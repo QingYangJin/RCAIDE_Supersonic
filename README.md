@@ -1,6 +1,6 @@
-# RCAIDE Research Workspace
+# RCAIDE_Supersonic
 
-基于 [RCAIDE-LEADS](https://github.com/leadsgroup/RCAIDE_LEADS) 的飞机分析、教程与优化工作区，由 **QingYangJin** 独立维护。
+基于 [RCAIDE-LEADS](https://github.com/leadsgroup/RCAIDE_LEADS) 的超声速飞机分析、教程与优化工作区。
 
 本仓库包含官方教程、数字机库与本地优化扩展。RCAIDE 核心作为 Python 依赖安装；本仓库不是上游 RCAIDE 的完整源码镜像，也不是官方发行版。
 
@@ -10,7 +10,7 @@
 
 - 完整许可证：[LICENSE](LICENSE)。版权及第三方声明：[NOTICE.md](NOTICE.md)。
 - 上游项目：[leadsgroup/RCAIDE_LEADS](https://github.com/leadsgroup/RCAIDE_LEADS)，由伊利诺伊大学厄巴纳-香槟分校 LEADS 实验室及上游贡献者开发。
-- 原有版权与作者署名予以保留；QingYangJin 的署名仅覆盖本地新增与修改内容。
+- 原有版权与作者署名在相应源码及版权声明文件中保留；本地新增与修改内容的版权范围见第三方声明。
 - 教程和数字机库的固定来源提交、本地修改及哈希见 [docs/UPSTREAM.md](docs/UPSTREAM.md)。修改文件带有日期说明，不再将它们称为未经修改的官方副本。
 - 研究使用请遵循[上游引用说明](tutorials/_repository/README.md#citing-rcaide)。本仓库不代表上游机构认可本地修改或研究结果。
 
@@ -34,9 +34,9 @@
 ```powershell
 python -m venv envs\RCAIDE
 & '.\envs\RCAIDE\Scripts\python.exe' -m pip install -r requirements.txt
-.un_rcaide.cmd -m pip check
-.un_rcaide.cmd
-.un_rcaide.cmd examples\stall_speed_demo.py
+.\run_rcaide.cmd -m pip check
+.\run_rcaide.cmd
+.\run_rcaide.cmd examples\stall_speed_demo.py
 ```
 
 已有 Conda 环境位于 `envs\RCAIDE\python.exe` 时，启动器会直接使用它；新建 venv 则使用 `envs\RCAIDE\Scripts\python.exe`。环境检查器随项目目录定位，不要求固定在 `D:\RCAIDE`。输出写入 `outputs/`。
@@ -49,7 +49,7 @@ python -m venv envs\RCAIDE
 
 ```powershell
 Set-Location tutorials\Optimization_Wing_Planform_Fuel_Burn
-& '..\..un_rcaide.cmd' Optimize.py
+& '..\..\run_rcaide.cmd' Optimize.py
 ```
 
 当前优化入口是 `Optimize.py`，调用本地 `Differential_Evolution.py`，由 `Save_Results.py` 保存结果。运行前检查 `DE_OPTIONS`；当前设置最多请求 24 个工作进程，包含 Windows CPU 限制和内存余量控制。该优化可能耗时较长，不在基础 CI 中执行。
