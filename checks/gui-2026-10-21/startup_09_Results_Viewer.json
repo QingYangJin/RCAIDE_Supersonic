@@ -1,0 +1,1177 @@
+{
+ "tab_index": 8,
+ "tab_name": "Results Viewer",
+ "tree": {
+  "cls": "ResultsViewerWidget",
+  "visible": true,
+  "enabled": true,
+  "geom": [
+   0,
+   0,
+   1596,
+   957
+  ],
+  "children": [
+   {
+    "cls": "QLabel",
+    "text": "Results Viewer",
+    "visible": true,
+    "enabled": true,
+    "geom": [
+     14,
+     12,
+     1568,
+     26
+    ]
+   },
+   {
+    "cls": "QLabel",
+    "text": "Source:",
+    "visible": true,
+    "enabled": true,
+    "geom": [
+     14,
+     48,
+     84,
+     22
+    ]
+   },
+   {
+    "cls": "QComboBox",
+    "items": [
+     "Mission Results",
+     "Performance Analysis"
+    ],
+    "current": "Mission Results",
+    "visible": true,
+    "enabled": true,
+    "geom": [
+     106,
+     48,
+     220,
+     22
+    ],
+    "children": [
+     {
+      "cls": "QFrame",
+      "visible": false,
+      "enabled": true,
+      "geom": [
+       0,
+       0,
+       100,
+       30
+      ],
+      "children": [
+       {
+        "cls": "QListView",
+        "visible": false,
+        "enabled": true,
+        "geom": [
+         1,
+         1,
+         98,
+         28
+        ],
+        "children": [
+         {
+          "cls": "QWidget",
+          "name": "qt_scrollarea_viewport",
+          "visible": false,
+          "enabled": true,
+          "geom": [
+           0,
+           0,
+           98,
+           28
+          ]
+         },
+         {
+          "cls": "QWidget",
+          "name": "qt_scrollarea_hcontainer",
+          "visible": false,
+          "enabled": true,
+          "geom": [
+           0,
+           0,
+           100,
+           14
+          ],
+          "children": [
+           {
+            "cls": "QScrollBar",
+            "visible": false,
+            "enabled": true,
+            "geom": [
+             0,
+             0,
+             100,
+             14
+            ]
+           }
+          ]
+         },
+         {
+          "cls": "QWidget",
+          "name": "qt_scrollarea_vcontainer",
+          "visible": false,
+          "enabled": true,
+          "geom": [
+           0,
+           0,
+           14,
+           30
+          ],
+          "children": [
+           {
+            "cls": "QScrollBar",
+            "visible": false,
+            "enabled": true,
+            "geom": [
+             0,
+             0,
+             14,
+             30
+            ]
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "cls": "QWidget",
+        "visible": false,
+        "enabled": true,
+        "geom": [
+         0,
+         0,
+         100,
+         30
+        ]
+       },
+       {
+        "cls": "QWidget",
+        "visible": false,
+        "enabled": true,
+        "geom": [
+         0,
+         0,
+         100,
+         30
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "cls": "QLabel",
+    "visible": true,
+    "enabled": true,
+    "geom": [
+     334,
+     48,
+     12,
+     22
+    ]
+   },
+   {
+    "cls": "QPushButton",
+    "text": "Refresh",
+    "visible": true,
+    "enabled": true,
+    "geom": [
+     14,
+     81,
+     98,
+     20
+    ]
+   },
+   {
+    "cls": "QPushButton",
+    "text": "Copy Shown Path",
+    "visible": true,
+    "enabled": true,
+    "geom": [
+     120,
+     81,
+     194,
+     20
+    ]
+   },
+   {
+    "cls": "QPushButton",
+    "text": "Copy Shown Value",
+    "visible": true,
+    "enabled": true,
+    "geom": [
+     322,
+     81,
+     206,
+     20
+    ]
+   },
+   {
+    "cls": "QPushButton",
+    "text": "Export Shown",
+    "visible": true,
+    "enabled": true,
+    "geom": [
+     536,
+     81,
+     158,
+     20
+    ]
+   },
+   {
+    "cls": "QPushButton",
+    "text": "Export All",
+    "visible": true,
+    "enabled": true,
+    "geom": [
+     702,
+     81,
+     134,
+     20
+    ]
+   },
+   {
+    "cls": "QLineEdit",
+    "placeholder": "Search fields: altitude, velocity, mass, lift, throttle...",
+    "visible": true,
+    "enabled": true,
+    "geom": [
+     844,
+     80,
+     738,
+     22
+    ]
+   },
+   {
+    "cls": "QLineEdit",
+    "placeholder": "Inspect path, e.g. rcaide_results.segments[0].conditions.freestream.altitude",
+    "visible": true,
+    "enabled": true,
+    "geom": [
+     14,
+     112,
+     1402,
+     22
+    ]
+   },
+   {
+    "cls": "QPushButton",
+    "text": "Inspect Path",
+    "visible": true,
+    "enabled": true,
+    "geom": [
+     1424,
+     113,
+     158,
+     20
+    ]
+   },
+   {
+    "cls": "QLabel",
+    "text": "Select a tree row or inspect a path; copy/export buttons use the value shown on the right.",
+    "visible": true,
+    "enabled": true,
+    "geom": [
+     14,
+     144,
+     1568,
+     22
+    ]
+   },
+   {
+    "cls": "QSplitter",
+    "visible": true,
+    "enabled": true,
+    "geom": [
+     14,
+     176,
+     1568,
+     769
+    ],
+    "children": [
+     {
+      "cls": "QWidget",
+      "visible": true,
+      "enabled": true,
+      "geom": [
+       734,
+       0,
+       834,
+       769
+      ],
+      "children": [
+       {
+        "cls": "QLabel",
+        "text": "No results loaded.",
+        "visible": true,
+        "enabled": true,
+        "geom": [
+         10,
+         0,
+         824,
+         14
+        ]
+       },
+       {
+        "cls": "QTextEdit",
+        "visible": true,
+        "enabled": true,
+        "geom": [
+         10,
+         22,
+         824,
+         717
+        ],
+        "children": [
+         {
+          "cls": "QWidget",
+          "name": "qt_scrollarea_viewport",
+          "visible": true,
+          "enabled": true,
+          "geom": [
+           1,
+           1,
+           822,
+           715
+          ]
+         },
+         {
+          "cls": "QWidget",
+          "name": "qt_scrollarea_hcontainer",
+          "visible": false,
+          "enabled": true,
+          "geom": [
+           0,
+           0,
+           100,
+           14
+          ],
+          "children": [
+           {
+            "cls": "QScrollBar",
+            "visible": false,
+            "enabled": true,
+            "geom": [
+             0,
+             0,
+             100,
+             14
+            ]
+           }
+          ]
+         },
+         {
+          "cls": "QWidget",
+          "name": "qt_scrollarea_vcontainer",
+          "visible": false,
+          "enabled": true,
+          "geom": [
+           0,
+           0,
+           14,
+           30
+          ],
+          "children": [
+           {
+            "cls": "QScrollBar",
+            "visible": false,
+            "enabled": true,
+            "geom": [
+             0,
+             0,
+             14,
+             30
+            ]
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "cls": "QTableWidget",
+        "dims": [
+         0,
+         0
+        ],
+        "visible": false,
+        "enabled": true,
+        "geom": [
+         0,
+         0,
+         640,
+         480
+        ],
+        "children": [
+         {
+          "cls": "QWidget",
+          "name": "qt_scrollarea_viewport",
+          "visible": false,
+          "enabled": true,
+          "geom": [
+           1,
+           1,
+           638,
+           478
+          ]
+         },
+         {
+          "cls": "QWidget",
+          "name": "qt_scrollarea_hcontainer",
+          "visible": false,
+          "enabled": true,
+          "geom": [
+           0,
+           0,
+           100,
+           14
+          ],
+          "children": [
+           {
+            "cls": "QScrollBar",
+            "visible": false,
+            "enabled": true,
+            "geom": [
+             0,
+             0,
+             100,
+             14
+            ]
+           }
+          ]
+         },
+         {
+          "cls": "QWidget",
+          "name": "qt_scrollarea_vcontainer",
+          "visible": false,
+          "enabled": true,
+          "geom": [
+           0,
+           0,
+           14,
+           30
+          ],
+          "children": [
+           {
+            "cls": "QScrollBar",
+            "visible": false,
+            "enabled": true,
+            "geom": [
+             0,
+             0,
+             14,
+             30
+            ]
+           }
+          ]
+         },
+         {
+          "cls": "QHeaderView",
+          "visible": false,
+          "enabled": true,
+          "geom": [
+           1,
+           1,
+           0,
+           478
+          ],
+          "children": [
+           {
+            "cls": "QWidget",
+            "name": "qt_scrollarea_viewport",
+            "visible": false,
+            "enabled": true,
+            "geom": [
+             0,
+             0,
+             0,
+             478
+            ]
+           },
+           {
+            "cls": "QWidget",
+            "name": "qt_scrollarea_hcontainer",
+            "visible": false,
+            "enabled": true,
+            "geom": [
+             0,
+             0,
+             100,
+             14
+            ],
+            "children": [
+             {
+              "cls": "QScrollBar",
+              "visible": false,
+              "enabled": true,
+              "geom": [
+               0,
+               0,
+               100,
+               14
+              ]
+             }
+            ]
+           },
+           {
+            "cls": "QWidget",
+            "name": "qt_scrollarea_vcontainer",
+            "visible": false,
+            "enabled": true,
+            "geom": [
+             0,
+             0,
+             14,
+             30
+            ],
+            "children": [
+             {
+              "cls": "QScrollBar",
+              "visible": false,
+              "enabled": true,
+              "geom": [
+               0,
+               0,
+               14,
+               30
+              ]
+             }
+            ]
+           }
+          ]
+         },
+         {
+          "cls": "QHeaderView",
+          "visible": false,
+          "enabled": true,
+          "geom": [
+           1,
+           1,
+           638,
+           0
+          ],
+          "children": [
+           {
+            "cls": "QWidget",
+            "name": "qt_scrollarea_viewport",
+            "visible": false,
+            "enabled": true,
+            "geom": [
+             0,
+             0,
+             638,
+             0
+            ]
+           },
+           {
+            "cls": "QWidget",
+            "name": "qt_scrollarea_hcontainer",
+            "visible": false,
+            "enabled": true,
+            "geom": [
+             0,
+             0,
+             100,
+             14
+            ],
+            "children": [
+             {
+              "cls": "QScrollBar",
+              "visible": false,
+              "enabled": true,
+              "geom": [
+               0,
+               0,
+               100,
+               14
+              ]
+             }
+            ]
+           },
+           {
+            "cls": "QWidget",
+            "name": "qt_scrollarea_vcontainer",
+            "visible": false,
+            "enabled": true,
+            "geom": [
+             0,
+             0,
+             14,
+             30
+            ],
+            "children": [
+             {
+              "cls": "QScrollBar",
+              "visible": false,
+              "enabled": true,
+              "geom": [
+               0,
+               0,
+               14,
+               30
+              ]
+             }
+            ]
+           }
+          ]
+         },
+         {
+          "cls": "QAbstractButton",
+          "name": "qt_tableview_cornerbutton",
+          "visible": false,
+          "enabled": true,
+          "geom": [
+           1,
+           1,
+           0,
+           0
+          ]
+         }
+        ]
+       },
+       {
+        "cls": "QLabel",
+        "text": "X axis:",
+        "visible": true,
+        "enabled": true,
+        "geom": [
+         10,
+         747,
+         84,
+         22
+        ]
+       },
+       {
+        "cls": "QComboBox",
+        "items": [
+         "Time (s)",
+         "Range (m)",
+         "Altitude (m)",
+         "Mach",
+         "Index"
+        ],
+        "current": "Time (s)",
+        "visible": true,
+        "enabled": true,
+        "geom": [
+         100,
+         747,
+         130,
+         22
+        ],
+        "children": [
+         {
+          "cls": "QFrame",
+          "visible": false,
+          "enabled": true,
+          "geom": [
+           0,
+           0,
+           100,
+           30
+          ],
+          "children": [
+           {
+            "cls": "QListView",
+            "visible": false,
+            "enabled": true,
+            "geom": [
+             1,
+             1,
+             98,
+             28
+            ],
+            "children": [
+             {
+              "cls": "QWidget",
+              "name": "qt_scrollarea_viewport",
+              "visible": false,
+              "enabled": true,
+              "geom": [
+               0,
+               0,
+               98,
+               28
+              ]
+             },
+             {
+              "cls": "QWidget",
+              "name": "qt_scrollarea_hcontainer",
+              "visible": false,
+              "enabled": true,
+              "geom": [
+               0,
+               0,
+               100,
+               14
+              ],
+              "children": [
+               {
+                "cls": "QScrollBar",
+                "visible": false,
+                "enabled": true,
+                "geom": [
+                 0,
+                 0,
+                 100,
+                 14
+                ]
+               }
+              ]
+             },
+             {
+              "cls": "QWidget",
+              "name": "qt_scrollarea_vcontainer",
+              "visible": false,
+              "enabled": true,
+              "geom": [
+               0,
+               0,
+               14,
+               30
+              ],
+              "children": [
+               {
+                "cls": "QScrollBar",
+                "visible": false,
+                "enabled": true,
+                "geom": [
+                 0,
+                 0,
+                 14,
+                 30
+                ]
+               }
+              ]
+             }
+            ]
+           },
+           {
+            "cls": "QWidget",
+            "visible": false,
+            "enabled": true,
+            "geom": [
+             0,
+             0,
+             100,
+             30
+            ]
+           },
+           {
+            "cls": "QWidget",
+            "visible": false,
+            "enabled": true,
+            "geom": [
+             0,
+             0,
+             100,
+             30
+            ]
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "cls": "QPushButton",
+        "text": "Plot",
+        "visible": true,
+        "enabled": false,
+        "geom": [
+         236,
+         748,
+         80,
+         20
+        ]
+       },
+       {
+        "cls": "QPushButton",
+        "text": "Add",
+        "visible": true,
+        "enabled": false,
+        "geom": [
+         322,
+         748,
+         80,
+         20
+        ]
+       },
+       {
+        "cls": "QPushButton",
+        "text": "Clear Plot",
+        "visible": true,
+        "enabled": false,
+        "geom": [
+         408,
+         748,
+         134,
+         20
+        ]
+       },
+       {
+        "cls": "PlotWidget",
+        "visible": false,
+        "enabled": true,
+        "geom": [
+         0,
+         0,
+         640,
+         480
+        ],
+        "children": [
+         {
+          "cls": "QWidget",
+          "name": "qt_scrollarea_hcontainer",
+          "visible": false,
+          "enabled": true,
+          "geom": [
+           0,
+           0,
+           100,
+           14
+          ],
+          "children": [
+           {
+            "cls": "QScrollBar",
+            "visible": false,
+            "enabled": true,
+            "geom": [
+             0,
+             0,
+             100,
+             14
+            ]
+           }
+          ]
+         },
+         {
+          "cls": "QWidget",
+          "name": "qt_scrollarea_vcontainer",
+          "visible": false,
+          "enabled": true,
+          "geom": [
+           0,
+           0,
+           14,
+           30
+          ],
+          "children": [
+           {
+            "cls": "QScrollBar",
+            "visible": false,
+            "enabled": true,
+            "geom": [
+             0,
+             0,
+             14,
+             30
+            ]
+           }
+          ]
+         },
+         {
+          "cls": "QWidget",
+          "visible": false,
+          "enabled": true,
+          "geom": [
+           0,
+           0,
+           640,
+           480
+          ]
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "cls": "QTreeWidget",
+      "header": [
+       "Name",
+       "Class / Size",
+       "Value"
+      ],
+      "topLevelCount": 0,
+      "topLevel": [],
+      "visible": true,
+      "enabled": true,
+      "geom": [
+       0,
+       0,
+       730,
+       769
+      ],
+      "children": [
+       {
+        "cls": "QWidget",
+        "name": "qt_scrollarea_viewport",
+        "visible": true,
+        "enabled": true,
+        "geom": [
+         1,
+         17,
+         728,
+         751
+        ]
+       },
+       {
+        "cls": "QWidget",
+        "name": "qt_scrollarea_vcontainer",
+        "visible": false,
+        "enabled": true,
+        "geom": [
+         0,
+         0,
+         14,
+         30
+        ],
+        "children": [
+         {
+          "cls": "QScrollBar",
+          "visible": false,
+          "enabled": true,
+          "geom": [
+           0,
+           0,
+           14,
+           30
+          ]
+         }
+        ]
+       },
+       {
+        "cls": "QHeaderView",
+        "visible": true,
+        "enabled": true,
+        "geom": [
+         1,
+         1,
+         728,
+         16
+        ],
+        "children": [
+         {
+          "cls": "QWidget",
+          "name": "qt_scrollarea_viewport",
+          "visible": true,
+          "enabled": true,
+          "geom": [
+           0,
+           0,
+           728,
+           16
+          ]
+         },
+         {
+          "cls": "QWidget",
+          "name": "qt_scrollarea_hcontainer",
+          "visible": false,
+          "enabled": true,
+          "geom": [
+           0,
+           0,
+           100,
+           14
+          ],
+          "children": [
+           {
+            "cls": "QScrollBar",
+            "visible": false,
+            "enabled": true,
+            "geom": [
+             0,
+             0,
+             100,
+             14
+            ]
+           }
+          ]
+         },
+         {
+          "cls": "QWidget",
+          "name": "qt_scrollarea_vcontainer",
+          "visible": false,
+          "enabled": true,
+          "geom": [
+           0,
+           0,
+           14,
+           30
+          ],
+          "children": [
+           {
+            "cls": "QScrollBar",
+            "visible": false,
+            "enabled": true,
+            "geom": [
+             0,
+             0,
+             14,
+             30
+            ]
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "cls": "QWidget",
+        "name": "qt_scrollarea_hcontainer",
+        "visible": false,
+        "enabled": true,
+        "geom": [
+         1,
+         754,
+         728,
+         14
+        ],
+        "children": [
+         {
+          "cls": "QScrollBar",
+          "visible": false,
+          "enabled": true,
+          "geom": [
+           0,
+           0,
+           728,
+           14
+          ]
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "cls": "QSplitterHandle",
+      "name": "qt_splithandle_",
+      "visible": false,
+      "enabled": true,
+      "geom": [
+       0,
+       0,
+       100,
+       30
+      ]
+     },
+     {
+      "cls": "QSplitterHandle",
+      "name": "qt_splithandle_",
+      "visible": true,
+      "enabled": true,
+      "geom": [
+       730,
+       0,
+       4,
+       769
+      ]
+     }
+    ]
+   }
+  ]
+ },
+ "summary": {
+  "type_counts": {
+   "ResultsViewerWidget": 1,
+   "QLabel": 6,
+   "QComboBox": 2,
+   "QFrame": 2,
+   "QListView": 2,
+   "QWidget": 32,
+   "QScrollBar": 18,
+   "QPushButton": 9,
+   "QLineEdit": 2,
+   "QSplitter": 1,
+   "QTextEdit": 1,
+   "QTableWidget": 1,
+   "QHeaderView": 3,
+   "QAbstractButton": 1,
+   "PlotWidget": 1,
+   "QTreeWidget": 1,
+   "QSplitterHandle": 2
+  },
+  "interactive": [
+   {
+    "cls": "QComboBox",
+    "items": [
+     "Mission Results",
+     "Performance Analysis"
+    ],
+    "current": "Mission Results"
+   },
+   {
+    "cls": "QPushButton",
+    "text": "Refresh"
+   },
+   {
+    "cls": "QPushButton",
+    "text": "Copy Shown Path"
+   },
+   {
+    "cls": "QPushButton",
+    "text": "Copy Shown Value"
+   },
+   {
+    "cls": "QPushButton",
+    "text": "Export Shown"
+   },
+   {
+    "cls": "QPushButton",
+    "text": "Export All"
+   },
+   {
+    "cls": "QLineEdit",
+    "placeholder": "Search fields: altitude, velocity, mass, lift, throttle..."
+   },
+   {
+    "cls": "QLineEdit",
+    "placeholder": "Inspect path, e.g. rcaide_results.segments[0].conditions.freestream.altitude"
+   },
+   {
+    "cls": "QPushButton",
+    "text": "Inspect Path"
+   },
+   {
+    "cls": "QTableWidget",
+    "dims": [
+     0,
+     0
+    ]
+   },
+   {
+    "cls": "QComboBox",
+    "items": [
+     "Time (s)",
+     "Range (m)",
+     "Altitude (m)",
+     "Mach",
+     "Index"
+    ],
+    "current": "Time (s)"
+   },
+   {
+    "cls": "QPushButton",
+    "text": "Plot"
+   },
+   {
+    "cls": "QPushButton",
+    "text": "Add"
+   },
+   {
+    "cls": "QPushButton",
+    "text": "Clear Plot"
+   },
+   {
+    "cls": "QTreeWidget",
+    "header": [
+     "Name",
+     "Class / Size",
+     "Value"
+    ]
+   }
+  ]
+ }
+}

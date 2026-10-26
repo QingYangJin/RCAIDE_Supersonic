@@ -1,0 +1,33 @@
+name: Core checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  numerical-smoke:
+    runs-on: windows-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-python@v7.1.0
+        with:
+          python-version: '3.11'
+      - name: Create the project environment
+        run: python -m venv envs/RCAIDE
+      - name: Install core dependencies
+        run: ./envs/RCAIDE/Scripts/python.exe -m pip install -r requirements.txt
+      - name: Check dependencies and numerical examples
+        shell: cmd
+        run: |
+          call run_rcaide.cmd -m pip check
+          if errorlevel 1 exit /b 1
+          call run_rcaide.cmd examples\verify_atmosphere.py
+          if errorlevel 1 exit /b 1
+          call run_rcaide.cmd examples\stall_speed_demo.py
+          if errorlevel 1 exit /b 1

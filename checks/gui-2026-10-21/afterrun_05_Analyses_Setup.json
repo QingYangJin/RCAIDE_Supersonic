@@ -1,0 +1,6527 @@
+{
+ "tab_index": 4,
+ "tab_name": "Analyses Setup",
+ "tree": {
+  "cls": "AnalysisWidget",
+  "visible": true,
+  "enabled": true,
+  "geom": [
+   0,
+   0,
+   1596,
+   955
+  ],
+  "children": [
+   {
+    "cls": "QGroupBox",
+    "title": "Analyses Setup",
+    "visible": true,
+    "enabled": true,
+    "geom": [
+     10,
+     10,
+     1576,
+     897
+    ],
+    "children": [
+     {
+      "cls": "QLabel",
+      "visible": false,
+      "enabled": true,
+      "geom": [
+       0,
+       0,
+       640,
+       480
+      ]
+     },
+     {
+      "cls": "MissionAnalysisWidget",
+      "visible": true,
+      "enabled": true,
+      "geom": [
+       12,
+       27,
+       1552,
+       858
+      ],
+      "children": [
+       {
+        "cls": "QPushButton",
+        "text": "Save Analyses",
+        "visible": true,
+        "enabled": true,
+        "geom": [
+         9,
+         9,
+         306,
+         22
+        ]
+       },
+       {
+        "cls": "QTreeWidget",
+        "header": [
+         "Analysis",
+         "Enabled"
+        ],
+        "topLevelCount": 10,
+        "topLevel": [
+         "Aerodynamics",
+         "Atmospheric",
+         "Planets",
+         "Weights",
+         "Geometry",
+         "Energy",
+         "Propulsion",
+         "Costs",
+         "Aeroacoustics",
+         "Stability"
+        ],
+        "visible": true,
+        "enabled": true,
+        "geom": [
+         9,
+         34,
+         306,
+         815
+        ],
+        "children": [
+         {
+          "cls": "QWidget",
+          "name": "qt_scrollarea_viewport",
+          "visible": true,
+          "enabled": true,
+          "geom": [
+           1,
+           19,
+           304,
+           795
+          ]
+         },
+         {
+          "cls": "QWidget",
+          "name": "qt_scrollarea_vcontainer",
+          "visible": false,
+          "enabled": true,
+          "geom": [
+           0,
+           0,
+           14,
+           30
+          ],
+          "children": [
+           {
+            "cls": "QScrollBar",
+            "visible": false,
+            "enabled": true,
+            "geom": [
+             0,
+             0,
+             14,
+             30
+            ]
+           }
+          ]
+         },
+         {
+          "cls": "QHeaderView",
+          "visible": true,
+          "enabled": true,
+          "geom": [
+           1,
+           1,
+           304,
+           18
+          ],
+          "children": [
+           {
+            "cls": "QWidget",
+            "name": "qt_scrollarea_viewport",
+            "visible": true,
+            "enabled": true,
+            "geom": [
+             0,
+             0,
+             304,
+             18
+            ]
+           },
+           {
+            "cls": "QWidget",
+            "name": "qt_scrollarea_hcontainer",
+            "visible": false,
+            "enabled": true,
+            "geom": [
+             0,
+             0,
+             100,
+             14
+            ],
+            "children": [
+             {
+              "cls": "QScrollBar",
+              "visible": false,
+              "enabled": true,
+              "geom": [
+               0,
+               0,
+               100,
+               14
+              ]
+             }
+            ]
+           },
+           {
+            "cls": "QWidget",
+            "name": "qt_scrollarea_vcontainer",
+            "visible": false,
+            "enabled": true,
+            "geom": [
+             0,
+             0,
+             14,
+             30
+            ],
+            "children": [
+             {
+              "cls": "QScrollBar",
+              "visible": false,
+              "enabled": true,
+              "geom": [
+               0,
+               0,
+               14,
+               30
+              ]
+             }
+            ]
+           }
+          ]
+         },
+         {
+          "cls": "QWidget",
+          "name": "qt_scrollarea_hcontainer",
+          "visible": false,
+          "enabled": true,
+          "geom": [
+           1,
+           800,
+           304,
+           14
+          ],
+          "children": [
+           {
+            "cls": "QScrollBar",
+            "visible": false,
+            "enabled": true,
+            "geom": [
+             0,
+             0,
+             304,
+             14
+            ]
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "cls": "QScrollArea",
+        "visible": true,
+        "enabled": true,
+        "geom": [
+         318,
+         9,
+         1225,
+         840
+        ],
+        "children": [
+         {
+          "cls": "QWidget",
+          "name": "qt_scrollarea_viewport",
+          "visible": true,
+          "enabled": true,
+          "geom": [
+           1,
+           1,
+           1223,
+           838
+          ],
+          "children": [
+           {
+            "cls": "QWidget",
+            "visible": true,
+            "enabled": true,
+            "geom": [
+             0,
+             0,
+             1223,
+             838
+            ],
+            "children": [
+             {
+              "cls": "AerodynamicsWidget",
+              "visible": true,
+              "enabled": true,
+              "geom": [
+               9,
+               9,
+               1205,
+               351
+              ],
+              "children": [
+               {
+                "cls": "QLabel",
+                "text": "<b>Aerodynamics</b>",
+                "visible": true,
+                "enabled": true,
+                "geom": [
+                 9,
+                 9,
+                 1187,
+                 14
+                ]
+               },
+               {
+                "cls": "QFrame",
+                "visible": true,
+                "enabled": true,
+                "geom": [
+                 9,
+                 29,
+                 1187,
+                 3
+                ]
+               },
+               {
+                "cls": "QComboBox",
+                "items": [
+                 "Vortex Lattice Method"
+                ],
+                "current": "Vortex Lattice Method",
+                "visible": true,
+                "enabled": true,
+                "geom": [
+                 9,
+                 38,
+                 1187,
+                 22
+                ],
+                "children": [
+                 {
+                  "cls": "QFrame",
+                  "visible": false,
+                  "enabled": true,
+                  "geom": [
+                   0,
+                   0,
+                   100,
+                   30
+                  ],
+                  "children": [
+                   {
+                    "cls": "QListView",
+                    "visible": false,
+                    "enabled": true,
+                    "geom": [
+                     1,
+                     1,
+                     98,
+                     28
+                    ],
+                    "children": [
+                     {
+                      "cls": "QWidget",
+                      "name": "qt_scrollarea_viewport",
+                      "visible": false,
+                      "enabled": true,
+                      "geom": [
+                       0,
+                       0,
+                       98,
+                       28
+                      ]
+                     },
+                     {
+                      "cls": "QWidget",
+                      "name": "qt_scrollarea_hcontainer",
+                      "visible": false,
+                      "enabled": true,
+                      "geom": [
+                       0,
+                       0,
+                       100,
+                       14
+                      ],
+                      "children": [
+                       {
+                        "cls": "QScrollBar",
+                        "visible": false,
+                        "enabled": true,
+                        "geom": [
+                         0,
+                         0,
+                         100,
+                         14
+                        ]
+                       }
+                      ]
+                     },
+                     {
+                      "cls": "QWidget",
+                      "name": "qt_scrollarea_vcontainer",
+                      "visible": false,
+                      "enabled": true,
+                      "geom": [
+                       0,
+                       0,
+                       14,
+                       30
+                      ],
+                      "children": [
+                       {
+                        "cls": "QScrollBar",
+                        "visible": false,
+                        "enabled": true,
+                        "geom": [
+                         0,
+                         0,
+                         14,
+                         30
+                        ]
+                       }
+                      ]
+                     }
+                    ]
+                   },
+                   {
+                    "cls": "QWidget",
+                    "visible": false,
+                    "enabled": true,
+                    "geom": [
+                     0,
+                     0,
+                     100,
+                     30
+                    ]
+                   },
+                   {
+                    "cls": "QWidget",
+                    "visible": false,
+                    "enabled": true,
+                    "geom": [
+                     0,
+                     0,
+                     100,
+                     30
+                    ]
+                   }
+                  ]
+                 }
+                ]
+               },
+               {
+                "cls": "DataEntryWidget",
+                "visible": true,
+                "enabled": true,
+                "geom": [
+                 9,
+                 66,
+                 1187,
+                 267
+                ],
+                "children": [
+                 {
+                  "cls": "QCheckBox",
+                  "visible": true,
+                  "enabled": true,
+                  "geom": [
+                   194,
+                   0,
+                   907,
+                   15
+                  ]
+                 },
+                 {
+                  "cls": "QCheckBox",
+                  "visible": true,
+                  "enabled": true,
+                  "geom": [
+                   194,
+                   21,
+                   907,
+                   15
+                  ]
+                 },
+                 {
+                  "cls": "QLineEdit",
+                  "text": "30",
+                  "visible": true,
+                  "enabled": true,
+                  "geom": [
+                   194,
+                   42,
+                   907,
+                   22
+                  ]
+                 },
+                 {
+                  "cls": "QLineEdit",
+                  "text": "15",
+                  "visible": true,
+                  "enabled": true,
+                  "geom": [
+                   194,
+                   70,
+                   907,
+                   22
+                  ]
+                 },
+                 {
+                  "cls": "QCheckBox",
+                  "visible": true,
+                  "enabled": true,
+                  "geom": [
+                   194,
+                   98,
+                   907,
+                   15
+                  ]
+                 },
+                 {
+                  "cls": "QCheckBox",
+                  "visible": true,
+                  "enabled": true,
+                  "geom": [
+                   194,
+                   119,
+                   907,
+                   15
+                  ]
+                 },
+                 {
+                  "cls": "QLineEdit",
+                  "text": "4",
+                  "visible": true,
+                  "enabled": true,
+                  "geom": [
+                   194,
+                   140,
+                   907,
+                   22
+                  ]
+                 },
+                 {
+                  "cls": "QLineEdit",
+                  "text": "10",
+                  "visible": true,
+                  "enabled": true,
+                  "geom": [
+                   194,
+                   168,
+                   907,
+                   22
+                  ]
+                 },
+                 {
+                  "cls": "QCheckBox",
+                  "visible": true,
+                  "enabled": true,
+                  "geom": [
+                   194,
+                   196,
+                   907,
+                   15
+                  ]
+                 },
+                 {
+                  "cls": "QLineEdit",
+                  "text": "1.2",
+                  "visible": true,
+                  "enabled": true,
+                  "geom": [
+                   194,
+                   217,
+                   907,
+                   22
+                  ]
+                 },
+                 {
+                  "cls": "QLineEdit",
+                  "text": "1.02",
+                  "visible": true,
+                  "enabled": true,
+                  "geom": [
+                   194,
+                   245,
+                   907,
+                   22
+                  ]
+                 },
+                 {
+                  "cls": "QLabel",
+                  "text": "Use Surrogate:",
+                  "visible": true,
+                  "enabled": true,
+                  "geom": [
+                   0,
+                   0,
+                   188,
+                   15
+                  ]
+                 },
+                 {
+                  "cls": "QLabel",
+                  "text": "Reuse Training Data:",
+                  "visible": true,
+                  "enabled": true,
+                  "geom": [
+                   0,
+                   21,
+                   188,
+                   15
+                  ]
+                 },
+                 {
+                  "cls": "QLabel",
+                  "text": "Spanwise Vortices:",
+                  "visible": true,
+                  "enabled": true,
+                  "geom": [
+                   0,
+                   42,
+                   188,
+                   22
+                  ]
+                 },
+                 {
+                  "cls": "UnitPickerWidget",
+                  "visible": true,
+                  "enabled": true,
+                  "geom": [
+                   1107,
+                   42,
+                   80,
+                   22
+                  ],
+                  "children": [
+                   {
+                    "cls": "QComboBox",
+                    "items": [
+                     "Unit"
+                    ],
+                    "current": "Unit",
+                    "visible": true,
+                    "enabled": true,
+                    "geom": [
+                     0,
+                     0,
+                     80,
+                     22
+                    ],
+                    "children": [
+                     {
+                      "cls": "QFrame",
+                      "visible": false,
+                      "enabled": true,
+                      "geom": [
+                       0,
+                       0,
+                       100,
+                       30
+                      ],
+                      "children": [
+                       {
+                        "cls": "QListView",
+                        "visible": false,
+                        "enabled": true,
+                        "geom": [
+                         1,
+                         1,
+                         98,
+                         28
+                        ],
+                        "children": [
+                         {
+                          "cls": "QWidget",
+                          "name": "qt_scrollarea_viewport",
+                          "visible": false,
+                          "enabled": true,
+                          "geom": [
+                           0,
+                           0,
+                           98,
+                           28
+                          ]
+                         },
+                         {
+                          "cls": "QWidget",
+                          "name": "qt_scrollarea_hcontainer",
+                          "visible": false,
+                          "enabled": true,
+                          "geom": [
+                           0,
+                           0,
+                           100,
+                           14
+                          ],
+                          "children": [
+                           {
+                            "cls": "QScrollBar",
+                            "visible": false,
+                            "enabled": true,
+                            "geom": [
+                             0,
+                             0,
+                             100,
+                             14
+                            ]
+                           }
+                          ]
+                         },
+                         {
+                          "cls": "QWidget",
+                          "name": "qt_scrollarea_vcontainer",
+                          "visible": false,
+                          "enabled": true,
+                          "geom": [
+                           0,
+                           0,
+                           14,
+                           30
+                          ],
+                          "children": [
+                           {
+                            "cls": "QScrollBar",
+                            "visible": false,
+                            "enabled": true,
+                            "geom": [
+                             0,
+                             0,
+                             14,
+                             30
+                            ]
+                           }
+                          ]
+                         }
+                        ]
+                       },
+                       {
+                        "cls": "QWidget",
+                        "visible": false,
+                        "enabled": true,
+                        "geom": [
+                         0,
+                         0,
+                         100,
+                         30
+                        ]
+                       },
+                       {
+                        "cls": "QWidget",
+                        "visible": false,
+                        "enabled": true,
+                        "geom": [
+                         0,
+                         0,
+                         100,
+                         30
+                        ]
+                       }
+                      ]
+                     }
+                    ]
+                   }
+                  ]
+                 },
+                 {
+                  "cls": "QLabel",
+                  "text": "Chordwise Vortices:",
+                  "visible": true,
+                  "enabled": true,
+                  "geom": [
+                   0,
+                   70,
+                   188,
+                   22
+                  ]
+                 },
+                 {
+                  "cls": "UnitPickerWidget",
+                  "visible": true,
+                  "enabled": true,
+                  "geom": [
+                   1107,
+                   70,
+                   80,
+                   22
+                  ],
+                  "children": [
+                   {
+                    "cls": "QComboBox",
+                    "items": [
+                     "Unit"
+                    ],
+                    "current": "Unit",
+                    "visible": true,
+                    "enabled": true,
+                    "geom": [
+                     0,
+                     0,
+                     80,
+                     22
+                    ],
+                    "children": [
+                     {
+                      "cls": "QFrame",
+                      "visible": false,
+                      "enabled": true,
+                      "geom": [
+                       0,
+                       0,
+                       100,
+                       30
+                      ],
+                      "children": [
+                       {
+                        "cls": "QListView",
+                        "visible": false,
+                        "enabled": true,
+                        "geom": [
+                         1,
+                         1,
+                         98,
+                         28
+                        ],
+                        "children": [
+                         {
+                          "cls": "QWidget",
+                          "name": "qt_scrollarea_viewport",
+                          "visible": false,
+                          "enabled": true,
+                          "geom": [
+                           0,
+                           0,
+                           98,
+                           28
+                          ]
+                         },
+                         {
+                          "cls": "QWidget",
+                          "name": "qt_scrollarea_hcontainer",
+                          "visible": false,
+                          "enabled": true,
+                          "geom": [
+                           0,
+                           0,
+                           100,
+                           14
+                          ],
+                          "children": [
+                           {
+                            "cls": "QScrollBar",
+                            "visible": false,
+                            "enabled": true,
+                            "geom": [
+                             0,
+                             0,
+                             100,
+                             14
+                            ]
+                           }
+                          ]
+                         },
+                         {
+                          "cls": "QWidget",
+                          "name": "qt_scrollarea_vcontainer",
+                          "visible": false,
+                          "enabled": true,
+                          "geom": [
+                           0,
+                           0,
+                           14,
+                           30
+                          ],
+                          "children": [
+                           {
+                            "cls": "QScrollBar",
+                            "visible": false,
+                            "enabled": true,
+                            "geom": [
+                             0,
+                             0,
+                             14,
+                             30
+                            ]
+                           }
+                          ]
+                         }
+                        ]
+                       },
+                       {
+                        "cls": "QWidget",
+                        "visible": false,
+                        "enabled": true,
+                        "geom": [
+                         0,
+                         0,
+                         100,
+                         30
+                        ]
+                       },
+                       {
+                        "cls": "QWidget",
+                        "visible": false,
+                        "enabled": true,
+                        "geom": [
+                         0,
+                         0,
+                         100,
+                         30
+                        ]
+                       }
+                      ]
+                     }
+                    ]
+                   }
+                  ]
+                 },
+                 {
+                  "cls": "QLabel",
+                  "text": "Spanwise Cosine Spacing:",
+                  "visible": true,
+                  "enabled": true,
+                  "geom": [
+                   0,
+                   98,
+                   188,
+                   15
+                  ]
+                 },
+                 {
+                  "cls": "QLabel",
+                  "text": "Model Fuselage:",
+                  "visible": true,
+                  "enabled": true,
+                  "geom": [
+                   0,
+                   119,
+                   188,
+                   15
+                  ]
+                 },
+                 {
+                  "cls": "QLabel",
+                  "text": "Fuselage Spanwise Vortices:",
+                  "visible": true,
+                  "enabled": true,
+                  "geom": [
+                   0,
+                   140,
+                   188,
+                   22
+                  ]
+                 },
+                 {
+                  "cls": "UnitPickerWidget",
+                  "visible": true,
+                  "enabled": true,
+                  "geom": [
+                   1107,
+                   140,
+                   80,
+                   22
+                  ],
+                  "children": [
+                   {
+                    "cls": "QComboBox",
+                    "items": [
+                     "Unit"
+                    ],
+                    "current": "Unit",
+                    "visible": true,
+                    "enabled": true,
+                    "geom": [
+                     0,
+                     0,
+                     80,
+                     22
+                    ],
+                    "children": [
+                     {
+                      "cls": "QFrame",
+                      "visible": false,
+                      "enabled": true,
+                      "geom": [
+                       0,
+                       0,
+                       100,
+                       30
+                      ],
+                      "children": [
+                       {
+                        "cls": "QListView",
+                        "visible": false,
+                        "enabled": true,
+                        "geom": [
+                         1,
+                         1,
+                         98,
+                         28
+                        ],
+                        "children": [
+                         {
+                          "cls": "QWidget",
+                          "name": "qt_scrollarea_viewport",
+                          "visible": false,
+                          "enabled": true,
+                          "geom": [
+                           0,
+                           0,
+                           98,
+                           28
+                          ]
+                         },
+                         {
+                          "cls": "QWidget",
+                          "name": "qt_scrollarea_hcontainer",
+                          "visible": false,
+                          "enabled": true,
+                          "geom": [
+                           0,
+                           0,
+                           100,
+                           14
+                          ],
+                          "children": [
+                           {
+                            "cls": "QScrollBar",
+                            "visible": false,
+                            "enabled": true,
+                            "geom": [
+                             0,
+                             0,
+                             100,
+                             14
+                            ]
+                           }
+                          ]
+                         },
+                         {
+                          "cls": "QWidget",
+                          "name": "qt_scrollarea_vcontainer",
+                          "visible": false,
+                          "enabled": true,
+                          "geom": [
+                           0,
+                           0,
+                           14,
+                           30
+                          ],
+                          "children": [
+                           {
+                            "cls": "QScrollBar",
+                            "visible": false,
+                            "enabled": true,
+                            "geom": [
+                             0,
+                             0,
+                             14,
+                             30
+                            ]
+                           }
+                          ]
+                         }
+                        ]
+                       },
+                       {
+                        "cls": "QWidget",
+                        "visible": false,
+                        "enabled": true,
+                        "geom": [
+                         0,
+                         0,
+                         100,
+                         30
+                        ]
+                       },
+                       {
+                        "cls": "QWidget",
+                        "visible": false,
+                        "enabled": true,
+                        "geom": [
+                         0,
+                         0,
+                         100,
+                         30
+                        ]
+                       }
+                      ]
+                     }
+                    ]
+                   }
+                  ]
+                 },
+                 {
+                  "cls": "QLabel",
+                  "text": "Fuselage Chordwise Vortices:",
+                  "visible": true,
+                  "enabled": true,
+                  "geom": [
+                   0,
+                   168,
+                   188,
+                   22
+                  ]
+                 },
+                 {
+                  "cls": "UnitPickerWidget",
+                  "visible": true,
+                  "enabled": true,
+                  "geom": [
+                   1107,
+                   168,
+                   80,
+                   22
+                  ],
+                  "children": [
+                   {
+                    "cls": "QComboBox",
+                    "items": [
+                     "Unit"
+                    ],
+                    "current": "Unit",
+                    "visible": true,
+                    "enabled": true,
+                    "geom": [
+                     0,
+                     0,
+                     80,
+                     22
+                    ],
+                    "children": [
+                     {
+                      "cls": "QFrame",
+                      "visible": false,
+                      "enabled": true,
+                      "geom": [
+                       0,
+                       0,
+                       100,
+                       30
+                      ],
+                      "children": [
+                       {
+                        "cls": "QListView",
+                        "visible": false,
+                        "enabled": true,
+                        "geom": [
+                         1,
+                         1,
+                         98,
+                         28
+                        ],
+                        "children": [
+                         {
+                          "cls": "QWidget",
+                          "name": "qt_scrollarea_viewport",
+                          "visible": false,
+                          "enabled": true,
+                          "geom": [
+                           0,
+                           0,
+                           98,
+                           28
+                          ]
+                         },
+                         {
+                          "cls": "QWidget",
+                          "name": "qt_scrollarea_hcontainer",
+                          "visible": false,
+                          "enabled": true,
+                          "geom": [
+                           0,
+                           0,
+                           100,
+                           14
+                          ],
+                          "children": [
+                           {
+                            "cls": "QScrollBar",
+                            "visible": false,
+                            "enabled": true,
+                            "geom": [
+                             0,
+                             0,
+                             100,
+                             14
+                            ]
+                           }
+                          ]
+                         },
+                         {
+                          "cls": "QWidget",
+                          "name": "qt_scrollarea_vcontainer",
+                          "visible": false,
+                          "enabled": true,
+                          "geom": [
+                           0,
+                           0,
+                           14,
+                           30
+                          ],
+                          "children": [
+                           {
+                            "cls": "QScrollBar",
+                            "visible": false,
+                            "enabled": true,
+                            "geom": [
+                             0,
+                             0,
+                             14,
+                             30
+                            ]
+                           }
+                          ]
+                         }
+                        ]
+                       },
+                       {
+                        "cls": "QWidget",
+                        "visible": false,
+                        "enabled": true,
+                        "geom": [
+                         0,
+                         0,
+                         100,
+                         30
+                        ]
+                       },
+                       {
+                        "cls": "QWidget",
+                        "visible": false,
+                        "enabled": true,
+                        "geom": [
+                         0,
+                         0,
+                         100,
+                         30
+                        ]
+                       }
+                      ]
+                     }
+                    ]
+                   }
+                  ]
+                 },
+                 {
+                  "cls": "QLabel",
+                  "text": "Propeller Wake Model:",
+                  "visible": true,
+                  "enabled": true,
+                  "geom": [
+                   0,
+                   196,
+                   188,
+                   15
+                  ]
+                 },
+                 {
+                  "cls": "QLabel",
+                  "text": "Fuselage Lift Correction:",
+                  "visible": true,
+                  "enabled": true,
+                  "geom": [
+                   0,
+                   217,
+                   188,
+                   22
+                  ]
+                 },
+                 {
+                  "cls": "UnitPickerWidget",
+                  "visible": true,
+                  "enabled": true,
+                  "geom": [
+                   1107,
+                   217,
+                   80,
+                   22
+                  ],
+                  "children": [
+                   {
+                    "cls": "QComboBox",
+                    "items": [
+                     "",
+                     "%"
+                    ],
+                    "current": "",
+                    "visible": true,
+                    "enabled": true,
+                    "geom": [
+                     0,
+                     0,
+                     80,
+                     22
+                    ],
+                    "children": [
+                     {
+                      "cls": "QFrame",
+                      "visible": false,
+                      "enabled": true,
+                      "geom": [
+                       0,
+                       0,
+                       100,
+                       30
+                      ],
+                      "children": [
+                       {
+                        "cls": "QListView",
+                        "visible": false,
+                        "enabled": true,
+                        "geom": [
+                         1,
+                         1,
+                         98,
+                         28
+                        ],
+                        "children": [
+                         {
+                          "cls": "QWidget",
+                          "name": "qt_scrollarea_viewport",
+                          "visible": false,
+                          "enabled": true,
+                          "geom": [
+                           0,
+                           0,
+                           98,
+                           28
+                          ]
+                         },
+                         {
+                          "cls": "QWidget",
+                          "name": "qt_scrollarea_hcontainer",
+                          "visible": false,
+                          "enabled": true,
+                          "geom": [
+                           0,
+                           0,
+                           100,
+                           14
+                          ],
+                          "children": [
+                           {
+                            "cls": "QScrollBar",
+                            "visible": false,
+                            "enabled": true,
+                            "geom": [
+                             0,
+                             0,
+                             100,
+                             14
+                            ]
+                           }
+                          ]
+                         },
+                         {
+                          "cls": "QWidget",
+                          "name": "qt_scrollarea_vcontainer",
+                          "visible": false,
+                          "enabled": true,
+                          "geom": [
+                           0,
+                           0,
+                           14,
+                           30
+                          ],
+                          "children": [
+                           {
+                            "cls": "QScrollBar",
+                            "visible": false,
+                            "enabled": true,
+                            "geom": [
+                             0,
+                             0,
+                             14,
+                             30
+                            ]
+                           }
+                          ]
+                         }
+                        ]
+                       },
+                       {
+                        "cls": "QWidget",
+                        "visible": false,
+                        "enabled": true,
+                        "geom": [
+                         0,
+                         0,
+                         100,
+                         30
+                        ]
+                       },
+                       {
+                        "cls": "QWidget",
+                        "visible": false,
+                        "enabled": true,
+                        "geom": [
+                         0,
+                         0,
+                         100,
+                         30
+                        ]
+                       }
+                      ]
+                     }
+                    ]
+                   }
+                  ]
+                 },
+                 {
+                  "cls": "QLabel",
+                  "text": "Trim Drag Correction Factor:",
+                  "visible": true,
+                  "enabled": true,
+                  "geom": [
+                   0,
+                   245,
+                   188,
+                   22
+                  ]
+                 },
+                 {
+                  "cls": "UnitPickerWidget",
+                  "visible": true,
+                  "enabled": true,
+                  "geom": [
+                   1107,
+                   245,
+                   80,
+                   22
+                  ],
+                  "children": [
+                   {
+                    "cls": "QComboBox",
+                    "items": [
+                     "",
+                     "%"
+                    ],
+                    "current": "",
+                    "visible": true,
+                    "enabled": true,
+                    "geom": [
+                     0,
+                     0,
+                     80,
+                     22
+                    ],
+                    "children": [
+                     {
+                      "cls": "QFrame",
+                      "visible": false,
+                      "enabled": true,
+                      "geom": [
+                       0,
+                       0,
+                       100,
+                       30
+                      ],
+                      "children": [
+                       {
+                        "cls": "QListView",
+                        "visible": false,
+                        "enabled": true,
+                        "geom": [
+                         1,
+                         1,
+                         98,
+                         28
+                        ],
+                        "children": [
+                         {
+                          "cls": "QWidget",
+                          "name": "qt_scrollarea_viewport",
+                          "visible": false,
+                          "enabled": true,
+                          "geom": [
+                           0,
+                           0,
+                           98,
+                           28
+                          ]
+                         },
+                         {
+                          "cls": "QWidget",
+                          "name": "qt_scrollarea_hcontainer",
+                          "visible": false,
+                          "enabled": true,
+                          "geom": [
+                           0,
+                           0,
+                           100,
+                           14
+                          ],
+                          "children": [
+                           {
+                            "cls": "QScrollBar",
+                            "visible": false,
+                            "enabled": true,
+                            "geom": [
+                             0,
+                             0,
+                             100,
+                             14
+                            ]
+                           }
+                          ]
+                         },
+                         {
+                          "cls": "QWidget",
+                          "name": "qt_scrollarea_vcontainer",
+                          "visible": false,
+                          "enabled": true,
+                          "geom": [
+                           0,
+                           0,
+                           14,
+                           30
+                          ],
+                          "children": [
+                           {
+                            "cls": "QScrollBar",
+                            "visible": false,
+                            "enabled": true,
+                            "geom": [
+                             0,
+                             0,
+                             14,
+                             30
+                            ]
+                           }
+                          ]
+                         }
+                        ]
+                       },
+                       {
+                        "cls": "QWidget",
+                        "visible": false,
+                        "enabled": true,
+                        "geom": [
+                         0,
+                         0,
+                         100,
+                         30
+                        ]
+                       },
+                       {
+                        "cls": "QWidget",
+                        "visible": false,
+                        "enabled": true,
+                        "geom": [
+                         0,
+                         0,
+                         100,
+                         30
+                        ]
+                       }
+                      ]
+                     }
+                    ]
+                   }
+                  ]
+                 }
+                ]
+               },
+               {
+                "cls": "QFrame",
+                "visible": true,
+                "enabled": true,
+                "geom": [
+                 9,
+                 339,
+                 1187,
+                 3
+                ]
+               }
+              ]
+             },
+             {
+              "cls": "AtmosphereWidget",
+              "visible": true,
+              "enabled": true,
+              "geom": [
+               9,
+               363,
+               1205,
+               78
+              ],
+              "children": [
+               {
+                "cls": "QLabel",
+                "text": "<b>Atmosphere</b>",
+                "visible": true,
+                "enabled": true,
+                "geom": [
+                 9,
+                 9,
+                 1187,
+                 14
+                ]
+               },
+               {
+                "cls": "QFrame",
+                "visible": true,
+                "enabled": true,
+                "geom": [
+                 9,
+                 29,
+                 1187,
+                 3
+                ]
+               },
+               {
+                "cls": "QComboBox",
+                "items": [
+                 "1976 US Standard Atmosphere",
+                 "Constant Temperature"
+                ],
+                "current": "1976 US Standard Atmosphere",
+                "visible": true,
+                "enabled": true,
+                "geom": [
+                 9,
+                 38,
+                 1187,
+                 22
+                ],
+                "children": [
+                 {
+                  "cls": "QFrame",
+                  "visible": false,
+                  "enabled": true,
+                  "geom": [
+                   0,
+                   0,
+                   100,
+                   30
+                  ],
+                  "children": [
+                   {
+                    "cls": "QListView",
+                    "visible": false,
+                    "enabled": true,
+                    "geom": [
+                     1,
+                     1,
+                     98,
+                     28
+                    ],
+                    "children": [
+                     {
+                      "cls": "QWidget",
+                      "name": "qt_scrollarea_viewport",
+                      "visible": false,
+                      "enabled": true,
+                      "geom": [
+                       0,
+                       0,
+                       98,
+                       28
+                      ]
+                     },
+                     {
+                      "cls": "QWidget",
+                      "name": "qt_scrollarea_hcontainer",
+                      "visible": false,
+                      "enabled": true,
+                      "geom": [
+                       0,
+                       0,
+                       100,
+                       14
+                      ],
+                      "children": [
+                       {
+                        "cls": "QScrollBar",
+                        "visible": false,
+                        "enabled": true,
+                        "geom": [
+                         0,
+                         0,
+                         100,
+                         14
+                        ]
+                       }
+                      ]
+                     },
+                     {
+                      "cls": "QWidget",
+                      "name": "qt_scrollarea_vcontainer",
+                      "visible": false,
+                      "enabled": true,
+                      "geom": [
+                       0,
+                       0,
+                       14,
+                       30
+                      ],
+                      "children": [
+                       {
+                        "cls": "QScrollBar",
+                        "visible": false,
+                        "enabled": true,
+                        "geom": [
+                         0,
+                         0,
+                         14,
+                         30
+                        ]
+                       }
+                      ]
+                     }
+                    ]
+                   },
+                   {
+                    "cls": "QWidget",
+                    "visible": false,
+                    "enabled": true,
+                    "geom": [
+                     0,
+                     0,
+                     100,
+                     30
+                    ]
+                   },
+                   {
+                    "cls": "QWidget",
+                    "visible": false,
+                    "enabled": true,
+                    "geom": [
+                     0,
+                     0,
+                     100,
+                     30
+                    ]
+                   }
+                  ]
+                 }
+                ]
+               },
+               {
+                "cls": "QFrame",
+                "visible": true,
+                "enabled": true,
+                "geom": [
+                 9,
+                 66,
+                 1187,
+                 3
+                ]
+               }
+              ]
+             },
+             {
+              "cls": "PlanetsWidget",
+              "visible": true,
+              "enabled": true,
+              "geom": [
+               9,
+               444,
+               1205,
+               74
+              ],
+              "children": [
+               {
+                "cls": "QLabel",
+                "text": "<b>Planets</b>",
+                "visible": true,
+                "enabled": true,
+                "geom": [
+                 11,
+                 11,
+                 1183,
+                 14
+                ]
+               },
+               {
+                "cls": "QFrame",
+                "visible": true,
+                "enabled": true,
+                "geom": [
+                 11,
+                 31,
+                 1183,
+                 3
+                ]
+               },
+               {
+                "cls": "QLabel",
+                "text": "Earth",
+                "visible": true,
+                "enabled": true,
+                "geom": [
+                 11,
+                 40,
+                 1183,
+                 14
+                ]
+               },
+               {
+                "cls": "QFrame",
+                "visible": true,
+                "enabled": true,
+                "geom": [
+                 11,
+                 60,
+                 1183,
+                 3
+                ]
+               }
+              ]
+             },
+             {
+              "cls": "WeightsWidget",
+              "visible": true,
+              "enabled": true,
+              "geom": [
+               9,
+               521,
+               1205,
+               141
+              ],
+              "children": [
+               {
+                "cls": "QLabel",
+                "text": "<b>Weights</b>",
+                "visible": true,
+                "enabled": true,
+                "geom": [
+                 9,
+                 9,
+                 1187,
+                 14
+                ]
+               },
+               {
+                "cls": "QFrame",
+                "visible": true,
+                "enabled": true,
+                "geom": [
+                 9,
+                 29,
+                 1187,
+                 3
+                ]
+               },
+               {
+                "cls": "QLabel",
+                "text": "Weight Method:",
+                "visible": true,
+                "enabled": true,
+                "geom": [
+                 9,
+                 38,
+                 94,
+                 22
+                ]
+               },
+               {
+                "cls": "QComboBox",
+                "items": [
+                 "Conventional Transport",
+                 "Conventional BWB",
+                 "Conventional General Aviation",
+                 "Electric Transport",
+                 "Electric General Aviation",
+                 "Electric VTOL",
+                 "Hybrid",
+                 "Cryogenic Transport",
+                 "Cryogenic BWB"
+                ],
+                "current": "Conventional Transport",
+                "visible": true,
+                "enabled": true,
+                "geom": [
+                 109,
+                 38,
+                 256,
+                 22
+                ],
+                "children": [
+                 {
+                  "cls": "QFrame",
+                  "visible": false,
+                  "enabled": true,
+                  "geom": [
+                   0,
+                   0,
+                   100,
+                   30
+                  ],
+                  "children": [
+                   {
+                    "cls": "QListView",
+                    "visible": false,
+                    "enabled": true,
+                    "geom": [
+                     1,
+                     1,
+                     98,
+                     28
+                    ],
+                    "children": [
+                     {
+                      "cls": "QWidget",
+                      "name": "qt_scrollarea_viewport",
+                      "visible": false,
+                      "enabled": true,
+                      "geom": [
+                       0,
+                       0,
+                       98,
+                       28
+                      ]
+                     },
+                     {
+                      "cls": "QWidget",
+                      "name": "qt_scrollarea_hcontainer",
+                      "visible": false,
+                      "enabled": true,
+                      "geom": [
+                       0,
+                       0,
+                       100,
+                       14
+                      ],
+                      "children": [
+                       {
+                        "cls": "QScrollBar",
+                        "visible": false,
+                        "enabled": true,
+                        "geom": [
+                         0,
+                         0,
+                         100,
+                         14
+                        ]
+                       }
+                      ]
+                     },
+                     {
+                      "cls": "QWidget",
+                      "name": "qt_scrollarea_vcontainer",
+                      "visible": false,
+                      "enabled": true,
+                      "geom": [
+                       0,
+                       0,
+                       14,
+                       30
+                      ],
+                      "children": [
+                       {
+                        "cls": "QScrollBar",
+                        "visible": false,
+                        "enabled": true,
+                        "geom": [
+                         0,
+                         0,
+                         14,
+                         30
+                        ]
+                       }
+                      ]
+                     }
+                    ]
+                   },
+                   {
+                    "cls": "QWidget",
+                    "visible": false,
+                    "enabled": true,
+                    "geom": [
+                     0,
+                     0,
+                     100,
+                     30
+                    ]
+                   },
+                   {
+                    "cls": "QWidget",
+                    "visible": false,
+                    "enabled": true,
+                    "geom": [
+                     0,
+                     0,
+                     100,
+                     30
+                    ]
+                   }
+                  ]
+                 }
+                ]
+               },
+               {
+                "cls": "DataEntryWidget",
+                "visible": true,
+                "enabled": true,
+                "geom": [
+                 9,
+                 66,
+                 1187,
+                 57
+                ],
+                "children": [
+                 {
+                  "cls": "QCheckBox",
+                  "visible": true,
+                  "enabled": true,
+                  "geom": [
+                   144,
+                   0,
+                   451,
+                   15
+                  ]
+                 },
+                 {
+                  "cls": "QCheckBox",
+                  "visible": true,
+                  "enabled": true,
+                  "geom": [
+                   737,
+                   0,
+                   450,
+                   15
+                  ]
+                 },
+                 {
+                  "cls": "QCheckBox",
+                  "visible": true,
+                  "enabled": true,
+                  "geom": [
+                   144,
+                   21,
+                   451,
+                   15
+                  ]
+                 },
+                 {
+                  "cls": "QCheckBox",
+                  "visible": true,
+                  "enabled": true,
+                  "geom": [
+                   737,
+                   21,
+                   450,
+                   15
+                  ]
+                 },
+                 {
+                  "cls": "QCheckBox",
+                  "visible": true,
+                  "enabled": true,
+                  "geom": [
+                   144,
+                   42,
+                   451,
+                   15
+                  ]
+                 },
+                 {
+                  "cls": "QCheckBox",
+                  "visible": true,
+                  "enabled": true,
+                  "geom": [
+                   737,
+                   42,
+                   450,
+                   15
+                  ]
+                 },
+                 {
+                  "cls": "QLabel",
+                  "text": "Run Weights Analysis:",
+                  "visible": true,
+                  "enabled": true,
+                  "geom": [
+                   0,
+                   0,
+                   138,
+                   15
+                  ]
+                 },
+                 {
+                  "cls": "QLabel",
+                  "text": "Overwrite OEW:",
+                  "visible": true,
+                  "enabled": true,
+                  "geom": [
+                   601,
+                   0,
+                   130,
+                   15
+                  ]
+                 },
+                 {
+                  "cls": "QLabel",
+                  "text": "Run CG Analysis:",
+                  "visible": true,
+                  "enabled": true,
+                  "geom": [
+                   0,
+                   21,
+                   138,
+                   15
+                  ]
+                 },
+                 {
+                  "cls": "QLabel",
+                  "text": "Run MOI Analysis:",
+                  "visible": true,
+                  "enabled": true,
+                  "geom": [
+                   601,
+                   21,
+                   130,
+                   15
+                  ]
+                 },
+                 {
+                  "cls": "QLabel",
+                  "text": "Write Mass Properties:",
+                  "visible": true,
+                  "enabled": true,
+                  "geom": [
+                   0,
+                   42,
+                   138,
+                   15
+                  ]
+                 },
+                 {
+                  "cls": "QLabel",
+                  "text": "Iterate MTOW:",
+                  "visible": true,
+                  "enabled": true,
+                  "geom": [
+                   601,
+                   42,
+                   130,
+                   15
+                  ]
+                 }
+                ]
+               },
+               {
+                "cls": "QFrame",
+                "visible": true,
+                "enabled": true,
+                "geom": [
+                 9,
+                 129,
+                 1187,
+                 3
+                ]
+               }
+              ]
+             },
+             {
+              "cls": "GeometryWidget",
+              "visible": true,
+              "enabled": true,
+              "geom": [
+               9,
+               665,
+               1205,
+               113
+              ],
+              "children": [
+               {
+                "cls": "QLabel",
+                "text": "<b>Geometry</b>",
+                "visible": true,
+                "enabled": true,
+                "geom": [
+                 9,
+                 9,
+                 1187,
+                 14
+                ]
+               },
+               {
+                "cls": "QFrame",
+                "visible": true,
+                "enabled": true,
+                "geom": [
+                 9,
+                 29,
+                 1187,
+                 3
+                ]
+               },
+               {
+                "cls": "DataEntryWidget",
+                "visible": true,
+                "enabled": true,
+                "geom": [
+                 9,
+                 38,
+                 1187,
+                 57
+                ],
+                "children": [
+                 {
+                  "cls": "QCheckBox",
+                  "visible": true,
+                  "enabled": true,
+                  "geom": [
+                   156,
+                   0,
+                   448,
+                   15
+                  ]
+                 },
+                 {
+                  "cls": "QCheckBox",
+                  "visible": true,
+                  "enabled": true,
+                  "geom": [
+                   733,
+                   0,
+                   454,
+                   15
+                  ]
+                 },
+                 {
+                  "cls": "QCheckBox",
+                  "visible": true,
+                  "enabled": true,
+                  "geom": [
+                   156,
+                   21,
+                   448,
+                   15
+                  ]
+                 },
+                 {
+                  "cls": "QCheckBox",
+                  "visible": true,
+                  "enabled": true,
+                  "geom": [
+                   733,
+                   21,
+                   454,
+                   15
+                  ]
+                 },
+                 {
+                  "cls": "QCheckBox",
+                  "visible": true,
+                  "enabled": true,
+                  "geom": [
+                   156,
+                   42,
+                   448,
+                   15
+                  ]
+                 },
+                 {
+                  "cls": "QLabel",
+                  "text": "Overwrite Reference:",
+                  "visible": true,
+                  "enabled": true,
+                  "geom": [
+                   0,
+                   0,
+                   150,
+                   15
+                  ]
+                 },
+                 {
+                  "cls": "QLabel",
+                  "text": "Compute Fuel Volume:",
+                  "visible": true,
+                  "enabled": true,
+                  "geom": [
+                   610,
+                   0,
+                   117,
+                   15
+                  ]
+                 },
+                 {
+                  "cls": "QLabel",
+                  "text": "Update Max Fuel:",
+                  "visible": true,
+                  "enabled": true,
+                  "geom": [
+                   0,
+                   21,
+                   150,
+                   15
+                  ]
+                 },
+                 {
+                  "cls": "QLabel",
+                  "text": "Unique Geometry:",
+                  "visible": true,
+                  "enabled": true,
+                  "geom": [
+                   610,
+                   21,
+                   117,
+                   15
+                  ]
+                 },
+                 {
+                  "cls": "QLabel",
+                  "text": "Write Geometry Properties:",
+                  "visible": true,
+                  "enabled": true,
+                  "geom": [
+                   0,
+                   42,
+                   150,
+                   15
+                  ]
+                 }
+                ]
+               },
+               {
+                "cls": "QFrame",
+                "visible": true,
+                "enabled": true,
+                "geom": [
+                 9,
+                 101,
+                 1187,
+                 3
+                ]
+               }
+              ]
+             },
+             {
+              "cls": "EnergyWidget",
+              "visible": false,
+              "enabled": true,
+              "geom": [
+               0,
+               0,
+               640,
+               480
+              ],
+              "children": [
+               {
+                "cls": "QLabel",
+                "text": "<b>Energy</b>",
+                "visible": false,
+                "enabled": true,
+                "geom": [
+                 9,
+                 9,
+                 622,
+                 444
+                ]
+               },
+               {
+                "cls": "QFrame",
+                "visible": false,
+                "enabled": true,
+                "geom": [
+                 9,
+                 459,
+                 622,
+                 3
+                ]
+               },
+               {
+                "cls": "QFrame",
+                "visible": false,
+                "enabled": true,
+                "geom": [
+                 9,
+                 468,
+                 622,
+                 3
+                ]
+               }
+              ]
+             },
+             {
+              "cls": "PropulsionWidget",
+              "visible": false,
+              "enabled": true,
+              "geom": [
+               0,
+               0,
+               640,
+               480
+              ],
+              "children": [
+               {
+                "cls": "QLabel",
+                "text": "<b>Propulsion</b>",
+                "visible": false,
+                "enabled": true,
+                "geom": [
+                 9,
+                 9,
+                 622,
+                 219
+                ]
+               },
+               {
+                "cls": "QFrame",
+                "visible": false,
+                "enabled": true,
+                "geom": [
+                 9,
+                 234,
+                 622,
+                 3
+                ]
+               },
+               {
+                "cls": "QLabel",
+                "text": "Propulsion analysis is not yet available.",
+                "visible": false,
+                "enabled": true,
+                "geom": [
+                 9,
+                 243,
+                 622,
+                 219
+                ]
+               },
+               {
+                "cls": "QFrame",
+                "visible": false,
+                "enabled": true,
+                "geom": [
+                 9,
+                 468,
+                 622,
+                 3
+                ]
+               }
+              ]
+             },
+             {
+              "cls": "CostsWidget",
+              "visible": false,
+              "enabled": true,
+              "geom": [
+               0,
+               0,
+               640,
+               480
+              ],
+              "children": [
+               {
+                "cls": "QLabel",
+                "text": "<b>Costs</b>",
+                "visible": false,
+                "enabled": true,
+                "geom": [
+                 9,
+                 9,
+                 622,
+                 219
+                ]
+               },
+               {
+                "cls": "QFrame",
+                "visible": false,
+                "enabled": true,
+                "geom": [
+                 9,
+                 234,
+                 622,
+                 3
+                ]
+               },
+               {
+                "cls": "QLabel",
+                "text": "Costs analysis is not yet available.",
+                "visible": false,
+                "enabled": true,
+                "geom": [
+                 9,
+                 243,
+                 622,
+                 219
+                ]
+               },
+               {
+                "cls": "QFrame",
+                "visible": false,
+                "enabled": true,
+                "geom": [
+                 9,
+                 468,
+                 622,
+                 3
+                ]
+               }
+              ]
+             },
+             {
+              "cls": "AeroacousticsWidget",
+              "visible": false,
+              "enabled": true,
+              "geom": [
+               0,
+               0,
+               640,
+               480
+              ],
+              "children": [
+               {
+                "cls": "QLabel",
+                "text": "<b>Acoustics</b>",
+                "visible": false,
+                "enabled": true,
+                "geom": [
+                 9,
+                 9,
+                 622,
+                 14
+                ]
+               },
+               {
+                "cls": "QFrame",
+                "visible": false,
+                "enabled": true,
+                "geom": [
+                 9,
+                 29,
+                 622,
+                 3
+                ]
+               },
+               {
+                "cls": "QComboBox",
+                "items": [
+                 "Semi Empirical",
+                 "Physics-Based"
+                ],
+                "current": "Semi Empirical",
+                "visible": false,
+                "enabled": true,
+                "geom": [
+                 9,
+                 38,
+                 622,
+                 22
+                ],
+                "children": [
+                 {
+                  "cls": "QFrame",
+                  "visible": false,
+                  "enabled": true,
+                  "geom": [
+                   0,
+                   0,
+                   100,
+                   30
+                  ],
+                  "children": [
+                   {
+                    "cls": "QListView",
+                    "visible": false,
+                    "enabled": true,
+                    "geom": [
+                     1,
+                     1,
+                     98,
+                     28
+                    ],
+                    "children": [
+                     {
+                      "cls": "QWidget",
+                      "name": "qt_scrollarea_viewport",
+                      "visible": false,
+                      "enabled": true,
+                      "geom": [
+                       0,
+                       0,
+                       98,
+                       28
+                      ]
+                     },
+                     {
+                      "cls": "QWidget",
+                      "name": "qt_scrollarea_hcontainer",
+                      "visible": false,
+                      "enabled": true,
+                      "geom": [
+                       0,
+                       0,
+                       100,
+                       14
+                      ],
+                      "children": [
+                       {
+                        "cls": "QScrollBar",
+                        "visible": false,
+                        "enabled": true,
+                        "geom": [
+                         0,
+                         0,
+                         100,
+                         14
+                        ]
+                       }
+                      ]
+                     },
+                     {
+                      "cls": "QWidget",
+                      "name": "qt_scrollarea_vcontainer",
+                      "visible": false,
+                      "enabled": true,
+                      "geom": [
+                       0,
+                       0,
+                       14,
+                       30
+                      ],
+                      "children": [
+                       {
+                        "cls": "QScrollBar",
+                        "visible": false,
+                        "enabled": true,
+                        "geom": [
+                         0,
+                         0,
+                         14,
+                         30
+                        ]
+                       }
+                      ]
+                     }
+                    ]
+                   },
+                   {
+                    "cls": "QWidget",
+                    "visible": false,
+                    "enabled": true,
+                    "geom": [
+                     0,
+                     0,
+                     100,
+                     30
+                    ]
+                   },
+                   {
+                    "cls": "QWidget",
+                    "visible": false,
+                    "enabled": true,
+                    "geom": [
+                     0,
+                     0,
+                     100,
+                     30
+                    ]
+                   }
+                  ]
+                 }
+                ]
+               },
+               {
+                "cls": "DataEntryWidget",
+                "visible": false,
+                "enabled": true,
+                "geom": [
+                 9,
+                 66,
+                 622,
+                 396
+                ],
+                "children": [
+                 {
+                  "cls": "QCheckBox",
+                  "visible": false,
+                  "enabled": true,
+                  "geom": [
+                   111,
+                   15,
+                   111,
+                   15
+                  ]
+                 },
+                 {
+                  "cls": "QCheckBox",
+                  "visible": false,
+                  "enabled": true,
+                  "geom": [
+                   425,
+                   15,
+                   111,
+                   15
+                  ]
+                 },
+                 {
+                  "cls": "QLineEdit",
+                  "text": "0",
+                  "visible": false,
+                  "enabled": true,
+                  "geom": [
+                   111,
+                   51,
+                   50,
+                   22
+                  ]
+                 },
+                 {
+                  "cls": "QLineEdit",
+                  "text": "0",
+                  "visible": false,
+                  "enabled": true,
+                  "geom": [
+                   150,
+                   51,
+                   50,
+                   22
+                  ]
+                 },
+                 {
+                  "cls": "QLineEdit",
+                  "text": "0",
+                  "visible": false,
+                  "enabled": true,
+                  "geom": [
+                   189,
+                   51,
+                   50,
+                   22
+                  ]
+                 },
+                 {
+                  "cls": "QLineEdit",
+                  "text": "0",
+                  "visible": false,
+                  "enabled": true,
+                  "geom": [
+                   425,
+                   51,
+                   50,
+                   22
+                  ]
+                 },
+                 {
+                  "cls": "QLineEdit",
+                  "text": "0",
+                  "visible": false,
+                  "enabled": true,
+                  "geom": [
+                   464,
+                   51,
+                   50,
+                   22
+                  ]
+                 },
+                 {
+                  "cls": "QLineEdit",
+                  "text": "0",
+                  "visible": false,
+                  "enabled": true,
+                  "geom": [
+                   503,
+                   51,
+                   50,
+                   22
+                  ]
+                 },
+                 {
+                  "cls": "QLineEdit",
+                  "text": "100",
+                  "visible": false,
+                  "enabled": true,
+                  "geom": [
+                   111,
+                   94,
+                   150,
+                   22
+                  ]
+                 },
+                 {
+                  "cls": "QLineEdit",
+                  "text": "100",
+                  "visible": false,
+                  "enabled": true,
+                  "geom": [
+                   425,
+                   94,
+                   150,
+                   22
+                  ]
+                 },
+                 {
+                  "cls": "QLineEdit",
+                  "text": "0",
+                  "visible": false,
+                  "enabled": true,
+                  "geom": [
+                   111,
+                   137,
+                   150,
+                   22
+                  ]
+                 },
+                 {
+                  "cls": "QLineEdit",
+                  "text": "5000",
+                  "visible": false,
+                  "enabled": true,
+                  "geom": [
+                   425,
+                   137,
+                   150,
+                   22
+                  ]
+                 },
+                 {
+                  "cls": "QLineEdit",
+                  "text": "1e-06",
+                  "visible": false,
+                  "enabled": true,
+                  "geom": [
+                   111,
+                   180,
+                   150,
+                   22
+                  ]
+                 },
+                 {
+                  "cls": "QLineEdit",
+                  "text": "450",
+                  "visible": false,
+                  "enabled": true,
+                  "geom": [
+                   425,
+                   180,
+                   150,
+                   22
+                  ]
+                 },
+                 {
+                  "cls": "QCheckBox",
+                  "visible": false,
+                  "enabled": true,
+                  "geom": [
+                   111,
+                   226,
+                   111,
+                   15
+                  ]
+                 },
+                 {
+                  "cls": "QLineEdit",
+                  "text": "20",
+                  "visible": false,
+                  "enabled": true,
+                  "geom": [
+                   425,
+                   223,
+                   150,
+                   22
+                  ]
+                 },
+                 {
+                  "cls": "QLineEdit",
+                  "text": "20",
+                  "visible": false,
+                  "enabled": true,
+                  "geom": [
+                   111,
+                   266,
+                   150,
+                   22
+                  ]
+                 },
+                 {
+                  "cls": "QLineEdit",
+                  "text": "180",
+                  "visible": false,
+                  "enabled": true,
+                  "geom": [
+                   425,
+                   266,
+                   150,
+                   22
+                  ]
+                 },
+                 {
+                  "cls": "QLineEdit",
+                  "text": "0",
+                  "visible": false,
+                  "enabled": true,
+                  "geom": [
+                   111,
+                   309,
+                   150,
+                   22
+                  ]
+                 },
+                 {
+                  "cls": "QLineEdit",
+                  "text": "360",
+                  "visible": false,
+                  "enabled": true,
+                  "geom": [
+                   425,
+                   309,
+                   150,
+                   22
+                  ]
+                 },
+                 {
+                  "cls": "QLineEdit",
+                  "text": "0",
+                  "visible": false,
+                  "enabled": true,
+                  "geom": [
+                   111,
+                   352,
+                   150,
+                   22
+                  ]
+                 },
+                 {
+                  "cls": "QLabel",
+                  "text": "Print Noise Output:",
+                  "visible": false,
+                  "enabled": true,
+                  "geom": [
+                   0,
+                   15,
+                   105,
+                   15
+                  ]
+                 },
+                 {
+                  "cls": "QLabel",
+                  "text": "Mean Sea Level Altitude:",
+                  "visible": false,
+                  "enabled": true,
+                  "geom": [
+                   314,
+                   15,
+                   105,
+                   15
+                  ]
+                 },
+                 {
+                  "cls": "QLabel",
+                  "text": "Aircraft Departure Location:",
+                  "visible": false,
+                  "enabled": true,
+                  "geom": [
+                   0,
+                   51,
+                   105,
+                   22
+                  ]
+                 },
+                 {
+                  "cls": "UnitPickerWidget",
+                  "visible": false,
+                  "enabled": true,
+                  "geom": [
+                   228,
+                   51,
+                   80,
+                   22
+                  ],
+                  "children": [
+                   {
+                    "cls": "QComboBox",
+                    "items": [
+                     "m",
+                     "cm",
+                     "mm",
+                     "in",
+                     "ft",
+                     "nmi",
+                     "km",
+                     "dm",
+                     "yd",
+                     "mi"
+                    ],
+                    "current": "m",
+                    "visible": false,
+                    "enabled": true,
+                    "geom": [
+                     0,
+                     0,
+                     80,
+                     22
+                    ],
+                    "children": [
+                     {
+                      "cls": "QFrame",
+                      "visible": false,
+                      "enabled": true,
+                      "geom": [
+                       0,
+                       0,
+                       100,
+                       30
+                      ],
+                      "children": [
+                       {
+                        "cls": "QListView",
+                        "visible": false,
+                        "enabled": true,
+                        "geom": [
+                         1,
+                         1,
+                         98,
+                         28
+                        ],
+                        "children": [
+                         {
+                          "cls": "QWidget",
+                          "name": "qt_scrollarea_viewport",
+                          "visible": false,
+                          "enabled": true,
+                          "geom": [
+                           0,
+                           0,
+                           98,
+                           28
+                          ]
+                         },
+                         {
+                          "cls": "QWidget",
+                          "name": "qt_scrollarea_hcontainer",
+                          "visible": false,
+                          "enabled": true,
+                          "geom": [
+                           0,
+                           0,
+                           100,
+                           14
+                          ],
+                          "children": [
+                           {
+                            "cls": "QScrollBar",
+                            "visible": false,
+                            "enabled": true,
+                            "geom": [
+                             0,
+                             0,
+                             100,
+                             14
+                            ]
+                           }
+                          ]
+                         },
+                         {
+                          "cls": "QWidget",
+                          "name": "qt_scrollarea_vcontainer",
+                          "visible": false,
+                          "enabled": true,
+                          "geom": [
+                           0,
+                           0,
+                           14,
+                           30
+                          ],
+                          "children": [
+                           {
+                            "cls": "QScrollBar",
+                            "visible": false,
+                            "enabled": true,
+                            "geom": [
+                             0,
+                             0,
+                             14,
+                             30
+                            ]
+                           }
+                          ]
+                         }
+                        ]
+                       },
+                       {
+                        "cls": "QWidget",
+                        "visible": false,
+                        "enabled": true,
+                        "geom": [
+                         0,
+                         0,
+                         100,
+                         30
+                        ]
+                       },
+                       {
+                        "cls": "QWidget",
+                        "visible": false,
+                        "enabled": true,
+                        "geom": [
+                         0,
+                         0,
+                         100,
+                         30
+                        ]
+                       }
+                      ]
+                     }
+                    ]
+                   }
+                  ]
+                 },
+                 {
+                  "cls": "QLabel",
+                  "text": "Aircraft Destination Location:",
+                  "visible": false,
+                  "enabled": true,
+                  "geom": [
+                   314,
+                   51,
+                   105,
+                   22
+                  ]
+                 },
+                 {
+                  "cls": "UnitPickerWidget",
+                  "visible": false,
+                  "enabled": true,
+                  "geom": [
+                   542,
+                   51,
+                   80,
+                   22
+                  ],
+                  "children": [
+                   {
+                    "cls": "QComboBox",
+                    "items": [
+                     "m",
+                     "cm",
+                     "mm",
+                     "in",
+                     "ft",
+                     "nmi",
+                     "km",
+                     "dm",
+                     "yd",
+                     "mi"
+                    ],
+                    "current": "m",
+                    "visible": false,
+                    "enabled": true,
+                    "geom": [
+                     0,
+                     0,
+                     80,
+                     22
+                    ],
+                    "children": [
+                     {
+                      "cls": "QFrame",
+                      "visible": false,
+                      "enabled": true,
+                      "geom": [
+                       0,
+                       0,
+                       100,
+                       30
+                      ],
+                      "children": [
+                       {
+                        "cls": "QListView",
+                        "visible": false,
+                        "enabled": true,
+                        "geom": [
+                         1,
+                         1,
+                         98,
+                         28
+                        ],
+                        "children": [
+                         {
+                          "cls": "QWidget",
+                          "name": "qt_scrollarea_viewport",
+                          "visible": false,
+                          "enabled": true,
+                          "geom": [
+                           0,
+                           0,
+                           98,
+                           28
+                          ]
+                         },
+                         {
+                          "cls": "QWidget",
+                          "name": "qt_scrollarea_hcontainer",
+                          "visible": false,
+                          "enabled": true,
+                          "geom": [
+                           0,
+                           0,
+                           100,
+                           14
+                          ],
+                          "children": [
+                           {
+                            "cls": "QScrollBar",
+                            "visible": false,
+                            "enabled": true,
+                            "geom": [
+                             0,
+                             0,
+                             100,
+                             14
+                            ]
+                           }
+                          ]
+                         },
+                         {
+                          "cls": "QWidget",
+                          "name": "qt_scrollarea_vcontainer",
+                          "visible": false,
+                          "enabled": true,
+                          "geom": [
+                           0,
+                           0,
+                           14,
+                           30
+                          ],
+                          "children": [
+                           {
+                            "cls": "QScrollBar",
+                            "visible": false,
+                            "enabled": true,
+                            "geom": [
+                             0,
+                             0,
+                             14,
+                             30
+                            ]
+                           }
+                          ]
+                         }
+                        ]
+                       },
+                       {
+                        "cls": "QWidget",
+                        "visible": false,
+                        "enabled": true,
+                        "geom": [
+                         0,
+                         0,
+                         100,
+                         30
+                        ]
+                       },
+                       {
+                        "cls": "QWidget",
+                        "visible": false,
+                        "enabled": true,
+                        "geom": [
+                         0,
+                         0,
+                         100,
+                         30
+                        ]
+                       }
+                      ]
+                     }
+                    ]
+                   }
+                  ]
+                 },
+                 {
+                  "cls": "QLabel",
+                  "text": "Microphone X Resolution:",
+                  "visible": false,
+                  "enabled": true,
+                  "geom": [
+                   0,
+                   94,
+                   105,
+                   22
+                  ]
+                 },
+                 {
+                  "cls": "UnitPickerWidget",
+                  "visible": false,
+                  "enabled": true,
+                  "geom": [
+                   228,
+                   94,
+                   80,
+                   22
+                  ],
+                  "children": [
+                   {
+                    "cls": "QComboBox",
+                    "items": [
+                     "Unit"
+                    ],
+                    "current": "Unit",
+                    "visible": false,
+                    "enabled": true,
+                    "geom": [
+                     0,
+                     0,
+                     80,
+                     22
+                    ],
+                    "children": [
+                     {
+                      "cls": "QFrame",
+                      "visible": false,
+                      "enabled": true,
+                      "geom": [
+                       0,
+                       0,
+                       100,
+                       30
+                      ],
+                      "children": [
+                       {
+                        "cls": "QListView",
+                        "visible": false,
+                        "enabled": true,
+                        "geom": [
+                         1,
+                         1,
+                         98,
+                         28
+                        ],
+                        "children": [
+                         {
+                          "cls": "QWidget",
+                          "name": "qt_scrollarea_viewport",
+                          "visible": false,
+                          "enabled": true,
+                          "geom": [
+                           0,
+                           0,
+                           98,
+                           28
+                          ]
+                         },
+                         {
+                          "cls": "QWidget",
+                          "name": "qt_scrollarea_hcontainer",
+                          "visible": false,
+                          "enabled": true,
+                          "geom": [
+                           0,
+                           0,
+                           100,
+                           14
+                          ],
+                          "children": [
+                           {
+                            "cls": "QScrollBar",
+                            "visible": false,
+                            "enabled": true,
+                            "geom": [
+                             0,
+                             0,
+                             100,
+                             14
+                            ]
+                           }
+                          ]
+                         },
+                         {
+                          "cls": "QWidget",
+                          "name": "qt_scrollarea_vcontainer",
+                          "visible": false,
+                          "enabled": true,
+                          "geom": [
+                           0,
+                           0,
+                           14,
+                           30
+                          ],
+                          "children": [
+                           {
+                            "cls": "QScrollBar",
+                            "visible": false,
+                            "enabled": true,
+                            "geom": [
+                             0,
+                             0,
+                             14,
+                             30
+                            ]
+                           }
+                          ]
+                         }
+                        ]
+                       },
+                       {
+                        "cls": "QWidget",
+                        "visible": false,
+                        "enabled": true,
+                        "geom": [
+                         0,
+                         0,
+                         100,
+                         30
+                        ]
+                       },
+                       {
+                        "cls": "QWidget",
+                        "visible": false,
+                        "enabled": true,
+                        "geom": [
+                         0,
+                         0,
+                         100,
+                         30
+                        ]
+                       }
+                      ]
+                     }
+                    ]
+                   }
+                  ]
+                 },
+                 {
+                  "cls": "QLabel",
+                  "text": "Microphone Y Resolution:",
+                  "visible": false,
+                  "enabled": true,
+                  "geom": [
+                   314,
+                   94,
+                   105,
+                   22
+                  ]
+                 },
+                 {
+                  "cls": "UnitPickerWidget",
+                  "visible": false,
+                  "enabled": true,
+                  "geom": [
+                   542,
+                   94,
+                   80,
+                   22
+                  ],
+                  "children": [
+                   {
+                    "cls": "QComboBox",
+                    "items": [
+                     "Unit"
+                    ],
+                    "current": "Unit",
+                    "visible": false,
+                    "enabled": true,
+                    "geom": [
+                     0,
+                     0,
+                     80,
+                     22
+                    ],
+                    "children": [
+                     {
+                      "cls": "QFrame",
+                      "visible": false,
+                      "enabled": true,
+                      "geom": [
+                       0,
+                       0,
+                       100,
+                       30
+                      ],
+                      "children": [
+                       {
+                        "cls": "QListView",
+                        "visible": false,
+                        "enabled": true,
+                        "geom": [
+                         1,
+                         1,
+                         98,
+                         28
+                        ],
+                        "children": [
+                         {
+                          "cls": "QWidget",
+                          "name": "qt_scrollarea_viewport",
+                          "visible": false,
+                          "enabled": true,
+                          "geom": [
+                           0,
+                           0,
+                           98,
+                           28
+                          ]
+                         },
+                         {
+                          "cls": "QWidget",
+                          "name": "qt_scrollarea_hcontainer",
+                          "visible": false,
+                          "enabled": true,
+                          "geom": [
+                           0,
+                           0,
+                           100,
+                           14
+                          ],
+                          "children": [
+                           {
+                            "cls": "QScrollBar",
+                            "visible": false,
+                            "enabled": true,
+                            "geom": [
+                             0,
+                             0,
+                             100,
+                             14
+                            ]
+                           }
+                          ]
+                         },
+                         {
+                          "cls": "QWidget",
+                          "name": "qt_scrollarea_vcontainer",
+                          "visible": false,
+                          "enabled": true,
+                          "geom": [
+                           0,
+                           0,
+                           14,
+                           30
+                          ],
+                          "children": [
+                           {
+                            "cls": "QScrollBar",
+                            "visible": false,
+                            "enabled": true,
+                            "geom": [
+                             0,
+                             0,
+                             14,
+                             30
+                            ]
+                           }
+                          ]
+                         }
+                        ]
+                       },
+                       {
+                        "cls": "QWidget",
+                        "visible": false,
+                        "enabled": true,
+                        "geom": [
+                         0,
+                         0,
+                         100,
+                         30
+                        ]
+                       },
+                       {
+                        "cls": "QWidget",
+                        "visible": false,
+                        "enabled": true,
+                        "geom": [
+                         0,
+                         0,
+                         100,
+                         30
+                        ]
+                       }
+                      ]
+                     }
+                    ]
+                   }
+                  ]
+                 },
+                 {
+                  "cls": "QLabel",
+                  "text": "Microphone Min X:",
+                  "visible": false,
+                  "enabled": true,
+                  "geom": [
+                   0,
+                   137,
+                   105,
+                   22
+                  ]
+                 },
+                 {
+                  "cls": "UnitPickerWidget",
+                  "visible": false,
+                  "enabled": true,
+                  "geom": [
+                   228,
+                   137,
+                   80,
+                   22
+                  ],
+                  "children": [
+                   {
+                    "cls": "QComboBox",
+                    "items": [
+                     "m",
+                     "cm",
+                     "mm",
+                     "in",
+                     "ft",
+                     "nmi",
+                     "km",
+                     "dm",
+                     "yd",
+                     "mi"
+                    ],
+                    "current": "m",
+                    "visible": false,
+                    "enabled": true,
+                    "geom": [
+                     0,
+                     0,
+                     80,
+                     22
+                    ],
+                    "children": [
+                     {
+                      "cls": "QFrame",
+                      "visible": false,
+                      "enabled": true,
+                      "geom": [
+                       0,
+                       0,
+                       100,
+                       30
+                      ],
+                      "children": [
+                       {
+                        "cls": "QListView",
+                        "visible": false,
+                        "enabled": true,
+                        "geom": [
+                         1,
+                         1,
+                         98,
+                         28
+                        ],
+                        "children": [
+                         {
+                          "cls": "QWidget",
+                          "name": "qt_scrollarea_viewport",
+                          "visible": false,
+                          "enabled": true,
+                          "geom": [
+                           0,
+                           0,
+                           98,
+                           28
+                          ]
+                         },
+                         {
+                          "cls": "QWidget",
+                          "name": "qt_scrollarea_hcontainer",
+                          "visible": false,
+                          "enabled": true,
+                          "geom": [
+                           0,
+                           0,
+                           100,
+                           14
+                          ],
+                          "children": [
+                           {
+                            "cls": "QScrollBar",
+                            "visible": false,
+                            "enabled": true,
+                            "geom": [
+                             0,
+                             0,
+                             100,
+                             14
+                            ]
+                           }
+                          ]
+                         },
+                         {
+                          "cls": "QWidget",
+                          "name": "qt_scrollarea_vcontainer",
+                          "visible": false,
+                          "enabled": true,
+                          "geom": [
+                           0,
+                           0,
+                           14,
+                           30
+                          ],
+                          "children": [
+                           {
+                            "cls": "QScrollBar",
+                            "visible": false,
+                            "enabled": true,
+                            "geom": [
+                             0,
+                             0,
+                             14,
+                             30
+                            ]
+                           }
+                          ]
+                         }
+                        ]
+                       },
+                       {
+                        "cls": "QWidget",
+                        "visible": false,
+                        "enabled": true,
+                        "geom": [
+                         0,
+                         0,
+                         100,
+                         30
+                        ]
+                       },
+                       {
+                        "cls": "QWidget",
+                        "visible": false,
+                        "enabled": true,
+                        "geom": [
+                         0,
+                         0,
+                         100,
+                         30
+                        ]
+                       }
+                      ]
+                     }
+                    ]
+                   }
+                  ]
+                 },
+                 {
+                  "cls": "QLabel",
+                  "text": "Microphone Max X:",
+                  "visible": false,
+                  "enabled": true,
+                  "geom": [
+                   314,
+                   137,
+                   105,
+                   22
+                  ]
+                 },
+                 {
+                  "cls": "UnitPickerWidget",
+                  "visible": false,
+                  "enabled": true,
+                  "geom": [
+                   542,
+                   137,
+                   80,
+                   22
+                  ],
+                  "children": [
+                   {
+                    "cls": "QComboBox",
+                    "items": [
+                     "m",
+                     "cm",
+                     "mm",
+                     "in",
+                     "ft",
+                     "nmi",
+                     "km",
+                     "dm",
+                     "yd",
+                     "mi"
+                    ],
+                    "current": "m",
+                    "visible": false,
+                    "enabled": true,
+                    "geom": [
+                     0,
+                     0,
+                     80,
+                     22
+                    ],
+                    "children": [
+                     {
+                      "cls": "QFrame",
+                      "visible": false,
+                      "enabled": true,
+                      "geom": [
+                       0,
+                       0,
+                       100,
+                       30
+                      ],
+                      "children": [
+                       {
+                        "cls": "QListView",
+                        "visible": false,
+                        "enabled": true,
+                        "geom": [
+                         1,
+                         1,
+                         98,
+                         28
+                        ],
+                        "children": [
+                         {
+                          "cls": "QWidget",
+                          "name": "qt_scrollarea_viewport",
+                          "visible": false,
+                          "enabled": true,
+                          "geom": [
+                           0,
+                           0,
+                           98,
+                           28
+                          ]
+                         },
+                         {
+                          "cls": "QWidget",
+                          "name": "qt_scrollarea_hcontainer",
+                          "visible": false,
+                          "enabled": true,
+                          "geom": [
+                           0,
+                           0,
+                           100,
+                           14
+                          ],
+                          "children": [
+                           {
+                            "cls": "QScrollBar",
+                            "visible": false,
+                            "enabled": true,
+                            "geom": [
+                             0,
+                             0,
+                             100,
+                             14
+                            ]
+                           }
+                          ]
+                         },
+                         {
+                          "cls": "QWidget",
+                          "name": "qt_scrollarea_vcontainer",
+                          "visible": false,
+                          "enabled": true,
+                          "geom": [
+                           0,
+                           0,
+                           14,
+                           30
+                          ],
+                          "children": [
+                           {
+                            "cls": "QScrollBar",
+                            "visible": false,
+                            "enabled": true,
+                            "geom": [
+                             0,
+                             0,
+                             14,
+                             30
+                            ]
+                           }
+                          ]
+                         }
+                        ]
+                       },
+                       {
+                        "cls": "QWidget",
+                        "visible": false,
+                        "enabled": true,
+                        "geom": [
+                         0,
+                         0,
+                         100,
+                         30
+                        ]
+                       },
+                       {
+                        "cls": "QWidget",
+                        "visible": false,
+                        "enabled": true,
+                        "geom": [
+                         0,
+                         0,
+                         100,
+                         30
+                        ]
+                       }
+                      ]
+                     }
+                    ]
+                   }
+                  ]
+                 },
+                 {
+                  "cls": "QLabel",
+                  "text": "Microphone Min Y:",
+                  "visible": false,
+                  "enabled": true,
+                  "geom": [
+                   0,
+                   180,
+                   105,
+                   22
+                  ]
+                 },
+                 {
+                  "cls": "UnitPickerWidget",
+                  "visible": false,
+                  "enabled": true,
+                  "geom": [
+                   228,
+                   180,
+                   80,
+                   22
+                  ],
+                  "children": [
+                   {
+                    "cls": "QComboBox",
+                    "items": [
+                     "m",
+                     "cm",
+                     "mm",
+                     "in",
+                     "ft",
+                     "nmi",
+                     "km",
+                     "dm",
+                     "yd",
+                     "mi"
+                    ],
+                    "current": "m",
+                    "visible": false,
+                    "enabled": true,
+                    "geom": [
+                     0,
+                     0,
+                     80,
+                     22
+                    ],
+                    "children": [
+                     {
+                      "cls": "QFrame",
+                      "visible": false,
+                      "enabled": true,
+                      "geom": [
+                       0,
+                       0,
+                       100,
+                       30
+                      ],
+                      "children": [
+                       {
+                        "cls": "QListView",
+                        "visible": false,
+                        "enabled": true,
+                        "geom": [
+                         1,
+                         1,
+                         98,
+                         28
+                        ],
+                        "children": [
+                         {
+                          "cls": "QWidget",
+                          "name": "qt_scrollarea_viewport",
+                          "visible": false,
+                          "enabled": true,
+                          "geom": [
+                           0,
+                           0,
+                           98,
+                           28
+                          ]
+                         },
+                         {
+                          "cls": "QWidget",
+                          "name": "qt_scrollarea_hcontainer",
+                          "visible": false,
+                          "enabled": true,
+                          "geom": [
+                           0,
+                           0,
+                           100,
+                           14
+                          ],
+                          "children": [
+                           {
+                            "cls": "QScrollBar",
+                            "visible": false,
+                            "enabled": true,
+                            "geom": [
+                             0,
+                             0,
+                             100,
+                             14
+                            ]
+                           }
+                          ]
+                         },
+                         {
+                          "cls": "QWidget",
+                          "name": "qt_scrollarea_vcontainer",
+                          "visible": false,
+                          "enabled": true,
+                          "geom": [
+                           0,
+                           0,
+                           14,
+                           30
+                          ],
+                          "children": [
+                           {
+                            "cls": "QScrollBar",
+                            "visible": false,
+                            "enabled": true,
+                            "geom": [
+                             0,
+                             0,
+                             14,
+                             30
+                            ]
+                           }
+                          ]
+                         }
+                        ]
+                       },
+                       {
+                        "cls": "QWidget",
+                        "visible": false,
+                        "enabled": true,
+                        "geom": [
+                         0,
+                         0,
+                         100,
+                         30
+                        ]
+                       },
+                       {
+                        "cls": "QWidget",
+                        "visible": false,
+                        "enabled": true,
+                        "geom": [
+                         0,
+                         0,
+                         100,
+                         30
+                        ]
+                       }
+                      ]
+                     }
+                    ]
+                   }
+                  ]
+                 },
+                 {
+                  "cls": "QLabel",
+                  "text": "Microphone Max Y:",
+                  "visible": false,
+                  "enabled": true,
+                  "geom": [
+                   314,
+                   180,
+                   105,
+                   22
+                  ]
+                 },
+                 {
+                  "cls": "UnitPickerWidget",
+                  "visible": false,
+                  "enabled": true,
+                  "geom": [
+                   542,
+                   180,
+                   80,
+                   22
+                  ],
+                  "children": [
+                   {
+                    "cls": "QComboBox",
+                    "items": [
+                     "m",
+                     "cm",
+                     "mm",
+                     "in",
+                     "ft",
+                     "nmi",
+                     "km",
+                     "dm",
+                     "yd",
+                     "mi"
+                    ],
+                    "current": "m",
+                    "visible": false,
+                    "enabled": true,
+                    "geom": [
+                     0,
+                     0,
+                     80,
+                     22
+                    ],
+                    "children": [
+                     {
+                      "cls": "QFrame",
+                      "visible": false,
+                      "enabled": true,
+                      "geom": [
+                       0,
+                       0,
+                       100,
+                       30
+                      ],
+                      "children": [
+                       {
+                        "cls": "QListView",
+                        "visible": false,
+                        "enabled": true,
+                        "geom": [
+                         1,
+                         1,
+                         98,
+                         28
+                        ],
+                        "children": [
+                         {
+                          "cls": "QWidget",
+                          "name": "qt_scrollarea_viewport",
+                          "visible": false,
+                          "enabled": true,
+                          "geom": [
+                           0,
+                           0,
+                           98,
+                           28
+                          ]
+                         },
+                         {
+                          "cls": "QWidget",
+                          "name": "qt_scrollarea_hcontainer",
+                          "visible": false,
+                          "enabled": true,
+                          "geom": [
+                           0,
+                           0,
+                           100,
+                           14
+                          ],
+                          "children": [
+                           {
+                            "cls": "QScrollBar",
+                            "visible": false,
+                            "enabled": true,
+                            "geom": [
+                             0,
+                             0,
+                             100,
+                             14
+                            ]
+                           }
+                          ]
+                         },
+                         {
+                          "cls": "QWidget",
+                          "name": "qt_scrollarea_vcontainer",
+                          "visible": false,
+                          "enabled": true,
+                          "geom": [
+                           0,
+                           0,
+                           14,
+                           30
+                          ],
+                          "children": [
+                           {
+                            "cls": "QScrollBar",
+                            "visible": false,
+                            "enabled": true,
+                            "geom": [
+                             0,
+                             0,
+                             14,
+                             30
+                            ]
+                           }
+                          ]
+                         }
+                        ]
+                       },
+                       {
+                        "cls": "QWidget",
+                        "visible": false,
+                        "enabled": true,
+                        "geom": [
+                         0,
+                         0,
+                         100,
+                         30
+                        ]
+                       },
+                       {
+                        "cls": "QWidget",
+                        "visible": false,
+                        "enabled": true,
+                        "geom": [
+                         0,
+                         0,
+                         100,
+                         30
+                        ]
+                       }
+                      ]
+                     }
+                    ]
+                   }
+                  ]
+                 },
+                 {
+                  "cls": "QLabel",
+                  "text": "Noise Hemisphere:",
+                  "visible": false,
+                  "enabled": true,
+                  "geom": [
+                   0,
+                   223,
+                   105,
+                   22
+                  ]
+                 },
+                 {
+                  "cls": "QLabel",
+                  "text": "Noise Hemisphere Radius:",
+                  "visible": false,
+                  "enabled": true,
+                  "geom": [
+                   314,
+                   223,
+                   105,
+                   22
+                  ]
+                 },
+                 {
+                  "cls": "UnitPickerWidget",
+                  "visible": false,
+                  "enabled": true,
+                  "geom": [
+                   542,
+                   223,
+                   80,
+                   22
+                  ],
+                  "children": [
+                   {
+                    "cls": "QComboBox",
+                    "items": [
+                     "m",
+                     "cm",
+                     "mm",
+                     "in",
+                     "ft",
+                     "nmi",
+                     "km",
+                     "dm",
+                     "yd",
+                     "mi"
+                    ],
+                    "current": "m",
+                    "visible": false,
+                    "enabled": true,
+                    "geom": [
+                     0,
+                     0,
+                     80,
+                     22
+                    ],
+                    "children": [
+                     {
+                      "cls": "QFrame",
+                      "visible": false,
+                      "enabled": true,
+                      "geom": [
+                       0,
+                       0,
+                       100,
+                       30
+                      ],
+                      "children": [
+                       {
+                        "cls": "QListView",
+                        "visible": false,
+                        "enabled": true,
+                        "geom": [
+                         1,
+                         1,
+                         98,
+                         28
+                        ],
+                        "children": [
+                         {
+                          "cls": "QWidget",
+                          "name": "qt_scrollarea_viewport",
+                          "visible": false,
+                          "enabled": true,
+                          "geom": [
+                           0,
+                           0,
+                           98,
+                           28
+                          ]
+                         },
+                         {
+                          "cls": "QWidget",
+                          "name": "qt_scrollarea_hcontainer",
+                          "visible": false,
+                          "enabled": true,
+                          "geom": [
+                           0,
+                           0,
+                           100,
+                           14
+                          ],
+                          "children": [
+                           {
+                            "cls": "QScrollBar",
+                            "visible": false,
+                            "enabled": true,
+                            "geom": [
+                             0,
+                             0,
+                             100,
+                             14
+                            ]
+                           }
+                          ]
+                         },
+                         {
+                          "cls": "QWidget",
+                          "name": "qt_scrollarea_vcontainer",
+                          "visible": false,
+                          "enabled": true,
+                          "geom": [
+                           0,
+                           0,
+                           14,
+                           30
+                          ],
+                          "children": [
+                           {
+                            "cls": "QScrollBar",
+                            "visible": false,
+                            "enabled": true,
+                            "geom": [
+                             0,
+                             0,
+                             14,
+                             30
+                            ]
+                           }
+                          ]
+                         }
+                        ]
+                       },
+                       {
+                        "cls": "QWidget",
+                        "visible": false,
+                        "enabled": true,
+                        "geom": [
+                         0,
+                         0,
+                         100,
+                         30
+                        ]
+                       },
+                       {
+                        "cls": "QWidget",
+                        "visible": false,
+                        "enabled": true,
+                        "geom": [
+                         0,
+                         0,
+                         100,
+                         30
+                        ]
+                       }
+                      ]
+                     }
+                    ]
+                   }
+                  ]
+                 },
+                 {
+                  "cls": "QLabel",
+                  "text": "Noise Hemisphere Microphone Resolution:",
+                  "visible": false,
+                  "enabled": true,
+                  "geom": [
+                   0,
+                   266,
+                   105,
+                   22
+                  ]
+                 },
+                 {
+                  "cls": "UnitPickerWidget",
+                  "visible": false,
+                  "enabled": true,
+                  "geom": [
+                   228,
+                   266,
+                   80,
+                   22
+                  ],
+                  "children": [
+                   {
+                    "cls": "QComboBox",
+                    "items": [
+                     "Unit"
+                    ],
+                    "current": "Unit",
+                    "visible": false,
+                    "enabled": true,
+                    "geom": [
+                     0,
+                     0,
+                     80,
+                     22
+                    ],
+                    "children": [
+                     {
+                      "cls": "QFrame",
+                      "visible": false,
+                      "enabled": true,
+                      "geom": [
+                       0,
+                       0,
+                       100,
+                       30
+                      ],
+                      "children": [
+                       {
+                        "cls": "QListView",
+                        "visible": false,
+                        "enabled": true,
+                        "geom": [
+                         1,
+                         1,
+                         98,
+                         28
+                        ],
+                        "children": [
+                         {
+                          "cls": "QWidget",
+                          "name": "qt_scrollarea_viewport",
+                          "visible": false,
+                          "enabled": true,
+                          "geom": [
+                           0,
+                           0,
+                           98,
+                           28
+                          ]
+                         },
+                         {
+                          "cls": "QWidget",
+                          "name": "qt_scrollarea_hcontainer",
+                          "visible": false,
+                          "enabled": true,
+                          "geom": [
+                           0,
+                           0,
+                           100,
+                           14
+                          ],
+                          "children": [
+                           {
+                            "cls": "QScrollBar",
+                            "visible": false,
+                            "enabled": true,
+                            "geom": [
+                             0,
+                             0,
+                             100,
+                             14
+                            ]
+                           }
+                          ]
+                         },
+                         {
+                          "cls": "QWidget",
+                          "name": "qt_scrollarea_vcontainer",
+                          "visible": false,
+                          "enabled": true,
+                          "geom": [
+                           0,
+                           0,
+                           14,
+                           30
+                          ],
+                          "children": [
+                           {
+                            "cls": "QScrollBar",
+                            "visible": false,
+                            "enabled": true,
+                            "geom": [
+                             0,
+                             0,
+                             14,
+                             30
+                            ]
+                           }
+                          ]
+                         }
+                        ]
+                       },
+                       {
+                        "cls": "QWidget",
+                        "visible": false,
+                        "enabled": true,
+                        "geom": [
+                         0,
+                         0,
+                         100,
+                         30
+                        ]
+                       },
+                       {
+                        "cls": "QWidget",
+                        "visible": false,
+                        "enabled": true,
+                        "geom": [
+                         0,
+                         0,
+                         100,
+                         30
+                        ]
+                       }
+                      ]
+                     }
+                    ]
+                   }
+                  ]
+                 },
+                 {
+                  "cls": "QLabel",
+                  "text": "Noise Hemisphere Phi Upper Bound:",
+                  "visible": false,
+                  "enabled": true,
+                  "geom": [
+                   314,
+                   266,
+                   105,
+                   22
+                  ]
+                 },
+                 {
+                  "cls": "UnitPickerWidget",
+                  "visible": false,
+                  "enabled": true,
+                  "geom": [
+                   542,
+                   266,
+                   80,
+                   22
+                  ],
+                  "children": [
+                   {
+                    "cls": "QComboBox",
+                    "items": [
+                     "rad",
+                     "deg"
+                    ],
+                    "current": "rad",
+                    "visible": false,
+                    "enabled": true,
+                    "geom": [
+                     0,
+                     0,
+                     80,
+                     22
+                    ],
+                    "children": [
+                     {
+                      "cls": "QFrame",
+                      "visible": false,
+                      "enabled": true,
+                      "geom": [
+                       0,
+                       0,
+                       100,
+                       30
+                      ],
+                      "children": [
+                       {
+                        "cls": "QListView",
+                        "visible": false,
+                        "enabled": true,
+                        "geom": [
+                         1,
+                         1,
+                         98,
+                         28
+                        ],
+                        "children": [
+                         {
+                          "cls": "QWidget",
+                          "name": "qt_scrollarea_viewport",
+                          "visible": false,
+                          "enabled": true,
+                          "geom": [
+                           0,
+                           0,
+                           98,
+                           28
+                          ]
+                         },
+                         {
+                          "cls": "QWidget",
+                          "name": "qt_scrollarea_hcontainer",
+                          "visible": false,
+                          "enabled": true,
+                          "geom": [
+                           0,
+                           0,
+                           100,
+                           14
+                          ],
+                          "children": [
+                           {
+                            "cls": "QScrollBar",
+                            "visible": false,
+                            "enabled": true,
+                            "geom": [
+                             0,
+                             0,
+                             100,
+                             14
+                            ]
+                           }
+                          ]
+                         },
+                         {
+                          "cls": "QWidget",
+                          "name": "qt_scrollarea_vcontainer",
+                          "visible": false,
+                          "enabled": true,
+                          "geom": [
+                           0,
+                           0,
+                           14,
+                           30
+                          ],
+                          "children": [
+                           {
+                            "cls": "QScrollBar",
+                            "visible": false,
+                            "enabled": true,
+                            "geom": [
+                             0,
+                             0,
+                             14,
+                             30
+                            ]
+                           }
+                          ]
+                         }
+                        ]
+                       },
+                       {
+                        "cls": "QWidget",
+                        "visible": false,
+                        "enabled": true,
+                        "geom": [
+                         0,
+                         0,
+                         100,
+                         30
+                        ]
+                       },
+                       {
+                        "cls": "QWidget",
+                        "visible": false,
+                        "enabled": true,
+                        "geom": [
+                         0,
+                         0,
+                         100,
+                         30
+                        ]
+                       }
+                      ]
+                     }
+                    ]
+                   }
+                  ]
+                 },
+                 {
+                  "cls": "QLabel",
+                  "text": "Noise Hemisphere Phi Lower Bound:",
+                  "visible": false,
+                  "enabled": true,
+                  "geom": [
+                   0,
+                   309,
+                   105,
+                   22
+                  ]
+                 },
+                 {
+                  "cls": "UnitPickerWidget",
+                  "visible": false,
+                  "enabled": true,
+                  "geom": [
+                   228,
+                   309,
+                   80,
+                   22
+                  ],
+                  "children": [
+                   {
+                    "cls": "QComboBox",
+                    "items": [
+                     "rad",
+                     "deg"
+                    ],
+                    "current": "rad",
+                    "visible": false,
+                    "enabled": true,
+                    "geom": [
+                     0,
+                     0,
+                     80,
+                     22
+                    ],
+                    "children": [
+                     {
+                      "cls": "QFrame",
+                      "visible": false,
+                      "enabled": true,
+                      "geom": [
+                       0,
+                       0,
+                       100,
+                       30
+                      ],
+                      "children": [
+                       {
+                        "cls": "QListView",
+                        "visible": false,
+                        "enabled": true,
+                        "geom": [
+                         1,
+                         1,
+                         98,
+                         28
+                        ],
+                        "children": [
+                         {
+                          "cls": "QWidget",
+                          "name": "qt_scrollarea_viewport",
+                          "visible": false,
+                          "enabled": true,
+                          "geom": [
+                           0,
+                           0,
+                           98,
+                           28
+                          ]
+                         },
+                         {
+                          "cls": "QWidget",
+                          "name": "qt_scrollarea_hcontainer",
+                          "visible": false,
+                          "enabled": true,
+                          "geom": [
+                           0,
+                           0,
+                           100,
+                           14
+                          ],
+                          "children": [
+                           {
+                            "cls": "QScrollBar",
+                            "visible": false,
+                            "enabled": true,
+                            "geom": [
+                             0,
+                             0,
+                             100,
+                             14
+                            ]
+                           }
+                          ]
+                         },
+                         {
+                          "cls": "QWidget",
+                          "name": "qt_scrollarea_vcontainer",
+                          "visible": false,
+                          "enabled": true,
+                          "geom": [
+                           0,
+                           0,
+                           14,
+                           30
+                          ],
+                          "children": [
+                           {
+                            "cls": "QScrollBar",
+                            "visible": false,
+                            "enabled": true,
+                            "geom": [
+                             0,
+                             0,
+                             14,
+                             30
+                            ]
+                           }
+                          ]
+                         }
+                        ]
+                       },
+                       {
+                        "cls": "QWidget",
+                        "visible": false,
+                        "enabled": true,
+                        "geom": [
+                         0,
+                         0,
+                         100,
+                         30
+                        ]
+                       },
+                       {
+                        "cls": "QWidget",
+                        "visible": false,
+                        "enabled": true,
+                        "geom": [
+                         0,
+                         0,
+                         100,
+                         30
+                        ]
+                       }
+                      ]
+                     }
+                    ]
+                   }
+                  ]
+                 },
+                 {
+                  "cls": "QLabel",
+                  "text": "Noise Hemisphere Theta Upper Bound:",
+                  "visible": false,
+                  "enabled": true,
+                  "geom": [
+                   314,
+                   309,
+                   105,
+                   22
+                  ]
+                 },
+                 {
+                  "cls": "UnitPickerWidget",
+                  "visible": false,
+                  "enabled": true,
+                  "geom": [
+                   542,
+                   309,
+                   80,
+                   22
+                  ],
+                  "children": [
+                   {
+                    "cls": "QComboBox",
+                    "items": [
+                     "rad",
+                     "deg"
+                    ],
+                    "current": "rad",
+                    "visible": false,
+                    "enabled": true,
+                    "geom": [
+                     0,
+                     0,
+                     80,
+                     22
+                    ],
+                    "children": [
+                     {
+                      "cls": "QFrame",
+                      "visible": false,
+                      "enabled": true,
+                      "geom": [
+                       0,
+                       0,
+                       100,
+                       30
+                      ],
+                      "children": [
+                       {
+                        "cls": "QListView",
+                        "visible": false,
+                        "enabled": true,
+                        "geom": [
+                         1,
+                         1,
+                         98,
+                         28
+                        ],
+                        "children": [
+                         {
+                          "cls": "QWidget",
+                          "name": "qt_scrollarea_viewport",
+                          "visible": false,
+                          "enabled": true,
+                          "geom": [
+                           0,
+                           0,
+                           98,
+                           28
+                          ]
+                         },
+                         {
+                          "cls": "QWidget",
+                          "name": "qt_scrollarea_hcontainer",
+                          "visible": false,
+                          "enabled": true,
+                          "geom": [
+                           0,
+                           0,
+                           100,
+                           14
+                          ],
+                          "children": [
+                           {
+                            "cls": "QScrollBar",
+                            "visible": false,
+                            "enabled": true,
+                            "geom": [
+                             0,
+                             0,
+                             100,
+                             14
+                            ]
+                           }
+                          ]
+                         },
+                         {
+                          "cls": "QWidget",
+                          "name": "qt_scrollarea_vcontainer",
+                          "visible": false,
+                          "enabled": true,
+                          "geom": [
+                           0,
+                           0,
+                           14,
+                           30
+                          ],
+                          "children": [
+                           {
+                            "cls": "QScrollBar",
+                            "visible": false,
+                            "enabled": true,
+                            "geom": [
+                             0,
+                             0,
+                             14,
+                             30
+                            ]
+                           }
+                          ]
+                         }
+                        ]
+                       },
+                       {
+                        "cls": "QWidget",
+                        "visible": false,
+                        "enabled": true,
+                        "geom": [
+                         0,
+                         0,
+                         100,
+                         30
+                        ]
+                       },
+                       {
+                        "cls": "QWidget",
+                        "visible": false,
+                        "enabled": true,
+                        "geom": [
+                         0,
+                         0,
+                         100,
+                         30
+                        ]
+                       }
+                      ]
+                     }
+                    ]
+                   }
+                  ]
+                 },
+                 {
+                  "cls": "QLabel",
+                  "text": "Noise Hemisphere Theta Lower Bound:",
+                  "visible": false,
+                  "enabled": true,
+                  "geom": [
+                   0,
+                   352,
+                   105,
+                   22
+                  ]
+                 },
+                 {
+                  "cls": "UnitPickerWidget",
+                  "visible": false,
+                  "enabled": true,
+                  "geom": [
+                   228,
+                   352,
+                   80,
+                   22
+                  ],
+                  "children": [
+                   {
+                    "cls": "QComboBox",
+                    "items": [
+                     "rad",
+                     "deg"
+                    ],
+                    "current": "rad",
+                    "visible": false,
+                    "enabled": true,
+                    "geom": [
+                     0,
+                     0,
+                     80,
+                     22
+                    ],
+                    "children": [
+                     {
+                      "cls": "QFrame",
+                      "visible": false,
+                      "enabled": true,
+                      "geom": [
+                       0,
+                       0,
+                       100,
+                       30
+                      ],
+                      "children": [
+                       {
+                        "cls": "QListView",
+                        "visible": false,
+                        "enabled": true,
+                        "geom": [
+                         1,
+                         1,
+                         98,
+                         28
+                        ],
+                        "children": [
+                         {
+                          "cls": "QWidget",
+                          "name": "qt_scrollarea_viewport",
+                          "visible": false,
+                          "enabled": true,
+                          "geom": [
+                           0,
+                           0,
+                           98,
+                           28
+                          ]
+                         },
+                         {
+                          "cls": "QWidget",
+                          "name": "qt_scrollarea_hcontainer",
+                          "visible": false,
+                          "enabled": true,
+                          "geom": [
+                           0,
+                           0,
+                           100,
+                           14
+                          ],
+                          "children": [
+                           {
+                            "cls": "QScrollBar",
+                            "visible": false,
+                            "enabled": true,
+                            "geom": [
+                             0,
+                             0,
+                             100,
+                             14
+                            ]
+                           }
+                          ]
+                         },
+                         {
+                          "cls": "QWidget",
+                          "name": "qt_scrollarea_vcontainer",
+                          "visible": false,
+                          "enabled": true,
+                          "geom": [
+                           0,
+                           0,
+                           14,
+                           30
+                          ],
+                          "children": [
+                           {
+                            "cls": "QScrollBar",
+                            "visible": false,
+                            "enabled": true,
+                            "geom": [
+                             0,
+                             0,
+                             14,
+                             30
+                            ]
+                           }
+                          ]
+                         }
+                        ]
+                       },
+                       {
+                        "cls": "QWidget",
+                        "visible": false,
+                        "enabled": true,
+                        "geom": [
+                         0,
+                         0,
+                         100,
+                         30
+                        ]
+                       },
+                       {
+                        "cls": "QWidget",
+                        "visible": false,
+                        "enabled": true,
+                        "geom": [
+                         0,
+                         0,
+                         100,
+                         30
+                        ]
+                       }
+                      ]
+                     }
+                    ]
+                   }
+                  ]
+                 }
+                ]
+               },
+               {
+                "cls": "QFrame",
+                "visible": false,
+                "enabled": true,
+                "geom": [
+                 9,
+                 468,
+                 622,
+                 3
+                ]
+               }
+              ]
+             },
+             {
+              "cls": "StabilityWidget",
+              "visible": false,
+              "enabled": true,
+              "geom": [
+               0,
+               0,
+               640,
+               480
+              ],
+              "children": [
+               {
+                "cls": "QLabel",
+                "text": "<b>Stability</b>",
+                "visible": false,
+                "enabled": true,
+                "geom": [
+                 9,
+                 9,
+                 622,
+                 14
+                ]
+               },
+               {
+                "cls": "QFrame",
+                "visible": false,
+                "enabled": true,
+                "geom": [
+                 9,
+                 29,
+                 622,
+                 3
+                ]
+               },
+               {
+                "cls": "DataEntryWidget",
+                "visible": false,
+                "enabled": true,
+                "geom": [
+                 9,
+                 38,
+                 622,
+                 424
+                ],
+                "children": [
+                 {
+                  "cls": "QCheckBox",
+                  "visible": false,
+                  "enabled": true,
+                  "geom": [
+                   180,
+                   0,
+                   356,
+                   15
+                  ]
+                 },
+                 {
+                  "cls": "QLineEdit",
+                  "text": "30",
+                  "visible": false,
+                  "enabled": true,
+                  "geom": [
+                   180,
+                   21,
+                   356,
+                   22
+                  ]
+                 },
+                 {
+                  "cls": "QLineEdit",
+                  "text": "15",
+                  "visible": false,
+                  "enabled": true,
+                  "geom": [
+                   180,
+                   49,
+                   356,
+                   22
+                  ]
+                 },
+                 {
+                  "cls": "QCheckBox",
+                  "visible": false,
+                  "enabled": true,
+                  "geom": [
+                   180,
+                   77,
+                   356,
+                   15
+                  ]
+                 },
+                 {
+                  "cls": "QCheckBox",
+                  "visible": false,
+                  "enabled": true,
+                  "geom": [
+                   180,
+                   98,
+                   356,
+                   15
+                  ]
+                 },
+                 {
+                  "cls": "QLineEdit",
+                  "text": "4",
+                  "visible": false,
+                  "enabled": true,
+                  "geom": [
+                   180,
+                   119,
+                   356,
+                   22
+                  ]
+                 },
+                 {
+                  "cls": "QLineEdit",
+                  "text": "10",
+                  "visible": false,
+                  "enabled": true,
+                  "geom": [
+                   180,
+                   147,
+                   356,
+                   22
+                  ]
+                 },
+                 {
+                  "cls": "QCheckBox",
+                  "visible": false,
+                  "enabled": true,
+                  "geom": [
+                   180,
+                   175,
+                   356,
+                   15
+                  ]
+                 },
+                 {
+                  "cls": "QLabel",
+                  "text": "Use Surrogate:",
+                  "visible": false,
+                  "enabled": true,
+                  "geom": [
+                   0,
+                   0,
+                   174,
+                   15
+                  ]
+                 },
+                 {
+                  "cls": "QLabel",
+                  "text": "Spanwise Vortices:",
+                  "visible": false,
+                  "enabled": true,
+                  "geom": [
+                   0,
+                   21,
+                   174,
+                   22
+                  ]
+                 },
+                 {
+                  "cls": "UnitPickerWidget",
+                  "visible": false,
+                  "enabled": true,
+                  "geom": [
+                   542,
+                   21,
+                   80,
+                   22
+                  ],
+                  "children": [
+                   {
+                    "cls": "QComboBox",
+                    "items": [
+                     "Unit"
+                    ],
+                    "current": "Unit",
+                    "visible": false,
+                    "enabled": true,
+                    "geom": [
+                     0,
+                     0,
+                     80,
+                     22
+                    ],
+                    "children": [
+                     {
+                      "cls": "QFrame",
+                      "visible": false,
+                      "enabled": true,
+                      "geom": [
+                       0,
+                       0,
+                       100,
+                       30
+                      ],
+                      "children": [
+                       {
+                        "cls": "QListView",
+                        "visible": false,
+                        "enabled": true,
+                        "geom": [
+                         1,
+                         1,
+                         98,
+                         28
+                        ],
+                        "children": [
+                         {
+                          "cls": "QWidget",
+                          "name": "qt_scrollarea_viewport",
+                          "visible": false,
+                          "enabled": true,
+                          "geom": [
+                           0,
+                           0,
+                           98,
+                           28
+                          ]
+                         },
+                         {
+                          "cls": "QWidget",
+                          "name": "qt_scrollarea_hcontainer",
+                          "visible": false,
+                          "enabled": true,
+                          "geom": [
+                           0,
+                           0,
+                           100,
+                           14
+                          ],
+                          "children": [
+                           {
+                            "cls": "QScrollBar",
+                            "visible": false,
+                            "enabled": true,
+                            "geom": [
+                             0,
+                             0,
+                             100,
+                             14
+                            ]
+                           }
+                          ]
+                         },
+                         {
+                          "cls": "QWidget",
+                          "name": "qt_scrollarea_vcontainer",
+                          "visible": false,
+                          "enabled": true,
+                          "geom": [
+                           0,
+                           0,
+                           14,
+                           30
+                          ],
+                          "children": [
+                           {
+                            "cls": "QScrollBar",
+                            "visible": false,
+                            "enabled": true,
+                            "geom": [
+                             0,
+                             0,
+                             14,
+                             30
+                            ]
+                           }
+                          ]
+                         }
+                        ]
+                       },
+                       {
+                        "cls": "QWidget",
+                        "visible": false,
+                        "enabled": true,
+                        "geom": [
+                         0,
+                         0,
+                         100,
+                         30
+                        ]
+                       },
+                       {
+                        "cls": "QWidget",
+                        "visible": false,
+                        "enabled": true,
+                        "geom": [
+                         0,
+                         0,
+                         100,
+                         30
+                        ]
+                       }
+                      ]
+                     }
+                    ]
+                   }
+                  ]
+                 },
+                 {
+                  "cls": "QLabel",
+                  "text": "Chordwise Vortices:",
+                  "visible": false,
+                  "enabled": true,
+                  "geom": [
+                   0,
+                   49,
+                   174,
+                   22
+                  ]
+                 },
+                 {
+                  "cls": "UnitPickerWidget",
+                  "visible": false,
+                  "enabled": true,
+                  "geom": [
+                   542,
+                   49,
+                   80,
+                   22
+                  ],
+                  "children": [
+                   {
+                    "cls": "QComboBox",
+                    "items": [
+                     "Unit"
+                    ],
+                    "current": "Unit",
+                    "visible": false,
+                    "enabled": true,
+                    "geom": [
+                     0,
+                     0,
+                     80,
+                     22
+                    ],
+                    "children": [
+                     {
+                      "cls": "QFrame",
+                      "visible": false,
+                      "enabled": true,
+                      "geom": [
+                       0,
+                       0,
+                       100,
+                       30
+                      ],
+                      "children": [
+                       {
+                        "cls": "QListView",
+                        "visible": false,
+                        "enabled": true,
+                        "geom": [
+                         1,
+                         1,
+                         98,
+                         28
+                        ],
+                        "children": [
+                         {
+                          "cls": "QWidget",
+                          "name": "qt_scrollarea_viewport",
+                          "visible": false,
+                          "enabled": true,
+                          "geom": [
+                           0,
+                           0,
+                           98,
+                           28
+                          ]
+                         },
+                         {
+                          "cls": "QWidget",
+                          "name": "qt_scrollarea_hcontainer",
+                          "visible": false,
+                          "enabled": true,
+                          "geom": [
+                           0,
+                           0,
+                           100,
+                           14
+                          ],
+                          "children": [
+                           {
+                            "cls": "QScrollBar",
+                            "visible": false,
+                            "enabled": true,
+                            "geom": [
+                             0,
+                             0,
+                             100,
+                             14
+                            ]
+                           }
+                          ]
+                         },
+                         {
+                          "cls": "QWidget",
+                          "name": "qt_scrollarea_vcontainer",
+                          "visible": false,
+                          "enabled": true,
+                          "geom": [
+                           0,
+                           0,
+                           14,
+                           30
+                          ],
+                          "children": [
+                           {
+                            "cls": "QScrollBar",
+                            "visible": false,
+                            "enabled": true,
+                            "geom": [
+                             0,
+                             0,
+                             14,
+                             30
+                            ]
+                           }
+                          ]
+                         }
+                        ]
+                       },
+                       {
+                        "cls": "QWidget",
+                        "visible": false,
+                        "enabled": true,
+                        "geom": [
+                         0,
+                         0,
+                         100,
+                         30
+                        ]
+                       },
+                       {
+                        "cls": "QWidget",
+                        "visible": false,
+                        "enabled": true,
+                        "geom": [
+                         0,
+                         0,
+                         100,
+                         30
+                        ]
+                       }
+                      ]
+                     }
+                    ]
+                   }
+                  ]
+                 },
+                 {
+                  "cls": "QLabel",
+                  "text": "Spanwise Cosine Spacing:",
+                  "visible": false,
+                  "enabled": true,
+                  "geom": [
+                   0,
+                   77,
+                   174,
+                   15
+                  ]
+                 },
+                 {
+                  "cls": "QLabel",
+                  "text": "Model Fuselage:",
+                  "visible": false,
+                  "enabled": true,
+                  "geom": [
+                   0,
+                   98,
+                   174,
+                   15
+                  ]
+                 },
+                 {
+                  "cls": "QLabel",
+                  "text": "Fuselage Spanwise Vortices:",
+                  "visible": false,
+                  "enabled": true,
+                  "geom": [
+                   0,
+                   119,
+                   174,
+                   22
+                  ]
+                 },
+                 {
+                  "cls": "UnitPickerWidget",
+                  "visible": false,
+                  "enabled": true,
+                  "geom": [
+                   542,
+                   119,
+                   80,
+                   22
+                  ],
+                  "children": [
+                   {
+                    "cls": "QComboBox",
+                    "items": [
+                     "Unit"
+                    ],
+                    "current": "Unit",
+                    "visible": false,
+                    "enabled": true,
+                    "geom": [
+                     0,
+                     0,
+                     80,
+                     22
+                    ],
+                    "children": [
+                     {
+                      "cls": "QFrame",
+                      "visible": false,
+                      "enabled": true,
+                      "geom": [
+                       0,
+                       0,
+                       100,
+                       30
+                      ],
+                      "children": [
+                       {
+                        "cls": "QListView",
+                        "visible": false,
+                        "enabled": true,
+                        "geom": [
+                         1,
+                         1,
+                         98,
+                         28
+                        ],
+                        "children": [
+                         {
+                          "cls": "QWidget",
+                          "name": "qt_scrollarea_viewport",
+                          "visible": false,
+                          "enabled": true,
+                          "geom": [
+                           0,
+                           0,
+                           98,
+                           28
+                          ]
+                         },
+                         {
+                          "cls": "QWidget",
+                          "name": "qt_scrollarea_hcontainer",
+                          "visible": false,
+                          "enabled": true,
+                          "geom": [
+                           0,
+                           0,
+                           100,
+                           14
+                          ],
+                          "children": [
+                           {
+                            "cls": "QScrollBar",
+                            "visible": false,
+                            "enabled": true,
+                            "geom": [
+                             0,
+                             0,
+                             100,
+                             14
+                            ]
+                           }
+                          ]
+                         },
+                         {
+                          "cls": "QWidget",
+                          "name": "qt_scrollarea_vcontainer",
+                          "visible": false,
+                          "enabled": true,
+                          "geom": [
+                           0,
+                           0,
+                           14,
+                           30
+                          ],
+                          "children": [
+                           {
+                            "cls": "QScrollBar",
+                            "visible": false,
+                            "enabled": true,
+                            "geom": [
+                             0,
+                             0,
+                             14,
+                             30
+                            ]
+                           }
+                          ]
+                         }
+                        ]
+                       },
+                       {
+                        "cls": "QWidget",
+                        "visible": false,
+                        "enabled": true,
+                        "geom": [
+                         0,
+                         0,
+                         100,
+                         30
+                        ]
+                       },
+                       {
+                        "cls": "QWidget",
+                        "visible": false,
+                        "enabled": true,
+                        "geom": [
+                         0,
+                         0,
+                         100,
+                         30
+                        ]
+                       }
+                      ]
+                     }
+                    ]
+                   }
+                  ]
+                 },
+                 {
+                  "cls": "QLabel",
+                  "text": "Fuselage Chordwise Vortices:",
+                  "visible": false,
+                  "enabled": true,
+                  "geom": [
+                   0,
+                   147,
+                   174,
+                   22
+                  ]
+                 },
+                 {
+                  "cls": "UnitPickerWidget",
+                  "visible": false,
+                  "enabled": true,
+                  "geom": [
+                   542,
+                   147,
+                   80,
+                   22
+                  ],
+                  "children": [
+                   {
+                    "cls": "QComboBox",
+                    "items": [
+                     "Unit"
+                    ],
+                    "current": "Unit",
+                    "visible": false,
+                    "enabled": true,
+                    "geom": [
+                     0,
+                     0,
+                     80,
+                     22
+                    ],
+                    "children": [
+                     {
+                      "cls": "QFrame",
+                      "visible": false,
+                      "enabled": true,
+                      "geom": [
+                       0,
+                       0,
+                       100,
+                       30
+                      ],
+                      "children": [
+                       {
+                        "cls": "QListView",
+                        "visible": false,
+                        "enabled": true,
+                        "geom": [
+                         1,
+                         1,
+                         98,
+                         28
+                        ],
+                        "children": [
+                         {
+                          "cls": "QWidget",
+                          "name": "qt_scrollarea_viewport",
+                          "visible": false,
+                          "enabled": true,
+                          "geom": [
+                           0,
+                           0,
+                           98,
+                           28
+                          ]
+                         },
+                         {
+                          "cls": "QWidget",
+                          "name": "qt_scrollarea_hcontainer",
+                          "visible": false,
+                          "enabled": true,
+                          "geom": [
+                           0,
+                           0,
+                           100,
+                           14
+                          ],
+                          "children": [
+                           {
+                            "cls": "QScrollBar",
+                            "visible": false,
+                            "enabled": true,
+                            "geom": [
+                             0,
+                             0,
+                             100,
+                             14
+                            ]
+                           }
+                          ]
+                         },
+                         {
+                          "cls": "QWidget",
+                          "name": "qt_scrollarea_vcontainer",
+                          "visible": false,
+                          "enabled": true,
+                          "geom": [
+                           0,
+                           0,
+                           14,
+                           30
+                          ],
+                          "children": [
+                           {
+                            "cls": "QScrollBar",
+                            "visible": false,
+                            "enabled": true,
+                            "geom": [
+                             0,
+                             0,
+                             14,
+                             30
+                            ]
+                           }
+                          ]
+                         }
+                        ]
+                       },
+                       {
+                        "cls": "QWidget",
+                        "visible": false,
+                        "enabled": true,
+                        "geom": [
+                         0,
+                         0,
+                         100,
+                         30
+                        ]
+                       },
+                       {
+                        "cls": "QWidget",
+                        "visible": false,
+                        "enabled": true,
+                        "geom": [
+                         0,
+                         0,
+                         100,
+                         30
+                        ]
+                       }
+                      ]
+                     }
+                    ]
+                   }
+                  ]
+                 },
+                 {
+                  "cls": "QLabel",
+                  "text": "Propeller Wake Model:",
+                  "visible": false,
+                  "enabled": true,
+                  "geom": [
+                   0,
+                   175,
+                   174,
+                   15
+                  ]
+                 }
+                ]
+               },
+               {
+                "cls": "QFrame",
+                "visible": false,
+                "enabled": true,
+                "geom": [
+                 9,
+                 468,
+                 622,
+                 3
+                ]
+               }
+              ]
+             }
+            ]
+           }
+          ]
+         },
+         {
+          "cls": "QWidget",
+          "name": "qt_scrollarea_hcontainer",
+          "visible": false,
+          "enabled": true,
+          "geom": [
+           1,
+           825,
+           1209,
+           14
+          ],
+          "children": [
+           {
+            "cls": "QScrollBar",
+            "visible": false,
+            "enabled": true,
+            "geom": [
+             0,
+             0,
+             1209,
+             14
+            ]
+           }
+          ]
+         },
+         {
+          "cls": "QWidget",
+          "name": "qt_scrollarea_vcontainer",
+          "visible": false,
+          "enabled": true,
+          "geom": [
+           1210,
+           1,
+           14,
+           824
+          ],
+          "children": [
+           {
+            "cls": "QScrollBar",
+            "visible": false,
+            "enabled": true,
+            "geom": [
+             0,
+             0,
+             14,
+             824
+            ]
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "cls": "QPushButton",
+    "text": "Save Analyses",
+    "visible": true,
+    "enabled": true,
+    "geom": [
+     1489,
+     913,
+     97,
+     32
+    ]
+   }
+  ]
+ },
+ "summary": {
+  "type_counts": {
+   "AnalysisWidget": 1,
+   "QGroupBox": 1,
+   "QLabel": 62,
+   "MissionAnalysisWidget": 1,
+   "QPushButton": 2,
+   "QTreeWidget": 1,
+   "QWidget": 150,
+   "QScrollBar": 62,
+   "QHeaderView": 1,
+   "QScrollArea": 1,
+   "AerodynamicsWidget": 1,
+   "QFrame": 48,
+   "QComboBox": 28,
+   "QListView": 28,
+   "DataEntryWidget": 5,
+   "QCheckBox": 23,
+   "QLineEdit": 28,
+   "UnitPickerWidget": 24,
+   "AtmosphereWidget": 1,
+   "PlanetsWidget": 1,
+   "WeightsWidget": 1,
+   "GeometryWidget": 1,
+   "EnergyWidget": 1,
+   "PropulsionWidget": 1,
+   "CostsWidget": 1,
+   "AeroacousticsWidget": 1,
+   "StabilityWidget": 1
+  },
+  "interactive": [
+   {
+    "cls": "QGroupBox",
+    "title": "Analyses Setup"
+   },
+   {
+    "cls": "QPushButton",
+    "text": "Save Analyses"
+   },
+   {
+    "cls": "QTreeWidget",
+    "header": [
+     "Analysis",
+     "Enabled"
+    ]
+   },
+   {
+    "cls": "QComboBox",
+    "items": [
+     "Vortex Lattice Method"
+    ],
+    "current": "Vortex Lattice Method"
+   },
+   {
+    "cls": "QCheckBox"
+   },
+   {
+    "cls": "QCheckBox"
+   },
+   {
+    "cls": "QLineEdit",
+    "text": "30"
+   },
+   {
+    "cls": "QLineEdit",
+    "text": "15"
+   },
+   {
+    "cls": "QCheckBox"
+   },
+   {
+    "cls": "QCheckBox"
+   },
+   {
+    "cls": "QLineEdit",
+    "text": "4"
+   },
+   {
+    "cls": "QLineEdit",
+    "text": "10"
+   },
+   {
+    "cls": "QCheckBox"
+   },
+   {
+    "cls": "QLineEdit",
+    "text": "1.2"
+   },
+   {
+    "cls": "QLineEdit",
+    "text": "1.02"
+   },
+   {
+    "cls": "QComboBox",
+    "items": [
+     "Unit"
+    ],
+    "current": "Unit"
+   },
+   {
+    "cls": "QComboBox",
+    "items": [
+     "Unit"
+    ],
+    "current": "Unit"
+   },
+   {
+    "cls": "QComboBox",
+    "items": [
+     "Unit"
+    ],
+    "current": "Unit"
+   },
+   {
+    "cls": "QComboBox",
+    "items": [
+     "Unit"
+    ],
+    "current": "Unit"
+   },
+   {
+    "cls": "QComboBox",
+    "items": [
+     "",
+     "%"
+    ],
+    "current": ""
+   },
+   {
+    "cls": "QComboBox",
+    "items": [
+     "",
+     "%"
+    ],
+    "current": ""
+   },
+   {
+    "cls": "QComboBox",
+    "items": [
+     "1976 US Standard Atmosphere",
+     "Constant Temperature"
+    ],
+    "current": "1976 US Standard Atmosphere"
+   },
+   {
+    "cls": "QComboBox",
+    "items": [
+     "Conventional Transport",
+     "Conventional BWB",
+     "Conventional General Aviation",
+     "Electric Transport",
+     "Electric General Aviation",
+     "Electric VTOL",
+     "Hybrid",
+     "Cryogenic Transport",
+     "Cryogenic BWB"
+    ],
+    "current": "Conventional Transport"
+   },
+   {
+    "cls": "QCheckBox"
+   },
+   {
+    "cls": "QCheckBox"
+   },
+   {
+    "cls": "QCheckBox"
+   },
+   {
+    "cls": "QCheckBox"
+   },
+   {
+    "cls": "QCheckBox"
+   },
+   {
+    "cls": "QCheckBox"
+   },
+   {
+    "cls": "QCheckBox"
+   },
+   {
+    "cls": "QCheckBox"
+   },
+   {
+    "cls": "QCheckBox"
+   },
+   {
+    "cls": "QCheckBox"
+   },
+   {
+    "cls": "QCheckBox"
+   },
+   {
+    "cls": "QComboBox",
+    "items": [
+     "Semi Empirical",
+     "Physics-Based"
+    ],
+    "current": "Semi Empirical"
+   },
+   {
+    "cls": "QCheckBox"
+   },
+   {
+    "cls": "QCheckBox"
+   },
+   {
+    "cls": "QLineEdit",
+    "text": "0"
+   },
+   {
+    "cls": "QLineEdit",
+    "text": "0"
+   },
+   {
+    "cls": "QLineEdit",
+    "text": "0"
+   },
+   {
+    "cls": "QLineEdit",
+    "text": "0"
+   },
+   {
+    "cls": "QLineEdit",
+    "text": "0"
+   },
+   {
+    "cls": "QLineEdit",
+    "text": "0"
+   },
+   {
+    "cls": "QLineEdit",
+    "text": "100"
+   },
+   {
+    "cls": "QLineEdit",
+    "text": "100"
+   },
+   {
+    "cls": "QLineEdit",
+    "text": "0"
+   },
+   {
+    "cls": "QLineEdit",
+    "text": "5000"
+   },
+   {
+    "cls": "QLineEdit",
+    "text": "1e-06"
+   },
+   {
+    "cls": "QLineEdit",
+    "text": "450"
+   },
+   {
+    "cls": "QCheckBox"
+   },
+   {
+    "cls": "QLineEdit",
+    "text": "20"
+   },
+   {
+    "cls": "QLineEdit",
+    "text": "20"
+   },
+   {
+    "cls": "QLineEdit",
+    "text": "180"
+   },
+   {
+    "cls": "QLineEdit",
+    "text": "0"
+   },
+   {
+    "cls": "QLineEdit",
+    "text": "360"
+   },
+   {
+    "cls": "QLineEdit",
+    "text": "0"
+   },
+   {
+    "cls": "QComboBox",
+    "items": [
+     "m",
+     "cm",
+     "mm",
+     "in",
+     "ft",
+     "nmi",
+     "km",
+     "dm",
+     "yd",
+     "mi"
+    ],
+    "current": "m"
+   },
+   {
+    "cls": "QComboBox",
+    "items": [
+     "m",
+     "cm",
+     "mm",
+     "in",
+     "ft",
+     "nmi",
+     "km",
+     "dm",
+     "yd",
+     "mi"
+    ],
+    "current": "m"
+   },
+   {
+    "cls": "QComboBox",
+    "items": [
+     "Unit"
+    ],
+    "current": "Unit"
+   },
+   {
+    "cls": "QComboBox",
+    "items": [
+     "Unit"
+    ],
+    "current": "Unit"
+   },
+   {
+    "cls": "QComboBox",
+    "items": [
+     "m",
+     "cm",
+     "mm",
+     "in",
+     "ft",
+     "nmi",
+     "km",
+     "dm",
+     "yd",
+     "mi"
+    ],
+    "current": "m"
+   },
+   {
+    "cls": "QComboBox",
+    "items": [
+     "m",
+     "cm",
+     "mm",
+     "in",
+     "ft",
+     "nmi",
+     "km",
+     "dm",
+     "yd",
+     "mi"
+    ],
+    "current": "m"
+   },
+   {
+    "cls": "QComboBox",
+    "items": [
+     "m",
+     "cm",
+     "mm",
+     "in",
+     "ft",
+     "nmi",
+     "km",
+     "dm",
+     "yd",
+     "mi"
+    ],
+    "current": "m"
+   },
+   {
+    "cls": "QComboBox",
+    "items": [
+     "m",
+     "cm",
+     "mm",
+     "in",
+     "ft",
+     "nmi",
+     "km",
+     "dm",
+     "yd",
+     "mi"
+    ],
+    "current": "m"
+   },
+   {
+    "cls": "QComboBox",
+    "items": [
+     "m",
+     "cm",
+     "mm",
+     "in",
+     "ft",
+     "nmi",
+     "km",
+     "dm",
+     "yd",
+     "mi"
+    ],
+    "current": "m"
+   },
+   {
+    "cls": "QComboBox",
+    "items": [
+     "Unit"
+    ],
+    "current": "Unit"
+   },
+   {
+    "cls": "QComboBox",
+    "items": [
+     "rad",
+     "deg"
+    ],
+    "current": "rad"
+   },
+   {
+    "cls": "QComboBox",
+    "items": [
+     "rad",
+     "deg"
+    ],
+    "current": "rad"
+   },
+   {
+    "cls": "QComboBox",
+    "items": [
+     "rad",
+     "deg"
+    ],
+    "current": "rad"
+   },
+   {
+    "cls": "QComboBox",
+    "items": [
+     "rad",
+     "deg"
+    ],
+    "current": "rad"
+   },
+   {
+    "cls": "QCheckBox"
+   },
+   {
+    "cls": "QLineEdit",
+    "text": "30"
+   },
+   {
+    "cls": "QLineEdit",
+    "text": "15"
+   },
+   {
+    "cls": "QCheckBox"
+   },
+   {
+    "cls": "QCheckBox"
+   },
+   {
+    "cls": "QLineEdit",
+    "text": "4"
+   },
+   {
+    "cls": "QLineEdit",
+    "text": "10"
+   },
+   {
+    "cls": "QCheckBox"
+   },
+   {
+    "cls": "QComboBox",
+    "items": [
+     "Unit"
+    ],
+    "current": "Unit"
+   },
+   {
+    "cls": "QComboBox",
+    "items": [
+     "Unit"
+    ],
+    "current": "Unit"
+   },
+   {
+    "cls": "QComboBox",
+    "items": [
+     "Unit"
+    ],
+    "current": "Unit"
+   },
+   {
+    "cls": "QComboBox",
+    "items": [
+     "Unit"
+    ],
+    "current": "Unit"
+   },
+   {
+    "cls": "QPushButton",
+    "text": "Save Analyses"
+   }
+  ]
+ }
+}

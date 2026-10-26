@@ -1,0 +1,52 @@
+{
+  "date": "2026-10-13",
+  "env": "D:\\RCAIDE\\envs\\RCAIDE",
+  "python": "3.11.17",
+  "install": {
+    "package": "RCAIDE-GUI",
+    "version": "1.2.0",
+    "pypi_latest_checked": "1.2.0 (uploaded 2026-07-24)",
+    "command": "D:\\RCAIDE\\envs\\RCAIDE\\python.exe -m pip install RCAIDE-GUI"
+  },
+  "new_packages": {
+    "RCAIDE-GUI": "1.2.0",
+    "PyQt6": "6.11.0",
+    "PyQt6-Qt6": "6.11.2",
+    "PyQt6-sip": "13.13.0",
+    "QtPy": "2.4.3",
+    "pyqtgraph": "0.14.0",
+    "pyvistaqt": "0.13.1",
+    "qt-material": "2.17",
+    "Jinja2": "3.1.6",
+    "MarkupSafe": "3.0.4"
+  },
+  "checks": {
+    "pip_check": "PASS (No broken requirements found)",
+    "entry_point": "PASS (D:\\RCAIDE\\envs\\RCAIDE\\Scripts\\rcaide-gui.exe)",
+    "entrypoint_launch": "PASS (rcaide-gui.exe kept running 10 s, then terminated by test)",
+    "offscreen_smoke": "PASS (rc=0, 9 tabs built; OpenGL/font warnings are offscreen-only)",
+    "display_smoke": "PASS (rc=0, 9 tabs, window shown ~12 s then auto-closed, no warnings)"
+  },
+  "tabs": [
+    "Home",
+    "Vehicle Setup",
+    "Visualize Geometry",
+    "Configurations",
+    "Analyses Setup",
+    "Mission Setup",
+    "Performance",
+    "Run Mission",
+    "Results Viewer"
+  ],
+  "evidence": [
+    "checks/2026-10-13/gui-install.log",
+    "checks/2026-10-13/gui-pip-check.log",
+    "checks/2026-10-13/gui-smoke.log",
+    "checks/2026-10-13/gui-smoke-display.log",
+    "checks/2026-10-13/gui_smoke_test.py"
+  ],
+  "limitations": [
+    "Smoke tests confirm the app launches and builds its window; per-tab workflows (vehicle setup, analyses, mission simulation, export) were not exercised.",
+    "RCAIDE_LEADS stays at 1.5.0; no existing package versions were changed."
+  ]
+}

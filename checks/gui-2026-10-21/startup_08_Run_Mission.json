@@ -1,0 +1,1257 @@
+{
+ "tab_index": 7,
+ "tab_name": "Run Mission",
+ "tree": {
+  "cls": "SolveWidget",
+  "visible": true,
+  "enabled": true,
+  "geom": [
+   0,
+   0,
+   1596,
+   957
+  ],
+  "children": [
+   {
+    "cls": "QPushButton",
+    "text": "Simulate Mission",
+    "visible": true,
+    "enabled": true,
+    "geom": [
+     14,
+     14,
+     407,
+     36
+    ]
+   },
+   {
+    "cls": "QTreeWidget",
+    "header": [
+     "Plot Options",
+     "Enabled"
+    ],
+    "topLevelCount": 4,
+    "topLevel": [
+     "Aerodynamics",
+     "Energy",
+     "Mission",
+     "Stability"
+    ],
+    "visible": true,
+    "enabled": true,
+    "geom": [
+     14,
+     60,
+     407,
+     883
+    ],
+    "children": [
+     {
+      "cls": "QWidget",
+      "name": "qt_scrollarea_viewport",
+      "visible": true,
+      "enabled": true,
+      "geom": [
+       1,
+       29,
+       405,
+       839
+      ]
+     },
+     {
+      "cls": "QHeaderView",
+      "visible": true,
+      "enabled": true,
+      "geom": [
+       1,
+       1,
+       405,
+       28
+      ],
+      "children": [
+       {
+        "cls": "QWidget",
+        "name": "qt_scrollarea_viewport",
+        "visible": true,
+        "enabled": true,
+        "geom": [
+         0,
+         0,
+         405,
+         28
+        ]
+       },
+       {
+        "cls": "QWidget",
+        "name": "qt_scrollarea_hcontainer",
+        "visible": false,
+        "enabled": true,
+        "geom": [
+         0,
+         0,
+         100,
+         14
+        ],
+        "children": [
+         {
+          "cls": "QScrollBar",
+          "visible": false,
+          "enabled": true,
+          "geom": [
+           0,
+           0,
+           100,
+           14
+          ]
+         }
+        ]
+       },
+       {
+        "cls": "QWidget",
+        "name": "qt_scrollarea_vcontainer",
+        "visible": false,
+        "enabled": true,
+        "geom": [
+         0,
+         0,
+         14,
+         30
+        ],
+        "children": [
+         {
+          "cls": "QScrollBar",
+          "visible": false,
+          "enabled": true,
+          "geom": [
+           0,
+           0,
+           14,
+           30
+          ]
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "cls": "QWidget",
+      "name": "qt_scrollarea_vcontainer",
+      "visible": false,
+      "enabled": true,
+      "geom": [
+       392,
+       1,
+       14,
+       867
+      ],
+      "children": [
+       {
+        "cls": "QScrollBar",
+        "visible": false,
+        "enabled": true,
+        "geom": [
+         0,
+         0,
+         14,
+         867
+        ]
+       }
+      ]
+     },
+     {
+      "cls": "QWidget",
+      "name": "qt_scrollarea_hcontainer",
+      "visible": true,
+      "enabled": true,
+      "geom": [
+       1,
+       868,
+       405,
+       14
+      ],
+      "children": [
+       {
+        "cls": "QScrollBar",
+        "visible": true,
+        "enabled": true,
+        "geom": [
+         0,
+         0,
+         405,
+         14
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "cls": "QScrollArea",
+    "visible": true,
+    "enabled": true,
+    "geom": [
+     435,
+     14,
+     813,
+     929
+    ],
+    "children": [
+     {
+      "cls": "QWidget",
+      "name": "qt_scrollarea_viewport",
+      "visible": true,
+      "enabled": true,
+      "geom": [
+       0,
+       0,
+       799,
+       929
+      ],
+      "children": [
+       {
+        "cls": "QWidget",
+        "visible": true,
+        "enabled": true,
+        "geom": [
+         0,
+         0,
+         799,
+         1636
+        ],
+        "children": [
+         {
+          "cls": "PlotWidget",
+          "visible": true,
+          "enabled": true,
+          "geom": [
+           89,
+           9,
+           620,
+           400
+          ],
+          "children": [
+           {
+            "cls": "QWidget",
+            "name": "qt_scrollarea_hcontainer",
+            "visible": false,
+            "enabled": true,
+            "geom": [
+             0,
+             0,
+             100,
+             14
+            ],
+            "children": [
+             {
+              "cls": "QScrollBar",
+              "visible": false,
+              "enabled": true,
+              "geom": [
+               0,
+               0,
+               100,
+               14
+              ]
+             }
+            ]
+           },
+           {
+            "cls": "QWidget",
+            "name": "qt_scrollarea_vcontainer",
+            "visible": false,
+            "enabled": true,
+            "geom": [
+             0,
+             0,
+             14,
+             30
+            ],
+            "children": [
+             {
+              "cls": "QScrollBar",
+              "visible": false,
+              "enabled": true,
+              "geom": [
+               0,
+               0,
+               14,
+               30
+              ]
+             }
+            ]
+           },
+           {
+            "cls": "QWidget",
+            "visible": true,
+            "enabled": true,
+            "geom": [
+             0,
+             0,
+             620,
+             400
+            ]
+           }
+          ]
+         },
+         {
+          "cls": "PlotWidget",
+          "visible": true,
+          "enabled": true,
+          "geom": [
+           89,
+           415,
+           620,
+           400
+          ],
+          "children": [
+           {
+            "cls": "QWidget",
+            "name": "qt_scrollarea_hcontainer",
+            "visible": false,
+            "enabled": true,
+            "geom": [
+             0,
+             0,
+             100,
+             14
+            ],
+            "children": [
+             {
+              "cls": "QScrollBar",
+              "visible": false,
+              "enabled": true,
+              "geom": [
+               0,
+               0,
+               100,
+               14
+              ]
+             }
+            ]
+           },
+           {
+            "cls": "QWidget",
+            "name": "qt_scrollarea_vcontainer",
+            "visible": false,
+            "enabled": true,
+            "geom": [
+             0,
+             0,
+             14,
+             30
+            ],
+            "children": [
+             {
+              "cls": "QScrollBar",
+              "visible": false,
+              "enabled": true,
+              "geom": [
+               0,
+               0,
+               14,
+               30
+              ]
+             }
+            ]
+           },
+           {
+            "cls": "QWidget",
+            "visible": true,
+            "enabled": true,
+            "geom": [
+             0,
+             0,
+             620,
+             400
+            ]
+           }
+          ]
+         },
+         {
+          "cls": "PlotWidget",
+          "visible": true,
+          "enabled": true,
+          "geom": [
+           89,
+           821,
+           620,
+           400
+          ],
+          "children": [
+           {
+            "cls": "QWidget",
+            "name": "qt_scrollarea_hcontainer",
+            "visible": false,
+            "enabled": true,
+            "geom": [
+             0,
+             0,
+             100,
+             14
+            ],
+            "children": [
+             {
+              "cls": "QScrollBar",
+              "visible": false,
+              "enabled": true,
+              "geom": [
+               0,
+               0,
+               100,
+               14
+              ]
+             }
+            ]
+           },
+           {
+            "cls": "QWidget",
+            "name": "qt_scrollarea_vcontainer",
+            "visible": false,
+            "enabled": true,
+            "geom": [
+             0,
+             0,
+             14,
+             30
+            ],
+            "children": [
+             {
+              "cls": "QScrollBar",
+              "visible": false,
+              "enabled": true,
+              "geom": [
+               0,
+               0,
+               14,
+               30
+              ]
+             }
+            ]
+           },
+           {
+            "cls": "QWidget",
+            "visible": true,
+            "enabled": true,
+            "geom": [
+             0,
+             0,
+             620,
+             400
+            ]
+           }
+          ]
+         },
+         {
+          "cls": "PlotWidget",
+          "visible": true,
+          "enabled": true,
+          "geom": [
+           89,
+           1227,
+           620,
+           400
+          ],
+          "children": [
+           {
+            "cls": "QWidget",
+            "name": "qt_scrollarea_hcontainer",
+            "visible": false,
+            "enabled": true,
+            "geom": [
+             0,
+             0,
+             100,
+             14
+            ],
+            "children": [
+             {
+              "cls": "QScrollBar",
+              "visible": false,
+              "enabled": true,
+              "geom": [
+               0,
+               0,
+               100,
+               14
+              ]
+             }
+            ]
+           },
+           {
+            "cls": "QWidget",
+            "name": "qt_scrollarea_vcontainer",
+            "visible": false,
+            "enabled": true,
+            "geom": [
+             0,
+             0,
+             14,
+             30
+            ],
+            "children": [
+             {
+              "cls": "QScrollBar",
+              "visible": false,
+              "enabled": true,
+              "geom": [
+               0,
+               0,
+               14,
+               30
+              ]
+             }
+            ]
+           },
+           {
+            "cls": "QWidget",
+            "visible": true,
+            "enabled": true,
+            "geom": [
+             0,
+             0,
+             620,
+             400
+            ]
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "cls": "QWidget",
+      "name": "qt_scrollarea_hcontainer",
+      "visible": false,
+      "enabled": true,
+      "geom": [
+       0,
+       0,
+       100,
+       14
+      ],
+      "children": [
+       {
+        "cls": "QScrollBar",
+        "visible": false,
+        "enabled": true,
+        "geom": [
+         0,
+         0,
+         100,
+         14
+        ]
+       }
+      ]
+     },
+     {
+      "cls": "QWidget",
+      "name": "qt_scrollarea_vcontainer",
+      "visible": true,
+      "enabled": true,
+      "geom": [
+       799,
+       0,
+       14,
+       929
+      ],
+      "children": [
+       {
+        "cls": "QScrollBar",
+        "visible": true,
+        "enabled": true,
+        "geom": [
+         0,
+         0,
+         14,
+         929
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "cls": "QWidget",
+    "visible": true,
+    "enabled": true,
+    "geom": [
+     1262,
+     14,
+     320,
+     929
+    ],
+    "children": [
+     {
+      "cls": "QLabel",
+      "text": "Plot Parameters",
+      "visible": true,
+      "enabled": true,
+      "geom": [
+       9,
+       9,
+       302,
+       23
+      ]
+     },
+     {
+      "cls": "QLabel",
+      "text": "Line Appearance",
+      "visible": true,
+      "enabled": true,
+      "geom": [
+       9,
+       40,
+       302,
+       12
+      ]
+     },
+     {
+      "cls": "QLabel",
+      "text": "Line Width",
+      "visible": true,
+      "enabled": true,
+      "geom": [
+       9,
+       60,
+       302,
+       12
+      ]
+     },
+     {
+      "cls": "QDoubleSpinBox",
+      "text": "2.00",
+      "visible": true,
+      "enabled": true,
+      "geom": [
+       9,
+       80,
+       302,
+       29
+      ],
+      "children": [
+       {
+        "cls": "QLineEdit",
+        "name": "qt_spinbox_lineedit",
+        "text": "2.00",
+        "visible": true,
+        "enabled": true,
+        "geom": [
+         5,
+         5,
+         278,
+         19
+        ]
+       }
+      ]
+     },
+     {
+      "cls": "QLabel",
+      "text": "Line Style",
+      "visible": true,
+      "enabled": true,
+      "geom": [
+       9,
+       117,
+       302,
+       12
+      ]
+     },
+     {
+      "cls": "QComboBox",
+      "items": [
+       "Solid",
+       "Dashed",
+       "Dotted"
+      ],
+      "current": "Solid",
+      "visible": true,
+      "enabled": true,
+      "geom": [
+       9,
+       137,
+       302,
+       26
+      ],
+      "children": [
+       {
+        "cls": "QFrame",
+        "visible": false,
+        "enabled": true,
+        "geom": [
+         0,
+         0,
+         100,
+         30
+        ],
+        "children": [
+         {
+          "cls": "QListView",
+          "visible": false,
+          "enabled": true,
+          "geom": [
+           1,
+           5,
+           98,
+           20
+          ],
+          "children": [
+           {
+            "cls": "QWidget",
+            "name": "qt_scrollarea_viewport",
+            "visible": false,
+            "enabled": true,
+            "geom": [
+             0,
+             0,
+             98,
+             20
+            ]
+           },
+           {
+            "cls": "QWidget",
+            "name": "qt_scrollarea_hcontainer",
+            "visible": false,
+            "enabled": true,
+            "geom": [
+             0,
+             0,
+             100,
+             14
+            ],
+            "children": [
+             {
+              "cls": "QScrollBar",
+              "visible": false,
+              "enabled": true,
+              "geom": [
+               0,
+               0,
+               100,
+               14
+              ]
+             }
+            ]
+           },
+           {
+            "cls": "QWidget",
+            "name": "qt_scrollarea_vcontainer",
+            "visible": false,
+            "enabled": true,
+            "geom": [
+             0,
+             0,
+             14,
+             30
+            ],
+            "children": [
+             {
+              "cls": "QScrollBar",
+              "visible": false,
+              "enabled": true,
+              "geom": [
+               0,
+               0,
+               14,
+               30
+              ]
+             }
+            ]
+           }
+          ]
+         },
+         {
+          "cls": "QWidget",
+          "visible": false,
+          "enabled": true,
+          "geom": [
+           0,
+           0,
+           100,
+           30
+          ]
+         },
+         {
+          "cls": "QWidget",
+          "visible": false,
+          "enabled": true,
+          "geom": [
+           0,
+           0,
+           100,
+           30
+          ]
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "cls": "QPushButton",
+      "text": "Select Line Color",
+      "visible": true,
+      "enabled": true,
+      "geom": [
+       9,
+       171,
+       302,
+       26
+      ]
+     },
+     {
+      "cls": "QLabel",
+      "text": "Markers",
+      "visible": true,
+      "enabled": true,
+      "geom": [
+       9,
+       205,
+       302,
+       12
+      ]
+     },
+     {
+      "cls": "QCheckBox",
+      "text": "Show Markers",
+      "visible": true,
+      "enabled": true,
+      "geom": [
+       9,
+       225,
+       302,
+       14
+      ]
+     },
+     {
+      "cls": "QLabel",
+      "text": "Marker Style",
+      "visible": true,
+      "enabled": true,
+      "geom": [
+       9,
+       247,
+       302,
+       12
+      ]
+     },
+     {
+      "cls": "QComboBox",
+      "items": [
+       "o",
+       "s",
+       "^",
+       "d",
+       "x",
+       "+",
+       "*"
+      ],
+      "current": "o",
+      "visible": true,
+      "enabled": true,
+      "geom": [
+       9,
+       267,
+       302,
+       26
+      ],
+      "children": [
+       {
+        "cls": "QFrame",
+        "visible": false,
+        "enabled": true,
+        "geom": [
+         0,
+         0,
+         100,
+         30
+        ],
+        "children": [
+         {
+          "cls": "QListView",
+          "visible": false,
+          "enabled": true,
+          "geom": [
+           1,
+           5,
+           98,
+           20
+          ],
+          "children": [
+           {
+            "cls": "QWidget",
+            "name": "qt_scrollarea_viewport",
+            "visible": false,
+            "enabled": true,
+            "geom": [
+             0,
+             0,
+             98,
+             20
+            ]
+           },
+           {
+            "cls": "QWidget",
+            "name": "qt_scrollarea_hcontainer",
+            "visible": false,
+            "enabled": true,
+            "geom": [
+             0,
+             0,
+             100,
+             14
+            ],
+            "children": [
+             {
+              "cls": "QScrollBar",
+              "visible": false,
+              "enabled": true,
+              "geom": [
+               0,
+               0,
+               100,
+               14
+              ]
+             }
+            ]
+           },
+           {
+            "cls": "QWidget",
+            "name": "qt_scrollarea_vcontainer",
+            "visible": false,
+            "enabled": true,
+            "geom": [
+             0,
+             0,
+             14,
+             30
+            ],
+            "children": [
+             {
+              "cls": "QScrollBar",
+              "visible": false,
+              "enabled": true,
+              "geom": [
+               0,
+               0,
+               14,
+               30
+              ]
+             }
+            ]
+           }
+          ]
+         },
+         {
+          "cls": "QWidget",
+          "visible": false,
+          "enabled": true,
+          "geom": [
+           0,
+           0,
+           100,
+           30
+          ]
+         },
+         {
+          "cls": "QWidget",
+          "visible": false,
+          "enabled": true,
+          "geom": [
+           0,
+           0,
+           100,
+           30
+          ]
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "cls": "QLabel",
+      "text": "Marker Size",
+      "visible": true,
+      "enabled": true,
+      "geom": [
+       9,
+       301,
+       302,
+       12
+      ]
+     },
+     {
+      "cls": "QDoubleSpinBox",
+      "text": "8.00",
+      "visible": true,
+      "enabled": true,
+      "geom": [
+       9,
+       321,
+       302,
+       29
+      ],
+      "children": [
+       {
+        "cls": "QLineEdit",
+        "name": "qt_spinbox_lineedit",
+        "text": "8.00",
+        "visible": true,
+        "enabled": true,
+        "geom": [
+         5,
+         5,
+         278,
+         19
+        ]
+       }
+      ]
+     },
+     {
+      "cls": "QLabel",
+      "text": "Axes",
+      "visible": true,
+      "enabled": true,
+      "geom": [
+       9,
+       358,
+       302,
+       12
+      ]
+     },
+     {
+      "cls": "QCheckBox",
+      "text": "Autoscale Axes",
+      "visible": true,
+      "enabled": true,
+      "geom": [
+       9,
+       378,
+       302,
+       14
+      ]
+     },
+     {
+      "cls": "QLabel",
+      "text": "Axis Font Size",
+      "visible": true,
+      "enabled": true,
+      "geom": [
+       9,
+       400,
+       302,
+       12
+      ]
+     },
+     {
+      "cls": "QDoubleSpinBox",
+      "text": "14.00",
+      "visible": true,
+      "enabled": true,
+      "geom": [
+       9,
+       420,
+       302,
+       29
+      ],
+      "children": [
+       {
+        "cls": "QLineEdit",
+        "name": "qt_spinbox_lineedit",
+        "text": "14.00",
+        "visible": true,
+        "enabled": true,
+        "geom": [
+         5,
+         5,
+         278,
+         19
+        ]
+       }
+      ]
+     },
+     {
+      "cls": "QLabel",
+      "text": "Grid / Legend",
+      "visible": true,
+      "enabled": true,
+      "geom": [
+       9,
+       457,
+       302,
+       12
+      ]
+     },
+     {
+      "cls": "QCheckBox",
+      "text": "Show Grid",
+      "visible": true,
+      "enabled": true,
+      "geom": [
+       9,
+       477,
+       302,
+       14
+      ]
+     },
+     {
+      "cls": "QPushButton",
+      "text": "Select Grid Color",
+      "visible": true,
+      "enabled": true,
+      "geom": [
+       9,
+       499,
+       302,
+       26
+      ]
+     },
+     {
+      "cls": "QCheckBox",
+      "text": "Show Legend",
+      "visible": true,
+      "enabled": true,
+      "geom": [
+       9,
+       533,
+       302,
+       14
+      ]
+     },
+     {
+      "cls": "QLabel",
+      "text": "Export",
+      "visible": true,
+      "enabled": true,
+      "geom": [
+       9,
+       555,
+       302,
+       12
+      ]
+     },
+     {
+      "cls": "QPushButton",
+      "text": "Save Plots",
+      "visible": true,
+      "enabled": true,
+      "geom": [
+       9,
+       575,
+       302,
+       26
+      ]
+     }
+    ]
+   }
+  ]
+ },
+ "summary": {
+  "type_counts": {
+   "SolveWidget": 1,
+   "QPushButton": 4,
+   "QTreeWidget": 1,
+   "QWidget": 33,
+   "QHeaderView": 1,
+   "QScrollBar": 18,
+   "QScrollArea": 1,
+   "PlotWidget": 4,
+   "QLabel": 11,
+   "QDoubleSpinBox": 3,
+   "QLineEdit": 3,
+   "QComboBox": 2,
+   "QFrame": 2,
+   "QListView": 2,
+   "QCheckBox": 4
+  },
+  "interactive": [
+   {
+    "cls": "QPushButton",
+    "text": "Simulate Mission"
+   },
+   {
+    "cls": "QTreeWidget",
+    "header": [
+     "Plot Options",
+     "Enabled"
+    ]
+   },
+   {
+    "cls": "QDoubleSpinBox",
+    "text": "2.00"
+   },
+   {
+    "cls": "QLineEdit",
+    "name": "qt_spinbox_lineedit",
+    "text": "2.00"
+   },
+   {
+    "cls": "QComboBox",
+    "items": [
+     "Solid",
+     "Dashed",
+     "Dotted"
+    ],
+    "current": "Solid"
+   },
+   {
+    "cls": "QPushButton",
+    "text": "Select Line Color"
+   },
+   {
+    "cls": "QCheckBox",
+    "text": "Show Markers"
+   },
+   {
+    "cls": "QComboBox",
+    "items": [
+     "o",
+     "s",
+     "^",
+     "d",
+     "x",
+     "+",
+     "*"
+    ],
+    "current": "o"
+   },
+   {
+    "cls": "QDoubleSpinBox",
+    "text": "8.00"
+   },
+   {
+    "cls": "QLineEdit",
+    "name": "qt_spinbox_lineedit",
+    "text": "8.00"
+   },
+   {
+    "cls": "QCheckBox",
+    "text": "Autoscale Axes"
+   },
+   {
+    "cls": "QDoubleSpinBox",
+    "text": "14.00"
+   },
+   {
+    "cls": "QLineEdit",
+    "name": "qt_spinbox_lineedit",
+    "text": "14.00"
+   },
+   {
+    "cls": "QCheckBox",
+    "text": "Show Grid"
+   },
+   {
+    "cls": "QPushButton",
+    "text": "Select Grid Color"
+   },
+   {
+    "cls": "QCheckBox",
+    "text": "Show Legend"
+   },
+   {
+    "cls": "QPushButton",
+    "text": "Save Plots"
+   }
+  ]
+ }
+}

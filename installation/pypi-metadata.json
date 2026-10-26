@@ -1,0 +1,721 @@
+{
+  "info": {
+    "author": null,
+    "author_email": null,
+    "bugtrack_url": null,
+    "classifiers": [
+      "Development Status :: 4 - Beta",
+      "Intended Audience :: Developers",
+      "Intended Audience :: Education",
+      "Intended Audience :: Science/Research",
+      "License :: OSI Approved :: GNU Affero General Public License v3",
+      "Programming Language :: Python :: 3",
+      "Programming Language :: Python :: 3.10",
+      "Programming Language :: Python :: 3.11",
+      "Programming Language :: Python :: 3.12",
+      "Programming Language :: Python :: 3.13",
+      "Topic :: Scientific/Engineering"
+    ],
+    "description": "<p align=\"center\">\n  <img src=\"https://raw.githubusercontent.com/leadsgroup/RCAIDE_Website/main/assets/img/RCAIDE_Logo_No_Background.png\" width=25% height=25%>\n</p>\n\n<p align=\"center\">\n  <a href=\"https://aerospace.illinois.edu\">\n    <img src=\"https://raw.githubusercontent.com/leadsgroup/RCAIDE_Website/main/assets/img/Illinois_logo_fullcolor_rgb.png\" height=\"80\">\n  </a>\n  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n  <a href=\"https://www.leadsresearchgroup.com\">\n    <img src=\"https://raw.githubusercontent.com/leadsgroup/RCAIDE_Website/main/assets/img/LEADS_logo_1.png\" height=\"80\">\n  </a>\n</p>\n\n<p align=\"center\">\n  Developed at the <strong>University of Illinois Urbana-Champaign</strong><br>\n  <a href=\"https://www.leadsresearchgroup.com\"><strong>Laboratory for Emerging Aircraft Design and Systems (LEADS)</strong></a>\n</p>\n\n<div align=\"center\">\n\n[![CI](https://github.com/leadsgroup/RCAIDE_LEADS/actions/workflows/CI.yml/badge.svg?branch=master)](https://github.com/leadsgroup/RCAIDE_LEADS/actions/workflows/CI.yml)\n[![Documentation](https://github.com/leadsgroup/RCAIDE_LEADS/actions/workflows/sphinx_docs.yml/badge.svg)](https://github.com/leadsgroup/RCAIDE_LEADS/actions/workflows/sphinx_docs.yml)\n[![codecov](https://codecov.io/gh/leadsgroup/RCAIDE_LEADS/graph/badge.svg?token=WZOFW5EKWJ)](https://codecov.io/gh/leadsgroup/RCAIDE_LEADS)\n[![PyPI Downloads](https://static.pepy.tech/badge/rcaide-leads)](https://pepy.tech/projects/rcaide-leads)\n\n</div>\n\n---\n\n# RCAIDE: Research Community Aerospace Interdisciplinary Design Environment\n\nRCAIDE (pronounced \"arcade\") is an open-source Python platform for the modeling, analysis, and optimization of both conventional and unconventional aerospace systems. The successor to the globally recognized SUAVE code, RCAIDE builds on a robust foundation of validated engineering methods while extending its scope to address novel design paradigms including hybrid-electric propulsion, hydrogen-powered aircraft, urban air mobility vehicles, and supersonic transports.\n\nRCAIDE's modular architecture supports multi-fidelity analysis, high-performance parallel computing, and a generalized energy-agnostic powertrain network that enforces thermodynamic closure across all powertrain domains. It is developed and maintained by the [Laboratory for Emerging Aircraft Design and Systems (LEADS)](https://www.leadsresearchgroup.com/) at the University of Illinois Urbana-Champaign.\n\n## Key Features\n\n### Multidisciplinary Analysis\n| Discipline | Methods |\n|---|---|\n| Geometry | 2D & 3D parametric planform definition, OpenVSP & AVL interfaces |\n| Atmosphere | US Standard 1976 atmospheric model |\n| Aerodynamics | Vortex Lattice Method (VLM), viscous vortex panel method, SU2 CFD interface |\n| Stability | VLM-based perturbation approach; longitudinal and lateral-directional derivatives |\n| Mass Properties | FLOPS, Raymer, and physics-based weight methods; CG and MOI estimation |\n| Powertrain | Polytropic turbomachinery, BEMT/actuator-disk rotors, electric motors, fuel cells, heat exchangers, cryogenic tanks |\n| Aeroacoustics | Semi-empirical airframe and jet noise; physics-based rotor harmonic noise |\n| Emissions | Empirical emission indices; chemical reactor network (CRN) via Cantera |\n| Performance | Payload-range diagrams, V-n diagrams, takeoff/landing field length, stall speed |\n| Optimization | Gradient-based (SLSQP) and non-gradient methods via pyOptSparse |\n\n### Propulsion Architectures Supported\n- Conventional turbofan, turbojet, turboprop\n- Fully electric (battery-powered rotors and ducted fans)\n- Series and parallel hybrid-electric\n- Hydrogen (gaseous and liquid cryogenic)\n- Internal combustion engine + propeller\n- Fuel cell systems\n\n### Mission Solver\nRCAIDE employs a pseudospectral collocation method using Chebyshev polynomials for solving flight mechanics, departing from traditional time-marching techniques. A closed-loop powertrain network solver enforces energy balance across electrical, thermal, mechanical, pneumatic, and hydraulic domains at every mission point — eliminating the open-loop approximations that can mask design flaws in complex powertrains.\n\n## Validation\n\nRCAIDE's methods are validated against experimental data and high-fidelity simulations. Aerodynamic predictions using the VLM and semi-empirical drag buildup achieve R² = 0.96 (C_L) and R² = 0.94 (C_D) against National Transonic Facility wind-tunnel data for the NASA Common Research Model. Vehicle-level validation includes payload-range comparisons for the Boeing 737-800, ATR 72-600, Boeing 787-8, and Concorde.\n\nFull validation tables are available in the [RCAIDE paper](https://doi.org/10.1016/j.ast.2026.112328) and the [Verification & Validation subdirectory](https://github.com/leadsgroup/RCAIDE_LEADS/tree/master/VnV).\n\n## Installation\n\n```bash\npip install RCAIDE-LEADS\n```\n\nWe recommend installing within a virtual environment. See the full [installation guide](https://www.docs.rcaide.leadsresearchgroup.com/install.html) for environment setup, optional dependencies (OpenVSP, AVL, SU2), and platform-specific notes.\n\n## Documentation & Tutorials\n\n- [Documentation](https://www.docs.rcaide.leadsresearchgroup.com)\n- [Tutorials](https://docs.rcaide.leadsresearchgroup.com/tutorials.html)\n- [GitHub Repository](https://github.com/leadsgroup/RCAIDE_LEADS)\n\n## Citing RCAIDE\n\nIf you use RCAIDE in your research, please cite:\n\n> Clarke, Matthew A., et al. \"RCAIDE: A Multidisciplinary Analysis Toolbox for Aircraft Design and Flight Simulation.\" *Aerospace Science and Technology* (2026): 112328.\n\n```bibtex\n@article{clarke2026rcaide,\n  title   = {RCAIDE: A Multidisciplinary Analysis Toolbox for Aircraft Design and Flight Simulation},\n  author  = {Clarke, Matthew A. and others},\n  journal = {Aerospace Science and Technology},\n  pages   = {112328},\n  year    = {2026}\n}\n```\n\n## Contributing\n\nContributions are welcome. Please read the [contributing guidelines](https://www.docs.rcaide.leadsresearchgroup.com/contributing.html) before submitting a pull request.\n\n## Contact\n\n- Bug reports and feature requests: [GitHub Issues](https://github.com/leadsgroup/RCAIDE_LEADS/issues)\n- Community discussion: [GitHub Discussions](https://github.com/leadsgroup/RCAIDE_LEADS/discussions)\n",
+    "description_content_type": "text/markdown",
+    "docs_url": null,
+    "download_url": null,
+    "downloads": {
+      "last_day": -1,
+      "last_month": -1,
+      "last_week": -1
+    },
+    "dynamic": [
+      "License-File"
+    ],
+    "home_page": null,
+    "keywords": null,
+    "license": "GNU Affero General Public License v3.0",
+    "license_expression": null,
+    "license_files": [
+      "LICENSE"
+    ],
+    "maintainer": null,
+    "maintainer_email": null,
+    "name": "RCAIDE-LEADS",
+    "package_url": "https://pypi.org/project/RCAIDE-LEADS/",
+    "platform": null,
+    "project_url": "https://pypi.org/project/RCAIDE-LEADS/",
+    "project_urls": null,
+    "provides_extra": null,
+    "release_url": "https://pypi.org/project/RCAIDE-LEADS/1.5.0/",
+    "requires_dist": [
+      "numpy",
+      "scipy",
+      "matplotlib",
+      "scikit-learn",
+      "plotly",
+      "kaleido",
+      "pandas",
+      "tqdm",
+      "contourpy",
+      "cycler",
+      "fonttools",
+      "geographiclib",
+      "geopy",
+      "importlib_metadata",
+      "joblib",
+      "openpyxl",
+      "pillow",
+      "python-dateutil",
+      "pytz",
+      "shapely",
+      "h5py",
+      "trimesh",
+      "triangle",
+      "pyvista",
+      "six",
+      "vtk",
+      "tenacity",
+      "threadpoolctl",
+      "zipp"
+    ],
+    "requires_python": ">=3.10",
+    "summary": "RCAIDE: Research Community Aerospace Interdisciplinary Design Environment",
+    "version": "1.5.0",
+    "yanked": false,
+    "yanked_reason": null
+  },
+  "last_serial": 39366571,
+  "ownership": {
+    "organization": null,
+    "roles": [
+      {
+        "role": "Owner",
+        "user": "maclarke"
+      }
+    ]
+  },
+  "releases": {
+    "0.3.0": [
+      {
+        "comment_text": "",
+        "core-metadata": {
+          "sha256": "65862b926cd67816ff8abc6b329d3b358e5b0ac708d79b4bc67c1c266842277d"
+        },
+        "digests": {
+          "blake2b_256": "ea2ddc1e84318e79798dbcc0da4cafadb1e56f59240c0a80db5b6075c1cc38d6",
+          "md5": "bc12a274854b66b5f42a1c63f01e59ba",
+          "sha256": "d18aa1178bcbd257f06c889bff5800b3a153eadfabcd56593721f9ba3ac1700b"
+        },
+        "downloads": -1,
+        "filename": "RCAIDE_LEADS-0.3.0-py3-none-any.whl",
+        "has_sig": false,
+        "md5_digest": "bc12a274854b66b5f42a1c63f01e59ba",
+        "packagetype": "bdist_wheel",
+        "python_version": "py3",
+        "requires_python": ">=3.8",
+        "size": 1310825,
+        "upload_time": "2024-12-31T07:51:12",
+        "upload_time_iso_8601": "2024-12-31T07:51:12.750697Z",
+        "url": "https://files.pythonhosted.org/packages/ea/2d/dc1e84318e79798dbcc0da4cafadb1e56f59240c0a80db5b6075c1cc38d6/RCAIDE_LEADS-0.3.0-py3-none-any.whl",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "comment_text": "",
+        "core-metadata": false,
+        "digests": {
+          "blake2b_256": "61509d2c231e6a19ba207f7c2f7ebf892064dfcafc5d101c9ad52c667ce024da",
+          "md5": "aaaef065ea7fc3d2a6c6868e5da4947a",
+          "sha256": "d7ce64483bec15a1dafb9c989a59c0a0e4689263027ec69472fc6dcbdb15409b"
+        },
+        "downloads": -1,
+        "filename": "rcaide_leads-0.3.0.tar.gz",
+        "has_sig": false,
+        "md5_digest": "aaaef065ea7fc3d2a6c6868e5da4947a",
+        "packagetype": "sdist",
+        "python_version": "source",
+        "requires_python": ">=3.8",
+        "size": 764467,
+        "upload_time": "2024-12-31T07:51:15",
+        "upload_time_iso_8601": "2024-12-31T07:51:15.917992Z",
+        "url": "https://files.pythonhosted.org/packages/61/50/9d2c231e6a19ba207f7c2f7ebf892064dfcafc5d101c9ad52c667ce024da/rcaide_leads-0.3.0.tar.gz",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "0.3.1": [
+      {
+        "comment_text": "",
+        "core-metadata": {
+          "sha256": "5450eda5597a1cb0ff99d87b8791a6ac179ddbe1910afd67d659e27f15d45dc6"
+        },
+        "digests": {
+          "blake2b_256": "3f03999745e51c256323d1d7306cc49caf0dfd5b71d226bbdd19058ac26fb7e3",
+          "md5": "e7acb14f08ae6f748fdca5ff92ea385e",
+          "sha256": "39acd335bbf2cb9e1af711ed325f24e86f50bbbb5042579336479cfc5dc94270"
+        },
+        "downloads": -1,
+        "filename": "RCAIDE_LEADS-0.3.1-py3-none-any.whl",
+        "has_sig": false,
+        "md5_digest": "e7acb14f08ae6f748fdca5ff92ea385e",
+        "packagetype": "bdist_wheel",
+        "python_version": "py3",
+        "requires_python": ">=3.8",
+        "size": 1308709,
+        "upload_time": "2024-12-31T20:24:03",
+        "upload_time_iso_8601": "2024-12-31T20:24:03.909914Z",
+        "url": "https://files.pythonhosted.org/packages/3f/03/999745e51c256323d1d7306cc49caf0dfd5b71d226bbdd19058ac26fb7e3/RCAIDE_LEADS-0.3.1-py3-none-any.whl",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "comment_text": "",
+        "core-metadata": false,
+        "digests": {
+          "blake2b_256": "9d2e47b94d0db5a75977e9906b00bcdb7a90be26a4a409b852d90d24d53d8ea6",
+          "md5": "6849065216ae1a1c8f087aec160e5dd2",
+          "sha256": "22b30cb88c6fc86c6d84c8dc146064ccffa301440879d6dcf7a4ac677962ab26"
+        },
+        "downloads": -1,
+        "filename": "rcaide_leads-0.3.1.tar.gz",
+        "has_sig": false,
+        "md5_digest": "6849065216ae1a1c8f087aec160e5dd2",
+        "packagetype": "sdist",
+        "python_version": "source",
+        "requires_python": ">=3.8",
+        "size": 757854,
+        "upload_time": "2024-12-31T20:24:05",
+        "upload_time_iso_8601": "2024-12-31T20:24:05.302948Z",
+        "url": "https://files.pythonhosted.org/packages/9d/2e/47b94d0db5a75977e9906b00bcdb7a90be26a4a409b852d90d24d53d8ea6/rcaide_leads-0.3.1.tar.gz",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "0.4.0": [
+      {
+        "comment_text": "",
+        "core-metadata": {
+          "sha256": "d11e67c6de2707945eaaf43751efd7a0e2c788108e86aaaf1a8b8898cfc97b21"
+        },
+        "digests": {
+          "blake2b_256": "3d192dc7773b1d5f137d0ae9d2af0add914464a2a1d851b0d28804595c7db9b8",
+          "md5": "cab523d60077df1b1884dccb4af005cf",
+          "sha256": "2a56353420354b4e654839dc2f33a3d738998e120629ecbff535cba9b0990e85"
+        },
+        "downloads": -1,
+        "filename": "RCAIDE_LEADS-0.4.0-py3-none-any.whl",
+        "has_sig": false,
+        "md5_digest": "cab523d60077df1b1884dccb4af005cf",
+        "packagetype": "bdist_wheel",
+        "python_version": "py3",
+        "requires_python": ">=3.8",
+        "size": 1264774,
+        "upload_time": "2025-01-03T01:47:04",
+        "upload_time_iso_8601": "2025-01-03T01:47:04.844535Z",
+        "url": "https://files.pythonhosted.org/packages/3d/19/2dc7773b1d5f137d0ae9d2af0add914464a2a1d851b0d28804595c7db9b8/RCAIDE_LEADS-0.4.0-py3-none-any.whl",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "comment_text": "",
+        "core-metadata": false,
+        "digests": {
+          "blake2b_256": "247b9c906b1b4b1fc92f2554700a4fbb43db9ec0320fb4075f72b0efbd453d35",
+          "md5": "f8fff90f1ed489b532f66e0827e2ec88",
+          "sha256": "a605c499b8ae6cae6a1e4b31db707b2e63105e89f4aaa15ac395dede7d34e005"
+        },
+        "downloads": -1,
+        "filename": "rcaide_leads-0.4.0.tar.gz",
+        "has_sig": false,
+        "md5_digest": "f8fff90f1ed489b532f66e0827e2ec88",
+        "packagetype": "sdist",
+        "python_version": "source",
+        "requires_python": ">=3.8",
+        "size": 730686,
+        "upload_time": "2025-01-03T01:47:07",
+        "upload_time_iso_8601": "2025-01-03T01:47:07.397048Z",
+        "url": "https://files.pythonhosted.org/packages/24/7b/9c906b1b4b1fc92f2554700a4fbb43db9ec0320fb4075f72b0efbd453d35/rcaide_leads-0.4.0.tar.gz",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "0.5.0": [
+      {
+        "comment_text": "",
+        "core-metadata": {
+          "sha256": "9da8f5035b434dc5519a71556e1670b9903e4c08615da35be4048366fc2877c0"
+        },
+        "digests": {
+          "blake2b_256": "144167137ebe994cee56fc1838d1f0aaa884e176ec8d80cf3f9c977d31b6ec6f",
+          "md5": "522d517e979c75c3941366b2418aff46",
+          "sha256": "b6463b97cbc620c316f0c720dc2720cf117652e479e2fea3c349200aa22b9f6c"
+        },
+        "downloads": -1,
+        "filename": "RCAIDE_LEADS-0.5.0-py3-none-any.whl",
+        "has_sig": false,
+        "md5_digest": "522d517e979c75c3941366b2418aff46",
+        "packagetype": "bdist_wheel",
+        "python_version": "py3",
+        "requires_python": ">=3.8",
+        "size": 1295975,
+        "upload_time": "2025-01-04T02:10:59",
+        "upload_time_iso_8601": "2025-01-04T02:10:59.880053Z",
+        "url": "https://files.pythonhosted.org/packages/14/41/67137ebe994cee56fc1838d1f0aaa884e176ec8d80cf3f9c977d31b6ec6f/RCAIDE_LEADS-0.5.0-py3-none-any.whl",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "comment_text": "",
+        "core-metadata": false,
+        "digests": {
+          "blake2b_256": "96bc8af58a22e37cd3487d1b6fdd8af64abcd1e94f2b1753e1bd8d8a6e54ef85",
+          "md5": "dbc58f25b01be4b666b4137c6eb7c744",
+          "sha256": "e18c02a82173a67b6ea69d6a2565474ea17be94dc10e4cb04a902ac1a5dc310a"
+        },
+        "downloads": -1,
+        "filename": "rcaide_leads-0.5.0.tar.gz",
+        "has_sig": false,
+        "md5_digest": "dbc58f25b01be4b666b4137c6eb7c744",
+        "packagetype": "sdist",
+        "python_version": "source",
+        "requires_python": ">=3.8",
+        "size": 748592,
+        "upload_time": "2025-01-04T02:11:01",
+        "upload_time_iso_8601": "2025-01-04T02:11:01.523469Z",
+        "url": "https://files.pythonhosted.org/packages/96/bc/8af58a22e37cd3487d1b6fdd8af64abcd1e94f2b1753e1bd8d8a6e54ef85/rcaide_leads-0.5.0.tar.gz",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "1.0.0": [
+      {
+        "comment_text": "",
+        "core-metadata": {
+          "sha256": "3ff4a183d4d820d8d767c9001828d1e6cc37b589bd5c207afa8f19ea35ff3879"
+        },
+        "digests": {
+          "blake2b_256": "480e1188b96f6a23d1cd0f04c7bb90d80d1527521a34c4efb7e55b602a136ab9",
+          "md5": "b88cca31697c4e6d46713a5166bbaf0e",
+          "sha256": "d95dcca3dc85184d06c5fcec34d838e43d94ef4abfa0c1ca02f375e94c316286"
+        },
+        "downloads": -1,
+        "filename": "RCAIDE_LEADS-1.0.0-py3-none-any.whl",
+        "has_sig": false,
+        "md5_digest": "b88cca31697c4e6d46713a5166bbaf0e",
+        "packagetype": "bdist_wheel",
+        "python_version": "py3",
+        "requires_python": ">=3.8",
+        "size": 1295976,
+        "upload_time": "2025-01-04T15:44:38",
+        "upload_time_iso_8601": "2025-01-04T15:44:38.529568Z",
+        "url": "https://files.pythonhosted.org/packages/48/0e/1188b96f6a23d1cd0f04c7bb90d80d1527521a34c4efb7e55b602a136ab9/RCAIDE_LEADS-1.0.0-py3-none-any.whl",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "comment_text": "",
+        "core-metadata": false,
+        "digests": {
+          "blake2b_256": "4081b46921d8d18a763fa5cd3a8c7a772404e70f244f143e8f69b1025bc9ee19",
+          "md5": "e88450408144f2a06ee3e8c7ab32ec6c",
+          "sha256": "b93154432b2702191529f75bcfedde38c6024e9285711e926093138c11c7032e"
+        },
+        "downloads": -1,
+        "filename": "rcaide_leads-1.0.0.tar.gz",
+        "has_sig": false,
+        "md5_digest": "e88450408144f2a06ee3e8c7ab32ec6c",
+        "packagetype": "sdist",
+        "python_version": "source",
+        "requires_python": ">=3.8",
+        "size": 748598,
+        "upload_time": "2025-01-04T15:44:41",
+        "upload_time_iso_8601": "2025-01-04T15:44:41.133624Z",
+        "url": "https://files.pythonhosted.org/packages/40/81/b46921d8d18a763fa5cd3a8c7a772404e70f244f143e8f69b1025bc9ee19/rcaide_leads-1.0.0.tar.gz",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "1.0.1": [
+      {
+        "comment_text": "",
+        "core-metadata": {
+          "sha256": "cc2bf82f70482d7d649832f0cadcb4c46cfe6200bf9080af286a5e93f10175c2"
+        },
+        "digests": {
+          "blake2b_256": "3a81f384199f657b130840043f432e130823fb5992b1f7b487b7ab1f5eb13816",
+          "md5": "0941311fc9ce8b061004e6b9bfb64148",
+          "sha256": "ecb34545149b8fda7c72c3ae14438d55eb2f85c793bd749692af8ff552d52991"
+        },
+        "downloads": -1,
+        "filename": "RCAIDE_LEADS-1.0.1-py3-none-any.whl",
+        "has_sig": false,
+        "md5_digest": "0941311fc9ce8b061004e6b9bfb64148",
+        "packagetype": "bdist_wheel",
+        "python_version": "py3",
+        "requires_python": ">=3.8",
+        "size": 1296323,
+        "upload_time": "2025-01-08T13:02:37",
+        "upload_time_iso_8601": "2025-01-08T13:02:37.582481Z",
+        "url": "https://files.pythonhosted.org/packages/3a/81/f384199f657b130840043f432e130823fb5992b1f7b487b7ab1f5eb13816/RCAIDE_LEADS-1.0.1-py3-none-any.whl",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "comment_text": "",
+        "core-metadata": false,
+        "digests": {
+          "blake2b_256": "f260a3f091ceaed38f741bb21b701a56b95a4689e124402451611ea0eb330207",
+          "md5": "73929abfbbbd9890b5240c7ab18e731b",
+          "sha256": "a57e062af8f2de270a1b3d443f9b6fff09b0bfddd4fe9379bd665dd9e8a67483"
+        },
+        "downloads": -1,
+        "filename": "rcaide_leads-1.0.1.tar.gz",
+        "has_sig": false,
+        "md5_digest": "73929abfbbbd9890b5240c7ab18e731b",
+        "packagetype": "sdist",
+        "python_version": "source",
+        "requires_python": ">=3.8",
+        "size": 748877,
+        "upload_time": "2025-01-08T13:02:40",
+        "upload_time_iso_8601": "2025-01-08T13:02:40.708855Z",
+        "url": "https://files.pythonhosted.org/packages/f2/60/a3f091ceaed38f741bb21b701a56b95a4689e124402451611ea0eb330207/rcaide_leads-1.0.1.tar.gz",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "1.1.0": [
+      {
+        "comment_text": null,
+        "core-metadata": {
+          "sha256": "0b6a06fb86df16cfcf1412e3152041fc052e955adf3c33cd20426cea86be94bb"
+        },
+        "digests": {
+          "blake2b_256": "d41c69ee65a50639c6e5f0adaf1519561d603d5bdcaad86254f23d06b74e7b7c",
+          "md5": "26b73ad142dff8b22d31dbfa2cdc76bf",
+          "sha256": "901bca6ac84a6cb9f6c2c39314b5047d3151b39c3c5740135ed89430affccf98"
+        },
+        "downloads": -1,
+        "filename": "rcaide_leads-1.1.0-py3-none-any.whl",
+        "has_sig": false,
+        "md5_digest": "26b73ad142dff8b22d31dbfa2cdc76bf",
+        "packagetype": "bdist_wheel",
+        "python_version": "py3",
+        "requires_python": ">=3.8",
+        "size": 1360847,
+        "upload_time": "2025-03-04T19:47:29",
+        "upload_time_iso_8601": "2025-03-04T19:47:29.719799Z",
+        "url": "https://files.pythonhosted.org/packages/d4/1c/69ee65a50639c6e5f0adaf1519561d603d5bdcaad86254f23d06b74e7b7c/rcaide_leads-1.1.0-py3-none-any.whl",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "comment_text": null,
+        "core-metadata": false,
+        "digests": {
+          "blake2b_256": "a5b329c95df5be297bb1c10954abcdc776b4f3066fd843a7a95296063118796d",
+          "md5": "9e8e5f529aa05646cd20d2f63e100bf6",
+          "sha256": "ee828f215390776de208ddca85619ea1f9e79aa1399b5c756cf7e628aa786178"
+        },
+        "downloads": -1,
+        "filename": "rcaide_leads-1.1.0.tar.gz",
+        "has_sig": false,
+        "md5_digest": "9e8e5f529aa05646cd20d2f63e100bf6",
+        "packagetype": "sdist",
+        "python_version": "source",
+        "requires_python": ">=3.8",
+        "size": 791059,
+        "upload_time": "2025-03-04T19:47:32",
+        "upload_time_iso_8601": "2025-03-04T19:47:32.694977Z",
+        "url": "https://files.pythonhosted.org/packages/a5/b3/29c95df5be297bb1c10954abcdc776b4f3066fd843a7a95296063118796d/rcaide_leads-1.1.0.tar.gz",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "1.2.1": [
+      {
+        "comment_text": null,
+        "core-metadata": {
+          "sha256": "3ff7e750ac73820d28cd97e473a4874f9ecd120b8f5300ccc948edcbfcb0d9d0"
+        },
+        "digests": {
+          "blake2b_256": "eee2845d4d9e1d12aee298611e5d4ddf198d29ec17eaf18c6d7ce26a29711d37",
+          "md5": "f24f279560d91614ec22e88251113b9a",
+          "sha256": "382af60866a5ff055b8f84d0d7dc9baff607d0a3f763acd867040a26ab04d66c"
+        },
+        "downloads": -1,
+        "filename": "rcaide_leads-1.2.1-py3-none-any.whl",
+        "has_sig": false,
+        "md5_digest": "f24f279560d91614ec22e88251113b9a",
+        "packagetype": "bdist_wheel",
+        "python_version": "py3",
+        "requires_python": ">=3.8",
+        "size": 1537582,
+        "upload_time": "2025-04-10T18:29:45",
+        "upload_time_iso_8601": "2025-04-10T18:29:45.142107Z",
+        "url": "https://files.pythonhosted.org/packages/ee/e2/845d4d9e1d12aee298611e5d4ddf198d29ec17eaf18c6d7ce26a29711d37/rcaide_leads-1.2.1-py3-none-any.whl",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "comment_text": null,
+        "core-metadata": false,
+        "digests": {
+          "blake2b_256": "1c152f40432fcdf972c0429900b5dddb4d02e92dbb622fde03b0b12feac11770",
+          "md5": "de2b5f9c868a3b27b72240f6a8cca7e8",
+          "sha256": "4b22ed23b512a6db960f068ef8d73474a852b168075c19cbbb2389ba6d319e3b"
+        },
+        "downloads": -1,
+        "filename": "rcaide_leads-1.2.1.tar.gz",
+        "has_sig": false,
+        "md5_digest": "de2b5f9c868a3b27b72240f6a8cca7e8",
+        "packagetype": "sdist",
+        "python_version": "source",
+        "requires_python": ">=3.8",
+        "size": 903055,
+        "upload_time": "2025-04-10T18:29:46",
+        "upload_time_iso_8601": "2025-04-10T18:29:46.591599Z",
+        "url": "https://files.pythonhosted.org/packages/1c/15/2f40432fcdf972c0429900b5dddb4d02e92dbb622fde03b0b12feac11770/rcaide_leads-1.2.1.tar.gz",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "1.4.2": [
+      {
+        "comment_text": null,
+        "core-metadata": {
+          "sha256": "cdd844505ef5f28a6a3e6e1ddc5f4d8240af4662d729f9b8c5bc01650e0e9f72"
+        },
+        "digests": {
+          "blake2b_256": "d77cb2c5d2e51b01bd1b9f1d6b0b9599c55daa951b202225a0e452f257696752",
+          "md5": "9a69bd6de5b27b0edad594a02439c483",
+          "sha256": "9597ef51f06a1b29ad7ec35a873e9435fa6f37d8c46d297bd5d8850d2cc30333"
+        },
+        "downloads": -1,
+        "filename": "rcaide_leads-1.4.2-py3-none-any.whl",
+        "has_sig": false,
+        "md5_digest": "9a69bd6de5b27b0edad594a02439c483",
+        "packagetype": "bdist_wheel",
+        "python_version": "py3",
+        "requires_python": ">=3.10",
+        "size": 1738518,
+        "upload_time": "2026-07-18T18:21:28",
+        "upload_time_iso_8601": "2026-07-18T18:21:28.999737Z",
+        "url": "https://files.pythonhosted.org/packages/d7/7c/b2c5d2e51b01bd1b9f1d6b0b9599c55daa951b202225a0e452f257696752/rcaide_leads-1.4.2-py3-none-any.whl",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "comment_text": null,
+        "core-metadata": false,
+        "digests": {
+          "blake2b_256": "a3773c7d429e05c99bd03120a2d9becda61b299cc830d5c5ca4419a92117e1c9",
+          "md5": "430f4125902cd162642f108cf514bbb0",
+          "sha256": "39c4867da7cce83fe253213ec59d426cfdfab1d8ee5a136f1fbc4242bb23c1aa"
+        },
+        "downloads": -1,
+        "filename": "rcaide_leads-1.4.2.tar.gz",
+        "has_sig": false,
+        "md5_digest": "430f4125902cd162642f108cf514bbb0",
+        "packagetype": "sdist",
+        "python_version": "source",
+        "requires_python": ">=3.10",
+        "size": 1019791,
+        "upload_time": "2026-07-18T18:21:30",
+        "upload_time_iso_8601": "2026-07-18T18:21:30.637529Z",
+        "url": "https://files.pythonhosted.org/packages/a3/77/3c7d429e05c99bd03120a2d9becda61b299cc830d5c5ca4419a92117e1c9/rcaide_leads-1.4.2.tar.gz",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "1.4.3": [
+      {
+        "comment_text": null,
+        "core-metadata": {
+          "sha256": "d71582a5385b584032d73ddd6ba59a4f2809a42d5590d23d025f7dace4636e7c"
+        },
+        "digests": {
+          "blake2b_256": "8a69f127087c640658268cbd36274d9146ddcf0c930ed9a8f34985b2d259f193",
+          "md5": "c06780546e80dd931b4f1760c8759e73",
+          "sha256": "6f9d2df42d0ef27b771870555dc258d63af7fc83f9b7f5c3b7e1e1dc278cdbfc"
+        },
+        "downloads": -1,
+        "filename": "rcaide_leads-1.4.3-py3-none-any.whl",
+        "has_sig": false,
+        "md5_digest": "c06780546e80dd931b4f1760c8759e73",
+        "packagetype": "bdist_wheel",
+        "python_version": "py3",
+        "requires_python": ">=3.10",
+        "size": 1740554,
+        "upload_time": "2026-07-22T22:29:55",
+        "upload_time_iso_8601": "2026-07-22T22:29:55.376791Z",
+        "url": "https://files.pythonhosted.org/packages/8a/69/f127087c640658268cbd36274d9146ddcf0c930ed9a8f34985b2d259f193/rcaide_leads-1.4.3-py3-none-any.whl",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "comment_text": null,
+        "core-metadata": false,
+        "digests": {
+          "blake2b_256": "3079e9c51780e89c5171baf7103a479ae3958fba9702cc1a0ecdaa2198cb9c0f",
+          "md5": "c48829056d5453711a171f2fc7f21a40",
+          "sha256": "a2cd7073607ddc6834f479c8bc5ee984c5aa031c3d52d78b626c01a63a108d97"
+        },
+        "downloads": -1,
+        "filename": "rcaide_leads-1.4.3.tar.gz",
+        "has_sig": false,
+        "md5_digest": "c48829056d5453711a171f2fc7f21a40",
+        "packagetype": "sdist",
+        "python_version": "source",
+        "requires_python": ">=3.10",
+        "size": 1025957,
+        "upload_time": "2026-07-22T22:29:57",
+        "upload_time_iso_8601": "2026-07-22T22:29:57.342556Z",
+        "url": "https://files.pythonhosted.org/packages/30/79/e9c51780e89c5171baf7103a479ae3958fba9702cc1a0ecdaa2198cb9c0f/rcaide_leads-1.4.3.tar.gz",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "1.4.4": [
+      {
+        "comment_text": null,
+        "core-metadata": {
+          "sha256": "b00d00250f1f722f8120de69a84b5e82651cd777a19ce63766cd691187e74e08"
+        },
+        "digests": {
+          "blake2b_256": "6ff2f67e61de969167c74f532ec580aa5534b892ddc4a69653c30ed7c115e7f3",
+          "md5": "9602003c895c763a1b38260a1ea61058",
+          "sha256": "0029f705f7102ddc6da46f499110969f60d5f237c45beef4b0ec8a60973816e5"
+        },
+        "downloads": -1,
+        "filename": "rcaide_leads-1.4.4-py3-none-any.whl",
+        "has_sig": false,
+        "md5_digest": "9602003c895c763a1b38260a1ea61058",
+        "packagetype": "bdist_wheel",
+        "python_version": "py3",
+        "requires_python": ">=3.10",
+        "size": 1740551,
+        "upload_time": "2026-07-24T13:43:45",
+        "upload_time_iso_8601": "2026-07-24T13:43:45.359927Z",
+        "url": "https://files.pythonhosted.org/packages/6f/f2/f67e61de969167c74f532ec580aa5534b892ddc4a69653c30ed7c115e7f3/rcaide_leads-1.4.4-py3-none-any.whl",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "comment_text": null,
+        "core-metadata": false,
+        "digests": {
+          "blake2b_256": "ed99a9f3369e9bbc04ec0f42c00feb93501eb64369671eff3f58825d45ff44c6",
+          "md5": "b3d8c579ae3a14144346a7bfa6e71302",
+          "sha256": "b19ee26531db8f285930c9b05184bd44382600dd2eef6c7f98bb07f882d79211"
+        },
+        "downloads": -1,
+        "filename": "rcaide_leads-1.4.4.tar.gz",
+        "has_sig": false,
+        "md5_digest": "b3d8c579ae3a14144346a7bfa6e71302",
+        "packagetype": "sdist",
+        "python_version": "source",
+        "requires_python": ">=3.10",
+        "size": 1025965,
+        "upload_time": "2026-07-24T13:43:47",
+        "upload_time_iso_8601": "2026-07-24T13:43:47.252348Z",
+        "url": "https://files.pythonhosted.org/packages/ed/99/a9f3369e9bbc04ec0f42c00feb93501eb64369671eff3f58825d45ff44c6/rcaide_leads-1.4.4.tar.gz",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "1.5.0": [
+      {
+        "comment_text": null,
+        "core-metadata": {
+          "sha256": "c84583a44647b21fa51ccc640c758d02e833bb70aab71005458b081e418a4e46"
+        },
+        "digests": {
+          "blake2b_256": "197ecfe85da0b2c31c7591f52351315c2b91413e2ee4d03d0b69cdcef9780361",
+          "md5": "cae748ecbb30c7e911370a8fe9ec9375",
+          "sha256": "817732f16279357693635851a69fe6472df3e26396c58dba44a1a5aa9aea6ff3"
+        },
+        "downloads": -1,
+        "filename": "rcaide_leads-1.5.0-py3-none-any.whl",
+        "has_sig": false,
+        "md5_digest": "cae748ecbb30c7e911370a8fe9ec9375",
+        "packagetype": "bdist_wheel",
+        "python_version": "py3",
+        "requires_python": ">=3.10",
+        "size": 1740555,
+        "upload_time": "2026-07-25T16:47:52",
+        "upload_time_iso_8601": "2026-07-25T16:47:52.805859Z",
+        "url": "https://files.pythonhosted.org/packages/19/7e/cfe85da0b2c31c7591f52351315c2b91413e2ee4d03d0b69cdcef9780361/rcaide_leads-1.5.0-py3-none-any.whl",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "comment_text": null,
+        "core-metadata": false,
+        "digests": {
+          "blake2b_256": "6c35c5993bc06c8f26f28c64711a5a9cdbec66ec333f16425f15e5a46b3eafa4",
+          "md5": "0a545769b524c827169570359fdfd175",
+          "sha256": "c7bd0ae7079c11b6e051b4e520f420b1577c96384484356f7526d8707842b35b"
+        },
+        "downloads": -1,
+        "filename": "rcaide_leads-1.5.0.tar.gz",
+        "has_sig": false,
+        "md5_digest": "0a545769b524c827169570359fdfd175",
+        "packagetype": "sdist",
+        "python_version": "source",
+        "requires_python": ">=3.10",
+        "size": 1025859,
+        "upload_time": "2026-07-25T16:47:54",
+        "upload_time_iso_8601": "2026-07-25T16:47:54.749992Z",
+        "url": "https://files.pythonhosted.org/packages/6c/35/c5993bc06c8f26f28c64711a5a9cdbec66ec333f16425f15e5a46b3eafa4/rcaide_leads-1.5.0.tar.gz",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ]
+  },
+  "urls": [
+    {
+      "comment_text": null,
+      "core-metadata": {
+        "sha256": "c84583a44647b21fa51ccc640c758d02e833bb70aab71005458b081e418a4e46"
+      },
+      "digests": {
+        "blake2b_256": "197ecfe85da0b2c31c7591f52351315c2b91413e2ee4d03d0b69cdcef9780361",
+        "md5": "cae748ecbb30c7e911370a8fe9ec9375",
+        "sha256": "817732f16279357693635851a69fe6472df3e26396c58dba44a1a5aa9aea6ff3"
+      },
+      "downloads": -1,
+      "filename": "rcaide_leads-1.5.0-py3-none-any.whl",
+      "has_sig": false,
+      "md5_digest": "cae748ecbb30c7e911370a8fe9ec9375",
+      "packagetype": "bdist_wheel",
+      "python_version": "py3",
+      "requires_python": ">=3.10",
+      "size": 1740555,
+      "upload_time": "2026-07-25T16:47:52",
+      "upload_time_iso_8601": "2026-07-25T16:47:52.805859Z",
+      "url": "https://files.pythonhosted.org/packages/19/7e/cfe85da0b2c31c7591f52351315c2b91413e2ee4d03d0b69cdcef9780361/rcaide_leads-1.5.0-py3-none-any.whl",
+      "yanked": false,
+      "yanked_reason": null
+    },
+    {
+      "comment_text": null,
+      "core-metadata": false,
+      "digests": {
+        "blake2b_256": "6c35c5993bc06c8f26f28c64711a5a9cdbec66ec333f16425f15e5a46b3eafa4",
+        "md5": "0a545769b524c827169570359fdfd175",
+        "sha256": "c7bd0ae7079c11b6e051b4e520f420b1577c96384484356f7526d8707842b35b"
+      },
+      "downloads": -1,
+      "filename": "rcaide_leads-1.5.0.tar.gz",
+      "has_sig": false,
+      "md5_digest": "0a545769b524c827169570359fdfd175",
+      "packagetype": "sdist",
+      "python_version": "source",
+      "requires_python": ">=3.10",
+      "size": 1025859,
+      "upload_time": "2026-07-25T16:47:54",
+      "upload_time_iso_8601": "2026-07-25T16:47:54.749992Z",
+      "url": "https://files.pythonhosted.org/packages/6c/35/c5993bc06c8f26f28c64711a5a9cdbec66ec333f16425f15e5a46b3eafa4/rcaide_leads-1.5.0.tar.gz",
+      "yanked": false,
+      "yanked_reason": null
+    }
+  ],
+  "vulnerabilities": []
+}

@@ -1,0 +1,759 @@
+{
+ "tab_index": 5,
+ "tab_name": "Mission Setup",
+ "tree": {
+  "cls": "MissionWidget",
+  "visible": true,
+  "enabled": true,
+  "geom": [
+   0,
+   0,
+   1596,
+   957
+  ],
+  "children": [
+   {
+    "cls": "QSplitter",
+    "visible": true,
+    "enabled": true,
+    "geom": [
+     9,
+     9,
+     1578,
+     939
+    ],
+    "children": [
+     {
+      "cls": "QWidget",
+      "visible": true,
+      "enabled": true,
+      "geom": [
+       402,
+       0,
+       1176,
+       939
+      ],
+      "children": [
+       {
+        "cls": "QGroupBox",
+        "title": "Mission Setup",
+        "visible": true,
+        "enabled": true,
+        "geom": [
+         0,
+         0,
+         1176,
+         311
+        ],
+        "children": [
+         {
+          "cls": "QLabel",
+          "visible": false,
+          "enabled": true,
+          "geom": [
+           0,
+           0,
+           640,
+           480
+          ]
+         },
+         {
+          "cls": "QLabel",
+          "text": "Segment Name:",
+          "visible": true,
+          "enabled": true,
+          "geom": [
+           12,
+           27,
+           156,
+           22
+          ]
+         },
+         {
+          "cls": "QLineEdit",
+          "placeholder": "Enter mission name...",
+          "visible": true,
+          "enabled": true,
+          "geom": [
+           174,
+           27,
+           990,
+           22
+          ]
+         },
+         {
+          "cls": "QPushButton",
+          "text": "➕ Add Segment",
+          "visible": true,
+          "enabled": true,
+          "geom": [
+           12,
+           55,
+           573,
+           20
+          ]
+         },
+         {
+          "cls": "QPushButton",
+          "text": "💾 Save All Data",
+          "visible": true,
+          "enabled": true,
+          "geom": [
+           591,
+           55,
+           573,
+           20
+          ]
+         },
+         {
+          "cls": "QTreeWidget",
+          "header": [
+           "Mission Segments"
+          ],
+          "topLevelCount": 0,
+          "topLevel": [],
+          "visible": true,
+          "enabled": true,
+          "geom": [
+           12,
+           81,
+           1152,
+           192
+          ],
+          "children": [
+           {
+            "cls": "QWidget",
+            "name": "qt_scrollarea_viewport",
+            "visible": true,
+            "enabled": true,
+            "geom": [
+             1,
+             17,
+             1150,
+             174
+            ]
+           },
+           {
+            "cls": "QWidget",
+            "name": "qt_scrollarea_hcontainer",
+            "visible": false,
+            "enabled": true,
+            "geom": [
+             0,
+             0,
+             100,
+             14
+            ],
+            "children": [
+             {
+              "cls": "QScrollBar",
+              "visible": false,
+              "enabled": true,
+              "geom": [
+               0,
+               0,
+               100,
+               14
+              ]
+             }
+            ]
+           },
+           {
+            "cls": "QWidget",
+            "name": "qt_scrollarea_vcontainer",
+            "visible": false,
+            "enabled": true,
+            "geom": [
+             0,
+             0,
+             14,
+             30
+            ],
+            "children": [
+             {
+              "cls": "QScrollBar",
+              "visible": false,
+              "enabled": true,
+              "geom": [
+               0,
+               0,
+               14,
+               30
+              ]
+             }
+            ]
+           },
+           {
+            "cls": "QHeaderView",
+            "visible": true,
+            "enabled": true,
+            "geom": [
+             1,
+             1,
+             1150,
+             16
+            ],
+            "children": [
+             {
+              "cls": "QWidget",
+              "name": "qt_scrollarea_viewport",
+              "visible": true,
+              "enabled": true,
+              "geom": [
+               0,
+               0,
+               1150,
+               16
+              ]
+             },
+             {
+              "cls": "QWidget",
+              "name": "qt_scrollarea_hcontainer",
+              "visible": false,
+              "enabled": true,
+              "geom": [
+               0,
+               0,
+               100,
+               14
+              ],
+              "children": [
+               {
+                "cls": "QScrollBar",
+                "visible": false,
+                "enabled": true,
+                "geom": [
+                 0,
+                 0,
+                 100,
+                 14
+                ]
+               }
+              ]
+             },
+             {
+              "cls": "QWidget",
+              "name": "qt_scrollarea_vcontainer",
+              "visible": false,
+              "enabled": true,
+              "geom": [
+               0,
+               0,
+               14,
+               30
+              ],
+              "children": [
+               {
+                "cls": "QScrollBar",
+                "visible": false,
+                "enabled": true,
+                "geom": [
+                 0,
+                 0,
+                 14,
+                 30
+                ]
+               }
+              ]
+             }
+            ]
+           }
+          ]
+         },
+         {
+          "cls": "QPushButton",
+          "text": "Disable / Enable",
+          "visible": true,
+          "enabled": true,
+          "geom": [
+           12,
+           279,
+           206,
+           20
+          ]
+         },
+         {
+          "cls": "QPushButton",
+          "text": "🗑 Clear Selected",
+          "visible": true,
+          "enabled": true,
+          "geom": [
+           970,
+           282,
+           194,
+           14
+          ]
+         }
+        ]
+       },
+       {
+        "cls": "QGroupBox",
+        "title": "Segment Details",
+        "visible": true,
+        "enabled": true,
+        "geom": [
+         0,
+         319,
+         1176,
+         620
+        ],
+        "children": [
+         {
+          "cls": "QScrollArea",
+          "visible": true,
+          "enabled": true,
+          "geom": [
+           12,
+           27,
+           1152,
+           581
+          ],
+          "children": [
+           {
+            "cls": "QWidget",
+            "name": "qt_scrollarea_viewport",
+            "visible": true,
+            "enabled": true,
+            "geom": [
+             1,
+             1,
+             1150,
+             579
+            ],
+            "children": [
+             {
+              "cls": "QWidget",
+              "visible": true,
+              "enabled": true,
+              "geom": [
+               0,
+               0,
+               1150,
+               579
+              ]
+             }
+            ]
+           },
+           {
+            "cls": "QWidget",
+            "name": "qt_scrollarea_hcontainer",
+            "visible": false,
+            "enabled": true,
+            "geom": [
+             0,
+             0,
+             100,
+             14
+            ],
+            "children": [
+             {
+              "cls": "QScrollBar",
+              "visible": false,
+              "enabled": true,
+              "geom": [
+               0,
+               0,
+               100,
+               14
+              ]
+             }
+            ]
+           },
+           {
+            "cls": "QWidget",
+            "name": "qt_scrollarea_vcontainer",
+            "visible": false,
+            "enabled": true,
+            "geom": [
+             0,
+             0,
+             14,
+             30
+            ],
+            "children": [
+             {
+              "cls": "QScrollBar",
+              "visible": false,
+              "enabled": true,
+              "geom": [
+               0,
+               0,
+               14,
+               30
+              ]
+             }
+            ]
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "cls": "QWidget",
+      "visible": true,
+      "enabled": true,
+      "geom": [
+       0,
+       0,
+       392,
+       939
+      ],
+      "children": [
+       {
+        "cls": "QGroupBox",
+        "title": "Mission Overview",
+        "visible": true,
+        "enabled": true,
+        "geom": [
+         0,
+         0,
+         392,
+         939
+        ],
+        "children": [
+         {
+          "cls": "MissionProfileWidget",
+          "visible": true,
+          "enabled": true,
+          "geom": [
+           12,
+           27,
+           368,
+           280
+          ]
+         },
+         {
+          "cls": "MissionSummaryTable",
+          "dims": [
+           1,
+           6
+          ],
+          "visible": true,
+          "enabled": true,
+          "geom": [
+           12,
+           313,
+           368,
+           614
+          ],
+          "children": [
+           {
+            "cls": "QWidget",
+            "name": "qt_scrollarea_viewport",
+            "visible": true,
+            "enabled": true,
+            "geom": [
+             1,
+             23,
+             366,
+             576
+            ]
+           },
+           {
+            "cls": "QWidget",
+            "name": "qt_scrollarea_vcontainer",
+            "visible": false,
+            "enabled": true,
+            "geom": [
+             0,
+             0,
+             14,
+             30
+            ],
+            "children": [
+             {
+              "cls": "QScrollBar",
+              "visible": false,
+              "enabled": true,
+              "geom": [
+               0,
+               0,
+               14,
+               30
+              ]
+             }
+            ]
+           },
+           {
+            "cls": "QHeaderView",
+            "visible": false,
+            "enabled": true,
+            "geom": [
+             1,
+             23,
+             0,
+             576
+            ],
+            "children": [
+             {
+              "cls": "QWidget",
+              "name": "qt_scrollarea_viewport",
+              "visible": false,
+              "enabled": true,
+              "geom": [
+               0,
+               0,
+               0,
+               576
+              ]
+             },
+             {
+              "cls": "QWidget",
+              "name": "qt_scrollarea_hcontainer",
+              "visible": false,
+              "enabled": true,
+              "geom": [
+               0,
+               0,
+               100,
+               14
+              ],
+              "children": [
+               {
+                "cls": "QScrollBar",
+                "visible": false,
+                "enabled": true,
+                "geom": [
+                 0,
+                 0,
+                 100,
+                 14
+                ]
+               }
+              ]
+             },
+             {
+              "cls": "QWidget",
+              "name": "qt_scrollarea_vcontainer",
+              "visible": false,
+              "enabled": true,
+              "geom": [
+               0,
+               0,
+               14,
+               30
+              ],
+              "children": [
+               {
+                "cls": "QScrollBar",
+                "visible": false,
+                "enabled": true,
+                "geom": [
+                 0,
+                 0,
+                 14,
+                 30
+                ]
+               }
+              ]
+             }
+            ]
+           },
+           {
+            "cls": "QHeaderView",
+            "visible": true,
+            "enabled": true,
+            "geom": [
+             1,
+             1,
+             366,
+             22
+            ],
+            "children": [
+             {
+              "cls": "QWidget",
+              "name": "qt_scrollarea_viewport",
+              "visible": true,
+              "enabled": true,
+              "geom": [
+               0,
+               0,
+               366,
+               22
+              ]
+             },
+             {
+              "cls": "QWidget",
+              "name": "qt_scrollarea_hcontainer",
+              "visible": false,
+              "enabled": true,
+              "geom": [
+               0,
+               0,
+               100,
+               14
+              ],
+              "children": [
+               {
+                "cls": "QScrollBar",
+                "visible": false,
+                "enabled": true,
+                "geom": [
+                 0,
+                 0,
+                 100,
+                 14
+                ]
+               }
+              ]
+             },
+             {
+              "cls": "QWidget",
+              "name": "qt_scrollarea_vcontainer",
+              "visible": false,
+              "enabled": true,
+              "geom": [
+               0,
+               0,
+               14,
+               30
+              ],
+              "children": [
+               {
+                "cls": "QScrollBar",
+                "visible": false,
+                "enabled": true,
+                "geom": [
+                 0,
+                 0,
+                 14,
+                 30
+                ]
+               }
+              ]
+             }
+            ]
+           },
+           {
+            "cls": "QAbstractButton",
+            "name": "qt_tableview_cornerbutton",
+            "visible": false,
+            "enabled": true,
+            "geom": [
+             1,
+             1,
+             0,
+             16
+            ]
+           },
+           {
+            "cls": "QWidget",
+            "name": "qt_scrollarea_hcontainer",
+            "visible": true,
+            "enabled": true,
+            "geom": [
+             1,
+             599,
+             366,
+             14
+            ],
+            "children": [
+             {
+              "cls": "QScrollBar",
+              "visible": true,
+              "enabled": true,
+              "geom": [
+               0,
+               0,
+               366,
+               14
+              ]
+             }
+            ]
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "cls": "QSplitterHandle",
+      "name": "qt_splithandle_",
+      "visible": false,
+      "enabled": true,
+      "geom": [
+       0,
+       0,
+       100,
+       30
+      ]
+     },
+     {
+      "cls": "QSplitterHandle",
+      "name": "qt_splithandle_",
+      "visible": true,
+      "enabled": true,
+      "geom": [
+       392,
+       0,
+       10,
+       939
+      ]
+     }
+    ]
+   }
+  ]
+ },
+ "summary": {
+  "type_counts": {
+   "MissionWidget": 1,
+   "QSplitter": 1,
+   "QWidget": 21,
+   "QGroupBox": 3,
+   "QLabel": 2,
+   "QLineEdit": 1,
+   "QPushButton": 4,
+   "QTreeWidget": 1,
+   "QScrollBar": 12,
+   "QHeaderView": 3,
+   "QScrollArea": 1,
+   "MissionProfileWidget": 1,
+   "MissionSummaryTable": 1,
+   "QAbstractButton": 1,
+   "QSplitterHandle": 2
+  },
+  "interactive": [
+   {
+    "cls": "QGroupBox",
+    "title": "Mission Setup"
+   },
+   {
+    "cls": "QLineEdit",
+    "placeholder": "Enter mission name..."
+   },
+   {
+    "cls": "QPushButton",
+    "text": "➕ Add Segment"
+   },
+   {
+    "cls": "QPushButton",
+    "text": "💾 Save All Data"
+   },
+   {
+    "cls": "QTreeWidget",
+    "header": [
+     "Mission Segments"
+    ]
+   },
+   {
+    "cls": "QPushButton",
+    "text": "Disable / Enable"
+   },
+   {
+    "cls": "QPushButton",
+    "text": "🗑 Clear Selected"
+   },
+   {
+    "cls": "QGroupBox",
+    "title": "Segment Details"
+   },
+   {
+    "cls": "QGroupBox",
+    "title": "Mission Overview"
+   }
+  ]
+ }
+}

@@ -1,0 +1,2628 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-10-21T10:50:00+08:00",
+  "generated_by": "tutorial-scout (RCAIDE 资料工程)",
+  "source": {
+    "repository": "https://github.com/leadsgroup/RCAIDE_LEADS",
+    "branch": "master",
+    "commit_sha": "5d80bd5006828c967cc8d3425e29a9b3a3385608",
+    "commit_date": "2026-07-25T16:47:07Z",
+    "fetched_on": "2026-10-21",
+    "fetch_method": "git clone --filter=blob:none --sparse --depth 1 + git sparse-checkout set Tutorials Digital_Hangar",
+    "documentation_site": "https://www.docs.rcaide.leadsresearchgroup.com/",
+    "license": "AGPL-3.0 (GNU Affero General Public License v3.0)",
+    "license_file": "_repository/LICENSE"
+  },
+  "environment": {
+    "python": "3.11.17 (D:\\RCAIDE\\envs\\RCAIDE\\python.exe)",
+    "rcaide": "1.5.0",
+    "available": [
+      "numpy",
+      "scipy",
+      "matplotlib",
+      "pandas",
+      "h5py",
+      "vtk"
+    ],
+    "missing_optional_solvers": [
+      "pyoptsparse",
+      "openvsp",
+      "avl",
+      "SU2",
+      "cantera"
+    ],
+    "missing_for_notebooks": [
+      "jupyter",
+      "IPython",
+      "nbformat"
+    ]
+  },
+  "stats": {
+    "tutorial_dirs": 14,
+    "total_files": 65,
+    "total_bytes": 26743676,
+    "python_scripts": 17,
+    "notebooks": 13,
+    "tutorials_requiring_external_solver": 0,
+    "total_doc_pages": 19,
+    "mapped_with_local_file": 18,
+    "digital_hangar_models": 31
+  },
+  "tutorials": [
+    {
+      "dir": "Airfoils_and_Polars",
+      "group": "数据",
+      "theme": "翼型坐标与极曲线数据",
+      "description": "20 个翼型坐标文件 + Polars 子目录下 20 个极曲线文件，供其他教程按相对路径 ../Airfoils_and_Polars 引用。",
+      "file_count": 32,
+      "bytes": 177042,
+      "files": [
+        {
+          "path": "Clark_y.txt",
+          "bytes": 2601
+        },
+        {
+          "path": "NACA65_203.txt",
+          "bytes": 1123
+        },
+        {
+          "path": "NACA_23012.txt",
+          "bytes": 1340
+        },
+        {
+          "path": "NACA_4412 2.txt",
+          "bytes": 789
+        },
+        {
+          "path": "NACA_4412.txt",
+          "bytes": 789
+        },
+        {
+          "path": "NACA_4415.txt",
+          "bytes": 2091
+        },
+        {
+          "path": "NACA_63_412.txt",
+          "bytes": 1135
+        },
+        {
+          "path": "NACA_6410.txt",
+          "bytes": 1719
+        },
+        {
+          "path": "Polars/NACA_23012_polar_Re_100000.txt",
+          "bytes": 7374
+        },
+        {
+          "path": "Polars/NACA_23012_polar_Re_1000000.txt",
+          "bytes": 9649
+        },
+        {
+          "path": "Polars/NACA_23012_polar_Re_200000.txt",
+          "bytes": 7569
+        },
+        {
+          "path": "Polars/NACA_23012_polar_Re_50000.txt",
+          "bytes": 6399
+        },
+        {
+          "path": "Polars/NACA_23012_polar_Re_500000.txt",
+          "bytes": 8609
+        },
+        {
+          "path": "Polars/NACA_4412_polar_Re_100000.txt",
+          "bytes": 7374
+        },
+        {
+          "path": "Polars/NACA_4412_polar_Re_1000000.txt",
+          "bytes": 9259
+        },
+        {
+          "path": "Polars/NACA_4412_polar_Re_200000.txt",
+          "bytes": 7114
+        },
+        {
+          "path": "Polars/NACA_4412_polar_Re_3500000.txt",
+          "bytes": 13078
+        },
+        {
+          "path": "Polars/NACA_4412_polar_Re_50000.txt",
+          "bytes": 6529
+        },
+        {
+          "path": "Polars/NACA_4412_polar_Re_500000.txt",
+          "bytes": 8154
+        },
+        {
+          "path": "Polars/NACA_4412_polar_Re_5000000.txt",
+          "bytes": 12082
+        },
+        {
+          "path": "Polars/NACA_4412_polar_Re_7500000.txt",
+          "bytes": 13493
+        },
+        {
+          "path": "Polars/NACA_63_412_polar_Re_100000.txt",
+          "bytes": 7049
+        },
+        {
+          "path": "Polars/NACA_63_412_polar_Re_1000000.txt",
+          "bytes": 9454
+        },
+        {
+          "path": "Polars/NACA_63_412_polar_Re_200000.txt",
+          "bytes": 7634
+        },
+        {
+          "path": "Polars/NACA_63_412_polar_Re_50000.txt",
+          "bytes": 6724
+        },
+        {
+          "path": "Polars/NACA_63_412_polar_Re_500000.txt",
+          "bytes": 8804
+        },
+        {
+          "path": "s1014.txt",
+          "bytes": 1408
+        },
+        {
+          "path": "supersonic_tail.txt",
+          "bytes": 3251
+        },
+        {
+          "path": "transonic_wing_inboard_section_airfoil.txt",
+          "bytes": 1112
+        },
+        {
+          "path": "transonic_wing_outboard_section_airfoil.txt",
+          "bytes": 1112
+        },
+        {
+          "path": "transonic_wing_root_section_airfoil.txt",
+          "bytes": 1112
+        },
+        {
+          "path": "transonic_wing_tip_section_airfoil.txt",
+          "bytes": 1112
+        }
+      ],
+      "python_scripts": [],
+      "notebooks": [],
+      "main_file": null,
+      "third_party_imports": [],
+      "rcaide_modules": [],
+      "external_solver_markers": [],
+      "external_solver_required": false,
+      "runnable": "不适用",
+      "run_note": "纯数据目录，无脚本。",
+      "doc_pages": []
+    },
+    {
+      "dir": "Analysis_Aerodynamic_Polars",
+      "group": "分析脚本",
+      "theme": "整机气动极曲线分析",
+      "description": "用涡格法/气动代理模型计算整机升阻极曲线。",
+      "file_count": 1,
+      "bytes": 48747,
+      "files": [
+        {
+          "path": "aircraft_aerodynamics_analysis.py",
+          "bytes": 48747
+        }
+      ],
+      "python_scripts": [
+        "aircraft_aerodynamics_analysis.py"
+      ],
+      "notebooks": [],
+      "main_file": "aircraft_aerodynamics_analysis.py",
+      "third_party_imports": [
+        "RCAIDE",
+        "copy",
+        "matplotlib",
+        "numpy as np",
+        "os",
+        "sys"
+      ],
+      "rcaide_modules": [
+        "RCAIDE",
+        "RCAIDE.Framework.Analyses.Aerodynamics.Vortex_Lattice_Method",
+        "RCAIDE.Framework.Analyses.Analysis.Container",
+        "RCAIDE.Framework.Analyses.Geometry.Geometry",
+        "RCAIDE.Framework.Analyses.Vehicle",
+        "RCAIDE.Framework.Core",
+        "RCAIDE.Framework.Networks.Fuel",
+        "RCAIDE.Library.Attributes.Gases.Air",
+        "RCAIDE.Library.Attributes.Propellants.Jet_A",
+        "RCAIDE.Library.Attributes.Propellants.Jet_A1",
+        "RCAIDE.Library.Components.Airfoils.Airfoil",
+        "RCAIDE.Library.Components.Airfoils.NACA_4_Series_Airfoil",
+        "RCAIDE.Library.Components.Cargo_Bays.Cargo_Bay",
+        "RCAIDE.Library.Components.Configs.Config",
+        "RCAIDE.Library.Components.Configs.Config.Container",
+        "RCAIDE.Library.Components.Fuselages.Cabins.Cabin",
+        "RCAIDE.Library.Components.Fuselages.Cabins.Classes.Business",
+        "RCAIDE.Library.Components.Fuselages.Cabins.Classes.Economy",
+        "RCAIDE.Library.Components.Fuselages.Cabins.Classes.First",
+        "RCAIDE.Library.Components.Fuselages.Fuselage",
+        "RCAIDE.Library.Components.Fuselages.Segments.Circle_Segment",
+        "RCAIDE.Library.Components.Fuselages.Segments.Segment",
+        "RCAIDE.Library.Components.Landing_Gear.Main_Landing_Gear",
+        "RCAIDE.Library.Components.Landing_Gear.Nose_Landing_Gear",
+        "RCAIDE.Library.Components.Nacelles.Body_of_Revolution_Nacelle",
+        "RCAIDE.Library.Components.Powertrain.Converters.Combustor",
+        "RCAIDE.Library.Components.Powertrain.Converters.Compression_Nozzle",
+        "RCAIDE.Library.Components.Powertrain.Converters.Compressor",
+        "RCAIDE.Library.Components.Powertrain.Converters.Expansion_Nozzle",
+        "RCAIDE.Library.Components.Powertrain.Converters.Fan",
+        "RCAIDE.Library.Components.Powertrain.Converters.Ram",
+        "RCAIDE.Library.Components.Powertrain.Converters.Turbine",
+        "RCAIDE.Library.Components.Powertrain.Distributors.Fuel_Line",
+        "RCAIDE.Library.Components.Powertrain.Propulsors.Turbofan",
+        "RCAIDE.Library.Components.Powertrain.Sources.Fuel_Tanks.Integral_Tank",
+        "RCAIDE.Library.Components.Wings.Control_Surfaces.Aileron",
+        "RCAIDE.Library.Components.Wings.Control_Surfaces.Elevator",
+        "RCAIDE.Library.Components.Wings.Control_Surfaces.Flap",
+        "RCAIDE.Library.Components.Wings.Control_Surfaces.Rudder",
+        "RCAIDE.Library.Components.Wings.Control_Surfaces.Slat",
+        "RCAIDE.Library.Components.Wings.Control_Surfaces.Spoiler",
+        "RCAIDE.Library.Components.Wings.Horizontal_Tail",
+        "RCAIDE.Library.Components.Wings.Main_Wing",
+        "RCAIDE.Library.Components.Wings.Segments.Segment",
+        "RCAIDE.Library.Components.Wings.Vertical_Tail",
+        "RCAIDE.Library.Methods.Performance",
+        "RCAIDE.Library.Methods.Powertrain.Propulsors.Turbofan",
+        "RCAIDE.Library.Plots",
+        "RCAIDE.Vehicle"
+      ],
+      "external_solver_markers": [],
+      "external_solver_required": false,
+      "runnable": "是",
+      "run_note": "",
+      "doc_pages": []
+    },
+    {
+      "dir": "Analysis_Approach_Sideline_Takeoff_Noise",
+      "group": "分析脚本",
+      "theme": "进场/边线/起飞噪声适航审定",
+      "description": "计算噪声审定指标（approach / sideline / takeoff）。",
+      "file_count": 1,
+      "bytes": 51258,
+      "files": [
+        {
+          "path": "approach_landing_takeoff_noise_certification.py",
+          "bytes": 51258
+        }
+      ],
+      "python_scripts": [
+        "approach_landing_takeoff_noise_certification.py"
+      ],
+      "notebooks": [],
+      "main_file": "approach_landing_takeoff_noise_certification.py",
+      "third_party_imports": [
+        "RCAIDE",
+        "copy",
+        "matplotlib",
+        "numpy as np",
+        "os",
+        "sys"
+      ],
+      "rcaide_modules": [
+        "RCAIDE",
+        "RCAIDE.Framework.Analyses.Aeroacoustics.Semi_Empirical",
+        "RCAIDE.Framework.Analyses.Aerodynamics.Vortex_Lattice_Method",
+        "RCAIDE.Framework.Analyses.Analysis.Container",
+        "RCAIDE.Framework.Analyses.Atmospheric.US_Standard_1976",
+        "RCAIDE.Framework.Analyses.Energy.Energy",
+        "RCAIDE.Framework.Analyses.Geometry.Geometry",
+        "RCAIDE.Framework.Analyses.Planets.Earth",
+        "RCAIDE.Framework.Analyses.Vehicle",
+        "RCAIDE.Framework.Analyses.Weights.Conventional_Transport",
+        "RCAIDE.Framework.Core",
+        "RCAIDE.Framework.Mission.Segments",
+        "RCAIDE.Framework.Mission.Sequential_Segments",
+        "RCAIDE.Framework.Networks.Fuel",
+        "RCAIDE.Library.Attributes.Gases.Air",
+        "RCAIDE.Library.Attributes.Propellants.Jet_A",
+        "RCAIDE.Library.Components.Airfoils.Airfoil",
+        "RCAIDE.Library.Components.Airfoils.NACA_4_Series_Airfoil",
+        "RCAIDE.Library.Components.Cargo_Bays.Cargo_Bay",
+        "RCAIDE.Library.Components.Configs.Config",
+        "RCAIDE.Library.Components.Configs.Config.Container",
+        "RCAIDE.Library.Components.Fuselages.Cabins.Cabin",
+        "RCAIDE.Library.Components.Fuselages.Cabins.Classes.Economy",
+        "RCAIDE.Library.Components.Fuselages.Fuselage",
+        "RCAIDE.Library.Components.Fuselages.Segments.Segment",
+        "RCAIDE.Library.Components.Landing_Gear.Main_Landing_Gear",
+        "RCAIDE.Library.Components.Landing_Gear.Nose_Landing_Gear",
+        "RCAIDE.Library.Components.Nacelles.Body_of_Revolution_Nacelle",
+        "RCAIDE.Library.Components.Powertrain.Converters.Combustor",
+        "RCAIDE.Library.Components.Powertrain.Converters.Compression_Nozzle",
+        "RCAIDE.Library.Components.Powertrain.Converters.Compressor",
+        "RCAIDE.Library.Components.Powertrain.Converters.Expansion_Nozzle",
+        "RCAIDE.Library.Components.Powertrain.Converters.Fan",
+        "RCAIDE.Library.Components.Powertrain.Converters.Ram",
+        "RCAIDE.Library.Components.Powertrain.Converters.Turbine",
+        "RCAIDE.Library.Components.Powertrain.Distributors.Fuel_Line",
+        "RCAIDE.Library.Components.Powertrain.Propulsors.Turbofan",
+        "RCAIDE.Library.Components.Powertrain.Sources.Fuel_Tanks.Integral_Tank",
+        "RCAIDE.Library.Components.Powertrain.Sources.Fuel_Tanks.Non_Integral_Tank",
+        "RCAIDE.Library.Components.Wings.Control_Surfaces.Aileron",
+        "RCAIDE.Library.Components.Wings.Control_Surfaces.Flap",
+        "RCAIDE.Library.Components.Wings.Control_Surfaces.Slat",
+        "RCAIDE.Library.Components.Wings.Control_Surfaces.Spoiler",
+        "RCAIDE.Library.Components.Wings.Horizontal_Tail",
+        "RCAIDE.Library.Components.Wings.Main_Wing",
+        "RCAIDE.Library.Components.Wings.Segments.Segment",
+        "RCAIDE.Library.Components.Wings.Vertical_Tail",
+        "RCAIDE.Library.Methods.Performance.compute_noise_certification_metrics",
+        "RCAIDE.Library.Methods.Powertrain.Propulsors.Turbofan",
+        "RCAIDE.Library.Plots",
+        "RCAIDE.Vehicle"
+      ],
+      "external_solver_markers": [],
+      "external_solver_required": false,
+      "runnable": "是",
+      "run_note": "",
+      "doc_pages": []
+    },
+    {
+      "dir": "Analysis_Landing_Field_Length",
+      "group": "分析脚本",
+      "theme": "着陆场长估算",
+      "description": "估算着陆场长。",
+      "file_count": 1,
+      "bytes": 40903,
+      "files": [
+        {
+          "path": "landing_field_length.py",
+          "bytes": 40903
+        }
+      ],
+      "python_scripts": [
+        "landing_field_length.py"
+      ],
+      "notebooks": [],
+      "main_file": "landing_field_length.py",
+      "third_party_imports": [
+        "RCAIDE",
+        "copy",
+        "matplotlib",
+        "numpy as np",
+        "os",
+        "sys"
+      ],
+      "rcaide_modules": [
+        "RCAIDE",
+        "RCAIDE.Framework.Analyses.Aerodynamics.Vortex_Lattice_Method",
+        "RCAIDE.Framework.Analyses.Analysis.Container",
+        "RCAIDE.Framework.Analyses.Atmospheric.US_Standard_1976",
+        "RCAIDE.Framework.Analyses.Energy.Energy",
+        "RCAIDE.Framework.Analyses.Geometry.Geometry",
+        "RCAIDE.Framework.Analyses.Planets.Earth",
+        "RCAIDE.Framework.Analyses.Vehicle",
+        "RCAIDE.Framework.Analyses.Weights.Conventional_Transport",
+        "RCAIDE.Framework.Core",
+        "RCAIDE.Framework.Networks.Fuel",
+        "RCAIDE.Library.Attributes.Gases.Air",
+        "RCAIDE.Library.Attributes.Propellants.Jet_A",
+        "RCAIDE.Library.Components.Airfoils.Airfoil",
+        "RCAIDE.Library.Components.Airfoils.NACA_4_Series_Airfoil",
+        "RCAIDE.Library.Components.Cargo_Bays.Cargo_Bay",
+        "RCAIDE.Library.Components.Configs.Config",
+        "RCAIDE.Library.Components.Configs.Config.Container",
+        "RCAIDE.Library.Components.Fuselages.Cabins.Cabin",
+        "RCAIDE.Library.Components.Fuselages.Cabins.Classes.Economy",
+        "RCAIDE.Library.Components.Fuselages.Fuselage",
+        "RCAIDE.Library.Components.Fuselages.Segments.Segment",
+        "RCAIDE.Library.Components.Landing_Gear.Main_Landing_Gear",
+        "RCAIDE.Library.Components.Landing_Gear.Nose_Landing_Gear",
+        "RCAIDE.Library.Components.Nacelles.Body_of_Revolution_Nacelle",
+        "RCAIDE.Library.Components.Powertrain.Converters.Combustor",
+        "RCAIDE.Library.Components.Powertrain.Converters.Compression_Nozzle",
+        "RCAIDE.Library.Components.Powertrain.Converters.Compressor",
+        "RCAIDE.Library.Components.Powertrain.Converters.Expansion_Nozzle",
+        "RCAIDE.Library.Components.Powertrain.Converters.Fan",
+        "RCAIDE.Library.Components.Powertrain.Converters.Ram",
+        "RCAIDE.Library.Components.Powertrain.Converters.Turbine",
+        "RCAIDE.Library.Components.Powertrain.Distributors.Fuel_Line",
+        "RCAIDE.Library.Components.Powertrain.Propulsors.Turbofan",
+        "RCAIDE.Library.Components.Powertrain.Sources.Fuel_Tanks.Integral_Tank",
+        "RCAIDE.Library.Components.Powertrain.Sources.Fuel_Tanks.Non_Integral_Tank",
+        "RCAIDE.Library.Components.Wings.Control_Surfaces.Aileron",
+        "RCAIDE.Library.Components.Wings.Control_Surfaces.Flap",
+        "RCAIDE.Library.Components.Wings.Control_Surfaces.Slat",
+        "RCAIDE.Library.Components.Wings.Control_Surfaces.Spoiler",
+        "RCAIDE.Library.Components.Wings.Horizontal_Tail",
+        "RCAIDE.Library.Components.Wings.Main_Wing",
+        "RCAIDE.Library.Components.Wings.Segments.Segment",
+        "RCAIDE.Library.Components.Wings.Vertical_Tail",
+        "RCAIDE.Library.Methods.Performance.estimate_landing_field_length",
+        "RCAIDE.Library.Methods.Powertrain.Propulsors.Turbofan",
+        "RCAIDE.Vehicle"
+      ],
+      "external_solver_markers": [],
+      "external_solver_required": false,
+      "runnable": "是",
+      "run_note": "",
+      "doc_pages": []
+    },
+    {
+      "dir": "Analysis_Loading_and_Trim_Diagram",
+      "group": "分析脚本",
+      "theme": "载重与配平图",
+      "description": "生成飞机载重—配平图。",
+      "file_count": 1,
+      "bytes": 42504,
+      "files": [
+        {
+          "path": "aircraft_loading_and_trim_diagram.py",
+          "bytes": 42504
+        }
+      ],
+      "python_scripts": [
+        "aircraft_loading_and_trim_diagram.py"
+      ],
+      "notebooks": [],
+      "main_file": "aircraft_loading_and_trim_diagram.py",
+      "third_party_imports": [
+        "RCAIDE",
+        "copy",
+        "matplotlib",
+        "numpy as np",
+        "os",
+        "sys"
+      ],
+      "rcaide_modules": [
+        "RCAIDE",
+        "RCAIDE.Framework.Analyses.Aerodynamics.Vortex_Lattice_Method",
+        "RCAIDE.Framework.Analyses.Analysis.Container",
+        "RCAIDE.Framework.Analyses.Atmospheric.US_Standard_1976",
+        "RCAIDE.Framework.Analyses.Energy.Energy",
+        "RCAIDE.Framework.Analyses.Geometry.Geometry",
+        "RCAIDE.Framework.Analyses.Planets.Earth",
+        "RCAIDE.Framework.Analyses.Stability.Vortex_Lattice_Method",
+        "RCAIDE.Framework.Analyses.Vehicle",
+        "RCAIDE.Framework.Analyses.Weights.Conventional_Transport",
+        "RCAIDE.Framework.Core",
+        "RCAIDE.Framework.Mission.Segments",
+        "RCAIDE.Framework.Mission.Sequential_Segments",
+        "RCAIDE.Framework.Networks.Fuel",
+        "RCAIDE.Library.Attributes.Gases.Air",
+        "RCAIDE.Library.Attributes.Propellants.Jet_A",
+        "RCAIDE.Library.Components.Airfoils.Airfoil",
+        "RCAIDE.Library.Components.Airfoils.NACA_4_Series_Airfoil",
+        "RCAIDE.Library.Components.Cargo_Bays.Cargo_Bay",
+        "RCAIDE.Library.Components.Configs.Config",
+        "RCAIDE.Library.Components.Configs.Config.Container",
+        "RCAIDE.Library.Components.Fuselages.Cabins.Cabin",
+        "RCAIDE.Library.Components.Fuselages.Cabins.Classes.Economy",
+        "RCAIDE.Library.Components.Fuselages.Fuselage",
+        "RCAIDE.Library.Components.Fuselages.Segments.Segment",
+        "RCAIDE.Library.Components.Landing_Gear.Main_Landing_Gear",
+        "RCAIDE.Library.Components.Landing_Gear.Nose_Landing_Gear",
+        "RCAIDE.Library.Components.Nacelles.Body_of_Revolution_Nacelle",
+        "RCAIDE.Library.Components.Powertrain.Converters.Combustor",
+        "RCAIDE.Library.Components.Powertrain.Converters.Compression_Nozzle",
+        "RCAIDE.Library.Components.Powertrain.Converters.Compressor",
+        "RCAIDE.Library.Components.Powertrain.Converters.Expansion_Nozzle",
+        "RCAIDE.Library.Components.Powertrain.Converters.Fan",
+        "RCAIDE.Library.Components.Powertrain.Converters.Ram",
+        "RCAIDE.Library.Components.Powertrain.Converters.Turbine",
+        "RCAIDE.Library.Components.Powertrain.Distributors.Fuel_Line",
+        "RCAIDE.Library.Components.Powertrain.Propulsors.Turbofan",
+        "RCAIDE.Library.Components.Powertrain.Sources.Fuel_Tanks.Integral_Tank",
+        "RCAIDE.Library.Components.Powertrain.Sources.Fuel_Tanks.Non_Integral_Tank",
+        "RCAIDE.Library.Components.Wings.Control_Surfaces.Aileron",
+        "RCAIDE.Library.Components.Wings.Control_Surfaces.Flap",
+        "RCAIDE.Library.Components.Wings.Control_Surfaces.Slat",
+        "RCAIDE.Library.Components.Wings.Control_Surfaces.Spoiler",
+        "RCAIDE.Library.Components.Wings.Horizontal_Tail",
+        "RCAIDE.Library.Components.Wings.Main_Wing",
+        "RCAIDE.Library.Components.Wings.Segments.Segment",
+        "RCAIDE.Library.Components.Wings.Vertical_Tail",
+        "RCAIDE.Library.Methods.Performance.compute_load_and_trim_diagram",
+        "RCAIDE.Library.Methods.Powertrain.Propulsors.Turbofan",
+        "RCAIDE.Library.Plots",
+        "RCAIDE.Vehicle"
+      ],
+      "external_solver_markers": [],
+      "external_solver_required": false,
+      "runnable": "是",
+      "run_note": "",
+      "doc_pages": []
+    },
+    {
+      "dir": "Analysis_Payload_Range",
+      "group": "分析脚本",
+      "theme": "载荷航程图",
+      "description": "生成载荷—航程图。",
+      "file_count": 1,
+      "bytes": 42663,
+      "files": [
+        {
+          "path": "aircraft_payload_range_diagram.py",
+          "bytes": 42663
+        }
+      ],
+      "python_scripts": [
+        "aircraft_payload_range_diagram.py"
+      ],
+      "notebooks": [],
+      "main_file": "aircraft_payload_range_diagram.py",
+      "third_party_imports": [
+        "RCAIDE",
+        "copy",
+        "matplotlib",
+        "numpy as np",
+        "os",
+        "sys"
+      ],
+      "rcaide_modules": [
+        "RCAIDE",
+        "RCAIDE.Framework.Analyses.Aerodynamics.Vortex_Lattice_Method",
+        "RCAIDE.Framework.Analyses.Analysis.Container",
+        "RCAIDE.Framework.Analyses.Atmospheric.US_Standard_1976",
+        "RCAIDE.Framework.Analyses.Energy.Energy",
+        "RCAIDE.Framework.Analyses.Geometry.Geometry",
+        "RCAIDE.Framework.Analyses.Planets.Earth",
+        "RCAIDE.Framework.Analyses.Vehicle",
+        "RCAIDE.Framework.Analyses.Weights.Conventional_Transport",
+        "RCAIDE.Framework.Core",
+        "RCAIDE.Framework.Mission.Missions",
+        "RCAIDE.Framework.Mission.Segments",
+        "RCAIDE.Framework.Mission.Sequential_Segments",
+        "RCAIDE.Framework.Networks.Fuel",
+        "RCAIDE.Library.Attributes.Gases.Air",
+        "RCAIDE.Library.Attributes.Propellants.Jet_A",
+        "RCAIDE.Library.Components.Airfoils.Airfoil",
+        "RCAIDE.Library.Components.Airfoils.NACA_4_Series_Airfoil",
+        "RCAIDE.Library.Components.Cargo_Bays.Cargo_Bay",
+        "RCAIDE.Library.Components.Configs.Config",
+        "RCAIDE.Library.Components.Configs.Config.Container",
+        "RCAIDE.Library.Components.Fuselages.Cabins.Cabin",
+        "RCAIDE.Library.Components.Fuselages.Cabins.Classes.Economy",
+        "RCAIDE.Library.Components.Fuselages.Fuselage",
+        "RCAIDE.Library.Components.Fuselages.Segments.Segment",
+        "RCAIDE.Library.Components.Landing_Gear.Main_Landing_Gear",
+        "RCAIDE.Library.Components.Landing_Gear.Nose_Landing_Gear",
+        "RCAIDE.Library.Components.Nacelles.Body_of_Revolution_Nacelle",
+        "RCAIDE.Library.Components.Powertrain.Converters.Combustor",
+        "RCAIDE.Library.Components.Powertrain.Converters.Compression_Nozzle",
+        "RCAIDE.Library.Components.Powertrain.Converters.Compressor",
+        "RCAIDE.Library.Components.Powertrain.Converters.Expansion_Nozzle",
+        "RCAIDE.Library.Components.Powertrain.Converters.Fan",
+        "RCAIDE.Library.Components.Powertrain.Converters.Ram",
+        "RCAIDE.Library.Components.Powertrain.Converters.Turbine",
+        "RCAIDE.Library.Components.Powertrain.Distributors.Fuel_Line",
+        "RCAIDE.Library.Components.Powertrain.Propulsors.Turbofan",
+        "RCAIDE.Library.Components.Powertrain.Sources.Fuel_Tanks.Integral_Tank",
+        "RCAIDE.Library.Components.Powertrain.Sources.Fuel_Tanks.Non_Integral_Tank",
+        "RCAIDE.Library.Components.Wings.Control_Surfaces.Aileron",
+        "RCAIDE.Library.Components.Wings.Control_Surfaces.Flap",
+        "RCAIDE.Library.Components.Wings.Control_Surfaces.Slat",
+        "RCAIDE.Library.Components.Wings.Control_Surfaces.Spoiler",
+        "RCAIDE.Library.Components.Wings.Horizontal_Tail",
+        "RCAIDE.Library.Components.Wings.Main_Wing",
+        "RCAIDE.Library.Components.Wings.Segments.Segment",
+        "RCAIDE.Library.Components.Wings.Vertical_Tail",
+        "RCAIDE.Library.Methods.Performance.compute_payload_range_diagram",
+        "RCAIDE.Library.Methods.Powertrain.Propulsors.Turbofan",
+        "RCAIDE.Library.Plots",
+        "RCAIDE.Vehicle"
+      ],
+      "external_solver_markers": [],
+      "external_solver_required": false,
+      "runnable": "是",
+      "run_note": "",
+      "doc_pages": []
+    },
+    {
+      "dir": "Analysis_Take_Off_Field_Length",
+      "group": "分析脚本",
+      "theme": "起飞场长估算",
+      "description": "两个脚本：由重量估算起飞场长；由目标场长反算起飞重量。",
+      "file_count": 2,
+      "bytes": 81953,
+      "files": [
+        {
+          "path": "takeoff_field_length_estimation.py",
+          "bytes": 41030
+        },
+        {
+          "path": "takeoff_weight_estimation_from_target_TOFL.py",
+          "bytes": 40923
+        }
+      ],
+      "python_scripts": [
+        "takeoff_field_length_estimation.py",
+        "takeoff_weight_estimation_from_target_TOFL.py"
+      ],
+      "notebooks": [],
+      "main_file": "takeoff_field_length_estimation.py",
+      "third_party_imports": [
+        "RCAIDE",
+        "copy",
+        "numpy as np",
+        "os",
+        "pylab as plt",
+        "sys"
+      ],
+      "rcaide_modules": [
+        "RCAIDE",
+        "RCAIDE.Framework.Analyses.Aerodynamics.Vortex_Lattice_Method",
+        "RCAIDE.Framework.Analyses.Analysis.Container",
+        "RCAIDE.Framework.Analyses.Atmospheric.US_Standard_1976",
+        "RCAIDE.Framework.Analyses.Energy.Energy",
+        "RCAIDE.Framework.Analyses.Geometry.Geometry",
+        "RCAIDE.Framework.Analyses.Planets.Earth",
+        "RCAIDE.Framework.Analyses.Vehicle",
+        "RCAIDE.Framework.Analyses.Weights.Conventional_Transport",
+        "RCAIDE.Framework.Core",
+        "RCAIDE.Framework.Networks.Fuel",
+        "RCAIDE.Library.Attributes.Gases.Air",
+        "RCAIDE.Library.Attributes.Propellants.Jet_A",
+        "RCAIDE.Library.Components.Airfoils.Airfoil",
+        "RCAIDE.Library.Components.Airfoils.NACA_4_Series_Airfoil",
+        "RCAIDE.Library.Components.Cargo_Bays.Cargo_Bay",
+        "RCAIDE.Library.Components.Configs.Config",
+        "RCAIDE.Library.Components.Configs.Config.Container",
+        "RCAIDE.Library.Components.Fuselages.Cabins.Cabin",
+        "RCAIDE.Library.Components.Fuselages.Cabins.Classes.Economy",
+        "RCAIDE.Library.Components.Fuselages.Fuselage",
+        "RCAIDE.Library.Components.Fuselages.Segments.Segment",
+        "RCAIDE.Library.Components.Landing_Gear.Main_Landing_Gear",
+        "RCAIDE.Library.Components.Landing_Gear.Nose_Landing_Gear",
+        "RCAIDE.Library.Components.Nacelles.Body_of_Revolution_Nacelle",
+        "RCAIDE.Library.Components.Powertrain.Converters.Combustor",
+        "RCAIDE.Library.Components.Powertrain.Converters.Compression_Nozzle",
+        "RCAIDE.Library.Components.Powertrain.Converters.Compressor",
+        "RCAIDE.Library.Components.Powertrain.Converters.Expansion_Nozzle",
+        "RCAIDE.Library.Components.Powertrain.Converters.Fan",
+        "RCAIDE.Library.Components.Powertrain.Converters.Ram",
+        "RCAIDE.Library.Components.Powertrain.Converters.Turbine",
+        "RCAIDE.Library.Components.Powertrain.Distributors.Fuel_Line",
+        "RCAIDE.Library.Components.Powertrain.Propulsors.Turbofan",
+        "RCAIDE.Library.Components.Powertrain.Sources.Fuel_Tanks.Integral_Tank",
+        "RCAIDE.Library.Components.Powertrain.Sources.Fuel_Tanks.Non_Integral_Tank",
+        "RCAIDE.Library.Components.Wings.Control_Surfaces.Aileron",
+        "RCAIDE.Library.Components.Wings.Control_Surfaces.Flap",
+        "RCAIDE.Library.Components.Wings.Control_Surfaces.Slat",
+        "RCAIDE.Library.Components.Wings.Control_Surfaces.Spoiler",
+        "RCAIDE.Library.Components.Wings.Horizontal_Tail",
+        "RCAIDE.Library.Components.Wings.Main_Wing",
+        "RCAIDE.Library.Components.Wings.Segments.Segment",
+        "RCAIDE.Library.Components.Wings.Vertical_Tail",
+        "RCAIDE.Library.Methods.Performance.estimate_take_off_field_length",
+        "RCAIDE.Library.Methods.Powertrain.Propulsors.Turbofan",
+        "RCAIDE.Vehicle"
+      ],
+      "external_solver_markers": [],
+      "external_solver_required": false,
+      "runnable": "是",
+      "run_note": "",
+      "doc_pages": []
+    },
+    {
+      "dir": "Analysis_V_n_Diagram",
+      "group": "分析脚本",
+      "theme": "V-n 机动包线图",
+      "description": "Part 23（活塞/通航）与 Part 35 两种情况下的 V-n 图。",
+      "file_count": 2,
+      "bytes": 72122,
+      "files": [
+        {
+          "path": "Part_23_V_n_diagram.py",
+          "bytes": 31053
+        },
+        {
+          "path": "Part_35_V_n_diagram.py",
+          "bytes": 41069
+        }
+      ],
+      "python_scripts": [
+        "Part_23_V_n_diagram.py",
+        "Part_35_V_n_diagram.py"
+      ],
+      "notebooks": [],
+      "main_file": "Part_23_V_n_diagram.py",
+      "third_party_imports": [
+        "RCAIDE",
+        "matplotlib",
+        "numpy as np",
+        "os",
+        "sys"
+      ],
+      "rcaide_modules": [
+        "RCAIDE",
+        "RCAIDE.Framework.Analyses.Aerodynamics.Vortex_Lattice_Method",
+        "RCAIDE.Framework.Analyses.Analysis.Container",
+        "RCAIDE.Framework.Analyses.Atmospheric.US_Standard_1976",
+        "RCAIDE.Framework.Analyses.Energy.Energy",
+        "RCAIDE.Framework.Analyses.Geometry.Geometry",
+        "RCAIDE.Framework.Analyses.Planets.Earth",
+        "RCAIDE.Framework.Analyses.Vehicle",
+        "RCAIDE.Framework.Analyses.Weights.Conventional_General_Aviation",
+        "RCAIDE.Framework.Core",
+        "RCAIDE.Framework.Networks.Fuel",
+        "RCAIDE.Library.Attributes.Propellants.Aviation_Gasoline",
+        "RCAIDE.Library.Components.Airfoils.Airfoil",
+        "RCAIDE.Library.Components.Airfoils.NACA_4_Series_Airfoil",
+        "RCAIDE.Library.Components.Configs.Config",
+        "RCAIDE.Library.Components.Configs.Config.Container",
+        "RCAIDE.Library.Components.Fuselages.Cabins.Cabin",
+        "RCAIDE.Library.Components.Fuselages.Cabins.Classes.Economy",
+        "RCAIDE.Library.Components.Fuselages.Fuselage",
+        "RCAIDE.Library.Components.Fuselages.Segments.Ellipse_Segment",
+        "RCAIDE.Library.Components.Fuselages.Segments.Rounded_Rectangle_Segment",
+        "RCAIDE.Library.Components.Fuselages.Segments.Segment",
+        "RCAIDE.Library.Components.Fuselages.Segments.Super_Ellipse_Segment",
+        "RCAIDE.Library.Components.Landing_Gear.Main_Landing_Gear",
+        "RCAIDE.Library.Components.Landing_Gear.Nose_Landing_Gear",
+        "RCAIDE.Library.Components.Powertrain.Converters.Engine",
+        "RCAIDE.Library.Components.Powertrain.Converters.Propeller",
+        "RCAIDE.Library.Components.Powertrain.Distributors.Fuel_Line",
+        "RCAIDE.Library.Components.Powertrain.Propulsors.Internal_Combustion_Engine",
+        "RCAIDE.Library.Components.Powertrain.Sources.Fuel_Tanks.Fuel_Tank",
+        "RCAIDE.Library.Components.Powertrain.Systems.Avionics",
+        "RCAIDE.Library.Components.Wings.Control_Surfaces.Elevator",
+        "RCAIDE.Library.Components.Wings.Control_Surfaces.Flap",
+        "RCAIDE.Library.Components.Wings.Control_Surfaces.Rudder",
+        "RCAIDE.Library.Components.Wings.Control_Surfaces.Slat",
+        "RCAIDE.Library.Components.Wings.Horizontal_Tail",
+        "RCAIDE.Library.Components.Wings.Main_Wing",
+        "RCAIDE.Library.Components.Wings.Vertical_Tail",
+        "RCAIDE.Library.Methods.Performance",
+        "RCAIDE.Library.Methods.Powertrain.Propulsors.Internal_Combustion_Engine",
+        "RCAIDE.Library.Plots",
+        "RCAIDE.Vehicle"
+      ],
+      "external_solver_markers": [],
+      "external_solver_required": false,
+      "runnable": "部分——可运行但耗时长",
+      "run_note": "实测 Part_23_V_n_diagram.py：导入 5.2s，main() 正常输出重量分解后进入气动代理模型构建，300s 未结束（2026-10-21 抽样）。",
+      "doc_pages": []
+    },
+    {
+      "dir": "Missions",
+      "group": "Missions",
+      "theme": "整机任务仿真（7 个 notebook）",
+      "description": "官方 Mission 系列：涡扇/涡喷/涡桨/通航/电动/倾转旋翼 eVTOL/升力巡航 eVTOL。",
+      "file_count": 9,
+      "bytes": 17419991,
+      "files": [
+        {
+          "path": "Tilt_Stopped_Rotor_Conv_Tail.pkl",
+          "bytes": 1458698
+        },
+        {
+          "path": "Tutorial_01_turbofan_aircraft.ipynb",
+          "bytes": 1296707
+        },
+        {
+          "path": "Tutorial_02_turbojet_aircraft.ipynb",
+          "bytes": 1302021
+        },
+        {
+          "path": "Tutorial_03_turboprop_aircraft.ipynb",
+          "bytes": 1557202
+        },
+        {
+          "path": "Tutorial_04_general_aviation_aircraft.ipynb",
+          "bytes": 1001093
+        },
+        {
+          "path": "Tutorial_05_electric_aircraft.ipynb",
+          "bytes": 1947008
+        },
+        {
+          "path": "Tutorial_06_tiltrotor_evtol_aircraft.ipynb",
+          "bytes": 1798543
+        },
+        {
+          "path": "Tutorial_07_lift_cruise_evtol_aircraft.ipynb",
+          "bytes": 2100855
+        },
+        {
+          "path": "Vehicle_Geometry.html",
+          "bytes": 4957864
+        }
+      ],
+      "python_scripts": [],
+      "notebooks": [
+        "Tutorial_01_turbofan_aircraft.ipynb",
+        "Tutorial_02_turbojet_aircraft.ipynb",
+        "Tutorial_03_turboprop_aircraft.ipynb",
+        "Tutorial_04_general_aviation_aircraft.ipynb",
+        "Tutorial_05_electric_aircraft.ipynb",
+        "Tutorial_06_tiltrotor_evtol_aircraft.ipynb",
+        "Tutorial_07_lift_cruise_evtol_aircraft.ipynb"
+      ],
+      "main_file": "Tutorial_01_turbofan_aircraft.ipynb",
+      "third_party_imports": [],
+      "rcaide_modules": [
+        "RCAIDE",
+        "RCAIDE.",
+        "RCAIDE.Framework.Analyses.Aerodynamics.Vortex_Lattice_Method",
+        "RCAIDE.Framework.Analyses.Analysis.Container",
+        "RCAIDE.Framework.Analyses.Atmospheric.US_Standard_1976",
+        "RCAIDE.Framework.Analyses.Energy.Energy",
+        "RCAIDE.Framework.Analyses.Geometry.Geometry",
+        "RCAIDE.Framework.Analyses.Planets.Earth",
+        "RCAIDE.Framework.Analyses.Vehicle",
+        "RCAIDE.Framework.Analyses.Weights.Conventional_Transport",
+        "RCAIDE.Framework.Core",
+        "RCAIDE.Framework.Mission.Missions",
+        "RCAIDE.Framework.Mission.Segments",
+        "RCAIDE.Framework.Mission.Sequential_Segments",
+        "RCAIDE.Framework.Networks.Fuel",
+        "RCAIDE.Library.Attributes.Gases.Air",
+        "RCAIDE.Library.Attributes.Propellants.Jet_A1",
+        "RCAIDE.Library.Components.Airfoils.Airfoil",
+        "RCAIDE.Library.Components.Airfoils.NACA_4_Series_Airfoil",
+        "RCAIDE.Library.Components.Configs.Config",
+        "RCAIDE.Library.Components.Configs.Config.Container",
+        "RCAIDE.Library.Components.Fuselages.Cabins.Cabin",
+        "RCAIDE.Library.Components.Fuselages.Cabins.Classes.Business",
+        "RCAIDE.Library.Components.Fuselages.Cabins.Classes.Economy",
+        "RCAIDE.Library.Components.Fuselages.Cabins.Classes.First",
+        "RCAIDE.Library.Components.Fuselages.Fuselage",
+        "RCAIDE.Library.Components.Fuselages.Segments.Circle_Segment",
+        "RCAIDE.Library.Components.Fuselages.Segments.Segment",
+        "RCAIDE.Library.Components.Landing_Gear.Main_Landing_Gear",
+        "RCAIDE.Library.Components.Landing_Gear.Nose_Landing_Gear",
+        "RCAIDE.Library.Components.Nacelles.Body_of_Revolution_Nacelle",
+        "RCAIDE.Library.Components.Powertrain.Converters.Combustor",
+        "RCAIDE.Library.Components.Powertrain.Converters.Compression_Nozzle",
+        "RCAIDE.Library.Components.Powertrain.Converters.Compressor",
+        "RCAIDE.Library.Components.Powertrain.Converters.Expansion_Nozzle",
+        "RCAIDE.Library.Components.Powertrain.Converters.Fan",
+        "RCAIDE.Library.Components.Powertrain.Converters.Ram",
+        "RCAIDE.Library.Components.Powertrain.Converters.Turbine",
+        "RCAIDE.Library.Components.Powertrain.Distributors.Fuel_Line",
+        "RCAIDE.Library.Components.Powertrain.Propulsors.Turbofan",
+        "RCAIDE.Library.Components.Powertrain.Sources.Fuel_Tanks.Fuel_Tank",
+        "RCAIDE.Library.Components.Wings.Control_Surfaces.Aileron",
+        "RCAIDE.Library.Components.Wings.Control_Surfaces.Elevator",
+        "RCAIDE.Library.Components.Wings.Control_Surfaces.Flap",
+        "RCAIDE.Library.Components.Wings.Control_Surfaces.Slat",
+        "RCAIDE.Library.Components.Wings.Horizontal_Tail",
+        "RCAIDE.Library.Components.Wings.Main_Wing",
+        "RCAIDE.Library.Components.Wings.Segments.Segment",
+        "RCAIDE.Library.Components.Wings.Vertical_Tail",
+        "RCAIDE.Library.Methods.Powertrain.Propulsors.Turbofan",
+        "RCAIDE.Library.Plots",
+        "RCAIDE.Vehicle"
+      ],
+      "external_solver_markers": [],
+      "external_solver_required": false,
+      "runnable": "需 Jupyter",
+      "run_note": ".ipynb 需 nbformat/jupyter，本机 RCAIDE 环境未安装（import IPython/jupyter/nbformat 均缺失）。",
+      "doc_pages": [
+        {
+          "page": "Tutorial_01_turbofan_aircraft",
+          "local_file": "Tutorial_01_turbofan_aircraft.ipynb",
+          "desc": "涡扇客机任务仿真",
+          "url": "https://www.docs.rcaide.leadsresearchgroup.com/tutorials/Missions/Tutorial_01_turbofan_aircraft.html"
+        },
+        {
+          "page": "Tutorial_02_turbojet_aircraft",
+          "local_file": "Tutorial_02_turbojet_aircraft.ipynb",
+          "desc": "涡喷超音速客机任务仿真",
+          "url": "https://www.docs.rcaide.leadsresearchgroup.com/tutorials/Missions/Tutorial_02_turbojet_aircraft.html"
+        },
+        {
+          "page": "Tutorial_03_turboprop_aircraft",
+          "local_file": "Tutorial_03_turboprop_aircraft.ipynb",
+          "desc": "涡桨支线客机任务仿真",
+          "url": "https://www.docs.rcaide.leadsresearchgroup.com/tutorials/Missions/Tutorial_03_turboprop_aircraft.html"
+        },
+        {
+          "page": "Tutorial_04_general_aviation_aircraft",
+          "local_file": "Tutorial_04_general_aviation_aircraft.ipynb",
+          "desc": "通用航空飞机任务仿真",
+          "url": "https://www.docs.rcaide.leadsresearchgroup.com/tutorials/Missions/Tutorial_04_general_aviation_aircraft.html"
+        },
+        {
+          "page": "Tutorial_05_electric_aircraft",
+          "local_file": "Tutorial_05_electric_aircraft.ipynb",
+          "desc": "全电飞机任务仿真",
+          "url": "https://www.docs.rcaide.leadsresearchgroup.com/tutorials/Missions/Tutorial_05_electric_aircraft.html"
+        },
+        {
+          "page": "Tutorial_06_tiltrotor_evtol_aircraft",
+          "local_file": "Tutorial_06_tiltrotor_evtol_aircraft.ipynb",
+          "desc": "倾转旋翼 eVTOL 任务仿真",
+          "url": "https://www.docs.rcaide.leadsresearchgroup.com/tutorials/Missions/Tutorial_06_tiltrotor_evtol_aircraft.html"
+        },
+        {
+          "page": "Tutorial_07_lift_cruise_evtol_aircraft",
+          "local_file": "Tutorial_07_lift_cruise_evtol_aircraft.ipynb",
+          "desc": "升力巡航 eVTOL 任务仿真",
+          "url": "https://www.docs.rcaide.leadsresearchgroup.com/tutorials/Missions/Tutorial_07_lift_cruise_evtol_aircraft.html"
+        }
+      ]
+    },
+    {
+      "dir": "Optimization_Wing_Planform_Fuel_Burn",
+      "group": "Optimize",
+      "theme": "机翼平面形状优化（燃油消耗）",
+      "description": "官方 Optimize 系列的分步源码：Vehicles/Missions/Analyses/Procedure/Optimize。",
+      "file_count": 5,
+      "bytes": 68245,
+      "files": [
+        {
+          "path": "Analyses.py",
+          "bytes": 2840
+        },
+        {
+          "path": "Missions.py",
+          "bytes": 13654
+        },
+        {
+          "path": "Optimize.py",
+          "bytes": 6653
+        },
+        {
+          "path": "Procedure.py",
+          "bytes": 4695
+        },
+        {
+          "path": "Vehicles.py",
+          "bytes": 40403
+        }
+      ],
+      "python_scripts": [
+        "Analyses.py",
+        "Missions.py",
+        "Optimize.py",
+        "Procedure.py",
+        "Vehicles.py"
+      ],
+      "notebooks": [],
+      "main_file": "Analyses.py",
+      "third_party_imports": [
+        "RCAIDE",
+        "numpy as np"
+      ],
+      "rcaide_modules": [
+        "RCAIDE",
+        "RCAIDE.Framework.Analyses.Aerodynamics.Vortex_Lattice_Method",
+        "RCAIDE.Framework.Analyses.Analysis.Container",
+        "RCAIDE.Framework.Analyses.Atmospheric.US_Standard_1976",
+        "RCAIDE.Framework.Analyses.Energy.Energy",
+        "RCAIDE.Framework.Analyses.Geometry.Geometry",
+        "RCAIDE.Framework.Analyses.Planets.Earth",
+        "RCAIDE.Framework.Analyses.Vehicle",
+        "RCAIDE.Framework.Analyses.Weights.Conventional_Transport"
+      ],
+      "external_solver_markers": [],
+      "external_solver_required": false,
+      "runnable": "是（含优化循环，耗时长）",
+      "run_note": "Optimize.py 使用 RCAIDE.Framework.Optimization.Packages.scipy（scipy 驱动），非 pyoptsparse。",
+      "doc_pages": [
+        {
+          "page": "Tutorial_10_Analyses",
+          "local_file": "Analyses.py",
+          "desc": "分析流程搭建（推断对应）",
+          "url": "https://www.docs.rcaide.leadsresearchgroup.com/tutorials/Optimize/Tutorial_10_Analyses.html"
+        },
+        {
+          "page": "Tutorial_11_Missions",
+          "local_file": "Missions.py",
+          "desc": "任务定义（推断对应）",
+          "url": "https://www.docs.rcaide.leadsresearchgroup.com/tutorials/Optimize/Tutorial_11_Missions.html"
+        },
+        {
+          "page": "Tutorial_12_Optimize",
+          "local_file": "Optimize.py",
+          "desc": "优化主程序（推断对应）",
+          "url": "https://www.docs.rcaide.leadsresearchgroup.com/tutorials/Optimize/Tutorial_12_Optimize.html"
+        },
+        {
+          "page": "Tutorial_13_Plot_Mission",
+          "local_file": null,
+          "desc": "绘图步骤（本地无独立脚本）",
+          "url": "https://www.docs.rcaide.leadsresearchgroup.com/tutorials/Optimize/Tutorial_13_Plot_Mission.html"
+        },
+        {
+          "page": "Tutorial_14_Procedure",
+          "local_file": "Procedure.py",
+          "desc": "流程/过程定义（推断对应）",
+          "url": "https://www.docs.rcaide.leadsresearchgroup.com/tutorials/Optimize/Tutorial_14_Procedure.html"
+        },
+        {
+          "page": "Tutorial_15_Vehicle",
+          "local_file": "Vehicles.py",
+          "desc": "飞行器定义（推断对应）",
+          "url": "https://www.docs.rcaide.leadsresearchgroup.com/tutorials/Optimize/Tutorial_15_Vehicle.html"
+        }
+      ]
+    },
+    {
+      "dir": "Performance",
+      "group": "Performance",
+      "theme": "性能图与仿真 notebook",
+      "description": "载荷航程图、螺旋桨仿真、整机气动、翼型极曲线、V-n 图（notebook 版）。",
+      "file_count": 6,
+      "bytes": 7139635,
+      "files": [
+        {
+          "path": "Rotor.html",
+          "bytes": 4614602
+        },
+        {
+          "path": "Tutorial_21_payload_range_diagram.ipynb",
+          "bytes": 190845
+        },
+        {
+          "path": "Tutorial_22_propeller_simulation.ipynb",
+          "bytes": 371326
+        },
+        {
+          "path": "Tutorial_23_aircraft_aerodynamic_analysis.ipynb",
+          "bytes": 182429
+        },
+        {
+          "path": "Tutorial_24_airfoil_polar_simulation.ipynb",
+          "bytes": 1592443
+        },
+        {
+          "path": "Tutorial_25_V_n_diagram.ipynb",
+          "bytes": 187990
+        }
+      ],
+      "python_scripts": [],
+      "notebooks": [
+        "Tutorial_21_payload_range_diagram.ipynb",
+        "Tutorial_22_propeller_simulation.ipynb",
+        "Tutorial_23_aircraft_aerodynamic_analysis.ipynb",
+        "Tutorial_24_airfoil_polar_simulation.ipynb",
+        "Tutorial_25_V_n_diagram.ipynb"
+      ],
+      "main_file": "Tutorial_21_payload_range_diagram.ipynb",
+      "third_party_imports": [],
+      "rcaide_modules": [
+        "RCAIDE",
+        "RCAIDE.",
+        "RCAIDE.Framework.Analyses.Aerodynamics.Vortex_Lattice_Method",
+        "RCAIDE.Framework.Analyses.Analysis.Container",
+        "RCAIDE.Framework.Analyses.Atmospheric.US_Standard_1976",
+        "RCAIDE.Framework.Analyses.Energy.Energy",
+        "RCAIDE.Framework.Analyses.Geometry.Geometry",
+        "RCAIDE.Framework.Analyses.Planets.Earth",
+        "RCAIDE.Framework.Analyses.Vehicle",
+        "RCAIDE.Framework.Analyses.Weights.Conventional_Transport",
+        "RCAIDE.Framework.Core",
+        "RCAIDE.Framework.Mission.Missions",
+        "RCAIDE.Framework.Mission.Segments",
+        "RCAIDE.Framework.Mission.Sequential_Segments",
+        "RCAIDE.Framework.Networks.Fuel",
+        "RCAIDE.Library.Attributes.Gases.Air",
+        "RCAIDE.Library.Attributes.Propellants.Jet_A",
+        "RCAIDE.Library.Components.Airfoils.Airfoil",
+        "RCAIDE.Library.Components.Airfoils.NACA_4_Series_Airfoil",
+        "RCAIDE.Library.Components.Configs.Config",
+        "RCAIDE.Library.Components.Configs.Config.Container",
+        "RCAIDE.Library.Components.Fuselages.Cabins.Cabin",
+        "RCAIDE.Library.Components.Fuselages.Cabins.Classes.Economy",
+        "RCAIDE.Library.Components.Fuselages.Fuselage",
+        "RCAIDE.Library.Components.Fuselages.Segments.Segment",
+        "RCAIDE.Library.Components.Landing_Gear.Main_Landing_Gear",
+        "RCAIDE.Library.Components.Landing_Gear.Nose_Landing_Gear",
+        "RCAIDE.Library.Components.Nacelles.Body_of_Revolution_Nacelle",
+        "RCAIDE.Library.Components.Powertrain.Converters.Combustor",
+        "RCAIDE.Library.Components.Powertrain.Converters.Compression_Nozzle",
+        "RCAIDE.Library.Components.Powertrain.Converters.Compressor",
+        "RCAIDE.Library.Components.Powertrain.Converters.Expansion_Nozzle",
+        "RCAIDE.Library.Components.Powertrain.Converters.Fan",
+        "RCAIDE.Library.Components.Powertrain.Converters.Ram",
+        "RCAIDE.Library.Components.Powertrain.Converters.Turbine",
+        "RCAIDE.Library.Components.Powertrain.Distributors.Fuel_Line",
+        "RCAIDE.Library.Components.Powertrain.Propulsors.Turbofan",
+        "RCAIDE.Library.Components.Powertrain.Sources.Fuel_Tanks.Fuel_Tank",
+        "RCAIDE.Library.Components.Wings.Control_Surfaces.Flap",
+        "RCAIDE.Library.Components.Wings.Control_Surfaces.Slat",
+        "RCAIDE.Library.Components.Wings.Horizontal_Tail",
+        "RCAIDE.Library.Components.Wings.Main_Wing",
+        "RCAIDE.Library.Components.Wings.Segments.Segment",
+        "RCAIDE.Library.Components.Wings.Vertical_Tail",
+        "RCAIDE.Library.Methods.Performance.compute_payload_range_diagram",
+        "RCAIDE.Library.Methods.Powertrain.Propulsors.Turbofan",
+        "RCAIDE.Library.Plots",
+        "RCAIDE.Methods.Performance.Payload_Range_Diagram",
+        "RCAIDE.Vehicle"
+      ],
+      "external_solver_markers": [],
+      "external_solver_required": false,
+      "runnable": "需 Jupyter",
+      "run_note": ".ipynb 需 jupyter/nbformat，本环境未安装。",
+      "doc_pages": [
+        {
+          "page": "Tutorial_21_payload_range_diagram",
+          "local_file": "Tutorial_21_payload_range_diagram.ipynb",
+          "desc": "载荷航程图",
+          "url": "https://www.docs.rcaide.leadsresearchgroup.com/tutorials/Performance/Tutorial_21_payload_range_diagram.html"
+        },
+        {
+          "page": "Tutorial_22_propeller_simulation",
+          "local_file": "Tutorial_22_propeller_simulation.ipynb",
+          "desc": "螺旋桨仿真",
+          "url": "https://www.docs.rcaide.leadsresearchgroup.com/tutorials/Performance/Tutorial_22_propeller_simulation.html"
+        },
+        {
+          "page": "Tutorial_23_aircraft_aerodynamic_analysis",
+          "local_file": "Tutorial_23_aircraft_aerodynamic_analysis.ipynb",
+          "desc": "整机气动分析",
+          "url": "https://www.docs.rcaide.leadsresearchgroup.com/tutorials/Performance/Tutorial_23_aircraft_aerodynamic_analysis.html"
+        },
+        {
+          "page": "Tutorial_24_airfoil_polar_simulation",
+          "local_file": "Tutorial_24_airfoil_polar_simulation.ipynb",
+          "desc": "翼型极曲线仿真",
+          "url": "https://www.docs.rcaide.leadsresearchgroup.com/tutorials/Performance/Tutorial_24_airfoil_polar_simulation.html"
+        },
+        {
+          "page": "Tutorial_25_V_n_diagram",
+          "local_file": "Tutorial_25_V_n_diagram.ipynb",
+          "desc": "V-n 图",
+          "url": "https://www.docs.rcaide.leadsresearchgroup.com/tutorials/Performance/Tutorial_25_V_n_diagram.html"
+        }
+      ]
+    },
+    {
+      "dir": "Simulation_Turbofan_Transonic_Aircraft_5000nmi_Mission",
+      "group": "专题",
+      "theme": "Boeing 737-800 涡扇跨音速 5000nmi 任务",
+      "description": "含脚本 Boeing_737_800.py 与配套 notebook。",
+      "file_count": 2,
+      "bytes": 1441483,
+      "files": [
+        {
+          "path": "Boeing_737_800.py",
+          "bytes": 63509
+        },
+        {
+          "path": "Boeing_737_800_Tutorial.ipynb",
+          "bytes": 1377974
+        }
+      ],
+      "python_scripts": [
+        "Boeing_737_800.py"
+      ],
+      "notebooks": [
+        "Boeing_737_800_Tutorial.ipynb"
+      ],
+      "main_file": "Boeing_737_800.py",
+      "third_party_imports": [
+        "RCAIDE",
+        "copy",
+        "matplotlib",
+        "numpy as np",
+        "os",
+        "sys"
+      ],
+      "rcaide_modules": [
+        "RCAIDE",
+        "RCAIDE.Framework.Analyses.Aerodynamics.Vortex_Lattice_Method",
+        "RCAIDE.Framework.Analyses.Analysis.Container",
+        "RCAIDE.Framework.Analyses.Atmospheric.US_Standard_1976",
+        "RCAIDE.Framework.Analyses.Energy.Energy",
+        "RCAIDE.Framework.Analyses.Geometry.Geometry",
+        "RCAIDE.Framework.Analyses.Planets.Earth",
+        "RCAIDE.Framework.Analyses.Vehicle",
+        "RCAIDE.Framework.Analyses.Weights.Conventional_Transport",
+        "RCAIDE.Framework.Core",
+        "RCAIDE.Framework.Mission.Missions",
+        "RCAIDE.Framework.Mission.Segments",
+        "RCAIDE.Framework.Mission.Sequential_Segments",
+        "RCAIDE.Framework.Networks.Fuel",
+        "RCAIDE.Library.Attributes.Gases.Air",
+        "RCAIDE.Library.Attributes.Propellants.Jet_A",
+        "RCAIDE.Library.Attributes.Propellants.Jet_A1",
+        "RCAIDE.Library.Components.Airfoils.Airfoil",
+        "RCAIDE.Library.Components.Airfoils.NACA_4_Series_Airfoil",
+        "RCAIDE.Library.Components.Cargo_Bays.Cargo_Bay",
+        "RCAIDE.Library.Components.Configs.Config",
+        "RCAIDE.Library.Components.Configs.Config.Container",
+        "RCAIDE.Library.Components.Fuselages.Cabins.Cabin",
+        "RCAIDE.Library.Components.Fuselages.Cabins.Classes.Business",
+        "RCAIDE.Library.Components.Fuselages.Cabins.Classes.Economy",
+        "RCAIDE.Library.Components.Fuselages.Cabins.Classes.First",
+        "RCAIDE.Library.Components.Fuselages.Fuselage",
+        "RCAIDE.Library.Components.Fuselages.Segments.Circle_Segment",
+        "RCAIDE.Library.Components.Fuselages.Segments.Segment",
+        "RCAIDE.Library.Components.Landing_Gear.Main_Landing_Gear",
+        "RCAIDE.Library.Components.Landing_Gear.Nose_Landing_Gear",
+        "RCAIDE.Library.Components.Nacelles.Body_of_Revolution_Nacelle",
+        "RCAIDE.Library.Components.Powertrain.Converters.Combustor",
+        "RCAIDE.Library.Components.Powertrain.Converters.Compression_Nozzle",
+        "RCAIDE.Library.Components.Powertrain.Converters.Compressor",
+        "RCAIDE.Library.Components.Powertrain.Converters.Expansion_Nozzle",
+        "RCAIDE.Library.Components.Powertrain.Converters.Fan",
+        "RCAIDE.Library.Components.Powertrain.Converters.Ram",
+        "RCAIDE.Library.Components.Powertrain.Converters.Turbine",
+        "RCAIDE.Library.Components.Powertrain.Distributors.Fuel_Line",
+        "RCAIDE.Library.Components.Powertrain.Propulsors.Turbofan",
+        "RCAIDE.Library.Components.Powertrain.Sources.Fuel_Tanks.Integral_Tank",
+        "RCAIDE.Library.Components.Wings.Control_Surfaces.Aileron",
+        "RCAIDE.Library.Components.Wings.Control_Surfaces.Elevator",
+        "RCAIDE.Library.Components.Wings.Control_Surfaces.Flap",
+        "RCAIDE.Library.Components.Wings.Control_Surfaces.Rudder",
+        "RCAIDE.Library.Components.Wings.Control_Surfaces.Slat",
+        "RCAIDE.Library.Components.Wings.Control_Surfaces.Spoiler",
+        "RCAIDE.Library.Components.Wings.Horizontal_Tail",
+        "RCAIDE.Library.Components.Wings.Main_Wing",
+        "RCAIDE.Library.Components.Wings.Segments.Segment",
+        "RCAIDE.Library.Components.Wings.Vertical_Tail",
+        "RCAIDE.Library.Methods.Performance",
+        "RCAIDE.Library.Methods.Powertrain.Propulsors.Turbofan",
+        "RCAIDE.Library.Plots",
+        "RCAIDE.Vehicle"
+      ],
+      "external_solver_markers": [],
+      "external_solver_required": false,
+      "runnable": "脚本是 / notebook 需 Jupyter",
+      "run_note": "Boeing_737_800.py 可直接跑；配套 .ipynb 需 jupyter。",
+      "doc_pages": [
+        {
+          "page": "Boeing_737_800_Tutorial",
+          "local_file": "Boeing_737_800_Tutorial.ipynb",
+          "desc": "Boeing 737-800 专题教程（文档页名 Boeing_737_800_Tutorial）",
+          "url": null
+        }
+      ]
+    },
+    {
+      "dir": "Simulation_Turbojet_Supersonic_Aircraft_4500nmi_Mission",
+      "group": "专题",
+      "theme": "Concorde 涡喷超音速 4500nmi 任务",
+      "description": "Concorde 全机定义 + 任务仿真脚本。",
+      "file_count": 1,
+      "bytes": 55912,
+      "files": [
+        {
+          "path": "Concorde.py",
+          "bytes": 55912
+        }
+      ],
+      "python_scripts": [
+        "Concorde.py"
+      ],
+      "notebooks": [],
+      "main_file": "Concorde.py",
+      "third_party_imports": [
+        "RCAIDE",
+        "copy",
+        "matplotlib",
+        "numpy as np",
+        "os",
+        "sys"
+      ],
+      "rcaide_modules": [
+        "RCAIDE",
+        "RCAIDE.Framework.Analyses.Aerodynamics.Vortex_Lattice_Method",
+        "RCAIDE.Framework.Analyses.Analysis.Container",
+        "RCAIDE.Framework.Analyses.Atmospheric.US_Standard_1976",
+        "RCAIDE.Framework.Analyses.Emissions.Emission_Index_Correlation_Method",
+        "RCAIDE.Framework.Analyses.Energy.Energy",
+        "RCAIDE.Framework.Analyses.Geometry.Geometry",
+        "RCAIDE.Framework.Analyses.Planets.Earth",
+        "RCAIDE.Framework.Analyses.Vehicle",
+        "RCAIDE.Framework.Analyses.Weights.Conventional_Transport",
+        "RCAIDE.Framework.Core",
+        "RCAIDE.Framework.Mission.Missions",
+        "RCAIDE.Framework.Mission.Segments",
+        "RCAIDE.Framework.Mission.Sequential_Segments",
+        "RCAIDE.Framework.Networks.Fuel",
+        "RCAIDE.Library.Attributes.Gases.Air",
+        "RCAIDE.Library.Attributes.Propellants.Jet_A",
+        "RCAIDE.Library.Components.Airfoils.Airfoil",
+        "RCAIDE.Library.Components.Configs.Config",
+        "RCAIDE.Library.Components.Configs.Config.Container",
+        "RCAIDE.Library.Components.Fuselages.Cabins.Cabin",
+        "RCAIDE.Library.Components.Fuselages.Cabins.Classes.Business",
+        "RCAIDE.Library.Components.Fuselages.Fuselage",
+        "RCAIDE.Library.Components.Fuselages.Segments.Segment",
+        "RCAIDE.Library.Components.Landing_Gear.Main_Landing_Gear",
+        "RCAIDE.Library.Components.Landing_Gear.Nose_Landing_Gear",
+        "RCAIDE.Library.Components.Nacelles.Segments.Rounded_Rectangle_Segment",
+        "RCAIDE.Library.Components.Nacelles.Stack_Nacelle",
+        "RCAIDE.Library.Components.Powertrain.Converters.Combustor",
+        "RCAIDE.Library.Components.Powertrain.Converters.Compression_Nozzle",
+        "RCAIDE.Library.Components.Powertrain.Converters.Compressor",
+        "RCAIDE.Library.Components.Powertrain.Converters.Ram",
+        "RCAIDE.Library.Components.Powertrain.Converters.Supersonic_Nozzle",
+        "RCAIDE.Library.Components.Powertrain.Converters.Turbine",
+        "RCAIDE.Library.Components.Powertrain.Distributors.Fuel_Line",
+        "RCAIDE.Library.Components.Powertrain.Propulsors.Turbojet",
+        "RCAIDE.Library.Components.Powertrain.Sources.Fuel_Tanks.Fuel_Tank",
+        "RCAIDE.Library.Components.Wings.Control_Surfaces.Aileron",
+        "RCAIDE.Library.Components.Wings.Control_Surfaces.Elevator",
+        "RCAIDE.Library.Components.Wings.Control_Surfaces.Flap",
+        "RCAIDE.Library.Components.Wings.Control_Surfaces.Slat",
+        "RCAIDE.Library.Components.Wings.Main_Wing",
+        "RCAIDE.Library.Components.Wings.Segments.Segment",
+        "RCAIDE.Library.Components.Wings.Vertical_Tail",
+        "RCAIDE.Library.Methods.Powertrain.Propulsors.Turbojet",
+        "RCAIDE.Library.Plots",
+        "RCAIDE.Vehicle"
+      ],
+      "external_solver_markers": [],
+      "external_solver_required": false,
+      "runnable": "是",
+      "run_note": "",
+      "doc_pages": []
+    },
+    {
+      "dir": "Simulation_Turboprop_Aircraft_1000nmi_Mission",
+      "group": "专题",
+      "theme": "ATR-72 涡桨 1000nmi 任务",
+      "description": "ATR-72 全机定义 + 任务仿真脚本。",
+      "file_count": 1,
+      "bytes": 61218,
+      "files": [
+        {
+          "path": "ATR_72.py",
+          "bytes": 61218
+        }
+      ],
+      "python_scripts": [
+        "ATR_72.py"
+      ],
+      "notebooks": [],
+      "main_file": "ATR_72.py",
+      "third_party_imports": [
+        "RCAIDE",
+        "copy",
+        "matplotlib",
+        "numpy as np",
+        "os",
+        "sys"
+      ],
+      "rcaide_modules": [
+        "RCAIDE",
+        "RCAIDE.Framework.Analyses.Aerodynamics.Vortex_Lattice_Method",
+        "RCAIDE.Framework.Analyses.Analysis.Container",
+        "RCAIDE.Framework.Analyses.Atmospheric.US_Standard_1976",
+        "RCAIDE.Framework.Analyses.Energy.Energy",
+        "RCAIDE.Framework.Analyses.Geometry.Geometry",
+        "RCAIDE.Framework.Analyses.Planets.Earth",
+        "RCAIDE.Framework.Analyses.Stability.Vortex_Lattice_Method",
+        "RCAIDE.Framework.Analyses.Vehicle",
+        "RCAIDE.Framework.Analyses.Weights.Conventional_Transport",
+        "RCAIDE.Framework.Core",
+        "RCAIDE.Framework.Mission.Missions",
+        "RCAIDE.Framework.Mission.Segments",
+        "RCAIDE.Framework.Mission.Sequential_Segments",
+        "RCAIDE.Framework.Networks.Fuel",
+        "RCAIDE.Library.Attributes.Gases.Air",
+        "RCAIDE.Library.Attributes.Propellants.Jet_A",
+        "RCAIDE.Library.Components.Configs.Config",
+        "RCAIDE.Library.Components.Configs.Config.Container",
+        "RCAIDE.Library.Components.Fuselages.Cabins.Cabin",
+        "RCAIDE.Library.Components.Fuselages.Cabins.Classes.Economy",
+        "RCAIDE.Library.Components.Fuselages.Fuselage",
+        "RCAIDE.Library.Components.Fuselages.Segments.Segment",
+        "RCAIDE.Library.Components.Landing_Gear.Main_Landing_Gear",
+        "RCAIDE.Library.Components.Landing_Gear.Nose_Landing_Gear",
+        "RCAIDE.Library.Components.Nacelles.Segments.Segment",
+        "RCAIDE.Library.Components.Nacelles.Stack_Nacelle",
+        "RCAIDE.Library.Components.Powertrain.Converters.Combustor",
+        "RCAIDE.Library.Components.Powertrain.Converters.Compression_Nozzle",
+        "RCAIDE.Library.Components.Powertrain.Converters.Compressor",
+        "RCAIDE.Library.Components.Powertrain.Converters.Expansion_Nozzle",
+        "RCAIDE.Library.Components.Powertrain.Converters.Propeller",
+        "RCAIDE.Library.Components.Powertrain.Converters.Ram",
+        "RCAIDE.Library.Components.Powertrain.Converters.Turbine",
+        "RCAIDE.Library.Components.Powertrain.Distributors.Fuel_Line",
+        "RCAIDE.Library.Components.Powertrain.Propulsors.Turboprop",
+        "RCAIDE.Library.Components.Powertrain.Sources.Fuel_Tanks.Integral_Tank",
+        "RCAIDE.Library.Components.Wings.Control_Surfaces.Aileron",
+        "RCAIDE.Library.Components.Wings.Control_Surfaces.Elevator",
+        "RCAIDE.Library.Components.Wings.Control_Surfaces.Flap",
+        "RCAIDE.Library.Components.Wings.Control_Surfaces.Rudder",
+        "RCAIDE.Library.Components.Wings.Horizontal_Tail",
+        "RCAIDE.Library.Components.Wings.Main_Wing",
+        "RCAIDE.Library.Components.Wings.Segments.Segment",
+        "RCAIDE.Library.Components.Wings.Vertical_Tail",
+        "RCAIDE.Library.Methods.Performance",
+        "RCAIDE.Library.Methods.Powertrain.Propulsors.Turboprop",
+        "RCAIDE.Library.Plots",
+        "RCAIDE.Vehicle"
+      ],
+      "external_solver_markers": [],
+      "external_solver_required": false,
+      "runnable": "是",
+      "run_note": "",
+      "doc_pages": []
+    }
+  ],
+  "digital_hangar": {
+    "path": "D:\\RCAIDE\\digital_hangar",
+    "model_count": 31,
+    "models": [
+      {
+        "dir": "ATR_72",
+        "file_count": 3,
+        "bytes": 631473,
+        "main_py": "ATR_72.py",
+        "python_scripts": [
+          "ATR_72.py"
+        ],
+        "gltf": [
+          "ATR_72.gltf"
+        ],
+        "has_gltf": true,
+        "files": [
+          {
+            "path": "ATR_72.gltf",
+            "bytes": 587081
+          },
+          {
+            "path": "ATR_72.py",
+            "bytes": 44392
+          },
+          {
+            "path": "starboard_propulsor_propeller.bem",
+            "bytes": 0
+          }
+        ]
+      },
+      {
+        "dir": "ATR_72_All_Electric",
+        "file_count": 5,
+        "bytes": 2008529,
+        "main_py": "ATR_72_all_electric.py",
+        "python_scripts": [
+          "ATR_72_all_electric.py"
+        ],
+        "gltf": [
+          "ATR_72_all_electric.gltf"
+        ],
+        "has_gltf": true,
+        "files": [
+          {
+            "path": "ATR_72_all_electric.gltf",
+            "bytes": 1618257
+          },
+          {
+            "path": "ATR_72_all_electric.png",
+            "bytes": 169410
+          },
+          {
+            "path": "ATR_72_all_electric.py",
+            "bytes": 42602
+          },
+          {
+            "path": "port_propulsor_propeller.bem",
+            "bytes": 89137
+          },
+          {
+            "path": "propeller_1.bem",
+            "bytes": 89123
+          }
+        ]
+      },
+      {
+        "dir": "ATR_72_Parallel_Hybrid",
+        "file_count": 2,
+        "bytes": 741173,
+        "main_py": "ATR_72_cryo_parallel_hybrid_electric.py",
+        "python_scripts": [
+          "ATR_72_cryo_parallel_hybrid_electric.py"
+        ],
+        "gltf": [
+          "ATR_72_parallel_hybrid_electric.gltf"
+        ],
+        "has_gltf": true,
+        "files": [
+          {
+            "path": "ATR_72_cryo_parallel_hybrid_electric.py",
+            "bytes": 52156
+          },
+          {
+            "path": "ATR_72_parallel_hybrid_electric.gltf",
+            "bytes": 689017
+          }
+        ]
+      },
+      {
+        "dir": "Airbus_A220",
+        "file_count": 2,
+        "bytes": 1111853,
+        "main_py": "Airbus_A220_100.py",
+        "python_scripts": [
+          "Airbus_A220_100.py"
+        ],
+        "gltf": [
+          "Airbus_A220_100.gltf"
+        ],
+        "has_gltf": true,
+        "files": [
+          {
+            "path": "Airbus_A220_100.gltf",
+            "bytes": 1074780
+          },
+          {
+            "path": "Airbus_A220_100.py",
+            "bytes": 37073
+          }
+        ]
+      },
+      {
+        "dir": "Airbus_A320",
+        "file_count": 2,
+        "bytes": 1054555,
+        "main_py": "Airbus_A320.py",
+        "python_scripts": [
+          "Airbus_A320.py"
+        ],
+        "gltf": [
+          "Airbus_A320.gltf"
+        ],
+        "has_gltf": true,
+        "files": [
+          {
+            "path": "Airbus_A320.gltf",
+            "bytes": 1018507
+          },
+          {
+            "path": "Airbus_A320.py",
+            "bytes": 36048
+          }
+        ]
+      },
+      {
+        "dir": "Airbus_Vahana",
+        "file_count": 11,
+        "bytes": 4138535,
+        "main_py": "Vahana.py",
+        "python_scripts": [
+          "Vahana.py"
+        ],
+        "gltf": [
+          "Vahana.gltf"
+        ],
+        "has_gltf": true,
+        "files": [
+          {
+            "path": "Vahana.gltf",
+            "bytes": 2680673
+          },
+          {
+            "path": "Vahana.py",
+            "bytes": 25291
+          },
+          {
+            "path": "rotor_1.bem",
+            "bytes": 89104
+          },
+          {
+            "path": "rotor_2.bem",
+            "bytes": 89104
+          },
+          {
+            "path": "rotor_3.bem",
+            "bytes": 89105
+          },
+          {
+            "path": "rotor_4.bem",
+            "bytes": 89105
+          },
+          {
+            "path": "rotor_5.bem",
+            "bytes": 89104
+          },
+          {
+            "path": "rotor_6.bem",
+            "bytes": 89104
+          },
+          {
+            "path": "rotor_7.bem",
+            "bytes": 89105
+          },
+          {
+            "path": "rotor_8.bem",
+            "bytes": 89105
+          },
+          {
+            "path": "vahana_tilt_rotor_propulsor.res",
+            "bytes": 719735
+          }
+        ]
+      },
+      {
+        "dir": "Airfoils_and_Polars",
+        "file_count": 33,
+        "bytes": 896478,
+        "main_py": null,
+        "python_scripts": [],
+        "gltf": [],
+        "has_gltf": false,
+        "files": [
+          {
+            "path": "Clark_y.txt",
+            "bytes": 2601
+          },
+          {
+            "path": "NACA65_203.txt",
+            "bytes": 1123
+          },
+          {
+            "path": "NACA_23012.txt",
+            "bytes": 1340
+          },
+          {
+            "path": "NACA_4412 2.txt",
+            "bytes": 789
+          },
+          {
+            "path": "NACA_4412.txt",
+            "bytes": 789
+          },
+          {
+            "path": "NACA_4415.txt",
+            "bytes": 2091
+          },
+          {
+            "path": "NACA_63_412.txt",
+            "bytes": 1135
+          },
+          {
+            "path": "NACA_6410.txt",
+            "bytes": 1719
+          },
+          {
+            "path": "Polars/NACA_23012_polar_Re_100000.txt",
+            "bytes": 7374
+          },
+          {
+            "path": "Polars/NACA_23012_polar_Re_1000000.txt",
+            "bytes": 9649
+          },
+          {
+            "path": "Polars/NACA_23012_polar_Re_200000.txt",
+            "bytes": 7569
+          },
+          {
+            "path": "Polars/NACA_23012_polar_Re_50000.txt",
+            "bytes": 6399
+          },
+          {
+            "path": "Polars/NACA_23012_polar_Re_500000.txt",
+            "bytes": 8609
+          },
+          {
+            "path": "Polars/NACA_4412_polar_Re_100000.txt",
+            "bytes": 7374
+          },
+          {
+            "path": "Polars/NACA_4412_polar_Re_1000000.txt",
+            "bytes": 9259
+          },
+          {
+            "path": "Polars/NACA_4412_polar_Re_200000.txt",
+            "bytes": 7114
+          },
+          {
+            "path": "Polars/NACA_4412_polar_Re_3500000.txt",
+            "bytes": 13078
+          },
+          {
+            "path": "Polars/NACA_4412_polar_Re_50000.txt",
+            "bytes": 6529
+          },
+          {
+            "path": "Polars/NACA_4412_polar_Re_500000.txt",
+            "bytes": 8154
+          },
+          {
+            "path": "Polars/NACA_4412_polar_Re_5000000.txt",
+            "bytes": 12082
+          },
+          {
+            "path": "Polars/NACA_4412_polar_Re_7500000.txt",
+            "bytes": 13493
+          },
+          {
+            "path": "Polars/NACA_63_412_polar_Re_100000.txt",
+            "bytes": 7049
+          },
+          {
+            "path": "Polars/NACA_63_412_polar_Re_1000000.txt",
+            "bytes": 9454
+          },
+          {
+            "path": "Polars/NACA_63_412_polar_Re_200000.txt",
+            "bytes": 7634
+          },
+          {
+            "path": "Polars/NACA_63_412_polar_Re_50000.txt",
+            "bytes": 6724
+          },
+          {
+            "path": "Polars/NACA_63_412_polar_Re_500000.txt",
+            "bytes": 8804
+          },
+          {
+            "path": "s1014.txt",
+            "bytes": 1408
+          },
+          {
+            "path": "stopped_rotor_lift_rotor.res",
+            "bytes": 719436
+          },
+          {
+            "path": "supersonic_tail.txt",
+            "bytes": 3251
+          },
+          {
+            "path": "transonic_wing_inboard_section_airfoil.txt",
+            "bytes": 1112
+          },
+          {
+            "path": "transonic_wing_outboard_section_airfoil.txt",
+            "bytes": 1112
+          },
+          {
+            "path": "transonic_wing_root_section_airfoil.txt",
+            "bytes": 1112
+          },
+          {
+            "path": "transonic_wing_tip_section_airfoil.txt",
+            "bytes": 1112
+          }
+        ]
+      },
+      {
+        "dir": "Blended_Wing_Body",
+        "file_count": 2,
+        "bytes": 1450841,
+        "main_py": "BWB.py",
+        "python_scripts": [
+          "BWB.py"
+        ],
+        "gltf": [
+          "BWB.gltf"
+        ],
+        "has_gltf": true,
+        "files": [
+          {
+            "path": "BWB.gltf",
+            "bytes": 1414772
+          },
+          {
+            "path": "BWB.py",
+            "bytes": 36069
+          }
+        ]
+      },
+      {
+        "dir": "Blended_Wing_Body_Hydrogen",
+        "file_count": 3,
+        "bytes": 1969400,
+        "main_py": "BWB_Hydrogen.py",
+        "python_scripts": [
+          "BWB_Hydrogen.py"
+        ],
+        "gltf": [
+          "BWB_LH2.gltf"
+        ],
+        "has_gltf": true,
+        "files": [
+          {
+            "path": "BWB_Hydrogen.py",
+            "bytes": 45184
+          },
+          {
+            "path": "BWB_LH2.gltf",
+            "bytes": 1776831
+          },
+          {
+            "path": "BWB_LH2.png",
+            "bytes": 147385
+          }
+        ]
+      },
+      {
+        "dir": "Boeing_737_800",
+        "file_count": 2,
+        "bytes": 1089499,
+        "main_py": "Boeing_737_800.py",
+        "python_scripts": [
+          "Boeing_737_800.py"
+        ],
+        "gltf": [
+          "Boeing_737_800.gltf"
+        ],
+        "has_gltf": true,
+        "files": [
+          {
+            "path": "Boeing_737_800.gltf",
+            "bytes": 1043205
+          },
+          {
+            "path": "Boeing_737_800.py",
+            "bytes": 46294
+          }
+        ]
+      },
+      {
+        "dir": "Boeing_747_100",
+        "file_count": 2,
+        "bytes": 2150246,
+        "main_py": "Boeing_747_100.py",
+        "python_scripts": [
+          "Boeing_747_100.py"
+        ],
+        "gltf": [
+          "Boeing_747_100.gltf"
+        ],
+        "has_gltf": true,
+        "files": [
+          {
+            "path": "Boeing_747_100.gltf",
+            "bytes": 2105133
+          },
+          {
+            "path": "Boeing_747_100.py",
+            "bytes": 45113
+          }
+        ]
+      },
+      {
+        "dir": "Boeing_777",
+        "file_count": 2,
+        "bytes": 1477763,
+        "main_py": "Boeing_777_200er.py",
+        "python_scripts": [
+          "Boeing_777_200er.py"
+        ],
+        "gltf": [
+          "Boeing_777_200er.gltf"
+        ],
+        "has_gltf": true,
+        "files": [
+          {
+            "path": "Boeing_777_200er.gltf",
+            "bytes": 1433030
+          },
+          {
+            "path": "Boeing_777_200er.py",
+            "bytes": 44733
+          }
+        ]
+      },
+      {
+        "dir": "Boeing_787",
+        "file_count": 3,
+        "bytes": 2511696,
+        "main_py": "Boeing_787.py",
+        "python_scripts": [
+          "Boeing_787.py"
+        ],
+        "gltf": [
+          "Boeing_787.gltf",
+          "Boeing_787_8.gltf"
+        ],
+        "has_gltf": true,
+        "files": [
+          {
+            "path": "Boeing_787.gltf",
+            "bytes": 1247904
+          },
+          {
+            "path": "Boeing_787.py",
+            "bytes": 45095
+          },
+          {
+            "path": "Boeing_787_8.gltf",
+            "bytes": 1218697
+          }
+        ]
+      },
+      {
+        "dir": "Canadair_Regional_Jet_CRJ_700",
+        "file_count": 2,
+        "bytes": 1009998,
+        "main_py": "CRJ_700.py",
+        "python_scripts": [
+          "CRJ_700.py"
+        ],
+        "gltf": [
+          "CRJ_700.gltf"
+        ],
+        "has_gltf": true,
+        "files": [
+          {
+            "path": "CRJ_700.gltf",
+            "bytes": 972037
+          },
+          {
+            "path": "CRJ_700.py",
+            "bytes": 37961
+          }
+        ]
+      },
+      {
+        "dir": "Cessna_172",
+        "file_count": 3,
+        "bytes": 496198,
+        "main_py": "Cessna_172.py",
+        "python_scripts": [
+          "Cessna_172.py"
+        ],
+        "gltf": [
+          "Cessna_172.gltf"
+        ],
+        "has_gltf": true,
+        "files": [
+          {
+            "path": "Cessna_172.gltf",
+            "bytes": 380024
+          },
+          {
+            "path": "Cessna_172.py",
+            "bytes": 27055
+          },
+          {
+            "path": "propeller.bem",
+            "bytes": 89119
+          }
+        ]
+      },
+      {
+        "dir": "Concorde",
+        "file_count": 3,
+        "bytes": 854037,
+        "main_py": "Concorde.py",
+        "python_scripts": [
+          "Concorde.py"
+        ],
+        "gltf": [
+          "Concorde.gltf"
+        ],
+        "has_gltf": true,
+        "files": [
+          {
+            "path": "Concorde.gltf",
+            "bytes": 701414
+          },
+          {
+            "path": "Concorde.png",
+            "bytes": 115670
+          },
+          {
+            "path": "Concorde.py",
+            "bytes": 36953
+          }
+        ]
+      },
+      {
+        "dir": "De_Havilland_Canada_DHC_6",
+        "file_count": 2,
+        "bytes": 393345,
+        "main_py": "Twin_Otter.py",
+        "python_scripts": [
+          "Twin_Otter.py"
+        ],
+        "gltf": [
+          "Twin_Otter.gltf"
+        ],
+        "has_gltf": true,
+        "files": [
+          {
+            "path": "Twin_Otter.gltf",
+            "bytes": 356270
+          },
+          {
+            "path": "Twin_Otter.py",
+            "bytes": 37075
+          }
+        ]
+      },
+      {
+        "dir": "De_Havilland_Canada_DHC_6_Electric",
+        "file_count": 4,
+        "bytes": 1078049,
+        "main_py": "Electric_Twin_Otter.py",
+        "python_scripts": [
+          "Electric_Twin_Otter.py"
+        ],
+        "gltf": [
+          "Electric_Twin_Otter.gltf"
+        ],
+        "has_gltf": true,
+        "files": [
+          {
+            "path": "Electric_Twin_Otter.gltf",
+            "bytes": 861850
+          },
+          {
+            "path": "Electric_Twin_Otter.py",
+            "bytes": 37963
+          },
+          {
+            "path": "port_propulsor_propeller.bem",
+            "bytes": 89125
+          },
+          {
+            "path": "propeller_1.bem",
+            "bytes": 89111
+          }
+        ]
+      },
+      {
+        "dir": "De_Havilland_Canada_DHC_8",
+        "file_count": 3,
+        "bytes": 484320,
+        "main_py": "DHC8_100.py",
+        "python_scripts": [
+          "DHC8_100.py"
+        ],
+        "gltf": [
+          "DHC8_100.gltf"
+        ],
+        "has_gltf": true,
+        "files": [
+          {
+            "path": "Clark_y.txt",
+            "bytes": 2601
+          },
+          {
+            "path": "DHC8_100.gltf",
+            "bytes": 441798
+          },
+          {
+            "path": "DHC8_100.py",
+            "bytes": 39921
+          }
+        ]
+      },
+      {
+        "dir": "Elysian_E9X",
+        "file_count": 8,
+        "bytes": 3968371,
+        "main_py": "Elysian_E9X_Model.py",
+        "python_scripts": [
+          "Elysian_E9X_Model.py"
+        ],
+        "gltf": [
+          "Elysian_E9X_Model.gltf"
+        ],
+        "has_gltf": true,
+        "files": [
+          {
+            "path": "Elysian_E9X_Model.gltf",
+            "bytes": 3395275
+          },
+          {
+            "path": "Elysian_E9X_Model.py",
+            "bytes": 38368
+          },
+          {
+            "path": "center_port_propeller.bem",
+            "bytes": 89119
+          },
+          {
+            "path": "center_starboard_propeller.bem",
+            "bytes": 89123
+          },
+          {
+            "path": "inboard_port_propeller.bem",
+            "bytes": 89120
+          },
+          {
+            "path": "inboard_starboard_propeller.bem",
+            "bytes": 89122
+          },
+          {
+            "path": "outboard_port_propeller.bem",
+            "bytes": 89119
+          },
+          {
+            "path": "outboard_starboard_propeller.bem",
+            "bytes": 89125
+          }
+        ]
+      },
+      {
+        "dir": "Embraer_E190",
+        "file_count": 2,
+        "bytes": 1083211,
+        "main_py": "Embraer_190.py",
+        "python_scripts": [
+          "Embraer_190.py"
+        ],
+        "gltf": [
+          "Embraer_190.gltf"
+        ],
+        "has_gltf": true,
+        "files": [
+          {
+            "path": "Embraer_190.gltf",
+            "bytes": 1045335
+          },
+          {
+            "path": "Embraer_190.py",
+            "bytes": 37876
+          }
+        ]
+      },
+      {
+        "dir": "Lockheed_C5a",
+        "file_count": 2,
+        "bytes": 2392618,
+        "main_py": "Lockheed_C5a.py",
+        "python_scripts": [
+          "Lockheed_C5a.py"
+        ],
+        "gltf": [
+          "Lockheed_C5a.gltf"
+        ],
+        "has_gltf": true,
+        "files": [
+          {
+            "path": "Lockheed_C5a.gltf",
+            "bytes": 2353762
+          },
+          {
+            "path": "Lockheed_C5a.py",
+            "bytes": 38856
+          }
+        ]
+      },
+      {
+        "dir": "Lockheed_F22",
+        "file_count": 2,
+        "bytes": 528328,
+        "main_py": "Lockheed_F22.py",
+        "python_scripts": [
+          "Lockheed_F22.py"
+        ],
+        "gltf": [
+          "Lockheed_F22.gltf"
+        ],
+        "has_gltf": true,
+        "files": [
+          {
+            "path": "Lockheed_F22.gltf",
+            "bytes": 481976
+          },
+          {
+            "path": "Lockheed_F22.py",
+            "bytes": 46352
+          }
+        ]
+      },
+      {
+        "dir": "Lockheed_F35C",
+        "file_count": 2,
+        "bytes": 510214,
+        "main_py": "Lockheed_F35C.py",
+        "python_scripts": [
+          "Lockheed_F35C.py"
+        ],
+        "gltf": [
+          "Lockheed_F35C.gltf"
+        ],
+        "has_gltf": true,
+        "files": [
+          {
+            "path": "Lockheed_F35C.gltf",
+            "bytes": 466135
+          },
+          {
+            "path": "Lockheed_F35C.py",
+            "bytes": 44079
+          }
+        ]
+      },
+      {
+        "dir": "NASA_X_57_Modification_2",
+        "file_count": 4,
+        "bytes": 979011,
+        "main_py": "X57_Maxwell_M2.py",
+        "python_scripts": [
+          "X57_Maxwell_M2.py"
+        ],
+        "gltf": [
+          "X57_Maxwell_M2.gltf"
+        ],
+        "has_gltf": true,
+        "files": [
+          {
+            "path": "X57_Maxwell_M2.gltf",
+            "bytes": 770599
+          },
+          {
+            "path": "X57_Maxwell_M2.py",
+            "bytes": 30175
+          },
+          {
+            "path": "propeller_1.bem",
+            "bytes": 89118
+          },
+          {
+            "path": "propeller_2.bem",
+            "bytes": 89119
+          }
+        ]
+      },
+      {
+        "dir": "Ryan_Navion",
+        "file_count": 3,
+        "bytes": 420234,
+        "main_py": "Navion.py",
+        "python_scripts": [
+          "Navion.py"
+        ],
+        "gltf": [
+          "Navion.gltf"
+        ],
+        "has_gltf": true,
+        "files": [
+          {
+            "path": "Navion.gltf",
+            "bytes": 393433
+          },
+          {
+            "path": "Navion.py",
+            "bytes": 24296
+          },
+          {
+            "path": "propeller.bem",
+            "bytes": 2505
+          }
+        ]
+      },
+      {
+        "dir": "Stopped_Rotor_EVTOL",
+        "file_count": 14,
+        "bytes": 5527965,
+        "main_py": "Stopped_Rotor.py",
+        "python_scripts": [
+          "Stopped_Rotor.py"
+        ],
+        "gltf": [
+          "Stopped_Rotor.gltf"
+        ],
+        "has_gltf": true,
+        "files": [
+          {
+            "path": "Stopped_Rotor.gltf",
+            "bytes": 3756128
+          },
+          {
+            "path": "Stopped_Rotor.py",
+            "bytes": 49607
+          },
+          {
+            "path": "lift_rotor.bem",
+            "bytes": 89142
+          },
+          {
+            "path": "lift_rotor_1.bem",
+            "bytes": 89158
+          },
+          {
+            "path": "lift_rotor_2.bem",
+            "bytes": 89160
+          },
+          {
+            "path": "lift_rotor_3.bem",
+            "bytes": 89156
+          },
+          {
+            "path": "lift_rotor_4.bem",
+            "bytes": 89158
+          },
+          {
+            "path": "lift_rotor_5.bem",
+            "bytes": 89158
+          },
+          {
+            "path": "lift_rotor_6.bem",
+            "bytes": 89160
+          },
+          {
+            "path": "lift_rotor_7.bem",
+            "bytes": 89158
+          },
+          {
+            "path": "lift_rotor_8.bem",
+            "bytes": 89160
+          },
+          {
+            "path": "propeller_1.bem",
+            "bytes": 89100
+          },
+          {
+            "path": "propeller_12.bem",
+            "bytes": 89102
+          },
+          {
+            "path": "stoppedrotor_propulsor.res",
+            "bytes": 741618
+          }
+        ]
+      },
+      {
+        "dir": "Tecnam_P2012",
+        "file_count": 4,
+        "bytes": 950973,
+        "main_py": "Tecnam_P2012.py",
+        "python_scripts": [
+          "Tecnam_P2012.py"
+        ],
+        "gltf": [
+          "Tecnam_P2012.gltf"
+        ],
+        "has_gltf": true,
+        "files": [
+          {
+            "path": "Tecnam_P2012.gltf",
+            "bytes": 740750
+          },
+          {
+            "path": "Tecnam_P2012.py",
+            "bytes": 31984
+          },
+          {
+            "path": "propeller_1.bem",
+            "bytes": 89119
+          },
+          {
+            "path": "propeller_2.bem",
+            "bytes": 89120
+          }
+        ]
+      },
+      {
+        "dir": "Tilt_Stopped_Rotor_V_tail_EVTOL",
+        "file_count": 16,
+        "bytes": 7585374,
+        "main_py": "Tilt_Stopped_Rotor_V_Tail.py",
+        "python_scripts": [
+          "Tilt_Stopped_Rotor_V_Tail.py"
+        ],
+        "gltf": [
+          "Tilt_Stopped_Rotor_V_Tail.gltf"
+        ],
+        "has_gltf": true,
+        "files": [
+          {
+            "path": "Tilt_Stopped_Rotor_V_Tail.gltf",
+            "bytes": 5002165
+          },
+          {
+            "path": "Tilt_Stopped_Rotor_V_Tail.py",
+            "bytes": 48716
+          },
+          {
+            "path": "lift_rotor_1.bem",
+            "bytes": 89125
+          },
+          {
+            "path": "lift_rotor_2.bem",
+            "bytes": 89124
+          },
+          {
+            "path": "lift_rotor_3.bem",
+            "bytes": 89125
+          },
+          {
+            "path": "lift_rotor_4.bem",
+            "bytes": 89124
+          },
+          {
+            "path": "lift_rotor_5.bem",
+            "bytes": 89125
+          },
+          {
+            "path": "lift_rotor_6.bem",
+            "bytes": 89124
+          },
+          {
+            "path": "lift_rotor_propulsor.res",
+            "bytes": 732307
+          },
+          {
+            "path": "prop_rotor_1.bem",
+            "bytes": 89142
+          },
+          {
+            "path": "prop_rotor_2.bem",
+            "bytes": 89141
+          },
+          {
+            "path": "prop_rotor_3.bem",
+            "bytes": 89142
+          },
+          {
+            "path": "prop_rotor_4.bem",
+            "bytes": 89141
+          },
+          {
+            "path": "prop_rotor_5.bem",
+            "bytes": 89142
+          },
+          {
+            "path": "prop_rotor_6.bem",
+            "bytes": 89141
+          },
+          {
+            "path": "tilt_rotor_propulsor.res",
+            "bytes": 732590
+          }
+        ]
+      },
+      {
+        "dir": "Tiltrotor_EVTOL",
+        "file_count": 13,
+        "bytes": 5311991,
+        "main_py": "Tiltrotor.py",
+        "python_scripts": [
+          "Tiltrotor.py"
+        ],
+        "gltf": [
+          "Tiltrotor.gltf"
+        ],
+        "has_gltf": true,
+        "files": [
+          {
+            "path": "Tiltrotor.gltf",
+            "bytes": 3236370
+          },
+          {
+            "path": "Tiltrotor.py",
+            "bytes": 36838
+          },
+          {
+            "path": "Tiltrotor_rotor_geometry.res",
+            "bytes": 288955
+          },
+          {
+            "path": "front_port_rotor.bem",
+            "bytes": 89130
+          },
+          {
+            "path": "front_starboard_rotor.bem",
+            "bytes": 89134
+          },
+          {
+            "path": "outboard_port_rotor.bem",
+            "bytes": 89132
+          },
+          {
+            "path": "outboard_starboard_rotor.bem",
+            "bytes": 89136
+          },
+          {
+            "path": "prop_rotor_1.bem",
+            "bytes": 89129
+          },
+          {
+            "path": "prop_rotor_2.bem",
+            "bytes": 89128
+          },
+          {
+            "path": "proprotor_propulsor.res",
+            "bytes": 296479
+          },
+          {
+            "path": "rear_port_rotor.bem",
+            "bytes": 89126
+          },
+          {
+            "path": "rear_starboard_rotor.bem",
+            "bytes": 89130
+          },
+          {
+            "path": "tilt_rotor_propulsor.res",
+            "bytes": 740304
+          }
+        ]
+      },
+      {
+        "dir": "Tiltwing_EVTOL",
+        "file_count": 21,
+        "bytes": 5446263,
+        "main_py": "Tiltwing.py",
+        "python_scripts": [
+          "Tiltwing.py"
+        ],
+        "gltf": [
+          "Tiltwing.gltf"
+        ],
+        "has_gltf": true,
+        "files": [
+          {
+            "path": "Tiltwing.gltf",
+            "bytes": 2695418
+          },
+          {
+            "path": "Tiltwing.py",
+            "bytes": 25148
+          },
+          {
+            "path": "Tiltwing_rotor_geometry.res",
+            "bytes": 288380
+          },
+          {
+            "path": "lift_rotor_propulsor.res",
+            "bytes": 291733
+          },
+          {
+            "path": "prop_rotor_1.bem",
+            "bytes": 89124
+          },
+          {
+            "path": "prop_rotor_2.bem",
+            "bytes": 89124
+          },
+          {
+            "path": "prop_rotor_3.bem",
+            "bytes": 89125
+          },
+          {
+            "path": "prop_rotor_4.bem",
+            "bytes": 89125
+          },
+          {
+            "path": "prop_rotor_5.bem",
+            "bytes": 89123
+          },
+          {
+            "path": "prop_rotor_6.bem",
+            "bytes": 89123
+          },
+          {
+            "path": "prop_rotor_7.bem",
+            "bytes": 89124
+          },
+          {
+            "path": "prop_rotor_8.bem",
+            "bytes": 89124
+          },
+          {
+            "path": "rotor_1.bem",
+            "bytes": 89107
+          },
+          {
+            "path": "rotor_2.bem",
+            "bytes": 89107
+          },
+          {
+            "path": "rotor_3.bem",
+            "bytes": 89108
+          },
+          {
+            "path": "rotor_4.bem",
+            "bytes": 89108
+          },
+          {
+            "path": "rotor_5.bem",
+            "bytes": 89109
+          },
+          {
+            "path": "rotor_6.bem",
+            "bytes": 89109
+          },
+          {
+            "path": "rotor_7.bem",
+            "bytes": 89110
+          },
+          {
+            "path": "rotor_8.bem",
+            "bytes": 89110
+          },
+          {
+            "path": "tilt_wing_propulsor.res",
+            "bytes": 719724
+          }
+        ]
+      }
+    ]
+  }
+}
