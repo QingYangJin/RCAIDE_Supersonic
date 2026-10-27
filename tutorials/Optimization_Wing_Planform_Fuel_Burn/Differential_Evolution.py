@@ -134,6 +134,17 @@ def _atomic_json(path, value):
     os.replace(temporary, path)
 
 
+def _append_worker_record(directory, record):
+    target = Path(directory) / 'optimization_history.jsonl'
+    with target.open('a', encoding='utf-8') as stream:
+        stream.write(json.dumps(record, ensure_ascii=False, allow_nan=False) + '\n')
+        stream.flush()
+
+
+def _write_worker_history(directory, records):
+    _atomic_json(Path(directory) / 'optimization_history.json', records)
+
+
 def _signature(problem):
     tables = problem.optimization_problem
     value = {key: np.asarray(getattr(tables, key), dtype=object).tolist()
@@ -143,16 +154,18 @@ def _signature(problem):
 
 
 def _start_worker(factory_module, factory_name, signature, directory, blas_threads):
-    global _worker_problem, _thread_limiter, _worker_log
+    global _worker_factory, _worker_signature, _worker_directory
+    global _thread_limiter, _worker_log, _worker_evaluation_count, _worker_records
     directory = Path(directory) / ('worker_%d' % os.getpid())
     directory.mkdir(parents=True, exist_ok=False)
     _worker_log = (directory / 'console.log').open('a', encoding='utf-8', buffering=1)
     sys.stdout = sys.stderr = _worker_log
     _thread_limiter = threadpool_limits(limits=blas_threads)
-    _worker_problem = getattr(importlib.import_module(factory_module), factory_name)()
-    if _signature(_worker_problem) != signature:
-        raise ValueError('Worker task tables/aliases differ from the coordinator.')
-    _worker_problem.results_directory = str(directory)
+    _worker_factory = (factory_module, factory_name)
+    _worker_signature = signature
+    _worker_directory = directory
+    _worker_evaluation_count = 0
+    _worker_records = []
     from threadpoolctl import threadpool_info
     _atomic_json(directory / 'runtime.json', {
         'pid': os.getpid(), 'blas_libraries': threadpool_info(),
@@ -161,20 +174,34 @@ def _start_worker(factory_module, factory_name, signature, directory, blas_threa
 
 
 def _evaluate_candidate(x):
+    global _worker_evaluation_count, _worker_records
     import Save_Results
-    before = int(_worker_problem.evaluation_count)
-    objective = np.asarray(_worker_problem.objective(x), float).ravel()
-    constraints = np.asarray(_worker_problem.all_constraints(x), float).ravel()
+    # Mission state is mutable and therefore not safe to reuse between candidates.
+    factory_module, factory_name = _worker_factory
+    problem = getattr(importlib.import_module(factory_module), factory_name)()
+    if _signature(problem) != _worker_signature:
+        raise ValueError('Worker task tables/aliases changed after startup.')
+    problem.results_directory = str(_worker_directory)
+    objective = np.asarray(problem.objective(x), float).ravel()
+    constraints = np.asarray(problem.all_constraints(x), float).ravel()
     if objective.size != 1 or not np.all(np.isfinite(objective)) or not np.all(np.isfinite(constraints)):
         raise ValueError('Worker returned a non-finite or non-scalar response.')
+    actual = np.asarray(problem.optimization_problem.inputs[:, 1], float)
+    scales = np.asarray(problem.optimization_problem.inputs[:, 4], float)
+    if not np.allclose(actual, np.asarray(x) * scales, rtol=1e-12, atol=1e-12):
+        raise RuntimeError('Worker inputs do not match the requested candidate.')
     record = dict(record_type='performance_evaluation',
                   observed_at_utc=datetime.now(timezone.utc).isoformat(),
-                  worker_pid=os.getpid(), worker_evaluation_index=int(_worker_problem.evaluation_count),
+                  worker_pid=os.getpid(), worker_evaluation_index=_worker_evaluation_count + 1,
                   design_inputs_in_declared_units={str(r[0]): float(r[1])
-                                                  for r in _worker_problem.optimization_problem.inputs})
-    record.update(Save_Results._summary_scalars(_worker_problem))
+                                                  for r in problem.optimization_problem.inputs})
+    record.update(Save_Results._summary_scalars(problem))
+    _worker_evaluation_count += 1
+    record.update(worker_evaluation_index=_worker_evaluation_count)
+    _worker_records.append(dict(record, solver_coordinates=np.asarray(x).tolist()))
+    _write_worker_history(problem.results_directory, _worker_records)
     return (float(objective[0]), constraints, record,
-            int(_worker_problem.evaluation_count) - before, _process_resources())
+            int(problem.evaluation_count), _process_resources())
 
 
 class _BatchEvaluator:
