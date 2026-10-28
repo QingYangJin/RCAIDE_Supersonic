@@ -1,0 +1,5 @@
+case_id,expected,actual_status,error,failed_checks,matched
+NC01_fuselage_volume_binding,G18_fuselage_volume_requirement,invalid,,G18_fuselage_volume_requirement;G23_design_space_bounds,True
+NC02_span_order_inverted,GeometryError,invalid,GeometryError: span_location_2 must be smaller than span_location_3,,True
+NC03_chord_order_inverted,GeometryError,invalid,GeometryError: chord_ratio_3 < chord_ratio_2 < 1 required,,True
+NC04_negative_fuselage_length,GeometryError,invalid,"GeometryError: fuselage_length must be a positive finite number, got -1.0",,True
