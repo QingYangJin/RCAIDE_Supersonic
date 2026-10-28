@@ -79,7 +79,15 @@ def assemble(probe_dir: Path) -> dict:
                 "raw_file": "openvsp_" + label + "_with_libxml2.txt",
             }
         interpreters.append(entry)
-    tools["openvsp_python_binding"] = {"external_interpreters": interpreters}
+    tools["openvsp_python_binding"] = {
+        "external_interpreters": interpreters,
+        "sys_path_roots": [
+            r"D:\Program Files\OpenVSP\OpenVSP-3.26.1-win64-Python3.9\OpenVSP-3.26.1-win64\python",
+            r"D:\Program Files\OpenVSP\OpenVSP-3.26.1-win64-Python3.9\OpenVSP-3.26.1-win64\python\openvsp",
+            r"D:\Program Files\OpenVSP\OpenVSP-3.26.1-win64-Python3.9\OpenVSP-3.26.1-win64\python\degen_geom",
+            r"D:\Program Files\OpenVSP\OpenVSP-3.26.1-win64-Python3.9\OpenVSP-3.26.1-win64\python\utilities",
+        ],
+    }
     return {
         "probe_id": datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ"),
         "probe_dir": str(probe_dir),

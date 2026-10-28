@@ -7,6 +7,7 @@ not observed is stored as null or as an error entry, never as a pass.
 from __future__ import annotations
 
 import ast
+import copy
 import hashlib
 import importlib
 import importlib.metadata as md
@@ -70,8 +71,15 @@ OPENVSP_PYTHON_CANDIDATES = [
     r"D:\Anaconda\envs\SUAVE\python.exe",
     r"D:\Anaconda\python.exe",
 ]
+# The importable packages are nested under these directories; openvsp itself
+# imports utilities.transformations, and degen_geom is required by the shipped
+# scripts. All four entries must be on sys.path (issue found by the independent
+# P0 review, 2026-10-28).
 OPENVSP_API_PARENT_CANDIDATES = [
     r"D:\Program Files\OpenVSP\OpenVSP-3.26.1-win64-Python3.9\OpenVSP-3.26.1-win64\python",
+    r"D:\Program Files\OpenVSP\OpenVSP-3.26.1-win64-Python3.9\OpenVSP-3.26.1-win64\python\openvsp",
+    r"D:\Program Files\OpenVSP\OpenVSP-3.26.1-win64-Python3.9\OpenVSP-3.26.1-win64\python\degen_geom",
+    r"D:\Program Files\OpenVSP\OpenVSP-3.26.1-win64-Python3.9\OpenVSP-3.26.1-win64\python\utilities",
 ]
 TOOLS_LOCAL_NAMES = ["tools.local.json"]
 
@@ -227,11 +235,6 @@ def _find_tools_local(repo_root: Path):
 
 def discover_external_tools(repo_root: Path, shell_probes=None) -> dict:
     tools = {}
-    for name in ("su2_cfd", "gmsh", "vspaero"):
-        which = shutil.which(name)
-        if which:
-            EXTERNAL_TOOLS.setdefault(name, {"paths": [], "probe": None, "kind": "solver"})["paths"].append(which)
-            break
     for name, spec in EXTERNAL_TOOLS.items():
         candidates = []
         for raw in spec["paths"]:
@@ -328,6 +331,41 @@ def scan_concorde(repo_root: Path) -> dict:
         for index, line in enumerate(lines, start=1)
         if "segment_6" in line
     ]
+
+    def count_append(receiver, start=0, end=None):
+        end = len(lines) if end is None else end
+        pattern = re.compile(r"\b" + receiver + r"\.append_segment\(")
+        return sum(1 for line in lines[start:end] if pattern.search(line))
+
+    vtail_tag_line = next(
+        (i for i, line in enumerate(lines) if "vertical_stabilizer" in line and ".tag" in line), None)
+    main_wing_count = count_append("wing", 0, vtail_tag_line if vtail_tag_line is not None else len(lines))
+    vtail_count = 0
+    if vtail_tag_line is not None:
+        vtail_end = next((i for i, line in enumerate(lines)
+                          if i > vtail_tag_line and ".tag" in line and ("fuselage" in line or "fuselages" in line)),
+                         len(lines))
+        vtail_count = count_append("wing", vtail_tag_line, vtail_end)
+    component_counts = {
+        "main_wing_segments": main_wing_count,
+        "vertical_stabilizer_segments": vtail_count,
+        "fuselage_segments": count_append("fuselage"),
+        "nacelle_segments": count_append("nacelle"),
+        "mission_segments": count_append("mission"),
+    }
+    segment_tags = re.findall(r"segment\.tag\s*=\s*['\"]([^'\"]+)['\"]", text)
+    duplicate_tags = {tag: count for tag, count in Counter(segment_tags).items() if count > 1}
+    level_cruise_lines = [
+        {"line": index, "text": line.strip()[:200]}
+        for index, line in enumerate(lines, start=1)
+        if "level_cruise" in line
+    ]
+    derived_terms = [
+        ".areas.reference", ".spans.projected", ".chords.root", ".mass_properties",
+        ".wet_area", ".usable_volume", ".aspect_ratio", "reference_area",
+        ".areas.wetted", ".volume", "required_volume",
+    ]
+    derived_counts = {term: len(re.findall(re.escape(term), text)) for term in derived_terms}
     return {
         "path": str(path),
         "relative_path": str(CONCORDE_REL).replace("\\", "/"),
@@ -341,12 +379,17 @@ def scan_concorde(repo_root: Path) -> dict:
         "top_call_names": call_names.most_common(25),
         "segment_6_lines": segment_6_lines[:40],
         "segment_6_line_count": len(segment_6_lines),
+        "component_segment_counts": component_counts,
+        "mission_segment_tags": segment_tags,
+        "duplicate_segment_tags": duplicate_tags,
+        "level_cruise_lines": level_cruise_lines,
+        "derived_quantity_counts": derived_counts,
         "ast_parse_error": parse_error,
     }
 
 
-def _iter_source_files(roots, max_files=1500, max_bytes=2_000_000, time_budget_s=25.0):
-    extensions = {".py", ".yaml", ".yml", ".json", ".md", ".txt", ".jsonl"}
+def _iter_source_files(roots, max_files=1500, max_bytes=2_000_000, time_budget_s=25.0, extensions=None):
+    extensions = set(extensions or {".py", ".yaml", ".yml", ".json", ".md", ".txt", ".jsonl"})
     skip_dirs = {".git", "node_modules", "__pycache__", ".venv", "envs", "site-packages", "Lib", "include", "Scripts"}
     seen = 0
     started = time.time()
@@ -371,11 +414,11 @@ def _iter_source_files(roots, max_files=1500, max_bytes=2_000_000, time_budget_s
                 yield path
 
 
-def _search_terms(roots, terms, max_hits=40) -> dict:
+def _search_terms(roots, terms, max_hits=40, extensions=None) -> dict:
     lowered = [(t, t.lower()) for t in terms]
     hits = []
     scanned = 0
-    for path in _iter_source_files(roots):
+    for path in _iter_source_files(roots, extensions=extensions):
         scanned += 1
         try:
             text = path.read_text(encoding="utf-8", errors="replace")
@@ -390,6 +433,30 @@ def _search_terms(roots, terms, max_hits=40) -> dict:
             if len(hits) >= max_hits:
                 return {"terms": terms, "scanned_files": scanned, "hits": hits, "truncated": True}
     return {"terms": terms, "scanned_files": scanned, "hits": hits, "truncated": False}
+
+
+def _legacy_scan_roots(repo_root: Path) -> list:
+    """Bounded read-only roots for the historical 13-D application scan."""
+    roots = [repo_root / "tutorials", repo_root / "research"]
+    for extra in [Path(r"D:\CodexMemory\RCAIDE"), Path(r"D:\CodexMemory") / "MAML\u5143\u5b66\u4e60"]:
+        if extra.exists():
+            roots.append(extra)
+    return roots
+
+
+def _find_maml_source_project(roots) -> list:
+    """Look for an unpacked maml-opt source tree next to the installed wheel."""
+    found = []
+    for root in roots:
+        for name in ("maml-opt", "maml_opt", "maml-opt-src"):
+            candidate = Path(root) / name
+            if not candidate.is_dir():
+                continue
+            for marker in ("pyproject.toml", "setup.py", "setup.cfg"):
+                if (candidate / marker).exists():
+                    found.append({"path": str(candidate), "marker": marker})
+                    break
+    return found
 
 
 def discover_maml_opt(repo_root: Path) -> dict:
@@ -427,14 +494,16 @@ def discover_maml_opt(repo_root: Path) -> dict:
             entry["api"][full] = mod_entry
     except Exception as exc:
         entry["error"] = type(exc).__name__ + ": " + str(exc)
-    roots = [repo_root / "tutorials", repo_root / "research"]
-    for extra in [Path(r"D:\CodexMemory\RCAIDE"), Path(r"D:\CodexMemory") / "MAML" + "\u5143\u5b66\u4e60"]:
-        if extra.exists():
-            roots.append(extra)
+    legacy_roots = _legacy_scan_roots(repo_root)
+    entry["scan_roots"] = [str(p) for p in legacy_roots]
+    # Code-only scan: markdown research notes mention these terms but are not the
+    # historical application; counting them would hide the real "not located" result.
     entry["legacy_13d_scan"] = _search_terms(
-        roots,
+        legacy_roots,
         ["single_cruise", "maml_a", "route_a", "design_space_15", "design_space_13", "concorde"],
+        extensions={".py", ".yaml", ".yml", ".json"},
     )
+    entry["source_project"] = _find_maml_source_project(legacy_roots)
     return entry
 
 
@@ -485,22 +554,49 @@ def build_blockers(environment: dict) -> list:
     py = environment.get("python", {})
 
     openvsp = tools.get("openvsp_python_binding", {})
-    if not (openvsp.get("project_interpreter_import") or {}).get("ok"):
-        blockers.append({
-            "id": "B-P1-OPENVSP-BINDING",
-            "severity": "major",
-            "stage": "P1",
-            "statement": ("OpenVSP 3.26.1 Python API is not importable in the available interpreters: the shipped _vsp.pyd "
-                          "(x64) fails with ImportError 'DLL load failed while importing _vsp'. The pyd names libxml2.dll, "
-                          "which the OpenVSP install does not contain; a PATH-supplemented retry with D:/Anaconda/Library/bin "
-                          "also failed. P1 must drive vsp.exe/.vsp3 in a separate process or repair the binding; no in-process "
-                          "OpenVSP geometry call may be assumed available, and no OpenVSP version is claimed in solver_versions."),
-            "evidence": {
-                "project_import": openvsp.get("project_interpreter_import"),
-                "external_interpreters": openvsp.get("external_interpreters"),
-                "install_probe": "OpenVSP install root 3.26.1-win64 contains vsp.exe/vspaero.exe but no libxml2.dll; _vsp.pyd is PE x64 and dates 2022-01-06.",
-            },
-        })
+    project_openvsp_ok = bool((openvsp.get("project_interpreter_import") or {}).get("ok"))
+    external = openvsp.get("external_interpreters") or []
+    external_openvsp_ok = [
+        item for item in external
+        if "OPENVSP_IMPORT_OK" in ((item.get("probe") or {}).get("stdout") or "")
+    ]
+    if not project_openvsp_ok:
+        if external_openvsp_ok:
+            blockers.append({
+                "id": "B-P1-OPENVSP-BINDING",
+                "severity": "minor",
+                "stage": "P1",
+                "statement": ("The project interpreter (Python 3.11) cannot import the OpenVSP 3.26.1 binding because the "
+                              "shipped _vsp.pyd is built for Python 3.9; this is a worker-ABI constraint, not a broken install. "
+                              "The SUAVE Python 3.9 interpreter imports openvsp successfully once the package roots "
+                              "(python/, python/openvsp, python/degen_geom, python/utilities) are on sys.path. P1 must drive "
+                              "OpenVSP through an external Python 3.9 worker (vsp.exe/.vsp3 remains a fallback); in-process "
+                              "import from envs/RCAIDE must not be assumed, and the OpenVSP version is reported only from the "
+                              "working worker probe, not from the 3.11 interpreter."),
+                "evidence": {
+                    "project_import": openvsp.get("project_interpreter_import"),
+                    "working_external_interpreters": [
+                        {"python": item.get("python"), "stdout": ((item.get("probe") or {}).get("stdout") or "")[:400]}
+                        for item in external_openvsp_ok
+                    ],
+                    "sys_path_roots": OPENVSP_API_PARENT_CANDIDATES,
+                },
+            })
+        else:
+            blockers.append({
+                "id": "B-P1-OPENVSP-BINDING",
+                "severity": "major",
+                "stage": "P1",
+                "statement": ("OpenVSP 3.26.1 Python API could not be imported by the project interpreter nor by the probed "
+                              "external Python interpreters. P1 must drive vsp.exe/.vsp3 in a separate process or repair the "
+                              "binding; no in-process OpenVSP geometry call may be assumed available, and no OpenVSP version is "
+                              "claimed in solver_versions."),
+                "evidence": {
+                    "project_import": openvsp.get("project_interpreter_import"),
+                    "external_interpreters": external,
+                    "sys_path_roots": OPENVSP_API_PARENT_CANDIDATES,
+                },
+            })
     gmsh = tools.get("gmsh_python_binding", {})
     if not (gmsh.get("project_interpreter_import") or {}).get("ok"):
         blockers.append({
@@ -528,13 +624,32 @@ def build_blockers(environment: dict) -> list:
     })
     maml_dist = maml.get("distribution", {}) if isinstance(maml, dict) else {}
     legacy = maml.get("legacy_13d_scan") or {}
-    if not legacy.get("hits"):
+    legacy_hits = legacy.get("hits") or []
+    source_project = maml.get("source_project") or []
+    if not source_project:
+        if legacy.get("scanned_files") is None:
+            statement = ("The bounded scan for the historical 13-variable single_cruise application did not complete "
+                         "(no file was scanned); P5 must re-run the scan with user help before claiming it is absent.")
+        elif not legacy_hits:
+            statement = ("The bounded code scan completed (" + str(legacy.get("scanned_files")) + " files) and found no hit for the "
+                         "historical 13-variable single_cruise application; P5 must either locate it with user help or build the "
+                         "response-model path from the installed maml-opt 0.1.0 API only.")
+        else:
+            statement = ("The bounded code scan completed (" + str(legacy.get("scanned_files")) + " files) and returned "
+                         + str(len(legacy_hits)) + " textual hits, but none is a candidate application source project "
+                         "(no maml-opt/single_cruise app tree with pyproject/setup was found); the historical 13-variable "
+                         "application remains unlocated. P5 must locate it with user help or build the response-model path "
+                         "from the installed maml-opt 0.1.0 API only.")
         blockers.append({
             "id": "B-P5-LEGACY-13D-APP",
             "severity": "major",
             "stage": "P5",
-            "statement": "The historical 13-variable single_cruise application was not located in bounded scans; P5 must either locate it with user help or build the response-model path from the installed maml-opt 0.1.0 API only.",
-            "evidence": {"scanned_files": legacy.get("scanned_files"), "roots": ["tutorials", "research", "D:/CodexMemory/RCAIDE", "D:/CodexMemory/..."]},
+            "statement": statement,
+            "evidence": {"scanned_files": legacy.get("scanned_files"), "roots": maml.get("scan_roots"),
+                         "hit_files": sorted({
+                             str((hit.get("path") if isinstance(hit, dict) else hit))
+                             for hit in legacy_hits if (hit.get("path") if isinstance(hit, dict) else hit)
+                         })[:20]},
         })
     if not maml_dist.get("direct_url") and maml_dist.get("location"):
         blockers.append({
@@ -577,13 +692,127 @@ def _md_table(headers, rows) -> str:
     return "\n".join(out) + "\n"
 
 
-def _write_evidence(output_dir: Path, environment: dict) -> dict:
+def _sanitize_text(text: str, repo_root: Path) -> str:
+    """Placeholder repository/home/external-evidence roots in committed evidence.
+
+    Standard tool install locations (Program Files, Anaconda) are retained because
+    they are needed to reproduce the environment; they contain no username, token
+    or secret path.
+    """
+    replacements = [
+        (str(repo_root), "<repo_root>"),
+        (str(repo_root).replace("\\", "/"), "<repo_root>"),
+        (str(Path.home()), "<home>"),
+        (str(Path.home()).replace("\\", "/"), "<home>"),
+        (r"D:\CodexMemory", "<external_evidence_root>"),
+        ("D:/CodexMemory", "<external_evidence_root>"),
+    ]
+    for source, target in replacements:
+        if source:
+            text = text.replace(source, target)
+    return text
+
+
+def _sanitize_obj(value, repo_root: Path):
+    if isinstance(value, str):
+        return _sanitize_text(value, repo_root)
+    if isinstance(value, list):
+        return [_sanitize_obj(item, repo_root) for item in value]
+    if isinstance(value, dict):
+        return {key: _sanitize_obj(item, repo_root) for key, item in value.items()}
+    return value
+
+
+def _write_run_readme(output_dir: Path, summary: dict, environment: dict, repo_root: Path) -> str:
+    blockers = environment.get("blockers") or []
+    lines = [
+        "# Audit run " + str(summary.get("run_id")),
+        "",
+        "Read-only P0 environment/source audit for RCAIDE_Supersonic Issue #1.",
+        "No Mission, CFD case, DOE or optimization was executed.",
+        "",
+        "| field | value |",
+        "| --- | --- |",
+        "| generated_at | " + str(environment.get("generated_at")) + " |",
+        "| stage | " + str(summary.get("stage")) + " |",
+        "| status | " + str(summary.get("status")) + " |",
+        "| git_sha | " + str(summary.get("git_sha")) + " |",
+        "| wall_seconds | " + str(summary.get("wall_seconds")) + " |",
+        "| total_true_evaluations | " + str(summary.get("total_true_evaluations")) + " |",
+        "| blockers | " + str(len(blockers)) + " |",
+        "",
+        "## Files",
+        "",
+        "- environment.json: full environment snapshot and blocker list",
+        "- summary.json: Issue #1 mandatory summary fields (missing values are null)",
+        "- evidence/: tables and raw command outputs mirrored as JSON/Markdown",
+        "- probes/: raw shell-probe outputs and shell_probes.json (when present)",
+        "",
+        "## Reproduction",
+        "",
+        "See research/concorde_metaopt/README.md (probe -> assemble_probes -> audit).",
+        "",
+        "## Notes",
+        "",
+        "Repository root, user home and the external evidence root are replaced by",
+        "placeholders in generated JSON/Markdown; tool install locations are kept for",
+        "reproducibility and contain no username or secret.",
+    ]
+    for note in environment.get("notes") or []:
+        lines.append("- " + str(note))
+    path = output_dir / "README.md"
+    path.write_text(_sanitize_text("\n".join(lines) + "\n", repo_root), encoding="utf-8")
+    return "README.md"
+
+
+def discover_checks(repo_root: Path) -> dict:
+    """Record cheap reproducibility checks: pip check and installed-package tests."""
+    pip = _run([sys.executable, "-m", "pip", "check"], cwd=repo_root, timeout=120)
+    checks = {
+        "pip_check": {
+            "cmd": pip.get("cmd"),
+            "returncode": pip.get("returncode"),
+            "stdout": pip.get("stdout", "")[-4000:],
+            "stderr": pip.get("stderr", "")[-4000:],
+            "seconds": pip.get("seconds"),
+            "timed_out": pip.get("timed_out"),
+        },
+        "package_tests": {
+            "maml_opt": {
+                "available": False,
+                "reason": "installed wheel only; no source tree/tests and direct_url is null",
+            },
+            "rcaide_cfd": None,
+        },
+    }
+    multifidelity = Path(r"D:\CodexMemory\RCAIDE\multifidelity")
+    tests_dir = multifidelity / "tests"
+    if tests_dir.is_dir():
+        # The project tests are not a package under multifidelity; run discover with
+        # a relative start dir and cwd=multifidelity (verified: 63 tests OK, 12.8 s).
+        run = _run([sys.executable, "-m", "unittest", "discover", "-s", "tests"],
+                   cwd=multifidelity, timeout=600)
+        checks["package_tests"]["rcaide_cfd"] = {
+            "tests_dir": str(tests_dir),
+            "returncode": run.get("returncode"),
+            "stdout_tail": (run.get("stdout") or "")[-6000:],
+            "stderr_tail": (run.get("stderr") or "")[-3000:],
+            "seconds": run.get("seconds"),
+            "timed_out": run.get("timed_out"),
+        }
+    else:
+        checks["package_tests"]["rcaide_cfd"] = {"available": False, "reason": "tests dir missing"}
+    return checks
+
+
+def _write_evidence(output_dir: Path, environment: dict, repo_root: Path) -> dict:
     evidence = output_dir / "evidence"
     evidence.mkdir(parents=True, exist_ok=True)
     written = {}
 
     def dump(name, payload):
         path = evidence / name
+        payload = _sanitize_obj(payload, repo_root)
         path.write_text(json.dumps(payload, indent=2, ensure_ascii=False), encoding="utf-8")
         written[name] = str(path.relative_to(output_dir)).replace("\\", "/")
 
@@ -598,10 +827,13 @@ def _write_evidence(output_dir: Path, environment: dict) -> dict:
 
     git = environment["git"]
     (evidence / "git_status.txt").write_text(
-        "branch: " + str(git.get("branch")) + "\n"
-        "head_sha: " + str(git.get("head_sha")) + "\n"
-        "dirty: " + str(git.get("dirty")) + "\n\n"
-        + "\n".join(git.get("status_lines", [])) + "\n",
+        _sanitize_text(
+            "branch: " + str(git.get("branch")) + "\n"
+            "head_sha: " + str(git.get("head_sha")) + "\n"
+            "dirty: " + str(git.get("dirty")) + "\n\n"
+            + "\n".join(git.get("status_lines", [])) + "\n",
+            repo_root,
+        ),
         encoding="utf-8",
     )
     written["git_status.txt"] = "evidence/git_status.txt"
@@ -610,11 +842,24 @@ def _write_evidence(output_dir: Path, environment: dict) -> dict:
     imports = environment["packages"]["imports"]
     rows = []
     for name, info in packages.items():
-        import_info = imports.get(name, {})
-        rows.append([name, info.get("version"), "ok" if import_info.get("ok") else "failed", info.get("location"), import_info.get("error")])
+        import_info = imports.get(name)
+        if import_info is None:
+            # Only IMPORT_MODULES entries are probed; everything else must not be
+            # mislabelled as a failed import (independent P0 review finding, 2026-10-28).
+            status, error, probe_note = "not_probed", None, "no import probe for this distribution"
+        else:
+            status = "ok" if import_info.get("ok") else "failed"
+            error = import_info.get("error")
+            probe_note = "imported in project interpreter"
+        rows.append([name, info.get("version"), status, info.get("location"), error, probe_note])
     (evidence / "toolchain_table.md").write_text(
-        "# Toolchain inventory (P0 audit)\n\n" + _md_table(
-            ["distribution", "version", "import", "location", "error"], rows), encoding="utf-8")
+        _sanitize_text(
+            "# Toolchain inventory (P0 audit)\n\n"
+            "Import status is 'not_probed' when no import probe exists for that distribution; it is never reported as a failure.\n\n"
+            + _md_table(["distribution", "version", "import", "location", "error", "probe_note"], rows),
+            repo_root,
+        ),
+        encoding="utf-8")
     written["toolchain_table.md"] = "evidence/toolchain_table.md"
 
     api_rows = []
@@ -624,23 +869,43 @@ def _write_evidence(output_dir: Path, environment: dict) -> dict:
         for fn in mod.get("functions", []):
             api_rows.append([module_name, "function", fn.get("name"), fn.get("signature")])
     (evidence / "api_table.md").write_text(
-        "# Observed installed-package API (P0 audit)\n\n"
-        "Only members whose __module__ starts with maml_opt are listed. No API is assumed beyond this table.\n\n"
-        + _md_table(["module", "kind", "name", "signature"], api_rows), encoding="utf-8")
+        _sanitize_text(
+            "# Observed installed-package API (P0 audit)\n\n"
+            "Only members whose __module__ starts with maml_opt are listed. No API is assumed beyond this table.\n\n"
+            + _md_table(["module", "kind", "name", "signature"], api_rows),
+            repo_root,
+        ), encoding="utf-8")
     written["api_table.md"] = "evidence/api_table.md"
 
     concorde = environment["concorde"]
     term_rows = [[term, count] for term, count in sorted(concorde.get("term_counts", {}).items())]
+    component_rows = [[name, count] for name, count in (concorde.get("component_segment_counts") or {}).items()]
+    mission_tags = concorde.get("mission_segment_tags") or []
+    duplicate = concorde.get("duplicate_segment_tags") or {}
+    duplicate_rows = [[tag, count] for tag, count in sorted(duplicate.items())]
+    level_rows = [[item["line"], item["text"]] for item in (concorde.get("level_cruise_lines") or [])]
+    derived_rows = [[term, count] for term, count in sorted((concorde.get("derived_quantity_counts") or {}).items())]
     (evidence / "concorde_structure.md").write_text(
-        "# Concorde.py static structure (P0 audit)\n\n"
-        "relative_path: " + str(concorde.get("relative_path")) + "\n"
-        "sha256: " + str(concorde.get("sha256")) + "\n"
-        "lines: " + str(concorde.get("line_count")) + "\n"
-        "segment_6 references: " + str(concorde.get("segment_6_line_count")) + "\n\n"
-        "## Term counts\n\n" + _md_table(["term", "count"], term_rows)
-        + "\n## Top-level functions\n\n" + "\n".join(
-            "- " + fn["name"] + " (line " + str(fn["line"]) + ")" for fn in concorde.get("top_level_functions", []))
-        + "\n",
+        _sanitize_text(
+            "# Concorde.py static structure (P0 audit)\n\n"
+            "relative_path: " + str(concorde.get("relative_path")) + "\n"
+            "sha256: " + str(concorde.get("sha256")) + "\n"
+            "lines: " + str(concorde.get("line_count")) + "\n"
+            "segment_6 references: " + str(concorde.get("segment_6_line_count")) + "\n\n"
+            "## Component segment counts\n\n" + _md_table(["component", "append_segment calls"], component_rows)
+            + "\n## Mission segment tags (in source order)\n\n"
+            + "count: " + str(len(mission_tags)) + "\n\n"
+            + ", ".join("'" + tag + "'" for tag in mission_tags) + "\n"
+            + "\n## level_cruise occurrences\n\n" + _md_table(["line", "text"], level_rows)
+            + "\n## Duplicate segment tags (same tag reused)\n\n"
+            + (_md_table(["tag", "count"], duplicate_rows) if duplicate_rows else "none\n")
+            + "\n## Derived-quantity markers\n\n" + _md_table(["term", "count"], derived_rows)
+            + "\n## Term counts\n\n" + _md_table(["term", "count"], term_rows)
+            + "\n## Top-level functions\n\n" + "\n".join(
+                "- " + fn["name"] + " (line " + str(fn["line"]) + ")" for fn in concorde.get("top_level_functions", []))
+            + "\n",
+            repo_root,
+        ),
         encoding="utf-8")
     written["concorde_structure.md"] = "evidence/concorde_structure.md"
 
@@ -649,8 +914,23 @@ def _write_evidence(output_dir: Path, environment: dict) -> dict:
         blocker_lines.append("## " + item["id"] + " [" + item["severity"] + ", " + item["stage"] + "]")
         blocker_lines.append(item["statement"])
         blocker_lines.append("")
-    (evidence / "blocker_list.md").write_text("\n".join(blocker_lines), encoding="utf-8")
+    (evidence / "blocker_list.md").write_text(_sanitize_text("\n".join(blocker_lines), repo_root), encoding="utf-8")
     written["blocker_list.md"] = "evidence/blocker_list.md"
+
+    checks = environment.get("checks") or {}
+    dump("checks.json", checks)
+    pip_check = checks.get("pip_check") or {}
+    (evidence / "pip_check.txt").write_text(
+        _sanitize_text(
+            "command: " + " ".join(str(part) for part in (pip_check.get("cmd") or [])) + "\n"
+            "returncode: " + str(pip_check.get("returncode")) + "\n\n"
+            "stdout:\n" + str(pip_check.get("stdout") or "") + "\n"
+            "stderr:\n" + str(pip_check.get("stderr") or "") + "\n",
+            repo_root,
+        ),
+        encoding="utf-8",
+    )
+    written["pip_check.txt"] = "evidence/pip_check.txt"
 
     return written
 
@@ -677,7 +957,8 @@ def run_audit(repo_root=None, output_root=None, run_id=None, shell_probes=None, 
         "notes": [
             "Read-only audit: no Mission, CFD case or optimization was executed.",
             "Missing or unobservable values are null; failed probes are recorded with their error text.",
-            "Absolute local paths are recorded for traceability; no token or secret value is read.",
+            "Generated evidence placeholders the repository root, the user home and the external evidence root; standard tool install locations are kept because they contain no username, token or secret path.",
+            "The run directory contains a README.md describing this run and its reproduction commands.",
         ],
         "git": _safe("git", lambda: discover_git(repo_root, shell_probes)),
         "python": _safe("python", discover_python),
@@ -687,6 +968,7 @@ def run_audit(repo_root=None, output_root=None, run_id=None, shell_probes=None, 
         "maml_opt": _safe("maml_opt", lambda: discover_maml_opt(repo_root)),
         "rcaide_cfd": _safe("rcaide_cfd", lambda: discover_rcaide_cfd(repo_root)),
         "rcaide": _safe("rcaide", discover_rcaide),
+        "checks": _safe("checks", lambda: discover_checks(repo_root)),
     }
     environment["blockers"] = build_blockers(environment)
 
@@ -734,20 +1016,34 @@ def run_audit(repo_root=None, output_root=None, run_id=None, shell_probes=None, 
         elif candidates:
             summary["solver_versions"][key] = (candidates[0].get("probe") or {}).get("stdout", "").strip()[:200] or None
 
+    openvsp_binding = external.get("openvsp_python_binding") or {}
+    for item in openvsp_binding.get("external_interpreters") or []:
+        stdout = ((item.get("probe") or {}).get("stdout") or "")
+        for line in stdout.splitlines():
+            if line.startswith("OPENVSP_VERSION "):
+                version_text = line.split(" ", 1)[1].strip() if " " in line else ""
+                if version_text:
+                    summary["solver_versions"]["openvsp"] = version_text[:200]
+                break
     if shell_probes:
         environment["notes"].append("Git and external tool facts include a shell probe conducted by research/concorde_metaopt/scripts/probe_external_tools.sh; probe_source records which path supplied them.")
-    evidence = _write_evidence(output_dir, environment)
+    summary["wall_seconds"] = round(time.time() - started, 3)
+    evidence = _write_evidence(output_dir, environment, repo_root)
+    readme = _write_run_readme(output_dir, summary, environment, repo_root)
     summary["artifacts"] = {
         "environment": "environment.json",
         "summary": "summary.json",
+        "readme": readme,
         "evidence_dir": "evidence/",
         "evidence": evidence,
+        "checks": "evidence/checks.json",
     }
-    summary["wall_seconds"] = round(time.time() - started, 3)
     probes_dir = output_dir / "probes"
     if probes_dir.exists():
         summary["artifacts"]["probes_dir"] = "probes/"
     environment["summary_ref"] = "summary.json"
-    (output_dir / "environment.json").write_text(json.dumps(environment, indent=2, ensure_ascii=False), encoding="utf-8")
-    (output_dir / "summary.json").write_text(json.dumps(summary, indent=2, ensure_ascii=False), encoding="utf-8")
+    (output_dir / "environment.json").write_text(
+        json.dumps(_sanitize_obj(environment, repo_root), indent=2, ensure_ascii=False), encoding="utf-8")
+    (output_dir / "summary.json").write_text(
+        json.dumps(_sanitize_obj(summary, repo_root), indent=2, ensure_ascii=False), encoding="utf-8")
     return {"summary": summary, "environment": environment, "output_dir": str(output_dir)}
