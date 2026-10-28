@@ -1,0 +1,1404 @@
+case_id,check_id,category,subject,status,model_value,reference_value,tolerance,delta,detail
+baseline,G01_wing_area_closure,model,main_wing.area_m2,pass,358.25000000000006,358.25,1e-09,5.684341886080802e-14,sum of the four trapezoid sections equals the requested wing area
+baseline,G02_wing_span_derivation,model,main_wing.span_m,pass,25.604638251691824,25.604638251691824,1e-09,0.0,span = sqrt(wing_area * aspect_ratio)
+baseline,G03_wing_aspect_ratio_closure,model,main_wing.aspect_ratio,pass,358.25000000000006,358.2500000000001,1e-09,-5.684341886080802e-14,area = span^2 / aspect_ratio
+baseline,G04_wing_root_chord_positive,model,main_wing.root_chord_m,pass,,,,,root chord 29.901819 m
+baseline,G05_wing_section_span_order,model,main_wing.sections.percent_span_location,pass,,,,,"span fractions [0, 0.480469, 0.945313, 1]"
+baseline,G06_wing_chord_positive_monotonic,model,main_wing.sections.chord_m,pass,,,,,"chords [29.9018, 12.2084, 3.89256, 0.973136]"
+baseline,G07_wing_sweep_range,model,main_wing.sections.quarter_chord_sweep_deg,pass,,,,,"sweeps [67, 48, 71, 71]"
+baseline,G08_wing_tip_twist_in_bounds,model,main_wing.sections.tip.twist_deg,pass,,,,,tip twist 0.000000 deg
+baseline,G09_wing_wetted_area_positive,model,main_wing.wetted_area_m2,pass,,,,,wetted 717.575 m2 vs reference 358.250 m2
+baseline,G10_wing_exposed_le_reference,model,main_wing.exposed_area_m2,pass,,,,,exposed 358.250 m2 <= reference 358.250 m2; wing-fuselage unexposed span is not modelled in P1
+baseline,G11_tail_area_closure,model,vertical_stabilizer.area_m2,pass,33.91,33.91,1e-09,0.0,tail planform area equals the requested vertical_tail_area
+baseline,G12_tail_span_derivation,model,vertical_stabilizer.span_m,pass,5.0093312926976585,5.0093312926976585,1e-09,0.0,tail span = sqrt(vertical_tail_area * 0.74)
+baseline,G13_tail_sections_positive_monotonic,model,vertical_stabilizer.sections,pass,,,,,"span fractions [0, 0.4, 1] chords [13.1576, 6.80566, 2.45004]"
+baseline,G14_tail_sweep_range,model,vertical_stabilizer.sections.quarter_chord_sweep_deg,pass,,,,,"sweeps [63, 40, 0]"
+baseline,G15_fuselage_cabin_positive,model,fuselage.cabin_length_m,pass,,,,,cabin 30.844000 m = total 61.660 - nose 12.384 - tail 18.432
+baseline,G16_fuselage_station_order,model,fuselage.stations.x_m,pass,,,,,"x stations [0, 3.02863, 5.77404, 9.07877, 12.384, 43.228, 47.5354, 61.66]"
+baseline,G17_fuselage_station_tags_unique,model,fuselage.stations.tag,pass,,,,,"tags segment_0, segment_1, segment_2, segment_3, segment_4, segment_5, segment_6, segment_7"
+baseline,G18_fuselage_volume_requirement,constraint,fuselage.usable_volume_m3,pass,231.62809266421624,110.0,,,"usable 231.628 m3, required 110.000 m3, margin 121.628 m3"
+baseline,G19_fuselage_wetted_front_positive,model,fuselage.wetted_area_m2,pass,,,,,"wetted 488.922 m2, front projected 7.510 m2"
+baseline,G20_mass_positive_finite,model,mass_kg,pass,,,,,"operating empty 78700.0 kg, total takeoff 184880.0 kg"
+baseline,G21_cg_inside_fuselage,model,cg_x_m,pass,,,,,"cg 28.287 m, fuselage length 61.660 m"
+baseline,G22_static_margin_finite,model,static_margin,pass,,,,,static margin 0.1371 (provisional; excludes tail lift)
+baseline,G23_design_space_bounds,constraint,design vector,pass,,,,,within bounds and cross constraints
+baseline,source_wing_root_chord,source,wing.root_chord_m,warn,29.901818514349216,33.8,,-3.898181485650781,"upstream Concorde.py declares 33.800000, the P1 geometry model derives 29.901819 (-11.53%)"
+baseline,source_wing_span,source,wing.span_m,info,25.604638251691824,25.6,,0.004638251691822859,"upstream Concorde.py declares 25.600000, the P1 geometry model derives 25.604638 (0.02%)"
+baseline,source_wing_wetted,source,wing.wetted_area_m2,warn,717.5747500000001,601.0,,116.57475000000011,"upstream Concorde.py declares 601.000000, the P1 geometry model derives 717.574750 (19.40%)"
+baseline,source_wing_exposed,source,wing.exposed_area_m2,warn,358.25000000000006,326.5,,31.750000000000057,"upstream Concorde.py declares 326.500000, the P1 geometry model derives 358.250000 (9.72%)"
+baseline,source_tail_span,source,tail.span_m,warn,5.0093312926976585,6.0,,-0.9906687073023415,"upstream Concorde.py declares 6.000000, the P1 geometry model derives 5.009331 (-16.51%)"
+baseline,source_tail_root_chord,source,tail.root_chord_m,warn,13.157616068421863,14.5,,-1.3423839315781372,"upstream Concorde.py declares 14.500000, the P1 geometry model derives 13.157616 (-9.26%)"
+baseline,source_fuselage_wetted,source,fuselage.wetted_area_m2,warn,488.92216679029485,442.0,,46.92216679029485,"upstream Concorde.py declares 442.000000, the P1 geometry model derives 488.922167 (10.62%)"
+baseline,source_fuselage_front_projected,source,fuselage.front_projected_area_m2,warn,7.509664526786937,11.9,,-4.390335473213064,"upstream Concorde.py declares 11.900000, the P1 geometry model derives 7.509665 (-36.89%)"
+baseline,R00_rcaide_available,rcaide,RCAIDE geometry adapter,pass,,,,,vehicle rebuilt
+baseline,R01_wing_area_match,rcaide,wing.area_m2,pass,358.25000000000006,358.25000000000006,1e-09,0.0,
+baseline,R02_wing_span_match,rcaide,wing.span_m,pass,25.604638251691824,25.604638251691824,1e-12,0.0,
+baseline,R03_wing_root_chord_match,rcaide,wing.root_chord_m,pass,29.901818514349216,29.901818514349216,1e-12,0.0,
+baseline,R04_wing_mac_match,rcaide,wing.mean_aerodynamic_chord_m,pass,18.489892944055953,18.489892944055953,1e-06,0.0,
+baseline,R05_wing_wetted_match,rcaide,wing.wetted_area_m2,pass,717.5747500000001,717.5747500000001,0.0001,0.0,
+baseline,R06_wing_exposed_match,rcaide,wing.exposed_area_m2,pass,358.25000000000006,358.25000000000006,0.0001,0.0,
+baseline,R07_wing_ac_match,rcaide,wing.aerodynamic_center_x_m,pass,16.821978259514246,16.79639739469192,0.25,0.025580864822327243,"model AC = LE(MAC) + 0.25 MAC, RCAIDE AC = area centroid - 0.25 MAC; both are equivalent for a single trapezoid but differ slightly for a multi-section planform, so a small difference is a diagnostic note, not a geometry error"
+baseline,R08_wing_le_mac_match,rcaide,wing.leading_edge_mac_x_m,pass,12.199505023500258,12.199505023500262,0.01,-3.552713678800501e-15,model LE(MAC) vs RCAIDE LEMAC minus wing origin
+baseline,R09_tail_area_match,rcaide,tail.area_m2,pass,33.91,33.91,1e-09,0.0,
+baseline,R10_tail_span_match,rcaide,tail.span_m,pass,5.0093312926976585,5.0093312926976585,1e-12,0.0,
+baseline,R11_tail_mac_match,rcaide,tail.mean_aerodynamic_chord_m,pass,8.124384956069033,8.124384956069035,1e-06,-1.7763568394002505e-15,
+baseline,R12_fuselage_wetted_match,rcaide,fuselage.wetted_area_m2,pass,488.92216679029485,488.9221667902949,1e-09,-5.684341886080802e-14,
+baseline,R13_fuselage_front_projected_match,rcaide,fuselage.front_projected_area_m2,pass,7.509664526786937,7.509664526786935,1e-09,1.7763568394002505e-15,
+baseline,R14_fuselage_effective_diameter_match,rcaide,fuselage.effective_diameter_m,pass,3.1039047869569845,3.1039047869569845,1e-09,0.0,
+baseline,R15_fuselage_lengths_match,rcaide,fuselage.lengths.total_m,pass,61.66,61.66,1e-12,0.0,
+baseline,R16_01_section_sweep_match,rcaide,wing.sections[0].quarter_chord_sweep_deg,pass,67.0,67.0,1e-09,0.0,
+baseline,R16_02_section_sweep_match,rcaide,wing.sections[1].quarter_chord_sweep_deg,pass,48.0,48.00000000000001,1e-09,-7.105427357601002e-15,
+baseline,R16_03_section_sweep_match,rcaide,wing.sections[2].quarter_chord_sweep_deg,pass,71.0,71.0,1e-09,0.0,
+baseline,R16_tip_sweep_rcaide_convention,rcaide,wing.sections.tip.quarter_chord_sweep_deg,info,71.0,71.0,,,"RCAIDE wing_planform forces the last segment sweep to the previous segment (model tip 71.000 deg, RCAIDE tip 71.000 deg); this is an RCAIDE convention, not a model error"
+baseline,R17_airfoil_thickness_declared_vs_imported,rcaide,wing.section.thickness_to_chord,pass,0.03,0.029990192989497864,0.002,9.80701050213445e-06,RCAIDE replaces the declared t/c with the value read from the airfoil file; difference is reported
+baseline,R18_wing_taper_match,rcaide,wing.taper_ratio,pass,0.03254437869822486,0.03254437869822486,1e-09,0.0,
+W01_plus,G01_wing_area_closure,model,main_wing.area_m2,pass,370.25,370.25,1e-09,0.0,sum of the four trapezoid sections equals the requested wing area
+W01_plus,G02_wing_span_derivation,model,main_wing.span_m,pass,26.029934690659523,26.029934690659523,1e-09,0.0,span = sqrt(wing_area * aspect_ratio)
+W01_plus,G03_wing_aspect_ratio_closure,model,main_wing.aspect_ratio,pass,370.25,370.25000000000006,1e-09,-5.684341886080802e-14,area = span^2 / aspect_ratio
+W01_plus,G04_wing_root_chord_positive,model,main_wing.root_chord_m,pass,,,,,root chord 30.398492 m
+W01_plus,G05_wing_section_span_order,model,main_wing.sections.percent_span_location,pass,,,,,"span fractions [0, 0.480469, 0.945313, 1]"
+W01_plus,G06_wing_chord_positive_monotonic,model,main_wing.sections.chord_m,pass,,,,,"chords [30.3985, 12.4112, 3.95721, 0.9893]"
+W01_plus,G07_wing_sweep_range,model,main_wing.sections.quarter_chord_sweep_deg,pass,,,,,"sweeps [67, 48, 71, 71]"
+W01_plus,G08_wing_tip_twist_in_bounds,model,main_wing.sections.tip.twist_deg,pass,,,,,tip twist 0.000000 deg
+W01_plus,G09_wing_wetted_area_positive,model,main_wing.wetted_area_m2,pass,,,,,wetted 741.611 m2 vs reference 370.250 m2
+W01_plus,G10_wing_exposed_le_reference,model,main_wing.exposed_area_m2,pass,,,,,exposed 370.250 m2 <= reference 370.250 m2; wing-fuselage unexposed span is not modelled in P1
+W01_plus,G11_tail_area_closure,model,vertical_stabilizer.area_m2,pass,33.91,33.91,1e-09,0.0,tail planform area equals the requested vertical_tail_area
+W01_plus,G12_tail_span_derivation,model,vertical_stabilizer.span_m,pass,5.0093312926976585,5.0093312926976585,1e-09,0.0,tail span = sqrt(vertical_tail_area * 0.74)
+W01_plus,G13_tail_sections_positive_monotonic,model,vertical_stabilizer.sections,pass,,,,,"span fractions [0, 0.4, 1] chords [13.1576, 6.80566, 2.45004]"
+W01_plus,G14_tail_sweep_range,model,vertical_stabilizer.sections.quarter_chord_sweep_deg,pass,,,,,"sweeps [63, 40, 0]"
+W01_plus,G15_fuselage_cabin_positive,model,fuselage.cabin_length_m,pass,,,,,cabin 30.844000 m = total 61.660 - nose 12.384 - tail 18.432
+W01_plus,G16_fuselage_station_order,model,fuselage.stations.x_m,pass,,,,,"x stations [0, 3.02863, 5.77404, 9.07877, 12.384, 43.228, 47.5354, 61.66]"
+W01_plus,G17_fuselage_station_tags_unique,model,fuselage.stations.tag,pass,,,,,"tags segment_0, segment_1, segment_2, segment_3, segment_4, segment_5, segment_6, segment_7"
+W01_plus,G18_fuselage_volume_requirement,constraint,fuselage.usable_volume_m3,pass,231.62809266421624,110.0,,,"usable 231.628 m3, required 110.000 m3, margin 121.628 m3"
+W01_plus,G19_fuselage_wetted_front_positive,model,fuselage.wetted_area_m2,pass,,,,,"wetted 488.922 m2, front projected 7.510 m2"
+W01_plus,G20_mass_positive_finite,model,mass_kg,pass,,,,,"operating empty 79227.2 kg, total takeoff 185407.2 kg"
+W01_plus,G21_cg_inside_fuselage,model,cg_x_m,pass,,,,,"cg 28.420 m, fuselage length 61.660 m"
+W01_plus,G22_static_margin_finite,model,static_margin,pass,,,,,static margin 0.1427 (provisional; excludes tail lift)
+W01_plus,G23_design_space_bounds,constraint,design vector,pass,,,,,within bounds and cross constraints
+W01_plus,R00_rcaide_available,rcaide,RCAIDE geometry adapter,pass,,,,,vehicle rebuilt
+W01_plus,R01_wing_area_match,rcaide,wing.area_m2,pass,370.25,370.25,1e-09,0.0,
+W01_plus,R02_wing_span_match,rcaide,wing.span_m,pass,26.029934690659523,26.029934690659523,1e-12,0.0,
+W01_plus,R03_wing_root_chord_match,rcaide,wing.root_chord_m,pass,30.398491687693927,30.398491687693927,1e-12,0.0,
+W01_plus,R04_wing_mac_match,rcaide,wing.mean_aerodynamic_chord_m,pass,18.7970125193728,18.797012519372796,1e-06,3.552713678800501e-15,
+W01_plus,R05_wing_wetted_match,rcaide,wing.wetted_area_m2,pass,741.61075,741.61075,0.0001,0.0,
+W01_plus,R06_wing_exposed_match,rcaide,wing.exposed_area_m2,pass,370.25,370.25,0.0001,0.0,
+W01_plus,R07_wing_ac_match,rcaide,wing.aerodynamic_center_x_m,pass,17.10139355059694,17.075387784215458,0.25,0.026005766381480555,"model AC = LE(MAC) + 0.25 MAC, RCAIDE AC = area centroid - 0.25 MAC; both are equivalent for a single trapezoid but differ slightly for a multi-section planform, so a small difference is a diagnostic note, not a geometry error"
+W01_plus,R08_wing_le_mac_match,rcaide,wing.leading_edge_mac_x_m,pass,12.402140420753739,12.402140420753742,0.01,-3.552713678800501e-15,model LE(MAC) vs RCAIDE LEMAC minus wing origin
+W01_plus,R09_tail_area_match,rcaide,tail.area_m2,pass,33.91,33.91,1e-09,0.0,
+W01_plus,R10_tail_span_match,rcaide,tail.span_m,pass,5.0093312926976585,5.0093312926976585,1e-12,0.0,
+W01_plus,R11_tail_mac_match,rcaide,tail.mean_aerodynamic_chord_m,pass,8.124384956069033,8.124384956069035,1e-06,-1.7763568394002505e-15,
+W01_plus,R12_fuselage_wetted_match,rcaide,fuselage.wetted_area_m2,pass,488.92216679029485,488.9221667902949,1e-09,-5.684341886080802e-14,
+W01_plus,R13_fuselage_front_projected_match,rcaide,fuselage.front_projected_area_m2,pass,7.509664526786937,7.509664526786935,1e-09,1.7763568394002505e-15,
+W01_plus,R14_fuselage_effective_diameter_match,rcaide,fuselage.effective_diameter_m,pass,3.1039047869569845,3.1039047869569845,1e-09,0.0,
+W01_plus,R15_fuselage_lengths_match,rcaide,fuselage.lengths.total_m,pass,61.66,61.66,1e-12,0.0,
+W01_plus,R16_01_section_sweep_match,rcaide,wing.sections[0].quarter_chord_sweep_deg,pass,67.0,67.0,1e-09,0.0,
+W01_plus,R16_02_section_sweep_match,rcaide,wing.sections[1].quarter_chord_sweep_deg,pass,48.0,48.00000000000001,1e-09,-7.105427357601002e-15,
+W01_plus,R16_03_section_sweep_match,rcaide,wing.sections[2].quarter_chord_sweep_deg,pass,71.0,71.0,1e-09,0.0,
+W01_plus,R16_tip_sweep_rcaide_convention,rcaide,wing.sections.tip.quarter_chord_sweep_deg,info,71.0,71.0,,,"RCAIDE wing_planform forces the last segment sweep to the previous segment (model tip 71.000 deg, RCAIDE tip 71.000 deg); this is an RCAIDE convention, not a model error"
+W01_plus,R17_airfoil_thickness_declared_vs_imported,rcaide,wing.section.thickness_to_chord,pass,0.03,0.029990192989497864,0.002,9.80701050213445e-06,RCAIDE replaces the declared t/c with the value read from the airfoil file; difference is reported
+W01_plus,R18_wing_taper_match,rcaide,wing.taper_ratio,pass,0.03254437869822486,0.03254437869822486,1e-09,0.0,
+W01_minus,G01_wing_area_closure,model,main_wing.area_m2,pass,346.25000000000006,346.25,1e-09,5.684341886080802e-14,sum of the four trapezoid sections equals the requested wing area
+W01_minus,G02_wing_span_derivation,model,main_wing.span_m,pass,25.17215723771008,25.17215723771008,1e-09,0.0,span = sqrt(wing_area * aspect_ratio)
+W01_minus,G03_wing_aspect_ratio_closure,model,main_wing.aspect_ratio,pass,346.25000000000006,346.25,1e-09,5.684341886080802e-14,area = span^2 / aspect_ratio
+W01_minus,G04_wing_root_chord_positive,model,main_wing.root_chord_m,pass,,,,,root chord 29.396755 m
+W01_minus,G05_wing_section_span_order,model,main_wing.sections.percent_span_location,pass,,,,,"span fractions [0, 0.480469, 0.945313, 1]"
+W01_minus,G06_wing_chord_positive_monotonic,model,main_wing.sections.chord_m,pass,,,,,"chords [29.3968, 12.0022, 3.82681, 0.956699]"
+W01_minus,G07_wing_sweep_range,model,main_wing.sections.quarter_chord_sweep_deg,pass,,,,,"sweeps [67, 48, 71, 71]"
+W01_minus,G08_wing_tip_twist_in_bounds,model,main_wing.sections.tip.twist_deg,pass,,,,,tip twist 0.000000 deg
+W01_minus,G09_wing_wetted_area_positive,model,main_wing.wetted_area_m2,pass,,,,,wetted 693.539 m2 vs reference 346.250 m2
+W01_minus,G10_wing_exposed_le_reference,model,main_wing.exposed_area_m2,pass,,,,,exposed 346.250 m2 <= reference 346.250 m2; wing-fuselage unexposed span is not modelled in P1
+W01_minus,G11_tail_area_closure,model,vertical_stabilizer.area_m2,pass,33.91,33.91,1e-09,0.0,tail planform area equals the requested vertical_tail_area
+W01_minus,G12_tail_span_derivation,model,vertical_stabilizer.span_m,pass,5.0093312926976585,5.0093312926976585,1e-09,0.0,tail span = sqrt(vertical_tail_area * 0.74)
+W01_minus,G13_tail_sections_positive_monotonic,model,vertical_stabilizer.sections,pass,,,,,"span fractions [0, 0.4, 1] chords [13.1576, 6.80566, 2.45004]"
+W01_minus,G14_tail_sweep_range,model,vertical_stabilizer.sections.quarter_chord_sweep_deg,pass,,,,,"sweeps [63, 40, 0]"
+W01_minus,G15_fuselage_cabin_positive,model,fuselage.cabin_length_m,pass,,,,,cabin 30.844000 m = total 61.660 - nose 12.384 - tail 18.432
+W01_minus,G16_fuselage_station_order,model,fuselage.stations.x_m,pass,,,,,"x stations [0, 3.02863, 5.77404, 9.07877, 12.384, 43.228, 47.5354, 61.66]"
+W01_minus,G17_fuselage_station_tags_unique,model,fuselage.stations.tag,pass,,,,,"tags segment_0, segment_1, segment_2, segment_3, segment_4, segment_5, segment_6, segment_7"
+W01_minus,G18_fuselage_volume_requirement,constraint,fuselage.usable_volume_m3,pass,231.62809266421624,110.0,,,"usable 231.628 m3, required 110.000 m3, margin 121.628 m3"
+W01_minus,G19_fuselage_wetted_front_positive,model,fuselage.wetted_area_m2,pass,,,,,"wetted 488.922 m2, front projected 7.510 m2"
+W01_minus,G20_mass_positive_finite,model,mass_kg,pass,,,,,"operating empty 78172.8 kg, total takeoff 184352.8 kg"
+W01_minus,G21_cg_inside_fuselage,model,cg_x_m,pass,,,,,"cg 28.153 m, fuselage length 61.660 m"
+W01_minus,G22_static_margin_finite,model,static_margin,pass,,,,,static margin 0.1312 (provisional; excludes tail lift)
+W01_minus,G23_design_space_bounds,constraint,design vector,pass,,,,,within bounds and cross constraints
+W01_minus,R00_rcaide_available,rcaide,RCAIDE geometry adapter,pass,,,,,vehicle rebuilt
+W01_minus,R01_wing_area_match,rcaide,wing.area_m2,pass,346.25000000000006,346.25000000000006,1e-09,0.0,
+W01_minus,R02_wing_span_match,rcaide,wing.span_m,pass,25.17215723771008,25.17215723771008,1e-12,0.0,
+W01_minus,R03_wing_root_chord_match,rcaide,wing.root_chord_m,pass,29.396754991722442,29.396754991722442,1e-12,0.0,
+W01_minus,R04_wing_mac_match,rcaide,wing.mean_aerodynamic_chord_m,pass,18.17758516722842,18.17758516722841,1e-06,7.105427357601002e-15,
+W01_minus,R05_wing_wetted_match,rcaide,wing.wetted_area_m2,pass,693.53875,693.53875,0.0001,0.0,
+W01_minus,R06_wing_exposed_match,rcaide,wing.exposed_area_m2,pass,346.25000000000006,346.25000000000006,0.0001,0.0,
+W01_minus,R07_wing_ac_match,rcaide,wing.aerodynamic_center_x_m,pass,16.53784277814798,16.512693992789075,0.25,0.025148785358904746,"model AC = LE(MAC) + 0.25 MAC, RCAIDE AC = area centroid - 0.25 MAC; both are equivalent for a single trapezoid but differ slightly for a multi-section planform, so a small difference is a diagnostic note, not a geometry error"
+W01_minus,R08_wing_le_mac_match,rcaide,wing.leading_edge_mac_x_m,pass,11.993446486340876,11.99344648634088,0.01,-3.552713678800501e-15,model LE(MAC) vs RCAIDE LEMAC minus wing origin
+W01_minus,R09_tail_area_match,rcaide,tail.area_m2,pass,33.91,33.91,1e-09,0.0,
+W01_minus,R10_tail_span_match,rcaide,tail.span_m,pass,5.0093312926976585,5.0093312926976585,1e-12,0.0,
+W01_minus,R11_tail_mac_match,rcaide,tail.mean_aerodynamic_chord_m,pass,8.124384956069033,8.124384956069035,1e-06,-1.7763568394002505e-15,
+W01_minus,R12_fuselage_wetted_match,rcaide,fuselage.wetted_area_m2,pass,488.92216679029485,488.9221667902949,1e-09,-5.684341886080802e-14,
+W01_minus,R13_fuselage_front_projected_match,rcaide,fuselage.front_projected_area_m2,pass,7.509664526786937,7.509664526786935,1e-09,1.7763568394002505e-15,
+W01_minus,R14_fuselage_effective_diameter_match,rcaide,fuselage.effective_diameter_m,pass,3.1039047869569845,3.1039047869569845,1e-09,0.0,
+W01_minus,R15_fuselage_lengths_match,rcaide,fuselage.lengths.total_m,pass,61.66,61.66,1e-12,0.0,
+W01_minus,R16_01_section_sweep_match,rcaide,wing.sections[0].quarter_chord_sweep_deg,pass,67.0,67.0,1e-09,0.0,
+W01_minus,R16_02_section_sweep_match,rcaide,wing.sections[1].quarter_chord_sweep_deg,pass,48.0,48.00000000000001,1e-09,-7.105427357601002e-15,
+W01_minus,R16_03_section_sweep_match,rcaide,wing.sections[2].quarter_chord_sweep_deg,pass,71.0,71.0,1e-09,0.0,
+W01_minus,R16_tip_sweep_rcaide_convention,rcaide,wing.sections.tip.quarter_chord_sweep_deg,info,71.0,71.0,,,"RCAIDE wing_planform forces the last segment sweep to the previous segment (model tip 71.000 deg, RCAIDE tip 71.000 deg); this is an RCAIDE convention, not a model error"
+W01_minus,R17_airfoil_thickness_declared_vs_imported,rcaide,wing.section.thickness_to_chord,pass,0.03,0.029990192989497864,0.002,9.80701050213445e-06,RCAIDE replaces the declared t/c with the value read from the airfoil file; difference is reported
+W01_minus,R18_wing_taper_match,rcaide,wing.taper_ratio,pass,0.03254437869822486,0.03254437869822486,1e-09,0.0,
+W02_plus,G01_wing_area_closure,model,main_wing.area_m2,pass,358.25,358.25,1e-09,0.0,sum of the four trapezoid sections equals the requested wing area
+W02_plus,G02_wing_span_derivation,model,main_wing.span_m,pass,26.089748944748397,26.089748944748397,1e-09,0.0,span = sqrt(wing_area * aspect_ratio)
+W02_plus,G03_wing_aspect_ratio_closure,model,main_wing.aspect_ratio,pass,358.25,358.25,1e-09,0.0,area = span^2 / aspect_ratio
+W02_plus,G04_wing_root_chord_positive,model,main_wing.root_chord_m,pass,,,,,root chord 29.345827 m
+W02_plus,G05_wing_section_span_order,model,main_wing.sections.percent_span_location,pass,,,,,"span fractions [0, 0.480469, 0.945313, 1]"
+W02_plus,G06_wing_chord_positive_monotonic,model,main_wing.sections.chord_m,pass,,,,,"chords [29.3458, 11.9814, 3.82018, 0.955042]"
+W02_plus,G07_wing_sweep_range,model,main_wing.sections.quarter_chord_sweep_deg,pass,,,,,"sweeps [67, 48, 71, 71]"
+W02_plus,G08_wing_tip_twist_in_bounds,model,main_wing.sections.tip.twist_deg,pass,,,,,tip twist 0.000000 deg
+W02_plus,G09_wing_wetted_area_positive,model,main_wing.wetted_area_m2,pass,,,,,wetted 717.575 m2 vs reference 358.250 m2
+W02_plus,G10_wing_exposed_le_reference,model,main_wing.exposed_area_m2,pass,,,,,exposed 358.250 m2 <= reference 358.250 m2; wing-fuselage unexposed span is not modelled in P1
+W02_plus,G11_tail_area_closure,model,vertical_stabilizer.area_m2,pass,33.91,33.91,1e-09,0.0,tail planform area equals the requested vertical_tail_area
+W02_plus,G12_tail_span_derivation,model,vertical_stabilizer.span_m,pass,5.0093312926976585,5.0093312926976585,1e-09,0.0,tail span = sqrt(vertical_tail_area * 0.74)
+W02_plus,G13_tail_sections_positive_monotonic,model,vertical_stabilizer.sections,pass,,,,,"span fractions [0, 0.4, 1] chords [13.1576, 6.80566, 2.45004]"
+W02_plus,G14_tail_sweep_range,model,vertical_stabilizer.sections.quarter_chord_sweep_deg,pass,,,,,"sweeps [63, 40, 0]"
+W02_plus,G15_fuselage_cabin_positive,model,fuselage.cabin_length_m,pass,,,,,cabin 30.844000 m = total 61.660 - nose 12.384 - tail 18.432
+W02_plus,G16_fuselage_station_order,model,fuselage.stations.x_m,pass,,,,,"x stations [0, 3.02863, 5.77404, 9.07877, 12.384, 43.228, 47.5354, 61.66]"
+W02_plus,G17_fuselage_station_tags_unique,model,fuselage.stations.tag,pass,,,,,"tags segment_0, segment_1, segment_2, segment_3, segment_4, segment_5, segment_6, segment_7"
+W02_plus,G18_fuselage_volume_requirement,constraint,fuselage.usable_volume_m3,pass,231.62809266421624,110.0,,,"usable 231.628 m3, required 110.000 m3, margin 121.628 m3"
+W02_plus,G19_fuselage_wetted_front_positive,model,fuselage.wetted_area_m2,pass,,,,,"wetted 488.922 m2, front projected 7.510 m2"
+W02_plus,G20_mass_positive_finite,model,mass_kg,pass,,,,,"operating empty 78700.0 kg, total takeoff 184880.0 kg"
+W02_plus,G21_cg_inside_fuselage,model,cg_x_m,pass,,,,,"cg 28.137 m, fuselage length 61.660 m"
+W02_plus,G22_static_margin_finite,model,static_margin,pass,,,,,static margin 0.1501 (provisional; excludes tail lift)
+W02_plus,G23_design_space_bounds,constraint,design vector,pass,,,,,within bounds and cross constraints
+W02_plus,R00_rcaide_available,rcaide,RCAIDE geometry adapter,pass,,,,,vehicle rebuilt
+W02_plus,R01_wing_area_match,rcaide,wing.area_m2,pass,358.25,358.25,1e-09,0.0,
+W02_plus,R02_wing_span_match,rcaide,wing.span_m,pass,26.089748944748397,26.089748944748397,1e-12,0.0,
+W02_plus,R03_wing_root_chord_match,rcaide,wing.root_chord_m,pass,29.345826506382124,29.345826506382124,1e-12,0.0,
+W02_plus,R04_wing_mac_match,rcaide,wing.mean_aerodynamic_chord_m,pass,18.146093362096448,18.146093362096448,1e-06,0.0,
+W02_plus,R05_wing_wetted_match,rcaide,wing.wetted_area_m2,pass,717.5747499999999,717.5747499999999,0.0001,0.0,
+W02_plus,R06_wing_exposed_match,rcaide,wing.exposed_area_m2,pass,358.25,358.25,0.0001,0.0,
+W02_plus,R07_wing_ac_match,rcaide,wing.aerodynamic_center_x_m,pass,16.860061398513366,16.83399587341421,0.25,0.02606552509915616,"model AC = LE(MAC) + 0.25 MAC, RCAIDE AC = area centroid - 0.25 MAC; both are equivalent for a single trapezoid but differ slightly for a multi-section planform, so a small difference is a diagnostic note, not a geometry error"
+W02_plus,R08_wing_le_mac_match,rcaide,wing.leading_edge_mac_x_m,pass,12.323538057989254,12.32353805798925,0.01,3.552713678800501e-15,model LE(MAC) vs RCAIDE LEMAC minus wing origin
+W02_plus,R09_tail_area_match,rcaide,tail.area_m2,pass,33.91,33.91,1e-09,0.0,
+W02_plus,R10_tail_span_match,rcaide,tail.span_m,pass,5.0093312926976585,5.0093312926976585,1e-12,0.0,
+W02_plus,R11_tail_mac_match,rcaide,tail.mean_aerodynamic_chord_m,pass,8.124384956069033,8.124384956069035,1e-06,-1.7763568394002505e-15,
+W02_plus,R12_fuselage_wetted_match,rcaide,fuselage.wetted_area_m2,pass,488.92216679029485,488.9221667902949,1e-09,-5.684341886080802e-14,
+W02_plus,R13_fuselage_front_projected_match,rcaide,fuselage.front_projected_area_m2,pass,7.509664526786937,7.509664526786935,1e-09,1.7763568394002505e-15,
+W02_plus,R14_fuselage_effective_diameter_match,rcaide,fuselage.effective_diameter_m,pass,3.1039047869569845,3.1039047869569845,1e-09,0.0,
+W02_plus,R15_fuselage_lengths_match,rcaide,fuselage.lengths.total_m,pass,61.66,61.66,1e-12,0.0,
+W02_plus,R16_01_section_sweep_match,rcaide,wing.sections[0].quarter_chord_sweep_deg,pass,67.0,67.0,1e-09,0.0,
+W02_plus,R16_02_section_sweep_match,rcaide,wing.sections[1].quarter_chord_sweep_deg,pass,48.0,48.00000000000001,1e-09,-7.105427357601002e-15,
+W02_plus,R16_03_section_sweep_match,rcaide,wing.sections[2].quarter_chord_sweep_deg,pass,71.0,71.0,1e-09,0.0,
+W02_plus,R16_tip_sweep_rcaide_convention,rcaide,wing.sections.tip.quarter_chord_sweep_deg,info,71.0,71.0,,,"RCAIDE wing_planform forces the last segment sweep to the previous segment (model tip 71.000 deg, RCAIDE tip 71.000 deg); this is an RCAIDE convention, not a model error"
+W02_plus,R17_airfoil_thickness_declared_vs_imported,rcaide,wing.section.thickness_to_chord,pass,0.03,0.029990192989497864,0.002,9.80701050213445e-06,RCAIDE replaces the declared t/c with the value read from the airfoil file; difference is reported
+W02_plus,R18_wing_taper_match,rcaide,wing.taper_ratio,pass,0.03254437869822486,0.03254437869822486,1e-09,0.0,
+W02_minus,G01_wing_area_closure,model,main_wing.area_m2,pass,358.25,358.25,1e-09,0.0,sum of the four trapezoid sections equals the requested wing area
+W02_minus,G02_wing_span_derivation,model,main_wing.span_m,pass,25.110157307352736,25.110157307352736,1e-09,0.0,span = sqrt(wing_area * aspect_ratio)
+W02_minus,G03_wing_aspect_ratio_closure,model,main_wing.aspect_ratio,pass,358.25,358.25,1e-09,0.0,area = span^2 / aspect_ratio
+W02_minus,G04_wing_root_chord_positive,model,main_wing.root_chord_m,pass,,,,,root chord 30.490659 m
+W02_minus,G05_wing_section_span_order,model,main_wing.sections.percent_span_location,pass,,,,,"span fractions [0, 0.480469, 0.945313, 1]"
+W02_minus,G06_wing_chord_positive_monotonic,model,main_wing.sections.chord_m,pass,,,,,"chords [30.4907, 12.4488, 3.96921, 0.9923]"
+W02_minus,G07_wing_sweep_range,model,main_wing.sections.quarter_chord_sweep_deg,pass,,,,,"sweeps [67, 48, 71, 71]"
+W02_minus,G08_wing_tip_twist_in_bounds,model,main_wing.sections.tip.twist_deg,pass,,,,,tip twist 0.000000 deg
+W02_minus,G09_wing_wetted_area_positive,model,main_wing.wetted_area_m2,pass,,,,,wetted 717.575 m2 vs reference 358.250 m2
+W02_minus,G10_wing_exposed_le_reference,model,main_wing.exposed_area_m2,pass,,,,,exposed 358.250 m2 <= reference 358.250 m2; wing-fuselage unexposed span is not modelled in P1
+W02_minus,G11_tail_area_closure,model,vertical_stabilizer.area_m2,pass,33.91,33.91,1e-09,0.0,tail planform area equals the requested vertical_tail_area
+W02_minus,G12_tail_span_derivation,model,vertical_stabilizer.span_m,pass,5.0093312926976585,5.0093312926976585,1e-09,0.0,tail span = sqrt(vertical_tail_area * 0.74)
+W02_minus,G13_tail_sections_positive_monotonic,model,vertical_stabilizer.sections,pass,,,,,"span fractions [0, 0.4, 1] chords [13.1576, 6.80566, 2.45004]"
+W02_minus,G14_tail_sweep_range,model,vertical_stabilizer.sections.quarter_chord_sweep_deg,pass,,,,,"sweeps [63, 40, 0]"
+W02_minus,G15_fuselage_cabin_positive,model,fuselage.cabin_length_m,pass,,,,,cabin 30.844000 m = total 61.660 - nose 12.384 - tail 18.432
+W02_minus,G16_fuselage_station_order,model,fuselage.stations.x_m,pass,,,,,"x stations [0, 3.02863, 5.77404, 9.07877, 12.384, 43.228, 47.5354, 61.66]"
+W02_minus,G17_fuselage_station_tags_unique,model,fuselage.stations.tag,pass,,,,,"tags segment_0, segment_1, segment_2, segment_3, segment_4, segment_5, segment_6, segment_7"
+W02_minus,G18_fuselage_volume_requirement,constraint,fuselage.usable_volume_m3,pass,231.62809266421624,110.0,,,"usable 231.628 m3, required 110.000 m3, margin 121.628 m3"
+W02_minus,G19_fuselage_wetted_front_positive,model,fuselage.wetted_area_m2,pass,,,,,"wetted 488.922 m2, front projected 7.510 m2"
+W02_minus,G20_mass_positive_finite,model,mass_kg,pass,,,,,"operating empty 78700.0 kg, total takeoff 184880.0 kg"
+W02_minus,G21_cg_inside_fuselage,model,cg_x_m,pass,,,,,"cg 28.447 m, fuselage length 61.660 m"
+W02_minus,G22_static_margin_finite,model,static_margin,pass,,,,,static margin 0.1242 (provisional; excludes tail lift)
+W02_minus,G23_design_space_bounds,constraint,design vector,pass,,,,,within bounds and cross constraints
+W02_minus,R00_rcaide_available,rcaide,RCAIDE geometry adapter,pass,,,,,vehicle rebuilt
+W02_minus,R01_wing_area_match,rcaide,wing.area_m2,pass,358.25,358.25,1e-09,0.0,
+W02_minus,R02_wing_span_match,rcaide,wing.span_m,pass,25.110157307352736,25.110157307352736,1e-12,0.0,
+W02_minus,R03_wing_root_chord_match,rcaide,wing.root_chord_m,pass,30.490659088920278,30.490659088920278,1e-12,0.0,
+W02_minus,R04_wing_mac_match,rcaide,wing.mean_aerodynamic_chord_m,pass,18.854004550837008,18.854004550837015,1e-06,-7.105427357601002e-15,
+W02_minus,R05_wing_wetted_match,rcaide,wing.wetted_area_m2,pass,717.57475,717.57475,0.0001,0.0,
+W02_minus,R06_wing_exposed_match,rcaide,wing.exposed_area_m2,pass,358.25,358.25,0.0001,0.0,
+W02_minus,R07_wing_ac_match,rcaide,wing.aerodynamic_center_x_m,pass,16.788686816457076,16.763599973462743,0.25,0.025086842994333836,"model AC = LE(MAC) + 0.25 MAC, RCAIDE AC = area centroid - 0.25 MAC; both are equivalent for a single trapezoid but differ slightly for a multi-section planform, so a small difference is a diagnostic note, not a geometry error"
+W02_minus,R08_wing_le_mac_match,rcaide,wing.leading_edge_mac_x_m,pass,12.075185678747825,12.075185678747815,0.01,1.0658141036401503e-14,model LE(MAC) vs RCAIDE LEMAC minus wing origin
+W02_minus,R09_tail_area_match,rcaide,tail.area_m2,pass,33.91,33.91,1e-09,0.0,
+W02_minus,R10_tail_span_match,rcaide,tail.span_m,pass,5.0093312926976585,5.0093312926976585,1e-12,0.0,
+W02_minus,R11_tail_mac_match,rcaide,tail.mean_aerodynamic_chord_m,pass,8.124384956069033,8.124384956069035,1e-06,-1.7763568394002505e-15,
+W02_minus,R12_fuselage_wetted_match,rcaide,fuselage.wetted_area_m2,pass,488.92216679029485,488.9221667902949,1e-09,-5.684341886080802e-14,
+W02_minus,R13_fuselage_front_projected_match,rcaide,fuselage.front_projected_area_m2,pass,7.509664526786937,7.509664526786935,1e-09,1.7763568394002505e-15,
+W02_minus,R14_fuselage_effective_diameter_match,rcaide,fuselage.effective_diameter_m,pass,3.1039047869569845,3.1039047869569845,1e-09,0.0,
+W02_minus,R15_fuselage_lengths_match,rcaide,fuselage.lengths.total_m,pass,61.66,61.66,1e-12,0.0,
+W02_minus,R16_01_section_sweep_match,rcaide,wing.sections[0].quarter_chord_sweep_deg,pass,67.0,67.0,1e-09,0.0,
+W02_minus,R16_02_section_sweep_match,rcaide,wing.sections[1].quarter_chord_sweep_deg,pass,48.0,48.00000000000001,1e-09,-7.105427357601002e-15,
+W02_minus,R16_03_section_sweep_match,rcaide,wing.sections[2].quarter_chord_sweep_deg,pass,71.0,71.0,1e-09,0.0,
+W02_minus,R16_tip_sweep_rcaide_convention,rcaide,wing.sections.tip.quarter_chord_sweep_deg,info,71.0,71.0,,,"RCAIDE wing_planform forces the last segment sweep to the previous segment (model tip 71.000 deg, RCAIDE tip 71.000 deg); this is an RCAIDE convention, not a model error"
+W02_minus,R17_airfoil_thickness_declared_vs_imported,rcaide,wing.section.thickness_to_chord,pass,0.03,0.029990192989497864,0.002,9.80701050213445e-06,RCAIDE replaces the declared t/c with the value read from the airfoil file; difference is reported
+W02_minus,R18_wing_taper_match,rcaide,wing.taper_ratio,pass,0.03254437869822486,0.03254437869822486,1e-09,0.0,
+W03_plus,G01_wing_area_closure,model,main_wing.area_m2,pass,358.25000000000006,358.25,1e-09,5.684341886080802e-14,sum of the four trapezoid sections equals the requested wing area
+W03_plus,G02_wing_span_derivation,model,main_wing.span_m,pass,25.604638251691824,25.604638251691824,1e-09,0.0,span = sqrt(wing_area * aspect_ratio)
+W03_plus,G03_wing_aspect_ratio_closure,model,main_wing.aspect_ratio,pass,358.25000000000006,358.2500000000001,1e-09,-5.684341886080802e-14,area = span^2 / aspect_ratio
+W03_plus,G04_wing_root_chord_positive,model,main_wing.root_chord_m,pass,,,,,root chord 29.901819 m
+W03_plus,G05_wing_section_span_order,model,main_wing.sections.percent_span_location,pass,,,,,"span fractions [0, 0.480469, 0.945313, 1]"
+W03_plus,G06_wing_chord_positive_monotonic,model,main_wing.sections.chord_m,pass,,,,,"chords [29.9018, 12.2084, 3.89256, 0.973136]"
+W03_plus,G07_wing_sweep_range,model,main_wing.sections.quarter_chord_sweep_deg,pass,,,,,"sweeps [68, 48, 71, 71]"
+W03_plus,G08_wing_tip_twist_in_bounds,model,main_wing.sections.tip.twist_deg,pass,,,,,tip twist 0.000000 deg
+W03_plus,G09_wing_wetted_area_positive,model,main_wing.wetted_area_m2,pass,,,,,wetted 717.575 m2 vs reference 358.250 m2
+W03_plus,G10_wing_exposed_le_reference,model,main_wing.exposed_area_m2,pass,,,,,exposed 358.250 m2 <= reference 358.250 m2; wing-fuselage unexposed span is not modelled in P1
+W03_plus,G11_tail_area_closure,model,vertical_stabilizer.area_m2,pass,33.91,33.91,1e-09,0.0,tail planform area equals the requested vertical_tail_area
+W03_plus,G12_tail_span_derivation,model,vertical_stabilizer.span_m,pass,5.0093312926976585,5.0093312926976585,1e-09,0.0,tail span = sqrt(vertical_tail_area * 0.74)
+W03_plus,G13_tail_sections_positive_monotonic,model,vertical_stabilizer.sections,pass,,,,,"span fractions [0, 0.4, 1] chords [13.1576, 6.80566, 2.45004]"
+W03_plus,G14_tail_sweep_range,model,vertical_stabilizer.sections.quarter_chord_sweep_deg,pass,,,,,"sweeps [63, 40, 0]"
+W03_plus,G15_fuselage_cabin_positive,model,fuselage.cabin_length_m,pass,,,,,cabin 30.844000 m = total 61.660 - nose 12.384 - tail 18.432
+W03_plus,G16_fuselage_station_order,model,fuselage.stations.x_m,pass,,,,,"x stations [0, 3.02863, 5.77404, 9.07877, 12.384, 43.228, 47.5354, 61.66]"
+W03_plus,G17_fuselage_station_tags_unique,model,fuselage.stations.tag,pass,,,,,"tags segment_0, segment_1, segment_2, segment_3, segment_4, segment_5, segment_6, segment_7"
+W03_plus,G18_fuselage_volume_requirement,constraint,fuselage.usable_volume_m3,pass,231.62809266421624,110.0,,,"usable 231.628 m3, required 110.000 m3, margin 121.628 m3"
+W03_plus,G19_fuselage_wetted_front_positive,model,fuselage.wetted_area_m2,pass,,,,,"wetted 488.922 m2, front projected 7.510 m2"
+W03_plus,G20_mass_positive_finite,model,mass_kg,pass,,,,,"operating empty 78700.0 kg, total takeoff 184880.0 kg"
+W03_plus,G21_cg_inside_fuselage,model,cg_x_m,pass,,,,,"cg 28.287 m, fuselage length 61.660 m"
+W03_plus,G22_static_margin_finite,model,static_margin,pass,,,,,static margin 0.1627 (provisional; excludes tail lift)
+W03_plus,G23_design_space_bounds,constraint,design vector,pass,,,,,within bounds and cross constraints
+W03_plus,R00_rcaide_available,rcaide,RCAIDE geometry adapter,pass,,,,,vehicle rebuilt
+W03_plus,R01_wing_area_match,rcaide,wing.area_m2,pass,358.25000000000006,358.25000000000006,1e-09,0.0,
+W03_plus,R02_wing_span_match,rcaide,wing.span_m,pass,25.604638251691824,25.604638251691824,1e-12,0.0,
+W03_plus,R03_wing_root_chord_match,rcaide,wing.root_chord_m,pass,29.901818514349216,29.901818514349216,1e-12,0.0,
+W03_plus,R04_wing_mac_match,rcaide,wing.mean_aerodynamic_chord_m,pass,18.489892944055953,18.489892944055953,1e-06,0.0,
+W03_plus,R05_wing_wetted_match,rcaide,wing.wetted_area_m2,pass,717.5747500000001,717.5747500000001,0.0001,0.0,
+W03_plus,R06_wing_exposed_match,rcaide,wing.exposed_area_m2,pass,358.25000000000006,358.25000000000006,0.0001,0.0,
+W03_plus,R07_wing_ac_match,rcaide,wing.aerodynamic_center_x_m,pass,17.295024861275937,17.227543871690482,0.25,0.06748098958545512,"model AC = LE(MAC) + 0.25 MAC, RCAIDE AC = area centroid - 0.25 MAC; both are equivalent for a single trapezoid but differ slightly for a multi-section planform, so a small difference is a diagnostic note, not a geometry error"
+W03_plus,R08_wing_le_mac_match,rcaide,wing.leading_edge_mac_x_m,pass,12.67255162526195,12.672551625261953,0.01,-3.552713678800501e-15,model LE(MAC) vs RCAIDE LEMAC minus wing origin
+W03_plus,R09_tail_area_match,rcaide,tail.area_m2,pass,33.91,33.91,1e-09,0.0,
+W03_plus,R10_tail_span_match,rcaide,tail.span_m,pass,5.0093312926976585,5.0093312926976585,1e-12,0.0,
+W03_plus,R11_tail_mac_match,rcaide,tail.mean_aerodynamic_chord_m,pass,8.124384956069033,8.124384956069035,1e-06,-1.7763568394002505e-15,
+W03_plus,R12_fuselage_wetted_match,rcaide,fuselage.wetted_area_m2,pass,488.92216679029485,488.9221667902949,1e-09,-5.684341886080802e-14,
+W03_plus,R13_fuselage_front_projected_match,rcaide,fuselage.front_projected_area_m2,pass,7.509664526786937,7.509664526786935,1e-09,1.7763568394002505e-15,
+W03_plus,R14_fuselage_effective_diameter_match,rcaide,fuselage.effective_diameter_m,pass,3.1039047869569845,3.1039047869569845,1e-09,0.0,
+W03_plus,R15_fuselage_lengths_match,rcaide,fuselage.lengths.total_m,pass,61.66,61.66,1e-12,0.0,
+W03_plus,R16_01_section_sweep_match,rcaide,wing.sections[0].quarter_chord_sweep_deg,pass,68.0,68.0,1e-09,0.0,
+W03_plus,R16_02_section_sweep_match,rcaide,wing.sections[1].quarter_chord_sweep_deg,pass,48.0,48.00000000000001,1e-09,-7.105427357601002e-15,
+W03_plus,R16_03_section_sweep_match,rcaide,wing.sections[2].quarter_chord_sweep_deg,pass,71.0,71.0,1e-09,0.0,
+W03_plus,R16_tip_sweep_rcaide_convention,rcaide,wing.sections.tip.quarter_chord_sweep_deg,info,71.0,71.0,,,"RCAIDE wing_planform forces the last segment sweep to the previous segment (model tip 71.000 deg, RCAIDE tip 71.000 deg); this is an RCAIDE convention, not a model error"
+W03_plus,R17_airfoil_thickness_declared_vs_imported,rcaide,wing.section.thickness_to_chord,pass,0.03,0.029990192989497864,0.002,9.80701050213445e-06,RCAIDE replaces the declared t/c with the value read from the airfoil file; difference is reported
+W03_plus,R18_wing_taper_match,rcaide,wing.taper_ratio,pass,0.03254437869822486,0.03254437869822486,1e-09,0.0,
+W03_minus,G01_wing_area_closure,model,main_wing.area_m2,pass,358.25000000000006,358.25,1e-09,5.684341886080802e-14,sum of the four trapezoid sections equals the requested wing area
+W03_minus,G02_wing_span_derivation,model,main_wing.span_m,pass,25.604638251691824,25.604638251691824,1e-09,0.0,span = sqrt(wing_area * aspect_ratio)
+W03_minus,G03_wing_aspect_ratio_closure,model,main_wing.aspect_ratio,pass,358.25000000000006,358.2500000000001,1e-09,-5.684341886080802e-14,area = span^2 / aspect_ratio
+W03_minus,G04_wing_root_chord_positive,model,main_wing.root_chord_m,pass,,,,,root chord 29.901819 m
+W03_minus,G05_wing_section_span_order,model,main_wing.sections.percent_span_location,pass,,,,,"span fractions [0, 0.480469, 0.945313, 1]"
+W03_minus,G06_wing_chord_positive_monotonic,model,main_wing.sections.chord_m,pass,,,,,"chords [29.9018, 12.2084, 3.89256, 0.973136]"
+W03_minus,G07_wing_sweep_range,model,main_wing.sections.quarter_chord_sweep_deg,pass,,,,,"sweeps [66, 48, 71, 71]"
+W03_minus,G08_wing_tip_twist_in_bounds,model,main_wing.sections.tip.twist_deg,pass,,,,,tip twist 0.000000 deg
+W03_minus,G09_wing_wetted_area_positive,model,main_wing.wetted_area_m2,pass,,,,,wetted 717.575 m2 vs reference 358.250 m2
+W03_minus,G10_wing_exposed_le_reference,model,main_wing.exposed_area_m2,pass,,,,,exposed 358.250 m2 <= reference 358.250 m2; wing-fuselage unexposed span is not modelled in P1
+W03_minus,G11_tail_area_closure,model,vertical_stabilizer.area_m2,pass,33.91,33.91,1e-09,0.0,tail planform area equals the requested vertical_tail_area
+W03_minus,G12_tail_span_derivation,model,vertical_stabilizer.span_m,pass,5.0093312926976585,5.0093312926976585,1e-09,0.0,tail span = sqrt(vertical_tail_area * 0.74)
+W03_minus,G13_tail_sections_positive_monotonic,model,vertical_stabilizer.sections,pass,,,,,"span fractions [0, 0.4, 1] chords [13.1576, 6.80566, 2.45004]"
+W03_minus,G14_tail_sweep_range,model,vertical_stabilizer.sections.quarter_chord_sweep_deg,pass,,,,,"sweeps [63, 40, 0]"
+W03_minus,G15_fuselage_cabin_positive,model,fuselage.cabin_length_m,pass,,,,,cabin 30.844000 m = total 61.660 - nose 12.384 - tail 18.432
+W03_minus,G16_fuselage_station_order,model,fuselage.stations.x_m,pass,,,,,"x stations [0, 3.02863, 5.77404, 9.07877, 12.384, 43.228, 47.5354, 61.66]"
+W03_minus,G17_fuselage_station_tags_unique,model,fuselage.stations.tag,pass,,,,,"tags segment_0, segment_1, segment_2, segment_3, segment_4, segment_5, segment_6, segment_7"
+W03_minus,G18_fuselage_volume_requirement,constraint,fuselage.usable_volume_m3,pass,231.62809266421624,110.0,,,"usable 231.628 m3, required 110.000 m3, margin 121.628 m3"
+W03_minus,G19_fuselage_wetted_front_positive,model,fuselage.wetted_area_m2,pass,,,,,"wetted 488.922 m2, front projected 7.510 m2"
+W03_minus,G20_mass_positive_finite,model,mass_kg,pass,,,,,"operating empty 78700.0 kg, total takeoff 184880.0 kg"
+W03_minus,G21_cg_inside_fuselage,model,cg_x_m,pass,,,,,"cg 28.287 m, fuselage length 61.660 m"
+W03_minus,G22_static_margin_finite,model,static_margin,pass,,,,,static margin 0.1135 (provisional; excludes tail lift)
+W03_minus,G23_design_space_bounds,constraint,design vector,pass,,,,,within bounds and cross constraints
+W03_minus,R00_rcaide_available,rcaide,RCAIDE geometry adapter,pass,,,,,vehicle rebuilt
+W03_minus,R01_wing_area_match,rcaide,wing.area_m2,pass,358.25000000000006,358.25000000000006,1e-09,0.0,
+W03_minus,R02_wing_span_match,rcaide,wing.span_m,pass,25.604638251691824,25.604638251691824,1e-12,0.0,
+W03_minus,R03_wing_root_chord_match,rcaide,wing.root_chord_m,pass,29.901818514349216,29.901818514349216,1e-12,0.0,
+W03_minus,R04_wing_mac_match,rcaide,wing.mean_aerodynamic_chord_m,pass,18.489892944055953,18.489892944055953,1e-06,0.0,
+W03_minus,R05_wing_wetted_match,rcaide,wing.wetted_area_m2,pass,717.5747500000001,717.5747500000001,0.0001,0.0,
+W03_minus,R06_wing_exposed_match,rcaide,wing.exposed_area_m2,pass,358.25000000000006,358.25000000000006,0.0001,0.0,
+W03_minus,R07_wing_ac_match,rcaide,wing.aerodynamic_center_x_m,pass,16.386299844427615,16.39930921549483,0.25,-0.013009371067216335,"model AC = LE(MAC) + 0.25 MAC, RCAIDE AC = area centroid - 0.25 MAC; both are equivalent for a single trapezoid but differ slightly for a multi-section planform, so a small difference is a diagnostic note, not a geometry error"
+W03_minus,R08_wing_le_mac_match,rcaide,wing.leading_edge_mac_x_m,pass,11.763826608413627,11.76382660841363,0.01,-3.552713678800501e-15,model LE(MAC) vs RCAIDE LEMAC minus wing origin
+W03_minus,R09_tail_area_match,rcaide,tail.area_m2,pass,33.91,33.91,1e-09,0.0,
+W03_minus,R10_tail_span_match,rcaide,tail.span_m,pass,5.0093312926976585,5.0093312926976585,1e-12,0.0,
+W03_minus,R11_tail_mac_match,rcaide,tail.mean_aerodynamic_chord_m,pass,8.124384956069033,8.124384956069035,1e-06,-1.7763568394002505e-15,
+W03_minus,R12_fuselage_wetted_match,rcaide,fuselage.wetted_area_m2,pass,488.92216679029485,488.9221667902949,1e-09,-5.684341886080802e-14,
+W03_minus,R13_fuselage_front_projected_match,rcaide,fuselage.front_projected_area_m2,pass,7.509664526786937,7.509664526786935,1e-09,1.7763568394002505e-15,
+W03_minus,R14_fuselage_effective_diameter_match,rcaide,fuselage.effective_diameter_m,pass,3.1039047869569845,3.1039047869569845,1e-09,0.0,
+W03_minus,R15_fuselage_lengths_match,rcaide,fuselage.lengths.total_m,pass,61.66,61.66,1e-12,0.0,
+W03_minus,R16_01_section_sweep_match,rcaide,wing.sections[0].quarter_chord_sweep_deg,pass,66.0,66.0,1e-09,0.0,
+W03_minus,R16_02_section_sweep_match,rcaide,wing.sections[1].quarter_chord_sweep_deg,pass,48.0,48.00000000000001,1e-09,-7.105427357601002e-15,
+W03_minus,R16_03_section_sweep_match,rcaide,wing.sections[2].quarter_chord_sweep_deg,pass,71.0,71.0,1e-09,0.0,
+W03_minus,R16_tip_sweep_rcaide_convention,rcaide,wing.sections.tip.quarter_chord_sweep_deg,info,71.0,71.0,,,"RCAIDE wing_planform forces the last segment sweep to the previous segment (model tip 71.000 deg, RCAIDE tip 71.000 deg); this is an RCAIDE convention, not a model error"
+W03_minus,R17_airfoil_thickness_declared_vs_imported,rcaide,wing.section.thickness_to_chord,pass,0.03,0.029990192989497864,0.002,9.80701050213445e-06,RCAIDE replaces the declared t/c with the value read from the airfoil file; difference is reported
+W03_minus,R18_wing_taper_match,rcaide,wing.taper_ratio,pass,0.03254437869822486,0.03254437869822486,1e-09,0.0,
+W04_plus,G01_wing_area_closure,model,main_wing.area_m2,pass,358.25000000000006,358.25,1e-09,5.684341886080802e-14,sum of the four trapezoid sections equals the requested wing area
+W04_plus,G02_wing_span_derivation,model,main_wing.span_m,pass,25.604638251691824,25.604638251691824,1e-09,0.0,span = sqrt(wing_area * aspect_ratio)
+W04_plus,G03_wing_aspect_ratio_closure,model,main_wing.aspect_ratio,pass,358.25000000000006,358.2500000000001,1e-09,-5.684341886080802e-14,area = span^2 / aspect_ratio
+W04_plus,G04_wing_root_chord_positive,model,main_wing.root_chord_m,pass,,,,,root chord 29.901819 m
+W04_plus,G05_wing_section_span_order,model,main_wing.sections.percent_span_location,pass,,,,,"span fractions [0, 0.480469, 0.945313, 1]"
+W04_plus,G06_wing_chord_positive_monotonic,model,main_wing.sections.chord_m,pass,,,,,"chords [29.9018, 12.2084, 3.89256, 0.973136]"
+W04_plus,G07_wing_sweep_range,model,main_wing.sections.quarter_chord_sweep_deg,pass,,,,,"sweeps [67, 49.6, 71, 71]"
+W04_plus,G08_wing_tip_twist_in_bounds,model,main_wing.sections.tip.twist_deg,pass,,,,,tip twist 0.000000 deg
+W04_plus,G09_wing_wetted_area_positive,model,main_wing.wetted_area_m2,pass,,,,,wetted 717.575 m2 vs reference 358.250 m2
+W04_plus,G10_wing_exposed_le_reference,model,main_wing.exposed_area_m2,pass,,,,,exposed 358.250 m2 <= reference 358.250 m2; wing-fuselage unexposed span is not modelled in P1
+W04_plus,G11_tail_area_closure,model,vertical_stabilizer.area_m2,pass,33.91,33.91,1e-09,0.0,tail planform area equals the requested vertical_tail_area
+W04_plus,G12_tail_span_derivation,model,vertical_stabilizer.span_m,pass,5.0093312926976585,5.0093312926976585,1e-09,0.0,tail span = sqrt(vertical_tail_area * 0.74)
+W04_plus,G13_tail_sections_positive_monotonic,model,vertical_stabilizer.sections,pass,,,,,"span fractions [0, 0.4, 1] chords [13.1576, 6.80566, 2.45004]"
+W04_plus,G14_tail_sweep_range,model,vertical_stabilizer.sections.quarter_chord_sweep_deg,pass,,,,,"sweeps [63, 40, 0]"
+W04_plus,G15_fuselage_cabin_positive,model,fuselage.cabin_length_m,pass,,,,,cabin 30.844000 m = total 61.660 - nose 12.384 - tail 18.432
+W04_plus,G16_fuselage_station_order,model,fuselage.stations.x_m,pass,,,,,"x stations [0, 3.02863, 5.77404, 9.07877, 12.384, 43.228, 47.5354, 61.66]"
+W04_plus,G17_fuselage_station_tags_unique,model,fuselage.stations.tag,pass,,,,,"tags segment_0, segment_1, segment_2, segment_3, segment_4, segment_5, segment_6, segment_7"
+W04_plus,G18_fuselage_volume_requirement,constraint,fuselage.usable_volume_m3,pass,231.62809266421624,110.0,,,"usable 231.628 m3, required 110.000 m3, margin 121.628 m3"
+W04_plus,G19_fuselage_wetted_front_positive,model,fuselage.wetted_area_m2,pass,,,,,"wetted 488.922 m2, front projected 7.510 m2"
+W04_plus,G20_mass_positive_finite,model,mass_kg,pass,,,,,"operating empty 78700.0 kg, total takeoff 184880.0 kg"
+W04_plus,G21_cg_inside_fuselage,model,cg_x_m,pass,,,,,"cg 28.287 m, fuselage length 61.660 m"
+W04_plus,G22_static_margin_finite,model,static_margin,pass,,,,,static margin 0.1371 (provisional; excludes tail lift)
+W04_plus,G23_design_space_bounds,constraint,design vector,pass,,,,,within bounds and cross constraints
+W04_plus,R00_rcaide_available,rcaide,RCAIDE geometry adapter,pass,,,,,vehicle rebuilt
+W04_plus,R01_wing_area_match,rcaide,wing.area_m2,pass,358.25000000000006,358.25000000000006,1e-09,0.0,
+W04_plus,R02_wing_span_match,rcaide,wing.span_m,pass,25.604638251691824,25.604638251691824,1e-12,0.0,
+W04_plus,R03_wing_root_chord_match,rcaide,wing.root_chord_m,pass,29.901818514349216,29.901818514349216,1e-12,0.0,
+W04_plus,R04_wing_mac_match,rcaide,wing.mean_aerodynamic_chord_m,pass,18.489892944055953,18.489892944055953,1e-06,0.0,
+W04_plus,R05_wing_wetted_match,rcaide,wing.wetted_area_m2,pass,717.5747500000001,717.5747500000001,0.0001,0.0,
+W04_plus,R06_wing_exposed_match,rcaide,wing.exposed_area_m2,pass,358.25000000000006,358.25000000000006,0.0001,0.0,
+W04_plus,R07_wing_ac_match,rcaide,wing.aerodynamic_center_x_m,pass,16.821978259514246,16.842458628805247,0.25,-0.0204803692910005,"model AC = LE(MAC) + 0.25 MAC, RCAIDE AC = area centroid - 0.25 MAC; both are equivalent for a single trapezoid but differ slightly for a multi-section planform, so a small difference is a diagnostic note, not a geometry error"
+W04_plus,R08_wing_le_mac_match,rcaide,wing.leading_edge_mac_x_m,pass,12.199505023500258,12.199505023500262,0.01,-3.552713678800501e-15,model LE(MAC) vs RCAIDE LEMAC minus wing origin
+W04_plus,R09_tail_area_match,rcaide,tail.area_m2,pass,33.91,33.91,1e-09,0.0,
+W04_plus,R10_tail_span_match,rcaide,tail.span_m,pass,5.0093312926976585,5.0093312926976585,1e-12,0.0,
+W04_plus,R11_tail_mac_match,rcaide,tail.mean_aerodynamic_chord_m,pass,8.124384956069033,8.124384956069035,1e-06,-1.7763568394002505e-15,
+W04_plus,R12_fuselage_wetted_match,rcaide,fuselage.wetted_area_m2,pass,488.92216679029485,488.9221667902949,1e-09,-5.684341886080802e-14,
+W04_plus,R13_fuselage_front_projected_match,rcaide,fuselage.front_projected_area_m2,pass,7.509664526786937,7.509664526786935,1e-09,1.7763568394002505e-15,
+W04_plus,R14_fuselage_effective_diameter_match,rcaide,fuselage.effective_diameter_m,pass,3.1039047869569845,3.1039047869569845,1e-09,0.0,
+W04_plus,R15_fuselage_lengths_match,rcaide,fuselage.lengths.total_m,pass,61.66,61.66,1e-12,0.0,
+W04_plus,R16_01_section_sweep_match,rcaide,wing.sections[0].quarter_chord_sweep_deg,pass,67.0,67.0,1e-09,0.0,
+W04_plus,R16_02_section_sweep_match,rcaide,wing.sections[1].quarter_chord_sweep_deg,pass,49.6,49.6,1e-09,0.0,
+W04_plus,R16_03_section_sweep_match,rcaide,wing.sections[2].quarter_chord_sweep_deg,pass,71.0,71.0,1e-09,0.0,
+W04_plus,R16_tip_sweep_rcaide_convention,rcaide,wing.sections.tip.quarter_chord_sweep_deg,info,71.0,71.0,,,"RCAIDE wing_planform forces the last segment sweep to the previous segment (model tip 71.000 deg, RCAIDE tip 71.000 deg); this is an RCAIDE convention, not a model error"
+W04_plus,R17_airfoil_thickness_declared_vs_imported,rcaide,wing.section.thickness_to_chord,pass,0.03,0.029990192989497864,0.002,9.80701050213445e-06,RCAIDE replaces the declared t/c with the value read from the airfoil file; difference is reported
+W04_plus,R18_wing_taper_match,rcaide,wing.taper_ratio,pass,0.03254437869822486,0.03254437869822486,1e-09,0.0,
+W04_minus,G01_wing_area_closure,model,main_wing.area_m2,pass,358.25000000000006,358.25,1e-09,5.684341886080802e-14,sum of the four trapezoid sections equals the requested wing area
+W04_minus,G02_wing_span_derivation,model,main_wing.span_m,pass,25.604638251691824,25.604638251691824,1e-09,0.0,span = sqrt(wing_area * aspect_ratio)
+W04_minus,G03_wing_aspect_ratio_closure,model,main_wing.aspect_ratio,pass,358.25000000000006,358.2500000000001,1e-09,-5.684341886080802e-14,area = span^2 / aspect_ratio
+W04_minus,G04_wing_root_chord_positive,model,main_wing.root_chord_m,pass,,,,,root chord 29.901819 m
+W04_minus,G05_wing_section_span_order,model,main_wing.sections.percent_span_location,pass,,,,,"span fractions [0, 0.480469, 0.945313, 1]"
+W04_minus,G06_wing_chord_positive_monotonic,model,main_wing.sections.chord_m,pass,,,,,"chords [29.9018, 12.2084, 3.89256, 0.973136]"
+W04_minus,G07_wing_sweep_range,model,main_wing.sections.quarter_chord_sweep_deg,pass,,,,,"sweeps [67, 46.4, 71, 71]"
+W04_minus,G08_wing_tip_twist_in_bounds,model,main_wing.sections.tip.twist_deg,pass,,,,,tip twist 0.000000 deg
+W04_minus,G09_wing_wetted_area_positive,model,main_wing.wetted_area_m2,pass,,,,,wetted 717.575 m2 vs reference 358.250 m2
+W04_minus,G10_wing_exposed_le_reference,model,main_wing.exposed_area_m2,pass,,,,,exposed 358.250 m2 <= reference 358.250 m2; wing-fuselage unexposed span is not modelled in P1
+W04_minus,G11_tail_area_closure,model,vertical_stabilizer.area_m2,pass,33.91,33.91,1e-09,0.0,tail planform area equals the requested vertical_tail_area
+W04_minus,G12_tail_span_derivation,model,vertical_stabilizer.span_m,pass,5.0093312926976585,5.0093312926976585,1e-09,0.0,tail span = sqrt(vertical_tail_area * 0.74)
+W04_minus,G13_tail_sections_positive_monotonic,model,vertical_stabilizer.sections,pass,,,,,"span fractions [0, 0.4, 1] chords [13.1576, 6.80566, 2.45004]"
+W04_minus,G14_tail_sweep_range,model,vertical_stabilizer.sections.quarter_chord_sweep_deg,pass,,,,,"sweeps [63, 40, 0]"
+W04_minus,G15_fuselage_cabin_positive,model,fuselage.cabin_length_m,pass,,,,,cabin 30.844000 m = total 61.660 - nose 12.384 - tail 18.432
+W04_minus,G16_fuselage_station_order,model,fuselage.stations.x_m,pass,,,,,"x stations [0, 3.02863, 5.77404, 9.07877, 12.384, 43.228, 47.5354, 61.66]"
+W04_minus,G17_fuselage_station_tags_unique,model,fuselage.stations.tag,pass,,,,,"tags segment_0, segment_1, segment_2, segment_3, segment_4, segment_5, segment_6, segment_7"
+W04_minus,G18_fuselage_volume_requirement,constraint,fuselage.usable_volume_m3,pass,231.62809266421624,110.0,,,"usable 231.628 m3, required 110.000 m3, margin 121.628 m3"
+W04_minus,G19_fuselage_wetted_front_positive,model,fuselage.wetted_area_m2,pass,,,,,"wetted 488.922 m2, front projected 7.510 m2"
+W04_minus,G20_mass_positive_finite,model,mass_kg,pass,,,,,"operating empty 78700.0 kg, total takeoff 184880.0 kg"
+W04_minus,G21_cg_inside_fuselage,model,cg_x_m,pass,,,,,"cg 28.287 m, fuselage length 61.660 m"
+W04_minus,G22_static_margin_finite,model,static_margin,pass,,,,,static margin 0.1371 (provisional; excludes tail lift)
+W04_minus,G23_design_space_bounds,constraint,design vector,pass,,,,,within bounds and cross constraints
+W04_minus,R00_rcaide_available,rcaide,RCAIDE geometry adapter,pass,,,,,vehicle rebuilt
+W04_minus,R01_wing_area_match,rcaide,wing.area_m2,pass,358.25000000000006,358.25000000000006,1e-09,0.0,
+W04_minus,R02_wing_span_match,rcaide,wing.span_m,pass,25.604638251691824,25.604638251691824,1e-12,0.0,
+W04_minus,R03_wing_root_chord_match,rcaide,wing.root_chord_m,pass,29.901818514349216,29.901818514349216,1e-12,0.0,
+W04_minus,R04_wing_mac_match,rcaide,wing.mean_aerodynamic_chord_m,pass,18.489892944055953,18.489892944055953,1e-06,0.0,
+W04_minus,R05_wing_wetted_match,rcaide,wing.wetted_area_m2,pass,717.5747500000001,717.5747500000001,0.0001,0.0,
+W04_minus,R06_wing_exposed_match,rcaide,wing.exposed_area_m2,pass,358.25000000000006,358.25000000000006,0.0001,0.0,
+W04_minus,R07_wing_ac_match,rcaide,wing.aerodynamic_center_x_m,pass,16.821978259514246,16.753108014674265,0.25,0.06887024483998161,"model AC = LE(MAC) + 0.25 MAC, RCAIDE AC = area centroid - 0.25 MAC; both are equivalent for a single trapezoid but differ slightly for a multi-section planform, so a small difference is a diagnostic note, not a geometry error"
+W04_minus,R08_wing_le_mac_match,rcaide,wing.leading_edge_mac_x_m,pass,12.199505023500258,12.199505023500262,0.01,-3.552713678800501e-15,model LE(MAC) vs RCAIDE LEMAC minus wing origin
+W04_minus,R09_tail_area_match,rcaide,tail.area_m2,pass,33.91,33.91,1e-09,0.0,
+W04_minus,R10_tail_span_match,rcaide,tail.span_m,pass,5.0093312926976585,5.0093312926976585,1e-12,0.0,
+W04_minus,R11_tail_mac_match,rcaide,tail.mean_aerodynamic_chord_m,pass,8.124384956069033,8.124384956069035,1e-06,-1.7763568394002505e-15,
+W04_minus,R12_fuselage_wetted_match,rcaide,fuselage.wetted_area_m2,pass,488.92216679029485,488.9221667902949,1e-09,-5.684341886080802e-14,
+W04_minus,R13_fuselage_front_projected_match,rcaide,fuselage.front_projected_area_m2,pass,7.509664526786937,7.509664526786935,1e-09,1.7763568394002505e-15,
+W04_minus,R14_fuselage_effective_diameter_match,rcaide,fuselage.effective_diameter_m,pass,3.1039047869569845,3.1039047869569845,1e-09,0.0,
+W04_minus,R15_fuselage_lengths_match,rcaide,fuselage.lengths.total_m,pass,61.66,61.66,1e-12,0.0,
+W04_minus,R16_01_section_sweep_match,rcaide,wing.sections[0].quarter_chord_sweep_deg,pass,67.0,67.0,1e-09,0.0,
+W04_minus,R16_02_section_sweep_match,rcaide,wing.sections[1].quarter_chord_sweep_deg,pass,46.4,46.4,1e-09,0.0,
+W04_minus,R16_03_section_sweep_match,rcaide,wing.sections[2].quarter_chord_sweep_deg,pass,71.0,71.0,1e-09,0.0,
+W04_minus,R16_tip_sweep_rcaide_convention,rcaide,wing.sections.tip.quarter_chord_sweep_deg,info,71.0,71.0,,,"RCAIDE wing_planform forces the last segment sweep to the previous segment (model tip 71.000 deg, RCAIDE tip 71.000 deg); this is an RCAIDE convention, not a model error"
+W04_minus,R17_airfoil_thickness_declared_vs_imported,rcaide,wing.section.thickness_to_chord,pass,0.03,0.029990192989497864,0.002,9.80701050213445e-06,RCAIDE replaces the declared t/c with the value read from the airfoil file; difference is reported
+W04_minus,R18_wing_taper_match,rcaide,wing.taper_ratio,pass,0.03254437869822486,0.03254437869822486,1e-09,0.0,
+W05_plus,G01_wing_area_closure,model,main_wing.area_m2,pass,358.25000000000006,358.25,1e-09,5.684341886080802e-14,sum of the four trapezoid sections equals the requested wing area
+W05_plus,G02_wing_span_derivation,model,main_wing.span_m,pass,25.604638251691824,25.604638251691824,1e-09,0.0,span = sqrt(wing_area * aspect_ratio)
+W05_plus,G03_wing_aspect_ratio_closure,model,main_wing.aspect_ratio,pass,358.25000000000006,358.2500000000001,1e-09,-5.684341886080802e-14,area = span^2 / aspect_ratio
+W05_plus,G04_wing_root_chord_positive,model,main_wing.root_chord_m,pass,,,,,root chord 29.901819 m
+W05_plus,G05_wing_section_span_order,model,main_wing.sections.percent_span_location,pass,,,,,"span fractions [0, 0.480469, 0.945313, 1]"
+W05_plus,G06_wing_chord_positive_monotonic,model,main_wing.sections.chord_m,pass,,,,,"chords [29.9018, 12.2084, 3.89256, 0.973136]"
+W05_plus,G07_wing_sweep_range,model,main_wing.sections.quarter_chord_sweep_deg,pass,,,,,"sweeps [67, 48, 72, 72]"
+W05_plus,G08_wing_tip_twist_in_bounds,model,main_wing.sections.tip.twist_deg,pass,,,,,tip twist 0.000000 deg
+W05_plus,G09_wing_wetted_area_positive,model,main_wing.wetted_area_m2,pass,,,,,wetted 717.575 m2 vs reference 358.250 m2
+W05_plus,G10_wing_exposed_le_reference,model,main_wing.exposed_area_m2,pass,,,,,exposed 358.250 m2 <= reference 358.250 m2; wing-fuselage unexposed span is not modelled in P1
+W05_plus,G11_tail_area_closure,model,vertical_stabilizer.area_m2,pass,33.91,33.91,1e-09,0.0,tail planform area equals the requested vertical_tail_area
+W05_plus,G12_tail_span_derivation,model,vertical_stabilizer.span_m,pass,5.0093312926976585,5.0093312926976585,1e-09,0.0,tail span = sqrt(vertical_tail_area * 0.74)
+W05_plus,G13_tail_sections_positive_monotonic,model,vertical_stabilizer.sections,pass,,,,,"span fractions [0, 0.4, 1] chords [13.1576, 6.80566, 2.45004]"
+W05_plus,G14_tail_sweep_range,model,vertical_stabilizer.sections.quarter_chord_sweep_deg,pass,,,,,"sweeps [63, 40, 0]"
+W05_plus,G15_fuselage_cabin_positive,model,fuselage.cabin_length_m,pass,,,,,cabin 30.844000 m = total 61.660 - nose 12.384 - tail 18.432
+W05_plus,G16_fuselage_station_order,model,fuselage.stations.x_m,pass,,,,,"x stations [0, 3.02863, 5.77404, 9.07877, 12.384, 43.228, 47.5354, 61.66]"
+W05_plus,G17_fuselage_station_tags_unique,model,fuselage.stations.tag,pass,,,,,"tags segment_0, segment_1, segment_2, segment_3, segment_4, segment_5, segment_6, segment_7"
+W05_plus,G18_fuselage_volume_requirement,constraint,fuselage.usable_volume_m3,pass,231.62809266421624,110.0,,,"usable 231.628 m3, required 110.000 m3, margin 121.628 m3"
+W05_plus,G19_fuselage_wetted_front_positive,model,fuselage.wetted_area_m2,pass,,,,,"wetted 488.922 m2, front projected 7.510 m2"
+W05_plus,G20_mass_positive_finite,model,mass_kg,pass,,,,,"operating empty 78700.0 kg, total takeoff 184880.0 kg"
+W05_plus,G21_cg_inside_fuselage,model,cg_x_m,pass,,,,,"cg 28.287 m, fuselage length 61.660 m"
+W05_plus,G22_static_margin_finite,model,static_margin,pass,,,,,static margin 0.1371 (provisional; excludes tail lift)
+W05_plus,G23_design_space_bounds,constraint,design vector,pass,,,,,within bounds and cross constraints
+W05_plus,R00_rcaide_available,rcaide,RCAIDE geometry adapter,pass,,,,,vehicle rebuilt
+W05_plus,R01_wing_area_match,rcaide,wing.area_m2,pass,358.25000000000006,358.25000000000006,1e-09,0.0,
+W05_plus,R02_wing_span_match,rcaide,wing.span_m,pass,25.604638251691824,25.604638251691824,1e-12,0.0,
+W05_plus,R03_wing_root_chord_match,rcaide,wing.root_chord_m,pass,29.901818514349216,29.901818514349216,1e-12,0.0,
+W05_plus,R04_wing_mac_match,rcaide,wing.mean_aerodynamic_chord_m,pass,18.489892944055953,18.489892944055953,1e-06,0.0,
+W05_plus,R05_wing_wetted_match,rcaide,wing.wetted_area_m2,pass,717.5747500000001,717.5747500000001,0.0001,0.0,
+W05_plus,R06_wing_exposed_match,rcaide,wing.exposed_area_m2,pass,358.25000000000006,358.25000000000006,0.0001,0.0,
+W05_plus,R07_wing_ac_match,rcaide,wing.aerodynamic_center_x_m,pass,16.821978259514246,16.79685934471735,0.25,0.025118914796895098,"model AC = LE(MAC) + 0.25 MAC, RCAIDE AC = area centroid - 0.25 MAC; both are equivalent for a single trapezoid but differ slightly for a multi-section planform, so a small difference is a diagnostic note, not a geometry error"
+W05_plus,R08_wing_le_mac_match,rcaide,wing.leading_edge_mac_x_m,pass,12.199505023500258,12.199505023500262,0.01,-3.552713678800501e-15,model LE(MAC) vs RCAIDE LEMAC minus wing origin
+W05_plus,R09_tail_area_match,rcaide,tail.area_m2,pass,33.91,33.91,1e-09,0.0,
+W05_plus,R10_tail_span_match,rcaide,tail.span_m,pass,5.0093312926976585,5.0093312926976585,1e-12,0.0,
+W05_plus,R11_tail_mac_match,rcaide,tail.mean_aerodynamic_chord_m,pass,8.124384956069033,8.124384956069035,1e-06,-1.7763568394002505e-15,
+W05_plus,R12_fuselage_wetted_match,rcaide,fuselage.wetted_area_m2,pass,488.92216679029485,488.9221667902949,1e-09,-5.684341886080802e-14,
+W05_plus,R13_fuselage_front_projected_match,rcaide,fuselage.front_projected_area_m2,pass,7.509664526786937,7.509664526786935,1e-09,1.7763568394002505e-15,
+W05_plus,R14_fuselage_effective_diameter_match,rcaide,fuselage.effective_diameter_m,pass,3.1039047869569845,3.1039047869569845,1e-09,0.0,
+W05_plus,R15_fuselage_lengths_match,rcaide,fuselage.lengths.total_m,pass,61.66,61.66,1e-12,0.0,
+W05_plus,R16_01_section_sweep_match,rcaide,wing.sections[0].quarter_chord_sweep_deg,pass,67.0,67.0,1e-09,0.0,
+W05_plus,R16_02_section_sweep_match,rcaide,wing.sections[1].quarter_chord_sweep_deg,pass,48.0,48.00000000000001,1e-09,-7.105427357601002e-15,
+W05_plus,R16_03_section_sweep_match,rcaide,wing.sections[2].quarter_chord_sweep_deg,pass,72.0,72.0,1e-09,0.0,
+W05_plus,R16_tip_sweep_rcaide_convention,rcaide,wing.sections.tip.quarter_chord_sweep_deg,info,72.0,72.0,,,"RCAIDE wing_planform forces the last segment sweep to the previous segment (model tip 72.000 deg, RCAIDE tip 72.000 deg); this is an RCAIDE convention, not a model error"
+W05_plus,R17_airfoil_thickness_declared_vs_imported,rcaide,wing.section.thickness_to_chord,pass,0.03,0.029990192989497864,0.002,9.80701050213445e-06,RCAIDE replaces the declared t/c with the value read from the airfoil file; difference is reported
+W05_plus,R18_wing_taper_match,rcaide,wing.taper_ratio,pass,0.03254437869822486,0.03254437869822486,1e-09,0.0,
+W05_minus,G01_wing_area_closure,model,main_wing.area_m2,pass,358.25000000000006,358.25,1e-09,5.684341886080802e-14,sum of the four trapezoid sections equals the requested wing area
+W05_minus,G02_wing_span_derivation,model,main_wing.span_m,pass,25.604638251691824,25.604638251691824,1e-09,0.0,span = sqrt(wing_area * aspect_ratio)
+W05_minus,G03_wing_aspect_ratio_closure,model,main_wing.aspect_ratio,pass,358.25000000000006,358.2500000000001,1e-09,-5.684341886080802e-14,area = span^2 / aspect_ratio
+W05_minus,G04_wing_root_chord_positive,model,main_wing.root_chord_m,pass,,,,,root chord 29.901819 m
+W05_minus,G05_wing_section_span_order,model,main_wing.sections.percent_span_location,pass,,,,,"span fractions [0, 0.480469, 0.945313, 1]"
+W05_minus,G06_wing_chord_positive_monotonic,model,main_wing.sections.chord_m,pass,,,,,"chords [29.9018, 12.2084, 3.89256, 0.973136]"
+W05_minus,G07_wing_sweep_range,model,main_wing.sections.quarter_chord_sweep_deg,pass,,,,,"sweeps [67, 48, 70, 70]"
+W05_minus,G08_wing_tip_twist_in_bounds,model,main_wing.sections.tip.twist_deg,pass,,,,,tip twist 0.000000 deg
+W05_minus,G09_wing_wetted_area_positive,model,main_wing.wetted_area_m2,pass,,,,,wetted 717.575 m2 vs reference 358.250 m2
+W05_minus,G10_wing_exposed_le_reference,model,main_wing.exposed_area_m2,pass,,,,,exposed 358.250 m2 <= reference 358.250 m2; wing-fuselage unexposed span is not modelled in P1
+W05_minus,G11_tail_area_closure,model,vertical_stabilizer.area_m2,pass,33.91,33.91,1e-09,0.0,tail planform area equals the requested vertical_tail_area
+W05_minus,G12_tail_span_derivation,model,vertical_stabilizer.span_m,pass,5.0093312926976585,5.0093312926976585,1e-09,0.0,tail span = sqrt(vertical_tail_area * 0.74)
+W05_minus,G13_tail_sections_positive_monotonic,model,vertical_stabilizer.sections,pass,,,,,"span fractions [0, 0.4, 1] chords [13.1576, 6.80566, 2.45004]"
+W05_minus,G14_tail_sweep_range,model,vertical_stabilizer.sections.quarter_chord_sweep_deg,pass,,,,,"sweeps [63, 40, 0]"
+W05_minus,G15_fuselage_cabin_positive,model,fuselage.cabin_length_m,pass,,,,,cabin 30.844000 m = total 61.660 - nose 12.384 - tail 18.432
+W05_minus,G16_fuselage_station_order,model,fuselage.stations.x_m,pass,,,,,"x stations [0, 3.02863, 5.77404, 9.07877, 12.384, 43.228, 47.5354, 61.66]"
+W05_minus,G17_fuselage_station_tags_unique,model,fuselage.stations.tag,pass,,,,,"tags segment_0, segment_1, segment_2, segment_3, segment_4, segment_5, segment_6, segment_7"
+W05_minus,G18_fuselage_volume_requirement,constraint,fuselage.usable_volume_m3,pass,231.62809266421624,110.0,,,"usable 231.628 m3, required 110.000 m3, margin 121.628 m3"
+W05_minus,G19_fuselage_wetted_front_positive,model,fuselage.wetted_area_m2,pass,,,,,"wetted 488.922 m2, front projected 7.510 m2"
+W05_minus,G20_mass_positive_finite,model,mass_kg,pass,,,,,"operating empty 78700.0 kg, total takeoff 184880.0 kg"
+W05_minus,G21_cg_inside_fuselage,model,cg_x_m,pass,,,,,"cg 28.287 m, fuselage length 61.660 m"
+W05_minus,G22_static_margin_finite,model,static_margin,pass,,,,,static margin 0.1371 (provisional; excludes tail lift)
+W05_minus,G23_design_space_bounds,constraint,design vector,pass,,,,,within bounds and cross constraints
+W05_minus,R00_rcaide_available,rcaide,RCAIDE geometry adapter,pass,,,,,vehicle rebuilt
+W05_minus,R01_wing_area_match,rcaide,wing.area_m2,pass,358.25000000000006,358.25000000000006,1e-09,0.0,
+W05_minus,R02_wing_span_match,rcaide,wing.span_m,pass,25.604638251691824,25.604638251691824,1e-12,0.0,
+W05_minus,R03_wing_root_chord_match,rcaide,wing.root_chord_m,pass,29.901818514349216,29.901818514349216,1e-12,0.0,
+W05_minus,R04_wing_mac_match,rcaide,wing.mean_aerodynamic_chord_m,pass,18.489892944055953,18.489892944055953,1e-06,0.0,
+W05_minus,R05_wing_wetted_match,rcaide,wing.wetted_area_m2,pass,717.5747500000001,717.5747500000001,0.0001,0.0,
+W05_minus,R06_wing_exposed_match,rcaide,wing.exposed_area_m2,pass,358.25000000000006,358.25000000000006,0.0001,0.0,
+W05_minus,R07_wing_ac_match,rcaide,wing.aerodynamic_center_x_m,pass,16.821978259514246,16.795980020419684,0.25,0.025998239094562337,"model AC = LE(MAC) + 0.25 MAC, RCAIDE AC = area centroid - 0.25 MAC; both are equivalent for a single trapezoid but differ slightly for a multi-section planform, so a small difference is a diagnostic note, not a geometry error"
+W05_minus,R08_wing_le_mac_match,rcaide,wing.leading_edge_mac_x_m,pass,12.199505023500258,12.199505023500262,0.01,-3.552713678800501e-15,model LE(MAC) vs RCAIDE LEMAC minus wing origin
+W05_minus,R09_tail_area_match,rcaide,tail.area_m2,pass,33.91,33.91,1e-09,0.0,
+W05_minus,R10_tail_span_match,rcaide,tail.span_m,pass,5.0093312926976585,5.0093312926976585,1e-12,0.0,
+W05_minus,R11_tail_mac_match,rcaide,tail.mean_aerodynamic_chord_m,pass,8.124384956069033,8.124384956069035,1e-06,-1.7763568394002505e-15,
+W05_minus,R12_fuselage_wetted_match,rcaide,fuselage.wetted_area_m2,pass,488.92216679029485,488.9221667902949,1e-09,-5.684341886080802e-14,
+W05_minus,R13_fuselage_front_projected_match,rcaide,fuselage.front_projected_area_m2,pass,7.509664526786937,7.509664526786935,1e-09,1.7763568394002505e-15,
+W05_minus,R14_fuselage_effective_diameter_match,rcaide,fuselage.effective_diameter_m,pass,3.1039047869569845,3.1039047869569845,1e-09,0.0,
+W05_minus,R15_fuselage_lengths_match,rcaide,fuselage.lengths.total_m,pass,61.66,61.66,1e-12,0.0,
+W05_minus,R16_01_section_sweep_match,rcaide,wing.sections[0].quarter_chord_sweep_deg,pass,67.0,67.0,1e-09,0.0,
+W05_minus,R16_02_section_sweep_match,rcaide,wing.sections[1].quarter_chord_sweep_deg,pass,48.0,48.00000000000001,1e-09,-7.105427357601002e-15,
+W05_minus,R16_03_section_sweep_match,rcaide,wing.sections[2].quarter_chord_sweep_deg,pass,70.0,70.0,1e-09,0.0,
+W05_minus,R16_tip_sweep_rcaide_convention,rcaide,wing.sections.tip.quarter_chord_sweep_deg,info,70.0,70.0,,,"RCAIDE wing_planform forces the last segment sweep to the previous segment (model tip 70.000 deg, RCAIDE tip 70.000 deg); this is an RCAIDE convention, not a model error"
+W05_minus,R17_airfoil_thickness_declared_vs_imported,rcaide,wing.section.thickness_to_chord,pass,0.03,0.029990192989497864,0.002,9.80701050213445e-06,RCAIDE replaces the declared t/c with the value read from the airfoil file; difference is reported
+W05_minus,R18_wing_taper_match,rcaide,wing.taper_ratio,pass,0.03254437869822486,0.03254437869822486,1e-09,0.0,
+W06_plus,G01_wing_area_closure,model,main_wing.area_m2,pass,358.25000000000006,358.25,1e-09,5.684341886080802e-14,sum of the four trapezoid sections equals the requested wing area
+W06_plus,G02_wing_span_derivation,model,main_wing.span_m,pass,25.604638251691824,25.604638251691824,1e-09,0.0,span = sqrt(wing_area * aspect_ratio)
+W06_plus,G03_wing_aspect_ratio_closure,model,main_wing.aspect_ratio,pass,358.25000000000006,358.2500000000001,1e-09,-5.684341886080802e-14,area = span^2 / aspect_ratio
+W06_plus,G04_wing_root_chord_positive,model,main_wing.root_chord_m,pass,,,,,root chord 29.275970 m
+W06_plus,G05_wing_section_span_order,model,main_wing.sections.percent_span_location,pass,,,,,"span fractions [0, 0.503469, 0.945313, 1]"
+W06_plus,G06_wing_chord_positive_monotonic,model,main_wing.sections.chord_m,pass,,,,,"chords [29.276, 11.9529, 3.81109, 0.952768]"
+W06_plus,G07_wing_sweep_range,model,main_wing.sections.quarter_chord_sweep_deg,pass,,,,,"sweeps [67, 48, 71, 71]"
+W06_plus,G08_wing_tip_twist_in_bounds,model,main_wing.sections.tip.twist_deg,pass,,,,,tip twist 0.000000 deg
+W06_plus,G09_wing_wetted_area_positive,model,main_wing.wetted_area_m2,pass,,,,,wetted 717.575 m2 vs reference 358.250 m2
+W06_plus,G10_wing_exposed_le_reference,model,main_wing.exposed_area_m2,pass,,,,,exposed 358.250 m2 <= reference 358.250 m2; wing-fuselage unexposed span is not modelled in P1
+W06_plus,G11_tail_area_closure,model,vertical_stabilizer.area_m2,pass,33.91,33.91,1e-09,0.0,tail planform area equals the requested vertical_tail_area
+W06_plus,G12_tail_span_derivation,model,vertical_stabilizer.span_m,pass,5.0093312926976585,5.0093312926976585,1e-09,0.0,tail span = sqrt(vertical_tail_area * 0.74)
+W06_plus,G13_tail_sections_positive_monotonic,model,vertical_stabilizer.sections,pass,,,,,"span fractions [0, 0.4, 1] chords [13.1576, 6.80566, 2.45004]"
+W06_plus,G14_tail_sweep_range,model,vertical_stabilizer.sections.quarter_chord_sweep_deg,pass,,,,,"sweeps [63, 40, 0]"
+W06_plus,G15_fuselage_cabin_positive,model,fuselage.cabin_length_m,pass,,,,,cabin 30.844000 m = total 61.660 - nose 12.384 - tail 18.432
+W06_plus,G16_fuselage_station_order,model,fuselage.stations.x_m,pass,,,,,"x stations [0, 3.02863, 5.77404, 9.07877, 12.384, 43.228, 47.5354, 61.66]"
+W06_plus,G17_fuselage_station_tags_unique,model,fuselage.stations.tag,pass,,,,,"tags segment_0, segment_1, segment_2, segment_3, segment_4, segment_5, segment_6, segment_7"
+W06_plus,G18_fuselage_volume_requirement,constraint,fuselage.usable_volume_m3,pass,231.62809266421624,110.0,,,"usable 231.628 m3, required 110.000 m3, margin 121.628 m3"
+W06_plus,G19_fuselage_wetted_front_positive,model,fuselage.wetted_area_m2,pass,,,,,"wetted 488.922 m2, front projected 7.510 m2"
+W06_plus,G20_mass_positive_finite,model,mass_kg,pass,,,,,"operating empty 78700.0 kg, total takeoff 184880.0 kg"
+W06_plus,G21_cg_inside_fuselage,model,cg_x_m,pass,,,,,"cg 28.118 m, fuselage length 61.660 m"
+W06_plus,G22_static_margin_finite,model,static_margin,pass,,,,,static margin 0.1513 (provisional; excludes tail lift)
+W06_plus,G23_design_space_bounds,constraint,design vector,pass,,,,,within bounds and cross constraints
+W06_plus,R00_rcaide_available,rcaide,RCAIDE geometry adapter,pass,,,,,vehicle rebuilt
+W06_plus,R01_wing_area_match,rcaide,wing.area_m2,pass,358.25000000000006,358.25000000000006,1e-09,0.0,
+W06_plus,R02_wing_span_match,rcaide,wing.span_m,pass,25.604638251691824,25.604638251691824,1e-12,0.0,
+W06_plus,R03_wing_root_chord_match,rcaide,wing.root_chord_m,pass,29.275969516571674,29.275969516571674,1e-12,0.0,
+W06_plus,R04_wing_mac_match,rcaide,wing.mean_aerodynamic_chord_m,pass,18.35246265259137,18.35246265259137,1e-06,0.0,
+W06_plus,R05_wing_wetted_match,rcaide,wing.wetted_area_m2,pass,717.5747500000001,717.5747500000001,0.0001,0.0,
+W06_plus,R06_wing_exposed_match,rcaide,wing.exposed_area_m2,pass,358.25000000000006,358.25000000000006,0.0001,0.0,
+W06_plus,R07_wing_ac_match,rcaide,wing.aerodynamic_center_x_m,pass,16.89417226418246,16.796418287761277,0.25,0.09775397642118122,"model AC = LE(MAC) + 0.25 MAC, RCAIDE AC = area centroid - 0.25 MAC; both are equivalent for a single trapezoid but differ slightly for a multi-section planform, so a small difference is a diagnostic note, not a geometry error"
+W06_plus,R08_wing_le_mac_match,rcaide,wing.leading_edge_mac_x_m,pass,12.306056601034616,12.306056601034612,0.01,3.552713678800501e-15,model LE(MAC) vs RCAIDE LEMAC minus wing origin
+W06_plus,R09_tail_area_match,rcaide,tail.area_m2,pass,33.91,33.91,1e-09,0.0,
+W06_plus,R10_tail_span_match,rcaide,tail.span_m,pass,5.0093312926976585,5.0093312926976585,1e-12,0.0,
+W06_plus,R11_tail_mac_match,rcaide,tail.mean_aerodynamic_chord_m,pass,8.124384956069033,8.124384956069035,1e-06,-1.7763568394002505e-15,
+W06_plus,R12_fuselage_wetted_match,rcaide,fuselage.wetted_area_m2,pass,488.92216679029485,488.9221667902949,1e-09,-5.684341886080802e-14,
+W06_plus,R13_fuselage_front_projected_match,rcaide,fuselage.front_projected_area_m2,pass,7.509664526786937,7.509664526786935,1e-09,1.7763568394002505e-15,
+W06_plus,R14_fuselage_effective_diameter_match,rcaide,fuselage.effective_diameter_m,pass,3.1039047869569845,3.1039047869569845,1e-09,0.0,
+W06_plus,R15_fuselage_lengths_match,rcaide,fuselage.lengths.total_m,pass,61.66,61.66,1e-12,0.0,
+W06_plus,R16_01_section_sweep_match,rcaide,wing.sections[0].quarter_chord_sweep_deg,pass,67.0,67.0,1e-09,0.0,
+W06_plus,R16_02_section_sweep_match,rcaide,wing.sections[1].quarter_chord_sweep_deg,pass,48.0,48.00000000000001,1e-09,-7.105427357601002e-15,
+W06_plus,R16_03_section_sweep_match,rcaide,wing.sections[2].quarter_chord_sweep_deg,pass,71.0,71.0,1e-09,0.0,
+W06_plus,R16_tip_sweep_rcaide_convention,rcaide,wing.sections.tip.quarter_chord_sweep_deg,info,71.0,71.0,,,"RCAIDE wing_planform forces the last segment sweep to the previous segment (model tip 71.000 deg, RCAIDE tip 71.000 deg); this is an RCAIDE convention, not a model error"
+W06_plus,R17_airfoil_thickness_declared_vs_imported,rcaide,wing.section.thickness_to_chord,pass,0.03,0.029990192989497864,0.002,9.80701050213445e-06,RCAIDE replaces the declared t/c with the value read from the airfoil file; difference is reported
+W06_plus,R18_wing_taper_match,rcaide,wing.taper_ratio,pass,0.03254437869822486,0.03254437869822486,1e-09,0.0,
+W06_minus,G01_wing_area_closure,model,main_wing.area_m2,pass,358.25000000000006,358.25,1e-09,5.684341886080802e-14,sum of the four trapezoid sections equals the requested wing area
+W06_minus,G02_wing_span_derivation,model,main_wing.span_m,pass,25.604638251691824,25.604638251691824,1e-09,0.0,span = sqrt(wing_area * aspect_ratio)
+W06_minus,G03_wing_aspect_ratio_closure,model,main_wing.aspect_ratio,pass,358.25000000000006,358.2500000000001,1e-09,-5.684341886080802e-14,area = span^2 / aspect_ratio
+W06_minus,G04_wing_root_chord_positive,model,main_wing.root_chord_m,pass,,,,,root chord 30.555010 m
+W06_minus,G05_wing_section_span_order,model,main_wing.sections.percent_span_location,pass,,,,,"span fractions [0, 0.457469, 0.945313, 1]"
+W06_minus,G06_wing_chord_positive_monotonic,model,main_wing.sections.chord_m,pass,,,,,"chords [30.555, 12.4751, 3.97759, 0.994394]"
+W06_minus,G07_wing_sweep_range,model,main_wing.sections.quarter_chord_sweep_deg,pass,,,,,"sweeps [67, 48, 71, 71]"
+W06_minus,G08_wing_tip_twist_in_bounds,model,main_wing.sections.tip.twist_deg,pass,,,,,tip twist 0.000000 deg
+W06_minus,G09_wing_wetted_area_positive,model,main_wing.wetted_area_m2,pass,,,,,wetted 717.575 m2 vs reference 358.250 m2
+W06_minus,G10_wing_exposed_le_reference,model,main_wing.exposed_area_m2,pass,,,,,exposed 358.250 m2 <= reference 358.250 m2; wing-fuselage unexposed span is not modelled in P1
+W06_minus,G11_tail_area_closure,model,vertical_stabilizer.area_m2,pass,33.91,33.91,1e-09,0.0,tail planform area equals the requested vertical_tail_area
+W06_minus,G12_tail_span_derivation,model,vertical_stabilizer.span_m,pass,5.0093312926976585,5.0093312926976585,1e-09,0.0,tail span = sqrt(vertical_tail_area * 0.74)
+W06_minus,G13_tail_sections_positive_monotonic,model,vertical_stabilizer.sections,pass,,,,,"span fractions [0, 0.4, 1] chords [13.1576, 6.80566, 2.45004]"
+W06_minus,G14_tail_sweep_range,model,vertical_stabilizer.sections.quarter_chord_sweep_deg,pass,,,,,"sweeps [63, 40, 0]"
+W06_minus,G15_fuselage_cabin_positive,model,fuselage.cabin_length_m,pass,,,,,cabin 30.844000 m = total 61.660 - nose 12.384 - tail 18.432
+W06_minus,G16_fuselage_station_order,model,fuselage.stations.x_m,pass,,,,,"x stations [0, 3.02863, 5.77404, 9.07877, 12.384, 43.228, 47.5354, 61.66]"
+W06_minus,G17_fuselage_station_tags_unique,model,fuselage.stations.tag,pass,,,,,"tags segment_0, segment_1, segment_2, segment_3, segment_4, segment_5, segment_6, segment_7"
+W06_minus,G18_fuselage_volume_requirement,constraint,fuselage.usable_volume_m3,pass,231.62809266421624,110.0,,,"usable 231.628 m3, required 110.000 m3, margin 121.628 m3"
+W06_minus,G19_fuselage_wetted_front_positive,model,fuselage.wetted_area_m2,pass,,,,,"wetted 488.922 m2, front projected 7.510 m2"
+W06_minus,G20_mass_positive_finite,model,mass_kg,pass,,,,,"operating empty 78700.0 kg, total takeoff 184880.0 kg"
+W06_minus,G21_cg_inside_fuselage,model,cg_x_m,pass,,,,,"cg 28.465 m, fuselage length 61.660 m"
+W06_minus,G22_static_margin_finite,model,static_margin,pass,,,,,static margin 0.1225 (provisional; excludes tail lift)
+W06_minus,G23_design_space_bounds,constraint,design vector,pass,,,,,within bounds and cross constraints
+W06_minus,R00_rcaide_available,rcaide,RCAIDE geometry adapter,pass,,,,,vehicle rebuilt
+W06_minus,R01_wing_area_match,rcaide,wing.area_m2,pass,358.25000000000006,358.25000000000006,1e-09,0.0,
+W06_minus,R02_wing_span_match,rcaide,wing.span_m,pass,25.604638251691824,25.604638251691824,1e-12,0.0,
+W06_minus,R03_wing_root_chord_match,rcaide,wing.root_chord_m,pass,30.55501029190754,30.55501029190754,1e-12,0.0,
+W06_minus,R04_wing_mac_match,rcaide,wing.mean_aerodynamic_chord_m,pass,18.62194778944729,18.621947789447287,1e-06,3.552713678800501e-15,
+W06_minus,R05_wing_wetted_match,rcaide,wing.wetted_area_m2,pass,717.5747500000001,717.5747500000001,0.0001,0.0,
+W06_minus,R06_wing_exposed_match,rcaide,wing.exposed_area_m2,pass,358.25000000000006,358.25000000000006,0.0001,0.0,
+W06_minus,R07_wing_ac_match,rcaide,wing.aerodynamic_center_x_m,pass,16.745316860673803,16.802373081259336,0.25,-0.05705622058553317,"model AC = LE(MAC) + 0.25 MAC, RCAIDE AC = area centroid - 0.25 MAC; both are equivalent for a single trapezoid but differ slightly for a multi-section planform, so a small difference is a diagnostic note, not a geometry error"
+W06_minus,R08_wing_le_mac_match,rcaide,wing.leading_edge_mac_x_m,pass,12.08982991331198,12.089829913311984,0.01,-3.552713678800501e-15,model LE(MAC) vs RCAIDE LEMAC minus wing origin
+W06_minus,R09_tail_area_match,rcaide,tail.area_m2,pass,33.91,33.91,1e-09,0.0,
+W06_minus,R10_tail_span_match,rcaide,tail.span_m,pass,5.0093312926976585,5.0093312926976585,1e-12,0.0,
+W06_minus,R11_tail_mac_match,rcaide,tail.mean_aerodynamic_chord_m,pass,8.124384956069033,8.124384956069035,1e-06,-1.7763568394002505e-15,
+W06_minus,R12_fuselage_wetted_match,rcaide,fuselage.wetted_area_m2,pass,488.92216679029485,488.9221667902949,1e-09,-5.684341886080802e-14,
+W06_minus,R13_fuselage_front_projected_match,rcaide,fuselage.front_projected_area_m2,pass,7.509664526786937,7.509664526786935,1e-09,1.7763568394002505e-15,
+W06_minus,R14_fuselage_effective_diameter_match,rcaide,fuselage.effective_diameter_m,pass,3.1039047869569845,3.1039047869569845,1e-09,0.0,
+W06_minus,R15_fuselage_lengths_match,rcaide,fuselage.lengths.total_m,pass,61.66,61.66,1e-12,0.0,
+W06_minus,R16_01_section_sweep_match,rcaide,wing.sections[0].quarter_chord_sweep_deg,pass,67.0,67.0,1e-09,0.0,
+W06_minus,R16_02_section_sweep_match,rcaide,wing.sections[1].quarter_chord_sweep_deg,pass,48.0,48.00000000000001,1e-09,-7.105427357601002e-15,
+W06_minus,R16_03_section_sweep_match,rcaide,wing.sections[2].quarter_chord_sweep_deg,pass,71.0,71.0,1e-09,0.0,
+W06_minus,R16_tip_sweep_rcaide_convention,rcaide,wing.sections.tip.quarter_chord_sweep_deg,info,71.0,71.0,,,"RCAIDE wing_planform forces the last segment sweep to the previous segment (model tip 71.000 deg, RCAIDE tip 71.000 deg); this is an RCAIDE convention, not a model error"
+W06_minus,R17_airfoil_thickness_declared_vs_imported,rcaide,wing.section.thickness_to_chord,pass,0.03,0.029990192989497864,0.002,9.80701050213445e-06,RCAIDE replaces the declared t/c with the value read from the airfoil file; difference is reported
+W06_minus,R18_wing_taper_match,rcaide,wing.taper_ratio,pass,0.03254437869822486,0.03254437869822486,1e-09,0.0,
+W07_plus,G01_wing_area_closure,model,main_wing.area_m2,pass,358.24999999999994,358.25,1e-09,-5.684341886080802e-14,sum of the four trapezoid sections equals the requested wing area
+W07_plus,G02_wing_span_derivation,model,main_wing.span_m,pass,25.604638251691824,25.604638251691824,1e-09,0.0,span = sqrt(wing_area * aspect_ratio)
+W07_plus,G03_wing_aspect_ratio_closure,model,main_wing.aspect_ratio,pass,358.24999999999994,358.2500000000001,1e-09,-1.7053025658242404e-13,area = span^2 / aspect_ratio
+W07_plus,G04_wing_root_chord_positive,model,main_wing.root_chord_m,pass,,,,,root chord 29.746556 m
+W07_plus,G05_wing_section_span_order,model,main_wing.sections.percent_span_location,pass,,,,,"span fractions [0, 0.480469, 0.958313, 1]"
+W07_plus,G06_wing_chord_positive_monotonic,model,main_wing.sections.chord_m,pass,,,,,"chords [29.7466, 12.145, 3.87235, 0.968083]"
+W07_plus,G07_wing_sweep_range,model,main_wing.sections.quarter_chord_sweep_deg,pass,,,,,"sweeps [67, 48, 71, 71]"
+W07_plus,G08_wing_tip_twist_in_bounds,model,main_wing.sections.tip.twist_deg,pass,,,,,tip twist 0.000000 deg
+W07_plus,G09_wing_wetted_area_positive,model,main_wing.wetted_area_m2,pass,,,,,wetted 717.575 m2 vs reference 358.250 m2
+W07_plus,G10_wing_exposed_le_reference,model,main_wing.exposed_area_m2,pass,,,,,exposed 358.250 m2 <= reference 358.250 m2; wing-fuselage unexposed span is not modelled in P1
+W07_plus,G11_tail_area_closure,model,vertical_stabilizer.area_m2,pass,33.91,33.91,1e-09,0.0,tail planform area equals the requested vertical_tail_area
+W07_plus,G12_tail_span_derivation,model,vertical_stabilizer.span_m,pass,5.0093312926976585,5.0093312926976585,1e-09,0.0,tail span = sqrt(vertical_tail_area * 0.74)
+W07_plus,G13_tail_sections_positive_monotonic,model,vertical_stabilizer.sections,pass,,,,,"span fractions [0, 0.4, 1] chords [13.1576, 6.80566, 2.45004]"
+W07_plus,G14_tail_sweep_range,model,vertical_stabilizer.sections.quarter_chord_sweep_deg,pass,,,,,"sweeps [63, 40, 0]"
+W07_plus,G15_fuselage_cabin_positive,model,fuselage.cabin_length_m,pass,,,,,cabin 30.844000 m = total 61.660 - nose 12.384 - tail 18.432
+W07_plus,G16_fuselage_station_order,model,fuselage.stations.x_m,pass,,,,,"x stations [0, 3.02863, 5.77404, 9.07877, 12.384, 43.228, 47.5354, 61.66]"
+W07_plus,G17_fuselage_station_tags_unique,model,fuselage.stations.tag,pass,,,,,"tags segment_0, segment_1, segment_2, segment_3, segment_4, segment_5, segment_6, segment_7"
+W07_plus,G18_fuselage_volume_requirement,constraint,fuselage.usable_volume_m3,pass,231.62809266421624,110.0,,,"usable 231.628 m3, required 110.000 m3, margin 121.628 m3"
+W07_plus,G19_fuselage_wetted_front_positive,model,fuselage.wetted_area_m2,pass,,,,,"wetted 488.922 m2, front projected 7.510 m2"
+W07_plus,G20_mass_positive_finite,model,mass_kg,pass,,,,,"operating empty 78700.0 kg, total takeoff 184880.0 kg"
+W07_plus,G21_cg_inside_fuselage,model,cg_x_m,pass,,,,,"cg 28.245 m, fuselage length 61.660 m"
+W07_plus,G22_static_margin_finite,model,static_margin,pass,,,,,static margin 0.1399 (provisional; excludes tail lift)
+W07_plus,G23_design_space_bounds,constraint,design vector,pass,,,,,within bounds and cross constraints
+W07_plus,R00_rcaide_available,rcaide,RCAIDE geometry adapter,pass,,,,,vehicle rebuilt
+W07_plus,R01_wing_area_match,rcaide,wing.area_m2,pass,358.24999999999994,358.24999999999994,1e-09,0.0,
+W07_plus,R02_wing_span_match,rcaide,wing.span_m,pass,25.604638251691824,25.604638251691824,1e-12,0.0,
+W07_plus,R03_wing_root_chord_match,rcaide,wing.root_chord_m,pass,29.74655583184673,29.74655583184673,1e-12,0.0,
+W07_plus,R04_wing_mac_match,rcaide,wing.mean_aerodynamic_chord_m,pass,18.3571741151045,18.357174115104492,1e-06,7.105427357601002e-15,
+W07_plus,R05_wing_wetted_match,rcaide,wing.wetted_area_m2,pass,717.57475,717.57475,0.0001,0.0,
+W07_plus,R06_wing_exposed_match,rcaide,wing.exposed_area_m2,pass,358.24999999999994,358.24999999999994,0.0001,0.0,
+W07_plus,R07_wing_ac_match,rcaide,wing.aerodynamic_center_x_m,pass,16.81338683973172,16.808958036990035,0.25,0.004428802741685445,"model AC = LE(MAC) + 0.25 MAC, RCAIDE AC = area centroid - 0.25 MAC; both are equivalent for a single trapezoid but differ slightly for a multi-section planform, so a small difference is a diagnostic note, not a geometry error"
+W07_plus,R08_wing_le_mac_match,rcaide,wing.leading_edge_mac_x_m,pass,12.224093310955595,12.224093310955602,0.01,-7.105427357601002e-15,model LE(MAC) vs RCAIDE LEMAC minus wing origin
+W07_plus,R09_tail_area_match,rcaide,tail.area_m2,pass,33.91,33.91,1e-09,0.0,
+W07_plus,R10_tail_span_match,rcaide,tail.span_m,pass,5.0093312926976585,5.0093312926976585,1e-12,0.0,
+W07_plus,R11_tail_mac_match,rcaide,tail.mean_aerodynamic_chord_m,pass,8.124384956069033,8.124384956069035,1e-06,-1.7763568394002505e-15,
+W07_plus,R12_fuselage_wetted_match,rcaide,fuselage.wetted_area_m2,pass,488.92216679029485,488.9221667902949,1e-09,-5.684341886080802e-14,
+W07_plus,R13_fuselage_front_projected_match,rcaide,fuselage.front_projected_area_m2,pass,7.509664526786937,7.509664526786935,1e-09,1.7763568394002505e-15,
+W07_plus,R14_fuselage_effective_diameter_match,rcaide,fuselage.effective_diameter_m,pass,3.1039047869569845,3.1039047869569845,1e-09,0.0,
+W07_plus,R15_fuselage_lengths_match,rcaide,fuselage.lengths.total_m,pass,61.66,61.66,1e-12,0.0,
+W07_plus,R16_01_section_sweep_match,rcaide,wing.sections[0].quarter_chord_sweep_deg,pass,67.0,67.0,1e-09,0.0,
+W07_plus,R16_02_section_sweep_match,rcaide,wing.sections[1].quarter_chord_sweep_deg,pass,48.0,48.00000000000001,1e-09,-7.105427357601002e-15,
+W07_plus,R16_03_section_sweep_match,rcaide,wing.sections[2].quarter_chord_sweep_deg,pass,71.0,71.0,1e-09,0.0,
+W07_plus,R16_tip_sweep_rcaide_convention,rcaide,wing.sections.tip.quarter_chord_sweep_deg,info,71.0,71.0,,,"RCAIDE wing_planform forces the last segment sweep to the previous segment (model tip 71.000 deg, RCAIDE tip 71.000 deg); this is an RCAIDE convention, not a model error"
+W07_plus,R17_airfoil_thickness_declared_vs_imported,rcaide,wing.section.thickness_to_chord,pass,0.03,0.029990192989497864,0.002,9.80701050213445e-06,RCAIDE replaces the declared t/c with the value read from the airfoil file; difference is reported
+W07_plus,R18_wing_taper_match,rcaide,wing.taper_ratio,pass,0.03254437869822486,0.03254437869822486,1e-09,0.0,
+W07_minus,G01_wing_area_closure,model,main_wing.area_m2,pass,358.2499999999999,358.25,1e-09,-1.1368683772161603e-13,sum of the four trapezoid sections equals the requested wing area
+W07_minus,G02_wing_span_derivation,model,main_wing.span_m,pass,25.604638251691824,25.604638251691824,1e-09,0.0,span = sqrt(wing_area * aspect_ratio)
+W07_minus,G03_wing_aspect_ratio_closure,model,main_wing.aspect_ratio,pass,358.2499999999999,358.2500000000001,1e-09,-2.2737367544323206e-13,area = span^2 / aspect_ratio
+W07_minus,G04_wing_root_chord_positive,model,main_wing.root_chord_m,pass,,,,,root chord 30.058710 m
+W07_minus,G05_wing_section_span_order,model,main_wing.sections.percent_span_location,pass,,,,,"span fractions [0, 0.480469, 0.932313, 1]"
+W07_minus,G06_wing_chord_positive_monotonic,model,main_wing.sections.chord_m,pass,,,,,"chords [30.0587, 12.2725, 3.91298, 0.978242]"
+W07_minus,G07_wing_sweep_range,model,main_wing.sections.quarter_chord_sweep_deg,pass,,,,,"sweeps [67, 48, 71, 71]"
+W07_minus,G08_wing_tip_twist_in_bounds,model,main_wing.sections.tip.twist_deg,pass,,,,,tip twist 0.000000 deg
+W07_minus,G09_wing_wetted_area_positive,model,main_wing.wetted_area_m2,pass,,,,,wetted 717.575 m2 vs reference 358.250 m2
+W07_minus,G10_wing_exposed_le_reference,model,main_wing.exposed_area_m2,pass,,,,,exposed 358.250 m2 <= reference 358.250 m2; wing-fuselage unexposed span is not modelled in P1
+W07_minus,G11_tail_area_closure,model,vertical_stabilizer.area_m2,pass,33.91,33.91,1e-09,0.0,tail planform area equals the requested vertical_tail_area
+W07_minus,G12_tail_span_derivation,model,vertical_stabilizer.span_m,pass,5.0093312926976585,5.0093312926976585,1e-09,0.0,tail span = sqrt(vertical_tail_area * 0.74)
+W07_minus,G13_tail_sections_positive_monotonic,model,vertical_stabilizer.sections,pass,,,,,"span fractions [0, 0.4, 1] chords [13.1576, 6.80566, 2.45004]"
+W07_minus,G14_tail_sweep_range,model,vertical_stabilizer.sections.quarter_chord_sweep_deg,pass,,,,,"sweeps [63, 40, 0]"
+W07_minus,G15_fuselage_cabin_positive,model,fuselage.cabin_length_m,pass,,,,,cabin 30.844000 m = total 61.660 - nose 12.384 - tail 18.432
+W07_minus,G16_fuselage_station_order,model,fuselage.stations.x_m,pass,,,,,"x stations [0, 3.02863, 5.77404, 9.07877, 12.384, 43.228, 47.5354, 61.66]"
+W07_minus,G17_fuselage_station_tags_unique,model,fuselage.stations.tag,pass,,,,,"tags segment_0, segment_1, segment_2, segment_3, segment_4, segment_5, segment_6, segment_7"
+W07_minus,G18_fuselage_volume_requirement,constraint,fuselage.usable_volume_m3,pass,231.62809266421624,110.0,,,"usable 231.628 m3, required 110.000 m3, margin 121.628 m3"
+W07_minus,G19_fuselage_wetted_front_positive,model,fuselage.wetted_area_m2,pass,,,,,"wetted 488.922 m2, front projected 7.510 m2"
+W07_minus,G20_mass_positive_finite,model,mass_kg,pass,,,,,"operating empty 78700.0 kg, total takeoff 184880.0 kg"
+W07_minus,G21_cg_inside_fuselage,model,cg_x_m,pass,,,,,"cg 28.330 m, fuselage length 61.660 m"
+W07_minus,G22_static_margin_finite,model,static_margin,pass,,,,,static margin 0.1343 (provisional; excludes tail lift)
+W07_minus,G23_design_space_bounds,constraint,design vector,pass,,,,,within bounds and cross constraints
+W07_minus,R00_rcaide_available,rcaide,RCAIDE geometry adapter,pass,,,,,vehicle rebuilt
+W07_minus,R01_wing_area_match,rcaide,wing.area_m2,pass,358.2499999999999,358.2499999999999,1e-09,0.0,
+W07_minus,R02_wing_span_match,rcaide,wing.span_m,pass,25.604638251691824,25.604638251691824,1e-12,0.0,
+W07_minus,R03_wing_root_chord_match,rcaide,wing.root_chord_m,pass,30.058710493716557,30.058710493716557,1e-12,0.0,
+W07_minus,R04_wing_mac_match,rcaide,wing.mean_aerodynamic_chord_m,pass,18.62439378630025,18.624393786300242,1e-06,7.105427357601002e-15,
+W07_minus,R05_wing_wetted_match,rcaide,wing.wetted_area_m2,pass,717.5747499999999,717.5747499999999,0.0001,0.0,
+W07_minus,R06_wing_exposed_match,rcaide,wing.exposed_area_m2,pass,358.2499999999999,358.2499999999999,0.0001,0.0,
+W07_minus,R07_wing_ac_match,rcaide,wing.aerodynamic_center_x_m,pass,16.83065983601112,16.784894138113426,0.25,0.0457656978976928,"model AC = LE(MAC) + 0.25 MAC, RCAIDE AC = area centroid - 0.25 MAC; both are equivalent for a single trapezoid but differ slightly for a multi-section planform, so a small difference is a diagnostic note, not a geometry error"
+W07_minus,R08_wing_le_mac_match,rcaide,wing.leading_edge_mac_x_m,pass,12.174561389436057,12.174561389436057,0.01,0.0,model LE(MAC) vs RCAIDE LEMAC minus wing origin
+W07_minus,R09_tail_area_match,rcaide,tail.area_m2,pass,33.91,33.91,1e-09,0.0,
+W07_minus,R10_tail_span_match,rcaide,tail.span_m,pass,5.0093312926976585,5.0093312926976585,1e-12,0.0,
+W07_minus,R11_tail_mac_match,rcaide,tail.mean_aerodynamic_chord_m,pass,8.124384956069033,8.124384956069035,1e-06,-1.7763568394002505e-15,
+W07_minus,R12_fuselage_wetted_match,rcaide,fuselage.wetted_area_m2,pass,488.92216679029485,488.9221667902949,1e-09,-5.684341886080802e-14,
+W07_minus,R13_fuselage_front_projected_match,rcaide,fuselage.front_projected_area_m2,pass,7.509664526786937,7.509664526786935,1e-09,1.7763568394002505e-15,
+W07_minus,R14_fuselage_effective_diameter_match,rcaide,fuselage.effective_diameter_m,pass,3.1039047869569845,3.1039047869569845,1e-09,0.0,
+W07_minus,R15_fuselage_lengths_match,rcaide,fuselage.lengths.total_m,pass,61.66,61.66,1e-12,0.0,
+W07_minus,R16_01_section_sweep_match,rcaide,wing.sections[0].quarter_chord_sweep_deg,pass,67.0,67.0,1e-09,0.0,
+W07_minus,R16_02_section_sweep_match,rcaide,wing.sections[1].quarter_chord_sweep_deg,pass,48.0,48.00000000000001,1e-09,-7.105427357601002e-15,
+W07_minus,R16_03_section_sweep_match,rcaide,wing.sections[2].quarter_chord_sweep_deg,pass,71.0,71.0,1e-09,0.0,
+W07_minus,R16_tip_sweep_rcaide_convention,rcaide,wing.sections.tip.quarter_chord_sweep_deg,info,71.0,71.0,,,"RCAIDE wing_planform forces the last segment sweep to the previous segment (model tip 71.000 deg, RCAIDE tip 71.000 deg); this is an RCAIDE convention, not a model error"
+W07_minus,R17_airfoil_thickness_declared_vs_imported,rcaide,wing.section.thickness_to_chord,pass,0.03,0.029990192989497864,0.002,9.80701050213445e-06,RCAIDE replaces the declared t/c with the value read from the airfoil file; difference is reported
+W07_minus,R18_wing_taper_match,rcaide,wing.taper_ratio,pass,0.03254437869822486,0.03254437869822486,1e-09,0.0,
+W08_plus,G01_wing_area_closure,model,main_wing.area_m2,pass,358.25,358.25,1e-09,0.0,sum of the four trapezoid sections equals the requested wing area
+W08_plus,G02_wing_span_derivation,model,main_wing.span_m,pass,25.604638251691824,25.604638251691824,1e-09,0.0,span = sqrt(wing_area * aspect_ratio)
+W08_plus,G03_wing_aspect_ratio_closure,model,main_wing.aspect_ratio,pass,358.25,358.2500000000001,1e-09,-1.1368683772161603e-13,area = span^2 / aspect_ratio
+W08_plus,G04_wing_root_chord_positive,model,main_wing.root_chord_m,pass,,,,,root chord 29.309689 m
+W08_plus,G05_wing_section_span_order,model,main_wing.sections.percent_span_location,pass,,,,,"span fractions [0, 0.480469, 0.945313, 1]"
+W08_plus,G06_wing_chord_positive_monotonic,model,main_wing.sections.chord_m,pass,,,,,"chords [29.3097, 12.5529, 3.81548, 0.953866]"
+W08_plus,G07_wing_sweep_range,model,main_wing.sections.quarter_chord_sweep_deg,pass,,,,,"sweeps [67, 48, 71, 71]"
+W08_plus,G08_wing_tip_twist_in_bounds,model,main_wing.sections.tip.twist_deg,pass,,,,,tip twist 0.000000 deg
+W08_plus,G09_wing_wetted_area_positive,model,main_wing.wetted_area_m2,pass,,,,,wetted 717.575 m2 vs reference 358.250 m2
+W08_plus,G10_wing_exposed_le_reference,model,main_wing.exposed_area_m2,pass,,,,,exposed 358.250 m2 <= reference 358.250 m2; wing-fuselage unexposed span is not modelled in P1
+W08_plus,G11_tail_area_closure,model,vertical_stabilizer.area_m2,pass,33.91,33.91,1e-09,0.0,tail planform area equals the requested vertical_tail_area
+W08_plus,G12_tail_span_derivation,model,vertical_stabilizer.span_m,pass,5.0093312926976585,5.0093312926976585,1e-09,0.0,tail span = sqrt(vertical_tail_area * 0.74)
+W08_plus,G13_tail_sections_positive_monotonic,model,vertical_stabilizer.sections,pass,,,,,"span fractions [0, 0.4, 1] chords [13.1576, 6.80566, 2.45004]"
+W08_plus,G14_tail_sweep_range,model,vertical_stabilizer.sections.quarter_chord_sweep_deg,pass,,,,,"sweeps [63, 40, 0]"
+W08_plus,G15_fuselage_cabin_positive,model,fuselage.cabin_length_m,pass,,,,,cabin 30.844000 m = total 61.660 - nose 12.384 - tail 18.432
+W08_plus,G16_fuselage_station_order,model,fuselage.stations.x_m,pass,,,,,"x stations [0, 3.02863, 5.77404, 9.07877, 12.384, 43.228, 47.5354, 61.66]"
+W08_plus,G17_fuselage_station_tags_unique,model,fuselage.stations.tag,pass,,,,,"tags segment_0, segment_1, segment_2, segment_3, segment_4, segment_5, segment_6, segment_7"
+W08_plus,G18_fuselage_volume_requirement,constraint,fuselage.usable_volume_m3,pass,231.62809266421624,110.0,,,"usable 231.628 m3, required 110.000 m3, margin 121.628 m3"
+W08_plus,G19_fuselage_wetted_front_positive,model,fuselage.wetted_area_m2,pass,,,,,"wetted 488.922 m2, front projected 7.510 m2"
+W08_plus,G20_mass_positive_finite,model,mass_kg,pass,,,,,"operating empty 78700.0 kg, total takeoff 184880.0 kg"
+W08_plus,G21_cg_inside_fuselage,model,cg_x_m,pass,,,,,"cg 28.127 m, fuselage length 61.660 m"
+W08_plus,G22_static_margin_finite,model,static_margin,pass,,,,,static margin 0.1482 (provisional; excludes tail lift)
+W08_plus,G23_design_space_bounds,constraint,design vector,pass,,,,,within bounds and cross constraints
+W08_plus,R00_rcaide_available,rcaide,RCAIDE geometry adapter,pass,,,,,vehicle rebuilt
+W08_plus,R01_wing_area_match,rcaide,wing.area_m2,pass,358.25,358.25,1e-09,0.0,
+W08_plus,R02_wing_span_match,rcaide,wing.span_m,pass,25.604638251691824,25.604638251691824,1e-12,0.0,
+W08_plus,R03_wing_root_chord_match,rcaide,wing.root_chord_m,pass,29.309688761539412,29.309688761539412,1e-12,0.0,
+W08_plus,R04_wing_mac_match,rcaide,wing.mean_aerodynamic_chord_m,pass,18.309985764493383,18.309985764493383,1e-06,0.0,
+W08_plus,R05_wing_wetted_match,rcaide,wing.wetted_area_m2,pass,717.5747499999999,717.5747499999999,0.0001,0.0,
+W08_plus,R06_wing_exposed_match,rcaide,wing.exposed_area_m2,pass,358.25,358.25,0.0001,0.0,
+W08_plus,R07_wing_ac_match,rcaide,wing.aerodynamic_center_x_m,pass,16.839852709048685,16.723583119598786,0.25,0.11626958944989951,"model AC = LE(MAC) + 0.25 MAC, RCAIDE AC = area centroid - 0.25 MAC; both are equivalent for a single trapezoid but differ slightly for a multi-section planform, so a small difference is a diagnostic note, not a geometry error"
+W08_plus,R08_wing_le_mac_match,rcaide,wing.leading_edge_mac_x_m,pass,12.26235626792534,12.262356267925341,0.01,-1.7763568394002505e-15,model LE(MAC) vs RCAIDE LEMAC minus wing origin
+W08_plus,R09_tail_area_match,rcaide,tail.area_m2,pass,33.91,33.91,1e-09,0.0,
+W08_plus,R10_tail_span_match,rcaide,tail.span_m,pass,5.0093312926976585,5.0093312926976585,1e-12,0.0,
+W08_plus,R11_tail_mac_match,rcaide,tail.mean_aerodynamic_chord_m,pass,8.124384956069033,8.124384956069035,1e-06,-1.7763568394002505e-15,
+W08_plus,R12_fuselage_wetted_match,rcaide,fuselage.wetted_area_m2,pass,488.92216679029485,488.9221667902949,1e-09,-5.684341886080802e-14,
+W08_plus,R13_fuselage_front_projected_match,rcaide,fuselage.front_projected_area_m2,pass,7.509664526786937,7.509664526786935,1e-09,1.7763568394002505e-15,
+W08_plus,R14_fuselage_effective_diameter_match,rcaide,fuselage.effective_diameter_m,pass,3.1039047869569845,3.1039047869569845,1e-09,0.0,
+W08_plus,R15_fuselage_lengths_match,rcaide,fuselage.lengths.total_m,pass,61.66,61.66,1e-12,0.0,
+W08_plus,R16_01_section_sweep_match,rcaide,wing.sections[0].quarter_chord_sweep_deg,pass,67.0,67.0,1e-09,0.0,
+W08_plus,R16_02_section_sweep_match,rcaide,wing.sections[1].quarter_chord_sweep_deg,pass,48.0,48.00000000000001,1e-09,-7.105427357601002e-15,
+W08_plus,R16_03_section_sweep_match,rcaide,wing.sections[2].quarter_chord_sweep_deg,pass,71.0,71.0,1e-09,0.0,
+W08_plus,R16_tip_sweep_rcaide_convention,rcaide,wing.sections.tip.quarter_chord_sweep_deg,info,71.0,71.0,,,"RCAIDE wing_planform forces the last segment sweep to the previous segment (model tip 71.000 deg, RCAIDE tip 71.000 deg); this is an RCAIDE convention, not a model error"
+W08_plus,R17_airfoil_thickness_declared_vs_imported,rcaide,wing.section.thickness_to_chord,pass,0.03,0.029990192989497864,0.002,9.80701050213445e-06,RCAIDE replaces the declared t/c with the value read from the airfoil file; difference is reported
+W08_plus,R18_wing_taper_match,rcaide,wing.taper_ratio,pass,0.03254437869822486,0.03254437869822486,1e-09,0.0,
+W08_minus,G01_wing_area_closure,model,main_wing.area_m2,pass,358.24999999999994,358.25,1e-09,-5.684341886080802e-14,sum of the four trapezoid sections equals the requested wing area
+W08_minus,G02_wing_span_derivation,model,main_wing.span_m,pass,25.604638251691824,25.604638251691824,1e-09,0.0,span = sqrt(wing_area * aspect_ratio)
+W08_minus,G03_wing_aspect_ratio_closure,model,main_wing.aspect_ratio,pass,358.24999999999994,358.2500000000001,1e-09,-1.7053025658242404e-13,area = span^2 / aspect_ratio
+W08_minus,G04_wing_root_chord_positive,model,main_wing.root_chord_m,pass,,,,,root chord 30.518367 m
+W08_minus,G05_wing_section_span_order,model,main_wing.sections.percent_span_location,pass,,,,,"span fractions [0, 0.480469, 0.945313, 1]"
+W08_minus,G06_wing_chord_positive_monotonic,model,main_wing.sections.chord_m,pass,,,,,"chords [30.5184, 11.8498, 3.97282, 0.993201]"
+W08_minus,G07_wing_sweep_range,model,main_wing.sections.quarter_chord_sweep_deg,pass,,,,,"sweeps [67, 48, 71, 71]"
+W08_minus,G08_wing_tip_twist_in_bounds,model,main_wing.sections.tip.twist_deg,pass,,,,,tip twist 0.000000 deg
+W08_minus,G09_wing_wetted_area_positive,model,main_wing.wetted_area_m2,pass,,,,,wetted 717.575 m2 vs reference 358.250 m2
+W08_minus,G10_wing_exposed_le_reference,model,main_wing.exposed_area_m2,pass,,,,,exposed 358.250 m2 <= reference 358.250 m2; wing-fuselage unexposed span is not modelled in P1
+W08_minus,G11_tail_area_closure,model,vertical_stabilizer.area_m2,pass,33.91,33.91,1e-09,0.0,tail planform area equals the requested vertical_tail_area
+W08_minus,G12_tail_span_derivation,model,vertical_stabilizer.span_m,pass,5.0093312926976585,5.0093312926976585,1e-09,0.0,tail span = sqrt(vertical_tail_area * 0.74)
+W08_minus,G13_tail_sections_positive_monotonic,model,vertical_stabilizer.sections,pass,,,,,"span fractions [0, 0.4, 1] chords [13.1576, 6.80566, 2.45004]"
+W08_minus,G14_tail_sweep_range,model,vertical_stabilizer.sections.quarter_chord_sweep_deg,pass,,,,,"sweeps [63, 40, 0]"
+W08_minus,G15_fuselage_cabin_positive,model,fuselage.cabin_length_m,pass,,,,,cabin 30.844000 m = total 61.660 - nose 12.384 - tail 18.432
+W08_minus,G16_fuselage_station_order,model,fuselage.stations.x_m,pass,,,,,"x stations [0, 3.02863, 5.77404, 9.07877, 12.384, 43.228, 47.5354, 61.66]"
+W08_minus,G17_fuselage_station_tags_unique,model,fuselage.stations.tag,pass,,,,,"tags segment_0, segment_1, segment_2, segment_3, segment_4, segment_5, segment_6, segment_7"
+W08_minus,G18_fuselage_volume_requirement,constraint,fuselage.usable_volume_m3,pass,231.62809266421624,110.0,,,"usable 231.628 m3, required 110.000 m3, margin 121.628 m3"
+W08_minus,G19_fuselage_wetted_front_positive,model,fuselage.wetted_area_m2,pass,,,,,"wetted 488.922 m2, front projected 7.510 m2"
+W08_minus,G20_mass_positive_finite,model,mass_kg,pass,,,,,"operating empty 78700.0 kg, total takeoff 184880.0 kg"
+W08_minus,G21_cg_inside_fuselage,model,cg_x_m,pass,,,,,"cg 28.455 m, fuselage length 61.660 m"
+W08_minus,G22_static_margin_finite,model,static_margin,pass,,,,,static margin 0.1263 (provisional; excludes tail lift)
+W08_minus,G23_design_space_bounds,constraint,design vector,pass,,,,,within bounds and cross constraints
+W08_minus,R00_rcaide_available,rcaide,RCAIDE geometry adapter,pass,,,,,vehicle rebuilt
+W08_minus,R01_wing_area_match,rcaide,wing.area_m2,pass,358.24999999999994,358.24999999999994,1e-09,0.0,
+W08_minus,R02_wing_span_match,rcaide,wing.span_m,pass,25.604638251691824,25.604638251691824,1e-12,0.0,
+W08_minus,R03_wing_root_chord_match,rcaide,wing.root_chord_m,pass,30.5183666130258,30.5183666130258,1e-12,0.0,
+W08_minus,R04_wing_mac_match,rcaide,wing.mean_aerodynamic_chord_m,pass,18.686002612214363,18.686002612214363,1e-06,0.0,
+W08_minus,R05_wing_wetted_match,rcaide,wing.wetted_area_m2,pass,717.5747499999999,717.5747499999999,0.0001,0.0,
+W08_minus,R06_wing_exposed_match,rcaide,wing.exposed_area_m2,pass,358.24999999999994,358.24999999999994,0.0001,0.0,
+W08_minus,R07_wing_ac_match,rcaide,wing.aerodynamic_center_x_m,pass,16.814239035239893,16.872214397050197,0.25,-0.05797536181030338,"model AC = LE(MAC) + 0.25 MAC, RCAIDE AC = area centroid - 0.25 MAC; both are equivalent for a single trapezoid but differ slightly for a multi-section planform, so a small difference is a diagnostic note, not a geometry error"
+W08_minus,R08_wing_le_mac_match,rcaide,wing.leading_edge_mac_x_m,pass,12.142738382186302,12.142738382186309,0.01,-7.105427357601002e-15,model LE(MAC) vs RCAIDE LEMAC minus wing origin
+W08_minus,R09_tail_area_match,rcaide,tail.area_m2,pass,33.91,33.91,1e-09,0.0,
+W08_minus,R10_tail_span_match,rcaide,tail.span_m,pass,5.0093312926976585,5.0093312926976585,1e-12,0.0,
+W08_minus,R11_tail_mac_match,rcaide,tail.mean_aerodynamic_chord_m,pass,8.124384956069033,8.124384956069035,1e-06,-1.7763568394002505e-15,
+W08_minus,R12_fuselage_wetted_match,rcaide,fuselage.wetted_area_m2,pass,488.92216679029485,488.9221667902949,1e-09,-5.684341886080802e-14,
+W08_minus,R13_fuselage_front_projected_match,rcaide,fuselage.front_projected_area_m2,pass,7.509664526786937,7.509664526786935,1e-09,1.7763568394002505e-15,
+W08_minus,R14_fuselage_effective_diameter_match,rcaide,fuselage.effective_diameter_m,pass,3.1039047869569845,3.1039047869569845,1e-09,0.0,
+W08_minus,R15_fuselage_lengths_match,rcaide,fuselage.lengths.total_m,pass,61.66,61.66,1e-12,0.0,
+W08_minus,R16_01_section_sweep_match,rcaide,wing.sections[0].quarter_chord_sweep_deg,pass,67.0,67.0,1e-09,0.0,
+W08_minus,R16_02_section_sweep_match,rcaide,wing.sections[1].quarter_chord_sweep_deg,pass,48.0,48.00000000000001,1e-09,-7.105427357601002e-15,
+W08_minus,R16_03_section_sweep_match,rcaide,wing.sections[2].quarter_chord_sweep_deg,pass,71.0,71.0,1e-09,0.0,
+W08_minus,R16_tip_sweep_rcaide_convention,rcaide,wing.sections.tip.quarter_chord_sweep_deg,info,71.0,71.0,,,"RCAIDE wing_planform forces the last segment sweep to the previous segment (model tip 71.000 deg, RCAIDE tip 71.000 deg); this is an RCAIDE convention, not a model error"
+W08_minus,R17_airfoil_thickness_declared_vs_imported,rcaide,wing.section.thickness_to_chord,pass,0.03,0.029990192989497864,0.002,9.80701050213445e-06,RCAIDE replaces the declared t/c with the value read from the airfoil file; difference is reported
+W08_minus,R18_wing_taper_match,rcaide,wing.taper_ratio,pass,0.03254437869822486,0.03254437869822486,1e-09,0.0,
+W09_plus,G01_wing_area_closure,model,main_wing.area_m2,pass,358.24999999999994,358.25,1e-09,-5.684341886080802e-14,sum of the four trapezoid sections equals the requested wing area
+W09_plus,G02_wing_span_derivation,model,main_wing.span_m,pass,25.604638251691824,25.604638251691824,1e-09,0.0,span = sqrt(wing_area * aspect_ratio)
+W09_plus,G03_wing_aspect_ratio_closure,model,main_wing.aspect_ratio,pass,358.24999999999994,358.2500000000001,1e-09,-1.7053025658242404e-13,area = span^2 / aspect_ratio
+W09_plus,G04_wing_root_chord_positive,model,main_wing.root_chord_m,pass,,,,,root chord 29.703936 m
+W09_plus,G05_wing_section_span_order,model,main_wing.sections.percent_span_location,pass,,,,,"span fractions [0, 0.480469, 0.945313, 1]"
+W09_plus,G06_wing_chord_positive_monotonic,model,main_wing.sections.chord_m,pass,,,,,"chords [29.7039, 12.1276, 4.22325, 0.966696]"
+W09_plus,G07_wing_sweep_range,model,main_wing.sections.quarter_chord_sweep_deg,pass,,,,,"sweeps [67, 48, 71, 71]"
+W09_plus,G08_wing_tip_twist_in_bounds,model,main_wing.sections.tip.twist_deg,pass,,,,,tip twist 0.000000 deg
+W09_plus,G09_wing_wetted_area_positive,model,main_wing.wetted_area_m2,pass,,,,,wetted 717.575 m2 vs reference 358.250 m2
+W09_plus,G10_wing_exposed_le_reference,model,main_wing.exposed_area_m2,pass,,,,,exposed 358.250 m2 <= reference 358.250 m2; wing-fuselage unexposed span is not modelled in P1
+W09_plus,G11_tail_area_closure,model,vertical_stabilizer.area_m2,pass,33.91,33.91,1e-09,0.0,tail planform area equals the requested vertical_tail_area
+W09_plus,G12_tail_span_derivation,model,vertical_stabilizer.span_m,pass,5.0093312926976585,5.0093312926976585,1e-09,0.0,tail span = sqrt(vertical_tail_area * 0.74)
+W09_plus,G13_tail_sections_positive_monotonic,model,vertical_stabilizer.sections,pass,,,,,"span fractions [0, 0.4, 1] chords [13.1576, 6.80566, 2.45004]"
+W09_plus,G14_tail_sweep_range,model,vertical_stabilizer.sections.quarter_chord_sweep_deg,pass,,,,,"sweeps [63, 40, 0]"
+W09_plus,G15_fuselage_cabin_positive,model,fuselage.cabin_length_m,pass,,,,,cabin 30.844000 m = total 61.660 - nose 12.384 - tail 18.432
+W09_plus,G16_fuselage_station_order,model,fuselage.stations.x_m,pass,,,,,"x stations [0, 3.02863, 5.77404, 9.07877, 12.384, 43.228, 47.5354, 61.66]"
+W09_plus,G17_fuselage_station_tags_unique,model,fuselage.stations.tag,pass,,,,,"tags segment_0, segment_1, segment_2, segment_3, segment_4, segment_5, segment_6, segment_7"
+W09_plus,G18_fuselage_volume_requirement,constraint,fuselage.usable_volume_m3,pass,231.62809266421624,110.0,,,"usable 231.628 m3, required 110.000 m3, margin 121.628 m3"
+W09_plus,G19_fuselage_wetted_front_positive,model,fuselage.wetted_area_m2,pass,,,,,"wetted 488.922 m2, front projected 7.510 m2"
+W09_plus,G20_mass_positive_finite,model,mass_kg,pass,,,,,"operating empty 78700.0 kg, total takeoff 184880.0 kg"
+W09_plus,G21_cg_inside_fuselage,model,cg_x_m,pass,,,,,"cg 28.234 m, fuselage length 61.660 m"
+W09_plus,G22_static_margin_finite,model,static_margin,pass,,,,,static margin 0.1402 (provisional; excludes tail lift)
+W09_plus,G23_design_space_bounds,constraint,design vector,pass,,,,,within bounds and cross constraints
+W09_plus,R00_rcaide_available,rcaide,RCAIDE geometry adapter,pass,,,,,vehicle rebuilt
+W09_plus,R01_wing_area_match,rcaide,wing.area_m2,pass,358.24999999999994,358.24999999999994,1e-09,0.0,
+W09_plus,R02_wing_span_match,rcaide,wing.span_m,pass,25.604638251691824,25.604638251691824,1e-12,0.0,
+W09_plus,R03_wing_root_chord_match,rcaide,wing.root_chord_m,pass,29.703936296857965,29.703936296857965,1e-12,0.0,
+W09_plus,R04_wing_mac_match,rcaide,wing.mean_aerodynamic_chord_m,pass,18.32999408830242,18.329994088302417,1e-06,3.552713678800501e-15,
+W09_plus,R05_wing_wetted_match,rcaide,wing.wetted_area_m2,pass,717.5747500000001,717.5747500000001,0.0001,0.0,
+W09_plus,R06_wing_exposed_match,rcaide,wing.exposed_area_m2,pass,358.24999999999994,358.24999999999994,0.0001,0.0,
+W09_plus,R07_wing_ac_match,rcaide,wing.aerodynamic_center_x_m,pass,16.803456408257425,16.812307781617164,0.25,-0.008851373359739512,"model AC = LE(MAC) + 0.25 MAC, RCAIDE AC = area centroid - 0.25 MAC; both are equivalent for a single trapezoid but differ slightly for a multi-section planform, so a small difference is a diagnostic note, not a geometry error"
+W09_plus,R08_wing_le_mac_match,rcaide,wing.leading_edge_mac_x_m,pass,12.22095788618182,12.220957886181825,0.01,-5.329070518200751e-15,model LE(MAC) vs RCAIDE LEMAC minus wing origin
+W09_plus,R09_tail_area_match,rcaide,tail.area_m2,pass,33.91,33.91,1e-09,0.0,
+W09_plus,R10_tail_span_match,rcaide,tail.span_m,pass,5.0093312926976585,5.0093312926976585,1e-12,0.0,
+W09_plus,R11_tail_mac_match,rcaide,tail.mean_aerodynamic_chord_m,pass,8.124384956069033,8.124384956069035,1e-06,-1.7763568394002505e-15,
+W09_plus,R12_fuselage_wetted_match,rcaide,fuselage.wetted_area_m2,pass,488.92216679029485,488.9221667902949,1e-09,-5.684341886080802e-14,
+W09_plus,R13_fuselage_front_projected_match,rcaide,fuselage.front_projected_area_m2,pass,7.509664526786937,7.509664526786935,1e-09,1.7763568394002505e-15,
+W09_plus,R14_fuselage_effective_diameter_match,rcaide,fuselage.effective_diameter_m,pass,3.1039047869569845,3.1039047869569845,1e-09,0.0,
+W09_plus,R15_fuselage_lengths_match,rcaide,fuselage.lengths.total_m,pass,61.66,61.66,1e-12,0.0,
+W09_plus,R16_01_section_sweep_match,rcaide,wing.sections[0].quarter_chord_sweep_deg,pass,67.0,67.0,1e-09,0.0,
+W09_plus,R16_02_section_sweep_match,rcaide,wing.sections[1].quarter_chord_sweep_deg,pass,48.0,48.00000000000001,1e-09,-7.105427357601002e-15,
+W09_plus,R16_03_section_sweep_match,rcaide,wing.sections[2].quarter_chord_sweep_deg,pass,71.0,71.0,1e-09,0.0,
+W09_plus,R16_tip_sweep_rcaide_convention,rcaide,wing.sections.tip.quarter_chord_sweep_deg,info,71.0,71.0,,,"RCAIDE wing_planform forces the last segment sweep to the previous segment (model tip 71.000 deg, RCAIDE tip 71.000 deg); this is an RCAIDE convention, not a model error"
+W09_plus,R17_airfoil_thickness_declared_vs_imported,rcaide,wing.section.thickness_to_chord,pass,0.03,0.029990192989497864,0.002,9.80701050213445e-06,RCAIDE replaces the declared t/c with the value read from the airfoil file; difference is reported
+W09_plus,R18_wing_taper_match,rcaide,wing.taper_ratio,pass,0.03254437869822486,0.03254437869822486,1e-09,0.0,
+W09_minus,G01_wing_area_closure,model,main_wing.area_m2,pass,358.25,358.25,1e-09,0.0,sum of the four trapezoid sections equals the requested wing area
+W09_minus,G02_wing_span_derivation,model,main_wing.span_m,pass,25.604638251691824,25.604638251691824,1e-09,0.0,span = sqrt(wing_area * aspect_ratio)
+W09_minus,G03_wing_aspect_ratio_closure,model,main_wing.aspect_ratio,pass,358.25,358.2500000000001,1e-09,-1.1368683772161603e-13,area = span^2 / aspect_ratio
+W09_minus,G04_wing_root_chord_positive,model,main_wing.root_chord_m,pass,,,,,root chord 30.102355 m
+W09_minus,G05_wing_section_span_order,model,main_wing.sections.percent_span_location,pass,,,,,"span fractions [0, 0.480469, 0.945313, 1]"
+W09_minus,G06_wing_chord_positive_monotonic,model,main_wing.sections.chord_m,pass,,,,,"chords [30.1024, 12.2903, 3.55744, 0.979662]"
+W09_minus,G07_wing_sweep_range,model,main_wing.sections.quarter_chord_sweep_deg,pass,,,,,"sweeps [67, 48, 71, 71]"
+W09_minus,G08_wing_tip_twist_in_bounds,model,main_wing.sections.tip.twist_deg,pass,,,,,tip twist 0.000000 deg
+W09_minus,G09_wing_wetted_area_positive,model,main_wing.wetted_area_m2,pass,,,,,wetted 717.575 m2 vs reference 358.250 m2
+W09_minus,G10_wing_exposed_le_reference,model,main_wing.exposed_area_m2,pass,,,,,exposed 358.250 m2 <= reference 358.250 m2; wing-fuselage unexposed span is not modelled in P1
+W09_minus,G11_tail_area_closure,model,vertical_stabilizer.area_m2,pass,33.91,33.91,1e-09,0.0,tail planform area equals the requested vertical_tail_area
+W09_minus,G12_tail_span_derivation,model,vertical_stabilizer.span_m,pass,5.0093312926976585,5.0093312926976585,1e-09,0.0,tail span = sqrt(vertical_tail_area * 0.74)
+W09_minus,G13_tail_sections_positive_monotonic,model,vertical_stabilizer.sections,pass,,,,,"span fractions [0, 0.4, 1] chords [13.1576, 6.80566, 2.45004]"
+W09_minus,G14_tail_sweep_range,model,vertical_stabilizer.sections.quarter_chord_sweep_deg,pass,,,,,"sweeps [63, 40, 0]"
+W09_minus,G15_fuselage_cabin_positive,model,fuselage.cabin_length_m,pass,,,,,cabin 30.844000 m = total 61.660 - nose 12.384 - tail 18.432
+W09_minus,G16_fuselage_station_order,model,fuselage.stations.x_m,pass,,,,,"x stations [0, 3.02863, 5.77404, 9.07877, 12.384, 43.228, 47.5354, 61.66]"
+W09_minus,G17_fuselage_station_tags_unique,model,fuselage.stations.tag,pass,,,,,"tags segment_0, segment_1, segment_2, segment_3, segment_4, segment_5, segment_6, segment_7"
+W09_minus,G18_fuselage_volume_requirement,constraint,fuselage.usable_volume_m3,pass,231.62809266421624,110.0,,,"usable 231.628 m3, required 110.000 m3, margin 121.628 m3"
+W09_minus,G19_fuselage_wetted_front_positive,model,fuselage.wetted_area_m2,pass,,,,,"wetted 488.922 m2, front projected 7.510 m2"
+W09_minus,G20_mass_positive_finite,model,mass_kg,pass,,,,,"operating empty 78700.0 kg, total takeoff 184880.0 kg"
+W09_minus,G21_cg_inside_fuselage,model,cg_x_m,pass,,,,,"cg 28.342 m, fuselage length 61.660 m"
+W09_minus,G22_static_margin_finite,model,static_margin,pass,,,,,static margin 0.1338 (provisional; excludes tail lift)
+W09_minus,G23_design_space_bounds,constraint,design vector,pass,,,,,within bounds and cross constraints
+W09_minus,R00_rcaide_available,rcaide,RCAIDE geometry adapter,pass,,,,,vehicle rebuilt
+W09_minus,R01_wing_area_match,rcaide,wing.area_m2,pass,358.25,358.25,1e-09,0.0,
+W09_minus,R02_wing_span_match,rcaide,wing.span_m,pass,25.604638251691824,25.604638251691824,1e-12,0.0,
+W09_minus,R03_wing_root_chord_match,rcaide,wing.root_chord_m,pass,30.10235492422375,30.10235492422375,1e-12,0.0,
+W09_minus,R04_wing_mac_match,rcaide,wing.mean_aerodynamic_chord_m,pass,18.655676868808268,18.655676868808275,1e-06,-7.105427357601002e-15,
+W09_minus,R05_wing_wetted_match,rcaide,wing.wetted_area_m2,pass,717.5747500000001,717.5747500000001,0.0001,0.0,
+W09_minus,R06_wing_exposed_match,rcaide,wing.exposed_area_m2,pass,358.25,358.25,0.0001,0.0,
+W09_minus,R07_wing_ac_match,rcaide,wing.aerodynamic_center_x_m,pass,16.838120671051907,16.780273601891558,0.25,0.05784706916034921,"model AC = LE(MAC) + 0.25 MAC, RCAIDE AC = area centroid - 0.25 MAC; both are equivalent for a single trapezoid but differ slightly for a multi-section planform, so a small difference is a diagnostic note, not a geometry error"
+W09_minus,R08_wing_le_mac_match,rcaide,wing.leading_edge_mac_x_m,pass,12.17420145384984,12.174201453849829,0.01,1.0658141036401503e-14,model LE(MAC) vs RCAIDE LEMAC minus wing origin
+W09_minus,R09_tail_area_match,rcaide,tail.area_m2,pass,33.91,33.91,1e-09,0.0,
+W09_minus,R10_tail_span_match,rcaide,tail.span_m,pass,5.0093312926976585,5.0093312926976585,1e-12,0.0,
+W09_minus,R11_tail_mac_match,rcaide,tail.mean_aerodynamic_chord_m,pass,8.124384956069033,8.124384956069035,1e-06,-1.7763568394002505e-15,
+W09_minus,R12_fuselage_wetted_match,rcaide,fuselage.wetted_area_m2,pass,488.92216679029485,488.9221667902949,1e-09,-5.684341886080802e-14,
+W09_minus,R13_fuselage_front_projected_match,rcaide,fuselage.front_projected_area_m2,pass,7.509664526786937,7.509664526786935,1e-09,1.7763568394002505e-15,
+W09_minus,R14_fuselage_effective_diameter_match,rcaide,fuselage.effective_diameter_m,pass,3.1039047869569845,3.1039047869569845,1e-09,0.0,
+W09_minus,R15_fuselage_lengths_match,rcaide,fuselage.lengths.total_m,pass,61.66,61.66,1e-12,0.0,
+W09_minus,R16_01_section_sweep_match,rcaide,wing.sections[0].quarter_chord_sweep_deg,pass,67.0,67.0,1e-09,0.0,
+W09_minus,R16_02_section_sweep_match,rcaide,wing.sections[1].quarter_chord_sweep_deg,pass,48.0,48.00000000000001,1e-09,-7.105427357601002e-15,
+W09_minus,R16_03_section_sweep_match,rcaide,wing.sections[2].quarter_chord_sweep_deg,pass,71.0,71.0,1e-09,0.0,
+W09_minus,R16_tip_sweep_rcaide_convention,rcaide,wing.sections.tip.quarter_chord_sweep_deg,info,71.0,71.0,,,"RCAIDE wing_planform forces the last segment sweep to the previous segment (model tip 71.000 deg, RCAIDE tip 71.000 deg); this is an RCAIDE convention, not a model error"
+W09_minus,R17_airfoil_thickness_declared_vs_imported,rcaide,wing.section.thickness_to_chord,pass,0.03,0.029990192989497864,0.002,9.80701050213445e-06,RCAIDE replaces the declared t/c with the value read from the airfoil file; difference is reported
+W09_minus,R18_wing_taper_match,rcaide,wing.taper_ratio,pass,0.03254437869822486,0.03254437869822486,1e-09,0.0,
+W10_plus,G01_wing_area_closure,model,main_wing.area_m2,pass,358.25000000000006,358.25,1e-09,5.684341886080802e-14,sum of the four trapezoid sections equals the requested wing area
+W10_plus,G02_wing_span_derivation,model,main_wing.span_m,pass,25.604638251691824,25.604638251691824,1e-09,0.0,span = sqrt(wing_area * aspect_ratio)
+W10_plus,G03_wing_aspect_ratio_closure,model,main_wing.aspect_ratio,pass,358.25000000000006,358.2500000000001,1e-09,-5.684341886080802e-14,area = span^2 / aspect_ratio
+W10_plus,G04_wing_root_chord_positive,model,main_wing.root_chord_m,pass,,,,,root chord 29.901819 m
+W10_plus,G05_wing_section_span_order,model,main_wing.sections.percent_span_location,pass,,,,,"span fractions [0, 0.480469, 0.945313, 1]"
+W10_plus,G06_wing_chord_positive_monotonic,model,main_wing.sections.chord_m,pass,,,,,"chords [29.9018, 12.2084, 3.89256, 0.973136]"
+W10_plus,G07_wing_sweep_range,model,main_wing.sections.quarter_chord_sweep_deg,pass,,,,,"sweeps [67, 48, 71, 71]"
+W10_plus,G08_wing_tip_twist_in_bounds,model,main_wing.sections.tip.twist_deg,pass,,,,,tip twist 0.800000 deg
+W10_plus,G09_wing_wetted_area_positive,model,main_wing.wetted_area_m2,pass,,,,,wetted 717.575 m2 vs reference 358.250 m2
+W10_plus,G10_wing_exposed_le_reference,model,main_wing.exposed_area_m2,pass,,,,,exposed 358.250 m2 <= reference 358.250 m2; wing-fuselage unexposed span is not modelled in P1
+W10_plus,G11_tail_area_closure,model,vertical_stabilizer.area_m2,pass,33.91,33.91,1e-09,0.0,tail planform area equals the requested vertical_tail_area
+W10_plus,G12_tail_span_derivation,model,vertical_stabilizer.span_m,pass,5.0093312926976585,5.0093312926976585,1e-09,0.0,tail span = sqrt(vertical_tail_area * 0.74)
+W10_plus,G13_tail_sections_positive_monotonic,model,vertical_stabilizer.sections,pass,,,,,"span fractions [0, 0.4, 1] chords [13.1576, 6.80566, 2.45004]"
+W10_plus,G14_tail_sweep_range,model,vertical_stabilizer.sections.quarter_chord_sweep_deg,pass,,,,,"sweeps [63, 40, 0]"
+W10_plus,G15_fuselage_cabin_positive,model,fuselage.cabin_length_m,pass,,,,,cabin 30.844000 m = total 61.660 - nose 12.384 - tail 18.432
+W10_plus,G16_fuselage_station_order,model,fuselage.stations.x_m,pass,,,,,"x stations [0, 3.02863, 5.77404, 9.07877, 12.384, 43.228, 47.5354, 61.66]"
+W10_plus,G17_fuselage_station_tags_unique,model,fuselage.stations.tag,pass,,,,,"tags segment_0, segment_1, segment_2, segment_3, segment_4, segment_5, segment_6, segment_7"
+W10_plus,G18_fuselage_volume_requirement,constraint,fuselage.usable_volume_m3,pass,231.62809266421624,110.0,,,"usable 231.628 m3, required 110.000 m3, margin 121.628 m3"
+W10_plus,G19_fuselage_wetted_front_positive,model,fuselage.wetted_area_m2,pass,,,,,"wetted 488.922 m2, front projected 7.510 m2"
+W10_plus,G20_mass_positive_finite,model,mass_kg,pass,,,,,"operating empty 78700.0 kg, total takeoff 184880.0 kg"
+W10_plus,G21_cg_inside_fuselage,model,cg_x_m,pass,,,,,"cg 28.287 m, fuselage length 61.660 m"
+W10_plus,G22_static_margin_finite,model,static_margin,pass,,,,,static margin 0.1371 (provisional; excludes tail lift)
+W10_plus,G23_design_space_bounds,constraint,design vector,pass,,,,,within bounds and cross constraints
+W10_plus,R00_rcaide_available,rcaide,RCAIDE geometry adapter,pass,,,,,vehicle rebuilt
+W10_plus,R01_wing_area_match,rcaide,wing.area_m2,pass,358.25000000000006,358.25000000000006,1e-09,0.0,
+W10_plus,R02_wing_span_match,rcaide,wing.span_m,pass,25.604638251691824,25.604638251691824,1e-12,0.0,
+W10_plus,R03_wing_root_chord_match,rcaide,wing.root_chord_m,pass,29.901818514349216,29.901818514349216,1e-12,0.0,
+W10_plus,R04_wing_mac_match,rcaide,wing.mean_aerodynamic_chord_m,pass,18.489892944055953,18.489892944055953,1e-06,0.0,
+W10_plus,R05_wing_wetted_match,rcaide,wing.wetted_area_m2,pass,717.5747500000001,717.5747500000001,0.0001,0.0,
+W10_plus,R06_wing_exposed_match,rcaide,wing.exposed_area_m2,pass,358.25000000000006,358.25000000000006,0.0001,0.0,
+W10_plus,R07_wing_ac_match,rcaide,wing.aerodynamic_center_x_m,pass,16.821978259514246,16.79639739469192,0.25,0.025580864822327243,"model AC = LE(MAC) + 0.25 MAC, RCAIDE AC = area centroid - 0.25 MAC; both are equivalent for a single trapezoid but differ slightly for a multi-section planform, so a small difference is a diagnostic note, not a geometry error"
+W10_plus,R08_wing_le_mac_match,rcaide,wing.leading_edge_mac_x_m,pass,12.199505023500258,12.199505023500262,0.01,-3.552713678800501e-15,model LE(MAC) vs RCAIDE LEMAC minus wing origin
+W10_plus,R09_tail_area_match,rcaide,tail.area_m2,pass,33.91,33.91,1e-09,0.0,
+W10_plus,R10_tail_span_match,rcaide,tail.span_m,pass,5.0093312926976585,5.0093312926976585,1e-12,0.0,
+W10_plus,R11_tail_mac_match,rcaide,tail.mean_aerodynamic_chord_m,pass,8.124384956069033,8.124384956069035,1e-06,-1.7763568394002505e-15,
+W10_plus,R12_fuselage_wetted_match,rcaide,fuselage.wetted_area_m2,pass,488.92216679029485,488.9221667902949,1e-09,-5.684341886080802e-14,
+W10_plus,R13_fuselage_front_projected_match,rcaide,fuselage.front_projected_area_m2,pass,7.509664526786937,7.509664526786935,1e-09,1.7763568394002505e-15,
+W10_plus,R14_fuselage_effective_diameter_match,rcaide,fuselage.effective_diameter_m,pass,3.1039047869569845,3.1039047869569845,1e-09,0.0,
+W10_plus,R15_fuselage_lengths_match,rcaide,fuselage.lengths.total_m,pass,61.66,61.66,1e-12,0.0,
+W10_plus,R16_01_section_sweep_match,rcaide,wing.sections[0].quarter_chord_sweep_deg,pass,67.0,67.0,1e-09,0.0,
+W10_plus,R16_02_section_sweep_match,rcaide,wing.sections[1].quarter_chord_sweep_deg,pass,48.0,48.00000000000001,1e-09,-7.105427357601002e-15,
+W10_plus,R16_03_section_sweep_match,rcaide,wing.sections[2].quarter_chord_sweep_deg,pass,71.0,71.0,1e-09,0.0,
+W10_plus,R16_tip_sweep_rcaide_convention,rcaide,wing.sections.tip.quarter_chord_sweep_deg,info,71.0,71.0,,,"RCAIDE wing_planform forces the last segment sweep to the previous segment (model tip 71.000 deg, RCAIDE tip 71.000 deg); this is an RCAIDE convention, not a model error"
+W10_plus,R17_airfoil_thickness_declared_vs_imported,rcaide,wing.section.thickness_to_chord,pass,0.03,0.029990192989497864,0.002,9.80701050213445e-06,RCAIDE replaces the declared t/c with the value read from the airfoil file; difference is reported
+W10_plus,R18_wing_taper_match,rcaide,wing.taper_ratio,pass,0.03254437869822486,0.03254437869822486,1e-09,0.0,
+W10_minus,G01_wing_area_closure,model,main_wing.area_m2,pass,358.25000000000006,358.25,1e-09,5.684341886080802e-14,sum of the four trapezoid sections equals the requested wing area
+W10_minus,G02_wing_span_derivation,model,main_wing.span_m,pass,25.604638251691824,25.604638251691824,1e-09,0.0,span = sqrt(wing_area * aspect_ratio)
+W10_minus,G03_wing_aspect_ratio_closure,model,main_wing.aspect_ratio,pass,358.25000000000006,358.2500000000001,1e-09,-5.684341886080802e-14,area = span^2 / aspect_ratio
+W10_minus,G04_wing_root_chord_positive,model,main_wing.root_chord_m,pass,,,,,root chord 29.901819 m
+W10_minus,G05_wing_section_span_order,model,main_wing.sections.percent_span_location,pass,,,,,"span fractions [0, 0.480469, 0.945313, 1]"
+W10_minus,G06_wing_chord_positive_monotonic,model,main_wing.sections.chord_m,pass,,,,,"chords [29.9018, 12.2084, 3.89256, 0.973136]"
+W10_minus,G07_wing_sweep_range,model,main_wing.sections.quarter_chord_sweep_deg,pass,,,,,"sweeps [67, 48, 71, 71]"
+W10_minus,G08_wing_tip_twist_in_bounds,model,main_wing.sections.tip.twist_deg,pass,,,,,tip twist -0.800000 deg
+W10_minus,G09_wing_wetted_area_positive,model,main_wing.wetted_area_m2,pass,,,,,wetted 717.575 m2 vs reference 358.250 m2
+W10_minus,G10_wing_exposed_le_reference,model,main_wing.exposed_area_m2,pass,,,,,exposed 358.250 m2 <= reference 358.250 m2; wing-fuselage unexposed span is not modelled in P1
+W10_minus,G11_tail_area_closure,model,vertical_stabilizer.area_m2,pass,33.91,33.91,1e-09,0.0,tail planform area equals the requested vertical_tail_area
+W10_minus,G12_tail_span_derivation,model,vertical_stabilizer.span_m,pass,5.0093312926976585,5.0093312926976585,1e-09,0.0,tail span = sqrt(vertical_tail_area * 0.74)
+W10_minus,G13_tail_sections_positive_monotonic,model,vertical_stabilizer.sections,pass,,,,,"span fractions [0, 0.4, 1] chords [13.1576, 6.80566, 2.45004]"
+W10_minus,G14_tail_sweep_range,model,vertical_stabilizer.sections.quarter_chord_sweep_deg,pass,,,,,"sweeps [63, 40, 0]"
+W10_minus,G15_fuselage_cabin_positive,model,fuselage.cabin_length_m,pass,,,,,cabin 30.844000 m = total 61.660 - nose 12.384 - tail 18.432
+W10_minus,G16_fuselage_station_order,model,fuselage.stations.x_m,pass,,,,,"x stations [0, 3.02863, 5.77404, 9.07877, 12.384, 43.228, 47.5354, 61.66]"
+W10_minus,G17_fuselage_station_tags_unique,model,fuselage.stations.tag,pass,,,,,"tags segment_0, segment_1, segment_2, segment_3, segment_4, segment_5, segment_6, segment_7"
+W10_minus,G18_fuselage_volume_requirement,constraint,fuselage.usable_volume_m3,pass,231.62809266421624,110.0,,,"usable 231.628 m3, required 110.000 m3, margin 121.628 m3"
+W10_minus,G19_fuselage_wetted_front_positive,model,fuselage.wetted_area_m2,pass,,,,,"wetted 488.922 m2, front projected 7.510 m2"
+W10_minus,G20_mass_positive_finite,model,mass_kg,pass,,,,,"operating empty 78700.0 kg, total takeoff 184880.0 kg"
+W10_minus,G21_cg_inside_fuselage,model,cg_x_m,pass,,,,,"cg 28.287 m, fuselage length 61.660 m"
+W10_minus,G22_static_margin_finite,model,static_margin,pass,,,,,static margin 0.1371 (provisional; excludes tail lift)
+W10_minus,G23_design_space_bounds,constraint,design vector,pass,,,,,within bounds and cross constraints
+W10_minus,R00_rcaide_available,rcaide,RCAIDE geometry adapter,pass,,,,,vehicle rebuilt
+W10_minus,R01_wing_area_match,rcaide,wing.area_m2,pass,358.25000000000006,358.25000000000006,1e-09,0.0,
+W10_minus,R02_wing_span_match,rcaide,wing.span_m,pass,25.604638251691824,25.604638251691824,1e-12,0.0,
+W10_minus,R03_wing_root_chord_match,rcaide,wing.root_chord_m,pass,29.901818514349216,29.901818514349216,1e-12,0.0,
+W10_minus,R04_wing_mac_match,rcaide,wing.mean_aerodynamic_chord_m,pass,18.489892944055953,18.489892944055953,1e-06,0.0,
+W10_minus,R05_wing_wetted_match,rcaide,wing.wetted_area_m2,pass,717.5747500000001,717.5747500000001,0.0001,0.0,
+W10_minus,R06_wing_exposed_match,rcaide,wing.exposed_area_m2,pass,358.25000000000006,358.25000000000006,0.0001,0.0,
+W10_minus,R07_wing_ac_match,rcaide,wing.aerodynamic_center_x_m,pass,16.821978259514246,16.79639739469192,0.25,0.025580864822327243,"model AC = LE(MAC) + 0.25 MAC, RCAIDE AC = area centroid - 0.25 MAC; both are equivalent for a single trapezoid but differ slightly for a multi-section planform, so a small difference is a diagnostic note, not a geometry error"
+W10_minus,R08_wing_le_mac_match,rcaide,wing.leading_edge_mac_x_m,pass,12.199505023500258,12.199505023500262,0.01,-3.552713678800501e-15,model LE(MAC) vs RCAIDE LEMAC minus wing origin
+W10_minus,R09_tail_area_match,rcaide,tail.area_m2,pass,33.91,33.91,1e-09,0.0,
+W10_minus,R10_tail_span_match,rcaide,tail.span_m,pass,5.0093312926976585,5.0093312926976585,1e-12,0.0,
+W10_minus,R11_tail_mac_match,rcaide,tail.mean_aerodynamic_chord_m,pass,8.124384956069033,8.124384956069035,1e-06,-1.7763568394002505e-15,
+W10_minus,R12_fuselage_wetted_match,rcaide,fuselage.wetted_area_m2,pass,488.92216679029485,488.9221667902949,1e-09,-5.684341886080802e-14,
+W10_minus,R13_fuselage_front_projected_match,rcaide,fuselage.front_projected_area_m2,pass,7.509664526786937,7.509664526786935,1e-09,1.7763568394002505e-15,
+W10_minus,R14_fuselage_effective_diameter_match,rcaide,fuselage.effective_diameter_m,pass,3.1039047869569845,3.1039047869569845,1e-09,0.0,
+W10_minus,R15_fuselage_lengths_match,rcaide,fuselage.lengths.total_m,pass,61.66,61.66,1e-12,0.0,
+W10_minus,R16_01_section_sweep_match,rcaide,wing.sections[0].quarter_chord_sweep_deg,pass,67.0,67.0,1e-09,0.0,
+W10_minus,R16_02_section_sweep_match,rcaide,wing.sections[1].quarter_chord_sweep_deg,pass,48.0,48.00000000000001,1e-09,-7.105427357601002e-15,
+W10_minus,R16_03_section_sweep_match,rcaide,wing.sections[2].quarter_chord_sweep_deg,pass,71.0,71.0,1e-09,0.0,
+W10_minus,R16_tip_sweep_rcaide_convention,rcaide,wing.sections.tip.quarter_chord_sweep_deg,info,71.0,71.0,,,"RCAIDE wing_planform forces the last segment sweep to the previous segment (model tip 71.000 deg, RCAIDE tip 71.000 deg); this is an RCAIDE convention, not a model error"
+W10_minus,R17_airfoil_thickness_declared_vs_imported,rcaide,wing.section.thickness_to_chord,pass,0.03,0.029990192989497864,0.002,9.80701050213445e-06,RCAIDE replaces the declared t/c with the value read from the airfoil file; difference is reported
+W10_minus,R18_wing_taper_match,rcaide,wing.taper_ratio,pass,0.03254437869822486,0.03254437869822486,1e-09,0.0,
+V01_plus,G01_wing_area_closure,model,main_wing.area_m2,pass,358.25000000000006,358.25,1e-09,5.684341886080802e-14,sum of the four trapezoid sections equals the requested wing area
+V01_plus,G02_wing_span_derivation,model,main_wing.span_m,pass,25.604638251691824,25.604638251691824,1e-09,0.0,span = sqrt(wing_area * aspect_ratio)
+V01_plus,G03_wing_aspect_ratio_closure,model,main_wing.aspect_ratio,pass,358.25000000000006,358.2500000000001,1e-09,-5.684341886080802e-14,area = span^2 / aspect_ratio
+V01_plus,G04_wing_root_chord_positive,model,main_wing.root_chord_m,pass,,,,,root chord 29.901819 m
+V01_plus,G05_wing_section_span_order,model,main_wing.sections.percent_span_location,pass,,,,,"span fractions [0, 0.480469, 0.945313, 1]"
+V01_plus,G06_wing_chord_positive_monotonic,model,main_wing.sections.chord_m,pass,,,,,"chords [29.9018, 12.2084, 3.89256, 0.973136]"
+V01_plus,G07_wing_sweep_range,model,main_wing.sections.quarter_chord_sweep_deg,pass,,,,,"sweeps [67, 48, 71, 71]"
+V01_plus,G08_wing_tip_twist_in_bounds,model,main_wing.sections.tip.twist_deg,pass,,,,,tip twist 0.000000 deg
+V01_plus,G09_wing_wetted_area_positive,model,main_wing.wetted_area_m2,pass,,,,,wetted 717.575 m2 vs reference 358.250 m2
+V01_plus,G10_wing_exposed_le_reference,model,main_wing.exposed_area_m2,pass,,,,,exposed 358.250 m2 <= reference 358.250 m2; wing-fuselage unexposed span is not modelled in P1
+V01_plus,G11_tail_area_closure,model,vertical_stabilizer.area_m2,pass,35.10999999999999,35.11,1e-09,-7.105427357601002e-15,tail planform area equals the requested vertical_tail_area
+V01_plus,G12_tail_span_derivation,model,vertical_stabilizer.span_m,pass,5.097195307225337,5.097195307225337,1e-09,0.0,tail span = sqrt(vertical_tail_area * 0.74)
+V01_plus,G13_tail_sections_positive_monotonic,model,vertical_stabilizer.sections,pass,,,,,"span fractions [0, 0.4, 1] chords [13.3884, 6.92504, 2.49301]"
+V01_plus,G14_tail_sweep_range,model,vertical_stabilizer.sections.quarter_chord_sweep_deg,pass,,,,,"sweeps [63, 40, 0]"
+V01_plus,G15_fuselage_cabin_positive,model,fuselage.cabin_length_m,pass,,,,,cabin 30.844000 m = total 61.660 - nose 12.384 - tail 18.432
+V01_plus,G16_fuselage_station_order,model,fuselage.stations.x_m,pass,,,,,"x stations [0, 3.02863, 5.77404, 9.07877, 12.384, 43.228, 47.5354, 61.66]"
+V01_plus,G17_fuselage_station_tags_unique,model,fuselage.stations.tag,pass,,,,,"tags segment_0, segment_1, segment_2, segment_3, segment_4, segment_5, segment_6, segment_7"
+V01_plus,G18_fuselage_volume_requirement,constraint,fuselage.usable_volume_m3,pass,231.62809266421624,110.0,,,"usable 231.628 m3, required 110.000 m3, margin 121.628 m3"
+V01_plus,G19_fuselage_wetted_front_positive,model,fuselage.wetted_area_m2,pass,,,,,"wetted 488.922 m2, front projected 7.510 m2"
+V01_plus,G20_mass_positive_finite,model,mass_kg,pass,,,,,"operating empty 78783.6 kg, total takeoff 184963.6 kg"
+V01_plus,G21_cg_inside_fuselage,model,cg_x_m,pass,,,,,"cg 28.296 m, fuselage length 61.660 m"
+V01_plus,G22_static_margin_finite,model,static_margin,pass,,,,,static margin 0.1366 (provisional; excludes tail lift)
+V01_plus,G23_design_space_bounds,constraint,design vector,pass,,,,,within bounds and cross constraints
+V01_plus,R00_rcaide_available,rcaide,RCAIDE geometry adapter,pass,,,,,vehicle rebuilt
+V01_plus,R01_wing_area_match,rcaide,wing.area_m2,pass,358.25000000000006,358.25000000000006,1e-09,0.0,
+V01_plus,R02_wing_span_match,rcaide,wing.span_m,pass,25.604638251691824,25.604638251691824,1e-12,0.0,
+V01_plus,R03_wing_root_chord_match,rcaide,wing.root_chord_m,pass,29.901818514349216,29.901818514349216,1e-12,0.0,
+V01_plus,R04_wing_mac_match,rcaide,wing.mean_aerodynamic_chord_m,pass,18.489892944055953,18.489892944055953,1e-06,0.0,
+V01_plus,R05_wing_wetted_match,rcaide,wing.wetted_area_m2,pass,717.5747500000001,717.5747500000001,0.0001,0.0,
+V01_plus,R06_wing_exposed_match,rcaide,wing.exposed_area_m2,pass,358.25000000000006,358.25000000000006,0.0001,0.0,
+V01_plus,R07_wing_ac_match,rcaide,wing.aerodynamic_center_x_m,pass,16.821978259514246,16.79639739469192,0.25,0.025580864822327243,"model AC = LE(MAC) + 0.25 MAC, RCAIDE AC = area centroid - 0.25 MAC; both are equivalent for a single trapezoid but differ slightly for a multi-section planform, so a small difference is a diagnostic note, not a geometry error"
+V01_plus,R08_wing_le_mac_match,rcaide,wing.leading_edge_mac_x_m,pass,12.199505023500258,12.199505023500262,0.01,-3.552713678800501e-15,model LE(MAC) vs RCAIDE LEMAC minus wing origin
+V01_plus,R09_tail_area_match,rcaide,tail.area_m2,pass,35.10999999999999,35.10999999999999,1e-09,0.0,
+V01_plus,R10_tail_span_match,rcaide,tail.span_m,pass,5.097195307225337,5.097195307225337,1e-12,0.0,
+V01_plus,R11_tail_mac_match,rcaide,tail.mean_aerodynamic_chord_m,pass,8.26688722555341,8.266887225553404,1e-06,5.329070518200751e-15,
+V01_plus,R12_fuselage_wetted_match,rcaide,fuselage.wetted_area_m2,pass,488.92216679029485,488.9221667902949,1e-09,-5.684341886080802e-14,
+V01_plus,R13_fuselage_front_projected_match,rcaide,fuselage.front_projected_area_m2,pass,7.509664526786937,7.509664526786935,1e-09,1.7763568394002505e-15,
+V01_plus,R14_fuselage_effective_diameter_match,rcaide,fuselage.effective_diameter_m,pass,3.1039047869569845,3.1039047869569845,1e-09,0.0,
+V01_plus,R15_fuselage_lengths_match,rcaide,fuselage.lengths.total_m,pass,61.66,61.66,1e-12,0.0,
+V01_plus,R16_01_section_sweep_match,rcaide,wing.sections[0].quarter_chord_sweep_deg,pass,67.0,67.0,1e-09,0.0,
+V01_plus,R16_02_section_sweep_match,rcaide,wing.sections[1].quarter_chord_sweep_deg,pass,48.0,48.00000000000001,1e-09,-7.105427357601002e-15,
+V01_plus,R16_03_section_sweep_match,rcaide,wing.sections[2].quarter_chord_sweep_deg,pass,71.0,71.0,1e-09,0.0,
+V01_plus,R16_tip_sweep_rcaide_convention,rcaide,wing.sections.tip.quarter_chord_sweep_deg,info,71.0,71.0,,,"RCAIDE wing_planform forces the last segment sweep to the previous segment (model tip 71.000 deg, RCAIDE tip 71.000 deg); this is an RCAIDE convention, not a model error"
+V01_plus,R17_airfoil_thickness_declared_vs_imported,rcaide,wing.section.thickness_to_chord,pass,0.03,0.029990192989497864,0.002,9.80701050213445e-06,RCAIDE replaces the declared t/c with the value read from the airfoil file; difference is reported
+V01_plus,R18_wing_taper_match,rcaide,wing.taper_ratio,pass,0.03254437869822486,0.03254437869822486,1e-09,0.0,
+V01_minus,G01_wing_area_closure,model,main_wing.area_m2,pass,358.25000000000006,358.25,1e-09,5.684341886080802e-14,sum of the four trapezoid sections equals the requested wing area
+V01_minus,G02_wing_span_derivation,model,main_wing.span_m,pass,25.604638251691824,25.604638251691824,1e-09,0.0,span = sqrt(wing_area * aspect_ratio)
+V01_minus,G03_wing_aspect_ratio_closure,model,main_wing.aspect_ratio,pass,358.25000000000006,358.2500000000001,1e-09,-5.684341886080802e-14,area = span^2 / aspect_ratio
+V01_minus,G04_wing_root_chord_positive,model,main_wing.root_chord_m,pass,,,,,root chord 29.901819 m
+V01_minus,G05_wing_section_span_order,model,main_wing.sections.percent_span_location,pass,,,,,"span fractions [0, 0.480469, 0.945313, 1]"
+V01_minus,G06_wing_chord_positive_monotonic,model,main_wing.sections.chord_m,pass,,,,,"chords [29.9018, 12.2084, 3.89256, 0.973136]"
+V01_minus,G07_wing_sweep_range,model,main_wing.sections.quarter_chord_sweep_deg,pass,,,,,"sweeps [67, 48, 71, 71]"
+V01_minus,G08_wing_tip_twist_in_bounds,model,main_wing.sections.tip.twist_deg,pass,,,,,tip twist 0.000000 deg
+V01_minus,G09_wing_wetted_area_positive,model,main_wing.wetted_area_m2,pass,,,,,wetted 717.575 m2 vs reference 358.250 m2
+V01_minus,G10_wing_exposed_le_reference,model,main_wing.exposed_area_m2,pass,,,,,exposed 358.250 m2 <= reference 358.250 m2; wing-fuselage unexposed span is not modelled in P1
+V01_minus,G11_tail_area_closure,model,vertical_stabilizer.area_m2,pass,32.709999999999994,32.709999999999994,1e-09,0.0,tail planform area equals the requested vertical_tail_area
+V01_minus,G12_tail_span_derivation,model,vertical_stabilizer.span_m,pass,4.9198983729341395,4.9198983729341395,1e-09,0.0,tail span = sqrt(vertical_tail_area * 0.74)
+V01_minus,G13_tail_sections_positive_monotonic,model,vertical_stabilizer.sections,pass,,,,,"span fractions [0, 0.4, 1] chords [12.9227, 6.68416, 2.4063]"
+V01_minus,G14_tail_sweep_range,model,vertical_stabilizer.sections.quarter_chord_sweep_deg,pass,,,,,"sweeps [63, 40, 0]"
+V01_minus,G15_fuselage_cabin_positive,model,fuselage.cabin_length_m,pass,,,,,cabin 30.844000 m = total 61.660 - nose 12.384 - tail 18.432
+V01_minus,G16_fuselage_station_order,model,fuselage.stations.x_m,pass,,,,,"x stations [0, 3.02863, 5.77404, 9.07877, 12.384, 43.228, 47.5354, 61.66]"
+V01_minus,G17_fuselage_station_tags_unique,model,fuselage.stations.tag,pass,,,,,"tags segment_0, segment_1, segment_2, segment_3, segment_4, segment_5, segment_6, segment_7"
+V01_minus,G18_fuselage_volume_requirement,constraint,fuselage.usable_volume_m3,pass,231.62809266421624,110.0,,,"usable 231.628 m3, required 110.000 m3, margin 121.628 m3"
+V01_minus,G19_fuselage_wetted_front_positive,model,fuselage.wetted_area_m2,pass,,,,,"wetted 488.922 m2, front projected 7.510 m2"
+V01_minus,G20_mass_positive_finite,model,mass_kg,pass,,,,,"operating empty 78616.4 kg, total takeoff 184796.4 kg"
+V01_minus,G21_cg_inside_fuselage,model,cg_x_m,pass,,,,,"cg 28.279 m, fuselage length 61.660 m"
+V01_minus,G22_static_margin_finite,model,static_margin,pass,,,,,static margin 0.1375 (provisional; excludes tail lift)
+V01_minus,G23_design_space_bounds,constraint,design vector,pass,,,,,within bounds and cross constraints
+V01_minus,R00_rcaide_available,rcaide,RCAIDE geometry adapter,pass,,,,,vehicle rebuilt
+V01_minus,R01_wing_area_match,rcaide,wing.area_m2,pass,358.25000000000006,358.25000000000006,1e-09,0.0,
+V01_minus,R02_wing_span_match,rcaide,wing.span_m,pass,25.604638251691824,25.604638251691824,1e-12,0.0,
+V01_minus,R03_wing_root_chord_match,rcaide,wing.root_chord_m,pass,29.901818514349216,29.901818514349216,1e-12,0.0,
+V01_minus,R04_wing_mac_match,rcaide,wing.mean_aerodynamic_chord_m,pass,18.489892944055953,18.489892944055953,1e-06,0.0,
+V01_minus,R05_wing_wetted_match,rcaide,wing.wetted_area_m2,pass,717.5747500000001,717.5747500000001,0.0001,0.0,
+V01_minus,R06_wing_exposed_match,rcaide,wing.exposed_area_m2,pass,358.25000000000006,358.25000000000006,0.0001,0.0,
+V01_minus,R07_wing_ac_match,rcaide,wing.aerodynamic_center_x_m,pass,16.821978259514246,16.79639739469192,0.25,0.025580864822327243,"model AC = LE(MAC) + 0.25 MAC, RCAIDE AC = area centroid - 0.25 MAC; both are equivalent for a single trapezoid but differ slightly for a multi-section planform, so a small difference is a diagnostic note, not a geometry error"
+V01_minus,R08_wing_le_mac_match,rcaide,wing.leading_edge_mac_x_m,pass,12.199505023500258,12.199505023500262,0.01,-3.552713678800501e-15,model LE(MAC) vs RCAIDE LEMAC minus wing origin
+V01_minus,R09_tail_area_match,rcaide,tail.area_m2,pass,32.709999999999994,32.709999999999994,1e-09,0.0,
+V01_minus,R10_tail_span_match,rcaide,tail.span_m,pass,4.9198983729341395,4.9198983729341395,1e-12,0.0,
+V01_minus,R11_tail_mac_match,rcaide,tail.mean_aerodynamic_chord_m,pass,7.979338157315028,7.979338157315028,1e-06,0.0,
+V01_minus,R12_fuselage_wetted_match,rcaide,fuselage.wetted_area_m2,pass,488.92216679029485,488.9221667902949,1e-09,-5.684341886080802e-14,
+V01_minus,R13_fuselage_front_projected_match,rcaide,fuselage.front_projected_area_m2,pass,7.509664526786937,7.509664526786935,1e-09,1.7763568394002505e-15,
+V01_minus,R14_fuselage_effective_diameter_match,rcaide,fuselage.effective_diameter_m,pass,3.1039047869569845,3.1039047869569845,1e-09,0.0,
+V01_minus,R15_fuselage_lengths_match,rcaide,fuselage.lengths.total_m,pass,61.66,61.66,1e-12,0.0,
+V01_minus,R16_01_section_sweep_match,rcaide,wing.sections[0].quarter_chord_sweep_deg,pass,67.0,67.0,1e-09,0.0,
+V01_minus,R16_02_section_sweep_match,rcaide,wing.sections[1].quarter_chord_sweep_deg,pass,48.0,48.00000000000001,1e-09,-7.105427357601002e-15,
+V01_minus,R16_03_section_sweep_match,rcaide,wing.sections[2].quarter_chord_sweep_deg,pass,71.0,71.0,1e-09,0.0,
+V01_minus,R16_tip_sweep_rcaide_convention,rcaide,wing.sections.tip.quarter_chord_sweep_deg,info,71.0,71.0,,,"RCAIDE wing_planform forces the last segment sweep to the previous segment (model tip 71.000 deg, RCAIDE tip 71.000 deg); this is an RCAIDE convention, not a model error"
+V01_minus,R17_airfoil_thickness_declared_vs_imported,rcaide,wing.section.thickness_to_chord,pass,0.03,0.029990192989497864,0.002,9.80701050213445e-06,RCAIDE replaces the declared t/c with the value read from the airfoil file; difference is reported
+V01_minus,R18_wing_taper_match,rcaide,wing.taper_ratio,pass,0.03254437869822486,0.03254437869822486,1e-09,0.0,
+V02_plus,G01_wing_area_closure,model,main_wing.area_m2,pass,358.25000000000006,358.25,1e-09,5.684341886080802e-14,sum of the four trapezoid sections equals the requested wing area
+V02_plus,G02_wing_span_derivation,model,main_wing.span_m,pass,25.604638251691824,25.604638251691824,1e-09,0.0,span = sqrt(wing_area * aspect_ratio)
+V02_plus,G03_wing_aspect_ratio_closure,model,main_wing.aspect_ratio,pass,358.25000000000006,358.2500000000001,1e-09,-5.684341886080802e-14,area = span^2 / aspect_ratio
+V02_plus,G04_wing_root_chord_positive,model,main_wing.root_chord_m,pass,,,,,root chord 29.901819 m
+V02_plus,G05_wing_section_span_order,model,main_wing.sections.percent_span_location,pass,,,,,"span fractions [0, 0.480469, 0.945313, 1]"
+V02_plus,G06_wing_chord_positive_monotonic,model,main_wing.sections.chord_m,pass,,,,,"chords [29.9018, 12.2084, 3.89256, 0.973136]"
+V02_plus,G07_wing_sweep_range,model,main_wing.sections.quarter_chord_sweep_deg,pass,,,,,"sweeps [67, 48, 71, 71]"
+V02_plus,G08_wing_tip_twist_in_bounds,model,main_wing.sections.tip.twist_deg,pass,,,,,tip twist 0.000000 deg
+V02_plus,G09_wing_wetted_area_positive,model,main_wing.wetted_area_m2,pass,,,,,wetted 717.575 m2 vs reference 358.250 m2
+V02_plus,G10_wing_exposed_le_reference,model,main_wing.exposed_area_m2,pass,,,,,exposed 358.250 m2 <= reference 358.250 m2; wing-fuselage unexposed span is not modelled in P1
+V02_plus,G11_tail_area_closure,model,vertical_stabilizer.area_m2,pass,33.91,33.91,1e-09,0.0,tail planform area equals the requested vertical_tail_area
+V02_plus,G12_tail_span_derivation,model,vertical_stabilizer.span_m,pass,5.0093312926976585,5.0093312926976585,1e-09,0.0,tail span = sqrt(vertical_tail_area * 0.74)
+V02_plus,G13_tail_sections_positive_monotonic,model,vertical_stabilizer.sections,pass,,,,,"span fractions [0, 0.4, 1] chords [13.1576, 6.80566, 2.45004]"
+V02_plus,G14_tail_sweep_range,model,vertical_stabilizer.sections.quarter_chord_sweep_deg,pass,,,,,"sweeps [65, 42, 2]"
+V02_plus,G15_fuselage_cabin_positive,model,fuselage.cabin_length_m,pass,,,,,cabin 30.844000 m = total 61.660 - nose 12.384 - tail 18.432
+V02_plus,G16_fuselage_station_order,model,fuselage.stations.x_m,pass,,,,,"x stations [0, 3.02863, 5.77404, 9.07877, 12.384, 43.228, 47.5354, 61.66]"
+V02_plus,G17_fuselage_station_tags_unique,model,fuselage.stations.tag,pass,,,,,"tags segment_0, segment_1, segment_2, segment_3, segment_4, segment_5, segment_6, segment_7"
+V02_plus,G18_fuselage_volume_requirement,constraint,fuselage.usable_volume_m3,pass,231.62809266421624,110.0,,,"usable 231.628 m3, required 110.000 m3, margin 121.628 m3"
+V02_plus,G19_fuselage_wetted_front_positive,model,fuselage.wetted_area_m2,pass,,,,,"wetted 488.922 m2, front projected 7.510 m2"
+V02_plus,G20_mass_positive_finite,model,mass_kg,pass,,,,,"operating empty 78700.0 kg, total takeoff 184880.0 kg"
+V02_plus,G21_cg_inside_fuselage,model,cg_x_m,pass,,,,,"cg 28.287 m, fuselage length 61.660 m"
+V02_plus,G22_static_margin_finite,model,static_margin,pass,,,,,static margin 0.1371 (provisional; excludes tail lift)
+V02_plus,G23_design_space_bounds,constraint,design vector,pass,,,,,within bounds and cross constraints
+V02_plus,R00_rcaide_available,rcaide,RCAIDE geometry adapter,pass,,,,,vehicle rebuilt
+V02_plus,R01_wing_area_match,rcaide,wing.area_m2,pass,358.25000000000006,358.25000000000006,1e-09,0.0,
+V02_plus,R02_wing_span_match,rcaide,wing.span_m,pass,25.604638251691824,25.604638251691824,1e-12,0.0,
+V02_plus,R03_wing_root_chord_match,rcaide,wing.root_chord_m,pass,29.901818514349216,29.901818514349216,1e-12,0.0,
+V02_plus,R04_wing_mac_match,rcaide,wing.mean_aerodynamic_chord_m,pass,18.489892944055953,18.489892944055953,1e-06,0.0,
+V02_plus,R05_wing_wetted_match,rcaide,wing.wetted_area_m2,pass,717.5747500000001,717.5747500000001,0.0001,0.0,
+V02_plus,R06_wing_exposed_match,rcaide,wing.exposed_area_m2,pass,358.25000000000006,358.25000000000006,0.0001,0.0,
+V02_plus,R07_wing_ac_match,rcaide,wing.aerodynamic_center_x_m,pass,16.821978259514246,16.79639739469192,0.25,0.025580864822327243,"model AC = LE(MAC) + 0.25 MAC, RCAIDE AC = area centroid - 0.25 MAC; both are equivalent for a single trapezoid but differ slightly for a multi-section planform, so a small difference is a diagnostic note, not a geometry error"
+V02_plus,R08_wing_le_mac_match,rcaide,wing.leading_edge_mac_x_m,pass,12.199505023500258,12.199505023500262,0.01,-3.552713678800501e-15,model LE(MAC) vs RCAIDE LEMAC minus wing origin
+V02_plus,R09_tail_area_match,rcaide,tail.area_m2,pass,33.91,33.91,1e-09,0.0,
+V02_plus,R10_tail_span_match,rcaide,tail.span_m,pass,5.0093312926976585,5.0093312926976585,1e-12,0.0,
+V02_plus,R11_tail_mac_match,rcaide,tail.mean_aerodynamic_chord_m,pass,8.124384956069033,8.124384956069035,1e-06,-1.7763568394002505e-15,
+V02_plus,R12_fuselage_wetted_match,rcaide,fuselage.wetted_area_m2,pass,488.92216679029485,488.9221667902949,1e-09,-5.684341886080802e-14,
+V02_plus,R13_fuselage_front_projected_match,rcaide,fuselage.front_projected_area_m2,pass,7.509664526786937,7.509664526786935,1e-09,1.7763568394002505e-15,
+V02_plus,R14_fuselage_effective_diameter_match,rcaide,fuselage.effective_diameter_m,pass,3.1039047869569845,3.1039047869569845,1e-09,0.0,
+V02_plus,R15_fuselage_lengths_match,rcaide,fuselage.lengths.total_m,pass,61.66,61.66,1e-12,0.0,
+V02_plus,R16_01_section_sweep_match,rcaide,wing.sections[0].quarter_chord_sweep_deg,pass,67.0,67.0,1e-09,0.0,
+V02_plus,R16_02_section_sweep_match,rcaide,wing.sections[1].quarter_chord_sweep_deg,pass,48.0,48.00000000000001,1e-09,-7.105427357601002e-15,
+V02_plus,R16_03_section_sweep_match,rcaide,wing.sections[2].quarter_chord_sweep_deg,pass,71.0,71.0,1e-09,0.0,
+V02_plus,R16_tip_sweep_rcaide_convention,rcaide,wing.sections.tip.quarter_chord_sweep_deg,info,71.0,71.0,,,"RCAIDE wing_planform forces the last segment sweep to the previous segment (model tip 71.000 deg, RCAIDE tip 71.000 deg); this is an RCAIDE convention, not a model error"
+V02_plus,R17_airfoil_thickness_declared_vs_imported,rcaide,wing.section.thickness_to_chord,pass,0.03,0.029990192989497864,0.002,9.80701050213445e-06,RCAIDE replaces the declared t/c with the value read from the airfoil file; difference is reported
+V02_plus,R18_wing_taper_match,rcaide,wing.taper_ratio,pass,0.03254437869822486,0.03254437869822486,1e-09,0.0,
+V02_minus,G01_wing_area_closure,model,main_wing.area_m2,pass,358.25000000000006,358.25,1e-09,5.684341886080802e-14,sum of the four trapezoid sections equals the requested wing area
+V02_minus,G02_wing_span_derivation,model,main_wing.span_m,pass,25.604638251691824,25.604638251691824,1e-09,0.0,span = sqrt(wing_area * aspect_ratio)
+V02_minus,G03_wing_aspect_ratio_closure,model,main_wing.aspect_ratio,pass,358.25000000000006,358.2500000000001,1e-09,-5.684341886080802e-14,area = span^2 / aspect_ratio
+V02_minus,G04_wing_root_chord_positive,model,main_wing.root_chord_m,pass,,,,,root chord 29.901819 m
+V02_minus,G05_wing_section_span_order,model,main_wing.sections.percent_span_location,pass,,,,,"span fractions [0, 0.480469, 0.945313, 1]"
+V02_minus,G06_wing_chord_positive_monotonic,model,main_wing.sections.chord_m,pass,,,,,"chords [29.9018, 12.2084, 3.89256, 0.973136]"
+V02_minus,G07_wing_sweep_range,model,main_wing.sections.quarter_chord_sweep_deg,pass,,,,,"sweeps [67, 48, 71, 71]"
+V02_minus,G08_wing_tip_twist_in_bounds,model,main_wing.sections.tip.twist_deg,pass,,,,,tip twist 0.000000 deg
+V02_minus,G09_wing_wetted_area_positive,model,main_wing.wetted_area_m2,pass,,,,,wetted 717.575 m2 vs reference 358.250 m2
+V02_minus,G10_wing_exposed_le_reference,model,main_wing.exposed_area_m2,pass,,,,,exposed 358.250 m2 <= reference 358.250 m2; wing-fuselage unexposed span is not modelled in P1
+V02_minus,G11_tail_area_closure,model,vertical_stabilizer.area_m2,pass,33.91,33.91,1e-09,0.0,tail planform area equals the requested vertical_tail_area
+V02_minus,G12_tail_span_derivation,model,vertical_stabilizer.span_m,pass,5.0093312926976585,5.0093312926976585,1e-09,0.0,tail span = sqrt(vertical_tail_area * 0.74)
+V02_minus,G13_tail_sections_positive_monotonic,model,vertical_stabilizer.sections,pass,,,,,"span fractions [0, 0.4, 1] chords [13.1576, 6.80566, 2.45004]"
+V02_minus,G14_tail_sweep_range,model,vertical_stabilizer.sections.quarter_chord_sweep_deg,pass,,,,,"sweeps [61, 38, 0]"
+V02_minus,G15_fuselage_cabin_positive,model,fuselage.cabin_length_m,pass,,,,,cabin 30.844000 m = total 61.660 - nose 12.384 - tail 18.432
+V02_minus,G16_fuselage_station_order,model,fuselage.stations.x_m,pass,,,,,"x stations [0, 3.02863, 5.77404, 9.07877, 12.384, 43.228, 47.5354, 61.66]"
+V02_minus,G17_fuselage_station_tags_unique,model,fuselage.stations.tag,pass,,,,,"tags segment_0, segment_1, segment_2, segment_3, segment_4, segment_5, segment_6, segment_7"
+V02_minus,G18_fuselage_volume_requirement,constraint,fuselage.usable_volume_m3,pass,231.62809266421624,110.0,,,"usable 231.628 m3, required 110.000 m3, margin 121.628 m3"
+V02_minus,G19_fuselage_wetted_front_positive,model,fuselage.wetted_area_m2,pass,,,,,"wetted 488.922 m2, front projected 7.510 m2"
+V02_minus,G20_mass_positive_finite,model,mass_kg,pass,,,,,"operating empty 78700.0 kg, total takeoff 184880.0 kg"
+V02_minus,G21_cg_inside_fuselage,model,cg_x_m,pass,,,,,"cg 28.287 m, fuselage length 61.660 m"
+V02_minus,G22_static_margin_finite,model,static_margin,pass,,,,,static margin 0.1371 (provisional; excludes tail lift)
+V02_minus,G23_design_space_bounds,constraint,design vector,pass,,,,,within bounds and cross constraints
+V02_minus,R00_rcaide_available,rcaide,RCAIDE geometry adapter,pass,,,,,vehicle rebuilt
+V02_minus,R01_wing_area_match,rcaide,wing.area_m2,pass,358.25000000000006,358.25000000000006,1e-09,0.0,
+V02_minus,R02_wing_span_match,rcaide,wing.span_m,pass,25.604638251691824,25.604638251691824,1e-12,0.0,
+V02_minus,R03_wing_root_chord_match,rcaide,wing.root_chord_m,pass,29.901818514349216,29.901818514349216,1e-12,0.0,
+V02_minus,R04_wing_mac_match,rcaide,wing.mean_aerodynamic_chord_m,pass,18.489892944055953,18.489892944055953,1e-06,0.0,
+V02_minus,R05_wing_wetted_match,rcaide,wing.wetted_area_m2,pass,717.5747500000001,717.5747500000001,0.0001,0.0,
+V02_minus,R06_wing_exposed_match,rcaide,wing.exposed_area_m2,pass,358.25000000000006,358.25000000000006,0.0001,0.0,
+V02_minus,R07_wing_ac_match,rcaide,wing.aerodynamic_center_x_m,pass,16.821978259514246,16.79639739469192,0.25,0.025580864822327243,"model AC = LE(MAC) + 0.25 MAC, RCAIDE AC = area centroid - 0.25 MAC; both are equivalent for a single trapezoid but differ slightly for a multi-section planform, so a small difference is a diagnostic note, not a geometry error"
+V02_minus,R08_wing_le_mac_match,rcaide,wing.leading_edge_mac_x_m,pass,12.199505023500258,12.199505023500262,0.01,-3.552713678800501e-15,model LE(MAC) vs RCAIDE LEMAC minus wing origin
+V02_minus,R09_tail_area_match,rcaide,tail.area_m2,pass,33.91,33.91,1e-09,0.0,
+V02_minus,R10_tail_span_match,rcaide,tail.span_m,pass,5.0093312926976585,5.0093312926976585,1e-12,0.0,
+V02_minus,R11_tail_mac_match,rcaide,tail.mean_aerodynamic_chord_m,pass,8.124384956069033,8.124384956069035,1e-06,-1.7763568394002505e-15,
+V02_minus,R12_fuselage_wetted_match,rcaide,fuselage.wetted_area_m2,pass,488.92216679029485,488.9221667902949,1e-09,-5.684341886080802e-14,
+V02_minus,R13_fuselage_front_projected_match,rcaide,fuselage.front_projected_area_m2,pass,7.509664526786937,7.509664526786935,1e-09,1.7763568394002505e-15,
+V02_minus,R14_fuselage_effective_diameter_match,rcaide,fuselage.effective_diameter_m,pass,3.1039047869569845,3.1039047869569845,1e-09,0.0,
+V02_minus,R15_fuselage_lengths_match,rcaide,fuselage.lengths.total_m,pass,61.66,61.66,1e-12,0.0,
+V02_minus,R16_01_section_sweep_match,rcaide,wing.sections[0].quarter_chord_sweep_deg,pass,67.0,67.0,1e-09,0.0,
+V02_minus,R16_02_section_sweep_match,rcaide,wing.sections[1].quarter_chord_sweep_deg,pass,48.0,48.00000000000001,1e-09,-7.105427357601002e-15,
+V02_minus,R16_03_section_sweep_match,rcaide,wing.sections[2].quarter_chord_sweep_deg,pass,71.0,71.0,1e-09,0.0,
+V02_minus,R16_tip_sweep_rcaide_convention,rcaide,wing.sections.tip.quarter_chord_sweep_deg,info,71.0,71.0,,,"RCAIDE wing_planform forces the last segment sweep to the previous segment (model tip 71.000 deg, RCAIDE tip 71.000 deg); this is an RCAIDE convention, not a model error"
+V02_minus,R17_airfoil_thickness_declared_vs_imported,rcaide,wing.section.thickness_to_chord,pass,0.03,0.029990192989497864,0.002,9.80701050213445e-06,RCAIDE replaces the declared t/c with the value read from the airfoil file; difference is reported
+V02_minus,R18_wing_taper_match,rcaide,wing.taper_ratio,pass,0.03254437869822486,0.03254437869822486,1e-09,0.0,
+F01_plus,G01_wing_area_closure,model,main_wing.area_m2,pass,358.25000000000006,358.25,1e-09,5.684341886080802e-14,sum of the four trapezoid sections equals the requested wing area
+F01_plus,G02_wing_span_derivation,model,main_wing.span_m,pass,25.604638251691824,25.604638251691824,1e-09,0.0,span = sqrt(wing_area * aspect_ratio)
+F01_plus,G03_wing_aspect_ratio_closure,model,main_wing.aspect_ratio,pass,358.25000000000006,358.2500000000001,1e-09,-5.684341886080802e-14,area = span^2 / aspect_ratio
+F01_plus,G04_wing_root_chord_positive,model,main_wing.root_chord_m,pass,,,,,root chord 29.901819 m
+F01_plus,G05_wing_section_span_order,model,main_wing.sections.percent_span_location,pass,,,,,"span fractions [0, 0.480469, 0.945313, 1]"
+F01_plus,G06_wing_chord_positive_monotonic,model,main_wing.sections.chord_m,pass,,,,,"chords [29.9018, 12.2084, 3.89256, 0.973136]"
+F01_plus,G07_wing_sweep_range,model,main_wing.sections.quarter_chord_sweep_deg,pass,,,,,"sweeps [67, 48, 71, 71]"
+F01_plus,G08_wing_tip_twist_in_bounds,model,main_wing.sections.tip.twist_deg,pass,,,,,tip twist 0.000000 deg
+F01_plus,G09_wing_wetted_area_positive,model,main_wing.wetted_area_m2,pass,,,,,wetted 717.575 m2 vs reference 358.250 m2
+F01_plus,G10_wing_exposed_le_reference,model,main_wing.exposed_area_m2,pass,,,,,exposed 358.250 m2 <= reference 358.250 m2; wing-fuselage unexposed span is not modelled in P1
+F01_plus,G11_tail_area_closure,model,vertical_stabilizer.area_m2,pass,33.91,33.91,1e-09,0.0,tail planform area equals the requested vertical_tail_area
+F01_plus,G12_tail_span_derivation,model,vertical_stabilizer.span_m,pass,5.0093312926976585,5.0093312926976585,1e-09,0.0,tail span = sqrt(vertical_tail_area * 0.74)
+F01_plus,G13_tail_sections_positive_monotonic,model,vertical_stabilizer.sections,pass,,,,,"span fractions [0, 0.4, 1] chords [13.1576, 6.80566, 2.45004]"
+F01_plus,G14_tail_sweep_range,model,vertical_stabilizer.sections.quarter_chord_sweep_deg,pass,,,,,"sweeps [63, 40, 0]"
+F01_plus,G15_fuselage_cabin_positive,model,fuselage.cabin_length_m,pass,,,,,cabin 31.644000 m = total 62.460 - nose 12.384 - tail 18.432
+F01_plus,G16_fuselage_station_order,model,fuselage.stations.x_m,pass,,,,,"x stations [0, 3.02863, 5.77404, 9.07877, 12.384, 44.028, 48.3354, 62.46]"
+F01_plus,G17_fuselage_station_tags_unique,model,fuselage.stations.tag,pass,,,,,"tags segment_0, segment_1, segment_2, segment_3, segment_4, segment_5, segment_6, segment_7"
+F01_plus,G18_fuselage_volume_requirement,constraint,fuselage.usable_volume_m3,pass,237.63582428564575,110.0,,,"usable 237.636 m3, required 110.000 m3, margin 127.636 m3"
+F01_plus,G19_fuselage_wetted_front_positive,model,fuselage.wetted_area_m2,pass,,,,,"wetted 496.713 m2, front projected 7.510 m2"
+F01_plus,G20_mass_positive_finite,model,mass_kg,pass,,,,,"operating empty 79006.3 kg, total takeoff 185186.3 kg"
+F01_plus,G21_cg_inside_fuselage,model,cg_x_m,pass,,,,,"cg 28.381 m, fuselage length 62.460 m"
+F01_plus,G22_static_margin_finite,model,static_margin,pass,,,,,static margin 0.1320 (provisional; excludes tail lift)
+F01_plus,G23_design_space_bounds,constraint,design vector,pass,,,,,within bounds and cross constraints
+F01_plus,R00_rcaide_available,rcaide,RCAIDE geometry adapter,pass,,,,,vehicle rebuilt
+F01_plus,R01_wing_area_match,rcaide,wing.area_m2,pass,358.25000000000006,358.25000000000006,1e-09,0.0,
+F01_plus,R02_wing_span_match,rcaide,wing.span_m,pass,25.604638251691824,25.604638251691824,1e-12,0.0,
+F01_plus,R03_wing_root_chord_match,rcaide,wing.root_chord_m,pass,29.901818514349216,29.901818514349216,1e-12,0.0,
+F01_plus,R04_wing_mac_match,rcaide,wing.mean_aerodynamic_chord_m,pass,18.489892944055953,18.489892944055953,1e-06,0.0,
+F01_plus,R05_wing_wetted_match,rcaide,wing.wetted_area_m2,pass,717.5747500000001,717.5747500000001,0.0001,0.0,
+F01_plus,R06_wing_exposed_match,rcaide,wing.exposed_area_m2,pass,358.25000000000006,358.25000000000006,0.0001,0.0,
+F01_plus,R07_wing_ac_match,rcaide,wing.aerodynamic_center_x_m,pass,16.821978259514246,16.79639739469192,0.25,0.025580864822327243,"model AC = LE(MAC) + 0.25 MAC, RCAIDE AC = area centroid - 0.25 MAC; both are equivalent for a single trapezoid but differ slightly for a multi-section planform, so a small difference is a diagnostic note, not a geometry error"
+F01_plus,R08_wing_le_mac_match,rcaide,wing.leading_edge_mac_x_m,pass,12.199505023500258,12.199505023500262,0.01,-3.552713678800501e-15,model LE(MAC) vs RCAIDE LEMAC minus wing origin
+F01_plus,R09_tail_area_match,rcaide,tail.area_m2,pass,33.91,33.91,1e-09,0.0,
+F01_plus,R10_tail_span_match,rcaide,tail.span_m,pass,5.0093312926976585,5.0093312926976585,1e-12,0.0,
+F01_plus,R11_tail_mac_match,rcaide,tail.mean_aerodynamic_chord_m,pass,8.124384956069033,8.124384956069035,1e-06,-1.7763568394002505e-15,
+F01_plus,R12_fuselage_wetted_match,rcaide,fuselage.wetted_area_m2,pass,496.71331737544523,496.71331737544523,1e-09,0.0,
+F01_plus,R13_fuselage_front_projected_match,rcaide,fuselage.front_projected_area_m2,pass,7.509664526786937,7.509664526786935,1e-09,1.7763568394002505e-15,
+F01_plus,R14_fuselage_effective_diameter_match,rcaide,fuselage.effective_diameter_m,pass,3.1039047869569845,3.1039047869569845,1e-09,0.0,
+F01_plus,R15_fuselage_lengths_match,rcaide,fuselage.lengths.total_m,pass,62.459999999999994,62.459999999999994,1e-12,0.0,
+F01_plus,R16_01_section_sweep_match,rcaide,wing.sections[0].quarter_chord_sweep_deg,pass,67.0,67.0,1e-09,0.0,
+F01_plus,R16_02_section_sweep_match,rcaide,wing.sections[1].quarter_chord_sweep_deg,pass,48.0,48.00000000000001,1e-09,-7.105427357601002e-15,
+F01_plus,R16_03_section_sweep_match,rcaide,wing.sections[2].quarter_chord_sweep_deg,pass,71.0,71.0,1e-09,0.0,
+F01_plus,R16_tip_sweep_rcaide_convention,rcaide,wing.sections.tip.quarter_chord_sweep_deg,info,71.0,71.0,,,"RCAIDE wing_planform forces the last segment sweep to the previous segment (model tip 71.000 deg, RCAIDE tip 71.000 deg); this is an RCAIDE convention, not a model error"
+F01_plus,R17_airfoil_thickness_declared_vs_imported,rcaide,wing.section.thickness_to_chord,pass,0.03,0.029990192989497864,0.002,9.80701050213445e-06,RCAIDE replaces the declared t/c with the value read from the airfoil file; difference is reported
+F01_plus,R18_wing_taper_match,rcaide,wing.taper_ratio,pass,0.03254437869822486,0.03254437869822486,1e-09,0.0,
+F01_minus,G01_wing_area_closure,model,main_wing.area_m2,pass,358.25000000000006,358.25,1e-09,5.684341886080802e-14,sum of the four trapezoid sections equals the requested wing area
+F01_minus,G02_wing_span_derivation,model,main_wing.span_m,pass,25.604638251691824,25.604638251691824,1e-09,0.0,span = sqrt(wing_area * aspect_ratio)
+F01_minus,G03_wing_aspect_ratio_closure,model,main_wing.aspect_ratio,pass,358.25000000000006,358.2500000000001,1e-09,-5.684341886080802e-14,area = span^2 / aspect_ratio
+F01_minus,G04_wing_root_chord_positive,model,main_wing.root_chord_m,pass,,,,,root chord 29.901819 m
+F01_minus,G05_wing_section_span_order,model,main_wing.sections.percent_span_location,pass,,,,,"span fractions [0, 0.480469, 0.945313, 1]"
+F01_minus,G06_wing_chord_positive_monotonic,model,main_wing.sections.chord_m,pass,,,,,"chords [29.9018, 12.2084, 3.89256, 0.973136]"
+F01_minus,G07_wing_sweep_range,model,main_wing.sections.quarter_chord_sweep_deg,pass,,,,,"sweeps [67, 48, 71, 71]"
+F01_minus,G08_wing_tip_twist_in_bounds,model,main_wing.sections.tip.twist_deg,pass,,,,,tip twist 0.000000 deg
+F01_minus,G09_wing_wetted_area_positive,model,main_wing.wetted_area_m2,pass,,,,,wetted 717.575 m2 vs reference 358.250 m2
+F01_minus,G10_wing_exposed_le_reference,model,main_wing.exposed_area_m2,pass,,,,,exposed 358.250 m2 <= reference 358.250 m2; wing-fuselage unexposed span is not modelled in P1
+F01_minus,G11_tail_area_closure,model,vertical_stabilizer.area_m2,pass,33.91,33.91,1e-09,0.0,tail planform area equals the requested vertical_tail_area
+F01_minus,G12_tail_span_derivation,model,vertical_stabilizer.span_m,pass,5.0093312926976585,5.0093312926976585,1e-09,0.0,tail span = sqrt(vertical_tail_area * 0.74)
+F01_minus,G13_tail_sections_positive_monotonic,model,vertical_stabilizer.sections,pass,,,,,"span fractions [0, 0.4, 1] chords [13.1576, 6.80566, 2.45004]"
+F01_minus,G14_tail_sweep_range,model,vertical_stabilizer.sections.quarter_chord_sweep_deg,pass,,,,,"sweeps [63, 40, 0]"
+F01_minus,G15_fuselage_cabin_positive,model,fuselage.cabin_length_m,pass,,,,,cabin 30.044000 m = total 60.860 - nose 12.384 - tail 18.432
+F01_minus,G16_fuselage_station_order,model,fuselage.stations.x_m,pass,,,,,"x stations [0, 3.02863, 5.77404, 9.07877, 12.384, 42.428, 46.7354, 60.86]"
+F01_minus,G17_fuselage_station_tags_unique,model,fuselage.stations.tag,pass,,,,,"tags segment_0, segment_1, segment_2, segment_3, segment_4, segment_5, segment_6, segment_7"
+F01_minus,G18_fuselage_volume_requirement,constraint,fuselage.usable_volume_m3,pass,225.6203610427867,110.0,,,"usable 225.620 m3, required 110.000 m3, margin 115.620 m3"
+F01_minus,G19_fuselage_wetted_front_positive,model,fuselage.wetted_area_m2,pass,,,,,"wetted 481.131 m2, front projected 7.510 m2"
+F01_minus,G20_mass_positive_finite,model,mass_kg,pass,,,,,"operating empty 78393.7 kg, total takeoff 184573.7 kg"
+F01_minus,G21_cg_inside_fuselage,model,cg_x_m,pass,,,,,"cg 28.195 m, fuselage length 60.860 m"
+F01_minus,G22_static_margin_finite,model,static_margin,pass,,,,,static margin 0.1421 (provisional; excludes tail lift)
+F01_minus,G23_design_space_bounds,constraint,design vector,pass,,,,,within bounds and cross constraints
+F01_minus,R00_rcaide_available,rcaide,RCAIDE geometry adapter,pass,,,,,vehicle rebuilt
+F01_minus,R01_wing_area_match,rcaide,wing.area_m2,pass,358.25000000000006,358.25000000000006,1e-09,0.0,
+F01_minus,R02_wing_span_match,rcaide,wing.span_m,pass,25.604638251691824,25.604638251691824,1e-12,0.0,
+F01_minus,R03_wing_root_chord_match,rcaide,wing.root_chord_m,pass,29.901818514349216,29.901818514349216,1e-12,0.0,
+F01_minus,R04_wing_mac_match,rcaide,wing.mean_aerodynamic_chord_m,pass,18.489892944055953,18.489892944055953,1e-06,0.0,
+F01_minus,R05_wing_wetted_match,rcaide,wing.wetted_area_m2,pass,717.5747500000001,717.5747500000001,0.0001,0.0,
+F01_minus,R06_wing_exposed_match,rcaide,wing.exposed_area_m2,pass,358.25000000000006,358.25000000000006,0.0001,0.0,
+F01_minus,R07_wing_ac_match,rcaide,wing.aerodynamic_center_x_m,pass,16.821978259514246,16.79639739469192,0.25,0.025580864822327243,"model AC = LE(MAC) + 0.25 MAC, RCAIDE AC = area centroid - 0.25 MAC; both are equivalent for a single trapezoid but differ slightly for a multi-section planform, so a small difference is a diagnostic note, not a geometry error"
+F01_minus,R08_wing_le_mac_match,rcaide,wing.leading_edge_mac_x_m,pass,12.199505023500258,12.199505023500262,0.01,-3.552713678800501e-15,model LE(MAC) vs RCAIDE LEMAC minus wing origin
+F01_minus,R09_tail_area_match,rcaide,tail.area_m2,pass,33.91,33.91,1e-09,0.0,
+F01_minus,R10_tail_span_match,rcaide,tail.span_m,pass,5.0093312926976585,5.0093312926976585,1e-12,0.0,
+F01_minus,R11_tail_mac_match,rcaide,tail.mean_aerodynamic_chord_m,pass,8.124384956069033,8.124384956069035,1e-06,-1.7763568394002505e-15,
+F01_minus,R12_fuselage_wetted_match,rcaide,fuselage.wetted_area_m2,pass,481.1310162051445,481.13101620514453,1e-09,-5.684341886080802e-14,
+F01_minus,R13_fuselage_front_projected_match,rcaide,fuselage.front_projected_area_m2,pass,7.509664526786937,7.509664526786935,1e-09,1.7763568394002505e-15,
+F01_minus,R14_fuselage_effective_diameter_match,rcaide,fuselage.effective_diameter_m,pass,3.1039047869569845,3.1039047869569845,1e-09,0.0,
+F01_minus,R15_fuselage_lengths_match,rcaide,fuselage.lengths.total_m,pass,60.86,60.86,1e-12,0.0,
+F01_minus,R16_01_section_sweep_match,rcaide,wing.sections[0].quarter_chord_sweep_deg,pass,67.0,67.0,1e-09,0.0,
+F01_minus,R16_02_section_sweep_match,rcaide,wing.sections[1].quarter_chord_sweep_deg,pass,48.0,48.00000000000001,1e-09,-7.105427357601002e-15,
+F01_minus,R16_03_section_sweep_match,rcaide,wing.sections[2].quarter_chord_sweep_deg,pass,71.0,71.0,1e-09,0.0,
+F01_minus,R16_tip_sweep_rcaide_convention,rcaide,wing.sections.tip.quarter_chord_sweep_deg,info,71.0,71.0,,,"RCAIDE wing_planform forces the last segment sweep to the previous segment (model tip 71.000 deg, RCAIDE tip 71.000 deg); this is an RCAIDE convention, not a model error"
+F01_minus,R17_airfoil_thickness_declared_vs_imported,rcaide,wing.section.thickness_to_chord,pass,0.03,0.029990192989497864,0.002,9.80701050213445e-06,RCAIDE replaces the declared t/c with the value read from the airfoil file; difference is reported
+F01_minus,R18_wing_taper_match,rcaide,wing.taper_ratio,pass,0.03254437869822486,0.03254437869822486,1e-09,0.0,
+F02_plus,G01_wing_area_closure,model,main_wing.area_m2,pass,358.25000000000006,358.25,1e-09,5.684341886080802e-14,sum of the four trapezoid sections equals the requested wing area
+F02_plus,G02_wing_span_derivation,model,main_wing.span_m,pass,25.604638251691824,25.604638251691824,1e-09,0.0,span = sqrt(wing_area * aspect_ratio)
+F02_plus,G03_wing_aspect_ratio_closure,model,main_wing.aspect_ratio,pass,358.25000000000006,358.2500000000001,1e-09,-5.684341886080802e-14,area = span^2 / aspect_ratio
+F02_plus,G04_wing_root_chord_positive,model,main_wing.root_chord_m,pass,,,,,root chord 29.901819 m
+F02_plus,G05_wing_section_span_order,model,main_wing.sections.percent_span_location,pass,,,,,"span fractions [0, 0.480469, 0.945313, 1]"
+F02_plus,G06_wing_chord_positive_monotonic,model,main_wing.sections.chord_m,pass,,,,,"chords [29.9018, 12.2084, 3.89256, 0.973136]"
+F02_plus,G07_wing_sweep_range,model,main_wing.sections.quarter_chord_sweep_deg,pass,,,,,"sweeps [67, 48, 71, 71]"
+F02_plus,G08_wing_tip_twist_in_bounds,model,main_wing.sections.tip.twist_deg,pass,,,,,tip twist 0.000000 deg
+F02_plus,G09_wing_wetted_area_positive,model,main_wing.wetted_area_m2,pass,,,,,wetted 717.575 m2 vs reference 358.250 m2
+F02_plus,G10_wing_exposed_le_reference,model,main_wing.exposed_area_m2,pass,,,,,exposed 358.250 m2 <= reference 358.250 m2; wing-fuselage unexposed span is not modelled in P1
+F02_plus,G11_tail_area_closure,model,vertical_stabilizer.area_m2,pass,33.91,33.91,1e-09,0.0,tail planform area equals the requested vertical_tail_area
+F02_plus,G12_tail_span_derivation,model,vertical_stabilizer.span_m,pass,5.0093312926976585,5.0093312926976585,1e-09,0.0,tail span = sqrt(vertical_tail_area * 0.74)
+F02_plus,G13_tail_sections_positive_monotonic,model,vertical_stabilizer.sections,pass,,,,,"span fractions [0, 0.4, 1] chords [13.1576, 6.80566, 2.45004]"
+F02_plus,G14_tail_sweep_range,model,vertical_stabilizer.sections.quarter_chord_sweep_deg,pass,,,,,"sweeps [63, 40, 0]"
+F02_plus,G15_fuselage_cabin_positive,model,fuselage.cabin_length_m,pass,,,,,cabin 29.697358 m = total 61.660 - nose 12.845 - tail 19.118
+F02_plus,G16_fuselage_station_order,model,fuselage.stations.x_m,pass,,,,,"x stations [0, 3.14132, 5.98889, 9.41659, 12.8448, 42.5422, 47.0098, 61.66]"
+F02_plus,G17_fuselage_station_tags_unique,model,fuselage.stations.tag,pass,,,,,"tags segment_0, segment_1, segment_2, segment_3, segment_4, segment_5, segment_6, segment_7"
+F02_plus,G18_fuselage_volume_requirement,constraint,fuselage.usable_volume_m3,pass,223.0171969597524,110.0,,,"usable 223.017 m3, required 110.000 m3, margin 113.017 m3"
+F02_plus,G19_fuselage_wetted_front_positive,model,fuselage.wetted_area_m2,pass,,,,,"wetted 484.705 m2, front projected 7.510 m2"
+F02_plus,G20_mass_positive_finite,model,mass_kg,pass,,,,,"operating empty 78700.0 kg, total takeoff 184880.0 kg"
+F02_plus,G21_cg_inside_fuselage,model,cg_x_m,pass,,,,,"cg 28.287 m, fuselage length 61.660 m"
+F02_plus,G22_static_margin_finite,model,static_margin,pass,,,,,static margin 0.1371 (provisional; excludes tail lift)
+F02_plus,G23_design_space_bounds,constraint,design vector,pass,,,,,within bounds and cross constraints
+F02_plus,R00_rcaide_available,rcaide,RCAIDE geometry adapter,pass,,,,,vehicle rebuilt
+F02_plus,R01_wing_area_match,rcaide,wing.area_m2,pass,358.25000000000006,358.25000000000006,1e-09,0.0,
+F02_plus,R02_wing_span_match,rcaide,wing.span_m,pass,25.604638251691824,25.604638251691824,1e-12,0.0,
+F02_plus,R03_wing_root_chord_match,rcaide,wing.root_chord_m,pass,29.901818514349216,29.901818514349216,1e-12,0.0,
+F02_plus,R04_wing_mac_match,rcaide,wing.mean_aerodynamic_chord_m,pass,18.489892944055953,18.489892944055953,1e-06,0.0,
+F02_plus,R05_wing_wetted_match,rcaide,wing.wetted_area_m2,pass,717.5747500000001,717.5747500000001,0.0001,0.0,
+F02_plus,R06_wing_exposed_match,rcaide,wing.exposed_area_m2,pass,358.25000000000006,358.25000000000006,0.0001,0.0,
+F02_plus,R07_wing_ac_match,rcaide,wing.aerodynamic_center_x_m,pass,16.821978259514246,16.79639739469192,0.25,0.025580864822327243,"model AC = LE(MAC) + 0.25 MAC, RCAIDE AC = area centroid - 0.25 MAC; both are equivalent for a single trapezoid but differ slightly for a multi-section planform, so a small difference is a diagnostic note, not a geometry error"
+F02_plus,R08_wing_le_mac_match,rcaide,wing.leading_edge_mac_x_m,pass,12.199505023500258,12.199505023500262,0.01,-3.552713678800501e-15,model LE(MAC) vs RCAIDE LEMAC minus wing origin
+F02_plus,R09_tail_area_match,rcaide,tail.area_m2,pass,33.91,33.91,1e-09,0.0,
+F02_plus,R10_tail_span_match,rcaide,tail.span_m,pass,5.0093312926976585,5.0093312926976585,1e-12,0.0,
+F02_plus,R11_tail_mac_match,rcaide,tail.mean_aerodynamic_chord_m,pass,8.124384956069033,8.124384956069035,1e-06,-1.7763568394002505e-15,
+F02_plus,R12_fuselage_wetted_match,rcaide,fuselage.wetted_area_m2,pass,484.70513932539603,484.7051393253961,1e-09,-5.684341886080802e-14,
+F02_plus,R13_fuselage_front_projected_match,rcaide,fuselage.front_projected_area_m2,pass,7.509664526786937,7.509664526786935,1e-09,1.7763568394002505e-15,
+F02_plus,R14_fuselage_effective_diameter_match,rcaide,fuselage.effective_diameter_m,pass,3.1039047869569845,3.1039047869569845,1e-09,0.0,
+F02_plus,R15_fuselage_lengths_match,rcaide,fuselage.lengths.total_m,pass,61.66,61.66,1e-12,0.0,
+F02_plus,R16_01_section_sweep_match,rcaide,wing.sections[0].quarter_chord_sweep_deg,pass,67.0,67.0,1e-09,0.0,
+F02_plus,R16_02_section_sweep_match,rcaide,wing.sections[1].quarter_chord_sweep_deg,pass,48.0,48.00000000000001,1e-09,-7.105427357601002e-15,
+F02_plus,R16_03_section_sweep_match,rcaide,wing.sections[2].quarter_chord_sweep_deg,pass,71.0,71.0,1e-09,0.0,
+F02_plus,R16_tip_sweep_rcaide_convention,rcaide,wing.sections.tip.quarter_chord_sweep_deg,info,71.0,71.0,,,"RCAIDE wing_planform forces the last segment sweep to the previous segment (model tip 71.000 deg, RCAIDE tip 71.000 deg); this is an RCAIDE convention, not a model error"
+F02_plus,R17_airfoil_thickness_declared_vs_imported,rcaide,wing.section.thickness_to_chord,pass,0.03,0.029990192989497864,0.002,9.80701050213445e-06,RCAIDE replaces the declared t/c with the value read from the airfoil file; difference is reported
+F02_plus,R18_wing_taper_match,rcaide,wing.taper_ratio,pass,0.03254437869822486,0.03254437869822486,1e-09,0.0,
+F02_minus,G01_wing_area_closure,model,main_wing.area_m2,pass,358.25000000000006,358.25,1e-09,5.684341886080802e-14,sum of the four trapezoid sections equals the requested wing area
+F02_minus,G02_wing_span_derivation,model,main_wing.span_m,pass,25.604638251691824,25.604638251691824,1e-09,0.0,span = sqrt(wing_area * aspect_ratio)
+F02_minus,G03_wing_aspect_ratio_closure,model,main_wing.aspect_ratio,pass,358.25000000000006,358.2500000000001,1e-09,-5.684341886080802e-14,area = span^2 / aspect_ratio
+F02_minus,G04_wing_root_chord_positive,model,main_wing.root_chord_m,pass,,,,,root chord 29.901819 m
+F02_minus,G05_wing_section_span_order,model,main_wing.sections.percent_span_location,pass,,,,,"span fractions [0, 0.480469, 0.945313, 1]"
+F02_minus,G06_wing_chord_positive_monotonic,model,main_wing.sections.chord_m,pass,,,,,"chords [29.9018, 12.2084, 3.89256, 0.973136]"
+F02_minus,G07_wing_sweep_range,model,main_wing.sections.quarter_chord_sweep_deg,pass,,,,,"sweeps [67, 48, 71, 71]"
+F02_minus,G08_wing_tip_twist_in_bounds,model,main_wing.sections.tip.twist_deg,pass,,,,,tip twist 0.000000 deg
+F02_minus,G09_wing_wetted_area_positive,model,main_wing.wetted_area_m2,pass,,,,,wetted 717.575 m2 vs reference 358.250 m2
+F02_minus,G10_wing_exposed_le_reference,model,main_wing.exposed_area_m2,pass,,,,,exposed 358.250 m2 <= reference 358.250 m2; wing-fuselage unexposed span is not modelled in P1
+F02_minus,G11_tail_area_closure,model,vertical_stabilizer.area_m2,pass,33.91,33.91,1e-09,0.0,tail planform area equals the requested vertical_tail_area
+F02_minus,G12_tail_span_derivation,model,vertical_stabilizer.span_m,pass,5.0093312926976585,5.0093312926976585,1e-09,0.0,tail span = sqrt(vertical_tail_area * 0.74)
+F02_minus,G13_tail_sections_positive_monotonic,model,vertical_stabilizer.sections,pass,,,,,"span fractions [0, 0.4, 1] chords [13.1576, 6.80566, 2.45004]"
+F02_minus,G14_tail_sweep_range,model,vertical_stabilizer.sections.quarter_chord_sweep_deg,pass,,,,,"sweeps [63, 40, 0]"
+F02_minus,G15_fuselage_cabin_positive,model,fuselage.cabin_length_m,pass,,,,,cabin 31.990642 m = total 61.660 - nose 11.923 - tail 17.746
+F02_minus,G16_fuselage_station_order,model,fuselage.stations.x_m,pass,,,,,"x stations [0, 2.91594, 5.55919, 8.74096, 11.9232, 43.9138, 48.0609, 61.66]"
+F02_minus,G17_fuselage_station_tags_unique,model,fuselage.stations.tag,pass,,,,,"tags segment_0, segment_1, segment_2, segment_3, segment_4, segment_5, segment_6, segment_7"
+F02_minus,G18_fuselage_volume_requirement,constraint,fuselage.usable_volume_m3,pass,240.23898836868014,110.0,,,"usable 240.239 m3, required 110.000 m3, margin 130.239 m3"
+F02_minus,G19_fuselage_wetted_front_positive,model,fuselage.wetted_area_m2,pass,,,,,"wetted 493.142 m2, front projected 7.510 m2"
+F02_minus,G20_mass_positive_finite,model,mass_kg,pass,,,,,"operating empty 78700.0 kg, total takeoff 184880.0 kg"
+F02_minus,G21_cg_inside_fuselage,model,cg_x_m,pass,,,,,"cg 28.287 m, fuselage length 61.660 m"
+F02_minus,G22_static_margin_finite,model,static_margin,pass,,,,,static margin 0.1371 (provisional; excludes tail lift)
+F02_minus,G23_design_space_bounds,constraint,design vector,pass,,,,,within bounds and cross constraints
+F02_minus,R00_rcaide_available,rcaide,RCAIDE geometry adapter,pass,,,,,vehicle rebuilt
+F02_minus,R01_wing_area_match,rcaide,wing.area_m2,pass,358.25000000000006,358.25000000000006,1e-09,0.0,
+F02_minus,R02_wing_span_match,rcaide,wing.span_m,pass,25.604638251691824,25.604638251691824,1e-12,0.0,
+F02_minus,R03_wing_root_chord_match,rcaide,wing.root_chord_m,pass,29.901818514349216,29.901818514349216,1e-12,0.0,
+F02_minus,R04_wing_mac_match,rcaide,wing.mean_aerodynamic_chord_m,pass,18.489892944055953,18.489892944055953,1e-06,0.0,
+F02_minus,R05_wing_wetted_match,rcaide,wing.wetted_area_m2,pass,717.5747500000001,717.5747500000001,0.0001,0.0,
+F02_minus,R06_wing_exposed_match,rcaide,wing.exposed_area_m2,pass,358.25000000000006,358.25000000000006,0.0001,0.0,
+F02_minus,R07_wing_ac_match,rcaide,wing.aerodynamic_center_x_m,pass,16.821978259514246,16.79639739469192,0.25,0.025580864822327243,"model AC = LE(MAC) + 0.25 MAC, RCAIDE AC = area centroid - 0.25 MAC; both are equivalent for a single trapezoid but differ slightly for a multi-section planform, so a small difference is a diagnostic note, not a geometry error"
+F02_minus,R08_wing_le_mac_match,rcaide,wing.leading_edge_mac_x_m,pass,12.199505023500258,12.199505023500262,0.01,-3.552713678800501e-15,model LE(MAC) vs RCAIDE LEMAC minus wing origin
+F02_minus,R09_tail_area_match,rcaide,tail.area_m2,pass,33.91,33.91,1e-09,0.0,
+F02_minus,R10_tail_span_match,rcaide,tail.span_m,pass,5.0093312926976585,5.0093312926976585,1e-12,0.0,
+F02_minus,R11_tail_mac_match,rcaide,tail.mean_aerodynamic_chord_m,pass,8.124384956069033,8.124384956069035,1e-06,-1.7763568394002505e-15,
+F02_minus,R12_fuselage_wetted_match,rcaide,fuselage.wetted_area_m2,pass,493.14160531668585,493.14160531668585,1e-09,0.0,
+F02_minus,R13_fuselage_front_projected_match,rcaide,fuselage.front_projected_area_m2,pass,7.509664526786937,7.509664526786935,1e-09,1.7763568394002505e-15,
+F02_minus,R14_fuselage_effective_diameter_match,rcaide,fuselage.effective_diameter_m,pass,3.1039047869569845,3.1039047869569845,1e-09,0.0,
+F02_minus,R15_fuselage_lengths_match,rcaide,fuselage.lengths.total_m,pass,61.66,61.66,1e-12,0.0,
+F02_minus,R16_01_section_sweep_match,rcaide,wing.sections[0].quarter_chord_sweep_deg,pass,67.0,67.0,1e-09,0.0,
+F02_minus,R16_02_section_sweep_match,rcaide,wing.sections[1].quarter_chord_sweep_deg,pass,48.0,48.00000000000001,1e-09,-7.105427357601002e-15,
+F02_minus,R16_03_section_sweep_match,rcaide,wing.sections[2].quarter_chord_sweep_deg,pass,71.0,71.0,1e-09,0.0,
+F02_minus,R16_tip_sweep_rcaide_convention,rcaide,wing.sections.tip.quarter_chord_sweep_deg,info,71.0,71.0,,,"RCAIDE wing_planform forces the last segment sweep to the previous segment (model tip 71.000 deg, RCAIDE tip 71.000 deg); this is an RCAIDE convention, not a model error"
+F02_minus,R17_airfoil_thickness_declared_vs_imported,rcaide,wing.section.thickness_to_chord,pass,0.03,0.029990192989497864,0.002,9.80701050213445e-06,RCAIDE replaces the declared t/c with the value read from the airfoil file; difference is reported
+F02_minus,R18_wing_taper_match,rcaide,wing.taper_ratio,pass,0.03254437869822486,0.03254437869822486,1e-09,0.0,
+F03_plus,G01_wing_area_closure,model,main_wing.area_m2,pass,358.25000000000006,358.25,1e-09,5.684341886080802e-14,sum of the four trapezoid sections equals the requested wing area
+F03_plus,G02_wing_span_derivation,model,main_wing.span_m,pass,25.604638251691824,25.604638251691824,1e-09,0.0,span = sqrt(wing_area * aspect_ratio)
+F03_plus,G03_wing_aspect_ratio_closure,model,main_wing.aspect_ratio,pass,358.25000000000006,358.2500000000001,1e-09,-5.684341886080802e-14,area = span^2 / aspect_ratio
+F03_plus,G04_wing_root_chord_positive,model,main_wing.root_chord_m,pass,,,,,root chord 29.901819 m
+F03_plus,G05_wing_section_span_order,model,main_wing.sections.percent_span_location,pass,,,,,"span fractions [0, 0.480469, 0.945313, 1]"
+F03_plus,G06_wing_chord_positive_monotonic,model,main_wing.sections.chord_m,pass,,,,,"chords [29.9018, 12.2084, 3.89256, 0.973136]"
+F03_plus,G07_wing_sweep_range,model,main_wing.sections.quarter_chord_sweep_deg,pass,,,,,"sweeps [67, 48, 71, 71]"
+F03_plus,G08_wing_tip_twist_in_bounds,model,main_wing.sections.tip.twist_deg,pass,,,,,tip twist 0.000000 deg
+F03_plus,G09_wing_wetted_area_positive,model,main_wing.wetted_area_m2,pass,,,,,wetted 717.575 m2 vs reference 358.250 m2
+F03_plus,G10_wing_exposed_le_reference,model,main_wing.exposed_area_m2,pass,,,,,exposed 358.250 m2 <= reference 358.250 m2; wing-fuselage unexposed span is not modelled in P1
+F03_plus,G11_tail_area_closure,model,vertical_stabilizer.area_m2,pass,33.91,33.91,1e-09,0.0,tail planform area equals the requested vertical_tail_area
+F03_plus,G12_tail_span_derivation,model,vertical_stabilizer.span_m,pass,5.0093312926976585,5.0093312926976585,1e-09,0.0,tail span = sqrt(vertical_tail_area * 0.74)
+F03_plus,G13_tail_sections_positive_monotonic,model,vertical_stabilizer.sections,pass,,,,,"span fractions [0, 0.4, 1] chords [13.1576, 6.80566, 2.45004]"
+F03_plus,G14_tail_sweep_range,model,vertical_stabilizer.sections.quarter_chord_sweep_deg,pass,,,,,"sweeps [63, 40, 0]"
+F03_plus,G15_fuselage_cabin_positive,model,fuselage.cabin_length_m,pass,,,,,cabin 30.844000 m = total 61.660 - nose 12.384 - tail 18.432
+F03_plus,G16_fuselage_station_order,model,fuselage.stations.x_m,pass,,,,,"x stations [0, 3.02863, 5.77404, 9.07877, 12.384, 43.228, 47.5354, 61.66]"
+F03_plus,G17_fuselage_station_tags_unique,model,fuselage.stations.tag,pass,,,,,"tags segment_0, segment_1, segment_2, segment_3, segment_4, segment_5, segment_6, segment_7"
+F03_plus,G18_fuselage_volume_requirement,constraint,fuselage.usable_volume_m3,pass,238.66065508581656,110.0,,,"usable 238.661 m3, required 110.000 m3, margin 128.661 m3"
+F03_plus,G19_fuselage_wetted_front_positive,model,fuselage.wetted_area_m2,pass,,,,,"wetted 496.775 m2, front projected 7.738 m2"
+F03_plus,G20_mass_positive_finite,model,mass_kg,pass,,,,,"operating empty 78700.0 kg, total takeoff 184880.0 kg"
+F03_plus,G21_cg_inside_fuselage,model,cg_x_m,pass,,,,,"cg 28.287 m, fuselage length 61.660 m"
+F03_plus,G22_static_margin_finite,model,static_margin,pass,,,,,static margin 0.1371 (provisional; excludes tail lift)
+F03_plus,G23_design_space_bounds,constraint,design vector,pass,,,,,within bounds and cross constraints
+F03_plus,R00_rcaide_available,rcaide,RCAIDE geometry adapter,pass,,,,,vehicle rebuilt
+F03_plus,R01_wing_area_match,rcaide,wing.area_m2,pass,358.25000000000006,358.25000000000006,1e-09,0.0,
+F03_plus,R02_wing_span_match,rcaide,wing.span_m,pass,25.604638251691824,25.604638251691824,1e-12,0.0,
+F03_plus,R03_wing_root_chord_match,rcaide,wing.root_chord_m,pass,29.901818514349216,29.901818514349216,1e-12,0.0,
+F03_plus,R04_wing_mac_match,rcaide,wing.mean_aerodynamic_chord_m,pass,18.489892944055953,18.489892944055953,1e-06,0.0,
+F03_plus,R05_wing_wetted_match,rcaide,wing.wetted_area_m2,pass,717.5747500000001,717.5747500000001,0.0001,0.0,
+F03_plus,R06_wing_exposed_match,rcaide,wing.exposed_area_m2,pass,358.25000000000006,358.25000000000006,0.0001,0.0,
+F03_plus,R07_wing_ac_match,rcaide,wing.aerodynamic_center_x_m,pass,16.821978259514246,16.79639739469192,0.25,0.025580864822327243,"model AC = LE(MAC) + 0.25 MAC, RCAIDE AC = area centroid - 0.25 MAC; both are equivalent for a single trapezoid but differ slightly for a multi-section planform, so a small difference is a diagnostic note, not a geometry error"
+F03_plus,R08_wing_le_mac_match,rcaide,wing.leading_edge_mac_x_m,pass,12.199505023500258,12.199505023500262,0.01,-3.552713678800501e-15,model LE(MAC) vs RCAIDE LEMAC minus wing origin
+F03_plus,R09_tail_area_match,rcaide,tail.area_m2,pass,33.91,33.91,1e-09,0.0,
+F03_plus,R10_tail_span_match,rcaide,tail.span_m,pass,5.0093312926976585,5.0093312926976585,1e-12,0.0,
+F03_plus,R11_tail_mac_match,rcaide,tail.mean_aerodynamic_chord_m,pass,8.124384956069033,8.124384956069035,1e-06,-1.7763568394002505e-15,
+F03_plus,R12_fuselage_wetted_match,rcaide,fuselage.wetted_area_m2,pass,496.774545959468,496.7745459594681,1e-09,-1.1368683772161603e-13,
+F03_plus,R13_fuselage_front_projected_match,rcaide,fuselage.front_projected_area_m2,pass,7.737668755213869,7.7376687552138685,1e-09,8.881784197001252e-16,
+F03_plus,R14_fuselage_effective_diameter_match,rcaide,fuselage.effective_diameter_m,pass,3.1562051426131723,3.1562051426131723,1e-09,0.0,
+F03_plus,R15_fuselage_lengths_match,rcaide,fuselage.lengths.total_m,pass,61.66,61.66,1e-12,0.0,
+F03_plus,R16_01_section_sweep_match,rcaide,wing.sections[0].quarter_chord_sweep_deg,pass,67.0,67.0,1e-09,0.0,
+F03_plus,R16_02_section_sweep_match,rcaide,wing.sections[1].quarter_chord_sweep_deg,pass,48.0,48.00000000000001,1e-09,-7.105427357601002e-15,
+F03_plus,R16_03_section_sweep_match,rcaide,wing.sections[2].quarter_chord_sweep_deg,pass,71.0,71.0,1e-09,0.0,
+F03_plus,R16_tip_sweep_rcaide_convention,rcaide,wing.sections.tip.quarter_chord_sweep_deg,info,71.0,71.0,,,"RCAIDE wing_planform forces the last segment sweep to the previous segment (model tip 71.000 deg, RCAIDE tip 71.000 deg); this is an RCAIDE convention, not a model error"
+F03_plus,R17_airfoil_thickness_declared_vs_imported,rcaide,wing.section.thickness_to_chord,pass,0.03,0.029990192989497864,0.002,9.80701050213445e-06,RCAIDE replaces the declared t/c with the value read from the airfoil file; difference is reported
+F03_plus,R18_wing_taper_match,rcaide,wing.taper_ratio,pass,0.03254437869822486,0.03254437869822486,1e-09,0.0,
+F03_minus,G01_wing_area_closure,model,main_wing.area_m2,pass,358.25000000000006,358.25,1e-09,5.684341886080802e-14,sum of the four trapezoid sections equals the requested wing area
+F03_minus,G02_wing_span_derivation,model,main_wing.span_m,pass,25.604638251691824,25.604638251691824,1e-09,0.0,span = sqrt(wing_area * aspect_ratio)
+F03_minus,G03_wing_aspect_ratio_closure,model,main_wing.aspect_ratio,pass,358.25000000000006,358.2500000000001,1e-09,-5.684341886080802e-14,area = span^2 / aspect_ratio
+F03_minus,G04_wing_root_chord_positive,model,main_wing.root_chord_m,pass,,,,,root chord 29.901819 m
+F03_minus,G05_wing_section_span_order,model,main_wing.sections.percent_span_location,pass,,,,,"span fractions [0, 0.480469, 0.945313, 1]"
+F03_minus,G06_wing_chord_positive_monotonic,model,main_wing.sections.chord_m,pass,,,,,"chords [29.9018, 12.2084, 3.89256, 0.973136]"
+F03_minus,G07_wing_sweep_range,model,main_wing.sections.quarter_chord_sweep_deg,pass,,,,,"sweeps [67, 48, 71, 71]"
+F03_minus,G08_wing_tip_twist_in_bounds,model,main_wing.sections.tip.twist_deg,pass,,,,,tip twist 0.000000 deg
+F03_minus,G09_wing_wetted_area_positive,model,main_wing.wetted_area_m2,pass,,,,,wetted 717.575 m2 vs reference 358.250 m2
+F03_minus,G10_wing_exposed_le_reference,model,main_wing.exposed_area_m2,pass,,,,,exposed 358.250 m2 <= reference 358.250 m2; wing-fuselage unexposed span is not modelled in P1
+F03_minus,G11_tail_area_closure,model,vertical_stabilizer.area_m2,pass,33.91,33.91,1e-09,0.0,tail planform area equals the requested vertical_tail_area
+F03_minus,G12_tail_span_derivation,model,vertical_stabilizer.span_m,pass,5.0093312926976585,5.0093312926976585,1e-09,0.0,tail span = sqrt(vertical_tail_area * 0.74)
+F03_minus,G13_tail_sections_positive_monotonic,model,vertical_stabilizer.sections,pass,,,,,"span fractions [0, 0.4, 1] chords [13.1576, 6.80566, 2.45004]"
+F03_minus,G14_tail_sweep_range,model,vertical_stabilizer.sections.quarter_chord_sweep_deg,pass,,,,,"sweeps [63, 40, 0]"
+F03_minus,G15_fuselage_cabin_positive,model,fuselage.cabin_length_m,pass,,,,,cabin 30.844000 m = total 61.660 - nose 12.384 - tail 18.432
+F03_minus,G16_fuselage_station_order,model,fuselage.stations.x_m,pass,,,,,"x stations [0, 3.02863, 5.77404, 9.07877, 12.384, 43.228, 47.5354, 61.66]"
+F03_minus,G17_fuselage_station_tags_unique,model,fuselage.stations.tag,pass,,,,,"tags segment_0, segment_1, segment_2, segment_3, segment_4, segment_5, segment_6, segment_7"
+F03_minus,G18_fuselage_volume_requirement,constraint,fuselage.usable_volume_m3,pass,224.59553024261592,110.0,,,"usable 224.596 m3, required 110.000 m3, margin 114.596 m3"
+F03_minus,G19_fuselage_wetted_front_positive,model,fuselage.wetted_area_m2,pass,,,,,"wetted 481.073 m2, front projected 7.282 m2"
+F03_minus,G20_mass_positive_finite,model,mass_kg,pass,,,,,"operating empty 78700.0 kg, total takeoff 184880.0 kg"
+F03_minus,G21_cg_inside_fuselage,model,cg_x_m,pass,,,,,"cg 28.287 m, fuselage length 61.660 m"
+F03_minus,G22_static_margin_finite,model,static_margin,pass,,,,,static margin 0.1371 (provisional; excludes tail lift)
+F03_minus,G23_design_space_bounds,constraint,design vector,pass,,,,,within bounds and cross constraints
+F03_minus,R00_rcaide_available,rcaide,RCAIDE geometry adapter,pass,,,,,vehicle rebuilt
+F03_minus,R01_wing_area_match,rcaide,wing.area_m2,pass,358.25000000000006,358.25000000000006,1e-09,0.0,
+F03_minus,R02_wing_span_match,rcaide,wing.span_m,pass,25.604638251691824,25.604638251691824,1e-12,0.0,
+F03_minus,R03_wing_root_chord_match,rcaide,wing.root_chord_m,pass,29.901818514349216,29.901818514349216,1e-12,0.0,
+F03_minus,R04_wing_mac_match,rcaide,wing.mean_aerodynamic_chord_m,pass,18.489892944055953,18.489892944055953,1e-06,0.0,
+F03_minus,R05_wing_wetted_match,rcaide,wing.wetted_area_m2,pass,717.5747500000001,717.5747500000001,0.0001,0.0,
+F03_minus,R06_wing_exposed_match,rcaide,wing.exposed_area_m2,pass,358.25000000000006,358.25000000000006,0.0001,0.0,
+F03_minus,R07_wing_ac_match,rcaide,wing.aerodynamic_center_x_m,pass,16.821978259514246,16.79639739469192,0.25,0.025580864822327243,"model AC = LE(MAC) + 0.25 MAC, RCAIDE AC = area centroid - 0.25 MAC; both are equivalent for a single trapezoid but differ slightly for a multi-section planform, so a small difference is a diagnostic note, not a geometry error"
+F03_minus,R08_wing_le_mac_match,rcaide,wing.leading_edge_mac_x_m,pass,12.199505023500258,12.199505023500262,0.01,-3.552713678800501e-15,model LE(MAC) vs RCAIDE LEMAC minus wing origin
+F03_minus,R09_tail_area_match,rcaide,tail.area_m2,pass,33.91,33.91,1e-09,0.0,
+F03_minus,R10_tail_span_match,rcaide,tail.span_m,pass,5.0093312926976585,5.0093312926976585,1e-12,0.0,
+F03_minus,R11_tail_mac_match,rcaide,tail.mean_aerodynamic_chord_m,pass,8.124384956069033,8.124384956069035,1e-06,-1.7763568394002505e-15,
+F03_minus,R12_fuselage_wetted_match,rcaide,fuselage.wetted_area_m2,pass,481.0725066449455,481.07250664494563,1e-09,-1.1368683772161603e-13,
+F03_minus,R13_fuselage_front_projected_match,rcaide,fuselage.front_projected_area_m2,pass,7.281660298360005,7.281660298360005,1e-09,0.0,
+F03_minus,R14_fuselage_effective_diameter_match,rcaide,fuselage.effective_diameter_m,pass,3.0519588121105583,3.0519588121105583,1e-09,0.0,
+F03_minus,R15_fuselage_lengths_match,rcaide,fuselage.lengths.total_m,pass,61.66,61.66,1e-12,0.0,
+F03_minus,R16_01_section_sweep_match,rcaide,wing.sections[0].quarter_chord_sweep_deg,pass,67.0,67.0,1e-09,0.0,
+F03_minus,R16_02_section_sweep_match,rcaide,wing.sections[1].quarter_chord_sweep_deg,pass,48.0,48.00000000000001,1e-09,-7.105427357601002e-15,
+F03_minus,R16_03_section_sweep_match,rcaide,wing.sections[2].quarter_chord_sweep_deg,pass,71.0,71.0,1e-09,0.0,
+F03_minus,R16_tip_sweep_rcaide_convention,rcaide,wing.sections.tip.quarter_chord_sweep_deg,info,71.0,71.0,,,"RCAIDE wing_planform forces the last segment sweep to the previous segment (model tip 71.000 deg, RCAIDE tip 71.000 deg); this is an RCAIDE convention, not a model error"
+F03_minus,R17_airfoil_thickness_declared_vs_imported,rcaide,wing.section.thickness_to_chord,pass,0.03,0.029990192989497864,0.002,9.80701050213445e-06,RCAIDE replaces the declared t/c with the value read from the airfoil file; difference is reported
+F03_minus,R18_wing_taper_match,rcaide,wing.taper_ratio,pass,0.03254437869822486,0.03254437869822486,1e-09,0.0,

@@ -366,6 +366,149 @@ def _validate_space(space: DesignSpace, source: str) -> None:
     violations = space.check_physical(space.baseline_dict())
     if violations:
         raise DesignSpaceError("%s: baseline design violates its own contract: %s" % (source, "; ".join(violations)))
+    _validate_baseline_geometry(space, source)
+
+
+def _validate_baseline_geometry(space: DesignSpace, source: str) -> None:
+    """Reject a baseline_geometry block that contradicts its own derived rules.
+
+    The loader must not silently accept stale numbers: the P1 draft declared a
+    33.8 m root chord next to a formula that derives 27.10 m, and a validator
+    that ignored the block let that conflict through.  Every relation checked
+    here is independent of the geometry model module so the config remains a
+    genuine second source.
+    """
+    geometry = space.baseline_geometry
+    for key in ("status", "main_wing", "vertical_stabilizer", "fuselage"):
+        if key not in geometry:
+            raise DesignSpaceError("%s: baseline_geometry is missing %r" % (source, key))
+    if not isinstance(geometry["status"], str) or not geometry["status"].strip():
+        raise DesignSpaceError("%s: baseline_geometry.status must be a non-empty string" % source)
+    for key in ("main_wing", "vertical_stabilizer", "fuselage"):
+        if not isinstance(geometry[key], Mapping):
+            raise DesignSpaceError("%s: baseline_geometry.%s must be a mapping" % (source, key))
+    wing = geometry["main_wing"]
+    tail = geometry["vertical_stabilizer"]
+    fuselage = geometry["fuselage"]
+    baseline = space.baseline_dict()
+
+    wing_span = _require_positive_number(wing, "projected_span_m", source, "baseline_geometry.main_wing")
+    wing_root = _require_positive_number(wing, "root_chord_m", source, "baseline_geometry.main_wing")
+    wing_tip = _require_positive_number(wing, "tip_chord_m", source, "baseline_geometry.main_wing")
+    wing_taper = _require_positive_number(wing, "taper_ratio", source, "baseline_geometry.main_wing")
+    for key in ("mean_aerodynamic_chord_m", "wetted_area_m2", "exposed_area_m2"):
+        _require_positive_number(wing, key, source, "baseline_geometry.main_wing")
+    wing_spans = _require_sequence(wing, "section_span_fractions", 4, source, "baseline_geometry.main_wing")
+    wing_ratios = _require_sequence(wing, "section_chord_ratios", 4, source, "baseline_geometry.main_wing")
+    _require_sequence(wing, "section_quarter_chord_sweeps_deg", 4, source, "baseline_geometry.main_wing")
+    expected_span = math.sqrt(baseline["wing_area"] * baseline["aspect_ratio"])
+    _require_close(wing_span, expected_span, 1e-4, source, "main_wing.projected_span_m")
+    _require_ordered(wing_spans, source, "main_wing.section_span_fractions")
+    _require_ordered(list(reversed(wing_ratios)), source, "main_wing.section_chord_ratios")
+    wing_k = _segment_area_factor(wing_spans, wing_ratios)
+    expected_root = baseline["wing_area"] / (wing_span * wing_k)
+    _require_close(wing_root, expected_root, 1e-3, source, "main_wing.root_chord_m")
+    _require_close(wing_tip, wing_root * wing_ratios[-1], 1e-3, source, "main_wing.tip_chord_m")
+    _require_close(wing_taper, wing_ratios[-1] / wing_ratios[0], 1e-6, source, "main_wing.taper_ratio")
+    _require_close(
+        wing["exposed_area_m2"],
+        baseline["wing_area"],
+        1e-6,
+        source,
+        "main_wing.exposed_area_m2",
+    )
+
+    tail_span = _require_positive_number(tail, "projected_span_m", source, "baseline_geometry.vertical_stabilizer")
+    tail_root = _require_positive_number(tail, "root_chord_m", source, "baseline_geometry.vertical_stabilizer")
+    tail_tip = _require_positive_number(tail, "tip_chord_m", source, "baseline_geometry.vertical_stabilizer")
+    tail_taper = _require_positive_number(tail, "taper_ratio", source, "baseline_geometry.vertical_stabilizer")
+    for key in ("mean_aerodynamic_chord_m", "wetted_area_m2"):
+        _require_positive_number(tail, key, source, "baseline_geometry.vertical_stabilizer")
+    tail_spans = _require_sequence(tail, "section_span_fractions", 3, source, "baseline_geometry.vertical_stabilizer")
+    tail_ratios = _require_sequence(tail, "section_chord_ratios", 3, source, "baseline_geometry.vertical_stabilizer")
+    _require_sequence(tail, "section_quarter_chord_sweeps_deg", 3, source, "baseline_geometry.vertical_stabilizer")
+    _require_close(
+        tail_span, math.sqrt(baseline["vertical_tail_area"] * 0.74), 1e-4, source, "vertical_stabilizer.projected_span_m"
+    )
+    _require_ordered(tail_spans, source, "vertical_stabilizer.section_span_fractions")
+    _require_ordered(list(reversed(tail_ratios)), source, "vertical_stabilizer.section_chord_ratios")
+    tail_k = _segment_area_factor(tail_spans, tail_ratios)
+    _require_close(
+        tail_root, baseline["vertical_tail_area"] / (tail_span * tail_k), 1e-3, source, "vertical_stabilizer.root_chord_m"
+    )
+    _require_close(tail_tip, tail_root * tail_ratios[-1], 1e-3, source, "vertical_stabilizer.tip_chord_m")
+    _require_close(tail_taper, tail_ratios[-1] / tail_ratios[0], 1e-6, source, "vertical_stabilizer.taper_ratio")
+
+    for key in ("length_m", "width_m", "height_m", "nose_fineness", "tail_fineness"):
+        _require_positive_number(fuselage, key, source, "baseline_geometry.fuselage")
+    for key in ("wetted_area_m2", "front_projected_area_m2", "effective_diameter_m"):
+        _require_positive_number(fuselage, key, source, "baseline_geometry.fuselage")
+    _require_close(fuselage["length_m"], baseline["fuselage_length"], 1e-9, source, "fuselage.length_m")
+    _require_close(fuselage["height_m"], baseline["fuselage_height_width_ratio"] * fuselage["width_m"], 1e-4, source, "fuselage.height_m")
+    _require_close(fuselage["nose_fineness"], baseline["fuselage_fineness"], 1e-6, source, "fuselage.nose_fineness")
+    _require_close(fuselage["tail_fineness"], baseline["fuselage_fineness"] * 6.4 / 4.3, 1e-6, source, "fuselage.tail_fineness")
+
+    upstream = geometry.get("upstream_declared")
+    if upstream is not None:
+        if not isinstance(upstream, Mapping):
+            raise DesignSpaceError("%s: baseline_geometry.upstream_declared must be a mapping" % source)
+        for key, value in upstream.items():
+            if key in ("main_wing", "vertical_stabilizer", "fuselage") and not isinstance(value, Mapping):
+                raise DesignSpaceError(
+                    "%s: baseline_geometry.upstream_declared.%s must be a mapping" % (source, key)
+                )
+
+
+def _require_positive_number(mapping: Mapping[str, Any], key: str, source: str, label: str) -> float:
+    if key not in mapping:
+        raise DesignSpaceError("%s: %s is missing %r" % (source, label, key))
+    try:
+        value = float(mapping[key])
+    except (TypeError, ValueError) as error:
+        raise DesignSpaceError("%s: %s.%s is not numeric: %r" % (source, label, key, mapping[key])) from error
+    if not math.isfinite(value) or value <= 0.0:
+        raise DesignSpaceError("%s: %s.%s must be finite and positive, found %r" % (source, label, key, value))
+    return value
+
+
+def _require_sequence(mapping: Mapping[str, Any], key: str, length: int, source: str, label: str) -> List[float]:
+    if key not in mapping:
+        raise DesignSpaceError("%s: %s is missing %r" % (source, label, key))
+    raw = mapping[key]
+    if not isinstance(raw, (list, tuple)) or len(raw) != length:
+        raise DesignSpaceError("%s: %s.%s must be a list of %d numbers" % (source, label, key, length))
+    try:
+        values = [float(item) for item in raw]
+    except (TypeError, ValueError) as error:
+        raise DesignSpaceError("%s: %s.%s contains a non-numeric entry" % (source, label, key)) from error
+    if any(not math.isfinite(value) for value in values):
+        raise DesignSpaceError("%s: %s.%s contains a non-finite entry" % (source, label, key))
+    return values
+
+
+def _require_ordered(values: Sequence[float], source: str, label: str) -> None:
+    if any(left >= right for left, right in zip(values, values[1:])):
+        raise DesignSpaceError("%s: %s must be strictly increasing" % (source, label))
+
+
+def _require_close(actual: float, expected: float, tolerance: float, source: str, label: str) -> None:
+    if expected == 0.0:
+        if abs(actual) > tolerance:
+            raise DesignSpaceError("%s: %s=%r deviates from the derived value %r" % (source, label, actual, expected))
+        return
+    relative = abs(actual - expected) / abs(expected)
+    if relative > tolerance:
+        raise DesignSpaceError(
+            "%s: %s=%r deviates from the derived value %r by %.3g (tolerance %g)"
+            % (source, label, actual, expected, relative, tolerance)
+        )
+
+
+def _segment_area_factor(span_fractions: Sequence[float], chord_ratios: Sequence[float]) -> float:
+    return sum(
+        0.5 * (span_fractions[index + 1] - span_fractions[index]) * (chord_ratios[index] + chord_ratios[index + 1])
+        for index in range(len(span_fractions) - 1)
+    )
 
 
 def _cross_constraint_violations(physical: Mapping[str, float]) -> List[str]:

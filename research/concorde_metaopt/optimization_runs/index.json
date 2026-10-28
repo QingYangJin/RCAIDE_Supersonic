@@ -1,8 +1,20 @@
 {
   "schema_version": "1",
-  "updated_at": "2026-10-28T07:20:00Z",
+  "updated_at": "2026-10-28T09:40:00Z",
   "description": "Index of committed optimization/audit runs for the Concorde Phase I programme. Each entry points to a run directory that contains summary.json, environment.json (audits only) and evidence; large solver artefacts are out of repository scope per the Issue #1 contract.",
   "runs": [
+    {
+      "run_id": "geometry-check-p1-20261028T1740",
+      "stage": "P1",
+      "task_id": "concorde_fixed_cruise_15d",
+      "method": "geometry_check",
+      "git_sha": "0fd5e0fcf179f620b5b4685ee2031332c8247f47",
+      "status": "geometry_check_completed",
+      "path": "geometry-check-p1-20261028T1740",
+      "created_at": "2026-10-28T09:40:00Z",
+      "summary": "First P1 geometry evidence run: provisional 15D model and RCAIDE adapter, 31 cases (baseline + 15 variables x 2 directions), 0 invalid cases, 7 upstream-declaration WARN checks, RCAIDE cross-checks enabled, 0 true evaluations.",
+      "true_evaluations": 0
+    },
     {
       "run_id": "audit-p0-reviewfix-20261028T1540",
       "stage": "P0",

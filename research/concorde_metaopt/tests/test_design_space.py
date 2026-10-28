@@ -212,6 +212,48 @@ class ConfigValidationTests(unittest.TestCase):
         with self.assertRaises(ds.DesignSpaceError):
             self.build(data)
 
+    def test_baseline_geometry_root_chord_conflict_is_rejected(self):
+        data = copy.deepcopy(self.raw)
+        data["baseline_geometry"]["main_wing"]["root_chord_m"] = 1.0
+        with self.assertRaises(ds.DesignSpaceError):
+            self.build(data)
+
+    def test_baseline_geometry_span_conflict_is_rejected(self):
+        data = copy.deepcopy(self.raw)
+        data["baseline_geometry"]["main_wing"]["projected_span_m"] = 24.0
+        with self.assertRaises(ds.DesignSpaceError):
+            self.build(data)
+
+    def test_baseline_geometry_tail_span_conflict_is_rejected(self):
+        data = copy.deepcopy(self.raw)
+        data["baseline_geometry"]["vertical_stabilizer"]["projected_span_m"] = 6.0
+        with self.assertRaises(ds.DesignSpaceError):
+            self.build(data)
+
+    def test_baseline_geometry_section_count_is_validated(self):
+        data = copy.deepcopy(self.raw)
+        data["baseline_geometry"]["main_wing"]["section_span_fractions"] = [0.0, 1.0]
+        with self.assertRaises(ds.DesignSpaceError):
+            self.build(data)
+
+    def test_baseline_geometry_exposed_area_must_match_reference(self):
+        data = copy.deepcopy(self.raw)
+        data["baseline_geometry"]["main_wing"]["exposed_area_m2"] = 326.5
+        with self.assertRaises(ds.DesignSpaceError):
+            self.build(data)
+
+    def test_baseline_geometry_status_is_required(self):
+        data = copy.deepcopy(self.raw)
+        data["baseline_geometry"]["status"] = ""
+        with self.assertRaises(ds.DesignSpaceError):
+            self.build(data)
+
+    def test_c03_documents_aspect_ratio(self):
+        expressions = {
+            str(rule.get("id")): str(rule.get("expression")) for rule in self.raw["cross_constraints"]
+        }
+        self.assertIn("aspect_ratio", expressions["C03"])
+
 
 class YamlSubsetTests(unittest.TestCase):
     def test_nested_mapping_and_sequence(self):

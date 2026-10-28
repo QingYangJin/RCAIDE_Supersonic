@@ -142,53 +142,79 @@ variables:
     target: fuselage.heights.maximum_over_width
 
 baseline_geometry:
+  status: p1_geometry_model_derived
+  note: derived by research/concorde_metaopt/aircraft/geometry_model.py; upstream declared values that the parametric model does not reproduce are kept under upstream_declared for traceability
   main_wing:
-    projected_span_m: 25.6
-    root_chord_m: 33.8
-    tip_chord_m: 1.1
+    projected_span_m: 25.604638
+    root_chord_m: 29.901819
+    tip_chord_m: 0.973136
     taper_ratio: 0.032544
-    wetted_area_m2: 601.0
-    exposed_area_m2: 326.5
-    section_1_root_chord_percent: 1.0
-    span_location_2_base: 0.480469
-    span_location_3_base: 0.945313
+    mean_aerodynamic_chord_m: 18.489893
+    wetted_area_m2: 717.574750
+    exposed_area_m2: 358.250000
+    section_span_fractions: [0.0, 0.480469, 0.945313, 1.0]
+    section_chord_ratios: [1.0, 0.408284, 0.130178, 0.032544]
+    section_quarter_chord_sweeps_deg: [67.0, 48.0, 71.0, 71.0]
   vertical_stabilizer:
-    projected_span_m: 6.0
-    root_chord_m: 14.5
-    tip_chord_m: 2.7
+    projected_span_m: 5.009331
+    root_chord_m: 13.157616
+    tip_chord_m: 2.450039
     taper_ratio: 0.186207
-    wetted_area_m2: 76.0
-    section_sweeps_deg: [63.0, 40.0, 0.0]
+    mean_aerodynamic_chord_m: 8.124385
+    wetted_area_m2: 67.921730
+    section_span_fractions: [0.0, 0.4, 1.0]
+    section_chord_ratios: [1.0, 0.517241, 0.186207]
+    section_quarter_chord_sweeps_deg: [63.0, 40.0, 0.0]
   fuselage:
     length_m: 61.66
     width_m: 2.88
     height_m: 3.32
     nose_fineness: 4.3
     tail_fineness: 6.4
-    wetted_area_m2: 442.0
+    wetted_area_m2: 488.922167
+    front_projected_area_m2: 7.509665
+    effective_diameter_m: 3.103905
+  upstream_declared:
+    note: values as declared in tutorials/Simulation_Turbojet_Supersonic_Aircraft_4500nmi_Mission/Concorde.py; they are not reproduced by the P1 parametric model and are listed for traceability only
+    main_wing:
+      root_chord_m: 33.8
+      wetted_area_m2: 601.0
+      exposed_area_m2: 326.5
+    vertical_stabilizer:
+      projected_span_m: 6.0
+      root_chord_m: 14.5
+    fuselage:
+      wetted_area_m2: 442.0
+      front_projected_area_m2: 11.9
 
 derived_rules:
   - name: projected_span
     formula: sqrt(wing_area * aspect_ratio)
-    note: replaces the hard-coded 25.6 m span; section span fractions are applied to this span.
-  - name: wing_chords
-    formula: taper_ratio = tip_chord_root_chord_ratio; root_chord = 2 * wing_area / (span * (1 + taper_ratio)); tip_chord = taper_ratio * root_chord
-    note: taper ratio is held at the baseline value until a dedicated variable is approved.
+    note: section span fractions stay fixed and are applied to this span.
+  - name: wing_root_chord
+    formula: K = sum(0.5 * delta_s_i * (r_i + r_i+1)); root_chord = wing_area / (projected_span * K) with fixed chord ratios [1.0, chord_ratio_2, chord_ratio_3, 0.032544]
+    note: the single-trapezoid formula from the first P1 draft is withdrawn; it derived 27.10 m against the upstream declaration 33.8 m. Six generated configurations must be checked in P1.
+  - name: wing_tip_chord
+    formula: tip_chord = root_chord * 0.032544
+    note: the upstream tip/root ratio is preserved; tip chord therefore scales with the root chord.
   - name: wing_wetted_area
-    formula: baseline_wetted_over_reference_ratio * wing_area
-    note: placeholder ratio 601/358.25; must be replaced by a geometry-derived value in P1.
+    formula: sum(2.003 * exposed_segment_area) over the four sections (thickness_to_chord 0.03 < 0.05)
+    note: no placeholder 601/358.25 ratio remains.
+  - name: wing_exposed_area
+    formula: equals the reference area in P1
+    note: the fuselage-unexposed span is not modelled; the upstream declaration 326.5 m2 is an unresolved cross-check for P2, not a frozen value.
   - name: vertical_tail_span
-    formula: sqrt(vertical_tail_area * baseline_tail_aspect_ratio)
-    note: tail aspect ratio held at 0.74; tail sweep deltas apply to all three tail sections.
-  - name: fuselage_height
-    formula: fuselage_height_width_ratio * baseline_width
-    note: width held at 2.88 m; height ratio replaces the three hard-coded 3.32 m values.
-  - name: fuselage_tail_fineness
-    formula: fuselage_fineness * baseline_tail_over_nose_ratio
-    note: tail fineness keeps the baseline 6.4 / 4.3 ratio.
+    formula: sqrt(vertical_tail_area * 0.74)
+    note: tail aspect ratio held at 0.74; tail sweep delta V02 applies to all three tail sections. RCAIDE forces the last segment sweep to the previous segment, so the RCAIDE tip sweep is 40 deg while the model tip sweep is 0 deg at baseline.
+  - name: vertical_tail_root_chord
+    formula: K = sum(0.5 * delta_s_i * (r_i + r_i+1)); root_chord = vertical_tail_area / (tail_span * K) with fixed chord ratios [1.0, 0.517241, 0.186207]
+    note: the derived baseline tail span 5.009331 m differs from the upstream declared 6.0 m; this deviation must be resolved before the design space is frozen.
+  - name: fuselage_geometry
+    formula: nose_length = fineness_nose * width; tail_length = nose_length * 6.4 / 4.3; cabin_length = length - nose_length - tail_length; height = fuselage_height_width_ratio * 2.88; wetted area and usable volume from the eight elliptic-cone stations
+    note: width is held at 2.88 m; usable volume must stay at or above the required 110 m3.
   - name: mass_and_cg
-    formula: NOT_IMPLEMENTED
-    note: mass/CG scaling and nacelle/landing-gear attachment updates are still open; no fuel-burn conclusion may use a hard-coded mass.
+    formula: PROVISIONAL_NOT_FROZEN
+    note: upstream operating empty mass 78700 kg is distributed over component classes and scaled with wing area and fuselage length; CG and static margin are diagnostics only and must not be used as a frozen constraint before P2 TaskSpec approval.
 
 cross_constraints:
   - id: C01
@@ -198,7 +224,7 @@ cross_constraints:
     expression: chord_ratio_3 < chord_ratio_2 < 1.0
     note: chord stays positive and monotonically decreasing outboard.
   - id: C03
-    expression: 0 < wing_area, 0 < vertical_tail_area, 0 < fuselage_length
+    expression: 0 < wing_area, 0 < aspect_ratio, 0 < vertical_tail_area, 0 < fuselage_length
     note: positive geometric quantities.
   - id: C04
     expression: 0 <= sweep_1, sweep_2, sweep_3 <= 90

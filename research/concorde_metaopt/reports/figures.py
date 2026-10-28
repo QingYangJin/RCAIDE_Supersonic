@@ -1,0 +1,268 @@
+"""P1 geometry figures.
+
+Every figure is produced only from files stored in the run directory
+(geometry_effect_delta.csv and geometry_planforms.json), so it can be redrawn
+without rerunning the geometry checks::
+
+    python -m research.concorde_metaopt.reports.figures <run_dir>
+
+The heat map shows, per design variable, the largest relative change of a
+selected derived metric under the +delta and -delta perturbation.  The planform
+panel overlays the baseline geometry with the perturbations of the wing, tail
+and fuselage variables.
+"""
+
+from __future__ import annotations
+
+import argparse
+import csv
+import json
+from pathlib import Path
+from typing import Any, Dict, List, Mapping, Optional, Sequence, Tuple
+
+import matplotlib
+
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+import numpy as np
+
+HEATMAP_METRICS: List[Tuple[str, str]] = [
+    ("wing_span_m", "wing span"),
+    ("wing_root_chord_m", "wing root chord"),
+    ("wing_mac_m", "wing MAC"),
+    ("wing_wetted_area_m2", "wing wetted area"),
+    ("wing_ac_x_m", "wing AC x"),
+    ("tail_span_m", "tail span"),
+    ("tail_root_chord_m", "tail root chord"),
+    ("tail_ac_x_m", "tail AC x"),
+    ("fuselage_length_m", "fuselage length"),
+    ("fuselage_wetted_area_m2", "fuselage wetted area"),
+    ("fuselage_usable_volume_m3", "fuselage usable volume"),
+    ("cg_x_m", "CG x"),
+    ("static_margin", "static margin"),
+    ("mass_total_takeoff_kg", "takeoff mass"),
+]
+
+WING_CASES = ("W01_plus", "W01_minus", "W02_plus", "W02_minus")
+TAIL_CASES = ("V01_plus", "V01_minus", "V02_plus", "V02_minus")
+FUSELAGE_CASES = ("F01_plus", "F01_minus", "F02_plus", "F02_minus", "F03_plus", "F03_minus")
+
+
+def plot_geometry_artifacts(run_dir: Path) -> Dict[str, str]:
+    """Create the two P1 figures; returns paths keyed by artifact name."""
+    run_dir = Path(run_dir)
+    figures_dir = run_dir / "figures"
+    figures_dir.mkdir(parents=True, exist_ok=True)
+    delta_rows = _read_delta_rows(run_dir / "geometry_effect_delta.csv")
+    planforms = json.loads((run_dir / "geometry_planforms.json").read_text(encoding="utf-8"))
+    heatmap_path = figures_dir / "geometry_effect_heatmap.png"
+    planform_path = figures_dir / "wing_planform_comparison.png"
+    _plot_heatmap(delta_rows, heatmap_path)
+    _plot_planforms(planforms, planform_path)
+    return {
+        "geometry_effect_heatmap": str(heatmap_path.relative_to(run_dir)),
+        "wing_planform_comparison": str(planform_path.relative_to(run_dir)),
+    }
+
+
+def _read_delta_rows(path: Path) -> List[Dict[str, Any]]:
+    with path.open("r", encoding="utf-8", newline="") as handle:
+        return list(csv.DictReader(handle))
+
+
+def _plot_heatmap(rows: Sequence[Mapping[str, Any]], path: Path) -> None:
+    variables = sorted({row["variable_id"] for row in rows if row["variable_id"]})
+    variable_names = {row["variable_id"]: row["variable_name"] for row in rows}
+    matrix = np.zeros((len(HEATMAP_METRICS), len(variables)))
+    for row in rows:
+        if row["variable_id"] not in variables:
+            continue
+        try:
+            relative = abs(float(row["relative_delta"]))
+        except (TypeError, ValueError):
+            continue
+        row_index = next(
+            (index for index, (metric, _) in enumerate(HEATMAP_METRICS) if metric == row["metric"]), None
+        )
+        if row_index is None:
+            continue
+        column_index = variables.index(row["variable_id"])
+        matrix[row_index, column_index] = max(matrix[row_index, column_index], relative)
+    figure, axis = plt.subplots(figsize=(15.5, 7.4))
+    image = axis.imshow(matrix, aspect="auto", cmap="viridis")
+    axis.set_xticks(range(len(variables)))
+    axis.set_xticklabels(
+        ["%s %s" % (identifier, variable_names.get(identifier, "")) for identifier in variables],
+        rotation=45,
+        ha="right",
+        fontsize=8,
+    )
+    axis.set_yticks(range(len(HEATMAP_METRICS)))
+    axis.set_yticklabels([label for _, label in HEATMAP_METRICS], fontsize=9)
+    for row_index in range(matrix.shape[0]):
+        for column_index in range(matrix.shape[1]):
+            value = matrix[row_index, column_index]
+            if value > 0.0:
+                axis.text(
+                    column_index,
+                    row_index,
+                    "%.2f" % value,
+                    ha="center",
+                    va="center",
+                    color="white" if value < 0.6 * matrix.max() else "black",
+                    fontsize=6.5,
+                )
+    colorbar = figure.colorbar(image, ax=axis, fraction=0.025, pad=0.02)
+    colorbar.set_label("max |relative change| under +-delta perturbation")
+    axis.set_title(
+        "P1 geometry effect matrix: each design variable versus derived geometry metrics\n"
+        "(delta = 10 percent of the variable bound span; values are |delta / baseline|)"
+    )
+    axis.set_xlabel("design variable")
+    figure.tight_layout()
+    figure.savefig(path, dpi=140)
+    plt.close(figure)
+
+
+def _plot_planforms(planforms: Mapping[str, Any], path: Path) -> None:
+    figure, axes = plt.subplots(2, 2, figsize=(15.0, 9.0))
+    wing_axis, tail_axis = axes[0][0], axes[0][1]
+    fuselage_height_axis, fuselage_width_axis = axes[1][0], axes[1][1]
+    colors = {
+        "baseline": ("black", "-", 2.2),
+        "W01_plus": ("#d62728", "-", 1.6),
+        "W01_minus": ("#1f77b4", "--", 1.6),
+        "W02_plus": ("#ff7f0e", "-.", 1.4),
+        "W02_minus": ("#2ca02c", ":", 1.4),
+        "V01_plus": ("#d62728", "-", 1.6),
+        "V01_minus": ("#1f77b4", "--", 1.6),
+        "V02_plus": ("#ff7f0e", "-.", 1.4),
+        "V02_minus": ("#2ca02c", ":", 1.4),
+        "F01_plus": ("#d62728", "-", 1.6),
+        "F01_minus": ("#1f77b4", "--", 1.6),
+        "F02_plus": ("#ff7f0e", "-.", 1.4),
+        "F02_minus": ("#2ca02c", ":", 1.4),
+        "F03_plus": ("#9467bd", "-", 1.2),
+        "F03_minus": ("#8c564b", "--", 1.2),
+    }
+    for case_id in ("baseline",) + WING_CASES:
+        if case_id not in planforms:
+            continue
+        color, linestyle, width = colors[case_id]
+        _draw_wing(wing_axis, planforms[case_id], color, linestyle, width, _legend_label(case_id))
+    wing_axis.set_title("Main wing planform (baseline vs W01/W02 perturbations)")
+    wing_axis.set_xlabel("body station x [m]")
+    wing_axis.set_ylabel("semi-span y [m]")
+    wing_axis.legend(fontsize=7, loc="upper right")
+    wing_axis.grid(True, alpha=0.3)
+    wing_axis.set_aspect("equal", adjustable="datalim")
+
+    for case_id in ("baseline",) + TAIL_CASES:
+        if case_id not in planforms:
+            continue
+        color, linestyle, width = colors[case_id]
+        _draw_tail(tail_axis, planforms[case_id], color, linestyle, width, _legend_label(case_id))
+    tail_axis.set_title("Vertical tail planform (baseline vs V01/V02 perturbations)")
+    tail_axis.set_xlabel("body station x [m]")
+    tail_axis.set_ylabel("height z [m]")
+    tail_axis.legend(fontsize=7, loc="upper right")
+    tail_axis.grid(True, alpha=0.3)
+
+    for case_id in ("baseline",) + FUSELAGE_CASES:
+        if case_id not in planforms:
+            continue
+        color, linestyle, width = colors[case_id]
+        _draw_fuselage(
+            fuselage_height_axis,
+            fuselage_width_axis,
+            planforms[case_id],
+            color,
+            linestyle,
+            width,
+            _legend_label(case_id),
+        )
+    fuselage_height_axis.set_title("Fuselage side profile (half height)")
+    fuselage_height_axis.set_xlabel("body station x [m]")
+    fuselage_height_axis.set_ylabel("half height [m]")
+    fuselage_height_axis.legend(fontsize=7, loc="upper right")
+    fuselage_height_axis.grid(True, alpha=0.3)
+    fuselage_width_axis.set_title("Fuselage plan profile (half width)")
+    fuselage_width_axis.set_xlabel("body station x [m]")
+    fuselage_width_axis.set_ylabel("half width [m]")
+    fuselage_width_axis.legend(fontsize=7, loc="upper right")
+    fuselage_width_axis.grid(True, alpha=0.3)
+    figure.suptitle(
+        "P1 geometry comparison: baseline and single-variable perturbations "
+        "(delta = 10 percent of the variable bound span)",
+        fontsize=11,
+    )
+    figure.tight_layout(rect=(0, 0, 1, 0.96))
+    figure.savefig(path, dpi=140)
+    plt.close(figure)
+
+
+def _legend_label(case_id: str) -> str:
+    if case_id == "baseline":
+        return "baseline"
+    identifier, direction = case_id.rsplit("_", 1)
+    return "%s %s" % (identifier, "+delta" if direction == "plus" else "-delta")
+
+
+def _draw_wing(axis: Any, planform: Mapping[str, Any], color: str, linestyle: str, width: float, label: str) -> None:
+    sections = planform["wing"]
+    origin_x = planform["wing_origin_x_m"]
+    half_span = 0.5 * planform["wing_span_m"]
+    leading = [(origin_x + section["leading_edge_x_m"], section["span_fraction"] * half_span) for section in sections]
+    trailing = [
+        (origin_x + section["trailing_edge_x_m"], section["span_fraction"] * half_span) for section in sections
+    ]
+    polygon = leading + list(reversed(trailing))
+    xs = [point[0] for point in polygon]
+    ys = [point[1] for point in polygon]
+    axis.plot(xs + [xs[0]], ys + [ys[0]], color=color, linestyle=linestyle, linewidth=width, label=label)
+
+
+def _draw_tail(axis: Any, planform: Mapping[str, Any], color: str, linestyle: str, width: float, label: str) -> None:
+    sections = planform["vertical_tail"]
+    origin_x = planform["tail_origin_x_m"]
+    span = planform["tail_span_m"]
+    leading = [(origin_x + section["leading_edge_x_m"], section["span_fraction"] * span) for section in sections]
+    trailing = [
+        (origin_x + section["trailing_edge_x_m"], section["span_fraction"] * span) for section in sections
+    ]
+    polygon = leading + list(reversed(trailing))
+    xs = [point[0] for point in polygon]
+    ys = [point[1] for point in polygon]
+    axis.plot(xs + [xs[0]], ys + [ys[0]], color=color, linestyle=linestyle, linewidth=width, label=label)
+
+
+def _draw_fuselage(
+    height_axis: Any,
+    width_axis: Any,
+    planform: Mapping[str, Any],
+    color: str,
+    linestyle: str,
+    width: float,
+    label: str,
+) -> None:
+    stations = planform["fuselage"]
+    stations = sorted(stations, key=lambda station: station["x_m"])
+    xs = [station["x_m"] for station in stations]
+    heights = [station["half_height_m"] for station in stations]
+    widths = [station["half_width_m"] for station in stations]
+    height_axis.plot(xs, heights, color=color, linestyle=linestyle, linewidth=width, label=label)
+    width_axis.plot(xs, widths, color=color, linestyle=linestyle, linewidth=width, label=label)
+
+
+def main(argv: Optional[Sequence[str]] = None) -> int:
+    parser = argparse.ArgumentParser(description="Redraw P1 geometry figures from stored run artifacts.")
+    parser.add_argument("run_dir", help="path to the optimization_runs/<run_id> directory")
+    arguments = parser.parse_args(argv)
+    paths = plot_geometry_artifacts(Path(arguments.run_dir))
+    for name, path in paths.items():
+        print("%s: %s" % (name, path))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

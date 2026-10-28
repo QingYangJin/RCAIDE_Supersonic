@@ -1,8 +1,9 @@
 """Command line entry point for the Phase I research workspace.
 
-Only subcommands that are genuinely implemented are available. The P0 scope is
-the read-only audit; later-stage subcommands are declared but raise a clear
-NotImplementedError so that no placeholder result can be mistaken for evidence.
+Only subcommands that are genuinely implemented are available. Implemented so
+far: the P0 read-only audit and the P1 geometry check. Later-stage subcommands
+return exit code 2 with an explicit message so that no placeholder result can be
+mistaken for evidence.
 """
 from __future__ import annotations
 
@@ -35,6 +36,27 @@ def _cmd_audit(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_geometry_check(args: argparse.Namespace) -> int:
+    from research.concorde_metaopt.aircraft.geometry_checks import run_geometry_check
+
+    summary = run_geometry_check(
+        output_root=Path(args.output_root) if args.output_root else None,
+        run_id=args.run_id,
+        use_rcaide=not args.no_rcaide,
+        delta_fraction=args.delta_fraction,
+        allow_existing=args.allow_existing,
+    )
+    print(json.dumps({
+        "run_id": summary["run_id"],
+        "status": summary["status"],
+        "cases": summary["geometry"]["cases"],
+        "invalid_cases": summary["geometry"]["failed_cases"],
+        "rcaide_cross_checks": summary["geometry"]["rcaide_cross_checks"],
+        "true_evaluations": summary["total_true_evaluations"],
+    }, indent=2, ensure_ascii=False))
+    return 0
+
+
 def _unimplemented(name: str):
     def _call(args: argparse.Namespace) -> int:
         print(
@@ -56,7 +78,15 @@ def build_parser() -> argparse.ArgumentParser:
     audit.add_argument("--allow-existing", action="store_true", help="write into a run directory that already contains probes/")
     audit.set_defaults(func=_cmd_audit)
 
-    for name in ("geometry-check", "smoke", "doe", "baseline", "route-a", "report"):
+    geometry = sub.add_parser("geometry-check", help="P1: 15D geometry checks, effect matrix and RCAIDE cross-checks")
+    geometry.add_argument("--run-id", default=None, help="run id (default: timestamped)")
+    geometry.add_argument("--output-root", default=None, help="default: research/concorde_metaopt/optimization_runs")
+    geometry.add_argument("--no-rcaide", action="store_true", help="skip the RCAIDE rebuild cross-checks")
+    geometry.add_argument("--delta-fraction", type=float, default=0.10, help="perturbation as a fraction of each bound span (default 0.10)")
+    geometry.add_argument("--allow-existing", action="store_true", help="write into an existing run directory")
+    geometry.set_defaults(func=_cmd_geometry_check)
+
+    for name in ("smoke", "doe", "baseline", "route-a", "report"):
         p = sub.add_parser(name, help="declared by Issue #1; implemented in a later milestone")
         p.set_defaults(func=_unimplemented(name))
     return parser
