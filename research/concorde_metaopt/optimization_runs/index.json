@@ -1,0 +1,43 @@
+{
+  "schema_version": "1",
+  "updated_at": "2026-10-28T07:20:00Z",
+  "description": "Index of committed optimization/audit runs for the Concorde Phase I programme. Each entry points to a run directory that contains summary.json, environment.json (audits only) and evidence; large solver artefacts are out of repository scope per the Issue #1 contract.",
+  "runs": [
+    {
+      "run_id": "audit-p0-reviewfix-20261028T1540",
+      "stage": "P0",
+      "task_id": "METAOPT-P0-AUDIT",
+      "method": "read_only_environment_audit",
+      "git_sha": "fdadeaa064f7c54d9d46dc763ea57740677644fa",
+      "status": "audit_completed",
+      "path": "audit-p0-reviewfix-20261028T1540",
+      "created_at": "2026-10-28T07:40:00Z",
+      "summary": "Post-independent-review audit on the review-fix commit: 9 evidence-based blockers, pip check clean, rcaide_cfd 63 tests OK, no true evaluations.",
+      "true_evaluations": 0
+    },
+    {
+      "run_id": "audit-p0-20261028T1430",
+      "stage": "P0",
+      "task_id": "METAOPT-P0-AUDIT",
+      "method": "read_only_environment_audit",
+      "git_sha": "d9aa5e6373c1549f7f82a7a4c48b45b140b627d5",
+      "status": "audit_completed",
+      "path": "audit-p0-20261028T1430",
+      "created_at": "2026-10-28T06:30:00Z",
+      "summary": "First audit after sandbox permissions were lifted; contains the OpenVSP/libxml2 misdiagnosis and missing maml-opt API table later corrected in audit-p0-reviewfix-20261028T1540.",
+      "true_evaluations": 0
+    },
+    {
+      "run_id": "audit-p0-20261027T2055",
+      "stage": "P0",
+      "task_id": "METAOPT-P0-AUDIT",
+      "method": "read_only_environment_audit",
+      "git_sha": "ec65e5a9a723bc52df8075a395fcaf9e0fd0fc2b",
+      "status": "audit_completed",
+      "path": "audit-p0-20261027T2055",
+      "created_at": "2026-10-27T13:00:00Z",
+      "summary": "Historical audit taken while the sandbox blocked git/process probing (git_sha reported null in its summary); kept only as a pre-permission-fix reference.",
+      "true_evaluations": 0
+    }
+  ]
+}

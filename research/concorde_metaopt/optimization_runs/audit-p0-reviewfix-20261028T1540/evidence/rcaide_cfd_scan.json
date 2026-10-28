@@ -1,0 +1,575 @@
+{
+  "distribution": {
+    "name": "rcaide-multifidelity",
+    "version": "0.1.0",
+    "location": "<repo_root>\\envs\\RCAIDE\\Lib\\site-packages",
+    "direct_url": {
+      "archive_info": {
+        "hash": "sha256=12d49c8a901e9ec71851c3d75f0de2a347011473a0802ecafb0c2aa8cf31d2e8",
+        "hashes": {
+          "sha256": "12d49c8a901e9ec71851c3d75f0de2a347011473a0802ecafb0c2aa8cf31d2e8"
+        }
+      },
+      "url": "file:///<external_evidence_root>/RCAIDE/multifidelity/dist/rcaide_multifidelity-0.1.0-py3-none-any.whl"
+    },
+    "error": null,
+    "py_file_count": 14
+  },
+  "import_ok": true,
+  "modules": [
+    "__main__",
+    "batch",
+    "cli",
+    "geometry",
+    "low_fidelity",
+    "mesh",
+    "openvsp_worker",
+    "pairing",
+    "rcaide_adapter",
+    "runtime",
+    "solver",
+    "surrogate",
+    "utils"
+  ],
+  "evidence": {
+    "evidence/build-result.json": {
+      "path": "<external_evidence_root>\\RCAIDE\\multifidelity\\evidence\\build-result.json",
+      "bytes": 20679,
+      "sha256": "4ca7e0d61a1d2699e7a784c1562791bfd84655d1d037f6c7a96829d0c93837f5",
+      "content": {
+        "status": "INITIAL_CHAIN_BUILT_AND_VERIFIED",
+        "date": "2026-10-23",
+        "python": "<repo_root>\\envs\\RCAIDE\\python.exe",
+        "versions": {
+          "rcaide-multifidelity": "0.1.0",
+          "RCAIDE-LEADS": "1.5.0",
+          "numpy": "2.4.6",
+          "scipy": "1.17.1",
+          "scikit-learn": "1.9.1",
+          "maml-opt": "0.1.0",
+          "rcaide-cpacs": "0.1.0"
+        },
+        "installed_module": "<repo_root>\\envs\\RCAIDE\\Lib\\site-packages\\rcaide_cfd",
+        "reviewed_source_matches_wheel": true,
+        "source_files_checked": 14,
+        "software_receipt": {
+          "timestamp_utc": "2026-10-23T11:40:56.693193+00:00",
+          "status": "PASS",
+          "tests_run": 63,
+          "subtests_run": 113,
+          "failures": 0,
+          "errors": 0,
+          "skips": 0,
+          "interpreter": "<repo_root>\\envs\\RCAIDE\\python.exe",
+          "python_version": "3.11.17 | packaged by Anaconda, Inc. | (main, Oct  1 2026, 20:16:54) [MSC v.1942 64 bit (AMD64)]",
+          "bytecode_disabled": true,
+          "records": [
+            {
+              "test": "test_adapter.AdapterTests.test_actual_state_lift_injection_preserves_total_drag",
+              "status": "PASS"
+            },
+            {
+              "test": "test_adapter.AdapterTests.test_changed_vehicle_is_rejected_before_state_mutation",
+              "status": "PASS"
+            },
+            {
+              "test": "test_adapter.AdapterTests.test_constructor_rejects_wrong_geometry_identity",
+              "status": "PASS"
+            },
+            {
+              "test": "test_adapter.AdapterTests.test_native_batch_pairs_actual_vlm_and_retains_high_source_evidence",
+              "status": "PASS"
+            },
+            {
+              "test": "test_adapter.AdapterTests.test_polluted_native_source_cannot_bind_lf_to_hf",
+              "status": "PASS"
+            },
+            {
+              "test": "test_adapter.AdapterTests.test_sideslip_shape_nonfinite_and_freestream_mismatch_rejected",
+              "status": "PASS"
+            },
+            {
+              "test": "test_batch.BatchTests.test_complete_batch_exports_only_verified_training_and_resumes",
+              "status": "PASS"
+            },
+            {
+              "test": "test_batch.BatchTests.test_corruption_recomputes_only_affected_case",
+              "status": "PASS"
+            },
+            {
+              "test": "test_batch.BatchTests.test_failed_rerun_removes_prior_trainable_artifact",
+              "status": "PASS"
+            },
+            {
+              "test": "test_batch.BatchTests.test_half_mesh_uses_half_of_full_aircraft_area_once",
+              "status": "PASS"
+            },
+            {
+              "test": "test_batch.BatchTests.test_input_validation_precedes_outputs_and_solver_start",
+              "status": "PASS"
+            },
+            {
+              "test": "test_batch.BatchTests.test_manifest_identity_and_reference_tampering_rejected",
+              "status": "PASS"
+            },
+            {
+              "test": "test_batch.BatchTests.test_partial_batch_has_no_training_artifact",
+              "status": "PASS"
+            },
+            {
+              "test": "test_cli.CLITests.test_doctor_missing_tools_is_blocked_with_receipt",
+              "status": "PASS"
+            },
+            {
+              "test": "test_cli.CLITests.test_invalid_request_returns_structured_error_without_output",
+              "status": "PASS"
+            },
+            {
+              "test": "test_cli.CLITests.test_module_help_exposes_pipeline_commands",
+              "status": "PASS"
+            },
+            {
+              "test": "test_geometry.GeometryContractTests.test_geometry_output_must_be_isolated_from_input",
+              "status": "PASS"
+            },
+            {
+              "test": "test_geometry.GeometryContractTests.test_imported_mesh_cache_detects_source_and_output_changes",
+              "status": "PASS"
+            },
+            {
+              "test": "test_geometry.GeometryContractTests.test_native_airfoil_mismatch_or_missing_rejected",
+              "status": "PASS"
+            },
+            {
+              "test": "test_geometry.GeometryContractTests.test_native_rcaide_export_has_explicit_planform_and_airfoil",
+              "status": "PASS"
+            },
+            {
+              "test": "test_geometry.GeometryContractTests.test_native_references_cannot_disagree_with_solver",
+              "status": "PASS"
+            },
+            {
+              "test": "test_geometry.GeometryContractTests.test_unsupported_components_are_rejected_without_output",
+              "status": "PASS"
+            },
+            {
+              "test": "test_low_fidelity.LowFidelityTests.test_existing_reference_disagreement_is_rejected",
+              "status": "PASS"
+            },
+            {
+              "test": "test_low_fidelity.LowFidelityTests.test_invalid_vlm_conditions_rejected",
+              "status": "PASS"
+            },
+            {
+              "test": "test_low_fidelity.LowFidelityTests.test_lift_field_is_not_confused_with_native_rolling_moment",
+              "status": "PASS"
+            },
+            {
+              "test": "test_low_fidelity.LowFidelityTests.test_real_vlm_returns_finite_cl_without_mutating_vehicle_or_conditions",
+              "status": "PASS"
+            },
+            {
+              "test": "test_mesh.MeshAcceptanceTests.test_closed_full_mesh_accepted_without_modification",
+              "status": "PASS"
+            },
+            {
+              "test": "test_mesh.MeshAcceptanceTests.test_corrupted_meshes_rejected_without_repair",
+              "status": "PASS"
+            },
+            {
+              "test": "test_mesh.MeshAcceptanceTests.test_duplicate_volume_rejected",
+              "status": "PASS"
+            },
+            {
+              "test": "test_mesh.MeshAcceptanceTests.test_half_mesh_requires_symmetry_and_full_mesh_rejects_it",
+              "status": "PASS"
+            },
+            {
+              "test": "test_pairing.PairingTests.test_duplicate_and_unmatched_accepted_records_rejected",
+              "status": "PASS"
+            },
+            {
+              "test": "test_pairing.PairingTests.test_failed_pair_is_retained_and_not_used_as_training",
+              "status": "PASS"
+            },
+            {
+              "test": "test_pairing.PairingTests.test_matched_cl_pair_retains_provenance_and_delta",
+              "status": "PASS"
+            },
+            {
+              "test": "test_pairing.PairingTests.test_mesh_only_batch_cannot_establish_native_pairing_equivalence",
+              "status": "PASS"
+            },
+            {
+              "test": "test_pairing.PairingTests.test_mismatched_definitions_and_drag_quantities_rejected",
+              "status": "PASS"
+            },
+            {
+              "test": "test_pairing.PairingTests.test_same_label_cannot_hide_different_native_geometry",
+              "status": "PASS"
+            },
+            {
+              "test": "test_runtime.RuntimeTests.test_absolute_executable_identity_and_execution",
+              "status": "PASS"
+            },
+            {
+              "test": "test_runtime.RuntimeTests.test_nonzero_exit_and_check_semantics",
+              "status": "PASS"
+            },
+            {
+              "test": "test_runtime.RuntimeTests.test_relative_executable_is_rejected",
+              "status": "PASS"
+            },
+            {
+              "test": "test_runtime.RuntimeTests.test_timeout_is_bounded",
+              "status": "PASS"
+            },
+            {
+              "test": "test_solver.ConfigAndProcessTests.test_case_tag_paths_and_devices_rejected",
+              "status": "PASS"
+            },
+            {
+              "test": "test_solver.ConfigAndProcessTests.test_config_rejects_viscous_or_bad_inputs_before_writing",
+              "status": "PASS"
+            },
+            {
+              "test": "test_solver.ConfigAndProcessTests.test_euler_config_preserves_explicit_area_and_localizes_mesh",
+              "status": "PASS"
+            },
+            {
+              "test": "test_solver.ConfigAndProcessTests.test_fresh_output_is_numerically_assessed",
+              "status": "PASS"
+            },
+            {
+              "test": "test_solver.ConfigAndProcessTests.test_nonzero_exit_cannot_reuse_preexisting_history",
+              "status": "PASS"
+            },
+            {
+              "test": "test_solver.ConfigAndProcessTests.test_timeout_is_explicit_failure",
+              "status": "PASS"
+            },
+            {
+              "test": "test_solver.ConfigAndProcessTests.test_zero_exit_requires_exactly_one_new_history",
+              "status": "PASS"
+            },
+            {
+              "test": "test_solver.HistoryAcceptanceTests.test_corruption_not_silently_skipped",
+              "status": "PASS"
+            },
+            {
+              "test": "test_solver.HistoryAcceptanceTests.test_insufficient_or_unphysical_history_never_accepted",
+              "status": "PASS"
+            },
+            {
+              "test": "test_solver.HistoryAcceptanceTests.test_invalid_acceptance_thresholds_rejected",
+              "status": "PASS"
+            },
+            {
+              "test": "test_solver.HistoryAcceptanceTests.test_missing_history_is_failure",
+              "status": "PASS"
+            },
+            {
+              "test": "test_solver.HistoryAcceptanceTests.test_stable_finite_history_passes_all_explicit_gates",
+              "status": "PASS"
+            },
+            {
+              "test": "test_surrogate.SurrogateTests.test_bbox_inside_but_triangle_outside_is_rejected",
+              "status": "PASS"
+            },
+            {
+              "test": "test_surrogate.SurrogateTests.test_interpolation_inside_each_convex_hull",
+              "status": "PASS"
+            },
+            {
+              "test": "test_surrogate.SurrogateTests.test_line_envelope_for_constant_mach",
+              "status": "PASS"
+            },
+            {
+              "test": "test_surrogate.SurrogateTests.test_loaded_snapshot_stays_fixed_after_disk_changes",
+              "status": "PASS"
+            },
+            {
+              "test": "test_surrogate.SurrogateTests.test_manifest_tampering_rejected",
+              "status": "PASS"
+            },
+            {
+              "test": "test_surrogate.SurrogateTests.test_nonfinite_and_geometry_or_fixed_condition_mismatch_rejected",
+              "status": "PASS"
+            },
+            {
+              "test": "test_surrogate.SurrogateTests.test_numeric_model_or_source_history_corruption_rejected",
+              "status": "PASS"
+            },
+            {
+              "test": "test_surrogate.SurrogateTests.test_outside_domain_and_mach_one_gap_rejected",
+              "status": "PASS"
+            },
+            {
+              "test": "test_surrogate.SurrogateTests.test_single_sample_mach_domain_cannot_fit",
+              "status": "PASS"
+            },
+            {
+              "test": "test_surrogate.SurrogateTests.test_two_mach_domains_and_sample_reproduction",
+              "status": "PASS"
+            },
+            {
+              "test": "test_surrogate.SurrogateTests.test_varying_pressure_cannot_be_silently_ignored",
+              "status": "PASS"
+            }
+          ],
+          "source_sha256": {
+            "src\\rcaide_cfd\\__init__.py": "c69003a0bfadef4d7b2e23812662b73ef543f5e26868dfc73eec6790014bf91e",
+            "src\\rcaide_cfd\\__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+            "src\\rcaide_cfd\\batch.py": "757a1eedd121fd1c060ae5707531073b469af027711d4f29f7009311a49ec265",
+            "src\\rcaide_cfd\\cli.py": "2f6fb4c0c30e66941b4402c49d9bb6a5cad7f85b3aff2cf7ec52fa9ca7ec368c",
+            "src\\rcaide_cfd\\geometry.py": "8db451e37c50ed180bd0c48d5254a9a0039da1a7788f5f9835fcb02489e236ba",
+            "src\\rcaide_cfd\\low_fidelity.py": "1139c7cf59550d39357a812958106446acc77980d70edfb39e5c99812a5d7dbf",
+            "src\\rcaide_cfd\\mesh.py": "9ed878682bf08a9ecac4b602a6cde40bd4ebde0ce12017296fc0c82038869d7b",
+            "src\\rcaide_cfd\\openvsp_worker.py": "28d9641882ca532ffd3ed3e8173e747a935ab2266d94a66435b7f6342994982f",
+            "src\\rcaide_cfd\\pairing.py": "97cb852cf501180d36f3e346cc30046c8e24127d3384113581b6a0b1ccba9a67",
+            "src\\rcaide_cfd\\rcaide_adapter.py": "4bbf978bdfb43ae49b5fbce0fadd2ac04fce78c246b7c75dc09912280ddb0582",
+            "src\\rcaide_cfd\\runtime.py": "dfeea5477917351b9c67c9ae961eee82ba18f362d4cd274852bbfafbf7af3d01",
+            "src\\rcaide_cfd\\solver.py": "aec5347be701cf5ddb67f71ec88d6f95bfda9f094668e534892227ff6610ca8b",
+            "src\\rcaide_cfd\\surrogate.py": "d430d13f69756efcd18966c64ff3384120d0f8e6c5bbbe770e76beab304adc97",
+            "src\\rcaide_cfd\\utils.py": "6f4cced948bc78414f046523f4019fef8a94eeaeb2950f29bb0fde123bc6330d"
+          },
+          "tests_sha256": {
+            "tests\\_support.py": "5d3b287e518150c6e679c8b3d06971e5ec135a9b774559ae63315a341d3ed393",
+            "tests\\run_acceptance.py": "882e71b2f056fa448b81644cd30b2075864c2b5455b1292974e6b616db163b34",
+            "tests\\test_adapter.py": "50263c907d2f7c19c8e4b7138b2d807bb003686da89e4a2bd3aa6a5cfbd33e21",
+            "tests\\test_batch.py": "f1163292bb645f4273349b3417d78d13f3ec40fe14b40e7310d71795e64f976d",
+            "tests\\test_cli.py": "99552160763457ec6a581cb3786a1b758774255a51d492671dbaa6bae5642271",
+            "tests\\test_geometry.py": "0a371552e74d45e0145beaeddb4146b092854a836389809365fc4a37fd482c35",
+            "tests\\test_low_fidelity.py": "e079fce4f874490ec53ca499d56ef170d1ee68aac377f3c5e5bb3636436f68ee",
+            "tests\\test_mesh.py": "55fa35779163e3391eecfefd3edab3967b958ca61a162c0576a48afc55cb31a9",
+            "tests\\test_pairing.py": "19c268254e0fa6e195fc1dae4b6a1a3231def805d23f0b9ae4e5c78b8cff6b17",
+            "tests\\test_runtime.py": "b5d39ef570f01b9d04bdc4b89c566645cb6bf2375bd708c53ea1cce987975006",
+            "tests\\test_solver.py": "6581c772ef11fb98ae8e3cf35f7377431db304aa9a5a9c2c430963290b76031b",
+            "tests\\test_surrogate.py": "3a2b2e6d33484a62ae308d3a9689e27f5ffddc80908b92ebb2e9aa08ed7956f1"
+          },
+          "evidence_scope": "Synthetic meshes/history and mocked native CFD boundaries; actual RCAIDE VLM and State objects; short Python subprocess probes",
+          "native_cfd_executed_by_this_runner": false,
+          "native_rcaide_vlm_executed_by_this_runner": true,
+          "acceptance_level": "SOFTWARE_CONTRACTS_AND_LIGHTWEIGHT_NATIVE_VLM",
+          "not_verified": [
+            "full aircraft geometry equivalence",
+            "mesh independence",
+            "real CFD physical accuracy",
+            "complete Mission numerical acceptance",
+            "S1 acceptance",
+            "MAML training benefit"
+          ]
+        },
+        "review_receipt": {
+          "timestamp_utc": "2026-10-23T11:40:13.227454+00:00",
+          "status": "PASS_FOR_INITIAL_SOFTWARE_SCOPE",
+          "reviewer_scope": "Independent code and scientific-boundary review; no source/test/RCAIDE modifications; no native CFD launched",
+          "outstanding_code_findings": [],
+          "rejection_probes": 13,
+          "all_rejection_probes_passed": true,
+          "mesh_sha256": "33def4d78793b1542fae4a021d1b0f9b7ff6bbf4075e1f369cd0f91951a2807c",
+          "real_generated_mesh_readonly_validation": {
+            "NDIME": 3,
+            "NELEM": 82327,
+            "NPOIN": 18770,
+            "NMARK": 2,
+            "markers": {
+              "VEHICLE": 19376,
+              "FARFIELD": 1396
+            },
+            "bytes": 4092346,
+            "minimum_tetrahedron_volume": 3.523055126251231e-08,
+            "topology": {
+              "boundary_faces": 20772,
+              "exterior_faces": 20772,
+              "interior_faces": 154268,
+              "orphan_boundary_faces": 0,
+              "missing_boundary_faces": 0,
+              "duplicate_boundary_faces": 0,
+              "nonmanifold_faces": 0,
+              "inverted_cells": 0,
+              "unused_nodes": 0
+            }
+          },
+          "reviewed_sources_sha256": {
+            "src\\rcaide_cfd\\__init__.py": "c69003a0bfadef4d7b2e23812662b73ef543f5e26868dfc73eec6790014bf91e",
+            "src\\rcaide_cfd\\__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+            "src\\rcaide_cfd\\batch.py": "757a1eedd121fd1c060ae5707531073b469af027711d4f29f7009311a49ec265",
+            "src\\rcaide_cfd\\cli.py": "2f6fb4c0c30e66941b4402c49d9bb6a5cad7f85b3aff2cf7ec52fa9ca7ec368c",
+            "src\\rcaide_cfd\\geometry.py": "8db451e37c50ed180bd0c48d5254a9a0039da1a7788f5f9835fcb02489e236ba",
+            "src\\rcaide_cfd\\low_fidelity.py": "1139c7cf59550d39357a812958106446acc77980d70edfb39e5c99812a5d7dbf",
+            "src\\rcaide_cfd\\mesh.py": "9ed878682bf08a9ecac4b602a6cde40bd4ebde0ce12017296fc0c82038869d7b",
+            "src\\rcaide_cfd\\openvsp_worker.py": "28d9641882ca532ffd3ed3e8173e747a935ab2266d94a66435b7f6342994982f",
+            "src\\rcaide_cfd\\pairing.py": "97cb852cf501180d36f3e346cc30046c8e24127d3384113581b6a0b1ccba9a67",
+            "src\\rcaide_cfd\\rcaide_adapter.py": "4bbf978bdfb43ae49b5fbce0fadd2ac04fce78c246b7c75dc09912280ddb0582",
+            "src\\rcaide_cfd\\runtime.py": "dfeea5477917351b9c67c9ae961eee82ba18f362d4cd274852bbfafbf7af3d01",
+            "src\\rcaide_cfd\\solver.py": "aec5347be701cf5ddb67f71ec88d6f95bfda9f094668e534892227ff6610ca8b",
+            "src\\rcaide_cfd\\surrogate.py": "d430d13f69756efcd18966c64ff3384120d0f8e6c5bbbe770e76beab304adc97",
+            "src\\rcaide_cfd\\utils.py": "6f4cced948bc78414f046523f4019fef8a94eeaeb2950f29bb0fde123bc6330d"
+          },
+          "probe_files": [
+            "review-probe.json",
+            "review-native-probe.json",
+            "review-pairing-probe.json"
+          ],
+          "acceptance_not_advanced": [
+            "CFD numerical convergence: refer to root final batch receipt",
+            "RCAIDE original file protection: refer to root final snapshot comparison",
+            "Full aircraft geometry equivalence",
+            "Mesh independence",
+            "Surrogate holdout accuracy",
+            "Complete Mission and hybrid drag consistency",
+            "S1 acceptance",
+            "MAML training benefit"
+          ]
+        },
+        "native_integration": {
+          "status": "PASS",
+          "installed_module": "<repo_root>\\envs\\RCAIDE\\Lib\\site-packages\\rcaide_cfd\\__init__.py",
+          "batch_identity": "5dd0851764f1a932efd1cff40a4db89920a3df8cc3ab05f965dfddc88bee4b6f",
+          "geometry_identity": "bb14e35f890b2821a9b5192c52629489000c93d4479d405dbc02c9629a5fb44c",
+          "accepted": 4,
+          "requested": 4,
+          "resume_reused": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "mesh": {
+            "NDIME": 3,
+            "NELEM": 82327,
+            "NPOIN": 18770,
+            "NMARK": 2,
+            "markers": {
+              "VEHICLE": 19376,
+              "FARFIELD": 1396
+            },
+            "bytes": 4092346,
+            "minimum_tetrahedron_volume": 3.523055126251231e-08,
+            "topology": {
+              "boundary_faces": 20772,
+              "exterior_faces": 20772,
+              "interior_faces": 154268,
+              "orphan_boundary_faces": 0,
+              "missing_boundary_faces": 0,
+              "duplicate_boundary_faces": 0,
+              "nonmanifold_faces": 0,
+              "inverted_cells": 0,
+              "unused_nodes": 0
+            }
+          },
+          "paired_cl_count": 4,
+          "pair_summary": [
+            {
+              "condition": {
+                "mach": 1.7,
+                "alpha_deg": 2.0,
+                "pressure": 101325.0,
+                "temperature": 288.15
+              },
+              "low_value": 0.09204108283757927,
+              "high_value": 0.08353587404,
+              "delta_high_minus_low": -0.008505208797579267
+            },
+            {
+              "condition": {
+                "mach": 2.0,
+                "alpha_deg": 3.0,
+                "pressure": 101325.0,
+                "temperature": 288.15
+              },
+              "low_value": 0.11178618564087917,
+              "high_value": 0.1029413053,
+              "delta_high_minus_low": -0.008844880340879172
+            },
+            {
+              "condition": {
+                "mach": 2.0,
+                "alpha_deg": 2.0,
+                "pressure": 101325.0,
+                "temperature": 288.15
+              },
+              "low_value": 0.07465674361796612,
+              "high_value": 0.06958539826,
+              "delta_high_minus_low": -0.00507134535796612
+            },
+            {
+              "condition": {
+                "mach": 1.7,
+                "alpha_deg": 3.0,
+                "pressure": 101325.0,
+                "temperature": 288.15
+              },
+              "low_value": 0.13781637229343535,
+              "high_value": 0.123630214,
+              "delta_high_minus_low": -0.01418615829343535
+            }
+          ],
+          "surrogate_query": {
+            "CL": 0.09492319789999999,
+            "CL_std": 0.010087358188375074,
+            "CD_euler_diagnostic": 0.095239969455,
+            "geometry_identity": "bb14e35f890b2821a9b5192c52629489000c93d4479d405dbc02c9629a5fb44c",
+            "fidelity": "EULER",
+            "total_drag_provided": false,
+            "engineering_validation": "NOT_RUN"
+          },
+          "out_of_domain_rejected": true,
+          "rcaide_lift_seam": "PASS",
+          "changed_vehicle_rejected": true,
+          "total_drag_unchanged": true,
+          "mission_validation": "NOT_RUN",
+          "S1": "NOT_STARTED",
+          "engineering_validation": "NOT_RUN",
+          "mesh_independence": "NOT_RUN",
+          "maml_training": "NOT_RUN",
+          "single_holdout": {
+            "status": "PASS",
+            "cl_absolute_error": 0.0013815654299999952,
+            "cl_relative_error": 0.014769524472892655,
+            "holdout_count": 1
+          }
+        },
+        "original_files_modified": 0,
+        "original_files_deleted": 0,
+        "environment_files_added": 25,
+        "outside_environment_added": 0,
+        "wheel": {
+          "file": "<external_evidence_root>\\RCAIDE\\multifidelity\\dist\\rcaide_multifidelity-0.1.0-py3-none-any.whl",
+          "sha256": "12d49c8a901e9ec71851c3d75f0de2a347011473a0802ecafb0c2aa8cf31d2e8"
+        },
+        "source_archive": {
+          "file": "<external_evidence_root>\\RCAIDE\\multifidelity\\dist\\rcaide-multifidelity-source-0.1.0.zip",
+          "sha256": "01beeef7bd32c4c1d9e291f9348cbf3365cb1925f1370de65275903e90088ca7"
+        },
+        "pip_check": "PASS",
+        "remaining": [
+          "representative full-aircraft geometry equivalence",
+          "mesh and farfield convergence",
+          "broader held-out and transonic validation",
+          "complete Mission/empirical drag/trim integration",
+          "S1 ordinary optimization",
+          "MAML research training"
+        ]
+      }
+    },
+    "evidence/review.md": {
+      "path": "<external_evidence_root>\\RCAIDE\\multifidelity\\evidence\\review.md",
+      "bytes": 7347,
+      "sha256": "30f2bc6e6392d9f445029bed1e10956e3bb6843f751d70683294c13516230702"
+    },
+    "pyproject.toml": {
+      "path": "<external_evidence_root>\\RCAIDE\\multifidelity\\pyproject.toml",
+      "bytes": 542,
+      "sha256": "6954bc2d62f5e855119cf82c92330f15fc8757610cc94e393cbd0ca31af7d86b"
+    },
+    "README.md": {
+      "path": "<external_evidence_root>\\RCAIDE\\multifidelity\\README.md",
+      "bytes": 7022,
+      "sha256": "502e38d107d1c94107002d3d0f3eb76d3e15bedc4e5da4090f80e027be9c610f"
+    }
+  },
+  "error": null,
+  "file": "<repo_root>\\envs\\RCAIDE\\Lib\\site-packages\\rcaide_cfd\\__init__.py"
+}
