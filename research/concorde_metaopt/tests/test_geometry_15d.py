@@ -9,8 +9,10 @@ with the dependency-free geometry model.
 import json
 import math
 import shutil
+import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 from research.concorde_metaopt.aircraft import geometry_checks as checks
 from research.concorde_metaopt.aircraft.design_space import DesignSpaceError, load_design_space
@@ -22,7 +24,24 @@ from research.concorde_metaopt.aircraft.geometry_builder import build_geometry_f
 from research.concorde_metaopt.config_io import load_config
 
 CONFIG_PATH = Path(__file__).resolve().parent.parent / "configs" / "design_space_15d.yaml"
-TMP_ROOT = Path(__file__).resolve().parent / "_tmp"
+TMP_ROOT = Path(tempfile.mkdtemp(prefix="concorde-p1-tests-"))
+
+# Metrics that merely echo a design variable are not evidence that the variable
+# changes derived geometry; at least one non-echo metric must change.
+ECHO_METRICS = {
+    "wing_span_location_2",
+    "wing_span_location_3",
+    "wing_chord_ratio_2",
+    "wing_chord_ratio_3",
+    "wing_tip_twist_deg",
+    "wing_sweep_1_deg",
+    "wing_sweep_2_deg",
+    "wing_sweep_3_deg",
+    "tail_sweep_1_deg",
+    "tail_sweep_2_deg",
+    "tail_sweep_3_deg",
+    "fuselage_length_m",
+}
 
 
 class GeometryModelBaselineTests(unittest.TestCase):
@@ -121,7 +140,7 @@ class EffectMatrixTests(unittest.TestCase):
                     scale = max(abs(baseline_value), 1.0)
                     if abs(value - baseline_value) > 1e-9 * scale:
                         changed.append(name)
-            if not changed:
+            if not [name for name in changed if name not in ECHO_METRICS]:
                 unchanged.append(record["case_id"])
         self.assertEqual(unchanged, [])
 
@@ -157,6 +176,9 @@ class EffectMatrixTests(unittest.TestCase):
         )
         self.assertNotAlmostEqual(
             self.by_id["W10_plus"]["metrics"]["wing_tip_twist_deg"], 0.0, places=6
+        )
+        self.assertNotAlmostEqual(
+            self.by_id["W10_plus"]["metrics"]["wing_tip_leading_edge_z_m"], 0.0, places=6
         )
         self.assertNotAlmostEqual(
             self.by_id["W08_plus"]["metrics"]["wing_root_chord_m"],
@@ -198,12 +220,37 @@ class InvalidGeometryTests(unittest.TestCase):
             self._build(fuselage_length=1.0)
 
     def test_volume_requirement_failure_is_reported_not_repaired(self):
-        geometry = self._build(fuselage_length=1.0) if False else None
-        self.assertIsNone(geometry)
-        physical = dict(self.baseline)
-        physical["fuselage_length"] = 1.0
-        with self.assertRaises(GeometryError):
-            build_geometry(self.space.names, [physical[name] for name in self.space.names])
+        # 45 m still produces a positive cabin but cannot meet the 110 m3
+        # volume requirement; the model must build it and report G18 as FAIL
+        # rather than clamping or repairing the design.
+        geometry = self._build(fuselage_length=45.0)
+        self.assertGreater(geometry.fuselage.cabin_length_m, 0.0)
+        self.assertLess(geometry.fuselage.usable_volume_m3, geometry.fuselage.required_volume_m3)
+        results = checks.model_checks(geometry, self.space)
+        statuses = {result.check_id: result.status for result in results}
+        self.assertEqual(statuses["G18_fuselage_volume_requirement"], checks.FAIL)
+
+
+class NegativeControlTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.space = load_design_space(CONFIG_PATH)
+
+    def test_negative_controls_are_rejected_or_fail_as_expected(self):
+        rows = checks._negative_control_rows(self.space)
+        self.assertEqual([row["case_id"] for row in rows][0], "NC01_fuselage_volume_binding")
+        self.assertEqual(len(rows), 4)
+        for row in rows:
+            self.assertTrue(row["matched"], row)
+        by_id = {row["case_id"]: row for row in rows}
+        self.assertEqual(by_id["NC01_fuselage_volume_binding"]["actual_status"], "invalid")
+        self.assertIn("G18_fuselage_volume_requirement", by_id["NC01_fuselage_volume_binding"]["failed_checks"])
+        for case_id in (
+            "NC02_span_order_inverted",
+            "NC03_chord_order_inverted",
+            "NC04_negative_fuselage_length",
+        ):
+            self.assertTrue(by_id[case_id]["error"].startswith("GeometryError"), by_id[case_id])
 
 
 class RcaideCrossCheckTests(unittest.TestCase):
@@ -246,6 +293,10 @@ class GeometryRunArtifactTests(unittest.TestCase):
     def tearDown(self):
         shutil.rmtree(TMP_ROOT / self.run_id, ignore_errors=True)
 
+    @classmethod
+    def tearDownClass(cls):
+        shutil.rmtree(TMP_ROOT, ignore_errors=True)
+
     def test_run_writes_required_artifacts(self):
         summary = checks.run_geometry_check(
             output_root=self.output_root,
@@ -263,6 +314,7 @@ class GeometryRunArtifactTests(unittest.TestCase):
             "geometry_cases.jsonl",
             "geometry_effect_matrix.csv",
             "geometry_effect_delta.csv",
+            "geometry_negative_controls.csv",
             "geometry_planforms.json",
             "figures/geometry_effect_heatmap.png",
             "figures/wing_planform_comparison.png",
@@ -278,6 +330,10 @@ class GeometryRunArtifactTests(unittest.TestCase):
         self.assertIsNone(stored["best_feasible_fuel_kg"])
         self.assertIsNone(stored["seed"])
         self.assertEqual(stored["status"], "geometry_check_completed")
+        self.assertEqual(stored["failed_count"], stored["invalid_count"])
+        self.assertEqual(stored["geometry"]["negative_controls"]["total"], 4)
+        self.assertEqual(stored["geometry"]["negative_controls"]["matched"], 4)
+        self.assertEqual(stored["geometry"]["negative_controls"]["unexpected"], [])
         lines = (run_dir / "geometry_cases.jsonl").read_text(encoding="utf-8").strip().splitlines()
         self.assertEqual(len(lines), 31)
         case = json.loads(lines[0])
@@ -305,6 +361,18 @@ class GeometryRunArtifactTests(unittest.TestCase):
         checks.run_geometry_check(output_root=self.output_root, run_id=self.run_id, use_rcaide=False)
         with self.assertRaises(FileExistsError):
             checks.run_geometry_check(output_root=self.output_root, run_id=self.run_id, use_rcaide=False)
+
+    def test_failed_count_is_derived_from_failures(self):
+        fake_rows = [{"case_id": "NC99_unmatched", "matched": False}]
+        with mock.patch.object(checks, "_negative_control_rows", return_value=fake_rows):
+            summary = checks.run_geometry_check(
+                output_root=self.output_root,
+                run_id=self.run_id + "-failure",
+                use_rcaide=False,
+            )
+        self.assertEqual(summary["failed_count"], 1)
+        self.assertEqual(summary["status"], "geometry_check_negative_control_failed")
+        shutil.rmtree(self.output_root / (self.run_id + "-failure"), ignore_errors=True)
 
     def test_bad_delta_fraction_is_detected_by_empty_matrix(self):
         summary = checks.run_geometry_check(

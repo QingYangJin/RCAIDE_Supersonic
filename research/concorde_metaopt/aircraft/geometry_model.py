@@ -171,7 +171,8 @@ class WingPlanform:
     exposed_area_m2: float
     thickness_to_chord: float
     sections: Tuple[WingSection, ...]
-    total_length_m: float
+    tip_trailing_edge_x_m: float
+    tip_leading_edge_z_m: float
     aerodynamic_center_x_m: float
     aerodynamic_center_y_m: float
     mac_span_location_m: float
@@ -193,7 +194,8 @@ class WingPlanform:
             "exposed_area_m2": _round(self.exposed_area_m2),
             "thickness_to_chord": _round(self.thickness_to_chord),
             "sections": [section.to_dict() for section in self.sections],
-            "total_length_m": _round(self.total_length_m),
+            "tip_trailing_edge_x_m": _round(self.tip_trailing_edge_x_m),
+            "tip_leading_edge_z_m": _round(self.tip_leading_edge_z_m),
             "aerodynamic_center_x_m": _round(self.aerodynamic_center_x_m),
             "aerodynamic_center_y_m": _round(self.aerodynamic_center_y_m),
             "mac_span_location_m": _round(self.mac_span_location_m),
@@ -328,12 +330,12 @@ def build_geometry(names: Sequence[str], vector: Sequence[float]) -> ConcordeGeo
     fuselage_fineness = _positive(values["fuselage_fineness"], "fuselage_fineness")
     height_width_ratio = _positive(values["fuselage_height_width_ratio"], "fuselage_height_width_ratio")
 
-    span_2 = _in_range(values["span_location_2"], "span_location_2")
-    span_3 = _in_range(values["span_location_3"], "span_location_3")
+    span_2 = _finite(values["span_location_2"], "span_location_2")
+    span_3 = _finite(values["span_location_3"], "span_location_3")
     if not span_2 < span_3:
         raise GeometryError("span_location_2 must be smaller than span_location_3")
-    chord_2 = _in_range(values["chord_ratio_2"], "chord_ratio_2")
-    chord_3 = _in_range(values["chord_ratio_3"], "chord_ratio_3")
+    chord_2 = _finite(values["chord_ratio_2"], "chord_ratio_2")
+    chord_3 = _finite(values["chord_ratio_3"], "chord_ratio_3")
     if not chord_3 < chord_2 < 1.0:
         raise GeometryError("chord_ratio_3 < chord_ratio_2 < 1 required")
 
@@ -463,7 +465,6 @@ def _wing_planform(
         )
 
     area_sum = 0.0
-    signed_area = 0.0
     wetted = 0.0
     mac_integral = 0.0
     for index in range(len(spans) - 1):
@@ -472,7 +473,6 @@ def _wing_planform(
         if symmetric:
             segment_area *= 2.0
         area_sum += segment_area
-        signed_area += segment_area if not symmetric else segment_area
         exposed = semispan * ds * 0.5 * (chords[index] + chords[index + 1])
         if symmetric:
             exposed *= 2.0
@@ -481,7 +481,6 @@ def _wing_planform(
     if not area_sum > 0.0:
         raise GeometryError("computed wing area is not positive")
     mac = span * mac_integral / area_sum
-    semispan = span / 2.0 if symmetric else span
     y_mac = _span_location_for_chord(sections, semispan, mac)
     y_mac_fraction = y_mac / semispan
     ac_x = _leading_edge_at(sections, y_mac_fraction) + 0.25 * mac
@@ -502,7 +501,10 @@ def _wing_planform(
         exposed_area_m2=area_sum,
         thickness_to_chord=thickness_to_chord,
         sections=tuple(sections),
-        total_length_m=leading_edge + chords[-1],
+        tip_trailing_edge_x_m=leading_edge + chords[-1],
+        # Twist is carried by the section definition; its vertical leading-edge
+        # offset is the only derived geometry scalar available before P2 aero.
+        tip_leading_edge_z_m=chords[-1] * math.sin(math.radians(twists[-1])),
         aerodynamic_center_x_m=ac_x,
         aerodynamic_center_y_m=0.0 if symmetric else y_mac,
         mac_span_location_m=y_mac,
@@ -809,7 +811,7 @@ def _positive(value: float, name: str) -> float:
     return number
 
 
-def _in_range(value: float, name: str) -> float:
+def _finite(value: float, name: str) -> float:
     number = float(value)
     if not math.isfinite(number):
         raise GeometryError("%s must be finite, got %r" % (name, value))

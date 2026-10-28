@@ -4,8 +4,8 @@ Phase I workspace for RCAIDE_Supersonic Issue #1 ("[METAOPT-00] ..."). P0 is
 complete: the mandatory directory skeleton, the read-only `audit` subcommand and
 the committed evidence runs. P1 now contains the provisional 15-variable
 design-space contract (`configs/design_space_15d.yaml`), a dependency-free
-geometry model, an RCAIDE vehicle adapter, 24 model checks, 19 RCAIDE cross-checks
-and a 31-case (baseline + 15 variables × 2 directions) effect matrix. No Mission,
+geometry model, an RCAIDE vehicle adapter, 23 model checks (G01–G23), 22 RCAIDE
+check rows per case (19 identifiers, R16 expands to four) and a 31-case (baseline + 15 variables × 2 directions) effect matrix. No Mission,
 CFD case, DOE or optimization is executed by this code yet. P2–P6 (evaluator,
 DOE/fidelity, BO, MAML-A, comparison) remain unimplemented.
 
@@ -14,7 +14,7 @@ DOE/fidelity, BO, MAML-A, comparison) remain unimplemented.
 | subcommand | status |
 | --- | --- |
 | `audit` | implemented (read-only environment audit) |
-| `geometry-check` | implemented (15D geometry + 31-case effect matrix + RCAIDE cross-check) |
+| `geometry-check` | implemented (15D geometry + 31-case effect matrix + 4 negative controls + RCAIDE cross-check) |
 | `smoke`, `doe`, `baseline`, `route-a`, `report` | declared in `cli.py`, exit code 2 with "not implemented ...; no result was produced." |
 
 Reproduce the P0 audit (one run directory, small files committed on purpose so the
@@ -149,11 +149,15 @@ the geometry model remain **provisional** until a Mission evaluation exists (P2)
   (main wing with four segments and four control surfaces, vertical tail, fuselage,
   landing gear, upstream airfoil files) and runs RCAIDE `wing_planform` /
   `fuselage_planform` as an independent cross-check.
-- `aircraft/geometry_checks.py` — 24 model checks (G01–G24: area/span/AR closure,
+- `aircraft/geometry_checks.py` — 23 model checks (G01–G23: area/span/AR closure,
   section order, chord positivity and monotonicity, sweep/twist bounds, wetted and
   exposed area, tail closure, fuselage station order and cabin length, volume
-  requirement, mass/CG finiteness) and 19 RCAIDE checks (R00–R18), plus the
-  31-case effect matrix, CSV/JSON run artefacts and PNG figures.
+  requirement, mass/CG finiteness) and 22 RCAIDE check rows per case from 19
+  identifiers (R00–R18; R16 expands to four rows). G01/G02/G03/G11/G12 are
+  identity/regression guards, G10 is an explicit WARN limitation (exposed area is
+  not modelled) and G15 is a defensive guard that the fuselage constructor normally
+  makes unreachable. Also the 31-case effect matrix, four deliberately invalid
+  negative controls, CSV/JSON run artefacts and PNG figures.
 - `reports/figures.py` — regenerates the two figures from the CSV/JSON artefacts
   alone (`python -m research.concorde_metaopt.reports.figures <run_dir>`).
 
@@ -165,9 +169,11 @@ Run the P1 geometry check and the tests:
 ./run_rcaide.cmd -m unittest discover -s research/concorde_metaopt/tests -t . -v
 ```
 
-Committed P1 evidence run: `geometry-check-p1-20261028T1740` — 31 cases, zero
-invalid cases, RCAIDE cross-checks enabled, `total_true_evaluations=0`, two
-figures. Known unresolved source deviations are recorded as WARN checks (not
+Committed P1 evidence run: `geometry-check-p1-20261028T1835` — 31 valid cases, zero
+invalid perturbation cases, four negative controls rejected/failed as expected,
+RCAIDE cross-checks enabled, `total_true_evaluations=0`, `failed_count=0`, two
+figures. The run is generated from the code commit and committed separately so its
+`git_sha` attests the reviewed code. Known unresolved source deviations are recorded as WARN checks (not
 hidden): derived wing root chord 29.902 m vs upstream 33.8 m (−11.5%), wing wetted
 area 717.6 vs 601 m² (+19.4%), wing exposed area 358.25 vs 326.5 m² (+9.7%,
 fuselage shielding is not modelled in P1), tail span 5.009 vs 6.0 m (−16.5%), tail
@@ -175,7 +181,28 @@ root chord 13.158 vs 14.5 m (−9.3%), fuselage wetted area 488.9 vs 442 m² (+1
 fuselage front projected area 7.510 vs 11.9 m² (−36.9%). The upstream declared
 values are kept in `baseline_geometry.upstream_declared` for traceability only.
 These deviations must be resolved (or frozen with a documented physical decision)
-before the P2 Mission contract is frozen.
+before the P2 Mission contract is frozen. Their arithmetic causes are recorded here
+so the WARN rows are not mistaken for model bugs:
+
+- Main wing: the upstream declarations are mutually inconsistent. With area
+  358.25 m², span 25.6 m and the upstream section fractions/chord ratios, the
+  three-segment trapezoid integral requires a root chord of 29.902 m; the upstream
+  declared root chord 33.8 m would give an area of about 404.7 m². The RCAIDE
+  rebuild driven by this model returns 358.25 m², so the model preserves the
+  declared reference area and treats 33.8 m as an upstream inconsistency kept in
+  `upstream_declared`.
+- Vertical tail: area 33.91 m² with the fixed AR 0.74 implies a span of 5.009 m;
+  the upstream declared span 6.0 m would imply an area of about 26.6 m². The model
+  preserves the declared area and records the declared span as upstream data.
+- Fuselage front projected area: `π/4 · width · height = π/4 · 2.88 · 3.32 =
+  7.510 m²`; the upstream declaration 11.9 m² cannot be reproduced from its own
+  width/height and is kept as upstream data.
+- Fuselage wetted area: the eight-station truncated-elliptic-cone integral gives
+  488.9 m² vs the upstream empirical 442 m². Which value P2 should use is an open
+  TaskSpec question, not a P1 fix.
+- Wing exposed area: P1 does not model fuselage shielding, so exposed equals the
+  reference area (358.25 m²) instead of 326.5 m²; this is explicitly a P1
+  limitation to be resolved in P2.
 
 Two conventions are explicitly recorded rather than silently aligned: the geometry
 model uses `AC = LE(MAC) + 0.25·MAC` while RCAIDE uses the area centroid −0.25·MAC
@@ -190,8 +217,9 @@ and RCAIDE forces the last wing/tail segment sweep to the previous segment value
   captured by the bash probe and merged under `probe_source: "shell_probe"`.
 - The current session has danger-full-access; `probe_source` still records whether
   a fact came from the direct Python path or from a shell probe.
-- Writes to `tempfile.mkdtemp` directories were denied in the sandbox; tests
-  therefore use `research/concorde_metaopt/tests/_tmp/` (git ignored).
+- The historical sandbox denied writes to `tempfile.mkdtemp`; the current session
+  has danger-full-access and the tests now use `tempfile.mkdtemp` outside the repo
+  (the old `tests/_tmp/` rule remains ignored for safety).
 - `pytest` is not installed in `envs/RCAIDE`; tests run with `unittest`:
   `./run_rcaide.cmd -m unittest discover -s research/concorde_metaopt/tests -t . -v`.
 
@@ -215,13 +243,15 @@ section count, exposed area, status), the C03 expression text, and the YAML-subs
 loader (nested data, inline lists, comments, quotes, tabs, duplicate keys, bad
 indentation).
 
-`tests/test_geometry_15d.py` (20 tests) covers the baseline model values and
+`tests/test_geometry_15d.py` (23 tests) covers the baseline model values and
 derived dependencies, all 31 effect cases (each variable changes at least one
-derived metric; area/span closure; expected directions), rejection of invalid
-geometry, RCAIDE cross-checks R00–R16, and the run artefacts (required files,
-summary fields, per-case JSONL fields, duplicate-run rejection).
+non-echo derived metric; area/span closure; expected directions), rejection of
+invalid geometry, the volume-requirement FAIL path, the four negative controls,
+RCAIDE cross-checks R00–R18, the derived `failed_count` path, and the run
+artefacts (required files, summary fields, per-case JSONL fields, duplicate-run
+rejection). Tests use a temporary directory outside the repository.
 
-All 78 tests pass (17 audit + 41 design space + 20 geometry).
+All 80 tests pass (17 audit + 40 design space + 23 geometry).
 
 ## Out of scope so far
 

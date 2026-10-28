@@ -192,7 +192,7 @@ def _planform_values(wing: Any) -> Dict[str, Any]:
         "mean_aerodynamic_chord_m": float(wing.chords.mean_aerodynamic),
         "mean_geometric_chord_m": float(wing.chords.mean_geometric),
         "taper_ratio": float(wing.taper),
-        "total_length_m": float(wing.total_length),
+        "tip_trailing_edge_x_m": float(wing.total_length),
         "aerodynamic_center_local_x_m": float(wing.aerodynamic_center[0]),
         "leading_edge_mac_x_m": float(getattr(wing, "LEMAC", float("nan"))),
         "section_span_locations": [float(segment.percent_span_location) for segment in segments],
@@ -217,7 +217,7 @@ def _build_main_wing(geometry: ConcordeGeometry, RCAIDE: Any, airfoil_dir: Path)
     wing.chords.root = planform.root_chord_m
     wing.chords.tip = planform.tip_chord_m
     wing.chords.mean_aerodynamic = planform.mean_aerodynamic_chord_m
-    wing.total_length = planform.total_length_m
+    wing.total_length = planform.tip_trailing_edge_x_m
     wing.areas.reference = planform.area_m2
     wing.areas.wetted = planform.wetted_area_m2
     wing.areas.exposed = planform.exposed_area_m2
@@ -259,7 +259,7 @@ def _build_vertical_tail(geometry: ConcordeGeometry, RCAIDE: Any, airfoil_dir: P
     wing.chords.root = planform.root_chord_m
     wing.chords.tip = planform.tip_chord_m
     wing.chords.mean_aerodynamic = planform.mean_aerodynamic_chord_m
-    wing.total_length = planform.total_length_m
+    wing.total_length = planform.tip_trailing_edge_x_m
     wing.areas.reference = planform.area_m2
     wing.areas.wetted = planform.wetted_area_m2
     wing.areas.exposed = planform.exposed_area_m2

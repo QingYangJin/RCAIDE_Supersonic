@@ -102,7 +102,7 @@ def model_checks(
             wing.area_m2,
             requested["wing_area"],
             1e-9,
-            "sum of the four trapezoid sections equals the requested wing area",
+            "identity/regression check: sum of the four trapezoid sections equals the requested wing area",
         )
     )
     checks.append(
@@ -113,7 +113,7 @@ def model_checks(
             wing.span_m,
             math.sqrt(requested["wing_area"] * requested["aspect_ratio"]),
             1e-9,
-            "span = sqrt(wing_area * aspect_ratio)",
+            "identity/regression check: span = sqrt(wing_area * aspect_ratio)",
         )
     )
     checks.append(
@@ -124,7 +124,7 @@ def model_checks(
             wing.area_m2,
             wing.span_m * wing.span_m / requested["aspect_ratio"],
             1e-9,
-            "area = span^2 / aspect_ratio",
+            "identity/regression check: area = span^2 / aspect_ratio",
         )
     )
     checks.append(
@@ -186,16 +186,20 @@ def model_checks(
             "wetted %.3f m2 vs reference %.3f m2" % (wing.wetted_area_m2, wing.area_m2),
         )
     )
-    exposed_ok = wing.exposed_area_m2 <= wing.area_m2 + 1e-9
+    # exposed_area_m2 is set equal to the reference area by construction because
+    # P1 does not model the wing-fuselage unexposed span; report that limitation
+    # instead of pretending the inequality is evidence.
     checks.append(
-        _boolean(
+        CheckResult(
             "G10_wing_exposed_le_reference",
             "model",
             "main_wing.exposed_area_m2",
-            exposed_ok,
-            "exposed %.3f m2 <= reference %.3f m2; wing-fuselage unexposed span is not modelled in P1"
+            WARN,
+            "exposed %.3f m2 equals reference %.3f m2 by construction; wing-fuselage "
+            "unexposed span is NOT modelled in P1 (limitation, not a pass)"
             % (wing.exposed_area_m2, wing.area_m2),
-            status_if_false=WARN,
+            model_value=wing.exposed_area_m2,
+            reference_value=wing.area_m2,
         )
     )
     checks.append(
@@ -206,7 +210,7 @@ def model_checks(
             tail.area_m2,
             requested["vertical_tail_area"],
             1e-9,
-            "tail planform area equals the requested vertical_tail_area",
+            "identity/regression check: tail planform area equals the requested vertical_tail_area",
         )
     )
     checks.append(
@@ -217,7 +221,7 @@ def model_checks(
             tail.span_m,
             math.sqrt(requested["vertical_tail_area"] * SOURCE_BASELINE["tail_aspect_ratio"]),
             1e-9,
-            "tail span = sqrt(vertical_tail_area * 0.74)",
+            "identity/regression check: tail span = sqrt(vertical_tail_area * 0.74)",
         )
     )
     tail_spans = [section.percent_span_location for section in tail.sections]
@@ -249,7 +253,7 @@ def model_checks(
             "model",
             "fuselage.cabin_length_m",
             fuselage.cabin_length_m > 0.0,
-            "cabin %.6f m = total %.3f - nose %.3f - tail %.3f"
+            "defensive check (normally unreachable because the fuselage builder raises first); cabin %.6f m = total %.3f - nose %.3f - tail %.3f"
             % (
                 fuselage.cabin_length_m,
                 fuselage.length_m,
@@ -616,7 +620,8 @@ def metrics(geometry: ConcordeGeometry) -> Dict[str, Any]:
         "wing_mac_m": wing.mean_aerodynamic_chord_m,
         "wing_wetted_area_m2": wing.wetted_area_m2,
         "wing_exposed_area_m2": wing.exposed_area_m2,
-        "wing_total_length_m": wing.total_length_m,
+        "wing_tip_trailing_edge_x_m": wing.tip_trailing_edge_x_m,
+        "wing_tip_leading_edge_z_m": wing.tip_leading_edge_z_m,
         "wing_ac_x_m": wing.aerodynamic_center_x_m,
         "wing_span_location_2": wing.sections[1].percent_span_location,
         "wing_span_location_3": wing.sections[2].percent_span_location,
@@ -632,7 +637,8 @@ def metrics(geometry: ConcordeGeometry) -> Dict[str, Any]:
         "tail_mac_m": tail.mean_aerodynamic_chord_m,
         "tail_wetted_area_m2": tail.wetted_area_m2,
         "tail_ac_x_m": tail.aerodynamic_center_x_m,
-        "tail_total_length_m": tail.total_length_m,
+        "tail_tip_trailing_edge_x_m": tail.tip_trailing_edge_x_m,
+        "tail_tip_leading_edge_z_m": tail.tip_leading_edge_z_m,
         "tail_sweep_1_deg": tail.sections[0].quarter_chord_sweep_deg,
         "tail_sweep_2_deg": tail.sections[1].quarter_chord_sweep_deg,
         "tail_sweep_3_deg": tail.sections[2].quarter_chord_sweep_deg,
@@ -790,6 +796,79 @@ def effect_cases(
     return cases
 
 
+def negative_control_cases(design_space: DesignSpace) -> List[Dict[str, Any]]:
+    """Deliberately invalid designs used to prove the checks can fail.
+
+    These are NOT part of the 31-case perturbation matrix and are never counted
+    as true evaluations.  NC01 stays inside the model but violates the usable
+    volume constraint; NC02-NC04 must be rejected by the geometry constructor.
+    """
+    baseline = design_space.baseline_dict()
+
+    def case(case_id: str, updates: Mapping[str, float], expected: str) -> Dict[str, Any]:
+        physical = dict(baseline)
+        physical.update(updates)
+        return {
+            "case_id": case_id,
+            "physical": physical,
+            "expected": expected,
+        }
+
+    return [
+        case(
+            "NC01_fuselage_volume_binding",
+            {"fuselage_length": 45.0},
+            "G18_fuselage_volume_requirement",
+        ),
+        case(
+            "NC02_span_order_inverted",
+            {"span_location_2": 0.96},
+            "GeometryError",
+        ),
+        case(
+            "NC03_chord_order_inverted",
+            {"chord_ratio_2": 0.05},
+            "GeometryError",
+        ),
+        case(
+            "NC04_negative_fuselage_length",
+            {"fuselage_length": -1.0},
+            "GeometryError",
+        ),
+    ]
+
+
+def _negative_control_rows(
+    design_space: DesignSpace,
+) -> List[Dict[str, Any]]:
+    rows: List[Dict[str, Any]] = []
+    for spec in negative_control_cases(design_space):
+        record = run_case(
+            design_space,
+            spec["physical"],
+            spec["case_id"],
+            use_rcaide=False,
+            is_baseline=False,
+        )
+        expected = spec["expected"]
+        error = record.get("error") or ""
+        if expected == "GeometryError":
+            matched = record["status"] == "invalid" and error.startswith("GeometryError")
+        else:
+            matched = record["status"] == "invalid" and expected in record.get("failed_checks", [])
+        rows.append(
+            {
+                "case_id": spec["case_id"],
+                "expected": expected,
+                "actual_status": record["status"],
+                "error": error,
+                "failed_checks": ";".join(record.get("failed_checks", [])),
+                "matched": matched,
+            }
+        )
+    return rows
+
+
 def run_geometry_check(
     output_root: Optional[Path] = None,
     run_id: Optional[str] = None,
@@ -848,6 +927,16 @@ def run_geometry_check(
         for check in record["checks"]
         if check.status == FAIL
     ]
+    negative_rows = _negative_control_rows(space)
+    negative_failures = [row["case_id"] for row in negative_rows if not row["matched"]]
+    _write_csv(run_dir / "geometry_negative_controls.csv", negative_rows)
+    failed_count = len(failed_cases) + len(negative_failures)
+    if failed_cases:
+        status = "geometry_check_invalid_cases"
+    elif negative_failures:
+        status = "geometry_check_negative_control_failed"
+    else:
+        status = "geometry_check_completed"
     summary = {
         "run_id": identifier,
         "stage": "P1",
@@ -857,12 +946,12 @@ def run_geometry_check(
         "git_sha": _git_sha(REPO_ROOT),
         "solver_versions": _software_versions(),
         "design_dim": len(space.variables),
-        "status": "geometry_check_completed" if not failed_cases else "geometry_check_invalid_cases",
+        "status": status,
         "total_true_evaluations": 0,
         "low_fidelity_calls": 0,
         "su2_calls": 0,
         "invalid_count": len(failed_cases),
-        "failed_count": 0,
+        "failed_count": failed_count,
         "first_feasible_evaluation": None,
         "best_feasible_fuel_kg": None,
         "best_design_id": None,
@@ -877,6 +966,7 @@ def run_geometry_check(
             "geometry_cases": "geometry_cases.jsonl",
             "geometry_effect_matrix_csv": "geometry_effect_matrix.csv",
             "geometry_effect_delta_csv": "geometry_effect_delta.csv",
+            "geometry_negative_controls_csv": "geometry_negative_controls.csv",
             "geometry_planforms": "geometry_planforms.json",
             "figures": ["figures/geometry_effect_heatmap.png", "figures/wing_planform_comparison.png"],
         },
@@ -889,6 +979,12 @@ def run_geometry_check(
             "baseline_status": baseline["status"],
             "failed_cases": failed_cases,
             "failed_checks": failed_checks,
+            "negative_controls": {
+                "total": len(negative_rows),
+                "matched": sum(1 for row in negative_rows if row["matched"]),
+                "unexpected": negative_failures,
+                "cases": [row["case_id"] for row in negative_rows],
+            },
             "rcaide_cross_checks": rcaide_available,
             "delta_fraction": delta_fraction,
             "note": "These are geometry checks, not Mission or CFD evaluations; no objective value is reported.",
@@ -906,6 +1002,7 @@ def run_geometry_check(
         "delta_fraction": delta_fraction,
         "use_rcaide": use_rcaide,
         "cases": [case["case_id"] for case in case_specs],
+        "negative_control_cases": [case["case_id"] for case in negative_control_cases(space)],
         "seed": None,
         "command": "python -m research.concorde_metaopt.cli geometry-check --run-id %s%s"
         % (identifier, "" if use_rcaide else " --no-rcaide"),
@@ -933,7 +1030,15 @@ def _run_readme(summary: Mapping[str, Any]) -> str:
         "- status: %s" % summary["status"],
         "- git_sha: %s" % summary["git_sha"],
         "- design_dim: %s" % summary["design_dim"],
-        "- cases: %s (baseline + 15 variables x 2 directions)" % geometry["cases"],
+        "- cases: %s valid (baseline + 15 variables x 2 directions)" % geometry["cases"],
+        "- negative controls: %s/%s rejected or failed as expected (%s)"
+        % (
+            geometry["negative_controls"]["matched"],
+            geometry["negative_controls"]["total"],
+            ", ".join(geometry["negative_controls"]["cases"]),
+        ),
+        "- invalid perturbation cases: %s; derived failed_count: %s"
+        % (summary["invalid_count"], summary["failed_count"]),
         "- delta: %s of each variable bound span" % geometry["delta_fraction"],
         "- invalid cases: %s" % (", ".join(geometry["failed_cases"]) or "none"),
         "- RCAIDE cross-checks: %s" % geometry["rcaide_cross_checks"],
@@ -943,7 +1048,7 @@ def _run_readme(summary: Mapping[str, Any]) -> str:
         "Artefacts: summary.json, run_config.json, environment.json,",
         "baseline_geometry.json, checks.csv, geometry_cases.jsonl,",
         "geometry_effect_matrix.csv, geometry_effect_delta.csv,",
-        "geometry_planforms.json and figures/.",
+        "geometry_negative_controls.csv, geometry_planforms.json and figures/.",
         "",
         "Known unresolved upstream-declaration deviations are reported as WARN rows in",
         "checks.csv (source_* checks); they are not repaired or hidden. Mass and CG are",
