@@ -1,8 +1,20 @@
 {
   "schema_version": "1",
-  "updated_at": "2026-10-28T10:35:00Z",
+  "updated_at": "2026-10-29T06:24:00Z",
   "description": "Index of committed optimization/audit runs for the Concorde Phase I programme. Each entry points to a run directory that contains summary.json, environment.json (audits only) and evidence; large solver artefacts are out of repository scope per the Issue #1 contract.",
   "runs": [
+    {
+      "run_id": "openvsp-check-p1-20261029T1425",
+      "stage": "P1",
+      "task_id": "concorde_fixed_cruise_15d",
+      "method": "openvsp_geometry_check",
+      "git_sha": "c0eb7accba8394b5e01e1b31a6f164fab412dc43",
+      "status": "openvsp_check_completed_with_warnings",
+      "path": "openvsp-check-p1-20261029T1425",
+      "created_at": "2026-10-29T06:24:00Z",
+      "summary": "OpenVSP 3.26.1 geometry export check via external Python 3.9 worker: baseline 15D geometry exported to VSP3/STL/STEP, 11 model-vs-mesh comparisons (10 pass, 1 warning for the known OpenVSP fuselage spline overshoot +15.0% width), 0 failures, 0 true evaluations.",
+      "true_evaluations": 0
+    },
     {
       "run_id": "geometry-check-p1-20261028T1835",
       "stage": "P1",
