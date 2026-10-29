@@ -285,7 +285,7 @@ The run records `git_dirty: true` because three pre-existing uncommitted tutoria
 edits were present in the worktree; the research code and run artefacts are
 otherwise clean and the `git_sha` is `35903cf`.
 
-Committed P1 OpenVSP perturbation evidence run: `openvsp-cases-p1-20261029T1655` —
+Committed P1 OpenVSP perturbation evidence run: `openvsp-cases-p1-20261029T1700` —
 seven cases (baseline plus six perturbations) exported through OpenVSP, 63 checks
 (62 pass, one baseline perturbation-reach skip, zero fail), zero true evaluations,
 wall time about 10 s. The perturbation-reach measurements are the answer to the

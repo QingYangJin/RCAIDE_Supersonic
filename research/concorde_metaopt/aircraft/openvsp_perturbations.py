@@ -626,7 +626,12 @@ def run_openvsp_perturbation_check(
     for row in rows:
         if "model_metrics" not in row:
             continue
-        for metric, model_value in row["model_metrics"].items():
+        metric_names = list(row["model_metrics"].keys())
+        for metric in (row["openvsp_metrics"] or {}):
+            if metric not in metric_names:
+                metric_names.append(metric)
+        for metric in metric_names:
+            model_value = row["model_metrics"].get(metric)
             openvsp_value = (row["openvsp_metrics"] or {}).get(metric)
             model_delta = _relative_delta((baseline_model or {}).get(metric), model_value)
             openvsp_delta = _relative_delta((baseline_openvsp or {}).get(metric), openvsp_value)
