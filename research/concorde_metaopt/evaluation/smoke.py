@@ -240,6 +240,44 @@ def _smoke_cases_csv(
     return cases
 
 
+def _format_mass(value: Any) -> str:
+    if value is None:
+        return "unknown"
+    if isinstance(value, (int, float)):
+        return "%g" % value
+    return str(value)
+
+
+def _mass_contract_line(contract: Any) -> str:
+    if not isinstance(contract, Mapping):
+        return "Frozen mass contract: not recorded"
+    applied = contract.get("applied") if isinstance(contract.get("applied"), Mapping) else contract
+    readback = contract.get("readback") if isinstance(contract.get("readback"), Mapping) else None
+    start = applied.get("takeoff", applied.get("start_mass_kg"))
+    fuel = applied.get("fuel", applied.get("fuel_loaded_kg"))
+    oew = applied.get("operating_empty", applied.get("operating_empty_kg"))
+    payload = applied.get("payload", applied.get("payload_kg"))
+    cargo = applied.get("cargo", applied.get("cargo_kg"))
+    zfw = None
+    if None not in (oew, payload, cargo):
+        zfw = float(oew) + float(payload) + float(cargo)
+    else:
+        zfw = applied.get("zero_fuel_mass_kg", applied.get("zero_fuel_mass"))
+    line = "Frozen mass contract: start %s kg, loaded fuel %s kg, ZFW %s kg" % (
+        _format_mass(start),
+        _format_mass(fuel),
+        _format_mass(zfw),
+    )
+    if readback is not None:
+        rb_start = readback.get("takeoff", readback.get("start_mass_kg"))
+        rb_fuel = readback.get("fuel", readback.get("fuel_loaded_kg"))
+        if rb_start is not None and start is not None and abs(float(rb_start) - float(start)) > 1e-9:
+            line += " (readback start %s kg)" % _format_mass(rb_start)
+        if rb_fuel is not None and fuel is not None and abs(float(rb_fuel) - float(fuel)) > 1e-9:
+            line += " (readback fuel %s kg)" % _format_mass(rb_fuel)
+    return line
+
+
 def _run_readme(summary: Mapping[str, Any]) -> str:
     smoke = summary.get("smoke", {})
     repeat = smoke.get("repeatability", {})
@@ -255,11 +293,7 @@ def _run_readme(summary: Mapping[str, Any]) -> str:
         "True evaluations: %s (budget %s)" % (
             summary.get("total_true_evaluations"), smoke.get("budget")
         ),
-        "Frozen mass contract: start %s kg, loaded fuel %s kg, ZFW %s kg" % (
-            (smoke.get("mass_contract") or {}).get("start_mass_kg"),
-            (smoke.get("mass_contract") or {}).get("fuel_loaded_kg"),
-            (smoke.get("mass_contract") or {}).get("zero_fuel_mass_kg"),
-        ),
+        _mass_contract_line(smoke.get("mass_contract")),
         "Baseline repeats: %s, relative spread %s (tolerance %s), passed=%s" % (
             repeat.get("count"), repeat.get("relative_spread"), repeat.get("tolerance"), repeat.get("passed")
         ),

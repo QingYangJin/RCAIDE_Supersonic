@@ -381,5 +381,64 @@ class SmokeWorkflowTests(LedgerTestBase):
             self.assertTrue((run_dir / path).stat().st_size > 1000)
 
 
+class ReadmeMassContractTests(unittest.TestCase):
+    def test_nested_contract_renders_measured_masses(self):
+        from research.concorde_metaopt.evaluation.smoke import _mass_contract_line
+
+        line = _mass_contract_line(
+            {
+                "applied": {
+                    "operating_empty": 78700.0,
+                    "payload": 9500.0,
+                    "cargo": 1000.0,
+                    "fuel": 46800.0,
+                    "takeoff": 136000.0,
+                },
+                "readback": {
+                    "operating_empty": 78700.0,
+                    "payload": 9500.0,
+                    "cargo": 1000.0,
+                    "fuel": 46800.0,
+                    "takeoff": 136000.0,
+                },
+            }
+        )
+        self.assertIn("start 136000 kg", line)
+        self.assertIn("loaded fuel 46800 kg", line)
+        self.assertIn("ZFW 89200 kg", line)
+        self.assertNotIn("unknown", line)
+        self.assertNotIn("readback", line)
+
+    def test_flat_contract_is_still_accepted(self):
+        from research.concorde_metaopt.evaluation.smoke import _mass_contract_line
+
+        line = _mass_contract_line(
+            {
+                "start_mass_kg": 136000.0,
+                "fuel_loaded_kg": 46800.0,
+                "zero_fuel_mass_kg": 89200.0,
+            }
+        )
+        self.assertIn("start 136000 kg", line)
+        self.assertIn("loaded fuel 46800 kg", line)
+        self.assertIn("ZFW 89200 kg", line)
+
+    def test_readback_mismatch_is_disclosed(self):
+        from research.concorde_metaopt.evaluation.smoke import _mass_contract_line
+
+        line = _mass_contract_line(
+            {
+                "applied": {"operating_empty": 78700.0, "payload": 9500.0, "cargo": 1000.0, "fuel": 46800.0, "takeoff": 136000.0},
+                "readback": {"fuel": 46000.0},
+            }
+        )
+        self.assertIn("readback fuel 46000 kg", line)
+
+    def test_missing_contract_is_explicit(self):
+        from research.concorde_metaopt.evaluation.smoke import _mass_contract_line
+
+        self.assertIn("not recorded", _mass_contract_line(None))
+
+
 if __name__ == "__main__":
     unittest.main()

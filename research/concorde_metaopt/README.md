@@ -5,7 +5,7 @@ complete: the mandatory directory skeleton, the read-only `audit` subcommand and
 the committed evidence runs. P1 contains the provisional 15-variable
 design-space contract (`configs/design_space_15d.yaml`), a dependency-free
 geometry model, an RCAIDE vehicle adapter, 23 model checks (G01–G23), 22 RCAIDE
-check rows per case (19 identifiers, R16 expands to four), a 31-case (baseline + 15 variables × 2 directions) effect matrix, and an OpenVSP geometry export check that builds the same baseline geometry from the model and compares eleven derived quantities against the exported STL/STEP/VSP3 files. P2 now freezes the
+check rows per case (19 identifiers, R16 expands to four), a 31-case (baseline + 15 variables × 2 directions) effect matrix, and an OpenVSP geometry export check that builds the same baseline geometry from the model and compares twenty-one quantities (geometry plus placement/orientation) against the exported STL/STEP/VSP3 files. P2 now freezes the
 single fixed-cruise task contract and implements the evaluation loop: a real
 RCAIDE Mission backend, ten frozen `g <= 0` constraints, a budget/cache ledger,
 an `evaluations.jsonl` record and the five-evaluation smoke workflow. No DOE,
@@ -17,7 +17,7 @@ BO, MAML or CFD case is executed by this code yet; P3–P6 remain unimplemented.
 | --- | --- |
 | `audit` | implemented (read-only environment audit) |
 | `geometry-check` | implemented (15D geometry + 31-case effect matrix + 4 negative controls + RCAIDE cross-check) |
-| `openvsp-check` | implemented (baseline 15D geometry exported through an external OpenVSP 3.26.1 Python 3.9 worker; 11 model-vs-STL checks) |
+| `openvsp-check` | implemented (baseline 15D geometry exported through an external OpenVSP 3.26.1 Python 3.9 worker; 21 model-vs-mesh checks including placement/orientation) |
 | `smoke` | implemented (three baseline RCAIDE cruise repeats + two single-variable perturbations; five true evaluations) |
 | `doe`, `baseline`, `route-a`, `report` | declared in `cli.py`, exit code 2 with "not implemented ...; no result was produced." |
 

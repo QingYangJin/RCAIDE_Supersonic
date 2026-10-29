@@ -507,5 +507,17 @@ class RealOpenVSPIntegrationTests(unittest.TestCase):
             self.assertEqual(summary["total_true_evaluations"], 0)
 
 
+class CliWiringTests(unittest.TestCase):
+    def test_openvsp_check_parser_accepts_delete_exports(self):
+        from research.concorde_metaopt.cli import build_parser
+
+        parser = build_parser()
+        args = parser.parse_args(["openvsp-check", "--delete-exports", "--run-id", "x"])
+        self.assertTrue(args.delete_exports)
+        self.assertEqual(args.run_id, "x")
+        defaults = parser.parse_args(["openvsp-check"])
+        self.assertFalse(defaults.delete_exports)
+
+
 if __name__ == "__main__":
     unittest.main()

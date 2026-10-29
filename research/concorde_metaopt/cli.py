@@ -69,6 +69,7 @@ def _cmd_openvsp_check(args: argparse.Namespace) -> int:
         openvsp_root=args.openvsp_root,
         timeout_s=args.timeout,
         allow_existing=args.allow_existing,
+        delete_exports=args.delete_exports,
     )
     openvsp = summary.get("openvsp") or {}
     comparisons = openvsp.get("comparisons") or []
@@ -158,6 +159,11 @@ def build_parser() -> argparse.ArgumentParser:
     openvsp.add_argument("--openvsp-root", default=None, help="OpenVSP installation root")
     openvsp.add_argument("--timeout", type=float, default=900.0, help="worker timeout seconds (default: 900)")
     openvsp.add_argument("--allow-existing", action="store_true", help="write into an existing run directory")
+    openvsp.add_argument(
+        "--delete-exports",
+        action="store_true",
+        help="delete the git-ignored export directory after recording its manifest",
+    )
     openvsp.set_defaults(func=_cmd_openvsp_check)
 
     smoke = sub.add_parser("smoke", help="P2: baseline repeatability and two real single-cruise perturbations")
