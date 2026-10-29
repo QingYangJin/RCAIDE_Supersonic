@@ -188,18 +188,37 @@ def _cmd_doe(args: argparse.Namespace) -> int:
 
 
 def _cmd_baseline(args: argparse.Namespace) -> int:
-    from research.concorde_metaopt.optimization.baseline_bo import run_baseline_bo
+    algorithm = args.algorithm
+    if algorithm == "bo":
+        from research.concorde_metaopt.optimization.baseline_bo import run_baseline_bo
 
-    summary = run_baseline_bo(
-        output_root=Path(args.output_root) if args.output_root else None,
-        run_id=args.run_id,
-        budget=args.budget,
-        seed=args.seed,
-        initial_design_count=args.initial_designs,
-        strategy=args.strategy,
-        allow_existing=args.allow_existing,
-    )
-    bo = summary.get("baseline_bo") or {}
+        summary = run_baseline_bo(
+            output_root=Path(args.output_root) if args.output_root else None,
+            run_id=args.run_id,
+            budget=args.budget,
+            seed=args.seed,
+            initial_design_count=args.initial_designs,
+            strategy=args.strategy,
+            allow_existing=args.allow_existing,
+        )
+        block = summary.get("baseline_bo") or {}
+    elif algorithm == "de":
+        from research.concorde_metaopt.optimization.baseline_de import run_baseline_de
+
+        summary = run_baseline_de(
+            output_root=Path(args.output_root) if args.output_root else None,
+            run_id=args.run_id,
+            budget=args.budget,
+            seed=args.seed,
+            population_size=args.population_size,
+            mutation_factor=args.mutation_factor,
+            crossover_rate=args.crossover_rate,
+            allow_existing=args.allow_existing,
+        )
+        block = summary.get("baseline_de") or {}
+    else:  # pragma: no cover - argparse restricts the choice
+        print("unsupported algorithm %r; no result was produced." % (algorithm,))
+        return 2
     print(json.dumps({
         "run_id": summary["run_id"],
         "status": summary["status"],
@@ -208,17 +227,20 @@ def _cmd_baseline(args: argparse.Namespace) -> int:
         "seed": summary["seed"],
         "budget": summary["budget"],
         "true_evaluations": summary["total_true_evaluations"],
-        "valid_evaluations": bo.get("valid_evaluations"),
-        "feasible_evaluations": bo.get("feasible_evaluations"),
-        "search_status": bo.get("search_status"),
-        "termination_reason": bo.get("termination_reason"),
-        "baseline_objective": bo.get("baseline_objective"),
+        "valid_evaluations": block.get("valid_evaluations"),
+        "feasible_evaluations": block.get("feasible_evaluations"),
+        "initial_design_count": block.get("initial_design_count"),
+        "population_size": block.get("population_size"),
+        "generations_completed": block.get("generations_completed"),
+        "search_status": block.get("search_status"),
+        "termination_reason": block.get("termination_reason"),
+        "baseline_objective": block.get("baseline_objective"),
         "best_feasible_fuel_kg": summary["best_feasible_fuel_kg"],
-        "improvement_kg": bo.get("improvement_kg"),
+        "improvement_kg": block.get("improvement_kg"),
         "first_feasible_evaluation": summary["first_feasible_evaluation"],
-        "cache_hits": (bo.get("ledger") or {}).get("cache_hits"),
+        "cache_hits": (block.get("ledger") or {}).get("cache_hits"),
     }, indent=2, ensure_ascii=False))
-    return 0 if summary["status"].startswith("baseline_bo_completed") else 1
+    return 0 if summary["status"].startswith("baseline_%s_completed" % (algorithm,)) else 1
 
 
 def _unimplemented(name: str):
@@ -302,14 +324,17 @@ def build_parser() -> argparse.ArgumentParser:
     doe.add_argument("--recompute-geometry", action="store_true", help="re-build every candidate geometry during validation")
     doe.set_defaults(func=_cmd_doe)
 
-    baseline = sub.add_parser("baseline", help="P4: ordinary constrained BO baseline on the frozen evaluator")
+    baseline = sub.add_parser("baseline", help="P4: ordinary constrained BO or DE baseline on the frozen evaluator")
     baseline.add_argument("--run-id", default=None, help="run id (default: timestamped)")
     baseline.add_argument("--output-root", default=None, help="default: research/concorde_metaopt/optimization_runs")
-    baseline.add_argument("--algorithm", default="bo", choices=["bo"], help="baseline algorithm (default: bo)")
+    baseline.add_argument("--algorithm", default="bo", choices=["bo", "de"], help="baseline algorithm (default: bo)")
     baseline.add_argument("--budget", type=int, default=30, help="true-evaluation budget (default 30)")
     baseline.add_argument("--seed", type=int, default=42, help="optimizer seed (default 42)")
     baseline.add_argument("--initial-designs", type=int, default=5, help="initial design count (default 5)")
-    baseline.add_argument("--strategy", default="bayesian", choices=["bayesian", "random"], help="selection strategy (default: bayesian)")
+    baseline.add_argument("--strategy", default="bayesian", choices=["bayesian", "random"], help="BO selection strategy (default: bayesian)")
+    baseline.add_argument("--population-size", type=int, default=None, help="DE population size (default: min(15, budget))")
+    baseline.add_argument("--mutation-factor", type=float, default=0.5, help="DE mutation factor F (default 0.5)")
+    baseline.add_argument("--crossover-rate", type=float, default=0.7, help="DE crossover rate CR (default 0.7)")
     baseline.add_argument("--allow-existing", action="store_true", help="write into an existing run directory")
     baseline.set_defaults(func=_cmd_baseline)
 

@@ -514,23 +514,44 @@ selection method), `observations.csv`, `best_design.json`, `data_manifest.json`
 (file hashes) and two figures: `convergence.png` (best-so-far versus cumulative
 physical calls) and `feasibility_rate.png`.
 
-Run the baseline (the toy tests below prove the loop; a real campaign needs an
-approved true-evaluation budget and is not launched by any test):
+`optimization/baseline_de.py` implements the second mandatory P4 baseline: a
+deterministic single-process DE/rand/1/bin over the same unit cube, sharing the
+same ledger, design space and ten constraints so BO and DE are compared at equal
+true-evaluation budgets. maml-opt ships no DE implementation and the tutorial DE
+driver is tied to a different Nexus/process pool, so this is an explicit
+re-implementation (LHS start population seeded with the frozen baseline,
+standard feasibility-rule selection, physical-call budget cap, invalid designs
+keep `objective: null`). It writes the same artefact set and is selected with
+`--algorithm de`.
+
+The mathematical gate the Issue requires (Analytic test functions before the
+Concorde mission) is `tests/test_math_functions.py`: constrained Branin and
+Ackley are optimised by the same DE class and by maml-opt's
+`ConstrainedBayesianOptimizer`/`run_search`, and the tests check known minima,
+feasibility, budget stopping, determinism and the no-feasible-solution path.
+
+Run the baselines (the toy/math tests below prove the loops; a real campaign
+needs an approved true-evaluation budget and is not launched by any test):
 
 ```bash
 ./run_rcaide.cmd -m research.concorde_metaopt.cli baseline \
   --run-id <run_id> --algorithm bo --budget 30 --seed 42 --initial-designs 5 \
   --output-root research/concorde_metaopt/optimization_runs
+./run_rcaide.cmd -m research.concorde_metaopt.cli baseline \
+  --run-id <run_id> --algorithm de --budget 30 --seed 42 --population-size 15 \
+  --output-root research/concorde_metaopt/optimization_runs
 ```
 
-`tests/test_bo_toy.py` (7 tests) drives the full path with a synthetic quadratic
+`tests/test_bo_toy.py` (7 tests) drives the BO path with a synthetic quadratic
 objective and a throttle-like constraint: it checks that the budget is exactly
 spent (12 of 12 calls), that the search improves on the starting point, that an
 infeasible case returns `baseline_bo_no_feasible_solution` with
 `best_feasible_fuel_kg: null`, the random strategy, validation errors,
-existing-directory protection and figure redraw. No real RCAIDE evaluation is
-executed there. A real P4 campaign (proposal: 35–50 true evaluations, about 80 s
-each) is blocked on the repository owner's budget approval.
+existing-directory protection and figure redraw. `tests/test_de_toy.py` (9
+tests) does the same for DE (baseline-design first evaluation, same-seed
+determinism, population/budget validation). No real RCAIDE evaluation is executed
+there. A real P4 campaign (proposal: 35–50 true evaluations, about 80 s each) is
+blocked on the repository owner's budget approval.
 
 ## Host/sandbox constraints (recorded, not hidden)
 
@@ -630,18 +651,19 @@ budgets/initial counts/strategies, the no-feasible-solution path, random
 strategy, committed artefacts and manifest hashes, existing-directory
 protection, and redrawing both figures from the trace alone.
 
-All 199 tests pass, 1 skipped (17 audit + 40 design space + 23 geometry + 28
-OpenVSP + 31 task/evaluation + 30 budget/cache + 23 DOE + 7 BO toy; the skipped
-test is the real OpenVSP worker integration test, which needs the external
-Python 3.9 install).
+All 219 tests pass, 1 skipped (17 audit + 40 design space + 23 geometry + 28
+OpenVSP + 31 task/evaluation + 30 budget/cache + 23 DOE + 7 BO toy + 9 DE toy +
+11 analytic functions; the skipped test is the real OpenVSP worker integration
+test, which needs the external Python 3.9 install).
 
 ## Out of scope so far
 
-No SU2 case, no fidelity-identity study, no evaluated DOE dataset, no real BO
-campaign and no MAML. Those require P3–P6 code gates and explicit user approval
-for true-evaluation budgets; the P3 dataset above is geometry screening only and
-contains no aerodynamic or mission result, and the P4 baseline is implemented but
-has only been exercised with a toy backend so far. The P1 config and geometry
+No SU2 case, no fidelity-identity study, no evaluated DOE dataset, no real BO or
+DE campaign and no MAML. Those require P3–P6 code gates and explicit user
+approval for true-evaluation budgets; the P3 dataset above is geometry screening
+only and contains no aerodynamic or mission result, and the P4 baselines are
+implemented but have only been exercised on toy backends and analytic functions
+so far. The P1 config and geometry
 model are provisional and must not be cited as a frozen design space or a
 validated aerodynamic model; the effect matrix is a geometry-sensitivity sanity
 check only, not a physical performance study. The OpenVSP check and the

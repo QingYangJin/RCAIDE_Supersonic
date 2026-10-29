@@ -451,8 +451,15 @@ def _plot_perturbations(
     plt.close(figure)
 
 
-def plot_baseline_bo_artifacts(run_dir: Path) -> Dict[str, str]:
-    """Create the P4 baseline BO figures from opt_trace.jsonl and summary.json."""
+def _optimizer_label(summary: Mapping[str, Any]) -> str:
+    method = str(summary.get("method") or "")
+    if "differential_evolution" in method:
+        return "differential-evolution baseline"
+    return "ordinary constrained BO"
+
+
+def plot_optimizer_trace_artifacts(run_dir: Path) -> Dict[str, str]:
+    """Create the P4 optimizer figures from opt_trace.jsonl and summary.json."""
     run_dir = Path(run_dir)
     figures_dir = run_dir / "figures"
     figures_dir.mkdir(parents=True, exist_ok=True)
@@ -468,6 +475,11 @@ def plot_baseline_bo_artifacts(run_dir: Path) -> Dict[str, str]:
         "convergence": str(convergence_path.relative_to(run_dir)),
         "feasibility_rate": str(feasibility_path.relative_to(run_dir)),
     }
+
+
+def plot_baseline_bo_artifacts(run_dir: Path) -> Dict[str, str]:
+    """Backwards-compatible alias for the P4 trace figures."""
+    return plot_optimizer_trace_artifacts(run_dir)
 
 
 def _trace_cumulative_calls(trace: Sequence[Mapping[str, Any]]) -> List[float]:
@@ -531,7 +543,9 @@ def _plot_bo_convergence(
                      label="baseline (seed design)")
     axis.set_xlabel("cumulative true mission evaluations")
     axis.set_ylabel("single-cruise fuel burn (kg)")
-    axis.set_title("P4 ordinary constrained BO convergence (%s)" % summary.get("run_id"))
+    axis.set_title(
+        "P4 %s convergence (%s)" % (_optimizer_label(summary), summary.get("run_id"))
+    )
     axis.grid(True, alpha=0.3)
     axis.legend(fontsize=8, loc="best")
     figure.tight_layout()
@@ -590,8 +604,8 @@ def _plot_bo_feasibility(
     status_axis.tick_params(axis="x", rotation=15)
     status_axis.grid(True, axis="y", alpha=0.3)
 
-    figure.suptitle("P4 ordinary constrained BO: feasibility diagnostics (%s, %s evaluations)"
-                    % (summary.get("run_id"), summary.get("total_true_evaluations")), fontsize=10)
+    figure.suptitle("P4 %s: feasibility diagnostics (%s, %s evaluations)"
+                    % (_optimizer_label(summary), summary.get("run_id"), summary.get("total_true_evaluations")), fontsize=10)
     figure.tight_layout(rect=(0, 0, 1, 0.94))
     figure.savefig(path, dpi=140)
     plt.close(figure)
@@ -608,7 +622,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     if (run_dir / "smoke_cases.csv").exists() and (run_dir / "evaluations.jsonl").exists():
         paths.update(plot_smoke_artifacts(run_dir))
     if (run_dir / "opt_trace.jsonl").exists() and (run_dir / "summary.json").exists():
-        paths.update(plot_baseline_bo_artifacts(run_dir))
+        paths.update(plot_optimizer_trace_artifacts(run_dir))
     if not paths:
         parser.error("no drawable artifacts found in %s" % run_dir)
     for name, path in paths.items():
