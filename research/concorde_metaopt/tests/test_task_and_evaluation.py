@@ -25,6 +25,7 @@ from research.concorde_metaopt.evaluation.contract import (
     feasibility,
     violated_constraints,
 )
+from research.concorde_metaopt.evaluation.low_fidelity import mission_converged
 from research.concorde_metaopt.evaluation.mission import (
     MissionBuildError,
     ObservationError,
@@ -370,6 +371,37 @@ class ObservationExtractionTests(unittest.TestCase):
         propulsor.thrust_force = np.asarray([[42000.0], [41000.0]], dtype=float)
         observations = extract_observations(segment, self.task)
         self.assertAlmostEqual(observations["max_thrust_x_n"], 42000.0, places=9)
+
+
+class MissionConvergenceGateTests(unittest.TestCase):
+    """M2: a converged mission must also satisfy the residual acceptance limit."""
+
+    def test_clean_convergence_passes(self):
+        self.assertTrue(
+            mission_converged(
+                {"converged": True, "solver_converged": True, "residual_max": 8.3e-15}
+            )
+        )
+
+    def test_residual_above_limit_fails(self):
+        self.assertFalse(
+            mission_converged(
+                {"converged": True, "solver_converged": True, "residual_max": 1.0e-3}
+            )
+        )
+
+    def test_flag_failure_or_missing_residual_fails(self):
+        self.assertFalse(
+            mission_converged(
+                {"converged": False, "solver_converged": True, "residual_max": 1.0e-12}
+            )
+        )
+        self.assertFalse(mission_converged({"converged": True, "solver_converged": True}))
+        self.assertFalse(
+            mission_converged(
+                {"converged": True, "solver_converged": True, "residual_max": float("nan")}
+            )
+        )
 
 
 if __name__ == "__main__":

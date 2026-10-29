@@ -31,6 +31,7 @@ class HighFidelityBackend:
     def evaluate(
         self,
         design: Mapping[str, float],
+        task: Any = None,
         fidelity: str = "su2_euler",
         purpose: str = "search",
     ) -> Dict[str, Any]:

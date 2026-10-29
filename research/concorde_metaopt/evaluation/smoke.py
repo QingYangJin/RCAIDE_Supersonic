@@ -9,6 +9,7 @@ artifacts only.
 from __future__ import annotations
 
 import json
+import math
 import platform
 import time
 from pathlib import Path
@@ -82,7 +83,10 @@ def _summary_base(run_id: str, git_sha: Optional[str]) -> Dict[str, Any]:
             "names": list(CONSTRAINT_NAMES),
             "feasibility_tolerance": FEASIBILITY_TOLERANCE,
             "residual_limit": RESIDUAL_LIMIT,
-            "all_g_le_zero": True,
+            "all_g_le_zero": None,
+            "all_g_le_zero_within_tolerance": None,
+            "max_constraint_excess": None,
+            "rows_checked": 0,
         },
     }
 
@@ -131,6 +135,71 @@ def _constraint_delta(first: Mapping[str, float], second: Mapping[str, float]) -
     if not keys:
         return None
     return max(abs(float(first[name]) - float(second[name])) for name in keys)
+
+
+def _constraint_gate(rows: List[Mapping[str, Any]]) -> Dict[str, Any]:
+    """Strict and tolerance-aware audit of the g <= 0 contract over the rows.
+
+    The strict flag is exactly "every recorded constraint value is <= 0"; the
+    tolerance-aware flag uses FEASIBILITY_TOLERANCE so numerical round-off in a
+    converged mission is visible instead of silently claimed as feasible. Missing
+    or non-finite constraint values fail both flags.
+    """
+    offenders: List[Dict[str, Any]] = []
+    missing: List[str] = []
+    max_excess: Optional[float] = None
+    strict = True
+    tolerant = True
+    for row in rows:
+        constraints = row.get("constraints")
+        if not isinstance(constraints, Mapping) or not constraints:
+            strict = False
+            tolerant = False
+            missing.append(str(row.get("design_id")))
+            continue
+        for name, value in constraints.items():
+            if value is None:
+                strict = False
+                tolerant = False
+                missing.append("%s:%s" % (row.get("design_id"), name))
+                continue
+            try:
+                numeric = float(value)
+            except (TypeError, ValueError):
+                strict = False
+                tolerant = False
+                missing.append("%s:%s" % (row.get("design_id"), name))
+                continue
+            if not math.isfinite(numeric):
+                strict = False
+                tolerant = False
+                missing.append("%s:%s" % (row.get("design_id"), name))
+                continue
+            if max_excess is None or numeric > max_excess:
+                max_excess = numeric
+            if numeric > 0.0:
+                strict = False
+                offenders.append(
+                    {
+                        "design_id": row.get("design_id"),
+                        "constraint": str(name),
+                        "value": numeric,
+                    }
+                )
+            if numeric > FEASIBILITY_TOLERANCE:
+                tolerant = False
+    return {
+        "all_g_le_zero": bool(strict and rows),
+        "all_g_le_zero_within_tolerance": bool(tolerant and rows),
+        "max_constraint_excess": max_excess,
+        "rows_checked": len(rows),
+        "positive_constraint_offenders": offenders[:50],
+        "missing_constraint_entries": missing[:50],
+        "strict_note": (
+            "strict compares every constraint value against 0.0; the tolerance-aware "
+            "flag uses feasibility_tolerance for numerical round-off"
+        ),
+    }
 
 
 def _cross_check_summary(record: Optional[Mapping[str, Any]]) -> Optional[Dict[str, Any]]:
@@ -281,6 +350,7 @@ def _mass_contract_line(contract: Any) -> str:
 def _run_readme(summary: Mapping[str, Any]) -> str:
     smoke = summary.get("smoke", {})
     repeat = smoke.get("repeatability", {})
+    constraints = summary.get("constraints", {})
     lines = [
         "# P2 single-cruise smoke run",
         "",
@@ -294,8 +364,20 @@ def _run_readme(summary: Mapping[str, Any]) -> str:
             summary.get("total_true_evaluations"), smoke.get("budget")
         ),
         _mass_contract_line(smoke.get("mass_contract")),
-        "Baseline repeats: %s, relative spread %s (tolerance %s), passed=%s" % (
-            repeat.get("count"), repeat.get("relative_spread"), repeat.get("tolerance"), repeat.get("passed")
+        "Baseline repeats: %s (%s/%s valid rows), relative spread %s (tolerance %s), passed=%s" % (
+            repeat.get("count"),
+            repeat.get("valid_rows"),
+            repeat.get("required_rows"),
+            repeat.get("relative_spread"),
+            repeat.get("tolerance"),
+            repeat.get("passed"),
+        ),
+        "Constraint gate: strict all g<=0=%s, within tolerance %s=%s, max excess %s over %s rows" % (
+            constraints.get("all_g_le_zero"),
+            constraints.get("feasibility_tolerance"),
+            constraints.get("all_g_le_zero_within_tolerance"),
+            constraints.get("max_constraint_excess"),
+            constraints.get("rows_checked"),
         ),
         "",
         "Cases:",
@@ -432,9 +514,21 @@ def run_smoke(
         if len(repeat_rows) >= 2
         else None
     )
-    if len(repeat_rows) == REPEAT_COUNT and all(row["status"] == "VALID" for row in repeat_rows):
-        if repeatability.get("relative_spread") is None:
-            repeatability["passed"] = False
+    valid_repeats = [
+        row for row in repeat_rows if row["status"] == "VALID" and row["objective"] is not None
+    ]
+    repeatability["rows_recorded"] = len(repeat_rows)
+    repeatability["valid_rows"] = len(valid_repeats)
+    repeatability["required_rows"] = REPEAT_COUNT
+    if len(repeat_rows) != REPEAT_COUNT or len(valid_repeats) != REPEAT_COUNT:
+        repeatability["passed"] = False
+        repeatability["reason"] = (
+            "expected %d VALID baseline repeats, recorded %d rows with %d valid objectives"
+            % (REPEAT_COUNT, len(repeat_rows), len(valid_repeats))
+        )
+    elif repeatability.get("relative_spread") is None:
+        repeatability["passed"] = False
+        repeatability["reason"] = "no usable baseline objective values";
 
     perturbation_cases: List[Dict[str, Any]] = []
     perturbation_rows: List[Dict[str, Any]] = []
@@ -505,6 +599,7 @@ def run_smoke(
     _write_csv(run_dir / "smoke_cases.csv", cases)
 
     counts = ledger.summary()
+    summary["constraints"].update(_constraint_gate(ledger.rows))
     summary.update(
         {
             "total_true_evaluations": int(counts["total_true_evaluations"]),

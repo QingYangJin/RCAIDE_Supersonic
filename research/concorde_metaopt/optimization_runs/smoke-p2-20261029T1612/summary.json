@@ -19,8 +19,11 @@
   "best_feasible_fuel_kg": 34035.332605355274,
   "branch": "research/concorde-metaopt",
   "constraints": {
-    "all_g_le_zero": true,
+    "all_g_le_zero": false,
+    "all_g_le_zero_within_tolerance": true,
     "feasibility_tolerance": 1e-12,
+    "max_constraint_excess": 1.9991931146427733e-15,
+    "missing_constraint_entries": [],
     "names": [
       "geometry_invalid",
       "task_mass_balance",
@@ -33,7 +36,36 @@
       "mission_convergence",
       "trim_attitude_limit"
     ],
-    "residual_limit": 0.0001
+    "positive_constraint_offenders": [
+      {
+        "constraint": "cruise_range_error",
+        "design_id": "d-78be330a6036",
+        "value": 1.9991931146427733e-15
+      },
+      {
+        "constraint": "cruise_range_error",
+        "design_id": "d-78be330a6036",
+        "value": 1.9991931146427733e-15
+      },
+      {
+        "constraint": "cruise_range_error",
+        "design_id": "d-78be330a6036",
+        "value": 1.9991931146427733e-15
+      },
+      {
+        "constraint": "cruise_range_error",
+        "design_id": "d-5417b9423870",
+        "value": 1.9991931146427733e-15
+      },
+      {
+        "constraint": "cruise_range_error",
+        "design_id": "d-832662b885fa",
+        "value": 1.9991931146427733e-15
+      }
+    ],
+    "residual_limit": 0.0001,
+    "rows_checked": 5,
+    "strict_note": "strict compares every constraint value against 0.0; the tolerance-aware flag uses feasibility_tolerance for numerical round-off"
   },
   "cpu_seconds_if_available": 1117.688,
   "design_dim": 15,
@@ -47,6 +79,12 @@
     "direction": "minimize",
     "name": "fuel_burn_kg",
     "unit": "kg"
+  },
+  "regeneration": {
+    "evaluations_rerun": false,
+    "reason": "P2 review fix: the constraint gate now reports strict g<=0 separately from the feasibility tolerance, and repeatability records valid-row accounting. Regenerated from the unchanged evaluations.jsonl; no evaluation was re-run.",
+    "source": "evaluations.jsonl",
+    "true_evaluations_produced_at_git_sha": "93c4e3525cd63ca1851d97c3ad589feb131c3086"
   },
   "run_id": "smoke-p2-20261029T1612",
   "seed": 42,
@@ -656,7 +694,10 @@
       ],
       "passed": true,
       "relative_spread": 0.0,
-      "tolerance": 1e-06
+      "required_rows": 3,
+      "rows_recorded": 3,
+      "tolerance": 1e-06,
+      "valid_rows": 3
     }
   },
   "solver_versions": {

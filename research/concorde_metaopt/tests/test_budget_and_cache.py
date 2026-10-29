@@ -7,6 +7,7 @@ separately.
 
 from __future__ import annotations
 
+import dataclasses
 import json
 import shutil
 import tempfile
@@ -21,6 +22,7 @@ from research.concorde_metaopt.evaluation.ledger import (
     canonical_design,
     design_id,
 )
+from research.concorde_metaopt.evaluation.low_fidelity import SingleCruiseBackend
 from research.concorde_metaopt.evaluation.smoke import SmokeError, run_smoke
 from research.concorde_metaopt.reports.figures import plot_smoke_artifacts
 from research.concorde_metaopt.tasks.task_spec import load_task_spec
@@ -51,38 +53,65 @@ class FakeBackend:
 
     fidelity = "single_cruise"
 
-    def __init__(self, status="VALID", raise_error=False, jitter=0.0, fail_perturbations=False):
+    def __init__(
+        self,
+        status="VALID",
+        raise_error=False,
+        jitter=0.0,
+        fail_perturbations=False,
+        constraint_excess=0.0,
+        objective_override=None,
+        feasible_override=None,
+        drop_constraints=False,
+        fail_calls=(),
+    ):
         self.status = status
         self.raise_error = raise_error
         self.jitter = jitter
         self.fail_perturbations = fail_perturbations
+        self.constraint_excess = float(constraint_excess)
+        self.objective_override = objective_override
+        self.feasible_override = feasible_override
+        self.drop_constraints = drop_constraints
+        self.fail_calls = set(fail_calls)
         self.calls = 0
+        self.tasks = []
+        self.designs = []
 
     def preflight(self):
         return {"status": "PREFLIGHT_OK", "physical_call_count": 0}
 
-    def evaluate(self, design, fidelity=None, purpose="search"):
+    def evaluate(self, design, task=None, fidelity=None, purpose="search"):
         self.calls += 1
+        self.tasks.append(task)
+        self.designs.append(dict(design))
         if self.raise_error:
             raise RuntimeError("synthetic backend failure")
         status = self.status
+        if self.calls in self.fail_calls:
+            status = "MISSION_NOT_CONVERGED"
         if self.fail_perturbations and self._is_perturbed(design):
             status = "MISSION_NOT_CONVERGED"
         objective = None
-        if status == "VALID":
+        if self.objective_override is not None:
+            objective = self.objective_override
+        elif status == "VALID":
             objective = BASELINE_OBJECTIVE
             objective += 0.5 * (float(design["wing_area"]) - 358.25)
             objective += 30.0 * float(design["tip_twist"])
             if self.jitter:
                 objective *= 1.0 + self.jitter * self.calls
-        constraints = {name: -0.05 for name in CONSTRAINT_NAMES}
-        constraints["task_mass_balance"] = 0.0
-        constraints["mission_convergence"] = 0.0
+        constraints = {} if self.drop_constraints else {name: -0.05 for name in CONSTRAINT_NAMES}
+        if constraints:
+            constraints["task_mass_balance"] = 0.0
+            constraints["mission_convergence"] = 0.0
+            constraints["cruise_range_error"] = self.constraint_excess
+        feasible = status == "VALID" if self.feasible_override is None else bool(self.feasible_override)
         return {
             "status": status,
             "objective": objective,
             "constraints": constraints,
-            "feasible": status == "VALID",
+            "feasible": feasible,
             "fidelity": fidelity or self.fidelity,
             "diagnostics": [] if status == "VALID" else ["synthetic non-convergence"],
             "physical_call_count": 1,
@@ -191,6 +220,60 @@ class CacheTests(LedgerTestBase):
         self.assertIsNone(row["objective"])
         self.assertFalse(row["feasible"])
         self.assertEqual(ledger.summary()["failed_count"], 1)
+
+
+class LedgerFailClosedTests(LedgerTestBase):
+    """A backend cannot smuggle an objective/feasible value through a failed status."""
+
+    def test_non_valid_result_cannot_carry_objective_or_feasible(self):
+        backend = FakeBackend(status="MISSION_FAILED", objective_override=1.23, feasible_override=True)
+        ledger = self._ledger(1)
+        row = ledger.evaluate(backend, self.baseline, self.task)
+        self.assertEqual(row["status"], "MISSION_FAILED")
+        self.assertIsNone(row["objective"])
+        self.assertFalse(row["feasible"])
+        summary = ledger.summary()
+        self.assertIsNone(summary["best_feasible_fuel_kg"])
+        self.assertIsNone(summary["first_feasible_evaluation"])
+        self.assertEqual(summary["failed_count"], 1)
+
+    def test_valid_result_with_non_finite_objective_is_downgraded(self):
+        backend = FakeBackend(objective_override=float("nan"))
+        ledger = self._ledger(1)
+        row = ledger.evaluate(backend, self.baseline, self.task)
+        self.assertEqual(row["status"], "INVALID_OR_MISSING_RESPONSE")
+        self.assertIsNone(row["objective"])
+        self.assertFalse(row["feasible"])
+        self.assertIsNone(ledger.summary()["best_feasible_fuel_kg"])
+        lines = [
+            line
+            for line in (self.run_dir / "evaluations.jsonl").read_text(encoding="utf-8").splitlines()
+            if line
+        ]
+        self.assertIsNone(json.loads(lines[0])["objective"])
+
+    def test_valid_result_without_constraints_is_downgraded(self):
+        backend = FakeBackend(drop_constraints=True)
+        ledger = self._ledger(1)
+        row = ledger.evaluate(backend, self.baseline, self.task)
+        self.assertEqual(row["status"], "INVALID_OR_MISSING_RESPONSE")
+        self.assertIsNone(row["objective"])
+        self.assertFalse(row["feasible"])
+
+    def test_backend_receives_task_and_fidelity(self):
+        backend = FakeBackend()
+        ledger = self._ledger(1)
+        ledger.evaluate(backend, self.baseline, self.task, fidelity="single_cruise")
+        self.assertIs(backend.tasks[-1], self.task)
+
+
+class TaskAwarenessTests(LedgerTestBase):
+    def test_low_fidelity_rejects_foreign_task(self):
+        backend = SingleCruiseBackend(self.space, self.task)
+        other = dataclasses.replace(self.task, task_id=self.task.task_id + "-other")
+        self.assertNotEqual(other.fingerprint(), self.task.fingerprint())
+        with self.assertRaises(ValueError):
+            backend.evaluate(self.baseline, task=other)
 
 
 class JsonlContractTests(LedgerTestBase):
@@ -360,6 +443,36 @@ class SmokeWorkflowTests(LedgerTestBase):
         # The baseline repeats are feasible, so a best point still exists even
         # though both perturbation cases failed.
         self.assertAlmostEqual(summary["best_feasible_fuel_kg"], BASELINE_OBJECTIVE, places=6)
+
+    def test_partial_repeat_is_not_reported_as_passed(self):
+        summary = self._run("offline-partial-repeat", FakeBackend(fail_calls=(3,)))
+        repeat = summary["smoke"]["repeatability"]
+        self.assertFalse(repeat["passed"])
+        self.assertEqual(repeat["rows_recorded"], 3)
+        self.assertEqual(repeat["valid_rows"], 2)
+        self.assertEqual(repeat["required_rows"], 3)
+        self.assertIn("expected 3 VALID baseline repeats", repeat["reason"])
+        self.assertEqual(summary["status"], "smoke_repeatability_failed")
+
+    def test_constraint_gate_separates_round_off_from_strict_feasibility(self):
+        summary = self._run("offline-roundoff", FakeBackend(constraint_excess=2.0e-15))
+        constraints = summary["constraints"]
+        self.assertFalse(constraints["all_g_le_zero"])
+        self.assertTrue(constraints["all_g_le_zero_within_tolerance"])
+        self.assertGreater(constraints["max_constraint_excess"], 0.0)
+        self.assertEqual(constraints["rows_checked"], 5)
+        offenders = constraints["positive_constraint_offenders"]
+        self.assertTrue(any(item["constraint"] == "cruise_range_error" for item in offenders), offenders)
+
+    def test_happy_path_constraint_gate_is_strictly_clean(self):
+        summary = self._run("offline-gate-clean", FakeBackend())
+        constraints = summary["constraints"]
+        self.assertTrue(constraints["all_g_le_zero"])
+        self.assertTrue(constraints["all_g_le_zero_within_tolerance"])
+        self.assertEqual(constraints["max_constraint_excess"], 0.0)
+        self.assertEqual(constraints["rows_checked"], 5)
+        self.assertEqual(constraints["positive_constraint_offenders"], [])
+        self.assertEqual(constraints["missing_constraint_entries"], [])
 
     def test_budget_below_minimum_is_rejected(self):
         with self.assertRaises(SmokeError):

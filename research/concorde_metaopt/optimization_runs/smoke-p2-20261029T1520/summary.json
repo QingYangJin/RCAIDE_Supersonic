@@ -18,8 +18,11 @@
   "best_feasible_fuel_kg": null,
   "branch": "research/concorde-metaopt",
   "constraints": {
-    "all_g_le_zero": true,
+    "all_g_le_zero": false,
+    "all_g_le_zero_within_tolerance": false,
     "feasibility_tolerance": 1e-12,
+    "max_constraint_excess": 0.016751443943032518,
+    "missing_constraint_entries": [],
     "names": [
       "geometry_invalid",
       "task_mass_balance",
@@ -32,7 +35,61 @@
       "mission_convergence",
       "trim_attitude_limit"
     ],
-    "residual_limit": 0.0001
+    "positive_constraint_offenders": [
+      {
+        "constraint": "cruise_range_error",
+        "design_id": "d-78be330a6036",
+        "value": 1.9991931146427733e-15
+      },
+      {
+        "constraint": "max_throttle",
+        "design_id": "d-78be330a6036",
+        "value": 0.016330708844840558
+      },
+      {
+        "constraint": "cruise_range_error",
+        "design_id": "d-78be330a6036",
+        "value": 1.9991931146427733e-15
+      },
+      {
+        "constraint": "max_throttle",
+        "design_id": "d-78be330a6036",
+        "value": 0.016330708844840558
+      },
+      {
+        "constraint": "cruise_range_error",
+        "design_id": "d-78be330a6036",
+        "value": 1.9991931146427733e-15
+      },
+      {
+        "constraint": "max_throttle",
+        "design_id": "d-78be330a6036",
+        "value": 0.016330708844840558
+      },
+      {
+        "constraint": "cruise_range_error",
+        "design_id": "d-5417b9423870",
+        "value": 1.9991931146427733e-15
+      },
+      {
+        "constraint": "max_throttle",
+        "design_id": "d-5417b9423870",
+        "value": 0.013114322780485521
+      },
+      {
+        "constraint": "cruise_range_error",
+        "design_id": "d-832662b885fa",
+        "value": 1.9991931146427733e-15
+      },
+      {
+        "constraint": "max_throttle",
+        "design_id": "d-832662b885fa",
+        "value": 0.016751443943032518
+      }
+    ],
+    "residual_limit": 0.0001,
+    "rows_checked": 5,
+    "strict_note": "strict compares every constraint value against 0.0; the tolerance-aware flag uses feasibility_tolerance for numerical round-off"
   },
   "cpu_seconds_if_available": 1030.453,
   "design_dim": 15,
@@ -46,6 +103,12 @@
     "direction": "minimize",
     "name": "fuel_burn_kg",
     "unit": "kg"
+  },
+  "regeneration": {
+    "evaluations_rerun": false,
+    "reason": "P2 review fix: the constraint gate now reports strict g<=0 separately from the feasibility tolerance, and repeatability records valid-row accounting. Regenerated from the unchanged evaluations.jsonl; no evaluation was re-run.",
+    "source": "evaluations.jsonl",
+    "true_evaluations_produced_at_git_sha": "c8bd8790359b08aa5cca4dc54921e6ca32ba07fe"
   },
   "run_id": "smoke-p2-20261029T1520",
   "seed": 42,
@@ -591,7 +654,10 @@
       ],
       "passed": true,
       "relative_spread": 0.0,
-      "tolerance": 1e-06
+      "required_rows": 3,
+      "rows_recorded": 3,
+      "tolerance": 1e-06,
+      "valid_rows": 3
     }
   },
   "solver_versions": {

@@ -25,6 +25,12 @@ import time
 from pathlib import Path
 from typing import Any, Dict, List, Mapping, Optional, Tuple
 
+from .contract import (
+    STATUS_INVALID_OR_MISSING_RESPONSE,
+    STATUS_VALID,
+    feasibility,
+)
+
 EVALUATIONS_FILENAME = "evaluations.jsonl"
 DETAILS_FILENAME = "evaluations_detail.jsonl"
 
@@ -40,6 +46,59 @@ class BudgetExceeded(RuntimeError):
         )
         self.budget = budget
         self.used = used
+
+
+def _finite_number(value: Any) -> bool:
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        return False
+    return math.isfinite(float(value))
+
+
+def _sanitize_record(record: Mapping[str, Any], fidelity_name: str) -> Dict[str, Any]:
+    """Fail-closed view of a backend record.
+
+    Only a VALID record with a finite objective and a non-empty finite
+    constraint mapping can contribute an objective or a feasible flag. Anything
+    else keeps its physical-call accounting but never leaks a fabricated
+    objective into the ledger, best-so-far tracking or the cache.
+    """
+    raw_status = record.get("status")
+    status = str(raw_status) if raw_status is not None else "MISSING_STATUS"
+    diagnostics = [str(item) for item in record.get("diagnostics") or []]
+    constraints_in = record.get("constraints")
+    constraints: Dict[str, Optional[float]] = {}
+    if isinstance(constraints_in, Mapping):
+        for name, value in constraints_in.items():
+            if value is None:
+                constraints[str(name)] = None
+            elif _finite_number(value):
+                constraints[str(name)] = float(value)
+            else:
+                constraints[str(name)] = None
+    objective = record.get("objective")
+    feasible = False
+    if status == STATUS_VALID:
+        if not _finite_number(objective):
+            status = STATUS_INVALID_OR_MISSING_RESPONSE
+            diagnostics.append("VALID status without a finite objective was rejected")
+            objective = None
+        elif not constraints:
+            status = STATUS_INVALID_OR_MISSING_RESPONSE
+            diagnostics.append("VALID status without constraint values was rejected")
+            objective = None
+        else:
+            objective = float(objective)
+            feasible = feasibility(constraints)
+    else:
+        objective = None
+    return {
+        "status": status,
+        "objective": objective,
+        "feasible": bool(feasible),
+        "constraints": constraints,
+        "diagnostics": diagnostics,
+        "fidelity": record.get("fidelity", fidelity_name),
+    }
 
 
 def canonical_design(design: Mapping[str, float]) -> str:
@@ -157,7 +216,7 @@ class EvaluationLedger:
         error: Optional[BaseException] = None
         record: Dict[str, Any]
         try:
-            record = backend.evaluate(design, fidelity=fidelity_name, purpose=purpose)
+            record = backend.evaluate(design, task=task, fidelity=fidelity_name, purpose=purpose)
         except BudgetExceeded:
             raise
         except Exception as exc:  # pragma: no cover - defensive boundary
@@ -173,12 +232,18 @@ class EvaluationLedger:
             }
         wall = time.perf_counter() - started
 
-        physical = int(record.get("physical_call_count", 1) or 0)
+        try:
+            physical = int(record.get("physical_call_count", 1) or 0)
+        except (TypeError, ValueError):
+            physical = 1
+        if physical < 0:
+            physical = 0
         self.physical_calls += physical
         self.records.append(record)
 
-        objective = record.get("objective")
-        feasible = bool(record.get("feasible", False)) and objective is not None
+        sanitized = _sanitize_record(record, fidelity_name)
+        objective = sanitized["objective"]
+        feasible = bool(sanitized["feasible"]) and objective is not None
         if feasible and objective is not None:
             value = float(objective)
             if self._best_objective is None or value < self._best_objective:
@@ -192,25 +257,26 @@ class EvaluationLedger:
             "iteration": iteration,
             "design_id": did,
             "x": {name: float(design[name]) for name in design},
-            "status": record.get("status"),
+            "status": STATUS_BACKEND_ERROR if error is not None else sanitized["status"],
             "objective": None if objective is None else float(objective),
-            "constraints": dict(record.get("constraints") or {}),
+            "constraints": dict(sanitized["constraints"]),
             "feasible": feasible,
-            "fidelity": record.get("fidelity", fidelity_name),
+            "fidelity": sanitized["fidelity"],
             "cache_hit": False,
             "physical_call_count": physical,
             "wall_seconds": round(wall, 6),
             "cumulative_calls": self.physical_calls,
             "best_feasible_objective": self._best_objective,
-            "diagnostics": list(record.get("diagnostics", [])),
+            "diagnostics": list(sanitized["diagnostics"]),
         }
         if error is not None:
-            row["status"] = STATUS_BACKEND_ERROR
+            row["objective"] = None
+            row["feasible"] = False
         self.rows.append(row)
         self._append(row)
         self._append_detail(row, record)
 
-        if self.cache_enabled and record.get("status") == "VALID":
+        if self.cache_enabled and row["status"] == STATUS_VALID:
             self._cache[key] = {
                 "status": row["status"],
                 "objective": row["objective"],

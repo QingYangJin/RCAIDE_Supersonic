@@ -9,6 +9,7 @@ null objective, so downstream optimization cannot treat them as fuel burn.
 
 from __future__ import annotations
 
+import math
 import time
 from pathlib import Path
 from typing import Any, Dict, Mapping, Optional, Sequence
@@ -28,6 +29,7 @@ from ..tasks.task_spec import FixedCruiseTask, load_task_spec
 from .contract import (
     OBJECTIVE_NAME,
     OBJECTIVE_UNIT,
+    RESIDUAL_LIMIT,
     STATUS_GEOMETRY_INVALID,
     STATUS_GEOMETRY_MISMATCH,
     STATUS_INVALID_OR_MISSING_RESPONSE,
@@ -56,6 +58,22 @@ WEIGHT_SETTINGS_TO_DISABLE = (
     "run_moments_of_inertia_analysis",
     "print_weight_analysis_report",
 )
+
+
+def mission_converged(observations: Mapping[str, Any]) -> bool:
+    """True only when mission, solver and residual acceptance all pass.
+
+    The P2 contract requires a finite residual below RESIDUAL_LIMIT in addition
+    to the two convergence flags; the backend status must not ignore the
+    residual criterion even though the constraint bundle also encodes it.
+    """
+    try:
+        residual = float(observations["residual_max"])
+    except (KeyError, TypeError, ValueError):
+        return False
+    if not math.isfinite(residual) or residual > RESIDUAL_LIMIT:
+        return False
+    return bool(observations.get("converged")) and bool(observations.get("solver_converged"))
 
 
 def _disable_weight_preprocessing(analysis: Any) -> Dict[str, Any]:
@@ -128,10 +146,19 @@ class SingleCruiseBackend:
     def evaluate(
         self,
         design: Mapping[str, float],
+        task: Optional[FixedCruiseTask] = None,
         fidelity: Optional[str] = None,
         purpose: str = "search",
     ) -> Dict[str, Any]:
         started = time.perf_counter()
+        if task is not None:
+            received = task.fingerprint() if hasattr(task, "fingerprint") else None
+            expected = self.task.fingerprint()
+            if received is None or received != expected:
+                raise ValueError(
+                    "evaluation task does not match the frozen backend task "
+                    "(expected fingerprint %s, received %s)" % (expected, received)
+                )
         record: Dict[str, Any] = {
             "fidelity": fidelity or self.fidelity,
             "purpose": purpose,
@@ -260,12 +287,19 @@ class SingleCruiseBackend:
 
         constraints = evaluate_constraints(self.task, observations)
         record["constraints"] = constraints
-        converged = observations["converged"] and observations["solver_converged"]
-        if not converged:
+        if not mission_converged(observations):
             record["status"] = STATUS_MISSION_NOT_CONVERGED
             record["objective"] = None
             record["feasible"] = False
-            record["diagnostics"] = ["mission did not converge; no objective is reported"]
+            record["diagnostics"] = [
+                "mission, solver or residual acceptance failed "
+                "(converged=%s, solver_converged=%s, residual_max=%s); no objective is reported"
+                % (
+                    observations.get("converged"),
+                    observations.get("solver_converged"),
+                    observations.get("residual_max"),
+                )
+            ]
             record["wall_seconds"] = time.perf_counter() - started
             return record
 
