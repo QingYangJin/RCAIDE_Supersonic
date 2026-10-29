@@ -3,10 +3,11 @@
 Only subcommands that are genuinely implemented are available. Implemented so
 far: the P0 read-only audit, the P1 geometry check, the P1 OpenVSP geometry
 export check, the P1 OpenVSP perturbation check (representative wing/tail/
-fuselage perturbations), the P2 single-cruise smoke run and the P3 DOE dataset
-screening (geometry only, zero physics). Later-stage subcommands return
-exit code 2 with an explicit message so that no placeholder result can be
-mistaken for evidence.
+fuselage perturbations), the P2 single-cruise smoke run, the P3 DOE dataset
+screening (geometry only, zero physics) and the P4 ordinary constrained BO
+baseline on the frozen evaluator. Later-stage subcommands return exit code 2
+with an explicit message so that no placeholder result can be mistaken for
+evidence.
 """
 from __future__ import annotations
 
@@ -186,6 +187,40 @@ def _cmd_doe(args: argparse.Namespace) -> int:
     return 0 if summary["status"].startswith("doe_completed") else 1
 
 
+def _cmd_baseline(args: argparse.Namespace) -> int:
+    from research.concorde_metaopt.optimization.baseline_bo import run_baseline_bo
+
+    summary = run_baseline_bo(
+        output_root=Path(args.output_root) if args.output_root else None,
+        run_id=args.run_id,
+        budget=args.budget,
+        seed=args.seed,
+        initial_design_count=args.initial_designs,
+        strategy=args.strategy,
+        allow_existing=args.allow_existing,
+    )
+    bo = summary.get("baseline_bo") or {}
+    print(json.dumps({
+        "run_id": summary["run_id"],
+        "status": summary["status"],
+        "method": summary["method"],
+        "algorithm": summary["algorithm"],
+        "seed": summary["seed"],
+        "budget": summary["budget"],
+        "true_evaluations": summary["total_true_evaluations"],
+        "valid_evaluations": bo.get("valid_evaluations"),
+        "feasible_evaluations": bo.get("feasible_evaluations"),
+        "search_status": bo.get("search_status"),
+        "termination_reason": bo.get("termination_reason"),
+        "baseline_objective": bo.get("baseline_objective"),
+        "best_feasible_fuel_kg": summary["best_feasible_fuel_kg"],
+        "improvement_kg": bo.get("improvement_kg"),
+        "first_feasible_evaluation": summary["first_feasible_evaluation"],
+        "cache_hits": (bo.get("ledger") or {}).get("cache_hits"),
+    }, indent=2, ensure_ascii=False))
+    return 0 if summary["status"].startswith("baseline_bo_completed") else 1
+
+
 def _unimplemented(name: str):
     def _call(args: argparse.Namespace) -> int:
         print(
@@ -267,7 +302,18 @@ def build_parser() -> argparse.ArgumentParser:
     doe.add_argument("--recompute-geometry", action="store_true", help="re-build every candidate geometry during validation")
     doe.set_defaults(func=_cmd_doe)
 
-    for name in ("baseline", "route-a", "report"):
+    baseline = sub.add_parser("baseline", help="P4: ordinary constrained BO baseline on the frozen evaluator")
+    baseline.add_argument("--run-id", default=None, help="run id (default: timestamped)")
+    baseline.add_argument("--output-root", default=None, help="default: research/concorde_metaopt/optimization_runs")
+    baseline.add_argument("--algorithm", default="bo", choices=["bo"], help="baseline algorithm (default: bo)")
+    baseline.add_argument("--budget", type=int, default=30, help="true-evaluation budget (default 30)")
+    baseline.add_argument("--seed", type=int, default=42, help="optimizer seed (default 42)")
+    baseline.add_argument("--initial-designs", type=int, default=5, help="initial design count (default 5)")
+    baseline.add_argument("--strategy", default="bayesian", choices=["bayesian", "random"], help="selection strategy (default: bayesian)")
+    baseline.add_argument("--allow-existing", action="store_true", help="write into an existing run directory")
+    baseline.set_defaults(func=_cmd_baseline)
+
+    for name in ("route-a", "report"):
         p = sub.add_parser(name, help="declared by Issue #1; implemented in a later milestone")
         p.set_defaults(func=_unimplemented(name))
     return parser

@@ -451,6 +451,152 @@ def _plot_perturbations(
     plt.close(figure)
 
 
+def plot_baseline_bo_artifacts(run_dir: Path) -> Dict[str, str]:
+    """Create the P4 baseline BO figures from opt_trace.jsonl and summary.json."""
+    run_dir = Path(run_dir)
+    figures_dir = run_dir / "figures"
+    figures_dir.mkdir(parents=True, exist_ok=True)
+    trace = _read_jsonl(run_dir / "opt_trace.jsonl")
+    summary = json.loads((run_dir / "summary.json").read_text(encoding="utf-8"))
+    best_path = run_dir / "best_design.json"
+    best = json.loads(best_path.read_text(encoding="utf-8")) if best_path.exists() else {}
+    convergence_path = figures_dir / "convergence.png"
+    feasibility_path = figures_dir / "feasibility_rate.png"
+    _plot_bo_convergence(trace, best, summary, convergence_path)
+    _plot_bo_feasibility(trace, summary, feasibility_path)
+    return {
+        "convergence": str(convergence_path.relative_to(run_dir)),
+        "feasibility_rate": str(feasibility_path.relative_to(run_dir)),
+    }
+
+
+def _trace_cumulative_calls(trace: Sequence[Mapping[str, Any]]) -> List[float]:
+    cumulative = 0.0
+    values: List[float] = []
+    for row in trace:
+        try:
+            calls = float(row.get("analysis_calls") or 0)
+        except (TypeError, ValueError):
+            calls = 0.0
+        cumulative += calls
+        values.append(cumulative)
+    return values
+
+
+def _plot_bo_convergence(
+    trace: Sequence[Mapping[str, Any]],
+    best: Mapping[str, Any],
+    summary: Mapping[str, Any],
+    path: Path,
+) -> None:
+    cumulative = _trace_cumulative_calls(trace)
+    feasible_points: List[Tuple[float, float]] = []
+    for index, row in enumerate(trace):
+        objective = row.get("objective")
+        if row.get("feasible") and objective is not None:
+            try:
+                feasible_points.append((cumulative[index], float(objective)))
+            except (TypeError, ValueError):
+                continue
+    figure, axis = plt.subplots(figsize=(9.6, 4.6))
+    if feasible_points:
+        xs = [point[0] for point in feasible_points]
+        ys = [point[1] for point in feasible_points]
+        axis.scatter(xs, ys, s=28, color="#4C72B0", alpha=0.7, label="feasible evaluation")
+        best_xs: List[float] = []
+        best_ys: List[float] = []
+        running = None
+        for x, y in feasible_points:
+            running = y if running is None else min(running, y)
+            best_xs.append(x)
+            best_ys.append(running)
+        axis.step(best_xs, best_ys, where="post", color="#C44E52", linewidth=1.8, label="best feasible so far")
+        best_objective = best.get("best_feasible_objective")
+        if best_objective is not None:
+            axis.axhline(float(best_objective), color="#C44E52", linestyle=":", linewidth=1.0)
+            axis.annotate(
+                "best = %.3f kg" % float(best_objective),
+                xy=(best_xs[-1], float(best_objective)),
+                xytext=(-140, 14),
+                textcoords="offset points",
+                fontsize=8,
+                color="#C44E52",
+            )
+    else:
+        axis.text(0.5, 0.5, "no feasible design was found", transform=axis.transAxes,
+                  ha="center", va="center", fontsize=11)
+    baseline_objective = best.get("baseline_objective")
+    if baseline_objective is not None:
+        axis.axhline(float(baseline_objective), color="#555555", linestyle="--", linewidth=1.2,
+                     label="baseline (seed design)")
+    axis.set_xlabel("cumulative true mission evaluations")
+    axis.set_ylabel("single-cruise fuel burn (kg)")
+    axis.set_title("P4 ordinary constrained BO convergence (%s)" % summary.get("run_id"))
+    axis.grid(True, alpha=0.3)
+    axis.legend(fontsize=8, loc="best")
+    figure.tight_layout()
+    figure.savefig(path, dpi=140)
+    plt.close(figure)
+
+
+def _plot_bo_feasibility(
+    trace: Sequence[Mapping[str, Any]],
+    summary: Mapping[str, Any],
+    path: Path,
+) -> None:
+    figure, (rate_axis, status_axis) = plt.subplots(1, 2, figsize=(11.5, 4.4))
+    feasible_flags = [1.0 if row.get("feasible") else 0.0 for row in trace]
+    iterations = list(range(1, len(trace) + 1))
+    if feasible_flags:
+        cumulative = np.cumsum(feasible_flags)
+        running_rate = cumulative / np.asarray(iterations, dtype=float)
+        rate_axis.plot(iterations, running_rate, color="#55A868", linewidth=1.6,
+                       label="cumulative feasible rate")
+        overall = float(cumulative[-1]) / float(len(trace))
+        rate_axis.axhline(overall, color="#555555", linestyle="--", linewidth=1.0,
+                          label="overall %.3f" % overall)
+        rate_axis.set_ylim(-0.02, 1.02)
+    rate_axis.set_xlabel("evaluation index")
+    rate_axis.set_ylabel("feasible fraction")
+    rate_axis.set_title("Feasibility discovery")
+    rate_axis.grid(True, alpha=0.3)
+    rate_axis.legend(fontsize=8, loc="best")
+
+    categories = {
+        "feasible": 0,
+        "valid infeasible": 0,
+        "geometry invalid": 0,
+        "failed": 0,
+    }
+    for row in trace:
+        status = str(row.get("status", ""))
+        if row.get("feasible"):
+            categories["feasible"] += 1
+        elif status == "VALID":
+            categories["valid infeasible"] += 1
+        elif status.startswith("GEOMETRY"):
+            categories["geometry invalid"] += 1
+        else:
+            categories["failed"] += 1
+    labels = list(categories)
+    values = [categories[label] for label in labels]
+    colors = ["#55A868", "#C44E52", "#8172B2", "#937860"]
+    bars = status_axis.bar(labels, values, color=colors)
+    for bar, value in zip(bars, values):
+        status_axis.text(bar.get_x() + bar.get_width() / 2.0, bar.get_height(),
+                         str(value), ha="center", va="bottom", fontsize=9)
+    status_axis.set_ylabel("evaluations")
+    status_axis.set_title("Evaluation outcomes (%d total)" % len(trace))
+    status_axis.tick_params(axis="x", rotation=15)
+    status_axis.grid(True, axis="y", alpha=0.3)
+
+    figure.suptitle("P4 ordinary constrained BO: feasibility diagnostics (%s, %s evaluations)"
+                    % (summary.get("run_id"), summary.get("total_true_evaluations")), fontsize=10)
+    figure.tight_layout(rect=(0, 0, 1, 0.94))
+    figure.savefig(path, dpi=140)
+    plt.close(figure)
+
+
 def main(argv: Optional[Sequence[str]] = None) -> int:
     parser = argparse.ArgumentParser(description="Redraw P1/P2 figures from stored run artifacts.")
     parser.add_argument("run_dir", help="path to the optimization_runs/<run_id> directory")
@@ -459,8 +605,10 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     paths: Dict[str, str] = {}
     if (run_dir / "geometry_effect_delta.csv").exists() and (run_dir / "geometry_planforms.json").exists():
         paths.update(plot_geometry_artifacts(run_dir))
-    if (run_dir / "evaluations.jsonl").exists():
+    if (run_dir / "smoke_cases.csv").exists() and (run_dir / "evaluations.jsonl").exists():
         paths.update(plot_smoke_artifacts(run_dir))
+    if (run_dir / "opt_trace.jsonl").exists() and (run_dir / "summary.json").exists():
+        paths.update(plot_baseline_bo_artifacts(run_dir))
     if not paths:
         parser.error("no drawable artifacts found in %s" % run_dir)
     for name, path in paths.items():
