@@ -174,7 +174,10 @@ def _wing_metrics(vsp, geom, name):
     }
 
 
-def _fuselage_metrics(vsp, geom, name, length):
+def _fuselage_metrics(vsp, geom, name):
+    # Read the length back from OpenVSP instead of echoing the request value, so
+    # the comparison can actually fail if the Design.Length parameter is ignored.
+    length = vsp.GetParmVal(vsp.GetParm(geom, "Length", "Design"))
     return {
         "name": name,
         "length_m": length,
@@ -259,7 +262,7 @@ def build_model(request):
         if kind == "wing":
             metrics[name] = _wing_metrics(vsp, geom, name)
         else:
-            metrics[name] = _fuselage_metrics(vsp, geom, name, float(component["length_m"]))
+            metrics[name] = _fuselage_metrics(vsp, geom, name)
     exports = {"assembly": _export_assembly(vsp, request["export"]), "components": {}}
     formats = [fmt.lower() for fmt in request["export"].get("formats", ["stl", "step", "vsp3"])]
     if "stl" in formats:

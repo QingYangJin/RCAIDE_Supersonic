@@ -11,6 +11,14 @@ This is a geometry-export check. It performs no aerodynamic or Mission
 evaluation and reports no objective value. The known OpenVSP fuselage spline
 overshoot is recorded as a warning rather than silently accepted.
 
+Placement is checked at mesh level. This OpenVSP build exports component STL
+files in their local frames: setting XForm or XSecSurf global-XForm parameters
+does not reach the STL writer (verified by probes recorded in the P1 review
+worklog). The orchestrator therefore applies the documented rigid transforms
+with trimesh, writes a composed assembly STL, and checks the resulting bounds.
+The .vsp3/.step exports remain component-local; the composed STL is the
+placement-checked artefact.
+
 Environment / CLI inputs (no machine paths are stored in committed artifacts):
 
     CONCORDE_OPENVSP_PYTHON   Python 3.9 interpreter that can import openvsp
@@ -23,9 +31,11 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 import os
 import platform
 import re
+import shutil
 import subprocess
 import sys
 import time
@@ -60,6 +70,8 @@ TAIL_ORIGIN_M = (TAIL_ORIGIN_X_M, 0.0, 1.0)
 TAIL_ROTATION_DEG = (90.0, 0.0, 0.0)
 
 BASELINE_COMPONENTS = ("main_wing", "vertical_tail", "fuselage")
+COMPOSED_ASSEMBLY_FILENAME = "concorde_full_assembly_composed.stl"
+WORKER_ARTIFACT_DIRNAME = "worker"
 
 
 class OpenVSPSetupError(RuntimeError):
@@ -265,6 +277,87 @@ def measure_component_stls(
     return measured
 
 
+def compose_assembly_mesh(
+    component_exports: Mapping[str, Mapping[str, Any]],
+    export_directory: Path,
+    basename: str = "concorde_full",
+) -> Dict[str, Any]:
+    """Compose the placement-checked assembly from the component STL files.
+
+    The OpenVSP build used here writes every component mesh in its local frame;
+    the documented rigid transforms are applied with trimesh rather than relying
+    on XForm parameters that the STL writer ignores.
+    """
+    import trimesh
+
+    missing = [name for name in BASELINE_COMPONENTS if name not in component_exports]
+    if missing:
+        raise RuntimeError("missing component exports: %s" % ", ".join(missing))
+    meshes: Dict[str, Any] = {}
+    for name in BASELINE_COMPONENTS:
+        entry = component_exports[name]
+        path = Path(str(entry["path"]))
+        mesh = trimesh.load(str(path), force="mesh")
+        if mesh.is_empty:
+            raise RuntimeError("component STL has no geometry: %s" % path)
+        meshes[name] = mesh
+    meshes["main_wing"].apply_translation(list(WING_ORIGIN_M))
+    rotation = trimesh.transformations.rotation_matrix(
+        math.radians(TAIL_ROTATION_DEG[0]), [1.0, 0.0, 0.0]
+    )
+    meshes["vertical_tail"].apply_transform(rotation)
+    meshes["vertical_tail"].apply_translation(list(TAIL_ORIGIN_M))
+    scene = trimesh.Scene()
+    for name in BASELINE_COMPONENTS:
+        scene.add_geometry(meshes[name], node_name=name)
+    composed = scene.dump(concatenate=True)
+    path = Path(export_directory) / COMPOSED_ASSEMBLY_FILENAME
+    composed.export(str(path))
+    if not path.is_file() or path.stat().st_size == 0:
+        raise RuntimeError("composed assembly STL was not written: %s" % path)
+    measured = measure_stl(path)
+    measured["components"] = list(BASELINE_COMPONENTS)
+    measured["component_bounds_m"] = {
+        name: [[float(value) for value in row] for row in meshes[name].bounds]
+        for name in BASELINE_COMPONENTS
+    }
+    measured["note"] = (
+        "Assembly composed with trimesh rigid transforms because this OpenVSP "
+        "build does not apply XForm placement to exported STL meshes."
+    )
+    return measured
+
+
+def _abs_comparison(
+    check_id: str,
+    subject: str,
+    model_value: Optional[float],
+    openvsp_value: Optional[float],
+    tolerance: float,
+    detail: str = "",
+) -> Dict[str, Any]:
+    delta = None
+    status = "skip"
+    if model_value is not None and openvsp_value is not None:
+        try:
+            delta = abs(float(openvsp_value) - float(model_value))
+        except (TypeError, ValueError):
+            delta = None
+        if delta is not None:
+            status = "pass" if delta <= tolerance else "fail"
+    return {
+        "check_id": check_id,
+        "subject": subject,
+        "model_value": model_value,
+        "openvsp_value": openvsp_value,
+        "relative_delta": None,
+        "absolute_delta": delta,
+        "tolerance": tolerance,
+        "status": status,
+        "detail": detail,
+    }
+
+
 def _relative_delta(model_value: float, openvsp_value: float) -> Optional[float]:
     try:
         if abs(model_value) <= 1.0e-15:
@@ -386,11 +479,11 @@ def compare_openvsp(
         rows.append(
             _comparison(
                 "OV11_tail_mesh_span",
-                "vertical_tail STL lateral extent (m)",
+                "vertical_tail local-frame STL lateral extent (m)",
                 float(geometry.vertical_tail.span_m),
                 max(float(tail_extents[1]), float(tail_extents[2])),
                 0.005,
-                detail="Largest lateral STL extent for the rotated vertical tail",
+                detail="Local-frame extent; the 90 deg rotation is applied in the composed assembly",
             )
         )
 
@@ -435,13 +528,130 @@ def compare_openvsp(
         rows.append(
             _comparison(
                 "OV10_assembly_length",
-                "assembly STL longitude extent (m)",
+                "OpenVSP assembly STL longitude extent (m)",
                 float(geometry.fuselage.length_m),
                 assembly_extents[0],
                 0.01,
-                detail="Wing trailing edge lies forward of the fuselage tail",
+                detail="Bounds of the raw OpenVSP export; placement is checked on the composed mesh below",
             )
         )
+
+    # Placement checks on the composed assembly. The raw OpenVSP exports are in
+    # local frames, so these rows are the ones that can detect lost placement.
+    composed = stl_metrics.get("assembly_composed") or {}
+    composed_bounds = composed.get("bounds_m") or []
+    component_bounds = composed.get("component_bounds_m") or {}
+    wing_composed = component_bounds.get("main_wing") or []
+    tail_composed = component_bounds.get("vertical_tail") or []
+    if wing_composed and len(wing_composed) == 2 and len(wing_composed[0]) == 3:
+        wing_min = [float(value) for value in wing_composed[0]]
+        wing_max = [float(value) for value in wing_composed[1]]
+        rows.append(
+            _abs_comparison(
+                "OV12_wing_x_origin",
+                "main_wing composed x_min (m)",
+                float(WING_ORIGIN_M[0]),
+                wing_min[0],
+                0.02,
+                detail="Rigid translation applied to the local wing mesh",
+            )
+        )
+        rows.append(
+            _abs_comparison(
+                "OV13_wing_z_center",
+                "main_wing composed z centre (m)",
+                float(WING_ORIGIN_M[2]),
+                0.5 * (wing_min[2] + wing_max[2]),
+                0.02,
+                detail="Chord-plane centre after translation (the mesh carries thickness)",
+            )
+        )
+    if tail_composed and len(tail_composed) == 2 and len(tail_composed[0]) == 3:
+        tail_min = [float(value) for value in tail_composed[0]]
+        tail_max = [float(value) for value in tail_composed[1]]
+        rows.append(
+            _abs_comparison(
+                "OV14_tail_x_origin",
+                "vertical_tail composed x_min (m)",
+                float(TAIL_ORIGIN_M[0]),
+                tail_min[0],
+                0.02,
+            )
+        )
+        rows.append(
+            _abs_comparison(
+                "OV15_tail_z_origin",
+                "vertical_tail composed z_min (m)",
+                float(TAIL_ORIGIN_M[2]),
+                tail_min[2],
+                0.02,
+                detail="Root station of the tail after the 90 deg rotation sits at the origin height",
+            )
+        )
+        rows.append(
+            _comparison(
+                "OV16_tail_z_extent",
+                "vertical_tail composed z extent (m)",
+                float(geometry.vertical_tail.span_m),
+                tail_max[2] - tail_min[2],
+                0.005,
+                detail="The 90 deg rotation about X makes the tail span vertical",
+            )
+        )
+    if composed_bounds and len(composed_bounds) == 2 and len(composed_bounds[0]) == 3:
+        assembly_min = [float(value) for value in composed_bounds[0]]
+        assembly_max = [float(value) for value in composed_bounds[1]]
+        rows.append(
+            _abs_comparison(
+                "OV17_assembly_x_origin",
+                "composed assembly x_min (m)",
+                0.0,
+                assembly_min[0],
+                0.02,
+                detail="Fuselage nose at the global origin",
+            )
+        )
+        rows.append(
+            _comparison(
+                "OV18_assembly_x_extent",
+                "composed assembly x extent (m)",
+                float(geometry.fuselage.length_m),
+                assembly_max[0] - assembly_min[0],
+                1.0e-6,
+                detail="Fuselage tail sets the aft bound",
+            )
+        )
+        rows.append(
+            _comparison(
+                "OV19_assembly_y_extent",
+                "composed assembly y extent (m)",
+                float(geometry.wing.span_m),
+                assembly_max[1] - assembly_min[1],
+                0.005,
+                detail="Wing span sets the lateral bound",
+            )
+        )
+        rows.append(
+            _abs_comparison(
+                "OV20_assembly_z_max",
+                "composed assembly z_max (m)",
+                float(TAIL_ORIGIN_M[2]) + float(geometry.vertical_tail.span_m),
+                assembly_max[2],
+                0.02,
+                detail="Vertical tail tip sets the upper bound",
+            )
+        )
+        if wing_composed and len(wing_composed[0]) == 3:
+            rows.append(
+                _abs_comparison(
+                    "OV21_assembly_z_min",
+                    "composed assembly z_min follows the wing mesh (m)",
+                    float(wing_composed[0][2]),
+                    assembly_min[2],
+                    0.02,
+                    detail="Composition consistency: the translated wing is the lowest component",
+                )
+            )
     return rows
 
 
@@ -519,10 +729,18 @@ def _run_readme(summary: Mapping[str, Any]) -> str:
             or "none"
         ),
         "- failure: %s" % ("; ".join(row["check_id"] for row in failures) or "none"),
+        "- measurement failures: %s"
+        % ("; ".join(openvsp.get("measurement_failures") or []) or "none"),
         "- true evaluations: %s" % summary["total_true_evaluations"],
+        "- worktree dirty at run time: %s" % summary.get("git_dirty"),
+        "- composed assembly: %s" % (openvsp.get("composed_assembly") or "none"),
         "",
         "The exported STL/STEP/VSP3 files are under the git-ignored outputs",
         "directory; this run records their relative paths, sizes and SHA-256.",
+        "Component exports from this OpenVSP build are in local frames because the",
+        "STL writer ignores geometry XForm placement (probed). The composed assembly",
+        "STL applies the documented rigid transforms with trimesh and its bounds are",
+        "checked (OV12-OV21); the .vsp3/.step files remain component-local.",
         "",
         "Known limitation: OpenVSP fuselage surface uses spline interpolation",
         "between the eight stations and overshoots the declared maximum width near",
@@ -532,10 +750,37 @@ def _run_readme(summary: Mapping[str, Any]) -> str:
     return "\n".join(lines) + "\n"
 
 
+def _git_dirty(repo_root: Path, ignore_paths: Sequence[str] = ()) -> Optional[bool]:
+    try:
+        completed = subprocess.run(
+            ["git", "status", "--porcelain"],
+            cwd=str(repo_root),
+            capture_output=True,
+            text=True,
+            timeout=60,
+        )
+    except (OSError, subprocess.SubprocessError):
+        return None
+    if completed.returncode != 0:
+        return None
+    lines = [line for line in completed.stdout.splitlines() if line.strip()]
+    prefixes = [str(value).strip().rstrip("/") for value in ignore_paths if str(value).strip()]
+    relevant = []
+    for line in lines:
+        target = line[3:].strip() if len(line) > 3 else line.strip()
+        if " -> " in target:
+            target = target.split(" -> ", 1)[1]
+        if any(target == prefix or target.startswith(prefix + "/") for prefix in prefixes):
+            continue
+        relevant.append(line)
+    return bool(relevant)
+
+
 def _environment(
     openvsp_python: Path,
     openvsp_root: Path,
     worker_version: Optional[str],
+    ignore_paths: Sequence[str] = (),
 ) -> Dict[str, Any]:
     return {
         "python": platform.python_version(),
@@ -543,6 +788,7 @@ def _environment(
         "platform": platform.platform(),
         "processor": platform.processor(),
         "geometry_model_version": GEOMETRY_MODEL_VERSION,
+        "git_dirty": _git_dirty(REPO_ROOT, ignore_paths),
         "packages": _software_versions(),
         "openvsp": {
             "version": openvsp_version_from_root(openvsp_root),
@@ -551,6 +797,36 @@ def _environment(
             "worker_python_executable": "<external>/" + openvsp_python.name,
         },
     }
+
+
+def _external_export_entries(
+    export_directory: Path,
+) -> Tuple[List[Dict[str, Any]], List[Dict[str, Any]]]:
+    entries: List[Dict[str, Any]] = []
+    backups: List[Dict[str, Any]] = []
+    for path in sorted(Path(export_directory).rglob("*")):
+        if not path.is_file():
+            continue
+        if path.parent.name == WORKER_ARTIFACT_DIRNAME:
+            kind = "worker"
+        elif path.name == COMPOSED_ASSEMBLY_FILENAME:
+            kind = "assembly_composed"
+        elif path.stem.startswith("concorde_full_"):
+            kind = "component"
+        else:
+            kind = "assembly"
+        entry = {
+            "kind": kind,
+            "name": path.name,
+            "path": _safe_path(path),
+            "bytes": path.stat().st_size,
+            "sha256": _sha256(path),
+        }
+        if path.suffix == ".bak":
+            backups.append(entry)
+        else:
+            entries.append(entry)
+    return entries, backups
 
 
 def run_openvsp_check(
@@ -574,7 +850,12 @@ def run_openvsp_check(
     if run_dir.exists() and not allow_existing:
         raise FileExistsError("run directory already exists: %s" % run_dir)
     run_dir.mkdir(parents=True, exist_ok=True)
+    if export_dir.exists():
+        if not allow_existing:
+            raise FileExistsError("export directory already exists: %s" % export_dir)
+        shutil.rmtree(export_dir, ignore_errors=True)
     export_dir.mkdir(parents=True, exist_ok=True)
+    run_display = _display_path(run_dir)
     started = time.perf_counter()
 
     try:
@@ -589,13 +870,15 @@ def run_openvsp_check(
         )
         return summary
 
+    worker_dir = export_dir / WORKER_ARTIFACT_DIRNAME
+    worker_dir.mkdir(parents=True, exist_ok=True)
     request = build_openvsp_request(geometry, export_dir)
     request["openvsp_root"] = str(root_path)
-    request_path = export_dir / "request.json"
+    request_path = worker_dir / "request.json"
     _write_json(request_path, request, pretty=True)
     _write_json(run_dir / "openvsp_request.json", _sanitize_request(request), pretty=True)
 
-    worker_result_path = export_dir / "worker_result.json"
+    worker_result_path = worker_dir / "worker_result.json"
     worker = run_worker(
         python_path,
         DEFAULT_WORKER,
@@ -629,20 +912,39 @@ def run_openvsp_check(
 
     exports = raw_result.get("exports") or {}
     component_exports = exports.get("components") or {}
-    try:
-        stl_metrics = measure_component_stls(component_exports)
-        assembly_path = (exports.get("assembly") or {}).get("stl", {}).get("path")
-        if assembly_path:
-            stl_metrics["assembly"] = measure_stl(Path(assembly_path))
-        measurement_warnings: List[str] = []
-    except Exception as exc:  # noqa: BLE001 - record the measurement failure
-        stl_metrics = {}
-        measurement_warnings = ["STL measurement failed: %s: %s" % (type(exc).__name__, exc)]
+
+    # A missing or unreadable STL is a check failure, not a silent reduction of
+    # the comparison set: every placement guarantee depends on these meshes.
+    measurement_failures: List[str] = []
+    stl_metrics: Dict[str, Dict[str, Any]] = {}
+    for name in BASELINE_COMPONENTS:
+        entry = component_exports.get(name)
+        path = entry.get("path") if isinstance(entry, Mapping) else None
+        if not path:
+            measurement_failures.append("component %s: no STL export reported by the worker" % name)
+            continue
+        try:
+            stl_metrics[name] = measure_stl(Path(str(path)))
+        except Exception as exc:  # noqa: BLE001 - record the measurement failure
+            measurement_failures.append("component %s: %s: %s" % (name, type(exc).__name__, exc))
+    assembly_path = (exports.get("assembly") or {}).get("stl", {}).get("path")
+    if assembly_path:
+        try:
+            stl_metrics["assembly"] = measure_stl(Path(str(assembly_path)))
+        except Exception as exc:  # noqa: BLE001
+            measurement_failures.append("assembly STL: %s: %s" % (type(exc).__name__, exc))
+    else:
+        measurement_failures.append("assembly STL: no export reported by the worker")
+    if not measurement_failures:
+        try:
+            stl_metrics["assembly_composed"] = compose_assembly_mesh(component_exports, export_dir)
+        except Exception as exc:  # noqa: BLE001
+            measurement_failures.append("assembly composition failed: %s: %s" % (type(exc).__name__, exc))
 
     comparisons = compare_openvsp(geometry, raw_result, stl_metrics)
     status = _status_from_comparisons(comparisons)
-    if measurement_warnings and status == "openvsp_check_completed":
-        status = "openvsp_check_completed_with_warnings"
+    if measurement_failures:
+        status = "openvsp_check_failed"
 
     summary = _summary_base(identifier, space, status, time.perf_counter() - started)
     summary["solver_versions"].update(
@@ -654,7 +956,8 @@ def run_openvsp_check(
     )
     failures = [row for row in comparisons if row["status"] == "fail"]
     warnings = [row for row in comparisons if row["status"] == "warn"]
-    summary["failed_count"] = len(failures)
+    summary["failed_count"] = len(failures) + len(measurement_failures)
+    summary["git_dirty"] = _git_dirty(REPO_ROOT, (run_display,))
     summary["openvsp"] = {
         "available": True,
         "version": openvsp_version_from_root(root_path),
@@ -666,10 +969,12 @@ def run_openvsp_check(
         "comparisons": comparisons,
         "failures": [row["check_id"] for row in failures],
         "warnings": [row["check_id"] for row in warnings],
-        "measurement_warnings": measurement_warnings,
+        "measurement_failures": measurement_failures,
+        "composed_assembly": (stl_metrics.get("assembly_composed") or {}).get("path"),
         "limitations": [
             "OpenVSP fuselage spline overshoot is recorded as a warning.",
             "No VSPAERO or CFD analysis is run; aerodynamic applicability is not established.",
+            "This OpenVSP build does not bake geometry XForm placement into exported STL meshes; the composed assembly STL applies the rigid transforms and is the placement-checked artefact.",
             "Surface twist is not applied to the OpenVSP wing sections.",
         ],
         "note": "Geometry export and consistency check only; no objective value is reported.",
@@ -684,26 +989,25 @@ def run_openvsp_check(
         "openvsp_comparisons_csv": "openvsp_comparisons.csv",
     }
 
-    export_entries: List[Dict[str, Any]] = []
-    for section, label in (("assembly", "assembly"), ("components", "component")):
-        for key, entry in (exports.get(section) or {}).items():
-            path = entry.get("path") if isinstance(entry, dict) else None
-            if not path:
-                continue
-            export_entries.append(
-                {
-                    "kind": label,
-                    "name": key,
-                    "path": _safe_path(path),
-                    "bytes": entry.get("bytes"),
-                    "sha256": _sha256(Path(path)),
-                }
-            )
+    export_files, export_backups = _external_export_entries(export_dir)
     summary["external_artifacts"] = {
         "root": _safe_path(export_dir),
-        "files": export_entries,
-        "note": "Raw OpenVSP exports are git-ignored; paths are relative to the repository root.",
+        "files": export_files,
+        "ignored_files": export_backups,
+        "deleted": False,
+        "note": (
+            "Raw OpenVSP exports (including the worker request/result JSON) are "
+            "git-ignored; paths are relative to the repository root. Writer "
+            "scratch backups (*.bak) are listed separately and are not geometry "
+            "artefacts."
+        ),
     }
+    if delete_exports:
+        shutil.rmtree(export_dir, ignore_errors=True)
+        summary["external_artifacts"]["deleted"] = True
+        summary["external_artifacts"]["note"] += (
+            " The export directory was deleted after the run (--delete-exports)."
+        )
     _write_json(run_dir / "worker_result.json", _sanitize_worker_result(raw_result), pretty=True)
     _write_json(
         run_dir / "openvsp_metrics.json",
@@ -733,7 +1037,12 @@ def run_openvsp_check(
     )
     _write_json(
         run_dir / "environment.json",
-        _environment(python_path, root_path, raw_result.get("python_version")),
+        _environment(
+            python_path,
+            root_path,
+            raw_result.get("python_version"),
+            ignore_paths=(run_display,),
+        ),
         pretty=True,
     )
     (run_dir / "README.md").write_text(_run_readme(summary), encoding="utf-8")
@@ -760,6 +1069,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     parser.add_argument("--openvsp-root", default=None)
     parser.add_argument("--timeout", type=float, default=DEFAULT_TIMEOUT_S)
     parser.add_argument("--allow-existing", action="store_true")
+    parser.add_argument("--delete-exports", action="store_true")
     args = parser.parse_args(argv)
     summary = run_openvsp_check(
         output_root=Path(args.output_root) if args.output_root else None,
@@ -769,6 +1079,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         openvsp_root=args.openvsp_root,
         timeout_s=args.timeout,
         allow_existing=args.allow_existing,
+        delete_exports=args.delete_exports,
     )
     print(json.dumps(summary, indent=2, ensure_ascii=False))
     return 0 if summary["status"].startswith("openvsp_check_completed") else 1
