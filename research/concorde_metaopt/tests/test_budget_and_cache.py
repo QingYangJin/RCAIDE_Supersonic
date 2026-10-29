@@ -268,6 +268,7 @@ class SmokeWorkflowTests(LedgerTestBase):
             "environment.json",
             "best_design.json",
             "evaluations.jsonl",
+            "evaluations_detail.jsonl",
             "smoke_cases.csv",
             "README.md",
             "task_spec.json",
@@ -281,6 +282,20 @@ class SmokeWorkflowTests(LedgerTestBase):
             if line
         ]
         self.assertEqual(len(evaluations), 5)
+        detail = [
+            line
+            for line in (run_dir / "evaluations_detail.jsonl").read_text(encoding="utf-8").splitlines()
+            if line
+        ]
+        self.assertEqual(len(detail), 5)
+        self.assertIn("responses", json.loads(detail[0]))
+        header = (run_dir / "smoke_cases.csv").read_text(encoding="utf-8").splitlines()[0]
+        self.assertIn("max_throttle", header)
+        self.assertIn("violated_constraints", header)
+        self.assertIn("geometry_cross_check_failed", header)
+        run_config = json.loads((run_dir / "run_config.json").read_text(encoding="utf-8"))
+        self.assertEqual(run_config["task_fingerprint"], self.task.fingerprint())
+        self.assertEqual(summary["smoke"]["perturbations"][0]["max_throttle"], -0.05)
         self.assertEqual(len(summary["smoke"]["perturbations"]), 2)
         self.assertTrue(all(case["status"] == "VALID" for case in summary["smoke"]["perturbations"]))
         index = json.loads(
@@ -289,6 +304,46 @@ class SmokeWorkflowTests(LedgerTestBase):
             )
         )
         self.assertEqual([entry["run_id"] for entry in index["runs"]], ["offline-ok"])
+        entry = index["runs"][0]
+        self.assertEqual(entry["path"], "offline-ok")
+        self.assertEqual(entry["status"], "smoke_completed")
+        self.assertIn("created_at", entry)
+        self.assertIn("P2 single-cruise smoke", entry["summary"])
+        self.assertIn("baseline objective", entry["summary"])
+        self.assertEqual(
+            run_config["design_space"]["config_path"],
+            "research/concorde_metaopt/configs/design_space_15d.yaml",
+        )
+
+    def test_absolute_config_paths_in_preflight_are_sanitized(self):
+        class NestedConfigBackend(FakeBackend):
+            def preflight(self):
+                data = super().preflight()
+                repo_root = Path(__file__).resolve().parents[3]
+                data["design_space_config"] = {
+                    "task_id": "concorde_fixed_cruise_15d",
+                    "config_path": str(
+                        repo_root
+                        / "research"
+                        / "concorde_metaopt"
+                        / "configs"
+                        / "design_space_15d.yaml"
+                    ),
+                }
+                return data
+
+        summary = self._run("offline-sanitize", NestedConfigBackend())
+        preflight = summary["smoke"]["preflight"]["design_space_config"]
+        self.assertEqual(
+            preflight["config_path"],
+            "research/concorde_metaopt/configs/design_space_15d.yaml",
+        )
+        run_dir = TMP_ROOT / ("smoke-runs-" + self._testMethodName) / "offline-sanitize"
+        run_config = json.loads((run_dir / "run_config.json").read_text(encoding="utf-8"))
+        self.assertEqual(
+            run_config["design_space"]["config_path"],
+            "research/concorde_metaopt/configs/design_space_15d.yaml",
+        )
 
     def test_repeatability_failure_is_reported(self):
         summary = self._run("offline-repeat-fail", FakeBackend(jitter=1.0e-3))

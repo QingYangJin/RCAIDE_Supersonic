@@ -133,6 +133,68 @@ def _constraint_delta(first: Mapping[str, float], second: Mapping[str, float]) -
     return max(abs(float(first[name]) - float(second[name])) for name in keys)
 
 
+def _cross_check_summary(record: Optional[Mapping[str, Any]]) -> Optional[Dict[str, Any]]:
+    """Compact geometry cross-check block from a backend record, if present."""
+    if not record:
+        return None
+    cross = record.get("geometry_cross_check")
+    if not isinstance(cross, Mapping):
+        return None
+    return {
+        "checked_count": cross.get("checked_count"),
+        "failed_count": cross.get("failed_count"),
+        "failures": list(cross.get("failures") or []),
+    }
+
+
+def _violated_constraints(constraints: Mapping[str, Any]) -> List[str]:
+    return [
+        name
+        for name, value in constraints.items()
+        if value is not None and float(value) > FEASIBILITY_TOLERANCE
+    ]
+
+
+def _sanitized_config_summary(space: DesignSpace) -> Dict[str, Any]:
+    data: Dict[str, Any] = dict(space.config_summary()) if hasattr(space, "config_summary") else {}
+    config_path = data.get("config_path")
+    if config_path:
+        data["config_path"] = _display_path(config_path)
+    return data
+
+
+def _sanitize_preflight(preflight: Mapping[str, Any]) -> Dict[str, Any]:
+    data: Dict[str, Any] = dict(preflight)
+    config_summary = data.get("design_space_config")
+    if isinstance(config_summary, Mapping):
+        summary = dict(config_summary)
+        if summary.get("config_path"):
+            summary["config_path"] = _display_path(summary["config_path"])
+        data["design_space_config"] = summary
+    return data
+
+
+def _index_summary(summary: Mapping[str, Any]) -> str:
+    smoke = summary.get("smoke") or {}
+    repeat = smoke.get("repeatability") or {}
+    baseline = smoke.get("baseline") or {}
+    violated = _violated_constraints(baseline.get("constraints") or {})
+    text = (
+        "P2 single-cruise smoke: status %s, %s true evaluations, baseline objective %s kg, "
+        "repeatability spread %s (passed=%s)"
+        % (
+            summary.get("status"),
+            summary.get("total_true_evaluations"),
+            baseline.get("objective"),
+            repeat.get("relative_spread"),
+            repeat.get("passed"),
+        )
+    )
+    if violated:
+        text += "; baseline constraint violations: " + ", ".join(violated)
+    return text
+
+
 def _environment(task: FixedCruiseTask, space: DesignSpace) -> Dict[str, Any]:
     packages = _software_versions()
     return {
@@ -149,10 +211,17 @@ def _environment(task: FixedCruiseTask, space: DesignSpace) -> Dict[str, Any]:
     }
 
 
-def _smoke_cases_csv(rows: List[Mapping[str, Any]], repeats: int, labels: List[str]) -> List[Dict[str, Any]]:
+def _smoke_cases_csv(
+    rows: List[Mapping[str, Any]],
+    repeats: int,
+    labels: List[str],
+    metas: List[Optional[Mapping[str, Any]]],
+) -> List[Dict[str, Any]]:
     cases: List[Dict[str, Any]] = []
     for index, row in enumerate(rows):
         label = labels[index] if index < len(labels) else "unknown"
+        meta = metas[index] if index < len(metas) and metas[index] is not None else {}
+        constraints = row.get("constraints") or {}
         cases.append(
             {
                 "iteration": row["iteration"],
@@ -162,6 +231,9 @@ def _smoke_cases_csv(rows: List[Mapping[str, Any]], repeats: int, labels: List[s
                 "status": row["status"],
                 "objective": row["objective"],
                 "feasible": row["feasible"],
+                "max_throttle": constraints.get("max_throttle"),
+                "violated_constraints": ";".join(meta.get("violated_constraints") or []),
+                "geometry_cross_check_failed": meta.get("geometry_cross_check_failed"),
                 "physical_call_count": row["physical_call_count"],
             }
         )
@@ -182,6 +254,11 @@ def _run_readme(summary: Mapping[str, Any]) -> str:
         "",
         "True evaluations: %s (budget %s)" % (
             summary.get("total_true_evaluations"), smoke.get("budget")
+        ),
+        "Frozen mass contract: start %s kg, loaded fuel %s kg, ZFW %s kg" % (
+            (smoke.get("mass_contract") or {}).get("start_mass_kg"),
+            (smoke.get("mass_contract") or {}).get("fuel_loaded_kg"),
+            (smoke.get("mass_contract") or {}).get("zero_fuel_mass_kg"),
         ),
         "Baseline repeats: %s, relative spread %s (tolerance %s), passed=%s" % (
             repeat.get("count"), repeat.get("relative_spread"), repeat.get("tolerance"), repeat.get("passed")
@@ -209,7 +286,10 @@ def _run_readme(summary: Mapping[str, Any]) -> str:
         "repeatability; only valid evaluations are cached by the ledger.",
         "",
         "Artifacts: summary.json, run_config.json, environment.json,",
-        "best_design.json, evaluations.jsonl, smoke_cases.csv, figures/.",
+        "best_design.json, evaluations.jsonl, evaluations_detail.jsonl,",
+        "smoke_cases.csv, figures/.  The detail file repeats every true",
+        "evaluation with the full backend record (mission responses and geometry",
+        "cross-check); the compact evaluations.jsonl keeps the Issue schema.",
     ]
     return "\n".join(lines) + "\n"
 
@@ -232,11 +312,11 @@ def _update_index(run_dir: Path, summary: Mapping[str, Any]) -> Path:
             "task_id": summary.get("task_id"),
             "method": METHOD,
             "git_sha": summary.get("git_sha"),
-            "status": "completed" if str(summary.get("status", "")).startswith("smoke_completed") else summary.get("status"),
-            "path": _display_path(run_dir),
-            "summary": _display_path(run_dir / "summary.json"),
+            "status": summary.get("status"),
+            "created_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+            "path": run_dir.name,
+            "summary": _index_summary(summary),
             "true_evaluations": summary.get("total_true_evaluations"),
-            "best_feasible_fuel_kg": summary.get("best_feasible_fuel_kg"),
         }
     )
     payload["runs"] = entries
@@ -295,10 +375,11 @@ def run_smoke(
     except (OSError, subprocess.SubprocessError):
         summary["branch"] = None
 
-    preflight = backend.preflight()
+    preflight = _sanitize_preflight(backend.preflight())
     ledger = EvaluationLedger(budget=budget, run_dir=run_dir, cache_enabled=False)
     baseline = dict(space.baseline_dict())
     repeat_rows: List[Dict[str, Any]] = []
+    repeat_records: List[Mapping[str, Any]] = []
     failures: List[str] = []
     for repeat in range(REPEAT_COUNT):
         try:
@@ -307,6 +388,8 @@ def run_smoke(
             failures.append("baseline repeat %d failed: %s: %s" % (repeat + 1, type(exc).__name__, exc))
             break
         repeat_rows.append(row)
+        if ledger.records:
+            repeat_records.append(ledger.records[-1])
 
     repeat_values = [row["objective"] for row in repeat_rows if row["objective"] is not None]
     repeatability = _repeatability_metrics(repeat_values)
@@ -321,6 +404,7 @@ def run_smoke(
 
     perturbation_cases: List[Dict[str, Any]] = []
     perturbation_rows: List[Dict[str, Any]] = []
+    perturbation_metas: List[Mapping[str, Any]] = []
     baseline_row = repeat_rows[0] if repeat_rows else None
     labels = ["baseline_repeat_%d" % (index + 1) for index in range(len(repeat_rows))]
     for spec in PERTURBATIONS:
@@ -329,6 +413,8 @@ def run_smoke(
             design = _perturbed_design(space, spec)
             row = ledger.evaluate(backend, design, frozen_task, fidelity=FIDELITY_SINGLE_CRUISE)
             perturbation_rows.append(row)
+            case_record = ledger.records[-1] if ledger.records else None
+            case_cross_check = _cross_check_summary(case_record)
             base_objective = baseline_row["objective"] if baseline_row else None
             variable = space.variable_by_id(str(spec["variable"]))
             case = {
@@ -343,9 +429,10 @@ def run_smoke(
                 "status": row["status"],
                 "objective": row["objective"],
                 "feasible": row["feasible"],
-                "violated_constraints": [
-                    name for name, value in row["constraints"].items() if value > FEASIBILITY_TOLERANCE
-                ],
+                "violated_constraints": _violated_constraints(row["constraints"]),
+                "max_throttle": row["constraints"].get("max_throttle"),
+                "geometry_cross_check": case_cross_check,
+                "geometry_cross_check_failed": bool((case_cross_check or {}).get("failed_count")),
                 "objective_delta": (
                     None
                     if base_objective is None or row["objective"] is None
@@ -359,13 +446,28 @@ def run_smoke(
                 "constraints": dict(row["constraints"]),
             }
             perturbation_cases.append(case)
+            perturbation_metas.append(
+                {
+                    "violated_constraints": case["violated_constraints"],
+                    "geometry_cross_check_failed": case["geometry_cross_check_failed"],
+                }
+            )
         except Exception as exc:
             failures.append("%s failed: %s: %s" % (spec["label"], type(exc).__name__, exc))
             perturbation_cases.append(
                 {"label": spec["label"], "variable": spec["variable"], "status": "SMOKE_CASE_ERROR", "error": str(exc)}
             )
 
-    cases = _smoke_cases_csv(repeat_rows + perturbation_rows, len(repeat_rows), labels)
+    case_metas: List[Optional[Mapping[str, Any]]] = []
+    for row, record in zip(repeat_rows, repeat_records):
+        case_metas.append(
+            {
+                "violated_constraints": _violated_constraints(row["constraints"]),
+                "geometry_cross_check_failed": bool((_cross_check_summary(record) or {}).get("failed_count")),
+            }
+        )
+    case_metas.extend(perturbation_metas)
+    cases = _smoke_cases_csv(repeat_rows + perturbation_rows, len(repeat_rows), labels, case_metas)
     _write_csv(run_dir / "smoke_cases.csv", cases)
 
     counts = ledger.summary()
@@ -422,7 +524,11 @@ def run_smoke(
             "feasible": baseline_row["feasible"] if baseline_row else None,
             "constraints": dict(baseline_row["constraints"]) if baseline_row else {},
             "records": [record for record in ledger.records[: len(repeat_rows)]],
+            "mass_contract": repeat_records[0].get("mass_contract") if repeat_records else None,
+            "geometry_cross_check": _cross_check_summary(repeat_records[0] if repeat_records else None),
         },
+        "mass_contract": repeat_records[0].get("mass_contract") if repeat_records else None,
+        "geometry_cross_check": _cross_check_summary(repeat_records[0] if repeat_records else None),
         "perturbations": perturbation_cases,
         "case_file": "smoke_cases.csv",
         "failures": failures,
@@ -450,6 +556,7 @@ def run_smoke(
         "environment": "environment.json",
         "best_design": "best_design.json",
         "evaluations": "evaluations.jsonl",
+        "evaluations_detail": "evaluations_detail.jsonl",
         "smoke_cases": "smoke_cases.csv",
         "figures": ["figures/repeatability.png", "figures/perturbation_sensitivity.png"],
         "readme": "README.md",
@@ -474,7 +581,8 @@ def run_smoke(
             "repeatability_relative_tolerance": REPEATABILITY_RELATIVE_TOLERANCE,
             "perturbations": [dict(spec) for spec in PERTURBATIONS],
             "task": frozen_task.run_record(),
-            "design_space": space.config_summary() if hasattr(space, "config_summary") else {},
+            "task_fingerprint": frozen_task.fingerprint(),
+            "design_space": _sanitized_config_summary(space),
             "cache_enabled": False,
             "fidelity": FIDELITY_SINGLE_CRUISE,
             "note": "cache disabled so the three baseline repeats are genuine physical calls",

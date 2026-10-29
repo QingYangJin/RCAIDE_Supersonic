@@ -1,19 +1,22 @@
 # Frozen single-cruise task contract for the Concorde Phase I optimisation.
 # All values are SI: m, kg, dimensionless Mach and m for distance.
 #
-# Mass-contract provenance (measured 2026-10-29, RCAIDE mission evaluation,
-# tutorials/Simulation_Turbojet_Supersonic_Aircraft_4500nmi_Mission/Concorde.py,
-# single fixed cruise at 60000 ft and Mach 2.02 over 1635 nmi):
-#   start 185000 kg -> max_throttle 1.2708  (INFEASIBLE, like the old app)
-#   start 155000 kg -> max_throttle 1.0374
-#   start 150000 kg -> max_throttle 1.0008
-#   start 145000 kg -> extrapolated max_throttle 0.9642 with 55800 kg fuel.
-# 145000 kg is therefore the frozen Phase I contract: about 3.7 percent
-# throttle margin so the baseline is feasible and the optimiser has room to
-# trade fuel burn against geometry.  It is NOT an MTOW mission; it is the
-# fixed cruise-entry state the Issue requires.
+# Mass-contract provenance (measured 2026-10-29, RCAIDE single-cruise mission
+# evaluation on the P1 geometry model, 60000 ft and Mach 2.02 over 1635 nmi):
+#   start 185000 kg -> max_throttle 1.2708  (INFEASIBLE, the old app failure)
+#   start 155000 kg -> max_throttle 1.0374  (infeasible)
+#   start 150000 kg -> max_throttle 1.0008  (infeasible)
+#   start 145000 kg -> max_throttle 1.0163  (infeasible with the P1 geometry)
+#   start 136000 kg -> max_throttle 0.9455  (feasible, measured)
+# The 145000 kg point was extrapolated from the tutorial geometry, whose root
+# chord (33.8 m) differs from the P1 planform closure (29.90 m); once the P2
+# adapter drives the real P1 geometry the 145 t contract is no longer feasible.
+# 136000 kg with 46800 kg loaded fuel (zero-fuel mass 89200 kg) is therefore the
+# frozen Phase I contract: about a 5.5 percent baseline throttle margin so the
+# baseline is feasible and the optimiser can trade fuel burn against geometry.
+# It is NOT an MTOW mission; it is the fixed cruise-entry state the Issue asks for.
 task_id: concorde-fixed-cruise-p2-v1
-version: p2-2026-10-29
+version: p2-2026-10-29b
 created_utc: '2026-10-29T00:00:00Z'
 description: 'Concorde-class fixed topology, single fixed supersonic cruise segment.'
 cruise:
@@ -24,8 +27,8 @@ masses:
   operating_empty_kg: 78700.0
   payload_kg: 9500.0
   cargo_kg: 1000.0
-  fuel_loaded_kg: 55800.0
-  start_mass_kg: 145000.0
+  fuel_loaded_kg: 46800.0
+  start_mass_kg: 136000.0
   max_fuel_kg: 95680.0
   max_zero_fuel_kg: 92000.0
   max_takeoff_kg: 185000.0
@@ -37,4 +40,4 @@ objective:
   unit: kg
 mass_contract:
   status: frozen
-  evidence: 'Measured RCAIDE single-cruise throttle sweep on 2026-10-29: 185000 kg 1.2708, 155000 kg 1.0374, 150000 kg 1.0008; 145000 kg selected with 55800 kg fuel for a positive baseline throttle and mass margin.'
+  evidence: 'Measured RCAIDE single-cruise throttle sweep on 2026-10-29: 185000 kg 1.2708, 155000 kg 1.0374, 150000 kg 1.0008; 145000 kg measured 1.0163 with the P1 geometry (infeasible; the earlier 0.9642 was extrapolated from the tutorial geometry); 136000 kg measured 0.9455 with 46800 kg fuel and 34109.5 kg burn, so 136000 kg / 46800 kg is the frozen contract.'

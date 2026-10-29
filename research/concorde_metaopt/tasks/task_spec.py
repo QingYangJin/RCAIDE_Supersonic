@@ -15,9 +15,13 @@ The mass contract was calibrated against the real RCAIDE mission on
 configs/task_fixed_cruise.yaml).  The upstream tutorial takeoff mass of
 185000 kg starts the cruise so heavy that the required throttle is 1.2708,
 which is physically infeasible, so it cannot serve as the frozen Phase I
-contract.  A 145000 kg cruise-entry mass (zero-fuel mass 89200 kg, loaded fuel
-55800 kg) leaves about a 3.7 percent throttle margin at the baseline geometry
-and keeps every declared mass constraint feasible.
+contract.  A 145000 kg point looked feasible when extrapolated from the
+tutorial geometry, but the P1 planform closure gives a shorter root chord
+(29.90 m versus the declared 33.8 m), and the measured throttle at 145000 kg is
+1.0163, so that contract is infeasible too.  The frozen contract is therefore
+136000 kg (zero-fuel mass 89200 kg, loaded fuel 46800 kg): the measured
+baseline throttle is 0.9455, a 5.5 percent margin, and every declared mass
+constraint is feasible.
 
 TaskSpec versions are immutable: any change to a value, bound, propulsor list or
 mission setting must bump the version string, which changes the fingerprint and
@@ -35,7 +39,7 @@ from typing import Any, Dict, Mapping, Optional, Sequence, Tuple
 
 from ..config_io import ConfigError, load_config
 
-TASK_SPEC_VERSION = "p2-2026-10-29"
+TASK_SPEC_VERSION = "p2-2026-10-29b"
 
 CONFIG_DIR = Path(__file__).resolve().parent.parent / "configs"
 DEFAULT_TASK_CONFIG_PATH = CONFIG_DIR / "task_fixed_cruise.yaml"
@@ -356,4 +360,9 @@ def load_task_spec(path: Optional[Path] = None) -> FixedCruiseTask:
         config = load_config(config_path)
     except ConfigError as error:
         raise TaskSpecError(str(error)) from error
-    return FixedCruiseTask.from_config(config)
+    task = FixedCruiseTask.from_config(config)
+    # `config_path` is provenance, not part of the frozen identity: attaching it
+    # lets run evidence record which YAML file produced the contract without
+    # changing the fingerprint (the field is not in to_dict()).
+    object.__setattr__(task, "config_path", config_path)
+    return task

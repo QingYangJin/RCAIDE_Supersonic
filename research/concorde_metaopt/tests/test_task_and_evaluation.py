@@ -39,8 +39,8 @@ from research.concorde_metaopt.tasks.task_spec import (
 
 TASK_PATH = Path(__file__).resolve().parent.parent / "configs" / "task_fixed_cruise.yaml"
 
-BASELINE_MASS_START = 145000.0
-BASELINE_BURN = 35700.0
+BASELINE_MASS_START = 136000.0
+BASELINE_BURN = 34109.48257123768
 BASELINE_RANGE = 3028020.0
 
 
@@ -57,7 +57,7 @@ def baseline_observations(**overrides):
         "time_start_s": 0.0,
         "time_end_s": 5080.0,
         "time_span_s": 5080.0,
-        "max_throttle": 0.9642,
+        "max_throttle": 0.9455,
         "max_fuel_mass_flow_kg_s": 2.0,
         "max_thrust_x_n": 43000.0,
         "alpha_end_deg": 1.0,
@@ -75,14 +75,14 @@ def baseline_observations(**overrides):
 
 
 def synthetic_segment(*, mass=None, range_history=None, time_history=None, throttle=None, missing_propulsor=False):
-    mass = np.asarray(mass if mass is not None else [145000.0, 109300.0], dtype=float)
+    mass = np.asarray(mass if mass is not None else [136000.0, 101890.51742876232], dtype=float)
     range_history = np.asarray(
         range_history if range_history is not None else [0.0, BASELINE_RANGE], dtype=float
     )
     time_history = np.asarray(time_history if time_history is not None else [0.0, 5080.0], dtype=float)
-    throttle = np.asarray(throttle if throttle is not None else [0.9642, 0.9642], dtype=float)
+    throttle = np.asarray(throttle if throttle is not None else [0.9455, 0.9455], dtype=float)
     flow = np.asarray([2.0, 1.9], dtype=float)
-    thrust = np.asarray([[43000.0, 0.0, 0.0], [42000.0, 0.0, 0.0]], dtype=float)
+    thrust = np.asarray([[42056.6, 0.0, 0.0], [42000.0, 0.0, 0.0]], dtype=float)
     propulsor = SimpleNamespace(
         throttle=throttle,
         fuel_mass_flow_rate=flow,
@@ -130,12 +130,12 @@ class TaskSpecTests(unittest.TestCase):
         self.assertAlmostEqual(task.operating_empty_kg, 78700.0, places=9)
         self.assertAlmostEqual(task.payload_kg, 9500.0, places=9)
         self.assertAlmostEqual(task.cargo_kg, 1000.0, places=9)
-        self.assertAlmostEqual(task.fuel_loaded_kg, 55800.0, places=9)
-        self.assertAlmostEqual(task.start_mass_kg, 145000.0, places=9)
+        self.assertAlmostEqual(task.fuel_loaded_kg, 46800.0, places=9)
+        self.assertAlmostEqual(task.start_mass_kg, 136000.0, places=9)
         self.assertAlmostEqual(task.zero_fuel_mass_kg, 89200.0, places=9)
-        self.assertAlmostEqual(task.fuel_margin_kg, 95680.0 - 55800.0, places=9)
+        self.assertAlmostEqual(task.fuel_margin_kg, 95680.0 - 46800.0, places=9)
         self.assertAlmostEqual(task.zero_fuel_margin_kg, 92000.0 - 89200.0, places=9)
-        self.assertAlmostEqual(task.takeoff_margin_kg, 185000.0 - 145000.0, places=9)
+        self.assertAlmostEqual(task.takeoff_margin_kg, 185000.0 - 136000.0, places=9)
         self.assertEqual(task.objective_name, "fuel_burn_kg")
         self.assertEqual(task.objective_unit, "kg")
         self.assertEqual(len(task.propulsor_tags), 4)
@@ -144,7 +144,7 @@ class TaskSpecTests(unittest.TestCase):
         self.assertEqual(self.task.fingerprint(), load_task_spec().fingerprint())
         config = copy.deepcopy(self.config)
         config["masses"]["payload_kg"] = 9000.0
-        config["masses"]["start_mass_kg"] = 144500.0
+        config["masses"]["start_mass_kg"] = 135500.0
         changed = FixedCruiseTask.from_config(config)
         self.assertNotEqual(self.task.fingerprint(), changed.fingerprint())
 
@@ -182,7 +182,7 @@ class TaskSpecTests(unittest.TestCase):
         import tempfile
 
         text = TASK_PATH.read_text(encoding="utf-8").replace(
-            "start_mass_kg: 145000.0", "start_mass_kg: 144000.0"
+            "start_mass_kg: 136000.0", "start_mass_kg: 135000.0"
         )
         path = Path(tempfile.mkdtemp(prefix="concorde-task-test-")) / "task.yaml"
         path.write_text(text, encoding="utf-8")
@@ -195,7 +195,7 @@ class TaskSpecTests(unittest.TestCase):
         self.assertEqual(record["task_fingerprint"], self.task.fingerprint())
         context = self.task.maml_context()
         self.assertAlmostEqual(context["cruise_distance_m"], 3028020.0, places=6)
-        self.assertAlmostEqual(context["start_mass_kg"], 145000.0, places=9)
+        self.assertAlmostEqual(context["start_mass_kg"], 136000.0, places=9)
         self.assertTrue(all(isinstance(value, float) for value in context.values()))
 
     def test_maml_task_spec_adapter(self):
@@ -324,14 +324,14 @@ class ObservationExtractionTests(unittest.TestCase):
         segment = synthetic_segment()
         observations = extract_observations(segment, self.task)
         self.assertEqual(observations["objective_name"], "fuel_burn_kg")
-        self.assertAlmostEqual(observations["mass_start_kg"], 145000.0, places=9)
-        self.assertAlmostEqual(observations["mass_end_kg"], 109300.0, places=9)
-        self.assertAlmostEqual(observations["fuel_burn_kg"], 35700.0, places=9)
+        self.assertAlmostEqual(observations["mass_start_kg"], 136000.0, places=9)
+        self.assertAlmostEqual(observations["mass_end_kg"], 101890.51742876232, places=6)
+        self.assertAlmostEqual(observations["fuel_burn_kg"], 34109.48257123768, places=6)
         self.assertAlmostEqual(observations["range_span_m"], BASELINE_RANGE, places=6)
         self.assertAlmostEqual(observations["time_span_s"], 5080.0, places=9)
-        self.assertAlmostEqual(observations["max_throttle"], 0.9642, places=9)
+        self.assertAlmostEqual(observations["max_throttle"], 0.9455, places=9)
         self.assertAlmostEqual(observations["max_fuel_mass_flow_kg_s"], 2.0, places=9)
-        self.assertAlmostEqual(observations["max_thrust_x_n"], 43000.0, places=9)
+        self.assertAlmostEqual(observations["max_thrust_x_n"], 42056.6, places=9)
         self.assertAlmostEqual(observations["alpha_end_deg"], math.degrees(0.04), places=9)
         self.assertTrue(observations["converged"])
         self.assertTrue(observations["solver_converged"])
@@ -339,7 +339,7 @@ class ObservationExtractionTests(unittest.TestCase):
         self.assertEqual(len(observations["propulsors"]), 4)
 
     def test_mass_increase_rejected(self):
-        segment = synthetic_segment(mass=[109300.0, 145000.0])
+        segment = synthetic_segment(mass=[101890.51742876232, 136000.0])
         with self.assertRaises(ObservationError):
             extract_observations(segment, self.task)
 
@@ -349,12 +349,12 @@ class ObservationExtractionTests(unittest.TestCase):
             extract_observations(segment, self.task)
 
     def test_non_finite_mass_rejected(self):
-        segment = synthetic_segment(mass=[145000.0, float("nan")])
+        segment = synthetic_segment(mass=[136000.0, float("nan")])
         with self.assertRaises(ObservationError):
             extract_observations(segment, self.task)
 
     def test_short_history_rejected(self):
-        segment = synthetic_segment(mass=[145000.0])
+        segment = synthetic_segment(mass=[136000.0])
         with self.assertRaises(ObservationError):
             extract_observations(segment, self.task)
 

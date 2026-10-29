@@ -4,17 +4,29 @@ The ledger is the single place that counts true (physical) evaluations, so the
 budget argument in the CLI is authoritative. A cache hit never consumes budget
 and is marked as such; only valid evaluations are cached so a transient mission
 failure is not silently reused.
+
+Two files are written:
+
+- evaluations.jsonl: one compact row per request (the Issue-mandated schema).
+- evaluations_detail.jsonl: one row per true (physical) evaluation, carrying the
+  full backend record (responses, geometry cross-check, mass contract, design).
+  Cache hits are not repeated here because they made no physical call.
+
+The detail file keeps the evidence auditable without inflating the compact row
+with nested mission output; every value is JSON-safe (non-finite -> null).
 """
 
 from __future__ import annotations
 
 import hashlib
 import json
+import math
 import time
 from pathlib import Path
 from typing import Any, Dict, List, Mapping, Optional, Tuple
 
 EVALUATIONS_FILENAME = "evaluations.jsonl"
+DETAILS_FILENAME = "evaluations_detail.jsonl"
 
 STATUS_BACKEND_ERROR = "BACKEND_ERROR"
 
@@ -39,6 +51,28 @@ def design_id(design: Mapping[str, float]) -> str:
     return "d-" + hashlib.sha256(canonical_design(design).encode("utf-8")).hexdigest()[:12]
 
 
+def json_safe(value: Any) -> Any:
+    """Recursively convert a backend value to something json.dumps accepts.
+
+    Non-finite floats become None so a failed or partially populated record can
+    still be written without allow_nan (NaN/Infinity are not valid JSON).
+    """
+    if value is None or isinstance(value, (str, bool)):
+        return value
+    if isinstance(value, Mapping):
+        return {str(key): json_safe(item) for key, item in value.items()}
+    if isinstance(value, (list, tuple, set)):
+        return [json_safe(item) for item in value]
+    tolist = getattr(value, "tolist", None)
+    if callable(tolist):
+        return json_safe(tolist())
+    if isinstance(value, int):
+        return int(value)
+    if isinstance(value, float):
+        return value if math.isfinite(value) else None
+    return str(value)
+
+
 class EvaluationLedger:
     """Writes evaluations.jsonl and enforces the physical-call budget."""
 
@@ -48,6 +82,7 @@ class EvaluationLedger:
         run_dir: Path,
         cache_enabled: bool = True,
         evaluations_filename: str = EVALUATIONS_FILENAME,
+        details_filename: Optional[str] = DETAILS_FILENAME,
     ) -> None:
         self.budget = int(budget)
         if self.budget < 0:
@@ -63,6 +98,7 @@ class EvaluationLedger:
         self._best_design: Optional[Dict[str, float]] = None
         self._first_feasible: Optional[int] = None
         self._path = self.run_dir / evaluations_filename
+        self._details_path = self.run_dir / details_filename if details_filename else None
         self.run_dir.mkdir(parents=True, exist_ok=True)
 
     # -- properties -------------------------------------------------------
@@ -172,6 +208,7 @@ class EvaluationLedger:
             row["status"] = STATUS_BACKEND_ERROR
         self.rows.append(row)
         self._append(row)
+        self._append_detail(row, record)
 
         if self.cache_enabled and record.get("status") == "VALID":
             self._cache[key] = {
@@ -187,6 +224,33 @@ class EvaluationLedger:
     def _append(self, row: Mapping[str, Any]) -> None:
         with self._path.open("a", encoding="utf-8") as handle:
             handle.write(json.dumps(row, sort_keys=True, allow_nan=False) + "\n")
+
+    def _append_detail(self, row: Mapping[str, Any], record: Mapping[str, Any]) -> None:
+        if self._details_path is None:
+            return
+        detail = {
+            "iteration": row["iteration"],
+            "design_id": row["design_id"],
+            "task_id": record.get("task_id"),
+            "task_fingerprint": record.get("task_fingerprint"),
+            "fidelity": row["fidelity"],
+            "purpose": record.get("purpose"),
+            "status": row["status"],
+            "objective": row["objective"],
+            "feasible": row["feasible"],
+            "constraints": row["constraints"],
+            "design": record.get("design") or row["x"],
+            "geometry_summary": record.get("geometry_summary"),
+            "geometry_cross_check": record.get("geometry_cross_check"),
+            "mass_contract": record.get("mass_contract"),
+            "responses": record.get("responses"),
+            "diagnostics": row["diagnostics"],
+            "physical_call_count": row["physical_call_count"],
+            "wall_seconds": row["wall_seconds"],
+        }
+        safe = json_safe(detail)
+        with self._details_path.open("a", encoding="utf-8") as handle:
+            handle.write(json.dumps(safe, sort_keys=True, allow_nan=False) + "\n")
 
     # -- reporting --------------------------------------------------------
     def best(self) -> Dict[str, Any]:

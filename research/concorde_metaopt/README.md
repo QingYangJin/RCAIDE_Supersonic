@@ -257,75 +257,94 @@ and RCAIDE forces the last wing/tail segment sweep to the previous segment value
 P2 freezes the single fixed-cruise evaluation contract and implements the
 evaluation loop that P3–P6 will reuse.
 
-- \`configs/task_fixed_cruise.yaml\` + \`tasks/task_spec.py\` — frozen Phase I task:
+- `configs/task_fixed_cruise.yaml` + `tasks/task_spec.py` — frozen Phase I task:
   18,288 m (60,000 ft), Mach 2.02, 3,028,020 m (1,635 nmi) cruise; OEW 78,700 kg,
-  payload 9,500 kg, cargo 1,000 kg, loaded fuel 55,800 kg, start mass 145,000 kg
-  (zero-fuel mass 89,200 kg); limits max fuel 95,680 / max zero fuel 92,000 /
-  max take-off 185,000 kg; four turbojets; objective \`fuel_burn_kg\` in kg. The
-  mass contract is \`frozen\` because it was measured, not guessed: the same
-  single-cruise mission at the upstream MTOW 185,000 kg needs **max throttle
-  1.2708** (infeasible, the historical failure the old application reported),
-  155,000 kg needs 1.0374, 150,000 kg needs 1.0008, so 145,000 kg was selected
-  with about 3.7% throttle margin. The task validates its own mass balance,
-  limits and objective identity on load and can be adapted to
-  \`maml_opt.contracts.TaskSpec\` for P4/P5. It is a cruise-entry contract, not an
-  MTOW mission.
-- \`aircraft/concorde_adapter.py\` — loads the upstream tutorial
-  (\`tutorials/Simulation_Turbojet_Supersonic_Aircraft_4500nmi_Mission/Concorde.py\`,
+  payload 9,500 kg, cargo 1,000 kg, loaded fuel **46,800 kg**, start mass
+  **136,000 kg** (zero-fuel mass 89,200 kg); limits max fuel 95,680 / max zero fuel
+  92,000 / max take-off 185,000 kg; four turbojets; objective `fuel_burn_kg` in kg.
+  The mass contract is `frozen` because it was measured, not guessed: with the P1
+  geometry the same single-cruise mission needs **max throttle 1.2708** at the
+  upstream MTOW 185,000 kg (infeasible, the historical failure the old application
+  reported), 1.0374 at 155,000 kg, 1.0008 at 150,000 kg and **1.0163 at 145,000 kg**
+  (also infeasible; the earlier 0.9642 estimate was extrapolated from the tutorial
+  geometry, whose declared root chord is 33.8 m instead of the P1 closure 29.90 m).
+  The measured feasible point is 136,000 kg with 46,800 kg fuel: max throttle
+  **0.9455** (5.5% margin) and 34,109.5 kg fuel burn. The task validates its own
+  mass balance, limits and objective identity on load, attaches its config path for
+  run provenance, and can be adapted to `maml_opt.contracts.TaskSpec` for P4/P5. It
+  is a cruise-entry contract, not an MTOW mission.
+- `aircraft/concorde_adapter.py` — loads the upstream tutorial
+  (`tutorials/Simulation_Turbojet_Supersonic_Aircraft_4500nmi_Mission/Concorde.py`,
   SHA-256 pinned), applies the 15D geometry to the RCAIDE main wing, vertical
-  tail and fuselage **before** \`configs_setup\` (RCAIDE \`Config\` deep-copies the
-  vehicle, so later edits must go to \`analyses.<tag>.vehicle\`), rebuilds the
-  eight fuselage segments (the upstream file appends a duplicate \`segment_6\` tag
+  tail and fuselage **before** `configs_setup` (RCAIDE `Config` deep-copies the
+  vehicle, so later edits must go to `analyses.<tag>.vehicle`), rebuilds the
+  eight fuselage segments (the upstream file appends a duplicate `segment_6` tag
   and silently loses one station), applies the frozen mass contract to the
   analysis vehicle, and re-derives the geometry through RCAIDE
-  \`wing_planform\`/\`fuselage_planform\` to fail closed on a mismatch.
-- \`evaluation/contract.py\` — ten constraints, all \`g <= 0\`, with names and
-  denominators frozen: \`geometry_invalid\`, \`task_mass_balance\`,
-  \`fuel_capacity_excess\`, \`zero_fuel_excess\`, \`takeoff_excess\`,
-  \`fuel_remaining_deficit\`, \`max_throttle\`, \`cruise_range_error\`,
-  \`mission_convergence\` (both convergence flags and residual norm <= 1e-4) and
-  \`trim_attitude_limit\` (|alpha| <= 12 deg as a force-balance guard; this
-  single-segment mission has no moment trim). \`empty_constraints()\` writes nulls,
+  `wing_planform`/`fuselage_planform` to fail closed on a mismatch.
+- `evaluation/contract.py` — ten constraints, all `g <= 0`, with names and
+  denominators frozen: `geometry_invalid`, `task_mass_balance`,
+  `fuel_capacity_excess`, `zero_fuel_excess`, `takeoff_excess`,
+  `fuel_remaining_deficit`, `max_throttle`, `cruise_range_error`,
+  `mission_convergence` (both convergence flags and residual norm <= 1e-4) and
+  `trim_attitude_limit` (|alpha| <= 12 deg as a force-balance guard; this
+  single-segment mission has no moment trim). `empty_constraints()` writes nulls,
   never fabricated numbers; invalid evaluations never get a fake large objective.
-- \`evaluation/mission.py\` — builds the one-segment
-  \`Constant_Mach_Constant_Altitude\` mission and extracts a validated observation
+- `evaluation/mission.py` — builds the one-segment
+  `Constant_Mach_Constant_Altitude` mission and extracts a validated observation
   history (mass/range/time, throttle, fuel mass flow and thrust for the four
   turbojets, alpha/CL/CD, convergence flags, residual norm); non-finite,
-  decreasing-range or increasing-mass histories raise \`ObservationError\`.
-- \`evaluation/low_fidelity.py\` — \`SingleCruiseBackend\`: one fresh vehicle,
+  decreasing-range or increasing-mass histories raise `ObservationError`.
+- `evaluation/low_fidelity.py` — `SingleCruiseBackend`: one fresh vehicle,
   mission and solver state per evaluation (no warm start), status vocabulary
   VALID / GEOMETRY_INVALID / GEOMETRY_MISMATCH / MISSION_BUILD_FAILED /
   MISSION_FAILED / MISSION_NOT_CONVERGED / INVALID_OR_MISSING_RESPONSE. Failed or
-  invalid evaluations carry \`objective: null\`. \`preflight()\` validates the
+  invalid evaluations carry `objective: null`. `preflight()` validates the
   template and task with zero physical calls.
-- \`evaluation/high_fidelity.py\` — fail-closed stub: SU2/RANS is not wired in P2,
+- `evaluation/high_fidelity.py` — fail-closed stub: SU2/RANS is not wired in P2,
   so any call raises instead of returning a placeholder number.
-- \`evaluation/ledger.py\` — \`EvaluationLedger\` enforces the true-evaluation
+- `evaluation/ledger.py` — `EvaluationLedger` enforces the true-evaluation
   budget, caches only VALID results keyed by task fingerprint + fidelity +
   canonical design (a cache hit consumes no budget and reports
-  \`physical_call_count: 0\`), records backend exceptions as \`BACKEND_ERROR\`, and
-  writes the Issue-mandated \`evaluations.jsonl\` fields.
-- \`evaluation/smoke.py\` — three baseline repeats with caching disabled
-  (repeatability tolerance 1e-6) and two perturbations, W01 \`wing_area\` +1% and
-  W10 \`tip_twist\` 0 -> +2 deg. Writes \`summary.json\`, \`run_config.json\`,
-  \`environment.json\`, \`best_design.json\`, \`evaluations.jsonl\`,
-  \`smoke_cases.csv\`, \`task_spec.json\`, two figures and a run \`README.md\`, and
-  updates \`optimization_runs/index.json\`.
-- \`reports/figures.py plot_smoke_artifacts\` — redraws the repeatability and
-  perturbation figures from \`evaluations.jsonl\`/\`smoke_cases.csv\` alone.
+  `physical_call_count: 0`), records backend exceptions as `BACKEND_ERROR`, and
+  writes the Issue-mandated `evaluations.jsonl` fields. It also writes
+  `evaluations_detail.jsonl`: one row per true evaluation with the full backend
+  record (mission responses, geometry cross-check, mass contract, design), with
+  non-finite values serialised as null; cache hits are not repeated there.
+- `evaluation/smoke.py` — three baseline repeats with caching disabled
+  (repeatability tolerance 1e-6) and two perturbations, W01 `wing_area` +1% and
+  W10 `tip_twist` 0 -> +2 deg. Writes `summary.json`, `run_config.json`,
+  `environment.json`, `best_design.json`, `evaluations.jsonl`,
+  `evaluations_detail.jsonl`, `smoke_cases.csv`, `task_spec.json`, two figures
+  and a run `README.md`, records the baseline mass contract and geometry
+  cross-check counts, and updates `optimization_runs/index.json`.
+- `reports/figures.py plot_smoke_artifacts` — redraws the repeatability and
+  perturbation figures from `evaluations.jsonl`/`smoke_cases.csv` alone.
 
 Run the P2 smoke (three repeats + two perturbations = five true evaluations,
 roughly 80 s each on this host):
 
-\`\`\`bash
+```bash
 ./run_rcaide.cmd -m research.concorde_metaopt.cli smoke \
   --run-id <run_id> --output-root research/concorde_metaopt/optimization_runs
-\`\`\`
+```
+
+P2 evidence so far: `smoke-p2-20261029T1520` ran five true evaluations against the
+145,000 kg contract, which the run itself proved infeasible (baseline max throttle
+1.0163). Its status is `smoke_completed_with_failures`: repeatability passed exactly
+(three identical 36,469.33 kg burns, relative spread 0.0), the only violated
+constraint was `max_throttle` (+0.0163 normalised), and `best_feasible_fuel_kg` is
+therefore null. The run is kept as the diagnostic evidence that invalidated the
+145 t contract and is listed in `optimization_runs/index.json`; a replacement smoke
+run with the frozen 136,000 kg contract needs five more true evaluations.
 
 True-evaluation accounting for P2 (approved envelope 8–12 missions): four
-calibration missions froze the mass contract (185 t, 155 t, 150 t and the
-4,500 nmi MTOW probe that showed the fuel cannot close), and the smoke spends
-five, so nine in total. \`run_smoke\` refuses a budget below five.
+calibration missions froze the mass contract (185 t, 155 t, 150 t and the 4,500 nmi
+MTOW probe that showed the fuel cannot close), the first smoke spent five, and the
+136 t diagnostic contract probe spent one, so ten in total. The replacement smoke
+would spend five more (fifteen in total), which exceeds the approved envelope and
+therefore waits for explicit user approval; `run_smoke` still refuses a budget
+below five.
 
 ## Host/sandbox constraints (recorded, not hidden)
 
@@ -390,7 +409,7 @@ missing propulsor, `thrust_force` fallback). No Mission is launched.
 (no row on a rejected call), cache hits that consume no budget, cache-disabled
 runs, invalid results not cached, backend exceptions recorded as
 `BACKEND_ERROR`, the JSONL row fields and deterministic design ids, best/
-first-feasible tracking, and the offline smoke workflow (happy path artefacts,
+first-feasible tracking, and the offline smoke workflow (happy path artefacts including the detailed ledger,
 repeatability failure, case failure, minimum-budget rejection, existing run
 directory protection, figure redraw from artefacts). The backend is a fake; no
 Mission or CFD runs here.
