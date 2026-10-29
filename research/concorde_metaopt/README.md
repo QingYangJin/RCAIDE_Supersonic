@@ -461,6 +461,13 @@ Run the P3 DOE screening (zero physical evaluations):
   --output-root research/concorde_metaopt/optimization_runs --recompute-geometry
 ```
 
+Committed evidence run `doe-p3-20261029T1725` (git sha in its `summary.json`):
+batches `32 + 128` LHS samples (seeds 42 and 43), 160 candidates, 160
+geometry-valid, 0 invalid, 0 geometry errors, 0 duplicates, all twelve DS checks
+pass including recomputation, zero true evaluations, about 2 s wall time. The
+candidate files are the only sizeable artefacts (about 0.3 MB JSONL + 0.1 MB
+CSV); they contain no objective values and no physical-call records.
+
 ## Host/sandbox constraints (recorded, not hidden)
 
 - The first audit (2026-10-27) ran under a Windows file sandbox that denied child

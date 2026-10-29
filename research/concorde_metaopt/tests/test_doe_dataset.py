@@ -172,6 +172,11 @@ class RunDoETests(unittest.TestCase):
         self.assertEqual(manifest["evaluations"]["physical_call_count"], 0)
         self.assertFalse(manifest["evaluations"]["objective_fields_present"])
         self.assertGreaterEqual(len(manifest["files"]), 4)
+        config_path = manifest["design_space"]["config_path"]
+        self.assertNotIn(":", config_path)
+        self.assertFalse(config_path.startswith(("/", "\\")))
+        environment = json.loads((self.run_dir / "environment.json").read_text(encoding="utf-8"))
+        self.assertNotIn(":", environment["design_space_config"])
         rows = [json.loads(line) for line in (self.run_dir / "candidates.jsonl").read_text(encoding="utf-8").splitlines()]
         self.assertEqual(len(rows), 32)
         self.assertEqual({row["candidate_id"] for row in rows}.__len__(), 32)

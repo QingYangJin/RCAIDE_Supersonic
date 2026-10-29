@@ -166,6 +166,7 @@ def _file_entry(path: Path, rows: Optional[int], role: str) -> Dict[str, Any]:
 def _design_space_record(space: DesignSpace) -> Dict[str, Any]:
     config_path = Path(space.config_path)
     record = space.config_summary()
+    record["config_path"] = _display_path(space.config_path)
     record["config_sha256"] = _sha256_file(config_path) if config_path.is_file() else None
     record["bounds"] = {
         variable.id: {"name": variable.name, "lower": variable.lower, "upper": variable.upper, "unit": variable.unit}
