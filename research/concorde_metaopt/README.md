@@ -27,8 +27,9 @@ and P5–P6 remain unimplemented.
 | `openvsp-cases` | implemented (baseline + six representative 15D perturbations exported through OpenVSP; per-case model-vs-OpenVSP checks, perturbation-reach checks, delta CSV/JSON and figure) |
 | `smoke` | implemented (three baseline RCAIDE cruise repeats + two single-variable perturbations; five true evaluations) |
 | `doe` | implemented (LHS/Sobol candidate batches in the 15D box, geometry screening, dataset validator; zero physical evaluations) |
-| `baseline` | implemented (ordinary constrained BO over the 15D box using maml-opt's constrained GP/EI optimizer and the shared evaluation ledger; toy tests only, real budget awaits approval) |
-| `route-a`, `report` | declared in `cli.py`, exit code 2 with "not implemented ...; no result was produced." |
+| `baseline` | implemented (ordinary constrained BO over the 15D box using maml-opt's constrained GP/EI optimizer, plus a deterministic single-process DE/rand/1/bin baseline; both share the evaluation ledger; toy and analytic-function tests only, real budget awaits approval) |
+| `report` | implemented (rebuilds `report.md`/`report.json` from stored artefacts, recomputes headline numbers, checks artefact paths and redraws figures; no Mission/CFD/OpenVSP call) |
+| `route-a` | declared in `cli.py`, exit code 2 with "not implemented ...; no result was produced." |
 
 Reproduce the P0 audit (one run directory, small files committed on purpose so the
 result can be reviewed remotely):
@@ -173,6 +174,15 @@ the geometry model remain **provisional** until a Mission evaluation exists (P2)
   negative controls, CSV/JSON run artefacts and PNG figures.
 - `reports/figures.py` — regenerates the two figures from the CSV/JSON artefacts
   alone (`python -m research.concorde_metaopt.reports.figures <run_dir>`).
+- `reports/summarize.py` — artefact-only run reporter. It reads
+  `summary.json`, `evaluations.jsonl`, `best_design.json` and the recorded
+  artefact list, recomputes the true-evaluation count, best feasible objective,
+  first feasible evaluation, best design id and status histogram from the raw
+  rows, compares them with the stored summary (R01–R04), flags missing or
+  absolute artefact paths, redraws the figures that the run's artefacts support,
+  and writes `report.md`/`report.json` (plus an optional cross-run
+  `comparison.csv`/`comparison.json` when `--compare-run` is given). It never
+  re-runs a Mission, CFD or OpenVSP call.
 - `aircraft/openvsp_geometry.py` — worker that runs under the **external Python
   3.9** OpenVSP distribution (the project interpreter 3.11 cannot import the
   `_vsp` extension, which is ABI cp39). It reads a JSON request (OpenVSP root,
@@ -379,10 +389,18 @@ evaluation loop that P3–P6 will reuse.
 - `evaluation/ledger.py` — `EvaluationLedger` enforces the true-evaluation
   budget, passes the frozen task to the backend on every call, and is
   fail-closed: a record keeps its objective and feasibility only when its status
-  is VALID, the objective is finite and the constraint dict is non-empty;
-  otherwise the row is demoted to `INVALID_OR_MISSING_RESPONSE` with
-  `objective: null` and `feasible: false`, so a misbehaving backend cannot inject
-  a feasible-looking objective. It caches only VALID results keyed by task
+  is VALID, the objective is finite, **exactly the complete frozen constraint
+  schema** (all ten names, finite values) is present and no unknown constraint
+  names are supplied; otherwise the row is demoted to
+  `INVALID_OR_MISSING_RESPONSE` with `objective: null` and `feasible: false`
+  (and is never cached), so a misbehaving backend cannot inject a
+  feasible-looking objective through a partial or all-null mapping. It also
+  rejects impossible physical-call accounting: a non-integer or negative count,
+  a non-cached evaluation reporting zero calls, or a count larger than the
+  remaining budget marks the row `BACKEND_ERROR`, increments
+  `budget_overruns`, sets `budget_exceeded` in the summary and is never cached.
+  A task object without a fingerprint cannot key the cache, so that request is
+  always physical. It caches only VALID results keyed by task
   fingerprint + fidelity + canonical design (a cache hit consumes no budget and
   reports `physical_call_count: 0`), records backend exceptions as
   `BACKEND_ERROR`, and writes the Issue-mandated `evaluations.jsonl` fields. It also writes
@@ -419,7 +437,8 @@ P2 evidence so far: `smoke-p2-20261029T1520` ran five true evaluations against t
 (three identical 36,469.33 kg burns, relative spread 0.0), the only violated
 constraint was `max_throttle` (+0.0163 normalised), and `best_feasible_fuel_kg` is
 therefore null. The run is kept as the diagnostic evidence that invalidated the
-145 t contract.
+145 t contract. It predates the `evaluations_detail.jsonl` writer, so its
+`README.md` says so explicitly instead of listing a file that does not exist.
 
 The acceptance smoke `smoke-p2-20261029T1612` then ran against the frozen
 136,000 kg contract: status `smoke_completed`, five true evaluations, five
@@ -524,6 +543,20 @@ standard feasibility-rule selection, physical-call budget cap, invalid designs
 keep `objective: null`). It writes the same artefact set and is selected with
 `--algorithm de`.
 
+Both baselines map ledger rows into maml-opt's result dict defensively: a row is
+`valid` only when the ledger status is VALID **and** the complete frozen
+constraint schema is present; an invalid row is passed with an empty constraint
+mapping and is therefore never treated as feasible by the optimizer. Constraint
+values are shifted by the contract feasibility tolerance (`g - 1e-12`) because
+maml-opt tests `g <= 0` exactly while the contract accepts `|g| <= 1e-12`.
+A cached duplicate proposal is counted in `duplicate_proposals_ignored` and
+skipped instead of aborting the search, and the experiment status is derived from
+the ledger (`completed` / `completed_with_failures` /
+`no_feasible_solution` / `failed`, with `status_basis: "ledger"`) rather than
+echoing the optimizer's raw status. `run_paths.py` validates every run id to a
+single relative segment and refuses to reuse a non-empty run directory, so
+evidence from two experiments can never be mixed.
+
 The mathematical gate the Issue requires (Analytic test functions before the
 Concorde mission) is `tests/test_math_functions.py`: constrained Branin and
 Ackley are optimised by the same DE class and by maml-opt's
@@ -542,16 +575,59 @@ needs an approved true-evaluation budget and is not launched by any test):
   --output-root research/concorde_metaopt/optimization_runs
 ```
 
-`tests/test_bo_toy.py` (7 tests) drives the BO path with a synthetic quadratic
+`tests/test_bo_toy.py` (15 tests) drives the BO path with a synthetic quadratic
 objective and a throttle-like constraint: it checks that the budget is exactly
 spent (12 of 12 calls), that the search improves on the starting point, that an
 infeasible case returns `baseline_bo_no_feasible_solution` with
 `best_feasible_fuel_kg: null`, the random strategy, validation errors,
-existing-directory protection and figure redraw. `tests/test_de_toy.py` (9
-tests) does the same for DE (baseline-design first evaluation, same-seed
-determinism, population/budget validation). No real RCAIDE evaluation is executed
-there. A real P4 campaign (proposal: 35–50 true evaluations, about 80 s each) is
+existing-directory protection and figure redraw. Adapter tests cover the
+ledger-to-maml-opt mapping (partial mapping is not valid, an infeasible row stays
+valid but not feasible, the tolerance shift makes `g = +1e-12/2` non-positive,
+a non-VALID row with an objective is demoted) and the duplicate-tolerant
+optimizer (a repeated `tell()` is counted and ignored, an out-of-bounds value
+still raises). `tests/test_de_toy.py` (11 tests) does the same for DE
+(baseline-design first evaluation, same-seed determinism, population/budget
+validation, run-id validation and non-empty-directory refusal). No real RCAIDE
+evaluation is executed there. A real P4 campaign (proposal: 35–50 true evaluations, about 80 s each) is
 blocked on the repository owner's budget approval.
+
+## Review fixes (P2/P4 independent review 2, 2026-10-29)
+
+A second independent code review of the P2 evaluation loop and both P4 baselines
+returned CHANGES_REQUESTED (2 BLOCKING / 5 MAJOR / 4 MINOR; the report is kept
+outside the repository at `outputs/agent-worklog/reviews/p2p4_review_2.md`).
+Every finding was fixed and covered by a regression test:
+
+- B-1 a partial or all-null constraint mapping could keep its objective and then
+  count as "feasible" inside the BO optimizer. The ledger now requires exactly
+  the frozen ten-name constraint schema with finite values and rejects unknown
+  names; the optimizer adapter re-checks completeness and never forwards a
+  partial mapping, so an invalid row stays invalid.
+- B-2 the contract's 1e-12 feasibility tolerance contradicted maml-opt's exact
+  `g <= 0` test (`+2e-15` was feasible to P2 but infeasible to BO). Constraint
+  values are shifted by `-FEASIBILITY_TOLERANCE` before `tell()`, and the run
+  status is derived from the ledger instead of the optimizer's raw status. The
+  committed P2 summaries keep the strict `all_g_le_zero` flag as a raw record
+  (false at a `+2e-15` range residual); only the optimizer input is shifted.
+- M-1 the smoke summary copied raw backend records, so a failed repeat could
+  still carry an objective and `feasible: true`; the summary now stores only
+  sanitized ledger rows.
+- M-2 physical-call accounting could exceed the budget or report zero calls for a
+  non-cached evaluation; both are now rejected as `BACKEND_ERROR`, counted in
+  `budget_overruns` and never cached.
+- M-3/M-4 `--allow-existing` could mix old evaluations with new traces, and a
+  run id could escape the output root. `run_paths.py` validates every run id to a
+  single relative segment and only reuses an existing empty directory.
+- M-5 a cached duplicate proposal aborted the BO search with
+  `ValueError("Design has already been recorded")`;
+  `_DuplicateTolerantOptimizer` (a real `ConstrainedBayesianOptimizer`
+  subclass, as `run_search` requires) counts and ignores duplicate `tell()`
+  calls.
+- m-1 status derivation, m-2 the 1520 run README's missing detail file, m-3
+  non-finite values in the generic JSON writer and n-1 the cache task fallback
+  are fixed or explicitly documented.
+
+The full suite after these fixes is 248 tests, 1 skipped.
 
 ## Host/sandbox constraints (recorded, not hidden)
 
@@ -621,7 +697,7 @@ missing propulsor, `thrust_force` fallback). The convergence gate is unit-tested
 separately: a 1e-3 residual fails even when both flags are true, and non-finite
 or missing residuals fail. No Mission is launched.
 
-`tests/test_budget_and_cache.py` (30 tests) covers ledger budget enforcement
+`tests/test_budget_and_cache.py` (38 tests) covers ledger budget enforcement
 (no row on a rejected call), cache hits that consume no budget, cache-disabled
 runs, invalid results not cached, backend exceptions recorded as
 `BACKEND_ERROR`, the JSONL row fields and deterministic design ids, best/
@@ -631,10 +707,15 @@ flat fallback, readback disclosure, explicit "not recorded"), the
 artefacts including the detailed ledger, repeatability failure, case failure,
 minimum-budget rejection, existing run directory protection, figure redraw from
 artefacts). Fail-closed tests show that a backend returning an objective with a
-non-VALID status, a non-finite objective or no constraints cannot produce a
-feasible or cached row, and a task-awareness test shows the single-cruise
-backend rejects a swapped task fingerprint. The backend is a fake; no Mission or
-CFD runs here.
+non-VALID status, a non-finite objective, no constraints or a partial constraint
+schema cannot produce a feasible or cached row. Accounting tests cover
+partial/all-null schema demotion, unknown constraint names, a physical-call
+overrun and a non-cached zero-call report (both `BACKEND_ERROR` with
+`budget_overruns`/`budget_exceeded`), non-integer counts and a task without a
+fingerprint that can never hit the cache. A sanitization test proves the smoke
+summary stores cleaned ledger rows, and a task-awareness test shows the
+single-cruise backend rejects a swapped task fingerprint. The backend is a fake;
+no Mission or CFD runs here.
 
 `tests/test_doe_dataset.py` (23 tests) covers batch-size parsing, deterministic
 LHS and Sobol sampling, screening outcomes (baseline valid, cross-constraint and
@@ -645,16 +726,25 @@ reproducibility, multi-batch seed accounting, existing-directory protection) and
 tamper detection (out-of-bounds design, deleted row, changed config hash,
 injected objective).
 
-`tests/test_bo_toy.py` (7 tests) covers the P4 baseline end to end with a toy
+`tests/test_bo_toy.py` (15 tests) covers the P4 baseline end to end with a toy
 backend: budget accounting, improvement over the starting point, rejected
 budgets/initial counts/strategies, the no-feasible-solution path, random
 strategy, committed artefacts and manifest hashes, existing-directory
-protection, and redrawing both figures from the trace alone.
+protection, redrawing both figures from the trace alone, the defensive
+ledger-to-optimizer mapping (partial mapping, feasibility tolerance, invalid
+rows) and the duplicate-tolerant optimizer (a repeated duplicate `tell()` is
+counted and ignored).
 
-All 219 tests pass, 1 skipped (17 audit + 40 design space + 23 geometry + 28
-OpenVSP + 31 task/evaluation + 30 budget/cache + 23 DOE + 7 BO toy + 9 DE toy +
-11 analytic functions; the skipped test is the real OpenVSP worker integration
-test, which needs the external Python 3.9 install).
+`tests/test_report.py` (11 tests) covers the read-only report CLI: recomputing
+summary counts from `evaluations.jsonl` (including failed physical rows and
+cache hits), the R01–R04 summary-versus-recomputed consistency checks, artifact
+completeness and absolute-path checks, the cross-run comparison output and figure
+regeneration from stored rows. No Mission, CFD or OpenVSP call is made.
+
+All 248 tests pass, 1 skipped (17 audit + 40 design space + 23 geometry + 28
+OpenVSP + 31 task/evaluation + 38 budget/cache + 23 DOE + 15 BO toy + 11 DE toy +
+11 analytic functions + 11 report; the skipped test is the real OpenVSP worker
+integration test, which needs the external Python 3.9 install).
 
 ## Out of scope so far
 

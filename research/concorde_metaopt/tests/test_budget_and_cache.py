@@ -64,6 +64,9 @@ class FakeBackend:
         feasible_override=None,
         drop_constraints=False,
         fail_calls=(),
+        constraint_values=None,
+        extra_constraints=None,
+        physical_call_count=1,
     ):
         self.status = status
         self.raise_error = raise_error
@@ -74,6 +77,13 @@ class FakeBackend:
         self.feasible_override = feasible_override
         self.drop_constraints = drop_constraints
         self.fail_calls = set(fail_calls)
+        self.constraint_values = (
+            None if constraint_values is None else dict(constraint_values)
+        )
+        self.extra_constraints = (
+            None if extra_constraints is None else dict(extra_constraints)
+        )
+        self.physical_call_count = physical_call_count
         self.calls = 0
         self.tasks = []
         self.designs = []
@@ -106,6 +116,10 @@ class FakeBackend:
             constraints["task_mass_balance"] = 0.0
             constraints["mission_convergence"] = 0.0
             constraints["cruise_range_error"] = self.constraint_excess
+        if self.constraint_values is not None:
+            constraints = dict(self.constraint_values)
+        if self.extra_constraints:
+            constraints.update(self.extra_constraints)
         feasible = status == "VALID" if self.feasible_override is None else bool(self.feasible_override)
         return {
             "status": status,
@@ -114,7 +128,7 @@ class FakeBackend:
             "feasible": feasible,
             "fidelity": fidelity or self.fidelity,
             "diagnostics": [] if status == "VALID" else ["synthetic non-convergence"],
-            "physical_call_count": 1,
+            "physical_call_count": self.physical_call_count,
         }
 
     @staticmethod
@@ -274,6 +288,120 @@ class TaskAwarenessTests(LedgerTestBase):
         self.assertNotEqual(other.fingerprint(), self.task.fingerprint())
         with self.assertRaises(ValueError):
             backend.evaluate(self.baseline, task=other)
+
+
+class LedgerAccountingTests(LedgerTestBase):
+    """The ledger rejects partial schemas and impossible physical-call accounting."""
+
+    def test_partial_constraint_schema_is_downgraded_and_not_cached(self):
+        partial = {"task_mass_balance": 0.0, "mission_convergence": 0.0}
+        backend = FakeBackend(constraint_values=partial)
+        ledger = self._ledger(2)
+        first = ledger.evaluate(backend, self.baseline, self.task)
+        self.assertEqual(first["status"], "INVALID_OR_MISSING_RESPONSE")
+        self.assertIsNone(first["objective"])
+        self.assertFalse(first["feasible"])
+        second = ledger.evaluate(backend, self.baseline, self.task)
+        self.assertFalse(second["cache_hit"])
+        self.assertEqual(backend.calls, 2)
+        self.assertEqual(ledger.summary()["failed_count"], 2)
+
+    def test_all_null_constraints_are_downgraded(self):
+        backend = FakeBackend(constraint_values={name: None for name in CONSTRAINT_NAMES})
+        ledger = self._ledger(1)
+        row = ledger.evaluate(backend, self.baseline, self.task)
+        self.assertEqual(row["status"], "INVALID_OR_MISSING_RESPONSE")
+        self.assertIsNone(row["objective"])
+        self.assertFalse(row["feasible"])
+        self.assertTrue(all(value is None for value in row["constraints"].values()))
+
+    def test_unexpected_constraint_names_are_downgraded(self):
+        backend = FakeBackend(extra_constraints={"mystery_constraint": -1.0})
+        ledger = self._ledger(1)
+        row = ledger.evaluate(backend, self.baseline, self.task)
+        self.assertEqual(row["status"], "INVALID_OR_MISSING_RESPONSE")
+        self.assertIsNone(row["objective"])
+        self.assertIn("unknown constraint names", " ".join(row["diagnostics"]))
+
+    def test_physical_call_overrun_is_rejected_and_counted(self):
+        backend = FakeBackend(physical_call_count=5)
+        ledger = self._ledger(1)
+        row = ledger.evaluate(backend, self.baseline, self.task)
+        self.assertEqual(row["status"], "BACKEND_ERROR")
+        self.assertIsNone(row["objective"])
+        self.assertFalse(row["feasible"])
+        summary = ledger.summary()
+        self.assertEqual(summary["budget_overruns"], 1)
+        self.assertTrue(summary["budget_exceeded"])
+        self.assertEqual(ledger.physical_calls, 5)
+        self.assertEqual(ledger.remaining, 0)
+
+    def test_zero_physical_calls_are_rejected_and_not_cached(self):
+        backend = FakeBackend(physical_call_count=0)
+        ledger = self._ledger(2)
+        first = ledger.evaluate(backend, self.baseline, self.task)
+        second = ledger.evaluate(backend, self.baseline, self.task)
+        self.assertEqual(first["status"], "BACKEND_ERROR")
+        self.assertEqual(second["status"], "BACKEND_ERROR")
+        self.assertFalse(second["cache_hit"])
+        self.assertEqual(backend.calls, 2)
+        self.assertEqual(ledger.physical_calls, 0)
+        self.assertEqual(ledger.summary()["budget_overruns"], 2)
+
+    def test_non_integer_physical_call_count_is_rejected(self):
+        backend = FakeBackend(physical_call_count="1")
+        ledger = self._ledger(2)
+        row = ledger.evaluate(backend, self.baseline, self.task)
+        self.assertEqual(row["status"], "BACKEND_ERROR")
+        self.assertIsNone(row["objective"])
+        self.assertEqual(ledger.summary()["budget_overruns"], 1)
+
+    def test_missing_task_fingerprint_disables_the_cache(self):
+        from types import SimpleNamespace
+
+        backend = FakeBackend()
+        ledger = self._ledger(2)
+        task = SimpleNamespace(task_id="synthetic-no-fingerprint")
+        first = ledger.evaluate(backend, self.baseline, task)
+        second = ledger.evaluate(backend, self.baseline, task)
+        self.assertFalse(first["cache_hit"])
+        self.assertFalse(second["cache_hit"])
+        self.assertEqual(backend.calls, 2)
+        self.assertEqual(ledger.summary()["cache_hits"], 0)
+
+
+class SmokeSummarySanitizationTests(LedgerTestBase):
+    """A failed repeat cannot publish the raw backend objective into the summary."""
+
+    def test_failed_repeat_records_carry_no_objective(self):
+        backend = FakeBackend(
+            fail_calls=(1,),
+            objective_override=1.23,
+        )
+        run_id = "offline-sanitized-" + self._testMethodName
+        summary = run_smoke(
+            output_root=TMP_ROOT / ("smoke-runs-" + self._testMethodName),
+            run_id=run_id,
+            budget=5,
+            design_space=self.space,
+            task=self.task,
+            backend=backend,
+        )
+        records = summary["smoke"]["baseline"]["records"]
+        failed = [row for row in records if row["status"] != "VALID"]
+        self.assertEqual(len(failed), 1)
+        self.assertIsNone(failed[0]["objective"])
+        self.assertFalse(failed[0]["feasible"])
+        for row in records:
+            self.assertNotIn("responses", row)
+        run_dir = TMP_ROOT / ("smoke-runs-" + self._testMethodName) / run_id
+        evaluations = [
+            json.loads(line)
+            for line in (run_dir / "evaluations.jsonl").read_text(encoding="utf-8").splitlines()
+            if line
+        ]
+        self.assertEqual(evaluations[0]["status"], "MISSION_NOT_CONVERGED")
+        self.assertIsNone(evaluations[0]["objective"])
 
 
 class JsonlContractTests(LedgerTestBase):
@@ -482,6 +610,8 @@ class SmokeWorkflowTests(LedgerTestBase):
         self._run("offline-existing", FakeBackend())
         with self.assertRaises(FileExistsError):
             self._run("offline-existing", FakeBackend())
+        with self.assertRaises(FileExistsError):
+            self._run("offline-existing", FakeBackend(), allow_existing=True)
 
     def test_figures_are_redrawn_from_artifacts(self):
         self._run("offline-redraw", FakeBackend())

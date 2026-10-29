@@ -34,12 +34,19 @@ from ..aircraft.geometry_checks import (
     _write_jsonl,
 )
 from ..aircraft.geometry_model import GEOMETRY_MODEL_VERSION
+from ..evaluation.contract import (
+    CONSTRAINT_NAMES,
+    FEASIBILITY_TOLERANCE,
+    STATUS_VALID,
+    optimizer_constraints,
+)
 from ..evaluation.ledger import (
     BudgetExceeded,
     EvaluationLedger,
     design_id as design_identifier,
 )
 from ..evaluation.low_fidelity import SingleCruiseBackend
+from ..run_paths import RunPathError, resolve_run_directory
 from ..tasks.task_spec import TASK_SPEC_VERSION, FixedCruiseTask, load_task_spec
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
@@ -150,24 +157,63 @@ def _environment(space: DesignSpace, task: FixedCruiseTask) -> Dict[str, Any]:
     }
 
 
+class _DuplicateTolerantOptimizer(ConstrainedBayesianOptimizer):
+    """BO optimizer that keeps a cached duplicate proposal from aborting the search.
+
+    maml-opt refuses to record the same design twice. A cache hit returns a
+    zero-call evaluation of an already recorded design, so the duplicate
+    observation carries no new information: dropping it is safe and keeps the
+    run (and its evidence bundle) alive. This is a subclass, not a proxy,
+    because run_search() accepts only a real ConstrainedBayesianOptimizer.
+    """
+
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        super().__init__(*args, **kwargs)
+        self.duplicates_ignored = 0
+
+    def tell(self, design_vector: Any, result: Any, selection: Any = None) -> Any:
+        try:
+            return super().tell(design_vector, result, selection=selection)
+        except ValueError as exc:
+            if "already been recorded" not in str(exc):
+                raise
+            self.duplicates_ignored += 1
+            return None
+
+
 def _evaluator_result(row: Mapping[str, Any]) -> Dict[str, Any]:
-    """Convert one ledger row into the result dict maml-opt tell() expects."""
+    """Convert one ledger row into the result dict maml-opt tell() expects.
+
+    The ledger already enforces the complete frozen constraint schema for a
+    VALID row; this function re-checks it so a future ledger change cannot leak
+    a partial mapping into the optimizer (an empty mapping would be treated as
+    feasible by maml-opt). Constraint values are shifted by the contract
+    feasibility tolerance because maml-opt tests g <= 0 exactly while the
+    contract accepts |g| <= FEASIBILITY_TOLERANCE.
+    """
     status = str(row.get("status", ""))
-    valid = status == "VALID"
     constraints = row.get("constraints") or {}
+    complete = all(constraints.get(name) is not None for name in CONSTRAINT_NAMES)
+    valid = status == STATUS_VALID and complete and row.get("objective") is not None
+    if status == STATUS_VALID and not complete:
+        status = "INVALID_OR_MISSING_RESPONSE"
+    shifted: Dict[str, float] = (
+        optimizer_constraints(constraints) if valid else {}
+    )
+    physical = row.get("physical_call_count", 0)
+    try:
+        analysis_calls = int(physical)
+    except (TypeError, ValueError):
+        analysis_calls = 0
     result: Dict[str, Any] = {
         "status": status,
-        "valid": valid,
-        "feasible": bool(row.get("feasible", False)),
-        "objective": row.get("objective"),
-        "constraints_g_le_zero": {
-            str(name): float(value)
-            for name, value in constraints.items()
-            if value is not None
-        },
+        "valid": bool(valid),
+        "feasible": bool(row.get("feasible", False)) if valid else False,
+        "objective": row.get("objective") if valid else None,
+        "constraints_g_le_zero": shifted,
         "objective_model_eligible": True,
-        "analysis_calls": int(row.get("physical_call_count", 0)),
-        "analysis_calls_this_request": int(row.get("physical_call_count", 0)),
+        "analysis_calls": analysis_calls,
+        "analysis_calls_this_request": analysis_calls,
         "cache_hit": bool(row.get("cache_hit", False)),
         "design_id": row.get("design_id"),
     }
@@ -282,6 +328,8 @@ def _update_index(run_dir: Path, summary: Mapping[str, Any]) -> Path:
         index_status = "completed"
     elif raw_status == "baseline_bo_no_feasible_solution":
         index_status = "no_feasible_solution"
+    elif raw_status == "baseline_bo_failed":
+        index_status = "failed"
     else:
         index_status = raw_status
     entries.append(
@@ -384,11 +432,15 @@ def run_baseline_bo(
         design_space=space, task=frozen_task
     )
     root = Path(output_root) if output_root is not None else DEFAULT_OUTPUT_ROOT
-    generated = run_id or time.strftime("baseline-bo-p4-%Y%m%dT%H%M%S", time.gmtime())
-    run_dir = root / generated
-    if run_dir.exists() and not allow_existing:
-        raise FileExistsError("run directory already exists: %s" % run_dir)
-    run_dir.mkdir(parents=True, exist_ok=True)
+    generated = (
+        time.strftime("baseline-bo-p4-%Y%m%dT%H%M%S", time.gmtime())
+        if run_id is None
+        else run_id
+    )
+    try:
+        run_dir = resolve_run_directory(root, generated, allow_existing=allow_existing)
+    except RunPathError as exc:
+        raise BaselineError(str(exc)) from exc
     (run_dir / "figures").mkdir(exist_ok=True)
 
     git_sha = _git_sha(REPO_ROOT)
@@ -457,14 +509,14 @@ def run_baseline_bo(
         baseline=np.asarray(space.to_unit_interval(space.baseline_dict()), dtype=float),
         method="lhs",
     )
-    optimizer = ConstrainedBayesianOptimizer(
+    search_optimizer = _DuplicateTolerantOptimizer(
         lower_bounds=np.zeros(len(space.variables), dtype=float),
         upper_bounds=np.ones(len(space.variables), dtype=float),
         seed=int(seed),
     )
     try:
         search = run_search(
-            optimizer,
+            search_optimizer,
             evaluator,
             initial_designs,
             int(budget),
@@ -476,16 +528,22 @@ def run_baseline_bo(
 
     ledger_summary = ledger.summary()
     best = ledger.best()
-    status_map = {
-        "SEARCH_COMPLETE": "baseline_bo_completed",
-        "NO_FEASIBLE_SOLUTION": "baseline_bo_no_feasible_solution",
-        "SEARCH_INTERRUPTED": "baseline_bo_interrupted",
-    }
-    status = status_map.get(str(search.get("status")), "baseline_bo_interrupted")
-    if ledger_summary.get("failed_count") and status == "baseline_bo_completed":
-        pass
-    if not ledger.rows:
+    # The experiment status is derived from the ledger, not from the external
+    # optimizer status: a cache hit, a failed evaluation or a tolerance-level
+    # constraint must not turn an infeasible run into a "completed" one.
+    valid_rows = [row for row in ledger.rows if str(row.get("status")) == STATUS_VALID]
+    if not valid_rows:
         status = "baseline_bo_failed"
+        outcome_note = "no VALID evaluation was recorded"
+    elif best.get("best_feasible_objective") is None:
+        status = "baseline_bo_no_feasible_solution"
+        outcome_note = "valid evaluations exist but none satisfies every constraint"
+    elif ledger_summary.get("failed_count"):
+        status = "baseline_bo_completed_with_failures"
+        outcome_note = "search completed with failed evaluations; the best feasible design is kept"
+    else:
+        status = "baseline_bo_completed"
+        outcome_note = "search completed"
 
     elbow = time.perf_counter() - started
     cpu_elapsed = time.process_time() - cpu_started
@@ -547,7 +605,14 @@ def run_baseline_bo(
             "feasible_evaluations": search.get("feasible_evaluations"),
             "objective_model_eligible_evaluations": search.get("objective_model_eligible_evaluations"),
             "optimizer_best_feasible": search.get("best_feasible"),
-            "optimizer_iterations": len(optimizer.observations),
+            "optimizer_iterations": len(search_optimizer.observations),
+            "optimizer_raw_status": search.get("status"),
+            "status_basis": "ledger",
+            "outcome_note": outcome_note,
+            "feasibility_tolerance": FEASIBILITY_TOLERANCE,
+            "optimizer_constraint_shift": -FEASIBILITY_TOLERANCE,
+            "duplicate_proposals_ignored": search_optimizer.duplicates_ignored,
+            "budget_overruns": ledger_summary.get("budget_overruns"),
             "ledger": ledger_summary,
             "baseline_objective": baseline_objective,
             "improvement_kg": improvement,

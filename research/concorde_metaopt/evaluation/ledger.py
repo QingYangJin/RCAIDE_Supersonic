@@ -26,6 +26,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Mapping, Optional, Tuple
 
 from .contract import (
+    CONSTRAINT_NAMES,
     STATUS_INVALID_OR_MISSING_RESPONSE,
     STATUS_VALID,
     feasibility,
@@ -66,15 +67,18 @@ def _sanitize_record(record: Mapping[str, Any], fidelity_name: str) -> Dict[str,
     status = str(raw_status) if raw_status is not None else "MISSING_STATUS"
     diagnostics = [str(item) for item in record.get("diagnostics") or []]
     constraints_in = record.get("constraints")
-    constraints: Dict[str, Optional[float]] = {}
-    if isinstance(constraints_in, Mapping):
-        for name, value in constraints_in.items():
-            if value is None:
-                constraints[str(name)] = None
-            elif _finite_number(value):
-                constraints[str(name)] = float(value)
-            else:
-                constraints[str(name)] = None
+    mapping_in = constraints_in if isinstance(constraints_in, Mapping) else {}
+    constraints: Dict[str, Optional[float]] = {name: None for name in CONSTRAINT_NAMES}
+    for name in CONSTRAINT_NAMES:
+        value = mapping_in.get(name)
+        if _finite_number(value):
+            constraints[name] = float(value)
+    complete_schema = all(constraints[name] is not None for name in CONSTRAINT_NAMES)
+    unexpected = sorted(
+        str(name)
+        for name, value in mapping_in.items()
+        if str(name) not in CONSTRAINT_NAMES and value is not None
+    )
     objective = record.get("objective")
     feasible = False
     if status == STATUS_VALID:
@@ -82,9 +86,18 @@ def _sanitize_record(record: Mapping[str, Any], fidelity_name: str) -> Dict[str,
             status = STATUS_INVALID_OR_MISSING_RESPONSE
             diagnostics.append("VALID status without a finite objective was rejected")
             objective = None
-        elif not constraints:
+        elif not complete_schema:
             status = STATUS_INVALID_OR_MISSING_RESPONSE
-            diagnostics.append("VALID status without constraint values was rejected")
+            diagnostics.append(
+                "VALID status without the complete frozen constraint schema was rejected"
+            )
+            objective = None
+        elif unexpected:
+            status = STATUS_INVALID_OR_MISSING_RESPONSE
+            diagnostics.append(
+                "VALID status with unknown constraint names was rejected: %s"
+                % (", ".join(unexpected),)
+            )
             objective = None
         else:
             objective = float(objective)
@@ -151,6 +164,7 @@ class EvaluationLedger:
         self.rows: List[Dict[str, Any]] = []
         self.records: List[Dict[str, Any]] = []
         self.physical_calls = 0
+        self.budget_overruns = 0
         self._cache: Dict[str, Dict[str, Any]] = {}
         self._best_objective: Optional[float] = None
         self._best_design_id: Optional[str] = None
@@ -181,13 +195,20 @@ class EvaluationLedger:
 
         Returns the ledger row. The full backend record is kept in self.records.
         """
-        task_fingerprint = task.fingerprint() if hasattr(task, "fingerprint") else str(getattr(task, "task_id", "task"))
+        task_fingerprint = task.fingerprint() if hasattr(task, "fingerprint") else None
         fidelity_name = fidelity or getattr(backend, "fidelity", None) or "single_cruise"
-        key = self._cache_key(task_fingerprint, fidelity_name, design)
+        # A task without a fingerprint cannot key the cache safely: fall back to
+        # a miss and skip caching for this request instead of colliding tasks.
+        cache_usable = self.cache_enabled and task_fingerprint is not None
+        key = (
+            self._cache_key(task_fingerprint, fidelity_name, design)
+            if cache_usable
+            else None
+        )
         iteration = len(self.rows) + 1
         did = design_id(design)
 
-        cached = self._cache.get(key) if self.cache_enabled else None
+        cached = self._cache.get(key) if (cache_usable and key is not None) else None
         if cached is not None:
             row = {
                 "iteration": iteration,
@@ -232,16 +253,35 @@ class EvaluationLedger:
             }
         wall = time.perf_counter() - started
 
-        try:
-            physical = int(record.get("physical_call_count", 1) or 0)
-        except (TypeError, ValueError):
-            physical = 1
-        if physical < 0:
-            physical = 0
+        raw_count = record.get("physical_call_count", 1)
+        accounting_error: Optional[str] = None
+        if type(raw_count) is not int or raw_count < 0:
+            accounting_error = (
+                "backend reported an invalid physical call count: %r" % (raw_count,)
+            )
+            physical = 1 if self.remaining >= 1 else 0
+        else:
+            physical = int(raw_count)
+        if accounting_error is None and physical == 0:
+            accounting_error = (
+                "backend reported zero physical calls for a non-cached evaluation"
+            )
+        if accounting_error is None and physical > self.remaining:
+            accounting_error = (
+                "physical call overrun: backend reported %d calls but only %d remain in the budget"
+                % (physical, self.remaining)
+            )
         self.physical_calls += physical
         self.records.append(record)
 
         sanitized = _sanitize_record(record, fidelity_name)
+        if accounting_error is not None:
+            self.budget_overruns += 1
+            sanitized = dict(sanitized)
+            sanitized["status"] = STATUS_BACKEND_ERROR
+            sanitized["objective"] = None
+            sanitized["feasible"] = False
+            sanitized["diagnostics"] = list(sanitized["diagnostics"]) + [accounting_error]
         objective = sanitized["objective"]
         feasible = bool(sanitized["feasible"]) and objective is not None
         if feasible and objective is not None:
@@ -276,7 +316,7 @@ class EvaluationLedger:
         self._append(row)
         self._append_detail(row, record)
 
-        if self.cache_enabled and row["status"] == STATUS_VALID:
+        if cache_usable and key is not None and row["status"] == STATUS_VALID and physical > 0:
             self._cache[key] = {
                 "status": row["status"],
                 "objective": row["objective"],
@@ -347,4 +387,6 @@ class EvaluationLedger:
             "best_design_id": self._best_design_id,
             "budget": self.budget,
             "budget_remaining": self.remaining,
+            "budget_overruns": self.budget_overruns,
+            "budget_exceeded": self.physical_calls > self.budget,
         }

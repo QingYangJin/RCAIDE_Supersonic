@@ -234,14 +234,26 @@ class BaselineDETests(unittest.TestCase):
         with self.assertRaises(BaselineError):
             self._run(budget=12, crossover_rate=1.5)
 
-    def test_existing_run_directory_requires_allow_existing(self):
+    def test_existing_run_directory_is_never_reused(self):
         self._run(run_id="toy-de-existing", budget=8, population_size=4)
         with self.assertRaises(FileExistsError):
             self._run(run_id="toy-de-existing", budget=8, population_size=4)
+        with self.assertRaises(FileExistsError):
+            self._run(
+                run_id="toy-de-existing", budget=8, population_size=4, allow_existing=True
+            )
+
+    def test_allow_existing_accepts_an_empty_run_directory(self):
+        (TMP_ROOT / "toy-de-empty").mkdir(parents=True, exist_ok=True)
         summary = self._run(
-            run_id="toy-de-existing", budget=8, population_size=4, allow_existing=True
+            run_id="toy-de-empty", budget=8, population_size=4, allow_existing=True
         )
         self.assertEqual(summary["total_true_evaluations"], 8)
+
+    def test_run_id_cannot_escape_the_output_root(self):
+        for bad_id in ("../escape", "nested/run", "C:/abs", "", "..", "run\\name"):
+            with self.assertRaises(BaselineError):
+                self._run(run_id=bad_id, budget=8, population_size=4)
 
 
 class BaselineDEFiguresRedrawTests(unittest.TestCase):

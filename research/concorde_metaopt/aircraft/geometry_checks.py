@@ -1322,16 +1322,45 @@ def _csv_value(value: Any) -> Any:
     return value
 
 
+def _json_ready(value: Any) -> Any:
+    """Return a JSON-safe copy of value (non-finite floats become null).
+
+    Artefacts must never silently contain NaN/Infinity: json.dump writes those
+    by default, which is invalid JSON and lets a failed evaluation masquerade as
+    a recorded number in a post-processing tool.
+    """
+    if value is None or isinstance(value, (str, bool)):
+        return value
+    if isinstance(value, Mapping):
+        return {str(key): _json_ready(item) for key, item in value.items()}
+    if isinstance(value, (list, tuple, set)):
+        return [_json_ready(item) for item in value]
+    tolist = getattr(value, "tolist", None)
+    if callable(tolist):
+        return _json_ready(tolist())
+    if isinstance(value, int):
+        return int(value)
+    if isinstance(value, float):
+        return value if math.isfinite(value) else None
+    return str(value)
+
+
 def _write_json(path: Path, data: Any, pretty: bool) -> None:
     with path.open("w", encoding="utf-8") as handle:
-        json.dump(data, handle, indent=2 if pretty else None, sort_keys=True)
+        json.dump(
+            _json_ready(data),
+            handle,
+            indent=2 if pretty else None,
+            sort_keys=True,
+            allow_nan=False,
+        )
         handle.write("\n")
 
 
 def _write_jsonl(path: Path, rows: Iterable[Mapping[str, Any]]) -> None:
     with path.open("w", encoding="utf-8") as handle:
         for row in rows:
-            handle.write(json.dumps(row, sort_keys=True) + "\n")
+            handle.write(json.dumps(_json_ready(row), sort_keys=True, allow_nan=False) + "\n")
 
 
 def _write_csv(path: Path, rows: Sequence[Mapping[str, Any]]) -> None:

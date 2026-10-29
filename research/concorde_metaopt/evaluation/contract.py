@@ -160,6 +160,26 @@ def feasibility(constraints: Mapping[str, Optional[float]]) -> bool:
     return True
 
 
+def optimizer_constraints(
+    constraints: Mapping[str, Optional[float]],
+) -> Dict[str, float]:
+    """Return constraints shifted so an exact g <= 0 test matches the contract.
+
+    The frozen contract treats |g| <= FEASIBILITY_TOLERANCE as feasible, while
+    the external maml-opt optimizer tests g <= 0 exactly. Shifting every value
+    down by the same tolerance makes both tests agree on signed values without
+    changing the ranking of designs. The shift is tiny (1e-12) and is recorded
+    in the run summary under the feasibility tolerance fields.
+    """
+    shifted: Dict[str, float] = {}
+    for name in CONSTRAINT_NAMES:
+        value = constraints.get(name)
+        if value is None:
+            raise ValueError("constraint %r is missing from the evaluation" % (name,))
+        shifted[name] = float(value) - FEASIBILITY_TOLERANCE
+    return shifted
+
+
 def violated_constraints(
     constraints: Mapping[str, Optional[float]],
 ) -> Dict[str, Optional[float]]:

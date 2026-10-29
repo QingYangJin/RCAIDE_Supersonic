@@ -37,6 +37,7 @@ from .contract import (
 )
 from .ledger import EvaluationLedger
 from .low_fidelity import FIDELITY_SINGLE_CRUISE, SingleCruiseBackend
+from ..run_paths import RunPathError, resolve_run_directory
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_OUTPUT_ROOT = REPO_ROOT / "research" / "concorde_metaopt" / "optimization_runs"
@@ -401,12 +402,27 @@ def _run_readme(summary: Mapping[str, Any]) -> str:
         "baseline repeats were executed with the cache disabled to measure true",
         "repeatability; only valid evaluations are cached by the ledger.",
         "",
-        "Artifacts: summary.json, run_config.json, environment.json,",
-        "best_design.json, evaluations.jsonl, evaluations_detail.jsonl,",
-        "smoke_cases.csv, figures/.  The detail file repeats every true",
-        "evaluation with the full backend record (mission responses and geometry",
-        "cross-check); the compact evaluations.jsonl keeps the Issue schema.",
     ]
+    artifacts = summary.get("artifacts") or {}
+    artifact_names = [
+        "summary.json",
+        "run_config.json",
+        "environment.json",
+        "best_design.json",
+        "evaluations.jsonl",
+    ]
+    detail_note = []
+    if "evaluations_detail" in artifacts:
+        artifact_names.append("evaluations_detail.jsonl")
+        detail_note = [
+            "The detail file repeats every true evaluation with the full backend",
+            "record (mission responses and geometry cross-check); the compact",
+            "evaluations.jsonl keeps the Issue schema.",
+        ]
+    artifact_names += ["smoke_cases.csv", "figures/"]
+    lines.append("Artifacts: " + ", ".join(artifact_names) + ".")
+    if detail_note:
+        lines += [""] + detail_note
     return "\n".join(lines) + "\n"
 
 
@@ -464,11 +480,15 @@ def run_smoke(
         design_space=space, task=frozen_task, verify_tutorial_hash=verify_tutorial_hash
     )
     root = Path(output_root) if output_root is not None else DEFAULT_OUTPUT_ROOT
-    generated = run_id or time.strftime("smoke-p2-%Y%m%dT%H%M%S", time.gmtime())
-    run_dir = root / generated
-    if run_dir.exists() and not allow_existing:
-        raise FileExistsError("run directory already exists: %s" % run_dir)
-    run_dir.mkdir(parents=True, exist_ok=True)
+    generated = (
+        time.strftime("smoke-p2-%Y%m%dT%H%M%S", time.gmtime())
+        if run_id is None
+        else run_id
+    )
+    try:
+        run_dir = resolve_run_directory(root, generated, allow_existing=allow_existing)
+    except RunPathError as exc:
+        raise SmokeError(str(exc)) from exc
     (run_dir / "figures").mkdir(exist_ok=True)
 
     git_sha = _git_sha(REPO_ROOT)
@@ -652,7 +672,25 @@ def run_smoke(
             "objective": baseline_row["objective"] if baseline_row else None,
             "feasible": baseline_row["feasible"] if baseline_row else None,
             "constraints": dict(baseline_row["constraints"]) if baseline_row else {},
-            "records": [record for record in ledger.records[: len(repeat_rows)]],
+            # Sanitised ledger rows only: the raw backend record may still carry
+            # an objective for a failed status, which must never be written into
+            # the summary as if it were an evaluation result.
+            "records": [
+                {
+                    "iteration": row["iteration"],
+                    "design_id": row["design_id"],
+                    "status": row["status"],
+                    "objective": row["objective"],
+                    "feasible": row["feasible"],
+                    "constraints": dict(row["constraints"]),
+                    "fidelity": row["fidelity"],
+                    "cache_hit": row["cache_hit"],
+                    "physical_call_count": row["physical_call_count"],
+                    "wall_seconds": row["wall_seconds"],
+                    "diagnostics": list(row["diagnostics"]),
+                }
+                for row in repeat_rows
+            ],
             "mass_contract": repeat_records[0].get("mass_contract") if repeat_records else None,
             "geometry_cross_check": _cross_check_summary(repeat_records[0] if repeat_records else None),
         },

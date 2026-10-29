@@ -192,14 +192,139 @@ class BaselineBOTests(unittest.TestCase):
         with self.assertRaises(BaselineError):
             self._run(strategy="unsupported")
 
-    def test_existing_run_directory_requires_allow_existing(self):
+    def test_existing_run_directory_is_never_reused(self):
         self._run(run_id="toy-existing", budget=4, initial_design_count=2)
         with self.assertRaises(FileExistsError):
             self._run(run_id="toy-existing", budget=4, initial_design_count=2)
+        # allow_existing may reuse an empty directory, but never a directory that
+        # already holds evidence: mixing two runs would corrupt both trails.
+        with self.assertRaises(FileExistsError):
+            self._run(
+                run_id="toy-existing", budget=4, initial_design_count=2, allow_existing=True
+            )
+
+    def test_allow_existing_accepts_an_empty_run_directory(self):
+        (TMP_ROOT / "toy-empty").mkdir(parents=True, exist_ok=True)
         summary = self._run(
-            run_id="toy-existing", budget=4, initial_design_count=2, allow_existing=True
+            run_id="toy-empty", budget=4, initial_design_count=2, allow_existing=True
         )
         self.assertEqual(summary["total_true_evaluations"], 4)
+
+    def test_run_id_cannot_escape_the_output_root(self):
+        for bad_id in ("../escape", "nested/run", "C:/abs", "", "..", "run\\name"):
+            with self.assertRaises(BaselineError):
+                self._run(run_id=bad_id, budget=4, initial_design_count=2)
+
+
+class EvaluatorResultTests(unittest.TestCase):
+    """The BO adapter must never hand maml-opt a partial constraint mapping."""
+
+    def _row(self, constraints, status="VALID", objective=34000.0, feasible=True):
+        return {
+            "iteration": 1,
+            "design_id": "d-test",
+            "x": {},
+            "status": status,
+            "objective": objective,
+            "constraints": constraints,
+            "feasible": feasible,
+            "fidelity": "single_cruise",
+            "cache_hit": False,
+            "physical_call_count": 1,
+            "wall_seconds": 0.0,
+            "cumulative_calls": 1,
+            "best_feasible_objective": objective,
+        }
+
+    def test_partial_constraints_are_downgraded(self):
+        from research.concorde_metaopt.optimization.baseline_bo import _evaluator_result
+
+        partial = {name: -0.05 for name in CONSTRAINT_NAMES[:3]}
+        result = _evaluator_result(self._row(partial))
+        self.assertFalse(result["valid"])
+        self.assertEqual(result["status"], "INVALID_OR_MISSING_RESPONSE")
+        self.assertIsNone(result["objective"])
+        self.assertFalse(result["feasible"])
+        self.assertEqual(result["constraints_g_le_zero"], {})
+        self.assertIn("error", result)
+        self.assertEqual(result["analysis_calls"], 1)
+
+    def test_infeasible_row_is_still_valid_but_not_feasible(self):
+        from research.concorde_metaopt.optimization.baseline_bo import _evaluator_result
+
+        constraints = {name: -0.05 for name in CONSTRAINT_NAMES}
+        constraints["max_throttle"] = 0.2
+        result = _evaluator_result(self._row(constraints, feasible=False))
+        self.assertTrue(result["valid"])
+        self.assertFalse(result["feasible"])
+        self.assertEqual(result["objective"], 34000.0)
+        self.assertGreater(result["constraints_g_le_zero"]["max_throttle"], 0.0)
+
+    def test_tolerance_sized_violation_is_shifted_to_feasible(self):
+        from research.concorde_metaopt.evaluation.contract import FEASIBILITY_TOLERANCE
+        from research.concorde_metaopt.optimization.baseline_bo import _evaluator_result
+
+        constraints = {name: -0.05 for name in CONSTRAINT_NAMES}
+        constraints["cruise_range_error"] = FEASIBILITY_TOLERANCE / 2.0
+        result = _evaluator_result(self._row(constraints))
+        self.assertTrue(result["valid"])
+        self.assertLessEqual(result["constraints_g_le_zero"]["cruise_range_error"], 0.0)
+        self.assertAlmostEqual(
+            result["constraints_g_le_zero"]["cruise_range_error"],
+            FEASIBILITY_TOLERANCE / 2.0 - FEASIBILITY_TOLERANCE,
+            places=18,
+        )
+
+    def test_non_valid_row_cannot_carry_an_objective(self):
+        from research.concorde_metaopt.optimization.baseline_bo import _evaluator_result
+
+        constraints = {name: -0.05 for name in CONSTRAINT_NAMES}
+        result = _evaluator_result(
+            self._row(constraints, status="MISSION_FAILED", objective=1.0, feasible=True)
+        )
+        self.assertFalse(result["valid"])
+        self.assertIsNone(result["objective"])
+        self.assertFalse(result["feasible"])
+        self.assertEqual(result["constraints_g_le_zero"], {})
+
+
+class DuplicateTolerantOptimizerTests(unittest.TestCase):
+    """A cached duplicate proposal must not abort the maml-opt search."""
+
+    def _optimizer(self):
+        from research.concorde_metaopt.optimization.baseline_bo import (
+            _DuplicateTolerantOptimizer,
+        )
+
+        return _DuplicateTolerantOptimizer(
+            lower_bounds=[0.0, 0.0],
+            upper_bounds=[1.0, 1.0],
+            seed=7,
+        )
+
+    @staticmethod
+    def _result(objective=1.0):
+        return {
+            "status": "VALID",
+            "valid": True,
+            "objective": objective,
+            "constraints_g_le_zero": {"g": -0.5},
+            "objective_model_eligible": True,
+            "analysis_calls": 1,
+        }
+
+    def test_duplicate_tell_is_ignored(self):
+        optimizer = self._optimizer()
+        optimizer.tell([0.5, 0.5], self._result())
+        optimizer.tell([0.5, 0.5], self._result())
+        self.assertEqual(optimizer.duplicates_ignored, 1)
+        self.assertEqual(len(optimizer.observations), 1)
+
+    def test_other_value_errors_still_propagate(self):
+        optimizer = self._optimizer()
+        with self.assertRaises(ValueError):
+            optimizer.tell([2.0, 0.5], self._result())
+        self.assertEqual(optimizer.duplicates_ignored, 0)
 
 
 class BaselineBOFiguesRedrawTests(unittest.TestCase):

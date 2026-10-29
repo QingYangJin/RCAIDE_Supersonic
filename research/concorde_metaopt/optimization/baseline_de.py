@@ -40,12 +40,14 @@ from ..aircraft.geometry_checks import (
     _write_json,
 )
 from ..aircraft.geometry_model import GEOMETRY_MODEL_VERSION
+from ..evaluation.contract import CONSTRAINT_NAMES, STATUS_VALID, optimizer_constraints
 from ..evaluation.ledger import (
     BudgetExceeded,
     EvaluationLedger,
     design_id as design_identifier,
 )
 from ..evaluation.low_fidelity import SingleCruiseBackend
+from ..run_paths import RunPathError, resolve_run_directory
 from ..tasks.task_spec import TASK_SPEC_VERSION, FixedCruiseTask, load_task_spec
 from .baseline_bo import (
     BaselineError,
@@ -476,6 +478,8 @@ def _index_entry(run_dir: Path, summary: Mapping[str, Any]) -> Path:
         index_status = "completed"
     elif raw_status == "baseline_de_no_feasible_solution":
         index_status = "no_feasible_solution"
+    elif raw_status == "baseline_de_failed":
+        index_status = "failed"
     else:
         index_status = raw_status
     entries.append(
@@ -589,11 +593,15 @@ def run_baseline_de(
         crossover_rate=crossover_rate,
     )
     root = Path(output_root) if output_root is not None else DEFAULT_OUTPUT_ROOT
-    generated = run_id or time.strftime("baseline-de-p4-%Y%m%dT%H%M%S", time.gmtime())
-    run_dir = root / generated
-    if run_dir.exists() and not allow_existing:
-        raise FileExistsError("run directory already exists: %s" % run_dir)
-    run_dir.mkdir(parents=True, exist_ok=True)
+    generated = (
+        time.strftime("baseline-de-p4-%Y%m%dT%H%M%S", time.gmtime())
+        if run_id is None
+        else run_id
+    )
+    try:
+        run_dir = resolve_run_directory(root, generated, allow_existing=allow_existing)
+    except RunPathError as exc:
+        raise BaselineError(str(exc)) from exc
     (run_dir / "figures").mkdir(exist_ok=True)
 
     git_sha = _git_sha(REPO_ROOT)
@@ -651,16 +659,17 @@ def run_baseline_de(
         design = space.from_unit_interval(unit_vector)
         row = ledger.evaluate(backend, design, frozen_task, fidelity=FIDELITY_SINGLE_CRUISE)
         physical_calls += int(row.get("physical_call_count", 0) or 0)
+        constraints = row.get("constraints") or {}
+        complete = all(constraints.get(name) is not None for name in CONSTRAINT_NAMES)
+        valid = str(row.get("status")) == STATUS_VALID and complete
         return {
             "status": row.get("status"),
-            "valid": str(row.get("status")) == "VALID",
-            "feasible": bool(row.get("feasible", False)),
-            "objective": row.get("objective"),
-            "constraints_g_le_zero": {
-                str(name): value
-                for name, value in (row.get("constraints") or {}).items()
-                if value is not None
-            },
+            "valid": bool(valid),
+            "feasible": bool(row.get("feasible", False)) if valid else False,
+            "objective": row.get("objective") if valid else None,
+            "constraints_g_le_zero": (
+                optimizer_constraints(constraints) if valid else {}
+            ),
             "analysis_calls": int(row.get("physical_call_count", 0) or 0),
         }
 
@@ -692,18 +701,23 @@ def run_baseline_de(
 
     ledger_summary = ledger.summary()
     best = ledger.best()
-    valid_evaluations = sum(1 for row in ledger.rows if str(row.get("status")) == "VALID")
+    # Derive the experiment status from the ledger (not from the optimizer's own
+    # flag) so a failed evaluation can never be reported as a clean completion.
+    valid_rows = [row for row in ledger.rows if str(row.get("status")) == STATUS_VALID]
+    valid_evaluations = len(valid_rows)
     feasible_evaluations = sum(1 for row in ledger.rows if bool(row.get("feasible")))
-    if not ledger.rows:
+    if not valid_rows:
         status = "baseline_de_failed"
-    elif str(search_result.get("status")) == "no_feasible_solution" or best.get(
-        "best_feasible_objective"
-    ) is None:
+        outcome_note = "no VALID evaluation was recorded"
+    elif best.get("best_feasible_objective") is None:
         status = "baseline_de_no_feasible_solution"
-    elif str(search_result.get("status")) == "interrupted":
-        status = "baseline_de_interrupted"
+        outcome_note = "valid evaluations exist but none satisfies every constraint"
+    elif ledger_summary.get("failed_count"):
+        status = "baseline_de_completed_with_failures"
+        outcome_note = "search completed with failed evaluations; the best feasible design is kept"
     else:
         status = "baseline_de_completed"
+        outcome_note = "search completed"
 
     elbow = time.perf_counter() - started
     cpu_elapsed = time.process_time() - cpu_started
@@ -756,6 +770,9 @@ def run_baseline_de(
     summary["baseline_de"].update(
         {
             "search_status": search_result.get("status"),
+            "status_basis": "ledger",
+            "outcome_note": outcome_note,
+            "budget_overruns": ledger_summary.get("budget_overruns"),
             "valid_evaluations": valid_evaluations,
             "feasible_evaluations": feasible_evaluations,
             "termination_reason": search_result.get("termination_reason"),
