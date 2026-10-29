@@ -2,6 +2,18 @@
   "description": "Index of committed optimization/audit runs for the Concorde Phase I programme. Each entry points to a run directory that contains summary.json, environment.json (audits only) and evidence; large solver artefacts are out of repository scope per the Issue #1 contract.",
   "runs": [
     {
+      "created_at": "2026-10-29T08:56:00Z",
+      "git_sha": "5237a1ccc7659204001f220d3e3769d0a0c7a91e",
+      "method": "openvsp_perturbation_check",
+      "path": "openvsp-cases-p1-20261029T1700",
+      "run_id": "openvsp-cases-p1-20261029T1700",
+      "stage": "P1",
+      "status": "openvsp_perturbation_check_completed",
+      "summary": "P1 OpenVSP perturbation evidence at code commit 5237a1c: baseline plus six representative 15D perturbations (W01 wing area +2%, W02 AR +2%, V01 tail area +2%, F01 fuselage length +1%, F02 nose fineness +2%, F03 height/width ratio +2%) exported through OpenVSP 3.26.1 (external Python 3.9); 63 checks (62 pass, 1 baseline reach skip), 0 fail; perturbation-reach relative deltas match the model for W01/W02/V01/F01; F02/F03 spline differences recorded as limitations; 0 true evaluations.",
+      "task_id": "concorde_fixed_cruise_15d",
+      "true_evaluations": 0
+    },
+    {
       "created_at": "2026-10-29T07:55:00Z",
       "git_sha": "35903cf83ef644ed47e82f18a8e962b6879eda57",
       "method": "openvsp_geometry_check",

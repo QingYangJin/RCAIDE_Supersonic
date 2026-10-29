@@ -1,0 +1,3042 @@
+{
+  "cases": [
+    {
+      "assembly": {
+        "bounds_m": [
+          [
+            -7.401487051415874e-17,
+            -12.802319526672363,
+            -2.2938663959503174
+          ],
+          [
+            61.65999984741211,
+            12.802319526672363,
+            6.009331226348877
+          ]
+        ],
+        "component_bounds_m": {
+          "fuselage": [
+            [
+              -7.4014868308e-17,
+              -1.6561441904,
+              -1.6794723748
+            ],
+            [
+              61.66,
+              1.6561441904,
+              1.6794723748
+            ]
+          ],
+          "main_wing": [
+            [
+              14.0,
+              -12.802319126,
+              -2.2938664746
+            ],
+            [
+              45.495343759,
+              12.802319126,
+              0.6938664746000001
+            ]
+          ],
+          "vertical_tail": [
+            [
+              42.0,
+              -0.65734201154,
+              1.0
+            ],
+            [
+              55.157616067999996,
+              0.65734201154,
+              6.0093312927
+            ]
+          ]
+        },
+        "components": [
+          "main_wing",
+          "vertical_tail",
+          "fuselage"
+        ],
+        "extents_m": [
+          61.65999984741211,
+          25.604639053344727,
+          8.303197622299194
+        ],
+        "faces": 4128,
+        "mesh_count": 1,
+        "note": "Assembly composed with trimesh rigid transforms because this OpenVSP build does not apply XForm placement to exported STL meshes.",
+        "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/baseline/concorde_full_assembly_composed.stl",
+        "vertices": 2070
+      },
+      "baseline_value": null,
+      "checks": [
+        {
+          "absolute_tolerance": null,
+          "check_id": "OVP01_wing_area",
+          "delta": 0.0,
+          "detail": "",
+          "model_value": 358.25000000000006,
+          "openvsp_value": 358.25000000000006,
+          "relative_delta": 0.0,
+          "relative_tolerance": 0.005,
+          "status": "pass",
+          "subject": "main_wing area"
+        },
+        {
+          "absolute_tolerance": null,
+          "check_id": "OVP02_wing_span",
+          "delta": 0.0,
+          "detail": "",
+          "model_value": 25.604638251691824,
+          "openvsp_value": 25.604638251691824,
+          "relative_delta": 0.0,
+          "relative_tolerance": 0.005,
+          "status": "pass",
+          "subject": "main_wing span"
+        },
+        {
+          "absolute_tolerance": null,
+          "check_id": "OVP03_tail_area",
+          "delta": 0.0,
+          "detail": "",
+          "model_value": 33.91,
+          "openvsp_value": 33.91,
+          "relative_delta": 0.0,
+          "relative_tolerance": 0.005,
+          "status": "pass",
+          "subject": "vertical_tail area"
+        },
+        {
+          "absolute_tolerance": null,
+          "check_id": "OVP04_tail_span",
+          "delta": 8.881784197001252e-16,
+          "detail": "",
+          "model_value": 5.0093312926976585,
+          "openvsp_value": 5.009331292697659,
+          "relative_delta": 1.7730478736650247e-16,
+          "relative_tolerance": 0.005,
+          "status": "pass",
+          "subject": "vertical_tail span"
+        },
+        {
+          "absolute_tolerance": 1e-06,
+          "check_id": "OVP05_fuselage_length",
+          "delta": 0.0,
+          "detail": "",
+          "model_value": 61.66,
+          "openvsp_value": 61.66,
+          "relative_delta": 0.0,
+          "relative_tolerance": null,
+          "status": "pass",
+          "subject": "fuselage length read back"
+        },
+        {
+          "absolute_tolerance": null,
+          "check_id": "OVP06_assembly_x",
+          "delta": -1.5258788721439487e-07,
+          "detail": "",
+          "model_value": 61.66,
+          "openvsp_value": 61.65999984741211,
+          "relative_delta": -2.4746657024715354e-09,
+          "relative_tolerance": 1e-06,
+          "status": "pass",
+          "subject": "composed assembly x extent vs fuselage length"
+        },
+        {
+          "absolute_tolerance": null,
+          "check_id": "OVP07_assembly_y",
+          "delta": 8.016529022825125e-07,
+          "detail": "",
+          "model_value": 25.604638251691824,
+          "openvsp_value": 25.604639053344727,
+          "relative_delta": 3.13088938965792e-08,
+          "relative_tolerance": 0.005,
+          "status": "pass",
+          "subject": "composed assembly y extent vs wing span"
+        },
+        {
+          "absolute_tolerance": null,
+          "check_id": "OVP08_assembly_zmax",
+          "delta": -6.634878157996127e-08,
+          "detail": "",
+          "model_value": 6.0093312926976585,
+          "openvsp_value": 6.009331226348877,
+          "relative_delta": -1.1040959193011395e-08,
+          "relative_tolerance": 0.005,
+          "status": "pass",
+          "subject": "composed assembly z max vs tail origin + tail span"
+        },
+        {
+          "absolute_tolerance": null,
+          "check_id": "OVP09_perturbation_reach",
+          "delta": null,
+          "detail": "baseline case; reach check applies to perturbed cases only",
+          "model_value": null,
+          "openvsp_value": null,
+          "relative_delta": null,
+          "relative_tolerance": null,
+          "status": "skip",
+          "subject": "baseline (no perturbation)"
+        }
+      ],
+      "component": "all",
+      "component_measurements": {
+        "fuselage": {
+          "bounds_m": [
+            [
+              -7.4014868308e-17,
+              -1.6561441904,
+              -1.6794723748
+            ],
+            [
+              61.66,
+              1.6561441904,
+              1.6794723748
+            ]
+          ],
+          "extents_m": [
+            61.66,
+            3.3122883808,
+            3.3589447496
+          ],
+          "faces": 1088,
+          "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/baseline/concorde_full_fuselage.stl",
+          "surface_area_m2": 545.9067219464076,
+          "vertices": 546,
+          "volume_m3": 393.8387421741201,
+          "watertight": true
+        },
+        "main_wing": {
+          "bounds_m": [
+            [
+              0.0,
+              -12.802319126,
+              -1.4938664746
+            ],
+            [
+              31.495343759,
+              12.802319126,
+              1.4938664746
+            ]
+          ],
+          "extents_m": [
+            31.495343759,
+            25.604638252,
+            2.9877329492
+          ],
+          "faces": 2160,
+          "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/baseline/concorde_full_main_wing.stl",
+          "surface_area_m2": 767.2986319179228,
+          "vertices": 1082,
+          "volume_m3": 446.7251197520079,
+          "watertight": true
+        },
+        "vertical_tail": {
+          "bounds_m": [
+            [
+              0.0,
+              0.0,
+              -0.65734201154
+            ],
+            [
+              13.157616068,
+              5.0093312927,
+              0.65734201154
+            ]
+          ],
+          "extents_m": [
+            13.157616068,
+            5.0093312927,
+            1.31468402308
+          ],
+          "faces": 880,
+          "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/baseline/concorde_full_vertical_tail.stl",
+          "surface_area_m2": 83.70128513470657,
+          "vertices": 442,
+          "volume_m3": 18.57967279174616,
+          "watertight": true
+        }
+      },
+      "delta": 0.0,
+      "kind": "baseline",
+      "label": "baseline",
+      "measurement_failures": [],
+      "model_metrics": {
+        "fuselage_front_m2": 7.509664526786937,
+        "fuselage_height_m": 3.32000064,
+        "fuselage_length_m": 61.66,
+        "fuselage_nose_m": 12.383999999999999,
+        "fuselage_tail_m": 18.432,
+        "fuselage_wetted_m2": 488.92216679029485,
+        "fuselage_width_m": 2.88,
+        "tail_area_m2": 33.91,
+        "tail_span_m": 5.0093312926976585,
+        "wing_area_m2": 358.25000000000006,
+        "wing_span_m": 25.604638251691824,
+        "wing_wetted_m2": 717.5747500000001
+      },
+      "openvsp_metrics": {
+        "assembly_x_extent_m": 61.65999984741211,
+        "assembly_x_min_m": -7.401487051415874e-17,
+        "assembly_y_extent_m": 25.604639053344727,
+        "assembly_z_max_m": 6.009331226348877,
+        "fuselage_bbox_height_m": 3.3589447496,
+        "fuselage_height_m": 3.3589447496,
+        "fuselage_length_m": 61.66,
+        "fuselage_surface_area_m2": 545.9067219464076,
+        "fuselage_width_m": 3.3122883808,
+        "tail_area_m2": 33.91,
+        "tail_span_m": 5.009331292697659,
+        "wing_area_m2": 358.25000000000006,
+        "wing_span_m": 25.604638251691824,
+        "wing_wetted_m2": 767.2986319179228
+      },
+      "request": {
+        "components": [
+          {
+            "kind": "wing",
+            "location": [
+              14.0,
+              0.0,
+              -0.8
+            ],
+            "name": "main_wing",
+            "rotation": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "sections": [
+              {
+                "chord_m": 29.901818514349216,
+                "leading_edge_x_m": 0.0,
+                "percent_span_location": 0.0
+              },
+              {
+                "chord_m": 12.208434070312554,
+                "leading_edge_x_m": 18.914470750635964,
+                "percent_span_location": 0.480469
+              },
+              {
+                "chord_m": 3.892558930560952,
+                "leading_edge_x_m": 27.60278482830357,
+                "percent_span_location": 0.945313
+              },
+              {
+                "chord_m": 0.9731361054965724,
+                "leading_edge_x_m": 30.365937891543936,
+                "percent_span_location": 1.0
+              }
+            ],
+            "span_m": 25.604638251691824,
+            "symmetric": true
+          },
+          {
+            "kind": "wing",
+            "location": [
+              42.0,
+              0.0,
+              1.0
+            ],
+            "name": "vertical_tail",
+            "rotation": [
+              90.0,
+              0.0,
+              0.0
+            ],
+            "sections": [
+              {
+                "chord_m": 13.157616068421863,
+                "leading_edge_x_m": 0.0,
+                "percent_span_location": 0.0
+              },
+              {
+                "chord_m": 6.805663483666481,
+                "leading_edge_x_m": 5.5205346344304935,
+                "percent_span_location": 0.39999999999999997
+              },
+              {
+                "chord_m": 2.450038854119933,
+                "leading_edge_x_m": 9.131437615905579,
+                "percent_span_location": 1.0
+              }
+            ],
+            "span_m": 5.0093312926976585,
+            "symmetric": false
+          },
+          {
+            "kind": "fuselage",
+            "length_m": 61.66,
+            "location": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "name": "fuselage",
+            "stations": [
+              {
+                "height_m": 0.0,
+                "width_m": 0.001,
+                "x_m": 0.0
+              },
+              {
+                "height_m": 1.4502002795566267,
+                "width_m": 1.567,
+                "x_m": 3.0286310399999996
+              },
+              {
+                "height_m": 2.356000454168675,
+                "width_m": 2.3429,
+                "x_m": 5.774039999999999
+              },
+              {
+                "height_m": 3.0581005895132534,
+                "width_m": 2.741,
+                "x_m": 9.078772319999999
+              },
+              {
+                "height_m": 3.32000064,
+                "width_m": 2.88,
+                "x_m": 12.383999999999999
+              },
+              {
+                "height_m": 3.32000064,
+                "width_m": 2.88,
+                "x_m": 43.227999999999994
+              },
+              {
+                "height_m": 2.952000569060241,
+                "width_m": 2.88,
+                "x_m": 47.53537408
+              },
+              {
+                "height_m": 0.0010000001927710845,
+                "width_m": 0.001,
+                "x_m": 61.66
+              }
+            ]
+          }
+        ],
+        "export": {
+          "basename": "concorde_full",
+          "directory": "<export_directory>",
+          "formats": [
+            "stl",
+            "step",
+            "vsp3"
+          ]
+        },
+        "openvsp_root": "<openvsp_root>"
+      },
+      "status": "pass",
+      "value": null,
+      "variable_id": null,
+      "variable_name": null,
+      "worker_python": "3.9.25"
+    },
+    {
+      "assembly": {
+        "bounds_m": [
+          [
+            -7.401487051415874e-17,
+            -12.929708480834961,
+            -2.3087310791015625
+          ],
+          [
+            61.65999984741211,
+            12.929708480834961,
+            6.009331226348877
+          ]
+        ],
+        "component_bounds_m": {
+          "fuselage": [
+            [
+              -7.4014868308e-17,
+              -1.6561441904,
+              -1.6794723748
+            ],
+            [
+              61.66,
+              1.6561441904,
+              1.6794723748
+            ]
+          ],
+          "main_wing": [
+            [
+              14.0,
+              -12.929708523,
+              -2.3087311838
+            ],
+            [
+              45.808737983,
+              12.929708523,
+              0.7087311837999999
+            ]
+          ],
+          "vertical_tail": [
+            [
+              42.0,
+              -0.65734201154,
+              1.0
+            ],
+            [
+              55.157616067999996,
+              0.65734201154,
+              6.0093312927
+            ]
+          ]
+        },
+        "components": [
+          "main_wing",
+          "vertical_tail",
+          "fuselage"
+        ],
+        "extents_m": [
+          61.65999984741211,
+          25.859416961669922,
+          8.31806230545044
+        ],
+        "faces": 4128,
+        "mesh_count": 1,
+        "note": "Assembly composed with trimesh rigid transforms because this OpenVSP build does not apply XForm placement to exported STL meshes.",
+        "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/W01_plus_2pct/concorde_full_assembly_composed.stl",
+        "vertices": 2070
+      },
+      "baseline_value": 358.25,
+      "checks": [
+        {
+          "absolute_tolerance": null,
+          "check_id": "OVP01_wing_area",
+          "delta": 0.0,
+          "detail": "",
+          "model_value": 365.415,
+          "openvsp_value": 365.415,
+          "relative_delta": 0.0,
+          "relative_tolerance": 0.005,
+          "status": "pass",
+          "subject": "main_wing area"
+        },
+        {
+          "absolute_tolerance": null,
+          "check_id": "OVP02_wing_span",
+          "delta": 0.0,
+          "detail": "",
+          "model_value": 25.859417046793613,
+          "openvsp_value": 25.859417046793613,
+          "relative_delta": 0.0,
+          "relative_tolerance": 0.005,
+          "status": "pass",
+          "subject": "main_wing span"
+        },
+        {
+          "absolute_tolerance": null,
+          "check_id": "OVP03_tail_area",
+          "delta": 0.0,
+          "detail": "",
+          "model_value": 33.91,
+          "openvsp_value": 33.91,
+          "relative_delta": 0.0,
+          "relative_tolerance": 0.005,
+          "status": "pass",
+          "subject": "vertical_tail area"
+        },
+        {
+          "absolute_tolerance": null,
+          "check_id": "OVP04_tail_span",
+          "delta": 8.881784197001252e-16,
+          "detail": "",
+          "model_value": 5.0093312926976585,
+          "openvsp_value": 5.009331292697659,
+          "relative_delta": 1.7730478736650247e-16,
+          "relative_tolerance": 0.005,
+          "status": "pass",
+          "subject": "vertical_tail span"
+        },
+        {
+          "absolute_tolerance": 1e-06,
+          "check_id": "OVP05_fuselage_length",
+          "delta": 0.0,
+          "detail": "",
+          "model_value": 61.66,
+          "openvsp_value": 61.66,
+          "relative_delta": 0.0,
+          "relative_tolerance": null,
+          "status": "pass",
+          "subject": "fuselage length read back"
+        },
+        {
+          "absolute_tolerance": null,
+          "check_id": "OVP06_assembly_x",
+          "delta": -1.5258788721439487e-07,
+          "detail": "",
+          "model_value": 61.66,
+          "openvsp_value": 61.65999984741211,
+          "relative_delta": -2.4746657024715354e-09,
+          "relative_tolerance": 1e-06,
+          "status": "pass",
+          "subject": "composed assembly x extent vs fuselage length"
+        },
+        {
+          "absolute_tolerance": null,
+          "check_id": "OVP07_assembly_y",
+          "delta": -8.51236912069453e-08,
+          "detail": "",
+          "model_value": 25.859417046793613,
+          "openvsp_value": 25.859416961669922,
+          "relative_delta": -3.291786935989728e-09,
+          "relative_tolerance": 0.005,
+          "status": "pass",
+          "subject": "composed assembly y extent vs wing span"
+        },
+        {
+          "absolute_tolerance": null,
+          "check_id": "OVP08_assembly_zmax",
+          "delta": -6.634878157996127e-08,
+          "detail": "",
+          "model_value": 6.0093312926976585,
+          "openvsp_value": 6.009331226348877,
+          "relative_delta": -1.1040959193011395e-08,
+          "relative_tolerance": 0.005,
+          "status": "pass",
+          "subject": "composed assembly z max vs tail origin + tail span"
+        },
+        {
+          "absolute_tolerance": 0.02,
+          "check_id": "OVP09_perturbation_reach",
+          "delta": 0.0,
+          "detail": "OpenVSP delta must follow the model delta; absolute tolerance 0.02",
+          "model_value": 0.019999999999999896,
+          "openvsp_value": 0.019999999999999896,
+          "relative_delta": 0.019999999999999896,
+          "relative_tolerance": null,
+          "status": "pass",
+          "subject": "W01 wing_area_m2 vs wing_area_m2"
+        }
+      ],
+      "component": "main_wing",
+      "component_measurements": {
+        "fuselage": {
+          "bounds_m": [
+            [
+              -7.4014868308e-17,
+              -1.6561441904,
+              -1.6794723748
+            ],
+            [
+              61.66,
+              1.6561441904,
+              1.6794723748
+            ]
+          ],
+          "extents_m": [
+            61.66,
+            3.3122883808,
+            3.3589447496
+          ],
+          "faces": 1088,
+          "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/W01_plus_2pct/concorde_full_fuselage.stl",
+          "surface_area_m2": 545.9067219464076,
+          "vertices": 546,
+          "volume_m3": 393.8387421741201,
+          "watertight": true
+        },
+        "main_wing": {
+          "bounds_m": [
+            [
+              0.0,
+              -12.929708523,
+              -1.5087311838
+            ],
+            [
+              31.808737983,
+              12.929708523,
+              1.5087311838
+            ]
+          ],
+          "extents_m": [
+            31.808737983,
+            25.859417046,
+            3.0174623676
+          ],
+          "faces": 2160,
+          "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/W01_plus_2pct/concorde_full_main_wing.stl",
+          "surface_area_m2": 782.6446045555613,
+          "vertices": 1082,
+          "volume_m3": 460.1936604074058,
+          "watertight": true
+        },
+        "vertical_tail": {
+          "bounds_m": [
+            [
+              0.0,
+              0.0,
+              -0.65734201154
+            ],
+            [
+              13.157616068,
+              5.0093312927,
+              0.65734201154
+            ]
+          ],
+          "extents_m": [
+            13.157616068,
+            5.0093312927,
+            1.31468402308
+          ],
+          "faces": 880,
+          "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/W01_plus_2pct/concorde_full_vertical_tail.stl",
+          "surface_area_m2": 83.70128513470657,
+          "vertices": 442,
+          "volume_m3": 18.57967279174616,
+          "watertight": true
+        }
+      },
+      "delta": 0.02,
+      "kind": "relative",
+      "label": "W01_plus_2pct",
+      "measurement_failures": [],
+      "model_metrics": {
+        "fuselage_front_m2": 7.509664526786937,
+        "fuselage_height_m": 3.32000064,
+        "fuselage_length_m": 61.66,
+        "fuselage_nose_m": 12.383999999999999,
+        "fuselage_tail_m": 18.432,
+        "fuselage_wetted_m2": 488.92216679029485,
+        "fuselage_width_m": 2.88,
+        "tail_area_m2": 33.91,
+        "tail_span_m": 5.0093312926976585,
+        "wing_area_m2": 365.415,
+        "wing_span_m": 25.859417046793613,
+        "wing_wetted_m2": 731.9262450000002
+      },
+      "openvsp_metrics": {
+        "assembly_x_extent_m": 61.65999984741211,
+        "assembly_x_min_m": -7.401487051415874e-17,
+        "assembly_y_extent_m": 25.859416961669922,
+        "assembly_z_max_m": 6.009331226348877,
+        "fuselage_bbox_height_m": 3.3589447496,
+        "fuselage_height_m": 3.3589447496,
+        "fuselage_length_m": 61.66,
+        "fuselage_surface_area_m2": 545.9067219464076,
+        "fuselage_width_m": 3.3122883808,
+        "tail_area_m2": 33.91,
+        "tail_span_m": 5.009331292697659,
+        "wing_area_m2": 365.415,
+        "wing_span_m": 25.859417046793613,
+        "wing_wetted_m2": 782.6446045555613
+      },
+      "request": {
+        "components": [
+          {
+            "kind": "wing",
+            "location": [
+              14.0,
+              0.0,
+              -0.8
+            ],
+            "name": "main_wing",
+            "rotation": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "sections": [
+              {
+                "chord_m": 30.199356375167653,
+                "leading_edge_x_m": 0.0,
+                "percent_span_location": 0.0
+              },
+              {
+                "chord_m": 12.32991401827895,
+                "leading_edge_x_m": 19.1026790752553,
+                "percent_span_location": 0.480469
+              },
+              {
+                "chord_m": 3.9312918142065745,
+                "leading_edge_x_m": 27.877446168599775,
+                "percent_span_location": 0.945313
+              },
+              {
+                "chord_m": 0.9828192903161073,
+                "leading_edge_x_m": 30.668093969364413,
+                "percent_span_location": 1.0
+              }
+            ],
+            "span_m": 25.859417046793613,
+            "symmetric": true
+          },
+          {
+            "kind": "wing",
+            "location": [
+              42.0,
+              0.0,
+              1.0
+            ],
+            "name": "vertical_tail",
+            "rotation": [
+              90.0,
+              0.0,
+              0.0
+            ],
+            "sections": [
+              {
+                "chord_m": 13.157616068421863,
+                "leading_edge_x_m": 0.0,
+                "percent_span_location": 0.0
+              },
+              {
+                "chord_m": 6.805663483666481,
+                "leading_edge_x_m": 5.5205346344304935,
+                "percent_span_location": 0.39999999999999997
+              },
+              {
+                "chord_m": 2.450038854119933,
+                "leading_edge_x_m": 9.131437615905579,
+                "percent_span_location": 1.0
+              }
+            ],
+            "span_m": 5.0093312926976585,
+            "symmetric": false
+          },
+          {
+            "kind": "fuselage",
+            "length_m": 61.66,
+            "location": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "name": "fuselage",
+            "stations": [
+              {
+                "height_m": 0.0,
+                "width_m": 0.001,
+                "x_m": 0.0
+              },
+              {
+                "height_m": 1.4502002795566267,
+                "width_m": 1.567,
+                "x_m": 3.0286310399999996
+              },
+              {
+                "height_m": 2.356000454168675,
+                "width_m": 2.3429,
+                "x_m": 5.774039999999999
+              },
+              {
+                "height_m": 3.0581005895132534,
+                "width_m": 2.741,
+                "x_m": 9.078772319999999
+              },
+              {
+                "height_m": 3.32000064,
+                "width_m": 2.88,
+                "x_m": 12.383999999999999
+              },
+              {
+                "height_m": 3.32000064,
+                "width_m": 2.88,
+                "x_m": 43.227999999999994
+              },
+              {
+                "height_m": 2.952000569060241,
+                "width_m": 2.88,
+                "x_m": 47.53537408
+              },
+              {
+                "height_m": 0.0010000001927710845,
+                "width_m": 0.001,
+                "x_m": 61.66
+              }
+            ]
+          }
+        ],
+        "export": {
+          "basename": "concorde_full",
+          "directory": "<export_directory>",
+          "formats": [
+            "stl",
+            "step",
+            "vsp3"
+          ]
+        },
+        "openvsp_root": "<openvsp_root>"
+      },
+      "status": "pass",
+      "value": 365.415,
+      "variable_id": "W01",
+      "variable_name": "wing_area",
+      "worker_python": "3.9.25"
+    },
+    {
+      "assembly": {
+        "bounds_m": [
+          [
+            -7.401487051415874e-17,
+            -12.929708480834961,
+            -2.2791481018066406
+          ],
+          [
+            61.65999984741211,
+            12.929708480834961,
+            6.009331226348877
+          ]
+        ],
+        "component_bounds_m": {
+          "fuselage": [
+            [
+              -7.4014868308e-17,
+              -1.6561441904,
+              -1.6794723748
+            ],
+            [
+              61.66,
+              1.6561441904,
+              1.6794723748
+            ]
+          ],
+          "main_wing": [
+            [
+              14.0,
+              -12.929708523,
+              -2.2791482194
+            ],
+            [
+              45.602888807,
+              12.929708523,
+              0.6791482194
+            ]
+          ],
+          "vertical_tail": [
+            [
+              42.0,
+              -0.65734201154,
+              1.0
+            ],
+            [
+              55.157616067999996,
+              0.65734201154,
+              6.0093312927
+            ]
+          ]
+        },
+        "components": [
+          "main_wing",
+          "vertical_tail",
+          "fuselage"
+        ],
+        "extents_m": [
+          61.65999984741211,
+          25.859416961669922,
+          8.288479328155518
+        ],
+        "faces": 4128,
+        "mesh_count": 1,
+        "note": "Assembly composed with trimesh rigid transforms because this OpenVSP build does not apply XForm placement to exported STL meshes.",
+        "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/W02_plus_2pct/concorde_full_assembly_composed.stl",
+        "vertices": 2070
+      },
+      "baseline_value": 1.83,
+      "checks": [
+        {
+          "absolute_tolerance": null,
+          "check_id": "OVP01_wing_area",
+          "delta": 0.0,
+          "detail": "",
+          "model_value": 358.25,
+          "openvsp_value": 358.25,
+          "relative_delta": 0.0,
+          "relative_tolerance": 0.005,
+          "status": "pass",
+          "subject": "main_wing area"
+        },
+        {
+          "absolute_tolerance": null,
+          "check_id": "OVP02_wing_span",
+          "delta": 0.0,
+          "detail": "",
+          "model_value": 25.859417046793613,
+          "openvsp_value": 25.859417046793613,
+          "relative_delta": 0.0,
+          "relative_tolerance": 0.005,
+          "status": "pass",
+          "subject": "main_wing span"
+        },
+        {
+          "absolute_tolerance": null,
+          "check_id": "OVP03_tail_area",
+          "delta": 0.0,
+          "detail": "",
+          "model_value": 33.91,
+          "openvsp_value": 33.91,
+          "relative_delta": 0.0,
+          "relative_tolerance": 0.005,
+          "status": "pass",
+          "subject": "vertical_tail area"
+        },
+        {
+          "absolute_tolerance": null,
+          "check_id": "OVP04_tail_span",
+          "delta": 8.881784197001252e-16,
+          "detail": "",
+          "model_value": 5.0093312926976585,
+          "openvsp_value": 5.009331292697659,
+          "relative_delta": 1.7730478736650247e-16,
+          "relative_tolerance": 0.005,
+          "status": "pass",
+          "subject": "vertical_tail span"
+        },
+        {
+          "absolute_tolerance": 1e-06,
+          "check_id": "OVP05_fuselage_length",
+          "delta": 0.0,
+          "detail": "",
+          "model_value": 61.66,
+          "openvsp_value": 61.66,
+          "relative_delta": 0.0,
+          "relative_tolerance": null,
+          "status": "pass",
+          "subject": "fuselage length read back"
+        },
+        {
+          "absolute_tolerance": null,
+          "check_id": "OVP06_assembly_x",
+          "delta": -1.5258788721439487e-07,
+          "detail": "",
+          "model_value": 61.66,
+          "openvsp_value": 61.65999984741211,
+          "relative_delta": -2.4746657024715354e-09,
+          "relative_tolerance": 1e-06,
+          "status": "pass",
+          "subject": "composed assembly x extent vs fuselage length"
+        },
+        {
+          "absolute_tolerance": null,
+          "check_id": "OVP07_assembly_y",
+          "delta": -8.51236912069453e-08,
+          "detail": "",
+          "model_value": 25.859417046793613,
+          "openvsp_value": 25.859416961669922,
+          "relative_delta": -3.291786935989728e-09,
+          "relative_tolerance": 0.005,
+          "status": "pass",
+          "subject": "composed assembly y extent vs wing span"
+        },
+        {
+          "absolute_tolerance": null,
+          "check_id": "OVP08_assembly_zmax",
+          "delta": -6.634878157996127e-08,
+          "detail": "",
+          "model_value": 6.0093312926976585,
+          "openvsp_value": 6.009331226348877,
+          "relative_delta": -1.1040959193011395e-08,
+          "relative_tolerance": 0.005,
+          "status": "pass",
+          "subject": "composed assembly z max vs tail origin + tail span"
+        },
+        {
+          "absolute_tolerance": 0.02,
+          "check_id": "OVP09_perturbation_reach",
+          "delta": 0.0,
+          "detail": "OpenVSP delta must follow the model delta; absolute tolerance 0.02",
+          "model_value": 0.009950493836207755,
+          "openvsp_value": 0.009950493836207755,
+          "relative_delta": 0.009950493836207755,
+          "relative_tolerance": null,
+          "status": "pass",
+          "subject": "W02 wing_span_m vs wing_span_m"
+        }
+      ],
+      "component": "main_wing",
+      "component_measurements": {
+        "fuselage": {
+          "bounds_m": [
+            [
+              -7.4014868308e-17,
+              -1.6561441904,
+              -1.6794723748
+            ],
+            [
+              61.66,
+              1.6561441904,
+              1.6794723748
+            ]
+          ],
+          "extents_m": [
+            61.66,
+            3.3122883808,
+            3.3589447496
+          ],
+          "faces": 1088,
+          "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/W02_plus_2pct/concorde_full_fuselage.stl",
+          "surface_area_m2": 545.9067219464076,
+          "vertices": 546,
+          "volume_m3": 393.8387421741201,
+          "watertight": true
+        },
+        "main_wing": {
+          "bounds_m": [
+            [
+              0.0,
+              -12.929708523,
+              -1.4791482194
+            ],
+            [
+              31.602888807,
+              12.929708523,
+              1.4791482194
+            ]
+          ],
+          "extents_m": [
+            31.602888807,
+            25.859417046,
+            2.9582964388
+          ],
+          "faces": 2160,
+          "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/W02_plus_2pct/concorde_full_main_wing.stl",
+          "surface_area_m2": 766.9095632566812,
+          "vertices": 1082,
+          "volume_m3": 442.32377970668017,
+          "watertight": true
+        },
+        "vertical_tail": {
+          "bounds_m": [
+            [
+              0.0,
+              0.0,
+              -0.65734201154
+            ],
+            [
+              13.157616068,
+              5.0093312927,
+              0.65734201154
+            ]
+          ],
+          "extents_m": [
+            13.157616068,
+            5.0093312927,
+            1.31468402308
+          ],
+          "faces": 880,
+          "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/W02_plus_2pct/concorde_full_vertical_tail.stl",
+          "surface_area_m2": 83.70128513470657,
+          "vertices": 442,
+          "volume_m3": 18.57967279174616,
+          "watertight": true
+        }
+      },
+      "delta": 0.02,
+      "kind": "relative",
+      "label": "W02_plus_2pct",
+      "measurement_failures": [],
+      "model_metrics": {
+        "fuselage_front_m2": 7.509664526786937,
+        "fuselage_height_m": 3.32000064,
+        "fuselage_length_m": 61.66,
+        "fuselage_nose_m": 12.383999999999999,
+        "fuselage_tail_m": 18.432,
+        "fuselage_wetted_m2": 488.92216679029485,
+        "fuselage_width_m": 2.88,
+        "tail_area_m2": 33.91,
+        "tail_span_m": 5.0093312926976585,
+        "wing_area_m2": 358.25,
+        "wing_span_m": 25.859417046793613,
+        "wing_wetted_m2": 717.57475
+      },
+      "openvsp_metrics": {
+        "assembly_x_extent_m": 61.65999984741211,
+        "assembly_x_min_m": -7.401487051415874e-17,
+        "assembly_y_extent_m": 25.859416961669922,
+        "assembly_z_max_m": 6.009331226348877,
+        "fuselage_bbox_height_m": 3.3589447496,
+        "fuselage_height_m": 3.3589447496,
+        "fuselage_length_m": 61.66,
+        "fuselage_surface_area_m2": 545.9067219464076,
+        "fuselage_width_m": 3.3122883808,
+        "tail_area_m2": 33.91,
+        "tail_span_m": 5.009331292697659,
+        "wing_area_m2": 358.25,
+        "wing_span_m": 25.859417046793613,
+        "wing_wetted_m2": 766.9095632566812
+      },
+      "request": {
+        "components": [
+          {
+            "kind": "wing",
+            "location": [
+              14.0,
+              0.0,
+              -0.8
+            ],
+            "name": "main_wing",
+            "rotation": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "sections": [
+              {
+                "chord_m": 29.607212132517304,
+                "leading_edge_x_m": 0.0,
+                "percent_span_location": 0.0
+              },
+              {
+                "chord_m": 12.088150998312695,
+                "leading_edge_x_m": 19.015083769584276,
+                "percent_span_location": 0.480469
+              },
+              {
+                "chord_m": 3.8542076609868374,
+                "leading_edge_x_m": 27.74868114624212,
+                "percent_span_location": 0.945313
+              },
+              {
+                "chord_m": 0.9635483238393208,
+                "leading_edge_x_m": 30.52487565032102,
+                "percent_span_location": 1.0
+              }
+            ],
+            "span_m": 25.859417046793613,
+            "symmetric": true
+          },
+          {
+            "kind": "wing",
+            "location": [
+              42.0,
+              0.0,
+              1.0
+            ],
+            "name": "vertical_tail",
+            "rotation": [
+              90.0,
+              0.0,
+              0.0
+            ],
+            "sections": [
+              {
+                "chord_m": 13.157616068421863,
+                "leading_edge_x_m": 0.0,
+                "percent_span_location": 0.0
+              },
+              {
+                "chord_m": 6.805663483666481,
+                "leading_edge_x_m": 5.5205346344304935,
+                "percent_span_location": 0.39999999999999997
+              },
+              {
+                "chord_m": 2.450038854119933,
+                "leading_edge_x_m": 9.131437615905579,
+                "percent_span_location": 1.0
+              }
+            ],
+            "span_m": 5.0093312926976585,
+            "symmetric": false
+          },
+          {
+            "kind": "fuselage",
+            "length_m": 61.66,
+            "location": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "name": "fuselage",
+            "stations": [
+              {
+                "height_m": 0.0,
+                "width_m": 0.001,
+                "x_m": 0.0
+              },
+              {
+                "height_m": 1.4502002795566267,
+                "width_m": 1.567,
+                "x_m": 3.0286310399999996
+              },
+              {
+                "height_m": 2.356000454168675,
+                "width_m": 2.3429,
+                "x_m": 5.774039999999999
+              },
+              {
+                "height_m": 3.0581005895132534,
+                "width_m": 2.741,
+                "x_m": 9.078772319999999
+              },
+              {
+                "height_m": 3.32000064,
+                "width_m": 2.88,
+                "x_m": 12.383999999999999
+              },
+              {
+                "height_m": 3.32000064,
+                "width_m": 2.88,
+                "x_m": 43.227999999999994
+              },
+              {
+                "height_m": 2.952000569060241,
+                "width_m": 2.88,
+                "x_m": 47.53537408
+              },
+              {
+                "height_m": 0.0010000001927710845,
+                "width_m": 0.001,
+                "x_m": 61.66
+              }
+            ]
+          }
+        ],
+        "export": {
+          "basename": "concorde_full",
+          "directory": "<export_directory>",
+          "formats": [
+            "stl",
+            "step",
+            "vsp3"
+          ]
+        },
+        "openvsp_root": "<openvsp_root>"
+      },
+      "status": "pass",
+      "value": 1.8666,
+      "variable_id": "W02",
+      "variable_name": "aspect_ratio",
+      "worker_python": "3.9.25"
+    },
+    {
+      "assembly": {
+        "bounds_m": [
+          [
+            -7.401487051415874e-17,
+            -12.802319526672363,
+            -2.2938663959503174
+          ],
+          [
+            61.65999984741211,
+            12.802319526672363,
+            6.059176445007324
+          ]
+        ],
+        "component_bounds_m": {
+          "fuselage": [
+            [
+              -7.4014868308e-17,
+              -1.6561441904,
+              -1.6794723748
+            ],
+            [
+              61.66,
+              1.6561441904,
+              1.6794723748
+            ]
+          ],
+          "main_wing": [
+            [
+              14.0,
+              -12.802319126,
+              -2.2938664746
+            ],
+            [
+              45.495343759,
+              12.802319126,
+              0.6938664746000001
+            ]
+          ],
+          "vertical_tail": [
+            [
+              42.0,
+              -0.66388288917,
+              1.0
+            ],
+            [
+              55.288540846000004,
+              0.66388288917,
+              6.0591766128
+            ]
+          ]
+        },
+        "components": [
+          "main_wing",
+          "vertical_tail",
+          "fuselage"
+        ],
+        "extents_m": [
+          61.65999984741211,
+          25.604639053344727,
+          8.353042840957642
+        ],
+        "faces": 4128,
+        "mesh_count": 1,
+        "note": "Assembly composed with trimesh rigid transforms because this OpenVSP build does not apply XForm placement to exported STL meshes.",
+        "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/V01_plus_2pct/concorde_full_assembly_composed.stl",
+        "vertices": 2070
+      },
+      "baseline_value": 33.91,
+      "checks": [
+        {
+          "absolute_tolerance": null,
+          "check_id": "OVP01_wing_area",
+          "delta": 0.0,
+          "detail": "",
+          "model_value": 358.25000000000006,
+          "openvsp_value": 358.25000000000006,
+          "relative_delta": 0.0,
+          "relative_tolerance": 0.005,
+          "status": "pass",
+          "subject": "main_wing area"
+        },
+        {
+          "absolute_tolerance": null,
+          "check_id": "OVP02_wing_span",
+          "delta": 0.0,
+          "detail": "",
+          "model_value": 25.604638251691824,
+          "openvsp_value": 25.604638251691824,
+          "relative_delta": 0.0,
+          "relative_tolerance": 0.005,
+          "status": "pass",
+          "subject": "main_wing span"
+        },
+        {
+          "absolute_tolerance": null,
+          "check_id": "OVP03_tail_area",
+          "delta": 0.0,
+          "detail": "",
+          "model_value": 34.5882,
+          "openvsp_value": 34.5882,
+          "relative_delta": 0.0,
+          "relative_tolerance": 0.005,
+          "status": "pass",
+          "subject": "vertical_tail area"
+        },
+        {
+          "absolute_tolerance": null,
+          "check_id": "OVP04_tail_span",
+          "delta": 8.881784197001252e-16,
+          "detail": "",
+          "model_value": 5.05917661284917,
+          "openvsp_value": 5.059176612849171,
+          "relative_delta": 1.7555789956894406e-16,
+          "relative_tolerance": 0.005,
+          "status": "pass",
+          "subject": "vertical_tail span"
+        },
+        {
+          "absolute_tolerance": 1e-06,
+          "check_id": "OVP05_fuselage_length",
+          "delta": 0.0,
+          "detail": "",
+          "model_value": 61.66,
+          "openvsp_value": 61.66,
+          "relative_delta": 0.0,
+          "relative_tolerance": null,
+          "status": "pass",
+          "subject": "fuselage length read back"
+        },
+        {
+          "absolute_tolerance": null,
+          "check_id": "OVP06_assembly_x",
+          "delta": -1.5258788721439487e-07,
+          "detail": "",
+          "model_value": 61.66,
+          "openvsp_value": 61.65999984741211,
+          "relative_delta": -2.4746657024715354e-09,
+          "relative_tolerance": 1e-06,
+          "status": "pass",
+          "subject": "composed assembly x extent vs fuselage length"
+        },
+        {
+          "absolute_tolerance": null,
+          "check_id": "OVP07_assembly_y",
+          "delta": 8.016529022825125e-07,
+          "detail": "",
+          "model_value": 25.604638251691824,
+          "openvsp_value": 25.604639053344727,
+          "relative_delta": 3.13088938965792e-08,
+          "relative_tolerance": 0.005,
+          "status": "pass",
+          "subject": "composed assembly y extent vs wing span"
+        },
+        {
+          "absolute_tolerance": null,
+          "check_id": "OVP08_assembly_zmax",
+          "delta": -1.678418461992237e-07,
+          "detail": "",
+          "model_value": 6.05917661284917,
+          "openvsp_value": 6.059176445007324,
+          "relative_delta": -2.7700438017155015e-08,
+          "relative_tolerance": 0.005,
+          "status": "pass",
+          "subject": "composed assembly z max vs tail origin + tail span"
+        },
+        {
+          "absolute_tolerance": 0.02,
+          "check_id": "OVP09_perturbation_reach",
+          "delta": 0.0,
+          "detail": "OpenVSP delta must follow the model delta; absolute tolerance 0.02",
+          "model_value": 0.02000000000000012,
+          "openvsp_value": 0.02000000000000012,
+          "relative_delta": 0.02000000000000012,
+          "relative_tolerance": null,
+          "status": "pass",
+          "subject": "V01 tail_area_m2 vs tail_area_m2"
+        }
+      ],
+      "component": "vertical_tail",
+      "component_measurements": {
+        "fuselage": {
+          "bounds_m": [
+            [
+              -7.4014868308e-17,
+              -1.6561441904,
+              -1.6794723748
+            ],
+            [
+              61.66,
+              1.6561441904,
+              1.6794723748
+            ]
+          ],
+          "extents_m": [
+            61.66,
+            3.3122883808,
+            3.3589447496
+          ],
+          "faces": 1088,
+          "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/V01_plus_2pct/concorde_full_fuselage.stl",
+          "surface_area_m2": 545.9067219464076,
+          "vertices": 546,
+          "volume_m3": 393.8387421741201,
+          "watertight": true
+        },
+        "main_wing": {
+          "bounds_m": [
+            [
+              0.0,
+              -12.802319126,
+              -1.4938664746
+            ],
+            [
+              31.495343759,
+              12.802319126,
+              1.4938664746
+            ]
+          ],
+          "extents_m": [
+            31.495343759,
+            25.604638252,
+            2.9877329492
+          ],
+          "faces": 2160,
+          "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/V01_plus_2pct/concorde_full_main_wing.stl",
+          "surface_area_m2": 767.2986319179228,
+          "vertices": 1082,
+          "volume_m3": 446.7251197520079,
+          "watertight": true
+        },
+        "vertical_tail": {
+          "bounds_m": [
+            [
+              0.0,
+              0.0,
+              -0.66388288917
+            ],
+            [
+              13.288540846,
+              5.0591766128,
+              0.66388288917
+            ]
+          ],
+          "extents_m": [
+            13.288540846,
+            5.0591766128,
+            1.32776577834
+          ],
+          "faces": 880,
+          "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/V01_plus_2pct/concorde_full_vertical_tail.stl",
+          "surface_area_m2": 85.37531083760138,
+          "vertices": 442,
+          "volume_m3": 19.139840705467858,
+          "watertight": true
+        }
+      },
+      "delta": 0.02,
+      "kind": "relative",
+      "label": "V01_plus_2pct",
+      "measurement_failures": [],
+      "model_metrics": {
+        "fuselage_front_m2": 7.509664526786937,
+        "fuselage_height_m": 3.32000064,
+        "fuselage_length_m": 61.66,
+        "fuselage_nose_m": 12.383999999999999,
+        "fuselage_tail_m": 18.432,
+        "fuselage_wetted_m2": 488.92216679029485,
+        "fuselage_width_m": 2.88,
+        "tail_area_m2": 34.5882,
+        "tail_span_m": 5.05917661284917,
+        "wing_area_m2": 358.25000000000006,
+        "wing_span_m": 25.604638251691824,
+        "wing_wetted_m2": 717.5747500000001
+      },
+      "openvsp_metrics": {
+        "assembly_x_extent_m": 61.65999984741211,
+        "assembly_x_min_m": -7.401487051415874e-17,
+        "assembly_y_extent_m": 25.604639053344727,
+        "assembly_z_max_m": 6.059176445007324,
+        "fuselage_bbox_height_m": 3.3589447496,
+        "fuselage_height_m": 3.3589447496,
+        "fuselage_length_m": 61.66,
+        "fuselage_surface_area_m2": 545.9067219464076,
+        "fuselage_width_m": 3.3122883808,
+        "tail_area_m2": 34.5882,
+        "tail_span_m": 5.059176612849171,
+        "wing_area_m2": 358.25000000000006,
+        "wing_span_m": 25.604638251691824,
+        "wing_wetted_m2": 767.2986319179228
+      },
+      "request": {
+        "components": [
+          {
+            "kind": "wing",
+            "location": [
+              14.0,
+              0.0,
+              -0.8
+            ],
+            "name": "main_wing",
+            "rotation": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "sections": [
+              {
+                "chord_m": 29.901818514349216,
+                "leading_edge_x_m": 0.0,
+                "percent_span_location": 0.0
+              },
+              {
+                "chord_m": 12.208434070312554,
+                "leading_edge_x_m": 18.914470750635964,
+                "percent_span_location": 0.480469
+              },
+              {
+                "chord_m": 3.892558930560952,
+                "leading_edge_x_m": 27.60278482830357,
+                "percent_span_location": 0.945313
+              },
+              {
+                "chord_m": 0.9731361054965724,
+                "leading_edge_x_m": 30.365937891543936,
+                "percent_span_location": 1.0
+              }
+            ],
+            "span_m": 25.604638251691824,
+            "symmetric": true
+          },
+          {
+            "kind": "wing",
+            "location": [
+              42.0,
+              0.0,
+              1.0
+            ],
+            "name": "vertical_tail",
+            "rotation": [
+              90.0,
+              0.0,
+              0.0
+            ],
+            "sections": [
+              {
+                "chord_m": 13.288540846009882,
+                "leading_edge_x_m": 0.0,
+                "percent_span_location": 0.0
+              },
+              {
+                "chord_m": 6.873383196212008,
+                "leading_edge_x_m": 5.575466680282966,
+                "percent_span_location": 0.39999999999999997
+              },
+              {
+                "chord_m": 2.474417950636323,
+                "leading_edge_x_m": 9.222299929618364,
+                "percent_span_location": 1.0
+              }
+            ],
+            "span_m": 5.05917661284917,
+            "symmetric": false
+          },
+          {
+            "kind": "fuselage",
+            "length_m": 61.66,
+            "location": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "name": "fuselage",
+            "stations": [
+              {
+                "height_m": 0.0,
+                "width_m": 0.001,
+                "x_m": 0.0
+              },
+              {
+                "height_m": 1.4502002795566267,
+                "width_m": 1.567,
+                "x_m": 3.0286310399999996
+              },
+              {
+                "height_m": 2.356000454168675,
+                "width_m": 2.3429,
+                "x_m": 5.774039999999999
+              },
+              {
+                "height_m": 3.0581005895132534,
+                "width_m": 2.741,
+                "x_m": 9.078772319999999
+              },
+              {
+                "height_m": 3.32000064,
+                "width_m": 2.88,
+                "x_m": 12.383999999999999
+              },
+              {
+                "height_m": 3.32000064,
+                "width_m": 2.88,
+                "x_m": 43.227999999999994
+              },
+              {
+                "height_m": 2.952000569060241,
+                "width_m": 2.88,
+                "x_m": 47.53537408
+              },
+              {
+                "height_m": 0.0010000001927710845,
+                "width_m": 0.001,
+                "x_m": 61.66
+              }
+            ]
+          }
+        ],
+        "export": {
+          "basename": "concorde_full",
+          "directory": "<export_directory>",
+          "formats": [
+            "stl",
+            "step",
+            "vsp3"
+          ]
+        },
+        "openvsp_root": "<openvsp_root>"
+      },
+      "status": "pass",
+      "value": 34.5882,
+      "variable_id": "V01",
+      "variable_name": "vertical_tail_area",
+      "worker_python": "3.9.25"
+    },
+    {
+      "assembly": {
+        "bounds_m": [
+          [
+            -7.401487051415874e-17,
+            -12.802319526672363,
+            -2.2938663959503174
+          ],
+          [
+            62.2765998840332,
+            12.802319526672363,
+            6.009331226348877
+          ]
+        ],
+        "component_bounds_m": {
+          "fuselage": [
+            [
+              -7.4014868308e-17,
+              -1.6561441904,
+              -1.6794723748
+            ],
+            [
+              62.2766,
+              1.6561441904,
+              1.6794723748
+            ]
+          ],
+          "main_wing": [
+            [
+              14.0,
+              -12.802319126,
+              -2.2938664746
+            ],
+            [
+              45.495343759,
+              12.802319126,
+              0.6938664746000001
+            ]
+          ],
+          "vertical_tail": [
+            [
+              42.0,
+              -0.65734201154,
+              1.0
+            ],
+            [
+              55.157616067999996,
+              0.65734201154,
+              6.0093312927
+            ]
+          ]
+        },
+        "components": [
+          "main_wing",
+          "vertical_tail",
+          "fuselage"
+        ],
+        "extents_m": [
+          62.2765998840332,
+          25.604639053344727,
+          8.303197622299194
+        ],
+        "faces": 4128,
+        "mesh_count": 1,
+        "note": "Assembly composed with trimesh rigid transforms because this OpenVSP build does not apply XForm placement to exported STL meshes.",
+        "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/F01_plus_1pct/concorde_full_assembly_composed.stl",
+        "vertices": 2070
+      },
+      "baseline_value": 61.66,
+      "checks": [
+        {
+          "absolute_tolerance": null,
+          "check_id": "OVP01_wing_area",
+          "delta": 0.0,
+          "detail": "",
+          "model_value": 358.25000000000006,
+          "openvsp_value": 358.25000000000006,
+          "relative_delta": 0.0,
+          "relative_tolerance": 0.005,
+          "status": "pass",
+          "subject": "main_wing area"
+        },
+        {
+          "absolute_tolerance": null,
+          "check_id": "OVP02_wing_span",
+          "delta": 0.0,
+          "detail": "",
+          "model_value": 25.604638251691824,
+          "openvsp_value": 25.604638251691824,
+          "relative_delta": 0.0,
+          "relative_tolerance": 0.005,
+          "status": "pass",
+          "subject": "main_wing span"
+        },
+        {
+          "absolute_tolerance": null,
+          "check_id": "OVP03_tail_area",
+          "delta": 0.0,
+          "detail": "",
+          "model_value": 33.91,
+          "openvsp_value": 33.91,
+          "relative_delta": 0.0,
+          "relative_tolerance": 0.005,
+          "status": "pass",
+          "subject": "vertical_tail area"
+        },
+        {
+          "absolute_tolerance": null,
+          "check_id": "OVP04_tail_span",
+          "delta": 8.881784197001252e-16,
+          "detail": "",
+          "model_value": 5.0093312926976585,
+          "openvsp_value": 5.009331292697659,
+          "relative_delta": 1.7730478736650247e-16,
+          "relative_tolerance": 0.005,
+          "status": "pass",
+          "subject": "vertical_tail span"
+        },
+        {
+          "absolute_tolerance": 1e-06,
+          "check_id": "OVP05_fuselage_length",
+          "delta": 0.0,
+          "detail": "",
+          "model_value": 62.276599999999995,
+          "openvsp_value": 62.276599999999995,
+          "relative_delta": 0.0,
+          "relative_tolerance": null,
+          "status": "pass",
+          "subject": "fuselage length read back"
+        },
+        {
+          "absolute_tolerance": null,
+          "check_id": "OVP06_assembly_x",
+          "delta": -1.1596679172498625e-07,
+          "detail": "",
+          "model_value": 62.276599999999995,
+          "openvsp_value": 62.2765998840332,
+          "relative_delta": -1.8621246459342073e-09,
+          "relative_tolerance": 1e-06,
+          "status": "pass",
+          "subject": "composed assembly x extent vs fuselage length"
+        },
+        {
+          "absolute_tolerance": null,
+          "check_id": "OVP07_assembly_y",
+          "delta": 8.016529022825125e-07,
+          "detail": "",
+          "model_value": 25.604638251691824,
+          "openvsp_value": 25.604639053344727,
+          "relative_delta": 3.13088938965792e-08,
+          "relative_tolerance": 0.005,
+          "status": "pass",
+          "subject": "composed assembly y extent vs wing span"
+        },
+        {
+          "absolute_tolerance": null,
+          "check_id": "OVP08_assembly_zmax",
+          "delta": -6.634878157996127e-08,
+          "detail": "",
+          "model_value": 6.0093312926976585,
+          "openvsp_value": 6.009331226348877,
+          "relative_delta": -1.1040959193011395e-08,
+          "relative_tolerance": 0.005,
+          "status": "pass",
+          "subject": "composed assembly z max vs tail origin + tail span"
+        },
+        {
+          "absolute_tolerance": 0.02,
+          "check_id": "OVP09_perturbation_reach",
+          "delta": 0.0,
+          "detail": "OpenVSP delta must follow the model delta; absolute tolerance 0.02",
+          "model_value": 0.009999999999999972,
+          "openvsp_value": 0.009999999999999972,
+          "relative_delta": 0.009999999999999972,
+          "relative_tolerance": null,
+          "status": "pass",
+          "subject": "F01 fuselage_length_m vs fuselage_length_m"
+        }
+      ],
+      "component": "fuselage",
+      "component_measurements": {
+        "fuselage": {
+          "bounds_m": [
+            [
+              -7.4014868308e-17,
+              -1.6561441904,
+              -1.6794723748
+            ],
+            [
+              62.2766,
+              1.6561441904,
+              1.6794723748
+            ]
+          ],
+          "extents_m": [
+            62.2766,
+            3.3122883808,
+            3.3589447496
+          ],
+          "faces": 1088,
+          "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/F01_plus_1pct/concorde_full_fuselage.stl",
+          "surface_area_m2": 551.8808675700565,
+          "vertices": 546,
+          "volume_m3": 398.3512385545403,
+          "watertight": true
+        },
+        "main_wing": {
+          "bounds_m": [
+            [
+              0.0,
+              -12.802319126,
+              -1.4938664746
+            ],
+            [
+              31.495343759,
+              12.802319126,
+              1.4938664746
+            ]
+          ],
+          "extents_m": [
+            31.495343759,
+            25.604638252,
+            2.9877329492
+          ],
+          "faces": 2160,
+          "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/F01_plus_1pct/concorde_full_main_wing.stl",
+          "surface_area_m2": 767.2986319179228,
+          "vertices": 1082,
+          "volume_m3": 446.7251197520079,
+          "watertight": true
+        },
+        "vertical_tail": {
+          "bounds_m": [
+            [
+              0.0,
+              0.0,
+              -0.65734201154
+            ],
+            [
+              13.157616068,
+              5.0093312927,
+              0.65734201154
+            ]
+          ],
+          "extents_m": [
+            13.157616068,
+            5.0093312927,
+            1.31468402308
+          ],
+          "faces": 880,
+          "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/F01_plus_1pct/concorde_full_vertical_tail.stl",
+          "surface_area_m2": 83.70128513470657,
+          "vertices": 442,
+          "volume_m3": 18.57967279174616,
+          "watertight": true
+        }
+      },
+      "delta": 0.01,
+      "kind": "relative",
+      "label": "F01_plus_1pct",
+      "measurement_failures": [],
+      "model_metrics": {
+        "fuselage_front_m2": 7.509664526786937,
+        "fuselage_height_m": 3.32000064,
+        "fuselage_length_m": 62.276599999999995,
+        "fuselage_nose_m": 12.383999999999999,
+        "fuselage_tail_m": 18.432,
+        "fuselage_wetted_m2": 494.92719610379953,
+        "fuselage_width_m": 2.88,
+        "tail_area_m2": 33.91,
+        "tail_span_m": 5.0093312926976585,
+        "wing_area_m2": 358.25000000000006,
+        "wing_span_m": 25.604638251691824,
+        "wing_wetted_m2": 717.5747500000001
+      },
+      "openvsp_metrics": {
+        "assembly_x_extent_m": 62.2765998840332,
+        "assembly_x_min_m": -7.401487051415874e-17,
+        "assembly_y_extent_m": 25.604639053344727,
+        "assembly_z_max_m": 6.009331226348877,
+        "fuselage_bbox_height_m": 3.3589447496,
+        "fuselage_height_m": 3.3589447496,
+        "fuselage_length_m": 62.276599999999995,
+        "fuselage_surface_area_m2": 551.8808675700565,
+        "fuselage_width_m": 3.3122883808,
+        "tail_area_m2": 33.91,
+        "tail_span_m": 5.009331292697659,
+        "wing_area_m2": 358.25000000000006,
+        "wing_span_m": 25.604638251691824,
+        "wing_wetted_m2": 767.2986319179228
+      },
+      "request": {
+        "components": [
+          {
+            "kind": "wing",
+            "location": [
+              14.0,
+              0.0,
+              -0.8
+            ],
+            "name": "main_wing",
+            "rotation": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "sections": [
+              {
+                "chord_m": 29.901818514349216,
+                "leading_edge_x_m": 0.0,
+                "percent_span_location": 0.0
+              },
+              {
+                "chord_m": 12.208434070312554,
+                "leading_edge_x_m": 18.914470750635964,
+                "percent_span_location": 0.480469
+              },
+              {
+                "chord_m": 3.892558930560952,
+                "leading_edge_x_m": 27.60278482830357,
+                "percent_span_location": 0.945313
+              },
+              {
+                "chord_m": 0.9731361054965724,
+                "leading_edge_x_m": 30.365937891543936,
+                "percent_span_location": 1.0
+              }
+            ],
+            "span_m": 25.604638251691824,
+            "symmetric": true
+          },
+          {
+            "kind": "wing",
+            "location": [
+              42.0,
+              0.0,
+              1.0
+            ],
+            "name": "vertical_tail",
+            "rotation": [
+              90.0,
+              0.0,
+              0.0
+            ],
+            "sections": [
+              {
+                "chord_m": 13.157616068421863,
+                "leading_edge_x_m": 0.0,
+                "percent_span_location": 0.0
+              },
+              {
+                "chord_m": 6.805663483666481,
+                "leading_edge_x_m": 5.5205346344304935,
+                "percent_span_location": 0.39999999999999997
+              },
+              {
+                "chord_m": 2.450038854119933,
+                "leading_edge_x_m": 9.131437615905579,
+                "percent_span_location": 1.0
+              }
+            ],
+            "span_m": 5.0093312926976585,
+            "symmetric": false
+          },
+          {
+            "kind": "fuselage",
+            "length_m": 62.276599999999995,
+            "location": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "name": "fuselage",
+            "stations": [
+              {
+                "height_m": 0.0,
+                "width_m": 0.001,
+                "x_m": 0.0
+              },
+              {
+                "height_m": 1.4502002795566267,
+                "width_m": 1.567,
+                "x_m": 3.0286310399999996
+              },
+              {
+                "height_m": 2.356000454168675,
+                "width_m": 2.3429,
+                "x_m": 5.774039999999999
+              },
+              {
+                "height_m": 3.0581005895132534,
+                "width_m": 2.741,
+                "x_m": 9.078772319999999
+              },
+              {
+                "height_m": 3.32000064,
+                "width_m": 2.88,
+                "x_m": 12.383999999999999
+              },
+              {
+                "height_m": 3.32000064,
+                "width_m": 2.88,
+                "x_m": 43.8446
+              },
+              {
+                "height_m": 2.952000569060241,
+                "width_m": 2.88,
+                "x_m": 48.15197408
+              },
+              {
+                "height_m": 0.0010000001927710845,
+                "width_m": 0.001,
+                "x_m": 62.276599999999995
+              }
+            ]
+          }
+        ],
+        "export": {
+          "basename": "concorde_full",
+          "directory": "<export_directory>",
+          "formats": [
+            "stl",
+            "step",
+            "vsp3"
+          ]
+        },
+        "openvsp_root": "<openvsp_root>"
+      },
+      "status": "pass",
+      "value": 62.276599999999995,
+      "variable_id": "F01",
+      "variable_name": "fuselage_length",
+      "worker_python": "3.9.25"
+    },
+    {
+      "assembly": {
+        "bounds_m": [
+          [
+            -7.401487051415874e-17,
+            -12.802319526672363,
+            -2.2938663959503174
+          ],
+          [
+            61.65999984741211,
+            12.802319526672363,
+            6.009331226348877
+          ]
+        ],
+        "component_bounds_m": {
+          "fuselage": [
+            [
+              -7.4014868308e-17,
+              -1.6704499879,
+              -1.6937781723
+            ],
+            [
+              61.66,
+              1.6704499879,
+              1.6937781723
+            ]
+          ],
+          "main_wing": [
+            [
+              14.0,
+              -12.802319126,
+              -2.2938664746
+            ],
+            [
+              45.495343759,
+              12.802319126,
+              0.6938664746000001
+            ]
+          ],
+          "vertical_tail": [
+            [
+              42.0,
+              -0.65734201154,
+              1.0
+            ],
+            [
+              55.157616067999996,
+              0.65734201154,
+              6.0093312927
+            ]
+          ]
+        },
+        "components": [
+          "main_wing",
+          "vertical_tail",
+          "fuselage"
+        ],
+        "extents_m": [
+          61.65999984741211,
+          25.604639053344727,
+          8.303197622299194
+        ],
+        "faces": 4128,
+        "mesh_count": 1,
+        "note": "Assembly composed with trimesh rigid transforms because this OpenVSP build does not apply XForm placement to exported STL meshes.",
+        "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/F02_plus_2pct/concorde_full_assembly_composed.stl",
+        "vertices": 2070
+      },
+      "baseline_value": 4.3,
+      "checks": [
+        {
+          "absolute_tolerance": null,
+          "check_id": "OVP01_wing_area",
+          "delta": 0.0,
+          "detail": "",
+          "model_value": 358.25000000000006,
+          "openvsp_value": 358.25000000000006,
+          "relative_delta": 0.0,
+          "relative_tolerance": 0.005,
+          "status": "pass",
+          "subject": "main_wing area"
+        },
+        {
+          "absolute_tolerance": null,
+          "check_id": "OVP02_wing_span",
+          "delta": 0.0,
+          "detail": "",
+          "model_value": 25.604638251691824,
+          "openvsp_value": 25.604638251691824,
+          "relative_delta": 0.0,
+          "relative_tolerance": 0.005,
+          "status": "pass",
+          "subject": "main_wing span"
+        },
+        {
+          "absolute_tolerance": null,
+          "check_id": "OVP03_tail_area",
+          "delta": 0.0,
+          "detail": "",
+          "model_value": 33.91,
+          "openvsp_value": 33.91,
+          "relative_delta": 0.0,
+          "relative_tolerance": 0.005,
+          "status": "pass",
+          "subject": "vertical_tail area"
+        },
+        {
+          "absolute_tolerance": null,
+          "check_id": "OVP04_tail_span",
+          "delta": 8.881784197001252e-16,
+          "detail": "",
+          "model_value": 5.0093312926976585,
+          "openvsp_value": 5.009331292697659,
+          "relative_delta": 1.7730478736650247e-16,
+          "relative_tolerance": 0.005,
+          "status": "pass",
+          "subject": "vertical_tail span"
+        },
+        {
+          "absolute_tolerance": 1e-06,
+          "check_id": "OVP05_fuselage_length",
+          "delta": 0.0,
+          "detail": "",
+          "model_value": 61.66,
+          "openvsp_value": 61.66,
+          "relative_delta": 0.0,
+          "relative_tolerance": null,
+          "status": "pass",
+          "subject": "fuselage length read back"
+        },
+        {
+          "absolute_tolerance": null,
+          "check_id": "OVP06_assembly_x",
+          "delta": -1.5258788721439487e-07,
+          "detail": "",
+          "model_value": 61.66,
+          "openvsp_value": 61.65999984741211,
+          "relative_delta": -2.4746657024715354e-09,
+          "relative_tolerance": 1e-06,
+          "status": "pass",
+          "subject": "composed assembly x extent vs fuselage length"
+        },
+        {
+          "absolute_tolerance": null,
+          "check_id": "OVP07_assembly_y",
+          "delta": 8.016529022825125e-07,
+          "detail": "",
+          "model_value": 25.604638251691824,
+          "openvsp_value": 25.604639053344727,
+          "relative_delta": 3.13088938965792e-08,
+          "relative_tolerance": 0.005,
+          "status": "pass",
+          "subject": "composed assembly y extent vs wing span"
+        },
+        {
+          "absolute_tolerance": null,
+          "check_id": "OVP08_assembly_zmax",
+          "delta": -6.634878157996127e-08,
+          "detail": "",
+          "model_value": 6.0093312926976585,
+          "openvsp_value": 6.009331226348877,
+          "relative_delta": -1.1040959193011395e-08,
+          "relative_tolerance": 0.005,
+          "status": "pass",
+          "subject": "composed assembly z max vs tail origin + tail span"
+        },
+        {
+          "absolute_tolerance": 0.0001,
+          "check_id": "OVP09_perturbation_reach",
+          "delta": 0.004981109149586836,
+          "detail": "geometry must change under this perturbation; threshold 0.0001",
+          "model_value": -0.004636597995797934,
+          "openvsp_value": 0.0003445111537889023,
+          "relative_delta": 0.0003445111537889023,
+          "relative_tolerance": null,
+          "status": "pass",
+          "subject": "F02 fuselage_wetted_m2 vs fuselage_surface_area_m2"
+        }
+      ],
+      "component": "fuselage",
+      "component_measurements": {
+        "fuselage": {
+          "bounds_m": [
+            [
+              -7.4014868308e-17,
+              -1.6704499879,
+              -1.6937781723
+            ],
+            [
+              61.66,
+              1.6704499879,
+              1.6937781723
+            ]
+          ],
+          "extents_m": [
+            61.66,
+            3.3408999758,
+            3.3875563446
+          ],
+          "faces": 1088,
+          "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/F02_plus_2pct/concorde_full_fuselage.stl",
+          "surface_area_m2": 546.0947929010465,
+          "vertices": 546,
+          "volume_m3": 394.36065477382954,
+          "watertight": true
+        },
+        "main_wing": {
+          "bounds_m": [
+            [
+              0.0,
+              -12.802319126,
+              -1.4938664746
+            ],
+            [
+              31.495343759,
+              12.802319126,
+              1.4938664746
+            ]
+          ],
+          "extents_m": [
+            31.495343759,
+            25.604638252,
+            2.9877329492
+          ],
+          "faces": 2160,
+          "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/F02_plus_2pct/concorde_full_main_wing.stl",
+          "surface_area_m2": 767.2986319179228,
+          "vertices": 1082,
+          "volume_m3": 446.7251197520079,
+          "watertight": true
+        },
+        "vertical_tail": {
+          "bounds_m": [
+            [
+              0.0,
+              0.0,
+              -0.65734201154
+            ],
+            [
+              13.157616068,
+              5.0093312927,
+              0.65734201154
+            ]
+          ],
+          "extents_m": [
+            13.157616068,
+            5.0093312927,
+            1.31468402308
+          ],
+          "faces": 880,
+          "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/F02_plus_2pct/concorde_full_vertical_tail.stl",
+          "surface_area_m2": 83.70128513470657,
+          "vertices": 442,
+          "volume_m3": 18.57967279174616,
+          "watertight": true
+        }
+      },
+      "delta": 0.02,
+      "kind": "relative",
+      "label": "F02_plus_2pct",
+      "measurement_failures": [],
+      "model_metrics": {
+        "fuselage_front_m2": 7.509664526786937,
+        "fuselage_height_m": 3.32000064,
+        "fuselage_length_m": 61.66,
+        "fuselage_nose_m": 12.63168,
+        "fuselage_tail_m": 18.800640000000005,
+        "fuselage_wetted_m2": 486.6552312516538,
+        "fuselage_width_m": 2.88,
+        "tail_area_m2": 33.91,
+        "tail_span_m": 5.0093312926976585,
+        "wing_area_m2": 358.25000000000006,
+        "wing_span_m": 25.604638251691824,
+        "wing_wetted_m2": 717.5747500000001
+      },
+      "openvsp_metrics": {
+        "assembly_x_extent_m": 61.65999984741211,
+        "assembly_x_min_m": -7.401487051415874e-17,
+        "assembly_y_extent_m": 25.604639053344727,
+        "assembly_z_max_m": 6.009331226348877,
+        "fuselage_bbox_height_m": 3.3875563446,
+        "fuselage_height_m": 3.3875563446,
+        "fuselage_length_m": 61.66,
+        "fuselage_surface_area_m2": 546.0947929010465,
+        "fuselage_width_m": 3.3408999758,
+        "tail_area_m2": 33.91,
+        "tail_span_m": 5.009331292697659,
+        "wing_area_m2": 358.25000000000006,
+        "wing_span_m": 25.604638251691824,
+        "wing_wetted_m2": 767.2986319179228
+      },
+      "request": {
+        "components": [
+          {
+            "kind": "wing",
+            "location": [
+              14.0,
+              0.0,
+              -0.8
+            ],
+            "name": "main_wing",
+            "rotation": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "sections": [
+              {
+                "chord_m": 29.901818514349216,
+                "leading_edge_x_m": 0.0,
+                "percent_span_location": 0.0
+              },
+              {
+                "chord_m": 12.208434070312554,
+                "leading_edge_x_m": 18.914470750635964,
+                "percent_span_location": 0.480469
+              },
+              {
+                "chord_m": 3.892558930560952,
+                "leading_edge_x_m": 27.60278482830357,
+                "percent_span_location": 0.945313
+              },
+              {
+                "chord_m": 0.9731361054965724,
+                "leading_edge_x_m": 30.365937891543936,
+                "percent_span_location": 1.0
+              }
+            ],
+            "span_m": 25.604638251691824,
+            "symmetric": true
+          },
+          {
+            "kind": "wing",
+            "location": [
+              42.0,
+              0.0,
+              1.0
+            ],
+            "name": "vertical_tail",
+            "rotation": [
+              90.0,
+              0.0,
+              0.0
+            ],
+            "sections": [
+              {
+                "chord_m": 13.157616068421863,
+                "leading_edge_x_m": 0.0,
+                "percent_span_location": 0.0
+              },
+              {
+                "chord_m": 6.805663483666481,
+                "leading_edge_x_m": 5.5205346344304935,
+                "percent_span_location": 0.39999999999999997
+              },
+              {
+                "chord_m": 2.450038854119933,
+                "leading_edge_x_m": 9.131437615905579,
+                "percent_span_location": 1.0
+              }
+            ],
+            "span_m": 5.0093312926976585,
+            "symmetric": false
+          },
+          {
+            "kind": "fuselage",
+            "length_m": 61.66,
+            "location": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "name": "fuselage",
+            "stations": [
+              {
+                "height_m": 0.0,
+                "width_m": 0.001,
+                "x_m": 0.0
+              },
+              {
+                "height_m": 1.4502002795566267,
+                "width_m": 1.567,
+                "x_m": 3.0892036608
+              },
+              {
+                "height_m": 2.356000454168675,
+                "width_m": 2.3429,
+                "x_m": 5.8895208
+              },
+              {
+                "height_m": 3.0581005895132534,
+                "width_m": 2.741,
+                "x_m": 9.260347766399999
+              },
+              {
+                "height_m": 3.32000064,
+                "width_m": 2.88,
+                "x_m": 12.63168
+              },
+              {
+                "height_m": 3.32000064,
+                "width_m": 2.88,
+                "x_m": 42.859359999999995
+              },
+              {
+                "height_m": 2.952000569060241,
+                "width_m": 2.88,
+                "x_m": 47.2528815616
+              },
+              {
+                "height_m": 0.0010000001927710845,
+                "width_m": 0.001,
+                "x_m": 61.66
+              }
+            ]
+          }
+        ],
+        "export": {
+          "basename": "concorde_full",
+          "directory": "<export_directory>",
+          "formats": [
+            "stl",
+            "step",
+            "vsp3"
+          ]
+        },
+        "openvsp_root": "<openvsp_root>"
+      },
+      "status": "pass",
+      "value": 4.386,
+      "variable_id": "F02",
+      "variable_name": "fuselage_fineness",
+      "worker_python": "3.9.25"
+    },
+    {
+      "assembly": {
+        "bounds_m": [
+          [
+            -7.401487051415874e-17,
+            -12.802319526672363,
+            -2.2938663959503174
+          ],
+          [
+            61.65999984741211,
+            12.802319526672363,
+            6.009331226348877
+          ]
+        ],
+        "component_bounds_m": {
+          "fuselage": [
+            [
+              -7.4014868308e-17,
+              -1.6563019366,
+              -1.6987590847
+            ],
+            [
+              61.66,
+              1.6563019366,
+              1.6987590847
+            ]
+          ],
+          "main_wing": [
+            [
+              14.0,
+              -12.802319126,
+              -2.2938664746
+            ],
+            [
+              45.495343759,
+              12.802319126,
+              0.6938664746000001
+            ]
+          ],
+          "vertical_tail": [
+            [
+              42.0,
+              -0.65734201154,
+              1.0
+            ],
+            [
+              55.157616067999996,
+              0.65734201154,
+              6.0093312927
+            ]
+          ]
+        },
+        "components": [
+          "main_wing",
+          "vertical_tail",
+          "fuselage"
+        ],
+        "extents_m": [
+          61.65999984741211,
+          25.604639053344727,
+          8.303197622299194
+        ],
+        "faces": 4128,
+        "mesh_count": 1,
+        "note": "Assembly composed with trimesh rigid transforms because this OpenVSP build does not apply XForm placement to exported STL meshes.",
+        "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/F03_plus_2pct/concorde_full_assembly_composed.stl",
+        "vertices": 2070
+      },
+      "baseline_value": 1.152778,
+      "checks": [
+        {
+          "absolute_tolerance": null,
+          "check_id": "OVP01_wing_area",
+          "delta": 0.0,
+          "detail": "",
+          "model_value": 358.25000000000006,
+          "openvsp_value": 358.25000000000006,
+          "relative_delta": 0.0,
+          "relative_tolerance": 0.005,
+          "status": "pass",
+          "subject": "main_wing area"
+        },
+        {
+          "absolute_tolerance": null,
+          "check_id": "OVP02_wing_span",
+          "delta": 0.0,
+          "detail": "",
+          "model_value": 25.604638251691824,
+          "openvsp_value": 25.604638251691824,
+          "relative_delta": 0.0,
+          "relative_tolerance": 0.005,
+          "status": "pass",
+          "subject": "main_wing span"
+        },
+        {
+          "absolute_tolerance": null,
+          "check_id": "OVP03_tail_area",
+          "delta": 0.0,
+          "detail": "",
+          "model_value": 33.91,
+          "openvsp_value": 33.91,
+          "relative_delta": 0.0,
+          "relative_tolerance": 0.005,
+          "status": "pass",
+          "subject": "vertical_tail area"
+        },
+        {
+          "absolute_tolerance": null,
+          "check_id": "OVP04_tail_span",
+          "delta": 8.881784197001252e-16,
+          "detail": "",
+          "model_value": 5.0093312926976585,
+          "openvsp_value": 5.009331292697659,
+          "relative_delta": 1.7730478736650247e-16,
+          "relative_tolerance": 0.005,
+          "status": "pass",
+          "subject": "vertical_tail span"
+        },
+        {
+          "absolute_tolerance": 1e-06,
+          "check_id": "OVP05_fuselage_length",
+          "delta": 0.0,
+          "detail": "",
+          "model_value": 61.66,
+          "openvsp_value": 61.66,
+          "relative_delta": 0.0,
+          "relative_tolerance": null,
+          "status": "pass",
+          "subject": "fuselage length read back"
+        },
+        {
+          "absolute_tolerance": null,
+          "check_id": "OVP06_assembly_x",
+          "delta": -1.5258788721439487e-07,
+          "detail": "",
+          "model_value": 61.66,
+          "openvsp_value": 61.65999984741211,
+          "relative_delta": -2.4746657024715354e-09,
+          "relative_tolerance": 1e-06,
+          "status": "pass",
+          "subject": "composed assembly x extent vs fuselage length"
+        },
+        {
+          "absolute_tolerance": null,
+          "check_id": "OVP07_assembly_y",
+          "delta": 8.016529022825125e-07,
+          "detail": "",
+          "model_value": 25.604638251691824,
+          "openvsp_value": 25.604639053344727,
+          "relative_delta": 3.13088938965792e-08,
+          "relative_tolerance": 0.005,
+          "status": "pass",
+          "subject": "composed assembly y extent vs wing span"
+        },
+        {
+          "absolute_tolerance": null,
+          "check_id": "OVP08_assembly_zmax",
+          "delta": -6.634878157996127e-08,
+          "detail": "",
+          "model_value": 6.0093312926976585,
+          "openvsp_value": 6.009331226348877,
+          "relative_delta": -1.1040959193011395e-08,
+          "relative_tolerance": 0.005,
+          "status": "pass",
+          "subject": "composed assembly z max vs tail origin + tail span"
+        },
+        {
+          "absolute_tolerance": 0.02,
+          "check_id": "OVP09_perturbation_reach",
+          "delta": -0.008516208906206744,
+          "detail": "OpenVSP delta must follow the model delta; absolute tolerance 0.02",
+          "model_value": 0.01999999999999999,
+          "openvsp_value": 0.011483791093793246,
+          "relative_delta": 0.011483791093793246,
+          "relative_tolerance": null,
+          "status": "pass",
+          "subject": "F03 fuselage_height_m vs fuselage_bbox_height_m"
+        }
+      ],
+      "component": "fuselage",
+      "component_measurements": {
+        "fuselage": {
+          "bounds_m": [
+            [
+              -7.4014868308e-17,
+              -1.6563019366,
+              -1.6987590847
+            ],
+            [
+              61.66,
+              1.6563019366,
+              1.6987590847
+            ]
+          ],
+          "extents_m": [
+            61.66,
+            3.3126038732,
+            3.3975181694
+          ],
+          "faces": 1088,
+          "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/F03_plus_2pct/concorde_full_fuselage.stl",
+          "surface_area_m2": 551.1742788826612,
+          "vertices": 546,
+          "volume_m3": 400.9047870756322,
+          "watertight": true
+        },
+        "main_wing": {
+          "bounds_m": [
+            [
+              0.0,
+              -12.802319126,
+              -1.4938664746
+            ],
+            [
+              31.495343759,
+              12.802319126,
+              1.4938664746
+            ]
+          ],
+          "extents_m": [
+            31.495343759,
+            25.604638252,
+            2.9877329492
+          ],
+          "faces": 2160,
+          "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/F03_plus_2pct/concorde_full_main_wing.stl",
+          "surface_area_m2": 767.2986319179228,
+          "vertices": 1082,
+          "volume_m3": 446.7251197520079,
+          "watertight": true
+        },
+        "vertical_tail": {
+          "bounds_m": [
+            [
+              0.0,
+              0.0,
+              -0.65734201154
+            ],
+            [
+              13.157616068,
+              5.0093312927,
+              0.65734201154
+            ]
+          ],
+          "extents_m": [
+            13.157616068,
+            5.0093312927,
+            1.31468402308
+          ],
+          "faces": 880,
+          "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/F03_plus_2pct/concorde_full_vertical_tail.stl",
+          "surface_area_m2": 83.70128513470657,
+          "vertices": 442,
+          "volume_m3": 18.57967279174616,
+          "watertight": true
+        }
+      },
+      "delta": 0.02,
+      "kind": "relative",
+      "label": "F03_plus_2pct",
+      "measurement_failures": [],
+      "model_metrics": {
+        "fuselage_front_m2": 7.659857817322675,
+        "fuselage_height_m": 3.3864006528,
+        "fuselage_length_m": 61.66,
+        "fuselage_nose_m": 12.383999999999999,
+        "fuselage_tail_m": 18.432,
+        "fuselage_wetted_m2": 494.0944561983744,
+        "fuselage_width_m": 2.88,
+        "tail_area_m2": 33.91,
+        "tail_span_m": 5.0093312926976585,
+        "wing_area_m2": 358.25000000000006,
+        "wing_span_m": 25.604638251691824,
+        "wing_wetted_m2": 717.5747500000001
+      },
+      "openvsp_metrics": {
+        "assembly_x_extent_m": 61.65999984741211,
+        "assembly_x_min_m": -7.401487051415874e-17,
+        "assembly_y_extent_m": 25.604639053344727,
+        "assembly_z_max_m": 6.009331226348877,
+        "fuselage_bbox_height_m": 3.3975181694,
+        "fuselage_height_m": 3.3975181694,
+        "fuselage_length_m": 61.66,
+        "fuselage_surface_area_m2": 551.1742788826612,
+        "fuselage_width_m": 3.3126038732,
+        "tail_area_m2": 33.91,
+        "tail_span_m": 5.009331292697659,
+        "wing_area_m2": 358.25000000000006,
+        "wing_span_m": 25.604638251691824,
+        "wing_wetted_m2": 767.2986319179228
+      },
+      "request": {
+        "components": [
+          {
+            "kind": "wing",
+            "location": [
+              14.0,
+              0.0,
+              -0.8
+            ],
+            "name": "main_wing",
+            "rotation": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "sections": [
+              {
+                "chord_m": 29.901818514349216,
+                "leading_edge_x_m": 0.0,
+                "percent_span_location": 0.0
+              },
+              {
+                "chord_m": 12.208434070312554,
+                "leading_edge_x_m": 18.914470750635964,
+                "percent_span_location": 0.480469
+              },
+              {
+                "chord_m": 3.892558930560952,
+                "leading_edge_x_m": 27.60278482830357,
+                "percent_span_location": 0.945313
+              },
+              {
+                "chord_m": 0.9731361054965724,
+                "leading_edge_x_m": 30.365937891543936,
+                "percent_span_location": 1.0
+              }
+            ],
+            "span_m": 25.604638251691824,
+            "symmetric": true
+          },
+          {
+            "kind": "wing",
+            "location": [
+              42.0,
+              0.0,
+              1.0
+            ],
+            "name": "vertical_tail",
+            "rotation": [
+              90.0,
+              0.0,
+              0.0
+            ],
+            "sections": [
+              {
+                "chord_m": 13.157616068421863,
+                "leading_edge_x_m": 0.0,
+                "percent_span_location": 0.0
+              },
+              {
+                "chord_m": 6.805663483666481,
+                "leading_edge_x_m": 5.5205346344304935,
+                "percent_span_location": 0.39999999999999997
+              },
+              {
+                "chord_m": 2.450038854119933,
+                "leading_edge_x_m": 9.131437615905579,
+                "percent_span_location": 1.0
+              }
+            ],
+            "span_m": 5.0093312926976585,
+            "symmetric": false
+          },
+          {
+            "kind": "fuselage",
+            "length_m": 61.66,
+            "location": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "name": "fuselage",
+            "stations": [
+              {
+                "height_m": 0.0,
+                "width_m": 0.001,
+                "x_m": 0.0
+              },
+              {
+                "height_m": 1.479204285147759,
+                "width_m": 1.567,
+                "x_m": 3.0286310399999996
+              },
+              {
+                "height_m": 2.4031204632520478,
+                "width_m": 2.3429,
+                "x_m": 5.774039999999999
+              },
+              {
+                "height_m": 3.119262601303518,
+                "width_m": 2.741,
+                "x_m": 9.078772319999999
+              },
+              {
+                "height_m": 3.3864006528,
+                "width_m": 2.88,
+                "x_m": 12.383999999999999
+              },
+              {
+                "height_m": 3.3864006528,
+                "width_m": 2.88,
+                "x_m": 43.227999999999994
+              },
+              {
+                "height_m": 3.0110405804414455,
+                "width_m": 2.88,
+                "x_m": 47.53537408
+              },
+              {
+                "height_m": 0.001020000196626506,
+                "width_m": 0.001,
+                "x_m": 61.66
+              }
+            ]
+          }
+        ],
+        "export": {
+          "basename": "concorde_full",
+          "directory": "<export_directory>",
+          "formats": [
+            "stl",
+            "step",
+            "vsp3"
+          ]
+        },
+        "openvsp_root": "<openvsp_root>"
+      },
+      "status": "pass",
+      "value": 1.17583356,
+      "variable_id": "F03",
+      "variable_name": "fuselage_height_width_ratio",
+      "worker_python": "3.9.25"
+    }
+  ]
+}

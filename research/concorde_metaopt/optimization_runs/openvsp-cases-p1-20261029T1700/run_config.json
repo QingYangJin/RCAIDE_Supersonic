@@ -1,0 +1,52 @@
+{
+  "cases": [
+    {
+      "delta": 0.0,
+      "label": "baseline",
+      "variable_id": null
+    },
+    {
+      "delta": 0.02,
+      "label": "W01_plus_2pct",
+      "variable_id": "W01"
+    },
+    {
+      "delta": 0.02,
+      "label": "W02_plus_2pct",
+      "variable_id": "W02"
+    },
+    {
+      "delta": 0.02,
+      "label": "V01_plus_2pct",
+      "variable_id": "V01"
+    },
+    {
+      "delta": 0.01,
+      "label": "F01_plus_1pct",
+      "variable_id": "F01"
+    },
+    {
+      "delta": 0.02,
+      "label": "F02_plus_2pct",
+      "variable_id": "F02"
+    },
+    {
+      "delta": 0.02,
+      "label": "F03_plus_2pct",
+      "variable_id": "F03"
+    }
+  ],
+  "changed_threshold": 0.0001,
+  "command": "python -m research.concorde_metaopt.cli openvsp-cases --run-id openvsp-cases-p1-20261029T1700 --openvsp-python <python3.9> --openvsp-root <OpenVSP root>",
+  "delta_tolerance": 0.02,
+  "design_space_config": "research/concorde_metaopt/configs/design_space_15d.yaml",
+  "export_root": "outputs/concorde_metaopt",
+  "method": "openvsp_perturbation_check",
+  "openvsp_python": "<external>/python.exe",
+  "openvsp_root": "OpenVSP-3.26.1-win64",
+  "openvsp_version": "3.26.1",
+  "run_id": "openvsp-cases-p1-20261029T1700",
+  "stage": "P1",
+  "timeout_s": 900.0,
+  "worker_script": "research/concorde_metaopt/aircraft/openvsp_geometry.py"
+}
