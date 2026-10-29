@@ -1,0 +1,146 @@
+{
+  "artifacts": {
+    "candidates": "research/concorde_metaopt/optimization_runs/doe-p3-20261029T1725/candidates.jsonl",
+    "candidates_csv": "research/concorde_metaopt/optimization_runs/doe-p3-20261029T1725/candidates.csv",
+    "data_manifest": "research/concorde_metaopt/optimization_runs/doe-p3-20261029T1725/data_manifest.json",
+    "environment": "research/concorde_metaopt/optimization_runs/doe-p3-20261029T1725/environment.json",
+    "readme": "research/concorde_metaopt/optimization_runs/doe-p3-20261029T1725/README.md",
+    "run_config": "research/concorde_metaopt/optimization_runs/doe-p3-20261029T1725/run_config.json",
+    "summary": "research/concorde_metaopt/optimization_runs/doe-p3-20261029T1725/summary.json",
+    "validation": "research/concorde_metaopt/optimization_runs/doe-p3-20261029T1725/validation.json"
+  },
+  "best_design_id": null,
+  "best_feasible_fuel_kg": null,
+  "cpu_seconds_if_available": null,
+  "design_dim": 15,
+  "doe": {
+    "batches": [
+      {
+        "batch_id": "batch-000",
+        "batch_index": 0,
+        "count": 32,
+        "method": "lhs",
+        "requested": 32,
+        "seed": 42
+      },
+      {
+        "batch_id": "batch-001",
+        "batch_index": 1,
+        "count": 128,
+        "method": "lhs",
+        "requested": 128,
+        "seed": 43
+      }
+    ],
+    "duplicates_removed": 0,
+    "geometry_errors": 0,
+    "geometry_invalid": 0,
+    "geometry_valid": 160,
+    "method": "lhs",
+    "note": "zero physical evaluations; geometry screening only",
+    "requested_candidates": 160,
+    "validation_checks": [
+      {
+        "check_id": "DS01",
+        "description": "data_manifest.json exists and parses",
+        "detail": "dataset_id=doe-p3-20261029T1725",
+        "status": "pass"
+      },
+      {
+        "check_id": "DS02",
+        "description": "candidates.jsonl parses",
+        "detail": "160 rows",
+        "status": "pass"
+      },
+      {
+        "check_id": "DS03",
+        "description": "row count matches manifest",
+        "detail": "160 rows",
+        "status": "pass"
+      },
+      {
+        "check_id": "DS04",
+        "description": "candidates.csv row count matches JSONL",
+        "detail": "csv=160 jsonl=160",
+        "status": "pass"
+      },
+      {
+        "check_id": "DS05",
+        "description": "every row matches the candidate schema",
+        "detail": "160 rows valid",
+        "status": "pass"
+      },
+      {
+        "check_id": "DS06",
+        "description": "candidate ids are unique",
+        "detail": "160 unique ids",
+        "status": "pass"
+      },
+      {
+        "check_id": "DS07",
+        "description": "geometry status counts match manifest",
+        "detail": "{\"errors\": 0, \"invalid\": 0, \"valid\": 160}",
+        "status": "pass"
+      },
+      {
+        "check_id": "DS08",
+        "description": "manifest file hashes match artifacts",
+        "detail": "4 files verified",
+        "status": "pass"
+      },
+      {
+        "check_id": "DS09",
+        "description": "design-space config hash matches manifest",
+        "detail": "1a9025e99830",
+        "status": "pass"
+      },
+      {
+        "check_id": "DS10",
+        "description": "batch counts are internally consistent",
+        "detail": "requested=160 written=160 batches=2",
+        "status": "pass"
+      },
+      {
+        "check_id": "DS11",
+        "description": "dataset is screening-only (zero physical calls, no objective)",
+        "detail": "",
+        "status": "pass"
+      },
+      {
+        "check_id": "DS12",
+        "description": "geometry recomputation matches stored status",
+        "detail": "160 rows recomputed",
+        "status": "pass"
+      }
+    ],
+    "validation_status": "valid",
+    "written_candidates": 160
+  },
+  "failed_count": 0,
+  "first_feasible_evaluation": null,
+  "git_sha": "047621f3ab04c781d127e751265c90ff461ceb9b",
+  "invalid_count": 0,
+  "low_fidelity_calls": 0,
+  "method": "doe_screening",
+  "objective": {
+    "direction": "minimize",
+    "name": "fuel_burn_kg",
+    "status": "not_evaluated_in_doe_screening",
+    "unit": "kg"
+  },
+  "run_id": "doe-p3-20261029T1725",
+  "seed": 42,
+  "solver_versions": {
+    "RCAIDE-LEADS": "1.5.0",
+    "RCAIDE_module": "1.5.0",
+    "matplotlib": "3.11.2",
+    "numpy": "2.4.6",
+    "scipy": "1.17.1"
+  },
+  "stage": "P3",
+  "status": "doe_completed",
+  "su2_calls": 0,
+  "task_id": "concorde_fixed_cruise_15d",
+  "total_true_evaluations": 0,
+  "wall_seconds": 2.0312318000069354
+}

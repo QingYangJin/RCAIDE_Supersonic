@@ -1,0 +1,174 @@
+{
+  "batch_sizes": [
+    32,
+    128
+  ],
+  "batches": [
+    {
+      "batch_id": "batch-000",
+      "batch_index": 0,
+      "count": 32,
+      "method": "lhs",
+      "requested": 32,
+      "seed": 42
+    },
+    {
+      "batch_id": "batch-001",
+      "batch_index": 1,
+      "count": 128,
+      "method": "lhs",
+      "requested": 128,
+      "seed": 43
+    }
+  ],
+  "design_dim": 15,
+  "design_space": {
+    "bounds": {
+      "F01": {
+        "lower": 58.0,
+        "name": "fuselage_length",
+        "unit": "m",
+        "upper": 66.0
+      },
+      "F02": {
+        "lower": 3.6,
+        "name": "fuselage_fineness",
+        "unit": "dimensionless",
+        "upper": 5.2
+      },
+      "F03": {
+        "lower": 1.0,
+        "name": "fuselage_height_width_ratio",
+        "unit": "dimensionless",
+        "upper": 1.35
+      },
+      "V01": {
+        "lower": 28.0,
+        "name": "vertical_tail_area",
+        "unit": "m^2",
+        "upper": 40.0
+      },
+      "V02": {
+        "lower": -10.0,
+        "name": "vertical_tail_sweep_delta",
+        "unit": "deg",
+        "upper": 10.0
+      },
+      "W01": {
+        "lower": 300.0,
+        "name": "wing_area",
+        "unit": "m^2",
+        "upper": 420.0
+      },
+      "W02": {
+        "lower": 1.5,
+        "name": "aspect_ratio",
+        "unit": "dimensionless",
+        "upper": 2.2
+      },
+      "W03": {
+        "lower": 62.0,
+        "name": "sweep_1",
+        "unit": "deg",
+        "upper": 72.0
+      },
+      "W04": {
+        "lower": 40.0,
+        "name": "sweep_2",
+        "unit": "deg",
+        "upper": 56.0
+      },
+      "W05": {
+        "lower": 66.0,
+        "name": "sweep_3",
+        "unit": "deg",
+        "upper": 76.0
+      },
+      "W06": {
+        "lower": 0.35,
+        "name": "span_location_2",
+        "unit": "dimensionless",
+        "upper": 0.58
+      },
+      "W07": {
+        "lower": 0.85,
+        "name": "span_location_3",
+        "unit": "dimensionless",
+        "upper": 0.98
+      },
+      "W08": {
+        "lower": 0.3,
+        "name": "chord_ratio_2",
+        "unit": "dimensionless",
+        "upper": 0.5
+      },
+      "W09": {
+        "lower": 0.08,
+        "name": "chord_ratio_3",
+        "unit": "dimensionless",
+        "upper": 0.2
+      },
+      "W10": {
+        "lower": -4.0,
+        "name": "tip_twist",
+        "unit": "deg",
+        "upper": 4.0
+      }
+    },
+    "bounds_status": "provisional_until_geometry_perturbation",
+    "config_path": "research/concorde_metaopt/configs/design_space_15d.yaml",
+    "config_sha256": "1a9025e998305a86060181584b63c9c4b93526ee9a25a2b7d0a215b23aaa6326",
+    "design_dim": 15,
+    "frozen": false,
+    "ids": [
+      "W01",
+      "W02",
+      "W03",
+      "W04",
+      "W05",
+      "W06",
+      "W07",
+      "W08",
+      "W09",
+      "W10",
+      "V01",
+      "V02",
+      "F01",
+      "F02",
+      "F03"
+    ],
+    "names": [
+      "wing_area",
+      "aspect_ratio",
+      "sweep_1",
+      "sweep_2",
+      "sweep_3",
+      "span_location_2",
+      "span_location_3",
+      "chord_ratio_2",
+      "chord_ratio_3",
+      "tip_twist",
+      "vertical_tail_area",
+      "vertical_tail_sweep_delta",
+      "fuselage_length",
+      "fuselage_fineness",
+      "fuselage_height_width_ratio"
+    ],
+    "task_id": "concorde_fixed_cruise_15d",
+    "units": "SI"
+  },
+  "git_sha": "047621f3ab04c781d127e751265c90ff461ceb9b",
+  "method": "doe_screening",
+  "note": "DOE screening only; physical evaluation requires a separate approved budget.",
+  "run_id": "doe-p3-20261029T1725",
+  "sampler": "lhs",
+  "screening": {
+    "cfd_calls": 0,
+    "geometry_model_only": true,
+    "mission_calls": 0,
+    "rcaide_rebuild": false,
+    "vlm_calls": 0
+  },
+  "seed": 42,
+  "stage": "P3"
+}
