@@ -1,4 +1,4 @@
-# research/concorde_metaopt — P0 audit, P1 geometry and P2 single-cruise evaluator
+# research/concorde_metaopt — P0 audit, P1 geometry, P2 single-cruise evaluator and P3 DOE screening
 
 Phase I workspace for RCAIDE_Supersonic Issue #1 ("[METAOPT-00] ..."). P0 is
 complete: the mandatory directory skeleton, the read-only `audit` subcommand and
@@ -8,8 +8,11 @@ geometry model, an RCAIDE vehicle adapter, 23 model checks (G01–G23), 22 RCAID
 check rows per case (19 identifiers, R16 expands to four), a 31-case (baseline + 15 variables × 2 directions) effect matrix, an OpenVSP geometry export check that builds the same baseline geometry from the model and compares twenty-one quantities (geometry plus placement/orientation) against the exported STL/STEP/VSP3 files, and a seven-case OpenVSP perturbation check that exports the baseline plus representative wing, vertical-tail and fuselage perturbations and proves that each change reaches the exported geometry. P2 now freezes the
 single fixed-cruise task contract and implements the evaluation loop: a real
 RCAIDE Mission backend, ten frozen `g <= 0` constraints, a budget/cache ledger,
-an `evaluations.jsonl` record and the five-evaluation smoke workflow. No DOE,
-BO, MAML or CFD case is executed by this code yet; P3–P6 remain unimplemented.
+an `evaluations.jsonl` record and the five-evaluation smoke workflow. P3 adds the
+zero-physics DOE screening path (`data/schema.py`, `data/generate_doe.py`,
+`data/validate_dataset.py`): LHS/Sobol candidate batches, geometry screening and a
+12-check dataset validator. No fidelity-identity probe, BO, MAML or CFD case is
+executed by this code yet; the rest of P3 and P4–P6 remain unimplemented.
 
 ## CLI status
 
@@ -20,7 +23,8 @@ BO, MAML or CFD case is executed by this code yet; P3–P6 remain unimplemented.
 | `openvsp-check` | implemented (baseline 15D geometry exported through an external OpenVSP 3.26.1 Python 3.9 worker; 21 model-vs-mesh checks including placement/orientation) |
 | `openvsp-cases` | implemented (baseline + six representative 15D perturbations exported through OpenVSP; per-case model-vs-OpenVSP checks, perturbation-reach checks, delta CSV/JSON and figure) |
 | `smoke` | implemented (three baseline RCAIDE cruise repeats + two single-variable perturbations; five true evaluations) |
-| `doe`, `baseline`, `route-a`, `report` | declared in `cli.py`, exit code 2 with "not implemented ...; no result was produced." |
+| `doe` | implemented (LHS/Sobol candidate batches in the 15D box, geometry screening, dataset validator; zero physical evaluations) |
+| `baseline`, `route-a`, `report` | declared in `cli.py`, exit code 2 with "not implemented ...; no result was produced." |
 
 Reproduce the P0 audit (one run directory, small files committed on purpose so the
 result can be reviewed remotely):
@@ -397,16 +401,65 @@ P2 evidence so far: `smoke-p2-20261029T1520` ran five true evaluations against t
 (three identical 36,469.33 kg burns, relative spread 0.0), the only violated
 constraint was `max_throttle` (+0.0163 normalised), and `best_feasible_fuel_kg` is
 therefore null. The run is kept as the diagnostic evidence that invalidated the
-145 t contract and is listed in `optimization_runs/index.json`; a replacement smoke
-run with the frozen 136,000 kg contract needs five more true evaluations.
+145 t contract.
 
-True-evaluation accounting for P2 (approved envelope 8–12 missions): four
-calibration missions froze the mass contract (185 t, 155 t, 150 t and the 4,500 nmi
-MTOW probe that showed the fuel cannot close), the first smoke spent five, and the
-136 t diagnostic contract probe spent one, so ten in total. The replacement smoke
-would spend five more (fifteen in total), which exceeds the approved envelope and
-therefore waits for explicit user approval; `run_smoke` still refuses a budget
-below five.
+The acceptance smoke `smoke-p2-20261029T1612` then ran against the frozen
+136,000 kg contract: status `smoke_completed`, five true evaluations, five
+feasible results, repeatability spread 0.0 (`34,109.48` kg three times),
+`best_feasible_fuel_kg` `34,035.33` kg, W01 `wing_area` +1% -> `-74.15` kg and
+W10 `tip_twist` +2 deg -> `+8.07` kg. Both runs are listed in
+`optimization_runs/index.json`.
+
+True-evaluation accounting for P2: four calibration missions froze the mass
+contract (185 t, 155 t, 150 t and the 4,500 nmi MTOW probe that showed the fuel
+cannot close), the first smoke spent five, the 136 t diagnostic contract probe
+spent one, and the acceptance smoke spent five, so **fifteen** in total. That
+exceeds the provisional 8–12 envelope; it is disclosed in the P2 gate checklist
+and in the Issue #1 receipt draft and awaits the repository owner's confirmation.
+`run_smoke` still refuses a budget below five.
+
+## P3 status
+
+P3 starts with the dataset pipeline that everything else consumes. It is
+**zero-physics** by construction: candidate rows carry `physical_call_count: 0`
+and `evaluation_status: "not_evaluated"`, no objective field may exist, and the
+run manifest records `objective_fields_present: false`.
+
+- `data/schema.py` — frozen candidate-row schema (`p3-doe-1`): 17 required
+  fields, 14 geometry metrics, content-addressed `cand-<sha256[:16]>` ids, and a
+  hard ban on `objective`/`feasible`/`constraints`/`fuel_burn_kg`. Every row is
+  re-checked by `check_candidate_row`: bounds and C01–C04 cross-constraints in
+  the frozen order, finite metrics, `physical_call_count == 0`,
+  `evaluation_status == "not_evaluated"`, and the id must match the design.
+- `data/generate_doe.py` — `run_doe` draws unit-cube samples with
+  `scipy.stats.qmc.LatinHypercube` or scrambled `Sobol`, decodes them through
+  the design space, screens each candidate through `build_geometry` + the 23
+  model checks (geometry-invalid vs geometry-error kept apart), de-duplicates by
+  canonical design, and writes `candidates.jsonl`, `candidates.csv`,
+  `data_manifest.json` (sampler, seed, git sha, config hash, counts, file
+  hashes, limitations), `environment.json`, `run_config.json`, `summary.json`,
+  a run `README.md` and the `optimization_runs/index.json` entry. The summary
+  uses the Issue schema with `total_true_evaluations`/`low_fidelity_calls`/
+  `su2_calls` all 0 and null objective fields.
+- `data/validate_dataset.py` — 12 fail-closed checks DS01–DS12: manifest parse,
+  JSONL/CSV presence, row-count agreement, per-row schema/bounds/id checks,
+  unique ids, geometry-count agreement, manifest file hashes, current
+  design-space config hash, batch totals, zero physical calls / no objective
+  fields, and (with `--recompute-geometry`) an independent re-screening of every
+  row. Results go to `validation.json`.
+- Batch policy: `--n` accepts `32`, `32,128` or a list, so the frozen
+  progression 32 -> 128 -> 512 -> 1,500–2,000 can be grown incrementally; total
+  candidates per run are capped at 5,000. Geometry screening is cheap (about
+  0.2 ms per candidate), so the candidate dataset can be generated ahead of any
+  evaluation budget; a candidate is never an evaluation.
+
+Run the P3 DOE screening (zero physical evaluations):
+
+```bash
+./run_rcaide.cmd -m research.concorde_metaopt.cli doe \
+  --run-id <run_id> --n 32,128 --method lhs --seed 42 \
+  --output-root research/concorde_metaopt/optimization_runs --recompute-geometry
+```
 
 ## Host/sandbox constraints (recorded, not hidden)
 
@@ -432,7 +485,7 @@ global-state immutability, toolchain `not_probed` handling, and an end-to-end
 mocked `run_audit` that writes `environment.json`/`summary.json`/`README.md`/
 evidence without any simulation.
 
-`tests/test_design_space.py` (41 tests) covers the real 15D config (order,
+`tests/test_design_space.py` (40 tests) covers the real 15D config (order,
 identifiers, units, provisional status, baseline SHA), normalization roundtrips,
 bound/cross-constraint violations, rejection of missing/duplicate/reordered
 variables, wrong units, out-of-range baselines, a frozen flag before the measured
@@ -485,14 +538,26 @@ artefacts including the detailed ledger, repeatability failure, case failure,
 minimum-budget rejection, existing run directory protection, figure redraw from
 artefacts). The backend is a fake; no Mission or CFD runs here.
 
-All 158 tests pass, 1 skipped (17 audit + 40 design space + 23 geometry + 28
-OpenVSP + 28 task/evaluation + 22 budget/cache; the skipped test is the real
-OpenVSP worker integration test, which needs the external Python 3.9 install).
+`tests/test_doe_dataset.py` (23 tests) covers batch-size parsing, deterministic
+LHS and Sobol sampling, screening outcomes (baseline valid, cross-constraint and
+bad-geometry rejection), the candidate schema round-trip and forbidden fields,
+content-addressed ids, a 32-candidate run (eight artefacts, manifest counts and
+hashes, zero physical calls, full validation with recomputed geometry, seed
+reproducibility, multi-batch seed accounting, existing-directory protection) and
+tamper detection (out-of-bounds design, deleted row, changed config hash,
+injected objective).
+
+All 181 tests pass, 1 skipped (17 audit + 40 design space + 23 geometry + 28
+OpenVSP + 28 task/evaluation + 22 budget/cache + 23 DOE; the skipped test is the
+real OpenVSP worker integration test, which needs the external Python 3.9
+install).
 
 ## Out of scope so far
 
-No SU2 case, no DOE dataset, no BO, no MAML. Those require P3–P6 code gates and
-explicit user approval for true-evaluation budgets. The P1 config and geometry
+No SU2 case, no fidelity-identity study, no evaluated DOE dataset, no BO, no
+MAML. Those require P3–P6 code gates and explicit user approval for
+true-evaluation budgets; the P3 dataset above is geometry screening only and
+contains no aerodynamic or mission result. The P1 config and geometry
 model are provisional and must not be cited as a frozen design space or a
 validated aerodynamic model; the effect matrix is a geometry-sensitivity sanity
 check only, not a physical performance study. The OpenVSP check and the

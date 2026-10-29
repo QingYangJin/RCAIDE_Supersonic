@@ -3,7 +3,8 @@
 Only subcommands that are genuinely implemented are available. Implemented so
 far: the P0 read-only audit, the P1 geometry check, the P1 OpenVSP geometry
 export check, the P1 OpenVSP perturbation check (representative wing/tail/
-fuselage perturbations) and the P2 single-cruise smoke run. Later-stage subcommands return
+fuselage perturbations), the P2 single-cruise smoke run and the P3 DOE dataset
+screening (geometry only, zero physics). Later-stage subcommands return
 exit code 2 with an explicit message so that no placeholder result can be
 mistaken for evidence.
 """
@@ -152,6 +153,39 @@ def _cmd_smoke(args: argparse.Namespace) -> int:
     return 0 if summary["status"].startswith("smoke_completed") else 1
 
 
+def _cmd_doe(args: argparse.Namespace) -> int:
+    from research.concorde_metaopt.data.generate_doe import run_doe
+
+    summary = run_doe(
+        output_root=Path(args.output_root) if args.output_root else None,
+        run_id=args.run_id,
+        batch_sizes=args.n,
+        method=args.method,
+        seed=args.seed,
+        allow_existing=args.allow_existing,
+        validate=not args.no_validate,
+        recompute_geometry=args.recompute_geometry,
+    )
+    doe = summary.get("doe") or {}
+    print(json.dumps({
+        "run_id": summary["run_id"],
+        "status": summary["status"],
+        "method": summary["method"],
+        "seed": summary["seed"],
+        "requested_candidates": doe.get("requested_candidates"),
+        "written_candidates": doe.get("written_candidates"),
+        "geometry_valid": doe.get("geometry_valid"),
+        "geometry_invalid": doe.get("geometry_invalid"),
+        "geometry_errors": doe.get("geometry_errors"),
+        "duplicates_removed": doe.get("duplicates_removed"),
+        "validation_status": doe.get("validation_status"),
+        "true_evaluations": summary["total_true_evaluations"],
+    }, indent=2, ensure_ascii=False))
+    if summary["total_true_evaluations"] != 0:
+        return 1
+    return 0 if summary["status"].startswith("doe_completed") else 1
+
+
 def _unimplemented(name: str):
     def _call(args: argparse.Namespace) -> int:
         print(
@@ -222,7 +256,18 @@ def build_parser() -> argparse.ArgumentParser:
     smoke.add_argument("--allow-existing", action="store_true", help="write into an existing run directory")
     smoke.set_defaults(func=_cmd_smoke)
 
-    for name in ("doe", "baseline", "route-a", "report"):
+    doe = sub.add_parser("doe", help="P3: LHS/Sobol candidate generation with geometry screening (zero physics)")
+    doe.add_argument("--run-id", default=None, help="run id (default: timestamped)")
+    doe.add_argument("--output-root", default=None, help="default: research/concorde_metaopt/optimization_runs")
+    doe.add_argument("--n", default="32", help="batch sizes, e.g. 32 or 32,128,512 (default: 32)")
+    doe.add_argument("--method", default="lhs", choices=["lhs", "sobol"], help="space-filling sampler (default: lhs)")
+    doe.add_argument("--seed", type=int, default=42, help="base seed (default 42; batch i uses seed+i)")
+    doe.add_argument("--allow-existing", action="store_true", help="write into an existing run directory")
+    doe.add_argument("--no-validate", action="store_true", help="skip the independent dataset validation")
+    doe.add_argument("--recompute-geometry", action="store_true", help="re-build every candidate geometry during validation")
+    doe.set_defaults(func=_cmd_doe)
+
+    for name in ("baseline", "route-a", "report"):
         p = sub.add_parser(name, help="declared by Issue #1; implemented in a later milestone")
         p.set_defaults(func=_unimplemented(name))
     return parser
