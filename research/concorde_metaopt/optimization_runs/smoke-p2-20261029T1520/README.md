@@ -21,9 +21,9 @@ baseline repeats were executed with the cache disabled to measure true
 repeatability; only valid evaluations are cached by the ledger.
 
 Artifacts: summary.json, run_config.json, environment.json,
-best_design.json, evaluations.jsonl, evaluations_detail.jsonl,
-smoke_cases.csv, figures/.  The detail file repeats every true
-evaluation with the full backend record (mission responses and geometry
-cross-check); the compact evaluations.jsonl keeps the Issue schema.
+best_design.json, evaluations.jsonl, smoke_cases.csv, figures/. This run
+predates the evaluations_detail.jsonl writer, so that file is absent; it was
+not silently dropped, and the compact evaluations.jsonl keeps the Issue
+schema for every true evaluation.
 
 Commit note (P2 review fix): the constraint gate block and the repeatability row accounting in summary.json were regenerated from the unchanged evaluations.jsonl; no evaluation was re-run. The five recorded true evaluations were produced at c8bd8790359b08aa5cca4dc54921e6ca32ba07fe. The strict flag is false whenever any constraint value is positive, even if it is inside the feasibility tolerance; the tolerance-aware flag is reported separately.

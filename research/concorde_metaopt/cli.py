@@ -4,10 +4,10 @@ Only subcommands that are genuinely implemented are available. Implemented so
 far: the P0 read-only audit, the P1 geometry check, the P1 OpenVSP geometry
 export check, the P1 OpenVSP perturbation check (representative wing/tail/
 fuselage perturbations), the P2 single-cruise smoke run, the P3 DOE dataset
-screening (geometry only, zero physics) and the P4 ordinary constrained BO
-baseline on the frozen evaluator. Later-stage subcommands return exit code 2
-with an explicit message so that no placeholder result can be mistaken for
-evidence.
+screening (geometry only, zero physics), the P4 ordinary constrained BO/DE
+baselines on the frozen evaluator and the artefact-only run reporter. Later
+subcommands return exit code 2 with an explicit message so that no placeholder
+result can be mistaken for evidence.
 """
 from __future__ import annotations
 
@@ -243,6 +243,30 @@ def _cmd_baseline(args: argparse.Namespace) -> int:
     return 0 if summary["status"].startswith("baseline_%s_completed" % (algorithm,)) else 1
 
 
+def _cmd_report(args: argparse.Namespace) -> int:
+    from research.concorde_metaopt.reports.summarize import run_report
+
+    result = run_report(
+        run_id=args.run_id,
+        output_root=Path(args.output_root) if args.output_root else None,
+        compare_run_ids=tuple(args.compare_run or ()),
+        rewrite_figures=not args.no_figures,
+    )
+    report = result["report"]
+    print(json.dumps({
+        "run_id": report["run_id"],
+        "stage": report["stage"],
+        "method": report["method"],
+        "experiment_status": report["experiment_status"],
+        "report_status": report["report_status"],
+        "consistency_failures": report["consistency_failures"],
+        "missing_artifacts": len(report["artifacts"]["missing"]),
+        "figures": report["figures"]["generated"],
+        "report": report["report_path"],
+    }, indent=2, ensure_ascii=False))
+    return 0 if report["report_status"].startswith("report_completed") else 1
+
+
 def _unimplemented(name: str):
     def _call(args: argparse.Namespace) -> int:
         print(
@@ -338,7 +362,14 @@ def build_parser() -> argparse.ArgumentParser:
     baseline.add_argument("--allow-existing", action="store_true", help="write into an existing run directory")
     baseline.set_defaults(func=_cmd_baseline)
 
-    for name in ("route-a", "report"):
+    report = sub.add_parser("report", help="rebuild a run report from stored artefacts (no physics)")
+    report.add_argument("--run-id", required=True, help="committed run id to report")
+    report.add_argument("--output-root", default=None, help="default: research/concorde_metaopt/optimization_runs")
+    report.add_argument("--compare-run", action="append", default=[], help="additional run id for the comparison table")
+    report.add_argument("--no-figures", action="store_true", help="do not redraw figures")
+    report.set_defaults(func=_cmd_report)
+
+    for name in ("route-a",):
         p = sub.add_parser(name, help="declared by Issue #1; implemented in a later milestone")
         p.set_defaults(func=_unimplemented(name))
     return parser
