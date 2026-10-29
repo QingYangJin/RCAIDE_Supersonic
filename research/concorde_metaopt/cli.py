@@ -1,9 +1,10 @@
 """Command line entry point for the Phase I research workspace.
 
 Only subcommands that are genuinely implemented are available. Implemented so
-far: the P0 read-only audit, the P1 geometry check and the P1 OpenVSP geometry
-export check. Later-stage subcommands return exit code 2 with an explicit
-message so that no placeholder result can be mistaken for evidence.
+far: the P0 read-only audit, the P1 geometry check, the P1 OpenVSP geometry
+export check and the P2 single-cruise smoke run. Later-stage subcommands return
+exit code 2 with an explicit message so that no placeholder result can be
+mistaken for evidence.
 """
 from __future__ import annotations
 
@@ -85,6 +86,41 @@ def _cmd_openvsp_check(args: argparse.Namespace) -> int:
     return 0 if summary["status"].startswith("openvsp_check_completed") else 1
 
 
+def _cmd_smoke(args: argparse.Namespace) -> int:
+    from research.concorde_metaopt.evaluation.smoke import run_smoke
+
+    summary = run_smoke(
+        output_root=Path(args.output_root) if args.output_root else None,
+        run_id=args.run_id,
+        seed=args.seed,
+        budget=args.budget,
+        allow_existing=args.allow_existing,
+    )
+    smoke = summary.get("smoke") or {}
+    repeatability = smoke.get("repeatability") or {}
+    print(json.dumps({
+        "run_id": summary["run_id"],
+        "status": summary["status"],
+        "task_id": summary["task_id"],
+        "true_evaluations": summary["total_true_evaluations"],
+        "budget": smoke.get("budget"),
+        "repeatability_passed": repeatability.get("passed"),
+        "repeatability_spread": repeatability.get("relative_spread"),
+        "baseline_objective": (smoke.get("baseline") or {}).get("objective"),
+        "best_feasible_fuel_kg": summary["best_feasible_fuel_kg"],
+        "perturbations": [
+            {
+                "label": case.get("label"),
+                "status": case.get("status"),
+                "objective": case.get("objective"),
+                "objective_delta": case.get("objective_delta"),
+            }
+            for case in smoke.get("perturbations", [])
+        ],
+    }, indent=2, ensure_ascii=False))
+    return 0 if summary["status"].startswith("smoke_completed") else 1
+
+
 def _unimplemented(name: str):
     def _call(args: argparse.Namespace) -> int:
         print(
@@ -124,7 +160,15 @@ def build_parser() -> argparse.ArgumentParser:
     openvsp.add_argument("--allow-existing", action="store_true", help="write into an existing run directory")
     openvsp.set_defaults(func=_cmd_openvsp_check)
 
-    for name in ("smoke", "doe", "baseline", "route-a", "report"):
+    smoke = sub.add_parser("smoke", help="P2: baseline repeatability and two real single-cruise perturbations")
+    smoke.add_argument("--run-id", default=None, help="run id (default: timestamped)")
+    smoke.add_argument("--output-root", default=None, help="default: research/concorde_metaopt/optimization_runs")
+    smoke.add_argument("--budget", type=int, default=5, help="true-evaluation budget (minimum 5, default 5)")
+    smoke.add_argument("--seed", type=int, default=42, help="recorded seed (default 42)")
+    smoke.add_argument("--allow-existing", action="store_true", help="write into an existing run directory")
+    smoke.set_defaults(func=_cmd_smoke)
+
+    for name in ("doe", "baseline", "route-a", "report"):
         p = sub.add_parser(name, help="declared by Issue #1; implemented in a later milestone")
         p.set_defaults(func=_unimplemented(name))
     return parser

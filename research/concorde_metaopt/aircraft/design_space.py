@@ -146,6 +146,12 @@ class DesignSpace:
                 return candidate
         raise DesignSpaceError("unknown design variable %r" % name)
 
+    def variable_by_id(self, identifier: str) -> DesignVariable:
+        for candidate in self.variables:
+            if candidate.id == identifier:
+                return candidate
+        raise DesignSpaceError("unknown design variable id %r" % identifier)
+
     def baseline_vector(self) -> Tuple[float, ...]:
         return tuple(variable.baseline for variable in self.variables)
 

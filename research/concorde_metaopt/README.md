@@ -1,13 +1,15 @@
-# research/concorde_metaopt — P0 audit and P1 geometry
+# research/concorde_metaopt — P0 audit, P1 geometry and P2 single-cruise evaluator
 
 Phase I workspace for RCAIDE_Supersonic Issue #1 ("[METAOPT-00] ..."). P0 is
 complete: the mandatory directory skeleton, the read-only `audit` subcommand and
-the committed evidence runs. P1 now contains the provisional 15-variable
+the committed evidence runs. P1 contains the provisional 15-variable
 design-space contract (`configs/design_space_15d.yaml`), a dependency-free
 geometry model, an RCAIDE vehicle adapter, 23 model checks (G01–G23), 22 RCAIDE
-check rows per case (19 identifiers, R16 expands to four), a 31-case (baseline + 15 variables × 2 directions) effect matrix, and an OpenVSP geometry export check that builds the same baseline geometry from the model and compares eleven derived quantities against the exported STL/STEP/VSP3 files. No Mission,
-CFD case, DOE or optimization is executed by this code yet. P2–P6 (evaluator,
-DOE/fidelity, BO, MAML-A, comparison) remain unimplemented.
+check rows per case (19 identifiers, R16 expands to four), a 31-case (baseline + 15 variables × 2 directions) effect matrix, and an OpenVSP geometry export check that builds the same baseline geometry from the model and compares eleven derived quantities against the exported STL/STEP/VSP3 files. P2 now freezes the
+single fixed-cruise task contract and implements the evaluation loop: a real
+RCAIDE Mission backend, ten frozen `g <= 0` constraints, a budget/cache ledger,
+an `evaluations.jsonl` record and the five-evaluation smoke workflow. No DOE,
+BO, MAML or CFD case is executed by this code yet; P3–P6 remain unimplemented.
 
 ## CLI status
 
@@ -16,7 +18,8 @@ DOE/fidelity, BO, MAML-A, comparison) remain unimplemented.
 | `audit` | implemented (read-only environment audit) |
 | `geometry-check` | implemented (15D geometry + 31-case effect matrix + 4 negative controls + RCAIDE cross-check) |
 | `openvsp-check` | implemented (baseline 15D geometry exported through an external OpenVSP 3.26.1 Python 3.9 worker; 11 model-vs-STL checks) |
-| `smoke`, `doe`, `baseline`, `route-a`, `report` | declared in `cli.py`, exit code 2 with "not implemented ...; no result was produced." |
+| `smoke` | implemented (three baseline RCAIDE cruise repeats + two single-variable perturbations; five true evaluations) |
+| `doe`, `baseline`, `route-a`, `report` | declared in `cli.py`, exit code 2 with "not implemented ...; no result was produced." |
 
 Reproduce the P0 audit (one run directory, small files committed on purpose so the
 result can be reviewed remotely):
@@ -249,6 +252,81 @@ model uses `AC = LE(MAC) + 0.25·MAC` while RCAIDE uses the area centroid −0.2
 and RCAIDE forces the last wing/tail segment sweep to the previous segment value
 (RCAIDE check R16 records this as INFO).
 
+## P2 status
+
+P2 freezes the single fixed-cruise evaluation contract and implements the
+evaluation loop that P3–P6 will reuse.
+
+- \`configs/task_fixed_cruise.yaml\` + \`tasks/task_spec.py\` — frozen Phase I task:
+  18,288 m (60,000 ft), Mach 2.02, 3,028,020 m (1,635 nmi) cruise; OEW 78,700 kg,
+  payload 9,500 kg, cargo 1,000 kg, loaded fuel 55,800 kg, start mass 145,000 kg
+  (zero-fuel mass 89,200 kg); limits max fuel 95,680 / max zero fuel 92,000 /
+  max take-off 185,000 kg; four turbojets; objective \`fuel_burn_kg\` in kg. The
+  mass contract is \`frozen\` because it was measured, not guessed: the same
+  single-cruise mission at the upstream MTOW 185,000 kg needs **max throttle
+  1.2708** (infeasible, the historical failure the old application reported),
+  155,000 kg needs 1.0374, 150,000 kg needs 1.0008, so 145,000 kg was selected
+  with about 3.7% throttle margin. The task validates its own mass balance,
+  limits and objective identity on load and can be adapted to
+  \`maml_opt.contracts.TaskSpec\` for P4/P5. It is a cruise-entry contract, not an
+  MTOW mission.
+- \`aircraft/concorde_adapter.py\` — loads the upstream tutorial
+  (\`tutorials/Simulation_Turbojet_Supersonic_Aircraft_4500nmi_Mission/Concorde.py\`,
+  SHA-256 pinned), applies the 15D geometry to the RCAIDE main wing, vertical
+  tail and fuselage **before** \`configs_setup\` (RCAIDE \`Config\` deep-copies the
+  vehicle, so later edits must go to \`analyses.<tag>.vehicle\`), rebuilds the
+  eight fuselage segments (the upstream file appends a duplicate \`segment_6\` tag
+  and silently loses one station), applies the frozen mass contract to the
+  analysis vehicle, and re-derives the geometry through RCAIDE
+  \`wing_planform\`/\`fuselage_planform\` to fail closed on a mismatch.
+- \`evaluation/contract.py\` — ten constraints, all \`g <= 0\`, with names and
+  denominators frozen: \`geometry_invalid\`, \`task_mass_balance\`,
+  \`fuel_capacity_excess\`, \`zero_fuel_excess\`, \`takeoff_excess\`,
+  \`fuel_remaining_deficit\`, \`max_throttle\`, \`cruise_range_error\`,
+  \`mission_convergence\` (both convergence flags and residual norm <= 1e-4) and
+  \`trim_attitude_limit\` (|alpha| <= 12 deg as a force-balance guard; this
+  single-segment mission has no moment trim). \`empty_constraints()\` writes nulls,
+  never fabricated numbers; invalid evaluations never get a fake large objective.
+- \`evaluation/mission.py\` — builds the one-segment
+  \`Constant_Mach_Constant_Altitude\` mission and extracts a validated observation
+  history (mass/range/time, throttle, fuel mass flow and thrust for the four
+  turbojets, alpha/CL/CD, convergence flags, residual norm); non-finite,
+  decreasing-range or increasing-mass histories raise \`ObservationError\`.
+- \`evaluation/low_fidelity.py\` — \`SingleCruiseBackend\`: one fresh vehicle,
+  mission and solver state per evaluation (no warm start), status vocabulary
+  VALID / GEOMETRY_INVALID / GEOMETRY_MISMATCH / MISSION_BUILD_FAILED /
+  MISSION_FAILED / MISSION_NOT_CONVERGED / INVALID_OR_MISSING_RESPONSE. Failed or
+  invalid evaluations carry \`objective: null\`. \`preflight()\` validates the
+  template and task with zero physical calls.
+- \`evaluation/high_fidelity.py\` — fail-closed stub: SU2/RANS is not wired in P2,
+  so any call raises instead of returning a placeholder number.
+- \`evaluation/ledger.py\` — \`EvaluationLedger\` enforces the true-evaluation
+  budget, caches only VALID results keyed by task fingerprint + fidelity +
+  canonical design (a cache hit consumes no budget and reports
+  \`physical_call_count: 0\`), records backend exceptions as \`BACKEND_ERROR\`, and
+  writes the Issue-mandated \`evaluations.jsonl\` fields.
+- \`evaluation/smoke.py\` — three baseline repeats with caching disabled
+  (repeatability tolerance 1e-6) and two perturbations, W01 \`wing_area\` +1% and
+  W10 \`tip_twist\` 0 -> +2 deg. Writes \`summary.json\`, \`run_config.json\`,
+  \`environment.json\`, \`best_design.json\`, \`evaluations.jsonl\`,
+  \`smoke_cases.csv\`, \`task_spec.json\`, two figures and a run \`README.md\`, and
+  updates \`optimization_runs/index.json\`.
+- \`reports/figures.py plot_smoke_artifacts\` — redraws the repeatability and
+  perturbation figures from \`evaluations.jsonl\`/\`smoke_cases.csv\` alone.
+
+Run the P2 smoke (three repeats + two perturbations = five true evaluations,
+roughly 80 s each on this host):
+
+\`\`\`bash
+./run_rcaide.cmd -m research.concorde_metaopt.cli smoke \
+  --run-id <run_id> --output-root research/concorde_metaopt/optimization_runs
+\`\`\`
+
+True-evaluation accounting for P2 (approved envelope 8–12 missions): four
+calibration missions froze the mass contract (185 t, 155 t, 150 t and the
+4,500 nmi MTOW probe that showed the fuel cannot close), and the smoke spends
+five, so nine in total. \`run_smoke\` refuses a budget below five.
+
 ## Host/sandbox constraints (recorded, not hidden)
 
 - The first audit (2026-10-27) ran under a Windows file sandbox that denied child
@@ -298,13 +376,36 @@ RCAIDE cross-checks R00–R18, the derived `failed_count` path, and the run
 artefacts (required files, summary fields, per-case JSONL fields, duplicate-run
 rejection). Tests use a temporary directory outside the repository.
 
-All 94 tests pass (17 audit + 40 design space + 23 geometry + 14 OpenVSP).
+`tests/test_task_and_evaluation.py` (28 tests) covers the frozen task contract
+(exact values, derived margins, fingerprint stability, rejection of unbalanced
+masses, unfrozen status, changed objective identity, empty freeze evidence and
+out-of-range Mach), the ten constraints (names, normalized range error,
+throttle/non-convergence/trim violations, fuel and mass deficits, missing
+observation keys), mission assembly from the task (segment altitude/Mach/
+distance, control variables, missing analysis tag) and observation extraction
+(happy path, increasing mass, decreasing range, non-finite or short histories,
+missing propulsor, `thrust_force` fallback). No Mission is launched.
+
+`tests/test_budget_and_cache.py` (17 tests) covers ledger budget enforcement
+(no row on a rejected call), cache hits that consume no budget, cache-disabled
+runs, invalid results not cached, backend exceptions recorded as
+`BACKEND_ERROR`, the JSONL row fields and deterministic design ids, best/
+first-feasible tracking, and the offline smoke workflow (happy path artefacts,
+repeatability failure, case failure, minimum-budget rejection, existing run
+directory protection, figure redraw from artefacts). The backend is a fake; no
+Mission or CFD runs here.
+
+All 139 tests pass (17 audit + 40 design space + 23 geometry + 14 OpenVSP +
+28 task/evaluation + 17 budget/cache).
 
 ## Out of scope so far
 
-No Mission evaluation, no SU2 case, no DOE dataset, no BO, no MAML. Those require
-P2–P6 code gates and explicit user approval for true-evaluation budgets. The P1
-config and geometry model are provisional and must not be cited as a frozen design
-space or a validated aerodynamic model; the effect matrix is a geometry-sensitivity
-sanity check only, not a physical performance study, and the OpenVSP check verifies
-geometry export only (no VSPAERO/CFD aerodynamic analysis is claimed).
+No SU2 case, no DOE dataset, no BO, no MAML. Those require P3–P6 code gates and
+explicit user approval for true-evaluation budgets. The P1 config and geometry
+model are provisional and must not be cited as a frozen design space or a
+validated aerodynamic model; the effect matrix is a geometry-sensitivity sanity
+check only, not a physical performance study. The OpenVSP check verifies geometry
+export only (no VSPAERO/CFD aerodynamic analysis is claimed). The P2 task
+contract is frozen and physically measured, but the single-cruise evaluation is
+low-fidelity (RCAIDE VLM + turbojet deck) and must not be presented as a
+high-fidelity fuel-burn result.

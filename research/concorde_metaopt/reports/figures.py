@@ -254,14 +254,219 @@ def _draw_fuselage(
     width_axis.plot(xs, widths, color=color, linestyle=linestyle, linewidth=width, label=label)
 
 
+SMOKE_REPEAT_LABEL = "baseline_repeat"
+
+
+def plot_smoke_artifacts(run_dir: Path) -> Dict[str, str]:
+    """Create the P2 smoke figures from the stored evaluations and case CSV."""
+    run_dir = Path(run_dir)
+    figures_dir = run_dir / "figures"
+    figures_dir.mkdir(parents=True, exist_ok=True)
+    evaluations = _read_jsonl(run_dir / "evaluations.jsonl")
+    cases = _read_csv_rows(run_dir / "smoke_cases.csv")
+    summary = json.loads((run_dir / "summary.json").read_text(encoding="utf-8"))
+    reliability_path = figures_dir / "repeatability.png"
+    perturbation_path = figures_dir / "perturbation_sensitivity.png"
+    _plot_repeatability(evaluations, cases, summary, reliability_path)
+    _plot_perturbations(evaluations, cases, summary, perturbation_path)
+    return {
+        "repeatability": str(reliability_path.relative_to(run_dir)),
+        "perturbation_sensitivity": str(perturbation_path.relative_to(run_dir)),
+    }
+
+
+def _read_jsonl(path: Path) -> List[Dict[str, Any]]:
+    rows: List[Dict[str, Any]] = []
+    with path.open("r", encoding="utf-8") as handle:
+        for line in handle:
+            line = line.strip()
+            if line:
+                rows.append(json.loads(line))
+    return rows
+
+
+def _read_csv_rows(path: Path) -> List[Dict[str, Any]]:
+    if not path.exists():
+        return []
+    with path.open("r", encoding="utf-8", newline="") as handle:
+        return list(csv.DictReader(handle))
+
+
+def _case_kind(case: Mapping[str, Any]) -> str:
+    return str(case.get("case_kind", ""))
+
+
+def _smoke_baseline_rows(
+    evaluations: Sequence[Mapping[str, Any]], cases: Sequence[Mapping[str, Any]]
+) -> List[Mapping[str, Any]]:
+    baseline_ids = {
+        str(case["design_id"]) for case in cases if _case_kind(case) == "baseline_repeat"
+    }
+    selected = [row for row in evaluations if str(row.get("design_id")) in baseline_ids]
+    return selected or list(evaluations[:3])
+
+
+def _smoke_perturbation_rows(
+    evaluations: Sequence[Mapping[str, Any]], cases: Sequence[Mapping[str, Any]]
+) -> List[Mapping[str, Any]]:
+    labels = {
+        str(case["design_id"]): str(case.get("case_label", ""))
+        for case in cases
+        if _case_kind(case) == "perturbation"
+    }
+    return [row for row in evaluations if str(row.get("design_id")) in labels]
+
+
+def _constraint_names(evaluations: Sequence[Mapping[str, Any]]) -> List[str]:
+    for row in evaluations:
+        constraints = row.get("constraints") or {}
+        if constraints:
+            return list(constraints.keys())
+    return []
+
+
+def _plot_repeatability(
+    evaluations: Sequence[Mapping[str, Any]],
+    cases: Sequence[Mapping[str, Any]],
+    summary: Mapping[str, Any],
+    path: Path,
+) -> None:
+    rows = _smoke_baseline_rows(evaluations, cases)
+    repeat = (summary.get("smoke") or {}).get("repeatability") or {}
+    tolerance = float(repeat.get("tolerance", 1.0e-6))
+    objectives = [row.get("objective") for row in rows]
+    figure, axes = plt.subplots(1, 2, figsize=(14.0, 5.6))
+    objective_axis, constraint_axis = axes[0], axes[1]
+
+    valid = [float(value) for value in objectives if value is not None]
+    positions = list(range(1, len(rows) + 1))
+    plotted = [float(value) if value is not None else np.nan for value in objectives]
+    objective_axis.bar(positions, plotted, color="#1f77b4", width=0.55, label="fuel burn per repeat")
+    if valid:
+        mean = sum(valid) / len(valid)
+        objective_axis.axhline(mean, color="black", linewidth=1.0, label="mean")
+        objective_axis.axhspan(mean * (1.0 - tolerance), mean * (1.0 + tolerance), color="grey", alpha=0.25, label="+-%.0e band" % tolerance)
+        for position, value in zip(positions, objectives):
+            if value is not None:
+                objective_axis.text(position, float(value), "%.3f" % float(value), ha="center", va="bottom", fontsize=8)
+    objective_axis.set_xticks(positions)
+    objective_axis.set_xticklabels(["repeat %d" % position for position in positions])
+    objective_axis.set_ylabel("fuel burn [kg]")
+    objective_axis.set_title(
+        "Baseline repeatability: spread %s, tolerance %.0e, passed=%s"
+        % (repeat.get("relative_spread"), tolerance, repeat.get("passed"))
+    )
+    objective_axis.grid(True, axis="y", alpha=0.3)
+    objective_axis.legend(fontsize=8)
+
+    names = _constraint_names(rows)
+    if names and rows:
+        baseline_constraints = rows[0].get("constraints") or {}
+        values = [float(baseline_constraints.get(name, np.nan)) for name in names]
+        constraint_axis.bar(range(len(names)), values, color="#ff7f0e", width=0.6)
+        constraint_axis.axhline(0.0, color="black", linewidth=1.0)
+        constraint_axis.set_xticks(range(len(names)))
+        constraint_axis.set_xticklabels(names, rotation=60, ha="right", fontsize=7)
+        constraint_axis.set_ylabel("normalized constraint value (g <= 0)")
+        constraint_axis.set_title("Baseline constraints (feasible means all <= 0)")
+        constraint_axis.grid(True, axis="y", alpha=0.3)
+    else:
+        constraint_axis.axis("off")
+    figure.suptitle("P2 single-cruise smoke: baseline repeatability (RCAIDE mission only)", fontsize=11)
+    figure.tight_layout(rect=(0, 0, 1, 0.95))
+    figure.savefig(path, dpi=140)
+    plt.close(figure)
+
+
+def _plot_perturbations(
+    evaluations: Sequence[Mapping[str, Any]],
+    cases: Sequence[Mapping[str, Any]],
+    summary: Mapping[str, Any],
+    path: Path,
+) -> None:
+    rows = _smoke_perturbation_rows(evaluations, cases)
+    labels = {
+        str(case["design_id"]): str(case.get("case_label", ""))
+        for case in cases
+        if _case_kind(case) == "perturbation"
+    }
+    baseline_rows = _smoke_baseline_rows(evaluations, cases)
+    baseline_objective = None
+    for row in baseline_rows:
+        if row.get("objective") is not None:
+            baseline_objective = float(row["objective"])
+            break
+    figure, axes = plt.subplots(1, 2, figsize=(14.0, 5.6))
+    objective_axis, constraint_axis = axes[0], axes[1]
+
+    names = [labels.get(str(row.get("design_id")), "case %d" % (index + 1)) for index, row in enumerate(rows)]
+    deltas: List[float] = []
+    for row in rows:
+        objective = row.get("objective")
+        if objective is None or baseline_objective is None:
+            deltas.append(np.nan)
+        else:
+            deltas.append(float(objective) - baseline_objective)
+    positions = list(range(len(rows)))
+    objective_axis.bar(positions, deltas, color="#9467bd", width=0.5)
+    objective_axis.axhline(0.0, color="black", linewidth=1.0)
+    for position, value in zip(positions, deltas):
+        if not np.isnan(value):
+            objective_axis.text(position, value, "%+.2f kg" % value, ha="center", va="bottom" if value >= 0 else "top", fontsize=8)
+    objective_axis.set_xticks(positions)
+    objective_axis.set_xticklabels(names, rotation=20, ha="right", fontsize=8)
+    objective_axis.set_ylabel("fuel burn change versus baseline [kg]")
+    objective_axis.set_title("Perturbation sensitivity: objective change (lower is better)")
+    objective_axis.grid(True, axis="y", alpha=0.3)
+
+    constraint_names = _constraint_names(rows) or _constraint_names(baseline_rows)
+    if constraint_names and rows:
+        width = 0.8 / (len(rows) + 1)
+        for series_index, (label, row) in enumerate(
+            [("baseline", baseline_rows[0] if baseline_rows else None)] + list(zip(names, rows))
+        ):
+            if row is None:
+                continue
+            constraints = row.get("constraints") or {}
+            values = [float(constraints.get(name, np.nan)) for name in constraint_names]
+            offset = (series_index - 0.5 * len(rows)) * width
+            constraint_axis.bar(
+                np.arange(len(constraint_names)) + offset,
+                values,
+                width=width,
+                label=label,
+            )
+        constraint_axis.axhline(0.0, color="black", linewidth=1.0)
+        constraint_axis.set_xticks(range(len(constraint_names)))
+        constraint_axis.set_xticklabels(constraint_names, rotation=60, ha="right", fontsize=7)
+        constraint_axis.set_ylabel("normalized constraint value (g <= 0)")
+        constraint_axis.set_title("Constraint response to the same perturbations")
+        constraint_axis.legend(fontsize=7)
+        constraint_axis.grid(True, axis="y", alpha=0.3)
+    else:
+        constraint_axis.axis("off")
+    figure.suptitle("P2 single-cruise smoke: single-variable perturbation effect (RCAIDE mission only)", fontsize=11)
+    figure.tight_layout(rect=(0, 0, 1, 0.95))
+    figure.savefig(path, dpi=140)
+    plt.close(figure)
+
+
 def main(argv: Optional[Sequence[str]] = None) -> int:
-    parser = argparse.ArgumentParser(description="Redraw P1 geometry figures from stored run artifacts.")
+    parser = argparse.ArgumentParser(description="Redraw P1/P2 figures from stored run artifacts.")
     parser.add_argument("run_dir", help="path to the optimization_runs/<run_id> directory")
     arguments = parser.parse_args(argv)
-    paths = plot_geometry_artifacts(Path(arguments.run_dir))
+    run_dir = Path(arguments.run_dir)
+    paths: Dict[str, str] = {}
+    if (run_dir / "geometry_effect_delta.csv").exists() and (run_dir / "geometry_planforms.json").exists():
+        paths.update(plot_geometry_artifacts(run_dir))
+    if (run_dir / "evaluations.jsonl").exists():
+        paths.update(plot_smoke_artifacts(run_dir))
+    if not paths:
+        parser.error("no drawable artifacts found in %s" % run_dir)
     for name, path in paths.items():
         print("%s: %s" % (name, path))
     return 0
+
 
 
 if __name__ == "__main__":

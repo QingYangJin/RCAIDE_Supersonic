@@ -1,0 +1,330 @@
+"""P2 tests: budget accounting, caching, the JSONL contract and the offline smoke flow.
+
+Every test uses a fake backend; no test in this module launches a RCAIDE Mission
+or an SU2 run. The real-evidence run is executed once from the CLI and reviewed
+separately.
+"""
+
+from __future__ import annotations
+
+import json
+import shutil
+import tempfile
+import unittest
+from pathlib import Path
+
+from research.concorde_metaopt.aircraft.design_space import load_design_space
+from research.concorde_metaopt.evaluation.contract import CONSTRAINT_NAMES
+from research.concorde_metaopt.evaluation.ledger import (
+    BudgetExceeded,
+    EvaluationLedger,
+    canonical_design,
+    design_id,
+)
+from research.concorde_metaopt.evaluation.smoke import SmokeError, run_smoke
+from research.concorde_metaopt.reports.figures import plot_smoke_artifacts
+from research.concorde_metaopt.tasks.task_spec import load_task_spec
+
+TMP_ROOT = Path(tempfile.mkdtemp(prefix="concorde-p2-tests-"))
+
+REQUIRED_ROW_FIELDS = {
+    "iteration",
+    "design_id",
+    "x",
+    "status",
+    "objective",
+    "constraints",
+    "feasible",
+    "fidelity",
+    "cache_hit",
+    "physical_call_count",
+    "wall_seconds",
+    "cumulative_calls",
+    "best_feasible_objective",
+}
+
+BASELINE_OBJECTIVE = 35700.0
+
+
+class FakeBackend:
+    """Deterministic offline backend used to exercise the ledger and smoke flow."""
+
+    fidelity = "single_cruise"
+
+    def __init__(self, status="VALID", raise_error=False, jitter=0.0, fail_perturbations=False):
+        self.status = status
+        self.raise_error = raise_error
+        self.jitter = jitter
+        self.fail_perturbations = fail_perturbations
+        self.calls = 0
+
+    def preflight(self):
+        return {"status": "PREFLIGHT_OK", "physical_call_count": 0}
+
+    def evaluate(self, design, fidelity=None, purpose="search"):
+        self.calls += 1
+        if self.raise_error:
+            raise RuntimeError("synthetic backend failure")
+        status = self.status
+        if self.fail_perturbations and self._is_perturbed(design):
+            status = "MISSION_NOT_CONVERGED"
+        objective = None
+        if status == "VALID":
+            objective = BASELINE_OBJECTIVE
+            objective += 0.5 * (float(design["wing_area"]) - 358.25)
+            objective += 30.0 * float(design["tip_twist"])
+            if self.jitter:
+                objective *= 1.0 + self.jitter * self.calls
+        constraints = {name: -0.05 for name in CONSTRAINT_NAMES}
+        constraints["task_mass_balance"] = 0.0
+        constraints["mission_convergence"] = 0.0
+        return {
+            "status": status,
+            "objective": objective,
+            "constraints": constraints,
+            "feasible": status == "VALID",
+            "fidelity": fidelity or self.fidelity,
+            "diagnostics": [] if status == "VALID" else ["synthetic non-convergence"],
+            "physical_call_count": 1,
+        }
+
+    @staticmethod
+    def _is_perturbed(design):
+        return (
+            abs(float(design["wing_area"]) - 358.25) > 1.0e-9
+            or abs(float(design["tip_twist"])) > 1.0e-9
+        )
+
+
+class LedgerTestBase(unittest.TestCase):
+    def setUp(self):
+        self.space = load_design_space()
+        self.task = load_task_spec()
+        self.run_dir = TMP_ROOT / ("ledger-" + self._testMethodName)
+        if self.run_dir.exists():
+            shutil.rmtree(self.run_dir)
+        self.baseline = dict(self.space.baseline_dict())
+
+    def _ledger(self, budget, cache_enabled=True):
+        return EvaluationLedger(budget=budget, run_dir=self.run_dir, cache_enabled=cache_enabled)
+
+    def _design(self, tip_twist=0.0):
+        design = dict(self.baseline)
+        design["tip_twist"] = tip_twist
+        return design
+
+
+class BudgetTests(LedgerTestBase):
+    def test_budget_is_enforced(self):
+        backend = FakeBackend()
+        ledger = self._ledger(2)
+        ledger.evaluate(backend, self._design(0.0), self.task)
+        ledger.evaluate(backend, self._design(1.0), self.task)
+        with self.assertRaises(BudgetExceeded):
+            ledger.evaluate(backend, self._design(2.0), self.task)
+        self.assertEqual(ledger.physical_calls, 2)
+        self.assertEqual(ledger.remaining, 0)
+        self.assertEqual(len(ledger.rows), 2)
+
+    def test_zero_budget_rejects_first_call(self):
+        ledger = self._ledger(0)
+        with self.assertRaises(BudgetExceeded):
+            ledger.evaluate(FakeBackend(), self.baseline, self.task)
+        self.assertEqual(len(ledger.rows), 0)
+
+    def test_rejected_call_does_not_write_a_row(self):
+        ledger = self._ledger(1)
+        backend = FakeBackend()
+        ledger.evaluate(backend, self._design(0.0), self.task)
+        before = (self.run_dir / "evaluations.jsonl").read_text(encoding="utf-8").splitlines()
+        with self.assertRaises(BudgetExceeded):
+            ledger.evaluate(backend, self._design(1.0), self.task)
+        after = (self.run_dir / "evaluations.jsonl").read_text(encoding="utf-8").splitlines()
+        self.assertEqual(before, after)
+
+    def test_negative_budget_rejected(self):
+        with self.assertRaises(ValueError):
+            self._ledger(-1)
+
+
+class CacheTests(LedgerTestBase):
+    def test_cache_hit_does_not_consume_budget(self):
+        backend = FakeBackend()
+        ledger = self._ledger(1)
+        first = ledger.evaluate(backend, self.baseline, self.task)
+        second = ledger.evaluate(backend, self.baseline, self.task)
+        self.assertFalse(first["cache_hit"])
+        self.assertTrue(second["cache_hit"])
+        self.assertEqual(second["physical_call_count"], 0)
+        self.assertEqual(second["cumulative_calls"], 1)
+        self.assertEqual(second["objective"], first["objective"])
+        self.assertEqual(backend.calls, 1)
+        self.assertEqual(ledger.physical_calls, 1)
+        self.assertEqual(ledger.summary()["cache_hits"], 1)
+
+    def test_cache_disabled_forces_physical_calls(self):
+        backend = FakeBackend()
+        ledger = self._ledger(2, cache_enabled=False)
+        ledger.evaluate(backend, self.baseline, self.task)
+        second = ledger.evaluate(backend, self.baseline, self.task)
+        self.assertFalse(second["cache_hit"])
+        self.assertEqual(second["cumulative_calls"], 2)
+        self.assertEqual(backend.calls, 2)
+
+    def test_invalid_results_are_not_cached(self):
+        backend = FakeBackend(status="MISSION_NOT_CONVERGED")
+        ledger = self._ledger(2)
+        first = ledger.evaluate(backend, self.baseline, self.task)
+        second = ledger.evaluate(backend, self.baseline, self.task)
+        self.assertEqual(first["status"], "MISSION_NOT_CONVERGED")
+        self.assertIsNone(first["objective"])
+        self.assertFalse(first["feasible"])
+        self.assertFalse(second["cache_hit"])
+        self.assertEqual(second["cumulative_calls"], 2)
+        self.assertEqual(ledger.summary()["failed_count"], 2)
+
+    def test_backend_exception_is_recorded_not_raised(self):
+        backend = FakeBackend(raise_error=True)
+        ledger = self._ledger(1)
+        row = ledger.evaluate(backend, self.baseline, self.task)
+        self.assertEqual(row["status"], "BACKEND_ERROR")
+        self.assertIsNone(row["objective"])
+        self.assertFalse(row["feasible"])
+        self.assertEqual(ledger.summary()["failed_count"], 1)
+
+
+class JsonlContractTests(LedgerTestBase):
+    def test_required_fields_are_present(self):
+        ledger = self._ledger(1)
+        ledger.evaluate(FakeBackend(), self.baseline, self.task)
+        lines = [
+            line
+            for line in (self.run_dir / "evaluations.jsonl").read_text(encoding="utf-8").splitlines()
+            if line
+        ]
+        self.assertEqual(len(lines), 1)
+        row = json.loads(lines[0])
+        self.assertTrue(REQUIRED_ROW_FIELDS.issubset(row), REQUIRED_ROW_FIELDS - set(row))
+        self.assertEqual(set(row["x"]), set(self.space.names))
+        self.assertEqual(set(row["constraints"]), set(CONSTRAINT_NAMES))
+        self.assertEqual(row["design_id"], design_id(self.baseline))
+        self.assertEqual(row["fidelity"], "single_cruise")
+        self.assertEqual(row["physical_call_count"], 1)
+        self.assertEqual(row["cumulative_calls"], 1)
+
+    def test_design_id_is_deterministic_and_order_independent(self):
+        first = canonical_design({"wing_area": 358.25, "aspect_ratio": 1.83})
+        second = canonical_design({"aspect_ratio": 1.83, "wing_area": 358.25})
+        self.assertEqual(first, second)
+        changed = canonical_design({"wing_area": 359.0, "aspect_ratio": 1.83})
+        self.assertNotEqual(first, changed)
+        identifier = design_id(self.baseline)
+        self.assertTrue(identifier.startswith("d-"))
+        self.assertEqual(identifier, design_id(dict(reversed(list(self.baseline.items())))))
+
+    def test_best_and_first_feasible_are_tracked(self):
+        backend = FakeBackend()
+        ledger = self._ledger(3)
+        higher = dict(self.baseline)
+        higher["tip_twist"] = 2.0
+        lower = dict(self.baseline)
+        lower["tip_twist"] = -1.0
+        ledger.evaluate(backend, higher, self.task)
+        ledger.evaluate(backend, lower, self.task)
+        ledger.evaluate(backend, self.baseline, self.task)
+        summary = ledger.summary()
+        expected_best = BASELINE_OBJECTIVE - 30.0 * 1.0
+        self.assertAlmostEqual(summary["best_feasible_fuel_kg"], expected_best, places=6)
+        self.assertEqual(summary["first_feasible_evaluation"], 1)
+        self.assertEqual(summary["total_true_evaluations"], 3)
+
+
+class SmokeWorkflowTests(LedgerTestBase):
+    def _run(self, run_id, backend, budget=5, allow_existing=False):
+        return run_smoke(
+            output_root=TMP_ROOT / ("smoke-runs-" + self._testMethodName),
+            run_id=run_id,
+            budget=budget,
+            design_space=self.space,
+            task=self.task,
+            backend=backend,
+            allow_existing=allow_existing,
+        )
+
+    def test_offline_smoke_happy_path(self):
+        backend = FakeBackend()
+        summary = self._run("offline-ok", backend)
+        run_dir = TMP_ROOT / ("smoke-runs-" + self._testMethodName) / "offline-ok"
+        self.assertEqual(summary["status"], "smoke_completed")
+        self.assertEqual(summary["total_true_evaluations"], 5)
+        self.assertEqual(backend.calls, 5)
+        self.assertEqual(summary["smoke"]["budget"], 5)
+        self.assertTrue(summary["smoke"]["repeatability"]["passed"])
+        self.assertEqual(summary["smoke"]["repeatability"]["count"], 3)
+        self.assertAlmostEqual(summary["best_feasible_fuel_kg"], BASELINE_OBJECTIVE, places=6)
+        for name in (
+            "summary.json",
+            "run_config.json",
+            "environment.json",
+            "best_design.json",
+            "evaluations.jsonl",
+            "smoke_cases.csv",
+            "README.md",
+            "task_spec.json",
+        ):
+            self.assertTrue((run_dir / name).exists(), name)
+        self.assertTrue((run_dir / "figures" / "repeatability.png").stat().st_size > 1000)
+        self.assertTrue((run_dir / "figures" / "perturbation_sensitivity.png").stat().st_size > 1000)
+        evaluations = [
+            line
+            for line in (run_dir / "evaluations.jsonl").read_text(encoding="utf-8").splitlines()
+            if line
+        ]
+        self.assertEqual(len(evaluations), 5)
+        self.assertEqual(len(summary["smoke"]["perturbations"]), 2)
+        self.assertTrue(all(case["status"] == "VALID" for case in summary["smoke"]["perturbations"]))
+        index = json.loads(
+            (TMP_ROOT / ("smoke-runs-" + self._testMethodName) / "index.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        self.assertEqual([entry["run_id"] for entry in index["runs"]], ["offline-ok"])
+
+    def test_repeatability_failure_is_reported(self):
+        summary = self._run("offline-repeat-fail", FakeBackend(jitter=1.0e-3))
+        self.assertEqual(summary["status"], "smoke_repeatability_failed")
+        self.assertFalse(summary["smoke"]["repeatability"]["passed"])
+        self.assertGreater(summary["smoke"]["repeatability"]["relative_spread"], 1.0e-6)
+
+    def test_case_failure_is_reported(self):
+        summary = self._run("offline-case-fail", FakeBackend(fail_perturbations=True))
+        self.assertEqual(summary["status"], "smoke_completed_with_failures")
+        statuses = [case["status"] for case in summary["smoke"]["perturbations"]]
+        self.assertTrue(all(status != "VALID" for status in statuses), statuses)
+        self.assertEqual(summary["smoke"]["baseline"]["status"], "VALID")
+        # The baseline repeats are feasible, so a best point still exists even
+        # though both perturbation cases failed.
+        self.assertAlmostEqual(summary["best_feasible_fuel_kg"], BASELINE_OBJECTIVE, places=6)
+
+    def test_budget_below_minimum_is_rejected(self):
+        with self.assertRaises(SmokeError):
+            self._run("offline-low-budget", FakeBackend(), budget=4)
+
+    def test_existing_run_directory_requires_allow_existing(self):
+        self._run("offline-existing", FakeBackend())
+        with self.assertRaises(FileExistsError):
+            self._run("offline-existing", FakeBackend())
+
+    def test_figures_are_redrawn_from_artifacts(self):
+        self._run("offline-redraw", FakeBackend())
+        run_dir = TMP_ROOT / ("smoke-runs-" + self._testMethodName) / "offline-redraw"
+        shutil.rmtree(run_dir / "figures")
+        paths = plot_smoke_artifacts(run_dir)
+        self.assertIn("repeatability", paths)
+        self.assertIn("perturbation_sensitivity", paths)
+        for path in paths.values():
+            self.assertTrue((run_dir / path).stat().st_size > 1000)
+
+
+if __name__ == "__main__":
+    unittest.main()
