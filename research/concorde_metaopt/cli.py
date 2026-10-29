@@ -1,9 +1,9 @@
 """Command line entry point for the Phase I research workspace.
 
 Only subcommands that are genuinely implemented are available. Implemented so
-far: the P0 read-only audit and the P1 geometry check. Later-stage subcommands
-return exit code 2 with an explicit message so that no placeholder result can be
-mistaken for evidence.
+far: the P0 read-only audit, the P1 geometry check and the P1 OpenVSP geometry
+export check. Later-stage subcommands return exit code 2 with an explicit
+message so that no placeholder result can be mistaken for evidence.
 """
 from __future__ import annotations
 
@@ -57,6 +57,34 @@ def _cmd_geometry_check(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_openvsp_check(args: argparse.Namespace) -> int:
+    from research.concorde_metaopt.aircraft.openvsp_check import run_openvsp_check
+
+    summary = run_openvsp_check(
+        output_root=Path(args.output_root) if args.output_root else None,
+        export_root=Path(args.export_root) if args.export_root else None,
+        run_id=args.run_id,
+        openvsp_python=args.openvsp_python,
+        openvsp_root=args.openvsp_root,
+        timeout_s=args.timeout,
+        allow_existing=args.allow_existing,
+    )
+    openvsp = summary.get("openvsp") or {}
+    comparisons = openvsp.get("comparisons") or []
+    print(json.dumps({
+        "run_id": summary["run_id"],
+        "status": summary["status"],
+        "design_dim": summary["design_dim"],
+        "openvsp_version": openvsp.get("version"),
+        "openvsp_python": openvsp.get("python_version"),
+        "comparisons": len(comparisons),
+        "warnings": openvsp.get("warnings"),
+        "failures": openvsp.get("failures"),
+        "true_evaluations": summary["total_true_evaluations"],
+    }, indent=2, ensure_ascii=False))
+    return 0 if summary["status"].startswith("openvsp_check_completed") else 1
+
+
 def _unimplemented(name: str):
     def _call(args: argparse.Namespace) -> int:
         print(
@@ -85,6 +113,16 @@ def build_parser() -> argparse.ArgumentParser:
     geometry.add_argument("--delta-fraction", type=float, default=0.10, help="perturbation as a fraction of each bound span (default 0.10)")
     geometry.add_argument("--allow-existing", action="store_true", help="write into an existing run directory")
     geometry.set_defaults(func=_cmd_geometry_check)
+
+    openvsp = sub.add_parser("openvsp-check", help="P1: export baseline geometry through OpenVSP and verify STL metrics")
+    openvsp.add_argument("--run-id", default=None, help="run id (default: timestamped)")
+    openvsp.add_argument("--output-root", default=None, help="default: research/concorde_metaopt/optimization_runs")
+    openvsp.add_argument("--export-root", default=None, help="default: outputs/concorde_metaopt (git-ignored)")
+    openvsp.add_argument("--openvsp-python", default=None, help="external Python 3.9 interpreter that imports openvsp")
+    openvsp.add_argument("--openvsp-root", default=None, help="OpenVSP installation root")
+    openvsp.add_argument("--timeout", type=float, default=900.0, help="worker timeout seconds (default: 900)")
+    openvsp.add_argument("--allow-existing", action="store_true", help="write into an existing run directory")
+    openvsp.set_defaults(func=_cmd_openvsp_check)
 
     for name in ("smoke", "doe", "baseline", "route-a", "report"):
         p = sub.add_parser(name, help="declared by Issue #1; implemented in a later milestone")

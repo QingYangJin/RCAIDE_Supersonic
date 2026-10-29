@@ -5,7 +5,7 @@ complete: the mandatory directory skeleton, the read-only `audit` subcommand and
 the committed evidence runs. P1 now contains the provisional 15-variable
 design-space contract (`configs/design_space_15d.yaml`), a dependency-free
 geometry model, an RCAIDE vehicle adapter, 23 model checks (G01–G23), 22 RCAIDE
-check rows per case (19 identifiers, R16 expands to four) and a 31-case (baseline + 15 variables × 2 directions) effect matrix. No Mission,
+check rows per case (19 identifiers, R16 expands to four), a 31-case (baseline + 15 variables × 2 directions) effect matrix, and an OpenVSP geometry export check that builds the same baseline geometry from the model and compares eleven derived quantities against the exported STL/STEP/VSP3 files. No Mission,
 CFD case, DOE or optimization is executed by this code yet. P2–P6 (evaluator,
 DOE/fidelity, BO, MAML-A, comparison) remain unimplemented.
 
@@ -15,6 +15,7 @@ DOE/fidelity, BO, MAML-A, comparison) remain unimplemented.
 | --- | --- |
 | `audit` | implemented (read-only environment audit) |
 | `geometry-check` | implemented (15D geometry + 31-case effect matrix + 4 negative controls + RCAIDE cross-check) |
+| `openvsp-check` | implemented (baseline 15D geometry exported through an external OpenVSP 3.26.1 Python 3.9 worker; 11 model-vs-STL checks) |
 | `smoke`, `doe`, `baseline`, `route-a`, `report` | declared in `cli.py`, exit code 2 with "not implemented ...; no result was produced." |
 
 Reproduce the P0 audit (one run directory, small files committed on purpose so the
@@ -160,12 +161,37 @@ the geometry model remain **provisional** until a Mission evaluation exists (P2)
   negative controls, CSV/JSON run artefacts and PNG figures.
 - `reports/figures.py` — regenerates the two figures from the CSV/JSON artefacts
   alone (`python -m research.concorde_metaopt.reports.figures <run_dir>`).
+- `aircraft/openvsp_geometry.py` — worker that runs under the **external Python
+  3.9** OpenVSP distribution (the project interpreter 3.11 cannot import the
+  `_vsp` extension, which is ABI cp39). It reads a JSON request (OpenVSP root,
+  export directory, components) and builds the main wing (four sections,
+  symmetric), vertical tail (three sections, rotated 90° about X) and fuselage
+  (eight elliptical-cone stations), then writes `.vsp3`, `.stl`, `.step`.
+  Component STL files are written by isolated one-component models because the
+  OpenVSP binding has no working subset export (`ExportFile` only accepts
+  `(filename, set, type)` and user sets are ignored by the STL writer).
+- `aircraft/openvsp_check.py` — the RCAIDE-environment orchestrator: resolves the
+  external Python/OpenVSP paths (`--openvsp-python`/`--openvsp-root` or
+  `CONCORDE_OPENVSP_PYTHON`/`CONCORDE_OPENVSP_ROOT`), builds the request from the
+  15D geometry model, runs the worker as a subprocess, measures the STL files with
+  `trimesh`, and writes the run artefacts. Eleven checks OV01–OV11 compare model
+  area/span/lengths against the OpenVSP metrics and mesh extents; OV08/OV09
+  (fuselage width/height) are warnings because OpenVSP's fuselage spline
+  overshoots the eight-station profile (measured width 3.312 m vs model 2.88 m
+  at the baseline). No aerodynamic result is produced; VSPAERO is not run by this
+  check.
 
 Run the P1 geometry check and the tests:
 
 ```bash
 ./run_rcaide.cmd -m research.concorde_metaopt.cli geometry-check \
   --run-id <run_id> --output-root research/concorde_metaopt/optimization_runs
+# OpenVSP export check (external Python 3.9 + OpenVSP 3.26.1 install)
+./run_rcaide.cmd -m research.concorde_metaopt.cli openvsp-check \
+  --run-id <run_id> \
+  --openvsp-python <path-to-python3.9.exe> \
+  --openvsp-root <path-to-OpenVSP-3.26.1-win64> \
+  --export-root outputs/concorde_metaopt
 ./run_rcaide.cmd -m unittest discover -s research/concorde_metaopt/tests -t . -v
 ```
 
@@ -203,6 +229,19 @@ so the WARN rows are not mistaken for model bugs:
 - Wing exposed area: P1 does not model fuselage shielding, so exposed equals the
   reference area (358.25 m²) instead of 326.5 m²; this is explicitly a P1
   limitation to be resolved in P2.
+
+Committed P1 OpenVSP evidence run: `openvsp-check-p1-20261029T1425` — baseline
+15D geometry exported to `.vsp3`/`.stl`/`.step`, eleven comparisons
+(ten pass, OV08 fuselage width warning), zero failures, zero true evaluations.
+The exported binaries are large and live under `outputs/concorde_metaopt/<run>/openvsp/`
+(gitignored); the run directory records their relative paths, sizes and SHA-256.
+OpenVSP is available on this host only through the external Python 3.9
+distribution shipped with the install; the project environment 3.11 dependency
+list is unchanged. The fuselage spline overshoot is a tool limitation, not a
+model bug: the eight-station profile is exact in the model/RCAIDE path, but
+OpenVSP interpolates it with a spline and exceeds the nominal width by 15.0% at
+the baseline. A denser station set was tried and also overshoots; P1 records the
+limitation and keeps the model as the authority.
 
 Two conventions are explicitly recorded rather than silently aligned: the geometry
 model uses `AC = LE(MAC) + 0.25·MAC` while RCAIDE uses the area centroid −0.25·MAC
@@ -243,6 +282,14 @@ section count, exposed area, status), the C03 expression text, and the YAML-subs
 loader (nested data, inline lists, comments, quotes, tabs, duplicate keys, bad
 indentation).
 
+`tests/test_openvsp_check.py` (14 tests) drives the orchestrator with fake
+workers (no real OpenVSP required): version parsing from the install directory
+name, path resolution failures, request construction (components, sections,
+symmetric flags, rotation, spans/chords), path sanitisation, comparison
+pass/warn/fail/skip semantics, status aggregation, and the unavailable /
+worker-failed / successful run artefacts (summary, README, environment,
+external artefact hashes, relative-path policy).
+
 `tests/test_geometry_15d.py` (23 tests) covers the baseline model values and
 derived dependencies, all 31 effect cases (each variable changes at least one
 non-echo derived metric; area/span closure; expected directions), rejection of
@@ -251,7 +298,7 @@ RCAIDE cross-checks R00–R18, the derived `failed_count` path, and the run
 artefacts (required files, summary fields, per-case JSONL fields, duplicate-run
 rejection). Tests use a temporary directory outside the repository.
 
-All 80 tests pass (17 audit + 40 design space + 23 geometry).
+All 94 tests pass (17 audit + 40 design space + 23 geometry + 14 OpenVSP).
 
 ## Out of scope so far
 
@@ -259,4 +306,5 @@ No Mission evaluation, no SU2 case, no DOE dataset, no BO, no MAML. Those requir
 P2–P6 code gates and explicit user approval for true-evaluation budgets. The P1
 config and geometry model are provisional and must not be cited as a frozen design
 space or a validated aerodynamic model; the effect matrix is a geometry-sensitivity
-sanity check only, not a physical performance study.
+sanity check only, not a physical performance study, and the OpenVSP check verifies
+geometry export only (no VSPAERO/CFD aerodynamic analysis is claimed).
