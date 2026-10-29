@@ -168,21 +168,33 @@ the geometry model remain **provisional** until a Mission evaluation exists (P2)
   3.9** OpenVSP distribution (the project interpreter 3.11 cannot import the
   `_vsp` extension, which is ABI cp39). It reads a JSON request (OpenVSP root,
   export directory, components) and builds the main wing (four sections,
-  symmetric), vertical tail (three sections, rotated 90° about X) and fuselage
-  (eight elliptical-cone stations), then writes `.vsp3`, `.stl`, `.step`.
+  symmetric), vertical tail (three sections) and fuselage (eight elliptical-cone
+  stations), then writes `.vsp3`, `.stl`, `.step`. Components are exported in
+  their **local frame**: this OpenVSP build does not bake `XForm` translation or
+  rotation into exported meshes (measured: readback >0 before `Update`, reset to
+  0 after `Update`, STL bounds unchanged), and an `XSecSurf` global transform is
+  likewise not baked. Placement/orientation is therefore applied by the
+  orchestrator when composing the assembly mesh, and checked explicitly.
   Component STL files are written by isolated one-component models because the
   OpenVSP binding has no working subset export (`ExportFile` only accepts
   `(filename, set, type)` and user sets are ignored by the STL writer).
 - `aircraft/openvsp_check.py` — the RCAIDE-environment orchestrator: resolves the
   external Python/OpenVSP paths (`--openvsp-python`/`--openvsp-root` or
   `CONCORDE_OPENVSP_PYTHON`/`CONCORDE_OPENVSP_ROOT`), builds the request from the
-  15D geometry model, runs the worker as a subprocess, measures the STL files with
-  `trimesh`, and writes the run artefacts. Eleven checks OV01–OV11 compare model
-  area/span/lengths against the OpenVSP metrics and mesh extents; OV08/OV09
-  (fuselage width/height) are warnings because OpenVSP's fuselage spline
-  overshoots the eight-station profile (measured width 3.312 m vs model 2.88 m
-  at the baseline). No aerodynamic result is produced; VSPAERO is not run by this
-  check.
+  15D geometry model, runs the worker as a subprocess, and measures the STL files
+  with `trimesh`. It composes a placed/oriented assembly mesh (main wing at
+  `[14, 0, −0.8]`, vertical tail rotated 90° about X then placed at
+  `[42, 0, 1]`) and writes the run artefacts. Twenty-one checks OV01–OV21 compare
+  model area/span/lengths against the OpenVSP metrics and mesh extents (OV01–OV11)
+  and verify placement/orientation on the composed assembly: wing X origin and Z
+  centre, tail X/Z origin and vertical Z extent, assembly X origin/extent, wing
+  span as Y extent, and assembly Z min/max (OV12–OV21). Missing or unreadable
+  component/assembly STL measurements are check failures (`openvsp_check_failed`,
+  exit 1), never silently dropped. OV08/OV09 (fuselage width/height) are capped at
+  warning because OpenVSP's fuselage spline overshoots the eight-station profile
+  (baseline: width +15.0% warns, height +1.17% passes). The `.vsp3`/`.step` files
+  keep component local frames; the composed STL is the placed assembly artefact.
+  No aerodynamic result is produced; VSPAERO is not run by this check.
 
 Run the P1 geometry check and the tests:
 
@@ -233,18 +245,25 @@ so the WARN rows are not mistaken for model bugs:
   reference area (358.25 m²) instead of 326.5 m²; this is explicitly a P1
   limitation to be resolved in P2.
 
-Committed P1 OpenVSP evidence run: `openvsp-check-p1-20261029T1425` — baseline
-15D geometry exported to `.vsp3`/`.stl`/`.step`, eleven comparisons
-(ten pass, OV08 fuselage width warning), zero failures, zero true evaluations.
-The exported binaries are large and live under `outputs/concorde_metaopt/<run>/openvsp/`
-(gitignored); the run directory records their relative paths, sizes and SHA-256.
+Committed P1 OpenVSP evidence run: `openvsp-check-p1-20261029T1557` — baseline
+15D geometry exported to `.vsp3`/`.stl`/`.step`, 21 comparisons (20 pass, one
+OV08 fuselage-width warning), zero failures, zero measurement failures, zero
+true evaluations. The placement/orientation checks OV12–OV21 pass on the
+composed assembly: wing X origin 14.0 m and Z centre −0.8 m, tail X origin 42 m
+and Z origin 1.0 m with vertical Z extent 5.009 m, assembly X extent 61.66 m,
+wing span as Y extent 25.605 m, assembly Z max 6.009 m (1.0 + tail span) and
+Z min −2.294 m. The exported binaries are large and live under
+`outputs/concorde_metaopt/<run>/openvsp/` (gitignored); the run directory records
+their relative paths, sizes and SHA-256, including the composed assembly STL.
 OpenVSP is available on this host only through the external Python 3.9
 distribution shipped with the install; the project environment 3.11 dependency
 list is unchanged. The fuselage spline overshoot is a tool limitation, not a
 model bug: the eight-station profile is exact in the model/RCAIDE path, but
 OpenVSP interpolates it with a spline and exceeds the nominal width by 15.0% at
-the baseline. A denser station set was tried and also overshoots; P1 records the
-limitation and keeps the model as the authority.
+the baseline; P1 records the limitation and keeps the model as the authority.
+The run records `git_dirty: true` because three pre-existing uncommitted tutorial
+edits were present in the worktree; the research code and run artefacts are
+otherwise clean and the `git_sha` is `35903cf`.
 
 Two conventions are explicitly recorded rather than silently aligned: the geometry
 model uses `AC = LE(MAC) + 0.25·MAC` while RCAIDE uses the area centroid −0.25·MAC
@@ -379,13 +398,17 @@ section count, exposed area, status), the C03 expression text, and the YAML-subs
 loader (nested data, inline lists, comments, quotes, tabs, duplicate keys, bad
 indentation).
 
-`tests/test_openvsp_check.py` (14 tests) drives the orchestrator with fake
+`tests/test_openvsp_check.py` (21 tests) drives the orchestrator with fake
 workers (no real OpenVSP required): version parsing from the install directory
 name, path resolution failures, request construction (components, sections,
 symmetric flags, rotation, spans/chords), path sanitisation, comparison
-pass/warn/fail/skip semantics, status aggregation, and the unavailable /
-worker-failed / successful run artefacts (summary, README, environment,
-external artefact hashes, relative-path policy).
+pass/warn/fail/skip semantics including the absolute placement checks, status
+aggregation, the 21-row comparison set and its reduced form when STL metrics are
+missing, and the unavailable / worker-failed / measurement-failed / successful
+run artefacts (summary, README, environment, external artefact hashes,
+relative-path policy, writer backups, `--delete-exports`, existing export
+directory protection). One real-worker test is skipped unless
+`CONCORDE_OPENVSP_PYTHON`/`CONCORDE_OPENVSP_ROOT` are set.
 
 `tests/test_geometry_15d.py` (23 tests) covers the baseline model values and
 derived dependencies, all 31 effect cases (each variable changes at least one
@@ -414,8 +437,9 @@ repeatability failure, case failure, minimum-budget rejection, existing run
 directory protection, figure redraw from artefacts). The backend is a fake; no
 Mission or CFD runs here.
 
-All 139 tests pass (17 audit + 40 design space + 23 geometry + 14 OpenVSP +
-28 task/evaluation + 17 budget/cache).
+All 147 tests pass, 1 skipped (17 audit + 40 design space + 23 geometry + 21
+OpenVSP + 28 task/evaluation + 17 budget/cache; the skipped test is the real
+OpenVSP worker integration test, which needs the external Python 3.9 install).
 
 ## Out of scope so far
 
