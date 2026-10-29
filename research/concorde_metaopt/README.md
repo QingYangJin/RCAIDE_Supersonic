@@ -5,7 +5,7 @@ complete: the mandatory directory skeleton, the read-only `audit` subcommand and
 the committed evidence runs. P1 contains the provisional 15-variable
 design-space contract (`configs/design_space_15d.yaml`), a dependency-free
 geometry model, an RCAIDE vehicle adapter, 23 model checks (G01–G23), 22 RCAIDE
-check rows per case (19 identifiers, R16 expands to four), a 31-case (baseline + 15 variables × 2 directions) effect matrix, and an OpenVSP geometry export check that builds the same baseline geometry from the model and compares twenty-one quantities (geometry plus placement/orientation) against the exported STL/STEP/VSP3 files. P2 now freezes the
+check rows per case (19 identifiers, R16 expands to four), a 31-case (baseline + 15 variables × 2 directions) effect matrix, an OpenVSP geometry export check that builds the same baseline geometry from the model and compares twenty-one quantities (geometry plus placement/orientation) against the exported STL/STEP/VSP3 files, and a seven-case OpenVSP perturbation check that exports the baseline plus representative wing, vertical-tail and fuselage perturbations and proves that each change reaches the exported geometry. P2 now freezes the
 single fixed-cruise task contract and implements the evaluation loop: a real
 RCAIDE Mission backend, ten frozen `g <= 0` constraints, a budget/cache ledger,
 an `evaluations.jsonl` record and the five-evaluation smoke workflow. No DOE,
@@ -18,6 +18,7 @@ BO, MAML or CFD case is executed by this code yet; P3–P6 remain unimplemented.
 | `audit` | implemented (read-only environment audit) |
 | `geometry-check` | implemented (15D geometry + 31-case effect matrix + 4 negative controls + RCAIDE cross-check) |
 | `openvsp-check` | implemented (baseline 15D geometry exported through an external OpenVSP 3.26.1 Python 3.9 worker; 21 model-vs-mesh checks including placement/orientation) |
+| `openvsp-cases` | implemented (baseline + six representative 15D perturbations exported through OpenVSP; per-case model-vs-OpenVSP checks, perturbation-reach checks, delta CSV/JSON and figure) |
 | `smoke` | implemented (three baseline RCAIDE cruise repeats + two single-variable perturbations; five true evaluations) |
 | `doe`, `baseline`, `route-a`, `report` | declared in `cli.py`, exit code 2 with "not implemented ...; no result was produced." |
 
@@ -195,6 +196,19 @@ the geometry model remain **provisional** until a Mission evaluation exists (P2)
   (baseline: width +15.0% warns, height +1.17% passes). The `.vsp3`/`.step` files
   keep component local frames; the composed STL is the placed assembly artefact.
   No aerodynamic result is produced; VSPAERO is not run by this check.
+- `aircraft/openvsp_perturbations.py` — the OpenVSP perturbation evidence path.
+  It rebuilds the model for the baseline plus six representative 15D moves
+  (W01 wing area +2%, W02 aspect ratio +2%, V01 vertical-tail area +2%, F01
+  fuselage length +1%, F02 nose fineness +2%, F03 height/width ratio +2%), exports
+  each case through the same external Python 3.9 worker, measures the component
+  and composed-assembly STL files with `trimesh`, and runs nine checks per case
+  (OVP01–OVP09: wing/tail area and span, fuselage length readback, composed
+  assembly X/Y/Z extents, and a perturbation-reach check that the changed variable
+  actually moved the OpenVSP geometry by at least 1e-4 relative). A case whose
+  variable does not reach the exported geometry fails. The run keeps the
+  per-case request/metrics/checks, delta CSVs, a heat-map figure and a
+  README that lists the limitations (twist is not applied to OpenVSP surfaces,
+  fuselage spline overshoot, geometry only — no CFD/Mission value).
 
 Run the P1 geometry check and the tests:
 
@@ -203,6 +217,12 @@ Run the P1 geometry check and the tests:
   --run-id <run_id> --output-root research/concorde_metaopt/optimization_runs
 # OpenVSP export check (external Python 3.9 + OpenVSP 3.26.1 install)
 ./run_rcaide.cmd -m research.concorde_metaopt.cli openvsp-check \
+  --run-id <run_id> \
+  --openvsp-python <path-to-python3.9.exe> \
+  --openvsp-root <path-to-OpenVSP-3.26.1-win64> \
+  --export-root outputs/concorde_metaopt
+# OpenVSP perturbation evidence (baseline + six 15D perturbations, ~10 s)
+./run_rcaide.cmd -m research.concorde_metaopt.cli openvsp-cases \
   --run-id <run_id> \
   --openvsp-python <path-to-python3.9.exe> \
   --openvsp-root <path-to-OpenVSP-3.26.1-win64> \
@@ -264,6 +284,29 @@ the baseline; P1 records the limitation and keeps the model as the authority.
 The run records `git_dirty: true` because three pre-existing uncommitted tutorial
 edits were present in the worktree; the research code and run artefacts are
 otherwise clean and the `git_sha` is `35903cf`.
+
+Committed P1 OpenVSP perturbation evidence run: `openvsp-cases-p1-20261029T1655` —
+seven cases (baseline plus six perturbations) exported through OpenVSP, 63 checks
+(62 pass, one baseline perturbation-reach skip, zero fail), zero true evaluations,
+wall time about 10 s. The perturbation-reach measurements are the answer to the
+"only a mathematical model, zero OpenVSP calls" review point: W01 wing area
++2.000% model / +2.000% OpenVSP, W02 aspect ratio (span) +0.995% / +0.995%, V01
+tail area +2.000% / +2.000%, F01 fuselage length +1.000% / +1.000%, F02 nose
+fineness (surface change) −0.464% model / +0.034% OpenVSP (the check requires only
+a change ≥ 1e-4 because OpenVSP's fuselage spline responds differently from the
+model cone formula, and the run marks that as a limitation), F03 fuselage height
++2.000% / +1.148% (within the 2% tolerance band). The full-run 15D → OpenVSP
+mapping is recorded here so no dimension is silently dropped:
+
+| model dimension | OpenVSP destination |
+| --- | --- |
+| W01 wing_area, W02 aspect_ratio | wing area / span and the four section chords (both perturbed here) |
+| W03/W04/W05 section sweeps | section LE positions and sweeps of the four wing sections |
+| W06/W07 span locations | wing section Y positions (section spans) |
+| W08/W09 chord ratios | section chord ratios / root-chord percentages |
+| W10 tip twist | **not applied to the OpenVSP surface**: the model and RCAIDE VLM consume tip twist, but the OpenVSP worker does not twist the section; this is the one blocked surface mapping and is stated in the run limitations |
+| V01 tail area, V02 tail sweep delta | vertical-tail area / span / three section sweeps (V01 perturbed here) |
+| F01 fuselage length, F02 fineness, F03 height/width ratio | fuselage length, nose/tail lengths, station width/height (all three perturbed here) |
 
 Two conventions are explicitly recorded rather than silently aligned: the geometry
 model uses `AC = LE(MAC) + 0.25·MAC` while RCAIDE uses the area centroid −0.25·MAC
@@ -398,7 +441,7 @@ section count, exposed area, status), the C03 expression text, and the YAML-subs
 loader (nested data, inline lists, comments, quotes, tabs, duplicate keys, bad
 indentation).
 
-`tests/test_openvsp_check.py` (21 tests) drives the orchestrator with fake
+`tests/test_openvsp_check.py` (28 tests) drives the orchestrator with fake
 workers (no real OpenVSP required): version parsing from the install directory
 name, path resolution failures, request construction (components, sections,
 symmetric flags, rotation, spans/chords), path sanitisation, comparison
@@ -407,7 +450,10 @@ aggregation, the 21-row comparison set and its reduced form when STL metrics are
 missing, and the unavailable / worker-failed / measurement-failed / successful
 run artefacts (summary, README, environment, external artefact hashes,
 relative-path policy, writer backups, `--delete-exports`, existing export
-directory protection). One real-worker test is skipped unless
+directory protection). The perturbation tests additionally cover the seven
+cases (bounds-respecting, baseline reach skipped, reach pass/fail when a change
+is ignored, the F02 changed-mode rule and case-status aggregation). One
+real-worker test is skipped unless
 `CONCORDE_OPENVSP_PYTHON`/`CONCORDE_OPENVSP_ROOT` are set.
 
 `tests/test_geometry_15d.py` (23 tests) covers the baseline model values and
@@ -428,17 +474,19 @@ distance, control variables, missing analysis tag) and observation extraction
 (happy path, increasing mass, decreasing range, non-finite or short histories,
 missing propulsor, `thrust_force` fallback). No Mission is launched.
 
-`tests/test_budget_and_cache.py` (17 tests) covers ledger budget enforcement
+`tests/test_budget_and_cache.py` (22 tests) covers ledger budget enforcement
 (no row on a rejected call), cache hits that consume no budget, cache-disabled
 runs, invalid results not cached, backend exceptions recorded as
 `BACKEND_ERROR`, the JSONL row fields and deterministic design ids, best/
-first-feasible tracking, and the offline smoke workflow (happy path artefacts including the detailed ledger,
-repeatability failure, case failure, minimum-budget rejection, existing run
-directory protection, figure redraw from artefacts). The backend is a fake; no
-Mission or CFD runs here.
+first-feasible tracking, the smoke run README mass-contract rendering (nested,
+flat fallback, readback disclosure, explicit "not recorded"), the
+`--delete-exports` CLI wiring, and the offline smoke workflow (happy path
+artefacts including the detailed ledger, repeatability failure, case failure,
+minimum-budget rejection, existing run directory protection, figure redraw from
+artefacts). The backend is a fake; no Mission or CFD runs here.
 
-All 147 tests pass, 1 skipped (17 audit + 40 design space + 23 geometry + 21
-OpenVSP + 28 task/evaluation + 17 budget/cache; the skipped test is the real
+All 158 tests pass, 1 skipped (17 audit + 40 design space + 23 geometry + 28
+OpenVSP + 28 task/evaluation + 22 budget/cache; the skipped test is the real
 OpenVSP worker integration test, which needs the external Python 3.9 install).
 
 ## Out of scope so far
@@ -447,8 +495,10 @@ No SU2 case, no DOE dataset, no BO, no MAML. Those require P3–P6 code gates an
 explicit user approval for true-evaluation budgets. The P1 config and geometry
 model are provisional and must not be cited as a frozen design space or a
 validated aerodynamic model; the effect matrix is a geometry-sensitivity sanity
-check only, not a physical performance study. The OpenVSP check verifies geometry
-export only (no VSPAERO/CFD aerodynamic analysis is claimed). The P2 task
+check only, not a physical performance study. The OpenVSP check and the
+perturbation cases verify geometry export only (no VSPAERO/CFD aerodynamic
+analysis is claimed; the F02/F03 spline differences are recorded as limitations,
+not as physics). The P2 task
 contract is frozen and physically measured, but the single-cruise evaluation is
 low-fidelity (RCAIDE VLM + turbojet deck) and must not be presented as a
 high-fidelity fuel-burn result.

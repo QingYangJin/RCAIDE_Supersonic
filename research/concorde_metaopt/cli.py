@@ -2,7 +2,8 @@
 
 Only subcommands that are genuinely implemented are available. Implemented so
 far: the P0 read-only audit, the P1 geometry check, the P1 OpenVSP geometry
-export check and the P2 single-cruise smoke run. Later-stage subcommands return
+export check, the P1 OpenVSP perturbation check (representative wing/tail/
+fuselage perturbations) and the P2 single-cruise smoke run. Later-stage subcommands return
 exit code 2 with an explicit message so that no placeholder result can be
 mistaken for evidence.
 """
@@ -87,6 +88,35 @@ def _cmd_openvsp_check(args: argparse.Namespace) -> int:
     return 0 if summary["status"].startswith("openvsp_check_completed") else 1
 
 
+def _cmd_openvsp_cases(args: argparse.Namespace) -> int:
+    from research.concorde_metaopt.aircraft.openvsp_perturbations import (
+        run_openvsp_perturbation_check,
+    )
+
+    summary = run_openvsp_perturbation_check(
+        output_root=Path(args.output_root) if args.output_root else None,
+        export_root=Path(args.export_root) if args.export_root else None,
+        run_id=args.run_id,
+        openvsp_python=args.openvsp_python,
+        openvsp_root=args.openvsp_root,
+        timeout_s=args.timeout,
+        allow_existing=args.allow_existing,
+        delete_exports=args.delete_exports,
+    )
+    block = summary.get("perturbation") or {}
+    print(json.dumps({
+        "run_id": summary["run_id"],
+        "status": summary["status"],
+        "cases": block.get("case_count"),
+        "exported_cases": block.get("exported_cases"),
+        "checks_pass": block.get("checks_pass"),
+        "checks_fail": block.get("checks_fail"),
+        "failures": block.get("failures"),
+        "true_evaluations": summary["total_true_evaluations"],
+    }, indent=2, ensure_ascii=False))
+    return 0 if summary["status"].startswith("openvsp_perturbation_check_completed") else 1
+
+
 def _cmd_smoke(args: argparse.Namespace) -> int:
     from research.concorde_metaopt.evaluation.smoke import run_smoke
 
@@ -165,6 +195,24 @@ def build_parser() -> argparse.ArgumentParser:
         help="delete the git-ignored export directory after recording its manifest",
     )
     openvsp.set_defaults(func=_cmd_openvsp_check)
+
+    openvsp_cases = sub.add_parser(
+        "openvsp-cases",
+        help="P1: OpenVSP geometry-export evidence for representative 15D perturbations",
+    )
+    openvsp_cases.add_argument("--run-id", default=None, help="run id (default: timestamped)")
+    openvsp_cases.add_argument("--output-root", default=None, help="default: research/concorde_metaopt/optimization_runs")
+    openvsp_cases.add_argument("--export-root", default=None, help="default: outputs/concorde_metaopt (git-ignored)")
+    openvsp_cases.add_argument("--openvsp-python", default=None, help="external Python 3.9 interpreter that imports openvsp")
+    openvsp_cases.add_argument("--openvsp-root", default=None, help="OpenVSP installation root")
+    openvsp_cases.add_argument("--timeout", type=float, default=900.0, help="per-case worker timeout seconds (default: 900)")
+    openvsp_cases.add_argument("--allow-existing", action="store_true", help="write into an existing run directory")
+    openvsp_cases.add_argument(
+        "--delete-exports",
+        action="store_true",
+        help="delete the git-ignored export directory after recording its manifest",
+    )
+    openvsp_cases.set_defaults(func=_cmd_openvsp_cases)
 
     smoke = sub.add_parser("smoke", help="P2: baseline repeatability and two real single-cruise perturbations")
     smoke.add_argument("--run-id", default=None, help="run id (default: timestamped)")

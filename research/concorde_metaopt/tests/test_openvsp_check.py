@@ -519,5 +519,123 @@ class CliWiringTests(unittest.TestCase):
         self.assertFalse(defaults.delete_exports)
 
 
+class OpenVSPPerturbationTests(unittest.TestCase):
+    """Offline tests for the representative-perturbation geometry evidence."""
+
+    @classmethod
+    def setUpClass(cls):
+        from research.concorde_metaopt.aircraft.openvsp_perturbations import (
+            perturbation_cases,
+        )
+
+        cls.space = load_design_space(CONFIG_PATH)
+        cls.cases = perturbation_cases(cls.space)
+        cls.module = __import__(
+            "research.concorde_metaopt.aircraft.openvsp_perturbations",
+            fromlist=["_case_checks"],
+        )
+
+    @staticmethod
+    def _baseline_metrics():
+        model = {
+            "wing_area_m2": 358.25,
+            "wing_span_m": 25.604638,
+            "tail_area_m2": 33.91,
+            "tail_span_m": 5.009331,
+            "fuselage_length_m": 61.66,
+            "fuselage_wetted_m2": 488.922,
+            "fuselage_height_m": 3.32,
+        }
+        openvsp = {
+            "wing_area_m2": 358.184948,
+            "wing_span_m": 25.604638,
+            "tail_area_m2": 33.909681,
+            "tail_span_m": 5.009331,
+            "fuselage_length_m": 61.66,
+            "fuselage_surface_area_m2": 500.0,
+            "fuselage_bbox_height_m": 3.32,
+            "assembly_x_extent_m": 61.66,
+            "assembly_y_extent_m": 25.604638,
+            "assembly_z_max_m": 6.009331,
+        }
+        return model, openvsp
+
+    def test_cases_are_bounds_respecting(self):
+        labels = [case["label"] for case in self.cases]
+        self.assertEqual(labels[0], "baseline")
+        self.assertEqual(len(self.cases), 7)
+        self.assertEqual(set(labels[1:]), {"W01_plus_2pct", "W02_plus_2pct", "V01_plus_2pct", "F01_plus_1pct", "F02_plus_2pct", "F03_plus_2pct"})
+        by_label = {case["label"]: case for case in self.cases}
+        self.assertAlmostEqual(by_label["W01_plus_2pct"]["value"], 358.25 * 1.02)
+        self.assertAlmostEqual(by_label["F01_plus_1pct"]["value"], 61.66 * 1.01)
+        for case in self.cases:
+            self.assertEqual(len(case["vector"]), 15)
+            self.space.check_bounds({name: value for name, value in zip(self.space.names, case["vector"])})
+
+    def test_baseline_case_skips_reach_check(self):
+        model, openvsp = self._baseline_metrics()
+        checks = self.module._case_checks({"variable_id": None}, model, openvsp, None, None)
+        statuses = {check["check_id"]: check["status"] for check in checks}
+        self.assertEqual(statuses["OVP09_perturbation_reach"], "skip")
+        self.assertTrue(all(status == "pass" for check_id, status in statuses.items() if check_id != "OVP09_perturbation_reach"))
+
+    def test_reach_check_passes_when_openvsp_follows_model(self):
+        model, openvsp = self._baseline_metrics()
+        perturbed_model = dict(model, wing_area_m2=358.25 * 1.02, wing_span_m=model["wing_span_m"] * (1.02 ** 0.5))
+        perturbed_openvsp = dict(openvsp, wing_area_m2=358.25 * 1.02, wing_span_m=openvsp["wing_span_m"] * (1.02 ** 0.5))
+        checks = self.module._case_checks(
+            {"variable_id": "W01", "label": "W01_plus_2pct"},
+            perturbed_model,
+            perturbed_openvsp,
+            model,
+            openvsp,
+        )
+        reach = [check for check in checks if check["check_id"] == "OVP09_perturbation_reach"][0]
+        self.assertEqual(reach["status"], "pass")
+        expected = (358.25 * 1.02 - 358.184948) / 358.184948
+        self.assertAlmostEqual(reach["openvsp_value"], expected, places=9)
+        self.assertAlmostEqual(reach["model_value"], 0.02, places=9)
+
+    def test_reach_check_fails_when_openvsp_ignores_perturbation(self):
+        model, openvsp = self._baseline_metrics()
+        perturbed_model = dict(model, wing_area_m2=358.25 * 1.02)
+        checks = self.module._case_checks(
+            {"variable_id": "W01", "label": "W01_plus_2pct"},
+            perturbed_model,
+            dict(openvsp),
+            model,
+            openvsp,
+        )
+        reach = [check for check in checks if check["check_id"] == "OVP09_perturbation_reach"][0]
+        self.assertEqual(reach["status"], "fail")
+        self.assertAlmostEqual(reach["openvsp_value"], 0.0)
+
+    def test_changed_mode_requires_any_geometry_motion(self):
+        model, openvsp = self._baseline_metrics()
+        perturbed_model = dict(model, fuselage_wetted_m2=model["fuselage_wetted_m2"] * 0.999)
+        unchanged = self.module._case_checks(
+            {"variable_id": "F02", "label": "F02_plus_2pct"},
+            perturbed_model,
+            dict(openvsp),
+            model,
+            openvsp,
+        )
+        self.assertEqual([check for check in unchanged if check["check_id"] == "OVP09_perturbation_reach"][0]["status"], "fail")
+        moved_openvsp = dict(openvsp, fuselage_surface_area_m2=openvsp["fuselage_surface_area_m2"] * 1.001)
+        moved = self.module._case_checks(
+            {"variable_id": "F02", "label": "F02_plus_2pct"},
+            perturbed_model,
+            moved_openvsp,
+            model,
+            openvsp,
+        )
+        self.assertEqual([check for check in moved if check["check_id"] == "OVP09_perturbation_reach"][0]["status"], "pass")
+
+    def test_case_status_aggregates_checks(self):
+        self.assertEqual(self.module._case_status([{"status": "pass"}, {"status": "skip"}]), "pass")
+        self.assertEqual(self.module._case_status([{"status": "pass"}, {"status": "warn"}]), "warn")
+        self.assertEqual(self.module._case_status([{"status": "pass"}, {"status": "fail"}]), "fail")
+
+
 if __name__ == "__main__":
     unittest.main()
