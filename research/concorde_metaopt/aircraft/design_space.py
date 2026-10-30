@@ -13,10 +13,12 @@ Two declared variable sets share this loader:
   and is expanded back to the full 15-name vector by DesignSpace.expand
   before any geometry consumer sees it.
 
-The P2/P3 evaluation pipeline still requires the 15D set; a 12D space is
-loader-validated and geometry-expandable, but full pipeline wiring is a
-separate approved card.  Physical values are always stored in SI units as
-declared by the config; normalisation is only a view.
+The P2/P3 pipeline accepts an explicit design-space config (smoke and DOE
+take --design-space-config); a 12D space is expanded to the full 15-name
+vector before any geometry consumer sees it, with the fuselage fixed.  The
+default remains the 15D set until the owner freezes the 12D bounds.  Physical
+values are always stored in SI units as declared by the config; normalisation
+is only a view.
 
 The loader intentionally knows nothing about RCAIDE.  It answers three
 questions: which variables exist, what their legal ranges are, and whether a

@@ -641,8 +641,9 @@ Every finding was fixed and covered by a regression test:
   are fixed or explicitly documented.
 
 The full suite after those P2 fixes was 248 tests, 1 skipped; this commit adds
-the 20 P1–P3 repair tests listed below, so the committed suite is 268 tests,
-1 skipped (see the test count below).
+the 20 P1–P3 repair tests plus the 9 software-integration tests for the 12D
+pipeline wiring and the fail-closed RCAIDE drag ledger, so the committed suite
+is 277 tests, 1 skipped (see the test count below).
 
 ## Host/sandbox constraints (recorded, not hidden)
 
@@ -756,10 +757,17 @@ cache hits), the R01–R04 summary-versus-recomputed consistency checks, artifac
 completeness and absolute-path checks, the cross-run comparison output and figure
 regeneration from stored rows. No Mission, CFD or OpenVSP call is made.
 
-All 268 tests pass, 1 skipped (17 audit + 56 design space + 23 geometry + 32
+All 277 tests pass, 1 skipped (17 audit + 56 design space + 23 geometry + 32
 OpenVSP + 31 task/evaluation + 38 budget/cache + 23 DOE + 15 BO toy + 11 DE toy +
-11 analytic functions + 11 report; the skipped test is the real OpenVSP worker
-integration test, which needs the external Python 3.9 install).
+11 analytic functions + 11 report + 5 12D pipeline + 4 drag ledger; the skipped
+test is the real OpenVSP worker integration test, which needs the external
+Python 3.9 install).
+
+New in this revision: the 12D lifting-surface design set is wired through the
+Mission and DOE geometry paths, so P2/P3 accept an explicit
+`--design-space-config`; each future Mission record can carry a fail-closed
+RCAIDE drag ledger that keeps missing components NULL and marks the Trefftz
+induced-drag versus lift-wave-drag overlap as UNRESOLVED.
 
 ## Out of scope so far
 
