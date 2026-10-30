@@ -1,6 +1,6 @@
 # P1–P3 physical-call accounting rectification
 
-Status: LOCAL_TESTS_PASS_PENDING_INDEPENDENT_A5_AND_ROLE_REVIEWS
+Status: REVIEWED_ON_ACCC734; THIS DOCS-ONLY REVISION CORRECTS THE RECORD REFERENCES AND ADDS THE ROLE-REVIEW RESULTS
 Date: 2026-10-30 (Asia/Shanghai)
 Parent commit: 38f5119e33196498b5fbb422b58cbc54fc1722f0
 Physical calls introduced by this patch: 0 (no RCAIDE Mission, VSPAERO, SU2, DOE evaluation, BO/DE or MAML run)
@@ -42,7 +42,11 @@ Before this patch:
 
 Billing rule: only a Mission solver attempt is billable. A request rejected
 before the solver, a geometry rejection and a Mission build failure cost 0 but
-remain recorded with their failure stage.
+remain recorded with their failure stage. Backends that raise without exposing
+an accounting block keep the historical fallback and are billed one attempt
+(an exception after entering a backend cannot be proven unsolved); the
+low-fidelity backend always exposes its per-request block, and the fail-closed
+high-fidelity stub is unused by P2.
 
 ## Code changes
 
@@ -105,10 +109,18 @@ No simulation, CFD or OpenVSP geometry export was run for this rectification.
 
 The ten archived RCAIDE Mission evaluations in
 `optimization_runs/smoke-p2-20261029T1520` and
-`optimization_runs/smoke-p2-20261029T1612` (5 rows each) are not rewritten,
-recomputed or re-billed by this patch; the ledger only changes how new records
-are written. The five additional Mission calls recorded in the 1612 README but
-not archived, and the DOE geometry-only candidates, remain labelled as before.
+`optimization_runs/smoke-p2-20261029T1612` (5 rows each,
+`physical_call_count = 1` per row) are not rewritten, recomputed or re-billed by
+this patch; the ledger only changes how new records are written. All ten rows
+are `VALID`, but feasibility is 5/10: the 145 t diagnostic run
+`smoke-p2-20261029T1520` is infeasible on `max_throttle` (largest excess about
+`+0.01675`), while the 136 t acceptance run `smoke-p2-20261029T1612` is 5/5
+feasible. The five additional Mission calls (four mass-contract calibration
+missions plus the 136 t diagnostic probe) are recorded only in
+`research/concorde_metaopt/README.md:481-487`, not in either run README, and
+remain unarchived documentation rather than billable archived rows. The DOE
+160 candidates remain geometry-only with 0 physical calls and 0 fuel-burn
+labels.
 
 ## Gate status (unchanged, still not physically validated)
 
@@ -124,16 +136,41 @@ not archived, and the DOE geometry-only candidates, remain labelled as before.
 P4–P6 remain frozen; PR #3 remains open and is not merged into `main`; no
 APPROVED_FOR_NEXT_STAGE is requested or implied by this patch.
 
-## Pending independent role reviews
+## Independent role reviews on accc734
 
-- A1: rerun the 17 new tests and the committed 294-test suite in a clean
-  worktree at the patch commit;
-- A5: independent rerun, blocker/major/minor verdict, SHA and logs;
-- A3: confirm the commit range contains no P5 worktree files and no staged
-  archive changes;
-- A2: reconcile the old 10 archived rows and the archival 5 calls against the
-  new accounting vocabulary (no re-billing).
+- A1 (own clean worktree, detached): 17/17 new tests OK, exit 0; committed
+  suite `Ran 294 tests ... OK (skipped=1)`, 25.550 s, exit 0; the only skip is
+  the real OpenVSP worker test that needs the external Python 3.9 install.
+- A5 (own clean worktree, detached): verdict `APPROVE_WITH_FINDINGS`,
+  0 blocker / 0 major / 4 minor; independent 17-test rerun OK and 294-test
+  rerun OK (skipped=1), exit 0; all five management scenarios map to real code
+  paths and tests; commit scope has no `optimization_runs/` file and the
+  archived 5+5 rows are untouched.
+- A3: `PASS`, 7/7 checks; the commit is one single-parent change of exactly
+  7 files (2 added, 5 modified), no P5/tutorials/`optimization_runs/` paths,
+  no staged leftovers, `main` still at ec65e5a, no reset/force.
+- A2: `COMPLETED_WITH_PREMISE_CORRECTIONS`; 10 archived rows unchanged (2 x 5,
+  feasible only 5/10 as noted above), the 5 unarchived calls live only in
+  `research/concorde_metaopt/README.md:481-487`, DOE 160 candidates are
+  geometry-only, and of the new summary fields only `mission_solve_attempts`
+  (=10) is derivable from the old archives; the other five are
+  `NOT_DERIVABLE` and are not back-filled with invented values.
 
-The Lead will post one consolidated evidence receipt on Issue #4 after those
-reviews, without claiming any gate pass and without requesting a new physics
-budget.
+The A5 minors are accepted as non-blocking follow-ups: (F-01) a valid
+accounting block that disagrees with the raw count is flagged but billed 0,
+(F-02) backend-exception fallback default (now documented above), (F-03) the
+cache-hit-while-exhausted boundary has no dedicated test, and (F-04)
+`budget_overruns` also counts accounting errors. None of them changes the five
+management scenarios or the archived record interpretation.
+
+## Revision note
+
+This revision is docs-only relative to accc734: it corrects the unarchived-call
+reference location (A2 finding D2), records the valid 10 / feasible 5 split
+(A2 finding D1), adds the backend-exception default disclosure (A5 F-02), and
+replaces the pending-review list with the completed role results. No code or
+test changed, and the 294-test suite is unaffected.
+
+The Lead will post one consolidated evidence receipt on Issue #4 after the
+docs-only revision, without claiming any gate pass and without requesting a new
+physics budget.
