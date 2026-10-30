@@ -7,11 +7,12 @@ warm start or cached vehicle state can leak between design candidates.
 from __future__ import annotations
 
 import math
-from typing import Any, Dict, Tuple
+from typing import Any, Dict, Optional, Tuple
 
 import numpy as np
 
 from .contract import RESIDUAL_LIMIT
+from .drag_ledger import build_drag_ledger
 
 
 class MissionBuildError(RuntimeError):
@@ -95,7 +96,12 @@ def _last(value: Any, name: str) -> float:
     return float(_finite_array(value, name)[-1])
 
 
-def extract_observations(segment: Any, task: Any) -> Dict[str, Any]:
+def extract_observations(
+    segment: Any,
+    task: Any,
+    reference_area_m2: Optional[float] = None,
+    trim_factor: Optional[float] = None,
+) -> Dict[str, Any]:
     """Extract the frozen observation record from a completed cruise segment."""
     conditions = segment.state.conditions
     try:
@@ -204,6 +210,10 @@ def extract_observations(segment: Any, task: Any) -> Dict[str, Any]:
         "alpha_end_deg": alpha_end_deg,
         "lift_coefficient_end": cl_end,
         "drag_coefficient_end": cd_end,
+        "drag_ledger": build_drag_ledger(
+            conditions, reference_area_m2=reference_area_m2,
+            trim_factor=trim_factor,
+        ),
         "converged": converged,
         "solver_converged": solver_converged,
         "residual_max": residual_max,

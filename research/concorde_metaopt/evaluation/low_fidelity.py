@@ -254,7 +254,14 @@ class SingleCruiseBackend:
             return record
 
         try:
-            observations = extract_observations(segment, self.task)
+            # Observe real drag components when they are available in RCAIDE;
+            # missing terms remain null (never synthesized from historical CD).
+            aero_settings = getattr(getattr(analysis, "aerodynamics", None), "settings", None)
+            observations = extract_observations(
+                segment, self.task,
+                reference_area_m2=geometry.wing.area_m2,
+                trim_factor=getattr(aero_settings, "trim_drag_correction_factor", None),
+            )
         except ObservationError as exc:
             record["status"] = STATUS_INVALID_OR_MISSING_RESPONSE
             record["constraints"] = empty_constraints(1.0)
