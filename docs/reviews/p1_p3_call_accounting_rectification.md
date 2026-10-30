@@ -117,7 +117,7 @@ are `VALID`, but feasibility is 5/10: the 145 t diagnostic run
 `+0.01675`), while the 136 t acceptance run `smoke-p2-20261029T1612` is 5/5
 feasible. The five additional Mission calls (four mass-contract calibration
 missions plus the 136 t diagnostic probe) are recorded only in
-`research/concorde_metaopt/README.md:481-487`, not in either run README, and
+`research/concorde_metaopt/README.md:473-479`, not in either run README, and
 remain unarchived documentation rather than billable archived rows. The DOE
 160 candidates remain geometry-only with 0 physical calls and 0 fuel-burn
 labels.
@@ -151,10 +151,11 @@ APPROVED_FOR_NEXT_STAGE is requested or implied by this patch.
   no staged leftovers, `main` still at ec65e5a, no reset/force.
 - A2: `COMPLETED_WITH_PREMISE_CORRECTIONS`; 10 archived rows unchanged (2 x 5,
   feasible only 5/10 as noted above), the 5 unarchived calls live only in
-  `research/concorde_metaopt/README.md:481-487`, DOE 160 candidates are
+  `research/concorde_metaopt/README.md:473-479`, DOE 160 candidates are
   geometry-only, and of the new summary fields only `mission_solve_attempts`
-  (=10) is derivable from the old archives; the other five are
-  `NOT_DERIVABLE` and are not back-filled with invented values.
+  (=10) has an explicit value in the old archives; `mission_solve_successes`
+  (=10) can only be inferred from the ten `VALID` statuses, and the other four
+  are `NOT_DERIVABLE` and are not back-filled with invented values.
 
 The A5 minors are accepted as non-blocking follow-ups: (F-01) a valid
 accounting block that disagrees with the raw count is flagged but billed 0,
@@ -171,6 +172,11 @@ reference location (A2 finding D2), records the valid 10 / feasible 5 split
 replaces the pending-review list with the completed role results. No code or
 test changed, and the 294-test suite is unaffected.
 
+A5's delta review of the 235d8f9 revision approved it with two minor
+documentation follow-ups (the README line reference D-1 and the
+`NOT_DERIVABLE` wording D-2); both are applied in a follow-up docs-only commit
+that touches only this file.
+
 The Lead will post one consolidated evidence receipt on Issue #4 after the
-docs-only revision, without claiming any gate pass and without requesting a new
+docs-only revisions, without claiming any gate pass and without requesting a new
 physics budget.
