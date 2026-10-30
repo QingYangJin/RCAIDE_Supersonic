@@ -17,14 +17,15 @@
     "key_files": [
       "D:/RCAIDE/envs/RCAIDE/Lib/site-packages/RCAIDE/Framework/Analyses/Aerodynamics/Vortex_Lattice_Method.py",
       "D:/RCAIDE/envs/RCAIDE/Lib/site-packages/RCAIDE/Framework/Analyses/Aerodynamics/Aerodynamics.py",
-      "D:/RCAIDE/envs/RCAIDE/Lib/site-packages/RCAIDE/Framework/Analyses/Aerodynamics/evaluate_VLM.py",
-      "D:/RCAIDE/envs/RCAIDE/Lib/site-packages/RCAIDE/Framework/Analyses/Aerodynamics/VLM.py",
-      "D:/RCAIDE/envs/RCAIDE/Lib/site-packages/RCAIDE/Framework/Analyses/Aerodynamics/build_VLM_surrogates.py",
-      "D:/RCAIDE/envs/RCAIDE/Lib/site-packages/RCAIDE/Framework/Analyses/Aerodynamics/generate_wing_vortex_distribution.py",
+      "D:/RCAIDE/envs/RCAIDE/Lib/site-packages/RCAIDE/Library/Methods/Aerodynamics/Vortex_Lattice_Method/evaluate_VLM.py",
+      "D:/RCAIDE/envs/RCAIDE/Lib/site-packages/RCAIDE/Library/Methods/Aerodynamics/Vortex_Lattice_Method/VLM.py",
+      "D:/RCAIDE/envs/RCAIDE/Lib/site-packages/RCAIDE/Library/Methods/Aerodynamics/Vortex_Lattice_Method/build_VLM_surrogates.py",
+      "D:/RCAIDE/envs/RCAIDE/Lib/site-packages/RCAIDE/Library/Methods/Aerodynamics/Vortex_Lattice_Method/generate_wing_vortex_distribution.py",
       "D:/RCAIDE/envs/RCAIDE/Lib/site-packages/RCAIDE/Library/Methods/Aerodynamics/Common/Drag/"
     ],
     "rcaide_version": "RCAIDE-LEADS 1.5.0",
-    "method_class_docstring": "Vortex_Lattice_Method.py class docstring line 25: 'This is a subsonic aerodynamic buildup analysis based on the vortex lattice method' (the implementation nevertheless contains supersonic kernels; see vlm_capability)"
+    "method_class_docstring": "Vortex_Lattice_Method.py class docstring line 25: 'This is a subsonic aerodynamic buildup analysis based on the vortex lattice method' (the implementation nevertheless contains supersonic kernels; see vlm_capability)",
+    "verification_note": "All cited RCAIDE paths and line numbers were re-checked against the installed RCAIDE 1.5.0 source on 2026-10-30: Vortex_Lattice_Method.py:25 (class docstring), Aerodynamics.py:67 (use_surrogate=True), evaluate_VLM.py:26 (AoA-drag-only docstring), evaluate_surrogate at evaluate_VLM.py:22, evaluate_no_surrogate at evaluate_VLM.py:308, VLM.py:248 (beta^2=M^2-1), VLM.py:371-374 (vortex lift disabled above M=1), generate_wing_vortex_distribution.py:151-159 and 229-243 (twist enters panels), total_drag.py:86-102 (total formula), openvsp_perturbations.py:590 (twist not exported), Concorde.py:886-887 (VLM analysis + vortex_lift)."
   },
   "vlm_capability": {
     "status": "SUPERSONIC_KERNELS_PRESENT_BUT_APPLICABILITY_UNVALIDATED",
@@ -58,7 +59,7 @@
       "cruise Mach 2.02 lies between the 2.0 and 2.5 nodes -> interpolation for Mach, but the AoA solution may fall outside the training AoA grid, in which case the interpolator extrapolates",
       "evaluate_surrogate blends sub/trans/sup with Cubic_Spline_Blender: subsonic 0.85-0.95, supersonic 1.05-1.15 smoothing windows"
     ],
-    "drag_coverage": "evaluate_VLM.py:27 docstring: 'Drag due to angle of attack is the dominant drag component and the only one calculated' by the surrogate itself; the remaining parasite/compressibility/misc/form/trim terms are added by process.compute after the lift surrogate call.",
+    "drag_coverage": "evaluate_VLM.py:26 docstring: 'Drag due to angle of attack is the dominant drag component and the only one calculated' by the surrogate itself; the remaining parasite/compressibility/misc/form/trim terms are added by process.compute after the lift surrogate call.",
     "caveats": [
       "The surrogate is retrained per design because geometry changes invalidate the panel solution; this is why each P2 evaluation costs ~80-101 s wall.",
       "Mach 2.02 is interpolated, not extrapolated (good), but that says nothing about physical fidelity of the underlying VLM training samples.",
