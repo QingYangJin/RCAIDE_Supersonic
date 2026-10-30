@@ -1,0 +1,412 @@
+{
+  "schema_version": 1,
+  "proposal_id": "DS-12D-LIFTING-SURFACES-2026-10-30",
+  "status": "PROPOSED_FOR_OWNER_APPROVAL",
+  "decision_ref": "D-12D-001 (Issue #4 comment, owner-approved decision)",
+  "created_utc": "2026-10-30T07:35:45.125Z",
+  "git_sha": "1f79924e296c511bd6d700bb579b11a685958f6c",
+  "branch": "research/concorde-metaopt",
+  "stage": "P1-P3 integration feasibility review",
+  "purpose": "Define the 12-variable acceptance design space (main wing W01-W10 + vertical tail V01-V02, fuselage fixed) while preserving the 15D contract, code, history and DOE candidates unchanged.",
+  "scope": {
+    "free_variables": [
+      "W01",
+      "W02",
+      "W03",
+      "W04",
+      "W05",
+      "W06",
+      "W07",
+      "W08",
+      "W09",
+      "W10",
+      "V01",
+      "V02"
+    ],
+    "fixed_components": [
+      "fuselage (F01-F03 frozen at the computed-consistent baseline)",
+      "nacelles",
+      "landing gear",
+      "propulsion contract",
+      "mission mass contract"
+    ],
+    "lifting_surfaces_only": true,
+    "fuselage_fixed": true,
+    "note": "Fixed fuselage is NOT 'no fuselage check': the fuselage remains in the RCAIDE Vehicle and Mission, the fuselage parasite/lift/volume-wave terms stay in the drag build-up, and the fixed geometry source is itself a review item (B-12D-FUSELAGE-SOURCE)."
+  },
+  "fuselage_fixed_source": {
+    "selected_by": "owner decision 2026-10-30 item 2 ('选取模型计算值为准' / use the model-computed values)",
+    "resolution_doc": "docs/planning/baseline_reference_decision.md (still marked proposal; owner decision selects option A but the document and freeze record are not yet signed/updated)",
+    "computed_values": {
+      "length_m": 61.66,
+      "width_m": 2.88,
+      "max_height_m": 3.32,
+      "nose_length_m": 12.384,
+      "tail_length_m": 18.432,
+      "cabin_length_m": 30.844,
+      "wetted_area_m2": 488.922,
+      "front_projected_area_m2": 7.509665,
+      "effective_diameter_m": 3.103905,
+      "station_count": 8,
+      "station_z_offsets_m": [
+        0,
+        -0.61,
+        -0.3583,
+        -0.15,
+        0,
+        0,
+        0.1,
+        1.2332
+      ]
+    },
+    "upstream_declared_values": {
+      "wetted_area_m2": 442,
+      "front_projected_area_m2": 11.9,
+      "effective_diameter_m": 3.1
+    },
+    "deltas_vs_upstream_pct": {
+      "wetted_area": 10.62,
+      "front_projected": -36.89
+    },
+    "mass_cg_status": "PROVISIONAL_NOT_FROZEN",
+    "impact_statement": "The 7 upstream-vs-computed deltas do not enter the P2 VLM main channel (the VLM drag build-up uses per-section airfoil polars and wetted areas, not the upstream declared wetted/frontal areas); they do matter for any body-drag or area-rule correction, so GATE-CORRECTION cannot pass until the source is frozen and the correction is defined."
+  },
+  "variables": [
+    {
+      "index": 1,
+      "id": "W01",
+      "name": "wing_area",
+      "unit": "m^2",
+      "baseline": 358.25,
+      "lower": 300,
+      "upper": 420,
+      "geometry_model_path": "span = sqrt(wing_area * aspect_ratio); root chord solved so the four-section trapezoid area equals wing_area exactly (geometry_model.py:build_wing_planform)",
+      "rcaide_adapter_target": "wing.areas.reference/wetted/exposed; wing.spans.projected/total; wing.chords.root/tip/MAC",
+      "vlm_panel_input": "VLM S_ref, per-strip wing areas and lift integration (RCAIDE Vortex_Lattice_Method / VLM.py)",
+      "openvsp_surface_input": "OpenVSP wing reference area and section chords (P1 exporter verified)",
+      "su2_surface_input": "wing planform surface (requires external mesher; NOT_IMPLEMENTED)",
+      "mission_coupling": "Lift, induced drag, parasite drag, wave drag and thrust/fuel burn through the single-cruise Mission",
+      "archived_lf_evidence": "smoke-p2-20261029T1612 W01+1%: 34109.4826 -> 34035.3326 kg (delta -74.1500 kg, -0.2174%); smoke-p2-20261029T1520 W01+1%: 36469.3256 -> 36384.4159 kg (delta -84.9097 kg, -0.2328%)",
+      "status": "LF_OBSERVED",
+      "notes": "Both smoke runs use the 15D model with the P1 geometry; effect measured with the real RCAIDE VLM + turbojet Mission, not VSPAERO/SU2."
+    },
+    {
+      "index": 2,
+      "id": "W02",
+      "name": "aspect_ratio",
+      "unit": "dimensionless",
+      "baseline": 1.83,
+      "lower": 1.5,
+      "upper": 2.2,
+      "geometry_model_path": "span = sqrt(wing_area * aspect_ratio); changes span, root chord and section chords (geometry_model.py)",
+      "rcaide_adapter_target": "wing.aspect_ratio; wing.spans.projected/total; chords via area closure",
+      "vlm_panel_input": "VLM aspect ratio, vortex strip planform and induced drag",
+      "openvsp_surface_input": "OpenVSP wing planform",
+      "su2_surface_input": "wing planform surface (requires external mesher; NOT_IMPLEMENTED)",
+      "mission_coupling": "Lift and induced drag; fuel burn through the Mission",
+      "archived_lf_evidence": "P1 geometry effect matrix only (geometry-check-p1-20261028T1835); no Mission evaluation archived",
+      "status": "GEOMETRY_EFFECT_ONLY",
+      "notes": "No low-fidelity fuel-burn sensitivity is archived for W02; do not claim an effect."
+    },
+    {
+      "index": 3,
+      "id": "W03",
+      "name": "sweep_1",
+      "unit": "deg",
+      "baseline": 67,
+      "lower": 62,
+      "upper": 72,
+      "geometry_model_path": "quarter-chord sweep of wing section_1 (geometry_model.py); tip segment inherits section_3 sweep by RCAIDE convention",
+      "rcaide_adapter_target": "wing.segments.section_1.sweeps.quarter_chord; section_2/3 set W04/W05",
+      "vlm_panel_input": "VLM panel leading-edge sweep, Mach normal component and wave-drag terms",
+      "openvsp_surface_input": "OpenVSP wing section sweeps",
+      "su2_surface_input": "wing planform surface (requires external mesher; NOT_IMPLEMENTED)",
+      "mission_coupling": "Lift distribution, induced drag and supersonic wave drag; fuel burn through the Mission",
+      "archived_lf_evidence": "P1 geometry effect matrix only; no Mission evaluation archived",
+      "status": "GEOMETRY_EFFECT_ONLY",
+      "notes": "Sweep is a primary supersonic wave-drag driver; HF evidence is absent, so any supersonic aero claim is PROVISIONAL."
+    },
+    {
+      "index": 4,
+      "id": "W04",
+      "name": "sweep_2",
+      "unit": "deg",
+      "baseline": 48,
+      "lower": 40,
+      "upper": 56,
+      "geometry_model_path": "quarter-chord sweep of wing section_2 (geometry_model.py)",
+      "rcaide_adapter_target": "wing.segments.section_2.sweeps.quarter_chord",
+      "vlm_panel_input": "VLM panel geometry, inboard wing sweep",
+      "openvsp_surface_input": "OpenVSP wing section sweeps",
+      "su2_surface_input": "wing planform surface (requires external mesher; NOT_IMPLEMENTED)",
+      "mission_coupling": "Lift distribution / induced drag / wave drag; fuel burn through the Mission",
+      "archived_lf_evidence": "P1 geometry effect matrix only; no Mission evaluation archived",
+      "status": "GEOMETRY_EFFECT_ONLY",
+      "notes": "Same status as W03."
+    },
+    {
+      "index": 5,
+      "id": "W05",
+      "name": "sweep_3",
+      "unit": "deg",
+      "baseline": 71,
+      "lower": 66,
+      "upper": 76,
+      "geometry_model_path": "quarter-chord sweep of wing section_3; RCAIDE forces the last (tip) segment sweep to the previous value (R16 INFO), the model follows that convention",
+      "rcaide_adapter_target": "wing.segments.section_3.sweeps.quarter_chord; tip inherits",
+      "vlm_panel_input": "VLM panel geometry, outboard wing sweep",
+      "openvsp_surface_input": "OpenVSP wing section sweeps",
+      "su2_surface_input": "wing planform surface (requires external mesher; NOT_IMPLEMENTED)",
+      "mission_coupling": "Lift distribution / induced drag / wave drag; fuel burn through the Mission",
+      "archived_lf_evidence": "P1 geometry effect matrix only; no Mission evaluation archived",
+      "status": "GEOMETRY_EFFECT_ONLY",
+      "notes": "Tip sweep is not independent: it is tied to W05 by the RCAIDE convention."
+    },
+    {
+      "index": 6,
+      "id": "W06",
+      "name": "span_location_2",
+      "unit": "dimensionless",
+      "baseline": 0.480469,
+      "lower": 0.35,
+      "upper": 0.58,
+      "geometry_model_path": "percent span location of wing section_2 (geometry_model.py)",
+      "rcaide_adapter_target": "wing.segments.section_2.percent_span_location",
+      "vlm_panel_input": "VLM strip span positions and areas",
+      "openvsp_surface_input": "OpenVSP wing section spanwise placement",
+      "su2_surface_input": "wing planform surface (requires external mesher; NOT_IMPLEMENTED)",
+      "mission_coupling": "Lift distribution / induced drag; fuel burn through the Mission",
+      "archived_lf_evidence": "P1 geometry effect matrix only; no Mission evaluation archived",
+      "status": "GEOMETRY_EFFECT_ONLY",
+      "notes": "Confined by C01-C04 cross constraints with W07/W08/W09 in the 15D config."
+    },
+    {
+      "index": 7,
+      "id": "W07",
+      "name": "span_location_3",
+      "unit": "dimensionless",
+      "baseline": 0.945313,
+      "lower": 0.85,
+      "upper": 0.98,
+      "geometry_model_path": "percent span location of wing section_3 (geometry_model.py)",
+      "rcaide_adapter_target": "wing.segments.section_3.percent_span_location",
+      "vlm_panel_input": "VLM strip span positions and areas",
+      "openvsp_surface_input": "OpenVSP wing section spanwise placement",
+      "su2_surface_input": "wing planform surface (requires external mesher; NOT_IMPLEMENTED)",
+      "mission_coupling": "Lift distribution / induced drag; fuel burn through the Mission",
+      "archived_lf_evidence": "P1 geometry effect matrix only; no Mission evaluation archived",
+      "status": "GEOMETRY_EFFECT_ONLY",
+      "notes": "Confined by cross constraints."
+    },
+    {
+      "index": 8,
+      "id": "W08",
+      "name": "chord_ratio_2",
+      "unit": "dimensionless",
+      "baseline": 0.408284,
+      "lower": 0.3,
+      "upper": 0.5,
+      "geometry_model_path": "chord of wing section_2 as a fraction of the derived root chord (geometry_model.py)",
+      "rcaide_adapter_target": "wing.segments.section_2.root_chord_percent",
+      "vlm_panel_input": "VLM strip chords and areas",
+      "openvsp_surface_input": "OpenVSP wing section chords",
+      "su2_surface_input": "wing planform surface (requires external mesher; NOT_IMPLEMENTED)",
+      "mission_coupling": "Lift distribution / induced drag / parasite wetted area; fuel burn through the Mission",
+      "archived_lf_evidence": "P1 geometry effect matrix only; no Mission evaluation archived",
+      "status": "GEOMETRY_EFFECT_ONLY",
+      "notes": "Changes wing wetted area, so the parasite-drag path is expected to react; unverified."
+    },
+    {
+      "index": 9,
+      "id": "W09",
+      "name": "chord_ratio_3",
+      "unit": "dimensionless",
+      "baseline": 0.130178,
+      "lower": 0.08,
+      "upper": 0.2,
+      "geometry_model_path": "chord of wing section_3 as a fraction of the derived root chord (geometry_model.py)",
+      "rcaide_adapter_target": "wing.segments.section_3.root_chord_percent",
+      "vlm_panel_input": "VLM strip chords and areas",
+      "openvsp_surface_input": "OpenVSP wing section chords",
+      "su2_surface_input": "wing planform surface (requires external mesher; NOT_IMPLEMENTED)",
+      "mission_coupling": "Lift distribution / induced drag / parasite wetted area; fuel burn through the Mission",
+      "archived_lf_evidence": "P1 geometry effect matrix only; no Mission evaluation archived",
+      "status": "GEOMETRY_EFFECT_ONLY",
+      "notes": "Changes wing wetted area; unverified."
+    },
+    {
+      "index": 10,
+      "id": "W10",
+      "name": "tip_twist",
+      "unit": "deg",
+      "baseline": 0,
+      "lower": -4,
+      "upper": 4,
+      "geometry_model_path": "tip twist in deg applied to the 4th wing segment; sections 1-3 stay at 0 deg (geometry_model.py; docstring line 22, twist=(0,0,0,W10))",
+      "rcaide_adapter_target": "wing.twists.tip = radians(tip_twist); wing.segments.tip.twist = radians(tip_twist) (concorde_adapter.py)",
+      "vlm_panel_input": "VLM applies the segment twist to the airfoil points about the leading edge (RCAIDE generate_wing_vortex_distribution.py:229-243); twist therefore reaches the panel geometry",
+      "openvsp_surface_input": "NOT APPLIED: openvsp_perturbations.py line 590 states 'Surface twist is not applied to the OpenVSP wing sections.' This is a confirmed exporter defect for any VSPAERO path",
+      "su2_surface_input": "wing surface with twist (requires external mesher; NOT_IMPLEMENTED)",
+      "mission_coupling": "Changes lift distribution and induced drag; fuel burn through the Mission",
+      "archived_lf_evidence": "smoke-p2-20261029T1612 W10+2deg: 34109.4826 -> 34117.5553 kg (delta +8.0727 kg, +0.0237%); smoke-p2-20261029T1520 W10+2deg: delta +10.0174 kg (+0.0275%)",
+      "status": "LF_OBSERVED_EXPORT_DEFECT",
+      "notes": "W10 is a real solver input in the RCAIDE path (LF effect measured) but is silently dropped by the OpenVSP exporter; HF/VSPAERO use of W10 is BLOCKED until the exporter is fixed."
+    },
+    {
+      "index": 11,
+      "id": "V01",
+      "name": "vertical_tail_area",
+      "unit": "m^2",
+      "baseline": 33.91,
+      "lower": 28,
+      "upper": 40,
+      "geometry_model_path": "tail span = sqrt(vertical_tail_area * 0.74); root chord solved from tail area and the upstream chord ratios (geometry_model.py)",
+      "rcaide_adapter_target": "wing.areas.reference/wetted/exposed for vertical_stabilizer; wing.spans.projected; wing.chords.root/tip/MAC",
+      "vlm_panel_input": "VLM treats the vertical tail as a lifting surface; at zero sideslip (beta=0) its symmetric lift contribution is expected to be negligible and its effect should enter mainly through parasite/wetted drag - this is a hypothesis, not measured",
+      "openvsp_surface_input": "OpenVSP vertical tail planform",
+      "su2_surface_input": "vertical tail planform surface (owner restricted HF validation to the main wing)",
+      "mission_coupling": "Tail parasite drag and (small) lift; fuel burn through the Mission",
+      "archived_lf_evidence": "No archived perturbation of V01 in any Mission run; P1 geometry effect matrix only",
+      "status": "SENSITIVITY_UNVERIFIED",
+      "notes": "Must not be kept merely to fill a 12D count: owner decision keeps V01/V02 in the 12D acceptance set, but their physical effect at beta=0 requires an LF zero-sideslip probe before the set is certified."
+    },
+    {
+      "index": 12,
+      "id": "V02",
+      "name": "vertical_tail_sweep_delta",
+      "unit": "deg",
+      "baseline": 0,
+      "lower": -10,
+      "upper": 10,
+      "geometry_model_path": "delta added to all three vertical-tail section quarter-chord sweeps (geometry_model.py); clamped",
+      "rcaide_adapter_target": "wing.segments.section_1/2/tip.sweeps.quarter_chord for vertical_stabilizer",
+      "vlm_panel_input": "VLM tail panel sweep; compessibility/form factor of the tail parasite drag",
+      "openvsp_surface_input": "OpenVSP vertical tail section sweeps",
+      "su2_surface_input": "vertical tail planform surface (owner restricted HF validation to the main wing)",
+      "mission_coupling": "Tail parasite drag and wave-drag terms; fuel burn through the Mission",
+      "archived_lf_evidence": "No archived perturbation of V02 in any Mission run; P1 geometry effect matrix only",
+      "status": "SENSITIVITY_UNVERIFIED",
+      "notes": "Same status as V01."
+    }
+  ],
+  "inherited_15d_contract": {
+    "source_config": "research/concorde_metaopt/configs/design_space_15d.yaml",
+    "source_config_sha256": "1a9025e998305a86060181584b63c9c4b93526ee9a25a2b7d0a215b23aaa6326",
+    "source_frozen": false,
+    "bounds_status": "provisional_until_geometry_perturbation",
+    "task_id": "concorde_fixed_cruise_15d",
+    "ids_unmodified": true,
+    "rule": "The 12D set is a strict subset of the 15D contract. Do not edit or overwrite design_space_15d.yaml, the 160 DOE candidates, or any historical P1-P3 result."
+  },
+  "new_config_proposal": {
+    "path": "research/concorde_metaopt/configs/design_space_12d_lifting_surfaces.yaml",
+    "status": "NOT_CREATED (proposal only; owner approval + loader/test changes required)",
+    "contents": "12 variables with the identical IDs, names, units, baselines, bounds and C01-C04 cross constraints from the 15D config; fuselage F01-F03 removed from the free set and recorded as fixed baseline values; frozen=false; bounds_status remains provisional.",
+    "loader_impact": "aircraft/design_space.py currently requires exactly 15 variables in the frozen order; a 12D loader path or a derived-space flag is required plus regression tests, before any 12D run can be produced."
+  },
+  "w10_defect": {
+    "id": "B-12D-W10-OPENVSP",
+    "severity": "major",
+    "statement": "W10 tip_twist is applied in the RCAIDE VLM path (adapter sets wing.twists.tip and the tip segment twist; RCAIDE generate_wing_vortex_distribution.py:151-159 and 229-243 rotate the airfoil points about the leading edge) but openvsp_perturbations.py:590 documents that surface twist is not applied to OpenVSP wing sections.",
+    "consequence": "Any OpenVSP/VSPAERO surface comparison that varies W10 would be invalid; the LF VLM evidence for W10 is still real. W10 must not be described as 'not acting on the solver'; it is a confirmed export-path defect only.",
+    "action": "Fix the exporter (apply twist to OpenVSP wing sections) or explicitly exclude W10 from surface-based validation with a written limitation. A regression test must assert the applied twist before any VSPAERO use."
+  },
+  "v01_v02_zero_sideslip_assessment": {
+    "question": "Do V01/V02 physically act at the frozen zero-sideslip cruise condition?",
+    "physical_argument": "At beta=0 the vertical tail is a symmetric lifting surface at zero incidence; it carries no side force and its symmetric lift is small. Its realistic contributions are (a) wetted/parasite drag changing with area, span and root chord (V01), and (b) sweep-dependent parasite/compressibility factors (V02). In the RCAIDE VLM process, the tail is still discretised and included in induced-drag accounting, so a small effect is possible but unquantified.",
+    "evidence": "NONE. No archived Mission or OpenVSP case perturbs V01 or V02 separately; P1 only produced geometry effect matrix rows.",
+    "status": "SENSITIVITY_UNVERIFIED",
+    "recommendation": "Keep V01/V02 in the 12D set as the owner directed, but require a small LF zero-sideslip probe (V01 +/-1%, V02 +/-2 deg) inside the approved minimal validation matrix; if the measured fuel-burn effect is below the repeatability floor (repeat spread was exactly 0.0 kg in the smoke runs), record them as 'physically weak variables retained by owner decision' rather than silently dropping them."
+  },
+  "conventions_frozen": {
+    "cruise": {
+      "altitude_m": 18288,
+      "mach": 2.02,
+      "distance_m": 3028020,
+      "config_tag": "cruise",
+      "propulsors": [
+        "inner_right_turbojet",
+        "outer_right_turbojet",
+        "outer_left_turbojet",
+        "inner_left_turbojet"
+      ]
+    },
+    "mass_contract": {
+      "operating_empty_kg": 78700,
+      "payload_kg": 9500,
+      "cargo_kg": 1000,
+      "fuel_loaded_kg": 46800,
+      "start_mass_kg": 136000,
+      "max_fuel_kg": 95680,
+      "max_zero_fuel_kg": 92000,
+      "max_takeoff_kg": 185000,
+      "status": "frozen"
+    },
+    "reference_quantities": {
+      "Sref_m2": 358.25,
+      "cref_m": 18.489893,
+      "bref_m": 25.604638,
+      "Sref_basis": "wing reference area; all RCAIDE drag coefficients are normalised to this area (total_drag.py docstring: same reference area, additive, no overlap)"
+    },
+    "moment_reference": "RCAIDE mass_properties.center_of_gravity (PROVISIONAL_NOT_FROZEN); model aerodynamic centre uses LE(MAC)+0.25*MAC and is not the same definition (R07 WARN)",
+    "frame_and_signs": "RCAIDE body axes: x forward, z up; the mission solves a force-balance cruise with throttle and pitch angle as controls; drag is positive opposite the freestream. Force ledger must be reconciled in N before any q_inf*Sref conversion.",
+    "units": "SI (m, m^2, kg, N, s, deg stored where noted)",
+    "thickness": {
+      "wing_tc": 0.03,
+      "tail_tc": 0.04,
+      "basis": "fixed upstream-derived values"
+    },
+    "symmetry": {
+      "wing_xz_plane_symmetric": true,
+      "tail_xz_plane_symmetric": false
+    },
+    "wing_body_occlusion": "NOT MODELLED: wing exposed area is set equal to the reference area 358.25 m2 (upstream declared exposed 326.5 m2, +9.72%); G10 remains open.",
+    "alpha": "free, solved by the force-balance cruise; baseline end-of-segment alpha 2.8398 deg (smoke 1612)",
+    "reynolds": "NOT FROZEN as a design variable: the VLM is inviscid and the parasite-drag methods recompute Re internally from local chord and state; an explicit Reynolds reference must be recorded before HF comparisons."
+  },
+  "regression_test_plan": [
+    {
+      "id": "T1",
+      "name": "config subset identity",
+      "requirement": "12D config IDs/names/units/baselines/bounds equal the 15D subset exactly; C01-C04 unchanged; frozen=false.",
+      "status": "PROPOSED"
+    },
+    {
+      "id": "T2",
+      "name": "geometry invariance",
+      "requirement": "12D vector + fixed fuselage baseline reproduces the 15D baseline geometry bit-for-bit (root chord 29.901818514349216 m, span 25.604638251691824 m, wing area 358.25 m2, wetted 717.57475 m2, tail span 5.009331 m, root chord 13.157616 m) within 1e-9 relative.",
+      "status": "PROPOSED"
+    },
+    {
+      "id": "T3",
+      "name": "effect-matrix subset",
+      "requirement": "The W01-W10/V01/V02 rows of the P1 geometry effect matrix are unchanged when F01-F03 are held at baseline.",
+      "status": "PROPOSED"
+    },
+    {
+      "id": "T4",
+      "name": "DOE projection",
+      "requirement": "All 160 LHS candidates project onto the 12D box by dropping F01-F03, with zero bound violations; projection must be labelled '15D historical projection', never '160 native 12D candidates'.",
+      "status": "PROPOSED"
+    },
+    {
+      "id": "T5",
+      "name": "W10 exporter regression",
+      "requirement": "A generated OpenVSP model must carry the W10 tip twist (angle check), or the limitation is asserted explicitly; test must fail before the fix.",
+      "status": "PROPOSED"
+    },
+    {
+      "id": "T6",
+      "name": "V01/V02 LF sensitivity probe",
+      "requirement": "Zero-sideslip Mission perturbation records the fuel-burn delta and compares it to the exact-repeat floor (0.0 kg).",
+      "status": "PROPOSED_NOT_RUN"
+    }
+  ],
+  "non_actions": [
+    "design_space_15d.yaml is not edited",
+    "the 160 DOE candidates are not re-sampled or relabelled",
+    "no P1/P2/P3 evidence is deleted or overwritten",
+    "no 15D result is presented as a 12D result",
+    "no new physical computation is launched by this proposal"
+  ]
+}

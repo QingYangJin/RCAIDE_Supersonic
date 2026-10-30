@@ -1,0 +1,205 @@
+{
+  "schema_version": 1,
+  "audit_id": "AUDIT-SUPERSONIC-AERO-2026-10-30",
+  "created_utc": "2026-10-30T07:37:20.473Z",
+  "git_sha": "1f79924e296c511bd6d700bb579b11a685958f6c",
+  "branch": "research/concorde-metaopt",
+  "scope": "Static, read-only audit of the aerodynamic path that actually produces the archived P2 drag/fuel-burn numbers, plus the capabilities and limits of the candidate VSPAERO and SU2 paths. No new physical computation was performed for this audit.",
+  "activated_path": {
+    "entry": "tutorials/Simulation_Turbojet_Supersonic_Aircraft_4500nmi_Mission/Concorde.py",
+    "chain": [
+      "analyses_setup (Concorde.py:856-865) -> base_analysis (Concorde.py:867-912)",
+      "base_analysis appends RCAIDE Aerodynamics.Vortex_Lattice_Method() (Concorde.py:886) and sets aerodynamics.vortex_lift = True (line 887); main wing also sets wing.vortex_lift = True (line 261)",
+      "research/concorde_metaopt/evaluation/low_fidelity.py::SingleCruiseBackend.evaluate -> build_vehicle -> evaluation/mission.py::build_single_cruise_mission -> RCAIDE Sequential_Segments with one Constant_Mach_Constant_Altitude cruise segment",
+      "segment.analyses contains the tutorial analyses; Vortex_Lattice_Method.evaluate(state, settings, vehicle) computes the aerodynamic state each iteration",
+      "RCAIDE Vortex_Lattice_Method.initialize -> use_surrogate == True by default -> train_VLM_surrogates + build_VLM_surrogates -> evaluate_surrogate for every solve (Aerodynamics.py:67 use_surrogate=True, not overridden by the tutorial)"
+    ],
+    "key_files": [
+      "D:/RCAIDE/envs/RCAIDE/Lib/site-packages/RCAIDE/Framework/Analyses/Aerodynamics/Vortex_Lattice_Method.py",
+      "D:/RCAIDE/envs/RCAIDE/Lib/site-packages/RCAIDE/Framework/Analyses/Aerodynamics/Aerodynamics.py",
+      "D:/RCAIDE/envs/RCAIDE/Lib/site-packages/RCAIDE/Framework/Analyses/Aerodynamics/evaluate_VLM.py",
+      "D:/RCAIDE/envs/RCAIDE/Lib/site-packages/RCAIDE/Framework/Analyses/Aerodynamics/VLM.py",
+      "D:/RCAIDE/envs/RCAIDE/Lib/site-packages/RCAIDE/Framework/Analyses/Aerodynamics/build_VLM_surrogates.py",
+      "D:/RCAIDE/envs/RCAIDE/Lib/site-packages/RCAIDE/Framework/Analyses/Aerodynamics/generate_wing_vortex_distribution.py",
+      "D:/RCAIDE/envs/RCAIDE/Lib/site-packages/RCAIDE/Library/Methods/Aerodynamics/Common/Drag/"
+    ],
+    "rcaide_version": "RCAIDE-LEADS 1.5.0",
+    "method_class_docstring": "Vortex_Lattice_Method.py class docstring line 25: 'This is a subsonic aerodynamic buildup analysis based on the vortex lattice method' (the implementation nevertheless contains supersonic kernels; see vlm_capability)"
+  },
+  "vlm_capability": {
+    "status": "SUPERSONIC_KERNELS_PRESENT_BUT_APPLICABILITY_UNVALIDATED",
+    "settings_defaults": {
+      "number_of_spanwise_vortices": 30,
+      "number_of_chordwise_vortices": 15,
+      "number_of_fuselage_spanwise_vortices": 4,
+      "number_of_fuselage_chordwise_vortices": 10,
+      "model_fuselage": false,
+      "spanwise_cosine_spacing": true,
+      "leading_edge_suction_multiplier": 1,
+      "use_VORLAX_matrix_calculation": false,
+      "floating_point_precision": "np.float32"
+    },
+    "supersonic_kernel_evidence": [
+      "VLM.py:248 B2 = np.tile((mach**2 - 1), VD.n_cp[0]) — supersonic kernel uses beta^2 = M^2 - 1",
+      "VLM.py:217-218 RHS = RHS*RFLAG with comment 'Turn off sonic vortices when Mach>1'",
+      "VLM.py:371-374 vortex lift is multiplied by (mach<1), i.e. vortex lift is disabled above Mach 1",
+      "VLM.py:585-624 induced-drag docstring: 'Incompressible, inviscid flow (Trefftz-plane analysis is exact only in this limit; compressibility corrections are applied elsewhere)'"
+    ],
+    "unresolved_question": "Whether a VORLAX-derived supersonic VLM is quantitatively credible for this 12D lifting-surface configuration near Mach 2.02 with a 30x15 lattice, and whether the Trefftz-plane induced-drag formula is consistent with the supersonic lift representation. B-P3-VLM-MACH2 (audit.py:679) remains open. No Mach-sweep validation of the VLM itself exists.",
+    "verdict": "LF outputs may be used as an algorithmic low-fidelity objective (as P2 already did), but must not be presented as physically validated supersonic aerodynamics. Gate LF-M2.02 cannot pass on the current evidence."
+  },
+  "surrogate_path": {
+    "active": true,
+    "why": "RCAIDE Aerodynamics.py line 67 sets use_surrogate=True by default and the tutorial never overrides it; exotic_engine / configs_setup do not touch it.",
+    "behavior": [
+      "Vortex_Lattice_Method.initialize (lines 150-178): trains surrogates over the training grid, then compute.lift.inviscid_wings = evaluate_surrogate (or evaluate_no_surrogate if disabled)",
+      "training defaults (Vortex_Lattice_Method.py:80-106): 11 Mach nodes [0.1,0.3,0.5,0.65,0.85,0.9,1.3,1.5,2.0,2.5,3.5]; 7 AoA nodes [-2, ~0, 2, 5, 8, 12, 45] deg; sideslip [10,5] deg",
+      "build_VLM_surrogates.py: always builds subsonic surrogate; builds transonic+supersonic surrogates only if len(sup_Mach) > 2; uses scipy RegularGridInterpolator(method='linear', bounds_error=False, fill_value=None) and interp1d(kind='linear', fill_value='extrapolate')",
+      "cruise Mach 2.02 lies between the 2.0 and 2.5 nodes -> interpolation for Mach, but the AoA solution may fall outside the training AoA grid, in which case the interpolator extrapolates",
+      "evaluate_surrogate blends sub/trans/sup with Cubic_Spline_Blender: subsonic 0.85-0.95, supersonic 1.05-1.15 smoothing windows"
+    ],
+    "drag_coverage": "evaluate_VLM.py:27 docstring: 'Drag due to angle of attack is the dominant drag component and the only one calculated' by the surrogate itself; the remaining parasite/compressibility/misc/form/trim terms are added by process.compute after the lift surrogate call.",
+    "caveats": [
+      "The surrogate is retrained per design because geometry changes invalidate the panel solution; this is why each P2 evaluation costs ~80-101 s wall.",
+      "Mach 2.02 is interpolated, not extrapolated (good), but that says nothing about physical fidelity of the underlying VLM training samples.",
+      "No archived run exercises evaluate_no_surrogate; the raw VLM path has never been compared against the surrogate path in this repo."
+    ]
+  },
+  "drag_decomposition": {
+    "total_formula": "RCAIDE total_drag.py:86-102: drag.total = settings.trim_drag_correction_factor * (parasite_total + induced_total + compressibility_total + miscellaneous + cooling + trim + form + drag_coefficient_increment)",
+    "trim_drag_correction_factor": 1.02,
+    "components": [
+      {
+        "name": "parasite_total",
+        "source": "parasite_drag_wing/fuselage/nacelle/pylon per component; parasitic_total sums them",
+        "includes": "skin friction, form factor, compressibility factor, Reynolds factor; wetted-area based",
+        "in_archived_path": true
+      },
+      {
+        "name": "induced",
+        "source": "RCAIDE induced_drag (Trefftz-plane / near-field w=Gamma/(4*pi*r))",
+        "includes": "lift-induced drag only, incompressible Trefftz formula",
+        "in_archived_path": true
+      },
+      {
+        "name": "compressibility",
+        "source": "compressibility_drag.py: subsonic Shevell (AA241) + transonic Lock 1986 lift wave drag (Mach<=1 only) + supersonic JAXA lift wave drag (main wing only) + Wright Lab supersonic volume wave drag",
+        "includes": "wave drag split into lift and volume parts; writes compressible.total/wave.total/wave.volume/wave.lift to conditions",
+        "in_archived_path": true
+      },
+      {
+        "name": "miscellaneous",
+        "source": "miscellaneous_drag.py",
+        "includes": "empirical miscellaneous terms",
+        "in_archived_path": true
+      },
+      {
+        "name": "cooling",
+        "source": "cooling_drag.py",
+        "includes": "cooling drag from propulsion installation",
+        "in_archived_path": true
+      },
+      {
+        "name": "trim",
+        "source": "trim_drag.py",
+        "includes": "trim drag increment",
+        "in_archived_path": true
+      },
+      {
+        "name": "form",
+        "source": "form_drag.py",
+        "includes": "form drag increment",
+        "in_archived_path": true
+      }
+    ],
+    "lift_side": "lift.fuselage = fuselage_lift_correction (factor 1.20, fixed while the fuselage is fixed) and lift.inviscid_wings from VLM/surrogate; the VLM uses Sref = geometry.reference_area (358.25 m2) and sums wing strip forces."
+  },
+  "known_method_risks": [
+    {
+      "id": "LF-R1",
+      "severity": "major",
+      "risk": "Supersonic VLM applicability for the 12D wing is unvalidated (class docstring says subsonic).",
+      "gate": "LF-M2.02"
+    },
+    {
+      "id": "LF-R2",
+      "severity": "major",
+      "risk": "The surrogate adds AoA-induced drag only; other terms are added by empirical build-up methods, so a drag increment can come from a different method family than the lift it is paired with. No component-level N-force ledger is written by the archived runs.",
+      "gate": "BODY-CORR / MISSION-DATA"
+    },
+    {
+      "id": "LF-R3",
+      "severity": "major",
+      "risk": "Potential double counting between VLM Trefftz induced drag and the JAXA supersonic lift wave drag (both scale with CL^2); RCAIDE declares additivity with no overlap, but this has not been demonstrated for this configuration.",
+      "gate": "BODY-CORR"
+    },
+    {
+      "id": "LF-R4",
+      "severity": "major",
+      "risk": "The wave-drag volume term uses maximum cross-sectional area / length and cannot represent a lifting-surface-only body correction; the fuselage-fixed assumption therefore does not remove the body-drag problem.",
+      "gate": "BODY-CORR"
+    },
+    {
+      "id": "LF-R5",
+      "severity": "info",
+      "risk": "Mach 2.02 is interpolated between training nodes 2.0 and 2.5; within training bounds but unvalidated between nodes.",
+      "gate": "LF-M2.02"
+    },
+    {
+      "id": "LF-R6",
+      "severity": "major",
+      "risk": "Wing wetted area is set to the reference area (358.25 m2) and wing-body occlusion G10 is not modelled; body/parasite area attribution is therefore uncertain (upstream exposed area 326.5 m2).",
+      "gate": "BODY-CORR"
+    },
+    {
+      "id": "HF-R1",
+      "severity": "blocking",
+      "risk": "evaluation/high_fidelity.py is a fail-closed NotImplementedError stub; no SU2 case exists in this repo, and rcaide-multifidelity 0.1.0 evidence is Euler-only with a limited native input scope (B-P3-HF-SCOPE).",
+      "gate": "HF-M2.02"
+    },
+    {
+      "id": "HF-R2",
+      "severity": "major",
+      "risk": "No closed external-flow mesh generator exists in the repo that can wrap a real 12D wing/vertical-tail thick surface; Gmsh is CLI-only, no Python module in the project interpreter (B-P3-GMSH-BINDING).",
+      "gate": "HF-M2.02"
+    }
+  ],
+  "vspaero_assessment": {
+    "installed_openvsp": "OpenVSP 3.26.1 (D:/Program Files/OpenVSP/OpenVSP-3.26.1-win64-Python3.9/), vspaero.exe and vsp.exe on PATH; Python binding not importable in the project 3.11 interpreter (B-P1-OPENVSP-BINDING); external Python 3.9 worker used for P1 export runs",
+    "thin_surface": "VSPAERO supports thin-surface (DegenGeom) analysis; OpenVSP's 2015 release announcement states the thin-surface solver supports inviscid subsonic and supersonic flow. This claim is external documentation, NOT verified on this machine.",
+    "not_yet_verified_on_machine": [
+      "supersonic thin-surface solve for the Concorde-derived lifting surface at Mach 2.02",
+      "Sref/cref/bref convention produced by the VSPAERO setup versus the frozen 358.25/18.489893/25.604638 values",
+      "whether W10 tip twist reaches the surface (currently NOT APPLIED by openvsp_perturbations.py:590)",
+      "whether VSPAERO's own drag output can be decomposed and reconciled against the RCAIDE ledger without double counting"
+    ],
+    "verdict": "VSPAERO is a credible LF-surface-validation candidate, but its installation success, VSP3/STL generation and prior P1 OpenVSP checks are NOT aerodynamic PASS evidence. Gate LF-M2.02 requires an actual Mach 2.02 VSPAERO solve matrix with reference-area bookkeeping."
+  },
+  "su2_assessment": {
+    "installed": "SU2 v8.5.0 Harrier win64-mpi at D:/Program Files/SU2/SU2-v8.5.0-win64-mpi/win64-mpi/bin/SU2_CFD.exe (not on PATH)",
+    "official_reference": "SU2 inviscid wedge tutorial is widely used as a Mach-2 shock-angle verification case; only external documentation, not run here",
+    "physics_limit": "Euler equations are inviscid: no skin friction, no viscous separation, no viscous wave drag. A SU2 Euler result can support pressure-drag/wave-drag and shock-position checks, but cannot be called a full-aircraft high-fidelity fuel-burn model without an audited viscous correction or RANS evidence.",
+    "readiness": "NOT_IMPLEMENTED_FOR_CONCORDE: no mesh generator, no case template, no convergence script, no wing-only surface source pipeline in the repo."
+  },
+  "body_correction_assessment": {
+    "requirement": "D_total(x) = D_lifting_surfaces(x) + D_body_and_interference_correction(x) + D_other(x) is only a STRUCTURE to be validated. It is not an approved model.",
+    "current_status": "The archived RCAIDE build-up already contains fuselage parasite, fuselage lift correction (1.20) and supersonic volume wave drag. There is no separable, traceable body/interference correction that can be removed from the lift-surface term and re-attributed to the fixed fuselage.",
+    "fixed_fuselage_does_not_simplify_the_correction": "The fuselage is fixed but the wing pressure field, wave system and wing-root juncture all change with the 12D variables, so wing-body interference is NOT constant. A constant correction factor is rejected by the Issue #4 contract.",
+    "verdict": "BODY-CORR: BLOCKED / NOT_VALIDATED. No correction model, no calibration data, no double-counting proof."
+  },
+  "status_summary": {
+    "GEO-12D": "PARTIAL — 12D set and mapping documented here; 12D config not created; W10 exporter defect open; V01/V02 sensitivity unverified",
+    "LF-M2.02": "PARTIAL — 10 archived RCAIDE Mission evaluations exist; no Mach 2.02 VSPAERO/VLM validation matrix; LF_PROVISIONAL only",
+    "HF-M2.02": "BLOCKED — fail-closed stub, SU2 calls = 0, wing-only budget approved verbally but not executed or written",
+    "BODY-CORR": "BLOCKED — no correction model and no double-counting proof",
+    "MISSION-DATA": "PARTIAL — 10 Mission calls with logs/summary/manifest; §3 data contract incomplete; no N-force component ledger",
+    "BUDGET": "BLOCKED — Issue #4 §2 requires itemized approval; owner verbally approved a wing-only minimal matrix on 2026-10-30 but it is not written and no physical budget has been consumed"
+  },
+  "non_actions": [
+    "no VSPAERO solve",
+    "no SU2 run",
+    "no new RCAIDE Mission",
+    "no bulk DOE",
+    "no BO/DE/MAML training"
+  ]
+}

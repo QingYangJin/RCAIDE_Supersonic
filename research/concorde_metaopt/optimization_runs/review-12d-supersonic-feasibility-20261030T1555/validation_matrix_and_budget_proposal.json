@@ -1,0 +1,197 @@
+{
+  "schema_version": 1,
+  "proposal_id": "VALIDATION-MATRIX-12D-2026-10-30",
+  "created_utc": "2026-10-30T07:40:29.751Z",
+  "git_sha": "1f79924e296c511bd6d700bb579b11a685958f6c",
+  "status": "PROPOSED_NOT_APPROVED_IN_WRITING; NO CASE EXECUTED",
+  "owner_inputs": {
+    "2026-10-30 owner decision 4": "validation budget approved, but VLM/CFD are to model the MAIN WING ONLY (lifting-surfaces-only) to reduce failure rate. This review narrows the HF scope to the main wing alone; the vertical tail remains in the 12D LF evidence stream only.",
+    "conflict": "Issue #4 section 2 states no new physics is approved and any diagnostic/mesh case requires an itemized budget, stop conditions, verification baseline and separate approval. The local owner approval is not yet recorded in the Issue. Until the two records agree, every budget line below is a PROPOSAL with approval_state != APPROVED."
+  },
+  "principles": [
+    "No case is approved until the owner records a written, itemized approval consistent with Issue #4 section 2.",
+    "Every case needs a stop condition, a verification baseline and a falsifiable acceptance criterion before launch.",
+    "LF and HF are separate evidence streams; neither substitutes for the other.",
+    "All forces are reconciled in N before q_inf*Sref conversion; all CD values carry their reference area.",
+    "Wing-only HF evidence can never be called a full-aircraft fuel-burn result; it is lifting-surface pressure/wave-drag evidence."
+  ],
+  "lf_vspaero_matrix": {
+    "tool": "OpenVSP 3.26.1 VSPAERO thin-surface, external Python 3.9 worker, Mach 2.02",
+    "purpose": "Independent inviscid lifting-surface check of the VLM-derived lift/drag trend for the 12D wing, with its own Sref/cref/bref bookkeeping.",
+    "cases": [
+      {
+        "id": "LFV-00",
+        "description": "baseline 12D wing at Mach 2.02, zero sideslip, alpha sweep to match the mission CL",
+        "outputs": [
+          "CL vs alpha",
+          "CDi",
+          "CM",
+          "spanwise lift",
+          "Cp cuts"
+        ],
+        "acceptance": "solver converges; lift curve slope positive and finite; Sref-based CL within 15% of RCAIDE VLM at the matched alpha, OR the discrepancy is explained by a documented method difference",
+        "estimated_calls": 1,
+        "estimated_wall_min": "10-40 ESTIMATE_ONLY",
+        "stop": "non-convergence after 3 restarts, or CL differs >50% unexplained, or VSPAERO supersonic mode unavailable"
+      },
+      {
+        "id": "LFV-01",
+        "description": "W01 wing area +2%",
+        "outputs": [
+          "CL",
+          "CDi",
+          "CM"
+        ],
+        "acceptance": "dCL and dCDi have the same sign as VLM; magnitude ratio documented",
+        "estimated_calls": 1,
+        "estimated_wall_min": "10-40 ESTIMATE_ONLY",
+        "stop": "same as LFV-00"
+      },
+      {
+        "id": "LFV-02",
+        "description": "W03 sweep_1 +3 deg",
+        "outputs": [
+          "CL",
+          "CDi",
+          "CM",
+          "Cp"
+        ],
+        "acceptance": "wave-drag/lift trend sign documented against VLM; unexplained sign reversal stops the matrix",
+        "estimated_calls": 1,
+        "estimated_wall_min": "10-40 ESTIMATE_ONLY",
+        "stop": "same as LFV-00"
+      },
+      {
+        "id": "LFV-03",
+        "description": "W10 tip_twist +2 deg (only after the OpenVSP twist exporter is fixed)",
+        "outputs": [
+          "CL",
+          "CDi",
+          "spanwise lift"
+        ],
+        "acceptance": "applied twist is visible in the geometry and the lift distribution changes in the expected direction",
+        "estimated_calls": 1,
+        "estimated_wall_min": "10-40 ESTIMATE_ONLY",
+        "stop": "exporter still drops twist -> cancel this case and record the defect"
+      },
+      {
+        "id": "LFV-04",
+        "description": "V01 vertical_tail_area +2% zero-sideslip sensitivity probe (RCAIDE VLM Mission, not VSPAERO)",
+        "outputs": [
+          "fuel_burn_kg delta"
+        ],
+        "acceptance": "delta outside the exact-repeat floor (0.0 kg) or explicitly recorded as below the floor",
+        "estimated_calls": 1,
+        "estimated_wall_min": "2 (80-100 s from archived evidence)",
+        "stop": "mission non-convergence or mass-contract mismatch"
+      },
+      {
+        "id": "LFV-05",
+        "description": "V02 vertical_tail_sweep_delta +2 deg zero-sideslip sensitivity probe (RCAIDE VLM Mission)",
+        "outputs": [
+          "fuel_burn_kg delta"
+        ],
+        "acceptance": "delta outside the exact-repeat floor (0.0 kg) or explicitly recorded as below the floor",
+        "estimated_calls": 1,
+        "estimated_wall_min": "2 (80-100 s from archived evidence)",
+        "stop": "mission non-convergence or mass-contract mismatch"
+      }
+    ],
+    "subtotal_estimated_calls": 6,
+    "note": "Calls are counted per solve; an alpha sweep may multiply LFV-00 cost, which is why the sweep is capped and the stop condition explicit."
+  },
+  "hf_su2_matrix": {
+    "tool": "SU2 v8.5.0 Euler, wing-only lifting surface, external mesher required",
+    "purpose": "Independent pressure/wave-drag and shock-position evidence for the 12D wing at Mach 2.02; verification-first sequence.",
+    "cases": [
+      {
+        "id": "HFS-00",
+        "description": "SU2 official inviscid Mach-2 wedge verification case (shock-angle check against theory)",
+        "outputs": [
+          "shock angle",
+          "Cp distribution",
+          "residual history"
+        ],
+        "acceptance": "shock angle within 1 deg of the oblique-shock relation; mesh-converged",
+        "estimated_calls": 1,
+        "estimated_wall_min": "5-20 ESTIMATE_ONLY",
+        "stop": "toolchain/PATH failure or case files unavailable -> mark NOT_RUN and stop HF"
+      },
+      {
+        "id": "HFS-01",
+        "description": "wing-only Euler mesh level M1 (coarse) at Mach 2.02",
+        "outputs": [
+          "CL",
+          "CDpressure",
+          "CDwave_lift",
+          "CM",
+          "Cp cuts",
+          "residual history",
+          "force convergence history"
+        ],
+        "acceptance": "CL/CD converge monotonically with mesh refinement; force oscillation < 1% over the last 200 iterations",
+        "estimated_calls": 1,
+        "estimated_wall_min": "30-120 ESTIMATE_ONLY",
+        "stop": "no closed external mesh, wing-body line intersection, or force non-convergence"
+      },
+      {
+        "id": "HFS-02",
+        "description": "mesh level M2 (medium)",
+        "outputs": "same as HFS-01",
+        "acceptance": "grid-convergence index (GCI) estimate for CL and CDpressure; M2-M1 relative change < 5%",
+        "estimated_calls": 1,
+        "estimated_wall_min": "60-240 ESTIMATE_ONLY",
+        "stop": "same as HFS-01"
+      },
+      {
+        "id": "HFS-03",
+        "description": "mesh level M3 (fine)",
+        "outputs": "same as HFS-01",
+        "acceptance": "GCI for CL and CDpressure reported with uncertainty; final CDpressure/CL uncertainties stated",
+        "estimated_calls": 1,
+        "estimated_wall_min": "2-8 h ESTIMATE_ONLY",
+        "stop": "same as HFS-01"
+      },
+      {
+        "id": "HFS-04",
+        "description": "one representative wing planform perturbation re-run at M2",
+        "outputs": [
+          "dCL",
+          "dCDpressure",
+          "dCM"
+        ],
+        "acceptance": "trend direction documented and compared with the LF prediction; no physical pass claim",
+        "estimated_calls": 1,
+        "estimated_wall_min": "60-240 ESTIMATE_ONLY",
+        "stop": "same as HFS-01"
+      }
+    ],
+    "subtotal_estimated_calls": 5,
+    "mandatory_disclaimer": "Euler is inviscid: no friction, no viscous drag, no separation. A wing-only Euler drag number must never be presented as full-aircraft drag or fuel burn. Any use in the D_total ledger requires an audited separate viscous correction or RANS evidence.",
+    "prerequisite": "Wing-only thick surface plus a closed external-flow mesh generator, explicitly avoiding the wing-body junction. This does not exist in the repo today. If it cannot be built without body geometry, the case must be labelled NOT_IMPLEMENTED_FOR_CONCORDE."
+  },
+  "reproducibility_requirements": [
+    "record RCAIDE/VSPAERO/SU2 exact versions and PATH used; record the run command",
+    "record mesh size/quality statistics, farfield distance in body lengths, boundary conditions and inviscid settings",
+    "record residual history, force convergence history, and shock/Cp plots as figures with source data",
+    "record wall time and machine load for every case",
+    "store raw large meshes/logs under an ignored outputs/ path with a sha256 manifest; store summaries and figures in the run directory",
+    "any failed or stopped case is reported with its stop reason; never deleted"
+  ],
+  "budget_summary": {
+    "total_proposed_solves": 11,
+    "total_proposed_LF_solves": 6,
+    "total_proposed_HF_solves": 5,
+    "estimated_wall_time": "LF 0.5-3 h + HF 3-15 h (ORDER-OF-MAGNITUDE ESTIMATE ONLY; not a commitment)",
+    "approval_state": "OWNER_VERBAL_APPROVAL_2026-10-30_WING_ONLY; NOT RECORDED IN ISSUE #4",
+    "accounting_rule": "Do not present the 160 DOE candidates or the 31 P1 cases as physical calls. Archived physical calls remain 10 RCAIDE Mission evaluations, 0 VSPAERO, 0 SU2."
+  },
+  "stop_all_conditions": [
+    "any attempted run violates the wing-only owner restriction",
+    "the run would require modifying a frozen contract instead of reporting a mismatch",
+    "the required toolchain is unavailable and a workaround would change the physics",
+    "the result would be reported as a pass without its verification baseline",
+    "a case exceeds its approved solve count or wall-time envelope"
+  ],
+  "next_step": "Owner records itemized written approval in Issue #4; only then L schedules cases in order HFS-00 -> LFV-00 -> LFV-01..03 -> LFV-04/05 -> HFS-01..04, with an approval checkpoint before HF mesh work."
+}

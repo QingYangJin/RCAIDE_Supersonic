@@ -1,0 +1,184 @@
+{
+  "schema_version": 1,
+  "ledger_id": "DRAG-LEDGER-12D-2026-10-30",
+  "created_utc": "2026-10-30T07:37:20.473Z",
+  "git_sha": "1f79924e296c511bd6d700bb579b11a685958f6c",
+  "status": {
+    "D-LS-1": "COMPUTED_NOT_VALIDATED",
+    "D-LS-2": "COMPUTED_NOT_VALIDATED",
+    "D-LS-3": "COMPUTED_NOT_VALIDATED",
+    "D-LS-4": "ZERO_AT_CRUISE",
+    "D-BODY-1": "COMPUTED_UNVALIDATED_SOURCE",
+    "D-BODY-2": "COMPUTED_AREARULE_APPROX",
+    "D-BODY-3": "COMPUTED_CONSTANT",
+    "D-BODY-4": "MISSING",
+    "D-OTHER-1": "COMPUTED",
+    "D-OTHER-2": "COMPUTED",
+    "D-OTHER-3": "COMPUTED_FACTOR"
+  },
+  "statement": "The drag decomposition below is the structure required by Issue #4. It is NOT an approved numerical model and must not be summed mechanically across incompatible outputs. Missing, overlapping and uncalibrated terms are flagged with explicit uncertainty.",
+  "target_structure": {
+    "formula": "D_total(x) = D_lifting_surfaces(x) + D_body_and_interference_correction(x) + D_other(x)",
+    "x": "the 12D lifting-surface vector (W01-W10, V01-V02); the fuselage is fixed but not removed from the physics",
+    "approved": false,
+    "note": "All terms must first be reconciled as dimensional forces in N (RCAIDE body axes) before any q_inf*Sref conversion. CD values on different reference areas must never be added directly."
+  },
+  "component_ledger": [
+    {
+      "id": "D-LS-1",
+      "term": "wing inviscid lift-induced drag",
+      "rcaide_source": "Common/Drag/induced_drag.py (Trefftz-plane, w=Gamma/(4*pi*r), per-wing integration)",
+      "basis": "N, integrated over wing strips; normalised by Sref=358.25 m2 on output",
+      "availability": "computed inside every archived P2 evaluation but not exported as a separate N-force row",
+      "double_counting_risk": "HIGH with D-LS-2",
+      "validated": false
+    },
+    {
+      "id": "D-LS-2",
+      "term": "supersonic lift wave drag (main wing)",
+      "rcaide_source": "compressibility_drag.py::supersonic_lift_wave_drag (JAXA/Yoshida), CD_lift_wave = CL^2*(beta^2/pi)*p*(s/l)*Kw",
+      "basis": "CD on Sref; only Main_Wing is looped",
+      "availability": "computed, stored at conditions.aerodynamics.coefficients.drag.compressible.wave.lift",
+      "double_counting_risk": "HIGH with D-LS-1: both are lift-induced/lift-dependent terms; RCAIDE declares additivity but no proof exists",
+      "validated": false
+    },
+    {
+      "id": "D-LS-3",
+      "term": "wing parasite drag (friction + form + compressibility + Reynolds)",
+      "rcaide_source": "Common/Drag/parasite_drag_wing.py + compressible turbulent flat plate methods",
+      "basis": "CD on Sref from per-segment wetted area, MAC, t/c, sweep",
+      "availability": "computed",
+      "double_counting_risk": "LOW-MEDIUM: compressibility factor inside parasite may overlap the separate compression term",
+      "validated": false
+    },
+    {
+      "id": "D-LS-4",
+      "term": "transonic lift wave drag",
+      "rcaide_source": "compressibility_drag.py::transonic_lift_wave_drag (Lock 1986 / NASA TP 2969)",
+      "basis": "CD on Sref; forced to 0 when Mach>1",
+      "availability": "computed; zero at Mach 2.02",
+      "double_counting_risk": "LOW at cruise Mach",
+      "validated": false
+    },
+    {
+      "id": "D-BODY-1",
+      "term": "fuselage parasite drag",
+      "rcaide_source": "Common/Drag/parasite_drag_fuselage.py",
+      "basis": "CD on Sref; Re from fuselage length; form factor 2.5",
+      "availability": "computed",
+      "double_counting_risk": "MEDIUM: fuselage wetted area is the computed 488.922 m2 (+10.62% vs upstream 442)",
+      "validated": false
+    },
+    {
+      "id": "D-BODY-2",
+      "term": "supersonic volume wave drag",
+      "rcaide_source": "compressibility_drag.py::supersonic_volume_wave_drag (Wright Lab)",
+      "basis": "CD = CD_wave_volume_frontal * A_max/Sref; uses geometry length and A_max",
+      "availability": "computed",
+      "double_counting_risk": "MEDIUM: area-rule approximation, uses fixed fuselage length/max area; overlaps with the lift term only if the drag rise is attributed twice",
+      "validated": false
+    },
+    {
+      "id": "D-BODY-3",
+      "term": "fuselage lift correction / carry-over lift",
+      "rcaide_source": "Common/Lift/fuselage_correction, factor fuselage_lift_correction=1.20",
+      "basis": "multiplies fuselage lift; affects induced drag through the lift solution",
+      "availability": "computed (constant while fuselage is fixed)",
+      "double_counting_risk": "N/A: it is a lift term, not a drag term",
+      "validated": false
+    },
+    {
+      "id": "D-BODY-4",
+      "term": "wing-body interference correction (explicit, separable)",
+      "rcaide_source": "NONE",
+      "basis": "not implemented",
+      "availability": "MISSING",
+      "double_counting_risk": "UNKNOWN",
+      "validated": false,
+      "note": "This is exactly the term GATE-CORRECTION requires; the archived build-up does not expose it as a separable quantity."
+    },
+    {
+      "id": "D-OTHER-1",
+      "term": "nacelle/pylon parasite",
+      "rcaide_source": "parasite_drag_nacelle.py / parasite_drag_pylon.py",
+      "basis": "CD on Sref",
+      "availability": "computed",
+      "double_counting_risk": "LOW",
+      "validated": false
+    },
+    {
+      "id": "D-OTHER-2",
+      "term": "cooling, miscellaneous, form, trim drag",
+      "rcaide_source": "cooling_drag.py / miscellaneous_drag.py / form_drag.py / trim_drag.py",
+      "basis": "CD on Sref",
+      "availability": "computed",
+      "double_counting_risk": "LOW-MEDIUM",
+      "validated": false
+    },
+    {
+      "id": "D-OTHER-3",
+      "term": "trim_drag_correction_factor = 1.02 multiplier",
+      "rcaide_source": "total_drag.py:86-102",
+      "basis": "multiplies the whole sum, not a component",
+      "availability": "computed",
+      "double_counting_risk": "LOW but hides a 2% global uplift with no uncertainty statement",
+      "validated": false
+    }
+  ],
+  "double_counting_assessment": {
+    "headline": "RCAIDE's total_drag docstring claims 'All drag components are additive with no overlap' (total_drag.py:54-55) and normalises every term to the same reference area. That claim is an implementation statement, not independent validation for this configuration.",
+    "highest_risk_pairs": [
+      {
+        "pair": [
+          "D-LS-1",
+          "D-LS-2"
+        ],
+        "reason": "Trefftz induced drag and JAXA supersonic lift wave drag both scale with CL^2 and both describe lift-dependent drag at Mach>1. RCAIDE applies them additively.",
+        "required_evidence": "A wing-only drag decomposition with a cross-check against an independent method (VSPAERO or SU2 Euler) at Mach 2.02; if the sum exceeds the independent total by approximately the smaller term, the pair is double counted."
+      },
+      {
+        "pair": [
+          "D-LS-3",
+          "D-LS-2"
+        ],
+        "reason": "Compression effects are partly inside the parasite compressibility factor and partly in the separate compressibility term.",
+        "required_evidence": "Component-level export and summation audit."
+      },
+      {
+        "pair": [
+          "D-BODY-2",
+          "D-BODY-4"
+        ],
+        "reason": "Until D-BODY-4 exists, it is unknown whether any body/interference drag is already embedded inside the volume wave-drag or fuselage parasite terms.",
+        "required_evidence": "Explicit correction model with calibration data."
+      }
+    ],
+    "reference_area_rule": "RCAIDE converts internally to coefficients on Sref = 358.25 m2. VSPAERO and SU2 will each expose their own Sref/cref/bref conventions; every comparison must be done in N with the force direction stated, and any CD comparison must state the reference area used.",
+    "unit_rule": "Force ledger in N first; q_inf = 0.5*rho*V^2 at 18288 m and Mach 2.02; rho and speed of sound must be recorded from the mission atmosphere state, not assumed."
+  },
+  "fixed_fuselage_impact": {
+    "body_wetted_area_m2": 488.922,
+    "body_frontal_area_m2": 7.509665,
+    "upstream_declared_wetted_m2": 442,
+    "upstream_declared_frontal_m2": 11.9,
+    "consequences": [
+      "Body parasite drag scales with wetted area: +10.62% versus the upstream declared value, a real shift in D_BODY-1.",
+      "Volume wave drag scales with frontal/maximum cross-sectional area: a -36.89% difference in the declared frontal area is a large relative change in D-BODY-2.",
+      "Because the two upstream-vs-computed deltas have opposite signs, the net body-drag change is not predictable from the deltas alone; it must be computed once the correction model exists.",
+      "No drag term can be labelled a 'body correction' until the fixed fuselage source is frozen (baseline_reference_decision.md is still a proposal) and the correction model is defined."
+    ],
+    "decision_required": "Owner must freeze the fixed-fuselage source (owner already selected computed values on 2026-10-30) and the resulting correction/decomposition must be independently reviewed before any D_total claim."
+  },
+  "required_before_any_sum": [
+    "Export every component as a signed N force in body axes from one evaluation.",
+    "Verify the sum of components equals total_drag*Sref*q_inf within numerical tolerance.",
+    "Run one independent wing-only method (VSPAERO thin-surface or SU2 Euler) at Mach 2.02 and compare total lift and drag in N.",
+    "Resolve D-LS-1 vs D-LS-2 overlap with either a documented RCAIDE internal statement plus independent comparison, or a re-parameterised model.",
+    "Define and calibrate D-BODY-4, or explicitly report it as NOT_VALIDATED and exclude it from any pass claim."
+  ],
+  "non_actions": [
+    "no new drag computation",
+    "no claim that the current RCAIDE drag build-up is physically correct at Mach 2.02",
+    "no VSPAERO or SU2 results fabricated"
+  ]
+}
