@@ -141,13 +141,19 @@
     },
     {
       "id": "B-A5-P2-BUDGET-COUNT",
-      "severity": "minor",
+      "severity": "info",
       "gate": "BUDGET",
-      "status": "OPEN",
+      "status": "RESOLVED_BY_A5_DELIVERY_REVIEW",
       "origin": "A5 finding",
-      "statement": "A5's independent baseline review reports 15 P2 true evaluations against an 8-12 envelope, while the archived evidence verified here counts 10 (5+5) RCAIDE Mission calls in two smoke runs. The discrepancy must be resolved before any budget statement.",
-      "required_action": "Re-check ledger/evaluations accounting; report the exact source of each counted call in the receipt.",
-      "owner": "L"
+      "statement": "Resolved: archived P2 physical evaluations are exactly 10 (5 + 5, each independently recomputable from evaluations.jsonl and summary.json). A5 found that the figure 15 in research/concorde_metaopt/README.md:468-471 counts 10 archived evaluations plus 5 earlier unarchived calls (4 calibration Mission runs + 1 136 t diagnostic probe) that have no run directory or evaluations.jsonl and are therefore not independently verifiable.",
+      "required_action": "Receipt must state '10 archived (independently recomputable) + 5 unarchived (documented only)'; never report 15 as archived evaluations.",
+      "owner": "L",
+      "resolution": {
+        "resolved_by": "A5 minimal delivery review, 2026-10-30",
+        "verdict": "APPROVE_FOR_DELIVERY (5/5 PASS)",
+        "archived_count": 10,
+        "unarchived_documented_only": 5
+      }
     },
     {
       "id": "B-README-STALE-TESTS",

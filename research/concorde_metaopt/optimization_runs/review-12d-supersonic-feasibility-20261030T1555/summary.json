@@ -39,7 +39,8 @@
       "su2": 0,
       "doe_geometry_candidates": 160,
       "doe_physical_labels": 0
-    }
+    },
+    "unarchived_documented_only": 5
   },
   "deliverables": {
     "summary_json": "summary.json",
@@ -130,8 +131,14 @@
   "evidence_verification": {
     "unit_tests": "A5 independent rerun: 327 tests OK, 1 skipped, EXIT_CODE=0 on HEAD 1f79924",
     "a5_baseline_verdict": "APPROVE_WITH_FINDINGS (no blockers); F-01 DOE 15D mismatch, F-02 HF stub, F-03 provisional bounds",
-    "a5_reported_discrepancy": "A5 reports 15 P2 true evaluations vs 10 counted here; unresolved, requires receipt reconciliation (B-A5-P2-BUDGET-COUNT)",
-    "run_inventory": "14 run directories: 11 committed P0-P3 runs + 3 untracked P5 runs (frozen, excluded from acceptance)"
+    "run_inventory": "14 run directories: 11 committed P0-P3 runs + 3 untracked P5 runs (frozen, excluded from acceptance)",
+    "a5_delivery_review": {
+      "verdict": "APPROVE_FOR_DELIVERY (5/5 PASS, no blocking)",
+      "date": "2026-10-30",
+      "scope": "8 JSON parse, CSV 12x15, manifest sha256 12/12, 3 code refs, exaggeration scan",
+      "location": "C:/Users/pc/AppData/Local/RCAIDE_Supersonic_agent_state/independent-review/delivery_review.md"
+    },
+    "a5_p2_budget_resolution": "Archived physical evaluations = 10 (independently recomputable). The documented total 15 adds 5 unarchived calls (4 calibration + 1 136 t diagnostic) with no run artefacts; the receipt must state '10 archived + 5 unarchived', never 15 archived."
   },
   "validation_proposal": {
     "status": "PROPOSED_NOT_APPROVED_NOT_EXECUTED",
