@@ -30,6 +30,8 @@ from .contract import (
     STATUS_INVALID_OR_MISSING_RESPONSE,
     STATUS_VALID,
     feasibility,
+    new_call_accounting,
+    validate_call_accounting,
 )
 
 EVALUATIONS_FILENAME = "evaluations.jsonl"
@@ -165,6 +167,7 @@ class EvaluationLedger:
         self.records: List[Dict[str, Any]] = []
         self.physical_calls = 0
         self.budget_overruns = 0
+        self.accounting_errors = 0
         self._cache: Dict[str, Dict[str, Any]] = {}
         self._best_objective: Optional[float] = None
         self._best_design_id: Optional[str] = None
@@ -210,6 +213,9 @@ class EvaluationLedger:
 
         cached = self._cache.get(key) if (cache_usable and key is not None) else None
         if cached is not None:
+            cache_accounting = new_call_accounting()
+            cache_accounting["cache_hit"] = 1
+            cache_accounting["failure_stage"] = "cache_hit"
             row = {
                 "iteration": iteration,
                 "design_id": did,
@@ -220,7 +226,9 @@ class EvaluationLedger:
                 "feasible": cached["feasible"],
                 "fidelity": cached["fidelity"],
                 "cache_hit": True,
+                "request_count": 1,
                 "physical_call_count": 0,
+                "call_accounting": cache_accounting,
                 "wall_seconds": 0.0,
                 "cumulative_calls": self.physical_calls,
                 "best_feasible_objective": self._best_objective,
@@ -250,22 +258,47 @@ class EvaluationLedger:
                 "fidelity": fidelity_name,
                 "diagnostics": ["backend error: %s: %s" % (type(exc).__name__, exc)],
                 "physical_call_count": getattr(backend, "last_physical_call_count", 1),
+                "call_accounting": getattr(backend, "last_call_accounting", None),
             }
         wall = time.perf_counter() - started
 
         raw_count = record.get("physical_call_count", 1)
+        explicit_accounting: Optional[Dict[str, Any]] = None
         accounting_error: Optional[str] = None
-        if type(raw_count) is not int or raw_count < 0:
-            accounting_error = (
-                "backend reported an invalid physical call count: %r" % (raw_count,)
-            )
-            physical = 1 if self.remaining >= 1 else 0
+        raw_accounting = record.get("call_accounting")
+        if raw_accounting is not None:
+            # Explicit accounting contract: the backend reports requests, the
+            # rejection stage and solver attempts separately, so a rejected or
+            # failed-before-solve design is not billed while a failed solve is.
+            explicit_accounting, accounting_error = validate_call_accounting(raw_accounting)
+            if explicit_accounting is None:
+                physical = 1 if self.remaining >= 1 else 0
+            else:
+                physical = int(explicit_accounting["billable_physical_calls"])
+                if type(raw_count) is not int:
+                    accounting_error = (
+                        "backend reported a non-integer physical call count: %r" % (raw_count,)
+                    )
+                elif int(raw_count) != physical:
+                    accounting_error = (
+                        "backend physical_call_count %r disagrees with "
+                        "call_accounting billable_physical_calls %d"
+                        % (raw_count, physical)
+                    )
         else:
-            physical = int(raw_count)
-        if accounting_error is None and physical == 0:
-            accounting_error = (
-                "backend reported zero physical calls for a non-cached evaluation"
-            )
+            # Legacy contract: backends without explicit accounting report
+            # solver calls directly and a non-cached zero remains an error.
+            if type(raw_count) is not int or raw_count < 0:
+                accounting_error = (
+                    "backend reported an invalid physical call count: %r" % (raw_count,)
+                )
+                physical = 1 if self.remaining >= 1 else 0
+            else:
+                physical = int(raw_count)
+            if accounting_error is None and physical == 0:
+                accounting_error = (
+                    "backend reported zero physical calls for a non-cached evaluation"
+                )
         if accounting_error is None and physical > self.remaining:
             accounting_error = (
                 "physical call overrun: backend reported %d calls but only %d remain in the budget"
@@ -276,6 +309,7 @@ class EvaluationLedger:
 
         sanitized = _sanitize_record(record, fidelity_name)
         if accounting_error is not None:
+            self.accounting_errors += 1
             self.budget_overruns += 1
             sanitized = dict(sanitized)
             sanitized["status"] = STATUS_BACKEND_ERROR
@@ -303,7 +337,9 @@ class EvaluationLedger:
             "feasible": feasible,
             "fidelity": sanitized["fidelity"],
             "cache_hit": False,
+            "request_count": 1,
             "physical_call_count": physical,
+            "call_accounting": explicit_accounting,
             "wall_seconds": round(wall, 6),
             "cumulative_calls": self.physical_calls,
             "best_feasible_objective": self._best_objective,
@@ -352,6 +388,8 @@ class EvaluationLedger:
             "responses": record.get("responses"),
             "diagnostics": row["diagnostics"],
             "physical_call_count": row["physical_call_count"],
+            "request_count": row.get("request_count", 1),
+            "call_accounting": row.get("call_accounting"),
             "wall_seconds": row["wall_seconds"],
         }
         safe = json_safe(detail)
@@ -366,6 +404,16 @@ class EvaluationLedger:
             "best_design": self._best_design,
             "first_feasible_evaluation": self._first_feasible,
         }
+
+    def _accounting_flag(self, name: str) -> int:
+        total = 0
+        for row in self.rows:
+            block = row.get("call_accounting")
+            if isinstance(block, Mapping):
+                value = block.get(name)
+                if type(value) is int:
+                    total += value
+        return total
 
     def summary(self) -> Dict[str, Any]:
         invalid = 0
@@ -389,4 +437,14 @@ class EvaluationLedger:
             "budget_remaining": self.remaining,
             "budget_overruns": self.budget_overruns,
             "budget_exceeded": self.physical_calls > self.budget,
+            "accounting_errors": self.accounting_errors,
+            "request_rejected_requests": self._accounting_flag("request_rejected"),
+            "geometry_rejected_requests": self._accounting_flag("geometry_rejected"),
+            "mission_build_failed_requests": self._accounting_flag("mission_build_failed"),
+            "mission_solve_attempts": self._accounting_flag("mission_solve_attempted"),
+            "mission_solve_successes": self._accounting_flag("mission_solve_completed"),
+            "call_accounting_consistent": (
+                sum(int(row.get("physical_call_count") or 0) for row in self.rows)
+                == self.physical_calls
+            ),
         }

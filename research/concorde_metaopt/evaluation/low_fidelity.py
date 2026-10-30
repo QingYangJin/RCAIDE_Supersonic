@@ -40,6 +40,7 @@ from .contract import (
     empty_constraints,
     evaluate_constraints,
     feasibility,
+    new_call_accounting,
 )
 from .mission import (
     MissionBuildError,
@@ -156,6 +157,10 @@ class SingleCruiseBackend:
             received = task.fingerprint() if hasattr(task, "fingerprint") else None
             expected = self.task.fingerprint()
             if received is None or received != expected:
+                self.last_physical_call_count = 0
+                self.last_call_accounting = new_call_accounting()
+                self.last_call_accounting["request_rejected"] = 1
+                self.last_call_accounting["failure_stage"] = "task_mismatch"
                 raise ValueError(
                     "evaluation task does not match the frozen backend task "
                     "(expected fingerprint %s, received %s)" % (expected, received)
@@ -176,13 +181,36 @@ class SingleCruiseBackend:
             "feasible": False,
             "responses": {},
             "diagnostics": [],
-            "physical_call_count": 1,
+            "physical_call_count": 0,
+            "call_accounting": new_call_accounting(),
             "wall_seconds": 0.0,
         }
+        acct = record["call_accounting"]
+        # Conservative default if an unexpected exception escapes before any
+        # solver attempt: the request is rejected and nothing is billable.
+        self.last_physical_call_count = 0
+        self.last_call_accounting = new_call_accounting()
+        self.last_call_accounting["request_rejected"] = 1
+        self.last_call_accounting["failure_stage"] = "backend_exception_before_accounting"
+
+        def mark(stage: str, **flags: int) -> None:
+            for name, value in flags.items():
+                acct[name] = int(value)
+            acct["failure_stage"] = stage
+
+        def bill_solver_attempt(completed: int, stage: Optional[str]) -> None:
+            acct["mission_solve_attempted"] = 1
+            acct["mission_solve_completed"] = int(completed)
+            acct["billable_physical_calls"] = 1
+            acct["failure_stage"] = stage
+            record["physical_call_count"] = 1
+            self.last_physical_call_count = 1
+            self.last_call_accounting = dict(acct)
 
         try:
             vector = self.design_vector(design)
         except (KeyError, TypeError, ValueError) as exc:
+            mark("design_vector", request_rejected=1)
             record["status"] = STATUS_GEOMETRY_INVALID
             record["constraints"] = empty_constraints(1.0)
             record["diagnostics"] = ["design vector error: %s: %s" % (type(exc).__name__, exc)]
@@ -193,6 +221,7 @@ class SingleCruiseBackend:
             {name: float(value) for name, value in zip(self.names, vector)}
         )
         if violations:
+            mark("design_space", request_rejected=1)
             record["status"] = STATUS_GEOMETRY_INVALID
             record["constraints"] = empty_constraints(1.0)
             record["diagnostics"] = ["design space violation: %s" % str(item) for item in violations]
@@ -203,6 +232,7 @@ class SingleCruiseBackend:
             expanded = self.design_space.expand(dict(zip(self.names, vector)))
             geometry = build_geometry(tuple(expanded), tuple(expanded.values()))
         except GeometryError as exc:
+            mark("geometry_model", geometry_rejected=1)
             record["status"] = STATUS_GEOMETRY_INVALID
             record["constraints"] = empty_constraints(1.0)
             record["diagnostics"] = ["geometry error: %s" % exc]
@@ -227,6 +257,7 @@ class SingleCruiseBackend:
             mass_contract = apply_mass_contract(analysis.vehicle, self.task)
             record["mass_contract"] = mass_contract
         except (AdapterError, AttributeError, KeyError, TypeError) as exc:
+            mark("analysis_build", mission_build_failed=1)
             record["status"] = STATUS_MISSION_BUILD_FAILED
             record["constraints"] = empty_constraints(1.0)
             record["diagnostics"] = [
@@ -237,13 +268,28 @@ class SingleCruiseBackend:
 
         try:
             mission, segment = build_single_cruise_mission(analyses, self.task)
-            mission.evaluate()
         except MissionBuildError as exc:
+            mark("mission_build", mission_build_failed=1)
             record["status"] = STATUS_MISSION_BUILD_FAILED
             record["constraints"] = empty_constraints(1.0)
             record["diagnostics"] = ["mission build error: %s" % exc]
             record["wall_seconds"] = time.perf_counter() - started
             return record
+        except Exception as exc:
+            mark("mission_build", mission_build_failed=1)
+            record["status"] = STATUS_MISSION_BUILD_FAILED
+            record["constraints"] = empty_constraints(1.0)
+            record["diagnostics"] = [
+                "mission build error: %s: %s" % (type(exc).__name__, exc)
+            ]
+            record["wall_seconds"] = time.perf_counter() - started
+            return record
+
+        # From this point on the mission solver is actually invoked: even a
+        # failed solve consumes one true evaluation.
+        bill_solver_attempt(0, "mission_solve")
+        try:
+            mission.evaluate()
         except Exception as exc:
             record["status"] = STATUS_MISSION_FAILED
             record["constraints"] = empty_constraints(1.0)
@@ -252,6 +298,9 @@ class SingleCruiseBackend:
             ]
             record["wall_seconds"] = time.perf_counter() - started
             return record
+        acct["mission_solve_completed"] = 1
+        acct["failure_stage"] = None
+        self.last_call_accounting = dict(acct)
 
         try:
             # Observe real drag components when they are available in RCAIDE;
@@ -263,6 +312,7 @@ class SingleCruiseBackend:
                 trim_factor=getattr(aero_settings, "trim_drag_correction_factor", None),
             )
         except ObservationError as exc:
+            mark("observation")
             record["status"] = STATUS_INVALID_OR_MISSING_RESPONSE
             record["constraints"] = empty_constraints(1.0)
             record["diagnostics"] = ["observation error: %s" % exc]
@@ -272,6 +322,7 @@ class SingleCruiseBackend:
         try:
             cross_check = evaluate_geometry_cross_check(geometry, analysis.vehicle)
         except Exception as exc:
+            mark("geometry_cross_check")
             record["status"] = STATUS_INVALID_OR_MISSING_RESPONSE
             record["constraints"] = empty_constraints(1.0)
             record["diagnostics"] = [
@@ -287,6 +338,7 @@ class SingleCruiseBackend:
         }
         record["responses"] = observations
         if cross_check["failed_count"] > 0:
+            mark("geometry_mismatch")
             record["status"] = STATUS_GEOMETRY_MISMATCH
             record["constraints"] = empty_constraints(1.0)
             record["diagnostics"] = [
@@ -299,6 +351,7 @@ class SingleCruiseBackend:
         constraints = evaluate_constraints(self.task, observations)
         record["constraints"] = constraints
         if not mission_converged(observations):
+            mark("mission_not_converged")
             record["status"] = STATUS_MISSION_NOT_CONVERGED
             record["objective"] = None
             record["feasible"] = False
