@@ -1,7 +1,7 @@
 > [!IMPORTANT]
 > **历史团队计划 / Legacy team plan — 当前不可直接执行。**
 >
-> 本文档是 2026-10-27 的原团队规划，保留供审计追溯。**2026-10-30 起，其“从 Issue #1 连续开发 P0–P6、15维全部进入优化、子智能体可将 AI 记忆写入仓库内 outputs/agent-worklog、无批准执行真实 Mission/CFD/优化”等旧安排均不再有效。**
+> 本文档是 2026-10-27 的原团队规划，保留供审计追溯。**2026-10-30 起，其“以 Issue #1 直接执行 P0–P6、默认沿用原15维优化空间、AI 记忆可放仓库内部 outputs/agent-worklog”等旧安排均不再有效。** 旧计划本就要求物理计算预算审批，但该旧阶段计划与任何历史审批**都不构成当前新增 Mission/CFD/优化的执行授权**。
 >
 > **当前唯一有效的任务执行和团队职责合同**：[Issue #4 `5：Leader + A1–A5 团队协议 v2.0](https://github.com/QingYangJin/RCAIDE_Supersonic/issues/4)，治理总控为 [Issue #1 METAOPT-00](https://github.com/QingYangJin/RCAIDE_Supersonic/issues/1)。**当前方案为12维（主翼10+垂尾2，机身固定），先完成 P1–P3 低/高保真 Mach 2.02 气动和阻力修正的集成验收；P4 BO/DE、MAML-A、正式优化和未经审批的物理计算全部冻结。**
 >
