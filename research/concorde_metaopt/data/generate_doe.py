@@ -121,7 +121,8 @@ def screen_design(space: DesignSpace, design: Mapping[str, float]) -> Dict[str, 
             "wall_seconds": time.perf_counter() - started,
         }
     try:
-        geometry = build_geometry(space.names, [design[name] for name in space.names])
+        expanded = space.expand({name: float(design[name]) for name in space.names})
+        geometry = build_geometry(tuple(expanded), tuple(expanded.values()))
     except GeometryError as exc:
         return {
             "status": schema.GEOMETRY_ERROR,
@@ -283,7 +284,9 @@ def _run_readme(summary: Mapping[str, Any], manifest: Mapping[str, Any]) -> str:
         ),
         "",
         "Sampling is scipy qmc (%s) over the frozen unit box, mapped through the" % doe["method"],
-        "design_space_15d config. Geometry legality is screened with the same",
+        "design-space config (%s, %sD). Geometry legality is screened with the same" % (
+            manifest["design_space"].get("design_set", "15d"), manifest["design_dim"]
+        ),
         "dependency-free model used by geometry-check; failed checks are recorded,",
         "never converted into a fake objective.",
         "",

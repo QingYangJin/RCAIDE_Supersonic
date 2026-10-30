@@ -1,6 +1,6 @@
 """Low-fidelity fixed-cruise backend used by Phase I.
 
-Each call builds a fresh tutorial vehicle, patches the 15D geometry, freezes the
+Each call builds a fresh tutorial vehicle, expands a 12D or 15D design into full geometry, freezes the
 task mass contract, flies the single cruise segment and returns one evaluation
 record. The backend never raises for a bad design: geometry errors, mission
 failures and non-convergence are reported through the frozen status codes with a
@@ -117,14 +117,15 @@ class SingleCruiseBackend:
         extra = [name for name in design if name not in names]
         if missing or extra:
             raise KeyError(
-                "design keys do not match the frozen 15D space (missing=%s, extra=%s)"
-                % (missing, extra)
+                "design keys do not match the %s space (missing=%s, extra=%s)"
+                % (self.design_space.design_set, missing, extra)
             )
         return [float(design[name]) for name in names]
 
     def preflight(self) -> Dict[str, Any]:
         """Validate the template and task without launching a mission."""
-        geometry = build_geometry(list(self.names), list(self.design_space.baseline_vector()))
+        expanded = self.design_space.full_baseline_dict()
+        geometry = build_geometry(tuple(expanded), tuple(expanded.values()))
         return {
             "physical_call_count": 0,
             "fidelity": self.fidelity,
@@ -162,6 +163,8 @@ class SingleCruiseBackend:
         record: Dict[str, Any] = {
             "fidelity": fidelity or self.fidelity,
             "purpose": purpose,
+            "design_dim": self.design_space.design_dim,
+            "design_set": self.design_space.design_set,
             "task_id": self.task.task_id,
             "task_fingerprint": self.task.fingerprint(),
             "design": {name: float(design[name]) for name in self.names if name in design},
@@ -197,7 +200,8 @@ class SingleCruiseBackend:
             return record
 
         try:
-            geometry = build_geometry(list(self.names), list(vector))
+            expanded = self.design_space.expand(dict(zip(self.names, vector)))
+            geometry = build_geometry(tuple(expanded), tuple(expanded.values()))
         except GeometryError as exc:
             record["status"] = STATUS_GEOMETRY_INVALID
             record["constraints"] = empty_constraints(1.0)

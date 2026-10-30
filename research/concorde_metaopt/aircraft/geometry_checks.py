@@ -339,7 +339,14 @@ def model_checks(
         )
     )
     physical = {name: value for name, value in zip(geometry.names, geometry.vector)}
-    violations = design_space.check_physical(physical)
+    # Geometry always contains all 15 entries, while the 12D contract
+    # declares only lifting surfaces and fixes three fuselage values.
+    declared = {name: physical[name] for name in design_space.names}
+    violations = design_space.check_physical(declared)
+    for name, expected in design_space.fixed_dict.items():
+        actual = physical.get(name)
+        if actual is None or not math.isclose(actual, expected, rel_tol=1e-12, abs_tol=1e-12):
+            violations.append("fixed %s changed: actual %r, expected %r" % (name, actual, expected))
     checks.append(
         _boolean(
             "G23_design_space_bounds",

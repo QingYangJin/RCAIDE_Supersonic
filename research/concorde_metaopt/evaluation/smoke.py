@@ -493,6 +493,8 @@ def run_smoke(
 
     git_sha = _git_sha(REPO_ROOT)
     summary = _summary_base(generated, git_sha)
+    summary["design_dim"] = space.design_dim
+    summary["design_set"] = space.design_set
     summary["task_id"] = frozen_task.task_id
     summary["seed"] = int(seed)
     summary["branch"] = None

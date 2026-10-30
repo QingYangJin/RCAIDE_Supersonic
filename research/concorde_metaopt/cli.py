@@ -121,6 +121,7 @@ def _cmd_openvsp_cases(args: argparse.Namespace) -> int:
 
 def _cmd_smoke(args: argparse.Namespace) -> int:
     from research.concorde_metaopt.evaluation.smoke import run_smoke
+    from research.concorde_metaopt.aircraft.design_space import load_design_space
 
     summary = run_smoke(
         output_root=Path(args.output_root) if args.output_root else None,
@@ -128,6 +129,7 @@ def _cmd_smoke(args: argparse.Namespace) -> int:
         seed=args.seed,
         budget=args.budget,
         allow_existing=args.allow_existing,
+        design_space=load_design_space(args.design_space_config) if args.design_space_config else None,
     )
     smoke = summary.get("smoke") or {}
     repeatability = smoke.get("repeatability") or {}
@@ -156,6 +158,7 @@ def _cmd_smoke(args: argparse.Namespace) -> int:
 
 def _cmd_doe(args: argparse.Namespace) -> int:
     from research.concorde_metaopt.data.generate_doe import run_doe
+    from research.concorde_metaopt.aircraft.design_space import load_design_space
 
     summary = run_doe(
         output_root=Path(args.output_root) if args.output_root else None,
@@ -166,6 +169,7 @@ def _cmd_doe(args: argparse.Namespace) -> int:
         allow_existing=args.allow_existing,
         validate=not args.no_validate,
         recompute_geometry=args.recompute_geometry,
+        design_space=load_design_space(args.design_space_config) if args.design_space_config else None,
     )
     doe = summary.get("doe") or {}
     print(json.dumps({
@@ -333,6 +337,7 @@ def build_parser() -> argparse.ArgumentParser:
     smoke.add_argument("--run-id", default=None, help="run id (default: timestamped)")
     smoke.add_argument("--output-root", default=None, help="default: research/concorde_metaopt/optimization_runs")
     smoke.add_argument("--budget", type=int, default=5, help="true-evaluation budget (minimum 5, default 5)")
+    smoke.add_argument("--design-space-config", default=None, help="versioned 12D/15D YAML; physical calls require separate approval")
     smoke.add_argument("--seed", type=int, default=42, help="recorded seed (default 42)")
     smoke.add_argument("--allow-existing", action="store_true", help="write into an existing run directory")
     smoke.set_defaults(func=_cmd_smoke)
@@ -341,6 +346,7 @@ def build_parser() -> argparse.ArgumentParser:
     doe.add_argument("--run-id", default=None, help="run id (default: timestamped)")
     doe.add_argument("--output-root", default=None, help="default: research/concorde_metaopt/optimization_runs")
     doe.add_argument("--n", default="32", help="batch sizes, e.g. 32 or 32,128,512 (default: 32)")
+    doe.add_argument("--design-space-config", default=None, help="12D or 15D versioned YAML; geometry only")
     doe.add_argument("--method", default="lhs", choices=["lhs", "sobol"], help="space-filling sampler (default: lhs)")
     doe.add_argument("--seed", type=int, default=42, help="base seed (default 42; batch i uses seed+i)")
     doe.add_argument("--allow-existing", action="store_true", help="write into an existing run directory")

@@ -1,6 +1,7 @@
 """P3 DOE dataset schema.
 
-A DOE candidate is a pure geometry sample from the frozen 15D design space.
+A DOE candidate is a pure geometry sample from an explicitly versioned
+12D fixed-fuselage or legacy 15D design space.
 The row schema deliberately has no objective, constraint result or feasibility
 field: P3 only screens geometry legality until a physical evaluation budget is
 approved.  Mission/CFD results live in the evaluation ledger, never here, so a
@@ -195,9 +196,12 @@ def check_candidate_row(
         return errors
     if space is not None:
         missing = [name for name in space.names if name not in design]
+        extra = [name for name in design if name not in space.names]
         if missing:
             errors.append("design misses variables: %s" % ", ".join(missing))
-        else:
+        if extra:
+            errors.append("design contains undeclared variables: %s" % ", ".join(extra))
+        if not missing and not extra:
             for violation in space.check_physical(design):
                 errors.append("design violation: " + violation)
             expected_id = candidate_id(design, space.names)
