@@ -185,6 +185,24 @@ class PathAndRequestTests(unittest.TestCase):
         self.assertEqual(components["vertical_tail"]["rotation"], [90.0, 0.0, 0.0])
         self.assertAlmostEqual(components["main_wing"]["span_m"], self.geometry.wing.span_m, places=12)
         self.assertAlmostEqual(components["main_wing"]["sections"][1]["chord_m"], self.geometry.wing.sections[1].chord_m, places=12)
+        self.assertEqual(
+            [section["twist_deg"] for section in components["main_wing"]["sections"]], [0.0, 0.0, 0.0, 0.0]
+        )
+
+    def test_build_request_carries_the_w10_tip_twist(self):
+        export_dir = TMP_ROOT / "request-export-twist"
+        names = list(self.space.names)
+        physical = list(self.space.baseline_vector())
+        physical[names.index("tip_twist")] = 2.0
+        geometry = build_geometry_from_design_space(self.space, physical)
+        request = openvsp_check.build_openvsp_request(geometry, export_dir)
+        components = {component["name"]: component for component in request["components"]}
+        self.assertEqual(
+            [section["twist_deg"] for section in components["main_wing"]["sections"]], [0.0, 0.0, 0.0, 2.0]
+        )
+        self.assertEqual(
+            [section["twist_deg"] for section in components["vertical_tail"]["sections"]], [0.0, 0.0, 0.0]
+        )
 
     def test_safe_path_and_sanitize(self):
         inside = REPO_ROOT / "research" / "concorde_metaopt" / "cli.py"

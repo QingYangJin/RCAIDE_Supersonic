@@ -1,9 +1,22 @@
-"""Frozen-order 15D design space for the Concorde fixed-cruise problem.
+"""Design-space contract for the Concorde fixed-cruise problem.
 
-Issue #1 fixes the variable order and identifiers; this module loads the
-provisional P1 config, validates it and provides the small numerical helpers the
-geometry, evaluation and optimisation code share.  Physical values are always
-stored in SI units as declared by the config; normalisation is only a view.
+Two declared variable sets share this loader:
+
+* '15d' (the P1 history, configs/design_space_15d.yaml):
+  W01-W10 + V01-V02 + F01-F03.  The order and identifiers are frozen by
+  Issue #1; the P1 config stays provisional and is never rewritten by the
+  12D work.
+* '12d_lifting_surfaces' (decision D-12D-001,
+  configs/design_space_12d_lifting_surfaces.yaml):
+  W01-W10 + V01-V02 only.  The fuselage is fixed to the owner-approved
+  computed geometry (F01-F03 baselines recorded under fixed_variables)
+  and is expanded back to the full 15-name vector by DesignSpace.expand
+  before any geometry consumer sees it.
+
+The P2/P3 evaluation pipeline still requires the 15D set; a 12D space is
+loader-validated and geometry-expandable, but full pipeline wiring is a
+separate approved card.  Physical values are always stored in SI units as
+declared by the config; normalisation is only a view.
 
 The loader intentionally knows nothing about RCAIDE.  It answers three
 questions: which variables exist, what their legal ranges are, and whether a
@@ -57,6 +70,20 @@ EXPECTED_NAMES: Tuple[str, ...] = (
     "fuselage_fineness",
     "fuselage_height_width_ratio",
 )
+
+# Decision D-12D-001: the first-stage supersonic acceptance case freezes the
+# fuselage and keeps only the lifting-surface variables.  The 15D order is
+# preserved for history; the 12D set is the leading prefix of it.
+LIFTING_SURFACE_IDS: Tuple[str, ...] = EXPECTED_IDS[:12]
+LIFTING_SURFACE_NAMES: Tuple[str, ...] = EXPECTED_NAMES[:12]
+FIXED_FUSELAGE_IDS: Tuple[str, ...] = EXPECTED_IDS[12:]
+FIXED_FUSELAGE_NAMES: Tuple[str, ...] = EXPECTED_NAMES[12:]
+
+# The loader rejects any pair not exactly equal to one of these ordered sets.
+DESIGN_SETS: Dict[str, Tuple[Tuple[str, ...], Tuple[str, ...]]] = {
+    "15d": (EXPECTED_IDS, EXPECTED_NAMES),
+    "12d_lifting_surfaces": (LIFTING_SURFACE_IDS, LIFTING_SURFACE_NAMES),
+}
 
 EXPECTED_UNITS: Dict[str, str] = {
     "wing_area": "m^2",
@@ -116,6 +143,40 @@ class DesignVariable:
 
 
 @dataclass(frozen=True)
+class FixedVariable:
+    """A physical variable held constant by the 12D acceptance case.
+
+    Fixed variables do not carry bounds or a scale: they are not optimised and
+    the loader rejects any attempt to vary them.  source records why the value
+    is fixed (owner decision and, later, the frozen decision document).
+    """
+
+    id: str
+    name: str
+    unit: str
+    baseline: float
+    target: str
+    source: str
+
+    def __post_init__(self) -> None:
+        for label, value in (
+            ("id", self.id),
+            ("name", self.name),
+            ("unit", self.unit),
+            ("target", self.target),
+            ("source", self.source),
+        ):
+            if not isinstance(value, str) or not value.strip():
+                raise ValueError("fixed variable %s must be a non-empty string" % label)
+        if not math.isfinite(self.baseline):
+            raise ValueError("fixed variable %r baseline is not finite" % self.name)
+
+    @property
+    def value(self) -> float:
+        return self.baseline
+
+
+@dataclass(frozen=True)
 class DesignSpace:
     schema_version: str
     stage: str
@@ -131,6 +192,8 @@ class DesignSpace:
     evaluation_target: Dict[str, Any]
     freeze_requires: Tuple[str, ...]
     config_path: str
+    design_set: str = "15d"
+    fixed_variables: Tuple[FixedVariable, ...] = ()
 
     @property
     def names(self) -> Tuple[str, ...]:
@@ -139,6 +202,49 @@ class DesignSpace:
     @property
     def ids(self) -> Tuple[str, ...]:
         return tuple(variable.id for variable in self.variables)
+
+    @property
+    def design_dim(self) -> int:
+        return len(self.variables)
+
+    @property
+    def fixed_names(self) -> Tuple[str, ...]:
+        return tuple(variable.name for variable in self.fixed_variables)
+
+    @property
+    def fixed_dict(self) -> Dict[str, float]:
+        return {variable.name: variable.baseline for variable in self.fixed_variables}
+
+    def expand(self, physical: Mapping[str, float]) -> Dict[str, float]:
+        """Merge a declared-variable vector with the fixed values.
+
+        The result is the full 15-name physical mapping the geometry model and
+        the RCAIDE adapter consume.  Missing declared variables and undeclared
+        extra keys both raise DesignSpaceError: a 15-name vector must not be
+        passed to a 12D space and silently lose its fuselage values.  Fixed
+        values are never taken from the caller, so a 12D workflow cannot
+        silently perturb the fuselage.
+        """
+        declared = set(self.names)
+        unexpected = sorted(set(physical) - declared)
+        if unexpected:
+            raise DesignSpaceError(
+                "expand() got undeclared variables: %s" % ", ".join(repr(name) for name in unexpected)
+            )
+        expanded: Dict[str, float] = {}
+        for variable in self.variables:
+            expanded[variable.name] = _require_number(physical, variable.name)
+        for variable in self.fixed_variables:
+            if variable.name in expanded:
+                raise DesignSpaceError(
+                    "variable %r is both declared and fixed" % variable.name
+                )
+            expanded[variable.name] = variable.baseline
+        return expanded
+
+    def full_baseline_dict(self) -> Dict[str, float]:
+        """Baseline of the full 15-name physical vector (declared + fixed)."""
+        return self.expand(self.baseline_dict())
 
     def variable(self, name: str) -> DesignVariable:
         for candidate in self.variables:
@@ -195,7 +301,7 @@ class DesignSpace:
         for name in self.names:
             if name not in physical:
                 raise DesignSpaceError("design vector is missing variable %r" % name)
-        return _cross_constraint_violations(physical)
+        return _cross_constraint_violations(self.expand(physical))
 
     def check_physical(self, physical: Mapping[str, float]) -> List[str]:
         return self.check_bounds(physical) + self.check_cross_constraints(physical)
@@ -206,15 +312,18 @@ class DesignSpace:
             "config_path": self.config_path,
             "frozen": self.frozen,
             "bounds_status": self.bounds_status,
-            "design_dim": len(self.variables),
+            "design_set": self.design_set,
+            "design_dim": self.design_dim,
+            "geometry_dim": self.design_dim + len(self.fixed_variables),
             "names": list(self.names),
             "ids": list(self.ids),
+            "fixed_names": list(self.fixed_names),
             "units": self.units,
         }
 
 
 def load_design_space(path: Optional[str | Path] = None) -> DesignSpace:
-    """Load and validate the 15D design-space config."""
+    """Load and validate a design-space config (15d or 12d_lifting_surfaces)."""
     config_path = Path(path) if path is not None else DEFAULT_CONFIG_PATH
     try:
         data = load_config(config_path)
@@ -245,12 +354,21 @@ def design_space_from_config(data: Any, source: str = "<memory>") -> DesignSpace
     if missing:
         raise DesignSpaceError("%s: missing top-level keys: %s" % (source, ", ".join(missing)))
 
+    design_set = str(data.get("design_set", "15d"))
+    if design_set not in DESIGN_SETS:
+        raise DesignSpaceError(
+            "%s: unsupported design_set %r; expected one of %s"
+            % (source, design_set, sorted(DESIGN_SETS))
+        )
+    expected_ids, expected_names = DESIGN_SETS[design_set]
+
     raw_variables = data["variables"]
     if not isinstance(raw_variables, list):
         raise DesignSpaceError("%s: variables must be a list" % source)
-    if len(raw_variables) != len(EXPECTED_NAMES):
+    if len(raw_variables) != len(expected_names):
         raise DesignSpaceError(
-            "%s: expected %d design variables, found %d" % (source, len(EXPECTED_NAMES), len(raw_variables))
+            "%s: design_set %r expects %d design variables, found %d"
+            % (source, design_set, len(expected_names), len(raw_variables))
         )
 
     variables: List[DesignVariable] = []
@@ -268,13 +386,47 @@ def design_space_from_config(data: Any, source: str = "<memory>") -> DesignSpace
         seen_names.add(variable.name)
         variables.append(variable)
 
-    expected_pairs = tuple(zip(EXPECTED_IDS, EXPECTED_NAMES))
+    expected_pairs = tuple(zip(expected_ids, expected_names))
     actual_pairs = tuple((variable.id, variable.name) for variable in variables)
     if actual_pairs != expected_pairs:
         raise DesignSpaceError(
-            "%s: variable order/identity differs from the frozen Issue #1 contract; expected %r, found %r"
-            % (source, expected_pairs, actual_pairs)
+            "%s: variable order/identity differs from the %r contract; expected %r, found %r"
+            % (source, design_set, expected_pairs, actual_pairs)
         )
+
+    fixed_variables: List[FixedVariable] = []
+    raw_fixed = data.get("fixed_variables", [])
+    if not isinstance(raw_fixed, list):
+        raise DesignSpaceError("%s: fixed_variables must be a list" % source)
+    if design_set == "15d":
+        if raw_fixed:
+            raise DesignSpaceError("%s: the 15d set declares every variable and cannot fix any of them" % source)
+    else:
+        if len(raw_fixed) != len(FIXED_FUSELAGE_NAMES):
+            raise DesignSpaceError(
+                "%s: design_set %r requires exactly %d fixed variables, found %d"
+                % (source, design_set, len(FIXED_FUSELAGE_NAMES), len(raw_fixed))
+            )
+        fixed_seen_ids = set()
+        fixed_seen_names = set()
+        for position, raw in enumerate(raw_fixed, start=1):
+            if not isinstance(raw, Mapping):
+                raise DesignSpaceError("%s: fixed variable #%d must be a mapping" % (source, position))
+            fixed = _build_fixed_variable(raw, position, source)
+            if fixed.id in fixed_seen_ids or fixed.name in fixed_seen_names:
+                raise DesignSpaceError("%s: duplicate fixed variable %r" % (source, fixed.name))
+            if fixed.id in seen_ids or fixed.name in seen_names:
+                raise DesignSpaceError("%s: fixed variable %r collides with a declared variable" % (source, fixed.name))
+            fixed_seen_ids.add(fixed.id)
+            fixed_seen_names.add(fixed.name)
+            fixed_variables.append(fixed)
+        fixed_pairs = tuple((fixed.id, fixed.name) for fixed in fixed_variables)
+        expected_fixed_pairs = tuple(zip(FIXED_FUSELAGE_IDS, FIXED_FUSELAGE_NAMES))
+        if fixed_pairs != expected_fixed_pairs:
+            raise DesignSpaceError(
+                "%s: fixed-variable order/identity differs from the D-12D-001 contract; expected %r, found %r"
+                % (source, expected_fixed_pairs, fixed_pairs)
+            )
 
     for key in ("derived_rules", "cross_constraints"):
         if not isinstance(data[key], list):
@@ -298,6 +450,8 @@ def design_space_from_config(data: Any, source: str = "<memory>") -> DesignSpace
         evaluation_target=dict(data["evaluation_target"]),
         freeze_requires=tuple(str(item) for item in data.get("freeze_requires", ())),
         config_path=source,
+        design_set=design_set,
+        fixed_variables=tuple(fixed_variables),
     )
     _validate_space(space, source)
     return space
@@ -349,6 +503,39 @@ def _build_variable(raw: Mapping[str, Any], position: int, source: str) -> Desig
     )
 
 
+def _build_fixed_variable(raw: Mapping[str, Any], position: int, source: str) -> FixedVariable:
+    required = ("id", "name", "unit", "baseline", "target", "source")
+    missing = [key for key in required if key not in raw]
+    if missing:
+        raise DesignSpaceError(
+            "%s: fixed variable #%d is missing keys: %s" % (source, position, ", ".join(missing))
+        )
+    name = str(raw["name"])
+    unit = str(raw["unit"])
+    if name not in FIXED_FUSELAGE_NAMES:
+        raise DesignSpaceError("%s: fixed variable #%d name %r is not a fuselage variable" % (source, position, name))
+    try:
+        baseline = float(raw["baseline"])
+    except (TypeError, ValueError) as error:
+        raise DesignSpaceError("%s: fixed variable %r has a non-numeric baseline: %s" % (source, name, error)) from error
+    if not math.isfinite(baseline):
+        raise DesignSpaceError("%s: fixed variable %r has a non-finite baseline" % (source, name))
+    expected_unit = EXPECTED_UNITS[name]
+    if unit != expected_unit:
+        raise DesignSpaceError(
+            "%s: fixed variable %r uses unit %r but the contract declares %r"
+            % (source, name, unit, expected_unit)
+        )
+    return FixedVariable(
+        id=str(raw["id"]),
+        name=name,
+        unit=unit,
+        baseline=baseline,
+        target=str(raw["target"]),
+        source=str(raw["source"]),
+    )
+
+
 def _validate_space(space: DesignSpace, source: str) -> None:
     if not space.units.upper() == "SI":
         raise DesignSpaceError("%s: Phase I design space must declare SI units" % source)
@@ -396,7 +583,7 @@ def _validate_baseline_geometry(space: DesignSpace, source: str) -> None:
     wing = geometry["main_wing"]
     tail = geometry["vertical_stabilizer"]
     fuselage = geometry["fuselage"]
-    baseline = space.baseline_dict()
+    baseline = space.expand(space.baseline_dict())
 
     wing_span = _require_positive_number(wing, "projected_span_m", source, "baseline_geometry.main_wing")
     wing_root = _require_positive_number(wing, "root_chord_m", source, "baseline_geometry.main_wing")

@@ -86,17 +86,19 @@ def build_geometry_from_design_space(
 ) -> ConcordeGeometry:
     """Validate a physical design vector against the config and build the model."""
     space = design_space if design_space is not None else load_design_space()
-    names = list(space.names)
-    if physical is None:
-        vector = list(space.baseline_vector())
-    else:
-        vector = [float(value) for value in physical]
-        if len(vector) != len(names):
-            raise GeometryError("expected %d physical values, got %d" % (len(names), len(vector)))
-    violations = space.check_physical({name: value for name, value in zip(names, vector)})
+    physical = physical if physical is not None else space.baseline_vector()
+    declared = [float(value) for value in physical]
+    if len(declared) != space.design_dim:
+        raise GeometryError(
+            "expected %d physical values for design_set %r, got %d"
+            % (space.design_dim, space.design_set, len(declared))
+        )
+    values = {name: value for name, value in zip(space.names, declared)}
+    violations = space.check_bounds(values) + space.check_cross_constraints(values)
     if violations:
         raise GeometryError("; ".join(str(item) for item in violations))
-    return build_geometry(names, vector)
+    full = space.expand(values)
+    return build_geometry(tuple(full), tuple(full.values()))
 
 
 def build_geometry_vehicle(

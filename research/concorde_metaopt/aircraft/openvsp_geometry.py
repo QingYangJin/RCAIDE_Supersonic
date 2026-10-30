@@ -26,8 +26,10 @@ Request schema (JSON)::
 The wing section mapping reproduces the OpenVSP convention verified during the
 P1 probe: section 0 span is ignored, an interior section's Root_Chord is the
 chord at the previous station, and the final section's Tip_Chord is the tip
-chord. Surface twist is intentionally not modelled here (the wing model has a
-single tip twist that OpenVSP would apply only as a rotation).
+chord. Wing section twist is applied through the OpenVSP XSec "Twist" parameter
+about the leading edge ("Twist_Location" = 0), matching the geometry model's
+leading-edge twist convention. The OpenVSP twist is a geometry rotation only; it
+is not aerodynamic evidence.
 
 Usage::
 
@@ -92,6 +94,7 @@ def _add_wing(vsp, spec):
     # the inboard end of the previous segment. The verified mapping is
     # roots = [c0, c0, c1, ..., c_(n-1)] and final Tip_Chord = c_n.
     roots = [chords[0]] + chords[:-1]
+    twists = [float(section.get("twist_deg", 0.0)) for section in sections]
     for index, section in enumerate(sections):
         xsec = vsp.GetXSec(surf, index)
         if index == 0:
@@ -106,6 +109,8 @@ def _add_wing(vsp, spec):
         _set(vsp, vsp.GetXSecParm(xsec, "Span"), span)
         _set(vsp, vsp.GetXSecParm(xsec, "Root_Chord"), roots[index])
         _set(vsp, vsp.GetXSecParm(xsec, "Sweep"), sweep)
+        _set(vsp, vsp.GetXSecParm(xsec, "Twist"), twists[index])
+        _set(vsp, vsp.GetXSecParm(xsec, "Twist_Location"), 0.0)
     _set(vsp, vsp.GetXSecParm(vsp.GetXSec(surf, len(sections) - 1), "Tip_Chord"), chords[-1])
 
     location = spec.get("location", [0.0, 0.0, 0.0])

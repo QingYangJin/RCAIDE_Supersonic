@@ -139,14 +139,25 @@ the geometry model remain **provisional** until a Mission evaluation exists (P2)
   for span/chords/MAC, wetted area from exposed area, tail span from V01 and fixed
   AR 0.74, fuselage nose/tail/cabin/volume from F01–F03, mass and CG explicitly
   `PROVISIONAL_NOT_FROZEN`) and cross constraints C01–C04.
+- `configs/design_space_12d_lifting_surfaces.yaml` — 12D lifting-surface set
+  approved by the owner on 2026-10-30 under D-12D-001: W01–W10 + V01–V02 are
+  declared with the same ids/bounds/scale/targets as the 15D file, while F01–F03
+  move into a `fixed_variables` block pinned to the computed geometry-model
+  values (owner decision 2: model-computed values rather than the upstream
+  declared ones). Records `design_set: 12d_lifting_surfaces`; the loader expands
+  a 12D vector back to all 15 names before the geometry model and RCAIDE builder
+  run, so the 15D pipeline and historical runs are unaffected.
 - `config_io.py` — dependency-free config loading. The project environment has no
   PyYAML (and no network to install it), so `.yaml` files use PyYAML when present
   and otherwise a strict indentation-based subset loader (nested mappings,
   sequences, inline scalar lists, comments, quoted scalars; rejects tabs,
   bad indentation and duplicate keys with line numbers).
-- `aircraft/design_space.py` — `DesignVariable`/`DesignSpace` dataclasses,
+- `aircraft/design_space.py` — `DesignVariable`/`DesignSpace`/`FixedVariable`
+  dataclasses,
   `load_design_space()`, order/unit/range validation, baseline and cross-constraint
-  checks, normalized views `(x - baseline)/scale` and
+  checks, two design sets (`15d` and `12d_lifting_surfaces`) with an
+  `expand()` that pins fixed fuselage values to the config baseline and refuses
+  caller-supplied fixed values, normalized views `(x - baseline)/scale` and
   `(x - lower)/(upper - lower)`, and validation of the `baseline_geometry` block
   against the derived-quantity rules (a hand-edited inconsistent baseline is now
   rejected instead of silently accepted).
@@ -162,7 +173,9 @@ the geometry model remain **provisional** until a Mission evaluation exists (P2)
 - `aircraft/geometry_builder.py` — builds an RCAIDE `Vehicle` from the model
   (main wing with four segments and four control surfaces, vertical tail, fuselage,
   landing gear, upstream airfoil files) and runs RCAIDE `wing_planform` /
-  `fuselage_planform` as an independent cross-check.
+  `fuselage_planform` as an independent cross-check. Accepts either design set:
+  a 12D vector is bounds/cross-checked on its 12 declared variables and expanded
+  with the frozen fuselage baseline before the 15-value geometry model runs.
 - `aircraft/geometry_checks.py` — 23 model checks (G01–G23: area/span/AR closure,
   section order, chord positivity and monotonicity, sweep/twist bounds, wetted and
   exposed area, tail closure, fuselage station order and cabin length, volume
@@ -225,8 +238,8 @@ the geometry model remain **provisional** until a Mission evaluation exists (P2)
   actually moved the OpenVSP geometry by at least 1e-4 relative). A case whose
   variable does not reach the exported geometry fails. The run keeps the
   per-case request/metrics/checks, delta CSVs, a heat-map figure and a
-  README that lists the limitations (twist is not applied to OpenVSP surfaces,
-  fuselage spline overshoot, geometry only — no CFD/Mission value).
+  README that lists the limitations (wing twist applied as an OpenVSP XSec
+  rotation only, fuselage spline overshoot, geometry only — no CFD/Mission value).
 
 Run the P1 geometry check and the tests:
 
@@ -322,7 +335,7 @@ mapping is recorded here so no dimension is silently dropped:
 | W03/W04/W05 section sweeps | section LE positions and sweeps of the four wing sections |
 | W06/W07 span locations | wing section Y positions (section spans) |
 | W08/W09 chord ratios | section chord ratios / root-chord percentages |
-| W10 tip twist | **not applied to the OpenVSP surface**: the model and RCAIDE VLM consume tip twist, but the OpenVSP worker does not twist the section; this is the one blocked surface mapping and is stated in the run limitations |
+| W10 tip twist | wing section `Twist` (rotation about the leading edge, `Twist_Location` = 0) on the exported OpenVSP surface; the archived P1 OpenVSP runs predate this fix and are recorded as such |
 | V01 tail area, V02 tail sweep delta | vertical-tail area / span / three section sweeps (V01 perturbed here) |
 | F01 fuselage length, F02 fineness, F03 height/width ratio | fuselage length, nose/tail lengths, station width/height (all three perturbed here) |
 
@@ -627,7 +640,9 @@ Every finding was fixed and covered by a regression test:
   non-finite values in the generic JSON writer and n-1 the cache task fallback
   are fixed or explicitly documented.
 
-The full suite after these fixes is 248 tests, 1 skipped.
+The full suite after those P2 fixes was 248 tests, 1 skipped; this commit adds
+the 20 P1–P3 repair tests listed below, so the committed suite is 268 tests,
+1 skipped (see the test count below).
 
 ## Host/sandbox constraints (recorded, not hidden)
 
@@ -741,7 +756,7 @@ cache hits), the R01–R04 summary-versus-recomputed consistency checks, artifac
 completeness and absolute-path checks, the cross-run comparison output and figure
 regeneration from stored rows. No Mission, CFD or OpenVSP call is made.
 
-All 248 tests pass, 1 skipped (17 audit + 40 design space + 23 geometry + 28
+All 268 tests pass, 1 skipped (17 audit + 56 design space + 23 geometry + 32
 OpenVSP + 31 task/evaluation + 38 budget/cache + 23 DOE + 15 BO toy + 11 DE toy +
 11 analytic functions + 11 report; the skipped test is the real OpenVSP worker
 integration test, which needs the external Python 3.9 install).

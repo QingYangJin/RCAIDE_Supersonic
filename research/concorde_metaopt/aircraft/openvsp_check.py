@@ -118,6 +118,7 @@ def build_openvsp_request(
                 "percent_span_location": float(section.percent_span_location),
                 "chord_m": float(section.chord_m),
                 "leading_edge_x_m": float(section.leading_edge_x_m),
+                "twist_deg": float(section.twist_deg),
             }
             for section in component.sections
         ]
@@ -975,7 +976,7 @@ def run_openvsp_check(
             "OpenVSP fuselage spline overshoot is recorded as a warning.",
             "No VSPAERO or CFD analysis is run; aerodynamic applicability is not established.",
             "This OpenVSP build does not bake geometry XForm placement into exported STL meshes; the composed assembly STL applies the rigid transforms and is the placement-checked artefact.",
-            "Surface twist is not applied to the OpenVSP wing sections.",
+            "Wing section twist is applied as an OpenVSP XSec Twist rotation about the leading edge (Twist_Location = 0); twist aerodynamics are not analysed.",
         ],
         "note": "Geometry export and consistency check only; no objective value is reported.",
     }

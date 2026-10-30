@@ -587,7 +587,7 @@ def run_openvsp_perturbation_check(
         "delta_tolerance": DELTA_TOLERANCE,
         "changed_threshold": CHANGED_THRESHOLD,
         "limitations": [
-            "Surface twist is not applied to the OpenVSP wing sections.",
+            "Wing section twist is applied as an OpenVSP XSec Twist rotation about the leading edge; twist aerodynamics are not analysed.",
             "The fuselage nose-fineness case only requires that the exported surface changes (F02); its OpenVSP surface-area response can differ in sign from the model cone formula because of the OpenVSP spline interpolation / overshoot.",
             "The OpenVSP fuselage BBox is not a reliable bound; placement and size checks use STL measurements and the composed assembly.",
             "This is geometry-export evidence only: no VSPAERO, CFD or Mission evaluation is performed and no objective value is reported.",
