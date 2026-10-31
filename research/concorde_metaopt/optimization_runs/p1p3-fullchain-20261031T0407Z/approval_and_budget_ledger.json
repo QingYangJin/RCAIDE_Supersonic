@@ -1,0 +1,767 @@
+{
+  "schema_version": 1,
+  "run_id": "p1p3-fullchain-20261031T0407Z",
+  "approval_source": "Issue #4 / D-12D-002 (comment 6538481816)",
+  "approval_scope": "one-shot P1-P3 full-chain validation; does not approve stage gate, does not unfreeze P4-P6",
+  "limits": {
+    "max_numerical_analysis_starts": 23,
+    "wall_clock_hours": 30,
+    "max_cpu_cores": 4,
+    "max_ram_gb_total": 21.8,
+    "serial_only": true,
+    "no_unlimited_retries": true
+  },
+  "counting_contract": {
+    "counts_as_numerical_analysis_start": "each solver process start that computes a numerical analysis (VSPAERO solve, RCAIDE Mission, SU2 solver run, area-rule/wave-drag analysis execution), including alpha sweeps launched as separate processes, restarts and failed/retried attempts",
+    "not_counted_but_logged": "mesh generation (Gmsh), geometry processing without solving (OpenVSP export, DegenGeom generation, vspaero -geom if used), file conversions, JSON/CSV/PNG post-processing; each logged with cpu/mem/disk/time/grid size",
+    "budget_semantics": "unused quota of a category may fund one necessary retry in the same category only; category and total caps never increase; a failed start still consumes one count"
+  },
+  "wall_clock": {
+    "started_utc": "2026-10-31T04:07:14Z",
+    "deadline_utc": "2026-11-01T10:07:14Z",
+    "elapsed_hours_excluding_downtime": 0,
+    "note": "manual serial execution; clock monitored by Leader"
+  },
+  "categories": {
+    "VSPAERO_LF": {
+      "cap": 6,
+      "used": 6,
+      "case_ids": [
+        "LFV-00",
+        "LFV-01",
+        "LFV-02",
+        "LFV-03",
+        "LFV-SENS-A",
+        "LFV-SENS-B"
+      ]
+    },
+    "RCAIDE_LF": {
+      "cap": 4,
+      "used": 4,
+      "case_ids": [
+        "LFV-04",
+        "LFV-05",
+        "E2E-00",
+        "E2E-01"
+      ]
+    },
+    "SU2_HF": {
+      "cap": 6,
+      "used": 6,
+      "case_ids": [
+        "HFS-00",
+        "HFS-00R",
+        "HFS-01",
+        "HFS-02",
+        "HFS-03",
+        "HFS-04"
+      ]
+    },
+    "WAVE_AREA_RULE": {
+      "cap": 7,
+      "used": 7,
+      "case_ids": [
+        "WAVE-00",
+        "WAVE-01",
+        "WAVE-02",
+        "WAVE-03",
+        "WAVE-04",
+        "WAVE-05",
+        "WAVE-06"
+      ]
+    }
+  },
+  "totals": {
+    "cap": 23,
+    "used": 23,
+    "remaining": 0
+  },
+  "numerical_analysis_events": [
+    {
+      "event_id": "NA-001",
+      "case_id": "LFV-00",
+      "category": "VSPAERO_LF",
+      "started_utc": "2026-10-31T04:46:20Z",
+      "status": "SOLVED",
+      "description": "Baseline wing-only thin-surface VSPAERO alpha sweep (-2,0,2,4,6 deg) at Mach 2.02, ISA 18288 m, single process",
+      "command": "vspaero -omp 4 -fs 2.02 END -2 0 2 4 6 END 0 END main_wing_baseline_DegenGeom",
+      "files_before_utc": {},
+      "files_after_utc": {
+        "geom_probe.log": 4485,
+        "lfv00_stdout.log": 53836,
+        "main_wing_baseline.stl": 650534,
+        "main_wing_baseline.vsp3": 84828,
+        "main_wing_baseline_DegenGeom.adb": 499592,
+        "main_wing_baseline_DegenGeom.adb.cases": 1195,
+        "main_wing_baseline_DegenGeom.csv": 460921,
+        "main_wing_baseline_DegenGeom.fem": 61077,
+        "main_wing_baseline_DegenGeom.group.1": 14361,
+        "main_wing_baseline_DegenGeom.history": 14150,
+        "main_wing_baseline_DegenGeom.lod": 44000,
+        "main_wing_baseline_DegenGeom.polar": 1753,
+        "main_wing_baseline_DegenGeom.vspaero": 457,
+        "request.json": 1383,
+        "setup.log": 861,
+        "worker_result.json": 324
+      },
+      "wall_seconds": 5.0,
+      "returncode": 0,
+      "budget_after_start": {
+        "category_used": 1,
+        "category_cap": 6,
+        "total_used": 1,
+        "total_cap": 23
+      },
+      "finished_utc": "2026-10-31T04:46:25Z",
+      "note": null
+    },
+    {
+      "event_id": "NA-002",
+      "case_id": "w01_plus1pct",
+      "category": "VSPAERO_LF",
+      "started_utc": "2026-10-31T04:53:50Z",
+      "status": "SOLVED",
+      "description": "VSPAERO thin-surface LF polar, main wing only, Mach 2.02, alpha -2..6 deg",
+      "command": "vspaero -omp 4 -fs 2.02 END -2 0 2 4 6 END 0 END main_wing_w01_plus1pct_DegenGeom",
+      "files_before_utc": {},
+      "files_after_utc": {
+        "case_geometry.json": 1544,
+        "main_wing_w01_plus1pct.stl": 650523,
+        "main_wing_w01_plus1pct.vsp3": 84828,
+        "main_wing_w01_plus1pct_DegenGeom.adb": 499592,
+        "main_wing_w01_plus1pct_DegenGeom.adb.cases": 1195,
+        "main_wing_w01_plus1pct_DegenGeom.csv": 460867,
+        "main_wing_w01_plus1pct_DegenGeom.fem": 61095,
+        "main_wing_w01_plus1pct_DegenGeom.group.1": 14371,
+        "main_wing_w01_plus1pct_DegenGeom.history": 13850,
+        "main_wing_w01_plus1pct_DegenGeom.lod": 44000,
+        "main_wing_w01_plus1pct_DegenGeom.polar": 1698,
+        "main_wing_w01_plus1pct_DegenGeom.vspaero": 446,
+        "request.json": 1337,
+        "worker_result.json": 296
+      },
+      "wall_seconds": 4.577,
+      "returncode": 0,
+      "budget_after_start": {
+        "category_used": 2,
+        "category_cap": 6,
+        "total_used": 2,
+        "total_cap": 23
+      },
+      "finished_utc": "2026-10-31T04:53:54Z",
+      "note": null
+    },
+    {
+      "event_id": "NA-003",
+      "case_id": "w03_plus1deg",
+      "category": "VSPAERO_LF",
+      "started_utc": "2026-10-31T04:53:55Z",
+      "status": "SOLVED",
+      "description": "VSPAERO thin-surface LF polar, main wing only, Mach 2.02, alpha -2..6 deg",
+      "command": "vspaero -omp 4 -fs 2.02 END -2 0 2 4 6 END 0 END main_wing_w03_plus1deg_DegenGeom",
+      "files_before_utc": {},
+      "files_after_utc": {
+        "case_geometry.json": 1539,
+        "main_wing_w03_plus1deg.stl": 650534,
+        "main_wing_w03_plus1deg.vsp3": 84828,
+        "main_wing_w03_plus1deg_DegenGeom.adb": 498672,
+        "main_wing_w03_plus1deg_DegenGeom.adb.cases": 1195,
+        "main_wing_w03_plus1deg_DegenGeom.csv": 460900,
+        "main_wing_w03_plus1deg_DegenGeom.fem": 61084,
+        "main_wing_w03_plus1deg_DegenGeom.group.1": 14371,
+        "main_wing_w03_plus1deg_DegenGeom.history": 13850,
+        "main_wing_w03_plus1deg_DegenGeom.lod": 44000,
+        "main_wing_w03_plus1deg_DegenGeom.polar": 1698,
+        "main_wing_w03_plus1deg_DegenGeom.vspaero": 446,
+        "request.json": 1337,
+        "worker_result.json": 296
+      },
+      "wall_seconds": 4.595,
+      "returncode": 0,
+      "budget_after_start": {
+        "category_used": 3,
+        "category_cap": 6,
+        "total_used": 3,
+        "total_cap": 23
+      },
+      "finished_utc": "2026-10-31T04:54:00Z",
+      "note": null
+    },
+    {
+      "event_id": "NA-004",
+      "case_id": "w10_plus2",
+      "category": "VSPAERO_LF",
+      "started_utc": "2026-10-31T04:54:01Z",
+      "status": "SOLVED",
+      "description": "VSPAERO thin-surface LF polar, main wing only, Mach 2.02, alpha -2..6 deg",
+      "command": "vspaero -omp 4 -fs 2.02 END -2 0 2 4 6 END 0 END main_wing_w10_plus2_DegenGeom",
+      "files_before_utc": {},
+      "files_after_utc": {
+        "main_wing_w10_plus2.stl": 650932,
+        "main_wing_w10_plus2.vsp3": 84829,
+        "main_wing_w10_plus2_DegenGeom.adb": 499592,
+        "main_wing_w10_plus2_DegenGeom.adb.cases": 1195,
+        "main_wing_w10_plus2_DegenGeom.csv": 461111,
+        "main_wing_w10_plus2_DegenGeom.fem": 61083,
+        "main_wing_w10_plus2_DegenGeom.group.1": 14368,
+        "main_wing_w10_plus2_DegenGeom.history": 13850,
+        "main_wing_w10_plus2_DegenGeom.lod": 44000,
+        "main_wing_w10_plus2_DegenGeom.polar": 1698,
+        "main_wing_w10_plus2_DegenGeom.vspaero": 446,
+        "request.json": 1385,
+        "worker_result.json": 337
+      },
+      "wall_seconds": 4.213,
+      "returncode": 0,
+      "budget_after_start": {
+        "category_used": 4,
+        "category_cap": 6,
+        "total_used": 4,
+        "total_cap": 23
+      },
+      "finished_utc": "2026-10-31T04:54:05Z",
+      "note": null
+    },
+    {
+      "event_id": "NA-005",
+      "case_id": "sens_coarse",
+      "category": "VSPAERO_LF",
+      "started_utc": "2026-10-31T04:55:56Z",
+      "status": "SOLVED",
+      "description": "VSPAERO thin-surface LF polar, main wing only, Mach 2.02, alpha -2..6 deg",
+      "command": "vspaero -omp 4 -fs 2.02 END -2 0 2 4 6 END 0 END main_wing_sens_coarse_DegenGeom",
+      "files_before_utc": {},
+      "files_after_utc": {
+        "main_wing_sens_coarse.stl": 322766,
+        "main_wing_sens_coarse.vsp3": 84828,
+        "main_wing_sens_coarse_DegenGeom.adb": 354808,
+        "main_wing_sens_coarse_DegenGeom.adb.cases": 1195,
+        "main_wing_sens_coarse_DegenGeom.csv": 269793,
+        "main_wing_sens_coarse_DegenGeom.fem": 61066,
+        "main_wing_sens_coarse_DegenGeom.group.1": 14364,
+        "main_wing_sens_coarse_DegenGeom.history": 14150,
+        "main_wing_sens_coarse_DegenGeom.lod": 44000,
+        "main_wing_sens_coarse_DegenGeom.polar": 1753,
+        "main_wing_sens_coarse_DegenGeom.vspaero": 468,
+        "request.json": 1461,
+        "worker_result.json": 260
+      },
+      "wall_seconds": 2.535,
+      "returncode": 0,
+      "budget_after_start": {
+        "category_used": 5,
+        "category_cap": 6,
+        "total_used": 5,
+        "total_cap": 23
+      },
+      "finished_utc": "2026-10-31T04:55:58Z",
+      "note": null
+    },
+    {
+      "event_id": "NA-006",
+      "case_id": "sens_fine",
+      "category": "VSPAERO_LF",
+      "started_utc": "2026-10-31T04:56:00Z",
+      "status": "SOLVED",
+      "description": "VSPAERO thin-surface LF polar, main wing only, Mach 2.02, alpha -2..6 deg",
+      "command": "vspaero -omp 4 -fs 2.02 END -2 0 2 4 6 END 0 END main_wing_sens_fine_DegenGeom",
+      "files_before_utc": {},
+      "files_after_utc": {
+        "main_wing_sens_fine.stl": 1306072,
+        "main_wing_sens_fine.vsp3": 84828,
+        "main_wing_sens_fine_DegenGeom.adb": 814200,
+        "main_wing_sens_fine_DegenGeom.adb.cases": 1195,
+        "main_wing_sens_fine_DegenGeom.csv": 843199,
+        "main_wing_sens_fine_DegenGeom.fem": 61074,
+        "main_wing_sens_fine_DegenGeom.group.1": 14362,
+        "main_wing_sens_fine_DegenGeom.history": 14150,
+        "main_wing_sens_fine_DegenGeom.lod": 44000,
+        "main_wing_sens_fine_DegenGeom.polar": 1753,
+        "main_wing_sens_fine_DegenGeom.vspaero": 468,
+        "request.json": 1458,
+        "worker_result.json": 255
+      },
+      "wall_seconds": 12.359,
+      "returncode": 0,
+      "budget_after_start": {
+        "category_used": 6,
+        "category_cap": 6,
+        "total_used": 6,
+        "total_cap": 23
+      },
+      "finished_utc": "2026-10-31T04:56:12Z",
+      "note": null
+    },
+    {
+      "event_id": "NA-007",
+      "case_id": "WAVE-00",
+      "category": "WAVE_AREA_RULE",
+      "started_utc": "2026-10-31T05:09:56Z",
+      "status": "SOLVED",
+      "description": "OpenVSP analysis single start (WAVE-00)",
+      "command": "D:/Anaconda/envs/SUAVE/python.exe C:\\Users\\pc\\AppData\\Local\\RCAIDE_Supersonic_agent_state\\fullchain\\wave\\wave_worker.py C:\\Users\\pc\\AppData\\Local\\RCAIDE_Supersonic_agent_state\\fullchain\\wave\\WAVE-00\\request.json C:\\Users\\pc\\AppData\\Local\\RCAIDE_Supersonic_agent_state\\fullchain\\wave\\WAVE-00\\result.json",
+      "files_before_utc": {},
+      "files_after_utc": {
+        "request.json": 3672,
+        "result.json": 3312,
+        "worker_stderr.log": 0,
+        "worker_stdout.log": 220
+      },
+      "wall_seconds": 0.166,
+      "returncode": 0,
+      "budget_after_start": {
+        "category_used": 1,
+        "category_cap": 7,
+        "total_used": 7,
+        "total_cap": 23
+      },
+      "finished_utc": "2026-10-31T05:09:56Z",
+      "note": "case WAVE-00 rc=0"
+    },
+    {
+      "event_id": "NA-008",
+      "case_id": "WAVE-00R",
+      "category": "WAVE_AREA_RULE",
+      "started_utc": "2026-10-31T05:11:48Z",
+      "status": "SOLVED",
+      "description": "OpenVSP analysis single start (WAVE-00R)",
+      "command": "D:/Anaconda/envs/SUAVE/python.exe C:\\Users\\pc\\AppData\\Local\\RCAIDE_Supersonic_agent_state\\fullchain\\wave\\wave_worker.py C:\\Users\\pc\\AppData\\Local\\RCAIDE_Supersonic_agent_state\\fullchain\\wave\\WAVE-00R\\request.json C:\\Users\\pc\\AppData\\Local\\RCAIDE_Supersonic_agent_state\\fullchain\\wave\\WAVE-00R\\result.json",
+      "files_before_utc": {},
+      "files_after_utc": {
+        "request.json": 3672,
+        "result.json": 5578,
+        "results_NEGCZHS.csv": 869,
+        "worker_stderr.log": 0,
+        "worker_stdout.log": 1109
+      },
+      "wall_seconds": 0.168,
+      "returncode": 0,
+      "budget_after_start": {
+        "category_used": 2,
+        "category_cap": 7,
+        "total_used": 8,
+        "total_cap": 23
+      },
+      "finished_utc": "2026-10-31T05:11:48Z",
+      "note": "case WAVE-00R rc=0"
+    },
+    {
+      "event_id": "NA-009",
+      "case_id": "WAVE-01",
+      "category": "WAVE_AREA_RULE",
+      "started_utc": "2026-10-31T05:12:40Z",
+      "status": "SOLVED",
+      "description": "OpenVSP analysis single start (WAVE-01)",
+      "command": "D:/Anaconda/envs/SUAVE/python.exe C:\\Users\\pc\\AppData\\Local\\RCAIDE_Supersonic_agent_state\\fullchain\\wave\\wave_worker.py C:\\Users\\pc\\AppData\\Local\\RCAIDE_Supersonic_agent_state\\fullchain\\wave\\WAVE-01\\request.json C:\\Users\\pc\\AppData\\Local\\RCAIDE_Supersonic_agent_state\\fullchain\\wave\\WAVE-01\\result.json",
+      "files_before_utc": {},
+      "files_after_utc": {
+        "request.json": 1557,
+        "result.json": 451063,
+        "results_SXDVOUR.csv": 72834,
+        "Unnamed_WaveDrag_M2.020000_Shown.txt": 304164,
+        "worker_stderr.log": 0,
+        "worker_stdout.log": 72965
+      },
+      "wall_seconds": 4.27,
+      "returncode": 0,
+      "budget_after_start": {
+        "category_used": 3,
+        "category_cap": 7,
+        "total_used": 9,
+        "total_cap": 23
+      },
+      "finished_utc": "2026-10-31T05:12:44Z",
+      "note": "case WAVE-01 rc=0"
+    },
+    {
+      "event_id": "NA-010",
+      "case_id": "WAVE-02",
+      "category": "WAVE_AREA_RULE",
+      "started_utc": "2026-10-31T05:14:28Z",
+      "status": "SOLVED",
+      "description": "OpenVSP analysis single start (WAVE-02)",
+      "command": "D:/Anaconda/envs/SUAVE/python.exe C:\\Users\\pc\\AppData\\Local\\RCAIDE_Supersonic_agent_state\\fullchain\\wave\\wave_worker.py C:\\Users\\pc\\AppData\\Local\\RCAIDE_Supersonic_agent_state\\fullchain\\wave\\WAVE-02\\request.json C:\\Users\\pc\\AppData\\Local\\RCAIDE_Supersonic_agent_state\\fullchain\\wave\\WAVE-02\\result.json",
+      "files_before_utc": {},
+      "files_after_utc": {
+        "request.json": 2758,
+        "result.json": 451550,
+        "results_GFIEFEN.csv": 73062,
+        "Unnamed_WaveDrag_M2.020000_Shown.txt": 304164,
+        "worker_stderr.log": 0,
+        "worker_stdout.log": 73193
+      },
+      "wall_seconds": 6.721,
+      "returncode": 0,
+      "budget_after_start": {
+        "category_used": 4,
+        "category_cap": 7,
+        "total_used": 10,
+        "total_cap": 23
+      },
+      "finished_utc": "2026-10-31T05:14:35Z",
+      "note": "case WAVE-02 rc=0"
+    },
+    {
+      "event_id": "NA-011",
+      "case_id": "WAVE-03",
+      "category": "WAVE_AREA_RULE",
+      "started_utc": "2026-10-31T05:14:35Z",
+      "status": "SOLVED",
+      "description": "OpenVSP analysis single start (WAVE-03)",
+      "command": "D:/Anaconda/envs/SUAVE/python.exe C:\\Users\\pc\\AppData\\Local\\RCAIDE_Supersonic_agent_state\\fullchain\\wave\\wave_worker.py C:\\Users\\pc\\AppData\\Local\\RCAIDE_Supersonic_agent_state\\fullchain\\wave\\WAVE-03\\request.json C:\\Users\\pc\\AppData\\Local\\RCAIDE_Supersonic_agent_state\\fullchain\\wave\\WAVE-03\\result.json",
+      "files_before_utc": {},
+      "files_after_utc": {
+        "request.json": 1565,
+        "result.json": 450939,
+        "results_VWYQQSF.csv": 72772,
+        "Unnamed_WaveDrag_M2.020000_Shown.txt": 304164,
+        "worker_stderr.log": 0,
+        "worker_stdout.log": 72903
+      },
+      "wall_seconds": 4.187,
+      "returncode": 0,
+      "budget_after_start": {
+        "category_used": 5,
+        "category_cap": 7,
+        "total_used": 11,
+        "total_cap": 23
+      },
+      "finished_utc": "2026-10-31T05:14:40Z",
+      "note": "case WAVE-03 rc=0"
+    },
+    {
+      "event_id": "NA-012",
+      "case_id": "WAVE-04",
+      "category": "WAVE_AREA_RULE",
+      "started_utc": "2026-10-31T05:14:40Z",
+      "status": "SOLVED",
+      "description": "OpenVSP analysis single start (WAVE-04)",
+      "command": "D:/Anaconda/envs/SUAVE/python.exe C:\\Users\\pc\\AppData\\Local\\RCAIDE_Supersonic_agent_state\\fullchain\\wave\\wave_worker.py C:\\Users\\pc\\AppData\\Local\\RCAIDE_Supersonic_agent_state\\fullchain\\wave\\WAVE-04\\request.json C:\\Users\\pc\\AppData\\Local\\RCAIDE_Supersonic_agent_state\\fullchain\\wave\\WAVE-04\\result.json",
+      "files_before_utc": {},
+      "files_after_utc": {
+        "request.json": 2766,
+        "result.json": 451630,
+        "results_SNUJUVB.csv": 73102,
+        "Unnamed_WaveDrag_M2.020000_Shown.txt": 304164,
+        "worker_stderr.log": 0,
+        "worker_stdout.log": 73233
+      },
+      "wall_seconds": 6.748,
+      "returncode": 0,
+      "budget_after_start": {
+        "category_used": 6,
+        "category_cap": 7,
+        "total_used": 12,
+        "total_cap": 23
+      },
+      "finished_utc": "2026-10-31T05:14:47Z",
+      "note": "case WAVE-04 rc=0"
+    },
+    {
+      "event_id": "NA-013",
+      "case_id": "WAVE-05",
+      "category": "WAVE_AREA_RULE",
+      "started_utc": "2026-10-31T05:15:03Z",
+      "status": "SOLVED",
+      "description": "OpenVSP analysis single start (WAVE-05)",
+      "command": "D:/Anaconda/envs/SUAVE/python.exe C:\\Users\\pc\\AppData\\Local\\RCAIDE_Supersonic_agent_state\\fullchain\\wave\\wave_worker.py C:\\Users\\pc\\AppData\\Local\\RCAIDE_Supersonic_agent_state\\fullchain\\wave\\WAVE-05\\request.json C:\\Users\\pc\\AppData\\Local\\RCAIDE_Supersonic_agent_state\\fullchain\\wave\\WAVE-05\\result.json",
+      "files_before_utc": {},
+      "files_after_utc": {
+        "request.json": 2758,
+        "result.json": 760315,
+        "results_PEEKGVX.csv": 559026,
+        "Unnamed_WaveDrag_M2.020000_Shown.txt": 2422584,
+        "worker_stderr.log": 0,
+        "worker_stdout.log": 558725
+      },
+      "wall_seconds": 259.072,
+      "returncode": 0,
+      "budget_after_start": {
+        "category_used": 7,
+        "category_cap": 7,
+        "total_used": 13,
+        "total_cap": 23
+      },
+      "finished_utc": "2026-10-31T05:19:22Z",
+      "note": "case WAVE-05 rc=0"
+    },
+    {
+      "event_id": "NA-014",
+      "case_id": "LFV-04",
+      "category": "RCAIDE_LF",
+      "started_utc": "2026-10-31T05:44:34Z",
+      "status": "SOLVED",
+      "description": "V01 vertical_tail_area +1% (34.2491 m2) zero-sideslip sensitivity",
+      "command": "research.concorde_metaopt.evaluation.low_fidelity.SingleCruiseBackend.evaluate (RCAIDE 1.5.0 tutorial VLM single cruise)",
+      "files_before_utc": {},
+      "files_after_utc": {
+        "LFV-04.json": 5935
+      },
+      "wall_seconds": 79.485,
+      "returncode": 0,
+      "budget_after_start": {
+        "category_used": 1,
+        "category_cap": 4,
+        "total_used": 14,
+        "total_cap": 23
+      },
+      "finished_utc": "2026-10-31T05:45:54Z",
+      "note": "record status VALID"
+    },
+    {
+      "event_id": "NA-015",
+      "case_id": "LFV-05",
+      "category": "RCAIDE_LF",
+      "started_utc": "2026-10-31T05:45:54Z",
+      "status": "SOLVED",
+      "description": "V02 vertical_tail_sweep_delta +2 deg zero-sideslip sensitivity",
+      "command": "research.concorde_metaopt.evaluation.low_fidelity.SingleCruiseBackend.evaluate (RCAIDE 1.5.0 tutorial VLM single cruise)",
+      "files_before_utc": {},
+      "files_after_utc": {
+        "LFV-05.json": 5924
+      },
+      "wall_seconds": 79.455,
+      "returncode": 0,
+      "budget_after_start": {
+        "category_used": 2,
+        "category_cap": 4,
+        "total_used": 15,
+        "total_cap": 23
+      },
+      "finished_utc": "2026-10-31T05:47:13Z",
+      "note": "record status VALID"
+    },
+    {
+      "event_id": "NA-016",
+      "case_id": "E2E-00",
+      "category": "RCAIDE_LF",
+      "started_utc": "2026-10-31T05:47:13Z",
+      "status": "SOLVED",
+      "description": "12D baseline through instrumented single-cruise chain (drag ledger, no unvalidated correction)",
+      "command": "research.concorde_metaopt.evaluation.low_fidelity.SingleCruiseBackend.evaluate (RCAIDE 1.5.0 tutorial VLM single cruise)",
+      "files_before_utc": {},
+      "files_after_utc": {
+        "E2E-00.json": 5918
+      },
+      "wall_seconds": 80.232,
+      "returncode": 0,
+      "budget_after_start": {
+        "category_used": 3,
+        "category_cap": 4,
+        "total_used": 16,
+        "total_cap": 23
+      },
+      "finished_utc": "2026-10-31T05:48:33Z",
+      "note": "record status VALID"
+    },
+    {
+      "event_id": "NA-017",
+      "case_id": "E2E-01",
+      "category": "RCAIDE_LF",
+      "started_utc": "2026-10-31T05:48:33Z",
+      "status": "SOLVED",
+      "description": "W10 tip_twist +2 deg through instrumented single-cruise chain (drag ledger)",
+      "command": "research.concorde_metaopt.evaluation.low_fidelity.SingleCruiseBackend.evaluate (RCAIDE 1.5.0 tutorial VLM single cruise)",
+      "files_before_utc": {},
+      "files_after_utc": {
+        "E2E-01.json": 5920
+      },
+      "wall_seconds": 79.771,
+      "returncode": 0,
+      "budget_after_start": {
+        "category_used": 4,
+        "category_cap": 4,
+        "total_used": 17,
+        "total_cap": 23
+      },
+      "finished_utc": "2026-10-31T05:49:53Z",
+      "note": "record status VALID"
+    },
+    {
+      "event_id": "NA-018",
+      "case_id": "HFS-SETUP-01",
+      "category": "SU2_HF",
+      "started_utc": "2026-10-31T05:48:00Z",
+      "finished_utc": "2026-10-31T05:48:10Z",
+      "status": "FAILED_CONFIG_PARSE",
+      "wall_seconds": null,
+      "command": "SU2_CFD.exe wedge_coarse.cfg (first harness config attempt)",
+      "files": [],
+      "note": "Post-hoc recorded: config option CONV_CRITERIA invalid for SU2 8.5.0; solver aborted during config parsing (0 iterations). Counted as a solver process start per D-12D-002 counting contract."
+    },
+    {
+      "event_id": "NA-019",
+      "case_id": "HFS-SETUP-02",
+      "category": "SU2_HF",
+      "started_utc": "2026-10-31T05:51:00Z",
+      "finished_utc": "2026-10-31T05:51:40Z",
+      "status": "SOLVED_VOID_CONVERGENCE",
+      "wall_seconds": null,
+      "command": "SU2_CFD.exe wedge_coarse.cfg (second harness config attempt)",
+      "files": [
+        "hf/wedge/su2_coarse.log",
+        "hf/wedge/restart_coarse.csv"
+      ],
+      "note": "Post-hoc recorded: 100 Euler iterations, terminated on Cauchy[CD]=0 because MARKER_MONITORING was not set (CL/CD identically zero) and CONV_FIELD=DRAG retired an empty force; residual log10(rho) only -1.53, so solution is NOT converged and NOT used as aerodynamic evidence. Counted as a solver process start."
+    },
+    {
+      "event_id": "NA-020",
+      "case_id": "HFS-00",
+      "category": "SU2_HF",
+      "started_utc": "2026-10-31T05:54:38Z",
+      "status": "SOLVED",
+      "description": "2D supersonic wedge benchmark, Mach 2.0, half angle 10 deg, Euler, theory comparison",
+      "command": "$SU2 hfs00.cfg",
+      "files_before_utc": {},
+      "files_after_utc": {
+        "su2_hfs00.log": 0,
+        "surface_flow_hfs00.csv": 0,
+        "restart_hfs00.csv": 0,
+        "history_hfs00.csv": 0
+      },
+      "wall_seconds": 116.0,
+      "returncode": 0,
+      "budget_after_start": {
+        "category_used": 3,
+        "category_cap": 6,
+        "total_used": 20,
+        "total_cap": 23
+      },
+      "finished_utc": "2026-10-31T05:56:35Z",
+      "note": "SU2 8.5.0 Euler 2D wedge; MARKER_EULER wall + MARKER_FAR farfield; MUSCL/Venkatarishnan; residual criterion RMS_DENSITY -8"
+    },
+    {
+      "event_id": "NA-021",
+      "case_id": "HFS-01",
+      "category": "SU2_HF",
+      "started_utc": "2026-10-31T09:05:04Z",
+      "status": "FAILED",
+      "description": "SU2 8.5.0 Euler isolated 12D main wing (HFS-01)",
+      "command": "mpiexec -n 4 SU2_CFD C:/Users/pc/AppData/Local/RCAIDE_Supersonic_agent_state/fullchain/hf/wing/hfs01.cfg",
+      "files_before_utc": {},
+      "files_after_utc": {},
+      "wall_seconds": 1.0,
+      "returncode": 1,
+      "budget_after_start": {
+        "category_used": 4,
+        "category_cap": 6,
+        "total_used": 21,
+        "total_cap": 23
+      },
+      "finished_utc": "2026-10-31T09:05:05Z",
+      "note": "mpi_ranks=4 log=su2_HFS-01.log"
+    },
+    {
+      "event_id": "NA-022",
+      "case_id": "HFS-02",
+      "category": "SU2_HF",
+      "started_utc": "2026-10-31T09:12:06Z",
+      "status": "SOLVED",
+      "description": "SU2 8.5.0 Euler isolated 12D main wing (HFS-02)",
+      "command": "mpiexec -n 4 SU2_CFD C:/Users/pc/AppData/Local/RCAIDE_Supersonic_agent_state/fullchain/hf/wing/hfs02.cfg",
+      "files_before_utc": {},
+      "files_after_utc": {},
+      "wall_seconds": 394.0,
+      "returncode": 0,
+      "budget_after_start": {
+        "category_used": 5,
+        "category_cap": 6,
+        "total_used": 22,
+        "total_cap": 23
+      },
+      "finished_utc": "2026-10-31T09:18:40Z",
+      "note": "mpi_ranks=4 log=su2_HFS-02.log"
+    },
+    {
+      "event_id": "NA-023",
+      "case_id": "HFS-03",
+      "category": "SU2_HF",
+      "started_utc": "2026-10-31T09:18:51Z",
+      "status": "SOLVED",
+      "description": "SU2 8.5.0 Euler isolated 12D main wing (HFS-03)",
+      "command": "mpiexec -n 4 SU2_CFD C:/Users/pc/AppData/Local/RCAIDE_Supersonic_agent_state/fullchain/hf/wing/hfs03.cfg",
+      "files_before_utc": {},
+      "files_after_utc": {},
+      "wall_seconds": 871.0,
+      "returncode": 0,
+      "budget_after_start": {
+        "category_used": 6,
+        "category_cap": 6,
+        "total_used": 23,
+        "total_cap": 23
+      },
+      "finished_utc": "2026-10-31T09:33:22Z",
+      "note": "mpi_ranks=4 log=su2_HFS-03.log"
+    }
+  ],
+  "mesh_generation_events": [],
+  "policy_events": [
+    {
+      "utc": "2026-10-31T04:45:33Z",
+      "kind": "policy",
+      "message": "D-12D-002 counting contract active: only solver process starts that compute a numerical analysis are counted; geometry processing, mesh generation and setup are logged separately."
+    },
+    {
+      "utc": "2026-10-31T04:45:33Z",
+      "kind": "geometry",
+      "message": "LF DegenGeom export for baseline and W10+2deg via OpenVSP VSPAEROComputeGeometry ExecAnalysis: wing-only thin surface, 544 nodes / 960 loops / 1502 edges / 32 Kutta nodes, total surface area 358.25 m2; no solver started."
+    },
+    {
+      "utc": "2026-10-31T04:45:33Z",
+      "kind": "setup",
+      "message": "vspaero -setup template generation for both LF cases with frozen Sref/Cref/Bref, X_cg=16.821978 (wing model aerodynamic center), Mach 2.02, ISA 18288 m Vinf 596.037397 m/s, rho 0.11531783 kg/m3, ReCref 8.9397e7; setup only, no solve."
+    },
+    {
+      "utc": "2026-10-31T04:45:33Z",
+      "kind": "tooling_probe",
+      "message": "vspaero -geom probe on baseline DegenGeom produced all-zero force coefficients (VSPAERO documents -geom as process geometry without solving); treated as geometry processing, not a numerical analysis, and NOT used as aerodynamic evidence."
+    },
+    {
+      "utc": "2026-10-31T04:58:01Z",
+      "kind": "policy",
+      "message": "LD-001: run_lf_case.py template rewrite dropped the  =  separator; LFV-01/02/03 starts consumed but data non-physical and quarantined; fixed and mitigated by SENS-A/B density series"
+    },
+    {
+      "utc": "2026-10-31T05:44:05Z",
+      "kind": "policy",
+      "message": "RCAIDE_LF phase beginning: 4 authorised single-cruise Mission starts (LFV-04 V01+1%, LFV-05 V02+2deg, E2E-00 baseline instrumented chain, E2E-01 W10+2deg instrumented chain); no external body correction injected because WAVE_AREA_RULE is NOT_VALIDATED"
+    },
+    {
+      "utc": "2026-10-31T05:52:00Z",
+      "kind": "policy",
+      "message": "SU2_HF budget adjustment: 2 of the 6 allocated SU2 starts were consumed by harness configuration attempts (NA-018 config parse failure, NA-019 run with missing force markers and invalid convergence criterion). Remaining SU2_HF quota = 4. Plan adjusted to HFS-00 (wedge benchmark, converged) + HFS-01/02/03 (main-wing coarse/medium/fine Euler). HFS-00R (wedge mesh refinement) and HFS-04 (W10+2deg perturbation) are NOT_RUN because the category cap is binding and D-12D-002 forbids increasing category limits. This is reported, not hidden."
+    },
+    {
+      "utc": "2026-10-31T09:11:51Z",
+      "kind": "LD-003",
+      "message": "SU2 ASCII boundary elements must use VTK type 5 (triangle) not 3 (line); first HFS-01 launch aborted in ReadSurfaceElementConnectivity after the converter wrote line-type markers. Converter fixed, all three wing meshes re-converted and pass a structural preflight (SU2-free): NDIME=3, tets type 10, boundary type 5, every boundary face a free tet face, no negative/orphan nodes, wall area 722.3-722.8 m2, divergence volume 128.48/128.83/129.01 m3 vs analytic 129.45 m3. HFS-01 remains counted as a failed numerical analysis start (NA event)."
+    },
+    {
+      "utc": "2026-10-31T09:37:24Z",
+      "kind": "Offline post-processing not counted",
+      "message": "All post-processing after solver exit (Cp reconstruction from the preserved-variable surface CSV, wind-axis force integration, Eminton-Lord recomputation in plain Python, Richardson estimates, figure generation, manifest hashing) launches no solver process and is therefore not counted as a numerical-analysis start under the counting contract of D-12D-002. Only vspaero.exe / SU2_CFD.exe process starts were billed."
+    },
+    {
+      "utc": "2026-10-31T09:37:24Z",
+      "kind": "Budget exhausted at 23/23",
+      "message": "All 23 authorised numerical-analysis starts are consumed (VSPAERO_LF 6/6, RCAIDE_LF 4/4, SU2_HF 6/6, WAVE_AREA_RULE 7/7); remaining 0. Per D-12D-002 no category cap may be raised, so HFS-00R (wedge grid check), HFS-04 (W10 perturbation recompute) and any retry are recorded as NOT_RUN. No further solver process will be started in this run."
+    },
+    {
+      "utc": "2026-10-31T09:37:24Z",
+      "kind": "HFS-01 counted as a failed start",
+      "message": "HFS-01 (coarse wing Euler) failed at mesh read time because the first msh2-to-SU2 converter wrote boundary elements with SU2 type 3 (line) instead of VTK type 5 (triangle). The failure is a harness/mesh-format defect, not a physics result; it still consumed one of the 6 SU2 starts per the contract and is kept as FAILED in the ledger. The converter, mesh preflight and all three meshes were corrected afterwards; HFS-02/03 then ran on validated meshes."
+    },
+    {
+      "utc": "2026-10-31T09:37:25Z",
+      "kind": "LF VSPAERO LD-001 invalid data isolated",
+      "message": "The three early VSPAERO cases (W01/W03/W10) were run with a corrupted -setup template (missing ' = ' separator, LD-001) and produced non-physical polars. They are counted as starts, flagged invalid in the ledger and their polars are isolated under EXT/lead/failed_runs; they are NOT used as aerodynamic evidence. The two density-sensitivity cases (SENS-A/B) and LFV-00 were re-setup with a corrected template and are the only VSPAERO rows used."
+    },
+    {
+      "utc": "2026-10-31T09:37:25Z",
+      "kind": "Wave-drag result capture LD-002",
+      "message": "OpenVSP ExecAnalysis returns a result id, not a data dictionary; PrintResults printed nothing. Wave results were captured with WriteResultsCSVFile plus parsing of the slice text file. WAVE-00's first EmintonLord run lost its data before this path was found (billed, not used); WAVE-00R re-ran the same analytical benchmark and matched Sears-Haack theory to 1.55e-6 relative."
+    }
+  ],
+  "amendment_log": [],
+  "updated_utc": "2026-10-31T09:37:25Z"
+}

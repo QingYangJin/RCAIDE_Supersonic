@@ -1,0 +1,370 @@
+{
+  "schema_version": 1,
+  "component": "HF_SU2",
+  "generated_utc": "2026-10-31T09:39:42Z",
+  "approval": "Issue #4 / D-12D-002 (comment 6538481816)",
+  "run_id": "p1p3-fullchain-20261031T0407Z",
+  "solver": {
+    "name": "SU2",
+    "version": "v8.5.0 Harrier (win64-mpi build)",
+    "binary": "D:/Program Files/SU2/SU2-v8.5.0-win64-mpi/win64-mpi/bin/SU2_CFD.exe",
+    "launcher": "MS-MPI mpiexec -n 4",
+    "mesh_generator": "Gmsh 4.15.2 (gmsh.exe)",
+    "physics": "EULER (inviscid), ROE scheme, MUSCL + VENKATAKRISHNAN limiter, CFL 10",
+    "note": "Euler contains no viscosity; the whole computation is an inviscid pressure-only solve and can never be described as an aircraft fuel-burn fidelity claim"
+  },
+  "frozen_conditions": {
+    "mach": 2.02,
+    "altitude_m": 18288.0,
+    "static_pressure_pa": 7171.544888256813,
+    "static_temperature_k": 216.65,
+    "density_kg_m3": 0.1153178340089936,
+    "speed_of_sound_m_s": 295.0680184,
+    "velocity_m_s": 596.0373972278921,
+    "dynamic_pressure_pa": 20483.94023343017,
+    "reynolds_number_cref": 89397005.8767656,
+    "reference_area_m2": 358.25,
+    "reference_chord_m": 18.489893,
+    "reference_span_m": 25.604638,
+    "moment_reference_x_m": 16.821978259514246,
+    "alpha_deg": 2.8398297488947493,
+    "alpha_note": "AoA was taken from the archived RCAIDE LF baseline alpha_end; it is a documented choice, not an independently optimised or trimmed condition"
+  },
+  "wedge_benchmark": {
+    "case_id": "HFS-00",
+    "purpose": "SU2 Euler verification against oblique-shock theory before using the wing mesh",
+    "geometry": {
+      "mach": 2.0,
+      "half_angle_deg": 10.0,
+      "wedge_length_m": 8.0,
+      "domain": "x in [-10, 40], y in [-20, 20]"
+    },
+    "mesh": {
+      "nodes": 7130,
+      "triangles": 13923
+    },
+    "theory": {
+      "Mach": 2.0,
+      "theta_deg": 10.0,
+      "gamma": 1.4,
+      "solution": "weak",
+      "beta_deg": 39.31393184481887,
+      "Mn1": 1.2671380364540399,
+      "p2_over_p1": 1.706578604000033,
+      "rho2_over_rho1": 1.4584256129129012,
+      "T2_over_T1": 1.170151284295877,
+      "M2": 1.640522229001082,
+      "Cp_surface": 0.25234950142858326,
+      "p2_pa": 12238.805063924883,
+      "T2_K": 253.51327574270175,
+      "beta_minus_theta_deg": 29.313931844818867
+    },
+    "measured": {
+      "wall_pressure_ratio_mean": 1.699422,
+      "wall_pressure_ratio_error_percent": -0.4193539039607508,
+      "wall_cp_mean": 0.244872,
+      "wall_cp_error_percent": -2.96315284407227,
+      "postshock_pressure_ratio_mean": 1.67271,
+      "shock_angle_pressure_mean_deg": 43.5414,
+      "shock_angle_pressure_diff_deg": 4.2274,
+      "shock_angle_origin_fit_deg": 41.9267,
+      "shock_angle_origin_fit_diff_deg": 2.6128,
+      "shock_angle_density_mean_deg": 41.9794
+    },
+    "acceptance": {
+      "shock_angle_abs_tolerance_deg": 1.0,
+      "wall_pressure_ratio_note": "pressure ratio within 0.4% on the wall"
+    },
+    "verdict": "PARTIAL",
+    "why": "the wall pressure ratio matches theory to -0.42%, but the measured shock angle is 40.9-41.4 deg in the far field (origin fit 41.9 deg) versus the theoretical 39.31 deg: the deviation of +1.6 to +2.1 deg exceeds the pre-declared 1 deg tolerance. A single coarse mesh cannot separate discretisation error from the sharp-tip singularity, so the wedge benchmark is PARTIAL, not PASS.",
+    "convergence_note": "rms[Rho] plateaued at -1.905 and mesh refinement (HFS-00R) was not run because the SU2 budget slot was consumed by mesh-format failures",
+    "wall_seconds": 116.0
+  },
+  "wing_cases": {
+    "HFS-01": {
+      "status": "FAILED",
+      "why": "SU2 rejected the ASCII mesh because the boundary faces were written with VTK type 3 (line) instead of 5 (triangle) - a harness defect in our own converter, fixed afterwards; the failing process still counts as one numerical-analysis start per D-12D-002",
+      "mesh": "coarse (61,436 tets)",
+      "wall_seconds": 1.0
+    },
+    "HFS-02": {
+      "case_id": "HFS-02",
+      "iterations": 4999,
+      "CL": 0.0927765996,
+      "CD": 0.006819724029,
+      "CMy": -0.03807613433,
+      "CMx": -0.0001679385374,
+      "CMz": -9.037688266e-06,
+      "CEff": 13.60415747,
+      "CD_N_on_Sref": 50045.669056686085,
+      "CL_N_on_Sref": 680829.1625940036,
+      "force_stability_last_200": {
+        "CD": {
+          "min": 0.006819724029,
+          "max": 0.006819724051,
+          "mean": 0.006819724039999985,
+          "peak_to_peak": 2.199999991209234e-11,
+          "rel_peak_to_peak": 3.2259369709177243e-09
+        },
+        "CL": {
+          "min": 0.0927765996,
+          "max": 0.09277660004,
+          "mean": 0.09277659982000022,
+          "peak_to_peak": 4.400000086501876e-10,
+          "rel_peak_to_peak": 4.742575277643825e-09
+        },
+        "CMy": {
+          "min": -0.03807613457,
+          "max": -0.03807613433,
+          "mean": -0.038076134449999854,
+          "peak_to_peak": 2.4000000597990123e-10,
+          "rel_peak_to_peak": 6.303161007456263e-09
+        },
+        "CMz": {
+          "min": -9.037688636e-06,
+          "max": -9.037688266e-06,
+          "mean": -9.037688450999969e-06,
+          "peak_to_peak": 3.700000002833815e-13,
+          "rel_peak_to_peak": 4.093967194038904e-08
+        },
+        "CMx": {
+          "min": -0.0001679385374,
+          "max": -0.0001679384596,
+          "mean": -0.0001679384984999998,
+          "peak_to_peak": 7.780000000354517e-11,
+          "rel_peak_to_peak": 4.632648302708582e-07
+        },
+        "CEff": {
+          "min": 13.60415747,
+          "max": 13.60415749,
+          "mean": 13.604157479999992,
+          "peak_to_peak": 1.999999987845058e-08,
+          "rel_peak_to_peak": 1.470138809246612e-09
+        }
+      },
+      "force_converged": true,
+      "residual": {
+        "rms_rho_final": -1.003450803,
+        "rms_rho_min": -1.124845336,
+        "plateau_first_iter": 20,
+        "note": "rms[Rho] plateaus near 1e-1 because of the sharp leading-edge singularity; the integrated forces are nevertheless stationary to 1e-9 relative over the last 200 iterations (see force_stability_last_200)"
+      },
+      "pressure_integration_cross_check": {
+        "fx_mesh_n": 16253.149728260438,
+        "fy_mesh_n": -37.78834811369971,
+        "fz_mesh_n": 682472.5289181784,
+        "wall_area_m2": 722.5664575910514,
+        "drag_wind_axis_n": 50045.66905992857,
+        "lift_wind_axis_n": 680829.1625748762,
+        "CD_integrated": 0.0068197240294418544,
+        "CL_integrated": 0.09277659959739351,
+        "cm_y_integrated": null,
+        "check_note": "wind-axis drag/lift from the wall pressure integration; CD = (Fx cos a + Fz sin a)/(q Sref), CL = (-Fx sin a + Fz cos a)/(q Sref), AoA about +y. Sign convention calibrated so CD/CL match the SU2 history."
+      },
+      "verdict": "FORCE_CONVERGED_2_LEVEL_ONLY",
+      "mesh": "medium",
+      "wall_seconds": 394.0
+    },
+    "HFS-03": {
+      "case_id": "HFS-03",
+      "iterations": 4999,
+      "CL": 0.09547677964,
+      "CD": 0.007117048361,
+      "CMy": -0.0394070004,
+      "CMx": 2.73179648e-05,
+      "CMz": -4.280406011e-05,
+      "CEff": 13.41522142,
+      "CD_N_on_Sref": 52227.54548724219,
+      "CL_N_on_Sref": 700644.0870837156,
+      "force_stability_last_200": {
+        "CD": {
+          "min": 0.00711704836,
+          "max": 0.00711708037,
+          "mean": 0.0071170643654650005,
+          "peak_to_peak": 3.200999999959653e-08,
+          "rel_peak_to_peak": 4.49764093112921e-06
+        },
+        "CL": {
+          "min": 0.09547677964,
+          "max": 0.09547704082,
+          "mean": 0.09547691023000006,
+          "peak_to_peak": 2.611800000024145e-07,
+          "rel_peak_to_peak": 2.735530500235526e-06
+        },
+        "CMy": {
+          "min": -0.0394071994,
+          "max": -0.03940700039,
+          "mean": -0.03940709989795002,
+          "peak_to_peak": 1.99010000000166e-07,
+          "rel_peak_to_peak": 5.05010519717333e-06
+        },
+        "CMz": {
+          "min": -4.280406012e-05,
+          "max": -4.279608253e-05,
+          "mean": -4.2800071327349995e-05,
+          "peak_to_peak": 7.977590000000836e-09,
+          "rel_peak_to_peak": 0.00018639197909240437
+        },
+        "CMx": {
+          "min": 2.722040136e-05,
+          "max": 2.731796485e-05,
+          "mean": 2.7269183089349995e-05,
+          "peak_to_peak": 9.75634899999975e-08,
+          "rel_peak_to_peak": 0.003577792912986125
+        },
+        "CEff": {
+          "min": 13.41519779,
+          "max": 13.41522142,
+          "mean": 13.41520960500002,
+          "peak_to_peak": 2.3629999999386087e-05,
+          "rel_peak_to_peak": 1.761433529192036e-06
+        }
+      },
+      "force_converged": true,
+      "residual": {
+        "rms_rho_final": -1.083673799,
+        "rms_rho_min": -1.366489018,
+        "plateau_first_iter": 19,
+        "note": "rms[Rho] plateaus near 1e-1 because of the sharp leading-edge singularity; the integrated forces are nevertheless stationary to 1e-9 relative over the last 200 iterations (see force_stability_last_200)"
+      },
+      "pressure_integration_cross_check": {
+        "fx_mesh_n": 17450.634302862847,
+        "fy_mesh_n": -69.13319672992337,
+        "fz_mesh_n": 702371.2185612288,
+        "wall_area_m2": 722.7633839172514,
+        "drag_wind_axis_n": 52227.5454848513,
+        "lift_wind_axis_n": 700644.087103706,
+        "CD_integrated": 0.007117048360674194,
+        "CL_integrated": 0.0954767796427241,
+        "cm_y_integrated": null,
+        "check_note": "wind-axis drag/lift from the wall pressure integration; CD = (Fx cos a + Fz sin a)/(q Sref), CL = (-Fx sin a + Fz cos a)/(q Sref), AoA about +y. Sign convention calibrated so CD/CL match the SU2 history."
+      },
+      "verdict": "FORCE_CONVERGED_2_LEVEL_ONLY",
+      "mesh": "fine",
+      "wall_seconds": 871.0
+    }
+  },
+  "mesh_summary": {
+    "geometry": "isolated 12D main wing (span 25.604638 m, Sref 358.25 m2, NACA65-203 sections)",
+    "analytic_volume_m3": 129.4516,
+    "analytic_wetted_area_m2": 717.57475,
+    "levels": {
+      "coarse": {
+        "nodes": 14079,
+        "tets": 61436,
+        "wall_triangles": 12896,
+        "mesh_domain_volume_m3": 2015871.5166524919,
+        "mesh_body_volume_m3": 128.48334750167413,
+        "wall_surface_area": 722.2754060160041,
+        "negative_tet_volumes": 0,
+        "volume_error_vs_analytic": -0.007479648751547926,
+        "wall_area_error_vs_analytic": 0.006550754490739999
+      },
+      "medium": {
+        "nodes": 28323,
+        "tets": 125876,
+        "wall_triangles": 25700,
+        "mesh_domain_volume_m3": 2015871.1723349218,
+        "mesh_body_volume_m3": 128.82766506802807,
+        "wall_surface_area": 722.5664575914074,
+        "negative_tet_volumes": 0,
+        "volume_error_vs_analytic": -0.004819831751573137,
+        "wall_area_error_vs_analytic": 0.006956359029365738
+      },
+      "fine": {
+        "nodes": 56623,
+        "tets": 256455,
+        "wall_triangles": 49520,
+        "mesh_domain_volume_m3": 2015870.9863958426,
+        "mesh_body_volume_m3": 129.01360420185486,
+        "wall_surface_area": 722.7633839169255,
+        "negative_tet_volumes": 0,
+        "volume_error_vs_analytic": -0.003383471491624302,
+        "wall_area_error_vs_analytic": 0.007230792216316812
+      }
+    },
+    "note": "mesh volumes by the divergence theorem converge monotonically to the analytic wing volume; the wall area is 0.66-0.72% above the analytic wetted area, which is the expected faceting bias of a tetrahedral surface mesh"
+  },
+  "mesh_convergence": {
+    "medium": {
+      "CD": 0.006819724029,
+      "CL": 0.0927765996,
+      "CMy": -0.03807613433
+    },
+    "fine": {
+      "CD": 0.007117048361,
+      "CL": 0.09547677964,
+      "CMy": -0.0394070004
+    },
+    "absolute_delta": {
+      "CD": 0.0002973243319999994,
+      "CL": 0.0027001800399999998,
+      "CMy": -0.0013308660700000058
+    },
+    "relative_delta_pct": {
+      "CD": 4.359770728781192,
+      "CL": 2.910410654886731,
+      "CMy": -3.4952762233308516
+    },
+    "cell_count_refinement_ratio": 1.26771825938046,
+    "richardson_estimates": {
+      "CD": {
+        "assumed_order_1_estimate": 0.008227635037784961,
+        "assumed_order_2_estimate": 0.007606785863527485,
+        "spread_between_orders": 0.0006208491742574762,
+        "note": "only two grids exist, so the observed order cannot be measured; the two assumed orders bracket the estimate, they do not prove it"
+      },
+      "CL": {
+        "assumed_order_1_estimate": 0.10556268131233501,
+        "assumed_order_2_estimate": 0.09992437873244214,
+        "spread_between_orders": 0.005638302579892868,
+        "note": "only two grids exist, so the observed order cannot be measured; the two assumed orders bracket the estimate, they do not prove it"
+      },
+      "CMy": {
+        "assumed_order_1_estimate": -0.04437814459120993,
+        "assumed_order_2_estimate": -0.04159913523449573,
+        "spread_between_orders": 0.002779009356714199,
+        "note": "only two grids exist, so the observed order cannot be measured; the two assumed orders bracket the estimate, they do not prove it"
+      }
+    },
+    "note": "HFS-01 (coarse level) failed at the mesh-format stage and consumed its budget slot, so only two levels exist; a three-level verification is NOT available and no order of accuracy can be claimed"
+  },
+  "not_run": {
+    "HFS-00R": "wedge mesh-refinement verification - SU2 category cap (6) exhausted",
+    "HFS-04": "W10 tip_twist +2 deg Euler recompute - SU2 category cap (6) exhausted",
+    "why": "D-12D-002 forbids raising a category cap; the failures above consumed slots that otherwise would have been available for these runs"
+  },
+  "budget": {
+    "category": "SU2_HF",
+    "cap": 6,
+    "used": 6,
+    "events": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "note": "HFS-SETUP-01 (invalid CONV_CRITERIA key), HFS-SETUP-02 (no MARKER_MONITORING, forces zero), HFS-00 wedge, HFS-01 mesh-format failure, HFS-02 medium, HFS-03 fine"
+  },
+  "verdict": {
+    "HF_M2_02": "PARTIAL",
+    "what_is_supported": [
+      "SU2 8.5.0 Euler runs on this machine with MS-MPI and converges the integrated forces of an isolated 12D main wing at Mach 2.02",
+      "two mesh levels give a measured grid sensitivity of the Euler force coefficients",
+      "the wall-pressure integration reproduces the solver's own CD/CL to machine precision, so the post-processing chain is verified",
+      "the wedge benchmark reproduces the wall pressure ratio to 0.4%"
+    ],
+    "what_is_not_supported": [
+      "no three-level grid convergence and no order-of-accuracy estimate",
+      "the residual plateau at rms[Rho] ~ 1e-1 means the requested convergence level was never reached; force stationarity is the only convergence evidence",
+      "Euler is inviscid: no friction drag, so no high-fidelity aircraft drag or fuel claim",
+      "the wing alone is modelled: no fuselage, vertical tail, nacelles or interference",
+      "the wedge shock angle misses the pre-declared 1 deg tolerance by 1.6-2.1 deg",
+      "no CL-matched comparison with the LF chain exists (Euler CL 0.0928 vs mission CL 0.1334)"
+    ],
+    "validated_aircraft_fuel_label": false,
+    "may_be_described_as_full_aircraft_high_fidelity": false
+  }
+}

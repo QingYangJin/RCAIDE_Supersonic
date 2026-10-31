@@ -1,0 +1,224 @@
+{
+  "schema_version": 1,
+  "run_id": "p1p3-fullchain-20261031T0407Z",
+  "stage": "P1-P3 full-chain multi-fidelity validation",
+  "approval": {
+    "source": "Issue #4 / D-12D-002",
+    "comment_id": 6538481816,
+    "scope": "one-off capped validation, 23 starts, 30 h, serial, <= 4 cores; no gate approval"
+  },
+  "status": "EXECUTED_NO_GATE_APPROVED",
+  "base_commit": "048ef2e55f389b0ae52e8872131dcfcf0c91a1eb",
+  "branch": "research/concorde-metaopt",
+  "pr": {
+    "number": 3,
+    "state": "open",
+    "base": "main",
+    "merged": false
+  },
+  "started_utc": "2026-10-31T04:07:14Z",
+  "finished_utc": "2026-10-31T09:44:53Z",
+  "wall_clock_limit_hours": null,
+  "budget": {
+    "cap": 23,
+    "used": 23,
+    "remaining": 0,
+    "categories": {
+      "VSPAERO_LF": {
+        "cap": 6,
+        "used": 6
+      },
+      "RCAIDE_LF": {
+        "cap": 4,
+        "used": 4
+      },
+      "SU2_HF": {
+        "cap": 6,
+        "used": 6
+      },
+      "WAVE_AREA_RULE": {
+        "cap": 7,
+        "used": 7
+      }
+    }
+  },
+  "frozen_conditions": {
+    "mach": 2.02,
+    "altitude_m": 18288.0,
+    "temperature_k": 216.65,
+    "pressure_pa": 7171.544888256813,
+    "density_kg_m3": 0.1153178340089936,
+    "speed_of_sound_m_s": 295.0680184,
+    "velocity_m_s": 596.0373972278921,
+    "reynolds_cref": 89397005.8767656
+  },
+  "results": {
+    "lf_vspaero": {
+      "verdict": "NOT_VALIDATED",
+      "density_spread_alpha_2deg": {
+        "CL": [
+          0.08387934,
+          0.08781966,
+          0.1082826
+        ],
+        "CDi": [
+          0.0003435104,
+          -0.0008942229,
+          -0.02260794
+        ],
+        "CDtot": [
+          0.005420316,
+          0.004188608,
+          -0.01743937
+        ]
+      },
+      "invalid_cases": [
+        "LFV-01",
+        "LFV-02",
+        "LFV-03"
+      ],
+      "invalid_reason": "LD-001 -setup template defect; data isolated and excluded"
+    },
+    "rcAide_lf": {
+      "verdict": "CHAIN_REPRODUCIBLE_PHYSICS_PROVISIONAL",
+      "E2E_00_fuel_kg": 34109.48257123768,
+      "deltas_kg": {
+        "E2E-01": 8.072725252233795,
+        "LFV-04": 8.269174466098775,
+        "LFV-05": 0.2248719662457006
+      },
+      "deltas_pct": {
+        "E2E-01": 0.023667099714496997,
+        "LFV-04": 0.024243036958501493,
+        "LFV-05": 0.0006592652520484747
+      },
+      "drag_ledger_status": "PARTIAL_DATA_NOT_VALIDATED"
+    },
+    "area_rule": {
+      "verdict": "NOT_VALIDATED",
+      "analytic_benchmark": {
+        "verdict": "PASS -- the tool and the independent port agree with the closed-form Sears-Haack result to ~1.6e-6; the wave-drag implementation itself is trustworthy for smooth analytic area distributions.",
+        "sears_haack_rel_error_port": -1.5474421627514013e-06,
+        "sears_haack_rel_error_openvsp": -1.6059312413488623e-06,
+        "implied_Sref_m2": 100.0
+      },
+      "fine_over_coarse": 2.866553250322776,
+      "slice_effect_ratio": 1.9015705646705658,
+      "theta_sampling_effect_ratio": 1.5074661459220615,
+      "fuselage_increment_candidate": {
+        "delta_donq_m2": 2.923597797613626,
+        "delta_D_N": 59886.80255290559,
+        "delta_CD_on_Sref": 0.008160775429486743,
+        "promoted_to_validated_correction": false
+      }
+    },
+    "hf_su2": {
+      "verdict": "PARTIAL",
+      "wedge": {
+        "verdict": "PARTIAL",
+        "wall_pressure_ratio_error_pct": -0.4193539039607508,
+        "shock_angle_farfield_diff_deg": [
+          1.59,
+          1.99,
+          2.05
+        ]
+      },
+      "wing": {
+        "HFS-01": "FAILED",
+        "HFS-02": {
+          "CL": 0.0927765996,
+          "CD": 0.006819724029,
+          "CMy": -0.03807613433,
+          "CD_N_on_Sref": 50045.669056686085
+        },
+        "HFS-03": {
+          "CL": 0.09547677964,
+          "CD": 0.007117048361,
+          "CMy": -0.0394070004,
+          "CD_N_on_Sref": 52227.54548724219
+        },
+        "mesh_medium_to_fine_rel_pct": {
+          "CD": 4.359770728781192,
+          "CL": 2.910410654886731,
+          "CMy": -3.4952762233308516
+        },
+        "not_run": [
+          "HFS-00R",
+          "HFS-04"
+        ]
+      }
+    },
+    "drag_ledger": {
+      "verdict": "NOT_VALIDATED",
+      "body_correction_gate": "BODY-CORR BLOCKED",
+      "no_number_may_be_read_as_a_validated_correction": true
+    },
+    "geometry": {
+      "status": "GEOMETRY_VALIDATED_WITH_WARNINGS",
+      "w10_twist_dz_m": 0.03396196030486226,
+      "warnings": [
+        "LF geometry is wing-only; fuselage and vertical tail are not in the LF thin surface (owner decision 4 / D-12D-002 lifting-surfaces-only).",
+        "OpenVSP thin-surface DegenGeom is a geometry idealisation, not aerodynamic evidence.",
+        "CG is provisional; the VSPAERO template uses X/Y/Z_cg = 0 and moments are reported about that provisional point."
+      ]
+    }
+  },
+  "gates": {
+    "GEO-12D": {
+      "status": "PARTIAL",
+      "why": "12D design set, fixed-fuselage expansion, DOE wiring and W10 OpenVSP twist fix are verified; no validated aerodynamic force evidence for the geometry."
+    },
+    "LF-M2.02": {
+      "status": "NOT_VALIDATED / LF_PROVISIONAL",
+      "why": "VSPAERO 6.2.0 thin-surface drag at Mach 2.02 is non-convergent and non-physical; the RCAIDE single-cruise chain is reproducible but uses empirical drag build-up and interpolation."
+    },
+    "HF-M2.02": {
+      "status": "PARTIAL",
+      "why": "SU2 Euler wedge verification is PARTIAL (shock angle misses the 1 deg tolerance), the isolated wing has only two mesh levels and is inviscid; HFS-00R and HFS-04 are NOT_RUN."
+    },
+    "BODY-CORR": {
+      "status": "BLOCKED",
+      "why": "The area-rule analytical benchmark passes, but the real-geometry Mach-sliced level is not converged and contradicts the independent RCAIDE drag level; no calibrated interference model exists."
+    },
+    "MISSION-DATA": {
+      "status": "PARTIAL",
+      "why": "The instrumented 12D E2E chain and the physical-call accounting are verified, but no validated aircraft fuel-burn label exists and the mission q is 0.83% above the frozen value."
+    },
+    "BUDGET": {
+      "status": "EXHAUSTED",
+      "why": "All 23 D-12D-002 numerical-analysis starts are consumed; any further physics requires a new owner approval."
+    }
+  },
+  "one_off_authorisation": {
+    "consumed": true,
+    "remaining_starts": 0,
+    "not_run_due_to_cap": [
+      "HFS-00R",
+      "HFS-04"
+    ],
+    "further_physics_requires_new_owner_approval": true
+  },
+  "review": {
+    "a1": "PENDING",
+    "a2": "PENDING",
+    "a3": "PENDING",
+    "a4": "PENDING",
+    "a5": "PENDING",
+    "note": "independent role reviews are requested after the commit; results are recorded in the Issue receipt"
+  },
+  "artifacts": {
+    "data_manifest": "data_manifest.json",
+    "raw_artifacts_manifest": "raw_artifacts_manifest.json",
+    "raw_file_count": 195,
+    "raw_total_bytes": 108824422,
+    "figures": "figures/*.png",
+    "scripts": "scripts/"
+  },
+  "not_approved": [
+    "APPROVED_FOR_NEXT_STAGE",
+    "P4 BO/DE",
+    "P5 MAML",
+    "P6",
+    "merge to main"
+  ]
+}
