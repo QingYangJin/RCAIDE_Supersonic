@@ -225,12 +225,12 @@
       },
       "A5": {
         "task": "FULLCHAIN-A5-INDEPENDENT-RECALC",
-        "verdict": "CHANGES_REQUESTED_THEN_ADDRESSED",
-        "detail": "Independent recompute PASS (SU2 tail 6/6 components abs diff 0.0, Cp integral <=1.4e-17; WAVE donq 0 diff; budget 23/23 all billed). MAJOR: (1) stationarity wording overstated -> corrected in report/README/hf JSON; (2) data_manifest CRLF-sensitive hashes + uncommitted ledger backfill -> manifest regenerated from committed LF tree in a later commit, ledger backfill committed. Delta re-check pending"
+        "verdict": "CHANGES_REQUESTED_TWICE_THEN_ADDRESSED",
+        "detail": "Independent recompute PASS (SU2 tail 6/6 components abs diff 0.0, Cp integral <=1.4e-17; WAVE donq 0 diff; budget 23/23 all billed). MAJOR round 1: blanket stationarity wording and CRLF-sensitive manifest -> reviews archived, wording corrected once, ledger mesh events backfilled, manifest canonicalized in 529d9b7. Delta round 2 (task-30): manifest/ledger PASS but wording still grouped both cases at 6.3e-9 and two old residual notes remained -> corrected per case in this revision (HFS-02 CD/CL/CMy <= 6.3e-9; HFS-03 CD/CL/CMy <= 5.1e-6; CMx exceptions 4.63e-7 / 3.58e-3). Final delta re-check pending on this commit."
       }
     },
     "reviews_are_verbatim_copies": "independent_reviews/ contains verbatim role outputs (repo-external originals); no review ran a solver or wrote to the repository.",
-    "revision_note": "Post-review revision: added independent_reviews/, corrected stationarity wording, backfilled 11 mesh_generation_events in the ledger, recorded role verdicts here. No numerical result changed; no new solver start (23/23 remains exhausted)."
+    "revision_note": "Post-review revisions: d80b4c4 (run) -> 58933bb (reviews archived, first wording fix, mesh events backfilled) -> 529d9b7 (canonical LF manifest) -> this revision (per-case stationarity wording + old residual notes replaced). No numerical result changed; no new solver start (23/23 remains exhausted)."
   },
   "artifacts": {
     "data_manifest": "data_manifest.json",

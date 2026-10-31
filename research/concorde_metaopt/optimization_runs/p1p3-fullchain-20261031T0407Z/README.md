@@ -159,9 +159,9 @@ Isolated 12D main wing (inviscid Euler, no fuselage/tail, AoA 2.8398 deg):
 | HFS-02 medium | 125876 | 0.0927765996 | 0.006819724029 | -0.03807613433 | 394 |
 | HFS-03 fine | 256455 | 0.09547677964 | 0.007117048361 | -0.0394070004 | 871 |
 
-Over the last 200 iterations the integrated CD/CL/CMy of both completed runs are stationary
-to relative peak-to-peak <= 6.3e-9; this does not hold for every monitored component
-(HFS-02 CMx 4.6e-7, HFS-03 CMx 3.6e-3 relative). An independent wall-pressure integration reproduces
+Over the last 200 iterations HFS-02 CD/CL/CMy are stationary to relative peak-to-peak
+<= 6.3e-9 and HFS-03 CD/CL/CMy to <= 5.1e-6; this does not hold for every monitored
+component (CMx: HFS-02 4.63e-7, HFS-03 3.58e-3 relative). An independent wall-pressure integration reproduces
 the solver CD/CL to machine precision (CD_integrated 0.0068197240294 vs 0.006819724029,
 CL_integrated 0.09277659960 vs 0.0927765996; medium mesh drag 50045.7 N, lift 680829.2 N).
 However medium to fine changes CD by +4.36%, CL by +2.91% and CMy by -3.50%: two levels are
