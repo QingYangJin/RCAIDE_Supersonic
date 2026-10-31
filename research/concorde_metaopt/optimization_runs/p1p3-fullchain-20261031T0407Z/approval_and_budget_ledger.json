@@ -694,7 +694,254 @@
       "note": "mpi_ranks=4 log=su2_HFS-03.log"
     }
   ],
-  "mesh_generation_events": [],
+  "mesh_generation_events": [
+    {
+      "event_id": "MG-001",
+      "case_id": "HFS-01-mesh",
+      "tool": "Gmsh 4.15.2 + msh2_to_su2.py (in-house)",
+      "status": "SUCCESS",
+      "started_utc": null,
+      "finished_utc": "2026-10-31T09:11:30.825546Z",
+      "cpu_seconds": null,
+      "peak_memory_mb": null,
+      "disk_bytes": 2830915,
+      "wall_seconds": null,
+      "mesh_nodes": 14079,
+      "mesh_elements": 61436,
+      "billable_numerical_analysis_start": false,
+      "recording_note": "CPU/memory/wall not captured live during run; values reconstructed from artifacts and artifact mtimes only",
+      "artifacts": [
+        "wing_coarse.su2"
+      ],
+      "level": "coarse",
+      "wall_triangles": null,
+      "farfield_triangles": null,
+      "wall_surface_area_m2": null,
+      "wall_volume_m3": null,
+      "preflight": "mesh_preflight.py PASS (tet orientation, 1-2 face adjacency, marker partition)",
+      "geometry_mesh_json": "wing_coarse_mesh.json"
+    },
+    {
+      "event_id": "MG-002",
+      "case_id": "HFS-02-mesh",
+      "tool": "Gmsh 4.15.2 + msh2_to_su2.py (in-house)",
+      "status": "SUCCESS",
+      "started_utc": null,
+      "finished_utc": "2026-10-31T09:11:31.791727Z",
+      "cpu_seconds": null,
+      "peak_memory_mb": null,
+      "disk_bytes": 6046806,
+      "wall_seconds": null,
+      "mesh_nodes": 28323,
+      "mesh_elements": 125876,
+      "billable_numerical_analysis_start": false,
+      "recording_note": "CPU/memory/wall not captured live during run; values reconstructed from artifacts and artifact mtimes only",
+      "artifacts": [
+        "wing_medium.su2"
+      ],
+      "level": "medium",
+      "wall_triangles": null,
+      "farfield_triangles": null,
+      "wall_surface_area_m2": null,
+      "wall_volume_m3": null,
+      "preflight": "mesh_preflight.py PASS (tet orientation, 1-2 face adjacency, marker partition)",
+      "geometry_mesh_json": "wing_medium_mesh.json"
+    },
+    {
+      "event_id": "MG-003",
+      "case_id": "HFS-03-mesh",
+      "tool": "Gmsh 4.15.2 + msh2_to_su2.py (in-house)",
+      "status": "SUCCESS",
+      "started_utc": null,
+      "finished_utc": "2026-10-31T09:11:33.764890Z",
+      "cpu_seconds": null,
+      "peak_memory_mb": null,
+      "disk_bytes": 12473958,
+      "wall_seconds": null,
+      "mesh_nodes": 56623,
+      "mesh_elements": 256455,
+      "billable_numerical_analysis_start": false,
+      "recording_note": "CPU/memory/wall not captured live during run; values reconstructed from artifacts and artifact mtimes only",
+      "artifacts": [
+        "wing_fine.su2"
+      ],
+      "level": "fine",
+      "wall_triangles": null,
+      "farfield_triangles": null,
+      "wall_surface_area_m2": null,
+      "wall_volume_m3": null,
+      "preflight": "mesh_preflight.py PASS (tet orientation, 1-2 face adjacency, marker partition)",
+      "geometry_mesh_json": "wing_fine_mesh.json"
+    },
+    {
+      "event_id": "MG-004",
+      "case_id": "HFS-00-mesh-wedge_coarse",
+      "tool": "Gmsh 4.15.2 (-2)",
+      "status": "SUCCESS",
+      "started_utc": null,
+      "finished_utc": "2026-10-31T05:47:19.469317Z",
+      "cpu_seconds": null,
+      "peak_memory_mb": null,
+      "disk_bytes": 618400,
+      "wall_seconds": null,
+      "mesh_nodes": 7130,
+      "mesh_elements": 13923,
+      "billable_numerical_analysis_start": false,
+      "recording_note": "CPU/memory/wall not captured live during run; values reconstructed from artifacts and artifact mtimes only",
+      "artifacts": [
+        "wedge_coarse.su2"
+      ],
+      "level": "coarse",
+      "note": "wedge_fine mesh generated but its solver case HFS-00R is NOT_RUN (SU2 cap reached)"
+    },
+    {
+      "event_id": "MG-005",
+      "case_id": "HFS-00-mesh-wedge_fine",
+      "tool": "Gmsh 4.15.2 (-2)",
+      "status": "SUCCESS",
+      "started_utc": null,
+      "finished_utc": "2026-10-31T05:47:19.893399Z",
+      "cpu_seconds": null,
+      "peak_memory_mb": null,
+      "disk_bytes": 1049358,
+      "wall_seconds": null,
+      "mesh_nodes": 11769,
+      "mesh_elements": 23038,
+      "billable_numerical_analysis_start": false,
+      "recording_note": "CPU/memory/wall not captured live during run; values reconstructed from artifacts and artifact mtimes only",
+      "artifacts": [
+        "wedge_fine.su2"
+      ],
+      "level": "fine",
+      "note": "wedge_fine mesh generated but its solver case HFS-00R is NOT_RUN (SU2 cap reached)"
+    },
+    {
+      "event_id": "MG-006",
+      "case_id": "LF-mesh-baseline",
+      "tool": "OpenVSP 3.26.1 VSPAEROComputeGeometry (DegenGeom CSV)",
+      "status": "SUCCESS",
+      "started_utc": null,
+      "finished_utc": "2026-10-31T04:38:03.909952Z",
+      "cpu_seconds": null,
+      "peak_memory_mb": null,
+      "disk_bytes": 460921,
+      "wall_seconds": null,
+      "mesh_nodes": 544,
+      "mesh_elements": 960,
+      "billable_numerical_analysis_start": false,
+      "recording_note": "CPU/memory/wall not captured live during run; values reconstructed from artifacts and artifact mtimes only",
+      "artifacts": [
+        "main_wing_baseline_DegenGeom.csv"
+      ],
+      "note": "thin-surface DegenGeom; 544 nodes / 960 loops / 1502 edges / 32 Kutta nodes (baseline medium tessellation); counts vary by tessellation for sens_* cases",
+      "vspaero_billable_starts_are_separate": true
+    },
+    {
+      "event_id": "MG-007",
+      "case_id": "LF-mesh-w01_plus1pct",
+      "tool": "OpenVSP 3.26.1 VSPAEROComputeGeometry (DegenGeom CSV)",
+      "status": "SUCCESS",
+      "started_utc": null,
+      "finished_utc": "2026-10-31T04:53:49.862703Z",
+      "cpu_seconds": null,
+      "peak_memory_mb": null,
+      "disk_bytes": 460867,
+      "wall_seconds": null,
+      "mesh_nodes": 544,
+      "mesh_elements": 960,
+      "billable_numerical_analysis_start": false,
+      "recording_note": "CPU/memory/wall not captured live during run; values reconstructed from artifacts and artifact mtimes only",
+      "artifacts": [
+        "main_wing_w01_plus1pct_DegenGeom.csv"
+      ],
+      "note": "thin-surface DegenGeom; 544 nodes / 960 loops / 1502 edges / 32 Kutta nodes (baseline medium tessellation); counts vary by tessellation for sens_* cases",
+      "vspaero_billable_starts_are_separate": true
+    },
+    {
+      "event_id": "MG-008",
+      "case_id": "LF-mesh-w03_plus1deg",
+      "tool": "OpenVSP 3.26.1 VSPAEROComputeGeometry (DegenGeom CSV)",
+      "status": "SUCCESS",
+      "started_utc": null,
+      "finished_utc": "2026-10-31T04:53:55.476511Z",
+      "cpu_seconds": null,
+      "peak_memory_mb": null,
+      "disk_bytes": 460900,
+      "wall_seconds": null,
+      "mesh_nodes": 544,
+      "mesh_elements": 960,
+      "billable_numerical_analysis_start": false,
+      "recording_note": "CPU/memory/wall not captured live during run; values reconstructed from artifacts and artifact mtimes only",
+      "artifacts": [
+        "main_wing_w03_plus1deg_DegenGeom.csv"
+      ],
+      "note": "thin-surface DegenGeom; 544 nodes / 960 loops / 1502 edges / 32 Kutta nodes (baseline medium tessellation); counts vary by tessellation for sens_* cases",
+      "vspaero_billable_starts_are_separate": true
+    },
+    {
+      "event_id": "MG-009",
+      "case_id": "LF-mesh-w10_plus2",
+      "tool": "OpenVSP 3.26.1 VSPAEROComputeGeometry (DegenGeom CSV)",
+      "status": "SUCCESS",
+      "started_utc": null,
+      "finished_utc": "2026-10-31T04:54:01.121794Z",
+      "cpu_seconds": null,
+      "peak_memory_mb": null,
+      "disk_bytes": 461111,
+      "wall_seconds": null,
+      "mesh_nodes": 544,
+      "mesh_elements": 960,
+      "billable_numerical_analysis_start": false,
+      "recording_note": "CPU/memory/wall not captured live during run; values reconstructed from artifacts and artifact mtimes only",
+      "artifacts": [
+        "main_wing_w10_plus2_DegenGeom.csv"
+      ],
+      "note": "thin-surface DegenGeom; 544 nodes / 960 loops / 1502 edges / 32 Kutta nodes (baseline medium tessellation); counts vary by tessellation for sens_* cases",
+      "vspaero_billable_starts_are_separate": true
+    },
+    {
+      "event_id": "MG-010",
+      "case_id": "LF-mesh-sens_coarse",
+      "tool": "OpenVSP 3.26.1 VSPAEROComputeGeometry (DegenGeom CSV)",
+      "status": "SUCCESS",
+      "started_utc": null,
+      "finished_utc": "2026-10-31T04:55:56.088013Z",
+      "cpu_seconds": null,
+      "peak_memory_mb": null,
+      "disk_bytes": 269793,
+      "wall_seconds": null,
+      "mesh_nodes": 544,
+      "mesh_elements": 960,
+      "billable_numerical_analysis_start": false,
+      "recording_note": "CPU/memory/wall not captured live during run; values reconstructed from artifacts and artifact mtimes only",
+      "artifacts": [
+        "main_wing_sens_coarse_DegenGeom.csv"
+      ],
+      "note": "thin-surface DegenGeom; 544 nodes / 960 loops / 1502 edges / 32 Kutta nodes (baseline medium tessellation); counts vary by tessellation for sens_* cases",
+      "vspaero_billable_starts_are_separate": true
+    },
+    {
+      "event_id": "MG-011",
+      "case_id": "LF-mesh-sens_fine",
+      "tool": "OpenVSP 3.26.1 VSPAEROComputeGeometry (DegenGeom CSV)",
+      "status": "SUCCESS",
+      "started_utc": null,
+      "finished_utc": "2026-10-31T04:55:59.823493Z",
+      "cpu_seconds": null,
+      "peak_memory_mb": null,
+      "disk_bytes": 843199,
+      "wall_seconds": null,
+      "mesh_nodes": 544,
+      "mesh_elements": 960,
+      "billable_numerical_analysis_start": false,
+      "recording_note": "CPU/memory/wall not captured live during run; values reconstructed from artifacts and artifact mtimes only",
+      "artifacts": [
+        "main_wing_sens_fine_DegenGeom.csv"
+      ],
+      "note": "thin-surface DegenGeom; 544 nodes / 960 loops / 1502 edges / 32 Kutta nodes (baseline medium tessellation); counts vary by tessellation for sens_* cases",
+      "vspaero_billable_starts_are_separate": true
+    }
+  ],
   "policy_events": [
     {
       "utc": "2026-10-31T04:45:33Z",
@@ -760,6 +1007,11 @@
       "utc": "2026-10-31T09:37:25Z",
       "kind": "Wave-drag result capture LD-002",
       "message": "OpenVSP ExecAnalysis returns a result id, not a data dictionary; PrintResults printed nothing. Wave results were captured with WriteResultsCSVFile plus parsing of the slice text file. WAVE-00's first EmintonLord run lost its data before this path was found (billed, not used); WAVE-00R re-ran the same analytical benchmark and matched Sears-Haack theory to 1.55e-6 relative."
+    },
+    {
+      "event": "LEDGER_BACKFILL_MESH_EVENTS",
+      "utc": "2026-10-31T10:10:27.416720Z",
+      "note": "A4 acceptance matrix GAP-08: mesh_generation_events was empty. Backfilled from preserved artifacts (Gmsh/msh2_to_su2 wing meshes, wedge meshes, LF DegenGeom) with node/element/disk counts and artifact mtimes; CPU/memory/wall were not captured live and are explicitly null (no fabricated values). Backfill does not add or change any billable numerical-analysis start (still 23/23)."
     }
   ],
   "amendment_log": [],

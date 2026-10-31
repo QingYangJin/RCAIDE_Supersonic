@@ -163,7 +163,8 @@
       },
       "verdict": "FORCE_CONVERGED_2_LEVEL_ONLY",
       "mesh": "medium",
-      "wall_seconds": 394.0
+      "wall_seconds": 394.0,
+      "force_stationarity_note": "Over the last 200 iterations CD/CL/CMy are stationary to relative peak-to-peak <= 6.3e-9 for HFS-02; this does NOT hold for every monitored component: HFS-02 CMx rel. p2p 4.63e-7, HFS-03 CMx rel. p2p 3.58e-3. Force-stationarity is not residual convergence (rms[Rho] plateau ~ -1.0)."
     },
     "HFS-03": {
       "case_id": "HFS-03",
@@ -241,7 +242,8 @@
       },
       "verdict": "FORCE_CONVERGED_2_LEVEL_ONLY",
       "mesh": "fine",
-      "wall_seconds": 871.0
+      "wall_seconds": 871.0,
+      "force_stationarity_note": "Over the last 200 iterations CD/CL/CMy are stationary to relative peak-to-peak <= 6.3e-9 for HFS-02; this does NOT hold for every monitored component: HFS-02 CMx rel. p2p 4.63e-7, HFS-03 CMx rel. p2p 3.58e-3. Force-stationarity is not residual convergence (rms[Rho] plateau ~ -1.0)."
     }
   },
   "mesh_summary": {
@@ -366,5 +368,7 @@
     ],
     "validated_aircraft_fuel_label": false,
     "may_be_described_as_full_aircraft_high_fidelity": false
-  }
+  },
+  "wing_stationarity_note": "Over the last 200 iterations CD/CL/CMy are stationary to relative peak-to-peak <= 6.3e-9 for HFS-02; this does NOT hold for every monitored component: HFS-02 CMx rel. p2p 4.63e-7, HFS-03 CMx rel. p2p 3.58e-3. Force-stationarity is not residual convergence (rms[Rho] plateau ~ -1.0).",
+  "revision_note": "Post-review documentation correction (A5 CHANGES_REQUESTED, 2026-10-31): the earlier wording implied all forces of both cases reached 6.3e-9 relative peak-to-peak. Corrected to CD/CL/CMy only, with CMx exceptions. No numerical result changed; no new solver start."
 }

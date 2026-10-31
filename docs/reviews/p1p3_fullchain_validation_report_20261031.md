@@ -129,9 +129,10 @@ SU2 cap was consumed by setup failures.
 Isolated wing, inviscid Euler, AoA 2.8398 deg: medium (125876 tets) CL 0.0927765996,
 CD 0.006819724029, CMy -0.03807613433, wall 394 s; fine (256455 tets) CL 0.09547677964,
 CD 0.007117048361, CMy -0.0394070004, wall 871 s; HFS-01 (coarse) failed on a mesh-format
-defect in our own converter and is billed. Forces are stationary over the last 200
-iterations (relative peak-to-peak <= 6.3e-9) and an independent wall-pressure integration
-reproduces the solver CD/CL to machine precision (medium drag 50045.7 N, lift 680829.2 N),
+defect in our own converter and is billed. CD/CL/CMy are stationary over the last 200
+iterations (relative peak-to-peak <= 6.3e-9); this does not hold for every monitored
+component (HFS-02 CMx 4.6e-7, HFS-03 CMx 3.6e-3 relative). An independent wall-pressure
+integration reproduces the solver CD/CL to machine precision (medium drag 50045.7 N, lift 680829.2 N),
 so the post-processing chain is verified. Grid sensitivity medium to fine is CD +4.36%,
 CL +2.91%, CMy -3.50%: two levels do not demonstrate convergence and no order of accuracy
 is established. Mesh body volumes by divergence are 128.483 / 128.828 / 129.014 m3 versus

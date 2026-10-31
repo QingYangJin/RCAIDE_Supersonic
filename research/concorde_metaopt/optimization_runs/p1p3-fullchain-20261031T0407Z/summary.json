@@ -40,7 +40,9 @@
         "cap": 7,
         "used": 7
       }
-    }
+    },
+    "mesh_generation_events": 11,
+    "mesh_events_note": "mesh_generation_events was empty at run end (A4 GAP-08); backfilled from preserved artifacts (Gmsh wing coarse/medium/fine, wedge coarse/fine, LF DegenGeom cases) with node/element/disk counts and artifact mtimes; CPU/memory/wall are explicitly null because they were not captured live. Backfill adds/changes no billable numerical-analysis start."
   },
   "frozen_conditions": {
     "mach": 2.02,
@@ -199,12 +201,36 @@
     "further_physics_requires_new_owner_approval": true
   },
   "review": {
-    "a1": "PENDING",
-    "a2": "PENDING",
-    "a3": "PENDING",
-    "a4": "PENDING",
-    "a5": "PENDING",
-    "note": "independent role reviews are requested after the commit; results are recorded in the Issue receipt"
+    "status": "INDEPENDENT_ROLE_REVIEWS_COMPLETED",
+    "roles": {
+      "A1": {
+        "task": "FULLCHAIN-A1-PACKAGE-INTEGRITY",
+        "verdict": "PASS_WITH_WARNINGS",
+        "detail": "294 tests OK (1 skipped); 14 JSON parse; manifest 59 files re-hashed 0 mismatch at review time; 23 billable starts 6/4/7/6; 7 PNG valid; gates exact; WARN: ledger planned case_ids stale, used/totals correct"
+      },
+      "A2": {
+        "task": "FULLCHAIN-A2-RAW-RECALC",
+        "verdict": "PASS_WITH_SMALL_DISCREPANCIES",
+        "detail": "4/4 fuel exact incl E2E-00 34109.48257123768 literal; 3 valid LF polars 0 diff; HF mesh volume/area <1e-6; raw 155+39 hashes ok 195 files/108,824,422 B; 23/23 budget; discrepancies: CRLF-sensitive manifest hashes, run-time CRLF ledger digest, 1/155 EXT file edited after archiving"
+      },
+      "A3": {
+        "task": "FULLCHAIN-A3-HYGIENE",
+        "verdict": "PASS",
+        "detail": "d80b4c4 single parent 048ef2e; 61 additions = 60 run files + report; no excluded paths; main worktree baseline unchanged; P5 54 files/7,976,412 B untouched; stash 0; no reset/force; main ec65e5a untouched; outputs ignored; origin fast-forwarded to d80b4c4 by L push"
+      },
+      "A4": {
+        "task": "FULLCHAIN-A4-ACCEPTANCE-MATRIX",
+        "verdict": "COMPLETED_WITH_GAPS",
+        "detail": "23 authorized starts mapped to case IDs/evidence; all required deliverables present; six gates none PASS; gaps: LF perturbation evidence void (LD-001), HFS-00R/04 NOT_RUN, wedge shock angle >1 deg, area rule non-convergent, q mismatch +0.83%, ledger increment missing, mesh events empty (backfilled in this revision), reviews pending at matrix time"
+      },
+      "A5": {
+        "task": "FULLCHAIN-A5-INDEPENDENT-RECALC",
+        "verdict": "CHANGES_REQUESTED_THEN_ADDRESSED",
+        "detail": "Independent recompute PASS (SU2 tail 6/6 components abs diff 0.0, Cp integral <=1.4e-17; WAVE donq 0 diff; budget 23/23 all billed). MAJOR: (1) stationarity wording overstated -> corrected in report/README/hf JSON; (2) data_manifest CRLF-sensitive hashes + uncommitted ledger backfill -> manifest regenerated from committed LF tree in a later commit, ledger backfill committed. Delta re-check pending"
+      }
+    },
+    "reviews_are_verbatim_copies": "independent_reviews/ contains verbatim role outputs (repo-external originals); no review ran a solver or wrote to the repository.",
+    "revision_note": "Post-review revision: added independent_reviews/, corrected stationarity wording, backfilled 11 mesh_generation_events in the ledger, recorded role verdicts here. No numerical result changed; no new solver start (23/23 remains exhausted)."
   },
   "artifacts": {
     "data_manifest": "data_manifest.json",
