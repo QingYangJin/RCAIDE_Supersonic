@@ -3,25 +3,28 @@
   "run_id": "p1p3-fullchain-20261031T0407Z",
   "stage": "P1-P3 full-chain multi-fidelity validation (D-12D-002)",
   "approval": "Issue #4 / D-12D-002 (comment 6538481816)",
-  "generated_utc": "2026-10-31T09:45:09Z",
+  "generated_utc": "2026-10-31T10:19:58Z",
   "git_sha_at_run_start": "048ef2e55f389b0ae52e8872131dcfcf0c91a1eb",
-  "file_count": 59,
-  "total_bytes": 1181000,
+  "revision": "post-review revision (independent reviews archived, stationarity wording corrected, mesh events backfilled, manifest canonicalized)",
+  "hashing_convention": "sha256 over committed worktree bytes (git canonical LF line endings); regenerate/verify from a clean checkout of the commit containing this manifest",
+  "line_ending_note": "The first package manifest (in commit d80b4c4) hashed CRLF working-tree copies; A2/A5 found 14/59 CRLF-only differences against a clean LF checkout. Example: the run-time CRLF ledger was 32,677 B with sha256 d064d93fd14b865fd90d823cd0538f4d81d5facc115b89680ec9e2687f697454, which is exactly the committed LF ledger (31,911 B) with LF->CRLF conversion. This revision records canonical LF hashes only.",
+  "file_count": 67,
+  "total_bytes": 1290937,
   "files": [
     {
       "path": "approval_and_budget_ledger.json",
-      "bytes": 32677,
-      "sha256": "d064d93fd14b865fd90d823cd0538f4d81d5facc115b89680ec9e2687f697454"
+      "bytes": 42222,
+      "sha256": "0b9acc2e13f053ee70e94471a9b00c2ef9bdad65c5e358a41a6b456a6161fd8a"
     },
     {
       "path": "blocker_register_current.json",
-      "bytes": 4636,
-      "sha256": "87d0fc18940e25aeb52b168758fa7ecebee194773aac4b1112d9d4156b29273b"
+      "bytes": 4531,
+      "sha256": "1e1308ba56776598b9408bf587a2442205081b33e5ac6427f6fcf4dac74cc4ee"
     },
     {
       "path": "drag_component_ledger.json",
-      "bytes": 8868,
-      "sha256": "2062e57bed0985a4224e8dfb61d9acafdf1b46cec564e0d9a87847fa17dcdf9f"
+      "bytes": 8708,
+      "sha256": "1e6813dbe76eb7e7fc846aa4106b52a712dc852bd234481ea79dbff8ce8c972f"
     },
     {
       "path": "environment.json",
@@ -30,8 +33,8 @@
     },
     {
       "path": "evaluations.jsonl",
-      "bytes": 11295,
-      "sha256": "2708194d4fff88fc0e7040f315e95e2c77dc4610e330d81e70956f125f74fcdf"
+      "bytes": 11272,
+      "sha256": "8d1c3ee3b0aa60849398bf78f6b9ee35d957802bd3865ec078a30aab9768ea81"
     },
     {
       "path": "figures/drag_component_bookkeeping.png",
@@ -70,43 +73,83 @@
     },
     {
       "path": "geometry_validation.json",
-      "bytes": 3438,
-      "sha256": "60c68d5abaef583b3fa8ce40403367ef46be86eaade1a69c328bb24fe9445a7e"
+      "bytes": 3349,
+      "sha256": "7b5d9a45071a5c4ee6ab1b4100dfaa0350f448fc1eca419443f5aa8b84569f77"
     },
     {
       "path": "hf_su2_results.json",
-      "bytes": 15650,
-      "sha256": "69040ffc12d9733e07232c05c2b5da01467e6f3a9033775f5186220a31f5c93e"
+      "bytes": 16520,
+      "sha256": "f5241d196131a797381580fea1a15cb80d375c048f07a116ef04e69997cb7f9f"
+    },
+    {
+      "path": "independent_reviews/A1_package_integrity/fullchain_a1_report.md",
+      "bytes": 5957,
+      "sha256": "f6cd75392bf99ae5172d5995a4e113ecb345a44de1a99798ade288f288fcaa3a"
+    },
+    {
+      "path": "independent_reviews/A2_raw_recalc/reconcile.json",
+      "bytes": 44272,
+      "sha256": "8d33eb98b43ad3a1d82b316464932ffbae6fd6d8bb0a9d68febf1be1fa067dcc"
+    },
+    {
+      "path": "independent_reviews/A2_raw_recalc/reconcile_report.md",
+      "bytes": 9830,
+      "sha256": "5a30050e4290758084af18640096a9fe3184bd2bc847a5432181fb6c613babb9"
+    },
+    {
+      "path": "independent_reviews/A3_hygiene/isolation_report.md",
+      "bytes": 5304,
+      "sha256": "67fee72359afe11f3445f385aa5ddf809d47bee86293912a8c5abe4bd54606b7"
+    },
+    {
+      "path": "independent_reviews/A4_acceptance_matrix/final_receipt_matrix.md",
+      "bytes": 20837,
+      "sha256": "ec22733506b4281d232381d63bfdada879f6f04baceaa4cde2fd5f3ad34792b8"
+    },
+    {
+      "path": "independent_reviews/A5_independent_recalc/recalc.md",
+      "bytes": 8051,
+      "sha256": "926dac7d30a75d14d72fa71177d541668fc3fcdd413e76aaa54cf0e237998c15"
+    },
+    {
+      "path": "independent_reviews/A5_independent_recalc/verdict.txt",
+      "bytes": 1572,
+      "sha256": "36c73cc4c9562c44e5faebc88d914860e111770ae75cee3d1bdfc4a49a7b13ec"
+    },
+    {
+      "path": "independent_reviews/README.md",
+      "bytes": 3639,
+      "sha256": "9facf356f0fc4c171d0b5d16fcb00263c5e154ccf864246d88c6343aa0c9651c"
     },
     {
       "path": "lf_vspaero_density_sensitivity.csv",
-      "bytes": 1219,
-      "sha256": "309acfdc6a042dc1edf4a5c73d7c4f8974d85b1931d60d2f0aff993f7d080b08"
+      "bytes": 1203,
+      "sha256": "de12090d38e56c47b0bf8196e3724eedfa546f6cf861e2b5c2472eaad106c992"
     },
     {
       "path": "lf_vspaero_results.json",
-      "bytes": 23692,
-      "sha256": "e6862f6bedf42b72c3e8907e8036882b38f67a40521906acd7526a113d3203d5"
+      "bytes": 22927,
+      "sha256": "2eebf2d4cb0d0677f44a350a639253c1ed9eaf10939ede1867a38e0a644d4486"
     },
     {
       "path": "mesh_convergence.csv",
-      "bytes": 562,
-      "sha256": "eb11b5a3fe03a92d47fba0009b22cebed40847d1f59995c7371fa13ca60ba077"
+      "bytes": 558,
+      "sha256": "a110a035e299fc869e20090d08e7142f53a98aa946f3d87f4eca40b5062c5b26"
     },
     {
       "path": "mission_e2e.json",
-      "bytes": 26573,
-      "sha256": "1030b043ca571a198bd449d70ce72a30fdcc93efa00ff42dde78f03bd3175aa3"
+      "bytes": 25933,
+      "sha256": "203faa1295bd10d1e93f34c9c6634090e2cc18fe11c06e4bae5956cd1608da0d"
     },
     {
       "path": "raw_artifacts_manifest.json",
-      "bytes": 1714,
-      "sha256": "7f26eca44433608f48bb9b0fbc537ad3f1f2eb01ee58c74f84a7533e07615570"
+      "bytes": 1733,
+      "sha256": "49674167dee96f775637b3147a4f8f34252b1d33ff3ee14432697da1a71d6c9f"
     },
     {
       "path": "README.md",
-      "bytes": 16432,
-      "sha256": "22c65085b7349cf7d35b6a08b942c20c79e9f0bb0075163b4014a4c40a116e50"
+      "bytes": 16536,
+      "sha256": "e309a6d5133dc4a24775658895deb43ac49aa0dcaa9a7ca842d8c2906711699b"
     },
     {
       "path": "run_config.json",
@@ -285,8 +328,8 @@
     },
     {
       "path": "summary.json",
-      "bytes": 7285,
-      "sha256": "15aca8d17c85750166b86c644680e18fbd61eb1e0fa9b34b47f122120854afdd"
+      "bytes": 9926,
+      "sha256": "04a33f46887a937b0a04ee95bacfaa337fc30a20cd55be929fd42b8cb72325b2"
     },
     {
       "path": "toolchain_capability_probe.json",
@@ -295,13 +338,13 @@
     },
     {
       "path": "wave_drag_area_rule.json",
-      "bytes": 32406,
-      "sha256": "b323cc4961054eca2e37c4c211f0d02f79166de3b214309effef8d1b7f08cf92"
+      "bytes": 31721,
+      "sha256": "83030c796a467e771f90f4eaf9867774250bc417eacc3b6d7ca3547de892fa71"
     },
     {
       "path": "wave_per_theta_donq.csv",
-      "bytes": 6360,
-      "sha256": "a6ae74aa4d79537ab4f65da784db35a1452e005593d76ad028303a7c2f2d901e"
+      "bytes": 6143,
+      "sha256": "e0147c09a35e883ae0922a0a1d25b98d41e0aca097614ad4e977c286d6172680"
     }
   ],
   "input_source_files": [
@@ -338,11 +381,23 @@
   ],
   "raw_artifacts": {
     "manifest": "raw_artifacts_manifest.json",
-    "sha256": "7f26eca44433608f48bb9b0fbc537ad3f1f2eb01ee58c74f84a7533e07615570",
+    "sha256": "49674167dee96f775637b3147a4f8f34252b1d33ff3ee14432697da1a71d6c9f",
     "archive_root": "D:/RCAIDE/outputs/concorde_metaopt/p1p3-fullchain-20261031T0407Z",
     "file_count": 195,
     "total_bytes": 108824422,
     "outside_git": true
   },
-  "figure_count": 7
+  "figure_count": 7,
+  "independent_reviews": {
+    "dir": "independent_reviews/",
+    "roles": [
+      "A1",
+      "A2",
+      "A3",
+      "A4",
+      "A5"
+    ],
+    "note": "verbatim copies of project-external role deliverables; no reviewer ran a solver or wrote to the repo/GitHub"
+  },
+  "mesh_generation_events": 11
 }
