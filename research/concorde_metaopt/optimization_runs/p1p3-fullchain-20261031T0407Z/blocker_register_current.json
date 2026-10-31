@@ -1,0 +1,106 @@
+{
+  "schema_version": 1,
+  "run_id": "p1p3-fullchain-20261031T0407Z",
+  "generated_utc": "2026-10-31T09:44:53Z",
+  "gate_status": {
+    "GEO-12D": "PARTIAL",
+    "LF-M2.02": "NOT_VALIDATED / LF_PROVISIONAL",
+    "HF-M2.02": "PARTIAL",
+    "BODY-CORR": "BLOCKED",
+    "MISSION-DATA": "PARTIAL",
+    "BUDGET": "EXHAUSTED"
+  },
+  "blockers": [
+    {
+      "id": "B-LF-VSPAERO-MACH2",
+      "severity": "blocking-for-LF",
+      "status": "CONFIRMED_BY_MEASUREMENT",
+      "statement": "VSPAERO 6.2.0 thin-surface drag at Mach 2.02 on the isolated 12D wing is non-convergent and non-physical (CDi sign flip, negative CDtot, density sensitivity 65x), so VSPAERO cannot provide validated LF drag.",
+      "evidence": [
+        "lf_vspaero_results.json",
+        "lf_vspaero_density_sensitivity.csv",
+        "figures/lf_vspaero_density_sensitivity.png"
+      ]
+    },
+    {
+      "id": "B-LF-RCAIDE-EMPIRICAL",
+      "severity": "major-for-LF",
+      "status": "OPEN",
+      "statement": "The reproducible RCAIDE single-cruise chain uses VLM induced drag, empirical parasite/compressibility build-up and surrogate interpolation; reproducible does not mean physically validated at Mach 2.02.",
+      "evidence": [
+        "mission_e2e.json",
+        "drag_component_ledger.json"
+      ]
+    },
+    {
+      "id": "B-HF-WEDGE-PARTIAL",
+      "severity": "major-for-HF",
+      "status": "OPEN",
+      "statement": "The SU2 Euler wedge reproduces wall pressure to 0.42% but misses the pre-declared 1 deg shock-angle tolerance by 1.6-2.1 deg; HFS-00R refinement was not run.",
+      "evidence": [
+        "hf_su2_results.json"
+      ]
+    },
+    {
+      "id": "B-HF-GRID-2LEVEL",
+      "severity": "major-for-HF",
+      "status": "OPEN",
+      "statement": "Only two wing mesh levels completed (HFS-01 failed, cap exhausted): medium-to-fine CD changes 4.36%, no order of accuracy or three-level convergence, residual criterion not met.",
+      "evidence": [
+        "hf_su2_results.json",
+        "mesh_convergence.csv"
+      ]
+    },
+    {
+      "id": "B-HF-INVISCID-WING-ONLY",
+      "severity": "major-for-HF",
+      "status": "OPEN",
+      "statement": "Euler is inviscid and only the isolated wing is modelled; no fuselage, tail, nacelles, interference or CL-matched LF/HF comparison exists. No full-aircraft high-fidelity claim is allowed.",
+      "evidence": [
+        "hf_su2_results.json",
+        "drag_component_ledger.json"
+      ]
+    },
+    {
+      "id": "D-BODY-4-BODY-CORR-MISSING",
+      "severity": "blocking-for-BODY-CORR",
+      "status": "OPEN",
+      "statement": "No calibrated wing-body interference / fuselage correction exists. The Mach-sliced area-rule level for the real geometry is not converged (2.87x under refinement) and contradicts the independent RCAIDE drag level by 2.6-7.4x; the paired increment is retained only as a candidate warning, not a validated correction.",
+      "evidence": [
+        "wave_drag_area_rule.json",
+        "drag_component_ledger.json",
+        "figures/wave_area_rule_results.png"
+      ]
+    },
+    {
+      "id": "B-BUDGET-EXHAUSTED",
+      "severity": "blocking-for-further-physics",
+      "status": "EXHAUSTED",
+      "statement": "All 23 D-12D-002 starts are consumed (VSPAERO 6/6, RCAIDE 4/4, WAVE 7/7, SU2 6/6); retries and the remaining planned cases (HFS-00R, HFS-04) are NOT_RUN. Further physics requires a new owner approval and budget.",
+      "evidence": [
+        "approval_and_budget_ledger.json",
+        "evaluations.jsonl"
+      ]
+    },
+    {
+      "id": "B-MISSION-Q-MISMATCH",
+      "severity": "minor",
+      "status": "OPEN",
+      "statement": "The mission atmosphere yields q = 20654.01 Pa, 0.83% above the frozen 20483.94 Pa; the LF mission results are dimensionalized with the mission q, recorded as a caveat and not silently corrected.",
+      "evidence": [
+        "mission_e2e.json"
+      ]
+    },
+    {
+      "id": "B-GEO-BOUNDS-PROVISIONAL",
+      "severity": "major-for-acceptance",
+      "status": "OPEN",
+      "statement": "The 12D numeric bounds remain provisional (frozen: false) and the fuselage fixed source, mass and CG are still provisional per the owner's pending decisions; the run used them as stated, not as frozen values.",
+      "evidence": [
+        "run_config.json",
+        "design_space_12d_proposal.json (earlier review package)"
+      ]
+    }
+  ],
+  "pass_policy": "No gate is approved by this run. APPROVED_FOR_NEXT_STAGE can only be issued by the owner after the owner's pending decisions and a separately approved budget."
+}

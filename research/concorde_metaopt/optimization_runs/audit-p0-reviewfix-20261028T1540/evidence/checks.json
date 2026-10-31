@@ -1,0 +1,29 @@
+{
+  "pip_check": {
+    "cmd": [
+      "<repo_root>\\envs\\RCAIDE\\python.exe",
+      "-m",
+      "pip",
+      "check"
+    ],
+    "returncode": 0,
+    "stdout": "No broken requirements found.\n",
+    "stderr": "",
+    "seconds": 0.383,
+    "timed_out": false
+  },
+  "package_tests": {
+    "maml_opt": {
+      "available": false,
+      "reason": "installed wheel only; no source tree/tests and direct_url is null"
+    },
+    "rcaide_cfd": {
+      "tests_dir": "<external_evidence_root>\\RCAIDE\\multifidelity\\tests",
+      "returncode": 0,
+      "stdout_tail": "",
+      "stderr_tail": "...............................................................\n----------------------------------------------------------------------\nRan 63 tests in 6.116s\n\nOK\n",
+      "seconds": 6.528,
+      "timed_out": false
+    }
+  }
+}

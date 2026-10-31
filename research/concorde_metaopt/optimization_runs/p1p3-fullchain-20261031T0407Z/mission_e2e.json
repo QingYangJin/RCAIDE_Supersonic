@@ -1,0 +1,641 @@
+{
+  "schema_version": 1,
+  "component": "MISSION_E2E",
+  "generated_utc": "2026-10-31T09:23:38Z",
+  "approval": "Issue #4 / D-12D-002 (comment 6538481816)",
+  "run_id": "p1p3-fullchain-20261031T0407Z",
+  "chain": {
+    "backend": "research/concorde_metaopt/evaluation/low_fidelity.py::SingleCruiseBackend",
+    "task": "concorde-fixed-cruise-p2-v1 (frozen mass contract, 136000 kg start mass)",
+    "design_set": "12d_lifting_surfaces (W01-W10 + V01-V02; F01-F03 fixed)",
+    "mission": "single constant-Mach constant-altitude cruise segment, Mach 2.02, 18288 m, 3028020 m",
+    "aerodynamics": "RCAIDE Vortex_Lattice_Method with default use_surrogate=True (11 Mach x 7 AoA training grid, Mach 2.02 inside the 2.0-2.5 interval)"
+  },
+  "frozen_conditions_from_approval": {
+    "mach": 2.02,
+    "altitude_m": 18288.0,
+    "range_m": 3028020.0,
+    "start_mass_kg": 136000.0,
+    "Sref_m2": 358.25,
+    "cref_m": 18.489893,
+    "bref_m": 25.604638,
+    "dynamic_pressure_pa_isa": 20483.94023343017
+  },
+  "observed_mission_dynamic_pressure_pa": 20654.013924958777,
+  "dynamic_pressure_note": "The RCAIDE/SUAVE mission atmosphere gives q = 20654.014 Pa at 18288 m / Mach 2.02, 0.83% above the 20483.940 Pa used to freeze the LF/HF solver inputs (implied density 0.116275 vs 0.115318 kg/m3). The two chains are therefore consistent to within 0.83% in q; this is recorded as a caveat, not corrected.",
+  "archive_reproduction_check": {
+    "archived_run": "research/concorde_metaopt/optimization_runs/smoke-p2-20261029T1612",
+    "archived_baseline_fuel_burn_kg": 34109.48257123768,
+    "archived_W10_plus_2deg_fuel_burn_kg": 34117.55529648991,
+    "archived_best_feasible_fuel_kg": 34035.332605355274,
+    "E2E_00_fuel_burn_kg": 34109.48257123768,
+    "E2E_01_fuel_burn_kg": 34117.55529648991,
+    "baseline_abs_difference_kg": 0.0,
+    "W10_abs_difference_kg": 0.0,
+    "match": true,
+    "note": "E2E-00 and E2E-01 reproduce the archived baseline (34109.48257123768 kg) and W10 tip_twist +2 deg (34117.55529648991 kg) values exactly; the 12D design set expands to the same 15D baseline vector, so the archived numbers are not overwritten and no new fuel labels are invented."
+  },
+  "cases": {
+    "E2E-00": {
+      "case_id": "E2E-00",
+      "role": "baseline 12D lifting-surface design through the instrumented RCAIDE single-cruise chain",
+      "status": "VALID",
+      "feasible": true,
+      "objective_fuel_burn_kg": 34109.48257123768,
+      "design": {
+        "wing_area": 358.25,
+        "aspect_ratio": 1.83,
+        "sweep_1": 67.0,
+        "sweep_2": 48.0,
+        "sweep_3": 71.0,
+        "span_location_2": 0.480469,
+        "span_location_3": 0.945313,
+        "chord_ratio_2": 0.408284,
+        "chord_ratio_3": 0.130178,
+        "tip_twist": 0.0,
+        "vertical_tail_area": 33.91,
+        "vertical_tail_sweep_delta": 0.0
+      },
+      "design_dim": 12,
+      "design_set": "12d_lifting_surfaces",
+      "task_id": "concorde-fixed-cruise-p2-v1",
+      "task_fingerprint": "91b0d9dd11c87d59999d5f96418f4320f610758ecf4d1a8dae42c2d991c42b0f",
+      "physical_call_count": 1,
+      "call_accounting": {
+        "schema_version": 1,
+        "request": 1,
+        "cache_hit": 0,
+        "request_rejected": 0,
+        "geometry_rejected": 0,
+        "mission_build_failed": 0,
+        "mission_solve_attempted": 1,
+        "mission_solve_completed": 1,
+        "billable_physical_calls": 1,
+        "failure_stage": null
+      },
+      "responses": {
+        "mass_start_kg": 136000.0,
+        "mass_end_kg": 101890.51742876232,
+        "fuel_burn_kg": 34109.48257123768,
+        "max_throttle": 0.9454702906042612,
+        "max_thrust_x_n": 42056.61383006206,
+        "max_fuel_mass_flow_kg_s": 1.9493982998035835,
+        "alpha_end_deg": 2.8398297488947493,
+        "lift_coefficient_end": 0.13343292326555833,
+        "drag_coefficient_end": 0.01684412229490337,
+        "residual_max": 8.27462330857737e-15,
+        "converged": true,
+        "solver_converged": true,
+        "range_span_m": 3028019.999999994,
+        "time_span_s": 5080.226265300772
+      },
+      "propulsors": {
+        "inner_right_turbojet": {
+          "max_throttle": 0.9454702906042612,
+          "max_fuel_mass_flow_kg_s": 1.9493982998035835,
+          "max_thrust_x_n": 42056.61383006206
+        },
+        "outer_right_turbojet": {
+          "max_throttle": 0.9454702906042612,
+          "max_fuel_mass_flow_kg_s": 1.9493982998035835,
+          "max_thrust_x_n": 42056.61383006206
+        },
+        "outer_left_turbojet": {
+          "max_throttle": 0.9454702906042612,
+          "max_fuel_mass_flow_kg_s": 1.9493982998035835,
+          "max_thrust_x_n": 42056.61383006206
+        },
+        "inner_left_turbojet": {
+          "max_throttle": 0.9454702906042612,
+          "max_fuel_mass_flow_kg_s": 1.9493982998035835,
+          "max_thrust_x_n": 42056.61383006206
+        }
+      },
+      "constraints": {
+        "geometry_invalid": 0.0,
+        "task_mass_balance": 0.0,
+        "fuel_capacity_excess": -0.5108695652173914,
+        "zero_fuel_excess": -0.030434782608695653,
+        "takeoff_excess": -0.2648648648648649,
+        "fuel_remaining_deficit": -0.1326350065715126,
+        "max_throttle": -0.05452970939573876,
+        "cruise_range_error": 1.9991931146427733e-15,
+        "mission_convergence": 0.0,
+        "trim_attitude_limit": -0.7633475209254376
+      },
+      "geometry_cross_check": {
+        "checked_count": 31,
+        "failed_count": 0,
+        "failures": []
+      },
+      "drag_ledger": {
+        "status": "PARTIAL_DATA_NOT_VALIDATED",
+        "model_validated": false,
+        "body_interference_validated": false,
+        "supersonic_validated": false,
+        "reference_area_m2": 358.25000000000006,
+        "dynamic_pressure_pa": 20654.013924958777,
+        "trim_drag_factor": 1.02,
+        "total_cd": 0.01684412229490337,
+        "total_drag_magnitude_n": 124634.72232699429,
+        "component_cd": {
+          "parasite": 0.0034562511456507307,
+          "induced": 0.003532702084779934,
+          "compressible": 0.009508144075780444,
+          "miscellaneous": 1.674808094905792e-05,
+          "cooling": 0.0,
+          "trim": 0.0,
+          "form": 0.0,
+          "increment": null
+        },
+        "component_drag_magnitude_n": {
+          "parasite": 25573.840790794733,
+          "induced": 26139.524262048635,
+          "compressible": 70353.61510575816,
+          "miscellaneous": 123.92408354975267,
+          "cooling": 0.0,
+          "trim": 0.0,
+          "form": 0.0,
+          "increment": null
+        },
+        "diagnostic_subcomponents_cd_not_additive": {
+          "wave_lift": 0.004204399584880333,
+          "wave_volume": 0.005303744490900112
+        },
+        "missing_additive_components": [
+          "increment"
+        ],
+        "numerical_closure_residual_cd": null,
+        "numerical_closure_passed": null,
+        "axis_note": "positive wind-axis drag magnitude; not signed body-X force",
+        "overlap_note": "VLM Trefftz induced drag vs supersonic lift wave drag overlap is UNRESOLVED; numerical closure alone is NOT physical validation",
+        "fuselage_note": "Fixed fuselage has no independently calibrated, design-dependent body/wing interference correction: BODY-CORR is BLOCKED"
+      },
+      "delta_vs_E2E_00_kg": 0.0,
+      "delta_vs_E2E_00_pct": 0.0
+    },
+    "E2E-01": {
+      "case_id": "E2E-01",
+      "role": "W10 tip_twist=+2 deg through the same instrumented chain",
+      "status": "VALID",
+      "feasible": true,
+      "objective_fuel_burn_kg": 34117.55529648991,
+      "design": {
+        "wing_area": 358.25,
+        "aspect_ratio": 1.83,
+        "sweep_1": 67.0,
+        "sweep_2": 48.0,
+        "sweep_3": 71.0,
+        "span_location_2": 0.480469,
+        "span_location_3": 0.945313,
+        "chord_ratio_2": 0.408284,
+        "chord_ratio_3": 0.130178,
+        "tip_twist": 2.0,
+        "vertical_tail_area": 33.91,
+        "vertical_tail_sweep_delta": 0.0
+      },
+      "design_dim": 12,
+      "design_set": "12d_lifting_surfaces",
+      "task_id": "concorde-fixed-cruise-p2-v1",
+      "task_fingerprint": "91b0d9dd11c87d59999d5f96418f4320f610758ecf4d1a8dae42c2d991c42b0f",
+      "physical_call_count": 1,
+      "call_accounting": {
+        "schema_version": 1,
+        "request": 1,
+        "cache_hit": 0,
+        "request_rejected": 0,
+        "geometry_rejected": 0,
+        "mission_build_failed": 0,
+        "mission_solve_attempted": 1,
+        "mission_solve_completed": 1,
+        "billable_physical_calls": 1,
+        "failure_stage": null
+      },
+      "responses": {
+        "mass_start_kg": 136000.0,
+        "mass_end_kg": 101882.44470351009,
+        "fuel_burn_kg": 34117.55529648991,
+        "max_throttle": 0.9458268120507757,
+        "max_thrust_x_n": 42072.47269410802,
+        "max_fuel_mass_flow_kg_s": 1.9501333861501196,
+        "alpha_end_deg": 2.8361336115969547,
+        "lift_coefficient_end": 0.1334233026091628,
+        "drag_coefficient_end": 0.01684557414930364,
+        "residual_max": 1.2412667504008188e-14,
+        "converged": true,
+        "solver_converged": true,
+        "range_span_m": 3028019.999999994,
+        "time_span_s": 5080.226265300772
+      },
+      "propulsors": {
+        "inner_right_turbojet": {
+          "max_throttle": 0.9458268120507757,
+          "max_fuel_mass_flow_kg_s": 1.9501333861501196,
+          "max_thrust_x_n": 42072.47269410802
+        },
+        "outer_right_turbojet": {
+          "max_throttle": 0.9458268120507757,
+          "max_fuel_mass_flow_kg_s": 1.9501333861501196,
+          "max_thrust_x_n": 42072.47269410802
+        },
+        "outer_left_turbojet": {
+          "max_throttle": 0.9458268120507757,
+          "max_fuel_mass_flow_kg_s": 1.9501333861501196,
+          "max_thrust_x_n": 42072.47269410802
+        },
+        "inner_left_turbojet": {
+          "max_throttle": 0.9458268120507757,
+          "max_fuel_mass_flow_kg_s": 1.9501333861501196,
+          "max_thrust_x_n": 42072.47269410802
+        }
+      },
+      "constraints": {
+        "geometry_invalid": 0.0,
+        "task_mass_balance": 0.0,
+        "fuel_capacity_excess": -0.5108695652173914,
+        "zero_fuel_excess": -0.030434782608695653,
+        "takeoff_excess": -0.2648648648648649,
+        "fuel_remaining_deficit": -0.13255063444304024,
+        "max_throttle": -0.05417318794922432,
+        "cruise_range_error": 1.9991931146427733e-15,
+        "mission_convergence": 0.0,
+        "trim_attitude_limit": -0.7636555323669204
+      },
+      "geometry_cross_check": {
+        "checked_count": 31,
+        "failed_count": 0,
+        "failures": []
+      },
+      "drag_ledger": {
+        "status": "PARTIAL_DATA_NOT_VALIDATED",
+        "model_validated": false,
+        "body_interference_validated": false,
+        "supersonic_validated": false,
+        "reference_area_m2": 358.25000000000006,
+        "dynamic_pressure_pa": 20654.013924958777,
+        "trim_drag_factor": 1.02,
+        "total_cd": 0.01684557414930364,
+        "total_drag_magnitude_n": 124645.46503396763,
+        "component_cd": {
+          "parasite": 0.0034562511456507307,
+          "induced": 0.0035347317329984342,
+          "compressible": 0.009507537814228877,
+          "miscellaneous": 1.674808094905792e-05,
+          "cooling": 0.0,
+          "trim": 0.0,
+          "form": 0.0,
+          "increment": null
+        },
+        "component_drag_magnitude_n": {
+          "parasite": 25573.840790794733,
+          "induced": 26154.542239103503,
+          "compressible": 70349.12919436343,
+          "miscellaneous": 123.92408354975267,
+          "cooling": 0.0,
+          "trim": 0.0,
+          "form": 0.0,
+          "increment": null
+        },
+        "diagnostic_subcomponents_cd_not_additive": {
+          "wave_lift": 0.004203793323328765,
+          "wave_volume": 0.005303744490900112
+        },
+        "missing_additive_components": [
+          "increment"
+        ],
+        "numerical_closure_residual_cd": null,
+        "numerical_closure_passed": null,
+        "axis_note": "positive wind-axis drag magnitude; not signed body-X force",
+        "overlap_note": "VLM Trefftz induced drag vs supersonic lift wave drag overlap is UNRESOLVED; numerical closure alone is NOT physical validation",
+        "fuselage_note": "Fixed fuselage has no independently calibrated, design-dependent body/wing interference correction: BODY-CORR is BLOCKED"
+      },
+      "delta_vs_E2E_00_kg": 8.072725252233795,
+      "delta_vs_E2E_00_pct": 0.023667099714496997
+    },
+    "LFV-04": {
+      "case_id": "LFV-04",
+      "role": "V01 vertical_tail_area +1% (34.2491 m2) sensitivity",
+      "status": "VALID",
+      "feasible": true,
+      "objective_fuel_burn_kg": 34117.751745703776,
+      "design": {
+        "wing_area": 358.25,
+        "aspect_ratio": 1.83,
+        "sweep_1": 67.0,
+        "sweep_2": 48.0,
+        "sweep_3": 71.0,
+        "span_location_2": 0.480469,
+        "span_location_3": 0.945313,
+        "chord_ratio_2": 0.408284,
+        "chord_ratio_3": 0.130178,
+        "tip_twist": 0.0,
+        "vertical_tail_area": 34.2491,
+        "vertical_tail_sweep_delta": 0.0
+      },
+      "design_dim": 12,
+      "design_set": "12d_lifting_surfaces",
+      "task_id": "concorde-fixed-cruise-p2-v1",
+      "task_fingerprint": "91b0d9dd11c87d59999d5f96418f4320f610758ecf4d1a8dae42c2d991c42b0f",
+      "physical_call_count": 1,
+      "call_accounting": {
+        "schema_version": 1,
+        "request": 1,
+        "cache_hit": 0,
+        "request_rejected": 0,
+        "geometry_rejected": 0,
+        "mission_build_failed": 0,
+        "mission_solve_attempted": 1,
+        "mission_solve_completed": 1,
+        "billable_physical_calls": 1,
+        "failure_stage": null
+      },
+      "responses": {
+        "mass_start_kg": 136000.0,
+        "mass_end_kg": 101882.24825429622,
+        "fuel_burn_kg": 34117.751745703776,
+        "max_throttle": 0.9456975773609347,
+        "max_thrust_x_n": 42066.72404870044,
+        "max_fuel_mass_flow_kg_s": 1.9498669262865413,
+        "alpha_end_deg": 2.8395623602098095,
+        "lift_coefficient_end": 0.13342189886117514,
+        "drag_coefficient_end": 0.016848281928090673,
+        "residual_max": 1.0632210678470764e-14,
+        "converged": true,
+        "solver_converged": true,
+        "range_span_m": 3028019.999999994,
+        "time_span_s": 5080.226265300772
+      },
+      "propulsors": {
+        "inner_right_turbojet": {
+          "max_throttle": 0.9456975773609347,
+          "max_fuel_mass_flow_kg_s": 1.9498669262865413,
+          "max_thrust_x_n": 42066.72404870044
+        },
+        "outer_right_turbojet": {
+          "max_throttle": 0.9456975773609347,
+          "max_fuel_mass_flow_kg_s": 1.9498669262865413,
+          "max_thrust_x_n": 42066.72404870044
+        },
+        "outer_left_turbojet": {
+          "max_throttle": 0.9456975773609347,
+          "max_fuel_mass_flow_kg_s": 1.9498669262865413,
+          "max_thrust_x_n": 42066.72404870044
+        },
+        "inner_left_turbojet": {
+          "max_throttle": 0.9456975773609347,
+          "max_fuel_mass_flow_kg_s": 1.9498669262865413,
+          "max_thrust_x_n": 42066.72404870044
+        }
+      },
+      "constraints": {
+        "geometry_invalid": 0.0,
+        "task_mass_balance": 0.0,
+        "fuel_capacity_excess": -0.5108695652173914,
+        "zero_fuel_excess": -0.030434782608695653,
+        "takeoff_excess": -0.2648648648648649,
+        "fuel_remaining_deficit": -0.132548581253096,
+        "max_throttle": -0.05430242263906526,
+        "cruise_range_error": 1.9991931146427733e-15,
+        "mission_convergence": 0.0,
+        "trim_attitude_limit": -0.7633698033158492
+      },
+      "geometry_cross_check": {
+        "checked_count": 31,
+        "failed_count": 0,
+        "failures": []
+      },
+      "drag_ledger": {
+        "status": "PARTIAL_DATA_NOT_VALIDATED",
+        "model_validated": false,
+        "body_interference_validated": false,
+        "supersonic_validated": false,
+        "reference_area_m2": 358.25000000000006,
+        "dynamic_pressure_pa": 20654.013924958777,
+        "trim_drag_factor": 1.02,
+        "total_cd": 0.016848281928090673,
+        "total_drag_magnitude_n": 124665.50070286958,
+        "component_cd": {
+          "parasite": 0.0034579609405028158,
+          "induced": 0.003532096567228679,
+          "compressible": 0.009511117870231872,
+          "miscellaneous": 1.674808094905792e-05,
+          "cooling": 0.0,
+          "trim": 0.0,
+          "form": 0.0,
+          "increment": null
+        },
+        "component_drag_magnitude_n": {
+          "parasite": 25586.4920766792,
+          "induced": 26135.04385573577,
+          "compressible": 70375.61910449565,
+          "miscellaneous": 123.92408354975267,
+          "cooling": 0.0,
+          "trim": 0.0,
+          "form": 0.0,
+          "increment": null
+        },
+        "diagnostic_subcomponents_cd_not_additive": {
+          "wave_lift": 0.004203704867485444,
+          "wave_volume": 0.0053074130027464285
+        },
+        "missing_additive_components": [
+          "increment"
+        ],
+        "numerical_closure_residual_cd": null,
+        "numerical_closure_passed": null,
+        "axis_note": "positive wind-axis drag magnitude; not signed body-X force",
+        "overlap_note": "VLM Trefftz induced drag vs supersonic lift wave drag overlap is UNRESOLVED; numerical closure alone is NOT physical validation",
+        "fuselage_note": "Fixed fuselage has no independently calibrated, design-dependent body/wing interference correction: BODY-CORR is BLOCKED"
+      },
+      "delta_vs_E2E_00_kg": 8.269174466098775,
+      "delta_vs_E2E_00_pct": 0.024243036958501493
+    },
+    "LFV-05": {
+      "case_id": "LFV-05",
+      "role": "V02 vertical_tail_sweep_delta=+2 deg sensitivity",
+      "status": "VALID",
+      "feasible": true,
+      "objective_fuel_burn_kg": 34109.70744320392,
+      "design": {
+        "wing_area": 358.25,
+        "aspect_ratio": 1.83,
+        "sweep_1": 67.0,
+        "sweep_2": 48.0,
+        "sweep_3": 71.0,
+        "span_location_2": 0.480469,
+        "span_location_3": 0.945313,
+        "chord_ratio_2": 0.408284,
+        "chord_ratio_3": 0.130178,
+        "tip_twist": 0.0,
+        "vertical_tail_area": 33.91,
+        "vertical_tail_sweep_delta": 2.0
+      },
+      "design_dim": 12,
+      "design_set": "12d_lifting_surfaces",
+      "task_id": "concorde-fixed-cruise-p2-v1",
+      "task_fingerprint": "91b0d9dd11c87d59999d5f96418f4320f610758ecf4d1a8dae42c2d991c42b0f",
+      "physical_call_count": 1,
+      "call_accounting": {
+        "schema_version": 1,
+        "request": 1,
+        "cache_hit": 0,
+        "request_rejected": 0,
+        "geometry_rejected": 0,
+        "mission_build_failed": 0,
+        "mission_solve_attempted": 1,
+        "mission_solve_completed": 1,
+        "billable_physical_calls": 1,
+        "failure_stage": null
+      },
+      "responses": {
+        "mass_start_kg": 136000.0,
+        "mass_end_kg": 101890.29255679608,
+        "fuel_burn_kg": 34109.70744320392,
+        "max_throttle": 0.9454777195022229,
+        "max_thrust_x_n": 42056.944283906945,
+        "max_fuel_mass_flow_kg_s": 1.9494136169226932,
+        "alpha_end_deg": 2.839822506770231,
+        "lift_coefficient_end": 0.1334326246824312,
+        "drag_coefficient_end": 0.016844210742915883,
+        "residual_max": 8.80102268688348e-15,
+        "converged": true,
+        "solver_converged": true,
+        "range_span_m": 3028019.999999994,
+        "time_span_s": 5080.226265300772
+      },
+      "propulsors": {
+        "inner_right_turbojet": {
+          "max_throttle": 0.9454777195022229,
+          "max_fuel_mass_flow_kg_s": 1.9494136169226932,
+          "max_thrust_x_n": 42056.944283906945
+        },
+        "outer_right_turbojet": {
+          "max_throttle": 0.9454777195022229,
+          "max_fuel_mass_flow_kg_s": 1.9494136169226932,
+          "max_thrust_x_n": 42056.944283906945
+        },
+        "outer_left_turbojet": {
+          "max_throttle": 0.9454777195022229,
+          "max_fuel_mass_flow_kg_s": 1.9494136169226932,
+          "max_thrust_x_n": 42056.944283906945
+        },
+        "inner_left_turbojet": {
+          "max_throttle": 0.9454777195022229,
+          "max_fuel_mass_flow_kg_s": 1.9494136169226932,
+          "max_thrust_x_n": 42056.944283906945
+        }
+      },
+      "constraints": {
+        "geometry_invalid": 0.0,
+        "task_mass_balance": 0.0,
+        "fuel_capacity_excess": -0.5108695652173914,
+        "zero_fuel_excess": -0.030434782608695653,
+        "takeoff_excess": -0.2648648648648649,
+        "fuel_remaining_deficit": -0.13263265632102925,
+        "max_throttle": -0.054522280497777076,
+        "cruise_range_error": 1.9991931146427733e-15,
+        "mission_convergence": 0.0,
+        "trim_attitude_limit": -0.7633481244358141
+      },
+      "geometry_cross_check": {
+        "checked_count": 31,
+        "failed_count": 0,
+        "failures": []
+      },
+      "drag_ledger": {
+        "status": "PARTIAL_DATA_NOT_VALIDATED",
+        "model_validated": false,
+        "body_interference_validated": false,
+        "supersonic_validated": false,
+        "reference_area_m2": 358.25000000000006,
+        "dynamic_pressure_pa": 20654.013924958777,
+        "trim_drag_factor": 1.02,
+        "total_cd": 0.016844210742915883,
+        "total_drag_magnitude_n": 124635.37678041651,
+        "component_cd": {
+          "parasite": 0.0034562511456507307,
+          "induced": 0.0035328076148838546,
+          "compressible": 0.009508125259414281,
+          "miscellaneous": 1.674808094905792e-05,
+          "cooling": 0.0,
+          "trim": 0.0,
+          "form": 0.0,
+          "increment": null
+        },
+        "component_drag_magnitude_n": {
+          "parasite": 25573.840790794733,
+          "induced": 26140.30511099814,
+          "compressible": 70353.47587781082,
+          "miscellaneous": 123.92408354975267,
+          "cooling": 0.0,
+          "trim": 0.0,
+          "form": 0.0,
+          "increment": null
+        },
+        "diagnostic_subcomponents_cd_not_additive": {
+          "wave_lift": 0.004204380768514169,
+          "wave_volume": 0.005303744490900112
+        },
+        "missing_additive_components": [
+          "increment"
+        ],
+        "numerical_closure_residual_cd": null,
+        "numerical_closure_passed": null,
+        "axis_note": "positive wind-axis drag magnitude; not signed body-X force",
+        "overlap_note": "VLM Trefftz induced drag vs supersonic lift wave drag overlap is UNRESOLVED; numerical closure alone is NOT physical validation",
+        "fuselage_note": "Fixed fuselage has no independently calibrated, design-dependent body/wing interference correction: BODY-CORR is BLOCKED"
+      },
+      "delta_vs_E2E_00_kg": 0.2248719662457006,
+      "delta_vs_E2E_00_pct": 0.0006592652520484747
+    }
+  },
+  "tail_sensitivity_summary": {
+    "V01_plus_1pct_fuel_delta_kg": 8.269174466098775,
+    "V01_plus_1pct_fuel_delta_pct": 0.024243036958501493,
+    "V02_plus_2deg_fuel_delta_kg": 0.2248719662457006,
+    "V02_plus_2deg_fuel_delta_pct": 0.0006592652520484747,
+    "verdict": "both vertical-tail variables are physically active in the LF chain (nonzero, reproducible deltas) but the effect is small; zero-sideslip flight keeps the tail lift near zero, so the deltas come from parasite drag / wetted area and sweep changes. This satisfies the G1 requirement that V01/V02 not be inert."
+  },
+  "external_body_correction": {
+    "injected": false,
+    "reason": "the area-rule / wave-drag candidate increment is NOT_VALIDATED (see wave_drag_area_rule.json: analytic benchmark passes, but the real-geometry slice convergence fails and the absolute magnitude contradicts the RCAIDE drag level). Injecting it into the mission would fabricate a validated number.",
+    "candidate_value": {
+      "candidate_delta_CD": 0.008160775429486743,
+      "q_used_pa": 20654.013924958777,
+      "delta_drag_N": 60384.02962289065,
+      "total_drag_N": 124634.72232699429,
+      "relative_drag_fraction": 0.48448801823031173,
+      "naive_linear_fuel_estimate_kg": 50635.11818503798,
+      "fuel_loaded_kg": 46800.0,
+      "max_throttle_at_baseline": 0.9454702906042612,
+      "feasible_if_injected": false,
+      "why": "a +48 percent drag increment would push the required thrust far past the 0.945 throttle needed at baseline; the naive linear fuel estimate already exceeds the 46800 kg fuel load, so the mission would be infeasible. This is an order-of-magnitude warning, NOT a validated correction."
+    }
+  },
+  "budget_accounting": {
+    "approval": "Issue #4 / D-12D-002",
+    "cap_total": 23,
+    "events_recorded": 23,
+    "used_by_category": {
+      "VSPAERO_LF": 6,
+      "RCAIDE_LF": 4,
+      "SU2_HF": 6,
+      "WAVE_AREA_RULE": 7
+    },
+    "remaining": 0,
+    "mesh_generation_events": 0,
+    "note": "every solver process start in this run is recorded, including the failed HFS-01 start and the two SU2 configuration attempts; mesh generation is recorded separately per the counting contract."
+  },
+  "assessment": {
+    "mission_data_gate": "PARTIAL",
+    "why": "the integration chain is exercised end to end and reproduces archived results, but the mission still uses an unvalidated analytic drag build-up; no validated wing-body correction exists, Euler wing pressure drag is a different physical quantity, and the fuel-burn value remains an algorithm-level LF number.",
+    "validated_aircraft_fuel_label": false,
+    "caveats": [
+      "single cruise segment only (no climb/descent/takeoff/landing, no reserves)",
+      "mass/CG/SM status PROVISIONAL_NOT_FROZEN",
+      "RCAIDE VLM use_surrogate=True: Mach 2.02 is interpolated inside 2.0-2.5, but the underlying drag build-up is empirical, not a validated supersonic solver",
+      "LF/HF q differs by 0.83% because of the RCAIDE atmosphere state",
+      "no validated fuselage/wing interference, no calibrated body correction"
+    ]
+  }
+}

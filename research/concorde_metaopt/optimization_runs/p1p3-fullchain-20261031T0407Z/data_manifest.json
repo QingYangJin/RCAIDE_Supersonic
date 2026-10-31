@@ -1,0 +1,403 @@
+{
+  "schema_version": 1,
+  "run_id": "p1p3-fullchain-20261031T0407Z",
+  "stage": "P1-P3 full-chain multi-fidelity validation (D-12D-002)",
+  "approval": "Issue #4 / D-12D-002 (comment 6538481816)",
+  "generated_utc": "2026-10-31T10:28:39Z",
+  "git_sha_at_run_start": "048ef2e55f389b0ae52e8872131dcfcf0c91a1eb",
+  "revision": "post-review revision (independent reviews archived, stationarity wording corrected, mesh events backfilled, manifest canonicalized)",
+  "hashing_convention": "sha256 over committed worktree bytes (git canonical LF line endings); regenerate/verify from a clean checkout of the commit containing this manifest",
+  "line_ending_note": "The first package manifest (in commit d80b4c4) hashed CRLF working-tree copies; A2/A5 found 14/59 CRLF-only differences against a clean LF checkout. Example: the run-time CRLF ledger was 32,677 B with sha256 d064d93fd14b865fd90d823cd0538f4d81d5facc115b89680ec9e2687f697454, which is exactly the committed LF ledger (31,911 B) with LF->CRLF conversion. This revision records canonical LF hashes only.",
+  "file_count": 67,
+  "total_bytes": 1291764,
+  "files": [
+    {
+      "path": "approval_and_budget_ledger.json",
+      "bytes": 42454,
+      "sha256": "8779f5b594ea07293664cd9cc5b0df2bf0d9c296a53abf6126dfa183aa87c5d7"
+    },
+    {
+      "path": "blocker_register_current.json",
+      "bytes": 4531,
+      "sha256": "1e1308ba56776598b9408bf587a2442205081b33e5ac6427f6fcf4dac74cc4ee"
+    },
+    {
+      "path": "drag_component_ledger.json",
+      "bytes": 8708,
+      "sha256": "1e6813dbe76eb7e7fc846aa4106b52a712dc852bd234481ea79dbff8ce8c972f"
+    },
+    {
+      "path": "environment.json",
+      "bytes": 4069,
+      "sha256": "24431ee4cc0a4f4647459223af86ce9d4a679f25c798263d6d2387782cbfffb4"
+    },
+    {
+      "path": "evaluations.jsonl",
+      "bytes": 11272,
+      "sha256": "8d1c3ee3b0aa60849398bf78f6b9ee35d957802bd3865ec078a30aab9768ea81"
+    },
+    {
+      "path": "figures/drag_component_bookkeeping.png",
+      "bytes": 68344,
+      "sha256": "9901470cc2b10ffab4223fd4e192bd92adc17fcc14c77c7ab1470f8b6e52fd4a"
+    },
+    {
+      "path": "figures/lf_vspaero_density_sensitivity.png",
+      "bytes": 113900,
+      "sha256": "30c485207acaf94927fa9c87c6eacb4f3fa1a58cdb4e7a65356f8d3392c16bd3"
+    },
+    {
+      "path": "figures/mission_e2e_fuel_deltas.png",
+      "bytes": 53962,
+      "sha256": "49c2a7b06e5186366617ab99b48240c688c927c29373ae3d957f299cc47c637a"
+    },
+    {
+      "path": "figures/su2_wing_force_convergence.png",
+      "bytes": 85200,
+      "sha256": "43dea2b89c03fbe1782da2f9e6be3f800003d53ba39eac8c412777475e623cc7"
+    },
+    {
+      "path": "figures/su2_wing_mesh_sensitivity.png",
+      "bytes": 50517,
+      "sha256": "bd1733b7b3c319e0ad461c6586d565d7274868fabab9335a7f5fc11f41871221"
+    },
+    {
+      "path": "figures/wave_area_rule_results.png",
+      "bytes": 209303,
+      "sha256": "ef5d451c9c62c54d94174fea11de69fbaef0b0d8e91c8e917f3d07bb57d113d2"
+    },
+    {
+      "path": "figures/wave_area_rule_validation.png",
+      "bytes": 191702,
+      "sha256": "2cf77c3ab0d13e5b5d330856e84f423caf90ffb40580f1ee0ab683c66c9e170e"
+    },
+    {
+      "path": "geometry_validation.json",
+      "bytes": 3349,
+      "sha256": "7b5d9a45071a5c4ee6ab1b4100dfaa0350f448fc1eca419443f5aa8b84569f77"
+    },
+    {
+      "path": "hf_su2_results.json",
+      "bytes": 16781,
+      "sha256": "a4c4b98429cfb2363425b0500ca8190c9e4256aa9d0cbd5c2f2ab1cea13d0625"
+    },
+    {
+      "path": "independent_reviews/A1_package_integrity/fullchain_a1_report.md",
+      "bytes": 5957,
+      "sha256": "f6cd75392bf99ae5172d5995a4e113ecb345a44de1a99798ade288f288fcaa3a"
+    },
+    {
+      "path": "independent_reviews/A2_raw_recalc/reconcile.json",
+      "bytes": 44272,
+      "sha256": "8d33eb98b43ad3a1d82b316464932ffbae6fd6d8bb0a9d68febf1be1fa067dcc"
+    },
+    {
+      "path": "independent_reviews/A2_raw_recalc/reconcile_report.md",
+      "bytes": 9830,
+      "sha256": "5a30050e4290758084af18640096a9fe3184bd2bc847a5432181fb6c613babb9"
+    },
+    {
+      "path": "independent_reviews/A3_hygiene/isolation_report.md",
+      "bytes": 5304,
+      "sha256": "67fee72359afe11f3445f385aa5ddf809d47bee86293912a8c5abe4bd54606b7"
+    },
+    {
+      "path": "independent_reviews/A4_acceptance_matrix/final_receipt_matrix.md",
+      "bytes": 20837,
+      "sha256": "ec22733506b4281d232381d63bfdada879f6f04baceaa4cde2fd5f3ad34792b8"
+    },
+    {
+      "path": "independent_reviews/A5_independent_recalc/recalc.md",
+      "bytes": 8051,
+      "sha256": "926dac7d30a75d14d72fa71177d541668fc3fcdd413e76aaa54cf0e237998c15"
+    },
+    {
+      "path": "independent_reviews/A5_independent_recalc/verdict.txt",
+      "bytes": 1572,
+      "sha256": "36c73cc4c9562c44e5faebc88d914860e111770ae75cee3d1bdfc4a49a7b13ec"
+    },
+    {
+      "path": "independent_reviews/README.md",
+      "bytes": 3639,
+      "sha256": "9facf356f0fc4c171d0b5d16fcb00263c5e154ccf864246d88c6343aa0c9651c"
+    },
+    {
+      "path": "lf_vspaero_density_sensitivity.csv",
+      "bytes": 1203,
+      "sha256": "de12090d38e56c47b0bf8196e3724eedfa546f6cf861e2b5c2472eaad106c992"
+    },
+    {
+      "path": "lf_vspaero_results.json",
+      "bytes": 22927,
+      "sha256": "2eebf2d4cb0d0677f44a350a639253c1ed9eaf10939ede1867a38e0a644d4486"
+    },
+    {
+      "path": "mesh_convergence.csv",
+      "bytes": 558,
+      "sha256": "a110a035e299fc869e20090d08e7142f53a98aa946f3d87f4eca40b5062c5b26"
+    },
+    {
+      "path": "mission_e2e.json",
+      "bytes": 25933,
+      "sha256": "203faa1295bd10d1e93f34c9c6634090e2cc18fe11c06e4bae5956cd1608da0d"
+    },
+    {
+      "path": "raw_artifacts_manifest.json",
+      "bytes": 1733,
+      "sha256": "6fdd8f118450a91ea573a064daa5a6acf0f3ca86e12203b8a7acd89d5b6e9ad7"
+    },
+    {
+      "path": "README.md",
+      "bytes": 16582,
+      "sha256": "8c8d52f827b25ce4cbf17d3557cf495586101378de083e9bfa207d551b832693"
+    },
+    {
+      "path": "run_config.json",
+      "bytes": 17235,
+      "sha256": "f28bc3f91c7a880a152361c486418d15a491c73d7223df840d99ebd72c0c2e23"
+    },
+    {
+      "path": "scripts/analyze_hfs00c.py",
+      "bytes": 3592,
+      "sha256": "a3e767f38b204222b28905caa9ccb0dfd3480c577b7de84ea82d019460474eac"
+    },
+    {
+      "path": "scripts/analyze_hfs_wing.py",
+      "bytes": 9087,
+      "sha256": "4697cc280ba526f7014576c1440a58cbfb69d86199fe01f760d3a447e7f7648e"
+    },
+    {
+      "path": "scripts/area_rule_diag.py",
+      "bytes": 4290,
+      "sha256": "b5bb1b9827bd4248448d7c6b6a6b15d3ae7037d03903b465aa91154d831a2da1"
+    },
+    {
+      "path": "scripts/area_rule_recompute.py",
+      "bytes": 10770,
+      "sha256": "61de511de85ed8ee4dcbb5e29f412344ae2f066cc4b7f58ad58097c5f9417efb"
+    },
+    {
+      "path": "scripts/build_lf_case.py",
+      "bytes": 2702,
+      "sha256": "1837c82e81c0619a7bc4792771399711cc02bc7de1cb0731a1369926dda91ddf"
+    },
+    {
+      "path": "scripts/build_lf_request.py",
+      "bytes": 2667,
+      "sha256": "c8a5e4896105f857afef5b7bb94fb5fff06112d0b44d09149284ca70ee76f1a7"
+    },
+    {
+      "path": "scripts/build_wave00.py",
+      "bytes": 877,
+      "sha256": "b23cf1e0ef52bd4b1b8388bac0655c8f06dfcc571a24489df958a4e117862dea"
+    },
+    {
+      "path": "scripts/build_wave_case.py",
+      "bytes": 2042,
+      "sha256": "2ce88b401bb9c057d4a2fc69ae4a59b3bf5c52d578f85ae040c78e94b55e948b"
+    },
+    {
+      "path": "scripts/build_wave_cases.py",
+      "bytes": 1036,
+      "sha256": "fa223c06f7d68bfd5165be350e51f818edeb09e2e4266ceba91f39f5de78d3ae"
+    },
+    {
+      "path": "scripts/extract_su2_options.py",
+      "bytes": 868,
+      "sha256": "2e4367bc455cf98d0a3c1de417a8a45dc676ad856493ad06d58048c1f30078d9"
+    },
+    {
+      "path": "scripts/fetch_wavedrag_src.py",
+      "bytes": 893,
+      "sha256": "630755b5c3c3c0995dad0bc282e25905ac24b0247d317d303f35d50ca38fe8fe"
+    },
+    {
+      "path": "scripts/gen_wing_hf.py",
+      "bytes": 8040,
+      "sha256": "d91c63c7abf2af2afdb78710b0e8643a6f5809b7a60786dc1b6ed304fad4b3e1"
+    },
+    {
+      "path": "scripts/geometry_validation.py",
+      "bytes": 8634,
+      "sha256": "b77aea8bd7db68641d8178ab5476f7402394beac1fd48e054a43799213a857da"
+    },
+    {
+      "path": "scripts/ledger.py",
+      "bytes": 4776,
+      "sha256": "0d0feccc932af9f7c82c772108528d0e290f4129bf502c90f635a21c7cbff61f"
+    },
+    {
+      "path": "scripts/lf_worker.py",
+      "bytes": 3164,
+      "sha256": "d52f96cc0c5a18a694e8c28bfc45a9a8847a5de96ca79b04e2589930f856e388"
+    },
+    {
+      "path": "scripts/make_data_manifest.py",
+      "bytes": 4474,
+      "sha256": "439774a30ff0845cc25a239b47642768cbeaccfc20ffbc0d2612a8cc8b61d2f6"
+    },
+    {
+      "path": "scripts/make_drag_component_ledger.py",
+      "bytes": 11818,
+      "sha256": "7d32824bc0da813c91a6daad272c9945aed049c059d732fd25a12bab832304c3"
+    },
+    {
+      "path": "scripts/make_fullchain_figures.py",
+      "bytes": 9054,
+      "sha256": "b9de047a562a2e48fb64da68bc743b1ff474001bb86d6a6bba7eb5132377c1ac"
+    },
+    {
+      "path": "scripts/make_hf_su2_results.py",
+      "bytes": 14154,
+      "sha256": "31a7ca72e3837afa3baab8e5d187d438709cb2afaab639860a8ecac13213447f"
+    },
+    {
+      "path": "scripts/make_hfs_cfg.py",
+      "bytes": 2072,
+      "sha256": "70b3db15cf7cacf143a9094d258043f331b06e4d099179d58736617bf7fef57f"
+    },
+    {
+      "path": "scripts/make_mission_e2e.py",
+      "bytes": 11980,
+      "sha256": "5bbe1c1e163dc265b978df4183d620656d4bdbf3b2367af6bbec9094b34fea3e"
+    },
+    {
+      "path": "scripts/make_wave_deliverables.py",
+      "bytes": 25269,
+      "sha256": "7d49fc39ef7399cd6a2b9a6caa284e5837957d4015f16dc774e2de0912886bd1"
+    },
+    {
+      "path": "scripts/mesh_preflight.py",
+      "bytes": 7997,
+      "sha256": "3ca40c7d4682dea2b7841ee56bef3a1cf9536fedd3ec58e8ca02b86fc82674cd"
+    },
+    {
+      "path": "scripts/msh2_to_su2.py",
+      "bytes": 8142,
+      "sha256": "892cf21240a919679c4eada932876926a175a6aad10560bd977489f3104d2209"
+    },
+    {
+      "path": "scripts/README.md",
+      "bytes": 2216,
+      "sha256": "c295eaad48ec47d64501f2154d08a0406fe05889cb3d4a697d76adcb14440446"
+    },
+    {
+      "path": "scripts/run_hfs00.sh",
+      "bytes": 947,
+      "sha256": "a7f11472a812559f1b2350040fd8c4ad25e24331466ef0922bdd92bbcd551194"
+    },
+    {
+      "path": "scripts/run_hfs_wing.sh",
+      "bytes": 977,
+      "sha256": "5e3b38ca67e049fcb9b5f03f310537e9933f4ce67cd9df02df9770ad59514724"
+    },
+    {
+      "path": "scripts/run_lf_case.py",
+      "bytes": 6925,
+      "sha256": "afb68db050ff4fbffa746b41c6759639107d1fc4b47137164997710b1be3349b"
+    },
+    {
+      "path": "scripts/run_rcaide_lf.py",
+      "bytes": 4507,
+      "sha256": "c1ca9603d696c4c7ae0e62c64bd847b7ed7534a843b35027d550ef166982ff6e"
+    },
+    {
+      "path": "scripts/run_wave.py",
+      "bytes": 2347,
+      "sha256": "004e2af52ee58e195fd3db680d8d441cbee8a110faf23b0aae2f2de97747a31b"
+    },
+    {
+      "path": "scripts/run_wave_02_04.sh",
+      "bytes": 303,
+      "sha256": "f0f8bb505edb1d60375cb3e4bf27b14730fa629fc4130a849d21b8782c0ad8e5"
+    },
+    {
+      "path": "scripts/stage_raw_artifacts.py",
+      "bytes": 3268,
+      "sha256": "5822ac361e781e5ae6a75cfb2596bb814445328632c0b5ff7db02b8f1fd37fe4"
+    },
+    {
+      "path": "scripts/wave_worker.py",
+      "bytes": 6552,
+      "sha256": "b7258b2b6a285392d5e197cf408b56ae1e4f0fad8acf1b7cacf94d27915f3565"
+    },
+    {
+      "path": "scripts/wedge_prep.py",
+      "bytes": 3673,
+      "sha256": "5a20dee242872e4d1b3ef27063a3ba2ae463de3c928c7a3da37f1e2118bec7ec"
+    },
+    {
+      "path": "summary.json",
+      "bytes": 10214,
+      "sha256": "6e89fc57c8cd5f73a28ffd09fcbb8a458016413a76e79ad034dbb7760a38cf89"
+    },
+    {
+      "path": "toolchain_capability_probe.json",
+      "bytes": 3848,
+      "sha256": "714dcd70d2168fcea9d3bbca589e2df3c7798ae980dc48bdf4702408f1140d5c"
+    },
+    {
+      "path": "wave_drag_area_rule.json",
+      "bytes": 31721,
+      "sha256": "83030c796a467e771f90f4eaf9867774250bc417eacc3b6d7ca3547de892fa71"
+    },
+    {
+      "path": "wave_per_theta_donq.csv",
+      "bytes": 6143,
+      "sha256": "e0147c09a35e883ae0922a0a1d25b98d41e0aca097614ad4e977c286d6172680"
+    }
+  ],
+  "input_source_files": [
+    {
+      "path": "research/concorde_metaopt/configs/design_space_12d_lifting_surfaces.yaml",
+      "bytes": 10011,
+      "sha256": "463bb4a0a0fc06eb7dd6a6d9790f4d5b2b3a8c3d8681d16055036dae0c57fc7b"
+    },
+    {
+      "path": "research/concorde_metaopt/configs/task_fixed_cruise.yaml",
+      "bytes": 2247,
+      "sha256": "bde73b739b50cac786ca6b843fa2e9877c423262b7e8c93e8724d8ba481d894d"
+    },
+    {
+      "path": "tutorials/Simulation_Turbojet_Supersonic_Aircraft_4500nmi_Mission/Concorde.py",
+      "bytes": 60675,
+      "sha256": "4c633e485a915151faaa8104e6647f9dc02bd08ae1436c22845e5917b3d735bd"
+    },
+    {
+      "path": "research/concorde_metaopt/aircraft/concorde_adapter.py",
+      "bytes": 21006,
+      "sha256": "43feb9737f59155abbb7b155efcec7da838eabddf0c07ca20b14c426237a326e"
+    },
+    {
+      "path": "research/concorde_metaopt/evaluation/low_fidelity.py",
+      "bytes": 16230,
+      "sha256": "c08ca18eeea1ee0cf6bee7b2555d67d34411f1a018f440eb98b9f13955230080"
+    },
+    {
+      "path": "research/concorde_metaopt/evaluation/drag_ledger.py",
+      "bytes": 5041,
+      "sha256": "d03b1316ce2d868b3bf3a69efac2d8b2b95a307d422e2371cfb7dd99055973dc"
+    }
+  ],
+  "raw_artifacts": {
+    "manifest": "raw_artifacts_manifest.json",
+    "sha256": "6fdd8f118450a91ea573a064daa5a6acf0f3ca86e12203b8a7acd89d5b6e9ad7",
+    "archive_root": "D:/RCAIDE/outputs/concorde_metaopt/p1p3-fullchain-20261031T0407Z",
+    "file_count": 195,
+    "total_bytes": 108824422,
+    "outside_git": true
+  },
+  "figure_count": 7,
+  "independent_reviews": {
+    "dir": "independent_reviews/",
+    "roles": [
+      "A1",
+      "A2",
+      "A3",
+      "A4",
+      "A5"
+    ],
+    "note": "verbatim copies of project-external role deliverables; no reviewer ran a solver or wrote to the repo/GitHub"
+  },
+  "mesh_generation_events": 11
+}

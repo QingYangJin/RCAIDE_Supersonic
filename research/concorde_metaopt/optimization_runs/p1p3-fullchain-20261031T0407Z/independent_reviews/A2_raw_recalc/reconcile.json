@@ -1,0 +1,1571 @@
+{
+ "schema_version": 1,
+ "component": "A2_RAW_RECALC_RECONCILIATION",
+ "task": "task-27 / FULLCHAIN-A2-RAW-RECALC-d80b4c4",
+ "operator": "a2-run-opt (A2)",
+ "generated_utc": "2026-10-31T10:14:33Z",
+ "scope": "Static read-only re-derivation of the D-12D-002 p1p3 full-chain evidence from raw artifacts; zero solver starts; zero repo/GitHub writes.",
+ "targets": {
+  "run_dir_D_RCAIDE": "D:\\RCAIDE\\research\\concorde_metaopt\\optimization_runs\\p1p3-fullchain-20261031T0407Z",
+  "verified_worktree": "D:\\RCAIDE-verify-fullchain-a2\\research\\concorde_metaopt\\optimization_runs\\p1p3-fullchain-20261031T0407Z",
+  "raw_archive": "D:\\RCAIDE\\outputs\\concorde_metaopt\\p1p3-fullchain-20261031T0407Z",
+  "ext_root": "C:\\Users\\pc\\AppData\\Local\\RCAIDE_Supersonic_agent_state\\fullchain"
+ },
+ "git": {
+  "main_head": "d80b4c485d689082cd117f09ec6445a181dd458c",
+  "worktree_head": "d80b4c485d689082cd117f09ec6445a181dd458c",
+  "branch": "research/concorde-metaopt",
+  "worktree_porcelain_clean": true,
+  "main_checkout_uncommitted_in_run_dir": [
+   "approval_and_budget_ledger.json (+253 lines vs HEAD)"
+  ]
+ },
+ "environment": {
+  "python": "3.11.17",
+  "numpy": "2.4.6",
+  "solver_starts_this_task": 0,
+  "repo_writes_this_task": 0
+ },
+ "verdict": {
+  "overall": "RECORDED_EVIDENCE_REPRODUCED_WITH_3_BOOKKEEPING_DISCREPANCIES",
+  "n_checks": 45,
+  "n_pass": 42,
+  "n_fail": 3,
+  "failed_checks": [
+   "A1b-run-dir-content-identical",
+   "E1-data-manifest-all-hashes",
+   "E6b-ext-source-frozen"
+  ],
+  "discrepancy_ids": [
+   "X2",
+   "X4",
+   "X3"
+  ]
+ },
+ "physical_gate_status_unchanged": {
+  "LF_M2_02_VSPAERO_drag": "NOT_VALIDATED",
+  "HF_M2_02_SU2": "PARTIAL",
+  "WAVE_AREA_RULE": "NOT_VALIDATED",
+  "mission_data_gate": "PARTIAL",
+  "validated_aircraft_fuel_label": false,
+  "external_body_correction_injected": false,
+  "budget": {
+   "approval": "Issue #4 / D-12D-002",
+   "cap_total": 23,
+   "events_recorded": 23,
+   "used_by_category": {
+    "VSPAERO_LF": 6,
+    "RCAIDE_LF": 4,
+    "SU2_HF": 6,
+    "WAVE_AREA_RULE": 7
+   },
+   "remaining": 0,
+   "mesh_generation_events": 0,
+   "note": "every solver process start in this run is recorded, including the failed HFS-01 start and the two SU2 configuration attempts; mesh generation is recorded separately per the counting contract."
+  }
+ },
+ "discrepancies": [
+  {
+   "id": "X2",
+   "severity": "MEDIUM",
+   "summary": "1 run-dir file(s) differ in content between D:/RCAIDE working tree and verified worktree: ['approval_and_budget_ledger.json']. D:/RCAIDE approval_and_budget_ledger.json is +253 lines uncommitted vs HEAD (git diff), i.e. post-commit edit in the main checkout; this reconciliation uses worktree d80b4c4 content",
+   "evidence": "git -C D:/RCAIDE status --porcelain; git -C D:/RCAIDE diff --stat HEAD -- research/concorde_metaopt/optimization_runs/p1p3-fullchain-20261031T0407Z; hashes in tables.run_vs_worktree"
+  },
+  {
+   "id": "X4",
+   "severity": "MEDIUM",
+   "summary": "data_manifest.json row for ['approval_and_budget_ledger.json'] cannot be re-verified: manifest sha256/bytes=d064d93fd14b865f/32677 vs current D:/RCAIDE b491fcf115e8d118/43240. The run-time ledger version is not preserved: committed d80b4c4 blob is LF-normalized (31,911 B; 766 B = line count smaller, a CRLF artifact), while the main checkout has +253 uncommitted lines (43,240 B). Other 58/59 manifest rows verify byte-exactly against the D:/RCAIDE working tree.",
+   "evidence": "data_manifest.json files[approval_and_budget_ledger.json]; sha256(RUN/file) vs manifest; git cat-file blob for d80b4c4; git diff --stat HEAD -- run dir"
+  },
+  {
+   "id": "X3",
+   "severity": "LOW",
+   "summary": "live EXT source artifact(s) differ from archive manifest (1 of 155): [{'file': 'hf_raw/wedge/hfs00_analysis.json', 'bytes_manifest': 1915, 'bytes_live': 1913, 'sha_manifest': '01a61f477b79387a', 'sha_live': '084adf097b37a1ba'}]; archived copies still match the manifest, so cited evidence is the archive, but EXT working copy is not frozen (post-archive edit)",
+   "evidence": "tables.raw_manifest_verify.ext_source_drift; EXT/fullchain/* source_abs paths"
+  }
+ ],
+ "checks": [
+  {
+   "id": "A0-run-dir-exists",
+   "ok": true,
+   "summary": "run dir present: D:\\RCAIDE\\research\\concorde_metaopt\\optimization_runs\\p1p3-fullchain-20261031T0407Z",
+   "detail": null,
+   "severity": "INFO"
+  },
+  {
+   "id": "A0-worktree-run-dir-exists",
+   "ok": true,
+   "summary": "worktree run dir exists: D:\\RCAIDE-verify-fullchain-a2\\research\\concorde_metaopt\\optimization_runs\\p1p3-fullchain-20261031T0407Z",
+   "detail": null,
+   "severity": "INFO"
+  },
+  {
+   "id": "A1-run-dir-file-sets",
+   "ok": true,
+   "summary": "run dir file sets identical: D:/RCAIDE=60 vs worktree=60; only_run=[] only_wt=[]",
+   "detail": null,
+   "severity": "INFO"
+  },
+  {
+   "id": "A1b-run-dir-content-identical",
+   "ok": false,
+   "summary": "byte-identical=45/60; 14 line-ending-only diffs (main checkout CRLF vs worktree LF); real content diffs=['approval_and_budget_ledger.json']",
+   "detail": null,
+   "severity": "INFO"
+  },
+  {
+   "id": "B1-E2E00-equals-archive-line1",
+   "ok": true,
+   "summary": "E2E-00=34109.48257123768 vs archive[0]=34109.48257123768 vs literal 34109.48257123768",
+   "detail": null,
+   "severity": "INFO"
+  },
+  {
+   "id": "B2-E2E00-archive-diff-zero",
+   "ok": true,
+   "summary": "archive_reproduction_check baseline_abs_difference_kg=0.0 match=True",
+   "detail": null,
+   "severity": "INFO"
+  },
+  {
+   "id": "B3-E2E01-equals-archive-line5",
+   "ok": true,
+   "summary": "E2E-01=34117.55529648991 vs archive[4]=34117.55529648991 vs literal 34117.55529648991",
+   "detail": null,
+   "severity": "INFO"
+  },
+  {
+   "id": "B4-LFV04-delta-matches-V01",
+   "ok": true,
+   "summary": "d(F04)=8.269174466098775 vs token V01 V01_plus_1pct_fuel_delta_kg=8.269174466098775",
+   "detail": null,
+   "severity": "INFO"
+  },
+  {
+   "id": "B5-LFV05-delta-matches-V02",
+   "ok": true,
+   "summary": "d(F05)=0.2248719662457006 vs token V02 V02_plus_2deg_fuel_delta_kg=0.2248719662457006",
+   "detail": null,
+   "severity": "INFO"
+  },
+  {
+   "id": "B6-archived-best-feasible-not-in-new-cases",
+   "ok": true,
+   "summary": "archived best feasible 34035.332605355274 not re-computed; no new fuel label claims it (mission_e2e keeps it only as archive record)",
+   "detail": null,
+   "severity": "INFO"
+  },
+  {
+   "id": "B7-E2E00-vs-E2E01-design-diff-is-tip-twist",
+   "ok": true,
+   "summary": "E2E-00 vs E2E-01 design diff = {'tip_twist': (0.0, 2.0)} (expected only tip_twist 0.0 -> 2.0 = W10 +2deg)",
+   "detail": null,
+   "severity": "INFO"
+  },
+  {
+   "id": "B9-E2E-00-range",
+   "ok": true,
+   "summary": "range_span_m=3028019.999999994 vs frozen range 3028020.0",
+   "detail": null,
+   "severity": "INFO"
+  },
+  {
+   "id": "B9-E2E-01-range",
+   "ok": true,
+   "summary": "range_span_m=3028019.999999994 vs frozen range 3028020.0",
+   "detail": null,
+   "severity": "INFO"
+  },
+  {
+   "id": "B9-LFV-04-range",
+   "ok": true,
+   "summary": "range_span_m=3028019.999999994 vs frozen range 3028020.0",
+   "detail": null,
+   "severity": "INFO"
+  },
+  {
+   "id": "B9-LFV-05-range",
+   "ok": true,
+   "summary": "range_span_m=3028019.999999994 vs frozen range 3028020.0",
+   "detail": null,
+   "severity": "INFO"
+  },
+  {
+   "id": "C1-valid-polar-reparse-matches-json",
+   "ok": true,
+   "summary": "max |\u0394(CL,CDi,CDtot)| over LFV-00/SENS-A/SENS-B rows = 0.0",
+   "detail": null,
+   "severity": "INFO"
+  },
+  {
+   "id": "C2-valid-polar-sha-matches-json",
+   "ok": true,
+   "summary": "polar sha256 recomputed == lf_vspaero_results polar_sha256 for LFV-00/SENS-A/SENS-B",
+   "detail": null,
+   "severity": "INFO"
+  },
+  {
+   "id": "C3-invalid-LFV01-03-confirmed-nan",
+   "ok": true,
+   "summary": "raw polars of quarantined LFV-01/02/03 runs contain -NAN(IND) rows and Re/1e6 ~ 5.06e-318 (broken namelist), confirming they are non-evidence while lf_vspaero_results marks them MISSING",
+   "detail": null,
+   "severity": "INFO"
+  },
+  {
+   "id": "C4-density-spread-reproduces",
+   "ok": true,
+   "summary": "recomputed alpha=2 CL=[0.08387934, 0.08781966, 0.1082826] CDi=[0.0003435104, -0.0008942229, -0.02260794] CDtot=[0.005420316, 0.004188608, -0.01743937]; CDi sign changes=True; CDtot min=np.float64(-0.01743937)",
+   "detail": null,
+   "severity": "INFO"
+  },
+  {
+   "id": "D1-mesh-volume-area-reproduced",
+   "ok": true,
+   "summary": "SU2 mesh parsed independently; divergence-theorem body volume and wall triangle area match mesh_convergence.csv within 1e-6",
+   "detail": null,
+   "severity": "INFO"
+  },
+  {
+   "id": "D2-mesh-json-vs-csv-errors-consistent",
+   "ok": true,
+   "summary": "volume_error_vs_analytic / wall_area_error_vs_analytic recomputed from raw mesh == CSV values",
+   "detail": null,
+   "severity": "INFO"
+  },
+  {
+   "id": "D3-negative-tets-zero",
+   "ok": true,
+   "summary": "element counts match mesh JSON and preflight reports 0 negative tet volumes at all levels",
+   "detail": null,
+   "severity": "INFO"
+  },
+  {
+   "id": "D4-wall-area-faceting-bias",
+   "ok": true,
+   "summary": "wall area above analytic wetted area by [0.655, 0.696, 0.723] % (faceting bias, documented)",
+   "detail": null,
+   "severity": "INFO"
+  },
+  {
+   "id": "D5-hf-mesh-summary-equals-json",
+   "ok": true,
+   "summary": "hf_su2_results.mesh_summary levels match mesh_convergence.csv exactly",
+   "detail": null,
+   "severity": "INFO"
+  },
+  {
+   "id": "D6-hf-mesh-convergence-cl-cd-cmy",
+   "ok": true,
+   "summary": "hf_su2_results.mesh_convergence CL/CD/CMy == CSV (medium/fine)",
+   "detail": null,
+   "severity": "INFO"
+  },
+  {
+   "id": "D8-coarse-csv-empty",
+   "ok": true,
+   "summary": "coarse row's CL/CD/CMy cells are empty in mesh_convergence.csv (coarse SU2 run HFS-01 failed, expected)",
+   "detail": null,
+   "severity": "INFO"
+  },
+  {
+   "id": "D7-analytic-values-declared",
+   "ok": true,
+   "summary": "analytic_volume_m3=129.4516, analytic_wetted_area_m2=717.57475",
+   "detail": null,
+   "severity": "INFO"
+  },
+  {
+   "id": "E1-data-manifest-all-hashes",
+   "ok": false,
+   "summary": "data_manifest: 59/59 files resolved, mismatches=['approval_and_budget_ledger.json']",
+   "detail": null,
+   "severity": "INFO"
+  },
+  {
+   "id": "E2-data-manifest-random20",
+   "ok": true,
+   "summary": "random 20 sample all sha256+size match; sample size=20",
+   "detail": null,
+   "severity": "INFO"
+  },
+  {
+   "id": "E3-raw-manifest-sha",
+   "ok": true,
+   "summary": "sha256(raw_manifest.json)=b6b959ba1c7cc12d61f355ca248b3f140c01c1c4bbde5e2cdeb9116c613e2d11 vs raw_artifacts_manifest.lf_hf.manifest_sha256=b6b959ba1c7cc12d61f355ca248b3f140c01c1c4bbde5e2cdeb9116c613e2d11",
+   "detail": null,
+   "severity": "INFO"
+  },
+  {
+   "id": "E4-wave-manifest-sha",
+   "ok": true,
+   "summary": "sha256(wave_raw_manifest.json)=06c3c9dffe08679a40076d3f51234da720076232452d538d1325b2b1304d5b2a vs declared 06c3c9dffe08679a40076d3f51234da720076232452d538d1325b2b1304d5b2a",
+   "detail": null,
+   "severity": "INFO"
+  },
+  {
+   "id": "E5-counts-bytes",
+   "ok": true,
+   "summary": "155+40=195 files; 100875290+7949132=108824422 bytes; wave envelope 40 = 39 case files + manifest itself (7936388+12744); lead find total 196/108,875,262 = 195 archived + top raw_manifest.json (50,840 B)",
+   "detail": null,
+   "severity": "INFO"
+  },
+  {
+   "id": "E6-raw-archive-sha",
+   "ok": true,
+   "summary": "raw archived copies: 155/155 sha256+size match raw_manifest.json (0 mismatches)",
+   "detail": null,
+   "severity": "INFO"
+  },
+  {
+   "id": "E7-wave-archive-sha",
+   "ok": true,
+   "summary": "wave archived copies: 39/39 sha256+size match wave_raw_manifest.json (0 mismatches)",
+   "detail": null,
+   "severity": "INFO"
+  },
+  {
+   "id": "E6b-ext-source-frozen",
+   "ok": false,
+   "summary": "live EXT source files match archived manifest: 155/155 checked, drift=[{'file': 'hf_raw/wedge/hfs00_analysis.json', 'bytes_manifest': 1915, 'bytes_live': 1913, 'sha_manifest': '01a61f477b79387a', 'sha_live': '084adf097b37a1ba'}]",
+   "detail": null,
+   "severity": "INFO"
+  },
+  {
+   "id": "E8-group-sums",
+   "ok": true,
+   "summary": "raw group counts {'lf_raw/baseline': 16, 'lf_raw/w01_plus1pct': 16, 'lf_raw/w03_plus1deg': 16, 'lf_raw/w10_plus2': 15, 'lf_raw/sens_coarse': 15, 'lf_raw/sens_fine': 15, 'lf_raw/mission_records': 5, 'hf_raw/wing': 38, 'hf_raw/wedge': 19} == declared {'hf_raw/wedge': 19, 'hf_raw/wing': 38, 'lf_raw/baseline': 16, 'lf_raw/mission_records': 5, 'lf_raw/sens_coarse': 15, 'lf_raw/sens_fine': 15, 'lf_raw/w01_plus1pct': 16, 'lf_raw/w03_plus1deg': 16, 'lf_raw/w10_plus2': 15}",
+   "detail": null,
+   "severity": "INFO"
+  },
+  {
+   "id": "E9-disk-counts",
+   "ok": true,
+   "summary": "on-disk archived files (excl. raw_manifest.json) = 195 files / 108824422 bytes; wave subtree 40 files / 7949132 bytes; +raw_manifest.json 50840 B => find total 196/108875262",
+   "detail": {
+    "archived_excluding_top_manifest": {
+     "n": 195,
+     "bytes": 108824422
+    },
+    "wave_subtree": {
+     "n": 40,
+     "bytes": 7949132
+    },
+    "lf_hf_subtree": {
+     "n": 155,
+     "bytes": 100875290
+    },
+    "top_raw_manifest_bytes": 50840
+   },
+   "severity": "INFO"
+  },
+  {
+   "id": "E10-wave-manifest-self-inventory",
+   "ok": true,
+   "summary": "wave_raw_manifest.json lists 39 case files and excludes itself (has no file_count/total_bytes fields); raw_artifacts_manifest envelope 40 files/7,949,132 B = 39 + manifest itself 12744 B; on-disk wave subtree 40 files",
+   "detail": null,
+   "severity": "INFO"
+  },
+  {
+   "id": "E11-data-manifest-raw-artifacts",
+   "ok": true,
+   "summary": "data_manifest.raw_artifacts keys=['manifest', 'sha256', 'archive_root', 'file_count', 'total_bytes', 'outside_git']",
+   "detail": null,
+   "severity": "INFO"
+  },
+  {
+   "id": "F1-budget-23-events",
+   "ok": true,
+   "summary": "evaluations.jsonl=23 events {'VSPAERO_LF': 6, 'WAVE_AREA_RULE': 7, 'RCAIDE_LF': 4, 'SU2_HF': 6}; summary budget cap/used/remaining=23/23/0",
+   "detail": null,
+   "severity": "INFO"
+  },
+  {
+   "id": "F2-budget-accounting-mission-e2e",
+   "ok": true,
+   "summary": "mission_e2e.budget_accounting 23/dict matches evaluations.jsonl and summary.json",
+   "detail": null,
+   "severity": "INFO"
+  },
+  {
+   "id": "F3-setup-failures-billed",
+   "ok": true,
+   "summary": "SU2 events not SOLVED: ['HFS-SETUP-01', 'HFS-SETUP-02', 'HFS-01'] (billable=true); explains HFS-00R/HFS-04 not_run under cap=6",
+   "detail": null,
+   "severity": "INFO"
+  },
+  {
+   "id": "F4-q-implied-by-force-matches-rho-v",
+   "ok": true,
+   "summary": "CD_N/CL_N imply q=20483.940233/20483.940233 Pa, equal to 0.5*rho*V^2=20483.940233, NOT the recorded dynamic_pressure_pa=20483.94023343017",
+   "detail": null,
+   "severity": "INFO"
+  },
+  {
+   "id": "F5-lf-hf-frozen-consistent",
+   "ok": true,
+   "summary": "shared frozen fields lf/hf identical: {'mach': (2.02, 2.02), 'altitude_m': (18288.0, 18288.0), 'density_kg_m3': (0.1153178340089936, 0.1153178340089936), 'speed_of_sound_m_s': (295.0680184, 295.0680184), 'velocity_m_s': (596.0373972278921, 596.0373972278921)}",
+   "detail": null,
+   "severity": "INFO"
+  },
+  {
+   "id": "F6-mission-observed-q-vs-isa",
+   "ok": true,
+   "summary": "mission_e2e.observed_mission_dynamic_pressure_pa=20654.013925 Pa is +0.830% vs approval ISA q=20483.940233 Pa (documented in mission_e2e note; LF/HF solvers used the ISA value 20483.94023343017 Pa, which is also hf_su2_results.frozen_conditions.dynamic_pressure_pa)",
+   "detail": null,
+   "severity": "INFO"
+  }
+ ],
+ "tables": {
+  "run_vs_worktree": {
+   "n_run": 60,
+   "n_wt": 60,
+   "only_in_D_RCAIDE": [],
+   "only_in_worktree": [],
+   "sha_mismatch": [
+    "approval_and_budget_ledger.json",
+    "blocker_register_current.json",
+    "data_manifest.json",
+    "drag_component_ledger.json",
+    "evaluations.jsonl",
+    "geometry_validation.json",
+    "hf_su2_results.json",
+    "lf_vspaero_density_sensitivity.csv",
+    "lf_vspaero_results.json",
+    "mesh_convergence.csv",
+    "mission_e2e.json",
+    "raw_artifacts_manifest.json",
+    "summary.json",
+    "wave_drag_area_rule.json",
+    "wave_per_theta_donq.csv"
+   ],
+   "line_ending_only": [
+    "blocker_register_current.json",
+    "data_manifest.json",
+    "drag_component_ledger.json",
+    "evaluations.jsonl",
+    "geometry_validation.json",
+    "hf_su2_results.json",
+    "lf_vspaero_density_sensitivity.csv",
+    "lf_vspaero_results.json",
+    "mesh_convergence.csv",
+    "mission_e2e.json",
+    "raw_artifacts_manifest.json",
+    "summary.json",
+    "wave_drag_area_rule.json",
+    "wave_per_theta_donq.csv"
+   ],
+   "real_content_diff": [
+    "approval_and_budget_ledger.json"
+   ]
+  },
+  "archive_lines": [
+   {
+    "iter": 1,
+    "objective": 34109.48257123768,
+    "best_feasible": null,
+    "feasible": true,
+    "status": "VALID",
+    "pcc": 1
+   },
+   {
+    "iter": 2,
+    "objective": 34109.48257123768,
+    "best_feasible": null,
+    "feasible": true,
+    "status": "VALID",
+    "pcc": 1
+   },
+   {
+    "iter": 3,
+    "objective": 34109.48257123768,
+    "best_feasible": null,
+    "feasible": true,
+    "status": "VALID",
+    "pcc": 1
+   },
+   {
+    "iter": 4,
+    "objective": 34035.332605355274,
+    "best_feasible": null,
+    "feasible": true,
+    "status": "VALID",
+    "pcc": 1
+   },
+   {
+    "iter": 5,
+    "objective": 34117.55529648991,
+    "best_feasible": null,
+    "feasible": true,
+    "status": "VALID",
+    "pcc": 1
+   }
+  ],
+  "fuel_rows": [
+   {
+    "case": "E2E-00",
+    "lf_mission.objective": 34109.48257123768,
+    "lf_mission.responses.fuel_burn_kg": 34109.48257123768,
+    "mission_e2e.objective_fuel_burn_kg": 34109.48257123768,
+    "mission_e2e.responses.fuel_burn_kg": 34109.48257123768,
+    "mission_e2e.delta_vs_E2E_00_kg": 0.0,
+    "wall_seconds_lf_mission": 80.23028550000163,
+    "obj_eq_lf_vs_e2e": true,
+    "fb_eq_lf_vs_e2e": true
+   },
+   {
+    "case": "E2E-01",
+    "lf_mission.objective": 34117.55529648991,
+    "lf_mission.responses.fuel_burn_kg": 34117.55529648991,
+    "mission_e2e.objective_fuel_burn_kg": 34117.55529648991,
+    "mission_e2e.responses.fuel_burn_kg": 34117.55529648991,
+    "mission_e2e.delta_vs_E2E_00_kg": 8.072725252233795,
+    "wall_seconds_lf_mission": 79.7700257000397,
+    "obj_eq_lf_vs_e2e": true,
+    "fb_eq_lf_vs_e2e": true
+   },
+   {
+    "case": "LFV-04",
+    "lf_mission.objective": 34117.751745703776,
+    "lf_mission.responses.fuel_burn_kg": 34117.751745703776,
+    "mission_e2e.objective_fuel_burn_kg": 34117.751745703776,
+    "mission_e2e.responses.fuel_burn_kg": 34117.751745703776,
+    "mission_e2e.delta_vs_E2E_00_kg": 8.269174466098775,
+    "wall_seconds_lf_mission": 79.48484119999921,
+    "obj_eq_lf_vs_e2e": true,
+    "fb_eq_lf_vs_e2e": true
+   },
+   {
+    "case": "LFV-05",
+    "lf_mission.objective": 34109.70744320392,
+    "lf_mission.responses.fuel_burn_kg": 34109.70744320392,
+    "mission_e2e.objective_fuel_burn_kg": 34109.70744320392,
+    "mission_e2e.responses.fuel_burn_kg": 34109.70744320392,
+    "mission_e2e.delta_vs_E2E_00_kg": 0.2248719662457006,
+    "wall_seconds_lf_mission": 79.4546339000226,
+    "obj_eq_lf_vs_e2e": true,
+    "fb_eq_lf_vs_e2e": true
+   }
+  ],
+  "tail_sensitivity_summary": {
+   "V01_plus_1pct_fuel_delta_kg": 8.269174466098775,
+   "V01_plus_1pct_fuel_delta_pct": 0.024243036958501493,
+   "V02_plus_2deg_fuel_delta_kg": 0.2248719662457006,
+   "V02_plus_2deg_fuel_delta_pct": 0.0006592652520484747,
+   "verdict": "both vertical-tail variables are physically active in the LF chain (nonzero, reproducible deltas) but the effect is small; zero-sideslip flight keeps the tail lift near zero, so the deltas come from parasite drag / wetted area and sweep changes. This satisfies the G1 requirement that V01/V02 not be inert."
+  },
+  "e2e00_vs_e2e01_design_diff": {
+   "tip_twist": [
+    0.0,
+    2.0
+   ]
+  },
+  "polar_reparse": {
+   "LFV-00": {
+    "polar_path": "lf_raw\\baseline\\main_wing_baseline_DegenGeom.polar",
+    "header": [
+     "Beta",
+     "Mach",
+     "AoA",
+     "Re/1e6",
+     "CL",
+     "CDo",
+     "CDi",
+     "CDtot",
+     "CS",
+     "L/D",
+     "E",
+     "CFx",
+     "CFy",
+     "CFz",
+     "CMx",
+     "CMy",
+     "CMz",
+     "CMl",
+     "CMm",
+     "CMn"
+    ],
+    "n_rows": 5,
+    "json_status": "SOLVED_VALID",
+    "json_valid": true,
+    "polar_sha256": "f03511d5ee374860cad635195569322746bafed00c167547fa1e109ea6821691",
+    "json_polar_sha256": "f03511d5ee374860cad635195569322746bafed00c167547fa1e109ea6821691",
+    "sha_match": true,
+    "per_alpha": [
+     {
+      "AoA": -2.0,
+      "polar_row_found": true,
+      "CL_polar": -0.08781966,
+      "CL_json": -0.08781966,
+      "CDi_polar": -0.0008942229,
+      "CDi_json": -0.0008942229,
+      "CDtot_polar": 0.004189302,
+      "CDtot_json": 0.004189302,
+      "max_abs_diff_CL_CDi_CDtot": 0.0,
+      "has_nan_polar": false
+     },
+     {
+      "AoA": 0.0,
+      "polar_row_found": true,
+      "CL_polar": 6.129519e-16,
+      "CL_json": 6.129519e-16,
+      "CDi_polar": -4.706976e-30,
+      "CDi_json": -4.706976e-30,
+      "CDtot_polar": 0.005028233,
+      "CDtot_json": 0.005028233,
+      "max_abs_diff_CL_CDi_CDtot": 0.0,
+      "has_nan_polar": false
+     },
+     {
+      "AoA": 2.0,
+      "polar_row_found": true,
+      "CL_polar": 0.08781966,
+      "CL_json": 0.08781966,
+      "CDi_polar": -0.0008942229,
+      "CDi_json": -0.0008942229,
+      "CDtot_polar": 0.004188608,
+      "CDtot_json": 0.004188608,
+      "max_abs_diff_CL_CDi_CDtot": 0.0,
+      "has_nan_polar": false
+     },
+     {
+      "AoA": 4.0,
+      "polar_row_found": true,
+      "CL_polar": 0.1757192,
+      "CL_json": 0.1757192,
+      "CDi_polar": -0.003566005,
+      "CDi_json": -0.003566005,
+      "CDtot_polar": 0.001679218,
+      "CDtot_json": 0.001679218,
+      "max_abs_diff_CL_CDi_CDtot": 0.0,
+      "has_nan_polar": false
+     },
+     {
+      "AoA": 6.0,
+      "polar_row_found": true,
+      "CL_polar": 0.2637765,
+      "CL_json": 0.2637765,
+      "CDi_polar": -0.007982808,
+      "CDi_json": -0.007982808,
+      "CDtot_polar": -0.002472157,
+      "CDtot_json": -0.002472157,
+      "max_abs_diff_CL_CDi_CDtot": 0.0,
+      "has_nan_polar": false
+     }
+    ]
+   },
+   "LFV-01": {
+    "polar_path": "lf_raw\\w01_plus1pct\\main_wing_w01_plus1pct_DegenGeom.polar",
+    "header": [
+     "Beta",
+     "Mach",
+     "AoA",
+     "Re/1e6",
+     "CL",
+     "CDo",
+     "CDi",
+     "CDtot",
+     "CS",
+     "L/D",
+     "E",
+     "CFx",
+     "CFy",
+     "CFz",
+     "CMx",
+     "CMy",
+     "CMz",
+     "CMl",
+     "CMm",
+     "CMn"
+    ],
+    "n_rows": 5,
+    "json_status": "MISSING",
+    "json_valid": false,
+    "polar_sha256": "4dfefe1577ba9fd956cac389e39b67f4c7a48c635c20a50ed9f3f664a9ec7e9b",
+    "json_polar_sha256": null,
+    "sha_match": false,
+    "per_alpha": []
+   },
+   "LFV-02": {
+    "polar_path": "lf_raw\\w03_plus1deg\\main_wing_w03_plus1deg_DegenGeom.polar",
+    "header": [
+     "Beta",
+     "Mach",
+     "AoA",
+     "Re/1e6",
+     "CL",
+     "CDo",
+     "CDi",
+     "CDtot",
+     "CS",
+     "L/D",
+     "E",
+     "CFx",
+     "CFy",
+     "CFz",
+     "CMx",
+     "CMy",
+     "CMz",
+     "CMl",
+     "CMm",
+     "CMn"
+    ],
+    "n_rows": 5,
+    "json_status": "MISSING",
+    "json_valid": false,
+    "polar_sha256": "05e1d3a42a3a8b5afc5a5dfc91b9e6b1cf76a852e26245118d24b64fd4bc1653",
+    "json_polar_sha256": null,
+    "sha_match": false,
+    "per_alpha": []
+   },
+   "LFV-03": {
+    "polar_path": "lf_raw\\w10_plus2\\main_wing_w10_plus2_DegenGeom.polar",
+    "header": [
+     "Beta",
+     "Mach",
+     "AoA",
+     "Re/1e6",
+     "CL",
+     "CDo",
+     "CDi",
+     "CDtot",
+     "CS",
+     "L/D",
+     "E",
+     "CFx",
+     "CFy",
+     "CFz",
+     "CMx",
+     "CMy",
+     "CMz",
+     "CMl",
+     "CMm",
+     "CMn"
+    ],
+    "n_rows": 5,
+    "json_status": "MISSING",
+    "json_valid": false,
+    "polar_sha256": "9fda4071a48a96d733e97504a50336220cbbb94edba6a3f40f3497168ef3cda3",
+    "json_polar_sha256": null,
+    "sha_match": false,
+    "per_alpha": []
+   },
+   "SENS-A": {
+    "polar_path": "lf_raw\\sens_coarse\\main_wing_sens_coarse_DegenGeom.polar",
+    "header": [
+     "Beta",
+     "Mach",
+     "AoA",
+     "Re/1e6",
+     "CL",
+     "CDo",
+     "CDi",
+     "CDtot",
+     "CS",
+     "L/D",
+     "E",
+     "CFx",
+     "CFy",
+     "CFz",
+     "CMx",
+     "CMy",
+     "CMz",
+     "CMl",
+     "CMm",
+     "CMn"
+    ],
+    "n_rows": 5,
+    "json_status": "SOLVED_VALID",
+    "json_valid": true,
+    "polar_sha256": "e9a8df4136d212a60755dea49a6b2486d066a8780a24d6935ab89e2538ba0a91",
+    "json_polar_sha256": "e9a8df4136d212a60755dea49a6b2486d066a8780a24d6935ab89e2538ba0a91",
+    "sha_match": true,
+    "per_alpha": [
+     {
+      "AoA": -2.0,
+      "polar_row_found": true,
+      "CL_polar": -0.08387934,
+      "CL_json": -0.08387934,
+      "CDi_polar": 0.0003435104,
+      "CDi_json": 0.0003435104,
+      "CDtot_polar": 0.005423288,
+      "CDtot_json": 0.005423288,
+      "max_abs_diff_CL_CDi_CDtot": 0.0,
+      "has_nan_polar": false
+     },
+     {
+      "AoA": 0.0,
+      "polar_row_found": true,
+      "CL_polar": 2.119945e-16,
+      "CL_json": 2.119945e-16,
+      "CDi_polar": -1.630133e-30,
+      "CDi_json": -1.630133e-30,
+      "CDtot_polar": 0.005028233,
+      "CDtot_json": 0.005028233,
+      "max_abs_diff_CL_CDi_CDtot": 0.0,
+      "has_nan_polar": false
+     },
+     {
+      "AoA": 2.0,
+      "polar_row_found": true,
+      "CL_polar": 0.08387934,
+      "CL_json": 0.08387934,
+      "CDi_polar": 0.0003435104,
+      "CDi_json": 0.0003435104,
+      "CDtot_polar": 0.005420316,
+      "CDtot_json": 0.005420316,
+      "max_abs_diff_CL_CDi_CDtot": 0.0,
+      "has_nan_polar": false
+     },
+     {
+      "AoA": 4.0,
+      "polar_row_found": true,
+      "CL_polar": 0.1675846,
+      "CL_json": 0.1675846,
+      "CDi_polar": 0.001369858,
+      "CDi_json": 0.001369858,
+      "CDtot_polar": 0.00659464,
+      "CDtot_json": 0.00659464,
+      "max_abs_diff_CL_CDi_CDtot": 0.0,
+      "has_nan_polar": false
+     },
+     {
+      "AoA": 6.0,
+      "polar_row_found": true,
+      "CL_polar": 0.2509429,
+      "CL_json": 0.2509429,
+      "CDi_polar": 0.003066545,
+      "CDi_json": 0.003066545,
+      "CDtot_polar": 0.008531459,
+      "CDtot_json": 0.008531459,
+      "max_abs_diff_CL_CDi_CDtot": 0.0,
+      "has_nan_polar": false
+     }
+    ]
+   },
+   "SENS-B": {
+    "polar_path": "lf_raw\\sens_fine\\main_wing_sens_fine_DegenGeom.polar",
+    "header": [
+     "Beta",
+     "Mach",
+     "AoA",
+     "Re/1e6",
+     "CL",
+     "CDo",
+     "CDi",
+     "CDtot",
+     "CS",
+     "L/D",
+     "E",
+     "CFx",
+     "CFy",
+     "CFz",
+     "CMx",
+     "CMy",
+     "CMz",
+     "CMl",
+     "CMm",
+     "CMn"
+    ],
+    "n_rows": 5,
+    "json_status": "SOLVED_VALID",
+    "json_valid": true,
+    "polar_sha256": "166b1b2d46b0a9a55da7d888705b240b6666cac6b6b8eb1be6cddc7e4f7a5e0d",
+    "json_polar_sha256": "166b1b2d46b0a9a55da7d888705b240b6666cac6b6b8eb1be6cddc7e4f7a5e0d",
+    "sha_match": true,
+    "per_alpha": [
+     {
+      "AoA": -2.0,
+      "polar_row_found": true,
+      "CL_polar": -0.1082826,
+      "CL_json": -0.1082826,
+      "CDi_polar": -0.02260794,
+      "CDi_json": -0.02260794,
+      "CDtot_polar": -0.01743927,
+      "CDtot_json": -0.01743927,
+      "max_abs_diff_CL_CDi_CDtot": 0.0,
+      "has_nan_polar": false
+     },
+     {
+      "AoA": 0.0,
+      "polar_row_found": true,
+      "CL_polar": 1.338493e-15,
+      "CL_json": 1.338493e-15,
+      "CDi_polar": -2.348086e-28,
+      "CDi_json": -2.348086e-28,
+      "CDtot_polar": 0.005028233,
+      "CDtot_json": 0.005028233,
+      "max_abs_diff_CL_CDi_CDtot": 0.0,
+      "has_nan_polar": false
+     },
+     {
+      "AoA": 2.0,
+      "polar_row_found": true,
+      "CL_polar": 0.1082826,
+      "CL_json": 0.1082826,
+      "CDi_polar": -0.02260794,
+      "CDi_json": -0.02260794,
+      "CDtot_polar": -0.01743937,
+      "CDtot_json": -0.01743937,
+      "max_abs_diff_CL_CDi_CDtot": 0.0,
+      "has_nan_polar": false
+     },
+     {
+      "AoA": 4.0,
+      "polar_row_found": true,
+      "CL_polar": 0.2211598,
+      "CL_json": 0.2211598,
+      "CDi_polar": -0.09015653,
+      "CDi_json": -0.09015653,
+      "CDtot_polar": -0.0845689,
+      "CDtot_json": -0.0845689,
+      "max_abs_diff_CL_CDi_CDtot": 0.0,
+      "has_nan_polar": false
+     },
+     {
+      "AoA": 6.0,
+      "polar_row_found": true,
+      "CL_polar": 0.3431684,
+      "CL_json": 0.3431684,
+      "CDi_polar": -0.2018231,
+      "CDi_json": -0.2018231,
+      "CDtot_polar": -0.1955435,
+      "CDtot_json": -0.1955435,
+      "max_abs_diff_CL_CDi_CDtot": 0.0,
+      "has_nan_polar": false
+     }
+    ]
+   }
+  },
+  "invalid_polar_evidence": {
+   "LFV-01": {
+    "n_rows": 5,
+    "nan_rows": 5,
+    "alpha2_CL": 31.77605,
+    "alpha2_CDo": NaN,
+    "alpha2_CDi": -0.3248574,
+    "alpha2_CDtot": NaN,
+    "alpha2_Re_per_1e6": 5.05857e-318
+   },
+   "LFV-02": {
+    "n_rows": 5,
+    "nan_rows": 5,
+    "alpha2_CL": 31.32113,
+    "alpha2_CDo": NaN,
+    "alpha2_CDi": -0.2599315,
+    "alpha2_CDtot": NaN,
+    "alpha2_Re_per_1e6": 4.15674e-318
+   },
+   "LFV-03": {
+    "n_rows": 5,
+    "nan_rows": 5,
+    "alpha2_CL": 31.4877,
+    "alpha2_CDo": NaN,
+    "alpha2_CDi": -0.3189243,
+    "alpha2_CDtot": NaN,
+    "alpha2_Re_per_1e6": 9.10276e-319
+   }
+  },
+  "polar_parsed_cross": {
+   "SENS-A": {
+    "path": "lf_raw\\sens_coarse\\polar_parsed.json",
+    "rows": {
+     "header": [
+      "Beta",
+      "Mach",
+      "AoA",
+      "Re/1e6",
+      "CL",
+      "CDo",
+      "CDi",
+      "CDtot",
+      "CS",
+      "L/D",
+      "E",
+      "CFx",
+      "CFy",
+      "CFz",
+      "CMx",
+      "CMy",
+      "CMz",
+      "CMl",
+      "CMm",
+      "CMn"
+     ],
+     "rows": [
+      {
+       "Beta": 0.0,
+       "Mach": 2.02,
+       "AoA": -2.0,
+       "Re/1e6": 89.39701,
+       "CL": -0.08387934,
+       "CDo": 0.005079778,
+       "CDi": 0.0003435104,
+       "CDtot": 0.005423288,
+       "CS": 2.108764e-11,
+       "L/D": -15.46651,
+       "E": 3.562618,
+       "CFx": -0.002584045,
+       "CFy": 2.108764e-11,
+       "CFz": -0.08384023,
+       "CMx": -1.224754e-09,
+       "CMy": 0.02281313,
+       "CMz": 3.637583e-12,
+       "CMl": 1.224754e-09,
+       "CMm": 0.02281313,
+       "CMn": -3.637583e-12,
+       "_extra_unlabeled": [
+        7.07764
+       ]
+      },
+      {
+       "Beta": 0.0,
+       "Mach": 2.02,
+       "AoA": 0.0,
+       "Re/1e6": 89.39701,
+       "CL": 2.119945e-16,
+       "CDo": 0.005028233,
+       "CDi": -1.630133e-30,
+       "CDtot": 0.005028233,
+       "CS": 1.177993e-37,
+       "L/D": 4.216084e-14,
+       "E": -0.004795405,
+       "CFx": -1.630133e-30,
+       "CFy": 1.177993e-37,
+       "CFz": 2.119945e-16,
+       "CMx": 1.101606e-23,
+       "CMy": -2.21348e-16,
+       "CMz": 9.107265e-38,
+       "CMl": -1.101606e-23,
+       "CMm": -2.21348e-16,
+       "CMn": -9.107265e-38,
+       "_extra_unlabeled": [
+        3.24
+       ]
+      },
+      {
+       "Beta": 0.0,
+       "Mach": 2.02,
+       "AoA": 2.0,
+       "Re/1e6": 89.39701,
+       "CL": 0.08387934,
+       "CDo": 0.005076806,
+       "CDi": 0.0003435104,
+       "CDtot": 0.005420316,
+       "CS": 2.108764e-11,
+       "L/D": 15.47499,
+       "E": 3.562618,
+       "CFx": -0.002584045,
+       "CFy": 2.108764e-11,
+       "CFz": 0.08384023,
+       "CMx": 1.224754e-09,
+       "CMy": -0.02281313,
+       "CMz": 3.637583e-12,
+       "CMl": -1.224754e-09,
+       "CMm": -0.02281313,
+       "CMn": -3.637583e-12,
+       "_extra_unlabeled": [
+        1.038327
+       ]
+      },
+      {
+       "Beta": 0.0,
+       "Mach": 2.02,
+       "AoA": 4.0,
+       "Re/1e6": 89.39701,
+       "CL": 0.1675846,
+       "CDo": 0.005224782,
+       "CDi": 0.001369858,
+       "CDtot": 0.00659464,
+       "CS": -2.7826e-10,
+       "L/D": 25.41225,
+       "E": 3.566087,
+       "CFx": -0.01032359,
+       "CFy": -2.7826e-10,
+       "CFz": 0.167272,
+       "CMx": -3.2422e-09,
+       "CMy": -0.04551511,
+       "CMz": -1.762275e-10,
+       "CMl": 3.2422e-09,
+       "CMm": -0.04551511,
+       "CMn": 1.762275e-10,
+       "_extra_unlabeled": [
+        0.2443595
+       ]
+      },
+      {
+       "Beta": 0.0,
+       "Mach": 2.02,
+       "AoA": 6.0,
+       "Re/1e6": 89.39701,
+       "CL": 0.2509429,
+       "CDo": 0.005464914,
+       "CDi": 0.003066545,
+       "CDtot": 0.008531459,
+       "CS": -6.248143e-10,
+       "L/D": 29.41384,
+       "E": 3.571904,
+       "CFx": -0.02318093,
+       "CFy": -6.248143e-10,
+       "CFz": 0.2498888,
+       "CMx": -4.843545e-09,
+       "CMy": -0.06799536,
+       "CMz": -3.957071e-10,
+       "CMl": 4.843545e-09,
+       "CMm": -0.06799536,
+       "CMn": 3.957071e-10,
+       "_extra_unlabeled": [
+        0.8463335
+       ]
+      }
+     ]
+    }
+   },
+   "SENS-B": {
+    "path": "lf_raw\\sens_fine\\polar_parsed.json",
+    "rows": {
+     "header": [
+      "Beta",
+      "Mach",
+      "AoA",
+      "Re/1e6",
+      "CL",
+      "CDo",
+      "CDi",
+      "CDtot",
+      "CS",
+      "L/D",
+      "E",
+      "CFx",
+      "CFy",
+      "CFz",
+      "CMx",
+      "CMy",
+      "CMz",
+      "CMl",
+      "CMm",
+      "CMn"
+     ],
+     "rows": [
+      {
+       "Beta": 0.0,
+       "Mach": 2.02,
+       "AoA": -2.0,
+       "Re/1e6": 89.39701,
+       "CL": -0.1082826,
+       "CDo": 0.005168669,
+       "CDi": -0.02260794,
+       "CDtot": -0.01743927,
+       "CS": -2.853562e-09,
+       "L/D": 6.209123,
+       "E": -0.09021015,
+       "CFx": -0.02637318,
+       "CFy": -2.853562e-09,
+       "CFz": -0.1074276,
+       "CMx": 5.736547e-10,
+       "CMy": 0.03696871,
+       "CMz": -3.745671e-09,
+       "CMl": -5.736547e-10,
+       "CMm": 0.03696871,
+       "CMn": 3.745671e-09,
+       "_extra_unlabeled": [
+        8.518137
+       ]
+      },
+      {
+       "Beta": 0.0,
+       "Mach": 2.02,
+       "AoA": 0.0,
+       "Re/1e6": 89.39701,
+       "CL": 1.338493e-15,
+       "CDo": 0.005028233,
+       "CDi": -2.348086e-28,
+       "CDtot": 0.005028233,
+       "CS": -1.870646e-35,
+       "L/D": 2.661955e-13,
+       "E": -0.001327142,
+       "CFx": -2.348086e-28,
+       "CFy": -1.870646e-35,
+       "CFz": 1.338493e-15,
+       "CMx": -9.92454e-23,
+       "CMy": -9.30655e-16,
+       "CMz": -7.975411e-36,
+       "CMl": 9.92454e-23,
+       "CMm": -9.30655e-16,
+       "CMn": 7.975411e-36,
+       "_extra_unlabeled": [
+        3.24
+       ]
+      },
+      {
+       "Beta": 0.0,
+       "Mach": 2.02,
+       "AoA": 2.0,
+       "Re/1e6": 89.39701,
+       "CL": 0.1082826,
+       "CDo": 0.005168573,
+       "CDi": -0.02260794,
+       "CDtot": -0.01743937,
+       "CS": -2.853563e-09,
+       "L/D": -6.209089,
+       "E": -0.09021015,
+       "CFx": -0.02637318,
+       "CFy": -2.853563e-09,
+       "CFz": 0.1074276,
+       "CMx": -5.736547e-10,
+       "CMy": -0.03696871,
+       "CMz": -3.745671e-09,
+       "CMl": 5.736547e-10,
+       "CMm": -0.03696871,
+       "CMn": 3.745671e-09,
+       "_extra_unlabeled": [
+        0.7217902
+       ]
+      },
+      {
+       "Beta": 0.0,
+       "Mach": 2.02,
+       "AoA": 4.0,
+       "Re/1e6": 89.39701,
+       "CL": 0.2211598,
+       "CDo": 0.005587624,
+       "CDi": -0.09015653,
+       "CDtot": -0.0845689,
+       "CS": 1.195984e-08,
+       "L/D": -2.615144,
+       "E": -0.09436577,
+       "CFx": -0.1053642,
+       "CFy": 1.195984e-08,
+       "CFz": 0.2143321,
+       "CMx": -2.45747e-09,
+       "CMy": -0.07375746,
+       "CMz": 4.997532e-09,
+       "CMl": 2.45747e-09,
+       "CMm": -0.07375746,
+       "CMn": -4.997532e-09,
+       "_extra_unlabeled": [
+        0.6283571
+       ]
+      },
+      {
+       "Beta": 0.0,
+       "Mach": 2.02,
+       "AoA": 6.0,
+       "Re/1e6": 89.39701,
+       "CL": 0.3431684,
+       "CDo": 0.006279559,
+       "CDi": -0.2018231,
+       "CDtot": -0.1955435,
+       "CS": 2.685503e-08,
+       "L/D": -1.754947,
+       "E": -0.1014946,
+       "CFx": -0.2365883,
+       "CFy": 2.685503e-08,
+       "CFz": 0.3201923,
+       "CMx": -3.671233e-09,
+       "CMy": -0.1101868,
+       "CMz": 1.122162e-08,
+       "CMl": 3.671233e-09,
+       "CMm": -0.1101868,
+       "CMn": -1.122162e-08,
+       "_extra_unlabeled": [
+        3.415151
+       ]
+      }
+     ]
+    }
+   }
+  },
+  "mesh_recompute": {
+   "coarse": {
+    "level": "coarse",
+    "ndime": 3,
+    "npoin": 14079,
+    "nelem": 61436,
+    "wall_triangles": 12896,
+    "node_indexing": "0-based (raw .su2 node ids used as-is; 1-based reading gives garbage, 0-based reproduces declared mesh stats)",
+    "recomputed_total_tet_volume": 2015871.5166524984,
+    "json_total_tet_volume": 2015871.5166524919,
+    "recomputed_wall_area": 722.2754060162739,
+    "json_wall_area": 722.2754060160041,
+    "preflight_wall_area": 722.275406016271,
+    "recomputed_wall_volume_divergence": 128.48334750151434,
+    "json_wall_volume_divergence": 128.48334750167413,
+    "csv_volume": 128.48334750167413,
+    "csv_area": 722.2754060160041,
+    "csv_CL": null,
+    "csv_CD": null,
+    "csv_CMy": null,
+    "volume_err_recomputed": -0.007479648752782286,
+    "csv_volume_err": -0.007479648751547926,
+    "area_err_recomputed": 0.006550754491115862,
+    "csv_area_err": 0.006550754490739999,
+    "walltime_s": 0.09,
+    "d_volume_json_vs_recomputed": -6.51925802230835e-09,
+    "d_area_json_vs_recomputed": -2.6977886591339484e-10,
+    "d_volume_csv_vs_recomputed": 1.5978685041773133e-10,
+    "d_area_csv_vs_recomputed": -2.6977886591339484e-10,
+    "d_area_csv_vs_json": 0.0,
+    "d_volerr_csv_vs_recomputed": 1.2343607039277948e-12,
+    "d_areaerr_csv_vs_recomputed": -3.758634029016328e-13,
+    "d_area_preflight_vs_json": 2.668230081326328e-10
+   },
+   "medium": {
+    "level": "medium",
+    "ndime": 3,
+    "npoin": 28323,
+    "nelem": 125876,
+    "wall_triangles": 25700,
+    "node_indexing": "0-based (raw .su2 node ids used as-is; 1-based reading gives garbage, 0-based reproduces declared mesh stats)",
+    "recomputed_total_tet_volume": 2015871.1723349323,
+    "json_total_tet_volume": 2015871.1723349218,
+    "recomputed_wall_area": 722.5664575910487,
+    "json_wall_area": 722.5664575914074,
+    "preflight_wall_area": 722.5664575910514,
+    "recomputed_wall_volume_divergence": 128.82766506795232,
+    "json_wall_volume_divergence": 128.82766506802807,
+    "csv_volume": 128.82766506802807,
+    "csv_area": 722.5664575914074,
+    "csv_CL": 0.0927765996,
+    "csv_CD": 0.006819724029,
+    "csv_CMy": -0.03807613433,
+    "volume_err_recomputed": -0.004819831752158277,
+    "csv_volume_err": -0.004819831751573137,
+    "area_err_recomputed": 0.006956359028865933,
+    "csv_area_err": 0.006956359029365738,
+    "walltime_s": 0.19,
+    "d_volume_json_vs_recomputed": -1.0477378964424133e-08,
+    "d_area_json_vs_recomputed": 3.5868197301169857e-10,
+    "d_volume_csv_vs_recomputed": 7.574385563202668e-11,
+    "d_area_csv_vs_recomputed": 3.5868197301169857e-10,
+    "d_area_csv_vs_json": 0.0,
+    "d_volerr_csv_vs_recomputed": 5.851395756817368e-13,
+    "d_areaerr_csv_vs_recomputed": 4.998050584514857e-13,
+    "d_area_preflight_vs_json": -3.559534889063798e-10
+   },
+   "fine": {
+    "level": "fine",
+    "ndime": 3,
+    "npoin": 56623,
+    "nelem": 256455,
+    "wall_triangles": 49520,
+    "node_indexing": "0-based (raw .su2 node ids used as-is; 1-based reading gives garbage, 0-based reproduces declared mesh stats)",
+    "recomputed_total_tet_volume": 2015870.9863957982,
+    "json_total_tet_volume": 2015870.9863958426,
+    "recomputed_wall_area": 722.7633839172481,
+    "json_wall_area": 722.7633839169255,
+    "preflight_wall_area": 722.7633839172514,
+    "recomputed_wall_volume_divergence": 129.0136042016037,
+    "json_wall_volume_divergence": 129.01360420185486,
+    "csv_volume": 129.01360420185486,
+    "csv_area": 722.7633839169255,
+    "csv_CL": 0.09547677964,
+    "csv_CD": 0.007117048361,
+    "csv_CMy": -0.0394070004,
+    "volume_err_recomputed": -0.0033834714935645493,
+    "csv_volume_err": -0.003383471491624302,
+    "area_err_recomputed": 0.0072307922167664795,
+    "csv_area_err": 0.007230792216316812,
+    "walltime_s": 0.37,
+    "d_volume_json_vs_recomputed": 4.44706529378891e-08,
+    "d_area_json_vs_recomputed": -3.226432454539463e-10,
+    "d_volume_csv_vs_recomputed": 2.511626462364802e-10,
+    "d_area_csv_vs_recomputed": -3.226432454539463e-10,
+    "d_area_csv_vs_json": 0.0,
+    "d_volerr_csv_vs_recomputed": 1.9402474418783733e-12,
+    "d_areaerr_csv_vs_recomputed": -4.4966721318706604e-13,
+    "d_area_preflight_vs_json": 3.2594016374787316e-10
+   }
+  },
+  "data_manifest_verify": {
+   "n": 59,
+   "checked": 59,
+   "bad": [
+    {
+     "path": "approval_and_budget_ledger.json",
+     "manifest_sha256": "d064d93fd14b865f",
+     "actual_sha256": "b491fcf115e8d118",
+     "manifest_bytes": 32677,
+     "actual_bytes": 43240,
+     "resolved_at": "D:\\RCAIDE\\research\\concorde_metaopt\\optimization_runs\\p1p3-fullchain-20261031T0407Z\\approval_and_budget_ledger.json"
+    }
+   ],
+   "n_bad": 1,
+   "file_count_field": 59,
+   "total_bytes_field": 1181000,
+   "sample_paths": [
+    "approval_and_budget_ledger.json",
+    "blocker_register_current.json",
+    "drag_component_ledger.json"
+   ]
+  },
+  "raw_artifacts_manifest_keys": {
+   "top": [
+    "schema_version",
+    "run_id",
+    "archive_root",
+    "note",
+    "policy",
+    "generated_utc",
+    "lf_hf",
+    "wave",
+    "combined_file_count",
+    "combined_total_bytes"
+   ],
+   "lf_hf": [
+    "manifest",
+    "manifest_sha256",
+    "file_count",
+    "total_bytes",
+    "groups"
+   ],
+   "wave": [
+    "dir",
+    "manifest",
+    "manifest_sha256",
+    "file_count",
+    "total_bytes",
+    "manifest_json_sha256"
+   ]
+  },
+  "raw_manifest_verify": {
+   "lf_hf": {
+    "n": 155,
+    "bad": [],
+    "n_bad": 0,
+    "group_counts": {
+     "lf_raw/baseline": 16,
+     "lf_raw/w01_plus1pct": 16,
+     "lf_raw/w03_plus1deg": 16,
+     "lf_raw/w10_plus2": 15,
+     "lf_raw/sens_coarse": 15,
+     "lf_raw/sens_fine": 15,
+     "lf_raw/mission_records": 5,
+     "hf_raw/wing": 38,
+     "hf_raw/wedge": 19
+    }
+   },
+   "wave": {
+    "n": 39,
+    "checked": 39,
+    "bad": [],
+    "n_bad": 0,
+    "group_counts": {
+     "WAVE-00": 4,
+     "WAVE-00R": 5,
+     "WAVE-01": 6,
+     "WAVE-02": 6,
+     "WAVE-03": 6,
+     "WAVE-04": 6,
+     "WAVE-05": 6
+    }
+   },
+   "ext_source_drift": {
+    "n": 1,
+    "checked": 155,
+    "items": [
+     {
+      "file": "hf_raw/wedge/hfs00_analysis.json",
+      "bytes_manifest": 1915,
+      "bytes_live": 1913,
+      "sha_manifest": "01a61f477b79387a",
+      "sha_live": "084adf097b37a1ba"
+     }
+    ]
+   }
+  },
+  "disk_inventory": {
+   "archived_excluding_top_manifest": {
+    "n": 195,
+    "bytes": 108824422
+   },
+   "wave_subtree": {
+    "n": 40,
+    "bytes": 7949132
+   },
+   "lf_hf_subtree": {
+    "n": 155,
+    "bytes": 100875290
+   },
+   "top_raw_manifest_bytes": 50840
+  },
+  "evaluations": {
+   "n": 23,
+   "by_category": {
+    "VSPAERO_LF": 6,
+    "WAVE_AREA_RULE": 7,
+    "RCAIDE_LF": 4,
+    "SU2_HF": 6
+   },
+   "billable": 23,
+   "status_counts": {
+    "FAILED": 1,
+    "FAILED_CONFIG_PARSE": 1,
+    "SOLVED": 20,
+    "SOLVED_VOID_CONVERGENCE": 1
+   }
+  },
+  "q_check": {
+   "q_from_rho_v": 20483.94023343017,
+   "q_metadata": 20483.94023343017,
+   "rel_diff_pct": 0.0,
+   "q_implied_by_CD_N": 20483.94023343017,
+   "q_implied_by_CL_N": 20483.940233430174,
+   "mission_q_isa": 20483.94023343017,
+   "mission_observed_q": 20654.013924958777
+  },
+  "frozen_cross": {
+   "mach": [
+    2.02,
+    2.02
+   ],
+   "altitude_m": [
+    18288.0,
+    18288.0
+   ],
+   "density_kg_m3": [
+    0.1153178340089936,
+    0.1153178340089936
+   ],
+   "speed_of_sound_m_s": [
+    295.0680184,
+    295.0680184
+   ],
+   "velocity_m_s": [
+    596.0373972278921,
+    596.0373972278921
+   ]
+  },
+  "q_mission": {
+   "mission_observed_q_pa": 20654.013924958777,
+   "approval_ISA_q_pa": 20483.94023343017,
+   "rel_diff_pct": 0.830278206197077
+  },
+  "geometry_validation_keys": [
+   "run_id",
+   "case",
+   "conditions",
+   "cases",
+   "w10_twist_check",
+   "status",
+   "warnings"
+  ],
+  "environment_keys": [
+   "schema_version",
+   "run_id",
+   "probed_utc",
+   "os",
+   "pythons",
+   "solvers",
+   "git",
+   "worktrees",
+   "network",
+   "resource_policy"
+  ]
+ },
+ "artifacts": {
+  "script": "C:\\Users\\pc\\AppData\\Local\\RCAIDE_Supersonic_agent_state\\fullchain\\a2\\scripts\\verify_phase5.py",
+  "log": "C:\\Users\\pc\\AppData\\Local\\RCAIDE_Supersonic_agent_state\\fullchain\\a2\\scripts\\verify_phase5.log",
+  "check_results": "C:\\Users\\pc\\AppData\\Local\\RCAIDE_Supersonic_agent_state\\fullchain\\a2\\scripts\\check_results.json",
+  "report": "C:\\Users\\pc\\AppData\\Local\\RCAIDE_Supersonic_agent_state\\fullchain\\a2\\reconcile_report.md"
+ }
+}

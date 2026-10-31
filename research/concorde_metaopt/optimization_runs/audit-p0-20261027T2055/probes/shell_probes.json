@@ -1,0 +1,56 @@
+{
+  "probe_id": "20261027T131804Z",
+  "probe_dir": "research\\concorde_metaopt\\optimization_runs\\audit-p0-20261027T2055\\probes",
+  "git": {
+    "head_sha": "ec65e5a9a723bc52df8075a395fcaf9e0fd0fc2b",
+    "branch": "research/concorde-metaopt",
+    "status_lines": [
+      " M .gitignore",
+      " M tutorials/Optimization_Wing_Planform_Fuel_Burn/Differential_Evolution.py",
+      " M tutorials/Optimization_Wing_Planform_Fuel_Burn/README_DE.md",
+      " M tutorials/Optimization_Wing_Planform_Fuel_Burn/Save_Results.py",
+      "?? research/"
+    ],
+    "returncodes": {
+      "head": 0,
+      "branch": 0,
+      "status": 0
+    }
+  },
+  "tools": {
+    "su2_cfd": {
+      "version_text": "SU2 v8.5.0 \"Harrier\", The Open-Source CFD Code",
+      "returncode": 0,
+      "raw_file": "su2_help.txt"
+    },
+    "gmsh": {
+      "version_text": "4.15.2",
+      "returncode": 0,
+      "raw_file": "gmsh_version.txt"
+    },
+    "openvsp_python_binding": {
+      "external_interpreters": [
+        {
+          "python": "D:\\Anaconda\\envs\\SUAVE\\python.exe",
+          "probe": {
+            "stdout": "OPENVSP_IMPORT_FAIL ImportError DLL load failed while importing _vsp: Ӧ�ó�����Ʋ�������ֹ���ļ���",
+            "returncode": 0,
+            "version_stdout": "D:\\Anaconda\\envs\\SUAVE\\python.exe\n3.9.25 (main, Nov  3 2025, 22:44:01) [MSC v.1929 64 bit (AMD64)]"
+          },
+          "probe_with_system_libxml2": {
+            "stdout": "OPENVSP_IMPORT_FAIL ImportError DLL load failed while importing _vsp: Ӧ�ó�����Ʋ�������ֹ���ļ���",
+            "raw_file": "openvsp_suave_with_libxml2.txt"
+          }
+        },
+        {
+          "python": "D:\\Anaconda\\python.exe",
+          "probe": {
+            "stdout": "OPENVSP_IMPORT_FAIL ImportError DLL load failed while importing _vsp: Ӧ�ó�����Ʋ�������ֹ���ļ���",
+            "returncode": 0,
+            "version_stdout": "D:\\Anaconda\\python.exe\n3.14.6 | packaged by Anaconda, Inc. | (main, Jul  9 2026, 14:29:05) [MSC v.1942 64 bit (AMD64)]"
+          }
+        }
+      ]
+    }
+  }
+}

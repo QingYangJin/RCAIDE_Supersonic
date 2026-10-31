@@ -1,0 +1,12 @@
+check_id,subject,model_value,openvsp_value,relative_delta,tolerance,status,detail
+OV01_wing_area,main_wing planform area (m2),358.25000000000006,358.25000000000006,0.0,0.005,pass,OpenVSP TotalArea versus model reference area
+OV02_wing_span,main_wing span (m),25.604638251691824,25.604638251691824,0.0,0.005,pass,OpenVSP TotalSpan versus model projected span
+OV03_tail_area,vertical_tail planform area (m2),33.91,33.91,0.0,0.005,pass,
+OV04_tail_span,vertical_tail span (m),5.0093312926976585,5.009331292697659,1.7730478736650247e-16,0.005,pass,
+OV05_fuselage_length,fuselage length (m),61.66,61.66,0.0,1e-09,pass,
+OV06_wing_mesh_span,main_wing STL lateral extent (m),25.604638251691824,25.604638252,1.2035967558866328e-11,0.005,pass,Largest lateral STL extent for the symmetric wing
+OV11_tail_mesh_span,vertical_tail STL lateral extent (m),5.0093312926976585,5.0093312927,4.673754194981005e-13,0.005,pass,Largest lateral STL extent for the rotated vertical tail
+OV07_fuselage_mesh_length,fuselage STL longitude extent (m),61.66,61.66,0.0,0.01,pass,
+OV08_fuselage_width,fuselage STL width (m),2.88,3.3122883808,0.1501001322222223,0.02,warn,"Known OpenVSP spline overshoot; a warning, not an accepted value"
+OV09_fuselage_height,fuselage STL height (m),3.32000064,3.3589447496,0.011730151232741948,0.02,pass,Known OpenVSP spline overshoot; height stays within 2% at baseline
+OV10_assembly_length,assembly STL longitude extent (m),61.66,61.66,0.0,0.01,pass,Wing trailing edge lies forward of the fuselage tail

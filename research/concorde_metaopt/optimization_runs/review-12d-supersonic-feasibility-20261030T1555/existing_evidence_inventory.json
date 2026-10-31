@@ -1,0 +1,275 @@
+{
+  "schema_version": 1,
+  "inventory_id": "EVIDENCE-INVENTORY-2026-10-30",
+  "created_utc": "2026-10-30T07:40:55.082Z",
+  "git_sha": "1f79924e296c511bd6d700bb579b11a685958f6c",
+  "branch": "research/concorde-metaopt",
+  "method": "Read-only scan of research/concorde_metaopt/optimization_runs plus selected external artefact manifests. summary_sha256 and file counts recomputed from disk during this review; nothing was executed.",
+  "physical_call_ledger": {
+    "rcaide_mission_evaluations": 10,
+    "rcaide_mission_runs": [
+      "smoke-p2-20261029T1520 (5)",
+      "smoke-p2-20261029T1612 (5)"
+    ],
+    "vspaero_solves": 0,
+    "su2_solves": 0,
+    "openvsp_export_sessions": 3,
+    "openvsp_exported_cases": 7,
+    "doe_geometry_candidates": 160,
+    "doe_physical_labels": 0,
+    "p1_geometry_cases": 31,
+    "note": "The 160 DOE candidates are geometry-only candidates and must never be shown as 160 fuel-burn labels. The 10 Mission calls are single-cruise-segment evaluations, not full-mission fuel burn.",
+    "unarchived_calls_documented_only": 5,
+    "unarchived_detail": "research/concorde_metaopt/README.md:468-471 documents 4 calibration Mission runs and 1 136 t diagnostic probe before the two smoke runs. Total documented = 15, but only 10 are archived and independently recomputable. Do not report 15 as archived physical evaluations."
+  },
+  "committed_runs": [
+    {
+      "run_id": "audit-p0-20261027T2055",
+      "stage": "P0",
+      "status": "audit_completed",
+      "method": "none",
+      "git_sha": "ec65e5a9",
+      "true_evaluations": 0,
+      "low_fidelity_calls": 0,
+      "su2_calls": 0,
+      "summary_sha256": "0bd0e8556fc7ae495b9af2ef39a4517b25631fc7a7f331631ac4a96441fc02a1",
+      "file_count": 37,
+      "total_bytes": 104776,
+      "evidence_role": "initial audit"
+    },
+    {
+      "run_id": "audit-p0-20261028T1430",
+      "stage": "P0",
+      "status": "audit_completed",
+      "method": "none",
+      "git_sha": "d9aa5e63",
+      "true_evaluations": 0,
+      "low_fidelity_calls": 0,
+      "su2_calls": 0,
+      "summary_sha256": "554521049c5e38b2040277c0691160b52e9fa78bd7185743e0ecdda61bb970e8",
+      "file_count": 37,
+      "total_bytes": 106674,
+      "evidence_role": "audit with shell/OpenVSP probes"
+    },
+    {
+      "run_id": "audit-p0-reviewfix-20261028T1540",
+      "stage": "P0",
+      "status": "audit_completed",
+      "method": "none",
+      "git_sha": "fdadeaa0",
+      "true_evaluations": 0,
+      "low_fidelity_calls": 0,
+      "su2_calls": 0,
+      "summary_sha256": "3da125aa386043d0e7dda4ff9fe074e086d9b10fbe175d7828bd892fc6f92e37",
+      "file_count": 40,
+      "total_bytes": 178739,
+      "evidence_role": "review-fix audit"
+    },
+    {
+      "run_id": "geometry-check-p1-20261028T1740",
+      "stage": "P1",
+      "status": "geometry_check_completed",
+      "method": "15d_geometry",
+      "git_sha": "0fd5e0fc",
+      "true_evaluations": 0,
+      "low_fidelity_calls": 0,
+      "su2_calls": 0,
+      "summary_sha256": "bafef1e9ebc454a43600886314a7daff45f98bbc7a9f8c060d04a7a190c43a7d",
+      "file_count": 12,
+      "total_bytes": 980263,
+      "evidence_role": "first 15D geometry effect matrix"
+    },
+    {
+      "run_id": "geometry-check-p1-20261028T1835",
+      "stage": "P1",
+      "status": "geometry_check_completed",
+      "method": "15d_geometry",
+      "git_sha": "5e48037b",
+      "true_evaluations": 0,
+      "low_fidelity_calls": 0,
+      "su2_calls": 0,
+      "summary_sha256": "f732cdce9011bf0ca8cf60df6abdd398c351ca89954aed6f73d6b3899d0b87cc",
+      "file_count": 13,
+      "total_bytes": 999531,
+      "evidence_role": "31 cases, 4/4 negative controls, 0 failed checks; baseline of the P1 evidence"
+    },
+    {
+      "run_id": "openvsp-check-p1-20261029T1425",
+      "stage": "P1",
+      "status": "openvsp_check_completed_with_warnings",
+      "method": "openvsp_export",
+      "git_sha": "c0eb7acc",
+      "true_evaluations": 0,
+      "low_fidelity_calls": 0,
+      "su2_calls": 0,
+      "summary_sha256": "39db22268c3420b6cec10ddd7f5836c881f91a8ea978e25288995160549b5027",
+      "file_count": 8,
+      "total_bytes": 23065,
+      "evidence_role": "OpenVSP export/probe check"
+    },
+    {
+      "run_id": "openvsp-check-p1-20261029T1557",
+      "stage": "P1",
+      "status": "openvsp_check_completed_with_warnings",
+      "method": "openvsp_export",
+      "git_sha": "35903cf8",
+      "true_evaluations": 0,
+      "low_fidelity_calls": 0,
+      "su2_calls": 0,
+      "summary_sha256": "5b90e6bbceb5bc3058f797b8b108ed077a5a7ac69ddfa5f11505478dff579ab6",
+      "file_count": 8,
+      "total_bytes": 34324,
+      "evidence_role": "second OpenVSP check, git_dirty=true"
+    },
+    {
+      "run_id": "openvsp-cases-p1-20261029T1700",
+      "stage": "P1",
+      "status": "openvsp_perturbation_check_completed",
+      "method": "openvsp_perturbation",
+      "git_sha": "5237a1cc",
+      "true_evaluations": 0,
+      "low_fidelity_calls": 0,
+      "su2_calls": 0,
+      "summary_sha256": "447a849f623024edaa346255fd1bdafa4b63ffdf3d842511b52ac1b022d370b0",
+      "file_count": 9,
+      "total_bytes": 258444,
+      "evidence_role": "7 cases (baseline + 6 perturbations); external VSP3/STL/STEP artefacts with sha256"
+    },
+    {
+      "run_id": "doe-p3-20261029T1725",
+      "stage": "P3",
+      "status": "doe_completed",
+      "method": "15d_doe_geometry",
+      "git_sha": "047621f3",
+      "true_evaluations": 0,
+      "low_fidelity_calls": 0,
+      "su2_calls": 0,
+      "summary_sha256": "362dfb866add2cad23e67f32daf5a475c4917734b164ebe2c3d7de45b90804c8",
+      "file_count": 8,
+      "total_bytes": 442175,
+      "evidence_role": "160 LHS geometry candidates, 0 physical evaluations, DS01-DS12 pass"
+    },
+    {
+      "run_id": "smoke-p2-20261029T1520",
+      "stage": "P2",
+      "status": "smoke_completed_with_failures",
+      "method": "single_cruise_lf",
+      "git_sha": "c8bd8790",
+      "true_evaluations": 5,
+      "low_fidelity_calls": 5,
+      "su2_calls": 0,
+      "summary_sha256": "4a887d1ee5d665813540df2c3e203eb4c679117aad6db239914b37af41c51a7b",
+      "file_count": 10,
+      "total_bytes": 236788,
+      "evidence_role": "145 t mass contract; max_throttle violation; baseline 36469.3256 kg"
+    },
+    {
+      "run_id": "smoke-p2-20261029T1612",
+      "stage": "P2",
+      "status": "smoke_completed",
+      "method": "single_cruise_lf",
+      "git_sha": "93c4e352",
+      "true_evaluations": 5,
+      "low_fidelity_calls": 5,
+      "su2_calls": 0,
+      "summary_sha256": "1287f42c221b0d2f9d5d2f7c55fc875212915b939fa33bade2944c2239b17cfd",
+      "file_count": 15,
+      "total_bytes": 266123,
+      "evidence_role": "136 t frozen contract; baseline 34109.4826 kg; best feasible 34035.3326 kg"
+    }
+  ],
+  "uncommitted_p5_runs": [
+    {
+      "run_id": "maml-a-p5-final-20261030",
+      "tracked": false,
+      "included_in_pr3": false,
+      "git_sha": "18149257",
+      "true_evaluations": 0,
+      "low_fidelity_calls": 0,
+      "su2_calls": 0,
+      "summary_sha256": "61a7ced5fa225c5ac669f253a01b3102b415d64ba81c0835cdc236b97e8997a7",
+      "file_count": 20,
+      "total_bytes": 1324277,
+      "note": "P5 MAML-A work is FROZEN by Issue #4; local untracked artefacts; NOT part of the 12D acceptance and must not be cited as 12D evidence."
+    },
+    {
+      "run_id": "meta-tasks-p5-dev-1",
+      "tracked": false,
+      "included_in_pr3": false,
+      "git_sha": "18149257",
+      "true_evaluations": 0,
+      "low_fidelity_calls": 0,
+      "su2_calls": 0,
+      "summary_sha256": "d9536ed5c38b5db3d22fc2552b5b6f8b4ac20fa5043225e12fc2c2881c7344d9",
+      "file_count": 10,
+      "total_bytes": 3206941,
+      "note": "P5 MAML-A work is FROZEN by Issue #4; local untracked artefacts; NOT part of the 12D acceptance and must not be cited as 12D evidence."
+    },
+    {
+      "run_id": "meta-tasks-p5-final-20261030",
+      "tracked": false,
+      "included_in_pr3": false,
+      "git_sha": "18149257",
+      "true_evaluations": 0,
+      "low_fidelity_calls": 0,
+      "su2_calls": 0,
+      "summary_sha256": "8f4bdb3704d428eea3c565fd06ef05c89fc9caf9ba3e9b87753dc0fc04554d19",
+      "file_count": 10,
+      "total_bytes": 3214897,
+      "note": "P5 MAML-A work is FROZEN by Issue #4; local untracked artefacts; NOT part of the 12D acceptance and must not be cited as 12D evidence."
+    }
+  ],
+  "run_count_total": 14,
+  "external_artifacts": [
+    {
+      "run_id": "openvsp-cases-p1-20261029T1700",
+      "location": "D:/RCAIDE/outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/<case>/",
+      "ignored_by_git": true,
+      "cases": 7,
+      "formats": [
+        "vsp3",
+        "stl",
+        "step"
+      ],
+      "manifest": "summary.json external_artifacts.files[] with sha256; verified recorded sizes/sha for baseline wing STL 35b32db6... and identical main_wing.stl for the F01 perturbation"
+    },
+    {
+      "run_id": "P1 evidence directories",
+      "location": "D:/RCAIDE/outputs/concorde_metaopt/",
+      "ignored_by_git": true,
+      "size_bytes": 43993713,
+      "note": "OpenVSP export evidence for P1/P2; raw, regenerable, keep with hash manifest"
+    }
+  ],
+  "key_facts_for_acceptance": [
+    "P2 smoke 1612: 5/5 evaluations VALID and feasible within 1e-12 tolerance; 3 baseline repeats with spread exactly 0.0 kg; best feasible fuel burn 34035.332605 kg at W01+1% (34109.482571 kg baseline, delta -74.149966 kg); W10+2deg delta +8.072725 kg.",
+    "P2 smoke 1520 used a 145 t contract and violated max_throttle; it is evidence that the mass contract matters, not a feasible design point.",
+    "P1 geometry-check 1835: 31 cases, 4/4 negative controls matched, 0 true evaluations, 31 RCAIDE cross-check rows per case.",
+    "P3 DOE 1725: 160/160 geometry-valid, 0 evaluations; objective status not_evaluated_in_doe_screening.",
+    "OpenVSP P1 runs are export/geometry checks only: no aerodynamic pass evidence and no VSPAERO solve.",
+    "No run anywhere contains a VSPAERO or SU2 aerodynamic result; HF evidence count is exactly zero.",
+    "A5 independent rerun of the non-physical unit test suite: 327 tests OK, 1 skipped (external OpenVSP py3.9 worker), EXIT_CODE=0 on HEAD 1f79924."
+  ],
+  "data_contract_status": {
+    "summary.json per run": "present for all 14 runs",
+    "evaluations.jsonl": "present for the 2 P2 smoke runs (5 rows each)",
+    "environment/solver versions": "present for most runs; OpenVSP version recorded only where the export worker ran",
+    "component N-force ledger": "ABSENT",
+    "run README with fidelity disclaimer": "present for smoke 1612; incomplete elsewhere",
+    "hash manifest for large external artefacts": "present in openvsp-cases summary.external_artifacts",
+    "reproduction command": "partial (CLI + run_config present; no pinned environment file per run)"
+  },
+  "gaps": [
+    "No 12D native run of any kind exists (all runs are 15D or geometry-only).",
+    "No Mach 2.02 validation matrix for the VLM itself.",
+    "No VSPAERO or SU2 aerodynamic evidence at all.",
+    "No separable body/interference drag correction or double-counting proof.",
+    "No component-level force ledger in the archived evaluation records.",
+    "No archived perturbation isolates V01 or V02."
+  ],
+  "non_actions": [
+    "nothing executed",
+    "no run directory modified",
+    "no artefact deleted"
+  ]
+}

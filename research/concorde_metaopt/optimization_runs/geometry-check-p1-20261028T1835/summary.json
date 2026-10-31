@@ -1,0 +1,68 @@
+{
+  "artifacts": {
+    "baseline_geometry": "baseline_geometry.json",
+    "checks_csv": "checks.csv",
+    "environment": "environment.json",
+    "figures": [
+      "figures/geometry_effect_heatmap.png",
+      "figures/wing_planform_comparison.png"
+    ],
+    "geometry_cases": "geometry_cases.jsonl",
+    "geometry_effect_delta_csv": "geometry_effect_delta.csv",
+    "geometry_effect_matrix_csv": "geometry_effect_matrix.csv",
+    "geometry_negative_controls_csv": "geometry_negative_controls.csv",
+    "geometry_planforms": "geometry_planforms.json",
+    "run_config": "run_config.json",
+    "summary": "summary.json"
+  },
+  "best_design_id": null,
+  "best_feasible_fuel_kg": null,
+  "cpu_seconds_if_available": null,
+  "design_dim": 15,
+  "design_space_config": "research/concorde_metaopt/configs/design_space_15d.yaml",
+  "failed_count": 0,
+  "first_feasible_evaluation": null,
+  "geometry": {
+    "baseline_case": "baseline",
+    "baseline_status": "ok",
+    "bounds_status": "provisional_until_geometry_perturbation",
+    "cases": 31,
+    "delta_fraction": 0.1,
+    "failed_cases": [],
+    "failed_checks": [],
+    "frozen": false,
+    "geometry_model_version": "p1-2026-10-28",
+    "negative_controls": {
+      "cases": [
+        "NC01_fuselage_volume_binding",
+        "NC02_span_order_inverted",
+        "NC03_chord_order_inverted",
+        "NC04_negative_fuselage_length"
+      ],
+      "matched": 4,
+      "total": 4,
+      "unexpected": []
+    },
+    "note": "These are geometry checks, not Mission or CFD evaluations; no objective value is reported.",
+    "rcaide_cross_checks": true
+  },
+  "git_sha": "5e48037b40fbd58ff0df030754ab7a9e465fff27",
+  "invalid_count": 0,
+  "low_fidelity_calls": 0,
+  "method": "geometry_check",
+  "run_id": "geometry-check-p1-20261028T1835",
+  "seed": null,
+  "solver_versions": {
+    "RCAIDE-LEADS": "1.5.0",
+    "RCAIDE_module": "1.5.0",
+    "matplotlib": "3.11.2",
+    "numpy": "2.4.6",
+    "scipy": "1.17.1"
+  },
+  "stage": "P1",
+  "status": "geometry_check_completed",
+  "su2_calls": 0,
+  "task_id": "concorde_fixed_cruise_15d",
+  "total_true_evaluations": 0,
+  "wall_seconds": 2.227173600011156
+}

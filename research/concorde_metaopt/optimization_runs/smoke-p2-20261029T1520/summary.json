@@ -1,0 +1,676 @@
+{
+  "artifacts": {
+    "best_design": "best_design.json",
+    "design_space_config": "research/concorde_metaopt/configs/design_space_15d.yaml",
+    "environment": "environment.json",
+    "evaluations": "evaluations.jsonl",
+    "figures": [
+      "figures/repeatability.png",
+      "figures/perturbation_sensitivity.png"
+    ],
+    "readme": "README.md",
+    "run_config": "run_config.json",
+    "smoke_cases": "smoke_cases.csv",
+    "summary": "summary.json",
+    "task_config": null
+  },
+  "best_design_id": null,
+  "best_feasible_fuel_kg": null,
+  "branch": "research/concorde-metaopt",
+  "constraints": {
+    "all_g_le_zero": false,
+    "all_g_le_zero_within_tolerance": false,
+    "feasibility_tolerance": 1e-12,
+    "max_constraint_excess": 0.016751443943032518,
+    "missing_constraint_entries": [],
+    "names": [
+      "geometry_invalid",
+      "task_mass_balance",
+      "fuel_capacity_excess",
+      "zero_fuel_excess",
+      "takeoff_excess",
+      "fuel_remaining_deficit",
+      "max_throttle",
+      "cruise_range_error",
+      "mission_convergence",
+      "trim_attitude_limit"
+    ],
+    "positive_constraint_offenders": [
+      {
+        "constraint": "cruise_range_error",
+        "design_id": "d-78be330a6036",
+        "value": 1.9991931146427733e-15
+      },
+      {
+        "constraint": "max_throttle",
+        "design_id": "d-78be330a6036",
+        "value": 0.016330708844840558
+      },
+      {
+        "constraint": "cruise_range_error",
+        "design_id": "d-78be330a6036",
+        "value": 1.9991931146427733e-15
+      },
+      {
+        "constraint": "max_throttle",
+        "design_id": "d-78be330a6036",
+        "value": 0.016330708844840558
+      },
+      {
+        "constraint": "cruise_range_error",
+        "design_id": "d-78be330a6036",
+        "value": 1.9991931146427733e-15
+      },
+      {
+        "constraint": "max_throttle",
+        "design_id": "d-78be330a6036",
+        "value": 0.016330708844840558
+      },
+      {
+        "constraint": "cruise_range_error",
+        "design_id": "d-5417b9423870",
+        "value": 1.9991931146427733e-15
+      },
+      {
+        "constraint": "max_throttle",
+        "design_id": "d-5417b9423870",
+        "value": 0.013114322780485521
+      },
+      {
+        "constraint": "cruise_range_error",
+        "design_id": "d-832662b885fa",
+        "value": 1.9991931146427733e-15
+      },
+      {
+        "constraint": "max_throttle",
+        "design_id": "d-832662b885fa",
+        "value": 0.016751443943032518
+      }
+    ],
+    "residual_limit": 0.0001,
+    "rows_checked": 5,
+    "strict_note": "strict compares every constraint value against 0.0; the tolerance-aware flag uses feasibility_tolerance for numerical round-off"
+  },
+  "cpu_seconds_if_available": 1030.453,
+  "design_dim": 15,
+  "failed_count": 0,
+  "first_feasible_evaluation": null,
+  "git_sha": "c8bd8790359b08aa5cca4dc54921e6ca32ba07fe",
+  "invalid_count": 0,
+  "low_fidelity_calls": 5,
+  "method": "single_cruise_smoke",
+  "objective": {
+    "direction": "minimize",
+    "name": "fuel_burn_kg",
+    "unit": "kg"
+  },
+  "regeneration": {
+    "evaluations_rerun": false,
+    "reason": "P2 review fix: the constraint gate now reports strict g<=0 separately from the feasibility tolerance, and repeatability records valid-row accounting. Regenerated from the unchanged evaluations.jsonl; no evaluation was re-run.",
+    "source": "evaluations.jsonl",
+    "true_evaluations_produced_at_git_sha": "c8bd8790359b08aa5cca4dc54921e6ca32ba07fe"
+  },
+  "run_id": "smoke-p2-20261029T1520",
+  "seed": 42,
+  "smoke": {
+    "baseline": {
+      "constraints": {
+        "cruise_range_error": 1.9991931146427733e-15,
+        "fuel_capacity_excess": -0.41680602006688966,
+        "fuel_remaining_deficit": -0.20203464072328065,
+        "geometry_invalid": 0.0,
+        "max_throttle": 0.016330708844840558,
+        "mission_convergence": 0.0,
+        "takeoff_excess": -0.21621621621621623,
+        "task_mass_balance": 0.0,
+        "trim_attitude_limit": -0.7459010298631527,
+        "zero_fuel_excess": -0.030434782608695653
+      },
+      "design_id": "d-78be330a6036",
+      "feasible": false,
+      "objective": 36469.32557559651,
+      "records": [
+        {
+          "constraints": {
+            "cruise_range_error": 1.9991931146427733e-15,
+            "fuel_capacity_excess": -0.41680602006688966,
+            "fuel_remaining_deficit": -0.20203464072328065,
+            "geometry_invalid": 0.0,
+            "max_throttle": 0.016330708844840558,
+            "mission_convergence": 0.0,
+            "takeoff_excess": -0.21621621621621623,
+            "task_mass_balance": 0.0,
+            "trim_attitude_limit": -0.7459010298631527,
+            "zero_fuel_excess": -0.030434782608695653
+          },
+          "design": {
+            "aspect_ratio": 1.83,
+            "chord_ratio_2": 0.408284,
+            "chord_ratio_3": 0.130178,
+            "fuselage_fineness": 4.3,
+            "fuselage_height_width_ratio": 1.152778,
+            "fuselage_length": 61.66,
+            "span_location_2": 0.480469,
+            "span_location_3": 0.945313,
+            "sweep_1": 67.0,
+            "sweep_2": 48.0,
+            "sweep_3": 71.0,
+            "tip_twist": 0.0,
+            "vertical_tail_area": 33.91,
+            "vertical_tail_sweep_delta": 0.0,
+            "wing_area": 358.25
+          },
+          "diagnostics": [],
+          "feasible": false,
+          "fidelity": "single_cruise",
+          "geometry_cross_check": {
+            "checked_count": 31,
+            "failed_count": 0,
+            "failures": []
+          },
+          "geometry_summary": {
+            "fuselage_length_m": 61.66,
+            "mass_model_status": "PROVISIONAL_NOT_FROZEN",
+            "tail_area_m2": 33.91,
+            "wing_area_m2": 358.25000000000006,
+            "wing_root_chord_m": 29.901818514349216,
+            "wing_span_m": 25.604638251691824
+          },
+          "mass_contract": {
+            "applied": {
+              "cargo": 1000.0,
+              "fuel": 55800.0,
+              "max_fuel": 95680.0,
+              "max_takeoff": 185000.0,
+              "max_zero_fuel": 92000.0,
+              "operating_empty": 78700.0,
+              "payload": 9500.0,
+              "takeoff": 145000.0
+            },
+            "readback": {
+              "cargo": 1000.0,
+              "fuel": 55800.0,
+              "max_fuel": 95680.0,
+              "max_takeoff": 185000.0,
+              "max_zero_fuel": 92000.0,
+              "operating_empty": 78700.0,
+              "payload": 9500.0,
+              "takeoff": 145000.0
+            }
+          },
+          "objective": 36469.32557559651,
+          "objective_name": "fuel_burn_kg",
+          "objective_unit": "kg",
+          "physical_call_count": 1,
+          "purpose": "search",
+          "responses": {
+            "alpha_end_deg": 3.0491876416421686,
+            "converged": true,
+            "drag_coefficient_end": 0.01790901329696666,
+            "fuel_burn_kg": 36469.32557559651,
+            "history_samples": 16,
+            "lift_coefficient_end": 0.14206470017316603,
+            "mass_end_kg": 108530.67442440349,
+            "mass_start_kg": 145000.0,
+            "max_fuel_mass_flow_kg_s": 2.0955003827714918,
+            "max_throttle": 1.0163307088448406,
+            "max_thrust_x_n": 45208.642270718905,
+            "objective_name": "fuel_burn_kg",
+            "objective_unit": "kg",
+            "propulsors": {
+              "inner_left_turbojet": {
+                "max_fuel_mass_flow_kg_s": 2.0955003827714918,
+                "max_throttle": 1.0163307088448406,
+                "max_thrust_x_n": 45208.642270718905
+              },
+              "inner_right_turbojet": {
+                "max_fuel_mass_flow_kg_s": 2.0955003827714918,
+                "max_throttle": 1.0163307088448406,
+                "max_thrust_x_n": 45208.642270718905
+              },
+              "outer_left_turbojet": {
+                "max_fuel_mass_flow_kg_s": 2.0955003827714918,
+                "max_throttle": 1.0163307088448406,
+                "max_thrust_x_n": 45208.642270718905
+              },
+              "outer_right_turbojet": {
+                "max_fuel_mass_flow_kg_s": 2.0955003827714918,
+                "max_throttle": 1.0163307088448406,
+                "max_thrust_x_n": 45208.642270718905
+              }
+            },
+            "range_end_m": 3028019.999999994,
+            "range_span_m": 3028019.999999994,
+            "range_start_m": 0.0,
+            "residual_limit": 0.0001,
+            "residual_max": 5.792304721218019e-14,
+            "solver_converged": true,
+            "time_end_s": 5080.226265300772,
+            "time_span_s": 5080.226265300772,
+            "time_start_s": 0.0
+          },
+          "status": "VALID",
+          "task_fingerprint": "e4e69f26396682c149c2f2cd5568b33b888579b578c24a2fd75829c8de0fc700",
+          "task_id": "concorde-fixed-cruise-p2-v1",
+          "wall_seconds": 80.57968860000256
+        },
+        {
+          "constraints": {
+            "cruise_range_error": 1.9991931146427733e-15,
+            "fuel_capacity_excess": -0.41680602006688966,
+            "fuel_remaining_deficit": -0.20203464072328065,
+            "geometry_invalid": 0.0,
+            "max_throttle": 0.016330708844840558,
+            "mission_convergence": 0.0,
+            "takeoff_excess": -0.21621621621621623,
+            "task_mass_balance": 0.0,
+            "trim_attitude_limit": -0.7459010298631527,
+            "zero_fuel_excess": -0.030434782608695653
+          },
+          "design": {
+            "aspect_ratio": 1.83,
+            "chord_ratio_2": 0.408284,
+            "chord_ratio_3": 0.130178,
+            "fuselage_fineness": 4.3,
+            "fuselage_height_width_ratio": 1.152778,
+            "fuselage_length": 61.66,
+            "span_location_2": 0.480469,
+            "span_location_3": 0.945313,
+            "sweep_1": 67.0,
+            "sweep_2": 48.0,
+            "sweep_3": 71.0,
+            "tip_twist": 0.0,
+            "vertical_tail_area": 33.91,
+            "vertical_tail_sweep_delta": 0.0,
+            "wing_area": 358.25
+          },
+          "diagnostics": [],
+          "feasible": false,
+          "fidelity": "single_cruise",
+          "geometry_cross_check": {
+            "checked_count": 31,
+            "failed_count": 0,
+            "failures": []
+          },
+          "geometry_summary": {
+            "fuselage_length_m": 61.66,
+            "mass_model_status": "PROVISIONAL_NOT_FROZEN",
+            "tail_area_m2": 33.91,
+            "wing_area_m2": 358.25000000000006,
+            "wing_root_chord_m": 29.901818514349216,
+            "wing_span_m": 25.604638251691824
+          },
+          "mass_contract": {
+            "applied": {
+              "cargo": 1000.0,
+              "fuel": 55800.0,
+              "max_fuel": 95680.0,
+              "max_takeoff": 185000.0,
+              "max_zero_fuel": 92000.0,
+              "operating_empty": 78700.0,
+              "payload": 9500.0,
+              "takeoff": 145000.0
+            },
+            "readback": {
+              "cargo": 1000.0,
+              "fuel": 55800.0,
+              "max_fuel": 95680.0,
+              "max_takeoff": 185000.0,
+              "max_zero_fuel": 92000.0,
+              "operating_empty": 78700.0,
+              "payload": 9500.0,
+              "takeoff": 145000.0
+            }
+          },
+          "objective": 36469.32557559651,
+          "objective_name": "fuel_burn_kg",
+          "objective_unit": "kg",
+          "physical_call_count": 1,
+          "purpose": "search",
+          "responses": {
+            "alpha_end_deg": 3.0491876416421686,
+            "converged": true,
+            "drag_coefficient_end": 0.01790901329696666,
+            "fuel_burn_kg": 36469.32557559651,
+            "history_samples": 16,
+            "lift_coefficient_end": 0.14206470017316603,
+            "mass_end_kg": 108530.67442440349,
+            "mass_start_kg": 145000.0,
+            "max_fuel_mass_flow_kg_s": 2.0955003827714918,
+            "max_throttle": 1.0163307088448406,
+            "max_thrust_x_n": 45208.642270718905,
+            "objective_name": "fuel_burn_kg",
+            "objective_unit": "kg",
+            "propulsors": {
+              "inner_left_turbojet": {
+                "max_fuel_mass_flow_kg_s": 2.0955003827714918,
+                "max_throttle": 1.0163307088448406,
+                "max_thrust_x_n": 45208.642270718905
+              },
+              "inner_right_turbojet": {
+                "max_fuel_mass_flow_kg_s": 2.0955003827714918,
+                "max_throttle": 1.0163307088448406,
+                "max_thrust_x_n": 45208.642270718905
+              },
+              "outer_left_turbojet": {
+                "max_fuel_mass_flow_kg_s": 2.0955003827714918,
+                "max_throttle": 1.0163307088448406,
+                "max_thrust_x_n": 45208.642270718905
+              },
+              "outer_right_turbojet": {
+                "max_fuel_mass_flow_kg_s": 2.0955003827714918,
+                "max_throttle": 1.0163307088448406,
+                "max_thrust_x_n": 45208.642270718905
+              }
+            },
+            "range_end_m": 3028019.999999994,
+            "range_span_m": 3028019.999999994,
+            "range_start_m": 0.0,
+            "residual_limit": 0.0001,
+            "residual_max": 5.792304721218019e-14,
+            "solver_converged": true,
+            "time_end_s": 5080.226265300772,
+            "time_span_s": 5080.226265300772,
+            "time_start_s": 0.0
+          },
+          "status": "VALID",
+          "task_fingerprint": "e4e69f26396682c149c2f2cd5568b33b888579b578c24a2fd75829c8de0fc700",
+          "task_id": "concorde-fixed-cruise-p2-v1",
+          "wall_seconds": 78.95852340001147
+        },
+        {
+          "constraints": {
+            "cruise_range_error": 1.9991931146427733e-15,
+            "fuel_capacity_excess": -0.41680602006688966,
+            "fuel_remaining_deficit": -0.20203464072328065,
+            "geometry_invalid": 0.0,
+            "max_throttle": 0.016330708844840558,
+            "mission_convergence": 0.0,
+            "takeoff_excess": -0.21621621621621623,
+            "task_mass_balance": 0.0,
+            "trim_attitude_limit": -0.7459010298631527,
+            "zero_fuel_excess": -0.030434782608695653
+          },
+          "design": {
+            "aspect_ratio": 1.83,
+            "chord_ratio_2": 0.408284,
+            "chord_ratio_3": 0.130178,
+            "fuselage_fineness": 4.3,
+            "fuselage_height_width_ratio": 1.152778,
+            "fuselage_length": 61.66,
+            "span_location_2": 0.480469,
+            "span_location_3": 0.945313,
+            "sweep_1": 67.0,
+            "sweep_2": 48.0,
+            "sweep_3": 71.0,
+            "tip_twist": 0.0,
+            "vertical_tail_area": 33.91,
+            "vertical_tail_sweep_delta": 0.0,
+            "wing_area": 358.25
+          },
+          "diagnostics": [],
+          "feasible": false,
+          "fidelity": "single_cruise",
+          "geometry_cross_check": {
+            "checked_count": 31,
+            "failed_count": 0,
+            "failures": []
+          },
+          "geometry_summary": {
+            "fuselage_length_m": 61.66,
+            "mass_model_status": "PROVISIONAL_NOT_FROZEN",
+            "tail_area_m2": 33.91,
+            "wing_area_m2": 358.25000000000006,
+            "wing_root_chord_m": 29.901818514349216,
+            "wing_span_m": 25.604638251691824
+          },
+          "mass_contract": {
+            "applied": {
+              "cargo": 1000.0,
+              "fuel": 55800.0,
+              "max_fuel": 95680.0,
+              "max_takeoff": 185000.0,
+              "max_zero_fuel": 92000.0,
+              "operating_empty": 78700.0,
+              "payload": 9500.0,
+              "takeoff": 145000.0
+            },
+            "readback": {
+              "cargo": 1000.0,
+              "fuel": 55800.0,
+              "max_fuel": 95680.0,
+              "max_takeoff": 185000.0,
+              "max_zero_fuel": 92000.0,
+              "operating_empty": 78700.0,
+              "payload": 9500.0,
+              "takeoff": 145000.0
+            }
+          },
+          "objective": 36469.32557559651,
+          "objective_name": "fuel_burn_kg",
+          "objective_unit": "kg",
+          "physical_call_count": 1,
+          "purpose": "search",
+          "responses": {
+            "alpha_end_deg": 3.0491876416421686,
+            "converged": true,
+            "drag_coefficient_end": 0.01790901329696666,
+            "fuel_burn_kg": 36469.32557559651,
+            "history_samples": 16,
+            "lift_coefficient_end": 0.14206470017316603,
+            "mass_end_kg": 108530.67442440349,
+            "mass_start_kg": 145000.0,
+            "max_fuel_mass_flow_kg_s": 2.0955003827714918,
+            "max_throttle": 1.0163307088448406,
+            "max_thrust_x_n": 45208.642270718905,
+            "objective_name": "fuel_burn_kg",
+            "objective_unit": "kg",
+            "propulsors": {
+              "inner_left_turbojet": {
+                "max_fuel_mass_flow_kg_s": 2.0955003827714918,
+                "max_throttle": 1.0163307088448406,
+                "max_thrust_x_n": 45208.642270718905
+              },
+              "inner_right_turbojet": {
+                "max_fuel_mass_flow_kg_s": 2.0955003827714918,
+                "max_throttle": 1.0163307088448406,
+                "max_thrust_x_n": 45208.642270718905
+              },
+              "outer_left_turbojet": {
+                "max_fuel_mass_flow_kg_s": 2.0955003827714918,
+                "max_throttle": 1.0163307088448406,
+                "max_thrust_x_n": 45208.642270718905
+              },
+              "outer_right_turbojet": {
+                "max_fuel_mass_flow_kg_s": 2.0955003827714918,
+                "max_throttle": 1.0163307088448406,
+                "max_thrust_x_n": 45208.642270718905
+              }
+            },
+            "range_end_m": 3028019.999999994,
+            "range_span_m": 3028019.999999994,
+            "range_start_m": 0.0,
+            "residual_limit": 0.0001,
+            "residual_max": 5.792304721218019e-14,
+            "solver_converged": true,
+            "time_end_s": 5080.226265300772,
+            "time_span_s": 5080.226265300772,
+            "time_start_s": 0.0
+          },
+          "status": "VALID",
+          "task_fingerprint": "e4e69f26396682c149c2f2cd5568b33b888579b578c24a2fd75829c8de0fc700",
+          "task_id": "concorde-fixed-cruise-p2-v1",
+          "wall_seconds": 79.01115929998923
+        }
+      ],
+      "status": "VALID"
+    },
+    "budget": 5,
+    "case_file": "smoke_cases.csv",
+    "failures": [],
+    "ledger": {
+      "best_design_id": null,
+      "best_feasible_fuel_kg": null,
+      "budget": 5,
+      "budget_remaining": 0,
+      "cache_hits": 0,
+      "failed_count": 0,
+      "first_feasible_evaluation": null,
+      "invalid_count": 0,
+      "total_requests": 5,
+      "total_true_evaluations": 5
+    },
+    "note": "single_cruise RCAIDE mission only; no full mission, no CFD, no MAML",
+    "perturbations": [
+      {
+        "baseline_value": 358.25,
+        "constraints": {
+          "cruise_range_error": 1.9991931146427733e-15,
+          "fuel_capacity_excess": -0.41680602006688966,
+          "fuel_remaining_deficit": -0.2029220745374061,
+          "geometry_invalid": 0.0,
+          "max_throttle": 0.013114322780485521,
+          "mission_convergence": 0.0,
+          "takeoff_excess": -0.21621621621621623,
+          "task_mass_balance": 0.0,
+          "trim_attitude_limit": -0.7484982497135692,
+          "zero_fuel_excess": -0.030434782608695653
+        },
+        "delta": 0.01,
+        "design_id": "d-5417b9423870",
+        "feasible": false,
+        "kind": "relative",
+        "label": "W01_plus_1pct",
+        "objective": 36384.415908260984,
+        "objective_delta": -84.90966733552341,
+        "objective_relative_delta": -0.002328248904946595,
+        "status": "VALID",
+        "value": 361.8325,
+        "variable": "W01",
+        "variable_name": "wing_area",
+        "violated_constraints": [
+          "max_throttle"
+        ]
+      },
+      {
+        "baseline_value": 0.0,
+        "constraints": {
+          "cruise_range_error": 1.9991931146427733e-15,
+          "fuel_capacity_excess": -0.41680602006688966,
+          "fuel_remaining_deficit": -0.20192994352996035,
+          "geometry_invalid": 0.0,
+          "max_throttle": 0.016751443943032518,
+          "mission_convergence": 0.0,
+          "takeoff_excess": -0.21621621621621623,
+          "task_mass_balance": 0.0,
+          "trim_attitude_limit": -0.7462154113474121,
+          "zero_fuel_excess": -0.030434782608695653
+        },
+        "delta": 2.0,
+        "design_id": "d-832662b885fa",
+        "feasible": false,
+        "kind": "absolute",
+        "label": "W10_plus_2deg",
+        "objective": 36479.34300305339,
+        "objective_delta": 10.017427456885343,
+        "objective_relative_delta": 0.00027468090782541144,
+        "status": "VALID",
+        "value": 2.0,
+        "variable": "W10",
+        "variable_name": "tip_twist",
+        "violated_constraints": [
+          "max_throttle"
+        ]
+      }
+    ],
+    "preflight": {
+      "baseline": {
+        "fuselage_length_m": 61.66,
+        "tail_area_m2": 33.91,
+        "wing_area_m2": 358.25000000000006,
+        "wing_span_m": 25.604638251691824
+      },
+      "design_space_config": {
+        "bounds_status": "provisional_until_geometry_perturbation",
+        "config_path": "research/concorde_metaopt/configs/design_space_15d.yaml",
+        "design_dim": 15,
+        "frozen": false,
+        "ids": [
+          "W01",
+          "W02",
+          "W03",
+          "W04",
+          "W05",
+          "W06",
+          "W07",
+          "W08",
+          "W09",
+          "W10",
+          "V01",
+          "V02",
+          "F01",
+          "F02",
+          "F03"
+        ],
+        "names": [
+          "wing_area",
+          "aspect_ratio",
+          "sweep_1",
+          "sweep_2",
+          "sweep_3",
+          "span_location_2",
+          "span_location_3",
+          "chord_ratio_2",
+          "chord_ratio_3",
+          "tip_twist",
+          "vertical_tail_area",
+          "vertical_tail_sweep_delta",
+          "fuselage_length",
+          "fuselage_fineness",
+          "fuselage_height_width_ratio"
+        ],
+        "task_id": "concorde_fixed_cruise_15d",
+        "units": "SI"
+      },
+      "fidelity": "single_cruise",
+      "physical_call_count": 0,
+      "status": "PREFLIGHT_OK",
+      "task_fingerprint": "e4e69f26396682c149c2f2cd5568b33b888579b578c24a2fd75829c8de0fc700",
+      "task_id": "concorde-fixed-cruise-p2-v1",
+      "template_hash_verified": true,
+      "tutorial_sha256": "4c633e485a915151faaa8104e6647f9dc02bd08ae1436c22845e5917b3d735bd"
+    },
+    "repeat_count": 3,
+    "repeatability": {
+      "constraint_max_abs_delta": 0.0,
+      "count": 3,
+      "objective_max": 36469.32557559651,
+      "objective_mean": 36469.32557559651,
+      "objective_min": 36469.32557559651,
+      "objective_values": [
+        36469.32557559651,
+        36469.32557559651,
+        36469.32557559651
+      ],
+      "passed": true,
+      "relative_spread": 0.0,
+      "required_rows": 3,
+      "rows_recorded": 3,
+      "tolerance": 1e-06,
+      "valid_rows": 3
+    }
+  },
+  "solver_versions": {
+    "RCAIDE-LEADS": "1.5.0",
+    "RCAIDE_module": "1.5.0",
+    "matplotlib": "3.11.2",
+    "numpy": "2.4.6",
+    "scipy": "1.17.1"
+  },
+  "stage": "P2",
+  "status": "smoke_completed_with_failures",
+  "su2_calls": 0,
+  "task_id": "concorde-fixed-cruise-p2-v1",
+  "total_true_evaluations": 5,
+  "wall_seconds": 398.476
+}

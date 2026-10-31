@@ -1,0 +1,23 @@
+TASK:      task-26 FULLCHAIN-A5-INDEPENDENT-RECALC-d80b4c4
+REVIEWED:  run dir p1p3-fullchain-20261031T0407Z + docs/reviews/p1p3_fullchain_validation_report_20261031.md + raw artifacts
+COMMIT:    d80b4c485d689082cd117f09ec6445a181dd458c
+WORKTREE:  D:/RCAIDE-verify-fullchain-a5 (clean, porcelain 0)
+DATE:      2026-10-31
+REVIEWER:  A5 (a5-code-reviewer, independent session)
+VERDICT:   CHANGES_REQUESTED
+
+RECALC (PASS): SU2 tail-window mean/p2p 6/6 diffs = 0.0; HFS-02 wall Cp integration CD/CL within 1.4e-17;
+               WAVE-00R Eminton-Lord rel err -1.55e-6 vs theory, WAVE-01/02 donq 0 diff, implied Sref ~100 m2.
+BUDGET (PASS): 23/23 starts billed (VSPAERO 6, WAVE 7, RCAIDE 4, SU2 6), failed attempts billed, no uncounted solve.
+HONESTY:       gates NOT overstated (no gate approved, HF PARTIAL, BODY-CORR BLOCKED, LF NOT VALIDATED).
+
+BLOCKING FIXES (no new physics):
+  1) MAJOR F-01: report:132-133 / README:162-163 / hf_su2_results.json notes claim stationary <=6.3e-9 for
+     both cases; actual HFS-02 CMx 4.6e-7, HFS-03 CMx 3.6e-3 (6.3e-9 only max of HFS-02 CD/CL/CMy).
+  2) MAJOR F-02: data_manifest 14/59 hashes CRLF-sensitive -> not reproducible on clean LF checkout; main checkout
+     ledger has uncommitted +253-line mesh backfill (manifest expected 32677B, actual 43240B).
+
+MINOR: 1082-unique-vertex not recorded; VT/fuselage byte-identical unsupported; wall_clock null; n^3.1 vs n^3;
+       NA-018 no raw log; planned-vs-actual case_ids mapping.
+
+Artifacts: recalc.md, recalc.log, recalc_su2.out, recalc_wave.out, verify_claims*.out (this directory).

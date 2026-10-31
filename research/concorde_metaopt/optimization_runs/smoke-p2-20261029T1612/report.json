@@ -1,0 +1,145 @@
+{
+  "artifacts": {
+    "absolute_paths": [],
+    "missing": [],
+    "present": [
+      "best_design.json",
+      "research/concorde_metaopt/configs/design_space_15d.yaml",
+      "environment.json",
+      "evaluations.jsonl",
+      "evaluations_detail.jsonl",
+      "figures/repeatability.png",
+      "figures/perturbation_sensitivity.png",
+      "README.md",
+      "run_config.json",
+      "smoke_cases.csv",
+      "summary.json",
+      "research/concorde_metaopt/configs/task_fixed_cruise.yaml"
+    ],
+    "total": 12
+  },
+  "branch": "research/concorde-metaopt",
+  "comparison": [
+    {
+      "best_design_id": "d-5417b9423870",
+      "best_feasible_fuel_kg": 34035.332605355274,
+      "feasible_rows": 5,
+      "first_feasible_evaluation": 1,
+      "git_sha": "93c4e3525cd63ca1851d97c3ad589feb131c3086",
+      "method": "single_cruise_smoke",
+      "path": "research/concorde_metaopt/optimization_runs/smoke-p2-20261029T1612",
+      "recomputed_best_feasible_fuel_kg": 34035.332605355274,
+      "recomputed_true_evaluations": 5,
+      "run_id": "smoke-p2-20261029T1612",
+      "seed": 42,
+      "stage": "P2",
+      "status": "smoke_completed",
+      "true_evaluations": 5,
+      "valid_rows": 5,
+      "wall_seconds": 459.934
+    },
+    {
+      "best_design_id": null,
+      "best_feasible_fuel_kg": null,
+      "feasible_rows": 0,
+      "first_feasible_evaluation": null,
+      "git_sha": "c8bd8790359b08aa5cca4dc54921e6ca32ba07fe",
+      "method": "single_cruise_smoke",
+      "path": "research/concorde_metaopt/optimization_runs/smoke-p2-20261029T1520",
+      "recomputed_best_feasible_fuel_kg": null,
+      "recomputed_true_evaluations": 5,
+      "run_id": "smoke-p2-20261029T1520",
+      "seed": 42,
+      "stage": "P2",
+      "status": "smoke_completed_with_failures",
+      "true_evaluations": 5,
+      "valid_rows": 5,
+      "wall_seconds": 398.476
+    }
+  ],
+  "comparison_files": {
+    "csv": "research/concorde_metaopt/optimization_runs/smoke-p2-20261029T1612/comparison.csv",
+    "json": "research/concorde_metaopt/optimization_runs/smoke-p2-20261029T1612/comparison.json"
+  },
+  "consistency": [
+    {
+      "check_id": "R01",
+      "note": "sum of physical_call_count over stored rows",
+      "recomputed_value": 5,
+      "relative_delta": 0.0,
+      "status": "pass",
+      "subject": "total_true_evaluations",
+      "summary_value": 5,
+      "tolerance": 0.0
+    },
+    {
+      "check_id": "R02",
+      "note": "minimum objective over VALID feasible rows",
+      "recomputed_value": 34035.332605355274,
+      "relative_delta": 0.0,
+      "status": "pass",
+      "subject": "best_feasible_fuel_kg",
+      "summary_value": 34035.332605355274,
+      "tolerance": 1e-09
+    },
+    {
+      "check_id": "R03",
+      "note": "iteration of the first VALID feasible row",
+      "recomputed_value": 1,
+      "relative_delta": 0.0,
+      "status": "pass",
+      "subject": "first_feasible_evaluation",
+      "summary_value": 1,
+      "tolerance": null
+    },
+    {
+      "check_id": "R04",
+      "note": "design id of the best objective row",
+      "recomputed_value": "d-5417b9423870",
+      "relative_delta": null,
+      "status": "pass",
+      "subject": "best_design_id",
+      "summary_value": "d-5417b9423870",
+      "tolerance": null
+    }
+  ],
+  "consistency_failures": [],
+  "design_dim": 15,
+  "experiment_status": "smoke_completed",
+  "figure_targets": {
+    "smoke": "repeatability.png + perturbation_sensitivity.png"
+  },
+  "figures": {
+    "errors": [],
+    "generated": {
+      "perturbation_sensitivity": "figures/perturbation_sensitivity.png",
+      "repeatability": "figures/repeatability.png"
+    }
+  },
+  "git_sha": "93c4e3525cd63ca1851d97c3ad589feb131c3086",
+  "method": "single_cruise_smoke",
+  "notes": [
+    "smoke_completed"
+  ],
+  "recomputed": {
+    "best_design_id": "d-5417b9423870",
+    "best_feasible_objective": 34035.332605355274,
+    "cache_hits": 0,
+    "feasible_rows": 5,
+    "first_feasible_evaluation": 1,
+    "rows": 5,
+    "status_counts": {
+      "VALID": 5
+    },
+    "true_evaluations": 5,
+    "valid_rows": 5
+  },
+  "report_json_path": "research/concorde_metaopt/optimization_runs/smoke-p2-20261029T1612/report.json",
+  "report_note": "recomputed from stored artefacts; no Mission, CFD or OpenVSP call was executed",
+  "report_path": "research/concorde_metaopt/optimization_runs/smoke-p2-20261029T1612/report.md",
+  "report_status": "report_completed",
+  "run_id": "smoke-p2-20261029T1612",
+  "seed": 42,
+  "stage": "P2",
+  "task_id": "concorde-fixed-cruise-p2-v1"
+}

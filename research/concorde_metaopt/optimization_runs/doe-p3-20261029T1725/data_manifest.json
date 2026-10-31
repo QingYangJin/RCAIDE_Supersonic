@@ -1,0 +1,278 @@
+{
+  "batches": [
+    {
+      "batch_id": "batch-000",
+      "batch_index": 0,
+      "count": 32,
+      "method": "lhs",
+      "requested": 32,
+      "seed": 42
+    },
+    {
+      "batch_id": "batch-001",
+      "batch_index": 1,
+      "count": 128,
+      "method": "lhs",
+      "requested": 128,
+      "seed": 43
+    }
+  ],
+  "candidates": {
+    "duplicates_removed": 0,
+    "errors": 0,
+    "failed_check_histogram": {},
+    "invalid": 0,
+    "requested": 160,
+    "valid": 160,
+    "written": 160
+  },
+  "created_utc": "2026-10-29T09:18:52Z",
+  "dataset_id": "doe-p3-20261029T1725",
+  "design_dim": 15,
+  "design_space": {
+    "bounds": {
+      "F01": {
+        "lower": 58.0,
+        "name": "fuselage_length",
+        "unit": "m",
+        "upper": 66.0
+      },
+      "F02": {
+        "lower": 3.6,
+        "name": "fuselage_fineness",
+        "unit": "dimensionless",
+        "upper": 5.2
+      },
+      "F03": {
+        "lower": 1.0,
+        "name": "fuselage_height_width_ratio",
+        "unit": "dimensionless",
+        "upper": 1.35
+      },
+      "V01": {
+        "lower": 28.0,
+        "name": "vertical_tail_area",
+        "unit": "m^2",
+        "upper": 40.0
+      },
+      "V02": {
+        "lower": -10.0,
+        "name": "vertical_tail_sweep_delta",
+        "unit": "deg",
+        "upper": 10.0
+      },
+      "W01": {
+        "lower": 300.0,
+        "name": "wing_area",
+        "unit": "m^2",
+        "upper": 420.0
+      },
+      "W02": {
+        "lower": 1.5,
+        "name": "aspect_ratio",
+        "unit": "dimensionless",
+        "upper": 2.2
+      },
+      "W03": {
+        "lower": 62.0,
+        "name": "sweep_1",
+        "unit": "deg",
+        "upper": 72.0
+      },
+      "W04": {
+        "lower": 40.0,
+        "name": "sweep_2",
+        "unit": "deg",
+        "upper": 56.0
+      },
+      "W05": {
+        "lower": 66.0,
+        "name": "sweep_3",
+        "unit": "deg",
+        "upper": 76.0
+      },
+      "W06": {
+        "lower": 0.35,
+        "name": "span_location_2",
+        "unit": "dimensionless",
+        "upper": 0.58
+      },
+      "W07": {
+        "lower": 0.85,
+        "name": "span_location_3",
+        "unit": "dimensionless",
+        "upper": 0.98
+      },
+      "W08": {
+        "lower": 0.3,
+        "name": "chord_ratio_2",
+        "unit": "dimensionless",
+        "upper": 0.5
+      },
+      "W09": {
+        "lower": 0.08,
+        "name": "chord_ratio_3",
+        "unit": "dimensionless",
+        "upper": 0.2
+      },
+      "W10": {
+        "lower": -4.0,
+        "name": "tip_twist",
+        "unit": "deg",
+        "upper": 4.0
+      }
+    },
+    "bounds_status": "provisional_until_geometry_perturbation",
+    "config_path": "research/concorde_metaopt/configs/design_space_15d.yaml",
+    "config_sha256": "1a9025e998305a86060181584b63c9c4b93526ee9a25a2b7d0a215b23aaa6326",
+    "design_dim": 15,
+    "frozen": false,
+    "ids": [
+      "W01",
+      "W02",
+      "W03",
+      "W04",
+      "W05",
+      "W06",
+      "W07",
+      "W08",
+      "W09",
+      "W10",
+      "V01",
+      "V02",
+      "F01",
+      "F02",
+      "F03"
+    ],
+    "names": [
+      "wing_area",
+      "aspect_ratio",
+      "sweep_1",
+      "sweep_2",
+      "sweep_3",
+      "span_location_2",
+      "span_location_3",
+      "chord_ratio_2",
+      "chord_ratio_3",
+      "tip_twist",
+      "vertical_tail_area",
+      "vertical_tail_sweep_delta",
+      "fuselage_length",
+      "fuselage_fineness",
+      "fuselage_height_width_ratio"
+    ],
+    "task_id": "concorde_fixed_cruise_15d",
+    "units": "SI"
+  },
+  "evaluations": {
+    "note": "no physical evaluation was performed; see P3 budget gate",
+    "objective_fields_present": false,
+    "physical_call_count": 0
+  },
+  "files": [
+    {
+      "bytes": 319239,
+      "name": "candidates.jsonl",
+      "path": "research/concorde_metaopt/optimization_runs/doe-p3-20261029T1725/candidates.jsonl",
+      "role": "candidates",
+      "rows": 160,
+      "sha256": "77e7f935dd1ef751d3d11db326d06497609be7a87dad042c1d92827c1e76f4d3"
+    },
+    {
+      "bytes": 102955,
+      "name": "candidates.csv",
+      "path": "research/concorde_metaopt/optimization_runs/doe-p3-20261029T1725/candidates.csv",
+      "role": "candidates_csv",
+      "rows": 160,
+      "sha256": "b1d31a0f10ed4adbf9696267d76023c7bb83d1abc91aeab9cf87eaab81f404fd"
+    },
+    {
+      "bytes": 3896,
+      "name": "run_config.json",
+      "path": "research/concorde_metaopt/optimization_runs/doe-p3-20261029T1725/run_config.json",
+      "role": "run_config",
+      "rows": null,
+      "sha256": "77870f83ab34d288a370eb071f2e54f8383b2fb975c4ded0c89f1e1e16127472"
+    },
+    {
+      "bytes": 632,
+      "name": "environment.json",
+      "path": "research/concorde_metaopt/optimization_runs/doe-p3-20261029T1725/environment.json",
+      "role": "environment",
+      "rows": null,
+      "sha256": "3cd2134ada46db22a1dd677209aaa53d9a2a4140eb09deec8ec59df4e67b4793"
+    }
+  ],
+  "geometry": {
+    "errors": 0,
+    "invalid": 0,
+    "screening": "geometry_model.build_geometry + model_checks (no RCAIDE)",
+    "valid": 160
+  },
+  "git_sha": "047621f3ab04c781d127e751265c90ff461ceb9b",
+  "limitations": [
+    "design-space bounds are still provisional_until_geometry_perturbation (frozen: false)",
+    "geometry legality does not imply aerodynamic or mission validity",
+    "no low/high fidelity identity or CFD applicability has been established yet"
+  ],
+  "method": "doe_screening",
+  "sampler": "lhs",
+  "schema": {
+    "evaluation_status": "not_evaluated",
+    "forbidden_fields": [
+      "objective",
+      "feasible",
+      "constraints",
+      "fuel_burn_kg"
+    ],
+    "geometry_statuses": [
+      "valid",
+      "invalid",
+      "error"
+    ],
+    "methods": [
+      "lhs",
+      "sobol"
+    ],
+    "note": "DOE screening rows are geometry samples only; no objective is ever stored here.",
+    "required_fields": [
+      "schema_version",
+      "candidate_id",
+      "batch_id",
+      "batch_index",
+      "sample_index",
+      "method",
+      "seed",
+      "design",
+      "design_units",
+      "geometry_status",
+      "geometry_error",
+      "failed_checks",
+      "warned_checks",
+      "metrics",
+      "evaluation_status",
+      "physical_call_count"
+    ],
+    "row_metrics": [
+      "wing_area_m2",
+      "wing_span_m",
+      "wing_root_chord_m",
+      "wing_mac_m",
+      "wing_wetted_area_m2",
+      "wing_tip_twist_deg",
+      "tail_area_m2",
+      "tail_span_m",
+      "tail_root_chord_m",
+      "fuselage_length_m",
+      "fuselage_usable_volume_m3",
+      "fuselage_volume_margin_m3",
+      "cg_x_m",
+      "static_margin"
+    ],
+    "schema_version": "p3-doe-1"
+  },
+  "schema_version": "p3-doe-1",
+  "seed": 42,
+  "stage": "P3",
+  "task_id": "concorde_fixed_cruise_15d"
+}

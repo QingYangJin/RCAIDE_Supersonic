@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "status": "SUPERSEDES_COUNTS_AND_SCOPE_IN_20261030_STATIC_PROPOSAL; NOT_APPROVED; NO_SOLVES_EXECUTED",
+  "stage": "P1-P3_12D",
+  "governance": "Issue #4 D-12D-001; requires itemized owner approval before any new physical call",
+  "supersedes_note": "The original 11-case proposal called its 6 LF cases VSPAERO, but 2 are RCAIDE Mission tail probes. This document corrects the method and scope; the earlier hashed review run is kept unchanged.",
+  "approved_budget": 0,
+  "physical_calls_from_this_proposal": 0,
+  "nominal_existing_cases": {
+    "vspaero_thin_main_wing": [
+      "LFV-00_baseline",
+      "LFV-01_W01",
+      "LFV-02_W03",
+      "LFV-03_W10"
+    ],
+    "rcaide_single_cruise_vertical_tail": [
+      "LFV-04_V01",
+      "LFV-05_V02"
+    ],
+    "su2_euler": [
+      "HFS-00_wedge",
+      "HFS-01_wing_M1",
+      "HFS-02_wing_M2",
+      "HFS-03_wing_M3",
+      "HFS-04_wing_perturbation_M2"
+    ],
+    "count": 11,
+    "warning": "An alpha sweep, restart or verification grid may involve more than one actual solver invocation; these are nominal cases, not a bounded authorization of 11 physical solves."
+  },
+  "ordered_preconditions": [
+    "Document each exact Mach/Re/alpha/beta, wing geometry and Sref/cref/bref in SI; identify wind versus body axes and force sign.",
+    "Verify 12D loader/DOΕ/Mission software on local project interpreter and A5 independent review.",
+    "Verify W10 OpenVSP exported surface twist with the actual worker and preserve geometry hashes; compare wing-only geometry handed to VSPAERO and SU2.",
+    "Confirm mesh-generation method, farfield conditions, wall boundary treatment and geometry origin for any SU2 wing-only case; an absence blocks the SU2 case.",
+    "Obtain owner-signed physical-call budget and stop conditions in Issue #4; do not interpret this JSON as approval."
+  ],
+  "validation_cautions": [
+    "One Mach-2 wedge SU2 solve may check shock angle on its chosen grid but cannot demonstrate wedge grid independence. Add independently converged reference evidence or an approved multi-grid wedge verification series.",
+    "A three-grid wing-only Euler study can investigate wing pressure and wave drag but cannot prove full-aircraft fuel accuracy or viscous/skin-friction accuracy.",
+    "Mach2.02 VSPAERO thin-surface comparisons require correct vortex panel resolution, sweep, Mach-mode settings, convergence and same force reference.",
+    "Vertical-tail V01/V02 probes are RCAIDE LF Mission, not VSPAERO; wing-only SU2 does NOT validate vertical-tail effects.",
+    "Induced and wave-lift terms both scaling with CL^2 is a reason to investigate overlap, not proof of double counting. Diagnose with independent force-level component comparisons.",
+    "Baseline wing wetted area is 717.57475 m2; the 358.25 m2 number is reference/exposed area in the historical model. Unmodelled wing-body occlusion remains a source of error."
+  ],
+  "body_correction_gate": {
+    "status": "BLOCKED",
+    "reason": "The nominal 11 cases include no calibrated wing-body interference comparison and cannot validate a design-dependent fuselage correction even if every wing-only case converges.",
+    "minimum_additional_evidence": "Independent wing-body baseline/reference data or an approved limited full-configuration aerodynamic comparison over representative wing perturbations, with overlap and uncertainty ledger; exact case count and budget TBD, not authorized.",
+    "fallback": "If no independent source is obtainable, report BODY-CORR NOT_VALIDATED and limit optimization claims; do not auto-approve P4."
+  },
+  "cost_envelope": {
+    "nominal_upper_bound": "NOT_FROZEN",
+    "restart_policy": "Every re-solve/restart counts as another real call unless documented as same continuous solver run.",
+    "stop_conditions": [
+      "missing geometry or boundary-condition verification",
+      "solver instability or non-convergence",
+      "invalid aerodynamic reference values",
+      "unexplained LF/HF trend reversal",
+      "per-case approved wall-time or compute budget exhausted",
+      "unexpected negative or duplicated drag component"
+    ]
+  },
+  "next_decisions": [
+    "Accept the corrected nominal breakdown (4 VSPAERO, 2 RCAIDE Mission, 5 SU2) as a technical planning basis only.",
+    "Define wedge grid-independent acceptance method and whether additional calls are required.",
+    "Define body-correction calibration evidence and tolerable uncertainty, potentially expanding the matrix.",
+    "Approve explicit case-level run caps and resources if and only if the non-physical prerequisites pass."
+  ]
+}
