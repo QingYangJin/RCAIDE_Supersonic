@@ -211,7 +211,7 @@
       "A2": {
         "task": "FULLCHAIN-A2-RAW-RECALC",
         "verdict": "PASS_WITH_SMALL_DISCREPANCIES",
-        "detail": "4/4 fuel exact incl E2E-00 34109.48257123768 literal; 3 valid LF polars 0 diff; HF mesh volume/area <1e-6; raw 155+39 hashes ok 195 files/108,824,422 B; 23/23 budget; discrepancies: CRLF-sensitive manifest hashes, run-time CRLF ledger digest, 1/155 EXT file edited after archiving"
+        "detail": "4/4 fuel exact incl E2E-00 34109.48257123768 literal; 3 valid LF polars 0 diff; HF mesh volume/area <1e-6; raw 155+39 hashes ok 195 files/108,824,422 B; 23/23 budget; discrepancies: CRLF-sensitive manifest hashes, run-time CRLF ledger digest, 1/155 EXT file edited after archiving Delta task-31: X2/X3/X4 CLOSED on 529d9b7 (67/67 LF manifest hashes, CRLF ledger reconstruction d064d93f, raw archive intact)."
       },
       "A3": {
         "task": "FULLCHAIN-A3-HYGIENE",
@@ -225,12 +225,40 @@
       },
       "A5": {
         "task": "FULLCHAIN-A5-INDEPENDENT-RECALC",
-        "verdict": "CHANGES_REQUESTED_TWICE_THEN_ADDRESSED",
-        "detail": "Independent recompute PASS (SU2 tail 6/6 components abs diff 0.0, Cp integral <=1.4e-17; WAVE donq 0 diff; budget 23/23 all billed). MAJOR round 1: blanket stationarity wording and CRLF-sensitive manifest -> reviews archived, wording corrected once, ledger mesh events backfilled, manifest canonicalized in 529d9b7. Delta round 2 (task-30): manifest/ledger PASS but wording still grouped both cases at 6.3e-9 and two old residual notes remained -> corrected per case in this revision (HFS-02 CD/CL/CMy <= 6.3e-9; HFS-03 CD/CL/CMy <= 5.1e-6; CMx exceptions 4.63e-7 / 3.58e-3). Final delta re-check pending on this commit."
+        "verdict": "APPROVE_FINAL",
+        "detail": "Independent recompute PASS (SU2 tail 6/6 components abs diff 0.0, Cp integral <=1.4e-17; WAVE donq 0 diff; budget 23/23 all billed). MAJOR round 1: blanket stationarity wording and CRLF-sensitive manifest -> reviews archived, wording corrected once, ledger mesh events backfilled, manifest canonicalized in 529d9b7. Delta round 2 (task-30): manifest/ledger PASS but wording still grouped both cases at 6.3e-9 and two old residual notes remained -> corrected per case in this revision (HFS-02 CD/CL/CMy <= 6.3e-9; HFS-03 CD/CL/CMy <= 5.1e-6; CMx exceptions 4.63e-7 / 3.58e-3). Final delta re-check pending on this commit. Final re-check task-32: APPROVE, 6/6 PASS, 0 blocking on da7f9e3 (per-case wording, manifest LF 67/67, mesh events 11, no numerical change, gates unchanged)."
       }
     },
     "reviews_are_verbatim_copies": "independent_reviews/ contains verbatim role outputs (repo-external originals); no review ran a solver or wrote to the repository.",
-    "revision_note": "Post-review revisions: d80b4c4 (run) -> 58933bb (reviews archived, first wording fix, mesh events backfilled) -> 529d9b7 (canonical LF manifest) -> this revision (per-case stationarity wording + old residual notes replaced). No numerical result changed; no new solver start (23/23 remains exhausted)."
+    "revision_note": "Post-review revisions: d80b4c4 (run) -> 58933bb (reviews archived, first wording fix, mesh events backfilled) -> 529d9b7 (canonical LF manifest) -> this revision (per-case stationarity wording + old residual notes replaced). No numerical result changed; no new solver start (23/23 remains exhausted).",
+    "delta_rounds": [
+      {
+        "commit": "58933bb",
+        "round": "A5 task-26 findings addressed",
+        "notes": "reviews archived, first wording fix, mesh events backfilled"
+      },
+      {
+        "commit": "529d9b7",
+        "round": "canonical LF data_manifest",
+        "notes": "A5 MAJOR-2 closed; A2 X4 closed"
+      },
+      {
+        "commit": "3dc9b0b",
+        "round": "A5 task-30 wording blocking",
+        "notes": "per-case stationarity in README/report, residual notes replaced"
+      },
+      {
+        "commit": "ee0be3f",
+        "round": "A5 task-30 minors",
+        "notes": "README manifest line, ledger updated_utc + revision_note"
+      },
+      {
+        "commit": "da7f9e3",
+        "round": "final canonical manifest",
+        "notes": "A5 task-32 APPROVE (6/6 PASS, 0 blocking)"
+      }
+    ],
+    "final_review_verdict": "A5 APPROVE (task-32, 6/6 PASS, 0 blocking) on da7f9e3"
   },
   "artifacts": {
     "data_manifest": "data_manifest.json",

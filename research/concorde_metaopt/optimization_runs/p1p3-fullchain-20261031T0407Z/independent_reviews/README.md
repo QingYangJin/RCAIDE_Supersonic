@@ -15,3 +15,11 @@ Notes:
 - No reviewer started a solver process (the 23/23 D-12D-002 budget was already exhausted) and none wrote to the repository or GitHub.
 - The A5 request was to judge whether any gate claim was exaggerated; it found the gate statements honest (no gate approved, LF NOT_VALIDATED, HF PARTIAL, BODY-CORR BLOCKED) and only documentation/manifest fixes were required.
 - The post-review revision (this commit and the following manifest commit) changes no numerical result and starts no new physical analysis; the one-off authorisation remains consumed 23/23.
+
+## Review closeout (delta rounds)
+
+- A5 first verdict CHANGES_REQUESTED (task-26): independent recompute passed; two documentation/manifest majors raised. Addressed in 58933bb/529d9b7.
+- A5 delta verdict CHANGES_REQUESTED (task-30): manifest/ledger passed but the stationarity wording still grouped both wing cases at 6.3e-9 and two old residual notes remained. Addressed in 3dc9b0b/ee0be3f/da7f9e3.
+- A5 final verdict APPROVE (task-32, 6/6 PASS, 0 blocking) on da7f9e3: per-case wording correct, canonical LF manifest 67/67 hashes 0 mismatch (sha256 ecb6d40f7990e304b6ce669d0540a1a5aad9653130fe33f38fc47fa7fe145468), ledger mesh events 11 and updated_utc fixed, evaluations 23/23 unchanged, gates unchanged, no new solver.
+- A2 delta verdict (task-31): X2/X3/X4 discrepancies all CLOSED on 529d9b7 (67/67 LF hashes; CRLF ledger reconstruction d064d93f...; archive hfs00_analysis.json intact); final closeout copied under A2_raw_recalc/delta_reconcile.*.
+- The review-closeout commit that archives these final files is documentation-only: no numerical result, ledger budget, or solver start changes.
