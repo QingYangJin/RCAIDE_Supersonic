@@ -240,7 +240,7 @@ Evidence files (committed to PR #3):
 - HF: hf_su2_results.json, mesh_convergence.csv
 - drag bookkeeping: drag_component_ledger.json
 - figures: figures/*.png (7 figures)
-- manifests: data_manifest.json (all committed files), raw_artifacts_manifest.json
+- manifests: data_manifest.json (all package files except itself; hashes over committed LF bytes), raw_artifacts_manifest.json
   (pointer to the 195 raw files, 108.8 MB, archived outside git with sha256)
 - scripts: scripts/*.py and scripts/*.sh (the exact analysis/orchestration scripts used;
   they contain machine-specific absolute paths to the external state directory and the
