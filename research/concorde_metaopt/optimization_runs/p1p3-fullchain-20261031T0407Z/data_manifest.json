@@ -3,13 +3,13 @@
   "run_id": "p1p3-fullchain-20261031T0407Z",
   "stage": "P1-P3 full-chain multi-fidelity validation (D-12D-002)",
   "approval": "Issue #4 / D-12D-002 (comment 6538481816)",
-  "generated_utc": "2026-11-01T03:28:06Z",
+  "generated_utc": "2026-11-01T03:35:02Z",
   "git_sha_at_run_start": "048ef2e55f389b0ae52e8872131dcfcf0c91a1eb",
   "revision": "post-review revision (independent reviews archived, stationarity wording corrected, mesh events backfilled, manifest canonicalized)",
   "hashing_convention": "sha256 over committed worktree bytes (git canonical LF line endings); regenerate/verify from a clean checkout of the commit containing this manifest",
   "line_ending_note": "The first package manifest (in commit d80b4c4) hashed CRLF working-tree copies; A2/A5 found 14/59 CRLF-only differences against a clean LF checkout. Example: the run-time CRLF ledger was 32,677 B with sha256 d064d93fd14b865fd90d823cd0538f4d81d5facc115b89680ec9e2687f697454, which is exactly the committed LF ledger (31,911 B) with LF->CRLF conversion. This revision records canonical LF hashes only.",
-  "file_count": 71,
-  "total_bytes": 1332954,
+  "file_count": 77,
+  "total_bytes": 1394925,
   "files": [
     {
       "path": "approval_and_budget_ledger.json",
@@ -82,9 +82,19 @@
       "sha256": "a4c4b98429cfb2363425b0500ca8190c9e4256aa9d0cbd5c2f2ab1cea13d0625"
     },
     {
+      "path": "independent_reviews/A1_package_integrity/full_suite.log",
+      "bytes": 7217,
+      "sha256": "8e96dc1cbfcfa031bceefa85cc9708ac04168e3e7bd52f5396d8d1e19a970973"
+    },
+    {
       "path": "independent_reviews/A1_package_integrity/fullchain_a1_report.md",
       "bytes": 5957,
       "sha256": "f6cd75392bf99ae5172d5995a4e113ecb345a44de1a99798ade288f288fcaa3a"
+    },
+    {
+      "path": "independent_reviews/A1_package_integrity/manifest_check.log",
+      "bytes": 5865,
+      "sha256": "051782820a5035bdde3abe1deadc1cd18363fe4c8d41b5e6087b58e6c15ec628"
     },
     {
       "path": "independent_reviews/A2_raw_recalc/delta_reconcile.json",
@@ -117,6 +127,11 @@
       "sha256": "ec22733506b4281d232381d63bfdada879f6f04baceaa4cde2fd5f3ad34792b8"
     },
     {
+      "path": "independent_reviews/A5_independent_recalc/final_checks.log",
+      "bytes": 34246,
+      "sha256": "01238f8dd2d01277578c06797587749aed8420e1104a5a4a3f1a085b450b4fd0"
+    },
+    {
       "path": "independent_reviews/A5_independent_recalc/final_review.md",
       "bytes": 7031,
       "sha256": "86019c2d1d42aa066087b4d86af71ad5701093d537716386593d27259a30d35f"
@@ -125,6 +140,21 @@
       "path": "independent_reviews/A5_independent_recalc/final_verdict.txt",
       "bytes": 2652,
       "sha256": "1ba0fa93b0dd05fd262a7b25abbfc8752253b665676e0a1cd9c6a217800b64fc"
+    },
+    {
+      "path": "independent_reviews/A5_independent_recalc/pkg_checks.log",
+      "bytes": 5741,
+      "sha256": "6542f7cf1eed8214e46e2693e6ce06201218df5de86b483ac665a15a57bc8619"
+    },
+    {
+      "path": "independent_reviews/A5_independent_recalc/pkg_review.md",
+      "bytes": 5416,
+      "sha256": "cdd5fad0c3def1472b8d0d1bd8a2eab5319f843641d4f83d7f2a065d91c21c5b"
+    },
+    {
+      "path": "independent_reviews/A5_independent_recalc/pkg_verdict.txt",
+      "bytes": 2457,
+      "sha256": "584ae01407c52716f9b070474cfe85d6c76dcd6d3d54851d5cf65f1eb4b17f74"
     },
     {
       "path": "independent_reviews/A5_independent_recalc/recalc.md",
@@ -138,8 +168,8 @@
     },
     {
       "path": "independent_reviews/README.md",
-      "bytes": 4740,
-      "sha256": "b350013c4a4c2f9c476d370b2170fed1a7899dd474993424b0e4f2af96cea8f2"
+      "bytes": 5112,
+      "sha256": "8c729728a96465073e20415ddb3744476a95d036f07739d201efc5eae34b3269"
     },
     {
       "path": "lf_vspaero_density_sensitivity.csv",
@@ -164,7 +194,7 @@
     {
       "path": "raw_artifacts_manifest.json",
       "bytes": 1733,
-      "sha256": "03dd844334f0937995166dcc48abed1d09797cc0903d3cec4b6000dd9e0959b6"
+      "sha256": "44cd82f87ac44b392301bf1a2c93e34f9ce42a1aa16c067556398574a19a187f"
     },
     {
       "path": "README.md",
@@ -348,8 +378,8 @@
     },
     {
       "path": "summary.json",
-      "bytes": 11395,
-      "sha256": "7b191315947bcf84c803a54c3ba1b8365a66138b195199b8c7c0d27e3e6dc02c"
+      "bytes": 12052,
+      "sha256": "fa9a80eae0453b779a4e7e1a7ebbcef539313ad4cee4fdc691934bebb01229ff"
     },
     {
       "path": "toolchain_capability_probe.json",
@@ -401,7 +431,7 @@
   ],
   "raw_artifacts": {
     "manifest": "raw_artifacts_manifest.json",
-    "sha256": "03dd844334f0937995166dcc48abed1d09797cc0903d3cec4b6000dd9e0959b6",
+    "sha256": "44cd82f87ac44b392301bf1a2c93e34f9ce42a1aa16c067556398574a19a187f",
     "archive_root": "D:/RCAIDE/outputs/concorde_metaopt/p1p3-fullchain-20261031T0407Z",
     "file_count": 195,
     "total_bytes": 108824422,
