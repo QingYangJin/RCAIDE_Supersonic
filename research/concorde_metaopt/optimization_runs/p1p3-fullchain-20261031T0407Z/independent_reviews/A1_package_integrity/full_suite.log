@@ -1,0 +1,220 @@
+.......................................................................................................................................................................................................................................s..............................................................
+----------------------------------------------------------------------
+Ran 294 tests in 29.885s
+
+OK (skipped=1)
+{
+  "run_id": "measurement-cli",
+  "stage": "P1",
+  "task_id": "concorde_fixed_cruise_15d",
+  "method": "openvsp_geometry_check",
+  "seed": null,
+  "git_sha": "d80b4c485d689082cd117f09ec6445a181dd458c",
+  "solver_versions": {
+    "RCAIDE-LEADS": "1.5.0",
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "matplotlib": "3.11.2",
+    "RCAIDE_module": "1.5.0",
+    "OpenVSP": "9.9.9",
+    "OpenVSP_python": "3.11.17",
+    "trimesh": "5.1.1"
+  },
+  "design_dim": 15,
+  "status": "openvsp_check_failed",
+  "total_true_evaluations": 0,
+  "low_fidelity_calls": 0,
+  "su2_calls": 0,
+  "invalid_count": 0,
+  "failed_count": 4,
+  "first_feasible_evaluation": null,
+  "best_feasible_fuel_kg": null,
+  "best_design_id": null,
+  "wall_seconds": 0.7248053000075743,
+  "cpu_seconds_if_available": null,
+  "artifacts": {
+    "summary": "summary.json",
+    "run_config": "run_config.json",
+    "environment": "environment.json",
+    "openvsp_request": "openvsp_request.json",
+    "worker_result": "worker_result.json",
+    "openvsp_metrics": "openvsp_metrics.json",
+    "openvsp_comparisons_csv": "openvsp_comparisons.csv"
+  },
+  "git_dirty": false,
+  "openvsp": {
+    "available": true,
+    "version": "9.9.9",
+    "python_version": "3.11.17",
+    "worker_script": "<external>/measurement_cli_worker.py",
+    "components": [
+      "main_wing",
+      "vertical_tail",
+      "fuselage"
+    ],
+    "metrics": {
+      "main_wing": {
+        "name": "main_wing",
+        "total_area_m2": 358.25000000000006,
+        "total_span_m": 25.604638251691824,
+        "bbox_m": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "vertical_tail": {
+        "name": "vertical_tail",
+        "total_area_m2": 33.91,
+        "total_span_m": 5.0093312926976585,
+        "bbox_m": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "fuselage": {
+        "name": "fuselage",
+        "length_m": 61.66,
+        "bbox_m": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "bbox_note": "synthetic"
+      }
+    },
+    "stl_metrics": {},
+    "comparisons": [
+      {
+        "check_id": "OV01_wing_area",
+        "subject": "main_wing planform area (m2)",
+        "model_value": 358.25000000000006,
+        "openvsp_value": 358.25000000000006,
+        "relative_delta": 0.0,
+        "tolerance": 0.005,
+        "status": "pass",
+        "detail": "OpenVSP TotalArea versus model reference area"
+      },
+      {
+        "check_id": "OV02_wing_span",
+        "subject": "main_wing span (m)",
+        "model_value": 25.604638251691824,
+        "openvsp_value": 25.604638251691824,
+        "relative_delta": 0.0,
+        "tolerance": 0.005,
+        "status": "pass",
+        "detail": "OpenVSP TotalSpan versus model projected span"
+      },
+      {
+        "check_id": "OV03_tail_area",
+        "subject": "vertical_tail planform area (m2)",
+        "model_value": 33.91,
+        "openvsp_value": 33.91,
+        "relative_delta": 0.0,
+        "tolerance": 0.005,
+        "status": "pass",
+        "detail": ""
+      },
+      {
+        "check_id": "OV04_tail_span",
+        "subject": "vertical_tail span (m)",
+        "model_value": 5.0093312926976585,
+        "openvsp_value": 5.0093312926976585,
+        "relative_delta": 0.0,
+        "tolerance": 0.005,
+        "status": "pass",
+        "detail": ""
+      },
+      {
+        "check_id": "OV05_fuselage_length",
+        "subject": "fuselage length (m)",
+        "model_value": 61.66,
+        "openvsp_value": 61.66,
+        "relative_delta": 0.0,
+        "tolerance": 1e-09,
+        "status": "pass",
+        "detail": ""
+      }
+    ],
+    "failures": [],
+    "warnings": [],
+    "measurement_failures": [
+      "component main_wing: RuntimeError: unreadable STL",
+      "component vertical_tail: RuntimeError: unreadable STL",
+      "component fuselage: RuntimeError: unreadable STL",
+      "assembly STL: RuntimeError: unreadable STL"
+    ],
+    "composed_assembly": null,
+    "limitations": [
+      "OpenVSP fuselage spline overshoot is recorded as a warning.",
+      "No VSPAERO or CFD analysis is run; aerodynamic applicability is not established.",
+      "This OpenVSP build does not bake geometry XForm placement into exported STL meshes; the composed assembly STL applies the rigid transforms and is the placement-checked artefact.",
+      "Wing section twist is applied as an OpenVSP XSec Twist rotation about the leading edge (Twist_Location = 0); twist aerodynamics are not analysed."
+    ],
+    "note": "Geometry export and consistency check only; no objective value is reported."
+  },
+  "external_artifacts": {
+    "root": "<external>/openvsp",
+    "files": [
+      {
+        "kind": "assembly",
+        "name": "concorde_full.stl",
+        "path": "<external>/concorde_full.stl",
+        "bytes": 684,
+        "sha256": "9b7224daae204396ff98db308c6f49481fddc7e04def8a61d593e8886a351cd0"
+      },
+      {
+        "kind": "component",
+        "name": "concorde_full_fuselage.stl",
+        "path": "<external>/concorde_full_fuselage.stl",
+        "bytes": 684,
+        "sha256": "6bf261a6384dd96da4a796cc42abf78704878e3bc977bfec8aa277bb7c62db18"
+      },
+      {
+        "kind": "component",
+        "name": "concorde_full_main_wing.stl",
+        "path": "<external>/concorde_full_main_wing.stl",
+        "bytes": 684,
+        "sha256": "9b7198570072cbcc4d996a3e97b8850c72b370871e0be1e98e3608dda2b3c88f"
+      },
+      {
+        "kind": "component",
+        "name": "concorde_full_vertical_tail.stl",
+        "path": "<external>/concorde_full_vertical_tail.stl",
+        "bytes": 684,
+        "sha256": "811089ac3c5de943305948ef5d4beb67cbb4e19af534f4e0e73d18bcf4289a84"
+      },
+      {
+        "kind": "worker",
+        "name": "request.json",
+        "path": "<external>/request.json",
+        "bytes": 3485,
+        "sha256": "939f19f254274e7977dcf63d83ea06ab0ca44e462038e43d8b9950208cf3b07f"
+      },
+      {
+        "kind": "worker",
+        "name": "worker_result.json",
+        "path": "<external>/worker_result.json",
+        "bytes": 1350,
+        "sha256": "1e7e6ed65a8c54d7e0f6e120e93eb35739d1d8aec9a20930fef6462e27d617f2"
+      }
+    ],
+    "ignored_files": [],
+    "deleted": false,
+    "note": "Raw OpenVSP exports (including the worker request/result JSON) are git-ignored; paths are relative to the repository root. Writer scratch backups (*.bak) are listed separately and are not geometry artefacts."
+  }
+}
+{
+  "run_id": "run-cli",
+  "report_status": "report_completed",
+  "consistency_failures": [],
+  "missing_artifacts": 0,
+  "figures": {},
+  "report": "C:\\Users\\pc\\AppData\\Local\\Temp\\concorde-report-tests-mux2768z\\run-cli\\report.md"
+}
+{
+  "status": "report_failed",
+  "error": "run directory C:\\Users\\pc\\AppData\\Local\\Temp\\concorde-report-tests-mux2768z\\run-missing has no summary.json"
+}
+EXIT=0

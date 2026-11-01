@@ -1,0 +1,77 @@
+FULLCHAIN-A1-PACKAGE-INTEGRITY-d80b4c4 -- read-only package check
+run_dir     = D:\RCAIDE\research\concorde_metaopt\optimization_runs\p1p3-fullchain-20261031T0407Z
+checked_utc = 2026-10-31T18:01:23+08:00
+
+package files = 60 ; json = 14 ; jsonl = 1 ; png = 7
+
+## (2) JSON parse
+[PASS] parse approval_and_budget_ledger.json
+[PASS] parse blocker_register_current.json
+[PASS] parse data_manifest.json
+[PASS] parse drag_component_ledger.json
+[PASS] parse environment.json
+[PASS] parse geometry_validation.json
+[PASS] parse hf_su2_results.json
+[PASS] parse lf_vspaero_results.json
+[PASS] parse mission_e2e.json
+[PASS] parse raw_artifacts_manifest.json
+[PASS] parse run_config.json
+[PASS] parse summary.json
+[PASS] parse toolchain_capability_probe.json
+[PASS] parse wave_drag_area_rule.json
+[PASS] all 14 JSON files parse -- 14/14
+[PASS] evaluations.jsonl parses: 23 rows
+
+## (3) data_manifest.json re-hash
+manifest: file_count=59 total_bytes=1181000 listed=59
+[PASS] all 59 listed files match sha256+bytes -- mismatches=0
+[PASS] manifest file_count matches listed entries -- 59 vs 59
+[PASS] manifest total_bytes matches re-hashed sum -- 1181000 vs 1181000
+[PASS] only self-excluded file is data_manifest.json -- extras=['data_manifest.json']
+
+## (4) evaluations.jsonl billing vs approval_and_budget_ledger.json
+[PASS] evaluations.jsonl has 23 rows -- rows=23
+[PASS] 23 rows are billable numerical_analysis_start -- billable=23 numerical_analysis_start=23
+jsonl category counts: {"RCAIDE_LF": 4, "SU2_HF": 6, "VSPAERO_LF": 6, "WAVE_AREA_RULE": 7}
+ledger categories (cap/used): {"RCAIDE_LF": {"cap": 4, "used": 4}, "SU2_HF": {"cap": 6, "used": 6}, "VSPAERO_LF": {"cap": 6, "used": 6}, "WAVE_AREA_RULE": {"cap": 7, "used": 7}}
+[PASS] per-category counts = VSPAERO 6 / RCAIDE 4 / WAVE 7 / SU2 6 -- {"RCAIDE_LF": 4, "SU2_HF": 6, "VSPAERO_LF": 6, "WAVE_AREA_RULE": 7}
+[PASS] ledger categories used = 6/4/7/6 matching jsonl -- {"RCAIDE_LF": 4, "SU2_HF": 6, "VSPAERO_LF": 6, "WAVE_AREA_RULE": 7}
+[PASS] ledger totals cap=23 used=23 remaining=0 -- {"cap": 23, "used": 23, "remaining": 0}
+[PASS] summary.json budget agrees with ledger -- {"VSPAERO_LF": {"cap": 6, "used": 6}, "RCAIDE_LF": {"cap": 4, "used": 4}, "SU2_HF": {"cap": 6, "used": 6}, "WAVE_AREA_RULE": {"cap": 7, "used": 7}}
+[PASS] ledger has 23 numerical_analysis_events -- events=23
+[PASS] evaluations.jsonl rows reconcile 1:1 with ledger numerical_analysis_events -- first_diff=None
+[PASS] command strings agree for all 23 events
+jsonl status distribution: {"FAILED": 1, "FAILED_CONFIG_PARSE": 1, "SOLVED": 20, "SOLVED_VOID_CONVERGENCE": 1}
+NOTE all 23 starts are billable regardless of status (failed starts consume budget)
+[WARN] ledger categories[*].case_ids is stale vs executed events (used counts still correct) -- {"VSPAERO_LF": {"ledger_categories_case_ids": ["LFV-00", "LFV-01", "LFV-02", "LFV-03", "LFV-SENS-A", "LFV-SENS-B"], "executed_case_ids": ["LFV-00", "w01_plus1pct", "w03_plus1deg", "w10_plus2", "sens_coarse", "sens_fine"]}, "WAVE_AREA_RULE": {"ledger_categories_case_ids": ["WAVE-00", "WAVE-01", "WAVE-02", "WAVE-03", "WAVE-04", "WAVE-05", "WAVE-06"], "executed_case_ids": ["WAVE-00", "WAVE-00R", "WAVE-01", "WAVE-02", "WAVE-03", "WAVE-04", "WAVE-05"]}, "SU2_HF": {"ledger_categories_case_ids": ["HFS-00", "HFS-00R", "HFS-01", "HFS-02", "HFS-03", "HFS-04"], "executed_case_ids": ["HFS-SETUP-01", "HFS-SETUP-02", "HFS-00", "HFS-01", "HFS-02", "HFS-03"]}}
+
+## (5) PNG figures
+[PASS] figures/drag_component_bookkeeping.png size=68344 1275x630 bit_depth=8 color_type=6
+[PASS] figures/lf_vspaero_density_sensitivity.png size=113900 1650x510 bit_depth=8 color_type=6
+[PASS] figures/mission_e2e_fuel_deltas.png size=53962 1275x540 bit_depth=8 color_type=6
+[PASS] figures/su2_wing_force_convergence.png size=85200 1650x510 bit_depth=8 color_type=6
+[PASS] figures/su2_wing_mesh_sensitivity.png size=50517 1200x480 bit_depth=8 color_type=6
+[PASS] figures/wave_area_rule_results.png size=209303 2415x807 bit_depth=8 color_type=6
+[PASS] figures/wave_area_rule_validation.png size=191702 2574x758 bit_depth=8 color_type=6
+[PASS] 7 PNG figures present -- found=7
+[PASS] all 7 figures have valid PNG signature+IHDR and non-trivial size -- []
+
+## (6) gate honesty
+[PASS] gate GEO-12D = PARTIAL -- got='PARTIAL'
+[PASS] gate LF-M2.02 = NOT_VALIDATED -- got='NOT_VALIDATED / LF_PROVISIONAL'
+[PASS] gate HF-M2.02 = PARTIAL -- got='PARTIAL'
+[PASS] gate BODY-CORR = BLOCKED -- got='BLOCKED'
+[PASS] gate MISSION-DATA = PARTIAL -- got='PARTIAL'
+[PASS] gate BUDGET = EXHAUSTED -- got='EXHAUSTED'
+[PASS] no extra gates beyond the six frozen ones -- []
+[PASS] summary status = EXECUTED_NO_GATE_APPROVED -- 'EXECUTED_NO_GATE_APPROVED'
+[PASS] APPROVED_FOR_NEXT_STAGE is listed under not_approved (not granted) -- ["APPROVED_FOR_NEXT_STAGE", "P4 BO/DE", "P5 MAML", "P6", "merge to main"]
+[PASS] no gate carries an APPROVED status -- []
+
+## additional references
+[INFO] present: README.md (16432 bytes)
+[INFO] present: raw_artifacts_manifest.json (1714 bytes)
+[INFO] present: scripts/README.md (2216 bytes)
+
+RESULT: PASS_WITH_WARNINGS (all required checks green, 1 warning(s))
+  [WARN] ledger categories[*].case_ids is stale vs executed events (used counts still correct) -- {"VSPAERO_LF": {"ledger_categories_case_ids": ["LFV-00", "LFV-01", "LFV-02", "LFV-03", "LFV-SENS-A", "LFV-SENS-B"], "executed_case_ids": ["LFV-00", "w01_plus1pct", "w03_plus1deg", "w10_plus2", "sens_coarse", "sens_fine"]}, "WAVE_AREA_RULE": {"ledger_categories_case_ids": ["WAVE-00", "WAVE-01", "WAVE-02", "WAVE-03", "WAVE-04", "WAVE-05", "WAVE-06"], "executed_case_ids": ["WAVE-00", "WAVE-00R", "WAVE-01", "WAVE-02", "WAVE-03", "WAVE-04", "WAVE-05"]}, "SU2_HF": {"ledger_categories_case_ids": ["HFS-00", "HFS-00R", "HFS-01", "HFS-02", "HFS-03", "HFS-04"], "executed_case_ids": ["HFS-SETUP-01", "HFS-SETUP-02", "HFS-00", "HFS-01", "HFS-02", "HFS-03"]}}
