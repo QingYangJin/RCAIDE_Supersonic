@@ -1,0 +1,596 @@
+{
+  "openvsp_version": "OpenVSP 3.55.0",
+  "python": "3.11.17",
+  "tessellation_target": {
+    "Tess_U": 16.0,
+    "Tess_W": 33.0
+  },
+  "cases": {
+    "baseline": {
+      "tag": "baseline",
+      "twist_deg": 0.0,
+      "geometry": {
+        "kind": "wing",
+        "name": "main_wing",
+        "symmetric": true,
+        "span_m": 25.604638251691824,
+        "location": [
+          14.0,
+          0.0,
+          -0.8
+        ],
+        "rotation": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "sections": [
+          {
+            "percent_span_location": 0.0,
+            "chord_m": 29.901818514349216,
+            "leading_edge_x_m": 0.0,
+            "twist_deg": 0.0
+          },
+          {
+            "percent_span_location": 0.480469,
+            "chord_m": 12.208434070312554,
+            "leading_edge_x_m": 18.914470750635964,
+            "twist_deg": 0.0
+          },
+          {
+            "percent_span_location": 0.945313,
+            "chord_m": 3.892558930560952,
+            "leading_edge_x_m": 27.60278482830357,
+            "twist_deg": 0.0
+          },
+          {
+            "percent_span_location": 1.0,
+            "chord_m": 0.9731361054965724,
+            "leading_edge_x_m": 30.365937891543936,
+            "twist_deg": 0.0
+          }
+        ]
+      },
+      "metrics": {
+        "xsec_readback": [
+          {
+            "index": 0,
+            "Span": 1e-10,
+            "Root_Chord": 29.901818514349216,
+            "Sweep": 0.0,
+            "Twist": 0.0,
+            "Twist_Location": 0.0
+          },
+          {
+            "index": 1,
+            "Span": 6.151117468076059,
+            "Root_Chord": 29.901818514349216,
+            "Sweep": 71.98511412778159,
+            "Twist": 0.0,
+            "Twist_Location": 0.0
+          },
+          {
+            "index": 2,
+            "Span": 5.951081231734717,
+            "Root_Chord": 12.208434070312554,
+            "Sweep": 55.59071448860179,
+            "Twist": 0.0,
+            "Twist_Location": 0.0
+          },
+          {
+            "index": 3,
+            "Span": 0.7001204260351359,
+            "Root_Chord": 3.892558930560952,
+            "Sweep": 75.78177618375872,
+            "Twist": 0.0,
+            "Twist_Location": 0.0
+          }
+        ],
+        "TotalArea": 358.25000000000006,
+        "TotalSpan": 25.604638251691824,
+        "TotalChord": 10.512823436932134,
+        "bbox_X_Len": 31.49534375886453,
+        "bbox_Y_Len": 25.604638251691824,
+        "bbox_Z_Len": 2.9919174836412785,
+        "parms_present": {
+          "Tess_U": {
+            "ok": true,
+            "parm_id": "EJDCMAQWKVX"
+          },
+          "Tess_W": {
+            "ok": true,
+            "parm_id": "JWJJBWGHOOY"
+          }
+        },
+        "planform_area_trapezoid_m2": 358.25000000000006,
+        "wing_semispan_set_m": null,
+        "tessellation_applied": {
+          "Tess_U": 16.0,
+          "Tess_W": 33.0
+        }
+      },
+      "exports": {
+        "vsp3": {
+          "path": "C:\\Users\\pc\\AppData\\Local\\RCAIDE_Supersonic_agent_state\\fullchain\\d12d003\\a1\\geometry\\baseline\\baseline.vsp3",
+          "bytes": 111816
+        },
+        "stl": {
+          "path": "C:\\Users\\pc\\AppData\\Local\\RCAIDE_Supersonic_agent_state\\fullchain\\d12d003\\a1\\geometry\\baseline\\baseline.stl",
+          "bytes": 650534,
+          "stl_info": {
+            "path": "C:\\Users\\pc\\AppData\\Local\\RCAIDE_Supersonic_agent_state\\fullchain\\d12d003\\a1\\geometry\\baseline\\baseline.stl",
+            "format": "ascii",
+            "bytes": 650534,
+            "sha256": "019c61124bbe4cface95f31d09bb030343c46f6352e9c5d1321b3b663eb873f7",
+            "triangles": 2160,
+            "unique_vertices": 1082,
+            "bbox_min": [
+              0.0,
+              -12.802319126,
+              -1.4938664746
+            ],
+            "bbox_max": [
+              31.495343759,
+              12.802319126,
+              1.4938664746
+            ],
+            "bbox_len": [
+              31.495343759,
+              25.604638252,
+              2.9877329492
+            ],
+            "centroid": [
+              26.334911339839252,
+              2.5299120437471956e-13,
+              -5.961218717730132e-19
+            ],
+            "signed_volume_m3": 446.72511975207004,
+            "surface_area_m2": 767.2986319179234,
+            "vertices": null
+          }
+        },
+        "step": {
+          "path": "C:\\Users\\pc\\AppData\\Local\\RCAIDE_Supersonic_agent_state\\fullchain\\d12d003\\a1\\geometry\\baseline\\baseline.step",
+          "bytes": 344294
+        }
+      },
+      "step_export": {
+        "ok": true,
+        "bytes": 344294
+      },
+      "constants": {
+        "EXPORT_STL": 2,
+        "EXPORT_STEP": 12,
+        "SET_ALL": 0,
+        "XS_FOUR_SERIES": 7
+      }
+    },
+    "w10_plus2": {
+      "tag": "w10_plus2",
+      "twist_deg": 2.0,
+      "geometry": {
+        "kind": "wing",
+        "name": "main_wing",
+        "symmetric": true,
+        "span_m": 25.604638251691824,
+        "location": [
+          14.0,
+          0.0,
+          -0.8
+        ],
+        "rotation": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "sections": [
+          {
+            "percent_span_location": 0.0,
+            "chord_m": 29.901818514349216,
+            "leading_edge_x_m": 0.0,
+            "twist_deg": 0.0
+          },
+          {
+            "percent_span_location": 0.480469,
+            "chord_m": 12.208434070312554,
+            "leading_edge_x_m": 18.914470750635964,
+            "twist_deg": 0.0
+          },
+          {
+            "percent_span_location": 0.945313,
+            "chord_m": 3.892558930560952,
+            "leading_edge_x_m": 27.60278482830357,
+            "twist_deg": 0.0
+          },
+          {
+            "percent_span_location": 1.0,
+            "chord_m": 0.9731361054965724,
+            "leading_edge_x_m": 30.365937891543936,
+            "twist_deg": 2.0
+          }
+        ]
+      },
+      "metrics": {
+        "xsec_readback": [
+          {
+            "index": 0,
+            "Span": 1e-10,
+            "Root_Chord": 29.901818514349216,
+            "Sweep": 0.0,
+            "Twist": 0.0,
+            "Twist_Location": 0.0
+          },
+          {
+            "index": 1,
+            "Span": 6.151117468076059,
+            "Root_Chord": 29.901818514349216,
+            "Sweep": 71.98511412778159,
+            "Twist": 0.0,
+            "Twist_Location": 0.0
+          },
+          {
+            "index": 2,
+            "Span": 5.951081231734717,
+            "Root_Chord": 12.208434070312554,
+            "Sweep": 55.59071448860179,
+            "Twist": 0.0,
+            "Twist_Location": 0.0
+          },
+          {
+            "index": 3,
+            "Span": 0.7001204260351359,
+            "Root_Chord": 3.892558930560952,
+            "Sweep": 75.78177618375872,
+            "Twist": 2.0,
+            "Twist_Location": 0.0
+          }
+        ],
+        "TotalArea": 358.25000000000006,
+        "TotalSpan": 25.604638251691824,
+        "TotalChord": 10.512823436932134,
+        "bbox_X_Len": 31.49534375886453,
+        "bbox_Y_Len": 25.604638251691824,
+        "bbox_Z_Len": 2.9919174836412785,
+        "parms_present": {
+          "Tess_U": {
+            "ok": true,
+            "parm_id": "SLLLCKLVJGT"
+          },
+          "Tess_W": {
+            "ok": true,
+            "parm_id": "AKTHPWURLUY"
+          }
+        },
+        "planform_area_trapezoid_m2": 358.25000000000006,
+        "wing_semispan_set_m": null,
+        "tessellation_applied": {
+          "Tess_U": 16.0,
+          "Tess_W": 33.0
+        }
+      },
+      "exports": {
+        "vsp3": {
+          "path": "C:\\Users\\pc\\AppData\\Local\\RCAIDE_Supersonic_agent_state\\fullchain\\d12d003\\a1\\geometry\\w10_plus2\\w10_plus2.vsp3",
+          "bytes": 111817
+        },
+        "stl": {
+          "path": "C:\\Users\\pc\\AppData\\Local\\RCAIDE_Supersonic_agent_state\\fullchain\\d12d003\\a1\\geometry\\w10_plus2\\w10_plus2.stl",
+          "bytes": 650932,
+          "stl_info": {
+            "path": "C:\\Users\\pc\\AppData\\Local\\RCAIDE_Supersonic_agent_state\\fullchain\\d12d003\\a1\\geometry\\w10_plus2\\w10_plus2.stl",
+            "format": "ascii",
+            "bytes": 650932,
+            "sha256": "4f08a88ea5f4f798d26d5e722c5fe5e30cecbc1366a610cfaa923ef93427825a",
+            "triangles": 2160,
+            "unique_vertices": 1082,
+            "bbox_min": [
+              0.0,
+              -12.802319126,
+              -1.4938664746
+            ],
+            "bbox_max": [
+              31.495343759,
+              12.802319126,
+              1.4938664746
+            ],
+            "bbox_len": [
+              31.495343759,
+              25.604638252,
+              2.9877329492
+            ],
+            "centroid": [
+              26.334835275556223,
+              2.5299120437471956e-13,
+              -0.004357719069271185
+            ],
+            "signed_volume_m3": 446.7250471162868,
+            "surface_area_m2": 767.3008378984196,
+            "vertices": null
+          }
+        },
+        "step": {
+          "path": "C:\\Users\\pc\\AppData\\Local\\RCAIDE_Supersonic_agent_state\\fullchain\\d12d003\\a1\\geometry\\w10_plus2\\w10_plus2.step",
+          "bytes": 344805
+        }
+      },
+      "step_export": {
+        "ok": true,
+        "bytes": 344805
+      },
+      "constants": {
+        "EXPORT_STL": 2,
+        "EXPORT_STEP": 12,
+        "SET_ALL": 0,
+        "XS_FOUR_SERIES": 7
+      }
+    }
+  },
+  "stl_diff": {
+    "baseline_old_vs_new": {
+      "old": {
+        "format": "ascii",
+        "bytes": 650534,
+        "sha256": "35b32db6dd7dcb7230d636096cd5399ce088e5e751ec7e955969eafb2460a40b",
+        "triangles": 2160,
+        "unique_vertices": 1082,
+        "bbox_min": [
+          0.0,
+          -12.802319126,
+          -1.4938664746
+        ],
+        "bbox_max": [
+          31.495343759,
+          12.802319126,
+          1.4938664746
+        ],
+        "bbox_len": [
+          31.495343759,
+          25.604638252,
+          2.9877329492
+        ],
+        "centroid": [
+          26.33508152680036,
+          2.5299120437471956e-13,
+          -8.129623062701141e-19
+        ],
+        "signed_volume_m3": 446.72511975200945,
+        "surface_area_m2": 767.2986319179237
+      },
+      "new": {
+        "format": "ascii",
+        "bytes": 650534,
+        "sha256": "019c61124bbe4cface95f31d09bb030343c46f6352e9c5d1321b3b663eb873f7",
+        "triangles": 2160,
+        "unique_vertices": 1082,
+        "bbox_min": [
+          0.0,
+          -12.802319126,
+          -1.4938664746
+        ],
+        "bbox_max": [
+          31.495343759,
+          12.802319126,
+          1.4938664746
+        ],
+        "bbox_len": [
+          31.495343759,
+          25.604638252,
+          2.9877329492
+        ],
+        "centroid": [
+          26.334911339839252,
+          2.5299120437471956e-13,
+          -5.961218717730132e-19
+        ],
+        "signed_volume_m3": 446.72511975207004,
+        "surface_area_m2": 767.2986319179234
+      },
+      "shared_xy_vertices": 527,
+      "old_only_xy": 0,
+      "new_only_xy": 0,
+      "dz_stats_m": {
+        "min": -4.625929269271485e-18,
+        "max": 0.0,
+        "mean": -1.755570880178932e-20,
+        "max_abs": 4.625929269271485e-18,
+        "median_abs": 0.0
+      },
+      "dz_worst_xy": [
+        29.52843,
+        -12.1022,
+        -4.625929269271485e-18
+      ],
+      "bbox_len_delta_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "surface_area_delta_m2": -2.2737367544323206e-13,
+      "signed_volume_delta_m3": 6.059508450562134e-11
+    },
+    "w10_old_vs_new": {
+      "old": {
+        "format": "ascii",
+        "bytes": 650932,
+        "sha256": "78f672def8e24bd8884226a7642513729dbf67645b0cb44e2099bbfe33fbd150",
+        "triangles": 2160,
+        "unique_vertices": 1082,
+        "bbox_min": [
+          0.0,
+          -12.802319126,
+          -1.4938664746
+        ],
+        "bbox_max": [
+          31.495343759,
+          12.802319126,
+          1.4938664746
+        ],
+        "bbox_len": [
+          31.495343759,
+          25.604638252,
+          2.9877329492
+        ],
+        "centroid": [
+          26.33500546251733,
+          2.5299120437471956e-13,
+          -0.004357719069271185
+        ],
+        "signed_volume_m3": 446.7250471162261,
+        "surface_area_m2": 767.3008378984198
+      },
+      "new": {
+        "format": "ascii",
+        "bytes": 650932,
+        "sha256": "4f08a88ea5f4f798d26d5e722c5fe5e30cecbc1366a610cfaa923ef93427825a",
+        "triangles": 2160,
+        "unique_vertices": 1082,
+        "bbox_min": [
+          0.0,
+          -12.802319126,
+          -1.4938664746
+        ],
+        "bbox_max": [
+          31.495343759,
+          12.802319126,
+          1.4938664746
+        ],
+        "bbox_len": [
+          31.495343759,
+          25.604638252,
+          2.9877329492
+        ],
+        "centroid": [
+          26.334835275556223,
+          2.5299120437471956e-13,
+          -0.004357719069271185
+        ],
+        "signed_volume_m3": 446.7250471162868,
+        "surface_area_m2": 767.3008378984196
+      },
+      "shared_xy_vertices": 767,
+      "old_only_xy": 0,
+      "new_only_xy": 0,
+      "dz_stats_m": {
+        "min": -4.625929269271485e-18,
+        "max": 0.0,
+        "mean": -1.2062397051555372e-20,
+        "max_abs": 4.625929269271485e-18,
+        "median_abs": 0.0
+      },
+      "dz_worst_xy": [
+        29.52843,
+        -12.1022,
+        -4.625929269271485e-18
+      ],
+      "bbox_len_delta_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "surface_area_delta_m2": -2.2737367544323206e-13,
+      "signed_volume_delta_m3": 6.070877134334296e-11
+    },
+    "twist_dz": {
+      "old_3.26": {
+        "shared_xy_vertices": 377,
+        "max_abs_dz_m": 0.043895999597,
+        "worst": [
+          31.0075,
+          -12.24222,
+          0.043895999597
+        ],
+        "tip_max_abs_dz_m": 0.043895999597,
+        "tip_worst": [
+          31.0075,
+          -12.24222,
+          0.043895999597
+        ],
+        "x_range": [
+          0.0,
+          31.49534
+        ],
+        "theoretical_tip_te_dz_m": 0.03398266162414291
+      },
+      "new_3.55": {
+        "shared_xy_vertices": 377,
+        "max_abs_dz_m": 0.043895999597,
+        "worst": [
+          31.0075,
+          -12.24222,
+          0.043895999597
+        ],
+        "tip_max_abs_dz_m": 0.043895999597,
+        "tip_worst": [
+          31.0075,
+          -12.24222,
+          0.043895999597
+        ],
+        "x_range": [
+          0.0,
+          31.49534
+        ],
+        "theoretical_tip_te_dz_m": 0.03398266162414291
+      }
+    }
+  },
+  "old_stl": {
+    "baseline": {
+      "format": "ascii",
+      "bytes": 650534,
+      "sha256": "35b32db6dd7dcb7230d636096cd5399ce088e5e751ec7e955969eafb2460a40b",
+      "triangles": 2160,
+      "unique_vertices": 1082,
+      "bbox_min": [
+        0.0,
+        -12.802319126,
+        -1.4938664746
+      ],
+      "bbox_max": [
+        31.495343759,
+        12.802319126,
+        1.4938664746
+      ],
+      "bbox_len": [
+        31.495343759,
+        25.604638252,
+        2.9877329492
+      ],
+      "centroid": [
+        26.33508152680036,
+        2.5299120437471956e-13,
+        -8.129623062701141e-19
+      ],
+      "signed_volume_m3": 446.72511975200945,
+      "surface_area_m2": 767.2986319179237
+    },
+    "w10_plus2": {
+      "format": "ascii",
+      "bytes": 650932,
+      "sha256": "78f672def8e24bd8884226a7642513729dbf67645b0cb44e2099bbfe33fbd150",
+      "triangles": 2160,
+      "unique_vertices": 1082,
+      "bbox_min": [
+        0.0,
+        -12.802319126,
+        -1.4938664746
+      ],
+      "bbox_max": [
+        31.495343759,
+        12.802319126,
+        1.4938664746
+      ],
+      "bbox_len": [
+        31.495343759,
+        25.604638252,
+        2.9877329492
+      ],
+      "centroid": [
+        26.33500546251733,
+        2.5299120437471956e-13,
+        -0.004357719069271185
+      ],
+      "signed_volume_m3": 446.7250471162261,
+      "surface_area_m2": 767.3008378984198
+    }
+  }
+}

@@ -1,0 +1,417 @@
+{
+  "schema_version": 1,
+  "run_id": "openvsp355-remediation-20261102T014411Z",
+  "stage": "P1-P3 D-12D-003 Round-1: OpenVSP 3.55.0 side-install, API/geometry compatibility, archived VSPAERO diagnosis, offline area rule, Round-2 budget proposal, P4 plan-only draft",
+  "approval": "Issue #4 / D-12D-003 (comment 6566994749)",
+  "round": "Round-1 of at most two (D-12D-003); zero solver starts",
+  "created_utc": "2026-11-02T02:19:55Z",
+  "git_sha_at_run_start": "5dcb0bf09335fd6f73363d0280a667286d6d20f9",
+  "branch": "research/concorde-metaopt",
+  "status": "ROUND1_EVIDENCE_COMPLETE_NO_GATE_APPROVED",
+  "scope": {
+    "new_physical_solver_starts": 0,
+    "numerical_analysis_starts": 0,
+    "budget_carryover": false,
+    "d12d002_budget": {
+      "cap": 23,
+      "used": 23,
+      "remaining": 0,
+      "status": "CLOSED"
+    },
+    "d12d003_budget": {
+      "approved": 0,
+      "proposed": 23,
+      "status": "AWAITING_OWNER_APPROVAL"
+    },
+    "p4_p6": "FROZEN",
+    "pr_3": "open, not merged",
+    "main_branch_untouched": true,
+    "gate_approved": false
+  },
+  "toolchain": {
+    "archive": {
+      "path": "D:/OpenVSP-download/OpenVSP-3.55.0-win64-Python3.11.zip",
+      "bytes": 49664844,
+      "sha256": "f1fde65f9d48ae482dcad2c0b7711b81a22810871a5bebc236c4618c0131ebb9"
+    },
+    "new_install": {
+      "root": "D:/OpenVSP-3.55.0/OpenVSP-3.55.0-win64",
+      "version_reported": "OpenVSP 3.55.0",
+      "vspaero_version_reported": "VSPAERO v.7.2.2 --- Compiled on: Oct 12 2026 at 04:08:14 PST",
+      "python_version": "3.11.17 (D:/RCAIDE/envs/RCAIDE/python.exe, Anaconda, 64-bit)",
+      "vspaero_exe": {
+        "path": "D:\\OpenVSP-3.55.0\\OpenVSP-3.55.0-win64\\vspaero.exe",
+        "bytes": 811520,
+        "sha256": "db71c4412489af82398833408ea30fb73327bdd9434de2ef530d31375b9fddad"
+      },
+      "no_global_install": true,
+      "path_or_site_packages_modified": false,
+      "expanded": {
+        "files": 491,
+        "bytes": 149488735,
+        "source": "role_reviews/a3/install_audit.md"
+      }
+    },
+    "old_install_preserved": {
+      "vspaero_exe": {
+        "path": "D:\\Program Files\\OpenVSP\\OpenVSP-3.26.1-win64-Python3.9\\OpenVSP-3.26.1-win64\\vspaero.exe",
+        "bytes": 561664,
+        "sha256": "e1affca023f9d63d9b0b5f343c3ea5afd5a8dbcfe420952e557718dd15f90eb8"
+      },
+      "version_banner": "VSPAERO v.6.2.0 --- Compiled on: Jan  6 2022",
+      "untouched": true
+    },
+    "isolation_verdict": "PASS (role_reviews/a3/install_audit.md): authentic archive, 491/491 expansion, API and vspaero version match, old installs unchanged, no PATH/registry/site-packages pollution; rollback static-only NOT_RUN"
+  },
+  "tooling_events": {
+    "file": "evidence/tooling_events.json",
+    "count": 8,
+    "event_ids": [
+      "TG-001",
+      "TG-002",
+      "TG-003",
+      "TG-004",
+      "TG-005",
+      "TG-006",
+      "TG-007",
+      "TG-008"
+    ],
+    "solver_starts": 0,
+    "note": "geometry export, API probes, setup generation (3 attempts), source retrieval and binary banners; all non-billable tooling, no numerical analysis, no solver process"
+  },
+  "geometry_parity_355_vs_326": {
+    "file": "evidence/geometry_parity_355_vs_326.json",
+    "method": "compare unique STL vertex sets, not file hashes: both exporters tessellate the same surfaces but write different vertex order/formatting",
+    "wing": {
+      "baseline_unique_vertices_old": 1082,
+      "baseline_unique_vertices_new": 1082,
+      "only_old": 0,
+      "only_new": 0,
+      "w10_plus2_identical_set": true,
+      "w10_twist": {
+        "new_w10_vs_new_baseline": {
+          "max_abs_dz_m": 0.03396196,
+          "max_abs_dy_m": 0.0,
+          "max_abs_dx_m": 0.0018850099999987435,
+          "expected_sin2deg_tipchord_m": 0.03396196030486226
+        },
+        "expected_dz_m": 0.03396196030486226,
+        "observed_dz_m": 0.03396196,
+        "matches_within_1e-6": true
+      }
+    },
+    "fuselage": {
+      "old_unique": 559,
+      "new_unique": 552,
+      "only_old": 129,
+      "only_new": 122,
+      "nn_distance_m": {
+        "median": 0.004382412453650553,
+        "max": 0.03007221280542358
+      },
+      "nn_histogram_bins": {
+        "le_1e-6": 26,
+        "gt_1e-6_le_1mm": 8,
+        "gt_1mm_le_10mm": 52,
+        "gt_10mm_le_30_1mm": 36
+      },
+      "bbox_identical": true
+    },
+    "conclusion": "wing vertex sets identical across versions; fuselage tessellation differs by at most 30.07 mm (0.049% of 61.66 m); paired area-rule comparisons must be single-version (3.55 for both wing-alone and wing+body); cross-version STL hashes are not a geometry identity test"
+  },
+  "api_compat": {
+    "file": "evidence/api_compat_355.json",
+    "version_reported": "OpenVSP 3.55.0",
+    "api_name_count": 2186,
+    "analyses_count": 22,
+    "vspaero_sweep_input_count": 80,
+    "wavedrag_input_count": 8,
+    "emintonlord_input_count": 2,
+    "result_capture_change": "must pass the ExecAnalysis result id to GetAllDataNames/Get*Results; passing the analysis name raises Error Code: 15",
+    "degengeom_csv_change": "camber row has 11 fields in 3.26.1 vs 14 in 3.55.0; byte-diff of DegenGeom CSV is invalid",
+    "import_recipe_change": "requires os.add_dll_directory(root) plus sys.path entries root/python/{openvsp,degen_geom,utilities,openvsp_config}",
+    "repo_worker_gap": "aircraft/openvsp_geometry.py is 3.26-era (no add_dll_directory / openvsp_config); repository fix belongs to a reviewed card"
+  },
+  "setup_generation": {
+    "file": "evidence/vspaero7_setup_generation.json",
+    "method": "VSPAEROComputeGeometry ExecAnalysis for .vspgeom, then VSPAEROSweep with StopBeforeRun=1 for .vspaero; source guard returns before ForkCmd (VSPAEROMgr.cpp:2142-2146 vs :2149)",
+    "solver_starts": 0,
+    "variants": {
+      "thick": {
+        "geom_result_id": "LBMHAKQ",
+        "vspgeom_bytes": 503013,
+        "vspgeom_sha256": "494feef5bb8b070dc77892dd7e2838f4946bcd856c2448a99c1a56d2884fb718",
+        "mesh": "1082 nodes / 1088 elements (GeomSet=0)",
+        "setup_file": "wing355_thick.vspaero",
+        "setup_bytes": 930,
+        "setup_lines": 42,
+        "setup_sha256": "c862aa220bc6f3a9d057b2fbe99c4ed340591a14ad88f455d3d1b0ddbe7c1804"
+      },
+      "thin": {
+        "geom_result_id": "SPUSFGT",
+        "vspgeom_bytes": 224357,
+        "vspgeom_sha256": "9fcda6d5d45300fbb0e20257c9ddc80540b44f5064a9566089d7ef85f9018d8e",
+        "mesh": "527 nodes / 480 elements (ThinGeomSet=0)",
+        "setup_file": "wing355_thin.vspaero",
+        "setup_bytes": 930,
+        "setup_lines": 42,
+        "setup_sha256": "c862aa220bc6f3a9d057b2fbe99c4ed340591a14ad88f455d3d1b0ddbe7c1804"
+      }
+    },
+    "injected_inputs": {
+      "Sref": 358.25,
+      "Cref": 18.489893,
+      "Bref": 25.604638,
+      "Xcg": 16.821978259514246,
+      "Ycg": 0.0,
+      "Zcg": 0.0,
+      "MachStart": 2.02,
+      "MachEnd": 2.02,
+      "MachNpts": 1,
+      "AlphaStart": 2.0,
+      "AlphaEnd": 2.0,
+      "AlphaNpts": 1,
+      "BetaStart": 0.0,
+      "BetaEnd": 0.0,
+      "BetaNpts": 1,
+      "RefFlag": 0,
+      "Symmetry": 0,
+      "NCPU": 4,
+      "StopBeforeRun": 1
+    },
+    "big_artifacts": {
+      "archive_root": "outputs/concorde_metaopt/openvsp355-remediation-20261102T014411Z/vspaero7_setup_artifacts",
+      "outside_git": true,
+      "files": [
+        "wing355_thick.vspgeom (503,013 B)",
+        "wing355_thin.vspgeom (224,357 B)"
+      ]
+    },
+    "what_this_proves": "the new OpenVSP 3.55.0 + VSPAERO 7.2.2 toolchain can prepare the exact inputs a solver run would need, with Sref/cref/bref/CG/Mach/AoA frozen to the D-12D-002 contract values, and the setup content is reproducible from the committed scripts",
+    "what_this_does_not_prove": "nothing about VSPAERO 7.2.2 supersonic accuracy, convergence, or panel/wake behaviour at Mach 2.02; no lift/drag/moment value was produced; no physical gate may change"
+  },
+  "archived_vspaero_diagnosis": {
+    "source": "role_reviews/a1/vspaero_old_diagnostic.md, role_reviews/a1/vspaero_old_evidence.json",
+    "invalid_cases": [
+      "W01",
+      "W03",
+      "W10"
+    ],
+    "invalid_reason": "12 template lines were written without '=' (e.g. 'Sref 358.25'); VSPAERO 6.2.0 silently used Sref=1.0, so printed coefficients were inflated by the case reference area (~358x); CDo=NaN(IND), Re ~1e-318",
+    "invalid_case_check": {
+      "printed_CL": [
+        31.77605,
+        31.32113,
+        31.4877
+      ],
+      "CL_after_dividing_by_case_Sref": [
+        0.08782,
+        0.08743,
+        0.08789
+      ],
+      "baseline_CL_2deg": 0.08781966
+    },
+    "valid_cases_issue": {
+      "CDi_coarse_medium_fine": [
+        0.0003435104,
+        -0.0008942229,
+        -0.02260794
+      ],
+      "CDtot_negative_at": [
+        "medium AoA 6 deg",
+        "all fine AoA points"
+      ],
+      "CL_coarse_to_fine_delta_pct": 29.09
+    },
+    "harness_defects": [
+      "non-zero vspaero -setup return code does not stop the solve",
+      "template mismatch list stays empty",
+      "polar has no finite/Re/negative-drag validation",
+      "invalid data is still billed",
+      "two template write paths"
+    ],
+    "consequence": "LF-M2.02 stays NOT_VALIDATED / LF_PROVISIONAL; old VSPAERO 6.2.0 CL/CDi magnitudes must be marked not usable and are not rewritten"
+  },
+  "area_rule_offline": {
+    "source": "role_reviews/a2/area_rule_offline.md, role_reviews/a2/area_rule_cases.csv, role_reviews/a2/area_rule_candidates.json",
+    "port_validation": {
+      "reproduces_archived_CDWave_rel_diff_max": 1.6e-06,
+      "sears_haack_analytic_rel_err": {
+        "n81": -1.55e-06,
+        "n800": -1.55e-09,
+        "n1600": -1.93e-10
+      },
+      "theory_D_over_q": 0.10185916357881301
+    },
+    "conditioning": {
+      "n50": 28000.0,
+      "n100": 230000.0,
+      "n200": 1900000.0,
+      "n400": 15000000.0,
+      "n800": 120000000.0
+    },
+    "noise_amplification_raw": {
+      "min_factor": 58,
+      "max_factor": 18380,
+      "sigma_range_m2": [
+        0.002,
+        0.1
+      ]
+    },
+    "calibrated_smoothing": {
+      "lambda_rule": "27.84 * sigma^1.606",
+      "sharp_break_bias_pct": -0.29,
+      "fixed_savgol_bias_pct": -27.4
+    },
+    "mesh_convergence": {
+      "mean_donq_ratio_36_200_vs_72_800": 2.87,
+      "status": "NOT_CONVERGED"
+    },
+    "outliers": "WAVE-05 has 11 near-tangent theta artifacts (e.g. 73.52 deg Donq 742.48 m2) paired with 180-theta",
+    "fuselage_increment": {
+      "raw_m2": [
+        2.924,
+        2.656
+      ],
+      "smoothed_m2": [
+        1.236,
+        1.41
+      ],
+      "snr_raw": [
+        0.89,
+        1.69
+      ],
+      "verdict": "INCONCLUSIVE"
+    },
+    "verdict": "WAVE_AREA_RULE = NOT_VALIDATED; no correction may be injected; BODY-CORR stays BLOCKED"
+  },
+  "budget_round2_proposal": {
+    "file": "budget_request_round2.json",
+    "status": "PROPOSED_NOT_APPROVED",
+    "approval_target": "Issue #4 / D-12D-003",
+    "no_solver_started": true,
+    "categories": {
+      "A-VSPAERO7-thin-LF": {
+        "max_starts": 10,
+        "max_wall_clock_s": 600,
+        "required": true
+      },
+      "B-VSPAERO7-thick": {
+        "max_starts": 2,
+        "max_wall_clock_s": 300,
+        "required": false
+      },
+      "C-OpenVSP355-WaveDrag": {
+        "max_starts": 6,
+        "max_wall_clock_s": 900,
+        "required": true
+      },
+      "D-SU2-8.5-HF": {
+        "max_starts": 6,
+        "max_wall_clock_s": 1800,
+        "required": true
+      },
+      "E-RCAIDE-LF-E2E": {
+        "max_starts": 2,
+        "max_wall_clock_s": 240,
+        "required": false
+      }
+    },
+    "total": {
+      "max_starts_sum": 26,
+      "recommended_cap": 23,
+      "no_carryover": "D-12D-002 23/23 closed; no carryover"
+    },
+    "tiering": {
+      "tier1_required": [
+        "A-VSPAERO7-thin-LF",
+        "C-OpenVSP355-WaveDrag",
+        "D-SU2-8.5-HF"
+      ],
+      "tier1_cap": 22,
+      "tier2_optional": [
+        "B-VSPAERO7-thick",
+        "E-RCAIDE-LF-E2E"
+      ],
+      "tier2_cap": 4
+    },
+    "not_covered": [
+      "validated full-aircraft fuel label",
+      "body/wing interference correction",
+      "transonic drag rise",
+      "variable-sweep optimisation"
+    ],
+    "approval_note": "AWAITING_OWNER_APPROVAL: no solver may start until the owner approves each category in writing on Issue #4."
+  },
+  "p4_plan_only": {
+    "file": "p4_plan_only_draft.md",
+    "status": "DRAFT / PLAN-ONLY / NOT APPROVED",
+    "authorizes_nothing": true
+  },
+  "gates": {
+    "GEO-12D": "PARTIAL",
+    "LF-M2.02": "NOT_VALIDATED / LF_PROVISIONAL",
+    "HF-M2.02": "PARTIAL",
+    "BODY-CORR": "BLOCKED",
+    "MISSION-DATA": "PARTIAL",
+    "BUDGET": "AWAITING_OWNER_APPROVAL",
+    "APPROVED_FOR_NEXT_STAGE": "NOT ISSUED (owner only)"
+  },
+  "role_reviews": {
+    "A1": {
+      "tasks": [
+        "task-36",
+        "task-37"
+      ],
+      "status": "completed (repaired-code verification NOT_RUN: no budget)"
+    },
+    "A2": {
+      "tasks": [
+        "task-38",
+        "task-39"
+      ],
+      "status": "completed"
+    },
+    "A3": {
+      "tasks": [
+        "task-35"
+      ],
+      "status": "PASS"
+    },
+    "A4": {
+      "tasks": [
+        "task-34"
+      ],
+      "status": "completed (35 requirements mapped)"
+    },
+    "A5": {
+      "tasks": [
+        "task-41"
+      ],
+      "status": "PENDING"
+    }
+  },
+  "figures": [
+    {
+      "path": "figures/geometry_parity_355_vs_326.png",
+      "source": "evidence/geometry_parity_355_vs_326.json",
+      "note": "unique-vertex parity and fuselage nearest-neighbour distribution; offline STL only"
+    }
+  ],
+  "review": {
+    "status": "PENDING",
+    "owner_decisions_needed": [
+      "approve Round-2 budget per category",
+      "authorize VSPAERO7 re-run after the LD-001 harness fix and guard tests",
+      "authorize single-version 3.55 area-rule re-run",
+      "decide whether to adopt P4 plan-only draft (does not un-freeze P4-P6)"
+    ]
+  },
+  "caveats": [
+    "No solver was started; this run adds no physical evidence and must not be reported as a physical PASS.",
+    "The 3.55 install is a side install; the repository OpenVSP worker still needs a reviewed fix card before any Round-2 automation uses 3.55.",
+    "The archived VSPAERO 6.2.0 numbers are retracted as unusable; no historical file was rewritten.",
+    "The area-rule inversion is ill-conditioned on the current geometry; even an owner-approved re-run may end INCONCLUSIVE unless the body/wing geometry or the slice set changes.",
+    "The Round-2 budget proposal is the team's proposal, not an approval; D-12D-002's 23/23 is closed and does not carry over."
+  ]
+}

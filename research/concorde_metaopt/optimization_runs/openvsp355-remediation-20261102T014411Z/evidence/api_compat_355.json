@@ -1,0 +1,532 @@
+{
+  "schema_version": 1,
+  "component": "API_COMPATIBILITY_355",
+  "approval": "Issue #4 / D-12D-003 (comment 6566994749)",
+  "generated_utc": "2026-11-02T02:20:00Z",
+  "python": {
+    "executable": "D:/RCAIDE/envs/RCAIDE/python.exe",
+    "version": "3.11.17",
+    "note": "project environment, unchanged; no site-packages modification"
+  },
+  "openvsp": {
+    "version": "OpenVSP 3.55.0",
+    "major": 3,
+    "minor": 55,
+    "change": 0,
+    "api_name_count": 2186,
+    "module_file": "D:\\OpenVSP-3.55.0\\OpenVSP-3.55.0-win64\\python\\openvsp\\openvsp\\__init__.py",
+    "api_presence": {
+      "ListAnalysis": true,
+      "GetAnalysisInputNames": true,
+      "SetAnalysisInputDefaults": true,
+      "ExecAnalysis": true,
+      "WriteResultsCSVFile": true,
+      "GetStringAnalysisInput": true,
+      "SetStringAnalysisInput": true,
+      "GetDoubleAnalysisInput": true,
+      "SetDoubleAnalysisInput": true,
+      "GetIntAnalysisInput": true,
+      "GetAnalysisInputType": true,
+      "SetComputationFileName": true,
+      "ComputeCompGeom": true,
+      "ComputeDegenGeom": true,
+      "WriteVSPFile": true,
+      "ExportFile": true,
+      "FindGeoms": true,
+      "GetGeomParmIDs": true
+    }
+  },
+  "import_recipe": {
+    "steps": [
+      "import os; os.add_dll_directory(root)",
+      "sys.path insert: root/python/openvsp, root/python/degen_geom, root/python/utilities, root/python/openvsp_config (in this order)",
+      "import openvsp as vsp"
+    ],
+    "pitfall": "adding root/python alone fails with AttributeError: module openvsp_config has no attribute LOAD_GRAPHICS because root/python/openvsp_config is a namespace directory; the real module lives one level deeper",
+    "repo_module_gap": "research/concorde_metaopt/aircraft/openvsp_geometry.py (3.26-era) does not add the DLL directory nor the openvsp_config subdir; a patched copy openvsp_geometry_355.py is used for Round-1 evidence and the repo worker patch is deferred to a reviewed change"
+  },
+  "analyses": [
+    "BladeElement",
+    "CpSlicer",
+    "CompGeom",
+    "DegenGeom",
+    "PlanarSlice",
+    "DegenGeomMesh",
+    "EmintonLord",
+    "GeometryAnalysis",
+    "MassProp",
+    "FeaMeshAnalysis",
+    "Projection",
+    "SurfacePatches",
+    "WaveDrag",
+    "VSPAERODegenGeom",
+    "VSPAEROComputeGeometry",
+    "VSPAEROSinglePoint",
+    "VSPAEROSweep",
+    "VSPAEROReadPreviousAnalysis",
+    "ParasiteDrag",
+    "SurfaceIntersection",
+    "CfdMeshAnalysis",
+    "FeaMeshExport"
+  ],
+  "analyses_probe": {
+    "VSPAEROComputeGeometry": {
+      "input_names": [
+        "CullFrac",
+        "CullFracFlag",
+        "FindBodyWakesFlag",
+        "GeomSet",
+        "ModeID",
+        "NRef",
+        "SingleGeomID",
+        "Symmetry",
+        "ThinGeomSet",
+        "UseModeFlag"
+      ],
+      "selected_inputs": {
+        "GeomSet": {
+          "type": 1,
+          "value": [],
+          "value_getter": "double"
+        },
+        "ThinGeomSet": {
+          "type": 1,
+          "value": [],
+          "value_getter": "double"
+        },
+        "Symmetry": {
+          "type": 1,
+          "value": [],
+          "value_getter": "double"
+        },
+        "NRef": {
+          "type": 1,
+          "value": [],
+          "value_getter": "double"
+        },
+        "CullFrac": {
+          "type": 2,
+          "value": [
+            0.03
+          ],
+          "value_getter": "double"
+        },
+        "CullFracFlag": {
+          "type": 1,
+          "value": [],
+          "value_getter": "double"
+        },
+        "FindBodyWakesFlag": {
+          "type": 1,
+          "value": [],
+          "value_getter": "double"
+        }
+      }
+    },
+    "VSPAEROSweep": {
+      "input_count": 80,
+      "input_names": [
+        "2DFEMFlag",
+        "AdjointGMRESConvergenceFactor",
+        "AlphaEnd",
+        "AlphaNpts",
+        "AlphaStart",
+        "AutoTimeNumRevs",
+        "AutoTimeStepFlag",
+        "BetaEnd",
+        "BetaNpts",
+        "BetaStart",
+        "CGDegenSet",
+        "CGGeomSet",
+        "CGModeID",
+        "CGUseModeFlag",
+        "CLMax2D",
+        "Clo2D",
+        "CoreSizeFactor",
+        "FarAway",
+        "FarDist",
+        "FarDistToggle",
+        "FixedWakeFlag",
+        "ForwardGMRESConvergenceFactor",
+        "FreezeMultiPoleAtIteration",
+        "FreezeWakeAtIteration",
+        "FreezeWakeRootVortices",
+        "FromSteadyState",
+        "GeomSet",
+        "GroundEffect",
+        "GroundEffectToggle",
+        "HoverRamp",
+        "HoverRampFlag",
+        "ImplicitWake",
+        "ImplicitWakeStartIteration",
+        "MACFlag",
+        "MachEnd",
+        "MachNpts",
+        "MachStart",
+        "Machref",
+        "ManualVrefFlag",
+        "MassSliceDir",
+        "ModeID",
+        "NCPU",
+        "NoiseCalcFlag",
+        "NoiseCalcType",
+        "NoiseUnits",
+        "NonLinearConvergenceFactor",
+        "NumMassSlice",
+        "NumTimeSteps",
+        "NumWakeNodes",
+        "PropBladesMode",
+        "QuadTreeBufferLevels",
+        "ReCref",
+        "ReCrefEnd",
+        "ReCrefNpts",
+        "RedirectFile",
+        "RefFlag",
+        "Rho",
+        "SCurveFlag",
+        "Sref",
+        "StallModel",
+        "StartAveragingTimeStep",
+        "StopBeforeRun",
+        "Symmetry",
+        "TecplotFlag",
+        "ThinGeomSet",
+        "TimeStepSize",
+        "UnsteadyType",
+        "UpdateMatrixPreconditioner",
+        "UseModeFlag",
+        "UseWakeNodeMatrixPreconditioner",
+        "Vinf",
+        "Vref",
+        "WakeNumIter",
+        "WakeRelax",
+        "WingID",
+        "Xcg",
+        "Ycg",
+        "Zcg",
+        "bref",
+        "cref"
+      ],
+      "selected_inputs": {
+        "Sref": {
+          "type": 2,
+          "value": [
+            100.0
+          ],
+          "value_getter": "double"
+        },
+        "cref": {
+          "type": 2,
+          "value": [
+            1.0
+          ],
+          "value_getter": "double"
+        },
+        "bref": {
+          "type": 2,
+          "value": [
+            1.0
+          ],
+          "value_getter": "double"
+        },
+        "MachStart": {
+          "type": 2,
+          "value": [
+            0.0
+          ],
+          "value_getter": "double"
+        },
+        "MachEnd": {
+          "type": 2,
+          "value": [
+            0.0
+          ],
+          "value_getter": "double"
+        },
+        "MachNpts": {
+          "type": 1,
+          "value": [],
+          "value_getter": "double"
+        },
+        "AlphaStart": {
+          "type": 2,
+          "value": [
+            0.0
+          ],
+          "value_getter": "double"
+        },
+        "AlphaEnd": {
+          "type": 2,
+          "value": [
+            10.0
+          ],
+          "value_getter": "double"
+        },
+        "AlphaNpts": {
+          "type": 1,
+          "value": [],
+          "value_getter": "double"
+        },
+        "BetaStart": {
+          "type": 2,
+          "value": [
+            0.0
+          ],
+          "value_getter": "double"
+        },
+        "BetaEnd": {
+          "type": 2,
+          "value": [
+            0.0
+          ],
+          "value_getter": "double"
+        },
+        "BetaNpts": {
+          "type": 1,
+          "value": [],
+          "value_getter": "double"
+        },
+        "GeomSet": {
+          "type": 1,
+          "value": [],
+          "value_getter": "double"
+        },
+        "ThinGeomSet": {
+          "type": 1,
+          "value": [],
+          "value_getter": "double"
+        },
+        "Symmetry": {
+          "type": 1,
+          "value": [],
+          "value_getter": "double"
+        },
+        "StopBeforeRun": {
+          "type": 1,
+          "value": [],
+          "value_getter": "double"
+        },
+        "RedirectFile": {
+          "type": 3,
+          "value": [],
+          "value_getter": "double"
+        },
+        "RefFlag": {
+          "type": 1,
+          "value": [],
+          "value_getter": "double"
+        },
+        "MACFlag": {
+          "type": 1,
+          "value": [],
+          "value_getter": "double"
+        },
+        "NCPU": {
+          "type": 1,
+          "value": [],
+          "value_getter": "double"
+        },
+        "Vinf": {
+          "type": 2,
+          "value": [
+            100.0
+          ],
+          "value_getter": "double"
+        },
+        "Rho": {
+          "type": 2,
+          "value": [
+            0.002377
+          ],
+          "value_getter": "double"
+        },
+        "ReCref": {
+          "type": 2,
+          "value": [
+            10000000.0
+          ],
+          "value_getter": "double"
+        },
+        "Xcg": {
+          "type": 2,
+          "value": [
+            0.0
+          ],
+          "value_getter": "double"
+        },
+        "Ycg": {
+          "type": 2,
+          "value": [
+            0.0
+          ],
+          "value_getter": "double"
+        },
+        "Zcg": {
+          "type": 2,
+          "value": [
+            0.0
+          ],
+          "value_getter": "double"
+        },
+        "FarDist": {
+          "type": 2,
+          "value": [
+            -1.0
+          ],
+          "value_getter": "double"
+        },
+        "NumWakeNodes": {
+          "type": 1,
+          "value": [],
+          "value_getter": "double"
+        },
+        "WakeRelax": {
+          "type": 2,
+          "value": [
+            1.0
+          ],
+          "value_getter": "double"
+        },
+        "FarAway": {
+          "type": 2,
+          "value": [
+            5.0
+          ],
+          "value_getter": "double"
+        },
+        "CLMax2D": {
+          "type": 2,
+          "value": [
+            1.0
+          ],
+          "value_getter": "double"
+        },
+        "Clo2D": {
+          "type": 2,
+          "value": [
+            0.0
+          ],
+          "value_getter": "double"
+        },
+        "ManualVrefFlag": {
+          "type": 1,
+          "value": [],
+          "value_getter": "double"
+        }
+      }
+    },
+    "WaveDrag": {
+      "input_names": [
+        "Mach",
+        "ModeID",
+        "NumRotSects",
+        "NumSlices",
+        "SSFlow_vec",
+        "Set",
+        "SymmFlag",
+        "UseModeFlag"
+      ],
+      "selected_inputs": {
+        "Mach": {
+          "type": 2,
+          "value": [
+            1.5
+          ],
+          "value_getter": "double"
+        },
+        "NumRotSects": {
+          "type": 1,
+          "value": [],
+          "value_getter": "double"
+        },
+        "NumSlices": {
+          "type": 1,
+          "value": [],
+          "value_getter": "double"
+        },
+        "Set": {
+          "type": 1,
+          "value": [],
+          "value_getter": "double"
+        },
+        "SymmFlag": {
+          "type": 1,
+          "value": [],
+          "value_getter": "double"
+        },
+        "ModeID": {
+          "type": 3,
+          "value": [],
+          "value_getter": "double"
+        },
+        "UseModeFlag": {
+          "type": 1,
+          "value": [],
+          "value_getter": "double"
+        },
+        "SSFlow_vec": {
+          "type": 3,
+          "value": [],
+          "value_getter": "double"
+        }
+      }
+    },
+    "EmintonLord": {
+      "input_names": [
+        "Area_vec",
+        "X_vec"
+      ],
+      "selected_inputs": {
+        "Area_vec": {
+          "type": 2,
+          "value": [],
+          "value_getter": "double"
+        },
+        "X_vec": {
+          "type": 2,
+          "value": [],
+          "value_getter": "double"
+        }
+      }
+    }
+  },
+  "constants": {
+    "SET_ALL": 0,
+    "SET_NONE": -1,
+    "MANUAL_REF": 0,
+    "COMPONENT_REF": 1,
+    "SYM_NONE": 0,
+    "SYM_XZ": 2
+  },
+  "result_capture_lessons": [
+    "ExecAnalysis returns a string result id; the VSPAEROSweep id can be empty even when the setup file was written",
+    "WriteResultsCSVFile(rid, path) is the reliable way to capture analysis result rows (used for VSPAEROComputeGeometry)",
+    "VSPAEROSweep outputs must be read from files (.vspaero / .vspgeom / later .history/.polar), not from in-memory results"
+  ],
+  "compatibility_findings": [
+    {
+      "item": "old 3.26.1 -setup workflow",
+      "finding": "does not exist in VSPAERO 7.2.2; setup is now written by the VSPAEROSweep analysis with StopBeforeRun=1 (source-cited in evidence/vspaero7_setup_generation.json)",
+      "status": "REPLACED"
+    },
+    {
+      "item": "VSPAEROComputeGeometry",
+      "finding": "produces a v3 .vspgeom polygon mesh for thick and thin surface sets without forking a solver",
+      "status": "VERIFIED_ZERO_SOLVER"
+    },
+    {
+      "item": "DegenGeom analysis",
+      "finding": "present in 3.55.0 analysis list; the D-12D-002 headless hang was tied to the 3.26.1 API path and is not re-tested here to avoid unnecessary work",
+      "status": "NOT_RETESTED"
+    },
+    {
+      "item": "WaveDrag/EmintonLord",
+      "finding": "same input contracts as 3.26.1 (Mach/NumRotSects/NumSlices/Set/SymmFlag; Area_vec/X_vec); no new analysis start in Round-1",
+      "status": "CONTRACT_UNCHANGED_NOT_RUN"
+    }
+  ],
+  "not_proven_here": [
+    "no VSPAERO solver run, no lift/drag value, no supersonic accuracy claim",
+    "thick-vs-thin surface choice for the Round-2 lifting-surface case is a plan decision, not a validated choice"
+  ]
+}

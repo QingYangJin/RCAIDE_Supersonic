@@ -1,0 +1,161 @@
+{
+  "schema_version": 1,
+  "component": "VSPAERO7_SETUP_GENERATION",
+  "approval": "Issue #4 / D-12D-003 (comment 6566994749)",
+  "status": "GENERATED_NOT_SOLVED",
+  "solver_start_count": 0,
+  "generated_utc": "2026-11-02T02:20:00Z",
+  "binaries": {
+    "old_3_26_1_vspaero": {
+      "path": "D:\\Program Files\\OpenVSP\\OpenVSP-3.26.1-win64-Python3.9\\OpenVSP-3.26.1-win64\\vspaero.exe",
+      "bytes": 561664,
+      "sha256": "e1affca023f9d63d9b0b5f343c3ea5afd5a8dbcfe420952e557718dd15f90eb8"
+    },
+    "old_version_banner": "VSPAERO v.6.2.0 --- Compiled on: Jan  6 2022",
+    "new_3_55_0_vspaero_install_root": {
+      "path": "D:\\OpenVSP-3.55.0\\OpenVSP-3.55.0-win64\\vspaero.exe",
+      "bytes": 811520,
+      "sha256": "db71c4412489af82398833408ea30fb73327bdd9434de2ef530d31375b9fddad"
+    },
+    "new_3_55_0_vspaero_python_copy": {
+      "path": "D:\\OpenVSP-3.55.0\\OpenVSP-3.55.0-win64\\python\\openvsp\\openvsp\\vspaero.exe",
+      "bytes": 811520,
+      "sha256": "db71c4412489af82398833408ea30fb73327bdd9434de2ef530d31375b9fddad"
+    },
+    "new_version_banner": "VSPAERO v.7.2.2 --- Compiled on: Oct 12 2026 at 04:08:14 PST",
+    "new_python_copy_equals_install_root": true
+  },
+  "flow": {
+    "step_1": "openvsp Python API: VSPAEROComputeGeometry ExecAnalysis -> .vspgeom polygon mesh (geometry processing only, no solver process)",
+    "step_2": "openvsp Python API: VSPAEROSweep ExecAnalysis with StopBeforeRun=1 -> .vspaero setup file only; guard returns before the solver fork",
+    "step_3": "Round-2 (owner-approved budget only) would run: vspaero.exe -omp 4 <model_base> in the case directory containing <base>.vspgeom and <base>.vspaero"
+  },
+  "injected_inputs": {
+    "Sref": 358.25,
+    "Cref": 18.489893,
+    "Bref": 25.604638,
+    "Xcg": 16.821978259514246,
+    "Ycg": 0.0,
+    "Zcg": 0.0,
+    "MachStart": 2.02,
+    "MachEnd": 2.02,
+    "MachNpts": 1,
+    "AlphaStart": 2.0,
+    "AlphaEnd": 2.0,
+    "AlphaNpts": 1,
+    "BetaStart": 0.0,
+    "BetaEnd": 0.0,
+    "BetaNpts": 1,
+    "RefFlag": 0,
+    "Symmetry": 0,
+    "NCPU": 4,
+    "StopBeforeRun": 1
+  },
+  "variants": {
+    "thick": {
+      "geom_result_id": "LBMHAKQ",
+      "sweep_result_id": "",
+      "sweep_result_id_empty": true,
+      "geom_result_csv": "Results_Name,VSPAERO_Geom\nResults_Timestamp,1793585030\nResults_Date,11,2,2026\nResults_Time,10,3,50\nAnalysis_Duration_Sec,3.500000000000000333e-02\nGeometrySet,0\nMesh_GeomID,MQGGFAUMIN\nThinGeometrySet,-1\nVSPGeomFileName,C:\\Users\\pc\\AppData\\Local\\RCAIDE_Supersonic_agent_state\\fullchain\\lead\\d12d003\\setup355c\\thick\\wing355_thick.vspgeom\n",
+      "setup_file": "wing355_thick.vspaero",
+      "setup_bytes": 930,
+      "setup_lines": 42,
+      "setup_sha256": "c862aa220bc6f3a9d057b2fbe99c4ed340591a14ad88f455d3d1b0ddbe7c1804",
+      "setup_content": "Sref = 358.25 \nCref = 18.489892999999999 \nBref = 25.604638000000001 \nX_cg = 16.821978259514246 \nY_cg = 0 \nZ_cg = 0 \nMach = 2.02 \nAoA = 2 \nBeta = 0 \nReCref = 10000000 \nVinf = 100 \nRho = 0.0023770000000000002 \nStallModel = 0 \nClo2D = 0 \nCLMax2D = 1 \nSymmetry = 0 \nFreezeMultiPoleAtIteration = 10000 \nFreezeWakeAtIteration = 10000 \nFreezeWakeRootVortices = 0 \nImplicitWake = 0 \nImplicitWakeStartIteration = 0 \nFarDist = -1 \nNumWakeNodes = 8 \nWakeIters = 5 \nWakeRelax = 1 \nForwardGMRESConvergenceFactor = 1 \nAdjointGMRESConvergenceFactor = 1 \nNonLinearConvergenceFactor = 1 \nCoreSizeFactor = 1 \nFarAway = 5 \nUpdateMatrixPreconditioner = 0 \nUseWakeNodeMatrixPreconditioner = 0 \nWrite2DFEMFile = 0 \nWriteTecplotFile = 0 \nNumberOfControlGroups = 0 \nNumberofSurveyPoints = 0 \nQuadTreeBufferLevels = 0 \nNumberOfQuadTrees = 1 \n1 2 0 \nNumberOfInlets = 0 \nNumberOfNozzles = 0 \nVSP_StabilityType = 0 \n",
+      "vspgeom_file": "wing355_thick.vspgeom",
+      "vspgeom_bytes": 503013,
+      "vspgeom_sha256": "494feef5bb8b070dc77892dd7e2838f4946bcd856c2448a99c1a56d2884fb718",
+      "vspgeom_header": "# vspgeom v3\r\n1\r\n1082 1088 1\r\n     29.90181851              ",
+      "no_solver_artifacts": [
+        "*.adb",
+        "*.history",
+        "*.polar",
+        "*.lod",
+        "*.groups"
+      ],
+      "copied_small_artifacts": {
+        "geom_result_thick.csv": {
+          "path": "D:\\RCAIDE\\research\\concorde_metaopt\\optimization_runs\\openvsp355-remediation-20261102T014411Z\\evidence\\vspaero7_setup\\thick\\geom_result_thick.csv",
+          "bytes": 344,
+          "sha256": "dcc875729876691e6e32d51fa762e0f59fb038d4318a1a38c5e2036b893a1c4b"
+        },
+        "wing355_thick.vspaero": {
+          "path": "D:\\RCAIDE\\research\\concorde_metaopt\\optimization_runs\\openvsp355-remediation-20261102T014411Z\\evidence\\vspaero7_setup\\thick\\wing355_thick.vspaero",
+          "bytes": 930,
+          "sha256": "c862aa220bc6f3a9d057b2fbe99c4ed340591a14ad88f455d3d1b0ddbe7c1804"
+        }
+      },
+      "vspgeom_archive": {
+        "path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\openvsp355-remediation-20261102T014411Z\\vspaero7_setup_artifacts\\wing355_thick.vspgeom",
+        "bytes": 503013,
+        "sha256": "494feef5bb8b070dc77892dd7e2838f4946bcd856c2448a99c1a56d2884fb718"
+      }
+    },
+    "thin": {
+      "geom_result_id": "SPUSFGT",
+      "sweep_result_id": "",
+      "sweep_result_id_empty": true,
+      "geom_result_csv": "Results_Name,VSPAERO_Geom\nResults_Timestamp,1793585030\nResults_Date,11,2,2026\nResults_Time,10,3,50\nAnalysis_Duration_Sec,2.000000000000000042e-02\nGeometrySet,-1\nMesh_GeomID,RJNFDEVLYR\nThinGeometrySet,0\nVSPGeomFileName,C:\\Users\\pc\\AppData\\Local\\RCAIDE_Supersonic_agent_state\\fullchain\\lead\\d12d003\\setup355c\\thin\\wing355_thin.vspgeom\n",
+      "setup_file": "wing355_thin.vspaero",
+      "setup_bytes": 930,
+      "setup_lines": 42,
+      "setup_sha256": "c862aa220bc6f3a9d057b2fbe99c4ed340591a14ad88f455d3d1b0ddbe7c1804",
+      "setup_content": "Sref = 358.25 \nCref = 18.489892999999999 \nBref = 25.604638000000001 \nX_cg = 16.821978259514246 \nY_cg = 0 \nZ_cg = 0 \nMach = 2.02 \nAoA = 2 \nBeta = 0 \nReCref = 10000000 \nVinf = 100 \nRho = 0.0023770000000000002 \nStallModel = 0 \nClo2D = 0 \nCLMax2D = 1 \nSymmetry = 0 \nFreezeMultiPoleAtIteration = 10000 \nFreezeWakeAtIteration = 10000 \nFreezeWakeRootVortices = 0 \nImplicitWake = 0 \nImplicitWakeStartIteration = 0 \nFarDist = -1 \nNumWakeNodes = 8 \nWakeIters = 5 \nWakeRelax = 1 \nForwardGMRESConvergenceFactor = 1 \nAdjointGMRESConvergenceFactor = 1 \nNonLinearConvergenceFactor = 1 \nCoreSizeFactor = 1 \nFarAway = 5 \nUpdateMatrixPreconditioner = 0 \nUseWakeNodeMatrixPreconditioner = 0 \nWrite2DFEMFile = 0 \nWriteTecplotFile = 0 \nNumberOfControlGroups = 0 \nNumberofSurveyPoints = 0 \nQuadTreeBufferLevels = 0 \nNumberOfQuadTrees = 1 \n1 2 0 \nNumberOfInlets = 0 \nNumberOfNozzles = 0 \nVSP_StabilityType = 0 \n",
+      "vspgeom_file": "wing355_thin.vspgeom",
+      "vspgeom_bytes": 224357,
+      "vspgeom_sha256": "9fcda6d5d45300fbb0e20257c9ddc80540b44f5064a9566089d7ef85f9018d8e",
+      "vspgeom_header": "# vspgeom v3\r\n1\r\n527 480 1\r\n     29.64271293      1.23022349",
+      "no_solver_artifacts": [
+        "*.adb",
+        "*.history",
+        "*.polar",
+        "*.lod",
+        "*.groups"
+      ],
+      "copied_small_artifacts": {
+        "geom_result_thin.csv": {
+          "path": "D:\\RCAIDE\\research\\concorde_metaopt\\optimization_runs\\openvsp355-remediation-20261102T014411Z\\evidence\\vspaero7_setup\\thin\\geom_result_thin.csv",
+          "bytes": 342,
+          "sha256": "864d86f3156b203cdda4a96a0ef6123583eb735518853162fa693be912e1d319"
+        },
+        "wing355_thin.vspaero": {
+          "path": "D:\\RCAIDE\\research\\concorde_metaopt\\optimization_runs\\openvsp355-remediation-20261102T014411Z\\evidence\\vspaero7_setup\\thin\\wing355_thin.vspaero",
+          "bytes": 930,
+          "sha256": "c862aa220bc6f3a9d057b2fbe99c4ed340591a14ad88f455d3d1b0ddbe7c1804"
+        }
+      },
+      "vspgeom_archive": {
+        "path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\openvsp355-remediation-20261102T014411Z\\vspaero7_setup_artifacts\\wing355_thin.vspgeom",
+        "bytes": 224357,
+        "sha256": "9fcda6d5d45300fbb0e20257c9ddc80540b44f5064a9566089d7ef85f9018d8e"
+      }
+    }
+  },
+  "source_evidence": {
+    "stop_before_run_registration": "src/geom_core/AnalysisMgr.cpp:2255 (input \"StopBeforeRun\", description \"Flag to stop after writing files, but before running VSPAERO.\")",
+    "stop_before_run_read": "src/geom_core/AnalysisMgr.cpp:2875-2878 (read input and set VSPAEROMgr.m_StopBeforeRun)",
+    "stop_before_run_early_return": "src/geom_core/VSPAEROMgr.cpp:2142-2146 (if ( m_StopBeforeRun ) { m_StopBeforeRun = false; return string(); } )",
+    "solver_fork_after_guard": "src/geom_core/VSPAEROMgr.cpp:2149 (m_SolverProcess.ForkCmd(...) appears only AFTER the early return)",
+    "setup_writer": "src/geom_core/VSPAEROMgr.cpp:1362 CreateSetupFile()",
+    "file_name_rules": "src/geom_core/VSPAEROMgr.cpp:660-760 UpdateFilenames(): base is derived from the model export file name (VSPAERO_VSPGEOM_TYPE -> .vspgeom suffix stripped), producing .vspaero/.adb/.history/.polar/.lod/.groups",
+    "geometry_pipeline": "src/geom_core/VSPAEROMgr.cpp:1188-1361 ComputeGeometry(): CompGeomAndFlatten(:1304) + WriteVSPGEOM(:1319) + results GeometrySet/ThinGeometrySet/VSPGeomFileName/Mesh_GeomID(:1340-1355)",
+    "analysis_geometry_entry": "src/geom_core/AnalysisMgr.cpp:2044-2156 VSPAEROComputeGeometryAnalysis::Execute -> VSPAEROMgr.ComputeGeometry() at :2156",
+    "analysis_sweep_entry": "src/geom_core/AnalysisMgr.cpp:2875-2893 VSPAEROSweep reads StopBeforeRun then calls VSPAEROMgr.ComputeSolver() only (:2883/:2888/:2893)"
+  },
+  "proof_of_no_solver": {
+    "no_vspaero_process_running_at_completion": true,
+    "no_adb_history_polar_lod_groups_files": true,
+    "sweep_result_id_empty": true,
+    "no_outputs_from_monitor_or_read_history": true
+  },
+  "interpretation": {
+    "what_this_proves": "the new OpenVSP 3.55.0 + VSPAERO 7.2.2 toolchain can prepare the exact inputs a solver run would need, with Sref/cref/bref/CG/Mach/AoA frozen to the D-12D-002 contract values, and the setup content is reproducible from the committed scripts",
+    "what_this_does_not_prove": "nothing about VSPAERO 7.2.2 supersonic accuracy, convergence, or panel/wake behaviour at Mach 2.02; no lift/drag/moment value was produced; no physical gate may change",
+    "thick_vs_thin": "the thick-surface mesh (GeomSet=0) is 1082 nodes / 1088 elements and the thin-surface mesh (ThinGeomSet=0) is 527 nodes / 480 elements for the same wing; Round-2 must state which set is used and never mix them"
+  },
+  "caveats": [
+    "setup355b/_model was overwritten because OpenVSP derives output file names from the model export path; setup355c re-ran each variant in its own directory (lesson LD-004)",
+    "VSPAEROMgr.h downloaded from the release tree is a 14-byte placeholder; the .cpp files are the authority",
+    "the OpenVSP Python API returns an empty result id for VSPAEROSweep even on success; results must be captured via file outputs (consistent with LD-002)"
+  ]
+}

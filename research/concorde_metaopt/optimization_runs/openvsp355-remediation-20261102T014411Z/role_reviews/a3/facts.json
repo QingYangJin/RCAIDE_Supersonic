@@ -1,0 +1,506 @@
+{
+  "schema_version": 1,
+  "task": "task-35",
+  "decision": "D-12D-003",
+  "agent": "a3-repo-guard",
+  "generated_at_utc": "2026-11-02T01:57:47Z",
+  "generated_at_local": "2026-11-02T09:57:47+08:00",
+  "workspace": "D:/RCAIDE",
+  "branch": "research/concorde-metaopt",
+  "head": "5dcb0bf09335fd6f73363d0280a667286d6d20f9",
+  "verdict": "PASS",
+  "verdict_detail": "Official source verified online; archive sha256/size exact; extraction 491/491 files and 149,488,735 B complete; Python API reports OpenVSP 3.55.0; vspaero usage banner reports v7.2.2 and is byte-identical to A1 evidence; old 3.26.1 install and SUAVE py3.9 worker untouched (no files newer than 2026-11-01; old vspaero hash matches 2026-10-31 prior evidence); no PATH/registry/site-packages traces of 3.55; rollback steps statically realistic (execution NOT_RUN); repo free of install artifacts; P5 dirty set unchanged (54 files / 7,976,412 B excluding 2 pre-existing pycache). Discrepancy reconciled: porcelain is 23 lines, not 22, due to one new untracked D-12D-003 evidence directory.",
+  "official_source": {
+    "download_page": {
+      "url": "https://openvsp.org/download.php",
+      "http": 200,
+      "bytes": 5843,
+      "python311_link": "download.php?file=zips/current/windows/OpenVSP-3.55.0-win64-Python3.11.zip",
+      "label_seen": "OpenVSP 3.55.0 64-bit Python 3.11"
+    },
+    "index": {
+      "url": "https://openvsp.org/zips/current/windows/",
+      "http": 200,
+      "bytes": 705,
+      "entries": [
+        {
+          "file": "OpenVSP-3.55.0-win64-Python3.11.zip",
+          "last_modified_display": "2026-10-11 21:47",
+          "size_display": "47M"
+        },
+        {
+          "file": "OpenVSP-3.55.0-win64-Python3.13.zip",
+          "last_modified_display": "2026-10-11 21:47",
+          "size_display": "47M"
+        }
+      ]
+    },
+    "release_notes": {
+      "url": "https://openvsp.org/blogs/announcements/2026/10/12/openvsp-3-55-0-released",
+      "http": 200,
+      "bytes": 31772,
+      "title_seen": "OpenVSP 3.55.0 Released"
+    },
+    "remote_head": {
+      "url": "https://openvsp.org/zips/current/windows/OpenVSP-3.55.0-win64-Python3.11.zip",
+      "http": 200,
+      "content_length": 49664844,
+      "last_modified_gmt": "Mon, 12 Oct 2026 04:47:13 GMT",
+      "etag": "\"2f5d34c-65d9d64404427\"",
+      "content_type": "application/zip",
+      "local_size_equal": true
+    }
+  },
+  "archive": {
+    "path": "D:/OpenVSP-download/OpenVSP-3.55.0-win64-Python3.11.zip",
+    "bytes": 49664844,
+    "sha256": "f1fde65f9d48ae482dcad2c0b7711b81a22810871a5bebc236c4618c0131ebb9",
+    "mtime": "2026-11-02T09:39:59.4214048+08:00",
+    "matches_task_declared": true,
+    "matches_official_content_length": true
+  },
+  "extraction": {
+    "root": "D:/OpenVSP-3.55.0/OpenVSP-3.55.0-win64",
+    "root_mtime": "2026-11-02T09:40:49.9165436+08:00",
+    "dir_bytes_total": 150078455,
+    "zip_entries": 550,
+    "zip_dirs": 59,
+    "zip_files": 491,
+    "zip_uncompressed_bytes": 149488735,
+    "extracted_files_original": 491,
+    "extracted_bytes_original": 149488735,
+    "extracted_files_total": 504,
+    "extra_pycache_files": 13,
+    "extra_pycache_bytes": 589720,
+    "missing_files": 0,
+    "unzip_test_rc": 0,
+    "testzip_bad": null,
+    "top_level_dir": "OpenVSP-3.55.0-win64",
+    "extra_pycache_origin": "created 2026-11-02 09:43 by A1/Lead probe imports (cpython-311 bytecode), not part of official archive; removed with new install on rollback"
+  },
+  "hashes": {
+    "recomputed_matches_provenance": 12,
+    "mismatches": 0,
+    "items": [
+      {
+        "path": "D:/OpenVSP-download/OpenVSP-3.55.0-win64-Python3.11.zip",
+        "bytes": 49664844,
+        "sha256": "f1fde65f9d48ae482dcad2c0b7711b81a22810871a5bebc236c4618c0131ebb9",
+        "match": true
+      },
+      {
+        "path": "D:/OpenVSP-3.55.0/OpenVSP-3.55.0-win64/vsp.exe",
+        "bytes": 19713536,
+        "sha256": "f707fa8a550a4d84420916ba4c65bfb657995b829a55c86f1d6b0b398801f62b",
+        "match": true
+      },
+      {
+        "path": "D:/OpenVSP-3.55.0/OpenVSP-3.55.0-win64/vspaero.exe",
+        "bytes": 811520,
+        "sha256": "db71c4412489af82398833408ea30fb73327bdd9434de2ef530d31375b9fddad",
+        "match": true
+      },
+      {
+        "path": "D:/OpenVSP-3.55.0/OpenVSP-3.55.0-win64/python/openvsp/openvsp/_vsp.pyd",
+        "bytes": 17822208,
+        "sha256": "c002e778eed8801cda0aa9753e038cbb93555a37cf0df3cb7fd9b5565814fa37",
+        "match": true
+      },
+      {
+        "path": "D:/OpenVSP-3.55.0/OpenVSP-3.55.0-win64/python/openvsp/openvsp/_vsp_g.pyd",
+        "bytes": 21928960,
+        "sha256": "8df83996e69162657130425ffe28268c3da8d86e82567b12a5a5da09840a8a79",
+        "match": true
+      },
+      {
+        "path": "D:/OpenVSP-3.55.0/OpenVSP-3.55.0-win64/python/openvsp/openvsp/__init__.py",
+        "bytes": 2975,
+        "sha256": "d55a6858ca768370bcf457fc07b1f58c724ab77926a4eaea1441822776973988",
+        "match": true
+      },
+      {
+        "path": "D:/OpenVSP-3.55.0/OpenVSP-3.55.0-win64/python/openvsp/openvsp/vsp.py",
+        "bytes": 332170,
+        "sha256": "297638f06a0838efc17887d48f42b6ec72530ed4a1c45cc277c20eb38e1162eb",
+        "match": true
+      },
+      {
+        "path": "D:/OpenVSP-3.55.0/OpenVSP-3.55.0-win64/python/openvsp/openvsp/vsp_g.py",
+        "bytes": 337560,
+        "sha256": "32d2cd29bcc2a623bc257291be969f0d953fb696da3243315bbafdd249744605",
+        "match": true
+      },
+      {
+        "path": "D:/OpenVSP-3.55.0/OpenVSP-3.55.0-win64/python/openvsp/openvsp/facade.py",
+        "bytes": 301575,
+        "sha256": "03c264e67c580216137297690f8b14a2545d6ca7ca565439e84e96a248daf9dd",
+        "match": true
+      },
+      {
+        "path": "D:/Program Files/OpenVSP/OpenVSP-3.26.1-win64-Python3.9/OpenVSP-3.26.1-win64/vsp.exe",
+        "bytes": 21837312,
+        "sha256": "d175fcba7d027fc23cbd4150621397aa20d6b641272b2abea38ff0a48f24f802",
+        "match": true
+      },
+      {
+        "path": "D:/Program Files/OpenVSP/OpenVSP-3.26.1-win64-Python3.9/OpenVSP-3.26.1-win64/vspaero.exe",
+        "bytes": 561664,
+        "sha256": "e1affca023f9d63d9b0b5f343c3ea5afd5a8dbcfe420952e557718dd15f90eb8",
+        "match": true,
+        "prior_evidence": "research/concorde_metaopt/optimization_runs/p1p3-fullchain-20261031T0407Z/environment.json (probed_utc 2026-10-31T04:07:14Z) records same sha256"
+      },
+      {
+        "path": "D:/Program Files/OpenVSP/OpenVSP-3.26.1-win64-Python3.9/OpenVSP-3.26.1-win64/python/openvsp/openvsp/_vsp.pyd",
+        "bytes": 19921920,
+        "sha256": "b2025e16170e1547e174747375f2e0eb40e305b71f588e2299ce2579f945904a",
+        "match": true
+      }
+    ]
+  },
+  "versions": {
+    "python_api": {
+      "python": "3.11.17 (64bit) D:/RCAIDE/envs/RCAIDE/python.exe",
+      "import_ok": true,
+      "module": "D:/OpenVSP-3.55.0/OpenVSP-3.55.0-win64/python/openvsp/openvsp/__init__.py",
+      "GetVSPVersion": "OpenVSP 3.55.0",
+      "major_minor": [
+        3,
+        55
+      ],
+      "api_names": 2176,
+      "methods_present": [
+        "ListAnalysis",
+        "AddGeom",
+        "ExportFile"
+      ],
+      "geometry_ops_run": false
+    },
+    "vspaero_binary": {
+      "path": "D:/OpenVSP-3.55.0/OpenVSP-3.55.0-win64/vspaero.exe",
+      "bytes": 811520,
+      "sha256": "db71c4412489af82398833408ea30fb73327bdd9434de2ef530d31375b9fddad",
+      "file_version_resource": "(empty; PE32+ console binary has no version resource)",
+      "usage_banner": "VSPAERO v.7.2.2 --- Compiled on: Oct 12 2026 at 04:08:14 PST",
+      "usage_invocation": "vspaero.exe with no arguments (prints usage only; exit code 1; no geometry/model/analysis)",
+      "usage_capture_sha256": "3bc9b1d18729856fca513dad26343ea14eadd447f13ac0fa66a02df8157f5d67",
+      "usage_capture_bytes": 1546,
+      "repo_evidence_path": "research/concorde_metaopt/optimization_runs/openvsp355-remediation-20261102T014411Z/evidence/vspaero_7.2.2_usage.txt",
+      "usage_capture_equals_repo_evidence": true
+    },
+    "vsp_binary": {
+      "path": "D:/OpenVSP-3.55.0/OpenVSP-3.55.0-win64/vsp.exe",
+      "bytes": 19713536,
+      "sha256": "f707fa8a550a4d84420916ba4c65bfb657995b829a55c86f1d6b0b398801f62b",
+      "embedded_string": "OpenVSP 3.55.0 (found 3x)"
+    },
+    "vspaero_opt_binary": {
+      "path": "D:/OpenVSP-3.55.0/OpenVSP-3.55.0-win64/vspaero_opt.exe",
+      "bytes": 16329728,
+      "embedded_string": "OpenVSP 3.55.0 (found 1x)"
+    },
+    "changelog": {
+      "path": "D:/OpenVSP-3.55.0/OpenVSP-3.55.0-win64/CHANGELOG.md",
+      "sha256": "f20f114c601a66bc3a16ce4960cf7b7884c288a00f7455f5b7d36e041e6aec36",
+      "bytes": 332224,
+      "first_line": "# [OpenVSP 3.55.0](https://github.com/OpenVSP/OpenVSP/releases/tag/OpenVSP_3.55.0)",
+      "date_line": "2026-10-11"
+    }
+  },
+  "old_install": {
+    "root": "D:/Program Files/OpenVSP/OpenVSP-3.26.1-win64-Python3.9/OpenVSP-3.26.1-win64",
+    "still_present": true,
+    "files_total": 240,
+    "files_newer_than_2026_11_01": 0,
+    "files_newer_than_2026_10_30": 15,
+    "newer_than_2026_10_30_detail": "15 egg-info metadata files under python/{openvsp,degen_geom,utilities}/*.egg-info, mtime 2026-10-31 12:01 (pre-existing before this audit; not modified today; not binary/wrapper files)",
+    "max_file_mtime": "2026-10-31 12:01",
+    "binaries": {
+      "vspaero": {
+        "bytes": 561664,
+        "sha256": "e1affca023f9d63d9b0b5f343c3ea5afd5a8dbcfe420952e557718dd15f90eb8",
+        "mtime": "2022-01-06T01:06:36+08:00",
+        "matches_prior_evidence_2026_10_31": true
+      },
+      "vsp": {
+        "bytes": 21837312,
+        "sha256": "d175fcba7d027fc23cbd4150621397aa20d6b641272b2abea38ff0a48f24f802",
+        "mtime": "2022-01-06T01:12:46+08:00"
+      },
+      "vsp_pyd": {
+        "bytes": 19921920,
+        "sha256": "b2025e16170e1547e174747375f2e0eb40e305b71f588e2299ce2579f945904a",
+        "mtime": "2022-01-06T01:05:36+08:00"
+      }
+    },
+    "prior_evidence": "D:/RCAIDE/research/concorde_metaopt/optimization_runs/p1p3-fullchain-20261031T0407Z/environment.json: openvsp.version=3.26.1 (wrapper from 2022-01-06), vspaero.version=VSPAERO v6.2.0 (banner, compiled 2022-01-06), vspaero.sha256=e1affca0..."
+  },
+  "suave_worker": {
+    "path": "D:/Anaconda/envs/SUAVE/python.exe",
+    "exists": true,
+    "version": "3.9.25 (64bit)",
+    "mtime": "2025-11-04T07:01:33",
+    "site_packages_openvsp": false,
+    "site_packages_vsp": false,
+    "env_files_newer_than_2026_11_01": 0,
+    "openvsp_root_for_worker": "D:/Program Files/OpenVSP/OpenVSP-3.26.1-win64-Python3.9/OpenVSP-3.26.1-win64 (from prior evidence)"
+  },
+  "isolation": {
+    "path": {
+      "user_path_len": 544,
+      "user_openvsp_entries": [
+        "D:/Program Files/OpenVSP/OpenVSP-3.26.1-win64-Python3.9/OpenVSP-3.26.1-win64"
+      ],
+      "machine_path_len": 327,
+      "machine_openvsp_entries": [],
+      "process_openvsp_entries": [
+        "D:/Program Files/OpenVSP/OpenVSP-3.26.1-win64-Python3.9/OpenVSP-3.26.1-win64"
+      ],
+      "any_355_path_entry": false,
+      "where_vspaero": "D:/Program Files/OpenVSP/OpenVSP-3.26.1-win64-Python3.9/OpenVSP-3.26.1-win64/vspaero.exe",
+      "where_vsp": ".../vsp.exe"
+    },
+    "site_packages": {
+      "rc_aide": {
+        "path": "D:/RCAIDE/envs/RCAIDE/Lib/site-packages",
+        "openvsp": false,
+        "vsp": false,
+        "top_level_entries_newer_than_2026_11_01": 0
+      },
+      "python39_global": {
+        "path": "C:/Users/pc/AppData/Local/Programs/Python/Python39/Lib/site-packages",
+        "openvsp": false,
+        "vsp": false,
+        "top_level_entries_newer_than_2026_11_01": 0
+      },
+      "suave_env": {
+        "path": "D:/Anaconda/envs/SUAVE/Lib/site-packages",
+        "openvsp": false,
+        "vsp": false
+      }
+    },
+    "registry": {
+      "top_level_openvsp_keys": [],
+      "uninstall_openvsp_entries": [],
+      "app_paths_vsp_entries": [],
+      "hkcr_vsp3": "vsp3_auto_file (pre-existing file association; no path/3.55 value observed; creation time not determinable)",
+      "any_355_registry_value_seen": false
+    },
+    "env_vars": {
+      "CONCORDE_OPENVSP_ROOT": null,
+      "CONCORDE_OPENVSP_PYTHON": null,
+      "OPENVSP_HOME": null,
+      "VSPAERO_HOME": null,
+      "note": "unset in Process/User/Machine scopes; rollback step 4 therefore requires explicitly setting CONCORDE_OPENVSP_ROOT and CONCORDE_OPENVSP_PYTHON; documented at research/concorde_metaopt/aircraft/openvsp_check.py:24-25,85-90 and research/concorde_metaopt/README.md:223,782"
+    }
+  },
+  "repo": {
+    "head": "5dcb0bf09335fd6f73363d0280a667286d6d20f9",
+    "head_commit_time": "2026-11-01T11:35:02+08:00",
+    "branch": "research/concorde-metaopt",
+    "origin_branch": "5dcb0bf09335fd6f73363d0280a667286d6d20f9",
+    "main": "ec65e5a9a723bc52df8075a395fcaf9e0fd0fc2b",
+    "main_commit_time": "2026-10-27T14:16:15+08:00",
+    "tracked_files": 705,
+    "head_tree_files": 705,
+    "porcelain_default_lines": 23,
+    "porcelain_default_expected_by_lead": 22,
+    "porcelain_default_delta_explanation": "+1 untracked directory research/concorde_metaopt/optimization_runs/openvsp355-remediation-20261102T014411Z/ (2 files: install_provenance.json 5,147 B created 09:44:56; evidence/vspaero_7.2.2_usage.txt 1,546 B created 09:45:12). It is D-12D-003 project evidence produced by A1, not an install artifact; no new tracked changes.",
+    "porcelain_uall_lines": 95,
+    "porcelain_uall_baseline": 93,
+    "tracked_modified": 7,
+    "tracked_modified_paths": [
+      "research/concorde_metaopt/README.md",
+      "research/concorde_metaopt/cli.py",
+      "research/concorde_metaopt/optimization_runs/index.json",
+      "research/concorde_metaopt/reports/figures.py",
+      "tutorials/Optimization_Wing_Planform_Fuel_Burn/Differential_Evolution.py",
+      "tutorials/Optimization_Wing_Planform_Fuel_Burn/README_DE.md",
+      "tutorials/Optimization_Wing_Planform_Fuel_Burn/Save_Results.py"
+    ],
+    "tracked_diffstat": "+586/-123 (7 files)",
+    "staged": 0,
+    "stash": 0,
+    "head_reflog_reset_force_last50": 0,
+    "untracked_total": 88,
+    "untracked_output_dir": 32,
+    "untracked_p5": 54,
+    "untracked_run_dir_new": 2,
+    "p5": {
+      "files_excluding_pycache": 54,
+      "bytes_excluding_pycache": 7976412,
+      "pycache_files": 2,
+      "pycache_bytes": 115639,
+      "pycache_mtime": "2026-10-30 13:03",
+      "files_including_pycache": 56,
+      "bytes_including_pycache": 8092051,
+      "tracked": 0,
+      "unchanged_vs_prior_baseline": true
+    },
+    "install_artifacts": {
+      "tracked_install_files": 0,
+      "files_of_size_49664844_in_repo": 0,
+      "files_named_3_55_in_repo": 0,
+      "repo_files_created_2026_11_02_since_0935": [
+        "research/concorde_metaopt/optimization_runs/openvsp355-remediation-20261102T014411Z/install_provenance.json (5147 B, 09:44:56)",
+        "research/concorde_metaopt/optimization_runs/openvsp355-remediation-20261102T014411Z/evidence/vspaero_7.2.2_usage.txt (1546 B, 09:45:12)"
+      ],
+      "note": "only the two new untracked D-12D-003 evidence files; no OpenVSP binaries/zip copied into repo; pre-existing source files named openvsp*.py are code, not install artifacts"
+    },
+    "new_run_dir": {
+      "path": "research/concorde_metaopt/optimization_runs/openvsp355-remediation-20261102T014411Z",
+      "files": 2,
+      "tracked": 0,
+      "install_provenance_bytes": 5147,
+      "install_provenance_sha256": "3da3dc7ab82c3807156de894a1f7a8542a3b76dca2bb0212a5324596c8ef06aa",
+      "usage_evidence_bytes": 1546,
+      "usage_evidence_sha256": "3bc9b1d18729856fca513dad26343ea14eadd447f13ac0fa66a02df8157f5d67"
+    }
+  },
+  "rollback": {
+    "steps": [
+      "Remove or rename D:/OpenVSP-3.55.0 (new install only)",
+      "Keep D:/OpenVSP-download/OpenVSP-3.55.0-win64-Python3.11.zip for audit, or delete after report",
+      "Old 3.26.1 install and SUAVE python 3.9 worker are untouched; no PATH, registry or site-packages entry was added, so no further rollback is required",
+      "Re-run the old 3.26.1 worker path (CONCORDE_OPENVSP_ROOT / CONCORDE_OPENVSP_PYTHON) to resume old toolchain"
+    ],
+    "assessment": {
+      "step1": "REALISTIC: new install is a self-contained directory outside the repo; only runtime references are os.add_dll_directory/sys.path within probe processes; no PATH/registry/site-packages/service dependency; deleting it also removes 13 probe-generated pycache files.",
+      "step2": "REALISTIC: zip lives in D:/OpenVSP-download (single file, 49,664,844 B), independent of install and repo; retention for audit has no side effects.",
+      "step3": "VERIFIED: old install binaries/hashes unchanged vs 2026-10-31 evidence; SUAVE worker 3.9.25 untouched (0 files newer than 2026-11-01); no 3.55 entries in PATH/registry/site-packages, so removal of new dir restores prior state.",
+      "step4": "ACTIONABLE: old vspaero.exe/vsp.exe/_vsp.pyd present with original hashes; SUAVE py3.9 exists and is unchanged; CONCORDE_OPENVSP_ROOT/CONCORDE_OPENVSP_PYTHON currently unset, so rollback must set them explicitly (docs: aircraft/openvsp_check.py:24-25,85-90; README.md:223,782)."
+    },
+    "execution": "NOT_RUN (read-only audit; no deletion, rename, move, or execution of solver/toolchain rollback was performed)",
+    "static_verdict": "REALISTIC"
+  },
+  "checks": [
+    {
+      "id": "C1",
+      "result": "PASS",
+      "item": "Official source online",
+      "evidence": "openvsp.org index/download/release-notes HTTP 200; index lists OpenVSP-3.55.0-win64-Python3.11.zip (2026-10-11 21:47, 47M); download page exposes Python3.11 link; release page title 'OpenVSP 3.55.0 Released'"
+    },
+    {
+      "id": "C2",
+      "result": "PASS",
+      "item": "Official artifact identity/size",
+      "evidence": "remote HEAD HTTP 200, Content-Length=49,664,844, Last-Modified=Mon, 12 Oct 2026 04:47:13 GMT; local archive size identical"
+    },
+    {
+      "id": "C3",
+      "result": "PASS",
+      "item": "Local archive hash",
+      "evidence": "sha256=f1fde65f9d48ae482dcad2c0b7711b81a22810871a5bebc236c4618c0131ebb9 (matches declared)"
+    },
+    {
+      "id": "C4",
+      "result": "PASS",
+      "item": "Zip integrity",
+      "evidence": "unzip -t rc=0 'No errors detected'; zipfile.testzip=None; 550 entries = 491 files + 59 dirs; top dir OpenVSP-3.55.0-win64; uncompressed 149,488,735 B"
+    },
+    {
+      "id": "C5",
+      "result": "PASS",
+      "item": "Extraction completeness",
+      "evidence": "491/491 archive files present (missing=0), 149,488,735 B; 13 extra __pycache__ .pyc (589,720 B) from probe imports at 09:43; tree total 504 files / 150,078,455 B"
+    },
+    {
+      "id": "C6",
+      "result": "PASS",
+      "item": "Hash recomputation vs provenance",
+      "evidence": "12/12 recomputed sha256 match install_provenance.json (archive + 8 new files + 3 old files); 0 mismatches; provenance JSON valid 5,147 B sha256=3da3dc7a..."
+    },
+    {
+      "id": "C7",
+      "result": "PASS",
+      "item": "Python API version",
+      "evidence": "project py 3.11.17 import openvsp OK; GetVSPVersion='OpenVSP 3.55.0'; major/minor=[3,55]; 2176 API names; import only, no geometry/solve"
+    },
+    {
+      "id": "C8",
+      "result": "PASS",
+      "item": "VSPAERO binary version",
+      "evidence": "independent no-arg invocation captured 'VSPAERO v.7.2.2 --- Compiled on: Oct 12 2026 at 04:08:14 PST' (exit 1, usage banner only); capture sha256=3bc9b1d1... equals repo evidence file sha256 byte-for-byte"
+    },
+    {
+      "id": "C9",
+      "result": "PASS (limitation)",
+      "item": "Version resource metadata",
+      "evidence": "vsp.exe/vspaero.exe VersionInfo FileVersion/ProductVersion empty (PE has no version resource); vsp.exe/vspaero_opt.exe embed 'OpenVSP 3.55.0' strings; vspaero version therefore via usage banner"
+    },
+    {
+      "id": "C10",
+      "result": "PASS",
+      "item": "Old install untouched",
+      "evidence": "old tree 240 files, 0 newer than 2026-11-01; vspaero.exe sha256=e1affca0... equals 2026-10-31 environment.json; vsp.exe/_vsp.pyd hashes match provenance, mtimes 2022-01-06; last pre-audit mtimes are 15 egg-info files 2026-10-31 12:01 (not today)"
+    },
+    {
+      "id": "C11",
+      "result": "PASS",
+      "item": "SUAVE py3.9 worker untouched",
+      "evidence": "D:/Anaconda/envs/SUAVE/python.exe exists, 3.9.25, mtime 2025-11-04; env 0 files newer than 2026-11-01; site-packages has no openvsp/vsp"
+    },
+    {
+      "id": "C12",
+      "result": "PASS",
+      "item": "PATH isolation",
+      "evidence": "User PATH contains only old 3.26.1 entry; Machine PATH no OpenVSP; process PATH only old; no '3.55' in any PATH value; where vsp/vspaero resolve to old install"
+    },
+    {
+      "id": "C13",
+      "result": "PASS",
+      "item": "site-packages isolation",
+      "evidence": "no openvsp/vsp package in RCAIDE env (3.11), global Python39, or SUAVE env; RCAIDE/Python39 site-packages top-level entries newer than 2026-11-01 = 0/0"
+    },
+    {
+      "id": "C14",
+      "result": "PASS",
+      "item": "Registry isolation",
+      "evidence": "no HKCU/HKLM OpenVSP top-level keys, no Uninstall DisplayName~OpenVSP entries, no App Paths vsp/vspaero entries, no '3.55' registry value seen; HKCR .vsp3=vsp3_auto_file pre-existing association (no 3.55 path)"
+    },
+    {
+      "id": "C15",
+      "result": "PASS",
+      "item": "Repo free of install artifacts",
+      "evidence": "0 tracked install files; 0 files of size 49,664,844; 0 files named *3.55*; only 2 new repo files today = D-12D-003 evidence (provenance+usage capture), untracked; no OpenVSP binaries/zip copied into repo"
+    },
+    {
+      "id": "C16",
+      "result": "PASS (reconciled)",
+      "item": "Dirty-set/P5 protection",
+      "evidence": "HEAD=5dcb0bf=origin; main=ec65e5a (2026-10-27) unchanged; staged 0; stash 0; reset/force 0 in last 50 reflog; 7 tracked modifications unchanged paths (+586/-123); P5 54 files/7,976,412 B unchanged (+2 pre-existing pycache .pyc 115,639 B); porcelain default 23 vs Lead-expected 22 = +1 new untracked D-12D-003 evidence dir"
+    },
+    {
+      "id": "C17",
+      "result": "PASS",
+      "item": "Rollback steps",
+      "evidence": "4 steps statically realistic; execution NOT_RUN per read-only mandate; caveat env vars currently unset (step 4)"
+    },
+    {
+      "id": "C18",
+      "result": "PASS",
+      "item": "No solver/physical runs",
+      "evidence": "no vspaero/vsp/SU2_CFD processes; only binary execution = vspaero no-arg usage banner; Python import openvsp without geometry; no evaluations/solver logs produced"
+    }
+  ],
+  "limitations": [
+    "vsp.exe/vspaero.exe carry no PE version resource, so binary version uses usage banner + embedded strings + provenance hash rather than VersionInfo.",
+    "No pre-install vs post-install registry/PATH snapshot pair exists in this audit; isolation is demonstrated by current absence of any 3.55 traces plus portable-zip nature and provenance no_global_install=true. Residual risk LOW.",
+    "Rollback steps were assessed statically; no deletion/rename/rollback was executed (read-only mandate).",
+    "Repo state sampled at 2026-11-02 09:47-09:58 +0800; other agents were active (run dir created 09:44-09:45 by A1), so only the two evidence files are attributable to today.",
+    "GitHub was not queried (no GitHub writes; local intake snapshot comment_08_6566994749 was used to confirm D-12D-003 approval)."
+  ],
+  "safety": {
+    "repo_writes": 0,
+    "git_write_operations": 0,
+    "solver_or_physical_runs": 0,
+    "github_writes": 0,
+    "install_modified": false,
+    "old_install_modified": false,
+    "token_read": false,
+    "token_stat_only": true,
+    "only_executables": [
+      "vspaero.exe (no args; usage banner only)",
+      "python.exe (import openvsp only)"
+    ]
+  }
+}

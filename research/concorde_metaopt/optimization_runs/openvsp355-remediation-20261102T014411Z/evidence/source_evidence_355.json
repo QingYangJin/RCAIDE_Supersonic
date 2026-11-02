@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "component": "SOURCE_EVIDENCE_VSPAERO_7_2_2",
+  "tag": "OpenVSP_3.55.0",
+  "commit": "5240ef210f41c5d6aeed0ba7687f6fab0ca0cafb",
+  "generated_utc": "2026-11-02T02:20:00Z",
+  "files": [
+    {
+      "name": "AnalysisMgr.cpp",
+      "bytes": 111483,
+      "sha256": "869248c9050493836c7b099de826ac401a7b72c151f52ca8a1656ac757e0643e",
+      "source_url": "https://raw.githubusercontent.com/OpenVSP/OpenVSP/OpenVSP_3.55.0/src/geom_core/AnalysisMgr.cpp"
+    },
+    {
+      "name": "VSPAEROMgr.cpp",
+      "bytes": 275610,
+      "sha256": "9e39c3b746e2516a3a1b37f11c7d8a19d31839630642a70f4dcfbea0abfbc1a2",
+      "source_url": "https://raw.githubusercontent.com/OpenVSP/OpenVSP/OpenVSP_3.55.0/src/geom_core/VSPAEROMgr.cpp"
+    },
+    {
+      "name": "VSPAEROMgr.h",
+      "bytes": 14,
+      "sha256": "d5558cd419c8d46bdc958064cb97f963d1ea793866414c025906ec15033512ed",
+      "source_url": "https://raw.githubusercontent.com/OpenVSP/OpenVSP/OpenVSP_3.55.0/src/geom_core/VSPAEROMgr.h",
+      "note": "404 Not Found placeholder fetched from this path; the .cpp files are the authority"
+    }
+  ],
+  "citations": {
+    "StopBeforeRun_input": "AnalysisMgr.cpp:2255",
+    "StopBeforeRun_read": "AnalysisMgr.cpp:2875-2878",
+    "StopBeforeRun_guard_before_fork": "VSPAEROMgr.cpp:2142-2146",
+    "solver_fork": "VSPAEROMgr.cpp:2149",
+    "CreateSetupFile": "VSPAEROMgr.cpp:1362",
+    "UpdateFilenames": "VSPAEROMgr.cpp:660-760",
+    "ComputeGeometry": "VSPAEROMgr.cpp:1188-1361",
+    "CompGeomAndFlatten": "VSPAEROMgr.cpp:1304",
+    "WriteVSPGEOM": "VSPAEROMgr.cpp:1319",
+    "geometry_results": "VSPAEROMgr.cpp:1340-1355",
+    "VSPAEROComputeGeometry_execute": "AnalysisMgr.cpp:2044-2156",
+    "VSPAEROSweep_execute_and_ComputeSolver_calls": "AnalysisMgr.cpp:2875-2893"
+  },
+  "conclusion": "StopBeforeRun is a first-class, source-documented switch that writes setup files and returns before the solver process is forked; generating .vspaero/.vspgeom with it is not a physical solver start"
+}

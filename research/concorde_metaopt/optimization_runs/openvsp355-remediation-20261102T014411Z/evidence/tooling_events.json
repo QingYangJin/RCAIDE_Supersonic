@@ -1,0 +1,175 @@
+{
+  "schema_version": 1,
+  "component": "TOOLING_EVENTS",
+  "approval": "Issue #4 / D-12D-003 (comment 6566994749)",
+  "generated_utc": "2026-11-02T02:20:00Z",
+  "policy": {
+    "round": "Round-1 (zero solver)",
+    "rule": "no VSPAERO / WaveDrag / SU2 / RCAIDE solver process may be started in Round-1; geometry export, API reflection, setup-file generation and source retrieval are tooling events, recorded here, and are not billable numerical analysis starts",
+    "solver_processes_started_total": 0,
+    "numerical_analysis_starts_total": 0,
+    "round_2_rule": "any solver start in Round-2 requires an owner-approved per-item budget proposed by A2; this file is not a budget approval"
+  },
+  "events": [
+    {
+      "event_id": "TG-001",
+      "category": "geometry_export",
+      "description": "OpenVSP 3.55.0 python (py3.11) export of the 12D main wing baseline and W10+2deg STL to compare against the archived 3.26.1 py3.9 exports",
+      "solver_starts": 0,
+      "evidence": [
+        {
+          "path": "C:\\Users\\pc\\AppData\\Local\\RCAIDE_Supersonic_agent_state\\fullchain\\lead\\d12d003\\geom355\\baseline\\main_wing_baseline_main_wing.stl",
+          "exists": true,
+          "bytes": 650534,
+          "sha256": "019c61124bbe4cface95f31d09bb030343c46f6352e9c5d1321b3b663eb873f7"
+        },
+        {
+          "path": "C:\\Users\\pc\\AppData\\Local\\RCAIDE_Supersonic_agent_state\\fullchain\\lead\\d12d003\\geom355\\w10_plus2\\main_wing_w10_plus2_main_wing.stl",
+          "exists": true,
+          "bytes": 650932,
+          "sha256": "4f08a88ea5f4f798d26d5e722c5fe5e30cecbc1366a610cfaa923ef93427825a"
+        }
+      ]
+    },
+    {
+      "event_id": "TG-002",
+      "category": "geometry_export",
+      "description": "wing+body assembly exported by both OpenVSP versions from the same request for parity of main wing, vertical tail and fuselage",
+      "solver_starts": 0,
+      "evidence": [
+        {
+          "path": "C:\\Users\\pc\\AppData\\Local\\RCAIDE_Supersonic_agent_state\\fullchain\\lead\\d12d003\\wingbody_old326\\worker_result.json",
+          "exists": true,
+          "bytes": 1560,
+          "sha256": "777639981949bf35d3bdde6a5e3232c82c1d77c5d6380360938353d672ab7aaf"
+        },
+        {
+          "path": "C:\\Users\\pc\\AppData\\Local\\RCAIDE_Supersonic_agent_state\\fullchain\\lead\\d12d003\\wingbody_new355\\worker_result.json",
+          "exists": true,
+          "bytes": 1573,
+          "sha256": "b803fc30ef2a28fc2dbc02600bd1ae4796b933de2263f89bb326b5e2653451a6"
+        }
+      ]
+    },
+    {
+      "event_id": "TG-003",
+      "category": "api_probe",
+      "description": "read-only reflection over the 3.55.0 Python API (analysis list, input names, types, defaults); no geometry evaluation",
+      "solver_starts": 0,
+      "evidence": [
+        {
+          "path": "C:\\Users\\pc\\AppData\\Local\\RCAIDE_Supersonic_agent_state\\fullchain\\lead\\d12d003\\evidence\\api_355_probe.json",
+          "exists": true,
+          "bytes": 17427,
+          "sha256": "9cbc50803f97a15991ce2d3df96f5617605a871df3680d8aa0624c58c9135ec2"
+        },
+        {
+          "path": "C:\\Users\\pc\\AppData\\Local\\RCAIDE_Supersonic_agent_state\\fullchain\\lead\\d12d003\\evidence\\api_355_probe_extra.json",
+          "exists": true,
+          "bytes": 468,
+          "sha256": "4703c6c03480a526b8b49826b859ab7b5f7fcbbd32e281eca3b0220b58785164"
+        }
+      ]
+    },
+    {
+      "event_id": "TG-004",
+      "category": "vspaero_setup_generation",
+      "description": "first attempt: VSPAEROSweep with StopBeforeRun=1 for the thick variant only; wrote .vspaero into the model directory. Superseded by TG-006.",
+      "solver_starts": 0,
+      "evidence": [
+        {
+          "path": "C:\\Users\\pc\\AppData\\Local\\RCAIDE_Supersonic_agent_state\\fullchain\\lead\\d12d003\\setup355\\setup_generation_report.json",
+          "exists": true,
+          "bytes": 1883,
+          "sha256": "e608c0c395e6dd20ed83326931a0714968715640d7a4675f69cd9ff58d146968"
+        }
+      ]
+    },
+    {
+      "event_id": "TG-005",
+      "category": "vspaero_setup_generation",
+      "description": "second attempt: thick and thin setup generation in sibling directories, but both shared one model export path so the second run overwrote the first; superseded by TG-006 (lesson LD-004)",
+      "solver_starts": 0,
+      "evidence": [
+        {
+          "path": "C:\\Users\\pc\\AppData\\Local\\RCAIDE_Supersonic_agent_state\\fullchain\\lead\\d12d003\\setup355b\\setup_generation_report.json",
+          "exists": true,
+          "bytes": 1862,
+          "sha256": "83d65dd065680594bf65b33ce33aea81953c5380839c1e596959fa117a9f0ef0"
+        }
+      ]
+    },
+    {
+      "event_id": "TG-006",
+      "category": "vspaero_setup_generation",
+      "description": "authoritative isolated generation: one directory per variant, VSPAEROComputeGeometry (writes .vspgeom) then VSPAEROSweep with StopBeforeRun=1 (writes .vspaero); no solver process and no .adb/.history/.polar/.lod/.groups produced",
+      "solver_starts": 0,
+      "evidence": [
+        {
+          "path": "C:\\Users\\pc\\AppData\\Local\\RCAIDE_Supersonic_agent_state\\fullchain\\lead\\d12d003\\setup355c\\setup_generation_report.json",
+          "exists": true,
+          "bytes": 6357,
+          "sha256": "477de45edd8f83bf22388539b10d5714281e00afdd2fc3509b22db4cd6484040"
+        },
+        {
+          "path": "C:\\Users\\pc\\AppData\\Local\\RCAIDE_Supersonic_agent_state\\fullchain\\lead\\d12d003\\setup355c\\thick\\wing355_thick.vspgeom",
+          "exists": true,
+          "bytes": 503013,
+          "sha256": "494feef5bb8b070dc77892dd7e2838f4946bcd856c2448a99c1a56d2884fb718"
+        },
+        {
+          "path": "C:\\Users\\pc\\AppData\\Local\\RCAIDE_Supersonic_agent_state\\fullchain\\lead\\d12d003\\setup355c\\thin\\wing355_thin.vspgeom",
+          "exists": true,
+          "bytes": 224357,
+          "sha256": "9fcda6d5d45300fbb0e20257c9ddc80540b44f5064a9566089d7ef85f9018d8e"
+        }
+      ]
+    },
+    {
+      "event_id": "TG-007",
+      "category": "source_retrieval",
+      "description": "download of the OpenVSP_3.55.0 release source files used to prove the StopBeforeRun guard sits before the solver fork",
+      "solver_starts": 0,
+      "evidence": [
+        {
+          "path": "C:\\Users\\pc\\AppData\\Local\\RCAIDE_Supersonic_agent_state\\fullchain\\lead\\d12d003\\src355\\AnalysisMgr.cpp",
+          "exists": true,
+          "bytes": 111483,
+          "sha256": "869248c9050493836c7b099de826ac401a7b72c151f52ca8a1656ac757e0643e"
+        },
+        {
+          "path": "C:\\Users\\pc\\AppData\\Local\\RCAIDE_Supersonic_agent_state\\fullchain\\lead\\d12d003\\src355\\VSPAEROMgr.cpp",
+          "exists": true,
+          "bytes": 275610,
+          "sha256": "9e39c3b746e2516a3a1b37f11c7d8a19d31839630642a70f4dcfbea0abfbc1a2"
+        },
+        {
+          "path": "C:\\Users\\pc\\AppData\\Local\\RCAIDE_Supersonic_agent_state\\fullchain\\lead\\d12d003\\src355\\tree.json",
+          "exists": true,
+          "bytes": 3278759,
+          "sha256": "490b6e52877788849366c263d5be03b08dafd6c9597df3d6722e2e2e0c888ce0"
+        }
+      ]
+    },
+    {
+      "event_id": "TG-008",
+      "category": "binary_version_probe",
+      "description": "vspaero.exe invoked with no arguments only to print the usage banner, capturing v7.2.2; no model, no case, no solver start",
+      "solver_starts": 0,
+      "actual_solver_processes": 0,
+      "evidence": [
+        {
+          "path": "D:\\RCAIDE\\research\\concorde_metaopt\\optimization_runs\\openvsp355-remediation-20261102T014411Z\\evidence\\vspaero_7.2.2_usage.txt",
+          "exists": true,
+          "bytes": 1546,
+          "sha256": "3bc9b1d18729856fca513dad26343ea14eadd447f13ac0fa66a02df8157f5d67"
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "tooling_events": 8,
+    "solver_starts": 0,
+    "note": "all paths under EXT are outside the repository; only evidence/ copies are committed"
+  }
+}

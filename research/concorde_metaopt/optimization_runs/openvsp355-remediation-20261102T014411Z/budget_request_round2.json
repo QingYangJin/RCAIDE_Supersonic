@@ -1,0 +1,138 @@
+{
+ "schema_version": 1,
+ "status": "PROPOSED_NOT_APPROVED",
+ "approval_target": "Issue #4 / D-12D-003",
+ "round": "Round-2 only after owner approval",
+ "no_solver_started": true,
+ "prepared_by": "A2",
+ "design_refs": {
+  "design_space_12d_sha256": "463bb4a0a0fc06eb7dd6a6d9790f4d5b2b3a8c3d8681d16055036dae0c57fc7b",
+  "mission_contract": "configs/task_fixed_cruise.yaml",
+  "mach": 2.02,
+  "altitude_m": 18288,
+  "range_m": 3028020,
+  "sref_m2": 358.25,
+  "cref_m": 18.489893,
+  "bref_m": 25.604638,
+  "aoa_deg": 2.8398
+ },
+ "categories": [
+  {
+   "id": "A-VSPAERO7-thin-LF",
+   "description": "VSPAERO 7 thin-VLM LF: 12D isolated main wing baseline + W01/W03/W10 perturbations + panel-density sensitivity",
+   "max_starts": 10,
+   "max_wall_clock_s": 600,
+   "cpu_cores": 4,
+   "max_ram_gb": 8,
+   "stop_conditions": [
+    "non-finite CL/CDi/CM",
+    "CDi <= 0 or sign flip vs panel density",
+    "solver divergence message"
+   ],
+   "required": true,
+   "failure_billable": true,
+   "retry_rule": "max 1 retry per case; retries count against max_starts"
+  },
+  {
+   "id": "B-VSPAERO7-thick",
+   "description": "VSPAERO 7 thick-surface control for one configuration (thin-surface assumption test)",
+   "max_starts": 2,
+   "max_wall_clock_s": 300,
+   "cpu_cores": 4,
+   "max_ram_gb": 8,
+   "stop_conditions": [
+    "non-finite coefficients",
+    "solver crash"
+   ],
+   "required": false,
+   "failure_billable": true,
+   "retry_rule": "max 1 retry per case; retries count against max_starts"
+  },
+  {
+   "id": "C-OpenVSP355-WaveDrag",
+   "description": "OpenVSP 3.55 WaveDrag: Mach-plane wing-alone vs wing+body paired, slice/rotation-angle sensitivity 36/200 and 72/800, Sears-Haack analytic benchmark",
+   "max_starts": 6,
+   "max_wall_clock_s": 900,
+   "cpu_cores": 2,
+   "max_ram_gb": 8,
+   "stop_conditions": [
+    "non-finite or negative slice area",
+    "missing Sref override"
+   ],
+   "required": true,
+   "failure_billable": true,
+   "retry_rule": "max 1 retry per case; retries count against max_starts"
+  },
+  {
+   "id": "D-SU2-8.5-HF",
+   "description": "SU2 8.5 Euler HF: HFS-00R wedge mesh verification + main wing coarse/medium/fine + one representative perturbation",
+   "max_starts": 6,
+   "max_wall_clock_s": 1800,
+   "cpu_cores": 4,
+   "max_ram_gb": 16,
+   "stop_conditions": [
+    "non-finite forces",
+    "wedge shock angle > 1 deg from analytic",
+    "missing convergence history"
+   ],
+   "required": true,
+   "failure_billable": true,
+   "retry_rule": "max 1 retry per case; retries count against max_starts"
+  },
+  {
+   "id": "E-RCAIDE-LF-E2E",
+   "description": "RCAIDE LF mission E2E: baseline + W10 perturbation, fixed 12D aircraft, lifting-surfaces-only",
+   "max_starts": 2,
+   "max_wall_clock_s": 240,
+   "cpu_cores": 2,
+   "max_ram_gb": 4,
+   "stop_conditions": [
+    "mission not converged",
+    "fuel burn non-finite"
+   ],
+   "required": false,
+   "failure_billable": true,
+   "retry_rule": "max 1 retry per case; retries count against max_starts"
+  }
+ ],
+ "total": {
+  "max_starts_sum": 26,
+  "recommended_cap": 23,
+  "no_carryover": "D-12D-002 23/23 closed; no carryover"
+ },
+ "tiering": {
+  "tier1_required": [
+   "A-VSPAERO7-thin-LF",
+   "C-OpenVSP355-WaveDrag",
+   "D-SU2-8.5-HF"
+  ],
+  "tier1_cap": 22,
+  "tier2_optional": [
+   "B-VSPAERO7-thick",
+   "E-RCAIDE-LF-E2E"
+  ],
+  "tier2_cap": 4
+ },
+ "not_covered": [
+  "validated full-aircraft fuel label",
+  "body/wing interference correction",
+  "transonic drag rise",
+  "variable-sweep optimisation"
+ ],
+ "verification": {
+  "inputs_hashes": [
+   "design_space_12d_lifting_surfaces.yaml sha256 463bb4a0a0fc06eb7dd6a6d9790f4d5b2b3a8c3d8681d16055036dae0c57fc7b",
+   "configs/task_fixed_cruise.yaml (hash at approval)",
+   "area_rule_candidates.json and area_rule_offline.md (task-38 evidence)"
+  ],
+  "success_criteria": [
+   "VSPAERO thin-LF: CL/CDi/CM finite, CDi>0, medium->fine rel change <15%",
+   "OpenVSP WaveDrag: two resolutions weighted mean within 15%, paired SNR>=2, Sref explicit override",
+   "SU2 HF: wedge shock angle within 1 deg analytic at M2.02, main-wing force convergence documented",
+   "RCAIDE LF: mission converged, fuel burn finite",
+   "every case input hash recorded in evidence manifest"
+  ],
+  "evidence_dir": "EXT/fullchain/d12d003/round2 (to be created only after approval)"
+ },
+ "approval_note": "AWAITING_OWNER_APPROVAL: no solver may start until the owner approves each category in writing on Issue #4."
+}
