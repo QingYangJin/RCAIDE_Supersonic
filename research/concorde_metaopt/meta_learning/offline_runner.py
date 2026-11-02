@@ -58,6 +58,7 @@ from .baseline_arms import (
 from .data_contract import (
     CONSTRAINT_NAMES,
     CONTEXT_NAMES,
+    OOD_FLAG_NAME,
     DESIGN_LOWER,
     DESIGN_NAMES,
     DESIGN_UPPER,
@@ -445,20 +446,47 @@ def _forbidden_modules_present() -> list[str]:
     return sorted(loaded)
 
 
+_IMPORT_STATEMENT_RE = re.compile(r"(?m)^[ \t]*(?:from|import)[ \t]+[^\n]*")
+
+
+def scan_forbidden_import_statements(source_text: str) -> list[str]:
+    """静态扫描任意源码文本中的禁止 import 语句（§1.3 硬隔离）。
+
+    逐行匹配 from/import 语句（允许缩进与行内多模块），再检查模块名是否落在
+    FORBIDDEN_MODULE_PREFIXES 内；供内部包扫描与单元测试共用（M1-F02）。
+    """
+    violations: list[str] = []
+    for match in _IMPORT_STATEMENT_RE.finditer(source_text):
+        statement = match.group(0).strip()
+        is_from = statement.startswith("from")
+        body = statement[len("from") :] if is_from else statement[len("import") :]
+        if is_from:
+            head = body.split()
+            names = [head[0]] if head else []
+        else:
+            names = [part.split()[0] for part in body.split(",") if part.split()]
+        for name in names:
+            module = name.strip("()[]{}")
+            if not module:
+                continue
+            for prefix in FORBIDDEN_MODULE_PREFIXES:
+                if module == prefix or module.startswith(prefix + "."):
+                    violations.append(statement)
+                    break
+            else:
+                continue
+            break
+    return violations
+
+
 def _forbidden_import_statements() -> list[str]:
     """静态扫描 meta_learning 包源码，找禁止的 import 语句（§1.3 硬隔离）。"""
-    pattern = re.compile(
-        r"^\\s*(?:from|import)\\s+("
-        + "|".join(re.escape(prefix) for prefix in FORBIDDEN_MODULE_PREFIXES)
-        + r")\\b",
-        re.MULTILINE,
-    )
     violations: list[str] = []
     package_dir = Path(__file__).resolve().parent
     for path in sorted(package_dir.glob("*.py")):
         text = path.read_text(encoding="utf-8")
-        for match in pattern.finditer(text):
-            violations.append(f"{path.name}: {match.group(0).strip()}")
+        for statement in scan_forbidden_import_statements(text):
+            violations.append(f"{path.name}: {statement}")
     return violations
 
 
@@ -1648,13 +1676,63 @@ def build_meta_samples(
                     seed=task.seed,
                     physical_call_count=PHYSICAL_CALL_COUNT,
                     split=task.split,
-                    task_context=dict(task.context),
+                    task_context=meta_sample_task_context(task),
                     created_utc=created_utc,
                 )
                 samples.append(sample)
     if not samples:
         raise OfflineRunnerError("没有可归档的 MetaSample（检查任务族配置与 split）")
     return samples
+
+
+NEGATIVE_CONTROL_MANIFEST_PATH = "tasks/negative_control_manifest.json"
+
+
+def meta_sample_task_context(task: SyntheticTask) -> dict[str, float]:
+    """§3.2:162 / §4.4：OOD 样本的 task_context 带数值 ood_flag=1.0（M1-F06）。
+
+    ood_flag 仅作 OOD 元数据，不进入 task_context_names 或 14 维特征
+    （特征仍为 2 维 context_1/context_2，见 §3.1 与 data_contract.CONTEXT_NAMES）。
+    """
+    context: dict[str, float] = {name: float(value) for name, value in dict(task.context).items()}
+    if task.split == "meta_test_ood":
+        context[OOD_FLAG_NAME] = 1.0
+    return context
+
+
+def build_negative_control_manifest(tasks: Sequence[SyntheticTask], *, run_id: str) -> dict[str, Any]:
+    """§11.2 固定产物：负控制伪任务清单（不训练、不进主终点、不归档，M1-F04）。"""
+    entries: list[dict[str, Any]] = []
+    for task in tasks:
+        if task.split != "negative_control":
+            continue
+        params = dict(task.params or {})
+        entries.append(
+            {
+                "pseudo_task_id": task.task_id,
+                "source_task_id": params.get("source_task_id"),
+                "source_family": params.get("source_family", task.family),
+                "source_split": "meta_train",
+                "shuffle_seed": params.get("shuffle_seed"),
+                "split": "negative_control",
+            }
+        )
+    return {
+        "run_id": run_id,
+        "protocol": (
+            "pseudo_task_id = 'NC-' + sha1('negative_control|' + source_task_id + '|' + shuffle_seed)[:10]；"
+            "只打乱 objective/constraints 与 design 的配对，不改 context/params（§4.3）"
+        ),
+        "count": len(entries),
+        "entries": entries,
+        "isolation": {
+            "derived_from": "meta_train",
+            "not_in_training": True,
+            "not_in_primary_endpoint": True,
+            "not_archived": True,
+            "split_assignments_exclusive": True,
+        },
+    }
 
 
 def build_archive_payload(
@@ -2073,6 +2151,13 @@ def _write_products(core: Mapping[str, Any], config: OfflineRunnerConfig, run_di
             "tasks": [serialize_task(task) for task in tasks],
         },
     )
+    tasks_dir = run_dir / "tasks"
+    tasks_dir.mkdir(parents=True, exist_ok=True)
+    write_json(
+        tasks_dir / "negative_control_manifest.json",
+        build_negative_control_manifest(tasks, run_id=config.run_id),
+    )
+
     references: dict[str, Any] = {}
     for task in tasks:
         if task.split == "negative_control":
@@ -2156,13 +2241,13 @@ def _write_products(core: Mapping[str, Any], config: OfflineRunnerConfig, run_di
         figures_dir / "figure_status.json",
         {
             "status": "NOT_RUN",
-            "note": "fig1/fig2/fig3/fig5 由 A2 从本 run CSV 生成；fig4 归 Issue #4 D-12D-004，本阶段 NOT_RUN",
+            "note": "fig1_meta_training_loss/fig2_k_shot_adaptation/fig3_equal_budget_convergence/fig5_budget_gate_progress 由 A2 从本 run CSV 生成；fig4_vspaero_version_panel_density 归 Issue #4 D-12D-004，本阶段 NOT_RUN",
             "figures": {
-                "fig1_meta_loss_curves": "NOT_RUN",
-                "fig2_k_shot_rmse_mae": "NOT_RUN",
-                "fig3_equal_budget_optimization": "NOT_RUN",
-                "fig4_constraint_handling": "NOT_RUN（归 Issue #4 D-12D-004）",
-                "fig5_budget_and_gates": "NOT_RUN",
+                "fig1_meta_training_loss": "NOT_RUN",
+                "fig2_k_shot_adaptation": "NOT_RUN",
+                "fig3_equal_budget_convergence": "NOT_RUN",
+                "fig4_vspaero_version_panel_density": "NOT_RUN（归 Issue #4 D-12D-004）",
+                "fig5_budget_gate_progress": "NOT_RUN",
             },
         },
     )
@@ -2236,11 +2321,11 @@ def _write_products(core: Mapping[str, Any], config: OfflineRunnerConfig, run_di
         },
         "not_approved": list(NOT_APPROVED),
         "figures": {
-            "fig1_meta_loss_curves": "NOT_RUN",
-            "fig2_k_shot_rmse_mae": "NOT_RUN",
-            "fig3_equal_budget_optimization": "NOT_RUN",
-            "fig4_constraint_handling": "NOT_RUN（归 Issue #4 D-12D-004）",
-            "fig5_budget_and_gates": "NOT_RUN",
+            "fig1_meta_training_loss": "NOT_RUN",
+            "fig2_k_shot_adaptation": "NOT_RUN",
+            "fig3_equal_budget_convergence": "NOT_RUN",
+            "fig4_vspaero_version_panel_density": "NOT_RUN（归 Issue #4 D-12D-004）",
+            "fig5_budget_gate_progress": "NOT_RUN",
         },
         "archive": None if archive_info is None else dict(archive_info),
         "products": [
@@ -2249,6 +2334,7 @@ def _write_products(core: Mapping[str, Any], config: OfflineRunnerConfig, run_di
             "summary.json",
             "data_manifest.json",
             "tasks.json",
+            "tasks/negative_control_manifest.json",
             "reference_solutions.json",
             "evaluations.jsonl",
             "README.md",
@@ -2312,10 +2398,10 @@ def _render_readme(
         "## 产物文件",
         "",
         "run_config.json / environment.json / summary.json / data_manifest.json / tasks.json /",
-        "reference_solutions.json / evaluations.jsonl / solver_validation.csv /",
+        "tasks/negative_control_manifest.json / reference_solutions.json / evaluations.jsonl / solver_validation.csv /",
         "finite_difference_check.json / README.md；",
         "metrics/{training_history,adaptation_results,metrics,optimization_history,optimization_summary}.csv；",
-        "figures/figure_status.json（本阶段不生成图；fig1/2/3/5 由 A2 从 CSV 生成，fig4 归 Issue #4 D-12D-004）。",
+        "figures/figure_status.json（本阶段不生成图；fig1/fig2/fig3/fig5 由 A2 从 CSV 生成，fig4 归 Issue #4 D-12D-004）。",
         "",
         "## 隔离与边界",
         "",
@@ -2395,6 +2481,8 @@ def run_offline_study(config: OfflineRunnerConfig) -> dict[str, Any]:
         write_json(run_dir / "summary.json", summary)
         return summary
     except OfflineRunnerError as error:
+        return _write_failure_summary(run_dir, config, "FAILED", error)
+    except Exception as error:  # noqa: BLE001 - 失败必须如实落盘为 summary，不得静默崩溃（M1-F09）
         return _write_failure_summary(run_dir, config, "FAILED", error)
 
 

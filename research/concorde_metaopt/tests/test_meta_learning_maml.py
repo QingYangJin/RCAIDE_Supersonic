@@ -8,6 +8,7 @@ import json
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 import numpy as np
 
@@ -76,6 +77,14 @@ class FiniteDifferenceGateTests(unittest.TestCase):
         for name in ("epsilon", "tolerance", "max_relative_error", "n_checked"):
             self.assertIn(name, payload)
 
+
+    def test_04_insufficient_components_fail_closed(self):
+        # M1-F07：可抽查分量 < FD_MIN_COMPONENTS 时必须 fail-closed，不得以更少分量冒充通过
+        model = maml.build_small_model(seed=42)
+        episode = make_episode(seed=1)
+        with mock.patch.object(maml, "FD_MIN_COMPONENTS", 1000000):
+            with self.assertRaises(maml.MAMLError):
+                maml.finite_difference_gradient_check(model, [episode])
 
 @unittest.skipUnless(maml.torch_available(), "torch 不可用：相关测试 NOT_RUN（不得假装通过）")
 class MAMLCoreTests(unittest.TestCase):

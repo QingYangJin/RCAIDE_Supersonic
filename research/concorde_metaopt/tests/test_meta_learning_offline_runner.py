@@ -99,6 +99,7 @@ class OfflineRunnerProductTests(unittest.TestCase):
             "environment.json",
             "summary.json",
             "tasks.json",
+            "tasks/negative_control_manifest.json",
             "reference_solutions.json",
             "evaluations.jsonl",
             "README.md",
@@ -177,9 +178,19 @@ class OfflineRunnerProductTests(unittest.TestCase):
         self.assertIn("D-12D-004", notes)
         status = json.loads((self.run_dir / "figures" / "figure_status.json").read_text(encoding="utf-8"))
         figures = status["figures"]
-        self.assertIn("fig4_constraint_handling", figures)
-        self.assertIn("NOT_RUN", figures["fig4_constraint_handling"])
-        self.assertIn("D-12D-004", figures["fig4_constraint_handling"])
+        self.assertEqual(
+            list(figures),
+            [
+                "fig1_meta_training_loss",
+                "fig2_k_shot_adaptation",
+                "fig3_equal_budget_convergence",
+                "fig4_vspaero_version_panel_density",
+                "fig5_budget_gate_progress",
+            ],
+        )
+        self.assertIn("fig4_vspaero_version_panel_density", figures)
+        self.assertIn("NOT_RUN", figures["fig4_vspaero_version_panel_density"])
+        self.assertIn("D-12D-004", figures["fig4_vspaero_version_panel_density"])
         self.assertFalse(list((self.run_dir / "figures").glob("fig4*.png")))
 
     def test_07_run_config_and_summary_fields(self):
@@ -252,6 +263,48 @@ class OfflineRunnerProductTests(unittest.TestCase):
         self.assertEqual(len(tasks_payload["tasks"]), 6)
         reference = json.loads((self.run_dir / "reference_solutions.json").read_text(encoding="utf-8"))
         self.assertLessEqual(reference["max_residual"], reference["tolerance"])
+
+
+    def test_08_negative_control_manifest(self):
+        # M1-F04 / §11.2：负控制必须有独立固定清单，且不得进入训练或归档
+        path = self.run_dir / orun.NEGATIVE_CONTROL_MANIFEST_PATH
+        self.assertTrue(path.is_file())
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        self.assertEqual(payload["run_id"], self.config.run_id)
+        self.assertEqual(payload["count"], 1)
+        self.assertEqual(len(payload["entries"]), 1)
+        entry = payload["entries"][0]
+        self.assertTrue(entry["pseudo_task_id"].startswith("NC-"))
+        self.assertEqual(entry["split"], "negative_control")
+        self.assertIsInstance(entry["shuffle_seed"], int)
+        tasks_payload = json.loads((self.run_dir / "tasks.json").read_text(encoding="utf-8"))
+        meta_train_ids = set(tasks_payload["split_assignments"]["meta_train"])
+        self.assertIn(entry["source_task_id"], meta_train_ids)
+        self.assertNotIn(entry["pseudo_task_id"], meta_train_ids)
+        self.assertTrue(payload["isolation"]["not_in_training"])
+        self.assertTrue(payload["isolation"]["not_archived"])
+        self.assertIn(orun.NEGATIVE_CONTROL_MANIFEST_PATH, self.summary["products"])
+
+    def test_09_ood_task_context_flag(self):
+        # M1-F06：OOD 样本必须带数值 ood_flag=1.0；非 OOD 不带
+        family = tf.default_task_family_config(
+            train_tasks=1,
+            validation_tasks=1,
+            test_tasks=1,
+            ood_tasks=1,
+            negative_control_tasks=0,
+            support_pool_size=8,
+            query_size=4,
+            designs_per_task=12,
+        )
+        tasks = tf.build_task_family(family)
+        ood = [task for task in tasks if task.split == "meta_test_ood"][0]
+        plain = [task for task in tasks if task.split == "meta_test"][0]
+        ood_context = orun.meta_sample_task_context(ood)
+        self.assertEqual(ood_context["ood_flag"], 1.0)
+        self.assertEqual(set(ood_context), {"context_1", "context_2", "ood_flag"})
+        self.assertNotIn("ood_flag", orun.meta_sample_task_context(plain))
+        self.assertIsInstance(ood_context["ood_flag"], float)
 
 
 class PhysicsGuardViolationTests(unittest.TestCase):
@@ -401,6 +454,45 @@ class FormalDefaultsTests(unittest.TestCase):
             payload = json.loads(summary_path.read_text(encoding="utf-8"))
             self.assertEqual(payload["status"], "VALID")
             self.assertEqual(payload["physical_call_count"], 0)
+
+
+class ImportIsolationScanTests(unittest.TestCase):
+    """M1-F02：禁止 import 静态扫描必须能检出缩进/行内 import（双反斜杠缺陷回归）。"""
+
+    def test_01_scan_detects_indented_and_inline_imports(self):
+        source = "import os\n  import RCAIDE.Framework.Analyses\nfrom SU2 import mesh\n\timport su2\nx = 1\n"
+        violations = orun.scan_forbidden_import_statements(source)
+        self.assertEqual(len(violations), 3)
+        self.assertTrue(any("RCAIDE" in item for item in violations))
+        self.assertTrue(any(item.startswith("from SU2") for item in violations))
+        self.assertTrue(any(item == "import su2" for item in violations))
+
+    def test_02_clean_source_passes(self):
+        source = "import os\nimport math\nfrom pathlib import Path\nfrom numpy import array\n"
+
+class UnexpectedFailureTests(unittest.TestCase):
+    """M1-F09：非预期异常必须落盘为 FAILED summary，不得静默崩溃。"""
+
+    def test_01_unexpected_exception_written_as_failed_summary(self):
+        with tempfile.TemporaryDirectory(prefix="p4-meta-unexpected-") as temp_root:
+            config = small_runner_config(
+                temp_root,
+                run_id="p4-synthetic-unexpected",
+                determinism_reruns=1,
+                ks=(0,),
+            )
+            with mock.patch.object(
+                orun, "_run_core", side_effect=RuntimeError("synthetic unexpected failure")
+            ):
+                summary = orun.run_offline_study(config)
+            self.assertEqual(summary["status"], "FAILED")
+            self.assertEqual(summary["error"]["type"], "RuntimeError")
+            self.assertEqual(summary["products_written"], ["summary.json"])
+            self.assertIsNone(summary["physical_call_count"])
+            run_dir = Path(temp_root) / "runs" / config.run_id
+            on_disk = json.loads((run_dir / "summary.json").read_text(encoding="utf-8"))
+            self.assertEqual(on_disk["status"], "FAILED")
+            self.assertIsNone(on_disk["physical_call_count"])
 
 
 if __name__ == "__main__":

@@ -577,6 +577,11 @@ def finite_difference_gradient_check(
     if not candidates:
         raise MAMLError("参数梯度全为空，无法做有限差分检查")
     candidates.sort(key=lambda item: (-abs(item[2]), item[0], item[1]))
+    if len(candidates) < FD_MIN_COMPONENTS:
+        raise MAMLError(
+            f"可抽查参数分量仅 {len(candidates)} 个，少于 FD_MIN_COMPONENTS={FD_MIN_COMPONENTS}；"
+            "FD 门禁不得在证据不足时判定通过（§7.2）"
+        )
     selected = candidates[:FD_MAX_COMPONENTS]
     names = parameters.names
     checks: list[dict[str, Any]] = []

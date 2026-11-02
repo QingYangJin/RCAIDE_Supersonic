@@ -34,6 +34,7 @@ __all__ = [
     "DESIGN_LOWER",
     "DESIGN_UPPER",
     "CONTEXT_NAMES",
+    "OOD_FLAG_NAME",
     "MetaSample",
     "validate_split",
     "validate_sample",
@@ -97,6 +98,8 @@ DESIGN_NAMES = (
 DESIGN_LOWER = (300.0, 1.5, 62.0, 40.0, 66.0, 0.35, 0.85, 0.30, 0.08, -4.0, 28.0, -10.0)
 DESIGN_UPPER = (420.0, 2.2, 72.0, 56.0, 76.0, 0.58, 0.98, 0.50, 0.20, 4.0, 40.0, 10.0)
 CONTEXT_NAMES = ("context_1", "context_2")
+# §3.2:162 / §4.4：OOD 标记必须是数值键，不得写 bool/字符串；仅作元数据，不进 14 维特征。
+OOD_FLAG_NAME = "ood_flag"
 
 _DESIGN_LOWER_ARRAY = np.asarray(DESIGN_LOWER, dtype=np.float64)
 _DESIGN_UPPER_ARRAY = np.asarray(DESIGN_UPPER, dtype=np.float64)
@@ -266,6 +269,11 @@ def validate_sample(sample: MetaSample) -> list[str]:
         add(f"objective 必须是有限数值或 None，实际 {sample.objective!r}")
     if sample.objective is not None and sample.status not in LABEL_STATUSES:
         add(f"objective 非空时 status 必须属于 {LABEL_STATUSES}，实际 {sample.status!r}")
+    if sample.objective is None and sample.status in LABEL_STATUSES:
+        add(
+            f"objective 为 null 时 status 必须属于 {EXCLUDED_STATUSES}（§3.2:165 反向校验；"
+            f"label status={sample.status!r} 不允许空目标）"
+        )
     if not isinstance(sample.constraints, Mapping):
         add("constraints 必须是映射")
     else:
@@ -304,8 +312,27 @@ def validate_sample(sample: MetaSample) -> list[str]:
             if not _finite_or_none(value):
                 add(f"task_context[{name!r}] 必须是有限数值，实际 {value!r}")
         if sample.source_kind == "synthetic":
-            if set(sample.task_context) != set(CONTEXT_NAMES):
-                add(f"合成任务 task_context 必须是 {CONTEXT_NAMES}，实际 {sorted(sample.task_context)}")
+            context_keys = set(sample.task_context)
+            plain_keys = set(CONTEXT_NAMES)
+            ood_keys = plain_keys | {OOD_FLAG_NAME}
+            if context_keys not in (plain_keys, ood_keys):
+                add(
+                    f"合成任务 task_context 必须是 {CONTEXT_NAMES}（OOD 样本可额外带 {OOD_FLAG_NAME}），"
+                    f"实际 {sorted(sample.task_context)}"
+                )
+            elif sample.split == "meta_test_ood":
+                flag = sample.task_context.get(OOD_FLAG_NAME)
+                if flag != 1.0:
+                    add(
+                        f"split=meta_test_ood 的合成样本必须在 task_context 中带数值 {OOD_FLAG_NAME}=1.0，"
+                        f"实际 {flag!r}"
+                    )
+            elif OOD_FLAG_NAME in sample.task_context:
+                if float(sample.task_context[OOD_FLAG_NAME]) != 0.0:
+                    add(
+                        f"非 OOD 样本若带 {OOD_FLAG_NAME} 必须为 0.0，"
+                        f"实际 {sample.task_context[OOD_FLAG_NAME]!r}"
+                    )
     if not isinstance(sample.created_utc, str) or not _iso_utc_regex().match(sample.created_utc or ""):
         add(f"created_utc 必须是 ISO-8601 UTC（+00:00），实际 {sample.created_utc!r}")
     return errors

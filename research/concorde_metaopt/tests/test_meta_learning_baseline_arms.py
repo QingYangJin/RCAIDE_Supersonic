@@ -112,6 +112,31 @@ class InitialDesignTests(unittest.TestCase):
         self.assertEqual(len(result.observations), 8)
         self.assertEqual(result.arm, ba.DE_ARM)
 
+    def test_03b_de_arm_zero_acceptance_still_uses_full_budget(self):
+        # M1-F01 回归：整代无接受也不得提前终止，必须恰好用满等预算（§10）
+        task = small_task()
+
+        def constant_evaluate(design_u):
+            return {"valid": True, "objective": 1.0, "constraints_g_le_zero": {"c01": -0.1}}
+
+        budget = 24
+        result = ba.run_de_arm(
+            constant_evaluate,
+            task_id=task.task_id,
+            split="meta_test",
+            family=task.family,
+            seed=0,
+            budget=budget,
+            population_size=8,
+            reference_objective=1.0,
+        )
+        self.assertEqual(result.true_evals_used, budget)
+        self.assertEqual(len(result.observations), budget)
+        self.assertEqual(result.termination_reason, "budget_exhausted")
+        self.assertEqual(result.feasible_count, budget)
+        self.assertEqual(result.best_feasible_value, 1.0)
+        self.assertEqual(result.initial_feasible_count, 8)
+
     def test_04_maml_init_frozen_parameters(self):
         self.assertEqual(ba.MAML_INIT_CANDIDATE_COUNT, 64)
         self.assertEqual(ba.MAML_INIT_INITIAL_DESIGN_COUNT, 8)

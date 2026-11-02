@@ -101,6 +101,9 @@ class MetaSampleValidationTests(unittest.TestCase):
         self.assertTrue(any("objective" in error for error in dc.validate_sample(nonfinite)))
         failed = make_sample(objective=None, status="NONFINITE")
         self.assertEqual(dc.validate_sample(failed), [])
+        leaked = make_sample(objective=None, status="VALID")
+        self.assertTrue(any("objective 为 null" in error for error in dc.validate_sample(leaked)))
+
 
     def test_06_physical_call_count_non_negative(self):
         self.assertTrue(any("physical_call_count" in error for error in dc.validate_sample(make_sample(physical_call_count=-1))))
@@ -139,6 +142,29 @@ class MetaSampleValidationTests(unittest.TestCase):
         self.assertTrue(any("不一致" in error for error in errors))
 
 
+    def test_11_ood_flag_contract(self):
+        # §3.2:162 / §4.4：OOD 标记必须是数值键 ood_flag=1.0，且不进 14 维特征
+        ood_context = dict(BASE_CONTEXT)
+        ood_context[dc.OOD_FLAG_NAME] = 1.0
+        self.assertEqual(
+            dc.validate_sample(make_sample(split="meta_test_ood", task_context=ood_context)), []
+        )
+        missing = dc.validate_sample(make_sample(split="meta_test_ood"))
+        self.assertTrue(any("ood_flag" in error for error in missing))
+        wrong = dc.validate_sample(make_sample(split="meta_train", task_context=ood_context))
+        self.assertTrue(any("ood_flag" in error for error in wrong))
+        zero_context = dict(BASE_CONTEXT)
+        zero_context[dc.OOD_FLAG_NAME] = 0.0
+        self.assertEqual(dc.validate_sample(make_sample(split="meta_train", task_context=zero_context)), [])
+        extra = dc.validate_sample(make_sample(task_context=dict(BASE_CONTEXT, other=1.0)))
+        self.assertTrue(any("task_context" in error for error in extra))
+        constraints = {name: None for name in CONSTRAINT_NAMES}
+        constraints[CONSTRAINT_NAMES[0]] = -0.1
+        sample = make_sample(split="meta_test_ood", task_context=ood_context, constraints=constraints)
+        record = dc.to_archive_records([sample])[0]
+        self.assertEqual(len(record["features"]), 14)
+        self.assertEqual(record["task_id"], "task-a")
+
 class SplitAndDivideTests(unittest.TestCase):
     def _samples_for_tasks(self, task_ids, per_task=2):
         samples = []
@@ -168,7 +194,10 @@ class SplitAndDivideTests(unittest.TestCase):
         splits = ["meta_train", "meta_validation", "meta_test", "meta_test_ood", "negative_control"]
         samples = []
         for index, split in enumerate(splits):
-            samples.append(make_sample(task_id=f"task-{index}", split=split))
+            context = dict(BASE_CONTEXT)
+            if split == "meta_test_ood":
+                context[dc.OOD_FLAG_NAME] = 1.0
+            samples.append(make_sample(task_id=f"task-{index}", split=split, task_context=context))
         grouped = dc.to_archive_splits(samples)
         self.assertEqual(set(grouped), set(dc.ARCHIVE_SPLITS))
         self.assertEqual(grouped["train"], ["task-0"])
