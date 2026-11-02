@@ -153,7 +153,7 @@ OPT-BO-rand 的 gap_to_reference（n_finite=2）均值=0.6974555844120012；firs
     python -m research.concorde_metaopt.meta_learning.offline_runner --run-id <RUN_ID> --output-root research/concorde_metaopt/optimization_runs --seed 42 --max-meta-steps 2000 --budget 64 --ks 0 1 5 10 --optimization-seeds 0 1 2 3 4 --determinism-reruns 3
 
 - 环境：python 3.11.17，matplotlib 3.11.2，numpy 2.4.6，scipy 1.17.1，torch 2.8.0，platform Windows-10-10.0.26200-SP0，cpu_count 32，device=cpu。
-- 数据清单：data_manifest.json file_count=26，total_bytes=3276410（文本 canonical-LF、PNG raw、外置工件 raw），binary_file_count=5，external_artifacts=3 个（root=<EXTERNAL_ROOT>/concorde_metaopt/p4-meta-m2-offline-20261102T092828Z/raw_artifacts，external_total_bytes=82990422，不计入 file_count/total_bytes，逐文件 raw sha256 记录于 external_artifacts 段）；manifest 自身 canonical sha256=eada0111df6569f86d9cb4084093e395e63459c6ac12d61c5c6d8ab516a55918；本报告生成时脚本核对了清单计数（file_count 与 files 长度一致）。
+- 数据清单：data_manifest.json file_count=26，total_bytes=3276345（文本 canonical-LF、PNG raw、外置工件 raw），binary_file_count=5，external_artifacts=3 个（root=<EXTERNAL_ROOT>/concorde_metaopt/p4-meta-m2-offline-20261102T092828Z/raw_artifacts，external_total_bytes=82990422，不计入 file_count/total_bytes，逐文件 raw sha256 记录于 external_artifacts 段）；manifest 自身 canonical sha256=acaab106388f834266b6b7a168d3611c7f74b498456abcf821ea71a764e07f66；本报告生成时脚本核对了清单计数（file_count 与 files 长度一致）。
 - 出图命令（已执行，生成第 8 节 5 张 PNG 与本报告数字审计 CSV）：
 
     MPLCONFIGDIR=<cache> python <EXT_ROOT>/p4-meta-dev/a2/scripts/make_p4_m4_figures.py --run-dir <RUN_DIR> --out-dir <RUN_DIR>/figures --dpi 150
@@ -179,8 +179,8 @@ OPT-BO-rand 的 gap_to_reference（n_finite=2）均值=0.6974555844120012；firs
 
 ## 9. 下一步
 
-- M3（独立评审）：审阅本稿、m4_report_numbers.csv 与 5 图；重点核验 M2 主终点 n_finite 计数、A7 fallback 的 CI/p 口径、克隆臂排除、图 3 是否仅 3 臂、图 4 是否 NOT_RUN；评审通过前本稿不得外发。
-- 评审后由 Lead 决定是否提交 run 目录 figures/ 与报告到仓库分支；提交前需更新 data_manifest 并重算 sha256。
+- M3（独立评审）：已完成（A5，target f92a7f2；verdict=APPROVE_FOR_ISSUE_RECEIPT_AND_PR，0 blocker / 0 major / 4 minor；post-M3 修正与 delta 复核见 §11）。
+- 评审后由 Lead 提交 run 目录与报告到 `research/p4-meta-learning` 分支，并按 §10/§11 更新 data_manifest 与 sha256。
 - 待查项：(a) 负控制 OOD 未退化（ood_degraded_vs_meta_test=false）；(b) OOD best_objective_raw 的 bootstrap CI 与 Wilcoxon p 不一致口径的说明；(c) M2 主终点功效不足，若需臂间结论须在获批后提高预算或调整任务族（不得默认启动）。
 - 图 4 保持 NOT_RUN，待 D-12D-004 合法数据（当前 V1 已停止冻结、starts 4/10、剩余 6 关闭不结转）。
 - 本稿不含任何新 run、不含任何真实物理调用；后续动作均需 owner/Lead 书面批准。
@@ -189,7 +189,7 @@ OPT-BO-rand 的 gap_to_reference（n_finite=2）均值=0.6974555844120012；firs
 ## 10. 打包与提交说明（Lead）
 
 - 大文件外置：evaluations.jsonl（41,969,526 B）、archive/.../observations.jsonl（20,555,285 B）、metrics/optimization_history.csv（20,467,611 B）共 82990422 B 已移至仓库外 <EXTERNAL_ROOT>/concorde_metaopt/p4-meta-m2-offline-20261102T092828Z/raw_artifacts/（outside_git=true）；run 目录内保留 summary/metrics/CSV 派生文件；external_artifacts 段记录每个外置文件的 raw sha256，manifest 的 file_count/total_bytes 只统计仓库内文件。
-- data_manifest：file_count=26、total_bytes=3276410、external_file_count=3、external_total_bytes=82990422、schema_version=2.0.0；manifest 自身 canonical sha256=eada0111df6569f86d9cb4084093e395e63459c6ac12d61c5c6d8ab516a55918；可从干净 checkout 复现文本文件的 canonical-LF sha256。post-M3 修正（§11）已把 m4_report_numbers.csv 纳入包内并更新本清单。
+- data_manifest：file_count=26、total_bytes=3276345、external_file_count=3、external_total_bytes=82990422、schema_version=2.0.0；manifest 自身 canonical sha256=acaab106388f834266b6b7a168d3611c7f74b498456abcf821ea71a764e07f66；可从干净 checkout 复现文本文件的 canonical-LF sha256。post-M3 修正（§11）已把 m4_report_numbers.csv 纳入包内并更新本清单（两次 follow-up 后的最终数字）。
 - 提交范围：run 目录（26 个包内文件 + data_manifest.json 自身；含 5 张图、figures 元数据与 m4_report_numbers.csv）+ 本报告 + docs/planning/p4_meta_learning_design_20261102.md（v1.4a）；未含 P5 未跟踪文件、未改基线代码、未合并 main。post-M3 修正在父提交 f92a7f2 之上追加 follow-up 提交（仅 run 目录产物与本报告）。
 - 门禁：determinism=PASS、finite_difference=PASS、reference_solutions=PASS、physics_guard=PASS（expected=0）、physical_call_count=0；M2 主终点因 n_finite 失衡不可比，仅报告 A7 fallback 且不宣称优于基线。
 - 复核状态：A5 已签发 M1 rev5 APPROVE_TO_START_M2、A3 rev5 隔离 PASS 17/17；M3 独立终审（A5，f92a7f2）APPROVE_FOR_ISSUE_RECEIPT_AND_PR（0 blocker/0 major/4 minor，见 §11）；A3 对 f92a7f2 的隔离复核 PASS 25/25；post-M3 修正的 delta 复核结论以独立复核为准。run 实际执行于父提交 36d5891，f92a7f2 及 follow-up 仅为打包提交。
@@ -200,8 +200,10 @@ OPT-BO-rand 的 gap_to_reference（n_finite=2）均值=0.6974555844120012；firs
 - M3-F01（m4_report_numbers.csv 未随包）：已复制到 run 根目录 m4_report_numbers.csv（404 行，sha256 774c20203088dc6da6c4c2bc08143b9966057be2e838808a64d63bd27efd486a，与 EXT 源文件逐字节一致），并纳入 data_manifest.json。
 - M3-F02（run README 产物/图表述不一致）：README 产物段已改为"5 张图已生成：fig1/2/3/5 GENERATED、fig4 NOT_RUN 归 Issue #4 D-12D-004"；evaluations.jsonl 与 metrics/optimization_history.csv 移入 external_artifacts 说明。
 - M3-F03（报告图时间戳旧）：生成时间改为 2026-11-02T11:21:56Z（最终 figure_status），保留初版 11:03:35Z 供追溯。
-- M3-F04（本机绝对路径）：报告与 figures/make_p4_m4_figures.manifest.json 中的本机绝对路径替换为 <REPO_ROOT> / <EXT_ROOT> / <EXTERNAL_ROOT> 占位符；PNG 哈希与 manifest 校验项未变。
-- 包内影响：新增 m4_report_numbers.csv → data_manifest file_count 25→26、total_bytes 3,217,559→3,276,410 B、manifest 自身 canonical sha256=eada0111df6569f86d9cb4084093e395e63459c6ac12d61c5c6d8ab516a55918。
+- M3-F04（本机绝对路径）：报告主路径与本 run 目录 figures/make_p4_m4_figures.manifest.json 的 run_dir/out_dir/生成器/external_path/字体路径均替换为 <REPO_ROOT> / <EXT_ROOT> / <EXTERNAL_ROOT> / <SYSTEM_FONT_ROOT> 占位符（run 目录 data_manifest.json 的 external_artifacts.external_path 保留实际外置路径以保证可追溯）；PNG 哈希与 manifest 校验项未变。该 finding 的在包内复检见 A5 post-M3 delta 复核（task-92）。
+- 包内影响：新增 m4_report_numbers.csv → data_manifest file_count 25→26、total_bytes 3,217,559→3,276,410 B、manifest 自身 canonical sha256=eada0111df6569f86d9cb4084093e395e63459c6ac12d61c5c6d8ab516a55918（53919a4 状态）；M2P-01 修复 figures manifest 残留路径后重算为 file_count=26、total_bytes=3,276,345 B、manifest 自身 canonical sha256=acaab106388f834266b6b7a168d3611c7f74b498456abcf821ea71a764e07f66（第二次 follow-up 最终状态）。
+- M2P-01（A5 post-M3 delta 复核，非阻塞）：figures/make_p4_m4_figures.manifest.json 剩余 3 处绝对路径（inputs[5].external_path、font.path、font.candidates_tried[0].path）已替换为 <EXTERNAL_ROOT> / <SYSTEM_FONT_ROOT> 占位符；PNG 哈希与 checks 未变。
+- M2P-02（同上）：§9 已改为「M3 已完成并 APPROVE」，消除与 FINAL 状态的矛盾。
 - 未变项：5 张 PNG 与 figure_status 哈希、metrics/*.csv、run 在父提交 36d5891 执行的事实、M3 已核验的统计数值与 n_finite 计数。
 - delta 复核：follow-up 提交的 A5/A3 复核结论以独立复核记录为准；本稿不代签。
 - 不声明：本修正不改变任何结论、门禁状态或物理调用计数（physical_call_count=0）。
