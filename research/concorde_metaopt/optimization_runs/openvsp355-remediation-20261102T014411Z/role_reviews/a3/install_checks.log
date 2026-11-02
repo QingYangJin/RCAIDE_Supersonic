@@ -1,0 +1,124 @@
+# task-35 / D-12D-003 Round-1 — A3 install-audit checks log
+# audit window: 2026-11-02 09:47–09:58 +08:00 (sampled); generated 2026-11-02T09:57:47+08:00 / 2026-11-02T01:57:47Z
+# host: Windows 11 Pro 10.0.26200 x64; workspace D:/RCAIDE; branch research/concorde-metaopt
+# constraints: repo read-only; zero solver/physical computations; no GitHub writes; token not read; no file deletion/move
+
+[00] scope
+  decision D-12D-003 comment 6566994749 (snapshot: C:/Users/pc/AppData/Local/RCAIDE_Supersonic_agent_state/fullchain/lead/intake-20261102/comment_08_6566994749.md)
+  evidence file: repo research/concorde_metaopt/optimization_runs/openvsp355-remediation-20261102T014411Z/{install_provenance.json,evidence/vspaero_7.2.2_usage.txt}
+
+[01] repo state (git rev-parse / status / reflog)
+  HEAD=5dcb0bf09335fd6f73363d0280a667286d6d20f9 (2026-11-01T11:35:02+08:00)
+  origin/research/concorde-metaopt=5dcb0bf09335fd6f73363d0280a667286d6d20f9; main=ec65e5a9a723bc52df8075a395fcaf9e0fd0fc2b (2026-10-27T14:16:15+08:00)
+  tracked files=705; HEAD tree files=705
+  porcelain (default)=23 lines: 7 tracked M + 16 untracked entries
+  porcelain -uall=95 lines; staged=0; stash=0; HEAD reflog last50 reset/force=0
+  tracked M: research/concorde_metaopt/{README.md,cli.py,optimization_runs/index.json,reports/figures.py}, tutorials/Optimization_Wing_Planform_Fuel_Burn/{Differential_Evolution.py,README_DE.md,Save_Results.py}
+  git diff --stat: 7 files changed, 586 insertions(+), 123 deletions(-)
+  Lead expected 22 porcelain lines; actual 23 = 22 + new untracked D-12D-003 evidence dir openvsp355-remediation-20261102T014411Z/ (2 files, created 09:44:56/09:45:12). Not an install artifact; no new tracked changes.
+
+[02] archive
+  D:/OpenVSP-download/OpenVSP-3.55.0-win64-Python3.11.zip
+  bytes=49,664,844; mtime=2026-11-02 09:39:59 +0800
+  sha256=f1fde65f9d48ae482dcad2c0b7711b81a22810871a5bebc236c4618c0131ebb9 (matches declared + provenance)
+
+[03] official source (online, curl / web_fetch)
+  index https://openvsp.org/zips/current/windows/ -> HTTP 200, 705 B
+    entries: OpenVSP-3.55.0-win64-Python3.11.zip | 2026-10-11 21:47 | 47M
+             OpenVSP-3.55.0-win64-Python3.13.zip | 2026-10-11 21:47 | 47M
+  download https://openvsp.org/download.php -> HTTP 200, 5,843 B; label 'OpenVSP 3.55.0 64-bit Python 3.11'; link download.php?file=zips/current/windows/OpenVSP-3.55.0-win64-Python3.11.zip
+  release notes https://openvsp.org/blogs/announcements/2026/10/12/openvsp-3-55-0-released -> HTTP 200; title 'OpenVSP 3.55.0 Released'
+  remote HEAD on zip -> HTTP 200; Content-Length=49664844; Last-Modified=Mon, 12 Oct 2026 04:47:13 GMT; ETag="2f5d34c-65d9d64404427"; Content-Type=application/zip
+  => official file identity/size confirmed; local hash is the strong artifact identity (official site publishes no sha256).
+
+[04] zip integrity + extraction
+  unzip -t -> rc=0, 'No errors detected in compressed data'
+  python zipfile: entries=550 (files=491, dirs=59); testzip=None; uncompressed_bytes=149,488,735; one top dir 'OpenVSP-3.55.0-win64'
+  extracted D:/OpenVSP-3.55.0/OpenVSP-3.55.0-win64: original files=491, bytes=149,488,735, missing=0
+  extra files=13 (all python/**_pycache__/*.pyc, cpython-311, mtime 2026-11-02 09:43, 589,720 B) from API probe imports; total tree 504 files / 150,078,455 B
+
+[05] hash recomputation (sha256sum) — 12/12 match install_provenance.json
+  archive f1fde65f... 49,664,844
+  new vsp.exe f707fa8a... 19,713,536; vspaero.exe db71c441... 811,520; _vsp.pyd c002e778... 17,822,208; _vsp_g.pyd 8df83996... 21,928,960;
+  __init__.py d55a6858... 2,975; vsp.py 297638f0... 332,170; vsp_g.py 32d2cd29... 337,560; facade.py 03c264e6... 301,575
+  old vsp.exe d175fcba... 21,837,312; old vspaero.exe e1affca0... 561,664; old _vsp.pyd b2025e16... 19,921,920
+
+[06] Python API version (import only; no geometry/model load; no solve)
+  D:/RCAIDE/envs/RCAIDE/python.exe (-B) -> Python 3.11.17 64bit
+  os.add_dll_directory(root) + sys.path.insert of python/{openvsp,degen_geom,utilities,openvsp_config}
+  import openvsp OK -> D:/OpenVSP-3.55.0/OpenVSP-3.55.0-win64/python/openvsp/openvsp/__init__.py
+  vsp.GetVSPVersion() = 'OpenVSP 3.55.0'; versions=[3,55]; API names=2176; ListAnalysis/AddGeom/ExportFile present
+
+[07] VSPAERO version (usage banner only)
+  cd D:/OpenVSP-3.55.0/OpenVSP-3.55.0-win64 && ./vspaero.exe (no arguments) -> exit 1
+  banner: 'VSPAERO v.7.2.2 --- Compiled on: Oct 12 2026 at 04:08:14 PST'
+  capture /tmp/vspaero_usage_a3.txt: 1,546 B; sha256=3bc9b1d18729856fca513dad26343ea14eadd447f13ac0fa66a02df8157f5d67
+  repo evidence research/.../evidence/vspaero_7.2.2_usage.txt: 1,546 B; sha256=3bc9b1d1... (byte-identical)
+  NOTE: no model/geometry/analysis executed; this is a usage banner, not a solver run.
+
+[08] embedded version strings
+  new vsp.exe: 'OpenVSP 3.55.0' found 3x; new vspaero_opt.exe: 1x
+  vsp.exe/vspaero.exe VersionInfo FileVersion/ProductVersion empty (no PE version resource) -> limitation recorded
+  CHANGELOG.md first line '# [OpenVSP 3.55.0](...)' date '2026-10-11'
+
+[09] old 3.26.1 install
+  root D:/Program Files/OpenVSP/OpenVSP-3.26.1-win64-Python3.9/OpenVSP-3.26.1-win64; 240 files; 0 files newer than 2026-11-01
+  vspaero.exe 561,664 B / sha256 e1affca0... / mtime 2022-01-06 01:06:36 -> equals prior evidence research/.../p1p3-fullchain-20261031T0407Z/environment.json (probed_utc 2026-10-31T04:07:14Z, VSPAERO v6.2.0)
+  vsp.exe 21,837,312 B / d175fcba... / mtime 2022-01-06 01:12:46; _vsp.pyd 19,921,920 B / b2025e16... / mtime 2022-01-06 01:05:36
+  pre-existing non-binary mtimes: 15 egg-info metadata files at 2026-10-31 12:01 (before this audit; not today)
+
+[10] SUAVE py3.9 worker
+  D:/Anaconda/envs/SUAVE/python.exe exists -> Python 3.9.25 64bit; mtime 2025-11-04T07:01:33
+  site-packages openvsp=False vsp=False; files under env newer than 2026-11-01 = 0
+
+[11] PATH isolation
+  User PATH len=544; OpenVSP entries = D:/Program Files/OpenVSP/OpenVSP-3.26.1-win64-Python3.9/OpenVSP-3.26.1-win64 (old only)
+  Machine PATH len=327; OpenVSP entries = none; Process PATH old only; '3.55' in User/Machine/Process Path = false/false/false
+  where vspaero / vsp -> old install binaries
+
+[12] site-packages isolation
+  D:/RCAIDE/envs/RCAIDE/Lib/site-packages: openvsp=False vsp=False; top-level entries newer than 2026-11-01=0
+  C:/Users/pc/AppData/Local/Programs/Python/Python39/Lib/site-packages: openvsp=False vsp=False; top-level recent=0
+  D:/Anaconda/envs/SUAVE/Lib/site-packages: openvsp=False vsp=False
+
+[13] registry isolation
+  OpenVSP top-level keys HKCU/HKLM/WOW6432Node: none
+  Uninstall DisplayName~OpenVSP: none; App Paths vsp.exe/vspaero.exe: none
+  HKCR .vsp3 -> vsp3_auto_file (pre-existing file association; no path/3.55 value; creation time unknown)
+  no registry value containing '3.55' observed
+
+[14] env vars (rollback step 4)
+  CONCORDE_OPENVSP_ROOT / CONCORDE_OPENVSP_PYTHON / OPENVSP_HOME / VSPAERO_HOME: unset in Process, User, Machine
+  docs references: research/concorde_metaopt/aircraft/openvsp_check.py:24-25,85-90; research/concorde_metaopt/README.md:223,782
+  => rollback step 4 is actionable but requires explicitly setting the two CONCORDE_* variables.
+
+[15] repo cleanliness / install artifacts
+  tracked install files (OpenVSP*.zip/exe, *3.55*): 0
+  files of size 49,664,844 under repo: 0; files with '3.55' in name under repo: 0
+  repo files created/modified since 2026-11-02 09:35 (excl .git/outputs/output/envs): exactly 2 ->
+    research/.../openvsp355-remediation-20261102T014411Z/install_provenance.json (5,147 B, 09:44:56) sha256=3da3dc7a...
+    research/.../openvsp355-remediation-20261102T014411Z/evidence/vspaero_7.2.2_usage.txt (1,546 B, 09:45:12) sha256=3bc9b1d1...
+  both untracked (D-12D-003 evidence, A1-owned); no OpenVSP binaries/zip copied into repo.
+
+[16] P5 dirty-set protection
+  P5 set excluding __pycache__: 54 files / 7,976,412 B (identical to prior baseline); tracked P5 = 0
+  plus 2 pre-existing __pycache__ .pyc (115,639 B, mtime 2026-10-30 13:03) -> 56 files / 8,092,051 B if pycache included
+  no P5 file changed today (files newer than 2026-11-02: 0)
+
+[17] rollback assessment (static; no execution)
+  step1 remove/rename D:/OpenVSP-3.55.0 -> safe/self-contained (no PATH/registry/site-packages/service refs)
+  step2 keep/delete zip -> safe (single file in D:/OpenVSP-download)
+  step3 old install + worker untouched -> verified (hashes/mtimes, 0 post-2026-11-01 files)
+  step4 re-run old worker with CONCORDE_OPENVSP_ROOT/PYTHON -> actionable; vars currently unset, must be set explicitly
+  execution = NOT_RUN (read-only mandate; no deletion/rename performed)
+
+[18] safety statement
+  repo writes: 0 | git writes: 0 | solver/physical runs: 0 | GitHub writes: 0
+  only executions: vspaero.exe with no args (usage banner only) and python.exe import openvsp (no geometry/model)
+  old install modified: false | new install modified: false (except probe-generated __pycache__ inside new install at 09:43)
+  .agents/github Token.txt: not read (stat only in prior task; not accessed this task)
+
+[19] final artifact hashes (sha256; generated 2026-11-02T02:00:22.577Z)
+  install_audit.md f39872c7f3cbc6cc0b3c0db937b37422fc3af6ad5d52cc17988180e318a6c8d0 bytes=11870
+  facts.json f1566e7a8ec3b612320bed8288cd0044726f1f041346f73d271fe80fd819328f bytes=23681
+  checks.log: self hash changes with this section; [00]-[18] are raw audit records, this section is final delivery hashes.

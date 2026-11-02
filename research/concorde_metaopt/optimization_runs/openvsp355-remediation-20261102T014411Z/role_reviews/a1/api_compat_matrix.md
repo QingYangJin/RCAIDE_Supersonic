@@ -4,7 +4,7 @@
 - 侧装：D:/OpenVSP-3.55.0/OpenVSP-3.55.0-win64（vspaero.exe 811520 B，v7.2.2；archive sha256 f1fde65f…）
 - 运行环境：D:/RCAIDE/envs/RCAIDE/python.exe 3.11.17；`os.add_dll_directory(root)` + `sys.path.insert(0, root/python/openvsp)` 以及 python/degen_geom、python/utilities、python/openvsp_config；`import openvsp` → "OpenVSP 3.55.0"（2176 个导出名）。
 - 证据目录（OUT）：C:/Users/pc/AppData/Local/RCAIDE_Supersonic_agent_state/fullchain/d12d003/a1/
-- 机器可读明细：`api_compat_checks.csv`（28 行 C01–C28，含 method/evidence/status/risk，本文件为其人类可读版）
+- 机器可读明细：`api_compat_checks.csv`（29 行 C01–C29，含 method/evidence/status/risk，本文件为其人类可读版）
 
 ## 结论摘要
 
@@ -16,7 +16,7 @@
 6. **顺序约束未复现（C23，单次探针，不作保证）**：归档 lf_worker.py:3-4 记录"VSPAEROComputeGeometry 必须先于 WriteVSPFile，否则第二次 ExecAnalysis 挂起"；3.55 单次探针 build → WriteVSPFile → ExecAnalysis 正常返回，但仅 1 次、非回归测试。
 7. **零求解预算**：本任务 0 次空气动力求解启动，D-12D-002 预算（23/23）未消耗。
 
-## 兼容矩阵（C01–C28 摘要，逐行证据见 api_compat_checks.csv）
+## 兼容矩阵（C01–C29 摘要，逐行证据见 api_compat_checks.csv）
 
 | ID | 项 | 3.55 结果 | 状态 | 风险/说明 |
 |---|---|---|---|---|
@@ -48,6 +48,7 @@
 | C26 | vspgeom | 224357 B；格式 v3（CHANGELOG 3.45.0） | INFO | VSPAERO 7.2.2 读取 **NOT_RUN**（禁求解） |
 | C27 | panel 默认文件 | CHANGELOG 3.29.0：*.vspaero 默认 for panel models，DegenGeom 仍 thick-surface 默认 | INFO | 解释 3.55 新增 vspgeom 产物 |
 | C28 | 预算 | 0 次 air-dynamics solver 启动 | PASS | D-12D-002 23/23 未动 |
+| C29 | DegenGeom CSV 语义 | 3.26.1 与 3.55.0 均 2703 行 / 2 components；LIFTING_SURFACE 23 字段；FlipNormal/SymCopy 变换一致 | PASS | 由 task-37 追加；原 CSV 该行列数与表头不齐，post-review 已归一为 8 列 |
 
 ## W10 解读注意（C25）
 

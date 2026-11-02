@@ -58,7 +58,7 @@ axes[1].annotate(
 )
 axes[1].grid(axis="y", alpha=0.3)
 
-fig.suptitle("D-12D-003 Round-1: OpenVSP 3.55.0 vs 3.26.1 geometry parity (zero solver starts, offline STL only)", fontsize=11)
+fig.suptitle("D-12D-003 Round-1: OpenVSP 3.55.0 vs 3.26.1 geometry parity (zero solver cases, offline STL only)", fontsize=11)
 fig.text(0.5, 0.005, "Source: evidence/geometry_parity_355_vs_326.json. STL file hashes differ across versions even where geometry matches; identity is tested on unique vertex sets, not hashes.",
          ha="center", fontsize=7.2, color="#444")
 fig.tight_layout(rect=(0, 0.03, 1, 0.95))

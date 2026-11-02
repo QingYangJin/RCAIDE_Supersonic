@@ -103,13 +103,29 @@
   "rollback_steps": [
     "Remove or rename D:/OpenVSP-3.55.0 (new install only)",
     "Keep D:/OpenVSP-download/OpenVSP-3.55.0-win64-Python3.11.zip for audit, or delete after report",
-    "Old 3.26.1 install and SUAVE python 3.9 worker are untouched; no PATH, registry or site-packages entry was added, so no further rollback is required",
-    "Re-run the old 3.26.1 worker path (CONCORDE_OPENVSP_ROOT / CONCORDE_OPENVSP_PYTHON) to resume old toolchain"
+    "The 3.55 install added no User/Machine/Process PATH, registry or site-packages entry; OpenVSP 3.26.1's pre-existing User/Process PATH entries are untouched, so no further rollback is required (A5 F-05 / A1 F4)",
+    "Re-run the old 3.26.1 worker path (CONCORDE_OPENVSP_ROOT / CONCORDE_OPENVSP_PYTHON) to resume the old toolchain"
   ],
   "isolation_checks": {
     "old_root_exists": true,
     "new_root_exists": true,
     "old_vspaero_hash_unchanged_vs_prior_evidence": null,
-    "path_env_has_openvsp": true
+    "path_env_has_openvsp": true,
+    "path_env_openvsp_is_old_3261": true,
+    "any_355_path_entry": false,
+    "path_env_note": "a pre-existing OpenVSP 3.26.1 User/Process PATH entry exists (path_env_has_openvsp=true); the 3.55.0 install added no PATH entry in any scope (any_355_path_entry=false). The earlier wording 'no PATH entry' referred to 3.55 only and was too broad (A5 F-05).",
+    "expanded_files_archive": 491,
+    "expanded_bytes_archive": 149488735,
+    "expanded_files_after_import": 504,
+    "expanded_bytes_after_import": 150078455,
+    "post_import_side_effect": "13 .pyc files are written into the install tree by the first python import; runtime side effect, not an archive difference (A1 F5)"
+  },
+  "post_review_corrections": {
+    "revision": "post-review revision 2",
+    "applied_utc": "2026-11-02T03:00:33Z",
+    "sources": [
+      "A5 task-41 F-05",
+      "A1 task-43 F4/F5"
+    ]
   }
 }

@@ -8,7 +8,10 @@
     "rule": "no VSPAERO / WaveDrag / SU2 / RCAIDE solver process may be started in Round-1; geometry export, API reflection, setup-file generation and source retrieval are tooling events, recorded here, and are not billable numerical analysis starts",
     "solver_processes_started_total": 0,
     "numerical_analysis_starts_total": 0,
-    "round_2_rule": "any solver start in Round-2 requires an owner-approved per-item budget proposed by A2; this file is not a budget approval"
+    "round_2_rule": "any solver start in Round-2 requires an owner-approved per-item budget proposed by A2; this file is not a budget approval",
+    "unbillable_version_probe_processes": 1,
+    "counting_rule": "solver_processes_started_total counts processes that performed a numerical solver analysis (0 in Round-1). TG-008 launched vspaero.exe with no arguments only to print the usage banner: 1 actual process launch, no model/case/iteration/artifact, unbillable, not a solver case.",
+    "process_level_proof_limitation": "no 4688/USN/ETW audit trail was available and Prefetch reads were EPERM, so this package proves zero solver cases and zero billable numerical analyses. It does not claim process-level proof that no other solver process existed (A1 task-43 F6)."
   },
   "events": [
     {
@@ -154,9 +157,9 @@
     {
       "event_id": "TG-008",
       "category": "binary_version_probe",
-      "description": "vspaero.exe invoked with no arguments only to print the usage banner, capturing v7.2.2; no model, no case, no solver start",
+      "description": "vspaero.exe (7.2.2) invoked with no arguments only to print the usage banner; no model, no case, no iterations, no solver output, no budget consumed. Disclosed as 1 actual process launch for a version banner, not a solver run.",
       "solver_starts": 0,
-      "actual_solver_processes": 0,
+      "actual_solver_processes": 1,
       "evidence": [
         {
           "path": "D:\\RCAIDE\\research\\concorde_metaopt\\optimization_runs\\openvsp355-remediation-20261102T014411Z\\evidence\\vspaero_7.2.2_usage.txt",
@@ -164,12 +167,31 @@
           "bytes": 1546,
           "sha256": "3bc9b1d18729856fca513dad26343ea14eadd447f13ac0fa66a02df8157f5d67"
         }
-      ]
+      ],
+      "billable": false,
+      "numerical_analysis": false,
+      "no_model": true
     }
   ],
   "summary": {
     "tooling_events": 8,
     "solver_starts": 0,
     "note": "all paths under EXT are outside the repository; only evidence/ copies are committed"
+  },
+  "generated_utc_meaning": "package-assembly timestamp written when this JSON was assembled; the underlying files were written earlier (mtimes 2026-11-02T02:08Z-02:10Z). Not an event timestamp (A1 task-43 F3).",
+  "post_review_corrections": {
+    "revision": "post-review revision 2",
+    "applied_utc": "2026-11-02T03:00:33Z",
+    "sources": [
+      "A5 task-41 F-01..F-09",
+      "A1 task-43 F1..F6",
+      "A3 task-42"
+    ],
+    "changes": [
+      "TG-008 records actual_solver_processes=1, billable=false, numerical_analysis=false (A1 F1)",
+      "counting_rule and process_level_proof_limitation added (A1 F1/F6)",
+      "generated_utc_meaning added (A1 F3)",
+      "no numerical value, gate, budget line or solver count changed by this revision"
+    ]
   }
 }

@@ -1,9 +1,9 @@
-# P1-P3 D-12D-003 Round-1 remediation report: OpenVSP 3.55.0 (zero solver starts)
+# P1-P3 D-12D-003 Round-1 remediation report: OpenVSP 3.55.0 (zero solver cases; one unbillable banner probe)
 
 - Date: 2026-11-02
 - Approval: Issue #4 / D-12D-003 (comment 6566994749)
 - Run package: `research/concorde_metaopt/optimization_runs/openvsp355-remediation-20261102T014411Z/`
-- Round: Round-1 of at most two; **zero solver starts, zero numerical-analysis starts**
+- Round: Round-1 of at most two; **zero solver cases, zero billable numerical analyses** (one disclosed unbillable no-model `vspaero.exe` usage-banner probe, TG-008; A1 F1)
 - Verdict: Round-1 evidence complete; **no P1-P3 gate improved or approved**; Round-2 budget awaits the owner
 
 ## 1. Executive summary
@@ -16,7 +16,7 @@ up to 3.0 cm; VSPAERO 7.2.2 inputs can be generated without forking the solver; 
 results are now independently diagnosed (three cases invalid by a template defect, the rest mesh
 non-converged and partly negative-drag); the area-rule arithmetic is ported and validated while the
 geometry inversion itself is shown to be ill-conditioned and unresolved; a Round-2 budget proposal
-(23 starts, AWAITING_OWNER_APPROVAL) and a P4 plan-only draft are submitted. No solver was started, so no
+(23 starts, AWAITING_OWNER_APPROVAL) and a P4 plan-only draft are submitted. No solver case was run, so no
 gate can move on physical grounds.
 
 ## 2. What was actually done (all zero-solver)
@@ -25,7 +25,7 @@ gate can move on physical grounds.
    `f1fde65f...`) expanded to `D:/OpenVSP-3.55.0/OpenVSP-3.55.0-win64` (491/491 files, 149,488,735 B);
    API reports OpenVSP 3.55.0 (2186 names), `vspaero.exe` is v7.2.2 (811,520 B, sha256 `db71c441...`);
    old 3.26.1 + SUAVE Python 3.9 untouched (old `vspaero.exe` v6.2.0, 561,664 B, sha256
-   `e1affca0...`). No PATH/registry/site-packages change (A3 PASS).
+   `e1affca0...`). No 3.55 PATH/registry/site-packages entry was created (A3 PASS); the pre-existing 3.26.1 PATH entries are untouched.
 2. **Geometry parity**: main wing baseline and W10+2 deg have identical unique vertex sets (1082/1082,
    `only_old=0`, `only_new=0`; twist max|dz| = 0.03396196 m vs analytic 0.03396196030486226 m).
    Fuselage: 559 old vs 552 new unique vertices, 122 unmatched new vertices, nearest-neighbour median
@@ -37,18 +37,20 @@ gate can move on physical grounds.
    3.26-era and needs a reviewed fix card.
 4. **Solver-input generation**: `VSPAEROComputeGeometry` + `VSPAEROSweep(StopBeforeRun=1)` produces the
    exact solver inputs without a solver fork (source guard returns before `ForkCmd`):
-   thick `.vspgeom` 503,013 B (1082 nodes / 1088 elements), thin 224,357 B (527/480), both setup files
-   930 B / 42 lines, with Sref 358.25, Cref 18.489893, Bref 25.604638, Xcg 16.821978259514246 (provisional),
-   Mach 2.02, AoA 2.0. Eight tooling events, all `solver_starts = 0`.
+   thick `.vspgeom` 503,013 B (1082 nodes / 1088 elements), thin 224,357 B (527/480), both setup
+   files 930 B / 42 lines raw CRLF (888 B canonical LF in the committed package), with Sref ... Mach
+   2.02, AoA 2.0. Eight tooling events; zero solver cases. TG-008 is one unbillable no-model
+   usage-banner process launch (A1 F1). The `.vspaero` files carry VSPAERO defaults ReCref 1e7 / Vinf 100 /
+   Rho 0.002377, not the frozen contract values (A1 F2); Round-2 must inject and assert them.
 5. **Archived VSPAERO 6.2.0 diagnosis (A1)**: W01/W03/W10 are INVALID because 12 template lines lacked
    `=`, so VSPAERO used Sref = 1.0 and inflated coefficients by ~358x (printed CL 31.77605/31.32113/31.48770
    -> 0.08782/0.08743/0.08789 after dividing by the case Sref, matching baseline CL(2 deg) = 0.08781966);
    those three cases consumed 3 of the 23 D-12D-002 starts. For the correctly formatted cases, Trefftz CDi
    flips sign with mesh density (+3.435104e-4 / -8.942229e-4 / -2.260794e-2), CL is not mesh-converged
    (coarse -> fine +29.09%), and CDtot becomes negative. Five harness guard defects are documented.
-6. **Area rule offline (A2)**: the Eminton-Lord port reproduces the archived CDWave to ~1e-6 and
+6. **Area rule offline (A2)**: the Eminton-Lord port reproduces the archived CDWave to a relative difference < 2e-6 (max 1.79e-6, WAVE-05) and
    Sears-Haack to -1.55e-9 at n=800, but the real-geometry inversion is ill-conditioned (condition number
-   1.9e6 at n=200, 1.2e8 at n=800; raw noise amplification 58x-18,380x), the two slice resolutions differ
+   1.9e6 at n=200, 1.2e8 at n=800; raw noise amplification 8.7x (sigma 0.002), 58x (0.005) to 18,380x (0.1)), the two slice resolutions differ
    by 2.87x, and the paired fuselage increment has SNR < 2. Verdict: NOT_VALIDATED; no correction may be
    injected. BODY-CORR stays BLOCKED.
 7. **Governance**: A4 mapped 35 D-12D-003 requirements (14 Round-1 zero-solver, 9 Round-2 budget-gated,
@@ -63,7 +65,7 @@ gate can move on physical grounds.
 | HF-M2.02 | PARTIAL | D-12D-002 SU2 wing 2-level Euler only; wedge shock angle outside 1 deg |
 | BODY-CORR | BLOCKED | no validated body/wing interference model; area rule NOT_VALIDATED |
 | MISSION-DATA | PARTIAL | E2E chain reproducible (E2E-00 34,109.48257123768 kg) but no validated full-aircraft fuel label |
-| BUDGET | AWAITING_OWNER_APPROVAL | D-12D-002 23/23 closed; Round-2 proposal (cap 23) pending |
+| BUDGET | AWAITING_OWNER_APPROVAL (label change, not a grant) | D-12D-002 closed at 23/23 and reported as EXHAUSTED; Round-2 proposal (cap 23) pending, not approved (A5 F-07) |
 | APPROVED_FOR_NEXT_STAGE | NOT ISSUED | owner-only, not requested by this run |
 
 ## 4. Round-2 proposal (proposal only)
@@ -77,8 +79,10 @@ category in writing on Issue #4 before any solver start.**
 
 ## 5. Independent review and replicability
 
-- Role deliverables (A1-A4) are archived verbatim under `role_reviews/`; A5's package review is recorded
-  under `independent_reviews/` when delivered.
+- Role deliverables (A1, A2, A3, A4, A5) are archived under `role_reviews/` as canonical-LF copies of
+  project-external files; for CRLF-origin files the raw-byte hashes are given in
+  `role_reviews/README.md`. A5's package review is under `role_reviews/a5/` with verdict
+  APPROVE_FOR_DELIVERY (0 blocker / 0 major / 8 minor / 1 info).
 - `summary.json` and `data_manifest.json` are generated by committed scripts from package JSON; the
   manifest hashes canonical LF bytes so a clean checkout reproduces every hash.
 - Original large artifacts (`.vspgeom`) stay outside git under
@@ -103,6 +107,34 @@ Round-2 solve.
 4. Decide whether the P4 plan-only draft is acceptable as a planning artifact (it does not un-freeze
    P4-P6 by itself).
 5. Confirm that APPROVED_FOR_NEXT_STAGE remains withheld.
+
+
+## 8. Post-review corrections (revision 2)
+
+This section was added after independent review. It changes no numerical value, gate, budget line or solver
+count; it corrects wording, hash-convention statements and provenance.
+
+| Finding | Source | Resolution |
+| --- | --- | --- |
+| F-01 binary hashed as canonical-LF | A5 task-41 | manifest now hashes text as canonical LF and binaries as raw bytes (`hash_mode` per entry) |
+| F-02 setup file raw vs committed bytes | A5 task-41 | README/report/JSON state raw CRLF 930 B `c862aa22...` and canonical-LF 888 B `360618f4...` |
+| F-03 "verbatim" over-claim, checks.log missing | A5 task-41 | role_reviews documented as canonical-LF copies with raw hashes; install checks log archived |
+| F-04 matrix says 28 rows, CSV has 29 | A5 task-41 | matrix updated to C01-C29; C29 row normalised to the 8-column schema |
+| F-05 PATH wording too broad | A5 task-41 / A1 F4 | 3.55 added no PATH entry; pre-existing 3.26.1 entries explicitly acknowledged |
+| F-06 noise amplification 58x lower bound | A5 task-41 | stated as 8.7x (sigma 0.002), 58x (0.005) to 18,380x (0.1) |
+| F-07 BUDGET label change undisclosed | A5 task-41 | README/report/P4 draft disclose the label change; explicitly not a grant |
+| F-08 bbox/1627 not in parity JSON | A5 task-41 | external assembled export copied to `evidence/geometry_parity_assembled_355_vs_326.json` with provenance caveat |
+| F-09 "about 1e-6" | A5 task-41 | stated as < 2e-6 (max 1.79e-6, WAVE-05) |
+| F1 TG-008 banner probe | A1 task-43 | disclosed as 1 unbillable no-model process launch; counting rule added |
+| F2 setup carries VSPAERO defaults | A1 task-43 | `defaults_not_frozen_contract` added; Round-2 must inject Vinf 596.0373972278921, Rho 0.1153178340089936, ReCref 89397005.8767656 |
+| F3 generated_utc drift | A1 task-43 | timestamps documented as assembly time, not event time |
+| F5 13 .pyc after import | A1 task-43 | archive vs live-tree file counts distinguished |
+| F6 no process-level audit trail | A1 task-43 | scope limited to zero solver cases / zero billable analyses |
+
+Independent review status: A5 task-41 APPROVE_FOR_DELIVERY (0 blocker / 0 major), A3 task-42 PASS 7/7
+(commit isolation for dbc325d), A1 task-43 zero-solver audit CONFIRMED, A4 task-44 receipt draft
+DRAFT_NOT_POSTED. The final delivery commit and the Issue #4 receipt are handled by the Lead after this
+revision.
 
 ---
 

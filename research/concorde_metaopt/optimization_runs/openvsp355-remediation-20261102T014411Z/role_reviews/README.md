@@ -1,29 +1,30 @@
-# Role reviews archived for D-12D-003 Round-1
+# Role review deliverables (canonical-LF copies)
 
-This directory mirrors the read-only deliverables that the independent roles produced during Round-1 (zero solver starts). Each subdirectory is the verbatim copy of the role's file from the external agent-state directory, with hashes recorded in `../data_manifest.json` (regenerated after the final revision).
+This directory archives the independent role deliverables for the D-12D-003 Round-1 package. Files were
+copied from the project-external agent state root into this repository package. They are **not** verbatim
+byte copies when the source file had CRLF line endings: text was normalised to canonical LF to match the
+package hashing convention (`data_manifest.json`: `hash_mode: canonical_lf` for text,
+`hash_mode: raw` for binaries).
 
-## a1-code-dev (task-36 NEW-API-COMPAT, task-37 VSPAERO-OLD-DIAG)
+The two log files (`a3/install_checks.log`, `a5/commands.log`) are force-added to git because the
+repository `.gitignore` ignores `*.log`; they are evidence files and are listed in `data_manifest.json`.
 
-- `api_compat_matrix.md` / `api_compat_checks.csv` - 29-item compatibility matrix between OpenVSP 3.26.1 (Python 3.9) and 3.55.0 (Python 3.11); includes the changed result-capture path (ExecAnalysis id -> result APIs) and the DegenGeom CSV camber-row field count change 11 -> 14.
-- `vspaero_old_diagnostic.md` / `vspaero_old_evidence.json` - static diagnosis of the archived VSPAERO 6.2.0 run: three cases (W01/W03/W10) had 12 template lines without `=`, so VSPAERO silently used Sref=1.0 and printed coefficients inflated by about 358x (those cases are INVALID); the correctly-formatted cases show Trefftz CDi sign flips with mesh density and CL is not mesh-converged (coarse -> fine +29.09%). Harness guard defects (setup rc=1 not stopping the solve, no polar sanity checks) are documented as blocker-level process issues.
-- `geometry_diff.json` - STL geometry diff for the baseline and W10+2deg wing between the two OpenVSP versions.
+| Role | File(s) | Source | Bytes note |
+| --- | --- | --- | --- |
+| A1 code-dev | `a1/api_compat_checks.csv`, `a1/api_compat_matrix.md`, `a1/geometry_diff.json` | task-36/37 | text; C29 row of the CSV normalised to the 8-column schema in revision 2 |
+| A1 code-dev | `a1/vspaero_old_diagnostic.md`, `a1/vspaero_old_evidence.json` | task-36/37 | text |
+| A1 code-dev | `a1/zero_solver_audit.md`, `a1/evidence.json` | task-43 | text; the audit cites raw `install_provenance.json` 5,147 B sha `3da3dc7a...` vs canonical 5,033 B sha `6305eb12...` (CRLF) |
+| A2 run-opt | `a2/area_rule_offline.md`, `a2/area_rule_cases.csv`, `a2/area_rule_candidates.json` | task-38/39 | text |
+| A3 repo-guard | `a3/install_audit.md`, `a3/facts.json` | task-35 | text |
+| A3 repo-guard | `a3/delta_isolation_dbc325d.md`, `a3/delta_facts.json` | task-42 | text |
+| A3 repo-guard | `a3/install_checks.log` | task-35 | log copied from the external state root |
+| A4 issue-liaison | `a4/requirements_matrix.md`, `a4/requirements.csv`, `a4/round_plan.md` | task-34/44 | text |
+| A5 code-reviewer | `a5/round1_package_review.md`, `a5/findings.csv`, `a5/manifest_verification.json`, `a5/verdict.txt`, `a5/commands.log` | task-41 | canonical-LF copies |
 
-A1's own status: task-36 completed, task-37 completed; repaired-code verification NOT_RUN (no budget).
+Status summary: A1 zero-solver audit CONFIRMED (with the TG-008 banner-probe disclosure); A2 area rule
+NOT_VALIDATED / paired increment INCONCLUSIVE; A3 install audit PASS and delta isolation PASS 7/7; A4
+requirements mapped (35 items) and receipt draft DRAFT_NOT_POSTED; A5 package review APPROVE_FOR_DELIVERY
+(0 blocker / 0 major / 8 minor / 1 info, resolved in post-review revision 2).
 
-## a2-run-opt (task-38 AREA-RULE-OFFLINE; task-39 budget proposal)
-
-- `area_rule_offline.md` / `area_rule_cases.csv` - independent Eminton-Lord port reproduces the archived OpenVSP CDWave to about 1e-6 and the Sears-Haack analytic value to 1e-9 at n=800; however the raw inversion is ill-conditioned (matrix condition number 1.9e6 at n=200, 1.2e8 at n=800), white-noise calibration amplifies slice noise by 58x-18380x, and the paired wing-alone vs wing+body fuselage increment has SNR below 2 and no mesh convergence. Verdict: WAVE area rule stays NOT_VALIDATED; no correction may be injected.
-- Round-2 budget request: see `../budget_request_round2.json` (proposal only, AWAITING_OWNER_APPROVAL; no solver was started).
-
-## a3-repo-guard (task-35 INSTALL-AUDIT)
-
-- `install_audit.md` / `facts.json` - official-source check (HTTP 200, remote archive length matches the local 49,664,844 B, Last-Modified 2026-10-12 04:47:13 GMT), expansion 491/491 files / 149,488,735 B, API version OpenVSP 3.55.0, vspaero banner v7.2.2, old 3.26.1 install and SUAVE 3.9 worker untouched, no PATH/registry/site-packages changes, rollback plan static-only (execution NOT_RUN), repository clean of install artifacts.
-
-## a4-issue-liaison (task-34 INTAKE-MATRIX)
-
-- `requirements_matrix.md` / `requirements.csv` / `round_plan.md` - 35 unique requirements from D-12D-003 (14 Round-1 zero-solver, 9 Round-2 budget-gated, 12 standing governance), each with source, owner, needed evidence, status and gate. Confirms PR #3 head 5dcb0bf (D-12D-003 is later and not yet in the PR), 23/23 old budget exhausted, no new physical budget approved.
-
-## Cross-role conclusion carried into the run summary
-
-- The archive diagnosis and the offline area-rule recomputation are both **negative/partial results**: VSPAERO 6.2.0 thin-surface results are not usable at Mach 2.02, and the OpenVSP area-rule numbers are not a validated correction. No gate state changes in Round-1.
-- The new toolchain (OpenVSP 3.55.0 / VSPAERO 7.2.2) is installed, isolated, and able to produce the exact solver inputs for a future owner-approved Round-2 without starting a solver. That is a capability result, not a physical result.
+No role deliverable started a solver. The package-level zero-solver statement is in
+`../evidence/tooling_events.json` and `../summary.json`.

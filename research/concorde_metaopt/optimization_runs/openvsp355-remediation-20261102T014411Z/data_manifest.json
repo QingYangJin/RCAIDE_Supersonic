@@ -1,238 +1,347 @@
 {
   "schema_version": 1,
   "run_id": "openvsp355-remediation-20261102T014411Z",
-  "stage": "P1-P3 D-12D-003 Round-1 remediation (zero solver starts)",
+  "stage": "P1-P3 D-12D-003 Round-1 remediation (zero solver cases; one unbillable banner probe)",
   "approval": "Issue #4 / D-12D-003 (comment 6566994749)",
-  "generated_utc": "2026-11-02T02:20:43Z",
+  "generated_utc": "2026-11-02T03:05:37Z",
   "git_sha_at_run_start": "5dcb0bf09335fd6f73363d0280a667286d6d20f9",
-  "revision": "initial Round-1 package (before A5 package review)",
-  "hashing_convention": "sha256 over canonical LF bytes (CRLF -> LF) of each file; bytes = canonical blob length; reproduce from a clean checkout of the commit that contains this manifest",
-  "file_count": 34,
-  "total_bytes": 407111,
+  "revision": "post-review revision 2 (A5 task-41 findings resolved; A3/A1 reviews archived)",
+  "hashing_convention": "per-entry hash_mode: text is sha256 over canonical LF bytes (CRLF -> LF), binaries are sha256 of the raw stored bytes. For binary entries bytes = raw file length; for text entries bytes = canonical LF blob length. Reproduce from a clean checkout of the commit that contains this manifest.",
+  "file_count": 45,
+  "total_bytes": 541868,
   "files": [
     {
       "path": "budget_request_round2.json",
       "bytes": 4429,
-      "sha256": "4331a38eb541366b4b450b5ffbd850965960e4f3699f9b6a1b5f8f8c8acd2683"
+      "sha256": "4331a38eb541366b4b450b5ffbd850965960e4f3699f9b6a1b5f8f8c8acd2683",
+      "hash_mode": "canonical_lf"
     },
     {
       "path": "evidence/api_compat_355.json",
       "bytes": 13132,
-      "sha256": "fc5bc963b3d2d25a6a802c925dbe7e75bfe4aef071a071726c1dd17f5a28048a"
+      "sha256": "fc5bc963b3d2d25a6a802c925dbe7e75bfe4aef071a071726c1dd17f5a28048a",
+      "hash_mode": "canonical_lf"
     },
     {
       "path": "evidence/geometry_parity_355_vs_326.json",
       "bytes": 4662,
-      "sha256": "8d10f97f60cf35d4c7eda301d95d0c6b544e8f8469a071214a7afa10fb9679b3"
+      "sha256": "8d10f97f60cf35d4c7eda301d95d0c6b544e8f8469a071214a7afa10fb9679b3",
+      "hash_mode": "canonical_lf"
+    },
+    {
+      "path": "evidence/geometry_parity_assembled_355_vs_326.json",
+      "bytes": 3413,
+      "sha256": "21f0712cc76e0aae38eed4f2979d01870e75c19e9d6241af277f3bc6f60985cd",
+      "hash_mode": "canonical_lf"
     },
     {
       "path": "evidence/source_evidence_355.json",
       "bytes": 2005,
-      "sha256": "4aefc52d81a38db6acf90a112906791bbd993cf57ed1240a641caefe26ac0490"
+      "sha256": "4aefc52d81a38db6acf90a112906791bbd993cf57ed1240a641caefe26ac0490",
+      "hash_mode": "canonical_lf"
     },
     {
       "path": "evidence/tooling_events.json",
-      "bytes": 7948,
-      "sha256": "fb7eacf68414304988610071872299600b1f8d1c9ae3a5f5de1fbb00a61d4a4a"
+      "bytes": 9530,
+      "sha256": "aefbc3cdea13e403e2310fedc83ac3d54ea4b4805a8fe592c3e800c0bdeb9bda",
+      "hash_mode": "canonical_lf"
     },
     {
       "path": "evidence/vspaero7_setup/thick/geom_result_thick.csv",
       "bytes": 335,
-      "sha256": "1d65574ea949b1b09f815054e96656b1c5647bed19ccdead1b1a9a676a60a677"
+      "sha256": "1d65574ea949b1b09f815054e96656b1c5647bed19ccdead1b1a9a676a60a677",
+      "hash_mode": "canonical_lf"
     },
     {
       "path": "evidence/vspaero7_setup/thick/wing355_thick.vspaero",
       "bytes": 888,
-      "sha256": "360618f4b406fa72ed4bd7676892aad268d5ce19ee196deee2d7b54136e43d3c"
+      "sha256": "360618f4b406fa72ed4bd7676892aad268d5ce19ee196deee2d7b54136e43d3c",
+      "hash_mode": "canonical_lf"
     },
     {
       "path": "evidence/vspaero7_setup/thin/geom_result_thin.csv",
       "bytes": 333,
-      "sha256": "7161cc496c56dceccdaca5b3c77cc9e4dc5dba201335de4d901388c904a529bd"
+      "sha256": "7161cc496c56dceccdaca5b3c77cc9e4dc5dba201335de4d901388c904a529bd",
+      "hash_mode": "canonical_lf"
     },
     {
       "path": "evidence/vspaero7_setup/thin/wing355_thin.vspaero",
       "bytes": 888,
-      "sha256": "360618f4b406fa72ed4bd7676892aad268d5ce19ee196deee2d7b54136e43d3c"
+      "sha256": "360618f4b406fa72ed4bd7676892aad268d5ce19ee196deee2d7b54136e43d3c",
+      "hash_mode": "canonical_lf"
     },
     {
       "path": "evidence/vspaero7_setup_artifacts.json",
       "bytes": 648,
-      "sha256": "ac1171c416c33dba3b586dafa476e0deb7bd4186c827f3e7a2eb1ebf97313848"
+      "sha256": "ac1171c416c33dba3b586dafa476e0deb7bd4186c827f3e7a2eb1ebf97313848",
+      "hash_mode": "canonical_lf"
     },
     {
       "path": "evidence/vspaero7_setup_generation.json",
-      "bytes": 11064,
-      "sha256": "19574c4fa32ff412249ef7bab4167aafad6abc29a37f15e1d5959247edf26ef1"
+      "bytes": 13051,
+      "sha256": "30c005ebbb71acb7795eb4c57086e505b62c4388b9ad97ea32d644562db04d10",
+      "hash_mode": "canonical_lf"
     },
     {
       "path": "evidence/vspaero_7.2.2_usage.txt",
       "bytes": 1513,
-      "sha256": "34b30863be8cb150b4d3787829a095ae3e852231534dce297009a871dc4e00d2"
+      "sha256": "34b30863be8cb150b4d3787829a095ae3e852231534dce297009a871dc4e00d2",
+      "hash_mode": "canonical_lf"
     },
     {
       "path": "figures/geometry_parity_355_vs_326.png",
-      "bytes": 95303,
-      "sha256": "9331763adfdcebb9c11c1c5e3edc46cc850e51185337c59c00d9848191bd294a"
+      "bytes": 95266,
+      "sha256": "3fce9436094ba4bc52e3217dbee89421f792710f1ae2989a9d56e9d077b5bc0b",
+      "hash_mode": "raw"
     },
     {
       "path": "install_provenance.json",
-      "bytes": 5033,
-      "sha256": "6305eb12429bf149a9b16f0894a53e604ffceaa42e2fc416c472eaf5b6c814f1"
+      "bytes": 5976,
+      "sha256": "e4544f496f54f10920b5309c6fe5b4deed5942ece3554478936cf9f3ba359f65",
+      "hash_mode": "canonical_lf"
     },
     {
       "path": "p4_plan_only_draft.md",
-      "bytes": 7454,
-      "sha256": "49022c249aabbe27e5ec8fbde9bd592ec698e8034a83068b9df9b7ac2dc47f5b"
+      "bytes": 7727,
+      "sha256": "2d1a70ae448aa90085bd3b7258236607e602f52a8d2ce1dbc7412a7d3c525ec3",
+      "hash_mode": "canonical_lf"
     },
     {
       "path": "README.md",
-      "bytes": 15573,
-      "sha256": "5395f2aa4e142dea4adc396a787bc238227ca6694fae1d473b141a53c6a39974"
+      "bytes": 19040,
+      "sha256": "4c2f0adb8f01799eb14897ae0e928015ba9d1a705db8e4cac1dd6a08999fc0ff",
+      "hash_mode": "canonical_lf"
     },
     {
       "path": "role_reviews/a1/api_compat_checks.csv",
-      "bytes": 11535,
-      "sha256": "f28134bab195937a035c952b8433a3a476b08f2397b8719caa585d2cfd7e7cb7"
+      "bytes": 11725,
+      "sha256": "c3ea0561cd40c1e6d6f34301226d81214627118f8ef945444841739870e9e354",
+      "hash_mode": "canonical_lf"
     },
     {
       "path": "role_reviews/a1/api_compat_matrix.md",
-      "bytes": 10584,
-      "sha256": "38b3dccbcc13e67cdb5670af2a34c9bf8f4f90f779c0a5c97b64c384e76e70b6"
+      "bytes": 10824,
+      "sha256": "c4f4da4bcd9ef7088544f3b8f38b0ae3b21827e27698185d4308f6fe903b6926",
+      "hash_mode": "canonical_lf"
+    },
+    {
+      "path": "role_reviews/a1/evidence.json",
+      "bytes": 16170,
+      "sha256": "c4e3371c27623cf0674e00a3498eec9669b68e7c4bd6786fb6962fc7d79479ca",
+      "hash_mode": "canonical_lf"
     },
     {
       "path": "role_reviews/a1/geometry_diff.json",
       "bytes": 16070,
-      "sha256": "82c71b1659dd846a4f1c15a23740742e74fa58a806eb1b503eac87be4561b18a"
+      "sha256": "82c71b1659dd846a4f1c15a23740742e74fa58a806eb1b503eac87be4561b18a",
+      "hash_mode": "canonical_lf"
     },
     {
       "path": "role_reviews/a1/vspaero_old_diagnostic.md",
       "bytes": 13540,
-      "sha256": "2a7f9b77beca98eab2334f3b20fc84826969427b37a11f95f7337f008b016786"
+      "sha256": "2a7f9b77beca98eab2334f3b20fc84826969427b37a11f95f7337f008b016786",
+      "hash_mode": "canonical_lf"
     },
     {
       "path": "role_reviews/a1/vspaero_old_evidence.json",
       "bytes": 20194,
-      "sha256": "0163341574ce62c963affea78f1ce71133381874a350dff4e3dbc54e13e27282"
+      "sha256": "0163341574ce62c963affea78f1ce71133381874a350dff4e3dbc54e13e27282",
+      "hash_mode": "canonical_lf"
+    },
+    {
+      "path": "role_reviews/a1/zero_solver_audit.md",
+      "bytes": 23007,
+      "sha256": "259868ed899feef87633f5725eb5f829cff4c93952ddff5fedbe0579839ca234",
+      "hash_mode": "canonical_lf"
     },
     {
       "path": "role_reviews/a2/area_rule_candidates.json",
       "bytes": 2248,
-      "sha256": "69666fe362fab593046d67a28b1f92ab3f9d01586965b35f3c95a4f9fbd4d408"
+      "sha256": "69666fe362fab593046d67a28b1f92ab3f9d01586965b35f3c95a4f9fbd4d408",
+      "hash_mode": "canonical_lf"
     },
     {
       "path": "role_reviews/a2/area_rule_cases.csv",
       "bytes": 57981,
-      "sha256": "d75726c8315c8688b2dcce90edf893df20a0c061c900f3e796a4fe0eacbb2272"
+      "sha256": "d75726c8315c8688b2dcce90edf893df20a0c061c900f3e796a4fe0eacbb2272",
+      "hash_mode": "canonical_lf"
     },
     {
       "path": "role_reviews/a2/area_rule_offline.md",
       "bytes": 7039,
-      "sha256": "16a8e0268f0ddf2ca139b31325a3d43ac8b5156ce3c1482e024e5de5e41bf953"
+      "sha256": "16a8e0268f0ddf2ca139b31325a3d43ac8b5156ce3c1482e024e5de5e41bf953",
+      "hash_mode": "canonical_lf"
+    },
+    {
+      "path": "role_reviews/a3/delta_facts.json",
+      "bytes": 16300,
+      "sha256": "c6183d8f398b1399686aa5037d91c21e1a233a26ac51dd9114864d0b0b8e0705",
+      "hash_mode": "canonical_lf"
+    },
+    {
+      "path": "role_reviews/a3/delta_isolation_dbc325d.md",
+      "bytes": 11746,
+      "sha256": "e02300450c460683e24f67a490313a2f744fd266e4d9dd25c22400496ca33df7",
+      "hash_mode": "canonical_lf"
     },
     {
       "path": "role_reviews/a3/facts.json",
       "bytes": 23681,
-      "sha256": "f1566e7a8ec3b612320bed8288cd0044726f1f041346f73d271fe80fd819328f"
+      "sha256": "f1566e7a8ec3b612320bed8288cd0044726f1f041346f73d271fe80fd819328f",
+      "hash_mode": "canonical_lf"
     },
     {
       "path": "role_reviews/a3/install_audit.md",
       "bytes": 11870,
-      "sha256": "f39872c7f3cbc6cc0b3c0db937b37422fc3af6ad5d52cc17988180e318a6c8d0"
+      "sha256": "f39872c7f3cbc6cc0b3c0db937b37422fc3af6ad5d52cc17988180e318a6c8d0",
+      "hash_mode": "canonical_lf"
+    },
+    {
+      "path": "role_reviews/a3/install_checks.log",
+      "bytes": 9399,
+      "sha256": "8d30184359e98d2f1aceb3d925be7010dea49779529f909f2430c479964b7f40",
+      "hash_mode": "canonical_lf"
     },
     {
       "path": "role_reviews/a4/requirements.csv",
       "bytes": 9836,
-      "sha256": "08a792b0360c3974ddc49fe0fdd5ca9b0a699098646da3c4cca3ac2ec3b8f91a"
+      "sha256": "08a792b0360c3974ddc49fe0fdd5ca9b0a699098646da3c4cca3ac2ec3b8f91a",
+      "hash_mode": "canonical_lf"
     },
     {
       "path": "role_reviews/a4/requirements_matrix.md",
       "bytes": 6530,
-      "sha256": "9c35c9284762adff98aaaed240a0b5b7a041aed46a843846ace8a3839b99eb74"
+      "sha256": "9c35c9284762adff98aaaed240a0b5b7a041aed46a843846ace8a3839b99eb74",
+      "hash_mode": "canonical_lf"
     },
     {
       "path": "role_reviews/a4/round_plan.md",
       "bytes": 5034,
-      "sha256": "d9ea184f4a0ce66c26ff206d6e9c23380b5d30f9f0d9199c1c66dbceff52ad7b"
+      "sha256": "d9ea184f4a0ce66c26ff206d6e9c23380b5d30f9f0d9199c1c66dbceff52ad7b",
+      "hash_mode": "canonical_lf"
+    },
+    {
+      "path": "role_reviews/a5/commands.log",
+      "bytes": 4017,
+      "sha256": "b71555142514f3d68bdd78b9e892f8030dcd4fae570b98e1792c13e50f7351b0",
+      "hash_mode": "canonical_lf"
+    },
+    {
+      "path": "role_reviews/a5/findings.csv",
+      "bytes": 5388,
+      "sha256": "14fe89e38079da9045399b7d4004746d454ee32be36ebbb14f98521b2a41c572",
+      "hash_mode": "canonical_lf"
+    },
+    {
+      "path": "role_reviews/a5/manifest_verification.json",
+      "bytes": 23142,
+      "sha256": "4958840293ee7070e4adf2a847b682c9f01efe7c7ca7f19da492ad0b21919a67",
+      "hash_mode": "canonical_lf"
+    },
+    {
+      "path": "role_reviews/a5/round1_package_review.md",
+      "bytes": 8723,
+      "sha256": "b6293d9c7e97d803af62673dc0ec01033a0dd8f96dc6ad1ab7bda21d174ad335",
+      "hash_mode": "canonical_lf"
+    },
+    {
+      "path": "role_reviews/a5/verdict.txt",
+      "bytes": 984,
+      "sha256": "eccf8f5ff0f9c7afd292fc0d2351c8d29d8194df9dc078856712135812c6fad4",
+      "hash_mode": "canonical_lf"
     },
     {
       "path": "role_reviews/README.md",
-      "bytes": 3642,
-      "sha256": "a6868092c79718032ede2442fb5cb8c00644023e7b88610e87345032c9b758e9"
+      "bytes": 2445,
+      "sha256": "0cbd36381a3abd0d97b303d7f9b214d09a46cc44b072839d118d1faea246b8d0",
+      "hash_mode": "canonical_lf"
     },
     {
       "path": "scripts/make_round1_figures.py",
-      "bytes": 3622,
-      "sha256": "bfea00e70263ef0648e9b21ea000e7489be3a4cbcb8d06c62a62f0a2e229b879"
+      "bytes": 3621,
+      "sha256": "83f1445cd0b25e34bcb874ad9ae0c99cbc5ba944c41283789fc31463b6cf2106",
+      "hash_mode": "canonical_lf"
     },
     {
       "path": "scripts/make_round1_manifest.py",
-      "bytes": 4473,
-      "sha256": "b8177a65697c8f275fddc0e382de323005cab70930a03f733a948e52ca911f53"
+      "bytes": 5355,
+      "sha256": "eb9962f31a7768a25ea44009cd58a8fdb71249cee277193cd8f96c4a53d7d7f9",
+      "hash_mode": "canonical_lf"
     },
     {
       "path": "scripts/make_round1_summary.py",
-      "bytes": 13462,
-      "sha256": "bfc6b4c96dd1297e88a1b570453bdb13b855dc219e75484ee1aef0e63aab4eef"
+      "bytes": 15551,
+      "sha256": "e2bf451d9cf4c8fa49c0d421a98e59d12a930651bc471d959ab9d453a377acb3",
+      "hash_mode": "canonical_lf"
     },
     {
       "path": "summary.json",
-      "bytes": 14562,
-      "sha256": "701149bc258a09bfb31f1471a9a0045c2f4cfd52a28a28afd63c0b083df2fd90"
+      "bytes": 16612,
+      "sha256": "45f4d64454bcfdc982387c7d50544bdabbbfb270f692e9036ea671e840e8aba3",
+      "hash_mode": "canonical_lf"
     }
   ],
   "input_source_files": [
     {
       "path": "research/concorde_metaopt/configs/design_space_12d_lifting_surfaces.yaml",
       "bytes": 10011,
-      "sha256": "463bb4a0a0fc06eb7dd6a6d9790f4d5b2b3a8c3d8681d16055036dae0c57fc7b"
+      "sha256": "463bb4a0a0fc06eb7dd6a6d9790f4d5b2b3a8c3d8681d16055036dae0c57fc7b",
+      "hash_mode": "canonical_lf"
     },
     {
       "path": "research/concorde_metaopt/configs/task_fixed_cruise.yaml",
       "bytes": 2247,
-      "sha256": "bde73b739b50cac786ca6b843fa2e9877c423262b7e8c93e8724d8ba481d894d"
+      "sha256": "bde73b739b50cac786ca6b843fa2e9877c423262b7e8c93e8724d8ba481d894d",
+      "hash_mode": "canonical_lf"
     },
     {
       "path": "research/concorde_metaopt/aircraft/openvsp_geometry.py",
       "bytes": 12391,
-      "sha256": "d43ab35374d27e1c809c421430c60fd9e6501172ac913f2c5956372871b51357"
+      "sha256": "d43ab35374d27e1c809c421430c60fd9e6501172ac913f2c5956372871b51357",
+      "hash_mode": "canonical_lf"
     },
     {
       "path": "research/concorde_metaopt/aircraft/openvsp_check.py",
       "bytes": 41252,
-      "sha256": "8da2fa678272e117432a19b41cca0768b66d76bf430eb80bd4b4b646da113434"
+      "sha256": "8da2fa678272e117432a19b41cca0768b66d76bf430eb80bd4b4b646da113434",
+      "hash_mode": "canonical_lf"
     },
     {
       "path": "research/concorde_metaopt/aircraft/concorde_adapter.py",
       "bytes": 21006,
-      "sha256": "43feb9737f59155abbb7b155efcec7da838eabddf0c07ca20b14c426237a326e"
+      "sha256": "43feb9737f59155abbb7b155efcec7da838eabddf0c07ca20b14c426237a326e",
+      "hash_mode": "canonical_lf"
     },
     {
       "path": "research/concorde_metaopt/evaluation/low_fidelity.py",
       "bytes": 16230,
-      "sha256": "c08ca18eeea1ee0cf6bee7b2555d67d34411f1a018f440eb98b9f13955230080"
+      "sha256": "c08ca18eeea1ee0cf6bee7b2555d67d34411f1a018f440eb98b9f13955230080",
+      "hash_mode": "canonical_lf"
     },
     {
       "path": "research/concorde_metaopt/evaluation/high_fidelity.py",
       "bytes": 1276,
-      "sha256": "a7a2b10948c9171401523d20a5d467c0e40d3eb5bbea0cbc40c928566271ea01"
+      "sha256": "a7a2b10948c9171401523d20a5d467c0e40d3eb5bbea0cbc40c928566271ea01",
+      "hash_mode": "canonical_lf"
     },
     {
       "path": "research/concorde_metaopt/evaluation/drag_ledger.py",
       "bytes": 5041,
-      "sha256": "d03b1316ce2d868b3bf3a69efac2d8b2b95a307d422e2371cfb7dd99055973dc"
+      "sha256": "d03b1316ce2d868b3bf3a69efac2d8b2b95a307d422e2371cfb7dd99055973dc",
+      "hash_mode": "canonical_lf"
     }
   ],
   "report_file": {
     "path": "docs/reviews/p1p3_d12d003_round1_remediation_report_20261102.md",
-    "bytes": 7728,
-    "sha256": "197b1d1edd0c148b44abc3a044a4c946a757c46b6605f6f71eabeed57398e151"
+    "bytes": 10858,
+    "sha256": "45202e9bd8675858b0dcd3021ca03c943a3e91060e87cd97118d23ffa56e2b4c",
+    "hash_mode": "canonical_lf"
   },
   "raw_artifacts": {
     "manifest": "raw_artifacts_manifest.json",
     "archive_root": "D:/RCAIDE/outputs/concorde_metaopt/openvsp355-remediation-20261102T014411Z",
-    "file_count": 2,
-    "total_bytes": 717903,
+    "file_count": 3,
+    "total_bytes": 728357,
     "outside_git": true,
     "note": "the .vspgeom files are inputs for a future owner-approved Round-2; they are not evidence of any physical result"
   },
@@ -243,10 +352,15 @@
       "A1",
       "A2",
       "A3",
-      "A4"
+      "A4",
+      "A5"
     ],
-    "note": "verbatim copies of project-external role deliverables; no reviewer started a solver or wrote to the repo/GitHub in Round-1"
+    "note": "canonical-LF copies of project-external role deliverables; raw-byte hashes for CRLF-origin files are listed in role_reviews/README.md. No reviewer started a solver or wrote to the repo/GitHub in Round-1"
   },
+  "solver_cases": 0,
+  "billable_numerical_analyses": 0,
+  "unbillable_version_probe_processes": 1,
+  "note": "TG-008 was one no-model vspaero.exe usage-banner process launch: unbillable, not a solver case (A1 task-43 F1). Process-level absence of any solver process is not claimed (F6).",
   "solver_starts": 0,
   "numerical_analysis_starts": 0
 }

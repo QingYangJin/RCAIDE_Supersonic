@@ -157,5 +157,40 @@
     "setup355b/_model was overwritten because OpenVSP derives output file names from the model export path; setup355c re-ran each variant in its own directory (lesson LD-004)",
     "VSPAEROMgr.h downloaded from the release tree is a 14-byte placeholder; the .cpp files are the authority",
     "the OpenVSP Python API returns an empty result id for VSPAEROSweep even on success; results must be captured via file outputs (consistent with LD-002)"
-  ]
+  ],
+  "generated_utc_meaning": "package-assembly timestamp written when this JSON was assembled; the setup files were written earlier (mtimes 2026-11-02T02:08Z). Not an event timestamp (A1 task-43 F3).",
+  "package_copy_note": {
+    "issue": "the setup file as stored by OpenVSP is CRLF (930 B, 42 lines, sha256 c862aa220bc6f3a9d057b2fbe99c4ed340591a14ad88f455d3d1b0ddbe7c1804); git normalises committed text to canonical LF (888 B, 42 lines, sha256 360618f4b406fa72ed4bd7676892aad268d5ce19ee196deee2d7b54136e43d3c) (A5 F-02)",
+    "raw_crlf": {
+      "bytes": 930,
+      "lines": 42,
+      "sha256": "c862aa220bc6f3a9d057b2fbe99c4ed340591a14ad88f455d3d1b0ddbe7c1804"
+    },
+    "canonical_lf_in_package": {
+      "bytes": 888,
+      "lines": 42,
+      "sha256": "360618f4b406fa72ed4bd7676892aad268d5ce19ee196deee2d7b54136e43d3c"
+    },
+    "note": "both forms are the same logical file; data_manifest.json hashes text as canonical LF and binary files as raw bytes"
+  },
+  "defaults_not_frozen_contract": {
+    "issue": "the generated .vspaero currently carries VSPAERO defaults for three quantities, not the frozen task_fixed_cruise contract values (A1 task-43 F2). This is a Round-2 readiness gap, not a Round-1 physical claim.",
+    "ReCref": {
+      "value_in_file": 10000000.0,
+      "frozen_contract": 89397005.8767656,
+      "unit": "-"
+    },
+    "Vinf": {
+      "value_in_file": 100.0,
+      "frozen_contract": 596.0373972278921,
+      "unit": "m/s"
+    },
+    "Rho": {
+      "value_in_file": 0.002377,
+      "frozen_contract": 0.1153178340089936,
+      "unit": "kg/m3"
+    },
+    "contract_source": "research/concorde_metaopt/optimization_runs/p1p3-fullchain-20261031T0407Z/run_lf_case.py:21 and docs/reviews/p1p3_fullchain_validation_report_20261031.md:43",
+    "action_required": "any Round-2 LF case generator must inject and assert these three contract values before requesting an owner-approved solver start; the files in this package must not be fed to a solver as-is"
+  }
 }

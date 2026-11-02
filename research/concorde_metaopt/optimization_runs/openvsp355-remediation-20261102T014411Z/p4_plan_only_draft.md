@@ -7,11 +7,11 @@ Status: **DRAFT / PLAN-ONLY / NOT APPROVED**. This file is a Round-1 deliverable
 - D-12D-003 requires that, if two evidence-driven remediation rounds still fail, the project keeps history and moves to **P4-PLAN-ONLY**, which is explicitly not `APPROVED_FOR_NEXT_STAGE`.
 - P4 (constrained BO / DE on the real vehicle) remains frozen until the owner signs `APPROVED_FOR_NEXT_STAGE` after P1-P3 physical gates and budgets are approved item by item.
 - This draft exists so that planning and offline work can continue without any physical evaluation, and so that a later owner decision has a concrete contract to approve or reject.
-- Round-1 context: D-12D-002 consumed 23/23 authorized numerical starts, no gate passed (GEO-12D PARTIAL, LF-M2.02 NOT_VALIDATED / LF_PROVISIONAL, HF-M2.02 PARTIAL, BODY-CORR BLOCKED, MISSION-DATA PARTIAL, BUDGET EXHAUSTED). No new physical budget exists.
+- Round-1 context: D-12D-002 consumed 23/23 authorized numerical starts, no gate passed (GEO-12D PARTIAL, LF-M2.02 NOT_VALIDATED / LF_PROVISIONAL, HF-M2.02 PARTIAL, BODY-CORR BLOCKED, MISSION-DATA PARTIAL). D-12D-002's close-out labelled BUDGET EXHAUSTED; under D-12D-003 the BUDGET status label is AWAITING_OWNER_APPROVAL because an unapproved Round-2 proposal exists. The label change is not a grant and no new physical budget is approved (A5 F-07).
 
 ## 2. Permitted and prohibited under P4-PLAN-ONLY
 
-Permitted (zero solver starts):
+Permitted (zero solver cases):
 - planning documents, schemas, interface contracts, offline toy/analytic tests, dry-runs of the optimizer against synthetic or archived objectives, reproducibility scripts, figures computed from already-archived numbers.
 
 Prohibited:
@@ -37,7 +37,7 @@ Prohibited:
 | HF-M2.02 | PARTIAL (2-level Euler wing only, wedge shock angle outside 1 deg) | 3-level convergence, wedge grid refinement, accepted inviscid limits |
 | BODY-CORR | BLOCKED (no validated wing-body interference/volume-wave increment) | independent calibration and de-duplication rule |
 | MISSION-DATA | PARTIAL (23/23 ledger, reproducible chain; q mismatch 0.83%, no validated correction injected) | accepted data contract + reviewer sign-off |
-| BUDGET | EXHAUSTED (23/23) | new per-item owner-approved budget |
+| BUDGET | AWAITING_OWNER_APPROVAL (D-12D-002 EXHAUSTED at 23/23; Round-2 proposal submitted, not approved) | new per-item owner-approved budget |
 
 ## 5. Evaluation interface contract (target shape, not yet implemented for real runs)
 
@@ -50,7 +50,7 @@ Prohibited:
 ## 6. Optimization stack and offline dry-run plan
 
 - Baseline: deterministic DE (existing `optimization/baseline_de.py`) and constrained BO with maml-opt 0.1.0 GP/EI (existing `optimization/baseline_bo.py`, currently labelled low-fidelity RCAIDE VLM + turbojet).
-- Phase P4.0 (offline, allowed now): freeze evaluator schema; replay archived 10 evaluations through the optimizer interfaces; verify deterministic seeds, constraint mapping (g <= 0 with 1e-12 shift), and 3x-repeatability on the archived baseline; produce synthetic dry-run report with zero solver starts.
+- Phase P4.0 (offline, allowed now): freeze evaluator schema; replay archived 10 evaluations through the optimizer interfaces; verify deterministic seeds, constraint mapping (g <= 0 with 1e-12 shift), and 3x-repeatability on the archived baseline; produce synthetic dry-run report with zero solver cases.
 - Phase P4.1 (needs owner budget): small LF campaign on 12D with a pre-registered design count, convergence rules, and stop conditions; results must carry LF_PROVISIONAL until LF-M2.02 is accepted.
 - Phase P4.2 (needs HF + BODY-CORR acceptance and separate budget): mixed-fidelity campaign only after the correction de-duplication rule is validated.
 - P5 MAML-A remains out of scope even in P4-PLAN-ONLY.

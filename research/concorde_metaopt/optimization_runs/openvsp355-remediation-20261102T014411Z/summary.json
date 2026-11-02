@@ -3,14 +3,18 @@
   "run_id": "openvsp355-remediation-20261102T014411Z",
   "stage": "P1-P3 D-12D-003 Round-1: OpenVSP 3.55.0 side-install, API/geometry compatibility, archived VSPAERO diagnosis, offline area rule, Round-2 budget proposal, P4 plan-only draft",
   "approval": "Issue #4 / D-12D-003 (comment 6566994749)",
-  "round": "Round-1 of at most two (D-12D-003); zero solver starts",
-  "created_utc": "2026-11-02T02:19:55Z",
+  "round": "Round-1 of at most two (D-12D-003); zero solver cases, one unbillable no-model vspaero.exe usage-banner probe (TG-008)",
+  "created_utc": "2026-11-02T03:05:37Z",
   "git_sha_at_run_start": "5dcb0bf09335fd6f73363d0280a667286d6d20f9",
   "branch": "research/concorde-metaopt",
   "status": "ROUND1_EVIDENCE_COMPLETE_NO_GATE_APPROVED",
   "scope": {
     "new_physical_solver_starts": 0,
     "numerical_analysis_starts": 0,
+    "solver_cases": 0,
+    "billable_numerical_analyses": 0,
+    "unbillable_version_probe_processes": 1,
+    "process_level_proof_limitation": "no 4688/USN/ETW audit trail and Prefetch EPERM; the package proves zero solver cases / zero billable analyses, not process-level absence of any solver process (A1 F6)",
     "budget_carryover": false,
     "d12d002_budget": {
       "cap": 23,
@@ -46,10 +50,15 @@
       },
       "no_global_install": true,
       "path_or_site_packages_modified": false,
-      "expanded": {
+      "expanded_archive": {
         "files": 491,
         "bytes": 149488735,
         "source": "role_reviews/a3/install_audit.md"
+      },
+      "expanded_after_first_import": {
+        "files": 504,
+        "bytes": 150078455,
+        "note": "+13 .pyc runtime side effect (A1 F5)"
       }
     },
     "old_install_preserved": {
@@ -77,10 +86,12 @@
       "TG-008"
     ],
     "solver_starts": 0,
-    "note": "geometry export, API probes, setup generation (3 attempts), source retrieval and binary banners; all non-billable tooling, no numerical analysis, no solver process"
+    "note": "geometry export, API probes, setup generation (3 attempts), source retrieval and one no-model usage-banner probe (TG-008: 1 actual process launch, unbillable, no numerical analysis). All other events are non-billable tooling; zero solver cases"
   },
   "geometry_parity_355_vs_326": {
     "file": "evidence/geometry_parity_355_vs_326.json",
+    "assembled_file": "evidence/geometry_parity_assembled_355_vs_326.json",
+    "assembled_source_external_sha256": "9f25a2ef235b9dd18eaaf6db1cdb2ee5e4d38790bcefe6a08b5765fb4147d1b5",
     "method": "compare unique STL vertex sets, not file hashes: both exporters tessellate the same surfaces but write different vertex order/formatting",
     "wing": {
       "baseline_unique_vertices_old": 1082,
@@ -251,8 +262,9 @@
       "n800": 120000000.0
     },
     "noise_amplification_raw": {
-      "min_factor": 58,
-      "max_factor": 18380,
+      "sigma_0_002": 8.724,
+      "sigma_0_005": 58,
+      "sigma_0_1": 18380,
       "sigma_range_m2": [
         0.002,
         0.1
@@ -361,9 +373,10 @@
     "A1": {
       "tasks": [
         "task-36",
-        "task-37"
+        "task-37",
+        "task-43"
       ],
-      "status": "completed (repaired-code verification NOT_RUN: no budget)"
+      "status": "completed; zero-solver audit CONFIRMED (repaired-code verification NOT_RUN: no budget)"
     },
     "A2": {
       "tasks": [
@@ -374,21 +387,24 @@
     },
     "A3": {
       "tasks": [
-        "task-35"
+        "task-35",
+        "task-42"
       ],
-      "status": "PASS"
+      "status": "PASS (install audit; commit-isolation delta for dbc325d PASS 7/7)"
     },
     "A4": {
       "tasks": [
-        "task-34"
+        "task-34",
+        "task-44"
       ],
-      "status": "completed (35 requirements mapped)"
+      "status": "completed (35 requirements mapped; receipt DRAFT_NOT_POSTED)"
     },
     "A5": {
       "tasks": [
         "task-41"
       ],
-      "status": "PENDING"
+      "status": "APPROVE_FOR_DELIVERY (0 blocker / 0 major / 8 minor / 1 info)",
+      "findings_resolved": "post-review revision 2"
     }
   },
   "figures": [
@@ -399,7 +415,8 @@
     }
   ],
   "review": {
-    "status": "PENDING",
+    "status": "DELIVERY_APPROVED_INTERNAL",
+    "delivery_review": "A5 task-41 APPROVE_FOR_DELIVERY, findings resolved in post-review revision 2; final commit and Issue #4 receipt pending Lead",
     "owner_decisions_needed": [
       "approve Round-2 budget per category",
       "authorize VSPAERO7 re-run after the LD-001 harness fix and guard tests",
@@ -412,6 +429,11 @@
     "The 3.55 install is a side install; the repository OpenVSP worker still needs a reviewed fix card before any Round-2 automation uses 3.55.",
     "The archived VSPAERO 6.2.0 numbers are retracted as unusable; no historical file was rewritten.",
     "The area-rule inversion is ill-conditioned on the current geometry; even an owner-approved re-run may end INCONCLUSIVE unless the body/wing geometry or the slice set changes.",
-    "The Round-2 budget proposal is the team's proposal, not an approval; D-12D-002's 23/23 is closed and does not carry over."
+    "The Round-2 budget proposal is the team's proposal, not an approval; D-12D-002's 23/23 is closed and does not carry over.",
+    "TG-008: one unbillable, no-model vspaero.exe usage-banner process launch; it is not a solver case and consumed no budget (A1 F1).",
+    "Process-level absence of any solver process is not proven (no 4688/USN/ETW trail, Prefetch EPERM); the claim is zero solver cases and zero billable analyses (A1 F6).",
+    "The generated .vspaero files carry VSPAERO defaults ReCref 1e7 / Vinf 100 / Rho 0.002377, not the frozen contract values; Round-2 must inject and assert them (A1 F2).",
+    "The 3.55 install added no PATH/registry/site-packages entry; OpenVSP 3.26.1's pre-existing User/Process PATH entries are untouched (A5 F-05).",
+    "First python import adds 13 .pyc files to the 3.55 tree (504 files / 150,078,455 B live vs 491 / 149,488,735 B archive) (A1 F5)."
   ]
 }
