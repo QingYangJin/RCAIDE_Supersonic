@@ -168,7 +168,7 @@ minor m-01..m-10 的处置见 §16 修订记录表。
 
 - 使用 maml_opt.data.archive.write_archive(...) 生成 observations.jsonl + manifest.json（schema_version=2、state=FROZEN/UNFROZEN、records_sha256）。
 - manifest 必填：dataset_id、task_split_id、task_splits（train/validation/test 任务 id 列表）、design_feature_names（12）、task_context_names、target_names、target_map（objective→{source:"objective"}，约束→{source:"constraints_g_le_zero", key}）、feature_units/target_units、records_file、records_sha256。
-- 五值内部 split → schema-2 三值 archive 映射（M-03）：meta_train→train；meta_validation→validation；meta_test→test；meta_test_ood→test 且样本 task_context.ood_flag=1.0；negative_control 不写入三值 archive（仅记录在 tasks.json 与 tasks/negative_control_manifest.json，绝不进入训练或主终点统计）。archive 的 task_splits 恰为 train/validation/test 三键；内部五值互斥由 data_contract.assert_task_disjoint 保证，映射由 to_archive_splits() 单向完成并加断言测试。
+- 五值内部 split → schema-2 三值 archive 映射（M-03）：meta_train→train；meta_validation→validation；meta_test→test；meta_test_ood→test 且样本 task_context.ood_flag=1.0；negative_control 不写入三值 archive（仅记录在 tasks.json 与 tasks/negative_control_manifest.json，绝不进入训练或主终点统计）。archive 的 task_splits 恰为 train/validation/test 三键；内部五值互斥由 data_contract.assert_task_disjoint 保证，映射由 to_archive_splits() 单向完成并加断言测试。ood_flag 仅作 OOD 元数据，不进入 task_context_names 或 14 维特征（特征仍为 §3.1 的 2 维 context_1/context_2）。
 - TaskDataset.load() 会校验 feature_names=design+context、target_map 键集合=target_names、任务 split 归属；P4 数据合同测试必须覆盖这些失败分支。
 - build_dataset_archive(history_root, run_ids, ...) 仅用于未来真实 run（从 EvaluationManager 的 run_manifest/evaluation_log 构建）；P4 合成阶段用 write_archive 直接写 records，并用 audit_archive() 复核 labeled_records/task_counts/data_origins。
 - data_origin 取值：合成 SYNTHETIC_TEST；禁止把 P5 的 15D RFF 数据集直接当 12D 数据（维度/身份都不匹配）。
@@ -598,6 +598,7 @@ T-18 solver_validation.csv（M-01）：P4-CODE run 必含该文件，所有行 s
 | v1.1 | 2026-11-02 | A5 M0 审阅 CHANGES_REQUESTED（0 blocker / 8 major / 10 minor） | 见 §0.1 与本表 |
 | v1.2 | 2026-11-02 | A5 M0 v1.1 delta 复审 CHANGES_REQUESTED（1 open major M-03 + M-08 值错误） | §3.3/§5.2/§12 T-12 五值→三值 archive 映射；§2.3/§12 T-16 design_set=15d；§4.4 槽位映射；§13 单表；§12 T-12..T-18 编号；§11.1 A4 V-01..V-12 |
 | v1.2a | 2026-11-02 | A5 M0 v1.2 delta 复审 CHANGES_REQUESTED（M-03 部分闭合：§3.2 合同冲突） | §3.2 split/task_context 措辞；§3.3/T-12 ood_flag=1.0；§11.2 negative_control_manifest.json；本表 v1.2 行 |
+| v1.2b | 2026-11-02 | A5 v1.2a 终核 APPROVE_FOR_M1（1 non-blocking minor） | §3.3 补 ood_flag 不入特征/特征仍为 2 维 context_1/context_2 |
 
 | 审阅项 | 严重度 | 处置位置 |
 |---|---|---|
