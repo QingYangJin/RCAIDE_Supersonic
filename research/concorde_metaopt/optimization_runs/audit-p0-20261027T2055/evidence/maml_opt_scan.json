@@ -1,0 +1,5 @@
+{
+  "error": "TypeError: unsupported operand type(s) for +: 'WindowsPath' and 'str'",
+  "traceback": "Traceback (most recent call last):\n  File \"D:\\RCAIDE\\research\\concorde_metaopt\\audit.py\", line 130, in _safe\n    return fn()\n           ^^^^\n  File \"D:\\RCAIDE\\research\\concorde_metaopt\\audit.py\", line 687, in <lambda>\n    \"maml_opt\": _safe(\"maml_opt\", lambda: discover_maml_opt(repo_root)),\n                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"D:\\RCAIDE\\research\\concorde_metaopt\\audit.py\", line 431, in discover_maml_opt\n    for extra in [Path(r\"D:\\CodexMemory\\RCAIDE\"), Path(r\"D:\\CodexMemory\") / \"MAML\" + \"\\u5143\\u5b66\\u4e60\"]:\n                                                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~\nTypeError: unsupported operand type(s) for +: 'WindowsPath' and 'str'\n",
+  "label": "maml_opt"
+}

@@ -1,0 +1,118 @@
+{
+  "schema_version": 1,
+  "component": "GEOMETRY_PARITY_355_VS_326",
+  "approval": "Issue #4 / D-12D-003 (comment 6566994749)",
+  "generated_utc": "2026-11-02T02:20:00Z",
+  "method": "compare unique STL vertex sets, not file hashes: both exporters tessellate the same surfaces but write different vertex order/formatting",
+  "wing_only": {
+    "baseline": {
+      "old": {
+        "counts": [
+          6480,
+          6480
+        ],
+        "sorted_identical": false,
+        "sorted_max_abs_diff_m": 25.604638252,
+        "sorted_over_1e-9": 4474,
+        "unique_new": 1082,
+        "unique_old": 1082,
+        "new_not_old": 0,
+        "old_not_new": 0,
+        "example_new_not_old": [],
+        "example_old_not_new": []
+      },
+      "new_matches_old_vertex_set": true,
+      "unique_vertices": 1082
+    },
+    "w10_plus2": {
+      "old": {
+        "counts": [
+          6480,
+          6480
+        ],
+        "sorted_identical": false,
+        "sorted_max_abs_diff_m": 25.604638252,
+        "sorted_over_1e-9": 4474,
+        "unique_new": 1082,
+        "unique_old": 1082,
+        "new_not_old": 0,
+        "old_not_new": 0,
+        "example_new_not_old": [],
+        "example_old_not_new": []
+      },
+      "new_matches_old_vertex_set": true,
+      "unique_vertices": 1082
+    },
+    "twist_check": {
+      "new_w10_vs_new_baseline": {
+        "max_abs_dz_m": 0.03396196,
+        "max_abs_dy_m": 0.0,
+        "max_abs_dx_m": 0.0018850099999987435,
+        "expected_sin2deg_tipchord_m": 0.03396196030486226
+      },
+      "expected_dz_m": 0.03396196030486226,
+      "observed_dz_m": 0.03396196,
+      "matches_within_1e-6": true
+    }
+  },
+  "wing_body": {
+    "components": {
+      "fuselage": {
+        "component": "fuselage",
+        "old_stl": "C:\\Users\\pc\\AppData\\Local\\RCAIDE_Supersonic_agent_state\\fullchain\\lead\\d12d003\\wingbody_old326\\baseline_wingbody_fuselage.stl",
+        "new_stl": "C:\\Users\\pc\\AppData\\Local\\RCAIDE_Supersonic_agent_state\\fullchain\\lead\\d12d003\\wingbody_new355\\baseline_wingbody_fuselage.stl",
+        "old_unique": 559,
+        "new_unique": 552,
+        "old_records": 3264,
+        "new_records": 3264,
+        "only_old": 129,
+        "only_new": 122,
+        "old_sha256_20": "8f8c69afd235c9316f90",
+        "new_sha256_20": "ac8b6dc3cb8348826afa",
+        "only_new_nn_stats": {
+          "min": 6.038263702000008e-19,
+          "median": 0.004382412453650553,
+          "max": 0.03007221280542358,
+          "le_1e-6": 26,
+          "le_1mm": 34,
+          "le_10mm": 86,
+          "le_30_1mm": 122
+        }
+      },
+      "main_wing": {
+        "component": "main_wing",
+        "old_stl": "C:\\Users\\pc\\AppData\\Local\\RCAIDE_Supersonic_agent_state\\fullchain\\lead\\d12d003\\wingbody_old326\\baseline_wingbody_main_wing.stl",
+        "new_stl": "C:\\Users\\pc\\AppData\\Local\\RCAIDE_Supersonic_agent_state\\fullchain\\lead\\d12d003\\wingbody_new355\\baseline_wingbody_main_wing.stl",
+        "old_unique": 1082,
+        "new_unique": 1082,
+        "old_records": 6480,
+        "new_records": 6480,
+        "only_old": 0,
+        "only_new": 0,
+        "old_sha256_20": "35b32db6dd7dcb7230d6",
+        "new_sha256_20": "019c61124bbe4cface95",
+        "only_new_nn_stats": {
+          "min": null,
+          "median": null,
+          "max": null,
+          "le_1e-6": 0,
+          "le_1mm": 0,
+          "le_10mm": 0,
+          "le_30_1mm": 0
+        }
+      }
+    },
+    "conclusion": {
+      "main_wing": "identical vertex sets across versions (only_old=0, only_new=0)",
+      "fuselage": "vertex tessellation changed: 122 new vertices unmatched, nearest-neighbour median 4.38 mm, max 30.07 mm (0.049% of 61.66 m length)",
+      "implication": "do not mix geometry versions inside one paired area-rule comparison; use 3.55 for both wing-alone and wing+body; any cross-version hash equality test is invalid (file bytes differ even when geometry matches)"
+    },
+    "stl_hashes_differ_across_versions": true
+  },
+  "interpretation": {
+    "wing": "geometrically identical between 3.26.1 and 3.55.0 (same unique vertex sets, zero unmatched vertices)",
+    "fuselage": "tessellation changed slightly: 122 of 552 new unique vertices have no exact old match; nearest-neighbour median 4.38 mm, max 30.07 mm over a 61.66 m body (0.049% of length); bounding boxes identical",
+    "paired_comparison_rule": "any paired area-rule comparison must be single-version; run wing-alone and wing+body both on 3.55.0 and never subtract a 3.26.1 result from a 3.55.0 result",
+    "hash_rule": "cross-version STL sha256 equality is not a valid geometry identity test; compare vertex sets instead"
+  }
+}

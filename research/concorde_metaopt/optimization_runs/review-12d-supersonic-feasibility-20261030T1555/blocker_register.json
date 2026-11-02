@@ -1,0 +1,232 @@
+{
+  "schema_version": 1,
+  "register_id": "BLOCKERS-12D-2026-10-30",
+  "created_utc": "2026-10-30T07:40:55.082Z",
+  "git_sha": "1f79924e296c511bd6d700bb579b11a685958f6c",
+  "severity_scale": [
+    "blocking",
+    "major",
+    "minor",
+    "info"
+  ],
+  "blockers": [
+    {
+      "id": "B-GOV-BUDGET",
+      "severity": "blocking",
+      "gate": "BUDGET",
+      "status": "OPEN",
+      "statement": "Issue #4 section 2 states no new physical computation is approved; the owner approved a wing-only validation budget verbally on 2026-10-30 but it is not recorded in the Issue and the itemized budget/stop conditions were not attached.",
+      "required_action": "Owner writes itemized approval in Issue #4 (or accepts validation_matrix_and_budget_proposal.json with edits). No physical case runs before that.",
+      "owner": "负责人"
+    },
+    {
+      "id": "B-12D-12D-CONFIG-MISSING",
+      "severity": "blocking",
+      "gate": "GEO-12D",
+      "status": "OPEN",
+      "statement": "No configs/design_space_12d_lifting_surfaces.yaml exists; aircraft/design_space.py requires exactly the 15 variables in frozen order, so no 12D run can be produced.",
+      "required_action": "After owner approval of design_space_12d_proposal.json: add the 12D config plus loader/regression tests T1-T3, without touching the 15D config.",
+      "owner": "A1/L after approval"
+    },
+    {
+      "id": "B-12D-W10-OPENVSP",
+      "severity": "major",
+      "gate": "GEO-12D / LF-M2.02",
+      "status": "OPEN",
+      "explicit_code_ref": "research/concorde_metaopt/aircraft/openvsp_perturbations.py:590",
+      "statement": "W10 tip_twist reaches the RCAIDE VLM panel geometry but the OpenVSP exporter documents that surface twist is not applied. Any VSPAERO/surface-based W10 evidence is invalid until fixed.",
+      "required_action": "Fix the exporter plus regression test T5, or exclude W10 from surface validation with a written limitation.",
+      "owner": "A1 (code fix card)"
+    },
+    {
+      "id": "B-12D-V01V02-SENS",
+      "severity": "major",
+      "gate": "GEO-12D",
+      "status": "OPEN",
+      "statement": "V01/V02 have no archived isolated perturbation and their physical effect at the frozen zero-sideslip cruise is unquantified; the contract forbids retaining physically inert variables just to reach 12 dimensions.",
+      "required_action": "Run LF zero-sideslip probes LFV-04/05 inside the approved matrix; if below the repeat floor record the owner decision explicitly.",
+      "owner": "L"
+    },
+    {
+      "id": "B-12D-FUSELAGE-SOURCE",
+      "severity": "major",
+      "gate": "GEO-12D / BODY-CORR",
+      "status": "OPEN",
+      "statement": "docs/planning/baseline_reference_decision.md is still marked as a proposal. The owner selected computed values (decision item 2), but the document and freeze record were not updated; mass/CG/SM remain PROVISIONAL_NOT_FROZEN. Computed body wetted area is +10.62% and frontal area -36.89% versus upstream declared values.",
+      "required_action": "Update/freeze baseline_reference_decision.md with owner sign-off; record the frozen body source in the 12D config when created.",
+      "owner": "负责人 + L"
+    },
+    {
+      "id": "B-12D-DOE-15D-PROJECTION",
+      "severity": "major",
+      "gate": "MISSION-DATA / GEO-12D",
+      "status": "OPEN",
+      "origin": "A5 finding F-01",
+      "statement": "The 160 P3 DOE candidates are full 15D LHS samples: F01-F03 take 160 different values each, so they are not 12D native candidates and cannot be labelled as such for the fixed-fuselage acceptance.",
+      "required_action": "Keep the 160 as a historical 15D geometry library; produce any 12D candidate set by documented projection or a new sampling run with a version label and statistics note. Never present 160 as physical fuel-burn labels (geometry-only, 0 true evaluations).",
+      "owner": "L/A2"
+    },
+    {
+      "id": "B-LF-VLM-MACH2",
+      "severity": "major",
+      "gate": "LF-M2.02",
+      "status": "OPEN",
+      "origin": "audit.py:679 B-P3-VLM-MACH2",
+      "statement": "RCAIDE VLM/VSPAERO applicability near Mach 2.02 for this configuration is unvalidated; the VLM class docstring says 'subsonic' though supersonic kernels exist. The surrogate adds AoA-induced drag only and the rest of the build-up is empirical.",
+      "required_action": "Independent LF check (VSPAERO thin-surface matrix LFV-00/01/02) plus a component-level N-force ledger; otherwise LF stays LF_PROVISIONAL.",
+      "owner": "L after budget approval"
+    },
+    {
+      "id": "B-HF-STUB",
+      "severity": "blocking",
+      "gate": "HF-M2.02",
+      "status": "OPEN",
+      "statement": "evaluation/high_fidelity.py is a fail-closed NotImplementedError; no SU2 case, mesh generator or convergence script exists in the repo. rcaide-multifidelity 0.1.0 evidence is Euler-only with a limited native input scope (B-P3-HF-SCOPE).",
+      "required_action": "Implement the wing-only HF path as a separate approved work package; this review only proposes the matrix, not the implementation.",
+      "owner": "A1 (future package)"
+    },
+    {
+      "id": "B-HF-MESH-WINGONLY",
+      "severity": "major",
+      "gate": "HF-M2.02",
+      "status": "OPEN",
+      "statement": "No in-repo capability produces a closed external-flow mesh around a real 12D wing thick surface that avoids the wing-body junction; Gmsh is CLI-only in the project interpreter.",
+      "required_action": "Prototype wing-only surface plus external mesh under an approved diagnostic budget; if impossible without the body, mark HF NOT_IMPLEMENTED_FOR_CONCORDE.",
+      "owner": "A1/L"
+    },
+    {
+      "id": "B-HF-EULER-VISCOUS",
+      "severity": "major",
+      "gate": "HF-M2.02 / BODY-CORR",
+      "status": "OPEN",
+      "statement": "Euler is inviscid; a wing-only Euler result cannot be called a full-aircraft high-fidelity fuel-burn model without an audited viscous correction or RANS evidence.",
+      "required_action": "State the viscous correction plan explicitly in any HF report; never convert Euler drag directly into fuel burn.",
+      "owner": "L"
+    },
+    {
+      "id": "B-BODY-CORR-MISSING",
+      "severity": "blocking",
+      "gate": "BODY-CORR",
+      "status": "OPEN",
+      "statement": "No separable body/interference drag correction model exists; the archived RCAIDE build-up contains body terms and lift-wave terms with unresolved double-counting risk (drag_ledger_and_double_counting.json).",
+      "required_action": "Define D_body_and_interference_correction, calibrate it, and prove no overlap; otherwise report D_total as NOT_VALIDATED and do not pass GATE-CORRECTION.",
+      "owner": "L/A1"
+    },
+    {
+      "id": "B-MISSION-DATA-NFORCE",
+      "severity": "major",
+      "gate": "MISSION-DATA",
+      "status": "OPEN",
+      "statement": "Archived P2 runs store total fuel burn and total CL/CD but not a component-level signed N-force ledger; the section 3 data contract is incomplete.",
+      "required_action": "Extend the evaluation record with the component force ledger on the next approved LF run; keep the 10 archived calls as historical evidence.",
+      "owner": "A1/L"
+    },
+    {
+      "id": "B-REPO-DIRTY",
+      "severity": "major",
+      "gate": "MISSION-DATA / reproducibility",
+      "status": "OPEN",
+      "statement": "Worktree carries 7 tracked modifications and the untracked P5 package/runs (54 files, ~8 MB) plus the evidence directory D:/RCAIDE/output (6.2 MB, not gitignored). Archived run git_sha values include git_dirty flags. The P5 package is frozen and not part of the 12D acceptance.",
+      "required_action": "Keep P5 out of the 12D review package; commit only review artefacts; decide P5 ownership and clean ignored temp dirs after owner approval. Do not silently commit P5.",
+      "owner": "A3/L"
+    },
+    {
+      "id": "B-PR3-STALE",
+      "severity": "minor",
+      "gate": "MISSION-DATA",
+      "status": "OPEN",
+      "statement": "PR #3 title/body still describes the P0 phase while the branch now carries P1-P3 plus this review run.",
+      "required_action": "L updates the PR title/body to the current 12D review content when the receipt is published (L is the only GitHub writer).",
+      "owner": "L"
+    },
+    {
+      "id": "B-A5-P2-BUDGET-COUNT",
+      "severity": "info",
+      "gate": "BUDGET",
+      "status": "RESOLVED_BY_A5_DELIVERY_REVIEW",
+      "origin": "A5 finding",
+      "statement": "Resolved: archived P2 physical evaluations are exactly 10 (5 + 5, each independently recomputable from evaluations.jsonl and summary.json). A5 found that the figure 15 in research/concorde_metaopt/README.md:468-471 counts 10 archived evaluations plus 5 earlier unarchived calls (4 calibration Mission runs + 1 136 t diagnostic probe) that have no run directory or evaluations.jsonl and are therefore not independently verifiable.",
+      "required_action": "Receipt must state '10 archived (independently recomputable) + 5 unarchived (documented only)'; never report 15 as archived evaluations.",
+      "owner": "L",
+      "resolution": {
+        "resolved_by": "A5 minimal delivery review, 2026-10-30",
+        "verdict": "APPROVE_FOR_DELIVERY (5/5 PASS)",
+        "archived_count": 10,
+        "unarchived_documented_only": 5
+      }
+    },
+    {
+      "id": "B-README-STALE-TESTS",
+      "severity": "minor",
+      "gate": "Code",
+      "status": "OPEN",
+      "origin": "A5 finding F-04",
+      "statement": "research/concorde_metaopt/README.md line 720 states 248 tests while the current suite runs 327 (OK, 1 skipped).",
+      "required_action": "Update the README test count in the next code-fix card; do not rewrite history.",
+      "owner": "A1"
+    }
+  ],
+  "gate_rollup": {
+    "GEO-12D": {
+      "status": "PARTIAL",
+      "blocking_ids": [
+        "B-12D-12D-CONFIG-MISSING"
+      ],
+      "major_ids": [
+        "B-12D-W10-OPENVSP",
+        "B-12D-V01V02-SENS",
+        "B-12D-FUSELAGE-SOURCE"
+      ]
+    },
+    "LF-M2.02": {
+      "status": "PARTIAL_LF_PROVISIONAL",
+      "blocking_ids": [],
+      "major_ids": [
+        "B-LF-VLM-MACH2",
+        "B-12D-W10-OPENVSP"
+      ]
+    },
+    "HF-M2.02": {
+      "status": "BLOCKED",
+      "blocking_ids": [
+        "B-HF-STUB"
+      ],
+      "major_ids": [
+        "B-HF-MESH-WINGONLY",
+        "B-HF-EULER-VISCOUS"
+      ]
+    },
+    "BODY-CORR": {
+      "status": "BLOCKED",
+      "blocking_ids": [
+        "B-BODY-CORR-MISSING"
+      ],
+      "major_ids": [
+        "B-12D-FUSELAGE-SOURCE"
+      ]
+    },
+    "MISSION-DATA": {
+      "status": "PARTIAL",
+      "blocking_ids": [],
+      "major_ids": [
+        "B-MISSION-DATA-NFORCE",
+        "B-12D-DOE-15D-PROJECTION",
+        "B-REPO-DIRTY"
+      ]
+    },
+    "BUDGET": {
+      "status": "BLOCKED",
+      "blocking_ids": [
+        "B-GOV-BUDGET"
+      ],
+      "major_ids": []
+    }
+  },
+  "pass_policy_reminder": "No gate can pass by combining LF-only evidence. GATE-LF + GATE-HF + GATE-CORRECTION must each carry a written APPROVED_FOR_NEXT_STAGE from the owner; this register cannot approve anything.",
+  "non_actions": [
+    "no gate state changed",
+    "no budget consumed",
+    "no Issue comment posted",
+    "no code modified"
+  ]
+}

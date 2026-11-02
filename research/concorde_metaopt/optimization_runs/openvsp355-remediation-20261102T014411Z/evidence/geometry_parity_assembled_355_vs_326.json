@@ -1,0 +1,132 @@
+{
+  "schema_version": 1,
+  "component": "GEOMETRY_PARITY_ASSEMBLED_355_VS_326",
+  "approval": "Issue #4 / D-12D-003 (comment 6566994749)",
+  "created_utc": "2026-11-02T03:00:33Z",
+  "provenance": {
+    "source_external_path": "C:/Users/pc/AppData/Local/RCAIDE_Supersonic_agent_state/fullchain/lead/d12d003/geometry_wingbody_355_vs_326.json",
+    "source_external_sha256": "9f25a2ef235b9dd18eaaf6db1cdb2ee5e4d38790bcefe6a08b5765fb4147d1b5",
+    "source_external_bytes": 2165,
+    "note": "copy of the Round-1 assembled wing+body STL comparison that backs the 1627-vertex / bbox / hausdorff statements in README section 3 (A5 task-41 F-08). The per-component comparison is evidence/geometry_parity_355_vs_326.json.",
+    "leaf_count_caveat": "the assembled export reports 546/546 fuselage leaf vertices while the per-component comparison reports 559/552 on the component STLs; both come from the same 3.55.0-vs-3.26.1 export session and are retained without reconciliation. The statements used in the README are the assembled unique-vertex count 1627/1627, the identical bbox and hausdorff 0.03007221337110905 m."
+  },
+  "data": {
+    "main_wing": {
+      "old_unique": 1082,
+      "new_unique": 1082,
+      "bytes_old": 650534,
+      "bytes_new": 650534,
+      "bbox_old": [
+        [
+          0.0,
+          31.495343759
+        ],
+        [
+          -12.802319126,
+          12.802319126
+        ],
+        [
+          -1.493866475,
+          1.493866475
+        ]
+      ],
+      "bbox_new": [
+        [
+          0.0,
+          31.495343759
+        ],
+        [
+          -12.802319126,
+          12.802319126
+        ],
+        [
+          -1.493866475,
+          1.493866475
+        ]
+      ],
+      "bbox_max_diff": 0.0,
+      "hausdorff_old_to_new_m": 0.0,
+      "hausdorff_new_to_old_m": 0.0,
+      "old_vertices_over_1e-6": 0,
+      "new_vertices_over_1e-6": 0
+    },
+    "fuselage": {
+      "old_unique": 546,
+      "new_unique": 546,
+      "bytes_old": 327969,
+      "bytes_new": 327922,
+      "bbox_old": [
+        [
+          -0.0,
+          61.66
+        ],
+        [
+          -1.65614419,
+          1.65614419
+        ],
+        [
+          -1.679472375,
+          1.679472375
+        ]
+      ],
+      "bbox_new": [
+        [
+          -0.0,
+          61.66
+        ],
+        [
+          -1.65614419,
+          1.65614419
+        ],
+        [
+          -1.679472375,
+          1.679472375
+        ]
+      ],
+      "bbox_max_diff": 0.0,
+      "hausdorff_old_to_new_m": 0.03007221337110905,
+      "hausdorff_new_to_old_m": 0.03007221337110905,
+      "old_vertices_over_1e-6": 96,
+      "new_vertices_over_1e-6": 96
+    },
+    "assembly": {
+      "old_unique": 1627,
+      "new_unique": 1627,
+      "bytes_old": 978486,
+      "bytes_new": 978439,
+      "bbox_old": [
+        [
+          -0.0,
+          61.66
+        ],
+        [
+          -12.802319126,
+          12.802319126
+        ],
+        [
+          -1.679472375,
+          1.679472375
+        ]
+      ],
+      "bbox_new": [
+        [
+          -0.0,
+          61.66
+        ],
+        [
+          -12.802319126,
+          12.802319126
+        ],
+        [
+          -1.679472375,
+          1.679472375
+        ]
+      ],
+      "bbox_max_diff": 0.0,
+      "hausdorff_old_to_new_m": 0.03007221337110905,
+      "hausdorff_new_to_old_m": 0.03007221337110905,
+      "old_vertices_over_1e-6": 96,
+      "new_vertices_over_1e-6": 96
+    }
+  }
+}

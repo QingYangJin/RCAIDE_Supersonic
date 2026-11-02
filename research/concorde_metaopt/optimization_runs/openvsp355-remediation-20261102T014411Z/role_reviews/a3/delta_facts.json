@@ -1,0 +1,456 @@
+{
+  "schema_version": 1,
+  "task": {
+    "id": "task-42",
+    "title": "D12D003-DELTA-A3-DBC325D",
+    "owner": "A3 / a3-repo-guard",
+    "reports_to": "lead"
+  },
+  "request_file": "C:/Users/pc/AppData/Local/RCAIDE_Supersonic_agent_state/openvsp355-round1/a3/DELTA_REQUEST.md",
+  "repo": "D:/RCAIDE",
+  "branch": "research/concorde-metaopt",
+  "object": {
+    "commit": "dbc325dd9d7412b48e0399061a86d61eb0de6941",
+    "parent": "5dcb0bf09335fd6f73363d0280a667286d6d20f9",
+    "parents_count": 1,
+    "is_merge": false,
+    "authored_at": "2026-11-02T10:21:47+08:00",
+    "committed_at": "2026-11-02T10:21:47+08:00",
+    "author": "RCAIDE Agent Team <118662522+QingYangJin@users.noreply.github.com>",
+    "committer": "RCAIDE Agent Team <118662522+QingYangJin@users.noreply.github.com>",
+    "subject": "[P1-P3] D-12D-003 Round-1: OpenVSP 3.55.0 side-install, zero-solver evidence and Round-2 budget proposal",
+    "run_dir": "research/concorde_metaopt/optimization_runs/openvsp355-remediation-20261102T014411Z",
+    "docs_report": "docs/reviews/p1p3_d12d003_round1_remediation_report_20261102.md"
+  },
+  "audit_window": {
+    "start": "2026-11-02T10:26:00+08:00",
+    "end": "2026-11-02T10:36:00+08:00",
+    "timezone": "Asia/Shanghai"
+  },
+  "generated_at": "2026-11-02T10:34:26+0800",
+  "generated_at_utc": "2026-11-02T02:34:26Z",
+  "verdict": {
+    "overall": "PASS",
+    "checks_total": 7,
+    "checks_passed": 7,
+    "checks_failed": 0,
+    "checks_blocked": 0,
+    "request_items_total": 8,
+    "request_items_passed": 8,
+    "solver_starts": 0,
+    "numerical_analysis_starts": 0,
+    "repo_writes": 0,
+    "github_writes": 0
+  },
+  "checks": [
+    {
+      "id": "C1",
+      "name": "commit shape (36 files, single parent, no merge)",
+      "result": "PASS",
+      "evidence": {
+        "diff_name_status_lines": 36,
+        "added_A": 36,
+        "modified_M": 0,
+        "deleted_D": 0,
+        "renamed_R": 0,
+        "copied_C": 0,
+        "run_dir_files_committed": 35,
+        "docs_files_committed_in_commit": 1,
+        "paths_outside_allowed": 0,
+        "insertions": 5744,
+        "deletions": 0,
+        "tree_files_parent": 705,
+        "tree_files_commit": 741,
+        "tree_bytes_parent": 98978160,
+        "tree_bytes_commit": 99401849,
+        "tree_bytes_delta": 423689,
+        "parents": [
+          "5dcb0bf09335fd6f73363d0280a667286d6d20f9"
+        ],
+        "file_set": "35 files under run_dir + docs/reviews/p1p3_d12d003_round1_remediation_report_20261102.md"
+      }
+    },
+    {
+      "id": "C2",
+      "name": "contamination / large binaries / excluded paths",
+      "result": "PASS",
+      "evidence": {
+        "binary_files_in_commit": [
+          {
+            "path": "research/concorde_metaopt/optimization_runs/openvsp355-remediation-20261102T014411Z/figures/geometry_parity_355_vs_326.png",
+            "bytes": 95305
+          }
+        ],
+        "binary_count": 1,
+        "max_binary_bytes": 95305,
+        "binaries_over_1MiB": 0,
+        "forbidden_extensions_scanned": [
+          ".vspgeom",
+          ".vsp3",
+          ".stl",
+          ".zip",
+          ".exe",
+          ".dll",
+          ".pyd",
+          ".pt",
+          ".npy",
+          ".npz",
+          ".pdf"
+        ],
+        "forbidden_extension_hits": 0,
+        "excluded_path_patterns": "maml|meta_tasks|meta-tasks|initializer|learning/|/p5|p5_|tutorials|design_space",
+        "excluded_path_hits": 0,
+        "outputs_tracked_files": 0,
+        "file_modes": {
+          "100644": 36
+        },
+        "symlinks": 0,
+        "credential_named_files": 0,
+        "historical_large_blobs_outside_commit": [
+          {
+            "path": "digital_hangar/Tilt_Stopped_Rotor_V_tail_EVTOL/Tilt_Stopped_Rotor_V_Tail.gltf",
+            "bytes": 5002165,
+            "note": "pre-existing repo baseline, not in this commit"
+          }
+        ],
+        "raw_artifacts_on_disk": {
+          "path": "outputs/concorde_metaopt/openvsp355-remediation-20261102T014411Z",
+          "files": 3,
+          "bytes": 728080,
+          "files_list": [
+            "raw_artifacts_manifest.json",
+            "vspaero7_setup_artifacts/wing355_thick.vspgeom",
+            "vspaero7_setup_artifacts/wing355_thin.vspgeom"
+          ],
+          "ignored_by": ".gitignore:7:/outputs/",
+          "check_ignore_verified": true,
+          "tracked": 0
+        }
+      }
+    },
+    {
+      "id": "C3",
+      "name": "secret / sensitive information scan",
+      "result": "PASS",
+      "evidence": {
+        "pattern_hits": {
+          "ghp_[A-Za-z0-9]": 0,
+          "github_pat_": 0,
+          "gh[opsu]_[A-Za-z0-9]": 0,
+          "AKIA[0-9A-Z]{16}": 0,
+          "BEGIN ... PRIVATE KEY": 0,
+          "xox[baprs]-": 0,
+          "sk-[A-Za-z0-9]{20,}": 0,
+          "sk-proj-": 0,
+          "sk-ant-": 0,
+          "sk-[A-Za-z0-9_-]{32,}": 0,
+          "password": 0,
+          "passwd": 0,
+          "secret": 0,
+          "api_key": 0,
+          "api-key": 0,
+          "credentials": 0
+        },
+        "sk_lenient_hits": {
+          "lines": 34,
+          "verdict": "all false positives: substrings inside task-36/task-35/task-38 etc.; no key material"
+        },
+        "token_hits": [
+          {
+            "path": "research/concorde_metaopt/optimization_runs/openvsp355-remediation-20261102T014411Z/role_reviews/a1/api_compat_checks.csv",
+            "line": 8,
+            "text": "GeomID token inside DegenGeom CSV",
+            "benign": true
+          },
+          {
+            "path": "research/concorde_metaopt/optimization_runs/openvsp355-remediation-20261102T014411Z/role_reviews/a3/facts.json",
+            "line": "499-500",
+            "text": "\"token_read\": false / \"token_stat_only\": true",
+            "benign": true
+          },
+          {
+            "path": "research/concorde_metaopt/optimization_runs/openvsp355-remediation-20261102T014411Z/role_reviews/a3/install_audit.md",
+            "line": 91,
+            "text": "states .agents/github Token.txt was not read",
+            "benign": true
+          }
+        ],
+        "agents_mentions": 1,
+        "token_file_read": false,
+        "machine_path_references": {
+          "C:/Users": {
+            "lines": 9,
+            "files": 5,
+            "note": "evidence/delivery path metadata only, no credentials"
+          },
+          "D:/RCAIDE": {
+            "lines": 18
+          },
+          "/c/Users": {
+            "lines": 9
+          },
+          "envs/RCAIDE": {
+            "lines": 7
+          }
+        },
+        "credential_vendor_scan": "textual regex patterns only (no entropy scan)"
+      }
+    },
+    {
+      "id": "C4",
+      "name": "manifest vs git file-set consistency",
+      "result": "PASS",
+      "evidence": {
+        "manifest_path": "research/concorde_metaopt/optimization_runs/openvsp355-remediation-20261102T014411Z/data_manifest.json",
+        "manifest_bytes": 8848,
+        "manifest_sha256": "35afc8fb269915bdc86936a83bb9b1981f3cd2d1a0cec3b6408ac5a42a235e7d",
+        "file_count_field": 34,
+        "files_len": 34,
+        "committed_run_files": 34,
+        "MISSING": [],
+        "EXTRA": [],
+        "SETS_EQUAL": true,
+        "sha_bad": 0,
+        "bytes_bad": 0,
+        "hashing_convention": "sha256 over canonical LF bytes (CRLF -> LF); bytes = canonical length",
+        "canonical_total_bytes": 407111,
+        "total_bytes_field": 407111,
+        "total_bytes_match": true,
+        "raw_total_bytes": 409212,
+        "raw_crlf_files": 15,
+        "report_file": {
+          "path": "docs/reviews/p1p3_d12d003_round1_remediation_report_20261102.md",
+          "bytes": 7728,
+          "sha256": "197b1d1edd0c148b44abc3a044a4c946a757c46b6605f6f71eabeed57398e151",
+          "actual_bytes": 7728,
+          "actual_sha256_match": true,
+          "git_blob": "e84269922cb98e36884045a8d4b5ff0e60560c97"
+        },
+        "run_dir_on_disk": {
+          "files": 35,
+          "raw_bytes": 418060
+        },
+        "git_sha_at_run_start": "5dcb0bf09335fd6f73363d0280a667286d6d20f9",
+        "generated_utc": "2026-11-02T02:20:43Z",
+        "solver_starts": 0,
+        "numerical_analysis_starts": 0
+      }
+    },
+    {
+      "id": "C5",
+      "name": "remote == dbc325d, main unchanged, push is fast-forward",
+      "result": "PASS",
+      "evidence": {
+        "proxy": "http.proxy=http://127.0.0.1:9443 ; http.sslBackend=openssl (read-only fetch/ls-remote only)",
+        "fetch_rc": 0,
+        "lsremote_rc": 0,
+        "remote_main": "ec65e5a9a723bc52df8075a395fcaf9e0fd0fc2b",
+        "remote_research": "dbc325dd9d7412b48e0399061a86d61eb0de6941",
+        "origin_ref": "dbc325dd9d7412b48e0399061a86d61eb0de6941",
+        "ahead": 0,
+        "behind": 0,
+        "ancestor_5dcb0bf_of_dbc325d_rc": 0,
+        "commits_in_range": [
+          "dbc325dd9d7412b48e0399061a86d61eb0de6941"
+        ],
+        "remote_tracking_reflog_top": {
+          "sha": "dbc325dd9d7412b48e0399061a86d61eb0de6941",
+          "at": "2026-11-02 10:24:26 +0800",
+          "action": "update by push"
+        },
+        "remote_tracking_reflog_prev": {
+          "sha": "5dcb0bf09335fd6f73363d0280a667286d6d20f9",
+          "at": "2026-11-01 11:41:30 +0800"
+        },
+        "remote_ref_log_epoch": 1793586266,
+        "forced_update_markers": 0,
+        "main_local": "ec65e5a9a723bc52df8075a395fcaf9e0fd0fc2b",
+        "main_reflog_latest": "2026-10-27 14:31:12 +0800",
+        "main_unchanged": true,
+        "main_remote_matches_local": true,
+        "head_reflog_top": {
+          "sha": "dbc325dd9d7412b48e0399061a86d61eb0de6941",
+          "action": "commit",
+          "epoch": 1793586107
+        },
+        "head_reset_force_markers": 0,
+        "local_head_equals_origin": true
+      }
+    },
+    {
+      "id": "C6",
+      "name": "main worktree hygiene and P5 baseline unchanged",
+      "result": "PASS",
+      "evidence": {
+        "porcelain_default_lines": 22,
+        "tracked_modified": 7,
+        "tracked_modified_paths": [
+          "research/concorde_metaopt/README.md",
+          "research/concorde_metaopt/cli.py",
+          "research/concorde_metaopt/optimization_runs/index.json",
+          "research/concorde_metaopt/reports/figures.py",
+          "tutorials/Optimization_Wing_Planform_Fuel_Burn/Differential_Evolution.py",
+          "tutorials/Optimization_Wing_Planform_Fuel_Burn/README_DE.md",
+          "tutorials/Optimization_Wing_Planform_Fuel_Burn/Save_Results.py"
+        ],
+        "untracked_top_level_entries": 15,
+        "porcelain_uall_lines": 93,
+        "staged": 0,
+        "stash": 0,
+        "diffstat": {
+          "files": 7,
+          "insertions": 586,
+          "deletions": 123
+        },
+        "p5": {
+          "untracked_files": 54,
+          "untracked_bytes": 7976412,
+          "baseline_expected_files": 54,
+          "baseline_expected_bytes": 7976412,
+          "baseline_match": true,
+          "new_files": 0,
+          "modified_files": 0,
+          "tracked_hits": 3,
+          "tracked_hits_paths": [
+            "research/concorde_metaopt/optimization_runs/audit-p0-20261027T2055/evidence/maml_opt_scan.json",
+            "research/concorde_metaopt/optimization_runs/audit-p0-20261028T1430/evidence/maml_opt_scan.json",
+            "research/concorde_metaopt/optimization_runs/audit-p0-reviewfix-20261028T1540/evidence/maml_opt_scan.json"
+          ],
+          "tracked_hits_note": "pre-existing historical evidence; all exist in parent commit; not P5 code; not touched by this commit",
+          "staged": 0
+        },
+        "output_untracked_files": 32,
+        "gitignore_blob": "d576f43b94b4244048aead5444c3fc96a3928898",
+        "gitignore_changed_in_commit": false,
+        "repo_state_before_after_same": true
+      }
+    },
+    {
+      "id": "C7",
+      "name": "worktree/tag/branch hygiene; two new worktrees clean",
+      "result": "PASS",
+      "evidence": {
+        "worktree_count": 16,
+        "prunable": 0,
+        "main_worktree": {
+          "path": "D:/RCAIDE",
+          "branch": "refs/heads/research/concorde-metaopt"
+        },
+        "detached_worktrees": 15,
+        "new_worktrees": [
+          {
+            "path": "D:/RCAIDE-verify-a3-dbc325d",
+            "head": "dbc325dd9d7412b48e0399061a86d61eb0de6941",
+            "detached": true,
+            "symbolic_ref_rc": 1,
+            "porcelain_uall": 0,
+            "ignored_matching": 0
+          },
+          {
+            "path": "D:/RCAIDE-verify-a5-dbc325d",
+            "head": "dbc325dd9d7412b48e0399061a86d61eb0de6941",
+            "detached": true,
+            "symbolic_ref_rc": 1,
+            "porcelain_uall": 0,
+            "ignored_matching": 0
+          }
+        ],
+        "tags": 0,
+        "local_branches": [
+          "refs/heads/main",
+          "refs/heads/research/concorde-metaopt"
+        ],
+        "remote_refs": [
+          "refs/remotes/origin/HEAD",
+          "refs/remotes/origin/main",
+          "refs/remotes/origin/research/concorde-metaopt"
+        ],
+        "unexpected_branches": 0,
+        "unexpected_tags": 0,
+        "d_rcaide_untracked_dir": "absent"
+      }
+    }
+  ],
+  "request_acceptance": [
+    {
+      "item": "36 文件结构",
+      "expected": "36 files (35 run dir + 1 docs report)",
+      "observed": "36 = 35 run dir + 1 docs report, all A",
+      "result": "PASS"
+    },
+    {
+      "item": "无 P5 路径",
+      "expected": "no P5/maml/meta_tasks/tutorials/design_space in commit",
+      "observed": "excluded path hits 0",
+      "result": "PASS"
+    },
+    {
+      "item": "无密钥",
+      "expected": "no credentials/tokens leaked",
+      "observed": "credential patterns 0; 3 benign token mentions",
+      "result": "PASS"
+    },
+    {
+      "item": "无大二进制",
+      "expected": "no large binary in commit; raw artifacts outside git",
+      "observed": "only 95,305 B png; raw artifacts 3 files/728,080 B ignored under outputs/",
+      "result": "PASS"
+    },
+    {
+      "item": "manifest 与 git 文件集一致",
+      "expected": "manifest files == git run-dir files, hashes match",
+      "observed": "34/34 sha+bytes match, sets equal, total 407,111 match",
+      "result": "PASS"
+    },
+    {
+      "item": "远端 == dbc325d、main 未动",
+      "expected": "remote research=dbc325d; main=ec65e5a unchanged",
+      "observed": "remote matches; main unchanged since 2026-10-27",
+      "result": "PASS"
+    },
+    {
+      "item": "push 为 fast-forward",
+      "expected": "5dcb0bf..dbc325d FF, no force",
+      "observed": "ancestor rc=0; forced-update=0; 1 commit",
+      "result": "PASS"
+    },
+    {
+      "item": "P5 基线不变 + 两个新 worktree 干净",
+      "expected": "P5 54 files/7,976,412 B; new worktrees clean",
+      "observed": "P5 exact match; both worktrees porcelain=0, detached@dbc325d",
+      "result": "PASS"
+    }
+  ],
+  "limitations": [
+    "Secret scan is textual regex based (git grep counts), not entropy/vendor-API verification.",
+    "Remote verified online through local CONNECT proxy; fetch and ls-remote both succeeded (not NOT_RUN).",
+    "Point-in-time snapshot 2026-11-02 10:26-10:36 +0800; later agent actions not covered.",
+    "outputs/ raw artifacts checked only for ignored status and tracked=0, not byte-audited for sensitive content.",
+    "Other 15 pre-existing worktrees only checked for HEAD/detached/list sanity, not full porcelain sweep (request only requires the two new ones).",
+    "Deletion/rollback actions NOT_RUN (A3 read-only)."
+  ],
+  "safety": {
+    "solver_starts": 0,
+    "physical_computations": 0,
+    "repo_writes": 0,
+    "git_write_commands": 0,
+    "github_write_operations": 0,
+    "token_file_content_read": false,
+    "outputs_written_to": "C:/Users/pc/AppData/Local/RCAIDE_Supersonic_agent_state/EXT/openvsp355-round1/a3/",
+    "repo_state_after": {
+      "head": "dbc325dd9d7412b48e0399061a86d61eb0de6941",
+      "porcelain_default_lines": 22,
+      "staged": 0
+    }
+  },
+  "outputs": {
+    "report": {
+      "path": "C:/Users/pc/AppData/Local/RCAIDE_Supersonic_agent_state/EXT/openvsp355-round1/a3/delta_isolation_dbc325d.md",
+      "bytes": 11746,
+      "sha256": "e02300450c460683e24f67a490313a2f744fd266e4d9dd25c22400496ca33df7"
+    },
+    "facts": {
+      "path": "C:/Users/pc/AppData/Local/RCAIDE_Supersonic_agent_state/EXT/openvsp355-round1/a3/facts.json"
+    }
+  }
+}

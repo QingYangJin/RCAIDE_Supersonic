@@ -1,0 +1,181 @@
+{
+  "run_id": "review-12d-supersonic-feasibility-20261030T1555",
+  "stage": "P1-P3 integration acceptance (12D option A) — static feasibility review",
+  "status": "review_completed_static_no_new_physics",
+  "created_utc": "2026-10-30T07:42:25.007Z",
+  "git_sha": "1f79924e296c511bd6d700bb579b11a685958f6c",
+  "branch": "research/concorde-metaopt",
+  "pr": "PR #3 (open, head research/concorde-metaopt, base main)",
+  "authority": "Issue #4 current body + decision D-12D-001; Issue #1 governance only",
+  "scope": {
+    "design_space": "12D lifting surfaces: W01-W10 + V01-V02; fuselage F01-F03 fixed at model-computed baseline (owner decision 2026-10-30 item 2)",
+    "lifting_surfaces_only": true,
+    "preserved_untouched": [
+      "configs/design_space_15d.yaml",
+      "160 P3 DOE candidates",
+      "all P1/P2/P3 archived runs",
+      "P4/P5 code and local runs (frozen, not part of this review)"
+    ],
+    "explicit_non_actions": [
+      "no new RCAIDE Mission evaluation",
+      "no VSPAERO solve",
+      "no SU2/CFD run",
+      "no new meshing",
+      "no bulk DOE",
+      "no BO/DE/MAML training",
+      "no 15D result re-labelled as 12D",
+      "no code modified by the reviewer",
+      "no Issue comment posted by the reviewer"
+    ]
+  },
+  "physical_calls": {
+    "rcaide_mission": 0,
+    "vspaero": 0,
+    "su2": 0,
+    "new_doe": 0,
+    "archived_calls_cited": {
+      "rcaide_mission": 10,
+      "vspaero": 0,
+      "su2": 0,
+      "doe_geometry_candidates": 160,
+      "doe_physical_labels": 0
+    },
+    "unarchived_documented_only": 5
+  },
+  "deliverables": {
+    "summary_json": "summary.json",
+    "design_space_proposal": "design_space_12d_proposal.json",
+    "variable_matrix": "variable_to_solver_matrix.csv",
+    "evidence_inventory": "existing_evidence_inventory.json",
+    "method_audit": "supersonic_aero_method_audit.json",
+    "drag_ledger": "drag_ledger_and_double_counting.json",
+    "validation_budget_proposal": "validation_matrix_and_budget_proposal.json",
+    "blockers": "blocker_register.json",
+    "data_manifest": "data_manifest.json",
+    "figures": [
+      "figures/p2_smoke_perturbation_delta.png",
+      "figures/evidence_call_ledger.png"
+    ],
+    "figure_script": "make_figures.py",
+    "run_readme": "README.md",
+    "formal_report": "docs/reviews/p1_p3_12d_feasibility_review.md"
+  },
+  "gates": {
+    "GEO-12D": {
+      "status": "PARTIAL",
+      "validated": false,
+      "blockers": [
+        "B-12D-12D-CONFIG-MISSING"
+      ],
+      "majors": [
+        "B-12D-W10-OPENVSP",
+        "B-12D-V01V02-SENS",
+        "B-12D-FUSELAGE-SOURCE"
+      ]
+    },
+    "LF-M2.02": {
+      "status": "PARTIAL_LF_PROVISIONAL",
+      "validated": false,
+      "majors": [
+        "B-LF-VLM-MACH2",
+        "B-12D-W10-OPENVSP"
+      ]
+    },
+    "HF-M2.02": {
+      "status": "BLOCKED",
+      "validated": false,
+      "blockers": [
+        "B-HF-STUB"
+      ],
+      "majors": [
+        "B-HF-MESH-WINGONLY",
+        "B-HF-EULER-VISCOUS"
+      ]
+    },
+    "BODY-CORR": {
+      "status": "BLOCKED",
+      "validated": false,
+      "blockers": [
+        "B-BODY-CORR-MISSING"
+      ],
+      "majors": [
+        "B-12D-FUSELAGE-SOURCE"
+      ]
+    },
+    "MISSION-DATA": {
+      "status": "PARTIAL",
+      "validated": false,
+      "majors": [
+        "B-MISSION-DATA-NFORCE",
+        "B-12D-DOE-15D-PROJECTION",
+        "B-REPO-DIRTY"
+      ]
+    },
+    "BUDGET": {
+      "status": "BLOCKED",
+      "validated": false,
+      "blockers": [
+        "B-GOV-BUDGET"
+      ]
+    }
+  },
+  "headline_findings": [
+    "The archived P2 numbers come from a surrogated RCAIDE VLM + empirical drag build-up (use_surrogate=True by default); Mach 2.02 is interpolated between training nodes 2.0 and 2.5, but supersonic VLM validity for this configuration is unvalidated (B-P3-VLM-MACH2).",
+    "W10 tip_twist reaches VLM panels (with a measured archived effect +8.07 kg for +2 deg) but is NOT applied by the OpenVSP exporter (openvsp_perturbations.py:590); surface/VSPAERO W10 evidence is invalid until fixed.",
+    "V01/V02 have no isolated archived sensitivity; zero-sideslip physics analysis says their realistic effect is parasite/wetted drag, so a small LF probe is required before certifying the 12D set.",
+    "The 160 P3 DOE candidates are full-15D LHS samples (F01-F03 vary across all 160), not 12D native candidates and not fuel-burn labels.",
+    "No separable body/interference drag correction exists, and the archived build-up has unresolved induced-vs-lift-wave overlap; D_total is NOT_VALIDATED.",
+    "HF is blocked: fail-closed stub, zero SU2 solves, no wing-only closed external mesh generator, Euler carries no viscous drag.",
+    "Fixed-fuselage source still not frozen in the decision document despite the owner's computed-values selection; mass/CG remain PROVISIONAL_NOT_FROZEN."
+  ],
+  "evidence_verification": {
+    "unit_tests": "A5 independent rerun: 327 tests OK, 1 skipped, EXIT_CODE=0 on HEAD 1f79924",
+    "a5_baseline_verdict": "APPROVE_WITH_FINDINGS (no blockers); F-01 DOE 15D mismatch, F-02 HF stub, F-03 provisional bounds",
+    "run_inventory": "14 run directories: 11 committed P0-P3 runs + 3 untracked P5 runs (frozen, excluded from acceptance)",
+    "a5_delivery_review": {
+      "verdict": "APPROVE_FOR_DELIVERY (5/5 PASS, no blocking)",
+      "date": "2026-10-30",
+      "scope": "8 JSON parse, CSV 12x15, manifest sha256 12/12, 3 code refs, exaggeration scan",
+      "location": "C:/Users/pc/AppData/Local/RCAIDE_Supersonic_agent_state/independent-review/delivery_review.md"
+    },
+    "a5_p2_budget_resolution": "Archived physical evaluations = 10 (independently recomputable). The documented total 15 adds 5 unarchived calls (4 calibration + 1 136 t diagnostic) with no run artefacts; the receipt must state '10 archived + 5 unarchived', never 15 archived."
+  },
+  "validation_proposal": {
+    "status": "PROPOSED_NOT_APPROVED_NOT_EXECUTED",
+    "solved_cases": 11,
+    "lf_cases": 6,
+    "hf_cases": 5,
+    "owner_approval_state": "verbal wing-only approval 2026-10-30; not recorded in Issue #4 (Issue #4 section 2 requires itemized written approval)",
+    "ordering": [
+      "HFS-00 SU2 wedge verification",
+      "LFV-00 VSPAERO baseline",
+      "LFV-01/02/03 perturbations",
+      "LFV-04/05 V01/V02 probes",
+      "HFS-01..04 wing-only Euler mesh convergence + one perturbation"
+    ]
+  },
+  "decisions_requested": [
+    "approve 12D proposal and authorize 12D config creation + loader/regression tests",
+    "authorize W10 OpenVSP twist exporter fix with regression test",
+    "freeze the fixed-fuselage source in docs/planning/baseline_reference_decision.md",
+    "record itemized written approval of the wing-only validation matrix in Issue #4",
+    "decide HF implementation (separate package) vs NOT_IMPLEMENTED_FOR_CONCORDE for this acceptance"
+  ],
+  "reproduction": {
+    "command": "python -E -s -B make_figures.py (project env D:/RCAIDE/envs/RCAIDE/python.exe)",
+    "runtime_used": "Python 3.11.17, matplotlib 3.11.2; no solver executed",
+    "source_hashes": {
+      "configs/design_space_15d.yaml": "1a9025e998305a86060181584b63c9c4b93526ee9a25a2b7d0a215b23aaa6326",
+      "configs/task_fixed_cruise.yaml": "bde73b739b50cac786ca6b843fa2e9877c423262b7e8c93e8724d8ba481d894d",
+      "tutorials/.../Concorde.py": "4c633e485a915151faaa8104e6647f9dc02bd08ae1436c22845e5917b3d735bd",
+      "docs/planning/baseline_reference_decision.md": "991e3ff15e3df9d070efa11b9ceb891cc7011537a910497c374d047d95001221"
+    }
+  },
+  "independence_statement": "This package was produced by the Team Lead (L) after the A1/A2 subagent sessions failed repeatedly without delivering; the failure and the L takeover are disclosed in the team status. A5's independent baseline review is separate evidence. No fictitious independent reviewer is claimed.",
+  "non_actions": [
+    "nothing executed",
+    "no repository file modified except this run directory and the single report file",
+    "no GitHub write",
+    "no gate approved"
+  ]
+}

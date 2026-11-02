@@ -1,0 +1,766 @@
+{
+  "schema_version": 1,
+  "run_id": "p1p3-fullchain-20261031T0407Z",
+  "approval": "Issue #4 / D-12D-002 (comment 6538481816)",
+  "solver": {
+    "name": "VSPAERO",
+    "version": "6.2.0",
+    "binary": "D:/Program Files/OpenVSP/OpenVSP-3.26.1-win64-Python3.9/OpenVSP-3.26.1-win64/vspaero.exe",
+    "command": "vspaero -omp 4 -fs 2.02 END -2 0 2 4 6 END 0 END <case>_DegenGeom"
+  },
+  "geometry": {
+    "kind": "isolated 12D main wing, thin-surface DegenGeom (no fuselage, no vertical tail)",
+    "wing_area_m2": 358.25,
+    "span_m": 25.604638251691824,
+    "cref_m": 18.489893,
+    "bref_m": 25.604638,
+    "moment_reference": {
+      "X_cg": 16.821978259514246,
+      "Y_cg": 0.0,
+      "Z_cg": 0.0,
+      "status": "PROVISIONAL"
+    }
+  },
+  "frozen_conditions": {
+    "mach": 2.02,
+    "altitude_m": 18288.0,
+    "temperature_k": 216.65,
+    "pressure_pa": 7171.544888256813,
+    "density_kg_m3": 0.1153178340089936,
+    "speed_of_sound_m_s": 295.0680184,
+    "velocity_m_s": 596.0373972278921,
+    "reynolds_cref": 89397005.8767656
+  },
+  "cases": {
+    "LFV-00": {
+      "case_id": "LFV-00",
+      "case": "baseline",
+      "description": "baseline",
+      "valid_for_evidence": true,
+      "tessellation": {
+        "Tess_U": 16.0,
+        "Tess_W": 33.0
+      },
+      "polar_path": "EXT\\lf\\baseline\\main_wing_baseline_DegenGeom.polar",
+      "polar_sha256": "f03511d5ee374860cad635195569322746bafed00c167547fa1e109ea6821691",
+      "status": "SOLVED_VALID",
+      "rows": [
+        {
+          "_extra_unlabeled": [
+            7.302761
+          ],
+          "Beta": 0.0,
+          "Mach": 2.02,
+          "AoA": -2.0,
+          "Re/1e6": 89.39701,
+          "CL": -0.08781966,
+          "CDo": 0.005083525,
+          "CDi": -0.0008942229,
+          "CDtot": 0.004189302,
+          "CS": -5.058147e-10,
+          "L/D": -20.96284,
+          "E": -1.500157,
+          "CFx": -0.00395854,
+          "CFy": -5.058147e-10,
+          "CFz": -0.08773496,
+          "CMx": 2.711278e-09,
+          "CMy": 0.02582589,
+          "CMz": -5.217745e-10,
+          "CMl": -2.711278e-09,
+          "CMm": 0.02582589,
+          "CMn": 5.217745e-10
+        },
+        {
+          "_extra_unlabeled": [
+            3.24
+          ],
+          "Beta": 0.0,
+          "Mach": 2.02,
+          "AoA": 0.0,
+          "Re/1e6": 89.39701,
+          "CL": 6.129519e-16,
+          "CDo": 0.005028233,
+          "CDi": -4.706976e-30,
+          "CDtot": 0.005028233,
+          "CS": 1.841233e-36,
+          "L/D": 1.219021e-13,
+          "E": -0.01388385,
+          "CFx": -4.706976e-30,
+          "CFy": 1.841233e-36,
+          "CFz": 6.129519e-16,
+          "CMx": -1.719982e-22,
+          "CMy": -5.008992e-16,
+          "CMz": 1.543286e-36,
+          "CMl": 1.719982e-22,
+          "CMm": -5.008992e-16,
+          "CMn": -1.543286e-36
+        },
+        {
+          "_extra_unlabeled": [
+            0.9797452
+          ],
+          "Beta": 0.0,
+          "Mach": 2.02,
+          "AoA": 2.0,
+          "Re/1e6": 89.39701,
+          "CL": 0.08781966,
+          "CDo": 0.005082831,
+          "CDi": -0.0008942229,
+          "CDtot": 0.004188608,
+          "CS": -5.058147e-10,
+          "L/D": 20.96631,
+          "E": -1.500157,
+          "CFx": -0.00395854,
+          "CFy": -5.058147e-10,
+          "CFz": 0.08773496,
+          "CMx": -2.711278e-09,
+          "CMy": -0.02582589,
+          "CMz": -5.217745e-10,
+          "CMl": 2.711278e-09,
+          "CMm": -0.02582589,
+          "CMn": 5.217745e-10
+        },
+        {
+          "_extra_unlabeled": [
+            0.263028
+          ],
+          "Beta": 0.0,
+          "Mach": 2.02,
+          "AoA": 4.0,
+          "Re/1e6": 89.39701,
+          "CL": 0.1757192,
+          "CDo": 0.005245224,
+          "CDi": -0.003566005,
+          "CDtot": 0.001679218,
+          "CS": -1.963035e-10,
+          "L/D": 104.6434,
+          "E": -1.506106,
+          "CFx": -0.01581487,
+          "CFy": -1.963035e-10,
+          "CFz": 0.1750424,
+          "CMx": -5.598057e-10,
+          "CMy": -0.05152589,
+          "CMz": -2.228976e-10,
+          "CMl": 5.598057e-10,
+          "CMm": -0.05152589,
+          "CMn": 2.228976e-10
+        },
+        {
+          "_extra_unlabeled": [
+            1.094708
+          ],
+          "Beta": 0.0,
+          "Mach": 2.02,
+          "AoA": 6.0,
+          "Re/1e6": 89.39701,
+          "CL": 0.2637765,
+          "CDo": 0.005510651,
+          "CDi": -0.007982808,
+          "CDtot": -0.002472157,
+          "CS": -4.407862e-10,
+          "L/D": -106.6989,
+          "E": -1.516058,
+          "CFx": -0.03551122,
+          "CFy": -4.407862e-10,
+          "CFz": 0.2614971,
+          "CMx": -8.362977e-10,
+          "CMy": -0.07697489,
+          "CMz": -5.005016e-10,
+          "CMl": 8.362977e-10,
+          "CMm": -0.07697489,
+          "CMn": 5.005016e-10
+        }
+      ],
+      "alpha_2deg": {
+        "_extra_unlabeled": [
+          0.9797452
+        ],
+        "Beta": 0.0,
+        "Mach": 2.02,
+        "AoA": 2.0,
+        "Re/1e6": 89.39701,
+        "CL": 0.08781966,
+        "CDo": 0.005082831,
+        "CDi": -0.0008942229,
+        "CDtot": 0.004188608,
+        "CS": -5.058147e-10,
+        "L/D": 20.96631,
+        "E": -1.500157,
+        "CFx": -0.00395854,
+        "CFy": -5.058147e-10,
+        "CFz": 0.08773496,
+        "CMx": -2.711278e-09,
+        "CMy": -0.02582589,
+        "CMz": -5.217745e-10,
+        "CMl": 2.711278e-09,
+        "CMm": -0.02582589,
+        "CMn": 5.217745e-10
+      },
+      "alpha_0deg": {
+        "_extra_unlabeled": [
+          3.24
+        ],
+        "Beta": 0.0,
+        "Mach": 2.02,
+        "AoA": 0.0,
+        "Re/1e6": 89.39701,
+        "CL": 6.129519e-16,
+        "CDo": 0.005028233,
+        "CDi": -4.706976e-30,
+        "CDtot": 0.005028233,
+        "CS": 1.841233e-36,
+        "L/D": 1.219021e-13,
+        "E": -0.01388385,
+        "CFx": -4.706976e-30,
+        "CFy": 1.841233e-36,
+        "CFz": 6.129519e-16,
+        "CMx": -1.719982e-22,
+        "CMy": -5.008992e-16,
+        "CMz": 1.543286e-36,
+        "CMl": 1.719982e-22,
+        "CMm": -5.008992e-16,
+        "CMn": -1.543286e-36
+      }
+    },
+    "LFV-01": {
+      "case_id": "LFV-01",
+      "case": "w01_plus1pct",
+      "description": "perturbation W01 wing_area +1%",
+      "valid_for_evidence": false,
+      "tessellation": {
+        "Tess_U": 16.0,
+        "Tess_W": 33.0
+      },
+      "polar_path": "EXT\\lf\\failed_runs\\w01_plus1pct_polar_invalid_template.polar",
+      "polar_sha256": null,
+      "status": "MISSING"
+    },
+    "LFV-02": {
+      "case_id": "LFV-02",
+      "case": "w03_plus1deg",
+      "description": "perturbation W03 sweep_1 +1 deg",
+      "valid_for_evidence": false,
+      "tessellation": {
+        "Tess_U": 16.0,
+        "Tess_W": 33.0
+      },
+      "polar_path": "EXT\\lf\\failed_runs\\w03_plus1deg_polar_invalid_template.polar",
+      "polar_sha256": null,
+      "status": "MISSING"
+    },
+    "LFV-03": {
+      "case_id": "LFV-03",
+      "case": "w10_plus2",
+      "description": "perturbation W10 tip_twist +2 deg",
+      "valid_for_evidence": false,
+      "tessellation": {
+        "Tess_U": 16.0,
+        "Tess_W": 33.0
+      },
+      "polar_path": "EXT\\lf\\failed_runs\\w10_plus2_polar_invalid_template.polar",
+      "polar_sha256": null,
+      "status": "MISSING"
+    },
+    "SENS-A": {
+      "case_id": "SENS-A",
+      "case": "sens_coarse",
+      "description": "baseline coarse panel density",
+      "valid_for_evidence": true,
+      "tessellation": {
+        "Tess_U": 8.0,
+        "Tess_W": 17.0
+      },
+      "polar_path": "EXT\\lf\\sens_coarse\\main_wing_sens_coarse_DegenGeom.polar",
+      "polar_sha256": "e9a8df4136d212a60755dea49a6b2486d066a8780a24d6935ab89e2538ba0a91",
+      "status": "SOLVED_VALID",
+      "rows": [
+        {
+          "_extra_unlabeled": [
+            7.07764
+          ],
+          "Beta": 0.0,
+          "Mach": 2.02,
+          "AoA": -2.0,
+          "Re/1e6": 89.39701,
+          "CL": -0.08387934,
+          "CDo": 0.005079778,
+          "CDi": 0.0003435104,
+          "CDtot": 0.005423288,
+          "CS": 2.108764e-11,
+          "L/D": -15.46651,
+          "E": 3.562618,
+          "CFx": -0.002584045,
+          "CFy": 2.108764e-11,
+          "CFz": -0.08384023,
+          "CMx": -1.224754e-09,
+          "CMy": 0.02281313,
+          "CMz": 3.637583e-12,
+          "CMl": 1.224754e-09,
+          "CMm": 0.02281313,
+          "CMn": -3.637583e-12
+        },
+        {
+          "_extra_unlabeled": [
+            3.24
+          ],
+          "Beta": 0.0,
+          "Mach": 2.02,
+          "AoA": 0.0,
+          "Re/1e6": 89.39701,
+          "CL": 2.119945e-16,
+          "CDo": 0.005028233,
+          "CDi": -1.630133e-30,
+          "CDtot": 0.005028233,
+          "CS": 1.177993e-37,
+          "L/D": 4.216084e-14,
+          "E": -0.004795405,
+          "CFx": -1.630133e-30,
+          "CFy": 1.177993e-37,
+          "CFz": 2.119945e-16,
+          "CMx": 1.101606e-23,
+          "CMy": -2.21348e-16,
+          "CMz": 9.107265e-38,
+          "CMl": -1.101606e-23,
+          "CMm": -2.21348e-16,
+          "CMn": -9.107265e-38
+        },
+        {
+          "_extra_unlabeled": [
+            1.038327
+          ],
+          "Beta": 0.0,
+          "Mach": 2.02,
+          "AoA": 2.0,
+          "Re/1e6": 89.39701,
+          "CL": 0.08387934,
+          "CDo": 0.005076806,
+          "CDi": 0.0003435104,
+          "CDtot": 0.005420316,
+          "CS": 2.108764e-11,
+          "L/D": 15.47499,
+          "E": 3.562618,
+          "CFx": -0.002584045,
+          "CFy": 2.108764e-11,
+          "CFz": 0.08384023,
+          "CMx": 1.224754e-09,
+          "CMy": -0.02281313,
+          "CMz": 3.637583e-12,
+          "CMl": -1.224754e-09,
+          "CMm": -0.02281313,
+          "CMn": -3.637583e-12
+        },
+        {
+          "_extra_unlabeled": [
+            0.2443595
+          ],
+          "Beta": 0.0,
+          "Mach": 2.02,
+          "AoA": 4.0,
+          "Re/1e6": 89.39701,
+          "CL": 0.1675846,
+          "CDo": 0.005224782,
+          "CDi": 0.001369858,
+          "CDtot": 0.00659464,
+          "CS": -2.7826e-10,
+          "L/D": 25.41225,
+          "E": 3.566087,
+          "CFx": -0.01032359,
+          "CFy": -2.7826e-10,
+          "CFz": 0.167272,
+          "CMx": -3.2422e-09,
+          "CMy": -0.04551511,
+          "CMz": -1.762275e-10,
+          "CMl": 3.2422e-09,
+          "CMm": -0.04551511,
+          "CMn": 1.762275e-10
+        },
+        {
+          "_extra_unlabeled": [
+            0.8463335
+          ],
+          "Beta": 0.0,
+          "Mach": 2.02,
+          "AoA": 6.0,
+          "Re/1e6": 89.39701,
+          "CL": 0.2509429,
+          "CDo": 0.005464914,
+          "CDi": 0.003066545,
+          "CDtot": 0.008531459,
+          "CS": -6.248143e-10,
+          "L/D": 29.41384,
+          "E": 3.571904,
+          "CFx": -0.02318093,
+          "CFy": -6.248143e-10,
+          "CFz": 0.2498888,
+          "CMx": -4.843545e-09,
+          "CMy": -0.06799536,
+          "CMz": -3.957071e-10,
+          "CMl": 4.843545e-09,
+          "CMm": -0.06799536,
+          "CMn": 3.957071e-10
+        }
+      ],
+      "alpha_2deg": {
+        "_extra_unlabeled": [
+          1.038327
+        ],
+        "Beta": 0.0,
+        "Mach": 2.02,
+        "AoA": 2.0,
+        "Re/1e6": 89.39701,
+        "CL": 0.08387934,
+        "CDo": 0.005076806,
+        "CDi": 0.0003435104,
+        "CDtot": 0.005420316,
+        "CS": 2.108764e-11,
+        "L/D": 15.47499,
+        "E": 3.562618,
+        "CFx": -0.002584045,
+        "CFy": 2.108764e-11,
+        "CFz": 0.08384023,
+        "CMx": 1.224754e-09,
+        "CMy": -0.02281313,
+        "CMz": 3.637583e-12,
+        "CMl": -1.224754e-09,
+        "CMm": -0.02281313,
+        "CMn": -3.637583e-12
+      },
+      "alpha_0deg": {
+        "_extra_unlabeled": [
+          3.24
+        ],
+        "Beta": 0.0,
+        "Mach": 2.02,
+        "AoA": 0.0,
+        "Re/1e6": 89.39701,
+        "CL": 2.119945e-16,
+        "CDo": 0.005028233,
+        "CDi": -1.630133e-30,
+        "CDtot": 0.005028233,
+        "CS": 1.177993e-37,
+        "L/D": 4.216084e-14,
+        "E": -0.004795405,
+        "CFx": -1.630133e-30,
+        "CFy": 1.177993e-37,
+        "CFz": 2.119945e-16,
+        "CMx": 1.101606e-23,
+        "CMy": -2.21348e-16,
+        "CMz": 9.107265e-38,
+        "CMl": -1.101606e-23,
+        "CMm": -2.21348e-16,
+        "CMn": -9.107265e-38
+      }
+    },
+    "SENS-B": {
+      "case_id": "SENS-B",
+      "case": "sens_fine",
+      "description": "baseline fine panel density",
+      "valid_for_evidence": true,
+      "tessellation": {
+        "Tess_U": 32.0,
+        "Tess_W": 65.0
+      },
+      "polar_path": "EXT\\lf\\sens_fine\\main_wing_sens_fine_DegenGeom.polar",
+      "polar_sha256": "166b1b2d46b0a9a55da7d888705b240b6666cac6b6b8eb1be6cddc7e4f7a5e0d",
+      "status": "SOLVED_VALID",
+      "rows": [
+        {
+          "_extra_unlabeled": [
+            8.518137
+          ],
+          "Beta": 0.0,
+          "Mach": 2.02,
+          "AoA": -2.0,
+          "Re/1e6": 89.39701,
+          "CL": -0.1082826,
+          "CDo": 0.005168669,
+          "CDi": -0.02260794,
+          "CDtot": -0.01743927,
+          "CS": -2.853562e-09,
+          "L/D": 6.209123,
+          "E": -0.09021015,
+          "CFx": -0.02637318,
+          "CFy": -2.853562e-09,
+          "CFz": -0.1074276,
+          "CMx": 5.736547e-10,
+          "CMy": 0.03696871,
+          "CMz": -3.745671e-09,
+          "CMl": -5.736547e-10,
+          "CMm": 0.03696871,
+          "CMn": 3.745671e-09
+        },
+        {
+          "_extra_unlabeled": [
+            3.24
+          ],
+          "Beta": 0.0,
+          "Mach": 2.02,
+          "AoA": 0.0,
+          "Re/1e6": 89.39701,
+          "CL": 1.338493e-15,
+          "CDo": 0.005028233,
+          "CDi": -2.348086e-28,
+          "CDtot": 0.005028233,
+          "CS": -1.870646e-35,
+          "L/D": 2.661955e-13,
+          "E": -0.001327142,
+          "CFx": -2.348086e-28,
+          "CFy": -1.870646e-35,
+          "CFz": 1.338493e-15,
+          "CMx": -9.92454e-23,
+          "CMy": -9.30655e-16,
+          "CMz": -7.975411e-36,
+          "CMl": 9.92454e-23,
+          "CMm": -9.30655e-16,
+          "CMn": 7.975411e-36
+        },
+        {
+          "_extra_unlabeled": [
+            0.7217902
+          ],
+          "Beta": 0.0,
+          "Mach": 2.02,
+          "AoA": 2.0,
+          "Re/1e6": 89.39701,
+          "CL": 0.1082826,
+          "CDo": 0.005168573,
+          "CDi": -0.02260794,
+          "CDtot": -0.01743937,
+          "CS": -2.853563e-09,
+          "L/D": -6.209089,
+          "E": -0.09021015,
+          "CFx": -0.02637318,
+          "CFy": -2.853563e-09,
+          "CFz": 0.1074276,
+          "CMx": -5.736547e-10,
+          "CMy": -0.03696871,
+          "CMz": -3.745671e-09,
+          "CMl": 5.736547e-10,
+          "CMm": -0.03696871,
+          "CMn": 3.745671e-09
+        },
+        {
+          "_extra_unlabeled": [
+            0.6283571
+          ],
+          "Beta": 0.0,
+          "Mach": 2.02,
+          "AoA": 4.0,
+          "Re/1e6": 89.39701,
+          "CL": 0.2211598,
+          "CDo": 0.005587624,
+          "CDi": -0.09015653,
+          "CDtot": -0.0845689,
+          "CS": 1.195984e-08,
+          "L/D": -2.615144,
+          "E": -0.09436577,
+          "CFx": -0.1053642,
+          "CFy": 1.195984e-08,
+          "CFz": 0.2143321,
+          "CMx": -2.45747e-09,
+          "CMy": -0.07375746,
+          "CMz": 4.997532e-09,
+          "CMl": 2.45747e-09,
+          "CMm": -0.07375746,
+          "CMn": -4.997532e-09
+        },
+        {
+          "_extra_unlabeled": [
+            3.415151
+          ],
+          "Beta": 0.0,
+          "Mach": 2.02,
+          "AoA": 6.0,
+          "Re/1e6": 89.39701,
+          "CL": 0.3431684,
+          "CDo": 0.006279559,
+          "CDi": -0.2018231,
+          "CDtot": -0.1955435,
+          "CS": 2.685503e-08,
+          "L/D": -1.754947,
+          "E": -0.1014946,
+          "CFx": -0.2365883,
+          "CFy": 2.685503e-08,
+          "CFz": 0.3201923,
+          "CMx": -3.671233e-09,
+          "CMy": -0.1101868,
+          "CMz": 1.122162e-08,
+          "CMl": 3.671233e-09,
+          "CMm": -0.1101868,
+          "CMn": -1.122162e-08
+        }
+      ],
+      "alpha_2deg": {
+        "_extra_unlabeled": [
+          0.7217902
+        ],
+        "Beta": 0.0,
+        "Mach": 2.02,
+        "AoA": 2.0,
+        "Re/1e6": 89.39701,
+        "CL": 0.1082826,
+        "CDo": 0.005168573,
+        "CDi": -0.02260794,
+        "CDtot": -0.01743937,
+        "CS": -2.853563e-09,
+        "L/D": -6.209089,
+        "E": -0.09021015,
+        "CFx": -0.02637318,
+        "CFy": -2.853563e-09,
+        "CFz": 0.1074276,
+        "CMx": -5.736547e-10,
+        "CMy": -0.03696871,
+        "CMz": -3.745671e-09,
+        "CMl": 5.736547e-10,
+        "CMm": -0.03696871,
+        "CMn": 3.745671e-09
+      },
+      "alpha_0deg": {
+        "_extra_unlabeled": [
+          3.24
+        ],
+        "Beta": 0.0,
+        "Mach": 2.02,
+        "AoA": 0.0,
+        "Re/1e6": 89.39701,
+        "CL": 1.338493e-15,
+        "CDo": 0.005028233,
+        "CDi": -2.348086e-28,
+        "CDtot": 0.005028233,
+        "CS": -1.870646e-35,
+        "L/D": 2.661955e-13,
+        "E": -0.001327142,
+        "CFx": -2.348086e-28,
+        "CFy": -1.870646e-35,
+        "CFz": 1.338493e-15,
+        "CMx": -9.92454e-23,
+        "CMy": -9.30655e-16,
+        "CMz": -7.975411e-36,
+        "CMl": 9.92454e-23,
+        "CMm": -9.30655e-16,
+        "CMn": 7.975411e-36
+      }
+    }
+  },
+  "comparison": {
+    "alpha_2deg": {
+      "LFV-00": {
+        "CL": 0.08781966,
+        "CDo": 0.005082831,
+        "CDi": -0.0008942229,
+        "CDtot": 0.004188608,
+        "CMy": -0.02582589,
+        "L/D": 20.96631
+      },
+      "SENS-A": {
+        "CL": 0.08387934,
+        "CDo": 0.005076806,
+        "CDi": 0.0003435104,
+        "CDtot": 0.005420316,
+        "CMy": -0.02281313,
+        "L/D": 15.47499
+      },
+      "SENS-B": {
+        "CL": 0.1082826,
+        "CDo": 0.005168573,
+        "CDi": -0.02260794,
+        "CDtot": -0.01743937,
+        "CMy": -0.03696871,
+        "L/D": -6.209089
+      }
+    },
+    "density_spread_alpha_2deg": {
+      "CL": [
+        0.08387934,
+        0.08781966,
+        0.1082826
+      ],
+      "CDi": [
+        0.0003435104,
+        -0.0008942229,
+        -0.02260794
+      ],
+      "CDtot": [
+        0.005420316,
+        0.004188608,
+        -0.01743937
+      ]
+    }
+  },
+  "assessment": {
+    "verdict": "NOT_VALIDATED",
+    "headline": "VSPAERO 6.2.0 thin-surface analysis at Mach 2.02 on the isolated 12D main wing does not produce a converged, physically admissible drag polar: the induced-drag coefficient changes sign with panel refinement and the total-drag coefficient becomes negative.",
+    "observations": [
+      "At alpha=2 deg, CDi = +3.435104e-04 (coarse), -8.942229e-04 (medium), -2.260794e-02 (fine); the sign flips and the magnitude grows ~65x from medium to fine.",
+      "At alpha=6 deg, CDtot = +8.531459e-03 (coarse), -2.472157e-03 (medium), -1.955435e-01 (fine); a negative total drag coefficient is not physical for a lifting wing.",
+      "CL at alpha=2 deg = 0.083879 (coarse), 0.087820 (medium), 0.108283 (fine): +29.1% from coarse to fine, so lift is also not panel-converged.",
+      "CDo at alpha=0 is 5.028233e-03 for all three densities, identical to the medium case, and matches the VSPAERO skin-friction breakout in the .history file (0.00275 per half-wing): CDo is a flat-plate friction estimate, not an independent drag validation.",
+      "No installed VSPAERO manual or web page reachable in this environment documents supersonic applicability; the 3.26.1 install contains only vspaero.exe and three example models, none supersonic."
+    ],
+    "root_cause_hypothesis": "VSPAERO's Trefftz-plane induced-drag evaluation assumes an incompressible far field. At M=2.02 the wake/pressure integration is outside that assumption; the density series shows divergence rather than convergence, consistent with an invalid formulation instead of a discretization error.",
+    "gate_impact": "LF-M2.02 = NOT_VALIDATED for drag; the blocker B-P3-VLM-MACH2 (VLM/VSPAERO applicability near Mach 2 unverified) is now confirmed by measurement, not merely suspected. Geometry export and the W10 twist fix are separately validated and unaffected."
+  },
+  "budget": {
+    "category": "VSPAERO_LF",
+    "cap": 6,
+    "used": 6,
+    "events": [
+      {
+        "event_id": "NA-001",
+        "case_id": "LFV-00",
+        "status": "SOLVED",
+        "wall_seconds": 5.0,
+        "description": "Baseline wing-only thin-surface VSPAERO alpha sweep (-2,0,2,4,6 deg) at Mach 2.02, ISA 18288 m, single process"
+      },
+      {
+        "event_id": "NA-002",
+        "case_id": "w01_plus1pct",
+        "status": "SOLVED",
+        "wall_seconds": 4.577,
+        "description": "VSPAERO thin-surface LF polar, main wing only, Mach 2.02, alpha -2..6 deg"
+      },
+      {
+        "event_id": "NA-003",
+        "case_id": "w03_plus1deg",
+        "status": "SOLVED",
+        "wall_seconds": 4.595,
+        "description": "VSPAERO thin-surface LF polar, main wing only, Mach 2.02, alpha -2..6 deg"
+      },
+      {
+        "event_id": "NA-004",
+        "case_id": "w10_plus2",
+        "status": "SOLVED",
+        "wall_seconds": 4.213,
+        "description": "VSPAERO thin-surface LF polar, main wing only, Mach 2.02, alpha -2..6 deg"
+      },
+      {
+        "event_id": "NA-005",
+        "case_id": "sens_coarse",
+        "status": "SOLVED",
+        "wall_seconds": 2.535,
+        "description": "VSPAERO thin-surface LF polar, main wing only, Mach 2.02, alpha -2..6 deg"
+      },
+      {
+        "event_id": "NA-006",
+        "case_id": "sens_fine",
+        "status": "SOLVED",
+        "wall_seconds": 12.359,
+        "description": "VSPAERO thin-surface LF polar, main wing only, Mach 2.02, alpha -2..6 deg"
+      }
+    ],
+    "note": "Three of the six starts (LFV-01/02/03) are invalid because of harness defect LD-001; their outputs are quarantined and are not evidence. The VSPAERO category has no remaining quota, so the nominal aerodynamic perturbation runs and a repetition of the invalid starts were not executed."
+  },
+  "harness_defect": {
+    "id": "LD-001",
+    "found_utc": "2026-10-31T04:52Z",
+    "symptom": "run_lf_case.py patch_template rewrote Sref/Cref/Bref/Mach/X_cg/Vinf/Vref/Rho/ReCref lines as '<key> <value>' instead of '<key> = <value>', corrupting the VSPAERO namelist.",
+    "impacted_cases": [
+      "LFV-01",
+      "LFV-02",
+      "LFV-03"
+    ],
+    "budget_impact": "3 VSPAERO starts consumed; outputs quarantined in EXT/lead/failed_runs and NOT used as evidence",
+    "fix": "template lines are now written as '%s = %s'; the SENS-A/SENS-B runs that followed the fix produced a finite, correctly-parsed reference state (Re/1e6 = 89.39701) and are used as the density-sensitivity evidence.",
+    "prevention": "the runner now errors if the template contains a reference line without ' = '."
+  }
+}

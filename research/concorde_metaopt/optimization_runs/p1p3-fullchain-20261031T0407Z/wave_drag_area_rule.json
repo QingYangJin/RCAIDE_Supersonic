@@ -1,0 +1,686 @@
+{
+  "schema_version": 1,
+  "run_id": "p1p3-fullchain-20261031T0407Z",
+  "component": "WAVE_AREA_RULE",
+  "approval_source": "Issue #4 / D-12D-002 (comment 6538481816)",
+  "generated_utc": "2026-10-31T05:38:49Z",
+  "scope": "Supsersonic (Mach-cut) area-rule volume wave-drag estimate for the fixed fuselage, decision B of D-12D-002; isolated main wing and wing+fixed-fuselage combinations only.",
+  "frozen_conditions": {
+    "mach": 2.02,
+    "altitude_m": 18288.0,
+    "q_inf_pa": 20483.94023343017,
+    "reference_area_m2": 358.25,
+    "reference_chord_m": 18.489893,
+    "reference_span_m": 25.604638,
+    "note": "OpenVSP WaveDrag is a pure geometry method; Mach only selects the Mach-cut angle. No flow solver was run for this component."
+  },
+  "tool": {
+    "name": "OpenVSP",
+    "version": "3.26.1",
+    "binary": "D:/Program Files/OpenVSP/OpenVSP-3.26.1-win64-Python3.9/OpenVSP-3.26.1-win64/vsp.exe + OpenVSP Python API (external Python 3.9 worker)",
+    "analysis": "WaveDrag (WaveDragMgr, Eminton-Lord); EmintonLord analysis also used for the analytic benchmark",
+    "python_worker": "D:/Anaconda/envs/SUAVE/python.exe (3.9.25)"
+  },
+  "method": {
+    "what": "Mach-plane area rule: for each azimuth theta in [0,180] deg the model is cut by planes inclined at the Mach angle; the resulting area distribution S(x;theta) is fed to the Eminton-Lord (1956) supersonic wave-drag integral to obtain Donq(theta)=D/q; CDWave = mean_theta(Donq)/Sref.",
+    "implementation_source_evidence": {
+      "file": "src/geom_core/WaveDragMgr.cpp (OpenVSP, downloaded for audit)",
+      "sref_default": "WaveDragMgr.cpp:42 m_Sref.Init(\"Sref\",\"WaveDrag\",this,100,0.001,1.0e12) -- default reference area 100 m^2",
+      "cd_formula": "WaveDragMgr.cpp:571 m_CDWave = D / m_Sref();",
+      "averaging": "WaveDragMgr.cpp:510-575 CalcDrag(): D += WaveDrag(i)*dtheta*k with k=0.5 at theta=0 and theta=pi",
+      "kernel": "src/external/wavedragEL/wavedragEL.c emlord() -- Eminton-Lord collocation solution",
+      "reference_geometry_override": "WaveDragMgr.cpp:170-184 sets m_Sref to the referenced wing area only when a reference geometry is supplied; not used here"
+    },
+    "reference_area_convention_verified": {
+      "implied_sref_from_recompute_m2": {
+        "WAVE-01": 99.99984445838996,
+        "WAVE-02": 99.99985958516395,
+        "WAVE-03": 100.00001882660499,
+        "WAVE-04": 100.00015390017937,
+        "WAVE-05": 100.00017859370557
+      },
+      "conclusion": "CDWave output is normalised by the default 100 m^2, not by the wing Sref 358.25 m^2; all CD values in this file are therefore expressed as CDWave*100/Sref when compared with RCAIDE drag coefficients."
+    },
+    "offline_reanalysis": "A Python port of emlord() re-computed every case from the archived slice-area text outputs and reproduced the OpenVSP CDWave to <= 1.8e-6 relative. This re-analysis started no solver process and is not counted against the 23-start budget."
+  },
+  "analytic_benchmark": {
+    "case_id": "WAVE-00R",
+    "body": "Sears-Haack body, L=10 m, V=5 m^3, S(x)=(16V/(3*pi*L))*[4t(1-t)]^(3/2), 81 stations, EmintonLord analysis",
+    "theory_donq_m2": 0.10185916357881301,
+    "python_port_donq_m2": 0.10185900595764863,
+    "openvsp_donq_m2": 0.101859,
+    "rel_error_port_vs_theory": -1.5474421627514013e-06,
+    "rel_error_openvsp_vs_theory": -1.6059312413488623e-06,
+    "verdict": "PASS -- the tool and the independent port agree with the closed-form Sears-Haack result to ~1.6e-6; the wave-drag implementation itself is trustworthy for smooth analytic area distributions."
+  },
+  "cases": {
+    "WAVE-01": {
+      "description": "12D baseline main wing alone",
+      "discretization": "36 rot sections x 200 slices",
+      "donq_avg_m2": 12.578880434576416,
+      "cdwave_output": 0.125789,
+      "cd_on_Sref_358_25": 0.035112017961134445,
+      "donq_min_m2": 6.4708733614243945,
+      "donq_max_m2": 32.82386766546137
+    },
+    "WAVE-02": {
+      "description": "12D baseline main wing + fixed fuselage (8-station model)",
+      "discretization": "36 x 200",
+      "donq_avg_m2": 15.502478232190041,
+      "cdwave_output": 0.155025,
+      "cd_on_Sref_358_25": 0.04327279339062119,
+      "donq_min_m2": 8.60463583013905,
+      "donq_max_m2": 49.27295778747089
+    },
+    "WAVE-03": {
+      "description": "W03=68.0 deg (+1 deg) main wing alone",
+      "discretization": "36 x 200",
+      "donq_avg_m2": 11.682002199323994,
+      "cdwave_output": 0.11682,
+      "cd_on_Sref_358_25": 0.03260851974689182,
+      "donq_min_m2": 6.439702986130945,
+      "donq_max_m2": 23.11726236496049
+    },
+    "WAVE-04": {
+      "description": "W03=68.0 deg (+1 deg) main wing + fixed fuselage",
+      "discretization": "36 x 200",
+      "donq_avg_m2": 14.33832206666942,
+      "cdwave_output": 0.143383,
+      "cd_on_Sref_358_25": 0.040023229774373816,
+      "donq_min_m2": 8.540475239271919,
+      "donq_max_m2": 31.966729218766897
+    },
+    "WAVE-05": {
+      "description": "baseline main wing + fixed fuselage, refinement (numRotSects 36->72, numSlices 200->800)",
+      "discretization": "72 x 800",
+      "donq_avg_m2": 44.438679364542445,
+      "cdwave_output": 0.444386,
+      "cd_on_Sref_358_25": 0.12404376654443111,
+      "donq_min_m2": 9.308797446373685,
+      "donq_max_m2": 742.4771219069524
+    }
+  },
+  "resolution_sensitivity": {
+    "coarse_36rot_200slices": {
+      "donq_avg_m2": 15.502478232190041,
+      "cdwave_csv": 0.155025
+    },
+    "fine_72rot_800slices": {
+      "donq_avg_m2": 44.438679364542445,
+      "cdwave_csv": 0.444386
+    },
+    "ratio_fine_over_coarse": 2.866553250322776,
+    "fine_slices_with_coarse_theta_subset_donq_m2": 29.47905628577877,
+    "slice_effect_ratio_same_theta_grid": 1.9015705646705658,
+    "theta_sampling_effect_ratio": 1.5074661459220615,
+    "coincident_theta_pairs": [
+      {
+        "theta_deg": 0.0,
+        "donq_coarse_m2": 17.995038538774097,
+        "donq_fine_m2": 18.800525044518704,
+        "ratio": 1.0447615882571752
+      },
+      {
+        "theta_deg": 180.0,
+        "donq_coarse_m2": 17.995039776605758,
+        "donq_fine_m2": 18.800525044518704,
+        "ratio": 1.0447615163907615
+      }
+    ],
+    "verdict": "NOT_CONVERGED: changing theta count 36->72 and slice count 200->800 changes the area-rule D/q by a factor 2.87."
+  },
+  "fuselage_zero_lift_volume_wave_drag_increment": {
+    "definition": "Delta D/q = area-rule(wing + fixed fuselage) - area-rule(wing alone), paired per theta, coarse 36x200 only",
+    "baseline_pair": {
+      "wing_alone_case": "WAVE-01",
+      "wing_body_case": "WAVE-02",
+      "delta_donq_m2": 2.923597797613626,
+      "delta_D_N": 59886.80255290559,
+      "delta_CD_on_Sref": 0.008160775429486743,
+      "per_theta_m2": {
+        "min": 0.22538928495101018,
+        "max": 16.449090122009515,
+        "mean": 2.8735212381435398
+      }
+    },
+    "w03_plus_1deg_pair": {
+      "wing_alone_case": "WAVE-03",
+      "wing_body_case": "WAVE-04",
+      "delta_donq_m2": 2.656319867345429,
+      "delta_D_N": 54411.89740357693,
+      "delta_CD_on_Sref": 0.007414710027482008,
+      "per_theta_m2": {
+        "min": 1.103342637854519,
+        "max": 8.849466853806408,
+        "mean": 2.6436280398908707
+      }
+    },
+    "candidate_for_body_correction": false,
+    "why_not_usable": "Only the non-converged coarse discretization exists for a paired difference; the refined run (WAVE-05) has no paired wing-alone counterpart, and the coarse absolute level already exceeds the independently archived RCAIDE total drag (see absolute_magnitude_cross_check). The increment is therefore reported as an order-of-magnitude diagnostic only."
+  },
+  "w03_plus_1deg_effect": {
+    "wing_alone": {
+      "delta_donq_m2": -0.8968782352524246,
+      "delta_D_N": -18371.60016757499,
+      "delta_CD_on_Sref": -0.002503498214242637,
+      "per_theta_m2": {
+        "min": -9.706605300500883,
+        "max": 0.5602090088641738,
+        "mean": -0.9342804060530315
+      }
+    },
+    "wing_body": {
+      "delta_donq_m2": -1.1641561655206207,
+      "delta_D_N": -23846.505316903636,
+      "delta_CD_on_Sref": -0.0032495636162473713,
+      "per_theta_m2": {
+        "min": -17.30622856870399,
+        "max": 0.7827196306630473,
+        "mean": -1.1641736043057003
+      }
+    }
+  },
+  "absolute_magnitude_cross_check": {
+    "archived_rcaide_reference": {
+      "source": "research/concorde_metaopt/optimization_runs/smoke-p2-20261029T1612/evaluations.jsonl (baseline d-78be330a6036)",
+      "cl_end": 0.13343292326555833,
+      "cd_end": 0.01684412229490337,
+      "l_over_d": 7.921631114369905,
+      "note": "independent RCAIDE single-cruise Mission result; L/D=7.9 is physically plausible for a Concorde-class cruise"
+    },
+    "area_rule_wing_alone_cd": 0.035112017961134445,
+    "area_rule_wing_body_cd_coarse": 0.04327279339062119,
+    "area_rule_wing_body_cd_fine": 0.12404376654443111,
+    "ratio_wing_body_coarse_over_rcaide_total": 2.56901443916223,
+    "ratio_wing_body_fine_over_rcaide_total": 7.364216690706633,
+    "ratio_increment_over_rcaide_total": 0.48448801823031173,
+    "conclusion": "The area-rule absolute zero-lift volume wave drag (CD 0.043 coarse, 0.124 refined) is 2.6x-7.4x the archived RCAIDE TOTAL drag (CD 0.01684) of the whole aircraft at the same Mach and lift. A physical volume wave drag cannot exceed the total drag of the configuration, so the mesh-sliced area-rule absolute scale is not physical for this wing+body geometry. The paired fuselage increment (CD +0.0082) is ~48% of the RCAIDE total drag and is likewise not usable as a calibrated correction."
+  },
+  "diagnostics": {
+    "condition_number_vs_n": {
+      "50": 28235.616564865828,
+      "100": 233275.01624083956,
+      "200": 1895437.2713246858,
+      "400": 15279728.90429616,
+      "800": 122701247.88278759
+    },
+    "slice_noise": {
+      "WAVE-02_theta56_57": {
+        "case": "WAVE-02",
+        "theta_deg": 56.57,
+        "n_slices": 200,
+        "area_min": 2.12e-06,
+        "area_max": 24.00668208,
+        "n_zero_area_slices": 0,
+        "n_negative_area_slices": 0,
+        "max_abs_jump_between_slices_m2": 2.7709706999999995,
+        "n_jumps_gt_0p1m2": 143,
+        "rms_second_difference": 0.19833975821398736,
+        "donq_m2": 49.27390878568272,
+        "nonzero_first_index": 0,
+        "nonzero_last_index": 199
+      },
+      "WAVE-05_theta73_52": {
+        "case": "WAVE-05",
+        "theta_deg": 73.52,
+        "n_slices": 800,
+        "area_min": 4.16e-06,
+        "area_max": 22.74081243,
+        "n_zero_area_slices": 0,
+        "n_negative_area_slices": 0,
+        "max_abs_jump_between_slices_m2": 1.426105660000001,
+        "n_jumps_gt_0p1m2": 148,
+        "rms_second_difference": 0.10924820254664779,
+        "donq_m2": 742.3851119314512,
+        "nonzero_first_index": 0,
+        "nonzero_last_index": 799
+      },
+      "WAVE-02_theta0": {
+        "case": "WAVE-02",
+        "theta_deg": 0.0,
+        "n_slices": 200,
+        "area_min": 8.9e-07,
+        "area_max": 25.75638523,
+        "n_zero_area_slices": 0,
+        "n_negative_area_slices": 0,
+        "max_abs_jump_between_slices_m2": 1.3980238400000005,
+        "n_jumps_gt_0p1m2": 118,
+        "rms_second_difference": 0.06605636967809107,
+        "donq_m2": 17.995380420057465,
+        "nonzero_first_index": 0,
+        "nonzero_last_index": 199
+      },
+      "WAVE-05_theta0": {
+        "case": "WAVE-05",
+        "theta_deg": 0.0,
+        "n_slices": 800,
+        "area_min": 8.9e-07,
+        "area_max": 25.76030147,
+        "n_zero_area_slices": 0,
+        "n_negative_area_slices": 0,
+        "max_abs_jump_between_slices_m2": 0.3577635000000008,
+        "n_jumps_gt_0p1m2": 240,
+        "rms_second_difference": 0.005876480362708014,
+        "donq_m2": 18.800882228950137,
+        "nonzero_first_index": 0,
+        "nonzero_last_index": 799
+      }
+    },
+    "outlier_theta": {
+      "WAVE-05_theta73_52": {
+        "case": "WAVE-05",
+        "theta_deg": 73.52,
+        "n_slices": 800,
+        "area_min": 4.16e-06,
+        "area_max": 22.74081243,
+        "n_zero_area_slices": 0,
+        "n_negative_area_slices": 0,
+        "max_abs_jump_between_slices_m2": 1.426105660000001,
+        "n_jumps_gt_0p1m2": 148,
+        "rms_second_difference": 0.10924820254664779,
+        "donq_m2": 742.3851119314512,
+        "nonzero_first_index": 0,
+        "nonzero_last_index": 799
+      },
+      "WAVE-05_theta0": {
+        "case": "WAVE-05",
+        "theta_deg": 0.0,
+        "n_slices": 800,
+        "area_min": 8.9e-07,
+        "area_max": 25.76030147,
+        "n_zero_area_slices": 0,
+        "n_negative_area_slices": 0,
+        "max_abs_jump_between_slices_m2": 0.3577635000000008,
+        "n_jumps_gt_0p1m2": 240,
+        "rms_second_difference": 0.005876480362708014,
+        "donq_m2": 18.800882228950137,
+        "nonzero_first_index": 0,
+        "nonzero_last_index": 799
+      },
+      "WAVE-02_theta56_57": {
+        "case": "WAVE-02",
+        "theta_deg": 56.57,
+        "n_slices": 200,
+        "area_min": 2.12e-06,
+        "area_max": 24.00668208,
+        "n_zero_area_slices": 0,
+        "n_negative_area_slices": 0,
+        "max_abs_jump_between_slices_m2": 2.7709706999999995,
+        "n_jumps_gt_0p1m2": 143,
+        "rms_second_difference": 0.19833975821398736,
+        "donq_m2": 49.27390878568272,
+        "nonzero_first_index": 0,
+        "nonzero_last_index": 199
+      },
+      "WAVE-02_theta0": {
+        "case": "WAVE-02",
+        "theta_deg": 0.0,
+        "n_slices": 200,
+        "area_min": 8.9e-07,
+        "area_max": 25.75638523,
+        "n_zero_area_slices": 0,
+        "n_negative_area_slices": 0,
+        "max_abs_jump_between_slices_m2": 1.3980238400000005,
+        "n_jumps_gt_0p1m2": 118,
+        "rms_second_difference": 0.06605636967809107,
+        "donq_m2": 17.995380420057465,
+        "nonzero_first_index": 0,
+        "nonzero_last_index": 199
+      },
+      "condition_number_vs_n": {
+        "50": 28235.616564865828,
+        "100": 233275.01624083956,
+        "200": 1895437.2713246858,
+        "400": 15279728.90429616,
+        "800": 122701247.88278759
+      }
+    },
+    "interpretation": "The Eminton-Lord collocation matrix condition number grows ~n^3.1 (1.9e6 at n=200, 1.2e8 at n=800). The mesh-derived Mach-cut area distributions are not smooth (rms second difference 0.006-0.20 m^2, single-slice jumps up to 2.8 m^2), so refining the slice count injects more high-frequency discretization noise that the ill-conditioned solve amplifies: the area-rule D/q rises from 15.50 to 44.44 m^2 (2.87x) instead of converging. The large per-theta outliers (742 m^2 at theta=73.5 deg) are numerical artefacts of oblique cuts through a triangulated surface, not physical wave drag."
+  },
+  "verdict": "NOT_VALIDATED",
+  "verdict_detail": "The area-rule implementation passes the analytic Sears-Haack benchmark (PASS), but the application to the triangulated wing+fixed-fuselage geometry does not converge under slice/rotation refinement and its absolute level contradicts the independent RCAIDE drag level. Therefore no wave-drag increment from this component may be added to the drag ledger or used to calibrate the fixed-fuselage body correction.",
+  "body_correction_gate": {
+    "gate": "BODY-CORR",
+    "status": "BLOCKED / NOT_VALIDATED",
+    "evidence_from_this_component": "zero-lift volume wave-drag increment of the fixed body cannot be quantified to the required accuracy by the available area-rule path; the body-correction gate remains blocked and no validated whole-aircraft fuel label may be produced."
+  },
+  "budget": {
+    "category": "WAVE_AREA_RULE",
+    "cap": 7,
+    "used": 7,
+    "events": [
+      "NA-007 WAVE-00 (EmintonLord baseline; result lost to LD-002, counted)",
+      "NA-008 WAVE-00R (benchmark rerun)",
+      "NA-009 WAVE-01",
+      "NA-010 WAVE-02",
+      "NA-011 WAVE-03",
+      "NA-012 WAVE-04",
+      "NA-013 WAVE-05"
+    ],
+    "offline_reanalysis_starts": 0,
+    "total_run_starts_after_this_component": 13
+  },
+  "artifacts": {
+    "raw_manifest": {
+      "created_utc": "2026-10-31T05:38:48Z",
+      "note": "raw OpenVSP WaveDrag outputs archived outside git (outputs/ is git-ignored); hashed here for traceability",
+      "files": [
+        {
+          "case_id": "WAVE-00",
+          "name": "request.json",
+          "bytes": 3672,
+          "sha256": "bfbb65ea19a68d2cebdd825f8f4e741ed93907428fd118e706c385099d579929",
+          "archived_path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\p1p3-fullchain-20261031T0407Z\\wave_raw\\WAVE-00\\request.json"
+        },
+        {
+          "case_id": "WAVE-00",
+          "name": "result.json",
+          "bytes": 3312,
+          "sha256": "c64284b4ad91de0bc8a28a5101c398a92628f51de4bc75a3ee22954cadaa0fad",
+          "archived_path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\p1p3-fullchain-20261031T0407Z\\wave_raw\\WAVE-00\\result.json"
+        },
+        {
+          "case_id": "WAVE-00",
+          "name": "worker_stderr.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "archived_path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\p1p3-fullchain-20261031T0407Z\\wave_raw\\WAVE-00\\worker_stderr.log"
+        },
+        {
+          "case_id": "WAVE-00",
+          "name": "worker_stdout.log",
+          "bytes": 220,
+          "sha256": "093afc3cc28688ae1d49814584898b3c8d4298f0bef066076c6ae5ea34565106",
+          "archived_path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\p1p3-fullchain-20261031T0407Z\\wave_raw\\WAVE-00\\worker_stdout.log"
+        },
+        {
+          "case_id": "WAVE-00R",
+          "name": "request.json",
+          "bytes": 3672,
+          "sha256": "bfbb65ea19a68d2cebdd825f8f4e741ed93907428fd118e706c385099d579929",
+          "archived_path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\p1p3-fullchain-20261031T0407Z\\wave_raw\\WAVE-00R\\request.json"
+        },
+        {
+          "case_id": "WAVE-00R",
+          "name": "result.json",
+          "bytes": 5578,
+          "sha256": "5335ae90da01b54adade48483a1706d31a0baf0098748fe8fe59a5cac0b2b7a1",
+          "archived_path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\p1p3-fullchain-20261031T0407Z\\wave_raw\\WAVE-00R\\result.json"
+        },
+        {
+          "case_id": "WAVE-00R",
+          "name": "results_NEGCZHS.csv",
+          "bytes": 869,
+          "sha256": "7be35f005977ddfc63e181f162b761f8bbb6a0f174ba141d64d383894cd8e366",
+          "archived_path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\p1p3-fullchain-20261031T0407Z\\wave_raw\\WAVE-00R\\results_NEGCZHS.csv"
+        },
+        {
+          "case_id": "WAVE-00R",
+          "name": "worker_stderr.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "archived_path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\p1p3-fullchain-20261031T0407Z\\wave_raw\\WAVE-00R\\worker_stderr.log"
+        },
+        {
+          "case_id": "WAVE-00R",
+          "name": "worker_stdout.log",
+          "bytes": 1109,
+          "sha256": "452eba11b4f68120abb3a46526a7b54ece07f21e7f55018993f6e7a18f487161",
+          "archived_path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\p1p3-fullchain-20261031T0407Z\\wave_raw\\WAVE-00R\\worker_stdout.log"
+        },
+        {
+          "case_id": "WAVE-01",
+          "name": "request.json",
+          "bytes": 1557,
+          "sha256": "658f4fb5b5bf589675d91b52bed12ea8f947d3475b98a62ccd0e36cfc3bae605",
+          "archived_path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\p1p3-fullchain-20261031T0407Z\\wave_raw\\WAVE-01\\request.json"
+        },
+        {
+          "case_id": "WAVE-01",
+          "name": "result.json",
+          "bytes": 451063,
+          "sha256": "7c11d9b2f59d38857e1ec97647b43a55d4eb6566f07cbdae7b375ef77c3ae60f",
+          "archived_path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\p1p3-fullchain-20261031T0407Z\\wave_raw\\WAVE-01\\result.json"
+        },
+        {
+          "case_id": "WAVE-01",
+          "name": "results_SXDVOUR.csv",
+          "bytes": 72834,
+          "sha256": "0914e23b75f6007e8975b2ad350928c2684ecc94cd841c5c42a883c87ca59df7",
+          "archived_path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\p1p3-fullchain-20261031T0407Z\\wave_raw\\WAVE-01\\results_SXDVOUR.csv"
+        },
+        {
+          "case_id": "WAVE-01",
+          "name": "Unnamed_WaveDrag_M2.020000_Shown.txt",
+          "bytes": 304164,
+          "sha256": "477f915d5752614e5b148fe49e4134c561a571e5a4ef3ad21424a74dc94bdfb7",
+          "archived_path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\p1p3-fullchain-20261031T0407Z\\wave_raw\\WAVE-01\\Unnamed_WaveDrag_M2.020000_Shown.txt"
+        },
+        {
+          "case_id": "WAVE-01",
+          "name": "worker_stderr.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "archived_path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\p1p3-fullchain-20261031T0407Z\\wave_raw\\WAVE-01\\worker_stderr.log"
+        },
+        {
+          "case_id": "WAVE-01",
+          "name": "worker_stdout.log",
+          "bytes": 72965,
+          "sha256": "f1b4f3f4b852fc8d11f33504d6df08afa013e9cab8e2460ec8dd69e689e0603c",
+          "archived_path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\p1p3-fullchain-20261031T0407Z\\wave_raw\\WAVE-01\\worker_stdout.log"
+        },
+        {
+          "case_id": "WAVE-02",
+          "name": "request.json",
+          "bytes": 2758,
+          "sha256": "6137b9b83a7f828ed8efb47d81aa4f2c2c1c92c4a0d782d0fc2333f9c0b406c5",
+          "archived_path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\p1p3-fullchain-20261031T0407Z\\wave_raw\\WAVE-02\\request.json"
+        },
+        {
+          "case_id": "WAVE-02",
+          "name": "result.json",
+          "bytes": 451550,
+          "sha256": "d7ef6851691ba633fd4a005aeeff5b13e7a11a7e737c0dfe784050bf3fbc7927",
+          "archived_path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\p1p3-fullchain-20261031T0407Z\\wave_raw\\WAVE-02\\result.json"
+        },
+        {
+          "case_id": "WAVE-02",
+          "name": "results_GFIEFEN.csv",
+          "bytes": 73062,
+          "sha256": "96656bb090b9aa625fd1000e8ec67a0dd296f63b9bd74d5de4779d6d46889cdb",
+          "archived_path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\p1p3-fullchain-20261031T0407Z\\wave_raw\\WAVE-02\\results_GFIEFEN.csv"
+        },
+        {
+          "case_id": "WAVE-02",
+          "name": "Unnamed_WaveDrag_M2.020000_Shown.txt",
+          "bytes": 304164,
+          "sha256": "2b8085276b2b3ecfdd059e5b0d6f08de0c38d4357b95aff4c1d161c4961fe3cc",
+          "archived_path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\p1p3-fullchain-20261031T0407Z\\wave_raw\\WAVE-02\\Unnamed_WaveDrag_M2.020000_Shown.txt"
+        },
+        {
+          "case_id": "WAVE-02",
+          "name": "worker_stderr.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "archived_path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\p1p3-fullchain-20261031T0407Z\\wave_raw\\WAVE-02\\worker_stderr.log"
+        },
+        {
+          "case_id": "WAVE-02",
+          "name": "worker_stdout.log",
+          "bytes": 73193,
+          "sha256": "dd49718e2e9149df758cd5b6afd867c9f2be7b5eba9bcecc8d0ff5e283f3989e",
+          "archived_path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\p1p3-fullchain-20261031T0407Z\\wave_raw\\WAVE-02\\worker_stdout.log"
+        },
+        {
+          "case_id": "WAVE-03",
+          "name": "request.json",
+          "bytes": 1565,
+          "sha256": "01b17792d0f407d4f7d0a42fd4e55dcbc36e80b3faa983d49d8d7a7c6580d48d",
+          "archived_path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\p1p3-fullchain-20261031T0407Z\\wave_raw\\WAVE-03\\request.json"
+        },
+        {
+          "case_id": "WAVE-03",
+          "name": "result.json",
+          "bytes": 450939,
+          "sha256": "614c041ea96aab770c1ade314391500c7e0e6166e630b20424381f1b065d956a",
+          "archived_path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\p1p3-fullchain-20261031T0407Z\\wave_raw\\WAVE-03\\result.json"
+        },
+        {
+          "case_id": "WAVE-03",
+          "name": "results_VWYQQSF.csv",
+          "bytes": 72772,
+          "sha256": "14b71c8438922d960e4d01cecc25a47ead918791b8197dea3028aada3e93531b",
+          "archived_path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\p1p3-fullchain-20261031T0407Z\\wave_raw\\WAVE-03\\results_VWYQQSF.csv"
+        },
+        {
+          "case_id": "WAVE-03",
+          "name": "Unnamed_WaveDrag_M2.020000_Shown.txt",
+          "bytes": 304164,
+          "sha256": "84bdec78946cf518755bd9538b391efe01c6cb8959a8db305207c6613d44f8af",
+          "archived_path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\p1p3-fullchain-20261031T0407Z\\wave_raw\\WAVE-03\\Unnamed_WaveDrag_M2.020000_Shown.txt"
+        },
+        {
+          "case_id": "WAVE-03",
+          "name": "worker_stderr.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "archived_path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\p1p3-fullchain-20261031T0407Z\\wave_raw\\WAVE-03\\worker_stderr.log"
+        },
+        {
+          "case_id": "WAVE-03",
+          "name": "worker_stdout.log",
+          "bytes": 72903,
+          "sha256": "aeeb908f4e52af3d774d89ba02693223739dc7b96b1b75b6e7d2256a570249dd",
+          "archived_path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\p1p3-fullchain-20261031T0407Z\\wave_raw\\WAVE-03\\worker_stdout.log"
+        },
+        {
+          "case_id": "WAVE-04",
+          "name": "request.json",
+          "bytes": 2766,
+          "sha256": "7907103d54c07dc85155cdb69ff94e7be85fc103e6efc846e2b0ff53433c77e8",
+          "archived_path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\p1p3-fullchain-20261031T0407Z\\wave_raw\\WAVE-04\\request.json"
+        },
+        {
+          "case_id": "WAVE-04",
+          "name": "result.json",
+          "bytes": 451630,
+          "sha256": "aa8a7dd2f25b40f0865255a1b977b53c04764db4946e4bf37cb2079befb2b0e2",
+          "archived_path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\p1p3-fullchain-20261031T0407Z\\wave_raw\\WAVE-04\\result.json"
+        },
+        {
+          "case_id": "WAVE-04",
+          "name": "results_SNUJUVB.csv",
+          "bytes": 73102,
+          "sha256": "0abc1111a16d149bbdd1d8ef25d457bec0e14a0953aca33692af93df3766504f",
+          "archived_path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\p1p3-fullchain-20261031T0407Z\\wave_raw\\WAVE-04\\results_SNUJUVB.csv"
+        },
+        {
+          "case_id": "WAVE-04",
+          "name": "Unnamed_WaveDrag_M2.020000_Shown.txt",
+          "bytes": 304164,
+          "sha256": "e5471218020edc2243a5901c61fb13eaaeca6181fd3b2676c4da5ffbecf65ed9",
+          "archived_path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\p1p3-fullchain-20261031T0407Z\\wave_raw\\WAVE-04\\Unnamed_WaveDrag_M2.020000_Shown.txt"
+        },
+        {
+          "case_id": "WAVE-04",
+          "name": "worker_stderr.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "archived_path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\p1p3-fullchain-20261031T0407Z\\wave_raw\\WAVE-04\\worker_stderr.log"
+        },
+        {
+          "case_id": "WAVE-04",
+          "name": "worker_stdout.log",
+          "bytes": 73233,
+          "sha256": "a2d757f5e371c2690ed4f8f59753f84b9c276e14770ead50f858977703276693",
+          "archived_path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\p1p3-fullchain-20261031T0407Z\\wave_raw\\WAVE-04\\worker_stdout.log"
+        },
+        {
+          "case_id": "WAVE-05",
+          "name": "request.json",
+          "bytes": 2758,
+          "sha256": "a0842714f8ffedd14fd2542ee27d9b29dd4c0dea6cc85a746cd455d6df439f42",
+          "archived_path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\p1p3-fullchain-20261031T0407Z\\wave_raw\\WAVE-05\\request.json"
+        },
+        {
+          "case_id": "WAVE-05",
+          "name": "result.json",
+          "bytes": 760315,
+          "sha256": "1c92a4044188e3c632b0c9bc4729fc6053b8bf3ff15e0e94c9f53f463f9db386",
+          "archived_path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\p1p3-fullchain-20261031T0407Z\\wave_raw\\WAVE-05\\result.json"
+        },
+        {
+          "case_id": "WAVE-05",
+          "name": "results_PEEKGVX.csv",
+          "bytes": 559026,
+          "sha256": "38e3c3cee07ba692d5fcc6f2f5957defbb46fce6d1d2edae27619beac7ff5c9e",
+          "archived_path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\p1p3-fullchain-20261031T0407Z\\wave_raw\\WAVE-05\\results_PEEKGVX.csv"
+        },
+        {
+          "case_id": "WAVE-05",
+          "name": "Unnamed_WaveDrag_M2.020000_Shown.txt",
+          "bytes": 2422584,
+          "sha256": "b138889f8cb486930d1331769ee42438e5a96877ea86f4267356b1a19ca335c6",
+          "archived_path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\p1p3-fullchain-20261031T0407Z\\wave_raw\\WAVE-05\\Unnamed_WaveDrag_M2.020000_Shown.txt"
+        },
+        {
+          "case_id": "WAVE-05",
+          "name": "worker_stderr.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "archived_path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\p1p3-fullchain-20261031T0407Z\\wave_raw\\WAVE-05\\worker_stderr.log"
+        },
+        {
+          "case_id": "WAVE-05",
+          "name": "worker_stdout.log",
+          "bytes": 558725,
+          "sha256": "24af9bd3cf7d8a802af135ddcd65dd63fd364562a8b6ef0273fe927f5ed8d451",
+          "archived_path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\p1p3-fullchain-20261031T0407Z\\wave_raw\\WAVE-05\\worker_stdout.log"
+        }
+      ],
+      "manifest_sha256": "06c3c9dffe08679a40076d3f51234da720076232452d538d1325b2b1304d5b2a"
+    },
+    "geometry_requests": [
+      {
+        "component": "baseline",
+        "bytes": 1375,
+        "sha256": "3d6b591ecb9816268b5c45a53b6d8534d2882b5312fdfd35bd0c89a202247378"
+      },
+      {
+        "component": "baseline_wingbody",
+        "bytes": 2576,
+        "sha256": "dca06701d147f7bc3b3b7223cccf1f782dec38596443107dd62ac87cc277310a"
+      },
+      {
+        "component": "w03_plus1deg",
+        "bytes": 1383,
+        "sha256": "7f0994cc817008429bd5d6df7ea7a09a2fc1244da38357b9fb6f573c61990f27"
+      },
+      {
+        "component": "w03_plus1deg_wingbody",
+        "bytes": 2584,
+        "sha256": "5ea1eee3fc0112cace4ff0209c19e87da20f17f8cb2e4f0dd79d78fbd8334105"
+      },
+      {
+        "component": "WAVE-00",
+        "bytes": 3672,
+        "sha256": "bfbb65ea19a68d2cebdd825f8f4e741ed93907428fd118e706c385099d579929"
+      }
+    ],
+    "derived_csv": "wave_per_theta_donq.csv",
+    "figures": [
+      "figures/wave_area_rule_validation.png",
+      "figures/wave_area_rule_results.png"
+    ]
+  },
+  "caveats": [
+    "OpenVSP WaveDrag uses the OpenVSP default reference area of 100 m^2; CDWave is converted to the wing Sref 358.25 m^2 for comparison only.",
+    "The fuselage is the fixed 8-station 12D model (length 61.66 m), not a CFD-quality fuselage surface; its blunt 0.001 m end caps are numerical bookkeeping.",
+    "The Mach-cut area rule in this implementation does not model viscous drag, lift-dependent wave drag, or vortex drag; it is a zero-lift volume wave-drag estimate only.",
+    "The W03+1 deg geometry was generated through the same 12D parametric model as the LF/OpenVSP cases; W10 twist is not part of this area-rule pair.",
+    "The 7-start category is exhausted; a converged area-rule study would need additional authorised starts."
+  ],
+  "raw_artifacts_location": "D:\\RCAIDE\\outputs\\concorde_metaopt\\p1p3-fullchain-20261031T0407Z\\wave_raw",
+  "raw_artifacts_note": "raw slice files are large; copies live outside git under the ignored outputs/ tree and are hash-indexed above"
+}

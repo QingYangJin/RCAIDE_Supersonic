@@ -1,0 +1,90 @@
+{
+  "run_id": "p1p3-fullchain-20261031T0407Z",
+  "case": "LF geometry validation (wing-only, thin surface)",
+  "conditions": {
+    "mach": 2.02,
+    "altitude_m": 18288.0,
+    "temperature_k": 216.65,
+    "pressure_pa": 7171.544888256813,
+    "density_kg_m3": 0.1153178340089936,
+    "speed_of_sound_m_s": 295.06801842964956,
+    "vinf_m_s": 596.0373972278921,
+    "viscosity_pa_s": 1.4216130796413357e-05,
+    "reynolds_per_cref": 89397005.8767656,
+    "sref_m2": 358.25,
+    "cref_m": 18.489893,
+    "bref_m": 25.604638
+  },
+  "cases": {
+    "baseline": {
+      "stl": {
+        "path": "main_wing_baseline.stl",
+        "bytes": 650534,
+        "sha256": "35b32db6dd7dcb7230d636096cd5399ce088e5e751ec7e955969eafb2460a40b",
+        "format": "ascii",
+        "triangles": 2160,
+        "vertices": 6480
+      },
+      "vsp3": {
+        "path": "main_wing_baseline.vsp3",
+        "bytes": 84828,
+        "sha256": "ec96beff49512577d09d707bc6c45470d4a35bafa75139764dfe2b247ffc56bc"
+      },
+      "degen_geom_csv": {
+        "path": "main_wing_baseline_DegenGeom.csv",
+        "bytes": 460921,
+        "sha256": "3f1ea8a80b6d06845b5ee6e99159b49cdd3cc3cac13100dc345301e315b41a97",
+        "surface_points": 1056
+      },
+      "request_sha256": "c20be4a306499be32f31206374a9c3139e88d41e1bed46bbe367995f76bbae2c",
+      "worker_result_sha256": "ce856bf5be67835eaa2109a2e7b2662cfd8826f355f59ceae2d5779f92f17fab"
+    },
+    "w10_plus2": {
+      "stl": {
+        "path": "main_wing_w10_plus2.stl",
+        "bytes": 650932,
+        "sha256": "78f672def8e24bd8884226a7642513729dbf67645b0cb44e2099bbfe33fbd150",
+        "format": "ascii",
+        "triangles": 2160,
+        "vertices": 6480
+      },
+      "vsp3": {
+        "path": "main_wing_w10_plus2.vsp3",
+        "bytes": 84829,
+        "sha256": "c86804b44b517a077564bfbeeae83a9845114bf7ba4c39279d759ea954e739d2"
+      },
+      "degen_geom_csv": {
+        "path": "main_wing_w10_plus2_DegenGeom.csv",
+        "bytes": 461111,
+        "sha256": "10064e87df4398caaf5819b5889ca29ebacf46617dbb30f38ae740c2bf3c4b55",
+        "surface_points": 1056
+      },
+      "request_sha256": "2aa543e8dee0b17d6c778c99f69f49444d5dc72d22c8d9fb7a002163d7fd8180",
+      "worker_result_sha256": "80cf879358193ee946e4171331ea18848193c83ad4d2723affb3c5ee78673d02"
+    }
+  },
+  "w10_twist_check": {
+    "vertex_count_baseline": 6480,
+    "vertex_count_w10": 6480,
+    "same_vertex_count": true,
+    "max_abs_dx_m": 0.0018850099999987435,
+    "max_abs_dy_m": 0.0,
+    "max_abs_dz_m": 0.033961960305,
+    "moved_vertices": 2388,
+    "expected_max_abs_dz_m": 0.03396195662308498,
+    "dz_matches_twist_within_1e_6": true,
+    "dy_negligible": true,
+    "degen_point_count_baseline": 1056,
+    "degen_point_count_w10": 1056,
+    "degen_max_abs_dz_m": 0.03396196030486226,
+    "degen_max_abs_dy_m": 0.0,
+    "degen_max_abs_dx_m": 0.0018850094840523468,
+    "degen_dz_matches_twist_within_1e_5": true
+  },
+  "status": "GEOMETRY_VALIDATED_WITH_WARNINGS",
+  "warnings": [
+    "LF geometry is wing-only; fuselage and vertical tail are not in the LF thin surface (owner decision 4 / D-12D-002 lifting-surfaces-only).",
+    "OpenVSP thin-surface DegenGeom is a geometry idealisation, not aerodynamic evidence.",
+    "CG is provisional; the VSPAERO template uses X/Y/Z_cg = 0 and moments are reported about that provisional point."
+  ]
+}

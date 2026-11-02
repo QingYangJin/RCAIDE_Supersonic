@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "run_id": "p1p3-fullchain-20261031T0407Z",
+  "probed_utc": "2026-10-31T04:07:14Z",
+  "checks": [
+    {
+      "id": "TC-01",
+      "item": "OpenVSP Python 3.9 wrapper import",
+      "status": "PASS",
+      "evidence": "probe scripts fullchain/probe_openvsp3.py, probe_openvsp4.py; 979 exported names; module loaded from install dir",
+      "detail": "worker sys.path order required; pip-target install also possible after copying _vsp.pyd (not used for the run)"
+    },
+    {
+      "id": "TC-02",
+      "item": "OpenVSP geometry API (AddGeom/InsertXSec/XSecParm/SetParmVal/ExportFile/WriteVSPFile)",
+      "status": "PASS",
+      "evidence": "existing P1 evidence plus API probe",
+      "detail": "same functions used by aircraft/openvsp_geometry.py worker; W10 twist fix uses XSec Twist/Twist_Location=0"
+    },
+    {
+      "id": "TC-03",
+      "item": "OpenVSP WaveDrag analysis via Python API",
+      "status": "OPEN_LIMITED",
+      "evidence": "GetNumAnalysis()=0; GetAnalysisInputNames('WaveDrag') -> Error Code 14 Invalid Analysis ID; ExecAnalysis symbol present; vsp.exe contains WaveDragSingleton/WaveDragMgr strings",
+      "detail": "3.26.1 Python wrapper does not expose AnalysisManager/AddAnalysis; actual WaveDrag execution path must be verified in B phase; fallback is the independent Jones Mach-plane area-rule implementation (authorized decision B)"
+    },
+    {
+      "id": "TC-04",
+      "item": "EmintonLord analysis availability",
+      "status": "OPEN_LIMITED",
+      "evidence": "same wrapper limitation as TC-03",
+      "detail": "do not assume executable from Python; verify in B phase or implement independent integration"
+    },
+    {
+      "id": "TC-05",
+      "item": "VSPAERO executable",
+      "status": "PASS",
+      "evidence": "vspaero.exe banner 'VSPAERO v.6.2.0'; options -setup/-fs/-geom/-omp/-novortex/-lesuction; example reads DegenGeom dataset",
+      "detail": "thin-surface LF path is available; exact panel density parameter names to be read from generated setup template before LFV runs"
+    },
+    {
+      "id": "TC-06",
+      "item": "SU2 executable",
+      "status": "PASS_HELP_ONLY",
+      "evidence": "SU2_CFD.exe --help -> SU2 v8.5.0 Harrier; win64-mpi build",
+      "detail": "runtime/serial invocation not yet exercised; HFS-00 is the first budgeted run and doubles as runtime validation"
+    },
+    {
+      "id": "TC-07",
+      "item": "Gmsh executable",
+      "status": "PASS",
+      "evidence": "gmsh.exe --version -> 4.15.2",
+      "detail": "python module absent; use CLI; mesh events logged separately from analysis starts"
+    },
+    {
+      "id": "TC-08",
+      "item": "Project RCAIDE environment",
+      "status": "PASS",
+      "evidence": "RCAIDE-LEADS 1.5.0, python 3.11.17, unittest suite 294 tests (last verified at accc734/HEAD ancestor)",
+      "detail": "re-run of full suite at base commit is a PRE-0 task for A1/A5 in clean worktrees"
+    },
+    {
+      "id": "TC-09",
+      "item": "Independent area-rule stack",
+      "status": "READY_TO_IMPLEMENT",
+      "evidence": "numpy 1.26.4/scipy 1.13.1 in worker env; STL triangulation output from OpenVSP; no new dependency required",
+      "detail": "Jones Mach-plane slicing + cross-section area integration implemented per decision B; benchmarked against analytical standard body in WAVE-00"
+    }
+  ],
+  "open_items": [
+    "TC-03/TC-04 WaveDrag Python execution must be resolved in B phase; if unavailable, record limitation and use independent area rule only (still within 7-case allocation? no: WAVE cases are counted only if an analysis process actually runs; if no OpenVSP WaveDrag process runs, unused WAVE quota remains unused and is reported)",
+    "TC-06 SU2 MPI runtime verified only at HFS-00",
+    "DegenGeom CSV density parameters to be read from VSPAERO setup template during PRE-1"
+  ]
+}

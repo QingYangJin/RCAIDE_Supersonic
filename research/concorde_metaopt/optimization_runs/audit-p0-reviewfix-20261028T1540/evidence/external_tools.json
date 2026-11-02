@@ -1,0 +1,112 @@
+{
+  "su2_cfd": {
+    "kind": "solver",
+    "candidates": [
+      {
+        "path": "D:\\Program Files\\SU2\\SU2-v8.5.0-win64-mpi\\win64-mpi\\bin\\SU2_CFD.exe",
+        "exists": true,
+        "bytes": 24759883,
+        "probe": {
+          "cmd": [
+            "D:\\Program Files\\SU2\\SU2-v8.5.0-win64-mpi\\win64-mpi\\bin\\SU2_CFD.exe",
+            "--help"
+          ],
+          "returncode": 0,
+          "stdout": "SU2 v8.5.0 \"Harrier\", The Open-Source CFD Code\nUsage: D:\\Program Files\\SU2\\SU2-v8.5.0-win64-mpi\\win64-mpi\\bin\\SU2_CFD.exe [OPTIONS] [configfile]\n\nPositionals:\n  configfile TEXT:FILE        A config file.\n\nOptions:\n  -h,--help                   Print this help message and exit\n  -d,--dryrun                 Enable dry run mode.\n                              Only execute preprocessing steps using a dummy geometry.\n  -t,--threads INT            Number of OpenMP threads per MPI rank.\n  --thread_multiple           Request MPI_THREAD_MULTIPLE thread support.\n",
+          "stderr": "",
+          "timed_out": false,
+          "seconds": 0.015
+        }
+      }
+    ],
+    "shell_probe": {
+      "version_text": "SU2 v8.5.0 \"Harrier\", The Open-Source CFD Code",
+      "returncode": 0,
+      "raw_file": "su2_help.txt"
+    }
+  },
+  "gmsh": {
+    "kind": "mesher",
+    "candidates": [
+      {
+        "path": "D:\\Program Files\\GMesh\\gmsh-4.15.2-Windows64\\gmsh-4.15.2-Windows64\\gmsh.exe",
+        "exists": true,
+        "bytes": 89458688,
+        "probe": {
+          "cmd": [
+            "D:\\Program Files\\GMesh\\gmsh-4.15.2-Windows64\\gmsh-4.15.2-Windows64\\gmsh.exe",
+            "--version"
+          ],
+          "returncode": 0,
+          "stdout": "4.15.2\n",
+          "stderr": "",
+          "timed_out": false,
+          "seconds": 0.095
+        }
+      }
+    ],
+    "shell_probe": {
+      "version_text": "4.15.2",
+      "returncode": 0,
+      "raw_file": "gmsh_version.txt"
+    }
+  },
+  "openvsp_gui": {
+    "kind": "geometry_gui",
+    "candidates": [
+      {
+        "path": "D:\\Program Files\\OpenVSP\\OpenVSP-3.26.1-win64-Python3.9\\OpenVSP-3.26.1-win64\\vsp.exe",
+        "exists": true,
+        "bytes": 21837312
+      }
+    ]
+  },
+  "vspaero": {
+    "kind": "solver",
+    "candidates": [
+      {
+        "path": "D:\\Program Files\\OpenVSP\\OpenVSP-3.26.1-win64-Python3.9\\OpenVSP-3.26.1-win64\\vspaero.exe",
+        "exists": true,
+        "bytes": 561664
+      }
+    ]
+  },
+  "openvsp_python_binding": {
+    "kind": "python_binding",
+    "project_interpreter_import": {
+      "ok": false,
+      "error": "ModuleNotFoundError: No module named 'openvsp'"
+    },
+    "external_interpreters": [
+      {
+        "python": "D:\\Anaconda\\envs\\SUAVE\\python.exe",
+        "probe": {
+          "stdout": "OPENVSP_IMPORT_OK D:\\Program Files/OpenVSP/OpenVSP-3.26.1-win64-Python3.9/OpenVSP-3.26.1-win64/python/openvsp\\openvsp\\__init__.py\nOPENVSP_VERSION_UNAVAILABLE AttributeError module 'openvsp' has no attribute 'GetVSPVersion'",
+          "returncode": 0,
+          "version_stdout": "D:\\Anaconda\\envs\\SUAVE\\python.exe\n3.9.25 (main, Nov  3 2025, 22:44:01) [MSC v.1929 64 bit (AMD64)]"
+        },
+        "probe_with_system_libxml2": {
+          "stdout": "OPENVSP_IMPORT_OK D:\\Program Files/OpenVSP/OpenVSP-3.26.1-win64-Python3.9/OpenVSP-3.26.1-win64/python/openvsp\\openvsp\\__init__.py\nOPENVSP_VERSION_UNAVAILABLE AttributeError module 'openvsp' has no attribute 'GetVSPVersion'",
+          "raw_file": "openvsp_suave_with_libxml2.txt"
+        }
+      },
+      {
+        "python": "D:\\Anaconda\\python.exe",
+        "probe": {
+          "stdout": "OPENVSP_IMPORT_FAIL ImportError DLL load failed while importing _vsp: �Ҳ���ָ����ģ�顣",
+          "returncode": 0,
+          "version_stdout": "D:\\Anaconda\\python.exe\n3.14.6 | packaged by Anaconda, Inc. | (main, Jul  9 2026, 14:29:05) [MSC v.1942 64 bit (AMD64)]"
+        }
+      }
+    ]
+  },
+  "gmsh_python_binding": {
+    "kind": "python_binding",
+    "project_interpreter_import": {
+      "ok": false,
+      "error": "ModuleNotFoundError: No module named 'gmsh'"
+    }
+  },
+  "tools_local_json": [],
+  "probe_source": "shell_probe"
+}

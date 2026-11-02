@@ -1,0 +1,347 @@
+{
+  "artifacts": {
+    "environment": "environment.json",
+    "openvsp_comparisons_csv": "openvsp_comparisons.csv",
+    "openvsp_metrics": "openvsp_metrics.json",
+    "openvsp_request": "openvsp_request.json",
+    "run_config": "run_config.json",
+    "summary": "summary.json",
+    "worker_result": "worker_result.json"
+  },
+  "best_design_id": null,
+  "best_feasible_fuel_kg": null,
+  "cpu_seconds_if_available": null,
+  "design_dim": 15,
+  "external_artifacts": {
+    "files": [
+      {
+        "bytes": 1241804,
+        "kind": "assembly",
+        "name": "stl",
+        "path": "outputs/concorde_metaopt/openvsp-check-p1-20261029T1425/openvsp/concorde_full.stl",
+        "sha256": "0d14d9e3f8204e4eeb44af3c9825cb47f312917ad6ff742a8e0fd2d619ed926c"
+      },
+      {
+        "bytes": 534242,
+        "kind": "assembly",
+        "name": "step",
+        "path": "outputs/concorde_metaopt/openvsp-check-p1-20261029T1425/openvsp/concorde_full.step",
+        "sha256": "7811c8f1c2d396963980fcde48f1fc41c348668714caafa91ae3c3c75214d2a7"
+      },
+      {
+        "bytes": 1638156,
+        "kind": "assembly",
+        "name": "vsp3",
+        "path": "outputs/concorde_metaopt/openvsp-check-p1-20261029T1425/openvsp/concorde_full.vsp3",
+        "sha256": "bad791d43ea872e2750b3a33c3fd69880379b0094e484d805785760239d15c13"
+      },
+      {
+        "bytes": 650534,
+        "kind": "component",
+        "name": "main_wing",
+        "path": "outputs/concorde_metaopt/openvsp-check-p1-20261029T1425/openvsp/concorde_full_main_wing.stl",
+        "sha256": "35b32db6dd7dcb7230d636096cd5399ce088e5e751ec7e955969eafb2460a40b"
+      },
+      {
+        "bytes": 263335,
+        "kind": "component",
+        "name": "vertical_tail",
+        "path": "outputs/concorde_metaopt/openvsp-check-p1-20261029T1425/openvsp/concorde_full_vertical_tail.stl",
+        "sha256": "c6b7aac829d88b1eecc2bd04db8e89ebb6c6e48db1fd8624738b551453e998d0"
+      },
+      {
+        "bytes": 327969,
+        "kind": "component",
+        "name": "fuselage",
+        "path": "outputs/concorde_metaopt/openvsp-check-p1-20261029T1425/openvsp/concorde_full_fuselage.stl",
+        "sha256": "8f8c69afd235c9316f902aa4cb1853469de966fa408ad1f9968afe1b6e39b1ca"
+      }
+    ],
+    "note": "Raw OpenVSP exports are git-ignored; paths are relative to the repository root.",
+    "root": "outputs/concorde_metaopt/openvsp-check-p1-20261029T1425/openvsp"
+  },
+  "failed_count": 0,
+  "first_feasible_evaluation": null,
+  "git_sha": "c0eb7accba8394b5e01e1b31a6f164fab412dc43",
+  "invalid_count": 0,
+  "low_fidelity_calls": 0,
+  "method": "openvsp_geometry_check",
+  "openvsp": {
+    "available": true,
+    "comparisons": [
+      {
+        "check_id": "OV01_wing_area",
+        "detail": "OpenVSP TotalArea versus model reference area",
+        "model_value": 358.25000000000006,
+        "openvsp_value": 358.25000000000006,
+        "relative_delta": 0.0,
+        "status": "pass",
+        "subject": "main_wing planform area (m2)",
+        "tolerance": 0.005
+      },
+      {
+        "check_id": "OV02_wing_span",
+        "detail": "OpenVSP TotalSpan versus model projected span",
+        "model_value": 25.604638251691824,
+        "openvsp_value": 25.604638251691824,
+        "relative_delta": 0.0,
+        "status": "pass",
+        "subject": "main_wing span (m)",
+        "tolerance": 0.005
+      },
+      {
+        "check_id": "OV03_tail_area",
+        "detail": "",
+        "model_value": 33.91,
+        "openvsp_value": 33.91,
+        "relative_delta": 0.0,
+        "status": "pass",
+        "subject": "vertical_tail planform area (m2)",
+        "tolerance": 0.005
+      },
+      {
+        "check_id": "OV04_tail_span",
+        "detail": "",
+        "model_value": 5.0093312926976585,
+        "openvsp_value": 5.009331292697659,
+        "relative_delta": 1.7730478736650247e-16,
+        "status": "pass",
+        "subject": "vertical_tail span (m)",
+        "tolerance": 0.005
+      },
+      {
+        "check_id": "OV05_fuselage_length",
+        "detail": "",
+        "model_value": 61.66,
+        "openvsp_value": 61.66,
+        "relative_delta": 0.0,
+        "status": "pass",
+        "subject": "fuselage length (m)",
+        "tolerance": 1e-09
+      },
+      {
+        "check_id": "OV06_wing_mesh_span",
+        "detail": "Largest lateral STL extent for the symmetric wing",
+        "model_value": 25.604638251691824,
+        "openvsp_value": 25.604638252,
+        "relative_delta": 1.2035967558866328e-11,
+        "status": "pass",
+        "subject": "main_wing STL lateral extent (m)",
+        "tolerance": 0.005
+      },
+      {
+        "check_id": "OV11_tail_mesh_span",
+        "detail": "Largest lateral STL extent for the rotated vertical tail",
+        "model_value": 5.0093312926976585,
+        "openvsp_value": 5.0093312927,
+        "relative_delta": 4.673754194981005e-13,
+        "status": "pass",
+        "subject": "vertical_tail STL lateral extent (m)",
+        "tolerance": 0.005
+      },
+      {
+        "check_id": "OV07_fuselage_mesh_length",
+        "detail": "",
+        "model_value": 61.66,
+        "openvsp_value": 61.66,
+        "relative_delta": 0.0,
+        "status": "pass",
+        "subject": "fuselage STL longitude extent (m)",
+        "tolerance": 0.01
+      },
+      {
+        "check_id": "OV08_fuselage_width",
+        "detail": "Known OpenVSP spline overshoot; a warning, not an accepted value",
+        "model_value": 2.88,
+        "openvsp_value": 3.3122883808,
+        "relative_delta": 0.1501001322222223,
+        "status": "warn",
+        "subject": "fuselage STL width (m)",
+        "tolerance": 0.02
+      },
+      {
+        "check_id": "OV09_fuselage_height",
+        "detail": "Known OpenVSP spline overshoot; height stays within 2% at baseline",
+        "model_value": 3.32000064,
+        "openvsp_value": 3.3589447496,
+        "relative_delta": 0.011730151232741948,
+        "status": "pass",
+        "subject": "fuselage STL height (m)",
+        "tolerance": 0.02
+      },
+      {
+        "check_id": "OV10_assembly_length",
+        "detail": "Wing trailing edge lies forward of the fuselage tail",
+        "model_value": 61.66,
+        "openvsp_value": 61.66,
+        "relative_delta": 0.0,
+        "status": "pass",
+        "subject": "assembly STL longitude extent (m)",
+        "tolerance": 0.01
+      }
+    ],
+    "components": [
+      "main_wing",
+      "vertical_tail",
+      "fuselage"
+    ],
+    "failures": [],
+    "limitations": [
+      "OpenVSP fuselage spline overshoot is recorded as a warning.",
+      "No VSPAERO or CFD analysis is run; aerodynamic applicability is not established.",
+      "Surface twist is not applied to the OpenVSP wing sections."
+    ],
+    "measurement_warnings": [],
+    "metrics": {
+      "fuselage": {
+        "bbox_m": [
+          61.66,
+          5.021001322194966,
+          5.021001322194964
+        ],
+        "bbox_note": "OpenVSP FUSELAGE BBox is not a reliable surface bound; STL bounds are measured by the caller.",
+        "length_m": 61.66,
+        "name": "fuselage"
+      },
+      "main_wing": {
+        "bbox_m": [
+          31.49534375886453,
+          25.604638251691824,
+          2.9919174836412785
+        ],
+        "name": "main_wing",
+        "total_area_m2": 358.25000000000006,
+        "total_span_m": 25.604638251691824
+      },
+      "vertical_tail": {
+        "bbox_m": [
+          13.157616068421865,
+          5.009331292697659,
+          1.316525332372668
+        ],
+        "name": "vertical_tail",
+        "total_area_m2": 33.91,
+        "total_span_m": 5.009331292697659
+      }
+    },
+    "note": "Geometry export and consistency check only; no objective value is reported.",
+    "python_version": "3.9.25",
+    "stl_metrics": {
+      "assembly": {
+        "bounds_m": [
+          [
+            0.0,
+            -12.802319126,
+            -1.6794723748
+          ],
+          [
+            61.66,
+            12.802319126,
+            1.6794723748
+          ]
+        ],
+        "extents_m": [
+          61.66,
+          25.604638252,
+          3.3589447496
+        ],
+        "faces": 4128,
+        "mesh_count": 1,
+        "path": "outputs/concorde_metaopt/openvsp-check-p1-20261029T1425/openvsp/concorde_full.stl",
+        "vertices": 2068
+      },
+      "fuselage": {
+        "bounds_m": [
+          [
+            -7.4014868308e-17,
+            -1.6561441904,
+            -1.6794723748
+          ],
+          [
+            61.66,
+            1.6561441904,
+            1.6794723748
+          ]
+        ],
+        "extents_m": [
+          61.66,
+          3.3122883808,
+          3.3589447496
+        ],
+        "faces": 1088,
+        "mesh_count": 1,
+        "path": "outputs/concorde_metaopt/openvsp-check-p1-20261029T1425/openvsp/concorde_full_fuselage.stl",
+        "vertices": 546
+      },
+      "main_wing": {
+        "bounds_m": [
+          [
+            0.0,
+            -12.802319126,
+            -1.4938664746
+          ],
+          [
+            31.495343759,
+            12.802319126,
+            1.4938664746
+          ]
+        ],
+        "extents_m": [
+          31.495343759,
+          25.604638252,
+          2.9877329492
+        ],
+        "faces": 2160,
+        "mesh_count": 1,
+        "path": "outputs/concorde_metaopt/openvsp-check-p1-20261029T1425/openvsp/concorde_full_main_wing.stl",
+        "vertices": 1082
+      },
+      "vertical_tail": {
+        "bounds_m": [
+          [
+            0.0,
+            0.0,
+            -0.65734201154
+          ],
+          [
+            13.157616068,
+            5.0093312927,
+            0.65734201154
+          ]
+        ],
+        "extents_m": [
+          13.157616068,
+          5.0093312927,
+          1.31468402308
+        ],
+        "faces": 880,
+        "mesh_count": 1,
+        "path": "outputs/concorde_metaopt/openvsp-check-p1-20261029T1425/openvsp/concorde_full_vertical_tail.stl",
+        "vertices": 442
+      }
+    },
+    "version": "3.26.1",
+    "warnings": [
+      "OV08_fuselage_width"
+    ],
+    "worker_script": "research/concorde_metaopt/aircraft/openvsp_geometry.py"
+  },
+  "run_id": "openvsp-check-p1-20261029T1425",
+  "seed": null,
+  "solver_versions": {
+    "OpenVSP": "3.26.1",
+    "OpenVSP_python": "3.9.25",
+    "RCAIDE-LEADS": "1.5.0",
+    "RCAIDE_module": "1.5.0",
+    "matplotlib": "3.11.2",
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "trimesh": "5.1.1"
+  },
+  "stage": "P1",
+  "status": "openvsp_check_completed_with_warnings",
+  "su2_calls": 0,
+  "task_id": "concorde_fixed_cruise_15d",
+  "total_true_evaluations": 0,
+  "wall_seconds": 1.5846619999792892
+}

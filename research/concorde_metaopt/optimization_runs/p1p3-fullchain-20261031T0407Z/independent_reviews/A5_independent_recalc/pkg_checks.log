@@ -1,0 +1,59 @@
+=== A5 PACKAGING CHECK LOG - task-33 FULLCHAIN-PKG-A5-0bbed28 ===
+Reviewer: A5 (a5-code-reviewer) | Date: 2026-11-01
+Worktree: D:/RCAIDE-verify-pkg, detached HEAD 0bbed282fe79c5b5c456f7e34720a3478bbe0ac0
+Chain: 0bbed28 <- de3dec0 <- da7f9e3; porcelain 0 / ignored 0 before and after review
+Constraints: read-only; no solver/physics; no repo writes; no GitHub writes.
+
+--- [1] DIFF SCOPE ---
+$ git diff --numstat da7f9e3..0bbed28
+29 9  research/concorde_metaopt/optimization_runs/p1p3-fullchain-20261031T0407Z/data_manifest.json
+664 0  research/concorde_metaopt/optimization_runs/p1p3-fullchain-20261031T0407Z/independent_reviews/A2_raw_recalc/delta_reconcile.json
+40 0  research/concorde_metaopt/optimization_runs/p1p3-fullchain-20261031T0407Z/independent_reviews/A2_raw_recalc/delta_reconcile.md
+54 0  research/concorde_metaopt/optimization_runs/p1p3-fullchain-20261031T0407Z/independent_reviews/A5_independent_recalc/final_review.md
+20 0  research/concorde_metaopt/optimization_runs/p1p3-fullchain-20261031T0407Z/independent_reviews/A5_independent_recalc/final_verdict.txt
+8 0  research/concorde_metaopt/optimization_runs/p1p3-fullchain-20261031T0407Z/independent_reviews/README.md
+1 1  research/concorde_metaopt/optimization_runs/p1p3-fullchain-20261031T0407Z/raw_artifacts_manifest.json
+32 4  research/concorde_metaopt/optimization_runs/p1p3-fullchain-20261031T0407Z/summary.json
+=> 8 files, all inside the run directory; 0 code/tests/configs; evaluations.jsonl and approval_and_budget_ledger.json absent from the diff.
+$ git show --stat de3dec0  -> 6 files +818/-4 (A2 delta files, A5 final files, independent_reviews/README.md, summary.json)
+$ git show --stat 0bbed28  -> 2 files +30/-10 (data_manifest.json, raw_artifacts_manifest.json)
+
+--- [2] CANONICAL MANIFEST ---
+data_manifest.json size = 14733 B
+data_manifest.json sha256 = 1c3cca3ecbb2aac19bfb0d05b7bc653ba27a345f5310878ff711a139c312f77a
+expected sha256           = 1c3cca3ecbb2aac19bfb0d05b7bc653ba27a345f5310878ff711a139c312f77a  => MATCH
+file_count field = 71; entries = 71; total_bytes = 1332954; sum(entry.bytes) = 1332954
+rehash on clean LF checkout: 71 ok, 0 mismatch, 0 missing (bytes and sha256 per entry)
+committed files under run dir = 72; not listed = [data_manifest.json] (self-excluded, correct); listed but uncommitted = []
+manifest independent_reviews block: {"dir":"independent_reviews/","roles":["A1","A2","A3","A4","A5"],"note":"verbatim copies of project-external role deliverables; no reviewer ran a solver or wrote to the repo/GitHub"}
+manifest generated_utc = 2026-11-01T03:28:06Z; hashing_convention present; line_ending_note present
+A2 delta_reconcile.json: schema_version 1, task task-31 FULLCHAIN-DELTA-A2-529d9b7, checks 9/9 pass, X2/X3/X4 CLOSED, verdict X2_X3_X4_CLOSED_NO_NUMERICAL_CHANGE, 0 solver starts, 0 repo writes.
+A5 archived final_review.md 7031 B sha256 86019c2d1d42aa066087b4d86af71ad5701093d537716386593d27259a30d35f (byte-identical to EXT)
+A5 archived final_verdict.txt 2652 B sha256 1ba0fa93b0dd05fd262a7b25abbfc8752253b665676e0a1cd9c6a217800b64fc (byte-identical to EXT)
+A5 dir also holds recalc.md 8051 B and verdict.txt 1572 B from the earlier round; final_checks.log (34,555 B) is NOT archived (EXT-only reference).
+data_manifest payload change vs da7f9e3: file_count 67 -> 71, total_bytes 1,291,764 -> 1,332,954 (+41,190 = +38,908 new review files +1,101 README +1,181 summary)
+raw_artifacts_manifest.json: identical size 1733 B, only generated_utc 2026-10-31T10:28:39Z -> 2026-11-01T03:28:06Z
+
+--- [3] SUMMARY CLOSEOUT + INVARIANTS ---
+summary.json review keys: status,roles,reviews_are_verbatim_copies,revision_note,delta_rounds,final_review_verdict
+A5 verdict          = APPROVE_FINAL
+A5 detail contains  = "Final re-check task-32: APPROVE, 6/6 PASS, 0 blocking on da7f9e3"
+review.delta_rounds = 58933bb (first fixes), 529d9b7 (canonical LF manifest), 3dc9b0b (task-30 wording), ee0be3f (task-30 minors), da7f9e3 (final manifest / task-32 APPROVE)
+review.final_review_verdict = "A5 APPROVE (task-32, 6/6 PASS, 0 blocking) on da7f9e3"
+summary JSON structural diff da7f9e3..0bbed28 = only review.roles.A2.detail, review.roles.A5.verdict, review.roles.A5.detail, review.delta_rounds, review.final_review_verdict
+gates equal da7f9e3 = true; status = EXECUTED_NO_GATE_APPROVED
+not_approved = ["APPROVED_FOR_NEXT_STAGE","P4 BO/DE","P5 MAML","P6","merge to main"]
+budget identical to da7f9e3: cap 23, used 23, remaining 0, categories VSPAERO_LF 6/6, RCAIDE_LF 4/4, SU2_HF 6/6, WAVE_AREA_RULE 7/7, mesh_generation_events 11 (all non-billable)
+evaluations.jsonl untouched: 11272 B, sha256 8d1c3ee3b0aa60849398bf78f6b9ee35d957802bd3865ec078a30aab9768ea81, 23 rows, 23 billable
+approval_and_budget_ledger.json untouched by this revision (updated_utc still 2026-10-31T10:10:27.416720Z); no solver started, no new physical analysis, 23/23 authorisation consumed
+A5 archive role note in manifest: verbatim project-external copies; no reviewer ran a solver or wrote to the repo/GitHub
+
+--- [4] HYGIENE ---
+$ git -C D:/RCAIDE-verify-pkg status --porcelain | wc -l  -> 0
+$ git -C D:/RCAIDE-verify-pkg status --porcelain --ignored | wc -l -> 0 (worktree was already clean; this review read only)
+$ git -C D:/RCAIDE-verify-pkg rev-parse HEAD -> 0bbed282fe79c5b5c456f7e34720a3478bbe0ac0
+
+--- [5] CONCLUSION ---
+VERDICT: APPROVE (3/3 task-card checks PASS; 0 blocking, 0 major)
+Minor/informational only: (a) stale half-sentence "Final delta re-check pending on this commit" remains in summary A5 detail before the appended task-32 APPROVE sentence; (b) A5 final_checks.log is repo-external (not archived) though the task card wording mentioned review/verdict/checks.
+Artifacts: EXT/fullchain/a5/{pkg_review.md, pkg_verdict.txt, pkg_checks.log}

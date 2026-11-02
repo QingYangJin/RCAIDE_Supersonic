@@ -1,0 +1,117 @@
+{
+  "branch": "research/concorde-metaopt",
+  "budget": 5,
+  "cache_enabled": false,
+  "design_space": {
+    "bounds_status": "provisional_until_geometry_perturbation",
+    "config_path": "research/concorde_metaopt/configs/design_space_15d.yaml",
+    "design_dim": 15,
+    "frozen": false,
+    "ids": [
+      "W01",
+      "W02",
+      "W03",
+      "W04",
+      "W05",
+      "W06",
+      "W07",
+      "W08",
+      "W09",
+      "W10",
+      "V01",
+      "V02",
+      "F01",
+      "F02",
+      "F03"
+    ],
+    "names": [
+      "wing_area",
+      "aspect_ratio",
+      "sweep_1",
+      "sweep_2",
+      "sweep_3",
+      "span_location_2",
+      "span_location_3",
+      "chord_ratio_2",
+      "chord_ratio_3",
+      "tip_twist",
+      "vertical_tail_area",
+      "vertical_tail_sweep_delta",
+      "fuselage_length",
+      "fuselage_fineness",
+      "fuselage_height_width_ratio"
+    ],
+    "task_id": "concorde_fixed_cruise_15d",
+    "units": "SI"
+  },
+  "fidelity": "single_cruise",
+  "git_sha": "93c4e3525cd63ca1851d97c3ad589feb131c3086",
+  "method": "single_cruise_smoke",
+  "note": "cache disabled so the three baseline repeats are genuine physical calls",
+  "perturbations": [
+    {
+      "delta": 0.01,
+      "kind": "relative",
+      "label": "W01_plus_1pct",
+      "variable": "W01"
+    },
+    {
+      "delta": 2.0,
+      "kind": "absolute",
+      "label": "W10_plus_2deg",
+      "variable": "W10"
+    }
+  ],
+  "repeat_count": 3,
+  "repeatability_relative_tolerance": 1e-06,
+  "run_id": "smoke-p2-20261029T1612",
+  "seed": 42,
+  "stage": "P2",
+  "task": {
+    "created_utc": "2026-10-29T00:00:00Z",
+    "cruise": {
+      "altitude_m": 18288.0,
+      "distance_m": 3028020.0,
+      "mach_number": 2.02
+    },
+    "derived": {
+      "fuel_margin_kg": 48880.0,
+      "takeoff_margin_kg": 49000.0,
+      "zero_fuel_margin_kg": 2800.0,
+      "zero_fuel_mass_kg": 89200.0
+    },
+    "description": "Concorde-class fixed topology, single fixed supersonic cruise segment.",
+    "mass_contract": {
+      "evidence": "Measured RCAIDE single-cruise throttle sweep on 2026-10-29: 185000 kg 1.2708, 155000 kg 1.0374, 150000 kg 1.0008; 145000 kg measured 1.0163 with the P1 geometry (infeasible; the earlier 0.9642 was extrapolated from the tutorial geometry); 136000 kg measured 0.9455 with 46800 kg fuel and 34109.5 kg burn, so 136000 kg / 46800 kg is the frozen contract.",
+      "status": "frozen"
+    },
+    "masses": {
+      "cargo_kg": 1000.0,
+      "fuel_loaded_kg": 46800.0,
+      "max_fuel_kg": 95680.0,
+      "max_takeoff_kg": 185000.0,
+      "max_zero_fuel_kg": 92000.0,
+      "operating_empty_kg": 78700.0,
+      "payload_kg": 9500.0,
+      "start_mass_kg": 136000.0
+    },
+    "objective": {
+      "name": "fuel_burn_kg",
+      "unit": "kg"
+    },
+    "propulsion": {
+      "config_tag": "cruise",
+      "propulsor_tags": [
+        "inner_right_turbojet",
+        "outer_right_turbojet",
+        "outer_left_turbojet",
+        "inner_left_turbojet"
+      ]
+    },
+    "task_fingerprint": "91b0d9dd11c87d59999d5f96418f4320f610758ecf4d1a8dae42c2d991c42b0f",
+    "task_id": "concorde-fixed-cruise-p2-v1",
+    "task_spec_version": "p2-2026-10-29b",
+    "version": "p2-2026-10-29b"
+  },
+  "task_fingerprint": "91b0d9dd11c87d59999d5f96418f4320f610758ecf4d1a8dae42c2d991c42b0f"
+}

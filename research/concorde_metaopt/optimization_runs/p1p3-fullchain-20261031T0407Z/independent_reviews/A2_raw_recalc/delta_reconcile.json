@@ -1,0 +1,664 @@
+{
+ "schema_version": 1,
+ "task": "task-31 FULLCHAIN-DELTA-A2-529d9b7",
+ "owner": "a2-run-opt",
+ "generated_utc": "2026-10-31T10:30:00Z",
+ "mode": "READ-ONLY static verification; 0 solver starts; 0 repo writes; 0 GitHub writes",
+ "worktree": "D:/RCAIDE-verify-a2-final",
+ "head": "529d9b7cab6509b276533aa29a361e32a22122cf",
+ "predecessor_commits": {
+  "d80b4c4": "P1-P3 execute D-12D-002 capped full-chain validation (23/23 starts)",
+  "58933bb": "P1-P3 archive independent role reviews and fix review findings",
+  "529d9b7": "P1-P3 canonical LF data manifest for post-review run revision"
+ },
+ "checks_total": 9,
+ "checks_pass": 9,
+ "checks_fail": 0,
+ "checks": [
+  {
+   "id": "D0",
+   "name": "Clean worktree at 529d9b7 (porcelain empty), 58933bb is ancestor",
+   "pass": true,
+   "detail": {
+    "head": "529d9b7cab6509b276533aa29a361e32a22122cf",
+    "porcelain": "(empty)",
+    "58933bb_ancestor_of_529d9b7": true,
+    "log": [
+     "529d9b7 P1-P3: canonical LF data manifest for post-review run revision (no numerical change)",
+     "58933bb P1-P3: archive independent role reviews and fix review findings (no numerical change)",
+     "d80b4c4 P1-P3: execute D-12D-002 capped full-chain validation (23/23 starts, no gate approved)",
+     "048ef2e docs: fix README reference and derivability wording in accounting report"
+    ]
+   }
+  },
+  {
+   "id": "D1",
+   "name": "X4: data_manifest 67 files re-hashed on clean LF checkout (expect 0 mismatches)",
+   "pass": true,
+   "detail": {
+    "file_count_field": 67,
+    "len_files": 67,
+    "matched": 67,
+    "mismatch_count": 0,
+    "missing_count": 0,
+    "sum_disk_bytes": 1290937,
+    "manifest_total_bytes": 1290937,
+    "mismatches": [],
+    "missing": [],
+    "hashing_convention": "sha256 over committed worktree bytes (git canonical LF line endings); regenerate/verify from a clean checkout of the commit containing this manifest",
+    "revision": "post-review revision (independent reviews archived, stationarity wording corrected, mesh events backfilled, manifest canonicalized)"
+   }
+  },
+  {
+   "id": "D2",
+   "name": "X4 mechanism: run-time CRLF ledger 32,677 B/d064d93f... == committed d80b4c4 LF ledger 31,911 B + LF->CRLF",
+   "pass": true,
+   "detail": {
+    "committed_d80b4c4_lf_bytes": 31911,
+    "lf_count": 766,
+    "d80b4c4_blob_sha256": "a0fe97a0063c44427c20715b0ae3d1f9c570d530e328a07a3a24455300870cbd",
+    "crlf_bytes": 32677,
+    "crlf_sha256": "d064d93fd14b865fd90d823cd0538f4d81d5facc115b89680ec9e2687f697454",
+    "expected_crlf_sha256": "d064d93fd14b865fd90d823cd0538f4d81d5facc115b89680ec9e2687f697454",
+    "expected_bytes": 32677,
+    "line_ending_note": "The first package manifest (in commit d80b4c4) hashed CRLF working-tree copies; A2/A5 found 14/59 CRLF-only differences against a clean LF checkout. Example: the run-time CRLF ledger was 32,677 B with sha256 d064d93fd14b865fd90d823cd0538f4d81d5facc115b89680ec9e2687f697454, which is exactly the committed LF ledger (31,911 B) with LF->CRLF conversion. This revision records canonical LF hashes only."
+   }
+  },
+  {
+   "id": "D3",
+   "name": "X2/X4: ledger with 11 mesh_generation_events committed at 58933bb (identical blob at 529d9b7)",
+   "pass": true,
+   "detail": {
+    "ledger_sha256_58933bb": "0b9acc2e13f053ee70e94471a9b00c2ef9bdad65c5e358a41a6b456a6161fd8a",
+    "ledger_sha256_529d9b7": "0b9acc2e13f053ee70e94471a9b00c2ef9bdad65c5e358a41a6b456a6161fd8a",
+    "ledger_bytes_lf": 42222,
+    "mesh_generation_events_len": 11,
+    "data_manifest_mesh_generation_events": 11,
+    "mesh_event_ids": [
+     "MG-001",
+     "MG-002",
+     "MG-003",
+     "MG-004",
+     "MG-005",
+     "MG-006",
+     "MG-007",
+     "MG-008",
+     "MG-009",
+     "MG-010",
+     "MG-011"
+    ],
+    "mesh_events": [
+     {
+      "event_id": "MG-001",
+      "category": null,
+      "case_id": "HFS-01-mesh",
+      "mesh_nodes": 14079,
+      "mesh_elements": 61436,
+      "billable": null,
+      "source": null
+     },
+     {
+      "event_id": "MG-002",
+      "category": null,
+      "case_id": "HFS-02-mesh",
+      "mesh_nodes": 28323,
+      "mesh_elements": 125876,
+      "billable": null,
+      "source": null
+     },
+     {
+      "event_id": "MG-003",
+      "category": null,
+      "case_id": "HFS-03-mesh",
+      "mesh_nodes": 56623,
+      "mesh_elements": 256455,
+      "billable": null,
+      "source": null
+     },
+     {
+      "event_id": "MG-004",
+      "category": null,
+      "case_id": "HFS-00-mesh-wedge_coarse",
+      "mesh_nodes": 7130,
+      "mesh_elements": 13923,
+      "billable": null,
+      "source": null
+     },
+     {
+      "event_id": "MG-005",
+      "category": null,
+      "case_id": "HFS-00-mesh-wedge_fine",
+      "mesh_nodes": 11769,
+      "mesh_elements": 23038,
+      "billable": null,
+      "source": null
+     },
+     {
+      "event_id": "MG-006",
+      "category": null,
+      "case_id": "LF-mesh-baseline",
+      "mesh_nodes": 544,
+      "mesh_elements": 960,
+      "billable": null,
+      "source": null
+     },
+     {
+      "event_id": "MG-007",
+      "category": null,
+      "case_id": "LF-mesh-w01_plus1pct",
+      "mesh_nodes": 544,
+      "mesh_elements": 960,
+      "billable": null,
+      "source": null
+     },
+     {
+      "event_id": "MG-008",
+      "category": null,
+      "case_id": "LF-mesh-w03_plus1deg",
+      "mesh_nodes": 544,
+      "mesh_elements": 960,
+      "billable": null,
+      "source": null
+     },
+     {
+      "event_id": "MG-009",
+      "category": null,
+      "case_id": "LF-mesh-w10_plus2",
+      "mesh_nodes": 544,
+      "mesh_elements": 960,
+      "billable": null,
+      "source": null
+     },
+     {
+      "event_id": "MG-010",
+      "category": null,
+      "case_id": "LF-mesh-sens_coarse",
+      "mesh_nodes": 544,
+      "mesh_elements": 960,
+      "billable": null,
+      "source": null
+     },
+     {
+      "event_id": "MG-011",
+      "category": null,
+      "case_id": "LF-mesh-sens_fine",
+      "mesh_nodes": 544,
+      "mesh_elements": 960,
+      "billable": null,
+      "source": null
+     }
+    ],
+    "ledger_totals": {
+     "cap": 23,
+     "used": 23,
+     "remaining": 0
+    },
+    "amendment_log_len": 0
+   }
+  },
+  {
+   "id": "D4",
+   "name": "X3: raw archive hfs00_analysis.json still matches raw_manifest (archive intact though EXT source edited)",
+   "pass": true,
+   "detail": {
+    "raw_manifest_file_count": 155,
+    "archive_rel": "hf_raw/wedge/hfs00_analysis.json",
+    "manifest_bytes": 1915,
+    "manifest_sha256": "01a61f477b79387a806b239f616d49ecaeceba44257589be763652dc74307b3d",
+    "archive_disk_bytes": 1915,
+    "archive_disk_sha256": "01a61f477b79387a806b239f616d49ecaeceba44257589be763652dc74307b3d",
+    "ext_live_bytes": 1913,
+    "ext_live_sha256": "084adf097b37a1baaf44d59ae6c2bf7abe3352bc20635d24be45260d04f6b73d",
+    "ext_live_matches_manifest": false
+   }
+  },
+  {
+   "id": "D5",
+   "name": "No numerical change vs d80b4c4 in data artifacts; changed files only README/ledger/manifest/summary/hf_su2 notes/independent_reviews",
+   "pass": true,
+   "detail": {
+    "core3_unchanged": true,
+    "all_numeric_artifacts_unchanged": true,
+    "unchanged_detail": {
+     "mission_e2e.json": true,
+     "lf_vspaero_results.json": true,
+     "wave_drag_area_rule.json": true,
+     "evaluations.jsonl": true,
+     "mesh_convergence.csv": true,
+     "lf_vspaero_density_sensitivity.csv": true,
+     "wave_per_theta_donq.csv": true,
+     "drag_component_ledger.json": true,
+     "geometry_validation.json": true,
+     "toolchain_capability_probe.json": true,
+     "run_config.json": true,
+     "blocker_register_current.json": true,
+     "figures/": true
+    },
+    "changed_paths_vs_d80b4c4": [
+     "README.md",
+     "approval_and_budget_ledger.json",
+     "data_manifest.json",
+     "hf_su2_results.json",
+     "independent_reviews/A1_package_integrity/fullchain_a1_report.md",
+     "independent_reviews/A2_raw_recalc/reconcile.json",
+     "independent_reviews/A2_raw_recalc/reconcile_report.md",
+     "independent_reviews/A3_hygiene/isolation_report.md",
+     "independent_reviews/A4_acceptance_matrix/final_receipt_matrix.md",
+     "independent_reviews/A5_independent_recalc/recalc.md",
+     "independent_reviews/A5_independent_recalc/verdict.txt",
+     "independent_reviews/README.md",
+     "raw_artifacts_manifest.json",
+     "summary.json"
+    ],
+    "unexpected_changed_paths": [],
+    "hf_su2_diff_only_additive_notes": true,
+    "hf_su2_diffs": [
+     {
+      "path": "/revision_note",
+      "kind": "added",
+      "old": "<MISSING>",
+      "new": "Post-review documentation correction (A5 CHANGES_REQUESTED, 2026-10-31): the earlier wording implied all forces of both cases reached 6.3e-9 relative peak-to-peak. Corrected to CD/CL/CMy only, with CMx exceptions. No numerical result changed; no new solver start."
+     },
+     {
+      "path": "/wing_cases/HFS-02/force_stationarity_note",
+      "kind": "added",
+      "old": "<MISSING>",
+      "new": "Over the last 200 iterations CD/CL/CMy are stationary to relative peak-to-peak <= 6.3e-9 for HFS-02; this does NOT hold for every monitored component: HFS-02 CMx rel. p2p 4.63e-7, HFS-03 CMx rel. p2p 3.58e-3. Force-stationarity is not residual convergence (rms[Rho] plateau ~ -1.0)."
+     },
+     {
+      "path": "/wing_cases/HFS-03/force_stationarity_note",
+      "kind": "added",
+      "old": "<MISSING>",
+      "new": "Over the last 200 iterations CD/CL/CMy are stationary to relative peak-to-peak <= 6.3e-9 for HFS-02; this does NOT hold for every monitored component: HFS-02 CMx rel. p2p 4.63e-7, HFS-03 CMx rel. p2p 3.58e-3. Force-stationarity is not residual convergence (rms[Rho] plateau ~ -1.0)."
+     },
+     {
+      "path": "/wing_stationarity_note",
+      "kind": "added",
+      "old": "<MISSING>",
+      "new": "Over the last 200 iterations CD/CL/CMy are stationary to relative peak-to-peak <= 6.3e-9 for HFS-02; this does NOT hold for every monitored component: HFS-02 CMx rel. p2p 4.63e-7, HFS-03 CMx rel. p2p 3.58e-3. Force-stationarity is not residual convergence (rms[Rho] plateau ~ -1.0)."
+     }
+    ],
+    "summary_and_raw_manifest_numeric_unchanged": true,
+    "summary_and_raw_manifest_diff": {
+     "summary.json": {
+      "diff_count": 12,
+      "numeric_diffs": [],
+      "other_diffs": [
+       {
+        "path": "/budget/mesh_events_note",
+        "kind": "added"
+       },
+       {
+        "path": "/budget/mesh_generation_events",
+        "kind": "added"
+       },
+       {
+        "path": "/review/a1",
+        "kind": "removed"
+       },
+       {
+        "path": "/review/a2",
+        "kind": "removed"
+       },
+       {
+        "path": "/review/a3",
+        "kind": "removed"
+       },
+       {
+        "path": "/review/a4",
+        "kind": "removed"
+       },
+       {
+        "path": "/review/a5",
+        "kind": "removed"
+       },
+       {
+        "path": "/review/note",
+        "kind": "removed"
+       },
+       {
+        "path": "/review/reviews_are_verbatim_copies",
+        "kind": "added"
+       },
+       {
+        "path": "/review/revision_note",
+        "kind": "added"
+       },
+       {
+        "path": "/review/roles",
+        "kind": "added"
+       },
+       {
+        "path": "/review/status",
+        "kind": "added"
+       }
+      ]
+     },
+     "raw_artifacts_manifest.json": {
+      "diff_count": 3,
+      "numeric_diffs": [],
+      "other_diffs": [
+       {
+        "path": "/generated_utc",
+        "kind": "text/other"
+       },
+       {
+        "path": "/review_note",
+        "kind": "added"
+       },
+       {
+        "path": "/wave/manifest_json_sha256",
+        "kind": "removed"
+       }
+      ]
+     }
+    }
+   }
+  },
+  {
+   "id": "D6",
+   "name": "Budget 23/23 unchanged at 529d9b7 (mission_e2e + evaluations)",
+   "pass": true,
+   "detail": {
+    "evaluations_lines": 23,
+    "categories": {
+     "VSPAERO_LF": 6,
+     "WAVE_AREA_RULE": 7,
+     "RCAIDE_LF": 4,
+     "SU2_HF": 6
+    },
+    "mission_e2e_budget": {
+     "approval": "Issue #4 / D-12D-002",
+     "cap_total": 23,
+     "events_recorded": 23,
+     "used_by_category": {
+      "VSPAERO_LF": 6,
+      "RCAIDE_LF": 4,
+      "SU2_HF": 6,
+      "WAVE_AREA_RULE": 7
+     },
+     "remaining": 0,
+     "mesh_generation_events": 0,
+     "note": "every solver process start in this run is recorded, including the failed HFS-01 start and the two SU2 configuration attempts; mesh generation is recorded separately per the counting contract."
+    }
+   }
+  },
+  {
+   "id": "D7",
+   "name": "X2: main-checkout ledger LF-normalized == committed 529d9b7 blob",
+   "pass": true,
+   "detail": {
+    "main_worktree_bytes": 43240,
+    "main_worktree_sha256": "b491fcf115e8d11831813e5ba0127c26c6c08d9176247272879c835a9a76c41b",
+    "main_worktree_lf_normalized_bytes": 42222,
+    "main_worktree_lf_normalized_sha256": "0b9acc2e13f053ee70e94471a9b00c2ef9bdad65c5e358a41a6b456a6161fd8a",
+    "committed_529d9b7_lf_bytes": 42222,
+    "committed_529d9b7_lf_sha256": "0b9acc2e13f053ee70e94471a9b00c2ef9bdad65c5e358a41a6b456a6161fd8a",
+    "git_status_line": "(clean for this path)"
+   }
+  },
+  {
+   "id": "D8",
+   "name": "independent_reviews recorded in data_manifest and files present on clean checkout",
+   "pass": true,
+   "detail": {
+    "independent_reviews_meta": {
+     "dir": "independent_reviews/",
+     "roles": [
+      "A1",
+      "A2",
+      "A3",
+      "A4",
+      "A5"
+     ],
+     "note": "verbatim copies of project-external role deliverables; no reviewer ran a solver or wrote to the repo/GitHub"
+    },
+    "file_count": 8,
+    "files": [
+     {
+      "path": "independent_reviews/README.md",
+      "bytes": 3639,
+      "sha256": "9facf356f0fc4c171d0b5d16fcb00263c5e154ccf864246d88c6343aa0c9651c"
+     },
+     {
+      "path": "independent_reviews/A1_package_integrity/fullchain_a1_report.md",
+      "bytes": 5957,
+      "sha256": "f6cd75392bf99ae5172d5995a4e113ecb345a44de1a99798ade288f288fcaa3a"
+     },
+     {
+      "path": "independent_reviews/A2_raw_recalc/reconcile.json",
+      "bytes": 44272,
+      "sha256": "8d33eb98b43ad3a1d82b316464932ffbae6fd6d8bb0a9d68febf1be1fa067dcc"
+     },
+     {
+      "path": "independent_reviews/A2_raw_recalc/reconcile_report.md",
+      "bytes": 9830,
+      "sha256": "5a30050e4290758084af18640096a9fe3184bd2bc847a5432181fb6c613babb9"
+     },
+     {
+      "path": "independent_reviews/A3_hygiene/isolation_report.md",
+      "bytes": 5304,
+      "sha256": "67fee72359afe11f3445f385aa5ddf809d47bee86293912a8c5abe4bd54606b7"
+     },
+     {
+      "path": "independent_reviews/A4_acceptance_matrix/final_receipt_matrix.md",
+      "bytes": 20837,
+      "sha256": "ec22733506b4281d232381d63bfdada879f6f04baceaa4cde2fd5f3ad34792b8"
+     },
+     {
+      "path": "independent_reviews/A5_independent_recalc/recalc.md",
+      "bytes": 8051,
+      "sha256": "926dac7d30a75d14d72fa71177d541668fc3fcdd413e76aaa54cf0e237998c15"
+     },
+     {
+      "path": "independent_reviews/A5_independent_recalc/verdict.txt",
+      "bytes": 1572,
+      "sha256": "36c73cc4c9562c44e5faebc88d914860e111770ae75cee3d1bdfc4a49a7b13ec"
+     }
+    ]
+   }
+  }
+ ],
+ "closure": {
+  "X2_ledger_uncommitted": {
+   "status": "CLOSED",
+   "original_finding": "D:/RCAIDE approval_and_budget_ledger.json 43,240 B sha b491fcf1... had +253 uncommitted lines vs HEAD d80b4c4 blob (31,911 B LF)",
+   "evidence": {
+    "committed_58933bb_ledger_sha256": "0b9acc2e13f053ee70e94471a9b00c2ef9bdad65c5e358a41a6b456a6161fd8a",
+    "committed_58933bb_ledger_bytes_lf": 42222,
+    "mesh_generation_events": 11,
+    "mesh_event_ids": [
+     "MG-001",
+     "MG-002",
+     "MG-003",
+     "MG-004",
+     "MG-005",
+     "MG-006",
+     "MG-007",
+     "MG-008",
+     "MG-009",
+     "MG-010",
+     "MG-011"
+    ],
+    "ledger_totals": {
+     "cap": 23,
+     "used": 23,
+     "remaining": 0
+    },
+    "main_worktree_bytes": 43240,
+    "main_worktree_lf_normalized_sha256": "0b9acc2e13f053ee70e94471a9b00c2ef9bdad65c5e358a41a6b456a6161fd8a",
+    "committed_529d9b7_lf_sha256": "0b9acc2e13f053ee70e94471a9b00c2ef9bdad65c5e358a41a6b456a6161fd8a",
+    "git_status": "(clean for this path)"
+   },
+   "verdict": "the post-review ledger (11 mesh-generation events backfilled, 42,222 B canonical LF) is committed at 58933bb and unchanged at 529d9b7; main-checkout working copy is byte-identical after LF->CRLF normalization and git status is clean -> no uncommitted content remains, only the checkout line-ending artifact"
+  },
+  "X3_ext_source_edited": {
+   "status": "CLOSED_AS_ARCHIVE_INTACT",
+   "original_finding": "EXT/fullchain/hf/wedge/hfs00_analysis.json 1,913 B sha 084adf09... differs from manifest 1,915 B sha 01a61f47...",
+   "evidence": {
+    "raw_manifest_file_count": 155,
+    "archive_rel": "hf_raw/wedge/hfs00_analysis.json",
+    "manifest_bytes": 1915,
+    "manifest_sha256": "01a61f477b79387a806b239f616d49ecaeceba44257589be763652dc74307b3d",
+    "archive_disk_bytes": 1915,
+    "archive_disk_sha256": "01a61f477b79387a806b239f616d49ecaeceba44257589be763652dc74307b3d",
+    "ext_live_bytes": 1913,
+    "ext_live_sha256": "084adf097b37a1baaf44d59ae6c2bf7abe3352bc20635d24be45260d04f6b73d",
+    "ext_live_matches_manifest": false
+   },
+   "verdict": "raw archive copy under outputs/.../hf_raw/wedge/hfs00_analysis.json still matches raw_manifest.json exactly (1,915 B sha 01a61f47...); the EXT live source is a working copy edited after archiving and is not evidence -> no evidence-integrity impact, note retained as documentation"
+  },
+  "X4_manifest_ledger_unverifiable": {
+   "status": "CLOSED",
+   "original_finding": "data_manifest at d80b4c4 recorded CRLF worktree hashes; run-time CRLF ledger 32,677 B sha d064d93f... was not archived and could not be reproduced from LF commits",
+   "evidence": {
+    "canonical_hashing_convention": "sha256 over committed worktree bytes (git canonical LF line endings); regenerate/verify from a clean checkout of the commit containing this manifest",
+    "revision": "post-review revision (independent reviews archived, stationarity wording corrected, mesh events backfilled, manifest canonicalized)",
+    "clean_lf_checkout_rehash": {
+     "files": 67,
+     "matched": 67,
+     "mismatch_count": 0,
+     "sum_bytes": 1290937
+    },
+    "crlf_ledger_proof": {
+     "committed_d80b4c4_lf_bytes": 31911,
+     "lf_count": 766,
+     "crlf_bytes": 32677,
+     "crlf_sha256": "d064d93fd14b865fd90d823cd0538f4d81d5facc115b89680ec9e2687f697454",
+     "expected": "d064d93fd14b865fd90d823cd0538f4d81d5facc115b89680ec9e2687f697454",
+     "line_ending_note": "The first package manifest (in commit d80b4c4) hashed CRLF working-tree copies; A2/A5 found 14/59 CRLF-only differences against a clean LF checkout. Example: the run-time CRLF ledger was 32,677 B with sha256 d064d93fd14b865fd90d823cd0538f4d81d5facc115b89680ec9e2687f697454, which is exactly the committed LF ledger (31,911 B) with LF->CRLF conversion. This revision records canonical LF hashes only."
+    }
+   },
+   "verdict": "data_manifest revision at 529d9b7 declares canonical LF hashes and records the mechanism; all 67 files re-hash to 0 mismatches on a clean LF checkout; run-time CRLF ledger is proven identical to the committed 31,911 B LF ledger at d80b4c4 after LF->CRLF conversion (766 LF -> 32,677 B, sha256 d064d93f...) -> fully closed"
+  }
+ },
+ "stationarity": {
+  "verdict": "NO_NUMERICAL_CHANGE_d80b4c4_to_529d9b7",
+  "core_json_unchanged": true,
+  "all_numeric_artifacts_unchanged": true,
+  "changed_paths": [
+   "README.md",
+   "approval_and_budget_ledger.json",
+   "data_manifest.json",
+   "hf_su2_results.json",
+   "independent_reviews/A1_package_integrity/fullchain_a1_report.md",
+   "independent_reviews/A2_raw_recalc/reconcile.json",
+   "independent_reviews/A2_raw_recalc/reconcile_report.md",
+   "independent_reviews/A3_hygiene/isolation_report.md",
+   "independent_reviews/A4_acceptance_matrix/final_receipt_matrix.md",
+   "independent_reviews/A5_independent_recalc/recalc.md",
+   "independent_reviews/A5_independent_recalc/verdict.txt",
+   "independent_reviews/README.md",
+   "raw_artifacts_manifest.json",
+   "summary.json"
+  ],
+  "unexpected_changed_paths": [],
+  "hf_su2_changes": [
+   "/revision_note",
+   "/wing_cases/HFS-02/force_stationarity_note",
+   "/wing_cases/HFS-03/force_stationarity_note",
+   "/wing_stationarity_note"
+  ],
+  "hf_su2_numeric_diffs": [],
+  "summary_numeric_diffs": [],
+  "raw_manifest_numeric_diffs": [],
+  "budget": {
+   "evaluations_lines": 23,
+   "categories": {
+    "VSPAERO_LF": 6,
+    "WAVE_AREA_RULE": 7,
+    "RCAIDE_LF": 4,
+    "SU2_HF": 6
+   },
+   "mission_e2e_budget": {
+    "approval": "Issue #4 / D-12D-002",
+    "cap_total": 23,
+    "events_recorded": 23,
+    "used_by_category": {
+     "VSPAERO_LF": 6,
+     "RCAIDE_LF": 4,
+     "SU2_HF": 6,
+     "WAVE_AREA_RULE": 7
+    },
+    "remaining": 0,
+    "mesh_generation_events": 0,
+    "note": "every solver process start in this run is recorded, including the failed HFS-01 start and the two SU2 configuration attempts; mesh generation is recorded separately per the counting contract."
+   }
+  }
+ },
+ "independent_reviews": {
+  "recorded": {
+   "dir": "independent_reviews/",
+   "roles": [
+    "A1",
+    "A2",
+    "A3",
+    "A4",
+    "A5"
+   ],
+   "note": "verbatim copies of project-external role deliverables; no reviewer ran a solver or wrote to the repo/GitHub"
+  },
+  "file_count": 8,
+  "files": [
+   {
+    "path": "independent_reviews/README.md",
+    "bytes": 3639,
+    "sha256": "9facf356f0fc4c171d0b5d16fcb00263c5e154ccf864246d88c6343aa0c9651c"
+   },
+   {
+    "path": "independent_reviews/A1_package_integrity/fullchain_a1_report.md",
+    "bytes": 5957,
+    "sha256": "f6cd75392bf99ae5172d5995a4e113ecb345a44de1a99798ade288f288fcaa3a"
+   },
+   {
+    "path": "independent_reviews/A2_raw_recalc/reconcile.json",
+    "bytes": 44272,
+    "sha256": "8d33eb98b43ad3a1d82b316464932ffbae6fd6d8bb0a9d68febf1be1fa067dcc"
+   },
+   {
+    "path": "independent_reviews/A2_raw_recalc/reconcile_report.md",
+    "bytes": 9830,
+    "sha256": "5a30050e4290758084af18640096a9fe3184bd2bc847a5432181fb6c613babb9"
+   },
+   {
+    "path": "independent_reviews/A3_hygiene/isolation_report.md",
+    "bytes": 5304,
+    "sha256": "67fee72359afe11f3445f385aa5ddf809d47bee86293912a8c5abe4bd54606b7"
+   },
+   {
+    "path": "independent_reviews/A4_acceptance_matrix/final_receipt_matrix.md",
+    "bytes": 20837,
+    "sha256": "ec22733506b4281d232381d63bfdada879f6f04baceaa4cde2fd5f3ad34792b8"
+   },
+   {
+    "path": "independent_reviews/A5_independent_recalc/recalc.md",
+    "bytes": 8051,
+    "sha256": "926dac7d30a75d14d72fa71177d541668fc3fcdd413e76aaa54cf0e237998c15"
+   },
+   {
+    "path": "independent_reviews/A5_independent_recalc/verdict.txt",
+    "bytes": 1572,
+    "sha256": "36c73cc4c9562c44e5faebc88d914860e111770ae75cee3d1bdfc4a49a7b13ec"
+   }
+  ]
+ },
+ "verdict": {
+  "overall": "X2_X3_X4_CLOSED_NO_NUMERICAL_CHANGE",
+  "checks": "9/9 PASS",
+  "budget": "23/23 unchanged",
+  "gates_unchanged": {
+   "LF_M2_02_VSPAERO_drag": "NOT_VALIDATED",
+   "HF_M2_02": "PARTIAL",
+   "WAVE_AREA_RULE": "NOT_VALIDATED",
+   "mission_data_gate": "PARTIAL",
+   "validated_aircraft_fuel_label": false
+  },
+  "note": "this round only verifies bookkeeping/version closure; it does not re-run or validate any physics"
+ },
+ "deliverables": {
+  "md": "C:/Users/pc/AppData/Local/RCAIDE_Supersonic_agent_state/fullchain/a2/delta_reconcile.md",
+  "json": "C:/Users/pc/AppData/Local/RCAIDE_Supersonic_agent_state/fullchain/a2/delta_reconcile.json",
+  "script": "C:/Users/pc/AppData/Local/RCAIDE_Supersonic_agent_state/fullchain/a2/scripts/delta_check_31.py",
+  "raw_checks": "C:/Users/pc/AppData/Local/RCAIDE_Supersonic_agent_state/fullchain/a2/scripts/delta_check_31.json"
+ }
+}

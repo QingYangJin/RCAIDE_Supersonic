@@ -1,0 +1,241 @@
+# Concorde - 12D lifting-surface design space (D-12D-001, Issue #4 P1 section 3)
+# Status: variable set owner-approved (D-12D-001, 2026-10-30); the numerical bounds
+# remain provisional (frozen: false) until the owner freezes them. The 12 declared
+# variables are W01-W10 (main wing) plus V01-V02 (vertical tail). The fuselage F01-F03
+# are FIXED at the computed geometry-model values (owner decision, 2026-10-30) and are
+# recorded under fixed_variables. The legacy 15D config and every archived 15D result
+# are kept unchanged and must not be treated as 12D evidence.
+#
+# This file is data only: loading it runs no physics and evaluates no objective.
+schema_version: "1"
+stage: P1
+task_id: concorde_fixed_cruise_12d
+design_set: 12d_lifting_surfaces
+units: SI
+frozen: false
+bounds_status: provisional_until_geometry_perturbation
+freeze_requires:
+  - geometry effect matrix over the 12 declared lifting-surface variables (P1-P3)
+  - derived-quantity recomputation checked against RCAIDE geometry for the 12D set
+  - owner approval of the frozen bounds and of the fixed fuselage geometry source
+
+source:
+  issue: "#4 METAOPT-P1-P3 (D-12D-001)"
+  baseline_file: tutorials/Simulation_Turbojet_Supersonic_Aircraft_4500nmi_Mission/Concorde.py
+  baseline_sha256: 4c633e485a915151faaa8104e6647f9dc02bd08ae1436c22845e5917b3d735bd
+  notes: Lifting-surface variables and numeric bounds are inherited unchanged from the 15D contract; the fuselage is fixed, not deleted, and remains visible in baseline_geometry and fixed_variables. Supersonic low-fidelity and high-fidelity evidence for this set is NOT VALIDATED (see review-12d-supersonic-feasibility-20261030T1555).
+
+variables:
+  - id: W01
+    name: wing_area
+    unit: m^2
+    baseline: 358.25
+    lower: 300.0
+    upper: 420.0
+    scale: 100.0
+    target: main_wing.areas.reference
+  - id: W02
+    name: aspect_ratio
+    unit: dimensionless
+    baseline: 1.83
+    lower: 1.50
+    upper: 2.20
+    scale: 1.0
+    target: main_wing.aspect_ratio
+  - id: W03
+    name: sweep_1
+    unit: deg
+    baseline: 67.0
+    lower: 62.0
+    upper: 72.0
+    scale: 10.0
+    target: main_wing.segments.section_1.sweeps.quarter_chord
+  - id: W04
+    name: sweep_2
+    unit: deg
+    baseline: 48.0
+    lower: 40.0
+    upper: 56.0
+    scale: 10.0
+    target: main_wing.segments.section_2.sweeps.quarter_chord
+  - id: W05
+    name: sweep_3
+    unit: deg
+    baseline: 71.0
+    lower: 66.0
+    upper: 76.0
+    scale: 10.0
+    target: main_wing.segments.section_3.sweeps.quarter_chord
+  - id: W06
+    name: span_location_2
+    unit: dimensionless
+    baseline: 0.480469
+    lower: 0.35
+    upper: 0.58
+    scale: 0.1
+    target: main_wing.segments.section_2.percent_span_location
+  - id: W07
+    name: span_location_3
+    unit: dimensionless
+    baseline: 0.945313
+    lower: 0.85
+    upper: 0.98
+    scale: 0.1
+    target: main_wing.segments.section_3.percent_span_location
+  - id: W08
+    name: chord_ratio_2
+    unit: dimensionless
+    baseline: 0.408284
+    lower: 0.30
+    upper: 0.50
+    scale: 0.1
+    target: main_wing.segments.section_2.root_chord_percent
+  - id: W09
+    name: chord_ratio_3
+    unit: dimensionless
+    baseline: 0.130178
+    lower: 0.08
+    upper: 0.20
+    scale: 0.1
+    target: main_wing.segments.section_3.root_chord_percent
+  - id: W10
+    name: tip_twist
+    unit: deg
+    baseline: 0.0
+    lower: -4.0
+    upper: 4.0
+    scale: 5.0
+    target: main_wing.segments.tip.twist
+  - id: V01
+    name: vertical_tail_area
+    unit: m^2
+    baseline: 33.91
+    lower: 28.0
+    upper: 40.0
+    scale: 10.0
+    target: vertical_stabilizer.areas.reference
+  - id: V02
+    name: vertical_tail_sweep_delta
+    unit: deg
+    baseline: 0.0
+    lower: -10.0
+    upper: 10.0
+    scale: 10.0
+    target: vertical_stabilizer.quarter_chord_sweep_delta
+
+fixed_variables:
+  - id: F01
+    name: fuselage_length
+    unit: m
+    baseline: 61.66
+    target: fuselage.lengths.total
+    source: owner decision 2026-10-30, item 2: adopt the computed geometry-model value instead of the upstream declared value; not deleted from the contract.
+  - id: F02
+    name: fuselage_fineness
+    unit: dimensionless
+    baseline: 4.30
+    target: fuselage.fineness.nose
+    source: owner decision 2026-10-30, item 2: adopt the computed geometry-model value instead of the upstream declared value; not deleted from the contract.
+  - id: F03
+    name: fuselage_height_width_ratio
+    unit: dimensionless
+    baseline: 1.152778
+    target: fuselage.heights.maximum_over_width
+    source: owner decision 2026-10-30, item 2: adopt the computed geometry-model value instead of the upstream declared value; not deleted from the contract.
+
+baseline_geometry:
+  status: p1_geometry_model_derived
+  note: derived by research/concorde_metaopt/aircraft/geometry_model.py at the 12D baseline (fixed fuselage); upstream declared values that the parametric model does not reproduce are kept under upstream_declared for traceability
+  main_wing:
+    projected_span_m: 25.604638
+    root_chord_m: 29.901819
+    tip_chord_m: 0.973136
+    taper_ratio: 0.032544
+    mean_aerodynamic_chord_m: 18.489893
+    wetted_area_m2: 717.574750
+    exposed_area_m2: 358.250000
+    section_span_fractions: [0.0, 0.480469, 0.945313, 1.0]
+    section_chord_ratios: [1.0, 0.408284, 0.130178, 0.032544]
+    section_quarter_chord_sweeps_deg: [67.0, 48.0, 71.0, 71.0]
+  vertical_stabilizer:
+    projected_span_m: 5.009331
+    root_chord_m: 13.157616
+    tip_chord_m: 2.450039
+    taper_ratio: 0.186207
+    mean_aerodynamic_chord_m: 8.124385
+    wetted_area_m2: 67.921730
+    section_span_fractions: [0.0, 0.4, 1.0]
+    section_chord_ratios: [1.0, 0.517241, 0.186207]
+    section_quarter_chord_sweeps_deg: [63.0, 40.0, 0.0]
+  fuselage:
+    length_m: 61.66
+    width_m: 2.88
+    height_m: 3.32
+    nose_fineness: 4.3
+    tail_fineness: 6.4
+    wetted_area_m2: 488.922167
+    front_projected_area_m2: 7.509665
+    effective_diameter_m: 3.103905
+    source_status: fixed_owner_approved_computed_values
+    note: fixed, not removed. Fuselage drag/interference correction stays an open gate (BODY-CORR); supersonic lifting-surface evidence must not be reported as full-aircraft drag.
+  upstream_declared:
+    note: values as declared in tutorials/Simulation_Turbojet_Supersonic_Aircraft_4500nmi_Mission/Concorde.py; they are not reproduced by the parametric model and are listed for traceability only
+    main_wing:
+      root_chord_m: 33.8
+      wetted_area_m2: 601.0
+      exposed_area_m2: 326.5
+    vertical_stabilizer:
+      projected_span_m: 6.0
+      root_chord_m: 14.5
+    fuselage:
+      wetted_area_m2: 442.0
+      front_projected_area_m2: 11.9
+
+derived_rules:
+  - name: projected_span
+    formula: sqrt(wing_area * aspect_ratio)
+    note: section span fractions stay fixed and are applied to this span.
+  - name: wing_root_chord
+    formula: K = sum(0.5 * delta_s_i * (r_i + r_i+1)); root_chord = wing_area / (projected_span * K) with fixed chord ratios [1.0, chord_ratio_2, chord_ratio_3, 0.032544]
+    note: the single-trapezoid formula from the first P1 draft is withdrawn; it derived 27.10 m against the upstream declaration 33.8 m. Six generated configurations must be checked in P1.
+  - name: wing_tip_chord
+    formula: tip_chord = root_chord * 0.032544
+    note: the upstream tip/root ratio is preserved; tip chord therefore scales with the root chord.
+  - name: wing_wetted_area
+    formula: sum(2.003 * exposed_segment_area) over the four sections (thickness_to_chord 0.03 < 0.05)
+    note: no placeholder 601/358.25 ratio remains.
+  - name: wing_exposed_area
+    formula: equals the reference area in P1
+    note: the fuselage-unexposed span is not modelled; the upstream declaration 326.5 m2 is an unresolved cross-check, not a frozen value.
+  - name: vertical_tail_span
+    formula: sqrt(vertical_tail_area * 0.74)
+    note: tail aspect ratio held at 0.74; tail sweep delta V02 applies to all three tail sections. RCAIDE forces the last segment sweep to the previous segment, so the RCAIDE tip sweep is 40 deg while the model tip sweep is 0 deg at baseline.
+  - name: vertical_tail_root_chord
+    formula: K = sum(0.5 * delta_s_i * (r_i + r_i+1)); root_chord = vertical_tail_area / (tail_span * K) with fixed chord ratios [1.0, 0.517241, 0.186207]
+    note: the derived baseline tail span 5.009331 m differs from the upstream declared 6.0 m; this deviation must be resolved before the design space is frozen.
+  - name: fixed_fuselage_geometry
+    formula: FIXED. nose_length = 4.3 * 2.88; tail_length = nose_length * 6.4 / 4.3; cabin_length = 61.66 - nose_length - tail_length; height = 3.32; wetted area and usable volume from the eight elliptic-cone stations
+    note: F01-F03 are removed from the declared optimisation set, not from the vehicle model. Width 2.88 m is fixed by the model; usable volume must stay at or above the required 110 m3.
+  - name: mass_and_cg
+    formula: PROVISIONAL_NOT_FROZEN
+    note: upstream operating empty mass 78700 kg is distributed over component classes and scaled with wing area and fuselage length; CG and static margin are diagnostics only and must not be used as a frozen constraint before P2 TaskSpec approval.
+
+cross_constraints:
+  - id: C01
+    expression: span_location_2 < span_location_3
+    note: wing breakpoints must stay ordered.
+  - id: C02
+    expression: chord_ratio_3 < chord_ratio_2 < 1.0
+    note: chord stays positive and monotonically decreasing outboard.
+  - id: C03
+    expression: 0 < wing_area, 0 < aspect_ratio, 0 < vertical_tail_area, 0 < fuselage_length
+    note: positive geometric quantities; fuselage_length is the fixed F01 value re-injected by DesignSpace.expand.
+  - id: C04
+    expression: 0 <= sweep_1, sweep_2, sweep_3 <= 90
+    note: sweep sanity range in degrees.
+
+evaluation_target:
+  objective: fuel_burn_kg
+  definition: mass_start_kg - mass_end_kg for one fixed supersonic cruise segment
+  status: not_frozen
+  note: TaskSpec, cruise Mach/altitude/range and propulsion contract are P2 deliverables and are unchanged by this 12D proposal.

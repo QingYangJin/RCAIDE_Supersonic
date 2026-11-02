@@ -1,0 +1,12 @@
+# Phase I single-cruise experiment configuration (P2 smoke stage).
+experiment_id: phase1_single_cruise
+stage: P2
+fidelity: single_cruise
+objective: fuel_burn_kg
+task_config: configs/task_fixed_cruise.yaml
+design_space_config: configs/design_space_15d.yaml
+smoke:
+  budget: 5
+  repeat_count: 3
+  repeatability_relative_tolerance: 1.0e-6
+  perturbation_variables: ['W01', 'W10']

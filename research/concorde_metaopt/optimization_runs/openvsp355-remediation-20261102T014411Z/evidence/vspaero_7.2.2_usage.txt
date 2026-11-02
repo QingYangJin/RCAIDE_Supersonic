@@ -1,0 +1,33 @@
+VSPAERO v.7.2.2 --- Compiled on: Oct 12 2026 at 04:08:14 PST 
+
+
+
+
+Usage: vspaero [options] <FileName>
+
+
+Options: 
+ -omp <N>                           Use 'N' processes.
+ -stab                              Calculate stability derivatives.
+
+ -pstab                             Calculate unsteady roll  rate stability derivative analysis.
+ -qstab                             Calculate unsteady pitch rate stability derivative analysis.
+ -rstab                             Calculate unsteady yaw   rate stability derivative analysis.
+
+ -fs <M> END <A> END <B> END        Set/Override freestream Mach, Alpha, and Beta. note: M, A, and B are space delimited lists.
+ -save                              Save restart file.
+ -restart                           Restart analysis.
+ -geom                              Process and write geometry without solving.
+ -fem                               Load in FEM deformation file.
+ -write2dfem                        Write out 2D FEM load file.
+ -groundheight <H>                  Do ground effects analysis with cg set to <H> height above the ground. 
+ -rotor <RPM>                       Do a rotor analysis, with specified rotor RPM. 
+ -unsteady                          Run an unsteady analysis, assumes .groups file is setup! 
+
+
+
+ -interrogate                       Reload an existing solution, and interrogate the data using survey points list. 
+ -interrogate -unsteady             Reload an existing unsteady solution, and interrogate the data using survey points list. 
+
+
+

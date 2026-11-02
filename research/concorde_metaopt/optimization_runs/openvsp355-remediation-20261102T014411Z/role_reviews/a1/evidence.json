@@ -1,0 +1,371 @@
+{
+  "schema": "a1-zero-solver-audit/v1",
+  "task": "task-43 / D12D003-ZERO-SOLVER-AUDIT-A1",
+  "auditor": "a1-code-dev",
+  "audited_utc": "2026-11-02T02:40:00Z",
+  "audited_local": "2026-11-02T10:40:00+08:00",
+  "read_only_declaration": "no solver run, no numerical analysis, no repo/git/GitHub write, no subagent spawn",
+  "subject": {
+    "commit": "dbc325dd9d7412b48e0399061a86d61eb0de6941",
+    "parent": "5dcb0bf09335fd6f73363d0280a667286d6d20f9",
+    "commit_title": "[P1-P3] D-12D-003 Round-1: OpenVSP 3.55.0 side-install, zero-solver evidence and Round-2 budget proposal",
+    "commit_time_local": "2026-11-02T10:21:47+08:00",
+    "commit_stat": {
+      "files_changed": 36,
+      "insertions": 5744,
+      "deletions": 0,
+      "only_binary": "figures/geometry_parity_355_vs_326.png",
+      "only_binary_bytes": 95305
+    },
+    "repo": "D:/RCAIDE",
+    "branch": "research/concorde-metaopt",
+    "main_sha": "ec65e5a9a723bc52df8075a395fcaf9e0fd0fc2b",
+    "origin_main_sha": "ec65e5a9a723bc52df8075a395fcaf9e0fd0fc2b",
+    "head_is_ancestor_of_main": false,
+    "verify_worktree": "D:/RCAIDE-verify-a3-dbc325d",
+    "verify_worktree_clean": true,
+    "verify_worktree_detached": true,
+    "run_package": "D:/RCAIDE/research/concorde_metaopt/optimization_runs/openvsp355-remediation-20261102T014411Z",
+    "run_package_file_count": 35
+  },
+  "verdict": {
+    "zero_solver_cases": "CONFIRMED",
+    "zero_numerical_analysis_starts": "CONFIRMED",
+    "zero_solver_artifacts": "CONFIRMED",
+    "budget_consumed": "CONFIRMED_NONE",
+    "round2_budget_state": "PROPOSED_NOT_APPROVED_NOT_EXECUTED",
+    "main_branch_untouched": "CONFIRMED",
+    "literal_zero_solver_process_start": "PARTIAL_ONE_BANNER_ONLY_PROCESS (TG-008)",
+    "overall": "ZERO_PHYSICAL_SOLVER_CONFIRMED; literal 'zero solver process' wording needs F1 correction; no evidence refuting the claim"
+  },
+  "independent_verifications": [
+    {
+      "id": "E1",
+      "check": "git commit/parent/branch/main ancestry/cleanliness",
+      "result": "HEAD=dbc325d parent=5dcb0bf detached clean; main=origin/main=ec65e5a; merge-base --is-ancestor exit=1"
+    },
+    {
+      "id": "E2",
+      "check": "run package manifest integrity",
+      "method": "canonical LF (CRLF->LF) bytes+sha256 recomputation",
+      "result": "34/34 match; 35 files in dir; only data_manifest.json not listed (self-exclusion); no hidden solver artifacts; no .polar/.history/.lod/.groups/.adb/.csf/.vkey/.vspgeom"
+    },
+    {
+      "id": "E3",
+      "check": "solver-input generation evidence",
+      "result": "status=GENERATED_NOT_SOLVED; solver_start_count=0; sweep_result_id empty both variants; thick vspgeom 503013 B sha 494feef5..., thin 224357 B sha 9fcda6d5...; setup 930 B/42 lines sha c862aa22...; geom exec 0.02-0.035 s; no aerodynamic coefficients in geom CSVs"
+    },
+    {
+      "id": "E3b",
+      "check": "source guard: StopBeforeRun before solver fork",
+      "result": "VSPAEROMgr.cpp:2142-2146 returns before :2149 ForkCmd; AnalysisMgr.cpp StopBeforeRun registered :2255, read :2875-2878; no second fork path found"
+    },
+    {
+      "id": "E4",
+      "check": "tooling_events and 15 evidence paths",
+      "result": "8 events TG-001..TG-008 all solver_starts=0; solver_processes_started_total=0; numerical_analysis_starts_total=0; all 15 evidence paths exist+bytes+sha256 match"
+    },
+    {
+      "id": "E5",
+      "check": "disk forensic scan for new solver artifacts since 2026-11-01",
+      "cmd": "find D:/RCAIDE -type f -newermt '2026-11-01 00:00' with extensions .polar/.history/.lod/.adb/.groups/.fem/.vspgeom/.csf/.vkey",
+      "result": "only 2 hits, both geometry vspgeom in outputs/.../vspaero7_setup_artifacts (503013/224357 B, mtime 2026-11-02 10:08); EXT agent-state 0 hits; Temp depth<=2 (283 files) 0 hits; no solver stdout/log found by feature-string scan"
+    },
+    {
+      "id": "E6",
+      "check": "budget not executed",
+      "result": "D-12D-002 ledger totals cap=23 used=23 remaining=0 at 2026-10-31T10:10:27Z; evaluations.jsonl 23 rows last HFS-03 finished 2026-10-31T09:33:22Z; no new ledger/jsonl/run dir; D-12D-003 approved=0; budget_request_round2 status PROPOSED_NOT_APPROVED (line 3), approval_note AWAITING_OWNER_APPROVAL (line 137)"
+    },
+    {
+      "id": "E7",
+      "check": "summary/gates self-report consistency",
+      "result": "summary.json:12-13 zeros; :29 gate_approved=false; :358 APPROVED_FOR_NEXT_STAGE NOT ISSUED; :411 caveat; status ROUND1_EVIDENCE_COMPLETE_NO_GATE_APPROVED; 6 gates not passed"
+    },
+    {
+      "id": "E8",
+      "check": "generation scripts cannot start solver",
+      "result": "make_round1_summary/manifest/figures import only json/os/time/pathlib/hashlib/matplotlib; no subprocess/Popen/os.system; summary solver_starts is self-reported sum (make_round1_summary.py:21)"
+    },
+    {
+      "id": "E9",
+      "check": "binary fingerprints and archive hash",
+      "result": "new vspaero 811520 B sha db71c441... banner v7.2.2 (Oct 12 2026); old 561664 B sha e1affca0... banner v6.2.0 (Jan 6 2022); usage.txt 1546 B sha 3bc9b1d1... no -setup option; archive 49664844 B sha f1fde65f9d48ae482dcad2c0b7711b81a22810871a5bebc236c4618c0131ebb9 matches provenance"
+    },
+    {
+      "id": "E10",
+      "check": "geometry ExecAnalysis is not a solver run",
+      "result": "only .csf (20 B)/.vkey (350-356 B)/.vspgeom geometry products; A1 prior task-36 probe on same 3.55.0 reproduced same artifact classes and never forked vspaero.exe"
+    }
+  ],
+  "no_solver_evidence": {
+    "package_manifest": {
+      "solver_starts": 0,
+      "numerical_analysis_starts": 0,
+      "file_count": 34,
+      "total_bytes": 407111,
+      "raw_artifacts_files": 2,
+      "raw_artifacts_bytes": 717903
+    },
+    "tooling_events": {
+      "event_count": 8,
+      "events": [
+        "TG-001 geometry_export",
+        "TG-002 geometry_export",
+        "TG-003 api_probe",
+        "TG-004 vspaero_setup_generation",
+        "TG-005 vspaero_setup_generation",
+        "TG-006 vspaero_setup_generation",
+        "TG-007 source_retrieval",
+        "TG-008 binary_version_probe"
+      ],
+      "solver_processes_started_total": 0,
+      "numerical_analysis_starts_total": 0,
+      "tg008_self_report": "vspaero.exe invoked with no arguments only to print the usage banner; no model, no case, no solver start"
+    },
+    "artifacts_absent": [
+      ".polar",
+      ".history",
+      ".lod",
+      ".adb",
+      ".groups",
+      ".fem",
+      "solver stdout/log"
+    ],
+    "setup_files": {
+      "bytes": 930,
+      "lines": 42,
+      "sha256": "c862aa220bc6f3a9d057b2fbe99c4ed340591a14ad88f455d3d1b0ddbe7c1804",
+      "variants": 2
+    },
+    "geometry_inputs": {
+      "thick_vspgeom": {
+        "bytes": 503013,
+        "sha256": "494feef5bb8b070dc77892dd7e2838f4946bcd856c2448a99c1a56d2884fb718",
+        "nodes": 1082,
+        "elements": 1088
+      },
+      "thin_vspgeom": {
+        "bytes": 224357,
+        "sha256": "9fcda6d5d45300fbb0e20257c9ddc80540b44f5064a9566089d7ef85f9018d8e",
+        "nodes": 527,
+        "elements": 480
+      },
+      "geom_exec_seconds": [
+        0.035,
+        0.02
+      ],
+      "sweep_result_ids": [
+        "",
+        ""
+      ]
+    },
+    "disk_scan": {
+      "repo_hits": 2,
+      "repo_hits_detail": [
+        "outputs/concorde_metaopt/openvsp355-remediation-20261102T014411Z/vspaero7_setup_artifacts/wing355_thick.vspgeom",
+        "outputs/concorde_metaopt/openvsp355-remediation-20261102T014411Z/vspaero7_setup_artifacts/wing355_thin.vspgeom"
+      ],
+      "ext_hits": 0,
+      "temp_depth2_files_scanned": 283,
+      "temp_hits": 0
+    }
+  },
+  "refutation_checks": [
+    {
+      "id": "R1",
+      "hypothesis": "hidden solver artifacts inside package",
+      "method": "extension enumeration + feature-string scan",
+      "outcome": "NOT_SUPPORTED"
+    },
+    {
+      "id": "R2",
+      "hypothesis": "solver logs outside package (outputs/EXT/Temp)",
+      "method": "newer-than 2026-11-01 scan + feature-string scan",
+      "outcome": "NOT_SUPPORTED"
+    },
+    {
+      "id": "R3",
+      "hypothesis": "data_manifest hides files",
+      "method": "34 vs 35 attribution",
+      "outcome": "NOT_SUPPORTED (self-exclusion only)"
+    },
+    {
+      "id": "R4",
+      "hypothesis": "solver process execution traces",
+      "method": "Prefetch read (EPERM), exe atime, process audit availability",
+      "outcome": "INCONCLUSIVE_ON_PROCESS_COUNT (no independent accounting available)"
+    },
+    {
+      "id": "R5",
+      "hypothesis": "new budget events/approval during Round-1",
+      "method": "ledger timestamps, evaluations.jsonl, run dir mtimes, budget request status",
+      "outcome": "NOT_SUPPORTED"
+    },
+    {
+      "id": "R6",
+      "hypothesis": "setup file mistaken for solver output",
+      "method": "line-by-line content + geom CSV field check",
+      "outcome": "NOT_SUPPORTED (inputs only)"
+    },
+    {
+      "id": "R7",
+      "hypothesis": "generation scripts spawn solver",
+      "method": "static import/string scan",
+      "outcome": "NOT_SUPPORTED"
+    },
+    {
+      "id": "R8",
+      "hypothesis": "3.55 install polluted by solver runs",
+      "method": "install dir artifact check, PATH, registry",
+      "outcome": "NOT_SUPPORTED"
+    }
+  ],
+  "budget_state": {
+    "d12d002_ledger": "D:/RCAIDE/research/concorde_metaopt/optimization_runs/p1p3-fullchain-20261031T0407Z/approval_and_budget_ledger.json",
+    "d12d002_cap": 23,
+    "d12d002_used": 23,
+    "d12d002_remaining": 0,
+    "d12d002_ledger_updated_utc": "2026-10-31T10:10:27.416720Z",
+    "evaluations_jsonl_rows": 23,
+    "last_evaluation": {
+      "case_id": "HFS-03",
+      "category": "SU2_HF",
+      "status": "SOLVED",
+      "finished_utc": "2026-10-31T09:33:22Z"
+    },
+    "new_billable_events_since_2026_10_31": 0,
+    "d12d003_approved": 0,
+    "round2_request_status": "PROPOSED_NOT_APPROVED",
+    "round2_request_lines": {
+      "status": 3,
+      "no_solver_started": 6,
+      "recommended_cap": 100,
+      "approval_note": 137
+    },
+    "round2_user_visible_status": "AWAITING_OWNER_APPROVAL"
+  },
+  "findings": [
+    {
+      "id": "F1",
+      "severity": "major",
+      "area": "governance/wording",
+      "title": "Literal 'zero solver process' conflicts with TG-008 self-report of one banner-only vspaero.exe invocation",
+      "evidence": [
+        "evidence/tooling_events.json:157-159",
+        "README.md:21",
+        "tooling_events:9"
+      ],
+      "impact": "no change to V1-V4/gates/budget; weakens literal wording; recommend re-wording and classifying TG-008 as version probe",
+      "owner_action": "L decides whether to amend Round-1 package/receipt; A1 is read-only"
+    },
+    {
+      "id": "F2",
+      "severity": "major",
+      "area": "Round-2 readiness",
+      "title": "README:94-96 labels VSPAERO defaults (ReCref=1e7, Vinf=100, Rho=0.002377) as frozen contract values",
+      "evidence": [
+        "README.md:94-96",
+        "evidence/vspaero7_setup_generation.json:64",
+        "evidence/vspaero7_setup_generation.json:103",
+        "evidence/vspaero7_setup_generation.json:152",
+        "optimization_runs/p1p3-fullchain-20261031T0407Z/scripts/run_lf_case.py:21",
+        "docs/reviews/p1p3_fullchain_validation_report_20261031.md:43"
+      ],
+      "impact": "Round-2 must inject Vinf=596.0373972278921, Rho=0.1153178340089936, ReCref=89397005.8767656 and assert them; otherwise Round-2 invalid; does not refute zero solve",
+      "owner_action": "fix generator assertion + README wording before Round-2 execution"
+    },
+    {
+      "id": "F3",
+      "severity": "minor",
+      "area": "record accuracy",
+      "title": "generated_utc 2026-11-02T02:20:00Z vs file mtimes 02:08Z/02:10Z",
+      "evidence": [
+        "evidence/vspaero7_setup_generation.json:7",
+        "evidence/tooling_events.json generated_utc"
+      ],
+      "impact": "timeline auditability only",
+      "owner_action": "record actual write time"
+    },
+    {
+      "id": "F4",
+      "severity": "minor",
+      "area": "wording",
+      "title": "README:39 'no User/Machine/Process PATH entry' imprecise: pre-existing old 3.26.1 User PATH entry exists; 3.55 not added to PATH; no registry keys",
+      "evidence": [
+        "README.md:39",
+        "install_provenance.json isolation_checks.path_env_has_openvsp=true"
+      ],
+      "impact": "isolation conclusion (3.55 not on PATH) remains valid",
+      "owner_action": "re-word"
+    },
+    {
+      "id": "F5",
+      "severity": "info",
+      "area": "install accounting",
+      "title": "install dir now 504 files/150,078,455 B vs claimed 491/149,488,735 B; difference exactly 13 .pyc (589,720 B) __pycache__ created 09:43 by API imports",
+      "evidence": [
+        "README.md install claims",
+        "dir counts",
+        "491+13=504 files; 149,488,735+589,720=150,078,455 B"
+      ],
+      "impact": "none functional; original claim was correct at install time",
+      "owner_action": "L may clean pycache if desired; A1 does not delete"
+    },
+    {
+      "id": "F6",
+      "severity": "limitation",
+      "area": "process-level evidence",
+      "title": "No independent process accounting: Prefetch EPERM, atime polluted, no 4688/USN/ETW; summary solver_starts is self-reported sum",
+      "evidence": [
+        "make_round1_summary.py:21",
+        "Prefetch EPERM"
+      ],
+      "impact": "zero solver cases confirmed; literal zero-process only indirectly supported",
+      "owner_action": "future rounds: add command-level audit logging (non-binding)"
+    }
+  ],
+  "corpus_defects_referenced": [
+    {
+      "id": "W-group template missing '='",
+      "status": "already documented in Round-1 package; confirmed by A1 prior task-37 evidence (W01/W03/W10 invalid, CL inflated ~358x)"
+    },
+    {
+      "id": "CDi sign flip and mesh drift",
+      "status": "already documented; A1 prior task-37 evidence (CDi +3.435104e-4/-8.942229e-4/-2.260794e-2; CL coarse->fine +29.09%)"
+    }
+  ],
+  "limitations": [
+    "C:/Windows/Prefetch read denied (EPERM); no process-start audit trail available",
+    "vspaero.exe atimes both 2026-11-02T02:08:06Z (hash-read time), cannot distinguish execution",
+    "summary solver_starts derived from self-reported tooling_events field, not process instrumentation",
+    "GitHub PR #3 current head/state not re-checked (A4/L scope)",
+    "role_reviews a2/a3/a5 full contents not re-audited (cross-referenced only)",
+    "Symmetry=0 vs old template 'Symmetry=NO' semantic equivalence not verified (solver run prohibited this round)"
+  ],
+  "not_run": [
+    "any VSPAERO/SU2/WaveDrag/RCAIDE Mission/Gmsh execution",
+    "any geometry/mesh reconstruction",
+    "Prefetch content read (EPERM)",
+    "process audit log collection (4688/USN/ETW)",
+    "GitHub write operations and PR #3 head verification",
+    "repo file modification, git add/commit/push/checkout/stash",
+    "subagent spawn"
+  ],
+  "commands": [
+    "git -C D:/RCAIDE-verify-a3-dbc325d rev-parse HEAD HEAD^",
+    "git -C D:/RCAIDE-verify-a3-dbc325d status --porcelain",
+    "git -C D:/RCAIDE-verify-a3-dbc325d branch --show-current",
+    "git -C D:/RCAIDE rev-parse main origin/main",
+    "git -C D:/RCAIDE merge-base --is-ancestor dbc325dd9d7412b48e0399061a86d61eb0de6941 main; echo exit=$?",
+    "git -C D:/RCAIDE show --stat --oneline dbc325dd9d7412b48e0399061a86d61eb0de6941",
+    "find D:/RCAIDE -type f -newermt '2026-11-01 00:00' \\( -name '*.polar' -o -name '*.history' -o -name '*.lod' -o -name '*.adb' -o -name '*.groups' -o -name '*.fem' -o -name '*.vspgeom' -o -name '*.csf' -o -name '*.vkey' \\)",
+    "grep -n 'solver_processes_started_total\\|numerical_analysis_starts_total' evidence/tooling_events.json",
+    "grep -n 'cap\\|used\\|remaining' optimization_runs/p1p3-fullchain-20261031T0407Z/approval_and_budget_ledger.json",
+    "sha256sum D:/OpenVSP-download/OpenVSP-3.55.0-win64-Python3.11.zip",
+    "python (read-only): canonical LF bytes+sha256 recompute of data_manifest.json file list"
+  ],
+  "outputs": {
+    "report": "C:/Users/pc/AppData/Local/RCAIDE_Supersonic_agent_state/openvsp355-round1/a1/zero_solver_audit.md",
+    "evidence_json": "C:/Users/pc/AppData/Local/RCAIDE_Supersonic_agent_state/openvsp355-round1/a1/evidence.json"
+  }
+}

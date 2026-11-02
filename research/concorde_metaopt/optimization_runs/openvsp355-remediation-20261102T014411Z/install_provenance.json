@@ -1,0 +1,131 @@
+{
+  "schema_version": 1,
+  "approval": {
+    "decision": "D-12D-003",
+    "comment_id": 6566994749,
+    "url": "https://github.com/QingYangJin/RCAIDE_Supersonic/issues/4#issuecomment-6566994749"
+  },
+  "recorded_utc": "2026-11-02T01:44:56Z",
+  "official_source": {
+    "download_page": "https://openvsp.org/download.php",
+    "index": "https://openvsp.org/zips/current/windows/",
+    "file_url": "https://openvsp.org/zips/current/windows/OpenVSP-3.55.0-win64-Python3.11.zip",
+    "release_notes": "https://openvsp.org/blogs/announcements/2026/10/12/openvsp-3-55-0-released",
+    "migration_3_45": "https://openvsp.org/blogs/announcements/2025/07/19/openvsp-3-45-0-released"
+  },
+  "archive": {
+    "path": "D:/OpenVSP-download/OpenVSP-3.55.0-win64-Python3.11.zip",
+    "bytes": 49664844,
+    "sha256": "f1fde65f9d48ae482dcad2c0b7711b81a22810871a5bebc236c4618c0131ebb9"
+  },
+  "new_install": {
+    "root": "D:/OpenVSP-3.55.0/OpenVSP-3.55.0-win64",
+    "expanded_bytes_hint_mb": 144,
+    "files": [
+      {
+        "path": "D:/OpenVSP-3.55.0/OpenVSP-3.55.0-win64\\vsp.exe",
+        "bytes": 19713536,
+        "sha256": "f707fa8a550a4d84420916ba4c65bfb657995b829a55c86f1d6b0b398801f62b"
+      },
+      {
+        "path": "D:/OpenVSP-3.55.0/OpenVSP-3.55.0-win64\\vspaero.exe",
+        "bytes": 811520,
+        "sha256": "db71c4412489af82398833408ea30fb73327bdd9434de2ef530d31375b9fddad"
+      },
+      {
+        "path": "D:/OpenVSP-3.55.0/OpenVSP-3.55.0-win64\\python/openvsp/openvsp/_vsp.pyd",
+        "bytes": 17822208,
+        "sha256": "c002e778eed8801cda0aa9753e038cbb93555a37cf0df3cb7fd9b5565814fa37"
+      },
+      {
+        "path": "D:/OpenVSP-3.55.0/OpenVSP-3.55.0-win64\\python/openvsp/openvsp/_vsp_g.pyd",
+        "bytes": 21928960,
+        "sha256": "8df83996e69162657130425ffe28268c3da8d86e82567b12a5a5da09840a8a79"
+      },
+      {
+        "path": "D:/OpenVSP-3.55.0/OpenVSP-3.55.0-win64\\python/openvsp/openvsp/__init__.py",
+        "bytes": 2975,
+        "sha256": "d55a6858ca768370bcf457fc07b1f58c724ab77926a4eaea1441822776973988"
+      },
+      {
+        "path": "D:/OpenVSP-3.55.0/OpenVSP-3.55.0-win64\\python/openvsp/openvsp/vsp.py",
+        "bytes": 332170,
+        "sha256": "297638f06a0838efc17887d48f42b6ec72530ed4a1c45cc277c20eb38e1162eb"
+      },
+      {
+        "path": "D:/OpenVSP-3.55.0/OpenVSP-3.55.0-win64\\python/openvsp/openvsp/vsp_g.py",
+        "bytes": 337560,
+        "sha256": "32d2cd29bcc2a623bc257291be969f0d953fb696da3243315bbafdd249744605"
+      },
+      {
+        "path": "D:/OpenVSP-3.55.0/OpenVSP-3.55.0-win64\\python/openvsp/openvsp/facade.py",
+        "bytes": 301575,
+        "sha256": "03c264e67c580216137297690f8b14a2545d6ca7ca565439e84e96a248daf9dd"
+      }
+    ],
+    "python_version": "3.11.17 (D:/RCAIDE/envs/RCAIDE/python.exe, Anaconda, 64-bit)",
+    "import_recipe": [
+      "os.add_dll_directory(<new_root>)",
+      "sys.path.insert(0, <new_root>/python/openvsp)",
+      "sys.path.insert(0, <new_root>/python/degen_geom)",
+      "sys.path.insert(0, <new_root>/python/utilities)",
+      "sys.path.insert(0, <new_root>/python/openvsp_config)",
+      "import openvsp"
+    ],
+    "version_reported": "OpenVSP 3.55.0",
+    "vspaero_version_reported": "VSPAERO v.7.2.2 --- Compiled on: Oct 12 2026 at 04:08:14 PST",
+    "no_global_install": true,
+    "path_or_site_packages_modified": false
+  },
+  "old_install_preserved": {
+    "root": "D:/Program Files/OpenVSP/OpenVSP-3.26.1-win64-Python3.9/OpenVSP-3.26.1-win64",
+    "files": [
+      {
+        "path": "D:/Program Files/OpenVSP/OpenVSP-3.26.1-win64-Python3.9/OpenVSP-3.26.1-win64\\vsp.exe",
+        "bytes": 21837312,
+        "sha256": "d175fcba7d027fc23cbd4150621397aa20d6b641272b2abea38ff0a48f24f802"
+      },
+      {
+        "path": "D:/Program Files/OpenVSP/OpenVSP-3.26.1-win64-Python3.9/OpenVSP-3.26.1-win64\\vspaero.exe",
+        "bytes": 561664,
+        "sha256": "e1affca023f9d63d9b0b5f343c3ea5afd5a8dbcfe420952e557718dd15f90eb8"
+      },
+      {
+        "path": "D:/Program Files/OpenVSP/OpenVSP-3.26.1-win64-Python3.9/OpenVSP-3.26.1-win64\\python/openvsp/openvsp/_vsp.pyd",
+        "bytes": 19921920,
+        "sha256": "b2025e16170e1547e174747375f2e0eb40e305b71f588e2299ce2579f945904a"
+      }
+    ],
+    "python_version": "3.9 (D:/Anaconda/envs/SUAVE/python.exe worker)",
+    "vspaero_version_reported": "VSPAERO v.6.2.0 --- Compiled on: Jan  6 2022",
+    "still_present": true
+  },
+  "rollback_steps": [
+    "Remove or rename D:/OpenVSP-3.55.0 (new install only)",
+    "Keep D:/OpenVSP-download/OpenVSP-3.55.0-win64-Python3.11.zip for audit, or delete after report",
+    "The 3.55 install added no User/Machine/Process PATH, registry or site-packages entry; OpenVSP 3.26.1's pre-existing User/Process PATH entries are untouched, so no further rollback is required (A5 F-05 / A1 F4)",
+    "Re-run the old 3.26.1 worker path (CONCORDE_OPENVSP_ROOT / CONCORDE_OPENVSP_PYTHON) to resume the old toolchain"
+  ],
+  "isolation_checks": {
+    "old_root_exists": true,
+    "new_root_exists": true,
+    "old_vspaero_hash_unchanged_vs_prior_evidence": null,
+    "path_env_has_openvsp": true,
+    "path_env_openvsp_is_old_3261": true,
+    "any_355_path_entry": false,
+    "path_env_note": "a pre-existing OpenVSP 3.26.1 User/Process PATH entry exists (path_env_has_openvsp=true); the 3.55.0 install added no PATH entry in any scope (any_355_path_entry=false). The earlier wording 'no PATH entry' referred to 3.55 only and was too broad (A5 F-05).",
+    "expanded_files_archive": 491,
+    "expanded_bytes_archive": 149488735,
+    "expanded_files_after_import": 504,
+    "expanded_bytes_after_import": 150078455,
+    "post_import_side_effect": "13 .pyc files are written into the install tree by the first python import; runtime side effect, not an archive difference (A1 F5)"
+  },
+  "post_review_corrections": {
+    "revision": "post-review revision 2",
+    "applied_utc": "2026-11-02T03:00:33Z",
+    "sources": [
+      "A5 task-41 F-05",
+      "A1 task-43 F4/F5"
+    ]
+  }
+}

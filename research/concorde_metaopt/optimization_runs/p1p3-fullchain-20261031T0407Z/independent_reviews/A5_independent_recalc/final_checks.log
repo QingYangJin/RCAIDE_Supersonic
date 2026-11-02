@@ -1,0 +1,340 @@
+=== A5 FINAL DELTA CHECK LOG - task-32 FULLCHAIN-FINAL-A5-da7f9e3 ===
+Reviewer: A5 (a5-code-reviewer) | Date: 2026-10-31
+HEAD: da7f9e311e9bd52890d89a3f47b9a526e8bdcb58 | worktree D:/RCAIDE-verify-a5-final (detached, clean before/after)
+Chain: da7f9e3 <- ee0be3f <- 3dc9b0b <- 529d9b7 <- 58933bb <- d80b4c4
+Delta 529d9b7..da7f9e3: 7 files +33/-31 (3dc9b0b wording, ee0be3f minors, da7f9e3 manifest regen); d80b4c4..da7f9e3 total 15 files, no code/test changes.
+Constraints: no solver/physics, no repo write, no GitHub write. Main checkout untouched.
+
+=== [1] worktree/chain, canonical manifest re-hash (67/67), wording, hf notes, ledger ===
+=== A. worktree and commit chain ===
+exists: True
+HEAD = da7f9e311e9bd52890d89a3f47b9a526e8bdcb58
+porcelain lines = 0 | content = ''
+ignored = ''
+da7f9e3 parents: da7f9e311e9bd52890d89a3f47b9a526e8bdcb58 ee0be3f478dda78e613ed8694598e7850e10224b | 2026-10-31 18:28:39 +0800 | P1-P3: regenerate canonical manifest after delta-review fixes (no numerical change)
+ee0be3f parents: ee0be3f478dda78e613ed8694598e7850e10224b 3dc9b0b888eac743da6fb94efa183b7edfbd0aa7 | 2026-10-31 18:28:25 +0800 | P1-P3: fix delta-review minors (manifest wording, ledger updated_utc)
+3dc9b0b parents: 3dc9b0b888eac743da6fb94efa183b7edfbd0aa7 529d9b7cab6509b276533aa29a361e32a22122cf | 2026-10-31 18:27:42 +0800 | P1-P3: correct per-case force stationarity wording after delta review (no numerical change)
+529d9b7 parents: 529d9b7cab6509b276533aa29a361e32a22122cf 58933bb17f28d472ae10cf791039edad624a7e6d | 2026-10-31 18:20:06 +0800 | P1-P3: canonical LF data manifest for post-review run revision (no numerical change)
+58933bb parents: 58933bb17f28d472ae10cf791039edad624a7e6d d80b4c485d689082cd117f09ec6445a181dd458c | 2026-10-31 18:19:45 +0800 | P1-P3: archive independent role reviews and fix review findings (no numerical change)
+d80b4c4 parents: d80b4c485d689082cd117f09ec6445a181dd458c 048ef2e55f389b0ae52e8872131dcfcf0c91a1eb | 2026-10-31 17:46:15 +0800 | P1-P3: execute D-12D-002 capped full-chain validation (23/23 starts, no gate approved)
+
+diffstat 529d9b7..da7f9e3:
+.../p1p3_fullchain_validation_report_20261031.md   |  7 ++++---
+ .../p1p3-fullchain-20261031T0407Z/README.md        |  8 ++++----
+ .../approval_and_budget_ledger.json                |  5 +++--
+ .../data_manifest.json                             | 24 +++++++++++-----------
+ .../hf_su2_results.json                            | 12 +++++------
+ .../raw_artifacts_manifest.json                    |  2 +-
+ .../p1p3-fullchain-20261031T0407Z/summary.json     |  6 +++---
+ 7 files changed, 33 insertions(+), 31 deletions(-)
+name-status 529d9b7..da7f9e3:
+M	docs/reviews/p1p3_fullchain_validation_report_20261031.md
+M	research/concorde_metaopt/optimization_runs/p1p3-fullchain-20261031T0407Z/README.md
+M	research/concorde_metaopt/optimization_runs/p1p3-fullchain-20261031T0407Z/approval_and_budget_ledger.json
+M	research/concorde_metaopt/optimization_runs/p1p3-fullchain-20261031T0407Z/data_manifest.json
+M	research/concorde_metaopt/optimization_runs/p1p3-fullchain-20261031T0407Z/hf_su2_results.json
+M	research/concorde_metaopt/optimization_runs/p1p3-fullchain-20261031T0407Z/raw_artifacts_manifest.json
+M	research/concorde_metaopt/optimization_runs/p1p3-fullchain-20261031T0407Z/summary.json
+
+=== B. data_manifest canonical LF ===
+bytes = 13970 | sha256 = ecb6d40f7990e304b6ce669d0540a1a5aad9653130fe33f38fc47fa7fe145468
+expected sha match = True | expected bytes match = False
+top keys = ['approval', 'figure_count', 'file_count', 'files', 'generated_utc', 'git_sha_at_run_start', 'hashing_convention', 'independent_reviews', 'input_source_files', 'line_ending_note', 'mesh_generation_events', 'raw_artifacts', 'revision', 'run_id', 'schema_version', 'stage', 'total_bytes']
+files = 67 | total_bytes field = 1291764 | sum(bytes) = 1291764 | file_count field = 67
+rehash mismatches = 0 | missing = 0
+mismatch detail = []
+committed package files = 68 | listed = 67
+committed-not-listed = ['data_manifest.json']
+listed-not-committed = []
+manifest top fields: revision = post-review revision (independent reviews archived, stationarity wording corrected, mesh events backfilled, manifest canonicalized) | generated_utc = 2026-10-31T10:28:39Z | mesh_generation_events = 11 | file_count = 67 | figure_count = 7
+hashing_convention = sha256 over committed worktree bytes (git canonical LF line endings); regenerate/verify from a clean checkout of the commit containing this manifest
+line_ending_note tail = RLF-only differences against a clean LF checkout. Example: the run-time CRLF ledger was 32,677 B with sha256 d064d93fd14b865fd90d823cd0538f4d81d5facc115b89680ec9e2687f697454, which is exactly the committed LF ledger (31,911 B) with LF->CRLF conversion. This revision records canonical LF hashes only.
+raw_artifacts = {'manifest': 'raw_artifacts_manifest.json', 'sha256': '6fdd8f118450a91ea573a064daa5a6acf0f3ca86e12203b8a7acd89d5b6e9ad7', 'file_count': 195, 'total_bytes': 108824422, 'outside_git': True}
+
+=== C. README/report stationarity wording and manifest line ===
+--- README README.md ---
+README 162 : Over the last 200 iterations HFS-02 CD/CL/CMy are stationary to relative peak-to-peak
+README 163 : <= 6.3e-9 and HFS-03 CD/CL/CMy to <= 5.1e-6; this does not hold for every monitored
+README 164 : component (CMx: HFS-02 4.63e-7, HFS-03 3.58e-3 relative). An independent wall-pressure integration reproduces
+README 169 : residual criterion was never met (force stationarity only). Mesh volumes by divergence are
+README contains 'both completed runs' = False
+--- report p1p3_fullchain_validation_report_20261031.md ---
+report 38 : stationarity and an independent wall-pressure integration cross-check.
+report 132 : defect in our own converter and is billed. HFS-02 CD/CL/CMy are stationary over the last
+report 133 : 200 iterations (relative peak-to-peak <= 6.3e-9) and HFS-03 CD/CL/CMy to <= 5.1e-6;
+report 134 : this does not hold for every monitored component (CMx: HFS-02 4.63e-7, HFS-03 3.58e-3
+report contains 'both completed runs' = False
+README manifest line 243 : - manifests: data_manifest.json (all package files except itself; hashes over committed LF bytes), raw_artifacts_manifest.json
+
+=== D. hf_su2_results.json residual notes ===
+HFS-02 residual.note = rms[Rho] plateaus near 1e-1 because of the sharp leading-edge singularity; over the last 200 iterations the integrated CD/CL/CMy are nevertheless stationary to relative peak-to-peak <= 6.3e-9 (CMx is not: 4.63e-7; see force_stability_last_200)
+HFS-02 force_stationarity_note = Per-case relative peak-to-peak over the last 200 iterations: HFS-02 CD/CL/CMy <= 6.3e-9; HFS-03 CD/CL/CMy <= 5.1e-6. Not every monitored component is stationary at that level (CMx: HFS-02 4.63e-7, HFS-03 3.58e-3). Force stationarity is not residual convergence (rms[Rho] plateau ~ -1.0).
+HFS-02 force_stability_last_200 keys = ['CD', 'CL', 'CMy', 'CMz', 'CMx', 'CEff']
+HFS-02 force_stability_last_200 = {"CD": {"min": 0.006819724029, "max": 0.006819724051, "mean": 0.006819724039999985, "peak_to_peak": 2.199999991209234e-11, "rel_peak_to_peak": 3.2259369709177243e-09}, "CL": {"min": 0.0927765996, "max": 0.09277660004, "mean": 0.09277659982000022, "peak_to_peak": 4.400000086501876e-10, "rel_peak_to_peak": 4.742575277643825e-09}, "CMy": {"min": -0.03807613457, "max": -0.03807613433, "mean": -0.038076134449999854, "peak_to_peak": 2.4000000597990123e-10, "rel_peak_to_peak": 6.303161007456263e-09}, "CMz": {"min": -9.037688636e-06, "max": -9.037688266e-06, "mean": -9.037688450999969e-06, "peak_to_pe
+HFS-03 residual.note = rms[Rho] plateaus near 1e-1 because of the sharp leading-edge singularity; over the last 200 iterations the integrated CD/CL/CMy are nevertheless stationary to relative peak-to-peak <= 5.1e-6 (CMx is not: 3.58e-3; see force_stability_last_200)
+HFS-03 force_stationarity_note = Per-case relative peak-to-peak over the last 200 iterations: HFS-02 CD/CL/CMy <= 6.3e-9; HFS-03 CD/CL/CMy <= 5.1e-6. Not every monitored component is stationary at that level (CMx: HFS-02 4.63e-7, HFS-03 3.58e-3). Force stationarity is not residual convergence (rms[Rho] plateau ~ -1.0).
+HFS-03 force_stability_last_200 keys = ['CD', 'CL', 'CMy', 'CMz', 'CMx', 'CEff']
+HFS-03 force_stability_last_200 = {"CD": {"min": 0.00711704836, "max": 0.00711708037, "mean": 0.0071170643654650005, "peak_to_peak": 3.200999999959653e-08, "rel_peak_to_peak": 4.49764093112921e-06}, "CL": {"min": 0.09547677964, "max": 0.09547704082, "mean": 0.09547691023000006, "peak_to_peak": 2.611800000024145e-07, "rel_peak_to_peak": 2.735530500235526e-06}, "CMy": {"min": -0.0394071994, "max": -0.03940700039, "mean": -0.03940709989795002, "peak_to_peak": 1.99010000000166e-07, "rel_peak_to_peak": 5.05010519717333e-06}, "CMz": {"min": -4.280406012e-05, "max": -4.279608253e-05, "mean": -4.2800071327349995e-05, "peak_to_peak": 7
+wing_stationarity_note = Per-case relative peak-to-peak over the last 200 iterations: HFS-02 CD/CL/CMy <= 6.3e-9; HFS-03 CD/CL/CMy <= 5.1e-6. Not every monitored component is stationary at that level (CMx: HFS-02 4.63e-7, HFS-03 3.58e-3). Force stationarity is not residual convergence (rms[Rho] plateau ~ -1.0).
+revision_note = Post-review documentation corrections (A5 task-26 and task-30): (v1) the original wording implied all forces of both cases reached 6.3e-9 relative peak-to-peak; (v2) the first correction still grouped both cases at <= 6.3e-9. Final wording is per case: HFS-02 CD/CL/CMy <= 6.3e-9, HFS-03 CD/CL/CMy <= 5.1e-6, CMx exceptions listed, and the old 1e-9 residual note is replaced. No numerical result changed; no new solver start.
+contains 'stationary to 1e-9' = False
+
+=== E. ledger updated_utc / revision_note / mesh / totals ===
+ledger top keys = ['amendment_log', 'approval_scope', 'approval_source', 'categories', 'counting_contract', 'limits', 'mesh_generation_events', 'numerical_analysis_events', 'policy_events', 'revision_note', 'run_id', 'schema_version', 'totals', 'updated_utc', 'wall_clock']
+updated_utc = 2026-10-31T10:10:27.416720Z
+revision_note = updated_utc moved to the mesh-event backfill time (2026-10-31T10:10:27.416720Z, was 2026-10-31T09:37:25Z); backfill adds 11 non-billable mesh_generation_events only and leaves billable starts at 23/23.
+numerical_analysis_events = 23
+mesh_generation_events = 11
+policy_events count = 14
+policy tail = {"utc": "2026-10-31T09:37:25Z", "kind": "Wave-drag result capture LD-002", "message": "OpenVSP ExecAnalysis returns a result id, not a data dictionary; PrintResults printed nothing. Wave results were captured with WriteResultsCSVFile plus parsing of the slice text file. WAVE-00's first EmintonLord run lost its data before this path was found (billed, not used); WAVE-00R re-ran the same analytical benchmark and matched Sears-Haack theory to 1.55e-6 relative."}
+policy tail = {"event": "LEDGER_BACKFILL_MESH_EVENTS", "utc": "2026-10-31T10:10:27.416720Z", "note": "A4 acceptance matrix GAP-08: mesh_generation_events was empty. Backfilled from preserved artifacts (Gmsh/msh2_to_su2 wing meshes, wedge meshes, LF DegenGeom) with node/element/disk counts and artifact mtimes; CPU/memory/wall were not captured live and are explicitly null (no fabricated values). Backfill does not add or change any billable numerical-analysis start (still 23/23)."}
+totals = {'cap': 23, 'used': 23, 'remaining': 0}
+categories = {'VSPAERO_LF': {'cap': 6, 'used': 6}, 'RCAIDE_LF': {'cap': 4, 'used': 4}, 'SU2_HF': {'cap': 6, 'used': 6}, 'WAVE_AREA_RULE': {'cap': 7, 'used': 7}}
+
+=== [2] numeric invariance, gates, evidence-file hashes ===
+=== F. numeric invariance d80b4c4 -> da7f9e3 (run dir) ===
+run-dir changed entries = 14
+M	research/concorde_metaopt/optimization_runs/p1p3-fullchain-20261031T0407Z/README.md
+M	research/concorde_metaopt/optimization_runs/p1p3-fullchain-20261031T0407Z/approval_and_budget_ledger.json
+M	research/concorde_metaopt/optimization_runs/p1p3-fullchain-20261031T0407Z/data_manifest.json
+M	research/concorde_metaopt/optimization_runs/p1p3-fullchain-20261031T0407Z/hf_su2_results.json
+A	research/concorde_metaopt/optimization_runs/p1p3-fullchain-20261031T0407Z/independent_reviews/A1_package_integrity/fullchain_a1_report.md
+A	research/concorde_metaopt/optimization_runs/p1p3-fullchain-20261031T0407Z/independent_reviews/A2_raw_recalc/reconcile.json
+A	research/concorde_metaopt/optimization_runs/p1p3-fullchain-20261031T0407Z/independent_reviews/A2_raw_recalc/reconcile_report.md
+A	research/concorde_metaopt/optimization_runs/p1p3-fullchain-20261031T0407Z/independent_reviews/A3_hygiene/isolation_report.md
+A	research/concorde_metaopt/optimization_runs/p1p3-fullchain-20261031T0407Z/independent_reviews/A4_acceptance_matrix/final_receipt_matrix.md
+A	research/concorde_metaopt/optimization_runs/p1p3-fullchain-20261031T0407Z/independent_reviews/A5_independent_recalc/recalc.md
+A	research/concorde_metaopt/optimization_runs/p1p3-fullchain-20261031T0407Z/independent_reviews/A5_independent_recalc/verdict.txt
+A	research/concorde_metaopt/optimization_runs/p1p3-fullchain-20261031T0407Z/independent_reviews/README.md
+M	research/concorde_metaopt/optimization_runs/p1p3-fullchain-20261031T0407Z/raw_artifacts_manifest.json
+M	research/concorde_metaopt/optimization_runs/p1p3-fullchain-20261031T0407Z/summary.json
+
+--- full repo changed files d80b4c4..da7f9e3 (code/test check) ---
+total changed files = 15
+py/test changed = []
+non-run-dir, non-doc changed = []
+
+--- per-file classification of run-dir changes vs d80b4c4 ---
+README.md bytes changed = True | old sha = 22c65085b7349cf7 | new sha = 8c8d52f827b25ce4 | old bytes = 16432 | new bytes = 16582
+approval_and_budget_ledger.json numeric/bool/null changed = 0 | added = 106 | removed = 0
+   added keys: ['/mesh_generation_events[0]/started_utc', '/mesh_generation_events[0]/cpu_seconds', '/mesh_generation_events[0]/peak_memory_mb', '/mesh_generation_events[0]/disk_bytes', '/mesh_generation_events[0]/wall_seconds', '/mesh_generation_events[0]/mesh_nodes', '/mesh_generation_events[0]/mesh_elements', '/mesh_generation_events[0]/billable_numerical_analysis_start']
+data_manifest.json numeric/bool/null changed = 53 | added = 9 | removed = 0
+   changed keys: ['/file_count', '/total_bytes', '/files[0]/bytes', '/files[1]/bytes', '/files[2]/bytes', '/files[4]/bytes', '/files[12]/bytes', '/files[13]/bytes', '/files[14]/bytes', '/files[15]/bytes', '/files[16]/bytes', '/files[17]/bytes', '/files[18]/bytes', '/files[19]/bytes', '/files[20]/bytes', '/files[21]/bytes', '/files[22]/bytes', '/files[23]/bytes', '/files[24]/bytes', '/files[25]/bytes', '/files[26]/bytes', '/files[27]/bytes', '/files[28]/bytes', '/files[29]/bytes', '/files[30]/bytes']
+   added keys: ['/files[59]/bytes', '/files[60]/bytes', '/files[61]/bytes', '/files[62]/bytes', '/files[63]/bytes', '/files[64]/bytes', '/files[65]/bytes', '/files[66]/bytes']
+hf_su2_results.json numeric/bool/null changed = 0 | added = 0 | removed = 0
+independent_reviews/A1_package_integrity/fullchain_a1_report.md bytes changed = True | old sha = None | new sha = f6cd75392bf99ae5 | old bytes = None | new bytes = 5957
+independent_reviews/A2_raw_recalc/reconcile.json numeric/bool/null changed = 0 | added = 736 | removed = 0
+   added keys: ['/schema_version', '/git/worktree_porcelain_clean', '/environment/solver_starts_this_task', '/environment/repo_writes_this_task', '/verdict/n_checks', '/verdict/n_pass', '/verdict/n_fail', '/physical_gate_status_unchanged/validated_aircraft_fuel_label']
+independent_reviews/A2_raw_recalc/reconcile_report.md bytes changed = True | old sha = None | new sha = 5a30050e42907580 | old bytes = None | new bytes = 9830
+independent_reviews/A3_hygiene/isolation_report.md bytes changed = True | old sha = None | new sha = 67fee72359afe11f | old bytes = None | new bytes = 5304
+independent_reviews/A4_acceptance_matrix/final_receipt_matrix.md bytes changed = True | old sha = None | new sha = ec22733506b4281d | old bytes = None | new bytes = 20837
+independent_reviews/A5_independent_recalc/recalc.md bytes changed = True | old sha = None | new sha = 926dac7d30a75d14 | old bytes = None | new bytes = 8051
+independent_reviews/A5_independent_recalc/verdict.txt bytes changed = True | old sha = None | new sha = 36c73cc4c9562c44 | old bytes = None | new bytes = 1572
+independent_reviews/README.md bytes changed = True | old sha = None | new sha = 9facf356f0fc4c17 | old bytes = None | new bytes = 3639
+raw_artifacts_manifest.json numeric/bool/null changed = 0 | added = 0 | removed = 0
+summary.json numeric/bool/null changed = 0 | added = 1 | removed = 0
+   added keys: ['/budget/mesh_generation_events']
+
+=== G. untouched numeric evidence files (byte-identical d80b4c4 vs HEAD) ===
+evaluations.jsonl exists = True | old sha = 8d1c3ee3b0aa6084 | new sha = 8d1c3ee3b0aa6084 | identical = True
+evaluations_detail.jsonl exists = False | old sha = None | new sha = None | identical = True
+mission_e2e.json exists = True | old sha = 203faa1295bd10d1 | new sha = 203faa1295bd10d1 | identical = True
+wave_drag_area_rule.json exists = True | old sha = 83030c796a467e77 | new sha = 83030c796a467e77 | identical = True
+lf_vspaero_results.json exists = True | old sha = 2eebf2d4cb0d0677 | new sha = 2eebf2d4cb0d0677 | identical = True
+lf_vspaero_density_sensitivity.csv exists = True | old sha = de12090d38e56c47 | new sha = de12090d38e56c47 | identical = True
+wave_per_theta_donq.csv exists = True | old sha = e0147c09a35e883a | new sha = e0147c09a35e883a | identical = True
+mesh_convergence.csv exists = True | old sha = a110a035e299fc86 | new sha = a110a035e299fc86 | identical = True
+geometry_validation.json exists = True | old sha = 7b5d9a45071a5c4e | new sha = 7b5d9a45071a5c4e | identical = True
+drag_component_ledger.json exists = True | old sha = 1e6813dbe76eb7e7 | new sha = 1e6813dbe76eb7e7 | identical = True
+evaluations.jsonl row count = 23
+billable_true count = 0
+
+=== H. gates / solver / receipt invariants vs d80b4c4 ===
+summary keys = ['approval', 'artifacts', 'base_commit', 'branch', 'budget', 'finished_utc', 'frozen_conditions', 'gates', 'not_approved', 'one_off_authorisation', 'pr', 'results', 'review', 'run_id', 'schema_version', 'stage', 'started_utc', 'status', 'wall_clock_limit_hours']
+status = EXECUTED_NO_GATE_APPROVED | old status = EXECUTED_NO_GATE_APPROVED
+gates new = {"BODY-CORR": {"status": "BLOCKED", "why": "The area-rule analytical benchmark passes, but the real-geometry Mach-sliced level is not converged and contradicts the independent RCAIDE drag level; no calibrated interference model exists."}, "BUDGET": {"status": "EXHAUSTED", "why": "All 23 D-12D-002 numerical-analysis starts are consumed; any further physics requires a new owner approval."}, "GEO-12D": {"status": "PARTIAL", "why": "12D design set, fixed-fuselage expansion, DOE wiring and W10 OpenVSP twist fix are verified; no validated aerodynamic force evidence for the geometry."}, "HF-M2.02": {"status": "PARTIAL", "why": "SU2 Euler wedge verification is PARTIAL (shock angle misses the 1 deg tolerance), the isolated wing has only two mesh levels and is inviscid; HFS-00R and HFS-04 are NOT_RUN."}, "LF-M2.02": {"status": "NOT_VALIDATED / LF_PROVISIONAL", "why": "VSPAERO 6.2.0 thin-surface drag at Mach 2.02 is non-convergent and non-physical; the RCAIDE single-cruise chain is reproducible but uses empirical drag build-up and interpolation."}, "MISSION-DATA": {"status": "PARTIAL", "why": "The instrumented 12D E2E chain and the physical-call accounting are verified, but no validated aircraft fuel-burn label exists and the mission q is 0.83% above the frozen value."}}
+gates equal = True
+not_approved = ['APPROVED_FOR_NEXT_STAGE', 'P4 BO/DE', 'P5 MAML', 'P6', 'merge to main']
+budget = {"cap": 23, "used": 23, "remaining": 0, "categories": {"VSPAERO_LF": {"cap": 6, "used": 6}, "RCAIDE_LF": {"cap": 4, "used": 4}, "SU2_HF": {"cap": 6, "used": 6}, "WAVE_AREA_RULE": {"cap": 7, "used": 7}}, "mesh_generation_events": 11, "mesh_events_note": "mesh_generation_events was empty at run end (A4 GAP-08); backfilled from preserved artifacts (Gmsh wing coarse/medium/fine, wedge coarse/fine, LF DegenGeom cases) with node/element/disk counts and artifact mtimes; CPU/memory/wall are explicitly null because they were not captured live. Backfill adds/changes no billable numerical-analysis start."}
+old budget = {"cap": 23, "used": 23, "remaining": 0, "categories": {"VSPAERO_LF": {"cap": 6, "used": 6}, "RCAIDE_LF": {"cap": 4, "used": 4}, "SU2_HF": {"cap": 6, "used": 6}, "WAVE_AREA_RULE": {"cap": 7, "used": 7}}}
+approval / gate approval phrases:
+README hits = ['No APPROVED_FOR_NEXT_STAGE. P4-P6 frozen. PR #3 stays open and is not merged into main.']
+report hits = ['- Status: execution complete; **no phase gate approved**; budget 23/23 exhausted', 'or grant APPROVED_FOR_NEXT_STAGE.', 'No APPROVED_FOR_NEXT_STAGE. P4 BO/DE, P5 MAML and P6 remain frozen. PR #3 stays open; main']
+summary hits = ['"APPROVED_FOR_NEXT_STAGE",']
+status/forbidden phrase scan:
+'gate passed' = []
+'gate PASS' = []
+'validated body correction' = []
+'BODY-CORR validated' = []
+
+=== I. main checkout (not modified by this review) ===
+D:/RCAIDE rev-parse HEAD -> ['da7f9e311e9bd52890d89a3f47b9a526e8bdcb58'] | lines = 1
+D:/RCAIDE status --porcelain -> ['M research/concorde_metaopt/README.md', ' M research/concorde_metaopt/cli.py'] | lines = 22
+
+=== [3] per-commit diffstat, evaluations billable semantics, stale-phrase scan, exact fixed blocks, manifest decode ===
+=== J. per-commit diffstat (da7f9e3 chain) ===
+--- 529d9b7 -> 3dc9b0b ---
+docs/reviews/p1p3_fullchain_validation_report_20261031.md    |  7 ++++---
+ .../p1p3-fullchain-20261031T0407Z/README.md                  |  6 +++---
+ .../p1p3-fullchain-20261031T0407Z/hf_su2_results.json        | 12 ++++++------
+ .../p1p3-fullchain-20261031T0407Z/summary.json               |  6 +++---
+ 4 files changed, 16 insertions(+), 15 deletions(-)
+--- 3dc9b0b -> ee0be3f ---
+.../optimization_runs/p1p3-fullchain-20261031T0407Z/README.md        | 2 +-
+ .../p1p3-fullchain-20261031T0407Z/approval_and_budget_ledger.json    | 5 +++--
+ 2 files changed, 4 insertions(+), 3 deletions(-)
+--- ee0be3f -> da7f9e3 ---
+.../data_manifest.json                             | 24 +++++++++++-----------
+ .../raw_artifacts_manifest.json                    |  2 +-
+ 2 files changed, 13 insertions(+), 13 deletions(-)
+
+=== K. evaluations.jsonl row shape / billable accounting ===
+rows = 23 | first row keys = ['billable', 'case_id', 'category', 'command', 'event_id', 'finished_utc', 'note', 'returncode', 'started_utc', 'status', 'type', 'wall_seconds']
+physical_call_count values = [None]
+request_count values = [None]
+call_accounting present = 0
+call_accounting billable sum = 0
+status values = ['FAILED', 'FAILED_CONFIG_PARSE', 'SOLVED', 'SOLVED_VOID_CONVERGENCE']
+fidelity values = [None]
+
+=== L. stale phrase global scan (run dir + docs/reviews report) ===
+--- research\concorde_metaopt\optimization_runs\p1p3-fullchain-20261031T0407Z\README.md ---
+   '6.3e-9' count = 1
+   '5.1e-6' count = 1
+   '4.63e-7' count = 1
+   '3.58e-3' count = 1
+--- docs\reviews\p1p3_fullchain_validation_report_20261031.md ---
+   '6.3e-9' count = 1
+   '5.1e-6' count = 1
+   '4.63e-7' count = 1
+   '3.58e-3' count = 1
+--- research\concorde_metaopt\optimization_runs\p1p3-fullchain-20261031T0407Z\hf_su2_results.json ---
+   '6.3e-9' count = 7
+   '5.1e-6' count = 5
+   '4.63e-7' count = 4
+   '3.58e-3' count = 4
+--- research\concorde_metaopt\optimization_runs\p1p3-fullchain-20261031T0407Z\summary.json ---
+   '6.3e-9' count = 2
+   '5.1e-6' count = 1
+   '4.63e-7' count = 1
+   '3.58e-3' count = 1
+--- research\concorde_metaopt\optimization_runs\p1p3-fullchain-20261031T0407Z\approval_and_budget_ledger.json ---
+
+=== M. exact fixed blocks ===
+README 158-170:
+158 : | HFS-01 coarse | 61436 | FAILED (harness mesh-format defect; still billed) | - | - | - |
+159 : | HFS-02 medium | 125876 | 0.0927765996 | 0.006819724029 | -0.03807613433 | 394 |
+160 : | HFS-03 fine | 256455 | 0.09547677964 | 0.007117048361 | -0.0394070004 | 871 |
+161 : 
+162 : Over the last 200 iterations HFS-02 CD/CL/CMy are stationary to relative peak-to-peak
+163 : <= 6.3e-9 and HFS-03 CD/CL/CMy to <= 5.1e-6; this does not hold for every monitored
+164 : component (CMx: HFS-02 4.63e-7, HFS-03 3.58e-3 relative). An independent wall-pressure integration reproduces
+165 : the solver CD/CL to machine precision (CD_integrated 0.0068197240294 vs 0.006819724029,
+166 : CL_integrated 0.09277659960 vs 0.0927765996; medium mesh drag 50045.7 N, lift 680829.2 N).
+167 : However medium to fine changes CD by +4.36%, CL by +2.91% and CMy by -3.50%: two levels are
+168 : not enough to demonstrate grid convergence, no order of accuracy is established, and the
+169 : residual criterion was never met (force stationarity only). Mesh volumes by divergence are
+170 : 128.483 / 128.828 / 129.014 m3 versus the analytic 129.4516 m3 (-0.75% / -0.48% / -0.34%,
+report 128-136:
+128 : 
+129 : Isolated wing, inviscid Euler, AoA 2.8398 deg: medium (125876 tets) CL 0.0927765996,
+130 : CD 0.006819724029, CMy -0.03807613433, wall 394 s; fine (256455 tets) CL 0.09547677964,
+131 : CD 0.007117048361, CMy -0.0394070004, wall 871 s; HFS-01 (coarse) failed on a mesh-format
+132 : defect in our own converter and is billed. HFS-02 CD/CL/CMy are stationary over the last
+133 : 200 iterations (relative peak-to-peak <= 6.3e-9) and HFS-03 CD/CL/CMy to <= 5.1e-6;
+134 : this does not hold for every monitored component (CMx: HFS-02 4.63e-7, HFS-03 3.58e-3
+135 : relative). An independent wall-pressure
+136 : integration reproduces the solver CD/CL to machine precision (medium drag 50045.7 N, lift 680829.2 N),
+README manifest line:
+243 : - manifests: data_manifest.json (all package files except itself; hashes over committed LF bytes), raw_artifacts_manifest.json
+
+=== N. ledger revision_note / updated_utc / mesh summary ===
+updated_utc = 2026-10-31T10:10:27.416720Z
+revision_note = updated_utc moved to the mesh-event backfill time (2026-10-31T10:10:27.416720Z, was 2026-10-31T09:37:25Z); backfill adds 11 non-billable mesh_generation_events only and leaves billable starts at 23/23.
+mesh events = [('MG-001', 'HFS-01-mesh', False), ('MG-002', 'HFS-02-mesh', False), ('MG-003', 'HFS-03-mesh', False), ('MG-004', 'HFS-00-mesh-wedge_coarse', False), ('MG-005', 'HFS-00-mesh-wedge_fine', False), ('MG-006', 'LF-mesh-baseline', False), ('MG-007', 'LF-mesh-w01_plus1pct', False), ('MG-008', 'LF-mesh-w03_plus1deg', False), ('MG-009', 'LF-mesh-w10_plus2', False), ('MG-010', 'LF-mesh-sens_coarse', False), ('MG-011', 'LF-mesh-sens_fine', False)]
+amendment_log = []
+policy_events last entry = {"event": "LEDGER_BACKFILL_MESH_EVENTS", "utc": "2026-10-31T10:10:27.416720Z", "note": "A4 acceptance matrix GAP-08: mesh_generation_events was empty. Backfilled from preserved artifacts (Gmsh/msh2_to_su2 wing meshes, wedge meshes, LF DegenGeom) with node/element/disk counts and artifact mtimes; CPU
+
+=== O. data_manifest expected numbers decode ===
+manifest file bytes = 13970 | sha256 = ecb6d40f7990e304b6ce669d0540a1a5aad9653130fe33f38fc47fa7fe145468
+total_bytes field = 1291764 (task card figure) | sum(files.bytes) = 1291764 | file_count = 67 | files entries = 67
+independent_reviews = {'dir': 'independent_reviews/', 'roles': ['A1', 'A2', 'A3', 'A4', 'A5'], 'note': 'verbatim copies of project-external role deliverables; no reviewer ran a solver or wrote to the repo/GitHub'}
+input_source_files count = 6
+generated_utc = 2026-10-31T10:28:39Z | revision = post-review revision (independent reviews archived, stationarity wording corrected, mesh events backfilled, manifest canonicalized)
+
+=== P. worktree clean after review + main checkout ===
+final porcelains = ''
+final ignored = ''
+main HEAD = da7f9e311e9bd52890d89a3f47b9a526e8bdcb58
+
+=== [4] summary review block, manifest numeric delta explanation, archive hashes, final hygiene ===
+=== Q. evaluations.jsonl billable semantics ===
+rows = 23 | billable values = ['True']
+billable true count = 23
+categories = ['RCAIDE_LF', 'SU2_HF', 'VSPAERO_LF', 'WAVE_AREA_RULE']
+per category = Counter({'WAVE_AREA_RULE': 7, 'VSPAERO_LF': 6, 'SU2_HF': 6, 'RCAIDE_LF': 4})
+statuses = Counter({'SOLVED': 20, 'FAILED_CONFIG_PARSE': 1, 'SOLVED_VOID_CONVERGENCE': 1, 'FAILED': 1})
+
+=== R. summary review block / revision note (post-fix) ===
+summary.review = {
+ "status": "INDEPENDENT_ROLE_REVIEWS_COMPLETED",
+ "roles": {
+  "A1": {
+   "task": "FULLCHAIN-A1-PACKAGE-INTEGRITY",
+   "verdict": "PASS_WITH_WARNINGS",
+   "detail": "294 tests OK (1 skipped); 14 JSON parse; manifest 59 files re-hashed 0 mismatch at review time; 23 billable starts 6/4/7/6; 7 PNG valid; gates exact; WARN: ledger planned case_ids stale, used/totals correct"
+  },
+  "A2": {
+   "task": "FULLCHAIN-A2-RAW-RECALC",
+   "verdict": "PASS_WITH_SMALL_DISCREPANCIES",
+   "detail": "4/4 fuel exact incl E2E-00 34109.48257123768 literal; 3 valid LF polars 0 diff; HF mesh volume/area <1e-6; raw 155+39 hashes ok 195 files/108,824,422 B; 23/23 budget; discrepancies: CRLF-sensitive manifest hashes, run-time CRLF ledger digest, 1/155 EXT file edited after archiving"
+  },
+  "A3": {
+   "task": "FULLCHAIN-A3-HYGIENE",
+   "verdict": "PASS",
+   "detail": "d80b4c4 single parent 048ef2e; 61 additions = 60 run files + report; no excluded paths; main worktree baseline unchanged; P5 54 files/7,976,412 B untouched; stash 0; no reset/force; main ec65e5a untouched; outputs ignored; origin fast-forwarded to d80b4c4 by L push"
+  },
+  "A4": {
+   "task": "FULLCHAIN-A4-ACCEPTANCE-MATRIX",
+   "verdict": "COMPLETED_WITH_GAPS",
+   "detail": "23 authorized starts mapped to case IDs/evidence; all required deliverables present; six gates none PASS; gaps: LF perturbation evidence void (LD-001), HFS-00R/04 NOT_RUN, wedge shock angle >1 deg, area rule non-convergent, q mismatch +0.83%, ledger increment missing, mesh events empty (backfilled in this revision), reviews pending at matrix time"
+  },
+  "A5": {
+   "task": "FULLCHAIN-A5-INDEPENDENT-RECALC",
+   "verdict": "CHANGES_REQUESTED_TWICE_THEN_ADDRESSED",
+   "detail": "Independent recompute PASS (SU2 tail 6/6 components abs diff 0.0, Cp integral <=1.4e-17; WAVE donq 0 diff; budget 23/23 all billed). MAJOR round 1: blanket stationarity wording and CRLF-sensitive manifest -> reviews archived, wording corrected once, ledger mesh events backfilled, manifest canonicalized in 529d9b7. Delta round 2 (task-30): manifest/ledger PASS but wording still grouped both cases at 6.3e-9 and two old residual notes remained -> corrected per case in this revision (HFS-02 CD/CL/CMy <= 6.3e-9; HFS-03 CD/CL/CMy <= 5.1e-6; CMx exceptions 4.63e-7 / 3.58e-3). Final delta re-check pending on this commit."
+  }
+ },
+ "reviews_are_verbatim_copies": "independent_reviews/ contains verbatim role outputs (repo-external originals); no review ran a solver or wrote to the repository.",
+ "revision_note": "Post-review revisions: d80b4c4 (run) -> 58933bb (reviews archived, first wording fix, mesh events backfilled) -> 529d9b7 (canonical LF manifest) -> this revision (per-case stationarity wording + old residual notes replaced). No numerical result changed; no new solver start (23/23 remains exhausted)."
+}
+summary keys revision? = []
+
+=== S. d80b4c4 manifest size/count (explains manifest numeric deltas) ===
+d80b4c4 files = 59 | file_count = 59 | total_bytes = 1181000
+HEAD files = 67 | file_count = 67 | total_bytes = 1291764
+delta = + 8 files (the 8 independent_reviews added at 58933bb; d80b4c4 had 59)
+manifest numeric changes explained: file_count/count and total_bytes grow only because review files were added and docs edited; no scientific data values altered
+
+=== T. review-archive hashes still intact in manifest ===
+independent_reviews/A5_independent_recalc/recalc.md sha = 926dac7d30a75d14d72fa71177d541668fc3fcdd413e76aaa54cf0e237998c15
+independent_reviews/A5_independent_recalc/verdict.txt sha = 36c73cc4c9562c44e5faebc88d914860e111770ae75cee3d1bdfc4a49a7b13ec
+expected A5 recalc sha = 926dac7d30a75d14d72fa71177d541668fc3fcdd413e76aaa54cf0e237998c15
+expected A5 verdict sha = 36c73cc4c9562c44e5faebc88d914860e111770ae75cee3d1bdfc4a49a7b13ec
+
+=== U. final worktree status ===
+porcelain = ''
+ignored = ''
+
+=== [5] CONCLUSION ===
+VERDICT: APPROVE (6/6 task-card checks PASS; 0 blocking, 0 major)
+
+1 PASS per-case stationarity: README.md:162-164 and report:132-135 state HFS-02 CD/CL/CMy <= 6.3e-9, HFS-03 CD/CL/CMy <= 5.1e-6, CMx 4.63e-7 / 3.58e-3; no "both completed runs" grouping; numbers match force_stability_last_200.
+2 PASS hf_su2_results.json residual.note: HFS-02 :150 <= 6.3e-9 (CMx 4.63e-7), HFS-03 :229 <= 5.1e-6 (CMx 3.58e-3); old "stationary to 1e-9" string count 0; per-case notes :167/:246/:372; revision_note :373.
+3 PASS README.md:243 manifest line: "all package files except itself; hashes over committed LF bytes".
+4 PASS ledger updated_utc 2026-10-31T10:10:27.416720Z (:1018) + revision_note (:1019); mesh_generation_events=11 (all billable=false, null CPU/mem/wall with reconstruction note); budget 23/23, remaining 0; categories 6/4/7/6.
+5 PASS data_manifest canonical LF: sha256 ecb6d40f7990e304b6ce669d0540a1a5aad9653130fe33f38fc47fa7fe145468; manifest file 13,970 B; total_bytes 1,291,764 = sum(67 files); 67/67 rehashed on clean checkout, 0 mismatch / 0 missing; only data_manifest.json self-excluded of 68 committed package files; hashing_convention + line_ending_note (d064d93f reference) present.
+6 PASS no numerical change / no new solver / gates unchanged: hf numeric changed=0; summary numeric changed=0 (+budget.mesh_generation_events only); ledger numeric changed=0; evaluations.jsonl sha256 8d1c3ee3b0aa60849398bf78f6b9ee35d957802bd3865ec078a30aab9768ea81 identical (23 rows, all billable=true, 6/4/7/6); 8 evidence JSON/CSV byte-identical; gates dict byte-equal; status EXECUTED_NO_GATE_APPROVED; no gate approved. Manifest bookkeeping deltas only (59->67 files, +110,764 bytes because reviews/docs were archived); no scientific values changed.
+
+Minor/informational only: summary.json:229 A5 detail still says "Final delta re-check pending on this commit" (accurate until posted); A1 "59 files at review time" is historical. No blocking or major findings.
+Artifacts: EXT/fullchain/a5/{final_review.md, final_verdict.txt, final_checks.log}, final_checks_part1..4.log, delta_final_checks*.py.

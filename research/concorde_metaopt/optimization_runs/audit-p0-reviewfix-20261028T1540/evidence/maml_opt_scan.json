@@ -1,0 +1,713 @@
+{
+  "distribution": {
+    "name": "maml-opt",
+    "version": "0.1.0",
+    "location": "<repo_root>\\envs\\RCAIDE\\Lib\\site-packages",
+    "direct_url": null,
+    "error": null,
+    "py_file_count": 17
+  },
+  "import_ok": true,
+  "modules": [
+    "adapters",
+    "bayesian",
+    "campaign",
+    "cli",
+    "contracts",
+    "data",
+    "evaluation",
+    "initialization",
+    "learning"
+  ],
+  "api": {
+    "maml_opt.contracts": {
+      "ok": true,
+      "classes": [
+        {
+          "name": "AnalysisBackend",
+          "signature": "(*args, **kwargs)"
+        },
+        {
+          "name": "BackendIdentity",
+          "signature": "(platform: str, version: str, model_fingerprint: str, data_origin: str, cost_unit: str = 'analysis_attempt') -> None"
+        },
+        {
+          "name": "ConstraintSpec",
+          "signature": "(name: str, bound: float, sense: str = '<=', scale: float = 1.0, unit: str = '1') -> None"
+        },
+        {
+          "name": "DesignSpace",
+          "signature": "(names: tuple, lower_bounds: tuple, upper_bounds: tuple, baseline: tuple, scales: tuple, units: tuple) -> None"
+        },
+        {
+          "name": "EvaluationRequest",
+          "signature": "(design: Mapping, task: maml_opt.contracts.TaskSpec, fidelity: str, purpose: str = 'search') -> None"
+        },
+        {
+          "name": "EvaluationResult",
+          "signature": "(objective: float | None, constraints_g_le_zero: Mapping, valid: bool = True, status: str = 'VALID', objective_model_eligible: bool = True, responses: Mapping = <factory>, diagnostics: Mapping = <factory>) -> None"
+        },
+        {
+          "name": "TaskSpec",
+          "signature": "(task_id: str, context: Mapping = <factory>, model_config: Mapping = <factory>) -> None"
+        }
+      ],
+      "functions": [
+        {
+          "name": "fingerprint",
+          "signature": "(value)"
+        },
+        {
+          "name": "finite_number",
+          "signature": "(value, name)"
+        },
+        {
+          "name": "json_data",
+          "signature": "(value)"
+        },
+        {
+          "name": "nonempty",
+          "signature": "(value, name)"
+        }
+      ],
+      "error": null
+    },
+    "maml_opt.initialization": {
+      "ok": true,
+      "classes": [
+        {
+          "name": "DatasetError",
+          "signature": null
+        },
+        {
+          "name": "DesignSpace",
+          "signature": "(names: tuple, lower_bounds: tuple, upper_bounds: tuple, baseline: tuple, scales: tuple, units: tuple) -> None"
+        },
+        {
+          "name": "TaskDataset",
+          "signature": "(dataset_id, state, task_split_id, feature_names, design_feature_names, task_context_names, target_names, target_map, task_splits, records, excluded_records, source_runs, manifest_path, records_path)"
+        }
+      ],
+      "functions": [
+        {
+          "name": "build_task_conditioned_candidate_features",
+          "signature": "(candidate_designs, design_feature_names, task_context_names, target_task_context)"
+        },
+        {
+          "name": "generate_initial_designs",
+          "signature": "(lower_bounds, upper_bounds, count, seed=42, baseline=None, method='lhs')"
+        },
+        {
+          "name": "prepare_model_scored_initial_designs",
+          "signature": "(artifact, design_space, candidate_designs, design_feature_names, task_context_names, target_task_context, objective_target_name, constraint_target_names, initial_design_count, diversity_candidate_count, adaptation_method, candidate_pool_metadata, support_features=None, support_targets=None, support_observation_ids=None, inner_learning_rate=None, inner_steps=None, allow_synthetic_for_tests=False)"
+        },
+        {
+          "name": "retrieve_similar_task_initial_designs",
+          "signature": "(dataset, target_task_context, context_scales, context_weights, objective_target_name, constraint_target_names, design_lower_bounds, design_upper_bounds, neighbor_task_count, initial_design_count, allow_synthetic_for_tests=False)"
+        },
+        {
+          "name": "select_model_scored_initial_designs",
+          "signature": "(candidate_designs, predicted_targets_physical, target_names, objective_target_name, constraint_target_names, design_lower_bounds, design_upper_bounds, initial_design_count, diversity_candidate_count)"
+        }
+      ],
+      "error": null
+    },
+    "maml_opt.evaluation": {
+      "ok": true,
+      "classes": [
+        {
+          "name": "BudgetExceeded",
+          "signature": null
+        },
+        {
+          "name": "EvaluationContext",
+          "signature": "(manager, request_id, call_limit)"
+        },
+        {
+          "name": "EvaluationManager",
+          "signature": "(backend, run_id, budget, output_root)"
+        },
+        {
+          "name": "EvaluationRequest",
+          "signature": "(design: Mapping, task: maml_opt.contracts.TaskSpec, fidelity: str, purpose: str = 'search') -> None"
+        },
+        {
+          "name": "EvaluationResult",
+          "signature": "(objective: float | None, constraints_g_le_zero: Mapping, valid: bool = True, status: str = 'VALID', objective_model_eligible: bool = True, responses: Mapping = <factory>, diagnostics: Mapping = <factory>) -> None"
+        }
+      ],
+      "functions": [
+        {
+          "name": "atomic_json",
+          "signature": "(path, value)"
+        },
+        {
+          "name": "fingerprint",
+          "signature": "(value)"
+        },
+        {
+          "name": "json_data",
+          "signature": "(value)"
+        },
+        {
+          "name": "package_identity",
+          "signature": "()"
+        },
+        {
+          "name": "timestamp",
+          "signature": "()"
+        }
+      ],
+      "error": null
+    },
+    "maml_opt.bayesian": {
+      "ok": true,
+      "classes": [
+        {
+          "name": "ConstrainedBayesianOptimizer",
+          "signature": "(lower_bounds, upper_bounds, seed=42, candidate_count=512, minimum_model_observations=None, alpha=1e-06, exploration=0.01)"
+        }
+      ],
+      "functions": [
+        {
+          "name": "generate_initial_designs",
+          "signature": "(lower_bounds, upper_bounds, count, seed=42, baseline=None, method='lhs')"
+        },
+        {
+          "name": "run_search",
+          "signature": "(optimizer, evaluator, initial_designs, max_design_evaluations, strategy='bayesian', on_observation=None, initial_design_metadata=None)"
+        }
+      ],
+      "error": null
+    },
+    "maml_opt.campaign": {
+      "ok": true,
+      "classes": [
+        {
+          "name": "ConstrainedBayesianOptimizer",
+          "signature": "(lower_bounds, upper_bounds, seed=42, candidate_count=512, minimum_model_observations=None, alpha=1e-06, exploration=0.01)"
+        },
+        {
+          "name": "EvaluationManager",
+          "signature": "(backend, run_id, budget, output_root)"
+        },
+        {
+          "name": "EvaluationRequest",
+          "signature": "(design: Mapping, task: maml_opt.contracts.TaskSpec, fidelity: str, purpose: str = 'search') -> None"
+        }
+      ],
+      "functions": [
+        {
+          "name": "atomic_json",
+          "signature": "(path, value)"
+        },
+        {
+          "name": "finite_number",
+          "signature": "(value, name)"
+        },
+        {
+          "name": "generate_initial_designs",
+          "signature": "(lower_bounds, upper_bounds, count, seed=42, baseline=None, method='lhs')"
+        },
+        {
+          "name": "run_campaign",
+          "signature": "(backend, task, fidelity, output_root, run_id, total_analysis_budget, verification_budget=1, initial_design_count=5, max_design_evaluations=30, seed=42, strategy='bayesian', initial_designs=None, initial_design_metadata=None, verification_rtol=1e-06, verification_atol=1e-08, verification_fidelity=None)"
+        },
+        {
+          "name": "run_search",
+          "signature": "(optimizer, evaluator, initial_designs, max_design_evaluations, strategy='bayesian', on_observation=None, initial_design_metadata=None)"
+        }
+      ],
+      "error": null
+    },
+    "maml_opt.cli": {
+      "ok": true,
+      "classes": [],
+      "functions": [
+        {
+          "name": "main",
+          "signature": "(argv=None)"
+        }
+      ],
+      "error": null
+    },
+    "maml_opt.learning.model": {
+      "ok": true,
+      "classes": [
+        {
+          "name": "DatasetError",
+          "signature": null
+        },
+        {
+          "name": "Episode",
+          "signature": "(task_id: str, support: tuple, query: tuple, support_design_ids: tuple, query_design_ids: tuple) -> None"
+        },
+        {
+          "name": "MetaTaskBatch",
+          "signature": "(support_inputs: torch.Tensor, support_targets: torch.Tensor, query_inputs: torch.Tensor, query_targets: torch.Tensor) -> None"
+        },
+        {
+          "name": "ResponseModel",
+          "signature": "(input_dim, output_dim, hidden_sizes=(64, 64))"
+        },
+        {
+          "name": "Standardizer",
+          "signature": "(mean: tuple, scale: tuple) -> None"
+        }
+      ],
+      "functions": [
+        {
+          "name": "adapt_parameters",
+          "signature": "(model, support_inputs, support_targets, inner_lr, inner_steps, second_order=True)"
+        },
+        {
+          "name": "conditional_pretraining_step",
+          "signature": "(model, task_batches, optimizer, task_weighting, gradient_clip=None)"
+        },
+        {
+          "name": "episode_to_tensors",
+          "signature": "(episode, feature_standardizer, target_standardizer, device='cpu', dtype=torch.float32)"
+        },
+        {
+          "name": "evaluate_adaptation",
+          "signature": "(model, support_inputs, support_targets, query_inputs, query_targets, inner_lr, inner_steps, second_order=False)"
+        },
+        {
+          "name": "fine_tune_model",
+          "signature": "(model, support_inputs, support_targets, inner_lr, inner_steps)"
+        },
+        {
+          "name": "meta_objective",
+          "signature": "(model, task_batches, inner_lr, inner_steps, second_order=True)"
+        },
+        {
+          "name": "meta_train_step",
+          "signature": "(model, task_batches, optimizer, inner_lr, inner_steps, second_order=True, gradient_clip=None)"
+        },
+        {
+          "name": "predict_adapted_responses",
+          "signature": "(model, query_inputs, adaptation_method, support_inputs=None, support_targets=None, inner_lr=None, inner_steps=None)"
+        }
+      ],
+      "error": null
+    },
+    "maml_opt.learning.training": {
+      "ok": true,
+      "classes": [
+        {
+          "name": "DatasetError",
+          "signature": null
+        },
+        {
+          "name": "ResponseModel",
+          "signature": "(input_dim, output_dim, hidden_sizes=(64, 64))"
+        },
+        {
+          "name": "TaskDataset",
+          "signature": "(dataset_id, state, task_split_id, feature_names, design_feature_names, task_context_names, target_names, target_map, task_splits, records, excluded_records, source_runs, manifest_path, records_path)"
+        },
+        {
+          "name": "TrainingError",
+          "signature": null
+        }
+      ],
+      "functions": [
+        {
+          "name": "conditional_pretraining_step",
+          "signature": "(model, task_batches, optimizer, task_weighting, gradient_clip=None)"
+        },
+        {
+          "name": "episode_to_tensors",
+          "signature": "(episode, feature_standardizer, target_standardizer, device='cpu', dtype=torch.float32)"
+        },
+        {
+          "name": "evaluate_adaptation",
+          "signature": "(model, support_inputs, support_targets, query_inputs, query_targets, inner_lr, inner_steps, second_order=False)"
+        },
+        {
+          "name": "meta_train_step",
+          "signature": "(model, task_batches, optimizer, inner_lr, inner_steps, second_order=True, gradient_clip=None)"
+        },
+        {
+          "name": "package_identity",
+          "signature": "()"
+        },
+        {
+          "name": "train_conditional_pretraining",
+          "signature": "(dataset, config, output_root, run_id, allow_synthetic_for_tests=False)"
+        },
+        {
+          "name": "train_maml",
+          "signature": "(dataset, config, output_root, run_id, allow_synthetic_for_tests=False)"
+        }
+      ],
+      "error": null
+    },
+    "maml_opt.adapters.rcaide": {
+      "ok": true,
+      "classes": [
+        {
+          "name": "BackendIdentity",
+          "signature": "(platform: str, version: str, model_fingerprint: str, data_origin: str, cost_unit: str = 'analysis_attempt') -> None"
+        },
+        {
+          "name": "ConstraintSpec",
+          "signature": "(name: str, bound: float, sense: str = '<=', scale: float = 1.0, unit: str = '1') -> None"
+        },
+        {
+          "name": "EvaluationResult",
+          "signature": "(objective: float | None, constraints_g_le_zero: Mapping, valid: bool = True, status: str = 'VALID', objective_model_eligible: bool = True, responses: Mapping = <factory>, diagnostics: Mapping = <factory>) -> None"
+        },
+        {
+          "name": "RcaideBackend",
+          "signature": "(design_space, build_nexus, extract_responses, constraints, model_fingerprint, fidelities, data_origin='SIMULATION', cost_unit='mission_evaluation', input_names=None)"
+        }
+      ],
+      "functions": [
+        {
+          "name": "finite_number",
+          "signature": "(value, name)"
+        }
+      ],
+      "error": null
+    },
+    "maml_opt.data.dataset": {
+      "ok": true,
+      "classes": [
+        {
+          "name": "DatasetError",
+          "signature": null
+        },
+        {
+          "name": "Episode",
+          "signature": "(task_id: str, support: tuple, query: tuple, support_design_ids: tuple, query_design_ids: tuple) -> None"
+        },
+        {
+          "name": "Observation",
+          "signature": "(observation_id: str, task_id: str, design_id: str, features: tuple, targets: tuple, status: str, analysis_calls: int, source_run_id: str, source_record_id: str, data_origin: str = 'SYNTHETIC_TEST', source_implementation_fingerprint: str = '', source_run_manifest_sha256: str = '', source_evaluation_log_sha256: str = '', source_request_id: str = '', source_attempt_id: str = '', backend_platform: str = '', backend_version: str = '', model_fingerprint: str = '', fidelity: str = '', task_fingerprint: str = '') -> None"
+        },
+        {
+          "name": "Standardizer",
+          "signature": "(mean: tuple, scale: tuple) -> None"
+        },
+        {
+          "name": "TaskDataset",
+          "signature": "(dataset_id, state, task_split_id, feature_names, design_feature_names, task_context_names, target_names, target_map, task_splits, records, excluded_records, source_runs, manifest_path, records_path)"
+        }
+      ],
+      "functions": [],
+      "error": null
+    },
+    "maml_opt.data.archive": {
+      "ok": true,
+      "classes": [
+        {
+          "name": "DatasetError",
+          "signature": null
+        },
+        {
+          "name": "TaskDataset",
+          "signature": "(dataset_id, state, task_split_id, feature_names, design_feature_names, task_context_names, target_names, target_map, task_splits, records, excluded_records, source_runs, manifest_path, records_path)"
+        }
+      ],
+      "functions": [
+        {
+          "name": "atomic_json",
+          "signature": "(path, value)"
+        },
+        {
+          "name": "audit_archive",
+          "signature": "(manifest_path)"
+        },
+        {
+          "name": "build_dataset_archive",
+          "signature": "(history_root, run_ids, output_root, dataset_id, task_split_id, task_splits, task_context_names, task_context_units, target_map, target_units, frozen=False)"
+        },
+        {
+          "name": "fingerprint",
+          "signature": "(value)"
+        },
+        {
+          "name": "finite_number",
+          "signature": "(value, name)"
+        },
+        {
+          "name": "json_data",
+          "signature": "(value)"
+        },
+        {
+          "name": "resolve_target",
+          "signature": "(response, spec)"
+        },
+        {
+          "name": "write_archive",
+          "signature": "(output_root, dataset_id, task_split_id, task_splits, design_feature_names, task_context_names, feature_units, target_names, target_units, records, source_runs, frozen=False, target_map=None)"
+        }
+      ],
+      "error": null
+    }
+  },
+  "legacy_13d_scan": {
+    "terms": [
+      "single_cruise",
+      "maml_a",
+      "route_a",
+      "design_space_15",
+      "design_space_13",
+      "concorde"
+    ],
+    "scanned_files": 137,
+    "hits": [
+      {
+        "path": "<repo_root>\\tutorials\\tutorial_index.json",
+        "line": 1278,
+        "term": "concorde",
+        "text": "\"theme\": \"Concorde 涡喷超音速 4500nmi 任务\","
+      },
+      {
+        "path": "<repo_root>\\tutorials\\tutorial_index.json",
+        "line": 1279,
+        "term": "concorde",
+        "text": "\"description\": \"Concorde 全机定义 + 任务仿真脚本。\","
+      },
+      {
+        "path": "<repo_root>\\tutorials\\tutorial_index.json",
+        "line": 1284,
+        "term": "concorde",
+        "text": "\"path\": \"Concorde.py\","
+      },
+      {
+        "path": "<repo_root>\\tutorials\\tutorial_index.json",
+        "line": 1289,
+        "term": "concorde",
+        "text": "\"Concorde.py\""
+      },
+      {
+        "path": "<repo_root>\\tutorials\\tutorial_index.json",
+        "line": 1292,
+        "term": "concorde",
+        "text": "\"main_file\": \"Concorde.py\","
+      },
+      {
+        "path": "<repo_root>\\tutorials\\tutorial_index.json",
+        "line": 1975,
+        "term": "concorde",
+        "text": "\"dir\": \"Concorde\","
+      },
+      {
+        "path": "<repo_root>\\tutorials\\tutorial_index.json",
+        "line": 1978,
+        "term": "concorde",
+        "text": "\"main_py\": \"Concorde.py\","
+      },
+      {
+        "path": "<repo_root>\\tutorials\\tutorial_index.json",
+        "line": 1980,
+        "term": "concorde",
+        "text": "\"Concorde.py\""
+      },
+      {
+        "path": "<repo_root>\\tutorials\\tutorial_index.json",
+        "line": 1983,
+        "term": "concorde",
+        "text": "\"Concorde.gltf\""
+      },
+      {
+        "path": "<repo_root>\\tutorials\\tutorial_index.json",
+        "line": 1988,
+        "term": "concorde",
+        "text": "\"path\": \"Concorde.gltf\","
+      },
+      {
+        "path": "<repo_root>\\tutorials\\tutorial_index.json",
+        "line": 1992,
+        "term": "concorde",
+        "text": "\"path\": \"Concorde.png\","
+      },
+      {
+        "path": "<repo_root>\\tutorials\\tutorial_index.json",
+        "line": 1996,
+        "term": "concorde",
+        "text": "\"path\": \"Concorde.py\","
+      },
+      {
+        "path": "<repo_root>\\tutorials\\Simulation_Turbojet_Supersonic_Aircraft_4500nmi_Mission\\Concorde.py",
+        "line": 4,
+        "term": "concorde",
+        "text": "Concorde.py"
+      },
+      {
+        "path": "<repo_root>\\tutorials\\Simulation_Turbojet_Supersonic_Aircraft_4500nmi_Mission\\Concorde.py",
+        "line": 49,
+        "term": "concorde",
+        "text": "save_concorde_results(results)"
+      },
+      {
+        "path": "<repo_root>\\tutorials\\Simulation_Turbojet_Supersonic_Aircraft_4500nmi_Mission\\Concorde.py",
+        "line": 51,
+        "term": "concorde",
+        "text": "print('[Concorde] 结果存盘失败: %s' % err)"
+      },
+      {
+        "path": "<repo_root>\\tutorials\\Simulation_Turbojet_Supersonic_Aircraft_4500nmi_Mission\\Concorde.py",
+        "line": 59,
+        "term": "concorde",
+        "text": "def save_concorde_results(results, out_dir=None, filename='concorde_results.json'):"
+      },
+      {
+        "path": "<repo_root>\\tutorials\\Simulation_Turbojet_Supersonic_Aircraft_4500nmi_Mission\\Concorde.py",
+        "line": 79,
+        "term": "concorde",
+        "text": "summary = {'source': 'Concorde.py (Simulation_Turbojet_Supersonic_Aircraft_4500nmi_Mission)',"
+      },
+      {
+        "path": "<repo_root>\\tutorials\\Simulation_Turbojet_Supersonic_Aircraft_4500nmi_Mission\\Concorde.py",
+        "line": 164,
+        "term": "concorde",
+        "text": "vehicle.tag = 'Concorde'"
+      },
+      {
+        "path": "<repo_root>\\tutorials\\_tmp_meta\\dh_list.json",
+        "line": 243,
+        "term": "concorde",
+        "text": "\"name\": \"Concorde\","
+      },
+      {
+        "path": "<repo_root>\\tutorials\\_tmp_meta\\dh_list.json",
+        "line": 244,
+        "term": "concorde",
+        "text": "\"path\": \"Digital_Hangar/Concorde\","
+      },
+      {
+        "path": "<repo_root>\\tutorials\\_tmp_meta\\dh_list.json",
+        "line": 247,
+        "term": "concorde",
+        "text": "\"url\": \"https://api.github.com/repos/leadsgroup/RCAIDE_LEADS/contents/Digital_Hangar/Concorde?ref=master\","
+      },
+      {
+        "path": "<repo_root>\\tutorials\\_tmp_meta\\dh_list.json",
+        "line": 248,
+        "term": "concorde",
+        "text": "\"html_url\": \"https://github.com/leadsgroup/RCAIDE_LEADS/tree/master/Digital_Hangar/Concorde\","
+      },
+      {
+        "path": "<repo_root>\\tutorials\\_tmp_meta\\dh_list.json",
+        "line": 253,
+        "term": "concorde",
+        "text": "\"self\": \"https://api.github.com/repos/leadsgroup/RCAIDE_LEADS/contents/Digital_Hangar/Concorde?ref=master\","
+      },
+      {
+        "path": "<repo_root>\\tutorials\\_tmp_meta\\dh_list.json",
+        "line": 255,
+        "term": "concorde",
+        "text": "\"html\": \"https://github.com/leadsgroup/RCAIDE_LEADS/tree/master/Digital_Hangar/Concorde\""
+      },
+      {
+        "path": "<repo_root>\\tutorials\\_tmp_meta\\gen_index.py",
+        "line": 28,
+        "term": "concorde",
+        "text": "\"Simulation_Turbojet_Supersonic_Aircraft_4500nmi_Mission\": dict(group=\"专题\", theme=\"Concorde 涡喷超音速 4500nmi 任务\", desc=\"Concorde 全机定义 + 任务仿真脚本。\"),"
+      },
+      {
+        "path": "<repo_root>\\tutorials\\_tmp_meta\\tut_tree.json",
+        "line": 803,
+        "term": "concorde",
+        "text": "\"path\": \"Digital_Hangar/Concorde\","
+      },
+      {
+        "path": "<repo_root>\\tutorials\\_tmp_meta\\tut_tree.json",
+        "line": 810,
+        "term": "concorde",
+        "text": "\"path\": \"Digital_Hangar/Concorde/Concorde.gltf\","
+      },
+      {
+        "path": "<repo_root>\\tutorials\\_tmp_meta\\tut_tree.json",
+        "line": 818,
+        "term": "concorde",
+        "text": "\"path\": \"Digital_Hangar/Concorde/Concorde.png\","
+      },
+      {
+        "path": "<repo_root>\\tutorials\\_tmp_meta\\tut_tree.json",
+        "line": 826,
+        "term": "concorde",
+        "text": "\"path\": \"Digital_Hangar/Concorde/Concorde.py\","
+      },
+      {
+        "path": "<repo_root>\\tutorials\\_tmp_meta\\tut_tree.json",
+        "line": 12952,
+        "term": "concorde",
+        "text": "\"path\": \"Tutorials/Simulation_Turbojet_Supersonic_Aircraft_4500nmi_Mission/Concorde.py\","
+      },
+      {
+        "path": "<repo_root>\\tutorials\\_tmp_meta\\tut_tree.json",
+        "line": 14005,
+        "term": "concorde",
+        "text": "\"path\": \"VnV/Vehicles/Concorde.py\","
+      },
+      {
+        "path": "<repo_root>\\tutorials\\_tmp_meta\\tut_tree.json",
+        "line": 28115,
+        "term": "concorde",
+        "text": "\"path\": \"docs/source/tutorials/Simulation_Turbojet_Supersonic_Aircraft_4500nmi_Mission/Concorde.py\","
+      },
+      {
+        "path": "<repo_root>\\research\\concorde_metaopt\\audit.py",
+        "line": 1,
+        "term": "concorde",
+        "text": "\"\"\"P0 read-only audit for the Concorde Phase I contract (RCAIDE_Supersonic Issue #1)."
+      },
+      {
+        "path": "<repo_root>\\research\\concorde_metaopt\\audit.py",
+        "line": 50,
+        "term": "concorde",
+        "text": "CONCORDE_REL = Path(\"tutorials\") / \"Simulation_Turbojet_Supersonic_Aircraft_4500nmi_Mission\" / \"Concorde.py\""
+      },
+      {
+        "path": "<repo_root>\\research\\concorde_metaopt\\audit.py",
+        "line": 298,
+        "term": "concorde",
+        "text": "def scan_concorde(repo_root: Path) -> dict:"
+      },
+      {
+        "path": "<repo_root>\\research\\concorde_metaopt\\audit.py",
+        "line": 299,
+        "term": "concorde",
+        "text": "path = repo_root / CONCORDE_REL"
+      },
+      {
+        "path": "<repo_root>\\research\\concorde_metaopt\\audit.py",
+        "line": 301,
+        "term": "concorde",
+        "text": "return {\"path\": str(path), \"exists\": False, \"error\": \"Concorde.py not found\"}"
+      },
+      {
+        "path": "<repo_root>\\research\\concorde_metaopt\\audit.py",
+        "line": 371,
+        "term": "concorde",
+        "text": "\"relative_path\": str(CONCORDE_REL).replace(\"\\\\\", \"/\"),"
+      },
+      {
+        "path": "<repo_root>\\research\\concorde_metaopt\\audit.py",
+        "line": 503,
+        "term": "single_cruise",
+        "text": "[\"single_cruise\", \"maml_a\", \"route_a\", \"design_space_15\", \"design_space_13\", \"concorde\"],"
+      },
+      {
+        "path": "<repo_root>\\research\\concorde_metaopt\\audit.py",
+        "line": 552,
+        "term": "concorde",
+        "text": "concorde = environment.get(\"concorde\", {})"
+      }
+    ],
+    "truncated": true
+  },
+  "error": null,
+  "file": "<repo_root>\\envs\\RCAIDE\\Lib\\site-packages\\maml_opt\\__init__.py",
+  "scan_roots": [
+    "<repo_root>\\tutorials",
+    "<repo_root>\\research",
+    "<external_evidence_root>\\RCAIDE",
+    "<external_evidence_root>\\MAML元学习"
+  ],
+  "source_project": []
+}

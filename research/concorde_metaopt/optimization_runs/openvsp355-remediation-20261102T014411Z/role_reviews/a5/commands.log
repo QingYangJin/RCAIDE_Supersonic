@@ -1,0 +1,37 @@
+# A5 D-12D-003 Round-1 independent review — command and result log
+# Reviewer: A5 (a5-code-reviewer); date: 2026-11-02 (Asia/Shanghai)
+# Worktree: D:/RCAIDE-verify-a5-dbc325d ; HEAD: dbc325dd9d7412b48e0399061a86d61eb0de6941
+# Policy: read-only; no repository writes; no git index change; no GitHub write; no solver start; no numerical analysis start; OpenVSP not imported.
+
+[01] git -C D:/RCAIDE-verify-a5-dbc325d rev-parse HEAD
+     -> dbc325dd9d7412b48e0399061a86d61eb0de6941
+[02] git -C D:/RCAIDE-verify-a5-dbc325d status --porcelain
+     -> (empty; worktree clean before review)
+[03] git -C D:/RCAIDE-verify-a5-dbc325d show --stat --format= dbc325d
+     -> 36 files changed, 5,744 insertions(+), 0 deletions; 35 run-directory files + 1 docs report
+[04] MPLCONFIGDIR=D:/RCAIDE/outputs/matplotlib-cache PYTHONDONTWRITEBYTECODE=1 D:/RCAIDE/envs/RCAIDE/python.exe -E -s -B "EXT/verify_round1_part1.py" > "EXT/verify_round1_part1.log" 2>&1
+     -> EXITCODE=0 ; part1 checks=28 fail=0 ; wrote EXT/_checks_part1.json
+     -> manifest: 43 entries rehashed canonical-LF, 0 mismatch, 0 missing, 0 extra
+     -> manifest self canonical sha256 = 35afc8fb269915bdc86936a83bb9b1981f3cd2d1a0cec3b6408ac5a42a235e7d (matches expected)
+     -> 14 JSON files parse; commit shape 36 files; no P5/MAML paths; max blob 95,305 B
+[05] MPLCONFIGDIR=D:/RCAIDE/outputs/matplotlib-cache PYTHONDONTWRITEBYTECODE=1 D:/RCAIDE/envs/RCAIDE/python.exe -E -s -B "EXT/verify_round1_part2.py" > "EXT/verify_round1_part2.log" 2>&1   (first run)
+     -> EXITCODE=0 ; part2 checks=80 fail=12
+     -> the 12 fails were check-construction/normalization issues, not package defects:
+        A304 (usage file stored canonical LF 1,513 B/34b30863; CRLF reconstruction 1,546 B/3bc9b1d1 = A3 value),
+        P.thick.2/P.thick.3/P.thin.2/P.thin.3 (generation setup_content is a string, script joined characters),
+        R01 (max area-rule relative diff is 1.79e-6, not 1.6e-6), Z05/H05/H06/S02 (wording-context regex),
+        H14 (a1md variable pointed at wrong file), H15 (header/blank-line filter bug).
+[06] patched verify_round1_part2.py (script lives in EXT; no repo file touched) and reran:
+     -> first rerun EXITCODE=1, IndentationError on inserted multi-line block (fixed; script-only)
+     -> second rerun EXITCODE=1, KeyError proof_of_no_solver.no_vspaero_process_running; actual key is no_vspaero_process_running_at_completion (fixed; script-only)
+     -> third rerun: part2 checks=81 fail=1 (H14: a1md loaded vspaero_old_diagnostic.md instead of api_compat_matrix.md; fixed)
+     -> final rerun: EXITCODE=0 ; part2 checks=81 fail=0 ; wrote EXT/_checks_part2.json and EXT/manifest_verification.json
+[07] Total verification checks: 109 (28 part1 + 81 part2), all pass; findings recorded separately in findings.csv (0 blocker, 0 major, 8 minor, 1 info).
+[08] Manifest verification summary: files_checked=43 (34 run files + 8 input_source_files + 1 report_file), mismatch_count=0, missing=0, extra=0, manifest_self.match=true, total_bytes_claimed=407,111.
+[09] Zero-solver evidence verified: tooling_events 8 events TG-001..TG-008 all solver_starts=0; policy totals 0; setup_generation solver_start_count=0, StopBeforeRun=1, proof flags true; no solver output extensions in package; scripts contain no subprocess/os.system/Popen/solver invocation; budget_request_round2 no_solver_started=true, status PROPOSED_NOT_APPROVED, approved=0.
+[10] git -C D:/RCAIDE-verify-a5-dbc325d status --porcelain   (after review)
+     -> (empty; worktree still clean; no repository write)
+[11] Deliverables in EXT: round1_package_review.md, findings.csv, manifest_verification.json, commands.log, verdict.txt, verify_round1_part1.py, verify_round1_part2.py, _checks_part1.json, _checks_part2.json, verify_round1_part1.log, verify_round1_part2.log.
+
+# Note: the shared task board entry for this work (task-41) was blocked by task-40 at the start of the review;
+# the review itself was executed read-only regardless and task status is reported to the Lead separately.

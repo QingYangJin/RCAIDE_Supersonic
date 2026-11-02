@@ -1,0 +1,106 @@
+{
+  "schema_version": 1,
+  "run_id": "p1p3-fullchain-20261031T0407Z",
+  "probed_utc": "2026-10-31T04:07:14Z",
+  "os": {
+    "platform": "Windows",
+    "version": "Windows 11 Pro",
+    "release": "10.0.26200",
+    "arch": "x64",
+    "logical_cpus": 32,
+    "physical_sockets": 1,
+    "ram_total_gb": 31.05,
+    "ram_free_gb": 16.41,
+    "ram_budget_target_gb": 14,
+    "disk": {
+      "D:": {
+        "total_gb": 632,
+        "free_gb": 348
+      },
+      "C:": {
+        "total_gb": 301,
+        "free_gb": 198
+      }
+    }
+  },
+  "pythons": {
+    "project": {
+      "path": "D:/RCAIDE/envs/RCAIDE/python.exe",
+      "version": "3.11.17",
+      "role": "RCAIDE mission, geometry model, tests, JSON/CSV/PNG pipeline",
+      "packages": {
+        "RCAIDE-LEADS": "1.5.0",
+        "numpy": "2.4.6",
+        "scipy": "1.17.1",
+        "matplotlib": "3.11.2",
+        "torch": "2.8.0+cpu"
+      }
+    },
+    "openvsp_worker": {
+      "path": "D:/Anaconda/envs/SUAVE/python.exe",
+      "version": "3.9.25",
+      "role": "OpenVSP 3.26.1 Python wrapper (3.9 ABI), DegenGeom/geometry export, independent area-rule slicing",
+      "packages": {
+        "numpy": "1.26.4",
+        "scipy": "1.13.1"
+      }
+    }
+  },
+  "solvers": {
+    "openvsp": {
+      "version": "3.26.1 (install dir name; wrapper from 2022-01-06)",
+      "root": "D:/Program Files/OpenVSP/OpenVSP-3.26.1-win64-Python3.9/OpenVSP-3.26.1-win64",
+      "wrapper_import": "PASS with sys.path order: <root>/python, <root>/python/openvsp, <root>/python/degen_geom, <root>/python/utilities (each inserted at position 0 in reverse order); project python 3.11 cannot load the 3.9 _vsp.pyd",
+      "api_limits": "no AnalysisManager/AddAnalysis/GetVSPVersion/GetNumTotalErrors in this wrapper; ExecAnalysis(name) present; ListAnalysis empty until analyses are registered on a loaded model",
+      "geometry_functions": [
+        "AddGeom",
+        "InsertXSec",
+        "GetXSecSurf",
+        "GetXSecParm",
+        "SetParmVal",
+        "Update",
+        "WriteVSPFile",
+        "ExportFile",
+        "ComputeDegenGeom"
+      ]
+    },
+    "vspaero": {
+      "version": "VSPAERO v6.2.0 (banner, compiled 2022-01-06)",
+      "path": "D:/Program Files/OpenVSP/OpenVSP-3.26.1-win64-Python3.9/OpenVSP-3.26.1-win64/vspaero.exe",
+      "sha256": "e1affca023f9d63d9b0b5f343c3ea5afd5a8dbcfe420952e557718dd15f90eb8",
+      "capabilities": "-fs Mach/alpha/beta override; -setup writes template with sref/bref/cref/cg/symy/wakeiters; -geom geometry-only; -omp N threads; reads DegenGeom thin-surface dataset (e.g. testModel_DegenGeom); -novortex / -lesuction toggles"
+    },
+    "su2": {
+      "version": "SU2 v8.5.0 Harrier",
+      "path": "D:/Program Files/SU2/SU2-v8.5.0-win64-mpi/win64-mpi/bin/SU2_CFD.exe",
+      "sha256": "61a803e0baf49382210888cc32f14f4ea837681a0e6cc2df6b1d5a99ce5baf8c",
+      "build": "win64-mpi (serial invocation and MPI runtime to be verified at HFS-00; HFS-00 is the first budgeted SU2 start)"
+    },
+    "gmsh": {
+      "version": "4.15.2",
+      "path": "D:/Program Files/GMesh/gmsh-4.15.2-Windows64/gmsh-4.15.2-Windows64/gmsh.exe",
+      "sha256": "317c43391e5b1fab3a1dd80dc5245dad6e2d087910f4b8ebc234bd6d4b8f41a1",
+      "python_module": "not installed in the project env; drive as executable CLI"
+    }
+  },
+  "git": {
+    "commit": "048ef2e55f389b0ae52e8872131dcfcf0c91a1eb",
+    "branch": "research/concorde-metaopt",
+    "main": "ec65e5a9a723bc52df8075a395fcaf9e0fd0fc2b",
+    "remote_head_at_setup": "048ef2e55f389b0ae52e8872131dcfcf0c91a1eb"
+  },
+  "worktrees": {
+    "code_execution": "D:/RCAIDE-verify-048ef2e (detached HEAD at base commit; no P5 files)",
+    "reviewer": "D:/RCAIDE-verify-a5-048ef2e (detached HEAD at base commit)"
+  },
+  "network": {
+    "note": "github.com:443 is intermittently unreachable; git operations use -c http.sslBackend=openssl and retries; api.github.com reachable",
+    "observed": "2026-10-30 push retries succeeded"
+  },
+  "resource_policy": {
+    "max_cpu_cores": 4,
+    "omp_threads": 4,
+    "memory_target_gb": 14,
+    "serial_jobs_only": true
+  }
+}

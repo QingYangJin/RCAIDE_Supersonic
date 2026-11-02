@@ -1,0 +1,517 @@
+{
+  "schema_version": 1,
+  "run_id": "p1p3-fullchain-20261031T0407Z",
+  "created_utc": "2026-10-31T04:07:14Z",
+  "approval": {
+    "source": "Issue #4 / D-12D-002",
+    "comment_id": 6538481816,
+    "comment_url": "https://github.com/QingYangJin/RCAIDE_Supersonic/issues/4#issuecomment-6538481816",
+    "authorized_decisions": [
+      "A: execute one low/high multi-fidelity supersonic validation",
+      "B: Mach-plane supersonic area rule for zero-lift volume wave drag of wing+fixed fuselage"
+    ],
+    "limits": {
+      "max_numerical_analysis_starts": 23,
+      "wall_clock_hours": 30,
+      "max_cpu_cores": 4,
+      "max_ram_gb_total": 21.8,
+      "serial_only": true
+    },
+    "category_allocations": {
+      "VSPAERO thin/LF": 6,
+      "RCAIDE single-cruise/LF": 4,
+      "SU2 Euler/HF": 6,
+      "OpenVSP WaveDrag/area rule": 7
+    },
+    "explicit_not_authorized": [
+      "APPROVED_FOR_NEXT_STAGE",
+      "P4 BO/DE",
+      "P5 MAML",
+      "P6",
+      "new budget beyond 23 starts",
+      "merge PR #3 into main",
+      "declare full-aircraft validated fuel burn"
+    ],
+    "history_policy": "existing JSON/runs are immutable historical snapshots; this run adds new versioned evidence and does not overwrite them"
+  },
+  "repository": {
+    "repo": "QingYangJin/RCAIDE_Supersonic",
+    "branch": "research/concorde-metaopt",
+    "base_commit": "048ef2e55f389b0ae52e8872131dcfcf0c91a1eb",
+    "pr": 3,
+    "pr_state": "open",
+    "pr_base": "main",
+    "main_commit": "ec65e5a9a723bc52df8075a395fcaf9e0fd0fc2b",
+    "worktree_policy": "P5 uncommitted files stay in the main worktree; code execution uses clean detached worktrees at the base commit; no P5 path may enter this run or any commit of this run"
+  },
+  "design_contract": {
+    "design_set": "12d_lifting_surfaces",
+    "config_path": "research/concorde_metaopt/configs/design_space_12d_lifting_surfaces.yaml",
+    "config_sha256": "463bb4a0a0fc06eb7dd6a6d9790f4d5b2b3a8c3d8681d16055036dae0c57fc7b",
+    "active_variables": [
+      {
+        "id": "W01",
+        "name": "wing_area",
+        "unit": "m^2",
+        "baseline": 358.25
+      },
+      {
+        "id": "W02",
+        "name": "aspect_ratio",
+        "unit": "-",
+        "baseline": 1.83
+      },
+      {
+        "id": "W03",
+        "name": "sweep_1",
+        "unit": "deg",
+        "baseline": 67
+      },
+      {
+        "id": "W04",
+        "name": "sweep_2",
+        "unit": "deg",
+        "baseline": 48
+      },
+      {
+        "id": "W05",
+        "name": "sweep_3",
+        "unit": "deg",
+        "baseline": 71
+      },
+      {
+        "id": "W06",
+        "name": "span_location_2",
+        "unit": "-",
+        "baseline": 0.480469
+      },
+      {
+        "id": "W07",
+        "name": "span_location_3",
+        "unit": "-",
+        "baseline": 0.945313
+      },
+      {
+        "id": "W08",
+        "name": "chord_ratio_2",
+        "unit": "-",
+        "baseline": 0.408284
+      },
+      {
+        "id": "W09",
+        "name": "chord_ratio_3",
+        "unit": "-",
+        "baseline": 0.130178
+      },
+      {
+        "id": "W10",
+        "name": "tip_twist",
+        "unit": "deg",
+        "baseline": 0
+      },
+      {
+        "id": "V01",
+        "name": "vertical_tail_area",
+        "unit": "m^2",
+        "baseline": 33.91
+      },
+      {
+        "id": "V02",
+        "name": "vertical_tail_sweep_delta",
+        "unit": "deg",
+        "baseline": 0
+      }
+    ],
+    "fixed_variables": [
+      {
+        "id": "F01",
+        "name": "fuselage_length",
+        "value": 61.66,
+        "unit": "m",
+        "source": "owner decision item 2: computed model values"
+      },
+      {
+        "id": "F02",
+        "name": "fuselage_fineness",
+        "value": 4.3,
+        "unit": "-",
+        "source": "owner decision item 2: computed model values"
+      },
+      {
+        "id": "F03",
+        "name": "fuselage_height_width_ratio",
+        "value": 1.152778,
+        "unit": "-",
+        "source": "owner decision item 2: computed model values"
+      }
+    ],
+    "legacy_15d": {
+      "config_path": "research/concorde_metaopt/configs/design_space_15d.yaml",
+      "sha256": "1a9025e998305a86060181584b63c9c4b93526ee9a25a2b7d0a215b23aaa6326",
+      "status": "read-only preserved; 12D variables are identical to the first 12 entries of the 15D contract"
+    },
+    "frozen_conditions": {
+      "mach": 2.02,
+      "altitude_m": 18288,
+      "range_m": 3028020,
+      "start_mass_kg": 136000,
+      "sref_m2": 358.25,
+      "cref_m": 18.489893,
+      "bref_m": 25.604638,
+      "task_config": "research/concorde_metaopt/configs/task_fixed_cruise.yaml",
+      "task_config_sha256": "bde73b739b50cac786ca6b843fa2e9877c423262b7e8c93e8724d8ba481d894d",
+      "mass_contract": "frozen",
+      "mass_model_status": "PROVISIONAL_NOT_FROZEN",
+      "note": "condition changes stop the current case and are reported; no silent redefinition"
+    },
+    "conventions": {
+      "units": "SI",
+      "moment_reference": "as reported by each solver; recorded per case (OpenVSP/SU2 reference point must be stated before comparing CM)",
+      "force_reporting": "drag in N along wind axis with positive aft; body-axis signed components are kept separate and never added to wind-axis positive drag",
+      "reference_areas": "all drag coefficients normalized to Sref=358.25 m2; a different reference area must be converted, never added directly",
+      "media": "Mach 2.02 at 18288 m; Reynolds number NOT FROZEN for inviscid LF/HF comparisons and must be stated per case"
+    }
+  },
+  "geometry_contract": {
+    "lf_thin": {
+      "solver": "VSPAERO v6.2.0 thin-surface VLM (DegenGeom)",
+      "representation": "independent main wing only, thin lifting surface, symmetric about y=0",
+      "source_chain": "12D geometry model -> aircraft/geometry_builder.py -> aircraft/openvsp_geometry.py request -> external Python 3.9 OpenVSP worker -> DegenGeom CSV",
+      "must_include": [
+        "W10 tip twist via OpenVSP XSec Twist/Twist_Location=0",
+        "no fuselage, no vertical tail in LF VSPAERO geometry"
+      ]
+    },
+    "hf_finite_thickness": {
+      "solver": "SU2 v8.5.0 Euler (inviscid)",
+      "representation": "independent main wing only, finite-thickness closed/watertight external-flow mesh",
+      "source_chain": "12D geometry model -> OpenVSP STEP/STL wing -> Gmsh closed volume mesh -> SU2",
+      "must_include": [
+        "no wing-body intersection (wing only)",
+        "wall + farfield boundary conditions",
+        "mesh family coarse/mid/fine documented with cell counts"
+      ]
+    },
+    "difference_statement": "LF thin surface and HF finite-thickness surface are intentionally different representations of the same 12D wing; comparisons use explicit common quantities (CL, CDpressure/CDi, CM with stated reference point) and never imply equality of the models",
+    "wing_only_scope": "lifting-surfaces-only (main wing). Fixed fuselage appears only in the area-rule/body-correction module. Vertical tail is not solved by VSPAERO/SU2 in this round; V01/V02 sensitivity is checked only through RCAIDE LF missions.",
+    "prohibited_claims": [
+      "full-aircraft high-fidelity fuel burn",
+      "12D full-vehicle high-fidelity",
+      "validated wing-body interference",
+      "APPROVED_FOR_NEXT_STAGE"
+    ]
+  },
+  "case_plan": {
+    "lf_vspaero": [
+      {
+        "id": "LFV-00",
+        "solver": "VSPAERO",
+        "purpose": "12D baseline independent main-wing thin-surface VLM reference",
+        "geometry": "12d baseline main wing, thin DegenGeom",
+        "counts_as_numerical_analysis_start": true,
+        "expected": [
+          "CL",
+          "CDi",
+          "CM",
+          "spanwise lift",
+          "residuals/polar"
+        ]
+      },
+      {
+        "id": "LFV-01",
+        "solver": "VSPAERO",
+        "purpose": "W01 wing_area +1% perturbation (representative planform perturbation)",
+        "geometry": "12d with W01=361.8325 m2",
+        "counts_as_numerical_analysis_start": true,
+        "expected": [
+          "delta CL",
+          "delta CDi",
+          "delta CM"
+        ]
+      },
+      {
+        "id": "LFV-02",
+        "solver": "VSPAERO",
+        "purpose": "W03 sweep_1 perturbation (representative sweep perturbation)",
+        "geometry": "12d with W03=67+2 deg",
+        "counts_as_numerical_analysis_start": true,
+        "expected": [
+          "delta CL",
+          "delta CDi",
+          "delta CM"
+        ]
+      },
+      {
+        "id": "LFV-03",
+        "solver": "VSPAERO",
+        "purpose": "W10 tip_twist +2 deg perturbation (twist now present in exported surface)",
+        "geometry": "12d with W10=+2 deg",
+        "counts_as_numerical_analysis_start": true,
+        "expected": [
+          "delta CL",
+          "delta CDi",
+          "delta CM"
+        ]
+      },
+      {
+        "id": "LFV-SENS-A",
+        "solver": "VSPAERO",
+        "purpose": "baseline surface/vortex density sensitivity A (coarser panels)",
+        "geometry": "12d baseline wing",
+        "counts_as_numerical_analysis_start": true,
+        "expected": [
+          "CL/CDi/CM vs LFV-00",
+          "density trend"
+        ]
+      },
+      {
+        "id": "LFV-SENS-B",
+        "solver": "VSPAERO",
+        "purpose": "baseline surface/vortex density sensitivity B (finer panels)",
+        "geometry": "12d baseline wing",
+        "counts_as_numerical_analysis_start": true,
+        "expected": [
+          "CL/CDi/CM vs LFV-00",
+          "density trend"
+        ]
+      }
+    ],
+    "lf_rcaide": [
+      {
+        "id": "LFV-04",
+        "solver": "RCAIDE single-cruise Mission",
+        "purpose": "V01 vertical_tail_area LF sensitivity (zero sideslip behaviour, wing+tail vehicle)",
+        "counts_as_numerical_analysis_start": true,
+        "expected": [
+          "fuel_burn_kg delta",
+          "constraints",
+          "max_throttle",
+          "alpha_end"
+        ]
+      },
+      {
+        "id": "LFV-05",
+        "solver": "RCAIDE single-cruise Mission",
+        "purpose": "V02 vertical_tail_sweep_delta LF sensitivity",
+        "counts_as_numerical_analysis_start": true,
+        "expected": [
+          "fuel_burn_kg delta",
+          "constraints"
+        ]
+      },
+      {
+        "id": "E2E-00",
+        "solver": "RCAIDE single-cruise Mission + drag injection",
+        "purpose": "baseline full-chain corrected evaluation (LF wing aero + body volume-wave increment + explicit gaps)",
+        "counts_as_numerical_analysis_start": true,
+        "expected": [
+          "fuel_burn_kg before/after correction",
+          "drag components",
+          "thrust/throttle",
+          "constraints"
+        ]
+      },
+      {
+        "id": "E2E-01",
+        "solver": "RCAIDE single-cruise Mission + drag injection",
+        "purpose": "representative perturbation full-chain corrected evaluation",
+        "counts_as_numerical_analysis_start": true,
+        "expected": [
+          "fuel_burn_kg before/after correction",
+          "delta vs E2E-00"
+        ]
+      }
+    ],
+    "hf_su2": [
+      {
+        "id": "HFS-00",
+        "solver": "SU2 Euler",
+        "purpose": "Mach 2.02 inviscid wedge benchmark vs theory (shock angle / pressure / grid sensitivity anchor)",
+        "counts_as_numerical_analysis_start": true,
+        "expected": [
+          "shock angle deg",
+          "p/p_inf",
+          "CL-equivalent check",
+          "residual"
+        ]
+      },
+      {
+        "id": "HFS-00R",
+        "solver": "SU2 Euler",
+        "purpose": "wedge grid-refinement recheck",
+        "counts_as_numerical_analysis_start": true,
+        "expected": [
+          "shock angle vs HFS-00",
+          "grid sensitivity"
+        ]
+      },
+      {
+        "id": "HFS-01",
+        "solver": "SU2 Euler",
+        "purpose": "independent main wing coarse mesh",
+        "counts_as_numerical_analysis_start": true,
+        "expected": [
+          "CL",
+          "CDpressure",
+          "CM",
+          "residual",
+          "force history"
+        ]
+      },
+      {
+        "id": "HFS-02",
+        "solver": "SU2 Euler",
+        "purpose": "independent main wing medium mesh",
+        "counts_as_numerical_analysis_start": true,
+        "expected": [
+          "CL",
+          "CDpressure",
+          "CM",
+          "grid trend vs HFS-01"
+        ]
+      },
+      {
+        "id": "HFS-03",
+        "solver": "SU2 Euler",
+        "purpose": "independent main wing fine mesh",
+        "counts_as_numerical_analysis_start": true,
+        "expected": [
+          "CL",
+          "CDpressure",
+          "CM",
+          "grid convergence"
+        ]
+      },
+      {
+        "id": "HFS-04",
+        "solver": "SU2 Euler",
+        "purpose": "representative wing perturbation medium mesh",
+        "counts_as_numerical_analysis_start": true,
+        "expected": [
+          "delta CL/CDpressure/CM vs HFS-02"
+        ]
+      }
+    ],
+    "wave_area_rule": [
+      {
+        "id": "WAVE-00",
+        "solver": "OpenVSP WaveDrag or independent Jones area rule",
+        "purpose": "standard body-of-revolution benchmark with published/analytical reference",
+        "counts_as_numerical_analysis_start": true,
+        "expected": [
+          "CD_wave_volume reference check"
+        ]
+      },
+      {
+        "id": "WAVE-01",
+        "solver": "area rule",
+        "purpose": "baseline main wing alone, Mach-plane area distribution and zero-lift volume wave drag",
+        "counts_as_numerical_analysis_start": true,
+        "expected": [
+          "area distribution",
+          "CD_wave_volume wing"
+        ]
+      },
+      {
+        "id": "WAVE-02",
+        "solver": "area rule",
+        "purpose": "baseline main wing + fixed fuselage",
+        "counts_as_numerical_analysis_start": true,
+        "expected": [
+          "increment vs wing-alone"
+        ]
+      },
+      {
+        "id": "WAVE-03",
+        "solver": "area rule",
+        "purpose": "representative perturbation wing alone",
+        "counts_as_numerical_analysis_start": true,
+        "expected": [
+          "area distribution",
+          "CD_wave_volume"
+        ]
+      },
+      {
+        "id": "WAVE-04",
+        "solver": "area rule",
+        "purpose": "representative perturbation wing + fixed fuselage",
+        "counts_as_numerical_analysis_start": true,
+        "expected": [
+          "increment vs wing-alone"
+        ]
+      },
+      {
+        "id": "WAVE-05",
+        "solver": "area rule",
+        "purpose": "baseline pair slice/plane refinement",
+        "counts_as_numerical_analysis_start": true,
+        "expected": [
+          "slice count convergence"
+        ]
+      },
+      {
+        "id": "WAVE-06",
+        "solver": "area rule",
+        "purpose": "baseline pair azimuth/rotation refinement",
+        "counts_as_numerical_analysis_start": true,
+        "expected": [
+          "rotation ref convergence"
+        ]
+      }
+    ]
+  },
+  "evidence_contract": {
+    "run_directory": "research/concorde_metaopt/optimization_runs/p1p3-fullchain-20261031T0407Z/",
+    "required_files": [
+      "run_config.json",
+      "environment.json",
+      "approval_and_budget_ledger.json",
+      "geometry_validation.json",
+      "lf_vspaero_results.json",
+      "hf_su2_results.json",
+      "mesh_convergence.csv",
+      "wave_drag_area_rule.json",
+      "drag_component_ledger.json",
+      "mission_e2e.json",
+      "evaluations.jsonl",
+      "summary.json",
+      "blocker_register_current.json",
+      "data_manifest.json",
+      "figures/*.png"
+    ],
+    "large_artifact_policy": "raw meshes/fields/logs go to ignored outputs/concorde_metaopt/p1p3-fullchain-20261031T0407Z/ with a sha256 manifest referenced from data_manifest.json",
+    "up_stream_export": "all experimental results exported as JSON/CSV/PNG plus data_manifest.json with sha256+bytes, so an upstream agent can audit without reading prose",
+    "failure_policy": "NOT_RUN and BLOCKED are explicit states; no empty/synthetic success records; failed solver attempts keep logs and exit codes"
+  },
+  "phase_order": [
+    "PRE-0 integration preflight (zero solver starts)",
+    "PRE-1 solver-input readiness (zero solver starts; mesh generation logged separately)",
+    "LF validation (6 VSPAERO + 4 RCAIDE incl. E2E)",
+    "B: supersonic area-rule body-volume correction (7)",
+    "HF validation (6 SU2, wedge first)",
+    "E2E integration",
+    "integrated review (A2/A5/A3/A4) and single Issue receipt"
+  ],
+  "gates": {
+    "GEO-12D": "target: PASS_WITH_WARNINGS or PARTIAL (geometry/software validated, physics pending)",
+    "LF-M2.02": "target: PASS or PARTIAL/LF_PROVISIONAL depending on VSPAERO evidence",
+    "HF-M2.02": "target: PASS/PARTIAL/BLOCKED based on actual SU2 runs",
+    "BODY-CORR": "target: PARTIAL at best (area-rule volume increment only, not full wing-body interference)",
+    "MISSION-DATA": "target: PARTIAL/PASS based on evidence contract completeness",
+    "BUDGET": "this ledger; APPROVED_FOR_NEXT_STAGE still requires owner signature"
+  },
+  "non_goals": [
+    "P4 BO/DE",
+    "P5 MAML/route-A",
+    "P6",
+    "full-aircraft viscous CFD",
+    "new design-space bounds freeze",
+    "Issue/PR merges"
+  ],
+  "status": {
+    "phase": "PRE-0",
+    "physical_starts_used": 0,
+    "budget_total": 23,
+    "updated_utc": "2026-10-31T04:07:14Z"
+  }
+}

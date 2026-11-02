@@ -1,0 +1,22 @@
+check_id,subject,model_value,openvsp_value,relative_delta,tolerance,status,detail,absolute_delta
+OV01_wing_area,main_wing planform area (m2),358.25000000000006,358.25000000000006,0.0,0.005,pass,OpenVSP TotalArea versus model reference area,
+OV02_wing_span,main_wing span (m),25.604638251691824,25.604638251691824,0.0,0.005,pass,OpenVSP TotalSpan versus model projected span,
+OV03_tail_area,vertical_tail planform area (m2),33.91,33.91,0.0,0.005,pass,,
+OV04_tail_span,vertical_tail span (m),5.0093312926976585,5.009331292697659,1.7730478736650247e-16,0.005,pass,,
+OV05_fuselage_length,fuselage length (m),61.66,61.66,0.0,1e-09,pass,,
+OV06_wing_mesh_span,main_wing STL lateral extent (m),25.604638251691824,25.604638252,1.2035967558866328e-11,0.005,pass,Largest lateral STL extent for the symmetric wing,
+OV11_tail_mesh_span,vertical_tail local-frame STL lateral extent (m),5.0093312926976585,5.0093312927,4.673754194981005e-13,0.005,pass,Local-frame extent; the 90 deg rotation is applied in the composed assembly,
+OV07_fuselage_mesh_length,fuselage STL longitude extent (m),61.66,61.66,0.0,0.01,pass,,
+OV08_fuselage_width,fuselage STL width (m),2.88,3.3122883808,0.1501001322222223,0.02,warn,"Known OpenVSP spline overshoot; a warning, not an accepted value",
+OV09_fuselage_height,fuselage STL height (m),3.32000064,3.3589447496,0.011730151232741948,0.02,pass,Known OpenVSP spline overshoot; height stays within 2% at baseline,
+OV10_assembly_length,OpenVSP assembly STL longitude extent (m),61.66,61.66,0.0,0.01,pass,Bounds of the raw OpenVSP export; placement is checked on the composed mesh below,
+OV12_wing_x_origin,main_wing composed x_min (m),14.0,14.0,,0.02,pass,Rigid translation applied to the local wing mesh,0.0
+OV13_wing_z_center,main_wing composed z centre (m),-0.8,-0.8,,0.02,pass,Chord-plane centre after translation (the mesh carries thickness),0.0
+OV14_tail_x_origin,vertical_tail composed x_min (m),42.0,42.0,,0.02,pass,,0.0
+OV15_tail_z_origin,vertical_tail composed z_min (m),1.0,1.0,,0.02,pass,Root station of the tail after the 90 deg rotation sits at the origin height,0.0
+OV16_tail_z_extent,vertical_tail composed z extent (m),5.0093312926976585,5.0093312927,4.673754194981005e-13,0.005,pass,The 90 deg rotation about X makes the tail span vertical,
+OV17_assembly_x_origin,composed assembly x_min (m),0.0,-7.401487051415874e-17,,0.02,pass,Fuselage nose at the global origin,7.401487051415874e-17
+OV18_assembly_x_extent,composed assembly x extent (m),61.66,61.65999984741211,-2.4746657024715354e-09,1e-06,pass,Fuselage tail sets the aft bound,
+OV19_assembly_y_extent,composed assembly y extent (m),25.604638251691824,25.604639053344727,3.13088938965792e-08,0.005,pass,Wing span sets the lateral bound,
+OV20_assembly_z_max,composed assembly z_max (m),6.0093312926976585,6.009331226348877,,0.02,pass,Vertical tail tip sets the upper bound,6.634878157996127e-08
+OV21_assembly_z_min,composed assembly z_min follows the wing mesh (m),-2.2938664746,-2.2938663959503174,,0.02,pass,Composition consistency: the translated wing is the lowest component,7.86496827664962e-08

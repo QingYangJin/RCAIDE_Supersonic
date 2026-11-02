@@ -1,0 +1,595 @@
+{
+  "artifacts": {
+    "environment": "environment.json",
+    "figure": "figures/openvsp_perturbation_deltas.png",
+    "perturbation_cases": "openvsp_perturbation_cases.json",
+    "perturbation_checks_csv": "openvsp_perturbation_checks.csv",
+    "perturbation_deltas_csv": "openvsp_perturbation_deltas.csv",
+    "perturbation_metrics_csv": "openvsp_perturbation_metrics.csv",
+    "run_config": "run_config.json",
+    "summary": "summary.json"
+  },
+  "best_design_id": null,
+  "best_feasible_fuel_kg": null,
+  "cpu_seconds_if_available": null,
+  "design_dim": 15,
+  "external_artifacts": {
+    "deleted": false,
+    "files": [
+      {
+        "bytes": 534242,
+        "kind": "assembly",
+        "name": "concorde_full.step",
+        "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/baseline/concorde_full.step",
+        "sha256": "e9bfb3c6ad50e748fdaffa1a5071e8e94a6a5f69be69716d28995818a79f4e22"
+      },
+      {
+        "bytes": 1241804,
+        "kind": "assembly",
+        "name": "concorde_full.stl",
+        "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/baseline/concorde_full.stl",
+        "sha256": "0d14d9e3f8204e4eeb44af3c9825cb47f312917ad6ff742a8e0fd2d619ed926c"
+      },
+      {
+        "bytes": 1638156,
+        "kind": "assembly",
+        "name": "concorde_full.vsp3",
+        "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/baseline/concorde_full.vsp3",
+        "sha256": "52ad024eed70421fe4ca3dd8588a5a9511aeb1a42e1de217e7271ecaa67837da"
+      },
+      {
+        "bytes": 206484,
+        "kind": "assembly_composed",
+        "name": "concorde_full_assembly_composed.stl",
+        "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/baseline/concorde_full_assembly_composed.stl",
+        "sha256": "76e4da7e583a338411c38097e0231505eb05520d2f0d1ae498d089d824b6cafb"
+      },
+      {
+        "bytes": 327969,
+        "kind": "component",
+        "name": "concorde_full_fuselage.stl",
+        "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/baseline/concorde_full_fuselage.stl",
+        "sha256": "8f8c69afd235c9316f902aa4cb1853469de966fa408ad1f9968afe1b6e39b1ca"
+      },
+      {
+        "bytes": 650534,
+        "kind": "component",
+        "name": "concorde_full_main_wing.stl",
+        "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/baseline/concorde_full_main_wing.stl",
+        "sha256": "35b32db6dd7dcb7230d636096cd5399ce088e5e751ec7e955969eafb2460a40b"
+      },
+      {
+        "bytes": 263335,
+        "kind": "component",
+        "name": "concorde_full_vertical_tail.stl",
+        "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/baseline/concorde_full_vertical_tail.stl",
+        "sha256": "c6b7aac829d88b1eecc2bd04db8e89ebb6c6e48db1fd8624738b551453e998d0"
+      },
+      {
+        "bytes": 3244,
+        "kind": "worker",
+        "name": "request.json",
+        "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/baseline/worker/request.json",
+        "sha256": "3bbf6e6c1ef4f838e010ae853a25e8712a6ac40eb877b44d132f1557f46fbaf3"
+      },
+      {
+        "bytes": 2398,
+        "kind": "worker",
+        "name": "worker_result.json",
+        "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/baseline/worker/worker_result.json",
+        "sha256": "c549a72e0eece2df797a1794fcbd955f8ba16afa287dd00f692f0fc9b2a0bcb5"
+      },
+      {
+        "bytes": 534326,
+        "kind": "assembly",
+        "name": "concorde_full.step",
+        "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/F01_plus_1pct/concorde_full.step",
+        "sha256": "1cecf925a04c4afe929e679b3980ab71ab15aa7ccf4510911143cd09d3326a63"
+      },
+      {
+        "bytes": 1241804,
+        "kind": "assembly",
+        "name": "concorde_full.stl",
+        "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/F01_plus_1pct/concorde_full.stl",
+        "sha256": "e59b74fae261f9a02be825c9f860a4960e4823f7c682c4ad586e9ff608de15ec"
+      },
+      {
+        "bytes": 1638156,
+        "kind": "assembly",
+        "name": "concorde_full.vsp3",
+        "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/F01_plus_1pct/concorde_full.vsp3",
+        "sha256": "db09d1aa49a153619617fd9c1528eb83089204fcbf87e75a15769dba07110f22"
+      },
+      {
+        "bytes": 206484,
+        "kind": "assembly_composed",
+        "name": "concorde_full_assembly_composed.stl",
+        "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/F01_plus_1pct/concorde_full_assembly_composed.stl",
+        "sha256": "9654b3c543386c0c638990d80058290afd44194ce44dc8f7ded1297135071c9a"
+      },
+      {
+        "bytes": 327969,
+        "kind": "component",
+        "name": "concorde_full_fuselage.stl",
+        "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/F01_plus_1pct/concorde_full_fuselage.stl",
+        "sha256": "3b30ca390a8a60d0933b99ac51724d0ef804499c121bbccd69a0f31a1924e195"
+      },
+      {
+        "bytes": 650534,
+        "kind": "component",
+        "name": "concorde_full_main_wing.stl",
+        "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/F01_plus_1pct/concorde_full_main_wing.stl",
+        "sha256": "35b32db6dd7dcb7230d636096cd5399ce088e5e751ec7e955969eafb2460a40b"
+      },
+      {
+        "bytes": 263335,
+        "kind": "component",
+        "name": "concorde_full_vertical_tail.stl",
+        "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/F01_plus_1pct/concorde_full_vertical_tail.stl",
+        "sha256": "c6b7aac829d88b1eecc2bd04db8e89ebb6c6e48db1fd8624738b551453e998d0"
+      },
+      {
+        "bytes": 3264,
+        "kind": "worker",
+        "name": "request.json",
+        "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/F01_plus_1pct/worker/request.json",
+        "sha256": "b19f5bfaa23986270df1fb31fc7b85ff6655b2d2a57c00430bbd264bf2199f3b"
+      },
+      {
+        "bytes": 2454,
+        "kind": "worker",
+        "name": "worker_result.json",
+        "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/F01_plus_1pct/worker/worker_result.json",
+        "sha256": "0b624c7b8e61a515caef9d147bacdfb49286d3589a4a239787b2a7d3b340d95d"
+      },
+      {
+        "bytes": 534543,
+        "kind": "assembly",
+        "name": "concorde_full.step",
+        "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/F02_plus_2pct/concorde_full.step",
+        "sha256": "bf1dd4b9221d51007bee6465ea3b9fcf2c9bd5f822b29e09372d9f715b7ee792"
+      },
+      {
+        "bytes": 1241801,
+        "kind": "assembly",
+        "name": "concorde_full.stl",
+        "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/F02_plus_2pct/concorde_full.stl",
+        "sha256": "943335be04dc63b6806ef8867e744aaf5dc4a5633cf924708d203bdcbb62df2d"
+      },
+      {
+        "bytes": 1638153,
+        "kind": "assembly",
+        "name": "concorde_full.vsp3",
+        "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/F02_plus_2pct/concorde_full.vsp3",
+        "sha256": "7dbca125d941ebdf31ca41756028ec38e235166c2b97bb41532bea2aaf820aa2"
+      },
+      {
+        "bytes": 206484,
+        "kind": "assembly_composed",
+        "name": "concorde_full_assembly_composed.stl",
+        "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/F02_plus_2pct/concorde_full_assembly_composed.stl",
+        "sha256": "d97bc0c7793613fd79684ac1fc017fd3cc38a13c39b018b5474663d98fee46ed"
+      },
+      {
+        "bytes": 327966,
+        "kind": "component",
+        "name": "concorde_full_fuselage.stl",
+        "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/F02_plus_2pct/concorde_full_fuselage.stl",
+        "sha256": "30b72ea21f6ee322a9eb9dd136e2fbd9204f91b9563df77a7008ce1c03839bbe"
+      },
+      {
+        "bytes": 650534,
+        "kind": "component",
+        "name": "concorde_full_main_wing.stl",
+        "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/F02_plus_2pct/concorde_full_main_wing.stl",
+        "sha256": "35b32db6dd7dcb7230d636096cd5399ce088e5e751ec7e955969eafb2460a40b"
+      },
+      {
+        "bytes": 263335,
+        "kind": "component",
+        "name": "concorde_full_vertical_tail.stl",
+        "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/F02_plus_2pct/concorde_full_vertical_tail.stl",
+        "sha256": "c6b7aac829d88b1eecc2bd04db8e89ebb6c6e48db1fd8624738b551453e998d0"
+      },
+      {
+        "bytes": 3227,
+        "kind": "worker",
+        "name": "request.json",
+        "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/F02_plus_2pct/worker/request.json",
+        "sha256": "54647bc60716c664644be80688240f242acfd5bc4d80e367c03faf4e5d9769a2"
+      },
+      {
+        "bytes": 2428,
+        "kind": "worker",
+        "name": "worker_result.json",
+        "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/F02_plus_2pct/worker/worker_result.json",
+        "sha256": "4f3ddbefbd931b8afadf851cadf77ae07951fc1c399ee0e3601db37fa393c497"
+      },
+      {
+        "bytes": 534308,
+        "kind": "assembly",
+        "name": "concorde_full.step",
+        "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/F03_plus_2pct/concorde_full.step",
+        "sha256": "377aaaa3ab1f8573dc3afb04931cd9ec6417ddbbe4e678c62544d2f455dbeae1"
+      },
+      {
+        "bytes": 1241806,
+        "kind": "assembly",
+        "name": "concorde_full.stl",
+        "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/F03_plus_2pct/concorde_full.stl",
+        "sha256": "f6e46daa0b0a529a69912aed5d029c0ecd3c741cee8587de822e69c229680983"
+      },
+      {
+        "bytes": 1638160,
+        "kind": "assembly",
+        "name": "concorde_full.vsp3",
+        "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/F03_plus_2pct/concorde_full.vsp3",
+        "sha256": "7704b62a4d424fa3cf13be356ec02b67ac52129ee6f86a7c6ff9709422811cef"
+      },
+      {
+        "bytes": 206484,
+        "kind": "assembly_composed",
+        "name": "concorde_full_assembly_composed.stl",
+        "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/F03_plus_2pct/concorde_full_assembly_composed.stl",
+        "sha256": "0ecd1f4ccd8b06bbba254f09f09afd663c3204a3ed866e55b7d1090b270f8d24"
+      },
+      {
+        "bytes": 327971,
+        "kind": "component",
+        "name": "concorde_full_fuselage.stl",
+        "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/F03_plus_2pct/concorde_full_fuselage.stl",
+        "sha256": "5a9e1ac352dde8f07e187219f23bd1756856e0b558a474d8584bf4764a50f089"
+      },
+      {
+        "bytes": 650534,
+        "kind": "component",
+        "name": "concorde_full_main_wing.stl",
+        "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/F03_plus_2pct/concorde_full_main_wing.stl",
+        "sha256": "35b32db6dd7dcb7230d636096cd5399ce088e5e751ec7e955969eafb2460a40b"
+      },
+      {
+        "bytes": 263335,
+        "kind": "component",
+        "name": "concorde_full_vertical_tail.stl",
+        "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/F03_plus_2pct/concorde_full_vertical_tail.stl",
+        "sha256": "c6b7aac829d88b1eecc2bd04db8e89ebb6c6e48db1fd8624738b551453e998d0"
+      },
+      {
+        "bytes": 3252,
+        "kind": "worker",
+        "name": "request.json",
+        "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/F03_plus_2pct/worker/request.json",
+        "sha256": "f07191bf382578b03d447372ae548be40eb7f4c366acce3319387028d55eaba5"
+      },
+      {
+        "bytes": 2427,
+        "kind": "worker",
+        "name": "worker_result.json",
+        "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/F03_plus_2pct/worker/worker_result.json",
+        "sha256": "b401a2de98a3c1ee8634162f84eef5ff27636f4d80b8271abf7c2fb4b0f434c7"
+      },
+      {
+        "bytes": 534026,
+        "kind": "assembly",
+        "name": "concorde_full.step",
+        "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/V01_plus_2pct/concorde_full.step",
+        "sha256": "fecb2a6b510be489a9d31863ba7c16f002dc5644ab3adfa1da2c707c12e4888a"
+      },
+      {
+        "bytes": 1241796,
+        "kind": "assembly",
+        "name": "concorde_full.stl",
+        "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/V01_plus_2pct/concorde_full.stl",
+        "sha256": "3aab1f5b9033edb1d754effcd7809f9202d9a52e3029678526cc35a366e1b3eb"
+      },
+      {
+        "bytes": 1638153,
+        "kind": "assembly",
+        "name": "concorde_full.vsp3",
+        "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/V01_plus_2pct/concorde_full.vsp3",
+        "sha256": "723af1320af4466262eb615e1e1c79e909ba390a8f189aefdffabedaa7654253"
+      },
+      {
+        "bytes": 206484,
+        "kind": "assembly_composed",
+        "name": "concorde_full_assembly_composed.stl",
+        "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/V01_plus_2pct/concorde_full_assembly_composed.stl",
+        "sha256": "6b43fa1a56e2dae6797170080f2c5a25cfae57bdc9a3f47db451489708d2ffd1"
+      },
+      {
+        "bytes": 327969,
+        "kind": "component",
+        "name": "concorde_full_fuselage.stl",
+        "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/V01_plus_2pct/concorde_full_fuselage.stl",
+        "sha256": "8f8c69afd235c9316f902aa4cb1853469de966fa408ad1f9968afe1b6e39b1ca"
+      },
+      {
+        "bytes": 650534,
+        "kind": "component",
+        "name": "concorde_full_main_wing.stl",
+        "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/V01_plus_2pct/concorde_full_main_wing.stl",
+        "sha256": "35b32db6dd7dcb7230d636096cd5399ce088e5e751ec7e955969eafb2460a40b"
+      },
+      {
+        "bytes": 263327,
+        "kind": "component",
+        "name": "concorde_full_vertical_tail.stl",
+        "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/V01_plus_2pct/concorde_full_vertical_tail.stl",
+        "sha256": "33d61036d89dfd9a1df5a77cdb119976443406159895eb9aa3adc2238294b081"
+      },
+      {
+        "bytes": 3246,
+        "kind": "worker",
+        "name": "request.json",
+        "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/V01_plus_2pct/worker/request.json",
+        "sha256": "e57310628624be13c3b808c80612b33d0df6ae0ab102969e3f729185875d1118"
+      },
+      {
+        "bytes": 2431,
+        "kind": "worker",
+        "name": "worker_result.json",
+        "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/V01_plus_2pct/worker/worker_result.json",
+        "sha256": "28c3506651eab8ea9350d3b651c0d580978e4d050d062a7a144f27652df4e8d1"
+      },
+      {
+        "bytes": 534526,
+        "kind": "assembly",
+        "name": "concorde_full.step",
+        "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/W01_plus_2pct/concorde_full.step",
+        "sha256": "ee9688b4e69ed832ee8f488a1983fc0b79a743e7fbce6864fdf4c53f65e6997b"
+      },
+      {
+        "bytes": 1241837,
+        "kind": "assembly",
+        "name": "concorde_full.stl",
+        "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/W01_plus_2pct/concorde_full.stl",
+        "sha256": "bc915bd16eea77de88d635f70f89554bd5814dce1193c3cb8298ddac59a88a9c"
+      },
+      {
+        "bytes": 1638146,
+        "kind": "assembly",
+        "name": "concorde_full.vsp3",
+        "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/W01_plus_2pct/concorde_full.vsp3",
+        "sha256": "1d4d265a4bef5bd94898a8e9683091f1ddf61367b9fce0aff65e8ad367e052f3"
+      },
+      {
+        "bytes": 206484,
+        "kind": "assembly_composed",
+        "name": "concorde_full_assembly_composed.stl",
+        "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/W01_plus_2pct/concorde_full_assembly_composed.stl",
+        "sha256": "1813f3807e7ece52c894441801b417517c64eebc667dde2fc969634fcad22119"
+      },
+      {
+        "bytes": 327969,
+        "kind": "component",
+        "name": "concorde_full_fuselage.stl",
+        "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/W01_plus_2pct/concorde_full_fuselage.stl",
+        "sha256": "8f8c69afd235c9316f902aa4cb1853469de966fa408ad1f9968afe1b6e39b1ca"
+      },
+      {
+        "bytes": 650567,
+        "kind": "component",
+        "name": "concorde_full_main_wing.stl",
+        "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/W01_plus_2pct/concorde_full_main_wing.stl",
+        "sha256": "1faf66debbbc31c243c07a3eff20836d12c9f9b865971ee0685a3a43e37f7a9d"
+      },
+      {
+        "bytes": 263335,
+        "kind": "component",
+        "name": "concorde_full_vertical_tail.stl",
+        "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/W01_plus_2pct/concorde_full_vertical_tail.stl",
+        "sha256": "c6b7aac829d88b1eecc2bd04db8e89ebb6c6e48db1fd8624738b551453e998d0"
+      },
+      {
+        "bytes": 3248,
+        "kind": "worker",
+        "name": "request.json",
+        "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/W01_plus_2pct/worker/request.json",
+        "sha256": "98974bad5b1a1ac3543aed8b8ea7d118ab9d176c088fa166af88b7c3cac93701"
+      },
+      {
+        "bytes": 2417,
+        "kind": "worker",
+        "name": "worker_result.json",
+        "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/W01_plus_2pct/worker/worker_result.json",
+        "sha256": "fb1d647ab4c486674b6b7b3220ba6a89d7b0a2b335a8399159444ec9a0cb99d7"
+      },
+      {
+        "bytes": 535050,
+        "kind": "assembly",
+        "name": "concorde_full.step",
+        "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/W02_plus_2pct/concorde_full.step",
+        "sha256": "3ca80be951fc8a4bb205739b24a9ddcc301f34982966d83b14ef788eb66f728d"
+      },
+      {
+        "bytes": 1241835,
+        "kind": "assembly",
+        "name": "concorde_full.stl",
+        "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/W02_plus_2pct/concorde_full.stl",
+        "sha256": "8907777534260a163878b3de8ed72ee79fade0e5af19b5eb3b9ebc875a0b9869"
+      },
+      {
+        "bytes": 1638144,
+        "kind": "assembly",
+        "name": "concorde_full.vsp3",
+        "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/W02_plus_2pct/concorde_full.vsp3",
+        "sha256": "35215b072b41f6efb2de706ca476413bbb22a41c5a459796d7a2a745282fe5c0"
+      },
+      {
+        "bytes": 206484,
+        "kind": "assembly_composed",
+        "name": "concorde_full_assembly_composed.stl",
+        "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/W02_plus_2pct/concorde_full_assembly_composed.stl",
+        "sha256": "ba97ba130bf3835c2fd46c694718e7e94ad9c92a2aeaa025b7add1e74714ce90"
+      },
+      {
+        "bytes": 327969,
+        "kind": "component",
+        "name": "concorde_full_fuselage.stl",
+        "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/W02_plus_2pct/concorde_full_fuselage.stl",
+        "sha256": "8f8c69afd235c9316f902aa4cb1853469de966fa408ad1f9968afe1b6e39b1ca"
+      },
+      {
+        "bytes": 650565,
+        "kind": "component",
+        "name": "concorde_full_main_wing.stl",
+        "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/W02_plus_2pct/concorde_full_main_wing.stl",
+        "sha256": "bced122a0c32936e93c23018d57202824699edba46d2dd79d63965b6197ef70f"
+      },
+      {
+        "bytes": 263335,
+        "kind": "component",
+        "name": "concorde_full_vertical_tail.stl",
+        "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/W02_plus_2pct/concorde_full_vertical_tail.stl",
+        "sha256": "c6b7aac829d88b1eecc2bd04db8e89ebb6c6e48db1fd8624738b551453e998d0"
+      },
+      {
+        "bytes": 3249,
+        "kind": "worker",
+        "name": "request.json",
+        "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/W02_plus_2pct/worker/request.json",
+        "sha256": "242b678df2a906d79b6dcfc0cc3e0b63ca0f40accc3cd00c78602d4f289b9728"
+      },
+      {
+        "bytes": 2416,
+        "kind": "worker",
+        "name": "worker_result.json",
+        "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/W02_plus_2pct/worker/worker_result.json",
+        "sha256": "5ff4ec3c40d72b0e7dc750b3467e5433f5a3992e0a8ffd8fead356225c7a5044"
+      }
+    ],
+    "ignored_files": [
+      {
+        "bytes": 0,
+        "kind": "assembly",
+        "name": "concorde_full.step.bak",
+        "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/baseline/concorde_full.step.bak",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 0,
+        "kind": "assembly",
+        "name": "concorde_full.step.bak",
+        "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/F01_plus_1pct/concorde_full.step.bak",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 0,
+        "kind": "assembly",
+        "name": "concorde_full.step.bak",
+        "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/F02_plus_2pct/concorde_full.step.bak",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 0,
+        "kind": "assembly",
+        "name": "concorde_full.step.bak",
+        "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/F03_plus_2pct/concorde_full.step.bak",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 0,
+        "kind": "assembly",
+        "name": "concorde_full.step.bak",
+        "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/V01_plus_2pct/concorde_full.step.bak",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 0,
+        "kind": "assembly",
+        "name": "concorde_full.step.bak",
+        "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/W01_plus_2pct/concorde_full.step.bak",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 0,
+        "kind": "assembly",
+        "name": "concorde_full.step.bak",
+        "path": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp/W02_plus_2pct/concorde_full.step.bak",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    ],
+    "note": "Raw OpenVSP exports are git-ignored; paths are relative to the repository root.",
+    "root": "outputs/concorde_metaopt/openvsp-cases-p1-20261029T1700/openvsp"
+  },
+  "failed_count": 0,
+  "first_feasible_evaluation": null,
+  "git_dirty": true,
+  "git_sha": "5237a1ccc7659204001f220d3e3769d0a0c7a91e",
+  "invalid_count": 0,
+  "low_fidelity_calls": 0,
+  "method": "openvsp_perturbation_check",
+  "perturbation": {
+    "case_count": 7,
+    "cases": [
+      {
+        "label": "baseline",
+        "status": "pass",
+        "variable_id": null
+      },
+      {
+        "label": "W01_plus_2pct",
+        "status": "pass",
+        "variable_id": "W01"
+      },
+      {
+        "label": "W02_plus_2pct",
+        "status": "pass",
+        "variable_id": "W02"
+      },
+      {
+        "label": "V01_plus_2pct",
+        "status": "pass",
+        "variable_id": "V01"
+      },
+      {
+        "label": "F01_plus_1pct",
+        "status": "pass",
+        "variable_id": "F01"
+      },
+      {
+        "label": "F02_plus_2pct",
+        "status": "pass",
+        "variable_id": "F02"
+      },
+      {
+        "label": "F03_plus_2pct",
+        "status": "pass",
+        "variable_id": "F03"
+      }
+    ],
+    "changed_threshold": 0.0001,
+    "checks_fail": 0,
+    "checks_pass": 62,
+    "checks_skip": 1,
+    "checks_total": 63,
+    "delta_tolerance": 0.02,
+    "exported_cases": 7,
+    "failures": [],
+    "limitations": [
+      "Surface twist is not applied to the OpenVSP wing sections.",
+      "The fuselage nose-fineness case only requires that the exported surface changes (F02); its OpenVSP surface-area response can differ in sign from the model cone formula because of the OpenVSP spline interpolation / overshoot.",
+      "The OpenVSP fuselage BBox is not a reliable bound; placement and size checks use STL measurements and the composed assembly.",
+      "This is geometry-export evidence only: no VSPAERO, CFD or Mission evaluation is performed and no objective value is reported."
+    ],
+    "note": "Geometry-export evidence only: representative wing/tail/fuselage perturbations must reach OpenVSP geometry. No aerodynamic or Mission evaluation is performed. Placement is checked on the composed STL."
+  },
+  "run_id": "openvsp-cases-p1-20261029T1700",
+  "seed": null,
+  "solver_versions": {
+    "OpenVSP": "3.26.1",
+    "OpenVSP_python": "3.9.25",
+    "RCAIDE-LEADS": "1.5.0",
+    "RCAIDE_module": "1.5.0",
+    "matplotlib": "3.11.2",
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "trimesh": "5.1.1"
+  },
+  "stage": "P1",
+  "status": "openvsp_perturbation_check_completed",
+  "su2_calls": 0,
+  "task_id": "concorde_fixed_cruise_15d",
+  "total_true_evaluations": 0,
+  "wall_seconds": 8.992
+}
