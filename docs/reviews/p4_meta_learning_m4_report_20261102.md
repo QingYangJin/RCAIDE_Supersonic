@@ -175,7 +175,7 @@ OPT-BO-rand 的 gap_to_reference（n_finite=2）均值=0.6974555844120012；firs
 - metrics_summary.csv：6283 行，13 列（figure,panel,series,x,y_mean,y_std,y_min,y_max,n,unit,status,source,note）；每张图的数据点均已记录，可离线复核。
 - 图 manifest 检查项：{'all_five_png_written': True, 'every_png_gt_20kb': True, 'min_png_bytes': 85245, 'png_signature_and_dimensions_ok': True, 'metrics_summary_written': True, 'fig4_not_run_no_fake_data': True, 'fig4_placeholder_no_text_overlap': True, 'fig3_excludes_clone_arms': True, 'font_cjk_coverage': True, 'all_checks_pass': True}。
 - 图4 占位排版于 task-88 修订：原因段按语义拆为三行、去除文字背景点状 hatch，并用 matplotlib 渲染 bbox 自检（pairwise_overlaps=0、outside_inner_box=0、min_body_vertical_gap=26.51px）；其余四图与 task-87 交付逐字节一致（fig1 130569、fig2 132333、fig3 99114、fig5 154355 B）。
-- 字体：Microsoft YaHei（C:/Windows/Fonts/msyh.ttc，CJK=true，missing_characters=[]，characters_checked=209）；5 图均经人工目检无豆腐块。
+- 字体：Microsoft YaHei（<SYSTEM_FONT_ROOT>/msyh.ttc，CJK=true，missing_characters=[]，characters_checked=209）；5 图均经人工目检无豆腐块。
 
 ## 9. 下一步
 
