@@ -235,6 +235,22 @@ class OfflineRunnerProductTests(unittest.TestCase):
             self.config.maml_init_diversity_candidate_count,
         )
         self.assertEqual(run_config["maml_init"]["dedup_tolerance"], 1e-12)
+        summary_csv_path = self.run_dir / "metrics" / "optimization_summary.csv"
+        with summary_csv_path.open(encoding="utf-8", newline="") as handle:
+            rows = list(csv.DictReader(handle))
+        self.assertIn("identifiability", rows[0])
+        self.assertIn("identifiability_clone_of", rows[0])
+        by_arm = {row["arm"]: row for row in rows}
+        self.assertEqual(by_arm["OPT-BO-rand"]["identifiability"], "IDENTIFIABLE")
+        self.assertEqual(by_arm["OPT-BO-pretrain"]["identifiability"], "CLONE_OF_OPT-BO-rand")
+        self.assertEqual(
+            by_arm["OPT-BO-pretrain"]["identifiability_clone_of"], "OPT-BO-rand"
+        )
+        readme_text = (self.run_dir / "README.md").read_text(encoding="utf-8")
+        self.assertIn("可识别三臂比较使用 fallback 指标", readme_text)
+        self.assertNotIn("五臂预期均无可行解", readme_text)
+        with self.assertRaises(orun.OfflineRunnerError):
+            orun.m2_endpoint_statistics([], reference_arm="OPT-BO-MAML")
         fd_check = self.summary["finite_difference_check"]
         self.assertEqual(fd_check["status"], "PASS")
         self.assertGreaterEqual(int(fd_check["n_checked"]), 3)

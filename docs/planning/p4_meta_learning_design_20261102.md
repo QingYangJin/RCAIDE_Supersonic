@@ -618,6 +618,7 @@ T-18 solver_validation.csv（M-01）：P4-CODE run 必含该文件，所有行 s
 | v1.2c | 2026-11-02 | M1 实现期 Lead 裁决 A7/A8/A9（a6 提出） | §3.2 联合校验允许 INFEASIBLE+objective；§5.6 加 optimization_seeds；§10 加 F-QE fallback 指标与披露；§11 run_config 加 actual_seeds |
 | v1.3 | 2026-11-02 | A5 M1 代码复核 CHANGES_REQUESTED（1 blocker/5 major/4 minor） | 新增 §10.1 可识别臂裁决（M1-F05）；M1-F01..F09 由 M1 rev3 代码/测试修复（F01=0f2cf43 等预算；F02 静态扫描；F03 objective=None 反向校验；F04 negative_control_manifest；F06 ood_flag；F07 FD 下界；F08 figure 键名；F09 失败路径） |
 | v1.4 | 2026-11-02 | A5 M1 rev3 复核 CHANGES_REQUESTED（0 blocker / 3 open major / 3 minor 新增；F02 CLOSED_WITH_GAP） | §0/§10/§11 对齐 §10.1（预注册推断仅三可识别臂；pretrain/MAML 标 CLONE_OF_OPT-BO-rand 且仅描述性）；§11 run_config/summary/fig3 加可识别性标签；§16 补 M1-F10 映射；代码同步 rev4（offline_runner 打标 + 统计/图过滤，测试补 test_02 断言） |
+| v1.4a | 2026-11-02 | A5 M1 rev4 复核 APPROVE_FOR_M2（0 blocker / 0 open major / 3 非阻塞 minor M1R4-01..03） | 代码 rev5：optimization_summary.csv 增 identifiability/identifiability_clone_of 列；生成 README fallback 措辞改为可识别三臂；m2_endpoint_statistics 对非可识别 reference_arm fail-closed；测试同步 |
 
 | 审阅项 | 严重度 | 处置位置 |
 |---|---|---|

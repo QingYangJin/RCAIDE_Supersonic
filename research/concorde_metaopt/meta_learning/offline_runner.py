@@ -179,6 +179,7 @@ REQUIRED_CSV_COLUMNS: dict[str, tuple[str, ...]] = {
         "gap_to_reference", "first_feasible_eval_index", "feasible_count",
         "violation_rate", "wall_s", "status", "best_objective_raw",
         "min_constraint_violation_sum", "feasible_hit_rate", "feasibility_expected_zero",
+        "identifiability", "identifiability_clone_of",
     ),
 }
 
@@ -1576,6 +1577,11 @@ def m2_endpoint_statistics(
     """M2 预注册终点统计：主终点 @ B=64 + A7 fallback 配对比较（null 如实保留）。"""
     identifiable_arms = tuple(arm for arm in ARMS if arm in IDENTIFIABLE_ARMS)
     clone_arms = tuple(arm for arm in ARMS if arm in CLONE_ARMS)
+    if reference_arm not in identifiable_arms:
+        raise OfflineRunnerError(
+            f"reference_arm {reference_arm!r} 不是可识别臂（可识别臂：{identifiable_arms!r}）；"
+            "M0 v1.4 §10.1 规定预注册终点统计只引用可识别臂"
+        )
     out: dict[str, Any] = {
         "budget_note": "每次 run 恰好 64 次真实（合成）评估；可行域稀疏，主终点可为 null。",
         "primary_metrics": list(_PRIMARY_M2_METRICS),
@@ -2431,9 +2437,9 @@ def _render_readme(
         "## 可行域稀疏与 null 规则（A7）",
         "",
         "F-QE 的可行域是 12 维加权球（r~U(0.15,0.45)），体积约 1e-6；",
-        "在 64 次真实（合成）评估预算下五臂预期均无可行解。此时",
+        "在 64 次真实（合成）评估预算下可识别三臂预期均无可行解（克隆臂仅描述性，不参与比较）。此时",
         "best_feasible_value / gap_to_reference / first_feasible_eval_index 如实写 null，",
-        "严禁写成 0。五臂比较使用 fallback 指标：best_objective_raw（最小原始目标）、",
+        "严禁写成 0。可识别三臂比较使用 fallback 指标：best_objective_raw（最小原始目标）、",
         "min_constraint_violation_sum（最好目标设计的约束正违反之和）、",
         "feasible_hit_rate（feasible_count/evaluations）。",
         "",
