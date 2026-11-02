@@ -2,13 +2,13 @@
 
 | 项 | 内容 |
 |---|---|
-| 文档状态 | DESIGN v1.0（2026-11-02），待 A5 独立复核；本文档不含任何物理结论 |
+| 文档状态 | DESIGN v1.1（2026-11-02 修订 1）：已按 A5 M0 审阅（CHANGES_REQUESTED，0 blocker / 8 major / 10 minor）逐项修订；本文档不含任何物理结论 |
 | 任务 | task-49（P4-M0 A1：12D 元学习软件设计文档，中文） |
-| 作者/角色 | A1（a1-code-dev） |
+| 作者/角色 | A1（a1-code-dev）初稿；Lead 修订 1（2026-11-02，A5 独立复核后） |
 | 工作树 | D:/RCAIDE-p4-meta-learning，分支 research/p4-meta-learning，起点 bf6c052 |
 | 授权层级 | P4-CODE（结构代码/单元测试/合成元训练/离线 BO-DE 对照） |
 | 物理调用 | physical_call_count = 0；solver_starts = 0；未运行 Mission/VSPAERO/SU2/WaveDrag/Gmsh/DOE/BO 真值 |
-| 上游依据 | docs/planning/p4_meta_learning_implementation_plan_20261102.md（正式计划）；Issue #5 / D-P4-001；Lead 决策 m00606（M2 五臂）；A2 设计 EXT/p4-meta-dev/a2/p4_offline_experiment_matrix.md + p4_schemas.json |
+| 上游依据 | docs/planning/p4_meta_learning_implementation_plan_20261102.md（正式计划）；Issue #5 / D-P4-001；A2 设计 EXT/p4-meta-dev/a2/p4_offline_experiment_matrix.md + p4_schemas.json；M2 五臂以 A2 §5 与 Issue #5 为准（原 Lead 消息 m00606 引用撤回，不可独立复核，见修订 1 m-01） |
 | 只读参考 | maml-opt 0.1.0（D:/RCAIDE/envs/RCAIDE/Lib/site-packages/maml_opt）；主库 D:/RCAIDE 未跟踪 P5 文件（仅只读参考，不移植、不复制） |
 
 ---
@@ -22,6 +22,19 @@
 3. CSV 字段、任务规模、预算与容差全部对齐 A2 的 p4_offline_experiment_matrix.md / p4_schemas.json（§11），避免 A1 实现与 A2 统计两张皮。
 
 本文档是**软件接口与实验合同**，不是物理可信性声明；任何"改进"只能表述为合成任务上的算法机制证据。
+
+### 0.1 修订 1（v1.1，2026-11-02）——回应 A5 M0 审阅
+
+A5 M0 审阅结论为 CHANGES_REQUESTED（0 blocker / 8 major / 10 minor，依据 EXT/p4-meta-dev/a5/m0_design_review.md 与 findings.csv）。本修订逐项处理：
+- M-01 需求映射与交付清单缺失 → §11.1（需求→章节/产物映射）、§11.2（统一运行目录清单，含 solver_validation.csv 与图4/图5 归口）；
+- M-02 baseline_bo/de 复用与依赖分析 → §8.1（复用表、预算语义、12D 适配、依赖版本表）；
+- M-03 split 枚举缺 OOD/负控制 → §3.2 与 §5.2 枚举扩展、§4.3 五集合定义；
+- M-04 负控制定义与互斥冲突 → §4.3 负控制伪任务生成/打乱/登记协议（伪任务 ID 独立、不参与训练）；
+- M-05 MAML-init 参数未冻结 → §8.2（candidate_count=64、initial_design_count=8、diversity_candidate_count=64、seed 冻结）；
+- M-06 确定性缺整 run 重跑 → §12 测试 15（seed 0 整 run ×3，metrics 逐位一致）；
+- M-07 evaluator physical>0 注入负控制 → §12 测试 14（注入 physical_call_count=1 必须中止）；
+- M-08 15D 无参默认回归 → §2.3（无参默认 15D，12D 仅显式路径）与 §12 测试 16。
+minor m-01..m-10 的处置见 §16 修订记录表。
 
 ---
 
@@ -64,7 +77,7 @@
 | W03 | sweep_1 | deg | 62.0 | 72.0 | 67.0 | 0.5 |
 | W04 | sweep_2 | deg | 40.0 | 56.0 | 48.0 | 0.5 |
 | W05 | sweep_3 | deg | 66.0 | 76.0 | 71.0 | 0.5 |
-| W06 | span_location_2 | - | 0.35 | 0.58 | 0.480469 | 0.5672739130 |
+| W06 | span_location_2 | - | 0.35 | 0.58 | 0.480469 | 0.5672565217 |
 | W07 | span_location_3 | - | 0.85 | 0.98 | 0.945313 | 0.7331769231 |
 | W08 | chord_ratio_2 | - | 0.30 | 0.50 | 0.408284 | 0.54142 |
 | W09 | chord_ratio_3 | - | 0.08 | 0.20 | 0.130178 | 0.41815 |
@@ -72,7 +85,7 @@
 | V01 | vertical_tail_area | m^2 | 28.0 | 40.0 | 33.91 | 0.4925 |
 | V02 | vertical_tail_sweep_delta | deg | -10.0 | 10.0 | 0.0 | 0.5 |
 
-注：W08/W09/V01 的归一化 baseline 由上式手算，四位小数仅作阅读参考；实现一律调用 DesignVariable.to_unit_interval()，不在文档中作为权威数值。
+注：W06/W08/W09/V01 的归一化 baseline 由 u=(v-lower)/(upper-lower) 手算，四位小数仅作阅读参考（W06 按 yaml 0.480469 计算为 0.5672565217，旧稿误写 0.5672739130）；实现一律调用 DesignVariable.to_unit_interval()，不在文档中作为权威数值。
 
 ### 2.2 固定机身（F01–F03，owner 决策 2026-10-30）
 
@@ -98,15 +111,16 @@
 - 契约事实（已只读核对 research/concorde_metaopt/aircraft/design_space.py）：
   - expand() 拒绝未声明变量（如直接传 15 名向量会抛 DesignSpaceError）；固定值绝不来自调用方；
   - 12D 加载校验：load_design_space() 要求 12d_lifting_surfaces 恰有 3 个固定变量，且 id/name 顺序等于 FIXED_FUSELAGE_IDS / FIXED_FUSELAGE_NAMES；15d 配置不得声明 fixed；
-  - 无 decode/encode 便捷方法，12D 唯一路径就是 from_unit_interval → expand。
+- DesignSpace 已有 from_unit_interval()/to_unit_interval()（research/concorde_metaopt/aircraft/design_space.py:279-285 附近）；缺的是 12→15 合并解码入口，因此 12D 唯一路径仍是 from_unit_interval → expand。
 - 交叉约束（YAML cross_constraints）原样继承：C01 span_location_2 < span_location_3；C02 chord_ratio_3 < chord_ratio_2 < 1.0；其余见 YAML。违规设计不得进入训练/优化数据。
 - bounds 状态如实标注：frozen: false、bounds_status: provisional_until_geometry_perturbation；不得在报告中写成已冻结。
+- 旧 15D 默认行为（M-08）：load_design_space() 无参调用必须仍然加载 configs/design_space_15d.yaml（15 变量、无 fixed、design_set=15d_lifting_surfaces_fixed_body），既有 P1-P3/历史脚本行为不变；12D 仅在显式传入 design_space_12d_lifting_surfaces.yaml 路径时生效。新增回归测试 §12-16，禁止把 12D 设为无参默认。
 - config_hash：对 design space YAML 规范化字节 + 变量顺序 + task config + family config 取 sha256，写入每条样本、dataset manifest 与 run_config。
 
 ### 2.4 固定几何来源（baseline_geometry，仅引用不重算）
 
-- 主翼：投影半展 25.604638 m；根弦 29.901819 m；尖弦 0.973136 m；taper 0.032544；MAC 18.489893 m；暴露面积 358.25 m²；段展向分数 [0.0, 0.480469, 0.945313, 1.0]。
-- 垂尾：投影半展 5.009331 m；根弦 13.157616 m；MAC 8.124385 m；段展向分数 [0.0, 0.4, 1.0]。
+- 主翼：投影展长 25.604638 m（全展，与 yaml projected_span_m 语义一致，不得当半展用）；根弦 29.901819 m；尖弦 0.973136 m；taper 0.032544；MAC 18.489893 m；暴露面积 358.25 m²；段展向分数 [0.0, 0.480469, 0.945313, 1.0]。
+- 垂尾：投影展长 5.009331 m（全展，同上不得当半展）；根弦 13.157616 m；MAC 8.124385 m；段展向分数 [0.0, 0.4, 1.0]。
 - 机身：长 61.66 m、宽 2.88 m、高 3.32 m、湿面积 488.922167 m²。
 - 来源字段 status: p1_geometry_model_derived；这些数值是几何模型计算值，不是本轮重算结果（本轮 physical_call_count=0）。
 
@@ -131,20 +145,20 @@
 |---|---|---|
 | task_id | str | 任务唯一身份；split 只按它划分 |
 | fidelity | str | synthetic / single_cruise / ...（取真实保真度标识） |
-| evaluator_id | str | 如 p4_synthetic_analytic_12d_v1；物理为 rcaide_single_cruise |
+| evaluator_id | str | 命名规则 source_kind__fidelity__design_set__version，如 synthetic__analytic__12d_lifting_surfaces__v1、validated_real_lf__rcaide_single_cruise__12d_lifting_surfaces__p2v1；真实 evaluator 在 P4-CODE 默认不可达（构造即抛 NotImplementedError） |
 | design_set | str | 12d_lifting_surfaces |
 | design | float[12] | 物理值，顺序冻结 W01..V02 |
 | design_normalized | float[12] | u∈[0,1]，与 design 一一对应 |
 | config_hash | str | sha256(space+task+family config) |
 | objective | float 或 null | 失败/无效必须 null，不得填 0 或惩罚值 |
-| constraints | {str: float} | 10 项几何/任务 g<=0 语义；合成任务按 §4 启用子集，其余为 null 并显式标记 |
-| status | str | VALID / INFEASIBLE / INVALID / GEOMETRY_INVALID / MISSION_FAILED / NONFINITE ...（复用 maml-opt LABEL_STATUSES 语义） |
+| constraints | {str: float 或 null} | 10 项几何/任务 g<=0 语义；合成任务启用的槽位按 §4.4 命名规则，未启用槽位为 null（语义=未启用，不是满足/不满足） |
+| status | str | VALID / FEASIBLE / INFEASIBLE 属 maml-opt LABEL_STATUSES；INVALID / GEOMETRY_INVALID / MISSION_FAILED / MISSION_NOT_CONVERGED / NONFINITE / PARTIAL_RESULT 属 EXCLUDED_STATUSES（maml_opt/data/dataset.py:14/:17）；P4 合成只用 VALID/INFEASIBLE/INVALID/NONFINITE，禁止自造第三套枚举 |
 | source_kind | enum | synthetic / archived_real_lf / validated_real_lf / validated_real_hf |
 | physics_validation_status | enum | NOT_APPLICABLE / NOT_VALIDATED / PARTIAL / VALIDATED |
-| git_sha | str | 记录产生时 commit；未知写 UNKNOWN 并标 warning |
+| git_sha | str | 记录产生时 commit；未知写 UNKNOWN 并标 warning；工作树 dirty 时写 <sha>-dirty，且该样本不得进入结论表/正文，仅作调试（m-10） |
 | seed | int | 生成/评估种子 |
 | physical_call_count | int | 离线必须 0 |
-| split | enum | train / validation / test（按 task_id 划分） |
+| split | enum | meta_train / meta_validation / meta_test / meta_test_ood / negative_control（按 task_id 划分；五集合定义与互斥规则见 §4.3；写入 archive task_splits） |
 | task_context | {str: float} | 合成 2 维上下文；物理可为空 |
 | created_utc | str | ISO-8601 UTC |
 
@@ -188,12 +202,21 @@
 | meta-val | 20 | 仅超参与早停选择 |
 | meta-test | 20 | 最终结论唯一来源 |
 | meta-test-OOD | 10 | 上下文中心整体平移 +0.2、r 缩小 30%；单列报告 |
-| negative-control | 10 | label-shuffle 的 meta-train 子集 |
+| negative-control | 10 | 由 10 个不同 meta-train 任务派生的伪任务（label-shuffle，见 §4.3 协议）；仅评估诊断，不进训练、不进主终点 |
 
 - 每任务：query 64 点（独立 LHS seed）；support 候选池 128 点（另一 LHS seed）；K=0/1/5/10 取池按 seed 置换后的前 K 点。
-- 泄漏断言：task_id 跨 split 交集为空；support∩query=∅；adaptation 路径不得读 query 标签；归一化用任务参数而非测试集统计。
+- 任务身份互斥（M-03/M-04）：meta_train/meta_validation/meta_test/meta_test_ood/negative_control 五集合的 task_id 两两交集为空；OOD 与负控制都使用新 task_id（不得复用原任务 id 作为 split 标签）。
+- 负控制协议（M-04）：对第 i 个来源任务，pseudo_task_id = "NC-" + sha1("negative_control|" + source_task_id + "|" + shuffle_seed)[:10]；打乱种子 shuffle_seed = 20261102 + i，仅打乱该伪任务内部的 objective/constraints 与 design 的配对（同一 seed 逐位可复现），不改 context/params；伪任务与原任务、与训练集合均互斥；split manifest 记录 source_task_id 映射；负控制结果单列，禁止进入主终点或用于调参。
+- OOD 协议：meta-test-OOD 用新 task_id（context 中心整体 +0.2、r 缩小 30%），单列报告，不参与超参选择。
+- 泄漏断言：support∩query=∅（design 精确比较，容差 1e-12）；K 增大只能从 128 点池取更多点，不得取到 query；adaptation 路径不得读 query 标签；归一化用任务参数而非测试集统计。
 
 ---
+
+### 4.4 合成约束命名槽位与状态映射（m-05/m-07）
+
+- 合成约束槽位固定命名：synth_c01（每族第一个约束）、synth_c02、synth_c03；每任务启用 1-3 个槽位，其余 7-9 个键显式写 null。constraints 字典键集合恒等于 10 项物理约束名（geometry_invalid、task_mass_balance、fuel_capacity_excess、zero_fuel_excess、takeoff_excess、fuel_remaining_deficit、max_throttle、cruise_range_error、mission_convergence、trim_attitude_limit），合成槽位放在前 3 个，未启用为 null。
+- objective/status 映射：有可行且有限的参考评价 → status=VALID、objective=有限值；解析上不可行（g>0 无可行域） → INFEASIBLE、objective=null；设计越界/交叉约束违规 → INVALID 或 GEOMETRY_INVALID、objective=null；数值非有限 → NONFINITE、objective=null。禁止用 0 或大惩罚值代替 null。
+- CSV 统计时 null 约束按未启用剔除（denominator 只算启用槽位），并在 metrics.csv 的 n 字段记录启用的约束数。
 
 ## 5. meta_learning/ 六模块接口与签名
 
@@ -237,6 +260,12 @@
 ### 5.2 meta_learning/data_contract.py
 
     SOURCE_KINDS = ("synthetic", "archived_real_lf", "validated_real_lf", "validated_real_hf")
+    PHYSICS_STATUSES = ("NOT_APPLICABLE", "NOT_VALIDATED", "PARTIAL", "VALIDATED")
+    SPLITS = ("meta_train", "meta_validation", "meta_test", "meta_test_ood", "negative_control")
+    LABEL_STATUSES = ("VALID", "FEASIBLE", "INFEASIBLE")            # 与 maml_opt 一致
+    EXCLUDED_STATUSES = ("INVALID", "GEOMETRY_INVALID", "MISSION_FAILED", "MISSION_NOT_CONVERGED", "NONFINITE", "PARTIAL_RESULT")
+    EVALUATOR_ID_PATTERN = "<source_kind>__<fidelity>__<design_set>__<version>"
+    def validate_split(split: str) -> None   # 非 SPLITS 一律 DataContractError
     PHYSICS_STATUSES = ("NOT_APPLICABLE", "NOT_VALIDATED", "PARTIAL", "VALIDATED")
 
     @dataclass(frozen=True)
@@ -325,11 +354,24 @@
         bo_initial_designs: int = 8
         de_population: int = 8
         de_generations: int = 8
+        # 修订 1 冻结字段（M-05/M-06/M-07）
+        maml_init_candidate_count: int = 64
+        maml_init_initial_designs: int = 8
+        maml_init_diversity_candidate_count: int = 64
+        determinism_reruns: int = 3
+        physical_guard_expected: int = 0
 
     def run_offline_study(config: OfflineRunnerConfig) -> dict[str, Any]
     def main(argv: Sequence[str] | None = None) -> int
 
-输出（与 A2 对齐）：run_config.json、environment.json、summary.json、data_manifest.json、tasks.json、reference_solutions.json、metrics/{training_history,adaptation_results,metrics,optimization_history,optimization_summary}.csv、evaluations.jsonl、figures/*.png、README.md。启动/结束均断言 physical_call_count=0。
+输出（与 A2 对齐；修订 1 统一清单，M-01/m-06）：
+
+- run_config.json（字段见 §11）、environment.json、summary.json、data_manifest.json；
+- tasks.json、reference_solutions.json、README.md；
+- metrics/training_history.csv、metrics/adaptation_results.csv、metrics/metrics.csv、metrics/optimization_history.csv、metrics/optimization_summary.csv；
+- solver_validation.csv（Issue #5 §4 要求；P4-CODE 阶段所有行 status=NOT_RUN 或 NOT_APPLICABLE_THIS_STAGE，note 写明 VSPAERO 验证归口 Issue #4 D-12D-004，本阶段不画图4）；
+- evaluations.jsonl、figures/fig1..fig5（中文标题，缺失显示 NOT_RUN，禁止假图）；
+- 启动/结束均断言 physical_call_count=0；任何 evaluator 报告 physical_call_count>0 立即中止并写 status=PHYSICS_GUARD_VIOLATION（不得照常写 0）。
 
 ---
 
@@ -370,8 +412,8 @@
         metadata: Mapping[str, Any]               # artifact sha256、adaptation_method、pool digest、seed
 
     def meta_bo_initialization(design_space, artifact, task_context,
-                               candidate_count: int = 512,
-                               shortlist_count: int = 5,
+                               candidate_count: int = 64,        # 修订 1 冻结（M-05）
+                               initial_design_count: int = 8,    # 修订 1 冻结（M-05）；适配层映射到上游 shortlist
                                adaptation_method: str = "maml",
                                seed: int = 42) -> InitialDesignProposal
     def compare_initializers(design_space, artifact, tasks, methods, budget, seed) -> dict[str, Any]
@@ -381,8 +423,30 @@
 - 关键隔离：预测标签只能用于"先评估哪些点"的排序，绝不写入 BO observations；观测只能来自真实（合成）评估结果。测试断言 observations 长度只随真实评估增长。
 - 与既有基线共用同一真值评估预算与可行性判据；不修改 optimization/baseline_bo.py / baseline_de.py。
 - 返回的 designs 必须在界内、去重，并记录候选池 digest 与 artifact sha256，保证可追溯。
+- MAML-init 冻结（M-05，§8.2）：candidate_count=64、initial_design_count=8、diversity_candidate_count=64、seed 显式传入；代理打分只用于排序，不得进入 BO observations。
 
 ---
+
+### 8.1 与既有基线复用分析（M-02）
+
+| 复用对象 | 位置 | 复用内容 | M2 对应臂 | 适配/差异 |
+|---|---|---|---|---|
+| baseline_bo.py | research/concorde_metaopt/optimization/baseline_bo.py | run_baseline_bo()（默认 budget=30、initial_design_count=5、strategy=bayesian）、maml_opt.bayesian 的 ConstrainedBayesianOptimizer/run_search/generate_initial_designs、EvaluationLedger(cache_enabled=True)、_DuplicateTolerantOptimizer | OPT-BO-rand（基线语义） | P4 合成臂不 import 物理 SingleCruiseBackend；预算改 B=64、初始 8 点；复用搜索机制与缓存双计数语义，不改 baseline_bo.py 本体 |
+| baseline_de.py | research/concorde_metaopt/optimization/baseline_de.py | run_baseline_de()（默认 budget=30、population/mutation/crossover 默认）、DifferentialEvolutionBaseline（8 代×8 个体） | OPT-DE | 以合成 evaluator 替换物理 backend；budget=64、population=8、generations=8；不改 baseline_de.py 本体 |
+| 10 项约束顺序/容差 | research/concorde_metaopt/evaluation/contract.py | CONSTRAINT_NAMES、FEASIBILITY_TOLERANCE=1e-12 | 全臂 | 原样复用，禁止重排 |
+| 评估缓存语义 | maml_opt EvaluationLedger | 缓存命中不计 billable、但记 requested/billable 双计数 | 全臂 | 原样复用并落 optimization_history.csv 的 cache_hit/billable |
+| 设计空间 | research/concorde_metaopt/aircraft/design_space.py | from_unit_interval/expand/check_bounds/check_cross_constraints | 全臂 | 12D 显式路径，经 expand 得 15D 再进评估器 |
+
+实现方式：新增 meta_learning/baseline_arms.py，仅组合上述公开函数/类；不得复制 P5 代码、不得修改 baseline_bo.py/baseline_de.py；每个臂在 run_config.json 记录 implementation=reuse:<module>:<function>。
+
+依赖版本表（environment.json 必填，本次实测）：Python 3.11.17；numpy 2.4.6；torch 2.8.0+cpu；scipy 1.17.1；scikit-learn 1.9.1；matplotlib 3.11.2；maml_opt 0.1.0；Windows CPU（无 GPU）。
+
+### 8.2 MAML-init 参数冻结（M-05）
+
+- candidate_count=64（模型打分候选池）、initial_design_count=8（最终交给 BO 的初始点）、diversity_candidate_count=64、seed 显式（由任务 seed 派生，禁止默认 42 静默）。
+- 与 maml_opt.initialization.prepare_model_scored_initial_designs / select_model_scored_initial_designs 的参数名对齐（initial_design_count、diversity_candidate_count）；若上游签名不同，以适配层显式映射并在 run_config 记录 upstream_signature。
+- 记录 proxy_scoring_cost（候选数、预测次数、wall_s）；该成本不计入 true_evaluation_budget=64，但必须在报告中单列。
+- 候选去重容差 1e-12；不足 8 个唯一候选时整臂 FAIL（不得静默放宽阈值）。
 
 ## 9. M1 代理诊断矩阵（独立，不与 M2 混表）
 
@@ -400,7 +464,7 @@
 
 ---
 
-## 10. M2 等预算五臂优化矩阵（Lead 决策 m00606，替换草稿四臂）
+## 10. M2 等预算五臂优化矩阵（A2 §5 矩阵；Lead 2026-11-02 确认，替换草稿四臂）
 
 统一设定：同一合成任务集（meta-test 20 + OOD 10 单列）、seeds={0,1,2,3,4}、true_evaluation_budget=64、同一可行性判据（g<=0，容差 1e-12）、同一缓存规则（缓存命中不计 true 预算，但记 requested/billable 双计数）。每 run 恰好消耗 64 次真实（合成）评价。
 
@@ -413,7 +477,7 @@
 | OPT-DE | 同一 8 点（=种群 8） | 无 | DE/rand/1/bin 语义，8 代×8 个体=64 |
 
 - BO 执行：8 初始 + 56 次采集；DE 执行 8×8=64；两者预算严格相等。
-- 共享初始点由同一 (task, seed) 的 LHS seed 生成并在臂间复用；记录 initial_feasible_count；MAML-init 例外但同样 8 点、同任务同 seed 可复现。
+- 共享初始点由同一 (task, seed) 的 LHS seed 生成并在臂间复用；记录 initial_feasible_count；MAML-init 例外但同样 8 点、同任务同 seed 可复现，参数冻结见 §8.2（candidate_count=64、diversity_candidate_count=64）。
 - 约束与失败：g>0 即不可行；失败/非有限目标为 null，不得用大惩罚值伪造；失败评价计入预算并记 status。
 - 每 run 指标：best_feasible_value（无可行 null）、gap_to_reference = best − f*、first_feasible_eval_index（1-based，无则 null）、feasible_count、violation_rate、true_evals_used、cache_hits、wall_s、n_failed_evals。
 - 预注册终点：优化侧 first_feasible_eval_index 与 best_feasible_value（B=64）；统计任务×seed 配对（20×5=100 对）报告配对中位差 + bootstrap 95% CI（10,000 次）与 Wilcoxon 参考；不显著即如实报"无改进"。
@@ -425,17 +489,36 @@
 
 运行目录：research/concorde_metaopt/optimization_runs/p4-synthetic-<UTC>Z/（P4 分支）。每次 run 含：
 
-- run_config.json：run_id、git_sha、seed、family/split id、seeds、预算（64/8/8×8/50）、ks、tolerance、物理调用声明；
-- environment.json：python、numpy/scipy/scikit-learn/torch 版本（torch 可缺）、平台、CPU 核数；
-- summary.json：status、arms、终点统计、失败数、physical_call_count、NOT_APPROVED 列表；
-- data_manifest.json：每文件 sha256+bytes、hash_mode（如 CRLF→LF 规范化）、file_count、total_bytes，排除自身；
-- CSV（列名与 A2 完全一致）：
-  - training_history.csv：run_id, arm, split(meta_train|meta_val), task_id, family, iteration, epoch, loss_support, loss_query, grad_norm, lr, seed, wall_s, status(VALID|NONFINITE)
-  - adaptation_results.csv：run_id, task_id, split(meta_test|meta_test_ood|negative_control), family, arm(R|P|M), K, seed, n_support, n_query, adapt_steps, mae_raw, rmse_raw, mae_norm, rmse_norm, r2, max_abs_err, wall_s, status
-  - metrics.csv：experiment_id, phase(adaptation|optimization), split, family, arm, K, task_id, seed, metric, value, unit, aggregation(per_task|group_mean|group_std|ci95_low|ci95_high), n, status
-  - optimization_history.csv：run_id, task_id, split, family, arm, seed, eval_index, design_u_0..design_u_11, objective, feasible, constraints_json, cache_hit, billable, status, wall_s, best_feasible_so_far, best_value_so_far
-  - optimization_summary.csv：run_id, task_id, split, family, arm, seed, budget, true_evals_used, cache_hits, failed_evals, best_feasible_value, gap_to_reference, first_feasible_eval_index, feasible_count, violation_rate, wall_s, status
-- figures/*.png 为 A2 消费 CSV 后生成；A1 不预生成伪图。缺失数据显示 NOT_RUN，禁止画假数据。
+- run_config.json：run_id、git_sha、worktree_dirty、seed、family/split id、seeds、预算（true_evaluation_budget=64、bo_initial=8、de=8×8、S_adapt=50）、ks、tolerance、物理调用声明、primary_endpoint（预注册）、secondary_endpoints、negative_control_protocol、statistics（配对中位差、bootstrap 95% CI 10,000 次、Wilcoxon 参考）、determinism_reruns=3、maml_init 冻结参数、evaluator_id、implementation 标签；
+- environment.json：python、numpy/scipy/scikit-learn/torch/matplotlib 版本（torch 可缺）、maml_opt 版本、平台、CPU 核数；
+- summary.json：status、arms、终点统计、失败数、physical_call_count、PHYSICS_GUARD 结果、NOT_APPROVED 列表；
+- data_manifest.json：每文件 sha256+bytes、hash_mode（CRLF→LF 规范化）、file_count、total_bytes，排除自身；
+- CSV 同 A2 列名：training_history.csv、adaptation_results.csv、metrics.csv、optimization_history.csv、optimization_summary.csv；
+- solver_validation.csv：列 run_id, case_id, evaluator_id, solver_family, status, note；P4-CODE 阶段每行 status=NOT_RUN 或 NOT_APPLICABLE_THIS_STAGE；
+- figures/fig1..fig5 由 A2 消费 CSV 生成（中文标题）；P4-CODE 阶段 fig1/fig2/fig3/fig5 在数据产生后生成，fig4（VSPAERO 新旧对比）归口 Issue #4 D-12D-004，本阶段 NOT_RUN；缺失一律显示 NOT_RUN，禁止画假数据。
+
+### 11.1 需求映射（M-01）
+
+| 需求来源 | 需求 | 本设计章节/产物 | P4-CODE 状态 |
+|---|---|---|---|
+| Issue #5 §2 M0 | 设计复用分析、12D 解码、TaskSpec、模块接口、split | §2、§3、§5、§6 | 本文档 |
+| Issue #5 §2 M1 | 元学习模块 + 测试 | §5、§7、§12 | 待实现（M1） |
+| Issue #5 §2 M2 | 等预算优化对照 | §8、§10 | 待实现（M2） |
+| Issue #5 §4 图1 | MAML 训练损失 | figures/fig1_meta_training_loss.png | 数据后生成 |
+| Issue #5 §4 图2 | K-shot 适应精度 | figures/fig2_k_shot_adaptation.png | 数据后生成 |
+| Issue #5 §4 图3 | 等预算优化收敛 | figures/fig3_equal_budget_convergence.png | 数据后生成 |
+| Issue #5 §4 图4 | VSPAERO 新旧版本 | figures/fig4_vspaero_version_panel_density.png | NOT_RUN（归口 Issue #4） |
+| Issue #5 §4 图5 | 预算/门禁进度 | figures/fig5_budget_gate_progress.png | 数据后生成 |
+| Issue #5 §4 | solver_validation.csv | §11 solver_validation.csv | NOT_RUN 占位（归口 Issue #4） |
+| A4 F-01..F-05 | 五张中文图 | 图1-图5 | 同图1-图5 |
+| A4 T-01 | P4 交付物清单 | §11 统一清单 | M4 生成 |
+| A4 T-04 / V-06 | VSPAERO 线证据 | 不在 P4 run；见 Issue #4 D-12D-004 run 目录 | 归口 Issue #4 |
+| A4 BW-04 | 文档/图表中文 | 全文 | 本文档中文 |
+| D-12D-004 | VSPAERO 修复/验证 | 不进入 P4-CODE；物理标签不消费 | 不在本阶段授权 |
+
+### 11.2 统一运行目录清单（m-06）
+
+每 run 目录固定文件集（manifest 必须全覆盖，缺项按 NOT_RUN 记录）：run_config.json、environment.json、summary.json、data_manifest.json、tasks.json、reference_solutions.json、evaluations.jsonl、README.md、solver_validation.csv、metrics/{training_history,adaptation_results,metrics,optimization_history,optimization_summary}.csv、figures/fig1..fig5（缺失显示 NOT_RUN）。
 
 ---
 
@@ -455,6 +538,14 @@
 
 ---
 
+12. split 枚举（M-03）：SPLITS 五值全部可写入 archive；非法 split 抛 DataContractError；构造 OOD/negative_control 样本归档成功。
+13. 负控制协议（M-04）：伪任务 ID 与来源任务不同；同一 (source_task_id, shuffle_seed) 打乱逐位复现；五集合 task_id 两两交集为空；负控制样本不得进入训练或主终点统计。
+14. evaluator 物理守卫（M-07）：注入返回 physical_call_count=1 的 evaluator → offline_runner 立即中止，summary.status=PHYSICS_GUARD_VIOLATION，且不得写出正常 0 计数 summary。
+15. 确定性（M-06）：seed=0 整 run 独立重跑 3 次，metrics.csv 与 optimization_summary.csv 逐位一致（float 精确比较；若框架非确定，记录并降级该臂结论，不得静默通过）。
+16. 旧 15D 回归（M-08）：load_design_space() 无参 → 15 变量、无 fixed、design_set=15d_lifting_surfaces_fixed_body；传 12D 路径 → 12 变量 + 3 fixed；构造参数不得改变无参默认。
+17. MAML-init 冻结（M-05）：候选池=64、初始点=8、去重容差 1e-12；不足 8 唯一候选时该臂 FAIL。
+18. solver_validation.csv（M-01）：P4-CODE run 必含该文件，所有行 status 属 {NOT_RUN, NOT_APPLICABLE_THIS_STAGE}，不得出现伪造数值；图4 不在 P4-CODE 生成。
+
 ## 13. 风险与缓解
 
 | 风险 | 等级 | 缓解 |
@@ -470,6 +561,10 @@
 
 ---
 
+| evaluator 误报/漏报物理调用 | 高 | §12-14 注入 physical>0 负控制；offline_runner 中止写 PHYSICS_GUARD_VIOLATION |
+| 负控制身份泄漏/伪任务混入训练 | 高 | 伪任务独立 task_id + split manifest 登记 + 五集合互斥断言 |
+| 合成实验不可复现（非确定框架） | 中 | seed0 整 run ×3 逐位检查；不通过即降级该臂结论 |
+| 12D 改造回归 15D 默认 | 中 | §2.3 无参默认声明 + §12-16 回归测试 |
 ## 14. 附录 A：只读盘点证据（文件/符号）
 
 | 事实 | 证据位置 |
@@ -481,12 +576,43 @@
 | maml-opt 训练与归档签名 | D:/RCAIDE/envs/RCAIDE/Lib/site-packages/maml_opt/{learning/training.py,data/archive.py,data/dataset.py,initialization.py,contracts.py} |
 | P4 正式计划与三层门禁 | docs/planning/p4_meta_learning_implementation_plan_20261102.md |
 | A2 实验矩阵与 schema | EXT/p4-meta-dev/a2/p4_offline_experiment_matrix.md、p4_schemas.json |
-| Lead 五臂决策 | Team 消息 m00606（2026-11-02） |
+| 基线复用对象与默认预算 | research/concorde_metaopt/optimization/baseline_bo.py:59-61,403-423（DEFAULT_BUDGET=30、DEFAULT_INITIAL_DESIGN_COUNT=5）；research/concorde_metaopt/optimization/baseline_de.py:66,566-590（DEFAULT_BUDGET=30、DifferentialEvolutionBaseline） |
+| 依赖版本（实测） | Python 3.11.17、numpy 2.4.6、torch 2.8.0+cpu、scipy 1.17.1、scikit-learn 1.9.1、matplotlib 3.11.2、maml_opt 0.1.0 |
+| M2 五臂矩阵 | A2 实验矩阵 §5 + Issue #5；原 Lead 消息 m00606 引用已撤回（不可独立复核，见 §16 m-01） |
 | P5 只读参考（不复制） | 主库 D:/RCAIDE：configs/meta_tasks.yaml、data/meta_tasks.py、learning/{adapter,train_baselines,train_maml_a}.py、optimization/{initializer,maml_a_bo}.py |
 
 ## 15. 附录 B：状态枚举与术语
 
 - run status：DESIGN_ONLY / NOT_RUN / RUNNING / COMPLETED / FAILED / FINITE_DIFFERENCE_FAILED / SYNTHETIC_TEST_ONLY；
-- sample status：VALID / FEASIBLE / INFEASIBLE / INVALID / GEOMETRY_INVALID / NONFINITE / MISSION_FAILED / MISSION_NOT_CONVERGED / PARTIAL_RESULT（与 maml-opt LABEL_STATUSES/EXCLUDED_STATUSES 语义对齐）；
+- sample status：VALID / FEASIBLE / INFEASIBLE（LABEL_STATUSES）与 INVALID / GEOMETRY_INVALID / MISSION_FAILED / MISSION_NOT_CONVERGED / NONFINITE / PARTIAL_RESULT（EXCLUDED_STATUSES），与 maml_opt/data/dataset.py:14/:17 对齐；
 - source_kind：synthetic、archived_real_lf、validated_real_lf、validated_real_hf；
 - 术语：12D=W01–W10+V01–V02；F01–F03 固定机身；S_adapt=50 适应步；B=64 真实（合成）评价预算；M1=代理诊断，M2=等预算优化对照；NOT_APPROVED=未获 owners 书面批准。
+
+
+## 16. 修订记录
+
+| 修订 | 日期 | 触发 | 内容 |
+|---|---|---|---|
+| v1.0 | 2026-11-02 | A1 初稿 | 设计文档初稿 |
+| v1.1 | 2026-11-02 | A5 M0 审阅 CHANGES_REQUESTED（0 blocker / 8 major / 10 minor） | 见 §0.1 与本表 |
+
+| 审阅项 | 严重度 | 处置位置 |
+|---|---|---|
+| M-01 需求映射/交付清单缺 | major | §11.1、§11.2、§12-18 |
+| M-02 baseline 复用/依赖分析缺失 | major | §8.1 |
+| M-03 split 枚举缺 OOD/负控制 | major | §3.2、§4.3、§5.2 |
+| M-04 负控制定义与互斥冲突 | major | §4.3 |
+| M-05 MAML-init 参数未冻结 | major | §8.2、§5.6、§12-17 |
+| M-06 缺 seed0 整 run 重跑 | major | §5.6、§12-15 |
+| M-07 缺 evaluator physical>0 负控制 | major | §5.6、§12-14、§13 |
+| M-08 缺 15D 默认回归 | major | §2.3、§12-16 |
+| m-01 m00606 不可复核 | minor | 头部上游依据、§10、§14、§16 |
+| m-02 W06 归一化数值 | minor | §2.1 注 |
+| m-03 投影半展语义 | minor | §2.4 |
+| m-04 decode/encode 表述 | minor | §2.3 |
+| m-05 合成约束槽位 | minor | §3.2、§4.4 |
+| m-06 输出清单不一致 | minor | §5.6、§11.1/§11.2 |
+| m-07 status 语义引用 | minor | §3.2、§4.4、§5.2、§15 |
+| m-08 run_config 缺终点/负控制/统计 | minor | §11 |
+| m-09 evaluator_id 命名规则 | minor | §3.2 |
+| m-10 dirty 工作树规则 | minor | §3.2 |
