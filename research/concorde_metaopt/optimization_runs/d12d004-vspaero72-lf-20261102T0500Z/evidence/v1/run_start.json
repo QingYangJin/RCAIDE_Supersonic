@@ -1,0 +1,91 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_kind": "D12D004_V1_RUN_START",
+  "status": "V1_COMPLETED_STOPPED_ABORT",
+  "run_id": "d12d004-vspaero72-lf-20261102T0500Z",
+  "worktree": "D:/RCAIDE-d12d004",
+  "branch": "research/d12d004-vspaero7",
+  "runner_commit": "f8506c9ae13d6c6f472a461bf80d26dba6cadbd0",
+  "git_sha_at_run_start": "f8506c9ae13d6c6f472a461bf80d26dba6cadbd0",
+  "git_sha_recorded_utc": "2026-11-02T06:01:00Z",
+  "recorded_by": "A2 (run-opt)",
+  "authorization": {
+    "authorized_by": "Lead (Team Lead)",
+    "authorization_utc": "2026-11-02T05:55:00Z",
+    "authorization_local": "2026-11-02T13:55+08:00",
+    "authorization_note": "erratum applied: authorization_utc=05:55Z per Lead correction message; earlier 14:12/20:12 in the first authorization message was wrong.",
+    "approval_target": "Issue #4 / D-12D-004",
+    "approval_comment_id": 6569140757,
+    "category": "A-VSPAERO7-thin-LF",
+    "scope": "VSPAERO 7.2.2 thin-LF solver starts only; <=10 starts; serial; <=4 cores; <=8 GB RAM; <=600 s per start; round <=6 h.",
+    "denied_categories": [
+      "B",
+      "C",
+      "D",
+      "E",
+      "P4_REAL"
+    ],
+    "no_carryover": true
+  },
+  "round": {
+    "round_start_utc": "2026-11-02T05:55:00Z",
+    "round_start_local": "2026-11-02T13:55+08:00",
+    "round_deadline_utc": "2026-11-02T11:55:00Z",
+    "round_deadline_local": "2026-11-02T19:55+08:00",
+    "round_wall_limit_h": 6
+  },
+  "budget": {
+    "cap_starts": 10,
+    "starts_used": 4,
+    "starts_remaining": 6,
+    "retries_used": 2,
+    "billable_events": 4,
+    "remaining_starts_disposition": "CLOSED_NOT_CARRIED_OVER_NOT_REALLOCATED"
+  },
+  "first_solver_start_utc": "2026-11-02T06:06:32Z",
+  "worktree_status_at_record": {
+    "head_sha": "f8506c9ae13d6c6f472a461bf80d26dba6cadbd0",
+    "branch": "research/d12d004-vspaero7",
+    "porcelain": [
+      "M research/concorde_metaopt/optimization_runs/d12d004-vspaero72-lf-20261102T0500Z/config/run_config.json",
+      "?? research/concorde_metaopt/optimization_runs/d12d004-vspaero72-lf-20261102T0500Z/evidence/v1/"
+    ],
+    "note": "Only run-dir config/evidence records are modified (pre-authorized V1 prep); no source/test changes."
+  },
+  "preflight_gates": {
+    "A1": true,
+    "A5": true,
+    "A3": true,
+    "A2": true,
+    "gates_passed": true,
+    "evidence": "see config/actual_solver_budget.json#preflight_gates"
+  },
+  "note": "First solver start not yet executed; this file is updated again immediately before/after the first start.",
+  "first_solver_start_case": "V7-00",
+  "solver_starts": [
+    {
+      "event_id": "NA-D12D004-001",
+      "case_id": "V7-00",
+      "attempt_index": 1,
+      "outcome_class": "FAILED",
+      "wall_seconds": 0.024
+    },
+    {
+      "event_id": "NA-D12D004-002",
+      "case_id": "V7-01",
+      "attempt_index": 1,
+      "outcome_class": "ABORTED_WRAPPER_DEADLINE",
+      "wall_seconds": 120.0
+    },
+    {
+      "event_id": "NA-D12D004-003",
+      "case_id": "V7-01",
+      "attempt_index": 2,
+      "outcome_class": "TIMEOUT",
+      "wall_seconds": 600.331
+    }
+  ],
+  "updated_utc": "2026-11-02T06:25:27Z",
+  "stop_decision": "evidence/v1/stop_decision.json",
+  "last_solver_finish_utc": "2026-11-02T06:28:14Z"
+}

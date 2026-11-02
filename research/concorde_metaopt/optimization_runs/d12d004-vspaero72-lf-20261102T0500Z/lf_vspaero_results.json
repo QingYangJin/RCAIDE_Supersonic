@@ -1,0 +1,90 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_kind": "D12D004_LF_VSPAERO_RESULTS",
+  "run_id": "d12d004-vspaero72-lf-20261102T0500Z",
+  "generated_utc": "2026-11-02T06:30:46Z",
+  "status": "V1_STOPPED_ABORT_FINAL",
+  "solver": {
+    "name": "VSPAERO",
+    "version": "7.2.2",
+    "binary": "D:/OpenVSP-3.55.0/OpenVSP-3.55.0-win64/vspaero.exe",
+    "sha256": "db71c4412489af82398833408ea30fb73327bdd9434de2ef530d31375b9fddad",
+    "geometry_set": "ThinGeomSet=SET_ALL via OpenVSP 3.55 API (StopBeforeRun=1 for setup generation only)",
+    "solver_invocation": "direct vspaero.exe -omp 4 <base> (runner.start_solver intentionally not used)"
+  },
+  "fidelity": "A-VSPAERO7-thin-LF",
+  "budget": {
+    "cap_starts": 10,
+    "starts_used": 4,
+    "starts_remaining": 6,
+    "retries_used": 2,
+    "billable_events": 4
+  },
+  "cases": {
+    "V7-00": {
+      "purpose": "standard-wing subsonic sanity (Uber_eCRM-002 thin, Mach 0.10)",
+      "status": "FAIL_HYGIENE_NONPHYSICAL",
+      "event_id": "NA-D12D004-004",
+      "wall_seconds": 76.891,
+      "returncode": 0,
+      "polar": "raw_artifacts/cases/V7-00/v7_00_standard_wing_mach0p1.polar",
+      "polar_sha256": "2741d32ac33daf0fb88cd2793975cb36f2d7130c194f957970c30dce14506b6f",
+      "history": "raw_artifacts/cases/V7-00/v7_00_standard_wing_mach0p1.history",
+      "history_sha256": "1143945dc7e911319faacdbba795c123c5acc5875b66eeb7695cabb7d0a0f3a5",
+      "coefficients": {
+        "CLo": -5.961738308979,
+        "CLi": -2795.923829880693,
+        "CLtot": -2801.885568189672,
+        "CDo": -9.012800775642,
+        "CDi": -367.353142529815,
+        "CDtot": -376.365943305457,
+        "CMoy": -9.235854701727,
+        "L_D": 7.444577858405
+      },
+      "verdict": "Nonphysical (negative drag, |CL| >> 2); wake iteration diverged. Not usable as evidence."
+    },
+    "V7-01": {
+      "purpose": "standard-wing supersonic probe (Mach 2.02)",
+      "status": "TIMEOUT_DIVERGED",
+      "event_ids": [
+        "NA-D12D004-002",
+        "NA-D12D004-003"
+      ],
+      "wall_seconds": [
+        120.0,
+        600.331
+      ],
+      "polar": null,
+      "verdict": "Numerical divergence at Mach 2.02 in VSPAERO 7.2.2 thin; no polar produced. LF-M2.02 VSPAERO thin is NOT a validated physical method."
+    },
+    "V7-02..V7-08": {
+      "status": "NOT_RUN_AFTER_ABORT",
+      "verdict": "Not executed; chain aborted by stop rule."
+    },
+    "V7-09": {
+      "status": "NOT_RUN_CONDITION_NOT_TRIGGERED",
+      "verdict": "Conditional wake-sensitivity case; prerequisite not met."
+    }
+  },
+  "gates": {
+    "LF_M2_02_VSPAERO_drag": "NOT_VALIDATED",
+    "VSPAERO_7_2_2_thin_supersonic": "NOT_A_VALID_PHYSICAL_METHOD",
+    "v7_00_subsonic_hygiene": "FAIL",
+    "validated_aircraft_fuel_label": false
+  },
+  "defects": [
+    {
+      "id": "LD-001",
+      "desc": "V7-00/V7-01 first starts missing .vkey/.csf beside .vspgeom -> VSPAERO aborted (event 001)"
+    },
+    {
+      "id": "LD-002",
+      "desc": "VSPAERO 7.2.2 polar header names (CLo/CLi/CLtot) not accepted by the V0 runner validator built for VSPAERO 6.2; POLAR_HEADER_MISSING (event 004)"
+    },
+    {
+      "id": "LD-003",
+      "desc": "outer 120 s tool deadline killed the wrapper+solver (event 002); wrapper now runs as a background job with a 600 s internal solver timeout"
+    }
+  ],
+  "conclusion": "VSPAERO 7.2.2 thin was not demonstrated to be physically usable at Mach 2.02 (divergence) nor at Mach 0.10 (nonphysical coefficients). LF-M2.02 drag gate remains NOT_VALIDATED; no external correction may be injected."
+}

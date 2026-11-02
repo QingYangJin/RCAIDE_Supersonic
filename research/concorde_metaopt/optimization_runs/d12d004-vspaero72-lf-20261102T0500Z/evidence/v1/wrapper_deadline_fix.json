@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_kind": "D12D004_V1_WRAPPER_DEADLINE_FIX",
+  "generated_utc": "2026-11-02T06:26:57Z",
+  "run_id": "d12d004-vspaero72-lf-20261102T0500Z",
+  "defect": {
+    "observed_on": "NA-D12D004-002 (V7-01 attempt 1, 2026-11-02T06:10:54Z)",
+    "symptom": "the wrapper python process was killed ~120 s after the solver start by the outer tool execution deadline; vspaero.exe was terminated with it; no .polar; billed as ABORTED_WRAPPER_DEADLINE",
+    "scope": "runner invocation environment, not the solver setup; the vspaero child had produced partial .history/.adb/.lod but no polar"
+  },
+  "fix": {
+    "wrapper_invocation": "solver wrapper now launched as a managed background job with no outer 120 s deadline",
+    "internal_solver_timeout_s": 600,
+    "timeout_action": "taskkill /T /F on the vspaero process tree, then TIMEOUT outcome (billable)",
+    "streaming_logs": "solver stdout/stderr streamed to solver_stdout.log/solver_stderr.log before completion so partial progress survives",
+    "retry_after_fix": "V7-00 attempt 2 only (event NA-D12D004-004, billable, retries_used increments)"
+  },
+  "verification_before_retry": {
+    "v7_00_case_dir": "D:/RCAIDE/outputs/concorde_metaopt/d12d004-vspaero72-lf-20261102T0500Z/raw_artifacts/cases/V7-00/",
+    "files": [
+      "v7_00_standard_wing_mach0p1.vspaero",
+      "v7_00_standard_wing_mach0p1.vspgeom",
+      "v7_00_standard_wing_mach0p1.vkey",
+      "v7_00_standard_wing_mach0p1.csf"
+    ],
+    "vkey_line2": "D:\\RCAIDE\\outputs\\concorde_metaopt\\d12d004-vspaero72-lf-20261102T0500Z\\raw_artifacts\\cases\\V7-00\\v7_00_standard_wing_mach0p1.vspgeom",
+    "vkey_line2_matches_case_vspgeom": true,
+    "attempt1_logs_quarantined": "raw_artifacts/failed_runs/V7-00_attempt1/"
+  }
+}

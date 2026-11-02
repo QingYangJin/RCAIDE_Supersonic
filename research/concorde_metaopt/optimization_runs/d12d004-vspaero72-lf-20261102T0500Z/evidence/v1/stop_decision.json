@@ -1,0 +1,149 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_kind": "D12D004_V1_STOP_DECISION",
+  "generated_utc": "2026-11-02T06:25:27Z",
+  "run_id": "d12d004-vspaero72-lf-20261102T0500Z",
+  "decision": "STOP_V1_CHAIN_ABORT_RULE_FINAL",
+  "decision_made_by": "A2",
+  "authority": "Lead V1 authorization 2026-11-02T05:55Z + approved stop_rules list",
+  "triggered_rules": [
+    "单次启动墙钟 >600s -> 中止 (V7-01 attempt 2 wall 600.331 s, exit killed by harness timeout)",
+    "标准翼 Mach2.02 判为物理不可用 -> 停止 12D 大翼链路 (history iterations 2-3 values O(1e18)-O(1e24): numerical divergence, no .polar)"
+  ],
+  "evidence": {
+    "v7_01_divergence": "D:\\RCAIDE-d12d004\\research\\concorde_metaopt\\optimization_runs\\d12d004-vspaero72-lf-20261102T0500Z\\evidence\\v1\\v7_01_divergence.json",
+    "solver_stdout": "D:\\RCAIDE\\outputs\\concorde_metaopt\\d12d004-vspaero72-lf-20261102T0500Z\\raw_artifacts\\cases\\V7-01\\solver_stdout.log",
+    "solver_stdout_sha256": "7d0adb39081b62ae0181e6f045b74820ff1606feddba55549920bc1e1fc62343",
+    "history": "D:\\RCAIDE\\outputs\\concorde_metaopt\\d12d004-vspaero72-lf-20261102T0500Z\\raw_artifacts\\cases\\V7-01\\v7_01_standard_wing_mach2p02.history",
+    "history_sha256": "4c24413561afa7bfe298feef6992df17af3b64644da8472efd58fcce8da53210",
+    "no_polar": true
+  },
+  "counters_after_stop": {
+    "starts_used": 3,
+    "starts_remaining": 7,
+    "billable_events": 3,
+    "retries_used": 1,
+    "cap": 10
+  },
+  "starts_booked": [
+    {
+      "event_id": "NA-D12D004-001",
+      "case_id": "V7-00",
+      "attempt_index": 1,
+      "is_retry": false,
+      "wall_seconds": 0.024,
+      "outcome_class": "FAILED",
+      "billable": true
+    },
+    {
+      "event_id": "NA-D12D004-002",
+      "case_id": "V7-01",
+      "attempt_index": 1,
+      "is_retry": false,
+      "wall_seconds": 120.0,
+      "outcome_class": "ABORTED_WRAPPER_DEADLINE",
+      "billable": true
+    },
+    {
+      "event_id": "NA-D12D004-003",
+      "case_id": "V7-01",
+      "attempt_index": 2,
+      "is_retry": true,
+      "wall_seconds": 600.331,
+      "outcome_class": "TIMEOUT",
+      "billable": true
+    }
+  ],
+  "not_run": {
+    "cases": [
+      "V7-02",
+      "V7-03",
+      "V7-04",
+      "V7-05",
+      "V7-06",
+      "V7-07",
+      "V7-08",
+      "V7-09"
+    ],
+    "status": "NOT_RUN_AFTER_ABORT",
+    "note": "V7-09 was conditional; V7-02..V7-08 blocked by the approved stop rule. No further solver starts until Lead/owner decides."
+  },
+  "v7_00_note": "NA-D12D004-001 FAILED at 0.024 s because the case dir lacked .vkey/.csf (preflight packaging defect, not physics); not retried per Lead; billed conservatively as 1 start.",
+  "v7_01_attempt1_note": "NA-D12D004-002 ABORTED_WRAPPER_DEADLINE: outer 120 s tool deadline killed the wrapper; vspaero child stopped; no .polar; billed; partial artifacts quarantined (raw_artifacts/failed_runs/V7-01_attempt1).",
+  "next_action": "Write the final V1 report; keep LF-M2.02 NOT_VALIDATED; no further solver starts in this round.",
+  "finalised_utc": "2026-11-02T06:38:47Z",
+  "lead_decision": {
+    "reference": "Lead message m01190 / m01194",
+    "decision": "(a) terminate the V1 round after one additional V7-00 retry only; do not reallocate the remaining starts; do not retry V7-01",
+    "additional_starts_authorised": 1,
+    "extra_start_booked": "NA-D12D004-004"
+  },
+  "v7_00_retry": {
+    "event_id": "NA-D12D004-004",
+    "attempt_index": 2,
+    "is_retry": true,
+    "wall_seconds": 76.891,
+    "returncode": 0,
+    "outcome_class": "VERIFY_FAILED",
+    "solver_outputs": {
+      "polar": "v7_00_standard_wing_mach0p1.polar (3048 B, sha256 2741d32ac33daf0fb88cd2793975cb36f2d7130c194f957970c30dce14506b6f)",
+      "history": "v7_00_standard_wing_mach0p1.history (7800 B, sha256 1143945dc7e911319faacdbba795c123c5acc5875b66eeb7695cabb7d0a0f3a5)",
+      "lod": "v7_00_standard_wing_mach0p1.lod (223842 B sha256 3abc3c812d50587f8389d481e2b1a8a326d135adc76d001c42a0bcaaceedbea3)",
+      "adb": "v7_00_standard_wing_mach0p1.adb (1815136 B)"
+    },
+    "verifier_failure": "DataQualityError: POLAR_HEADER_MISSING: no header with AoA/CL/Mach (runner validate_polar_file expects the VSPAERO 6.2 column names CL/CDi/CDtot; VSPAERO 7.2.2 writes CLo/CLi/CLtot, CDo/CDi/CDtot) -> runner defect, not a solver output-schema error",
+    "independent_value_check": "FAIL_HYGIENE: CLo=-5.9617, CLi=-2795.9238, CLtot=-2801.8856, CDo=-9.0128, CDi=-367.3531, CDtot=-376.3659 (negative drag), CMoy=-9.2359; history divergence iter2..3 O(1e5)..O(1e7), iter5 returns nonphysical values"
+  },
+  "counters_after_retry": {
+    "starts_used": 4,
+    "starts_remaining": 6,
+    "retries_used": 2,
+    "billable_events": 4,
+    "cap": 10
+  },
+  "final_starts_booked": [
+    {
+      "event_id": "NA-D12D004-001",
+      "case_id": "V7-00",
+      "attempt": 1,
+      "outcome_class": "FAILED",
+      "wall_s": 0.024,
+      "note": "missing .vkey/.csf (pre-flight artifact packaging defect)"
+    },
+    {
+      "event_id": "NA-D12D004-002",
+      "case_id": "V7-01",
+      "attempt": 1,
+      "outcome_class": "ABORTED_WRAPPER_DEADLINE",
+      "wall_s": 120.0,
+      "note": "outer 120 s tool deadline killed wrapper+solver; fix applied, V7-00 retry used the fixed wrapper"
+    },
+    {
+      "event_id": "NA-D12D004-003",
+      "case_id": "V7-01",
+      "attempt": 2,
+      "outcome_class": "TIMEOUT",
+      "wall_s": 600.331,
+      "note": "Mach 2.02 thin solution divergent, no .polar; stop rule"
+    },
+    {
+      "event_id": "NA-D12D004-004",
+      "case_id": "V7-00",
+      "attempt": 2,
+      "outcome_class": "VERIFY_FAILED",
+      "wall_s": 76.891,
+      "note": "Mach 0.1 standard wing ran but returned nonphysical coefficients; verifier also rejected VSPAERO 7 header names"
+    }
+  ],
+  "remaining_budget": {
+    "starts": 6,
+    "disposition": "CLOSED_NOT_CARRIED_OVER_NOT_REALLOCATED"
+  },
+  "root_cause_static_check": {
+    "requested_by": "Lead follow-up (DegenGeom vs VSPGEOM hypothesis, 2026-11-02)",
+    "solver_started": false,
+    "result": "VSPGEOM thin path confirmed official (SET_NONE=-1, SET_ALL=0; geometry CSV GeometrySet=-1, ThinGeometrySet=0); no input-mode error; diagnostic start skipped per Lead rule 4",
+    "evidence": "evidence/v1/root_cause_static_check.json",
+    "budget_effect": "none; final counters unchanged"
+  }
+}

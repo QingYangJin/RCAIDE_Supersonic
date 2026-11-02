@@ -1,8 +1,8 @@
 {
   "schema_version": "1.0.0",
   "artifact_kind": "D12D004_RUN_CONFIG",
-  "status": "SKELETON_NOT_RUN",
-  "no_solver_started": true,
+  "status": "V1_STOPPED_ABORT_FINAL",
+  "no_solver_started": false,
   "authority": {
     "issue": "#4",
     "approval_comment_id": 6569140757,
@@ -33,10 +33,11 @@
     "branch": "research/d12d004-vspaero7",
     "worktree": "D:/RCAIDE-d12d004",
     "base_sha": "e5140fc64d348f2d9dcf52962f1dcfc425099341",
-    "runner_commit": null,
-    "runner_commit_rule": "A1 完成 runner 修复并提交后填入实际 40 位 SHA；runner_commit 必须与 A5 批准的 SHA 完全一致，否则不得启动。",
+    "runner_commit": "f8506c9ae13d6c6f472a461bf80d26dba6cadbd0",
+    "runner_commit_rule": "runner 代码所在提交的 40 位 SHA（V0 f8506c9，scripts/vspaero7_runner.py 即出自该提交）；A1/A5 若批准后续提交，由 Lead 书面指定并同步更新本字段，否则不得启动。",
     "git_sha_required_at_run_start": null,
-    "git_sha_rule": "run 开始时由 runner 执行 git rev-parse HEAD 填入并断言等于 A5 批准 SHA；不一致即拒绝启动。",
+    "git_sha_rule": "不在此写死自引用 SHA。首次 solver 启动时把实际 HEAD（git rev-parse HEAD）、分支、UTC、操作者记录到 evidence/v1/run_start.json，并与 Lead 授权消息中指定的 SHA 比对；不一致即不得启动。",
+    "run_start_record_path": "evidence/v1/run_start.json",
     "runner_version": null,
     "dirty_worktree_allowed": false
   },
@@ -61,7 +62,7 @@
     "rho_kg_m3": 0.1153178340089936,
     "speed_of_sound_m_s": 295.0680184,
     "vinf_m_s": 596.0373972278921,
-    "mu_kg_m_s": 0.0000142161308,
+    "mu_kg_m_s": 1.42161308e-05,
     "mu_source": "ISA 216.65 K；由合同反推 mu=rho*Vinf*Cref/ReCref，生成时同式复算。"
   },
   "reference_12d": {
@@ -115,57 +116,57 @@
     {
       "field": "Mach",
       "expected": "per case declared",
-      "tolerance_rel": 1e-9
+      "tolerance_rel": 1e-09
     },
     {
       "field": "Vinf",
       "expected": "per case declared",
-      "tolerance_rel": 1e-9
+      "tolerance_rel": 1e-09
     },
     {
       "field": "Rho",
       "expected": "per case declared",
-      "tolerance_rel": 1e-9
+      "tolerance_rel": 1e-09
     },
     {
       "field": "ReCref",
       "expected": "per case declared",
-      "tolerance_rel": 0.000001
+      "tolerance_rel": 1e-06
     },
     {
       "field": "Sref",
       "expected": "per case declared",
-      "tolerance_rel": 1e-9
+      "tolerance_rel": 1e-09
     },
     {
       "field": "Cref",
       "expected": "per case declared",
-      "tolerance_rel": 1e-9
+      "tolerance_rel": 1e-09
     },
     {
       "field": "Bref",
       "expected": "per case declared",
-      "tolerance_rel": 1e-9
+      "tolerance_rel": 1e-09
     },
     {
       "field": "X_cg",
       "expected": "per case declared",
-      "tolerance_abs": 0.000001
+      "tolerance_abs": 1e-06
     },
     {
       "field": "Y_cg",
       "expected": 0,
-      "tolerance_abs": 1e-9
+      "tolerance_abs": 1e-09
     },
     {
       "field": "Z_cg",
       "expected": "per case declared",
-      "tolerance_abs": 0.000001
+      "tolerance_abs": 1e-06
     },
     {
       "field": "AoA",
       "expected": "per case declared",
-      "tolerance_abs": 1e-9
+      "tolerance_abs": 1e-09
     },
     {
       "field": "Symmetry",
@@ -222,5 +223,19 @@
     "本文件为 A2 预检骨架，不是运行证据；任何 <FILL>/null 字段必须在启动前由 A1 runner 填充。",
     "启动前必须写入预算账本 pending 事件；完成后写 result 并自增 starts_used。",
     "当前 starts_used=0、starts_remaining=10、billable_events=0，未启动任何求解器。"
-  ]
+  ],
+  "v1_result": {
+    "round": "V1 authorised 2026-11-02T05:55:00Z, deadline 2026-11-02T11:55:00Z",
+    "starts_used": 4,
+    "starts_remaining": 6,
+    "retries_used": 2,
+    "billable_events": 4,
+    "stop_rule_triggered": true,
+    "stop_rule_event_id": "NA-D12D004-003",
+    "case_matrix_final": "config/solver_case_matrix.csv",
+    "summary": "summary.json",
+    "lf_vspaero_results": "lf_vspaero_results.json",
+    "data_manifest": "data_manifest.json",
+    "remaining_starts_disposition": "CLOSED_NOT_CARRIED_OVER_NOT_REALLOCATED"
+  }
 }

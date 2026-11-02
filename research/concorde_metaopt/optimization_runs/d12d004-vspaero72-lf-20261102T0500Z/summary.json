@@ -1,0 +1,192 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_kind": "D12D004_V1_RUN_SUMMARY",
+  "run_id": "d12d004-vspaero72-lf-20261102T0500Z",
+  "run_dir": "D:\\RCAIDE-d12d004\\research\\concorde_metaopt\\optimization_runs\\d12d004-vspaero72-lf-20261102T0500Z",
+  "run_family": "D-12D-004",
+  "stage": "V1 authorised VSPAERO 7.2.2 thin-LF round (A category only)",
+  "status": "V1_STOPPED_ABORT_FINAL",
+  "generated_utc": "2026-11-02T06:38:47Z",
+  "round": {
+    "authorisation_utc": "2026-11-02T05:55:00Z",
+    "deadline_utc": "2026-11-02T11:55:00Z",
+    "first_solver_start_utc": "2026-11-02T06:06:32Z",
+    "last_solver_finish_utc": "2026-11-02T06:28:14Z",
+    "closed_early_by": "approved stop rule + Lead decision (a)"
+  },
+  "authority": {
+    "issue": "#4",
+    "approval_comment_id": 6569140757,
+    "category": "A-VSPAERO7-thin-LF",
+    "approved_starts": 10,
+    "denied_categories": {
+      "B": 0,
+      "C": 0,
+      "D": 0,
+      "E": 0,
+      "P4_REAL": 0
+    },
+    "carryover_from_D12D002": false
+  },
+  "solver": {
+    "name": "VSPAERO",
+    "version": "7.2.2",
+    "binary": "D:/OpenVSP-3.55.0/OpenVSP-3.55.0-win64/vspaero.exe",
+    "sha256": "db71c4412489af82398833408ea30fb73327bdd9434de2ef530d31375b9fddad",
+    "omp": 4,
+    "serial": true
+  },
+  "budget_final": {
+    "cap_starts": 10,
+    "starts_used": 4,
+    "starts_remaining": 6,
+    "retries_used": 2,
+    "billable_events": 4,
+    "stop_rule_triggered": true,
+    "stop_rule_event_id": "NA-D12D004-003",
+    "remaining_starts_disposition": "CLOSED_NOT_CARRIED_OVER_NOT_REALLOCATED",
+    "assertion": {
+      "starts_used_plus_remaining_eq_10": true,
+      "billable_events_eq_starts_used": true
+    }
+  },
+  "cases": [
+    {
+      "case_id": "V7-00",
+      "group": "S",
+      "mach": 0.1,
+      "status": "FAILED_NONPHYSICAL_VALUE",
+      "event_id": "NA-D12D004-004",
+      "wall_seconds": 76.891,
+      "returncode": 0,
+      "coefficients": {
+        "CLtot": -2801.885568189672,
+        "CDtot": -376.365943305457,
+        "CDi": -367.353142529815,
+        "CMoy": -9.235854701727
+      },
+      "verdict": "FAIL_HYGIENE_NONPHYSICAL; wake iteration diverged; verifier also raised LD-002 header incompat"
+    },
+    {
+      "case_id": "V7-01",
+      "group": "S",
+      "mach": 2.02,
+      "status": "TIMEOUT_DIVERGED",
+      "event_ids": [
+        "NA-D12D004-002",
+        "NA-D12D004-003"
+      ],
+      "wall_seconds": [
+        120.0,
+        600.331
+      ],
+      "verdict": "numerical divergence, no polar; VSPAERO 7.2.2 thin supersonic NOT_A_VALID_PHYSICAL_METHOD"
+    },
+    {
+      "case_id": "V7-02",
+      "group": "M",
+      "mach": 2.02,
+      "status": "NOT_RUN_AFTER_ABORT"
+    },
+    {
+      "case_id": "V7-03",
+      "group": "M",
+      "mach": 2.02,
+      "status": "NOT_RUN_AFTER_ABORT"
+    },
+    {
+      "case_id": "V7-04",
+      "group": "M",
+      "mach": 2.02,
+      "status": "NOT_RUN_AFTER_ABORT"
+    },
+    {
+      "case_id": "V7-05",
+      "group": "P",
+      "mach": 2.02,
+      "status": "NOT_RUN_AFTER_ABORT"
+    },
+    {
+      "case_id": "V7-06",
+      "group": "P",
+      "mach": 2.02,
+      "status": "NOT_RUN_AFTER_ABORT"
+    },
+    {
+      "case_id": "V7-07",
+      "group": "P",
+      "mach": 2.02,
+      "status": "NOT_RUN_AFTER_ABORT"
+    },
+    {
+      "case_id": "V7-08",
+      "group": "D",
+      "mach": 2.02,
+      "status": "NOT_RUN_AFTER_ABORT"
+    },
+    {
+      "case_id": "V7-09",
+      "group": "D",
+      "mach": 2.02,
+      "status": "NOT_RUN_CONDITION_NOT_TRIGGERED"
+    }
+  ],
+  "gates": {
+    "LF_M2_02_VSPAERO_drag": "NOT_VALIDATED",
+    "VSPAERO_7_2_2_thin_supersonic": "NOT_A_VALID_PHYSICAL_METHOD",
+    "v7_00_subsonic_hygiene": "FAIL",
+    "validated_aircraft_fuel_label": false,
+    "external_body_correction_injected": false,
+    "body_correction_gate": "BLOCKED"
+  },
+  "defects": [
+    {
+      "id": "LD-001",
+      "event": "NA-D12D004-001",
+      "desc": "missing .vkey/.csf next to .vspgeom/.vspaero; fixed in prep (9/9 cases)"
+    },
+    {
+      "id": "LD-002",
+      "event": "NA-D12D004-004",
+      "desc": "V0 polar validator expects VSPAERO 6.2 column names; VSPAERO 7.2.2 writes CLo/CLi/CLtot -> POLAR_HEADER_MISSING"
+    },
+    {
+      "id": "LD-003",
+      "event": "NA-D12D004-002",
+      "desc": "outer 120 s tool deadline killed wrapper+solver; wrapper now background with 600 s internal timeout"
+    }
+  ],
+  "artefacts": {
+    "case_matrix": "config/solver_case_matrix.csv",
+    "budget": "config/actual_solver_budget.json",
+    "run_config": "config/run_config.json",
+    "run_start": "evidence/v1/run_start.json",
+    "stop_decision": "evidence/v1/stop_decision.json",
+    "case_results": "evidence/v1/case_results.json",
+    "per_case_conclusions": [
+      "evidence/v1/per_case_conclusions.md",
+      "evidence/v1/per_case_conclusions.csv"
+    ],
+    "evidence_readme": "evidence/v1/README.md",
+    "lf_results": "lf_vspaero_results.json",
+    "data_manifest": "data_manifest.json"
+  },
+  "honesty": {
+    "fabricated_numbers": 0,
+    "values_trace_to": "solver_ledger.jsonl events, case_results.json, archived .polar/.history, v7_01_divergence.json",
+    "not_run_written_as": "NOT_RUN_AFTER_ABORT / NOT_RUN_CONDITION_NOT_TRIGGERED"
+  },
+  "root_cause_static_check": {
+    "performed": true,
+    "solver_started": false,
+    "reference": "evidence/v1/root_cause_static_check.json",
+    "result": "VSPGEOM is the official thin path (GeomSet=SET_NONE/-1, ThinGeomSet=SET_ALL/0 confirmed); not an input-mode error; DIAGNOSTIC_DEGENGEOMMODE start skipped per Lead rule 4",
+    "budget_unchanged": {
+      "starts_used": 4,
+      "starts_remaining": 6,
+      "retries_used": 2,
+      "billable_events": 4,
+      "remaining_starts_disposition": "CLOSED_NOT_CARRIED_OVER_NOT_REALLOCATED"
+    }
+  }
+}

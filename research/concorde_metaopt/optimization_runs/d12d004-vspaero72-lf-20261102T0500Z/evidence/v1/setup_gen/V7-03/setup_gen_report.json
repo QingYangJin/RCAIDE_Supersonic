@@ -1,0 +1,180 @@
+{
+  "case_id": "V7-03",
+  "status": "PASS",
+  "basename": "v7_03_12d_baseline_tess16x33",
+  "method": "reuse V0 zero-solver assets; contract re-injected from V0 raw setup",
+  "v0_contract": {
+    "path": "D:\\RCAIDE-d12d004\\research\\concorde_metaopt\\optimization_runs\\d12d004-vspaero72-lf-20261102T0500Z\\evidence\\v0\\setup_gen\\wing355_thin_v0_contract.vspaero",
+    "bytes": 847,
+    "sha256": "c9cef04e6a6986fdc87f07338e168dbf2ee17bdab3f5836b417ba6e6036ccb64"
+  },
+  "v0_raw": {
+    "path": "D:\\RCAIDE-d12d004\\research\\concorde_metaopt\\optimization_runs\\d12d004-vspaero72-lf-20261102T0500Z\\evidence\\v0\\setup_gen\\wing355_baseline.vspaero",
+    "bytes": 930,
+    "sha256": "c862aa220bc6f3a9d057b2fbe99c4ed340591a14ad88f455d3d1b0ddbe7c1804"
+  },
+  "v0_vspgeom": {
+    "path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\d12d004-vspaero72-lf-20261102T0500Z\\raw_artifacts\\wing355_baseline.vspgeom",
+    "bytes": 224357,
+    "sha256": "9fcda6d5d45300fbb0e20257c9ddc80540b44f5064a9566089d7ef85f9018d8e"
+  },
+  "contract": {
+    "path": "D:\\RCAIDE-d12d004\\research\\concorde_metaopt\\optimization_runs\\d12d004-vspaero72-lf-20261102T0500Z\\evidence\\v1\\setup_gen\\V7-03\\v7_03_12d_baseline_tess16x33.vspaero",
+    "bytes": 847,
+    "sha256": "c9cef04e6a6986fdc87f07338e168dbf2ee17bdab3f5836b417ba6e6036ccb64"
+  },
+  "vspgeom": {
+    "path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\d12d004-vspaero72-lf-20261102T0500Z\\raw_artifacts\\setup_v1\\V7-03\\v7_03_12d_baseline_tess16x33.vspgeom",
+    "bytes": 224357,
+    "sha256": "9fcda6d5d45300fbb0e20257c9ddc80540b44f5064a9566089d7ef85f9018d8e"
+  },
+  "contract_matches_v0": true,
+  "vspgeom_matches_v0": true,
+  "readback": {
+    "status": "PASS",
+    "fields_checked": [
+      {
+        "field": "Sref",
+        "expected": 358.25,
+        "actual": 358.25,
+        "spec": "rel:1e-09",
+        "detail": "rel_delta=0.000e+00 tol=3.583e-07",
+        "ok": true
+      },
+      {
+        "field": "Cref",
+        "expected": 18.489893,
+        "actual": 18.489893,
+        "spec": "rel:1e-09",
+        "detail": "rel_delta=0.000e+00 tol=1.849e-08",
+        "ok": true
+      },
+      {
+        "field": "Bref",
+        "expected": 25.604638,
+        "actual": 25.604638,
+        "spec": "rel:1e-09",
+        "detail": "rel_delta=0.000e+00 tol=2.560e-08",
+        "ok": true
+      },
+      {
+        "field": "X_cg",
+        "expected": 16.821978259514246,
+        "actual": 16.821978259514246,
+        "spec": "abs:1e-06",
+        "detail": "abs_delta=0.000e+00 tol=1.000e-06",
+        "ok": true
+      },
+      {
+        "field": "Y_cg",
+        "expected": 0.0,
+        "actual": 0.0,
+        "spec": "abs:1e-09",
+        "detail": "abs_delta=0.000e+00 tol=1.000e-09",
+        "ok": true
+      },
+      {
+        "field": "Z_cg",
+        "expected": 0.0,
+        "actual": 0.0,
+        "spec": "abs:1e-06",
+        "detail": "abs_delta=0.000e+00 tol=1.000e-06",
+        "ok": true
+      },
+      {
+        "field": "Mach",
+        "expected": 2.02,
+        "actual": 2.02,
+        "spec": "rel:1e-09",
+        "detail": "rel_delta=0.000e+00 tol=2.020e-09",
+        "ok": true
+      },
+      {
+        "field": "AoA",
+        "expected": 2.0,
+        "actual": 2.0,
+        "spec": "abs:1e-09",
+        "detail": "abs_delta=0.000e+00 tol=1.000e-09",
+        "ok": true
+      },
+      {
+        "field": "Beta",
+        "expected": 0.0,
+        "actual": 0.0,
+        "spec": "abs:1e-09",
+        "detail": "abs_delta=0.000e+00 tol=1.000e-09",
+        "ok": true
+      },
+      {
+        "field": "ReCref",
+        "expected": 89397005.8767656,
+        "actual": 89397005.8767656,
+        "spec": "rel:1e-06",
+        "detail": "rel_delta=0.000e+00 tol=8.940e+01",
+        "ok": true
+      },
+      {
+        "field": "Vinf",
+        "expected": 596.0373972278921,
+        "actual": 596.0373972278921,
+        "spec": "rel:1e-09",
+        "detail": "rel_delta=0.000e+00 tol=5.960e-07",
+        "ok": true
+      },
+      {
+        "field": "Rho",
+        "expected": 0.1153178340089936,
+        "actual": 0.1153178340089936,
+        "spec": "rel:1e-09",
+        "detail": "rel_delta=0.000e+00 tol=1.000e-09",
+        "ok": true
+      },
+      {
+        "field": "Symmetry",
+        "expected": 0.0,
+        "actual": 0.0,
+        "spec": "exact:0.0",
+        "detail": "exact ok",
+        "ok": true
+      },
+      {
+        "field": "NumWakeNodes",
+        "expected": 8.0,
+        "actual": 8.0,
+        "spec": "exact:0.0",
+        "detail": "exact ok",
+        "ok": true
+      },
+      {
+        "field": "WakeIters",
+        "expected": 5.0,
+        "actual": 5.0,
+        "spec": "exact:0.0",
+        "detail": "exact ok",
+        "ok": true
+      },
+      {
+        "field": "WakeRelax",
+        "expected": 1.0,
+        "actual": 1.0,
+        "spec": "rel:1e-09",
+        "detail": "rel_delta=0.000e+00 tol=1.000e-09",
+        "ok": true
+      },
+      {
+        "field": "FarDist",
+        "expected": -1.0,
+        "actual": -1.0,
+        "spec": "rel:1e-09",
+        "detail": "rel_delta=0.000e+00 tol=1.000e-09",
+        "ok": true
+      }
+    ],
+    "assertions": 17,
+    "sha256": "c9cef04e6a6986fdc87f07338e168dbf2ee17bdab3f5836b417ba6e6036ccb64",
+    "vector_rows": 1,
+    "legacy_lines": 0
+  },
+  "solver_processes_started": 0,
+  "billable": false
+}

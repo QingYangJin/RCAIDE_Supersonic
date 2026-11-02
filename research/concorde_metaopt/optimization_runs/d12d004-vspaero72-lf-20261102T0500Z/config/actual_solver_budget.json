@@ -1,8 +1,8 @@
 {
   "schema_version": "1.0.0",
   "artifact_kind": "D12D004_ACTUAL_SOLVER_BUDGET",
-  "status": "UNUSED_AT_ZERO_STARTS",
-  "no_solver_started": true,
+  "status": "V1_STOPPED_ABORT_FINAL_FREEZE",
+  "no_solver_started": false,
   "run_id": "d12d004-vspaero72-lf-20261102T0500Z",
   "approval": {
     "issue": "#4",
@@ -30,14 +30,14 @@
     "serial_only": true
   },
   "counters": {
-    "starts_used": 0,
-    "starts_remaining": 10,
-    "retries_used": 0,
+    "starts_used": 4,
+    "starts_remaining": 6,
+    "retries_used": 2,
     "mesh_generation_events": 0,
-    "billable_events": 0
+    "billable_events": 4
   },
   "by_class": {
-    "A_VSPAERO7_thin_LF_used": 0,
+    "A_VSPAERO7_thin_LF_used": 4,
     "A_cap": 10,
     "B": 0,
     "C": 0,
@@ -58,13 +58,18 @@
     "preflight_note": "A1/A5/A3 门禁未通过时不得启动求解器，因此不产生计费事件"
   },
   "preflight_gates": {
-    "A1_runner_fix_and_tests": false,
-    "A5_independent_web_review": false,
-    "A3_binary_worktree_isolation": false,
+    "A1_runner_fix_and_tests": true,
+    "A1_evidence": "commit f8506c9ae13d6c6f472a461bf80d26dba6cadbd0; 22 unittest OK (evidence/v0/tests/test_vspaero7_runner.log; A5 independent rerun EXT/p4-meta-dev/a5/v0_gate/v0_tests_rerun.log)",
+    "A5_independent_web_review": true,
+    "A5_evidence": "EXT/p4-meta-dev/a5/v0_gate/verdict.txt sha256 472d5202554da7ef9f3b51c42f484c82465633a4fa9915508d45efb1f16bc220 = VERDICT=APPROVE_FOR_V1_AUTHORIZATION (task-57)",
+    "A3_binary_worktree_isolation": true,
+    "A3_evidence": "EXT/p4-meta-dev/a3/v0_isolation_f8506c9.md PASS 8/8, generated 2026-11-02T05:25:53Z (task-58)",
     "A2_run_config_and_budget_present": true,
+    "A2_evidence": "run_config.json + solver_case_matrix.csv + this budget file present; evidence/v1 5/5 zero-solver setup PASS (evidence/v1/setup_gen/setup_gen_summary.json)",
     "all_required": true,
-    "gates_passed": false,
-    "note": "A2 骨架已存在（本文件+run_config+case matrix），其余三门禁未通过前禁止任何启动。"
+    "gates_passed": true,
+    "gate_set_utc": "2026-11-02T06:01:00Z",
+    "note": "All four gates set true per Lead written V1 authorization (authorization_utc 2026-11-02T05:55:00Z; Issue #4 comment 6569140757). A1/A5/A3 evidence cited above; must not be flipped back."
   },
   "stop_rules": [
     "任一必填来流/参考量回读不一致 -> 停止链路",
@@ -110,5 +115,19 @@
     "NA-D12D004-010"
   ],
   "final_assertion": "完成时 starts_used + starts_remaining == 10 且 billable_events == starts_used",
-  "append_only": true
+  "append_only": true,
+  "stop_decision_ref": "D:\\RCAIDE-d12d004\\research\\concorde_metaopt\\optimization_runs\\d12d004-vspaero72-lf-20261102T0500Z\\evidence\\v1\\stop_decision.json",
+  "stop_rule_triggered": true,
+  "stop_rule_event_id": "NA-D12D004-003",
+  "stop_rule_reason": "V7-01 attempt 2 exceeded the 600 s hard wall and the VSPAERO 7.2.2 thin solution diverged (CLtot O(1e18)->O(1e24) over wake iterations, no .polar)",
+  "freeze_utc": "2026-11-02T06:30:46Z",
+  "freeze_authority": "Lead decision (a) message m01194: terminate V1 round + one V7-00 retry only; remaining starts are NOT carried over or reallocated",
+  "post_run_closure": {
+    "starts_used": 4,
+    "starts_remaining": 6,
+    "retries_used": 2,
+    "billable_events": 4,
+    "remaining_starts_disposition": "CLOSED_NOT_CARRIED_OVER_NOT_REALLOCATED",
+    "round_note": "V1 closed after 4 of 10 authorised starts; the unused 6 are not transferred to any later round or category."
+  }
 }

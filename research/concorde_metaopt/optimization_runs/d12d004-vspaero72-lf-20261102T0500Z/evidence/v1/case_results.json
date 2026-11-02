@@ -1,0 +1,181 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_kind": "D12D004_V1_CASE_RESULTS",
+  "run_id": "d12d004-vspaero72-lf-20261102T0500Z",
+  "cases": {
+    "V7-00": {
+      "case_id": "V7-00",
+      "group": "S",
+      "base": "v7_00_standard_wing_mach0p1",
+      "outcome": "VERIFY_FAILED",
+      "billable": true,
+      "event_id": "NA-D12D004-004",
+      "wall_seconds": 76.891,
+      "returncode": 0,
+      "timed_out": false,
+      "polar": {
+        "path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\d12d004-vspaero72-lf-20261102T0500Z\\raw_artifacts\\cases\\V7-00\\v7_00_standard_wing_mach0p1.polar",
+        "bytes": 3048,
+        "sha256": "2741d32ac33daf0fb88cd2793975cb36f2d7130c194f957970c30dce14506b6f"
+      },
+      "history": {
+        "path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\d12d004-vspaero72-lf-20261102T0500Z\\raw_artifacts\\cases\\V7-00\\v7_00_standard_wing_mach0p1.history",
+        "bytes": 7800,
+        "sha256": "1143945dc7e911319faacdbba795c123c5acc5875b66eeb7695cabb7d0a0f3a5"
+      },
+      "polar_verify": null,
+      "history_verify": null,
+      "polar_rows_data": null,
+      "polar_header": null,
+      "alarm_rows": [],
+      "produced_files": {
+        "v7_00_standard_wing_mach0p1.polar": {
+          "path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\d12d004-vspaero72-lf-20261102T0500Z\\raw_artifacts\\cases\\V7-00\\v7_00_standard_wing_mach0p1.polar",
+          "bytes": 3048,
+          "sha256": "2741d32ac33daf0fb88cd2793975cb36f2d7130c194f957970c30dce14506b6f"
+        },
+        "v7_00_standard_wing_mach0p1.history": {
+          "path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\d12d004-vspaero72-lf-20261102T0500Z\\raw_artifacts\\cases\\V7-00\\v7_00_standard_wing_mach0p1.history",
+          "bytes": 7800,
+          "sha256": "1143945dc7e911319faacdbba795c123c5acc5875b66eeb7695cabb7d0a0f3a5"
+        },
+        "v7_00_standard_wing_mach0p1.lod": {
+          "path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\d12d004-vspaero72-lf-20261102T0500Z\\raw_artifacts\\cases\\V7-00\\v7_00_standard_wing_mach0p1.lod",
+          "bytes": 223842,
+          "sha256": "3abc3c812d50587f8389d481e2b1a8a326d135adc76d001c42a0bcaaceedbea3"
+        },
+        "v7_00_standard_wing_mach0p1.adb": {
+          "path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\d12d004-vspaero72-lf-20261102T0500Z\\raw_artifacts\\cases\\V7-00\\v7_00_standard_wing_mach0p1.adb",
+          "bytes": 1815136,
+          "sha256": "d611f252062fb36547f2b2f03365f7227f60ae25544e308688ca77ecb8edd036"
+        },
+        "v7_00_standard_wing_mach0p1.vspaero": {
+          "path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\d12d004-vspaero72-lf-20261102T0500Z\\raw_artifacts\\cases\\V7-00\\v7_00_standard_wing_mach0p1.vspaero",
+          "bytes": 774,
+          "sha256": "d1d966ef83450f979e6f7067e067ceb09f1acbcf19d14b57301c87e575049101"
+        },
+        "v7_00_standard_wing_mach0p1.vspgeom": {
+          "path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\d12d004-vspaero72-lf-20261102T0500Z\\raw_artifacts\\cases\\V7-00\\v7_00_standard_wing_mach0p1.vspgeom",
+          "bytes": 2019343,
+          "sha256": "091ba77f0323fd1d55071a38105dfcfeb17efbc39b987c7a415be8a612672307"
+        }
+      },
+      "notes": [
+        "DataQualityError: POLAR_HEADER_MISSING: no header with AoA/CL/Mach"
+      ],
+      "error": "DataQualityError: POLAR_HEADER_MISSING: no header with AoA/CL/Mach",
+      "started_utc": "2026-11-02T06:26:57Z",
+      "finished_utc": "2026-11-02T06:28:14Z",
+      "final_classification": "FAIL_HYGIENE_NONPHYSICAL",
+      "hygiene_check": {
+        "cl_positive": false,
+        "cdi_positive": false,
+        "cdtot_positive": false,
+        "all_finite": true,
+        "abs_cl_below_2": false,
+        "verdict": "FAIL_HYGIENE"
+      },
+      "gross_coefficients": {
+        "CLo": -5.961738308979,
+        "CLi": -2795.923829880693,
+        "CLtot": -2801.885568189672,
+        "CDo": -9.012800775642,
+        "CDi": -367.353142529815,
+        "CDtot": -376.365943305457,
+        "CMoy": -9.235854701727,
+        "L_D": 7.444577858405
+      },
+      "history_iter_cltot_cdtot": [
+        [
+          1,
+          -0.008912137883,
+          0.023568114854
+        ],
+        [
+          2,
+          -267095.9036538789,
+          105094.20322424264
+        ],
+        [
+          3,
+          -7469379.927204403,
+          763160.6890963082
+        ],
+        [
+          4,
+          12.2645397462,
+          9.188337231016
+        ],
+        [
+          5,
+          -2801.885568189672,
+          -376.365943305457
+        ]
+      ],
+      "header_compat_defect": "LD-002: VSPAERO 7.2.2 polar header uses CLo/CLi/CLtot, CDo/CDi/CDtot, CMox/CMoy/CMoz; runner validate_polar_file (built for 6.2.0) requires bare CL/CDi/CDtot and raised POLAR_HEADER_MISSING",
+      "note_final": "The solver ran to completion at Mach 0.10 but the wake/GMRES iteration diverged; the written .polar contains nonphysical values. The verifier failure is a separate header-name defect (LD-002), not evidence that the polar is valid."
+    },
+    "V7-01": {
+      "case_id": "V7-01",
+      "group": "S",
+      "base": "v7_01_standard_wing_mach2p02",
+      "outcome": "TIMEOUT",
+      "billable": true,
+      "event_id": "NA-D12D004-003",
+      "wall_seconds": 600.331,
+      "returncode": null,
+      "timed_out": true,
+      "polar": null,
+      "history": {
+        "path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\d12d004-vspaero72-lf-20261102T0500Z\\raw_artifacts\\cases\\V7-01\\v7_01_standard_wing_mach2p02.history",
+        "bytes": 6992,
+        "sha256": "4c24413561afa7bfe298feef6992df17af3b64644da8472efd58fcce8da53210"
+      },
+      "polar_verify": null,
+      "history_verify": null,
+      "polar_rows_data": null,
+      "polar_header": null,
+      "alarm_rows": [],
+      "produced_files": {
+        "v7_01_standard_wing_mach2p02.history": {
+          "path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\d12d004-vspaero72-lf-20261102T0500Z\\raw_artifacts\\cases\\V7-01\\v7_01_standard_wing_mach2p02.history",
+          "bytes": 6992,
+          "sha256": "4c24413561afa7bfe298feef6992df17af3b64644da8472efd58fcce8da53210"
+        },
+        "v7_01_standard_wing_mach2p02.lod": {
+          "path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\d12d004-vspaero72-lf-20261102T0500Z\\raw_artifacts\\cases\\V7-01\\v7_01_standard_wing_mach2p02.lod",
+          "bytes": 1034,
+          "sha256": "f4becbf603150f3ce9ff196078fd63b2e9c2c2a2b8912f964ebd01e09cbaae4b"
+        },
+        "v7_01_standard_wing_mach2p02.adb": {
+          "path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\d12d004-vspaero72-lf-20261102T0500Z\\raw_artifacts\\cases\\V7-01\\v7_01_standard_wing_mach2p02.adb",
+          "bytes": 4920,
+          "sha256": "ff36755c1093592d047380002fff5adb285a640eb82b6f9272fcce75c6746d6d"
+        },
+        "v7_01_standard_wing_mach2p02.vspaero": {
+          "path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\d12d004-vspaero72-lf-20261102T0500Z\\raw_artifacts\\cases\\V7-01\\v7_01_standard_wing_mach2p02.vspaero",
+          "bytes": 781,
+          "sha256": "d0b515427a65cf2aec1a826821e3c9e052366a1caa0a7f2e03d7df7a9928fb9a"
+        },
+        "v7_01_standard_wing_mach2p02.vspgeom": {
+          "path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\d12d004-vspaero72-lf-20261102T0500Z\\raw_artifacts\\cases\\V7-01\\v7_01_standard_wing_mach2p02.vspgeom",
+          "bytes": 2019343,
+          "sha256": "091ba77f0323fd1d55071a38105dfcfeb17efbc39b987c7a415be8a612672307"
+        }
+      },
+      "notes": [
+        "TimeoutExpired after 600s"
+      ],
+      "error": "TimeoutExpired after 600s",
+      "started_utc": "2026-11-02T06:14:35Z",
+      "finished_utc": "2026-11-02T06:24:36Z",
+      "numeric_divergence": true,
+      "divergence_ref": "D:\\RCAIDE-d12d004\\research\\concorde_metaopt\\optimization_runs\\d12d004-vspaero72-lf-20261102T0500Z\\evidence\\v1\\v7_01_divergence.json",
+      "no_polar": true,
+      "final_classification": "TIMEOUT_DIVERGED",
+      "note_final": "Mach 2.02 thin wing: 600 s timeout, no .polar; .history diverges to O(1e18)-O(1e24) by wake iteration 2-3 (evidence/v1/v7_01_divergence.json). Nonphysical, no retry."
+    }
+  },
+  "updated_utc": "2026-11-02T06:28:14Z",
+  "finalised_utc": "2026-11-02T06:30:46Z"
+}

@@ -1,0 +1,81 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_kind": "D12D004_V1_ROOT_CAUSE_STATIC_CHECK",
+  "generated_utc": "2026-11-02T06:38:47Z",
+  "run_id": "d12d004-vspaero72-lf-20261102T0500Z",
+  "question": "Is the thin analysis supposed to use the DegenGeom input mode, i.e. is the API-generated .vspgeom path wrong?",
+  "method": "zero-solver static review only; no vspaero.exe and no OpenVSP analysis was executed for this check",
+  "evidence": {
+    "openvsp_enum_values": {
+      "source": "D:/OpenVSP-3.55.0/OpenVSP-3.55.0-win64/python/openvsp/openvsp/facade.py + compiled _vsp, printed through a python import",
+      "SET_NONE": -1,
+      "SET_ALL": 0,
+      "SYM_NONE": 0,
+      "MANUAL_REF": 0
+    },
+    "official_api_test_configuration": {
+      "file": "D:/OpenVSP-3.55.0/OpenVSP-3.55.0-win64/python/openvsp/openvsp/tests/test_vsp_api.py",
+      "lines": "1450-1463 and 1524-1536",
+      "code": "VSPAEROComputeGeometry with GeomSet=[vsp.SET_NONE] and ThinGeomSet=[vsp.SET_ALL]",
+      "meaning": "the official Python API test configures VSPAEROComputeGeometry for thin geometry exactly as our generator did"
+    },
+    "our_generator_configuration": {
+      "file": "C:/Users/pc/AppData/Local/RCAIDE_Supersonic_agent_state/fullchain/d12d004/a2/scripts/gen_v1_setups.py",
+      "location": "GA-compute-geometry helper: SetAnalysisInputDefaults('VSPAEROComputeGeometry'); GeomSet=SET_NONE; ThinGeomSet=SET_ALL; Symmetry=SYM_NONE; ExecAnalysis",
+      "oscillating": "the same helper generated all 9 V7 setups; the same vspgeom content was accepted by the strict 17-field readback"
+    },
+    "generated_geometry_csv_result": {
+      "file": "evidence/v1/setup_gen/V7-00/geom_result_thin.csv",
+      "GeometrySet": -1,
+      "ThinGeometrySet": 0,
+      "interpretation": "GeometrySet=-1 == SET_NONE (no thick/panel set) and ThinGeometrySet=0 == SET_ALL (all thin geoms); this is exactly the official thin configuration, not a swap",
+      "same_values_all_v7_cases": true
+    },
+    "input_mode_comparison": {
+      "official_example": {
+        "path": "D:/OpenVSP-3.55.0/OpenVSP-3.55.0-win64/vspaero_ex/Uber_eCRM-002/",
+        "inputs": "uber2_DegenGeom.csv + uber2_DegenGeom.groups + .vspaero (40 components, 9 groups)",
+        "readme_command": "vspaero -omp 4 -unsteady uber2_DegenGeom",
+        "vspaero_fields": {
+          "Sref": 117.0175,
+          "Cref": 3.4316,
+          "Bref": 35.6199,
+          "X_cg": 24.414,
+          "Y_cg": 0.0,
+          "Z_cg": 11.067,
+          "Mach": 0.1,
+          "AoA": -15.0,
+          "Beta": 0.0,
+          "Vinf": 101.0,
+          "Rho": 0.002377,
+          "ReCref": 5000000.0,
+          "NumWakeNodes": 128,
+          "WakeIters": 0,
+          "TimeStep": 0.001616046,
+          "NumberOfTimeSteps": 150
+        },
+        "note": "the example is an unsteady multirotor case driven by the .groups file and TimeStep/NumberOfTimeSteps; it is not a steady thin benchmark and its DegenGeom use does not prove VSPGEOM is wrong"
+      },
+      "our_case": {
+        "inputs": "API-generated VSPGEOM v3 (header 4811 nodes / 4122 tris / 33 surfaces) + .vspaero; -omp 4, steady (no -unsteady, no TimeStep)",
+        "contract": "Sref 117.0175 / Cref 3.4316 / Bref 35.6199 / X_cg 24.414 / Y_cg 0 / Z_cg 11.067 / Mach 0.1 / AoA 2 / Beta 0 / Vinf 29.50680184 / Rho 0.1153178340089936 / ReCref 821360.597981 / Symmetry 0 / NumWakeNodes 8 / WakeIters 5 / WakeRelax 1 / FarDist -1",
+        "vspaero_fields_different_from_official": [
+          "Vinf 29.50680184 vs 101",
+          "Rho 0.115317834 vs 0.002377",
+          "ReCref 821360.598 vs 5000000",
+          "NumWakeNodes 8 vs 128",
+          "WakeIters 5 vs 0",
+          "no TimeStep/NumberOfTimeSteps"
+        ]
+      }
+    }
+  },
+  "conclusion": {
+    "vspgeom_is_official_thin_path": true,
+    "input_mode_error": false,
+    "degengeom_diagnostic_start": "SKIPPED per Lead decision rule 4: the static check shows the VSPGEOM path is the official thin path (GeomSet=SET_NONE/-1, ThinGeomSet=SET_ALL/0 confirmed), so no extra solver start is authorised or used",
+    "likely_contributing_factor": "not the geometry mode: the injected contract used NumWakeNodes=8 / WakeIters=5 / WakeRelax=1, while the official example uses NumWakeNodes=128 / WakeIters=0; the Mach 0.10 wake iteration diverged at iteration 2. Unproven hypothesis, recorded as such.",
+    "unresolved": "why the VSPAERO 7.2.2 thin solution diverges is not established; solving it requires a new authorised round (settings study), which this round does not have"
+  },
+  "budget_effect": "none: no solver start, starts_used stays 4/10, remaining 6 CLOSED_NOT_CARRIED_OVER_NOT_REALLOCATED"
+}

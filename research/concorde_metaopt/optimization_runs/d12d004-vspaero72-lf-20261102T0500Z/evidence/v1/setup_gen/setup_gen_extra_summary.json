@@ -1,0 +1,1118 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_kind": "D12D004_V1_EXTRA_SETUP_GEN_SUMMARY",
+  "stage": "V1_ZERO_SOLVER_EXTRA_SETUP_GENERATION",
+  "generated_utc": "2026-11-02T06:03:45Z",
+  "prepared_by": "A2 (run-opt)",
+  "openvsp_version": "OpenVSP 3.55.0",
+  "cases": [
+    {
+      "case_id": "V7-03",
+      "status": "PASS",
+      "basename": "v7_03_12d_baseline_tess16x33",
+      "method": "reuse V0 zero-solver assets; contract re-injected from V0 raw setup",
+      "v0_contract": {
+        "path": "D:\\RCAIDE-d12d004\\research\\concorde_metaopt\\optimization_runs\\d12d004-vspaero72-lf-20261102T0500Z\\evidence\\v0\\setup_gen\\wing355_thin_v0_contract.vspaero",
+        "bytes": 847,
+        "sha256": "c9cef04e6a6986fdc87f07338e168dbf2ee17bdab3f5836b417ba6e6036ccb64"
+      },
+      "v0_raw": {
+        "path": "D:\\RCAIDE-d12d004\\research\\concorde_metaopt\\optimization_runs\\d12d004-vspaero72-lf-20261102T0500Z\\evidence\\v0\\setup_gen\\wing355_baseline.vspaero",
+        "bytes": 930,
+        "sha256": "c862aa220bc6f3a9d057b2fbe99c4ed340591a14ad88f455d3d1b0ddbe7c1804"
+      },
+      "v0_vspgeom": {
+        "path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\d12d004-vspaero72-lf-20261102T0500Z\\raw_artifacts\\wing355_baseline.vspgeom",
+        "bytes": 224357,
+        "sha256": "9fcda6d5d45300fbb0e20257c9ddc80540b44f5064a9566089d7ef85f9018d8e"
+      },
+      "contract": {
+        "path": "D:\\RCAIDE-d12d004\\research\\concorde_metaopt\\optimization_runs\\d12d004-vspaero72-lf-20261102T0500Z\\evidence\\v1\\setup_gen\\V7-03\\v7_03_12d_baseline_tess16x33.vspaero",
+        "bytes": 847,
+        "sha256": "c9cef04e6a6986fdc87f07338e168dbf2ee17bdab3f5836b417ba6e6036ccb64"
+      },
+      "vspgeom": {
+        "path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\d12d004-vspaero72-lf-20261102T0500Z\\raw_artifacts\\setup_v1\\V7-03\\v7_03_12d_baseline_tess16x33.vspgeom",
+        "bytes": 224357,
+        "sha256": "9fcda6d5d45300fbb0e20257c9ddc80540b44f5064a9566089d7ef85f9018d8e"
+      },
+      "contract_matches_v0": true,
+      "vspgeom_matches_v0": true,
+      "readback": {
+        "status": "PASS",
+        "fields_checked": [
+          {
+            "field": "Sref",
+            "expected": 358.25,
+            "actual": 358.25,
+            "spec": "rel:1e-09",
+            "detail": "rel_delta=0.000e+00 tol=3.583e-07",
+            "ok": true
+          },
+          {
+            "field": "Cref",
+            "expected": 18.489893,
+            "actual": 18.489893,
+            "spec": "rel:1e-09",
+            "detail": "rel_delta=0.000e+00 tol=1.849e-08",
+            "ok": true
+          },
+          {
+            "field": "Bref",
+            "expected": 25.604638,
+            "actual": 25.604638,
+            "spec": "rel:1e-09",
+            "detail": "rel_delta=0.000e+00 tol=2.560e-08",
+            "ok": true
+          },
+          {
+            "field": "X_cg",
+            "expected": 16.821978259514246,
+            "actual": 16.821978259514246,
+            "spec": "abs:1e-06",
+            "detail": "abs_delta=0.000e+00 tol=1.000e-06",
+            "ok": true
+          },
+          {
+            "field": "Y_cg",
+            "expected": 0.0,
+            "actual": 0.0,
+            "spec": "abs:1e-09",
+            "detail": "abs_delta=0.000e+00 tol=1.000e-09",
+            "ok": true
+          },
+          {
+            "field": "Z_cg",
+            "expected": 0.0,
+            "actual": 0.0,
+            "spec": "abs:1e-06",
+            "detail": "abs_delta=0.000e+00 tol=1.000e-06",
+            "ok": true
+          },
+          {
+            "field": "Mach",
+            "expected": 2.02,
+            "actual": 2.02,
+            "spec": "rel:1e-09",
+            "detail": "rel_delta=0.000e+00 tol=2.020e-09",
+            "ok": true
+          },
+          {
+            "field": "AoA",
+            "expected": 2.0,
+            "actual": 2.0,
+            "spec": "abs:1e-09",
+            "detail": "abs_delta=0.000e+00 tol=1.000e-09",
+            "ok": true
+          },
+          {
+            "field": "Beta",
+            "expected": 0.0,
+            "actual": 0.0,
+            "spec": "abs:1e-09",
+            "detail": "abs_delta=0.000e+00 tol=1.000e-09",
+            "ok": true
+          },
+          {
+            "field": "ReCref",
+            "expected": 89397005.8767656,
+            "actual": 89397005.8767656,
+            "spec": "rel:1e-06",
+            "detail": "rel_delta=0.000e+00 tol=8.940e+01",
+            "ok": true
+          },
+          {
+            "field": "Vinf",
+            "expected": 596.0373972278921,
+            "actual": 596.0373972278921,
+            "spec": "rel:1e-09",
+            "detail": "rel_delta=0.000e+00 tol=5.960e-07",
+            "ok": true
+          },
+          {
+            "field": "Rho",
+            "expected": 0.1153178340089936,
+            "actual": 0.1153178340089936,
+            "spec": "rel:1e-09",
+            "detail": "rel_delta=0.000e+00 tol=1.000e-09",
+            "ok": true
+          },
+          {
+            "field": "Symmetry",
+            "expected": 0.0,
+            "actual": 0.0,
+            "spec": "exact:0.0",
+            "detail": "exact ok",
+            "ok": true
+          },
+          {
+            "field": "NumWakeNodes",
+            "expected": 8.0,
+            "actual": 8.0,
+            "spec": "exact:0.0",
+            "detail": "exact ok",
+            "ok": true
+          },
+          {
+            "field": "WakeIters",
+            "expected": 5.0,
+            "actual": 5.0,
+            "spec": "exact:0.0",
+            "detail": "exact ok",
+            "ok": true
+          },
+          {
+            "field": "WakeRelax",
+            "expected": 1.0,
+            "actual": 1.0,
+            "spec": "rel:1e-09",
+            "detail": "rel_delta=0.000e+00 tol=1.000e-09",
+            "ok": true
+          },
+          {
+            "field": "FarDist",
+            "expected": -1.0,
+            "actual": -1.0,
+            "spec": "rel:1e-09",
+            "detail": "rel_delta=0.000e+00 tol=1.000e-09",
+            "ok": true
+          }
+        ],
+        "assertions": 17,
+        "sha256": "c9cef04e6a6986fdc87f07338e168dbf2ee17bdab3f5836b417ba6e6036ccb64",
+        "vector_rows": 1,
+        "legacy_lines": 0
+      },
+      "solver_processes_started": 0,
+      "billable": false
+    },
+    {
+      "case_id": "V7-02",
+      "status": "PASS",
+      "basename": "v7_02_12d_baseline_tess8x17",
+      "method": "OpenVSP 3.55 API VSPAEROComputeGeometry(ThinGeomSet=ALL) + VSPAEROSweep(StopBeforeRun=1)",
+      "openvsp_version": "OpenVSP 3.55.0",
+      "model": {
+        "path": "D:\\RCAIDE-d12d004\\research\\concorde_metaopt\\optimization_runs\\d12d004-vspaero72-lf-20261102T0500Z\\evidence\\v1\\setup_gen\\V7-02\\model\\v7_02_12d_baseline_tess8x17.vsp3",
+        "bytes": 111816,
+        "sha256": "e019706ecb62b95dde2e2a767837f4327246f9bf2902761ac0d5378d8429dd21"
+      },
+      "tess_readback": {
+        "Tess_U": 8.0,
+        "Tess_W": 17.0
+      },
+      "geometry_metrics": {
+        "main_wing": {
+          "name": "main_wing",
+          "total_area_m2": 358.25000000000006,
+          "total_span_m": 25.604638251691824
+        }
+      },
+      "sweep_inputs": {
+        "MachStart": 2.02,
+        "MachEnd": 2.02,
+        "MachNpts": 1,
+        "AlphaStart": 2.0,
+        "AlphaEnd": 2.0,
+        "AlphaNpts": 1,
+        "BetaStart": 0.0,
+        "BetaEnd": 0.0,
+        "BetaNpts": 1
+      },
+      "stop_before_run_readback": 1,
+      "vspgeom": {
+        "path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\d12d004-vspaero72-lf-20261102T0500Z\\raw_artifacts\\setup_v1\\V7-02\\v7_02_12d_baseline_tess8x17.vspgeom",
+        "bytes": 112391,
+        "sha256": "eac1d2b9361cd1b2decf008d8cfa309ecfffe5bc85329c075dc15064e7532133"
+      },
+      "raw_setup": {
+        "path": "D:\\RCAIDE-d12d004\\research\\concorde_metaopt\\optimization_runs\\d12d004-vspaero72-lf-20261102T0500Z\\evidence\\v1\\setup_gen\\V7-02\\v7_02_12d_baseline_tess8x17_raw.vspaero",
+        "bytes": 930,
+        "sha256": "c862aa220bc6f3a9d057b2fbe99c4ed340591a14ad88f455d3d1b0ddbe7c1804"
+      },
+      "contract": {
+        "path": "D:\\RCAIDE-d12d004\\research\\concorde_metaopt\\optimization_runs\\d12d004-vspaero72-lf-20261102T0500Z\\evidence\\v1\\setup_gen\\V7-02\\v7_02_12d_baseline_tess8x17.vspaero",
+        "bytes": 847,
+        "sha256": "c9cef04e6a6986fdc87f07338e168dbf2ee17bdab3f5836b417ba6e6036ccb64"
+      },
+      "readback": {
+        "status": "PASS",
+        "fields_checked": [
+          {
+            "field": "Sref",
+            "expected": 358.25,
+            "actual": 358.25,
+            "spec": "rel:1e-09",
+            "detail": "rel_delta=0.000e+00 tol=3.583e-07",
+            "ok": true
+          },
+          {
+            "field": "Cref",
+            "expected": 18.489893,
+            "actual": 18.489893,
+            "spec": "rel:1e-09",
+            "detail": "rel_delta=0.000e+00 tol=1.849e-08",
+            "ok": true
+          },
+          {
+            "field": "Bref",
+            "expected": 25.604638,
+            "actual": 25.604638,
+            "spec": "rel:1e-09",
+            "detail": "rel_delta=0.000e+00 tol=2.560e-08",
+            "ok": true
+          },
+          {
+            "field": "X_cg",
+            "expected": 16.821978259514246,
+            "actual": 16.821978259514246,
+            "spec": "abs:1e-06",
+            "detail": "abs_delta=0.000e+00 tol=1.000e-06",
+            "ok": true
+          },
+          {
+            "field": "Y_cg",
+            "expected": 0.0,
+            "actual": 0.0,
+            "spec": "abs:1e-09",
+            "detail": "abs_delta=0.000e+00 tol=1.000e-09",
+            "ok": true
+          },
+          {
+            "field": "Z_cg",
+            "expected": 0.0,
+            "actual": 0.0,
+            "spec": "abs:1e-06",
+            "detail": "abs_delta=0.000e+00 tol=1.000e-06",
+            "ok": true
+          },
+          {
+            "field": "Mach",
+            "expected": 2.02,
+            "actual": 2.02,
+            "spec": "rel:1e-09",
+            "detail": "rel_delta=0.000e+00 tol=2.020e-09",
+            "ok": true
+          },
+          {
+            "field": "AoA",
+            "expected": 2.0,
+            "actual": 2.0,
+            "spec": "abs:1e-09",
+            "detail": "abs_delta=0.000e+00 tol=1.000e-09",
+            "ok": true
+          },
+          {
+            "field": "Beta",
+            "expected": 0.0,
+            "actual": 0.0,
+            "spec": "abs:1e-09",
+            "detail": "abs_delta=0.000e+00 tol=1.000e-09",
+            "ok": true
+          },
+          {
+            "field": "ReCref",
+            "expected": 89397005.8767656,
+            "actual": 89397005.8767656,
+            "spec": "rel:1e-06",
+            "detail": "rel_delta=0.000e+00 tol=8.940e+01",
+            "ok": true
+          },
+          {
+            "field": "Vinf",
+            "expected": 596.0373972278921,
+            "actual": 596.0373972278921,
+            "spec": "rel:1e-09",
+            "detail": "rel_delta=0.000e+00 tol=5.960e-07",
+            "ok": true
+          },
+          {
+            "field": "Rho",
+            "expected": 0.1153178340089936,
+            "actual": 0.1153178340089936,
+            "spec": "rel:1e-09",
+            "detail": "rel_delta=0.000e+00 tol=1.000e-09",
+            "ok": true
+          },
+          {
+            "field": "Symmetry",
+            "expected": 0.0,
+            "actual": 0.0,
+            "spec": "exact:0.0",
+            "detail": "exact ok",
+            "ok": true
+          },
+          {
+            "field": "NumWakeNodes",
+            "expected": 8.0,
+            "actual": 8.0,
+            "spec": "exact:0.0",
+            "detail": "exact ok",
+            "ok": true
+          },
+          {
+            "field": "WakeIters",
+            "expected": 5.0,
+            "actual": 5.0,
+            "spec": "exact:0.0",
+            "detail": "exact ok",
+            "ok": true
+          },
+          {
+            "field": "WakeRelax",
+            "expected": 1.0,
+            "actual": 1.0,
+            "spec": "rel:1e-09",
+            "detail": "rel_delta=0.000e+00 tol=1.000e-09",
+            "ok": true
+          },
+          {
+            "field": "FarDist",
+            "expected": -1.0,
+            "actual": -1.0,
+            "spec": "rel:1e-09",
+            "detail": "rel_delta=0.000e+00 tol=1.000e-09",
+            "ok": true
+          }
+        ],
+        "assertions": 17,
+        "sha256": "c9cef04e6a6986fdc87f07338e168dbf2ee17bdab3f5836b417ba6e6036ccb64",
+        "vector_rows": 1,
+        "legacy_lines": 0
+      },
+      "negative_control": {
+        "raw_rejected": true,
+        "raw_error": "ContractViolation: SETUP_READBACK_FAIL in D:\\RCAIDE-d12d004\\research\\concorde_metaopt\\optimization_runs\\d12d004-vspaero72-lf-20261102T0500Z\\evidence\\v1\\setup_gen\\V7-02\\v7_02_12d_baseline_tess8x17_raw.vspaero: 6 violation(s): [{'field': 'ReCref', 'kind': 'MISMATCH', 'expected': 89397005.8767656, 'actual': 10000000.0, 'spec': 'rel:1e-06', 'detail': 'rel_delta=7.940e+07 tol=8.940e+01', 'ok': False}, {'field': 'Vinf', 'kind': 'MISMATCH', 'expected': 596.0373972278921, 'actual': 100.0, 'spec': 'rel:1e-09', 'detail': 'rel_delta=4.960e+02 tol=5.960e-07', 'ok': False}, {'field': 'Rho', 'kind': 'MISMATCH', 'expected': 0.1153178340089936, 'actual': 0.002377, 'spec': 'rel:1e-09', 'detail': 'rel_delta=1.129e-01 tol=1.000e-09', 'ok': False}, {'field': 'Vinf', 'kind': 'SETUP_DEFAULT_LEAK', 'expected': 596.0373972278921, 'actual': 100.0, 'detail': 'VSPAERO default 100.0 was not replaced'}, {'field': 'Rho', 'kind': 'SETUP_DEFAULT_LEAK', 'expected': 0.1153178340089936, 'actual': 0.002377, 'detail': 'VSPAERO default 0.002377 was not replaced'}, {'field': 'ReCref', 'kind': 'SETUP_DEFAULT_LEAK', 'expected': 89397005.8767656, 'actual': 10000000.0, 'detail': 'VSPAERO default 10000000.0 was not replaced'}]"
+      },
+      "sweep_rows_in_contract": [
+        "1 2 0"
+      ],
+      "design_metadata": {
+        "design_set": "12d_lifting_surfaces",
+        "config": "D:\\RCAIDE-d12d004\\research\\concorde_metaopt\\configs\\design_space_12d_lifting_surfaces.yaml",
+        "baseline_vector_12d": [
+          358.25,
+          1.83,
+          67.0,
+          48.0,
+          71.0,
+          0.480469,
+          0.945313,
+          0.408284,
+          0.130178,
+          0.0,
+          33.91,
+          0.0
+        ],
+        "case_vector_12d": [
+          358.25,
+          1.83,
+          67.0,
+          48.0,
+          71.0,
+          0.480469,
+          0.945313,
+          0.408284,
+          0.130178,
+          0.0,
+          33.91,
+          0.0
+        ],
+        "changed_variable": null,
+        "changed_value": null,
+        "full_15d_vector": [
+          358.25,
+          1.83,
+          67.0,
+          48.0,
+          71.0,
+          0.480469,
+          0.945313,
+          0.408284,
+          0.130178,
+          0.0,
+          33.91,
+          0.0,
+          61.66,
+          4.3,
+          1.152778
+        ],
+        "wing_from_geometry_model": {
+          "area_m2": 358.25000000000006,
+          "span_m": 25.604638251691824,
+          "root_chord_m": 29.901818514349216,
+          "mean_aerodynamic_chord_m": 18.489892944055953,
+          "sections": [
+            {
+              "percent_span_location": 0.0,
+              "chord_m": 29.901818514349216,
+              "leading_edge_x_m": 0.0,
+              "twist_deg": 0.0
+            },
+            {
+              "percent_span_location": 0.480469,
+              "chord_m": 12.208434070312554,
+              "leading_edge_x_m": 18.914470750635964,
+              "twist_deg": 0.0
+            },
+            {
+              "percent_span_location": 0.945313,
+              "chord_m": 3.892558930560952,
+              "leading_edge_x_m": 27.60278482830357,
+              "twist_deg": 0.0
+            },
+            {
+              "percent_span_location": 1.0,
+              "chord_m": 0.9731361054965724,
+              "leading_edge_x_m": 30.365937891543936,
+              "twist_deg": 0.0
+            }
+          ]
+        }
+      },
+      "expect_json": {
+        "path": "D:\\RCAIDE-d12d004\\research\\concorde_metaopt\\optimization_runs\\d12d004-vspaero72-lf-20261102T0500Z\\evidence\\v1\\setup_gen\\V7-02\\expect.json",
+        "bytes": 2729,
+        "sha256": "00be770e0c7b984dd9e7a6a8591aa3eded7a440eaf90fcc0bd49b056a6a8172b"
+      },
+      "solver_processes_started": 0,
+      "billable": false,
+      "notes": [
+        "Zero-solver setup generation; no vspaero process was forked."
+      ],
+      "checks": {
+        "readback_status_pass": true,
+        "readback_assertions_17": true,
+        "stop_before_run": true,
+        "raw_defaults_rejected": true,
+        "tess_readback_ok": true
+      }
+    },
+    {
+      "case_id": "V7-04",
+      "status": "PASS",
+      "basename": "v7_04_12d_baseline_tess32x65",
+      "method": "OpenVSP 3.55 API VSPAEROComputeGeometry(ThinGeomSet=ALL) + VSPAEROSweep(StopBeforeRun=1)",
+      "openvsp_version": "OpenVSP 3.55.0",
+      "model": {
+        "path": "D:\\RCAIDE-d12d004\\research\\concorde_metaopt\\optimization_runs\\d12d004-vspaero72-lf-20261102T0500Z\\evidence\\v1\\setup_gen\\V7-04\\model\\v7_04_12d_baseline_tess32x65.vsp3",
+        "bytes": 111816,
+        "sha256": "344ded0a77a760e45594c2bdb5006b263e490bdca73bf473080e36435e8c3627"
+      },
+      "tess_readback": {
+        "Tess_U": 32.0,
+        "Tess_W": 65.0
+      },
+      "geometry_metrics": {
+        "main_wing": {
+          "name": "main_wing",
+          "total_area_m2": 358.25000000000006,
+          "total_span_m": 25.604638251691824
+        }
+      },
+      "sweep_inputs": {
+        "MachStart": 2.02,
+        "MachEnd": 2.02,
+        "MachNpts": 1,
+        "AlphaStart": 2.0,
+        "AlphaEnd": 2.0,
+        "AlphaNpts": 1,
+        "BetaStart": 0.0,
+        "BetaEnd": 0.0,
+        "BetaNpts": 1
+      },
+      "stop_before_run_readback": 1,
+      "vspgeom": {
+        "path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\d12d004-vspaero72-lf-20261102T0500Z\\raw_artifacts\\setup_v1\\V7-04\\v7_04_12d_baseline_tess32x65.vspgeom",
+        "bytes": 448486,
+        "sha256": "f4998fff637f1f53aa295ebdd3a0f5b38e99ed824379258f4588adbeb794158f"
+      },
+      "raw_setup": {
+        "path": "D:\\RCAIDE-d12d004\\research\\concorde_metaopt\\optimization_runs\\d12d004-vspaero72-lf-20261102T0500Z\\evidence\\v1\\setup_gen\\V7-04\\v7_04_12d_baseline_tess32x65_raw.vspaero",
+        "bytes": 930,
+        "sha256": "c862aa220bc6f3a9d057b2fbe99c4ed340591a14ad88f455d3d1b0ddbe7c1804"
+      },
+      "contract": {
+        "path": "D:\\RCAIDE-d12d004\\research\\concorde_metaopt\\optimization_runs\\d12d004-vspaero72-lf-20261102T0500Z\\evidence\\v1\\setup_gen\\V7-04\\v7_04_12d_baseline_tess32x65.vspaero",
+        "bytes": 847,
+        "sha256": "c9cef04e6a6986fdc87f07338e168dbf2ee17bdab3f5836b417ba6e6036ccb64"
+      },
+      "readback": {
+        "status": "PASS",
+        "fields_checked": [
+          {
+            "field": "Sref",
+            "expected": 358.25,
+            "actual": 358.25,
+            "spec": "rel:1e-09",
+            "detail": "rel_delta=0.000e+00 tol=3.583e-07",
+            "ok": true
+          },
+          {
+            "field": "Cref",
+            "expected": 18.489893,
+            "actual": 18.489893,
+            "spec": "rel:1e-09",
+            "detail": "rel_delta=0.000e+00 tol=1.849e-08",
+            "ok": true
+          },
+          {
+            "field": "Bref",
+            "expected": 25.604638,
+            "actual": 25.604638,
+            "spec": "rel:1e-09",
+            "detail": "rel_delta=0.000e+00 tol=2.560e-08",
+            "ok": true
+          },
+          {
+            "field": "X_cg",
+            "expected": 16.821978259514246,
+            "actual": 16.821978259514246,
+            "spec": "abs:1e-06",
+            "detail": "abs_delta=0.000e+00 tol=1.000e-06",
+            "ok": true
+          },
+          {
+            "field": "Y_cg",
+            "expected": 0.0,
+            "actual": 0.0,
+            "spec": "abs:1e-09",
+            "detail": "abs_delta=0.000e+00 tol=1.000e-09",
+            "ok": true
+          },
+          {
+            "field": "Z_cg",
+            "expected": 0.0,
+            "actual": 0.0,
+            "spec": "abs:1e-06",
+            "detail": "abs_delta=0.000e+00 tol=1.000e-06",
+            "ok": true
+          },
+          {
+            "field": "Mach",
+            "expected": 2.02,
+            "actual": 2.02,
+            "spec": "rel:1e-09",
+            "detail": "rel_delta=0.000e+00 tol=2.020e-09",
+            "ok": true
+          },
+          {
+            "field": "AoA",
+            "expected": 2.0,
+            "actual": 2.0,
+            "spec": "abs:1e-09",
+            "detail": "abs_delta=0.000e+00 tol=1.000e-09",
+            "ok": true
+          },
+          {
+            "field": "Beta",
+            "expected": 0.0,
+            "actual": 0.0,
+            "spec": "abs:1e-09",
+            "detail": "abs_delta=0.000e+00 tol=1.000e-09",
+            "ok": true
+          },
+          {
+            "field": "ReCref",
+            "expected": 89397005.8767656,
+            "actual": 89397005.8767656,
+            "spec": "rel:1e-06",
+            "detail": "rel_delta=0.000e+00 tol=8.940e+01",
+            "ok": true
+          },
+          {
+            "field": "Vinf",
+            "expected": 596.0373972278921,
+            "actual": 596.0373972278921,
+            "spec": "rel:1e-09",
+            "detail": "rel_delta=0.000e+00 tol=5.960e-07",
+            "ok": true
+          },
+          {
+            "field": "Rho",
+            "expected": 0.1153178340089936,
+            "actual": 0.1153178340089936,
+            "spec": "rel:1e-09",
+            "detail": "rel_delta=0.000e+00 tol=1.000e-09",
+            "ok": true
+          },
+          {
+            "field": "Symmetry",
+            "expected": 0.0,
+            "actual": 0.0,
+            "spec": "exact:0.0",
+            "detail": "exact ok",
+            "ok": true
+          },
+          {
+            "field": "NumWakeNodes",
+            "expected": 8.0,
+            "actual": 8.0,
+            "spec": "exact:0.0",
+            "detail": "exact ok",
+            "ok": true
+          },
+          {
+            "field": "WakeIters",
+            "expected": 5.0,
+            "actual": 5.0,
+            "spec": "exact:0.0",
+            "detail": "exact ok",
+            "ok": true
+          },
+          {
+            "field": "WakeRelax",
+            "expected": 1.0,
+            "actual": 1.0,
+            "spec": "rel:1e-09",
+            "detail": "rel_delta=0.000e+00 tol=1.000e-09",
+            "ok": true
+          },
+          {
+            "field": "FarDist",
+            "expected": -1.0,
+            "actual": -1.0,
+            "spec": "rel:1e-09",
+            "detail": "rel_delta=0.000e+00 tol=1.000e-09",
+            "ok": true
+          }
+        ],
+        "assertions": 17,
+        "sha256": "c9cef04e6a6986fdc87f07338e168dbf2ee17bdab3f5836b417ba6e6036ccb64",
+        "vector_rows": 1,
+        "legacy_lines": 0
+      },
+      "negative_control": {
+        "raw_rejected": true,
+        "raw_error": "ContractViolation: SETUP_READBACK_FAIL in D:\\RCAIDE-d12d004\\research\\concorde_metaopt\\optimization_runs\\d12d004-vspaero72-lf-20261102T0500Z\\evidence\\v1\\setup_gen\\V7-04\\v7_04_12d_baseline_tess32x65_raw.vspaero: 6 violation(s): [{'field': 'ReCref', 'kind': 'MISMATCH', 'expected': 89397005.8767656, 'actual': 10000000.0, 'spec': 'rel:1e-06', 'detail': 'rel_delta=7.940e+07 tol=8.940e+01', 'ok': False}, {'field': 'Vinf', 'kind': 'MISMATCH', 'expected': 596.0373972278921, 'actual': 100.0, 'spec': 'rel:1e-09', 'detail': 'rel_delta=4.960e+02 tol=5.960e-07', 'ok': False}, {'field': 'Rho', 'kind': 'MISMATCH', 'expected': 0.1153178340089936, 'actual': 0.002377, 'spec': 'rel:1e-09', 'detail': 'rel_delta=1.129e-01 tol=1.000e-09', 'ok': False}, {'field': 'Vinf', 'kind': 'SETUP_DEFAULT_LEAK', 'expected': 596.0373972278921, 'actual': 100.0, 'detail': 'VSPAERO default 100.0 was not replaced'}, {'field': 'Rho', 'kind': 'SETUP_DEFAULT_LEAK', 'expected': 0.1153178340089936, 'actual': 0.002377, 'detail': 'VSPAERO default 0.002377 was not replaced'}, {'field': 'ReCref', 'kind': 'SETUP_DEFAULT_LEAK', 'expected': 89397005.8767656, 'actual': 10000000.0, 'detail': 'VSPAERO default 10000000.0 was not replaced'}]"
+      },
+      "sweep_rows_in_contract": [
+        "1 2 0"
+      ],
+      "design_metadata": {
+        "design_set": "12d_lifting_surfaces",
+        "config": "D:\\RCAIDE-d12d004\\research\\concorde_metaopt\\configs\\design_space_12d_lifting_surfaces.yaml",
+        "baseline_vector_12d": [
+          358.25,
+          1.83,
+          67.0,
+          48.0,
+          71.0,
+          0.480469,
+          0.945313,
+          0.408284,
+          0.130178,
+          0.0,
+          33.91,
+          0.0
+        ],
+        "case_vector_12d": [
+          358.25,
+          1.83,
+          67.0,
+          48.0,
+          71.0,
+          0.480469,
+          0.945313,
+          0.408284,
+          0.130178,
+          0.0,
+          33.91,
+          0.0
+        ],
+        "changed_variable": null,
+        "changed_value": null,
+        "full_15d_vector": [
+          358.25,
+          1.83,
+          67.0,
+          48.0,
+          71.0,
+          0.480469,
+          0.945313,
+          0.408284,
+          0.130178,
+          0.0,
+          33.91,
+          0.0,
+          61.66,
+          4.3,
+          1.152778
+        ],
+        "wing_from_geometry_model": {
+          "area_m2": 358.25000000000006,
+          "span_m": 25.604638251691824,
+          "root_chord_m": 29.901818514349216,
+          "mean_aerodynamic_chord_m": 18.489892944055953,
+          "sections": [
+            {
+              "percent_span_location": 0.0,
+              "chord_m": 29.901818514349216,
+              "leading_edge_x_m": 0.0,
+              "twist_deg": 0.0
+            },
+            {
+              "percent_span_location": 0.480469,
+              "chord_m": 12.208434070312554,
+              "leading_edge_x_m": 18.914470750635964,
+              "twist_deg": 0.0
+            },
+            {
+              "percent_span_location": 0.945313,
+              "chord_m": 3.892558930560952,
+              "leading_edge_x_m": 27.60278482830357,
+              "twist_deg": 0.0
+            },
+            {
+              "percent_span_location": 1.0,
+              "chord_m": 0.9731361054965724,
+              "leading_edge_x_m": 30.365937891543936,
+              "twist_deg": 0.0
+            }
+          ]
+        }
+      },
+      "expect_json": {
+        "path": "D:\\RCAIDE-d12d004\\research\\concorde_metaopt\\optimization_runs\\d12d004-vspaero72-lf-20261102T0500Z\\evidence\\v1\\setup_gen\\V7-04\\expect.json",
+        "bytes": 2730,
+        "sha256": "b98a75a6b3f36773175590ba70c666886c19816911e296e9cd48fff6b8e6b16f"
+      },
+      "solver_processes_started": 0,
+      "billable": false,
+      "notes": [
+        "Zero-solver setup generation; no vspaero process was forked."
+      ],
+      "checks": {
+        "readback_status_pass": true,
+        "readback_assertions_17": true,
+        "stop_before_run": true,
+        "raw_defaults_rejected": true,
+        "tess_readback_ok": true
+      }
+    },
+    {
+      "case_id": "V7-08",
+      "status": "PASS",
+      "basename": "v7_08_12d_baseline_alpha0to4",
+      "method": "OpenVSP 3.55 API VSPAEROComputeGeometry(ThinGeomSet=ALL) + VSPAEROSweep(StopBeforeRun=1)",
+      "openvsp_version": "OpenVSP 3.55.0",
+      "model": {
+        "path": "D:\\RCAIDE-d12d004\\research\\concorde_metaopt\\optimization_runs\\d12d004-vspaero72-lf-20261102T0500Z\\evidence\\v1\\setup_gen\\V7-08\\model\\v7_08_12d_baseline_alpha0to4.vsp3",
+        "bytes": 111816,
+        "sha256": "469a684392d7d01656ad63711d529b59b0179a31ac655a72bdcf4b4ea7ba81a2"
+      },
+      "tess_readback": {
+        "Tess_U": 16.0,
+        "Tess_W": 33.0
+      },
+      "geometry_metrics": {
+        "main_wing": {
+          "name": "main_wing",
+          "total_area_m2": 358.25000000000006,
+          "total_span_m": 25.604638251691824
+        }
+      },
+      "sweep_inputs": {
+        "MachStart": 2.02,
+        "MachEnd": 2.02,
+        "MachNpts": 1,
+        "AlphaStart": 0.0,
+        "AlphaEnd": 4.0,
+        "AlphaNpts": 3,
+        "BetaStart": 0.0,
+        "BetaEnd": 0.0,
+        "BetaNpts": 1
+      },
+      "stop_before_run_readback": 1,
+      "vspgeom": {
+        "path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\d12d004-vspaero72-lf-20261102T0500Z\\raw_artifacts\\setup_v1\\V7-08\\v7_08_12d_baseline_alpha0to4.vspgeom",
+        "bytes": 224357,
+        "sha256": "9fcda6d5d45300fbb0e20257c9ddc80540b44f5064a9566089d7ef85f9018d8e"
+      },
+      "raw_setup": {
+        "path": "D:\\RCAIDE-d12d004\\research\\concorde_metaopt\\optimization_runs\\d12d004-vspaero72-lf-20261102T0500Z\\evidence\\v1\\setup_gen\\V7-08\\v7_08_12d_baseline_alpha0to4_raw.vspaero",
+        "bytes": 936,
+        "sha256": "a69bdbbfbb18b1ac8e0f9960936cc5b11fd54610ead658da5a913dfb4dc36de9"
+      },
+      "contract": {
+        "path": "D:\\RCAIDE-d12d004\\research\\concorde_metaopt\\optimization_runs\\d12d004-vspaero72-lf-20261102T0500Z\\evidence\\v1\\setup_gen\\V7-08\\v7_08_12d_baseline_alpha0to4.vspaero",
+        "bytes": 853,
+        "sha256": "9206b45e4e4dc578a1ee1d7779d38e71ceb01809536f927cab8c8b7ad35d81b8"
+      },
+      "readback": {
+        "status": "PASS",
+        "fields_checked": 17,
+        "assertions": 17,
+        "scalar_fields_sans_AoA": {
+          "status": "PASS",
+          "source": "<fields>",
+          "fields_checked": [
+            {
+              "field": "Sref",
+              "expected": 358.25,
+              "actual": 358.25,
+              "spec": "rel:1e-09",
+              "detail": "rel_delta=0.000e+00 tol=3.583e-07",
+              "ok": true
+            },
+            {
+              "field": "Cref",
+              "expected": 18.489893,
+              "actual": 18.489893,
+              "spec": "rel:1e-09",
+              "detail": "rel_delta=0.000e+00 tol=1.849e-08",
+              "ok": true
+            },
+            {
+              "field": "Bref",
+              "expected": 25.604638,
+              "actual": 25.604638,
+              "spec": "rel:1e-09",
+              "detail": "rel_delta=0.000e+00 tol=2.560e-08",
+              "ok": true
+            },
+            {
+              "field": "X_cg",
+              "expected": 16.821978259514246,
+              "actual": 16.821978259514246,
+              "spec": "abs:1e-06",
+              "detail": "abs_delta=0.000e+00 tol=1.000e-06",
+              "ok": true
+            },
+            {
+              "field": "Y_cg",
+              "expected": 0.0,
+              "actual": 0.0,
+              "spec": "abs:1e-09",
+              "detail": "abs_delta=0.000e+00 tol=1.000e-09",
+              "ok": true
+            },
+            {
+              "field": "Z_cg",
+              "expected": 0.0,
+              "actual": 0.0,
+              "spec": "abs:1e-06",
+              "detail": "abs_delta=0.000e+00 tol=1.000e-06",
+              "ok": true
+            },
+            {
+              "field": "Mach",
+              "expected": 2.02,
+              "actual": 2.02,
+              "spec": "rel:1e-09",
+              "detail": "rel_delta=0.000e+00 tol=2.020e-09",
+              "ok": true
+            },
+            {
+              "field": "Beta",
+              "expected": 0.0,
+              "actual": 0.0,
+              "spec": "abs:1e-09",
+              "detail": "abs_delta=0.000e+00 tol=1.000e-09",
+              "ok": true
+            },
+            {
+              "field": "ReCref",
+              "expected": 89397005.8767656,
+              "actual": 89397005.8767656,
+              "spec": "rel:1e-06",
+              "detail": "rel_delta=0.000e+00 tol=8.940e+01",
+              "ok": true
+            },
+            {
+              "field": "Vinf",
+              "expected": 596.0373972278921,
+              "actual": 596.0373972278921,
+              "spec": "rel:1e-09",
+              "detail": "rel_delta=0.000e+00 tol=5.960e-07",
+              "ok": true
+            },
+            {
+              "field": "Rho",
+              "expected": 0.1153178340089936,
+              "actual": 0.1153178340089936,
+              "spec": "rel:1e-09",
+              "detail": "rel_delta=0.000e+00 tol=1.000e-09",
+              "ok": true
+            },
+            {
+              "field": "Symmetry",
+              "expected": 0.0,
+              "actual": 0.0,
+              "spec": "exact:0.0",
+              "detail": "exact ok",
+              "ok": true
+            },
+            {
+              "field": "NumWakeNodes",
+              "expected": 8.0,
+              "actual": 8.0,
+              "spec": "exact:0.0",
+              "detail": "exact ok",
+              "ok": true
+            },
+            {
+              "field": "WakeIters",
+              "expected": 5.0,
+              "actual": 5.0,
+              "spec": "exact:0.0",
+              "detail": "exact ok",
+              "ok": true
+            },
+            {
+              "field": "WakeRelax",
+              "expected": 1.0,
+              "actual": 1.0,
+              "spec": "rel:1e-09",
+              "detail": "rel_delta=0.000e+00 tol=1.000e-09",
+              "ok": true
+            },
+            {
+              "field": "FarDist",
+              "expected": -1.0,
+              "actual": -1.0,
+              "spec": "rel:1e-09",
+              "detail": "rel_delta=0.000e+00 tol=1.000e-09",
+              "ok": true
+            }
+          ],
+          "assertions": 16
+        },
+        "aoa_sweep_value": "0, 2, 4",
+        "aoa_sweep_expected": "0, 2, 4",
+        "aoa_sweep_preserved": true,
+        "note": "V7-08 is an alpha-sweep case: the 17-field strict gate is applied as 16 scalar fields + the AoA sweep vector (0,2,4), because CONTRACT_12D AoA=2 is the single-alpha form."
+      },
+      "negative_control": {
+        "raw_rejected": true,
+        "raw_error": "ContractViolation: SETUP_READBACK_FAIL in D:\\RCAIDE-d12d004\\research\\concorde_metaopt\\optimization_runs\\d12d004-vspaero72-lf-20261102T0500Z\\evidence\\v1\\setup_gen\\V7-08\\v7_08_12d_baseline_alpha0to4_raw.vspaero: 7 violation(s): [{'field': 'AoA', 'kind': 'NON_FINITE', 'detail': \"not a number '0, 2, 4' in D:\\\\RCAIDE-d12d004\\\\research\\\\concorde_metaopt\\\\optimization_runs\\\\d12d004-vspaero72-lf-20261102T0500Z\\\\evidence\\\\v1\\\\setup_gen\\\\V7-08\\\\v7_08_12d_baseline_alpha0to4_raw.vspaero\"}, {'field': 'ReCref', 'kind': 'MISMATCH', 'expected': 89397005.8767656, 'actual': 10000000.0, 'spec': 'rel:1e-06', 'detail': 'rel_delta=7.940e+07 tol=8.940e+01', 'ok': False}, {'field': 'Vinf', 'kind': 'MISMATCH', 'expected': 596.0373972278921, 'actual': 100.0, 'spec': 'rel:1e-09', 'detail': 'rel_delta=4.960e+02 tol=5.960e-07', 'ok': False}, {'field': 'Rho', 'kind': 'MISMATCH', 'expected': 0.1153178340089936, 'actual': 0.002377, 'spec': 'rel:1e-09', 'detail': 'rel_delta=1.129e-01 tol=1.000e-09', 'ok': False}, {'field': 'Vinf', 'kind': 'SETUP_DEFAULT_LEAK', 'expected': 596.0373972278921, 'actual': 100.0, 'detail': 'VSPAERO default 100.0 was not replaced'}, {'field': 'Rho', 'kind': 'SETUP_DEFAULT_LEAK', 'expected': 0.1153178340089936, 'actual': 0.002377, 'detail': 'VSPAERO default 0.002377 was not replaced'}]"
+      },
+      "sweep_rows_in_contract": [
+        "1 2 0"
+      ],
+      "design_metadata": {
+        "design_set": "12d_lifting_surfaces",
+        "config": "D:\\RCAIDE-d12d004\\research\\concorde_metaopt\\configs\\design_space_12d_lifting_surfaces.yaml",
+        "baseline_vector_12d": [
+          358.25,
+          1.83,
+          67.0,
+          48.0,
+          71.0,
+          0.480469,
+          0.945313,
+          0.408284,
+          0.130178,
+          0.0,
+          33.91,
+          0.0
+        ],
+        "case_vector_12d": [
+          358.25,
+          1.83,
+          67.0,
+          48.0,
+          71.0,
+          0.480469,
+          0.945313,
+          0.408284,
+          0.130178,
+          0.0,
+          33.91,
+          0.0
+        ],
+        "changed_variable": null,
+        "changed_value": null,
+        "full_15d_vector": [
+          358.25,
+          1.83,
+          67.0,
+          48.0,
+          71.0,
+          0.480469,
+          0.945313,
+          0.408284,
+          0.130178,
+          0.0,
+          33.91,
+          0.0,
+          61.66,
+          4.3,
+          1.152778
+        ],
+        "wing_from_geometry_model": {
+          "area_m2": 358.25000000000006,
+          "span_m": 25.604638251691824,
+          "root_chord_m": 29.901818514349216,
+          "mean_aerodynamic_chord_m": 18.489892944055953,
+          "sections": [
+            {
+              "percent_span_location": 0.0,
+              "chord_m": 29.901818514349216,
+              "leading_edge_x_m": 0.0,
+              "twist_deg": 0.0
+            },
+            {
+              "percent_span_location": 0.480469,
+              "chord_m": 12.208434070312554,
+              "leading_edge_x_m": 18.914470750635964,
+              "twist_deg": 0.0
+            },
+            {
+              "percent_span_location": 0.945313,
+              "chord_m": 3.892558930560952,
+              "leading_edge_x_m": 27.60278482830357,
+              "twist_deg": 0.0
+            },
+            {
+              "percent_span_location": 1.0,
+              "chord_m": 0.9731361054965724,
+              "leading_edge_x_m": 30.365937891543936,
+              "twist_deg": 0.0
+            }
+          ]
+        }
+      },
+      "expect_json": {
+        "path": "D:\\RCAIDE-d12d004\\research\\concorde_metaopt\\optimization_runs\\d12d004-vspaero72-lf-20261102T0500Z\\evidence\\v1\\setup_gen\\V7-08\\expect.json",
+        "bytes": 2730,
+        "sha256": "fb6b5d0339cc118c8f00f9009e5befdc771250ce19455d9031a00ffcdf4bdeba"
+      },
+      "solver_processes_started": 0,
+      "billable": false,
+      "notes": [
+        "Zero-solver setup generation; no vspaero process was forked."
+      ],
+      "checks": {
+        "readback_status_pass": true,
+        "readback_assertions_17": true,
+        "stop_before_run": true,
+        "raw_defaults_rejected": true,
+        "tess_readback_ok": true
+      },
+      "sweep_contract_repair": {
+        "reason": "inject_contract_fields rewrote 'AoA = 0, 2, 4' to scalar 'AoA = 0', destroying the sweep; repaired offline",
+        "method": "rewrite 16 scalar fields only; preserve comma-separated AoA vector line",
+        "old_contract": {
+          "path": "D:\\RCAIDE-d12d004\\research\\concorde_metaopt\\optimization_runs\\d12d004-vspaero72-lf-20261102T0500Z\\evidence\\v1\\setup_gen\\V7-08\\v7_08_12d_baseline_alpha0to4.vspaero",
+          "bytes": 847,
+          "sha256": "4d017e2805d52833650177215578f98f8de4b8e266bce11685ab58cc2fa3affc"
+        },
+        "fixed_utc": "2026-11-02T06:05:00Z"
+      }
+    }
+  ],
+  "case_count": 4,
+  "all_cases_pass": true,
+  "errors": [],
+  "no_solver_proof": {
+    "solver_processes_started": 0,
+    "solver_call": null,
+    "billable_starts": 0,
+    "budget_file": "D:\\RCAIDE-d12d004\\research\\concorde_metaopt\\optimization_runs\\d12d004-vspaero72-lf-20261102T0500Z\\config\\actual_solver_budget.json",
+    "budget_sha256_before": "08e045a357b4bb9ab861b1acfe7687eb91cafb007c982dd3b588a216620667e7",
+    "budget_sha256_after": "08e045a357b4bb9ab861b1acfe7687eb91cafb007c982dd3b588a216620667e7",
+    "budget_unchanged": true,
+    "note": "OpenVSP API only; StopBeforeRun=1 prints the command line but does not fork vspaero."
+  }
+}
