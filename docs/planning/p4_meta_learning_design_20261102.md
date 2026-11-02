@@ -2,7 +2,7 @@
 
 | 项 | 内容 |
 |---|---|
-| 文档状态 | DESIGN v1.1（2026-11-02 修订 1）：已按 A5 M0 审阅（CHANGES_REQUESTED，0 blocker / 8 major / 10 minor）逐项修订；本文档不含任何物理结论 |
+| 文档状态 | DESIGN v1.2（2026-11-02 修订 2）：按 A5 M0 两轮审阅逐项修订（第二轮 1 major：M-03 archive 五值→三值映射；M-08 design_set="15d"）；本文档不含任何物理结论 |
 | 任务 | task-49（P4-M0 A1：12D 元学习软件设计文档，中文） |
 | 作者/角色 | A1（a1-code-dev）初稿；Lead 修订 1（2026-11-02，A5 独立复核后） |
 | 工作树 | D:/RCAIDE-p4-meta-learning，分支 research/p4-meta-learning，起点 bf6c052 |
@@ -114,7 +114,7 @@ minor m-01..m-10 的处置见 §16 修订记录表。
 - DesignSpace 已有 from_unit_interval()/to_unit_interval()（research/concorde_metaopt/aircraft/design_space.py:279-285 附近）；缺的是 12→15 合并解码入口，因此 12D 唯一路径仍是 from_unit_interval → expand。
 - 交叉约束（YAML cross_constraints）原样继承：C01 span_location_2 < span_location_3；C02 chord_ratio_3 < chord_ratio_2 < 1.0；其余见 YAML。违规设计不得进入训练/优化数据。
 - bounds 状态如实标注：frozen: false、bounds_status: provisional_until_geometry_perturbation；不得在报告中写成已冻结。
-- 旧 15D 默认行为（M-08）：load_design_space() 无参调用必须仍然加载 configs/design_space_15d.yaml（15 变量、无 fixed、design_set=15d_lifting_surfaces_fixed_body），既有 P1-P3/历史脚本行为不变；12D 仅在显式传入 design_space_12d_lifting_surfaces.yaml 路径时生效。新增回归测试 §12-16，禁止把 12D 设为无参默认。
+- 旧 15D 默认行为（M-08）：load_design_space() 无参调用必须仍然加载 configs/design_space_15d.yaml（15 变量、无 fixed、design_set="15d"），既有 P1-P3/历史脚本行为不变；12D 仅在显式传入 design_space_12d_lifting_surfaces.yaml 路径时生效。新增回归测试 §12 T-16，禁止把 12D 设为无参默认。
 - config_hash：对 design space YAML 规范化字节 + 变量顺序 + task config + family config 取 sha256，写入每条样本、dataset manifest 与 run_config。
 
 ### 2.4 固定几何来源（baseline_geometry，仅引用不重算）
@@ -168,6 +168,7 @@ minor m-01..m-10 的处置见 §16 修订记录表。
 
 - 使用 maml_opt.data.archive.write_archive(...) 生成 observations.jsonl + manifest.json（schema_version=2、state=FROZEN/UNFROZEN、records_sha256）。
 - manifest 必填：dataset_id、task_split_id、task_splits（train/validation/test 任务 id 列表）、design_feature_names（12）、task_context_names、target_names、target_map（objective→{source:"objective"}，约束→{source:"constraints_g_le_zero", key}）、feature_units/target_units、records_file、records_sha256。
+- 五值内部 split → schema-2 三值 archive 映射（M-03）：meta_train→train；meta_validation→validation；meta_test→test；meta_test_ood→test 且样本 task_context.ood=true；negative_control 不写入三值 archive（仅记录在 tasks.json 与 tasks/negative_control_manifest.json，绝不进入训练或主终点统计）。archive 的 task_splits 恰为 train/validation/test 三键；内部五值互斥由 data_contract.assert_task_disjoint 保证，映射由 to_archive_splits() 单向完成并加断言测试。
 - TaskDataset.load() 会校验 feature_names=design+context、target_map 键集合=target_names、任务 split 归属；P4 数据合同测试必须覆盖这些失败分支。
 - build_dataset_archive(history_root, run_ids, ...) 仅用于未来真实 run（从 EvaluationManager 的 run_manifest/evaluation_log 构建）；P4 合成阶段用 write_archive 直接写 records，并用 audit_archive() 复核 labeled_records/task_counts/data_origins。
 - data_origin 取值：合成 SYNTHETIC_TEST；禁止把 P5 的 15D RFF 数据集直接当 12D 数据（维度/身份都不匹配）。
@@ -214,7 +215,7 @@ minor m-01..m-10 的处置见 §16 修订记录表。
 
 ### 4.4 合成约束命名槽位与状态映射（m-05/m-07）
 
-- 合成约束槽位固定命名：synth_c01（每族第一个约束）、synth_c02、synth_c03；每任务启用 1-3 个槽位，其余 7-9 个键显式写 null。constraints 字典键集合恒等于 10 项物理约束名（geometry_invalid、task_mass_balance、fuel_capacity_excess、zero_fuel_excess、takeoff_excess、fuel_remaining_deficit、max_throttle、cruise_range_error、mission_convergence、trim_attitude_limit），合成槽位放在前 3 个，未启用为 null。
+- 约束键名与槽位映射（m-05）：constraints 字典键集合恒等于 10 项物理约束名且顺序固定 = [geometry_invalid, task_mass_balance, fuel_capacity_excess, zero_fuel_excess, takeoff_excess, fuel_remaining_deficit, max_throttle, cruise_range_error, mission_convergence, trim_attitude_limit]；前 3 个键承载合成约束槽位 synth_c01/synth_c02/synth_c03（synth_c01→geometry_invalid、synth_c02→task_mass_balance、synth_c03→fuel_capacity_excess），其余 7 个键显式写 null；每任务启用 1-3 个槽位，未启用槽位在 constraints 中写 null 并记录在 task.params.enabled_slots。
 - objective/status 映射：有可行且有限的参考评价 → status=VALID、objective=有限值；解析上不可行（g>0 无可行域） → INFEASIBLE、objective=null；设计越界/交叉约束违规 → INVALID 或 GEOMETRY_INVALID、objective=null；数值非有限 → NONFINITE、objective=null。禁止用 0 或大惩罚值代替 null。
 - CSV 统计时 null 约束按未启用剔除（denominator 只算启用槽位），并在 metrics.csv 的 n 字段记录启用的约束数。
 
@@ -266,7 +267,6 @@ minor m-01..m-10 的处置见 §16 修订记录表。
     EXCLUDED_STATUSES = ("INVALID", "GEOMETRY_INVALID", "MISSION_FAILED", "MISSION_NOT_CONVERGED", "NONFINITE", "PARTIAL_RESULT")
     EVALUATOR_ID_PATTERN = "<source_kind>__<fidelity>__<design_set>__<version>"
     def validate_split(split: str) -> None   # 非 SPLITS 一律 DataContractError
-    PHYSICS_STATUSES = ("NOT_APPLICABLE", "NOT_VALIDATED", "PARTIAL", "VALIDATED")
 
     @dataclass(frozen=True)
     class MetaSample:  # §3.2 全字段
@@ -279,6 +279,8 @@ minor m-01..m-10 的处置见 §16 修订记录表。
     def support_query_split(samples, task_id, k_shot, query_size, seed) -> tuple[list, list]
     def from_ledger_row(row, *, task_id, config_hash, git_sha, source_kind, physics_validation_status) -> MetaSample
     def to_archive_records(samples) -> list[dict[str, Any]]
+    ARCHIVE_SPLIT_MAP = {"meta_train": "train", "meta_validation": "validation", "meta_test": "test", "meta_test_ood": "test"}  # negative_control 不入三值 archive
+    def to_archive_splits(samples) -> dict[str, list[str]]      # 仅 train/validation/test 三键，M-03 映射
 
 ### 5.3 meta_learning/surrogate.py
 
@@ -513,6 +515,7 @@ minor m-01..m-10 的处置见 §16 修订记录表。
 | A4 F-01..F-05 | 五张中文图 | 图1-图5 | 同图1-图5 |
 | A4 T-01 | P4 交付物清单 | §11 统一清单 | M4 生成 |
 | A4 T-04 / V-06 | VSPAERO 线证据 | 不在 P4 run；见 Issue #4 D-12D-004 run 目录 | 归口 Issue #4 |
+| A4 V-01..V-12 | VSPAERO 验证需求全集 | 仅 V-06 在本轮 §11 solver_validation.csv 留占位；V-01..V-05、V-07..V-12 标 NOT_APPLICABLE_THIS_STAGE | 归口 Issue #4，P4-CODE 不消费 |
 | A4 BW-04 | 文档/图表中文 | 全文 | 本文档中文 |
 | D-12D-004 | VSPAERO 修复/验证 | 不进入 P4-CODE；物理标签不消费 | 不在本阶段授权 |
 
@@ -538,13 +541,13 @@ minor m-01..m-10 的处置见 §16 修订记录表。
 
 ---
 
-12. split 枚举（M-03）：SPLITS 五值全部可写入 archive；非法 split 抛 DataContractError；构造 OOD/negative_control 样本归档成功。
-13. 负控制协议（M-04）：伪任务 ID 与来源任务不同；同一 (source_task_id, shuffle_seed) 打乱逐位复现；五集合 task_id 两两交集为空；负控制样本不得进入训练或主终点统计。
-14. evaluator 物理守卫（M-07）：注入返回 physical_call_count=1 的 evaluator → offline_runner 立即中止，summary.status=PHYSICS_GUARD_VIOLATION，且不得写出正常 0 计数 summary。
-15. 确定性（M-06）：seed=0 整 run 独立重跑 3 次，metrics.csv 与 optimization_summary.csv 逐位一致（float 精确比较；若框架非确定，记录并降级该臂结论，不得静默通过）。
-16. 旧 15D 回归（M-08）：load_design_space() 无参 → 15 变量、无 fixed、design_set=15d_lifting_surfaces_fixed_body；传 12D 路径 → 12 变量 + 3 fixed；构造参数不得改变无参默认。
-17. MAML-init 冻结（M-05）：候选池=64、初始点=8、去重容差 1e-12；不足 8 唯一候选时该臂 FAIL。
-18. solver_validation.csv（M-01）：P4-CODE run 必含该文件，所有行 status 属 {NOT_RUN, NOT_APPLICABLE_THIS_STAGE}，不得出现伪造数值；图4 不在 P4-CODE 生成。
+T-12 split 枚举（M-03）：SPLITS 五值在内部数据合同可写入；非法 split 抛 DataContractError；写入 schema-2 archive 时必须按 §3.3 映射只出现 train/validation/test 三键（OOD→test 且 task_context.ood=true；negative_control 不进三值 archive，单独清单），映射函数有断言测试。
+T-13 负控制协议（M-04）：伪任务 ID 与来源任务不同；同一 (source_task_id, shuffle_seed) 打乱逐位复现；五集合 task_id 两两交集为空；负控制样本不得进入训练或主终点统计。
+T-14 evaluator 物理守卫（M-07）：注入返回 physical_call_count=1 的 evaluator → offline_runner 立即中止，summary.status=PHYSICS_GUARD_VIOLATION，且不得写出正常 0 计数 summary。
+T-15 确定性（M-06）：seed=0 整 run 独立重跑 3 次，metrics.csv 与 optimization_summary.csv 逐位一致（float 精确比较；若框架非确定，记录并降级该臂结论，不得静默通过）。
+T-16 旧 15D 回归（M-08）：load_design_space() 无参 → 15 变量、无 fixed、design_set="15d"；传 12D 路径 → 12 变量 + 3 fixed；构造参数不得改变无参默认。
+T-17 MAML-init 冻结（M-05）：候选池=64、初始点=8、去重容差 1e-12；不足 8 唯一候选时该臂 FAIL。
+T-18 solver_validation.csv（M-01）：P4-CODE run 必含该文件，所有行 status 属 {NOT_RUN, NOT_APPLICABLE_THIS_STAGE}，不得出现伪造数值；图4 不在 P4-CODE 生成。
 
 ## 13. 风险与缓解
 
@@ -558,13 +561,11 @@ minor m-01..m-10 的处置见 §16 修订记录表。
 | support/query 泄漏 | 高影响 | 任务级 split + 设计不相交断言 + A5 复核 |
 | P5 只读参考被误当可复制 | 治理 | 文档/代码注释注明只读参考；只用 maml-opt 公开 API |
 | 预算/终点事后调整 | 治理 | 预注册终点写入 run_config；改写即记录偏离 |
-
----
-
-| evaluator 误报/漏报物理调用 | 高 | §12-14 注入 physical>0 负控制；offline_runner 中止写 PHYSICS_GUARD_VIOLATION |
+| evaluator 误报/漏报物理调用 | 高 | §12 T-14 注入 physical>0 负控制；offline_runner 中止写 PHYSICS_GUARD_VIOLATION |
 | 负控制身份泄漏/伪任务混入训练 | 高 | 伪任务独立 task_id + split manifest 登记 + 五集合互斥断言 |
 | 合成实验不可复现（非确定框架） | 中 | seed0 整 run ×3 逐位检查；不通过即降级该臂结论 |
-| 12D 改造回归 15D 默认 | 中 | §2.3 无参默认声明 + §12-16 回归测试 |
+| 12D 改造回归 15D 默认 | 中 | §2.3 无参默认声明 + §12 T-16 回归测试 |
+
 ## 14. 附录 A：只读盘点证据（文件/符号）
 
 | 事实 | 证据位置 |
@@ -598,15 +599,19 @@ minor m-01..m-10 的处置见 §16 修订记录表。
 
 | 审阅项 | 严重度 | 处置位置 |
 |---|---|---|
-| M-01 需求映射/交付清单缺 | major | §11.1、§11.2、§12-18 |
+| M-01 需求映射/交付清单缺 | major | §11.1、§11.2、§12 T-18 |
 | M-02 baseline 复用/依赖分析缺失 | major | §8.1 |
 | M-03 split 枚举缺 OOD/负控制 | major | §3.2、§4.3、§5.2 |
 | M-04 负控制定义与互斥冲突 | major | §4.3 |
-| M-05 MAML-init 参数未冻结 | major | §8.2、§5.6、§12-17 |
-| M-06 缺 seed0 整 run 重跑 | major | §5.6、§12-15 |
-| M-07 缺 evaluator physical>0 负控制 | major | §5.6、§12-14、§13 |
-| M-08 缺 15D 默认回归 | major | §2.3、§12-16 |
+| M-05 MAML-init 参数未冻结 | major | §8.2、§5.6、§12 T-17 |
+| M-06 缺 seed0 整 run 重跑 | major | §5.6、§12 T-15 |
+| M-07 缺 evaluator physical>0 负控制 | major | §5.6、§12 T-14、§13 |
+| M-08 缺 15D 默认回归 | major | §2.3、§12 T-16 |
 | m-01 m00606 不可复核 | minor | 头部上游依据、§10、§14、§16 |
+| M-03 未闭合（v1.2） | major | §3.3 五值→三值 archive 映射 + §5.2 ARCHIVE_SPLIT_MAP/to_archive_splits + §12 T-12 |
+| M-08 值错误（v1.2） | major | §2.3 与 §12 T-16 改为 design_set="15d"（aircraft/design_space.py:197/359） |
+| m-05 槽位映射 | minor | §4.4 显式槽位↔物理键名映射 |
+| §13 表格断裂 | minor | 风险表合并为单表 |
 | m-02 W06 归一化数值 | minor | §2.1 注 |
 | m-03 投影半展语义 | minor | §2.4 |
 | m-04 decode/encode 表述 | minor | §2.3 |
