@@ -60,7 +60,7 @@
 
 ## 7. 证据与文件
 
-- run 目录：`research/concorde_metaopt/optimization_runs/d12d004-vspaero72-lf-20261102T0500Z/`（config/run_config.json、actual_solver_budget.json、solver_case_matrix.csv；evidence/v1/{README.md, case_prep.json, case_results.json, per_case_conclusions.md/.csv, run_start.json, stop_decision.json, root_cause_static_check.json, v7_01_divergence.json, vkey_fix.json, wrapper_deadline_fix.json, tooling_events.json, ledger/solver_ledger.jsonl, setup_gen/}；summary.json；lf_vspaero_results.json；data_manifest.json 122 文件 3,154,507 B）。
+- run 目录：`research/concorde_metaopt/optimization_runs/d12d004-vspaero72-lf-20261102T0500Z/`（config/run_config.json、actual_solver_budget.json、solver_case_matrix.csv；evidence/v1/{README.md, case_prep.json, case_results.json, per_case_conclusions.md/.csv, run_start.json, stop_decision.json, root_cause_static_check.json, v7_01_divergence.json, vkey_fix.json, wrapper_deadline_fix.json, tooling_events.json, ledger/solver_ledger.jsonl, setup_gen/}；summary.json；lf_vspaero_results.json；data_manifest.json 122 文件 3,124,337 B（canonical sha256 84b2bf2c…；rev2 修复后数字，见 §8））。
 - 原始求解产物（polar/history/adb/lod、.vspgeom 等）归档于 `D:/RCAIDE/outputs/concorde_metaopt/d12d004-vspaero72-lf-20261102T0500Z/raw_artifacts/`（outside_git，manifest 引用）。
 
 ## 8. 不声明事项（explicit non-claims）
