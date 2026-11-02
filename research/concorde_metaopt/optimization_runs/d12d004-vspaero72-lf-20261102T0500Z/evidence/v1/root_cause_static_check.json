@@ -22,14 +22,30 @@
     "our_generator_configuration": {
       "file": "C:/Users/pc/AppData/Local/RCAIDE_Supersonic_agent_state/fullchain/d12d004/a2/scripts/gen_v1_setups.py",
       "location": "GA-compute-geometry helper: SetAnalysisInputDefaults('VSPAEROComputeGeometry'); GeomSet=SET_NONE; ThinGeomSet=SET_ALL; Symmetry=SYM_NONE; ExecAnalysis",
-      "oscillating": "the same helper generated all 9 V7 setups; the same vspgeom content was accepted by the strict 17-field readback"
+      "oscillating": "the same helper generated all 9 V7 setup directories; 8 of them contain geom_result_thin.csv (V7-03 does not; V7-09 has no setup dir). All 8 recordings show GeometrySet=-1 and ThinGeometrySet=0, and the same vspgeom content was accepted by the strict 17-field readback"
     },
     "generated_geometry_csv_result": {
       "file": "evidence/v1/setup_gen/V7-00/geom_result_thin.csv",
       "GeometrySet": -1,
       "ThinGeometrySet": 0,
       "interpretation": "GeometrySet=-1 == SET_NONE (no thick/panel set) and ThinGeometrySet=0 == SET_ALL (all thin geoms); this is exactly the official thin configuration, not a swap",
-      "same_values_all_v7_cases": true
+      "geom_csv_count": 8,
+      "setup_dir_count": 9,
+      "cases_with_geom_csv": [
+        "V7-00",
+        "V7-01",
+        "V7-02",
+        "V7-04",
+        "V7-05",
+        "V7-06",
+        "V7-07",
+        "V7-08"
+      ],
+      "cases_without_geom_csv": {
+        "V7-03": "geom_result_thin.csv is absent in its setup directory (setup dir exists; generated with the other 12D cases); no solver was run for V7-03",
+        "V7-09": "conditional case; no setup directory was generated in V1"
+      },
+      "same_values_in_generated_files": true
     },
     "input_mode_comparison": {
       "official_example": {
@@ -77,5 +93,7 @@
     "likely_contributing_factor": "not the geometry mode: the injected contract used NumWakeNodes=8 / WakeIters=5 / WakeRelax=1, while the official example uses NumWakeNodes=128 / WakeIters=0; the Mach 0.10 wake iteration diverged at iteration 2. Unproven hypothesis, recorded as such.",
     "unresolved": "why the VSPAERO 7.2.2 thin solution diverges is not established; solving it requires a new authorised round (settings study), which this round does not have"
   },
-  "budget_effect": "none: no solver start, starts_used stays 4/10, remaining 6 CLOSED_NOT_CARRIED_OVER_NOT_REALLOCATED"
+  "budget_effect": "none: no solver start, starts_used stays 4/10, remaining 6 CLOSED_NOT_CARRIED_OVER_NOT_REALLOCATED",
+  "bookkeeping_revision_utc": "2026-11-02T07:03:10Z",
+  "bookkeeping_revision_note": "task-66 m-02: corrected the geometry CSV count from a blanket every-V7-case claim to 8 of 9 setup dirs (V7-03 file absent, V7-09 setup dir not generated); conclusion unchanged and no solver was run."
 }

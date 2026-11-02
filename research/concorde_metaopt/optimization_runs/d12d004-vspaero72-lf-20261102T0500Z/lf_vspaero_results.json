@@ -23,7 +23,7 @@
   "cases": {
     "V7-00": {
       "purpose": "standard-wing subsonic sanity (Uber_eCRM-002 thin, Mach 0.10)",
-      "status": "FAIL_HYGIENE_NONPHYSICAL",
+      "status": "FAILED_NONPHYSICAL_VALUE",
       "event_id": "NA-D12D004-004",
       "wall_seconds": 76.891,
       "returncode": 0,
@@ -86,5 +86,14 @@
       "desc": "outer 120 s tool deadline killed the wrapper+solver (event 002); wrapper now runs as a background job with a 600 s internal solver timeout"
     }
   ],
-  "conclusion": "VSPAERO 7.2.2 thin was not demonstrated to be physically usable at Mach 2.02 (divergence) nor at Mach 0.10 (nonphysical coefficients). LF-M2.02 drag gate remains NOT_VALIDATED; no external correction may be injected."
+  "conclusion": "VSPAERO 7.2.2 thin was not demonstrated to be physically usable at Mach 2.02 (divergence) nor at Mach 0.10 (nonphysical coefficients). LF-M2.02 drag gate remains NOT_VALIDATED; no external correction may be injected.",
+  "status_enum": {
+    "canonical_token_for_V7_00": "FAILED_NONPHYSICAL_VALUE",
+    "deprecated_alias": "FAIL_HYGIENE_NONPHYSICAL",
+    "documented_in": [
+      "README.md",
+      "evidence/v1/README.md"
+    ]
+  },
+  "bookkeeping_revision_utc": "2026-11-02T07:03:10Z"
 }

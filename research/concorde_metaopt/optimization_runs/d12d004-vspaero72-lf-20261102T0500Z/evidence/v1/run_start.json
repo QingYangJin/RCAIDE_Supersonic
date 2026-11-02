@@ -60,32 +60,109 @@
     "gates_passed": true,
     "evidence": "see config/actual_solver_budget.json#preflight_gates"
   },
-  "note": "First solver start not yet executed; this file is updated again immediately before/after the first start.",
+  "note": "Final V1 record: lists all 4 billable solver starts (including the Lead-authorised single V7-00 retry NA-D12D004-004) and closes the round. No further solver starts occurred in this round. The stale note about a first start not yet executed has been replaced by this final wording during the task-66 bookkeeping fix.",
   "first_solver_start_case": "V7-00",
   "solver_starts": [
     {
       "event_id": "NA-D12D004-001",
       "case_id": "V7-00",
       "attempt_index": 1,
+      "is_retry": false,
       "outcome_class": "FAILED",
-      "wall_seconds": 0.024
+      "wall_seconds": 0.024,
+      "returncode": 1,
+      "billable": true,
+      "started_utc": "2026-11-02T06:06:32Z",
+      "finished_utc": "2026-11-02T06:06:32Z",
+      "polar_sha256": null,
+      "history_sha256": null
     },
     {
       "event_id": "NA-D12D004-002",
       "case_id": "V7-01",
       "attempt_index": 1,
+      "is_retry": false,
       "outcome_class": "ABORTED_WRAPPER_DEADLINE",
-      "wall_seconds": 120.0
+      "wall_seconds": 120.0,
+      "returncode": null,
+      "billable": true,
+      "started_utc": "2026-11-02T06:10:54Z",
+      "finished_utc": "2026-11-02T06:14:16Z",
+      "polar_sha256": null,
+      "history_sha256": "fb72da673642206e6697bd995aff3b2a723624784a605f402ec46e1d88bc94ae"
     },
     {
       "event_id": "NA-D12D004-003",
       "case_id": "V7-01",
       "attempt_index": 2,
+      "is_retry": true,
       "outcome_class": "TIMEOUT",
-      "wall_seconds": 600.331
+      "wall_seconds": 600.331,
+      "returncode": null,
+      "billable": true,
+      "started_utc": "2026-11-02T06:14:35Z",
+      "finished_utc": "2026-11-02T06:24:36Z",
+      "polar_sha256": null,
+      "history_sha256": "4c24413561afa7bfe298feef6992df17af3b64644da8472efd58fcce8da53210"
+    },
+    {
+      "event_id": "NA-D12D004-004",
+      "case_id": "V7-00",
+      "attempt_index": 2,
+      "is_retry": true,
+      "outcome_class": "VERIFY_FAILED",
+      "wall_seconds": 76.891,
+      "returncode": 0,
+      "billable": true,
+      "started_utc": "2026-11-02T06:26:57Z",
+      "finished_utc": "2026-11-02T06:28:14Z",
+      "polar_sha256": "2741d32ac33daf0fb88cd2793975cb36f2d7130c194f957970c30dce14506b6f",
+      "history_sha256": "1143945dc7e911319faacdbba795c123c5acc5875b66eeb7695cabb7d0a0f3a5"
     }
   ],
-  "updated_utc": "2026-11-02T06:25:27Z",
+  "updated_utc": "2026-11-02T07:03:10Z",
   "stop_decision": "evidence/v1/stop_decision.json",
-  "last_solver_finish_utc": "2026-11-02T06:28:14Z"
+  "last_solver_finish_utc": "2026-11-02T06:28:14Z",
+  "starts_accounting": {
+    "solver_starts_entries": 4,
+    "starts_used": 4,
+    "starts_remaining": 6,
+    "retries_used": 2,
+    "billable_events": 4,
+    "assert_len_solver_starts_eq_starts_used": true,
+    "assert_billable_events_eq_starts_used": true,
+    "assert_starts_used_plus_remaining_eq_cap": true,
+    "remaining_starts_disposition": "CLOSED_NOT_CARRIED_OVER_NOT_REALLOCATED"
+  },
+  "stop_and_retry_transition": {
+    "stop_decision_generated_utc": "2026-11-02T06:25:27Z",
+    "stop_rule_triggered": true,
+    "stop_rule_event_id": "NA-D12D004-003",
+    "counters_at_stop_freeze": {
+      "starts_used": 3,
+      "starts_remaining": 7,
+      "retries_used": 1,
+      "billable_events": 3
+    },
+    "lead_decision": {
+      "reference": [
+        "Lead message m01190",
+        "Lead message m01194"
+      ],
+      "decision": "(a) terminate the V1 round after one additional V7-00 retry only; do not reallocate the remaining starts; do not retry V7-01",
+      "additional_starts_authorised": 1,
+      "extra_start_booked": "NA-D12D004-004"
+    },
+    "retry_started_utc": "2026-11-02T06:26:57Z",
+    "retry_finished_utc": "2026-11-02T06:28:14Z",
+    "counters_final": {
+      "starts_used": 4,
+      "starts_remaining": 6,
+      "retries_used": 2,
+      "billable_events": 4
+    },
+    "finalised_utc": "2026-11-02T06:38:47Z",
+    "note": "The single retry was authorised by the Lead after the stop freeze; the 3/7/1 counters in stop_decision.json are the state at the freeze instant, the 4/6/2 counters are the round-final state."
+  },
+  "bookkeeping_revision_utc": "2026-11-02T07:03:10Z"
 }

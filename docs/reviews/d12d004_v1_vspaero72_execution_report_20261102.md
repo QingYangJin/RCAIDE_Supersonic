@@ -8,10 +8,10 @@
 
 ## 1. 执行摘要
 
-- V1 轮共消耗 **4 次真实启动（4/10）**，其中 2 次为 V7-01 的前序中止/重试、1 次为 V7-00 的必要重试；**剩余 6 次 CLOSED，不结转、不重分配**。
+- V1 轮共消耗 **4 次真实启动（4/10）**：NA-D12D004-001 = V7-00 attempt1（打包缺陷，0.024 s 失败）、NA-D12D004-002/003 = V7-01 两次（120.0 s 中止、600.331 s 超时发散）、NA-D12D004-004 = V7-00 attempt2（76.891 s，非物理）；**剩余 6 次 CLOSED，不结转、不重分配**。
 - V7-00（标准薄翼 Mach 0.10 卫生检查）：solver rc=0、76.891 s，但系数非物理——**CLtot = −2801.885568189672、CDtot = −376.365943305457（负阻力）、CDi = −367.353142529815**；`.history` 在 wake 迭代 2–3 即发散，polar 不可用。
 - V7-01（标准薄翼 Mach 2.02 适用性探针）：第一次尝试被外层 120 s 工具期限中止（运行器缺陷，已修并记录），第二次 600.331 s 超时；`.history` 达到 O(1e18)–O(1e24)，无 `.polar`。**触发 D-12D-004 停止规则**。
-- 停止规则生效后 V7-02…V7-08 全部 NOT_RUN_AFTER_ABORT，V7-09 NOT_RUN_CONDITION_NOT_TRIGGERED；不再启动任何求解器，无 vspaero.exe 残留进程。
+- 停止规则由 NA-D12D004-003 触发：`evidence/v1/stop_decision.json` 在 **06:25:27Z 冻结**（计数 3/10、remaining 7、retries 1、V7-02…V7-09 全部未执行）；随后 Lead 裁决 (a)（消息 m01190/m01194，见该文件 `lead_decision`）**追加授权并仅追加授权 1 次 V7-00 必要重试**，A2 于 **06:26:57Z 启动 NA-D12D004-004**、06:28:14Z 结束（76.891 s，rc=0 但非物理），最终计数 **4/10、remaining 6、retries 2**；此后**未再启动任何求解器**，无 vspaero.exe 残留进程。冻结快照 3/7/1（`counters_after_stop`）与终态 4/6/2（`counters_after_retry` / `budget_final`）同时保留在该 JSON 中。
 - 结论：**LF-M2.02 阻力维持 NOT_VALIDATED**；VSPAERO 7.2.2 thin 在 Mach 2.02 不是可用的物理方法；本轮不产生任何可用于上游优化/元学习的真实标签。
 
 ## 2. 每个算例的结论
@@ -36,13 +36,13 @@
 
 ## 4. 根因静态核对（零求解）
 
-- 复核 OpenVSP 3.55 官方 API 与示例：`SET_NONE=-1`、`SET_ALL=0`；官方 `test_vsp_api.py:1450-1463`、`1524-1536` 使用 `GeomSet=SET_NONE` + `ThinGeomSet=SET_ALL`；9 个 V7 case 的 `geom_result_thin.csv` 均为 `GeometrySet=-1`/`ThinGeometrySet=0`。
+- 复核 OpenVSP 3.55 官方 API 与示例：`SET_NONE=-1`、`SET_ALL=0`；官方 `test_vsp_api.py:1450-1463`、`1524-1536` 使用 `GeomSet=SET_NONE` + `ThinGeomSet=SET_ALL`；已生成 `geom_result_thin.csv` 的 **8 个** V7 case（V7-03 无该文件、V7-09 目录不存在）均为 `GeometrySet=-1`/`ThinGeometrySet=0`。
 - 结论：**VSPGEOM 就是官方 thin 路径**，本轮非物理不是『误用了厚网格』；官方 `Uber_eCRM-002` 示例是 DegenGeom + `.groups` + `-unsteady` 多旋翼非定常案例，不能反证 VSPGEOM 路径错误。
 - 因此未执行额外的 DegenGeom 诊断启动；剩余预算仍为 6 次（CLOSED）。发散根因未定：`NumWakeNodes=8`/`WakeIters=5`（对方官方示例为 128/0）只是未经证明的疑点，需新的设置研究授权。
 
 ## 5. 预算与合规
 
-- starts_used = 4 / cap 10；remaining = 6（CLOSED_NOT_CARRIED_OVER_NOT_REALLOCATED）；retries_used = 2；billable_events = 4；serial、≤4 核、≤8 GB、单次 ≤600 s、本轮总墙钟约 22 分钟（远低于 6 h）。
+- starts_used = 4 / cap 10（其中 1 次为 stop 冻结后由 Lead 裁定 (a) 追加授权的 V7-00 重试 NA-D004）；remaining = 6（CLOSED_NOT_CARRIED_OVER_NOT_REALLOCATED）；retries_used = 2；billable_events = 4；serial、≤4 核、≤8 GB、单次 ≤600 s、本轮总墙钟约 22 分钟（远低于 6 h）。
 - 未启动 B（thick）、C（WaveDrag/面积律）、D（SU2）、E（RCAIDE Mission）任何一次；P4 真实计算 0。
 - 未改动源码/测试文件（仅 run 目录内的 config/evidence/matrix 记录文件）；未伪造数据；所有数字可回溯到 solver_ledger.jsonl / case_results.json / .polar / .history。
 

@@ -66,14 +66,14 @@
       "error": "DataQualityError: POLAR_HEADER_MISSING: no header with AoA/CL/Mach",
       "started_utc": "2026-11-02T06:26:57Z",
       "finished_utc": "2026-11-02T06:28:14Z",
-      "final_classification": "FAIL_HYGIENE_NONPHYSICAL",
+      "final_classification": "FAILED_NONPHYSICAL_VALUE",
       "hygiene_check": {
         "cl_positive": false,
         "cdi_positive": false,
         "cdtot_positive": false,
         "all_finite": true,
         "abs_cl_below_2": false,
-        "verdict": "FAIL_HYGIENE"
+        "verdict": "FAIL"
       },
       "gross_coefficients": {
         "CLo": -5.961738308979,
@@ -113,7 +113,9 @@
         ]
       ],
       "header_compat_defect": "LD-002: VSPAERO 7.2.2 polar header uses CLo/CLi/CLtot, CDo/CDi/CDtot, CMox/CMoy/CMoz; runner validate_polar_file (built for 6.2.0) requires bare CL/CDi/CDtot and raised POLAR_HEADER_MISSING",
-      "note_final": "The solver ran to completion at Mach 0.10 but the wake/GMRES iteration diverged; the written .polar contains nonphysical values. The verifier failure is a separate header-name defect (LD-002), not evidence that the polar is valid."
+      "note_final": "The solver ran to completion at Mach 0.10 but the wake/GMRES iteration diverged; the written .polar contains nonphysical values. The verifier failure is a separate header-name defect (LD-002), not evidence that the polar is valid.",
+      "canonical_case_status": "FAILED_NONPHYSICAL_VALUE",
+      "status_enum_note": "Final case status is FAILED_NONPHYSICAL_VALUE (canonical, same as the case matrix and summary). hygiene_check.verdict FAIL records the internal coefficient check result, not the case status."
     },
     "V7-01": {
       "case_id": "V7-01",
@@ -177,5 +179,6 @@
     }
   },
   "updated_utc": "2026-11-02T06:28:14Z",
-  "finalised_utc": "2026-11-02T06:30:46Z"
+  "finalised_utc": "2026-11-02T06:30:46Z",
+  "bookkeeping_revision_utc": "2026-11-02T07:03:10Z"
 }

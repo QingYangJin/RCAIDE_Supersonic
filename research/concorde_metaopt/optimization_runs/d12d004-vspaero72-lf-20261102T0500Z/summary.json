@@ -65,7 +65,7 @@
         "CDi": -367.353142529815,
         "CMoy": -9.235854701727
       },
-      "verdict": "FAIL_HYGIENE_NONPHYSICAL; wake iteration diverged; verifier also raised LD-002 header incompat"
+      "verdict": "FAILED_NONPHYSICAL_VALUE: wake iteration diverged; verifier also raised LD-002 header incompat"
     },
     {
       "case_id": "V7-01",
@@ -188,5 +188,15 @@
       "billable_events": 4,
       "remaining_starts_disposition": "CLOSED_NOT_CARRIED_OVER_NOT_REALLOCATED"
     }
-  }
+  },
+  "status_enum": {
+    "canonical_token_for_V7_00": "FAILED_NONPHYSICAL_VALUE",
+    "deprecated_alias": "FAIL_HYGIENE_NONPHYSICAL",
+    "reason": "the matrix, lf_vspaero_results.json and case_results.json use FAILED_NONPHYSICAL_VALUE for the final case status; FAIL_HYGIENE was only one check name",
+    "documented_in": [
+      "README.md",
+      "evidence/v1/README.md"
+    ]
+  },
+  "bookkeeping_revision_utc": "2026-11-02T07:03:10Z"
 }

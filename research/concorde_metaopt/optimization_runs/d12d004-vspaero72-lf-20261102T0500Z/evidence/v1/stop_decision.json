@@ -55,22 +55,25 @@
     }
   ],
   "not_run": {
-    "cases": [
+    "cases_after_abort": [
       "V7-02",
       "V7-03",
       "V7-04",
       "V7-05",
       "V7-06",
       "V7-07",
-      "V7-08",
+      "V7-08"
+    ],
+    "status_after_abort": "NOT_RUN_AFTER_ABORT",
+    "cases_condition_not_triggered": [
       "V7-09"
     ],
-    "status": "NOT_RUN_AFTER_ABORT",
-    "note": "V7-09 was conditional; V7-02..V7-08 blocked by the approved stop rule. No further solver starts until Lead/owner decides."
+    "status_condition_not_triggered": "NOT_RUN_CONDITION_NOT_TRIGGERED",
+    "note": "V7-02..V7-08 were blocked by the approved stop rule; V7-09 was a conditional wake-sensitivity case and its condition never triggered. The Lead then authorised exactly one V7-00 retry (event NA-D12D004-004) and terminated the round; no further solver starts."
   },
   "v7_00_note": "NA-D12D004-001 FAILED at 0.024 s because the case dir lacked .vkey/.csf (preflight packaging defect, not physics); not retried per Lead; billed conservatively as 1 start.",
   "v7_01_attempt1_note": "NA-D12D004-002 ABORTED_WRAPPER_DEADLINE: outer 120 s tool deadline killed the wrapper; vspaero child stopped; no .polar; billed; partial artifacts quarantined (raw_artifacts/failed_runs/V7-01_attempt1).",
-  "next_action": "Write the final V1 report; keep LF-M2.02 NOT_VALIDATED; no further solver starts in this round.",
+  "next_action": "V1 final report written and the A5 CHANGES_REQUESTED run-dir bookkeeping items fixed (task-66); keep LF-M2.02 NOT_VALIDATED; no further solver starts in this round.",
   "finalised_utc": "2026-11-02T06:38:47Z",
   "lead_decision": {
     "reference": "Lead message m01190 / m01194",
@@ -92,7 +95,7 @@
       "adb": "v7_00_standard_wing_mach0p1.adb (1815136 B)"
     },
     "verifier_failure": "DataQualityError: POLAR_HEADER_MISSING: no header with AoA/CL/Mach (runner validate_polar_file expects the VSPAERO 6.2 column names CL/CDi/CDtot; VSPAERO 7.2.2 writes CLo/CLi/CLtot, CDo/CDi/CDtot) -> runner defect, not a solver output-schema error",
-    "independent_value_check": "FAIL_HYGIENE: CLo=-5.9617, CLi=-2795.9238, CLtot=-2801.8856, CDo=-9.0128, CDi=-367.3531, CDtot=-376.3659 (negative drag), CMoy=-9.2359; history divergence iter2..3 O(1e5)..O(1e7), iter5 returns nonphysical values"
+    "independent_value_check": "FAILED_NONPHYSICAL_VALUE: CLo=-5.9617, CLi=-2795.9238, CLtot=-2801.8856, CDo=-9.0128, CDi=-367.3531, CDtot=-376.3659 (negative drag), CMoy=-9.2359; history divergence iter2..3 O(1e5)..O(1e7), iter5 returns nonphysical values"
   },
   "counters_after_retry": {
     "starts_used": 4,
@@ -145,5 +148,36 @@
     "result": "VSPGEOM thin path confirmed official (SET_NONE=-1, SET_ALL=0; geometry CSV GeometrySet=-1, ThinGeometrySet=0); no input-mode error; diagnostic start skipped per Lead rule 4",
     "evidence": "evidence/v1/root_cause_static_check.json",
     "budget_effect": "none; final counters unchanged"
-  }
+  },
+  "authorisation_after_freeze": {
+    "freeze_utc": "2026-11-02T06:25:27Z",
+    "counters_at_freeze": {
+      "starts_used": 3,
+      "starts_remaining": 7,
+      "retries_used": 1,
+      "billable_events": 3
+    },
+    "lead_authorisation": {
+      "reference": [
+        "Lead message m01190",
+        "Lead message m01194"
+      ],
+      "decision": "(a) terminate the V1 round after one additional V7-00 retry only; do not reallocate the remaining starts; do not retry V7-01",
+      "additional_starts_authorised": 1,
+      "booked_event": "NA-D12D004-004"
+    },
+    "retry_utc": {
+      "started": "2026-11-02T06:26:57Z",
+      "finished": "2026-11-02T06:28:14Z"
+    },
+    "counters_final": {
+      "starts_used": 4,
+      "starts_remaining": 6,
+      "retries_used": 2,
+      "billable_events": 4
+    },
+    "note": "The retry was authorised after the stop freeze, so counters 3/7/1 in this file are the freeze-instant state while 4/6/2 is the round-final state."
+  },
+  "bookkeeping_revision_utc": "2026-11-02T07:03:10Z",
+  "bookkeeping_revision_note": "task-66 m-03/m-01/m-02: split V7-09 into NOT_RUN_CONDITION_NOT_TRIGGERED, unify the V7-00 token to FAILED_NONPHYSICAL_VALUE, and record the freeze -> Lead authorisation -> retry ordering explicitly. No ledger or counter value changed."
 }
