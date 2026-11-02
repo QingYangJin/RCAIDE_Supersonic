@@ -158,8 +158,8 @@ minor m-01..m-10 的处置见 §16 修订记录表。
 | git_sha | str | 记录产生时 commit；未知写 UNKNOWN 并标 warning；工作树 dirty 时写 <sha>-dirty，且该样本不得进入结论表/正文，仅作调试（m-10） |
 | seed | int | 生成/评估种子 |
 | physical_call_count | int | 离线必须 0 |
-| split | enum | meta_train / meta_validation / meta_test / meta_test_ood / negative_control（按 task_id 划分；五集合定义与互斥规则见 §4.3；写入 archive task_splits） |
-| task_context | {str: float} | 合成 2 维上下文；物理可为空 |
+| split | enum | meta_train / meta_validation / meta_test / meta_test_ood / negative_control（内部数据合同五值，按 task_id 划分，五集合互斥见 §4.3；写入 schema-2 archive 时必须经 §3.3 映射为三值，不得直接写五值） |
+| task_context | {str: float} | 合成 2 维上下文（数值）；物理可为空；OOD 标记用数值键 ood_flag=1.0，不得写 bool/字符串 |
 | created_utc | str | ISO-8601 UTC |
 
 联合校验：source_kind=synthetic ⇒ physics_validation_status=NOT_APPLICABLE；validated_real_hf ⇒ VALIDATED；objective 非 null 时必须有有限数值且 status 属 VALID/FEASIBLE；约束必须全为有限 float 或 null。data_contract.validate_sample() 返回错误列表，写入 archive 前任何错误即整体失败，不做自动修复。
@@ -168,7 +168,7 @@ minor m-01..m-10 的处置见 §16 修订记录表。
 
 - 使用 maml_opt.data.archive.write_archive(...) 生成 observations.jsonl + manifest.json（schema_version=2、state=FROZEN/UNFROZEN、records_sha256）。
 - manifest 必填：dataset_id、task_split_id、task_splits（train/validation/test 任务 id 列表）、design_feature_names（12）、task_context_names、target_names、target_map（objective→{source:"objective"}，约束→{source:"constraints_g_le_zero", key}）、feature_units/target_units、records_file、records_sha256。
-- 五值内部 split → schema-2 三值 archive 映射（M-03）：meta_train→train；meta_validation→validation；meta_test→test；meta_test_ood→test 且样本 task_context.ood=true；negative_control 不写入三值 archive（仅记录在 tasks.json 与 tasks/negative_control_manifest.json，绝不进入训练或主终点统计）。archive 的 task_splits 恰为 train/validation/test 三键；内部五值互斥由 data_contract.assert_task_disjoint 保证，映射由 to_archive_splits() 单向完成并加断言测试。
+- 五值内部 split → schema-2 三值 archive 映射（M-03）：meta_train→train；meta_validation→validation；meta_test→test；meta_test_ood→test 且样本 task_context.ood_flag=1.0；negative_control 不写入三值 archive（仅记录在 tasks.json 与 tasks/negative_control_manifest.json，绝不进入训练或主终点统计）。archive 的 task_splits 恰为 train/validation/test 三键；内部五值互斥由 data_contract.assert_task_disjoint 保证，映射由 to_archive_splits() 单向完成并加断言测试。
 - TaskDataset.load() 会校验 feature_names=design+context、target_map 键集合=target_names、任务 split 归属；P4 数据合同测试必须覆盖这些失败分支。
 - build_dataset_archive(history_root, run_ids, ...) 仅用于未来真实 run（从 EvaluationManager 的 run_manifest/evaluation_log 构建）；P4 合成阶段用 write_archive 直接写 records，并用 audit_archive() 复核 labeled_records/task_counts/data_origins。
 - data_origin 取值：合成 SYNTHETIC_TEST；禁止把 P5 的 15D RFF 数据集直接当 12D 数据（维度/身份都不匹配）。
@@ -521,7 +521,7 @@ minor m-01..m-10 的处置见 §16 修订记录表。
 
 ### 11.2 统一运行目录清单（m-06）
 
-每 run 目录固定文件集（manifest 必须全覆盖，缺项按 NOT_RUN 记录）：run_config.json、environment.json、summary.json、data_manifest.json、tasks.json、reference_solutions.json、evaluations.jsonl、README.md、solver_validation.csv、metrics/{training_history,adaptation_results,metrics,optimization_history,optimization_summary}.csv、figures/fig1..fig5（缺失显示 NOT_RUN）。
+每 run 目录固定文件集（manifest 必须全覆盖，缺项按 NOT_RUN 记录）：run_config.json、environment.json、summary.json、data_manifest.json、tasks.json、tasks/negative_control_manifest.json、reference_solutions.json、evaluations.jsonl、README.md、solver_validation.csv、metrics/{training_history,adaptation_results,metrics,optimization_history,optimization_summary}.csv、figures/fig1..fig5（缺失显示 NOT_RUN）。
 
 ---
 
@@ -541,7 +541,7 @@ minor m-01..m-10 的处置见 §16 修订记录表。
 
 ---
 
-T-12 split 枚举（M-03）：SPLITS 五值在内部数据合同可写入；非法 split 抛 DataContractError；写入 schema-2 archive 时必须按 §3.3 映射只出现 train/validation/test 三键（OOD→test 且 task_context.ood=true；negative_control 不进三值 archive，单独清单），映射函数有断言测试。
+T-12 split 枚举（M-03）：SPLITS 五值在内部数据合同可写入；非法 split 抛 DataContractError；写入 schema-2 archive 时必须按 §3.3 映射只出现 train/validation/test 三键（OOD→test 且 task_context.ood_flag=1.0；negative_control 不进三值 archive，单独清单 negative_control_manifest.json），映射函数有断言测试。
 T-13 负控制协议（M-04）：伪任务 ID 与来源任务不同；同一 (source_task_id, shuffle_seed) 打乱逐位复现；五集合 task_id 两两交集为空；负控制样本不得进入训练或主终点统计。
 T-14 evaluator 物理守卫（M-07）：注入返回 physical_call_count=1 的 evaluator → offline_runner 立即中止，summary.status=PHYSICS_GUARD_VIOLATION，且不得写出正常 0 计数 summary。
 T-15 确定性（M-06）：seed=0 整 run 独立重跑 3 次，metrics.csv 与 optimization_summary.csv 逐位一致（float 精确比较；若框架非确定，记录并降级该臂结论，不得静默通过）。
@@ -596,6 +596,8 @@ T-18 solver_validation.csv（M-01）：P4-CODE run 必含该文件，所有行 s
 |---|---|---|---|
 | v1.0 | 2026-11-02 | A1 初稿 | 设计文档初稿 |
 | v1.1 | 2026-11-02 | A5 M0 审阅 CHANGES_REQUESTED（0 blocker / 8 major / 10 minor） | 见 §0.1 与本表 |
+| v1.2 | 2026-11-02 | A5 M0 v1.1 delta 复审 CHANGES_REQUESTED（1 open major M-03 + M-08 值错误） | §3.3/§5.2/§12 T-12 五值→三值 archive 映射；§2.3/§12 T-16 design_set=15d；§4.4 槽位映射；§13 单表；§12 T-12..T-18 编号；§11.1 A4 V-01..V-12 |
+| v1.2a | 2026-11-02 | A5 M0 v1.2 delta 复审 CHANGES_REQUESTED（M-03 部分闭合：§3.2 合同冲突） | §3.2 split/task_context 措辞；§3.3/T-12 ood_flag=1.0；§11.2 negative_control_manifest.json；本表 v1.2 行 |
 
 | 审阅项 | 严重度 | 处置位置 |
 |---|---|---|
@@ -609,6 +611,9 @@ T-18 solver_validation.csv（M-01）：P4-CODE run 必含该文件，所有行 s
 | M-08 缺 15D 默认回归 | major | §2.3、§12 T-16 |
 | m-01 m00606 不可复核 | minor | 头部上游依据、§10、§14、§16 |
 | M-03 未闭合（v1.2） | major | §3.3 五值→三值 archive 映射 + §5.2 ARCHIVE_SPLIT_MAP/to_archive_splits + §12 T-12 |
+| M-03 残留合同冲突（v1.2a） | major | §3.2:161 改内部五值/archive 三值措辞；§3.2:162 task_context 数值合同加 ood_flag=1.0；§3.3/T-12 同步 |
+| negative_control_manifest 未入文件集（v1.2a） | minor | §11.2 文件集补齐 |
+| §16 缺 v1.2 修订行（v1.2a） | minor | §16 修订表补 v1.2/v1.2a 两行 |
 | M-08 值错误（v1.2） | major | §2.3 与 §12 T-16 改为 design_set="15d"（aircraft/design_space.py:197/359） |
 | m-05 槽位映射 | minor | §4.4 显式槽位↔物理键名映射 |
 | §13 表格断裂 | minor | 风险表合并为单表 |
