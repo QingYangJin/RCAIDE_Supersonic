@@ -162,7 +162,7 @@ minor m-01..m-10 的处置见 §16 修订记录表。
 | task_context | {str: float} | 合成 2 维上下文（数值）；物理可为空；OOD 标记用数值键 ood_flag=1.0，不得写 bool/字符串 |
 | created_utc | str | ISO-8601 UTC |
 
-联合校验：source_kind=synthetic ⇒ physics_validation_status=NOT_APPLICABLE；validated_real_hf ⇒ VALIDATED；objective 非 null 时必须有有限数值且 status 属 VALID/FEASIBLE；约束必须全为有限 float 或 null。data_contract.validate_sample() 返回错误列表，写入 archive 前任何错误即整体失败，不做自动修复。
+联合校验：source_kind=synthetic ⇒ physics_validation_status=NOT_APPLICABLE；validated_real_hf ⇒ VALIDATED；objective 非 null 时必须有有限数值且 status 属 VALID/FEASIBLE/INFEASIBLE（INFEASIBLE 仍保留 objective，不得置 null；objective=null 仅限 EXCLUDED_STATUSES 中的失败/无效状态）；约束必须全为有限 float 或 null。data_contract.validate_sample() 返回错误列表，写入 archive 前任何错误即整体失败，不做自动修复。
 
 ### 3.3 归档映射（复用 maml-opt schema-2，不造第二套格式）
 
@@ -362,6 +362,7 @@ minor m-01..m-10 的处置见 §16 修订记录表。
         maml_init_diversity_candidate_count: int = 64
         determinism_reruns: int = 3
         physical_guard_expected: int = 0
+        optimization_seeds: tuple[int, ...] = (0, 1, 2, 3, 4)  # A8：正式 run 必须 5 seeds；单测可小集合
 
     def run_offline_study(config: OfflineRunnerConfig) -> dict[str, Any]
     def main(argv: Sequence[str] | None = None) -> int
@@ -482,6 +483,8 @@ minor m-01..m-10 的处置见 §16 修订记录表。
 - 共享初始点由同一 (task, seed) 的 LHS seed 生成并在臂间复用；记录 initial_feasible_count；MAML-init 例外但同样 8 点、同任务同 seed 可复现，参数冻结见 §8.2（candidate_count=64、diversity_candidate_count=64）。
 - 约束与失败：g>0 即不可行；失败/非有限目标为 null，不得用大惩罚值伪造；失败评价计入预算并记 status。
 - 每 run 指标：best_feasible_value（无可行 null）、gap_to_reference = best − f*、first_feasible_eval_index（1-based，无则 null）、feasible_count、violation_rate、true_evals_used、cache_hits、wall_s、n_failed_evals。
+- F-QE 可行域极小的披露与 fallback（A7，2026-11-02 Lead 裁决）：F-QE 的可行域为 12 维加权球 r∈[0.15,0.45]，体积占比约 1e-6，B=64 下五臂很可能全部 0 可行。此时主终点如实为 null（禁止写成 0/大惩罚），并同时报告三项 fallback 指标用于同等比较：best_objective_raw（该臂全部评价中的最小原始目标）、min_constraint_violation_sum（对应最好目标设计的 sum(max(0,g))）、feasible_hit_rate=feasible_count/true_evals_used；optimization_summary.csv 需含 feasibility_expected_zero 注记与 n_feasible；结论表须披露“主终点不可比、仅 fallback 可比”，不得据 fallback 宣称优于基线。
+- 正式 M2 run 的 run_config 必须写 actual_seeds（=optimization_seeds 实际值，5 个），单测可减少但不得替代正式 run。
 - 预注册终点：优化侧 first_feasible_eval_index 与 best_feasible_value（B=64）；统计任务×seed 配对（20×5=100 对）报告配对中位差 + bootstrap 95% CI（10,000 次）与 Wilcoxon 参考；不显著即如实报"无改进"。
 - 负控制：label-shuffle、K=0、OOD、参考解断言。若 MAML 无改进，禁止改基线/指标/阈值。
 
@@ -491,7 +494,7 @@ minor m-01..m-10 的处置见 §16 修订记录表。
 
 运行目录：research/concorde_metaopt/optimization_runs/p4-synthetic-<UTC>Z/（P4 分支）。每次 run 含：
 
-- run_config.json：run_id、git_sha、worktree_dirty、seed、family/split id、seeds、预算（true_evaluation_budget=64、bo_initial=8、de=8×8、S_adapt=50）、ks、tolerance、物理调用声明、primary_endpoint（预注册）、secondary_endpoints、negative_control_protocol、statistics（配对中位差、bootstrap 95% CI 10,000 次、Wilcoxon 参考）、determinism_reruns=3、maml_init 冻结参数、evaluator_id、implementation 标签；
+- run_config.json：run_id、git_sha、worktree_dirty、seed、family/split id、seeds、actual_seeds、预算（true_evaluation_budget=64、bo_initial=8、de=8×8、S_adapt=50）、ks、tolerance、物理调用声明、primary_endpoint（预注册）、secondary_endpoints、negative_control_protocol、statistics（配对中位差、bootstrap 95% CI 10,000 次、Wilcoxon 参考）、determinism_reruns=3、maml_init 冻结参数、evaluator_id、implementation 标签；
 - environment.json：python、numpy/scipy/scikit-learn/torch/matplotlib 版本（torch 可缺）、maml_opt 版本、平台、CPU 核数；
 - summary.json：status、arms、终点统计、失败数、physical_call_count、PHYSICS_GUARD 结果、NOT_APPROVED 列表；
 - data_manifest.json：每文件 sha256+bytes、hash_mode（CRLF→LF 规范化）、file_count、total_bytes，排除自身；
@@ -599,6 +602,7 @@ T-18 solver_validation.csv（M-01）：P4-CODE run 必含该文件，所有行 s
 | v1.2 | 2026-11-02 | A5 M0 v1.1 delta 复审 CHANGES_REQUESTED（1 open major M-03 + M-08 值错误） | §3.3/§5.2/§12 T-12 五值→三值 archive 映射；§2.3/§12 T-16 design_set=15d；§4.4 槽位映射；§13 单表；§12 T-12..T-18 编号；§11.1 A4 V-01..V-12 |
 | v1.2a | 2026-11-02 | A5 M0 v1.2 delta 复审 CHANGES_REQUESTED（M-03 部分闭合：§3.2 合同冲突） | §3.2 split/task_context 措辞；§3.3/T-12 ood_flag=1.0；§11.2 negative_control_manifest.json；本表 v1.2 行 |
 | v1.2b | 2026-11-02 | A5 v1.2a 终核 APPROVE_FOR_M1（1 non-blocking minor） | §3.3 补 ood_flag 不入特征/特征仍为 2 维 context_1/context_2 |
+| v1.2c | 2026-11-02 | M1 实现期 Lead 裁决 A7/A8/A9（a6 提出） | §3.2 联合校验允许 INFEASIBLE+objective；§5.6 加 optimization_seeds；§10 加 F-QE fallback 指标与披露；§11 run_config 加 actual_seeds |
 
 | 审阅项 | 严重度 | 处置位置 |
 |---|---|---|
