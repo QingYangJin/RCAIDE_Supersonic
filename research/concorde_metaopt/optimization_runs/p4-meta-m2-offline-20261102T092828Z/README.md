@@ -28,10 +28,12 @@ OPT-BO-pretrain 与 OPT-BO-MAML 标 CLONE_OF_OPT-BO-rand（与 rand 同机制、
 ## 产物文件
 
 run_config.json / environment.json / summary.json / data_manifest.json / tasks.json /
-tasks/negative_control_manifest.json / reference_solutions.json / evaluations.jsonl / solver_validation.csv /
-finite_difference_check.json / README.md；
-metrics/{training_history,adaptation_results,metrics,optimization_history,optimization_summary}.csv；
-figures/figure_status.json（本阶段不生成图；fig1/fig2/fig3/fig5 由 A2 从 CSV 生成，fig4 归 Issue #4 D-12D-004）。
+tasks/negative_control_manifest.json / reference_solutions.json / solver_validation.csv /
+finite_difference_check.json / m4_report_numbers.csv / README.md；
+metrics/{training_history,adaptation_results,metrics,optimization_summary}.csv；
+figures/fig1..fig5 PNG + figure_status.json + make_p4_m4_figures.manifest.json + metrics_summary.csv
+（5 张图已生成：fig1/fig2/fig3/fig5 GENERATED；fig4 NOT_RUN，归 Issue #4 D-12D-004，不画假数据）；
+外部工件（不入 git，见 data_manifest.json 的 external_artifacts 段）：evaluations.jsonl / archive/.../observations.jsonl / metrics/optimization_history.csv。
 
 ## 隔离与边界
 

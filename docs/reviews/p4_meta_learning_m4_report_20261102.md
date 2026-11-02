@@ -1,8 +1,8 @@
 # P4-CODE M4 报告：M1 元学习与 M2 等预算优化（合成离线，物理调用 0）
 
-> 状态：FINAL_FOR_M3_INDEPENDENT_REVIEW（A2 起草、Lead 定稿；本稿随 run 目录提交入库，M3 独立复核进行中）。本 run 为 SYNTHETIC_ONLY：全部评估由合成解析评估器产生，physical_call_count=0，不含任何真实物理结论。
-> run_id：p4-meta-m2-offline-20261102T092828Z；stage=P4-CODE；git_sha=36d58918fc5f1002a599c45661e3cd389ce96c19；data_origin=SYNTHETIC_TEST；生成时间（UTC）：2026-11-02T11:03:35Z（图）/ 本稿由脚本生成。
-> 全部引用数字均可追溯到 run 目录 summary.json、run_config.json、environment.json、data_manifest.json、tasks.json、metrics/*.csv、figures/*；逐项审计见 m4_report_numbers.csv。
+> 状态：FINAL（A2 起草、Lead 定稿；已提交入库并通过 M3 独立终审 APPROVE_FOR_ISSUE_RECEIPT_AND_PR，0 blocker/0 major/4 minor，处置见 §11）。本 run 为 SYNTHETIC_ONLY：全部评估由合成解析评估器产生，physical_call_count=0，不含任何真实物理结论。
+> run_id：p4-meta-m2-offline-20261102T092828Z；stage=P4-CODE；git_sha=36d58918fc5f1002a599c45661e3cd389ce96c19；data_origin=SYNTHETIC_TEST；生成时间（UTC）：2026-11-02T11:21:56Z（最终 figure_status；初版 11:03:35Z）/ 本稿由脚本生成。
+> 全部引用数字均可追溯到 run 目录 summary.json、run_config.json、environment.json、data_manifest.json、tasks.json、metrics/*.csv、figures/*；逐项审计见本 run 目录 m4_report_numbers.csv（随包提交）。
 
 ## 1. 执行摘要
 
@@ -147,16 +147,16 @@ OPT-BO-rand 的 gap_to_reference（n_finite=2）均值=0.6974555844120012；firs
 
 ## 7. 复现方法
 
-- 代码版本：git_sha=36d58918fc5f1002a599c45661e3cd389ce96c19（git_sha_label 与 git_sha 相同）；worktree_dirty=false；config_hash=0d393de6ae1d56b3c62308d977678581025f63ec74ce92c6c43201436c902f8b；git 仓库 D:/RCAIDE-p4-meta-learning。
-- 运行入口：使用已提交的 research/concorde_metaopt/meta_learning/offline_runner（run_offline_study / OfflineRunnerConfig），由 EXT 包装脚本 C:/Users/pc/AppData/Local/RCAIDE_Supersonic_agent_state/p4-meta-dev/a6/run_p4_m2.py 调用；等价 CLI：
+- 代码版本：git_sha=36d58918fc5f1002a599c45661e3cd389ce96c19（git_sha_label 与 git_sha 相同）；worktree_dirty=false；config_hash=0d393de6ae1d56b3c62308d977678581025f63ec74ce92c6c43201436c902f8b；git 仓库 <REPO_ROOT>（P4 worktree，机器相关；本文以占位符代替本机绝对路径）。
+- 运行入口：使用已提交的 research/concorde_metaopt/meta_learning/offline_runner（run_offline_study / OfflineRunnerConfig），由 EXT 包装脚本 <EXT_ROOT>/p4-meta-dev/a6/run_p4_m2.py 调用；等价 CLI：
 
     python -m research.concorde_metaopt.meta_learning.offline_runner --run-id <RUN_ID> --output-root research/concorde_metaopt/optimization_runs --seed 42 --max-meta-steps 2000 --budget 64 --ks 0 1 5 10 --optimization-seeds 0 1 2 3 4 --determinism-reruns 3
 
 - 环境：python 3.11.17，matplotlib 3.11.2，numpy 2.4.6，scipy 1.17.1，torch 2.8.0，platform Windows-10-10.0.26200-SP0，cpu_count 32，device=cpu。
-- 数据清单：data_manifest.json file_count=25，total_bytes=3217559（文本 canonical-LF、PNG raw、外置工件 raw），binary_file_count=5，external_artifacts=3 个（root=D:/RCAIDE/outputs/concorde_metaopt/p4-meta-m2-offline-20261102T092828Z/raw_artifacts，external_total_bytes=82990422，不计入 file_count/total_bytes，逐文件 raw sha256 记录于 external_artifacts 段）；manifest 自身 canonical sha256=6a1afdca86d35f2f0485b859f57f726ebc520b07e3d3c1ab905d78ab80c10eca；本报告生成时脚本核对了清单计数（file_count 与 files 长度一致）。
-- 出图命令（已执行，生成第 8 节 5 张 PNG 与本表 CSV）：
+- 数据清单：data_manifest.json file_count=26，total_bytes=3276410（文本 canonical-LF、PNG raw、外置工件 raw），binary_file_count=5，external_artifacts=3 个（root=<EXTERNAL_ROOT>/concorde_metaopt/p4-meta-m2-offline-20261102T092828Z/raw_artifacts，external_total_bytes=82990422，不计入 file_count/total_bytes，逐文件 raw sha256 记录于 external_artifacts 段）；manifest 自身 canonical sha256=eada0111df6569f86d9cb4084093e395e63459c6ac12d61c5c6d8ab516a55918；本报告生成时脚本核对了清单计数（file_count 与 files 长度一致）。
+- 出图命令（已执行，生成第 8 节 5 张 PNG 与本报告数字审计 CSV）：
 
-    MPLCONFIGDIR=<cache> python C:/Users/pc/AppData/Local/RCAIDE_Supersonic_agent_state/p4-meta-dev/a2/scripts/make_p4_m4_figures.py --run-dir <RUN_DIR> --out-dir <RUN_DIR>/figures --dpi 150
+    MPLCONFIGDIR=<cache> python <EXT_ROOT>/p4-meta-dev/a2/scripts/make_p4_m4_figures.py --run-dir <RUN_DIR> --out-dir <RUN_DIR>/figures --dpi 150
 
 - 出图脚本 sha256=cee891c01df64e9ad0523fe6e0af5d80a1205fca4af71fbf0f00e5ab40fbd9c3（与 manifest 记录一致：true）；图 manifest=figures/make_p4_m4_figures.manifest.json（checks.all_checks_pass=true）；figure_status=figures/figure_status.json（status=GENERATED）。
 - 校验：summary.m2 aggregate 与 metrics/optimization_summary.csv 逐值复算，mismatch=0（数值比较 76 项，max_abs_diff=2.220446049250313e-16）；CSV 行数 adaptation_results=480、optimization_summary=750、training_history=4050；PNG 磁盘 sha256 与 figure_status 全部一致，fig3 序列仅含可识别臂，fig4 状态 NOT_RUN。
@@ -188,8 +188,20 @@ OPT-BO-rand 的 gap_to_reference（n_finite=2）均值=0.6974555844120012；firs
 
 ## 10. 打包与提交说明（Lead）
 
-- 大文件外置：evaluations.jsonl（41,969,526 B）、archive/.../observations.jsonl（20,555,285 B）、metrics/optimization_history.csv（20,467,611 B）共 82990422 B 已移至仓库外 D:/RCAIDE/outputs/concorde_metaopt/p4-meta-m2-offline-20261102T092828Z/raw_artifacts/（outside_git=true）；run 目录内保留 summary/metrics/CSV 派生文件；external_artifacts 段记录每个外置文件的 raw sha256，manifest 的 file_count/total_bytes 只统计仓库内文件。
-- data_manifest：file_count=25、total_bytes=3217559、external_file_count=3、external_total_bytes=82990422、schema_version=2.0.0；manifest 自身 canonical sha256=6a1afdca86d35f2f0485b859f57f726ebc520b07e3d3c1ab905d78ab80c10eca；可从干净 checkout 复现文本文件的 canonical-LF sha256。
-- 提交范围：仅 run 目录 26 个文件（含 5 张图与 figures 元数据）+ 本报告 + docs/planning/p4_meta_learning_design_20261102.md（v1.4a）；未含 P5 未跟踪文件、未改基线代码、未合并 main。
+- 大文件外置：evaluations.jsonl（41,969,526 B）、archive/.../observations.jsonl（20,555,285 B）、metrics/optimization_history.csv（20,467,611 B）共 82990422 B 已移至仓库外 <EXTERNAL_ROOT>/concorde_metaopt/p4-meta-m2-offline-20261102T092828Z/raw_artifacts/（outside_git=true）；run 目录内保留 summary/metrics/CSV 派生文件；external_artifacts 段记录每个外置文件的 raw sha256，manifest 的 file_count/total_bytes 只统计仓库内文件。
+- data_manifest：file_count=26、total_bytes=3276410、external_file_count=3、external_total_bytes=82990422、schema_version=2.0.0；manifest 自身 canonical sha256=eada0111df6569f86d9cb4084093e395e63459c6ac12d61c5c6d8ab516a55918；可从干净 checkout 复现文本文件的 canonical-LF sha256。post-M3 修正（§11）已把 m4_report_numbers.csv 纳入包内并更新本清单。
+- 提交范围：run 目录（26 个包内文件 + data_manifest.json 自身；含 5 张图、figures 元数据与 m4_report_numbers.csv）+ 本报告 + docs/planning/p4_meta_learning_design_20261102.md（v1.4a）；未含 P5 未跟踪文件、未改基线代码、未合并 main。post-M3 修正在父提交 f92a7f2 之上追加 follow-up 提交（仅 run 目录产物与本报告）。
 - 门禁：determinism=PASS、finite_difference=PASS、reference_solutions=PASS、physics_guard=PASS（expected=0）、physical_call_count=0；M2 主终点因 n_finite 失衡不可比，仅报告 A7 fallback 且不宣称优于基线。
-- 复核状态：A5 已签发 M1 rev5 APPROVE_TO_START_M2、A3 rev5 隔离 PASS 17/17；本报告与 run 包待 M3 独立终审（A5）与 A3 提交隔离复核，结论以独立复核为准。
+- 复核状态：A5 已签发 M1 rev5 APPROVE_TO_START_M2、A3 rev5 隔离 PASS 17/17；M3 独立终审（A5，f92a7f2）APPROVE_FOR_ISSUE_RECEIPT_AND_PR（0 blocker/0 major/4 minor，见 §11）；A3 对 f92a7f2 的隔离复核 PASS 25/25；post-M3 修正的 delta 复核结论以独立复核为准。run 实际执行于父提交 36d5891，f92a7f2 及 follow-up 仅为打包提交。
+
+## 11. post-M3 修正记录（M3-F01..M3-F04）
+
+- 触发：A5 M3 独立终审（task-89，target f92a7f2）verdict=APPROVE_FOR_ISSUE_RECEIPT_AND_PR，0 blocker / 0 major / 4 minor。
+- M3-F01（m4_report_numbers.csv 未随包）：已复制到 run 根目录 m4_report_numbers.csv（404 行，sha256 774c20203088dc6da6c4c2bc08143b9966057be2e838808a64d63bd27efd486a，与 EXT 源文件逐字节一致），并纳入 data_manifest.json。
+- M3-F02（run README 产物/图表述不一致）：README 产物段已改为"5 张图已生成：fig1/2/3/5 GENERATED、fig4 NOT_RUN 归 Issue #4 D-12D-004"；evaluations.jsonl 与 metrics/optimization_history.csv 移入 external_artifacts 说明。
+- M3-F03（报告图时间戳旧）：生成时间改为 2026-11-02T11:21:56Z（最终 figure_status），保留初版 11:03:35Z 供追溯。
+- M3-F04（本机绝对路径）：报告与 figures/make_p4_m4_figures.manifest.json 中的本机绝对路径替换为 <REPO_ROOT> / <EXT_ROOT> / <EXTERNAL_ROOT> 占位符；PNG 哈希与 manifest 校验项未变。
+- 包内影响：新增 m4_report_numbers.csv → data_manifest file_count 25→26、total_bytes 3,217,559→3,276,410 B、manifest 自身 canonical sha256=eada0111df6569f86d9cb4084093e395e63459c6ac12d61c5c6d8ab516a55918。
+- 未变项：5 张 PNG 与 figure_status 哈希、metrics/*.csv、run 在父提交 36d5891 执行的事实、M3 已核验的统计数值与 n_finite 计数。
+- delta 复核：follow-up 提交的 A5/A3 复核结论以独立复核记录为准；本稿不代签。
+- 不声明：本修正不改变任何结论、门禁状态或物理调用计数（physical_call_count=0）。
