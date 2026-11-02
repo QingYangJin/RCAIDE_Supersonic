@@ -705,6 +705,7 @@ def run_de_arm(
     accepted_trials = 0
     rejected_trials = 0
     generations_completed = 0
+    stagnation_generations = 0
     termination_reason = "search_finished"
     while True:
         if len(records) >= budget:
@@ -746,8 +747,10 @@ def run_de_arm(
             break
         generations_completed = generation
         if generation_accepted == 0:
-            termination_reason = "no_accepted_trial_in_generation"
-            break
+            # DE 可能出现整代无改进（已收敛或步长过小）；此处只累计停滞代数、
+            # 不提前终止：§10 要求每 run 恰好 budget 次真实评价（等预算比较），
+            # 提前 break 会使 true_evals_used < budget 并破坏五臂可比性。
+            stagnation_generations += 1
         generation += 1
     wall_s = time.perf_counter() - wall_start
     return _summarize_arm(
@@ -768,6 +771,7 @@ def run_de_arm(
             "generations_completed": generations_completed,
             "accepted_trials": accepted_trials,
             "rejected_trials": rejected_trials,
+            "stagnation_generations": stagnation_generations,
         },
         reference_objective=reference_objective,
     )
