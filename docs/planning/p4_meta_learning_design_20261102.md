@@ -2,7 +2,7 @@
 
 | 项 | 内容 |
 |---|---|
-| 文档状态 | DESIGN v1.4（2026-11-02 修订 4）：v1.3 已按 A5 M1 代码复核（1 blocker/5 major/4 minor）修订并新增 §10.1 P4-CODE 可识别臂裁决（M1-F05）；v1.4 按 A5 M1 rev3 复核（0 blocker / 3 open major / 3 minor 新增）把 §0/§10/§11 与 §10.1 对齐（预注册推断仅用三可识别臂；pretrain/MAML 标 CLONE_OF_OPT-BO-rand 且仅作描述性记录），并补 M1-F10 映射与代码 rev4 落点；本文档不含任何物理结论 |
+| 文档状态 | DESIGN v1.4a（2026-11-02 修订 4a，代码 rev5 已关闭 A5 M1R4-01..03）：v1.3 已按 A5 M1 代码复核（1 blocker/5 major/4 minor）修订并新增 §10.1 P4-CODE 可识别臂裁决（M1-F05）；v1.4 按 A5 M1 rev3 复核（0 blocker / 3 open major / 3 minor 新增）把 §0/§10/§11 与 §10.1 对齐（预注册推断仅用三可识别臂；pretrain/MAML 标 CLONE_OF_OPT-BO-rand 且仅作描述性记录），并补 M1-F10 映射与代码 rev4 落点；本文档不含任何物理结论 |
 | 任务 | task-49（P4-M0 A1：12D 元学习软件设计文档，中文） |
 | 作者/角色 | A1（a1-code-dev）初稿；Lead 修订 1（2026-11-02，A5 独立复核后） |
 | 工作树 | D:/RCAIDE-p4-meta-learning，分支 research/p4-meta-learning，起点 bf6c052 |
