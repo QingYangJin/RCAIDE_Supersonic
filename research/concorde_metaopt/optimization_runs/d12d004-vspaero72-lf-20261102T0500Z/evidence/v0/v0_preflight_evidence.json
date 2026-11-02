@@ -1,0 +1,166 @@
+{
+  "schema_version": "d12d004-v0-preflight-1",
+  "utc": "2026-11-02T05:18:37Z",
+  "run_id": "d12d004-vspaero72-lf-20261102T0500Z",
+  "run_dir": "D:\\RCAIDE-d12d004\\research\\concorde_metaopt\\optimization_runs\\d12d004-vspaero72-lf-20261102T0500Z",
+  "authority": {
+    "issue": "#4",
+    "approval_comment_id": 6569140757,
+    "category": "A-VSPAERO7-thin-LF (setup gate only)",
+    "approved_v1_starts_max": 10,
+    "v1_starts_used_so_far": 0,
+    "note": "V0 is a zero-solver pre-gate; the 10-start budget is untouched."
+  },
+  "solver_cases_started": 0,
+  "billable_numerical_analysis_starts": 0,
+  "stage_1_runner_tests": {
+    "status": "PASS",
+    "command": "D:\\RCAIDE\\envs\\RCAIDE\\python.exe -m unittest test_vspaero7_runner -v",
+    "workdir": "D:\\RCAIDE-d12d004\\research\\concorde_metaopt\\optimization_runs\\d12d004-vspaero72-lf-20261102T0500Z\\scripts",
+    "returncode": 0,
+    "tests_ran": 22,
+    "log_path": "D:\\RCAIDE-d12d004\\research\\concorde_metaopt\\optimization_runs\\d12d004-vspaero72-lf-20261102T0500Z\\evidence\\v0\\tests\\test_vspaero7_runner.log",
+    "log_sha256": "248a1c27eace4961ad500d8e897d4e80d3306ab3f455d5badf22d670f4483886"
+  },
+  "stage_2_setup_generation": {
+    "status": "PASS",
+    "stage": "V0_SETUP_GENERATION_VSPAERO_7_2_2",
+    "utc": "2026-11-02T05:18:38Z",
+    "openvsp_version": "OpenVSP 3.55.0",
+    "openvsp_root": "D:\\OpenVSP-3.55.0\\OpenVSP-3.55.0-win64",
+    "vspaero_exe": {
+      "path": "D:\\OpenVSP-3.55.0\\OpenVSP-3.55.0-win64\\vspaero.exe",
+      "bytes": 811520,
+      "sha256": "db71c4412489af82398833408ea30fb73327bdd9434de2ef530d31375b9fddad"
+    },
+    "source_model": {
+      "path": "C:\\Users\\pc\\AppData\\Local\\RCAIDE_Supersonic_agent_state\\fullchain\\lead\\d12d003\\setup355b\\_model\\wing355_baseline.vsp3",
+      "bytes": 111816,
+      "sha256": "9a788b467095b1a958a240eaa0132e922f667649e9212f9b19e4399bad14f27c"
+    },
+    "stop_before_run_expected": 1,
+    "stop_before_run_readback": 1,
+    "solver_start_path": "VSPAEROSweep(StopBeforeRun=1) stops before VSPAERO fork (source: VSPAEROMgr.cpp guard before ForkCmd)",
+    "analysis_result_ids": {
+      "VSPAEROComputeGeometry": "KVVNIPH",
+      "VSPAEROSweep": ""
+    },
+    "source_model_local_copy": {
+      "path": "D:\\RCAIDE-d12d004\\research\\concorde_metaopt\\optimization_runs\\d12d004-vspaero72-lf-20261102T0500Z\\evidence\\v0\\setup_gen\\wing355_baseline.vsp3",
+      "bytes": 111816,
+      "sha256": "9a788b467095b1a958a240eaa0132e922f667649e9212f9b19e4399bad14f27c"
+    },
+    "setup_file": "D:\\RCAIDE-d12d004\\research\\concorde_metaopt\\optimization_runs\\d12d004-vspaero72-lf-20261102T0500Z\\evidence\\v0\\setup_gen\\wing355_baseline.vspaero",
+    "vspgeom_file": null,
+    "vspgeom_external": {
+      "path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\d12d004-vspaero72-lf-20261102T0500Z\\raw_artifacts\\wing355_baseline.vspgeom",
+      "bytes": 224357,
+      "sha256": "9fcda6d5d45300fbb0e20257c9ddc80540b44f5064a9566089d7ef85f9018d8e",
+      "outside_git": true
+    },
+    "files": {
+      "geom_result_thin.csv": {
+        "bytes": 373,
+        "sha256": "5614d642220a34df33bc24ddc8e52138239efe7bafd404f2e03c2ffc27621878"
+      },
+      "wing355_baseline.csf": {
+        "bytes": 20,
+        "sha256": "bb29bf526f4379308ca9c271a8df90c39f4df4235f81f63e370f25e714bb797c"
+      },
+      "wing355_baseline.vkey": {
+        "bytes": 380,
+        "sha256": "9c79e43032ea7a6b6b451c881e498e5cf5ce927b3b70a111800d06297d8ecfb5"
+      },
+      "wing355_baseline.vsp3": {
+        "bytes": 111816,
+        "sha256": "9a788b467095b1a958a240eaa0132e922f667649e9212f9b19e4399bad14f27c"
+      },
+      "wing355_baseline.vspaero": {
+        "bytes": 930,
+        "sha256": "c862aa220bc6f3a9d057b2fbe99c4ed340591a14ad88f455d3d1b0ddbe7c1804"
+      }
+    },
+    "solver_artifacts_found": [],
+    "solver_processes_started": 0,
+    "billable_numerical_analysis_starts": 0
+  },
+  "stage_3_contract_injection": {
+    "status": "PASS",
+    "assertions": 17,
+    "legacy_lines_normalized": 0,
+    "target_path": "D:\\RCAIDE-d12d004\\research\\concorde_metaopt\\optimization_runs\\d12d004-vspaero72-lf-20261102T0500Z\\evidence\\v0\\setup_gen\\wing355_thin_v0_contract.vspaero",
+    "target_bytes": 847,
+    "target_sha256": "c9cef04e6a6986fdc87f07338e168dbf2ee17bdab3f5836b417ba6e6036ccb64",
+    "fields_checked": [
+      "Sref",
+      "Cref",
+      "Bref",
+      "X_cg",
+      "Y_cg",
+      "Z_cg",
+      "Mach",
+      "AoA",
+      "Beta",
+      "ReCref",
+      "Vinf",
+      "Rho",
+      "Symmetry",
+      "NumWakeNodes",
+      "WakeIters",
+      "WakeRelax",
+      "FarDist"
+    ],
+    "readback_from_disk": "PASS"
+  },
+  "stage_4_negative_controls": {
+    "raw_default_leak_rejected": {
+      "rejected": true,
+      "violation_count": 6,
+      "kinds": [
+        "MISMATCH",
+        "SETUP_DEFAULT_LEAK"
+      ]
+    },
+    "wrong_sref": {
+      "rejected": true
+    },
+    "setup_rc_nonzero": {
+      "rejected": true
+    },
+    "start_solver": {
+      "rejected": true
+    },
+    "solver_artifacts_absent": {
+      "status": "PASS"
+    },
+    "legacy_format": {
+      "normalized": false,
+      "strict_mode_rejected": true
+    }
+  },
+  "tooling_events": [
+    {
+      "event_id": "V0-SETUP-001",
+      "kind": "openvsp_api_setup_generation",
+      "tool": "OpenVSP 3.55.0 Python API (VSPAEROSweep StopBeforeRun=1 + VSPAEROComputeGeometry)",
+      "solver_processes_started": 0,
+      "billable": false,
+      "numerical_analysis": false,
+      "utc": "2026-11-02T05:18:37Z",
+      "evidence": "evidence/v0/setup_generation_raw.json",
+      "note": "setup/mesh generation only; no vspaero.exe process, no solver case, budget untouched"
+    }
+  ],
+  "limitations": [
+    "Process-level proof of zero solver processes is not available on this host (no Procmon/4688/ETW/USN in this environment); the evidence is code-path + artifact based.",
+    "The V0 setup uses the external wing-only VSP model asset (sha256 recorded); paired V1 cases must use single-version geometry.",
+    "Raw VSPAEROSweep output contains VSPAERO defaults (Vinf=100, Rho=0.002377, ReCref=1e7); the runner rejects them unless contract-injected and read back."
+  ],
+  "stage_5_budget": {
+    "v1_approved_starts": 10,
+    "v1_starts_used": 0,
+    "starts_remaining": 10,
+    "preflight_only": true
+  },
+  "status": "V0_PREGATE_PASS"
+}

@@ -1,0 +1,114 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_kind": "D12D004_ACTUAL_SOLVER_BUDGET",
+  "status": "UNUSED_AT_ZERO_STARTS",
+  "no_solver_started": true,
+  "run_id": "d12d004-vspaero72-lf-20261102T0500Z",
+  "approval": {
+    "issue": "#4",
+    "comment_id": 6569140757,
+    "category": "A-VSPAERO7-thin-LF",
+    "approved_starts": 10,
+    "denied": {
+      "B": 0,
+      "C": 0,
+      "D": 0,
+      "E": 0,
+      "P4_REAL": 0
+    },
+    "carryover": false,
+    "no_carryover": true
+  },
+  "hard_limits": {
+    "max_starts": 10,
+    "max_concurrent": 1,
+    "max_cores": 4,
+    "max_ram_gb": 8,
+    "max_wall_per_start_s": 600,
+    "max_round_wall_h": 6,
+    "paid_cloud": false,
+    "serial_only": true
+  },
+  "counters": {
+    "starts_used": 0,
+    "starts_remaining": 10,
+    "retries_used": 0,
+    "mesh_generation_events": 0,
+    "billable_events": 0
+  },
+  "by_class": {
+    "A_VSPAERO7_thin_LF_used": 0,
+    "A_cap": 10,
+    "B": 0,
+    "C": 0,
+    "D": 0,
+    "E": 0,
+    "P4_REAL": 0
+  },
+  "billing_rules": {
+    "billable_event_definition": "每一次 vspaero.exe 进程启动（含 setup 失败后仍启动、失败、超时、被中止）计 1 次",
+    "failure_billable": true,
+    "retry_billable": true,
+    "max_retries_per_case": 1,
+    "retry_consumes_cap": true,
+    "mesh_generation_billable": false,
+    "mesh_generation_note": "openvsp API 仅几何处理、无 solver fork，不计费但记录事件数",
+    "no_borrowing": "B-E 额度恒为 0，禁止借用或转换",
+    "preflight_failure_billable": false,
+    "preflight_note": "A1/A5/A3 门禁未通过时不得启动求解器，因此不产生计费事件"
+  },
+  "preflight_gates": {
+    "A1_runner_fix_and_tests": false,
+    "A5_independent_web_review": false,
+    "A3_binary_worktree_isolation": false,
+    "A2_run_config_and_budget_present": true,
+    "all_required": true,
+    "gates_passed": false,
+    "note": "A2 骨架已存在（本文件+run_config+case matrix），其余三门禁未通过前禁止任何启动。"
+  },
+  "stop_rules": [
+    "任一必填来流/参考量回读不一致 -> 停止链路",
+    "polar 出现 NaN/IND/非有限值 -> 停止链路",
+    "CL>0.05 时 CDtot<=0 或 CDi<=0 -> 停止并标 SOLVED_ALARM",
+    "中->细网格 CL/CDi/CDtot/CMy 相对差 >15% -> 停止并标 MESH_NOT_CONVERGED",
+    "单次启动墙钟 >600s 或整轮 >6h -> 中止",
+    "RSS >8GB 或核数 >4 -> 中止",
+    "starts_used >= 10 -> 强制停止（剩余案例 NOT_RUN）",
+    "标准翼 Mach2.02 判为物理不可用 -> 停止 12D 大翼链路"
+  ],
+  "ledger_event_fields": [
+    "event_id",
+    "case_id",
+    "category",
+    "attempt_index",
+    "is_retry",
+    "started_utc",
+    "finished_utc",
+    "wall_seconds",
+    "command",
+    "returncode",
+    "billable",
+    "outcome_class",
+    "stdout_sha256",
+    "vspgeom_sha256",
+    "setup_sha256",
+    "polar_sha256",
+    "polar_rows",
+    "history_sha256",
+    "notes"
+  ],
+  "ledger_expected_event_ids": [
+    "NA-D12D004-001",
+    "NA-D12D004-002",
+    "NA-D12D004-003",
+    "NA-D12D004-004",
+    "NA-D12D004-005",
+    "NA-D12D004-006",
+    "NA-D12D004-007",
+    "NA-D12D004-008",
+    "NA-D12D004-009",
+    "NA-D12D004-010"
+  ],
+  "final_assertion": "完成时 starts_used + starts_remaining == 10 且 billable_events == starts_used",
+  "append_only": true
+}

@@ -1,0 +1,226 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_kind": "D12D004_RUN_CONFIG",
+  "status": "SKELETON_NOT_RUN",
+  "no_solver_started": true,
+  "authority": {
+    "issue": "#4",
+    "approval_comment_id": 6569140757,
+    "approval_period": "2026-11-02 D-12D-004",
+    "approved_category": "A-VSPAERO7-thin-LF",
+    "approved_max_starts": 10,
+    "denied_categories": {
+      "B_VSPAERO_THICK": 0,
+      "C_OPENVSP_WAVEDRAG": 0,
+      "D_SU2_EULER": 0,
+      "E_RCAIDE_MISSION": 0,
+      "P4_REAL_BOE_MAML": 0
+    },
+    "carryover_from_D12D002": false,
+    "no_carryover": true,
+    "note": "A 类 10 次独立新账本；失败/重试均计费；不得借用 B-E 额度；门禁未通过不得启动。"
+  },
+  "run_identity": {
+    "run_id": "d12d004-vspaero72-lf-20261102T0500Z",
+    "run_dir": "research/concorde_metaopt/optimization_runs/d12d004-vspaero72-lf-20261102T0500Z",
+    "run_family": "D-12D-004",
+    "created_utc": "2026-11-02T05:00:00Z",
+    "skeleton_prepared_utc": "2026-11-02T04:59:00Z",
+    "prepared_by": "A2",
+    "report_language": "zh-CN"
+  },
+  "code": {
+    "branch": "research/d12d004-vspaero7",
+    "worktree": "D:/RCAIDE-d12d004",
+    "base_sha": "e5140fc64d348f2d9dcf52962f1dcfc425099341",
+    "runner_commit": null,
+    "runner_commit_rule": "A1 完成 runner 修复并提交后填入实际 40 位 SHA；runner_commit 必须与 A5 批准的 SHA 完全一致，否则不得启动。",
+    "git_sha_required_at_run_start": null,
+    "git_sha_rule": "run 开始时由 runner 执行 git rev-parse HEAD 填入并断言等于 A5 批准 SHA；不一致即拒绝启动。",
+    "runner_version": null,
+    "dirty_worktree_allowed": false
+  },
+  "toolchain": {
+    "openvsp_version": "3.55.0",
+    "openvsp_root": "D:/OpenVSP-3.55.0/OpenVSP-3.55.0-win64",
+    "vspaero_exe": "D:/OpenVSP-3.55.0/OpenVSP-3.55.0-win64/vspaero.exe",
+    "vspaero_version": "7.2.2",
+    "vspaero_bytes": 811520,
+    "vspaero_sha256": "db71c4412489af82398833408ea30fb73327bdd9434de2ef530d31375b9fddad",
+    "old_3261_vspaero_untouched": "D:/Program Files/OpenVSP/OpenVSP-3.26.1-win64-Python3.9/OpenVSP-3.26.1-win64/vspaero.exe",
+    "old_3261_sha256": "e1affca023f9d63d9b0b5f343c3ea5afd5a8dbcfe420952e557718dd15f90eb8",
+    "python": "D:/RCAIDE/envs/RCAIDE/python.exe",
+    "geometry_setup_method": "openvsp API VSPAEROComputeGeometry + VSPAEROSweep(StopBeforeRun=1)；零 solver 进程；capture result id",
+    "solver_command_template": "vspaero.exe -omp 4 <CASE_BASE> (cwd = 含 <CASE_BASE>.vspgeom 与 .vspaero 的 case 目录)"
+  },
+  "frozen_flow": {
+    "mach": 2.02,
+    "altitude_m": 18288,
+    "temperature_k": 216.65,
+    "pressure_pa": 7171.544888256813,
+    "rho_kg_m3": 0.1153178340089936,
+    "speed_of_sound_m_s": 295.0680184,
+    "vinf_m_s": 596.0373972278921,
+    "mu_kg_m_s": 0.0000142161308,
+    "mu_source": "ISA 216.65 K；由合同反推 mu=rho*Vinf*Cref/ReCref，生成时同式复算。"
+  },
+  "reference_12d": {
+    "sref_m2": 358.25,
+    "cref_m": 18.489893,
+    "bref_m": 25.604638,
+    "rec_ref_expected": 89397005.8767656,
+    "cg_m": {
+      "x": 16.821978259514246,
+      "y": 0,
+      "z": 0,
+      "status": "PROVISIONAL_NOT_FROZEN"
+    },
+    "aoa_deg": 2,
+    "beta_deg": 0,
+    "symmetry": "NO"
+  },
+  "standard_wing_case": {
+    "model": "OpenVSP 3.55 Uber_eCRM-002 thin",
+    "model_dir": "D:/OpenVSP-3.55.0/OpenVSP-3.55.0-win64/vspaero_ex/Uber_eCRM-002",
+    "sref_m2": 117.0175,
+    "cref_m": 3.4316,
+    "bref_m": 35.6199,
+    "cg_m": {
+      "x": 24.414,
+      "y": 0,
+      "z": 11.067,
+      "status": "EXAMPLE_VALUE_NOT_PHYSICAL_VALIDATION"
+    },
+    "subsonic": {
+      "mach": 0.1,
+      "vinf_m_s": 29.50680184,
+      "rec_ref_expected": 821360.597981
+    },
+    "supersonic": {
+      "mach": 2.02,
+      "vinf_m_s": 596.0373972278921,
+      "rec_ref_expected": 16591484.0809
+    },
+    "note": "标准翼用模型自带参考量 + 物理自洽逐案来流（亚音速 Vinf=0.1*a）；其余 12D 案例强制合同七字段。"
+  },
+  "wake": {
+    "num_wake_nodes": 8,
+    "wake_iters": 5,
+    "far_dist": -1,
+    "max_turning_angle": -1,
+    "symmetry": "NO",
+    "note": "12D 案例固定；标准翼案例逐案声明并回读断言，禁止默认值进入求解。"
+  },
+  "readback_assertions": [
+    {
+      "field": "Mach",
+      "expected": "per case declared",
+      "tolerance_rel": 1e-9
+    },
+    {
+      "field": "Vinf",
+      "expected": "per case declared",
+      "tolerance_rel": 1e-9
+    },
+    {
+      "field": "Rho",
+      "expected": "per case declared",
+      "tolerance_rel": 1e-9
+    },
+    {
+      "field": "ReCref",
+      "expected": "per case declared",
+      "tolerance_rel": 0.000001
+    },
+    {
+      "field": "Sref",
+      "expected": "per case declared",
+      "tolerance_rel": 1e-9
+    },
+    {
+      "field": "Cref",
+      "expected": "per case declared",
+      "tolerance_rel": 1e-9
+    },
+    {
+      "field": "Bref",
+      "expected": "per case declared",
+      "tolerance_rel": 1e-9
+    },
+    {
+      "field": "X_cg",
+      "expected": "per case declared",
+      "tolerance_abs": 0.000001
+    },
+    {
+      "field": "Y_cg",
+      "expected": 0,
+      "tolerance_abs": 1e-9
+    },
+    {
+      "field": "Z_cg",
+      "expected": "per case declared",
+      "tolerance_abs": 0.000001
+    },
+    {
+      "field": "AoA",
+      "expected": "per case declared",
+      "tolerance_abs": 1e-9
+    },
+    {
+      "field": "Symmetry",
+      "expected": "per case declared",
+      "tolerance": "exact"
+    },
+    {
+      "rule": "任何字段缺失/回读不一致/命中 VSPAERO 默认值(Vinf=100,Rho=0.002377,ReCref=1e7) => 该启动不计有效证据，归 SETUP_READBACK_FAIL 并停止链路（启动仍计费）"
+    }
+  ],
+  "case_matrix": {
+    "path": "config/solver_case_matrix.csv",
+    "expected_rows": 10,
+    "group_counts": {
+      "S_standard_wing": 2,
+      "M_baseline_mesh": 3,
+      "P_perturbations": 3,
+      "D_diagnostics": 2
+    },
+    "status_at_skeleton": "ALL_NOT_RUN"
+  },
+  "budget": {
+    "path": "config/actual_solver_budget.json",
+    "cap_starts": 10,
+    "used_starts": 0,
+    "no_carryover": true,
+    "max_concurrent": 1,
+    "max_cores": 4,
+    "max_ram_gb": 8,
+    "max_wall_per_start_s": 600,
+    "max_round_wall_h": 6,
+    "paid_cloud": false
+  },
+  "outputs": {
+    "raw_root": "D:/RCAIDE/outputs/concorde_metaopt/d12d004-vspaero72-lf-20261102T0500Z/",
+    "gitignored": true,
+    "delivered_root": "research/concorde_metaopt/optimization_runs/d12d004-vspaero72-lf-20261102T0500Z/",
+    "evidence_preflight_dir": "evidence/preflight/",
+    "required_files": [
+      "config/solver_case_matrix.csv",
+      "config/run_config.json",
+      "config/actual_solver_budget.json",
+      "lf_vspaero_results.json",
+      "summary.json",
+      "data_manifest.json",
+      "figures/*.png"
+    ],
+    "manifest_hash_mode": "text=canonical LF; binary=raw bytes"
+  },
+  "preflight_gates_ref": "config/actual_solver_budget.json#preflight_gates（骨架阶段全部 false，A1/A5/A3 通过后由 runner 更新）",
+  "abort_policy_ref": "EXT/d12d004/a2/vspaero_d12d004_execution_design.md §6",
+  "parse_policy_ref": "EXT/d12d004/a2/vspaero_d12d004_execution_design.md §7",
+  "skeleton_notes": [
+    "本文件为 A2 预检骨架，不是运行证据；任何 <FILL>/null 字段必须在启动前由 A1 runner 填充。",
+    "启动前必须写入预算账本 pending 事件；完成后写 result 并自增 starts_used。",
+    "当前 starts_used=0、starts_remaining=10、billable_events=0，未启动任何求解器。"
+  ]
+}
