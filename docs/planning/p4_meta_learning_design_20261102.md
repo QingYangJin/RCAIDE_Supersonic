@@ -2,7 +2,7 @@
 
 | 项 | 内容 |
 |---|---|
-| 文档状态 | DESIGN v1.2（2026-11-02 修订 2）：按 A5 M0 两轮审阅逐项修订（第二轮 1 major：M-03 archive 五值→三值映射；M-08 design_set="15d"）；本文档不含任何物理结论 |
+| 文档状态 | DESIGN v1.3（2026-11-02 修订 3）：按 A5 M1 代码复核（1 blocker/5 major/4 minor）修订，新增 §10.1 P4-CODE 可识别臂裁决（M1-F05）并将 M1-F01..F09 处置映射到 M1 rev3 代码/测试；本文档不含任何物理结论 |
 | 任务 | task-49（P4-M0 A1：12D 元学习软件设计文档，中文） |
 | 作者/角色 | A1（a1-code-dev）初稿；Lead 修订 1（2026-11-02，A5 独立复核后） |
 | 工作树 | D:/RCAIDE-p4-meta-learning，分支 research/p4-meta-learning，起点 bf6c052 |
@@ -490,6 +490,17 @@ minor m-01..m-10 的处置见 §16 修订记录表。
 
 ---
 
+### 10.1 P4-CODE 可识别臂裁决（Lead 2026-11-02；回应 A5 M1-F05）
+
+**事实**：maml-opt 0.1.0 的公开 API 只在“初始点选择”处接受模型先验（`select_model_scored_initial_designs`）；BO 采集阶段没有公开的代理注入入口。按 §1.3 硬隔离，不调用私有 API、不修改 `baseline_bo.py`、不伪造先验。
+
+**裁决**：
+1. P4-CODE 阶段的**可识别臂集合**（primary/secondary 对比唯一允许使用的臂）= {OPT-BO-rand, OPT-BO-MAML-init, OPT-DE}。三者机制不同：从头 GP + 共享 LHS 8 点 / MAML 代理从 64 候选池排序出的 8 点 / 无代理 DE 8×8。
+2. OPT-BO-pretrain 与 OPT-BO-MAML 在 P4-CODE 与 OPT-BO-rand **机制相同**（同 BO 实现、同 8 初始点、同 GP、同预算），只是元数据标签不同；二者**不得**用于任何“代理先验效应”归因，M2 产物与报告中必须标 `identifiability=CLONE_OF_OPT-BO-rand`，并披露“若与 rand 数值逐位相同，属预期（不可识别性的实证）”。
+3. 预注册终点（§10）的统计、图、回执与结论只允许引用可识别臂；禁止声称“预训练代理/MAML 代理在 BO 中带来改进”。若要真正隔离代理先验，须在 P4-REAL-LF 或新授权下用公开 API 可支持的采集注入重新设计并重新预注册。
+
+**能力边界**：本裁决不降低 M2 预算/统计要求（B=64、5 seeds、配对 bootstrap/Wilcoxon 不变），只是把不可识别臂排除出归因结论。
+
 ## 11. 产物、CSV schema 与运行目录（对齐 A2）
 
 运行目录：research/concorde_metaopt/optimization_runs/p4-synthetic-<UTC>Z/（P4 分支）。每次 run 含：
@@ -603,6 +614,7 @@ T-18 solver_validation.csv（M-01）：P4-CODE run 必含该文件，所有行 s
 | v1.2a | 2026-11-02 | A5 M0 v1.2 delta 复审 CHANGES_REQUESTED（M-03 部分闭合：§3.2 合同冲突） | §3.2 split/task_context 措辞；§3.3/T-12 ood_flag=1.0；§11.2 negative_control_manifest.json；本表 v1.2 行 |
 | v1.2b | 2026-11-02 | A5 v1.2a 终核 APPROVE_FOR_M1（1 non-blocking minor） | §3.3 补 ood_flag 不入特征/特征仍为 2 维 context_1/context_2 |
 | v1.2c | 2026-11-02 | M1 实现期 Lead 裁决 A7/A8/A9（a6 提出） | §3.2 联合校验允许 INFEASIBLE+objective；§5.6 加 optimization_seeds；§10 加 F-QE fallback 指标与披露；§11 run_config 加 actual_seeds |
+| v1.3 | 2026-11-02 | A5 M1 代码复核 CHANGES_REQUESTED（1 blocker/5 major/4 minor） | 新增 §10.1 可识别臂裁决（M1-F05）；M1-F01..F09 由 M1 rev3 代码/测试修复（F01=0f2cf43 等预算；F02 静态扫描；F03 objective=None 反向校验；F04 negative_control_manifest；F06 ood_flag；F07 FD 下界；F08 figure 键名；F09 失败路径） |
 
 | 审阅项 | 严重度 | 处置位置 |
 |---|---|---|
@@ -631,3 +643,7 @@ T-18 solver_validation.csv（M-01）：P4-CODE run 必含该文件，所有行 s
 | m-08 run_config 缺终点/负控制/统计 | minor | §11 |
 | m-09 evaluator_id 命名规则 | minor | §3.2 |
 | m-10 dirty 工作树规则 | minor | §3.2 |
+| M1-F05 三 BO 臂同机制（A5 M1 审阅） | major | §10.1（可识别臂裁决） |
+| M1-F01 DE 提前终止（A5 M1 审阅） | blocker | M1 rev2 0f2cf43（已修）+ M1 rev3 回归测试 |
+| M1-F02/F03/F04/F06（A5 M1 审阅） | major | M1 rev3 代码/测试（静态扫描/反向校验/负控制清单/OOD flag） |
+| M1-F07/F08/F09（A5 M1 审阅） | minor | M1 rev3 代码/测试（FD 下界/figure 键名/失败路径） |
