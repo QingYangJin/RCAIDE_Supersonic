@@ -34,6 +34,9 @@ import numpy as np
 from ..aircraft.design_space import DesignSpace, load_design_space
 from .baseline_arms import (
     ARMS,
+    ARM_CLONE_OF,
+    ARM_IDENTIFIABILITY,
+    CLONE_ARMS,
     DE_ARM,
     DE_GENERATIONS,
     DE_POPULATION_SIZE,
@@ -42,6 +45,9 @@ from .baseline_arms import (
     MAML_INIT_CANDIDATE_COUNT,
     MAML_INIT_DIVERSITY_CANDIDATE_COUNT,
     MAML_INIT_INITIAL_DESIGN_COUNT,
+    IDENTIFIABILITY_CLONE,
+    IDENTIFIABILITY_IDENTIFIABLE,
+    IDENTIFIABLE_ARMS,
     PHYSICAL_CALL_COUNT,
     PHYSICS_GUARD_EXPECTED,
     TRUE_EVALUATION_BUDGET,
@@ -1364,6 +1370,8 @@ def _m2_summary_row(result: Any, runner_config: OfflineRunnerConfig) -> dict[str
     row.update(
         {
             "implementation": result.implementation,
+            "identifiability": ARM_IDENTIFIABILITY.get(result.arm, "UNKNOWN"),
+            "identifiability_clone_of": ARM_CLONE_OF.get(result.arm),
             "termination_reason": result.termination_reason,
             "initial_feasible_count": int(result.initial_feasible_count),
             "proxy_scoring_cost_json": json.dumps(
@@ -1383,7 +1391,12 @@ def run_m2_study(
     design_space: DesignSpace,
     runner_config: OfflineRunnerConfig,
 ) -> dict[str, Any]:
-    """M2：五臂 × seeds × {meta_test, meta_test_ood}，恰好 budget 次真实（合成）评估。"""
+    """M2：五臂 × seeds × {meta_test, meta_test_ood}，恰好 budget 次真实（合成）评估。
+
+    五臂全部执行（数据完整性），但按 M0 v1.4 §10.1，预注册推断/统计/图只使用可识别臂
+    {OPT-BO-rand, OPT-BO-MAML-init, OPT-DE}；OPT-BO-pretrain/OPT-BO-MAML 标
+    CLONE_OF_OPT-BO-rand，仅作描述性记录。
+    """
     eval_tasks = [task for task in tasks if task.split in M2_EVAL_SPLITS]
     if not eval_tasks:
         raise OfflineRunnerError("M2 评估任务为空（meta_test 至少 1 个）")
@@ -1561,21 +1574,38 @@ def m2_endpoint_statistics(
     reference_arm: str = M2_REFERENCE_ARM,
 ) -> dict[str, Any]:
     """M2 预注册终点统计：主终点 @ B=64 + A7 fallback 配对比较（null 如实保留）。"""
+    identifiable_arms = tuple(arm for arm in ARMS if arm in IDENTIFIABLE_ARMS)
+    clone_arms = tuple(arm for arm in ARMS if arm in CLONE_ARMS)
     out: dict[str, Any] = {
         "budget_note": "每次 run 恰好 64 次真实（合成）评估；可行域稀疏，主终点可为 null。",
         "primary_metrics": list(_PRIMARY_M2_METRICS),
         "fallback_metrics": list(_FALLBACK_M2_METRICS),
         "reference_arm": reference_arm,
+        "identifiable_arms": list(identifiable_arms),
+        "clone_arms": list(clone_arms),
+        "arm_identifiability": {arm: ARM_IDENTIFIABILITY[arm] for arm in ARMS},
+        "clone_arms_note": (
+            "OPT-BO-pretrain / OPT-BO-MAML 在 P4-CODE 与 OPT-BO-rand 同机制同初始点，"
+            "标 CLONE_OF_OPT-BO-rand；预注册终点统计、图、回执与结论只引用可识别臂"
+            "（M0 v1.4 §10.1）。"
+        ),
+        "all_arms_descriptive_note": "all_arms_descriptive 仅作描述性记录，不用于推断或结论。",
     }
     for split in M2_EVAL_SPLITS:
         split_block: dict[str, Any] = {
-            "arms": [arm for arm in ARMS],
-            "aggregate": {arm: _m2_arm_aggregate(summary_rows, arm, split) for arm in ARMS},
+            "arms": list(identifiable_arms),
+            "aggregate": {
+                arm: _m2_arm_aggregate(summary_rows, arm, split) for arm in identifiable_arms
+            },
+            "excluded_clone_arms": list(clone_arms),
+            "all_arms_descriptive": {
+                arm: _m2_arm_aggregate(summary_rows, arm, split) for arm in ARMS
+            },
         }
         paired: dict[str, Any] = {}
         for metric in ("best_objective_raw", "min_constraint_violation_sum"):
             paired[metric] = {}
-            for arm in ARMS:
+            for arm in identifiable_arms:
                 if arm == reference_arm:
                     continue
                 differences = _paired_arm_differences(
@@ -1595,7 +1625,8 @@ def m2_endpoint_statistics(
         out[split] = split_block
     out["null_reporting_rule"] = (
         "best_feasible_value/gap_to_reference/first_feasible_eval_index 在无可行解时"
-        "如实为 null，不得写成 0；fallback 指标用于五臂可比较（A7）。"
+        "如实为 null，不得写成 0；fallback 指标用于可识别三臂可比较（A7），"
+        "克隆臂仅作描述性报告。"
     )
     out["feasibility_expected_zero"] = {
         "F-QE": "true（可行域体积 ~1e-6，B=64 预期 0 可行，结论表需披露）",
@@ -2123,6 +2154,14 @@ def _write_products(core: Mapping[str, Any], config: OfflineRunnerConfig, run_di
             "seed_policy": "derive_arm_seed(task_id, seed, 'maml_init_pool')（禁默认 42）",
         },
         "evaluator_id": EVALUATOR_ID,
+        "identifiable_arms": [arm for arm in ARMS if arm in IDENTIFIABLE_ARMS],
+        "clone_arms": [arm for arm in ARMS if arm in CLONE_ARMS],
+        "arm_identifiability": {arm: ARM_IDENTIFIABILITY[arm] for arm in ARMS},
+        "clone_arm_note": (
+            "P4-CODE 可识别臂 = {OPT-BO-rand, OPT-BO-MAML-init, OPT-DE}；"
+            "OPT-BO-pretrain/OPT-BO-MAML = CLONE_OF_OPT-BO-rand，仅描述性，"
+            "禁用于代理先验归因（M0 v1.4 §10.1）。"
+        ),
         "implementation": {
             "OPT-BO-rand": "reuse:maml_opt.bayesian:run_search",
             "OPT-BO-pretrain": "reuse:maml_opt.bayesian:run_search",
@@ -2241,7 +2280,7 @@ def _write_products(core: Mapping[str, Any], config: OfflineRunnerConfig, run_di
         figures_dir / "figure_status.json",
         {
             "status": "NOT_RUN",
-            "note": "fig1_meta_training_loss/fig2_k_shot_adaptation/fig3_equal_budget_convergence/fig5_budget_gate_progress 由 A2 从本 run CSV 生成；fig4_vspaero_version_panel_density 归 Issue #4 D-12D-004，本阶段 NOT_RUN",
+            "note": "fig1_meta_training_loss/fig2_k_shot_adaptation/fig3_equal_budget_convergence/fig5_budget_gate_progress 由 A2 从本 run CSV 生成（fig3 仅可识别三臂 OPT-BO-rand/OPT-BO-MAML-init/OPT-DE）；fig4_vspaero_version_panel_density 归 Issue #4 D-12D-004，本阶段 NOT_RUN",
             "figures": {
                 "fig1_meta_training_loss": "NOT_RUN",
                 "fig2_k_shot_adaptation": "NOT_RUN",
@@ -2296,6 +2335,9 @@ def _write_products(core: Mapping[str, Any], config: OfflineRunnerConfig, run_di
         },
         "m2": {
             "arms": list(ARMS),
+            "identifiable_arms": [arm for arm in ARMS if arm in IDENTIFIABLE_ARMS],
+            "clone_arms": [arm for arm in ARMS if arm in CLONE_ARMS],
+            "arm_identifiability": {arm: ARM_IDENTIFIABILITY[arm] for arm in ARMS},
             "seeds": list(config.optimization_seeds),
             "budget": config.budget_true_evaluations,
             "n_runs": len(m2["study"]["results"]),
@@ -2310,7 +2352,7 @@ def _write_products(core: Mapping[str, Any], config: OfflineRunnerConfig, run_di
             "feasibility_expected_zero_note": (
                 "F-QE 可行域体积 ~1e-6：B=64 预期 0 可行；无可行解时 best_feasible_value/"
                 "gap_to_reference/first_feasible_eval_index 如实为 null（禁写 0），"
-                "五臂比较使用 A7 fallback 指标并披露。"
+                "可识别三臂比较使用 A7 fallback 指标并披露（克隆臂仅描述性）。"
             ),
         },
         "failures": {
@@ -2394,6 +2436,13 @@ def _render_readme(
         "严禁写成 0。五臂比较使用 fallback 指标：best_objective_raw（最小原始目标）、",
         "min_constraint_violation_sum（最好目标设计的约束正违反之和）、",
         "feasible_hit_rate（feasible_count/evaluations）。",
+        "",
+        "## 可识别臂（M0 v1.4 §10.1）",
+        "",
+        "P4-CODE 可识别臂集合 = {OPT-BO-rand, OPT-BO-MAML-init, OPT-DE}；"
+        "预注册终点统计、图、回执与结论只引用这三臂。",
+        "OPT-BO-pretrain 与 OPT-BO-MAML 标 CLONE_OF_OPT-BO-rand（与 rand 同机制、同 8 初始点，"
+        "仅元数据标签不同），只作描述性记录，禁用于代理先验归因。",
         "",
         "## 产物文件",
         "",

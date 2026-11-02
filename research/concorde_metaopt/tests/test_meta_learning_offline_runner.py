@@ -201,6 +201,28 @@ class OfflineRunnerProductTests(unittest.TestCase):
         self.assertEqual(run_config["physical_call_declaration"]["physical_call_count"], 0)
         self.assertEqual(run_config["primary_endpoint"], orun.PRIMARY_ENDPOINT)
         self.assertEqual(run_config["evaluator_id"], orun.EVALUATOR_ID)
+        self.assertEqual(
+            run_config["identifiable_arms"], ["OPT-BO-rand", "OPT-BO-MAML-init", "OPT-DE"]
+        )
+        self.assertEqual(run_config["clone_arms"], ["OPT-BO-pretrain", "OPT-BO-MAML"])
+        self.assertEqual(run_config["arm_identifiability"]["OPT-BO-rand"], "IDENTIFIABLE")
+        self.assertEqual(
+            run_config["arm_identifiability"]["OPT-BO-pretrain"], "CLONE_OF_OPT-BO-rand"
+        )
+        m2_block = self.summary["m2"]
+        self.assertEqual(m2_block["identifiable_arms"], list(ba.IDENTIFIABLE_ARMS))
+        self.assertEqual(m2_block["clone_arms"], list(ba.CLONE_ARMS))
+        endpoints = m2_block["endpoints"]
+        for split in orun.M2_EVAL_SPLITS:
+            self.assertEqual(endpoints[split]["arms"], list(ba.IDENTIFIABLE_ARMS))
+            self.assertEqual(endpoints[split]["excluded_clone_arms"], list(ba.CLONE_ARMS))
+            self.assertEqual(
+                sorted(endpoints[split]["paired_vs_reference"]["best_objective_raw"].keys()),
+                ["OPT-BO-MAML-init", "OPT-DE"],
+            )
+            self.assertEqual(
+                sorted(endpoints[split]["all_arms_descriptive"].keys()), sorted(ba.ARMS)
+            )
         self.assertEqual(tuple(run_config["secondary_endpoints"]), orun.SECONDARY_ENDPOINTS)
         self.assertEqual(tuple(run_config["actual_seeds"]), (0,))
         self.assertEqual(run_config["statistics"]["bootstrap_samples"], 10000)
@@ -469,6 +491,7 @@ class ImportIsolationScanTests(unittest.TestCase):
 
     def test_02_clean_source_passes(self):
         source = "import os\nimport math\nfrom pathlib import Path\nfrom numpy import array\n"
+        self.assertEqual(orun.scan_forbidden_import_statements(source), [])
 
 class UnexpectedFailureTests(unittest.TestCase):
     """M1-F09：非预期异常必须落盘为 FAILED summary，不得静默崩溃。"""

@@ -2,7 +2,7 @@
 
 | 项 | 内容 |
 |---|---|
-| 文档状态 | DESIGN v1.3（2026-11-02 修订 3）：按 A5 M1 代码复核（1 blocker/5 major/4 minor）修订，新增 §10.1 P4-CODE 可识别臂裁决（M1-F05）并将 M1-F01..F09 处置映射到 M1 rev3 代码/测试；本文档不含任何物理结论 |
+| 文档状态 | DESIGN v1.4（2026-11-02 修订 4）：v1.3 已按 A5 M1 代码复核（1 blocker/5 major/4 minor）修订并新增 §10.1 P4-CODE 可识别臂裁决（M1-F05）；v1.4 按 A5 M1 rev3 复核（0 blocker / 3 open major / 3 minor 新增）把 §0/§10/§11 与 §10.1 对齐（预注册推断仅用三可识别臂；pretrain/MAML 标 CLONE_OF_OPT-BO-rand 且仅作描述性记录），并补 M1-F10 映射与代码 rev4 落点；本文档不含任何物理结论 |
 | 任务 | task-49（P4-M0 A1：12D 元学习软件设计文档，中文） |
 | 作者/角色 | A1（a1-code-dev）初稿；Lead 修订 1（2026-11-02，A5 独立复核后） |
 | 工作树 | D:/RCAIDE-p4-meta-learning，分支 research/p4-meta-learning，起点 bf6c052 |
@@ -17,7 +17,7 @@
 
 第一步草稿见 EXT/p4-meta-dev/a1/design_draft.md（256 行 / 18010 B，sha256 ec1e0917...）。本正式文档对其做了三处按 Lead 决策的修订：
 
-1. **M2 主对照采用 A2 的五臂等预算矩阵**（§10），不再使用草稿 §9 的"四臂"命名（A-random / A-pretrain-zero-shot / A-pretrain-finetune / A-maml）。五臂是：OPT-BO-rand、OPT-BO-pretrain、OPT-BO-MAML、OPT-BO-MAML-init、OPT-DE。
+1. **M2 执行 A2 的五臂等预算矩阵**（§10），不再使用草稿 §9 的"四臂"命名（A-random / A-pretrain-zero-shot / A-pretrain-finetune / A-maml）。五臂是：OPT-BO-rand、OPT-BO-pretrain、OPT-BO-MAML、OPT-BO-MAML-init、OPT-DE。**推断限制**：按 §10.1 可识别臂裁决，预注册终点统计/图/回执/结论只引用可识别臂 {OPT-BO-rand、OPT-BO-MAML-init、OPT-DE}；OPT-BO-pretrain/OPT-BO-MAML 标 CLONE_OF_OPT-BO-rand，仅作描述性记录。
 2. **M1 的 R/P/M × K∈{0,1,5,10} 代理臂是独立诊断**（§9），不与 M2 优化表混表、不共用同一终点判定。
 3. CSV 字段、任务规模、预算与容差全部对齐 A2 的 p4_offline_experiment_matrix.md / p4_schemas.json（§11），避免 A1 实现与 A2 统计两张皮。
 
@@ -467,23 +467,25 @@ minor m-01..m-10 的处置见 §16 修订记录表。
 
 ---
 
-## 10. M2 等预算五臂优化矩阵（A2 §5 矩阵；Lead 2026-11-02 确认，替换草稿四臂）
+## 10. M2 等预算五臂优化矩阵（A2 §5 矩阵；Lead 2026-11-02 确认，替换草稿四臂；推断仅限 §10.1 可识别臂）
 
 统一设定：同一合成任务集（meta-test 20 + OOD 10 单列）、seeds={0,1,2,3,4}、true_evaluation_budget=64、同一可行性判据（g<=0，容差 1e-12）、同一缓存规则（缓存命中不计 true 预算，但记 requested/billable 双计数）。每 run 恰好消耗 64 次真实（合成）评价。
 
 | 臂（精确命名） | 初始 8 点来源 | 代理来源 | 作用 |
 |---|---|---|---|
 | OPT-BO-rand | 共享 LHS 8 点 | 每任务从头 GP（普通约束 BO） | 基线 |
-| OPT-BO-pretrain | 同一 8 点 | 条件预训练代理（零样本或 support 微调，按 M1 选定） | 隔离"代理先验"效应 |
-| OPT-BO-MAML | 同一 8 点 | MAML 适应后代理 | 主对照 |
+| OPT-BO-pretrain | 同一 8 点 | 条件预训练代理（零样本或 support 微调，按 M1 选定） | 描述性：P4-CODE 与 rand 同机制（CLONE_OF_OPT-BO-rand），禁用于代理先验归因；真隔离须 P4-REAL-LF 或新授权 |
+| OPT-BO-MAML | 同一 8 点 | MAML 适应后代理 | 描述性：P4-CODE 与 rand 同机制（CLONE_OF_OPT-BO-rand），禁用于代理先验归因 |
 | OPT-BO-MAML-init | MAML 代理从 64 候选池排序出的 8 点 | MAML 适应后代理 | 隔离"初始化选择"效应；初始点不同但数量相同 |
 | OPT-DE | 同一 8 点（=种群 8） | 无 | DE/rand/1/bin 语义，8 代×8 个体=64 |
+
+- **推断限制（§10.1 优先）**：预注册终点统计、图、回执与结论只引用可识别臂 {OPT-BO-rand、OPT-BO-MAML-init、OPT-DE}；OPT-BO-pretrain/OPT-BO-MAML 只作描述性记录（CLONE_OF_OPT-BO-rand），不得据此声称代理先验效应；若克隆臂与 rand 数值逐位相同，属预期（不可识别性的实证）。
 
 - BO 执行：8 初始 + 56 次采集；DE 执行 8×8=64；两者预算严格相等。
 - 共享初始点由同一 (task, seed) 的 LHS seed 生成并在臂间复用；记录 initial_feasible_count；MAML-init 例外但同样 8 点、同任务同 seed 可复现，参数冻结见 §8.2（candidate_count=64、diversity_candidate_count=64）。
 - 约束与失败：g>0 即不可行；失败/非有限目标为 null，不得用大惩罚值伪造；失败评价计入预算并记 status。
 - 每 run 指标：best_feasible_value（无可行 null）、gap_to_reference = best − f*、first_feasible_eval_index（1-based，无则 null）、feasible_count、violation_rate、true_evals_used、cache_hits、wall_s、n_failed_evals。
-- F-QE 可行域极小的披露与 fallback（A7，2026-11-02 Lead 裁决）：F-QE 的可行域为 12 维加权球 r∈[0.15,0.45]，体积占比约 1e-6，B=64 下五臂很可能全部 0 可行。此时主终点如实为 null（禁止写成 0/大惩罚），并同时报告三项 fallback 指标用于同等比较：best_objective_raw（该臂全部评价中的最小原始目标）、min_constraint_violation_sum（对应最好目标设计的 sum(max(0,g))）、feasible_hit_rate=feasible_count/true_evals_used；optimization_summary.csv 需含 feasibility_expected_zero 注记与 n_feasible；结论表须披露“主终点不可比、仅 fallback 可比”，不得据 fallback 宣称优于基线。
+- F-QE 可行域极小的披露与 fallback（A7，2026-11-02 Lead 裁决）：F-QE 的可行域为 12 维加权球 r∈[0.15,0.45]，体积占比约 1e-6，B=64 下可识别三臂很可能全部 0 可行。此时主终点如实为 null（禁止写成 0/大惩罚），并同时报告三项 fallback 指标用于同等比较：best_objective_raw（该臂全部评价中的最小原始目标）、min_constraint_violation_sum（对应最好目标设计的 sum(max(0,g))）、feasible_hit_rate=feasible_count/true_evals_used；optimization_summary.csv 需含 feasibility_expected_zero 注记与 n_feasible；结论表须披露“主终点不可比、仅 fallback 可比”，不得据 fallback 宣称优于基线。
 - 正式 M2 run 的 run_config 必须写 actual_seeds（=optimization_seeds 实际值，5 个），单测可减少但不得替代正式 run。
 - 预注册终点：优化侧 first_feasible_eval_index 与 best_feasible_value（B=64）；统计任务×seed 配对（20×5=100 对）报告配对中位差 + bootstrap 95% CI（10,000 次）与 Wilcoxon 参考；不显著即如实报"无改进"。
 - 负控制：label-shuffle、K=0、OOD、参考解断言。若 MAML 无改进，禁止改基线/指标/阈值。
@@ -499,19 +501,19 @@ minor m-01..m-10 的处置见 §16 修订记录表。
 2. OPT-BO-pretrain 与 OPT-BO-MAML 在 P4-CODE 与 OPT-BO-rand **机制相同**（同 BO 实现、同 8 初始点、同 GP、同预算），只是元数据标签不同；二者**不得**用于任何“代理先验效应”归因，M2 产物与报告中必须标 `identifiability=CLONE_OF_OPT-BO-rand`，并披露“若与 rand 数值逐位相同，属预期（不可识别性的实证）”。
 3. 预注册终点（§10）的统计、图、回执与结论只允许引用可识别臂；禁止声称“预训练代理/MAML 代理在 BO 中带来改进”。若要真正隔离代理先验，须在 P4-REAL-LF 或新授权下用公开 API 可支持的采集注入重新设计并重新预注册。
 
-**能力边界**：本裁决不降低 M2 预算/统计要求（B=64、5 seeds、配对 bootstrap/Wilcoxon 不变），只是把不可识别臂排除出归因结论。
+**能力边界**：本裁决不降低 M2 预算/统计要求（B=64、5 seeds、配对 bootstrap/Wilcoxon 不变），只是把不可识别臂排除出归因结论。**本裁决优先于 §10 表格中任何“主对照/隔离效应”措辞；如两者冲突，以本节为准。**
 
 ## 11. 产物、CSV schema 与运行目录（对齐 A2）
 
 运行目录：research/concorde_metaopt/optimization_runs/p4-synthetic-<UTC>Z/（P4 分支）。每次 run 含：
 
-- run_config.json：run_id、git_sha、worktree_dirty、seed、family/split id、seeds、actual_seeds、预算（true_evaluation_budget=64、bo_initial=8、de=8×8、S_adapt=50）、ks、tolerance、物理调用声明、primary_endpoint（预注册）、secondary_endpoints、negative_control_protocol、statistics（配对中位差、bootstrap 95% CI 10,000 次、Wilcoxon 参考）、determinism_reruns=3、maml_init 冻结参数、evaluator_id、implementation 标签；
+- run_config.json：run_id、git_sha、worktree_dirty、seed、family/split id、seeds、actual_seeds、预算（true_evaluation_budget=64、bo_initial=8、de=8×8、S_adapt=50）、ks、tolerance、物理调用声明、primary_endpoint（预注册）、secondary_endpoints、negative_control_protocol、statistics（配对中位差、bootstrap 95% CI 10,000 次、Wilcoxon 参考）、determinism_reruns=3、maml_init 冻结参数、evaluator_id、identifiable_arms、clone_arms、arm_identifiability（§10.1 可识别臂标签）、implementation 标签；
 - environment.json：python、numpy/scipy/scikit-learn/torch/matplotlib 版本（torch 可缺）、maml_opt 版本、平台、CPU 核数；
-- summary.json：status、arms、终点统计、失败数、physical_call_count、PHYSICS_GUARD 结果、NOT_APPROVED 列表；
+- summary.json：status、arms（全五臂描述性结果）、identifiable_arms/clone_arms/arm_identifiability、终点统计（仅可识别三臂，另附 all_arms_descriptive 描述性块）、失败数、physical_call_count、PHYSICS_GUARD 结果、NOT_APPROVED 列表；
 - data_manifest.json：每文件 sha256+bytes、hash_mode（CRLF→LF 规范化）、file_count、total_bytes，排除自身；
 - CSV 同 A2 列名：training_history.csv、adaptation_results.csv、metrics.csv、optimization_history.csv、optimization_summary.csv；
 - solver_validation.csv：列 run_id, case_id, evaluator_id, solver_family, status, note；P4-CODE 阶段每行 status=NOT_RUN 或 NOT_APPLICABLE_THIS_STAGE；
-- figures/fig1..fig5 由 A2 消费 CSV 生成（中文标题）；P4-CODE 阶段 fig1/fig2/fig3/fig5 在数据产生后生成，fig4（VSPAERO 新旧对比）归口 Issue #4 D-12D-004，本阶段 NOT_RUN；缺失一律显示 NOT_RUN，禁止画假数据。
+- figures/fig1..fig5 由 A2 消费 CSV 生成（中文标题；fig3 仅可识别三臂 OPT-BO-rand/OPT-BO-MAML-init/OPT-DE）；P4-CODE 阶段 fig1/fig2/fig3/fig5 在数据产生后生成，fig4（VSPAERO 新旧对比）归口 Issue #4 D-12D-004，本阶段 NOT_RUN；缺失一律显示 NOT_RUN，禁止画假数据。
 
 ### 11.1 需求映射（M-01）
 
@@ -615,6 +617,7 @@ T-18 solver_validation.csv（M-01）：P4-CODE run 必含该文件，所有行 s
 | v1.2b | 2026-11-02 | A5 v1.2a 终核 APPROVE_FOR_M1（1 non-blocking minor） | §3.3 补 ood_flag 不入特征/特征仍为 2 维 context_1/context_2 |
 | v1.2c | 2026-11-02 | M1 实现期 Lead 裁决 A7/A8/A9（a6 提出） | §3.2 联合校验允许 INFEASIBLE+objective；§5.6 加 optimization_seeds；§10 加 F-QE fallback 指标与披露；§11 run_config 加 actual_seeds |
 | v1.3 | 2026-11-02 | A5 M1 代码复核 CHANGES_REQUESTED（1 blocker/5 major/4 minor） | 新增 §10.1 可识别臂裁决（M1-F05）；M1-F01..F09 由 M1 rev3 代码/测试修复（F01=0f2cf43 等预算；F02 静态扫描；F03 objective=None 反向校验；F04 negative_control_manifest；F06 ood_flag；F07 FD 下界；F08 figure 键名；F09 失败路径） |
+| v1.4 | 2026-11-02 | A5 M1 rev3 复核 CHANGES_REQUESTED（0 blocker / 3 open major / 3 minor 新增；F02 CLOSED_WITH_GAP） | §0/§10/§11 对齐 §10.1（预注册推断仅三可识别臂；pretrain/MAML 标 CLONE_OF_OPT-BO-rand 且仅描述性）；§11 run_config/summary/fig3 加可识别性标签；§16 补 M1-F10 映射；代码同步 rev4（offline_runner 打标 + 统计/图过滤，测试补 test_02 断言） |
 
 | 审阅项 | 严重度 | 处置位置 |
 |---|---|---|
@@ -647,3 +650,9 @@ T-18 solver_validation.csv（M-01）：P4-CODE run 必含该文件，所有行 s
 | M1-F01 DE 提前终止（A5 M1 审阅） | blocker | M1 rev2 0f2cf43（已修）+ M1 rev3 回归测试 |
 | M1-F02/F03/F04/F06（A5 M1 审阅） | major | M1 rev3 代码/测试（静态扫描/反向校验/负控制清单/OOD flag） |
 | M1-F07/F08/F09（A5 M1 审阅） | minor | M1 rev3 代码/测试（FD 下界/figure 键名/失败路径） |
+| M1-F10 正式 run actual_seeds（A5 M1 rev3 审阅） | minor | 正式 M2 run 的 run_config.actual_seeds（由 M2 执行落盘验证，不属代码改动） |
+| M1R3-M01 v1.3 §0/§10 与 §10.1 矛盾 | major | 本版 §0、§10 对齐 §10.1 可识别臂裁决 |
+| M1R3-M02 M2 orchestration 未落可识别臂标签/过滤 | major | M1 rev4 offline_runner（ARM_IDENTIFIABILITY、identifiable_arms、统计/图过滤） |
+| M1R3-M03 静态扫描 test_02 空断言 | minor | tests/test_meta_learning_offline_runner.py test_02 补断言 |
+| M1R3-M04 §16 缺 M1-F10 映射 | minor | 本表 M1-F10 行 |
+| M1R3-M05 A2 p4_schemas.json 旧 figure 键 | minor | A2 同步（外部 schema 文件，另行交付） |

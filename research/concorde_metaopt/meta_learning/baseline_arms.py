@@ -60,6 +60,29 @@ BO_ARMS = ("OPT-BO-rand", "OPT-BO-pretrain", "OPT-BO-MAML", "OPT-BO-MAML-init")
 MAML_INIT_ARM = "OPT-BO-MAML-init"
 DE_ARM = "OPT-DE"
 
+#: §10.1（M0 v1.4）：P4-CODE 可识别臂裁决。
+IDENTIFIABILITY_IDENTIFIABLE = "IDENTIFIABLE"
+IDENTIFIABILITY_CLONE = "CLONE_OF_OPT-BO-rand"
+IDENTIFIABLE_ARMS = ("OPT-BO-rand", "OPT-BO-MAML-init", "OPT-DE")
+CLONE_ARMS = ("OPT-BO-pretrain", "OPT-BO-MAML")
+ARM_IDENTIFIABILITY = {
+    arm: (IDENTIFIABILITY_IDENTIFIABLE if arm in IDENTIFIABLE_ARMS else IDENTIFIABILITY_CLONE)
+    for arm in ARMS
+}
+ARM_CLONE_OF = {arm: ("OPT-BO-rand" if arm in CLONE_ARMS else None) for arm in ARMS}
+
+
+def arm_identifiability(arm: str) -> dict[str, Any]:
+    """返回臂的可识别性标签（M0 v1.4 §10.1）；未知臂 fail-closed。"""
+    if arm not in ARM_IDENTIFIABILITY:
+        raise BaselineArmError(f"未知臂 {arm!r}，无法给出可识别性标签")
+    return {
+        "arm": arm,
+        "identifiability": ARM_IDENTIFIABILITY[arm],
+        "clone_of": ARM_CLONE_OF[arm],
+        "allowed_for_prior_attribution": arm in IDENTIFIABLE_ARMS,
+    }
+
 TRUE_EVALUATION_BUDGET = 64
 BO_INITIAL_DESIGN_COUNT = 8
 DE_POPULATION_SIZE = 8
@@ -1294,7 +1317,13 @@ def summarize_arm_results(results: Sequence[ArmResult], *, run_id: str = "") -> 
 __all__ = [
     "ARMS",
     "BO_ARMS",
+    "ARM_CLONE_OF",
+    "ARM_IDENTIFIABILITY",
+    "CLONE_ARMS",
     "DE_ARM",
+    "IDENTIFIABILITY_CLONE",
+    "IDENTIFIABILITY_IDENTIFIABLE",
+    "IDENTIFIABLE_ARMS",
     "MAML_INIT_ARM",
     "DE_GENERATIONS",
     "DE_POPULATION_SIZE",
@@ -1303,6 +1332,7 @@ __all__ = [
     "MAML_INIT_INITIAL_DESIGN_COUNT",
     "TRUE_EVALUATION_BUDGET",
     "ArmResult",
+    "arm_identifiability",
     "BaselineArmError",
     "EvaluationRecord",
     "PhysicsGuardViolation",
