@@ -1,0 +1,14 @@
+D-12D-005 A0 clean-checkout replay (evidence revision 4 checkpoint, after A batch1)
+commit: f5827bae792761fc927edbaa835000381abd55ea
+worktree: D:/RCAIDE-verify-batch1-f5827ba (detached HEAD; git status clean before and after the run)
+run_dir_relative: research/concorde_metaopt/optimization_runs/d12d005-20261104T0430Z
+command: D:/RCAIDE/envs/RCAIDE/python.exe -E -s -B scripts/a0_verify_cases.py --run-dir . --no-write
+replay_utc: 2026-11-04T08:03:28Z
+status: PASS
+checks_total: 264
+checks_failed: 0
+solver_processes_started: 0
+notes: --no-write was used, so the tracked evidence/a0/a0_verification.json inside the clean checkout was not rewritten; the checkout stayed clean. This log replays the revision 4 content at commit f5827ba, including the v2 runner rev3 main/derived polar column split, the 51-test log, the S3 allowlist re-verification and the frozen A batch1 execution evidence under evidence/v1.
+stdout:
+A0 VERIFICATION PASS checks 264 failed 0 (no-write)
+A0 VERIFICATION PASS checks 264 failed 0

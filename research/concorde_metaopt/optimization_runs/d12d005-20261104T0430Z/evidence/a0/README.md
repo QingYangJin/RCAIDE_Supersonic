@@ -212,6 +212,8 @@ A 批 4/6 次启动后 S3 因派生列 `Ew=inf` 触发 `POLAR_NONFINITE` 停批�
 
 verifier revision 4 结果：**264 checks PASS / 0 failed**（`a0_verification.json`，schema `d12d005-a0-verification-2`）；`setup_generation.json` revision 4 同步记录 8 个脚本的双形态哈希。本次修订**零求解**，A 批启动计数保持 4/6。
 
+**干净 checkout 复跑（revision 4）**：`evidence/a0/a0_verification_checkout_rev4.log`（1,011 B；纯 LF 生成，raw = canonical-LF，sha256 `a0151e9fa7a80c63c38e42640ef31d4074b470a51d116d95fe06acae6862c37b`），在 detached worktree @ `f5827ba`（batch1 证据提交）、`git status` 全干净的条件下以 `--no-write` 重跑 verifier，结果 **264 checks PASS / 0 failed**；日志显式记录 `checks_failed: 0`、`solver_processes_started: 0`、命令与 commit。
+
 ## 16. 下一步（等待门禁）
 
 1. ~~A1 交付 v2 解析器（LD-002）+ 回归测试 → A5 复核。~~ 已完成（`ab29a0c` 首版 + rev2 加固 + rev3 主/派生列分离；51 tests OK）。
