@@ -836,6 +836,7 @@ def identifiability_audit(records: Sequence[InitialDesignRecord]) -> dict[str, A
         bucket[key] = record
     groups_checked = len(groups)
     arms_present = sorted({record.arm for record in records})
+    budgets_compared = sorted({int(record.budget) for record in records})
     pairs: list[dict[str, Any]] = []
 
     def _compare(candidate: str, reference: str, *, clone_possible: bool, clone_label: str) -> dict[str, Any]:
@@ -905,6 +906,13 @@ def identifiability_audit(records: Sequence[InitialDesignRecord]) -> dict[str, A
         pairs.append(pair)
         if pair["clone"]:
             indistinguishable_arms = [M5_BO_PRETRAIN_INIT, M5_BO_MAML_INIT]
+    # A5-M5-02：臂对重叠率在全部 budget 上聚合，显式记录聚合口径，供 clone_audit.csv
+    # 的 budget/budget_scope 列使用（原先这些字段缺失导致 CSV 两列全空）。
+    budget_label = ",".join(str(budget) for budget in budgets_compared)
+    for pair in pairs:
+        pair.setdefault("budget", budget_label)
+        pair.setdefault("budget_scope", "aggregate_all_budgets")
+        pair.setdefault("budgets_compared", list(budgets_compared))
     code_paths = {ARM_CODE_PATHS[arm] for arm in arms_present}
     implementations = {ARM_IMPLEMENTATIONS[arm] for arm in arms_present}
     status = "IDENTIFIABLE" if not clone_arms and not indistinguishable_arms else "CLONE_ARMS_PRESENT"
@@ -912,6 +920,7 @@ def identifiability_audit(records: Sequence[InitialDesignRecord]) -> dict[str, A
         "stage": STAGE,
         "status": status,
         "arms_present": arms_present,
+        "budgets_compared": budgets_compared,
         "groups_checked": groups_checked,
         "distinct_code_paths": len(code_paths),
         "distinct_implementations": len(implementations),
@@ -989,6 +998,10 @@ def identifiability_rows(audit: Mapping[str, Any]) -> list[dict[str, Any]]:
             {
                 "arm": pair.get("arm"),
                 "reference_arm": pair.get("reference"),
+                "reference": pair.get("reference"),
+                "budget": pair.get("budget"),
+                "budget_scope": pair.get("budget_scope"),
+                "budgets_compared": pair.get("budgets_compared"),
                 "groups_compared": pair.get("groups_compared"),
                 "mean_initial_overlap": pair.get("mean_initial_overlap"),
                 "max_initial_overlap": pair.get("max_initial_overlap"),

@@ -89,7 +89,13 @@ FALLBACK_ENDPOINTS = (
     "feasible_hit_rate",
 )
 # 端点名 -> optimization_summary 行字段名（仅个别别名，其余同名）
-ENDPOINT_ROW_KEYS = {"n_failed_evals": "failed_evals"}
+# A5-M5-01：正式 run 的 summary 行由 ArmResult.to_summary_row 产生，
+# first_feasible 的列名是 first_feasible_eval_index；端点名却是
+# first_feasible_evaluation_index，缺别名会让该主终点整体读成 null。
+ENDPOINT_ROW_KEYS = {
+    "n_failed_evals": "failed_evals",
+    "first_feasible_evaluation_index": "first_feasible_eval_index",
+}
 
 
 def endpoint_row_key(endpoint: str) -> str:
@@ -244,6 +250,7 @@ ARM_AUDIT_COLUMNS = (
 )
 CLONE_AUDIT_COLUMNS = (
     "budget",
+    "budget_scope",
     "arm",
     "reference",
     "groups_compared",
@@ -2337,8 +2344,29 @@ def initial_design_rows(records: Sequence[Mapping[str, Any]], *, run_id: str) ->
 
 
 def clone_audit_rows(audit_rows: Sequence[Mapping[str, Any]]) -> list[dict[str, Any]]:
-    """clone_audit.csv 行：只保留可识别性审计字段（臂对重叠率与 CLONE 标签）。"""
-    return [{column: row.get(column) for column in CLONE_AUDIT_COLUMNS} for row in audit_rows]
+    """clone_audit.csv 行：只保留可识别性审计字段（臂对重叠率与 CLONE 标签）。
+
+    A5-M5-02：identifiability_rows 输出字段是 reference_arm，且臂对审计跨
+    budget 聚合；这里显式映射 reference 并填 budget（聚合口径见 budget_scope），
+    避免 reference/budget 两列全空导致 CSV 无法逐对判读。
+    """
+    rows: list[dict[str, Any]] = []
+    for row in audit_rows:
+        rows.append(
+            {
+                "budget": row.get("budget"),
+                "budget_scope": row.get("budget_scope"),
+                "arm": row.get("arm"),
+                "reference": row.get("reference") or row.get("reference_arm"),
+                "groups_compared": row.get("groups_compared"),
+                "mean_initial_overlap": row.get("mean_initial_overlap"),
+                "max_initial_overlap": row.get("max_initial_overlap"),
+                "fraction_groups_at_threshold": row.get("fraction_groups_at_threshold"),
+                "clone": row.get("clone"),
+                "label": row.get("label"),
+            }
+        )
+    return rows
 
 
 def compare_determinism(
@@ -2747,6 +2775,11 @@ def build_proxy_artifacts(
 def _identifiability_summary(audit: Mapping[str, Any]) -> dict[str, Any]:
     return {
         "status": audit.get("status"),
+        "budgets_compared": list(audit.get("budgets_compared") or ()),
+        "clone_audit_budget_semantics": (
+            "臂对重叠率在 budgets_compared 的全部 budget 上聚合；clone_audit.csv 的 "
+            "budget 列以逗号列出这些 budget，budget_scope=aggregate_all_budgets"
+        ),
         "arms_present": list(audit.get("arms_present") or ()),
         "groups_checked": audit.get("groups_checked"),
         "clone_arms": list(audit.get("clone_arms") or ()),
@@ -2808,6 +2841,24 @@ def _null_disclosure(summary_rows: Sequence[Mapping[str, Any]]) -> dict[str, Any
 
 def _project_rows(rows: Sequence[Mapping[str, Any]], columns: Sequence[str]) -> list[dict[str, Any]]:
     return [{column: row.get(column) for column in columns} for row in rows]
+
+
+def optimization_summary_rows(
+    summary_rows: Sequence[Mapping[str, Any]],
+) -> list[dict[str, Any]]:
+    """optimization_summary.csv 行：补齐端点列名（A5-M5-01）。
+
+    payload 行内键为 first_feasible_eval_index（ArmResult 字段名），而 CSV 列名为
+    first_feasible_evaluation_index；不补会导致该列全空、进而端点统计读到 null。
+    """
+    rows: list[dict[str, Any]] = []
+    for row in summary_rows:
+        merged = dict(row)
+        merged.setdefault(
+            "first_feasible_evaluation_index", row.get("first_feasible_eval_index")
+        )
+        rows.append(merged)
+    return rows
 
 
 def _write_history_csv_from_jsonl(jsonl_path: Path, target: Path, *, run_id: str) -> int:
@@ -3245,6 +3296,11 @@ def _holdout_summary(payload: Mapping[str, Any]) -> dict[str, Any]:
             "mismatch_count": determinism.get("mismatch_count"),
             "excluded_columns": list(determinism.get("excluded_columns") or ()),
             "note": determinism.get("note"),
+            "raw_digest_manifest": "NOT_STORED",
+            "raw_digest_note": (
+                "A5-M5-07：逐 pass 原始 digest 未单独落盘，仅本 summary 记录 "
+                "status/reruns/groups_compared/mismatch_count；如需独立复算须重跑 holdout。"
+            ),
         },
         "identifiability": _identifiability_summary(payload["audit"]),
         "fairness": _fairness_summary(payload["fairness"]),
@@ -3457,7 +3513,7 @@ def _write_holdout_products(
     )
     write_csv(
         metrics_dir / "optimization_summary.csv",
-        _project_rows(payload["summary_rows"], OPTIMIZATION_SUMMARY_COLUMNS),
+        _project_rows(optimization_summary_rows(payload["summary_rows"]), OPTIMIZATION_SUMMARY_COLUMNS),
         columns=OPTIMIZATION_SUMMARY_COLUMNS,
     )
     write_csv(

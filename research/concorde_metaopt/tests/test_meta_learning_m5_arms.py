@@ -443,5 +443,86 @@ class M5ArmRunTests(_M5Fixture):
             m5.arm_init_record(replace(self.results[m5.M5_BO_RANDOM], arm="M5-BAD"))
 
 
+class M5ProductColumnRegressionTests(unittest.TestCase):
+    """A5-M5-01/02 回归：端点别名与 clone_audit 的 budget/reference 非空。
+
+    这些缺陷出现在产物投影层（CSV 列名与审计行字段不一致），因此只需单元级
+    验证；修复后重跑 holdout 时同一逻辑会写出正确列值。
+    """
+
+    def test_identifiability_rows_carry_budget_and_reference_alias(self):
+        audit = {
+            "status": "IDENTIFIABLE",
+            "budgets_compared": [64, 128],
+            "pairs": [
+                {
+                    "arm": m5.M5_BO_MAML_INIT,
+                    "reference": m5.M5_BO_RANDOM,
+                    "budget": "64,128",
+                    "budget_scope": "aggregate_all_budgets",
+                    "budgets_compared": [64, 128],
+                    "groups_compared": 6,
+                    "mean_initial_overlap": 0.25,
+                    "max_initial_overlap": 0.5,
+                    "fraction_groups_at_threshold": 0.0,
+                    "clone": False,
+                    "label": "IDENTIFIABLE",
+                    "note": "",
+                }
+            ],
+        }
+        rows = m5.identifiability_rows(audit)
+        self.assertEqual(len(rows), 1)
+        row = rows[0]
+        self.assertEqual(row["reference_arm"], m5.M5_BO_RANDOM)
+        self.assertEqual(row["reference"], m5.M5_BO_RANDOM)
+        self.assertEqual(row["budget"], "64,128")
+        self.assertEqual(row["budget_scope"], "aggregate_all_budgets")
+        self.assertEqual(row["budgets_compared"], [64, 128])
+
+    def test_identifiability_audit_annotates_budget_semantics(self):
+        def designs(offset: float):
+            return tuple(
+                tuple(((index * 12 + dim) + offset) / 1000.0 for dim in range(12))
+                for index in range(8)
+            )
+
+        def record(arm: str, *, budget: int = 64, meta_seed=None):
+            points = designs(0.0 if arm == m5.M5_BO_RANDOM else 3.0)
+            return m5.InitialDesignRecord(
+                arm=arm,
+                task_id="task-1",
+                split="meta_test",
+                family="F-QE-feasible-v2",
+                seed=0,
+                budget=budget,
+                meta_seed=meta_seed,
+                initializer="shared_lhs_8",
+                code_path="test",
+                implementation="test",
+                candidate_pool_sha256="a" * 64,
+                artifact_sha256=None,
+                initial_designs=points,
+                initial_designs_sha256="b" * 64,
+                true_evals_used=budget,
+                requested_evaluations=budget,
+                status="VALID",
+            )
+
+        records = [
+            record(m5.M5_BO_RANDOM, budget=64),
+            record(m5.M5_DE, budget=64),
+            record(m5.M5_BO_PRETRAIN_INIT, budget=64, meta_seed=0),
+            record(m5.M5_BO_MAML_INIT, budget=64, meta_seed=0),
+        ]
+        audit = m5.identifiability_audit(records)
+        self.assertEqual(audit["budgets_compared"], [64])
+        self.assertTrue(audit["pairs"])
+        for pair in audit["pairs"]:
+            self.assertEqual(pair["budget"], "64")
+            self.assertEqual(pair["budget_scope"], "aggregate_all_budgets")
+            self.assertEqual(pair["budgets_compared"], [64])
+
+
 if __name__ == "__main__":
     unittest.main()

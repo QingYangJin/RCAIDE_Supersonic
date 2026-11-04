@@ -1032,3 +1032,118 @@ class M5InferenceExclusionFigureTests(unittest.TestCase):
             m5_arms.ARM_CODE_PATHS[m5_arms.M5_DE],
             "m5_arms.run_m5_de_arm->baseline_arms.run_de_arm[DE/rand/1/bin]",
         )
+
+class M5EndpointAndCloneColumnRegressionTests(unittest.TestCase):
+    """A5-M5-01/02 回归：first_feasible 端点别名与 clone_audit 列非空。
+
+    正式 run 的 summary 行由 ArmResult.to_summary_row 产生（键
+    first_feasible_eval_index），而端点/CSV 列名为 first_feasible_evaluation_index；
+    修复前该主终点整体读成 null、clone_audit.csv 的 budget/reference 两列全空。
+    """
+
+    @staticmethod
+    def _rows(*, with_null: bool = False):
+        rows = []
+        for arm, base in (("M5-BO-random", 1), ("M5-DE", 3)):
+            for task_id in ("task-a", "task-b"):
+                for seed in (0, 1):
+                    value = base + seed
+                    rows.append(
+                        {
+                            "arm": arm,
+                            "budget": 8,
+                            "split": "meta_test",
+                            "task_id": task_id,
+                            "seed": seed,
+                            "first_feasible_eval_index": value,
+                        }
+                    )
+        if with_null:
+            rows[0]["first_feasible_eval_index"] = None
+        return rows
+
+    def test_01_endpoint_row_key_alias(self) -> None:
+        self.assertEqual(
+            m5.endpoint_row_key("first_feasible_evaluation_index"),
+            "first_feasible_eval_index",
+        )
+        self.assertEqual(m5.endpoint_row_key("n_failed_evals"), "failed_evals")
+        self.assertEqual(m5.endpoint_row_key("best_feasible_value"), "best_feasible_value")
+
+    def test_02_optimization_summary_rows_backfill_alias(self) -> None:
+        rows = [
+            {"first_feasible_eval_index": 3, "best_feasible_value": 0.5},
+            {"first_feasible_evaluation_index": 7},
+            {"best_feasible_value": None},
+        ]
+        projected = m5.optimization_summary_rows(rows)
+        self.assertEqual(projected[0]["first_feasible_evaluation_index"], 3)
+        self.assertEqual(projected[1]["first_feasible_evaluation_index"], 7)
+        self.assertIsNone(projected[2]["first_feasible_evaluation_index"])
+
+    def test_03_endpoint_summary_and_null_disclosure_use_alias(self) -> None:
+        rows = self._rows()
+        endpoint_rows = m5.endpoint_summary_rows(
+            rows,
+            splits=("meta_test",),
+            budgets=(8,),
+            endpoints=("first_feasible_evaluation_index",),
+        )
+        by_arm = {row["arm"]: row for row in endpoint_rows}
+        self.assertEqual(by_arm["M5-BO-random"]["n_nonnull"], 2)
+        self.assertEqual(by_arm["M5-BO-random"]["null_rate"], 0.0)
+        self.assertAlmostEqual(by_arm["M5-BO-random"]["median"], 1.5, places=12)
+        self.assertAlmostEqual(by_arm["M5-DE"]["median"], 3.5, places=12)
+
+        disclosure = m5._null_disclosure(rows)["first_feasible_evaluation_index"]
+        self.assertEqual(disclosure["n_runs"], len(rows))
+        self.assertEqual(disclosure["n_null"], 0)
+        null_disclosure = m5._null_disclosure(self._rows(with_null=True))
+        self.assertEqual(null_disclosure["first_feasible_evaluation_index"]["n_null"], 1)
+
+    def test_04_paired_statistics_use_alias(self) -> None:
+        rows = self._rows()
+        statistics = m5.paired_statistics_rows(
+            rows,
+            splits=("meta_test",),
+            budgets=(8,),
+            comparisons=(("M5-DE", "M5-BO-random"),),
+            bootstrap_samples=200,
+        )
+        feasible_rows = [
+            row
+            for row in statistics
+            if row["endpoint"] == "first_feasible_evaluation_index"
+        ]
+        self.assertEqual(len(feasible_rows), 1)
+        row = feasible_rows[0]
+        self.assertEqual(row["arm"], "M5-DE")
+        self.assertEqual(row["reference"], "M5-BO-random")
+        self.assertEqual(row["n_nonnull"], 2)
+        self.assertEqual(row["n_pairs"], 2)
+        self.assertAlmostEqual(row["median_diff"], 2.0, places=12)
+        self.assertEqual(row["status"], "REPORTED")
+
+    def test_05_clone_audit_rows_fill_reference_and_budget(self) -> None:
+        audit_rows = [
+            {
+                "arm": "M5-BO-MAML-init",
+                "reference_arm": "M5-BO-random",
+                "budget": "64,128",
+                "budget_scope": "aggregate_all_budgets",
+                "groups_compared": 6,
+                "mean_initial_overlap": 0.25,
+                "max_initial_overlap": 0.5,
+                "fraction_groups_at_threshold": 0.0,
+                "clone": False,
+                "label": "IDENTIFIABLE",
+            }
+        ]
+        rows = m5.clone_audit_rows(audit_rows)
+        self.assertEqual(len(rows), 1)
+        row = rows[0]
+        self.assertEqual(row["reference"], "M5-BO-random")
+        self.assertEqual(row["budget"], "64,128")
+        self.assertEqual(row["budget_scope"], "aggregate_all_budgets")
+        self.assertEqual(tuple(row.keys()), m5.CLONE_AUDIT_COLUMNS)
+        self.assertEqual(len(row), len(m5.CLONE_AUDIT_COLUMNS))
