@@ -1,0 +1,94 @@
+{
+  "count": 10,
+  "entries": [
+    {
+      "pseudo_task_id": "NC-f3af734567",
+      "shuffle_seed": 20261102,
+      "source_family": "F-QE",
+      "source_split": "meta_train",
+      "source_task_id": "6a0986bb9236",
+      "split": "negative_control"
+    },
+    {
+      "pseudo_task_id": "NC-098c598ee0",
+      "shuffle_seed": 20261103,
+      "source_family": "F-QE",
+      "source_split": "meta_train",
+      "source_task_id": "79eb9f04814d",
+      "split": "negative_control"
+    },
+    {
+      "pseudo_task_id": "NC-985b98f085",
+      "shuffle_seed": 20261104,
+      "source_family": "F-QE",
+      "source_split": "meta_train",
+      "source_task_id": "8b669ca5e65a",
+      "split": "negative_control"
+    },
+    {
+      "pseudo_task_id": "NC-0b840c2d99",
+      "shuffle_seed": 20261105,
+      "source_family": "F-QE",
+      "source_split": "meta_train",
+      "source_task_id": "a029c02e5045",
+      "split": "negative_control"
+    },
+    {
+      "pseudo_task_id": "NC-e8f51551d6",
+      "shuffle_seed": 20261106,
+      "source_family": "F-QE",
+      "source_split": "meta_train",
+      "source_task_id": "a55b07dccd0d",
+      "split": "negative_control"
+    },
+    {
+      "pseudo_task_id": "NC-99f6a4d319",
+      "shuffle_seed": 20261107,
+      "source_family": "F-QE",
+      "source_split": "meta_train",
+      "source_task_id": "2066861734ad",
+      "split": "negative_control"
+    },
+    {
+      "pseudo_task_id": "NC-461b82ec22",
+      "shuffle_seed": 20261108,
+      "source_family": "F-QE",
+      "source_split": "meta_train",
+      "source_task_id": "9f3d47047754",
+      "split": "negative_control"
+    },
+    {
+      "pseudo_task_id": "NC-d93e3c6f8e",
+      "shuffle_seed": 20261109,
+      "source_family": "F-QE",
+      "source_split": "meta_train",
+      "source_task_id": "6e724ff385d2",
+      "split": "negative_control"
+    },
+    {
+      "pseudo_task_id": "NC-730085ef46",
+      "shuffle_seed": 20261110,
+      "source_family": "F-QE",
+      "source_split": "meta_train",
+      "source_task_id": "a932514894a4",
+      "split": "negative_control"
+    },
+    {
+      "pseudo_task_id": "NC-7f95f32614",
+      "shuffle_seed": 20261111,
+      "source_family": "F-QE",
+      "source_split": "meta_train",
+      "source_task_id": "ed810753d786",
+      "split": "negative_control"
+    }
+  ],
+  "isolation": {
+    "derived_from": "meta_train",
+    "not_archived": true,
+    "not_in_primary_endpoint": true,
+    "not_in_training": true,
+    "split_assignments_exclusive": true
+  },
+  "protocol": "pseudo_task_id = 'NC-' + sha1('negative_control|' + source_task_id + '|' + shuffle_seed)[:10]；只打乱 objective/constraints 与 design 的配对，不改 context/params（§4.3）",
+  "run_id": "p4-meta-m2-offline-20261102T092828Z"
+}

@@ -1,0 +1,374 @@
+{
+  "budgets": {
+    "true_evaluation_budget": [
+      64,
+      128
+    ]
+  },
+  "calibration_protocol": {
+    "budget": 64,
+    "empirical_samples": 256,
+    "family_seed": 20261102,
+    "opt_seeds": [
+      0,
+      1,
+      2
+    ],
+    "radius_grid": [
+      0.55,
+      0.6,
+      0.65,
+      0.7,
+      0.75,
+      0.8,
+      0.85,
+      0.9,
+      0.95,
+      1.0
+    ],
+    "train_tasks": 8,
+    "validation_tasks": 8
+  },
+  "calibration_report_sha256": "c5f8096d02abf5da4bfd9a5b234bdcedd8a7ffbb98ce7b413eb48e42c116286b",
+  "calibration_selection_rule": "只在 meta_train 的 8 个校准任务上、固定优化 seeds=(0,1,2) 跑 B=64 BO-random；pooled success rate（成功 (任务,seed) 数 / (8×3)）落在 [0.30, 0.70] 的半径格为候选；候选中取 pooled feasible_hit_rate 中位数最接近 0.5 者，并列取较小 radius_base；meta_validation 仅作难度旁证，不参与选中判定；禁止按 MAML 胜负或任何测试集表现选择。",
+  "conclusions_allowed": true,
+  "counts": {
+    "history_rows": 460800,
+    "holdout_groups": 300,
+    "runs": 4800,
+    "true_evaluations": 460800
+  },
+  "created_utc": "2026-11-04T20:09:26+00:00",
+  "data_origin": "SYNTHETIC_TEST",
+  "determinism": {
+    "excluded_columns": [
+      "wall_s",
+      "proxy_scoring_cost_json"
+    ],
+    "groups_compared": 300,
+    "mismatch_count": 0,
+    "reruns": 3,
+    "status": "PASS"
+  },
+  "determinism_reruns": 3,
+  "endpoint_directions": {
+    "best_feasible_value": "lower_better",
+    "best_objective_raw": "lower_better",
+    "feasible_hit_rate": "higher_better",
+    "first_feasible_evaluation_index": "lower_better",
+    "gap_to_reference": "lower_better",
+    "min_constraint_violation_sum": "lower_better"
+  },
+  "evaluation_splits": [
+    "meta_test",
+    "meta_test_ood"
+  ],
+  "evaluator": {
+    "evaluator_id": "synthetic__analytic__12d_lifting_surfaces__v2",
+    "fidelity": "synthetic_analytic",
+    "mission_fingerprint": null,
+    "note": "D-P4-002 第三节接口字段；P4-CODE 只做解析合成评估，不涉及真实求解器版本或任务指纹",
+    "physical_call_count": 0,
+    "physics_validation_status": "NOT_APPLICABLE_SYNTHETIC",
+    "solver_version": null,
+    "source_kind": "SYNTHETIC_TEST"
+  },
+  "evaluator_id": "synthetic__analytic__12d_lifting_surfaces__v2",
+  "fairness_gate": {
+    "arms": [
+      "M5-BO-MAML-init",
+      "M5-BO-pretrain-init",
+      "M5-BO-random",
+      "M5-DE"
+    ],
+    "dedup_tolerance": 1e-12,
+    "group_key_fields": [
+      "task_id",
+      "seed",
+      "budget",
+      "meta_seed"
+    ],
+    "groups": 2400,
+    "initial_design_count": 8,
+    "physical_call_count": 0,
+    "records": 4800,
+    "status": "PASS"
+  },
+  "fallback_endpoints": [
+    "best_objective_raw",
+    "min_constraint_violation_sum",
+    "feasible_hit_rate"
+  ],
+  "family": {
+    "design_config_path": "D:\\RCAIDE-p4-meta-learning\\research\\concorde_metaopt\\configs\\design_space_12d_lifting_surfaces.yaml",
+    "design_dim": 12,
+    "design_set": "12d_lifting_surfaces",
+    "designs_per_task": 192,
+    "family_id": "F-QE-feasible-v2",
+    "family_seed": 20261102,
+    "family_version": "v2",
+    "query_size": 64,
+    "support_pool_size": 128
+  },
+  "frozen_family_sha256": "5e7a9d1f2acd32a482195d0ae6255205310d4d5cf4bb38562e05265c4c9da20b",
+  "gap_definition": "f(u_best)-f(u*)",
+  "git_sha": "183616c7d69d277d16fca2f4b21839062cdbbab0",
+  "git_sha_label": "183616c7d69d277d16fca2f4b21839062cdbbab0-dirty",
+  "holdout_plan": {
+    "budgets": [
+      64,
+      128
+    ],
+    "meta_seeds": [
+      0,
+      1,
+      2
+    ],
+    "runs_per_budget_per_group": 8,
+    "runs_per_group": 16,
+    "splits": {
+      "meta_test": {
+        "groups": 200,
+        "seeds": 10,
+        "tasks": 20
+      },
+      "meta_test_ood": {
+        "groups": 100,
+        "seeds": 10,
+        "tasks": 10
+      }
+    },
+    "total_groups": 300,
+    "total_runs": 4800
+  },
+  "identifiability": {
+    "arms_present": [
+      "M5-BO-MAML-init",
+      "M5-BO-pretrain-init",
+      "M5-BO-random",
+      "M5-DE"
+    ],
+    "budgets_compared": [
+      64,
+      128
+    ],
+    "clone_arms": [],
+    "clone_audit_budget_semantics": "臂对重叠率在 budgets_compared 的全部 budget 上聚合；clone_audit.csv 的 budget 列以逗号列出这些 budget，budget_scope=aggregate_all_budgets",
+    "distinct_code_paths": 4,
+    "distinct_implementations": 3,
+    "groups_checked": 600,
+    "indistinguishable_arms": [],
+    "physical_call_count": 0,
+    "status": "IDENTIFIABLE"
+  },
+  "implementation": {
+    "arms": "research.concorde_metaopt.meta_learning.m5_arms",
+    "bo_engine": "maml_opt.bayesian:ConstrainedBayesianOptimizer/run_search",
+    "de_engine": "research.concorde_metaopt.meta_learning.baseline_arms:run_de_arm",
+    "initialization": "maml_opt.initialization:select_model_scored_initial_designs",
+    "runner": "research.concorde_metaopt.meta_learning.m5_runner"
+  },
+  "max_meta_steps": 200,
+  "meta_seeds": [
+    0,
+    1,
+    2
+  ],
+  "meta_test_tuning_policy": "禁止使用 meta_test/meta_test_ood 的任何信息（成功率/误差/gap）调参、选半径、选臂或选终点；测试集只在 frozen_family + preregistration 的 sha256/fingerprint/split_hash 校验通过后一次性构造并评估一次。",
+  "non_claims": [
+    "SYNTHETIC_ONLY：合成解析任务，不代表真实飞机/CFD 性能；physical_call_count=0；旧 F-QE 压力测试结果单独成表，不与 v2 混算绝对目标。"
+  ],
+  "not_approved": [
+    "P4-REAL-LF 真实低可信度求解器调用（未批准）",
+    "P4-MULTIFIDELITY-REAL 真实多保真（未批准）",
+    "真实跨任务元训练（未批准）"
+  ],
+  "null_disclosure": {
+    "best_feasible_value": {
+      "n_null": 1252,
+      "n_runs": 4800,
+      "null_rate": 0.2608333333333333
+    },
+    "best_objective_raw": {
+      "n_null": 0,
+      "n_runs": 4800,
+      "null_rate": 0.0
+    },
+    "cache_hits": {
+      "n_null": 0,
+      "n_runs": 4800,
+      "null_rate": 0.0
+    },
+    "feasible_hit_rate": {
+      "n_null": 0,
+      "n_runs": 4800,
+      "null_rate": 0.0
+    },
+    "first_feasible_evaluation_index": {
+      "n_null": 1252,
+      "n_runs": 4800,
+      "null_rate": 0.2608333333333333
+    },
+    "gap_to_reference": {
+      "n_null": 1252,
+      "n_runs": 4800,
+      "null_rate": 0.2608333333333333
+    },
+    "min_constraint_violation_sum": {
+      "n_null": 0,
+      "n_runs": 4800,
+      "null_rate": 0.0
+    },
+    "n_failed_evals": {
+      "n_null": 0,
+      "n_runs": 4800,
+      "null_rate": 0.0
+    },
+    "true_evals_used": {
+      "n_null": 0,
+      "n_runs": 4800,
+      "null_rate": 0.0
+    },
+    "wall_s": {
+      "n_null": 0,
+      "n_runs": 4800,
+      "null_rate": 0.0
+    }
+  },
+  "null_policy": "不可行/失败评价保留 objective=null 且计入预算；空值不插补、不转 0；非 null 样本占比 <70% 的终点标 INCONCLUSIVE 并给出原因，不补假曲线。",
+  "optimization_seeds": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
+  "physical_call_declaration": {
+    "data_origin": "SYNTHETIC_TEST",
+    "expected": 0,
+    "policy": "fail-closed：任何报告 physical_call_count!=0 立即中止整次 run",
+    "stage": "P4-CODE"
+  },
+  "preregistered_comparisons": [
+    [
+      "M5-BO-MAML-init",
+      "M5-BO-random"
+    ],
+    [
+      "M5-BO-MAML-init",
+      "M5-BO-pretrain-init"
+    ],
+    [
+      "M5-BO-pretrain-init",
+      "M5-BO-random"
+    ],
+    [
+      "M5-DE",
+      "M5-BO-random"
+    ],
+    [
+      "M5-BO-pretrain-init",
+      "M5-BO-MAML-init"
+    ],
+    [
+      "M5-DE",
+      "M5-BO-MAML-init"
+    ]
+  ],
+  "preregistration_gate": {
+    "calibration_report_sha256": "c5f8096d02abf5da4bfd9a5b234bdcedd8a7ffbb98ce7b413eb48e42c116286b",
+    "frozen_family_sha256": "5e7a9d1f2acd32a482195d0ae6255205310d4d5cf4bb38562e05265c4c9da20b",
+    "preregistration_sha256": "4f8a9a1fd05f0648646da58dc669524de81c2c11c38b81d72f28b0be42e565fe",
+    "radius_base": 0.75,
+    "split_hash": "3c206ebbe35e848a5137b433d7bc9ca022eb28b4b310ab3ccb9d89c989f33f8a",
+    "status": "UNLOCKED",
+    "unlock": {
+      "frozen_family_sha256": "5e7a9d1f2acd32a482195d0ae6255205310d4d5cf4bb38562e05265c4c9da20b",
+      "preregistration_sha256": "4f8a9a1fd05f0648646da58dc669524de81c2c11c38b81d72f28b0be42e565fe",
+      "radius_base": 0.75,
+      "split_hash": "3c206ebbe35e848a5137b433d7bc9ca022eb28b4b310ab3ccb9d89c989f33f8a",
+      "status": "UNLOCKED"
+    }
+  },
+  "preregistration_sha256": "4f8a9a1fd05f0648646da58dc669524de81c2c11c38b81d72f28b0be42e565fe",
+  "pretrain_steps": 50,
+  "primary_endpoints": [
+    "best_feasible_value",
+    "gap_to_reference",
+    "first_feasible_evaluation_index",
+    "feasible_hit_rate"
+  ],
+  "products": [
+    "old_m2_run_immutability.json",
+    "run_config.json",
+    "environment.json",
+    "tasks.json",
+    "reference_solutions.json",
+    "meta_task_split.json",
+    "frozen_family.json",
+    "preregistration.json",
+    "solver_validation.csv",
+    "metrics/training_history.csv",
+    "metrics/optimization_history.csv",
+    "metrics/optimization_summary.csv",
+    "metrics/metrics.csv",
+    "metrics/statistics.csv",
+    "metrics/endpoint_summary.csv",
+    "metrics/arm_audit.csv",
+    "metrics/clone_audit.csv",
+    "metrics/adaptation_results.csv",
+    "figures/figure_data.json",
+    "figures/figure_status.json",
+    "README.md",
+    "summary.json",
+    "data_manifest.json"
+  ],
+  "reference_solution": "c",
+  "run_id": "p4-meta-m5-formal-20261104T1018Z",
+  "runtime_s": 8960.326668500085,
+  "schema_version": "p4-m5-runner-v1",
+  "secondary_endpoints": [
+    "best_objective_raw",
+    "min_constraint_violation_sum",
+    "true_evals_used",
+    "cache_hits",
+    "wall_s",
+    "n_failed_evals"
+  ],
+  "split_counts": {
+    "meta_test": 20,
+    "meta_test_ood": 10,
+    "meta_train": 60,
+    "meta_validation": 20,
+    "negative_control": 10
+  },
+  "split_hash": "3c206ebbe35e848a5137b433d7bc9ca022eb28b4b310ab3ccb9d89c989f33f8a",
+  "stage": "holdout",
+  "stage_label": "P4-CODE",
+  "stage_sequence": [
+    "calibration",
+    "freeze",
+    "holdout"
+  ],
+  "statistics": {
+    "bootstrap_samples": 10000,
+    "confidence": 0.95,
+    "effect_size": "paired_cohen_d / rank_biserial",
+    "multiple_comparison": "Holm-Bonferroni（M5 6 臂对 × 2 预算 × 4 主终点）",
+    "paired_differences": "(task, seed, budget) 配对差",
+    "seed_aggregation": "优化 seed 在任务内先聚合，避免伪重复",
+    "test": "wilcoxon_signed_rank",
+    "unit": "task"
+  },
+  "study_scale": "FORMAL",
+  "tolerance": {
+    "feasibility_g_le_zero": 1e-10
+  },
+  "workers": 16,
+  "worktree_dirty": true
+}

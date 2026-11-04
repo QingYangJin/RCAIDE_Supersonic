@@ -1,0 +1,146 @@
+{
+  "actual_seeds": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "archive": {
+    "data_origin": "SYNTHETIC_TEST",
+    "dataset_id": "p4-meta-m2-offline-20261102T092828Z-m1",
+    "manifest_path": "archive/p4-meta-m2-offline-20261102T092828Z-m1/manifest.json",
+    "n_samples": 21120,
+    "schema_version": 2,
+    "target_names": [
+      "objective",
+      "geometry_invalid"
+    ],
+    "task_splits": {
+      "test": 30,
+      "train": 60,
+      "validation": 20
+    }
+  },
+  "arm_identifiability": {
+    "OPT-BO-MAML": "CLONE_OF_OPT-BO-rand",
+    "OPT-BO-MAML-init": "IDENTIFIABLE",
+    "OPT-BO-pretrain": "CLONE_OF_OPT-BO-rand",
+    "OPT-BO-rand": "IDENTIFIABLE",
+    "OPT-DE": "IDENTIFIABLE"
+  },
+  "budget": {
+    "bo_initial_designs": 8,
+    "de_generations": 8,
+    "de_population": 8,
+    "max_meta_steps": 2000,
+    "s_adapt": 50,
+    "true_evaluation_budget": 64
+  },
+  "clone_arm_note": "P4-CODE 可识别臂 = {OPT-BO-rand, OPT-BO-MAML-init, OPT-DE}；OPT-BO-pretrain/OPT-BO-MAML = CLONE_OF_OPT-BO-rand，仅描述性，禁用于代理先验归因（M0 v1.4 §10.1）。",
+  "clone_arms": [
+    "OPT-BO-pretrain",
+    "OPT-BO-MAML"
+  ],
+  "config_hash": "0d393de6ae1d56b3c62308d977678581025f63ec74ce92c6c43201436c902f8b",
+  "data_origin": "SYNTHETIC_TEST",
+  "design_set": "12d_lifting_surfaces",
+  "determinism_reruns": 3,
+  "evaluator_id": "synthetic__analytic__12d_lifting_surfaces__v1",
+  "family_config_path": null,
+  "family_fingerprint": "f4afd17512558277fd898e2b2b5c19f00d15b9b0e8618126ce3876b2c3b7c4e2",
+  "family_id": "F-QE",
+  "git_sha": "36d58918fc5f1002a599c45661e3cd389ce96c19",
+  "git_sha_label": "36d58918fc5f1002a599c45661e3cd389ce96c19",
+  "identifiable_arms": [
+    "OPT-BO-rand",
+    "OPT-BO-MAML-init",
+    "OPT-DE"
+  ],
+  "implementation": {
+    "OPT-BO-MAML": "reuse:maml_opt.bayesian:run_search",
+    "OPT-BO-MAML-init": "reuse:maml_opt.initialization:select_model_scored_initial_designs",
+    "OPT-BO-pretrain": "reuse:maml_opt.bayesian:run_search",
+    "OPT-BO-rand": "reuse:maml_opt.bayesian:run_search",
+    "OPT-DE": "reuse_semantics:research.concorde_metaopt.optimization.baseline_de:DifferentialEvolutionBaseline"
+  },
+  "ks": [
+    0,
+    1,
+    5,
+    10
+  ],
+  "maml_init": {
+    "candidate_count": 64,
+    "dedup_tolerance": 1e-12,
+    "diversity_candidate_count": 64,
+    "initial_design_count": 8,
+    "seed_policy": "derive_arm_seed(task_id, seed, 'maml_init_pool')（禁默认 42）"
+  },
+  "negative_control_protocol": {
+    "isolation": "负控制单列，禁进主终点/调参",
+    "pseudo_task_id": "NC-<sha1('negative_control|source_task_id|shuffle_seed')[:10]>",
+    "seed_formula": "shuffle_seed = 20261102 + index",
+    "shuffle": "打乱伪任务内部 objective/constraints 与 design 的配对，不改 context/params",
+    "split": "negative_control"
+  },
+  "not_approved": [
+    {
+      "id": "P4-REAL-LF",
+      "note": "真实低保证度评估未获授权，本 run 禁止调用任何真实求解器"
+    },
+    {
+      "id": "P4-MULTIFIDELITY-REAL",
+      "note": "真实多保真训练/评估未获授权"
+    },
+    {
+      "id": "REAL-CROSS-TASK-META-TRAINING",
+      "note": "真实跨任务元训练未获授权，本 run 仅合成解析任务族"
+    }
+  ],
+  "optimization_seeds": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "physical_call_declaration": {
+    "expected": 0,
+    "physical_call_count": 0,
+    "real_evaluator_policy": "fail-closed（构造即抛 NotImplementedError）"
+  },
+  "primary_endpoint": "meta_test K=5 query RMSE (MAML vs P, MAML vs R)",
+  "run_config_version": "p4-meta-learning-run-v1",
+  "run_id": "p4-meta-m2-offline-20261102T092828Z",
+  "secondary_endpoints": [
+    "meta_test K=0/1/10 query RMSE/MAE",
+    "meta_test_ood K=0/1/5/10 query RMSE/MAE（单列）",
+    "negative_control label-shuffle K-shot 诊断（不进主终点）",
+    "M2 best_feasible_value/gap_to_reference/first_feasible_eval_index @ B=64",
+    "M2 fallback: best_objective_raw / min_constraint_violation_sum / feasible_hit_rate"
+  ],
+  "seed": 42,
+  "split_counts": {
+    "meta_test": 20,
+    "meta_test_ood": 10,
+    "meta_train": 60,
+    "meta_validation": 20,
+    "negative_control": 10
+  },
+  "stage": "P4-CODE",
+  "statistics": {
+    "bootstrap_samples": 10000,
+    "confidence": 0.95,
+    "effect_size": "paired_cohen_d",
+    "paired_unit": "per (task, seed)",
+    "test": "wilcoxon_signed_rank（n>=5 且非全零时计算）"
+  },
+  "synthetic_only": true,
+  "tolerance": {
+    "feasibility_g_le_zero": 1e-12,
+    "reference_solution": 1e-10,
+    "support_query_design_disjoint": 1e-12
+  },
+  "worktree_dirty": false
+}

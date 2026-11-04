@@ -1,0 +1,110 @@
+{
+  "schema_version": 1,
+  "status": "FINAL",
+  "revision": "rev5_final",
+  "task_id": "task-181",
+  "run_id": "p4-meta-m5-formal-20261104T1018Z",
+  "report": {
+    "path": "C:\\Users\\pc\\AppData\\Local\\RCAIDE_Supersonic_agent_state\\p4-m5m6\\a2\\m5_figures_report_attempt2\\p4_m5_formal_report_20261104.md",
+    "file": "p4_m5_formal_report_20261104.md",
+    "bytes": 28854,
+    "lines": 260,
+    "sha256": "5fa16deae14d14a43fdbfa4093bcc30d29dd7b4ee8b022b548790e94302155df",
+    "content_revision_note": "报告内容 = task-177 批准的 rev5 内容（4c29732b，含 A5-M5A2-04 的 1 行路径修复）；本 rev 仅头注 L1/L4/L5/L6 由 rev4 自述更新为 rev5 并补 task-175/task-177 批准链（A5-M5PKG-02）；数字/表格/结论 0 变化。"
+  },
+  "sha256sums": {
+    "path": "C:\\Users\\pc\\AppData\\Local\\RCAIDE_Supersonic_agent_state\\p4-m5m6\\a2\\m5_figures_report_attempt2\\SHA256SUMS.txt",
+    "bytes": 1938,
+    "sha256": "4b96cd50aad26f221988fa3a23580164accf8e72954579d2efe4d7bb0de09ee5",
+    "entries": 21
+  },
+  "manifest": {
+    "path": "C:\\Users\\pc\\AppData\\Local\\RCAIDE_Supersonic_agent_state\\p4-m5m6\\a2\\m5_figures_report_attempt2\\manifest.json",
+    "bytes": 7286,
+    "sha256": "dbef791e5948cdfab78942ad0031b0ac2716782866eaa8e2a613f9378a91d9ea",
+    "all_checks_pass": true,
+    "n_checks": 31
+  },
+  "a5_closeout": {
+    "task_id": "task-181",
+    "verdict": "CHANGES_REQUESTED (m5_package_review, A5-M5PKG-02 minor)",
+    "closed_items": [
+      {
+        "item": "A5-M5PKG-02",
+        "status": "CLOSED",
+        "fix": "报告头注 L1/L4/L5/L6 自述 rev4 -> rev5（与 status_final.revision=rev5_final 一致），L5 补 task-175 CHANGES_REQUESTED（A5-M5A2-04，rev5 已修）与 task-177 APPROVE_FOR_M5_PACKAGING（0/0/0 new）；scripts/build_report_m5.py:375-380 同步；仅头注 4 行 diff，数字/表格/结论 0 变化。"
+      },
+      {
+        "item": "A5-M5A2-04",
+        "status": "CLOSED",
+        "fix": "report §4.5 数据源声明绝对路径 -> EXT 相对路径（rev5，task-176）；数字不变，1 行 diff。"
+      }
+    ],
+    "open_items": [
+      {
+        "item": "A5-M5PKG-01",
+        "status": "OPEN_OUTSIDE_A2_SCOPE",
+        "note": "evidence/packaging_note.md 打包说明版本/批准链/manifest 引用错误，由 Lead 打包时修复。"
+      },
+      {
+        "item": "A5-M5PKG-03",
+        "status": "OPEN_OUTSIDE_A2_SCOPE",
+        "note": "run README 产物清单，属 run 目录证据，由 Lead 打包时修复。"
+      }
+    ]
+  },
+  "a5_verdict_ref": {
+    "task_id": "task-170",
+    "path": "C:\\Users\\pc\\AppData\\Local\\RCAIDE_Supersonic_agent_state\\p4-m5m6\\a5\\m5_attempt2_results_review\\verdict.txt",
+    "bytes": 1139,
+    "sha256": "1585a60c86185a5558edd5e907a88fd12b365bb08e18810f1efd79c783da5695",
+    "verdict": "APPROVE_FOR_M5_REPORTING",
+    "counts": {
+      "blocker": 0,
+      "major": 0,
+      "minor": 2
+    },
+    "minor_items": [
+      "A5-M5A2-02",
+      "A5-M5A2-03"
+    ],
+    "preexisting_open_minor": [
+      "A5-M5-04"
+    ],
+    "note": "task-170 判 APPROVE_FOR_M5_REPORTING；A5-M5A2-02/03 已于 rev4 关闭；A5-M5A2-04 于 rev5（task-175 唯一 minor）关闭；A5-M5PKG-02 于本 rev（task-181 头注）关闭。"
+  },
+  "a5_packaging_approval_ref": {
+    "task_id": "task-177",
+    "path": "C:\\Users\\pc\\AppData\\Local\\RCAIDE_Supersonic_agent_state\\p4-m5m6\\a5\\m5_report_final_recheck\\verdict.txt",
+    "bytes": 1003,
+    "sha256": "c5a84e8efe6d4b21b0dad41ef7ed28dcab64ef5451dbebcfe747972867cace29",
+    "verdict": "APPROVE_FOR_M5_PACKAGING",
+    "counts": {
+      "blocker": 0,
+      "major": 0,
+      "minor_new": 0
+    },
+    "target_report_sha256": "4c29732bdf5d33cc1d1f7ed86a79a136fe3e7f94b8aef482678667c060471052",
+    "note": "task-177 对 rev5 报告（4c29732b/28650）判 APPROVE_FOR_M5_PACKAGING；本 rev 仅改头注标识，正文与之等价。"
+  },
+  "generated_utc": "2026-11-04T21:32:10.486323+00:00",
+  "generator": "scripts/write_status_final.py (one-off refresh via scripts/_dev/write_status_final_task181.py)",
+  "boundary": {
+    "solver_starts": 0,
+    "repo_tracked_writes": 0,
+    "github_writes": 0,
+    "numbers_changed_vs_attempt2": false,
+    "report_diff_lines_vs_rev5_baseline": 4,
+    "report_diff_lines_vs_rev4": 5
+  },
+  "validation": {
+    "path": "C:\\Users\\pc\\AppData\\Local\\RCAIDE_Supersonic_agent_state\\p4-m5m6\\a2\\m5_figures_report_attempt2\\validation.json",
+    "bytes": 6214,
+    "sha256": "7fb5becf044d35151e71301096e7e6b696cbb8bea9757c21c9cb8f063580ef5c",
+    "status": "VALIDATION_OK",
+    "all_checks_pass": true,
+    "n_checks": 45
+  },
+  "packaged_copy_sha256": "30d2852caf448b6c4235fb97d6af7e95bda2656ba4f8b4a5654d7574c4fa6cf3",
+  "source": "C:/Users/pc/AppData/Local/RCAIDE_Supersonic_agent_state/p4-m5m6/a2/m5_figures_report_attempt2/status_final.json"
+}

@@ -1,0 +1,30 @@
+{
+  "figures": {
+    "fig1_meta_training_loss": {
+      "source": "metrics/training_history.csv",
+      "status": "DATA_READY"
+    },
+    "fig2_k_shot_adaptation": {
+      "source": null,
+      "status": "NOT_APPLICABLE_THIS_STAGE"
+    },
+    "fig3_feasible_rate": {
+      "source": "metrics/optimization_summary.csv",
+      "status": "DATA_READY"
+    },
+    "fig4_equal_budget_gap": {
+      "source": "metrics/optimization_history.csv",
+      "status": "DATA_READY"
+    },
+    "fig5_fairness_audit": {
+      "source": "metrics/arm_audit.csv, metrics/clone_audit.csv",
+      "status": "DATA_READY"
+    },
+    "fig6_airframe_gate_progress": {
+      "source": null,
+      "status": "NOT_RUN"
+    }
+  },
+  "note": "本阶段只落盘图数据（figure_data.json）与状态（figure_status.json）；PNG 由 A2/M5 报告阶段从 CSV 生成。fig2 归 M6；fig6 归 Issue #4 D-12D-004，缺失图一律记 NOT_RUN/NOT_APPLICABLE，禁止假图。",
+  "run_id": "p4-meta-m5-formal-20261104T1018Z"
+}

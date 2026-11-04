@@ -1,0 +1,1530 @@
+{
+  "archive": {
+    "data_origin": "SYNTHETIC_TEST",
+    "dataset_id": "p4-meta-m2-offline-20261102T092828Z-m1",
+    "manifest_path": "archive/p4-meta-m2-offline-20261102T092828Z-m1/manifest.json",
+    "n_samples": 21120,
+    "schema_version": 2,
+    "target_names": [
+      "objective",
+      "geometry_invalid"
+    ],
+    "task_splits": {
+      "test": 30,
+      "train": 60,
+      "validation": 20
+    }
+  },
+  "data_origin": "SYNTHETIC_TEST",
+  "determinism": {
+    "compared_files": [
+      "metrics/metrics.csv",
+      "metrics/optimization_summary.csv"
+    ],
+    "hashes": {
+      "metrics/metrics.csv": "d7b0a9ad45a9f9d53c7b30e7b1eaf0db0a1527feb2578418660edadd8293040e",
+      "metrics/optimization_summary.csv": "965ab5f94e0ea86bafdde69aed725b94295f35b3a633a93f202e902a11d03a9c"
+    },
+    "metric": "sha256(normalized CSV text, float repr, wall_s/proxy wall 剔除)",
+    "mismatched_files": [],
+    "non_deterministic_columns_excluded": [
+      "wall_s",
+      "proxy_scoring_cost_json"
+    ],
+    "note": "PASS=逐位一致；FAIL=框架非确定，必须记录并降级该臂结论，不得静默通过（§11.2/§12-15）。",
+    "reruns": 3,
+    "status": "PASS"
+  },
+  "failures": {
+    "n_failed_evaluations": 0,
+    "n_nonfinite_m1": 0
+  },
+  "family_id": "F-QE",
+  "figures": {
+    "fig1_meta_training_loss": "NOT_RUN",
+    "fig2_k_shot_adaptation": "NOT_RUN",
+    "fig3_equal_budget_convergence": "NOT_RUN",
+    "fig4_vspaero_version_panel_density": "NOT_RUN（归 Issue #4 D-12D-004）",
+    "fig5_budget_gate_progress": "NOT_RUN"
+  },
+  "finite_difference_check": {
+    "epsilon": 1e-05,
+    "max_relative_error": 2.052996661561224e-11,
+    "n_checked": 5,
+    "status": "PASS",
+    "tolerance": 0.0001
+  },
+  "m1": {
+    "arms": [
+      "R",
+      "P",
+      "M"
+    ],
+    "endpoints": {
+      "note": "MAML 优势=P/M 臂之差交替对照；负控制单列、不进主终点。",
+      "primary": {
+        "K": 5,
+        "metric": "rmse_raw",
+        "n_tasks": 20,
+        "pairs": {
+          "M_vs_P": {
+            "bootstrap_samples": 10000,
+            "ci_high": -0.0036721320542072444,
+            "ci_low": -0.01808574719479586,
+            "confidence": 0.95,
+            "mean_diff": -0.013730479463645154,
+            "median_diff": -0.011314151283426388,
+            "n": 20,
+            "seed": 42,
+            "wilcoxon_pvalue": 0.005580902099609375,
+            "wilcoxon_statistic": 33.0
+          },
+          "M_vs_R": {
+            "bootstrap_samples": 10000,
+            "ci_high": -0.03865358684311426,
+            "ci_low": -0.08374463321767278,
+            "confidence": 0.95,
+            "mean_diff": -0.050614345553870066,
+            "median_diff": -0.051697121292827386,
+            "n": 20,
+            "seed": 42,
+            "wilcoxon_pvalue": 0.0019855499267578125,
+            "wilcoxon_statistic": 26.0
+          }
+        },
+        "split": "meta_test"
+      },
+      "primary_endpoint": "meta_test K=5 query RMSE (MAML vs P, MAML vs R)",
+      "secondary": {
+        "meta_test_K0": {
+          "K": 0,
+          "metric": "rmse_raw",
+          "n_tasks": 20,
+          "pairs": {
+            "M_vs_P": {
+              "bootstrap_samples": 10000,
+              "ci_high": -0.0029893594901730935,
+              "ci_low": -0.016851395935849722,
+              "confidence": 0.95,
+              "mean_diff": -0.008840408547739247,
+              "median_diff": -0.00937397703348819,
+              "n": 20,
+              "seed": 42,
+              "wilcoxon_pvalue": 0.0758514404296875,
+              "wilcoxon_statistic": 57.0
+            },
+            "M_vs_R": {
+              "bootstrap_samples": 10000,
+              "ci_high": -0.2605971734620949,
+              "ci_low": -1.505044958833152,
+              "confidence": 0.95,
+              "mean_diff": -0.7013686241281287,
+              "median_diff": -1.2267265324665946,
+              "n": 20,
+              "seed": 42,
+              "wilcoxon_pvalue": 0.013616561889648438,
+              "wilcoxon_statistic": 40.0
+            }
+          },
+          "split": "meta_test"
+        },
+        "meta_test_K1": {
+          "K": 1,
+          "metric": "rmse_raw",
+          "n_tasks": 20,
+          "pairs": {
+            "M_vs_P": {
+              "bootstrap_samples": 10000,
+              "ci_high": 0.003014369670105599,
+              "ci_low": -0.02321399263756352,
+              "confidence": 0.95,
+              "mean_diff": 0.00043160757304274713,
+              "median_diff": 0.0004569838235692347,
+              "n": 20,
+              "seed": 42,
+              "wilcoxon_pvalue": 0.9854354858398438,
+              "wilcoxon_statistic": 104.0
+            },
+            "M_vs_R": {
+              "bootstrap_samples": 10000,
+              "ci_high": 0.05107506614865648,
+              "ci_low": -0.12222255619084477,
+              "confidence": 0.95,
+              "mean_diff": -0.04942612290109612,
+              "median_diff": -0.03264347068048834,
+              "n": 20,
+              "seed": 42,
+              "wilcoxon_pvalue": 0.2305126190185547,
+              "wilcoxon_statistic": 72.0
+            }
+          },
+          "split": "meta_test"
+        },
+        "meta_test_K10": {
+          "K": 10,
+          "metric": "rmse_raw",
+          "n_tasks": 20,
+          "pairs": {
+            "M_vs_P": {
+              "bootstrap_samples": 10000,
+              "ci_high": -0.007880540585217366,
+              "ci_low": -0.033238991179254385,
+              "confidence": 0.95,
+              "mean_diff": -0.024686557543187944,
+              "median_diff": -0.021232999057475055,
+              "n": 20,
+              "seed": 42,
+              "wilcoxon_pvalue": 0.0003948211669921875,
+              "wilcoxon_statistic": 17.0
+            },
+            "M_vs_R": {
+              "bootstrap_samples": 10000,
+              "ci_high": -0.003436520208131788,
+              "ci_low": -0.05036347307241179,
+              "confidence": 0.95,
+              "mean_diff": -0.020532483194683197,
+              "median_diff": -0.021587525182617417,
+              "n": 20,
+              "seed": 42,
+              "wilcoxon_pvalue": 0.04405403137207031,
+              "wilcoxon_statistic": 51.0
+            }
+          },
+          "split": "meta_test"
+        },
+        "meta_test_ood_K5": {
+          "K": 5,
+          "metric": "rmse_raw",
+          "n_tasks": 10,
+          "pairs": {
+            "M_vs_P": {
+              "bootstrap_samples": 10000,
+              "ci_high": 0.005656825875343996,
+              "ci_low": -0.02409127881350631,
+              "confidence": 0.95,
+              "mean_diff": -0.009933331882158569,
+              "median_diff": -0.00489244870780603,
+              "n": 10,
+              "seed": 42,
+              "wilcoxon_pvalue": 0.232421875,
+              "wilcoxon_statistic": 15.0
+            },
+            "M_vs_R": {
+              "bootstrap_samples": 10000,
+              "ci_high": 0.055087038429133095,
+              "ci_low": -0.05715343524017835,
+              "confidence": 0.95,
+              "mean_diff": 0.010342259468626158,
+              "median_diff": 0.027663283096817814,
+              "n": 10,
+              "seed": 42,
+              "wilcoxon_pvalue": 0.6953125,
+              "wilcoxon_statistic": 23.0
+            }
+          },
+          "split": "meta_test_ood"
+        },
+        "negative_control_K5": {
+          "K": 5,
+          "metric": "rmse_raw",
+          "n_tasks": 10,
+          "pairs": {
+            "M_vs_P": {
+              "bootstrap_samples": 10000,
+              "ci_high": 0.008308701669183849,
+              "ci_low": -0.004039077545062497,
+              "confidence": 0.95,
+              "mean_diff": 0.0017913479192815274,
+              "median_diff": 0.0001527852621767689,
+              "n": 10,
+              "seed": 42,
+              "wilcoxon_pvalue": 0.625,
+              "wilcoxon_statistic": 22.0
+            },
+            "M_vs_R": {
+              "bootstrap_samples": 10000,
+              "ci_high": -0.022076124792498986,
+              "ci_low": -0.06981321977490751,
+              "confidence": 0.95,
+              "mean_diff": -0.04581777103182703,
+              "median_diff": -0.031944064302078856,
+              "n": 10,
+              "seed": 42,
+              "wilcoxon_pvalue": 0.02734375,
+              "wilcoxon_statistic": 6.0
+            }
+          },
+          "split": "negative_control"
+        }
+      }
+    },
+    "ks": [
+      0,
+      1,
+      5,
+      10
+    ],
+    "meta_training": {
+      "failure": null,
+      "history_length": 2000,
+      "outer_loss_first": 2.771985041028135,
+      "outer_loss_last": 1.2540536115550236,
+      "status": "VALID",
+      "steps": 2000,
+      "wall_s": 15.161331700044684
+    },
+    "n_adaptation_rows": 480,
+    "negative_control_checks": {
+      "interpretation": "负控制 label-shuffle 后 MAML 相对预训练优势应回落到接近 0；K=0 随机初始化臂应最差；OOD RMSE 预期上升。任一异常需查泄漏后重跑（§12-11）。",
+      "k0_group_rmse": {
+        "M": 1.4183756507878262,
+        "P": 1.4272160593355656,
+        "R": 2.1197442749159547
+      },
+      "k0_random_arm_worst": true,
+      "k0_worst_arm": "R",
+      "label_shuffle_advantage_collapsed": true,
+      "maml_advantage_meta_test_K5": 0.013730479463645695,
+      "maml_advantage_negative_control_K5": -0.001791347919281705,
+      "ood_K5_M_rmse": 1.023160461535162,
+      "ood_degraded_vs_meta_test": false
+    },
+    "pretraining": {
+      "final_loss": 1.9443600498105809,
+      "pretrain_rows": 11520,
+      "pretrain_steps": 50,
+      "status": "VALID",
+      "wall_s": 0.052557699964381754
+    }
+  },
+  "m2": {
+    "arm_identifiability": {
+      "OPT-BO-MAML": "CLONE_OF_OPT-BO-rand",
+      "OPT-BO-MAML-init": "IDENTIFIABLE",
+      "OPT-BO-pretrain": "CLONE_OF_OPT-BO-rand",
+      "OPT-BO-rand": "IDENTIFIABLE",
+      "OPT-DE": "IDENTIFIABLE"
+    },
+    "arms": [
+      "OPT-BO-rand",
+      "OPT-BO-pretrain",
+      "OPT-BO-MAML",
+      "OPT-BO-MAML-init",
+      "OPT-DE"
+    ],
+    "budget": 64,
+    "clone_arms": [
+      "OPT-BO-pretrain",
+      "OPT-BO-MAML"
+    ],
+    "endpoints": {
+      "all_arms_descriptive_note": "all_arms_descriptive 仅作描述性记录，不用于推断或结论。",
+      "arm_identifiability": {
+        "OPT-BO-MAML": "CLONE_OF_OPT-BO-rand",
+        "OPT-BO-MAML-init": "IDENTIFIABLE",
+        "OPT-BO-pretrain": "CLONE_OF_OPT-BO-rand",
+        "OPT-BO-rand": "IDENTIFIABLE",
+        "OPT-DE": "IDENTIFIABLE"
+      },
+      "budget_note": "每次 run 恰好 64 次真实（合成）评估；可行域稀疏，主终点可为 null。",
+      "clone_arms": [
+        "OPT-BO-pretrain",
+        "OPT-BO-MAML"
+      ],
+      "clone_arms_note": "OPT-BO-pretrain / OPT-BO-MAML 在 P4-CODE 与 OPT-BO-rand 同机制同初始点，标 CLONE_OF_OPT-BO-rand；预注册终点统计、图、回执与结论只引用可识别臂（M0 v1.4 §10.1）。",
+      "fallback_metrics": [
+        "best_objective_raw",
+        "min_constraint_violation_sum",
+        "feasible_hit_rate"
+      ],
+      "feasibility_expected_zero": {
+        "F-QE": "true（可行域体积 ~1e-6，B=64 预期 0 可行，结论表需披露）",
+        "others": "unknown"
+      },
+      "identifiable_arms": [
+        "OPT-BO-rand",
+        "OPT-BO-MAML-init",
+        "OPT-DE"
+      ],
+      "meta_test": {
+        "aggregate": {
+          "OPT-BO-MAML-init": {
+            "arm": "OPT-BO-MAML-init",
+            "best_feasible_value": {
+              "max": null,
+              "mean": null,
+              "median": null,
+              "min": null,
+              "n_finite": 0,
+              "n_null": 100,
+              "n_total": 100
+            },
+            "best_objective_raw": {
+              "max": 2.32094092178723,
+              "mean": 0.835828323284089,
+              "median": 1.0404854433002844,
+              "min": -0.9052489114654245,
+              "n_finite": 100,
+              "n_null": 0,
+              "n_total": 100
+            },
+            "feasible_hit_rate": {
+              "max": 0.0,
+              "mean": 0.0,
+              "median": 0.0,
+              "min": 0.0,
+              "n_finite": 100,
+              "n_null": 0,
+              "n_total": 100
+            },
+            "first_feasible_eval_index": {
+              "max": null,
+              "mean": null,
+              "median": null,
+              "min": null,
+              "n_finite": 0,
+              "n_null": 100,
+              "n_total": 100
+            },
+            "gap_to_reference": {
+              "max": null,
+              "mean": null,
+              "median": null,
+              "min": null,
+              "n_finite": 0,
+              "n_null": 100,
+              "n_total": 100
+            },
+            "min_constraint_violation_sum": {
+              "max": 3.167120295298636,
+              "mean": 0.924901463912512,
+              "median": 0.7951025119445383,
+              "min": 0.15988244857112782,
+              "n_finite": 100,
+              "n_null": 0,
+              "n_total": 100
+            },
+            "n_runs": 100,
+            "split": "meta_test"
+          },
+          "OPT-BO-rand": {
+            "arm": "OPT-BO-rand",
+            "best_feasible_value": {
+              "max": 1.4658106408684481,
+              "mean": 1.3921150000413935,
+              "median": 1.3921150000413935,
+              "min": 1.3184193592143387,
+              "n_finite": 2,
+              "n_null": 98,
+              "n_total": 100
+            },
+            "best_objective_raw": {
+              "max": 2.363611694865436,
+              "mean": 0.808731606195756,
+              "median": 0.9804166742344513,
+              "min": -0.89426962869336,
+              "n_finite": 100,
+              "n_null": 0,
+              "n_total": 100
+            },
+            "feasible_hit_rate": {
+              "max": 0.015625,
+              "mean": 0.0003125,
+              "median": 0.0,
+              "min": 0.0,
+              "n_finite": 100,
+              "n_null": 0,
+              "n_total": 100
+            },
+            "first_feasible_eval_index": {
+              "max": 59.0,
+              "mean": 50.5,
+              "median": 50.5,
+              "min": 42.0,
+              "n_finite": 2,
+              "n_null": 98,
+              "n_total": 100
+            },
+            "gap_to_reference": {
+              "max": 0.994197807335295,
+              "mean": 0.6974555844120012,
+              "median": 0.6974555844120012,
+              "min": 0.4007133614887073,
+              "n_finite": 2,
+              "n_null": 98,
+              "n_total": 100
+            },
+            "min_constraint_violation_sum": {
+              "max": 4.240410544239032,
+              "mean": 0.9631083640547611,
+              "median": 0.7155377161388597,
+              "min": 0.1097402782303415,
+              "n_finite": 100,
+              "n_null": 0,
+              "n_total": 100
+            },
+            "n_runs": 100,
+            "split": "meta_test"
+          },
+          "OPT-DE": {
+            "arm": "OPT-DE",
+            "best_feasible_value": {
+              "max": null,
+              "mean": null,
+              "median": null,
+              "min": null,
+              "n_finite": 0,
+              "n_null": 100,
+              "n_total": 100
+            },
+            "best_objective_raw": {
+              "max": 2.4134057933244826,
+              "mean": 0.8501261145880554,
+              "median": 1.1266250975090921,
+              "min": -0.8791554515105415,
+              "n_finite": 100,
+              "n_null": 0,
+              "n_total": 100
+            },
+            "feasible_hit_rate": {
+              "max": 0.0,
+              "mean": 0.0,
+              "median": 0.0,
+              "min": 0.0,
+              "n_finite": 100,
+              "n_null": 0,
+              "n_total": 100
+            },
+            "first_feasible_eval_index": {
+              "max": null,
+              "mean": null,
+              "median": null,
+              "min": null,
+              "n_finite": 0,
+              "n_null": 100,
+              "n_total": 100
+            },
+            "gap_to_reference": {
+              "max": null,
+              "mean": null,
+              "median": null,
+              "min": null,
+              "n_finite": 0,
+              "n_null": 100,
+              "n_total": 100
+            },
+            "min_constraint_violation_sum": {
+              "max": 4.944706845153293,
+              "mean": 1.3818024830129656,
+              "median": 1.163300346509415,
+              "min": 0.2767906151441677,
+              "n_finite": 100,
+              "n_null": 0,
+              "n_total": 100
+            },
+            "n_runs": 100,
+            "split": "meta_test"
+          }
+        },
+        "all_arms_descriptive": {
+          "OPT-BO-MAML": {
+            "arm": "OPT-BO-MAML",
+            "best_feasible_value": {
+              "max": 2.492192196369187,
+              "mean": 1.9261069690376407,
+              "median": 1.9261069690376407,
+              "min": 1.3600217417060945,
+              "n_finite": 2,
+              "n_null": 98,
+              "n_total": 100
+            },
+            "best_objective_raw": {
+              "max": 2.4195885483252875,
+              "mean": 0.8042217549373349,
+              "median": 0.980718183783873,
+              "min": -0.8010663201451315,
+              "n_finite": 100,
+              "n_null": 0,
+              "n_total": 100
+            },
+            "feasible_hit_rate": {
+              "max": 0.015625,
+              "mean": 0.0003125,
+              "median": 0.0,
+              "min": 0.0,
+              "n_finite": 100,
+              "n_null": 0,
+              "n_total": 100
+            },
+            "first_feasible_eval_index": {
+              "max": 60.0,
+              "mean": 44.0,
+              "median": 44.0,
+              "min": 28.0,
+              "n_finite": 2,
+              "n_null": 98,
+              "n_total": 100
+            },
+            "gap_to_reference": {
+              "max": 1.4587326563601475,
+              "mean": 0.9943271785622083,
+              "median": 0.9943271785622083,
+              "min": 0.5299217007642693,
+              "n_finite": 2,
+              "n_null": 98,
+              "n_total": 100
+            },
+            "min_constraint_violation_sum": {
+              "max": 4.240410544239032,
+              "mean": 0.9906410898004744,
+              "median": 0.7973934679873176,
+              "min": 0.026032468645941637,
+              "n_finite": 100,
+              "n_null": 0,
+              "n_total": 100
+            },
+            "n_runs": 100,
+            "split": "meta_test"
+          },
+          "OPT-BO-MAML-init": {
+            "arm": "OPT-BO-MAML-init",
+            "best_feasible_value": {
+              "max": null,
+              "mean": null,
+              "median": null,
+              "min": null,
+              "n_finite": 0,
+              "n_null": 100,
+              "n_total": 100
+            },
+            "best_objective_raw": {
+              "max": 2.32094092178723,
+              "mean": 0.835828323284089,
+              "median": 1.0404854433002844,
+              "min": -0.9052489114654245,
+              "n_finite": 100,
+              "n_null": 0,
+              "n_total": 100
+            },
+            "feasible_hit_rate": {
+              "max": 0.0,
+              "mean": 0.0,
+              "median": 0.0,
+              "min": 0.0,
+              "n_finite": 100,
+              "n_null": 0,
+              "n_total": 100
+            },
+            "first_feasible_eval_index": {
+              "max": null,
+              "mean": null,
+              "median": null,
+              "min": null,
+              "n_finite": 0,
+              "n_null": 100,
+              "n_total": 100
+            },
+            "gap_to_reference": {
+              "max": null,
+              "mean": null,
+              "median": null,
+              "min": null,
+              "n_finite": 0,
+              "n_null": 100,
+              "n_total": 100
+            },
+            "min_constraint_violation_sum": {
+              "max": 3.167120295298636,
+              "mean": 0.924901463912512,
+              "median": 0.7951025119445383,
+              "min": 0.15988244857112782,
+              "n_finite": 100,
+              "n_null": 0,
+              "n_total": 100
+            },
+            "n_runs": 100,
+            "split": "meta_test"
+          },
+          "OPT-BO-pretrain": {
+            "arm": "OPT-BO-pretrain",
+            "best_feasible_value": {
+              "max": null,
+              "mean": null,
+              "median": null,
+              "min": null,
+              "n_finite": 0,
+              "n_null": 100,
+              "n_total": 100
+            },
+            "best_objective_raw": {
+              "max": 2.2592374607917276,
+              "mean": 0.8185187599190629,
+              "median": 0.9875883071634655,
+              "min": -0.8595174450455985,
+              "n_finite": 100,
+              "n_null": 0,
+              "n_total": 100
+            },
+            "feasible_hit_rate": {
+              "max": 0.0,
+              "mean": 0.0,
+              "median": 0.0,
+              "min": 0.0,
+              "n_finite": 100,
+              "n_null": 0,
+              "n_total": 100
+            },
+            "first_feasible_eval_index": {
+              "max": null,
+              "mean": null,
+              "median": null,
+              "min": null,
+              "n_finite": 0,
+              "n_null": 100,
+              "n_total": 100
+            },
+            "gap_to_reference": {
+              "max": null,
+              "mean": null,
+              "median": null,
+              "min": null,
+              "n_finite": 0,
+              "n_null": 100,
+              "n_total": 100
+            },
+            "min_constraint_violation_sum": {
+              "max": 4.745994439370919,
+              "mean": 1.0276588559122086,
+              "median": 0.7774709898067327,
+              "min": 0.1460348309348243,
+              "n_finite": 100,
+              "n_null": 0,
+              "n_total": 100
+            },
+            "n_runs": 100,
+            "split": "meta_test"
+          },
+          "OPT-BO-rand": {
+            "arm": "OPT-BO-rand",
+            "best_feasible_value": {
+              "max": 1.4658106408684481,
+              "mean": 1.3921150000413935,
+              "median": 1.3921150000413935,
+              "min": 1.3184193592143387,
+              "n_finite": 2,
+              "n_null": 98,
+              "n_total": 100
+            },
+            "best_objective_raw": {
+              "max": 2.363611694865436,
+              "mean": 0.808731606195756,
+              "median": 0.9804166742344513,
+              "min": -0.89426962869336,
+              "n_finite": 100,
+              "n_null": 0,
+              "n_total": 100
+            },
+            "feasible_hit_rate": {
+              "max": 0.015625,
+              "mean": 0.0003125,
+              "median": 0.0,
+              "min": 0.0,
+              "n_finite": 100,
+              "n_null": 0,
+              "n_total": 100
+            },
+            "first_feasible_eval_index": {
+              "max": 59.0,
+              "mean": 50.5,
+              "median": 50.5,
+              "min": 42.0,
+              "n_finite": 2,
+              "n_null": 98,
+              "n_total": 100
+            },
+            "gap_to_reference": {
+              "max": 0.994197807335295,
+              "mean": 0.6974555844120012,
+              "median": 0.6974555844120012,
+              "min": 0.4007133614887073,
+              "n_finite": 2,
+              "n_null": 98,
+              "n_total": 100
+            },
+            "min_constraint_violation_sum": {
+              "max": 4.240410544239032,
+              "mean": 0.9631083640547611,
+              "median": 0.7155377161388597,
+              "min": 0.1097402782303415,
+              "n_finite": 100,
+              "n_null": 0,
+              "n_total": 100
+            },
+            "n_runs": 100,
+            "split": "meta_test"
+          },
+          "OPT-DE": {
+            "arm": "OPT-DE",
+            "best_feasible_value": {
+              "max": null,
+              "mean": null,
+              "median": null,
+              "min": null,
+              "n_finite": 0,
+              "n_null": 100,
+              "n_total": 100
+            },
+            "best_objective_raw": {
+              "max": 2.4134057933244826,
+              "mean": 0.8501261145880554,
+              "median": 1.1266250975090921,
+              "min": -0.8791554515105415,
+              "n_finite": 100,
+              "n_null": 0,
+              "n_total": 100
+            },
+            "feasible_hit_rate": {
+              "max": 0.0,
+              "mean": 0.0,
+              "median": 0.0,
+              "min": 0.0,
+              "n_finite": 100,
+              "n_null": 0,
+              "n_total": 100
+            },
+            "first_feasible_eval_index": {
+              "max": null,
+              "mean": null,
+              "median": null,
+              "min": null,
+              "n_finite": 0,
+              "n_null": 100,
+              "n_total": 100
+            },
+            "gap_to_reference": {
+              "max": null,
+              "mean": null,
+              "median": null,
+              "min": null,
+              "n_finite": 0,
+              "n_null": 100,
+              "n_total": 100
+            },
+            "min_constraint_violation_sum": {
+              "max": 4.944706845153293,
+              "mean": 1.3818024830129656,
+              "median": 1.163300346509415,
+              "min": 0.2767906151441677,
+              "n_finite": 100,
+              "n_null": 0,
+              "n_total": 100
+            },
+            "n_runs": 100,
+            "split": "meta_test"
+          }
+        },
+        "arms": [
+          "OPT-BO-rand",
+          "OPT-BO-MAML-init",
+          "OPT-DE"
+        ],
+        "excluded_clone_arms": [
+          "OPT-BO-pretrain",
+          "OPT-BO-MAML"
+        ],
+        "paired_vs_reference": {
+          "best_objective_raw": {
+            "OPT-BO-MAML-init": {
+              "bootstrap_samples": 10000,
+              "ci_high": 0.06674580761003293,
+              "ci_low": -0.07424225759273084,
+              "confidence": 0.95,
+              "direction": "OPT-BO-MAML-init - OPT-BO-rand",
+              "mean_diff": 0.027096717088332944,
+              "median_diff": -0.012437043068222187,
+              "n": 100,
+              "seed": 42,
+              "wilcoxon_pvalue": 0.8689128190274791,
+              "wilcoxon_statistic": 2477.0
+            },
+            "OPT-DE": {
+              "bootstrap_samples": 10000,
+              "ci_high": 0.1316838633845258,
+              "ci_low": -0.03688282341270904,
+              "confidence": 0.95,
+              "direction": "OPT-DE - OPT-BO-rand",
+              "mean_diff": 0.0413945083922995,
+              "median_diff": 0.043122220084671786,
+              "n": 100,
+              "seed": 42,
+              "wilcoxon_pvalue": 0.32201859899733143,
+              "wilcoxon_statistic": 2057.0
+            }
+          },
+          "min_constraint_violation_sum": {
+            "OPT-BO-MAML-init": {
+              "bootstrap_samples": 10000,
+              "ci_high": 0.10108321753660071,
+              "ci_low": -0.10339492770448677,
+              "confidence": 0.95,
+              "direction": "OPT-BO-MAML-init - OPT-BO-rand",
+              "mean_diff": -0.038206900142249284,
+              "median_diff": -0.007882719346085143,
+              "n": 100,
+              "seed": 42,
+              "wilcoxon_pvalue": 0.9670887024899815,
+              "wilcoxon_statistic": 2513.0
+            },
+            "OPT-DE": {
+              "bootstrap_samples": 10000,
+              "ci_high": 0.5575462622685858,
+              "ci_low": 0.14958818011667696,
+              "confidence": 0.95,
+              "direction": "OPT-DE - OPT-BO-rand",
+              "mean_diff": 0.4186941189582042,
+              "median_diff": 0.34687010382691297,
+              "n": 100,
+              "seed": 42,
+              "wilcoxon_pvalue": 1.3584976082693048e-06,
+              "wilcoxon_statistic": 1006.0
+            }
+          }
+        }
+      },
+      "meta_test_ood": {
+        "aggregate": {
+          "OPT-BO-MAML-init": {
+            "arm": "OPT-BO-MAML-init",
+            "best_feasible_value": {
+              "max": null,
+              "mean": null,
+              "median": null,
+              "min": null,
+              "n_finite": 0,
+              "n_null": 50,
+              "n_total": 50
+            },
+            "best_objective_raw": {
+              "max": 2.683090364930335,
+              "mean": 1.2732174962816691,
+              "median": 1.4044063917012033,
+              "min": -0.1380363706506012,
+              "n_finite": 50,
+              "n_null": 0,
+              "n_total": 50
+            },
+            "feasible_hit_rate": {
+              "max": 0.0,
+              "mean": 0.0,
+              "median": 0.0,
+              "min": 0.0,
+              "n_finite": 50,
+              "n_null": 0,
+              "n_total": 50
+            },
+            "first_feasible_eval_index": {
+              "max": null,
+              "mean": null,
+              "median": null,
+              "min": null,
+              "n_finite": 0,
+              "n_null": 50,
+              "n_total": 50
+            },
+            "gap_to_reference": {
+              "max": null,
+              "mean": null,
+              "median": null,
+              "min": null,
+              "n_finite": 0,
+              "n_null": 50,
+              "n_total": 50
+            },
+            "min_constraint_violation_sum": {
+              "max": 4.781958736192996,
+              "mean": 1.1772170480886337,
+              "median": 0.8679161198649318,
+              "min": 0.127832676026648,
+              "n_finite": 50,
+              "n_null": 0,
+              "n_total": 50
+            },
+            "n_runs": 50,
+            "split": "meta_test_ood"
+          },
+          "OPT-BO-rand": {
+            "arm": "OPT-BO-rand",
+            "best_feasible_value": {
+              "max": null,
+              "mean": null,
+              "median": null,
+              "min": null,
+              "n_finite": 0,
+              "n_null": 50,
+              "n_total": 50
+            },
+            "best_objective_raw": {
+              "max": 2.617028697311982,
+              "mean": 1.18696641110554,
+              "median": 1.2502599766414475,
+              "min": -0.028477719330131934,
+              "n_finite": 50,
+              "n_null": 0,
+              "n_total": 50
+            },
+            "feasible_hit_rate": {
+              "max": 0.0,
+              "mean": 0.0,
+              "median": 0.0,
+              "min": 0.0,
+              "n_finite": 50,
+              "n_null": 0,
+              "n_total": 50
+            },
+            "first_feasible_eval_index": {
+              "max": null,
+              "mean": null,
+              "median": null,
+              "min": null,
+              "n_finite": 0,
+              "n_null": 50,
+              "n_total": 50
+            },
+            "gap_to_reference": {
+              "max": null,
+              "mean": null,
+              "median": null,
+              "min": null,
+              "n_finite": 0,
+              "n_null": 50,
+              "n_total": 50
+            },
+            "min_constraint_violation_sum": {
+              "max": 3.6542498564968975,
+              "mean": 1.245365143554399,
+              "median": 1.0858301534276316,
+              "min": 0.1828849954293245,
+              "n_finite": 50,
+              "n_null": 0,
+              "n_total": 50
+            },
+            "n_runs": 50,
+            "split": "meta_test_ood"
+          },
+          "OPT-DE": {
+            "arm": "OPT-DE",
+            "best_feasible_value": {
+              "max": null,
+              "mean": null,
+              "median": null,
+              "min": null,
+              "n_finite": 0,
+              "n_null": 50,
+              "n_total": 50
+            },
+            "best_objective_raw": {
+              "max": 2.3461142899336442,
+              "mean": 1.183293079257971,
+              "median": 1.3658370817030447,
+              "min": -0.013960254851931697,
+              "n_finite": 50,
+              "n_null": 0,
+              "n_total": 50
+            },
+            "feasible_hit_rate": {
+              "max": 0.0,
+              "mean": 0.0,
+              "median": 0.0,
+              "min": 0.0,
+              "n_finite": 50,
+              "n_null": 0,
+              "n_total": 50
+            },
+            "first_feasible_eval_index": {
+              "max": null,
+              "mean": null,
+              "median": null,
+              "min": null,
+              "n_finite": 0,
+              "n_null": 50,
+              "n_total": 50
+            },
+            "gap_to_reference": {
+              "max": null,
+              "mean": null,
+              "median": null,
+              "min": null,
+              "n_finite": 0,
+              "n_null": 50,
+              "n_total": 50
+            },
+            "min_constraint_violation_sum": {
+              "max": 7.354975560041324,
+              "mean": 1.846640730893884,
+              "median": 1.4950012184627965,
+              "min": 0.18366902972823884,
+              "n_finite": 50,
+              "n_null": 0,
+              "n_total": 50
+            },
+            "n_runs": 50,
+            "split": "meta_test_ood"
+          }
+        },
+        "all_arms_descriptive": {
+          "OPT-BO-MAML": {
+            "arm": "OPT-BO-MAML",
+            "best_feasible_value": {
+              "max": null,
+              "mean": null,
+              "median": null,
+              "min": null,
+              "n_finite": 0,
+              "n_null": 50,
+              "n_total": 50
+            },
+            "best_objective_raw": {
+              "max": 2.6715194173200696,
+              "mean": 1.2609828871086268,
+              "median": 1.3047161942922019,
+              "min": -0.15625182084167127,
+              "n_finite": 50,
+              "n_null": 0,
+              "n_total": 50
+            },
+            "feasible_hit_rate": {
+              "max": 0.0,
+              "mean": 0.0,
+              "median": 0.0,
+              "min": 0.0,
+              "n_finite": 50,
+              "n_null": 0,
+              "n_total": 50
+            },
+            "first_feasible_eval_index": {
+              "max": null,
+              "mean": null,
+              "median": null,
+              "min": null,
+              "n_finite": 0,
+              "n_null": 50,
+              "n_total": 50
+            },
+            "gap_to_reference": {
+              "max": null,
+              "mean": null,
+              "median": null,
+              "min": null,
+              "n_finite": 0,
+              "n_null": 50,
+              "n_total": 50
+            },
+            "min_constraint_violation_sum": {
+              "max": 3.1435065610581177,
+              "mean": 1.25113224869581,
+              "median": 0.9729559290842021,
+              "min": 0.054234977164466194,
+              "n_finite": 50,
+              "n_null": 0,
+              "n_total": 50
+            },
+            "n_runs": 50,
+            "split": "meta_test_ood"
+          },
+          "OPT-BO-MAML-init": {
+            "arm": "OPT-BO-MAML-init",
+            "best_feasible_value": {
+              "max": null,
+              "mean": null,
+              "median": null,
+              "min": null,
+              "n_finite": 0,
+              "n_null": 50,
+              "n_total": 50
+            },
+            "best_objective_raw": {
+              "max": 2.683090364930335,
+              "mean": 1.2732174962816691,
+              "median": 1.4044063917012033,
+              "min": -0.1380363706506012,
+              "n_finite": 50,
+              "n_null": 0,
+              "n_total": 50
+            },
+            "feasible_hit_rate": {
+              "max": 0.0,
+              "mean": 0.0,
+              "median": 0.0,
+              "min": 0.0,
+              "n_finite": 50,
+              "n_null": 0,
+              "n_total": 50
+            },
+            "first_feasible_eval_index": {
+              "max": null,
+              "mean": null,
+              "median": null,
+              "min": null,
+              "n_finite": 0,
+              "n_null": 50,
+              "n_total": 50
+            },
+            "gap_to_reference": {
+              "max": null,
+              "mean": null,
+              "median": null,
+              "min": null,
+              "n_finite": 0,
+              "n_null": 50,
+              "n_total": 50
+            },
+            "min_constraint_violation_sum": {
+              "max": 4.781958736192996,
+              "mean": 1.1772170480886337,
+              "median": 0.8679161198649318,
+              "min": 0.127832676026648,
+              "n_finite": 50,
+              "n_null": 0,
+              "n_total": 50
+            },
+            "n_runs": 50,
+            "split": "meta_test_ood"
+          },
+          "OPT-BO-pretrain": {
+            "arm": "OPT-BO-pretrain",
+            "best_feasible_value": {
+              "max": null,
+              "mean": null,
+              "median": null,
+              "min": null,
+              "n_finite": 0,
+              "n_null": 50,
+              "n_total": 50
+            },
+            "best_objective_raw": {
+              "max": 2.863485000463206,
+              "mean": 1.2192004208909568,
+              "median": 1.362876862703814,
+              "min": -0.015946648379198625,
+              "n_finite": 50,
+              "n_null": 0,
+              "n_total": 50
+            },
+            "feasible_hit_rate": {
+              "max": 0.0,
+              "mean": 0.0,
+              "median": 0.0,
+              "min": 0.0,
+              "n_finite": 50,
+              "n_null": 0,
+              "n_total": 50
+            },
+            "first_feasible_eval_index": {
+              "max": null,
+              "mean": null,
+              "median": null,
+              "min": null,
+              "n_finite": 0,
+              "n_null": 50,
+              "n_total": 50
+            },
+            "gap_to_reference": {
+              "max": null,
+              "mean": null,
+              "median": null,
+              "min": null,
+              "n_finite": 0,
+              "n_null": 50,
+              "n_total": 50
+            },
+            "min_constraint_violation_sum": {
+              "max": 3.4641872699954286,
+              "mean": 1.2998680929375963,
+              "median": 1.0842708884824608,
+              "min": 0.1118332346992162,
+              "n_finite": 50,
+              "n_null": 0,
+              "n_total": 50
+            },
+            "n_runs": 50,
+            "split": "meta_test_ood"
+          },
+          "OPT-BO-rand": {
+            "arm": "OPT-BO-rand",
+            "best_feasible_value": {
+              "max": null,
+              "mean": null,
+              "median": null,
+              "min": null,
+              "n_finite": 0,
+              "n_null": 50,
+              "n_total": 50
+            },
+            "best_objective_raw": {
+              "max": 2.617028697311982,
+              "mean": 1.18696641110554,
+              "median": 1.2502599766414475,
+              "min": -0.028477719330131934,
+              "n_finite": 50,
+              "n_null": 0,
+              "n_total": 50
+            },
+            "feasible_hit_rate": {
+              "max": 0.0,
+              "mean": 0.0,
+              "median": 0.0,
+              "min": 0.0,
+              "n_finite": 50,
+              "n_null": 0,
+              "n_total": 50
+            },
+            "first_feasible_eval_index": {
+              "max": null,
+              "mean": null,
+              "median": null,
+              "min": null,
+              "n_finite": 0,
+              "n_null": 50,
+              "n_total": 50
+            },
+            "gap_to_reference": {
+              "max": null,
+              "mean": null,
+              "median": null,
+              "min": null,
+              "n_finite": 0,
+              "n_null": 50,
+              "n_total": 50
+            },
+            "min_constraint_violation_sum": {
+              "max": 3.6542498564968975,
+              "mean": 1.245365143554399,
+              "median": 1.0858301534276316,
+              "min": 0.1828849954293245,
+              "n_finite": 50,
+              "n_null": 0,
+              "n_total": 50
+            },
+            "n_runs": 50,
+            "split": "meta_test_ood"
+          },
+          "OPT-DE": {
+            "arm": "OPT-DE",
+            "best_feasible_value": {
+              "max": null,
+              "mean": null,
+              "median": null,
+              "min": null,
+              "n_finite": 0,
+              "n_null": 50,
+              "n_total": 50
+            },
+            "best_objective_raw": {
+              "max": 2.3461142899336442,
+              "mean": 1.183293079257971,
+              "median": 1.3658370817030447,
+              "min": -0.013960254851931697,
+              "n_finite": 50,
+              "n_null": 0,
+              "n_total": 50
+            },
+            "feasible_hit_rate": {
+              "max": 0.0,
+              "mean": 0.0,
+              "median": 0.0,
+              "min": 0.0,
+              "n_finite": 50,
+              "n_null": 0,
+              "n_total": 50
+            },
+            "first_feasible_eval_index": {
+              "max": null,
+              "mean": null,
+              "median": null,
+              "min": null,
+              "n_finite": 0,
+              "n_null": 50,
+              "n_total": 50
+            },
+            "gap_to_reference": {
+              "max": null,
+              "mean": null,
+              "median": null,
+              "min": null,
+              "n_finite": 0,
+              "n_null": 50,
+              "n_total": 50
+            },
+            "min_constraint_violation_sum": {
+              "max": 7.354975560041324,
+              "mean": 1.846640730893884,
+              "median": 1.4950012184627965,
+              "min": 0.18366902972823884,
+              "n_finite": 50,
+              "n_null": 0,
+              "n_total": 50
+            },
+            "n_runs": 50,
+            "split": "meta_test_ood"
+          }
+        },
+        "arms": [
+          "OPT-BO-rand",
+          "OPT-BO-MAML-init",
+          "OPT-DE"
+        ],
+        "excluded_clone_arms": [
+          "OPT-BO-pretrain",
+          "OPT-BO-MAML"
+        ],
+        "paired_vs_reference": {
+          "best_objective_raw": {
+            "OPT-BO-MAML-init": {
+              "bootstrap_samples": 10000,
+              "ci_high": 0.16396755981486105,
+              "ci_low": -0.0144320989743294,
+              "confidence": 0.95,
+              "direction": "OPT-BO-MAML-init - OPT-BO-rand",
+              "mean_diff": 0.08625108517612905,
+              "median_diff": 0.11684484705195242,
+              "n": 50,
+              "seed": 42,
+              "wilcoxon_pvalue": 0.031261656763490464,
+              "wilcoxon_statistic": 415.0
+            },
+            "OPT-DE": {
+              "bootstrap_samples": 10000,
+              "ci_high": 0.06813497287340453,
+              "ci_low": -0.09097188139104073,
+              "confidence": 0.95,
+              "direction": "OPT-DE - OPT-BO-rand",
+              "mean_diff": -0.0036733318475688304,
+              "median_diff": 0.0,
+              "n": 50,
+              "seed": 42,
+              "wilcoxon_pvalue": 0.9954969422956927,
+              "wilcoxon_statistic": 517.0
+            }
+          },
+          "min_constraint_violation_sum": {
+            "OPT-BO-MAML-init": {
+              "bootstrap_samples": 10000,
+              "ci_high": 0.05593542677797397,
+              "ci_low": -0.40847615388739766,
+              "confidence": 0.95,
+              "direction": "OPT-BO-MAML-init - OPT-BO-rand",
+              "mean_diff": -0.06814809546576539,
+              "median_diff": -0.26315222361977086,
+              "n": 50,
+              "seed": 42,
+              "wilcoxon_pvalue": 0.4042577575813002,
+              "wilcoxon_statistic": 550.0
+            },
+            "OPT-DE": {
+              "bootstrap_samples": 10000,
+              "ci_high": 0.6874203879875715,
+              "ci_low": 0.0,
+              "confidence": 0.95,
+              "direction": "OPT-DE - OPT-BO-rand",
+              "mean_diff": 0.6012755873394848,
+              "median_diff": 0.29255736347205424,
+              "n": 50,
+              "seed": 42,
+              "wilcoxon_pvalue": 0.0015446673518809207,
+              "wilcoxon_statistic": 237.0
+            }
+          }
+        }
+      },
+      "null_reporting_rule": "best_feasible_value/gap_to_reference/first_feasible_eval_index 在无可行解时如实为 null，不得写成 0；fallback 指标用于可识别三臂可比较（A7），克隆臂仅作描述性报告。",
+      "primary_metrics": [
+        "best_feasible_value",
+        "gap_to_reference",
+        "first_feasible_eval_index"
+      ],
+      "reference_arm": "OPT-BO-rand"
+    },
+    "feasibility_expected_zero_note": "F-QE 可行域体积 ~1e-6：B=64 预期 0 可行；无可行解时 best_feasible_value/gap_to_reference/first_feasible_eval_index 如实为 null（禁写 0），可识别三臂比较使用 A7 fallback 指标并披露（克隆臂仅描述性）。",
+    "identifiable_arms": [
+      "OPT-BO-rand",
+      "OPT-BO-MAML-init",
+      "OPT-DE"
+    ],
+    "n_evaluations": 48000,
+    "n_runs": 750,
+    "negative_control_note": {
+      "evaluated_splits": [
+        "meta_test",
+        "meta_test_ood"
+      ],
+      "negative_control_in_m2": false,
+      "note": "负控制仅用于 M1 label-shuffle 诊断（§10/§12-11），不进入 M2 主矩阵。"
+    },
+    "proxy": {
+      "role": "M2 proxy（objective+约束双输出；仅用于初始点排序/元数据）",
+      "steps": 2000,
+      "target_names": [
+        "objective",
+        "geometry_invalid"
+      ]
+    },
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ]
+  },
+  "message": "合成解析任务族上的离线元学习/优化对照（SYNTHETIC_ONLY）；不含任何真实物理结论。",
+  "not_approved": [
+    {
+      "id": "P4-REAL-LF",
+      "note": "真实低保证度评估未获授权，本 run 禁止调用任何真实求解器"
+    },
+    {
+      "id": "P4-MULTIFIDELITY-REAL",
+      "note": "真实多保真训练/评估未获授权"
+    },
+    {
+      "id": "REAL-CROSS-TASK-META-TRAINING",
+      "note": "真实跨任务元训练未获授权，本 run 仅合成解析任务族"
+    }
+  ],
+  "physical_call_count": 0,
+  "physics_guard": {
+    "end_assertion": "PASS",
+    "expected": 0,
+    "forbidden_modules_loaded": [],
+    "status": "PASS"
+  },
+  "products": [
+    "run_config.json",
+    "environment.json",
+    "summary.json",
+    "data_manifest.json",
+    "tasks.json",
+    "tasks/negative_control_manifest.json",
+    "reference_solutions.json",
+    "evaluations.jsonl",
+    "README.md",
+    "solver_validation.csv",
+    "finite_difference_check.json",
+    "metrics/training_history.csv",
+    "metrics/adaptation_results.csv",
+    "metrics/metrics.csv",
+    "metrics/optimization_history.csv",
+    "metrics/optimization_summary.csv",
+    "figures/figure_status.json"
+  ],
+  "reference_solutions": {
+    "max_residual": 0.0,
+    "n_tasks": 110,
+    "status": "PASS",
+    "tolerance": 1e-10
+  },
+  "run_id": "p4-meta-m2-offline-20261102T092828Z",
+  "stage": "P4-CODE",
+  "status": "VALID",
+  "synthetic_only": true
+}

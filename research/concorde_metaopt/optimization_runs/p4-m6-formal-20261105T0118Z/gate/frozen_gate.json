@@ -1,0 +1,140 @@
+{
+  "calibration_report_sha256": "c5f8096d02abf5da4bfd9a5b234bdcedd8a7ffbb98ce7b413eb48e42c116286b",
+  "calibration_seeds": [
+    0,
+    1,
+    2
+  ],
+  "family_fingerprint": "2b78ec7b533fa346f0629d34ed9e3bf525a2ff6295260f21a490452cc1778a42",
+  "family_id": "F-QE-feasible-v2",
+  "family_version": "v2",
+  "feasible_volume_fraction": 0.00048828125,
+  "frozen_family_path": "research\\concorde_metaopt\\optimization_runs\\p4-meta-m5-formal-20261104T1018Z\\frozen_family.json",
+  "frozen_family_sha256": "81e86dd5d1ec00f3416b10e19ff7725f854e1d7a988a99b6b578618bffd56ffc",
+  "frozen_split_verification": {
+    "family_fingerprint": "2b78ec7b533fa346f0629d34ed9e3bf525a2ff6295260f21a490452cc1778a42",
+    "family_id": "F-QE-feasible-v2",
+    "split_hash": "3c206ebbe35e848a5137b433d7bc9ca022eb28b4b310ab3ccb9d89c989f33f8a",
+    "splits": {
+      "meta_test": {
+        "m6_tasks": 20,
+        "manifest_tasks": 20,
+        "params_digest_match": true,
+        "seeds_match": true,
+        "status": "PASS",
+        "task_ids_match": true
+      },
+      "meta_test_ood": {
+        "m6_tasks": 10,
+        "manifest_tasks": 10,
+        "params_digest_match": true,
+        "seeds_match": true,
+        "status": "PASS",
+        "task_ids_match": true
+      },
+      "meta_train": {
+        "m6_tasks": 60,
+        "manifest_tasks": 60,
+        "params_digest_match": true,
+        "seeds_match": true,
+        "status": "PASS",
+        "task_ids_match": true
+      },
+      "meta_validation": {
+        "m6_tasks": 20,
+        "manifest_tasks": 20,
+        "params_digest_match": true,
+        "seeds_match": true,
+        "status": "PASS",
+        "task_ids_match": true
+      },
+      "negative_control": {
+        "m6_tasks": 10,
+        "manifest_tasks": 10,
+        "params_digest_match": true,
+        "seeds_match": true,
+        "status": "PASS",
+        "task_ids_match": true
+      }
+    },
+    "status": "PASS",
+    "tasks_checked": 120
+  },
+  "gap_definition": "f(u_best)-f(u*)",
+  "gate_directory": {
+    "files": {
+      "frozen_family": {
+        "bytes": 4221,
+        "path": "gate/frozen_family.json",
+        "sha256": "81e86dd5d1ec00f3416b10e19ff7725f854e1d7a988a99b6b578618bffd56ffc",
+        "source": "research\\concorde_metaopt\\optimization_runs\\p4-meta-m5-formal-20261104T1018Z\\frozen_family.json"
+      },
+      "preregistration": {
+        "bytes": 3478,
+        "path": "gate/preregistration.json",
+        "sha256": "c5abd30e811c93766002d6a3f0a25b8def1b5f4be0985b2a7e7999b120750c5d",
+        "source": "research\\concorde_metaopt\\optimization_runs\\p4-meta-m5-formal-20261104T1018Z\\preregistration.json"
+      },
+      "split_manifest": {
+        "bytes": 65518,
+        "path": "gate/meta_task_split.json",
+        "sha256": "5cb9452bff2b2392888d2d30303d11fe8598df322b08999004bd3f957e43729a",
+        "source": "research\\concorde_metaopt\\optimization_runs\\p4-meta-m5-formal-20261104T1018Z\\meta_task_split.json"
+      }
+    },
+    "gate_directory": "gate"
+  },
+  "meta_test_tuning_policy": "禁止使用 meta_test/meta_test_ood 的任何信息（成功率/误差/gap）调参、选半径、选臂或选终点；测试集只在 frozen_family + preregistration 的 sha256/fingerprint/split_hash 校验通过后一次性构造并评估一次。",
+  "note": "冻结输入只读；M6 产物内 gate/ 为逐字节副本，任何不一致即 fail-closed",
+  "physical_call_count": 0,
+  "pooled_success": 0.6666666666666666,
+  "preregistered_arms": [
+    "M5-BO-random",
+    "M5-BO-pretrain-init",
+    "M5-BO-MAML-init",
+    "M5-DE"
+  ],
+  "preregistered_budgets": [
+    64,
+    128
+  ],
+  "preregistered_meta_seeds": [
+    0,
+    1,
+    2
+  ],
+  "preregistered_optimization_seeds": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
+  "preregistration_path": "research\\concorde_metaopt\\optimization_runs\\p4-meta-m5-formal-20261104T1018Z\\preregistration.json",
+  "preregistration_sha256": "c5abd30e811c93766002d6a3f0a25b8def1b5f4be0985b2a7e7999b120750c5d",
+  "radius_base": 0.75,
+  "radius_mapping": {
+    "formula": "r_v2 = clip(radius_base*(1+0.15*z), r_min, r_max), z~N(0,1)",
+    "r_max": 1.2,
+    "r_min": 0.2
+  },
+  "reference_solution": "c",
+  "schema_version": "p4-m6-frozen-gate-1",
+  "split_counts": {
+    "meta_test": 20,
+    "meta_test_ood": 10,
+    "meta_train": 60,
+    "meta_validation": 20,
+    "negative_control": 10
+  },
+  "split_hash": "3c206ebbe35e848a5137b433d7bc9ca022eb28b4b310ab3ccb9d89c989f33f8a",
+  "split_manifest_path": "research\\concorde_metaopt\\optimization_runs\\p4-meta-m5-formal-20261104T1018Z\\meta_task_split.json",
+  "split_manifest_sha256": "5cb9452bff2b2392888d2d30303d11fe8598df322b08999004bd3f957e43729a",
+  "status": "PASS",
+  "train_family": "F-QE-feasible-v2"
+}
