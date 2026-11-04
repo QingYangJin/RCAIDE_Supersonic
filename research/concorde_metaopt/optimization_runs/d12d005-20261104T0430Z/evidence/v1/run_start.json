@@ -41,6 +41,18 @@
       "RSS>16 GB 或进程核数>4",
       "本批已用 6 次"
     ],
+    "batch1b_stop_rule_amendment": {
+      "applies_to": "BATCH1B (S4/S5 only)",
+      "issued_by": "Lead",
+      "reference": "evidence/lead/batch1b_reauthorization.md",
+      "amended_stop_rules": [
+        "主系数（CLtot/CLi/CLo/CDi/CDtot/CDo/CM*）或 history 非有限/发散/负阻力 => 停止",
+        "派生比值列（如 Ew）非有限 => 仅 WARNING（PASS_WITH_WARNINGS），不触发停止",
+        "无 Lead 事先书面批准不得重试；S4/S5 证据写 evidence/v1b/ 并标 VSPAERO_INTERNAL_ONLY / physical_validation=NOT_VALIDATED"
+      ],
+      "status": "RECORDED_NOT_YET_EFFECTIVE",
+      "note": "A5 task-111 对 revision 4 判 CHANGES_REQUESTED，故本修订仅登记；S4/S5 在 revision 5 delta 复核通过并由 Lead 重新书面授权前保持 NOT_RUN_AFTER_ABORT"
+    },
     "a5_verdict": {
       "path": "C:/Users/pc/AppData/Local/RCAIDE_Supersonic_agent_state/d12d005/a5/a0_rev3_review/verdict.txt",
       "sha256": "78e9933be2bd87dd9228ff7059b87397b4e4ff7ffbe68d29a7a5d2cf83b2b971",

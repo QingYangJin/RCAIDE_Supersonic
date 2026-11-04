@@ -1,5 +1,16 @@
 #!/usr/bin/env python
-"""D-12D-005 A0 evidence revision 4 (zero-solver, documentation/evidence only).
+"""D-12D-005 A0 evidence revision 5 (zero-solver, documentation/evidence only).
+
+Revision 5 responds to A5 task-111 findings on the batch-1 evidence package:
+  R4-M01 (MAJOR): the polar allowlist is now restricted to
+    POLAR_DERIVED_NONFINITE_COLUMNS (= ("Ew",)); any other column raises
+    POLAR_ALLOWLIST_NOT_DERIVED, so the public API can never mask a primary
+    coefficient (CDi/CLo/CDtot/CLtot/Mach/Re). 7 new regression tests (58 total).
+  R4-M02 (MAJOR): evidence/v1/data_manifest.json is regenerated from canonical-LF
+    bytes only, so every entry matches the committed git blob.
+  R4-M03 (MAJOR): evidence/v1/case_summary_reconciliation.json re-reads the four
+    frozen polar files with the v2 parser (zero solver) and records the complete
+    primary-coefficient set that A2's run-time case_summary.json left null.
 
 Responds to A5 task-97 findings:
   F-A0-01 (MAJOR): per-file hash evidence was recorded pre-commit (CRLF); the
@@ -27,6 +38,7 @@ SCRIPTS = (
     "a0_finalize_evidence_v2.py",
     "a0_generate_setups.py",
     "a0_verify_cases.py",
+    "make_v1_evidence_reconciliation.py",
     "vspaero7_runner_v1frozen.py",
     "vspaero7_runner_v2.py",
     "test_vspaero7_runner_v1frozen.py",
@@ -126,8 +138,8 @@ def main() -> int:
         rec["process_spawn_allowed"] = kind_of(name) == "regression_test"
         data["scripts"].append(rec)
     data["schema_version"] = "d12d005-a0-setup-generation-2"
-    data["revision"] = 4
-    data["revision_history"] = [2, 3, 4]
+    data["revision"] = 5
+    data["revision_history"] = [2, 3, 4, 5]
     data["generated_utc"] = utcnow()
     data["hashing_convention"] = {
         "text_files": "sha256 over canonical LF bytes (CRLF->LF) — equals the committed git blob content, because .gitattributes is '* text=auto' with eol=lf",
@@ -164,6 +176,7 @@ def main() -> int:
         "A5_F-A0-05": "S5 reference_velocity block records inheritance source and the 6.0e-8 m/s formula delta",
         "A5_A0R2_rev3": "revision 3: v2 runner rev2 hardening (V2-M01/M02/M03), LD-002 structure-only parser, verifier --no-write, 6/6 negative controls, real 12D-model check",
         "A5_S3F-01_rev4": "revision 4: v2 runner rev3 splits primary vs derived non-finite columns; Ew is the only allowlisted derived column (--allow-nonfinite-derived), non-allowlisted non-finite tokens still fail, and S3 verify-polar now reports PASS_WITH_WARNINGS (evidence/v1/s3_verify_polar_allowlisted.json). Zero solver; batch-1 starts stay 4/6.",
+        "A5_R4-M01_rev5": "revision 5: allowlist restricted by construction to POLAR_DERIVED_NONFINITE_COLUMNS=('Ew',); any other column (CDi/CLo/CDtot/CLtot/Mach/Re) raises POLAR_ALLOWLIST_NOT_DERIVED, closing the public-API escape. v2 suite is 58 tests. R4-M02 canonical-LF manifest and R4-M03 case-summary reconciliation are evidenced under evidence/v1/ (documentation/data only; zero solver; batch-1 starts stay 4/6).",
         "A5_A0R2-01": "clean-checkout replay log regenerated and records both raw and canonical-LF forms",
         "A5_A0R2-02": "replay log records checks_failed=0 explicitly, never null",
         "A5_A0R2-03": "verifier replays all 6 negative controls (S0 and S3 groups), not just S0",

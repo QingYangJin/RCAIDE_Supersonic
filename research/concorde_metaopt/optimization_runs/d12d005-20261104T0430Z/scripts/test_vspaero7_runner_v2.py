@@ -573,3 +573,65 @@ class CaseGateHardeningTests(TempDirTestCase):
             R.validate_polar_file(path, dict(R.CONTRACT_12D))
         self.assertIn("POLAR_NONPHYSICAL", str(ctx.exception))
 
+class AllowlistScopeTests(unittest.TestCase):
+    """R4-M01 回归：公共 API 的 allowlist 只能覆盖派生列，不能掩盖主系数。"""
+
+    def setUp(self):
+        self._tmp = tempfile.TemporaryDirectory()
+        self.tmp = Path(self._tmp.name)
+
+    def tearDown(self):
+        self._tmp.cleanup()
+
+    def _write(self, text):
+        path = self.tmp / "allowlist.polar"
+        path.write_text(text, encoding="utf-8")
+        return path
+
+    def test_allowlist_primary_cdi_rejected(self):
+        path = self._write(polar_text())
+        with self.assertRaises(R.DataQualityError) as ctx:
+            R.validate_polar_file(path, dict(R.CONTRACT_12D), allow_nonfinite_columns=("CDi",))
+        self.assertIn("POLAR_ALLOWLIST_NOT_DERIVED", str(ctx.exception))
+
+    def test_allowlist_primary_clo_rejected(self):
+        path = self._write(polar_text())
+        with self.assertRaises(R.DataQualityError) as ctx:
+            R.validate_polar_file(path, dict(R.CONTRACT_12D), allow_nonfinite_columns=("CLo",))
+        self.assertIn("POLAR_ALLOWLIST_NOT_DERIVED", str(ctx.exception))
+
+    def test_allowlist_primary_cdtot_rejected(self):
+        path = self._write(polar_text())
+        with self.assertRaises(R.DataQualityError) as ctx:
+            R.validate_polar_file(path, dict(R.CONTRACT_12D), allow_nonfinite_columns=("CDtot",))
+        self.assertIn("POLAR_ALLOWLIST_NOT_DERIVED", str(ctx.exception))
+
+    def test_allowlist_mixed_derived_and_primary_rejected(self):
+        path = self._write(polar_text(rows=[polar_row(**{"Ew": float("inf")})]))
+        with self.assertRaises(R.DataQualityError) as ctx:
+            R.validate_polar_file(
+                path, dict(R.CONTRACT_12D), allow_nonfinite_columns=("Ew", "CDi")
+            )
+        self.assertIn("POLAR_ALLOWLIST_NOT_DERIVED", str(ctx.exception))
+
+    def test_allowlist_primary_nan_never_masked(self):
+        bad = polar_row(cdi=float("nan"), **{"Ew": float("inf")})
+        path = self._write(polar_text(rows=[bad]))
+        with self.assertRaises(R.DataQualityError) as ctx:
+            R.validate_polar_file(
+                path, dict(R.CONTRACT_12D), allow_nonfinite_columns=("Ew", "CDi")
+            )
+        self.assertIn("POLAR_ALLOWLIST_NOT_DERIVED", str(ctx.exception))
+
+    def test_derived_allowlist_constant_is_exactly_ew(self):
+        self.assertEqual(tuple(R.POLAR_DERIVED_NONFINITE_COLUMNS), ("Ew",))
+
+    def test_derived_ew_still_pass_with_warnings(self):
+        path = self._write(polar_text(rows=[polar_row(**{"Ew": float("inf")})]))
+        report = R.validate_polar_file(
+            path, dict(R.CONTRACT_12D), allow_nonfinite_columns=R.POLAR_DERIVED_NONFINITE_COLUMNS
+        )
+        self.assertEqual(report["status"], "PASS_WITH_WARNINGS")
+        self.assertEqual(report["allow_nonfinite_columns"], ["Ew"])
+
+

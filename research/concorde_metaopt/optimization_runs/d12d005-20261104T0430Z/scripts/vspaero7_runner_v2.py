@@ -49,7 +49,7 @@ import re
 import sys
 from pathlib import Path
 
-SCHEMA_VERSION = "d12d005-runner-4"
+SCHEMA_VERSION = "d12d005-runner-5"
 CONTRACT_MU_KG_M_S = 1.42161308e-05
 CONTRACT_SPEED_OF_SOUND_M_S = 295.0680184
 CONTRACT_ALTITUDE_M = 18288.0
@@ -690,10 +690,13 @@ def validate_polar_file(path, expected, *, allow_nonfinite_columns=()):
     Re/1e6 column inconsistent with the declared ReCref (rel 1e-6).
 
     allow_nonfinite_columns is a narrow explicit allowlist for derived ratio
-    columns whose denominator can be exactly zero (e.g. Ew when CDiw = 0). Allowed
-    columns downgrade the report to PASS_WITH_WARNINGS and are listed in
-    derived_column_warnings; every other non-finite token still fails. Primary
-    coefficients can never be allowlisted; the default remains strict.
+    columns whose denominator can be exactly zero (e.g. Ew when CDiw = 0). The
+    allowlist is restricted by construction to POLAR_DERIVED_NONFINITE_COLUMNS:
+    any other column (including CDi/CLo/CDtot/CLtot/Mach/Re) raises
+    POLAR_ALLOWLIST_NOT_DERIVED, so primary coefficients can never be masked
+    through the public API. Allowed columns downgrade the report to
+    PASS_WITH_WARNINGS and are listed in derived_column_warnings; every other
+    non-finite token still fails. The default remains strict.
     """
     header, rows, nonfinite, width = _polar_header_and_rows(path)
     allowed = tuple(allow_nonfinite_columns)
@@ -702,6 +705,12 @@ def validate_polar_file(path, expected, *, allow_nonfinite_columns=()):
         raise DataQualityError(
             "POLAR_ALLOWLIST_UNKNOWN_COLUMNS: %r not present in the 48-column header of %s"
             % (unknown_allowed, path)
+        )
+    not_derived = [name for name in allowed if name not in POLAR_DERIVED_NONFINITE_COLUMNS]
+    if not_derived:
+        raise DataQualityError(
+            "POLAR_ALLOWLIST_NOT_DERIVED: %r is not a derived ratio column; only %r may be allowlisted (primary coefficients can never be masked)"
+            % (not_derived, list(POLAR_DERIVED_NONFINITE_COLUMNS))
         )
     forbidden = [item for item in nonfinite if item["column"] not in allowed]
     derived = [item for item in nonfinite if item["column"] in allowed]

@@ -4,22 +4,23 @@
 - 角色：A1（a1-code-dev）
 - 范围：D-12D-005 A0-aero 预检，**零求解器启动**（本文件所有验证均为静态解析/单测；未执行 vspaero/SU2/Mission）
 - 基线：`scripts/vspaero7_runner_v1frozen.py`（只读，未修改）
-- 产物：`scripts/vspaero7_runner_v2.py`、`scripts/test_vspaero7_runner_v2.py`、本说明、`evidence/a0/ld002_test_run.log`（首版 38 tests）、`evidence/a0/v2rev2_test_run.log`（rev2 46 tests）、`evidence/a0/v2rev3_test_run.log`（rev3 51 tests）
+- 产物：`scripts/vspaero7_runner_v2.py`、`scripts/test_vspaero7_runner_v2.py`、本说明、`evidence/a0/ld002_test_run.log`（首版 38 tests）、`evidence/a0/v2rev2_test_run.log`（rev2 46 tests）、`evidence/a0/v2rev3_test_run.log`（rev3 51 tests）、`evidence/a0/v2rev4_test_run.log`（rev4 58 tests）
 
 ## 1. 文件与校验和
 
 | 文件 | 行数 | 字节 | sha256 |
 | --- | --- | --- | --- |
 | scripts/vspaero7_runner_v1frozen.py（基线，未改） | 837 | 30373 | b77b56526acab6ac03ee07838d06970f2bd98d298aae597997bf393474128a36 |
-| scripts/vspaero7_runner_v2.py（rev3：主/派生列分离） | 1362 | 55115 | e5b3381ce0f72d587f725a5b400b51d1ef02e54dbde05c2c6ad285af9e849acf |
-| scripts/test_vspaero7_runner_v2.py（rev3） | 575 | 25999 | a57526aa2c5689083fb2d2b427dcbab3f7567549d6bf3876d610d4a992d42f3f |
+| scripts/vspaero7_runner_v2.py（rev4：主/派生列分离 + allowlist 范围限制） | 1371 | 55689 | 45545052106b84ec7aee990878cadae398b05701d651cd140c23eb67daa7c776 |
+| scripts/test_vspaero7_runner_v2.py（rev4） | 637 | 28823 | f6cffa0e41ed8833eeba192f4cc4c5351ea12ee1552b2e68bec6fd449b98e9dd |
 | evidence/a0/ld002_test_run.log（首版 38 tests） | - | 4345 | a34c9e282a9d8dd5c98561d24d042a7eb003a56f02b0e6cdbbc90eb4ca7f9705 |
 | evidence/a0/v2rev2_test_run.log（rev2 46 tests） | - | 319 | 03757b371510dee2db6efe87ac7928324fe2b4dd8deb032b47c97ac50fe7748f |
 | evidence/a0/v2rev3_test_run.log（rev3 51 tests） | - | 370 | 735f7d82b87ba37ece4661d1dcb335ca59aa382bdad68c20cc1c9407f964ffde |
+| evidence/a0/v2rev4_test_run.log（rev4 58 tests） | - | 351 | 797ac67654bc17732df2feefa89b47672909fd0d1a6d20bdae96c9acc67b8dd5 |
 
 注：`.log` 工作树形态为 CRLF，`.gitattributes`（`* text=auto eol=lf`）提交时归一化为 canonical-LF；上表按**提交 blob（canonical-LF）**记录，可从干净 checkout 逐字节复现。
 
-SCHEMA_VERSION 由 `d12d004-runner-1` 升为 `d12d005-runner-2`，rev2 加固后升为 `d12d005-runner-3`，rev3（主/派生列分离）后升为 `d12d005-runner-4`；公共 API 保持向后兼容（parse_setup_text / read_setup_file / validate_setup_fields / inject_contract_fields / require_setup_success / validate_history_file / assert_new_format_only / assert_no_solver_artifacts / start_solver 等函数名与异常类名不变）。
+SCHEMA_VERSION 由 `d12d004-runner-1` 升为 `d12d005-runner-2`，rev2 加固后升为 `d12d005-runner-3`，rev3（主/派生列分离）后升为 `d12d005-runner-4`，rev4（allowlist 范围限制）后升为 `d12d005-runner-5`；公共 API 保持向后兼容（parse_setup_text / read_setup_file / validate_setup_fields / inject_contract_fields / require_setup_success / validate_history_file / assert_new_format_only / assert_no_solver_artifacts / start_solver 等函数名与异常类名不变）。
 
 ## 2. 表头证据（为什么必须改 polar 解析）
 
@@ -153,10 +154,10 @@ GATE_EXIT=2
 D:/RCAIDE/envs/RCAIDE/python.exe -E -s -B -m unittest discover -s scripts -p "test_vspaero7_runner_v2.py" -v
 ```
 
-- 结果：**Ran 51 tests / OK / 退出码 0**（约 0.53 s；rev2 46 tests 见 `v2rev2_test_run.log`，首版 38 tests 见 `ld002_test_run.log`）
-- 全量日志：`evidence/a0/v2rev3_test_run.log`（370 B / sha256 735f7d82b87ba37ece4661d1dcb335ca59aa382bdad68c20cc1c9407f964ffde）
+- 结果：**Ran 58 tests / OK / 退出码 0**（约 0.59 s；rev3 51 tests 见 `v2rev3_test_run.log`，rev2 46、首版 38 tests 见对应日志）
+- 全量日志：`evidence/a0/v2rev4_test_run.log`（351 B / sha256 797ac67654bc17732df2feefa89b47672909fd0d1a6d20bdae96c9acc67b8dd5）
 - 覆盖：LD-001 缺 '=' 检测/规范化/严格拒绝、17 字段回读、默认值泄漏（ReCref=1e7、Vinf=100）、错误 Sref、setup 返回码非 0、缺 vkey/csf、薄几何记录、缺 vspgeom、StopBeforeRun=0/缺失、vkey-vspgeom 不一致、120 s 包装器误杀、包装器字段缺失、残留 polar 产物、7.2.2 48 列正确解析、legacy 6.2 拒绝、缺列、NaN/IND、错误 Re、错误 Mach、非物理 CLtot、无数据行、缺表头、CLI 三条用例。
-- 另：Lead 的 `scripts/a0_verify_cases.py` 在 v2 rev3 落盘后复跑 **PASS 264/264（revision 4）**（v1frozen 未被改动、公共 API 兼容）。rev3 新增 5 个测试：默认拒绝 Ew=inf、allowlist 放行 Ew=inf 且 CLtot 仍有限、主系数 NaN 即使有 allowlist 仍拒绝、未知 allowlist 列拒绝、CLI `--allow-nonfinite-derived` 端到端。
+- 另：Lead 的 `scripts/a0_verify_cases.py` 在 v2 rev4 落盘后复跑 **PASS 267/267（revision 5）**（v1frozen 未被改动、公共 API 兼容）。rev3 新增 5 个测试：默认拒绝 Ew=inf、allowlist 放行 Ew=inf 且 CLtot 仍有限、主系数 NaN 即使有 allowlist 仍拒绝、未知 allowlist 列拒绝、CLI `--allow-nonfinite-derived` 端到端。rev4 新增 7 个测试（`AllowlistScopeTests`）：CDi/CLo/CDtot 单列拒绝、Ew+CDi 混合拒绝、主系数 NaN + allowlist 仍拒、`POLAR_DERIVED_NONFINITE_COLUMNS == ("Ew",)`、Ew 仍 `PASS_WITH_WARNINGS`。
 - 注意：本套测试用临时目录合成 fixture，不读取/不修改 A0 真实 setup 包；未启动任何求解器。
 
 ## 7. 与 v1frozen 的差异
@@ -165,12 +166,13 @@ D:/RCAIDE/envs/RCAIDE/python.exe -E -s -B -m unittest discover -s scripts -p "te
 - 替换：`_polar_header_and_rows`/`validate_polar_file`（旧 9 列宽松解析 → 48 列严格解析 + legacy 拒绝 + 非物理/Re/Mach 检查）。
 - 新增：`POLAR_722_COLUMNS`(48)、`LEGACY_62_POLAR_COLUMNS`、`MIN_WRAPPER_TIMEOUT_S=600`、`CaseGateError`/`WrapperGateError`、`check_case_dir`、`validate_thin_geometry_record`、`validate_vkey`、`validate_csf`、`parse_geom_result_csv`、`resolve_case_vspgeom`、`validate_wrapper_outcome`、`_recorded_vspgeom`、`parse_polar_structure`、CLI `check-case-dir`、CLI `polar-structure`。
 - 扩大：`SOLVER_ARTIFACT_GLOBS` 增加 `*.group.*`（VSPAERO 7.2.2 实际产物名）。
+- 收紧（rev4）：`validate_polar_file` 的 `allow_nonfinite_columns` 只允许 `POLAR_DERIVED_NONFINITE_COLUMNS`；其它列一律 `POLAR_ALLOWLIST_NOT_DERIVED`（公共 API 不可能掩盖主系数）。
 
 ## 8. 限制与 NOT_RUN
 
 - NOT_RUN：任何 VSPAERO/SU2/RCAIDE Mission 启动、真实 7.2.2 求解、真实 polar 数值验收。polar 解析仅用合成 fixture 验证；真实 48 列结构以 §2.1 归档文件表头+行宽核对为准。
 - PARTIAL：`check-case-dir` 对 A0 真实包的完整 PASS 需 A2 先完成 vkey 第 2 行改写（见 §5）。
-- 提交：v2 首版随 A0-aero 提交 `ab29a0c`；rev2 加固与 evidence revision 3 同批提交（Lead 执行，A1 交付）；rev3 主/派生列分离与 evidence revision 4 同批提交（Lead 执行，回应 A5 task-110 S3F-01，零求解）。
+- 提交：v2 首版随 A0-aero 提交 `ab29a0c`；rev2 加固与 evidence revision 3 同批提交（Lead 执行，A1 交付）；rev3 主/派生列分离与 evidence revision 4 同批提交（Lead 执行，回应 A5 task-110 S3F-01，零求解）；rev4 allowlist 范围限制与 evidence revision 5 同批提交（Lead 执行，回应 A5 task-111 R4-M01，零求解）。
 ## 9. rev2 修订记录（A5 task-103）
 
 A5 对 v2 delta 给 CHANGES_REQUESTED（0 blocker / 3 major / 5 minor），rev2 逐项处置：
@@ -198,4 +200,14 @@ A 批第 4 次启动（S3 标准翼 Mach 2.02）返回 `rc=0`、主系数全部�
 | S3F-02 | 文档明确 `CDo/CDtot` 属 VSPAERO 内部寄生估算，不能当作真实阻力或优化目标；S4/S5 证据标 `VSPAERO_INTERNAL_ONLY` / `physical_validation=NOT_VALIDATED` |
 | S3F-04 | S3 重新以 allowlist 复核 `PASS_WITH_WARNINGS`（1 行、48 列、唯一非有限 token 为 Ew），不改变 A2 的 "保守停批正确" 结论 |
 
-本次修订**零求解**：只跑静态解析与 51 项回归测试；A 批启动计数保持 4/6，剩余 2 次须 Lead 重新书面授权后由 A2 执行（见 `evidence/lead/batch1b_reauthorization.md`）。
+本次修订（rev3）**零求解**：只跑静态解析与 51 项回归测试；A 批启动计数保持 4/6，剩余 2 次须 Lead 重新书面授权后由 A2 执行（见 `evidence/lead/batch1b_reauthorization.md`）。
+## 11. rev4 修订记录（A5 task-111 R4-M01，allowlist 范围限制）
+
+A5 对 revision 4 判 `CHANGES_REQUESTED`：R4-M01 major——`allow_nonfinite_columns` 是公共 API，调用方可传入 `CDi`/`CLo`/`CDo`/`CLi` 等主系数列，使 `validate_polar_file` 返回 `PASS_WITH_WARNINGS`，等于用 allowlist 掩盖非物理主系数（CLI 固定只放行 `Ew`，故 CLI 安全）。rev4 处置：
+
+| 编号 | 处置 |
+| --- | --- |
+| R4-M01 | 在 `unknown_allowed` 之后新增范围校验：`not_derived = [name for name in allowed if name not in POLAR_DERIVED_NONFINITE_COLUMNS]`，非空即抛 `DataQualityError("POLAR_ALLOWLIST_NOT_DERIVED: ...")`；`POLAR_DERIVED_NONFINITE_COLUMNS` 仍为 `("Ew",)`；新增 `AllowlistScopeTests` 7 项；SCHEMA_VERSION 升 `d12d005-runner-5` |
+
+本次修订**零求解**：仅静态解析与 58 项回归测试；A 批启动计数保持 4/6，S4/S5 仍为 `NOT_RUN_AFTER_ABORT`，须 A5 delta 通过 + Lead 书面再授权后由 A2 执行。
+

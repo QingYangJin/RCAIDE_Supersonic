@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""D-12D-005 A0 independent verification, revision 4 (no OpenVSP, no solver).
+"""D-12D-005 A0 independent verification, revision 5 (no OpenVSP, no solver).
 
 Re-checks the A0 setup bundle from disk only, from any checkout root:
   * evidence JSON self-consistency, dual raw/canonical-LF hashes, run-relative paths;
@@ -124,7 +124,7 @@ def main() -> int:
         return bool(ok)
 
     # ---- A. evidence self-consistency -----------------------------------
-    check("evidence.revision", evidence.get("revision") in (2, 3, 4), evidence.get("revision"))
+    check("evidence.revision", evidence.get("revision") in (2, 3, 4, 5), evidence.get("revision"))
     check("evidence.schema", evidence.get("schema_version") == "d12d005-a0-setup-generation-2", evidence.get("schema_version"))
     check("evidence.status", evidence.get("status") == "A0_SETUP_READY_NO_SOLVER", evidence.get("status"))
     check("evidence.solver_processes_started", evidence.get("solver_processes_started") == 0, evidence.get("solver_processes_started"))
@@ -144,7 +144,7 @@ def main() -> int:
     runner_rec = evidence.get("runner") or {}
     check("evidence.runner_dual", runner_rec.get("hash_mode") == "dual" and "sha256_canonical_lf" in runner_rec, list(runner_rec))
     script_recs = evidence.get("scripts") or []
-    check("evidence.script_records", len(script_recs) == 8 and all(s.get("hash_mode") == "dual" for s in script_recs), len(script_recs))
+    check("evidence.script_records", len(script_recs) == 9 and all(s.get("hash_mode") == "dual" for s in script_recs), len(script_recs))
 
     # ---- B. per case ----------------------------------------------------
     file_keys = ("model", "raw_setup", "contract_setup", "vkey", "csf", "geom_result_csv", "expected")
@@ -313,7 +313,7 @@ def main() -> int:
     check("readme.expected_json_bundle", "expected.json" in readme, None)
     check(
         "readme.revision_ok",
-        "revision 2" in readme or "revision 3" in readme or "revision 4" in readme or "v2" in readme,
+        "revision 2" in readme or "revision 3" in readme or "revision 4" in readme or "revision 5" in readme or "v2" in readme,
         None,
     )
 

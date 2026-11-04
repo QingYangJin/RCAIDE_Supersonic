@@ -5,7 +5,7 @@
 - 阶段：**A0 零求解预检**（尚未启动任何 VSPAERO 求解器；`solver_processes_started = 0`）
 - 分支 / worktree：`research/d12d005-aero-fallback` @ `D:/RCAIDE-d12d005`
 - 物理预算状态：A 类（VSPAERO7-thin-LF）cap 20，第一批 ≤6；**本轮使用 0/20**，`starts_used = 0`；D-12D-002/004 额度不结转
-- 生成时间：2026-11-04T04:55:48Z 起；**evidence revision 4**（revision 3 回应 A5 task-103/106；revision 4 回应 A5 task-110 S3F-01 的主/派生列分离，零求解，见 §15）
+- 生成时间：2026-11-04T04:55:48Z 起；**evidence revision 5**（revision 3 回应 A5 task-103/106；revision 4 回应 A5 task-110 S3F-01 的主/派生列分离；revision 5 回应 A5 task-111 的 R4-M01/R4-M02/R4-M03 与 6 项 minor，零求解，见 §16）
 
 ## 1. 本轮目的
 
@@ -15,7 +15,7 @@ D-12D-004 V1 的两次 VSPAERO 启动均出现非物理系数/发散，A0 需在
 2. 用于"标准可核对翼"的几何与设置族是否就绪、能否用解析/半解析预期判定？
 3. 正式启动前的严格门禁（LD-002 解析器、目录/版本/回读/薄厚/坐标/尾迹设置、StopBeforeRun 证据）是否冻结？
 
-结论：① V1 是在 **Uber_eCRM-002 全机模型**上跑的，"标准翼"设置族从未被验证 → 必须先跑真正的矩形标准翼；② 标准翼（AR=4 矩形、平板中弧线）已建成，六案 setup 全部生成并通过 17 字段回读；③ 独立校验脚本全部检查通过（revision 4：**264 项检查、0 失败**；逐文件同时校验 raw 与 canonical-LF 两种形态）。**A0 本身不产生任何 CL/CD 数值**；本 run 目录下的 `evidence/v1/` 是此后经 Lead 书面授权的 A 批执行结果（4/6 次），与 A0 证据分属不同小节，A0 校验器只声明 A0 子树零求解。
+结论：① V1 是在 **Uber_eCRM-002 全机模型**上跑的，"标准翼"设置族从未被验证 → 必须先跑真正的矩形标准翼；② 标准翼（AR=4 矩形、平板中弧线）已建成，六案 setup 全部生成并通过 17 字段回读；③ 独立校验脚本全部检查通过（revision 5：**267 项检查、0 失败**；逐文件同时校验 raw 与 canonical-LF 两种形态）。**A0 本身不产生任何 CL/CD 数值**；本 run 目录下的 `evidence/v1/` 是此后经 Lead 书面授权的 A 批执行结果（4/6 次），与 A0 证据分属不同小节，A0 校验器只声明 A0 子树零求解。
 
 ## 2. 零求解证据
 
@@ -23,7 +23,7 @@ D-12D-004 V1 的两次 VSPAERO 启动均出现非物理系数/发散，A0 需在
 | --- | --- |
 | `evidence/a0/setup_generation.json` | `status = A0_SETUP_READY_NO_SOLVER`；每案 `readback` 17 项决定性断言（Mach/AoA/ReCref/Vinf/Rho/Sref/Cref/Bref/X_cg/Y_cg/Z_cg/Symmetry/Beta/NumWakeNodes/WakeIters/WakeRelax/FarDist）；`stop_before_run_readback = 1`；`solver_processes_started = 0`；无 `.adb/.history/.polar/.lod` 产物 |
 | `evidence/a0/vspaero_v1_divergence_analysis.json` | 只读解析 d12d004 归档：`.vspaero`/`.polar`/`.history`/solver log/模型源 SHA，`solver_starts = 0` |
-| `evidence/a0/a0_verification.json` | 独立校验（revision 4）：264 checks 全部通过、0 failed；逐文件 raw + canonical-LF 双哈希；非测试脚本经 AST 扫描确认无进程启动路径（两个 unittest 以 child process 调 runner CLI，已在证据中标注例外）；A0 子树无本地 `.vspgeom`、无求解产物；求解产物只允许出现在 `evidence/v1/`（A 批授权执行，launch ledger 记账） |
+| `evidence/a0/a0_verification.json` | 独立校验（revision 5）：267 checks 全部通过、0 failed；逐文件 raw + canonical-LF 双哈希；非测试脚本经 AST 扫描确认无进程启动路径（两个 unittest 以 child process 调 runner CLI，已在证据中标注例外）；A0 子树无本地 `.vspgeom`、无求解产物；求解产物只允许出现在 `evidence/v1/`（A 批授权执行，launch ledger 记账） |
 | `evidence/a0/negative_controls/` | 6 个负控制 setup 均被严格门禁拒绝（见 §7） |
 
 注：VSPAEROComputeGeometry / VSPAEROSweep 在 `StopBeforeRun=1` 下会打印形如 `...vspaero.exe -omp 4 <base>` 的**将执行命令**，这是 OpenVSP 的分析命令行回显，**不是进程启动**；证据是 `.adb/.history/.polar/.lod` 一个都不存在，且 StopBeforeRun 读回为 1。此点与 D-12D-004 V0/V1 的口径一致（V0 复核 APPROVE）。
@@ -81,7 +81,7 @@ D-12D-004 V1 的两次 VSPAERO 启动均出现非物理系数/发散，A0 需在
 
 - 12D 案参考量：`Sref=358.25 / Cref=18.489893 / Bref=25.604638 / X_cg=16.821978259514246 / ReCref=89397005.8767656 / Vinf=596.0373972278921`；合同 setup 847 B / `c9cef04e...` 与 D-12D-004 V0 的 contract setup **逐字节一致**（V0 已由 A5 复核 APPROVE）。
 - 单因素 diff 由 `scripts/a0_verify_cases.py` 断言：S0→S1 仅 `NumWakeNodes` 8→128；S0→S2 仅 `WakeIters` 5→0；S3→S4 仅 `NumWakeNodes` 8→128。
-- **A 批执行现状（2026-11-04，详见 `evidence/v1/`）**：S0/S1/S2 = `SOLVED_VALID`；S3 = 主系数有限但与理论区间一致（CLtot=0.074251），因派生列 `Ew=inf` 被 v2 旧版判 `POLAR_NONFINITE`，A2 按 stop_rule_1 保守停批，S4/S5 = `NOT_RUN_AFTER_ABORT`；A5 task-110 判定 `Ew` 为除零伪影（`STOP_CONFIRMED=false`），v2 rev3 已分离主/派生列（本 revision 4），S4/S5 需 Lead 重新书面授权（`evidence/lead/batch1b_reauthorization.md`）。
+- **A 批执行现状（2026-11-04，详见 `evidence/v1/`）**：S0/S1/S2 = `SOLVED_VALID`；S3 = 主系数有限但与理论区间一致（CLtot=0.074251），因派生列 `Ew=inf` 被 v2 旧版判 `POLAR_NONFINITE`，A2 按 stop_rule_1 保守停批，S4/S5 = `NOT_RUN_AFTER_ABORT`；A5 task-110 判定 `Ew` 为除零伪影（`STOP_CONFIRMED=false`），v2 rev4 已分离主/派生列，且公共 API 层禁止 allowlist 掩盖主系数（本 revision 5），S4/S5 需 Lead 重新书面授权（`evidence/lead/batch1b_reauthorization.md`）。
 - 每案目录 7 个文件：`<case>_model.vsp3`、`<case>_model.vspaero`（**raw**，仍含 VSPAERO 三个默认值 ReCref=1e7 / Vinf=100 / Rho=0.002377）、`<case>_contract.vspaero`（17 断言 PASS）、`<case>_model.vkey`、`<case>_model.csf`、`geom_result_thin.csv`、`expected.json`。薄 `.vspgeom` 已外置：
   - std：284,327 B / sha256 `8363f8fb209d...`（5 个 std 案同几何同哈希）
   - 12D：224,357 B / sha256 `9fcda6d5...`（与 D-12D-004 V0 一致）
@@ -119,7 +119,7 @@ CLiw CDiw CSiw CFwxtot ... LoDw Ew StallFactor
 - 旧 6.2 表头（无 `CLo/CLi`）明确拒绝并给错误码；
 - 回归测试覆盖：LD-001 模板缺 `=`、缺 `.vkey/.csf`、外层 120 s 包装器误杀、默认值泄漏（1e7/100/0.002377）、错误 Sref、旧表头。测试不得启动真实求解器。
 
-当前状态：v2 解析器已交付并完成 rev2 加固与 rev3 主/派生列分离（`scripts/vspaero7_runner_v2.py` 1,362 行 / 55,115 B canonical / sha256 `e5b3381ce0f7...`；`scripts/test_vspaero7_runner_v2.py` 575 行 / 25,999 B / `a57526aa2c56...`；**51 tests OK**，日志 `evidence/a0/v2rev3_test_run.log`；`--allow-nonfinite-derived` 只放行派生列 `Ew`，主系数仍严格）。本包的 `scripts/vspaero7_runner_v1frozen.py` 仍是 D-12D-004 V1 的冻结基线（`start_solver()` 恒 raise `SolverStartRefused`），只作 setup 注入/回读/负控制用途；polar 校验必须用 v2（7.2.2 48 列），v1frozen 的 polar 校验器对 7.2.2 **不可用**。
+当前状态：v2 解析器已交付并完成 rev2 加固、rev3 主/派生列分离与 rev4 公共 API 收紧（`scripts/vspaero7_runner_v2.py` 1,371 行 / 55,689 B canonical / sha256 `45545052106b...`，SCHEMA_VERSION `d12d005-runner-5`；`scripts/test_vspaero7_runner_v2.py` 637 行 / 28,823 B / `f6cffa0e41ed...`；**58 tests OK**，日志 `evidence/a0/v2rev4_test_run.log`；`--allow-nonfinite-derived` 只放行派生列 `Ew`，公共 API 对任何非派生白名单列抛 `POLAR_ALLOWLIST_NOT_DERIVED`）。本包的 `scripts/vspaero7_runner_v1frozen.py` 仍是 D-12D-004 V1 的冻结基线（`start_solver()` 恒 raise `SolverStartRefused`），只作 setup 注入/回读/负控制用途；polar 校验必须用 v2（7.2.2 48 列），v1frozen 的 polar 校验器对 7.2.2 **不可用**。
 
 ## 8. 门禁状态（本阶段）
 
@@ -135,8 +135,8 @@ CLiw CDiw CSiw CFwxtot ... LoDw Ew StallFactor
 
 ## 9. 文件与哈希
 
-- 生成/校验脚本（8 条，逐文件双形态哈希见 `setup_generation.json` 的 `scripts` 数组）：`scripts/a0_analyze_v1_divergence.py`、`scripts/a0_generate_setups.py`、`scripts/a0_finalize_evidence_v2.py`、`scripts/a0_verify_cases.py`（支持 `--no-write` 只读复核）、`scripts/vspaero7_runner_v1frozen.py`、`scripts/test_vspaero7_runner_v1frozen.py`、`scripts/vspaero7_runner_v2.py`、`scripts/test_vspaero7_runner_v2.py`
-- 冻结基线：`scripts/vspaero7_runner_v1frozen.py`（30,373 B / sha256 `b77b56526acab6ac03ee07838d06970f2bd98d298aae597997bf393474128a36`）、`scripts/test_vspaero7_runner_v1frozen.py`（8,217 B；import 已修，22 tests OK）；LD-002 v2 解析器：`scripts/vspaero7_runner_v2.py`（55,115 B canonical / `e5b3381ce0f7...`，rev3）、`scripts/test_vspaero7_runner_v2.py`（25,999 B canonical / `a57526aa2c56...`，rev3）；测试日志 `evidence/a0/v1frozen_test_run.log`（22 tests）、`evidence/a0/v2rev2_test_run.log`（46 tests）与 `evidence/a0/v2rev3_test_run.log`（51 tests）
+- 生成/校验脚本（9 条，逐文件双形态哈希见 `setup_generation.json` 的 `scripts` 数组）：`scripts/a0_analyze_v1_divergence.py`、`scripts/a0_generate_setups.py`、`scripts/a0_finalize_evidence_v2.py`、`scripts/a0_verify_cases.py`（支持 `--no-write` 只读复核）、`scripts/make_v1_evidence_reconciliation.py`（V1/A 批证据双形态对账）、`scripts/vspaero7_runner_v1frozen.py`、`scripts/test_vspaero7_runner_v1frozen.py`、`scripts/vspaero7_runner_v2.py`、`scripts/test_vspaero7_runner_v2.py`
+- 冻结基线：`scripts/vspaero7_runner_v1frozen.py`（30,373 B / sha256 `b77b56526acab6ac03ee07838d06970f2bd98d298aae597997bf393474128a36`）、`scripts/test_vspaero7_runner_v1frozen.py`（8,217 B；import 已修，22 tests OK）；LD-002 v2 解析器：`scripts/vspaero7_runner_v2.py`（55,689 B canonical / `45545052106b...`，rev4 / `d12d005-runner-5`）、`scripts/test_vspaero7_runner_v2.py`（28,823 B canonical / `f6cffa0e41ed...`，rev4）；测试日志 `evidence/a0/v1frozen_test_run.log`（22 tests）、`evidence/a0/v2rev2_test_run.log`（46 tests）、`evidence/a0/v2rev3_test_run.log`（51 tests）与 `evidence/a0/v2rev4_test_run.log`（58 tests）
 - 关键哈希：OpenVSP 3.55.0 / `vspaero.exe` sha256 `db71c4412489af82398833408ea30fb73327bdd9434de2ef530d31375b9fddad`；12D 模型 sha256 `9a788b467095...`（完整值见 `setup_generation.json`）
 - 完整 `data_manifest.json` 在本阶段**未生成**；A0 阶段的逐文件哈希在 `evidence/a0/setup_generation.json` 与 `evidence/a0/a0_verification.json` 内，采用 raw + canonical-LF 双形态记录（见 §13）。整包 manifest 将在 A 线执行包冻结时统一生成（与 D-12D-004 V1 相同的 canonical-LF 约定）。
 
@@ -173,7 +173,7 @@ A5 首轮复核 verdict CHANGES_REQUESTED（0 blocker / 1 major / 4 minor），�
 | F-A0-01 | MAJOR | 逐文件哈希按提交前 CRLF 记录；clean checkout 是 canonical LF（.gitattributes 为 text=auto/eol=lf），复跑 24/163 失败 | 所有文本文件记录改为 raw + canonical-LF 双形态（bytes_raw/sha256_raw/bytes_canonical_lf/sha256_canonical_lf/hash_mode/eol），case 路径改为 run 目录相对路径；README 的 163/0 表述改为引用 a0_verification.json 的 checks_total |
 | F-A0-02 | minor | test_vspaero7_runner_v1frozen.py import 旧模块名，A0 包内死测试 | 改为 import vspaero7_runner_v1frozen 与 HERE/模块名；实跑 22 tests OK，日志 evidence/a0/v1frozen_test_run.log |
 | F-A0-03 | minor | §5 写每案 6 文件但列了 7 个 | 改为 7 文件 |
-| F-A0-04 | minor | 脚本无进程启动的扫描只覆盖 2 个脚本 | 扫描扩展到 setup_generation.json 的 scripts 全部 8 个记录，改为 AST 导入/调用扫描；两个 unittest 的 child-process CLI 作为例外显式记录（process_spawn_scan.documented_exception） |
+| F-A0-04 | minor | 脚本无进程启动的扫描只覆盖 2 个脚本 | 扫描扩展到 setup_generation.json 的 scripts 全部 9 个记录，改为 AST 导入/调用扫描；两个 unittest 的 child-process CLI 作为例外显式记录（process_spawn_scan.documented_exception） |
 | F-A0-05 | minor | S5 的 Vinf 直接继承 V0 冻结值，未注明与公式推导差 6.0e-8 m/s | S5 增加 reference_velocity 块：来源、公式值 596.0373971680001、差值 5.99e-8 m/s（相对 1.0e-10）、保留冻结值的理由（与已复核 V0 逐字节一致） |
 
 **哈希约定**：文本文件按 canonical LF 计哈希（等于提交后的 git blob 内容）；外部 thin .vspgeom（outside_git = true）按 raw 字节计哈希。raw 形态只在生成机存在（Windows CRLF）：在干净 checkout 中文本文件只有 canonical-LF 形态，校验器对 raw_hash 判为 checkout_normalised（raw 仅作生成机证据，不作为 clean checkout 判据）。复跑方式见 §11（--run-dir 支持任意 checkout 根）。
@@ -214,9 +214,22 @@ verifier revision 4 结果：**264 checks PASS / 0 failed**（`a0_verification.j
 
 **干净 checkout 复跑（revision 4）**：`evidence/a0/a0_verification_checkout_rev4.log`（1,011 B；纯 LF 生成，raw = canonical-LF，sha256 `a0151e9fa7a80c63c38e42640ef31d4074b470a51d116d95fe06acae6862c37b`），在 detached worktree @ `f5827ba`（batch1 证据提交）、`git status` 全干净的条件下以 `--no-write` 重跑 verifier，结果 **264 checks PASS / 0 failed**；日志显式记录 `checks_failed: 0`、`solver_processes_started: 0`、命令与 commit。
 
-## 16. 下一步（等待门禁）
+## 16. 复核整改（evidence revision 5，A5 task-111 R4-M01/M02/M03）
 
-1. ~~A1 交付 v2 解析器（LD-002）+ 回归测试 → A5 复核。~~ 已完成（`ab29a0c` 首版 + rev2 加固 + rev3 主/派生列分离；51 tests OK）。
+A5 对 revision 4 判 `CHANGES_REQUESTED`（0 blocker / 3 major / 6 minor）。revision 5 逐项处置（**零求解**）：
+
+| 编号 | 处置 |
+| --- | --- |
+| R4-M01（major） | `validate_polar_file` 的 `allow_nonfinite_columns` 现在只允许派生列：`not_derived = [n for n in allowed if n not in POLAR_DERIVED_NONFINITE_COLUMNS]`，非派生列一律抛 `DataQualityError("POLAR_ALLOWLIST_NOT_DERIVED: ...")`，因此公共 API 不可能再用 allowlist 掩盖 CDi/CLo/CDo/CLi 等主系数；新增 `AllowlistScopeTests` 7 个测试（CDi/CLo/CDtot 单列拒绝、Ew+CDi 混合拒绝、主系数 NaN + allowlist 仍拒、`POLAR_DERIVED_NONFINITE_COLUMNS == ("Ew",)`、Ew 仍 `PASS_WITH_WARNINGS`）；SCHEMA_VERSION 升 `d12d005-runner-5`，**58 tests OK**（`evidence/a0/v2rev4_test_run.log`） |
+| R4-M02（major） | 新增 `scripts/make_v1_evidence_reconciliation.py` 重生成 `evidence/v1/data_manifest.json`（schema 2 / revision 5，**40 条** = `evidence/v1/` 37 文件 + `config/` 3 文件；逐文件 `bytes_raw` / `sha256_raw` + `bytes_canonical_lf` / `sha256_canonical_lf` / `hash_mode` / `eol`；`total_canonical = 289,397 B`、`total_raw = 290,999 B`；`total_bytes_note` 记明 A5 核对中 283,485 B 为 10 条 CRLF 差值的估算）。A2 首版 manifest（39 条 / sha `a0b100ec…`）被本 revision 取代，可在 `f5827ba` 取回 |
+| R4-M03（major） | 新增 `evidence/v1/case_summary_reconciliation.json`：四案 polar 用 v2 解析器（allowlist `Ew`）重读，S0/S1/S2 = `PASS`，S3 = `PASS_WITH_WARNINGS`，主系数与 `batch1_results.json` 一致；A2 原始 `case_summary.json` 不改写，缺口由对账文件补足 |
+| R4-minor | 报告补 S4/S5 的 `VSPAERO_INTERNAL_ONLY` / `physical_validation=NOT_VALIDATED` 标签；`evidence/v1/run_start.json` 增加 `batch1b_stop_rule_amendment`；报告复现命令补齐 `_model.polar` 文件名；`evidence/v1/README.md` 把 Ew 溢出归因改为 `CDiw=0`（除零）；“只改 run+docs” 改为准确提交范围；日志分类改为“求解器产物日志 9 个 + 校验器日志” |
+
+verifier revision 5 结果：**267 checks PASS / 0 failed**（`evidence/a0/a0_verification.json`）；`evidence/a0/setup_generation.json` revision 5 同步记录 9 个脚本的双形态哈希。本次修订**零求解**，A 批启动计数保持 4/6。
+
+## 17. 下一步（等待门禁）
+
+1. ~~A1 交付 v2 解析器（LD-002）+ 回归测试 → A5 复核。~~ 已完成（`ab29a0c` 首版 + rev2 加固 + rev3 主/派生列分离 + rev4 allowlist 范围限制；58 tests OK）。
 2. ~~A5 复核本 A0 包（setup/回读/负控制/零求解）。~~ A0 revision 2 = `APPROVE_FOR_A_BATCH1`（task-106）；v2 delta CHANGES_REQUESTED（task-103）→ revision 3 处置后 A5 复核 APPROVE（task-108，980fffb）。
 3. ~~Lead 授权 A 类第一批 ≤6（S0–S5）~~ 已授权并执行 4/6（S0/S1/S2 = SOLVED_VALID；S3 触发 stop_rule_1，S4/S5 NOT_RUN；见 `evidence/v1/`）。
-4. A5 复核 revision 4（v2 rev3 + S3 allowlist 复算 + 条件是否满足）与 A3 隔离复核 → Lead 重新书面授权剩余 2 次（S4/S5）后由 A2 串行执行。
+4. ~~A5 复核 revision 4~~ → A5 task-111 判 `CHANGES_REQUESTED`（0 blocker / 3 major / 6 minor）→ revision 5 处置（本 §16）→ A5 delta 复核 + A3 delta → Lead 重新书面授权剩余 2 次（S4/S5）后由 A2 串行执行。

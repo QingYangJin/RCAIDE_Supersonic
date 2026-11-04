@@ -2447,7 +2447,7 @@
       }
     }
   ],
-  "generated_utc": "2026-11-04T07:57:28Z",
+  "generated_utc": "2026-11-04T08:44:27Z",
   "hashing_convention": {
     "external_artifacts": "sha256 over raw bytes (outside git)",
     "legacy_fields": "bytes/sha256 alias the canonical-LF form for older readers",
@@ -2539,11 +2539,12 @@
     "reason": "A5 F-A0-01 follow-up: a clean checkout must reproduce the evidence without the original absolute root",
     "verifier": "scripts/a0_verify_cases.py --run-dir <root> resolves every path from the run-dir root"
   },
-  "revision": 4,
+  "revision": 5,
   "revision_history": [
     2,
     3,
-    4
+    4,
+    5
   ],
   "revision_notes": {
     "A5_A0R2-01": "clean-checkout replay log regenerated and records both raw and canonical-LF forms",
@@ -2557,6 +2558,7 @@
     "A5_F-A0-03": "README file-count corrected to 7",
     "A5_F-A0-04": "process-spawn scan now covers every non-test script; the unittest's subprocess CLI call is documented as a permitted exception",
     "A5_F-A0-05": "S5 reference_velocity block records inheritance source and the 6.0e-8 m/s formula delta",
+    "A5_R4-M01_rev5": "revision 5: allowlist restricted by construction to POLAR_DERIVED_NONFINITE_COLUMNS=('Ew',); any other column (CDi/CLo/CDtot/CLtot/Mach/Re) raises POLAR_ALLOWLIST_NOT_DERIVED, closing the public-API escape. v2 suite is 58 tests. R4-M02 canonical-LF manifest and R4-M03 case-summary reconciliation are evidenced under evidence/v1/ (documentation/data only; zero solver; batch-1 starts stay 4/6).",
     "A5_S3F-01_rev4": "revision 4: v2 runner rev3 splits primary vs derived non-finite columns; Ew is the only allowlisted derived column (--allow-nonfinite-derived), non-allowlisted non-finite tokens still fail, and S3 verify-polar now reports PASS_WITH_WARNINGS (evidence/v1/s3_verify_polar_allowlisted.json). Zero solver; batch-1 starts stay 4/6."
   },
   "run_id": "d12d005-20261104T0430Z",
@@ -2589,18 +2591,18 @@
       "sha256_raw": "57d91e7944f06466c5d962d1cca41b02ab9f30264e1ca7843f75ae5f21460430"
     },
     {
-      "bytes": 9291,
-      "bytes_canonical_lf": 9291,
-      "bytes_raw": 9291,
+      "bytes": 10511,
+      "bytes_canonical_lf": 10511,
+      "bytes_raw": 10511,
       "eol": "lf",
       "hash_mode": "dual",
       "kind": "generator_or_verifier",
       "name": "a0_finalize_evidence_v2.py",
       "path_relative": "scripts/a0_finalize_evidence_v2.py",
       "process_spawn_allowed": false,
-      "sha256": "6f6aa92aacfac8eff92b0e7ee38f956b530a371bc50ab3be50bd41d5589ad18f",
-      "sha256_canonical_lf": "6f6aa92aacfac8eff92b0e7ee38f956b530a371bc50ab3be50bd41d5589ad18f",
-      "sha256_raw": "6f6aa92aacfac8eff92b0e7ee38f956b530a371bc50ab3be50bd41d5589ad18f"
+      "sha256": "48cae4ddbcadbac4989704ac995fa8a0e83ee14dc27a568517aec74f922c159d",
+      "sha256_canonical_lf": "48cae4ddbcadbac4989704ac995fa8a0e83ee14dc27a568517aec74f922c159d",
+      "sha256_raw": "48cae4ddbcadbac4989704ac995fa8a0e83ee14dc27a568517aec74f922c159d"
     },
     {
       "bytes": 18583,
@@ -2617,18 +2619,32 @@
       "sha256_raw": "187cbe16c003988be100473a601aa2a3f52d4db7c7de4c61643a5fb6de41b0f2"
     },
     {
-      "bytes": 19257,
-      "bytes_canonical_lf": 19257,
-      "bytes_raw": 19257,
+      "bytes": 19286,
+      "bytes_canonical_lf": 19286,
+      "bytes_raw": 19286,
       "eol": "lf",
       "hash_mode": "dual",
       "kind": "generator_or_verifier",
       "name": "a0_verify_cases.py",
       "path_relative": "scripts/a0_verify_cases.py",
       "process_spawn_allowed": false,
-      "sha256": "88bbac5b72f3c4094bbd4587bd5f46c531b90fe5a242d813a7ccbea99aff9fd0",
-      "sha256_canonical_lf": "88bbac5b72f3c4094bbd4587bd5f46c531b90fe5a242d813a7ccbea99aff9fd0",
-      "sha256_raw": "88bbac5b72f3c4094bbd4587bd5f46c531b90fe5a242d813a7ccbea99aff9fd0"
+      "sha256": "5f48467a6b23957ca0c22750ece93768584118a9373c8d80bf1d0c25d71f0d48",
+      "sha256_canonical_lf": "5f48467a6b23957ca0c22750ece93768584118a9373c8d80bf1d0c25d71f0d48",
+      "sha256_raw": "5f48467a6b23957ca0c22750ece93768584118a9373c8d80bf1d0c25d71f0d48"
+    },
+    {
+      "bytes": 9196,
+      "bytes_canonical_lf": 9196,
+      "bytes_raw": 9196,
+      "eol": "lf",
+      "hash_mode": "dual",
+      "kind": "generator_or_verifier",
+      "name": "make_v1_evidence_reconciliation.py",
+      "path_relative": "scripts/make_v1_evidence_reconciliation.py",
+      "process_spawn_allowed": false,
+      "sha256": "7c23978841dc7dfadcee5c6494edcfc79d7d224844309a87c78ee4f7944a2add",
+      "sha256_canonical_lf": "7c23978841dc7dfadcee5c6494edcfc79d7d224844309a87c78ee4f7944a2add",
+      "sha256_raw": "7c23978841dc7dfadcee5c6494edcfc79d7d224844309a87c78ee4f7944a2add"
     },
     {
       "bytes": 30373,
@@ -2645,18 +2661,18 @@
       "sha256_raw": "b77b56526acab6ac03ee07838d06970f2bd98d298aae597997bf393474128a36"
     },
     {
-      "bytes": 55115,
-      "bytes_canonical_lf": 55115,
-      "bytes_raw": 56477,
+      "bytes": 55689,
+      "bytes_canonical_lf": 55689,
+      "bytes_raw": 57060,
       "eol": "crlf",
       "hash_mode": "dual",
       "kind": "frozen_runner",
       "name": "vspaero7_runner_v2.py",
       "path_relative": "scripts/vspaero7_runner_v2.py",
       "process_spawn_allowed": false,
-      "sha256": "e5b3381ce0f72d587f725a5b400b51d1ef02e54dbde05c2c6ad285af9e849acf",
-      "sha256_canonical_lf": "e5b3381ce0f72d587f725a5b400b51d1ef02e54dbde05c2c6ad285af9e849acf",
-      "sha256_raw": "eea4e028a71a85ee82ed5016f85cbc1b18cc6a47b7780be32a3c3b8d09957606"
+      "sha256": "45545052106b84ec7aee990878cadae398b05701d651cd140c23eb67daa7c776",
+      "sha256_canonical_lf": "45545052106b84ec7aee990878cadae398b05701d651cd140c23eb67daa7c776",
+      "sha256_raw": "0c27d05f047d20e9bfc32b4ab27d687c261461b4feb9af5b97247089189f9377"
     },
     {
       "bytes": 8217,
@@ -2673,18 +2689,18 @@
       "sha256_raw": "51946c9c67dffe5e0e3db017043053f1329c384f418d66b7e707ea8275267192"
     },
     {
-      "bytes": 25999,
-      "bytes_canonical_lf": 25999,
-      "bytes_raw": 26574,
+      "bytes": 28823,
+      "bytes_canonical_lf": 28823,
+      "bytes_raw": 29460,
       "eol": "crlf",
       "hash_mode": "dual",
       "kind": "regression_test",
       "name": "test_vspaero7_runner_v2.py",
       "path_relative": "scripts/test_vspaero7_runner_v2.py",
       "process_spawn_allowed": true,
-      "sha256": "a57526aa2c5689083fb2d2b427dcbab3f7567549d6bf3876d610d4a992d42f3f",
-      "sha256_canonical_lf": "a57526aa2c5689083fb2d2b427dcbab3f7567549d6bf3876d610d4a992d42f3f",
-      "sha256_raw": "b273aafa496f2afc6392c1254844b2ab5eb879c1b6ed90806fab0e2575a3a3c5"
+      "sha256": "f6cffa0e41ed8833eeba192f4cc4c5351ea12ee1552b2e68bec6fd449b98e9dd",
+      "sha256_canonical_lf": "f6cffa0e41ed8833eeba192f4cc4c5351ea12ee1552b2e68bec6fd449b98e9dd",
+      "sha256_raw": "b2a83687aeeb61c3e78f22d39c0f251f1771f6ee706d5a1c713b74fa12888fca"
     }
   ],
   "solver_processes_started": 0,
