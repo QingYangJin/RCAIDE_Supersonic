@@ -34,7 +34,7 @@ run_id: d12d005-20261104T0430Z
 - `evidence/v1/cases/<case>/` — polar/history/stdout/stderr/case_summary（S3 另含 s3_column_diagnosis.json/.md 与 verify_polar_rerun.json/.log）
 - `evidence/v1/summary.json` — 冻结摘要（机器可读）
 - `evidence/v1/final_checks.json` — 最终断言校验结果
-- `evidence/v1/data_manifest.json` — 本清单（**revision 5**，schema 2，40 条 = `evidence/v1/` 37 文件 + `config/` 3 文件；逐文件 `bytes_raw`/`sha256_raw` 与 `bytes_canonical_lf`/`sha256_canonical_lf` 双形态，`total_canonical=289,397 B`、`total_raw=290,999 B`）
+- `evidence/v1/data_manifest.json` — 本清单（**revision 6**，schema 2，40 条 = `evidence/v1/` 37 文件 + `config/` 3 文件；逐文件 `bytes_raw`/`sha256_raw` 与 `bytes_canonical_lf`/`sha256_canonical_lf` 双形态，`total_canonical=290,912 B`、`total_raw=292,514 B`；revision 6 在最终 README/run_start 文本修订后重跑，40 条逐条与提交 blob 一致）
 - `evidence/v1/case_summary_reconciliation.json` — 四案 polar 主系数对账（v2 解析器 allowlist `Ew`；A2 原始 `case_summary.json` 不改写）
 - `config/run_config.json` — 本批运行配置（最终冻结态）
 - `config/approval_and_budget_ledger.json` — 授权/预算账本（最终冻结态）
