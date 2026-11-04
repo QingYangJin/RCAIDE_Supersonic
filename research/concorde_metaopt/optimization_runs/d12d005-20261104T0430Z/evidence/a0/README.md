@@ -176,6 +176,8 @@ A5 首轮复核 verdict CHANGES_REQUESTED（0 blocker / 1 major / 4 minor），�
 
 **哈希约定**：文本文件按 canonical LF 计哈希（等于提交后的 git blob 内容）；外部 thin .vspgeom（outside_git = true）按 raw 字节计哈希。raw 形态只在生成机存在（Windows CRLF）：在干净 checkout 中文本文件只有 canonical-LF 形态，校验器对 raw_hash 判为 checkout_normalised（raw 仅作生成机证据，不作为 clean checkout 判据）。复跑方式见 §11（--run-dir 支持任意 checkout 根）。
 
+**干净 checkout 复跑**：evidence/a0/a0_verification_checkout.log（442 B / sha256 27573eb2b866ce5be8bf9bd9061c37010ae149f146717054f944bf2eb3b7c479），在 detached worktree @ 200405e、git status 全干净的条件下重跑 verifier，结果 260 checks PASS / 0 failed。
+
 ## 12. 下一步（等待门禁）
 
 1. A1 交付 v2 解析器（LD-002）+ 回归测试 → A5 复核。
