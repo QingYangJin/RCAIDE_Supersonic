@@ -1,0 +1,19 @@
+# A0 verification clean-checkout replay — evidence revision 6
+# commit: 2b531e5216638719806ebfaa84db686cfd808040
+# worktree: D:/RCAIDE-verify-d12d005-rev6-2b531e5 (detached HEAD, git status clean)
+# command: D:/RCAIDE/envs/RCAIDE/python.exe -E -s -B scripts/a0_verify_cases.py --run-dir . --no-write
+#          D:/RCAIDE/envs/RCAIDE/python.exe -E -s -B <external>/check_v1_manifest_clean.py
+# note: --no-write does not rewrite the tracked evidence/a0/a0_verification.json
+--- A0 verifier replay (--no-write) ---
+A0 VERIFICATION PASS checks 267 failed 0 (no-write)
+A0 VERIFICATION PASS checks 267 failed 0
+--- V1 evidence manifest recompute (canonical LF form) ---
+V1_MANIFEST revision=6 entries=40 mismatch=0 total_canonical=290912 total_raw=292364
+# note: the raw total in a clean checkout (292,364 B) differs from the generation-worktree
+# total recorded in data_manifest.json (292,514 B) because .gitattributes text=auto/eol=lf
+# normalises most text blobs to LF while the force-added solver *.log keep committed CRLF.
+# Raw hashes remain generation-worktree evidence; the clean checkout verifies the
+# canonical-LF form 40/40 (mismatch 0) and the canonical total 290,912 B.
+checks_failed: 0
+solver_processes_started: 0
+git_status_entries: 0

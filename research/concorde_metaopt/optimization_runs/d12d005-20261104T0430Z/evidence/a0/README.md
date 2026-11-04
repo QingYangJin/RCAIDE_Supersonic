@@ -234,4 +234,17 @@ verifier revision 5 结果：**267 checks PASS / 0 failed**（`evidence/a0/a0_ve
 1. ~~A1 交付 v2 解析器（LD-002）+ 回归测试 → A5 复核。~~ 已完成（`ab29a0c` 首版 + rev2 加固 + rev3 主/派生列分离 + rev4 allowlist 范围限制；58 tests OK）。
 2. ~~A5 复核本 A0 包（setup/回读/负控制/零求解）。~~ A0 revision 2 = `APPROVE_FOR_A_BATCH1`（task-106）；v2 delta CHANGES_REQUESTED（task-103）→ revision 3 处置后 A5 复核 APPROVE（task-108，980fffb）。
 3. ~~Lead 授权 A 类第一批 ≤6（S0–S5）~~ 已授权并执行 4/6（S0/S1/S2 = SOLVED_VALID；S3 触发 stop_rule_1，S4/S5 NOT_RUN；见 `evidence/v1/`）。
-4. ~~A5 复核 revision 4~~ → A5 task-111 判 `CHANGES_REQUESTED`（0 blocker / 3 major / 6 minor）→ revision 5 处置（本 §16）→ A5 delta 复核 + A3 delta → Lead 重新书面授权剩余 2 次（S4/S5）后由 A2 串行执行。
+4. ~~A5 复核 revision 4~~ → A5 task-111 判 `CHANGES_REQUESTED`（0 blocker / 3 major / 6 minor）→ revision 5 处置（§16）→ A5 task-116 判 `CHANGES_REQUESTED`（0 blocker / 1 major / 2 minor：R4-M02 manifest 38/40、R4-m01 S4/S5 标签）→ revision 6 处置（§18）→ 待 A5 delta + A3 delta → Lead 重新书面授权剩余 2 次（S4/S5）后由 A2 串行执行。
+
+## 18. 复核整改（evidence revision 6，A5 task-116 R4-M02 / R4-m01）
+
+A5 对 revision 5（`69e2e03`）判 `CHANGES_REQUESTED`（0 blocker / 1 major / 2 minor）。revision 6 逐项处置（**零求解**）：
+
+| 编号 | 级别 | 问题 | 处置 |
+| --- | --- | --- | --- |
+| R4-M02 | MAJOR | `evidence/v1/data_manifest.json` canonical 仅 38/40 与提交 blob 一致（`evidence/v1/README.md` 3,700→4,306 B、`evidence/v1/run_start.json` 5,033→5,844 B 两处 stale），A5 复算 total 290,814 B ≠ 声明 289,397 B，报告 40/40 不实 | `scripts/make_v1_evidence_reconciliation.py` 升 revision 6，在**最终 README/run_start 文本修订之后**重跑，manifest 40 条逐条与提交 blob 一致；`total_canonical = 290,912 B`、`total_raw = 292,514 B`；本文件、`evidence/v1/README.md`、批次报告数字同步；复算脚本 `verify_v1_manifest_rev6.py` → revision 6 / entries 40 / mismatch 0 |
+| R4-m01 | MINOR | 报告正文仍缺 S4/S5 精确标签 | `docs/reviews/d12d005_batch1_report_20261104.md` §2 末尾与 §7 第 6 条强制写明：若 BATCH1B 获批准后执行，S4/S5 全部结果必须标注 `VSPAERO_INTERNAL_ONLY`、`physical_validation=NOT_VALIDATED`，不得升级为物理验证或真实标签；`CDo/CDtot` 不得作为真实阻力/标签/目标 |
+
+verifier revision 6 结果：**267 checks PASS / 0 failed**（`evidence/a0/a0_verification.json`，`generated_utc = 2026-11-04T09:35:18Z`）；`evidence/a0/setup_generation.json` 因 `make_v1_evidence_reconciliation.py` 字节变化（9,382 B / sha256 `6eb53b58…`）同步重跑 finalizer，9 个脚本记录 0 mismatch。本次修订**零求解**，A 批启动计数保持 4/6。
+
+**干净 checkout 复跑（revision 6）**：`evidence/a0/a0_verification_checkout_rev6.log`，在 detached worktree `D:/RCAIDE-verify-d12d005-rev6-2b531e5`（HEAD `2b531e5`，`git status` 全干净）中以 `--no-write` 重跑 verifier = **267 checks PASS / 0 failed**，并复算 `evidence/v1/data_manifest.json` canonical 形态 **40/40 mismatch 0 / total 290,912 B**；日志显式记录 `checks_failed: 0`、`solver_processes_started: 0`、命令与 commit。注意：clean checkout 的 raw 合计（292,364 B）与生成机记录（292,514 B）不同，原因是 `.gitattributes`（text=auto/eol=lf）把多数文本归一为 LF、而 force-add 的 solver `*.log` 保留提交时的 CRLF；raw 哈希只作生成机证据，clean checkout 以 canonical-LF 形态为判据（与 §13 哈希约定一致）。
