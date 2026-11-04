@@ -117,8 +117,9 @@ ARM_IMPLEMENTATIONS = {
         "maml_opt.bayesian:ConstrainedBayesianOptimizer/run_search"
     ),
     M5_DE: (
-        "reuse_semantics:research.concorde_metaopt.optimization.baseline_de:"
-        "DifferentialEvolutionBaseline(等预算 DE/rand/1/bin；不 import low_fidelity 链)"
+        "research.concorde_metaopt.meta_learning:m5_arms.run_m5_de_arm"
+        "->baseline_arms.run_de_arm[等预算 DE/rand/1/bin；不 import baseline_de、"
+        "不触 low_fidelity 链]"
     ),
 }
 

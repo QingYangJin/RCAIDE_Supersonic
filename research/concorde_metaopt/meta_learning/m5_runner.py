@@ -1029,6 +1029,23 @@ def assert_old_run_unchanged_after_write(
         raise M5RunnerError("旧 M2 run 在 " + str(stage) + " 写产物期间发生变化，立即失败")
 
 
+INFERENCE_COMPARISONS_RULE = (
+    "预注册比较对中任一端为 clone 臂时整对排除，不进入统计/配对/主终点；"
+    "全部预注册比较仍见 run_config.preregistered_comparisons，保持预注册可追溯。"
+)
+
+
+def inference_comparisons_excluding_clones(
+    comparisons: Sequence[tuple[str, str]] = PREREGISTERED_COMPARISONS,
+    clone_arms: Sequence[str] | None = None,
+) -> tuple[tuple[tuple[str, str], ...], list[list[str]]]:
+    """F02（P4R2）：从预注册比较对中剔除含 clone 臂的对，并返回被剔除清单。"""
+    excluded = {str(arm) for arm in (clone_arms or ())}
+    kept = tuple(pair for pair in comparisons if pair[0] not in excluded and pair[1] not in excluded)
+    dropped = [list(pair) for pair in comparisons if pair not in kept]
+    return kept, dropped
+
+
 def inference_rows_excluding_clones(
     summary_rows: Sequence[Mapping[str, Any]],
     clone_arms: Sequence[str] | None,
@@ -2410,8 +2427,15 @@ def build_figure_data(
     clone_rows: Sequence[Mapping[str, Any]],
     excluded_arms: Sequence[str] = (),
 ) -> dict[str, Any]:
-    """生成各图的数据载荷（只描述真实记录；缺数据标 NOT_AVAILABLE/NOT_RUN，不补假曲线）。"""
+    """生成各图的数据载荷（只描述真实记录；缺数据标 NOT_AVAILABLE/NOT_RUN，不补假曲线）。
+
+    F01（P4R2）：excluded_arms（可识别性审计判定为 clone 的臂）不得进入推断型面板
+    fig3/fig4；fig5 是公平性/可识别性审计面板，保留全量臂（含 clone）以便复核排除依据。
+    """
     figures: dict[str, Any] = {}
+    excluded_arm_set = {str(arm) for arm in (excluded_arms or ())}
+    fig3_rows = [row for row in summary_rows if str(row.get("arm")) not in excluded_arm_set]
+    fig4_rows = [row for row in curve_rows if str(row.get("arm")) not in excluded_arm_set]
     series: dict[str, list[dict[str, Any]]] = {}
     for row in training_rows:
         key = f"{row.get('arm')}|meta_seed={row.get('meta_seed')}"
@@ -2444,16 +2468,16 @@ def build_figure_data(
             arms = sorted(
                 {
                     str(row.get("arm"))
-                    for row in summary_rows
+                    for row in fig3_rows
                     if int(row.get("budget")) == int(budget) and str(row.get("split")) == split
                 }
             )
             for arm in arms:
                 hit_values, n_tasks, n_runs = _task_level_values(
-                    summary_rows, arm=arm, budget=int(budget), split=split, endpoint="feasible_hit_rate"
+                    fig3_rows, arm=arm, budget=int(budget), split=split, endpoint="feasible_hit_rate"
                 )
                 first_values, _, _ = _task_level_values(
-                    summary_rows,
+                    fig3_rows,
                     arm=arm,
                     budget=int(budget),
                     split=split,
@@ -2463,7 +2487,7 @@ def build_figure_data(
                 finite_first = [float(value) for value in first_values.values() if value is not None]
                 null_runs = sum(
                     1
-                    for row in summary_rows
+                    for row in fig3_rows
                     if str(row.get("arm")) == arm
                     and int(row.get("budget")) == int(budget)
                     and str(row.get("split")) == split
@@ -2489,10 +2513,10 @@ def build_figure_data(
 
     fig4: dict[str, Any] = {}
     for budget in config.budgets:
-        for arm in sorted({str(row.get("arm")) for row in curve_rows if int(row.get("budget")) == int(budget)}):
+        for arm in sorted({str(row.get("arm")) for row in fig4_rows if int(row.get("budget")) == int(budget)}):
             runs = [
                 row
-                for row in curve_rows
+                for row in fig4_rows
                 if int(row.get("budget")) == int(budget) and str(row.get("arm")) == arm
             ]
             if not runs:
@@ -2945,7 +2969,14 @@ def run_holdout_stage(
         inference_rows, inference_exclusions = inference_rows_excluding_clones(
             summary_rows, audit.get("clone_arms")
         )
-        statistics_rows = paired_statistics_rows(inference_rows)
+        inference_comparisons, excluded_comparisons = inference_comparisons_excluding_clones(
+            PREREGISTERED_COMPARISONS, inference_exclusions["clone_arms"]
+        )
+        inference_exclusions["excluded_comparisons"] = excluded_comparisons
+        inference_exclusions["comparisons_rule"] = INFERENCE_COMPARISONS_RULE
+        statistics_rows = paired_statistics_rows(
+            inference_rows, comparisons=inference_comparisons
+        )
         endpoint_rows = endpoint_summary_rows(inference_rows)
         metric_rows = metrics_rows_from_summary(summary_rows, run_id=config.run_id)
         arm_rows = initial_design_rows(init_dicts, run_id=config.run_id)
@@ -3015,6 +3046,7 @@ def run_holdout_stage(
             "fairness": fairness,
             "inference_rows": inference_rows,
             "inference_exclusions": inference_exclusions,
+            "inference_comparisons": [list(pair) for pair in inference_comparisons],
             "history_jsonl": history_jsonl,
             "workers": int(workers),
             "plan": plan,
@@ -3602,6 +3634,7 @@ _NOT_APPROVED = (
 )
 
 __all__ = [
+    "INFERENCE_COMPARISONS_RULE",
     "INFERENCE_EXCLUSION_RULE",
     "OLD_M2_RUN_ID",
     "OLD_RUN_GATE_FILE",
@@ -3618,6 +3651,7 @@ __all__ = [
     "build_proxy_artifacts",
     "expected_holdout_plan",
     "holdout_split_tasks",
+    "inference_comparisons_excluding_clones",
     "inference_rows_excluding_clones",
     "load_holdout_prerequisites",
     "prepare_old_run_gate",

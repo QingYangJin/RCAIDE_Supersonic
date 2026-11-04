@@ -869,3 +869,119 @@ class M5OldRunImmutabilityGateTests(unittest.TestCase):
         config = _tiny_config(root, stage="calibration", run_id="gate-change")
         with self.assertRaises(m5.M5RunnerError):
             m5.prepare_old_run_gate(config, before=before, stage="calibration")
+
+
+class M5InferenceExclusionFigureTests(unittest.TestCase):
+    """P4R2-F01/F02/F03/F04：clone 臂不得进入 fig3/fig4 与统计比较，fig5 保留全量审计。"""
+
+    CLONE_ARM = m5.M5_BO_PRETRAIN_INIT
+
+    def setUp(self) -> None:
+        self.config = _tiny_config(_new_root(), stage="holdout", run_id="m5-fig-exclusion")
+
+    def _summary_rows(self) -> list[dict[str, object]]:
+        rows: list[dict[str, object]] = []
+        for arm in (m5.M5_BO_RANDOM, self.CLONE_ARM, m5.M5_DE):
+            for task_id in ("task-a", "task-b"):
+                rows.append(
+                    {
+                        "arm": arm,
+                        "budget": 8,
+                        "split": "meta_test",
+                        "task_id": task_id,
+                        "seed": 0,
+                        "best_feasible_value": 1.0,
+                        "gap_to_reference": 0.1,
+                        "first_feasible_evaluation_index": 2.0,
+                        "feasible_hit_rate": 0.5,
+                        "best_objective_raw": 1.0,
+                        "min_constraint_violation_sum": 0.0,
+                        "proxy_scoring_cost_json": '{"wall_s": 0.5}',
+                    }
+                )
+        return rows
+
+    def _curve_rows(self) -> list[dict[str, object]]:
+        rows: list[dict[str, object]] = []
+        for arm in (m5.M5_BO_RANDOM, self.CLONE_ARM, m5.M5_DE):
+            rows.append(
+                {
+                    "arm": arm,
+                    "budget": 8,
+                    "split": "meta_test",
+                    "task_id": "task-a",
+                    "seed": 0,
+                    "eval_index": (1, 2),
+                    "best_feasible_so_far": (1.0, 0.9),
+                    "gap_to_reference_so_far": (0.1, 0.05),
+                }
+            )
+        return rows
+
+    def _arm_audit_rows(self) -> list[dict[str, object]]:
+        return [
+            {
+                "arm": arm,
+                "initial_designs_sha256": "sha",
+                "code_path": "m5_arms",
+                "implementation": "impl",
+            }
+            for arm in (m5.M5_BO_RANDOM, self.CLONE_ARM, m5.M5_DE)
+        ]
+
+    def _figures(self) -> dict[str, object]:
+        return m5.build_figure_data(
+            config=self.config,
+            run_id="m5-fig-exclusion",
+            training_rows=(),
+            summary_rows=self._summary_rows(),
+            curve_rows=self._curve_rows(),
+            arm_audit_rows=self._arm_audit_rows(),
+            clone_rows=(),
+            excluded_arms=(self.CLONE_ARM,),
+        )
+
+    def test_01_fig3_and_fig4_exclude_clone_arm_and_fig5_keeps_audit(self) -> None:
+        figures = self._figures()
+        fig3 = figures["figures"]["fig3_feasible_rate"]["series"]
+        fig4 = figures["figures"]["fig4_equal_budget_gap"]["series"]
+        self.assertTrue(fig3)
+        self.assertTrue(fig4)
+        self.assertFalse(any(self.CLONE_ARM in key for key in fig3))
+        self.assertFalse(any(self.CLONE_ARM in key for key in fig4))
+        self.assertIn(m5.M5_BO_RANDOM, figures["figures"]["fig5_fairness_audit"]["arms"])
+        self.assertIn(self.CLONE_ARM, figures["figures"]["fig5_fairness_audit"]["arms"])
+        self.assertEqual(figures["excluded_from_inference"], [self.CLONE_ARM])
+
+    def test_02_inference_comparisons_drop_pairs_with_clone_arm(self) -> None:
+        kept, dropped = m5.inference_comparisons_excluding_clones(
+            m5.PREREGISTERED_COMPARISONS, (self.CLONE_ARM,)
+        )
+        self.assertTrue(kept)
+        self.assertFalse(any(self.CLONE_ARM in pair for pair in kept))
+        self.assertEqual(len(kept) + len(dropped), len(m5.PREREGISTERED_COMPARISONS))
+        self.assertTrue(dropped)
+        for pair in dropped:
+            self.assertIn(self.CLONE_ARM, pair)
+
+    def test_03_statistics_rows_have_no_clone_arm_comparison(self) -> None:
+        kept, _ = m5.inference_comparisons_excluding_clones(
+            m5.PREREGISTERED_COMPARISONS, (self.CLONE_ARM,)
+        )
+        rows = m5.paired_statistics_rows(self._summary_rows(), budgets=(8,), comparisons=kept)
+        self.assertTrue(rows)
+        for row in rows:
+            self.assertNotEqual(row["arm"], self.CLONE_ARM)
+            self.assertNotEqual(row["reference"], self.CLONE_ARM)
+
+    def test_04_de_arm_metadata_matches_actual_code_path(self) -> None:
+        from research.concorde_metaopt.meta_learning import m5_arms
+
+        implementation = m5_arms.ARM_IMPLEMENTATIONS[m5_arms.M5_DE]
+        self.assertIn("m5_arms.run_m5_de_arm", implementation)
+        self.assertIn("baseline_arms.run_de_arm", implementation)
+        self.assertNotIn("baseline_de:", implementation)
+        self.assertEqual(
+            m5_arms.ARM_CODE_PATHS[m5_arms.M5_DE],
+            "m5_arms.run_m5_de_arm->baseline_arms.run_de_arm[DE/rand/1/bin]",
+        )
