@@ -1,0 +1,36 @@
+{
+  "schema": "d12d005-batch2-corrections-1",
+  "run_id": "d12d005-20261104T0430Z",
+  "generated_utc": "2026-11-04T14:35:37Z",
+  "applies_to": "evidence/batch2 (immutable raw evidence, not rewritten)",
+  "corrections": [
+    {
+      "id": "A5B2R-01",
+      "field": "Ew mechanism wording",
+      "old_statement": "CLwtot near zero and CDwtot nonzero cause overflow",
+      "corrected_statement": "CDiw = 0 (and CLiw = 0) makes Ew = CLtot^2/(pi*AR*CDiw) a 0/0-derived infinity; derived-column artifact, not divergence.",
+      "evidence": "batch2 polar columns CLiw=0.0, CDiw=0.0 for 8/8 cases"
+    },
+    {
+      "id": "A5B2R-02",
+      "field": "history_iterations",
+      "old_value": null,
+      "corrected_value": 5,
+      "note": "Raw results JSON snapshot field not backfilled; each case history has 5 wake iterations and verify-history PASS. Raw evidence not rewritten."
+    },
+    {
+      "id": "A5B2R-03",
+      "field": "last_solver_finish_utc / stdout_sha256",
+      "old_value": null,
+      "note": "Snapshot fields not backfilled; solver stdout archived at cases/<case>/results/solver_stdout.log; first/last finish derivable from ledger."
+    },
+    {
+      "id": "A5B2R-04",
+      "field": "B2-04 delta interpretation",
+      "old_statement": "pure aerodynamic efficiency sensitivity",
+      "corrected_statement": "fixed-Sref=358.25 normalization while design wing area = 376.1625 m2; delta includes reference-area effect.",
+      "evidence": "batch2 plan B2-04 contract Sref=358.25"
+    }
+  ],
+  "corrections_policy": "Raw evidence is immutable; corrections are recorded here and in the final report, never by editing evidence files."
+}

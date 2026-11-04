@@ -1,0 +1,703 @@
+{
+  "schema": "d12d005-vspaero-diagnostics-1",
+  "run_id": "d12d005-20261104T0430Z",
+  "generated_utc": "2026-11-04T14:35:37Z",
+  "labels": {
+    "result_label": "VSPAERO_INTERNAL_ONLY",
+    "physical_validation": "NOT_VALIDATED",
+    "physical_validation_claim": false
+  },
+  "solver": {
+    "version": "7.2.2",
+    "openvsp": "3.55.0",
+    "exe": "D:\\OpenVSP-3.55.0\\OpenVSP-3.55.0-win64\\vspaero.exe",
+    "exe_sha256": "db71c4412489af82398833408ea30fb73327bdd9434de2ef530d31375b9fddad"
+  },
+  "zero_solver_setup_generation": {
+    "a0_cases": [
+      "S0_STD_M0p1_base",
+      "S1_STD_M0p1_wn128",
+      "S2_STD_M0p1_wi0",
+      "S3_STD_M2p02_base",
+      "S4_STD_M2p02_wn128",
+      "S5_D12_M2p02_base"
+    ],
+    "a0_status": "A0_SETUP_READY_NO_SOLVER",
+    "a0_solver_processes_started": 0,
+    "a0_readback_fields_per_case": 17,
+    "a0v2_cases": [
+      "B2-01",
+      "B2-02",
+      "B2-03",
+      "B2-04",
+      "B2-05",
+      "B2-06",
+      "B2-07",
+      "S6_STD_M2p02_aoa1"
+    ],
+    "a0v2_status": "A0V2_SETUP_READY_NO_SOLVER",
+    "a0v2_solver_processes_started": 0,
+    "a0v2_readback_fields_per_case": 17,
+    "a0v2_sect_tess_u": {
+      "B2-01": null,
+      "B2-02": null,
+      "B2-03": null,
+      "B2-04": null,
+      "B2-05": null,
+      "B2-06": null,
+      "B2-07": null,
+      "S6_STD_M2p02_aoa1": null
+    }
+  },
+  "contract_readback": {
+    "fields_expected": 17,
+    "batch1b_contract_asserts_all_ok": [
+      true,
+      true
+    ],
+    "batch2_readback_17_ok_all": true,
+    "batch2_prestart_all_pass": true,
+    "contract_12d": {
+      "Sref": 358.25,
+      "Cref": 18.489893,
+      "Bref": 25.604638,
+      "X_cg": 16.821978259514246,
+      "Mach": 2.02,
+      "AoA": 2.0,
+      "ReCref": 89397005.8767656,
+      "Vinf": 596.0373972278921,
+      "Rho": 0.1153178340089936,
+      "NumWakeNodes": 8,
+      "WakeIters": 5,
+      "WakeRelax": 1.0,
+      "FarDist": -1.0,
+      "Symmetry": 0
+    },
+    "contract_std_S6": {
+      "AoA": 1.0,
+      "Beta": 0.0,
+      "Bref": 4.0,
+      "Cref": 1.0,
+      "FarDist": -1.0,
+      "Mach": 2.02,
+      "NumWakeNodes": 8,
+      "ReCref": 4834912.016269014,
+      "Rho": 0.1153178340089936,
+      "Sref": 4.0,
+      "Symmetry": 0,
+      "Vinf": 596.0373971680001,
+      "WakeIters": 5,
+      "WakeRelax": 1.0,
+      "X_cg": 0.25,
+      "Y_cg": 0.0,
+      "Z_cg": 0.0
+    },
+    "note": "S6 使用独立标准矩形翼与 AoA=1；其 ReCref 按 Sref=4/Cref=1 计算，与 12D 案不同。"
+  },
+  "polar_parser": {
+    "ld_002": "VSPAERO 7.2.2 48-column polar header parsed (header row index 2); parser v2 in scripts/verify_polar_policy_v2.py.",
+    "ld_001": "contract setup format requires \"key = value\"; bare-key writes broke VSPAERO parsing in d12d004 and were fixed.",
+    "derived_column_allowlist": [
+      "Ew"
+    ],
+    "derived_column_policy": "Only Ew may be non-finite; PASS_WITH_WARNINGS. Any other column non-finite is a failure.",
+    "primary_columns_checked": [
+      "CLo",
+      "CLi",
+      "CLtot",
+      "CDo",
+      "CDi",
+      "CDtot",
+      "CMxtot",
+      "CMytot",
+      "CMztot"
+    ]
+  },
+  "batch1_stop_decision": {},
+  "batch1b_wake_sensitivity": {
+    "comparison": "S4 (NumWakeNodes=128) vs S3 (NumWakeNodes=8), same std wing, Mach 2.02, AoA 2",
+    "delta_s4_vs_s3": {
+      "CLo": {
+        "s3": -0.000390514345,
+        "s4": -0.000390514343,
+        "abs_diff": 2e-12,
+        "rel_diff": 5.121450767726329e-09
+      },
+      "CLi": {
+        "s3": 0.074641546128,
+        "s4": 0.074641472558,
+        "abs_diff": -7.357e-08,
+        "rel_diff": -9.856441060662863e-07
+      },
+      "CLtot": {
+        "s3": 0.074251031783,
+        "s4": 0.074250958215,
+        "abs_diff": -7.3568e-08,
+        "rel_diff": -9.908010465426818e-07
+      },
+      "CDo": {
+        "s3": 0.011182867698,
+        "s4": 0.011182867628,
+        "abs_diff": -7e-11,
+        "rel_diff": -6.259575135649212e-09
+      },
+      "CDi": {
+        "s3": 0.002606540227,
+        "s4": 0.002606535876,
+        "abs_diff": -4.351e-09,
+        "rel_diff": -1.6692625553564866e-06
+      },
+      "CDtot": {
+        "s3": 0.013789407924,
+        "s4": 0.013789403504,
+        "abs_diff": -4.42e-09,
+        "rel_diff": -3.205358797162658e-07
+      },
+      "CMytot": {
+        "s3": -0.014777040022,
+        "s4": -0.014776993867,
+        "abs_diff": 4.6155e-08,
+        "rel_diff": 3.12342660857926e-06
+      },
+      "E": {
+        "s3": 0.168318084604,
+        "s4": 0.168318032003,
+        "abs_diff": -5.2601e-08,
+        "rel_diff": -3.125094972646924e-07
+      }
+    },
+    "s5_vs_s4_cross_geometry": {
+      "CLtot": {
+        "s4_std_wing": 0.074250958215,
+        "s5_12d_wing": 0.070832611794,
+        "rel_diff_s5_vs_s4": -0.04603774150768381
+      },
+      "CDi": {
+        "s4_std_wing": 0.002606535876,
+        "s5_12d_wing": 0.002488240979,
+        "rel_diff_s5_vs_s4": -0.04538395120098474
+      },
+      "CDtot": {
+        "s4_std_wing": 0.013789403504,
+        "s5_12d_wing": 0.009796560997,
+        "rel_diff_s5_vs_s4": -0.2895587547236373
+      },
+      "CDo": {
+        "s4_std_wing": 0.011182867628,
+        "s5_12d_wing": 0.007308320018,
+        "rel_diff_s5_vs_s4": -0.34647174042360934
+      },
+      "E": {
+        "s4_std_wing": 0.168318032003,
+        "s5_12d_wing": 0.350730237755,
+        "rel_diff_s5_vs_s4": 1.0837353763068522
+      }
+    },
+    "conclusion": "wake-node change is below 1e-7 in primary coefficients at Mach 2.02; not a physical validation."
+  },
+  "batch2_sensitivity": {
+    "density": {
+      "sect_tess_u": {
+        "B2-01": 3,
+        "B2-02": 6,
+        "B2-03": 12
+      },
+      "deltas": {
+        "rule": "delta = case - B2-03 baseline (same 12D contract, AoA 2); repeat B2-07 vs B2-03 measures run-to-run repeatability",
+        "baseline_case": "B2-03",
+        "perturbations": {
+          "B2-04": {
+            "vs": "B2-03",
+            "primary_delta": {
+              "CLtot": {
+                "base": 0.068491960121,
+                "case": 0.071941629767,
+                "delta": 0.003449669645999992,
+                "rel_pct": 5.03660523060765
+              },
+              "CDi": {
+                "base": 0.002400696206,
+                "case": 0.002521957494,
+                "delta": 0.00012126128800000026,
+                "rel_pct": 5.051088417473855
+              },
+              "CDtot": {
+                "base": 0.009704726125,
+                "case": 0.010164783208,
+                "delta": 0.00046005708299999906,
+                "rel_pct": 4.740546792091973
+              },
+              "CLo": {
+                "base": -0.000255062345,
+                "case": -0.000266893355,
+                "delta": -1.183101000000003e-05,
+                "rel_pct": 4.638477702382933
+              },
+              "CDo": {
+                "base": 0.007304029919,
+                "case": 0.007642825714,
+                "delta": 0.0003387957950000001,
+                "rel_pct": 4.6384776453159
+              },
+              "CMytot": {
+                "base": -0.018563127748,
+                "case": -0.021611409887,
+                "delta": -0.0030482821389999984,
+                "rel_pct": 16.42116662871332
+              }
+            },
+            "derived_delta": {
+              "E": {
+                "base": 0.33989213923,
+                "case": 0.356961944011,
+                "delta": 0.01706980478100001,
+                "rel_pct": 5.022124024306759
+              },
+              "L/D": {
+                "base": 7.05758815252,
+                "case": 7.0775370506,
+                "delta": 0.01994889808,
+                "rel_pct": 0.2826588580813829
+              },
+              "LoDw": {
+                "base": -0.034920769492,
+                "case": -0.034920769492,
+                "delta": 0.0,
+                "rel_pct": -0.0
+              },
+              "Re/1e6": {
+                "base": 89.397005876766,
+                "case": 89.397005876766,
+                "delta": 0.0,
+                "rel_pct": 0.0
+              },
+              "Ew": {
+                "base": "inf",
+                "case": "inf",
+                "delta": "nan",
+                "rel_pct": "nan"
+              }
+            }
+          },
+          "B2-05": {
+            "vs": "B2-03",
+            "primary_delta": {
+              "CLtot": {
+                "base": 0.068491960121,
+                "case": 0.06701885029,
+                "delta": -0.0014731098310000051,
+                "rel_pct": -2.1507777385806506
+              },
+              "CDi": {
+                "base": 0.002400696206,
+                "case": 0.002349255361,
+                "delta": -5.144084499999991e-05,
+                "rel_pct": -2.1427469611288217
+              },
+              "CDtot": {
+                "base": 0.009704726125,
+                "case": 0.00965228443,
+                "delta": -5.244169500000055e-05,
+                "rel_pct": -0.5403727454493267
+              },
+              "CLo": {
+                "base": -0.000255062345,
+                "case": -0.000255027395,
+                "delta": 3.494999999999193e-08,
+                "rel_pct": -0.013702532218149228
+              },
+              "CDo": {
+                "base": 0.007304029919,
+                "case": 0.007303029069,
+                "delta": -1.0008500000002057e-06,
+                "rel_pct": -0.013702709478183967
+              },
+              "CMytot": {
+                "base": -0.018563127748,
+                "case": -0.022290135972,
+                "delta": -0.0037270082239999995,
+                "rel_pct": 20.077479800792457
+              }
+            },
+            "derived_delta": {
+              "E": {
+                "base": 0.33989213923,
+                "case": 0.332554521006,
+                "delta": -0.007337618223999975,
+                "rel_pct": -2.1588078619949247
+              },
+              "L/D": {
+                "base": 7.05758815252,
+                "case": 6.943314898451,
+                "delta": -0.11427325406900035,
+                "rel_pct": -1.619154470329891
+              },
+              "LoDw": {
+                "base": -0.034920769492,
+                "case": -0.034920769492,
+                "delta": 0.0,
+                "rel_pct": -0.0
+              },
+              "Re/1e6": {
+                "base": 89.397005876766,
+                "case": 89.397005876766,
+                "delta": 0.0,
+                "rel_pct": 0.0
+              },
+              "Ew": {
+                "base": "inf",
+                "case": "inf",
+                "delta": "nan",
+                "rel_pct": "nan"
+              }
+            }
+          },
+          "B2-06": {
+            "vs": "B2-03",
+            "primary_delta": {
+              "CLtot": {
+                "base": 0.068491960121,
+                "case": 0.068664187755,
+                "delta": 0.00017222763399998842,
+                "rel_pct": 0.2514567165193196
+              },
+              "CDi": {
+                "base": 0.002400696206,
+                "case": 0.002421413708,
+                "delta": 2.071750200000012e-05,
+                "rel_pct": 0.8629789120431559
+              },
+              "CDtot": {
+                "base": 0.009704726125,
+                "case": 0.009725748466,
+                "delta": 2.102234099999982e-05,
+                "rel_pct": 0.21661962150425776
+              },
+              "CLo": {
+                "base": -0.000255062345,
+                "case": -0.000255761098,
+                "delta": -6.987530000000125e-07,
+                "rel_pct": 0.2739538052941576
+              },
+              "CDo": {
+                "base": 0.007304029919,
+                "case": 0.007304334758,
+                "delta": 3.0483899999926567e-07,
+                "rel_pct": 0.004173572717799072
+              },
+              "CMytot": {
+                "base": -0.018563127748,
+                "case": -0.018671664135,
+                "delta": -0.00010853638699999738,
+                "rel_pct": 0.584688035730892
+              }
+            },
+            "derived_delta": {
+              "E": {
+                "base": 0.33989213923,
+                "case": 0.338680906778,
+                "delta": -0.0012112324519999995,
+                "rel_pct": -0.35635788893028103
+              },
+              "L/D": {
+                "base": 7.05758815252,
+                "case": 7.060041496326,
+                "delta": 0.002453343805999708,
+                "rel_pct": 0.0347617876387943
+              },
+              "LoDw": {
+                "base": -0.034920769492,
+                "case": -0.035014974819,
+                "delta": -9.420532699999651e-05,
+                "rel_pct": 0.26976876045522996
+              },
+              "Re/1e6": {
+                "base": 89.397005876766,
+                "case": 89.397005876766,
+                "delta": 0.0,
+                "rel_pct": 0.0
+              },
+              "Ew": {
+                "base": "inf",
+                "case": "inf",
+                "delta": "nan",
+                "rel_pct": "nan"
+              }
+            }
+          }
+        },
+        "repeatability": {
+          "B2-07": {
+            "vs": "B2-03",
+            "primary_delta": {
+              "CLtot": {
+                "base": 0.068491960121,
+                "case": 0.068491876738,
+                "delta": -8.338300000465537e-08,
+                "rel_pct": -0.00012174129614242079
+              },
+              "CDi": {
+                "base": 0.002400696206,
+                "case": 0.002399809101,
+                "delta": -8.871049999997771e-07,
+                "rel_pct": -0.036951989084777065
+              },
+              "CDtot": {
+                "base": 0.009704726125,
+                "case": 0.009703839326,
+                "delta": -8.867990000001325e-07,
+                "rel_pct": -0.009137805524626615
+              },
+              "CLo": {
+                "base": -0.000255062345,
+                "case": -0.000255062356,
+                "delta": -1.1000000010256278e-11,
+                "rel_pct": 4.3126710884181196e-06
+              },
+              "CDo": {
+                "base": 0.007304029919,
+                "case": 0.007304030225,
+                "delta": 3.059999996446461e-10,
+                "rel_pct": 4.189468047613648e-06
+              },
+              "CMytot": {
+                "base": -0.018563127748,
+                "case": -0.018562783568,
+                "delta": 3.441800000003603e-07,
+                "rel_pct": -0.0018541056478881496
+              }
+            },
+            "derived_delta": {
+              "E": {
+                "base": 0.33989213923,
+                "case": 0.340016954659,
+                "delta": 0.00012481542900000253,
+                "rel_pct": 0.036722069913932835
+              },
+              "L/D": {
+                "base": 7.05758815252,
+                "case": 7.058224526949,
+                "delta": 0.0006363744289998863,
+                "rel_pct": 0.009016882470999117
+              },
+              "LoDw": {
+                "base": -0.034920769492,
+                "case": -0.034920769492,
+                "delta": 0.0,
+                "rel_pct": -0.0
+              },
+              "Re/1e6": {
+                "base": 89.397005876766,
+                "case": 89.397005876766,
+                "delta": 0.0,
+                "rel_pct": 0.0
+              },
+              "Ew": {
+                "base": "inf",
+                "case": "inf",
+                "delta": "nan",
+                "rel_pct": "nan"
+              }
+            }
+          }
+        },
+        "density_trio": {
+          "B2-01_Tess_3_3_vs_B2-02_Tess_6_6": {
+            "CLtot": {
+              "base": 0.068720123506,
+              "case": 0.070394960019,
+              "delta": 0.0016748365130000026,
+              "rel_pct": 2.437184957698412
+            },
+            "CDi": {
+              "base": 0.002408676841,
+              "case": 0.002467158219,
+              "delta": 5.848137800000021e-05,
+              "rel_pct": 2.4279462070022126
+            },
+            "CDtot": {
+              "base": 0.009720832617,
+              "case": 0.009775137856,
+              "delta": 5.430523899999963e-05,
+              "rel_pct": 0.5586480205926956
+            },
+            "CLo": {
+              "base": -0.000255346106,
+              "case": -0.000255200272,
+              "delta": 1.4583399999998055e-07,
+              "rel_pct": -0.05711228664672902
+            },
+            "CDo": {
+              "base": 0.007312155776,
+              "case": 0.007307979636,
+              "delta": -4.1761400000001406e-06,
+              "rel_pct": -0.05711229530567567
+            },
+            "CMytot": {
+              "base": -0.01841834876,
+              "case": -0.019363091256,
+              "delta": -0.0009447424959999999,
+              "rel_pct": 5.129355016079085
+            }
+          },
+          "B2-02_Tess_6_6_vs_B2-03_Tess_12_12": {
+            "CLtot": {
+              "base": 0.070394960019,
+              "case": 0.068491960121,
+              "delta": -0.0019029998979999962,
+              "rel_pct": -2.7033183874049587
+            },
+            "CDi": {
+              "base": 0.002467158219,
+              "case": 0.002400696206,
+              "delta": -6.646201300000015e-05,
+              "rel_pct": -2.693869103658007
+            },
+            "CDtot": {
+              "base": 0.009775137856,
+              "case": 0.009704726125,
+              "delta": -7.04117309999995e-05,
+              "rel_pct": -0.7203144552767677
+            },
+            "CLo": {
+              "base": -0.000255200272,
+              "case": -0.000255062345,
+              "delta": 1.3792700000002508e-07,
+              "rel_pct": -0.05404657248955639
+            },
+            "CDo": {
+              "base": 0.007307979636,
+              "case": 0.007304029919,
+              "delta": -3.94971699999979e-06,
+              "rel_pct": -0.05404663390881663
+            },
+            "CMytot": {
+              "base": -0.019363091256,
+              "case": -0.018563127748,
+              "delta": 0.0007999635080000005,
+              "rel_pct": -4.131383245700076
+            }
+          },
+          "B2-01_Tess_3_3_vs_B2-03_Tess_12_12": {
+            "CLtot": {
+              "base": 0.068720123506,
+              "case": 0.068491960121,
+              "delta": -0.00022816338499999367,
+              "rel_pct": -0.3320182988030756
+            },
+            "CDi": {
+              "base": 0.002408676841,
+              "case": 0.002400696206,
+              "delta": -7.980634999999944e-06,
+              "rel_pct": -0.3313285893796637
+            },
+            "CDtot": {
+              "base": 0.009720832617,
+              "case": 0.009704726125,
+              "delta": -1.6106491999999875e-05,
+              "rel_pct": -0.1656904571305188
+            },
+            "CLo": {
+              "base": -0.000255346106,
+              "case": -0.000255062345,
+              "delta": 2.8376100000000563e-07,
+              "rel_pct": -0.11112799190288246
+            },
+            "CDo": {
+              "base": 0.007312155776,
+              "case": 0.007304029919,
+              "delta": -8.12585699999993e-06,
+              "rel_pct": -0.11112806194133153
+            },
+            "CMytot": {
+              "base": -0.01841834876,
+              "case": -0.018563127748,
+              "delta": -0.00014477898799999944,
+              "rel_pct": 0.7860584566322406
+            }
+          },
+          "note": "same 12D geometry/contract; SectTess_U only differs (3/3, 6/6, 12/12) - internal density sensitivity, NOT physical validation"
+        },
+        "s6_vs_s3_cross_aoa": {
+          "reference": "RUN/evidence/v1/per_case_conclusions.json (batch1 S3_STD_M2p02_base, AoA 2, Tess 12/12)",
+          "s6": {
+            "AoA": 1.0,
+            "CLtot": 0.037164223289,
+            "CDi": 0.000652721593,
+            "CDtot": 0.011813972653
+          },
+          "s3": {
+            "AoA": 2.0,
+            "CLtot": 0.074251031783,
+            "CDi": 0.002606540227,
+            "CDtot": 0.013789407924
+          },
+          "cltot_ratio_s6_over_s3": 0.5005213045067592,
+          "cltot_ratio_over_linear_expectation_0p5": 1.0010426090135185,
+          "note": "same standard rectangular wing (S3_STD_M2p02_base vs S6_STD_M2p02_aoa1), AoA 1 vs 2; CLtot ratio ~0.5 is a near-linear internal consistency check only, NOT physical validation"
+        }
+      }
+    },
+    "perturbations": {
+      "B2-04": "W01 wing area 358.25 -> 376.1625 (fixed Sref=358.25 normalization)",
+      "B2-05": "W03 quarter-chord sweep 67 -> 69 deg",
+      "B2-06": "W10 tip twist 0 -> 2 deg"
+    },
+    "repeat": {
+      "B2-07_vs_B2-03": null
+    }
+  },
+  "derived_column_artifact": {
+    "column": "Ew",
+    "observed": "Infinity in 8/8 batch2 and 2/2 batch1b cases",
+    "mechanism": "CDiw = 0 and CLiw = 0 in thin isolated-wing polar; Ew = CLtot^2 / (pi * AR * CDiw) divides by zero. Derived 0/0 artifact, not solver divergence.",
+    "correction_source": "A5 task-138 finding A5B2R-01 (report corrected); original evidence not rewritten."
+  },
+  "corrections_latest": [
+    {
+      "id": "A5B2R-01",
+      "status": "CORRECTED_IN_DOCS_AND_DIAGNOSTICS",
+      "summary": "Ew mechanism rewritten as CDiw=0 derived-ratio artifact."
+    },
+    {
+      "id": "A5B2R-02",
+      "status": "DISCLOSED",
+      "summary": "cases[*].history_iterations null in results JSON; raw history has 5 rows per case, verified by verify-history."
+    },
+    {
+      "id": "A5B2R-03",
+      "status": "DISCLOSED",
+      "summary": "last_solver_finish_utc and per-case stdout_sha256 null in snapshot; solver stdout archived at cases/<case>/results/solver_stdout.log."
+    },
+    {
+      "id": "A5B2R-04",
+      "status": "CORRECTED_IN_DOCS",
+      "summary": "B2-04 delta labeled as fixed-Sref normalization, not pure aerodynamic sensitivity."
+    },
+    {
+      "id": "B1B-m03",
+      "status": "INFORMATIONAL_WITHDRAWN",
+      "summary": "S4 budget snapshot 1/5 in immutable raw evidence is as-of-completion; corrections JSON defines final 2/6; not a new defect."
+    }
+  ],
+  "gate_notes": {
+    "gate1": "PASS_INTERNAL_ONLY",
+    "gate2": {
+      "a5_label": "DIAGNOSTIC_REPAIR_CONFIRMED_BY_S6",
+      "registration": "REGISTERED_POST_HOC_DIAGNOSTIC",
+      "s3_s4_band": [
+        0.06,
+        0.09
+      ],
+      "s6_band": [
+        0.03,
+        0.045
+      ],
+      "s6_observed_CLtot": 0.037164223,
+      "s6_band_pass": true
+    },
+    "gate3": "CANNOT_REACH_PHYSICAL_VALIDATION (thin-surface VLM has no thickness, viscosity or shock capturing)",
+    "lf_m2_02": "NOT_VALIDATED",
+    "fallback": "NOT_TRIGGERED"
+  }
+}

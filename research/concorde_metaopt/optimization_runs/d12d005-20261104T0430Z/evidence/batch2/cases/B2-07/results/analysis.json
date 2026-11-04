@@ -1,0 +1,359 @@
+{
+ "schema_version": "d12d005-batch2-analysis-1",
+ "batch_id": "D-12D-005-BATCH2",
+ "case_id": "B2-07",
+ "order": 8,
+ "kind": "d12",
+ "event_id": "NA-D12D005C-008",
+ "label": "VSPAERO_INTERNAL_ONLY",
+ "physical_validation": "NOT_VALIDATED",
+ "outcome_class": "SOLVED_VALID_WITH_DERIVED_WARNINGS",
+ "outcome_class_reason": null,
+ "stop_rule_hit": false,
+ "command": "D:\\OpenVSP-3.55.0\\OpenVSP-3.55.0-win64\\vspaero.exe -omp 4 wing355_baseline",
+ "cwd": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\batch2\\cases\\B2-07\\bundle",
+ "started_utc": "2026-11-04T13:17:51Z",
+ "finished_utc": "2026-11-04T13:17:53Z",
+ "wall_seconds": 1.762,
+ "timeout_s": 900,
+ "timed_out": false,
+ "returncode": 0,
+ "peak_rss_gb": 0.294,
+ "pid": 25672,
+ "worktree_head": "c1168ec656160a3e35e5e157050e98ac1fde8cdf",
+ "runner_version": "d12d005-runner-5",
+ "runner_sha256": "0c27d05f047d20e9bfc32b4ab27d687c261461b4feb9af5b97247089189f9377",
+ "exe_sha256": "db71c4412489af82398833408ea30fb73327bdd9434de2ef530d31375b9fddad",
+ "contract": {
+  "AoA": 2.0,
+  "Beta": 0.0,
+  "Bref": 25.604638,
+  "Cref": 18.489893,
+  "FarDist": -1.0,
+  "Mach": 2.02,
+  "NumWakeNodes": 8,
+  "ReCref": 89397005.8767656,
+  "Rho": 0.1153178340089936,
+  "Sref": 358.25,
+  "Symmetry": 0,
+  "Vinf": 596.0373972278921,
+  "WakeIters": 5,
+  "WakeRelax": 1.0,
+  "X_cg": 16.821978259514246,
+  "Y_cg": 0.0,
+  "Z_cg": 0.0
+ },
+ "contract_asserts": {
+  "Sref": {
+   "got": 358.25,
+   "want": 358.25,
+   "ok": true
+  },
+  "Cref": {
+   "got": 18.489893,
+   "want": 18.489893,
+   "ok": true
+  },
+  "Bref": {
+   "got": 25.604638,
+   "want": 25.604638,
+   "ok": true
+  },
+  "X_cg": {
+   "got": 16.821978259514246,
+   "want": 16.821978259514246,
+   "ok": true
+  },
+  "Mach": {
+   "got": 2.02,
+   "want": 2.02,
+   "ok": true
+  },
+  "AoA": {
+   "got": 2.0,
+   "want": 2.0,
+   "ok": true
+  },
+  "Vinf": {
+   "got": 596.0373972278921,
+   "want": 596.0373972278921,
+   "ok": true
+  },
+  "Rho": {
+   "got": 0.1153178340089936,
+   "want": 0.1153178340089936,
+   "ok": true
+  },
+  "ReCref": {
+   "got": 89397005.8767656,
+   "want": 89397005.8767656,
+   "ok": true
+  },
+  "NumWakeNodes": {
+   "got": 8,
+   "want": 8,
+   "ok": true
+  },
+  "WakeIters": {
+   "got": 5,
+   "want": 5,
+   "ok": true
+  },
+  "Symmetry": {
+   "got": 0,
+   "want": 0,
+   "ok": true
+  }
+ },
+ "prestart_checks": {
+  "auth_sha_matches": true,
+  "plan_sha_matches": true,
+  "worktree_head_matches": true,
+  "exe_sha256_matches_authorization": true,
+  "no_other_vspaero_process": true,
+  "stop_before_run_evidence_one": true,
+  "evidence_zero_solver_started": true,
+  "pc09_checks_all_ok": true,
+  "contract_asserts_all_ok": true,
+  "csf_zero_control_surfaces": true,
+  "setup_sha_equals_contract": true,
+  "vkey_line2_is_local_vspgeom": true,
+  "check_case_dir_pass": true,
+  "readback_17_ok": true,
+  "all_pass": true
+ },
+ "pc09": {
+  "schema_version": "d12d005-batch2-pc09-1",
+  "generated_utc": "2026-11-04T13:17:51Z",
+  "case_id": "B2-07",
+  "rule": "PC-09 external thin .vspgeom copied to case-local name matching vkey basename; vkey line2 rewritten to local absolute path",
+  "source_bundle_dir": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\a0v2\\setup_gen\\B2-07",
+  "bundle_dir": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\batch2\\cases\\B2-07\\bundle",
+  "source_case_files": {
+   "B2-07_contract.vspaero": {
+    "bytes": 847,
+    "sha256": "c9cef04e6a6986fdc87f07338e168dbf2ee17bdab3f5836b417ba6e6036ccb64"
+   },
+   "expected_v2.json": {
+    "bytes": 1209,
+    "sha256": "a14520fb7e9916de9ceeb805aa99957adf760e81dc079d0ad7b85efaa589b284"
+   },
+   "geom_result_thin.csv": {
+    "bytes": 363,
+    "sha256": "71c9c49eea4e89e2b12d64b2ddb8c132bbd927636176564a82ca7d502c0e3422"
+   },
+   "wing355_baseline.csf": {
+    "bytes": 19,
+    "sha256": "6630b6a16273b17ce900ab4ef14203af344d306033574c816571b91452c495ca"
+   },
+   "wing355_baseline.vkey": {
+    "bytes": 366,
+    "sha256": "23b15f661989f80938e3b25ed80bafe29f315b7cfe66a382ddcb56239221e134"
+   },
+   "wing355_baseline.vsp3": {
+    "bytes": 111816,
+    "sha256": "cccada66de718b23a039af88dae769070e5674b0ba32e4b706f8ef2d47cd8b4c"
+   },
+   "wing355_baseline.vspaero": {
+    "bytes": 888,
+    "sha256": "360618f4b406fa72ed4bd7676892aad268d5ce19ee196deee2d7b54136e43d3c"
+   }
+  },
+  "external_vspgeom_path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\d12d005-20261104T0430Z\\raw_artifacts\\a0v2_setup\\B2-07.vspgeom",
+  "external_vspgeom_sha256": "d071b05feb499931ec2022b19787047adb34dcc27693466c57b4baf777c981d3",
+  "external_vspgeom_bytes": 495690,
+  "evidence_recorded_vspgeom_sha256": "d071b05feb499931ec2022b19787047adb34dcc27693466c57b4baf777c981d3",
+  "evidence_recorded_vspgeom_bytes": 495690,
+  "local_vspgeom_basename": "wing355_baseline.vspgeom",
+  "local_vspgeom_sha256": "d071b05feb499931ec2022b19787047adb34dcc27693466c57b4baf777c981d3",
+  "local_vspgeom_bytes": 495690,
+  "vkey_basename_original": "wing355_baseline.vspgeom",
+  "vkey_final_basename": "wing355_baseline.vspgeom",
+  "vkey_line2_final": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\batch2\\cases\\B2-07\\bundle\\wing355_baseline.vspgeom",
+  "vkey_sha256": "8d7bdcd5a0d7fa868280df51b5608184636e9f3c7cfb429729ba08327cf7d79e",
+  "vkey_bytes": 367,
+  "contract_path": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\batch2\\cases\\B2-07\\bundle\\B2-07_contract.vspaero",
+  "contract_sha256": "c9cef04e6a6986fdc87f07338e168dbf2ee17bdab3f5836b417ba6e6036ccb64",
+  "contract_bytes": 847,
+  "setup_path": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\batch2\\cases\\B2-07\\bundle\\wing355_baseline.vspaero",
+  "setup_sha256": "c9cef04e6a6986fdc87f07338e168dbf2ee17bdab3f5836b417ba6e6036ccb64",
+  "setup_bytes": 847,
+  "raw_setup_sha256_before_contract_overwrite": "360618f4b406fa72ed4bd7676892aad268d5ce19ee196deee2d7b54136e43d3c",
+  "model_path": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\batch2\\cases\\B2-07\\bundle\\wing355_baseline.vsp3",
+  "model_sha256": "cccada66de718b23a039af88dae769070e5674b0ba32e4b706f8ef2d47cd8b4c",
+  "csf_path": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\batch2\\cases\\B2-07\\bundle\\wing355_baseline.csf",
+  "csf_sha256": "6630b6a16273b17ce900ab4ef14203af344d306033574c816571b91452c495ca",
+  "expected_v2_path": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\batch2\\cases\\B2-07\\bundle\\expected_v2.json",
+  "expected_v2_sha256": "a14520fb7e9916de9ceeb805aa99957adf760e81dc079d0ad7b85efaa589b284",
+  "checks": {
+   "local_vspgeom_sha_equals_external": true,
+   "local_vspgeom_sha_equals_evidence": true,
+   "local_vspgeom_bytes_equals_evidence": true,
+   "vkey_basename_matches_local_copy": true,
+   "vkey_line2_is_absolute_local": true,
+   "setup_sha_equals_contract": true,
+   "no_solver_artifacts_in_bundle": true
+  }
+ },
+ "primary_values": {
+  "CLo": -0.000255062356,
+  "CLi": 0.068746939094,
+  "CLtot": 0.068491876738,
+  "CDo": 0.007304030225,
+  "CDi": 0.002399809101,
+  "CDtot": 0.009703839326,
+  "CMytot": -0.018562783568,
+  "CMztot": -1.22351e-07,
+  "CLwtot": -0.000255062356,
+  "CDwtot": 0.007304030225
+ },
+ "primary_finite": true,
+ "primary_nonfinite": {},
+ "all_coefficients": {
+  "Beta": 0.0,
+  "Mach": 2.02,
+  "AoA": 2.0,
+  "Re/1e6": 89.397005876766,
+  "CLo": -0.000255062356,
+  "CLi": 0.068746939094,
+  "CLtot": 0.068491876738,
+  "CDo": 0.007304030225,
+  "CDi": 0.002399809101,
+  "CDtot": 0.009703839326,
+  "E": 0.340016954659,
+  "CMytot": -0.018562783568,
+  "CMztot": -1.22351e-07,
+  "CLwtot": -0.000255062356,
+  "CDwtot": 0.007304030225,
+  "LoDw": -0.034920769492,
+  "Ew": Infinity,
+  "L/D": 7.058224526949
+ },
+ "derived_column_warnings": [
+  {
+   "column": "Ew",
+   "value": "inf",
+   "classification": "DERIVED_RATIO_NONFINITE_ALLOWED"
+  }
+ ],
+ "gate_result": {
+  "finite_primary": true,
+  "abs_cl_lt_1": true,
+  "abs_cdtot_lt_10": true,
+  "abs_cltot_le_10": true,
+  "cdi_ge_0": true,
+  "cdtot_ge_cdi": true
+ },
+ "gate_failures": [],
+ "polar_rows": 1,
+ "artifacts": {
+  ".polar": {
+   "path": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\batch2\\cases\\B2-07\\bundle\\wing355_baseline.polar",
+   "bytes": 3025,
+   "sha256": "c98efbd6dd94fdd955f3926ba18fd2c39900e82590d2a4ca661e94fcc7c7f005"
+  },
+  ".history": {
+   "path": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\batch2\\cases\\B2-07\\bundle\\wing355_baseline.history",
+   "bytes": 7552,
+   "sha256": "51125f9f153756cfbde51ecdd65f156ed45c4c87ac3f940913b52053be7e06da"
+  },
+  ".lod": {
+   "path": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\batch2\\cases\\B2-07\\bundle\\wing355_baseline.lod",
+   "bytes": 49085,
+   "sha256": "8c87f42e542f699212c56ca9e78ffdf223025b0829d300bed2a4b4c6d32a6406"
+  },
+  ".adb": {
+   "path": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\batch2\\cases\\B2-07\\bundle\\wing355_baseline.adb",
+   "bytes": 407480,
+   "sha256": "651bbbb90b48b94c0576616fb4fdeae9ccab1ed9697e34f208760f047bf2b49b"
+  },
+  ".adb.cases": {
+   "path": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\batch2\\cases\\B2-07\\bundle\\wing355_baseline.adb.cases",
+   "bytes": 239,
+   "sha256": "8cbcd5570263a4a9e357ca3bf82600e02ddd8a7712d33819647443524d1226cd"
+  },
+  ".group.0": {
+   "path": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\batch2\\cases\\B2-07\\bundle\\wing355_baseline.group.0",
+   "bytes": 4141,
+   "sha256": "d4bff43ea4329733ba898b1ffecf01ff9af8da2946cfb683d530e87f3388ff02"
+  },
+  ".group.1": {
+   "path": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\batch2\\cases\\B2-07\\bundle\\wing355_baseline.group.1",
+   "bytes": 4141,
+   "sha256": "089a18b496a825012982952ee4dfa6e6aa4ca4aae6c5f39ad5cca0b1ef3c58e3"
+  }
+ },
+ "verify_polar": {
+  "status": "PASS_WITH_WARNINGS",
+  "path": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\batch2\\cases\\B2-07\\bundle\\wing355_baseline.polar",
+  "schema": "vspaero-7.2.2-48-column",
+  "allow_nonfinite_columns": [
+   "Ew"
+  ],
+  "derived_column_warnings": [
+   {
+    "line": 4,
+    "column": "Ew",
+    "token": "inf"
+   }
+  ],
+  "header_token_count": 48,
+  "rows": 1,
+  "checks": [
+   {
+    "row": 1,
+    "AoA": 2.0,
+    "CLo": -0.000255062356,
+    "CLi": 0.068746939094,
+    "CLtot": 0.068491876738,
+    "CDo": 0.007304030225,
+    "CDi": 0.002399809101,
+    "CDtot": 0.009703839326,
+    "CMztot": -1.22351e-07,
+    "Ew": null,
+    "Re": 89397005.876766
+   }
+  ],
+  "sha256": "c98efbd6dd94fdd955f3926ba18fd2c39900e82590d2a4ca661e94fcc7c7f005"
+ },
+ "verify_polar_returncode": 0,
+ "verify_polar_status": "PASS_WITH_WARNINGS",
+ "verify_polar_error": "",
+ "verify_history": {
+  "status": "PASS",
+  "path": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\batch2\\cases\\B2-07\\bundle\\wing355_baseline.history",
+  "sha256": "51125f9f153756cfbde51ecdd65f156ed45c4c87ac3f940913b52053be7e06da",
+  "reference_fields": {
+   "Sref_": 358.25,
+   "Cref_": 18.489893,
+   "Bref_": 25.604638,
+   "Xcg_": 16.8219783,
+   "Ycg_": 0.0,
+   "Zcg_": 0.0,
+   "Mach_": 2.02,
+   "AoA_": 2.0,
+   "Beta_": 0.0,
+   "Rho_": 0.1153178,
+   "Vinf_": 596.0373972
+  }
+ },
+ "verify_history_returncode": 0,
+ "verify_history_status": "PASS",
+ "verify_history_error": "",
+ "history_last_row": null,
+ "history_iterations": null,
+ "budget": {
+  "class_A_cap": 20,
+  "class_A_used_before": 6,
+  "starts_used_this_batch": 8,
+  "batch_cap": 8,
+  "class_A_used_total_after": 14,
+  "retries_used": 0
+ },
+ "notes": [
+  "physical_validation=NOT_VALIDATED",
+  "VSPAERO_INTERNAL_ONLY",
+  "CDo/CDtot must not be used as validated drag or fuel objective",
+  "Gate3 physical validation unreachable by thin VLM"
+ ]
+}

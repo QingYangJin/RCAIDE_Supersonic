@@ -1,0 +1,129 @@
+{
+  "schema": "d12d005-budget-ledger-1",
+  "run_id": "d12d005-20261104T0430Z",
+  "generated_utc": "2026-11-04T14:35:37Z",
+  "classes": {
+    "A": {
+      "category": "VSPAERO 7.2.2 thin-LF",
+      "cap_starts": 20,
+      "used_total": 14,
+      "remaining": 6,
+      "remaining_status": "NOT_AUTHORIZED",
+      "carry_over": false
+    },
+    "B": {
+      "category": "RCAIDE VLM empirical low-fidelity fallback",
+      "cap_starts": 12,
+      "used_total": 0,
+      "remaining": 12,
+      "status": "LOCKED_NOT_AUTHORIZED",
+      "trigger_required": "FALLBACK_TRIGGERED (not triggered)"
+    },
+    "C": {
+      "category": "SU2 Euler cross-check",
+      "cap_starts": 4,
+      "used_total": 0,
+      "remaining": 4,
+      "status": "LOCKED_NOT_AUTHORIZED"
+    },
+    "D": {
+      "category": "batch real DOE/BO/DE (Concorde)",
+      "cap_starts": 0,
+      "used_total": 0,
+      "status": "NOT_AUTHORIZED"
+    },
+    "E": {
+      "category": "real aviation MAML training",
+      "cap_starts": 0,
+      "used_total": 0,
+      "status": "NOT_AUTHORIZED"
+    },
+    "P4": {
+      "category": "high-fidelity batch (SU2/Mission)",
+      "cap_starts": 0,
+      "used_total": 0,
+      "status": "NOT_AUTHORIZED"
+    }
+  },
+  "batches": [
+    {
+      "batch": "batch1",
+      "batch_id": null,
+      "authorized_starts": 6,
+      "starts_used": 4,
+      "retries": 0,
+      "remaining_disposition": "CLOSED_NOT_CARRIED_OVER_NOT_REALLOCATED",
+      "billable_events": 4,
+      "non_billable_events": [
+        "NA-D12D005-004-AMEND"
+      ],
+      "ledger_rows": 9,
+      "ledger_sha256_raw": "563c448d9cce7cd2d2eaa1a94698d871a9667057133827ab0cbafc789b627b1b",
+      "events": [
+        "NA-D12D005-001",
+        "NA-D12D005-002",
+        "NA-D12D005-003",
+        "NA-D12D005-004"
+      ],
+      "notes": "S3 计费但判 FAILED_INVALID_POLAR（Ew 派生列）；S4/S5 未运行（NOT_RUN_AFTER_ABORT），由 batch1b 授权补跑而非重试。"
+    },
+    {
+      "batch": "batch1b",
+      "batch_id": "D-12D-005-BATCH1B",
+      "authorized_starts": 2,
+      "starts_used": 2,
+      "retries": 0,
+      "billable_events": 2,
+      "ledger_rows": 4,
+      "ledger_sha256_raw": "d75912ed0d0c1c074cd74415e2a9199fcefcbec705771f2b30c97d021280cf2a",
+      "events": [
+        "NA-D12D005B-001",
+        "NA-D12D005B-002"
+      ]
+    },
+    {
+      "batch": "batch2",
+      "batch_id": "D-12D-005-BATCH2",
+      "authorization_id": "D12D005-BATCH2-20261104T130635Z",
+      "authorized_starts": 8,
+      "starts_used": 8,
+      "retries": 0,
+      "billable_events": 8,
+      "ledger_rows": 16,
+      "ledger_sha256_raw": "a895c4f65df5aef0f5f47dabc9a05506ceed477bf5ffe80a0d47f4bf56376897",
+      "events": [
+        "NA-D12D005C-001",
+        "NA-D12D005C-002",
+        "NA-D12D005C-003",
+        "NA-D12D005C-004",
+        "NA-D12D005C-005",
+        "NA-D12D005C-006",
+        "NA-D12D005C-007",
+        "NA-D12D005C-008"
+      ],
+      "stopped": false
+    }
+  ],
+  "totals": {
+    "starts": 14,
+    "retries": 0,
+    "billable_events": 14,
+    "solver_invocations": 14,
+    "wall_seconds_sum": 50.246,
+    "peaks": {
+      "max_wall_seconds_single": 28.314,
+      "max_rss_gb": 3.493
+    }
+  },
+  "class_A_remaining_6": {
+    "status": "NOT_AUTHORIZED",
+    "carry_over": false,
+    "release_condition": "new Lead written authorization after A5+Lead review of new hypothesis and evidence (not requested this round)."
+  },
+  "sources": [
+    {
+      "path": "evidence/batch2/budget_ledger.json",
+      "sha256_raw": "e138b1215e994f18c2453de85a99355ffcdada7a8441ce94574e39fca3f4b09f"
+    }
+  ]
+}

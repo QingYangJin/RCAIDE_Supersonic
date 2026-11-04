@@ -1,0 +1,73 @@
+{
+ "schema_version": "d12d005-batch2-pc09-1",
+ "generated_utc": "2026-11-04T13:16:55Z",
+ "case_id": "B2-01",
+ "rule": "PC-09 external thin .vspgeom copied to case-local name matching vkey basename; vkey line2 rewritten to local absolute path",
+ "source_bundle_dir": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\a0v2\\setup_gen\\B2-01",
+ "bundle_dir": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\batch2\\cases\\B2-01\\bundle",
+ "source_case_files": {
+  "B2-01_contract.vspaero": {
+   "bytes": 847,
+   "sha256": "c9cef04e6a6986fdc87f07338e168dbf2ee17bdab3f5836b417ba6e6036ccb64"
+  },
+  "expected_v2.json": {
+   "bytes": 1217,
+   "sha256": "b8ae719e652a85ab432c5d3262fdf91e32cf6222264edcabd6c3a01ec25eafe5"
+  },
+  "geom_result_thin.csv": {
+   "bytes": 363,
+   "sha256": "71215ca16dcdb256a37f9671d6f1cd8c46e85b86b30ee3223eec89c7b9b0d4d1"
+  },
+  "wing355_baseline.csf": {
+   "bytes": 19,
+   "sha256": "6630b6a16273b17ce900ab4ef14203af344d306033574c816571b91452c495ca"
+  },
+  "wing355_baseline.vkey": {
+   "bytes": 366,
+   "sha256": "11085afa46d0d4e87b54ca3f88f6440c159a0e12151f21fd219d45ea49606115"
+  },
+  "wing355_baseline.vsp3": {
+   "bytes": 111816,
+   "sha256": "f9d649f467a02ceda7efb2bf5857330c5bdc73250463c92b8916bce4b3919950"
+  },
+  "wing355_baseline.vspaero": {
+   "bytes": 888,
+   "sha256": "360618f4b406fa72ed4bd7676892aad268d5ce19ee196deee2d7b54136e43d3c"
+  }
+ },
+ "external_vspgeom_path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\d12d005-20261104T0430Z\\raw_artifacts\\a0v2_setup\\B2-01.vspgeom",
+ "external_vspgeom_sha256": "0db18500be51340aa200cd33c2a11dc8e8a09423fcf8349f34ab0ab84008dbed",
+ "external_vspgeom_bytes": 89427,
+ "evidence_recorded_vspgeom_sha256": "0db18500be51340aa200cd33c2a11dc8e8a09423fcf8349f34ab0ab84008dbed",
+ "evidence_recorded_vspgeom_bytes": 89427,
+ "local_vspgeom_basename": "wing355_baseline.vspgeom",
+ "local_vspgeom_sha256": "0db18500be51340aa200cd33c2a11dc8e8a09423fcf8349f34ab0ab84008dbed",
+ "local_vspgeom_bytes": 89427,
+ "vkey_basename_original": "wing355_baseline.vspgeom",
+ "vkey_final_basename": "wing355_baseline.vspgeom",
+ "vkey_line2_final": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\batch2\\cases\\B2-01\\bundle\\wing355_baseline.vspgeom",
+ "vkey_sha256": "058c7b93da72bd199985e978c95de59d37a7f12f3a4c6549d29d6c4dec57dc38",
+ "vkey_bytes": 367,
+ "contract_path": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\batch2\\cases\\B2-01\\bundle\\B2-01_contract.vspaero",
+ "contract_sha256": "c9cef04e6a6986fdc87f07338e168dbf2ee17bdab3f5836b417ba6e6036ccb64",
+ "contract_bytes": 847,
+ "setup_path": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\batch2\\cases\\B2-01\\bundle\\wing355_baseline.vspaero",
+ "setup_sha256": "c9cef04e6a6986fdc87f07338e168dbf2ee17bdab3f5836b417ba6e6036ccb64",
+ "setup_bytes": 847,
+ "raw_setup_sha256_before_contract_overwrite": "360618f4b406fa72ed4bd7676892aad268d5ce19ee196deee2d7b54136e43d3c",
+ "model_path": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\batch2\\cases\\B2-01\\bundle\\wing355_baseline.vsp3",
+ "model_sha256": "f9d649f467a02ceda7efb2bf5857330c5bdc73250463c92b8916bce4b3919950",
+ "csf_path": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\batch2\\cases\\B2-01\\bundle\\wing355_baseline.csf",
+ "csf_sha256": "6630b6a16273b17ce900ab4ef14203af344d306033574c816571b91452c495ca",
+ "expected_v2_path": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\batch2\\cases\\B2-01\\bundle\\expected_v2.json",
+ "expected_v2_sha256": "b8ae719e652a85ab432c5d3262fdf91e32cf6222264edcabd6c3a01ec25eafe5",
+ "checks": {
+  "local_vspgeom_sha_equals_external": true,
+  "local_vspgeom_sha_equals_evidence": true,
+  "local_vspgeom_bytes_equals_evidence": true,
+  "vkey_basename_matches_local_copy": true,
+  "vkey_line2_is_absolute_local": true,
+  "setup_sha_equals_contract": true,
+  "no_solver_artifacts_in_bundle": true
+ }
+}

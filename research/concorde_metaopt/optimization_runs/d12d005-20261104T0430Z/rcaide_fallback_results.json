@@ -1,0 +1,38 @@
+{
+  "schema": "d12d005-rcaide-fallback-results-1",
+  "run_id": "d12d005-20261104T0430Z",
+  "generated_utc": "2026-11-04T14:35:37Z",
+  "status": "NOT_EXECUTED",
+  "fallback_triggered": false,
+  "fallback_status": "NOT_TRIGGERED",
+  "evaluator": {
+    "evaluator_id": "RCAIDE_VLM_EMPIRICAL_LF_M202",
+    "implemented_in_repo": false,
+    "physics_validation_status": "NOT_APPLICABLE"
+  },
+  "reason": "A-line (VSPAERO thin-LF) closed at 14/20 with internal-only evidence; A5 task-125/138 verdicts: FALLBACK_NOT_TRIGGERED; B class stays LOCKED 0/12; the mandatory RCAIDE_VLM_EMPIRICAL_LF_M202 evaluator is not implemented in the repo, so no fallback run can be produced without a new authorization and evaluator work.",
+  "budget": {
+    "cap_starts": 12,
+    "used": 0,
+    "remaining": 12,
+    "status": "LOCKED_NOT_AUTHORIZED"
+  },
+  "baseline_reference_context_only": {
+    "path": "D:\\RCAIDE\\research\\concorde_metaopt\\optimization_runs\\p1p3-fullchain-20261031T0407Z\\mission_e2e.json",
+    "sha256_raw": "1030b043ca571a198bd449d70ce72a30fdcc93efa00ff42dde78f03bd3175aa3",
+    "bytes": 26573,
+    "objective_fuel_burn_kg": null,
+    "note": "archived previous-round run (p1p3 fullchain); not part of this d12d005 round; context only."
+  },
+  "unimplemented_requirements": [
+    "evaluator RCAIDE_VLM_EMPIRICAL_LF_M202 (single-cruise VLM + empirical parasite/compressible drag) is not implemented.",
+    "RCAIDE-LEADS 1.5.0 SingleCruiseBackend integration for this evaluator not wired.",
+    "FALLBACK_TRIGGERED condition never reached (A line stopped on evidence review, not on two failed repair hypotheses)."
+  ],
+  "prohibitions": [
+    "Not used for real Concorde meta-learning training",
+    "Not used for formal BO/DE",
+    "No fuel-burn claim for this round",
+    "No body correction injection"
+  ]
+}

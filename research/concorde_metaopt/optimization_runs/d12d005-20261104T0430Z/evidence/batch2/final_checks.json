@@ -1,0 +1,229 @@
+{
+ "schema_version": "d12d005-batch2-final-checks-1",
+ "batch_id": "D-12D-005-BATCH2",
+ "generated_utc": "2026-11-04T13:24:24Z",
+ "checks": [
+  {
+   "id": "F01",
+   "desc": "authorization sha256 matches task card",
+   "ok": true,
+   "detail": "fd02dd898c816ad702a49e408ca4f31ea193a806275b9ffe95aa9d28e8507ecc"
+  },
+  {
+   "id": "F02",
+   "desc": "A5 frozen plan sha256 matches task card",
+   "ok": true,
+   "detail": "bc437267705d4df38cd214c1cb3c22d57245aaf5655f13d9f0a1e5e62c9fafd0"
+  },
+  {
+   "id": "F03",
+   "desc": "worktree HEAD == c1168ec (authorization target)",
+   "ok": true,
+   "detail": "c1168ec656160a3e35e5e157050e98ac1fde8cdf"
+  },
+  {
+   "id": "F04",
+   "desc": "exactly 8 solver starts used",
+   "ok": true,
+   "detail": "starts_used=8"
+  },
+  {
+   "id": "F05",
+   "desc": "batch allowed_starts == 8",
+   "ok": true,
+   "detail": "8"
+  },
+  {
+   "id": "F06",
+   "desc": "ledger has 8 PENDING + 8 COMPLETED rows",
+   "ok": true,
+   "detail": "rows=16 pending=8 completed=8"
+  },
+  {
+   "id": "F07",
+   "desc": "event ids are NA-D12D005C-001..008",
+   "ok": true,
+   "detail": "NA-D12D005C-001,NA-D12D005C-002,NA-D12D005C-003,NA-D12D005C-004,NA-D12D005C-005,NA-D12D005C-006,NA-D12D005C-007,NA-D12D005C-008"
+  },
+  {
+   "id": "F08",
+   "desc": "all completed events billable and non-retry",
+   "ok": true,
+   "detail": "n=8"
+  },
+  {
+   "id": "F09",
+   "desc": "retries used == 0",
+   "ok": true,
+   "detail": "0"
+  },
+  {
+   "id": "F10",
+   "desc": "class A budget 6+8=14 used / 20 cap / 6 remaining",
+   "ok": true,
+   "detail": "{\"class_A_cap\": 20, \"class_A_used_before\": 6, \"starts_used_this_batch\": 8, \"batch_cap\": 8, \"starts_remaining_this_batch\": 0, \"class_A_used_total_after\": 14, \"class_A_remaining_after\": 6, \"retries_used\": 0, \"billable_events\": 8}"
+  },
+  {
+   "id": "F11",
+   "desc": "batch state BATCH2_COMPLETED, not stopped, no next case",
+   "ok": true,
+   "detail": "BATCH2_COMPLETED"
+  },
+  {
+   "id": "F12",
+   "desc": "all 8 outcomes SOLVED_VALID_WITH_DERIVED_WARNINGS",
+   "ok": true,
+   "detail": "SOLVED_VALID_WITH_DERIVED_WARNINGS,SOLVED_VALID_WITH_DERIVED_WARNINGS,SOLVED_VALID_WITH_DERIVED_WARNINGS,SOLVED_VALID_WITH_DERIVED_WARNINGS,SOLVED_VALID_WITH_DERIVED_WARNINGS,SOLVED_VALID_WITH_DERIVED_WARNINGS,SOLVED_VALID_WITH_DERIVED_WARNINGS,SOLVED_VALID_WITH_DERIVED_WARNINGS"
+  },
+  {
+   "id": "F13",
+   "desc": "all primary values finite",
+   "ok": true,
+   "detail": "primary_nonfinite=[{}, {}, {}, {}, {}, {}, {}, {}]"
+  },
+  {
+   "id": "F14",
+   "desc": "all gate failures empty and gates pass",
+   "ok": true,
+   "detail": "n=8"
+  },
+  {
+   "id": "F15",
+   "desc": "S6 CLtot in [0.03, 0.045] band",
+   "ok": true,
+   "detail": "CLtot=0.037164223289"
+  },
+  {
+   "id": "F16",
+   "desc": "all verify-polar / verify-history acceptable",
+   "ok": true,
+   "detail": "ok"
+  },
+  {
+   "id": "F17",
+   "desc": "no vspaero process remains",
+   "ok": true,
+   "detail": "tasklist filter"
+  },
+  {
+   "id": "F18",
+   "desc": "worktree porcelain only untracked evidence/batch2",
+   "ok": true,
+   "detail": "git status --porcelain"
+  },
+  {
+   "id": "F19",
+   "desc": "all 8 analyses + state/budget/run_start/ledger JSON parse",
+   "ok": true,
+   "detail": "8 analyses"
+  },
+  {
+   "id": "F20",
+   "desc": "wake contribution ~0: CLwtot==CLo and CDwtot==CDo in all cases (Ew degenerate)",
+   "ok": true,
+   "detail": "all 8"
+  },
+  {
+   "id": "F21",
+   "desc": "artifact sha256 S6_STD_M2p02_aoa1 polar",
+   "ok": true,
+   "detail": "281c04f2da011079ee151badb6f6e0dd064100a25ac4698db050afb2c38f9481"
+  },
+  {
+   "id": "F22",
+   "desc": "artifact sha256 S6_STD_M2p02_aoa1 history",
+   "ok": true,
+   "detail": "c94dc43bee6c14cf687c94ef8b6696a251c13ca16eab621653ba9cb997170add"
+  },
+  {
+   "id": "F23",
+   "desc": "artifact sha256 B2-01 polar",
+   "ok": true,
+   "detail": "775b0f0cc4ecefe4b8cadbff1836086dc83ca7753d9775fd7e75aa8522e3ae24"
+  },
+  {
+   "id": "F24",
+   "desc": "artifact sha256 B2-01 history",
+   "ok": true,
+   "detail": "fe001d30cf302d8a0b309ec91478437042b9a95ae35ac33b11f742df5e5b7af1"
+  },
+  {
+   "id": "F25",
+   "desc": "artifact sha256 B2-02 polar",
+   "ok": true,
+   "detail": "903c5e3c6285e6c67d8fda24d68d3e525748970aa2cbffe74f9ce2192b226fae"
+  },
+  {
+   "id": "F26",
+   "desc": "artifact sha256 B2-02 history",
+   "ok": true,
+   "detail": "0404c6187cd7a21639869ca1d904084ef64d88adab25cdb76cc7e82a38f9e2b4"
+  },
+  {
+   "id": "F27",
+   "desc": "artifact sha256 B2-03 polar",
+   "ok": true,
+   "detail": "10a77e1166c347ce32aa29785e1f0243cdc7347166f2d60c32c37443d88519ee"
+  },
+  {
+   "id": "F28",
+   "desc": "artifact sha256 B2-03 history",
+   "ok": true,
+   "detail": "603f1dad288548864c84c3f69922fa348c08a671327c46f7c1ed04f0f673628f"
+  },
+  {
+   "id": "F29",
+   "desc": "artifact sha256 B2-04 polar",
+   "ok": true,
+   "detail": "0decad2770983b0d908bf4e3c128c798f2cf6bed2e0d714a87d6cb7748f91a86"
+  },
+  {
+   "id": "F30",
+   "desc": "artifact sha256 B2-04 history",
+   "ok": true,
+   "detail": "7df1bb23eb857e629159c2b57381dc08389409e3ff9e31ab2260daea30543a03"
+  },
+  {
+   "id": "F31",
+   "desc": "artifact sha256 B2-05 polar",
+   "ok": true,
+   "detail": "d483aa9e5527c7b671fd104db4a19af4afdd27698de3aac11ce01a90ec8761a7"
+  },
+  {
+   "id": "F32",
+   "desc": "artifact sha256 B2-05 history",
+   "ok": true,
+   "detail": "757e427f7cd8d03931f0d6a3e1cf00081761f8c5ef7eab04cbe5d3ed919896f8"
+  },
+  {
+   "id": "F33",
+   "desc": "artifact sha256 B2-06 polar",
+   "ok": true,
+   "detail": "6569a402ee08dc5ca4b0067b56b7f9152bcc38ecf69dc55f8cc479f7b1dc09b5"
+  },
+  {
+   "id": "F34",
+   "desc": "artifact sha256 B2-06 history",
+   "ok": true,
+   "detail": "c0d5446c62c65a978ad39358b7779ebe891f9bc4224beedc079ead2008b502c9"
+  },
+  {
+   "id": "F35",
+   "desc": "artifact sha256 B2-07 polar",
+   "ok": true,
+   "detail": "c98efbd6dd94fdd955f3926ba18fd2c39900e82590d2a4ca661e94fcc7c7f005"
+  },
+  {
+   "id": "F36",
+   "desc": "artifact sha256 B2-07 history",
+   "ok": true,
+   "detail": "51125f9f153756cfbde51ecdd65f156ed45c4c87ac3f940913b52053be7e06da"
+  }
+ ],
+ "n_checks": 36,
+ "n_pass": 36,
+ "all_pass": true,
+ "files": {
+  "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\batch2\\batch2_results.json": "0ffb4906d65ee6d52f047b39add3d94ccf2d3c187a84382d47a6f7927e3c9a06"
+ }
+}

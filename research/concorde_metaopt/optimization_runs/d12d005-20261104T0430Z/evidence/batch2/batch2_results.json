@@ -1,0 +1,1582 @@
+{
+ "schema_version": "d12d005-batch2-results-1",
+ "batch_id": "D-12D-005-BATCH2",
+ "status": "BATCH2_COMPLETED",
+ "generated_utc": "2026-11-04T13:24:24Z",
+ "labels": {
+  "output_label": "VSPAERO_INTERNAL_ONLY",
+  "physical_validation": "NOT_VALIDATED",
+  "gate3_note": "Gate3 physical validation of thin-surface VSPAERO at Mach 2.02 is NOT reachable with this method; all CD values are internal solver outputs, not validated physical drag.",
+  "no_body_correction_injected": true,
+  "lf_m2_02_gate_change": false,
+  "validated_fuel_label": false
+ },
+ "authorization": {
+  "path": "C:\\Users\\pc\\AppData\\Local\\RCAIDE_Supersonic_agent_state\\d12d005\\lead\\D12D005_BATCH2_AUTHORIZATION_20261104T130635Z.json",
+  "sha256": "fd02dd898c816ad702a49e408ca4f31ea193a806275b9ffe95aa9d28e8507ecc",
+  "authorization_id": "D12D005-BATCH2-20261104T130635Z",
+  "issued_utc": "2026-11-04T13:06:35Z",
+  "authorized_starts": 8,
+  "retries_authorized": 0,
+  "case_substitution_allowed": false
+ },
+ "a5_plan": {
+  "path": "C:\\Users\\pc\\AppData\\Local\\RCAIDE_Supersonic_agent_state\\d12d005\\a5\\batch2_prestart_gate\\batch2_plan_frozen_candidate.json",
+  "sha256": "bc437267705d4df38cd214c1cb3c22d57245aaf5655f13d9f0a1e5e62c9fafd0",
+  "verdict_task": "task-131 APPROVE_BATCH2_8 (0 blocker / 0 major / 4 minor non-blocking)"
+ },
+ "run": {
+  "run_dir": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z",
+  "target_worktree": "D:/RCAIDE-d12d005",
+  "branch": "research/d12d005-aero-fallback",
+  "git_head": "c1168ec656160a3e35e5e157050e98ac1fde8cdf",
+  "head_matches_authorization": true,
+  "exe": "D:\\OpenVSP-3.55.0\\OpenVSP-3.55.0-win64\\vspaero.exe",
+  "exe_sha256": "db71c4412489af82398833408ea30fb73327bdd9434de2ef530d31375b9fddad",
+  "runner_version": "d12d005-runner-5",
+  "runner_sha256": "0c27d05f047d20e9bfc32b4ab27d687c261461b4feb9af5b97247089189f9377",
+  "serial": true,
+  "omp_threads": 4,
+  "timeout_s_per_case": 900,
+  "max_ram_gb": 16,
+  "run_start": {
+   "first_solver_start_utc": "2026-11-04T13:16:10Z",
+   "last_solver_finish_utc": null,
+   "status": "RUN_COMPLETED"
+  }
+ },
+ "budget": {
+  "schema_version": "d12d005-batch2-budget-1",
+  "batch_id": "D-12D-005-BATCH2",
+  "status": "BATCH2_COMPLETED",
+  "parent_authorization": {
+   "path": "C:\\Users\\pc\\AppData\\Local\\RCAIDE_Supersonic_agent_state\\d12d005\\lead\\D12D005_BATCH2_AUTHORIZATION_20261104T130635Z.json",
+   "sha256": "fd02dd898c816ad702a49e408ca4f31ea193a806275b9ffe95aa9d28e8507ecc",
+   "authorization_id": "D12D005-BATCH2-20261104T130635Z"
+  },
+  "counters": {
+   "class_A_cap": 20,
+   "class_A_used_before": 6,
+   "starts_used_this_batch": 8,
+   "batch_cap": 8,
+   "starts_remaining_this_batch": 0,
+   "class_A_used_total_after": 14,
+   "class_A_remaining_after": 6,
+   "retries_used": 0,
+   "billable_events": 8
+  },
+  "by_class": {
+   "A_used": 14,
+   "A_cap": 20,
+   "B": 0,
+   "C": 0,
+   "D": 0,
+   "E": 0,
+   "P4_REAL": 0
+  },
+  "notes": [
+   "A-class remaining after batch = 6, NOT AUTHORIZED to release",
+   "B/C classes locked; no retries; no case substitution"
+  ]
+ },
+ "stop_rules": {
+  "triggered": false,
+  "stop_reason": null,
+  "stop_event_id": null,
+  "rule": "8 authorized stop rules (primary non-finite, nonphysical values, contract/vkey mismatch, wall>900 s, RSS>16 GB, cores>4 or non-serial, batch>8 or class A cap, S6 band); derived column Ew/LoDw non-finite is WARNING only"
+ },
+ "cases": [
+  {
+   "order": 1,
+   "case_id": "S6_STD_M2p02_aoa1",
+   "kind": "std",
+   "event_id": "NA-D12D005C-001",
+   "outcome_class": "SOLVED_VALID_WITH_DERIVED_WARNINGS",
+   "stop_rule_hit": false,
+   "gate_failures": [],
+   "gate_result": {
+    "finite_primary": true,
+    "abs_cl_lt_1": true,
+    "abs_cdtot_lt_10": true,
+    "abs_cltot_le_10": true,
+    "cdi_ge_0": true,
+    "cdtot_ge_cdi": true,
+    "s6_cltot_in_band": true,
+    "s6_band": [
+     0.03,
+     0.045
+    ]
+   },
+   "primary_finite": true,
+   "primary_nonfinite": {},
+   "derived_column_warnings": [
+    {
+     "column": "Ew",
+     "value": "inf",
+     "classification": "DERIVED_RATIO_NONFINITE_ALLOWED"
+    }
+   ],
+   "primary_values": {
+    "CLo": -0.000194820362,
+    "CLi": 0.037359043651,
+    "CLtot": 0.037164223289,
+    "CDo": 0.01116125106,
+    "CDi": 0.000652721593,
+    "CDtot": 0.011813972653,
+    "CMytot": -0.007348237833,
+    "CMztot": 8.392e-09,
+    "CLwtot": -0.000194820362,
+    "CDwtot": 0.01116125106
+   },
+   "all_coefficients": {
+    "Beta": 0.0,
+    "Mach": 2.02,
+    "AoA": 1.0,
+    "Re/1e6": 4.834912016269,
+    "CLo": -0.000194820362,
+    "CLi": 0.037359043651,
+    "CLtot": 0.037164223289,
+    "CDo": 0.01116125106,
+    "CDi": 0.000652721593,
+    "CDtot": 0.011813972653,
+    "E": 0.168388476555,
+    "CMytot": -0.007348237833,
+    "CMztot": 8.392e-09,
+    "CLwtot": -0.000194820362,
+    "CDwtot": 0.01116125106,
+    "LoDw": -0.017455064928,
+    "Ew": "inf",
+    "L/D": 3.145785450967
+   },
+   "wall_seconds": 0.762,
+   "returncode": 0,
+   "timed_out": false,
+   "timeout_s": 900,
+   "peak_rss_gb": 0.098,
+   "pid": 18656,
+   "started_utc": "2026-11-04T13:16:10Z",
+   "finished_utc": "2026-11-04T13:16:11Z",
+   "history_iterations": null,
+   "polar_rows": 1,
+   "verify_polar_status": "PASS_WITH_WARNINGS",
+   "verify_polar_returncode": 0,
+   "verify_history_status": "PASS",
+   "contract": {
+    "AoA": 1.0,
+    "Beta": 0.0,
+    "Bref": 4.0,
+    "Cref": 1.0,
+    "FarDist": -1.0,
+    "Mach": 2.02,
+    "NumWakeNodes": 8,
+    "ReCref": 4834912.016269014,
+    "Rho": 0.1153178340089936,
+    "Sref": 4.0,
+    "Symmetry": 0,
+    "Vinf": 596.0373971680001,
+    "WakeIters": 5,
+    "WakeRelax": 1.0,
+    "X_cg": 0.25,
+    "Y_cg": 0.0,
+    "Z_cg": 0.0
+   },
+   "prestart_checks": {
+    "auth_sha_matches": true,
+    "plan_sha_matches": true,
+    "worktree_head_matches": true,
+    "exe_sha256_matches_authorization": true,
+    "no_other_vspaero_process": true,
+    "stop_before_run_evidence_one": true,
+    "evidence_zero_solver_started": true,
+    "pc09_checks_all_ok": true,
+    "contract_asserts_all_ok": true,
+    "csf_zero_control_surfaces": true,
+    "setup_sha_equals_contract": true,
+    "vkey_line2_is_local_vspgeom": true,
+    "check_case_dir_pass": true,
+    "readback_17_ok": true,
+    "all_pass": true
+   },
+   "polar": {
+    "path": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\batch2\\cases\\S6_STD_M2p02_aoa1\\bundle\\S6_STD_M2p02_aoa1_model.polar",
+    "bytes": 3025,
+    "sha256": "281c04f2da011079ee151badb6f6e0dd064100a25ac4698db050afb2c38f9481"
+   },
+   "history": {
+    "path": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\batch2\\cases\\S6_STD_M2p02_aoa1\\bundle\\S6_STD_M2p02_aoa1_model.history",
+    "bytes": 7552,
+    "sha256": "c94dc43bee6c14cf687c94ef8b6696a251c13ca16eab621653ba9cb997170add"
+   },
+   "pc09": {
+    "rule": "PC-09 external thin .vspgeom copied to case-local name matching vkey basename; vkey line2 rewritten to local absolute path",
+    "external_vspgeom_path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\d12d005-20261104T0430Z\\raw_artifacts\\a0v2_setup\\S6_STD_M2p02_aoa1.vspgeom",
+    "external_vspgeom_sha256": "8363f8fb209dd3120bbdf2e3766605b9405b97de0c7561b0be08c91c4cb8ebad",
+    "external_vspgeom_bytes": 284327,
+    "local_vspgeom_basename": "S6_STD_M2p02_aoa1_model.vspgeom",
+    "local_vspgeom_sha256": "8363f8fb209dd3120bbdf2e3766605b9405b97de0c7561b0be08c91c4cb8ebad",
+    "local_vspgeom_bytes": 284327,
+    "vkey": null
+   },
+   "label": "VSPAERO_INTERNAL_ONLY",
+   "physical_validation": "NOT_VALIDATED"
+  },
+  {
+   "order": 2,
+   "case_id": "B2-01",
+   "kind": "d12",
+   "event_id": "NA-D12D005C-002",
+   "outcome_class": "SOLVED_VALID_WITH_DERIVED_WARNINGS",
+   "stop_rule_hit": false,
+   "gate_failures": [],
+   "gate_result": {
+    "finite_primary": true,
+    "abs_cl_lt_1": true,
+    "abs_cdtot_lt_10": true,
+    "abs_cltot_le_10": true,
+    "cdi_ge_0": true,
+    "cdtot_ge_cdi": true
+   },
+   "primary_finite": true,
+   "primary_nonfinite": {},
+   "derived_column_warnings": [
+    {
+     "column": "Ew",
+     "value": "inf",
+     "classification": "DERIVED_RATIO_NONFINITE_ALLOWED"
+    }
+   ],
+   "primary_values": {
+    "CLo": -0.000255346106,
+    "CLi": 0.068975469612,
+    "CLtot": 0.068720123506,
+    "CDo": 0.007312155776,
+    "CDi": 0.002408676841,
+    "CDtot": 0.009720832617,
+    "CMytot": -0.01841834876,
+    "CMztot": -3.31e-09,
+    "CLwtot": -0.000255346106,
+    "CDwtot": 0.007312155776
+   },
+   "all_coefficients": {
+    "Beta": 0.0,
+    "Mach": 2.02,
+    "AoA": 2.0,
+    "Re/1e6": 89.397005876766,
+    "CLo": -0.000255346106,
+    "CLi": 0.068975469612,
+    "CLtot": 0.068720123506,
+    "CDo": 0.007312155776,
+    "CDi": 0.002408676841,
+    "CDtot": 0.009720832617,
+    "E": 0.341026762578,
+    "CMytot": -0.01841834876,
+    "CMztot": -3.31e-09,
+    "CLwtot": -0.000255346106,
+    "CDwtot": 0.007312155776,
+    "LoDw": -0.034920769492,
+    "Ew": "inf",
+    "L/D": 7.069365990986
+   },
+   "wall_seconds": 0.259,
+   "returncode": 0,
+   "timed_out": false,
+   "timeout_s": 900,
+   "peak_rss_gb": 0.002,
+   "pid": 924,
+   "started_utc": "2026-11-04T13:16:56Z",
+   "finished_utc": "2026-11-04T13:16:56Z",
+   "history_iterations": null,
+   "polar_rows": 1,
+   "verify_polar_status": "PASS_WITH_WARNINGS",
+   "verify_polar_returncode": 0,
+   "verify_history_status": "PASS",
+   "contract": {
+    "AoA": 2.0,
+    "Beta": 0.0,
+    "Bref": 25.604638,
+    "Cref": 18.489893,
+    "FarDist": -1.0,
+    "Mach": 2.02,
+    "NumWakeNodes": 8,
+    "ReCref": 89397005.8767656,
+    "Rho": 0.1153178340089936,
+    "Sref": 358.25,
+    "Symmetry": 0,
+    "Vinf": 596.0373972278921,
+    "WakeIters": 5,
+    "WakeRelax": 1.0,
+    "X_cg": 16.821978259514246,
+    "Y_cg": 0.0,
+    "Z_cg": 0.0
+   },
+   "prestart_checks": {
+    "auth_sha_matches": true,
+    "plan_sha_matches": true,
+    "worktree_head_matches": true,
+    "exe_sha256_matches_authorization": true,
+    "no_other_vspaero_process": true,
+    "stop_before_run_evidence_one": true,
+    "evidence_zero_solver_started": true,
+    "pc09_checks_all_ok": true,
+    "contract_asserts_all_ok": true,
+    "csf_zero_control_surfaces": true,
+    "setup_sha_equals_contract": true,
+    "vkey_line2_is_local_vspgeom": true,
+    "check_case_dir_pass": true,
+    "readback_17_ok": true,
+    "all_pass": true
+   },
+   "polar": {
+    "path": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\batch2\\cases\\B2-01\\bundle\\wing355_baseline.polar",
+    "bytes": 3025,
+    "sha256": "775b0f0cc4ecefe4b8cadbff1836086dc83ca7753d9775fd7e75aa8522e3ae24"
+   },
+   "history": {
+    "path": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\batch2\\cases\\B2-01\\bundle\\wing355_baseline.history",
+    "bytes": 7552,
+    "sha256": "fe001d30cf302d8a0b309ec91478437042b9a95ae35ac33b11f742df5e5b7af1"
+   },
+   "pc09": {
+    "rule": "PC-09 external thin .vspgeom copied to case-local name matching vkey basename; vkey line2 rewritten to local absolute path",
+    "external_vspgeom_path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\d12d005-20261104T0430Z\\raw_artifacts\\a0v2_setup\\B2-01.vspgeom",
+    "external_vspgeom_sha256": "0db18500be51340aa200cd33c2a11dc8e8a09423fcf8349f34ab0ab84008dbed",
+    "external_vspgeom_bytes": 89427,
+    "local_vspgeom_basename": "wing355_baseline.vspgeom",
+    "local_vspgeom_sha256": "0db18500be51340aa200cd33c2a11dc8e8a09423fcf8349f34ab0ab84008dbed",
+    "local_vspgeom_bytes": 89427,
+    "vkey": null
+   },
+   "label": "VSPAERO_INTERNAL_ONLY",
+   "physical_validation": "NOT_VALIDATED"
+  },
+  {
+   "order": 3,
+   "case_id": "B2-02",
+   "kind": "d12",
+   "event_id": "NA-D12D005C-003",
+   "outcome_class": "SOLVED_VALID_WITH_DERIVED_WARNINGS",
+   "stop_rule_hit": false,
+   "gate_failures": [],
+   "gate_result": {
+    "finite_primary": true,
+    "abs_cl_lt_1": true,
+    "abs_cdtot_lt_10": true,
+    "abs_cltot_le_10": true,
+    "cdi_ge_0": true,
+    "cdtot_ge_cdi": true
+   },
+   "primary_finite": true,
+   "primary_nonfinite": {},
+   "derived_column_warnings": [
+    {
+     "column": "Ew",
+     "value": "inf",
+     "classification": "DERIVED_RATIO_NONFINITE_ALLOWED"
+    }
+   ],
+   "primary_values": {
+    "CLo": -0.000255200272,
+    "CLi": 0.070650160292,
+    "CLtot": 0.070394960019,
+    "CDo": 0.007307979636,
+    "CDi": 0.002467158219,
+    "CDtot": 0.009775137856,
+    "CMytot": -0.019363091256,
+    "CMztot": 9.2e-11,
+    "CLwtot": -0.000255200272,
+    "CDwtot": 0.007307979636
+   },
+   "all_coefficients": {
+    "Beta": 0.0,
+    "Mach": 2.02,
+    "AoA": 2.0,
+    "Re/1e6": 89.397005876766,
+    "CLo": -0.000255200272,
+    "CLi": 0.070650160292,
+    "CLtot": 0.070394960019,
+    "CDo": 0.007307979636,
+    "CDi": 0.002467158219,
+    "CDtot": 0.009775137856,
+    "E": 0.349369724921,
+    "CMytot": -0.019363091256,
+    "CMztot": 9.2e-11,
+    "CLwtot": -0.000255200272,
+    "CDwtot": 0.007307979636,
+    "LoDw": -0.034920769492,
+    "Ew": "inf",
+    "L/D": 7.201428875869
+   },
+   "wall_seconds": 0.521,
+   "returncode": 0,
+   "timed_out": false,
+   "timeout_s": 900,
+   "peak_rss_gb": 0.059,
+   "pid": 22628,
+   "started_utc": "2026-11-04T13:17:19Z",
+   "finished_utc": "2026-11-04T13:17:19Z",
+   "history_iterations": null,
+   "polar_rows": 1,
+   "verify_polar_status": "PASS_WITH_WARNINGS",
+   "verify_polar_returncode": 0,
+   "verify_history_status": "PASS",
+   "contract": {
+    "AoA": 2.0,
+    "Beta": 0.0,
+    "Bref": 25.604638,
+    "Cref": 18.489893,
+    "FarDist": -1.0,
+    "Mach": 2.02,
+    "NumWakeNodes": 8,
+    "ReCref": 89397005.8767656,
+    "Rho": 0.1153178340089936,
+    "Sref": 358.25,
+    "Symmetry": 0,
+    "Vinf": 596.0373972278921,
+    "WakeIters": 5,
+    "WakeRelax": 1.0,
+    "X_cg": 16.821978259514246,
+    "Y_cg": 0.0,
+    "Z_cg": 0.0
+   },
+   "prestart_checks": {
+    "auth_sha_matches": true,
+    "plan_sha_matches": true,
+    "worktree_head_matches": true,
+    "exe_sha256_matches_authorization": true,
+    "no_other_vspaero_process": true,
+    "stop_before_run_evidence_one": true,
+    "evidence_zero_solver_started": true,
+    "pc09_checks_all_ok": true,
+    "contract_asserts_all_ok": true,
+    "csf_zero_control_surfaces": true,
+    "setup_sha_equals_contract": true,
+    "vkey_line2_is_local_vspgeom": true,
+    "check_case_dir_pass": true,
+    "readback_17_ok": true,
+    "all_pass": true
+   },
+   "polar": {
+    "path": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\batch2\\cases\\B2-02\\bundle\\wing355_baseline.polar",
+    "bytes": 3025,
+    "sha256": "903c5e3c6285e6c67d8fda24d68d3e525748970aa2cbffe74f9ce2192b226fae"
+   },
+   "history": {
+    "path": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\batch2\\cases\\B2-02\\bundle\\wing355_baseline.history",
+    "bytes": 7552,
+    "sha256": "0404c6187cd7a21639869ca1d904084ef64d88adab25cdb76cc7e82a38f9e2b4"
+   },
+   "pc09": {
+    "rule": "PC-09 external thin .vspgeom copied to case-local name matching vkey basename; vkey line2 rewritten to local absolute path",
+    "external_vspgeom_path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\d12d005-20261104T0430Z\\raw_artifacts\\a0v2_setup\\B2-02.vspgeom",
+    "external_vspgeom_sha256": "9fcda6d5d45300fbb0e20257c9ddc80540b44f5064a9566089d7ef85f9018d8e",
+    "external_vspgeom_bytes": 224357,
+    "local_vspgeom_basename": "wing355_baseline.vspgeom",
+    "local_vspgeom_sha256": "9fcda6d5d45300fbb0e20257c9ddc80540b44f5064a9566089d7ef85f9018d8e",
+    "local_vspgeom_bytes": 224357,
+    "vkey": null
+   },
+   "label": "VSPAERO_INTERNAL_ONLY",
+   "physical_validation": "NOT_VALIDATED"
+  },
+  {
+   "order": 4,
+   "case_id": "B2-03",
+   "kind": "d12",
+   "event_id": "NA-D12D005C-004",
+   "outcome_class": "SOLVED_VALID_WITH_DERIVED_WARNINGS",
+   "stop_rule_hit": false,
+   "gate_failures": [],
+   "gate_result": {
+    "finite_primary": true,
+    "abs_cl_lt_1": true,
+    "abs_cdtot_lt_10": true,
+    "abs_cltot_le_10": true,
+    "cdi_ge_0": true,
+    "cdtot_ge_cdi": true
+   },
+   "primary_finite": true,
+   "primary_nonfinite": {},
+   "derived_column_warnings": [
+    {
+     "column": "Ew",
+     "value": "inf",
+     "classification": "DERIVED_RATIO_NONFINITE_ALLOWED"
+    }
+   ],
+   "primary_values": {
+    "CLo": -0.000255062345,
+    "CLi": 0.068747022466,
+    "CLtot": 0.068491960121,
+    "CDo": 0.007304029919,
+    "CDi": 0.002400696206,
+    "CDtot": 0.009704726125,
+    "CMytot": -0.018563127748,
+    "CMztot": 1.749e-09,
+    "CLwtot": -0.000255062345,
+    "CDwtot": 0.007304029919
+   },
+   "all_coefficients": {
+    "Beta": 0.0,
+    "Mach": 2.02,
+    "AoA": 2.0,
+    "Re/1e6": 89.397005876766,
+    "CLo": -0.000255062345,
+    "CLi": 0.068747022466,
+    "CLtot": 0.068491960121,
+    "CDo": 0.007304029919,
+    "CDi": 0.002400696206,
+    "CDtot": 0.009704726125,
+    "E": 0.33989213923,
+    "CMytot": -0.018563127748,
+    "CMztot": 1.749e-09,
+    "CLwtot": -0.000255062345,
+    "CDwtot": 0.007304029919,
+    "LoDw": -0.034920769492,
+    "Ew": "inf",
+    "L/D": 7.05758815252
+   },
+   "wall_seconds": 1.759,
+   "returncode": 0,
+   "timed_out": false,
+   "timeout_s": 900,
+   "peak_rss_gb": 0.226,
+   "pid": 29448,
+   "started_utc": "2026-11-04T13:17:21Z",
+   "finished_utc": "2026-11-04T13:17:23Z",
+   "history_iterations": null,
+   "polar_rows": 1,
+   "verify_polar_status": "PASS_WITH_WARNINGS",
+   "verify_polar_returncode": 0,
+   "verify_history_status": "PASS",
+   "contract": {
+    "AoA": 2.0,
+    "Beta": 0.0,
+    "Bref": 25.604638,
+    "Cref": 18.489893,
+    "FarDist": -1.0,
+    "Mach": 2.02,
+    "NumWakeNodes": 8,
+    "ReCref": 89397005.8767656,
+    "Rho": 0.1153178340089936,
+    "Sref": 358.25,
+    "Symmetry": 0,
+    "Vinf": 596.0373972278921,
+    "WakeIters": 5,
+    "WakeRelax": 1.0,
+    "X_cg": 16.821978259514246,
+    "Y_cg": 0.0,
+    "Z_cg": 0.0
+   },
+   "prestart_checks": {
+    "auth_sha_matches": true,
+    "plan_sha_matches": true,
+    "worktree_head_matches": true,
+    "exe_sha256_matches_authorization": true,
+    "no_other_vspaero_process": true,
+    "stop_before_run_evidence_one": true,
+    "evidence_zero_solver_started": true,
+    "pc09_checks_all_ok": true,
+    "contract_asserts_all_ok": true,
+    "csf_zero_control_surfaces": true,
+    "setup_sha_equals_contract": true,
+    "vkey_line2_is_local_vspgeom": true,
+    "check_case_dir_pass": true,
+    "readback_17_ok": true,
+    "all_pass": true
+   },
+   "polar": {
+    "path": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\batch2\\cases\\B2-03\\bundle\\wing355_baseline.polar",
+    "bytes": 3025,
+    "sha256": "10a77e1166c347ce32aa29785e1f0243cdc7347166f2d60c32c37443d88519ee"
+   },
+   "history": {
+    "path": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\batch2\\cases\\B2-03\\bundle\\wing355_baseline.history",
+    "bytes": 7552,
+    "sha256": "603f1dad288548864c84c3f69922fa348c08a671327c46f7c1ed04f0f673628f"
+   },
+   "pc09": {
+    "rule": "PC-09 external thin .vspgeom copied to case-local name matching vkey basename; vkey line2 rewritten to local absolute path",
+    "external_vspgeom_path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\d12d005-20261104T0430Z\\raw_artifacts\\a0v2_setup\\B2-03.vspgeom",
+    "external_vspgeom_sha256": "d071b05feb499931ec2022b19787047adb34dcc27693466c57b4baf777c981d3",
+    "external_vspgeom_bytes": 495690,
+    "local_vspgeom_basename": "wing355_baseline.vspgeom",
+    "local_vspgeom_sha256": "d071b05feb499931ec2022b19787047adb34dcc27693466c57b4baf777c981d3",
+    "local_vspgeom_bytes": 495690,
+    "vkey": null
+   },
+   "label": "VSPAERO_INTERNAL_ONLY",
+   "physical_validation": "NOT_VALIDATED"
+  },
+  {
+   "order": 5,
+   "case_id": "B2-04",
+   "kind": "d12",
+   "event_id": "NA-D12D005C-005",
+   "outcome_class": "SOLVED_VALID_WITH_DERIVED_WARNINGS",
+   "stop_rule_hit": false,
+   "gate_failures": [],
+   "gate_result": {
+    "finite_primary": true,
+    "abs_cl_lt_1": true,
+    "abs_cdtot_lt_10": true,
+    "abs_cltot_le_10": true,
+    "cdi_ge_0": true,
+    "cdtot_ge_cdi": true
+   },
+   "primary_finite": true,
+   "primary_nonfinite": {},
+   "derived_column_warnings": [
+    {
+     "column": "Ew",
+     "value": "inf",
+     "classification": "DERIVED_RATIO_NONFINITE_ALLOWED"
+    }
+   ],
+   "primary_values": {
+    "CLo": -0.000266893355,
+    "CLi": 0.072208523122,
+    "CLtot": 0.071941629767,
+    "CDo": 0.007642825714,
+    "CDi": 0.002521957494,
+    "CDtot": 0.010164783208,
+    "CMytot": -0.021611409887,
+    "CMztot": 3.0349e-08,
+    "CLwtot": -0.000266893355,
+    "CDwtot": 0.007642825714
+   },
+   "all_coefficients": {
+    "Beta": 0.0,
+    "Mach": 2.02,
+    "AoA": 2.0,
+    "Re/1e6": 89.397005876766,
+    "CLo": -0.000266893355,
+    "CLi": 0.072208523122,
+    "CLtot": 0.071941629767,
+    "CDo": 0.007642825714,
+    "CDi": 0.002521957494,
+    "CDtot": 0.010164783208,
+    "E": 0.356961944011,
+    "CMytot": -0.021611409887,
+    "CMztot": 3.0349e-08,
+    "CLwtot": -0.000266893355,
+    "CDwtot": 0.007642825714,
+    "LoDw": -0.034920769492,
+    "Ew": "inf",
+    "L/D": 7.0775370506
+   },
+   "wall_seconds": 1.511,
+   "returncode": 0,
+   "timed_out": false,
+   "timeout_s": 900,
+   "peak_rss_gb": 0.244,
+   "pid": 10436,
+   "started_utc": "2026-11-04T13:17:24Z",
+   "finished_utc": "2026-11-04T13:17:26Z",
+   "history_iterations": null,
+   "polar_rows": 1,
+   "verify_polar_status": "PASS_WITH_WARNINGS",
+   "verify_polar_returncode": 0,
+   "verify_history_status": "PASS",
+   "contract": {
+    "AoA": 2.0,
+    "Beta": 0.0,
+    "Bref": 25.604638,
+    "Cref": 18.489893,
+    "FarDist": -1.0,
+    "Mach": 2.02,
+    "NumWakeNodes": 8,
+    "ReCref": 89397005.8767656,
+    "Rho": 0.1153178340089936,
+    "Sref": 358.25,
+    "Symmetry": 0,
+    "Vinf": 596.0373972278921,
+    "WakeIters": 5,
+    "WakeRelax": 1.0,
+    "X_cg": 16.821978259514246,
+    "Y_cg": 0.0,
+    "Z_cg": 0.0
+   },
+   "prestart_checks": {
+    "auth_sha_matches": true,
+    "plan_sha_matches": true,
+    "worktree_head_matches": true,
+    "exe_sha256_matches_authorization": true,
+    "no_other_vspaero_process": true,
+    "stop_before_run_evidence_one": true,
+    "evidence_zero_solver_started": true,
+    "pc09_checks_all_ok": true,
+    "contract_asserts_all_ok": true,
+    "csf_zero_control_surfaces": true,
+    "setup_sha_equals_contract": true,
+    "vkey_line2_is_local_vspgeom": true,
+    "check_case_dir_pass": true,
+    "readback_17_ok": true,
+    "all_pass": true
+   },
+   "polar": {
+    "path": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\batch2\\cases\\B2-04\\bundle\\wing355_baseline.polar",
+    "bytes": 3025,
+    "sha256": "0decad2770983b0d908bf4e3c128c798f2cf6bed2e0d714a87d6cb7748f91a86"
+   },
+   "history": {
+    "path": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\batch2\\cases\\B2-04\\bundle\\wing355_baseline.history",
+    "bytes": 7552,
+    "sha256": "7df1bb23eb857e629159c2b57381dc08389409e3ff9e31ab2260daea30543a03"
+   },
+   "pc09": {
+    "rule": "PC-09 external thin .vspgeom copied to case-local name matching vkey basename; vkey line2 rewritten to local absolute path",
+    "external_vspgeom_path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\d12d005-20261104T0430Z\\raw_artifacts\\a0v2_setup\\B2-04.vspgeom",
+    "external_vspgeom_sha256": "d3f0035c12441da05f54928e3461051870fb90ed16b98837683663931af3de81",
+    "external_vspgeom_bytes": 495690,
+    "local_vspgeom_basename": "wing355_baseline.vspgeom",
+    "local_vspgeom_sha256": "d3f0035c12441da05f54928e3461051870fb90ed16b98837683663931af3de81",
+    "local_vspgeom_bytes": 495690,
+    "vkey": null
+   },
+   "label": "VSPAERO_INTERNAL_ONLY",
+   "physical_validation": "NOT_VALIDATED"
+  },
+  {
+   "order": 6,
+   "case_id": "B2-05",
+   "kind": "d12",
+   "event_id": "NA-D12D005C-006",
+   "outcome_class": "SOLVED_VALID_WITH_DERIVED_WARNINGS",
+   "stop_rule_hit": false,
+   "gate_failures": [],
+   "gate_result": {
+    "finite_primary": true,
+    "abs_cl_lt_1": true,
+    "abs_cdtot_lt_10": true,
+    "abs_cltot_le_10": true,
+    "cdi_ge_0": true,
+    "cdtot_ge_cdi": true
+   },
+   "primary_finite": true,
+   "primary_nonfinite": {},
+   "derived_column_warnings": [
+    {
+     "column": "Ew",
+     "value": "inf",
+     "classification": "DERIVED_RATIO_NONFINITE_ALLOWED"
+    }
+   ],
+   "primary_values": {
+    "CLo": -0.000255027395,
+    "CLi": 0.067273877685,
+    "CLtot": 0.06701885029,
+    "CDo": 0.007303029069,
+    "CDi": 0.002349255361,
+    "CDtot": 0.00965228443,
+    "CMytot": -0.022290135972,
+    "CMztot": -3.45e-10,
+    "CLwtot": -0.000255027395,
+    "CDwtot": 0.007303029069
+   },
+   "all_coefficients": {
+    "Beta": 0.0,
+    "Mach": 2.02,
+    "AoA": 2.0,
+    "Re/1e6": 89.397005876766,
+    "CLo": -0.000255027395,
+    "CLi": 0.067273877685,
+    "CLtot": 0.06701885029,
+    "CDo": 0.007303029069,
+    "CDi": 0.002349255361,
+    "CDtot": 0.00965228443,
+    "E": 0.332554521006,
+    "CMytot": -0.022290135972,
+    "CMztot": -3.45e-10,
+    "CLwtot": -0.000255027395,
+    "CDwtot": 0.007303029069,
+    "LoDw": -0.034920769492,
+    "Ew": "inf",
+    "L/D": 6.943314898451
+   },
+   "wall_seconds": 1.511,
+   "returncode": 0,
+   "timed_out": false,
+   "timeout_s": 900,
+   "peak_rss_gb": 0.238,
+   "pid": 10104,
+   "started_utc": "2026-11-04T13:17:44Z",
+   "finished_utc": "2026-11-04T13:17:46Z",
+   "history_iterations": null,
+   "polar_rows": 1,
+   "verify_polar_status": "PASS_WITH_WARNINGS",
+   "verify_polar_returncode": 0,
+   "verify_history_status": "PASS",
+   "contract": {
+    "AoA": 2.0,
+    "Beta": 0.0,
+    "Bref": 25.604638,
+    "Cref": 18.489893,
+    "FarDist": -1.0,
+    "Mach": 2.02,
+    "NumWakeNodes": 8,
+    "ReCref": 89397005.8767656,
+    "Rho": 0.1153178340089936,
+    "Sref": 358.25,
+    "Symmetry": 0,
+    "Vinf": 596.0373972278921,
+    "WakeIters": 5,
+    "WakeRelax": 1.0,
+    "X_cg": 16.821978259514246,
+    "Y_cg": 0.0,
+    "Z_cg": 0.0
+   },
+   "prestart_checks": {
+    "auth_sha_matches": true,
+    "plan_sha_matches": true,
+    "worktree_head_matches": true,
+    "exe_sha256_matches_authorization": true,
+    "no_other_vspaero_process": true,
+    "stop_before_run_evidence_one": true,
+    "evidence_zero_solver_started": true,
+    "pc09_checks_all_ok": true,
+    "contract_asserts_all_ok": true,
+    "csf_zero_control_surfaces": true,
+    "setup_sha_equals_contract": true,
+    "vkey_line2_is_local_vspgeom": true,
+    "check_case_dir_pass": true,
+    "readback_17_ok": true,
+    "all_pass": true
+   },
+   "polar": {
+    "path": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\batch2\\cases\\B2-05\\bundle\\wing355_baseline.polar",
+    "bytes": 3025,
+    "sha256": "d483aa9e5527c7b671fd104db4a19af4afdd27698de3aac11ce01a90ec8761a7"
+   },
+   "history": {
+    "path": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\batch2\\cases\\B2-05\\bundle\\wing355_baseline.history",
+    "bytes": 7552,
+    "sha256": "757e427f7cd8d03931f0d6a3e1cf00081761f8c5ef7eab04cbe5d3ed919896f8"
+   },
+   "pc09": {
+    "rule": "PC-09 external thin .vspgeom copied to case-local name matching vkey basename; vkey line2 rewritten to local absolute path",
+    "external_vspgeom_path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\d12d005-20261104T0430Z\\raw_artifacts\\a0v2_setup\\B2-05.vspgeom",
+    "external_vspgeom_sha256": "ef56573de1a526a66a8caeb072a83c8495f98d31e24b2706ba4c15100f4533e7",
+    "external_vspgeom_bytes": 495690,
+    "local_vspgeom_basename": "wing355_baseline.vspgeom",
+    "local_vspgeom_sha256": "ef56573de1a526a66a8caeb072a83c8495f98d31e24b2706ba4c15100f4533e7",
+    "local_vspgeom_bytes": 495690,
+    "vkey": null
+   },
+   "label": "VSPAERO_INTERNAL_ONLY",
+   "physical_validation": "NOT_VALIDATED"
+  },
+  {
+   "order": 7,
+   "case_id": "B2-06",
+   "kind": "d12",
+   "event_id": "NA-D12D005C-007",
+   "outcome_class": "SOLVED_VALID_WITH_DERIVED_WARNINGS",
+   "stop_rule_hit": false,
+   "gate_failures": [],
+   "gate_result": {
+    "finite_primary": true,
+    "abs_cl_lt_1": true,
+    "abs_cdtot_lt_10": true,
+    "abs_cltot_le_10": true,
+    "cdi_ge_0": true,
+    "cdtot_ge_cdi": true
+   },
+   "primary_finite": true,
+   "primary_nonfinite": {},
+   "derived_column_warnings": [
+    {
+     "column": "Ew",
+     "value": "inf",
+     "classification": "DERIVED_RATIO_NONFINITE_ALLOWED"
+    }
+   ],
+   "primary_values": {
+    "CLo": -0.000255761098,
+    "CLi": 0.068919948852,
+    "CLtot": 0.068664187755,
+    "CDo": 0.007304334758,
+    "CDi": 0.002421413708,
+    "CDtot": 0.009725748466,
+    "CMytot": -0.018671664135,
+    "CMztot": 1.45271e-07,
+    "CLwtot": -0.000255761098,
+    "CDwtot": 0.007304334758
+   },
+   "all_coefficients": {
+    "Beta": 0.0,
+    "Mach": 2.02,
+    "AoA": 2.0,
+    "Re/1e6": 89.397005876766,
+    "CLo": -0.000255761098,
+    "CLi": 0.068919948852,
+    "CLtot": 0.068664187755,
+    "CDo": 0.007304334758,
+    "CDi": 0.002421413708,
+    "CDtot": 0.009725748466,
+    "E": 0.338680906778,
+    "CMytot": -0.018671664135,
+    "CMztot": 1.45271e-07,
+    "CLwtot": -0.000255761098,
+    "CDwtot": 0.007304334758,
+    "LoDw": -0.035014974819,
+    "Ew": "inf",
+    "L/D": 7.060041496326
+   },
+   "wall_seconds": 1.761,
+   "returncode": 0,
+   "timed_out": false,
+   "timeout_s": 900,
+   "peak_rss_gb": 0.212,
+   "pid": 18060,
+   "started_utc": "2026-11-04T13:17:47Z",
+   "finished_utc": "2026-11-04T13:17:49Z",
+   "history_iterations": null,
+   "polar_rows": 1,
+   "verify_polar_status": "PASS_WITH_WARNINGS",
+   "verify_polar_returncode": 0,
+   "verify_history_status": "PASS",
+   "contract": {
+    "AoA": 2.0,
+    "Beta": 0.0,
+    "Bref": 25.604638,
+    "Cref": 18.489893,
+    "FarDist": -1.0,
+    "Mach": 2.02,
+    "NumWakeNodes": 8,
+    "ReCref": 89397005.8767656,
+    "Rho": 0.1153178340089936,
+    "Sref": 358.25,
+    "Symmetry": 0,
+    "Vinf": 596.0373972278921,
+    "WakeIters": 5,
+    "WakeRelax": 1.0,
+    "X_cg": 16.821978259514246,
+    "Y_cg": 0.0,
+    "Z_cg": 0.0
+   },
+   "prestart_checks": {
+    "auth_sha_matches": true,
+    "plan_sha_matches": true,
+    "worktree_head_matches": true,
+    "exe_sha256_matches_authorization": true,
+    "no_other_vspaero_process": true,
+    "stop_before_run_evidence_one": true,
+    "evidence_zero_solver_started": true,
+    "pc09_checks_all_ok": true,
+    "contract_asserts_all_ok": true,
+    "csf_zero_control_surfaces": true,
+    "setup_sha_equals_contract": true,
+    "vkey_line2_is_local_vspgeom": true,
+    "check_case_dir_pass": true,
+    "readback_17_ok": true,
+    "all_pass": true
+   },
+   "polar": {
+    "path": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\batch2\\cases\\B2-06\\bundle\\wing355_baseline.polar",
+    "bytes": 3025,
+    "sha256": "6569a402ee08dc5ca4b0067b56b7f9152bcc38ecf69dc55f8cc479f7b1dc09b5"
+   },
+   "history": {
+    "path": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\batch2\\cases\\B2-06\\bundle\\wing355_baseline.history",
+    "bytes": 7552,
+    "sha256": "c0d5446c62c65a978ad39358b7779ebe891f9bc4224beedc079ead2008b502c9"
+   },
+   "pc09": {
+    "rule": "PC-09 external thin .vspgeom copied to case-local name matching vkey basename; vkey line2 rewritten to local absolute path",
+    "external_vspgeom_path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\d12d005-20261104T0430Z\\raw_artifacts\\a0v2_setup\\B2-06.vspgeom",
+    "external_vspgeom_sha256": "3466cec97955742e9d13f7d39e214aa5cdc682c1313d4c43c7fb7d62e19e3d53",
+    "external_vspgeom_bytes": 495690,
+    "local_vspgeom_basename": "wing355_baseline.vspgeom",
+    "local_vspgeom_sha256": "3466cec97955742e9d13f7d39e214aa5cdc682c1313d4c43c7fb7d62e19e3d53",
+    "local_vspgeom_bytes": 495690,
+    "vkey": null
+   },
+   "label": "VSPAERO_INTERNAL_ONLY",
+   "physical_validation": "NOT_VALIDATED"
+  },
+  {
+   "order": 8,
+   "case_id": "B2-07",
+   "kind": "d12",
+   "event_id": "NA-D12D005C-008",
+   "outcome_class": "SOLVED_VALID_WITH_DERIVED_WARNINGS",
+   "stop_rule_hit": false,
+   "gate_failures": [],
+   "gate_result": {
+    "finite_primary": true,
+    "abs_cl_lt_1": true,
+    "abs_cdtot_lt_10": true,
+    "abs_cltot_le_10": true,
+    "cdi_ge_0": true,
+    "cdtot_ge_cdi": true
+   },
+   "primary_finite": true,
+   "primary_nonfinite": {},
+   "derived_column_warnings": [
+    {
+     "column": "Ew",
+     "value": "inf",
+     "classification": "DERIVED_RATIO_NONFINITE_ALLOWED"
+    }
+   ],
+   "primary_values": {
+    "CLo": -0.000255062356,
+    "CLi": 0.068746939094,
+    "CLtot": 0.068491876738,
+    "CDo": 0.007304030225,
+    "CDi": 0.002399809101,
+    "CDtot": 0.009703839326,
+    "CMytot": -0.018562783568,
+    "CMztot": -1.22351e-07,
+    "CLwtot": -0.000255062356,
+    "CDwtot": 0.007304030225
+   },
+   "all_coefficients": {
+    "Beta": 0.0,
+    "Mach": 2.02,
+    "AoA": 2.0,
+    "Re/1e6": 89.397005876766,
+    "CLo": -0.000255062356,
+    "CLi": 0.068746939094,
+    "CLtot": 0.068491876738,
+    "CDo": 0.007304030225,
+    "CDi": 0.002399809101,
+    "CDtot": 0.009703839326,
+    "E": 0.340016954659,
+    "CMytot": -0.018562783568,
+    "CMztot": -1.22351e-07,
+    "CLwtot": -0.000255062356,
+    "CDwtot": 0.007304030225,
+    "LoDw": -0.034920769492,
+    "Ew": "inf",
+    "L/D": 7.058224526949
+   },
+   "wall_seconds": 1.762,
+   "returncode": 0,
+   "timed_out": false,
+   "timeout_s": 900,
+   "peak_rss_gb": 0.294,
+   "pid": 25672,
+   "started_utc": "2026-11-04T13:17:51Z",
+   "finished_utc": "2026-11-04T13:17:53Z",
+   "history_iterations": null,
+   "polar_rows": 1,
+   "verify_polar_status": "PASS_WITH_WARNINGS",
+   "verify_polar_returncode": 0,
+   "verify_history_status": "PASS",
+   "contract": {
+    "AoA": 2.0,
+    "Beta": 0.0,
+    "Bref": 25.604638,
+    "Cref": 18.489893,
+    "FarDist": -1.0,
+    "Mach": 2.02,
+    "NumWakeNodes": 8,
+    "ReCref": 89397005.8767656,
+    "Rho": 0.1153178340089936,
+    "Sref": 358.25,
+    "Symmetry": 0,
+    "Vinf": 596.0373972278921,
+    "WakeIters": 5,
+    "WakeRelax": 1.0,
+    "X_cg": 16.821978259514246,
+    "Y_cg": 0.0,
+    "Z_cg": 0.0
+   },
+   "prestart_checks": {
+    "auth_sha_matches": true,
+    "plan_sha_matches": true,
+    "worktree_head_matches": true,
+    "exe_sha256_matches_authorization": true,
+    "no_other_vspaero_process": true,
+    "stop_before_run_evidence_one": true,
+    "evidence_zero_solver_started": true,
+    "pc09_checks_all_ok": true,
+    "contract_asserts_all_ok": true,
+    "csf_zero_control_surfaces": true,
+    "setup_sha_equals_contract": true,
+    "vkey_line2_is_local_vspgeom": true,
+    "check_case_dir_pass": true,
+    "readback_17_ok": true,
+    "all_pass": true
+   },
+   "polar": {
+    "path": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\batch2\\cases\\B2-07\\bundle\\wing355_baseline.polar",
+    "bytes": 3025,
+    "sha256": "c98efbd6dd94fdd955f3926ba18fd2c39900e82590d2a4ca661e94fcc7c7f005"
+   },
+   "history": {
+    "path": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\batch2\\cases\\B2-07\\bundle\\wing355_baseline.history",
+    "bytes": 7552,
+    "sha256": "51125f9f153756cfbde51ecdd65f156ed45c4c87ac3f940913b52053be7e06da"
+   },
+   "pc09": {
+    "rule": "PC-09 external thin .vspgeom copied to case-local name matching vkey basename; vkey line2 rewritten to local absolute path",
+    "external_vspgeom_path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\d12d005-20261104T0430Z\\raw_artifacts\\a0v2_setup\\B2-07.vspgeom",
+    "external_vspgeom_sha256": "d071b05feb499931ec2022b19787047adb34dcc27693466c57b4baf777c981d3",
+    "external_vspgeom_bytes": 495690,
+    "local_vspgeom_basename": "wing355_baseline.vspgeom",
+    "local_vspgeom_sha256": "d071b05feb499931ec2022b19787047adb34dcc27693466c57b4baf777c981d3",
+    "local_vspgeom_bytes": 495690,
+    "vkey": null
+   },
+   "label": "VSPAERO_INTERNAL_ONLY",
+   "physical_validation": "NOT_VALIDATED"
+  }
+ ],
+ "deltas": {
+  "rule": "delta = case - B2-03 baseline (same 12D contract, AoA 2); repeat B2-07 vs B2-03 measures run-to-run repeatability",
+  "baseline_case": "B2-03",
+  "perturbations": {
+   "B2-04": {
+    "vs": "B2-03",
+    "primary_delta": {
+     "CLtot": {
+      "base": 0.068491960121,
+      "case": 0.071941629767,
+      "delta": 0.003449669645999992,
+      "rel_pct": 5.03660523060765
+     },
+     "CDi": {
+      "base": 0.002400696206,
+      "case": 0.002521957494,
+      "delta": 0.00012126128800000026,
+      "rel_pct": 5.051088417473855
+     },
+     "CDtot": {
+      "base": 0.009704726125,
+      "case": 0.010164783208,
+      "delta": 0.00046005708299999906,
+      "rel_pct": 4.740546792091973
+     },
+     "CLo": {
+      "base": -0.000255062345,
+      "case": -0.000266893355,
+      "delta": -1.183101000000003e-05,
+      "rel_pct": 4.638477702382933
+     },
+     "CDo": {
+      "base": 0.007304029919,
+      "case": 0.007642825714,
+      "delta": 0.0003387957950000001,
+      "rel_pct": 4.6384776453159
+     },
+     "CMytot": {
+      "base": -0.018563127748,
+      "case": -0.021611409887,
+      "delta": -0.0030482821389999984,
+      "rel_pct": 16.42116662871332
+     }
+    },
+    "derived_delta": {
+     "E": {
+      "base": 0.33989213923,
+      "case": 0.356961944011,
+      "delta": 0.01706980478100001,
+      "rel_pct": 5.022124024306759
+     },
+     "L/D": {
+      "base": 7.05758815252,
+      "case": 7.0775370506,
+      "delta": 0.01994889808,
+      "rel_pct": 0.2826588580813829
+     },
+     "LoDw": {
+      "base": -0.034920769492,
+      "case": -0.034920769492,
+      "delta": 0.0,
+      "rel_pct": -0.0
+     },
+     "Re/1e6": {
+      "base": 89.397005876766,
+      "case": 89.397005876766,
+      "delta": 0.0,
+      "rel_pct": 0.0
+     },
+     "Ew": {
+      "base": "inf",
+      "case": "inf",
+      "delta": "nan",
+      "rel_pct": "nan"
+     }
+    }
+   },
+   "B2-05": {
+    "vs": "B2-03",
+    "primary_delta": {
+     "CLtot": {
+      "base": 0.068491960121,
+      "case": 0.06701885029,
+      "delta": -0.0014731098310000051,
+      "rel_pct": -2.1507777385806506
+     },
+     "CDi": {
+      "base": 0.002400696206,
+      "case": 0.002349255361,
+      "delta": -5.144084499999991e-05,
+      "rel_pct": -2.1427469611288217
+     },
+     "CDtot": {
+      "base": 0.009704726125,
+      "case": 0.00965228443,
+      "delta": -5.244169500000055e-05,
+      "rel_pct": -0.5403727454493267
+     },
+     "CLo": {
+      "base": -0.000255062345,
+      "case": -0.000255027395,
+      "delta": 3.494999999999193e-08,
+      "rel_pct": -0.013702532218149228
+     },
+     "CDo": {
+      "base": 0.007304029919,
+      "case": 0.007303029069,
+      "delta": -1.0008500000002057e-06,
+      "rel_pct": -0.013702709478183967
+     },
+     "CMytot": {
+      "base": -0.018563127748,
+      "case": -0.022290135972,
+      "delta": -0.0037270082239999995,
+      "rel_pct": 20.077479800792457
+     }
+    },
+    "derived_delta": {
+     "E": {
+      "base": 0.33989213923,
+      "case": 0.332554521006,
+      "delta": -0.007337618223999975,
+      "rel_pct": -2.1588078619949247
+     },
+     "L/D": {
+      "base": 7.05758815252,
+      "case": 6.943314898451,
+      "delta": -0.11427325406900035,
+      "rel_pct": -1.619154470329891
+     },
+     "LoDw": {
+      "base": -0.034920769492,
+      "case": -0.034920769492,
+      "delta": 0.0,
+      "rel_pct": -0.0
+     },
+     "Re/1e6": {
+      "base": 89.397005876766,
+      "case": 89.397005876766,
+      "delta": 0.0,
+      "rel_pct": 0.0
+     },
+     "Ew": {
+      "base": "inf",
+      "case": "inf",
+      "delta": "nan",
+      "rel_pct": "nan"
+     }
+    }
+   },
+   "B2-06": {
+    "vs": "B2-03",
+    "primary_delta": {
+     "CLtot": {
+      "base": 0.068491960121,
+      "case": 0.068664187755,
+      "delta": 0.00017222763399998842,
+      "rel_pct": 0.2514567165193196
+     },
+     "CDi": {
+      "base": 0.002400696206,
+      "case": 0.002421413708,
+      "delta": 2.071750200000012e-05,
+      "rel_pct": 0.8629789120431559
+     },
+     "CDtot": {
+      "base": 0.009704726125,
+      "case": 0.009725748466,
+      "delta": 2.102234099999982e-05,
+      "rel_pct": 0.21661962150425776
+     },
+     "CLo": {
+      "base": -0.000255062345,
+      "case": -0.000255761098,
+      "delta": -6.987530000000125e-07,
+      "rel_pct": 0.2739538052941576
+     },
+     "CDo": {
+      "base": 0.007304029919,
+      "case": 0.007304334758,
+      "delta": 3.0483899999926567e-07,
+      "rel_pct": 0.004173572717799072
+     },
+     "CMytot": {
+      "base": -0.018563127748,
+      "case": -0.018671664135,
+      "delta": -0.00010853638699999738,
+      "rel_pct": 0.584688035730892
+     }
+    },
+    "derived_delta": {
+     "E": {
+      "base": 0.33989213923,
+      "case": 0.338680906778,
+      "delta": -0.0012112324519999995,
+      "rel_pct": -0.35635788893028103
+     },
+     "L/D": {
+      "base": 7.05758815252,
+      "case": 7.060041496326,
+      "delta": 0.002453343805999708,
+      "rel_pct": 0.0347617876387943
+     },
+     "LoDw": {
+      "base": -0.034920769492,
+      "case": -0.035014974819,
+      "delta": -9.420532699999651e-05,
+      "rel_pct": 0.26976876045522996
+     },
+     "Re/1e6": {
+      "base": 89.397005876766,
+      "case": 89.397005876766,
+      "delta": 0.0,
+      "rel_pct": 0.0
+     },
+     "Ew": {
+      "base": "inf",
+      "case": "inf",
+      "delta": "nan",
+      "rel_pct": "nan"
+     }
+    }
+   }
+  },
+  "repeatability": {
+   "B2-07": {
+    "vs": "B2-03",
+    "primary_delta": {
+     "CLtot": {
+      "base": 0.068491960121,
+      "case": 0.068491876738,
+      "delta": -8.338300000465537e-08,
+      "rel_pct": -0.00012174129614242079
+     },
+     "CDi": {
+      "base": 0.002400696206,
+      "case": 0.002399809101,
+      "delta": -8.871049999997771e-07,
+      "rel_pct": -0.036951989084777065
+     },
+     "CDtot": {
+      "base": 0.009704726125,
+      "case": 0.009703839326,
+      "delta": -8.867990000001325e-07,
+      "rel_pct": -0.009137805524626615
+     },
+     "CLo": {
+      "base": -0.000255062345,
+      "case": -0.000255062356,
+      "delta": -1.1000000010256278e-11,
+      "rel_pct": 4.3126710884181196e-06
+     },
+     "CDo": {
+      "base": 0.007304029919,
+      "case": 0.007304030225,
+      "delta": 3.059999996446461e-10,
+      "rel_pct": 4.189468047613648e-06
+     },
+     "CMytot": {
+      "base": -0.018563127748,
+      "case": -0.018562783568,
+      "delta": 3.441800000003603e-07,
+      "rel_pct": -0.0018541056478881496
+     }
+    },
+    "derived_delta": {
+     "E": {
+      "base": 0.33989213923,
+      "case": 0.340016954659,
+      "delta": 0.00012481542900000253,
+      "rel_pct": 0.036722069913932835
+     },
+     "L/D": {
+      "base": 7.05758815252,
+      "case": 7.058224526949,
+      "delta": 0.0006363744289998863,
+      "rel_pct": 0.009016882470999117
+     },
+     "LoDw": {
+      "base": -0.034920769492,
+      "case": -0.034920769492,
+      "delta": 0.0,
+      "rel_pct": -0.0
+     },
+     "Re/1e6": {
+      "base": 89.397005876766,
+      "case": 89.397005876766,
+      "delta": 0.0,
+      "rel_pct": 0.0
+     },
+     "Ew": {
+      "base": "inf",
+      "case": "inf",
+      "delta": "nan",
+      "rel_pct": "nan"
+     }
+    }
+   }
+  },
+  "density_trio": {
+   "B2-01_Tess_3_3_vs_B2-02_Tess_6_6": {
+    "CLtot": {
+     "base": 0.068720123506,
+     "case": 0.070394960019,
+     "delta": 0.0016748365130000026,
+     "rel_pct": 2.437184957698412
+    },
+    "CDi": {
+     "base": 0.002408676841,
+     "case": 0.002467158219,
+     "delta": 5.848137800000021e-05,
+     "rel_pct": 2.4279462070022126
+    },
+    "CDtot": {
+     "base": 0.009720832617,
+     "case": 0.009775137856,
+     "delta": 5.430523899999963e-05,
+     "rel_pct": 0.5586480205926956
+    },
+    "CLo": {
+     "base": -0.000255346106,
+     "case": -0.000255200272,
+     "delta": 1.4583399999998055e-07,
+     "rel_pct": -0.05711228664672902
+    },
+    "CDo": {
+     "base": 0.007312155776,
+     "case": 0.007307979636,
+     "delta": -4.1761400000001406e-06,
+     "rel_pct": -0.05711229530567567
+    },
+    "CMytot": {
+     "base": -0.01841834876,
+     "case": -0.019363091256,
+     "delta": -0.0009447424959999999,
+     "rel_pct": 5.129355016079085
+    }
+   },
+   "B2-02_Tess_6_6_vs_B2-03_Tess_12_12": {
+    "CLtot": {
+     "base": 0.070394960019,
+     "case": 0.068491960121,
+     "delta": -0.0019029998979999962,
+     "rel_pct": -2.7033183874049587
+    },
+    "CDi": {
+     "base": 0.002467158219,
+     "case": 0.002400696206,
+     "delta": -6.646201300000015e-05,
+     "rel_pct": -2.693869103658007
+    },
+    "CDtot": {
+     "base": 0.009775137856,
+     "case": 0.009704726125,
+     "delta": -7.04117309999995e-05,
+     "rel_pct": -0.7203144552767677
+    },
+    "CLo": {
+     "base": -0.000255200272,
+     "case": -0.000255062345,
+     "delta": 1.3792700000002508e-07,
+     "rel_pct": -0.05404657248955639
+    },
+    "CDo": {
+     "base": 0.007307979636,
+     "case": 0.007304029919,
+     "delta": -3.94971699999979e-06,
+     "rel_pct": -0.05404663390881663
+    },
+    "CMytot": {
+     "base": -0.019363091256,
+     "case": -0.018563127748,
+     "delta": 0.0007999635080000005,
+     "rel_pct": -4.131383245700076
+    }
+   },
+   "B2-01_Tess_3_3_vs_B2-03_Tess_12_12": {
+    "CLtot": {
+     "base": 0.068720123506,
+     "case": 0.068491960121,
+     "delta": -0.00022816338499999367,
+     "rel_pct": -0.3320182988030756
+    },
+    "CDi": {
+     "base": 0.002408676841,
+     "case": 0.002400696206,
+     "delta": -7.980634999999944e-06,
+     "rel_pct": -0.3313285893796637
+    },
+    "CDtot": {
+     "base": 0.009720832617,
+     "case": 0.009704726125,
+     "delta": -1.6106491999999875e-05,
+     "rel_pct": -0.1656904571305188
+    },
+    "CLo": {
+     "base": -0.000255346106,
+     "case": -0.000255062345,
+     "delta": 2.8376100000000563e-07,
+     "rel_pct": -0.11112799190288246
+    },
+    "CDo": {
+     "base": 0.007312155776,
+     "case": 0.007304029919,
+     "delta": -8.12585699999993e-06,
+     "rel_pct": -0.11112806194133153
+    },
+    "CMytot": {
+     "base": -0.01841834876,
+     "case": -0.018563127748,
+     "delta": -0.00014477898799999944,
+     "rel_pct": 0.7860584566322406
+    }
+   },
+   "note": "same 12D geometry/contract; SectTess_U only differs (3/3, 6/6, 12/12) - internal density sensitivity, NOT physical validation"
+  },
+  "s6_vs_s3_cross_aoa": {
+   "reference": "RUN/evidence/v1/per_case_conclusions.json (batch1 S3_STD_M2p02_base, AoA 2, Tess 12/12)",
+   "s6": {
+    "AoA": 1.0,
+    "CLtot": 0.037164223289,
+    "CDi": 0.000652721593,
+    "CDtot": 0.011813972653
+   },
+   "s3": {
+    "AoA": 2.0,
+    "CLtot": 0.074251031783,
+    "CDi": 0.002606540227,
+    "CDtot": 0.013789407924
+   },
+   "cltot_ratio_s6_over_s3": 0.5005213045067592,
+   "cltot_ratio_over_linear_expectation_0p5": 1.0010426090135185,
+   "note": "same standard rectangular wing (S3_STD_M2p02_base vs S6_STD_M2p02_aoa1), AoA 1 vs 2; CLtot ratio ~0.5 is a near-linear internal consistency check only, NOT physical validation"
+  }
+ },
+ "totals": {
+  "starts_used_this_batch": 8,
+  "starts_allowed": 8,
+  "retries_used": 0,
+  "billable_events": 8,
+  "class_A_used_before": 6,
+  "class_A_used_total_after": 14,
+  "class_A_cap": 20,
+  "class_A_remaining_after": 6,
+  "total_wall_seconds": 9.846,
+  "max_wall_seconds": 1.762,
+  "max_peak_rss_gb": 0.294,
+  "ledger_rows": 16
+ },
+ "legacy": {
+  "batch1_a_class_used": 6,
+  "class_A_used_after_batch2": 14,
+  "class_A_remaining_6_status": "CLOSED, NOT AUTHORIZED TO RELEASE",
+  "classes_B_C_D_E_P4": "LOCKED / 0 starts"
+ }
+}

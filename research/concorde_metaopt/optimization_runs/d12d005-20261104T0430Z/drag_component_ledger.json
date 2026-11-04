@@ -1,0 +1,152 @@
+{
+  "schema": "d12d005-drag-component-ledger-1",
+  "run_id": "d12d005-20261104T0430Z",
+  "generated_utc": "2026-11-04T14:35:37Z",
+  "drag_component_source": "VSPAERO 7.2.2 internal thin-surface coefficients (CDo, CDi, CDtot)",
+  "derived_efficiency_column": {
+    "Ew_available": false,
+    "mechanism": "CDiw = 0 -> Ew = inf (derived 0/0 artifact)"
+  },
+  "physical_status": {
+    "label": "VSPAERO_INTERNAL_ONLY",
+    "physical_validation": "NOT_VALIDATED",
+    "CDtot_is_physical_drag": false,
+    "usable_as_objective": false,
+    "usable_for_body_correction": false
+  },
+  "components": {
+    "parasite_internal_CDo": {
+      "available": true,
+      "note": "VSPAERO internal parasite term, scales with Re; not a skin-friction model."
+    },
+    "induced_CDi": {
+      "available": true,
+      "note": "thin-surface induced drag; not validated against physics."
+    },
+    "total_CDtot": {
+      "available": true,
+      "note": "sum of internal terms; must not be used as real drag."
+    },
+    "wave_drag": {
+      "available": false,
+      "value": null,
+      "note": "OpenVSP WaveDrag / area rule is NOT_VALIDATED and not injected."
+    },
+    "compressibility_correction": {
+      "available": false,
+      "value": null,
+      "note": "not applied (not authorized; body correction BLOCKED)."
+    },
+    "body_correction": {
+      "available": false,
+      "value": null,
+      "note": "BODY-CORR stays BLOCKED; no delta-Donq was added."
+    }
+  },
+  "per_case_internal_coefficients": {
+    "S0_STD_M0p1_base": {
+      "CLtot": 0.126545398398,
+      "CDi": 0.001314258293,
+      "CDtot": 0.020946562364,
+      "class": "batch1",
+      "label": "VSPAERO_INTERNAL_ONLY"
+    },
+    "S1_STD_M0p1_wn128": {
+      "CLtot": 0.134634955743,
+      "CDi": 0.001522504678,
+      "CDtot": 0.021167612993,
+      "class": "batch1",
+      "label": "VSPAERO_INTERNAL_ONLY"
+    },
+    "S2_STD_M0p1_wi0": {
+      "CLtot": 0.126555050502,
+      "CDi": 0.001314544617,
+      "CDtot": 0.02094685813,
+      "class": "batch1",
+      "label": "VSPAERO_INTERNAL_ONLY"
+    },
+    "S3_STD_M2p02_base": {
+      "CLtot": 0.074251031783,
+      "CDi": 0.002606540227,
+      "CDtot": 0.013789407924,
+      "class": "batch1",
+      "label": "VSPAERO_INTERNAL_ONLY"
+    },
+    "S4_STD_M2p02_wn128": {
+      "CLtot": 0.074250958215,
+      "CDi": 0.002606535876,
+      "CDtot": 0.013789403504,
+      "class": "batch1b",
+      "label": "VSPAERO_INTERNAL_ONLY"
+    },
+    "S5_D12_M2p02_base": {
+      "CLtot": 0.070832611794,
+      "CDi": 0.002488240979,
+      "CDtot": 0.009796560997,
+      "class": "batch1b",
+      "label": "VSPAERO_INTERNAL_ONLY"
+    },
+    "S6_STD_M2p02_aoa1": {
+      "CLtot": 0.037164223289,
+      "CDi": 0.000652721593,
+      "CDtot": 0.011813972653,
+      "class": "batch2",
+      "label": "VSPAERO_INTERNAL_ONLY"
+    },
+    "B2-01": {
+      "CLtot": 0.068720123506,
+      "CDi": 0.002408676841,
+      "CDtot": 0.009720832617,
+      "class": "batch2",
+      "label": "VSPAERO_INTERNAL_ONLY"
+    },
+    "B2-02": {
+      "CLtot": 0.070394960019,
+      "CDi": 0.002467158219,
+      "CDtot": 0.009775137856,
+      "class": "batch2",
+      "label": "VSPAERO_INTERNAL_ONLY"
+    },
+    "B2-03": {
+      "CLtot": 0.068491960121,
+      "CDi": 0.002400696206,
+      "CDtot": 0.009704726125,
+      "class": "batch2",
+      "label": "VSPAERO_INTERNAL_ONLY"
+    },
+    "B2-04": {
+      "CLtot": 0.071941629767,
+      "CDi": 0.002521957494,
+      "CDtot": 0.010164783208,
+      "class": "batch2",
+      "label": "VSPAERO_INTERNAL_ONLY"
+    },
+    "B2-05": {
+      "CLtot": 0.06701885029,
+      "CDi": 0.002349255361,
+      "CDtot": 0.00965228443,
+      "class": "batch2",
+      "label": "VSPAERO_INTERNAL_ONLY"
+    },
+    "B2-06": {
+      "CLtot": 0.068664187755,
+      "CDi": 0.002421413708,
+      "CDtot": 0.009725748466,
+      "class": "batch2",
+      "label": "VSPAERO_INTERNAL_ONLY"
+    },
+    "B2-07": {
+      "CLtot": 0.068491876738,
+      "CDi": 0.002399809101,
+      "CDtot": 0.009703839326,
+      "class": "batch2",
+      "label": "VSPAERO_INTERNAL_ONLY"
+    }
+  },
+  "deduplication_note": "Only the single knock-down internal CDtot per case is recorded here; no cross-method addition is performed; wave-drag and body-correction deltas are null.",
+  "archived_baseline_context": {
+    "rcaide_lf_archived_fuel_burn_kg": 34109.48257123768,
+    "source": "p1p3-fullchain-20261031T0407Z (previous round)",
+    "role": "context only, not this round result"
+  }
+}

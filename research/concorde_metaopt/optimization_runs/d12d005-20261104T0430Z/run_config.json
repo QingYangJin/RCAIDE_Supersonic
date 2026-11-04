@@ -1,0 +1,160 @@
+{
+  "schema": "d12d005-run-config-1",
+  "run_id": "d12d005-20261104T0430Z",
+  "issue": "https://github.com/QingYangJin/RCAIDE_Supersonic/issues/4",
+  "authority_comment_id": 6622447995,
+  "authority": "D-12D-005",
+  "status": "A_LINE_CLOSED_VSPAERO_NOT_VALIDATED",
+  "generated_utc": "2026-11-04T14:35:37Z",
+  "repo": {
+    "path": "D:/RCAIDE-d12d005",
+    "branch": "research/d12d005-aero-fallback",
+    "head": "c1168ec656160a3e35e5e157050e98ac1fde8cdf",
+    "main_head": "ec65e5a"
+  },
+  "run_dir": "research/concorde_metaopt/optimization_runs/d12d005-20261104T0430Z",
+  "labels": {
+    "output_label": "VSPAERO_INTERNAL_ONLY",
+    "physical_validation": "NOT_VALIDATED",
+    "gate3_note": "Gate3 physical validation of thin-surface VSPAERO at Mach 2.02 is NOT reachable with this method; all CD values are internal solver outputs, not validated physical drag.",
+    "no_body_correction_injected": true,
+    "lf_m2_02_gate_change": false,
+    "validated_fuel_label": false
+  },
+  "solver": {
+    "name": "VSPAERO 7.2.2 (OpenVSP 3.55.0 thin lifting surface)",
+    "exe": "D:\\OpenVSP-3.55.0\\OpenVSP-3.55.0-win64\\vspaero.exe",
+    "exe_sha256": "db71c4412489af82398833408ea30fb73327bdd9434de2ef530d31375b9fddad",
+    "runner_version": "d12d005-runner-5",
+    "runner_sha256": "0c27d05f047d20e9bfc32b4ab27d687c261461b4feb9af5b97247089189f9377",
+    "serial_only": true,
+    "omp_threads": 4,
+    "timeout_s_per_case": 900,
+    "max_ram_gb": 16
+  },
+  "frozen_contract": {
+    "mach": 2.02,
+    "altitude_m": 18288,
+    "dynamic_pressure_pa": 20483.94,
+    "temperature_k": 216.65,
+    "pressure_pa": 7171.544888,
+    "density_kg_m3": 0.1153178340089936,
+    "velocity_m_s": 596.0373972278921,
+    "reynolds": 89397005.8767656,
+    "sref_m2": 358.25,
+    "cref_m": 18.489893,
+    "bref_m": 25.604638,
+    "x_cg_m": 16.821978259514246,
+    "num_wake_nodes": 8,
+    "wake_iters": 5,
+    "wake_relax": 1.0,
+    "far_dist": -1.0,
+    "symmetry": 0,
+    "aoa_deg": 2.0
+  },
+  "design_set": "12d_lifting_surfaces",
+  "design_vector_12d": {
+    "W01": 358.25,
+    "W02": 1.83,
+    "W03": 67.0,
+    "W04": 48.0,
+    "W05": 71.0,
+    "W06": 0.480469,
+    "W07": 0.945313,
+    "W08": 0.408284,
+    "W09": 0.130178,
+    "W10": 0.0,
+    "V01": 33.91,
+    "V02": 0.0
+  },
+  "fixed_fuselage": {
+    "F01": 61.66,
+    "F02": 4.3,
+    "F03": 1.152778
+  },
+  "geometry_provenance": {
+    "archived_model": {
+      "candidates": [
+        "D:\\RCAIDE-d12d005-gen\\research\\concorde_metaopt\\optimization_runs\\d12d004-vspaero72-lf-20261102T0500Z\\evidence\\v0\\setup_gen\\wing355_baseline.vsp3",
+        "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\v1b\\cases\\S5_D12_M2p02_base\\bundle\\wing355_baseline.vsp3"
+      ],
+      "sha256": "9a788b467095b1a958a240eaa0132e922f667649e9212f9b19e4399bad14f27c"
+    },
+    "archived_thin_vspgeom": {
+      "d12_baseline": {
+        "name": "S5_D12_M2p02_base",
+        "sha256": "9fcda6d5d45300fbb0e20257c9ddc80540b44f5064a9566089d7ef85f9018d8e"
+      },
+      "std": {
+        "name": "S3_STD_M2p02_base",
+        "sha256": "8363f8fb209dd3120bbdf2e3766605b9405b97de0c7561b0be08c91c4cb8ebad"
+      }
+    },
+    "a0v2_readback_status": "A0V2_SETUP_READY_NO_SOLVER",
+    "a0v2_generated_cases": [
+      "B2-01",
+      "B2-02",
+      "B2-03",
+      "B2-04",
+      "B2-05",
+      "B2-06",
+      "B2-07",
+      "S6_STD_M2p02_aoa1"
+    ],
+    "a0v2_status": "A0V2_SETUP_READY_NO_SOLVER",
+    "a0v2_solver_starts": null
+  },
+  "batch_authorizations": {
+    "batch1": {
+      "source": "evidence/v1/run_start.json",
+      "batch": "A-batch-1 (S0..S5)",
+      "authorized_utc": "2026-11-04T07:05:00Z",
+      "authorized_by": "lead",
+      "cap_starts": 6
+    },
+    "batch1b": {
+      "source": "evidence/lead/batch1b_reauthorization.md",
+      "authorized_by": "lead",
+      "cap_starts": 2,
+      "starts": 2
+    },
+    "batch2": {
+      "source": "EXT/d12d005/lead/D12D005_BATCH2_AUTHORIZATION_20261104T130635Z.json",
+      "authorization_id": "D12D005-BATCH2-20261104T130635Z",
+      "authorized_utc": "2026-11-04T13:06:35Z",
+      "authorized_by": "lead",
+      "cap_starts": 8,
+      "retries": 0
+    }
+  },
+  "deliverables_expected": [
+    "run_config.json",
+    "approval_and_budget_ledger.json",
+    "evaluations.jsonl",
+    "solver_case_matrix.csv",
+    "vspaero_diagnostics.json",
+    "rcaide_fallback_results.json",
+    "su2_crosscheck.json",
+    "drag_component_ledger.json",
+    "summary.json",
+    "data_manifest.json",
+    "evidence/batch2_corrections.json"
+  ],
+  "data_manifest_convention": {
+    "hash_modes": [
+      "sha256_raw",
+      "sha256_canonical_lf"
+    ],
+    "canonical_lf": "sha256 over bytes after replacing every CRLF with LF",
+    "note": "repo .gitattributes normalizes text to LF on commit; worktree may hold raw CRLF; both hashes are recorded; filters are not used."
+  },
+  "physical_call_accounting": {
+    "solver_starts_this_round": 14,
+    "class_A_used": 14,
+    "class_A_cap": 20,
+    "class_A_remaining_not_authorized": 6,
+    "class_B_used": 0,
+    "class_C_used": 0,
+    "class_D_E_P4_used": 0
+  }
+}

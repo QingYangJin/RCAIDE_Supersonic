@@ -1,0 +1,364 @@
+{
+ "schema_version": "d12d005-batch2-analysis-1",
+ "batch_id": "D-12D-005-BATCH2",
+ "case_id": "S6_STD_M2p02_aoa1",
+ "order": 1,
+ "kind": "std",
+ "event_id": "NA-D12D005C-001",
+ "label": "VSPAERO_INTERNAL_ONLY",
+ "physical_validation": "NOT_VALIDATED",
+ "outcome_class": "SOLVED_VALID_WITH_DERIVED_WARNINGS",
+ "outcome_class_reason": null,
+ "stop_rule_hit": false,
+ "command": "D:\\OpenVSP-3.55.0\\OpenVSP-3.55.0-win64\\vspaero.exe -omp 4 S6_STD_M2p02_aoa1_model",
+ "cwd": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\batch2\\cases\\S6_STD_M2p02_aoa1\\bundle",
+ "started_utc": "2026-11-04T13:16:10Z",
+ "finished_utc": "2026-11-04T13:16:11Z",
+ "wall_seconds": 0.762,
+ "timeout_s": 900,
+ "timed_out": false,
+ "returncode": 0,
+ "peak_rss_gb": 0.098,
+ "pid": 18656,
+ "worktree_head": "c1168ec656160a3e35e5e157050e98ac1fde8cdf",
+ "runner_version": "d12d005-runner-5",
+ "runner_sha256": "0c27d05f047d20e9bfc32b4ab27d687c261461b4feb9af5b97247089189f9377",
+ "exe_sha256": "db71c4412489af82398833408ea30fb73327bdd9434de2ef530d31375b9fddad",
+ "contract": {
+  "AoA": 1.0,
+  "Beta": 0.0,
+  "Bref": 4.0,
+  "Cref": 1.0,
+  "FarDist": -1.0,
+  "Mach": 2.02,
+  "NumWakeNodes": 8,
+  "ReCref": 4834912.016269014,
+  "Rho": 0.1153178340089936,
+  "Sref": 4.0,
+  "Symmetry": 0,
+  "Vinf": 596.0373971680001,
+  "WakeIters": 5,
+  "WakeRelax": 1.0,
+  "X_cg": 0.25,
+  "Y_cg": 0.0,
+  "Z_cg": 0.0
+ },
+ "contract_asserts": {
+  "Sref": {
+   "got": 4.0,
+   "want": 4.0,
+   "ok": true
+  },
+  "Cref": {
+   "got": 1.0,
+   "want": 1.0,
+   "ok": true
+  },
+  "Bref": {
+   "got": 4.0,
+   "want": 4.0,
+   "ok": true
+  },
+  "X_cg": {
+   "got": 0.25,
+   "want": 0.25,
+   "ok": true
+  },
+  "Mach": {
+   "got": 2.02,
+   "want": 2.02,
+   "ok": true
+  },
+  "AoA": {
+   "got": 1.0,
+   "want": 1.0,
+   "ok": true
+  },
+  "Vinf": {
+   "got": 596.0373971680001,
+   "want": 596.0373971680001,
+   "ok": true
+  },
+  "Rho": {
+   "got": 0.1153178340089936,
+   "want": 0.1153178340089936,
+   "ok": true
+  },
+  "ReCref": {
+   "got": 4834912.016269014,
+   "want": 4834912.016269014,
+   "ok": true
+  },
+  "NumWakeNodes": {
+   "got": 8,
+   "want": 8,
+   "ok": true
+  },
+  "WakeIters": {
+   "got": 5,
+   "want": 5,
+   "ok": true
+  },
+  "Symmetry": {
+   "got": 0,
+   "want": 0,
+   "ok": true
+  }
+ },
+ "prestart_checks": {
+  "auth_sha_matches": true,
+  "plan_sha_matches": true,
+  "worktree_head_matches": true,
+  "exe_sha256_matches_authorization": true,
+  "no_other_vspaero_process": true,
+  "stop_before_run_evidence_one": true,
+  "evidence_zero_solver_started": true,
+  "pc09_checks_all_ok": true,
+  "contract_asserts_all_ok": true,
+  "csf_zero_control_surfaces": true,
+  "setup_sha_equals_contract": true,
+  "vkey_line2_is_local_vspgeom": true,
+  "check_case_dir_pass": true,
+  "readback_17_ok": true,
+  "all_pass": true
+ },
+ "pc09": {
+  "schema_version": "d12d005-batch2-pc09-1",
+  "generated_utc": "2026-11-04T13:16:10Z",
+  "case_id": "S6_STD_M2p02_aoa1",
+  "rule": "PC-09 external thin .vspgeom copied to case-local name matching vkey basename; vkey line2 rewritten to local absolute path",
+  "source_bundle_dir": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\a0v2\\setup_gen\\S6_STD_M2p02_aoa1",
+  "bundle_dir": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\batch2\\cases\\S6_STD_M2p02_aoa1\\bundle",
+  "source_case_files": {
+   "expected_v2.json": {
+    "bytes": 1576,
+    "sha256": "50c624fe0cb6f8e04b4521b271f1c6efaa2e5bbebbee44e5a379eba87730bd45"
+   },
+   "geom_result_thin.csv": {
+    "bytes": 382,
+    "sha256": "d84a246b338e263fa853188f702f9c04e344a31b454e9d0ea55609bf76946e3c"
+   },
+   "S6_STD_M2p02_aoa1_contract.vspaero": {
+    "bytes": 813,
+    "sha256": "5a1e69bb298eae3d4e6c27f5b648750cb28eebb7b6f1581656dfd72b1727f463"
+   },
+   "S6_STD_M2p02_aoa1_model.csf": {
+    "bytes": 19,
+    "sha256": "6630b6a16273b17ce900ab4ef14203af344d306033574c816571b91452c495ca"
+   },
+   "S6_STD_M2p02_aoa1_model.vkey": {
+    "bytes": 391,
+    "sha256": "6bf9f0744bfad8cfbe44b0e7d6a18373f3dfe1afb5b71170b5668516c2027253"
+   },
+   "S6_STD_M2p02_aoa1_model.vsp3": {
+    "bytes": 87723,
+    "sha256": "53b4deaba2fd07d23916f0b08dcdfdda7a88a3932d80512d5f0a66e65e3f6450"
+   },
+   "S6_STD_M2p02_aoa1_model.vspaero": {
+    "bytes": 835,
+    "sha256": "d770c9e421fda6756b7e7948727cd6c00bdf81e68886d6011aae8c258e34686f"
+   }
+  },
+  "external_vspgeom_path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\d12d005-20261104T0430Z\\raw_artifacts\\a0v2_setup\\S6_STD_M2p02_aoa1.vspgeom",
+  "external_vspgeom_sha256": "8363f8fb209dd3120bbdf2e3766605b9405b97de0c7561b0be08c91c4cb8ebad",
+  "external_vspgeom_bytes": 284327,
+  "evidence_recorded_vspgeom_sha256": "8363f8fb209dd3120bbdf2e3766605b9405b97de0c7561b0be08c91c4cb8ebad",
+  "evidence_recorded_vspgeom_bytes": 284327,
+  "local_vspgeom_basename": "S6_STD_M2p02_aoa1_model.vspgeom",
+  "local_vspgeom_sha256": "8363f8fb209dd3120bbdf2e3766605b9405b97de0c7561b0be08c91c4cb8ebad",
+  "local_vspgeom_bytes": 284327,
+  "vkey_basename_original": "S6_STD_M2p02_aoa1_model.vspgeom",
+  "vkey_final_basename": "S6_STD_M2p02_aoa1_model.vspgeom",
+  "vkey_line2_final": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\batch2\\cases\\S6_STD_M2p02_aoa1\\bundle\\S6_STD_M2p02_aoa1_model.vspgeom",
+  "vkey_sha256": "ef1634768fe86eb6d98b63d575a14aa1b9da43b82ea4cceaaa63b671520888e3",
+  "vkey_bytes": 392,
+  "contract_path": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\batch2\\cases\\S6_STD_M2p02_aoa1\\bundle\\S6_STD_M2p02_aoa1_contract.vspaero",
+  "contract_sha256": "5a1e69bb298eae3d4e6c27f5b648750cb28eebb7b6f1581656dfd72b1727f463",
+  "contract_bytes": 813,
+  "setup_path": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\batch2\\cases\\S6_STD_M2p02_aoa1\\bundle\\S6_STD_M2p02_aoa1_model.vspaero",
+  "setup_sha256": "5a1e69bb298eae3d4e6c27f5b648750cb28eebb7b6f1581656dfd72b1727f463",
+  "setup_bytes": 813,
+  "raw_setup_sha256_before_contract_overwrite": "d770c9e421fda6756b7e7948727cd6c00bdf81e68886d6011aae8c258e34686f",
+  "model_path": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\batch2\\cases\\S6_STD_M2p02_aoa1\\bundle\\S6_STD_M2p02_aoa1_model.vsp3",
+  "model_sha256": "53b4deaba2fd07d23916f0b08dcdfdda7a88a3932d80512d5f0a66e65e3f6450",
+  "csf_path": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\batch2\\cases\\S6_STD_M2p02_aoa1\\bundle\\S6_STD_M2p02_aoa1_model.csf",
+  "csf_sha256": "6630b6a16273b17ce900ab4ef14203af344d306033574c816571b91452c495ca",
+  "expected_v2_path": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\batch2\\cases\\S6_STD_M2p02_aoa1\\bundle\\expected_v2.json",
+  "expected_v2_sha256": "50c624fe0cb6f8e04b4521b271f1c6efaa2e5bbebbee44e5a379eba87730bd45",
+  "checks": {
+   "local_vspgeom_sha_equals_external": true,
+   "local_vspgeom_sha_equals_evidence": true,
+   "local_vspgeom_bytes_equals_evidence": true,
+   "vkey_basename_matches_local_copy": true,
+   "vkey_line2_is_absolute_local": true,
+   "setup_sha_equals_contract": true,
+   "no_solver_artifacts_in_bundle": true
+  }
+ },
+ "primary_values": {
+  "CLo": -0.000194820362,
+  "CLi": 0.037359043651,
+  "CLtot": 0.037164223289,
+  "CDo": 0.01116125106,
+  "CDi": 0.000652721593,
+  "CDtot": 0.011813972653,
+  "CMytot": -0.007348237833,
+  "CMztot": 8.392e-09,
+  "CLwtot": -0.000194820362,
+  "CDwtot": 0.01116125106
+ },
+ "primary_finite": true,
+ "primary_nonfinite": {},
+ "all_coefficients": {
+  "Beta": 0.0,
+  "Mach": 2.02,
+  "AoA": 1.0,
+  "Re/1e6": 4.834912016269,
+  "CLo": -0.000194820362,
+  "CLi": 0.037359043651,
+  "CLtot": 0.037164223289,
+  "CDo": 0.01116125106,
+  "CDi": 0.000652721593,
+  "CDtot": 0.011813972653,
+  "E": 0.168388476555,
+  "CMytot": -0.007348237833,
+  "CMztot": 8.392e-09,
+  "CLwtot": -0.000194820362,
+  "CDwtot": 0.01116125106,
+  "LoDw": -0.017455064928,
+  "Ew": Infinity,
+  "L/D": 3.145785450967
+ },
+ "derived_column_warnings": [
+  {
+   "column": "Ew",
+   "value": "inf",
+   "classification": "DERIVED_RATIO_NONFINITE_ALLOWED"
+  }
+ ],
+ "gate_result": {
+  "finite_primary": true,
+  "abs_cl_lt_1": true,
+  "abs_cdtot_lt_10": true,
+  "abs_cltot_le_10": true,
+  "cdi_ge_0": true,
+  "cdtot_ge_cdi": true,
+  "s6_cltot_in_band": true,
+  "s6_band": [
+   0.03,
+   0.045
+  ]
+ },
+ "gate_failures": [],
+ "polar_rows": 1,
+ "artifacts": {
+  ".polar": {
+   "path": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\batch2\\cases\\S6_STD_M2p02_aoa1\\bundle\\S6_STD_M2p02_aoa1_model.polar",
+   "bytes": 3025,
+   "sha256": "281c04f2da011079ee151badb6f6e0dd064100a25ac4698db050afb2c38f9481"
+  },
+  ".history": {
+   "path": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\batch2\\cases\\S6_STD_M2p02_aoa1\\bundle\\S6_STD_M2p02_aoa1_model.history",
+   "bytes": 7552,
+   "sha256": "c94dc43bee6c14cf687c94ef8b6696a251c13ca16eab621653ba9cb997170add"
+  },
+  ".lod": {
+   "path": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\batch2\\cases\\S6_STD_M2p02_aoa1\\bundle\\S6_STD_M2p02_aoa1_model.lod",
+   "bytes": 29009,
+   "sha256": "e3a423030c4847158a133b11816ba14a0332ed259e184e686a71b63016c5c623"
+  },
+  ".adb": {
+   "path": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\batch2\\cases\\S6_STD_M2p02_aoa1\\bundle\\S6_STD_M2p02_aoa1_model.adb",
+   "bytes": 226616,
+   "sha256": "939682a58c543a6987efd2d8a6d2b6eff276bbf4e8600cee10829cb3550edef1"
+  },
+  ".adb.cases": {
+   "path": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\batch2\\cases\\S6_STD_M2p02_aoa1\\bundle\\S6_STD_M2p02_aoa1_model.adb.cases",
+   "bytes": 239,
+   "sha256": "bb5196c5aeee75b8d007a9867000d00c7a8c84e641c64cbcffe3757ea92ef5e1"
+  },
+  ".group.0": {
+   "path": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\batch2\\cases\\S6_STD_M2p02_aoa1\\bundle\\S6_STD_M2p02_aoa1_model.group.0",
+   "bytes": 4148,
+   "sha256": "1d26af24a89fdc52c6dc9f892fd2b45d786b3c09faec203666788c05e39d8c3a"
+  },
+  ".group.1": {
+   "path": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\batch2\\cases\\S6_STD_M2p02_aoa1\\bundle\\S6_STD_M2p02_aoa1_model.group.1",
+   "bytes": 4148,
+   "sha256": "7553690194aae83600a24a445833686543cfe8b6dc45bfd626dee0a673141fbe"
+  }
+ },
+ "verify_polar": {
+  "status": "PASS_WITH_WARNINGS",
+  "path": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\batch2\\cases\\S6_STD_M2p02_aoa1\\bundle\\S6_STD_M2p02_aoa1_model.polar",
+  "schema": "vspaero-7.2.2-48-column",
+  "allow_nonfinite_columns": [
+   "Ew"
+  ],
+  "derived_column_warnings": [
+   {
+    "line": 4,
+    "column": "Ew",
+    "token": "inf"
+   }
+  ],
+  "header_token_count": 48,
+  "rows": 1,
+  "checks": [
+   {
+    "row": 1,
+    "AoA": 1.0,
+    "CLo": -0.000194820362,
+    "CLi": 0.037359043651,
+    "CLtot": 0.037164223289,
+    "CDo": 0.01116125106,
+    "CDi": 0.000652721593,
+    "CDtot": 0.011813972653,
+    "CMztot": 8.392e-09,
+    "Ew": null,
+    "Re": 4834912.016268999
+   }
+  ],
+  "sha256": "281c04f2da011079ee151badb6f6e0dd064100a25ac4698db050afb2c38f9481"
+ },
+ "verify_polar_returncode": 0,
+ "verify_polar_status": "PASS_WITH_WARNINGS",
+ "verify_polar_error": "",
+ "verify_history": {
+  "status": "PASS",
+  "path": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\batch2\\cases\\S6_STD_M2p02_aoa1\\bundle\\S6_STD_M2p02_aoa1_model.history",
+  "sha256": "c94dc43bee6c14cf687c94ef8b6696a251c13ca16eab621653ba9cb997170add",
+  "reference_fields": {
+   "Sref_": 4.0,
+   "Cref_": 1.0,
+   "Bref_": 4.0,
+   "Xcg_": 0.25,
+   "Ycg_": 0.0,
+   "Zcg_": 0.0,
+   "Mach_": 2.02,
+   "AoA_": 1.0,
+   "Beta_": 0.0,
+   "Rho_": 0.1153178,
+   "Vinf_": 596.0373972
+  }
+ },
+ "verify_history_returncode": 0,
+ "verify_history_status": "PASS",
+ "verify_history_error": "",
+ "history_last_row": null,
+ "history_iterations": null,
+ "budget": {
+  "class_A_cap": 20,
+  "class_A_used_before": 6,
+  "starts_used_this_batch": 1,
+  "batch_cap": 8,
+  "class_A_used_total_after": 7,
+  "retries_used": 0
+ },
+ "notes": [
+  "physical_validation=NOT_VALIDATED",
+  "VSPAERO_INTERNAL_ONLY",
+  "CDo/CDtot must not be used as validated drag or fuel objective",
+  "Gate3 physical validation unreachable by thin VLM"
+ ]
+}

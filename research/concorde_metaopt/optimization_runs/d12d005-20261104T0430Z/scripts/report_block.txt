@@ -1,0 +1,86 @@
+print('stage: report')
+draft = read_bytes(EXT_FIG + '/d12d005_batch2_report_20261104.md').decode('utf-8')
+report_lines = draft.split(chr(10))
+
+
+def find_line(prefix, start=0):
+    for i in range(start, len(report_lines)):
+        if report_lines[i].startswith(prefix):
+            return i
+    die('report anchor missing: ' + prefix)
+
+
+i = find_line('> 状态：')
+report_lines[i] = bt('> 状态：**FINAL（Lead 合并稿）**；A5 task-138 结论 APPROVE_BATCH2_RESULTS_AND_CLOSE_A_LINE（0 blocker / 0 major / 4 minor，已按 A5B2R-01..04 修正）；A3 task-139 审计 PASS（critical 40/40）；入库路径 @BT@docs/reviews/d12d005_batch2_report_20261104.md@BT@。')
+i = find_line('> 生成：')
+report_lines[i] = bt('> 生成：2026-11-04T14:13:12Z（A2）；Lead 合并：2026-11-04；证据根（仓库相对）：@BT@research/concorde_metaopt/optimization_runs/d12d005-20261104T0430Z/evidence/batch2@BT@。外部审计状态根在本报告简记为 @BT@EXT@BT@（仓库外，不随仓库发布）。')
+i = find_line('- 授权文件：')
+report_lines[i] = bt('- 授权文件（仓库外）：@BT@EXT/d12d005/lead/D12D005_BATCH2_AUTHORIZATION_20261104T130635Z.json@BT@')
+i = find_line('- A5 冻结计划：')
+report_lines[i] = bt('- A5 冻结计划（仓库外）：@BT@EXT/d12d005/a5/batch2_prestart_gate/batch2_plan_frozen_candidate.json@BT@')
+i = find_line('- 唯一警告：派生效率列')
+report_lines[i] = bt('- 唯一警告：派生效率列 @BT@Ew=inf@BT@（8/8）。原因（A5 task-138 A5B2R-01 更正）：thin 孤立翼 polar 中 @BT@CDiw=0@BT@（且 @BT@CLiw=0@BT@），派生比值 Ew=CLtot²/(π·AR·CDiw) 的分母为 0 → inf；这是**派生列 0/0 伪影**，不是求解发散（主系数全部有限）。按授权派生列非有限仅记 WARNING，不触发停止。')
+i = find_line('- history 由 verify-history 判定 PASS')
+report_lines.insert(i + 1, bt('- 取证快照字段说明（A5B2R-02/03）：@BT@batch2_results.json@BT@ 的 @BT@cases[*].history_iterations@BT@ 与 @BT@run.run_start.last_solver_finish_utc@BT@、ledger @BT@stdout_sha256@BT@ 为 null 属快照字段未回填；原始 history 每案 5 行（verify-history PASS），每案 solver stdout 已归档于 @BT@cases/<case>/results/solver_stdout.log@BT@。原始证据不改写；详见 @BT@evidence/batch2_corrections.json@BT@。'))
+i = find_line('观察：W01 面积 +5%')
+report_lines[i] = report_lines[i] + bt('（A5B2R-04：W01 案设计翼面积=376.1625 m²，但合同参考面积固定 Sref=358.25 m² 未随动，故 Δ 含固定 Sref 归一化效应，不能读作纯气动效率敏感性。）')
+i = find_line('| Gate2（诊断 / 可观测性门）')
+report_lines[i] = bt('| Gate2（诊断 / 可观测性门） | **DIAGNOSTIC_REPAIR_CONFIRMED_BY_S6**（A5 task-138；登记属性仍为 POST_HOC_DIAGNOSTIC） | 事后诊断重注册：S3/S4 诊断带 [0.06,0.09]（观测 0.074251 在带内）；独立确认案 S6 预注册带 [0.03,0.045] PASS；密度三件套、单变量扰动、重复性差异均为内部可观测性记录；**不是事先注册的物理假设检验**，不产生物理通过/不通过结论。 |')
+i = find_line('- B 类（')
+if not report_lines[i + 1].startswith('- C 类（') or not report_lines[i + 2].startswith('- D（SU2）'):
+    die('report B/C/D block layout unexpected')
+report_lines[i:i + 3] = [
+    bt('- B 类（RCAIDE VLM 经验低保真回退，evaluator @BT@RCAIDE_VLM_EMPIRICAL_LF_M202@BT@）：cap 12，**0 starts，LOCKED / NOT_AUTHORIZED**；仅在 A 线 FALLBACK_TRIGGERED、evaluator 实现并获新授权后才可启动（本轮未触发）。'),
+    bt('- C 类（SU2 Euler 交叉检查）：cap 4，**0 starts，LOCKED / NOT_AUTHORIZED**。'),
+    bt('- 其他（OpenVSP WaveDrag、批量真实 DOE/BO/DE、真实航空 MAML、P5/P6）：均 0 starts，未授权。'),
+]
+i = find_line('下一步：')
+j = i + 1
+k = j
+while k < len(report_lines) and report_lines[k].startswith(('1.', '2.', '3.', '4.')):
+    k += 1
+if k - j != 4:
+    die('report next-steps block unexpected')
+report_lines[j:k] = [
+    bt('1. A5 结果复核：task-138 = APPROVE_BATCH2_RESULTS_AND_CLOSE_A_LINE（0 blocker / 0 major / 4 minor，已按 A5B2R-01..04 修正）。'),
+    bt('2. A3 隔离审计：task-139 = PASS（critical 40/40；证据 241 文件 / 7,788,381 B；审计时未提交、未推送）。'),
+    bt('3. 入库：Lead 已将 @BT@evidence/batch2/@BT@、5 张中文图、本报告与 10 个交付 JSON 一并提交并推送（提交 sha 见 Issue #4 事实回执）。'),
+    bt('4. 若后续需要 LF-M2.02 的物理结论，必须走不同的物理验证方法（如 SU2 Euler / 实验）并申请新授权；不得复用本批内部系数作为物理证据。'),
+]
+i = find_line('### 9.4 图表文件位置说明')
+report_lines[i] = '### 9.4 图表与复算产物位置（入库后）'
+j = i + 1
+if report_lines[j].strip() != '':
+    die('report 9.4 layout unexpected')
+report_lines[j + 1:j + 2] = [
+    bt('- 5 张中文图（300 dpi、Microsoft YaHei）：@BT@docs/reviews/figures/d12d005_batch2/@BT@（fig1..fig5，文件名不变）。'),
+    bt('- 图与复算产物清单、字节与 sha256 见 §9.3 及 @BT@figures_manifest.json@BT@ / @BT@SHA256SUMS.txt@BT@。'),
+    bt('- 复算与出图溯源副本（草稿报告、脚本、JSON、manifest）：@BT@research/concorde_metaopt/optimization_runs/d12d005-20261104T0430Z/evidence/a2_batch2_figures/@BT@。'),
+    bt('- 入库后 @BT@data_manifest.json@BT@ 对 run 目录全部文件（含 5 张图、本报告）记录 raw + canonical-LF 双哈希。'),
+]
+i = find_line('_本报告为草稿')
+report_lines[i] = '_本报告为 D-12D-005 Batch2 最终报告（Lead 合并稿）；全部数值可由 §9 证据文件与复算脚本复现；内部系数不得作为物理证据或验收依据。_'
+text = chr(10).join(report_lines)
+text = text.replace('](figures/', '](figures/d12d005_batch2/')
+APPENDIX = [
+    '',
+    '## §10 复核与入库记录',
+    '',
+    '| 角色 | 任务 | 结论 |',
+    '| --- | --- | --- |',
+    '| A5 | task-120（A0 rev6/6a @0e62db3） | APPROVE_FOR_BATCH1B（0 blocker / 0 major / 3 minor） |',
+    '| A5 | task-125（BATCH1B 复核 + Gate 判定） | CHANGES_REQUESTED（0 / 3 / 6）→ 后续由 A0v2 与 Batch2 处置 |',
+    '| A5 | task-131（Batch2 零求解预启动 gate） | APPROVE_BATCH2_8（0 / 0 / 4 minor；erratum 澄清 S4/S5 已在 batch1b 执行） |',
+    '| A5 | task-138（Batch2 结果复核） | APPROVE_BATCH2_RESULTS_AND_CLOSE_A_LINE（0 / 0 / 4 minor） |',
+    '| A3 | task-121（A0 rev6/6a 隔离） | PASS（critical 72/72） |',
+    '| A3 | task-134（Batch2 预启动隔离） | PASS（critical 31/31） |',
+    '| A3 | task-139（Batch2 证据完整性） | PASS（critical 40/40，warning 2/10） |',
+    '| Lead | Batch2 书面授权 | authorization_id D12D005-BATCH2-20261104T130635Z；sha256 @BT@fd02dd898c816ad702a49e408ca4f31ea193a806275b9ffe95aa9d28e8507ecc@BT@ |',
+    '',
+    '入库交付物（写在 run 目录 @BT@research/concorde_metaopt/optimization_runs/d12d005-20261104T0430Z/@BT@）：@BT@run_config.json@BT@、@BT@approval_and_budget_ledger.json@BT@、@BT@evaluations.jsonl@BT@、@BT@solver_case_matrix.csv@BT@、@BT@vspaero_diagnostics.json@BT@、@BT@rcaide_fallback_results.json@BT@、@BT@su2_crosscheck.json@BT@、@BT@drag_component_ledger.json@BT@、@BT@summary.json@BT@、@BT@data_manifest.json@BT@；证据 @BT@evidence/batch2/@BT@（241 文件 / 7,788,381 B）、@BT@evidence/batch2_corrections.json@BT@、@BT@evidence/a2_batch2_figures/@BT@。',
+    '',
+    '> 物理口径：本轮 14 次 A 类启动全部为 VSPAERO thin-LF 内部计算；@BT@CDtot@BT@ 不是真实阻力，机身修正、面积律与 LF-M2.02 均未签核；六门禁状态不变（GEO-12D PARTIAL / LF-M2.02 NOT_VALIDATED / HF-M2.02 PARTIAL / BODY-CORR BLOCKED / MISSION-DATA PARTIAL / BUDGET 门控中）。',
+]
+text = text.rstrip() + chr(10) + chr(10).join(bt(x) for x in APPENDIX) + chr(10)
+write_text(REPORT_DEST, text)
+print('report written: bytes=', os.path.getsize(REPORT_DEST))
