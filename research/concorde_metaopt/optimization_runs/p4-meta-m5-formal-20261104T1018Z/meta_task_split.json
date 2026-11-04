@@ -1,0 +1,1959 @@
+{
+  "counts": {
+    "meta_test": 20,
+    "meta_test_ood": 10,
+    "meta_train": 60,
+    "meta_validation": 20,
+    "negative_control": 10
+  },
+  "family_fingerprint": "2b78ec7b533fa346f0629d34ed9e3bf525a2ff6295260f21a490452cc1778a42",
+  "family_id": "F-QE-feasible-v2",
+  "family_version": "v2",
+  "radius_base": 0.75,
+  "schema_version": "p4-m5-split-1",
+  "split_hash": "3c206ebbe35e848a5137b433d7bc9ca022eb28b4b310ab3ccb9d89c989f33f8a",
+  "task_ids": {
+    "meta_test": [
+      "09d90b68a39e",
+      "0c26d359a7d4",
+      "19b3fae01205",
+      "2bbfab8ac1c0",
+      "2e4f62c8208b",
+      "31a5047d074b",
+      "501b7e78652c",
+      "546c2b3909a6",
+      "5c10e4d8701e",
+      "849a6a887c40",
+      "9380cd8a4ba4",
+      "94cb567647d7",
+      "968c59543946",
+      "a01f18498af9",
+      "a813d68199fd",
+      "cd19d1bf5e7d",
+      "cee5f7ad4dd1",
+      "cffaf14d5e32",
+      "d9091c7fbdf9",
+      "fdcabcb7474b"
+    ],
+    "meta_test_ood": [
+      "12e72516a917",
+      "1f577dedec59",
+      "55792a84f643",
+      "5f344c961c69",
+      "6a4c4d4d84af",
+      "92f76845ede3",
+      "c12dc832f91d",
+      "c31d0fc4fefe",
+      "f2f800a9b266",
+      "fabd81f6f2c7"
+    ],
+    "meta_train": [
+      "03d696eac8d8",
+      "0d792cf3f47b",
+      "0d8e85178b55",
+      "0eb740f9aee7",
+      "0ec6207fa96f",
+      "1056ffb1a364",
+      "1128c50f8b29",
+      "1170ff8e94ae",
+      "16df32f5a358",
+      "1cf323bcf24e",
+      "2163d34c2413",
+      "217850af88b6",
+      "2fa9841fcb2b",
+      "3234cb055b72",
+      "3de1a6e2018f",
+      "40c699d905c8",
+      "4264bad46358",
+      "484c2e1539b6",
+      "4b082a6aa3c6",
+      "5097821f38c3",
+      "59ff846eb526",
+      "5a83dbdf4d05",
+      "5c34a73ae851",
+      "5ead1be8ff3b",
+      "65bc48e1130c",
+      "65e809f4a6a4",
+      "6c95e2d8c43a",
+      "6ce4bc86f20c",
+      "73f04991efae",
+      "83b19b510bc8",
+      "8448d67290b6",
+      "8480f99221b1",
+      "935df38fdc81",
+      "9c2499be052f",
+      "9dabd6a7c23b",
+      "ae5d9bfe2313",
+      "b3920b20e9aa",
+      "b63f9df02b5d",
+      "b64036c31eef",
+      "bb8e35f3f65e",
+      "bc310b5dac2f",
+      "bd73bc2c6b52",
+      "c34a79798018",
+      "c5c87b4480ce",
+      "ca4b740fe1f7",
+      "cb53a1713703",
+      "cf8768d915c3",
+      "d0aadddff7d7",
+      "d0d8f4326f94",
+      "d12859977f1b",
+      "d2af3da13084",
+      "d3adbb8403ba",
+      "d50f7cd4b5b0",
+      "d9ece9586b6e",
+      "e88d8c80cf42",
+      "ed11eb0e6234",
+      "ed76d5e9ea64",
+      "fa0e98e28e40",
+      "fbe9a8320b71",
+      "fc00baabe75f"
+    ],
+    "meta_validation": [
+      "0ca9c3a2f489",
+      "102ef1742751",
+      "3ecbe5c538b6",
+      "498fb49c2af9",
+      "4f01bcb86871",
+      "5112929756c7",
+      "53e7a4acd454",
+      "5cf023976d6a",
+      "614f5fb6674f",
+      "742c22c56ec8",
+      "81430afeab87",
+      "8e0d3f68696f",
+      "a4bd2983eef1",
+      "c1521e60eda1",
+      "d0a4316773f7",
+      "d867bcef8e34",
+      "dcb277ea8170",
+      "e68dafd34c37",
+      "ea0d7d2081ec",
+      "ec4cf0c6c30e"
+    ],
+    "negative_control": [
+      "NC-013c5d9e78",
+      "NC-31d6154d8d",
+      "NC-38faf1185d",
+      "NC-49663da9ce",
+      "NC-85fe3eb9bf",
+      "NC-90cd085ef9",
+      "NC-a5c3bb096d",
+      "NC-d67e8cec44",
+      "NC-e32a6d5b63",
+      "NC-f9f815e9e1"
+    ]
+  },
+  "tasks": {
+    "meta_test": [
+      {
+        "params_digest": "13438fb52fe0934ce5dde9688b1a5b36d595d382b3227165bf947691582bbce2",
+        "params_summary": {
+          "context": {
+            "context_1": 1.3310990053737055,
+            "context_2": 0.725304001769556
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": 0.600999348514077,
+          "radius": 0.7457548531967025,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 1777677095,
+        "task_id": "09d90b68a39e"
+      },
+      {
+        "params_digest": "89215e345c0713fc7de697efc678abb5218b1abe2785aa3f165f1f4a88a7e88f",
+        "params_summary": {
+          "context": {
+            "context_1": 1.0921099693414071,
+            "context_2": 1.3450947447306618
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": 0.8770444178978158,
+          "radius": 0.8094153801013733,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 154844948,
+        "task_id": "0c26d359a7d4"
+      },
+      {
+        "params_digest": "6f2f51ce22ba9e6f573d755c7b6100a655e28980e4999743ec7893b024e131f9",
+        "params_summary": {
+          "context": {
+            "context_1": 0.643328929725959,
+            "context_2": 1.1819514538844622
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": -0.1975339983911707,
+          "radius": 0.7988861646484706,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 1568284604,
+        "task_id": "19b3fae01205"
+      },
+      {
+        "params_digest": "1905ecf26225c179124c56abb0dd5bdfe77151bcc9753c061498abc90b737546",
+        "params_summary": {
+          "context": {
+            "context_1": 0.871377127830931,
+            "context_2": 0.9989276693753519
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": -0.977005205756731,
+          "radius": 0.824676725150264,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 585521032,
+        "task_id": "2bbfab8ac1c0"
+      },
+      {
+        "params_digest": "33c47f7a8eda18edb3aebe6bcd69e7094c7f52fe9a947ea17361c4f21eaeaa0d",
+        "params_summary": {
+          "context": {
+            "context_1": 0.7544911948136864,
+            "context_2": 0.7461847285511953
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": 0.32511039133033104,
+          "radius": 0.8893531023589983,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 654517869,
+        "task_id": "2e4f62c8208b"
+      },
+      {
+        "params_digest": "3d0391ae3ef4cad8fdb638f77fa3a8e34c04a32e38f4b195a94b679a245772f5",
+        "params_summary": {
+          "context": {
+            "context_1": 0.6838733282630813,
+            "context_2": 1.196134582740913
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": 0.7782214881324268,
+          "radius": 0.7116014266689471,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 1378404579,
+        "task_id": "31a5047d074b"
+      },
+      {
+        "params_digest": "6b243c4b6b2e735d12835126b346b1b5897baf51800102bf07f8c5e4b8342cea",
+        "params_summary": {
+          "context": {
+            "context_1": 1.225995769284744,
+            "context_2": 1.0478151385094643
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": -0.21721914281113608,
+          "radius": 0.6848258087906945,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 1632137515,
+        "task_id": "501b7e78652c"
+      },
+      {
+        "params_digest": "cb501610fba7665cd6955a8e2f684c48709a59eeb865271ab81825ee0df0ba75",
+        "params_summary": {
+          "context": {
+            "context_1": 0.8274242597132605,
+            "context_2": 0.6734967429719544
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": 0.3864506033066909,
+          "radius": 0.6288080643313125,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 1084735977,
+        "task_id": "546c2b3909a6"
+      },
+      {
+        "params_digest": "a2b581c3f543fd4d3e491eb396e52c12cb3f3a3905c16bb3e8833e0632026715",
+        "params_summary": {
+          "context": {
+            "context_1": 1.2290815095496153,
+            "context_2": 1.2724784409781686
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": 0.322787599674913,
+          "radius": 0.7229280301734122,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 1852463630,
+        "task_id": "5c10e4d8701e"
+      },
+      {
+        "params_digest": "a1a08e7f3cdcbe112b3f30be02e3c598e27f3f922663fba403d1c9521e8cde9f",
+        "params_summary": {
+          "context": {
+            "context_1": 1.0481903290617474,
+            "context_2": 1.2773231092275608
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": 0.8106838824329428,
+          "radius": 0.7194755688941964,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 1084966482,
+        "task_id": "849a6a887c40"
+      },
+      {
+        "params_digest": "697788f4190e6039f1a8e244334c2ac97be0c91ca21be4d4b9ecb7b0ebbd2c35",
+        "params_summary": {
+          "context": {
+            "context_1": 0.6485561592360884,
+            "context_2": 0.7808290216217324
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": -0.3176608481635018,
+          "radius": 0.7626099970505062,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 914613013,
+        "task_id": "9380cd8a4ba4"
+      },
+      {
+        "params_digest": "4ab485c0a0365510394e7ea3477498c8316cdeec189a589d9241c2442234ffe5",
+        "params_summary": {
+          "context": {
+            "context_1": 0.9195830710788445,
+            "context_2": 0.9561262647144192
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": 0.17112979235829007,
+          "radius": 0.7170922661009278,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 99870166,
+        "task_id": "94cb567647d7"
+      },
+      {
+        "params_digest": "a0a0ee8c84c4646c947516517b9c4e075562813bf02d1c84acb6ba3d87b284c0",
+        "params_summary": {
+          "context": {
+            "context_1": 1.276168483866152,
+            "context_2": 1.2157594850008806
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": 1.0581443236802504,
+          "radius": 0.8368439246336876,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 1316826247,
+        "task_id": "968c59543946"
+      },
+      {
+        "params_digest": "17e107ac5a34889481e5f514bf02f2f793bedc51c3a95335696c3e697be59ebc",
+        "params_summary": {
+          "context": {
+            "context_1": 1.3595555244431141,
+            "context_2": 1.1554585091020366
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": -0.06904545194281098,
+          "radius": 0.7232209819443084,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 1643641223,
+        "task_id": "a01f18498af9"
+      },
+      {
+        "params_digest": "e6820ec27c050872f9e131d4e92bb65bb4dcc3ac5565e8d0748eee7d29807667",
+        "params_summary": {
+          "context": {
+            "context_1": 1.1042645639252975,
+            "context_2": 1.0553613285103398
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": -0.23074870674680725,
+          "radius": 0.6035122604753927,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 696450689,
+        "task_id": "a813d68199fd"
+      },
+      {
+        "params_digest": "48dc3394f0db71975cd217a86a2dc5927a6e2ce66f39c9c808ff505a09fd97bc",
+        "params_summary": {
+          "context": {
+            "context_1": 1.3051736928252677,
+            "context_2": 1.1959616081262445
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": -0.5848374521241937,
+          "radius": 0.8414452679345052,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 1207966997,
+        "task_id": "cd19d1bf5e7d"
+      },
+      {
+        "params_digest": "5a5686fa0281bf7e8dbdcb74723d82ba9c23bc8df4f5eeca565caa81fd9532fd",
+        "params_summary": {
+          "context": {
+            "context_1": 1.1082563039403528,
+            "context_2": 1.2977296956796471
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": -0.4293401034709792,
+          "radius": 0.7069668554509849,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 1042735509,
+        "task_id": "cee5f7ad4dd1"
+      },
+      {
+        "params_digest": "a5254f9c4ef0aa9836b837084e13a440b8c37aedf9e2b55d1d736834fd4d1402",
+        "params_summary": {
+          "context": {
+            "context_1": 1.2509528891644996,
+            "context_2": 1.378026349542862
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": -0.6210306652412421,
+          "radius": 0.7175627808486131,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 975780576,
+        "task_id": "cffaf14d5e32"
+      },
+      {
+        "params_digest": "0ca27b4075d4e22d45635ab40af4b27815108b59360243410126b36a5d5245cf",
+        "params_summary": {
+          "context": {
+            "context_1": 0.776474989187319,
+            "context_2": 0.6662276005485313
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": -1.1331741365568768,
+          "radius": 0.7306998488711963,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 527247244,
+        "task_id": "d9091c7fbdf9"
+      },
+      {
+        "params_digest": "ca5bf76b3ce5d55b07ff0e79eaef8d7e716e109574dbb6f29495e4fb4afd91ae",
+        "params_summary": {
+          "context": {
+            "context_1": 1.3174085619493052,
+            "context_2": 1.0172457344882482
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": 0.0640192035838596,
+          "radius": 0.7600092884337248,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 1977904725,
+        "task_id": "fdcabcb7474b"
+      }
+    ],
+    "meta_test_ood": [
+      {
+        "params_digest": "387a7c50bc134d4003d6abbe3fc2aa7bba7762bc34f16e3d10d9c4c886a7c513",
+        "params_summary": {
+          "context": {
+            "context_1": 0.8861692932149838,
+            "context_2": 1.5507633419936377
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": 0.21002345392708,
+          "radius": 0.46230418614475577,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 2070188922,
+        "task_id": "12e72516a917"
+      },
+      {
+        "params_digest": "3b168b252102bccfc8db0276644ebcb67119a975b6f1564f6e3f8c1613d63ddc",
+        "params_summary": {
+          "context": {
+            "context_1": 1.3680233159366852,
+            "context_2": 1.1392062670641676
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": 0.383886348511975,
+          "radius": 0.5555705239898853,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 1240881685,
+        "task_id": "1f577dedec59"
+      },
+      {
+        "params_digest": "ac7773a92835eb307c78b1255a6fee69427cd1994b4ff5736280d6bdec7a8723",
+        "params_summary": {
+          "context": {
+            "context_1": 1.3440999714138133,
+            "context_2": 0.9806793535382375
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": 0.8682680737114228,
+          "radius": 0.606957769700622,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 846930927,
+        "task_id": "55792a84f643"
+      },
+      {
+        "params_digest": "5844470233129221b973851c6b79944b8b65bea77d3426a55538775f58751669",
+        "params_summary": {
+          "context": {
+            "context_1": 1.5852054395731987,
+            "context_2": 0.9585271922309517
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": 0.006438466268308796,
+          "radius": 0.5588537605186991,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 1639060490,
+        "task_id": "5f344c961c69"
+      },
+      {
+        "params_digest": "4a03a1354fc23e2e1bc5161a17f5c5f0486c13cbe5ef1ff1d7e49bb4d5a585b2",
+        "params_summary": {
+          "context": {
+            "context_1": 1.3619861461049627,
+            "context_2": 0.9015874697547281
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": 0.6285308699229006,
+          "radius": 0.5150969373970575,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 903307754,
+        "task_id": "6a4c4d4d84af"
+      },
+      {
+        "params_digest": "90af9a7b77f194eea4ffd00010f216436969b2e3c566df46cae2b5493cfa023a",
+        "params_summary": {
+          "context": {
+            "context_1": 1.1654620682458476,
+            "context_2": 1.185422430668915
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": -0.787547783431531,
+          "radius": 0.6065563201536212,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 1428019055,
+        "task_id": "92f76845ede3"
+      },
+      {
+        "params_digest": "a94a4e56f004395789e5b11cc7e80d7dd5c55a7c38ca11cb1d2d1bf6a23985ce",
+        "params_summary": {
+          "context": {
+            "context_1": 0.9946674889002733,
+            "context_2": 1.579065308943963
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": -0.3063190474794819,
+          "radius": 0.5352629373598079,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 1874384626,
+        "task_id": "c12dc832f91d"
+      },
+      {
+        "params_digest": "a8e2d3b1e44b91d46a212e5ee0496ee506f8db19445d397b759a384c3ebfb787",
+        "params_summary": {
+          "context": {
+            "context_1": 1.040587152682496,
+            "context_2": 1.1705272200716113
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": 0.10256859549126118,
+          "radius": 0.478791465157146,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 1912072555,
+        "task_id": "c31d0fc4fefe"
+      },
+      {
+        "params_digest": "b9d253aa52cd9483d1925e40f6814fbee356da0672ccd97c92531def54edeb16",
+        "params_summary": {
+          "context": {
+            "context_1": 1.4008809895454077,
+            "context_2": 1.1377095635815642
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": 0.45875809757324637,
+          "radius": 0.6499103329345135,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 1717290371,
+        "task_id": "f2f800a9b266"
+      },
+      {
+        "params_digest": "4a80a0f96728d74f98fe09f88ed49059f7e9f45cd235549d02e9b83dfe35a2e2",
+        "params_summary": {
+          "context": {
+            "context_1": 1.5444156974242413,
+            "context_2": 1.3409018575332796
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": 0.46607830661484684,
+          "radius": 0.5403938036736404,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 857569773,
+        "task_id": "fabd81f6f2c7"
+      }
+    ],
+    "meta_train": [
+      {
+        "params_digest": "7b9488fe463f9f5fad7a7d28d2819304d202ed84e20f8feeabdbeec00bfeecad",
+        "params_summary": {
+          "context": {
+            "context_1": 0.7195847974279201,
+            "context_2": 1.0528159065258016
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": 0.707108203371674,
+          "radius": 0.7085041982632385,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 726921680,
+        "task_id": "03d696eac8d8"
+      },
+      {
+        "params_digest": "54bdf7038b57c8cb4ab8a47d8281cc3831a95c0ba43cea0d6b5f8aefe813f97a",
+        "params_summary": {
+          "context": {
+            "context_1": 1.142069261167407,
+            "context_2": 1.339196426324684
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": 0.30213906732359197,
+          "radius": 0.6906411546449172,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 1511745758,
+        "task_id": "0d792cf3f47b"
+      },
+      {
+        "params_digest": "56be0196723152f4183f32afcd73f06bc50817b49e0d605c37feef18bce7ed0f",
+        "params_summary": {
+          "context": {
+            "context_1": 1.1753529532900577,
+            "context_2": 0.7737094087533313
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": -0.6216220964965902,
+          "radius": 0.8749888724888355,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 895242100,
+        "task_id": "0d8e85178b55"
+      },
+      {
+        "params_digest": "63df5552fb042eec88a0318ad8a88f40c4362c63066002e37331a896518bf37a",
+        "params_summary": {
+          "context": {
+            "context_1": 0.7132997446463754,
+            "context_2": 0.8514157045959043
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": -0.04922868476664133,
+          "radius": 0.667725161324308,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 383738877,
+        "task_id": "0eb740f9aee7"
+      },
+      {
+        "params_digest": "19cecca7b5a12cbaeddcc25e20049cb3995aca040728219f7b12320674ec9b00",
+        "params_summary": {
+          "context": {
+            "context_1": 0.8295322829731259,
+            "context_2": 0.7292419522362685
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": -0.23260119331348972,
+          "radius": 0.7395597027492328,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 420346019,
+        "task_id": "0ec6207fa96f"
+      },
+      {
+        "params_digest": "8230bec966e0c96c358b7b3bf313b2f0d49520293c9a2fcf4d4c4a3c63a6c3f1",
+        "params_summary": {
+          "context": {
+            "context_1": 1.0085754964649847,
+            "context_2": 1.3425125046972637
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": 1.150143872292004,
+          "radius": 0.7763488364105583,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 235623036,
+        "task_id": "1056ffb1a364"
+      },
+      {
+        "params_digest": "58c76f08b00a5181d411f0fec881d4628231604e6aa4fa1f256bac6caf034048",
+        "params_summary": {
+          "context": {
+            "context_1": 1.107398901082076,
+            "context_2": 1.0401782366213053
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": -0.21013176425311575,
+          "radius": 0.7827238214527641,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 73717048,
+        "task_id": "1128c50f8b29"
+      },
+      {
+        "params_digest": "9f45ae8047bb490f5502d785fdd9db5c45897f870a1c91b50b4b1327edec6c50",
+        "params_summary": {
+          "context": {
+            "context_1": 0.7884012147462647,
+            "context_2": 1.1426141865896478
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": -0.4185544439360205,
+          "radius": 0.8200513517838968,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 136722383,
+        "task_id": "1170ff8e94ae"
+      },
+      {
+        "params_digest": "3e0515618e77c8958dace34066c8a5b7897a8f6cee610d9f4d7043b9f27cdc18",
+        "params_summary": {
+          "context": {
+            "context_1": 0.9370754696197442,
+            "context_2": 0.6441020150987847
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": -0.9451233732223564,
+          "radius": 0.6397493962647449,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 1139929475,
+        "task_id": "16df32f5a358"
+      },
+      {
+        "params_digest": "0f050213fcadd04167bf161e64f762a5ac36b06dc52d0369d712490bd4b30acb",
+        "params_summary": {
+          "context": {
+            "context_1": 1.022077675049245,
+            "context_2": 1.3416796655060037
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": 1.1282872588692012,
+          "radius": 0.89127955334391,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 477647824,
+        "task_id": "1cf323bcf24e"
+      },
+      {
+        "params_digest": "2b5e35f00c35c8a111775ed0409ef17d474e4b44f4b7e283935d806801a1f672",
+        "params_summary": {
+          "context": {
+            "context_1": 1.056141456607752,
+            "context_2": 0.8590496127770688
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": -0.30779563396747556,
+          "radius": 0.8435602135596754,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 1495763936,
+        "task_id": "2163d34c2413"
+      },
+      {
+        "params_digest": "ace112b04b78e187e983072ad444cb9f9c93a103a1fb2c12f4d5efe00d7f0b48",
+        "params_summary": {
+          "context": {
+            "context_1": 0.6411067914829721,
+            "context_2": 1.2819274819828979
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": -0.12195751727555382,
+          "radius": 0.848769270162602,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 1642600930,
+        "task_id": "217850af88b6"
+      },
+      {
+        "params_digest": "fbffbcfbf73ed9460c29c095fcd13c488176f243c1efcfea35864d17f5c81847",
+        "params_summary": {
+          "context": {
+            "context_1": 0.986207001254467,
+            "context_2": 0.8316450535215234
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": 0.1383133613295101,
+          "radius": 0.7769477902881061,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 927263933,
+        "task_id": "2fa9841fcb2b"
+      },
+      {
+        "params_digest": "ace0f378d742f4546bc4580095313882db217af04522c6ca0c3f61a01abba48b",
+        "params_summary": {
+          "context": {
+            "context_1": 0.8911387131459286,
+            "context_2": 1.325389755453806
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": 0.38526157497930713,
+          "radius": 0.7524991072105058,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 665414360,
+        "task_id": "3234cb055b72"
+      },
+      {
+        "params_digest": "63d81c761f080a8223950f375ab95a05eb44f63eb18b6c7668c00b53cbca2e5e",
+        "params_summary": {
+          "context": {
+            "context_1": 0.7336295327135046,
+            "context_2": 1.227296333883849
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": -0.11560767697143204,
+          "radius": 0.9552091801735904,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 971913478,
+        "task_id": "3de1a6e2018f"
+      },
+      {
+        "params_digest": "c138d51505c2fb9c5b862aaa72171f3367d4dae953e4f19df2dd6bcf3645bad8",
+        "params_summary": {
+          "context": {
+            "context_1": 1.2442508558562504,
+            "context_2": 1.1427571537646006
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": 0.9194844642564612,
+          "radius": 0.6176212351697556,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 847586628,
+        "task_id": "40c699d905c8"
+      },
+      {
+        "params_digest": "10e0957fe15def1c6ee11b83c4471bfa6ecaaefffc27d2ccb964d4278a9c364f",
+        "params_summary": {
+          "context": {
+            "context_1": 0.780980618775819,
+            "context_2": 0.7405398523822222
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": -0.055987924729892447,
+          "radius": 0.834336246381852,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 1674476086,
+        "task_id": "4264bad46358"
+      },
+      {
+        "params_digest": "17d8c80cf057b73f91d742c338a154e25e6b78deadc01e385115e99ae04a7d70",
+        "params_summary": {
+          "context": {
+            "context_1": 1.06618721310375,
+            "context_2": 0.9955681720716014
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": 0.9854025138657081,
+          "radius": 0.8921561915052247,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 746699676,
+        "task_id": "484c2e1539b6"
+      },
+      {
+        "params_digest": "e169a281f9ddb4995c703f3f393f8c7d97248031d809938af202d1d1babe89ba",
+        "params_summary": {
+          "context": {
+            "context_1": 1.1303927357533041,
+            "context_2": 1.2088386435319385
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": -0.6716315475266248,
+          "radius": 0.7214626131815769,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 115244937,
+        "task_id": "4b082a6aa3c6"
+      },
+      {
+        "params_digest": "e7a53ce248726ce8aea44a21b8d0bf8ef1a1a158caf0ce51d73a10a907ed4110",
+        "params_summary": {
+          "context": {
+            "context_1": 1.0193127352140938,
+            "context_2": 0.9559395422651651
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": -0.21147170807186932,
+          "radius": 0.5498461511972186,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 1337881741,
+        "task_id": "5097821f38c3"
+      },
+      {
+        "params_digest": "6a5c3f5f2ff0fcee6110c1a294415630c24e789a481df63eaf03f67171cfd206",
+        "params_summary": {
+          "context": {
+            "context_1": 1.064786420547465,
+            "context_2": 1.0904852827618952
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": 0.6527166957382056,
+          "radius": 0.7263303300108683,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 942772311,
+        "task_id": "59ff846eb526"
+      },
+      {
+        "params_digest": "f7e6dc3f430eda95a20b76f84d7a3881c604efb867a0c3aafea2db2fa2bff6db",
+        "params_summary": {
+          "context": {
+            "context_1": 1.103153071596968,
+            "context_2": 1.2072147792634262
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": -0.7251471999863766,
+          "radius": 0.7296728837993031,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 197814121,
+        "task_id": "5a83dbdf4d05"
+      },
+      {
+        "params_digest": "3f644979cb29c718ec682fae94dc638e34bcc5069536a767d731a0eecf0988f3",
+        "params_summary": {
+          "context": {
+            "context_1": 0.8551109798823977,
+            "context_2": 0.851276506934421
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": -0.3473983613712981,
+          "radius": 0.597490828901283,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 673893874,
+        "task_id": "5c34a73ae851"
+      },
+      {
+        "params_digest": "85a729ad649a46f1b30767500af6a09fe31880cc6f747236cdae2f46d22c9d53",
+        "params_summary": {
+          "context": {
+            "context_1": 1.1697524772327939,
+            "context_2": 0.7751636840222011
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": -0.8386775828265337,
+          "radius": 0.7378466506607378,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 479754607,
+        "task_id": "5ead1be8ff3b"
+      },
+      {
+        "params_digest": "1b5982c6f30e0c8f5cc32ec68c29cb74823b461fb82a8a810f2529bc49693c5e",
+        "params_summary": {
+          "context": {
+            "context_1": 0.9652613973277029,
+            "context_2": 0.8164980309325943
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": -0.14216075916725734,
+          "radius": 0.7216091038182408,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 254777142,
+        "task_id": "65bc48e1130c"
+      },
+      {
+        "params_digest": "0fe06a3d8c9389c28701ff7503bd6ac492dce8c770dcb6bdfa94f065fb62e2d6",
+        "params_summary": {
+          "context": {
+            "context_1": 0.6777235037252073,
+            "context_2": 1.0267422543043878
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": -0.22570656159667335,
+          "radius": 0.8028306793342415,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 467166903,
+        "task_id": "65e809f4a6a4"
+      },
+      {
+        "params_digest": "7192b8b6190b8b8cf50fca5bdb8f3ca3e918759356a114b1edc254e868b9a780",
+        "params_summary": {
+          "context": {
+            "context_1": 1.3683434214186954,
+            "context_2": 0.6199435741101778
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": -0.7210123981867289,
+          "radius": 0.7466233976543324,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 1702251989,
+        "task_id": "6c95e2d8c43a"
+      },
+      {
+        "params_digest": "6553bc2c6603ffc6ad56eae30f6d2d29f989290fdbfb7efbf2fc8583c214ce99",
+        "params_summary": {
+          "context": {
+            "context_1": 1.255259849019129,
+            "context_2": 1.2864130359034318
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": -0.5329321909341898,
+          "radius": 0.6235833293607161,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 324412322,
+        "task_id": "6ce4bc86f20c"
+      },
+      {
+        "params_digest": "81fe71222bbab6ba3783c865e7a7df94a87ac10980aa96eba35aac2948238bc7",
+        "params_summary": {
+          "context": {
+            "context_1": 0.9976492160250379,
+            "context_2": 1.1732258108462768
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": -0.07530118505757599,
+          "radius": 0.7124781191392764,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 298941256,
+        "task_id": "73f04991efae"
+      },
+      {
+        "params_digest": "62c8163a285585322dbd59e0d6e73e50ea88322090457c3761f014b6d2815c99",
+        "params_summary": {
+          "context": {
+            "context_1": 0.7596878566260024,
+            "context_2": 0.9185691522223518
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": -0.10152844661882232,
+          "radius": 0.8003570070566344,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 953847380,
+        "task_id": "83b19b510bc8"
+      },
+      {
+        "params_digest": "98afc3efa4629bd113687b9f4ad4c5486121564e1124dc501d3ac957960d3ce7",
+        "params_summary": {
+          "context": {
+            "context_1": 1.0495542686709423,
+            "context_2": 1.201113266565817
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": 0.9772406997478353,
+          "radius": 0.7154459528733621,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 1904039582,
+        "task_id": "8448d67290b6"
+      },
+      {
+        "params_digest": "cfb3485c26b485de1712bff2391528ef578842542175866f09a7e8d38767ff10",
+        "params_summary": {
+          "context": {
+            "context_1": 1.3475207596500862,
+            "context_2": 1.1400608195318087
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": 0.991566130736343,
+          "radius": 0.7937987999802606,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 8522231,
+        "task_id": "8480f99221b1"
+      },
+      {
+        "params_digest": "73413c45e5a2b24a6fa790026c4ceb2400dc1fe17869e59f57b8346fd6d54a0d",
+        "params_summary": {
+          "context": {
+            "context_1": 1.3541992455028307,
+            "context_2": 1.2370264600429688
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": 0.7277612721159388,
+          "radius": 0.7478751028715447,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 884101969,
+        "task_id": "935df38fdc81"
+      },
+      {
+        "params_digest": "21fe9220e51256e95f97ffa4a66ebc47b93124e57392ef4ad4d674d7aaa54994",
+        "params_summary": {
+          "context": {
+            "context_1": 1.3686598101837295,
+            "context_2": 0.8659026587402772
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": 0.36190883735979096,
+          "radius": 0.7137060328962161,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 2072034686,
+        "task_id": "9c2499be052f"
+      },
+      {
+        "params_digest": "2bd8d33e722fb9d1c565ca29e2e71b881d8f0de8f306d6de1b6f63cb40464e7d",
+        "params_summary": {
+          "context": {
+            "context_1": 1.1787861533068487,
+            "context_2": 0.7873379359274696
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": -0.9143255548649141,
+          "radius": 0.83122136331785,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 910989937,
+        "task_id": "9dabd6a7c23b"
+      },
+      {
+        "params_digest": "2b6b161e0b96d0096f15e6e2ef0cdbb1260be3450a7f014a02270db27da33615",
+        "params_summary": {
+          "context": {
+            "context_1": 0.9604692817347275,
+            "context_2": 0.7204394446096216
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": -1.0312354054440698,
+          "radius": 0.8174944887868318,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 1154854464,
+        "task_id": "ae5d9bfe2313"
+      },
+      {
+        "params_digest": "efb36ea0e93e35230d424b2574cfba0b63a0277dc8133f53a7ab047f019edb48",
+        "params_summary": {
+          "context": {
+            "context_1": 1.1708266053980863,
+            "context_2": 1.2722254205884473
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": -0.7201539199563944,
+          "radius": 0.9962141601624106,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 1473243806,
+        "task_id": "b3920b20e9aa"
+      },
+      {
+        "params_digest": "8a49631fe60a83af14aca63f3ff5f1c87c9cde459fdefa885b07c2a39a196a41",
+        "params_summary": {
+          "context": {
+            "context_1": 1.1530217113379573,
+            "context_2": 0.6309033540842056
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": 0.6649758595024686,
+          "radius": 0.6774337338363903,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 1459188466,
+        "task_id": "b63f9df02b5d"
+      },
+      {
+        "params_digest": "02f4710724d74078985b8a0b998f680b08671995fbe09eb8525b6ee9c6f846e9",
+        "params_summary": {
+          "context": {
+            "context_1": 0.8903329521096888,
+            "context_2": 0.9394111519343089
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": 0.7818621576625469,
+          "radius": 0.6799961617748671,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 1453711729,
+        "task_id": "b64036c31eef"
+      },
+      {
+        "params_digest": "143005bac86645ee21ab059c0da3ea23cbff0dfce3f07bf3179444379a224cb0",
+        "params_summary": {
+          "context": {
+            "context_1": 0.80131948503371,
+            "context_2": 1.1898372077345118
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": 0.4744060118239356,
+          "radius": 0.6488941631477564,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 182522699,
+        "task_id": "bb8e35f3f65e"
+      },
+      {
+        "params_digest": "30509bb96eaa56cc86281e4b4c39ee022c9e7de3fe21ca30a6ee3d020c77291a",
+        "params_summary": {
+          "context": {
+            "context_1": 0.894484340288956,
+            "context_2": 1.0689963194465983
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": 0.6208275254003026,
+          "radius": 0.9223724527224577,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 1773999739,
+        "task_id": "bc310b5dac2f"
+      },
+      {
+        "params_digest": "e941ba2b94d7a4860b2156a2b22c086b56941889c2c4963f4b9f1c4704a0a03f",
+        "params_summary": {
+          "context": {
+            "context_1": 1.2576164085917063,
+            "context_2": 0.8608437131112892
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": 0.17646639885259807,
+          "radius": 0.7358724814769122,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 48851333,
+        "task_id": "bd73bc2c6b52"
+      },
+      {
+        "params_digest": "0be75a62d030f2f51ca781827271948098e75462a813febc152656820b624272",
+        "params_summary": {
+          "context": {
+            "context_1": 0.8542179052289274,
+            "context_2": 0.6141636680653172
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": -0.24018461644964573,
+          "radius": 0.6754922304293082,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 789381613,
+        "task_id": "c34a79798018"
+      },
+      {
+        "params_digest": "20da773ee7294c4b5b04a7a105c0933bec4ce85624eca6c22e221838166c84cb",
+        "params_summary": {
+          "context": {
+            "context_1": 1.349947547318458,
+            "context_2": 1.1164765974590938
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": -0.14573772513406857,
+          "radius": 0.588325631458458,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 715346306,
+        "task_id": "c5c87b4480ce"
+      },
+      {
+        "params_digest": "312a2df1269252c8cc2f1966807847020ed4a9b7b6ee83159508086554bddd53",
+        "params_summary": {
+          "context": {
+            "context_1": 1.1631613982588997,
+            "context_2": 0.9240158194717815
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": -0.7957943334735786,
+          "radius": 0.8048759903511002,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 1903012780,
+        "task_id": "ca4b740fe1f7"
+      },
+      {
+        "params_digest": "9131f294f7731ade2f326739ebf9bce831621d62f77522f69b341c84bc9590ff",
+        "params_summary": {
+          "context": {
+            "context_1": 1.2230231213381326,
+            "context_2": 0.7091454819583664
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": -0.7690509492171205,
+          "radius": 0.8640672084136038,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 897895939,
+        "task_id": "cb53a1713703"
+      },
+      {
+        "params_digest": "dbffed09c580a94e6db339df59bde385161befed94962f1b3b9881b73eb50ab6",
+        "params_summary": {
+          "context": {
+            "context_1": 1.1936240042194162,
+            "context_2": 0.8735598986904147
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": -0.5964081309500067,
+          "radius": 0.6476878247781989,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 649626049,
+        "task_id": "cf8768d915c3"
+      },
+      {
+        "params_digest": "7328d5b3486391feb79171617bf168312e8f885395240384beda47bd91a4e577",
+        "params_summary": {
+          "context": {
+            "context_1": 1.1477004489531797,
+            "context_2": 0.7745927910430104
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": 0.7372648401195362,
+          "radius": 0.7878136587344453,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 1870489002,
+        "task_id": "d0aadddff7d7"
+      },
+      {
+        "params_digest": "ceeeb6e279eb498a9385f26995c890d3d712f4222d999ccbb23dce307c0a6a6b",
+        "params_summary": {
+          "context": {
+            "context_1": 1.3903985352899115,
+            "context_2": 1.1995321195719248
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": 1.2760681373811735,
+          "radius": 0.8010063564742702,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 1388528652,
+        "task_id": "d0d8f4326f94"
+      },
+      {
+        "params_digest": "be1c814f8407316af5bc41e4ed3c09b66c7c9866200e92c66b6319db2f59a5d2",
+        "params_summary": {
+          "context": {
+            "context_1": 0.8043599833776761,
+            "context_2": 1.3663589357894523
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": 0.03185027510584293,
+          "radius": 0.5277025376748719,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 280145195,
+        "task_id": "d12859977f1b"
+      },
+      {
+        "params_digest": "267672be1128a3a4d338c1ad706deb68ae178e7a1c9dec7857467fafcb5634a7",
+        "params_summary": {
+          "context": {
+            "context_1": 1.3064452447077775,
+            "context_2": 0.9215866326110219
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": -0.04286361118175397,
+          "radius": 0.7961868808759853,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 1673223738,
+        "task_id": "d2af3da13084"
+      },
+      {
+        "params_digest": "b3a45a76a5171a8eaa901beebf6c91c7f09e119212975c6308a9ee03bdd59a5a",
+        "params_summary": {
+          "context": {
+            "context_1": 1.0514937561208884,
+            "context_2": 1.182514670867839
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": 1.0102063855205157,
+          "radius": 0.706433370039052,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 1322002187,
+        "task_id": "d3adbb8403ba"
+      },
+      {
+        "params_digest": "720b2f6c5d5337a3a35bf8a961b48aab25c0262fee3377ac47df40c03071a822",
+        "params_summary": {
+          "context": {
+            "context_1": 1.1002776889632448,
+            "context_2": 1.3259719754008934
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": -0.36323764473681464,
+          "radius": 0.8205920843003415,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 707610746,
+        "task_id": "d50f7cd4b5b0"
+      },
+      {
+        "params_digest": "3f1b401ae575eb10a1cc265d14fd8210dda690f9998dbb225ebe43a6eb76192b",
+        "params_summary": {
+          "context": {
+            "context_1": 0.9483206829250276,
+            "context_2": 0.6910667455065838
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": 0.5391649481587801,
+          "radius": 0.5589965688574412,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 924635801,
+        "task_id": "d9ece9586b6e"
+      },
+      {
+        "params_digest": "e4c7e7c782ef048b48e837cf4070880efb145c928c6306352f8492abeac92486",
+        "params_summary": {
+          "context": {
+            "context_1": 0.8448562151620398,
+            "context_2": 0.9277958188538883
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": -0.48739180831927875,
+          "radius": 0.6057644249277363,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 1595602248,
+        "task_id": "e88d8c80cf42"
+      },
+      {
+        "params_digest": "ba369d1baab64a98642f82e006889414e013733a62967d4a8fa5f5063739eaba",
+        "params_summary": {
+          "context": {
+            "context_1": 1.3130397688844107,
+            "context_2": 1.099394856724084
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": -0.5355202002992578,
+          "radius": 0.6687636595236182,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 713939205,
+        "task_id": "ed11eb0e6234"
+      },
+      {
+        "params_digest": "4fb32782b7afa0efbf3ffb4079f80f66a44f6bd788f976cd37c92d66420176f3",
+        "params_summary": {
+          "context": {
+            "context_1": 1.3409206233169675,
+            "context_2": 0.7383495979156021
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": 0.6633333052133321,
+          "radius": 0.6076912793373768,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 16246381,
+        "task_id": "ed76d5e9ea64"
+      },
+      {
+        "params_digest": "33e985888796fd4c966c8a9bc85436577a0186e9ce76a7f5c3b2e1bb0f9a5389",
+        "params_summary": {
+          "context": {
+            "context_1": 1.2658207354427629,
+            "context_2": 1.3756658712105763
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": 0.6001736105101305,
+          "radius": 0.9013430729606762,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 2121630468,
+        "task_id": "fa0e98e28e40"
+      },
+      {
+        "params_digest": "a78420d170feb6c5440f39c760de1c0b2f07c3bb6acd080c36144c98eca810e9",
+        "params_summary": {
+          "context": {
+            "context_1": 0.671282818781436,
+            "context_2": 1.10862607442448
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": -1.0915322544360422,
+          "radius": 0.757222962911639,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 295419467,
+        "task_id": "fbe9a8320b71"
+      },
+      {
+        "params_digest": "ecfb400c6441f6a8f19fad5a5d3b1f3e04221403b885ff8a958a54426d198fe7",
+        "params_summary": {
+          "context": {
+            "context_1": 1.2616134886493922,
+            "context_2": 0.7236121283570516
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": -0.19168177478297388,
+          "radius": 0.695598625052289,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 563120183,
+        "task_id": "fc00baabe75f"
+      }
+    ],
+    "meta_validation": [
+      {
+        "params_digest": "e5ec7ab000a82a21dbf05791acd3da59693c29142671d961cfa08784fa954001",
+        "params_summary": {
+          "context": {
+            "context_1": 1.125006878318557,
+            "context_2": 1.0219344344647263
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": 0.36512328345678613,
+          "radius": 0.901431083238971,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 121098124,
+        "task_id": "0ca9c3a2f489"
+      },
+      {
+        "params_digest": "cf75202be39db9dca8a9689d8c34a82777066182ea2e9f7fd18b9d99138ce4d7",
+        "params_summary": {
+          "context": {
+            "context_1": 1.1497598985868938,
+            "context_2": 0.8664070116804276
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": 0.3794547504187413,
+          "radius": 0.7009672615343019,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 1982461475,
+        "task_id": "102ef1742751"
+      },
+      {
+        "params_digest": "d2638652332835439575414c39a7b1506559fc7897c3b99fa76b845085236e95",
+        "params_summary": {
+          "context": {
+            "context_1": 0.7745753610243915,
+            "context_2": 0.7761091786041905
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": -0.9631122722905127,
+          "radius": 0.8983541826620591,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 1887279248,
+        "task_id": "3ecbe5c538b6"
+      },
+      {
+        "params_digest": "49d25985205a83f739955d1bbd1a6a77a373ea33d24e79a7ded9e11e7927a0f0",
+        "params_summary": {
+          "context": {
+            "context_1": 0.8255753915012813,
+            "context_2": 0.9116417486657233
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": -0.7132493440915436,
+          "radius": 0.7619201497276566,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 1142443586,
+        "task_id": "498fb49c2af9"
+      },
+      {
+        "params_digest": "06348dff0493035fba2ffeacf7a4bc2ea64b8fb5f7e7611d3120bf9c8ba0eb2d",
+        "params_summary": {
+          "context": {
+            "context_1": 1.2244348919953087,
+            "context_2": 0.6729835755348694
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": -0.13165937854826248,
+          "radius": 0.7393304023730269,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 2038485653,
+        "task_id": "4f01bcb86871"
+      },
+      {
+        "params_digest": "791e570bd80f43f312c7ec0c2e80e3872453cb333b49e79090dcaef0f5a5f9b1",
+        "params_summary": {
+          "context": {
+            "context_1": 1.1078925102500563,
+            "context_2": 1.0999927289722509
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": 0.6057625913577191,
+          "radius": 0.7123444456502007,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 1747007570,
+        "task_id": "5112929756c7"
+      },
+      {
+        "params_digest": "9616e7d2c418580f3061ebbea13fb548f3fae5f38b8b39aaeca94c91c4d026c6",
+        "params_summary": {
+          "context": {
+            "context_1": 0.774522928381203,
+            "context_2": 0.6179196623347106
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": 0.11022857266036734,
+          "radius": 0.6496974121354016,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 397001825,
+        "task_id": "53e7a4acd454"
+      },
+      {
+        "params_digest": "ae74d304807b11f676a2f03194677c524a7c0a7cb06cdb0f48a0e6c0cef9996c",
+        "params_summary": {
+          "context": {
+            "context_1": 0.8244128278469597,
+            "context_2": 1.3307884764831412
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": 0.7125825715281524,
+          "radius": 0.719114590220381,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 685201948,
+        "task_id": "5cf023976d6a"
+      },
+      {
+        "params_digest": "880bfa11c509c09440fce2a965ba297b1a7e154f61e0f960ec26fdf9ad27e046",
+        "params_summary": {
+          "context": {
+            "context_1": 0.9339210776203482,
+            "context_2": 0.6769234497499204
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": 0.5582476414441784,
+          "radius": 0.6360431808026571,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 20079022,
+        "task_id": "614f5fb6674f"
+      },
+      {
+        "params_digest": "ed75c502fd8b34ef6a51559a1ef4537b56ba97c0f87c890ccf4e7ecb1e398b21",
+        "params_summary": {
+          "context": {
+            "context_1": 0.8443268539402609,
+            "context_2": 1.3115403359443096
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": 0.26547787033206416,
+          "radius": 0.7627928762453446,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 423956702,
+        "task_id": "742c22c56ec8"
+      },
+      {
+        "params_digest": "87ee786bfa18b06a5de2c154f7438526855fce04f7d5e5108d252ea4de08f72b",
+        "params_summary": {
+          "context": {
+            "context_1": 1.1411281254986148,
+            "context_2": 1.267080227937168
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": -0.2917547391450317,
+          "radius": 0.9273603754297237,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 1656063508,
+        "task_id": "81430afeab87"
+      },
+      {
+        "params_digest": "cf32a977c9bb3f6837e664f1ce02d1bed562fbb8468e1ffc2cf8b5e06d11e9b1",
+        "params_summary": {
+          "context": {
+            "context_1": 1.3325779306367154,
+            "context_2": 1.3841222296838485
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": 1.3024675507554224,
+          "radius": 0.7908116314414257,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 1656547250,
+        "task_id": "8e0d3f68696f"
+      },
+      {
+        "params_digest": "2cfaf7ea6bd94c84c79197049bf8a1737cbffc4e8a1288fa563ff437748016db",
+        "params_summary": {
+          "context": {
+            "context_1": 1.0640371870784289,
+            "context_2": 1.3288874630644218
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": 0.9556111161900023,
+          "radius": 0.9131186591422724,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 1338558301,
+        "task_id": "a4bd2983eef1"
+      },
+      {
+        "params_digest": "53cb93ec5142b8579b808cddcfa6578d6dbc48a64a89d031abf8d12d4cad7254",
+        "params_summary": {
+          "context": {
+            "context_1": 1.271103297900139,
+            "context_2": 0.7118456353659587
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": 0.5122508674195627,
+          "radius": 0.5359121474232993,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 645784473,
+        "task_id": "c1521e60eda1"
+      },
+      {
+        "params_digest": "3e477263a97d43bb0087c1a634a4a7656cb00f0397346d1f7bc4a2616067a315",
+        "params_summary": {
+          "context": {
+            "context_1": 0.8327259524023652,
+            "context_2": 0.8200931949539796
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": -0.5138674085819421,
+          "radius": 0.5570949191162797,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 478604293,
+        "task_id": "d0a4316773f7"
+      },
+      {
+        "params_digest": "9540231e59d6b79be7265700dd15d47bb35563a0261b449c36e8ea631212a8e9",
+        "params_summary": {
+          "context": {
+            "context_1": 0.6313451221950919,
+            "context_2": 0.8014398593464098
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": -0.6440901926683595,
+          "radius": 0.7615029704434173,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 934457109,
+        "task_id": "d867bcef8e34"
+      },
+      {
+        "params_digest": "0fa16efb2a5121b1b6adb38de9c38bffefb15d1296fb322837f6a097a413cb46",
+        "params_summary": {
+          "context": {
+            "context_1": 0.7395867480890979,
+            "context_2": 0.7168560990119626
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": -0.47694684105783525,
+          "radius": 0.7756082200091061,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 751222925,
+        "task_id": "dcb277ea8170"
+      },
+      {
+        "params_digest": "e2f0fbff6d7d599bd61d8077622aea06944e409752c4453096b2ed714fa931d8",
+        "params_summary": {
+          "context": {
+            "context_1": 0.884512822244583,
+            "context_2": 1.1639742430939135
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": -0.43750302328017554,
+          "radius": 0.8529920374346346,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 1888267586,
+        "task_id": "e68dafd34c37"
+      },
+      {
+        "params_digest": "c4da69f79efd9016c6761a7200ad1b1871ccac768bfcaa5daf87f3e36d864d78",
+        "params_summary": {
+          "context": {
+            "context_1": 1.3027526414186985,
+            "context_2": 0.6781177964347956
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": -0.7439928535895035,
+          "radius": 0.7011791105175643,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 526289634,
+        "task_id": "ea0d7d2081ec"
+      },
+      {
+        "params_digest": "3d0651cfc809f12764ee1ed57acae526fefea4c703cbd25d4761ebd84bfad6a2",
+        "params_summary": {
+          "context": {
+            "context_1": 1.3154173977627437,
+            "context_2": 1.2550588707871637
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": 0.3920216149760234,
+          "radius": 0.7967055745340179,
+          "reference_kind": "ANALYTIC_RADIAL_PROJECTION"
+        },
+        "seed": 646059328,
+        "task_id": "ec4cf0c6c30e"
+      }
+    ],
+    "negative_control": [
+      {
+        "params_digest": "89f86cdcc8e0a986a770c77ab0cb073319d9e71632f33b0a6561dcc25bd98e0b",
+        "params_summary": {
+          "context": {
+            "context_1": 0.9604692817347275,
+            "context_2": 0.7204394446096216
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": null,
+          "radius": null,
+          "reference_kind": "NEGATIVE_CONTROL"
+        },
+        "seed": 1659759156,
+        "task_id": "NC-013c5d9e78"
+      },
+      {
+        "params_digest": "3ba462a43e981aee53844119be5eb46c8d2b7b6af91a780738349cb356796007",
+        "params_summary": {
+          "context": {
+            "context_1": 0.8542179052289274,
+            "context_2": 0.6141636680653172
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": null,
+          "radius": null,
+          "reference_kind": "NEGATIVE_CONTROL"
+        },
+        "seed": 968396748,
+        "task_id": "NC-31d6154d8d"
+      },
+      {
+        "params_digest": "4652d1bf46759a4b0a825bc2922eebfb7eb61bbbd2181e9a24a0ed295ca63e5e",
+        "params_summary": {
+          "context": {
+            "context_1": 0.8903329521096888,
+            "context_2": 0.9394111519343089
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": null,
+          "radius": null,
+          "reference_kind": "NEGATIVE_CONTROL"
+        },
+        "seed": 1558883398,
+        "task_id": "NC-38faf1185d"
+      },
+      {
+        "params_digest": "ebc93115608dfe586bd7f31ebf60df9c282c3b072cfb8e9ca7a8874c02d761d4",
+        "params_summary": {
+          "context": {
+            "context_1": 1.349947547318458,
+            "context_2": 1.1164765974590938
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": null,
+          "radius": null,
+          "reference_kind": "NEGATIVE_CONTROL"
+        },
+        "seed": 1254024621,
+        "task_id": "NC-49663da9ce"
+      },
+      {
+        "params_digest": "2b8b4cfcba08c5542fd4a8776fd3e639d433ee1eb43c50bbd0af79a5a17c3c13",
+        "params_summary": {
+          "context": {
+            "context_1": 1.0495542686709423,
+            "context_2": 1.201113266565817
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": null,
+          "radius": null,
+          "reference_kind": "NEGATIVE_CONTROL"
+        },
+        "seed": 1750899314,
+        "task_id": "NC-85fe3eb9bf"
+      },
+      {
+        "params_digest": "696ded4947f15de310cefa671df66b0b626ce57bff27f80887349790369ee9b5",
+        "params_summary": {
+          "context": {
+            "context_1": 0.8043599833776761,
+            "context_2": 1.3663589357894523
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": null,
+          "radius": null,
+          "reference_kind": "NEGATIVE_CONTROL"
+        },
+        "seed": 1165911060,
+        "task_id": "NC-90cd085ef9"
+      },
+      {
+        "params_digest": "46ce4ea76e056e948a06b2aa8dcc2b1349c7b1f9448debdd28d6f07884821b3d",
+        "params_summary": {
+          "context": {
+            "context_1": 0.8911387131459286,
+            "context_2": 1.325389755453806
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": null,
+          "radius": null,
+          "reference_kind": "NEGATIVE_CONTROL"
+        },
+        "seed": 1877335152,
+        "task_id": "NC-a5c3bb096d"
+      },
+      {
+        "params_digest": "4f1f8d0272c74b8553dc9d56e9b48bd2780066d615e123c0db5fd60ffe6e38ff",
+        "params_summary": {
+          "context": {
+            "context_1": 1.3686598101837295,
+            "context_2": 0.8659026587402772
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": null,
+          "radius": null,
+          "reference_kind": "NEGATIVE_CONTROL"
+        },
+        "seed": 2049863168,
+        "task_id": "NC-d67e8cec44"
+      },
+      {
+        "params_digest": "4ead8e7b538e310b60704c23acd728023d44ddd94b0f937fe3809ad37dda64f0",
+        "params_summary": {
+          "context": {
+            "context_1": 1.2442508558562504,
+            "context_2": 1.1427571537646006
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": null,
+          "radius": null,
+          "reference_kind": "NEGATIVE_CONTROL"
+        },
+        "seed": 209836960,
+        "task_id": "NC-e32a6d5b63"
+      },
+      {
+        "params_digest": "0dc402bfa9273bcf02346f2ab3531f660c1cc1c6f89dc17136af57706746c0ac",
+        "params_summary": {
+          "context": {
+            "context_1": 1.142069261167407,
+            "context_2": 1.339196426324684
+          },
+          "family": "F-QE-feasible-v2",
+          "objective_star": null,
+          "radius": null,
+          "reference_kind": "NEGATIVE_CONTROL"
+        },
+        "seed": 1882580420,
+        "task_id": "NC-f9f815e9e1"
+      }
+    ]
+  }
+}

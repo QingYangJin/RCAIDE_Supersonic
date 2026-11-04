@@ -1,0 +1,801 @@
+{
+  "budgets": [
+    64,
+    128
+  ],
+  "conclusions_allowed": true,
+  "counts": {
+    "history_rows": 460800,
+    "holdout_groups": 300,
+    "runs": 4800,
+    "true_evaluations": 460800
+  },
+  "data_origin": "SYNTHETIC_TEST",
+  "determinism": {
+    "excluded_columns": [
+      "wall_s",
+      "proxy_scoring_cost_json"
+    ],
+    "groups_compared": 300,
+    "mismatch_count": 0,
+    "note": "逐组比较 optimization_history / optimization_summary / 初始设计 / 预算轴曲线的行内容 sha256；排除列 wall_s 与 proxy_scoring_cost_json.wall_s（墙钟不参与确定性比较）。determinism_reruns<2 时 status=NOT_RUN，不冒充确定性通过。",
+    "raw_digest_manifest": "NOT_STORED",
+    "raw_digest_note": "A5-M5-07：逐 pass 原始 digest 未单独落盘，仅本 summary 记录 status/reruns/groups_compared/mismatch_count；如需独立复算须重跑 holdout。",
+    "reruns": 3,
+    "status": "PASS"
+  },
+  "evaluator_id": "synthetic__analytic__12d_lifting_surfaces__v2",
+  "fairness": {
+    "arms": [
+      "M5-BO-MAML-init",
+      "M5-BO-pretrain-init",
+      "M5-BO-random",
+      "M5-DE"
+    ],
+    "dedup_tolerance": 1e-12,
+    "group_key_fields": [
+      "task_id",
+      "seed",
+      "budget",
+      "meta_seed"
+    ],
+    "groups": 2400,
+    "initial_design_count": 8,
+    "physical_call_count": 0,
+    "records": 4800,
+    "status": "PASS"
+  },
+  "fallback_metrics_note": "best_objective_raw / min_constraint_violation_sum / feasible_hit_rate 仅是 fallback 描述量：无可行解时主终点保留 null 并披露比例，禁止以非可行 raw objective 宣称约束优化更优。",
+  "family": {
+    "family_fingerprint": "2b78ec7b533fa346f0629d34ed9e3bf525a2ff6295260f21a490452cc1778a42",
+    "family_id": "F-QE-feasible-v2",
+    "family_seed": 20261102,
+    "family_version": "v2",
+    "gap_definition": "f(u_best)-f(u*)",
+    "radius_base": 0.75,
+    "reference_solution": "c"
+  },
+  "figures": {
+    "fig1_meta_training_loss": "DATA_READY",
+    "fig2_k_shot_adaptation": "NOT_APPLICABLE_THIS_STAGE",
+    "fig3_feasible_rate": "DATA_READY",
+    "fig4_equal_budget_gap": "DATA_READY",
+    "fig5_fairness_audit": "DATA_READY",
+    "fig6_airframe_gate_progress": "NOT_RUN"
+  },
+  "figures_note": "本阶段只落盘图数据（figure_data.json）与状态（figure_status.json）；PNG 由 A2/M5 报告阶段从 CSV 生成。fig2 归 M6；fig6 归 Issue #4 D-12D-004，缺失图一律记 NOT_RUN/NOT_APPLICABLE，禁止假图。",
+  "gate": {
+    "calibration_report_sha256": "c5f8096d02abf5da4bfd9a5b234bdcedd8a7ffbb98ce7b413eb48e42c116286b",
+    "frozen_family_sha256": "5e7a9d1f2acd32a482195d0ae6255205310d4d5cf4bb38562e05265c4c9da20b",
+    "meta_test_tuning_policy": "禁止使用 meta_test/meta_test_ood 的任何信息（成功率/误差/gap）调参、选半径、选臂或选终点；测试集只在 frozen_family + preregistration 的 sha256/fingerprint/split_hash 校验通过后一次性构造并评估一次。",
+    "preregistration_sha256": "4f8a9a1fd05f0648646da58dc669524de81c2c11c38b81d72f28b0be42e565fe",
+    "split_hash": "3c206ebbe35e848a5137b433d7bc9ca022eb28b4b310ab3ccb9d89c989f33f8a",
+    "status": "UNLOCKED"
+  },
+  "history_rows": 460800,
+  "holdout_wall_s": 8942.368107000017,
+  "identifiability": {
+    "arms_present": [
+      "M5-BO-MAML-init",
+      "M5-BO-pretrain-init",
+      "M5-BO-random",
+      "M5-DE"
+    ],
+    "budgets_compared": [
+      64,
+      128
+    ],
+    "clone_arms": [],
+    "clone_audit_budget_semantics": "臂对重叠率在 budgets_compared 的全部 budget 上聚合；clone_audit.csv 的 budget 列以逗号列出这些 budget，budget_scope=aggregate_all_budgets",
+    "distinct_code_paths": 4,
+    "distinct_implementations": 3,
+    "groups_checked": 600,
+    "indistinguishable_arms": [],
+    "physical_call_count": 0,
+    "status": "IDENTIFIABLE"
+  },
+  "inference_exclusions": {
+    "all_arms_rows": 4800,
+    "clone_arms": [],
+    "comparisons_rule": "预注册比较对中任一端为 clone 臂时整对排除，不进入统计/配对/主终点；全部预注册比较仍见 run_config.preregistered_comparisons，保持预注册可追溯。",
+    "excluded_comparisons": [],
+    "inference_rows": 4800,
+    "note": "statistics/endpoint_summary/primary_endpoint_summary/figures 仅用非 clone 臂；optimization_summary.csv/metrics.csv 保留全部臂描述性行，不参与推断",
+    "rows_excluded": 0,
+    "rule": "clone 臂不得进入推断（plan §2:48/§9:117）：statistics/endpoint_summary/primary_endpoint_summary/figures 仅使用非 clone 臂；optimization_summary.csv/metrics.csv 保留全部臂的描述性行，不参与推断"
+  },
+  "message": "SYNTHETIC_ONLY：仅解析合成任务族 F-QE-feasible-v2 与 12D 设计空间解析 evaluator；physical_call_count=0；结论不得外推到真实飞机/真实求解器。",
+  "meta_seeds": [
+    0,
+    1,
+    2
+  ],
+  "not_approved": [
+    "P4-REAL-LF 真实低可信度求解器调用（未批准）",
+    "P4-MULTIFIDELITY-REAL 真实多保真（未批准）",
+    "真实跨任务元训练（未批准）"
+  ],
+  "notes": [
+    "holdout 结果只在冻结（frozen_family + meta_task_split + preregistration + calibration 报告四方门禁）一致后产生；meta_test/meta_test_ood 不参与任何调参。",
+    "旧 F-QE 压力测试（~1e-6 可行域）结果单独成表，不与 v2 混算绝对目标。",
+    "best_objective_raw / min_constraint_violation_sum / feasible_hit_rate 仅是 fallback 描述量：无可行解时主终点保留 null 并披露比例，禁止以非可行 raw objective 宣称约束优化更优。"
+  ],
+  "null_disclosure": {
+    "best_feasible_value": {
+      "n_null": 1252,
+      "n_runs": 4800,
+      "null_rate": 0.2608333333333333
+    },
+    "best_objective_raw": {
+      "n_null": 0,
+      "n_runs": 4800,
+      "null_rate": 0.0
+    },
+    "cache_hits": {
+      "n_null": 0,
+      "n_runs": 4800,
+      "null_rate": 0.0
+    },
+    "feasible_hit_rate": {
+      "n_null": 0,
+      "n_runs": 4800,
+      "null_rate": 0.0
+    },
+    "first_feasible_evaluation_index": {
+      "n_null": 1252,
+      "n_runs": 4800,
+      "null_rate": 0.2608333333333333
+    },
+    "gap_to_reference": {
+      "n_null": 1252,
+      "n_runs": 4800,
+      "null_rate": 0.2608333333333333
+    },
+    "min_constraint_violation_sum": {
+      "n_null": 0,
+      "n_runs": 4800,
+      "null_rate": 0.0
+    },
+    "n_failed_evals": {
+      "n_null": 0,
+      "n_runs": 4800,
+      "null_rate": 0.0
+    },
+    "true_evals_used": {
+      "n_null": 0,
+      "n_runs": 4800,
+      "null_rate": 0.0
+    },
+    "wall_s": {
+      "n_null": 0,
+      "n_runs": 4800,
+      "null_rate": 0.0
+    }
+  },
+  "old_run_immutability": {
+    "after": {
+      "checked_files": 26,
+      "checked_utc": "2026-11-04T20:09:26+00:00",
+      "file_count": 26,
+      "gate": "OLD_M2_RUN_IMMUTABILITY",
+      "manifest_path": "research\\concorde_metaopt\\optimization_runs\\p4-meta-m2-offline-20261102T092828Z\\data_manifest.json",
+      "manifest_sha256": "acaab106388f834266b6b7a168d3611c7f74b498456abcf821ea71a764e07f66",
+      "mismatch_count": 0,
+      "mismatches": [],
+      "note": "逐文件按 manifest 的 hash_mode 复算 sha256/bytes；任何不一致即 fail-closed",
+      "read_only": true,
+      "rule": "旧 48,000 评价 M2 run 只读：正式实现前后按 data_manifest.json 逐文件校验 sha256/bytes，且任何阶段不得写入该目录（plan §9:113/115）",
+      "run_dir": "research\\concorde_metaopt\\optimization_runs\\p4-meta-m2-offline-20261102T092828Z",
+      "run_id": "p4-meta-m2-offline-20261102T092828Z",
+      "schema_version": "p4-m5-old-run-gate-1",
+      "status": "PASS",
+      "total_bytes": 3276345
+    },
+    "before": {
+      "checked_files": 26,
+      "checked_utc": "2026-11-04T17:40:07+00:00",
+      "file_count": 26,
+      "gate": "OLD_M2_RUN_IMMUTABILITY",
+      "manifest_path": "research\\concorde_metaopt\\optimization_runs\\p4-meta-m2-offline-20261102T092828Z\\data_manifest.json",
+      "manifest_sha256": "acaab106388f834266b6b7a168d3611c7f74b498456abcf821ea71a764e07f66",
+      "mismatch_count": 0,
+      "mismatches": [],
+      "note": "逐文件按 manifest 的 hash_mode 复算 sha256/bytes；任何不一致即 fail-closed",
+      "read_only": true,
+      "rule": "旧 48,000 评价 M2 run 只读：正式实现前后按 data_manifest.json 逐文件校验 sha256/bytes，且任何阶段不得写入该目录（plan §9:113/115）",
+      "run_dir": "research\\concorde_metaopt\\optimization_runs\\p4-meta-m2-offline-20261102T092828Z",
+      "run_id": "p4-meta-m2-offline-20261102T092828Z",
+      "schema_version": "p4-m5-old-run-gate-1",
+      "status": "PASS",
+      "total_bytes": 3276345
+    },
+    "enforced": true,
+    "enforcement": "ENFORCED",
+    "gate": "OLD_M2_RUN_IMMUTABILITY",
+    "manifest_sha256_same_before_after": true,
+    "note": "阶段开始与产物写出前各校验一次；本文件落在新 run 目录，绝不写旧 run。status=NOT_AVAILABLE 表示旧 run 不在该 output_root 下，门禁未执行（enforced=false），正式 run 必须使用保留旧 M2 run 的 output_root 才会 ENFORCED",
+    "read_only": true,
+    "rule": "旧 48,000 评价 M2 run 只读：正式实现前后按 data_manifest.json 逐文件校验 sha256/bytes，且任何阶段不得写入该目录（plan §9:113/115）",
+    "schema_version": "p4-m5-old-run-gate-2",
+    "stage": "holdout",
+    "status": "PASS"
+  },
+  "optimization_seeds": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
+  "physical_call_count": 0,
+  "physics_guard": {
+    "expected": 0,
+    "message": "holdout 全程 0 次真实求解器调用（GuardedEvaluator + 逐行 physical_call_count 复核）",
+    "status": "PASS"
+  },
+  "plan": {
+    "budgets": [
+      64,
+      128
+    ],
+    "meta_seeds": [
+      0,
+      1,
+      2
+    ],
+    "runs_per_budget_per_group": 8,
+    "runs_per_group": 16,
+    "splits": {
+      "meta_test": {
+        "groups": 200,
+        "seeds": 10,
+        "tasks": 20
+      },
+      "meta_test_ood": {
+        "groups": 100,
+        "seeds": 10,
+        "tasks": 10
+      }
+    },
+    "total_groups": 300,
+    "total_runs": 4800
+  },
+  "primary_endpoint_summary": {
+    "meta_test": {
+      "128": {
+        "M5-BO-MAML-init": {
+          "best_feasible_value": {
+            "mean": 0.3023935189976773,
+            "median": 0.27176849783409107,
+            "n_nonnull": 20,
+            "null_rate": 0.0,
+            "unit": "synthetic_objective_unit"
+          },
+          "feasible_hit_rate": {
+            "mean": 0.19123697916666665,
+            "median": 0.13098958333333333,
+            "n_nonnull": 20,
+            "null_rate": 0.0,
+            "unit": "ratio"
+          },
+          "first_feasible_evaluation_index": {
+            "mean": 42.865833333333335,
+            "median": 40.91666666666666,
+            "n_nonnull": 20,
+            "null_rate": 0.0,
+            "unit": "evaluation_index_1based"
+          },
+          "gap_to_reference": {
+            "mean": 0.2715437520123699,
+            "median": 0.28692106968073694,
+            "n_nonnull": 20,
+            "null_rate": 0.0,
+            "unit": "synthetic_objective_unit"
+          }
+        },
+        "M5-BO-pretrain-init": {
+          "best_feasible_value": {
+            "mean": 0.30318778350475295,
+            "median": 0.26867313345107624,
+            "n_nonnull": 20,
+            "null_rate": 0.0,
+            "unit": "synthetic_objective_unit"
+          },
+          "feasible_hit_rate": {
+            "mean": 0.1911979166666667,
+            "median": 0.12955729166666666,
+            "n_nonnull": 20,
+            "null_rate": 0.0,
+            "unit": "ratio"
+          },
+          "first_feasible_evaluation_index": {
+            "mean": 43.373981481481486,
+            "median": 43.96666666666667,
+            "n_nonnull": 20,
+            "null_rate": 0.0,
+            "unit": "evaluation_index_1based"
+          },
+          "gap_to_reference": {
+            "mean": 0.2723380165194456,
+            "median": 0.2863467829571297,
+            "n_nonnull": 20,
+            "null_rate": 0.0,
+            "unit": "synthetic_objective_unit"
+          }
+        },
+        "M5-BO-random": {
+          "best_feasible_value": {
+            "mean": 0.29535308919475883,
+            "median": 0.27002661630890434,
+            "n_nonnull": 20,
+            "null_rate": 0.0,
+            "unit": "synthetic_objective_unit"
+          },
+          "feasible_hit_rate": {
+            "mean": 0.203515625,
+            "median": 0.14375,
+            "n_nonnull": 20,
+            "null_rate": 0.0,
+            "unit": "ratio"
+          },
+          "first_feasible_evaluation_index": {
+            "mean": 39.14428571428571,
+            "median": 39.9,
+            "n_nonnull": 20,
+            "null_rate": 0.0,
+            "unit": "evaluation_index_1based"
+          },
+          "gap_to_reference": {
+            "mean": 0.2645033222094514,
+            "median": 0.2703620753132949,
+            "n_nonnull": 20,
+            "null_rate": 0.0,
+            "unit": "synthetic_objective_unit"
+          }
+        },
+        "M5-DE": {
+          "best_feasible_value": {
+            "mean": 0.36131332129645405,
+            "median": 0.2857100240889334,
+            "n_nonnull": 20,
+            "null_rate": 0.0,
+            "unit": "synthetic_objective_unit"
+          },
+          "feasible_hit_rate": {
+            "mean": 0.23644531249999998,
+            "median": 0.23085937499999998,
+            "n_nonnull": 20,
+            "null_rate": 0.0,
+            "unit": "ratio"
+          },
+          "first_feasible_evaluation_index": {
+            "mean": 66.07305555555556,
+            "median": 69.5,
+            "n_nonnull": 20,
+            "null_rate": 0.0,
+            "unit": "evaluation_index_1based"
+          },
+          "gap_to_reference": {
+            "mean": 0.33046355431114666,
+            "median": 0.32705789914328864,
+            "n_nonnull": 20,
+            "null_rate": 0.0,
+            "unit": "synthetic_objective_unit"
+          }
+        }
+      },
+      "64": {
+        "M5-BO-MAML-init": {
+          "best_feasible_value": {
+            "mean": 0.4246530394379343,
+            "median": 0.3856365400211337,
+            "n_nonnull": 20,
+            "null_rate": 0.0,
+            "unit": "synthetic_objective_unit"
+          },
+          "feasible_hit_rate": {
+            "mean": 0.10223958333333334,
+            "median": 0.05755208333333334,
+            "n_nonnull": 20,
+            "null_rate": 0.0,
+            "unit": "ratio"
+          },
+          "first_feasible_evaluation_index": {
+            "mean": 34.35856150793651,
+            "median": 37.358333333333334,
+            "n_nonnull": 20,
+            "null_rate": 0.0,
+            "unit": "evaluation_index_1based"
+          },
+          "gap_to_reference": {
+            "mean": 0.3938032724526269,
+            "median": 0.3808710189961818,
+            "n_nonnull": 20,
+            "null_rate": 0.0,
+            "unit": "synthetic_objective_unit"
+          }
+        },
+        "M5-BO-pretrain-init": {
+          "best_feasible_value": {
+            "mean": 0.4178678153507717,
+            "median": 0.401900776639856,
+            "n_nonnull": 20,
+            "null_rate": 0.0,
+            "unit": "synthetic_objective_unit"
+          },
+          "feasible_hit_rate": {
+            "mean": 0.10153645833333333,
+            "median": 0.057291666666666664,
+            "n_nonnull": 20,
+            "null_rate": 0.0,
+            "unit": "ratio"
+          },
+          "first_feasible_evaluation_index": {
+            "mean": 35.36190476190477,
+            "median": 38.116666666666674,
+            "n_nonnull": 20,
+            "null_rate": 0.0,
+            "unit": "evaluation_index_1based"
+          },
+          "gap_to_reference": {
+            "mean": 0.3870180483654643,
+            "median": 0.3578790753032828,
+            "n_nonnull": 20,
+            "null_rate": 0.0,
+            "unit": "synthetic_objective_unit"
+          }
+        },
+        "M5-BO-random": {
+          "best_feasible_value": {
+            "mean": 0.4007484466870963,
+            "median": 0.41576548673864755,
+            "n_nonnull": 20,
+            "null_rate": 0.0,
+            "unit": "synthetic_objective_unit"
+          },
+          "feasible_hit_rate": {
+            "mean": 0.11749999999999998,
+            "median": 0.07578125,
+            "n_nonnull": 20,
+            "null_rate": 0.0,
+            "unit": "ratio"
+          },
+          "first_feasible_evaluation_index": {
+            "mean": 33.69152777777778,
+            "median": 36.27777777777778,
+            "n_nonnull": 20,
+            "null_rate": 0.0,
+            "unit": "evaluation_index_1based"
+          },
+          "gap_to_reference": {
+            "mean": 0.36989867970178886,
+            "median": 0.3419747320558031,
+            "n_nonnull": 20,
+            "null_rate": 0.0,
+            "unit": "synthetic_objective_unit"
+          }
+        },
+        "M5-DE": {
+          "best_feasible_value": {
+            "mean": 0.5875864662225978,
+            "median": 0.5497595591117825,
+            "n_nonnull": 19,
+            "null_rate": 0.050000000000000044,
+            "unit": "synthetic_objective_unit"
+          },
+          "feasible_hit_rate": {
+            "mean": 0.03710937500000001,
+            "median": 0.01640625,
+            "n_nonnull": 20,
+            "null_rate": 0.0,
+            "unit": "ratio"
+          },
+          "first_feasible_evaluation_index": {
+            "mean": 46.58199665831245,
+            "median": 47.5,
+            "n_nonnull": 19,
+            "null_rate": 0.050000000000000044,
+            "unit": "evaluation_index_1based"
+          },
+          "gap_to_reference": {
+            "mean": 0.5429683585145476,
+            "median": 0.5264551148637775,
+            "n_nonnull": 19,
+            "null_rate": 0.050000000000000044,
+            "unit": "synthetic_objective_unit"
+          }
+        }
+      }
+    },
+    "meta_test_ood": {
+      "128": {
+        "M5-BO-MAML-init": {
+          "best_feasible_value": {
+            "mean": 0.4688959300495926,
+            "median": 0.5765877014048211,
+            "n_nonnull": 10,
+            "null_rate": 0.0,
+            "unit": "synthetic_objective_unit"
+          },
+          "feasible_hit_rate": {
+            "mean": 0.019427083333333327,
+            "median": 0.011458333333333334,
+            "n_nonnull": 10,
+            "null_rate": 0.0,
+            "unit": "ratio"
+          },
+          "first_feasible_evaluation_index": {
+            "mean": 72.20142857142856,
+            "median": 72.41666666666666,
+            "n_nonnull": 10,
+            "null_rate": 0.0,
+            "unit": "evaluation_index_1based"
+          },
+          "gap_to_reference": {
+            "mean": 0.26582739193858973,
+            "median": 0.25226307491996663,
+            "n_nonnull": 10,
+            "null_rate": 0.0,
+            "unit": "synthetic_objective_unit"
+          }
+        },
+        "M5-BO-pretrain-init": {
+          "best_feasible_value": {
+            "mean": 0.46776712312798685,
+            "median": 0.579617724146884,
+            "n_nonnull": 10,
+            "null_rate": 0.0,
+            "unit": "synthetic_objective_unit"
+          },
+          "feasible_hit_rate": {
+            "mean": 0.019765625,
+            "median": 0.011067708333333332,
+            "n_nonnull": 10,
+            "null_rate": 0.0,
+            "unit": "ratio"
+          },
+          "first_feasible_evaluation_index": {
+            "mean": 72.19015873015873,
+            "median": 72.41190476190476,
+            "n_nonnull": 10,
+            "null_rate": 0.0,
+            "unit": "evaluation_index_1based"
+          },
+          "gap_to_reference": {
+            "mean": 0.26469858501698396,
+            "median": 0.254163188457525,
+            "n_nonnull": 10,
+            "null_rate": 0.0,
+            "unit": "synthetic_objective_unit"
+          }
+        },
+        "M5-BO-random": {
+          "best_feasible_value": {
+            "mean": 0.4595365828943567,
+            "median": 0.5724694468592111,
+            "n_nonnull": 10,
+            "null_rate": 0.0,
+            "unit": "synthetic_objective_unit"
+          },
+          "feasible_hit_rate": {
+            "mean": 0.02078125,
+            "median": 0.012109375,
+            "n_nonnull": 10,
+            "null_rate": 0.0,
+            "unit": "ratio"
+          },
+          "first_feasible_evaluation_index": {
+            "mean": 69.74154761904762,
+            "median": 67.1875,
+            "n_nonnull": 10,
+            "null_rate": 0.0,
+            "unit": "evaluation_index_1based"
+          },
+          "gap_to_reference": {
+            "mean": 0.25646804478335394,
+            "median": 0.2558115340164409,
+            "n_nonnull": 10,
+            "null_rate": 0.0,
+            "unit": "synthetic_objective_unit"
+          }
+        },
+        "M5-DE": {
+          "best_feasible_value": {
+            "mean": 0.4273223301935859,
+            "median": 0.4654557264915956,
+            "n_nonnull": 10,
+            "null_rate": 0.0,
+            "unit": "synthetic_objective_unit"
+          },
+          "feasible_hit_rate": {
+            "mean": 0.06664062499999998,
+            "median": 0.0671875,
+            "n_nonnull": 10,
+            "null_rate": 0.0,
+            "unit": "ratio"
+          },
+          "first_feasible_evaluation_index": {
+            "mean": 88.34214285714286,
+            "median": 85.875,
+            "n_nonnull": 10,
+            "null_rate": 0.0,
+            "unit": "evaluation_index_1based"
+          },
+          "gap_to_reference": {
+            "mean": 0.22425379208258306,
+            "median": 0.20829922445317106,
+            "n_nonnull": 10,
+            "null_rate": 0.0,
+            "unit": "synthetic_objective_unit"
+          }
+        }
+      },
+      "64": {
+        "M5-BO-MAML-init": {
+          "best_feasible_value": {
+            "mean": 0.5220759861795625,
+            "median": 0.6758965425084797,
+            "n_nonnull": 8,
+            "null_rate": 0.19999999999999996,
+            "unit": "synthetic_objective_unit"
+          },
+          "feasible_hit_rate": {
+            "mean": 0.009114583333333334,
+            "median": 0.0046875,
+            "n_nonnull": 10,
+            "null_rate": 0.0,
+            "unit": "ratio"
+          },
+          "first_feasible_evaluation_index": {
+            "mean": 47.9578125,
+            "median": 46.108333333333334,
+            "n_nonnull": 8,
+            "null_rate": 0.19999999999999996,
+            "unit": "evaluation_index_1based"
+          },
+          "gap_to_reference": {
+            "mean": 0.32904718154121354,
+            "median": 0.30009600922629376,
+            "n_nonnull": 8,
+            "null_rate": 0.19999999999999996,
+            "unit": "synthetic_objective_unit"
+          }
+        },
+        "M5-BO-pretrain-init": {
+          "best_feasible_value": {
+            "mean": 0.5289059927670763,
+            "median": 0.6749229716390321,
+            "n_nonnull": 8,
+            "null_rate": 0.19999999999999996,
+            "unit": "synthetic_objective_unit"
+          },
+          "feasible_hit_rate": {
+            "mean": 0.009479166666666667,
+            "median": 0.004427083333333333,
+            "n_nonnull": 10,
+            "null_rate": 0.0,
+            "unit": "ratio"
+          },
+          "first_feasible_evaluation_index": {
+            "mean": 43.68647486772487,
+            "median": 43.18571428571428,
+            "n_nonnull": 8,
+            "null_rate": 0.19999999999999996,
+            "unit": "evaluation_index_1based"
+          },
+          "gap_to_reference": {
+            "mean": 0.33587718812872724,
+            "median": 0.30122671052618843,
+            "n_nonnull": 8,
+            "null_rate": 0.19999999999999996,
+            "unit": "synthetic_objective_unit"
+          }
+        },
+        "M5-BO-random": {
+          "best_feasible_value": {
+            "mean": 0.499485549387446,
+            "median": 0.6465437150847302,
+            "n_nonnull": 8,
+            "null_rate": 0.19999999999999996,
+            "unit": "synthetic_objective_unit"
+          },
+          "feasible_hit_rate": {
+            "mean": 0.0115625,
+            "median": 0.00546875,
+            "n_nonnull": 10,
+            "null_rate": 0.0,
+            "unit": "ratio"
+          },
+          "first_feasible_evaluation_index": {
+            "mean": 46.58159722222222,
+            "median": 44.888888888888886,
+            "n_nonnull": 8,
+            "null_rate": 0.19999999999999996,
+            "unit": "evaluation_index_1based"
+          },
+          "gap_to_reference": {
+            "mean": 0.30645674474909695,
+            "median": 0.30299680289369946,
+            "n_nonnull": 8,
+            "null_rate": 0.19999999999999996,
+            "unit": "synthetic_objective_unit"
+          }
+        },
+        "M5-DE": {
+          "best_feasible_value": {
+            "mean": 0.606014814976411,
+            "median": 0.7557192320939687,
+            "n_nonnull": 8,
+            "null_rate": 0.19999999999999996,
+            "unit": "synthetic_objective_unit"
+          },
+          "feasible_hit_rate": {
+            "mean": 0.0034375000000000005,
+            "median": 0.0015625,
+            "n_nonnull": 10,
+            "null_rate": 0.0,
+            "unit": "ratio"
+          },
+          "first_feasible_evaluation_index": {
+            "mean": 46.0625,
+            "median": 45.75,
+            "n_nonnull": 8,
+            "null_rate": 0.19999999999999996,
+            "unit": "evaluation_index_1based"
+          },
+          "gap_to_reference": {
+            "mean": 0.3912531485149501,
+            "median": 0.3802726765830119,
+            "n_nonnull": 8,
+            "null_rate": 0.19999999999999996,
+            "unit": "synthetic_objective_unit"
+          }
+        }
+      }
+    }
+  },
+  "products_written": [
+    "old_m2_run_immutability.json",
+    "run_config.json",
+    "environment.json",
+    "tasks.json",
+    "reference_solutions.json",
+    "meta_task_split.json",
+    "frozen_family.json",
+    "preregistration.json",
+    "solver_validation.csv",
+    "metrics/training_history.csv",
+    "metrics/optimization_history.csv",
+    "metrics/optimization_summary.csv",
+    "metrics/metrics.csv",
+    "metrics/statistics.csv",
+    "metrics/endpoint_summary.csv",
+    "metrics/arm_audit.csv",
+    "metrics/clone_audit.csv",
+    "metrics/adaptation_results.csv",
+    "figures/figure_data.json",
+    "figures/figure_status.json",
+    "README.md",
+    "summary.json",
+    "data_manifest.json"
+  ],
+  "run_id": "p4-meta-m5-formal-20261104T1018Z",
+  "runtime_s": 8960.326668500085,
+  "split_counts": {
+    "meta_test": 20,
+    "meta_test_ood": 10,
+    "meta_train": 60,
+    "meta_validation": 20,
+    "negative_control": 10
+  },
+  "stage": "holdout",
+  "statistics_rows": 96,
+  "status": "VALID",
+  "study_scale": "FORMAL",
+  "workers": 16
+}
