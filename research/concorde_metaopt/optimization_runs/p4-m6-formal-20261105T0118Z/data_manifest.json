@@ -1,11 +1,16 @@
 {
   "schema_version": "2.0.0",
   "run_id": "p4-m6-formal-20261105T0118Z",
-  "generated_utc": "2026-11-05T02:20:00Z",
+  "generated_utc": "2026-11-04T18:46:29Z",
   "hashing_convention": "text: sha256 over canonical LF bytes (CRLF normalized), bytes=canonical length; binary (png): sha256 over raw bytes; no external artifacts",
   "file_count": 31,
-  "total_bytes": 4576262,
+  "total_bytes": 4578799,
   "binary_file_count": 3,
+  "excluded": [
+    "data_manifest.json",
+    "SHA256SUMS.txt"
+  ],
+  "excluded_reason": "清单不纳入自身与 SHA256SUMS.txt；run 目录文件总数 = file_count + len(excluded)。",
   "files": [
     {
       "path": "determinism_check.json",
@@ -34,8 +39,8 @@
     {
       "path": "evidence/packaging_note.md",
       "hash_mode": "canonical_lf",
-      "bytes": 1417,
-      "sha256": "85f9ed7959cf48c8e78adba14bb33cb8412904e4da2449972b1fffeb0af60580"
+      "bytes": 2913,
+      "sha256": "b5365b8eca8c837316f9e1e3335450ee70cc3c2e3af5b5b141c50a560cf53f86"
     },
     {
       "path": "figures/fig2_K_shot_rmse.png",
@@ -142,8 +147,8 @@
     {
       "path": "README.md",
       "hash_mode": "canonical_lf",
-      "bytes": 5272,
-      "sha256": "4a90fc947b073b5b93452392c2879ec880b5e51c4ea6c99d3d0372f888ff7de4"
+      "bytes": 6313,
+      "sha256": "5a38e98397a7becd58d07c67640d293c3d37ede1153450864bdfd5b79a9f645e"
     },
     {
       "path": "reference_solutions.json",

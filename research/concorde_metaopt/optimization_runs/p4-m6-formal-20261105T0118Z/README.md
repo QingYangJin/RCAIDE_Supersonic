@@ -60,7 +60,15 @@
 
 ## 7. 产物与复现
 
-- 产物文件：run_config.json、environment.json、tasks.json、reference_solutions.json、meta_task_split.json、solver_validation.csv、determinism_check.json、metrics/training_history.csv、metrics/adaptation_results.csv、metrics/adaptation_summary.csv、metrics/statistics.csv、metrics/metrics.csv、figures/figure_data.json、figures/figure_status.json、gate/frozen_family.json、gate/preregistration.json、gate/meta_task_split.json、gate/frozen_gate.json、old_m2_run_immutability.json、preflight/formal_scale_preflight.json、README.md、summary.json、data_manifest.json
+- 产物文件（run 目录共 33 个 = data_manifest 31 条 + data_manifest.json + SHA256SUMS.txt；A5-M6PKG-05）：
+  - 配置/记录（11）：run_config.json、environment.json、tasks.json、reference_solutions.json、meta_task_split.json、solver_validation.csv、determinism_check.json、old_m2_run_immutability.json、preflight/formal_scale_preflight.json、summary.json、README.md
+  - 指标（5）：metrics/training_history.csv、metrics/adaptation_results.csv、metrics/adaptation_summary.csv、metrics/statistics.csv、metrics/metrics.csv
+  - 图（5）：figures/fig2_K_shot_rmse.png、figures/fig6_ood_negative_control.png、figures/fig7_k_sweep_delta.png、figures/figure_data.json、figures/figure_status.json
+  - 脚本（3）：scripts/gen_figures_m6.py、scripts/recompute_m6.py、scripts/build_report_m6.py
+  - 证据（3）：evidence/a3_m6_run_audit.json、evidence/a5_m6_results_review.json、evidence/packaging_note.md
+  - 门禁（4）：gate/frozen_family.json、gate/preregistration.json、gate/meta_task_split.json、gate/frozen_gate.json
+  - 清单：data_manifest.json（schema 2.0.0，31 条；excluded = data_manifest.json、SHA256SUMS.txt）、SHA256SUMS.txt（31 条 raw sha256）
+  - 未随包的 A2 外部产物：figures_manifest.json、recompute.json、recompute.md、probe*.py（属 A2 交付目录，不纳入本 run 包；A5-M6PKG-02）
 - 确定性：determinism_reruns=3，比较时排除列：wall_s
 - 正式复现命令（A5M6R-02：--frozen-run-dir 为必填，缺省会 fail-closed）：
   cd <repo> && D:/RCAIDE/envs/RCAIDE/python.exe -E -s -B -m research.concorde_metaopt.meta_learning.m6_study
@@ -71,3 +79,4 @@
 ## 8. 状态
 
 - summary.status = VALID；physical_call_count = 0
+- 状态口径（A5-M6PKG-04）：summary.json 为 run 生成时的不可变快照，其 m5_reference.status 保留历史值 PENDING_M5_HOLDOUT；machine-readable 现行状态以 run_config.json 与本 README §5 的 PENDING_M5_ACCEPTANCE 为准。
