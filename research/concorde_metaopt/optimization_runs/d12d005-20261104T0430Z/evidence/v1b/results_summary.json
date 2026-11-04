@@ -1,0 +1,450 @@
+{
+  "schema_version": "d12d005-batch1b-results-1",
+  "batch_id": "D-12D-005-BATCH1B",
+  "status": "BATCH1B_COMPLETED",
+  "generated_utc": "2026-11-04T10:22:04Z",
+  "authority": {
+    "issue_comment": 6622447995,
+    "approval": "Lead written authorization (task-124); S4 -> S5, 2 starts, no retries",
+    "a5": "task-120 verdict APPROVE_FOR_BATCH1B, target 0e62db3, counts blocker:0 major:0 minor:3",
+    "a3": "task-121 isolation PASS at 0e62db3"
+  },
+  "execution": {
+    "worktree": "D:/RCAIDE-d12d005",
+    "git_head": "0e62db35b4722154e1bbe8706d222cae230e1d33",
+    "runner_version": "d12d005-runner-5",
+    "runner_sha256": "0c27d05f047d20e9bfc32b4ab27d687c261461b4feb9af5b97247089189f9377",
+    "exe": "D:/OpenVSP-3.55.0/OpenVSP-3.55.0-win64/vspaero.exe",
+    "exe_sha256": "db71c4412489af82398833408ea30fb73327bdd9434de2ef530d31375b9fddad",
+    "serial": true,
+    "max_cores": 4,
+    "max_ram_gb": 16,
+    "timeout_s": 900,
+    "retries": 0,
+    "round_start_utc": "2026-11-04T10:16:20Z",
+    "round_end_utc": "2026-11-04T10:17:02Z"
+  },
+  "cases": [
+    {
+      "short_id": "S4",
+      "case_id": "S4_STD_M2p02_wn128",
+      "event_id": "NA-D12D005B-001",
+      "command": "D:\\OpenVSP-3.55.0\\OpenVSP-3.55.0-win64\\vspaero.exe -omp 4 S4_STD_M2p02_wn128_model",
+      "cwd": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\v1b\\cases\\S4_STD_M2p02_wn128\\bundle",
+      "started_utc": "2026-11-04T10:16:20Z",
+      "finished_utc": "2026-11-04T10:16:48Z",
+      "wall_seconds": 28.314,
+      "returncode": 0,
+      "timed_out": false,
+      "peak_rss_gb": 3.493,
+      "pid": 6140,
+      "outcome_class": "SOLVED_VALID_WITH_DERIVED_WARNINGS",
+      "stop_rule_hit": false,
+      "label": "VSPAERO_INTERNAL_ONLY",
+      "physical_validation": "NOT_VALIDATED",
+      "contract": {
+        "AoA": 2.0,
+        "Beta": 0.0,
+        "Bref": 4.0,
+        "Cref": 1.0,
+        "FarDist": -1.0,
+        "Mach": 2.02,
+        "NumWakeNodes": 128,
+        "ReCref": 4834912.016269014,
+        "Rho": 0.1153178340089936,
+        "Sref": 4.0,
+        "Symmetry": 0,
+        "Vinf": 596.0373971680001,
+        "WakeIters": 5,
+        "WakeRelax": 1.0,
+        "X_cg": 0.25,
+        "Y_cg": 0.0,
+        "Z_cg": 0.0
+      },
+      "contract_asserts_all_ok": true,
+      "coefficients": {
+        "CLo": -0.000390514343,
+        "CLi": 0.074641472558,
+        "CLtot": 0.074250958215,
+        "CDo": 0.011182867628,
+        "CDi": 0.002606535876,
+        "CDtot": 0.013789403504,
+        "E": 0.168318032003,
+        "Ew": Infinity,
+        "CMxtot": 3.959e-09,
+        "CMytot": -0.014776993867,
+        "CMztot": -1.24e-10,
+        "CLwtot": -0.000390514343,
+        "CDwtot": 0.011182867628,
+        "CLiw": 0.0,
+        "CDiw": 0.0
+      },
+      "primary_finite": true,
+      "primary_nonfinite": {},
+      "derived_column_warnings": [
+        {
+          "column": "Ew",
+          "value": "inf",
+          "classification": "DERIVED_RATIO_NONFINITE_ALLOWED"
+        }
+      ],
+      "derived_column_policy": "Ew is a derived ratio column; non-finite Ew allowed as WARNING per BATCH1B authorization",
+      "polar": {
+        "path": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\v1b\\cases\\S4_STD_M2p02_wn128\\bundle\\S4_STD_M2p02_wn128_model.polar",
+        "bytes": 3025,
+        "sha256": "6a4ec6044690da049a1abbe65918bed0a1aab08573f30e9365a8bc117e13f637",
+        "rows": 1
+      },
+      "history": {
+        "path": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\v1b\\cases\\S4_STD_M2p02_wn128\\bundle\\S4_STD_M2p02_wn128_model.history",
+        "bytes": 7552,
+        "sha256": "84aac09e15254dce6d79edb2634164df808a49881dfd1812b69fb355a475d16e",
+        "iterations": 5,
+        "iterations_parser_json": null
+      },
+      "verify_polar": {
+        "returncode": 0,
+        "status": "PASS_WITH_WARNINGS",
+        "error": "",
+        "detail": {
+          "status": "PASS_WITH_WARNINGS",
+          "path": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\v1b\\cases\\S4_STD_M2p02_wn128\\bundle\\S4_STD_M2p02_wn128_model.polar",
+          "schema": "vspaero-7.2.2-48-column",
+          "allow_nonfinite_columns": [
+            "Ew"
+          ],
+          "derived_column_warnings": [
+            {
+              "line": 4,
+              "column": "Ew",
+              "token": "inf"
+            }
+          ],
+          "header_token_count": 48,
+          "rows": 1,
+          "checks": [
+            {
+              "row": 1,
+              "AoA": 2.0,
+              "CLo": -0.000390514343,
+              "CLi": 0.074641472558,
+              "CLtot": 0.074250958215,
+              "CDo": 0.011182867628,
+              "CDi": 0.002606535876,
+              "CDtot": 0.013789403504,
+              "CMztot": -1.24e-10,
+              "Ew": null,
+              "Re": 4834912.016268999
+            }
+          ],
+          "sha256": "6a4ec6044690da049a1abbe65918bed0a1aab08573f30e9365a8bc117e13f637"
+        }
+      },
+      "verify_history": {
+        "returncode": 0,
+        "status": "PASS",
+        "error": ""
+      },
+      "budget": {
+        "class_A_cap_starts": 20,
+        "class_A_used_before_batch1b": 4,
+        "starts_used_this_batch": 1,
+        "batch_cap_starts": 2,
+        "starts_used_after": 5,
+        "retries_used": 0
+      },
+      "notes": [
+        "physical_validation=NOT_VALIDATED",
+        "VSPAERO_INTERNAL_ONLY",
+        "CDo/CDtot must not be used as validated drag or fuel objective"
+      ]
+    },
+    {
+      "short_id": "S5",
+      "case_id": "S5_D12_M2p02_base",
+      "event_id": "NA-D12D005B-002",
+      "command": "D:\\OpenVSP-3.55.0\\OpenVSP-3.55.0-win64\\vspaero.exe -omp 4 wing355_baseline",
+      "cwd": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\v1b\\cases\\S5_D12_M2p02_base\\bundle",
+      "started_utc": "2026-11-04T10:17:01Z",
+      "finished_utc": "2026-11-04T10:17:02Z",
+      "wall_seconds": 0.514,
+      "returncode": 0,
+      "timed_out": false,
+      "peak_rss_gb": 0.075,
+      "pid": 16612,
+      "outcome_class": "SOLVED_VALID_WITH_DERIVED_WARNINGS",
+      "stop_rule_hit": false,
+      "label": "VSPAERO_INTERNAL_ONLY",
+      "physical_validation": "NOT_VALIDATED",
+      "contract": {
+        "AoA": 2.0,
+        "Beta": 0.0,
+        "Bref": 25.604638,
+        "Cref": 18.489893,
+        "FarDist": -1.0,
+        "Mach": 2.02,
+        "NumWakeNodes": 8,
+        "ReCref": 89397005.8767656,
+        "Rho": 0.1153178340089936,
+        "Sref": 358.25,
+        "Symmetry": 0,
+        "Vinf": 596.0373972278921,
+        "WakeIters": 5,
+        "WakeRelax": 1.0,
+        "X_cg": 16.821978259514246,
+        "Y_cg": 0.0,
+        "Z_cg": 0.0
+      },
+      "contract_asserts_all_ok": true,
+      "coefficients": {
+        "CLo": -0.000255212159,
+        "CLi": 0.071087823953,
+        "CLtot": 0.070832611794,
+        "CDo": 0.007308320018,
+        "CDi": 0.002488240979,
+        "CDtot": 0.009796560997,
+        "E": 0.350730237755,
+        "Ew": Infinity,
+        "CMxtot": -1.0137099e-05,
+        "CMytot": -0.01944621897,
+        "CMztot": 5.4909e-07,
+        "CLwtot": -0.000255212159,
+        "CDwtot": 0.007308320018,
+        "CLiw": 0.0,
+        "CDiw": 0.0
+      },
+      "primary_finite": true,
+      "primary_nonfinite": {},
+      "derived_column_warnings": [
+        {
+          "column": "Ew",
+          "value": "inf",
+          "classification": "DERIVED_RATIO_NONFINITE_ALLOWED"
+        }
+      ],
+      "derived_column_policy": "Ew is a derived ratio column; non-finite Ew allowed as WARNING per BATCH1B authorization",
+      "polar": {
+        "path": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\v1b\\cases\\S5_D12_M2p02_base\\bundle\\wing355_baseline.polar",
+        "bytes": 3025,
+        "sha256": "0ab0661fe9768625608d91529cc7c94d0ebc78529ba4fb252b094b572f4f512e",
+        "rows": 1
+      },
+      "history": {
+        "path": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\v1b\\cases\\S5_D12_M2p02_base\\bundle\\wing355_baseline.history",
+        "bytes": 7552,
+        "sha256": "712aff070cbff14fb838b8e0e8fbfb32f034eef6dc3395bb3a0ded2eae165ddc",
+        "iterations": 5,
+        "iterations_parser_json": null
+      },
+      "verify_polar": {
+        "returncode": 0,
+        "status": "PASS_WITH_WARNINGS",
+        "error": "",
+        "detail": {
+          "status": "PASS_WITH_WARNINGS",
+          "path": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\v1b\\cases\\S5_D12_M2p02_base\\bundle\\wing355_baseline.polar",
+          "schema": "vspaero-7.2.2-48-column",
+          "allow_nonfinite_columns": [
+            "Ew"
+          ],
+          "derived_column_warnings": [
+            {
+              "line": 4,
+              "column": "Ew",
+              "token": "inf"
+            }
+          ],
+          "header_token_count": 48,
+          "rows": 1,
+          "checks": [
+            {
+              "row": 1,
+              "AoA": 2.0,
+              "CLo": -0.000255212159,
+              "CLi": 0.071087823953,
+              "CLtot": 0.070832611794,
+              "CDo": 0.007308320018,
+              "CDi": 0.002488240979,
+              "CDtot": 0.009796560997,
+              "CMztot": 5.4909e-07,
+              "Ew": null,
+              "Re": 89397005.876766
+            }
+          ],
+          "sha256": "0ab0661fe9768625608d91529cc7c94d0ebc78529ba4fb252b094b572f4f512e"
+        }
+      },
+      "verify_history": {
+        "returncode": 0,
+        "status": "PASS",
+        "error": ""
+      },
+      "budget": {
+        "class_A_cap_starts": 20,
+        "class_A_used_before_batch1b": 4,
+        "starts_used_this_batch": 2,
+        "batch_cap_starts": 2,
+        "starts_used_after": 6,
+        "retries_used": 0
+      },
+      "notes": [
+        "physical_validation=NOT_VALIDATED",
+        "VSPAERO_INTERNAL_ONLY",
+        "CDo/CDtot must not be used as validated drag or fuel objective"
+      ]
+    }
+  ],
+  "deltas_s4_vs_s3_single_factor_wake_nodes": {
+    "CLo": {
+      "s3": -0.000390514345,
+      "s4": -0.000390514343,
+      "abs_diff": 2e-12,
+      "rel_diff": 5.121450767726329e-09
+    },
+    "CLi": {
+      "s3": 0.074641546128,
+      "s4": 0.074641472558,
+      "abs_diff": -7.357e-08,
+      "rel_diff": -9.856441060662863e-07
+    },
+    "CLtot": {
+      "s3": 0.074251031783,
+      "s4": 0.074250958215,
+      "abs_diff": -7.3568e-08,
+      "rel_diff": -9.908010465426818e-07
+    },
+    "CDo": {
+      "s3": 0.011182867698,
+      "s4": 0.011182867628,
+      "abs_diff": -7e-11,
+      "rel_diff": -6.259575135649212e-09
+    },
+    "CDi": {
+      "s3": 0.002606540227,
+      "s4": 0.002606535876,
+      "abs_diff": -4.351e-09,
+      "rel_diff": -1.6692625553564866e-06
+    },
+    "CDtot": {
+      "s3": 0.013789407924,
+      "s4": 0.013789403504,
+      "abs_diff": -4.42e-09,
+      "rel_diff": -3.205358797162658e-07
+    },
+    "CMytot": {
+      "s3": -0.014777040022,
+      "s4": -0.014776993867,
+      "abs_diff": 4.6155e-08,
+      "rel_diff": 3.12342660857926e-06
+    },
+    "E": {
+      "s3": 0.168318084604,
+      "s4": 0.168318032003,
+      "abs_diff": -5.2601e-08,
+      "rel_diff": -3.125094972646924e-07
+    }
+  },
+  "s5_vs_s4_cross_geometry": {
+    "CLtot": {
+      "s4_std_wing": 0.074250958215,
+      "s5_12d_wing": 0.070832611794,
+      "rel_diff_s5_vs_s4": -0.04603774150768381
+    },
+    "CDi": {
+      "s4_std_wing": 0.002606535876,
+      "s5_12d_wing": 0.002488240979,
+      "rel_diff_s5_vs_s4": -0.04538395120098474
+    },
+    "CDtot": {
+      "s4_std_wing": 0.013789403504,
+      "s5_12d_wing": 0.009796560997,
+      "rel_diff_s5_vs_s4": -0.2895587547236373
+    },
+    "CDo": {
+      "s4_std_wing": 0.011182867628,
+      "s5_12d_wing": 0.007308320018,
+      "rel_diff_s5_vs_s4": -0.34647174042360934
+    },
+    "E": {
+      "s4_std_wing": 0.168318032003,
+      "s5_12d_wing": 0.350730237755,
+      "rel_diff_s5_vs_s4": 1.0837353763068522
+    }
+  },
+  "derived_column_diagnosis": {
+    "columns": [
+      "Ew"
+    ],
+    "value": "inf",
+    "both_cases": true,
+    "CDiw": [
+      0.0,
+      0.0
+    ],
+    "CLiw": [
+      0.0,
+      0.0
+    ],
+    "E_finite": [
+      0.168318032003,
+      0.350730237755
+    ],
+    "classification": "DERIVED_RATIO_NONFINITE_ALLOWED (0/0 denominator degradation; not solver divergence)",
+    "primary_columns_finite": true
+  },
+  "checks": {
+    "two_starts_only": true,
+    "retries_zero": true,
+    "stop_rule_triggered": false,
+    "primary_all_finite": true,
+    "verify_polar_status": [
+      "PASS_WITH_WARNINGS",
+      "PASS_WITH_WARNINGS"
+    ],
+    "verify_history_status": [
+      "PASS",
+      "PASS"
+    ],
+    "contract_asserts_all_ok": true,
+    "ledger_events": [
+      "NA-D12D005B-001",
+      "NA-D12D005B-002"
+    ],
+    "ledger_rows": 4,
+    "no_stop_after_s4": true
+  },
+  "budget": {
+    "class_A_cap": 20,
+    "used_before_batch1b": 4,
+    "used_this_batch": 2,
+    "used_total": 6,
+    "remaining": 14,
+    "retries_used": 0,
+    "billable_events": 2,
+    "remaining_authorized": false,
+    "note": "A-class remaining 14 is NOT authorized; no carryover/reallocation."
+  },
+  "labels": {
+    "output_label": "VSPAERO_INTERNAL_ONLY",
+    "physical_validation": "NOT_VALIDATED",
+    "lF_M2_02_gate_change": false,
+    "validated_fuel_label": false,
+    "body_correction_injected": false
+  },
+  "limitations": [
+    "Two authorized BATCH1B starts only; S4 first then S5; no retries.",
+    "Ew is a derived ratio column; CDiw=CLiw=0 identically in both M2.02 solutions -> Ew = 0/0 = inf; allowed as PASS_WITH_WARNINGS per Lead authorization, primary coefficients all finite.",
+    "S3 reference values come from A-batch evidence/v1/per_case_conclusions.json (same VSPAERO binary, same contract); S3 was NOT re-run in BATCH1B.",
+    "S4 vs S3 is a single-factor comparison (NumWakeNodes 8 -> 128, standard rectangular wing, Mach 2.02).",
+    "S5 vs S4 is cross-geometry/cross-Re only; no single-factor attribution.",
+    "Single polar row per case (AoA=2 contract, frozen single-point); no repeat runs, no density sequence.",
+    "Thin VLM/VSPAERO has no thickness, viscosity or shock modelling; results are VSPAERO_INTERNAL_ONLY and physical_validation=NOT_VALIDATED.",
+    "Peak RSS sampled at 0.5 s; S5 0.514 s wall may under-sample true peak.",
+    "history iterations were counted directly from the .history file (5 each); the analysis JSON parser field is null because this VSPAERO 7.2.2 history header layout is not recognised by that parser (verify-history PASS is authoritative)."
+  ],
+  "files": {
+    "run_dir": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z",
+    "run_evidence_v1b": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\v1b",
+    "ext_batch1b": "C:\\Users\\pc\\AppData\\Local\\RCAIDE_Supersonic_agent_state\\d12d005\\batch1b"
+  }
+}

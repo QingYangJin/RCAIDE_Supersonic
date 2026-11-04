@@ -1,0 +1,89 @@
+{
+ "schema_version": "d12d005-batch1b-run-start-1",
+ "batch_id": "D-12D-005-BATCH1B",
+ "status": "RUN_COMPLETED",
+ "run_id": "d12d005-20261104T0430Z",
+ "authorization": {
+  "task_id": "task-124",
+  "issue_comment": "6622447995",
+  "authorized_scope": "S4_STD_M2p02_wn128 then S5_D12_M2p02_base, 2 starts, no retries"
+ },
+ "worktree_head": "0e62db35b4722154e1bbe8706d222cae230e1d33",
+ "runner": {
+  "path": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\scripts\\vspaero7_runner_v2.py",
+  "version": "d12d005-runner-5",
+  "sha256": "0c27d05f047d20e9bfc32b4ab27d687c261461b4feb9af5b97247089189f9377"
+ },
+ "solver": {
+  "name": "VSPAERO",
+  "version": "7.2.2",
+  "exe": "D:\\OpenVSP-3.55.0\\OpenVSP-3.55.0-win64\\vspaero.exe",
+  "sha256": "db71c4412489af82398833408ea30fb73327bdd9434de2ef530d31375b9fddad"
+ },
+ "budget": {
+  "class_A_cap_starts": 20,
+  "class_A_used_before_batch1b": 4,
+  "batch_cap_starts": 2,
+  "starts_used": 2,
+  "starts_remaining_this_batch": 0,
+  "retries_used": 0,
+  "class_A_used_total_after_batch": 6
+ },
+ "case_order": [
+  "S4_STD_M2p02_wn128",
+  "S5_D12_M2p02_base"
+ ],
+ "starts": [
+  {
+   "event_id": "NA-D12D005B-001",
+   "case_id": "S4_STD_M2p02_wn128",
+   "short_id": "S4",
+   "pid": 6140,
+   "command": "D:\\OpenVSP-3.55.0\\OpenVSP-3.55.0-win64\\vspaero.exe -omp 4 S4_STD_M2p02_wn128_model",
+   "cwd": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\v1b\\cases\\S4_STD_M2p02_wn128\\bundle",
+   "started_utc": "2026-11-04T10:16:20Z",
+   "timeout_s": 900,
+   "exe": "D:\\OpenVSP-3.55.0\\OpenVSP-3.55.0-win64\\vspaero.exe",
+   "exe_sha256": "db71c4412489af82398833408ea30fb73327bdd9434de2ef530d31375b9fddad",
+   "runner_sha256": "0c27d05f047d20e9bfc32b4ab27d687c261461b4feb9af5b97247089189f9377",
+   "worktree_head": "0e62db35b4722154e1bbe8706d222cae230e1d33",
+   "solver_stdout_log": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\v1b\\cases\\S4_STD_M2p02_wn128\\bundle\\solver_stdout.log",
+   "solver_stderr_log": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\v1b\\cases\\S4_STD_M2p02_wn128\\bundle\\solver_stderr.log",
+   "status": "COMPLETED",
+   "wall_seconds": 28.314,
+   "returncode": 0,
+   "timed_out": false,
+   "peak_rss_gb": 3.493,
+   "outcome_class": "SOLVED_VALID_WITH_DERIVED_WARNINGS",
+   "finished_utc": "2026-11-04T10:16:48Z"
+  },
+  {
+   "event_id": "NA-D12D005B-002",
+   "case_id": "S5_D12_M2p02_base",
+   "short_id": "S5",
+   "pid": 16612,
+   "command": "D:\\OpenVSP-3.55.0\\OpenVSP-3.55.0-win64\\vspaero.exe -omp 4 wing355_baseline",
+   "cwd": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\v1b\\cases\\S5_D12_M2p02_base\\bundle",
+   "started_utc": "2026-11-04T10:17:01Z",
+   "timeout_s": 900,
+   "exe": "D:\\OpenVSP-3.55.0\\OpenVSP-3.55.0-win64\\vspaero.exe",
+   "exe_sha256": "db71c4412489af82398833408ea30fb73327bdd9434de2ef530d31375b9fddad",
+   "runner_sha256": "0c27d05f047d20e9bfc32b4ab27d687c261461b4feb9af5b97247089189f9377",
+   "worktree_head": "0e62db35b4722154e1bbe8706d222cae230e1d33",
+   "solver_stdout_log": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\v1b\\cases\\S5_D12_M2p02_base\\bundle\\solver_stdout.log",
+   "solver_stderr_log": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\v1b\\cases\\S5_D12_M2p02_base\\bundle\\solver_stderr.log",
+   "status": "COMPLETED",
+   "wall_seconds": 0.514,
+   "returncode": 0,
+   "timed_out": false,
+   "peak_rss_gb": 0.075,
+   "outcome_class": "SOLVED_VALID_WITH_DERIVED_WARNINGS",
+   "finished_utc": "2026-11-04T10:17:02Z"
+  }
+ ],
+ "no_solver_started": false,
+ "first_solver_start_utc": "2026-11-04T10:16:20Z",
+ "first_solver_event_id": "NA-D12D005B-001",
+ "starts_used": 2,
+ "starts_remaining_this_batch": 0
+}

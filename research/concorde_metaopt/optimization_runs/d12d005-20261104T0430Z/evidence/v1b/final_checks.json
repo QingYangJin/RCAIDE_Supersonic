@@ -1,0 +1,158 @@
+{
+  "schema_version": "d12d005-v1b-final-checks-1",
+  "run_id": "d12d005-20261104T0430Z",
+  "batch_id": "D-12D-005-BATCH1B",
+  "generated_utc": "2026-11-04T11:41:31Z",
+  "execution_head_sha": "0e62db35b4722154e1bbe8706d222cae230e1d33",
+  "expected_execution_head_sha": "0e62db35b4722154e1bbe8706d222cae230e1d33",
+  "checks": {
+    "starts_authorized_and_used": {
+      "authorized_starts": 2,
+      "starts_used": 2,
+      "run_start_status": "RUN_COMPLETED",
+      "batch_state_starts_used": 2,
+      "batch_state_allowed_starts": 2,
+      "cases": [
+        "S4_STD_M2p02_wn128",
+        "S5_D12_M2p02_base"
+      ],
+      "pass": true
+    },
+    "retries_zero": {
+      "ledger_is_retry_true_count": 0,
+      "batch_state_retries_used": 0,
+      "budget_ledger_retries_used": 0,
+      "pass": true
+    },
+    "budget_consistency": {
+      "class_A_cap": 20,
+      "used_before_batch1b": 4,
+      "starts_used_this_batch": 2,
+      "class_A_total_after": 6,
+      "remaining": 14,
+      "billable_events": 2,
+      "matches_batch_state": true,
+      "matches_budget_ledger": true,
+      "pass": true
+    },
+    "ledger_consistency": {
+      "rows": 4,
+      "pending_rows": 2,
+      "completed_rows": 2,
+      "event_ids": [
+        "NA-D12D005B-001",
+        "NA-D12D005B-002"
+      ],
+      "attempt_index_all_1": true,
+      "is_retry_all_false": true,
+      "pass": true
+    },
+    "stdout_sha256_reconciliation": {
+      "S4": {
+        "ledger_completed_stdout_sha256_field": null,
+        "recomputed_sha256": "76acc55efaf2cbbd96feed256aea278de29d1269e3362ae9bc6c7809e47605cb",
+        "recomputed_bytes": 21804,
+        "matches_corrections_values": true,
+        "resolution": "B1B-m06: null field is documented and reconciled in final_checks/case_summary; ledger.jsonl kept byte-identical (raw evidence not rewritten)"
+      },
+      "S5": {
+        "ledger_completed_stdout_sha256_field": null,
+        "recomputed_sha256": "0812a632c2d1703680dea111ac1122395d6eda6ef607f2d8e7d6a2a37244b24d",
+        "recomputed_bytes": 18700,
+        "matches_corrections_values": true,
+        "resolution": "B1B-m06: null field is documented and reconciled in final_checks/case_summary; ledger.jsonl kept byte-identical (raw evidence not rewritten)"
+      },
+      "ledger_jsonl_left_unmodified": true,
+      "pass": true
+    },
+    "history_rows": {
+      "S4": {
+        "nonblank_lines": 25,
+        "data_rows_field": 24,
+        "iteration_rows": 5
+      },
+      "S5": {
+        "nonblank_lines": 25,
+        "data_rows_field": 24,
+        "iteration_rows": 5
+      }
+    },
+    "contract_assertions": {
+      "per_case_fields": 17,
+      "cases": 2,
+      "assertions_ok": 34,
+      "total": 34,
+      "pass": true
+    },
+    "expected_outputs_only": {
+      "bundle_files": {
+        "S4": 19,
+        "S5": 19
+      },
+      "unexpected_files": [],
+      "missing_files": [],
+      "pass": true
+    },
+    "no_solver_started_during_freeze": {
+      "value": 0,
+      "basis": "freeze/v2 parser runs are pure stdlib data operations; no vspaero/OpenVSP/RCAIDE process is invoked by the freeze scripts",
+      "pass": true
+    },
+    "json_parse_all_ok": {
+      "files": 11,
+      "all_ok": true,
+      "files_parsed": {
+        "batch_state.json": "OK",
+        "budget_ledger.json": "OK",
+        "case_summary.json": "OK",
+        "cases/S4_STD_M2p02_wn128/bundle/expected.json": "OK",
+        "cases/S5_D12_M2p02_base/bundle/expected.json": "OK",
+        "corrections/batch1b_corrections.json": "OK",
+        "data_manifest.json": "OK",
+        "final_checks.json": "OK",
+        "per_case_conclusions.json": "OK",
+        "results_summary.json": "OK",
+        "run_start.json": "OK"
+      }
+    },
+    "labels_present": {
+      "output_label": "VSPAERO_INTERNAL_ONLY",
+      "physical_validation": "NOT_VALIDATED",
+      "lF_M2_02_gate_change": false,
+      "validated_fuel_label": false,
+      "body_correction_injected": false,
+      "pass": true
+    },
+    "raw_evidence_bytes_unchanged": {
+      "stdout_case_root_equals_bundle": {
+        "S4": true,
+        "S5": true
+      },
+      "polar_sha_matches_authoritative": {
+        "S4": true,
+        "S5": true
+      },
+      "history_sha_matches_authoritative": {
+        "S4": true,
+        "S5": true
+      },
+      "policy": "derived JSONs only; raw solver outputs, ledger.jsonl, batch_state.json, budget_ledger.json, run_start.json, results_summary.json are not rewritten",
+      "pass": true
+    },
+    "batch_state_consistency": {
+      "batch_state_starts_used": 2,
+      "batch_state_allowed_starts": 2,
+      "batch_state_retries_used": 0,
+      "batch_state_stopped": false,
+      "budget_ledger_status": "BATCH1B_COMPLETED",
+      "results_summary_status": "BATCH1B_COMPLETED",
+      "pass": true
+    }
+  },
+  "all_checks_pass": true,
+  "notes": [
+    "All values are read from the frozen v1b raw bytes; corrections_values.json (Lead-authored) was used as the authoritative reconciliation source for the recomputed stdout/history/polar sha256 values.",
+    "Ledger COMPLETED stdout_sha256 is null by runner design; it is reconciled here (B1B-m06) and ledger.jsonl is intentionally kept byte-identical.",
+    "No solver was started during this freeze (zero solver starts, zero billable events)."
+  ]
+}

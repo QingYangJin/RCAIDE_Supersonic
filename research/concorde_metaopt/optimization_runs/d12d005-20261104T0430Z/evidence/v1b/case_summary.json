@@ -1,0 +1,485 @@
+{
+  "schema_version": "d12d005-v1b-case-summary-1",
+  "run_id": "d12d005-20261104T0430Z",
+  "batch_id": "D-12D-005-BATCH1B",
+  "generated_utc": "2026-11-04T11:41:31Z",
+  "generated_by": "A1 task-129 data-only freeze (scripts/freeze_v1b_evidence.py); physical_call_count_during_freeze=0",
+  "physical_call_count_during_freeze": 0,
+  "labels": {
+    "output_label": "VSPAERO_INTERNAL_ONLY",
+    "physical_validation": "NOT_VALIDATED",
+    "lF_M2_02_gate_change": false,
+    "validated_fuel_label": false,
+    "body_correction_injected": false
+  },
+  "labels_text": {
+    "output_label": "VSPAERO_INTERNAL_ONLY",
+    "physical_validation": "NOT_VALIDATED",
+    "statement": "VSPAERO thin inviscid internal results only; no physical validation, no validated fuel/drag label, no body correction."
+  },
+  "authorization": {
+    "lead_task_id": "task-124",
+    "authorized_utc": "2026-11-04T10:16:19Z",
+    "issue_comment": "6622447995",
+    "scope": "S4_STD_M2p02_wn128 then S5_D12_M2p02_base; 2 starts; no retries",
+    "a5": "task-120 verdict APPROVE_FOR_BATCH1B (target 0e62db3; 0 blocker / 0 major / 3 minor)",
+    "a3": "task-121 isolation PASS"
+  },
+  "history_semantics": {
+    "corrections_total_lines": 25,
+    "corrections_data_rows": 24,
+    "iteration_rows": 5,
+    "definitions": {
+      "corrections_total_lines": "non-blank lines in the .history file (B1B-m05 reconciliation figure)",
+      "corrections_data_rows": "25 minus 1 header line, i.e. the historical parser's data-row count (includes 15 reference-condition lines)",
+      "iteration_rows": "rows commencing with an integer iteration index; 5 wake iterations",
+      "splitlines_total": "raw splitlines() count including blank lines (31)"
+    },
+    "parser_note": "results_summary.json history.iterations_parser_json is null because this VSPAERO 7.2.2 history layout is not recognised by that parser; verify-history PASS plus direct row counting are authoritative."
+  },
+  "budget_semantics": {
+    "class_A_cap": 20,
+    "used_before_batch1b": 4,
+    "starts_used_this_batch": 2,
+    "class_A_total_after": 6,
+    "remaining": 14,
+    "retries_used": 0,
+    "billable_events": 2,
+    "remaining_authorized": false,
+    "note": "A-class remaining 14 NOT authorized; no carryover/reallocation."
+  },
+  "stdout_sha256_reconciliation": {
+    "S4": {
+      "ledger_completed_stdout_sha256_field": null,
+      "recomputed_sha256": "76acc55efaf2cbbd96feed256aea278de29d1269e3362ae9bc6c7809e47605cb",
+      "recomputed_bytes": 21804,
+      "matches_corrections_values": true,
+      "resolution": "B1B-m06: null field is documented and reconciled in final_checks/case_summary; ledger.jsonl kept byte-identical (raw evidence not rewritten)"
+    },
+    "S5": {
+      "ledger_completed_stdout_sha256_field": null,
+      "recomputed_sha256": "0812a632c2d1703680dea111ac1122395d6eda6ef607f2d8e7d6a2a37244b24d",
+      "recomputed_bytes": 18700,
+      "matches_corrections_values": true,
+      "resolution": "B1B-m06: null field is documented and reconciled in final_checks/case_summary; ledger.jsonl kept byte-identical (raw evidence not rewritten)"
+    }
+  },
+  "cases": [
+    {
+      "case_id": "S4_STD_M2p02_wn128",
+      "short_id": "S4",
+      "event_id": "NA-D12D005B-001",
+      "outcome_class": "SOLVED_VALID_WITH_DERIVED_WARNINGS",
+      "timed_out": false,
+      "stop_rule_hit": false,
+      "command": "D:\\OpenVSP-3.55.0\\OpenVSP-3.55.0-win64\\vspaero.exe -omp 4 S4_STD_M2p02_wn128_model",
+      "cwd": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\v1b\\cases\\S4_STD_M2p02_wn128\\bundle",
+      "pid": 6140,
+      "started_utc": "2026-11-04T10:16:20Z",
+      "finished_utc": "2026-11-04T10:16:48Z",
+      "wall_seconds": 28.314,
+      "returncode": 0,
+      "peak_rss_gb": 3.493,
+      "contract": {
+        "AoA": 2.0,
+        "Beta": 0.0,
+        "Bref": 4.0,
+        "Cref": 1.0,
+        "FarDist": -1.0,
+        "Mach": 2.02,
+        "NumWakeNodes": 128,
+        "ReCref": 4834912.016269014,
+        "Rho": 0.1153178340089936,
+        "Sref": 4.0,
+        "Symmetry": 0,
+        "Vinf": 596.0373971680001,
+        "WakeIters": 5,
+        "WakeRelax": 1.0,
+        "X_cg": 0.25,
+        "Y_cg": 0.0,
+        "Z_cg": 0.0
+      },
+      "contract_asserts_all_ok": true,
+      "contract_checks": {
+        "fields": 17,
+        "asserts_all_ok": true,
+        "matches_bundle_expected_json": true,
+        "source": "cases/S4_STD_M2p02_wn128/bundle/expected.json"
+      },
+      "primary_coefficients": {
+        "CLo": -0.000390514343,
+        "CLi": 0.074641472558,
+        "CLtot": 0.074250958215,
+        "CDo": 0.011182867628,
+        "CDi": 0.002606535876,
+        "CDtot": 0.013789403504,
+        "CMxtot": 3.959e-09,
+        "CMytot": -0.014776993867,
+        "CMztot": -1.24e-10,
+        "CLwtot": -0.000390514343,
+        "CDwtot": 0.011182867628,
+        "CSwtot": 0.0
+      },
+      "derived_coefficients": {
+        "E": 0.168318032003,
+        "Ew": Infinity,
+        "CLiw": 0.0,
+        "CDiw": 0.0,
+        "note": "Ew=inf is DERIVED_RATIO_NONFINITE_ALLOWED (CDiw=CLiw=0, 0/0); primary coefficients finite; not solver divergence"
+      },
+      "verify_polar": {
+        "status": "PASS_WITH_WARNINGS",
+        "returncode": 0,
+        "rows": 1,
+        "header_token_count": 48,
+        "schema": "vspaero-7.2.2-48-column",
+        "allow_nonfinite_columns": [
+          "Ew"
+        ]
+      },
+      "verify_history": {
+        "returncode": 0,
+        "status": "PASS",
+        "error": ""
+      },
+      "history": {
+        "path": "cases/S4_STD_M2p02_wn128/S4_STD_M2p02_wn128_model.history",
+        "bytes": 7552,
+        "sha256": "84aac09e15254dce6d79edb2634164df808a49881dfd1812b69fb355a475d16e",
+        "splitlines_total": 31,
+        "nonblank_lines": 25,
+        "corrections_total_lines": 25,
+        "corrections_data_rows": 24,
+        "iteration_rows": 5,
+        "header_line_index_1based": 20,
+        "last_iteration": 5,
+        "last_row_first_fields": [
+          5.0,
+          2.02,
+          2.0,
+          0.0,
+          -0.000390514343,
+          0.074641472558,
+          0.074250958215,
+          0.011182867628,
+          0.002606535876,
+          0.013789403504,
+          0.0,
+          -2.71e-10
+        ],
+        "iteration4_to_5_abs_delta": {
+          "CLo": 7.120000000281242e-10,
+          "CLi": 2.1254721000008026e-05,
+          "CLtot": 2.1254008000001767e-05,
+          "CDo": 2.0409000000415345e-08,
+          "CDi": 1.2581519999999013e-06,
+          "CDtot": 1.2785610000003167e-06
+        }
+      },
+      "artifacts": {
+        "case_root": {
+          "polar": {
+            "path": "cases/S4_STD_M2p02_wn128/S4_STD_M2p02_wn128_model.polar",
+            "bytes": 3025,
+            "sha256": "6a4ec6044690da049a1abbe65918bed0a1aab08573f30e9365a8bc117e13f637"
+          },
+          "history": {
+            "path": "cases/S4_STD_M2p02_wn128/S4_STD_M2p02_wn128_model.history",
+            "bytes": 7552,
+            "sha256": "84aac09e15254dce6d79edb2634164df808a49881dfd1812b69fb355a475d16e"
+          },
+          "solver_stdout": {
+            "path": "cases/S4_STD_M2p02_wn128/solver_stdout.log",
+            "bytes": 21804,
+            "sha256": "76acc55efaf2cbbd96feed256aea278de29d1269e3362ae9bc6c7809e47605cb"
+          },
+          "solver_stderr": {
+            "path": "cases/S4_STD_M2p02_wn128/solver_stderr.log",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        "bundle": {
+          "polar": {
+            "path": "cases/S4_STD_M2p02_wn128/bundle/S4_STD_M2p02_wn128_model.polar",
+            "bytes": 3025,
+            "sha256": "6a4ec6044690da049a1abbe65918bed0a1aab08573f30e9365a8bc117e13f637"
+          },
+          "history": {
+            "path": "cases/S4_STD_M2p02_wn128/bundle/S4_STD_M2p02_wn128_model.history",
+            "bytes": 7552,
+            "sha256": "84aac09e15254dce6d79edb2634164df808a49881dfd1812b69fb355a475d16e"
+          },
+          "solver_stdout": {
+            "path": "cases/S4_STD_M2p02_wn128/bundle/solver_stdout.log",
+            "bytes": 21804,
+            "sha256": "76acc55efaf2cbbd96feed256aea278de29d1269e3362ae9bc6c7809e47605cb"
+          },
+          "solver_stderr": {
+            "path": "cases/S4_STD_M2p02_wn128/bundle/solver_stderr.log",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "contract": {
+            "path": "cases/S4_STD_M2p02_wn128/bundle/S4_STD_M2p02_wn128_contract.vspaero",
+            "bytes": 815,
+            "sha256": "f2bbfa6c17ad3e79f8c0576fbe2340f5ad52884415ada30040df3895f5761c76"
+          },
+          "vspgeom": {
+            "path": "cases/S4_STD_M2p02_wn128/bundle/S4_STD_M2p02_wn128_model.vspgeom",
+            "bytes": 284327,
+            "sha256": "8363f8fb209dd3120bbdf2e3766605b9405b97de0c7561b0be08c91c4cb8ebad"
+          },
+          "vkey": {
+            "path": "cases/S4_STD_M2p02_wn128/bundle/S4_STD_M2p02_wn128_model.vkey",
+            "bytes": 391,
+            "sha256": "f90265be9a3dc89ecf12f7e115a2159e2a6778fbf5e1c49a3761f0d1d6023bb0"
+          },
+          "csf": {
+            "path": "cases/S4_STD_M2p02_wn128/bundle/S4_STD_M2p02_wn128_model.csf",
+            "bytes": 20,
+            "sha256": "bb29bf526f4379308ca9c271a8df90c39f4df4235f81f63e370f25e714bb797c"
+          },
+          "vsp3": {
+            "path": "cases/S4_STD_M2p02_wn128/bundle/S4_STD_M2p02_wn128_model.vsp3",
+            "bytes": 87723,
+            "sha256": "e66b7d98142ed3116f92db446d8e3736e2f7c4844f6948ed9df55f4d43370029"
+          },
+          "vspaero_model": {
+            "path": "cases/S4_STD_M2p02_wn128/bundle/S4_STD_M2p02_wn128_model.vspaero",
+            "bytes": 815,
+            "sha256": "f2bbfa6c17ad3e79f8c0576fbe2340f5ad52884415ada30040df3895f5761c76"
+          }
+        }
+      },
+      "labels": {
+        "output_label": "VSPAERO_INTERNAL_ONLY",
+        "physical_validation": "NOT_VALIDATED",
+        "validated_fuel_label": false,
+        "body_correction_injected": false
+      },
+      "notes": [
+        "physical_validation=NOT_VALIDATED",
+        "VSPAERO_INTERNAL_ONLY",
+        "CDo/CDtot must not be used as validated drag or fuel objective",
+        "Ew is a derived ratio column; non-finite Ew allowed as WARNING per BATCH1B authorization"
+      ],
+      "per_case_budget": {
+        "starts_used_this_batch": 1,
+        "starts_used_after": 5,
+        "semantics": "as-of-S4-completion value",
+        "final_batch_starts_used": 2,
+        "final_batch_total_after": 6,
+        "note": "B1B-m03: S4's per-case budget field is a historical as-of-S4-completion snapshot (1 then / 5 total); the final batch totals are 2 starts / 6 total, identical in S5's field, batch_state.json and budget_ledger.json. results_summary.json is left as the historical execution record."
+      }
+    },
+    {
+      "case_id": "S5_D12_M2p02_base",
+      "short_id": "S5",
+      "event_id": "NA-D12D005B-002",
+      "outcome_class": "SOLVED_VALID_WITH_DERIVED_WARNINGS",
+      "timed_out": false,
+      "stop_rule_hit": false,
+      "command": "D:\\OpenVSP-3.55.0\\OpenVSP-3.55.0-win64\\vspaero.exe -omp 4 wing355_baseline",
+      "cwd": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\v1b\\cases\\S5_D12_M2p02_base\\bundle",
+      "pid": 16612,
+      "started_utc": "2026-11-04T10:17:01Z",
+      "finished_utc": "2026-11-04T10:17:02Z",
+      "wall_seconds": 0.514,
+      "returncode": 0,
+      "peak_rss_gb": 0.075,
+      "contract": {
+        "AoA": 2.0,
+        "Beta": 0.0,
+        "Bref": 25.604638,
+        "Cref": 18.489893,
+        "FarDist": -1.0,
+        "Mach": 2.02,
+        "NumWakeNodes": 8,
+        "ReCref": 89397005.8767656,
+        "Rho": 0.1153178340089936,
+        "Sref": 358.25,
+        "Symmetry": 0,
+        "Vinf": 596.0373972278921,
+        "WakeIters": 5,
+        "WakeRelax": 1.0,
+        "X_cg": 16.821978259514246,
+        "Y_cg": 0.0,
+        "Z_cg": 0.0
+      },
+      "contract_asserts_all_ok": true,
+      "contract_checks": {
+        "fields": 17,
+        "asserts_all_ok": true,
+        "matches_bundle_expected_json": true,
+        "source": "cases/S5_D12_M2p02_base/bundle/expected.json"
+      },
+      "primary_coefficients": {
+        "CLo": -0.000255212159,
+        "CLi": 0.071087823953,
+        "CLtot": 0.070832611794,
+        "CDo": 0.007308320018,
+        "CDi": 0.002488240979,
+        "CDtot": 0.009796560997,
+        "CMxtot": -1.0137099e-05,
+        "CMytot": -0.01944621897,
+        "CMztot": 5.4909e-07,
+        "CLwtot": -0.000255212159,
+        "CDwtot": 0.007308320018,
+        "CSwtot": 0.0
+      },
+      "derived_coefficients": {
+        "E": 0.350730237755,
+        "Ew": Infinity,
+        "CLiw": 0.0,
+        "CDiw": 0.0,
+        "note": "Ew=inf is DERIVED_RATIO_NONFINITE_ALLOWED (CDiw=CLiw=0, 0/0); primary coefficients finite; not solver divergence"
+      },
+      "verify_polar": {
+        "status": "PASS_WITH_WARNINGS",
+        "returncode": 0,
+        "rows": 1,
+        "header_token_count": 48,
+        "schema": "vspaero-7.2.2-48-column",
+        "allow_nonfinite_columns": [
+          "Ew"
+        ]
+      },
+      "verify_history": {
+        "returncode": 0,
+        "status": "PASS",
+        "error": ""
+      },
+      "history": {
+        "path": "cases/S5_D12_M2p02_base/wing355_baseline.history",
+        "bytes": 7552,
+        "sha256": "712aff070cbff14fb838b8e0e8fbfb32f034eef6dc3395bb3a0ded2eae165ddc",
+        "splitlines_total": 31,
+        "nonblank_lines": 25,
+        "corrections_total_lines": 25,
+        "corrections_data_rows": 24,
+        "iteration_rows": 5,
+        "header_line_index_1based": 20,
+        "last_iteration": 5,
+        "last_row_first_fields": [
+          5.0,
+          2.02,
+          2.0,
+          0.0,
+          -0.000255212159,
+          0.071087823953,
+          0.070832611794,
+          0.007308320018,
+          0.002488240979,
+          0.009796560997,
+          0.0,
+          4.886007e-06
+        ],
+        "iteration4_to_5_abs_delta": {
+          "CLo": 1.2186999999983829e-08,
+          "CLi": 0.00044550130000001187,
+          "CLtot": 0.0004454891129999916,
+          "CDo": 3.4898800000023045e-07,
+          "CDi": 2.1529271999999947e-05,
+          "CDtot": 2.1878259999998442e-05
+        }
+      },
+      "artifacts": {
+        "case_root": {
+          "polar": {
+            "path": "cases/S5_D12_M2p02_base/wing355_baseline.polar",
+            "bytes": 3025,
+            "sha256": "0ab0661fe9768625608d91529cc7c94d0ebc78529ba4fb252b094b572f4f512e"
+          },
+          "history": {
+            "path": "cases/S5_D12_M2p02_base/wing355_baseline.history",
+            "bytes": 7552,
+            "sha256": "712aff070cbff14fb838b8e0e8fbfb32f034eef6dc3395bb3a0ded2eae165ddc"
+          },
+          "solver_stdout": {
+            "path": "cases/S5_D12_M2p02_base/solver_stdout.log",
+            "bytes": 18700,
+            "sha256": "0812a632c2d1703680dea111ac1122395d6eda6ef607f2d8e7d6a2a37244b24d"
+          },
+          "solver_stderr": {
+            "path": "cases/S5_D12_M2p02_base/solver_stderr.log",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        "bundle": {
+          "polar": {
+            "path": "cases/S5_D12_M2p02_base/bundle/wing355_baseline.polar",
+            "bytes": 3025,
+            "sha256": "0ab0661fe9768625608d91529cc7c94d0ebc78529ba4fb252b094b572f4f512e"
+          },
+          "history": {
+            "path": "cases/S5_D12_M2p02_base/bundle/wing355_baseline.history",
+            "bytes": 7552,
+            "sha256": "712aff070cbff14fb838b8e0e8fbfb32f034eef6dc3395bb3a0ded2eae165ddc"
+          },
+          "solver_stdout": {
+            "path": "cases/S5_D12_M2p02_base/bundle/solver_stdout.log",
+            "bytes": 18700,
+            "sha256": "0812a632c2d1703680dea111ac1122395d6eda6ef607f2d8e7d6a2a37244b24d"
+          },
+          "solver_stderr": {
+            "path": "cases/S5_D12_M2p02_base/bundle/solver_stderr.log",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "contract": {
+            "path": "cases/S5_D12_M2p02_base/bundle/S5_D12_M2p02_base_contract.vspaero",
+            "bytes": 847,
+            "sha256": "c9cef04e6a6986fdc87f07338e168dbf2ee17bdab3f5836b417ba6e6036ccb64"
+          },
+          "vspgeom": {
+            "path": "cases/S5_D12_M2p02_base/bundle/wing355_baseline.vspgeom",
+            "bytes": 224357,
+            "sha256": "9fcda6d5d45300fbb0e20257c9ddc80540b44f5064a9566089d7ef85f9018d8e"
+          },
+          "vkey": {
+            "path": "cases/S5_D12_M2p02_base/bundle/wing355_baseline.vkey",
+            "bytes": 376,
+            "sha256": "c4e7d13306451beae5ee991c6597f7c5c7e57ee949f75874ce0405d49f73c31b"
+          },
+          "csf": {
+            "path": "cases/S5_D12_M2p02_base/bundle/wing355_baseline.csf",
+            "bytes": 20,
+            "sha256": "bb29bf526f4379308ca9c271a8df90c39f4df4235f81f63e370f25e714bb797c"
+          },
+          "vsp3": {
+            "path": "cases/S5_D12_M2p02_base/bundle/wing355_baseline.vsp3",
+            "bytes": 111816,
+            "sha256": "9a788b467095b1a958a240eaa0132e922f667649e9212f9b19e4399bad14f27c"
+          },
+          "vspaero_model": {
+            "path": "cases/S5_D12_M2p02_base/bundle/wing355_baseline.vspaero",
+            "bytes": 847,
+            "sha256": "c9cef04e6a6986fdc87f07338e168dbf2ee17bdab3f5836b417ba6e6036ccb64"
+          }
+        }
+      },
+      "labels": {
+        "output_label": "VSPAERO_INTERNAL_ONLY",
+        "physical_validation": "NOT_VALIDATED",
+        "validated_fuel_label": false,
+        "body_correction_injected": false
+      },
+      "notes": [
+        "physical_validation=NOT_VALIDATED",
+        "VSPAERO_INTERNAL_ONLY",
+        "CDo/CDtot must not be used as validated drag or fuel objective",
+        "Ew is a derived ratio column; non-finite Ew allowed as WARNING per BATCH1B authorization"
+      ],
+      "per_case_budget": {
+        "starts_used_this_batch": 2,
+        "starts_used_after": 6,
+        "semantics": "final batch value",
+        "final_batch_starts_used": 2,
+        "final_batch_total_after": 6,
+        "note": "B1B-m03: S4's per-case budget field is a historical as-of-S4-completion snapshot (1 then / 5 total); the final batch totals are 2 starts / 6 total, identical in S5's field, batch_state.json and budget_ledger.json. results_summary.json is left as the historical execution record."
+      }
+    }
+  ]
+}

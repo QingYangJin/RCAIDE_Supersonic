@@ -1,0 +1,157 @@
+{
+  "schema_version": "d12d005-v1b-per-case-conclusions-1",
+  "run_id": "d12d005-20261104T0430Z",
+  "batch_id": "D-12D-005-BATCH1B",
+  "generated_utc": "2026-11-04T11:41:31Z",
+  "review_context": {
+    "a5_task_id": "task-125",
+    "verdict": "CHANGES_REQUESTED",
+    "review_received_after_execution": true,
+    "counts": {
+      "blocker": 0,
+      "major": 3,
+      "minor": 6
+    },
+    "review_file": "C:/Users/pc/AppData/Local/RCAIDE_Supersonic_agent_state/d12d005/a5/batch1b_review/batch1b_review.md"
+  },
+  "cases": [
+    {
+      "short_id": "S4",
+      "case_id": "S4_STD_M2p02_wn128",
+      "event_id": "NA-D12D005B-001",
+      "status": "SOLVED_VALID_WITH_DERIVED_WARNINGS",
+      "wall_seconds": 28.314,
+      "returncode": 0,
+      "primary": {
+        "CLtot": 0.074250958215,
+        "CDi": 0.002606535876,
+        "CDtot": 0.013789403504,
+        "E": 0.168318032003
+      },
+      "internal_consistency": {
+        "CLtot_minus_CLo_plus_CLi": 0.0,
+        "CDtot_minus_CDo_plus_CDi": 0.0,
+        "CLwtot_equals_CLo": true,
+        "CDwtot_equals_CDo": true,
+        "E_finite": true,
+        "Ew_nonfinite_expected": true,
+        "CLiw": 0.0,
+        "CDiw": 0.0,
+        "primary_all_finite": true
+      },
+      "history_iterations": 5,
+      "polar_sha256": "6a4ec6044690da049a1abbe65918bed0a1aab08573f30e9365a8bc117e13f637",
+      "history_sha256": "84aac09e15254dce6d79edb2634164df808a49881dfd1812b69fb355a475d16e",
+      "labels": [
+        "VSPAERO_INTERNAL_ONLY",
+        "NOT_VALIDATED"
+      ],
+      "conclusion": "S4 主系数全有限，内部一致性成立（CLtot=CLo+CLi、CDtot=CDo+CDi 及分量镜像关系均在 1e-12 内），history 5 次迭代后稳定；Ew=inf 仅为 CDiw=CLiw=0 的派生列 0/0 退化，不构成求解发散。单次运行，不作可重复性声明。"
+    },
+    {
+      "short_id": "S5",
+      "case_id": "S5_D12_M2p02_base",
+      "event_id": "NA-D12D005B-002",
+      "status": "SOLVED_VALID_WITH_DERIVED_WARNINGS",
+      "wall_seconds": 0.514,
+      "returncode": 0,
+      "primary": {
+        "CLtot": 0.070832611794,
+        "CDi": 0.002488240979,
+        "CDtot": 0.009796560997,
+        "E": 0.350730237755
+      },
+      "internal_consistency": {
+        "CLtot_minus_CLo_plus_CLi": -1.3877787807814457e-17,
+        "CDtot_minus_CDo_plus_CDi": 0.0,
+        "CLwtot_equals_CLo": true,
+        "CDwtot_equals_CDo": true,
+        "E_finite": true,
+        "Ew_nonfinite_expected": true,
+        "CLiw": 0.0,
+        "CDiw": 0.0,
+        "primary_all_finite": true
+      },
+      "history_iterations": 5,
+      "polar_sha256": "0ab0661fe9768625608d91529cc7c94d0ebc78529ba4fb252b094b572f4f512e",
+      "history_sha256": "712aff070cbff14fb838b8e0e8fbfb32f034eef6dc3395bb3a0ded2eae165ddc",
+      "labels": [
+        "VSPAERO_INTERNAL_ONLY",
+        "NOT_VALIDATED"
+      ],
+      "conclusion": "S5（12D 主翼 wing-only，Mach 2.02 基线）主系数全有限、内部一致性成立；Ew=inf 同为派生列 0/0。单次运行，不构成可重复性结论，也不构成物理验证。"
+    }
+  ],
+  "comparisons": {
+    "s4_vs_s3_single_factor_wake_nodes": {
+      "factor": "NumWakeNodes 8 -> 128, standard rectangular wing, Mach 2.02",
+      "reference": "A-batch S3 (not re-run in BATCH1B)",
+      "deltas_abs": {
+        "CLo": 2e-12,
+        "CLi": -7.357e-08,
+        "CLtot": -7.3568e-08,
+        "CDo": -7e-11,
+        "CDi": -4.351e-09,
+        "CDtot": -4.42e-09,
+        "CMytot": 4.6155e-08,
+        "E": -5.2601e-08
+      },
+      "note": "descriptive single-factor comparison, single run, not physical validation, no causality"
+    },
+    "s5_vs_s4_cross_geometry": {
+      "note": "cross-geometry and cross-Re comparison only; no single-factor attribution and no causality",
+      "raw": {
+        "CLtot": {
+          "s4_std_wing": 0.074250958215,
+          "s5_12d_wing": 0.070832611794,
+          "rel_diff_s5_vs_s4": -0.04603774150768381
+        },
+        "CDi": {
+          "s4_std_wing": 0.002606535876,
+          "s5_12d_wing": 0.002488240979,
+          "rel_diff_s5_vs_s4": -0.04538395120098474
+        },
+        "CDtot": {
+          "s4_std_wing": 0.013789403504,
+          "s5_12d_wing": 0.009796560997,
+          "rel_diff_s5_vs_s4": -0.2895587547236373
+        },
+        "CDo": {
+          "s4_std_wing": 0.011182867628,
+          "s5_12d_wing": 0.007308320018,
+          "rel_diff_s5_vs_s4": -0.34647174042360934
+        },
+        "E": {
+          "s4_std_wing": 0.168318032003,
+          "s5_12d_wing": 0.350730237755,
+          "rel_diff_s5_vs_s4": 1.0837353763068522
+        }
+      }
+    }
+  },
+  "conclusions": {
+    "S4": "内部一致、有限、5 次 wake 迭代稳定；仅 VSPAERO 内部量，physical_validation=NOT_VALIDATED。",
+    "S5": "12D 基线主系数有限、内部一致；仅 VSPAERO 内部量，physical_validation=NOT_VALIDATED。",
+    "S4_vs_S3": "单因素（NumWakeNodes 8->128）单次描述性差异：CLtot 绝对差 7.3568e-08（相对 -9.908e-07）、CLi 绝对差 7.357e-08（相对 -9.856e-07）、CDi -4.351e-09、CDtot -4.42e-09、CDo -7e-11；差异在数值噪声量级，不得外推为可重复性结论。",
+    "S5_vs_S4": "跨几何/跨 Re 描述性差异：CLtot -4.60%、CDo -34.65%、CDi -4.54%、CDtot -28.96%、E +108.37%；不构成因果归因。"
+  },
+  "claims_not_made": [
+    "no repeatability claim: exactly one run per case, no repeats",
+    "no physical validation claim: VSPAERO_INTERNAL_ONLY / physical_validation=NOT_VALIDATED",
+    "no validated fuel or drag objective claim (CDo/CDtot are internal VSPAERO quantities)",
+    "no LF-M2.02 gate change; no APPROVED_FOR_NEXT_STAGE",
+    "no body correction injection",
+    "no causality from S5-vs-S4 cross-geometry deltas"
+  ],
+  "limitations": [
+    "Two authorized BATCH1B starts only; S4 first then S5; no retries.",
+    "Ew is a derived ratio column; CDiw=CLiw=0 identically in both M2.02 solutions -> Ew = 0/0 = inf; allowed as PASS_WITH_WARNINGS per Lead authorization, primary coefficients all finite.",
+    "S3 reference values come from A-batch evidence/v1/per_case_conclusions.json (same VSPAERO binary, same contract); S3 was NOT re-run in BATCH1B.",
+    "S4 vs S3 is a single-factor comparison (NumWakeNodes 8 -> 128, standard rectangular wing, Mach 2.02).",
+    "S5 vs S4 is cross-geometry/cross-Re only; no single-factor attribution.",
+    "Single polar row per case (AoA=2 contract, frozen single-point); no repeat runs, no density sequence.",
+    "Thin VLM/VSPAERO has no thickness, viscosity or shock modelling; results are VSPAERO_INTERNAL_ONLY and physical_validation=NOT_VALIDATED.",
+    "Peak RSS sampled at 0.5 s; S5 0.514 s wall may under-sample true peak.",
+    "history iterations were counted directly from the .history file (5 each); the analysis JSON parser field is null because this VSPAERO 7.2.2 history header layout is not recognised by that parser (verify-history PASS is authoritative)."
+  ]
+}

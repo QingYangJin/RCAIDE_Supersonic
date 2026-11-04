@@ -1,0 +1,242 @@
+{
+  "schema_version": "d12d005-batch1b-corrections-1",
+  "run_id": "d12d005-20261104T0430Z",
+  "batch_id": "D-12D-005-BATCH1B",
+  "created_utc": "2026-11-04T11:41:31Z",
+  "generated_by": "A1 task-129 (zero-solver documentation/derived-data freeze; no raw evidence bytes changed)",
+  "review_context": {
+    "a5_task_id": "task-125",
+    "verdict": "CHANGES_REQUESTED",
+    "counts": {
+      "blocker": 0,
+      "major": 3,
+      "minor": 6
+    },
+    "received_after_execution": true,
+    "review_file": "C:/Users/pc/AppData/Local/RCAIDE_Supersonic_agent_state/d12d005/a5/batch1b_review/batch1b_review.md",
+    "major_closure": {
+      "B1B-M2": {
+        "finding": "evidence/v1b was untracked and had no data_manifest / case_summary / final_checks / per_case_conclusions",
+        "resolution": "CLOSED by this freeze package: scripts/freeze_v1b_evidence.py + evidence/v1b/data_manifest.json (dual raw/canonical-LF hashing, --verify replay from committed git blobs, fail closed) + case_summary.json + final_checks.json + per_case_conclusions.json + corrections/batch1b_corrections.json; v1b committed on top of 0e62db3.",
+        "status": "CLOSED"
+      }
+    }
+  },
+  "real_authorizations": {
+    "lead_task_id": "task-124",
+    "lead_authorized_utc": "2026-11-04T10:16:19Z",
+    "issue_comment": "6622447995",
+    "a5_pre_execution_task_id": "task-120",
+    "a5_pre_execution_verdict": "APPROVE_FOR_BATCH1B",
+    "a5_target_head": "0e62db3",
+    "a3_task_id": "task-121",
+    "a3_verdict": "PASS",
+    "a5_post_execution_task_id": "task-125",
+    "a5_post_execution_verdict": "CHANGES_REQUESTED",
+    "note": "task-111 and task-116 references in the pre-freeze documents were stale; the actual execution authorization is Lead task-124 based on task-120 APPROVE_FOR_BATCH1B and task-121 PASS. task-125 arrived after execution and is a post-hoc review."
+  },
+  "findings": [
+    {
+      "id": "B1B-m01",
+      "severity": "minor",
+      "finding": "batch1b_report.md claimed the main-coefficient differences were all <=5e-8, while its own table shows absolute differences of 7.357e-08 (CLi) / 7.3568e-08 (CLtot), relative 9.856e-07.",
+      "resolution": "Absolute and relative differences now stated explicitly, single-run descriptive wording; the <=5e-8 claim removed from the repo report, v1b README and the external batch1b report.",
+      "exact_values": {
+        "CLi": {
+          "abs_diff": -7.357e-08,
+          "rel_diff": -9.856441060662863e-07
+        },
+        "CLtot": {
+          "abs_diff": -7.3568e-08,
+          "rel_diff": -9.908010465426818e-07
+        },
+        "CDi": {
+          "abs_diff": -4.351e-09,
+          "rel_diff": -1.6692625553564866e-06
+        },
+        "CDtot": {
+          "abs_diff": -4.42e-09,
+          "rel_diff": -3.205358797162658e-07
+        },
+        "CDo": {
+          "abs_diff": -7e-11,
+          "rel_diff": -6.259575135649212e-09
+        }
+      },
+      "files_changed": [
+        "docs/reviews/d12d005_batch1_report_20261104.md",
+        "evidence/v1b/README.md",
+        "C:/Users/pc/AppData/Local/RCAIDE_Supersonic_agent_state/d12d005/batch1b/batch1b_report.md (external, not committed)"
+      ],
+      "verification": "exact values match results_summary.json deltas_s4_vs_s3_single_factor_wake_nodes and corrections_values.json",
+      "status": "CLOSED"
+    },
+    {
+      "id": "B1B-m02",
+      "severity": "minor",
+      "finding": "Wording contradicted itself: 'repeatable finite polar curve' vs 'single run'.",
+      "resolution": "All wording now states exactly one run per case: finite and internally consistent values in a single run, no repeatability claim.",
+      "exact_values": {
+        "runs_per_case": 1,
+        "repeatability_claim": false
+      },
+      "files_changed": [
+        "docs/reviews/d12d005_batch1_report_20261104.md",
+        "evidence/v1b/README.md",
+        "C:/Users/pc/AppData/Local/RCAIDE_Supersonic_agent_state/d12d005/batch1b/batch1b_report.md (external, not committed)"
+      ],
+      "verification": "per_case_conclusions.json claims_not_made includes 'no repeatability claim'",
+      "status": "CLOSED"
+    },
+    {
+      "id": "B1B-m03",
+      "severity": "minor",
+      "finding": "S4 per-case budget starts_used_this_batch=1 / starts_used_after=5 looked inconsistent with the final batch total 2/6.",
+      "resolution": "Definition documented rather than rewriting the historical results_summary.json: S4's field is an as-of-S4-completion snapshot; S5's field, batch_state.json and budget_ledger.json carry the final 2/6 totals.",
+      "exact_values": {
+        "S4_snapshot": {
+          "starts_used_this_batch": 1,
+          "starts_used_after": 5
+        },
+        "S5_final": {
+          "starts_used_this_batch": 2,
+          "starts_used_after": 6
+        },
+        "final_batch_total": {
+          "batch_cap_starts": 2,
+          "class_A_used_before": 4,
+          "class_A_total_after": 6,
+          "remaining": 14
+        }
+      },
+      "files_changed": [
+        "evidence/v1b/case_summary.json (derived, semantics only)",
+        "evidence/v1b/corrections/batch1b_corrections.json"
+      ],
+      "verification": "case_summary.per_case_budget / budget_semantics; counters in budget_ledger.json unchanged",
+      "status": "CLOSED"
+    },
+    {
+      "id": "B1B-m04",
+      "severity": "minor",
+      "finding": "Stale authorization text: batch1b_reauthorization.md line 7 said the authorization became effective after A5 task-111 APPROVE, while task-111 was actually CHANGES_REQUESTED; v1b/README.md section 2 referenced A5 task-116 revision 5 as passed while task-116 was CHANGES_REQUESTED.",
+      "resolution": "Replaced with the real authorizations: Lead task-124 written authorization effective 2026-11-04T10:16:19Z, A5 task-120 APPROVE_FOR_BATCH1B (target 0e62db3), A3 task-121 PASS; noted task-125 CHANGES_REQUESTED is a post-hoc review received after execution.",
+      "exact_values": {
+        "lead_task_id": "task-124",
+        "authorized_utc": "2026-11-04T10:16:19Z",
+        "issue_comment": "6622447995",
+        "a5_pre": {
+          "task_id": "task-120",
+          "verdict": "APPROVE_FOR_BATCH1B"
+        },
+        "a3_pre": {
+          "task_id": "task-121",
+          "verdict": "PASS"
+        },
+        "a5_post": {
+          "task_id": "task-125",
+          "verdict": "CHANGES_REQUESTED",
+          "timing": "post-hoc"
+        }
+      },
+      "files_changed": [
+        "evidence/lead/batch1b_reauthorization.md",
+        "evidence/v1b/README.md"
+      ],
+      "verification": "run_start.json authorization = {task_id: task-124, issue_comment: 6622447995, scope: 2 starts no retries}",
+      "status": "CLOSED"
+    },
+    {
+      "id": "B1B-m05",
+      "severity": "minor",
+      "finding": "s4_analysis.json / s5_analysis.json history_last_row and history_iterations were null, while the archived .history files contain 5 iterations.",
+      "resolution": "History fields populated from the archived .history files and reconciled with corrections_values.json (25 non-blank lines / 24 data-row field / 5 iteration rows); the external analysis JSON snapshots were not rewritten.",
+      "exact_values": {
+        "S4": {
+          "nonblank_lines": 25,
+          "data_rows_field": 24,
+          "iteration_rows": 5,
+          "last_iteration": 5,
+          "history_sha256": "84aac09e15254dce6d79edb2634164df808a49881dfd1812b69fb355a475d16e"
+        },
+        "S5": {
+          "nonblank_lines": 25,
+          "data_rows_field": 24,
+          "iteration_rows": 5,
+          "last_iteration": 5,
+          "history_sha256": "712aff070cbff14fb838b8e0e8fbfb32f034eef6dc3395bb3a0ded2eae165ddc"
+        }
+      },
+      "files_changed": [
+        "evidence/v1b/case_summary.json (derived)",
+        "evidence/v1b/per_case_conclusions.json (derived)",
+        "evidence/v1b/corrections/batch1b_corrections.json"
+      ],
+      "verification": "case_summary.history_semantics + final_checks.checks.history_rows; verify-history PASS",
+      "status": "CLOSED"
+    },
+    {
+      "id": "B1B-m06",
+      "severity": "minor",
+      "finding": "Ledger COMPLETED rows had stdout_sha256 null.",
+      "resolution": "Recomputed stdout sha256 from the archived bytes and reconciled in final_checks/case_summary/corrections; ledger.jsonl left byte-identical because it is raw execution evidence.",
+      "exact_values": {
+        "S4": {
+          "stdout_bytes": 21804,
+          "stdout_sha256": "76acc55efaf2cbbd96feed256aea278de29d1269e3362ae9bc6c7809e47605cb"
+        },
+        "S5": {
+          "stdout_bytes": 18700,
+          "stdout_sha256": "0812a632c2d1703680dea111ac1122395d6eda6ef607f2d8e7d6a2a37244b24d"
+        },
+        "ledger_left_unmodified": true
+      },
+      "files_changed": [
+        "evidence/v1b/final_checks.json (derived)",
+        "evidence/v1b/case_summary.json (derived)",
+        "evidence/v1b/corrections/batch1b_corrections.json"
+      ],
+      "verification": "final_checks.checks.stdout_sha256_reconciliation; values match corrections_values.json ledger_stdout_sha256_reconciliation",
+      "status": "CLOSED"
+    }
+  ],
+  "additional_documentation_fixes": [
+    {
+      "id": "FREEZE-LAYOUT",
+      "finding": "v1b README section 5 described case_summary.json inside cases/<case>/ and did not describe the frozen top-level summary layout.",
+      "resolution": "Documented the actual frozen layout: top-level case_summary.json / final_checks.json / per_case_conclusions.json / data_manifest.json / corrections/batch1b_corrections.json next to the raw cases/ tree.",
+      "files_changed": [
+        "evidence/v1b/README.md"
+      ],
+      "status": "CLOSED"
+    }
+  ],
+  "raw_evidence_untouched": {
+    "policy": "Only derived manifests/summaries/corrections added; solver outputs, ledger.jsonl, batch_state.json, budget_ledger.json, run_start.json and results_summary.json are not rewritten.",
+    "verified_stdout_sha256": {
+      "S4": "76acc55efaf2cbbd96feed256aea278de29d1269e3362ae9bc6c7809e47605cb",
+      "S5": "0812a632c2d1703680dea111ac1122395d6eda6ef607f2d8e7d6a2a37244b24d"
+    },
+    "verified_history_sha256": {
+      "S4": "84aac09e15254dce6d79edb2634164df808a49881dfd1812b69fb355a475d16e",
+      "S5": "712aff070cbff14fb838b8e0e8fbfb32f034eef6dc3395bb3a0ded2eae165ddc"
+    },
+    "verified_polar_sha256": {
+      "S4": "6a4ec6044690da049a1abbe65918bed0a1aab08573f30e9365a8bc117e13f637",
+      "S5": "0ab0661fe9768625608d91529cc7c94d0ebc78529ba4fb252b094b572f4f512e"
+    }
+  },
+  "files_added": [
+    "scripts/freeze_v1b_evidence.py",
+    "evidence/v1b/data_manifest.json",
+    "evidence/v1b/case_summary.json",
+    "evidence/v1b/final_checks.json",
+    "evidence/v1b/per_case_conclusions.json",
+    "evidence/v1b/corrections/batch1b_corrections.json"
+  ],
+  "files_edited": [
+    "docs/reviews/d12d005_batch1_report_20261104.md",
+    "evidence/v1b/README.md",
+    "evidence/lead/batch1b_reauthorization.md"
+  ]
+}

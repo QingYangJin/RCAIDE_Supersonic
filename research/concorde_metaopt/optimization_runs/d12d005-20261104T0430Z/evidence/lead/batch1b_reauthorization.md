@@ -3,8 +3,8 @@
 - 授权编号：D-12D-005-BATCH1B
 - 授权人：Lead（本文件即书面授权；后续 Issue 回执引用本文件路径与 sha256）
 - 授权时间：2026-11-04T16:00+08:00 左右（Asia/Shanghai；精确值见文件 mtime）
-- 依据：Issue #4 评论 6622447995（A 类 VSPAERO7-thin-LF，cap 20，本批 ≤6）；A5 task-110 verdict `CONTINUE_S4_S5`（0 blocker / 2 major / 3 minor，`STOP_CONFIRMED=false`）
-- 生效条件：**A5 delta 复核（task-111）对本修复（v2 rev3 + evidence revision 4）给出 APPROVE，且 A3 隔离复核 PASS 后**生效；若 A5 要求改动，本授权自动失效并在改动后重新签发。
+- 依据：Issue #4 评论 6622447995（A 类 VSPAERO7-thin-LF，cap 20，本批 2 次、A 类累计至多 6）；A5 task-110 verdict CONTINUE_S4_S5（0 blocker / 2 major / 3 minor，STOP_CONFIRMED=false）
+- 生效条件（**已满足并生效**）：Lead 书面授权 task-124（2026-11-04T10:16:19Z，Issue #4 评论 6622447995）、A5 task-120 对 target 0e62db3 判 APPROVE_FOR_BATCH1B（blocker 0 / major 0 / minor 3）、A3 task-121 PASS。旧文引用的 task-111/task-116 为过期文本，按 B1B-m04 更正；A5 task-125 对执行后 BATCH1B 的 CHANGES_REQUESTED 属 post-hoc 复核，处置见 evidence/v1b/corrections/batch1b_corrections.json。
 
 ## 1. 授权范围（严格）
 
@@ -16,8 +16,8 @@
 ## 2. 硬限制
 
 - 串行；≤4 核；≤16 GB RAM；单次启动 ≤900 s；轮次墙钟 ≤24 h（自授权生效起算）；仅本机；无付费云。
-- 每案启动前必须用 v2 rev3 runner `check-case-dir`（含 7 文件 bundle、vkey 绝对路径、17 字段回读、StopBeforeRun=1）得 `status=PASS`。
-- 每案启动后必须用 v2 rev3 `verify-polar`（`--expect <case>/expected.json --allow-nonfinite-derived`）与 `verify-history` 复核；任何主系数非有限/发散/负阻力按停止规则处理。
+- 每案启动前必须用 v2 rev5 runner（`d12d005-runner-5`）`check-case-dir`（含 7 文件 bundle、vkey 绝对路径、17 字段回读、StopBeforeRun=1）得 `status=PASS`。
+- 每案启动后必须用 v2 rev5 `verify-polar`（`--expect <case>/expected.json --allow-nonfinite-derived`）与 `verify-history` 复核；任何主系数非有限/发散/负阻力按停止规则处理。
 - 每案须由 A2 逐案记账（19 字段、append-only），并记录实际命令、SHA、wall time、RSS/CPU 观测。
 
 ## 3. 停止规则（按 A5 条件 ④ 修订）
