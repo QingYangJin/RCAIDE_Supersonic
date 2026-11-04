@@ -1,0 +1,4809 @@
+{
+  "archived_model": {
+    "candidates": [
+      "D:\\RCAIDE-d12d005-gen\\research\\concorde_metaopt\\optimization_runs\\d12d004-vspaero72-lf-20261102T0500Z\\evidence\\v0\\setup_gen\\wing355_baseline.vsp3",
+      "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\v1b\\cases\\S5_D12_M2p02_base\\bundle\\wing355_baseline.vsp3"
+    ],
+    "sha256": "9a788b467095b1a958a240eaa0132e922f667649e9212f9b19e4399bad14f27c"
+  },
+  "archived_thin_vspgeom": {
+    "d12_baseline": {
+      "name": "S5_D12_M2p02_base",
+      "sha256": "9fcda6d5d45300fbb0e20257c9ddc80540b44f5064a9566089d7ef85f9018d8e"
+    },
+    "std": {
+      "name": "S3_STD_M2p02_base",
+      "sha256": "8363f8fb209dd3120bbdf2e3766605b9405b97de0c7561b0be08c91c4cb8ebad"
+    }
+  },
+  "cases": [
+    {
+      "case_dir": "D:\\RCAIDE-d12d005-gen\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\a0v2\\setup_gen\\B2-01",
+      "case_id": "B2-01",
+      "contract": {
+        "AoA": 2.0,
+        "Beta": 0.0,
+        "Bref": 25.604638,
+        "Cref": 18.489893,
+        "FarDist": -1.0,
+        "Mach": 2.02,
+        "NumWakeNodes": 8,
+        "ReCref": 89397005.8767656,
+        "Rho": 0.1153178340089936,
+        "Sref": 358.25,
+        "Symmetry": 0,
+        "Vinf": 596.0373972278921,
+        "WakeIters": 5,
+        "WakeRelax": 1.0,
+        "X_cg": 16.821978259514246,
+        "Y_cg": 0.0,
+        "Z_cg": 0.0
+      },
+      "contract_setup": {
+        "bytes": 847,
+        "name": "B2-01_contract.vspaero",
+        "sha256": "c9cef04e6a6986fdc87f07338e168dbf2ee17bdab3f5836b417ba6e6036ccb64"
+      },
+      "csf": {
+        "bytes": 20,
+        "name": "wing355_baseline.csf",
+        "sha256": "bb29bf526f4379308ca9c271a8df90c39f4df4235f81f63e370f25e714bb797c"
+      },
+      "execution_bundle": {
+        "csf": "wing355_baseline.csf",
+        "model": "wing355_baseline.vsp3",
+        "note": "A2 执行时把 model.vsp3 + .vkey + .csf + contract.vspaero 复制到执行目录，并把 thin .vspgeom 从 external_path 复制为 <base>.vspgeom；随后把 .vkey 第 2 行改为该 .vspgeom 的绝对路径（D-12D-004 V1 根因修复），最后运行 vspaero.exe -omp 4 <base>",
+        "setup": "B2-01_contract.vspaero",
+        "vkey": "wing355_baseline.vkey",
+        "vspgeom_bytes": 89427,
+        "vspgeom_external_path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\d12d005-20261104T0430Z\\raw_artifacts\\a0v2_setup\\B2-01.vspgeom",
+        "vspgeom_sha256": "0db18500be51340aa200cd33c2a11dc8e8a09423fcf8349f34ab0ab84008dbed"
+      },
+      "expected_v2": {
+        "bytes": 1217,
+        "name": "expected_v2.json",
+        "sha256": "b8ae719e652a85ab432c5d3262fdf91e32cf6222264edcabd6c3a01ec25eafe5"
+      },
+      "files_in_case_dir": [
+        "B2-01_contract.vspaero",
+        "expected_v2.json",
+        "geom_result_thin.csv",
+        "wing355_baseline.csf",
+        "wing355_baseline.vkey",
+        "wing355_baseline.vsp3",
+        "wing355_baseline.vspaero"
+      ],
+      "geom_result_csv": {
+        "bytes": 372,
+        "name": "geom_result_thin.csv",
+        "sha256": "49f64517e44bcab6f303735629ab70abe9b1e767f51bf78b2304ff7fde9c9731"
+      },
+      "geom_result_csv_error": null,
+      "kind": "d12",
+      "model": {
+        "bytes": 111816,
+        "name": "wing355_baseline.vsp3",
+        "sha256": "f9d649f467a02ceda7efb2bf5857330c5bdc73250463c92b8916bce4b3919950"
+      },
+      "model_name": "wing355_baseline.vsp3",
+      "model_readback": {
+        "design_consistency": {
+          "checks": {
+            "area_m2": {
+              "error": 0.0,
+              "expected": 358.25000000000006,
+              "measured": 358.25000000000006,
+              "mode": "relative",
+              "status": "PASS",
+              "tolerance": 0.001
+            },
+            "chords_m[0]": {
+              "error": 0.0,
+              "expected": 29.901818514349216,
+              "measured": 29.901818514349216,
+              "mode": "relative",
+              "status": "PASS",
+              "tolerance": 0.001
+            },
+            "chords_m[1]": {
+              "error": 0.0,
+              "expected": 12.208434070312554,
+              "measured": 12.208434070312554,
+              "mode": "relative",
+              "status": "PASS",
+              "tolerance": 0.001
+            },
+            "chords_m[2]": {
+              "error": 0.0,
+              "expected": 3.892558930560952,
+              "measured": 3.892558930560952,
+              "mode": "relative",
+              "status": "PASS",
+              "tolerance": 0.001
+            },
+            "chords_m[3]": {
+              "error": 0.0,
+              "expected": 0.9731361054965724,
+              "measured": 0.9731361054965724,
+              "mode": "relative",
+              "status": "PASS",
+              "tolerance": 0.001
+            },
+            "mac_m": {
+              "error": 0.0,
+              "expected": 18.489892944055953,
+              "measured": 18.489892944055953,
+              "mode": "relative",
+              "status": "PASS",
+              "tolerance": 0.001
+            },
+            "qc_sweep_deg[0]": {
+              "error": 0.0,
+              "expected": 67.0,
+              "measured": 67.0,
+              "mode": "relative",
+              "status": "PASS",
+              "tolerance": 0.001
+            },
+            "qc_sweep_deg[1]": {
+              "error": 4.440892098500624e-16,
+              "expected": 48.0,
+              "measured": 48.00000000000002,
+              "mode": "relative",
+              "status": "PASS",
+              "tolerance": 0.001
+            },
+            "qc_sweep_deg[2]": {
+              "error": 2.0015288331270423e-16,
+              "expected": 71.0,
+              "measured": 71.00000000000001,
+              "mode": "relative",
+              "status": "PASS",
+              "tolerance": 0.001
+            },
+            "root_chord_m": {
+              "error": 0.0,
+              "expected": 29.901818514349216,
+              "measured": 29.901818514349216,
+              "mode": "relative",
+              "status": "PASS",
+              "tolerance": 0.001
+            },
+            "span_m": {
+              "error": 0.0,
+              "expected": 25.604638251691824,
+              "measured": 25.604638251691824,
+              "mode": "relative",
+              "status": "PASS",
+              "tolerance": 0.001
+            },
+            "tip_twist_deg": {
+              "error": 0.0,
+              "expected": 0.0,
+              "measured": 0.0,
+              "mode": "absolute",
+              "status": "PASS",
+              "tolerance": 1e-06
+            }
+          },
+          "failed": [],
+          "status": "PASS",
+          "tolerance": 0.001
+        },
+        "design_overrides": {},
+        "design_physical": {
+          "aspect_ratio": 1.83,
+          "chord_ratio_2": 0.408284,
+          "chord_ratio_3": 0.130178,
+          "span_location_2": 0.480469,
+          "span_location_3": 0.945313,
+          "sweep_1": 67.0,
+          "sweep_2": 48.0,
+          "sweep_3": 71.0,
+          "tip_twist": 0.0,
+          "vertical_tail_area": 33.91,
+          "vertical_tail_sweep_delta": 0.0,
+          "wing_area": 358.25
+        },
+        "geometry_expected": {
+          "area_m2": 358.25000000000006,
+          "chords_m": [
+            29.901818514349216,
+            12.208434070312554,
+            3.892558930560952,
+            0.9731361054965724
+          ],
+          "mac_m": 18.489892944055953,
+          "qc_sweep_deg": [
+            67.0,
+            48.0,
+            71.0
+          ],
+          "root_chord_m": 29.901818514349216,
+          "span_m": 25.604638251691824,
+          "tip_twist_deg": 0.0
+        },
+        "openvsp_request": {
+          "component": "main_wing",
+          "location": [
+            14.0,
+            0.0,
+            -0.8
+          ],
+          "section_count": 4,
+          "span_m": 25.604638251691824
+        },
+        "readback": {
+          "area_m2": 358.25000000000006,
+          "chords_m": [
+            29.901818514349216,
+            12.208434070312554,
+            3.892558930560952,
+            0.9731361054965724
+          ],
+          "le_sweep_deg": [
+            0.0,
+            71.98511412778159,
+            55.59071448860179,
+            75.78177618375872
+          ],
+          "mac_m": 18.489892944055953,
+          "qc_sweep_deg": [
+            67.0,
+            48.00000000000002,
+            71.00000000000001
+          ],
+          "root_chord_m": 29.901818514349216,
+          "root_chord_raw": [
+            29.901818514349216,
+            29.901818514349216,
+            12.208434070312554,
+            3.892558930560952
+          ],
+          "sect_tess_u": [
+            3.0,
+            3.0,
+            3.0,
+            3.0
+          ],
+          "semispan_m": 12.802319125845912,
+          "span_m": 25.604638251691824,
+          "tip_chord_raw": [
+            29.901818514349216,
+            12.208434070312554,
+            3.892558930560952,
+            0.9731361054965724
+          ],
+          "tip_twist_deg": 0.0,
+          "twists_deg": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "sect_tess_u_expected": [
+          3.0,
+          3.0,
+          3.0,
+          3.0
+        ],
+        "sect_tess_u_max_abs_error": 0.0,
+        "sect_tess_u_readback": [
+          3.0,
+          3.0,
+          3.0,
+          3.0
+        ],
+        "sect_tess_u_status": "PASS",
+        "std_wing_metrics": null,
+        "std_wing_metrics_expected": null
+      },
+      "note": "12D 主翼 thin 基线：每个 XSec SectTess_U=3（低密度）",
+      "raw_setup": {
+        "bytes": 930,
+        "name": "wing355_baseline.vspaero",
+        "sha256": "c862aa220bc6f3a9d057b2fbe99c4ed340591a14ad88f455d3d1b0ddbe7c1804"
+      },
+      "readback": {
+        "assertions": 17,
+        "bytes": 847,
+        "expected_source": "a0_generate_setups_v2.py:B2-01",
+        "fields_checked": [
+          {
+            "actual": 358.25,
+            "detail": "rel_delta=0.000e+00 tol=3.583e-07",
+            "expected": 358.25,
+            "field": "Sref",
+            "ok": true,
+            "spec": "rel:1e-09"
+          },
+          {
+            "actual": 18.489893,
+            "detail": "rel_delta=0.000e+00 tol=1.849e-08",
+            "expected": 18.489893,
+            "field": "Cref",
+            "ok": true,
+            "spec": "rel:1e-09"
+          },
+          {
+            "actual": 25.604638,
+            "detail": "rel_delta=0.000e+00 tol=2.560e-08",
+            "expected": 25.604638,
+            "field": "Bref",
+            "ok": true,
+            "spec": "rel:1e-09"
+          },
+          {
+            "actual": 16.821978259514246,
+            "detail": "abs_delta=0.000e+00 tol=1.000e-06",
+            "expected": 16.821978259514246,
+            "field": "X_cg",
+            "ok": true,
+            "spec": "abs:1e-06"
+          },
+          {
+            "actual": 0.0,
+            "detail": "abs_delta=0.000e+00 tol=1.000e-09",
+            "expected": 0.0,
+            "field": "Y_cg",
+            "ok": true,
+            "spec": "abs:1e-09"
+          },
+          {
+            "actual": 0.0,
+            "detail": "abs_delta=0.000e+00 tol=1.000e-06",
+            "expected": 0.0,
+            "field": "Z_cg",
+            "ok": true,
+            "spec": "abs:1e-06"
+          },
+          {
+            "actual": 2.02,
+            "detail": "rel_delta=0.000e+00 tol=2.020e-09",
+            "expected": 2.02,
+            "field": "Mach",
+            "ok": true,
+            "spec": "rel:1e-09"
+          },
+          {
+            "actual": 2.0,
+            "detail": "abs_delta=0.000e+00 tol=1.000e-09",
+            "expected": 2.0,
+            "field": "AoA",
+            "ok": true,
+            "spec": "abs:1e-09"
+          },
+          {
+            "actual": 0.0,
+            "detail": "abs_delta=0.000e+00 tol=1.000e-09",
+            "expected": 0.0,
+            "field": "Beta",
+            "ok": true,
+            "spec": "abs:1e-09"
+          },
+          {
+            "actual": 89397005.8767656,
+            "detail": "rel_delta=0.000e+00 tol=8.940e+01",
+            "expected": 89397005.8767656,
+            "field": "ReCref",
+            "ok": true,
+            "spec": "rel:1e-06"
+          },
+          {
+            "actual": 596.0373972278921,
+            "detail": "rel_delta=0.000e+00 tol=5.960e-07",
+            "expected": 596.0373972278921,
+            "field": "Vinf",
+            "ok": true,
+            "spec": "rel:1e-09"
+          },
+          {
+            "actual": 0.1153178340089936,
+            "detail": "rel_delta=0.000e+00 tol=1.000e-09",
+            "expected": 0.1153178340089936,
+            "field": "Rho",
+            "ok": true,
+            "spec": "rel:1e-09"
+          },
+          {
+            "actual": 0.0,
+            "detail": "exact ok",
+            "expected": 0.0,
+            "field": "Symmetry",
+            "ok": true,
+            "spec": "exact:0.0"
+          },
+          {
+            "actual": 8.0,
+            "detail": "exact ok",
+            "expected": 8.0,
+            "field": "NumWakeNodes",
+            "ok": true,
+            "spec": "exact:0.0"
+          },
+          {
+            "actual": 5.0,
+            "detail": "exact ok",
+            "expected": 5.0,
+            "field": "WakeIters",
+            "ok": true,
+            "spec": "exact:0.0"
+          },
+          {
+            "actual": 1.0,
+            "detail": "rel_delta=0.000e+00 tol=1.000e-09",
+            "expected": 1.0,
+            "field": "WakeRelax",
+            "ok": true,
+            "spec": "rel:1e-09"
+          },
+          {
+            "actual": -1.0,
+            "detail": "rel_delta=0.000e+00 tol=1.000e-09",
+            "expected": -1.0,
+            "field": "FarDist",
+            "ok": true,
+            "spec": "rel:1e-09"
+          }
+        ],
+        "has_equals_format": true,
+        "injected_from": "D:\\RCAIDE-d12d005-gen\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\a0v2\\setup_gen\\B2-01\\wing355_baseline.vspaero",
+        "legacy_lines": 0,
+        "legacy_lines_normalized": 0,
+        "line_count": 42,
+        "path": "D:\\RCAIDE-d12d005-gen\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\a0v2\\setup_gen\\B2-01\\B2-01_contract.vspaero",
+        "rewrite": {
+          "AoA": {
+            "legacy_converted": false,
+            "new": 2.0,
+            "old": "2",
+            "rewritten": true
+          },
+          "Beta": {
+            "legacy_converted": false,
+            "new": 0.0,
+            "old": "0",
+            "rewritten": true
+          },
+          "Bref": {
+            "legacy_converted": false,
+            "new": 25.604638,
+            "old": "25.604638000000001",
+            "rewritten": true
+          },
+          "Cref": {
+            "legacy_converted": false,
+            "new": 18.489893,
+            "old": "18.489892999999999",
+            "rewritten": true
+          },
+          "FarDist": {
+            "legacy_converted": false,
+            "new": -1.0,
+            "old": "-1",
+            "rewritten": true
+          },
+          "Mach": {
+            "legacy_converted": false,
+            "new": 2.02,
+            "old": "2.02",
+            "rewritten": true
+          },
+          "NumWakeNodes": {
+            "legacy_converted": false,
+            "new": 8,
+            "old": "8",
+            "rewritten": true
+          },
+          "ReCref": {
+            "legacy_converted": false,
+            "new": 89397005.8767656,
+            "old": "10000000",
+            "rewritten": true
+          },
+          "Rho": {
+            "legacy_converted": false,
+            "new": 0.1153178340089936,
+            "old": "0.0023770000000000002",
+            "rewritten": true
+          },
+          "Sref": {
+            "legacy_converted": false,
+            "new": 358.25,
+            "old": "358.25",
+            "rewritten": true
+          },
+          "Symmetry": {
+            "legacy_converted": false,
+            "new": 0,
+            "old": "0",
+            "rewritten": true
+          },
+          "Vinf": {
+            "legacy_converted": false,
+            "new": 596.0373972278921,
+            "old": "100",
+            "rewritten": true
+          },
+          "WakeIters": {
+            "legacy_converted": false,
+            "new": 5,
+            "old": "5",
+            "rewritten": true
+          },
+          "WakeRelax": {
+            "legacy_converted": false,
+            "new": 1.0,
+            "old": "1",
+            "rewritten": true
+          },
+          "X_cg": {
+            "legacy_converted": false,
+            "new": 16.821978259514246,
+            "old": "16.821978259514246",
+            "rewritten": true
+          },
+          "Y_cg": {
+            "legacy_converted": false,
+            "new": 0.0,
+            "old": "0",
+            "rewritten": true
+          },
+          "Z_cg": {
+            "legacy_converted": false,
+            "new": 0.0,
+            "old": "0",
+            "rewritten": true
+          }
+        },
+        "sha256": "c9cef04e6a6986fdc87f07338e168dbf2ee17bdab3f5836b417ba6e6036ccb64",
+        "source": "D:\\RCAIDE-d12d005-gen\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\a0v2\\setup_gen\\B2-01\\B2-01_contract.vspaero",
+        "status": "PASS",
+        "target_sha256": "c9cef04e6a6986fdc87f07338e168dbf2ee17bdab3f5836b417ba6e6036ccb64",
+        "vector_rows": 1
+      },
+      "readback_assertions": 17,
+      "readback_status": "PASS",
+      "repeat_of": null,
+      "results": {
+        "geom_result_id": "KGEWIPE",
+        "stop_before_run_readback": 1,
+        "sweep_result_id": ""
+      },
+      "solver_artifacts_present": [],
+      "thin_geometry": {
+        "bytes": 89427,
+        "external_path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\d12d005-20261104T0430Z\\raw_artifacts\\a0v2_setup\\B2-01.vspgeom",
+        "local_copy": "D:\\RCAIDE-d12d005-gen\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\a0v2\\setup_gen\\B2-01\\wing355_baseline.vspgeom",
+        "local_copy_removed": true,
+        "name": "B2-01.vspgeom",
+        "outside_git": true,
+        "sha256": "0db18500be51340aa200cd33c2a11dc8e8a09423fcf8349f34ab0ab84008dbed"
+      },
+      "vkey": {
+        "bytes": 379,
+        "name": "wing355_baseline.vkey",
+        "sha256": "fab5371ac4147bf82570973284ab62c0c0aee23ff810710d057b21fff069c2be"
+      }
+    },
+    {
+      "case_dir": "D:\\RCAIDE-d12d005-gen\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\a0v2\\setup_gen\\B2-02",
+      "case_id": "B2-02",
+      "contract": {
+        "AoA": 2.0,
+        "Beta": 0.0,
+        "Bref": 25.604638,
+        "Cref": 18.489893,
+        "FarDist": -1.0,
+        "Mach": 2.02,
+        "NumWakeNodes": 8,
+        "ReCref": 89397005.8767656,
+        "Rho": 0.1153178340089936,
+        "Sref": 358.25,
+        "Symmetry": 0,
+        "Vinf": 596.0373972278921,
+        "WakeIters": 5,
+        "WakeRelax": 1.0,
+        "X_cg": 16.821978259514246,
+        "Y_cg": 0.0,
+        "Z_cg": 0.0
+      },
+      "contract_setup": {
+        "bytes": 847,
+        "name": "B2-02_contract.vspaero",
+        "sha256": "c9cef04e6a6986fdc87f07338e168dbf2ee17bdab3f5836b417ba6e6036ccb64"
+      },
+      "csf": {
+        "bytes": 20,
+        "name": "wing355_baseline.csf",
+        "sha256": "bb29bf526f4379308ca9c271a8df90c39f4df4235f81f63e370f25e714bb797c"
+      },
+      "execution_bundle": {
+        "csf": "wing355_baseline.csf",
+        "model": "wing355_baseline.vsp3",
+        "note": "A2 执行时把 model.vsp3 + .vkey + .csf + contract.vspaero 复制到执行目录，并把 thin .vspgeom 从 external_path 复制为 <base>.vspgeom；随后把 .vkey 第 2 行改为该 .vspgeom 的绝对路径（D-12D-004 V1 根因修复），最后运行 vspaero.exe -omp 4 <base>",
+        "setup": "B2-02_contract.vspaero",
+        "vkey": "wing355_baseline.vkey",
+        "vspgeom_bytes": 224357,
+        "vspgeom_external_path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\d12d005-20261104T0430Z\\raw_artifacts\\a0v2_setup\\B2-02.vspgeom",
+        "vspgeom_sha256": "9fcda6d5d45300fbb0e20257c9ddc80540b44f5064a9566089d7ef85f9018d8e"
+      },
+      "expected_v2": {
+        "bytes": 1227,
+        "name": "expected_v2.json",
+        "sha256": "b569cdd4d9ebc5ea16125d127cc4bbd601b1d7b1a2e1dc5affec21602dc473a2"
+      },
+      "files_in_case_dir": [
+        "B2-02_contract.vspaero",
+        "expected_v2.json",
+        "geom_result_thin.csv",
+        "wing355_baseline.csf",
+        "wing355_baseline.vkey",
+        "wing355_baseline.vsp3",
+        "wing355_baseline.vspaero"
+      ],
+      "geom_result_csv": {
+        "bytes": 372,
+        "name": "geom_result_thin.csv",
+        "sha256": "c7212b295a78aa4c97b16c78fe3cb8df6cc0ad2bf0a1cfa30fdcc9c93cfb69e3"
+      },
+      "geom_result_csv_error": null,
+      "kind": "d12",
+      "model": {
+        "bytes": 111816,
+        "name": "wing355_baseline.vsp3",
+        "sha256": "9ad40dc1490fa936748a71a8127f0a56cf58db6700dd43ad304454c6e73ccc31"
+      },
+      "model_name": "wing355_baseline.vsp3",
+      "model_readback": {
+        "design_consistency": {
+          "checks": {
+            "area_m2": {
+              "error": 0.0,
+              "expected": 358.25000000000006,
+              "measured": 358.25000000000006,
+              "mode": "relative",
+              "status": "PASS",
+              "tolerance": 0.001
+            },
+            "chords_m[0]": {
+              "error": 0.0,
+              "expected": 29.901818514349216,
+              "measured": 29.901818514349216,
+              "mode": "relative",
+              "status": "PASS",
+              "tolerance": 0.001
+            },
+            "chords_m[1]": {
+              "error": 0.0,
+              "expected": 12.208434070312554,
+              "measured": 12.208434070312554,
+              "mode": "relative",
+              "status": "PASS",
+              "tolerance": 0.001
+            },
+            "chords_m[2]": {
+              "error": 0.0,
+              "expected": 3.892558930560952,
+              "measured": 3.892558930560952,
+              "mode": "relative",
+              "status": "PASS",
+              "tolerance": 0.001
+            },
+            "chords_m[3]": {
+              "error": 0.0,
+              "expected": 0.9731361054965724,
+              "measured": 0.9731361054965724,
+              "mode": "relative",
+              "status": "PASS",
+              "tolerance": 0.001
+            },
+            "mac_m": {
+              "error": 0.0,
+              "expected": 18.489892944055953,
+              "measured": 18.489892944055953,
+              "mode": "relative",
+              "status": "PASS",
+              "tolerance": 0.001
+            },
+            "qc_sweep_deg[0]": {
+              "error": 0.0,
+              "expected": 67.0,
+              "measured": 67.0,
+              "mode": "relative",
+              "status": "PASS",
+              "tolerance": 0.001
+            },
+            "qc_sweep_deg[1]": {
+              "error": 4.440892098500624e-16,
+              "expected": 48.0,
+              "measured": 48.00000000000002,
+              "mode": "relative",
+              "status": "PASS",
+              "tolerance": 0.001
+            },
+            "qc_sweep_deg[2]": {
+              "error": 2.0015288331270423e-16,
+              "expected": 71.0,
+              "measured": 71.00000000000001,
+              "mode": "relative",
+              "status": "PASS",
+              "tolerance": 0.001
+            },
+            "root_chord_m": {
+              "error": 0.0,
+              "expected": 29.901818514349216,
+              "measured": 29.901818514349216,
+              "mode": "relative",
+              "status": "PASS",
+              "tolerance": 0.001
+            },
+            "span_m": {
+              "error": 0.0,
+              "expected": 25.604638251691824,
+              "measured": 25.604638251691824,
+              "mode": "relative",
+              "status": "PASS",
+              "tolerance": 0.001
+            },
+            "tip_twist_deg": {
+              "error": 0.0,
+              "expected": 0.0,
+              "measured": 0.0,
+              "mode": "absolute",
+              "status": "PASS",
+              "tolerance": 1e-06
+            }
+          },
+          "failed": [],
+          "status": "PASS",
+          "tolerance": 0.001
+        },
+        "design_overrides": {},
+        "design_physical": {
+          "aspect_ratio": 1.83,
+          "chord_ratio_2": 0.408284,
+          "chord_ratio_3": 0.130178,
+          "span_location_2": 0.480469,
+          "span_location_3": 0.945313,
+          "sweep_1": 67.0,
+          "sweep_2": 48.0,
+          "sweep_3": 71.0,
+          "tip_twist": 0.0,
+          "vertical_tail_area": 33.91,
+          "vertical_tail_sweep_delta": 0.0,
+          "wing_area": 358.25
+        },
+        "geometry_expected": {
+          "area_m2": 358.25000000000006,
+          "chords_m": [
+            29.901818514349216,
+            12.208434070312554,
+            3.892558930560952,
+            0.9731361054965724
+          ],
+          "mac_m": 18.489892944055953,
+          "qc_sweep_deg": [
+            67.0,
+            48.0,
+            71.0
+          ],
+          "root_chord_m": 29.901818514349216,
+          "span_m": 25.604638251691824,
+          "tip_twist_deg": 0.0
+        },
+        "openvsp_request": {
+          "component": "main_wing",
+          "location": [
+            14.0,
+            0.0,
+            -0.8
+          ],
+          "section_count": 4,
+          "span_m": 25.604638251691824
+        },
+        "readback": {
+          "area_m2": 358.25000000000006,
+          "chords_m": [
+            29.901818514349216,
+            12.208434070312554,
+            3.892558930560952,
+            0.9731361054965724
+          ],
+          "le_sweep_deg": [
+            0.0,
+            71.98511412778159,
+            55.59071448860179,
+            75.78177618375872
+          ],
+          "mac_m": 18.489892944055953,
+          "qc_sweep_deg": [
+            67.0,
+            48.00000000000002,
+            71.00000000000001
+          ],
+          "root_chord_m": 29.901818514349216,
+          "root_chord_raw": [
+            29.901818514349216,
+            29.901818514349216,
+            12.208434070312554,
+            3.892558930560952
+          ],
+          "sect_tess_u": [
+            6.0,
+            6.0,
+            6.0,
+            6.0
+          ],
+          "semispan_m": 12.802319125845912,
+          "span_m": 25.604638251691824,
+          "tip_chord_raw": [
+            29.901818514349216,
+            12.208434070312554,
+            3.892558930560952,
+            0.9731361054965724
+          ],
+          "tip_twist_deg": 0.0,
+          "twists_deg": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "sect_tess_u_expected": [
+          6.0,
+          6.0,
+          6.0,
+          6.0
+        ],
+        "sect_tess_u_max_abs_error": 0.0,
+        "sect_tess_u_readback": [
+          6.0,
+          6.0,
+          6.0,
+          6.0
+        ],
+        "sect_tess_u_status": "PASS",
+        "std_wing_metrics": null,
+        "std_wing_metrics_expected": null
+      },
+      "note": "12D 主翼 thin 基线：每个 XSec SectTess_U=6（与 v1 S5 同密度）",
+      "raw_setup": {
+        "bytes": 930,
+        "name": "wing355_baseline.vspaero",
+        "sha256": "c862aa220bc6f3a9d057b2fbe99c4ed340591a14ad88f455d3d1b0ddbe7c1804"
+      },
+      "readback": {
+        "assertions": 17,
+        "bytes": 847,
+        "expected_source": "a0_generate_setups_v2.py:B2-02",
+        "fields_checked": [
+          {
+            "actual": 358.25,
+            "detail": "rel_delta=0.000e+00 tol=3.583e-07",
+            "expected": 358.25,
+            "field": "Sref",
+            "ok": true,
+            "spec": "rel:1e-09"
+          },
+          {
+            "actual": 18.489893,
+            "detail": "rel_delta=0.000e+00 tol=1.849e-08",
+            "expected": 18.489893,
+            "field": "Cref",
+            "ok": true,
+            "spec": "rel:1e-09"
+          },
+          {
+            "actual": 25.604638,
+            "detail": "rel_delta=0.000e+00 tol=2.560e-08",
+            "expected": 25.604638,
+            "field": "Bref",
+            "ok": true,
+            "spec": "rel:1e-09"
+          },
+          {
+            "actual": 16.821978259514246,
+            "detail": "abs_delta=0.000e+00 tol=1.000e-06",
+            "expected": 16.821978259514246,
+            "field": "X_cg",
+            "ok": true,
+            "spec": "abs:1e-06"
+          },
+          {
+            "actual": 0.0,
+            "detail": "abs_delta=0.000e+00 tol=1.000e-09",
+            "expected": 0.0,
+            "field": "Y_cg",
+            "ok": true,
+            "spec": "abs:1e-09"
+          },
+          {
+            "actual": 0.0,
+            "detail": "abs_delta=0.000e+00 tol=1.000e-06",
+            "expected": 0.0,
+            "field": "Z_cg",
+            "ok": true,
+            "spec": "abs:1e-06"
+          },
+          {
+            "actual": 2.02,
+            "detail": "rel_delta=0.000e+00 tol=2.020e-09",
+            "expected": 2.02,
+            "field": "Mach",
+            "ok": true,
+            "spec": "rel:1e-09"
+          },
+          {
+            "actual": 2.0,
+            "detail": "abs_delta=0.000e+00 tol=1.000e-09",
+            "expected": 2.0,
+            "field": "AoA",
+            "ok": true,
+            "spec": "abs:1e-09"
+          },
+          {
+            "actual": 0.0,
+            "detail": "abs_delta=0.000e+00 tol=1.000e-09",
+            "expected": 0.0,
+            "field": "Beta",
+            "ok": true,
+            "spec": "abs:1e-09"
+          },
+          {
+            "actual": 89397005.8767656,
+            "detail": "rel_delta=0.000e+00 tol=8.940e+01",
+            "expected": 89397005.8767656,
+            "field": "ReCref",
+            "ok": true,
+            "spec": "rel:1e-06"
+          },
+          {
+            "actual": 596.0373972278921,
+            "detail": "rel_delta=0.000e+00 tol=5.960e-07",
+            "expected": 596.0373972278921,
+            "field": "Vinf",
+            "ok": true,
+            "spec": "rel:1e-09"
+          },
+          {
+            "actual": 0.1153178340089936,
+            "detail": "rel_delta=0.000e+00 tol=1.000e-09",
+            "expected": 0.1153178340089936,
+            "field": "Rho",
+            "ok": true,
+            "spec": "rel:1e-09"
+          },
+          {
+            "actual": 0.0,
+            "detail": "exact ok",
+            "expected": 0.0,
+            "field": "Symmetry",
+            "ok": true,
+            "spec": "exact:0.0"
+          },
+          {
+            "actual": 8.0,
+            "detail": "exact ok",
+            "expected": 8.0,
+            "field": "NumWakeNodes",
+            "ok": true,
+            "spec": "exact:0.0"
+          },
+          {
+            "actual": 5.0,
+            "detail": "exact ok",
+            "expected": 5.0,
+            "field": "WakeIters",
+            "ok": true,
+            "spec": "exact:0.0"
+          },
+          {
+            "actual": 1.0,
+            "detail": "rel_delta=0.000e+00 tol=1.000e-09",
+            "expected": 1.0,
+            "field": "WakeRelax",
+            "ok": true,
+            "spec": "rel:1e-09"
+          },
+          {
+            "actual": -1.0,
+            "detail": "rel_delta=0.000e+00 tol=1.000e-09",
+            "expected": -1.0,
+            "field": "FarDist",
+            "ok": true,
+            "spec": "rel:1e-09"
+          }
+        ],
+        "has_equals_format": true,
+        "injected_from": "D:\\RCAIDE-d12d005-gen\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\a0v2\\setup_gen\\B2-02\\wing355_baseline.vspaero",
+        "legacy_lines": 0,
+        "legacy_lines_normalized": 0,
+        "line_count": 42,
+        "path": "D:\\RCAIDE-d12d005-gen\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\a0v2\\setup_gen\\B2-02\\B2-02_contract.vspaero",
+        "rewrite": {
+          "AoA": {
+            "legacy_converted": false,
+            "new": 2.0,
+            "old": "2",
+            "rewritten": true
+          },
+          "Beta": {
+            "legacy_converted": false,
+            "new": 0.0,
+            "old": "0",
+            "rewritten": true
+          },
+          "Bref": {
+            "legacy_converted": false,
+            "new": 25.604638,
+            "old": "25.604638000000001",
+            "rewritten": true
+          },
+          "Cref": {
+            "legacy_converted": false,
+            "new": 18.489893,
+            "old": "18.489892999999999",
+            "rewritten": true
+          },
+          "FarDist": {
+            "legacy_converted": false,
+            "new": -1.0,
+            "old": "-1",
+            "rewritten": true
+          },
+          "Mach": {
+            "legacy_converted": false,
+            "new": 2.02,
+            "old": "2.02",
+            "rewritten": true
+          },
+          "NumWakeNodes": {
+            "legacy_converted": false,
+            "new": 8,
+            "old": "8",
+            "rewritten": true
+          },
+          "ReCref": {
+            "legacy_converted": false,
+            "new": 89397005.8767656,
+            "old": "10000000",
+            "rewritten": true
+          },
+          "Rho": {
+            "legacy_converted": false,
+            "new": 0.1153178340089936,
+            "old": "0.0023770000000000002",
+            "rewritten": true
+          },
+          "Sref": {
+            "legacy_converted": false,
+            "new": 358.25,
+            "old": "358.25",
+            "rewritten": true
+          },
+          "Symmetry": {
+            "legacy_converted": false,
+            "new": 0,
+            "old": "0",
+            "rewritten": true
+          },
+          "Vinf": {
+            "legacy_converted": false,
+            "new": 596.0373972278921,
+            "old": "100",
+            "rewritten": true
+          },
+          "WakeIters": {
+            "legacy_converted": false,
+            "new": 5,
+            "old": "5",
+            "rewritten": true
+          },
+          "WakeRelax": {
+            "legacy_converted": false,
+            "new": 1.0,
+            "old": "1",
+            "rewritten": true
+          },
+          "X_cg": {
+            "legacy_converted": false,
+            "new": 16.821978259514246,
+            "old": "16.821978259514246",
+            "rewritten": true
+          },
+          "Y_cg": {
+            "legacy_converted": false,
+            "new": 0.0,
+            "old": "0",
+            "rewritten": true
+          },
+          "Z_cg": {
+            "legacy_converted": false,
+            "new": 0.0,
+            "old": "0",
+            "rewritten": true
+          }
+        },
+        "sha256": "c9cef04e6a6986fdc87f07338e168dbf2ee17bdab3f5836b417ba6e6036ccb64",
+        "source": "D:\\RCAIDE-d12d005-gen\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\a0v2\\setup_gen\\B2-02\\B2-02_contract.vspaero",
+        "status": "PASS",
+        "target_sha256": "c9cef04e6a6986fdc87f07338e168dbf2ee17bdab3f5836b417ba6e6036ccb64",
+        "vector_rows": 1
+      },
+      "readback_assertions": 17,
+      "readback_status": "PASS",
+      "repeat_of": null,
+      "results": {
+        "geom_result_id": "MLNAWPE",
+        "stop_before_run_readback": 1,
+        "sweep_result_id": ""
+      },
+      "solver_artifacts_present": [],
+      "thin_geometry": {
+        "bytes": 224357,
+        "external_path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\d12d005-20261104T0430Z\\raw_artifacts\\a0v2_setup\\B2-02.vspgeom",
+        "local_copy": "D:\\RCAIDE-d12d005-gen\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\a0v2\\setup_gen\\B2-02\\wing355_baseline.vspgeom",
+        "local_copy_removed": true,
+        "name": "B2-02.vspgeom",
+        "outside_git": true,
+        "sha256": "9fcda6d5d45300fbb0e20257c9ddc80540b44f5064a9566089d7ef85f9018d8e"
+      },
+      "vkey": {
+        "bytes": 379,
+        "name": "wing355_baseline.vkey",
+        "sha256": "ca03b8b8d1119d2f68a0568f1cba9e40ee4d02a40be0ec27909feb7d5dcede10"
+      }
+    },
+    {
+      "case_dir": "D:\\RCAIDE-d12d005-gen\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\a0v2\\setup_gen\\B2-03",
+      "case_id": "B2-03",
+      "contract": {
+        "AoA": 2.0,
+        "Beta": 0.0,
+        "Bref": 25.604638,
+        "Cref": 18.489893,
+        "FarDist": -1.0,
+        "Mach": 2.02,
+        "NumWakeNodes": 8,
+        "ReCref": 89397005.8767656,
+        "Rho": 0.1153178340089936,
+        "Sref": 358.25,
+        "Symmetry": 0,
+        "Vinf": 596.0373972278921,
+        "WakeIters": 5,
+        "WakeRelax": 1.0,
+        "X_cg": 16.821978259514246,
+        "Y_cg": 0.0,
+        "Z_cg": 0.0
+      },
+      "contract_setup": {
+        "bytes": 847,
+        "name": "B2-03_contract.vspaero",
+        "sha256": "c9cef04e6a6986fdc87f07338e168dbf2ee17bdab3f5836b417ba6e6036ccb64"
+      },
+      "csf": {
+        "bytes": 20,
+        "name": "wing355_baseline.csf",
+        "sha256": "bb29bf526f4379308ca9c271a8df90c39f4df4235f81f63e370f25e714bb797c"
+      },
+      "execution_bundle": {
+        "csf": "wing355_baseline.csf",
+        "model": "wing355_baseline.vsp3",
+        "note": "A2 执行时把 model.vsp3 + .vkey + .csf + contract.vspaero 复制到执行目录，并把 thin .vspgeom 从 external_path 复制为 <base>.vspgeom；随后把 .vkey 第 2 行改为该 .vspgeom 的绝对路径（D-12D-004 V1 根因修复），最后运行 vspaero.exe -omp 4 <base>",
+        "setup": "B2-03_contract.vspaero",
+        "vkey": "wing355_baseline.vkey",
+        "vspgeom_bytes": 495690,
+        "vspgeom_external_path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\d12d005-20261104T0430Z\\raw_artifacts\\a0v2_setup\\B2-03.vspgeom",
+        "vspgeom_sha256": "d071b05feb499931ec2022b19787047adb34dcc27693466c57b4baf777c981d3"
+      },
+      "expected_v2": {
+        "bytes": 1218,
+        "name": "expected_v2.json",
+        "sha256": "9fba8d79cadd70eb7a1adc09c92bf191a0afb9c283a5be2f40a2590adb8e7df0"
+      },
+      "files_in_case_dir": [
+        "B2-03_contract.vspaero",
+        "expected_v2.json",
+        "geom_result_thin.csv",
+        "wing355_baseline.csf",
+        "wing355_baseline.vkey",
+        "wing355_baseline.vsp3",
+        "wing355_baseline.vspaero"
+      ],
+      "geom_result_csv": {
+        "bytes": 372,
+        "name": "geom_result_thin.csv",
+        "sha256": "6f2bc69cf444831cc0df5baaeca0508fe4e29bec4b62b0d99c7d03bd04bd4f20"
+      },
+      "geom_result_csv_error": null,
+      "kind": "d12",
+      "model": {
+        "bytes": 111816,
+        "name": "wing355_baseline.vsp3",
+        "sha256": "ec16aeeafdaecd91fd091a687d5c53dca341a3a4af2330d4e50d46fc47a58583"
+      },
+      "model_name": "wing355_baseline.vsp3",
+      "model_readback": {
+        "design_consistency": {
+          "checks": {
+            "area_m2": {
+              "error": 0.0,
+              "expected": 358.25000000000006,
+              "measured": 358.25000000000006,
+              "mode": "relative",
+              "status": "PASS",
+              "tolerance": 0.001
+            },
+            "chords_m[0]": {
+              "error": 0.0,
+              "expected": 29.901818514349216,
+              "measured": 29.901818514349216,
+              "mode": "relative",
+              "status": "PASS",
+              "tolerance": 0.001
+            },
+            "chords_m[1]": {
+              "error": 0.0,
+              "expected": 12.208434070312554,
+              "measured": 12.208434070312554,
+              "mode": "relative",
+              "status": "PASS",
+              "tolerance": 0.001
+            },
+            "chords_m[2]": {
+              "error": 0.0,
+              "expected": 3.892558930560952,
+              "measured": 3.892558930560952,
+              "mode": "relative",
+              "status": "PASS",
+              "tolerance": 0.001
+            },
+            "chords_m[3]": {
+              "error": 0.0,
+              "expected": 0.9731361054965724,
+              "measured": 0.9731361054965724,
+              "mode": "relative",
+              "status": "PASS",
+              "tolerance": 0.001
+            },
+            "mac_m": {
+              "error": 0.0,
+              "expected": 18.489892944055953,
+              "measured": 18.489892944055953,
+              "mode": "relative",
+              "status": "PASS",
+              "tolerance": 0.001
+            },
+            "qc_sweep_deg[0]": {
+              "error": 0.0,
+              "expected": 67.0,
+              "measured": 67.0,
+              "mode": "relative",
+              "status": "PASS",
+              "tolerance": 0.001
+            },
+            "qc_sweep_deg[1]": {
+              "error": 4.440892098500624e-16,
+              "expected": 48.0,
+              "measured": 48.00000000000002,
+              "mode": "relative",
+              "status": "PASS",
+              "tolerance": 0.001
+            },
+            "qc_sweep_deg[2]": {
+              "error": 2.0015288331270423e-16,
+              "expected": 71.0,
+              "measured": 71.00000000000001,
+              "mode": "relative",
+              "status": "PASS",
+              "tolerance": 0.001
+            },
+            "root_chord_m": {
+              "error": 0.0,
+              "expected": 29.901818514349216,
+              "measured": 29.901818514349216,
+              "mode": "relative",
+              "status": "PASS",
+              "tolerance": 0.001
+            },
+            "span_m": {
+              "error": 0.0,
+              "expected": 25.604638251691824,
+              "measured": 25.604638251691824,
+              "mode": "relative",
+              "status": "PASS",
+              "tolerance": 0.001
+            },
+            "tip_twist_deg": {
+              "error": 0.0,
+              "expected": 0.0,
+              "measured": 0.0,
+              "mode": "absolute",
+              "status": "PASS",
+              "tolerance": 1e-06
+            }
+          },
+          "failed": [],
+          "status": "PASS",
+          "tolerance": 0.001
+        },
+        "design_overrides": {},
+        "design_physical": {
+          "aspect_ratio": 1.83,
+          "chord_ratio_2": 0.408284,
+          "chord_ratio_3": 0.130178,
+          "span_location_2": 0.480469,
+          "span_location_3": 0.945313,
+          "sweep_1": 67.0,
+          "sweep_2": 48.0,
+          "sweep_3": 71.0,
+          "tip_twist": 0.0,
+          "vertical_tail_area": 33.91,
+          "vertical_tail_sweep_delta": 0.0,
+          "wing_area": 358.25
+        },
+        "geometry_expected": {
+          "area_m2": 358.25000000000006,
+          "chords_m": [
+            29.901818514349216,
+            12.208434070312554,
+            3.892558930560952,
+            0.9731361054965724
+          ],
+          "mac_m": 18.489892944055953,
+          "qc_sweep_deg": [
+            67.0,
+            48.0,
+            71.0
+          ],
+          "root_chord_m": 29.901818514349216,
+          "span_m": 25.604638251691824,
+          "tip_twist_deg": 0.0
+        },
+        "openvsp_request": {
+          "component": "main_wing",
+          "location": [
+            14.0,
+            0.0,
+            -0.8
+          ],
+          "section_count": 4,
+          "span_m": 25.604638251691824
+        },
+        "readback": {
+          "area_m2": 358.25000000000006,
+          "chords_m": [
+            29.901818514349216,
+            12.208434070312554,
+            3.892558930560952,
+            0.9731361054965724
+          ],
+          "le_sweep_deg": [
+            0.0,
+            71.98511412778159,
+            55.59071448860179,
+            75.78177618375872
+          ],
+          "mac_m": 18.489892944055953,
+          "qc_sweep_deg": [
+            67.0,
+            48.00000000000002,
+            71.00000000000001
+          ],
+          "root_chord_m": 29.901818514349216,
+          "root_chord_raw": [
+            29.901818514349216,
+            29.901818514349216,
+            12.208434070312554,
+            3.892558930560952
+          ],
+          "sect_tess_u": [
+            12.0,
+            12.0,
+            12.0,
+            12.0
+          ],
+          "semispan_m": 12.802319125845912,
+          "span_m": 25.604638251691824,
+          "tip_chord_raw": [
+            29.901818514349216,
+            12.208434070312554,
+            3.892558930560952,
+            0.9731361054965724
+          ],
+          "tip_twist_deg": 0.0,
+          "twists_deg": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "sect_tess_u_expected": [
+          12.0,
+          12.0,
+          12.0,
+          12.0
+        ],
+        "sect_tess_u_max_abs_error": 0.0,
+        "sect_tess_u_readback": [
+          12.0,
+          12.0,
+          12.0,
+          12.0
+        ],
+        "sect_tess_u_status": "PASS",
+        "std_wing_metrics": null,
+        "std_wing_metrics_expected": null
+      },
+      "note": "12D 主翼 thin 基线：每个 XSec SectTess_U=12（高密度）",
+      "raw_setup": {
+        "bytes": 930,
+        "name": "wing355_baseline.vspaero",
+        "sha256": "c862aa220bc6f3a9d057b2fbe99c4ed340591a14ad88f455d3d1b0ddbe7c1804"
+      },
+      "readback": {
+        "assertions": 17,
+        "bytes": 847,
+        "expected_source": "a0_generate_setups_v2.py:B2-03",
+        "fields_checked": [
+          {
+            "actual": 358.25,
+            "detail": "rel_delta=0.000e+00 tol=3.583e-07",
+            "expected": 358.25,
+            "field": "Sref",
+            "ok": true,
+            "spec": "rel:1e-09"
+          },
+          {
+            "actual": 18.489893,
+            "detail": "rel_delta=0.000e+00 tol=1.849e-08",
+            "expected": 18.489893,
+            "field": "Cref",
+            "ok": true,
+            "spec": "rel:1e-09"
+          },
+          {
+            "actual": 25.604638,
+            "detail": "rel_delta=0.000e+00 tol=2.560e-08",
+            "expected": 25.604638,
+            "field": "Bref",
+            "ok": true,
+            "spec": "rel:1e-09"
+          },
+          {
+            "actual": 16.821978259514246,
+            "detail": "abs_delta=0.000e+00 tol=1.000e-06",
+            "expected": 16.821978259514246,
+            "field": "X_cg",
+            "ok": true,
+            "spec": "abs:1e-06"
+          },
+          {
+            "actual": 0.0,
+            "detail": "abs_delta=0.000e+00 tol=1.000e-09",
+            "expected": 0.0,
+            "field": "Y_cg",
+            "ok": true,
+            "spec": "abs:1e-09"
+          },
+          {
+            "actual": 0.0,
+            "detail": "abs_delta=0.000e+00 tol=1.000e-06",
+            "expected": 0.0,
+            "field": "Z_cg",
+            "ok": true,
+            "spec": "abs:1e-06"
+          },
+          {
+            "actual": 2.02,
+            "detail": "rel_delta=0.000e+00 tol=2.020e-09",
+            "expected": 2.02,
+            "field": "Mach",
+            "ok": true,
+            "spec": "rel:1e-09"
+          },
+          {
+            "actual": 2.0,
+            "detail": "abs_delta=0.000e+00 tol=1.000e-09",
+            "expected": 2.0,
+            "field": "AoA",
+            "ok": true,
+            "spec": "abs:1e-09"
+          },
+          {
+            "actual": 0.0,
+            "detail": "abs_delta=0.000e+00 tol=1.000e-09",
+            "expected": 0.0,
+            "field": "Beta",
+            "ok": true,
+            "spec": "abs:1e-09"
+          },
+          {
+            "actual": 89397005.8767656,
+            "detail": "rel_delta=0.000e+00 tol=8.940e+01",
+            "expected": 89397005.8767656,
+            "field": "ReCref",
+            "ok": true,
+            "spec": "rel:1e-06"
+          },
+          {
+            "actual": 596.0373972278921,
+            "detail": "rel_delta=0.000e+00 tol=5.960e-07",
+            "expected": 596.0373972278921,
+            "field": "Vinf",
+            "ok": true,
+            "spec": "rel:1e-09"
+          },
+          {
+            "actual": 0.1153178340089936,
+            "detail": "rel_delta=0.000e+00 tol=1.000e-09",
+            "expected": 0.1153178340089936,
+            "field": "Rho",
+            "ok": true,
+            "spec": "rel:1e-09"
+          },
+          {
+            "actual": 0.0,
+            "detail": "exact ok",
+            "expected": 0.0,
+            "field": "Symmetry",
+            "ok": true,
+            "spec": "exact:0.0"
+          },
+          {
+            "actual": 8.0,
+            "detail": "exact ok",
+            "expected": 8.0,
+            "field": "NumWakeNodes",
+            "ok": true,
+            "spec": "exact:0.0"
+          },
+          {
+            "actual": 5.0,
+            "detail": "exact ok",
+            "expected": 5.0,
+            "field": "WakeIters",
+            "ok": true,
+            "spec": "exact:0.0"
+          },
+          {
+            "actual": 1.0,
+            "detail": "rel_delta=0.000e+00 tol=1.000e-09",
+            "expected": 1.0,
+            "field": "WakeRelax",
+            "ok": true,
+            "spec": "rel:1e-09"
+          },
+          {
+            "actual": -1.0,
+            "detail": "rel_delta=0.000e+00 tol=1.000e-09",
+            "expected": -1.0,
+            "field": "FarDist",
+            "ok": true,
+            "spec": "rel:1e-09"
+          }
+        ],
+        "has_equals_format": true,
+        "injected_from": "D:\\RCAIDE-d12d005-gen\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\a0v2\\setup_gen\\B2-03\\wing355_baseline.vspaero",
+        "legacy_lines": 0,
+        "legacy_lines_normalized": 0,
+        "line_count": 42,
+        "path": "D:\\RCAIDE-d12d005-gen\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\a0v2\\setup_gen\\B2-03\\B2-03_contract.vspaero",
+        "rewrite": {
+          "AoA": {
+            "legacy_converted": false,
+            "new": 2.0,
+            "old": "2",
+            "rewritten": true
+          },
+          "Beta": {
+            "legacy_converted": false,
+            "new": 0.0,
+            "old": "0",
+            "rewritten": true
+          },
+          "Bref": {
+            "legacy_converted": false,
+            "new": 25.604638,
+            "old": "25.604638000000001",
+            "rewritten": true
+          },
+          "Cref": {
+            "legacy_converted": false,
+            "new": 18.489893,
+            "old": "18.489892999999999",
+            "rewritten": true
+          },
+          "FarDist": {
+            "legacy_converted": false,
+            "new": -1.0,
+            "old": "-1",
+            "rewritten": true
+          },
+          "Mach": {
+            "legacy_converted": false,
+            "new": 2.02,
+            "old": "2.02",
+            "rewritten": true
+          },
+          "NumWakeNodes": {
+            "legacy_converted": false,
+            "new": 8,
+            "old": "8",
+            "rewritten": true
+          },
+          "ReCref": {
+            "legacy_converted": false,
+            "new": 89397005.8767656,
+            "old": "10000000",
+            "rewritten": true
+          },
+          "Rho": {
+            "legacy_converted": false,
+            "new": 0.1153178340089936,
+            "old": "0.0023770000000000002",
+            "rewritten": true
+          },
+          "Sref": {
+            "legacy_converted": false,
+            "new": 358.25,
+            "old": "358.25",
+            "rewritten": true
+          },
+          "Symmetry": {
+            "legacy_converted": false,
+            "new": 0,
+            "old": "0",
+            "rewritten": true
+          },
+          "Vinf": {
+            "legacy_converted": false,
+            "new": 596.0373972278921,
+            "old": "100",
+            "rewritten": true
+          },
+          "WakeIters": {
+            "legacy_converted": false,
+            "new": 5,
+            "old": "5",
+            "rewritten": true
+          },
+          "WakeRelax": {
+            "legacy_converted": false,
+            "new": 1.0,
+            "old": "1",
+            "rewritten": true
+          },
+          "X_cg": {
+            "legacy_converted": false,
+            "new": 16.821978259514246,
+            "old": "16.821978259514246",
+            "rewritten": true
+          },
+          "Y_cg": {
+            "legacy_converted": false,
+            "new": 0.0,
+            "old": "0",
+            "rewritten": true
+          },
+          "Z_cg": {
+            "legacy_converted": false,
+            "new": 0.0,
+            "old": "0",
+            "rewritten": true
+          }
+        },
+        "sha256": "c9cef04e6a6986fdc87f07338e168dbf2ee17bdab3f5836b417ba6e6036ccb64",
+        "source": "D:\\RCAIDE-d12d005-gen\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\a0v2\\setup_gen\\B2-03\\B2-03_contract.vspaero",
+        "status": "PASS",
+        "target_sha256": "c9cef04e6a6986fdc87f07338e168dbf2ee17bdab3f5836b417ba6e6036ccb64",
+        "vector_rows": 1
+      },
+      "readback_assertions": 17,
+      "readback_status": "PASS",
+      "repeat_of": null,
+      "results": {
+        "geom_result_id": "QXBNVDB",
+        "stop_before_run_readback": 1,
+        "sweep_result_id": ""
+      },
+      "solver_artifacts_present": [],
+      "thin_geometry": {
+        "bytes": 495690,
+        "external_path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\d12d005-20261104T0430Z\\raw_artifacts\\a0v2_setup\\B2-03.vspgeom",
+        "local_copy": "D:\\RCAIDE-d12d005-gen\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\a0v2\\setup_gen\\B2-03\\wing355_baseline.vspgeom",
+        "local_copy_removed": true,
+        "name": "B2-03.vspgeom",
+        "outside_git": true,
+        "sha256": "d071b05feb499931ec2022b19787047adb34dcc27693466c57b4baf777c981d3"
+      },
+      "vkey": {
+        "bytes": 379,
+        "name": "wing355_baseline.vkey",
+        "sha256": "5d3b9c0128952412fc8fafc9267fb116b27f7864e391c2f09219dd7411577e13"
+      }
+    },
+    {
+      "case_dir": "D:\\RCAIDE-d12d005-gen\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\a0v2\\setup_gen\\B2-04",
+      "case_id": "B2-04",
+      "contract": {
+        "AoA": 2.0,
+        "Beta": 0.0,
+        "Bref": 25.604638,
+        "Cref": 18.489893,
+        "FarDist": -1.0,
+        "Mach": 2.02,
+        "NumWakeNodes": 8,
+        "ReCref": 89397005.8767656,
+        "Rho": 0.1153178340089936,
+        "Sref": 358.25,
+        "Symmetry": 0,
+        "Vinf": 596.0373972278921,
+        "WakeIters": 5,
+        "WakeRelax": 1.0,
+        "X_cg": 16.821978259514246,
+        "Y_cg": 0.0,
+        "Z_cg": 0.0
+      },
+      "contract_setup": {
+        "bytes": 847,
+        "name": "B2-04_contract.vspaero",
+        "sha256": "c9cef04e6a6986fdc87f07338e168dbf2ee17bdab3f5836b417ba6e6036ccb64"
+      },
+      "csf": {
+        "bytes": 20,
+        "name": "wing355_baseline.csf",
+        "sha256": "bb29bf526f4379308ca9c271a8df90c39f4df4235f81f63e370f25e714bb797c"
+      },
+      "execution_bundle": {
+        "csf": "wing355_baseline.csf",
+        "model": "wing355_baseline.vsp3",
+        "note": "A2 执行时把 model.vsp3 + .vkey + .csf + contract.vspaero 复制到执行目录，并把 thin .vspgeom 从 external_path 复制为 <base>.vspgeom；随后把 .vkey 第 2 行改为该 .vspgeom 的绝对路径（D-12D-004 V1 根因修复），最后运行 vspaero.exe -omp 4 <base>",
+        "setup": "B2-04_contract.vspaero",
+        "vkey": "wing355_baseline.vkey",
+        "vspgeom_bytes": 495690,
+        "vspgeom_external_path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\d12d005-20261104T0430Z\\raw_artifacts\\a0v2_setup\\B2-04.vspgeom",
+        "vspgeom_sha256": "d3f0035c12441da05f54928e3461051870fb90ed16b98837683663931af3de81"
+      },
+      "expected_v2": {
+        "bytes": 1236,
+        "name": "expected_v2.json",
+        "sha256": "c2029102ae9bb4908083e6d8a65a2d919e9735726311a032c3334313ecd601b9"
+      },
+      "files_in_case_dir": [
+        "B2-04_contract.vspaero",
+        "expected_v2.json",
+        "geom_result_thin.csv",
+        "wing355_baseline.csf",
+        "wing355_baseline.vkey",
+        "wing355_baseline.vsp3",
+        "wing355_baseline.vspaero"
+      ],
+      "geom_result_csv": {
+        "bytes": 372,
+        "name": "geom_result_thin.csv",
+        "sha256": "10a296bbabb1305a55a271682f244619603508e609824efc54f27e45e1d2c9cf"
+      },
+      "geom_result_csv_error": null,
+      "kind": "d12",
+      "model": {
+        "bytes": 111816,
+        "name": "wing355_baseline.vsp3",
+        "sha256": "fc08af77e4c06ecea0bb720001c38f34b95264640424671cef1884f9aacea2af"
+      },
+      "model_name": "wing355_baseline.vsp3",
+      "model_readback": {
+        "design_consistency": {
+          "checks": {
+            "area_m2": {
+              "error": 0.0,
+              "expected": 376.16250000000014,
+              "measured": 376.16250000000014,
+              "mode": "relative",
+              "status": "PASS",
+              "tolerance": 0.001
+            },
+            "chords_m[0]": {
+              "error": 0.0,
+              "expected": 30.64024621291956,
+              "measured": 30.64024621291956,
+              "mode": "relative",
+              "status": "PASS",
+              "tolerance": 0.001
+            },
+            "chords_m[1]": {
+              "error": 0.0,
+              "expected": 12.50992228479565,
+              "measured": 12.50992228479565,
+              "mode": "relative",
+              "status": "PASS",
+              "tolerance": 0.001
+            },
+            "chords_m[2]": {
+              "error": 0.0,
+              "expected": 3.988685971505442,
+              "measured": 3.988685971505442,
+              "mode": "relative",
+              "status": "PASS",
+              "tolerance": 0.001
+            },
+            "chords_m[3]": {
+              "error": 0.0,
+              "expected": 0.9971677761601042,
+              "measured": 0.9971677761601042,
+              "mode": "relative",
+              "status": "PASS",
+              "tolerance": 0.001
+            },
+            "mac_m": {
+              "error": 0.0,
+              "expected": 18.946502266560508,
+              "measured": 18.946502266560508,
+              "mode": "relative",
+              "status": "PASS",
+              "tolerance": 0.001
+            },
+            "qc_sweep_deg[0]": {
+              "error": 0.0,
+              "expected": 67.0,
+              "measured": 67.0,
+              "mode": "relative",
+              "status": "PASS",
+              "tolerance": 0.001
+            },
+            "qc_sweep_deg[1]": {
+              "error": 1.480297366166875e-16,
+              "expected": 48.0,
+              "measured": 48.00000000000001,
+              "mode": "relative",
+              "status": "PASS",
+              "tolerance": 0.001
+            },
+            "qc_sweep_deg[2]": {
+              "error": 4.0030576662540856e-16,
+              "expected": 71.0,
+              "measured": 70.99999999999997,
+              "mode": "relative",
+              "status": "PASS",
+              "tolerance": 0.001
+            },
+            "root_chord_m": {
+              "error": 0.0,
+              "expected": 30.64024621291956,
+              "measured": 30.64024621291956,
+              "mode": "relative",
+              "status": "PASS",
+              "tolerance": 0.001
+            },
+            "span_m": {
+              "error": 0.0,
+              "expected": 26.236946754529196,
+              "measured": 26.236946754529196,
+              "mode": "relative",
+              "status": "PASS",
+              "tolerance": 0.001
+            },
+            "tip_twist_deg": {
+              "error": 0.0,
+              "expected": 0.0,
+              "measured": 0.0,
+              "mode": "absolute",
+              "status": "PASS",
+              "tolerance": 1e-06
+            }
+          },
+          "failed": [],
+          "status": "PASS",
+          "tolerance": 0.001
+        },
+        "design_overrides": {
+          "wing_area": 376.1625
+        },
+        "design_physical": {
+          "aspect_ratio": 1.83,
+          "chord_ratio_2": 0.408284,
+          "chord_ratio_3": 0.130178,
+          "span_location_2": 0.480469,
+          "span_location_3": 0.945313,
+          "sweep_1": 67.0,
+          "sweep_2": 48.0,
+          "sweep_3": 71.0,
+          "tip_twist": 0.0,
+          "vertical_tail_area": 33.91,
+          "vertical_tail_sweep_delta": 0.0,
+          "wing_area": 376.1625
+        },
+        "geometry_expected": {
+          "area_m2": 376.16250000000014,
+          "chords_m": [
+            30.64024621291956,
+            12.50992228479565,
+            3.988685971505442,
+            0.9971677761601042
+          ],
+          "mac_m": 18.946502266560508,
+          "qc_sweep_deg": [
+            67.0,
+            48.0,
+            71.0
+          ],
+          "root_chord_m": 30.64024621291956,
+          "span_m": 26.236946754529196,
+          "tip_twist_deg": 0.0
+        },
+        "openvsp_request": {
+          "component": "main_wing",
+          "location": [
+            14.0,
+            0.0,
+            -0.8
+          ],
+          "section_count": 4,
+          "span_m": 26.236946754529196
+        },
+        "readback": {
+          "area_m2": 376.16250000000014,
+          "chords_m": [
+            30.64024621291956,
+            12.50992228479565,
+            3.988685971505442,
+            0.9971677761601042
+          ],
+          "le_sweep_deg": [
+            0.0,
+            71.98511412778159,
+            55.59071448860178,
+            75.78177618375872
+          ],
+          "mac_m": 18.946502266560508,
+          "qc_sweep_deg": [
+            67.0,
+            48.00000000000001,
+            70.99999999999997
+          ],
+          "root_chord_m": 30.64024621291956,
+          "root_chord_raw": [
+            30.64024621291956,
+            30.64024621291956,
+            12.50992228479565,
+            3.988685971505442
+          ],
+          "sect_tess_u": [
+            12.0,
+            12.0,
+            12.0,
+            12.0
+          ],
+          "semispan_m": 13.118473377264598,
+          "span_m": 26.236946754529196,
+          "tip_chord_raw": [
+            30.64024621291956,
+            12.50992228479565,
+            3.988685971505442,
+            0.9971677761601042
+          ],
+          "tip_twist_deg": 0.0,
+          "twists_deg": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "sect_tess_u_expected": [
+          12.0,
+          12.0,
+          12.0,
+          12.0
+        ],
+        "sect_tess_u_max_abs_error": 0.0,
+        "sect_tess_u_readback": [
+          12.0,
+          12.0,
+          12.0,
+          12.0
+        ],
+        "sect_tess_u_status": "PASS",
+        "std_wing_metrics": null,
+        "std_wing_metrics_expected": null
+      },
+      "note": "单因素扰动 W01 wing_area=376.1625（baseline 358.25 的 +5%），SectTess_U=12",
+      "raw_setup": {
+        "bytes": 930,
+        "name": "wing355_baseline.vspaero",
+        "sha256": "c862aa220bc6f3a9d057b2fbe99c4ed340591a14ad88f455d3d1b0ddbe7c1804"
+      },
+      "readback": {
+        "assertions": 17,
+        "bytes": 847,
+        "expected_source": "a0_generate_setups_v2.py:B2-04",
+        "fields_checked": [
+          {
+            "actual": 358.25,
+            "detail": "rel_delta=0.000e+00 tol=3.583e-07",
+            "expected": 358.25,
+            "field": "Sref",
+            "ok": true,
+            "spec": "rel:1e-09"
+          },
+          {
+            "actual": 18.489893,
+            "detail": "rel_delta=0.000e+00 tol=1.849e-08",
+            "expected": 18.489893,
+            "field": "Cref",
+            "ok": true,
+            "spec": "rel:1e-09"
+          },
+          {
+            "actual": 25.604638,
+            "detail": "rel_delta=0.000e+00 tol=2.560e-08",
+            "expected": 25.604638,
+            "field": "Bref",
+            "ok": true,
+            "spec": "rel:1e-09"
+          },
+          {
+            "actual": 16.821978259514246,
+            "detail": "abs_delta=0.000e+00 tol=1.000e-06",
+            "expected": 16.821978259514246,
+            "field": "X_cg",
+            "ok": true,
+            "spec": "abs:1e-06"
+          },
+          {
+            "actual": 0.0,
+            "detail": "abs_delta=0.000e+00 tol=1.000e-09",
+            "expected": 0.0,
+            "field": "Y_cg",
+            "ok": true,
+            "spec": "abs:1e-09"
+          },
+          {
+            "actual": 0.0,
+            "detail": "abs_delta=0.000e+00 tol=1.000e-06",
+            "expected": 0.0,
+            "field": "Z_cg",
+            "ok": true,
+            "spec": "abs:1e-06"
+          },
+          {
+            "actual": 2.02,
+            "detail": "rel_delta=0.000e+00 tol=2.020e-09",
+            "expected": 2.02,
+            "field": "Mach",
+            "ok": true,
+            "spec": "rel:1e-09"
+          },
+          {
+            "actual": 2.0,
+            "detail": "abs_delta=0.000e+00 tol=1.000e-09",
+            "expected": 2.0,
+            "field": "AoA",
+            "ok": true,
+            "spec": "abs:1e-09"
+          },
+          {
+            "actual": 0.0,
+            "detail": "abs_delta=0.000e+00 tol=1.000e-09",
+            "expected": 0.0,
+            "field": "Beta",
+            "ok": true,
+            "spec": "abs:1e-09"
+          },
+          {
+            "actual": 89397005.8767656,
+            "detail": "rel_delta=0.000e+00 tol=8.940e+01",
+            "expected": 89397005.8767656,
+            "field": "ReCref",
+            "ok": true,
+            "spec": "rel:1e-06"
+          },
+          {
+            "actual": 596.0373972278921,
+            "detail": "rel_delta=0.000e+00 tol=5.960e-07",
+            "expected": 596.0373972278921,
+            "field": "Vinf",
+            "ok": true,
+            "spec": "rel:1e-09"
+          },
+          {
+            "actual": 0.1153178340089936,
+            "detail": "rel_delta=0.000e+00 tol=1.000e-09",
+            "expected": 0.1153178340089936,
+            "field": "Rho",
+            "ok": true,
+            "spec": "rel:1e-09"
+          },
+          {
+            "actual": 0.0,
+            "detail": "exact ok",
+            "expected": 0.0,
+            "field": "Symmetry",
+            "ok": true,
+            "spec": "exact:0.0"
+          },
+          {
+            "actual": 8.0,
+            "detail": "exact ok",
+            "expected": 8.0,
+            "field": "NumWakeNodes",
+            "ok": true,
+            "spec": "exact:0.0"
+          },
+          {
+            "actual": 5.0,
+            "detail": "exact ok",
+            "expected": 5.0,
+            "field": "WakeIters",
+            "ok": true,
+            "spec": "exact:0.0"
+          },
+          {
+            "actual": 1.0,
+            "detail": "rel_delta=0.000e+00 tol=1.000e-09",
+            "expected": 1.0,
+            "field": "WakeRelax",
+            "ok": true,
+            "spec": "rel:1e-09"
+          },
+          {
+            "actual": -1.0,
+            "detail": "rel_delta=0.000e+00 tol=1.000e-09",
+            "expected": -1.0,
+            "field": "FarDist",
+            "ok": true,
+            "spec": "rel:1e-09"
+          }
+        ],
+        "has_equals_format": true,
+        "injected_from": "D:\\RCAIDE-d12d005-gen\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\a0v2\\setup_gen\\B2-04\\wing355_baseline.vspaero",
+        "legacy_lines": 0,
+        "legacy_lines_normalized": 0,
+        "line_count": 42,
+        "path": "D:\\RCAIDE-d12d005-gen\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\a0v2\\setup_gen\\B2-04\\B2-04_contract.vspaero",
+        "rewrite": {
+          "AoA": {
+            "legacy_converted": false,
+            "new": 2.0,
+            "old": "2",
+            "rewritten": true
+          },
+          "Beta": {
+            "legacy_converted": false,
+            "new": 0.0,
+            "old": "0",
+            "rewritten": true
+          },
+          "Bref": {
+            "legacy_converted": false,
+            "new": 25.604638,
+            "old": "25.604638000000001",
+            "rewritten": true
+          },
+          "Cref": {
+            "legacy_converted": false,
+            "new": 18.489893,
+            "old": "18.489892999999999",
+            "rewritten": true
+          },
+          "FarDist": {
+            "legacy_converted": false,
+            "new": -1.0,
+            "old": "-1",
+            "rewritten": true
+          },
+          "Mach": {
+            "legacy_converted": false,
+            "new": 2.02,
+            "old": "2.02",
+            "rewritten": true
+          },
+          "NumWakeNodes": {
+            "legacy_converted": false,
+            "new": 8,
+            "old": "8",
+            "rewritten": true
+          },
+          "ReCref": {
+            "legacy_converted": false,
+            "new": 89397005.8767656,
+            "old": "10000000",
+            "rewritten": true
+          },
+          "Rho": {
+            "legacy_converted": false,
+            "new": 0.1153178340089936,
+            "old": "0.0023770000000000002",
+            "rewritten": true
+          },
+          "Sref": {
+            "legacy_converted": false,
+            "new": 358.25,
+            "old": "358.25",
+            "rewritten": true
+          },
+          "Symmetry": {
+            "legacy_converted": false,
+            "new": 0,
+            "old": "0",
+            "rewritten": true
+          },
+          "Vinf": {
+            "legacy_converted": false,
+            "new": 596.0373972278921,
+            "old": "100",
+            "rewritten": true
+          },
+          "WakeIters": {
+            "legacy_converted": false,
+            "new": 5,
+            "old": "5",
+            "rewritten": true
+          },
+          "WakeRelax": {
+            "legacy_converted": false,
+            "new": 1.0,
+            "old": "1",
+            "rewritten": true
+          },
+          "X_cg": {
+            "legacy_converted": false,
+            "new": 16.821978259514246,
+            "old": "16.821978259514246",
+            "rewritten": true
+          },
+          "Y_cg": {
+            "legacy_converted": false,
+            "new": 0.0,
+            "old": "0",
+            "rewritten": true
+          },
+          "Z_cg": {
+            "legacy_converted": false,
+            "new": 0.0,
+            "old": "0",
+            "rewritten": true
+          }
+        },
+        "sha256": "c9cef04e6a6986fdc87f07338e168dbf2ee17bdab3f5836b417ba6e6036ccb64",
+        "source": "D:\\RCAIDE-d12d005-gen\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\a0v2\\setup_gen\\B2-04\\B2-04_contract.vspaero",
+        "status": "PASS",
+        "target_sha256": "c9cef04e6a6986fdc87f07338e168dbf2ee17bdab3f5836b417ba6e6036ccb64",
+        "vector_rows": 1
+      },
+      "readback_assertions": 17,
+      "readback_status": "PASS",
+      "repeat_of": null,
+      "results": {
+        "geom_result_id": "TEOYZRR",
+        "stop_before_run_readback": 1,
+        "sweep_result_id": ""
+      },
+      "solver_artifacts_present": [],
+      "thin_geometry": {
+        "bytes": 495690,
+        "external_path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\d12d005-20261104T0430Z\\raw_artifacts\\a0v2_setup\\B2-04.vspgeom",
+        "local_copy": "D:\\RCAIDE-d12d005-gen\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\a0v2\\setup_gen\\B2-04\\wing355_baseline.vspgeom",
+        "local_copy_removed": true,
+        "name": "B2-04.vspgeom",
+        "outside_git": true,
+        "sha256": "d3f0035c12441da05f54928e3461051870fb90ed16b98837683663931af3de81"
+      },
+      "vkey": {
+        "bytes": 379,
+        "name": "wing355_baseline.vkey",
+        "sha256": "4a51f7fc678a0b20c9f4fd8a32fb8bac6c3e463c316255df9a087bfe6587c00e"
+      }
+    },
+    {
+      "case_dir": "D:\\RCAIDE-d12d005-gen\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\a0v2\\setup_gen\\B2-05",
+      "case_id": "B2-05",
+      "contract": {
+        "AoA": 2.0,
+        "Beta": 0.0,
+        "Bref": 25.604638,
+        "Cref": 18.489893,
+        "FarDist": -1.0,
+        "Mach": 2.02,
+        "NumWakeNodes": 8,
+        "ReCref": 89397005.8767656,
+        "Rho": 0.1153178340089936,
+        "Sref": 358.25,
+        "Symmetry": 0,
+        "Vinf": 596.0373972278921,
+        "WakeIters": 5,
+        "WakeRelax": 1.0,
+        "X_cg": 16.821978259514246,
+        "Y_cg": 0.0,
+        "Z_cg": 0.0
+      },
+      "contract_setup": {
+        "bytes": 847,
+        "name": "B2-05_contract.vspaero",
+        "sha256": "c9cef04e6a6986fdc87f07338e168dbf2ee17bdab3f5836b417ba6e6036ccb64"
+      },
+      "csf": {
+        "bytes": 20,
+        "name": "wing355_baseline.csf",
+        "sha256": "bb29bf526f4379308ca9c271a8df90c39f4df4235f81f63e370f25e714bb797c"
+      },
+      "execution_bundle": {
+        "csf": "wing355_baseline.csf",
+        "model": "wing355_baseline.vsp3",
+        "note": "A2 执行时把 model.vsp3 + .vkey + .csf + contract.vspaero 复制到执行目录，并把 thin .vspgeom 从 external_path 复制为 <base>.vspgeom；随后把 .vkey 第 2 行改为该 .vspgeom 的绝对路径（D-12D-004 V1 根因修复），最后运行 vspaero.exe -omp 4 <base>",
+        "setup": "B2-05_contract.vspaero",
+        "vkey": "wing355_baseline.vkey",
+        "vspgeom_bytes": 495690,
+        "vspgeom_external_path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\d12d005-20261104T0430Z\\raw_artifacts\\a0v2_setup\\B2-05.vspgeom",
+        "vspgeom_sha256": "ef56573de1a526a66a8caeb072a83c8495f98d31e24b2706ba4c15100f4533e7"
+      },
+      "expected_v2": {
+        "bytes": 1218,
+        "name": "expected_v2.json",
+        "sha256": "bad0190f0bfd6dd58c5dd24aeacbcf911df2d368d40f61b3b693637279855adb"
+      },
+      "files_in_case_dir": [
+        "B2-05_contract.vspaero",
+        "expected_v2.json",
+        "geom_result_thin.csv",
+        "wing355_baseline.csf",
+        "wing355_baseline.vkey",
+        "wing355_baseline.vsp3",
+        "wing355_baseline.vspaero"
+      ],
+      "geom_result_csv": {
+        "bytes": 372,
+        "name": "geom_result_thin.csv",
+        "sha256": "b23f7ae3d41e0e67d04381a9280b94d5b8940837471a026db42107dc78c39f40"
+      },
+      "geom_result_csv_error": null,
+      "kind": "d12",
+      "model": {
+        "bytes": 111816,
+        "name": "wing355_baseline.vsp3",
+        "sha256": "4cbf42594051ed1aed108b33d5fdee07df2b2d551c8fa91cae2aa18ef1d7800d"
+      },
+      "model_name": "wing355_baseline.vsp3",
+      "model_readback": {
+        "design_consistency": {
+          "checks": {
+            "area_m2": {
+              "error": 0.0,
+              "expected": 358.25000000000006,
+              "measured": 358.25000000000006,
+              "mode": "relative",
+              "status": "PASS",
+              "tolerance": 0.001
+            },
+            "chords_m[0]": {
+              "error": 0.0,
+              "expected": 29.901818514349216,
+              "measured": 29.901818514349216,
+              "mode": "relative",
+              "status": "PASS",
+              "tolerance": 0.001
+            },
+            "chords_m[1]": {
+              "error": 0.0,
+              "expected": 12.208434070312554,
+              "measured": 12.208434070312554,
+              "mode": "relative",
+              "status": "PASS",
+              "tolerance": 0.001
+            },
+            "chords_m[2]": {
+              "error": 0.0,
+              "expected": 3.892558930560952,
+              "measured": 3.892558930560952,
+              "mode": "relative",
+              "status": "PASS",
+              "tolerance": 0.001
+            },
+            "chords_m[3]": {
+              "error": 0.0,
+              "expected": 0.9731361054965724,
+              "measured": 0.9731361054965724,
+              "mode": "relative",
+              "status": "PASS",
+              "tolerance": 0.001
+            },
+            "mac_m": {
+              "error": 0.0,
+              "expected": 18.489892944055953,
+              "measured": 18.489892944055953,
+              "mode": "relative",
+              "status": "PASS",
+              "tolerance": 0.001
+            },
+            "qc_sweep_deg[0]": {
+              "error": 2.0595441616234788e-16,
+              "expected": 69.0,
+              "measured": 68.99999999999999,
+              "mode": "relative",
+              "status": "PASS",
+              "tolerance": 0.001
+            },
+            "qc_sweep_deg[1]": {
+              "error": 4.440892098500624e-16,
+              "expected": 48.0,
+              "measured": 48.00000000000002,
+              "mode": "relative",
+              "status": "PASS",
+              "tolerance": 0.001
+            },
+            "qc_sweep_deg[2]": {
+              "error": 4.0030576662540856e-16,
+              "expected": 71.0,
+              "measured": 70.99999999999997,
+              "mode": "relative",
+              "status": "PASS",
+              "tolerance": 0.001
+            },
+            "root_chord_m": {
+              "error": 0.0,
+              "expected": 29.901818514349216,
+              "measured": 29.901818514349216,
+              "mode": "relative",
+              "status": "PASS",
+              "tolerance": 0.001
+            },
+            "span_m": {
+              "error": 0.0,
+              "expected": 25.604638251691824,
+              "measured": 25.604638251691824,
+              "mode": "relative",
+              "status": "PASS",
+              "tolerance": 0.001
+            },
+            "tip_twist_deg": {
+              "error": 0.0,
+              "expected": 0.0,
+              "measured": 0.0,
+              "mode": "absolute",
+              "status": "PASS",
+              "tolerance": 1e-06
+            }
+          },
+          "failed": [],
+          "status": "PASS",
+          "tolerance": 0.001
+        },
+        "design_overrides": {
+          "sweep_1": 69.0
+        },
+        "design_physical": {
+          "aspect_ratio": 1.83,
+          "chord_ratio_2": 0.408284,
+          "chord_ratio_3": 0.130178,
+          "span_location_2": 0.480469,
+          "span_location_3": 0.945313,
+          "sweep_1": 69.0,
+          "sweep_2": 48.0,
+          "sweep_3": 71.0,
+          "tip_twist": 0.0,
+          "vertical_tail_area": 33.91,
+          "vertical_tail_sweep_delta": 0.0,
+          "wing_area": 358.25
+        },
+        "geometry_expected": {
+          "area_m2": 358.25000000000006,
+          "chords_m": [
+            29.901818514349216,
+            12.208434070312554,
+            3.892558930560952,
+            0.9731361054965724
+          ],
+          "mac_m": 18.489892944055953,
+          "qc_sweep_deg": [
+            69.0,
+            48.0,
+            71.0
+          ],
+          "root_chord_m": 29.901818514349216,
+          "span_m": 25.604638251691824,
+          "tip_twist_deg": 0.0
+        },
+        "openvsp_request": {
+          "component": "main_wing",
+          "location": [
+            14.0,
+            0.0,
+            -0.8
+          ],
+          "section_count": 4,
+          "span_m": 25.604638251691824
+        },
+        "readback": {
+          "area_m2": 358.25000000000006,
+          "chords_m": [
+            29.901818514349216,
+            12.208434070312554,
+            3.892558930560952,
+            0.9731361054965724
+          ],
+          "le_sweep_deg": [
+            0.0,
+            73.2574464508293,
+            55.59071448860179,
+            75.78177618375872
+          ],
+          "mac_m": 18.489892944055953,
+          "qc_sweep_deg": [
+            68.99999999999999,
+            48.00000000000002,
+            70.99999999999997
+          ],
+          "root_chord_m": 29.901818514349216,
+          "root_chord_raw": [
+            29.901818514349216,
+            29.901818514349216,
+            12.208434070312554,
+            3.892558930560952
+          ],
+          "sect_tess_u": [
+            12.0,
+            12.0,
+            12.0,
+            12.0
+          ],
+          "semispan_m": 12.802319125845912,
+          "span_m": 25.604638251691824,
+          "tip_chord_raw": [
+            29.901818514349216,
+            12.208434070312554,
+            3.892558930560952,
+            0.9731361054965724
+          ],
+          "tip_twist_deg": 0.0,
+          "twists_deg": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "sect_tess_u_expected": [
+          12.0,
+          12.0,
+          12.0,
+          12.0
+        ],
+        "sect_tess_u_max_abs_error": 0.0,
+        "sect_tess_u_readback": [
+          12.0,
+          12.0,
+          12.0,
+          12.0
+        ],
+        "sect_tess_u_status": "PASS",
+        "std_wing_metrics": null,
+        "std_wing_metrics_expected": null
+      },
+      "note": "单因素扰动 W03 sweep_1=69.0（baseline 67），SectTess_U=12",
+      "raw_setup": {
+        "bytes": 930,
+        "name": "wing355_baseline.vspaero",
+        "sha256": "c862aa220bc6f3a9d057b2fbe99c4ed340591a14ad88f455d3d1b0ddbe7c1804"
+      },
+      "readback": {
+        "assertions": 17,
+        "bytes": 847,
+        "expected_source": "a0_generate_setups_v2.py:B2-05",
+        "fields_checked": [
+          {
+            "actual": 358.25,
+            "detail": "rel_delta=0.000e+00 tol=3.583e-07",
+            "expected": 358.25,
+            "field": "Sref",
+            "ok": true,
+            "spec": "rel:1e-09"
+          },
+          {
+            "actual": 18.489893,
+            "detail": "rel_delta=0.000e+00 tol=1.849e-08",
+            "expected": 18.489893,
+            "field": "Cref",
+            "ok": true,
+            "spec": "rel:1e-09"
+          },
+          {
+            "actual": 25.604638,
+            "detail": "rel_delta=0.000e+00 tol=2.560e-08",
+            "expected": 25.604638,
+            "field": "Bref",
+            "ok": true,
+            "spec": "rel:1e-09"
+          },
+          {
+            "actual": 16.821978259514246,
+            "detail": "abs_delta=0.000e+00 tol=1.000e-06",
+            "expected": 16.821978259514246,
+            "field": "X_cg",
+            "ok": true,
+            "spec": "abs:1e-06"
+          },
+          {
+            "actual": 0.0,
+            "detail": "abs_delta=0.000e+00 tol=1.000e-09",
+            "expected": 0.0,
+            "field": "Y_cg",
+            "ok": true,
+            "spec": "abs:1e-09"
+          },
+          {
+            "actual": 0.0,
+            "detail": "abs_delta=0.000e+00 tol=1.000e-06",
+            "expected": 0.0,
+            "field": "Z_cg",
+            "ok": true,
+            "spec": "abs:1e-06"
+          },
+          {
+            "actual": 2.02,
+            "detail": "rel_delta=0.000e+00 tol=2.020e-09",
+            "expected": 2.02,
+            "field": "Mach",
+            "ok": true,
+            "spec": "rel:1e-09"
+          },
+          {
+            "actual": 2.0,
+            "detail": "abs_delta=0.000e+00 tol=1.000e-09",
+            "expected": 2.0,
+            "field": "AoA",
+            "ok": true,
+            "spec": "abs:1e-09"
+          },
+          {
+            "actual": 0.0,
+            "detail": "abs_delta=0.000e+00 tol=1.000e-09",
+            "expected": 0.0,
+            "field": "Beta",
+            "ok": true,
+            "spec": "abs:1e-09"
+          },
+          {
+            "actual": 89397005.8767656,
+            "detail": "rel_delta=0.000e+00 tol=8.940e+01",
+            "expected": 89397005.8767656,
+            "field": "ReCref",
+            "ok": true,
+            "spec": "rel:1e-06"
+          },
+          {
+            "actual": 596.0373972278921,
+            "detail": "rel_delta=0.000e+00 tol=5.960e-07",
+            "expected": 596.0373972278921,
+            "field": "Vinf",
+            "ok": true,
+            "spec": "rel:1e-09"
+          },
+          {
+            "actual": 0.1153178340089936,
+            "detail": "rel_delta=0.000e+00 tol=1.000e-09",
+            "expected": 0.1153178340089936,
+            "field": "Rho",
+            "ok": true,
+            "spec": "rel:1e-09"
+          },
+          {
+            "actual": 0.0,
+            "detail": "exact ok",
+            "expected": 0.0,
+            "field": "Symmetry",
+            "ok": true,
+            "spec": "exact:0.0"
+          },
+          {
+            "actual": 8.0,
+            "detail": "exact ok",
+            "expected": 8.0,
+            "field": "NumWakeNodes",
+            "ok": true,
+            "spec": "exact:0.0"
+          },
+          {
+            "actual": 5.0,
+            "detail": "exact ok",
+            "expected": 5.0,
+            "field": "WakeIters",
+            "ok": true,
+            "spec": "exact:0.0"
+          },
+          {
+            "actual": 1.0,
+            "detail": "rel_delta=0.000e+00 tol=1.000e-09",
+            "expected": 1.0,
+            "field": "WakeRelax",
+            "ok": true,
+            "spec": "rel:1e-09"
+          },
+          {
+            "actual": -1.0,
+            "detail": "rel_delta=0.000e+00 tol=1.000e-09",
+            "expected": -1.0,
+            "field": "FarDist",
+            "ok": true,
+            "spec": "rel:1e-09"
+          }
+        ],
+        "has_equals_format": true,
+        "injected_from": "D:\\RCAIDE-d12d005-gen\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\a0v2\\setup_gen\\B2-05\\wing355_baseline.vspaero",
+        "legacy_lines": 0,
+        "legacy_lines_normalized": 0,
+        "line_count": 42,
+        "path": "D:\\RCAIDE-d12d005-gen\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\a0v2\\setup_gen\\B2-05\\B2-05_contract.vspaero",
+        "rewrite": {
+          "AoA": {
+            "legacy_converted": false,
+            "new": 2.0,
+            "old": "2",
+            "rewritten": true
+          },
+          "Beta": {
+            "legacy_converted": false,
+            "new": 0.0,
+            "old": "0",
+            "rewritten": true
+          },
+          "Bref": {
+            "legacy_converted": false,
+            "new": 25.604638,
+            "old": "25.604638000000001",
+            "rewritten": true
+          },
+          "Cref": {
+            "legacy_converted": false,
+            "new": 18.489893,
+            "old": "18.489892999999999",
+            "rewritten": true
+          },
+          "FarDist": {
+            "legacy_converted": false,
+            "new": -1.0,
+            "old": "-1",
+            "rewritten": true
+          },
+          "Mach": {
+            "legacy_converted": false,
+            "new": 2.02,
+            "old": "2.02",
+            "rewritten": true
+          },
+          "NumWakeNodes": {
+            "legacy_converted": false,
+            "new": 8,
+            "old": "8",
+            "rewritten": true
+          },
+          "ReCref": {
+            "legacy_converted": false,
+            "new": 89397005.8767656,
+            "old": "10000000",
+            "rewritten": true
+          },
+          "Rho": {
+            "legacy_converted": false,
+            "new": 0.1153178340089936,
+            "old": "0.0023770000000000002",
+            "rewritten": true
+          },
+          "Sref": {
+            "legacy_converted": false,
+            "new": 358.25,
+            "old": "358.25",
+            "rewritten": true
+          },
+          "Symmetry": {
+            "legacy_converted": false,
+            "new": 0,
+            "old": "0",
+            "rewritten": true
+          },
+          "Vinf": {
+            "legacy_converted": false,
+            "new": 596.0373972278921,
+            "old": "100",
+            "rewritten": true
+          },
+          "WakeIters": {
+            "legacy_converted": false,
+            "new": 5,
+            "old": "5",
+            "rewritten": true
+          },
+          "WakeRelax": {
+            "legacy_converted": false,
+            "new": 1.0,
+            "old": "1",
+            "rewritten": true
+          },
+          "X_cg": {
+            "legacy_converted": false,
+            "new": 16.821978259514246,
+            "old": "16.821978259514246",
+            "rewritten": true
+          },
+          "Y_cg": {
+            "legacy_converted": false,
+            "new": 0.0,
+            "old": "0",
+            "rewritten": true
+          },
+          "Z_cg": {
+            "legacy_converted": false,
+            "new": 0.0,
+            "old": "0",
+            "rewritten": true
+          }
+        },
+        "sha256": "c9cef04e6a6986fdc87f07338e168dbf2ee17bdab3f5836b417ba6e6036ccb64",
+        "source": "D:\\RCAIDE-d12d005-gen\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\a0v2\\setup_gen\\B2-05\\B2-05_contract.vspaero",
+        "status": "PASS",
+        "target_sha256": "c9cef04e6a6986fdc87f07338e168dbf2ee17bdab3f5836b417ba6e6036ccb64",
+        "vector_rows": 1
+      },
+      "readback_assertions": 17,
+      "readback_status": "PASS",
+      "repeat_of": null,
+      "results": {
+        "geom_result_id": "CHSNGEE",
+        "stop_before_run_readback": 1,
+        "sweep_result_id": ""
+      },
+      "solver_artifacts_present": [],
+      "thin_geometry": {
+        "bytes": 495690,
+        "external_path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\d12d005-20261104T0430Z\\raw_artifacts\\a0v2_setup\\B2-05.vspgeom",
+        "local_copy": "D:\\RCAIDE-d12d005-gen\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\a0v2\\setup_gen\\B2-05\\wing355_baseline.vspgeom",
+        "local_copy_removed": true,
+        "name": "B2-05.vspgeom",
+        "outside_git": true,
+        "sha256": "ef56573de1a526a66a8caeb072a83c8495f98d31e24b2706ba4c15100f4533e7"
+      },
+      "vkey": {
+        "bytes": 379,
+        "name": "wing355_baseline.vkey",
+        "sha256": "3980a4a9b70bf237d8e3a8c7ab11b18e3f4755daa0b3b3df88117ac118c3d5c2"
+      }
+    },
+    {
+      "case_dir": "D:\\RCAIDE-d12d005-gen\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\a0v2\\setup_gen\\B2-06",
+      "case_id": "B2-06",
+      "contract": {
+        "AoA": 2.0,
+        "Beta": 0.0,
+        "Bref": 25.604638,
+        "Cref": 18.489893,
+        "FarDist": -1.0,
+        "Mach": 2.02,
+        "NumWakeNodes": 8,
+        "ReCref": 89397005.8767656,
+        "Rho": 0.1153178340089936,
+        "Sref": 358.25,
+        "Symmetry": 0,
+        "Vinf": 596.0373972278921,
+        "WakeIters": 5,
+        "WakeRelax": 1.0,
+        "X_cg": 16.821978259514246,
+        "Y_cg": 0.0,
+        "Z_cg": 0.0
+      },
+      "contract_setup": {
+        "bytes": 847,
+        "name": "B2-06_contract.vspaero",
+        "sha256": "c9cef04e6a6986fdc87f07338e168dbf2ee17bdab3f5836b417ba6e6036ccb64"
+      },
+      "csf": {
+        "bytes": 20,
+        "name": "wing355_baseline.csf",
+        "sha256": "bb29bf526f4379308ca9c271a8df90c39f4df4235f81f63e370f25e714bb797c"
+      },
+      "execution_bundle": {
+        "csf": "wing355_baseline.csf",
+        "model": "wing355_baseline.vsp3",
+        "note": "A2 执行时把 model.vsp3 + .vkey + .csf + contract.vspaero 复制到执行目录，并把 thin .vspgeom 从 external_path 复制为 <base>.vspgeom；随后把 .vkey 第 2 行改为该 .vspgeom 的绝对路径（D-12D-004 V1 根因修复），最后运行 vspaero.exe -omp 4 <base>",
+        "setup": "B2-06_contract.vspaero",
+        "vkey": "wing355_baseline.vkey",
+        "vspgeom_bytes": 495690,
+        "vspgeom_external_path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\d12d005-20261104T0430Z\\raw_artifacts\\a0v2_setup\\B2-06.vspgeom",
+        "vspgeom_sha256": "3466cec97955742e9d13f7d39e214aa5cdc682c1313d4c43c7fb7d62e19e3d53"
+      },
+      "expected_v2": {
+        "bytes": 1218,
+        "name": "expected_v2.json",
+        "sha256": "50a5b0b7e54f2339ee2b453eb6247824ec99c67d43544b0ad53bdbfa6f08c070"
+      },
+      "files_in_case_dir": [
+        "B2-06_contract.vspaero",
+        "expected_v2.json",
+        "geom_result_thin.csv",
+        "wing355_baseline.csf",
+        "wing355_baseline.vkey",
+        "wing355_baseline.vsp3",
+        "wing355_baseline.vspaero"
+      ],
+      "geom_result_csv": {
+        "bytes": 372,
+        "name": "geom_result_thin.csv",
+        "sha256": "60e435128c8b411339a9c9f20850d4269035b963d839c7640ee5b6ff85c7401e"
+      },
+      "geom_result_csv_error": null,
+      "kind": "d12",
+      "model": {
+        "bytes": 111817,
+        "name": "wing355_baseline.vsp3",
+        "sha256": "13dc1a23a5261874979a45d075c1f5b092204d6bce1086fe2031fdae084d348e"
+      },
+      "model_name": "wing355_baseline.vsp3",
+      "model_readback": {
+        "design_consistency": {
+          "checks": {
+            "area_m2": {
+              "error": 0.0,
+              "expected": 358.25000000000006,
+              "measured": 358.25000000000006,
+              "mode": "relative",
+              "status": "PASS",
+              "tolerance": 0.001
+            },
+            "chords_m[0]": {
+              "error": 0.0,
+              "expected": 29.901818514349216,
+              "measured": 29.901818514349216,
+              "mode": "relative",
+              "status": "PASS",
+              "tolerance": 0.001
+            },
+            "chords_m[1]": {
+              "error": 0.0,
+              "expected": 12.208434070312554,
+              "measured": 12.208434070312554,
+              "mode": "relative",
+              "status": "PASS",
+              "tolerance": 0.001
+            },
+            "chords_m[2]": {
+              "error": 0.0,
+              "expected": 3.892558930560952,
+              "measured": 3.892558930560952,
+              "mode": "relative",
+              "status": "PASS",
+              "tolerance": 0.001
+            },
+            "chords_m[3]": {
+              "error": 0.0,
+              "expected": 0.9731361054965724,
+              "measured": 0.9731361054965724,
+              "mode": "relative",
+              "status": "PASS",
+              "tolerance": 0.001
+            },
+            "mac_m": {
+              "error": 0.0,
+              "expected": 18.489892944055953,
+              "measured": 18.489892944055953,
+              "mode": "relative",
+              "status": "PASS",
+              "tolerance": 0.001
+            },
+            "qc_sweep_deg[0]": {
+              "error": 0.0,
+              "expected": 67.0,
+              "measured": 67.0,
+              "mode": "relative",
+              "status": "PASS",
+              "tolerance": 0.001
+            },
+            "qc_sweep_deg[1]": {
+              "error": 4.440892098500624e-16,
+              "expected": 48.0,
+              "measured": 48.00000000000002,
+              "mode": "relative",
+              "status": "PASS",
+              "tolerance": 0.001
+            },
+            "qc_sweep_deg[2]": {
+              "error": 2.0015288331270423e-16,
+              "expected": 71.0,
+              "measured": 71.00000000000001,
+              "mode": "relative",
+              "status": "PASS",
+              "tolerance": 0.001
+            },
+            "root_chord_m": {
+              "error": 0.0,
+              "expected": 29.901818514349216,
+              "measured": 29.901818514349216,
+              "mode": "relative",
+              "status": "PASS",
+              "tolerance": 0.001
+            },
+            "span_m": {
+              "error": 0.0,
+              "expected": 25.604638251691824,
+              "measured": 25.604638251691824,
+              "mode": "relative",
+              "status": "PASS",
+              "tolerance": 0.001
+            },
+            "tip_twist_deg": {
+              "error": 0.0,
+              "expected": 2.0,
+              "measured": 2.0,
+              "mode": "absolute",
+              "status": "PASS",
+              "tolerance": 1e-06
+            }
+          },
+          "failed": [],
+          "status": "PASS",
+          "tolerance": 0.001
+        },
+        "design_overrides": {
+          "tip_twist": 2.0
+        },
+        "design_physical": {
+          "aspect_ratio": 1.83,
+          "chord_ratio_2": 0.408284,
+          "chord_ratio_3": 0.130178,
+          "span_location_2": 0.480469,
+          "span_location_3": 0.945313,
+          "sweep_1": 67.0,
+          "sweep_2": 48.0,
+          "sweep_3": 71.0,
+          "tip_twist": 2.0,
+          "vertical_tail_area": 33.91,
+          "vertical_tail_sweep_delta": 0.0,
+          "wing_area": 358.25
+        },
+        "geometry_expected": {
+          "area_m2": 358.25000000000006,
+          "chords_m": [
+            29.901818514349216,
+            12.208434070312554,
+            3.892558930560952,
+            0.9731361054965724
+          ],
+          "mac_m": 18.489892944055953,
+          "qc_sweep_deg": [
+            67.0,
+            48.0,
+            71.0
+          ],
+          "root_chord_m": 29.901818514349216,
+          "span_m": 25.604638251691824,
+          "tip_twist_deg": 2.0
+        },
+        "openvsp_request": {
+          "component": "main_wing",
+          "location": [
+            14.0,
+            0.0,
+            -0.8
+          ],
+          "section_count": 4,
+          "span_m": 25.604638251691824
+        },
+        "readback": {
+          "area_m2": 358.25000000000006,
+          "chords_m": [
+            29.901818514349216,
+            12.208434070312554,
+            3.892558930560952,
+            0.9731361054965724
+          ],
+          "le_sweep_deg": [
+            0.0,
+            71.98511412778159,
+            55.59071448860179,
+            75.78177618375872
+          ],
+          "mac_m": 18.489892944055953,
+          "qc_sweep_deg": [
+            67.0,
+            48.00000000000002,
+            71.00000000000001
+          ],
+          "root_chord_m": 29.901818514349216,
+          "root_chord_raw": [
+            29.901818514349216,
+            29.901818514349216,
+            12.208434070312554,
+            3.892558930560952
+          ],
+          "sect_tess_u": [
+            12.0,
+            12.0,
+            12.0,
+            12.0
+          ],
+          "semispan_m": 12.802319125845912,
+          "span_m": 25.604638251691824,
+          "tip_chord_raw": [
+            29.901818514349216,
+            12.208434070312554,
+            3.892558930560952,
+            0.9731361054965724
+          ],
+          "tip_twist_deg": 2.0,
+          "twists_deg": [
+            0.0,
+            0.0,
+            0.0,
+            2.0
+          ]
+        },
+        "sect_tess_u_expected": [
+          12.0,
+          12.0,
+          12.0,
+          12.0
+        ],
+        "sect_tess_u_max_abs_error": 0.0,
+        "sect_tess_u_readback": [
+          12.0,
+          12.0,
+          12.0,
+          12.0
+        ],
+        "sect_tess_u_status": "PASS",
+        "std_wing_metrics": null,
+        "std_wing_metrics_expected": null
+      },
+      "note": "单因素扰动 W10 tip_twist=2.0（baseline 0），SectTess_U=12",
+      "raw_setup": {
+        "bytes": 930,
+        "name": "wing355_baseline.vspaero",
+        "sha256": "c862aa220bc6f3a9d057b2fbe99c4ed340591a14ad88f455d3d1b0ddbe7c1804"
+      },
+      "readback": {
+        "assertions": 17,
+        "bytes": 847,
+        "expected_source": "a0_generate_setups_v2.py:B2-06",
+        "fields_checked": [
+          {
+            "actual": 358.25,
+            "detail": "rel_delta=0.000e+00 tol=3.583e-07",
+            "expected": 358.25,
+            "field": "Sref",
+            "ok": true,
+            "spec": "rel:1e-09"
+          },
+          {
+            "actual": 18.489893,
+            "detail": "rel_delta=0.000e+00 tol=1.849e-08",
+            "expected": 18.489893,
+            "field": "Cref",
+            "ok": true,
+            "spec": "rel:1e-09"
+          },
+          {
+            "actual": 25.604638,
+            "detail": "rel_delta=0.000e+00 tol=2.560e-08",
+            "expected": 25.604638,
+            "field": "Bref",
+            "ok": true,
+            "spec": "rel:1e-09"
+          },
+          {
+            "actual": 16.821978259514246,
+            "detail": "abs_delta=0.000e+00 tol=1.000e-06",
+            "expected": 16.821978259514246,
+            "field": "X_cg",
+            "ok": true,
+            "spec": "abs:1e-06"
+          },
+          {
+            "actual": 0.0,
+            "detail": "abs_delta=0.000e+00 tol=1.000e-09",
+            "expected": 0.0,
+            "field": "Y_cg",
+            "ok": true,
+            "spec": "abs:1e-09"
+          },
+          {
+            "actual": 0.0,
+            "detail": "abs_delta=0.000e+00 tol=1.000e-06",
+            "expected": 0.0,
+            "field": "Z_cg",
+            "ok": true,
+            "spec": "abs:1e-06"
+          },
+          {
+            "actual": 2.02,
+            "detail": "rel_delta=0.000e+00 tol=2.020e-09",
+            "expected": 2.02,
+            "field": "Mach",
+            "ok": true,
+            "spec": "rel:1e-09"
+          },
+          {
+            "actual": 2.0,
+            "detail": "abs_delta=0.000e+00 tol=1.000e-09",
+            "expected": 2.0,
+            "field": "AoA",
+            "ok": true,
+            "spec": "abs:1e-09"
+          },
+          {
+            "actual": 0.0,
+            "detail": "abs_delta=0.000e+00 tol=1.000e-09",
+            "expected": 0.0,
+            "field": "Beta",
+            "ok": true,
+            "spec": "abs:1e-09"
+          },
+          {
+            "actual": 89397005.8767656,
+            "detail": "rel_delta=0.000e+00 tol=8.940e+01",
+            "expected": 89397005.8767656,
+            "field": "ReCref",
+            "ok": true,
+            "spec": "rel:1e-06"
+          },
+          {
+            "actual": 596.0373972278921,
+            "detail": "rel_delta=0.000e+00 tol=5.960e-07",
+            "expected": 596.0373972278921,
+            "field": "Vinf",
+            "ok": true,
+            "spec": "rel:1e-09"
+          },
+          {
+            "actual": 0.1153178340089936,
+            "detail": "rel_delta=0.000e+00 tol=1.000e-09",
+            "expected": 0.1153178340089936,
+            "field": "Rho",
+            "ok": true,
+            "spec": "rel:1e-09"
+          },
+          {
+            "actual": 0.0,
+            "detail": "exact ok",
+            "expected": 0.0,
+            "field": "Symmetry",
+            "ok": true,
+            "spec": "exact:0.0"
+          },
+          {
+            "actual": 8.0,
+            "detail": "exact ok",
+            "expected": 8.0,
+            "field": "NumWakeNodes",
+            "ok": true,
+            "spec": "exact:0.0"
+          },
+          {
+            "actual": 5.0,
+            "detail": "exact ok",
+            "expected": 5.0,
+            "field": "WakeIters",
+            "ok": true,
+            "spec": "exact:0.0"
+          },
+          {
+            "actual": 1.0,
+            "detail": "rel_delta=0.000e+00 tol=1.000e-09",
+            "expected": 1.0,
+            "field": "WakeRelax",
+            "ok": true,
+            "spec": "rel:1e-09"
+          },
+          {
+            "actual": -1.0,
+            "detail": "rel_delta=0.000e+00 tol=1.000e-09",
+            "expected": -1.0,
+            "field": "FarDist",
+            "ok": true,
+            "spec": "rel:1e-09"
+          }
+        ],
+        "has_equals_format": true,
+        "injected_from": "D:\\RCAIDE-d12d005-gen\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\a0v2\\setup_gen\\B2-06\\wing355_baseline.vspaero",
+        "legacy_lines": 0,
+        "legacy_lines_normalized": 0,
+        "line_count": 42,
+        "path": "D:\\RCAIDE-d12d005-gen\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\a0v2\\setup_gen\\B2-06\\B2-06_contract.vspaero",
+        "rewrite": {
+          "AoA": {
+            "legacy_converted": false,
+            "new": 2.0,
+            "old": "2",
+            "rewritten": true
+          },
+          "Beta": {
+            "legacy_converted": false,
+            "new": 0.0,
+            "old": "0",
+            "rewritten": true
+          },
+          "Bref": {
+            "legacy_converted": false,
+            "new": 25.604638,
+            "old": "25.604638000000001",
+            "rewritten": true
+          },
+          "Cref": {
+            "legacy_converted": false,
+            "new": 18.489893,
+            "old": "18.489892999999999",
+            "rewritten": true
+          },
+          "FarDist": {
+            "legacy_converted": false,
+            "new": -1.0,
+            "old": "-1",
+            "rewritten": true
+          },
+          "Mach": {
+            "legacy_converted": false,
+            "new": 2.02,
+            "old": "2.02",
+            "rewritten": true
+          },
+          "NumWakeNodes": {
+            "legacy_converted": false,
+            "new": 8,
+            "old": "8",
+            "rewritten": true
+          },
+          "ReCref": {
+            "legacy_converted": false,
+            "new": 89397005.8767656,
+            "old": "10000000",
+            "rewritten": true
+          },
+          "Rho": {
+            "legacy_converted": false,
+            "new": 0.1153178340089936,
+            "old": "0.0023770000000000002",
+            "rewritten": true
+          },
+          "Sref": {
+            "legacy_converted": false,
+            "new": 358.25,
+            "old": "358.25",
+            "rewritten": true
+          },
+          "Symmetry": {
+            "legacy_converted": false,
+            "new": 0,
+            "old": "0",
+            "rewritten": true
+          },
+          "Vinf": {
+            "legacy_converted": false,
+            "new": 596.0373972278921,
+            "old": "100",
+            "rewritten": true
+          },
+          "WakeIters": {
+            "legacy_converted": false,
+            "new": 5,
+            "old": "5",
+            "rewritten": true
+          },
+          "WakeRelax": {
+            "legacy_converted": false,
+            "new": 1.0,
+            "old": "1",
+            "rewritten": true
+          },
+          "X_cg": {
+            "legacy_converted": false,
+            "new": 16.821978259514246,
+            "old": "16.821978259514246",
+            "rewritten": true
+          },
+          "Y_cg": {
+            "legacy_converted": false,
+            "new": 0.0,
+            "old": "0",
+            "rewritten": true
+          },
+          "Z_cg": {
+            "legacy_converted": false,
+            "new": 0.0,
+            "old": "0",
+            "rewritten": true
+          }
+        },
+        "sha256": "c9cef04e6a6986fdc87f07338e168dbf2ee17bdab3f5836b417ba6e6036ccb64",
+        "source": "D:\\RCAIDE-d12d005-gen\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\a0v2\\setup_gen\\B2-06\\B2-06_contract.vspaero",
+        "status": "PASS",
+        "target_sha256": "c9cef04e6a6986fdc87f07338e168dbf2ee17bdab3f5836b417ba6e6036ccb64",
+        "vector_rows": 1
+      },
+      "readback_assertions": 17,
+      "readback_status": "PASS",
+      "repeat_of": null,
+      "results": {
+        "geom_result_id": "SKZLHGY",
+        "stop_before_run_readback": 1,
+        "sweep_result_id": ""
+      },
+      "solver_artifacts_present": [],
+      "thin_geometry": {
+        "bytes": 495690,
+        "external_path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\d12d005-20261104T0430Z\\raw_artifacts\\a0v2_setup\\B2-06.vspgeom",
+        "local_copy": "D:\\RCAIDE-d12d005-gen\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\a0v2\\setup_gen\\B2-06\\wing355_baseline.vspgeom",
+        "local_copy_removed": true,
+        "name": "B2-06.vspgeom",
+        "outside_git": true,
+        "sha256": "3466cec97955742e9d13f7d39e214aa5cdc682c1313d4c43c7fb7d62e19e3d53"
+      },
+      "vkey": {
+        "bytes": 379,
+        "name": "wing355_baseline.vkey",
+        "sha256": "b1dc21593aa63732e1d413442dd842c37b4f7aac5b8b1d84eb82f10325a466dd"
+      }
+    },
+    {
+      "case_dir": "D:\\RCAIDE-d12d005-gen\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\a0v2\\setup_gen\\B2-07",
+      "case_id": "B2-07",
+      "contract": {
+        "AoA": 2.0,
+        "Beta": 0.0,
+        "Bref": 25.604638,
+        "Cref": 18.489893,
+        "FarDist": -1.0,
+        "Mach": 2.02,
+        "NumWakeNodes": 8,
+        "ReCref": 89397005.8767656,
+        "Rho": 0.1153178340089936,
+        "Sref": 358.25,
+        "Symmetry": 0,
+        "Vinf": 596.0373972278921,
+        "WakeIters": 5,
+        "WakeRelax": 1.0,
+        "X_cg": 16.821978259514246,
+        "Y_cg": 0.0,
+        "Z_cg": 0.0
+      },
+      "contract_setup": {
+        "bytes": 847,
+        "name": "B2-07_contract.vspaero",
+        "sha256": "c9cef04e6a6986fdc87f07338e168dbf2ee17bdab3f5836b417ba6e6036ccb64"
+      },
+      "csf": {
+        "bytes": 20,
+        "name": "wing355_baseline.csf",
+        "sha256": "bb29bf526f4379308ca9c271a8df90c39f4df4235f81f63e370f25e714bb797c"
+      },
+      "execution_bundle": {
+        "csf": "wing355_baseline.csf",
+        "model": "wing355_baseline.vsp3",
+        "note": "A2 执行时把 model.vsp3 + .vkey + .csf + contract.vspaero 复制到执行目录，并把 thin .vspgeom 从 external_path 复制为 <base>.vspgeom；随后把 .vkey 第 2 行改为该 .vspgeom 的绝对路径（D-12D-004 V1 根因修复），最后运行 vspaero.exe -omp 4 <base>",
+        "setup": "B2-07_contract.vspaero",
+        "vkey": "wing355_baseline.vkey",
+        "vspgeom_bytes": 495690,
+        "vspgeom_external_path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\d12d005-20261104T0430Z\\raw_artifacts\\a0v2_setup\\B2-07.vspgeom",
+        "vspgeom_sha256": "d071b05feb499931ec2022b19787047adb34dcc27693466c57b4baf777c981d3"
+      },
+      "expected_v2": {
+        "bytes": 1209,
+        "name": "expected_v2.json",
+        "sha256": "a14520fb7e9916de9ceeb805aa99957adf760e81dc079d0ad7b85efaa589b284"
+      },
+      "files_in_case_dir": [
+        "B2-07_contract.vspaero",
+        "expected_v2.json",
+        "geom_result_thin.csv",
+        "wing355_baseline.csf",
+        "wing355_baseline.vkey",
+        "wing355_baseline.vsp3",
+        "wing355_baseline.vspaero"
+      ],
+      "geom_result_csv": {
+        "bytes": 372,
+        "name": "geom_result_thin.csv",
+        "sha256": "12040a72a29097486d15a12ea51ccdce13e5c3ee079aa8b05d9ee3c6798e5d46"
+      },
+      "geom_result_csv_error": null,
+      "kind": "d12",
+      "model": {
+        "bytes": 111816,
+        "name": "wing355_baseline.vsp3",
+        "sha256": "cccada66de718b23a039af88dae769070e5674b0ba32e4b706f8ef2d47cd8b4c"
+      },
+      "model_name": "wing355_baseline.vsp3",
+      "model_readback": {
+        "design_consistency": {
+          "checks": {
+            "area_m2": {
+              "error": 0.0,
+              "expected": 358.25000000000006,
+              "measured": 358.25000000000006,
+              "mode": "relative",
+              "status": "PASS",
+              "tolerance": 0.001
+            },
+            "chords_m[0]": {
+              "error": 0.0,
+              "expected": 29.901818514349216,
+              "measured": 29.901818514349216,
+              "mode": "relative",
+              "status": "PASS",
+              "tolerance": 0.001
+            },
+            "chords_m[1]": {
+              "error": 0.0,
+              "expected": 12.208434070312554,
+              "measured": 12.208434070312554,
+              "mode": "relative",
+              "status": "PASS",
+              "tolerance": 0.001
+            },
+            "chords_m[2]": {
+              "error": 0.0,
+              "expected": 3.892558930560952,
+              "measured": 3.892558930560952,
+              "mode": "relative",
+              "status": "PASS",
+              "tolerance": 0.001
+            },
+            "chords_m[3]": {
+              "error": 0.0,
+              "expected": 0.9731361054965724,
+              "measured": 0.9731361054965724,
+              "mode": "relative",
+              "status": "PASS",
+              "tolerance": 0.001
+            },
+            "mac_m": {
+              "error": 0.0,
+              "expected": 18.489892944055953,
+              "measured": 18.489892944055953,
+              "mode": "relative",
+              "status": "PASS",
+              "tolerance": 0.001
+            },
+            "qc_sweep_deg[0]": {
+              "error": 0.0,
+              "expected": 67.0,
+              "measured": 67.0,
+              "mode": "relative",
+              "status": "PASS",
+              "tolerance": 0.001
+            },
+            "qc_sweep_deg[1]": {
+              "error": 4.440892098500624e-16,
+              "expected": 48.0,
+              "measured": 48.00000000000002,
+              "mode": "relative",
+              "status": "PASS",
+              "tolerance": 0.001
+            },
+            "qc_sweep_deg[2]": {
+              "error": 2.0015288331270423e-16,
+              "expected": 71.0,
+              "measured": 71.00000000000001,
+              "mode": "relative",
+              "status": "PASS",
+              "tolerance": 0.001
+            },
+            "root_chord_m": {
+              "error": 0.0,
+              "expected": 29.901818514349216,
+              "measured": 29.901818514349216,
+              "mode": "relative",
+              "status": "PASS",
+              "tolerance": 0.001
+            },
+            "span_m": {
+              "error": 0.0,
+              "expected": 25.604638251691824,
+              "measured": 25.604638251691824,
+              "mode": "relative",
+              "status": "PASS",
+              "tolerance": 0.001
+            },
+            "tip_twist_deg": {
+              "error": 0.0,
+              "expected": 0.0,
+              "measured": 0.0,
+              "mode": "absolute",
+              "status": "PASS",
+              "tolerance": 1e-06
+            }
+          },
+          "failed": [],
+          "status": "PASS",
+          "tolerance": 0.001
+        },
+        "design_overrides": {},
+        "design_physical": {
+          "aspect_ratio": 1.83,
+          "chord_ratio_2": 0.408284,
+          "chord_ratio_3": 0.130178,
+          "span_location_2": 0.480469,
+          "span_location_3": 0.945313,
+          "sweep_1": 67.0,
+          "sweep_2": 48.0,
+          "sweep_3": 71.0,
+          "tip_twist": 0.0,
+          "vertical_tail_area": 33.91,
+          "vertical_tail_sweep_delta": 0.0,
+          "wing_area": 358.25
+        },
+        "geometry_expected": {
+          "area_m2": 358.25000000000006,
+          "chords_m": [
+            29.901818514349216,
+            12.208434070312554,
+            3.892558930560952,
+            0.9731361054965724
+          ],
+          "mac_m": 18.489892944055953,
+          "qc_sweep_deg": [
+            67.0,
+            48.0,
+            71.0
+          ],
+          "root_chord_m": 29.901818514349216,
+          "span_m": 25.604638251691824,
+          "tip_twist_deg": 0.0
+        },
+        "openvsp_request": {
+          "component": "main_wing",
+          "location": [
+            14.0,
+            0.0,
+            -0.8
+          ],
+          "section_count": 4,
+          "span_m": 25.604638251691824
+        },
+        "readback": {
+          "area_m2": 358.25000000000006,
+          "chords_m": [
+            29.901818514349216,
+            12.208434070312554,
+            3.892558930560952,
+            0.9731361054965724
+          ],
+          "le_sweep_deg": [
+            0.0,
+            71.98511412778159,
+            55.59071448860179,
+            75.78177618375872
+          ],
+          "mac_m": 18.489892944055953,
+          "qc_sweep_deg": [
+            67.0,
+            48.00000000000002,
+            71.00000000000001
+          ],
+          "root_chord_m": 29.901818514349216,
+          "root_chord_raw": [
+            29.901818514349216,
+            29.901818514349216,
+            12.208434070312554,
+            3.892558930560952
+          ],
+          "sect_tess_u": [
+            12.0,
+            12.0,
+            12.0,
+            12.0
+          ],
+          "semispan_m": 12.802319125845912,
+          "span_m": 25.604638251691824,
+          "tip_chord_raw": [
+            29.901818514349216,
+            12.208434070312554,
+            3.892558930560952,
+            0.9731361054965724
+          ],
+          "tip_twist_deg": 0.0,
+          "twists_deg": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "sect_tess_u_expected": [
+          12.0,
+          12.0,
+          12.0,
+          12.0
+        ],
+        "sect_tess_u_max_abs_error": 0.0,
+        "sect_tess_u_readback": [
+          12.0,
+          12.0,
+          12.0,
+          12.0
+        ],
+        "sect_tess_u_status": "PASS",
+        "std_wing_metrics": null,
+        "std_wing_metrics_expected": null
+      },
+      "note": "B2-03 重建（repeatability check；SectTess_U=12）",
+      "raw_setup": {
+        "bytes": 930,
+        "name": "wing355_baseline.vspaero",
+        "sha256": "c862aa220bc6f3a9d057b2fbe99c4ed340591a14ad88f455d3d1b0ddbe7c1804"
+      },
+      "readback": {
+        "assertions": 17,
+        "bytes": 847,
+        "expected_source": "a0_generate_setups_v2.py:B2-07",
+        "fields_checked": [
+          {
+            "actual": 358.25,
+            "detail": "rel_delta=0.000e+00 tol=3.583e-07",
+            "expected": 358.25,
+            "field": "Sref",
+            "ok": true,
+            "spec": "rel:1e-09"
+          },
+          {
+            "actual": 18.489893,
+            "detail": "rel_delta=0.000e+00 tol=1.849e-08",
+            "expected": 18.489893,
+            "field": "Cref",
+            "ok": true,
+            "spec": "rel:1e-09"
+          },
+          {
+            "actual": 25.604638,
+            "detail": "rel_delta=0.000e+00 tol=2.560e-08",
+            "expected": 25.604638,
+            "field": "Bref",
+            "ok": true,
+            "spec": "rel:1e-09"
+          },
+          {
+            "actual": 16.821978259514246,
+            "detail": "abs_delta=0.000e+00 tol=1.000e-06",
+            "expected": 16.821978259514246,
+            "field": "X_cg",
+            "ok": true,
+            "spec": "abs:1e-06"
+          },
+          {
+            "actual": 0.0,
+            "detail": "abs_delta=0.000e+00 tol=1.000e-09",
+            "expected": 0.0,
+            "field": "Y_cg",
+            "ok": true,
+            "spec": "abs:1e-09"
+          },
+          {
+            "actual": 0.0,
+            "detail": "abs_delta=0.000e+00 tol=1.000e-06",
+            "expected": 0.0,
+            "field": "Z_cg",
+            "ok": true,
+            "spec": "abs:1e-06"
+          },
+          {
+            "actual": 2.02,
+            "detail": "rel_delta=0.000e+00 tol=2.020e-09",
+            "expected": 2.02,
+            "field": "Mach",
+            "ok": true,
+            "spec": "rel:1e-09"
+          },
+          {
+            "actual": 2.0,
+            "detail": "abs_delta=0.000e+00 tol=1.000e-09",
+            "expected": 2.0,
+            "field": "AoA",
+            "ok": true,
+            "spec": "abs:1e-09"
+          },
+          {
+            "actual": 0.0,
+            "detail": "abs_delta=0.000e+00 tol=1.000e-09",
+            "expected": 0.0,
+            "field": "Beta",
+            "ok": true,
+            "spec": "abs:1e-09"
+          },
+          {
+            "actual": 89397005.8767656,
+            "detail": "rel_delta=0.000e+00 tol=8.940e+01",
+            "expected": 89397005.8767656,
+            "field": "ReCref",
+            "ok": true,
+            "spec": "rel:1e-06"
+          },
+          {
+            "actual": 596.0373972278921,
+            "detail": "rel_delta=0.000e+00 tol=5.960e-07",
+            "expected": 596.0373972278921,
+            "field": "Vinf",
+            "ok": true,
+            "spec": "rel:1e-09"
+          },
+          {
+            "actual": 0.1153178340089936,
+            "detail": "rel_delta=0.000e+00 tol=1.000e-09",
+            "expected": 0.1153178340089936,
+            "field": "Rho",
+            "ok": true,
+            "spec": "rel:1e-09"
+          },
+          {
+            "actual": 0.0,
+            "detail": "exact ok",
+            "expected": 0.0,
+            "field": "Symmetry",
+            "ok": true,
+            "spec": "exact:0.0"
+          },
+          {
+            "actual": 8.0,
+            "detail": "exact ok",
+            "expected": 8.0,
+            "field": "NumWakeNodes",
+            "ok": true,
+            "spec": "exact:0.0"
+          },
+          {
+            "actual": 5.0,
+            "detail": "exact ok",
+            "expected": 5.0,
+            "field": "WakeIters",
+            "ok": true,
+            "spec": "exact:0.0"
+          },
+          {
+            "actual": 1.0,
+            "detail": "rel_delta=0.000e+00 tol=1.000e-09",
+            "expected": 1.0,
+            "field": "WakeRelax",
+            "ok": true,
+            "spec": "rel:1e-09"
+          },
+          {
+            "actual": -1.0,
+            "detail": "rel_delta=0.000e+00 tol=1.000e-09",
+            "expected": -1.0,
+            "field": "FarDist",
+            "ok": true,
+            "spec": "rel:1e-09"
+          }
+        ],
+        "has_equals_format": true,
+        "injected_from": "D:\\RCAIDE-d12d005-gen\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\a0v2\\setup_gen\\B2-07\\wing355_baseline.vspaero",
+        "legacy_lines": 0,
+        "legacy_lines_normalized": 0,
+        "line_count": 42,
+        "path": "D:\\RCAIDE-d12d005-gen\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\a0v2\\setup_gen\\B2-07\\B2-07_contract.vspaero",
+        "rewrite": {
+          "AoA": {
+            "legacy_converted": false,
+            "new": 2.0,
+            "old": "2",
+            "rewritten": true
+          },
+          "Beta": {
+            "legacy_converted": false,
+            "new": 0.0,
+            "old": "0",
+            "rewritten": true
+          },
+          "Bref": {
+            "legacy_converted": false,
+            "new": 25.604638,
+            "old": "25.604638000000001",
+            "rewritten": true
+          },
+          "Cref": {
+            "legacy_converted": false,
+            "new": 18.489893,
+            "old": "18.489892999999999",
+            "rewritten": true
+          },
+          "FarDist": {
+            "legacy_converted": false,
+            "new": -1.0,
+            "old": "-1",
+            "rewritten": true
+          },
+          "Mach": {
+            "legacy_converted": false,
+            "new": 2.02,
+            "old": "2.02",
+            "rewritten": true
+          },
+          "NumWakeNodes": {
+            "legacy_converted": false,
+            "new": 8,
+            "old": "8",
+            "rewritten": true
+          },
+          "ReCref": {
+            "legacy_converted": false,
+            "new": 89397005.8767656,
+            "old": "10000000",
+            "rewritten": true
+          },
+          "Rho": {
+            "legacy_converted": false,
+            "new": 0.1153178340089936,
+            "old": "0.0023770000000000002",
+            "rewritten": true
+          },
+          "Sref": {
+            "legacy_converted": false,
+            "new": 358.25,
+            "old": "358.25",
+            "rewritten": true
+          },
+          "Symmetry": {
+            "legacy_converted": false,
+            "new": 0,
+            "old": "0",
+            "rewritten": true
+          },
+          "Vinf": {
+            "legacy_converted": false,
+            "new": 596.0373972278921,
+            "old": "100",
+            "rewritten": true
+          },
+          "WakeIters": {
+            "legacy_converted": false,
+            "new": 5,
+            "old": "5",
+            "rewritten": true
+          },
+          "WakeRelax": {
+            "legacy_converted": false,
+            "new": 1.0,
+            "old": "1",
+            "rewritten": true
+          },
+          "X_cg": {
+            "legacy_converted": false,
+            "new": 16.821978259514246,
+            "old": "16.821978259514246",
+            "rewritten": true
+          },
+          "Y_cg": {
+            "legacy_converted": false,
+            "new": 0.0,
+            "old": "0",
+            "rewritten": true
+          },
+          "Z_cg": {
+            "legacy_converted": false,
+            "new": 0.0,
+            "old": "0",
+            "rewritten": true
+          }
+        },
+        "sha256": "c9cef04e6a6986fdc87f07338e168dbf2ee17bdab3f5836b417ba6e6036ccb64",
+        "source": "D:\\RCAIDE-d12d005-gen\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\a0v2\\setup_gen\\B2-07\\B2-07_contract.vspaero",
+        "status": "PASS",
+        "target_sha256": "c9cef04e6a6986fdc87f07338e168dbf2ee17bdab3f5836b417ba6e6036ccb64",
+        "vector_rows": 1
+      },
+      "readback_assertions": 17,
+      "readback_status": "PASS",
+      "repeat_of": "B2-03",
+      "results": {
+        "geom_result_id": "OUAQKNL",
+        "stop_before_run_readback": 1,
+        "sweep_result_id": ""
+      },
+      "solver_artifacts_present": [],
+      "thin_geometry": {
+        "bytes": 495690,
+        "external_path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\d12d005-20261104T0430Z\\raw_artifacts\\a0v2_setup\\B2-07.vspgeom",
+        "local_copy": "D:\\RCAIDE-d12d005-gen\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\a0v2\\setup_gen\\B2-07\\wing355_baseline.vspgeom",
+        "local_copy_removed": true,
+        "name": "B2-07.vspgeom",
+        "outside_git": true,
+        "sha256": "d071b05feb499931ec2022b19787047adb34dcc27693466c57b4baf777c981d3"
+      },
+      "vkey": {
+        "bytes": 379,
+        "name": "wing355_baseline.vkey",
+        "sha256": "a5cea60ccdc6d03711294cea0e1a8397d892ba8faffcb50e80a460a1e918948d"
+      }
+    },
+    {
+      "case_dir": "D:\\RCAIDE-d12d005-gen\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\a0v2\\setup_gen\\S6_STD_M2p02_aoa1",
+      "case_id": "S6_STD_M2p02_aoa1",
+      "contract": {
+        "AoA": 1.0,
+        "Beta": 0.0,
+        "Bref": 4.0,
+        "Cref": 1.0,
+        "FarDist": -1.0,
+        "Mach": 2.02,
+        "NumWakeNodes": 8,
+        "ReCref": 4834912.016269014,
+        "Rho": 0.1153178340089936,
+        "Sref": 4.0,
+        "Symmetry": 0,
+        "Vinf": 596.0373971680001,
+        "WakeIters": 5,
+        "WakeRelax": 1.0,
+        "X_cg": 0.25,
+        "Y_cg": 0.0,
+        "Z_cg": 0.0
+      },
+      "contract_setup": {
+        "bytes": 813,
+        "name": "S6_STD_M2p02_aoa1_contract.vspaero",
+        "sha256": "5a1e69bb298eae3d4e6c27f5b648750cb28eebb7b6f1581656dfd72b1727f463"
+      },
+      "csf": {
+        "bytes": 20,
+        "name": "S6_STD_M2p02_aoa1_model.csf",
+        "sha256": "bb29bf526f4379308ca9c271a8df90c39f4df4235f81f63e370f25e714bb797c"
+      },
+      "execution_bundle": {
+        "csf": "S6_STD_M2p02_aoa1_model.csf",
+        "model": "S6_STD_M2p02_aoa1_model.vsp3",
+        "note": "A2 执行时把 model.vsp3 + .vkey + .csf + contract.vspaero 复制到执行目录，并把 thin .vspgeom 从 external_path 复制为 <base>.vspgeom；随后把 .vkey 第 2 行改为该 .vspgeom 的绝对路径（D-12D-004 V1 根因修复），最后运行 vspaero.exe -omp 4 <base>",
+        "setup": "S6_STD_M2p02_aoa1_contract.vspaero",
+        "vkey": "S6_STD_M2p02_aoa1_model.vkey",
+        "vspgeom_bytes": 284327,
+        "vspgeom_external_path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\d12d005-20261104T0430Z\\raw_artifacts\\a0v2_setup\\S6_STD_M2p02_aoa1.vspgeom",
+        "vspgeom_sha256": "8363f8fb209dd3120bbdf2e3766605b9405b97de0c7561b0be08c91c4cb8ebad"
+      },
+      "expected_v2": {
+        "bytes": 1576,
+        "name": "expected_v2.json",
+        "sha256": "50c624fe0cb6f8e04b4521b271f1c6efaa2e5bbebbee44e5a379eba87730bd45"
+      },
+      "files_in_case_dir": [
+        "S6_STD_M2p02_aoa1_contract.vspaero",
+        "S6_STD_M2p02_aoa1_model.csf",
+        "S6_STD_M2p02_aoa1_model.vkey",
+        "S6_STD_M2p02_aoa1_model.vsp3",
+        "S6_STD_M2p02_aoa1_model.vspaero",
+        "expected_v2.json",
+        "geom_result_thin.csv"
+      ],
+      "geom_result_csv": {
+        "bytes": 391,
+        "name": "geom_result_thin.csv",
+        "sha256": "0bc5eab57a773fdaef858c7acc31701e286aa6fd4c876a43bb2f7c046e55e4a1"
+      },
+      "geom_result_csv_error": null,
+      "kind": "std",
+      "model": {
+        "bytes": 87723,
+        "name": "S6_STD_M2p02_aoa1_model.vsp3",
+        "sha256": "53b4deaba2fd07d23916f0b08dcdfdda7a88a3932d80512d5f0a66e65e3f6450"
+      },
+      "model_name": "S6_STD_M2p02_aoa1_model.vsp3",
+      "model_readback": {
+        "design_consistency": null,
+        "design_overrides": {},
+        "design_physical": null,
+        "geometry_expected": null,
+        "openvsp_request": {
+          "component": "STD_RECT_AR4",
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "section_count": 2,
+          "span_m": 4.0
+        },
+        "readback": {
+          "area_m2": 4.0,
+          "chords_m": [
+            1.0,
+            1.0
+          ],
+          "le_sweep_deg": [
+            0.0,
+            0.0
+          ],
+          "mac_m": 1.0,
+          "qc_sweep_deg": [
+            0.0
+          ],
+          "root_chord_m": 1.0,
+          "root_chord_raw": [
+            1.0,
+            1.0
+          ],
+          "sect_tess_u": [
+            20.0,
+            20.0
+          ],
+          "semispan_m": 2.0,
+          "span_m": 4.0,
+          "tip_chord_raw": [
+            1.0,
+            1.0
+          ],
+          "tip_twist_deg": 0.0,
+          "twists_deg": [
+            0.0,
+            0.0
+          ]
+        },
+        "sect_tess_u_expected": [
+          20.0,
+          20.0
+        ],
+        "sect_tess_u_max_abs_error": 0.0,
+        "sect_tess_u_readback": [
+          20.0,
+          20.0
+        ],
+        "sect_tess_u_status": "PASS",
+        "std_wing_metrics": {
+          "TotalAR": 4.0,
+          "TotalArea": 4.0,
+          "TotalChord": 1.0,
+          "TotalSpan": 4.0
+        },
+        "std_wing_metrics_expected": {
+          "TotalAR": 4.0,
+          "TotalArea": 4.0,
+          "TotalChord": 1.0,
+          "TotalSpan": 4.0
+        }
+      },
+      "note": "独立超声速确认 case：标准矩形翼 Mach 2.02 AoA=1deg（与 S3 同几何/合同，仅 AoA 减半）",
+      "raw_setup": {
+        "bytes": 877,
+        "name": "S6_STD_M2p02_aoa1_model.vspaero",
+        "sha256": "55be1d5951f53466440b3b008e9f05da9ee33e4d7f1a878d1a74c01fd2be9150"
+      },
+      "readback": {
+        "assertions": 17,
+        "bytes": 813,
+        "expected_source": "a0_generate_setups_v2.py:S6_STD_M2p02_aoa1",
+        "fields_checked": [
+          {
+            "actual": 4.0,
+            "detail": "rel_delta=0.000e+00 tol=4.000e-09",
+            "expected": 4.0,
+            "field": "Sref",
+            "ok": true,
+            "spec": "rel:1e-09"
+          },
+          {
+            "actual": 1.0,
+            "detail": "rel_delta=0.000e+00 tol=1.000e-09",
+            "expected": 1.0,
+            "field": "Cref",
+            "ok": true,
+            "spec": "rel:1e-09"
+          },
+          {
+            "actual": 4.0,
+            "detail": "rel_delta=0.000e+00 tol=4.000e-09",
+            "expected": 4.0,
+            "field": "Bref",
+            "ok": true,
+            "spec": "rel:1e-09"
+          },
+          {
+            "actual": 0.25,
+            "detail": "abs_delta=0.000e+00 tol=1.000e-06",
+            "expected": 0.25,
+            "field": "X_cg",
+            "ok": true,
+            "spec": "abs:1e-06"
+          },
+          {
+            "actual": 0.0,
+            "detail": "abs_delta=0.000e+00 tol=1.000e-09",
+            "expected": 0.0,
+            "field": "Y_cg",
+            "ok": true,
+            "spec": "abs:1e-09"
+          },
+          {
+            "actual": 0.0,
+            "detail": "abs_delta=0.000e+00 tol=1.000e-06",
+            "expected": 0.0,
+            "field": "Z_cg",
+            "ok": true,
+            "spec": "abs:1e-06"
+          },
+          {
+            "actual": 2.02,
+            "detail": "rel_delta=0.000e+00 tol=2.020e-09",
+            "expected": 2.02,
+            "field": "Mach",
+            "ok": true,
+            "spec": "rel:1e-09"
+          },
+          {
+            "actual": 1.0,
+            "detail": "abs_delta=0.000e+00 tol=1.000e-09",
+            "expected": 1.0,
+            "field": "AoA",
+            "ok": true,
+            "spec": "abs:1e-09"
+          },
+          {
+            "actual": 0.0,
+            "detail": "abs_delta=0.000e+00 tol=1.000e-09",
+            "expected": 0.0,
+            "field": "Beta",
+            "ok": true,
+            "spec": "abs:1e-09"
+          },
+          {
+            "actual": 4834912.016269014,
+            "detail": "rel_delta=0.000e+00 tol=4.835e+00",
+            "expected": 4834912.016269014,
+            "field": "ReCref",
+            "ok": true,
+            "spec": "rel:1e-06"
+          },
+          {
+            "actual": 596.0373971680001,
+            "detail": "rel_delta=0.000e+00 tol=5.960e-07",
+            "expected": 596.0373971680001,
+            "field": "Vinf",
+            "ok": true,
+            "spec": "rel:1e-09"
+          },
+          {
+            "actual": 0.1153178340089936,
+            "detail": "rel_delta=0.000e+00 tol=1.000e-09",
+            "expected": 0.1153178340089936,
+            "field": "Rho",
+            "ok": true,
+            "spec": "rel:1e-09"
+          },
+          {
+            "actual": 0.0,
+            "detail": "exact ok",
+            "expected": 0.0,
+            "field": "Symmetry",
+            "ok": true,
+            "spec": "exact:0.0"
+          },
+          {
+            "actual": 8.0,
+            "detail": "exact ok",
+            "expected": 8.0,
+            "field": "NumWakeNodes",
+            "ok": true,
+            "spec": "exact:0.0"
+          },
+          {
+            "actual": 5.0,
+            "detail": "exact ok",
+            "expected": 5.0,
+            "field": "WakeIters",
+            "ok": true,
+            "spec": "exact:0.0"
+          },
+          {
+            "actual": 1.0,
+            "detail": "rel_delta=0.000e+00 tol=1.000e-09",
+            "expected": 1.0,
+            "field": "WakeRelax",
+            "ok": true,
+            "spec": "rel:1e-09"
+          },
+          {
+            "actual": -1.0,
+            "detail": "rel_delta=0.000e+00 tol=1.000e-09",
+            "expected": -1.0,
+            "field": "FarDist",
+            "ok": true,
+            "spec": "rel:1e-09"
+          }
+        ],
+        "has_equals_format": true,
+        "injected_from": "D:\\RCAIDE-d12d005-gen\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\a0v2\\setup_gen\\S6_STD_M2p02_aoa1\\S6_STD_M2p02_aoa1_model.vspaero",
+        "legacy_lines": 0,
+        "legacy_lines_normalized": 0,
+        "line_count": 42,
+        "path": "D:\\RCAIDE-d12d005-gen\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\a0v2\\setup_gen\\S6_STD_M2p02_aoa1\\S6_STD_M2p02_aoa1_contract.vspaero",
+        "rewrite": {
+          "AoA": {
+            "legacy_converted": false,
+            "new": 1.0,
+            "old": "1",
+            "rewritten": true
+          },
+          "Beta": {
+            "legacy_converted": false,
+            "new": 0.0,
+            "old": "0",
+            "rewritten": true
+          },
+          "Bref": {
+            "legacy_converted": false,
+            "new": 4.0,
+            "old": "4",
+            "rewritten": true
+          },
+          "Cref": {
+            "legacy_converted": false,
+            "new": 1.0,
+            "old": "1",
+            "rewritten": true
+          },
+          "FarDist": {
+            "legacy_converted": false,
+            "new": -1.0,
+            "old": "-1",
+            "rewritten": true
+          },
+          "Mach": {
+            "legacy_converted": false,
+            "new": 2.02,
+            "old": "2.02",
+            "rewritten": true
+          },
+          "NumWakeNodes": {
+            "legacy_converted": false,
+            "new": 8,
+            "old": "8",
+            "rewritten": true
+          },
+          "ReCref": {
+            "legacy_converted": false,
+            "new": 4834912.016269014,
+            "old": "10000000",
+            "rewritten": true
+          },
+          "Rho": {
+            "legacy_converted": false,
+            "new": 0.1153178340089936,
+            "old": "0.0023770000000000002",
+            "rewritten": true
+          },
+          "Sref": {
+            "legacy_converted": false,
+            "new": 4.0,
+            "old": "4",
+            "rewritten": true
+          },
+          "Symmetry": {
+            "legacy_converted": false,
+            "new": 0,
+            "old": "0",
+            "rewritten": true
+          },
+          "Vinf": {
+            "legacy_converted": false,
+            "new": 596.0373971680001,
+            "old": "100",
+            "rewritten": true
+          },
+          "WakeIters": {
+            "legacy_converted": false,
+            "new": 5,
+            "old": "5",
+            "rewritten": true
+          },
+          "WakeRelax": {
+            "legacy_converted": false,
+            "new": 1.0,
+            "old": "1",
+            "rewritten": true
+          },
+          "X_cg": {
+            "legacy_converted": false,
+            "new": 0.25,
+            "old": "0.25",
+            "rewritten": true
+          },
+          "Y_cg": {
+            "legacy_converted": false,
+            "new": 0.0,
+            "old": "0",
+            "rewritten": true
+          },
+          "Z_cg": {
+            "legacy_converted": false,
+            "new": 0.0,
+            "old": "0",
+            "rewritten": true
+          }
+        },
+        "sha256": "5a1e69bb298eae3d4e6c27f5b648750cb28eebb7b6f1581656dfd72b1727f463",
+        "source": "D:\\RCAIDE-d12d005-gen\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\a0v2\\setup_gen\\S6_STD_M2p02_aoa1\\S6_STD_M2p02_aoa1_contract.vspaero",
+        "status": "PASS",
+        "target_sha256": "5a1e69bb298eae3d4e6c27f5b648750cb28eebb7b6f1581656dfd72b1727f463",
+        "vector_rows": 1
+      },
+      "readback_assertions": 17,
+      "readback_status": "PASS",
+      "repeat_of": null,
+      "results": {
+        "geom_result_id": "EQBETKC",
+        "stop_before_run_readback": 1,
+        "sweep_result_id": ""
+      },
+      "solver_artifacts_present": [],
+      "thin_geometry": {
+        "bytes": 284327,
+        "external_path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\d12d005-20261104T0430Z\\raw_artifacts\\a0v2_setup\\S6_STD_M2p02_aoa1.vspgeom",
+        "local_copy": "D:\\RCAIDE-d12d005-gen\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\a0v2\\setup_gen\\S6_STD_M2p02_aoa1\\S6_STD_M2p02_aoa1_model.vspgeom",
+        "local_copy_removed": true,
+        "name": "S6_STD_M2p02_aoa1.vspgeom",
+        "outside_git": true,
+        "sha256": "8363f8fb209dd3120bbdf2e3766605b9405b97de0c7561b0be08c91c4cb8ebad"
+      },
+      "vkey": {
+        "bytes": 404,
+        "name": "S6_STD_M2p02_aoa1_model.vkey",
+        "sha256": "adb45a3d7ac8410e11a0e819fef20ca851454f3c6fb7804513b434b658002de3"
+      }
+    }
+  ],
+  "design_space_config": {
+    "bytes": 10011,
+    "name": "design_space_12d_lifting_surfaces.yaml",
+    "sha256": "463bb4a0a0fc06eb7dd6a6d9790f4d5b2b3a8c3d8681d16055036dae0c57fc7b"
+  },
+  "gate2_repair": {
+    "bytes": 4045,
+    "name": "gate2_repair_registration.json",
+    "sha256": "c2629cd37bac506fc286f1a2ff10cd6852b120f42da8555ada8c3f1bf2442dac"
+  },
+  "generated_utc": "2026-11-04T11:51:22Z",
+  "negative_controls": [
+    {
+      "all_rejected": true,
+      "case_id": "B2-03",
+      "checks": [
+        {
+          "control": "wrong_sref",
+          "detail": "SETUP_READBACK_FAIL in D:\\RCAIDE-d12d005-gen\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\a0v2\\negative_controls\\B2-03\\neg_wrong_sref.vspaero: 1 violation(s): [{'field':",
+          "result": "REJECTED"
+        },
+        {
+          "control": "legacy_no_equals",
+          "detail": "LD-001 legacy lines without '=' in D:\\RCAIDE-d12d005-gen\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\a0v2\\negative_controls\\B2-03\\neg_legacy.vspaero: legacy_lines=[(1, ",
+          "result": "REJECTED"
+        },
+        {
+          "control": "wake_node_mismatch",
+          "detail": "SETUP_READBACK_FAIL in D:\\RCAIDE-d12d005-gen\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\a0v2\\negative_controls\\B2-03\\neg_wake_mismatch.vspaero: 1 violation(s): [{'fiel",
+          "result": "REJECTED"
+        }
+      ],
+      "files": [
+        "neg_legacy.vspaero",
+        "neg_wake_mismatch.vspaero",
+        "neg_wrong_sref.vspaero"
+      ]
+    }
+  ],
+  "notes": [
+    "本文件只记录 setup 生成；没有任何 solver 运行，因此不包含气动力/极线数值。",
+    "Gate2 repair 为 post-hoc 诊断注册；独立超声速确认由 S6_STD_M2p02_aoa1 承担。",
+    "thin .vspgeom 位于 git 之外（outside_git=true），仓库内保留 sha256/bytes/external_path。"
+  ],
+  "openvsp": {
+    "root": "D:\\OpenVSP-3.55.0\\OpenVSP-3.55.0-win64",
+    "version": "OpenVSP 3.55.0"
+  },
+  "parity": {
+    "archived_model": {
+      "bytes": 111816,
+      "name": "wing355_baseline.vsp3",
+      "sha256": "9a788b467095b1a958a240eaa0132e922f667649e9212f9b19e4399bad14f27c"
+    },
+    "archived_readback": {
+      "area_m2": 358.25000000000006,
+      "chords_m": [
+        29.901818514349216,
+        12.208434070312554,
+        3.892558930560952,
+        0.9731361054965724
+      ],
+      "le_sweep_deg": [
+        0.0,
+        71.98511412778159,
+        55.59071448860179,
+        75.78177618375872
+      ],
+      "mac_m": 18.489892944055953,
+      "qc_sweep_deg": [
+        67.0,
+        48.00000000000002,
+        71.00000000000001
+      ],
+      "root_chord_m": 29.901818514349216,
+      "root_chord_raw": [
+        29.901818514349216,
+        29.901818514349216,
+        12.208434070312554,
+        3.892558930560952
+      ],
+      "sect_tess_u": [
+        6.0,
+        6.0,
+        6.0,
+        6.0
+      ],
+      "semispan_m": 12.802319125845912,
+      "span_m": 25.604638251691824,
+      "tip_chord_raw": [
+        29.901818514349216,
+        12.208434070312554,
+        3.892558930560952,
+        0.9731361054965724
+      ],
+      "tip_twist_deg": 0.0,
+      "twists_deg": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "fresh_baseline_readback": {
+      "area_m2": 358.25000000000006,
+      "chords_m": [
+        29.901818514349216,
+        12.208434070312554,
+        3.892558930560952,
+        0.9731361054965724
+      ],
+      "le_sweep_deg": [
+        0.0,
+        71.98511412778159,
+        55.59071448860179,
+        75.78177618375872
+      ],
+      "mac_m": 18.489892944055953,
+      "qc_sweep_deg": [
+        67.0,
+        48.00000000000002,
+        71.00000000000001
+      ],
+      "root_chord_m": 29.901818514349216,
+      "root_chord_raw": [
+        29.901818514349216,
+        29.901818514349216,
+        12.208434070312554,
+        3.892558930560952
+      ],
+      "sect_tess_u": [
+        6.0,
+        6.0,
+        6.0,
+        6.0
+      ],
+      "semispan_m": 12.802319125845912,
+      "span_m": 25.604638251691824,
+      "tip_chord_raw": [
+        29.901818514349216,
+        12.208434070312554,
+        3.892558930560952,
+        0.9731361054965724
+      ],
+      "tip_twist_deg": 0.0,
+      "twists_deg": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "fresh_model_sha256": "9ad40dc1490fa936748a71a8127f0a56cf58db6700dd43ad304454c6e73ccc31",
+    "metric_comparison": {
+      "checks": {
+        "area_m2": {
+          "error": 0.0,
+          "expected": 358.25000000000006,
+          "measured": 358.25000000000006,
+          "mode": "relative",
+          "status": "PASS",
+          "tolerance": 0.001
+        },
+        "chords_m[0]": {
+          "error": 0.0,
+          "expected": 29.901818514349216,
+          "measured": 29.901818514349216,
+          "mode": "relative",
+          "status": "PASS",
+          "tolerance": 0.001
+        },
+        "chords_m[1]": {
+          "error": 0.0,
+          "expected": 12.208434070312554,
+          "measured": 12.208434070312554,
+          "mode": "relative",
+          "status": "PASS",
+          "tolerance": 0.001
+        },
+        "chords_m[2]": {
+          "error": 0.0,
+          "expected": 3.892558930560952,
+          "measured": 3.892558930560952,
+          "mode": "relative",
+          "status": "PASS",
+          "tolerance": 0.001
+        },
+        "chords_m[3]": {
+          "error": 0.0,
+          "expected": 0.9731361054965724,
+          "measured": 0.9731361054965724,
+          "mode": "relative",
+          "status": "PASS",
+          "tolerance": 0.001
+        },
+        "mac_m": {
+          "error": 0.0,
+          "expected": 18.489892944055953,
+          "measured": 18.489892944055953,
+          "mode": "relative",
+          "status": "PASS",
+          "tolerance": 0.001
+        },
+        "qc_sweep_deg[0]": {
+          "error": 0.0,
+          "expected": 67.0,
+          "measured": 67.0,
+          "mode": "relative",
+          "status": "PASS",
+          "tolerance": 0.001
+        },
+        "qc_sweep_deg[1]": {
+          "error": 0.0,
+          "expected": 48.00000000000002,
+          "measured": 48.00000000000002,
+          "mode": "relative",
+          "status": "PASS",
+          "tolerance": 0.001
+        },
+        "qc_sweep_deg[2]": {
+          "error": 0.0,
+          "expected": 71.00000000000001,
+          "measured": 71.00000000000001,
+          "mode": "relative",
+          "status": "PASS",
+          "tolerance": 0.001
+        },
+        "root_chord_m": {
+          "error": 0.0,
+          "expected": 29.901818514349216,
+          "measured": 29.901818514349216,
+          "mode": "relative",
+          "status": "PASS",
+          "tolerance": 0.001
+        },
+        "span_m": {
+          "error": 0.0,
+          "expected": 25.604638251691824,
+          "measured": 25.604638251691824,
+          "mode": "relative",
+          "status": "PASS",
+          "tolerance": 0.001
+        },
+        "tip_twist_deg": {
+          "error": 0.0,
+          "expected": 0.0,
+          "measured": 0.0,
+          "mode": "absolute",
+          "status": "PASS",
+          "tolerance": 1e-06
+        }
+      },
+      "failed": [],
+      "status": "PASS",
+      "tolerance": 0.001
+    },
+    "model_sha_note": "vsp3 容器字节在不同会话/进程中不可复现（同一几何两次写出 sha 不同，大小相同）；parity 以读回几何指标 + thin vspgeom 字节 sha 为准，不以 vsp3 sha 为准",
+    "resolution": {
+      "candidates": [
+        {
+          "bytes": 111816,
+          "path": "D:\\RCAIDE-d12d005-gen\\research\\concorde_metaopt\\optimization_runs\\d12d004-vspaero72-lf-20261102T0500Z\\evidence\\v0\\setup_gen\\wing355_baseline.vsp3",
+          "sha256": "9a788b467095b1a958a240eaa0132e922f667649e9212f9b19e4399bad14f27c",
+          "status": "FOUND"
+        }
+      ],
+      "chosen": "D:\\RCAIDE-d12d005-gen\\research\\concorde_metaopt\\optimization_runs\\d12d004-vspaero72-lf-20261102T0500Z\\evidence\\v0\\setup_gen\\wing355_baseline.vsp3"
+    },
+    "v1_archive_vspgeom": [
+      {
+        "actual_sha256": "9fcda6d5d45300fbb0e20257c9ddc80540b44f5064a9566089d7ef85f9018d8e",
+        "expected_sha256": "9fcda6d5d45300fbb0e20257c9ddc80540b44f5064a9566089d7ef85f9018d8e",
+        "name": "S5_D12_M2p02_base",
+        "path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\d12d005-20261104T0430Z\\raw_artifacts\\a0_setup\\S5_D12_M2p02_base.vspgeom",
+        "status": "PASS"
+      }
+    ]
+  },
+  "raw_artifacts_root": "D:\\RCAIDE\\outputs\\concorde_metaopt\\d12d005-20261104T0430Z\\raw_artifacts\\a0v2_setup",
+  "repeatability": {
+    "comparisons": [
+      {
+        "B2-03_sha256": "d071b05feb499931ec2022b19787047adb34dcc27693466c57b4baf777c981d3",
+        "B2-07_sha256": "d071b05feb499931ec2022b19787047adb34dcc27693466c57b4baf777c981d3",
+        "artifact": "thin_geometry",
+        "equal": true
+      },
+      {
+        "B2-03_sha256": "c862aa220bc6f3a9d057b2fbe99c4ed340591a14ad88f455d3d1b0ddbe7c1804",
+        "B2-07_sha256": "c862aa220bc6f3a9d057b2fbe99c4ed340591a14ad88f455d3d1b0ddbe7c1804",
+        "artifact": "raw_setup",
+        "equal": true
+      },
+      {
+        "B2-03_sha256": "c9cef04e6a6986fdc87f07338e168dbf2ee17bdab3f5836b417ba6e6036ccb64",
+        "B2-07_sha256": "c9cef04e6a6986fdc87f07338e168dbf2ee17bdab3f5836b417ba6e6036ccb64",
+        "artifact": "contract_setup",
+        "equal": true
+      },
+      {
+        "B2-03_sha256": "bb29bf526f4379308ca9c271a8df90c39f4df4235f81f63e370f25e714bb797c",
+        "B2-07_sha256": "bb29bf526f4379308ca9c271a8df90c39f4df4235f81f63e370f25e714bb797c",
+        "artifact": "csf",
+        "equal": true
+      },
+      {
+        "B2-03_sha256": "5d3b9c0128952412fc8fafc9267fb116b27f7864e391c2f09219dd7411577e13",
+        "B2-07_sha256": "a5cea60ccdc6d03711294cea0e1a8397d892ba8faffcb50e80a460a1e918948d",
+        "artifact": "vkey",
+        "equal": false
+      },
+      {
+        "B2-03_sha256": "ec16aeeafdaecd91fd091a687d5c53dca341a3a4af2330d4e50d46fc47a58583",
+        "B2-07_sha256": "cccada66de718b23a039af88dae769070e5674b0ba32e4b706f8ef2d47cd8b4c",
+        "artifact": "model_vsp3",
+        "equal": false,
+        "note": "vsp3 容器字节跨会话不可复现；本项仅记录，不作 repeatability 判据"
+      }
+    ],
+    "failed": [],
+    "judgment_inputs": {
+      "contract_setup_normalized_equal": true,
+      "raw_setup_equal": true,
+      "readback_geometry_equal": true,
+      "sect_tess_u_equal": true,
+      "thin_geometry_equal": true
+    },
+    "note": "repeatability 以 thin vspgeom/raw setup/规范化 contract/读回几何/SectTess_U 判定；vsp3 与 .vkey 的字节差异（容器随机性/绝对路径）单列记录、不作判据",
+    "repeat_case": "B2-07",
+    "source_case": "B2-03",
+    "status": "PASS"
+  },
+  "run_dir": "D:\\RCAIDE-d12d005-gen\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z",
+  "run_id": "d12d005-20261104T0430Z",
+  "runner": {
+    "bytes": 30373,
+    "name": "vspaero7_runner_v1frozen.py",
+    "sha256": "b77b56526acab6ac03ee07838d06970f2bd98d298aae597997bf393474128a36"
+  },
+  "runtime_s": 1.744,
+  "schema_version": "d12d005-a0v2-setup-generation-1",
+  "solver_processes_started": 0,
+  "status": "A0V2_SETUP_READY_NO_SOLVER",
+  "std_parity": {
+    "actual_sha256": "8363f8fb209dd3120bbdf2e3766605b9405b97de0c7561b0be08c91c4cb8ebad",
+    "expected_sha256": "8363f8fb209dd3120bbdf2e3766605b9405b97de0c7561b0be08c91c4cb8ebad",
+    "name": "S3_STD_M2p02_base",
+    "path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\d12d005-20261104T0430Z\\raw_artifacts\\a0_setup\\S3_STD_M2p02_base.vspgeom",
+    "status": "PASS"
+  },
+  "stop_before_run": 1,
+  "summary": {
+    "case_count": 8,
+    "negative_controls_pass": true,
+    "note": "零求解器生成：仅 OpenVSP API 构建几何与 VSPAEROSweep 输入面（StopBeforeRun=1）",
+    "parity_pass": true,
+    "readback_pass": 8,
+    "repeatability_pass": true,
+    "solver_starts": 0,
+    "status": "A0V2_SETUP_READY_NO_SOLVER",
+    "std_parity_pass": true
+  }
+}

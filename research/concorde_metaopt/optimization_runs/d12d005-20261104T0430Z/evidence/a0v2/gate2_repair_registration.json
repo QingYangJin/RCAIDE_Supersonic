@@ -1,0 +1,108 @@
+{
+  "artifact_kind": "D12D005_A0V2_GATE2_REPAIR_REGISTRATION",
+  "derivation": {
+    "CL_2d": 0.07955432537008524,
+    "CL_3d_first_order": 0.0673411855785828,
+    "CL_alpha_2d_per_rad": 2.2790635428582076,
+    "CL_alpha_3d_first_order_per_rad": 1.9291828605300199,
+    "aoa_deg": 2.0,
+    "aspect_ratio": 4.0,
+    "beta": 1.7551068343551055,
+    "mach": 2.02,
+    "s6_CL_2d": 0.03977716268504262,
+    "s6_CL_3d_first_order": 0.0336705927892914,
+    "s6_aoa_deg": 1.0
+  },
+  "diagnostic_expectations": {
+    "S3_STD_M2p02_base": {
+      "CDi_CDtot": "定性门：CDi>0、CDtot>=CDi、全部有限（超声速数值带废止）",
+      "CL_range": [
+        0.06,
+        0.09
+      ]
+    },
+    "S4_STD_M2p02_wn128": {
+      "CDi_CDtot": "定性门：CDi>0、CDtot>=CDi、全部有限（超声速数值带废止）",
+      "CL_range": [
+        0.06,
+        0.09
+      ]
+    }
+  },
+  "disclosure": {
+    "a5_had_already_assessed": true,
+    "independence": "本注册不得作为独立确认；S6_STD_M2p02_aoa1 为独立超声速确认 case",
+    "no_retroactive_relabeling": "不修改 S3/S4 的原始观测与 v1 判定记录；本文件是新增诊断层",
+    "post_hoc_correction": true,
+    "post_hoc_evidence": "S3/S4 的 CLtot 在本注册生成前已被观测（见 observed 字段）"
+  },
+  "formula": {
+    "CL": "CL_alpha * AoA_rad",
+    "CL_alpha_2d_ackeret_per_rad": "4 / beta",
+    "CL_alpha_3d_first_order_per_rad": "CL_alpha_2d / (1 + CL_alpha_2d / (pi * AR))",
+    "beta": "sqrt(Mach^2 - 1)",
+    "note": "Ackeret 线化超声速 + 一阶有限展长修正；不含粘性/厚度/尾迹非线性"
+  },
+  "generated_utc": "2026-11-04T11:51:20Z",
+  "observed": {
+    "S3_STD_M2p02_base": {
+      "CDi": 0.002606540227,
+      "CDtot": 0.013789407924,
+      "CLtot": 0.074251031783,
+      "a5_assessment": "CONTINUE_S4_S5；Ew=inf 为派生列除零伪影，非发散",
+      "a5_assessment_path": "role_reviews/a5/s3_assessment/s3_assessment.md",
+      "in_diagnostic_range": true,
+      "source": "evidence/v1/cases/S3_STD_M2p02_base/case_summary.json"
+    },
+    "S4_STD_M2p02_wn128": {
+      "CDi": 0.002606535876,
+      "CDtot": 0.013789403504,
+      "CLtot": 0.074250958215,
+      "in_diagnostic_range": true,
+      "source": "evidence/v1b/cases/S4_STD_M2p02_wn128/S4_STD_M2p02_wn128_model.polar"
+    }
+  },
+  "old_registration": {
+    "CL_expected_range": [
+      0.10844,
+      0.16266
+    ],
+    "S3_shortfall_vs_lower_bound_pct": 31.528,
+    "reason": "Helmbold 亚声速公式在 Mach 2.02 不适用；S3/S4 观测 CLtot 低于该带下界",
+    "status": "VOID_FOR_SUPERSONIC_CASES",
+    "theory": "subsonic Helmbold 有限翼展升力线近似（Mach 无关；超声速下不适用）"
+  },
+  "physical_call_count": 0,
+  "provenance": {
+    "a5_assessment": "role_reviews/a5/s3_assessment/s3_assessment.md",
+    "s3_case_summary": "evidence/v1/cases/S3_STD_M2p02_base/case_summary.json",
+    "s4_polar": "evidence/v1b/cases/S4_STD_M2p02_wn128/S4_STD_M2p02_wn128_model.polar",
+    "v1_vspgeom_archive": "D:/RCAIDE/outputs/concorde_metaopt/d12d005-20261104T0430Z/raw_artifacts/a0_setup/"
+  },
+  "replacement_bands": {
+    "CDi_CDtot_numeric_bands": "VOID（原带由亚声速公式推导；超声速改用定性门）",
+    "CDi_CDtot_qualitative_gates": [
+      "CDi > 0",
+      "CDtot >= CDi",
+      "CL/CDi/CDtot 全部有限且无 NaN/INF",
+      "|CL| < 1（量级门）"
+    ],
+    "CL_diagnostic_range": [
+      0.06,
+      0.09
+    ],
+    "CL_status": "DIAGNOSTIC_POST_HOC（S3/S4 已观测后才登记）"
+  },
+  "run_id": "d12d005-20261104T0430Z",
+  "schema_version": "d12d005-a0v2-gate2-repair-1",
+  "scope": {
+    "case_ids": [
+      "S3_STD_M2p02_base",
+      "S4_STD_M2p02_wn128"
+    ],
+    "usage": "仅对既有 S3/S4 观测做诊断性解释；不得作为独立确认；独立确认由 S6_STD_M2p02_aoa1 承担",
+    "wing": "标准矩形翼：AR=4、Sref=4 m²、Cref=1、Bref=4、Xcg=0.25、AoA=2deg、Mach=2.02"
+  },
+  "solver_processes_started": 0,
+  "status": "REGISTERED_POST_HOC_DIAGNOSTIC"
+}
