@@ -49,7 +49,7 @@ import re
 import sys
 from pathlib import Path
 
-SCHEMA_VERSION = "d12d005-runner-3"
+SCHEMA_VERSION = "d12d005-runner-4"
 CONTRACT_MU_KG_M_S = 1.42161308e-05
 CONTRACT_SPEED_OF_SOUND_M_S = 295.0680184
 CONTRACT_ALTITUDE_M = 18288.0
@@ -124,6 +124,11 @@ POLAR_722_COLUMNS = (
 )
 POLAR_REQUIRED_COLUMNS = ("Beta", "Mach", "AoA", "Re/1e6", "CLo", "CLi", "CLtot", "CDo", "CDi", "CDtot", "E")
 POLAR_MOMENT_COLUMNS = ("CMxtot", "CMytot", "CMztot")
+# Derived ratio column: Ew = CLtot^2 / (pi * AR * CDiw); it is inf when CDiw = 0
+# (observed in the supersonic standard-wing case S3; A5 task-110 S3F-01). Only these
+# columns may be allowed as non-finite via an explicit allowlist; primary
+# coefficients (CL/CD/CM) are never allowed.
+POLAR_DERIVED_NONFINITE_COLUMNS = ("Ew",)
 LEGACY_62_POLAR_COLUMNS = (
     "Beta", "Mach", "AoA", "Re/1e6", "CL", "CDo", "CDi", "CDtot", "CS", "L/D", "E",
     "CFx", "CFy", "CFz", "CMx", "CMy", "CMz", "CMl", "CMm", "CMn",
@@ -677,16 +682,31 @@ def _close(actual, expected, *, rel=0.0, abs_=0.0):
     return abs(float(actual) - float(expected)) <= max(abs_, rel * abs(float(expected)))
 
 
-def validate_polar_file(path, expected):
+def validate_polar_file(path, expected, *, allow_nonfinite_columns=()):
     """Strict VSPAERO 7.2.2 polar validator (LD-002).
 
     Rejects a legacy 6.2 header, an unexpected token list, short/long rows,
     NaN/IND/INF values, missing CLtot/CDtot, non-physical coefficients, and a
     Re/1e6 column inconsistent with the declared ReCref (rel 1e-6).
+
+    allow_nonfinite_columns is a narrow explicit allowlist for derived ratio
+    columns whose denominator can be exactly zero (e.g. Ew when CDiw = 0). Allowed
+    columns downgrade the report to PASS_WITH_WARNINGS and are listed in
+    derived_column_warnings; every other non-finite token still fails. Primary
+    coefficients can never be allowlisted; the default remains strict.
     """
     header, rows, nonfinite, width = _polar_header_and_rows(path)
-    if nonfinite:
-        raise DataQualityError("POLAR_NONFINITE: %r in %s" % (nonfinite[:8], path))
+    allowed = tuple(allow_nonfinite_columns)
+    unknown_allowed = [name for name in allowed if name not in header]
+    if unknown_allowed:
+        raise DataQualityError(
+            "POLAR_ALLOWLIST_UNKNOWN_COLUMNS: %r not present in the 48-column header of %s"
+            % (unknown_allowed, path)
+        )
+    forbidden = [item for item in nonfinite if item["column"] not in allowed]
+    derived = [item for item in nonfinite if item["column"] in allowed]
+    if forbidden:
+        raise DataQualityError("POLAR_NONFINITE: %r in %s" % (forbidden[:8], path))
     if not rows:
         raise DataQualityError("POLAR_NO_DATA_ROWS: %s" % path)
     missing = [name for name in POLAR_REQUIRED_COLUMNS if name not in header]
@@ -734,13 +754,16 @@ def validate_polar_file(path, expected):
                 "CDi": row["CDi"],
                 "CDtot": cdtot,
                 "CMztot": row["CMztot"],
+                "Ew": row.get("Ew"),
                 "Re": actual_re,
             }
         )
     return {
-        "status": "PASS",
+        "status": "PASS_WITH_WARNINGS" if derived else "PASS",
         "path": str(Path(path).resolve()),
         "schema": "vspaero-7.2.2-48-column",
+        "allow_nonfinite_columns": list(allowed),
+        "derived_column_warnings": derived,
         "header_token_count": len(header),
         "rows": len(rows),
         "checks": checks,
@@ -1218,7 +1241,8 @@ def _cmd_polar_structure(args):
 
 def _cmd_verify_polar(args):
     expected = _load_expected(args.expect)
-    report = validate_polar_file(args.polar, expected)
+    allow = POLAR_DERIVED_NONFINITE_COLUMNS if args.allow_nonfinite_derived else ()
+    report = validate_polar_file(args.polar, expected, allow_nonfinite_columns=allow)
     print(json.dumps(report, indent=2, ensure_ascii=False))
     return 0
 
@@ -1282,9 +1306,17 @@ def build_parser():
     readback.add_argument("--expect", default=None)
     readback.set_defaults(func=_cmd_readback)
 
-    polar = sub.add_parser("verify-polar", help="reject NaN/IND/INF and wrong Re in polar")
+    polar = sub.add_parser(
+        "verify-polar",
+        help="reject NaN/IND/INF and wrong Re in polar (derived Ew allowlist is explicit)",
+    )
     polar.add_argument("--polar", required=True)
     polar.add_argument("--expect", default=None)
+    polar.add_argument(
+        "--allow-nonfinite-derived",
+        action="store_true",
+        help="allow non-finite values only in the derived column allowlist (Ew)",
+    )
     polar.set_defaults(func=_cmd_verify_polar)
     polar_struct = sub.add_parser("polar-structure", help="structure-only 7.2.2 polar parse (no numerical thresholds)")
     polar_struct.add_argument("--polar", required=True)

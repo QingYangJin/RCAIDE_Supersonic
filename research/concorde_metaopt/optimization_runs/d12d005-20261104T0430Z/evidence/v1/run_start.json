@@ -1,0 +1,110 @@
+{
+  "artifact_kind": "D12D005_RUN_START",
+  "schema_version": 1,
+  "run_id": "d12d005-20261104T0430Z",
+  "status": "RUN_STOPPED_FINAL_FREEZE",
+  "git_sha_at_run_start": "980fffb15431a4a5499f86f5a8f40c2b3e00f111",
+  "git_sha_required": "980fffb15431a4a5499f86f5a8f40c2b3e00f111",
+  "branch": "research/d12d005-aero-fallback",
+  "worktree": "D:/RCAIDE-d12d005",
+  "worktree_porcelain_at_check": "clean",
+  "authorization": {
+    "issue": "#4",
+    "approval_comment_id": 6622447995,
+    "category": "A_VSPAERO_AERO_FALLBACK",
+    "batch": "A-batch-1 (S0..S5)",
+    "authorized_utc": "2026-11-04T07:05:00Z",
+    "authorized_by": "lead",
+    "authorization_message": "Lead 书面授权 D-12D-005 A 类第一批（≤6 次），2026-11-04T15:05+08:00（07:05Z）",
+    "class_A_cap_starts": 20,
+    "batch_cap_starts": 6,
+    "case_order": [
+      "S0_STD_M0p1_base",
+      "S1_STD_M0p1_wn128",
+      "S2_STD_M0p1_wi0",
+      "S3_STD_M2p02_base",
+      "S4_STD_M2p02_wn128",
+      "S5_D12_M2p02_base"
+    ],
+    "one_start_per_case": true,
+    "serial_only": true,
+    "max_cores": 4,
+    "max_ram_gb": 16,
+    "max_wall_per_start_s": 900,
+    "max_round_wall_h": 24,
+    "failure_billable": true,
+    "retry_policy": "每配置最多 1 次必要重试且须事先取得 Lead 书面批准；本条暂不批准任何重试",
+    "stop_rules": [
+      "任一启动出现 NaN/INF/IND 或非物理：CL>0 且 CDi<=0 或 CDtot<=0（负阻力）",
+      "S0 在 600 s 内未收敛或 history 发散",
+      "单次启动 >900 s",
+      "RSS>16 GB 或进程核数>4",
+      "本批已用 6 次"
+    ],
+    "a5_verdict": {
+      "path": "C:/Users/pc/AppData/Local/RCAIDE_Supersonic_agent_state/d12d005/a5/a0_rev3_review/verdict.txt",
+      "sha256": "78e9933be2bd87dd9228ff7059b87397b4e4ff7ffbe68d29a7a5d2cf83b2b971",
+      "verdict": "APPROVE_FOR_A_BATCH1",
+      "target_head": "980fffb15431a4a5499f86f5a8f40c2b3e00f111",
+      "task": "task-108"
+    },
+    "a3_isolation": {
+      "path": "C:/Users/pc/AppData/Local/RCAIDE_Supersonic_agent_state/d12d005/a3/a0_rev3_isolation_980fffb.md",
+      "sha256": "bcee12ccd3de41ccff1e8430b599ec19b982eaaf6db2fc2d2c4a0ae53756001f",
+      "verdict": "PASS",
+      "task": "task-109",
+      "critical": "32/32"
+    },
+    "preflight_bundle_recheck": {
+      "dir": "C:/Users/pc/AppData/Local/RCAIDE_Supersonic_agent_state/d12d005/a2/bundle_check_postauth",
+      "all_six_pass": true,
+      "at_head": "980fffb15431a4a5499f86f5a8f40c2b3e00f111",
+      "at_utc": "2026-11-04T07:04:38Z"
+    }
+  },
+  "a5_verdict_sha256": "78e9933be2bd87dd9228ff7059b87397b4e4ff7ffbe68d29a7a5d2cf83b2b971",
+  "a3_report_sha256": "bcee12ccd3de41ccff1e8430b599ec19b982eaaf6db2fc2d2c4a0ae53756001f",
+  "runner_sha256": "5701d301e5c4660f6038dfd7ecb19a610c30256dc6104b922fa838d1712190e8",
+  "setup_generation_sha256": "b9b77bb4c2f753ace3837b2a3747fd1fd8fdfc2f56c19ac2eb8c9a7a32ca51dd",
+  "bundles_manifest_sha256": "7d12b056469255c324e662d1afd99f69a3ccd8e24304179b1d074b52a8a040c2",
+  "preflight_bundle_recheck": {
+    "dir": "C:/Users/pc/AppData/Local/RCAIDE_Supersonic_agent_state/d12d005/a2/bundle_check_postauth",
+    "all_six_pass": true
+  },
+  "budget": {
+    "class_A_cap_starts": 20,
+    "batch_cap_starts": 6,
+    "starts_used": 4,
+    "starts_remaining": 2,
+    "remaining_disposition": "CLOSED_NOT_CARRIED_OVER_NOT_REALLOCATED",
+    "retries": 0,
+    "billable_events": 4,
+    "no_carryover": true
+  },
+  "first_solver_start_utc": "2026-11-04T07:11:45Z",
+  "operator": "A2",
+  "created_utc": "2026-11-04T07:04:38Z",
+  "notes": [
+    "仅在 A 类第一批使用；不结转；每次启动前先写 pending ledger 事件（evidence/v1/ledger.jsonl）。",
+    "solver 调用：vspaero.exe -omp 4 <base>，cwd=该案 bundle 目录，超时 900 s。",
+    "冻结时 stops 4/6；remaining 2 关闭（不重分配、不重试、不结转）；S4/S5 从未启动。"
+  ],
+  "first_solver_event_id": "NA-D12D005-001",
+  "starts_used": 4,
+  "starts_remaining": 2,
+  "batch_stop_reason": "POLAR_NONFINITE: line 4, column Ew, token='inf' in S3_STD_M2p02_base_model.polar (verify-polar rc=2; POLAR_NONFINITE: [{'line': 4, 'column': 'Ew', 'token': 'inf'}] in D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\v1\\cases\\S3_STD_M2p02_base\\S3_STD_M2p02_base_model.polar)",
+  "batch_stop_event_id": "NA-D12D005-004",
+  "batch_stop_rule": "stop_rule_1_nonfinite_IND_INF",
+  "stopped_utc": "2026-11-04T07:14:40Z",
+  "frozen_utc": "2026-11-04T07:23:25Z",
+  "s3_column_diagnosis": {
+    "path": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\v1\\cases\\S3_STD_M2p02_base\\s3_column_diagnosis.json",
+    "sha256": "8d28804982ec08ddc83aec4c725aee2b91c874d773b2d3e0107e7af675c3f3ab",
+    "verdict": "A_OR_DERIVED_DEGENERATE"
+  },
+  "lead_stop_approval": {
+    "approved": true,
+    "received_utc": null,
+    "note": "Lead approved stop and freeze on 2026-11-04 (message in A2 session); exact UTC not embedded in the message."
+  }
+}

@@ -258,6 +258,39 @@ class Polar722Tests(TempDirTestCase):
             R.validate_polar_file(self._write(polar_text(rows=[bad])), dict(R.CONTRACT_12D))
         self.assertIn("POLAR_NONPHYSICAL", str(ctx.exception))
 
+    def test_derived_ew_inf_rejected_by_default(self):
+        path = self._write(polar_text(rows=[polar_row(**{"Ew": float("inf")})]))
+        with self.assertRaises(R.DataQualityError) as ctx:
+            R.validate_polar_file(path, dict(R.CONTRACT_12D))
+        self.assertIn("POLAR_NONFINITE", str(ctx.exception))
+        self.assertIn("Ew", str(ctx.exception))
+
+    def test_derived_ew_inf_allowed_with_allowlist(self):
+        path = self._write(polar_text(rows=[polar_row(**{"Ew": float("inf")})]))
+        report = R.validate_polar_file(
+            path, dict(R.CONTRACT_12D), allow_nonfinite_columns=R.POLAR_DERIVED_NONFINITE_COLUMNS
+        )
+        self.assertEqual(report["status"], "PASS_WITH_WARNINGS")
+        self.assertEqual(report["derived_column_warnings"][0]["column"], "Ew")
+        self.assertAlmostEqual(report["checks"][0]["CLtot"], 0.111)
+        self.assertIsNone(report["checks"][0]["Ew"])
+
+    def test_primary_nonfinite_rejected_even_with_allowlist(self):
+        bad = polar_row(cltot=float("nan"), **{"Ew": float("inf")})
+        path = self._write(polar_text(rows=[bad]))
+        with self.assertRaises(R.DataQualityError) as ctx:
+            R.validate_polar_file(
+                path, dict(R.CONTRACT_12D), allow_nonfinite_columns=R.POLAR_DERIVED_NONFINITE_COLUMNS
+            )
+        self.assertIn("POLAR_NONFINITE", str(ctx.exception))
+        self.assertIn("CLtot", str(ctx.exception))
+
+    def test_unknown_allowlist_column_rejected(self):
+        path = self._write(polar_text())
+        with self.assertRaises(R.DataQualityError) as ctx:
+            R.validate_polar_file(path, dict(R.CONTRACT_12D), allow_nonfinite_columns=("NotAColumn",))
+        self.assertIn("POLAR_ALLOWLIST_UNKNOWN_COLUMNS", str(ctx.exception))
+
     def test_no_data_rows_rejected(self):
         text = polar_text(rows=[])
         with self.assertRaises(R.DataQualityError) as ctx:
@@ -425,6 +458,21 @@ class CliTests(TempDirTestCase):
         self.assertEqual(proc.returncode, 0, proc.stdout + proc.stderr)
         payload = json.loads(proc.stdout)
         self.assertEqual(payload["header_token_count"], 48)
+
+    def test_cli_verify_polar_derived_allowlist(self):
+        polar = self.tmp / "case.polar"
+        polar.write_text(polar_text(rows=[polar_row(**{"Ew": float("inf")})]), encoding="utf-8")
+        proc = subprocess.run(
+            [sys.executable, "-E", "-s", "-B", str(HERE / "vspaero7_runner_v2.py"), "verify-polar",
+             "--polar", str(polar), "--allow-nonfinite-derived"],
+            capture_output=True,
+            text=True,
+            cwd=str(self.tmp),
+        )
+        self.assertEqual(proc.returncode, 0, proc.stdout + proc.stderr)
+        payload = json.loads(proc.stdout)
+        self.assertEqual(payload["status"], "PASS_WITH_WARNINGS")
+        self.assertEqual(payload["derived_column_warnings"][0]["column"], "Ew")
 
 
 if __name__ == "__main__":

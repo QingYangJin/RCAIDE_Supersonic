@@ -4,21 +4,22 @@
 - 角色：A1（a1-code-dev）
 - 范围：D-12D-005 A0-aero 预检，**零求解器启动**（本文件所有验证均为静态解析/单测；未执行 vspaero/SU2/Mission）
 - 基线：`scripts/vspaero7_runner_v1frozen.py`（只读，未修改）
-- 产物：`scripts/vspaero7_runner_v2.py`、`scripts/test_vspaero7_runner_v2.py`、本说明、`evidence/a0/ld002_test_run.log`（首版 38 tests）、`evidence/a0/v2rev2_test_run.log`（rev2 46 tests）
+- 产物：`scripts/vspaero7_runner_v2.py`、`scripts/test_vspaero7_runner_v2.py`、本说明、`evidence/a0/ld002_test_run.log`（首版 38 tests）、`evidence/a0/v2rev2_test_run.log`（rev2 46 tests）、`evidence/a0/v2rev3_test_run.log`（rev3 51 tests）
 
 ## 1. 文件与校验和
 
 | 文件 | 行数 | 字节 | sha256 |
 | --- | --- | --- | --- |
 | scripts/vspaero7_runner_v1frozen.py（基线，未改） | 837 | 30373 | b77b56526acab6ac03ee07838d06970f2bd98d298aae597997bf393474128a36 |
-| scripts/vspaero7_runner_v2.py（rev2 加固） | 1330 | 53392 | 08212a29502583b9c554c9f0dc3301a8ba24a773344d35692c0a9d00780f988a |
-| scripts/test_vspaero7_runner_v2.py（rev2） | 527 | 23488 | c5b7e4063fe506d5db23e85213b79b017ed75660072e6f663bc8b13c4a59fdb7 |
-| evidence/a0/ld002_test_run.log（首版 38 tests；交付形态 canonical-LF） | - | 4345 | a34c9e282a9d8dd5c98561d24d042a7eb003a56f02b0e6cdbbc90eb4ca7f9705 |
+| scripts/vspaero7_runner_v2.py（rev3：主/派生列分离） | 1362 | 55115 | e5b3381ce0f72d587f725a5b400b51d1ef02e54dbde05c2c6ad285af9e849acf |
+| scripts/test_vspaero7_runner_v2.py（rev3） | 575 | 25999 | a57526aa2c5689083fb2d2b427dcbab3f7567549d6bf3876d610d4a992d42f3f |
+| evidence/a0/ld002_test_run.log（首版 38 tests） | - | 4345 | a34c9e282a9d8dd5c98561d24d042a7eb003a56f02b0e6cdbbc90eb4ca7f9705 |
+| evidence/a0/v2rev2_test_run.log（rev2 46 tests） | - | 319 | 03757b371510dee2db6efe87ac7928324fe2b4dd8deb032b47c97ac50fe7748f |
+| evidence/a0/v2rev3_test_run.log（rev3 51 tests） | - | 370 | 735f7d82b87ba37ece4661d1dcb335ca59aa382bdad68c20cc1c9407f964ffde |
 
 注：`.log` 工作树形态为 CRLF，`.gitattributes`（`* text=auto eol=lf`）提交时归一化为 canonical-LF；上表按**提交 blob（canonical-LF）**记录，可从干净 checkout 逐字节复现。
-| evidence/a0/v2rev2_test_run.log（rev2 46 tests） | - | 319 | 03757b371510dee2db6efe87ac7928324fe2b4dd8deb032b47c97ac50fe7748f |
 
-SCHEMA_VERSION 由 `d12d004-runner-1` 升为 `d12d005-runner-2`，rev2 加固后升为 `d12d005-runner-3`；公共 API 保持向后兼容（parse_setup_text / read_setup_file / validate_setup_fields / inject_contract_fields / require_setup_success / validate_history_file / assert_new_format_only / assert_no_solver_artifacts / start_solver 等函数名与异常类名不变）。
+SCHEMA_VERSION 由 `d12d004-runner-1` 升为 `d12d005-runner-2`，rev2 加固后升为 `d12d005-runner-3`，rev3（主/派生列分离）后升为 `d12d005-runner-4`；公共 API 保持向后兼容（parse_setup_text / read_setup_file / validate_setup_fields / inject_contract_fields / require_setup_success / validate_history_file / assert_new_format_only / assert_no_solver_artifacts / start_solver 等函数名与异常类名不变）。
 
 ## 2. 表头证据（为什么必须改 polar 解析）
 
@@ -52,6 +53,7 @@ SCHEMA_VERSION 由 `d12d004-runner-1` 升为 `d12d005-runner-2`，rev2 加固后
 4. 每行强制校验：`Re/1e6*1e6` 与合同 `ReCref` 相对误差 ≤1e-6（`POLAR_RE_MISMATCH`）；`Mach` 与合同相对误差 ≤1e-6（`POLAR_MACH_MISMATCH`）；`|CLtot|≤10`、`|CDtot|≤10`（`POLAR_NONPHYSICAL`，防 358 倍 Sref 放大等失控值直接进入验收）。
 5. 返回结构含 `header_token_count=48`、逐行 `CLo/CLi/CLtot/CDo/CDi/CDtot/CMztot/Re` 与文件 sha256，供证据 JSON 直接引用。
 6. rev2 新增：表头必须在第 3 行（前两行是分组标签），否则 `POLAR_HEADER_ROW_UNEXPECTED`；新增 `parse_polar_structure()` 做 structure-only 解析（48 列/行宽/非有限 token/前 5 行预览），返回 `PASS_STRUCTURE_ONLY` 且 `physical_validation = NOT_APPLIED`，不把非物理数值伪装成通过。
+7. rev3 新增（A5 task-110 S3F-01）：把**主系数列**与**派生比列**分开。`validate_polar_file(..., allow_nonfinite_columns=...)` 支持一个显式、窄的白名单（当前只有 `("Ew",)`，即 `POLAR_DERIVED_NONFINITE_COLUMNS`）；白名单列的 NaN/IND/INF 只把报告降级为 `PASS_WITH_WARNINGS` 并写入 `derived_column_warnings`，其余任何列非有限仍报 `POLAR_NONFINITE`；主系数永不进入白名单，缺省行为仍是严格失败。S3 超声速标准翼的 `Ew = CLtot^2/(π·AR·CDiw)` 因 `CDiw=0` 为 `inf`，属于除零伪影（主系数 `CLtot=0.074251`、`CDi=0.002607`、`CDtot=0.013789` 均为有限且与线化理论区间 0.0673–0.0796 一致），allowlist 重跑 `verify-polar` 得 `PASS_WITH_WARNINGS`（见 `evidence/lead/s3_verify_polar_allowlisted.json`）。
 
 ### 3.2 严格 check-case-dir 门禁（新增 CLI 子命令）
 
@@ -104,14 +106,19 @@ SCHEMA_VERSION 由 `d12d004-runner-1` 升为 `d12d005-runner-2`，rev2 加固后
 | CASE_WRAPPER_TIMEOUT_TOO_SHORT | 包装器超时 < 600 s |
 | CASE_KILLED_BY_WRAPPER / CASE_WRAPPER_KILLED_AT_TIMEOUT / CASE_WRAPPER_TIMEOUT_MISSING | 包装器误杀/缺超时字段 |
 | CASE_READBACK_ASSERTION_COUNT | 回读断言数 != 合同字段数 |
+| POLAR_ALLOWLIST_UNKNOWN_COLUMNS | `allow_nonfinite_columns` 含 48 列表头中不存在的列名（防误用） |
 
-注：structure-only 状态 `PASS_STRUCTURE_ONLY` 不是错误，只声明结构可解析；其 `physical_validation = NOT_APPLIED`，不能用于数值验收。
+注：structure-only 状态 `PASS_STRUCTURE_ONLY` 不是错误，只声明结构可解析；其 `physical_validation = NOT_APPLIED`，不能用于数值验收。`PASS_WITH_WARNINGS` 仅表示“主系数全部有限、个别派生列被显式豁免”，不是物理验收通过，也不能作为 `CDtot` 可用的依据。
 
 ## 5. CLI 用法
 
 ```
-# 校验 7.2.2 polar（48 列严格解析 + 数值验收）
+# 校验 7.2.2 polar（48 列严格解析 + 数值验收；主系数必须有限）
 D:/RCAIDE/envs/RCAIDE/python.exe -E -s -B scripts/vspaero7_runner_v2.py verify-polar --polar <case>.polar
+
+# 显式允许派生列 Ew 非有限（只降级为 PASS_WITH_WARNINGS；主系数仍必须有限）
+D:/RCAIDE/envs/RCAIDE/python.exe -E -s -B scripts/vspaero7_runner_v2.py verify-polar \
+  --polar <case>.polar --expect <case>/expected.json --allow-nonfinite-derived
 
 # 只做结构解析（不验收数值）
 D:/RCAIDE/envs/RCAIDE/python.exe -E -s -B scripts/vspaero7_runner_v2.py polar-structure --polar <case>.polar
@@ -146,10 +153,10 @@ GATE_EXIT=2
 D:/RCAIDE/envs/RCAIDE/python.exe -E -s -B -m unittest discover -s scripts -p "test_vspaero7_runner_v2.py" -v
 ```
 
-- 结果：**Ran 46 tests / OK / 退出码 0**（约 0.41 s；首版 38 tests 见 `ld002_test_run.log`）
-- 全量日志：`evidence/a0/v2rev2_test_run.log`（319 B / sha256 03757b371510dee2db6efe87ac7928324fe2b4dd8deb032b47c97ac50fe7748f）
+- 结果：**Ran 51 tests / OK / 退出码 0**（约 0.53 s；rev2 46 tests 见 `v2rev2_test_run.log`，首版 38 tests 见 `ld002_test_run.log`）
+- 全量日志：`evidence/a0/v2rev3_test_run.log`（370 B / sha256 735f7d82b87ba37ece4661d1dcb335ca59aa382bdad68c20cc1c9407f964ffde）
 - 覆盖：LD-001 缺 '=' 检测/规范化/严格拒绝、17 字段回读、默认值泄漏（ReCref=1e7、Vinf=100）、错误 Sref、setup 返回码非 0、缺 vkey/csf、薄几何记录、缺 vspgeom、StopBeforeRun=0/缺失、vkey-vspgeom 不一致、120 s 包装器误杀、包装器字段缺失、残留 polar 产物、7.2.2 48 列正确解析、legacy 6.2 拒绝、缺列、NaN/IND、错误 Re、错误 Mach、非物理 CLtot、无数据行、缺表头、CLI 三条用例。
-- 另：Lead 的 `scripts/a0_verify_cases.py` 在 v2 落盘后仍 **PASS 263/263（revision 3）**（v1frozen 未被改动、公共 API 兼容）。
+- 另：Lead 的 `scripts/a0_verify_cases.py` 在 v2 rev3 落盘后复跑 **PASS 264/264（revision 4）**（v1frozen 未被改动、公共 API 兼容）。rev3 新增 5 个测试：默认拒绝 Ew=inf、allowlist 放行 Ew=inf 且 CLtot 仍有限、主系数 NaN 即使有 allowlist 仍拒绝、未知 allowlist 列拒绝、CLI `--allow-nonfinite-derived` 端到端。
 - 注意：本套测试用临时目录合成 fixture，不读取/不修改 A0 真实 setup 包；未启动任何求解器。
 
 ## 7. 与 v1frozen 的差异
@@ -163,7 +170,7 @@ D:/RCAIDE/envs/RCAIDE/python.exe -E -s -B -m unittest discover -s scripts -p "te
 
 - NOT_RUN：任何 VSPAERO/SU2/RCAIDE Mission 启动、真实 7.2.2 求解、真实 polar 数值验收。polar 解析仅用合成 fixture 验证；真实 48 列结构以 §2.1 归档文件表头+行宽核对为准。
 - PARTIAL：`check-case-dir` 对 A0 真实包的完整 PASS 需 A2 先完成 vkey 第 2 行改写（见 §5）。
-- 提交：v2 首版随 A0-aero 提交 `ab29a0c`；rev2 加固与本 evidence revision 3 同批提交（Lead 执行，A1 交付）。
+- 提交：v2 首版随 A0-aero 提交 `ab29a0c`；rev2 加固与 evidence revision 3 同批提交（Lead 执行，A1 交付）；rev3 主/派生列分离与 evidence revision 4 同批提交（Lead 执行，回应 A5 task-110 S3F-01，零求解）。
 ## 9. rev2 修订记录（A5 task-103）
 
 A5 对 v2 delta 给 CHANGES_REQUESTED（0 blocker / 3 major / 5 minor），rev2 逐项处置：
@@ -180,3 +187,15 @@ A5 对 v2 delta 给 CHANGES_REQUESTED（0 blocker / 3 major / 5 minor），rev2 
 | minor: 未 commit 表述 | §8 已更新 |
 
 新增回归测试 `CaseGateHardeningTests`（8 项）：vkey 不存在 / 同 basename 异目录 / 本地 vspgeom 篡改 / 本地匹配记录 PASS / 缺 solver 证据键 / csf 尾随内容 / 表头前移 / structure-only 接受非物理值。合计 **46 tests OK**。
+
+## 10. rev3 修订记录（A5 task-110 S3F-01，A 批 S3 停止后的零求解修复）
+
+A 批第 4 次启动（S3 标准翼 Mach 2.02）返回 `rc=0`、主系数全部有限，但 polar 派生列 `Ew=inf` 触发 v2 的 `POLAR_NONFINITE`，A2 按 `stop_rule_1` 保守停批（S4/S5 NOT_RUN）。A5 独立复核判定 `Ew` 为除零伪影、主系数未发散（`STOP_CONFIRMED=false`），条件性建议继续 S4/S5。rev3 处置：
+
+| 编号 | 处置 |
+| --- | --- |
+| S3F-01 | 新增派生列白名单 `POLAR_DERIVED_NONFINITE_COLUMNS=("Ew",)` + `--allow-nonfinite-derived`；主系数仍严格，报告降级为 `PASS_WITH_WARNINGS` 并列出 `derived_column_warnings` |
+| S3F-02 | 文档明确 `CDo/CDtot` 属 VSPAERO 内部寄生估算，不能当作真实阻力或优化目标；S4/S5 证据标 `VSPAERO_INTERNAL_ONLY` / `physical_validation=NOT_VALIDATED` |
+| S3F-04 | S3 重新以 allowlist 复核 `PASS_WITH_WARNINGS`（1 行、48 列、唯一非有限 token 为 Ew），不改变 A2 的 "保守停批正确" 结论 |
+
+本次修订**零求解**：只跑静态解析与 51 项回归测试；A 批启动计数保持 4/6，剩余 2 次须 Lead 重新书面授权后由 A2 执行（见 `evidence/lead/batch1b_reauthorization.md`）。

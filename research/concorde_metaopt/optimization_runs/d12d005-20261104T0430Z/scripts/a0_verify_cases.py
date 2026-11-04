@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""D-12D-005 A0 independent verification, revision 3 (no OpenVSP, no solver).
+"""D-12D-005 A0 independent verification, revision 4 (no OpenVSP, no solver).
 
 Re-checks the A0 setup bundle from disk only, from any checkout root:
   * evidence JSON self-consistency, dual raw/canonical-LF hashes, run-relative paths;
@@ -124,7 +124,7 @@ def main() -> int:
         return bool(ok)
 
     # ---- A. evidence self-consistency -----------------------------------
-    check("evidence.revision", evidence.get("revision") in (2, 3), evidence.get("revision"))
+    check("evidence.revision", evidence.get("revision") in (2, 3, 4), evidence.get("revision"))
     check("evidence.schema", evidence.get("schema_version") == "d12d005-a0-setup-generation-2", evidence.get("schema_version"))
     check("evidence.status", evidence.get("status") == "A0_SETUP_READY_NO_SOLVER", evidence.get("status"))
     check("evidence.solver_processes_started", evidence.get("solver_processes_started") == 0, evidence.get("solver_processes_started"))
@@ -284,7 +284,22 @@ def main() -> int:
     all_files = [p for p in run_dir.rglob("*") if p.is_file()]
     check("run_dir.file_count", len(all_files) >= 60, len(all_files))
     check("run_dir.no_vspgeom", not list(run_dir.rglob("*.vspgeom")), None)
-    check("run_dir.no_solver_artifacts", not [str(p) for p in all_files if p.suffix.lower() in (".adb", ".history", ".polar", ".lod", ".groups", ".fem")], None)
+    # A0 itself must be solver-free; the authorized A-batch executions under
+    # evidence/v1 are billable solver outputs recorded by the budget ledger and are
+    # therefore allowed there (and only there) in the same run directory.
+    solver_suffixes = (".adb", ".history", ".polar", ".lod", ".groups", ".fem")
+    a0_solver = [
+        str(p.relative_to(run_dir))
+        for p in (run_dir / "evidence" / "a0").rglob("*")
+        if p.is_file() and p.suffix.lower() in solver_suffixes
+    ]
+    check("a0_dir.no_solver_artifacts", not a0_solver, a0_solver[:5])
+    outside_v1 = [
+        str(p.relative_to(run_dir))
+        for p in all_files
+        if p.suffix.lower() in solver_suffixes and "evidence/v1" not in p.as_posix()
+    ]
+    check("run_dir.solver_artifacts_only_under_v1", not outside_v1, outside_v1[:5])
     binary = []
     for p in all_files:
         if b"\x00" in p.read_bytes():
@@ -296,7 +311,11 @@ def main() -> int:
     check("readme.canonical_convention", "canonical LF" in readme or "canonical-LF" in readme, None)
     check("readme.seven_files", "7 个文件" in readme or "7 files" in readme, None)
     check("readme.expected_json_bundle", "expected.json" in readme, None)
-    check("readme.revision_ok", "revision 2" in readme or "revision 3" in readme or "v2" in readme, None)
+    check(
+        "readme.revision_ok",
+        "revision 2" in readme or "revision 3" in readme or "revision 4" in readme or "v2" in readme,
+        None,
+    )
 
     failed = [c for c in checks if not c["ok"]]
     out = {

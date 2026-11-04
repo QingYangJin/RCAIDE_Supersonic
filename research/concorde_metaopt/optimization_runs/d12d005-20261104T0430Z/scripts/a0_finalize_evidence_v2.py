@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""D-12D-005 A0 evidence revision 3 (zero-solver, documentation/evidence only).
+"""D-12D-005 A0 evidence revision 4 (zero-solver, documentation/evidence only).
 
 Responds to A5 task-97 findings:
   F-A0-01 (MAJOR): per-file hash evidence was recorded pre-commit (CRLF); the
@@ -126,8 +126,8 @@ def main() -> int:
         rec["process_spawn_allowed"] = kind_of(name) == "regression_test"
         data["scripts"].append(rec)
     data["schema_version"] = "d12d005-a0-setup-generation-2"
-    data["revision"] = 3
-    data["revision_history"] = [2, 3]
+    data["revision"] = 4
+    data["revision_history"] = [2, 3, 4]
     data["generated_utc"] = utcnow()
     data["hashing_convention"] = {
         "text_files": "sha256 over canonical LF bytes (CRLF->LF) — equals the committed git blob content, because .gitattributes is '* text=auto' with eol=lf",
@@ -163,6 +163,7 @@ def main() -> int:
         "A5_F-A0-04": "process-spawn scan now covers every non-test script; the unittest's subprocess CLI call is documented as a permitted exception",
         "A5_F-A0-05": "S5 reference_velocity block records inheritance source and the 6.0e-8 m/s formula delta",
         "A5_A0R2_rev3": "revision 3: v2 runner rev2 hardening (V2-M01/M02/M03), LD-002 structure-only parser, verifier --no-write, 6/6 negative controls, real 12D-model check",
+        "A5_S3F-01_rev4": "revision 4: v2 runner rev3 splits primary vs derived non-finite columns; Ew is the only allowlisted derived column (--allow-nonfinite-derived), non-allowlisted non-finite tokens still fail, and S3 verify-polar now reports PASS_WITH_WARNINGS (evidence/v1/s3_verify_polar_allowlisted.json). Zero solver; batch-1 starts stay 4/6.",
         "A5_A0R2-01": "clean-checkout replay log regenerated and records both raw and canonical-LF forms",
         "A5_A0R2-02": "replay log records checks_failed=0 explicitly, never null",
         "A5_A0R2-03": "verifier replays all 6 negative controls (S0 and S3 groups), not just S0",

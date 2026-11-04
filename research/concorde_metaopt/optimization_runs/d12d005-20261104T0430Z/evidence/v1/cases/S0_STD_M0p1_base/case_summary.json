@@ -1,0 +1,267 @@
+{
+ "case_id": "S0_STD_M0p1_base",
+ "short_id": "S0",
+ "event_id": "NA-D12D005-001",
+ "started_utc": "2026-11-04T07:11:45Z",
+ "finished_utc": "2026-11-04T07:11:49Z",
+ "wall_seconds": 4.045,
+ "timeout_s": 600,
+ "timed_out": false,
+ "returncode": 0,
+ "outcome_class": "SOLVED_VALID",
+ "outcome_class_reason": null,
+ "peak_rss_gb": 0.002,
+ "coefficients": {
+  "AoA": 2.0,
+  "CLo": -0.000685575165,
+  "CLi": 0.127230973563,
+  "CLtot": 0.126545398398,
+  "CDo": 0.019632304071,
+  "CDi": 0.001314258293,
+  "CDtot": 0.020946562364,
+  "CMztot": 1.857e-09,
+  "Re": 239352.080013
+ },
+ "artifacts": {
+  ".polar": {
+   "path": "C:\\Users\\pc\\AppData\\Local\\RCAIDE_Supersonic_agent_state\\d12d005\\a2\\bundles\\S0_STD_M0p1_base\\S0_STD_M0p1_base_model.polar",
+   "bytes": 3025,
+   "sha256": "6cd1bab985faec6b4b4cee2fc2f3905886b67d7cddc48235a61f1be77f1e49b0"
+  },
+  ".history": {
+   "path": "C:\\Users\\pc\\AppData\\Local\\RCAIDE_Supersonic_agent_state\\d12d005\\a2\\bundles\\S0_STD_M0p1_base\\S0_STD_M0p1_base_model.history",
+   "bytes": 7552,
+   "sha256": "7dc18bd1fd65a4c0bb2d3c18ca885f6ff9885c5a9da4686001dc4d00d742d54f"
+  },
+  ".lod": {
+   "path": "C:\\Users\\pc\\AppData\\Local\\RCAIDE_Supersonic_agent_state\\d12d005\\a2\\bundles\\S0_STD_M0p1_base\\S0_STD_M0p1_base_model.lod",
+   "bytes": 29009,
+   "sha256": "5bef7cb333514e6ecec3b402170111d5441a22925de1b0bbf99a8f69918e212b"
+  },
+  ".adb": {
+   "path": "C:\\Users\\pc\\AppData\\Local\\RCAIDE_Supersonic_agent_state\\d12d005\\a2\\bundles\\S0_STD_M0p1_base\\S0_STD_M0p1_base_model.adb",
+   "bytes": 226616,
+   "sha256": "39c1226eaf01f20f515e156007211695c4590e419e3192ca40cc090a58edd3f4"
+  },
+  ".adb.cases": {
+   "path": "C:\\Users\\pc\\AppData\\Local\\RCAIDE_Supersonic_agent_state\\d12d005\\a2\\bundles\\S0_STD_M0p1_base\\S0_STD_M0p1_base_model.adb.cases",
+   "bytes": 239,
+   "sha256": "c105e2e5fd83ab143bb2195d01c20c9365f7e6d83e50b3c8ac8b2b759e7da817"
+  },
+  ".group.0": {
+   "path": "C:\\Users\\pc\\AppData\\Local\\RCAIDE_Supersonic_agent_state\\d12d005\\a2\\bundles\\S0_STD_M0p1_base\\S0_STD_M0p1_base_model.group.0",
+   "bytes": 4147,
+   "sha256": "e57326b3a9aa702a2da0be18de7381f30fb0d4dbfb7558b1f4c4fef05576120d"
+  },
+  ".group.1": {
+   "path": "C:\\Users\\pc\\AppData\\Local\\RCAIDE_Supersonic_agent_state\\d12d005\\a2\\bundles\\S0_STD_M0p1_base\\S0_STD_M0p1_base_model.group.1",
+   "bytes": 4147,
+   "sha256": "590d5c94b2e810fdc2c952d8ccf0759553a2bb22c2d0739c152430bdccd7a600"
+  }
+ },
+ "pre_start_checks": {
+  "contract_present": true,
+  "contract_sha_matches_manifest": true,
+  "vspgeom_sha_matches_manifest": true,
+  "vkey_line2_is_bundle_vspgeom": true,
+  "csf_zero_control_surfaces": true,
+  "setup_written_from_contract": true,
+  "exe_sha256": "db71c4412489af82398833408ea30fb73327bdd9434de2ef530d31375b9fddad",
+  "exe_sha256_matches_authorization": true,
+  "readback_17_ok": true,
+  "no_other_vspaero_process": true,
+  "all_pass": true
+ },
+ "readback": {
+  "status": "PASS",
+  "source": "C:\\Users\\pc\\AppData\\Local\\RCAIDE_Supersonic_agent_state\\d12d005\\a2\\bundles\\S0_STD_M0p1_base\\S0_STD_M0p1_base_model.vspaero",
+  "fields_checked": [
+   {
+    "field": "AoA",
+    "expected": 2.0,
+    "actual": 2.0,
+    "spec": "abs:1e-09",
+    "detail": "abs_delta=0.000e+00 tol=1.000e-09",
+    "ok": true
+   },
+   {
+    "field": "Beta",
+    "expected": 0.0,
+    "actual": 0.0,
+    "spec": "abs:1e-09",
+    "detail": "abs_delta=0.000e+00 tol=1.000e-09",
+    "ok": true
+   },
+   {
+    "field": "Bref",
+    "expected": 4.0,
+    "actual": 4.0,
+    "spec": "rel:1e-09",
+    "detail": "rel_delta=0.000e+00 tol=4.000e-09",
+    "ok": true
+   },
+   {
+    "field": "Cref",
+    "expected": 1.0,
+    "actual": 1.0,
+    "spec": "rel:1e-09",
+    "detail": "rel_delta=0.000e+00 tol=1.000e-09",
+    "ok": true
+   },
+   {
+    "field": "FarDist",
+    "expected": -1.0,
+    "actual": -1.0,
+    "spec": "rel:1e-09",
+    "detail": "rel_delta=0.000e+00 tol=1.000e-09",
+    "ok": true
+   },
+   {
+    "field": "Mach",
+    "expected": 0.1,
+    "actual": 0.1,
+    "spec": "rel:1e-09",
+    "detail": "rel_delta=0.000e+00 tol=1.000e-09",
+    "ok": true
+   },
+   {
+    "field": "NumWakeNodes",
+    "expected": 8.0,
+    "actual": 8.0,
+    "spec": "exact:0.0",
+    "detail": "exact ok",
+    "ok": true
+   },
+   {
+    "field": "ReCref",
+    "expected": 239352.08001331755,
+    "actual": 239352.08001331755,
+    "spec": "rel:1e-06",
+    "detail": "rel_delta=0.000e+00 tol=2.394e-01",
+    "ok": true
+   },
+   {
+    "field": "Rho",
+    "expected": 0.1153178340089936,
+    "actual": 0.1153178340089936,
+    "spec": "rel:1e-09",
+    "detail": "rel_delta=0.000e+00 tol=1.000e-09",
+    "ok": true
+   },
+   {
+    "field": "Sref",
+    "expected": 4.0,
+    "actual": 4.0,
+    "spec": "rel:1e-09",
+    "detail": "rel_delta=0.000e+00 tol=4.000e-09",
+    "ok": true
+   },
+   {
+    "field": "Symmetry",
+    "expected": 0.0,
+    "actual": 0.0,
+    "spec": "exact:0.0",
+    "detail": "exact ok",
+    "ok": true
+   },
+   {
+    "field": "Vinf",
+    "expected": 29.506801840000005,
+    "actual": 29.506801840000005,
+    "spec": "rel:1e-09",
+    "detail": "rel_delta=0.000e+00 tol=2.951e-08",
+    "ok": true
+   },
+   {
+    "field": "WakeIters",
+    "expected": 5.0,
+    "actual": 5.0,
+    "spec": "exact:0.0",
+    "detail": "exact ok",
+    "ok": true
+   },
+   {
+    "field": "WakeRelax",
+    "expected": 1.0,
+    "actual": 1.0,
+    "spec": "rel:1e-09",
+    "detail": "rel_delta=0.000e+00 tol=1.000e-09",
+    "ok": true
+   },
+   {
+    "field": "X_cg",
+    "expected": 0.25,
+    "actual": 0.25,
+    "spec": "abs:1e-06",
+    "detail": "abs_delta=0.000e+00 tol=1.000e-06",
+    "ok": true
+   },
+   {
+    "field": "Y_cg",
+    "expected": 0.0,
+    "actual": 0.0,
+    "spec": "abs:1e-09",
+    "detail": "abs_delta=0.000e+00 tol=1.000e-09",
+    "ok": true
+   },
+   {
+    "field": "Z_cg",
+    "expected": 0.0,
+    "actual": 0.0,
+    "spec": "abs:1e-06",
+    "detail": "abs_delta=0.000e+00 tol=1.000e-06",
+    "ok": true
+   }
+  ],
+  "assertions": 17,
+  "path": "C:\\Users\\pc\\AppData\\Local\\RCAIDE_Supersonic_agent_state\\d12d005\\a2\\bundles\\S0_STD_M0p1_base\\S0_STD_M0p1_base_model.vspaero",
+  "bytes": 814,
+  "sha256": "45c723b6063d56752ba153e3d6fd70f3c95d99ddb59ad2ebd92b56abf30f8912",
+  "line_count": 42,
+  "vector_rows": 1,
+  "legacy_lines": 0,
+  "has_equals_format": true
+ },
+ "verify_polar": {
+  "status": "PASS",
+  "path": "C:\\Users\\pc\\AppData\\Local\\RCAIDE_Supersonic_agent_state\\d12d005\\a2\\bundles\\S0_STD_M0p1_base\\S0_STD_M0p1_base_model.polar",
+  "schema": "vspaero-7.2.2-48-column",
+  "header_token_count": 48,
+  "rows": 1,
+  "checks": [
+   {
+    "row": 1,
+    "AoA": 2.0,
+    "CLo": -0.000685575165,
+    "CLi": 0.127230973563,
+    "CLtot": 0.126545398398,
+    "CDo": 0.019632304071,
+    "CDi": 0.001314258293,
+    "CDtot": 0.020946562364,
+    "CMztot": 1.857e-09,
+    "Re": 239352.080013
+   }
+  ],
+  "sha256": "6cd1bab985faec6b4b4cee2fc2f3905886b67d7cddc48235a61f1be77f1e49b0"
+ },
+ "verify_history": {
+  "status": "PASS",
+  "path": "C:\\Users\\pc\\AppData\\Local\\RCAIDE_Supersonic_agent_state\\d12d005\\a2\\bundles\\S0_STD_M0p1_base\\S0_STD_M0p1_base_model.history",
+  "sha256": "7dc18bd1fd65a4c0bb2d3c18ca885f6ff9885c5a9da4686001dc4d00d742d54f",
+  "reference_fields": {
+   "Sref_": 4.0,
+   "Cref_": 1.0,
+   "Bref_": 4.0,
+   "Xcg_": 0.25,
+   "Ycg_": 0.0,
+   "Zcg_": 0.0,
+   "Mach_": 0.1,
+   "AoA_": 2.0,
+   "Beta_": 0.0,
+   "Rho_": 0.1153178,
+   "Vinf_": 29.5068018
+  }
+ },
+ "verify_polar_error": "",
+ "verify_history_error": ""
+}

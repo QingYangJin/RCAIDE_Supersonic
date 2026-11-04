@@ -1,0 +1,601 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_kind": "D12D005_A1BATCH_RUN_CONFIG_TEMPLATE",
+  "status": "BATCH1_STOPPED_ABORT_FINAL_FREEZE",
+  "no_solver_started": false,
+  "authority": {
+    "issue": "#4",
+    "approval_comment_id": 6622447995,
+    "approval_period": "2026-11-04 D-12D-005",
+    "approved_category": "A_VSPAERO_AERO_FALLBACK",
+    "approved_max_starts_class_A": 20,
+    "this_batch_max_starts": 6,
+    "denied_categories": {
+      "B_VSPAERO_THICK": 0,
+      "C_OPENVSP_WAVEDRAG": 0,
+      "D_SU2_EULER": 0,
+      "E_RCAIDE_MISSION": 0,
+      "P4_REAL_BOE_MAML": 0
+    },
+    "carryover_from_D12D004": false,
+    "no_carryover": true,
+    "note": "A 类独立新账本 cap 20；本批最多 6 次，剩余 14 次不预分配、不结转；失败/重试/超时/中止均计费；门禁未通过不得启动。"
+  },
+  "authorization_state": {
+    "lead_authorization_required": false,
+    "lead_authorization_received": true,
+    "lead_authorization_message_ref": "Lead 书面授权消息 2026-11-04T15:05+08:00（07:05Z）",
+    "a5_verdict_required_token": "APPROVE_FOR_A_BATCH_1",
+    "a5_verdict_dir": "EXT/d12d005/a5/a0_review/",
+    "a0_gates": {
+      "A1_parser_ld002_fix_and_strict_gates": "DELIVERED task-95：vspaero7_runner_v2.py sha256 5701d301e5c4660f6038dfd7ecb19a610c30256dc6104b922fa838d1712190e8（schema d12d005-runner-3）；A2 独立复跑 unittest 46 tests OK",
+      "A0_archive_diagnosis_and_setup_generation": "DELIVERED task-96 rev3/rev3a：evidence/a0/setup_generation.json sha256 b9b77bb4…（status A0_SETUP_READY_NO_SOLVER，revision 3，stop_before_run=1，solver_processes_started=0）；rev3a 提交 980fffb 仅修文档/重放日志，a0_verification.json 83188900…",
+      "A5_independent_review": "APPROVE_FOR_A_BATCH1（task-108，target 980fffb；verdict sha256 78e9933be2bd87dd9228ff7059b87397b4e4ff7ffbe68d29a7a5d2cf83b2b971）"
+    },
+    "no_start_before_gate": true,
+    "note": "A5 verdict + A3 PASS + Lead 书面授权齐备；preflight_gates 全 true；可启动 A 批 ≤6 次（串行）。",
+    "observed_worktree_note": "准备基线为 HEAD 0790f177df2ae8c9fb239c1aeebf65bd46de9683（A0 rev3）；准备期间 Lead 于 2026-11-04T14:48:13+08:00 提交 980fffb15431a4a5499f86f5a8f40c2b3e00f111（A0 rev3a：LD-002 文档 canonical-LF 说明 + rev3 干净 checkout 重放日志，4 文件 +22/-4），worktree 现 porcelain=0。 A0 rev3a 未改 evidence/a0/setup_generation.json（仍 sha256 b9b77bb4c2f753ace3837b2a3747fd1fd8fdfc2f56c19ac2eb8c9a7a32ca51dd），也未改 v2 runner（仍 5701d301…）；仅 a0_verification.json 更新为 831889006d477685c7327a90dee1bcbad8f4ef059eb64f94cc2023959a9b0d66。故 6 案 bundle 与 check-case-dir PASS 结论不受影响。",
+    "a5_rev3_probe": "A5 rev3 复核现场：EXT/d12d005/a5/a0_rev3_review/ 于 14:41 产 independent_probe.json（179 checks / 1 failed = doc.ld002_log_claim_correct），截至 14:49 尚无 verdict.txt；rev3a 提交即针对该失败项，预计需 A5 对 980fffb 出 verdict。",
+    "authorization_utc": "2026-11-04T07:05:00Z",
+    "a3_repo_isolation": "PASS（task-109，980fffb，critical 32/32；report sha256 bcee12ccd3de41ccff1e8430b599ec19b982eaaf6db2fc2d2c4a0ae53756001f）"
+  },
+  "run_identity": {
+    "run_id": "d12d005-20261104T0430Z",
+    "run_dir": "research/concorde_metaopt/optimization_runs/d12d005-20261104T0430Z",
+    "worktree": "D:/RCAIDE-d12d005",
+    "branch": "research/d12d005-aero-fallback",
+    "run_family": "D-12D-005",
+    "created_utc": "2026-11-04T04:30:00Z",
+    "prepared_utc": "2026-11-04T04:43:52Z",
+    "prepared_by": "A2",
+    "report_language": "zh-CN",
+    "prep_scope": "zero-solver preparation only: run_config template + budget ledger + case matrix + execution SOP"
+  },
+  "code": {
+    "branch": "research/d12d005-aero-fallback",
+    "worktree": "D:/RCAIDE-d12d005",
+    "base_sha": "980fffb15431a4a5499f86f5a8f40c2b3e00f111",
+    "runner_path": "research/concorde_metaopt/optimization_runs/d12d005-20261104T0430Z/scripts/vspaero7_runner_v2.py",
+    "runner_status": "AUTHORIZED_FOR_A_BATCH1",
+    "runner_sha256": "5701d301e5c4660f6038dfd7ecb19a610c30256dc6104b922fa838d1712190e8",
+    "runner_sha256_required_before_start": true,
+    "runner_commit": "980fffb15431a4a5499f86f5a8f40c2b3e00f111",
+    "runner_commit_rule": "v2 runner 已随 A0 rev3 提交于 0790f177df2ae8c9fb239c1aeebf65bd46de9683；A5 APPROVE 后冻结该 SHA，不得改为未提交内容。",
+    "v1_frozen_runner_reference": {
+      "path": "research/concorde_metaopt/optimization_runs/d12d005-20261104T0430Z/scripts/vspaero7_runner_v1frozen.py",
+      "sha256": "b77b56526acab6ac03ee07838d06970f2bd98d298aae597997bf393474128a36",
+      "role": "仅作基线/回归对照，不得用于真实启动（LD-002 表头缺陷未修复）"
+    },
+    "v1_frozen_test_reference": {
+      "path": "research/concorde_metaopt/optimization_runs/d12d005-20261104T0430Z/scripts/test_vspaero7_runner_v1frozen.py",
+      "sha256": "ce741d4873c4ce7f573346f4f2df9af231189f3bedb55bc0d4876ae4c558d657"
+    },
+    "git_sha_required_at_run_start": "980fffb15431a4a5499f86f5a8f40c2b3e00f111",
+    "git_sha_rule": "首次启动前把实际 HEAD/分支/UTC/操作者写入 evidence/v1/run_start.json；该值必须等于 Lead 授权指定的 40 位 SHA（当前 980fffb...）",
+    "dirty_worktree_allowed": false
+  },
+  "toolchain": {
+    "openvsp_version": "3.55.0",
+    "openvsp_root": "D:/OpenVSP-3.55.0/OpenVSP-3.55.0-win64",
+    "vspaero_exe": "D:/OpenVSP-3.55.0/OpenVSP-3.55.0-win64/vspaero.exe",
+    "vspaero_version": "7.2.2",
+    "vspaero_bytes": 811520,
+    "vspaero_sha256": "db71c4412489af82398833408ea30fb73327bdd9434de2ef530d31375b9fddad",
+    "old_3261_must_stay_untouched": "D:/Program Files/OpenVSP/OpenVSP-3.26.1-win64-Python3.9/OpenVSP-3.26.1-win64/vspaero.exe",
+    "old_3261_sha256": "e1affca023f9d63d9b0b5f343c3ea5afd5a8dbcfe420952e557718dd15f90eb8",
+    "python": "D:/RCAIDE/envs/RCAIDE/python.exe",
+    "geometry_setup_method": "OpenVSP 3.55 API VSPAEROComputeGeometry + VSPAEROSweep(StopBeforeRun=1)；不 fork solver；计数 setup_generation_events 但 billable=false",
+    "solver_command_template": "D:/OpenVSP-3.55.0/OpenVSP-3.55.0-win64/vspaero.exe -omp 4 <CASE_BASE>（cwd=包含 <CASE_BASE>.vspgeom 与 <CASE_BASE>.vspaero 的 case 目录）"
+  },
+  "frozen_flow": {
+    "altitude_m": 18288.0,
+    "temperature_k": 216.65,
+    "pressure_pa": 7171.544888256813,
+    "rho_kg_m3": 0.1153178340089936,
+    "speed_of_sound_m_s": 295.0680184,
+    "mu_kg_m_s": 1.42161308e-05,
+    "mu_source": "ISA 216.65 K；与 D-12D-004 V0/V1 同一状态，由合同反推 mu=rho*V*Cref/ReCref 生成时同式复算。",
+    "note": "6 案全部使用同一 ISA 状态，只改 Mach/几何/wake 设置，保证单因素可比。"
+  },
+  "geometry_contracts": {
+    "standard_rectangular_wing": {
+      "id": "STD-RECT-NACA0012-AR4",
+      "expected_source": "research/concorde_metaopt/optimization_runs/d12d005-20261104T0430Z/evidence/a0/setup_gen/S0..S4_*/expected.json（A0 rev3，HEAD 0790f177）",
+      "configuration": "矩形翼 AR=4、NACA0012 对称翼型、Sref=4.0 m^2、thin（VSPGEOM）",
+      "derived_reference": {
+        "sref_m2": 4.0,
+        "span_m": 4.0,
+        "cref_m": 1.0,
+        "bref_m": 4.0,
+        "derivation": "A0 rev3 实测 contract：Sref=4.0、Cref=1.0、Bref=4.0（等弦矩形 b=4 m、c=1 m）；早期按 Sref=1.0 推导的 2.0/0.5/2.0 作废。"
+      },
+      "cg_m": {
+        "x": 0.25,
+        "y": 0.0,
+        "z": 0.0,
+        "status": "A0_REV3_READBACK"
+      },
+      "a0_contract_json": "evidence/a0/setup_gen/{S0_STD_M0p1_base,S1_STD_M0p1_wn128,S2_STD_M0p1_wi0,S3_STD_M2p02_base,S4_STD_M2p02_wn128}/expected.json（各 17 字段 contract；A2 bundle 已复制并逐案 check-case-dir PASS）",
+      "status": "A0_REV3_VERIFIED",
+      "note": "以 A0 rev3 expected.json 为准；A2 bundle 回读 17/17 PASS（见 EXT/d12d005/a2/bundle_check/summary.json）。"
+    },
+    "main_wing_12d_thin": {
+      "id": "12D-MAIN-WING-THIN",
+      "expected_source": "evidence/a0/setup_gen/S5_D12_M2p02_base/expected.json（A0 rev3；vspgeom sha 9fcda6d5… 与 D-12D-004 V0 基线一致）",
+      "sref_m2": 358.25,
+      "cref_m": 18.489893,
+      "bref_m": 25.604638,
+      "cg_m": {
+        "x": 16.821978259514246,
+        "y": 0.0,
+        "z": 0.0,
+        "status": "PROVISIONAL_NOT_FROZEN"
+      },
+      "status": "A0_REV3_VERIFIED_CG_PROVISIONAL",
+      "lifting_surfaces_only": true,
+      "note": "仅主翼薄面；机身不进求解域（lifting-surfaces-only），不得将本结果当作全机阻力/燃油验收。",
+      "a0_contract_json": "evidence/a0/setup_gen/S5_D12_M2p02_base/expected.json"
+    },
+    "shared_geometry_rules": {
+      "thin_only": "本批仅使用 VSPGEOM thin 路径（GeomSet=SET_NONE + ThinGeomSet=SET_ALL），与 D-12D-004 V1 的 LD-001/LD-003 修复一致。",
+      "one_factor_at_a_time": "S1/S2 仅相对 S0、S4 仅相对 S3 改 1 个 wake 字段；其余 .vspaero 字段必须逐字节相同（除 case 名/路径）。"
+    }
+  },
+  "case_flow_conditions": {
+    "STD_M0_1": {
+      "mach": 0.1,
+      "vinf_m_s": 29.506801840000005,
+      "recref_expected": 239352.08001331755
+    },
+    "STD_M2_02": {
+      "mach": 2.02,
+      "vinf_m_s": 596.0373971680001,
+      "recref_expected": 4834912.016269014
+    },
+    "MAIN_12D_M2_02": {
+      "mach": 2.02,
+      "vinf_m_s": 596.0373972278921,
+      "recref_expected": 89397005.8767656
+    }
+  },
+  "wake_contract": {
+    "baseline": {
+      "NumWakeNodes": 8,
+      "WakeIters": 5,
+      "WakeRelax": 1.0,
+      "FarDist": -1.0,
+      "MaxTurningAngle": -1.0,
+      "Symmetry": 0
+    },
+    "variants": {
+      "S1_num_wake_nodes_128": {
+        "NumWakeNodes": 128
+      },
+      "S2_wake_iters_0": {
+        "WakeIters": 0
+      },
+      "S4_num_wake_nodes_128": {
+        "NumWakeNodes": 128
+      }
+    },
+    "rule": "每个变体只允许改变列出的 1 个字段；其余字段与所在组基线逐字节一致。"
+  },
+  "readback_assertions": {
+    "required_field_count": 17,
+    "fields": [
+      {
+        "field": "Mach",
+        "tolerance_rel": 1e-09,
+        "expected": "per-case A0/run_config"
+      },
+      {
+        "field": "Vinf",
+        "tolerance_rel": 1e-09,
+        "expected": "per-case flow"
+      },
+      {
+        "field": "Rho",
+        "tolerance_rel": 1e-09,
+        "expected": 0.1153178340089936
+      },
+      {
+        "field": "ReCref",
+        "tolerance_rel": 1e-06,
+        "expected": "per-case flow"
+      },
+      {
+        "field": "Sref",
+        "tolerance_rel": 1e-09,
+        "expected": "A0 expect.json"
+      },
+      {
+        "field": "Cref",
+        "tolerance_rel": 1e-09,
+        "expected": "A0 expect.json"
+      },
+      {
+        "field": "Bref",
+        "tolerance_rel": 1e-09,
+        "expected": "A0 expect.json"
+      },
+      {
+        "field": "X_cg",
+        "tolerance_abs": 1e-06,
+        "expected": "A0 expect.json"
+      },
+      {
+        "field": "Y_cg",
+        "tolerance_abs": 1e-09,
+        "expected": "A0 expect.json"
+      },
+      {
+        "field": "Z_cg",
+        "tolerance_abs": 1e-06,
+        "expected": "A0 expect.json"
+      },
+      {
+        "field": "AoA",
+        "tolerance_abs": 1e-09,
+        "expected": 2.0
+      },
+      {
+        "field": "Beta",
+        "tolerance_abs": 1e-09,
+        "expected": 0.0
+      },
+      {
+        "field": "Symmetry",
+        "tolerance": "exact",
+        "expected": 0
+      },
+      {
+        "field": "NumWakeNodes",
+        "tolerance": "exact",
+        "expected": "per-case wake"
+      },
+      {
+        "field": "WakeIters",
+        "tolerance": "exact",
+        "expected": "per-case wake"
+      },
+      {
+        "field": "WakeRelax",
+        "tolerance_rel": 1e-09,
+        "expected": 1.0
+      },
+      {
+        "field": "FarDist",
+        "tolerance_rel": 1e-09,
+        "expected": -1.0
+      }
+    ],
+    "hard_gate": "任一字段缺失/不一致/命中 VSPAERO 默认值(Vinf=100, Rho=0.002377, ReCref=1e7) => SETUP_READBACK_FAIL，禁止启动（否则该启动计费但不计有效证据）。"
+  },
+  "case_matrix": {
+    "path": "solver_case_matrix.csv",
+    "expected_rows": 6,
+    "groups": {
+      "SUB_WAKE": {
+        "cases": [
+          "S0",
+          "S1",
+          "S2"
+        ],
+        "basis": "标准矩形翼 M0.10，wake 敏感性"
+      },
+      "SUP_STD": {
+        "cases": [
+          "S3",
+          "S4"
+        ],
+        "basis": "标准矩形翼 M2.02"
+      },
+      "SUP_12D": {
+        "cases": [
+          "S5"
+        ],
+        "basis": "12D 主翼 M2.02 基线"
+      }
+    },
+    "status_at_prep": "ALL_NOT_RUN",
+    "order_policy": "按 order 串行 S0→S5；任一案触发停止规则则剩余案标 NOT_RUN_AFTER_ABORT。"
+  },
+  "budget": {
+    "path": "approval_and_budget_ledger.json",
+    "class_A_cap_starts": 20,
+    "this_batch_cap_starts": 6,
+    "used_starts": 4,
+    "starts_remaining_this_batch": 2,
+    "serial_only": true,
+    "max_concurrent": 1,
+    "max_cores": 4,
+    "max_ram_gb": 16,
+    "max_wall_per_start_s": 900,
+    "max_round_wall_h": 24,
+    "paid_cloud": false,
+    "failure_billable": true,
+    "retry_billable": true,
+    "max_retries_per_case": 1,
+    "retry_requires_lead_written_authorization": true,
+    "no_carryover": true,
+    "remaining_disposition": "CLOSED_NOT_CARRIED_OVER_NOT_REALLOCATED",
+    "retries_used": 0,
+    "billable_events": 4
+  },
+  "outputs": {
+    "raw_root": "D:/RCAIDE/outputs/concorde_metaopt/d12d005-20261104T0430Z/",
+    "gitignored": true,
+    "delivered_root": "research/concorde_metaopt/optimization_runs/d12d005-20261104T0430Z",
+    "evidence_dir": "evidence/v1/",
+    "required_files": [
+      "config/run_config.json",
+      "config/approval_and_budget_ledger.json",
+      "config/solver_case_matrix.csv",
+      "evidence/v1/run_start.json",
+      "evidence/v1/ledger.jsonl",
+      "evidence/v1/batch_state.json",
+      "evidence/v1/stop_decision.json",
+      "evidence/v1/batch1_results.json",
+      "evidence/v1/batch1_summary.md",
+      "evidence/v1/per_case_conclusions.md",
+      "evidence/v1/per_case_conclusions.csv",
+      "evidence/v1/summary.json",
+      "evidence/v1/data_manifest.json"
+    ],
+    "manifest_hash_mode": "text=canonical LF; binary=raw bytes",
+    "frozen_record_dir": "evidence/v1/"
+  },
+  "parse_policy": {
+    "parser": "scripts/vspaero7_runner_v2.py（A1 task-95；A5 复核后冻结）",
+    "header_rule": "严格按 VSPAERO 7.2.2 polar 真实表头解析：CLo/CLi/CLtot、CDo/CDi/CDtot、CM*；禁止把旧 6.2 的 CL 静默认作 CLtot，禁止读取不存在列。",
+    "legacy_reject": "VSPAERO 6.2 legacy 表头（CL/CDi/CDtot 组合）明确拒绝（LD-002）。",
+    "nonfinite_rule": "NaN/IND/INF/非物理值 -> INVALID，绝不写 PASS；负阻力（CL>0.05 且 CDi<=0 或 CDtot<=0）-> SOLVED_ALARM。",
+    "invalid_never_pass": true
+  },
+  "abort_policy": {
+    "stop_rules": [
+      "任一必填来流/参考量回读不一致或命中默认值 -> 停止链路（SETUP_READBACK_FAIL）",
+      "polar/history 出现 NaN/IND/INF -> 停止链路（INVALID）",
+      "CL>0.05 时 CDi<=0 或 CDtot<=0 -> 停止链路（SOLVED_ALARM）",
+      "S0（M0.10 基线）非物理 -> 停止 SUB_WAKE 组，S1/S2 标 NOT_RUN_AFTER_ABORT",
+      "S3（M2.02 基线）非物理/发散 -> 停止 SUP_STD/SUP_12D，S4/S5 标 NOT_RUN_AFTER_ABORT",
+      "单次启动墙钟 >900s、整轮 >24h -> 中止并计费",
+      "RSS >16GB 或核数 >4 -> 中止",
+      "starts_used_this_batch >= 6 或 class_A_used >= 20 -> 强制停止",
+      "v2 parser 判定 INVALID 的案例不得标记为通过，不得作为后续判据"
+    ],
+    "on_abort": "立即停止后续启动，落盘本次事件与 stop_decision，send_message Lead（≤8 行）；未经 Lead 书面批准不得重试。"
+  },
+  "pending_inputs": [
+    {
+      "id": "A0-STD-WING",
+      "owner": "Lead (task-96)",
+      "need": "标准矩形翼 setup/expect + 17 字段回读证据",
+      "status": "DELIVERED",
+      "evidence": "evidence/a0/setup_generation.json sha256 b9b77bb4c2f753ace3837b2a3747fd1fd8fdfc2f56c19ac2eb8c9a7a32ca51dd；A2 bundle S0..S4 check-case-dir 全 PASS"
+    },
+    {
+      "id": "A0-12D-WING",
+      "owner": "Lead (task-96)",
+      "need": "12D 主翼 thin setup/expect",
+      "status": "DELIVERED",
+      "evidence": "S5_D12_M2p02_base；vspgeom sha256 9fcda6d5d45300fbb0e20257c9ddc80540b44f5064a9566089d7ef85f9018d8e；A2 bundle check PASS"
+    },
+    {
+      "id": "A1-RUNNER-V2",
+      "owner": "a1-code-dev (task-95)",
+      "need": "v2 parser + 严格门禁 + 回归测试",
+      "status": "DELIVERED",
+      "evidence": "vspaero7_runner_v2.py sha256 5701d301e5c4660f6038dfd7ecb19a610c30256dc6104b922fa838d1712190e8；A2 复跑 46 tests OK"
+    },
+    {
+      "id": "A5-VERDICT",
+      "owner": "a5-code-reviewer (task-97)",
+      "need": "APPROVE_FOR_A_BATCH_1 verdict",
+      "status": "DELIVERED",
+      "evidence": "APPROVE_FOR_A_BATCH1 task-108 @980fffb; verdict sha256 78e9933be2bd87dd9228ff7059b87397b4e4ff7ffbe68d29a7a5d2cf83b2b971"
+    },
+    {
+      "id": "LEAD-AUTH",
+      "owner": "Lead",
+      "need": "本批 ≤6 次启动书面授权（message ref + 授权 SHA）",
+      "status": "DELIVERED",
+      "evidence": "Lead 书面授权 2026-11-04T07:05Z；cap=6；案序 S0..S5"
+    }
+  ],
+  "prep_artifacts": {
+    "run_config_template": "EXT/d12d005/a2/run_config.json",
+    "budget_ledger_template": "EXT/d12d005/a2/approval_and_budget_ledger.json",
+    "case_matrix": "EXT/d12d005/a2/solver_case_matrix.csv",
+    "execution_sop": "EXT/d12d005/a2/a1_batch1_execution_sop.md",
+    "prep_manifest": "EXT/d12d005/a2/prep_manifest.json",
+    "readiness": "C:/Users/pc/AppData/Local/RCAIDE_Supersonic_agent_state/d12d005/a2/v1_readiness.md",
+    "bundles_manifest": "C:/Users/pc/AppData/Local/RCAIDE_Supersonic_agent_state/d12d005/a2/bundles_manifest.json",
+    "bundle_check_summary": "C:/Users/pc/AppData/Local/RCAIDE_Supersonic_agent_state/d12d005/a2/bundle_check/summary.json"
+  },
+  "notes": [
+    "模板状态 PREP_TEMPLATE_NOT_RUN：no_solver_started=true，任何真实启动前必须由 Lead 授权并落地 evidence/a1/run_start.json。",
+    "本文件写入 EXT 记忆目录，不进入仓库；授权后复制为 run 目录 config/run_config.json 并记录副本 SHA256。",
+    "S0/S1/S2 为亚音速 wake 敏感性；S3/S4 为超声速标准翼；S5 为 12D 主翼；全部 lifting-surfaces-only（机身不进求解域）。",
+    "rev3（2026-11-04）：按 A0 rev3（HEAD 0790f177）实际值对齐标准翼几何/来流，并加入 6 个执行 bundle 及其 check-case-dir PASS 证据；仍为 PREP_TEMPLATE_NOT_RUN，starts=0。",
+    "复核时观察到 worktree 有 1 个非 A2 的 tracked 修改（evidence/a0/ld002_parser_fix.md），A2 未改动仓库；详见 v1_readiness.md §附。",
+    "复核时观察：HEAD 由 0790f177 前进到 980fffb（A0 rev3a，Lead 14:48:13 提交，worktree porcelain=0），setup_generation.json 与 v2 runner 未变，bundle 结论不变；A2 仓库写入 0。",
+    "2026-11-04T07:05Z Lead 授权 A 类第一批 ≤6 次；A5 task-108 APPROVE_FOR_A_BATCH1、A3 task-109 PASS；6 bundle 于 HEAD 980fffb 复跑 check-case-dir 全 PASS；status=AUTHORIZED_WAITING_FIRST_START。",
+    "2026-11-04 冻结：A 类第一批执行 4 次后因 NA-D12D005-004 (S3 Ew=inf, POLAR_NONFINITE) 按停止规则中止；S4/S5 NOT_RUN_AFTER_ABORT；remaining 2 关闭不重分配/不重试/不结转；本批 0 重试。"
+  ],
+  "case_flow_conditions_note": "值取自 A0 rev3 expected.json 的 contract；STD 超声速组 Vinf=2.02*a=596.0373971680001，12D 组沿用 D-12D-004 冻结 596.0373972278921（差 6.0e-8 相对，属两套冻结口径）。",
+  "bundles": {
+    "root": "C:/Users/pc/AppData/Local/RCAIDE_Supersonic_agent_state/d12d005/a2/bundles",
+    "manifest_path": "C:/Users/pc/AppData/Local/RCAIDE_Supersonic_agent_state/d12d005/a2/bundles_manifest.json",
+    "manifest_sha256": "7d12b056469255c324e662d1afd99f69a3ccd8e24304179b1d074b52a8a040c2",
+    "check_summary_path": "C:/Users/pc/AppData/Local/RCAIDE_Supersonic_agent_state/d12d005/a2/bundle_check/summary.json",
+    "check_summary_sha256": "150c64d20a0b19c8bcfce5c145d0d4359c1e6b1dbb79b4cf65e4ce2215041dc0",
+    "a0_evidence_path": "research/concorde_metaopt/optimization_runs/d12d005-20261104T0430Z/evidence/a0/setup_generation.json",
+    "a0_evidence_sha256": "b9b77bb4c2f753ace3837b2a3747fd1fd8fdfc2f56c19ac2eb8c9a7a32ca51dd",
+    "runner_sha256": "5701d301e5c4660f6038dfd7ecb19a610c30256dc6104b922fa838d1712190e8",
+    "gate_command": "python -B scripts/vspaero7_runner_v2.py check-case-dir --dir <bundle> --evidence <setup_generation.json> --case-id <case_id>",
+    "all_six_gate_pass": true,
+    "cases": [
+      {
+        "case_id": "S0_STD_M0p1_base",
+        "bundle_dir": "C:/Users/pc/AppData/Local/RCAIDE_Supersonic_agent_state/d12d005/a2/bundles/S0_STD_M0p1_base",
+        "file_count": 7,
+        "total_bytes": 375164,
+        "contract_sha256": "45c723b6063d56752ba153e3d6fd70f3c95d99ddb59ad2ebd92b56abf30f8912",
+        "vspgeom_sha256": "8363f8fb209dd3120bbdf2e3766605b9405b97de0c7561b0be08c91c4cb8ebad",
+        "vspgeom_bytes": 284327,
+        "check_case_dir_status": "PASS",
+        "readback_assertions": 17,
+        "vkey_target_equals_local_vspgeom": true,
+        "solver_processes_started": 0,
+        "solver_artifacts": []
+      },
+      {
+        "case_id": "S1_STD_M0p1_wn128",
+        "bundle_dir": "C:/Users/pc/AppData/Local/RCAIDE_Supersonic_agent_state/d12d005/a2/bundles/S1_STD_M0p1_wn128",
+        "file_count": 7,
+        "total_bytes": 375147,
+        "contract_sha256": "3b3acace1d6fe5a51c355e1633c4118817a9f8854456c1495767e4eca8606e40",
+        "vspgeom_sha256": "8363f8fb209dd3120bbdf2e3766605b9405b97de0c7561b0be08c91c4cb8ebad",
+        "vspgeom_bytes": 284327,
+        "check_case_dir_status": "PASS",
+        "readback_assertions": 17,
+        "vkey_target_equals_local_vspgeom": true,
+        "solver_processes_started": 0,
+        "solver_artifacts": []
+      },
+      {
+        "case_id": "S2_STD_M0p1_wi0",
+        "bundle_dir": "C:/Users/pc/AppData/Local/RCAIDE_Supersonic_agent_state/d12d005/a2/bundles/S2_STD_M0p1_wi0",
+        "file_count": 7,
+        "total_bytes": 375128,
+        "contract_sha256": "668c1f4a5f543c5b7219b53d794fccfb88a80c0322085e5ebdf83ad35db39cbe",
+        "vspgeom_sha256": "8363f8fb209dd3120bbdf2e3766605b9405b97de0c7561b0be08c91c4cb8ebad",
+        "vspgeom_bytes": 284327,
+        "check_case_dir_status": "PASS",
+        "readback_assertions": 17,
+        "vkey_target_equals_local_vspgeom": true,
+        "solver_processes_started": 0,
+        "solver_artifacts": []
+      },
+      {
+        "case_id": "S3_STD_M2p02_base",
+        "bundle_dir": "C:/Users/pc/AppData/Local/RCAIDE_Supersonic_agent_state/d12d005/a2/bundles/S3_STD_M2p02_base",
+        "file_count": 7,
+        "total_bytes": 375137,
+        "contract_sha256": "da80fda85e2b4d67ebd293f7f5041fd1909290c0cb670268dfc6ea3fdbfa8246",
+        "vspgeom_sha256": "8363f8fb209dd3120bbdf2e3766605b9405b97de0c7561b0be08c91c4cb8ebad",
+        "vspgeom_bytes": 284327,
+        "check_case_dir_status": "PASS",
+        "readback_assertions": 17,
+        "vkey_target_equals_local_vspgeom": true,
+        "solver_processes_started": 0,
+        "solver_artifacts": []
+      },
+      {
+        "case_id": "S4_STD_M2p02_wn128",
+        "bundle_dir": "C:/Users/pc/AppData/Local/RCAIDE_Supersonic_agent_state/d12d005/a2/bundles/S4_STD_M2p02_wn128",
+        "file_count": 7,
+        "total_bytes": 375150,
+        "contract_sha256": "f2bbfa6c17ad3e79f8c0576fbe2340f5ad52884415ada30040df3895f5761c76",
+        "vspgeom_sha256": "8363f8fb209dd3120bbdf2e3766605b9405b97de0c7561b0be08c91c4cb8ebad",
+        "vspgeom_bytes": 284327,
+        "check_case_dir_status": "PASS",
+        "readback_assertions": 17,
+        "vkey_target_equals_local_vspgeom": true,
+        "solver_processes_started": 0,
+        "solver_artifacts": []
+      },
+      {
+        "case_id": "S5_D12_M2p02_base",
+        "bundle_dir": "C:/Users/pc/AppData/Local/RCAIDE_Supersonic_agent_state/d12d005/a2/bundles/S5_D12_M2p02_base",
+        "file_count": 7,
+        "total_bytes": 338659,
+        "contract_sha256": "c9cef04e6a6986fdc87f07338e168dbf2ee17bdab3f5836b417ba6e6036ccb64",
+        "vspgeom_sha256": "9fcda6d5d45300fbb0e20257c9ddc80540b44f5064a9566089d7ef85f9018d8e",
+        "vspgeom_bytes": 224357,
+        "check_case_dir_status": "PASS",
+        "readback_assertions": 17,
+        "vkey_target_equals_local_vspgeom": true,
+        "solver_processes_started": 0,
+        "solver_artifacts": []
+      }
+    ],
+    "note": "bundle 位于仓库外（EXT），每案 7 类文件；.vspgeom 为外部二进制复制件，vkey 第 2 行已改写为 bundle 内 .vspgeom 绝对路径。"
+  },
+  "lead_authorization": {
+    "issue": "#4",
+    "approval_comment_id": 6622447995,
+    "category": "A_VSPAERO_AERO_FALLBACK",
+    "batch": "A-batch-1 (S0..S5)",
+    "authorized_utc": "2026-11-04T07:05:00Z",
+    "authorized_by": "lead",
+    "authorization_message": "Lead 书面授权 D-12D-005 A 类第一批（≤6 次），2026-11-04T15:05+08:00（07:05Z）",
+    "class_A_cap_starts": 20,
+    "batch_cap_starts": 6,
+    "case_order": [
+      "S0_STD_M0p1_base",
+      "S1_STD_M0p1_wn128",
+      "S2_STD_M0p1_wi0",
+      "S3_STD_M2p02_base",
+      "S4_STD_M2p02_wn128",
+      "S5_D12_M2p02_base"
+    ],
+    "one_start_per_case": true,
+    "serial_only": true,
+    "max_cores": 4,
+    "max_ram_gb": 16,
+    "max_wall_per_start_s": 900,
+    "max_round_wall_h": 24,
+    "failure_billable": true,
+    "retry_policy": "每配置最多 1 次必要重试且须事先取得 Lead 书面批准；本条暂不批准任何重试",
+    "stop_rules": [
+      "任一启动出现 NaN/INF/IND 或非物理：CL>0 且 CDi<=0 或 CDtot<=0（负阻力）",
+      "S0 在 600 s 内未收敛或 history 发散",
+      "单次启动 >900 s",
+      "RSS>16 GB 或进程核数>4",
+      "本批已用 6 次"
+    ],
+    "a5_verdict": {
+      "path": "C:/Users/pc/AppData/Local/RCAIDE_Supersonic_agent_state/d12d005/a5/a0_rev3_review/verdict.txt",
+      "sha256": "78e9933be2bd87dd9228ff7059b87397b4e4ff7ffbe68d29a7a5d2cf83b2b971",
+      "verdict": "APPROVE_FOR_A_BATCH1",
+      "target_head": "980fffb15431a4a5499f86f5a8f40c2b3e00f111",
+      "task": "task-108"
+    },
+    "a3_isolation": {
+      "path": "C:/Users/pc/AppData/Local/RCAIDE_Supersonic_agent_state/d12d005/a3/a0_rev3_isolation_980fffb.md",
+      "sha256": "bcee12ccd3de41ccff1e8430b599ec19b982eaaf6db2fc2d2c4a0ae53756001f",
+      "verdict": "PASS",
+      "task": "task-109",
+      "critical": "32/32"
+    },
+    "preflight_bundle_recheck": {
+      "dir": "C:/Users/pc/AppData/Local/RCAIDE_Supersonic_agent_state/d12d005/a2/bundle_check_postauth",
+      "all_six_pass": true,
+      "at_head": "980fffb15431a4a5499f86f5a8f40c2b3e00f111",
+      "at_utc": "2026-11-04T07:04:38Z"
+    }
+  },
+  "finalization": {
+    "frozen_utc": "2026-11-04T07:23:25Z",
+    "frozen_by": "A2",
+    "status": "BATCH1_STOPPED_ABORT_FINAL_FREEZE",
+    "starts_used_this_batch": 4,
+    "starts_remaining_this_batch": 2,
+    "remaining_disposition": "CLOSED_NOT_CARRIED_OVER_NOT_REALLOCATED",
+    "retries_used": 0,
+    "billable_events": 4,
+    "stop_rule": "stop_rule_1_nonfinite_IND_INF",
+    "stop_event_id": "NA-D12D005-004",
+    "stop_decision": "evidence/v1/stop_decision.json",
+    "s3_column_diagnosis": "evidence/v1/cases/S3_STD_M2p02_base/s3_column_diagnosis.json",
+    "lead_stop_approval_note": "Lead approved stop + freeze on 2026-11-04 (A2 session message); exact UTC not embedded.",
+    "no_solver_started_after_stop": true,
+    "documentation_defects": [
+      "DOC-1 polar 5-row acceptance text vs single-AoA contract",
+      "DOC-2 matrix reference_condition stale rev2 values",
+      "DOC-3 evidence/a1 legacy naming in older docs; live records under evidence/v1/"
+    ]
+  }
+}

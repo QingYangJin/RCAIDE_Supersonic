@@ -1,0 +1,71 @@
+# A5 task-110 commands log (zero solver)
+# date_utc: 2026-11-04T07:38:03Z
+# date_local: 2026-11-04T15:38:03+0800
+# user: pc
+# host: Windows
+# no vspaero.exe started; no RANS/CFD; no network; no GitHub writes.
+
+# 1) Evidence hashes (read-only)
+cd D:/RCAIDE-d12d005/research/concorde_metaopt/optimization_runs/d12d005-20261104T0430Z/evidence/v1/cases/S3_STD_M2p02_base
+sha256sum S3_STD_M2p02_base_model.polar
+  1dd8cf4a6eb8ea109988a922a371c0f718fa3f4898ce79149c5ad1ac92beacf1
+sha256sum S3_STD_M2p02_base_model.history
+  9fa9e92d430aef950d9d3f94a1c76ec66f3add4ca90fe784783b230c32d6682d
+sha256sum case_summary.json
+  23279b45ac63cc797f84c13f4623aee0ef1385a2a01df9965228310861704183
+sha256sum s3_column_diagnosis.json
+  8d28804982ec08ddc83aec4c725aee2b91c874d773b2d3e0107e7af675c3f3ab
+sha256sum solver_stdout.log
+  9ad1eb6d2fc95a9cff71ff1ae493d020a3985d323e286634440590c322bd1e5e
+cd ../..
+sha256sum batch_state.json
+  addd6a0940c87afeb8ed4a93fd8492bcfc04dabfad252b48a30238c5488d9da9
+sha256sum run_start.json
+  992da8c2a354f4291c1eba05d82dde23f60da59fd6d2712fd84e2e152b23da02
+
+# 2) v2 static gate reproduction (no solver)
+cd D:/RCAIDE-d12d005/research/concorde_metaopt/optimization_runs/d12d005-20261104T0430Z/scripts
+D:/RCAIDE/envs/RCAIDE/python.exe -E -s -B vspaero7_runner_v2.py verify-polar --polar D:/RCAIDE-d12d005/research/concorde_metaopt/optimization_runs/d12d005-20261104T0430Z/evidence/v1/cases/S3_STD_M2p02_base/S3_STD_M2p02_base_model.polar
+  exit=2
+  stdout: {"status": "FAIL", "error_type": "DataQualityError", "message": "POLAR_NONFINITE: [{'line': 4, 'column': 'Ew', 'token': 'inf'}] ..."}
+
+D:/RCAIDE/envs/RCAIDE/python.exe -E -s -B vspaero7_runner_v2.py polar-structure --polar <same S3 polar>
+  exit=0
+  stdout: status=PASS_STRUCTURE_ONLY, header_token_count=48, rows=1, width=48, nonfinite_tokens=1, physical_validation=NOT_APPLIED
+
+D:/RCAIDE/envs/RCAIDE/python.exe -E -s -B vspaero7_runner_v2.py verify-history --history <same S3 history> --expect C:/Users/pc/AppData/Local/RCAIDE_Supersonic_agent_state/d12d005/a2/bundles/S3_STD_M2p02_base/expected.json
+  exit=0
+  stdout: status=PASS, reference_fields Sref=4.0/Cref=1.0/Bref=4.0/Xcg=0.25/Mach=2.02/AoA=2.0/Re=4.834912016269e6
+
+# 3) Independent probe (read-only file parse; no solver)
+cd C:/Users/pc/AppData/Local/RCAIDE_Supersonic_agent_state/d12d005/a5/s3_assessment
+D:/RCAIDE/envs/RCAIDE/python.exe -E -s -B s3_probe.py > s3_probe.stdout.log 2>&1
+  exit=0
+  SUMMARY: checks_failed=[]; 22 checks, 0 failed
+  key: s3_logic.verdict=DERIVED_COLUMN_DIVIDE_BY_ZERO_ARTIFACT
+  key: linear_theory.CL_2D=0.07955432537008524, CL_3D=0.0673411855785828, S3_CLtot=0.074251031783
+  key: cd_o_analysis.physical_checks.S3_CDi_over_CL_tan_alpha=1.005259379433563
+  key: cd_o_analysis.physical_checks.S3_CDi_over_CL2_piAR=5.941133482207892
+
+# 4) Repository state check (A5 made no repo writes)
+git -C D:/RCAIDE-d12d005 status --porcelain
+  shows existing untracked: research/concorde_metaopt/optimization_runs/d12d005-20261104T0430Z/config/
+  and D:/RCAIDE-d12d005/research/concorde_metaopt/optimization_runs/d12d005-20261104T0430Z/evidence/v1/ (A2/A0 evidence, pre-existing before A5)
+git -C D:/RCAIDE status --porcelain
+  22 pre-existing lines (same as A5 prior task); A5 did not add/commit/checkout/stash.
+
+# 5) No solver artifact created
+find D:/RCAIDE-d12d005/research/concorde_metaopt/optimization_runs/d12d005-20261104T0430Z -name '*.adb' -o -name '*.history' -newer ... 
+  (no new solver artifact from A5; S3 polar/history existed before this task)
+
+# 6) A5 deliverable file writes
+s3_assessment.md
+findings.csv
+verdict.txt
+commands.log
+s3_probe.py
+s3_probe.json
+s3_probe.stdout.log
+
+# Note: s3_probe.py uses its own 48-column parser and formula checks; it does not import A1/v2 parser.
+# Note: CDo interpretation is from behavior + Re cross-version comparison, not official VSPAERO documentation.

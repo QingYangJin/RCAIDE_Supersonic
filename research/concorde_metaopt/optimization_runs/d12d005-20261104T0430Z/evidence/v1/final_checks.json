@@ -1,0 +1,91 @@
+{
+  "generated_utc": "2026-11-04T07:27:14Z",
+  "head_sha": "980fffb15431a4a5499f86f5a8f40c2b3e00f111",
+  "head_is_expected_980fffb": true,
+  "git_status_porcelain": [
+    "?? research/concorde_metaopt/optimization_runs/d12d005-20261104T0430Z/config/",
+    "?? research/concorde_metaopt/optimization_runs/d12d005-20261104T0430Z/evidence/v1/"
+  ],
+  "git_only_run_dir_changes": true,
+  "no_vspaero_process_running": true,
+  "tasklist_snippet": "��Ϣ: û�����е�����ƥ��ָ����׼��",
+  "ledger_completed_events": 4,
+  "ledger_amend_events": 1,
+  "ledger_completed_all_billable": true,
+  "ledger_event_ids": [
+    "NA-D12D005-001",
+    "NA-D12D005-002",
+    "NA-D12D005-003",
+    "NA-D12D005-004"
+  ],
+  "starts_used_plus_remaining_equals_batch_cap": true,
+  "billable_events_equals_starts_used": true,
+  "retries_zero": true,
+  "no_starts_after_stop": true,
+  "s4_s5_not_run": true,
+  "matrix_statuses": {
+    "S0": "SOLVED_VALID",
+    "S1": "SOLVED_VALID",
+    "S2": "SOLVED_VALID",
+    "S3": "FAILED_INVALID_POLAR",
+    "S4": "NOT_RUN_AFTER_ABORT",
+    "S5": "NOT_RUN_AFTER_ABORT"
+  },
+  "json_parse": {
+    "config/approval_and_budget_ledger.json": "OK",
+    "config/run_config.json": "OK",
+    "evidence/v1/batch1_results.json": "OK",
+    "evidence/v1/batch_state.json": "OK",
+    "evidence/v1/cases/S0_STD_M0p1_base/case_summary.json": "OK",
+    "evidence/v1/cases/S1_STD_M0p1_wn128/case_summary.json": "OK",
+    "evidence/v1/cases/S2_STD_M0p1_wi0/case_summary.json": "OK",
+    "evidence/v1/cases/S3_STD_M2p02_base/case_summary.json": "OK",
+    "evidence/v1/cases/S3_STD_M2p02_base/s3_column_diagnosis.json": "OK",
+    "evidence/v1/cases/S3_STD_M2p02_base/verify_polar_rerun.json": "OK",
+    "evidence/v1/data_manifest.json": "OK",
+    "evidence/v1/final_checks.json": "OK",
+    "evidence/v1/per_case_conclusions.json": "OK",
+    "evidence/v1/run_start.json": "OK",
+    "evidence/v1/stop_decision.json": "OK",
+    "evidence/v1/summary.json": "OK"
+  },
+  "json_parse_all_ok": true,
+  "polar_history_sha_consistency": [
+    {
+      "event_id": "NA-D12D005-001",
+      "polar_exists": true,
+      "history_exists": true,
+      "polar_sha_matches": true,
+      "history_sha_matches": true
+    },
+    {
+      "event_id": "NA-D12D005-002",
+      "polar_exists": true,
+      "history_exists": true,
+      "polar_sha_matches": true,
+      "history_sha_matches": true
+    },
+    {
+      "event_id": "NA-D12D005-003",
+      "polar_exists": true,
+      "history_exists": true,
+      "polar_sha_matches": true,
+      "history_sha_matches": true
+    },
+    {
+      "event_id": "NA-D12D005-004",
+      "polar_exists": true,
+      "history_exists": true,
+      "polar_sha_matches": true,
+      "history_sha_matches": true
+    }
+  ],
+  "polar_history_sha_all_match": true,
+  "solver_exe_sha256": "db71c4412489af82398833408ea30fb73327bdd9434de2ef530d31375b9fddad",
+  "no_solver_started_during_freeze": true,
+  "freeze_notes": [
+    "data_manifest.json is written after this file and is not covered by json_parse here.",
+    "verify-polar was re-run (read-only, rc=2) to capture the exact failure text; it does not start the solver."
+  ],
+  "all_checks_pass": true
+}

@@ -4,14 +4,14 @@
   "status": "PASS",
   "run_dir": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z",
   "evidence_path": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\a0\\setup_generation.json",
-  "generated_utc": "2026-11-04T06:47:52Z",
-  "checks_total": 263,
+  "generated_utc": "2026-11-04T07:57:44Z",
+  "checks_total": 264,
   "checks_failed": 0,
   "checks": [
     {
       "check": "evidence.revision",
       "ok": true,
-      "detail": 3
+      "detail": 4
     },
     {
       "check": "evidence.schema",
@@ -78,7 +78,8 @@
         "A5_F-A0-02",
         "A5_F-A0-03",
         "A5_F-A0-04",
-        "A5_F-A0-05"
+        "A5_F-A0-05",
+        "A5_S3F-01_rev4"
       ]
     },
     {
@@ -1766,7 +1767,7 @@
     {
       "check": "run_dir.file_count",
       "ok": true,
-      "detail": 66
+      "detail": 114
     },
     {
       "check": "run_dir.no_vspgeom",
@@ -1774,9 +1775,14 @@
       "detail": null
     },
     {
-      "check": "run_dir.no_solver_artifacts",
+      "check": "a0_dir.no_solver_artifacts",
       "ok": true,
-      "detail": null
+      "detail": []
+    },
+    {
+      "check": "run_dir.solver_artifacts_only_under_v1",
+      "ok": true,
+      "detail": []
     },
     {
       "check": "run_dir.text_only",

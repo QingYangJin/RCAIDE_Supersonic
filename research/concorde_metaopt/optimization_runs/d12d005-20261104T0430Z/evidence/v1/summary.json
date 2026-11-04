@@ -1,0 +1,286 @@
+{
+  "artifact_kind": "D12D005_A_BATCH1_FREEZE_SUMMARY",
+  "schema_version": 1,
+  "run_id": "d12d005-20261104T0430Z",
+  "batch": "D-12D-005 A-batch-1",
+  "generated_utc": "2026-11-04T07:27:14Z",
+  "status": "BATCH1_STOPPED_ABORT_FINAL_FREEZE",
+  "frozen_by": "A2",
+  "lead_stop_approval": true,
+  "authorization": {
+    "issue": "#4",
+    "approval_comment_id": 6622447995,
+    "category": "A_VSPAERO_AERO_FALLBACK",
+    "batch": "A-batch-1 (S0..S5)",
+    "authorized_utc": "2026-11-04T07:05:00Z",
+    "authorized_by": "lead",
+    "authorization_message": "Lead 书面授权 D-12D-005 A 类第一批（≤6 次），2026-11-04T15:05+08:00（07:05Z）",
+    "class_A_cap_starts": 20,
+    "batch_cap_starts": 6,
+    "case_order": [
+      "S0_STD_M0p1_base",
+      "S1_STD_M0p1_wn128",
+      "S2_STD_M0p1_wi0",
+      "S3_STD_M2p02_base",
+      "S4_STD_M2p02_wn128",
+      "S5_D12_M2p02_base"
+    ],
+    "one_start_per_case": true,
+    "serial_only": true,
+    "max_cores": 4,
+    "max_ram_gb": 16,
+    "max_wall_per_start_s": 900,
+    "max_round_wall_h": 24,
+    "failure_billable": true,
+    "retry_policy": "每配置最多 1 次必要重试且须事先取得 Lead 书面批准；本条暂不批准任何重试",
+    "stop_rules": [
+      "任一启动出现 NaN/INF/IND 或非物理：CL>0 且 CDi<=0 或 CDtot<=0（负阻力）",
+      "S0 在 600 s 内未收敛或 history 发散",
+      "单次启动 >900 s",
+      "RSS>16 GB 或进程核数>4",
+      "本批已用 6 次"
+    ],
+    "a5_verdict": {
+      "path": "C:/Users/pc/AppData/Local/RCAIDE_Supersonic_agent_state/d12d005/a5/a0_rev3_review/verdict.txt",
+      "sha256": "78e9933be2bd87dd9228ff7059b87397b4e4ff7ffbe68d29a7a5d2cf83b2b971",
+      "verdict": "APPROVE_FOR_A_BATCH1",
+      "target_head": "980fffb15431a4a5499f86f5a8f40c2b3e00f111",
+      "task": "task-108"
+    },
+    "a3_isolation": {
+      "path": "C:/Users/pc/AppData/Local/RCAIDE_Supersonic_agent_state/d12d005/a3/a0_rev3_isolation_980fffb.md",
+      "sha256": "bcee12ccd3de41ccff1e8430b599ec19b982eaaf6db2fc2d2c4a0ae53756001f",
+      "verdict": "PASS",
+      "task": "task-109",
+      "critical": "32/32"
+    },
+    "preflight_bundle_recheck": {
+      "dir": "C:/Users/pc/AppData/Local/RCAIDE_Supersonic_agent_state/d12d005/a2/bundle_check_postauth",
+      "all_six_pass": true,
+      "at_head": "980fffb15431a4a5499f86f5a8f40c2b3e00f111",
+      "at_utc": "2026-11-04T07:04:38Z"
+    }
+  },
+  "solver": {
+    "name": "VSPAERO",
+    "version": "7.2.2",
+    "exe_sha256": "db71c4412489af82398833408ea30fb73327bdd9434de2ef530d31375b9fddad",
+    "omp": 4,
+    "thin": true,
+    "lifting_surfaces_only": true,
+    "fuselage_in_domain": false
+  },
+  "budget": {
+    "class_A_cap": 20,
+    "batch_cap": 6,
+    "starts_used": 4,
+    "starts_remaining": 2,
+    "remaining_disposition": "CLOSED_NOT_CARRIED_OVER_NOT_REALLOCATED",
+    "retries": 0,
+    "billable_events": 4,
+    "no_carryover": true,
+    "class_A_used_total": 4
+  },
+  "cases": [
+    {
+      "short_id": "S0",
+      "case_id": "S0_STD_M0p1_base",
+      "mach": 0.1,
+      "status": "SOLVED_VALID",
+      "event_id": "NA-D12D005-001",
+      "wall_seconds": 4.045,
+      "polar_rows": 1,
+      "coefficients": {
+        "CLo": -0.000685575165,
+        "CLi": 0.127230973563,
+        "CLtot": 0.126545398398,
+        "CDo": 0.019632304071,
+        "CDi": 0.001314258293,
+        "CDtot": 0.020946562364,
+        "E": 0.969621451468,
+        "Ew": 1.009909991712,
+        "CMoy": 0.0,
+        "CMytot": 0.005134520432,
+        "CLwtot": 0.126566617737,
+        "CDwtot": 0.020894132397,
+        "LoDw": 6.057519658319
+      },
+      "polar_sha256": "6cd1bab985faec6b4b4cee2fc2f3905886b67d7cddc48235a61f1be77f1e49b0",
+      "history_sha256": "7dc18bd1fd65a4c0bb2d3c18ca885f6ff9885c5a9da4686001dc4d00d742d54f",
+      "billable": true
+    },
+    {
+      "short_id": "S1",
+      "case_id": "S1_STD_M0p1_wn128",
+      "mach": 0.1,
+      "status": "SOLVED_VALID",
+      "event_id": "NA-D12D005-002",
+      "wall_seconds": 6.012,
+      "polar_rows": 1,
+      "coefficients": {
+        "CLo": -0.000686022299,
+        "CLi": 0.135320978043,
+        "CLtot": 0.134634955743,
+        "CDo": 0.019645108315,
+        "CDi": 0.001522504678,
+        "CDtot": 0.021167612993,
+        "E": 0.947430266105,
+        "Ew": 1.769927638406,
+        "CMoy": 0.0,
+        "CMytot": 0.003123686783,
+        "CLwtot": 0.134667310246,
+        "CDwtot": 0.020460094747,
+        "LoDw": 6.581949492811
+      },
+      "polar_sha256": "23315b74946289474fb413b6e25eebc74edb6f1565cf085227c9a2e447c5429b",
+      "history_sha256": "3e6372d79326ee29cfcbf0812dec05f712b8b997c49c4d673e5a840030052e15",
+      "billable": true
+    },
+    {
+      "short_id": "S2",
+      "case_id": "S2_STD_M0p1_wi0",
+      "mach": 0.1,
+      "status": "SOLVED_VALID",
+      "event_id": "NA-D12D005-003",
+      "wall_seconds": 0.507,
+      "polar_rows": 1,
+      "coefficients": {
+        "CLo": -0.000685575495,
+        "CLi": 0.127240625997,
+        "CLtot": 0.126555050502,
+        "CDo": 0.019632313513,
+        "CDi": 0.001314544617,
+        "CDtot": 0.02094685813,
+        "E": 0.969558142981,
+        "Ew": 1.009778243121,
+        "CMoy": 0.0,
+        "CMytot": 0.005138311266,
+        "CLwtot": 0.126576616571,
+        "CDwtot": 0.020894498994,
+        "LoDw": 6.057891917195
+      },
+      "polar_sha256": "d316a0e6dfc36b866c1223a881d9907d6643f4e9c0c358da099b033d2d337780",
+      "history_sha256": "a49df90690abd23e4df935354bbd1173e948d0e6280960bc8da5bdd522d8139f",
+      "billable": true
+    },
+    {
+      "short_id": "S3",
+      "case_id": "S3_STD_M2p02_base",
+      "mach": 2.02,
+      "status": "FAILED_INVALID_POLAR",
+      "event_id": "NA-D12D005-004",
+      "wall_seconds": 1.008,
+      "polar_rows": 1,
+      "coefficients": {
+        "CLo": -0.000390514345,
+        "CLi": 0.074641546128,
+        "CLtot": 0.074251031783,
+        "CDo": 0.011182867698,
+        "CDi": 0.002606540227,
+        "CDtot": 0.013789407924,
+        "E": 0.168318084604,
+        "Ew": "inf",
+        "CMoy": 0.0,
+        "CMytot": -0.014777040022,
+        "CLwtot": -0.000390514345,
+        "CDwtot": 0.011182867698,
+        "LoDw": -0.034920769492
+      },
+      "polar_sha256": "1dd8cf4a6eb8ea109988a922a371c0f718fa3f4898ce79149c5ad1ac92beacf1",
+      "history_sha256": "9fa9e92d430aef950d9d3f94a1c76ec66f3add4ca90fe784783b230c32d6682d",
+      "billable": true
+    },
+    {
+      "short_id": "S4",
+      "case_id": "S4_STD_M2p02_wn128",
+      "mach": 2.02,
+      "status": "NOT_RUN_AFTER_ABORT",
+      "event_id": "",
+      "wall_seconds": "",
+      "polar_rows": "",
+      "coefficients": {
+        "CLo": "",
+        "CLi": "",
+        "CLtot": "",
+        "CDo": "",
+        "CDi": "",
+        "CDtot": "",
+        "E": "",
+        "Ew": "",
+        "CMoy": "",
+        "CMytot": "",
+        "CLwtot": "",
+        "CDwtot": "",
+        "LoDw": ""
+      },
+      "polar_sha256": "",
+      "history_sha256": "",
+      "billable": false
+    },
+    {
+      "short_id": "S5",
+      "case_id": "S5_D12_M2p02_base",
+      "mach": 2.02,
+      "status": "NOT_RUN_AFTER_ABORT",
+      "event_id": "",
+      "wall_seconds": "",
+      "polar_rows": "",
+      "coefficients": {
+        "CLo": "",
+        "CLi": "",
+        "CLtot": "",
+        "CDo": "",
+        "CDi": "",
+        "CDtot": "",
+        "E": "",
+        "Ew": "",
+        "CMoy": "",
+        "CMytot": "",
+        "CLwtot": "",
+        "CDwtot": "",
+        "LoDw": ""
+      },
+      "polar_sha256": "",
+      "history_sha256": "",
+      "billable": false
+    }
+  ],
+  "stop": {
+    "rule": "stop_rule_1_nonfinite_IND_INF",
+    "event_id": "NA-D12D005-004",
+    "exact_failure": "POLAR_NONFINITE: line 4, column Ew, token='inf' in S3_STD_M2p02_base_model.polar (verify-polar rc=2; POLAR_NONFINITE: [{'line': 4, 'column': 'Ew', 'token': 'inf'}] in D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\v1\\cases\\S3_STD_M2p02_base\\S3_STD_M2p02_base_model.polar)",
+    "consequence": "S4/S5 NOT_RUN_AFTER_ABORT; remaining 2 closed; no retry; no carry-over"
+  },
+  "s3_column_diagnosis": {
+    "verdict": "A_OR_DERIVED_DEGENERATE",
+    "path": "evidence/v1/cases/S3_STD_M2p02_base/s3_column_diagnosis.json",
+    "sha256": "8d28804982ec08ddc83aec4c725aee2b91c874d773b2d3e0107e7af675c3f3ab"
+  },
+  "ledger": {
+    "path": "evidence/v1/ledger.jsonl",
+    "lines": 9,
+    "completed": 4,
+    "amend": 1,
+    "sha256": "563c448d9cce7cd2d2eaa1a94698d871a9667057133827ab0cbafc789b627b1b"
+  },
+  "gates": {
+    "LF_M0p10_std_rect_thin": "SOLVED_VALID (S0/S1/S2)",
+    "LF_M2p02_std_rect_thin": "NOT_VALIDATED (S3 fail-closed Ew=inf)",
+    "LF_M2p02_12D_main_wing_thin": "NOT_RUN (S5 NOT_RUN_AFTER_ABORT)",
+    "validated_aircraft_fuel_label": false,
+    "external_body_correction": "NOT_VALIDATED_NOT_INJECTED",
+    "D12D004_V1_relation": "independent failure modes at M2.02; V1 M0.10 anomaly not reproduced"
+  },
+  "physical_call_declaration": {
+    "starts": 4,
+    "solver_processes_started_after_stop": 0,
+    "no_new_physics": true
+  },
+  "files": {
+    "readme": "evidence/v1/README.md",
+    "batch1_results": "evidence/v1/batch1_results.json",
+    "batch1_summary": "evidence/v1/batch1_summary.md",
+    "final_checks": "evidence/v1/final_checks.json",
+    "data_manifest": "evidence/v1/data_manifest.json"
+  }
+}

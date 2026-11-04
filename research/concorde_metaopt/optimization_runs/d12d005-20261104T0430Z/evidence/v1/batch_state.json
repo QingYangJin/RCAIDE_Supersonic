@@ -1,0 +1,136 @@
+{
+  "batch_id": "D-12D-005-A-batch-1",
+  "authorized_utc": "2026-11-04T07:05:00Z",
+  "allowed_starts": 6,
+  "starts_used": 4,
+  "stopped": true,
+  "stop_reason": "POLAR_NONFINITE: line 4, column Ew, token='inf' in S3_STD_M2p02_base_model.polar (verify-polar rc=2; POLAR_NONFINITE: [{'line': 4, 'column': 'Ew', 'token': 'inf'}] in D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\v1\\cases\\S3_STD_M2p02_base\\S3_STD_M2p02_base_model.polar)",
+  "next_case": "S4",
+  "results": {
+    "S0": {
+      "case_id": "S0_STD_M0p1_base",
+      "event_id": "NA-D12D005-001",
+      "outcome_class": "SOLVED_VALID",
+      "wall_seconds": 4.045,
+      "coefficients": {
+        "AoA": 2.0,
+        "CLo": -0.000685575165,
+        "CLi": 0.127230973563,
+        "CLtot": 0.126545398398,
+        "CDo": 0.019632304071,
+        "CDi": 0.001314258293,
+        "CDtot": 0.020946562364,
+        "CMztot": 1.857e-09,
+        "Re": 239352.080013
+      },
+      "stop_reason": null
+    },
+    "S1": {
+      "case_id": "S1_STD_M0p1_wn128",
+      "event_id": "NA-D12D005-002",
+      "outcome_class": "SOLVED_VALID",
+      "wall_seconds": 6.012,
+      "coefficients": {
+        "AoA": 2.0,
+        "CLo": -0.000686022299,
+        "CLi": 0.135320978043,
+        "CLtot": 0.134634955743,
+        "CDo": 0.019645108315,
+        "CDi": 0.001522504678,
+        "CDtot": 0.021167612993,
+        "CMztot": -9.54504e-07,
+        "Re": 239352.080013
+      },
+      "stop_reason": null
+    },
+    "S2": {
+      "case_id": "S2_STD_M0p1_wi0",
+      "event_id": "NA-D12D005-003",
+      "outcome_class": "SOLVED_VALID",
+      "wall_seconds": 0.507,
+      "coefficients": {
+        "AoA": 2.0,
+        "CLo": -0.000685575495,
+        "CLi": 0.127240625997,
+        "CLtot": 0.126555050502,
+        "CDo": 0.019632313513,
+        "CDi": 0.001314544617,
+        "CDtot": 0.02094685813,
+        "CMztot": 2.1674e-08,
+        "Re": 239352.080013
+      },
+      "stop_reason": null
+    },
+    "S3": {
+      "case_id": "S3_STD_M2p02_base",
+      "event_id": "NA-D12D005-004",
+      "outcome_class": "FAILED_INVALID_POLAR",
+      "wall_seconds": 1.008,
+      "coefficients": {
+        "AoA": 2.0,
+        "CLo": -0.000390514345,
+        "CLi": 0.074641546128,
+        "CLtot": 0.074251031783,
+        "CDo": 0.011182867698,
+        "CDi": 0.002606540227,
+        "CDtot": 0.013789407924,
+        "CMoy": 0.0,
+        "CMytot": -0.014777040022,
+        "E": 0.168318084604,
+        "CLwtot": -0.000390514345,
+        "CDwtot": 0.011182867698,
+        "LoDw": -0.034920769492,
+        "Ew": "inf",
+        "Re": 4.834912016269
+      },
+      "stop_reason": "POLAR_NONFINITE: line 4, column Ew, token='inf' in S3_STD_M2p02_base_model.polar (verify-polar rc=2; POLAR_NONFINITE: [{'line': 4, 'column': 'Ew', 'token': 'inf'}] in D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\v1\\cases\\S3_STD_M2p02_base\\S3_STD_M2p02_base_model.polar)",
+      "outcome_class_reason": "POLAR_NONFINITE: line 4, column Ew, token='inf' in S3_STD_M2p02_base_model.polar (verify-polar rc=2; POLAR_NONFINITE: [{'line': 4, 'column': 'Ew', 'token': 'inf'}] in D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\v1\\cases\\S3_STD_M2p02_base\\S3_STD_M2p02_base_model.polar)",
+      "failure_class": "FAILED_INVALID_POLAR_NONFINITE_DERIVED_EFFICIENCY_COLUMN",
+      "s3_column_diagnosis_verdict": "A_OR_DERIVED_DEGENERATE"
+    },
+    "S4": {
+      "case_id": "S4_STD_M2p02_wn128",
+      "event_id": null,
+      "outcome_class": "NOT_RUN_AFTER_ABORT",
+      "wall_seconds": null,
+      "coefficients": null,
+      "stop_reason": "batch stopped after NA-D12D005-004",
+      "billable": false,
+      "start_consumed": false
+    },
+    "S5": {
+      "case_id": "S5_D12_M2p02_base",
+      "event_id": null,
+      "outcome_class": "NOT_RUN_AFTER_ABORT",
+      "wall_seconds": null,
+      "coefficients": null,
+      "stop_reason": "batch stopped after NA-D12D005-004",
+      "billable": false,
+      "start_consumed": false
+    }
+  },
+  "stop_event_id": "NA-D12D005-004",
+  "stop_rule": "stop_rule_1_nonfinite_IND_INF",
+  "stop_rule_triggered": true,
+  "stopped_utc": "2026-11-04T07:14:40Z",
+  "frozen_utc": "2026-11-04T07:23:25Z",
+  "remaining_disposition": "CLOSED_NOT_CARRIED_OVER_NOT_REALLOCATED",
+  "retries_used": 0,
+  "s3_column_diagnosis": {
+    "path": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\v1\\cases\\S3_STD_M2p02_base\\s3_column_diagnosis.json",
+    "sha256": "8d28804982ec08ddc83aec4c725aee2b91c874d773b2d3e0107e7af675c3f3ab",
+    "verdict": "A_OR_DERIVED_DEGENERATE"
+  },
+  "final_freeze": {
+    "frozen_utc": "2026-11-04T07:23:25Z",
+    "frozen_by": "A2",
+    "starts_used": 4,
+    "starts_remaining": 2,
+    "ledger_completed_events": 4,
+    "ledger_amend_events": 1,
+    "billable_events": 4,
+    "retries": 0,
+    "no_carryover": true,
+    "lead_stop_approval": "received 2026-11-04 before freeze (Lead: 停止决定正确，批准按授权收尾冻结)"
+  }
+}

@@ -2447,7 +2447,7 @@
       }
     }
   ],
-  "generated_utc": "2026-11-04T06:27:17Z",
+  "generated_utc": "2026-11-04T07:57:28Z",
   "hashing_convention": {
     "external_artifacts": "sha256 over raw bytes (outside git)",
     "legacy_fields": "bytes/sha256 alias the canonical-LF form for older readers",
@@ -2539,10 +2539,11 @@
     "reason": "A5 F-A0-01 follow-up: a clean checkout must reproduce the evidence without the original absolute root",
     "verifier": "scripts/a0_verify_cases.py --run-dir <root> resolves every path from the run-dir root"
   },
-  "revision": 3,
+  "revision": 4,
   "revision_history": [
     2,
-    3
+    3,
+    4
   ],
   "revision_notes": {
     "A5_A0R2-01": "clean-checkout replay log regenerated and records both raw and canonical-LF forms",
@@ -2555,7 +2556,8 @@
     "A5_F-A0-02": "scripts/test_vspaero7_runner_v1frozen.py import/path fixed to the frozen module; 22 tests OK (evidence/a0/v1frozen_test_run.log)",
     "A5_F-A0-03": "README file-count corrected to 7",
     "A5_F-A0-04": "process-spawn scan now covers every non-test script; the unittest's subprocess CLI call is documented as a permitted exception",
-    "A5_F-A0-05": "S5 reference_velocity block records inheritance source and the 6.0e-8 m/s formula delta"
+    "A5_F-A0-05": "S5 reference_velocity block records inheritance source and the 6.0e-8 m/s formula delta",
+    "A5_S3F-01_rev4": "revision 4: v2 runner rev3 splits primary vs derived non-finite columns; Ew is the only allowlisted derived column (--allow-nonfinite-derived), non-allowlisted non-finite tokens still fail, and S3 verify-polar now reports PASS_WITH_WARNINGS (evidence/v1/s3_verify_polar_allowlisted.json). Zero solver; batch-1 starts stay 4/6."
   },
   "run_id": "d12d005-20261104T0430Z",
   "runner": {
@@ -2587,18 +2589,18 @@
       "sha256_raw": "57d91e7944f06466c5d962d1cca41b02ab9f30264e1ca7843f75ae5f21460430"
     },
     {
-      "bytes": 8932,
-      "bytes_canonical_lf": 8932,
-      "bytes_raw": 8932,
+      "bytes": 9291,
+      "bytes_canonical_lf": 9291,
+      "bytes_raw": 9291,
       "eol": "lf",
       "hash_mode": "dual",
       "kind": "generator_or_verifier",
       "name": "a0_finalize_evidence_v2.py",
       "path_relative": "scripts/a0_finalize_evidence_v2.py",
       "process_spawn_allowed": false,
-      "sha256": "55b05084a7943da8fda789169a63661c3ec7a64fc812c2083353c04cddf699b4",
-      "sha256_canonical_lf": "55b05084a7943da8fda789169a63661c3ec7a64fc812c2083353c04cddf699b4",
-      "sha256_raw": "55b05084a7943da8fda789169a63661c3ec7a64fc812c2083353c04cddf699b4"
+      "sha256": "6f6aa92aacfac8eff92b0e7ee38f956b530a371bc50ab3be50bd41d5589ad18f",
+      "sha256_canonical_lf": "6f6aa92aacfac8eff92b0e7ee38f956b530a371bc50ab3be50bd41d5589ad18f",
+      "sha256_raw": "6f6aa92aacfac8eff92b0e7ee38f956b530a371bc50ab3be50bd41d5589ad18f"
     },
     {
       "bytes": 18583,
@@ -2615,18 +2617,18 @@
       "sha256_raw": "187cbe16c003988be100473a601aa2a3f52d4db7c7de4c61643a5fb6de41b0f2"
     },
     {
-      "bytes": 18535,
-      "bytes_canonical_lf": 18535,
-      "bytes_raw": 18535,
+      "bytes": 19257,
+      "bytes_canonical_lf": 19257,
+      "bytes_raw": 19257,
       "eol": "lf",
       "hash_mode": "dual",
       "kind": "generator_or_verifier",
       "name": "a0_verify_cases.py",
       "path_relative": "scripts/a0_verify_cases.py",
       "process_spawn_allowed": false,
-      "sha256": "ac7f784926c254966b5ac09af636aea5acfbff89e109c3d1f3e42b596d256bc9",
-      "sha256_canonical_lf": "ac7f784926c254966b5ac09af636aea5acfbff89e109c3d1f3e42b596d256bc9",
-      "sha256_raw": "ac7f784926c254966b5ac09af636aea5acfbff89e109c3d1f3e42b596d256bc9"
+      "sha256": "88bbac5b72f3c4094bbd4587bd5f46c531b90fe5a242d813a7ccbea99aff9fd0",
+      "sha256_canonical_lf": "88bbac5b72f3c4094bbd4587bd5f46c531b90fe5a242d813a7ccbea99aff9fd0",
+      "sha256_raw": "88bbac5b72f3c4094bbd4587bd5f46c531b90fe5a242d813a7ccbea99aff9fd0"
     },
     {
       "bytes": 30373,
@@ -2643,18 +2645,18 @@
       "sha256_raw": "b77b56526acab6ac03ee07838d06970f2bd98d298aae597997bf393474128a36"
     },
     {
-      "bytes": 53392,
-      "bytes_canonical_lf": 53392,
-      "bytes_raw": 54722,
+      "bytes": 55115,
+      "bytes_canonical_lf": 55115,
+      "bytes_raw": 56477,
       "eol": "crlf",
       "hash_mode": "dual",
       "kind": "frozen_runner",
       "name": "vspaero7_runner_v2.py",
       "path_relative": "scripts/vspaero7_runner_v2.py",
       "process_spawn_allowed": false,
-      "sha256": "08212a29502583b9c554c9f0dc3301a8ba24a773344d35692c0a9d00780f988a",
-      "sha256_canonical_lf": "08212a29502583b9c554c9f0dc3301a8ba24a773344d35692c0a9d00780f988a",
-      "sha256_raw": "5701d301e5c4660f6038dfd7ecb19a610c30256dc6104b922fa838d1712190e8"
+      "sha256": "e5b3381ce0f72d587f725a5b400b51d1ef02e54dbde05c2c6ad285af9e849acf",
+      "sha256_canonical_lf": "e5b3381ce0f72d587f725a5b400b51d1ef02e54dbde05c2c6ad285af9e849acf",
+      "sha256_raw": "eea4e028a71a85ee82ed5016f85cbc1b18cc6a47b7780be32a3c3b8d09957606"
     },
     {
       "bytes": 8217,
@@ -2671,18 +2673,18 @@
       "sha256_raw": "51946c9c67dffe5e0e3db017043053f1329c384f418d66b7e707ea8275267192"
     },
     {
-      "bytes": 23488,
-      "bytes_canonical_lf": 23488,
-      "bytes_raw": 24015,
+      "bytes": 25999,
+      "bytes_canonical_lf": 25999,
+      "bytes_raw": 26574,
       "eol": "crlf",
       "hash_mode": "dual",
       "kind": "regression_test",
       "name": "test_vspaero7_runner_v2.py",
       "path_relative": "scripts/test_vspaero7_runner_v2.py",
       "process_spawn_allowed": true,
-      "sha256": "c5b7e4063fe506d5db23e85213b79b017ed75660072e6f663bc8b13c4a59fdb7",
-      "sha256_canonical_lf": "c5b7e4063fe506d5db23e85213b79b017ed75660072e6f663bc8b13c4a59fdb7",
-      "sha256_raw": "abbd026265e0928e03c1dfeface3c386430daec062aec9ba9881e6ba3db0a885"
+      "sha256": "a57526aa2c5689083fb2d2b427dcbab3f7567549d6bf3876d610d4a992d42f3f",
+      "sha256_canonical_lf": "a57526aa2c5689083fb2d2b427dcbab3f7567549d6bf3876d610d4a992d42f3f",
+      "sha256_raw": "b273aafa496f2afc6392c1254844b2ab5eb879c1b6ed90806fab0e2575a3a3c5"
     }
   ],
   "solver_processes_started": 0,
