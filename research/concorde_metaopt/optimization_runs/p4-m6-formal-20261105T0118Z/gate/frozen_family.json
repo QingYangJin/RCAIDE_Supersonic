@@ -1,0 +1,107 @@
+{
+  "calibration": {
+    "analytic_ellipsoid_fraction_median": 0.0024852620213051393,
+    "calibration_budget": 64,
+    "calibration_seeds": [
+      0,
+      1,
+      2
+    ],
+    "calibration_train_tasks": 8,
+    "calibration_validation_tasks": 8,
+    "feasible_volume_fraction": 0.00048828125,
+    "pooled_hit_rate": 0.046223958333333336,
+    "pooled_success": 0.6666666666666666,
+    "reference_certificates_sha256": "0264402fb39f1ca93a5d292e120d45a54bcd583885ff385c1a10e363ee501734",
+    "report_sha256": "c5f8096d02abf5da4bfd9a5b234bdcedd8a7ffbb98ce7b413eb48e42c116286b",
+    "selected_radius_base": 0.75,
+    "selection_rule": "只在 meta_train 的 8 个校准任务上、固定优化 seeds=(0,1,2) 跑 B=64 BO-random；pooled success rate（成功 (任务,seed) 数 / (8×3)）落在 [0.30, 0.70] 的半径格为候选；候选中取 pooled feasible_hit_rate 中位数最接近 0.5 者，并列取较小 radius_base；meta_validation 仅作难度旁证，不参与选中判定；禁止按 MAML 胜负或任何测试集表现选择。",
+    "selection_status": "SELECTED"
+  },
+  "calibration_seeds": [
+    0,
+    1,
+    2
+  ],
+  "code_sha": "a6cf9045aedeb876792504cf928e9691f7b632e0b13d1ee5ed37fa13c84511a0",
+  "context_coupling": {
+    "context_names": [
+      "context_1",
+      "context_2"
+    ],
+    "description": "b_eff = b + scale*((context_1+context_2)/2 - 1)",
+    "scale": 0.5
+  },
+  "created_utc": "2026-11-04T10:44:32+00:00",
+  "design": {
+    "config_path": "D:\\RCAIDE-p4-meta-learning\\research\\concorde_metaopt\\configs\\design_space_12d_lifting_surfaces.yaml",
+    "design_config_sha256": "463bb4a0a0fc06eb7dd6a6d9790f4d5b2b3a8c3d8681d16055036dae0c57fc7b",
+    "design_dim": 12,
+    "design_set": "12d_lifting_surfaces"
+  },
+  "family_config": {
+    "context_names": [
+      "context_1",
+      "context_2"
+    ],
+    "design_dim": 12,
+    "designs_per_task": 192,
+    "family_id": "F-QE-feasible-v2",
+    "family_version": "v2",
+    "negative_control_tasks": 10,
+    "ood_tasks": 10,
+    "query_size": 64,
+    "radius_base": 0.75,
+    "reference_tolerance": 1e-10,
+    "seed": 20261102,
+    "support_pool_size": 128,
+    "test_tasks": 20,
+    "train_tasks": 60,
+    "validation_tasks": 20
+  },
+  "family_fingerprint": "2b78ec7b533fa346f0629d34ed9e3bf525a2ff6295260f21a490452cc1778a42",
+  "family_id": "F-QE-feasible-v2",
+  "family_version": "v2",
+  "feasible_volume_fraction": 0.00048828125,
+  "gap_definition": "f(u_best)-f(u*)",
+  "git_sha": "49b32ee93ee1f864b8a64e5bc235db72a006f098-dirty",
+  "meta_test_tuning_policy": "禁止使用 meta_test/meta_test_ood 的任何信息（成功率/误差/gap）调参、选半径、选臂或选终点；测试集只在 frozen_family + preregistration 的 sha256/fingerprint/split_hash 校验通过后一次性构造并评估一次。",
+  "notes": [
+    "选中 radius_base=0.750: pooled_success_train=0.6667, pooled_hit_train=0.0462, success_by_seed=[0.75, 0.75, 0.6875]"
+  ],
+  "param_distributions": {
+    "F-LIN": "p,s ~ normal(0,1)/sqrt(12); slack ~ uniform(0.02,0.15)",
+    "F-MF": "gamma ~ uniform(0.2,1.0); v ~ normal(0,1) normalized; delta ~ uniform(-0.5,0.5)",
+    "a": "loguniform(0.5, 5.0)",
+    "b": "uniform(-1.0, 1.0)",
+    "c": "uniform(0.15, 0.85) per coordinate",
+    "context": "uniform(0.6, 1.4)",
+    "context_ood": "uniform(0.8, 1.6)",
+    "d": "clip(c + normal(0, 0.25), 0.05, 0.95)",
+    "r": "uniform(0.15, 0.45)",
+    "w": "loguniform(0.5, 5.0)"
+  },
+  "physical_call_count": 0,
+  "pooled_success": 0.6666666666666666,
+  "radius_base": 0.75,
+  "radius_mapping": {
+    "formula": "r_v2 = clip(radius_base*(1+0.15*z), r_min, r_max), z~N(0,1)",
+    "r_max": 1.2,
+    "r_min": 0.2
+  },
+  "reference_solution": "c",
+  "run_id": "p4-meta-m5-formal-20261104T1018Z",
+  "schema_version": "p4-m5-frozen-v2-1",
+  "sha256": "5e7a9d1f2acd32a482195d0ae6255205310d4d5cf4bb38562e05265c4c9da20b",
+  "split": {
+    "counts": {
+      "meta_test": 20,
+      "meta_test_ood": 10,
+      "meta_train": 60,
+      "meta_validation": 20,
+      "negative_control": 10
+    },
+    "manifest_sha256": "2c41071eb8568f30611dd6c7f9976d510d22fb81e760eb5a6cf75093c31cdffd",
+    "split_hash": "3c206ebbe35e848a5137b433d7bc9ca022eb28b4b310ab3ccb9d89c989f33f8a"
+  }
+}

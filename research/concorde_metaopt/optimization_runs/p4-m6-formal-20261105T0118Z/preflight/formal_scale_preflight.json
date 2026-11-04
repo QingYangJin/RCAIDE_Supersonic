@@ -1,0 +1,115 @@
+{
+  "created_utc": "2026-11-04T17:23:16+00:00",
+  "dry_run": false,
+  "executed": {
+    "determinism_passes": 3,
+    "rows_per_pass": 3600,
+    "total_adaptation_executions": 10800
+  },
+  "expected": {
+    "determinism_passes": 3,
+    "rows_per_pass": 3600,
+    "runs_per_budget": 8,
+    "total_adaptation_executions": 10800,
+    "units_by_study": {
+      "in_dist": 20,
+      "negative_control": 10,
+      "new_family": 40,
+      "ood": 10
+    },
+    "units_total": 80
+  },
+  "mismatches": [],
+  "mock_adaptation_calls": null,
+  "note": "正式规模计数由实际执行的适应矩阵 pass 行数得出（A5M6R-01）",
+  "physical_call_count": 0,
+  "plan": {
+    "arms": [
+      "M",
+      "P",
+      "R"
+    ],
+    "determinism_passes": 3,
+    "expected": {
+      "determinism_passes": 3,
+      "rows_per_pass": 3600,
+      "runs_per_budget": 8,
+      "total_adaptation_executions": 10800,
+      "units_by_study": {
+        "in_dist": 20,
+        "negative_control": 10,
+        "new_family": 40,
+        "ood": 10
+      },
+      "units_total": 80
+    },
+    "ks": [
+      0,
+      1,
+      5,
+      10,
+      20
+    ],
+    "meta_seeds": [
+      0,
+      1,
+      2
+    ],
+    "physical_call_count": 0,
+    "rows_per_pass": 3600,
+    "run_id": "p4-m6-formal-20261105T0118Z",
+    "runs_per_budget": 8,
+    "schema_version": "p4-m6-formal-preflight-1",
+    "study_scale": "FORMAL",
+    "total_adaptation_executions": 10800,
+    "units_by_study": {
+      "in_dist": 20,
+      "negative_control": 10,
+      "new_family": 40,
+      "ood": 10
+    },
+    "units_total": 80
+  },
+  "plan_gate": {
+    "actual": {
+      "determinism_passes": 3,
+      "rows_per_pass": 3600,
+      "runs_per_budget": 8,
+      "total_adaptation_executions": 10800,
+      "units_by_study": {
+        "in_dist": 20,
+        "negative_control": 10,
+        "new_family": 40,
+        "ood": 10
+      },
+      "units_total": 80
+    },
+    "expected": {
+      "determinism_passes": 3,
+      "rows_per_pass": 3600,
+      "runs_per_budget": 8,
+      "total_adaptation_executions": 10800,
+      "units_by_study": {
+        "in_dist": 20,
+        "negative_control": 10,
+        "new_family": 40,
+        "ood": 10
+      },
+      "units_total": 80
+    },
+    "n_checks": 10,
+    "physical_call_count": 0,
+    "requirements": {
+      "determinism_reruns_at_least_2": true,
+      "k20_present_or_omitted": true,
+      "ks_has_0_1_5_10": true,
+      "meta_seeds_at_least_3": true
+    },
+    "schema_version": "p4-m6-formal-preflight-1",
+    "status": "PASS"
+  },
+  "run_id": "p4-m6-formal-20261105T0118Z",
+  "schema_version": "p4-m6-formal-preflight-1",
+  "status": "PASS",
+  "study_scale": "FORMAL"
+}

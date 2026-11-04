@@ -1,0 +1,334 @@
+{
+  "arms": {
+    "M": {
+      "method": "maml"
+    },
+    "P": {
+      "method": "fine_tuning"
+    },
+    "R": {
+      "method": "from_scratch"
+    }
+  },
+  "conclusions_allowed": true,
+  "config": {
+    "conclusions_allowed": true,
+    "designs_per_task": 192,
+    "determinism_reruns": 3,
+    "family_seed": 20261102,
+    "frozen_run_dir": "research\\concorde_metaopt\\optimization_runs\\p4-meta-m5-formal-20261104T1018Z",
+    "inner_steps": 50,
+    "k_omissions": [],
+    "ks": [
+      0,
+      1,
+      5,
+      10,
+      20
+    ],
+    "max_meta_steps": 200,
+    "meta_seeds": [
+      0,
+      1,
+      2
+    ],
+    "new_families": [
+      "F-LIN",
+      "F-MF"
+    ],
+    "old_run_output_root": "research\\concorde_metaopt\\optimization_runs",
+    "output_root": "research\\concorde_metaopt\\optimization_runs",
+    "physical_guard_expected": 0,
+    "query_size": 64,
+    "run_id": "p4-m6-formal-20261105T0118Z",
+    "split_counts": {
+      "meta_test": 20,
+      "meta_test_ood": 10,
+      "meta_train": 60,
+      "meta_validation": 20,
+      "negative_control": 10
+    },
+    "study_scale": "FORMAL",
+    "support_pool_size": 128,
+    "train_family": "F-QE-feasible-v2"
+  },
+  "created_utc": "2026-11-04T17:23:16+00:00",
+  "data_origin": "SYNTHETIC_TEST",
+  "evaluator_id": "synthetic__analytic__12d_lifting_surfaces__v1",
+  "families": {
+    "F-LIN": {
+      "config": {
+        "context_names": [
+          "context_1",
+          "context_2"
+        ],
+        "design_dim": 12,
+        "designs_per_task": 192,
+        "family_id": "F-LIN",
+        "family_version": "v1",
+        "negative_control_tasks": 0,
+        "ood_tasks": 0,
+        "query_size": 64,
+        "radius_base": null,
+        "reference_tolerance": 1e-10,
+        "seed": 20261102,
+        "support_pool_size": 128,
+        "test_tasks": 20,
+        "train_tasks": 0,
+        "validation_tasks": 0
+      },
+      "counts": {
+        "meta_test": 20,
+        "meta_test_ood": 0,
+        "meta_train": 0,
+        "meta_validation": 0,
+        "negative_control": 0
+      },
+      "fingerprint": "9154f78ab77b334ca5ed922c1e715c071d3888e730982b891254cb596f9ab554"
+    },
+    "F-MF": {
+      "config": {
+        "context_names": [
+          "context_1",
+          "context_2"
+        ],
+        "design_dim": 12,
+        "designs_per_task": 192,
+        "family_id": "F-MF",
+        "family_version": "v1",
+        "negative_control_tasks": 0,
+        "ood_tasks": 0,
+        "query_size": 64,
+        "radius_base": null,
+        "reference_tolerance": 1e-10,
+        "seed": 20261102,
+        "support_pool_size": 128,
+        "test_tasks": 20,
+        "train_tasks": 0,
+        "validation_tasks": 0
+      },
+      "counts": {
+        "meta_test": 20,
+        "meta_test_ood": 0,
+        "meta_train": 0,
+        "meta_validation": 0,
+        "negative_control": 0
+      },
+      "fingerprint": "aaf51077e23dacde36864120dff365feb6fd950b748e439f21aa2c598be5f993"
+    },
+    "F-QE-feasible-v2": {
+      "config": {
+        "context_names": [
+          "context_1",
+          "context_2"
+        ],
+        "design_dim": 12,
+        "designs_per_task": 192,
+        "family_id": "F-QE-feasible-v2",
+        "family_version": "v2",
+        "negative_control_tasks": 10,
+        "ood_tasks": 10,
+        "query_size": 64,
+        "radius_base": 0.75,
+        "reference_tolerance": 1e-10,
+        "seed": 20261102,
+        "support_pool_size": 128,
+        "test_tasks": 20,
+        "train_tasks": 60,
+        "validation_tasks": 20
+      },
+      "counts": {
+        "meta_test": 20,
+        "meta_test_ood": 10,
+        "meta_train": 60,
+        "meta_validation": 20,
+        "negative_control": 10
+      },
+      "fingerprint": "2b78ec7b533fa346f0629d34ed9e3bf525a2ff6295260f21a490452cc1778a42"
+    }
+  },
+  "git_sha": "c300d9532f3c354c71242adb720b3e5c1a958c40",
+  "git_sha_label": "c300d9532f3c354c71242adb720b3e5c1a958c40-dirty",
+  "ks": [
+    0,
+    1,
+    5,
+    10,
+    20
+  ],
+  "m5_reference": {
+    "status": "PENDING_M5_ACCEPTANCE",
+    "status_initial": "PENDING_M5_HOLDOUT",
+    "note": "M5 formal holdout run p4-meta-m5-formal-20261104T1018Z was executed; attempt1 products were rejected by A5 (task-153) and are being regenerated; acceptance pending."
+  },
+  "meta_seeds": [
+    0,
+    1,
+    2
+  ],
+  "meta_test_tuning_policy": "M6 不使用 meta_test/OOD 结果做任何模型选择或超参调整；选择只看 meta_train/meta_validation",
+  "not_approved": [
+    "真实跨任务元训练与真实低/高保真标签（需 P4-REAL-LF / P4-MULTIFIDELITY-REAL 授权）",
+    "MAML 参数级等价性声明（backend=torch 自写一阶实现，equivalence_claimed=false）",
+    "由 M6 代理误差直接推断 BO 样本效率（必须引用 M5 的 holdout 统计）"
+  ],
+  "notes": [
+    "SYNTHETIC_ONLY：全部标签来自解析合成任务族，physical_call_count=0（fail-closed）",
+    "跨族原始目标尺度不同，原始值与标准化值同时保留，不混合比较",
+    "三层结论（L1 代理误差 / L2 BO 样本效率 / L3 OOD 泛化）分别报告，禁止跨层推断"
+  ],
+  "physical_call_count": 0,
+  "physical_guard_expected": 0,
+  "primary_endpoint": "meta_test / in_dist 上 K=5 query RMSE（任务内标准化）MAML(M) vs 预训练(P) / 随机(R)",
+  "run_id": "p4-m6-formal-20261105T0118Z",
+  "scale_preflight": {
+    "created_utc": "2026-11-04T17:23:16+00:00",
+    "dry_run": false,
+    "executed": {
+      "determinism_passes": 3,
+      "rows_per_pass": 3600,
+      "total_adaptation_executions": 10800
+    },
+    "expected": {
+      "determinism_passes": 3,
+      "rows_per_pass": 3600,
+      "runs_per_budget": 8,
+      "total_adaptation_executions": 10800,
+      "units_by_study": {
+        "in_dist": 20,
+        "negative_control": 10,
+        "new_family": 40,
+        "ood": 10
+      },
+      "units_total": 80
+    },
+    "mismatches": [],
+    "mock_adaptation_calls": null,
+    "note": "正式规模计数由实际执行的适应矩阵 pass 行数得出（A5M6R-01）",
+    "physical_call_count": 0,
+    "plan": {
+      "arms": [
+        "M",
+        "P",
+        "R"
+      ],
+      "determinism_passes": 3,
+      "expected": {
+        "determinism_passes": 3,
+        "rows_per_pass": 3600,
+        "runs_per_budget": 8,
+        "total_adaptation_executions": 10800,
+        "units_by_study": {
+          "in_dist": 20,
+          "negative_control": 10,
+          "new_family": 40,
+          "ood": 10
+        },
+        "units_total": 80
+      },
+      "ks": [
+        0,
+        1,
+        5,
+        10,
+        20
+      ],
+      "meta_seeds": [
+        0,
+        1,
+        2
+      ],
+      "physical_call_count": 0,
+      "rows_per_pass": 3600,
+      "run_id": "p4-m6-formal-20261105T0118Z",
+      "runs_per_budget": 8,
+      "schema_version": "p4-m6-formal-preflight-1",
+      "study_scale": "FORMAL",
+      "total_adaptation_executions": 10800,
+      "units_by_study": {
+        "in_dist": 20,
+        "negative_control": 10,
+        "new_family": 40,
+        "ood": 10
+      },
+      "units_total": 80
+    },
+    "plan_gate": {
+      "actual": {
+        "determinism_passes": 3,
+        "rows_per_pass": 3600,
+        "runs_per_budget": 8,
+        "total_adaptation_executions": 10800,
+        "units_by_study": {
+          "in_dist": 20,
+          "negative_control": 10,
+          "new_family": 40,
+          "ood": 10
+        },
+        "units_total": 80
+      },
+      "expected": {
+        "determinism_passes": 3,
+        "rows_per_pass": 3600,
+        "runs_per_budget": 8,
+        "total_adaptation_executions": 10800,
+        "units_by_study": {
+          "in_dist": 20,
+          "negative_control": 10,
+          "new_family": 40,
+          "ood": 10
+        },
+        "units_total": 80
+      },
+      "n_checks": 10,
+      "physical_call_count": 0,
+      "requirements": {
+        "determinism_reruns_at_least_2": true,
+        "k20_present_or_omitted": true,
+        "ks_has_0_1_5_10": true,
+        "meta_seeds_at_least_3": true
+      },
+      "schema_version": "p4-m6-formal-preflight-1",
+      "status": "PASS"
+    },
+    "run_id": "p4-m6-formal-20261105T0118Z",
+    "schema_version": "p4-m6-formal-preflight-1",
+    "status": "PASS",
+    "study_scale": "FORMAL"
+  },
+  "schema_version": "p4-m6-run-config-1",
+  "secondary_endpoints": [
+    "K=0/1/10/20 query RMSE/MAE（原始值与标准化值）",
+    "OOD 参数外推与新函数族上 K=5 query RMSE",
+    "内循环损失稳定性（loss_final/loss_std/loss_monotonic_fraction）",
+    "每臂适应墙钟时间（wall_s，仅作成本披露，不作统计推断）"
+  ],
+  "stage": "P4-CODE",
+  "statistics": {
+    "bootstrap_samples": 10000,
+    "confidence": 0.95,
+    "min_tasks_for_stats": 5,
+    "multiple_comparison": "Holm-Bonferroni（每个 (study, 族, K, 指标) 内 3 个预注册比较 M-P / M-R / P-R）",
+    "nonnull_threshold": 0.7,
+    "pairing": "(task, meta_seed) 配对后按任务取均值，再跨任务统计",
+    "test": "wilcoxon_signed_rank",
+    "unit": "task"
+  },
+  "study_scale": "FORMAL",
+  "worktree_dirty": true,
+  "determinism_reruns": 3,
+  "packaging_corrections": [
+    {
+      "finding": "A5-M6-02",
+      "action": "README L1 direction detail added"
+    },
+    {
+      "finding": "A5-M6-04",
+      "action": "determinism_reruns=3 added"
+    },
+    {
+      "finding": "A5-M6-05",
+      "action": "m5_reference status PENDING_M5_ACCEPTANCE"
+    }
+  ]
+}
