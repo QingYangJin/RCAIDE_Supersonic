@@ -116,6 +116,13 @@ def git_output(args, root):
     return proc.returncode, proc.stdout, proc.stderr
 
 
+def git_blob_bytes(root, rev, repo_rel):
+    code, out, err = git_output(["cat-file", "blob", "%s:%s" % (rev, repo_rel)], root)
+    if code != 0:
+        return None
+    return out
+
+
 def record_entry(rel, raw):
     entry = {
         "path": rel,
@@ -163,6 +170,38 @@ def build_manifest(manifest_path):
     if not paths:
         raise RuntimeError("evidence/v1b contains no files to freeze")
     files = [record_entry(rel, (RUN_DIR / rel).read_bytes()) for rel in paths]
+    committed_mode_counts = {"canonical_lf": 0, "raw": 0, "not_committed": 0, "mismatch": 0}
+    root = repo_root()
+    rev = "HEAD"
+    for entry in files:
+        repo_rel = run_dir_rel_repo(root) + "/" + entry["path"]
+        blob = git_blob_bytes(root, rev, repo_rel)
+        if blob is None:
+            entry["committed_blob_mode"] = "not_committed"
+            entry["committed_blob_bytes"] = None
+            entry["committed_blob_sha256"] = None
+            committed_mode_counts["not_committed"] += 1
+            continue
+        blob_sha = sha256_bytes(blob)
+        entry["committed_blob_bytes"] = len(blob)
+        entry["committed_blob_sha256"] = blob_sha
+        raw_match = len(blob) == entry["bytes_raw"] and blob_sha == entry["sha256_raw"]
+        canon_match = False
+        if entry["hash_mode"] == "canonical_lf":
+            canon_match = (
+                len(blob) == entry["bytes_canonical_lf"]
+                and blob_sha == entry["sha256_canonical_lf"]
+            )
+        if entry["hash_mode"] == "raw":
+            mode = "raw" if raw_match else "mismatch"
+        elif canon_match:
+            mode = "canonical_lf"
+        elif raw_match:
+            mode = "raw"
+        else:
+            mode = "mismatch"
+        entry["committed_blob_mode"] = mode
+        committed_mode_counts[mode] += 1
     counts = {
         "canonical_lf": sum(1 for f in files if f["hash_mode"] == "canonical_lf"),
         "raw": sum(1 for f in files if f["hash_mode"] == "raw"),
@@ -175,7 +214,7 @@ def build_manifest(manifest_path):
     return {
         "artifact_kind": ARTIFACT_KIND,
         "schema_version": SCHEMA_VERSION,
-        "revision": 1,
+        "revision": 2,
         "run_id": RUN_ID,
         "generated_utc": utcnow(),
         "status": "V1B_FROZEN",
@@ -186,6 +225,14 @@ def build_manifest(manifest_path):
         "excluded": EXCLUDED,
         "file_count": len(files),
         "hash_mode_counts": counts,
+        "committed_blob_mode_counts": committed_mode_counts,
+        "committed_blob_mode_policy": (
+            "committed_blob_mode records how each file is actually stored in the frozen git blob: "
+            "canonical_lf = stored LF form (sha256_canonical_lf authoritative); raw = stored "
+            "CRLF/binary form preserved by git (sha256_raw authoritative; relevant for *.log files "
+            "that git treats as -text). --verify --source git/index auto-detects the stored form "
+            "and requires it to equal this field. Raw fields keep the generation-host bytes."
+        ),
         "total_bytes": total_bytes,
         "total_bytes_canonical_lf": total_canonical,
         "total_bytes_raw": total_raw,
@@ -278,6 +325,18 @@ def manifest_structure_errors(manifest):
         errors.append(("VERIFY_MANIFEST_TOTALS", "total_bytes_canonical_lf %r != %d" % (manifest.get("total_bytes_canonical_lf"), total_canonical)))
     if manifest.get("total_bytes_raw") != total_raw:
         errors.append(("VERIFY_MANIFEST_TOTALS", "total_bytes_raw %r != %d" % (manifest.get("total_bytes_raw"), total_raw)))
+    committed_counts = {"canonical_lf": 0, "raw": 0, "not_committed": 0, "mismatch": 0}
+    for entry in files:
+        mode = entry.get("committed_blob_mode")
+        if mode not in committed_counts:
+            errors.append(("VERIFY_COMMITTED_MODE", "%s: %r" % (entry.get("path"), mode)))
+            continue
+        committed_counts[mode] += 1
+        if mode in ("canonical_lf", "raw"):
+            if not isinstance(entry.get("committed_blob_bytes"), int) or not isinstance(entry.get("committed_blob_sha256"), str):
+                errors.append(("VERIFY_COMMITTED_MODE", "%s: missing committed blob bytes/sha" % entry.get("path")))
+    if manifest.get("committed_blob_mode_counts") != committed_counts:
+        errors.append(("VERIFY_MANIFEST_TOTALS", "committed_blob_mode_counts mismatch: %r != %r" % (manifest.get("committed_blob_mode_counts"), committed_counts)))
     return errors
 
 
@@ -339,6 +398,7 @@ def verify_manifest(manifest, source, rev):
     for missing in sorted(path_set - source_set):
         errors.append(("VERIFY_FILE_MISSING", missing))
     checked = 0
+    blob_modes = {"raw": 0, "canonical_lf": 0}
     for entry in files:
         rel = entry.get("path")
         data, read_error = read_source_bytes(source, root, rev, rel)
@@ -366,25 +426,49 @@ def verify_manifest(manifest, source, rev):
             elif len(canon) != entry.get("bytes_canonical_lf"):
                 errors.append(("VERIFY_CANONICAL_MISMATCH", "%s: bytes_canonical_lf %d != %r" % (rel, len(canon), entry.get("bytes_canonical_lf"))))
             continue
-        # --source git / index: the committed/staged blob is already the canonical-LF
-        # form (repo .gitattributes enforces eol=lf); compare canonical fields, and keep
-        # raw fields only for binary entries (binary bytes are never canonicalised).
+        # --source git / index: detect how each blob is actually stored. Repo
+        # .gitattributes normalises most text to LF (canonical form), but git keeps
+        # some files as -text (e.g. *.log, CRLF preserved). Both are accepted when they
+        # match the recorded form; the effective mode must equal committed_blob_mode.
+        if entry.get("committed_blob_mode") not in ("raw", "canonical_lf"):
+            errors.append(("VERIFY_COMMITTED_MODE", "%s: committed_blob_mode %r" % (rel, entry.get("committed_blob_mode"))))
+        blob_sha = sha256_bytes(data)
+        raw_match = len(data) == entry.get("bytes_raw") and blob_sha == entry.get("sha256_raw")
+        direct_canon_match = (
+            entry.get("hash_mode") == "canonical_lf"
+            and len(data) == entry.get("bytes_canonical_lf")
+            and blob_sha == entry.get("sha256_canonical_lf")
+        )
+        # content consistency: blob text normalised CRLF->LF must equal the recorded
+        # canonical form even when the stored blob preserved CRLF (effective mode raw).
+        canon = canonical_lf(data)
+        canon_content_match = (
+            canon is not None
+            and len(canon) == entry.get("bytes_canonical_lf")
+            and sha256_bytes(canon) == entry.get("sha256_canonical_lf")
+        )
         if entry.get("hash_mode") == "raw":
-            if len(data) != entry.get("bytes_raw"):
-                errors.append(("VERIFY_BYTES_MISMATCH", "%s: bytes_raw %d != %r" % (rel, len(data), entry.get("bytes_raw"))))
-            elif sha256_bytes(data) != entry.get("sha256_raw"):
-                errors.append(("VERIFY_SHA_MISMATCH", "%s: sha256_raw mismatch" % rel))
-            continue
-        if bytes([13, 10]) in data:
-            errors.append(("VERIFY_GIT_EOL_CRLF", "%s: committed blob contains CRLF" % rel))
-            continue
-        if len(data) != entry.get("bytes_canonical_lf"):
-            errors.append(("VERIFY_CANONICAL_MISMATCH", "%s: bytes_canonical_lf %d != %r" % (rel, len(data), entry.get("bytes_canonical_lf"))))
-        elif sha256_bytes(data) != entry.get("sha256_canonical_lf"):
-            errors.append(("VERIFY_CANONICAL_MISMATCH", "%s: sha256_canonical_lf mismatch" % rel))
-        if canonical_lf(data) is None:
-            errors.append(("VERIFY_HASH_MODE_MISMATCH", "%s: committed blob is not valid UTF-8 while manifest says text" % rel))
-    return errors, checked, len(files), len(source_set)
+            effective = "raw" if raw_match else None
+        elif direct_canon_match:
+            effective = "canonical_lf"
+        elif raw_match:
+            effective = "raw"
+        else:
+            effective = None
+        if effective == "raw" and entry.get("hash_mode") == "canonical_lf" and not canon_content_match:
+            errors.append(("VERIFY_CANONICAL_MISMATCH", "%s: raw-form blob normalises to a different canonical hash" % rel))
+        if effective is None:
+            errors.append(("VERIFY_BLOB_MISMATCH", "%s: blob matches neither raw nor canonical-LF form" % rel))
+        else:
+            blob_modes[effective] += 1
+            expected_mode = entry.get("committed_blob_mode")
+            if expected_mode in ("raw", "canonical_lf") and expected_mode != effective:
+                errors.append(("VERIFY_COMMITTED_MODE_MISMATCH", "%s: committed_blob_mode %s != actual %s" % (rel, expected_mode, effective)))
+        if entry.get("committed_blob_bytes") is not None and entry.get("committed_blob_bytes") != len(data):
+            errors.append(("VERIFY_COMMITTED_BLOB_MISMATCH", "%s: committed_blob_bytes %r != %d" % (rel, entry.get("committed_blob_bytes"), len(data))))
+        if entry.get("committed_blob_sha256") is not None and entry.get("committed_blob_sha256") != blob_sha:
+            errors.append(("VERIFY_COMMITTED_BLOB_MISMATCH", "%s: committed_blob_sha256 mismatch" % rel))
+    return errors, checked, len(files), len(source_set), blob_modes
 
 
 def main(argv=None):
@@ -412,7 +496,7 @@ def main(argv=None):
                     manifest["total_bytes_raw"],
                 )
             )
-            errors, checked, expected, found = verify_manifest(manifest, "worktree", args.rev)
+            errors, checked, expected, found, _ = verify_manifest(manifest, "worktree", args.rev)
             if errors:
                 print("SELF_VERIFY_FAIL errors=%d" % len(errors))
                 for code, detail in errors:
@@ -425,14 +509,14 @@ def main(argv=None):
             print("VERIFY_FAIL manifest missing: %s" % manifest_path)
             return 2
         manifest = load_json(manifest_path)
-        errors, checked, expected, found = verify_manifest(manifest, source=args.source, rev=args.rev)
+        errors, checked, expected, found, blob_modes = verify_manifest(manifest, source=args.source, rev=args.rev)
         if errors:
             print("VERIFY_FAIL source=%s rev=%s errors=%d" % (args.source, args.rev if args.source == "git" else "-", len(errors)))
             for code, detail in errors:
                 print("  FAIL %s: %s" % (code, detail))
             return 2
         print(
-            "VERIFY_OK source=%s rev=%s entries=%d/%d files_in_scope=%d total_bytes=%d total_canonical_lf=%d"
+            "VERIFY_OK source=%s rev=%s entries=%d/%d files_in_scope=%d total_bytes=%d total_canonical_lf=%d raw_blobs=%d canonical_lf_blobs=%d"
             % (
                 args.source,
                 args.rev if args.source == "git" else "-",
@@ -441,6 +525,8 @@ def main(argv=None):
                 found,
                 manifest["total_bytes"],
                 manifest["total_bytes_canonical_lf"],
+                blob_modes["raw"],
+                blob_modes["canonical_lf"],
             )
         )
         return 0
