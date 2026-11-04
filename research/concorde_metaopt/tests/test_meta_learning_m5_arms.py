@@ -313,6 +313,27 @@ class M5ArmRunTests(_M5Fixture):
         self.assertEqual(fairness["records"], 4)
         self.assertEqual(fairness["physical_call_count"], 0)
 
+    def test_fairness_audit_accepts_meta_seed_dimension(self):
+        """模型打分臂按 meta seed 各一条记录属预注册设计，不是重复组。"""
+        random_record = self.records[m5.M5_ARM_ORDER.index(m5.M5_BO_RANDOM)]
+        de_record = self.records[m5.M5_ARM_ORDER.index(m5.M5_DE)]
+        pretrain = self.records[m5.M5_ARM_ORDER.index(m5.M5_BO_PRETRAIN_INIT)]
+        maml = self.records[m5.M5_ARM_ORDER.index(m5.M5_BO_MAML_INIT)]
+        multi = [replace(random_record), replace(de_record)]
+        for meta_seed in (0, 1, 2):
+            multi.append(replace(pretrain, meta_seed=meta_seed))
+            multi.append(replace(maml, meta_seed=meta_seed))
+        fairness = m5.assert_m5_fairness(multi)
+        self.assertEqual(fairness["status"], "PASS")
+        self.assertEqual(fairness["records"], 8)
+        self.assertEqual(fairness["groups"], 4)
+        self.assertEqual(
+            fairness["group_key_fields"], ["task_id", "seed", "budget", "meta_seed"]
+        )
+        # 同一 (task, seed, budget, arm, meta_seed) 出现两次仍然是重复组 → fail-closed
+        with self.assertRaises(m5.M5ArmError):
+            m5.assert_m5_fairness(multi + [replace(pretrain, meta_seed=0)])
+
     def test_identifiability_audit_labels(self):
         audit = m5.identifiability_audit(self.records)
         self.assertEqual(audit["groups_checked"], 1)

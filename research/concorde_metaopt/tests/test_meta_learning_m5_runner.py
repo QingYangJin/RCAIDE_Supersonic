@@ -560,6 +560,53 @@ class M5HoldoutStageTests(unittest.TestCase):
         self.assertEqual(declaration["data_origin"], "SYNTHETIC_TEST")
         self.assertIn("fail-closed", declaration["policy"])
 
+    def test_11b_multi_meta_seed_records_not_duplicates(self) -> None:
+        """回归：多 meta seed 的模型打分臂记录不得被公平性审计误判为重复组。
+
+        正式 M5 holdout（meta_seeds=(0,1,2)）在 3 个 determinism pass 跑完后曾因
+        assert_m5_fairness 以 (task, seed, budget) 为键而抛出“重复组”失败：
+        pretrain-init / MAML-init 每 meta seed 各一条记录属预注册设计。修复后
+        公平性键包含 meta_seed，且本 tiny 端到端多 meta seed run 必须 VALID。
+        """
+        study = _study()
+        root = _new_root()
+        run_id = "m5-multi-meta-holdout"
+        holdout_dir = root / run_id
+        _prepare_holdout_prerequisites(
+            Path(study["calibration_config"].run_dir),
+            Path(study["freeze_config"].run_dir),
+            holdout_dir,
+        )
+        base = study["holdout_config"]
+        config = replace(
+            base,
+            output_root=root,
+            run_id=run_id,
+            meta_seeds=(0, 1),
+            calibration_report_path=None,
+            frozen_family_path=None,
+            preregistration_path=None,
+            split_manifest_path=None,
+        )
+        result = m5.run_holdout_stage(config, workers=1)
+        self.assertEqual(result["status"], "VALID")
+        self.assertEqual(result["physical_call_count"], 0)
+        expected_groups = HOLDOUT_TASKS * len(HOLDOUT_SEEDS)
+        expected_runs = expected_groups * len(HOLDOUT_BUDGETS) * (2 + 2 * 2)
+        self.assertEqual(result["groups"], expected_groups)
+        self.assertEqual(result["runs_completed"], expected_runs)
+        fairness = result["fairness"]
+        self.assertEqual(fairness["status"], "PASS")
+        self.assertEqual(fairness["records"], expected_runs)
+        # 键为 (task, seed, budget, meta_seed)：None + 两个 meta seed = 3 个键/组。
+        self.assertEqual(fairness["groups"], expected_groups * len(HOLDOUT_BUDGETS) * 3)
+        self.assertEqual(fairness["group_key_fields"], ["task_id", "seed", "budget", "meta_seed"])
+        summary = _read_json(Path(result["run_dir"]) / "summary.json")
+        self.assertEqual(summary["status"], "VALID")
+        self.assertEqual(summary["fairness"]["records"], expected_runs)
+        self.assertEqual(summary["fairness"]["groups"], fairness["groups"])
+        self.assertEqual(sorted(result["products_written"]), sorted(m5.HOLDOUT_PRODUCT_FILES))
+
     def test_12_products_complete_and_data_manifest(self) -> None:
         run_dir = Path(_study()["holdout"]["run_dir"])
         for name in m5.HOLDOUT_PRODUCT_FILES:

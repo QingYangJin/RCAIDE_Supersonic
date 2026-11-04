@@ -2762,6 +2762,7 @@ def _fairness_summary(fairness: Mapping[str, Any]) -> dict[str, Any]:
         "status": fairness.get("status"),
         "records": fairness.get("records"),
         "groups": fairness.get("groups"),
+        "group_key_fields": list(fairness.get("group_key_fields") or ()),
         "arms": list(fairness.get("arms") or ()),
         "initial_design_count": fairness.get("initial_design_count"),
         "dedup_tolerance": fairness.get("dedup_tolerance"),

@@ -923,13 +923,20 @@ def identifiability_audit(records: Sequence[InitialDesignRecord]) -> dict[str, A
 
 
 def assert_m5_fairness(records: Sequence[InitialDesignRecord]) -> dict[str, Any]:
-    """公平性/等预算审计（fail-closed）：发现违例即抛 M5ArmError。"""
+    """公平性/等预算审计（fail-closed）：发现违例即抛 M5ArmError。
+
+    审计分组键为 (task_id, seed, budget, meta_seed)。模型打分臂
+    （pretrain-init / MAML-init）按预注册设计对每个 meta seed 各产生一条记录，
+    因此 meta_seed 是同臂多记录的合法维度；只有同一键内同一臂出现两条记录
+    才算重复组。跨臂共享检查（pretrain/MAML 候选池与 artifact 指纹）只在同一
+    meta_seed 内比较，避免把不同元训练种子的 artifact 误判为同源。
+    """
     if not records:
         raise M5ArmError("assert_m5_fairness 需要至少一条 InitialDesignRecord")
     errors: list[str] = []
-    groups: dict[tuple[str, int, int], dict[str, InitialDesignRecord]] = {}
+    groups: dict[tuple[str, int, int, int | None], dict[str, InitialDesignRecord]] = {}
     for record in records:
-        key = (record.task_id, int(record.seed), int(record.budget))
+        key = (record.task_id, int(record.seed), int(record.budget), record.meta_seed)
         bucket = groups.setdefault(key, {})
         if record.arm in bucket:
             errors.append(f"重复组 {key} 臂 {record.arm}")
@@ -966,6 +973,7 @@ def assert_m5_fairness(records: Sequence[InitialDesignRecord]) -> dict[str, Any]
         "status": "PASS",
         "records": len(records),
         "groups": len(groups),
+        "group_key_fields": ["task_id", "seed", "budget", "meta_seed"],
         "arms": sorted({record.arm for record in records}),
         "initial_design_count": M5_INITIAL_DESIGN_COUNT,
         "dedup_tolerance": M5_DEDUP_TOLERANCE,
