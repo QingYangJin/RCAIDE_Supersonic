@@ -227,6 +227,8 @@ A5 对 revision 4 判 `CHANGES_REQUESTED`（0 blocker / 3 major / 6 minor）。r
 
 verifier revision 5 结果：**267 checks PASS / 0 failed**（`evidence/a0/a0_verification.json`）；`evidence/a0/setup_generation.json` revision 5 同步记录 9 个脚本的双形态哈希。本次修订**零求解**，A 批启动计数保持 4/6。
 
+**干净 checkout 复跑（revision 5）**：`evidence/a0/a0_verification_checkout_rev5.log`，在 detached worktree `D:/RCAIDE-verify-d12d005-c891a0c`（HEAD `c891a0c`，`git status` 全干净）中以 `--no-write` 重跑 verifier，结果 **267 checks PASS / 0 failed**；日志显式记录 `checks_failed: 0`、`solver_processes_started: 0`、命令与 commit，且 `--no-write` 不重写 tracked 的 `a0_verification.json`（复跑后 worktree 仍为空 status）。
+
 ## 17. 下一步（等待门禁）
 
 1. ~~A1 交付 v2 解析器（LD-002）+ 回归测试 → A5 复核。~~ 已完成（`ab29a0c` 首版 + rev2 加固 + rev3 主/派生列分离 + rev4 allowlist 范围限制；58 tests OK）。
