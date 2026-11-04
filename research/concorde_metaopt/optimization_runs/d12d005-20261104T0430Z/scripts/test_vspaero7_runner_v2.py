@@ -18,6 +18,8 @@ sys.path.insert(0, str(HERE))
 
 import vspaero7_runner_v2 as R
 
+NL = chr(10)
+
 
 def _fmt(value):
     if isinstance(value, bool):
@@ -257,7 +259,7 @@ class Polar722Tests(TempDirTestCase):
         self.assertIn("POLAR_NONPHYSICAL", str(ctx.exception))
 
     def test_no_data_rows_rejected(self):
-        text = "   Surface Integration Forces and Moments -->\n" + "  ".join(R.POLAR_722_COLUMNS) + "\n"
+        text = polar_text(rows=[])
         with self.assertRaises(R.DataQualityError) as ctx:
             R.validate_polar_file(self._write(text), dict(R.CONTRACT_12D))
         self.assertIn("POLAR_NO_DATA_ROWS", str(ctx.exception))
@@ -427,3 +429,99 @@ class CliTests(TempDirTestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class CaseGateHardeningTests(TempDirTestCase):
+    """A5 task-103 V2-M01/M02/M03 and minor hardening regressions."""
+
+    def _local_vspgeom_case(self, *, tamper=False):
+        case, evidence = make_case(self.tmp)
+        local = case / "CASE_X.vspgeom"
+        payload = b"fake-vspgeom-bytes-for-gate-test"
+        local.write_bytes(b"tampered-bytes" if tamper else payload)
+        (case / "CASE_X_model.vkey").write_text(
+            "# VSPGEOM v3 Tag Key File%s%s%s2%s" % (NL, local, NL, NL), encoding="utf-8"
+        )
+        (case / "geom_result_thin.csv").write_text(
+            "Results_Name,VSPAERO_Geom%sGeometrySet,-1%sThinGeometrySet,0%sVSPGeomFileName,%s%s"
+            % (NL, NL, NL, local, NL),
+            encoding="utf-8",
+        )
+        return case, evidence, local
+
+    def test_vkey_nonexistent_target_rejected(self):
+        case, evidence = make_case(self.tmp)
+        (case / "CASE_X_model.vkey").write_text(
+            "# VSPGEOM v3 Tag Key File%s%s%s2%s" % (NL, self.tmp / "missing.vspgeom", NL, NL),
+            encoding="utf-8",
+        )
+        with self.assertRaises(R.CaseGateError) as ctx:
+            R.check_case_dir(case, evidence=evidence, case_id="CASE_X")
+        self.assertEqual(ctx.exception.code, "CASE_VKEY_GEOM_MISMATCH")
+
+    def test_vkey_same_basename_other_dir_rejected(self):
+        case, evidence = make_case(self.tmp)
+        sibling = self.tmp / "sibling"
+        sibling.mkdir()
+        other = sibling / "CASE_X.vspgeom"
+        other.write_bytes(b"same-basename-other-dir")
+        (case / "CASE_X_model.vkey").write_text(
+            "# VSPGEOM v3 Tag Key File%s%s%s2%s" % (NL, other, NL, NL), encoding="utf-8"
+        )
+        with self.assertRaises(R.CaseGateError) as ctx:
+            R.check_case_dir(case, evidence=evidence, case_id="CASE_X")
+        self.assertEqual(ctx.exception.code, "CASE_VKEY_GEOM_MISMATCH")
+
+    def test_local_vspgeom_tampered_rejected(self):
+        case, evidence, _ = self._local_vspgeom_case(tamper=True)
+        with self.assertRaises(R.CaseGateError) as ctx:
+            R.check_case_dir(case, evidence=evidence, case_id="CASE_X")
+        self.assertEqual(ctx.exception.code, "CASE_VSPGEOM_SHA_MISMATCH")
+
+    def test_local_vspgeom_matching_record_passes(self):
+        case, evidence, local = self._local_vspgeom_case(tamper=False)
+        report = R.check_case_dir(case, evidence=evidence, case_id="CASE_X")
+        self.assertEqual(report["vspgeom"]["source"], "case_dir")
+        self.assertTrue(report["vspgeom"]["evidence_record_verified"])
+        self.assertEqual(Path(report["vspgeom"]["path"]), local.resolve())
+
+    def test_missing_solver_processes_started_rejected(self):
+        case, evidence = make_case(self.tmp)
+        data = json.loads(Path(evidence).read_text(encoding="utf-8"))
+        data.pop("solver_processes_started")
+        Path(evidence).write_text(json.dumps(data), encoding="utf-8")
+        with self.assertRaises(R.CaseGateError) as ctx:
+            R.check_case_dir(case, evidence=evidence, case_id="CASE_X")
+        self.assertEqual(ctx.exception.code, "CASE_SOLVER_PROCESS_EVIDENCE_MISSING")
+
+    def test_csf_trailing_content_rejected(self):
+        case, evidence = make_case(self.tmp)
+        (case / "CASE_X_model.csf").write_text(
+            "0 Control Surfaces%s1 Control Surface%s" % (NL, NL), encoding="utf-8"
+        )
+        with self.assertRaises(R.RunnerError) as ctx:
+            R.check_case_dir(case, evidence=evidence, case_id="CASE_X")
+        self.assertIn("CASE_CSF_INVALID", str(ctx.exception))
+
+    def test_polar_header_row_shift_rejected(self):
+        path = self.tmp / "shifted.polar"
+        path.write_text("padding line" + NL + polar_text(), encoding="utf-8")
+        with self.assertRaises(R.DataQualityError) as ctx:
+            R.validate_polar_file(path, dict(R.CONTRACT_12D))
+        self.assertIn("POLAR_HEADER_ROW_UNEXPECTED", str(ctx.exception))
+
+    def test_structure_only_accepts_nonphysical_polar(self):
+        path = self.tmp / "archived_v7_00.polar"
+        path.write_text(
+            polar_text(rows=[polar_row(cltot=-2801.885568189672, cdtot=-376.365943305457)]),
+            encoding="utf-8",
+        )
+        payload = R.parse_polar_structure(path, dict(R.CONTRACT_12D))
+        self.assertEqual(payload["status"], "PASS_STRUCTURE_ONLY")
+        self.assertEqual(payload["rows"], 1)
+        self.assertAlmostEqual(payload["rows_preview"][0]["CLtot"], -2801.885568189672)
+        self.assertEqual(payload["physical_validation"], "NOT_APPLIED")
+        with self.assertRaises(R.DataQualityError) as ctx:
+            R.validate_polar_file(path, dict(R.CONTRACT_12D))
+        self.assertIn("POLAR_NONPHYSICAL", str(ctx.exception))
+

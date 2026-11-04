@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""D-12D-005 A0 independent verification, revision 2 (no OpenVSP, no solver).
+"""D-12D-005 A0 independent verification, revision 3 (no OpenVSP, no solver).
 
 Re-checks the A0 setup bundle from disk only, from any checkout root:
   * evidence JSON self-consistency, dual raw/canonical-LF hashes, run-relative paths;
@@ -13,7 +13,7 @@ Re-checks the A0 setup bundle from disk only, from any checkout root:
   * process-spawn scan over every non-test script (unittest CLI exception documented);
   * README documents the 7-file bundle and the canonical-LF convention.
 
-Usage: python scripts/a0_verify_cases.py [--run-dir <root>]
+Usage: python scripts/a0_verify_cases.py [--run-dir <root>] [--no-write]
 """
 from __future__ import annotations
 
@@ -109,6 +109,7 @@ def parse_setup_kv(text: str) -> dict:
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--run-dir", default=None)
+    ap.add_argument("--no-write", action="store_true", help="verify only, do not rewrite tracked a0_verification.json")
     args = ap.parse_args()
     run_dir = Path(args.run_dir).resolve() if args.run_dir else Path(__file__).resolve().parent.parent
     evidence_path = run_dir / "evidence" / "a0" / "setup_generation.json"
@@ -123,7 +124,7 @@ def main() -> int:
         return bool(ok)
 
     # ---- A. evidence self-consistency -----------------------------------
-    check("evidence.revision", evidence.get("revision") == 2, evidence.get("revision"))
+    check("evidence.revision", evidence.get("revision") in (2, 3), evidence.get("revision"))
     check("evidence.schema", evidence.get("schema_version") == "d12d005-a0-setup-generation-2", evidence.get("schema_version"))
     check("evidence.status", evidence.get("status") == "A0_SETUP_READY_NO_SOLVER", evidence.get("status"))
     check("evidence.solver_processes_started", evidence.get("solver_processes_started") == 0, evidence.get("solver_processes_started"))
@@ -207,7 +208,8 @@ def main() -> int:
                   metrics == {"TotalSpan": 4.0, "TotalArea": 4.0, "TotalChord": 1.0, "TotalAR": 4.0}, metrics)
             check("case.%s.sym_xz" % cid, xml_parm(text, "Sym_Planar_Flag") == 2.0, xml_parm(text, "Sym_Planar_Flag"))
         else:
-            check("case.%s.model_is_12d_wing" % cid, "wing355" in case["model"]["name"].lower() or True, case["model"]["name"])
+            expected_model = "wing355_baseline.vsp3" if cid.startswith("S5") else cid + "_model.vsp3"
+            check("case.%s.model_expected_name" % cid, case["model"]["name"] == expected_model, case["model"]["name"])
 
     byid = {c["case_id"]: c for c in cases}
 
@@ -236,26 +238,28 @@ def main() -> int:
 
     # ---- D. negative controls ------------------------------------------
     neg_root = run_dir / "evidence" / "a0" / "negative_controls"
-    neg_dir = neg_root / "S0_STD_M0p1_base"
-    s0_contract = json.loads((run_dir / byid["S0_STD_M0p1_base"]["case_dir_relative"] / "expected.json").read_text(encoding="utf-8"))["contract"]
     expectations = {
         "neg_wrong_sref.vspaero": "ContractViolation",
         "neg_wake_mismatch.vspaero": "ContractViolation",
         "neg_legacy.vspaero": "SetupFormatError",
     }
-    for name, want in expectations.items():
-        p = neg_dir / name
-        if not p.is_file():
-            check("negative_control.%s" % name, False, "missing")
-            continue
-        try:
-            parsed = runner.parse_setup_text(p.read_text(encoding="utf-8", errors="replace"), source=name)
-            runner.assert_canonical(parsed)
-            runner.validate_setup_fields(parsed["fields"], s0_contract, source=name)
-            got = "ACCEPTED"
-        except Exception as exc:  # noqa: BLE001
-            got = type(exc).__name__
-        check("negative_control.%s" % name, got == want, got)
+    neg_groups = sorted(p for p in neg_root.iterdir() if p.is_dir())
+    for gdir in neg_groups:
+        grp_contract = json.loads((run_dir / byid[gdir.name]["case_dir_relative"] / "expected.json").read_text(encoding="utf-8"))["contract"]
+        for name, want in expectations.items():
+            p = gdir / name
+            label = "negative_control.%s.%s" % (gdir.name, name)
+            if not p.is_file():
+                check(label, False, "missing")
+                continue
+            try:
+                parsed = runner.parse_setup_text(p.read_text(encoding="utf-8", errors="replace"), source=str(p))
+                runner.assert_canonical(parsed)
+                runner.validate_setup_fields(parsed["fields"], grp_contract, source=str(p))
+                got = "ACCEPTED"
+            except Exception as exc:  # noqa: BLE001
+                got = type(exc).__name__
+            check(label, got == want, got)
     check("negative_control.count", len(list(neg_root.rglob("*.vspaero"))) == 6, len(list(neg_root.rglob("*.vspaero"))))
 
     # ---- E. scripts ----------------------------------------------------
@@ -292,7 +296,7 @@ def main() -> int:
     check("readme.canonical_convention", "canonical LF" in readme or "canonical-LF" in readme, None)
     check("readme.seven_files", "7 个文件" in readme or "7 files" in readme, None)
     check("readme.expected_json_bundle", "expected.json" in readme, None)
-    check("readme.revision2", "revision 2" in readme or "v2" in readme, None)
+    check("readme.revision_ok", "revision 2" in readme or "revision 3" in readme or "v2" in readme, None)
 
     failed = [c for c in checks if not c["ok"]]
     out = {
@@ -309,7 +313,10 @@ def main() -> int:
         "solver_processes_started": 0,
         "note": "disk-only verification; no OpenVSP call and no solver start",
     }
-    out_path.write_text(json.dumps(out, ensure_ascii=False, indent=2) + "\n", encoding="utf-8", newline="\n")
+    if args.no_write:
+        print("A0 VERIFICATION %s checks %d failed %d (no-write)" % (out["status"], out["checks_total"], out["checks_failed"]))
+    else:
+        out_path.write_text(json.dumps(out, ensure_ascii=False, indent=2) + "\n", encoding="utf-8", newline="\n")
     print("A0 VERIFICATION %s checks %d failed %d" % (out["status"], out["checks_total"], out["checks_failed"]))
     for c in failed:
         print("FAILED:", c["check"], c["detail"])

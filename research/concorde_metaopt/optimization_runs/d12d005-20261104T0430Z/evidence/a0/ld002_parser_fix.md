@@ -4,18 +4,19 @@
 - 角色：A1（a1-code-dev）
 - 范围：D-12D-005 A0-aero 预检，**零求解器启动**（本文件所有验证均为静态解析/单测；未执行 vspaero/SU2/Mission）
 - 基线：`scripts/vspaero7_runner_v1frozen.py`（只读，未修改）
-- 产物：`scripts/vspaero7_runner_v2.py`、`scripts/test_vspaero7_runner_v2.py`、本说明、`evidence/a0/ld002_test_run.log`
+- 产物：`scripts/vspaero7_runner_v2.py`、`scripts/test_vspaero7_runner_v2.py`、本说明、`evidence/a0/ld002_test_run.log`（首版 38 tests）、`evidence/a0/v2rev2_test_run.log`（rev2 46 tests）
 
 ## 1. 文件与校验和
 
 | 文件 | 行数 | 字节 | sha256 |
 | --- | --- | --- | --- |
 | scripts/vspaero7_runner_v1frozen.py（基线，未改） | 837 | 30373 | b77b56526acab6ac03ee07838d06970f2bd98d298aae597997bf393474128a36 |
-| scripts/vspaero7_runner_v2.py | 1227 | 50411 | 7cce34bcf210397008a8870f7064b60920cd50659127033ddf668a3207fde1b3 |
-| scripts/test_vspaero7_runner_v2.py | 429 | 18824 | 66972b155cfcf6a1799926804f73837b4ba48b7dd4942bbbe8c02450327c2525 |
-| evidence/a0/ld002_test_run.log | - | - | b59332cb8b7f2f2a4e677fc8d912329da824ffd5b87de6f04ab67e9ad2ac7100 |
+| scripts/vspaero7_runner_v2.py（rev2 加固） | 1330 | 53392 | 08212a29502583b9c554c9f0dc3301a8ba24a773344d35692c0a9d00780f988a |
+| scripts/test_vspaero7_runner_v2.py（rev2） | 527 | 23488 | c5b7e4063fe506d5db23e85213b79b017ed75660072e6f663bc8b13c4a59fdb7 |
+| evidence/a0/ld002_test_run.log（首版 38 tests） | - | 4388 | b59332cb8b7f2f2a4e677fc8d912329da824ffd5b87de6f04ab67e9ad2ac7100 |
+| evidence/a0/v2rev2_test_run.log（rev2 46 tests） | - | 319 | 03757b371510dee2db6efe87ac7928324fe2b4dd8deb032b47c97ac50fe7748f |
 
-SCHEMA_VERSION 由 `d12d004-runner-1` 升为 `d12d005-runner-2`；公共 API 保持向后兼容（parse_setup_text / read_setup_file / validate_setup_fields / inject_contract_fields / require_setup_success / validate_history_file / assert_new_format_only / assert_no_solver_artifacts / start_solver 等函数名与异常类名不变）。
+SCHEMA_VERSION 由 `d12d004-runner-1` 升为 `d12d005-runner-2`，rev2 加固后升为 `d12d005-runner-3`；公共 API 保持向后兼容（parse_setup_text / read_setup_file / validate_setup_fields / inject_contract_fields / require_setup_success / validate_history_file / assert_new_format_only / assert_no_solver_artifacts / start_solver 等函数名与异常类名不变）。
 
 ## 2. 表头证据（为什么必须改 polar 解析）
 
@@ -48,6 +49,7 @@ SCHEMA_VERSION 由 `d12d004-runner-1` 升为 `d12d005-runner-2`；公共 API 保
 3. 数据行必须与表头同宽，否则 `POLAR_ROW_WIDTH_INVALID`；NaN/IND/INF 给 `POLAR_NONFINITE`；无数据行给 `POLAR_NO_DATA_ROWS`。
 4. 每行强制校验：`Re/1e6*1e6` 与合同 `ReCref` 相对误差 ≤1e-6（`POLAR_RE_MISMATCH`）；`Mach` 与合同相对误差 ≤1e-6（`POLAR_MACH_MISMATCH`）；`|CLtot|≤10`、`|CDtot|≤10`（`POLAR_NONPHYSICAL`，防 358 倍 Sref 放大等失控值直接进入验收）。
 5. 返回结构含 `header_token_count=48`、逐行 `CLo/CLi/CLtot/CDo/CDi/CDtot/CMztot/Re` 与文件 sha256，供证据 JSON 直接引用。
+6. rev2 新增：表头必须在第 3 行（前两行是分组标签），否则 `POLAR_HEADER_ROW_UNEXPECTED`；新增 `parse_polar_structure()` 做 structure-only 解析（48 列/行宽/非有限 token/前 5 行预览），返回 `PASS_STRUCTURE_ONLY` 且 `physical_validation = NOT_APPLIED`，不把非物理数值伪装成通过。
 
 ### 3.2 严格 check-case-dir 门禁（新增 CLI 子命令）
 
@@ -57,9 +59,9 @@ SCHEMA_VERSION 由 `d12d004-runner-1` 升为 `d12d005-runner-2`；公共 API 保
 2. `*.vkey` 存在：首行须为 `# VSPGEOM v3 Tag Key File`，第 2 行为 vspgeom 路径。
 3. `*.csf` 存在且内容为 `0 Control Surfaces`（20 B）。
 4. `*geom_result*.csv` 存在，且记录必须是薄几何：`GeometrySet=-1` 且 `ThinGeometrySet=0`。
-5. `.vspgeom` 存在性：优先算例目录内 `*.vspgeom`；否则从 setup-generation 证据的 `execution_bundle.vspgeom_external_path`/`thin_geometry.external_path` 解析，并核对记录中的 sha256/bytes。
-6. `.vkey` 第 2 行指向的 vspgeom 文件名必须与解析出的 vspgeom 文件名一致（D-12D-004 V1 根因：vkey 指向不存在的本地 `_model.vspgeom`）。
-7. StopBeforeRun 证据：`--evidence` JSON 顶层须有 `stop_before_run=1`、`solver_processes_started=0`（或算例目录内置 `setup_gen_report.json`）。
+5. `.vspgeom` 存在性：优先算例目录内 `*.vspgeom`（必须与证据记录 sha256/bytes 一致，否则 `CASE_VSPGEOM_SHA_MISMATCH`/`CASE_VSPGEOM_BYTES_MISMATCH`，并标记 `evidence_record_verified`）；否则从 setup-generation 证据的 `execution_bundle.vspgeom_external_path`/`thin_geometry.external_path` 解析并核对记录。
+6. `.vkey` 第 2 行必须是绝对路径，`resolve(strict=True)` 后与解析出的 vspgeom **全路径相等**（只比 basename 不够；D-12D-004 V1 根因：vkey 指向不存在的本地 `_model.vspgeom`）。
+7. StopBeforeRun / 求解进程证据：`--evidence` JSON 顶层须有 `stop_before_run=1`，且 `solver_processes_started` / `solver_starts` 键必须存在并等于 0；键缺失即 `CASE_SOLVER_PROCESS_EVIDENCE_MISSING`（fail-closed，禁止“缺字段=放行”）。
 8. 禁止残留求解产物：`*.polar/*.history/*.lod/*.groups/*.group.*/*.adb/*.fem`。
 9. `wrapper.wrapper_timeout_s`（若记录）不得小于 600 s（`config/run_config.json` 的 `max_wall_per_start_s`）。
 
@@ -95,15 +97,22 @@ SCHEMA_VERSION 由 `d12d004-runner-1` 升为 `d12d005-runner-2`；公共 API 保
 | CASE_THIN_GEOMETRY_MISSING / CASE_THIN_GEOMETRY_MISMATCH | 缺 GeometrySet/ThinGeometrySet，或不是 -1/0 薄翼记录 |
 | CASE_STOP_BEFORE_RUN_EVIDENCE_MISSING / CASE_STOP_BEFORE_RUN_MISSING | 缺 StopBeforeRun 证据或不为 1 |
 | CASE_SOLVER_PROCESS_RECORDED | 证据记录到非 0 求解进程 |
+| CASE_SOLVER_PROCESS_EVIDENCE_MISSING | 证据缺 `solver_processes_started`/`solver_starts` 键（fail-closed） |
+| POLAR_HEADER_ROW_UNEXPECTED | 表头不在第 3 行（前两行应为分组标签） |
 | CASE_WRAPPER_TIMEOUT_TOO_SHORT | 包装器超时 < 600 s |
 | CASE_KILLED_BY_WRAPPER / CASE_WRAPPER_KILLED_AT_TIMEOUT / CASE_WRAPPER_TIMEOUT_MISSING | 包装器误杀/缺超时字段 |
 | CASE_READBACK_ASSERTION_COUNT | 回读断言数 != 合同字段数 |
 
+注：structure-only 状态 `PASS_STRUCTURE_ONLY` 不是错误，只声明结构可解析；其 `physical_validation = NOT_APPLIED`，不能用于数值验收。
+
 ## 5. CLI 用法
 
 ```
-# 校验 7.2.2 polar（48 列严格解析）
+# 校验 7.2.2 polar（48 列严格解析 + 数值验收）
 D:/RCAIDE/envs/RCAIDE/python.exe -E -s -B scripts/vspaero7_runner_v2.py verify-polar --polar <case>.polar
+
+# 只做结构解析（不验收数值）
+D:/RCAIDE/envs/RCAIDE/python.exe -E -s -B scripts/vspaero7_runner_v2.py polar-structure --polar <case>.polar
 
 # 严格算例目录门禁（推荐：A2 执行前的唯一入口检查）
 D:/RCAIDE/envs/RCAIDE/python.exe -E -s -B scripts/vspaero7_runner_v2.py check-case-dir \
@@ -135,21 +144,37 @@ GATE_EXIT=2
 D:/RCAIDE/envs/RCAIDE/python.exe -E -s -B -m unittest discover -s scripts -p "test_vspaero7_runner_v2.py" -v
 ```
 
-- 结果：**Ran 38 tests / OK / 退出码 0**（约 0.33 s）
-- 全量日志：`evidence/a0/ld002_test_run.log`（sha256 b59332cb8b7f2f2a4e677fc8d912329da824ffd5b87de6f04ab67e9ad2ac7100）
+- 结果：**Ran 46 tests / OK / 退出码 0**（约 0.41 s；首版 38 tests 见 `ld002_test_run.log`）
+- 全量日志：`evidence/a0/v2rev2_test_run.log`（319 B / sha256 03757b371510dee2db6efe87ac7928324fe2b4dd8deb032b47c97ac50fe7748f）
 - 覆盖：LD-001 缺 '=' 检测/规范化/严格拒绝、17 字段回读、默认值泄漏（ReCref=1e7、Vinf=100）、错误 Sref、setup 返回码非 0、缺 vkey/csf、薄几何记录、缺 vspgeom、StopBeforeRun=0/缺失、vkey-vspgeom 不一致、120 s 包装器误杀、包装器字段缺失、残留 polar 产物、7.2.2 48 列正确解析、legacy 6.2 拒绝、缺列、NaN/IND、错误 Re、错误 Mach、非物理 CLtot、无数据行、缺表头、CLI 三条用例。
-- 另：Lead 的 `scripts/a0_verify_cases.py` 在 v2 落盘后仍 **PASS 163/163**（v1frozen 未被改动，公共 API 兼容）。
+- 另：Lead 的 `scripts/a0_verify_cases.py` 在 v2 落盘后仍 **PASS 263/263（revision 3）**（v1frozen 未被改动、公共 API 兼容）。
 - 注意：本套测试用临时目录合成 fixture，不读取/不修改 A0 真实 setup 包；未启动任何求解器。
 
 ## 7. 与 v1frozen 的差异
 
 - 保留：所有 v1frozen 函数/异常/CLI 子命令名与行为（read_setup_file、validate_history_file、inject_contract_fields、require_setup_success、assert_new_format_only 等）。
 - 替换：`_polar_header_and_rows`/`validate_polar_file`（旧 9 列宽松解析 → 48 列严格解析 + legacy 拒绝 + 非物理/Re/Mach 检查）。
-- 新增：`POLAR_722_COLUMNS`(48)、`LEGACY_62_POLAR_COLUMNS`、`MIN_WRAPPER_TIMEOUT_S=600`、`CaseGateError`/`WrapperGateError`、`check_case_dir`、`validate_thin_geometry_record`、`validate_vkey`、`validate_csf`、`parse_geom_result_csv`、`resolve_case_vspgeom`、`validate_wrapper_outcome`、CLI `check-case-dir`。
+- 新增：`POLAR_722_COLUMNS`(48)、`LEGACY_62_POLAR_COLUMNS`、`MIN_WRAPPER_TIMEOUT_S=600`、`CaseGateError`/`WrapperGateError`、`check_case_dir`、`validate_thin_geometry_record`、`validate_vkey`、`validate_csf`、`parse_geom_result_csv`、`resolve_case_vspgeom`、`validate_wrapper_outcome`、`_recorded_vspgeom`、`parse_polar_structure`、CLI `check-case-dir`、CLI `polar-structure`。
 - 扩大：`SOLVER_ARTIFACT_GLOBS` 增加 `*.group.*`（VSPAERO 7.2.2 实际产物名）。
 
 ## 8. 限制与 NOT_RUN
 
 - NOT_RUN：任何 VSPAERO/SU2/RCAIDE Mission 启动、真实 7.2.2 求解、真实 polar 数值验收。polar 解析仅用合成 fixture 验证；真实 48 列结构以 §2.1 归档文件表头+行宽核对为准。
 - PARTIAL：`check-case-dir` 对 A0 真实包的完整 PASS 需 A2 先完成 vkey 第 2 行改写（见 §5）。
-- 本文件与 v2 代码未做 git commit；d12d005 run 目录仍为 untracked，由 Lead 决定归档提交。
+- 提交：v2 首版随 A0-aero 提交 `ab29a0c`；rev2 加固与本 evidence revision 3 同批提交（Lead 执行，A1 交付）。
+## 9. rev2 修订记录（A5 task-103）
+
+A5 对 v2 delta 给 CHANGES_REQUESTED（0 blocker / 3 major / 5 minor），rev2 逐项处置：
+
+| 编号 | 处置 |
+| --- | --- |
+| V2-M01 | vkey 绝对路径 + `resolve(strict=True)` + 与解析出的 vspgeom 全路径相等 |
+| V2-M02 | 本地 vspgeom 与证据记录 sha256/bytes 校验 |
+| V2-M03 | solver 进程证据键缺失 fail-closed |
+| minor: csf | 精确匹配 `0 control surfaces` |
+| minor: 表头行号 | 强制表头为第 3 行 |
+| minor: structure-only | 新增 `polar-structure` 子命令 |
+| minor: 旧数值 | §1 表按 canonical-LF 值更新 |
+| minor: 未 commit 表述 | §8 已更新 |
+
+新增回归测试 `CaseGateHardeningTests`（8 项）：vkey 不存在 / 同 basename 异目录 / 本地 vspgeom 篡改 / 本地匹配记录 PASS / 缺 solver 证据键 / csf 尾随内容 / 表头前移 / structure-only 接受非物理值。合计 **46 tests OK**。

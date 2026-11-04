@@ -2447,7 +2447,7 @@
       }
     }
   ],
-  "generated_utc": "2026-11-04T05:54:53Z",
+  "generated_utc": "2026-11-04T06:27:17Z",
   "hashing_convention": {
     "external_artifacts": "sha256 over raw bytes (outside git)",
     "legacy_fields": "bytes/sha256 alias the canonical-LF form for older readers",
@@ -2539,8 +2539,18 @@
     "reason": "A5 F-A0-01 follow-up: a clean checkout must reproduce the evidence without the original absolute root",
     "verifier": "scripts/a0_verify_cases.py --run-dir <root> resolves every path from the run-dir root"
   },
-  "revision": 2,
+  "revision": 3,
+  "revision_history": [
+    2,
+    3
+  ],
   "revision_notes": {
+    "A5_A0R2-01": "clean-checkout replay log regenerated and records both raw and canonical-LF forms",
+    "A5_A0R2-02": "replay log records checks_failed=0 explicitly, never null",
+    "A5_A0R2-03": "verifier replays all 6 negative controls (S0 and S3 groups), not just S0",
+    "A5_A0R2-04": "model_is_12d_wing replaced by a real expected-model-name check per case",
+    "A5_A0R2-05": "verifier --no-write avoids mutating tracked evidence; absolute provenance fields are informational only",
+    "A5_A0R2_rev3": "revision 3: v2 runner rev2 hardening (V2-M01/M02/M03), LD-002 structure-only parser, verifier --no-write, 6/6 negative controls, real 12D-model check",
     "A5_F-A0-01": "dual raw/canonical-LF per-file hash evidence; run-relative paths; verified from a relocated copy and from a clean checkout",
     "A5_F-A0-02": "scripts/test_vspaero7_runner_v1frozen.py import/path fixed to the frozen module; 22 tests OK (evidence/a0/v1frozen_test_run.log)",
     "A5_F-A0-03": "README file-count corrected to 7",
@@ -2577,18 +2587,18 @@
       "sha256_raw": "57d91e7944f06466c5d962d1cca41b02ab9f30264e1ca7843f75ae5f21460430"
     },
     {
-      "bytes": 8090,
-      "bytes_canonical_lf": 8090,
-      "bytes_raw": 8090,
+      "bytes": 8932,
+      "bytes_canonical_lf": 8932,
+      "bytes_raw": 8932,
       "eol": "lf",
       "hash_mode": "dual",
       "kind": "generator_or_verifier",
       "name": "a0_finalize_evidence_v2.py",
       "path_relative": "scripts/a0_finalize_evidence_v2.py",
       "process_spawn_allowed": false,
-      "sha256": "4a908b63fad85a9ce0344f369d1437dc6ebbbf55663c91cebc96c39ad9a61896",
-      "sha256_canonical_lf": "4a908b63fad85a9ce0344f369d1437dc6ebbbf55663c91cebc96c39ad9a61896",
-      "sha256_raw": "4a908b63fad85a9ce0344f369d1437dc6ebbbf55663c91cebc96c39ad9a61896"
+      "sha256": "55b05084a7943da8fda789169a63661c3ec7a64fc812c2083353c04cddf699b4",
+      "sha256_canonical_lf": "55b05084a7943da8fda789169a63661c3ec7a64fc812c2083353c04cddf699b4",
+      "sha256_raw": "55b05084a7943da8fda789169a63661c3ec7a64fc812c2083353c04cddf699b4"
     },
     {
       "bytes": 18583,
@@ -2605,18 +2615,18 @@
       "sha256_raw": "187cbe16c003988be100473a601aa2a3f52d4db7c7de4c61643a5fb6de41b0f2"
     },
     {
-      "bytes": 17990,
-      "bytes_canonical_lf": 17990,
-      "bytes_raw": 17990,
+      "bytes": 18535,
+      "bytes_canonical_lf": 18535,
+      "bytes_raw": 18535,
       "eol": "lf",
       "hash_mode": "dual",
       "kind": "generator_or_verifier",
       "name": "a0_verify_cases.py",
       "path_relative": "scripts/a0_verify_cases.py",
       "process_spawn_allowed": false,
-      "sha256": "d125116e07339e27a54a1d5b68b532396bfb1d1f2ea22342e274666ad710263c",
-      "sha256_canonical_lf": "d125116e07339e27a54a1d5b68b532396bfb1d1f2ea22342e274666ad710263c",
-      "sha256_raw": "d125116e07339e27a54a1d5b68b532396bfb1d1f2ea22342e274666ad710263c"
+      "sha256": "ac7f784926c254966b5ac09af636aea5acfbff89e109c3d1f3e42b596d256bc9",
+      "sha256_canonical_lf": "ac7f784926c254966b5ac09af636aea5acfbff89e109c3d1f3e42b596d256bc9",
+      "sha256_raw": "ac7f784926c254966b5ac09af636aea5acfbff89e109c3d1f3e42b596d256bc9"
     },
     {
       "bytes": 30373,
@@ -2633,18 +2643,18 @@
       "sha256_raw": "b77b56526acab6ac03ee07838d06970f2bd98d298aae597997bf393474128a36"
     },
     {
-      "bytes": 49184,
-      "bytes_canonical_lf": 49184,
-      "bytes_raw": 50411,
+      "bytes": 53392,
+      "bytes_canonical_lf": 53392,
+      "bytes_raw": 54722,
       "eol": "crlf",
       "hash_mode": "dual",
       "kind": "frozen_runner",
       "name": "vspaero7_runner_v2.py",
       "path_relative": "scripts/vspaero7_runner_v2.py",
       "process_spawn_allowed": false,
-      "sha256": "ce4c23c6700c0e8f77345dcec1d0c19b6f170acd77e9a38053e163bcb8ac4be0",
-      "sha256_canonical_lf": "ce4c23c6700c0e8f77345dcec1d0c19b6f170acd77e9a38053e163bcb8ac4be0",
-      "sha256_raw": "7cce34bcf210397008a8870f7064b60920cd50659127033ddf668a3207fde1b3"
+      "sha256": "08212a29502583b9c554c9f0dc3301a8ba24a773344d35692c0a9d00780f988a",
+      "sha256_canonical_lf": "08212a29502583b9c554c9f0dc3301a8ba24a773344d35692c0a9d00780f988a",
+      "sha256_raw": "5701d301e5c4660f6038dfd7ecb19a610c30256dc6104b922fa838d1712190e8"
     },
     {
       "bytes": 8217,
@@ -2661,18 +2671,18 @@
       "sha256_raw": "51946c9c67dffe5e0e3db017043053f1329c384f418d66b7e707ea8275267192"
     },
     {
-      "bytes": 18824,
-      "bytes_canonical_lf": 18824,
-      "bytes_raw": 18824,
-      "eol": "lf",
+      "bytes": 23488,
+      "bytes_canonical_lf": 23488,
+      "bytes_raw": 24015,
+      "eol": "crlf",
       "hash_mode": "dual",
       "kind": "regression_test",
       "name": "test_vspaero7_runner_v2.py",
       "path_relative": "scripts/test_vspaero7_runner_v2.py",
       "process_spawn_allowed": true,
-      "sha256": "66972b155cfcf6a1799926804f73837b4ba48b7dd4942bbbe8c02450327c2525",
-      "sha256_canonical_lf": "66972b155cfcf6a1799926804f73837b4ba48b7dd4942bbbe8c02450327c2525",
-      "sha256_raw": "66972b155cfcf6a1799926804f73837b4ba48b7dd4942bbbe8c02450327c2525"
+      "sha256": "c5b7e4063fe506d5db23e85213b79b017ed75660072e6f663bc8b13c4a59fdb7",
+      "sha256_canonical_lf": "c5b7e4063fe506d5db23e85213b79b017ed75660072e6f663bc8b13c4a59fdb7",
+      "sha256_raw": "abbd026265e0928e03c1dfeface3c386430daec062aec9ba9881e6ba3db0a885"
     }
   ],
   "solver_processes_started": 0,
@@ -2686,5 +2696,6 @@
     "solver_starts": 0
   },
   "vspaero_install": "D:\\OpenVSP-3.55.0\\OpenVSP-3.55.0-win64\\vspaero.exe",
-  "vspaero_sha256": "db71c4412489af82398833408ea30fb73327bdd9434de2ef530d31375b9fddad"
+  "vspaero_sha256": "db71c4412489af82398833408ea30fb73327bdd9434de2ef530d31375b9fddad",
+  "zero_solver_statement": "no solver started in any revision; v2 runner start_solver() always refuses"
 }

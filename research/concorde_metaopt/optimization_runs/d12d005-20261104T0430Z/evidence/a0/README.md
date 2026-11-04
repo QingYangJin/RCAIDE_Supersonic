@@ -5,7 +5,7 @@
 - 阶段：**A0 零求解预检**（尚未启动任何 VSPAERO 求解器；`solver_processes_started = 0`）
 - 分支 / worktree：`research/d12d005-aero-fallback` @ `D:/RCAIDE-d12d005`
 - 物理预算状态：A 类（VSPAERO7-thin-LF）cap 20，第一批 ≤6；**本轮使用 0/20**，`starts_used = 0`；D-12D-002/004 额度不结转
-- 生成时间：2026-11-04T04:55:48Z 起；**evidence revision 2** 按 A5 task-97 复核意见重建逐文件哈希证据（见 §13）
+- 生成时间：2026-11-04T04:55:48Z 起；**evidence revision 3**（在 A5 task-97 rev2 复核基础上回应 v2 delta 的 3 major 与 task-106 的 5 minor；见 §13/§14）
 
 ## 1. 本轮目的
 
@@ -15,7 +15,7 @@ D-12D-004 V1 的两次 VSPAERO 启动均出现非物理系数/发散，A0 需在
 2. 用于"标准可核对翼"的几何与设置族是否就绪、能否用解析/半解析预期判定？
 3. 正式启动前的严格门禁（LD-002 解析器、目录/版本/回读/薄厚/坐标/尾迹设置、StopBeforeRun 证据）是否冻结？
 
-结论：① V1 是在 **Uber_eCRM-002 全机模型**上跑的，"标准翼"设置族从未被验证 → 必须先跑真正的矩形标准翼；② 标准翼（AR=4 矩形、平板中弧线）已建成，六案 setup 全部生成并通过 17 字段回读；③ 独立校验脚本全部检查通过（0 失败；逐文件同时校验 raw 与 canonical-LF 两种形态，项数见 a0_verification.json 的 checks_total）。**本轮不产生任何 CL/CD 数值。**
+结论：① V1 是在 **Uber_eCRM-002 全机模型**上跑的，"标准翼"设置族从未被验证 → 必须先跑真正的矩形标准翼；② 标准翼（AR=4 矩形、平板中弧线）已建成，六案 setup 全部生成并通过 17 字段回读；③ 独立校验脚本全部检查通过（revision 3：**263 项检查、0 失败**；逐文件同时校验 raw 与 canonical-LF 两种形态）。**本轮不产生任何 CL/CD 数值。**
 
 ## 2. 零求解证据
 
@@ -23,7 +23,7 @@ D-12D-004 V1 的两次 VSPAERO 启动均出现非物理系数/发散，A0 需在
 | --- | --- |
 | `evidence/a0/setup_generation.json` | `status = A0_SETUP_READY_NO_SOLVER`；每案 `readback` 17 项决定性断言（Mach/AoA/ReCref/Vinf/Rho/Sref/Cref/Bref/X_cg/Y_cg/Z_cg/Symmetry/Beta/NumWakeNodes/WakeIters/WakeRelax/FarDist）；`stop_before_run_readback = 1`；`solver_processes_started = 0`；无 `.adb/.history/.polar/.lod` 产物 |
 | `evidence/a0/vspaero_v1_divergence_analysis.json` | 只读解析 d12d004 归档：`.vspaero`/`.polar`/`.history`/solver log/模型源 SHA，`solver_starts = 0` |
-| `evidence/a0/a0_verification.json` | 独立校验（revision 2）：全部检查通过、0 failed；逐文件 raw + canonical-LF 双哈希；非测试脚本经 AST 扫描确认无进程启动路径（两个 unittest 以 child process 调 runner CLI，已在证据中标注例外）；run 目录内无本地 `.vspgeom` |
+| `evidence/a0/a0_verification.json` | 独立校验（revision 3）：263 checks 全部通过、0 failed；逐文件 raw + canonical-LF 双哈希；非测试脚本经 AST 扫描确认无进程启动路径（两个 unittest 以 child process 调 runner CLI，已在证据中标注例外）；run 目录内无本地 `.vspgeom` |
 | `evidence/a0/negative_controls/` | 6 个负控制 setup 均被严格门禁拒绝（见 §7） |
 
 注：VSPAEROComputeGeometry / VSPAEROSweep 在 `StopBeforeRun=1` 下会打印形如 `...vspaero.exe -omp 4 <base>` 的**将执行命令**，这是 OpenVSP 的分析命令行回显，**不是进程启动**；证据是 `.adb/.history/.polar/.lod` 一个都不存在，且 StopBeforeRun 读回为 1。此点与 D-12D-004 V0/V1 的口径一致（V0 复核 APPROVE）。
@@ -118,7 +118,7 @@ CLiw CDiw CSiw CFwxtot ... LoDw Ew StallFactor
 - 旧 6.2 表头（无 `CLo/CLi`）明确拒绝并给错误码；
 - 回归测试覆盖：LD-001 模板缺 `=`、缺 `.vkey/.csf`、外层 120 s 包装器误杀、默认值泄漏（1e7/100/0.002377）、错误 Sref、旧表头。测试不得启动真实求解器。
 
-当前状态：A1 的 v2 解析器**尚未交付**；本包的 `scripts/vspaero7_runner_v1frozen.py` 是 D-12D-004 V1 的冻结基线（`start_solver()` 恒 raise `SolverStartRefused`），只作 setup 注入/回读/负控制用途，其 polar 校验器对 7.2.2 **不可用**。
+当前状态：v2 解析器已交付并完成 rev2 加固（`scripts/vspaero7_runner_v2.py` 1,330 行 / 53,392 B canonical / sha256 `08212a295025...`；`scripts/test_vspaero7_runner_v2.py` 527 行 / 23,488 B / `c5b7e4063fe5...`；46 tests OK，日志 `evidence/a0/v2rev2_test_run.log`）。本包的 `scripts/vspaero7_runner_v1frozen.py` 仍是 D-12D-004 V1 的冻结基线（`start_solver()` 恒 raise `SolverStartRefused`），只作 setup 注入/回读/负控制用途；polar 校验必须用 v2（7.2.2 48 列），v1frozen 的 polar 校验器对 7.2.2 **不可用**。
 
 ## 8. 门禁状态（本阶段）
 
@@ -134,8 +134,8 @@ CLiw CDiw CSiw CFwxtot ... LoDw Ew StallFactor
 
 ## 9. 文件与哈希
 
-- 生成/校验脚本：`scripts/a0_analyze_v1_divergence.py`、`scripts/a0_generate_setups.py`、`scripts/a0_finalize_evidence_v2.py`、`scripts/a0_verify_cases.py`（逐文件双形态哈希见 `setup_generation.json` 的 `scripts` 数组）
-- 冻结基线：`scripts/vspaero7_runner_v1frozen.py`（30,373 B / sha256 `b77b56526acab6ac03ee07838d06970f2bd98d298aae597997bf393474128a36`）、`scripts/test_vspaero7_runner_v1frozen.py`（8,217 B；import 已修，22 tests OK，日志 `evidence/a0/v1frozen_test_run.log`）
+- 生成/校验脚本（8 条，逐文件双形态哈希见 `setup_generation.json` 的 `scripts` 数组）：`scripts/a0_analyze_v1_divergence.py`、`scripts/a0_generate_setups.py`、`scripts/a0_finalize_evidence_v2.py`、`scripts/a0_verify_cases.py`（支持 `--no-write` 只读复核）、`scripts/vspaero7_runner_v1frozen.py`、`scripts/test_vspaero7_runner_v1frozen.py`、`scripts/vspaero7_runner_v2.py`、`scripts/test_vspaero7_runner_v2.py`
+- 冻结基线：`scripts/vspaero7_runner_v1frozen.py`（30,373 B / sha256 `b77b56526acab6ac03ee07838d06970f2bd98d298aae597997bf393474128a36`）、`scripts/test_vspaero7_runner_v1frozen.py`（8,217 B；import 已修，22 tests OK）；LD-002 v2 解析器：`scripts/vspaero7_runner_v2.py`（53,392 B / `08212a295025...`）、`scripts/test_vspaero7_runner_v2.py`（23,488 B / `c5b7e4063fe5...`）；测试日志 `evidence/a0/v1frozen_test_run.log`（22 tests）与 `evidence/a0/v2rev2_test_run.log`（46 tests）
 - 关键哈希：OpenVSP 3.55.0 / `vspaero.exe` sha256 `db71c4412489af82398833408ea30fb73327bdd9434de2ef530d31375b9fddad`；12D 模型 sha256 `9a788b467095...`（完整值见 `setup_generation.json`）
 - 完整 `data_manifest.json` 在本阶段**未生成**；A0 阶段的逐文件哈希在 `evidence/a0/setup_generation.json` 与 `evidence/a0/a0_verification.json` 内，采用 raw + canonical-LF 双形态记录（见 §13）。整包 manifest 将在 A 线执行包冻结时统一生成（与 D-12D-004 V1 相同的 canonical-LF 约定）。
 
@@ -152,6 +152,7 @@ CLiw CDiw CSiw CFwxtot ... LoDw Ew StallFactor
 ```bat
 cd D:/RCAIDE-d12d005/research/concorde_metaopt/optimization_runs/d12d005-20261104T0430Z
 D:/RCAIDE/envs/RCAIDE/python.exe -E -s -B scripts/a0_verify_cases.py --run-dir .
+# 只读复核（不重写 tracked a0_verification.json）：追加 --no-write
 ```
 
 - setup 生成（会调用 OpenVSP 3.55 API，但 StopBeforeRun=1，不启动求解器）：
@@ -176,11 +177,29 @@ A5 首轮复核 verdict CHANGES_REQUESTED（0 blocker / 1 major / 4 minor），�
 
 **哈希约定**：文本文件按 canonical LF 计哈希（等于提交后的 git blob 内容）；外部 thin .vspgeom（outside_git = true）按 raw 字节计哈希。raw 形态只在生成机存在（Windows CRLF）：在干净 checkout 中文本文件只有 canonical-LF 形态，校验器对 raw_hash 判为 checkout_normalised（raw 仅作生成机证据，不作为 clean checkout 判据）。复跑方式见 §11（--run-dir 支持任意 checkout 根）。
 
-**干净 checkout 复跑**：evidence/a0/a0_verification_checkout.log（442 B / sha256 27573eb2b866ce5be8bf9bd9061c37010ae149f146717054f944bf2eb3b7c479），在 detached worktree @ 200405e、git status 全干净的条件下重跑 verifier，结果 260 checks PASS / 0 failed。
+**干净 checkout 复跑**：`evidence/a0/a0_verification_checkout.log`（720 B；raw 与 canonical-LF 同形，sha256 `5233490259f1672ef49ac07dc5d5483a750d77bcd5f575847256ce2008ffe68a`，因纯 LF 生成；raw = canonical），在 detached worktree @ `2378345`（revision 2 checkpoint）、`git status` 全干净的条件下重跑 verifier，结果 **260 checks PASS / 0 failed**（日志显式记录 `checks_failed: 0`、`solver_processes_started: 0`、命令与 commit）。
+
+## 14. 复核整改（evidence revision 3，A5 task-103 / task-106）
+
+A5 对 v2 解析器 delta 给 CHANGES_REQUESTED（0/3/5：V2-M01/M02/M03），对 A0 revision 2 给 APPROVE_FOR_A_BATCH1（0/0/5：A0R2-01..05）。revision 3 处置：
+
+| 编号 | 级别 | 问题 | 处置 |
+| --- | --- | --- | --- |
+| V2-M01 | MAJOR | check-case-dir 只比较 vkey 的 basename，不验证存在/同一文件 | vkey 目标解析为绝对路径并 `resolve(strict=True)`，与解析出的 vspgeom 全路径相等才算 PASS（`CASE_VKEY_GEOM_MISMATCH`） |
+| V2-M02 | MAJOR | 本地 `*.vspgeom` 分支直接返回，不核对证据记录 | 本地 vspgeom 必须与记录 sha256/bytes 一致（`CASE_VSPGEOM_SHA_MISMATCH`/`CASE_VSPGEOM_BYTES_MISMATCH`），并返回 `evidence_record_verified` |
+| V2-M03 | MAJOR | 缺 `solver_processes_started` 时放行 | 改为 fail-closed：缺失即 `CASE_SOLVER_PROCESS_EVIDENCE_MISSING` |
+| V2-minor | minor | csf 仅 startswith；表头行号未强制；无 structure-only；说明文件数值旧；未 commit 表述 | csf 精确等于 `0 control surfaces`；强制表头为第 3 行（`POLAR_HEADER_ROW_UNEXPECTED`）；新增 `polar-structure`（`PASS_STRUCTURE_ONLY`）；本文件与 §1 表更新；说明改为已提交 |
+| A0R2-01 | minor | README 只写 checkout log 的 raw 哈希 | 本节与 §13 同时写 raw 与 canonical-LF 两种形态 |
+| A0R2-02 | minor | checkout log 写 `failed=None` | 新 log 显式写 `checks_failed: 0`，并记录 commit/命令 |
+| A0R2-03 | minor | verifier 只重放 S0 的 3/6 负控制 | 遍历 negative_controls 下所有分组（S0 与 S3），6/6 全部重放 |
+| A0R2-04 | minor | `model_is_12d_wing` 恒真 | 改为按案检查期望模型名（S5 为 `wing355_baseline.vsp3`，其余为 `<case>_model.vsp3`） |
+| A0R2-05 | minor | 绝对 provenance 字段 + verifier 写回弄脏 tracked JSON | `--no-write` 只读复核；绝对路径字段标注为 informational |
+
+verifier revision 3 结果：**263 checks PASS / 0 failed**（`a0_verification.json`，schema `d12d005-a0-verification-2`）。`setup_generation.json` revision 3 同步记录 8 个脚本的双形态哈希。
 
 ## 12. 下一步（等待门禁）
 
-1. A1 交付 v2 解析器（LD-002）+ 回归测试 → A5 复核。
-2. A5 复核本 A0 包（setup/回读/负控制/零求解） → verdict `APPROVE_FOR_A_BATCH1` 或 `CHANGES_REQUESTED`。
-3. A3 复核 worktree 隔离与提交（A0 baseline + delta）。
+1. ~~A1 交付 v2 解析器（LD-002）+ 回归测试 → A5 复核。~~ 已完成（`ab29a0c` 首版 + rev2 加固；46 tests OK）。
+2. ~~A5 复核本 A0 包（setup/回读/负控制/零求解）。~~ A0 revision 2 = `APPROVE_FOR_A_BATCH1`（task-106）；v2 delta = CHANGES_REQUESTED（task-103）→ 本 revision 3 已处置，待 A5 delta 复核。
+3. A3 复核 worktree 隔离与提交（A0 baseline + rev2 + rev3 delta）。
 4. Lead 在上述通过后授权 **A 类第一批 ≤6**（S0–S5），由 A2 串行执行并逐案记账。

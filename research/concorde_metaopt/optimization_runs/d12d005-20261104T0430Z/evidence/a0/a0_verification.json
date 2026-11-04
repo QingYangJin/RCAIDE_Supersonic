@@ -4,14 +4,14 @@
   "status": "PASS",
   "run_dir": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z",
   "evidence_path": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\a0\\setup_generation.json",
-  "generated_utc": "2026-11-04T05:54:53Z",
-  "checks_total": 260,
+  "generated_utc": "2026-11-04T06:30:53Z",
+  "checks_total": 263,
   "checks_failed": 0,
   "checks": [
     {
       "check": "evidence.revision",
       "ok": true,
-      "detail": 2
+      "detail": 3
     },
     {
       "check": "evidence.schema",
@@ -68,6 +68,12 @@
       "check": "evidence.revision_notes",
       "ok": true,
       "detail": [
+        "A5_A0R2-01",
+        "A5_A0R2-02",
+        "A5_A0R2-03",
+        "A5_A0R2-04",
+        "A5_A0R2-05",
+        "A5_A0R2_rev3",
         "A5_F-A0-01",
         "A5_F-A0-02",
         "A5_F-A0-03",
@@ -1539,7 +1545,7 @@
       ]
     },
     {
-      "check": "case.S5_D12_M2p02_base.model_is_12d_wing",
+      "check": "case.S5_D12_M2p02_base.model_expected_name",
       "ok": true,
       "detail": "wing355_baseline.vsp3"
     },
@@ -1603,17 +1609,32 @@
       "detail": "9fcda6d5d45300fbb0e20257c9ddc80540b44f5064a9566089d7ef85f9018d8e"
     },
     {
-      "check": "negative_control.neg_wrong_sref.vspaero",
+      "check": "negative_control.S0_STD_M0p1_base.neg_wrong_sref.vspaero",
       "ok": true,
       "detail": "ContractViolation"
     },
     {
-      "check": "negative_control.neg_wake_mismatch.vspaero",
+      "check": "negative_control.S0_STD_M0p1_base.neg_wake_mismatch.vspaero",
       "ok": true,
       "detail": "ContractViolation"
     },
     {
-      "check": "negative_control.neg_legacy.vspaero",
+      "check": "negative_control.S0_STD_M0p1_base.neg_legacy.vspaero",
+      "ok": true,
+      "detail": "SetupFormatError"
+    },
+    {
+      "check": "negative_control.S3_STD_M2p02_base.neg_wrong_sref.vspaero",
+      "ok": true,
+      "detail": "ContractViolation"
+    },
+    {
+      "check": "negative_control.S3_STD_M2p02_base.neg_wake_mismatch.vspaero",
+      "ok": true,
+      "detail": "ContractViolation"
+    },
+    {
+      "check": "negative_control.S3_STD_M2p02_base.neg_legacy.vspaero",
       "ok": true,
       "detail": "SetupFormatError"
     },
@@ -1745,7 +1766,7 @@
     {
       "check": "run_dir.file_count",
       "ok": true,
-      "detail": 63
+      "detail": 65
     },
     {
       "check": "run_dir.no_vspgeom",
@@ -1778,7 +1799,7 @@
       "detail": null
     },
     {
-      "check": "readme.revision2",
+      "check": "readme.revision_ok",
       "ok": true,
       "detail": null
     }

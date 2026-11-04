@@ -1,10 +1,13 @@
-D-12D-005 A0 verification — clean checkout replay (zero solver)
-worktree: D:/RCAIDE-verify-a0rev2b-200405e (detached)
-commit: 200405eaf0892af439298c0c58084de63e81e5e0
-git status --porcelain: 0 line(s)
+D-12D-005 A0 clean-checkout replay (evidence revision 2 checkpoint)
+commit: 23783452bc310ce59ff418d322a6d48b28e668e1
+worktree: D:/RCAIDE-verify-a0rev2-2378345 (detached HEAD; git status clean before the run)
+run_dir_relative: research/concorde_metaopt/optimization_runs/d12d005-20261104T0430Z
 command: D:/RCAIDE/envs/RCAIDE/python.exe -E -s -B scripts/a0_verify_cases.py --run-dir .
-utc: 2026-11-04T05:56:09Z
---- output ---
+replay_utc: 2026-11-04T06:29:10Z
+status: PASS
+checks_total: 260
+checks_failed: 0
+solver_processes_started: 0
+notes: the verifier rewrote evidence/a0/a0_verification.json inside the throwaway worktree; the worktree was reset afterwards, so this log is the only kept artifact of the replay
+stdout:
 A0 VERIFICATION PASS checks 260 failed 0
---- evidence fields ---
-checks_total=260 failed=None status=PASS

@@ -49,7 +49,7 @@ import re
 import sys
 from pathlib import Path
 
-SCHEMA_VERSION = "d12d005-runner-2"
+SCHEMA_VERSION = "d12d005-runner-3"
 CONTRACT_MU_KG_M_S = 1.42161308e-05
 CONTRACT_SPEED_OF_SOUND_M_S = 295.0680184
 CONTRACT_ALTITUDE_M = 18288.0
@@ -649,6 +649,11 @@ def _polar_header_and_rows(path):
     text = Path(path).read_text(encoding="utf-8", errors="replace")
     lines = text.splitlines()
     index, header = _identify_polar_header(lines, source=str(path))
+    if index != 2:
+        raise DataQualityError(
+            "POLAR_HEADER_ROW_UNEXPECTED: header found on line %d of %s; VSPAERO 7.2.2 requires the 48-column header on line 3"
+            % (index + 1, path),
+        )
     if list(header) != list(POLAR_722_COLUMNS):
         raise DataQualityError(
             "POLAR_HEADER_TOKENS_UNEXPECTED: got %d tokens %r in %s; expected the VSPAERO 7.2.2 48-column header"
@@ -740,6 +745,39 @@ def validate_polar_file(path, expected):
         "rows": len(rows),
         "checks": checks,
         "sha256": sha256_file(path),
+    }
+
+
+def parse_polar_structure(path, expected=None):
+    """Structure-only VSPAERO 7.2.2 polar parser (LD-002).
+
+    Returns the 48-column header and parsed rows without applying numerical
+    thresholds, so evidence can archive a structurally valid but physically
+    non-physical polar (e.g. the D-12D-004 V7-00 file) without weakening
+    validate_polar_file. Never upgrades a case to physically valid.
+    """
+    header, rows, nonfinite, width = _polar_header_and_rows(path)
+    if not rows:
+        raise DataQualityError("POLAR_NO_DATA_ROWS: %s" % path)
+    return {
+        "status": "PASS_STRUCTURE_ONLY",
+        "path": str(Path(path).resolve()),
+        "header_token_count": len(header),
+        "rows": len(rows),
+        "width": width,
+        "nonfinite_tokens": len(nonfinite),
+        "rows_preview": [
+            {
+                "Mach": row.get("Mach"),
+                "AoA": row.get("AoA"),
+                "CLtot": row.get("CLtot"),
+                "CDtot": row.get("CDtot"),
+            }
+            for row in rows[:5]
+        ],
+        "sha256": sha256_file(path),
+        "physical_validation": "NOT_APPLIED",
+        "expected_keys_ignored": sorted(dict(expected or {})),
     }
 
 
@@ -914,9 +952,24 @@ def validate_csf(path):
     text = raw.decode("utf-8-sig", errors="replace").strip()
     if not text:
         raise DataQualityError("CASE_CSF_INVALID: empty %s" % path)
-    if not text.lower().startswith("0 control surfaces"):
-        raise DataQualityError("CASE_CSF_INVALID: %r in %s" % (text[:60], path))
+    if text.lower() != "0 control surfaces":
+        raise DataQualityError(
+            "CASE_CSF_INVALID: %r in %s; a thin lifting-surface case must be exactly one line, 0 Control Surfaces"
+            % (text[:80], path),
+        )
     return {"path": str(Path(path).resolve()), "bytes": len(raw), "control_surfaces": 0, "sha256": hashlib.sha256(raw).hexdigest()}
+
+
+def _recorded_vspgeom(evidence_case):
+    if not isinstance(evidence_case, dict):
+        return None
+    bundle = evidence_case.get("execution_bundle") or {}
+    thin = evidence_case.get("thin_geometry") or {}
+    sha = bundle.get("vspgeom_sha256") or thin.get("sha256_raw") or thin.get("sha256")
+    size = bundle.get("vspgeom_bytes") or thin.get("bytes_raw") or thin.get("bytes")
+    if not sha and size is None:
+        return None
+    return {"sha256": sha, "bytes": int(size) if size is not None else None}
 
 
 def resolve_case_vspgeom(case_dir, *, evidence_case=None, explicit=None, verify_recorded=True):
@@ -929,7 +982,27 @@ def resolve_case_vspgeom(case_dir, *, evidence_case=None, explicit=None, verify_
     local = sorted(root.glob("*.vspgeom"))
     if len(local) == 1:
         path = local[0]
-        return {"path": str(path.resolve()), "source": "case_dir", "bytes": path.stat().st_size, "sha256": sha256_file(path)}
+        actual_bytes = path.stat().st_size
+        actual_sha = sha256_file(path)
+        recorded = _recorded_vspgeom(evidence_case)
+        if verify_recorded and recorded:
+            if recorded.get("sha256") and actual_sha != recorded["sha256"]:
+                raise CaseGateError(
+                    "CASE_VSPGEOM_SHA_MISMATCH",
+                    "%s sha256 %s != evidence-recorded %s" % (path, actual_sha, recorded["sha256"]),
+                )
+            if recorded.get("bytes") is not None and int(recorded["bytes"]) != actual_bytes:
+                raise CaseGateError(
+                    "CASE_VSPGEOM_BYTES_MISMATCH",
+                    "%s bytes %d != evidence-recorded %d" % (path, actual_bytes, int(recorded["bytes"])),
+                )
+        return {
+            "path": str(path.resolve()),
+            "source": "case_dir",
+            "bytes": actual_bytes,
+            "sha256": actual_sha,
+            "evidence_record_verified": bool(recorded),
+        }
     if len(local) > 1:
         raise CaseGateError("CASE_VSPGEOM_AMBIGUOUS", "multiple *.vspgeom in %s" % root)
     if evidence_case is not None:
@@ -981,7 +1054,8 @@ def check_case_dir(case_dir, *, expected=None, evidence=None, case_id=None, setu
             "artifact_kind": data.get("artifact_kind"),
             "status": data.get("status"),
             "stop_before_run": data.get("stop_before_run"),
-            "solver_processes_started": data.get("solver_processes_started", data.get("solver_starts")),
+            "solver_processes_started": data.get("solver_processes_started"),
+            "solver_starts": data.get("solver_starts"),
         }
     if not evidence_report:
         embedded = files["case_dir"] / "setup_gen_report.json"
@@ -993,7 +1067,8 @@ def check_case_dir(case_dir, *, expected=None, evidence=None, case_id=None, setu
                 "artifact_kind": data.get("artifact_kind"),
                 "status": data.get("status"),
                 "stop_before_run": data.get("stop_before_run"),
-                "solver_processes_started": data.get("solver_processes_started", data.get("solver_starts")),
+                "solver_processes_started": data.get("solver_processes_started"),
+            "solver_starts": data.get("solver_starts"),
             }
     if expected is None:
         expected_path = files["case_dir"] / "expected.json"
@@ -1009,18 +1084,37 @@ def check_case_dir(case_dir, *, expected=None, evidence=None, case_id=None, setu
         raise CaseGateError("CASE_STOP_BEFORE_RUN_EVIDENCE_MISSING", "no --evidence and no setup_gen_report.json in %s" % files["case_dir"])
     if evidence_report.get("stop_before_run") != 1:
         raise CaseGateError("CASE_STOP_BEFORE_RUN_MISSING", "evidence stop_before_run=%r from %s" % (evidence_report.get("stop_before_run"), evidence_report.get("path")))
-    starts = evidence_report.get("solver_processes_started")
-    if starts is not None and int(starts) != 0:
+    starts = evidence_report.get("solver_processes_started", evidence_report.get("solver_starts"))
+    if starts is None:
+        raise CaseGateError(
+            "CASE_SOLVER_PROCESS_EVIDENCE_MISSING",
+            "evidence %s has no solver_processes_started/solver_starts field; zero-solver evidence must be explicit (fail closed)"
+            % (evidence_report.get("path"),),
+        )
+    if int(starts) != 0:
         raise CaseGateError("CASE_SOLVER_PROCESS_RECORDED", "evidence solver_processes_started=%r" % (starts,))
     vkey_report = validate_vkey(files["vkey"])
     csf_report = validate_csf(files["csf"])
     geom_report = parse_geom_result_csv(files["geom_result"])
     thin_report = validate_thin_geometry_record(geom_report, expected=require_thin, source=str(files["geom_result"]))
     vspgeom = resolve_case_vspgeom(files["case_dir"], evidence_case=evidence_case)
-    if Path(vkey_report["vspgeom_path"]).name != Path(vspgeom["path"]).name:
+    vkey_target = Path(vkey_report["vspgeom_path"])
+    if not vkey_target.is_absolute():
+        vkey_target = files["case_dir"] / vkey_target
+    try:
+        vkey_resolved = vkey_target.resolve(strict=True)
+    except OSError:
         raise CaseGateError(
             "CASE_VKEY_GEOM_MISMATCH",
-            "vkey points at %r but the resolved vspgeom is %r" % (vkey_report["vspgeom_path"], vspgeom["path"]),
+            "vkey target %r does not exist (case dir %s); the execution bundle must rewrite the vkey path to the local .vspgeom"
+            % (vkey_report["vspgeom_path"], files["case_dir"]),
+        )
+    geom_resolved = Path(vspgeom["path"]).resolve()
+    if vkey_resolved != geom_resolved:
+        raise CaseGateError(
+            "CASE_VKEY_GEOM_MISMATCH",
+            "vkey points at %r (resolved %s) but the resolved vspgeom is %s"
+            % (vkey_report["vspgeom_path"], vkey_resolved, geom_resolved),
         )
     wrapper = None
     if evidence_case is not None:
@@ -1116,6 +1210,12 @@ def _cmd_readback(args):
     return 0
 
 
+def _cmd_polar_structure(args):
+    report = parse_polar_structure(args.polar)
+    print(json.dumps(report, indent=2, ensure_ascii=False))
+    return 0
+
+
 def _cmd_verify_polar(args):
     expected = _load_expected(args.expect)
     report = validate_polar_file(args.polar, expected)
@@ -1186,6 +1286,9 @@ def build_parser():
     polar.add_argument("--polar", required=True)
     polar.add_argument("--expect", default=None)
     polar.set_defaults(func=_cmd_verify_polar)
+    polar_struct = sub.add_parser("polar-structure", help="structure-only 7.2.2 polar parse (no numerical thresholds)")
+    polar_struct.add_argument("--polar", required=True)
+    polar_struct.set_defaults(func=_cmd_polar_structure)
 
     history = sub.add_parser("verify-history", help="reject NaN and wrong Sref/Re in history")
     history.add_argument("--history", required=True)
