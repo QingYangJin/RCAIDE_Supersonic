@@ -27,6 +27,10 @@ __all__ = [
     "CONTEXT_NAMES",
     "FAMILIES",
     "FORMULA_VERSION",
+    "V2_FAMILY_ID",
+    "V2_RADIUS_JITTER",
+    "V2_RADIUS_MIN",
+    "V2_RADIUS_MAX",
     "SYNTHETIC_CONSTRAINT_SLOTS",
     "TaskFamilyConfig",
     "SyntheticTask",
@@ -50,7 +54,7 @@ DESIGN_LOWER = np.array([300.0, 1.5, 62.0, 40.0, 66.0, 0.35, 0.85, 0.30, 0.08, -
 DESIGN_UPPER = np.array([420.0, 2.2, 72.0, 56.0, 76.0, 0.58, 0.98, 0.50, 0.20, 4.0, 40.0, 10.0])
 
 CONTEXT_NAMES = ("context_1", "context_2")
-FAMILIES = ("F-QE", "F-LIN", "F-NC", "F-MF")
+FAMILIES = ("F-QE", "F-LIN", "F-NC", "F-MF", "F-QE-feasible-v2")
 FORMULA_VERSION = "p4-task-family-v1"
 SYNTHETIC_CONSTRAINT_SLOTS = ("synth_c01", "synth_c02", "synth_c03")
 # 合成槽位固定占用 10 项物理约束名的前 3 个（§4.4），其余 7 项未启用置 null
@@ -71,6 +75,13 @@ _NC_CONSTANT = 120.0
 # OOD 协议（§4.3：context 中心整体平移 +0.2，r 缩小 30%）
 OOD_CONTEXT_SHIFT = 0.2
 OOD_RADIUS_SCALE = 0.7
+# P4-M5 版本化可行域族（Issue #5 D-P4-002）：仅改约束半径分布，旧 F-QE 逐位不变。
+V2_FAMILY_ID = "F-QE-feasible-v2"
+V2_FORMULA_VERSION = "p4-task-family-v2"
+# 任务级有界扰动：r_v2 = clip(radius_base*(1+0.15*z), r_min, r_max)，z~N(0,1) 由 task seed 派生
+V2_RADIUS_JITTER = 0.15
+V2_RADIUS_MIN = 0.20
+V2_RADIUS_MAX = 1.20
 
 _PARAM_DISTRIBUTIONS = {
     "c": "uniform(0.15, 0.85) per coordinate",
@@ -169,6 +180,9 @@ class TaskFamilyConfig:
     support_pool_size: int
     query_size: int
     reference_tolerance: float = REFERENCE_ABS_TOL
+    # v2 版本化字段（尾部默认值保证旧配置/fingerprint 逐位不变，CONTRACT_AMBIGUITY A11）
+    family_version: str = "v1"
+    radius_base: float | None = None
 
     def __post_init__(self) -> None:
         if self.family_id not in FAMILIES:
@@ -192,6 +206,20 @@ class TaskFamilyConfig:
             raise TaskFamilyError("negative_control_tasks 不能超过 meta-train 任务数（需由不同 meta-train 任务派生）")
         if not math.isfinite(self.reference_tolerance) or self.reference_tolerance <= 0:
             raise TaskFamilyError("reference_tolerance 必须是正有限数")
+        if self.family_version not in ("v1", "v2"):
+            raise TaskFamilyError(f"family_version 必须是 v1/v2，实际 {self.family_version!r}")
+        if self.family_id == V2_FAMILY_ID:
+            if self.family_version != "v2":
+                raise TaskFamilyError(f"{V2_FAMILY_ID} 必须显式声明 family_version='v2'")
+            if self.radius_base is None:
+                raise TaskFamilyError(f"{V2_FAMILY_ID} 必须提供 radius_base（校准后冻结）")
+            if not math.isfinite(float(self.radius_base)) or not (0.05 < float(self.radius_base) <= 2.0):
+                raise TaskFamilyError(f"radius_base 必须在 (0.05, 2.0]，实际 {self.radius_base!r}")
+        else:
+            if self.family_version != "v1":
+                raise TaskFamilyError(f"未版本化任务族 {self.family_id!r} 只能使用 family_version='v1'")
+            if self.radius_base is not None:
+                raise TaskFamilyError("radius_base 仅适用于 F-QE-feasible-v2，旧族必须为 None")
 
 
 def default_task_family_config(**overrides: Any) -> TaskFamilyConfig:
@@ -268,6 +296,28 @@ def family_fingerprint(config: TaskFamilyConfig) -> str:
         },
         "synthetic_constraint_slots": list(SYNTHETIC_CONSTRAINT_SLOTS),
     }
+    # v2 版本化：只在 v2 配置上追加块，保证旧 F-QE 指纹逐位不变（M5 回归测试锁定）。
+    if config.family_version == "v2":
+        payload["formula_version"] = V2_FORMULA_VERSION
+        payload["config"]["family_version"] = "v2"
+        payload["config"]["radius_base"] = float(config.radius_base)
+        payload["v2"] = {
+            "family_id": V2_FAMILY_ID,
+            "formula": {
+                "objective": "b_eff + sum_i a_i*(u_i-c_i)^2",
+                "constraint": "sum_i w_i*(u_i-c_i)^2 - r_v2^2 <= 0",
+                "d": "c",
+            },
+            "radius_mapping": {
+                "formula": "clip(radius_base*(1+jitter*z), min, max)",
+                "jitter": V2_RADIUS_JITTER,
+                "min": V2_RADIUS_MIN,
+                "max": V2_RADIUS_MAX,
+                "z": "normal(0,1) from task seed",
+                "ood_radius_scale": OOD_RADIUS_SCALE,
+            },
+            "reference_kind": "ANALYTIC_RADIAL_PROJECTION",
+        }
     return _digest_text(_canonical_json(payload))
 
 
@@ -275,14 +325,25 @@ def family_fingerprint(config: TaskFamilyConfig) -> str:
 # 参数采样
 # ---------------------------------------------------------------------------
 
-def _sample_common_params(rng: np.random.Generator, family: str, ood: bool) -> dict[str, Any]:
+def _sample_common_params(
+    rng: np.random.Generator, family: str, ood: bool, radius_base: float | None = None
+) -> dict[str, Any]:
     c = rng.uniform(0.15, 0.85, size=DESIGN_DIM)
     d = np.clip(c + rng.normal(0.0, 0.25, size=DESIGN_DIM), 0.05, 0.95)
     a = np.exp(rng.uniform(math.log(0.5), math.log(5.0), size=DESIGN_DIM))
     w = np.exp(rng.uniform(math.log(0.5), math.log(5.0), size=DESIGN_DIM))
-    r = float(rng.uniform(0.15, 0.45))
+    if family == V2_FAMILY_ID:
+        if radius_base is None:
+            raise TaskFamilyError(f"{V2_FAMILY_ID} 采样必须提供 radius_base")
+        # 任务级有界扰动（§计划 1.1），z 由 task seed 派生 → 逐位可复现
+        z = float(rng.normal())
+        r = float(np.clip(float(radius_base) * (1.0 + V2_RADIUS_JITTER * z), V2_RADIUS_MIN, V2_RADIUS_MAX))
+    else:
+        r = float(rng.uniform(0.15, 0.45))
     if ood:
         r *= OOD_RADIUS_SCALE
+    if family == V2_FAMILY_ID:
+        r = float(np.clip(r, V2_RADIUS_MIN, V2_RADIUS_MAX))
     b = float(rng.uniform(-1.0, 1.0))
     params: dict[str, Any] = {
         "c": [float(v) for v in c],
@@ -329,7 +390,13 @@ def _make_task(
     for attempt in range(_MAX_REFERENCE_RESAMPLES + 1):
         seed = derive_seed(family, split, index, attempt, config.seed)
         rng = np.random.default_rng(seed)
-        params = _sample_common_params(rng, family, ood)
+        params = _sample_common_params(rng, family, ood, getattr(config, "radius_base", None))
+        if family == V2_FAMILY_ID:
+            # 版本化任务参数（进入 task_id canonical json，便于审计与逐位复现）
+            params["family_version"] = "v2"
+            params["radius_base"] = float(config.radius_base)
+            params["radius_jitter"] = V2_RADIUS_JITTER
+            params["radius_bounds"] = [V2_RADIUS_MIN, V2_RADIUS_MAX]
         params["support_pool_size"] = config.support_pool_size
         params["query_size"] = config.query_size
         context = _sample_context(rng, ood)
@@ -541,6 +608,8 @@ class SyntheticTask:
         if self.is_negative_control:
             raise TaskFamilyError("负控制伪任务没有参考解（label-shuffle 破坏解析结构）")
         family = self.family
+        if family == V2_FAMILY_ID:
+            return self._reference_feasible_v2()
         if family == "F-QE":
             return self._reference_quadratic_ellipsoid()
         if family == "F-LIN":
@@ -589,6 +658,19 @@ class SyntheticTask:
         return self._assert_reference(
             u_star, f_star, "KKT_CERTIFIED_ANALYTIC",
             {"lambda": float(lam), "kkt_residual": float(kkt)},
+        )
+
+    # F-QE-feasible-v2：d=c 的可行域版本（§M5 计划 1.1），径向投影 u*=c、f*=b_eff
+    def _reference_feasible_v2(self) -> dict[str, Any]:
+        c = self._vector("c")
+        r = self._scalar("r")
+        y_c = np.sqrt(self._vector("w")) * (c - c)
+        norm = float(np.linalg.norm(y_c))
+        u_star = c.copy()
+        f_star = self._b_effective()
+        return self._assert_reference(
+            u_star, f_star, "ANALYTIC_RADIAL_PROJECTION",
+            {"lambda": 0.0, "kkt_residual": 0.0, "radius": float(r), "radial_norm": norm},
         )
 
     # F-LIN：二次目标 + 2 线性约束（活动集枚举）
@@ -667,6 +749,8 @@ class SyntheticTask:
         names = self.enabled_constraint_names
         if family == "F-QE":
             objective, constraints = self._truth_quadratic_ellipsoid(u)
+        elif family == V2_FAMILY_ID:
+            objective, constraints = self._truth_feasible_v2(u)
         elif family == "F-LIN":
             objective, constraints = self._truth_linear(u)
         elif family == "F-NC":
@@ -693,6 +777,15 @@ class SyntheticTask:
         r = self._scalar("r")
         objective = self._b_effective() + np.sum(a * (u - c) ** 2, axis=1)
         g = np.sum(w * (u - d) ** 2, axis=1) - r * r
+        return objective, [g]
+
+    def _truth_feasible_v2(self, u: np.ndarray) -> tuple[np.ndarray, list[np.ndarray]]:
+        c = self._vector("c")
+        a = self._vector("a")
+        w = self._vector("w")
+        r = self._scalar("r")
+        objective = self._b_effective() + np.sum(a * (u - c) ** 2, axis=1)
+        g = np.sum(w * (u - c) ** 2, axis=1) - r * r
         return objective, [g]
 
     def _truth_linear(self, u: np.ndarray) -> tuple[np.ndarray, list[np.ndarray]]:
