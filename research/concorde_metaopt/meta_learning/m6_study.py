@@ -27,6 +27,10 @@ from typing import Any, Mapping, Sequence
 
 import numpy as np
 
+from . import m6_frozen
+
+# A5M6-02：冻结门禁失败用独立异常类型；此处显式绑定便于 except 使用
+M6FrozenGateError = m6_frozen.M6FrozenGateError
 from . import task_family as tf
 from .baseline_arms import PhysicsGuardViolation, paired_statistics
 from .maml import torch_available, torch_import_error
@@ -60,6 +64,19 @@ M6_METHODS = {"M": "maml", "P": "fine_tuning", "R": "from_scratch"}
 M6_KS = (0, 1, 5, 10, 20)
 M6_STUDIES = ("in_dist", "ood", "new_family")
 DEFAULT_NEW_FAMILIES = ("F-LIN", "F-MF")
+#: A5M6-01：元训练族必须是 M5 冻结的 v2 家族；v1 F-QE 只能作历史对照，禁止默认
+TRAIN_FAMILY = m6_frozen.TRAIN_FAMILY
+#: A5M6-03：旧 M2 run（48,000 次合成评价）不可变门禁文件
+OLD_RUN_GATE_FILE = m6_frozen.OLD_M2_RUN_GATE_FILE
+#: A5M6-10：六个规范图键（缺键只能标 NOT_RUN，不得补假数据）
+M6_CANONICAL_FIGURES = (
+    "fig1_meta_training_loss",
+    "fig2_k_shot_adaptation",
+    "fig3_feasible_rate",
+    "fig4_equal_budget_gap",
+    "fig5_fairness_audit",
+    "fig6_airframe_gate_progress",
+)
 EVAL_SPLITS = ("meta_test", "meta_test_ood", "negative_control")
 VALID_SCALES = ("FORMAL", "SMOKE")
 
@@ -91,7 +108,7 @@ ADAPTATION_SUMMARY_COLUMNS = (
 )
 STATISTICS_COLUMNS = (
     "run_id", "study", "source_family", "arm", "reference", "K", "metric",
-    "n_pairs", "median_diff", "mean_diff", "ci_low", "ci_high",
+    "n_pairs", "median_diff", "mean_diff", "cohens_d", "rank_biserial", "ci_low", "ci_high",
     "wilcoxon_statistic", "wilcoxon_pvalue", "p_holm", "reject_holm", "status",
 )
 METRICS_COLUMNS = (
@@ -137,7 +154,7 @@ class M6RunnerConfig:
     run_id: str
     output_root: Path
     family_seed: int = 20261102
-    train_family: str = "F-QE"
+    train_family: str = TRAIN_FAMILY
     new_families: tuple[str, ...] = DEFAULT_NEW_FAMILIES
     ks: tuple[int, ...] = M6_KS
     meta_seeds: tuple[int, ...] = (0, 1, 2)
@@ -152,6 +169,15 @@ class M6RunnerConfig:
     query_size: int = 64
     determinism_reruns: int = 3
     physical_guard_expected: int = 0
+    #: A5M6-01/02：M5 冻结 run 目录（frozen_family / preregistration / meta_task_split）
+    frozen_run_dir: Path | None = None
+    frozen_family_path: Path | None = None
+    preregistration_path: Path | None = None
+    split_manifest_path: Path | None = None
+    #: A5M6-03：旧 M2 run 所在 output_root（只读快照；缺省与 output_root 相同）
+    old_run_output_root: Path | None = None
+    #: A5M6-09：显式预注册的 K 省略（缺 K=20 时必须给出并写入 run_config）
+    k_omissions: tuple[int, ...] = ()
 
     def __post_init__(self) -> None:
         if not isinstance(self.run_id, str) or not self.run_id.strip():
@@ -159,6 +185,21 @@ class M6RunnerConfig:
         if any(token in self.run_id for token in ("/", "\\")):
             raise M6Error("run_id 不得包含路径分隔符")
         object.__setattr__(self, "output_root", Path(self.output_root))
+        for _path_name in (
+            "frozen_run_dir",
+            "frozen_family_path",
+            "preregistration_path",
+            "split_manifest_path",
+            "old_run_output_root",
+        ):
+            _value = getattr(self, _path_name)
+            if _value is not None:
+                object.__setattr__(self, _path_name, Path(_value))
+        if self.frozen_run_dir is None and self.frozen_family_path is None:
+            raise M6Error(
+                "M6 必须显式提供 M5 冻结输入（frozen_run_dir 或 frozen_family_path/preregistration_path/"
+                "split_manifest_path）；A5M6-02：未冻结不得开 run（禁止回落到 v1 F-QE）"
+            )
         if self.train_family not in tf.FAMILIES:
             raise M6Error(f"train_family 必须是 {tf.FAMILIES} 之一，实际 {self.train_family!r}")
         new_families = tuple(str(name) for name in self.new_families)
@@ -201,6 +242,13 @@ class M6RunnerConfig:
             raise M6Error("determinism_reruns 必须 >= 1")
         if int(self.physical_guard_expected) != PHYSICAL_CALL_COUNT:
             raise M6Error("P4-CODE 物理调用期望必须为 0（fail-closed）")
+        omissions = tuple(int(value) for value in self.k_omissions)
+        if len(set(omissions)) != len(omissions) or any(value < 0 for value in omissions):
+            raise M6Error("k_omissions 必须是互异的非负 K 列表")
+        for value in omissions:
+            if value in ks:
+                raise M6Error(f"k_omissions 不得包含实际已评估的 K={value}")
+        object.__setattr__(self, "k_omissions", omissions)
 
     @property
     def run_dir(self) -> Path:
@@ -222,6 +270,7 @@ class M6RunnerConfig:
             and self.validation_tasks >= 20
             and self.max_meta_steps >= 200
             and all(k in self.ks for k in (0, 1, 5, 10))
+            and (20 in self.ks or 20 in self.k_omissions)
             and len(self.new_families) >= 2
         )
         return "FORMAL" if formal else "SMOKE"
@@ -253,6 +302,11 @@ class M6RunnerConfig:
             "designs_per_task": int(self.designs_per_task),
             "determinism_reruns": int(self.determinism_reruns),
             "physical_guard_expected": int(self.physical_guard_expected),
+            "k_omissions": list(self.k_omissions),
+            "frozen_run_dir": str(self.frozen_run_dir) if self.frozen_run_dir is not None else None,
+            "old_run_output_root": (
+                str(self.old_run_output_root) if self.old_run_output_root is not None else None
+            ),
             "study_scale": self.study_scale,
             "conclusions_allowed": self.conclusions_allowed,
         }
@@ -296,17 +350,32 @@ def _family_config(
     )
 
 
-def build_m6_family_configs(config: M6RunnerConfig) -> dict[str, tf.TaskFamilyConfig]:
-    """训练族用完整五集合；新函数族只生成 meta_test（外部任务，不回训）。"""
+def build_m6_family_configs(
+    config: M6RunnerConfig,
+    gate: m6_frozen.FrozenGate,
+) -> dict[str, tf.TaskFamilyConfig]:
+    """训练族用 M5 冻结的 v2 家族（A5M6-01）；新函数族只生成 meta_test（外部任务，不回训）。"""
+    if config.train_family != TRAIN_FAMILY:
+        raise M6Error(
+            "M6 元训练族必须是冻结的 %s（A5M6-01），实际 %r；v1 F-QE 只能作历史对照"
+            % (TRAIN_FAMILY, config.train_family)
+        )
+    if str(gate.family_id) != config.train_family:
+        raise M6FrozenGateError(
+            "冻结门禁 family_id=%r 与 config.train_family=%r 不一致" % (gate.family_id, config.train_family)
+        )
     configs: dict[str, tf.TaskFamilyConfig] = {
-        config.train_family: _family_config(
-            config,
-            config.train_family,
+        config.train_family: m6_frozen.family_config_for_m6(
+            gate,
             train_tasks=config.train_tasks,
             validation_tasks=config.validation_tasks,
             test_tasks=config.test_tasks,
             ood_tasks=config.ood_tasks,
             negative_control_tasks=config.negative_control_tasks,
+            support_pool_size=config.support_pool_size,
+            query_size=config.query_size,
+            family_seed=config.family_seed,
+            full_scale=config.study_scale == "FORMAL",
         )
     }
     for family_id in config.new_families:
@@ -337,10 +406,11 @@ def _tasks_by_split(tasks: Sequence[tf.SyntheticTask]) -> dict[str, list[tf.Synt
 def build_m6_datasets(
     config: M6RunnerConfig,
     *,
+    gate: m6_frozen.FrozenGate,
     progress: Any = None,
 ) -> dict[str, dict[str, Any]]:
     """构造训练族与新函数族的任务集合，并断言 task_id 全局互斥（防泄漏）。"""
-    configs = build_m6_family_configs(config)
+    configs = build_m6_family_configs(config, gate)
     datasets: dict[str, dict[str, Any]] = {}
     seen: dict[str, str] = {}
     for family_id, family_config in configs.items():
@@ -855,7 +925,7 @@ def paired_comparison_rows(
     rows: Sequence[Mapping[str, Any]],
     *,
     metrics: Sequence[str] = STATISTICS_METRICS,
-    comparisons: Sequence[tuple[str, str]] = (("M", "P"), ("M", "R")),
+    comparisons: Sequence[tuple[str, str]] = (("M", "P"), ("M", "R"), ("P", "R")),
 ) -> list[dict[str, Any]]:
     """任务层级配对差：先 (task, meta_seed) 配对，再按任务取均值，最后跨任务统计。"""
     studies = [study for study in STUDY_ORDER if any(row["study"] == study for row in rows)]
@@ -896,6 +966,8 @@ def paired_comparison_rows(
                             "n_pairs": int(diffs.size),
                             "median_diff": float(np.median(diffs)) if diffs.size else None,
                             "mean_diff": float(diffs.mean()) if diffs.size else None,
+                            "cohens_d": None,
+                            "rank_biserial": None,
                             "ci_low": None,
                             "ci_high": None,
                             "wilcoxon_statistic": None,
@@ -919,6 +991,7 @@ def paired_comparison_rows(
                                     "wilcoxon_pvalue": statistics.get("wilcoxon_pvalue"),
                                 }
                             )
+                            stats_row.update(_effect_sizes(diffs))
                             if statistics.get("wilcoxon_pvalue") is not None:
                                 stats_row["status"] = "VALID"
                             else:
@@ -928,7 +1001,7 @@ def paired_comparison_rows(
                             stats_row["mean_diff"] = float(diffs.mean())
                             stats_row["status"] = "INSUFFICIENT_TASKS"
                         stats_rows.append(stats_row)
-    # Holm-Bonferroni：范围 = 每个 (study, 来源族, K, 指标) 内的 2 个预注册比较
+    # Holm-Bonferroni：范围 = 每个 (study, 来源族, K, 指标) 内的 3 个预注册比较（M-P / M-R / P-R）
     family_key = lambda row: (row["study"], row["source_family"], row["K"], row["metric"])
     grouped: dict[tuple, list[int]] = {}
     for index, row in enumerate(stats_rows):
@@ -1355,6 +1428,7 @@ def ood_diagnostics(
         "conclusion_allowed": overall == "PASS",
         "tolerances": {"confound_relative_difference": CONFOUND_TOLERANCE, "ood_context_shift": OOD_STRONG_SHIFT},
         "note": "只有 H1-H5 全部通过（无难度混杂）时才允许讨论「泛化稳健」；OOD 不退化本身不构成泛化成功",
+        "difficulty_matching": {"status": "NOT_COMPUTED", "note": "由 attach_ood_difficulty_matching 注入"},
     }
 
 
@@ -1463,10 +1537,16 @@ def three_layer_conclusions(
         l3_status = "OOD_ADVANTAGE_NOT_ATTRIBUTABLE"
     else:
         l3_status = "OOD_NO_SIGNIFICANT_ADVANTAGE"
+    difficulty_matching = dict(ood_diagnostic.get("difficulty_matching") or {})
+    matching_status = str(difficulty_matching.get("status") or "NOT_COMPUTED")
+    if l3_status == "OOD_ADVANTAGE_OBSERVED_CONDITIONAL" and matching_status not in ("MATCHED",):
+        l3_status = "OOD_ADVANTAGE_NOT_ATTRIBUTABLE"
     l3 = {
         "layer": L3_LAYER,
-        "definition": "OOD 参数外推与新函数族上的误差优势，必须先通过 H1-H5 混杂诊断",
+        "definition": "OOD 参数外推与新函数族上的误差优势，必须先通过 H1-H5 混杂诊断与逐任务难度匹配",
         "ood_comparison": {"arm": "M", "reference": "R", "K": 5, "metric": "rmse_norm", "row": ood_row},
+        "difficulty_matching_status": matching_status,
+        "attribution_gate": "H1 通过 且 difficulty_matching.status=MATCHED 才允许条件性表述泛化",
         "diagnostics_status": ood_diagnostic.get("status"),
         "diagnostics_conclusion_allowed": diagnostics_ok,
         "negative_control_status": negative_control.get("status"),
@@ -1601,6 +1681,11 @@ M6_PRODUCT_FILES = (
     "metrics/metrics.csv",
     "figures/figure_data.json",
     "figures/figure_status.json",
+    "gate/frozen_family.json",
+    "gate/preregistration.json",
+    "gate/meta_task_split.json",
+    "gate/frozen_gate.json",
+    "old_m2_run_immutability.json",
     "README.md",
     "summary.json",
     "data_manifest.json",
@@ -1704,7 +1789,7 @@ def _base_run_config(config: M6RunnerConfig, datasets: Mapping[str, Any], git_st
             "bootstrap_samples": BOOTSTRAP_SAMPLES,
             "confidence": CONFIDENCE,
             "test": "wilcoxon_signed_rank",
-            "multiple_comparison": "Holm-Bonferroni（每个 (study, 族, K, 指标) 内 2 个预注册比较 M-P / M-R）",
+            "multiple_comparison": "Holm-Bonferroni（每个 (study, 族, K, 指标) 内 3 个预注册比较 M-P / M-R / P-R）",
             "min_tasks_for_stats": MIN_TASKS_FOR_STATS,
             "nonnull_threshold": MIN_NONNULL_FRACTION,
         },
@@ -1895,6 +1980,9 @@ def _write_m6_products(
     git_state: Mapping[str, Any],
     runtime_s: float,
     m5_reference: Mapping[str, Any] | None,
+    gate: m6_frozen.FrozenGate,
+    old_run_gate: Mapping[str, Any],
+    frozen_split_verification: Mapping[str, Any],
 ) -> dict[str, Any]:
     run_dir = config.run_dir
     run_dir.mkdir(parents=True, exist_ok=True)
@@ -1914,7 +2002,7 @@ def _write_m6_products(
         "stage": STAGE,
         "run_id": config.run_id,
         "created_utc": iso_utc(),
-        "status": "VALID",
+        "status": _summary_status(matrix, determinism),
         "study_scale": config.study_scale,
         "conclusions_allowed": config.conclusions_allowed,
         "data_origin": DATA_ORIGIN,
@@ -1933,7 +2021,16 @@ def _write_m6_products(
             "adaptation_rows": len(matrix.get("rows", ())),
             "training_rows": len(matrix.get("training_rows", ())),
             "statistics_rows": len(stats_rows),
+            # A5M6-11：adaptation_runs 只是 pass0 行数；实际执行次数 = 行数 x 确定性重跑次数
+            "determinism_passes": int(determinism.get("reruns", 0) or 0),
+            "total_adaptation_executions": len(matrix.get("rows", ()))
+            * int(determinism.get("reruns", 0) or 0),
+            "nonfinite_rows": _count_rows(matrix.get("rows", ())),
         },
+        "frozen_gate": gate.to_dict(),
+        "old_run_gate": dict(old_run_gate),
+        "frozen_split_verification": dict(frozen_split_verification),
+        "k_omissions": list(config.k_omissions),
         "primary_endpoint": "K=5 任务内标准化 query RMSE（M vs P / M vs R）",
         "headline_rows": headline,
         "negative_control": dict(negative_control),
@@ -1969,6 +2066,11 @@ def _write_m6_products(
     write_json(run_dir / "tasks.json", _tasks_payload(datasets))
     write_json(run_dir / "reference_solutions.json", _reference_solutions_payload(datasets))
     write_json(run_dir / "meta_task_split.json", _split_manifest_payload(datasets))
+    gate_copies = gate.write_gate_directory(run_dir)
+    frozen_gate_payload = gate.to_dict()
+    frozen_gate_payload["gate_directory"] = gate_copies
+    frozen_gate_payload["frozen_split_verification"] = dict(frozen_split_verification)
+    write_json(run_dir / "gate" / "frozen_gate.json", frozen_gate_payload)
     write_json(run_dir / "determinism_check.json", dict(determinism))
     write_csv(run_dir / "metrics" / "training_history.csv", matrix.get("training_rows", ()), TRAINING_HISTORY_COLUMNS)
     write_csv(run_dir / "metrics" / "adaptation_results.csv", matrix.get("rows", ()), ADAPTATION_RESULT_COLUMNS)
@@ -1981,10 +2083,17 @@ def _write_m6_products(
     write_csv(run_dir / "solver_validation.csv", solver_rows, SOLVER_VALIDATION_COLUMNS)
     figures_dir = run_dir / "figures"
     write_json(figures_dir / "figure_data.json", dict(figure_data))
+    missing_figures = [name for name in M6_CANONICAL_FIGURES if name not in summary["figures"]]
     figure_status = {
         "run_id": config.run_id,
-        "status": "PARTIAL",
+        "status": "PARTIAL" if not missing_figures else "PACKAGE_INCOMPLETE",
         "figures": summary["figures"],
+        "canonical_figures": list(M6_CANONICAL_FIGURES),
+        "missing_canonical_figures": missing_figures,
+        "preflight": {
+            "status": "PASS" if not missing_figures else "MISSING_CANONICAL_KEYS",
+            "rule": "六个规范图键必须显式存在；缺失只能标 NOT_RUN，禁止补假数据",
+        },
         "note": "只有 READY 的图数据可生成 PNG；NOT_RUN 不得补假数据（fig3-5 归 M5，fig6 归 Issue #4 D-12D-004）",
     }
     write_json(figures_dir / "figure_status.json", figure_status)
@@ -2049,8 +2158,25 @@ def run_m6_study(
         raise M6Error("确定性重跑次数必须 >= 1")
     wall_start = time.perf_counter()
     try:
+        # A5M6-02：未冻结不得开 run；缺失/篡改 fail-closed（PREREGISTRATION_NOT_FROZEN）
+        gate = m6_frozen.load_frozen_gate(
+            frozen_run_dir=config.frozen_run_dir,
+            frozen_family_path=config.frozen_family_path,
+            preregistration_path=config.preregistration_path,
+            split_manifest_path=config.split_manifest_path,
+        )
+        old_run_root = Path(config.old_run_output_root or config.output_root)
+        old_run_gate = m6_frozen.begin_old_run_gate(old_run_root, config.run_dir)
         git_state = repo_git_state(Path(__file__).resolve().parents[3])
-        datasets = build_m6_datasets(config, progress=progress)
+        datasets = build_m6_datasets(config, gate=gate, progress=progress)
+        frozen_split_verification = (
+            m6_frozen.verify_datasets(gate, datasets)
+            if config.study_scale == "FORMAL"
+            else {
+                "status": "NOT_APPLICABLE_SMOKE",
+                "note": "SMOKE 规模任务数缩小；冻结 split 逐位校验只在 FORMAL 执行",
+            }
+        )
         units = study_units(config, datasets)
         passes: list[dict[str, Any]] = []
         main_payload: dict[str, Any] | None = None
@@ -2076,6 +2202,9 @@ def run_m6_study(
         metrics_rows = metrics_rows_from_adaptation(config, matrix["rows"], summary_rows)
         negative_control = negative_control_check(config, stats_rows, summary_rows)
         ood_diagnostic = ood_diagnostics(config, datasets, adapt_rows=matrix["rows"], summary_rows=summary_rows)
+        ood_diagnostic = attach_ood_difficulty_matching(
+            config, datasets, ood_diagnostic, adapt_rows=matrix["rows"]
+        )
         conclusions = three_layer_conclusions(
             config,
             stats_rows=stats_rows,
@@ -2090,8 +2219,14 @@ def run_m6_study(
             summary_rows=summary_rows,
             adapt_rows=matrix["rows"],
         )
+        conclusions = attach_new_family_layer(
+            config, stats_rows=stats_rows, conclusions=conclusions, ood_diagnostic=ood_diagnostic
+        )
         determinism = determinism_check(config, passes)
         runtime_s = time.perf_counter() - wall_start
+        old_run_gate = m6_frozen.finish_old_run_gate(
+            old_run_root, config.run_dir, old_run_gate, stage="m6_before_products"
+        )
         written = _write_m6_products(
             config,
             datasets=datasets,
@@ -2107,8 +2242,12 @@ def run_m6_study(
             git_state=git_state,
             runtime_s=runtime_s,
             m5_reference=m5_reference,
+            gate=gate,
+            old_run_gate=old_run_gate,
+            frozen_split_verification=frozen_split_verification,
         )
         summary = written["summary"]
+        m6_frozen.assert_old_run_unchanged(old_run_root, old_run_gate, stage="m6_after_products")
         if progress is not None:
             progress(
                 "m6_done",
@@ -2135,6 +2274,18 @@ def run_m6_study(
             "ood_diagnostics": ood_diagnostic["status"],
             "three_layer_status": {name: layer.get("status") for name, layer in conclusions["layers"].items()},
             "physical_call_count": PHYSICAL_CALL_COUNT,
+            "frozen_gate": {
+                "status": "PASS",
+                "family_id": gate.family_id,
+                "radius_base": gate.radius_base,
+                "split_hash": gate.split_hash,
+                "frozen_family_sha256": gate.frozen_sha256,
+            },
+            "old_run_gate": {
+                "status": old_run_gate.get("status"),
+                "enforced": old_run_gate.get("enforced"),
+            },
+            "total_adaptation_executions": int(summary["counts"]["total_adaptation_executions"]),
             "products_written": written["products"],
             "runtime_s": float(runtime_s),
             "summary": summary,
@@ -2146,6 +2297,10 @@ def run_m6_study(
             status="PHYSICS_GUARD_VIOLATION",
             physical_call_count=int(getattr(error, "physical_call_count", 1) or 1),
         )
+        raise
+    except M6FrozenGateError as error:
+        # A5M6-02：冻结门禁失败必须单独状态，禁止混成普通 FAILED
+        _write_failure_summary(config, error, status="PREREGISTRATION_NOT_FROZEN")
         raise
     except Exception as error:  # noqa: BLE001 - fail-closed 落盘后重抛
         _write_failure_summary(config, error, status="FAILED")
@@ -2162,7 +2317,7 @@ def build_argument_parser() -> Any:
     parser.add_argument("--run-id", default=None, help="默认 p4-m6-<UTC>")
     parser.add_argument("--output-root", default=str(Path("research/concorde_metaopt/optimization_runs")))
     parser.add_argument("--family-seed", type=int, default=20261102)
-    parser.add_argument("--train-family", default="F-QE")
+    parser.add_argument("--train-family", default=TRAIN_FAMILY)
     parser.add_argument("--new-families", default="F-LIN,F-MF")
     parser.add_argument("--ks", default="0,1,5,10,20")
     parser.add_argument("--meta-seeds", default="0,1,2")
@@ -2176,6 +2331,13 @@ def build_argument_parser() -> Any:
     parser.add_argument("--support-pool-size", type=int, default=128)
     parser.add_argument("--query-size", type=int, default=64)
     parser.add_argument("--determinism-reruns", type=int, default=3)
+    # A5M6-01/02：M5 冻结输入（必须提供；缺省不得开 run）
+    parser.add_argument("--frozen-run-dir", default=None, help="M5 冻结 run 目录")
+    parser.add_argument("--frozen-family", default=None)
+    parser.add_argument("--preregistration", default=None)
+    parser.add_argument("--split-manifest", default=None)
+    parser.add_argument("--old-run-output-root", default=None, help="旧 M2 run 所在 output_root（缺省同 output_root）")
+    parser.add_argument("--k-omissions", default="", help="显式预注册的 K 省略，例如 20")
     return parser
 
 
@@ -2201,6 +2363,12 @@ def main(argv: Sequence[str] | None = None) -> int:
         support_pool_size=int(args.support_pool_size),
         query_size=int(args.query_size),
         determinism_reruns=int(args.determinism_reruns),
+        frozen_run_dir=Path(args.frozen_run_dir) if args.frozen_run_dir else None,
+        frozen_family_path=Path(args.frozen_family) if args.frozen_family else None,
+        preregistration_path=Path(args.preregistration) if args.preregistration else None,
+        split_manifest_path=Path(args.split_manifest) if args.split_manifest else None,
+        old_run_output_root=Path(args.old_run_output_root) if args.old_run_output_root else None,
+        k_omissions=tuple(int(item) for item in str(args.k_omissions).split(",") if item.strip()),
     )
     result = {
         "run_id": config.run_id,
@@ -2224,6 +2392,287 @@ def main(argv: Sequence[str] | None = None) -> int:
         return 1
     print(json.dumps(result, ensure_ascii=False, indent=2, default=str))
     return 0 if result.get("status") == "VALID" else 1
+
+
+_DIFFICULTY_MATCH_KEYS = (
+    "query_objective_std",
+    "mean_curvature",
+    "radius",
+    "context_shift_norm",
+)
+MATCH_TOLERANCE = 1.0
+
+
+def _count_rows(rows: Sequence[Mapping[str, Any]]) -> int:
+    """统计状态非 VALID 的行数（A5M6-08：NONFINITE 等异常必须传播到 summary）。"""
+    return sum(1 for row in rows if str(row.get("status") or "") != "VALID")
+
+
+def _summary_status(matrix: Mapping[str, Any], determinism: Mapping[str, Any]) -> str:
+    """summary.status 推导：确定性失败优先，其次把非有限行传播为 VALID_WITH_NONFINITE。"""
+    if str(determinism.get("status") or "") == "FAIL":
+        return "DETERMINISM_FAILED"
+    nonfinite = _count_rows(matrix.get("rows", ()))
+    if str(matrix.get("status") or "") == "VALID_WITH_NONFINITE" or nonfinite > 0:
+        return "VALID_WITH_NONFINITE"
+    return "VALID"
+
+
+def _average_ranks(values: np.ndarray) -> np.ndarray:
+    """平均秩（并列取平均），供 rank-biserial 相关使用。"""
+    order = np.argsort(values, kind="stable")
+    ranks = np.empty(values.size, dtype=float)
+    sorted_values = values[order]
+    index = 0
+    while index < values.size:
+        end = index + 1
+        while end < values.size and sorted_values[end] == sorted_values[index]:
+            end += 1
+        ranks[order[index:end]] = 0.5 * (index + end - 1) + 1.0
+        index = end
+    return ranks
+
+
+def _effect_sizes(differences: Any) -> dict[str, float | None]:
+    """配对效应量：Cohen d（配对差均值/标准差）与 rank-biserial（基于差值绝对秩）。"""
+    values = np.asarray(list(differences), dtype=float)
+    values = values[np.isfinite(values)]
+    if values.size < 2:
+        return {"cohens_d": None, "rank_biserial": None}
+    std = float(values.std(ddof=1))
+    mean = float(values.mean())
+    cohens_d = None if std <= 0.0 else mean / std
+    nonzero = values[values != 0.0]
+    if nonzero.size == 0:
+        return {"cohens_d": cohens_d, "rank_biserial": 0.0}
+    ranks = _average_ranks(np.abs(nonzero))
+    positive = float(ranks[nonzero > 0].sum())
+    negative = float(ranks[nonzero < 0].sum())
+    total = positive + negative
+    rank_biserial = None if total <= 0.0 else (positive - negative) / total
+    return {"cohens_d": cohens_d, "rank_biserial": rank_biserial}
+
+
+def _difficulty_table(config: M6RunnerConfig, datasets: Mapping[str, Mapping[str, Any]]) -> list[dict[str, Any]]:
+    """构造 meta_test / meta_test_ood 的逐任务难度协变量表（A5M6-04）。"""
+    family = datasets[config.train_family]
+    blocks = _evaluation_blocks(datasets, study_units(config, datasets))
+    table: list[dict[str, Any]] = []
+    for split in ("meta_test", "meta_test_ood"):
+        for task in family["splits"].get(split, ()):  # type: ignore[union-attr]
+            difficulty = _task_difficulty(task, blocks[task.task_id])
+            row: dict[str, Any] = {"task_id": task.task_id, "split": split, "family": task.family}
+            for key, value in difficulty.items():
+                row[key] = _finite_or_none(value)
+            table.append(row)
+    table.sort(key=lambda row: (str(row["split"]), str(row["task_id"])))
+    return table
+
+
+def _difficulty_vectors(table: Sequence[Mapping[str, Any]], split: str) -> list[tuple[str, np.ndarray]]:
+    """按固定键顺序抽取某 split 的难度向量；任一维缺失则跳过该任务。"""
+    vectors: list[tuple[str, np.ndarray]] = []
+    for row in table:
+        if str(row.get("split")) != split:
+            continue
+        values = [row.get(key) for key in _DIFFICULTY_MATCH_KEYS]
+        if any(value is None for value in values):
+            continue
+        vectors.append((str(row["task_id"]), np.asarray(values, dtype=float)))
+    vectors.sort(key=lambda item: item[0])
+    return vectors
+
+
+def _match_ood_to_indist(table: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    """在难度协变量空间做确定性一一最近邻匹配，并报告匹配集的不平衡度。"""
+    in_dist = _difficulty_vectors(table, "meta_test")
+    ood = _difficulty_vectors(table, "meta_test_ood")
+    if not in_dist or not ood:
+        return {
+            "status": "INSUFFICIENT_TASKS",
+            "matching_keys": list(_DIFFICULTY_MATCH_KEYS),
+            "pairs": [],
+            "note": "某一 split 无可用难度协变量，无法做逐任务匹配",
+        }
+    base = np.stack([vector for _, vector in in_dist])
+    center = base.mean(axis=0)
+    scale = base.std(axis=0)
+    scale = np.where(scale > 0.0, scale, 1.0)
+
+    def standardize(vector: np.ndarray) -> np.ndarray:
+        return (vector - center) / scale
+
+    available = list(range(len(in_dist)))
+    pairs: list[dict[str, Any]] = []
+    for ood_task, ood_vector in ood:
+        ood_z = standardize(ood_vector)
+        best_index = min(available, key=lambda idx: (float(np.linalg.norm(ood_z - standardize(in_dist[idx][1]))), idx))
+        in_task, in_vector = in_dist[best_index]
+        available.remove(best_index)
+        in_z = standardize(in_vector)
+        pairs.append(
+            {
+                "ood_task_id": ood_task,
+                "in_dist_task_id": in_task,
+                "distance": float(np.linalg.norm(ood_z - in_z)),
+                "ood_z": [float(value) for value in ood_z],
+                "in_dist_z": [float(value) for value in in_z],
+            }
+        )
+        if not available:
+            break
+    ood_z_mean = np.mean([pair["ood_z"] for pair in pairs], axis=0)
+    in_z_mean = np.mean([pair["in_dist_z"] for pair in pairs], axis=0)
+    imbalance_vector = ood_z_mean - in_z_mean
+    max_abs_imbalance = float(np.max(np.abs(imbalance_vector))) if pairs else 0.0
+    status = "MATCHED" if max_abs_imbalance <= MATCH_TOLERANCE else "POOR_MATCH"
+    return {
+        "status": status,
+        "matching_keys": list(_DIFFICULTY_MATCH_KEYS),
+        "n_pairs": len(pairs),
+        "pairs": pairs,
+        "imbalance": {key: float(value) for key, value in zip(_DIFFICULTY_MATCH_KEYS, imbalance_vector)},
+        "max_abs_imbalance": max_abs_imbalance,
+        "tolerance": MATCH_TOLERANCE,
+        "rule": "只有在 in-dist 标准化后各匹配键 |imbalance|<=tolerance 才允许称难度匹配",
+        "note": "贪心最近邻一一匹配（固定排序，确定性）；匹配集与不匹配集分开报告",
+    }
+
+
+def _matched_metric_deltas(
+    adapt_rows: Sequence[Mapping[str, Any]],
+    pairs: Sequence[Mapping[str, Any]],
+    *,
+    k_shot: int = 5,
+) -> dict[str, Any]:
+    """在匹配对上计算 OOD - in-dist 的配对误差差（A5M6-04 条件对比）。"""
+    metrics = ("rmse_raw", "rmse_norm")
+    arms = ("M", "R")
+    values: dict[tuple[str, str, str], list[float]] = {}
+    for row in adapt_rows:
+        if int(row.get("K", -1)) != k_shot:
+            continue
+        task_id = str(row.get("task_id"))
+        arm = str(row.get("arm"))
+        if arm not in arms:
+            continue
+        for metric in metrics:
+            value = _finite_or_none(row.get(metric))
+            if value is None:
+                continue
+            values.setdefault((task_id, arm, metric), []).append(float(value))
+    means = {key: float(np.mean(items)) for key, items in values.items()}
+    payload: dict[str, Any] = {"k_shot": k_shot, "metrics": {}, "n_pairs": len(pairs)}
+    any_delta = False
+    for metric in metrics:
+        metric_payload: dict[str, Any] = {}
+        for arm in arms:
+            deltas: list[float] = []
+            for pair in pairs:
+                ood_mean = means.get((str(pair["ood_task_id"]), arm, metric))
+                in_mean = means.get((str(pair["in_dist_task_id"]), arm, metric))
+                if ood_mean is None or in_mean is None:
+                    continue
+                deltas.append(ood_mean - in_mean)
+            if deltas:
+                any_delta = True
+            metric_payload[arm] = {
+                "mean_delta": float(np.mean(deltas)) if deltas else None,
+                "n_pairs": len(deltas),
+            }
+        payload["metrics"][metric] = metric_payload
+    payload["status"] = "COMPUTED" if any_delta else "NO_DATA"
+    return payload
+
+
+def attach_ood_difficulty_matching(
+    config: M6RunnerConfig,
+    datasets: Mapping[str, Mapping[str, Any]],
+    diagnostic: Mapping[str, Any],
+    *,
+    adapt_rows: Sequence[Mapping[str, Any]],
+) -> dict[str, Any]:
+    """把难度协变量表与逐任务匹配结果并入 OOD 诊断（A5M6-04）。"""
+    payload = dict(diagnostic)
+    family = datasets[config.train_family]
+    splits = family.get("splits", {})  # type: ignore[union-attr]
+    if not splits.get("meta_test") or not splits.get("meta_test_ood"):
+        payload["difficulty_matching"] = {
+            "status": "NOT_AVAILABLE",
+            "note": "meta_test 或 meta_test_ood 为空，无法做逐任务难度匹配",
+        }
+        payload["attribution_rule"] = "OOD 归因必须先完成逐任务难度匹配；无匹配时只允许描述性报告"
+        return payload
+    table = _difficulty_table(config, datasets)
+    matching = _match_ood_to_indist(table)
+    matching["metric_deltas"] = _matched_metric_deltas(adapt_rows, matching.get("pairs", ()))
+    payload["difficulty_table"] = table
+    payload["difficulty_matching"] = matching
+    payload["attribution_rule"] = "只有 H1（难度）无混杂且 difficulty_matching.status=MATCHED 才允许 OOD 归因；否则标 INCONCLUSIVE/NOT_ATTRIBUTABLE"
+    return payload
+
+
+def _new_family_rows(
+    stats_rows: Sequence[Mapping[str, Any]],
+) -> tuple[Mapping[str, Any] | None, list[Mapping[str, Any]]]:
+    """提取 new_family 层 K=5 rmse_norm 的 M-R / P-R 预注册比较行。"""
+    selected: list[Mapping[str, Any]] = []
+    baseline = None
+    for row in stats_rows:
+        if str(row.get("study")) != "new_family":
+            continue
+        if int(row.get("K", -1)) != 5 or str(row.get("metric")) != "rmse_norm":
+            continue
+        arm = str(row.get("arm"))
+        reference = str(row.get("reference"))
+        if arm == "M" and reference == "R":
+            baseline = row
+        if (arm, reference) in (("M", "R"), ("P", "R")):
+            selected.append(row)
+    return baseline, selected
+
+
+def attach_new_family_layer(
+    config: M6RunnerConfig,
+    *,
+    stats_rows: Sequence[Mapping[str, Any]],
+    conclusions: Mapping[str, Any],
+    ood_diagnostic: Mapping[str, Any],
+) -> dict[str, Any]:
+    """把新函数族分层并入三层结论的 L3（A5M6-06）。"""
+    payload = dict(conclusions)
+    layers = dict(payload.get("layers") or {})
+    l3 = dict(layers.get(L3_LAYER) or {})
+    baseline, rows = _new_family_rows(stats_rows)
+    if not rows or baseline is None:
+        new_family_status = "INCONCLUSIVE"
+    elif str(baseline.get("status")) == "INSUFFICIENT_TASKS":
+        new_family_status = "INCONCLUSIVE"
+    elif bool(baseline.get("reject_holm")) and float(baseline.get("median_diff") or 0.0) < 0.0:
+        new_family_status = "NEW_FAMILY_ADVANTAGE_OBSERVED"
+    else:
+        new_family_status = "NO_SIGNIFICANT_ADVANTAGE"
+    ood_status = str(l3.get("status") or "INCONCLUSIVE")
+    if ood_status == "INCONCLUSIVE" and new_family_status == "INCONCLUSIVE":
+        combined = "INCONCLUSIVE"
+    elif ood_status != "OOD_NO_SIGNIFICANT_ADVANTAGE" and ood_status != "INCONCLUSIVE":
+        combined = ood_status
+    elif new_family_status == "NEW_FAMILY_ADVANTAGE_OBSERVED":
+        combined = "NEW_FAMILY_ADVANTAGE_OBSERVED"
+    else:
+        combined = "OOD_NO_SIGNIFICANT_ADVANTAGE"
+    l3["new_family_comparisons"] = [dict(row) for row in rows]
+    l3["new_family_status"] = new_family_status
+    l3["combined_status"] = combined
+    l3["reports_both_ood_and_new_family"] = True
+    l3["difficulty_matching_status"] = str(
+        (ood_diagnostic.get("difficulty_matching") or {}).get("status") or "NOT_COMPUTED"
+    )
+    layers[L3_LAYER] = l3
+    payload["layers"] = layers
+    payload["l3_reports_both_layers"] = True
+    return payload
+
 
 
 __all__ = [
@@ -2251,6 +2700,10 @@ __all__ = [
     "study_units",
     "three_layer_conclusions",
     "training_tasks",
+    "M6_CANONICAL_FIGURES",
+    "TRAIN_FAMILY",
+    "attach_new_family_layer",
+    "attach_ood_difficulty_matching",
 ]
 
 

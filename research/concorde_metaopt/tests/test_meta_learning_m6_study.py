@@ -20,8 +20,11 @@ from pathlib import Path
 from unittest import mock
 
 from research.concorde_metaopt.meta_learning import adaptation as adaptation_module
+from research.concorde_metaopt.meta_learning import feasible_v2 as fv2
+from research.concorde_metaopt.meta_learning import m6_frozen
 from research.concorde_metaopt.meta_learning import m6_study as m6
 from research.concorde_metaopt.meta_learning import offline_runner as orun
+from research.concorde_metaopt.meta_learning import task_family as tf
 from research.concorde_metaopt.meta_learning.baseline_arms import PhysicsGuardViolation
 
 
@@ -33,12 +36,109 @@ def tearDownModule() -> None:
     shutil.rmtree(_TMP_ROOT, ignore_errors=True)
 
 
+FROZEN_RADIUS = 0.75
+_GATE: dict[str, object] = {}
+
+
+def _calibration_config() -> fv2.CalibrationConfig:
+    return fv2.CalibrationConfig(
+        radius_grid=(FROZEN_RADIUS,),
+        opt_seeds=(0,),
+        train_tasks=2,
+        validation_tasks=1,
+        budget=8,
+        family_seed=20261102,
+        empirical_samples=16,
+    )
+
+
+def _fake_calibration_report(*, radius: float = FROZEN_RADIUS) -> fv2.CalibrationReport:
+    """构造真实结构 + 真实 sha 的假校准报告（避免测试跑真实校准）。"""
+    calibration = _calibration_config()
+    cell = fv2.CalibrationCell(
+        radius_base=float(radius),
+        success_rate_by_seed=(0.5,),
+        feasible_hit_rate_by_seed=(0.25,),
+        success_rate_median=0.5,
+        feasible_hit_rate_median=0.25,
+        pooled_success_train=0.5,
+        pooled_hit_rate_train=0.25,
+        validation_success_rate_median=0.5,
+        all_seeds_in_acceptance=True,
+        analytic_sphere_fraction=fv2.analytic_sphere_fraction(radius),
+        analytic_ellipsoid_fraction_median=1.0e-4,
+        feasible_volume_fraction=1.0e-4,
+        n_tasks=3,
+        budget=8,
+        evaluations=24,
+        n_null=0,
+        wall_s=0.0,
+    )
+    return fv2.CalibrationReport(
+        schema_version=fv2.CALIBRATION_SCHEMA_VERSION,
+        created_utc="2026-11-04T00:00:00+00:00",
+        calibration=calibration,
+        cells=(cell,),
+        rows=(),
+        cohorts=({"radius_base": float(radius), "task_ids": {"meta_train": [], "meta_validation": []}},),
+        reference_certificates=({"task_id": "fixture", "min_margin": 0.1, "kkt_residual": 0.0},),
+        selected_radius_base=float(radius),
+        selection_status="SELECTED",
+        selection_rule=fv2.SELECTION_RULE,
+        notes=("M6 单元测试假校准报告（非真实校准证据）",),
+        physical_call_count=0,
+    )
+
+
+def _frozen_gate_dir() -> Path:
+    """构造 tiny v2 冻结三件套（frozen_family / split manifest / preregistration）。"""
+    if "dir" in _GATE:
+        return Path(_GATE["dir"])
+    gate_dir = _TMP_ROOT / "frozen-run"
+    gate_dir.mkdir(parents=True, exist_ok=True)
+    calibration = _calibration_config()
+    family_config = fv2.calibration_family_config(FROZEN_RADIUS, calibration)
+    tasks = tf.build_task_family(family_config)
+    split_manifest = fv2.build_split_manifest(tasks, family_config=family_config)
+    report = _fake_calibration_report()
+    frozen = fv2.build_frozen_family(
+        family_config,
+        split_manifest=split_manifest,
+        calibration_report=report,
+        run_id="m6-frozen-fixture",
+        git_sha="TEST",
+    )
+    preregistration = fv2.build_preregistration(
+        frozen,
+        run_id="m6-frozen-fixture",
+        optimization_seeds=tuple(range(10)),
+        meta_seeds=(0, 1, 2),
+    )
+    fv2.write_frozen_family(gate_dir / "frozen_family.json", frozen)
+    orun.write_json(gate_dir / "meta_task_split.json", split_manifest)
+    fv2.write_preregistration(gate_dir / "preregistration.json", preregistration, frozen)
+    _GATE.update(
+        dir=gate_dir,
+        frozen=frozen,
+        split_manifest=split_manifest,
+        preregistration=preregistration,
+        family_config=family_config,
+    )
+    return gate_dir
+
+
+def _gate() -> m6_frozen.FrozenGate:
+    """加载 tiny 冻结门禁（真实校验路径，非 mock）。"""
+    return m6_frozen.load_frozen_gate(frozen_run_dir=_frozen_gate_dir())
+
+
 def _tiny_config(output_root: Path | None = None, run_id: str = "test-m6-e2e", **overrides) -> m6.M6RunnerConfig:
     """tiny 规模配置：2/1/2/1/1 任务、support 8 / query 4、K={0,1,5}、1 个 meta seed。"""
     kwargs: dict[str, object] = {
         "run_id": run_id,
         "output_root": Path(output_root or (_TMP_ROOT / "runs")),
-        "train_family": "F-QE",
+        "train_family": m6.TRAIN_FAMILY,
+        "frozen_run_dir": _frozen_gate_dir(),
         "new_families": ("F-LIN", "F-MF"),
         "ks": (0, 1, 5),
         "meta_seeds": (0,),
@@ -131,7 +231,7 @@ class M6ConfigTests(unittest.TestCase):
             {"run_id": "bad/run"},
             {"run_id": ""},
             {"train_family": "F-QQ"},
-            {"new_families": ("F-LIN", "F-QE")},
+            {"new_families": ("F-LIN", m6.TRAIN_FAMILY)},
             {"new_families": ("F-LIN", "F-LIN")},
             {"ks": (1, 5)},
             {"ks": (0, 5, 1)},
@@ -143,10 +243,14 @@ class M6ConfigTests(unittest.TestCase):
             {"test_tasks": 0},
             {"train_tasks": 0},
             {"meta_seeds": (0, 0)},
+            # A5M6-09：显式省略的 K 不得与 ks 冲突
+            {"k_omissions": (0,)},
+            {"k_omissions": (20, 20)},
         ]
         base = {
             "run_id": "test-config",
             "output_root": _TMP_ROOT / "runs",
+            "frozen_run_dir": _frozen_gate_dir(),
             "ks": (0, 1, 5),
             "meta_seeds": (0,),
             "train_tasks": 2,
@@ -182,10 +286,11 @@ class M6DatasetTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         cls.config = _tiny_config(run_id="test-datasets")
-        cls.datasets = m6.build_m6_datasets(cls.config)
+        cls.gate = _gate()
+        cls.datasets = m6.build_m6_datasets(cls.config, gate=cls.gate)
 
     def test_dataset_split_counts(self) -> None:
-        train_family = self.datasets["F-QE"]
+        train_family = self.datasets[m6.TRAIN_FAMILY]
         counts = {split: len(tasks) for split, tasks in train_family["splits"].items()}
         self.assertEqual(counts["meta_train"], 2)
         self.assertEqual(counts["meta_validation"], 1)
@@ -219,10 +324,37 @@ class M6DatasetTests(unittest.TestCase):
         self.assertEqual(order, sorted(order))
 
     def test_cross_family_duplicate_task_id_rejected(self) -> None:
-        tasks = list(self.datasets["F-QE"]["tasks"])
+        tasks = list(self.datasets[m6.TRAIN_FAMILY]["tasks"])
         with mock.patch.object(m6.tf, "build_task_family", side_effect=[tasks[:2], tasks[:2]]):
             with self.assertRaises(m6.M6Error):
-                m6.build_m6_datasets(self.config)
+                m6.build_m6_datasets(self.config, gate=self.gate)
+
+    def test_frozen_gate_seed_and_family_are_gating(self) -> None:
+        # A5M6-01：训练族必须是冻结 v2；错误 family / seed 必须在构建数据集前 fail-closed
+        with self.assertRaises(m6.M6Error):
+            m6.build_m6_family_configs(
+                _tiny_config(run_id="test-wrong-family", train_family="F-LIN"), self.gate
+            )
+        with self.assertRaises(m6_frozen.M6FrozenGateError):
+            m6.build_m6_family_configs(
+                _tiny_config(run_id="test-wrong-seed", family_seed=123), self.gate
+            )
+
+    def test_formal_scale_rejects_nonfrozen_counts(self) -> None:
+        # A5M6-01：FORMAL 规模必须与冻结 split 一致，不得用缩小任务集冒充正式结论
+        with self.assertRaises(m6_frozen.M6FrozenGateError):
+            m6_frozen.family_config_for_m6(
+                self.gate,
+                train_tasks=60,
+                validation_tasks=20,
+                test_tasks=20,
+                ood_tasks=10,
+                negative_control_tasks=10,
+                support_pool_size=128,
+                query_size=64,
+                family_seed=int(self.gate.family_config.seed),
+                full_scale=True,
+            )
 
 class M6EndToEndTests(unittest.TestCase):
     """tiny SMOKE 端到端：产物、确定性、诊断结构与标准化保留。"""
@@ -248,11 +380,41 @@ class M6EndToEndTests(unittest.TestCase):
         self.assertEqual(summary["counts"]["evaluation_units"], 8)
         self.assertEqual(summary["counts"]["adaptation_runs"], 72)
         self.assertEqual(summary["counts"]["adaptation_rows"], 72)
+        # A5M6-11：adaptation_runs 是 pass0 行数；实际执行次数须含确定性重跑
+        self.assertEqual(summary["counts"]["determinism_passes"], 2)
+        self.assertEqual(summary["counts"]["total_adaptation_executions"], 144)
+        self.assertEqual(summary["counts"]["nonfinite_rows"], 0)
+        # A5M6-01/02：冻结门禁与旧 run 门禁必须出现在 summary
+        self.assertEqual(summary["frozen_gate"]["status"], "PASS")
+        self.assertEqual(summary["frozen_gate"]["family_id"], m6.TRAIN_FAMILY)
+        self.assertEqual(summary["frozen_gate"]["radius_base"], FROZEN_RADIUS)
+        self.assertEqual(summary["frozen_split_verification"]["status"], "NOT_APPLICABLE_SMOKE")
+        self.assertIn(summary["old_run_gate"]["status"], {"PASS", "NOT_AVAILABLE"})
 
     def test_products_complete_and_manifest_consistent(self) -> None:
         run_dir = Path(self.study_result["run_dir"])
         for relative in m6.M6_PRODUCT_FILES:
             self.assertTrue((run_dir / relative).is_file(), relative)
+        # A5M6-02：冻结三件套逐字节副本 + 门禁摘要
+        for relative in (
+            "gate/frozen_family.json",
+            "gate/preregistration.json",
+            "gate/meta_task_split.json",
+            "gate/frozen_gate.json",
+            "old_m2_run_immutability.json",
+        ):
+            self.assertTrue((run_dir / relative).is_file(), relative)
+        gate_payload = _read_json(run_dir / "gate" / "frozen_gate.json")
+        self.assertEqual(gate_payload["status"], "PASS")
+        self.assertEqual(gate_payload["physical_call_count"], 0)
+        self.assertEqual(
+            gate_payload["gate_directory"]["files"]["frozen_family"]["sha256"],
+            gate_payload["frozen_family_sha256"],
+        )
+        old_run = _read_json(run_dir / "old_m2_run_immutability.json")
+        self.assertEqual(old_run["gate"], "OLD_M2_RUN_IMMUTABILITY")
+        self.assertIn(old_run["status"], {"PASS", "NOT_AVAILABLE"})
+        self.assertIn("enforced", old_run)
         for relative in (
             "run_config.json",
             "environment.json",
@@ -314,6 +476,18 @@ class M6EndToEndTests(unittest.TestCase):
         tolerances = diagnostics["tolerances"]
         self.assertEqual(tolerances["confound_relative_difference"], m6.CONFOUND_TOLERANCE)
         self.assertEqual(tolerances["ood_context_shift"], m6.OOD_STRONG_SHIFT)
+        # A5M6-04：必须给出逐任务难度协变量表与匹配结果
+        self.assertEqual(
+            sorted({row["split"] for row in diagnostics["difficulty_table"]}),
+            ["meta_test", "meta_test_ood"],
+        )
+        matching = diagnostics["difficulty_matching"]
+        self.assertIn(matching["status"], {"MATCHED", "POOR_MATCH", "INSUFFICIENT_TASKS", "NOT_AVAILABLE"})
+        if matching["status"] != "NOT_AVAILABLE":
+            self.assertIn("matching_keys", matching)
+            self.assertIn("max_abs_imbalance", matching)
+            self.assertIn("metric_deltas", matching)
+        self.assertIn("attribution_rule", diagnostics)
 
     def test_three_layer_conclusions_separated(self) -> None:
         conclusions = self.study_result["summary"]["three_layer_conclusions"]
@@ -336,6 +510,19 @@ class M6EndToEndTests(unittest.TestCase):
             },
         )
         self.assertEqual(l3["diagnostics_status"], self.study_result["summary"]["ood_diagnostics"]["status"])
+        # A5M6-06：L3 必须同时报告 OOD 与新函数族分层
+        self.assertTrue(l3["reports_both_ood_and_new_family"])
+        self.assertTrue(conclusions["l3_reports_both_layers"])
+        self.assertIn(
+            l3["new_family_status"],
+            {"NEW_FAMILY_ADVANTAGE_OBSERVED", "NO_SIGNIFICANT_ADVANTAGE", "INCONCLUSIVE"},
+        )
+        self.assertTrue(l3["combined_status"])
+        self.assertEqual(
+            l3["difficulty_matching_status"],
+            self.study_result["summary"]["ood_diagnostics"]["difficulty_matching"]["status"],
+        )
+        self.assertIn("attribution_gate", l3)
 
     def test_figures_data_ready_and_no_fake_png(self) -> None:
         run_dir = Path(self.study_result["run_dir"])
@@ -351,6 +538,10 @@ class M6EndToEndTests(unittest.TestCase):
         ):
             self.assertEqual(status["figures"][name], "NOT_RUN")
         self.assertEqual(list((run_dir / "figures").glob("*.png")), [])
+        # A5M6-10：六图 preflight 必须显式声明规范图键
+        self.assertEqual(tuple(status["canonical_figures"]), m6.M6_CANONICAL_FIGURES)
+        self.assertEqual(status["missing_canonical_figures"], [])
+        self.assertEqual(status["preflight"]["status"], "PASS")
         figure_data = _read_json(run_dir / "figures" / "figure_data.json")
         fig1 = figure_data["figures"]["fig1_meta_training_loss"]
         self.assertEqual(fig1["status"], "READY")
@@ -379,7 +570,7 @@ class M6EndToEndTests(unittest.TestCase):
         by_family: dict[str, list[float]] = {}
         for row in rows:
             by_family.setdefault(row["source_family"], []).append(float(row["rmse_raw"]))
-        self.assertEqual(set(by_family), {"F-QE", "F-LIN", "F-MF"})
+        self.assertEqual(set(by_family), {m6.TRAIN_FAMILY, "F-LIN", "F-MF"})
         medians = {family: _median(values) for family, values in by_family.items()}
         # 不同族原始目标尺度不同（原始值必须保留、不得混合比较）；标准化值另行给出
         self.assertGreater(len({round(value, 6) for value in medians.values()}), 1)
@@ -429,7 +620,7 @@ def _median(values: list[float]) -> float:
 def _stats_row(**overrides) -> dict:
     base = {
         "study": "in_dist",
-        "source_family": "F-QE",
+        "source_family": m6.TRAIN_FAMILY,
         "arm": "M",
         "reference": "R",
         "K": 5,
@@ -446,7 +637,7 @@ def _stats_row(**overrides) -> dict:
 def _summary_row(arm: str, mean: float, *, study: str = "in_dist", k_shot: int = 0) -> dict:
     return {
         "study": study,
-        "source_family": "F-QE",
+        "source_family": m6.TRAIN_FAMILY,
         "arm": arm,
         "K": k_shot,
         "metric": "rmse_norm",
@@ -649,6 +840,202 @@ class M6DiagnosticsUnitTests(unittest.TestCase):
         )
         self.assertEqual(different["status"], "FAIL")
         self.assertEqual(different["distinct_digests"], 2)
+
+
+class M6FrozenGateTests(unittest.TestCase):
+    """A5M6-01/02/03：冻结 v2 家族门禁、未冻结 fail-closed、旧 run 不可变门禁。"""
+
+    def test_default_config_requires_frozen_inputs(self) -> None:
+        with self.assertRaises(m6.M6Error):
+            m6.M6RunnerConfig(run_id="test-no-gate", output_root=_TMP_ROOT / "no-gate")
+
+    def test_missing_frozen_inputs_fail_closed(self) -> None:
+        config = _tiny_config(
+            output_root=_TMP_ROOT / "missing-gate-runs",
+            run_id="test-missing-gate",
+            frozen_run_dir=_TMP_ROOT / "does-not-exist",
+        )
+        with self.assertRaises(m6_frozen.M6FrozenGateError):
+            m6.run_m6_study(config)
+        summary = _read_json(config.run_dir / "summary.json")
+        self.assertEqual(summary["status"], "PREREGISTRATION_NOT_FROZEN")
+        self.assertEqual(summary["products_written"], ["summary.json"])
+
+    def test_tampered_frozen_family_rejected(self) -> None:
+        tampered = _TMP_ROOT / "tampered-gate"
+        if tampered.exists():
+            shutil.rmtree(tampered)
+        shutil.copytree(_frozen_gate_dir(), tampered)
+        payload = _read_json(tampered / "frozen_family.json")
+        payload["sha256"] = "0" * 64
+        orun.write_json(tampered / "frozen_family.json", payload)
+        config = _tiny_config(
+            output_root=_TMP_ROOT / "tampered-runs",
+            run_id="test-tampered-gate",
+            frozen_run_dir=tampered,
+        )
+        with self.assertRaises(m6_frozen.M6FrozenGateError):
+            m6.run_m6_study(config)
+        summary = _read_json(config.run_dir / "summary.json")
+        self.assertEqual(summary["status"], "PREREGISTRATION_NOT_FROZEN")
+
+    def test_old_run_gate_recorded_and_not_available_is_honest(self) -> None:
+        _config, study = _shared_run()
+        run_dir = Path(study["run_dir"])
+        payload = _read_json(run_dir / "old_m2_run_immutability.json")
+        self.assertEqual(payload["physical_call_count"], 0)
+        self.assertTrue(payload["read_only"])
+        if payload["status"] == "NOT_AVAILABLE":
+            self.assertFalse(payload["enforced"])
+            self.assertIn("NOT_ENFORCED", payload["enforcement"])
+
+    def test_assert_old_run_unchanged_returns_status(self) -> None:
+        gate = m6_frozen.begin_old_run_gate(_TMP_ROOT / "old-run-root", _TMP_ROOT / "old-run-root" / "run")
+        report = m6_frozen.assert_old_run_unchanged(_TMP_ROOT / "old-run-root", gate)
+        self.assertIn(report["status"], {"PASS", "NOT_AVAILABLE"})
+        self.assertEqual(report["physical_call_count"], 0)
+
+
+class M6EffectSizeTests(unittest.TestCase):
+    """A5M6-05：P-R 第三对预注册比较 + Cohen d / rank-biserial 效应量。"""
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.config = _tiny_config(run_id="test-effects")
+
+    def _rows(self) -> list[dict]:
+        rows = []
+        for index in range(6):
+            for arm, value in (("M", 1.0 + 0.05 * index), ("P", 1.2), ("R", 1.6)):
+                rows.append(
+                    {
+                        "study": "in_dist",
+                        "source_family": m6.TRAIN_FAMILY,
+                        "arm": arm,
+                        "K": 5,
+                        "task_id": f"task-{index}",
+                        "meta_seed": 0,
+                        "rmse_norm": value,
+                    }
+                )
+        return rows
+
+    def test_default_comparisons_include_p_r_and_effect_sizes(self) -> None:
+        stats = m6.paired_comparison_rows(self.config, self._rows(), metrics=("rmse_norm",))
+        pairs = {(row["arm"], row["reference"]) for row in stats}
+        self.assertEqual(pairs, {("M", "P"), ("M", "R"), ("P", "R")})
+        for row in stats:
+            self.assertIn("cohens_d", row)
+            self.assertIn("rank_biserial", row)
+        mr = next(row for row in stats if (row["arm"], row["reference"]) == ("M", "R"))
+        self.assertLess(mr["cohens_d"], 0.0)
+        self.assertLess(mr["rank_biserial"], 0.0)
+
+    def test_effect_size_helpers(self) -> None:
+        effect = m6._effect_sizes([-1.0, -2.0, -3.0])
+        self.assertAlmostEqual(effect["rank_biserial"], -1.0)
+        self.assertLess(effect["cohens_d"], 0.0)
+        self.assertEqual(m6._effect_sizes([5.0]), {"cohens_d": None, "rank_biserial": None})
+
+    def test_holm_family_scales_with_three_comparisons(self) -> None:
+        stats = m6.paired_comparison_rows(self.config, self._rows(), metrics=("rmse_norm",))
+        for row in stats:
+            self.assertIsNotNone(row["p_holm"])
+            self.assertLessEqual(row["p_holm"], min(1.0, 3.0 * row["wilcoxon_pvalue"]) + 1e-12)
+
+
+class M6OodMatchingUnitTests(unittest.TestCase):
+    """A5M6-04：逐任务难度匹配与匹配集误差差。"""
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.config = _tiny_config(run_id="test-ood-match")
+
+    @staticmethod
+    def _row(task_id: str, split: str, value: float) -> dict:
+        return {
+            "task_id": task_id,
+            "split": split,
+            "family": m6.TRAIN_FAMILY,
+            "query_objective_std": value,
+            "mean_curvature": 1.0,
+            "radius": 0.75,
+            "context_shift_norm": 0.1,
+        }
+
+    def test_matched_when_difficulty_identical(self) -> None:
+        table = [
+            self._row("t1", "meta_test", 1.0),
+            self._row("t2", "meta_test", 2.0),
+            self._row("o1", "meta_test_ood", 1.0),
+        ]
+        matching = m6._match_ood_to_indist(table)
+        self.assertEqual(matching["status"], "MATCHED")
+        self.assertEqual(matching["n_pairs"], 1)
+        self.assertEqual(matching["pairs"][0]["ood_task_id"], "o1")
+        self.assertAlmostEqual(matching["max_abs_imbalance"], 0.0)
+
+    def test_poor_match_when_shifted_far(self) -> None:
+        table = [
+            self._row("t1", "meta_test", 1.0),
+            self._row("t2", "meta_test", 2.0),
+            self._row("o1", "meta_test_ood", 50.0),
+        ]
+        matching = m6._match_ood_to_indist(table)
+        self.assertEqual(matching["status"], "POOR_MATCH")
+        self.assertGreater(matching["max_abs_imbalance"], matching["tolerance"])
+
+    def test_matched_metric_deltas(self) -> None:
+        pairs = [{"ood_task_id": "o1", "in_dist_task_id": "t1"}]
+        rows = [
+            {"task_id": "o1", "arm": "M", "K": 5, "rmse_raw": 2.0, "rmse_norm": 2.0},
+            {"task_id": "t1", "arm": "M", "K": 5, "rmse_raw": 1.0, "rmse_norm": 1.0},
+            {"task_id": "o1", "arm": "R", "K": 5, "rmse_raw": 4.0, "rmse_norm": 4.0},
+            {"task_id": "t1", "arm": "R", "K": 5, "rmse_raw": 3.0, "rmse_norm": 3.0},
+        ]
+        deltas = m6._matched_metric_deltas(rows, pairs)
+        self.assertEqual(deltas["status"], "COMPUTED")
+        self.assertAlmostEqual(deltas["metrics"]["rmse_norm"]["M"]["mean_delta"], 1.0)
+        self.assertAlmostEqual(deltas["metrics"]["rmse_norm"]["R"]["mean_delta"], 1.0)
+        self.assertEqual(deltas["n_pairs"], 1)
+
+
+class M6StatusPropagationTests(unittest.TestCase):
+    """A5M6-08/09/11：非有限传播、K=20 预注册省略、实际执行次数。"""
+
+    def test_summary_status_propagates_nonfinite_and_determinism(self) -> None:
+        self.assertEqual(
+            m6._summary_status({"status": "VALID", "rows": [{"status": "NONFINITE"}]}, {"status": "PASS"}),
+            "VALID_WITH_NONFINITE",
+        )
+        self.assertEqual(
+            m6._summary_status({"status": "VALID_WITH_NONFINITE", "rows": []}, {"status": "PASS"}),
+            "VALID_WITH_NONFINITE",
+        )
+        self.assertEqual(
+            m6._summary_status({"status": "VALID", "rows": []}, {"status": "FAIL"}),
+            "DETERMINISM_FAILED",
+        )
+        self.assertEqual(m6._summary_status({"status": "VALID", "rows": []}, {"status": "PASS"}), "VALID")
+
+    def test_k20_requirement_or_explicit_omission(self) -> None:
+        formal_values = dict(
+            ks=(0, 1, 5, 10),
+            meta_seeds=(0, 1, 2),
+            max_meta_steps=200,
+            train_tasks=60,
+            validation_tasks=20,
+            test_tasks=20,
+            ood_tasks=10,
+            negative_control_tasks=10,
+            support_pool_size=128,
+            query_size=64,
+        )
+        without = _tiny_config(run_id="test-k20-missing", **formal_values)
+        self.assertEqual(without.study_scale, "SMOKE")
+        with_omission = _tiny_config(run_id="test-k20-omitted", k_omissions=(20,), **formal_values)
+        self.assertEqual(with_omission.study_scale, "FORMAL")
+        self.assertEqual(with_omission.to_dict()["k_omissions"], [20])
 
 
 class M6FailClosedTests(unittest.TestCase):
