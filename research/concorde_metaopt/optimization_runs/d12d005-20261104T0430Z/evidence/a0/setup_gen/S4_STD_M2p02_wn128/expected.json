@@ -1,0 +1,51 @@
+{
+  "analytic_expectations": {
+    "AR": 4.0,
+    "CDi_elliptic": 0.0014621412132458358,
+    "CDi_expected_range": [
+      0.0007310706066229179,
+      0.0029242824264916717
+    ],
+    "CDtot_expected_range": [
+      0.0005848564852983343,
+      0.004386423639737507
+    ],
+    "CL_alpha_per_deg": 0.06777501083765303,
+    "CL_alpha_per_rad": 3.8832220774509327,
+    "CL_at_2deg": 0.13555002167530605,
+    "CL_expected_range": [
+      0.10844,
+      0.16266
+    ],
+    "gates": [
+      "CL > 0 且落在 CL_expected_range（±20%）",
+      "CDi > 0 且落在 CDi_expected_range（0.5x–2x 椭圆值）",
+      "CDtot >= CDi > 0；无 NaN/IND/INF；|CL| < 1",
+      "尾迹 |Gamma| 有界、末段残差为有限值且无 1e6 量级发散"
+    ],
+    "theory": "Helmbold 有限翼展升力线近似 + 椭圆环量诱导阻力（e=1）"
+  },
+  "case_id": "S4_STD_M2p02_wn128",
+  "contract": {
+    "AoA": 2.0,
+    "Beta": 0.0,
+    "Bref": 4.0,
+    "Cref": 1.0,
+    "FarDist": -1.0,
+    "Mach": 2.02,
+    "NumWakeNodes": 128,
+    "ReCref": 4834912.016269014,
+    "Rho": 0.1153178340089936,
+    "Sref": 4.0,
+    "Symmetry": 0,
+    "Vinf": 596.0373971680001,
+    "WakeIters": 5,
+    "WakeRelax": 1.0,
+    "X_cg": 0.25,
+    "Y_cg": 0.0,
+    "Z_cg": 0.0
+  },
+  "note": "第2关 单因素：仅 NumWakeNodes=128",
+  "readback_spec_source": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\scripts\\vspaero7_runner_v1frozen.py",
+  "schema_version": "d12d005-a0-expected-1"
+}
