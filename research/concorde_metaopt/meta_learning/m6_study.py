@@ -77,6 +77,14 @@ M6_CANONICAL_FIGURES = (
     "fig5_fairness_audit",
     "fig6_airframe_gate_progress",
 )
+#: A5M6R-01：正式规模 preflight 计数（见文件末尾 formal_scale_plan/_assert_formal_scale_plan）
+FORMAL_PREFLIGHT_SCHEMA_VERSION = "p4-m6-formal-preflight-1"
+FORMAL_EXPECTED_UNITS_BY_STUDY = {"in_dist": 20, "ood": 10, "new_family": 40, "negative_control": 10}
+FORMAL_EXPECTED_UNITS_TOTAL = 80
+FORMAL_EXPECTED_ROWS_PER_PASS = 3600
+FORMAL_EXPECTED_DETERMINISM_PASSES = 3
+FORMAL_EXPECTED_TOTAL_EXECUTIONS = 10800
+FORMAL_EXPECTED_RUNS_PER_BUDGET = 8
 EVAL_SPLITS = ("meta_test", "meta_test_ood", "negative_control")
 VALID_SCALES = ("FORMAL", "SMOKE")
 
@@ -674,9 +682,12 @@ def run_m6_adaptation_matrix(
     artifacts_by_meta: Mapping[int, Mapping[str, Any]],
     *,
     progress: Any = None,
+    adapt_fn: Any = None,
 ) -> dict[str, Any]:
     """执行三臂 × K × 评估单元矩阵；范式目标只用于评估（§6 泄漏断言）。"""
     from .adaptation import adapt_and_predict
+
+    adapt = adapt_fn if adapt_fn is not None else adapt_and_predict
 
     units = study_units(config, datasets)
     blocks = _evaluation_blocks(datasets, units)
@@ -702,7 +713,7 @@ def run_m6_adaptation_matrix(
                 artifacts = artifacts_by_meta[meta_seed]["artifacts"]
                 for arm in M6_ARMS:
                     arm_wall = time.perf_counter()
-                    result = adapt_and_predict(
+                    result = adapt(
                         artifacts[arm],
                         support,
                         query,
@@ -1686,6 +1697,7 @@ M6_PRODUCT_FILES = (
     "gate/meta_task_split.json",
     "gate/frozen_gate.json",
     "old_m2_run_immutability.json",
+    "preflight/formal_scale_preflight.json",
     "README.md",
     "summary.json",
     "data_manifest.json",
@@ -1882,11 +1894,20 @@ def _render_readme(
     lines.append("")
     lines.append("- 产物文件：" + "、".join(M6_PRODUCT_FILES))
     lines.append("- 确定性：determinism_reruns=" + str(config.determinism_reruns) + "，比较时排除列：" + "、".join(DETERMINISM_EXCLUDED_COLUMNS))
-    lines.append(
-        "- 复现命令：cd D:/RCAIDE-p4-meta-learning && D:/RCAIDE/envs/RCAIDE/python.exe -E -s -B -m research.concorde_metaopt.meta_learning.m6_study "
-        + f"--run-id {config.run_id} --output-root <OUT> --ks {','.join(str(k) for k in config.ks)} "
-        + f"--meta-seeds {','.join(str(seed) for seed in config.meta_seeds)}"
+    frozen_dir = (
+        str(config.frozen_run_dir) if config.frozen_run_dir is not None else "<M5 冻结 run 目录，必填>"
     )
+    old_root = str(config.old_run_output_root or config.output_root)
+    lines.append("- 正式复现命令（A5M6R-02：--frozen-run-dir 为必填，缺省会 fail-closed）：")
+    lines.append("  cd <repo> && D:/RCAIDE/envs/RCAIDE/python.exe -E -s -B -m research.concorde_metaopt.meta_learning.m6_study")
+    lines.append(
+        f"  --run-id {config.run_id} --output-root <OUT> --frozen-run-dir {frozen_dir} "
+        f"--old-run-output-root {old_root} --ks {','.join(str(k) for k in config.ks)} "
+        f"--meta-seeds {','.join(str(seed) for seed in config.meta_seeds)} "
+        f"--determinism-reruns {config.determinism_reruns}"
+    )
+    lines.append("- 正式规模 dry-run（零真值评价、不写 run 产物，只写 preflight/formal_scale_preflight.json）：")
+    lines.append("  ... 同上命令行追加 --preflight-only")
     lines.append("")
     lines.append("## 8. 状态")
     lines.append("")
@@ -1983,6 +2004,7 @@ def _write_m6_products(
     gate: m6_frozen.FrozenGate,
     old_run_gate: Mapping[str, Any],
     frozen_split_verification: Mapping[str, Any],
+    scale_preflight: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     run_dir = config.run_dir
     run_dir.mkdir(parents=True, exist_ok=True)
@@ -2031,6 +2053,7 @@ def _write_m6_products(
         "old_run_gate": dict(old_run_gate),
         "frozen_split_verification": dict(frozen_split_verification),
         "k_omissions": list(config.k_omissions),
+        "scale_preflight": dict(scale_preflight or {}),
         "primary_endpoint": "K=5 任务内标准化 query RMSE（M vs P / M vs R）",
         "headline_rows": headline,
         "negative_control": dict(negative_control),
@@ -2061,6 +2084,7 @@ def _write_m6_products(
         summary["conclusions_allowed"] = False
     run_config = _base_run_config(config, datasets, git_state)
     run_config["m5_reference"] = summary["m5_reference"]
+    run_config["scale_preflight"] = summary["scale_preflight"]
     write_json(run_dir / "run_config.json", run_config)
     write_json(run_dir / "environment.json", environment_payload(config.run_id, physical_call_count=PHYSICAL_CALL_COUNT))
     write_json(run_dir / "tasks.json", _tasks_payload(datasets))
@@ -2097,6 +2121,8 @@ def _write_m6_products(
         "note": "只有 READY 的图数据可生成 PNG；NOT_RUN 不得补假数据（fig3-5 归 M5，fig6 归 Issue #4 D-12D-004）",
     }
     write_json(figures_dir / "figure_status.json", figure_status)
+    preflight_path = run_dir / "preflight" / "formal_scale_preflight.json"
+    write_json(preflight_path, summary["scale_preflight"])
     readme = _render_readme(
         config,
         summary=summary,
@@ -2178,6 +2204,8 @@ def run_m6_study(
             }
         )
         units = study_units(config, datasets)
+        formal_plan = formal_scale_plan(config, units)
+        formal_plan_gate = _assert_formal_scale_plan(config, formal_plan)
         passes: list[dict[str, Any]] = []
         main_payload: dict[str, Any] | None = None
         for pass_index in range(total_reruns):
@@ -2189,7 +2217,14 @@ def run_m6_study(
             )
             assert_no_forbidden_modules(guard_baseline)
             digest = _adaptation_digest(matrix["rows"], matrix["artifact_sha256"])
-            passes.append({"pass": pass_index, "digest": digest, "artifact_sha256": matrix["artifact_sha256"]})
+            passes.append(
+                {
+                    "pass": pass_index,
+                    "digest": digest,
+                    "artifact_sha256": matrix["artifact_sha256"],
+                    "n_rows": int(matrix["n_runs"]),
+                }
+            )
             if pass_index == 0:
                 main_payload = {
                     "matrix": matrix,
@@ -2223,6 +2258,12 @@ def run_m6_study(
             config, stats_rows=stats_rows, conclusions=conclusions, ood_diagnostic=ood_diagnostic
         )
         determinism = determinism_check(config, passes)
+        scale_preflight = _build_scale_preflight(
+            config,
+            formal_plan,
+            formal_plan_gate,
+            [int(item.get("n_rows", 0)) for item in passes],
+        )
         runtime_s = time.perf_counter() - wall_start
         old_run_gate = m6_frozen.finish_old_run_gate(
             old_run_root, config.run_dir, old_run_gate, stage="m6_before_products"
@@ -2245,6 +2286,7 @@ def run_m6_study(
             gate=gate,
             old_run_gate=old_run_gate,
             frozen_split_verification=frozen_split_verification,
+            scale_preflight=scale_preflight,
         )
         summary = written["summary"]
         m6_frozen.assert_old_run_unchanged(old_run_root, old_run_gate, stage="m6_after_products")
@@ -2286,6 +2328,14 @@ def run_m6_study(
                 "enforced": old_run_gate.get("enforced"),
             },
             "total_adaptation_executions": int(summary["counts"]["total_adaptation_executions"]),
+            "scale_preflight": {
+                "status": summary["scale_preflight"].get("status"),
+                "units_total": summary["scale_preflight"].get("plan", {}).get("units_total"),
+                "rows_per_pass": summary["scale_preflight"].get("executed", {}).get("rows_per_pass"),
+                "total_adaptation_executions": summary["scale_preflight"]
+                .get("executed", {})
+                .get("total_adaptation_executions"),
+            },
             "products_written": written["products"],
             "runtime_s": float(runtime_s),
             "summary": summary,
@@ -2338,6 +2388,11 @@ def build_argument_parser() -> Any:
     parser.add_argument("--split-manifest", default=None)
     parser.add_argument("--old-run-output-root", default=None, help="旧 M2 run 所在 output_root（缺省同 output_root）")
     parser.add_argument("--k-omissions", default="", help="显式预注册的 K 省略，例如 20")
+    parser.add_argument(
+        "--preflight-only",
+        action="store_true",
+        help="正式规模 dry-run：真实冻结门禁+数据集+单元+矩阵循环，mock 适应，只写 preflight JSON",
+    )
     return parser
 
 
@@ -2376,6 +2431,33 @@ def main(argv: Sequence[str] | None = None) -> int:
         "study_scale": config.study_scale,
         "conclusions_allowed": config.conclusions_allowed,
     }
+    if args.preflight_only:
+        try:
+            preflight = run_formal_scale_dry_run(
+                config,
+                progress=lambda event, payload: print(
+                    json.dumps({"event": event, **payload}, ensure_ascii=False), flush=True
+                ),
+            )
+        except Exception as error:  # noqa: BLE001 - CLI 如实失败退出
+            result.update({"status": "FAILED", "error": f"{type(error).__name__}: {error}"})
+            print(json.dumps(result, ensure_ascii=False, indent=2, default=str))
+            return 1
+        result.update(
+            {
+                "status": preflight["status"],
+                "scale_preflight": {
+                    "units_total": preflight["plan"]["units_total"],
+                    "units_by_study": preflight["plan"]["units_by_study"],
+                    "rows_per_pass": preflight["executed"]["rows_per_pass"],
+                    "total_adaptation_executions": preflight["executed"]["total_adaptation_executions"],
+                    "product_path": preflight["product_path"],
+                },
+                "physical_call_count": preflight["physical_call_count"],
+            }
+        )
+        print(json.dumps(result, ensure_ascii=False, indent=2, default=str))
+        return 0 if preflight["status"] == "PASS" else 1
     try:
         outcome = run_m6_study(config, progress=lambda event, payload: print(json.dumps({"event": event, **payload}, ensure_ascii=False), flush=True))
         result.update(
@@ -2392,6 +2474,275 @@ def main(argv: Sequence[str] | None = None) -> int:
         return 1
     print(json.dumps(result, ensure_ascii=False, indent=2, default=str))
     return 0 if result.get("status") == "VALID" else 1
+
+
+
+# ---------------------------------------------------------------------------
+# A5M6R-01：正式规模 preflight（计数必须来自实际执行代码，防止"文档声称"
+# ---------------------------------------------------------------------------
+FORMAL_PREFLIGHT_SCHEMA_VERSION = "p4-m6-formal-preflight-1"
+#: 正式规模预注册计数；任何漂移都必须 fail-closed，禁止静默改数
+FORMAL_EXPECTED_UNITS_BY_STUDY = {"in_dist": 20, "ood": 10, "new_family": 40, "negative_control": 10}
+FORMAL_EXPECTED_UNITS_TOTAL = 80
+FORMAL_EXPECTED_ROWS_PER_PASS = 3600
+FORMAL_EXPECTED_DETERMINISM_PASSES = 3
+FORMAL_EXPECTED_TOTAL_EXECUTIONS = 10800
+FORMAL_EXPECTED_RUNS_PER_BUDGET = 8
+
+
+def formal_scale_plan(
+    config: M6RunnerConfig,
+    units: Sequence[Mapping[str, Any]],
+) -> dict[str, Any]:
+    """由实际评估单元推导正式规模计划（80 units / 3600 行每 pass / 10800 次执行）。"""
+    units_by_study = {name: 0 for name in STUDY_ORDER}
+    for unit in units:
+        units_by_study[str(unit["study"])] += 1
+    rows_per_pass = len(units) * len(config.ks) * len(config.meta_seeds) * len(M6_ARMS)
+    # 每个 (task, seed) 组：BO-random/DE 各 1 次 + 3 个代理臂各 meta_seed 次
+    runs_per_budget = 2 + 2 * len(config.meta_seeds)
+    expected = {
+        "units_by_study": dict(FORMAL_EXPECTED_UNITS_BY_STUDY),
+        "units_total": int(FORMAL_EXPECTED_UNITS_TOTAL),
+        "rows_per_pass": int(FORMAL_EXPECTED_ROWS_PER_PASS),
+        "determinism_passes": int(FORMAL_EXPECTED_DETERMINISM_PASSES),
+        "total_adaptation_executions": int(FORMAL_EXPECTED_TOTAL_EXECUTIONS),
+        "runs_per_budget": int(FORMAL_EXPECTED_RUNS_PER_BUDGET),
+    }
+    return {
+        "schema_version": FORMAL_PREFLIGHT_SCHEMA_VERSION,
+        "run_id": config.run_id,
+        "study_scale": config.study_scale,
+        "units_by_study": units_by_study,
+        "units_total": len(units),
+        "ks": list(config.ks),
+        "meta_seeds": list(config.meta_seeds),
+        "arms": list(M6_ARMS),
+        "rows_per_pass": int(rows_per_pass),
+        "runs_per_budget": int(runs_per_budget),
+        "determinism_passes": int(config.determinism_reruns),
+        "total_adaptation_executions": int(rows_per_pass * int(config.determinism_reruns)),
+        "expected": expected,
+        "physical_call_count": PHYSICAL_CALL_COUNT,
+    }
+
+
+def _assert_formal_scale_plan(config: M6RunnerConfig, plan: Mapping[str, Any]) -> dict[str, Any]:
+    """正式规模计数门禁：实际计划必须等于预注册常量，否则 fail-closed。"""
+    if config.study_scale != "FORMAL":
+        return {
+            "status": "NOT_APPLICABLE_SMOKE",
+            "note": "SMOKE 规模计数必须与正式 80/3600/10800 分开，不得用于结论",
+        }
+    actual = {
+        "units_by_study": dict(plan["units_by_study"]),
+        "units_total": int(plan["units_total"]),
+        "rows_per_pass": int(plan["rows_per_pass"]),
+        "determinism_passes": int(plan["determinism_passes"]),
+        "total_adaptation_executions": int(plan["total_adaptation_executions"]),
+        "runs_per_budget": int(plan["runs_per_budget"]),
+    }
+    expected = dict(plan["expected"])
+    mismatches = [
+        f"{key}: 实际 {actual[key]!r} != 预注册 {expected[key]!r}"
+        for key in expected
+        if actual.get(key) != expected[key]
+    ]
+    requirements = {
+        "ks_has_0_1_5_10": all(k in config.ks for k in (0, 1, 5, 10)),
+        "k20_present_or_omitted": 20 in config.ks or 20 in config.k_omissions,
+        "meta_seeds_at_least_3": len(config.meta_seeds) >= 3,
+        "determinism_reruns_at_least_2": int(config.determinism_reruns) >= 2,
+    }
+    mismatches.extend(f"{key} 不满足" for key, ok in requirements.items() if not ok)
+    if mismatches:
+        raise M6Error("正式规模 preflight 失败（A5M6R-01 计数漂移或规模不足，fail-closed）：" + "；".join(mismatches))
+    return {
+        "status": "PASS",
+        "schema_version": FORMAL_PREFLIGHT_SCHEMA_VERSION,
+        "n_checks": len(expected) + len(requirements),
+        "expected": expected,
+        "actual": actual,
+        "requirements": requirements,
+        "physical_call_count": PHYSICAL_CALL_COUNT,
+    }
+
+
+def _preflight_standin_artifacts(config: M6RunnerConfig) -> dict[int, dict[str, Any]]:
+    """dry-run 用的三臂参数占位（未训练；只用于暴露执行计数，不得用于任何结论）。"""
+    from .maml import MAMLConfig, init_parameters
+
+    input_dim = int(tf.DESIGN_DIM) + len(tf.CONTEXT_NAMES)
+    artifacts_by_meta: dict[int, dict[str, Any]] = {}
+    for meta_seed in config.meta_seeds:
+        model_config = MAMLConfig(
+            input_dim=input_dim,
+            output_dim=1,
+            hidden_sizes=HIDDEN_SIZES,
+            seed=int(meta_seed),
+        )
+        parameters = init_parameters(model_config, seed=int(meta_seed))
+        artifact = {
+            "parameters": parameters,
+            "config": model_config.to_dict(),
+            "context_names": list(tf.CONTEXT_NAMES),
+            "adaptation_method": "preflight_standin",
+            "training": {
+                "status": "PREFLIGHT_UNTRAINED_STANDIN",
+                "note": "构造自随机初始化参数，仅用于 dry-run 计数量级预检，禁止用于任何结论",
+            },
+        }
+        digest = _artifact_sha256(artifact)
+        artifacts_by_meta[int(meta_seed)] = {
+            "meta_seed": int(meta_seed),
+            "artifacts": {arm: artifact for arm in M6_ARMS},
+            "artifacts_sha256": {arm: digest for arm in M6_ARMS},
+            "training_rows": [],
+        }
+    return artifacts_by_meta
+
+
+def _preflight_mock_adapt(counter: dict[str, int]) -> Any:
+    """dry-run 的 mock 适应函数：只计数 + 返回确定性伪指标，不执行真实训练。"""
+    from types import SimpleNamespace
+
+    def _adapt(artifact: Any, support: Any, query: Any, method: str, k_shot: int, config: Any = None) -> Any:
+        counter["calls"] = int(counter.get("calls", 0)) + 1
+        n_query = len(np.asarray(query["features"]))
+        return SimpleNamespace(
+            metrics={
+                "rmse": 0.1,
+                "mae": 0.1,
+                "mae_norm": 0.1,
+                "rmse_norm": 0.1,
+                "r2": 0.0,
+                "max_abs_err": 0.1,
+            },
+            losses=(0.1,),
+            inner_steps=int(k_shot),
+            targets=np.zeros(n_query, dtype=float),
+            physical_call_count=PHYSICAL_CALL_COUNT,
+        )
+
+    return _adapt
+
+
+def _build_scale_preflight(
+    config: M6RunnerConfig,
+    plan: Mapping[str, Any],
+    plan_gate: Mapping[str, Any],
+    pass_rows: Sequence[int],
+    *,
+    dry_run: bool = False,
+    mock_adaptation_calls: int | None = None,
+) -> dict[str, Any]:
+    """把实际执行的 pass 行数汇总为机器可读 preflight 产物；任何漂移即 fail-closed。"""
+    rows_per_pass = sorted({int(value) for value in pass_rows})
+    executed = {
+        "rows_per_pass": int(rows_per_pass[0]) if len(rows_per_pass) == 1 else rows_per_pass,
+        "determinism_passes": len(pass_rows),
+        "total_adaptation_executions": int(sum(int(value) for value in pass_rows)),
+    }
+    mismatches: list[str] = []
+    expected = plan.get("expected") if config.study_scale == "FORMAL" else None
+    if expected is not None:
+        if executed["rows_per_pass"] != int(expected["rows_per_pass"]):
+            mismatches.append(
+                f"executed.rows_per_pass={executed['rows_per_pass']!r} != {expected['rows_per_pass']}"
+            )
+        if executed["determinism_passes"] != int(expected["determinism_passes"]):
+            mismatches.append(
+                f"executed.determinism_passes={executed['determinism_passes']} != {expected['determinism_passes']}"
+            )
+        if executed["total_adaptation_executions"] != int(expected["total_adaptation_executions"]):
+            mismatches.append(
+                "executed.total_adaptation_executions="
+                f"{executed['total_adaptation_executions']} != {expected['total_adaptation_executions']}"
+            )
+    if dry_run and mock_adaptation_calls is not None:
+        if int(mock_adaptation_calls) != executed["total_adaptation_executions"]:
+            mismatches.append(
+                f"mock_adaptation_calls={int(mock_adaptation_calls)} != executed.total_adaptation_executions="
+                f"{executed['total_adaptation_executions']}"
+            )
+    if mismatches:
+        raise M6Error("正式规模执行计数 preflight 失败（A5M6R-01 fail-closed）：" + "；".join(mismatches))
+    status = plan_gate.get("status") if config.study_scale == "FORMAL" else "NOT_APPLICABLE_SMOKE"
+    return {
+        "schema_version": FORMAL_PREFLIGHT_SCHEMA_VERSION,
+        "status": status,
+        "run_id": config.run_id,
+        "study_scale": config.study_scale,
+        "dry_run": bool(dry_run),
+        "created_utc": iso_utc(),
+        "physical_call_count": PHYSICAL_CALL_COUNT,
+        "plan": dict(plan),
+        "plan_gate": dict(plan_gate),
+        "expected": expected,
+        "executed": executed,
+        "mock_adaptation_calls": None if mock_adaptation_calls is None else int(mock_adaptation_calls),
+        "mismatches": mismatches,
+        "note": (
+            "正式规模计数由实际执行的适应矩阵 pass 行数得出；dry_run 使用占位参数与 mock 适应，"
+            "不产生任何结论，只验证 80 units / 3600 行每 pass / 3 pass = 10800 次执行"
+            if dry_run
+            else "正式规模计数由实际执行的适应矩阵 pass 行数得出（A5M6R-01）"
+        ),
+    }
+
+
+def run_formal_scale_dry_run(
+    config: M6RunnerConfig,
+    *,
+    progress: Any = None,
+) -> dict[str, Any]:
+    """正式规模 dry-run：真实冻结门禁+数据集+单元+矩阵循环，mock 适应；只写 preflight JSON。"""
+    if config.study_scale != "FORMAL":
+        raise M6Error("dry-run 仅接受 FORMAL 规模配置（SMOKE 不能证明正式规模计数）")
+    guard_baseline = _forbidden_modules_present()
+    wall_start = time.perf_counter()
+    gate = m6_frozen.load_frozen_gate(
+        frozen_run_dir=config.frozen_run_dir,
+        frozen_family_path=config.frozen_family_path,
+        preregistration_path=config.preregistration_path,
+        split_manifest_path=config.split_manifest_path,
+    )
+    datasets = build_m6_datasets(config, gate=gate, progress=progress)
+    verification = m6_frozen.verify_datasets(gate, datasets)
+    units = study_units(config, datasets)
+    plan = formal_scale_plan(config, units)
+    plan_gate = _assert_formal_scale_plan(config, plan)
+    artifacts = _preflight_standin_artifacts(config)
+    counter: dict[str, int] = {"calls": 0}
+    mock_adapt = _preflight_mock_adapt(counter)
+    pass_rows: list[int] = []
+    for pass_index in range(int(config.determinism_reruns)):
+        matrix = run_m6_adaptation_matrix(
+            config,
+            datasets,
+            artifacts,
+            adapt_fn=mock_adapt,
+            progress=progress if pass_index == 0 else None,
+        )
+        pass_rows.append(int(matrix["n_runs"]))
+    assert_no_forbidden_modules(guard_baseline)
+    preflight = _build_scale_preflight(
+        config, plan, plan_gate, pass_rows, dry_run=True, mock_adaptation_calls=counter["calls"]
+    )
+    preflight["frozen_gate"] = {
+        "status": "PASS",
+        "family_id": gate.family_id,
+        "family_version": gate.family_version,
+        "radius_base": gate.radius_base,
+        "split_hash": gate.split_hash,
+        "frozen_family_sha256": gate.frozen_sha256,
+    }
+    preflight["frozen_split_verification"] = dict(verification)
+    preflight["wall_s"] = round(time.perf_counter() - wall_start, 3)
+    preflight["product_path"] = (config.run_dir / "preflight" / "formal_scale_preflight.json").as_posix()
+    write_json(config.run_dir / "preflight" / "formal_scale_preflight.json", preflight)
+    return preflight
+
 
 
 _DIFFICULTY_MATCH_KEYS = (
@@ -2614,22 +2965,34 @@ def attach_ood_difficulty_matching(
 
 def _new_family_rows(
     stats_rows: Sequence[Mapping[str, Any]],
-) -> tuple[Mapping[str, Any] | None, list[Mapping[str, Any]]]:
-    """提取 new_family 层 K=5 rmse_norm 的 M-R / P-R 预注册比较行。"""
+) -> list[Mapping[str, Any]]:
+    """提取 new_family 层 K=5 rmse_norm 的 M-R / P-R 预注册比较行（全部新族）。"""
     selected: list[Mapping[str, Any]] = []
-    baseline = None
     for row in stats_rows:
         if str(row.get("study")) != "new_family":
             continue
         if int(row.get("K", -1)) != 5 or str(row.get("metric")) != "rmse_norm":
             continue
-        arm = str(row.get("arm"))
-        reference = str(row.get("reference"))
-        if arm == "M" and reference == "R":
-            baseline = row
-        if (arm, reference) in (("M", "R"), ("P", "R")):
+        if (str(row.get("arm")), str(row.get("reference"))) in (("M", "R"), ("P", "R")):
             selected.append(row)
-    return baseline, selected
+    return selected
+
+
+def _new_family_family_status(rows: Sequence[Mapping[str, Any]]) -> str:
+    """单族判定：只用该族自身的 M-R 比较，禁止以其他族（最后一行）为基线。"""
+    baseline = next(
+        (
+            row
+            for row in rows
+            if str(row.get("arm")) == "M" and str(row.get("reference")) == "R"
+        ),
+        None,
+    )
+    if baseline is None or str(baseline.get("status")) == "INSUFFICIENT_TASKS":
+        return "INCONCLUSIVE"
+    if bool(baseline.get("reject_holm")) and float(baseline.get("median_diff") or 0.0) < 0.0:
+        return "NEW_FAMILY_ADVANTAGE_OBSERVED"
+    return "NO_SIGNIFICANT_ADVANTAGE"
 
 
 def attach_new_family_layer(
@@ -2639,17 +3002,34 @@ def attach_new_family_layer(
     conclusions: Mapping[str, Any],
     ood_diagnostic: Mapping[str, Any],
 ) -> dict[str, Any]:
-    """把新函数族分层并入三层结论的 L3（A5M6-06）。"""
+    """把新函数族分层并入三层结论的 L3（A5M6-06/A5M6R-04：逐族判定与聚合规则显式化）。"""
     payload = dict(conclusions)
     layers = dict(payload.get("layers") or {})
     l3 = dict(layers.get(L3_LAYER) or {})
-    baseline, rows = _new_family_rows(stats_rows)
-    if not rows or baseline is None:
+    rows = _new_family_rows(stats_rows)
+    by_family: dict[str, list[Mapping[str, Any]]] = {}
+    for row in rows:
+        by_family.setdefault(str(row.get("source_family")), []).append(row)
+    families = sorted(by_family)
+    per_family_status = [
+        {
+            "source_family": family_id,
+            "status": _new_family_family_status(by_family[family_id]),
+            "comparisons": [dict(row) for row in by_family[family_id]],
+        }
+        for family_id in families
+    ]
+    statuses = [item["status"] for item in per_family_status]
+    if not statuses or all(status == "INCONCLUSIVE" for status in statuses):
         new_family_status = "INCONCLUSIVE"
-    elif str(baseline.get("status")) == "INSUFFICIENT_TASKS":
-        new_family_status = "INCONCLUSIVE"
-    elif bool(baseline.get("reject_holm")) and float(baseline.get("median_diff") or 0.0) < 0.0:
+    elif any(status == "NEW_FAMILY_ADVANTAGE_OBSERVED" for status in statuses) and any(
+        status == "NO_SIGNIFICANT_ADVANTAGE" for status in statuses
+    ):
+        new_family_status = "PER_FAMILY_MIXED"
+    elif all(status == "NEW_FAMILY_ADVANTAGE_OBSERVED" for status in statuses):
         new_family_status = "NEW_FAMILY_ADVANTAGE_OBSERVED"
+    elif any(status == "INCONCLUSIVE" for status in statuses):
+        new_family_status = "INCONCLUSIVE"
     else:
         new_family_status = "NO_SIGNIFICANT_ADVANTAGE"
     ood_status = str(l3.get("status") or "INCONCLUSIVE")
@@ -2659,10 +3039,17 @@ def attach_new_family_layer(
         combined = ood_status
     elif new_family_status == "NEW_FAMILY_ADVANTAGE_OBSERVED":
         combined = "NEW_FAMILY_ADVANTAGE_OBSERVED"
+    elif new_family_status == "PER_FAMILY_MIXED":
+        combined = "NEW_FAMILY_MIXED"
     else:
         combined = "OOD_NO_SIGNIFICANT_ADVANTAGE"
     l3["new_family_comparisons"] = [dict(row) for row in rows]
+    l3["new_family_per_family_status"] = per_family_status
     l3["new_family_status"] = new_family_status
+    l3["new_family_aggregation_rule"] = (
+        "逐族使用本族自身的 M-R 比较判定；全部族都显著才聚合为优势；"
+        "任一族无显著优势则 PER_FAMILY_MIXED；禁止以最后一个族或单族基线代表全部新族"
+    )
     l3["combined_status"] = combined
     l3["reports_both_ood_and_new_family"] = True
     l3["difficulty_matching_status"] = str(
@@ -2704,6 +3091,14 @@ __all__ = [
     "TRAIN_FAMILY",
     "attach_new_family_layer",
     "attach_ood_difficulty_matching",
+    "FORMAL_EXPECTED_DETERMINISM_PASSES",
+    "FORMAL_EXPECTED_ROWS_PER_PASS",
+    "FORMAL_EXPECTED_RUNS_PER_BUDGET",
+    "FORMAL_EXPECTED_TOTAL_EXECUTIONS",
+    "FORMAL_EXPECTED_UNITS_BY_STUDY",
+    "FORMAL_EXPECTED_UNITS_TOTAL",
+    "formal_scale_plan",
+    "run_formal_scale_dry_run",
 ]
 
 

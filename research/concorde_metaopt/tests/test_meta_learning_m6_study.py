@@ -1083,3 +1083,257 @@ class M6FailClosedTests(unittest.TestCase):
         self.assertEqual(summary["status"], "FAILED")
         self.assertIn("注入失败", summary["error"]["message"])
         self.assertIsNone(summary["physical_call_count"])
+
+
+# ---------------------------------------------------------------------------
+# A5M6R-01：正式规模 preflight（真实执行计数，禁止配置层面的“声称”）
+# ---------------------------------------------------------------------------
+_FORMAL_GATE: dict[str, object] = {}
+
+
+def _formal_family_config() -> tf.TaskFamilyConfig:
+    """正式规模 v2 冻结族配置（与 M5 冻结产物同规模：60/20/20/10/10，support128/query64）。"""
+    return tf.TaskFamilyConfig(
+        family_id=tf.V2_FAMILY_ID,
+        design_dim=tf.DESIGN_DIM,
+        context_names=tf.CONTEXT_NAMES,
+        seed=20261102,
+        train_tasks=60,
+        validation_tasks=20,
+        test_tasks=20,
+        ood_tasks=10,
+        negative_control_tasks=10,
+        designs_per_task=192,
+        support_pool_size=128,
+        query_size=64,
+        family_version="v2",
+        radius_base=FROZEN_RADIUS,
+    )
+
+
+def _formal_gate_dir() -> Path:
+    """构造正式规模 v2 冻结三件套（真实 TaskFamilyConfig/真实冻结校验路径）。"""
+    if "dir" in _FORMAL_GATE:
+        return Path(_FORMAL_GATE["dir"])
+    gate_dir = _TMP_ROOT / "frozen-formal"
+    gate_dir.mkdir(parents=True, exist_ok=True)
+    family_config = _formal_family_config()
+    tasks = tf.build_task_family(family_config)
+    split_manifest = fv2.build_split_manifest(tasks, family_config=family_config)
+    report = _fake_calibration_report()
+    frozen = fv2.build_frozen_family(
+        family_config,
+        split_manifest=split_manifest,
+        calibration_report=report,
+        run_id="m6-formal-fixture",
+        git_sha="TEST",
+    )
+    preregistration = fv2.build_preregistration(
+        frozen,
+        run_id="m6-formal-fixture",
+        optimization_seeds=tuple(range(10)),
+        meta_seeds=(0, 1, 2),
+    )
+    fv2.write_frozen_family(gate_dir / "frozen_family.json", frozen)
+    orun.write_json(gate_dir / "meta_task_split.json", split_manifest)
+    fv2.write_preregistration(gate_dir / "preregistration.json", preregistration, frozen)
+    _FORMAL_GATE.update(
+        dir=gate_dir,
+        frozen=frozen,
+        split_manifest=split_manifest,
+        preregistration=preregistration,
+        family_config=family_config,
+        tasks=tasks,
+    )
+    return gate_dir
+
+
+def _formal_config(run_id: str = "test-m6-formal", output_root: Path | None = None) -> m6.M6RunnerConfig:
+    """正式规模 M6 配置（冻结门禁、K=0/1/5/10/20、3 个 meta seed、3 次确定性重跑）。"""
+    return m6.M6RunnerConfig(
+        run_id=run_id,
+        output_root=Path(output_root or (_TMP_ROOT / "runs")),
+        train_family=m6.TRAIN_FAMILY,
+        frozen_run_dir=_formal_gate_dir(),
+        new_families=("F-LIN", "F-MF"),
+        ks=m6.M6_KS,
+        meta_seeds=(0, 1, 2),
+        max_meta_steps=200,
+        inner_steps=m6.S_ADAPT,
+        train_tasks=60,
+        validation_tasks=20,
+        test_tasks=20,
+        ood_tasks=10,
+        negative_control_tasks=10,
+        support_pool_size=128,
+        query_size=64,
+        determinism_reruns=3,
+    )
+
+
+def _preflight_artifacts_stub(config: m6.M6RunnerConfig, datasets, *, progress=None):
+    """用未训练占位参数替换真实 M/N 训练（只暴露执行计数，不用于结论）。"""
+    return m6._preflight_standin_artifacts(config)
+
+
+def _fake_scale_plan() -> dict:
+    """构造与预注册常量一致的正式规模计划（供门禁单测使用）。"""
+    units = [{"study": name} for name, count in m6.FORMAL_EXPECTED_UNITS_BY_STUDY.items() for _ in range(count)]
+    return {
+        "units_by_study": dict(m6.FORMAL_EXPECTED_UNITS_BY_STUDY),
+        "units_total": len(units),
+        "rows_per_pass": len(units) * len(m6.M6_KS) * 3 * len(m6.M6_ARMS),
+        "determinism_passes": 3,
+        "total_adaptation_executions": 10800,
+        "runs_per_budget": 8,
+        "expected": {
+            "units_by_study": dict(m6.FORMAL_EXPECTED_UNITS_BY_STUDY),
+            "units_total": m6.FORMAL_EXPECTED_UNITS_TOTAL,
+            "rows_per_pass": m6.FORMAL_EXPECTED_ROWS_PER_PASS,
+            "determinism_passes": m6.FORMAL_EXPECTED_DETERMINISM_PASSES,
+            "total_adaptation_executions": m6.FORMAL_EXPECTED_TOTAL_EXECUTIONS,
+            "runs_per_budget": m6.FORMAL_EXPECTED_RUNS_PER_BUDGET,
+        },
+    }
+
+
+class M6FormalScalePreflightTests(unittest.TestCase):
+    """A5M6R-01：正式规模 preflight 必须由实际执行（80 units / 3600 行每 pass / 3 pass = 10800）生成。"""
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.config = _formal_config()
+        counter: dict[str, int] = {"calls": 0}
+        cls.counter = counter
+        mock_adapt = m6._preflight_mock_adapt(counter)
+        with mock.patch.object(m6, "build_m6_artifacts", side_effect=_preflight_artifacts_stub):
+            with mock.patch.object(adaptation_module, "adapt_and_predict", mock_adapt):
+                cls.result = m6.run_m6_study(cls.config)
+        cls.summary = cls.result["summary"]
+        cls.run_dir = Path(cls.result["run_dir"])
+        cls.preflight = _read_json(cls.run_dir / "preflight" / "formal_scale_preflight.json")
+
+    def test_plan_units_and_runs_per_budget(self) -> None:
+        plan = self.preflight["plan"]
+        self.assertEqual(
+            plan["units_by_study"],
+            {"in_dist": 20, "ood": 10, "new_family": 40, "negative_control": 10},
+        )
+        self.assertEqual(plan["units_total"], 80)
+        self.assertEqual(plan["rows_per_pass"], 3600)
+        self.assertEqual(plan["runs_per_budget"], 8)
+        self.assertEqual(plan["determinism_passes"], 3)
+        self.assertEqual(plan["total_adaptation_executions"], 10800)
+        self.assertEqual(self.preflight["plan_gate"]["status"], "PASS")
+        self.assertEqual(self.preflight["plan_gate"]["n_checks"], 10)
+        self.assertTrue(all(self.preflight["plan_gate"]["requirements"].values()))
+
+    def test_executed_counts_from_real_loop(self) -> None:
+        executed = self.preflight["executed"]
+        self.assertEqual(executed["rows_per_pass"], 3600)
+        self.assertEqual(executed["determinism_passes"], 3)
+        self.assertEqual(executed["total_adaptation_executions"], 10800)
+        # 正常 run 不传 mock 计数（只有 dry-run 才传）；mock 适应函数确实被调用了 10800 次
+        self.assertIsNone(self.preflight["mock_adaptation_calls"])
+        self.assertEqual(self.counter["calls"], 10800)
+        self.assertEqual(self.preflight["status"], "PASS")
+        self.assertFalse(self.preflight["dry_run"])
+        self.assertEqual(self.preflight["mismatches"], [])
+        self.assertEqual(self.preflight["physical_call_count"], 0)
+
+    def test_summary_propagates_preflight_and_counts(self) -> None:
+        counts = self.summary["counts"]
+        self.assertEqual(counts["evaluation_units"], 80)
+        self.assertEqual(counts["adaptation_runs"], 3600)
+        self.assertEqual(counts["adaptation_rows"], 3600)
+        self.assertEqual(counts["determinism_passes"], 3)
+        self.assertEqual(counts["total_adaptation_executions"], 10800)
+        preflight = self.summary["scale_preflight"]
+        self.assertEqual(preflight["status"], "PASS")
+        self.assertEqual(preflight["executed"]["rows_per_pass"], 3600)
+        self.assertEqual(preflight["executed"]["total_adaptation_executions"], 10800)
+        self.assertEqual(preflight["plan"]["units_total"], 80)
+        self.assertEqual(self.summary["frozen_split_verification"]["status"], "PASS")
+        self.assertEqual(self.summary["physical_call_count"], 0)
+        product = self.run_dir / "preflight" / "formal_scale_preflight.json"
+        self.assertTrue(product.exists())
+        self.assertIn("preflight/formal_scale_preflight.json", m6.M6_PRODUCT_FILES)
+        self.assertEqual(self.result["scale_preflight"]["units_total"], 80)
+
+    def test_documented_formal_command_has_required_args(self) -> None:
+        readme = (self.run_dir / "README.md").read_text(encoding="utf-8")
+        self.assertIn("--frozen-run-dir", readme)
+        self.assertIn("--old-run-output-root", readme)
+        self.assertIn("--preflight-only", readme)
+        self.assertIn("--ks 0,1,5,10,20", readme)
+        self.assertIn("--meta-seeds 0,1,2", readme)
+        self.assertIn("--determinism-reruns 3", readme)
+        # 文档命令必须能在不写产物的情况下做 dry-run（完整命令见 rev2 回执/EXT 证据）
+        self.assertIn("m6_study", readme)
+
+
+class M6FormalScaleFailClosedTests(unittest.TestCase):
+    """A5M6R-01/A5M6R-04：计数漂移 fail-closed 与逐族聚合规则。"""
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.config = _formal_config(run_id="test-m6-formal-failclosed")
+
+    def test_plan_gate_passes_for_formal_config(self) -> None:
+        units = [{"study": name} for name, count in m6.FORMAL_EXPECTED_UNITS_BY_STUDY.items() for _ in range(count)]
+        plan = m6.formal_scale_plan(self.config, units)
+        gate = m6._assert_formal_scale_plan(self.config, plan)
+        self.assertEqual(gate["status"], "PASS")
+
+    def test_plan_drift_fails_closed(self) -> None:
+        # 负控：把预注册行数常量改成 3599，真实计划 3600 必须 fail-closed（该断言在测试内可复现）
+        with mock.patch.object(m6, "FORMAL_EXPECTED_ROWS_PER_PASS", 3599):
+            drift_plan = _fake_scale_plan()
+            with self.assertRaises(m6.M6Error):
+                m6._assert_formal_scale_plan(self.config, drift_plan)
+            self.assertEqual(
+                drift_plan["rows_per_pass"], m6.FORMAL_EXPECTED_ROWS_PER_PASS + 1
+            )
+
+    def test_scale_preflight_detects_executed_row_drift(self) -> None:
+        plan = _fake_scale_plan()
+        gate = {"status": "PASS", "n_checks": 10}
+        with self.assertRaises(m6.M6Error):
+            m6._build_scale_preflight(self.config, plan, gate, [3600, 3599, 3600])
+
+    def test_k20_omission_declaration(self) -> None:
+        config = _tiny_config(
+            run_id="test-m6-k20",
+            ks=(0, 1, 5, 10),
+            k_omissions=(20,),
+            support_pool_size=64,
+            query_size=16,
+        )
+        self.assertEqual(config.to_dict()["k_omissions"], [20])
+        with self.assertRaises(m6.M6Error):
+            _tiny_config(run_id="test-m6-k20-bad", k_omissions=(5,))
+
+    def test_new_family_per_family_status_and_aggregation(self) -> None:
+        rows = [
+            _stats_row(study="new_family", source_family="F-LIN", median_diff=-1.0, reject_holm=True),
+            _stats_row(study="new_family", source_family="F-MF", median_diff=0.2, reject_holm=False),
+        ]
+        conclusions = {
+            "layers": {
+                m6.L3_LAYER: {"status": "OOD_NO_SIGNIFICANT_ADVANTAGE"},
+            }
+        }
+        payload = m6.attach_new_family_layer(
+            self.config,
+            stats_rows=rows,
+            conclusions=conclusions,
+            ood_diagnostic={"difficulty_matching": {"status": "MATCHED"}},
+        )
+        l3 = payload["layers"][m6.L3_LAYER]
+        self.assertEqual(l3["new_family_status"], "PER_FAMILY_MIXED")
+        self.assertEqual(
+            {item["source_family"]: item["status"] for item in l3["new_family_per_family_status"]},
+            {"F-LIN": "NEW_FAMILY_ADVANTAGE_OBSERVED", "F-MF": "NO_SIGNIFICANT_ADVANTAGE"},
+        )
+        self.assertIn("禁止以最后一个族", l3["new_family_aggregation_rule"])
+        self.assertEqual(l3["combined_status"], "NEW_FAMILY_MIXED")
