@@ -656,11 +656,24 @@ def _base_run_config(config: M5RunnerConfig, *, stage: str, git_state: Mapping[s
         "null_policy": fv2.NULL_POLICY,
         "meta_test_tuning_policy": fv2.META_TEST_TUNING_POLICY,
         "evaluator_id": SYNTHETIC_EVALUATOR_ID,
+        "evaluator": {
+            "evaluator_id": SYNTHETIC_EVALUATOR_ID,
+            "fidelity": "synthetic_analytic",
+            "source_kind": "SYNTHETIC_TEST",
+            "physics_validation_status": "NOT_APPLICABLE_SYNTHETIC",
+            "solver_version": None,
+            "mission_fingerprint": None,
+            "physical_call_count": PHYSICAL_CALL_COUNT,
+            "note": (
+                "D-P4-002 第三节接口字段；P4-CODE 只做解析合成评估，"
+                "不涉及真实求解器版本或任务指纹"
+            ),
+        },
         "implementation": {
             "runner": "research.concorde_metaopt.meta_learning.m5_runner",
             "arms": "research.concorde_metaopt.meta_learning.m5_arms",
             "bo_engine": "maml_opt.bayesian:ConstrainedBayesianOptimizer/run_search",
-            "de_engine": "reuse_semantics:research.concorde_metaopt.optimization.baseline_de:DifferentialEvolutionBaseline",
+            "de_engine": "research.concorde_metaopt.meta_learning.baseline_arms:run_de_arm",
             "initialization": "maml_opt.initialization:select_model_scored_initial_designs",
         },
         "physical_call_declaration": {
@@ -789,8 +802,9 @@ def _write_stage_failure(
     stage: str,
     status: str,
     error: BaseException,
+    partial_products: Sequence[str] | None = None,
 ) -> dict[str, Any]:
-    """阶段失败时只写 summary.json（不写伪造的正常产物）。"""
+    """阶段失败时只写 summary.json（不写伪造的正常产物；F07 如实披露已写产物）。"""
     import traceback
 
     root = Path(run_dir)
@@ -814,9 +828,249 @@ def _write_stage_failure(
         "error": {"type": type(error).__name__, "message": str(error)},
         "traceback_summary": traceback.format_exception(type(error), error, error.__traceback__)[-1].strip(),
         "products_written": ["summary.json"],
+        "partial_products": sorted(str(item) for item in (partial_products or ())),
+        "product_state": "PARTIAL" if partial_products else "FAILED_ONLY_SUMMARY",
     }
     write_json(root / "summary.json", summary)
     return summary
+
+
+# ---------------------------------------------------------------------------
+# 旧 run 不可变性门禁（A5 M5-M6 F02）+ 推断排除口径（A5 M5-M6 F01）
+# ---------------------------------------------------------------------------
+def _count_lines(path: Path) -> int:
+    """逐行计数并显式关文件（避免 ResourceWarning）。"""
+    with Path(path).open("r", encoding="utf-8") as handle:
+        return sum(1 for _ in handle)
+
+
+OLD_M2_RUN_ID = "p4-meta-m2-offline-20261102T092828Z"
+OLD_RUN_GATE_FILE = "old_m2_run_immutability.json"
+OLD_RUN_GATE_RULE = (
+    "旧 48,000 评价 M2 run 只读：正式实现前后按 data_manifest.json 逐文件校验 "
+    "sha256/bytes，且任何阶段不得写入该目录（plan §9:113/115）"
+)
+INFERENCE_EXCLUSION_RULE = (
+    "clone 臂不得进入推断（plan §2:48/§9:117）：statistics/endpoint_summary/"
+    "primary_endpoint_summary/figures 仅使用非 clone 臂；optimization_summary.csv/"
+    "metrics.csv 保留全部臂的描述性行，不参与推断"
+)
+
+
+def _sha256_file_raw(path: Path) -> str:
+    digest = hashlib.sha256()
+    with Path(path).open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def _canonical_lf_sha256(path: Path) -> tuple[int, str]:
+    data = Path(path).read_bytes()
+    canonical = data.replace(bytes([13, 10]), bytes([10]))
+    return len(canonical), hashlib.sha256(canonical).hexdigest()
+
+
+def _old_run_file_record(path: Path, hash_mode: str) -> dict[str, Any]:
+    raw_bytes = int(Path(path).stat().st_size)
+    raw_sha = _sha256_file_raw(path)
+    canonical_bytes, canonical_sha = _canonical_lf_sha256(path)
+    if hash_mode == "raw":
+        return {
+            "hash_mode": "raw",
+            "bytes": raw_bytes,
+            "sha256": raw_sha,
+            "bytes_canonical_lf": canonical_bytes,
+            "sha256_canonical_lf": canonical_sha,
+        }
+    return {
+        "hash_mode": "canonical_lf",
+        "bytes": canonical_bytes,
+        "sha256": canonical_sha,
+        "bytes_raw": raw_bytes,
+        "sha256_raw": raw_sha,
+    }
+
+
+def snapshot_old_m2_run(output_root: Path | str) -> dict[str, Any]:
+    """按旧 M2 run 的 data_manifest.json 逐文件校验 sha256/bytes（只读，不写旧 run）。"""
+    import json as _json
+
+    run_dir = Path(output_root) / OLD_M2_RUN_ID
+    manifest_path = run_dir / "data_manifest.json"
+    base: dict[str, Any] = {
+        "schema_version": "p4-m5-old-run-gate-1",
+        "gate": "OLD_M2_RUN_IMMUTABILITY",
+        "run_id": OLD_M2_RUN_ID,
+        "run_dir": str(run_dir),
+        "read_only": True,
+        "rule": OLD_RUN_GATE_RULE,
+        "checked_utc": iso_utc(),
+    }
+    if not manifest_path.is_file():
+        base.update(
+            {
+                "status": "NOT_AVAILABLE",
+                "mismatch_count": None,
+                "note": (
+                    "旧 run data_manifest.json 不存在（临时 output_root 或未保留旧 run）；"
+                    "门禁如实降级为 NOT_AVAILABLE，不冒充通过"
+                ),
+            }
+        )
+        return base
+    manifest = _json.loads(manifest_path.read_text(encoding="utf-8"))
+    entries = list(manifest.get("files") or ())
+    mismatches: list[dict[str, Any]] = []
+    for entry in entries:
+        rel = str(entry.get("path") or "")
+        hash_mode = str(entry.get("hash_mode") or "canonical_lf")
+        path = run_dir / rel
+        if not path.is_file():
+            mismatches.append({"path": rel, "reason": "missing"})
+            continue
+        record = _old_run_file_record(path, hash_mode)
+        if int(record["bytes"]) != int(entry.get("bytes") or -1) or str(
+            record["sha256"]
+        ) != str(entry.get("sha256") or ""):
+            mismatches.append(
+                {
+                    "path": rel,
+                    "reason": "hash_or_bytes_mismatch",
+                    "expected_bytes": entry.get("bytes"),
+                    "actual_bytes": record["bytes"],
+                    "expected_sha256": entry.get("sha256"),
+                    "actual_sha256": record["sha256"],
+                }
+            )
+    base.update(
+        {
+            "status": "PASS" if not mismatches else "FAIL",
+            "manifest_path": str(manifest_path),
+            "manifest_sha256": _sha256_file_raw(manifest_path),
+            "file_count": int(manifest.get("file_count") or len(entries)),
+            "total_bytes": int(manifest.get("total_bytes") or 0),
+            "checked_files": len(entries),
+            "mismatch_count": len(mismatches),
+            "mismatches": mismatches[:20],
+            "note": "逐文件按 manifest 的 hash_mode 复算 sha256/bytes；任何不一致即 fail-closed",
+        }
+    )
+    return base
+
+
+def prepare_old_run_gate(
+    config: M5RunnerConfig, *, before: Mapping[str, Any], stage: str
+) -> dict[str, Any]:
+    """阶段计算完成后再次校验旧 run，并把门禁记录写入新 run 目录（绝不写旧 run）。"""
+    after = snapshot_old_m2_run(config.output_root)
+    before_status = str(before.get("status"))
+    after_status = str(after.get("status"))
+    same_manifest = before.get("manifest_sha256") == after.get("manifest_sha256")
+    # FAIL 一律 fail-closed；NOT_AVAILABLE（临时 output_root / 旧 run 未保留）如实降级披露，
+    # 但强制标记 enforced=false，禁止把"未校验"表述成"已通过"。
+    if after_status == "FAIL":
+        raise M5RunnerError(
+            "旧 M2 run 不可变性门禁失败（stage="
+            + str(stage)
+            + "）：before="
+            + before_status
+            + " after="
+            + after_status
+        )
+    if before_status == "PASS" and after_status == "PASS" and not same_manifest:
+        raise M5RunnerError(
+            "旧 M2 run 的 data_manifest.json 在 stage=" + str(stage) + " 期间发生变化"
+        )
+    enforced = before_status == "PASS" and after_status == "PASS" and same_manifest
+    if enforced:
+        enforcement = "ENFORCED"
+    elif after_status == "NOT_AVAILABLE":
+        enforcement = "NOT_ENFORCED_OLD_RUN_UNAVAILABLE"
+    else:
+        enforcement = "NOT_ENFORCED_BEFORE_UNAVAILABLE"
+    payload = {
+        "schema_version": "p4-m5-old-run-gate-2",
+        "gate": "OLD_M2_RUN_IMMUTABILITY",
+        "stage": stage,
+        "status": after_status,
+        "enforced": enforced,
+        "enforcement": enforcement,
+        "read_only": True,
+        "rule": OLD_RUN_GATE_RULE,
+        "before": dict(before),
+        "after": dict(after),
+        "manifest_sha256_same_before_after": same_manifest,
+        "note": (
+            "阶段开始与产物写出前各校验一次；本文件落在新 run 目录，绝不写旧 run。"
+            "status=NOT_AVAILABLE 表示旧 run 不在该 output_root 下，门禁未执行（enforced=false），"
+            "正式 run 必须使用保留旧 M2 run 的 output_root 才会 ENFORCED"
+        ),
+    }
+    Path(config.run_dir).mkdir(parents=True, exist_ok=True)
+    write_json(Path(config.run_dir) / OLD_RUN_GATE_FILE, payload)
+    return payload
+
+
+def assert_old_run_unchanged_after_write(
+    config: M5RunnerConfig, *, gate: Mapping[str, Any], stage: str
+) -> None:
+    """产物写出后复核旧 run 未变化（fail-closed）。"""
+    after_write = snapshot_old_m2_run(config.output_root)
+    gate_status = str(gate.get("status"))
+    if gate_status == "NOT_AVAILABLE":
+        return
+    if str(after_write.get("status")) != "PASS":
+        raise M5RunnerError(
+            "旧 M2 run 不可变门禁写后复核失败（stage=" + str(stage) + "）"
+        )
+    expected = (gate.get("after") or {}).get("manifest_sha256")
+    if str(after_write.get("manifest_sha256")) != str(expected):
+        raise M5RunnerError("旧 M2 run 在 " + str(stage) + " 写产物期间发生变化，立即失败")
+
+
+def inference_rows_excluding_clones(
+    summary_rows: Sequence[Mapping[str, Any]],
+    clone_arms: Sequence[str] | None,
+) -> tuple[list[Mapping[str, Any]], dict[str, Any]]:
+    """F01：按 clone_arms 过滤推断行；返回 (inference_rows, exclusions)。"""
+    excluded = tuple(sorted(str(arm) for arm in (clone_arms or ())))
+    excluded_set = set(excluded)
+    rows = [row for row in summary_rows if str(row.get("arm")) not in excluded_set]
+    exclusions = {
+        "rule": INFERENCE_EXCLUSION_RULE,
+        "clone_arms": list(excluded),
+        "all_arms_rows": len(summary_rows),
+        "inference_rows": len(rows),
+        "rows_excluded": len(summary_rows) - len(rows),
+        "note": (
+            "statistics/endpoint_summary/primary_endpoint_summary/figures 仅用非 clone 臂；"
+            "optimization_summary.csv/metrics.csv 保留全部臂描述性行，不参与推断"
+        ),
+    }
+    return rows, exclusions
+
+
+def _existing_products(run_dir: Path | str) -> list[str]:
+    """失败时列出已落盘产物，便于如实披露 PARTIAL（F07）。"""
+    root = Path(run_dir)
+    names = set(HOLDOUT_PRODUCT_FILES) | {
+        "run_config.json",
+        "environment.json",
+        "README.md",
+        "summary.json",
+        "calibration/calibration_report.json",
+        "calibration/calibration_report.csv",
+        "calibration/calibration_cells.csv",
+        "calibration/calibration_evidence.json",
+        "frozen_family.json",
+        "preregistration.json",
+        "tasks.json",
+        "reference_solutions.json",
+        "meta_task_split.json",
+    }
+    return [name for name in sorted(names) if (root / name).is_file()]
+
 
 
 # ---------------------------------------------------------------------------
@@ -926,6 +1180,7 @@ def run_calibration_stage(
     guard_baseline = _forbidden_modules_present()
     try:
         assert_no_forbidden_modules(guard_baseline)
+        old_run_gate_before = snapshot_old_m2_run(config.output_root)
         space = design_space if design_space is not None else load_design_space_12d()
         if calibration_report is None:
             report = fv2.calibrate_radius_base(config.calibration, design_space=space, progress=progress)
@@ -1004,7 +1259,10 @@ def run_calibration_stage(
                 }
             }
         )
+        old_run_gate = prepare_old_run_gate(config, before=old_run_gate_before, stage=config.stage)
+        summary["old_run_immutability"] = old_run_gate
         products = [
+            OLD_RUN_GATE_FILE,
             "calibration/calibration_report.json",
             "calibration/calibration_report.csv",
             "calibration/calibration_cells.csv",
@@ -1018,6 +1276,7 @@ def run_calibration_stage(
         products = _write_stage_products(
             run_dir, config, stage=config.stage, run_config=run_config, summary=summary, products=products
         )
+        assert_old_run_unchanged_after_write(config, gate=old_run_gate, stage=config.stage)
         return {
             "status": status,
             "stage": config.stage,
@@ -1028,9 +1287,34 @@ def run_calibration_stage(
         }
     except (PhysicsGuardViolation, M5RunnerError, fv2.FeasibleV2Error, tf.TaskFamilyError) as error:
         status = "PHYSICS_GUARD_VIOLATION" if isinstance(error, PhysicsGuardViolation) else "FAILED"
-        summary = _write_stage_failure(config.run_dir, config, stage=config.stage, status=status, error=error)
+        summary = _write_stage_failure(
+            config.run_dir,
+            config,
+            stage=config.stage,
+            status=status,
+            error=error,
+            partial_products=_existing_products(config.run_dir),
+        )
         return {
             "status": status,
+            "stage": config.stage,
+            "run_dir": str(config.run_dir),
+            "calibration_report": None,
+            "summary": summary,
+            "products_written": ["summary.json"],
+            "error": summary["error"],
+        }
+    except Exception as error:  # noqa: BLE001 - F06：任何非预期异常也必须落盘失败 summary
+        summary = _write_stage_failure(
+            config.run_dir,
+            config,
+            stage=config.stage,
+            status="FAILED",
+            error=error,
+            partial_products=_existing_products(config.run_dir),
+        )
+        return {
+            "status": "FAILED",
             "stage": config.stage,
             "run_dir": str(config.run_dir),
             "calibration_report": None,
@@ -1103,6 +1387,7 @@ def run_freeze_stage(
     guard_baseline = _forbidden_modules_present()
     try:
         assert_no_forbidden_modules(guard_baseline)
+        old_run_gate_before = snapshot_old_m2_run(config.output_root)
         report = calibration_report
         if report is None:
             report = load_calibration_report(resolve_calibration_report_path(config))
@@ -1121,14 +1406,24 @@ def run_freeze_stage(
                 "report_sha256": report.sha256,
                 "selection_status": report.selection_status,
             }
+            old_run_gate = prepare_old_run_gate(config, before=old_run_gate_before, stage=config.stage)
+            summary["old_run_immutability"] = old_run_gate
             products = _write_stage_products(
                 config.run_dir,
                 config,
                 stage=config.stage,
                 run_config=run_config,
                 summary=summary,
-                products=["run_config.json", "environment.json", "summary.json", "README.md", "data_manifest.json"],
+                products=[
+                    OLD_RUN_GATE_FILE,
+                    "run_config.json",
+                    "environment.json",
+                    "summary.json",
+                    "README.md",
+                    "data_manifest.json",
+                ],
             )
+            assert_old_run_unchanged_after_write(config, gate=old_run_gate, stage=config.stage)
             return {
                 "status": "NO_CELL_IN_TARGET",
                 "stage": config.stage,
@@ -1231,7 +1526,10 @@ def run_freeze_stage(
                 },
             }
         )
+        old_run_gate = prepare_old_run_gate(config, before=old_run_gate_before, stage=config.stage)
+        summary["old_run_immutability"] = old_run_gate
         products = [
+            OLD_RUN_GATE_FILE,
             "meta_task_split.json",
             "frozen_family.json",
             "preregistration.json",
@@ -1246,6 +1544,7 @@ def run_freeze_stage(
         products = _write_stage_products(
             run_dir, config, stage=config.stage, run_config=run_config, summary=summary, products=products
         )
+        assert_old_run_unchanged_after_write(config, gate=old_run_gate, stage=config.stage)
         return {
             "status": "FROZEN",
             "stage": config.stage,
@@ -1260,9 +1559,35 @@ def run_freeze_stage(
         }
     except (PhysicsGuardViolation, M5RunnerError, fv2.FeasibleV2Error, tf.TaskFamilyError) as error:
         status = "PHYSICS_GUARD_VIOLATION" if isinstance(error, PhysicsGuardViolation) else "FAILED"
-        summary = _write_stage_failure(config.run_dir, config, stage=config.stage, status=status, error=error)
+        summary = _write_stage_failure(
+            config.run_dir,
+            config,
+            stage=config.stage,
+            status=status,
+            error=error,
+            partial_products=_existing_products(config.run_dir),
+        )
         return {
             "status": status,
+            "stage": config.stage,
+            "run_dir": str(config.run_dir),
+            "frozen_family": None,
+            "preregistration": None,
+            "summary": summary,
+            "products_written": ["summary.json"],
+            "error": summary["error"],
+        }
+    except Exception as error:  # noqa: BLE001 - F06：任何非预期异常也必须落盘失败 summary
+        summary = _write_stage_failure(
+            config.run_dir,
+            config,
+            stage=config.stage,
+            status="FAILED",
+            error=error,
+            partial_products=_existing_products(config.run_dir),
+        )
+        return {
+            "status": "FAILED",
             "stage": config.stage,
             "run_dir": str(config.run_dir),
             "frozen_family": None,
@@ -2083,6 +2408,7 @@ def build_figure_data(
     curve_rows: Sequence[Mapping[str, Any]],
     arm_audit_rows: Sequence[Mapping[str, Any]],
     clone_rows: Sequence[Mapping[str, Any]],
+    excluded_arms: Sequence[str] = (),
 ) -> dict[str, Any]:
     """生成各图的数据载荷（只描述真实记录；缺数据标 NOT_AVAILABLE/NOT_RUN，不补假曲线）。"""
     figures: dict[str, Any] = {}
@@ -2099,14 +2425,14 @@ def build_figure_data(
         )
     for key in series:
         series[key].sort(key=lambda item: item["iteration"])
-    figures["fig1_meta_loss_curves"] = {
+    figures["fig1_meta_training_loss"] = {
         "status": "DATA_READY" if series else "NOT_AVAILABLE",
         "source": "metrics/training_history.csv",
         "series": series,
         "validation_loss": "NOT_AVAILABLE（M5 未记录元验证损失；按合同不得补造）",
         "note": "MAML 代理元训练损失按 meta_seed 给出；预训练代理只有终点损失，无迭代曲线。",
     }
-    figures["fig2_k_shot_rmse_mae"] = {
+    figures["fig2_k_shot_adaptation"] = {
         "status": "NOT_APPLICABLE_THIS_STAGE",
         "source": None,
         "note": "K-shot 适应曲线归 M6（m6_study.py 生成）；M5 不产生 adaptation_results 数据。",
@@ -2154,7 +2480,7 @@ def build_figure_data(
                     "median_first_feasible_evaluation_index": _median(finite_first),
                     "null_run_fraction": (null_runs / n_runs) if n_runs else None,
                 }
-    figures["fig3_feasibility"] = {
+    figures["fig3_feasible_rate"] = {
         "status": "DATA_READY" if fig3 else "NOT_AVAILABLE",
         "source": "metrics/optimization_summary.csv",
         "series": fig3,
@@ -2204,7 +2530,7 @@ def build_figure_data(
                     1 for row in runs if any(value is not None for value in (row.get("best_feasible_so_far") or ()))
                 ),
             }
-    figures["fig4_equal_budget_optimization"] = {
+    figures["fig4_equal_budget_gap"] = {
         "status": "DATA_READY" if fig4 else "NOT_AVAILABLE",
         "source": "metrics/optimization_history.csv",
         "series": fig4,
@@ -2233,14 +2559,14 @@ def build_figure_data(
             "proxy_scoring_wall_s_median": _median(proxy.get(arm, [])),
             "proxy_scoring_runs": len(proxy.get(arm, [])),
         }
-    figures["fig5_arm_identifiability_and_cost"] = {
+    figures["fig5_fairness_audit"] = {
         "status": "DATA_READY" if audit_summary else "NOT_AVAILABLE",
         "source": "metrics/arm_audit.csv, metrics/clone_audit.csv",
         "arms": audit_summary,
         "clone_audit": list(clone_rows),
         "note": "代理打分墙钟与真实评价预算分开披露；不把代理成本混入真值预算。",
     }
-    figures["fig6_issue4_progress"] = {
+    figures["fig6_airframe_gate_progress"] = {
         "status": "NOT_RUN",
         "source": None,
         "note": "fig6 归 Issue #4（D-12D-004 VSPAERO/RCAIDE 回退气动油耗 + A/B/C 预算门禁），本阶段不得用非物理数值充图。",
@@ -2249,6 +2575,7 @@ def build_figure_data(
         "run_id": run_id,
         "generated_utc": iso_utc(),
         "physical_call_count": PHYSICAL_CALL_COUNT,
+        "excluded_from_inference": list(excluded_arms),
         "figures": figures,
         "note": "图中数据均来自本 run 的 CSV/JSONL 记录；缺失/不适用一律显式标注。",
     }
@@ -2493,6 +2820,7 @@ def run_holdout_stage(
     tmp_dir: Path | None = None
     try:
         assert_no_forbidden_modules(guard_baseline)
+        old_run_gate_before = snapshot_old_m2_run(config.output_root)
         prereq = load_holdout_prerequisites(config)
         design_space = load_design_space_12d()
         family_config = prereq["family_config"]
@@ -2614,8 +2942,11 @@ def run_holdout_stage(
             )
         audit_rows = identifiability_rows(audit)
         clone_rows = clone_audit_rows(audit_rows)
-        statistics_rows = paired_statistics_rows(summary_rows)
-        endpoint_rows = endpoint_summary_rows(summary_rows)
+        inference_rows, inference_exclusions = inference_rows_excluding_clones(
+            summary_rows, audit.get("clone_arms")
+        )
+        statistics_rows = paired_statistics_rows(inference_rows)
+        endpoint_rows = endpoint_summary_rows(inference_rows)
         metric_rows = metrics_rows_from_summary(summary_rows, run_id=config.run_id)
         arm_rows = initial_design_rows(init_dicts, run_id=config.run_id)
         figures = build_figure_data(
@@ -2626,6 +2957,7 @@ def run_holdout_stage(
             curve_rows=curve_rows,
             arm_audit_rows=arm_rows,
             clone_rows=clone_rows,
+            excluded_arms=inference_exclusions["clone_arms"],
         )
         true_evaluations = sum(int(row.get("true_evals_used") or 0) for row in summary_rows)
         for row in summary_rows:
@@ -2681,6 +3013,8 @@ def run_holdout_stage(
             "determinism": determinism,
             "audit": audit,
             "fairness": fairness,
+            "inference_rows": inference_rows,
+            "inference_exclusions": inference_exclusions,
             "history_jsonl": history_jsonl,
             "workers": int(workers),
             "plan": plan,
@@ -2689,10 +3023,13 @@ def run_holdout_stage(
             "run_wall_s": run_wall_s,
             "status": status,
             "conclusions_allowed": conclusions,
-            "history_rows_count": sum(1 for _ in history_jsonl.open("r", encoding="utf-8")),
+            "history_rows_count": _count_lines(history_jsonl),
         }
         summary = _holdout_summary(stage_payload)
+        old_run_gate = prepare_old_run_gate(config, before=old_run_gate_before, stage=config.stage)
+        summary["old_run_immutability"] = old_run_gate
         products = _write_holdout_products(stage_payload, summary=summary)
+        assert_old_run_unchanged_after_write(config, gate=old_run_gate, stage=config.stage)
         return {
             "status": status,
             "stage": "holdout",
@@ -2711,7 +3048,12 @@ def run_holdout_stage(
         }
     except PhysicsGuardViolation as error:
         summary = _write_stage_failure(
-            config.run_dir, config, stage="holdout", status="PHYSICS_GUARD_VIOLATION", error=error
+            config.run_dir,
+            config,
+            stage="holdout",
+            status="PHYSICS_GUARD_VIOLATION",
+            error=error,
+            partial_products=_existing_products(config.run_dir),
         )
         return {
             "status": "PHYSICS_GUARD_VIOLATION",
@@ -2723,7 +3065,12 @@ def run_holdout_stage(
         }
     except PreregistrationNotFrozen as error:
         summary = _write_stage_failure(
-            config.run_dir, config, stage="holdout", status="PREREGISTRATION_NOT_FROZEN", error=error
+            config.run_dir,
+            config,
+            stage="holdout",
+            status="PREREGISTRATION_NOT_FROZEN",
+            error=error,
+            partial_products=_existing_products(config.run_dir),
         )
         return {
             "status": "PREREGISTRATION_NOT_FROZEN",
@@ -2734,7 +3081,12 @@ def run_holdout_stage(
         }
     except (M5RunnerError, fv2.FeasibleV2Error, tf.TaskFamilyError, ValueError) as error:
         summary = _write_stage_failure(
-            config.run_dir, config, stage="holdout", status="FAILED", error=error
+            config.run_dir,
+            config,
+            stage="holdout",
+            status="FAILED",
+            error=error,
+            partial_products=_existing_products(config.run_dir),
         )
         return {
             "status": "FAILED",
@@ -2746,7 +3098,12 @@ def run_holdout_stage(
         }
     except Exception as error:  # 失败如实落盘，绝不伪造正常产物
         summary = _write_stage_failure(
-            config.run_dir, config, stage="holdout", status="FAILED", error=error
+            config.run_dir,
+            config,
+            stage="holdout",
+            status="FAILED",
+            error=error,
+            partial_products=_existing_products(config.run_dir),
         )
         return {
             "status": "FAILED",
@@ -2763,6 +3120,7 @@ def run_holdout_stage(
 # holdout 产物写出（§11.2 固定文件集）+ 阶段编排入口
 # ---------------------------------------------------------------------------
 HOLDOUT_PRODUCT_FILES = (
+    OLD_RUN_GATE_FILE,
     "run_config.json",
     "environment.json",
     "tasks.json",
@@ -2857,6 +3215,7 @@ def _holdout_summary(payload: Mapping[str, Any]) -> dict[str, Any]:
         },
         "identifiability": _identifiability_summary(payload["audit"]),
         "fairness": _fairness_summary(payload["fairness"]),
+        "inference_exclusions": dict(payload.get("inference_exclusions") or {}),
         "primary_endpoint_summary": _primary_endpoint_payload(payload["endpoint_rows"]),
         "null_disclosure": _null_disclosure(payload["summary_rows"]),
         "fallback_metrics_note": FALLBACK_NOTE,
@@ -3243,6 +3602,9 @@ _NOT_APPROVED = (
 )
 
 __all__ = [
+    "INFERENCE_EXCLUSION_RULE",
+    "OLD_M2_RUN_ID",
+    "OLD_RUN_GATE_FILE",
     "FALLBACK_NOTE",
     "FIGURES_NOTE",
     "HOLDOUT_PRODUCT_FILES",
@@ -3256,7 +3618,10 @@ __all__ = [
     "build_proxy_artifacts",
     "expected_holdout_plan",
     "holdout_split_tasks",
+    "inference_rows_excluding_clones",
     "load_holdout_prerequisites",
+    "prepare_old_run_gate",
+    "snapshot_old_m2_run",
     "main",
     "reference_objectives_by_task",
     "run_calibration_stage",

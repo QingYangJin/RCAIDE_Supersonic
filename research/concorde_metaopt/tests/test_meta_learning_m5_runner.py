@@ -50,12 +50,12 @@ EXPECTED_GROUPS = HOLDOUT_TASKS * len(HOLDOUT_SEEDS)
 EXPECTED_RUNS = EXPECTED_GROUPS * len(HOLDOUT_BUDGETS) * 4
 EXPECTED_EVALUATIONS = EXPECTED_GROUPS * sum(4 * budget for budget in HOLDOUT_BUDGETS)
 FIGURE_KEYS = (
-    "fig1_meta_loss_curves",
-    "fig2_k_shot_rmse_mae",
-    "fig3_feasibility",
-    "fig4_equal_budget_optimization",
-    "fig5_arm_identifiability_and_cost",
-    "fig6_issue4_progress",
+    "fig1_meta_training_loss",
+    "fig2_k_shot_adaptation",
+    "fig3_feasible_rate",
+    "fig4_equal_budget_gap",
+    "fig5_fairness_audit",
+    "fig6_airframe_gate_progress",
 )
 
 _TEMP_ROOTS: list[Path] = []
@@ -595,10 +595,10 @@ class M5HoldoutStageTests(unittest.TestCase):
         for name, item in figures.items():
             self.assertIsInstance(item, dict, name)
             self.assertIn(item["status"], ("DATA_READY", "NOT_AVAILABLE", "NOT_RUN", "NOT_APPLICABLE_THIS_STAGE"))
-        self.assertEqual(figures["fig1_meta_loss_curves"]["status"], "DATA_READY")
-        self.assertEqual(figures["fig2_k_shot_rmse_mae"]["status"], "NOT_APPLICABLE_THIS_STAGE")
-        self.assertEqual(figures["fig6_issue4_progress"]["status"], "NOT_RUN")
-        for name in ("fig3_feasibility", "fig4_equal_budget_optimization", "fig5_arm_identifiability_and_cost"):
+        self.assertEqual(figures["fig1_meta_training_loss"]["status"], "DATA_READY")
+        self.assertEqual(figures["fig2_k_shot_adaptation"]["status"], "NOT_APPLICABLE_THIS_STAGE")
+        self.assertEqual(figures["fig6_airframe_gate_progress"]["status"], "NOT_RUN")
+        for name in ("fig3_feasible_rate", "fig4_equal_budget_gap", "fig5_fairness_audit"):
             self.assertIn(figures[name]["status"], ("DATA_READY", "NOT_AVAILABLE"), name)
         self.assertIn("NOT_RUN", status_payload["note"])
         data = _read_json(run_dir / "figures" / "figure_data.json")
@@ -781,3 +781,91 @@ class M5HoldoutStageTests(unittest.TestCase):
         self.assertFalse((destination / "metrics").exists())
         self.assertFalse((destination / "optimization_history.csv").exists())
         self.assertFalse((destination / "figures").exists())
+
+class M5OldRunImmutabilityGateTests(unittest.TestCase):
+    """F02：旧 48,000 评价 M2 run 不可变性门禁（PASS/FAIL/NOT_AVAILABLE 三态）。"""
+
+    def _fabricate_old_run(self, root: Path, *, tamper: bool = False) -> Path:
+        run_dir = root / m5.OLD_M2_RUN_ID
+        run_dir.mkdir(parents=True, exist_ok=True)
+        files = {
+            "metrics/metrics.csv": "arm,budget,value\nOPT-BO-rand,64,1.0\n".encode("utf-8"),
+            "summary.json": json.dumps({"status": "VALID", "physical_call_count": 0}, sort_keys=True).encode(
+                "utf-8"
+            ),
+        }
+        entries = []
+        for rel, data in files.items():
+            path = run_dir / rel
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_bytes(data)
+            canonical = data.replace(bytes([13, 10]), bytes([10]))
+            entries.append(
+                {
+                    "path": rel,
+                    "hash_mode": "canonical_lf",
+                    "bytes": len(canonical),
+                    "sha256": m5.hashlib.sha256(canonical).hexdigest(),
+                }
+            )
+        manifest = {
+            "schema_version": "2.0.0",
+            "file_count": len(entries),
+            "total_bytes": sum(int(entry["bytes"]) for entry in entries),
+            "files": entries,
+        }
+        (run_dir / "data_manifest.json").write_text(
+            json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8", newline="\n"
+        )
+        if tamper:
+            (run_dir / "summary.json").write_bytes(files["summary.json"].replace(b"VALID", b"TAMPER"))
+        return run_dir
+
+    def test_19_gate_pass_and_enforced(self) -> None:
+        root = _new_root()
+        self._fabricate_old_run(root)
+        before = m5.snapshot_old_m2_run(root)
+        self.assertEqual(before["status"], "PASS")
+        self.assertEqual(int(before["mismatch_count"]), 0)
+        config = _tiny_config(root, stage="calibration", run_id="gate-pass")
+        gate = m5.prepare_old_run_gate(config, before=before, stage="calibration")
+        self.assertEqual(gate["status"], "PASS")
+        self.assertTrue(gate["enforced"])
+        self.assertEqual(gate["enforcement"], "ENFORCED")
+        self.assertTrue((config.run_dir / m5.OLD_RUN_GATE_FILE).is_file())
+        m5.assert_old_run_unchanged_after_write(config, gate=gate, stage="calibration")
+
+    def test_20_gate_fail_closed_on_tamper(self) -> None:
+        root = _new_root()
+        self._fabricate_old_run(root, tamper=True)
+        before = m5.snapshot_old_m2_run(root)
+        self.assertEqual(before["status"], "FAIL")
+        self.assertGreaterEqual(int(before["mismatch_count"]), 1)
+        config = _tiny_config(root, stage="calibration", run_id="gate-fail")
+        with self.assertRaises(m5.M5RunnerError):
+            m5.prepare_old_run_gate(config, before=before, stage="calibration")
+
+    def test_21_gate_not_available_is_disclosed_not_enforced(self) -> None:
+        root = _new_root()
+        before = m5.snapshot_old_m2_run(root)
+        self.assertEqual(before["status"], "NOT_AVAILABLE")
+        config = _tiny_config(root, stage="calibration", run_id="gate-na")
+        gate = m5.prepare_old_run_gate(config, before=before, stage="calibration")
+        self.assertEqual(gate["status"], "NOT_AVAILABLE")
+        self.assertFalse(gate["enforced"])
+        self.assertEqual(gate["enforcement"], "NOT_ENFORCED_OLD_RUN_UNAVAILABLE")
+        payload = _read_json(config.run_dir / m5.OLD_RUN_GATE_FILE)
+        self.assertFalse(payload["enforced"])
+
+    def test_22_gate_manifest_change_between_snapshots_fails(self) -> None:
+        root = _new_root()
+        run_dir = self._fabricate_old_run(root)
+        before = m5.snapshot_old_m2_run(root)
+        self.assertEqual(before["status"], "PASS")
+        manifest_path = run_dir / "data_manifest.json"
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        manifest["note"] = "changed between snapshots"
+        manifest_path.write_text(json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8", newline="\n")
+        config = _tiny_config(root, stage="calibration", run_id="gate-change")
+        with self.assertRaises(m5.M5RunnerError):
+            m5.prepare_old_run_gate(config, before=before, stage="calibration")

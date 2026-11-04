@@ -341,24 +341,24 @@ class M6EndToEndTests(unittest.TestCase):
         run_dir = Path(self.study_result["run_dir"])
         status = _read_json(run_dir / "figures" / "figure_status.json")
         self.assertEqual(status["status"], "PARTIAL")
-        self.assertEqual(status["figures"]["fig1_meta_loss_curves"], "READY")
-        self.assertEqual(status["figures"]["fig2_k_shot_error"], "READY")
+        self.assertEqual(status["figures"]["fig1_meta_training_loss"], "READY")
+        self.assertEqual(status["figures"]["fig2_k_shot_adaptation"], "READY")
         for name in (
-            "fig3_feasibility_first_feasible",
-            "fig4_equal_budget_curve",
-            "fig5_identifiability_audit",
-            "fig6_vspaero_rcside_progress",
+            "fig3_feasible_rate",
+            "fig4_equal_budget_gap",
+            "fig5_fairness_audit",
+            "fig6_airframe_gate_progress",
         ):
             self.assertEqual(status["figures"][name], "NOT_RUN")
         self.assertEqual(list((run_dir / "figures").glob("*.png")), [])
         figure_data = _read_json(run_dir / "figures" / "figure_data.json")
-        fig1 = figure_data["figures"]["fig1_meta_loss_curves"]
+        fig1 = figure_data["figures"]["fig1_meta_training_loss"]
         self.assertEqual(fig1["status"], "READY")
         self.assertIn("meta0-M", fig1["series"])
         self.assertIn("meta0-P", fig1["series"])
         series = fig1["series"]["meta0-M"]
         self.assertEqual(series["x"], sorted(series["x"]))
-        fig2 = figure_data["figures"]["fig2_k_shot_error"]
+        fig2 = figure_data["figures"]["fig2_k_shot_adaptation"]
         self.assertEqual(fig2["status"], "READY")
         self.assertTrue(fig2["rows"])
         degradation = fig2["degradation_diagnostic"]

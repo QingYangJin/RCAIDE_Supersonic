@@ -1546,13 +1546,13 @@ def build_figure_data(
             "degraded": bool(ratio is not None and ratio > DEGRADATION_RATIO),
         }
     figures = {
-        "fig1_meta_loss_curves": {
+        "fig1_meta_training_loss": {
             "status": "READY" if fig1_series else "NOT_AVAILABLE",
             "title": "图1 元训练/预训练损失曲线（多 seed）",
             "series": fig1_series,
             "note": "MAML 元验证损失未记录时标 NOT_AVAILABLE，不补假曲线",
         },
-        "fig2_k_shot_error": {
+        "fig2_k_shot_adaptation": {
             "status": "READY" if fig2_rows else "NOT_AVAILABLE",
             "title": "图2 K-shot MAE/RMSE（按族与 OOD 分列，原始值与标准化值并列）",
             "rows": fig2_rows,
@@ -1560,19 +1560,19 @@ def build_figure_data(
             "degradation_diagnostic": degradation,
             "note": "不同函数族原始目标值不可混合比较；标准化值同图分面展示",
         },
-        "fig3_feasibility_first_feasible": {
+        "fig3_feasible_rate": {
             "status": "NOT_RUN",
             "note": "可行率/first_feasible 图归 M5 holdout 产物（m5_runner figures/），本模块不重复绘图",
         },
-        "fig4_equal_budget_curve": {
+        "fig4_equal_budget_gap": {
             "status": "NOT_RUN",
             "note": "等预算 best_feasible/gap 曲线归 M5 holdout 产物，本模块不重复绘图",
         },
-        "fig5_identifiability_audit": {
+        "fig5_fairness_audit": {
             "status": "NOT_RUN",
             "note": "识别臂/代理成本审计图归 M5 holdout 产物（arm_audit/clone_audit），本模块引用不重绘",
         },
-        "fig6_vspaero_rcside_progress": {
+        "fig6_airframe_gate_progress": {
             "status": "NOT_RUN",
             "note": "fig6 归 Issue #4 D-12D-004（VSPAERO/RCAIDE 回退气动油耗+A/B/C 预算门禁联合进度）；P4-CODE 阶段 not_approved，禁止用非物理数值充图",
         },
