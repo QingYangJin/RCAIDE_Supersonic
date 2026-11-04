@@ -13,7 +13,9 @@
 | scripts/vspaero7_runner_v1frozen.py（基线，未改） | 837 | 30373 | b77b56526acab6ac03ee07838d06970f2bd98d298aae597997bf393474128a36 |
 | scripts/vspaero7_runner_v2.py（rev2 加固） | 1330 | 53392 | 08212a29502583b9c554c9f0dc3301a8ba24a773344d35692c0a9d00780f988a |
 | scripts/test_vspaero7_runner_v2.py（rev2） | 527 | 23488 | c5b7e4063fe506d5db23e85213b79b017ed75660072e6f663bc8b13c4a59fdb7 |
-| evidence/a0/ld002_test_run.log（首版 38 tests） | - | 4388 | b59332cb8b7f2f2a4e677fc8d912329da824ffd5b87de6f04ab67e9ad2ac7100 |
+| evidence/a0/ld002_test_run.log（首版 38 tests；交付形态 canonical-LF） | - | 4345 | a34c9e282a9d8dd5c98561d24d042a7eb003a56f02b0e6cdbbc90eb4ca7f9705 |
+
+注：`.log` 工作树形态为 CRLF，`.gitattributes`（`* text=auto eol=lf`）提交时归一化为 canonical-LF；上表按**提交 blob（canonical-LF）**记录，可从干净 checkout 逐字节复现。
 | evidence/a0/v2rev2_test_run.log（rev2 46 tests） | - | 319 | 03757b371510dee2db6efe87ac7928324fe2b4dd8deb032b47c97ac50fe7748f |
 
 SCHEMA_VERSION 由 `d12d004-runner-1` 升为 `d12d005-runner-2`，rev2 加固后升为 `d12d005-runner-3`；公共 API 保持向后兼容（parse_setup_text / read_setup_file / validate_setup_fields / inject_contract_fields / require_setup_success / validate_history_file / assert_new_format_only / assert_no_solver_artifacts / start_solver 等函数名与异常类名不变）。

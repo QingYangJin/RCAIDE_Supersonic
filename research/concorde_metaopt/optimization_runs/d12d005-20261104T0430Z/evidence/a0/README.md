@@ -197,9 +197,11 @@ A5 对 v2 解析器 delta 给 CHANGES_REQUESTED（0/3/5：V2-M01/M02/M03），�
 
 verifier revision 3 结果：**263 checks PASS / 0 failed**（`a0_verification.json`，schema `d12d005-a0-verification-2`）。`setup_generation.json` revision 3 同步记录 8 个脚本的双形态哈希。
 
+**干净 checkout 复跑（revision 3）**：`evidence/a0/a0_verification_checkout_rev3.log`（896 B；纯 LF 生成，raw = canonical-LF，sha256 `d498c2ecc00fe483d0a144ea2d2f2fc16104b6a58acd38173e115c48744d65bd`），在 detached worktree @ `0790f17`（revision 3 checkpoint，v2 rev2 + evidence rev3）、`git status` 全干净的条件下以 `--no-write` 重跑 verifier，结果 **263 checks PASS / 0 failed**；日志显式记录 `checks_failed: 0`、`solver_processes_started: 0`、命令与 commit，且 `--no-write` 不重写 tracked 的 `a0_verification.json`。
+
 ## 12. 下一步（等待门禁）
 
 1. ~~A1 交付 v2 解析器（LD-002）+ 回归测试 → A5 复核。~~ 已完成（`ab29a0c` 首版 + rev2 加固；46 tests OK）。
-2. ~~A5 复核本 A0 包（setup/回读/负控制/零求解）。~~ A0 revision 2 = `APPROVE_FOR_A_BATCH1`（task-106）；v2 delta = CHANGES_REQUESTED（task-103）→ 本 revision 3 已处置，待 A5 delta 复核。
+2. ~~A5 复核本 A0 包（setup/回读/负控制/零求解）。~~ A0 revision 2 = `APPROVE_FOR_A_BATCH1`（task-106）；v2 delta = CHANGES_REQUESTED（task-103）→ revision 3 已处置并在干净 checkout @ `0790f17` 重放通过（263/0），待 A5 delta 复核。
 3. A3 复核 worktree 隔离与提交（A0 baseline + rev2 + rev3 delta）。
 4. Lead 在上述通过后授权 **A 类第一批 ≤6**（S0–S5），由 A2 串行执行并逐案记账。
