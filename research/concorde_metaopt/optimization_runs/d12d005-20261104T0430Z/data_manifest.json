@@ -2,7 +2,7 @@
   "schema": "d12d005-data-manifest-1",
   "schema_version": "1.0.0",
   "run_id": "d12d005-20261104T0430Z",
-  "generated_utc": "2026-11-04T14:35:37Z",
+  "generated_utc": "2026-11-04T14:37:43Z",
   "run_dir": "research/concorde_metaopt/optimization_runs/d12d005-20261104T0430Z",
   "repo": {
     "path": "D:/RCAIDE-d12d005",
@@ -15,15 +15,22 @@
   ],
   "canonical_lf_definition": "sha256 over bytes after replacing every CRLF (0x0D 0x0A) with LF (0x0A); applied only to UTF-8 text files; equal to raw when the file is already LF.",
   "verification_scope": "run_dir files + docs-report + 5 figures + external audit artifacts",
+  "checkout_verification": {
+    "worktree_eol": "mixed: 186 run-dir files are CRLF in the original worktree",
+    "committed_blob_eol": "LF for text files (.gitattributes: * text=auto eol=lf)",
+    "worktree_raw_sha": "sha256_raw records the original pre-commit worktree bytes",
+    "clean_checkout_rule": "for is_text files compare sha256_canonical_lf against the checkout bytes; for binary files compare sha256_raw",
+    "verifier_source_git": "python -E -s -B verify_d12d005_package.py --source-git HEAD"
+  },
   "path_conventions": {
     "run_dir_paths": "relative to run_dir",
     "repo_referenced_paths": "repo-relative (docs/... are repo-relative; deliverables are run-dir-relative)",
     "external_artifact_paths": "absolute machine-specific locators (EXT state dir, OpenVSP install, worktrees); sha256/bytes are authoritative; in-repo evidence is fully reproducible from repo + external sha manifest"
   },
   "totals": {
-    "run_dir_files": 511,
-    "run_dir_bytes": 13268029,
-    "run_dir_text_files": 501,
+    "run_dir_files": 512,
+    "run_dir_bytes": 13272993,
+    "run_dir_text_files": 502,
     "run_dir_raw_crlf_files": 186,
     "external_entries": 37
   },
@@ -366,20 +373,20 @@
     {
       "path": "approval_and_budget_ledger.json",
       "bytes": 3583,
-      "sha256_raw": "3cafccc2fc4a4ff223f158532eb9436d84176f734af197e76ea25d558ba7b44b",
+      "sha256_raw": "cc2d70f9981f9f1ea63efc9d1e20fdb6144a76b3c8dc99e541bbf65901c89722",
       "is_text": true,
       "eol": "lf",
       "outside_git": false,
-      "sha256_canonical_lf": "3cafccc2fc4a4ff223f158532eb9436d84176f734af197e76ea25d558ba7b44b"
+      "sha256_canonical_lf": "cc2d70f9981f9f1ea63efc9d1e20fdb6144a76b3c8dc99e541bbf65901c89722"
     },
     {
       "path": "drag_component_ledger.json",
       "bytes": 4455,
-      "sha256_raw": "9cd12fb783eae379652299cf1b894c524b6b0f46780d4dcd15ebc22566ac8d65",
+      "sha256_raw": "906e0dc6615d68bf7997eba6bf601db8ba9f8f9aaf44f6a70ceda3d3c626bef1",
       "is_text": true,
       "eol": "lf",
       "outside_git": false,
-      "sha256_canonical_lf": "9cd12fb783eae379652299cf1b894c524b6b0f46780d4dcd15ebc22566ac8d65"
+      "sha256_canonical_lf": "906e0dc6615d68bf7997eba6bf601db8ba9f8f9aaf44f6a70ceda3d3c626bef1"
     },
     {
       "path": "evaluations.jsonl",
@@ -393,20 +400,20 @@
     {
       "path": "rcaide_fallback_results.json",
       "bytes": 1813,
-      "sha256_raw": "747ea32eed81bf53fe629328b0bb9928f256a13012653c8079c3e283aaa6b819",
+      "sha256_raw": "af893a4bd47991f9093cce1503d663605eadc7e3fc70b8bffaba3c782eaddc9f",
       "is_text": true,
       "eol": "lf",
       "outside_git": false,
-      "sha256_canonical_lf": "747ea32eed81bf53fe629328b0bb9928f256a13012653c8079c3e283aaa6b819"
+      "sha256_canonical_lf": "af893a4bd47991f9093cce1503d663605eadc7e3fc70b8bffaba3c782eaddc9f"
     },
     {
       "path": "run_config.json",
       "bytes": 5120,
-      "sha256_raw": "a2d39746c6b4a0b6d20051a6b8af7b5973e9ab04dd61a51c0af4c20e992ecda8",
+      "sha256_raw": "d27bd00a7bc05183e8c42991c1186d839c6876575089c43768630be09ee1a2f8",
       "is_text": true,
       "eol": "lf",
       "outside_git": false,
-      "sha256_canonical_lf": "a2d39746c6b4a0b6d20051a6b8af7b5973e9ab04dd61a51c0af4c20e992ecda8"
+      "sha256_canonical_lf": "d27bd00a7bc05183e8c42991c1186d839c6876575089c43768630be09ee1a2f8"
     },
     {
       "path": "solver_case_matrix.csv",
@@ -420,29 +427,29 @@
     {
       "path": "su2_crosscheck.json",
       "bytes": 806,
-      "sha256_raw": "66c4b584a93f825db714c9db8ef7d8f54f7ec4aef525ecbb8fad698dd1f3aa2a",
+      "sha256_raw": "0e97c3ea692011b09a91bf2ff1ec78e33739e189811fb1eac23dedbb2cc68c37",
       "is_text": true,
       "eol": "lf",
       "outside_git": false,
-      "sha256_canonical_lf": "66c4b584a93f825db714c9db8ef7d8f54f7ec4aef525ecbb8fad698dd1f3aa2a"
+      "sha256_canonical_lf": "0e97c3ea692011b09a91bf2ff1ec78e33739e189811fb1eac23dedbb2cc68c37"
     },
     {
       "path": "summary.json",
       "bytes": 13057,
-      "sha256_raw": "b9608d3fe56c7cbe3b77d1778ea48d6fb5ee6bc87cc45cb6891c973b2787a560",
+      "sha256_raw": "8694b0018c6afa103b50d6389f925d820f18823f4e1fe97179eff9674d4905ce",
       "is_text": true,
       "eol": "lf",
       "outside_git": false,
-      "sha256_canonical_lf": "b9608d3fe56c7cbe3b77d1778ea48d6fb5ee6bc87cc45cb6891c973b2787a560"
+      "sha256_canonical_lf": "8694b0018c6afa103b50d6389f925d820f18823f4e1fe97179eff9674d4905ce"
     },
     {
       "path": "vspaero_diagnostics.json",
       "bytes": 22673,
-      "sha256_raw": "1c72659c56c0d7c3b12f0d34154ed6ed52ce5c252be88d3e9598c49ecad12f04",
+      "sha256_raw": "145799c91bcddde2ad8cd083df38ee814cf70722a3e338cd9c3ca64f09b859f0",
       "is_text": true,
       "eol": "lf",
       "outside_git": false,
-      "sha256_canonical_lf": "1c72659c56c0d7c3b12f0d34154ed6ed52ce5c252be88d3e9598c49ecad12f04"
+      "sha256_canonical_lf": "145799c91bcddde2ad8cd083df38ee814cf70722a3e338cd9c3ca64f09b859f0"
     },
     {
       "path": "config/approval_and_budget_ledger.json",
@@ -474,11 +481,11 @@
     {
       "path": "evidence/batch2_corrections.json",
       "bytes": 1653,
-      "sha256_raw": "d150f9f075399d47fa876d11e34c36bac4e445b60618c52bca4fa00c67e8fd96",
+      "sha256_raw": "4737463ef5d6ca0cb3ec33f89bf75ddb2ab63c4aae762f44940509e3b2efd2e1",
       "is_text": true,
       "eol": "lf",
       "outside_git": false,
-      "sha256_canonical_lf": "d150f9f075399d47fa876d11e34c36bac4e445b60618c52bca4fa00c67e8fd96"
+      "sha256_canonical_lf": "4737463ef5d6ca0cb3ec33f89bf75ddb2ab63c4aae762f44940509e3b2efd2e1"
     },
     {
       "path": "evidence/a0/README.md",
@@ -4855,12 +4862,12 @@
     },
     {
       "path": "scripts/build_d12d005_package.py",
-      "bytes": 59210,
-      "sha256_raw": "f46c41e29a8a7f47a84cb28221e414609f9d7fcd78d163ca178a312f6b4f9154",
+      "bytes": 59749,
+      "sha256_raw": "313b16a102f846bad9936fe13e2111b5766e01b4bb6921987e1c9f9599dd7352",
       "is_text": true,
       "eol": "lf",
       "outside_git": false,
-      "sha256_canonical_lf": "f46c41e29a8a7f47a84cb28221e414609f9d7fcd78d163ca178a312f6b4f9154"
+      "sha256_canonical_lf": "313b16a102f846bad9936fe13e2111b5766e01b4bb6921987e1c9f9599dd7352"
     },
     {
       "path": "scripts/freeze_v1b_evidence.py",
@@ -4888,6 +4895,15 @@
       "eol": "lf",
       "outside_git": false,
       "sha256_canonical_lf": "235f00e116e7264d389811ac4ebee7f480e04a125b099e35e13387b5b311e388"
+    },
+    {
+      "path": "scripts/patch_checkout_verification.py",
+      "bytes": 2874,
+      "sha256_raw": "929669ea4119b2283f91354d8aa495b34766fb8939ba28276a4335af01814f91",
+      "is_text": true,
+      "eol": "lf",
+      "outside_git": false,
+      "sha256_canonical_lf": "929669ea4119b2283f91354d8aa495b34766fb8939ba28276a4335af01814f91"
     },
     {
       "path": "scripts/report_block.txt",
@@ -4927,12 +4943,12 @@
     },
     {
       "path": "scripts/verify_d12d005_package.py",
-      "bytes": 9465,
-      "sha256_raw": "2f608be7f0e77b61963ac9c1fb77a93a414a419f8b26352cd415c38fa55ac2dd",
+      "bytes": 11016,
+      "sha256_raw": "6e6f8f64a14094ee23b48200d8a0a6b0e279fa9094bacf98cbf2cdbe94115d75",
       "is_text": true,
       "eol": "lf",
       "outside_git": false,
-      "sha256_canonical_lf": "2f608be7f0e77b61963ac9c1fb77a93a414a419f8b26352cd415c38fa55ac2dd"
+      "sha256_canonical_lf": "6e6f8f64a14094ee23b48200d8a0a6b0e279fa9094bacf98cbf2cdbe94115d75"
     },
     {
       "path": "scripts/vspaero7_runner_v1frozen.py",

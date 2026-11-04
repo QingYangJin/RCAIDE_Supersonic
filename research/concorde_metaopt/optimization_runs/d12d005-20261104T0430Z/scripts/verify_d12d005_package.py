@@ -183,6 +183,46 @@ chk('vsp_gate3', 'CANNOT_REACH_PHYSICAL_VALIDATION' in vsp['gate_notes']['gate3'
 drg = json.load(open(RUN_DIR + '/drag_component_ledger.json', encoding='utf-8'))
 chk('drag_no_wave', drg['components']['wave_drag']['available'] is False and drg['components']['body_correction']['available'] is False)
 
+
+def verify_from_git(rev):
+    import subprocess
+    items = []
+    for rel, rec in sorted(listed.items()):
+        items.append((RUN_REL + '/' + rel, rec))
+    for e in M['external_artifacts']:
+        if e.get('outside_git') is False and e['kind'] in ('report', 'figure_zh'):
+            items.append((e['path'], e))
+    reqs = b''.join((rev + ':' + p + chr(10)).encode('utf-8') for p, _ in items)
+    proc = subprocess.Popen(['git', '-C', REPO, 'cat-file', '--batch'], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+    out, _ = proc.communicate(reqs)
+    bad = []
+    i = 0
+    for p, rec in items:
+        nl = out.index(bytes([10]), i)
+        header = out[i:nl]
+        i = nl + 1
+        parts = header.split(b' ')
+        if len(parts) < 3 or parts[1] != b'blob':
+            bad.append((p, 'not_blob', header[:80].decode('utf-8', 'replace')))
+            continue
+        size = int(parts[2])
+        blob = out[i:i + size]
+        i += size + 1
+        if rec.get('is_text'):
+            live = sha(blob.replace(bytes([13, 10]), bytes([10])))
+            ok = live == rec.get('sha256_canonical_lf')
+        else:
+            live = sha(blob)
+            ok = live == rec['sha256_raw']
+        if not ok:
+            bad.append((p, rec.get('sha256_raw'), rec.get('sha256_canonical_lf'), live))
+    chk('git_blob_verification', not bad, {'items': len(items), 'bad': bad[:5]})
+
+if '--source-git' in sys.argv:
+    idx = sys.argv.index('--source-git')
+    rev = sys.argv[idx + 1] if len(sys.argv) > idx + 1 else 'HEAD'
+    verify_from_git(rev)
+
 result = {'checks': len(checks), 'failed': [c for c in checks if not c['ok']], 'passed': sum(1 for c in checks if c['ok'])}
 print(json.dumps(result, ensure_ascii=False, indent=2))
 sys.exit(0 if not result['failed'] else 1)

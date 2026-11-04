@@ -962,6 +962,13 @@ MANIFEST = {
     'hash_modes': ['sha256_raw', 'sha256_canonical_lf'],
     'canonical_lf_definition': 'sha256 over bytes after replacing every CRLF (0x0D 0x0A) with LF (0x0A); applied only to UTF-8 text files; equal to raw when the file is already LF.',
     'verification_scope': 'run_dir files + docs-report + 5 figures + external audit artifacts',
+    'checkout_verification': {
+        'worktree_eol': 'mixed: 186 run-dir files are CRLF in the original worktree',
+        'committed_blob_eol': 'LF for text files (.gitattributes: * text=auto eol=lf)',
+        'worktree_raw_sha': 'sha256_raw records the original pre-commit worktree bytes',
+        'clean_checkout_rule': 'for is_text files compare sha256_canonical_lf against the checkout bytes; for binary files compare sha256_raw',
+        'verifier_source_git': 'python -E -s -B verify_d12d005_package.py --source-git HEAD',
+    },
     'path_conventions': {
         'run_dir_paths': 'relative to run_dir',
         'repo_referenced_paths': 'repo-relative (docs/... are repo-relative; deliverables are run-dir-relative)',
