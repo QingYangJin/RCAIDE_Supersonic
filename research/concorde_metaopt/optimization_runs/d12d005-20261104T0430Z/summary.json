@@ -1,7 +1,7 @@
 {
   "schema": "d12d005-summary-1",
   "run_id": "d12d005-20261104T0430Z",
-  "generated_utc": "2026-11-04T14:37:43Z",
+  "generated_utc": "2026-11-04T15:48:15Z",
   "status": "A_LINE_CLOSED_VSPAERO_NOT_VALIDATED_BATCH2_EXECUTED_AND_REVIEWED",
   "round": "D-12D-005",
   "authority": {
@@ -16,7 +16,9 @@
     "head_short": "c1168ec",
     "main_head": "ec65e5a",
     "merged_to_main": false,
-    "pushed": false
+    "pushed": true,
+    "pushed_note": "package commits up to cb45917 pushed to origin/research/d12d005-aero-fallback; the commit for this revision is recorded in the Issue #4 receipt",
+    "as_of_git_snapshot": "c1168ec656160a3e35e5e157050e98ac1fde8cdf (execution HEAD snapshot at build time)"
   },
   "physical_accounting": {
     "solver_starts": 14,
@@ -124,6 +126,7 @@
     "run_dir": "research/concorde_metaopt/optimization_runs/d12d005-20261104T0430Z",
     "batch2_files": 241,
     "batch2_bytes": 7788381,
+    "batch2_bytes_scope": "pre-commit worktree raw bytes of evidence/batch2 (241 files); clean checkout bytes are slightly smaller because git normalizes tracked text files to LF (see data_manifest.checkout_verification).",
     "batch2_results_sha256": "0ffb4906d65ee6d52f047b39add3d94ccf2d3c187a84382d47a6f7927e3c9a06",
     "batch2_ledger_rows": 16,
     "batch2_final_checks": "36/36 PASS",
@@ -164,8 +167,8 @@
     ],
     "report": {
       "path": "docs/reviews/d12d005_batch2_report_20261104.md",
-      "sha256_raw": "970e38ade5a3acf33b9a88f4f0f691b2d0c6bd95b0c662fc8e168d0b36251b7c",
-      "bytes": 18562
+      "sha256_raw": "c5a13fc7a1d5efff83cb3a05513450e130b30b5b6e97ffe8b0ff3cabf04ebc79",
+      "bytes": 18721
     }
   },
   "review_refs": {
@@ -242,57 +245,57 @@
   "deliverables": [
     {
       "path": "run_config.json",
-      "bytes": 5120,
-      "sha256_raw": "d27bd00a7bc05183e8c42991c1186d839c6876575089c43768630be09ee1a2f8",
-      "sha256_canonical_lf": "d27bd00a7bc05183e8c42991c1186d839c6876575089c43768630be09ee1a2f8"
+      "bytes": 8268,
+      "sha256_raw": "b3d9522e2e0245e3a7277476972b0fe9db93b24ea902756c6de8b8962e1da095",
+      "sha256_canonical_lf": "b3d9522e2e0245e3a7277476972b0fe9db93b24ea902756c6de8b8962e1da095"
     },
     {
       "path": "approval_and_budget_ledger.json",
       "bytes": 3583,
-      "sha256_raw": "cc2d70f9981f9f1ea63efc9d1e20fdb6144a76b3c8dc99e541bbf65901c89722",
-      "sha256_canonical_lf": "cc2d70f9981f9f1ea63efc9d1e20fdb6144a76b3c8dc99e541bbf65901c89722"
+      "sha256_raw": "a58c9454263a8f32cb09e0e237b88ad387c3b95dae2ee6354c3238bbcc049346",
+      "sha256_canonical_lf": "a58c9454263a8f32cb09e0e237b88ad387c3b95dae2ee6354c3238bbcc049346"
     },
     {
       "path": "evaluations.jsonl",
-      "bytes": 31594,
-      "sha256_raw": "90d384c764c0fb3b486fce799569c99f5edf226d85fa6a8f5e2ce74c7cdfb692",
-      "sha256_canonical_lf": "90d384c764c0fb3b486fce799569c99f5edf226d85fa6a8f5e2ce74c7cdfb692"
+      "bytes": 31621,
+      "sha256_raw": "6cb3d729b28e22557debab42528d8f05293c061d13afe3499d89e7ab0ef6c9f8",
+      "sha256_canonical_lf": "6cb3d729b28e22557debab42528d8f05293c061d13afe3499d89e7ab0ef6c9f8"
     },
     {
       "path": "solver_case_matrix.csv",
-      "bytes": 7109,
-      "sha256_raw": "3e4e587d77d511f2306fd1d8f0dc40ed189c3cf578bbe29dca2e2cb7775b891f",
-      "sha256_canonical_lf": "3e4e587d77d511f2306fd1d8f0dc40ed189c3cf578bbe29dca2e2cb7775b891f"
+      "bytes": 7138,
+      "sha256_raw": "e09fa6c3e225a0d2778f0e7b08eed74230e42dab27ebe8ae981124bae6f7dbd0",
+      "sha256_canonical_lf": "e09fa6c3e225a0d2778f0e7b08eed74230e42dab27ebe8ae981124bae6f7dbd0"
     },
     {
       "path": "vspaero_diagnostics.json",
-      "bytes": 22673,
-      "sha256_raw": "145799c91bcddde2ad8cd083df38ee814cf70722a3e338cd9c3ca64f09b859f0",
-      "sha256_canonical_lf": "145799c91bcddde2ad8cd083df38ee814cf70722a3e338cd9c3ca64f09b859f0"
+      "bytes": 29535,
+      "sha256_raw": "0d30e2e3992cfbce798b84c9245fc4789317cf2a71a019f1232e19a9b4cce5a9",
+      "sha256_canonical_lf": "0d30e2e3992cfbce798b84c9245fc4789317cf2a71a019f1232e19a9b4cce5a9"
     },
     {
       "path": "rcaide_fallback_results.json",
       "bytes": 1813,
-      "sha256_raw": "af893a4bd47991f9093cce1503d663605eadc7e3fc70b8bffaba3c782eaddc9f",
-      "sha256_canonical_lf": "af893a4bd47991f9093cce1503d663605eadc7e3fc70b8bffaba3c782eaddc9f"
+      "sha256_raw": "152c7e5e68f1ec39df4efc887f2afa416b3cece6898d5ec93e0cc0e87bd1a8c4",
+      "sha256_canonical_lf": "152c7e5e68f1ec39df4efc887f2afa416b3cece6898d5ec93e0cc0e87bd1a8c4"
     },
     {
       "path": "su2_crosscheck.json",
       "bytes": 806,
-      "sha256_raw": "0e97c3ea692011b09a91bf2ff1ec78e33739e189811fb1eac23dedbb2cc68c37",
-      "sha256_canonical_lf": "0e97c3ea692011b09a91bf2ff1ec78e33739e189811fb1eac23dedbb2cc68c37"
+      "sha256_raw": "5c6dbe68f2ebf4ce487dfcc9602e104338c8ad1278ffa22bdcc59a5b5500f9e3",
+      "sha256_canonical_lf": "5c6dbe68f2ebf4ce487dfcc9602e104338c8ad1278ffa22bdcc59a5b5500f9e3"
     },
     {
       "path": "drag_component_ledger.json",
       "bytes": 4455,
-      "sha256_raw": "906e0dc6615d68bf7997eba6bf601db8ba9f8f9aaf44f6a70ceda3d3c626bef1",
-      "sha256_canonical_lf": "906e0dc6615d68bf7997eba6bf601db8ba9f8f9aaf44f6a70ceda3d3c626bef1"
+      "sha256_raw": "0ff4fa200fe41bed0c2de06df82ba5f1116dac265d956e341add76803a6475cc",
+      "sha256_canonical_lf": "0ff4fa200fe41bed0c2de06df82ba5f1116dac265d956e341add76803a6475cc"
     },
     {
       "path": "evidence/batch2_corrections.json",
       "bytes": 1653,
-      "sha256_raw": "4737463ef5d6ca0cb3ec33f89bf75ddb2ab63c4aae762f44940509e3b2efd2e1",
-      "sha256_canonical_lf": "4737463ef5d6ca0cb3ec33f89bf75ddb2ab63c4aae762f44940509e3b2efd2e1"
+      "sha256_raw": "1d2e862f17f72e835de7561cfedaf736b60bfa57666f379fc25c853056c06c2e",
+      "sha256_canonical_lf": "1d2e862f17f72e835de7561cfedaf736b60bfa57666f379fc25c853056c06c2e"
     },
     {
       "path": "docs/reviews/figures/d12d005_batch2/fig1_budget_and_scope.png",
@@ -331,12 +334,12 @@
     },
     {
       "path": "docs/reviews/d12d005_batch2_report_20261104.md",
-      "bytes": 18562,
-      "sha256_raw": "970e38ade5a3acf33b9a88f4f0f691b2d0c6bd95b0c662fc8e168d0b36251b7c",
+      "bytes": 18721,
+      "sha256_raw": "c5a13fc7a1d5efff83cb3a05513450e130b30b5b6e97ffe8b0ff3cabf04ebc79",
       "is_text": true,
       "eol": "lf",
       "outside_git": false,
-      "sha256_canonical_lf": "970e38ade5a3acf33b9a88f4f0f691b2d0c6bd95b0c662fc8e168d0b36251b7c",
+      "sha256_canonical_lf": "c5a13fc7a1d5efff83cb3a05513450e130b30b5b6e97ffe8b0ff3cabf04ebc79",
       "kind": "report"
     }
   ],

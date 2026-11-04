@@ -205,6 +205,17 @@ V1_RUN = load_json(ensure(RUN_DIR + '/evidence/v1/run_start.json'))
 V1B = load_json(ensure(RUN_DIR + '/evidence/v1b/results_summary.json'))
 V1B_LED = rows_jsonl(ensure(RUN_DIR + '/evidence/v1b/ledger.jsonl'))
 B2 = load_json(ensure(RUN_DIR + '/evidence/batch2/batch2_results.json'))
+V1_STOP = (V1.get('stop') or {})
+V1_STOP_TRIGGER = (V1_STOP.get('trigger') or {})
+
+
+def _sect_tess_scalar(a0v2_case):
+    mr = a0v2_case.get('model_readback') or {}
+    vals = mr.get('sect_tess_u_readback') or (mr.get('readback') or {}).get('sect_tess_u') or mr.get('SectTess_U')
+    if isinstance(vals, (list, tuple)) and vals:
+        return max(vals)
+    return vals
+
 B2_LED = rows_jsonl(ensure(RUN_DIR + '/evidence/batch2/ledger.jsonl'))
 B2_STATE = load_json(ensure(RUN_DIR + '/evidence/batch2/batch_state.json'))
 B2_BUDGET = load_json(ensure(RUN_DIR + '/evidence/batch2/budget_ledger.json'))
@@ -305,7 +316,7 @@ def build_evaluations():
             'timed_out': bool(case.get('timed_out')),
             'outcome_class': case['outcome_class'],
             'billable': True,
-            'stop_rule_hit': None,
+            'stop_rule_hit': (V1_STOP_TRIGGER.get('rule') if V1_STOP_TRIGGER.get('case_id') == case['case_id'] else None),
             'coefficients': coeff_subset(case.get('coefficients')),
             'primary_values': primary3(case.get('coefficients')),
             'derived_column_warnings': derived,
@@ -431,6 +442,26 @@ EVAL = build_evaluations()
 if len(EVAL) != 14:
     die('expected 14 billable evaluations, got ' + str(len(EVAL)))
 
+REVIEW_REFS = {
+    'A5': [
+        {'task': 'task-120', 'verdict': 'APPROVE_FOR_BATCH1B', 'path': 'EXT/d12d005/a5/a0_rev6_delta/verdict.txt', 'sha256_raw': sha_file(ensure(EXT_D12 + '/a5/a0_rev6_delta/verdict.txt'))},
+        {'task': 'task-125', 'verdict': 'CHANGES_REQUESTED', 'path': 'EXT/d12d005/a5/batch1b_review/verdict.txt', 'sha256_raw': sha_file(ensure(EXT_D12 + '/a5/batch1b_review/verdict.txt'))},
+        {'task': 'task-131', 'verdict': 'APPROVE_BATCH2_8', 'path': 'EXT/d12d005/a5/batch2_prestart_gate/verdict.txt', 'sha256_raw': sha_file(ensure(EXT_D12 + '/a5/batch2_prestart_gate/verdict.txt'))},
+        {'task': 'task-131-erratum', 'verdict': 'ERRATUM_S4_S5_EXECUTED_IN_BATCH1B', 'path': 'EXT/d12d005/a5/batch2_prestart_gate/verdict_v2.txt', 'sha256_raw': sha_file(ensure(EXT_D12 + '/a5/batch2_prestart_gate/verdict_v2.txt'))},
+        {'task': 'task-138', 'verdict': 'APPROVE_BATCH2_RESULTS_AND_CLOSE_A_LINE', 'path': 'EXT/d12d005/a5/batch2_results_review/verdict.txt', 'sha256_raw': sha_file(ensure(EXT_D12 + '/a5/batch2_results_review/verdict.txt'))},
+    ],
+    'A3': [
+        {'task': 'task-121', 'verdict': 'PASS', 'path': 'EXT/d12d005/a3/facts_a0_rev6.json', 'sha256_raw': sha_file(ensure(EXT_D12 + '/a3/facts_a0_rev6.json'))},
+        {'task': 'task-134', 'verdict': 'PASS', 'path': 'EXT/d12d005/a3/prestart_audit/facts_prestart.json', 'sha256_raw': sha_file(ensure(EXT_D12 + '/a3/prestart_audit/facts_prestart.json'))},
+        {'task': 'task-139', 'verdict': 'PASS', 'path': 'EXT/d12d005/a3/batch2_evidence_audit/facts_batch2_evidence_audit.json', 'sha256_raw': sha_file(ensure(EXT_D12 + '/a3/batch2_evidence_audit/facts_batch2_evidence_audit.json'))},
+    ],
+    'lead_authorizations': [
+        {'id': 'A0/0e62db3 batch1 auth', 'path': 'evidence/v1/run_start.json', 'sha256_raw': sha_file(ensure(RUN_DIR + '/evidence/v1/run_start.json'))},
+        {'id': 'batch1b reauthorization', 'path': 'evidence/lead/batch1b_reauthorization.md', 'sha256_raw': sha_file(ensure(RUN_DIR + '/evidence/lead/batch1b_reauthorization.md'))},
+        {'id': 'D12D005-BATCH2-20261104T130635Z', 'path': 'EXT/d12d005/lead/D12D005_BATCH2_AUTHORIZATION_20261104T130635Z.json', 'sha256_raw': sha_file(ensure(EXT_D12 + '/lead/D12D005_BATCH2_AUTHORIZATION_20261104T130635Z.json'))},
+    ],
+}
+
 print('stage: run_config')
 RUN_CONFIG = {
     'schema': 'd12d005-run-config-1',
@@ -490,6 +521,17 @@ RUN_CONFIG = {
         'batch1b': {'source': 'evidence/lead/batch1b_reauthorization.md', 'authorized_by': 'lead', 'cap_starts': 2, 'starts': 2},
         'batch2': {'source': 'EXT/d12d005/lead/D12D005_BATCH2_AUTHORIZATION_20261104T130635Z.json', 'authorization_id': 'D12D005-BATCH2-20261104T130635Z', 'authorized_utc': (B2['authorization'].get('issued') or B2['authorization'].get('issued_utc')), 'authorized_by': 'lead', 'cap_starts': 8, 'retries': 0},
     },
+    'review_refs': REVIEW_REFS,
+    'environment': {
+        'platform': 'Windows (host)',
+        'python_version': sys.version.split()[0],
+        'worktree': REPO,
+        'run_dir': RUN_REL,
+        'openvsp_root': 'D:/OpenVSP-3.55.0/OpenVSP-3.55.0-win64',
+        'vspaero_exe': VSPAERO_EXE,
+        'vspaero_version': '7.2.2',
+        'vspaero_exe_sha256': VSPAERO_SHA,
+    },
     'deliverables_expected': ['run_config.json', 'approval_and_budget_ledger.json', 'evaluations.jsonl', 'solver_case_matrix.csv', 'vspaero_diagnostics.json', 'rcaide_fallback_results.json', 'su2_crosscheck.json', 'drag_component_ledger.json', 'summary.json', 'data_manifest.json', 'evidence/batch2_corrections.json'],
     'data_manifest_convention': {
         'hash_modes': ['sha256_raw', 'sha256_canonical_lf'],
@@ -534,6 +576,8 @@ BUDGET = {
 }
 write_json('approval_and_budget_ledger.json', BUDGET)
 
+
+
 print('stage: evaluations.jsonl')
 write_text(RUN_DIR + '/evaluations.jsonl', chr(10).join(json.dumps(clean(r), ensure_ascii=False, sort_keys=True) for r in EVAL) + chr(10))
 
@@ -566,7 +610,8 @@ VSP = {
         'a0v2_status': A0V2.get('status'),
         'a0v2_solver_processes_started': A0V2.get('solver_processes_started'),
         'a0v2_readback_fields_per_case': 17,
-        'a0v2_sect_tess_u': dict((cid, A0V2_CASES[cid].get('model_readback', {}).get('SectTess_U') or A0V2_CASES[cid].get('tess_readback')) for cid in sorted(A0V2_CASES)),
+        'a0v2_sect_tess_u': dict((cid, _sect_tess_scalar(A0V2_CASES[cid])) for cid in sorted(A0V2_CASES)),
+        'a0v2_sect_tess_u_note': 'read back from OpenVSP model per section (max of sections); B2-01/02/03 = 3/6/12, B2-04..B2-07 = 12, S6 = 20',
     },
     'contract_readback': {
         'fields_expected': 17,
@@ -584,7 +629,7 @@ VSP = {
         'derived_column_policy': 'Only Ew may be non-finite; PASS_WITH_WARNINGS. Any other column non-finite is a failure.',
         'primary_columns_checked': ['CLo', 'CLi', 'CLtot', 'CDo', 'CDi', 'CDtot', 'CMxtot', 'CMytot', 'CMztot'],
     },
-    'batch1_stop_decision': (V1.get('stop_decision') or {}), 
+    'batch1_stop_decision': V1_STOP,
     'batch1b_wake_sensitivity': {
         'comparison': 'S4 (NumWakeNodes=128) vs S3 (NumWakeNodes=8), same std wing, Mach 2.02, AoA 2',
         'delta_s4_vs_s3': V1B.get('deltas_s4_vs_s3_single_factor_wake_nodes'),
@@ -791,7 +836,7 @@ report_lines[j + 1:j + 2] = [
     bt('- 5 张中文图（300 dpi、Microsoft YaHei）：@BT@docs/reviews/figures/d12d005_batch2/@BT@（fig1..fig5，文件名不变）。'),
     bt('- 图与复算产物清单、字节与 sha256 见 §9.3 及 @BT@figures_manifest.json@BT@ / @BT@SHA256SUMS.txt@BT@。'),
     bt('- 复算与出图溯源副本（草稿报告、脚本、JSON、manifest）：@BT@research/concorde_metaopt/optimization_runs/d12d005-20261104T0430Z/evidence/a2_batch2_figures/@BT@。'),
-    bt('- 入库后 @BT@data_manifest.json@BT@ 对 run 目录全部文件（含 5 张图、本报告）记录 raw + canonical-LF 双哈希。'),
+    bt('- 入库后 @BT@data_manifest.json@BT@ 对 run 目录内全部文件逐文件记录 raw + canonical-LF 双哈希；本报告与 5 张图作为 @BT@external_artifacts@BT@ 条目记录 raw sha256（文本报告另记 canonical-LF 与 verified），a2 溯源副本目录逐文件记录 sha256/bytes。'),
 ]
 i = find_line('_本报告为草稿')
 report_lines[i] = '_本报告为 D-12D-005 Batch2 最终报告（Lead 合并稿）；全部数值可由 §9 证据文件与复算脚本复现；内部系数不得作为物理证据或验收依据。_'
@@ -839,7 +884,7 @@ SUMMARY = {
     'status': 'A_LINE_CLOSED_VSPAERO_NOT_VALIDATED_BATCH2_EXECUTED_AND_REVIEWED',
     'round': 'D-12D-005',
     'authority': {'issue': '#4', 'approval_comment_id': 6622447995, 'issue_comment_url': 'https://github.com/QingYangJin/RCAIDE_Supersonic/issues/4#issuecomment-6622447995'},
-    'repo': {'path': REPO, 'branch': 'research/d12d005-aero-fallback', 'head': HEAD, 'head_short': HEAD[:7], 'main_head': 'ec65e5a', 'merged_to_main': False, 'pushed': False},
+    'repo': {'path': REPO, 'branch': 'research/d12d005-aero-fallback', 'head': HEAD, 'head_short': HEAD[:7], 'main_head': 'ec65e5a', 'merged_to_main': False, 'pushed': True, 'pushed_note': 'package commits up to cb45917 pushed to origin/research/d12d005-aero-fallback; the commit for this revision is recorded in the Issue #4 receipt', 'as_of_git_snapshot': HEAD + ' (execution HEAD snapshot at build time)'},
     'physical_accounting': {'solver_starts': 14, 'retries': 0, 'class_A_used': 14, 'class_A_cap': 20, 'class_A_remaining_not_authorized': 6, 'class_B_used': 0, 'class_C_used': 0, 'class_D_E_P4_used': 0, 'zero_solver_actions': ['A0 setup generation 6 cases', 'A0v2 setup generation 8 cases', 'Batch2 prestart gate', 'all evidence parsing and figure generation'], 'physical_validation_claim': False},
     'labels': {'result_label': 'VSPAERO_INTERNAL_ONLY', 'physical_validation': 'NOT_VALIDATED', 'cdtot_is_physical_drag': False, 'gate3_note': 'thin-surface VSPAERO at Mach 2.02 cannot reach physical validation'},
     'gate_status': {
@@ -863,6 +908,7 @@ SUMMARY = {
         'run_dir': RUN_REL,
         'batch2_files': 241,
         'batch2_bytes': 7788381,
+        'batch2_bytes_scope': 'pre-commit worktree raw bytes of evidence/batch2 (241 files); clean checkout bytes are slightly smaller because git normalizes tracked text files to LF (see data_manifest.checkout_verification).',
         'batch2_results_sha256': sha_file(RUN_DIR + '/evidence/batch2/batch2_results.json'),
         'batch2_ledger_rows': len(B2_LED),
         'batch2_final_checks': '36/36 PASS',
@@ -872,25 +918,7 @@ SUMMARY = {
         'figures': [{'name': fr['name'], 'repo_path': fr['repo_path'], 'sha256_raw': fr['sha256_raw'], 'bytes': fr['bytes']} for fr in fig_records],
         'report': {'path': REPORT_REL, 'sha256_raw': sha_file(REPORT_DEST), 'bytes': os.path.getsize(REPORT_DEST)},
     },
-    'review_refs': {
-        'A5': [
-            {'task': 'task-120', 'verdict': 'APPROVE_FOR_BATCH1B', 'path': 'EXT/d12d005/a5/a0_rev6_delta/verdict.txt', 'sha256_raw': sha_file(ensure(EXT_D12 + '/a5/a0_rev6_delta/verdict.txt'))},
-            {'task': 'task-125', 'verdict': 'CHANGES_REQUESTED', 'path': 'EXT/d12d005/a5/batch1b_review/verdict.txt', 'sha256_raw': sha_file(ensure(EXT_D12 + '/a5/batch1b_review/verdict.txt'))},
-            {'task': 'task-131', 'verdict': 'APPROVE_BATCH2_8', 'path': 'EXT/d12d005/a5/batch2_prestart_gate/verdict.txt', 'sha256_raw': sha_file(ensure(EXT_D12 + '/a5/batch2_prestart_gate/verdict.txt'))},
-            {'task': 'task-131-erratum', 'verdict': 'ERRATUM_S4_S5_EXECUTED_IN_BATCH1B', 'path': 'EXT/d12d005/a5/batch2_prestart_gate/verdict_v2.txt', 'sha256_raw': sha_file(ensure(EXT_D12 + '/a5/batch2_prestart_gate/verdict_v2.txt'))},
-            {'task': 'task-138', 'verdict': 'APPROVE_BATCH2_RESULTS_AND_CLOSE_A_LINE', 'path': 'EXT/d12d005/a5/batch2_results_review/verdict.txt', 'sha256_raw': sha_file(ensure(EXT_D12 + '/a5/batch2_results_review/verdict.txt'))},
-        ],
-        'A3': [
-            {'task': 'task-121', 'verdict': 'PASS', 'path': 'EXT/d12d005/a3/facts_a0_rev6.json', 'sha256_raw': sha_file(ensure(EXT_D12 + '/a3/facts_a0_rev6.json'))},
-            {'task': 'task-134', 'verdict': 'PASS', 'path': 'EXT/d12d005/a3/prestart_audit/facts_prestart.json', 'sha256_raw': sha_file(ensure(EXT_D12 + '/a3/prestart_audit/facts_prestart.json'))},
-            {'task': 'task-139', 'verdict': 'PASS', 'path': 'EXT/d12d005/a3/batch2_evidence_audit/facts_batch2_evidence_audit.json', 'sha256_raw': sha_file(ensure(EXT_D12 + '/a3/batch2_evidence_audit/facts_batch2_evidence_audit.json'))},
-        ],
-        'lead_authorizations': [
-            {'id': 'A0/0e62db3 batch1 auth', 'path': 'evidence/v1/run_start.json', 'sha256_raw': sha_file(ensure(RUN_DIR + '/evidence/v1/run_start.json'))},
-            {'id': 'batch1b reauthorization', 'path': 'evidence/lead/batch1b_reauthorization.md', 'sha256_raw': sha_file(ensure(RUN_DIR + '/evidence/lead/batch1b_reauthorization.md'))},
-            {'id': 'D12D005-BATCH2-20261104T130635Z', 'path': 'EXT/d12d005/lead/D12D005_BATCH2_AUTHORIZATION_20261104T130635Z.json', 'sha256_raw': sha_file(ensure(EXT_D12 + '/lead/D12D005_BATCH2_AUTHORIZATION_20261104T130635Z.json'))},
-        ],
-    },
+    'review_refs': REVIEW_REFS,
     'deliverables': deliverables,
     'limitations': [
         'All coordinates/forces are VSPAERO internal thin-surface coefficients; no physical validation and no real-drag claim.',
@@ -950,8 +978,16 @@ for src in [
     external.append(rec)
 for fr in fig_records:
     external.append({'kind': 'figure_zh', 'path': fr['repo_path'], 'source_path': fr['source_path'], 'sha256_raw': fr['sha256_raw'], 'bytes': fr['bytes'], 'outside_git': False, 'verified': True, 'language': 'zh-CN'})
-external.append({'kind': 'report', 'path': REPORT_REL, 'sha256_raw': sha_file(REPORT_DEST), 'bytes': os.path.getsize(REPORT_DEST), 'outside_git': False})
-external.append({'kind': 'a2_provenance_bundle', 'path': A2_REL, 'outside_git': False, 'files': a2_count})
+rep_data = read_bytes(REPORT_DEST)
+external.append({'kind': 'report', 'path': REPORT_REL, 'sha256_raw': sha_bytes(rep_data), 'sha256_canonical_lf': sha_bytes(canonical_lf(rep_data)) if is_text_bytes(rep_data) else None, 'bytes': len(rep_data), 'outside_git': False, 'verified': True})
+a2_file_records = []
+for a2_root, a2_dirs, a2_names in os.walk(A2_DEST):
+    a2_dirs.sort()
+    for a2_name in sorted(a2_names):
+        a2_p = os.path.join(a2_root, a2_name)
+        a2_data = read_bytes(a2_p)
+        a2_file_records.append({'path': os.path.relpath(a2_p, A2_DEST).replace(chr(92), '/'), 'bytes': len(a2_data), 'sha256_raw': sha_bytes(a2_data), 'sha256_canonical_lf': sha_bytes(canonical_lf(a2_data)) if is_text_bytes(a2_data) else None})
+external.append({'kind': 'a2_provenance_bundle', 'path': A2_REL, 'outside_git': False, 'file_count': len(a2_file_records), 'files': a2_file_records})
 MANIFEST = {
     'schema': 'd12d005-data-manifest-1',
     'schema_version': '1.0.0',

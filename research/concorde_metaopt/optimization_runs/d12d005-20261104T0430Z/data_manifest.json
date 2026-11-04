@@ -2,7 +2,7 @@
   "schema": "d12d005-data-manifest-1",
   "schema_version": "1.0.0",
   "run_id": "d12d005-20261104T0430Z",
-  "generated_utc": "2026-11-04T14:37:43Z",
+  "generated_utc": "2026-11-04T15:48:15Z",
   "run_dir": "research/concorde_metaopt/optimization_runs/d12d005-20261104T0430Z",
   "repo": {
     "path": "D:/RCAIDE-d12d005",
@@ -28,9 +28,9 @@
     "external_artifact_paths": "absolute machine-specific locators (EXT state dir, OpenVSP install, worktrees); sha256/bytes are authoritative; in-repo evidence is fully reproducible from repo + external sha manifest"
   },
   "totals": {
-    "run_dir_files": 512,
-    "run_dir_bytes": 13272993,
-    "run_dir_text_files": 502,
+    "run_dir_files": 513,
+    "run_dir_bytes": 13295789,
+    "run_dir_text_files": 503,
     "run_dir_raw_crlf_files": 186,
     "external_entries": 37
   },
@@ -358,98 +358,186 @@
     {
       "kind": "report",
       "path": "docs/reviews/d12d005_batch2_report_20261104.md",
-      "sha256_raw": "970e38ade5a3acf33b9a88f4f0f691b2d0c6bd95b0c662fc8e168d0b36251b7c",
-      "bytes": 18562,
-      "outside_git": false
+      "sha256_raw": "c5a13fc7a1d5efff83cb3a05513450e130b30b5b6e97ffe8b0ff3cabf04ebc79",
+      "sha256_canonical_lf": "c5a13fc7a1d5efff83cb3a05513450e130b30b5b6e97ffe8b0ff3cabf04ebc79",
+      "bytes": 18721,
+      "outside_git": false,
+      "verified": true
     },
     {
       "kind": "a2_provenance_bundle",
       "path": "research/concorde_metaopt/optimization_runs/d12d005-20261104T0430Z/evidence/a2_batch2_figures",
       "outside_git": false,
-      "files": 14
+      "file_count": 14,
+      "files": [
+        {
+          "path": "README.md",
+          "bytes": 1498,
+          "sha256_raw": "fcee0f4281f496d4706b585c9c387e7e9356f0be033096118cbc04b57a27a2ae",
+          "sha256_canonical_lf": "fcee0f4281f496d4706b585c9c387e7e9356f0be033096118cbc04b57a27a2ae"
+        },
+        {
+          "path": "SHA256SUMS.txt",
+          "bytes": 3115,
+          "sha256_raw": "dcec4e899385ee2f8a330949455736f462caf79acedf82a610c3f343f42c51fb",
+          "sha256_canonical_lf": "dcec4e899385ee2f8a330949455736f462caf79acedf82a610c3f343f42c51fb"
+        },
+        {
+          "path": "build_report.py",
+          "bytes": 20772,
+          "sha256_raw": "ec849a5546d1112ad9d53c552048da848c3e5c7c5dc66ec7b927b45fd42463ed",
+          "sha256_canonical_lf": "ec849a5546d1112ad9d53c552048da848c3e5c7c5dc66ec7b927b45fd42463ed"
+        },
+        {
+          "path": "d12d005_batch2_report_20261104.md",
+          "bytes": 15328,
+          "sha256_raw": "df45ba67ebd11f6835507744865382e1d7cf32ea8433d178721fc3f4061b2e58",
+          "sha256_canonical_lf": "df45ba67ebd11f6835507744865382e1d7cf32ea8433d178721fc3f4061b2e58"
+        },
+        {
+          "path": "deliverables_manifest.json",
+          "bytes": 2884,
+          "sha256_raw": "fe1e5057b482cba7b0c0b0de64688b50a44026a8c973f71e46e191ac78ca1ec1",
+          "sha256_canonical_lf": "fe1e5057b482cba7b0c0b0de64688b50a44026a8c973f71e46e191ac78ca1ec1"
+        },
+        {
+          "path": "figures_manifest.json",
+          "bytes": 2454,
+          "sha256_raw": "13652a739c9d29806e56e0e7410d2b594f83aafb3d465974c19c9d0c10f8186b",
+          "sha256_canonical_lf": "13652a739c9d29806e56e0e7410d2b594f83aafb3d465974c19c9d0c10f8186b"
+        },
+        {
+          "path": "gen_figures.py",
+          "bytes": 13225,
+          "sha256_raw": "670c7b9dcaa77e783aa480a5ca189f0df1bf35d35c1f32bee91ee360b2e2cda3",
+          "sha256_canonical_lf": "670c7b9dcaa77e783aa480a5ca189f0df1bf35d35c1f32bee91ee360b2e2cda3"
+        },
+        {
+          "path": "patch_build_report.py",
+          "bytes": 740,
+          "sha256_raw": "74c604b3ec25168e2e558ebbbdac0e3ddad8e8fcb9d2fdc0a08e6f083cdbb3db",
+          "sha256_canonical_lf": "74c604b3ec25168e2e558ebbbdac0e3ddad8e8fcb9d2fdc0a08e6f083cdbb3db"
+        },
+        {
+          "path": "patch_build_report2.py",
+          "bytes": 442,
+          "sha256_raw": "2abadb864aebeb49eee028714ceea9e302c85906f969f69414007919b33aafb0",
+          "sha256_canonical_lf": "2abadb864aebeb49eee028714ceea9e302c85906f969f69414007919b33aafb0"
+        },
+        {
+          "path": "patch_fig5.py",
+          "bytes": 2134,
+          "sha256_raw": "4e21a3d705bcbd92a2a5b54742ea9976a3a4d8f79d4a7f560b3f1b3e9a90902b",
+          "sha256_canonical_lf": "4e21a3d705bcbd92a2a5b54742ea9976a3a4d8f79d4a7f560b3f1b3e9a90902b"
+        },
+        {
+          "path": "recompute.json",
+          "bytes": 17906,
+          "sha256_raw": "e838104d471cf01a392fac5d36a00760d486e52add81e77ef76a1285d559122e",
+          "sha256_canonical_lf": "e838104d471cf01a392fac5d36a00760d486e52add81e77ef76a1285d559122e"
+        },
+        {
+          "path": "recompute.md",
+          "bytes": 1565,
+          "sha256_raw": "8a72a404b84f6b81457b9687c7f00bfd051f851e9df5e1b56338eb66cbbab3dc",
+          "sha256_canonical_lf": "8a72a404b84f6b81457b9687c7f00bfd051f851e9df5e1b56338eb66cbbab3dc"
+        },
+        {
+          "path": "recompute_batch2.py",
+          "bytes": 11141,
+          "sha256_raw": "aee1b0e5fb5e6654bc2518110b4695f53c1d188e48297238bd6813007cd9b9d4",
+          "sha256_canonical_lf": "aee1b0e5fb5e6654bc2518110b4695f53c1d188e48297238bd6813007cd9b9d4"
+        },
+        {
+          "path": "docs/reviews/d12d005_batch2_report_20261104.md",
+          "bytes": 15328,
+          "sha256_raw": "df45ba67ebd11f6835507744865382e1d7cf32ea8433d178721fc3f4061b2e58",
+          "sha256_canonical_lf": "df45ba67ebd11f6835507744865382e1d7cf32ea8433d178721fc3f4061b2e58"
+        }
+      ]
     }
   ],
   "files": [
     {
       "path": "approval_and_budget_ledger.json",
       "bytes": 3583,
-      "sha256_raw": "cc2d70f9981f9f1ea63efc9d1e20fdb6144a76b3c8dc99e541bbf65901c89722",
+      "sha256_raw": "a58c9454263a8f32cb09e0e237b88ad387c3b95dae2ee6354c3238bbcc049346",
       "is_text": true,
       "eol": "lf",
       "outside_git": false,
-      "sha256_canonical_lf": "cc2d70f9981f9f1ea63efc9d1e20fdb6144a76b3c8dc99e541bbf65901c89722"
+      "sha256_canonical_lf": "a58c9454263a8f32cb09e0e237b88ad387c3b95dae2ee6354c3238bbcc049346"
     },
     {
       "path": "drag_component_ledger.json",
       "bytes": 4455,
-      "sha256_raw": "906e0dc6615d68bf7997eba6bf601db8ba9f8f9aaf44f6a70ceda3d3c626bef1",
+      "sha256_raw": "0ff4fa200fe41bed0c2de06df82ba5f1116dac265d956e341add76803a6475cc",
       "is_text": true,
       "eol": "lf",
       "outside_git": false,
-      "sha256_canonical_lf": "906e0dc6615d68bf7997eba6bf601db8ba9f8f9aaf44f6a70ceda3d3c626bef1"
+      "sha256_canonical_lf": "0ff4fa200fe41bed0c2de06df82ba5f1116dac265d956e341add76803a6475cc"
     },
     {
       "path": "evaluations.jsonl",
-      "bytes": 31594,
-      "sha256_raw": "90d384c764c0fb3b486fce799569c99f5edf226d85fa6a8f5e2ce74c7cdfb692",
+      "bytes": 31621,
+      "sha256_raw": "6cb3d729b28e22557debab42528d8f05293c061d13afe3499d89e7ab0ef6c9f8",
       "is_text": true,
       "eol": "lf",
       "outside_git": false,
-      "sha256_canonical_lf": "90d384c764c0fb3b486fce799569c99f5edf226d85fa6a8f5e2ce74c7cdfb692"
+      "sha256_canonical_lf": "6cb3d729b28e22557debab42528d8f05293c061d13afe3499d89e7ab0ef6c9f8"
     },
     {
       "path": "rcaide_fallback_results.json",
       "bytes": 1813,
-      "sha256_raw": "af893a4bd47991f9093cce1503d663605eadc7e3fc70b8bffaba3c782eaddc9f",
+      "sha256_raw": "152c7e5e68f1ec39df4efc887f2afa416b3cece6898d5ec93e0cc0e87bd1a8c4",
       "is_text": true,
       "eol": "lf",
       "outside_git": false,
-      "sha256_canonical_lf": "af893a4bd47991f9093cce1503d663605eadc7e3fc70b8bffaba3c782eaddc9f"
+      "sha256_canonical_lf": "152c7e5e68f1ec39df4efc887f2afa416b3cece6898d5ec93e0cc0e87bd1a8c4"
     },
     {
       "path": "run_config.json",
-      "bytes": 5120,
-      "sha256_raw": "d27bd00a7bc05183e8c42991c1186d839c6876575089c43768630be09ee1a2f8",
+      "bytes": 8268,
+      "sha256_raw": "b3d9522e2e0245e3a7277476972b0fe9db93b24ea902756c6de8b8962e1da095",
       "is_text": true,
       "eol": "lf",
       "outside_git": false,
-      "sha256_canonical_lf": "d27bd00a7bc05183e8c42991c1186d839c6876575089c43768630be09ee1a2f8"
+      "sha256_canonical_lf": "b3d9522e2e0245e3a7277476972b0fe9db93b24ea902756c6de8b8962e1da095"
     },
     {
       "path": "solver_case_matrix.csv",
-      "bytes": 7109,
-      "sha256_raw": "3e4e587d77d511f2306fd1d8f0dc40ed189c3cf578bbe29dca2e2cb7775b891f",
+      "bytes": 7138,
+      "sha256_raw": "e09fa6c3e225a0d2778f0e7b08eed74230e42dab27ebe8ae981124bae6f7dbd0",
       "is_text": true,
       "eol": "lf",
       "outside_git": false,
-      "sha256_canonical_lf": "3e4e587d77d511f2306fd1d8f0dc40ed189c3cf578bbe29dca2e2cb7775b891f"
+      "sha256_canonical_lf": "e09fa6c3e225a0d2778f0e7b08eed74230e42dab27ebe8ae981124bae6f7dbd0"
     },
     {
       "path": "su2_crosscheck.json",
       "bytes": 806,
-      "sha256_raw": "0e97c3ea692011b09a91bf2ff1ec78e33739e189811fb1eac23dedbb2cc68c37",
+      "sha256_raw": "5c6dbe68f2ebf4ce487dfcc9602e104338c8ad1278ffa22bdcc59a5b5500f9e3",
       "is_text": true,
       "eol": "lf",
       "outside_git": false,
-      "sha256_canonical_lf": "0e97c3ea692011b09a91bf2ff1ec78e33739e189811fb1eac23dedbb2cc68c37"
+      "sha256_canonical_lf": "5c6dbe68f2ebf4ce487dfcc9602e104338c8ad1278ffa22bdcc59a5b5500f9e3"
     },
     {
       "path": "summary.json",
-      "bytes": 13057,
-      "sha256_raw": "8694b0018c6afa103b50d6389f925d820f18823f4e1fe97179eff9674d4905ce",
+      "bytes": 13556,
+      "sha256_raw": "6d1b7ebdf2c32d04e32715523ed219e161b01d14b986e9ce7533def9162f92d6",
       "is_text": true,
       "eol": "lf",
       "outside_git": false,
-      "sha256_canonical_lf": "8694b0018c6afa103b50d6389f925d820f18823f4e1fe97179eff9674d4905ce"
+      "sha256_canonical_lf": "6d1b7ebdf2c32d04e32715523ed219e161b01d14b986e9ce7533def9162f92d6"
     },
     {
       "path": "vspaero_diagnostics.json",
-      "bytes": 22673,
-      "sha256_raw": "145799c91bcddde2ad8cd083df38ee814cf70722a3e338cd9c3ca64f09b859f0",
+      "bytes": 29535,
+      "sha256_raw": "0d30e2e3992cfbce798b84c9245fc4789317cf2a71a019f1232e19a9b4cce5a9",
       "is_text": true,
       "eol": "lf",
       "outside_git": false,
-      "sha256_canonical_lf": "145799c91bcddde2ad8cd083df38ee814cf70722a3e338cd9c3ca64f09b859f0"
+      "sha256_canonical_lf": "0d30e2e3992cfbce798b84c9245fc4789317cf2a71a019f1232e19a9b4cce5a9"
     },
     {
       "path": "config/approval_and_budget_ledger.json",
@@ -481,11 +569,11 @@
     {
       "path": "evidence/batch2_corrections.json",
       "bytes": 1653,
-      "sha256_raw": "4737463ef5d6ca0cb3ec33f89bf75ddb2ab63c4aae762f44940509e3b2efd2e1",
+      "sha256_raw": "1d2e862f17f72e835de7561cfedaf736b60bfa57666f379fc25c853056c06c2e",
       "is_text": true,
       "eol": "lf",
       "outside_git": false,
-      "sha256_canonical_lf": "4737463ef5d6ca0cb3ec33f89bf75ddb2ab63c4aae762f44940509e3b2efd2e1"
+      "sha256_canonical_lf": "1d2e862f17f72e835de7561cfedaf736b60bfa57666f379fc25c853056c06c2e"
     },
     {
       "path": "evidence/a0/README.md",
@@ -4862,12 +4950,12 @@
     },
     {
       "path": "scripts/build_d12d005_package.py",
-      "bytes": 59749,
-      "sha256_raw": "313b16a102f846bad9936fe13e2111b5766e01b4bb6921987e1c9f9599dd7352",
+      "bytes": 61859,
+      "sha256_raw": "16a6285ea2d6edd0d11b4718b17f92005955c5184a091490d338edfae9314be5",
       "is_text": true,
       "eol": "lf",
       "outside_git": false,
-      "sha256_canonical_lf": "313b16a102f846bad9936fe13e2111b5766e01b4bb6921987e1c9f9599dd7352"
+      "sha256_canonical_lf": "16a6285ea2d6edd0d11b4718b17f92005955c5184a091490d338edfae9314be5"
     },
     {
       "path": "scripts/freeze_v1b_evidence.py",
@@ -4889,12 +4977,21 @@
     },
     {
       "path": "scripts/patch_build.py",
-      "bytes": 2676,
-      "sha256_raw": "235f00e116e7264d389811ac4ebee7f480e04a125b099e35e13387b5b311e388",
+      "bytes": 2651,
+      "sha256_raw": "a9bcd97481989a17a005ac5cd883f42bbdd6f880f5eaefc2fc993e926a1dc971",
       "is_text": true,
       "eol": "lf",
       "outside_git": false,
-      "sha256_canonical_lf": "235f00e116e7264d389811ac4ebee7f480e04a125b099e35e13387b5b311e388"
+      "sha256_canonical_lf": "a9bcd97481989a17a005ac5cd883f42bbdd6f880f5eaefc2fc993e926a1dc971"
+    },
+    {
+      "path": "scripts/patch_builder_rev2.py",
+      "bytes": 9981,
+      "sha256_raw": "5c4cf02f78f4ff58a144cfbcf71aedbb1baf3cb4694b4db13fee69d9fa028d43",
+      "is_text": true,
+      "eol": "lf",
+      "outside_git": false,
+      "sha256_canonical_lf": "5c4cf02f78f4ff58a144cfbcf71aedbb1baf3cb4694b4db13fee69d9fa028d43"
     },
     {
       "path": "scripts/patch_checkout_verification.py",
@@ -4907,12 +5004,12 @@
     },
     {
       "path": "scripts/report_block.txt",
-      "bytes": 8066,
-      "sha256_raw": "fc2b7953a48e5f1f1567f0686a630432f237adc485b6283a9e474daaebb36f73",
+      "bytes": 8231,
+      "sha256_raw": "af214d19a0b6350470c7e2a808ea55e71220d6afa1a2682d43e3d6376ff27f11",
       "is_text": true,
       "eol": "lf",
       "outside_git": false,
-      "sha256_canonical_lf": "fc2b7953a48e5f1f1567f0686a630432f237adc485b6283a9e474daaebb36f73"
+      "sha256_canonical_lf": "af214d19a0b6350470c7e2a808ea55e71220d6afa1a2682d43e3d6376ff27f11"
     },
     {
       "path": "scripts/test_a0_generate_setups_v2.py",

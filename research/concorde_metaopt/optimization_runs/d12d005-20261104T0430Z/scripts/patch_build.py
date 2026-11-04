@@ -13,7 +13,7 @@ reps = [
   ("b2_cases = dict((c['case_id'], c) for c in B2['cases'])",
    "b2_cases = dict((c['case_id'], c) for c in B2['cases'])" + chr(10) + "b2_contracts = dict((c['case_id'], c['contract']) for c in B2['cases'])"),
   ("'batch1_stop_decision': {'artifact_kind': V1.get('stop_decision', {}).get('artifact_kind'), 'status': V1.get('stop_decision', {}).get('status'), 'trigger': V1.get('stop_decision', {}).get('trigger') if isinstance(V1.get('stop_decision'), dict) else None},",
-   "'batch1_stop_decision': (V1.get('stop_decision') or {}), "),
+   "'batch1_stop_decision': V1_STOP,"),
   ("'delta_CLtot': V1B.get('deltas_s4_vs_s3_single_factor_wake_nodes', {}).get('CLtot'),",
    "'delta_s4_vs_s3': V1B.get('deltas_s4_vs_s3_single_factor_wake_nodes'),"),
   ("'delta_CDi': V1B.get('deltas_s4_vs_s3_single_factor_wake_nodes', {}).get('CDi'),",

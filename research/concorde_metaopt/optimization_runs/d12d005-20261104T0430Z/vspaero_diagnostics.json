@@ -1,7 +1,7 @@
 {
   "schema": "d12d005-vspaero-diagnostics-1",
   "run_id": "d12d005-20261104T0430Z",
-  "generated_utc": "2026-11-04T14:37:43Z",
+  "generated_utc": "2026-11-04T15:48:15Z",
   "labels": {
     "result_label": "VSPAERO_INTERNAL_ONLY",
     "physical_validation": "NOT_VALIDATED",
@@ -39,15 +39,16 @@
     "a0v2_solver_processes_started": 0,
     "a0v2_readback_fields_per_case": 17,
     "a0v2_sect_tess_u": {
-      "B2-01": null,
-      "B2-02": null,
-      "B2-03": null,
-      "B2-04": null,
-      "B2-05": null,
-      "B2-06": null,
-      "B2-07": null,
-      "S6_STD_M2p02_aoa1": null
-    }
+      "B2-01": 3.0,
+      "B2-02": 6.0,
+      "B2-03": 12.0,
+      "B2-04": 12.0,
+      "B2-05": 12.0,
+      "B2-06": 12.0,
+      "B2-07": 12.0,
+      "S6_STD_M2p02_aoa1": 20.0
+    },
+    "a0v2_sect_tess_u_note": "read back from OpenVSP model per section (max of sections); B2-01/02/03 = 3/6/12, B2-04..B2-07 = 12, S6 = 20"
   },
   "contract_readback": {
     "fields_expected": 17,
@@ -113,7 +114,112 @@
       "CMztot"
     ]
   },
-  "batch1_stop_decision": {},
+  "batch1_stop_decision": {
+    "artifact_kind": "D12D005_BATCH1_STOP_DECISION",
+    "schema_version": 1,
+    "run_id": "d12d005-20261104T0430Z",
+    "batch": "D-12D-005 A-batch-1 (S0..S5)",
+    "status": "STOPPED_ABORT_FINAL_FREEZE",
+    "decided_by": "A2",
+    "decided_utc": "2026-11-04T07:14:40Z",
+    "frozen_utc": "2026-11-04T07:22:35Z",
+    "trigger": {
+      "event_id": "NA-D12D005-004",
+      "case_id": "S3_STD_M2p02_base",
+      "rule": "stop_rule_1_nonfinite_IND_INF",
+      "rule_text": "polar/history 出现 NaN/IND/INF -> 停止链路（INVALID）",
+      "exact_failure": "POLAR_NONFINITE: line 4, column Ew, token='inf' in S3_STD_M2p02_base_model.polar (verify-polar rc=2; POLAR_NONFINITE: [{'line': 4, 'column': 'Ew', 'token': 'inf'}] in D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\v1\\cases\\S3_STD_M2p02_base\\S3_STD_M2p02_base_model.polar)",
+      "verify_polar_returncode": 2,
+      "verify_history_returncode": 0,
+      "history_finite": true,
+      "solver_returncode": 0,
+      "solver_wall_seconds": 1.008,
+      "timed_out": false,
+      "peak_rss_gb": 0.088,
+      "evidence": {
+        "polar": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\v1\\cases\\S3_STD_M2p02_base\\S3_STD_M2p02_base_model.polar",
+        "polar_sha256": "1dd8cf4a6eb8ea109988a922a371c0f718fa3f4898ce79149c5ad1ac92beacf1",
+        "history": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\v1\\cases\\S3_STD_M2p02_base\\S3_STD_M2p02_base_model.history",
+        "verify_polar_rerun_json": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\v1\\cases\\S3_STD_M2p02_base\\verify_polar_rerun.json"
+      }
+    },
+    "s3_column_diagnosis": {
+      "path": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\v1\\cases\\S3_STD_M2p02_base\\s3_column_diagnosis.json",
+      "sha256": "8d28804982ec08ddc83aec4c725aee2b91c874d773b2d3e0107e7af675c3f3ab",
+      "verdict": "A_OR_DERIVED_DEGENERATE",
+      "verdict_reason": "primary coefficients finite but derived efficiency/tail columns degenerate; CDwtot nonzero",
+      "nonfinite_count_S3": 1,
+      "nonfinite_count_S0_S1_S2": {
+        "S0": 0,
+        "S1": 0,
+        "S2": 0
+      },
+      "primary_columns_finite": {
+        "CLtot": true,
+        "CDtot": true,
+        "CDi": true,
+        "CDo": true,
+        "CLo": true,
+        "CLi": true,
+        "CMoy": true,
+        "CMytot": true,
+        "L/D": true,
+        "E": true
+      },
+      "CDwtot": "0.011182867698",
+      "CLwtot": "-0.000390514345",
+      "LoDw": "-0.034920769492",
+      "Ew": "inf",
+      "history_plateau": false,
+      "history_last_step_delta": {
+        "CLtot": -1.8353980000010428e-05,
+        "CDtot": -7.103250000001227e-07,
+        "CLtot_abs_prev": 0.074269385763,
+        "relative_CLtot_step": 0.00024718821488771056
+      }
+    },
+    "lead_decision": {
+      "approved": true,
+      "approval_received_utc": null,
+      "approval_note": "Lead approved the stop and the freeze in a session message received 2026-11-04 (before this freeze): 4/6 used, S4/S5 NOT_RUN_AFTER_ABORT, remaining 2 closed without reallocation, no retries, no carryover. Exact UTC timestamp is not embedded in that message; recorded as received before this freeze.",
+      "freeze_scope": "Lead additionally required the S3 column diagnosis before freezing; diagnosis written to evidence/v1/cases/S3_STD_M2p02_base/s3_column_diagnosis.json (+ .md) and reported to Lead."
+    },
+    "consequences": {
+      "starts_used_this_batch": 4,
+      "starts_remaining_this_batch": 2,
+      "remaining_disposition": "CLOSED_NOT_CARRIED_OVER_NOT_REALLOCATED",
+      "cases_stopped_before_start": [
+        "S4_STD_M2p02_wn128",
+        "S5_D12_M2p02_base"
+      ],
+      "cases_not_run_status": "NOT_RUN_AFTER_ABORT",
+      "retries": 0,
+      "retries_authorized": false,
+      "billable_events": 4,
+      "no_carryover": true,
+      "class_A_cap_starts": 20,
+      "class_A_used_total": 4,
+      "class_A_remaining_total": 16
+    },
+    "gate_impact": {
+      "LF_VSPAERO_7p2p2_thin_M0p1_standard_wing": "VALID_SOLVED (S0 baseline; S1/S2 single-factor wake variants valid)",
+      "LF_VSPAERO_7p2p2_thin_M2p02_standard_wing": "NOT_VALIDATED (S3 fail-closed: derived Ew=inf; primary coefficients finite but polar rejected)",
+      "LF_VSPAERO_7p2p2_thin_M2p02_12D_main_wing": "NOT_RUN (S5 aborted before start)",
+      "validated_aircraft_fuel_label": false,
+      "body_correction_injection": "none (no valid supersonic drag evidence; external body correction stays NOT_VALIDATED)",
+      "D12D004_V1_relation": "D-12D-004 V1 saw numerical divergence at M2.02 (V7-01 history O(1e27)); this batch S3 is numerically stable (history residual decreasing, CLtot/CDtot smooth) but fail-closed on the derived Ew column. Two distinct failure modes -> VSPAERO 7.2.2 thin supersonic remains NOT_A_VALID_PHYSICAL_METHOD.",
+      "M0p1_relation_to_V1": "D-12D-004 V1 V7-00 at Mach 0.10 produced garbage coefficients; this batch S0-S2 at Mach 0.10 produce clean physical coefficients, which supports attributing the V1 M0.1 failure to setup/DegenGeom/wake configuration rather than to the Mach 0.1 flow regime."
+    },
+    "documentation_defects_observed": [
+      "DOC-1: solver_case_matrix.csv acceptance column says polar must have 5 complete rows (AoA -2,0,2,4,6), but the frozen single-AoA contract (expected.json AoA=2) produces 1 polar row. SOLVED_VALID for S0-S2 is based on 17/17 readback + v2 verify-polar PASS + finite physical coefficients at the contracted AoA; the 5-row clause is an inherited template expectation and should be corrected by the matrix owner (A2 did not edit non-status columns).",
+      "DOC-2: solver_case_matrix.csv reference_condition column still carries the rev2 values (Sref=1.0, Cref=0.5, Bref=2.0) while the A0 rev3 contracts and run_config use Sref=4.0, Cref=1.0, Bref=4.0. Bundle readback 17/17 PASS proves the executed contracts are the rev3 values; the matrix column is stale text (not edited beyond the status column).",
+      "DOC-3: archive evidence/a0/ and older EXT templates under evidence/a1/ naming remain; live batch evidence lives under evidence/v1/ (run_config.outputs updated at freeze to evidence/v1/)."
+    ],
+    "notes": [
+      "No solver was started to produce this decision or the diagnosis; verify-polar rerun is a pure file parser call.",
+      "Ledger event 004 was amended by an append-only AMEND record (NA-D12D005-004-AMEND) to carry the exact fail-closed reason; the original COMPLETED record is unchanged."
+    ]
+  },
   "batch1b_wake_sensitivity": {
     "comparison": "S4 (NumWakeNodes=128) vs S3 (NumWakeNodes=8), same std wing, Mach 2.02, AoA 2",
     "delta_s4_vs_s3": {

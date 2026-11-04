@@ -56,7 +56,7 @@ report_lines[j + 1:j + 2] = [
     bt('- 5 张中文图（300 dpi、Microsoft YaHei）：@BT@docs/reviews/figures/d12d005_batch2/@BT@（fig1..fig5，文件名不变）。'),
     bt('- 图与复算产物清单、字节与 sha256 见 §9.3 及 @BT@figures_manifest.json@BT@ / @BT@SHA256SUMS.txt@BT@。'),
     bt('- 复算与出图溯源副本（草稿报告、脚本、JSON、manifest）：@BT@research/concorde_metaopt/optimization_runs/d12d005-20261104T0430Z/evidence/a2_batch2_figures/@BT@。'),
-    bt('- 入库后 @BT@data_manifest.json@BT@ 对 run 目录全部文件（含 5 张图、本报告）记录 raw + canonical-LF 双哈希。'),
+    bt('- 入库后 @BT@data_manifest.json@BT@ 对 run 目录内全部文件逐文件记录 raw + canonical-LF 双哈希；本报告与 5 张图作为 @BT@external_artifacts@BT@ 条目记录 raw sha256（文本报告另记 canonical-LF 与 verified），a2 溯源副本目录逐文件记录 sha256/bytes。'),
 ]
 i = find_line('_本报告为草稿')
 report_lines[i] = '_本报告为 D-12D-005 Batch2 最终报告（Lead 合并稿）；全部数值可由 §9 证据文件与复算脚本复现；内部系数不得作为物理证据或验收依据。_'

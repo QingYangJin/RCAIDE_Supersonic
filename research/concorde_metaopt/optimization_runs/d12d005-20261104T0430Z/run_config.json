@@ -5,7 +5,7 @@
   "authority_comment_id": 6622447995,
   "authority": "D-12D-005",
   "status": "A_LINE_CLOSED_VSPAERO_NOT_VALIDATED",
-  "generated_utc": "2026-11-04T14:37:43Z",
+  "generated_utc": "2026-11-04T15:48:15Z",
   "repo": {
     "path": "D:/RCAIDE-d12d005",
     "branch": "research/d12d005-aero-fallback",
@@ -126,6 +126,87 @@
       "cap_starts": 8,
       "retries": 0
     }
+  },
+  "review_refs": {
+    "A5": [
+      {
+        "task": "task-120",
+        "verdict": "APPROVE_FOR_BATCH1B",
+        "path": "EXT/d12d005/a5/a0_rev6_delta/verdict.txt",
+        "sha256_raw": "b6ba08dc73916cf76fa212f82ab20d56fd213a42e9b56a5d18a323bb037ecb50"
+      },
+      {
+        "task": "task-125",
+        "verdict": "CHANGES_REQUESTED",
+        "path": "EXT/d12d005/a5/batch1b_review/verdict.txt",
+        "sha256_raw": "b0bb68e2fd6fbf0eb21a60aab9f73d3a20c27724a76aed83baf4a2dc00dda00b"
+      },
+      {
+        "task": "task-131",
+        "verdict": "APPROVE_BATCH2_8",
+        "path": "EXT/d12d005/a5/batch2_prestart_gate/verdict.txt",
+        "sha256_raw": "e31787f069d78eb732c165012536c5483b6afb5bbd1dccab926d56b118c32942"
+      },
+      {
+        "task": "task-131-erratum",
+        "verdict": "ERRATUM_S4_S5_EXECUTED_IN_BATCH1B",
+        "path": "EXT/d12d005/a5/batch2_prestart_gate/verdict_v2.txt",
+        "sha256_raw": "b61146c1675874d1089642df7be7476b9f392aa3964a1e2ede57f1011ae12374"
+      },
+      {
+        "task": "task-138",
+        "verdict": "APPROVE_BATCH2_RESULTS_AND_CLOSE_A_LINE",
+        "path": "EXT/d12d005/a5/batch2_results_review/verdict.txt",
+        "sha256_raw": "1b9f14917a490435823a0b9d385cb97941b71802a99bbbac7ef8c3878d03d4b5"
+      }
+    ],
+    "A3": [
+      {
+        "task": "task-121",
+        "verdict": "PASS",
+        "path": "EXT/d12d005/a3/facts_a0_rev6.json",
+        "sha256_raw": "591e8a378a36ae39738ca4f5cf12482df080f6cb34b394890c2827d057c211c2"
+      },
+      {
+        "task": "task-134",
+        "verdict": "PASS",
+        "path": "EXT/d12d005/a3/prestart_audit/facts_prestart.json",
+        "sha256_raw": "3aadf597c40a292a333c736cad40f052478c2f075c0e1e9b30560a6ead8318a5"
+      },
+      {
+        "task": "task-139",
+        "verdict": "PASS",
+        "path": "EXT/d12d005/a3/batch2_evidence_audit/facts_batch2_evidence_audit.json",
+        "sha256_raw": "93b1c3973c7ca1088fab2f027e5293c16cf3350a7307ecd91d8cfc2a7ea5efd4"
+      }
+    ],
+    "lead_authorizations": [
+      {
+        "id": "A0/0e62db3 batch1 auth",
+        "path": "evidence/v1/run_start.json",
+        "sha256_raw": "e49edf9373e94766b9b1c99ce3fcbda0ada9e66f234a44d288bb99e39377bd03"
+      },
+      {
+        "id": "batch1b reauthorization",
+        "path": "evidence/lead/batch1b_reauthorization.md",
+        "sha256_raw": "1e805557e1db703b737409e36fc1d7775e62b2f833098d47690283c844a05198"
+      },
+      {
+        "id": "D12D005-BATCH2-20261104T130635Z",
+        "path": "EXT/d12d005/lead/D12D005_BATCH2_AUTHORIZATION_20261104T130635Z.json",
+        "sha256_raw": "fd02dd898c816ad702a49e408ca4f31ea193a806275b9ffe95aa9d28e8507ecc"
+      }
+    ]
+  },
+  "environment": {
+    "platform": "Windows (host)",
+    "python_version": "3.11.17",
+    "worktree": "D:/RCAIDE-d12d005",
+    "run_dir": "research/concorde_metaopt/optimization_runs/d12d005-20261104T0430Z",
+    "openvsp_root": "D:/OpenVSP-3.55.0/OpenVSP-3.55.0-win64",
+    "vspaero_exe": "D:\\OpenVSP-3.55.0\\OpenVSP-3.55.0-win64\\vspaero.exe",
+    "vspaero_version": "7.2.2",
+    "vspaero_exe_sha256": "db71c4412489af82398833408ea30fb73327bdd9434de2ef530d31375b9fddad"
   },
   "deliverables_expected": [
     "run_config.json",
