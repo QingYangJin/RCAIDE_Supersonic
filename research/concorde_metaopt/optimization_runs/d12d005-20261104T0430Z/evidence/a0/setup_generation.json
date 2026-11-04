@@ -1,18 +1,42 @@
 {
   "artifact_kind": "D12D005_A0_SETUP_GENERATION",
+  "bundle_requirements": [
+    "model .vsp3 (copy of the generated model)",
+    ".vkey (rewrite line 2 to the absolute path of the copied .vspgeom)",
+    ".csf",
+    "<base>_contract.vspaero (contract form, never the raw VSPAERO-default form)",
+    "geom_result_thin.csv",
+    "expected.json (required: the case-dir gate falls back to the 12D contract without it)",
+    "thin .vspgeom copied from the external artifact root"
+  ],
   "cases": [
     {
-      "case_dir": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\a0\\setup_gen\\S0_STD_M0p1_base",
+      "case_dir_abs_at_generation": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\a0\\setup_gen\\S0_STD_M0p1_base",
+      "case_dir_relative": "evidence/a0/setup_gen/S0_STD_M0p1_base",
       "case_id": "S0_STD_M0p1_base",
       "contract_setup": {
         "bytes": 814,
+        "bytes_canonical_lf": 814,
+        "bytes_raw": 814,
+        "eol": "lf",
+        "hash_mode": "dual",
         "name": "S0_STD_M0p1_base_contract.vspaero",
-        "sha256": "45c723b6063d56752ba153e3d6fd70f3c95d99ddb59ad2ebd92b56abf30f8912"
+        "path_relative": "evidence/a0/setup_gen/S0_STD_M0p1_base/S0_STD_M0p1_base_contract.vspaero",
+        "sha256": "45c723b6063d56752ba153e3d6fd70f3c95d99ddb59ad2ebd92b56abf30f8912",
+        "sha256_canonical_lf": "45c723b6063d56752ba153e3d6fd70f3c95d99ddb59ad2ebd92b56abf30f8912",
+        "sha256_raw": "45c723b6063d56752ba153e3d6fd70f3c95d99ddb59ad2ebd92b56abf30f8912"
       },
       "csf": {
-        "bytes": 20,
+        "bytes": 19,
+        "bytes_canonical_lf": 19,
+        "bytes_raw": 20,
+        "eol": "crlf",
+        "hash_mode": "dual",
         "name": "S0_STD_M0p1_base_model.csf",
-        "sha256": "bb29bf526f4379308ca9c271a8df90c39f4df4235f81f63e370f25e714bb797c"
+        "path_relative": "evidence/a0/setup_gen/S0_STD_M0p1_base/S0_STD_M0p1_base_model.csf",
+        "sha256": "6630b6a16273b17ce900ab4ef14203af344d306033574c816571b91452c495ca",
+        "sha256_canonical_lf": "6630b6a16273b17ce900ab4ef14203af344d306033574c816571b91452c495ca",
+        "sha256_raw": "bb29bf526f4379308ca9c271a8df90c39f4df4235f81f63e370f25e714bb797c"
       },
       "execution_bundle": {
         "csf": "S0_STD_M0p1_base_model.csf",
@@ -26,8 +50,15 @@
       },
       "expected": {
         "bytes": 1533,
+        "bytes_canonical_lf": 1533,
+        "bytes_raw": 1533,
+        "eol": "lf",
+        "hash_mode": "dual",
         "name": "expected.json",
-        "sha256": "ff5dfd12ac5ffbf83603ae00434c4c2fe950552c316501994d5d5e444a30d961"
+        "path_relative": "evidence/a0/setup_gen/S0_STD_M0p1_base/expected.json",
+        "sha256": "ff5dfd12ac5ffbf83603ae00434c4c2fe950552c316501994d5d5e444a30d961",
+        "sha256_canonical_lf": "ff5dfd12ac5ffbf83603ae00434c4c2fe950552c316501994d5d5e444a30d961",
+        "sha256_raw": "ff5dfd12ac5ffbf83603ae00434c4c2fe950552c316501994d5d5e444a30d961"
       },
       "files_in_case_dir": [
         "S0_STD_M0p1_base_contract.vspaero",
@@ -39,9 +70,16 @@
         "geom_result_thin.csv"
       ],
       "geom_result_csv": {
-        "bytes": 383,
+        "bytes": 374,
+        "bytes_canonical_lf": 374,
+        "bytes_raw": 383,
+        "eol": "crlf",
+        "hash_mode": "dual",
         "name": "geom_result_thin.csv",
-        "sha256": "3a46b66c840acc0bc89fa6e2bb45b6ffe7b127c58150847a5cbbb673d0bc2794"
+        "path_relative": "evidence/a0/setup_gen/S0_STD_M0p1_base/geom_result_thin.csv",
+        "sha256": "9a6193f55b4bd3218c6e319913ea9118267eac5c1e53d73e13fc796525533471",
+        "sha256_canonical_lf": "9a6193f55b4bd3218c6e319913ea9118267eac5c1e53d73e13fc796525533471",
+        "sha256_raw": "3a46b66c840acc0bc89fa6e2bb45b6ffe7b127c58150847a5cbbb673d0bc2794"
       },
       "geom_result_csv_error": null,
       "geometry": {
@@ -66,14 +104,28 @@
       "kind": "std",
       "model": {
         "bytes": 87723,
+        "bytes_canonical_lf": 87723,
+        "bytes_raw": 87723,
+        "eol": "lf",
+        "hash_mode": "dual",
         "name": "S0_STD_M0p1_base_model.vsp3",
-        "sha256": "54ea525747250407f200b2a17e5638d650b679d40c6402ec6950bd265c03d95c"
+        "path_relative": "evidence/a0/setup_gen/S0_STD_M0p1_base/S0_STD_M0p1_base_model.vsp3",
+        "sha256": "54ea525747250407f200b2a17e5638d650b679d40c6402ec6950bd265c03d95c",
+        "sha256_canonical_lf": "54ea525747250407f200b2a17e5638d650b679d40c6402ec6950bd265c03d95c",
+        "sha256_raw": "54ea525747250407f200b2a17e5638d650b679d40c6402ec6950bd265c03d95c"
       },
       "note": "第1关 亚声速标准翼 基线（NumWakeNodes=8, WakeIters=5）",
       "raw_setup": {
-        "bytes": 892,
+        "bytes": 850,
+        "bytes_canonical_lf": 850,
+        "bytes_raw": 892,
+        "eol": "crlf",
+        "hash_mode": "dual",
         "name": "S0_STD_M0p1_base_model.vspaero",
-        "sha256": "e544bbeb53ddd42cad85a8c26d581b473362064f5eaf2d294c35f457a0cceb45"
+        "path_relative": "evidence/a0/setup_gen/S0_STD_M0p1_base/S0_STD_M0p1_base_model.vspaero",
+        "sha256": "b58442fc97b5078cecaa4da0c925d0a331b16a002de8301ea40a9cf83cfef25d",
+        "sha256_canonical_lf": "b58442fc97b5078cecaa4da0c925d0a331b16a002de8301ea40a9cf83cfef25d",
+        "sha256_raw": "e544bbeb53ddd42cad85a8c26d581b473362064f5eaf2d294c35f457a0cceb45"
       },
       "readback": {
         "assertions": 17,
@@ -341,30 +393,57 @@
       "solver_artifacts_present": [],
       "thin_geometry": {
         "bytes": 284327,
+        "bytes_raw": 284327,
         "external_path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\d12d005-20261104T0430Z\\raw_artifacts\\a0_setup\\S0_STD_M0p1_base.vspgeom",
+        "hash_mode": "raw_external",
         "local_copy": "S0_STD_M0p1_base_model.vspgeom",
         "name": "S0_STD_M0p1_base.vspgeom",
+        "note": "thin .vspgeom lives outside the repo; hashed as raw bytes (never git-normalised)",
         "outside_git": true,
-        "sha256": "8363f8fb209dd3120bbdf2e3766605b9405b97de0c7561b0be08c91c4cb8ebad"
+        "path_relative": null,
+        "sha256": "8363f8fb209dd3120bbdf2e3766605b9405b97de0c7561b0be08c91c4cb8ebad",
+        "sha256_raw": "8363f8fb209dd3120bbdf2e3766605b9405b97de0c7561b0be08c91c4cb8ebad"
       },
       "vkey": {
-        "bytes": 396,
+        "bytes": 383,
+        "bytes_canonical_lf": 383,
+        "bytes_raw": 396,
+        "eol": "crlf",
+        "hash_mode": "dual",
         "name": "S0_STD_M0p1_base_model.vkey",
-        "sha256": "c4a5b88f273f00f6755ffa5cb3accefe490b290517967204cabf7dfa3bb01820"
+        "path_relative": "evidence/a0/setup_gen/S0_STD_M0p1_base/S0_STD_M0p1_base_model.vkey",
+        "sha256": "7d178464de3a904ea916e58a6e50c219ab9b5c5622c75f002cb56dd2b209676a",
+        "sha256_canonical_lf": "7d178464de3a904ea916e58a6e50c219ab9b5c5622c75f002cb56dd2b209676a",
+        "sha256_raw": "c4a5b88f273f00f6755ffa5cb3accefe490b290517967204cabf7dfa3bb01820"
       }
     },
     {
-      "case_dir": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\a0\\setup_gen\\S1_STD_M0p1_wn128",
+      "case_dir_abs_at_generation": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\a0\\setup_gen\\S1_STD_M0p1_wn128",
+      "case_dir_relative": "evidence/a0/setup_gen/S1_STD_M0p1_wn128",
       "case_id": "S1_STD_M0p1_wn128",
       "contract_setup": {
         "bytes": 816,
+        "bytes_canonical_lf": 816,
+        "bytes_raw": 816,
+        "eol": "lf",
+        "hash_mode": "dual",
         "name": "S1_STD_M0p1_wn128_contract.vspaero",
-        "sha256": "3b3acace1d6fe5a51c355e1633c4118817a9f8854456c1495767e4eca8606e40"
+        "path_relative": "evidence/a0/setup_gen/S1_STD_M0p1_wn128/S1_STD_M0p1_wn128_contract.vspaero",
+        "sha256": "3b3acace1d6fe5a51c355e1633c4118817a9f8854456c1495767e4eca8606e40",
+        "sha256_canonical_lf": "3b3acace1d6fe5a51c355e1633c4118817a9f8854456c1495767e4eca8606e40",
+        "sha256_raw": "3b3acace1d6fe5a51c355e1633c4118817a9f8854456c1495767e4eca8606e40"
       },
       "csf": {
-        "bytes": 20,
+        "bytes": 19,
+        "bytes_canonical_lf": 19,
+        "bytes_raw": 20,
+        "eol": "crlf",
+        "hash_mode": "dual",
         "name": "S1_STD_M0p1_wn128_model.csf",
-        "sha256": "bb29bf526f4379308ca9c271a8df90c39f4df4235f81f63e370f25e714bb797c"
+        "path_relative": "evidence/a0/setup_gen/S1_STD_M0p1_wn128/S1_STD_M0p1_wn128_model.csf",
+        "sha256": "6630b6a16273b17ce900ab4ef14203af344d306033574c816571b91452c495ca",
+        "sha256_canonical_lf": "6630b6a16273b17ce900ab4ef14203af344d306033574c816571b91452c495ca",
+        "sha256_raw": "bb29bf526f4379308ca9c271a8df90c39f4df4235f81f63e370f25e714bb797c"
       },
       "execution_bundle": {
         "csf": "S1_STD_M0p1_wn128_model.csf",
@@ -378,8 +457,15 @@
       },
       "expected": {
         "bytes": 1510,
+        "bytes_canonical_lf": 1510,
+        "bytes_raw": 1510,
+        "eol": "lf",
+        "hash_mode": "dual",
         "name": "expected.json",
-        "sha256": "d3565bf041e29cb6827f1d02f3f042ed27e209080b9cdc7ec8576685780fd6ff"
+        "path_relative": "evidence/a0/setup_gen/S1_STD_M0p1_wn128/expected.json",
+        "sha256": "d3565bf041e29cb6827f1d02f3f042ed27e209080b9cdc7ec8576685780fd6ff",
+        "sha256_canonical_lf": "d3565bf041e29cb6827f1d02f3f042ed27e209080b9cdc7ec8576685780fd6ff",
+        "sha256_raw": "d3565bf041e29cb6827f1d02f3f042ed27e209080b9cdc7ec8576685780fd6ff"
       },
       "files_in_case_dir": [
         "S1_STD_M0p1_wn128_contract.vspaero",
@@ -391,9 +477,16 @@
         "geom_result_thin.csv"
       ],
       "geom_result_csv": {
-        "bytes": 385,
+        "bytes": 376,
+        "bytes_canonical_lf": 376,
+        "bytes_raw": 385,
+        "eol": "crlf",
+        "hash_mode": "dual",
         "name": "geom_result_thin.csv",
-        "sha256": "4fe494a386f69fa2fea345f157f01d258454859f48c25fc4100d952aeda5e41f"
+        "path_relative": "evidence/a0/setup_gen/S1_STD_M0p1_wn128/geom_result_thin.csv",
+        "sha256": "39f949c95a0acc9d14109ce5f526c5fc5f13e7a9d68bce91fb96422b7f7f1727",
+        "sha256_canonical_lf": "39f949c95a0acc9d14109ce5f526c5fc5f13e7a9d68bce91fb96422b7f7f1727",
+        "sha256_raw": "4fe494a386f69fa2fea345f157f01d258454859f48c25fc4100d952aeda5e41f"
       },
       "geom_result_csv_error": null,
       "geometry": {
@@ -418,14 +511,28 @@
       "kind": "std",
       "model": {
         "bytes": 87723,
+        "bytes_canonical_lf": 87723,
+        "bytes_raw": 87723,
+        "eol": "lf",
+        "hash_mode": "dual",
         "name": "S1_STD_M0p1_wn128_model.vsp3",
-        "sha256": "da25d620e2c6f0ade6934e6bb08a16fcf0dd5848250065da363d7e64860f6f8f"
+        "path_relative": "evidence/a0/setup_gen/S1_STD_M0p1_wn128/S1_STD_M0p1_wn128_model.vsp3",
+        "sha256": "da25d620e2c6f0ade6934e6bb08a16fcf0dd5848250065da363d7e64860f6f8f",
+        "sha256_canonical_lf": "da25d620e2c6f0ade6934e6bb08a16fcf0dd5848250065da363d7e64860f6f8f",
+        "sha256_raw": "da25d620e2c6f0ade6934e6bb08a16fcf0dd5848250065da363d7e64860f6f8f"
       },
       "note": "第1关 单因素：仅 NumWakeNodes=128",
       "raw_setup": {
-        "bytes": 894,
+        "bytes": 852,
+        "bytes_canonical_lf": 852,
+        "bytes_raw": 894,
+        "eol": "crlf",
+        "hash_mode": "dual",
         "name": "S1_STD_M0p1_wn128_model.vspaero",
-        "sha256": "32540bf5b9c70dd3faccd877ff4c03abc7cf2762a15556cb35514a4397889641"
+        "path_relative": "evidence/a0/setup_gen/S1_STD_M0p1_wn128/S1_STD_M0p1_wn128_model.vspaero",
+        "sha256": "ee945a6573dfbe86a8206226547771414cf0e5fff3a085fba5319f2fb8380373",
+        "sha256_canonical_lf": "ee945a6573dfbe86a8206226547771414cf0e5fff3a085fba5319f2fb8380373",
+        "sha256_raw": "32540bf5b9c70dd3faccd877ff4c03abc7cf2762a15556cb35514a4397889641"
       },
       "readback": {
         "assertions": 17,
@@ -693,30 +800,57 @@
       "solver_artifacts_present": [],
       "thin_geometry": {
         "bytes": 284327,
+        "bytes_raw": 284327,
         "external_path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\d12d005-20261104T0430Z\\raw_artifacts\\a0_setup\\S1_STD_M0p1_wn128.vspgeom",
+        "hash_mode": "raw_external",
         "local_copy": "S1_STD_M0p1_wn128_model.vspgeom",
         "name": "S1_STD_M0p1_wn128.vspgeom",
+        "note": "thin .vspgeom lives outside the repo; hashed as raw bytes (never git-normalised)",
         "outside_git": true,
-        "sha256": "8363f8fb209dd3120bbdf2e3766605b9405b97de0c7561b0be08c91c4cb8ebad"
+        "path_relative": null,
+        "sha256": "8363f8fb209dd3120bbdf2e3766605b9405b97de0c7561b0be08c91c4cb8ebad",
+        "sha256_raw": "8363f8fb209dd3120bbdf2e3766605b9405b97de0c7561b0be08c91c4cb8ebad"
       },
       "vkey": {
-        "bytes": 398,
+        "bytes": 385,
+        "bytes_canonical_lf": 385,
+        "bytes_raw": 398,
+        "eol": "crlf",
+        "hash_mode": "dual",
         "name": "S1_STD_M0p1_wn128_model.vkey",
-        "sha256": "51dfdeb7d851edfcf90aa22a4860e313b854f7fe5cf6cc3427fd4ed90ee9b53a"
+        "path_relative": "evidence/a0/setup_gen/S1_STD_M0p1_wn128/S1_STD_M0p1_wn128_model.vkey",
+        "sha256": "481a163ce8f563e3bba0c2e9acaaf02dd83257b820bfa9fcfd4c1090ba9ab8f6",
+        "sha256_canonical_lf": "481a163ce8f563e3bba0c2e9acaaf02dd83257b820bfa9fcfd4c1090ba9ab8f6",
+        "sha256_raw": "51dfdeb7d851edfcf90aa22a4860e313b854f7fe5cf6cc3427fd4ed90ee9b53a"
       }
     },
     {
-      "case_dir": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\a0\\setup_gen\\S2_STD_M0p1_wi0",
+      "case_dir_abs_at_generation": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\a0\\setup_gen\\S2_STD_M0p1_wi0",
+      "case_dir_relative": "evidence/a0/setup_gen/S2_STD_M0p1_wi0",
       "case_id": "S2_STD_M0p1_wi0",
       "contract_setup": {
         "bytes": 814,
+        "bytes_canonical_lf": 814,
+        "bytes_raw": 814,
+        "eol": "lf",
+        "hash_mode": "dual",
         "name": "S2_STD_M0p1_wi0_contract.vspaero",
-        "sha256": "668c1f4a5f543c5b7219b53d794fccfb88a80c0322085e5ebdf83ad35db39cbe"
+        "path_relative": "evidence/a0/setup_gen/S2_STD_M0p1_wi0/S2_STD_M0p1_wi0_contract.vspaero",
+        "sha256": "668c1f4a5f543c5b7219b53d794fccfb88a80c0322085e5ebdf83ad35db39cbe",
+        "sha256_canonical_lf": "668c1f4a5f543c5b7219b53d794fccfb88a80c0322085e5ebdf83ad35db39cbe",
+        "sha256_raw": "668c1f4a5f543c5b7219b53d794fccfb88a80c0322085e5ebdf83ad35db39cbe"
       },
       "csf": {
-        "bytes": 20,
+        "bytes": 19,
+        "bytes_canonical_lf": 19,
+        "bytes_raw": 20,
+        "eol": "crlf",
+        "hash_mode": "dual",
         "name": "S2_STD_M0p1_wi0_model.csf",
-        "sha256": "bb29bf526f4379308ca9c271a8df90c39f4df4235f81f63e370f25e714bb797c"
+        "path_relative": "evidence/a0/setup_gen/S2_STD_M0p1_wi0/S2_STD_M0p1_wi0_model.csf",
+        "sha256": "6630b6a16273b17ce900ab4ef14203af344d306033574c816571b91452c495ca",
+        "sha256_canonical_lf": "6630b6a16273b17ce900ab4ef14203af344d306033574c816571b91452c495ca",
+        "sha256_raw": "bb29bf526f4379308ca9c271a8df90c39f4df4235f81f63e370f25e714bb797c"
       },
       "execution_bundle": {
         "csf": "S2_STD_M0p1_wi0_model.csf",
@@ -730,8 +864,15 @@
       },
       "expected": {
         "bytes": 1501,
+        "bytes_canonical_lf": 1501,
+        "bytes_raw": 1501,
+        "eol": "lf",
+        "hash_mode": "dual",
         "name": "expected.json",
-        "sha256": "8e544102ef8e982033bab43b585ce80d9af05f78d5515ad7ff82400533fa5578"
+        "path_relative": "evidence/a0/setup_gen/S2_STD_M0p1_wi0/expected.json",
+        "sha256": "8e544102ef8e982033bab43b585ce80d9af05f78d5515ad7ff82400533fa5578",
+        "sha256_canonical_lf": "8e544102ef8e982033bab43b585ce80d9af05f78d5515ad7ff82400533fa5578",
+        "sha256_raw": "8e544102ef8e982033bab43b585ce80d9af05f78d5515ad7ff82400533fa5578"
       },
       "files_in_case_dir": [
         "S2_STD_M0p1_wi0_contract.vspaero",
@@ -743,9 +884,16 @@
         "geom_result_thin.csv"
       ],
       "geom_result_csv": {
-        "bytes": 381,
+        "bytes": 372,
+        "bytes_canonical_lf": 372,
+        "bytes_raw": 381,
+        "eol": "crlf",
+        "hash_mode": "dual",
         "name": "geom_result_thin.csv",
-        "sha256": "2b1075371e0ee7f90c0d8e0cdf97197287c8b62a82c1757e71341c02fa5578d4"
+        "path_relative": "evidence/a0/setup_gen/S2_STD_M0p1_wi0/geom_result_thin.csv",
+        "sha256": "31eaf5089bb0b39d2cf608ee68e421b3a526742c85dcb05a0a0cadcccec6c738",
+        "sha256_canonical_lf": "31eaf5089bb0b39d2cf608ee68e421b3a526742c85dcb05a0a0cadcccec6c738",
+        "sha256_raw": "2b1075371e0ee7f90c0d8e0cdf97197287c8b62a82c1757e71341c02fa5578d4"
       },
       "geom_result_csv_error": null,
       "geometry": {
@@ -770,14 +918,28 @@
       "kind": "std",
       "model": {
         "bytes": 87723,
+        "bytes_canonical_lf": 87723,
+        "bytes_raw": 87723,
+        "eol": "lf",
+        "hash_mode": "dual",
         "name": "S2_STD_M0p1_wi0_model.vsp3",
-        "sha256": "3262e9a4d64316c0b543c25b380d5d398a142d8f4d89ec13466fce34db711a2c"
+        "path_relative": "evidence/a0/setup_gen/S2_STD_M0p1_wi0/S2_STD_M0p1_wi0_model.vsp3",
+        "sha256": "3262e9a4d64316c0b543c25b380d5d398a142d8f4d89ec13466fce34db711a2c",
+        "sha256_canonical_lf": "3262e9a4d64316c0b543c25b380d5d398a142d8f4d89ec13466fce34db711a2c",
+        "sha256_raw": "3262e9a4d64316c0b543c25b380d5d398a142d8f4d89ec13466fce34db711a2c"
       },
       "note": "第1关 单因素：仅 WakeIters=0",
       "raw_setup": {
-        "bytes": 892,
+        "bytes": 850,
+        "bytes_canonical_lf": 850,
+        "bytes_raw": 892,
+        "eol": "crlf",
+        "hash_mode": "dual",
         "name": "S2_STD_M0p1_wi0_model.vspaero",
-        "sha256": "9fe4ea54afce86e517ccd33889303625e0dfe503d5f8af4baf00b3609d78ef54"
+        "path_relative": "evidence/a0/setup_gen/S2_STD_M0p1_wi0/S2_STD_M0p1_wi0_model.vspaero",
+        "sha256": "8d92b2f7a4cdc6dcd16de5ca3e64c21a106e0bf78247916494e6298cd9404fbf",
+        "sha256_canonical_lf": "8d92b2f7a4cdc6dcd16de5ca3e64c21a106e0bf78247916494e6298cd9404fbf",
+        "sha256_raw": "9fe4ea54afce86e517ccd33889303625e0dfe503d5f8af4baf00b3609d78ef54"
       },
       "readback": {
         "assertions": 17,
@@ -1045,30 +1207,57 @@
       "solver_artifacts_present": [],
       "thin_geometry": {
         "bytes": 284327,
+        "bytes_raw": 284327,
         "external_path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\d12d005-20261104T0430Z\\raw_artifacts\\a0_setup\\S2_STD_M0p1_wi0.vspgeom",
+        "hash_mode": "raw_external",
         "local_copy": "S2_STD_M0p1_wi0_model.vspgeom",
         "name": "S2_STD_M0p1_wi0.vspgeom",
+        "note": "thin .vspgeom lives outside the repo; hashed as raw bytes (never git-normalised)",
         "outside_git": true,
-        "sha256": "8363f8fb209dd3120bbdf2e3766605b9405b97de0c7561b0be08c91c4cb8ebad"
+        "path_relative": null,
+        "sha256": "8363f8fb209dd3120bbdf2e3766605b9405b97de0c7561b0be08c91c4cb8ebad",
+        "sha256_raw": "8363f8fb209dd3120bbdf2e3766605b9405b97de0c7561b0be08c91c4cb8ebad"
       },
       "vkey": {
-        "bytes": 394,
+        "bytes": 381,
+        "bytes_canonical_lf": 381,
+        "bytes_raw": 394,
+        "eol": "crlf",
+        "hash_mode": "dual",
         "name": "S2_STD_M0p1_wi0_model.vkey",
-        "sha256": "17c24d94ed94e745520b373a03a3f7798acae66f826bb8cd5752f306edb6bf8f"
+        "path_relative": "evidence/a0/setup_gen/S2_STD_M0p1_wi0/S2_STD_M0p1_wi0_model.vkey",
+        "sha256": "33a65005e9989d202f9140a1a2a67ba03edff15a1d6b41cdd3bc1613577dec30",
+        "sha256_canonical_lf": "33a65005e9989d202f9140a1a2a67ba03edff15a1d6b41cdd3bc1613577dec30",
+        "sha256_raw": "17c24d94ed94e745520b373a03a3f7798acae66f826bb8cd5752f306edb6bf8f"
       }
     },
     {
-      "case_dir": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\a0\\setup_gen\\S3_STD_M2p02_base",
+      "case_dir_abs_at_generation": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\a0\\setup_gen\\S3_STD_M2p02_base",
+      "case_dir_relative": "evidence/a0/setup_gen/S3_STD_M2p02_base",
       "case_id": "S3_STD_M2p02_base",
       "contract_setup": {
         "bytes": 813,
+        "bytes_canonical_lf": 813,
+        "bytes_raw": 813,
+        "eol": "lf",
+        "hash_mode": "dual",
         "name": "S3_STD_M2p02_base_contract.vspaero",
-        "sha256": "da80fda85e2b4d67ebd293f7f5041fd1909290c0cb670268dfc6ea3fdbfa8246"
+        "path_relative": "evidence/a0/setup_gen/S3_STD_M2p02_base/S3_STD_M2p02_base_contract.vspaero",
+        "sha256": "da80fda85e2b4d67ebd293f7f5041fd1909290c0cb670268dfc6ea3fdbfa8246",
+        "sha256_canonical_lf": "da80fda85e2b4d67ebd293f7f5041fd1909290c0cb670268dfc6ea3fdbfa8246",
+        "sha256_raw": "da80fda85e2b4d67ebd293f7f5041fd1909290c0cb670268dfc6ea3fdbfa8246"
       },
       "csf": {
-        "bytes": 20,
+        "bytes": 19,
+        "bytes_canonical_lf": 19,
+        "bytes_raw": 20,
+        "eol": "crlf",
+        "hash_mode": "dual",
         "name": "S3_STD_M2p02_base_model.csf",
-        "sha256": "bb29bf526f4379308ca9c271a8df90c39f4df4235f81f63e370f25e714bb797c"
+        "path_relative": "evidence/a0/setup_gen/S3_STD_M2p02_base/S3_STD_M2p02_base_model.csf",
+        "sha256": "6630b6a16273b17ce900ab4ef14203af344d306033574c816571b91452c495ca",
+        "sha256_canonical_lf": "6630b6a16273b17ce900ab4ef14203af344d306033574c816571b91452c495ca",
+        "sha256_raw": "bb29bf526f4379308ca9c271a8df90c39f4df4235f81f63e370f25e714bb797c"
       },
       "execution_bundle": {
         "csf": "S3_STD_M2p02_base_model.csf",
@@ -1082,8 +1271,15 @@
       },
       "expected": {
         "bytes": 1503,
+        "bytes_canonical_lf": 1503,
+        "bytes_raw": 1503,
+        "eol": "lf",
+        "hash_mode": "dual",
         "name": "expected.json",
-        "sha256": "2ffeae077a748f0a682356ad2bfa3f1ad1a02295dc1c53037c4ee2102fd758bf"
+        "path_relative": "evidence/a0/setup_gen/S3_STD_M2p02_base/expected.json",
+        "sha256": "2ffeae077a748f0a682356ad2bfa3f1ad1a02295dc1c53037c4ee2102fd758bf",
+        "sha256_canonical_lf": "2ffeae077a748f0a682356ad2bfa3f1ad1a02295dc1c53037c4ee2102fd758bf",
+        "sha256_raw": "2ffeae077a748f0a682356ad2bfa3f1ad1a02295dc1c53037c4ee2102fd758bf"
       },
       "files_in_case_dir": [
         "S3_STD_M2p02_base_contract.vspaero",
@@ -1095,9 +1291,16 @@
         "geom_result_thin.csv"
       ],
       "geom_result_csv": {
-        "bytes": 385,
+        "bytes": 376,
+        "bytes_canonical_lf": 376,
+        "bytes_raw": 385,
+        "eol": "crlf",
+        "hash_mode": "dual",
         "name": "geom_result_thin.csv",
-        "sha256": "38658b3c1c9000aa652eccab8468387ed22f09d278ad1d310cca30f25cbe67ec"
+        "path_relative": "evidence/a0/setup_gen/S3_STD_M2p02_base/geom_result_thin.csv",
+        "sha256": "a9597655f468f127b16452051d086612afafade0e78cd1ce4ccfd134e07d8f4f",
+        "sha256_canonical_lf": "a9597655f468f127b16452051d086612afafade0e78cd1ce4ccfd134e07d8f4f",
+        "sha256_raw": "38658b3c1c9000aa652eccab8468387ed22f09d278ad1d310cca30f25cbe67ec"
       },
       "geom_result_csv_error": null,
       "geometry": {
@@ -1122,14 +1325,28 @@
       "kind": "std",
       "model": {
         "bytes": 87723,
+        "bytes_canonical_lf": 87723,
+        "bytes_raw": 87723,
+        "eol": "lf",
+        "hash_mode": "dual",
         "name": "S3_STD_M2p02_base_model.vsp3",
-        "sha256": "72ad142983de42f7885b26d0400a341035696040c506ebea8c531cb67aeb82c1"
+        "path_relative": "evidence/a0/setup_gen/S3_STD_M2p02_base/S3_STD_M2p02_base_model.vsp3",
+        "sha256": "72ad142983de42f7885b26d0400a341035696040c506ebea8c531cb67aeb82c1",
+        "sha256_canonical_lf": "72ad142983de42f7885b26d0400a341035696040c506ebea8c531cb67aeb82c1",
+        "sha256_raw": "72ad142983de42f7885b26d0400a341035696040c506ebea8c531cb67aeb82c1"
       },
       "note": "第2关 Mach2.02 标准薄翼 基线",
       "raw_setup": {
-        "bytes": 877,
+        "bytes": 835,
+        "bytes_canonical_lf": 835,
+        "bytes_raw": 877,
+        "eol": "crlf",
+        "hash_mode": "dual",
         "name": "S3_STD_M2p02_base_model.vspaero",
-        "sha256": "dce7f49e8f667a440383a3d3633a79790fa204532cb0f6535c9bde434cb08028"
+        "path_relative": "evidence/a0/setup_gen/S3_STD_M2p02_base/S3_STD_M2p02_base_model.vspaero",
+        "sha256": "a7274f5a1ee7491726467c961f30cd3492d6a44b5e383e271598c6dff5babdac",
+        "sha256_canonical_lf": "a7274f5a1ee7491726467c961f30cd3492d6a44b5e383e271598c6dff5babdac",
+        "sha256_raw": "dce7f49e8f667a440383a3d3633a79790fa204532cb0f6535c9bde434cb08028"
       },
       "readback": {
         "assertions": 17,
@@ -1397,30 +1614,57 @@
       "solver_artifacts_present": [],
       "thin_geometry": {
         "bytes": 284327,
+        "bytes_raw": 284327,
         "external_path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\d12d005-20261104T0430Z\\raw_artifacts\\a0_setup\\S3_STD_M2p02_base.vspgeom",
+        "hash_mode": "raw_external",
         "local_copy": "S3_STD_M2p02_base_model.vspgeom",
         "name": "S3_STD_M2p02_base.vspgeom",
+        "note": "thin .vspgeom lives outside the repo; hashed as raw bytes (never git-normalised)",
         "outside_git": true,
-        "sha256": "8363f8fb209dd3120bbdf2e3766605b9405b97de0c7561b0be08c91c4cb8ebad"
+        "path_relative": null,
+        "sha256": "8363f8fb209dd3120bbdf2e3766605b9405b97de0c7561b0be08c91c4cb8ebad",
+        "sha256_raw": "8363f8fb209dd3120bbdf2e3766605b9405b97de0c7561b0be08c91c4cb8ebad"
       },
       "vkey": {
-        "bytes": 398,
+        "bytes": 385,
+        "bytes_canonical_lf": 385,
+        "bytes_raw": 398,
+        "eol": "crlf",
+        "hash_mode": "dual",
         "name": "S3_STD_M2p02_base_model.vkey",
-        "sha256": "ffff2476d4399cd336c10757b3d5e69b12cfd3e953f8bd3d227d56a693b8c14f"
+        "path_relative": "evidence/a0/setup_gen/S3_STD_M2p02_base/S3_STD_M2p02_base_model.vkey",
+        "sha256": "00c6df9474c8b30ea6ebc9ba66206dd8d0741f3a3ebcee5ecd55e43eb803b4b5",
+        "sha256_canonical_lf": "00c6df9474c8b30ea6ebc9ba66206dd8d0741f3a3ebcee5ecd55e43eb803b4b5",
+        "sha256_raw": "ffff2476d4399cd336c10757b3d5e69b12cfd3e953f8bd3d227d56a693b8c14f"
       }
     },
     {
-      "case_dir": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\a0\\setup_gen\\S4_STD_M2p02_wn128",
+      "case_dir_abs_at_generation": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\a0\\setup_gen\\S4_STD_M2p02_wn128",
+      "case_dir_relative": "evidence/a0/setup_gen/S4_STD_M2p02_wn128",
       "case_id": "S4_STD_M2p02_wn128",
       "contract_setup": {
         "bytes": 815,
+        "bytes_canonical_lf": 815,
+        "bytes_raw": 815,
+        "eol": "lf",
+        "hash_mode": "dual",
         "name": "S4_STD_M2p02_wn128_contract.vspaero",
-        "sha256": "f2bbfa6c17ad3e79f8c0576fbe2340f5ad52884415ada30040df3895f5761c76"
+        "path_relative": "evidence/a0/setup_gen/S4_STD_M2p02_wn128/S4_STD_M2p02_wn128_contract.vspaero",
+        "sha256": "f2bbfa6c17ad3e79f8c0576fbe2340f5ad52884415ada30040df3895f5761c76",
+        "sha256_canonical_lf": "f2bbfa6c17ad3e79f8c0576fbe2340f5ad52884415ada30040df3895f5761c76",
+        "sha256_raw": "f2bbfa6c17ad3e79f8c0576fbe2340f5ad52884415ada30040df3895f5761c76"
       },
       "csf": {
-        "bytes": 20,
+        "bytes": 19,
+        "bytes_canonical_lf": 19,
+        "bytes_raw": 20,
+        "eol": "crlf",
+        "hash_mode": "dual",
         "name": "S4_STD_M2p02_wn128_model.csf",
-        "sha256": "bb29bf526f4379308ca9c271a8df90c39f4df4235f81f63e370f25e714bb797c"
+        "path_relative": "evidence/a0/setup_gen/S4_STD_M2p02_wn128/S4_STD_M2p02_wn128_model.csf",
+        "sha256": "6630b6a16273b17ce900ab4ef14203af344d306033574c816571b91452c495ca",
+        "sha256_canonical_lf": "6630b6a16273b17ce900ab4ef14203af344d306033574c816571b91452c495ca",
+        "sha256_raw": "bb29bf526f4379308ca9c271a8df90c39f4df4235f81f63e370f25e714bb797c"
       },
       "execution_bundle": {
         "csf": "S4_STD_M2p02_wn128_model.csf",
@@ -1434,8 +1678,15 @@
       },
       "expected": {
         "bytes": 1510,
+        "bytes_canonical_lf": 1510,
+        "bytes_raw": 1510,
+        "eol": "lf",
+        "hash_mode": "dual",
         "name": "expected.json",
-        "sha256": "7b261745808609064f2e56f89f0c5dd1b5568d43e43e9e5f36144fbfc4dfc766"
+        "path_relative": "evidence/a0/setup_gen/S4_STD_M2p02_wn128/expected.json",
+        "sha256": "7b261745808609064f2e56f89f0c5dd1b5568d43e43e9e5f36144fbfc4dfc766",
+        "sha256_canonical_lf": "7b261745808609064f2e56f89f0c5dd1b5568d43e43e9e5f36144fbfc4dfc766",
+        "sha256_raw": "7b261745808609064f2e56f89f0c5dd1b5568d43e43e9e5f36144fbfc4dfc766"
       },
       "files_in_case_dir": [
         "S4_STD_M2p02_wn128_contract.vspaero",
@@ -1447,9 +1698,16 @@
         "geom_result_thin.csv"
       ],
       "geom_result_csv": {
-        "bytes": 387,
+        "bytes": 378,
+        "bytes_canonical_lf": 378,
+        "bytes_raw": 387,
+        "eol": "crlf",
+        "hash_mode": "dual",
         "name": "geom_result_thin.csv",
-        "sha256": "4c096311de39ed9767fccfdd0701420d9ec0a41b2cfe7ff592ed7d91fb3d4f91"
+        "path_relative": "evidence/a0/setup_gen/S4_STD_M2p02_wn128/geom_result_thin.csv",
+        "sha256": "beed1604786b5d970844943f3695c1f13f40e552e3b0aa011f254cf629b8112d",
+        "sha256_canonical_lf": "beed1604786b5d970844943f3695c1f13f40e552e3b0aa011f254cf629b8112d",
+        "sha256_raw": "4c096311de39ed9767fccfdd0701420d9ec0a41b2cfe7ff592ed7d91fb3d4f91"
       },
       "geom_result_csv_error": null,
       "geometry": {
@@ -1474,14 +1732,28 @@
       "kind": "std",
       "model": {
         "bytes": 87723,
+        "bytes_canonical_lf": 87723,
+        "bytes_raw": 87723,
+        "eol": "lf",
+        "hash_mode": "dual",
         "name": "S4_STD_M2p02_wn128_model.vsp3",
-        "sha256": "e66b7d98142ed3116f92db446d8e3736e2f7c4844f6948ed9df55f4d43370029"
+        "path_relative": "evidence/a0/setup_gen/S4_STD_M2p02_wn128/S4_STD_M2p02_wn128_model.vsp3",
+        "sha256": "e66b7d98142ed3116f92db446d8e3736e2f7c4844f6948ed9df55f4d43370029",
+        "sha256_canonical_lf": "e66b7d98142ed3116f92db446d8e3736e2f7c4844f6948ed9df55f4d43370029",
+        "sha256_raw": "e66b7d98142ed3116f92db446d8e3736e2f7c4844f6948ed9df55f4d43370029"
       },
       "note": "第2关 单因素：仅 NumWakeNodes=128",
       "raw_setup": {
-        "bytes": 879,
+        "bytes": 837,
+        "bytes_canonical_lf": 837,
+        "bytes_raw": 879,
+        "eol": "crlf",
+        "hash_mode": "dual",
         "name": "S4_STD_M2p02_wn128_model.vspaero",
-        "sha256": "768b497480dc847c3a8a6e027cd3cb9bd982cc68fc9152706653062bb055a174"
+        "path_relative": "evidence/a0/setup_gen/S4_STD_M2p02_wn128/S4_STD_M2p02_wn128_model.vspaero",
+        "sha256": "636a0ca1264175bb7ae4fb33b6b4ae7fcef70cf4c8403ef1067fdc562873089d",
+        "sha256_canonical_lf": "636a0ca1264175bb7ae4fb33b6b4ae7fcef70cf4c8403ef1067fdc562873089d",
+        "sha256_raw": "768b497480dc847c3a8a6e027cd3cb9bd982cc68fc9152706653062bb055a174"
       },
       "readback": {
         "assertions": 17,
@@ -1749,30 +2021,57 @@
       "solver_artifacts_present": [],
       "thin_geometry": {
         "bytes": 284327,
+        "bytes_raw": 284327,
         "external_path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\d12d005-20261104T0430Z\\raw_artifacts\\a0_setup\\S4_STD_M2p02_wn128.vspgeom",
+        "hash_mode": "raw_external",
         "local_copy": "S4_STD_M2p02_wn128_model.vspgeom",
         "name": "S4_STD_M2p02_wn128.vspgeom",
+        "note": "thin .vspgeom lives outside the repo; hashed as raw bytes (never git-normalised)",
         "outside_git": true,
-        "sha256": "8363f8fb209dd3120bbdf2e3766605b9405b97de0c7561b0be08c91c4cb8ebad"
+        "path_relative": null,
+        "sha256": "8363f8fb209dd3120bbdf2e3766605b9405b97de0c7561b0be08c91c4cb8ebad",
+        "sha256_raw": "8363f8fb209dd3120bbdf2e3766605b9405b97de0c7561b0be08c91c4cb8ebad"
       },
       "vkey": {
-        "bytes": 400,
+        "bytes": 387,
+        "bytes_canonical_lf": 387,
+        "bytes_raw": 400,
+        "eol": "crlf",
+        "hash_mode": "dual",
         "name": "S4_STD_M2p02_wn128_model.vkey",
-        "sha256": "82a2b4bf0790ed9a33e52ac39040dcf4a634f15a531f2c49f0ae926554a44f29"
+        "path_relative": "evidence/a0/setup_gen/S4_STD_M2p02_wn128/S4_STD_M2p02_wn128_model.vkey",
+        "sha256": "9be10bc7079c38293eeea0153c3a4abf8c4ce16d8858f5b7d9961661b75d3780",
+        "sha256_canonical_lf": "9be10bc7079c38293eeea0153c3a4abf8c4ce16d8858f5b7d9961661b75d3780",
+        "sha256_raw": "82a2b4bf0790ed9a33e52ac39040dcf4a634f15a531f2c49f0ae926554a44f29"
       }
     },
     {
-      "case_dir": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\a0\\setup_gen\\S5_D12_M2p02_base",
+      "case_dir_abs_at_generation": "D:\\RCAIDE-d12d005\\research\\concorde_metaopt\\optimization_runs\\d12d005-20261104T0430Z\\evidence\\a0\\setup_gen\\S5_D12_M2p02_base",
+      "case_dir_relative": "evidence/a0/setup_gen/S5_D12_M2p02_base",
       "case_id": "S5_D12_M2p02_base",
       "contract_setup": {
         "bytes": 847,
+        "bytes_canonical_lf": 847,
+        "bytes_raw": 847,
+        "eol": "lf",
+        "hash_mode": "dual",
         "name": "S5_D12_M2p02_base_contract.vspaero",
-        "sha256": "c9cef04e6a6986fdc87f07338e168dbf2ee17bdab3f5836b417ba6e6036ccb64"
+        "path_relative": "evidence/a0/setup_gen/S5_D12_M2p02_base/S5_D12_M2p02_base_contract.vspaero",
+        "sha256": "c9cef04e6a6986fdc87f07338e168dbf2ee17bdab3f5836b417ba6e6036ccb64",
+        "sha256_canonical_lf": "c9cef04e6a6986fdc87f07338e168dbf2ee17bdab3f5836b417ba6e6036ccb64",
+        "sha256_raw": "c9cef04e6a6986fdc87f07338e168dbf2ee17bdab3f5836b417ba6e6036ccb64"
       },
       "csf": {
-        "bytes": 20,
+        "bytes": 19,
+        "bytes_canonical_lf": 19,
+        "bytes_raw": 20,
+        "eol": "crlf",
+        "hash_mode": "dual",
         "name": "wing355_baseline.csf",
-        "sha256": "bb29bf526f4379308ca9c271a8df90c39f4df4235f81f63e370f25e714bb797c"
+        "path_relative": "evidence/a0/setup_gen/S5_D12_M2p02_base/wing355_baseline.csf",
+        "sha256": "6630b6a16273b17ce900ab4ef14203af344d306033574c816571b91452c495ca",
+        "sha256_canonical_lf": "6630b6a16273b17ce900ab4ef14203af344d306033574c816571b91452c495ca",
+        "sha256_raw": "bb29bf526f4379308ca9c271a8df90c39f4df4235f81f63e370f25e714bb797c"
       },
       "execution_bundle": {
         "csf": "wing355_baseline.csf",
@@ -1786,8 +2085,15 @@
       },
       "expected": {
         "bytes": 888,
+        "bytes_canonical_lf": 888,
+        "bytes_raw": 888,
+        "eol": "lf",
+        "hash_mode": "dual",
         "name": "expected.json",
-        "sha256": "7c6579c910e02a84097492a18e39044a46da6d0d50b5342f6c11d58f958edeb1"
+        "path_relative": "evidence/a0/setup_gen/S5_D12_M2p02_base/expected.json",
+        "sha256": "7c6579c910e02a84097492a18e39044a46da6d0d50b5342f6c11d58f958edeb1",
+        "sha256_canonical_lf": "7c6579c910e02a84097492a18e39044a46da6d0d50b5342f6c11d58f958edeb1",
+        "sha256_raw": "7c6579c910e02a84097492a18e39044a46da6d0d50b5342f6c11d58f958edeb1"
       },
       "files_in_case_dir": [
         "S5_D12_M2p02_base_contract.vspaero",
@@ -1799,9 +2105,16 @@
         "wing355_baseline.vspaero"
       ],
       "geom_result_csv": {
-        "bytes": 378,
+        "bytes": 369,
+        "bytes_canonical_lf": 369,
+        "bytes_raw": 378,
+        "eol": "crlf",
+        "hash_mode": "dual",
         "name": "geom_result_thin.csv",
-        "sha256": "f9113014f433a6f13dc2032a585abb0aeb6e9e7bb37f2a34f51bfb792c67d577"
+        "path_relative": "evidence/a0/setup_gen/S5_D12_M2p02_base/geom_result_thin.csv",
+        "sha256": "8f9283e1b02e4d1c2f354986e7bd16db97ee4c56a3b20ca59cfe2fcf6d89d089",
+        "sha256_canonical_lf": "8f9283e1b02e4d1c2f354986e7bd16db97ee4c56a3b20ca59cfe2fcf6d89d089",
+        "sha256_raw": "f9113014f433a6f13dc2032a585abb0aeb6e9e7bb37f2a34f51bfb792c67d577"
       },
       "geom_result_csv_error": null,
       "geometry": {
@@ -1812,14 +2125,28 @@
       "kind": "d12",
       "model": {
         "bytes": 111816,
+        "bytes_canonical_lf": 111816,
+        "bytes_raw": 111816,
+        "eol": "lf",
+        "hash_mode": "dual",
         "name": "wing355_baseline.vsp3",
-        "sha256": "9a788b467095b1a958a240eaa0132e922f667649e9212f9b19e4399bad14f27c"
+        "path_relative": "evidence/a0/setup_gen/S5_D12_M2p02_base/wing355_baseline.vsp3",
+        "sha256": "9a788b467095b1a958a240eaa0132e922f667649e9212f9b19e4399bad14f27c",
+        "sha256_canonical_lf": "9a788b467095b1a958a240eaa0132e922f667649e9212f9b19e4399bad14f27c",
+        "sha256_raw": "9a788b467095b1a958a240eaa0132e922f667649e9212f9b19e4399bad14f27c"
       },
       "note": "第3关 12D 主翼 thin 基线（合同参考量）",
       "raw_setup": {
-        "bytes": 930,
+        "bytes": 888,
+        "bytes_canonical_lf": 888,
+        "bytes_raw": 930,
+        "eol": "crlf",
+        "hash_mode": "dual",
         "name": "wing355_baseline.vspaero",
-        "sha256": "c862aa220bc6f3a9d057b2fbe99c4ed340591a14ad88f455d3d1b0ddbe7c1804"
+        "path_relative": "evidence/a0/setup_gen/S5_D12_M2p02_base/wing355_baseline.vspaero",
+        "sha256": "360618f4b406fa72ed4bd7676892aad268d5ce19ee196deee2d7b54136e43d3c",
+        "sha256_canonical_lf": "360618f4b406fa72ed4bd7676892aad268d5ce19ee196deee2d7b54136e43d3c",
+        "sha256_raw": "c862aa220bc6f3a9d057b2fbe99c4ed340591a14ad88f455d3d1b0ddbe7c1804"
       },
       "readback": {
         "assertions": 17,
@@ -2079,6 +2406,14 @@
         "target_sha256": "c9cef04e6a6986fdc87f07338e168dbf2ee17bdab3f5836b417ba6e6036ccb64",
         "vector_rows": 1
       },
+      "reference_velocity": {
+        "Vinf": 596.0373972278921,
+        "decision": "keep the frozen value so S5 stays byte-identical to the already-reviewed V0 contract; the delta is 1.0e-10 relative and physically irrelevant",
+        "delta_m_s": 5.989204510115087e-08,
+        "delta_relative": 1.0048370350535476e-10,
+        "formula_with_a_295_0680184": 596.0373971680001,
+        "source": "frozen 12D contract inherited byte-for-byte from D-12D-004 V0 (wing355_thin_v0_contract.vspaero)"
+      },
       "results": {
         "geom_result_id": "CQFASBE",
         "stop_before_run_readback": 1,
@@ -2087,20 +2422,44 @@
       "solver_artifacts_present": [],
       "thin_geometry": {
         "bytes": 224357,
+        "bytes_raw": 224357,
         "external_path": "D:\\RCAIDE\\outputs\\concorde_metaopt\\d12d005-20261104T0430Z\\raw_artifacts\\a0_setup\\S5_D12_M2p02_base.vspgeom",
+        "hash_mode": "raw_external",
         "local_copy": "wing355_baseline.vspgeom",
         "name": "S5_D12_M2p02_base.vspgeom",
+        "note": "thin .vspgeom lives outside the repo; hashed as raw bytes (never git-normalised)",
         "outside_git": true,
-        "sha256": "9fcda6d5d45300fbb0e20257c9ddc80540b44f5064a9566089d7ef85f9018d8e"
+        "path_relative": null,
+        "sha256": "9fcda6d5d45300fbb0e20257c9ddc80540b44f5064a9566089d7ef85f9018d8e",
+        "sha256_raw": "9fcda6d5d45300fbb0e20257c9ddc80540b44f5064a9566089d7ef85f9018d8e"
       },
       "vkey": {
-        "bytes": 385,
+        "bytes": 372,
+        "bytes_canonical_lf": 372,
+        "bytes_raw": 385,
+        "eol": "crlf",
+        "hash_mode": "dual",
         "name": "wing355_baseline.vkey",
-        "sha256": "f58033fcd92f050521cfedeaad649ab7b78be20b80a42f94cbec9ec20bce10c9"
+        "path_relative": "evidence/a0/setup_gen/S5_D12_M2p02_base/wing355_baseline.vkey",
+        "sha256": "83966086e90df2048753bd00d5f9d930fc8816419e0a52e37bc2d2ec3efdb170",
+        "sha256_canonical_lf": "83966086e90df2048753bd00d5f9d930fc8816419e0a52e37bc2d2ec3efdb170",
+        "sha256_raw": "f58033fcd92f050521cfedeaad649ab7b78be20b80a42f94cbec9ec20bce10c9"
       }
     }
   ],
-  "generated_utc": "2026-11-04T04:55:48Z",
+  "generated_utc": "2026-11-04T05:50:48Z",
+  "hashing_convention": {
+    "external_artifacts": "sha256 over raw bytes (outside git)",
+    "legacy_fields": "bytes/sha256 alias the canonical-LF form for older readers",
+    "per_entry_fields": [
+      "bytes_raw",
+      "sha256_raw",
+      "bytes_canonical_lf",
+      "sha256_canonical_lf",
+      "hash_mode"
+    ],
+    "text_files": "sha256 over canonical LF bytes (CRLF->LF) — equals the committed git blob content, because .gitattributes is '* text=auto' with eol=lf"
+  },
   "negative_controls": [
     {
       "all_rejected": true,
@@ -2159,13 +2518,163 @@
     "root": "D:\\OpenVSP-3.55.0\\OpenVSP-3.55.0-win64",
     "version": "OpenVSP 3.55.0"
   },
+  "process_spawn_scan": {
+    "covered": "every scripts/*.py record except regression_test kind",
+    "documented_exception": "the two regression_test files launch the runner CLI as a child process for smoke tests only; neither launches vspaero.exe",
+    "forbidden_calls": [
+      "os.system",
+      "os.popen",
+      "subprocess.Popen",
+      "subprocess.run",
+      "subprocess.call",
+      "shell=True"
+    ],
+    "forbidden_modules": [
+      "subprocess"
+    ],
+    "mode": "ast_import_and_call_scan"
+  },
+  "relocatability": {
+    "case_dir_field": "case_dir_relative (run-dir relative, posix); case_dir_abs_at_generation is informational only",
+    "reason": "A5 F-A0-01 follow-up: a clean checkout must reproduce the evidence without the original absolute root",
+    "verifier": "scripts/a0_verify_cases.py --run-dir <root> resolves every path from the run-dir root"
+  },
+  "revision": 2,
+  "revision_notes": {
+    "A5_F-A0-01": "dual raw/canonical-LF per-file hash evidence; run-relative paths; verified from a relocated copy and from a clean checkout",
+    "A5_F-A0-02": "scripts/test_vspaero7_runner_v1frozen.py import/path fixed to the frozen module; 22 tests OK (evidence/a0/v1frozen_test_run.log)",
+    "A5_F-A0-03": "README file-count corrected to 7",
+    "A5_F-A0-04": "process-spawn scan now covers every non-test script; the unittest's subprocess CLI call is documented as a permitted exception",
+    "A5_F-A0-05": "S5 reference_velocity block records inheritance source and the 6.0e-8 m/s formula delta"
+  },
   "run_id": "d12d005-20261104T0430Z",
   "runner": {
     "bytes": 30373,
+    "bytes_canonical_lf": 30373,
+    "bytes_raw": 30373,
+    "eol": "lf",
+    "hash_mode": "dual",
     "name": "vspaero7_runner_v1frozen.py",
-    "sha256": "b77b56526acab6ac03ee07838d06970f2bd98d298aae597997bf393474128a36"
+    "path_relative": "scripts/vspaero7_runner_v1frozen.py",
+    "sha256": "b77b56526acab6ac03ee07838d06970f2bd98d298aae597997bf393474128a36",
+    "sha256_canonical_lf": "b77b56526acab6ac03ee07838d06970f2bd98d298aae597997bf393474128a36",
+    "sha256_raw": "b77b56526acab6ac03ee07838d06970f2bd98d298aae597997bf393474128a36"
   },
-  "schema_version": "d12d005-a0-setup-generation-1",
+  "schema_version": "d12d005-a0-setup-generation-2",
+  "scripts": [
+    {
+      "bytes": 9749,
+      "bytes_canonical_lf": 9749,
+      "bytes_raw": 9749,
+      "eol": "lf",
+      "hash_mode": "dual",
+      "kind": "generator_or_verifier",
+      "name": "a0_analyze_v1_divergence.py",
+      "path_relative": "scripts/a0_analyze_v1_divergence.py",
+      "process_spawn_allowed": false,
+      "sha256": "57d91e7944f06466c5d962d1cca41b02ab9f30264e1ca7843f75ae5f21460430",
+      "sha256_canonical_lf": "57d91e7944f06466c5d962d1cca41b02ab9f30264e1ca7843f75ae5f21460430",
+      "sha256_raw": "57d91e7944f06466c5d962d1cca41b02ab9f30264e1ca7843f75ae5f21460430"
+    },
+    {
+      "bytes": 8090,
+      "bytes_canonical_lf": 8090,
+      "bytes_raw": 8090,
+      "eol": "lf",
+      "hash_mode": "dual",
+      "kind": "generator_or_verifier",
+      "name": "a0_finalize_evidence_v2.py",
+      "path_relative": "scripts/a0_finalize_evidence_v2.py",
+      "process_spawn_allowed": false,
+      "sha256": "4a908b63fad85a9ce0344f369d1437dc6ebbbf55663c91cebc96c39ad9a61896",
+      "sha256_canonical_lf": "4a908b63fad85a9ce0344f369d1437dc6ebbbf55663c91cebc96c39ad9a61896",
+      "sha256_raw": "4a908b63fad85a9ce0344f369d1437dc6ebbbf55663c91cebc96c39ad9a61896"
+    },
+    {
+      "bytes": 18583,
+      "bytes_canonical_lf": 18583,
+      "bytes_raw": 18583,
+      "eol": "lf",
+      "hash_mode": "dual",
+      "kind": "generator_or_verifier",
+      "name": "a0_generate_setups.py",
+      "path_relative": "scripts/a0_generate_setups.py",
+      "process_spawn_allowed": false,
+      "sha256": "187cbe16c003988be100473a601aa2a3f52d4db7c7de4c61643a5fb6de41b0f2",
+      "sha256_canonical_lf": "187cbe16c003988be100473a601aa2a3f52d4db7c7de4c61643a5fb6de41b0f2",
+      "sha256_raw": "187cbe16c003988be100473a601aa2a3f52d4db7c7de4c61643a5fb6de41b0f2"
+    },
+    {
+      "bytes": 17746,
+      "bytes_canonical_lf": 17746,
+      "bytes_raw": 17746,
+      "eol": "lf",
+      "hash_mode": "dual",
+      "kind": "generator_or_verifier",
+      "name": "a0_verify_cases.py",
+      "path_relative": "scripts/a0_verify_cases.py",
+      "process_spawn_allowed": false,
+      "sha256": "54f153c5a5d3b89ed09555978d10209b9776b61c9ea1affc4699dd670804ebce",
+      "sha256_canonical_lf": "54f153c5a5d3b89ed09555978d10209b9776b61c9ea1affc4699dd670804ebce",
+      "sha256_raw": "54f153c5a5d3b89ed09555978d10209b9776b61c9ea1affc4699dd670804ebce"
+    },
+    {
+      "bytes": 30373,
+      "bytes_canonical_lf": 30373,
+      "bytes_raw": 30373,
+      "eol": "lf",
+      "hash_mode": "dual",
+      "kind": "frozen_runner",
+      "name": "vspaero7_runner_v1frozen.py",
+      "path_relative": "scripts/vspaero7_runner_v1frozen.py",
+      "process_spawn_allowed": false,
+      "sha256": "b77b56526acab6ac03ee07838d06970f2bd98d298aae597997bf393474128a36",
+      "sha256_canonical_lf": "b77b56526acab6ac03ee07838d06970f2bd98d298aae597997bf393474128a36",
+      "sha256_raw": "b77b56526acab6ac03ee07838d06970f2bd98d298aae597997bf393474128a36"
+    },
+    {
+      "bytes": 49184,
+      "bytes_canonical_lf": 49184,
+      "bytes_raw": 50411,
+      "eol": "crlf",
+      "hash_mode": "dual",
+      "kind": "frozen_runner",
+      "name": "vspaero7_runner_v2.py",
+      "path_relative": "scripts/vspaero7_runner_v2.py",
+      "process_spawn_allowed": false,
+      "sha256": "ce4c23c6700c0e8f77345dcec1d0c19b6f170acd77e9a38053e163bcb8ac4be0",
+      "sha256_canonical_lf": "ce4c23c6700c0e8f77345dcec1d0c19b6f170acd77e9a38053e163bcb8ac4be0",
+      "sha256_raw": "7cce34bcf210397008a8870f7064b60920cd50659127033ddf668a3207fde1b3"
+    },
+    {
+      "bytes": 8217,
+      "bytes_canonical_lf": 8217,
+      "bytes_raw": 8217,
+      "eol": "lf",
+      "hash_mode": "dual",
+      "kind": "regression_test",
+      "name": "test_vspaero7_runner_v1frozen.py",
+      "path_relative": "scripts/test_vspaero7_runner_v1frozen.py",
+      "process_spawn_allowed": true,
+      "sha256": "51946c9c67dffe5e0e3db017043053f1329c384f418d66b7e707ea8275267192",
+      "sha256_canonical_lf": "51946c9c67dffe5e0e3db017043053f1329c384f418d66b7e707ea8275267192",
+      "sha256_raw": "51946c9c67dffe5e0e3db017043053f1329c384f418d66b7e707ea8275267192"
+    },
+    {
+      "bytes": 18824,
+      "bytes_canonical_lf": 18824,
+      "bytes_raw": 18824,
+      "eol": "lf",
+      "hash_mode": "dual",
+      "kind": "regression_test",
+      "name": "test_vspaero7_runner_v2.py",
+      "path_relative": "scripts/test_vspaero7_runner_v2.py",
+      "process_spawn_allowed": true,
+      "sha256": "66972b155cfcf6a1799926804f73837b4ba48b7dd4942bbbe8c02450327c2525",
+      "sha256_canonical_lf": "66972b155cfcf6a1799926804f73837b4ba48b7dd4942bbbe8c02450327c2525",
+      "sha256_raw": "66972b155cfcf6a1799926804f73837b4ba48b7dd4942bbbe8c02450327c2525"
+    }
+  ],
   "solver_processes_started": 0,
   "status": "A0_SETUP_READY_NO_SOLVER",
   "stop_before_run": 1,

@@ -5,7 +5,7 @@
 - 阶段：**A0 零求解预检**（尚未启动任何 VSPAERO 求解器；`solver_processes_started = 0`）
 - 分支 / worktree：`research/d12d005-aero-fallback` @ `D:/RCAIDE-d12d005`
 - 物理预算状态：A 类（VSPAERO7-thin-LF）cap 20，第一批 ≤6；**本轮使用 0/20**，`starts_used = 0`；D-12D-002/004 额度不结转
-- 生成时间：2026-11-04T04:55:48Z 起（本 README 最后核对 2026-11-04T05:0xZ）
+- 生成时间：2026-11-04T04:55:48Z 起；**evidence revision 2** 按 A5 task-97 复核意见重建逐文件哈希证据（见 §13）
 
 ## 1. 本轮目的
 
@@ -15,7 +15,7 @@ D-12D-004 V1 的两次 VSPAERO 启动均出现非物理系数/发散，A0 需在
 2. 用于"标准可核对翼"的几何与设置族是否就绪、能否用解析/半解析预期判定？
 3. 正式启动前的严格门禁（LD-002 解析器、目录/版本/回读/薄厚/坐标/尾迹设置、StopBeforeRun 证据）是否冻结？
 
-结论：① V1 是在 **Uber_eCRM-002 全机模型**上跑的，"标准翼"设置族从未被验证 → 必须先跑真正的矩形标准翼；② 标准翼（AR=4 矩形、平板中弧线）已建成，六案 setup 全部生成并通过 17 字段回读；③ 独立校验脚本 163 项检查全过（0 失败）。**本轮不产生任何 CL/CD 数值。**
+结论：① V1 是在 **Uber_eCRM-002 全机模型**上跑的，"标准翼"设置族从未被验证 → 必须先跑真正的矩形标准翼；② 标准翼（AR=4 矩形、平板中弧线）已建成，六案 setup 全部生成并通过 17 字段回读；③ 独立校验脚本全部检查通过（0 失败；逐文件同时校验 raw 与 canonical-LF 两种形态，项数见 a0_verification.json 的 checks_total）。**本轮不产生任何 CL/CD 数值。**
 
 ## 2. 零求解证据
 
@@ -23,7 +23,7 @@ D-12D-004 V1 的两次 VSPAERO 启动均出现非物理系数/发散，A0 需在
 | --- | --- |
 | `evidence/a0/setup_generation.json` | `status = A0_SETUP_READY_NO_SOLVER`；每案 `readback` 17 项决定性断言（Mach/AoA/ReCref/Vinf/Rho/Sref/Cref/Bref/X_cg/Y_cg/Z_cg/Symmetry/Beta/NumWakeNodes/WakeIters/WakeRelax/FarDist）；`stop_before_run_readback = 1`；`solver_processes_started = 0`；无 `.adb/.history/.polar/.lod` 产物 |
 | `evidence/a0/vspaero_v1_divergence_analysis.json` | 只读解析 d12d004 归档：`.vspaero`/`.polar`/`.history`/solver log/模型源 SHA，`solver_starts = 0` |
-| `evidence/a0/a0_verification.json` | 独立校验：163 checks，0 failed；含"脚本内无 `subprocess`/`os.system`/`Popen`/`shell=True`"、"run 目录内无本地 `.vspgeom`" |
+| `evidence/a0/a0_verification.json` | 独立校验（revision 2）：全部检查通过、0 failed；逐文件 raw + canonical-LF 双哈希；非测试脚本经 AST 扫描确认无进程启动路径（两个 unittest 以 child process 调 runner CLI，已在证据中标注例外）；run 目录内无本地 `.vspgeom` |
 | `evidence/a0/negative_controls/` | 6 个负控制 setup 均被严格门禁拒绝（见 §7） |
 
 注：VSPAEROComputeGeometry / VSPAEROSweep 在 `StopBeforeRun=1` 下会打印形如 `...vspaero.exe -omp 4 <base>` 的**将执行命令**，这是 OpenVSP 的分析命令行回显，**不是进程启动**；证据是 `.adb/.history/.polar/.lod` 一个都不存在，且 StopBeforeRun 读回为 1。此点与 D-12D-004 V0/V1 的口径一致（V0 复核 APPROVE）。
@@ -81,7 +81,7 @@ D-12D-004 V1 的两次 VSPAERO 启动均出现非物理系数/发散，A0 需在
 
 - 12D 案参考量：`Sref=358.25 / Cref=18.489893 / Bref=25.604638 / X_cg=16.821978259514246 / ReCref=89397005.8767656 / Vinf=596.0373972278921`；合同 setup 847 B / `c9cef04e...` 与 D-12D-004 V0 的 contract setup **逐字节一致**（V0 已由 A5 复核 APPROVE）。
 - 单因素 diff 由 `scripts/a0_verify_cases.py` 断言：S0→S1 仅 `NumWakeNodes` 8→128；S0→S2 仅 `WakeIters` 5→0；S3→S4 仅 `NumWakeNodes` 8→128。
-- 每案目录 6 文件：`<case>_model.vsp3`、`<case>_model.vspaero`（**raw**，仍含 VSPAERO 三个默认值 ReCref=1e7 / Vinf=100 / Rho=0.002377）、`<case>_contract.vspaero`（17 断言 PASS）、`<case>_model.vkey`、`<case>_model.csf`、`geom_result_thin.csv`、`expected.json`。薄 `.vspgeom` 已外置：
+- 每案目录 7 个文件：`<case>_model.vsp3`、`<case>_model.vspaero`（**raw**，仍含 VSPAERO 三个默认值 ReCref=1e7 / Vinf=100 / Rho=0.002377）、`<case>_contract.vspaero`（17 断言 PASS）、`<case>_model.vkey`、`<case>_model.csf`、`geom_result_thin.csv`、`expected.json`。薄 `.vspgeom` 已外置：
   - std：284,327 B / sha256 `8363f8fb209d...`（5 个 std 案同几何同哈希）
   - 12D：224,357 B / sha256 `9fcda6d5...`（与 D-12D-004 V0 一致）
   - 外部根：`D:/RCAIDE/outputs/concorde_metaopt/d12d005-20261104T0430Z/raw_artifacts/a0_setup/`（`outside_git = true`）
@@ -89,11 +89,11 @@ D-12D-004 V1 的两次 VSPAERO 启动均出现非物理系数/发散，A0 需在
 ## 6. A2 执行 bundle（门禁通过后照此启动，禁止自行改参数）
 
 1. 新建 case 执行目录（不要直接改写 A0 证据目录）。
-2. 复制：`<case>_model.vsp3`、`<case>_model.vkey`、`<case>_model.csf`、`<case>_contract.vspaero`（**用 contract 版，不要用 raw 版**）。
+2. 复制：`<case>_model.vsp3`、`<case>_model.vkey`、`<case>_model.csf`、`<case>_contract.vspaero`（**用 contract 版，不要用 raw 版**）、`geom_result_thin.csv`、`expected.json`（**必须随包**：v2 的 check-case-dir 在缺 expected.json 时回退 12D 合同，std 案会以 Sref 4.0 vs 358.25 报 SETUP_READBACK_FAIL）。
 3. 把外置 thin `.vspgeom` 复制到执行目录，命名 `<base>.vspgeom`（base 与 contract 文件名主干一致）。
 4. 改写 `.vkey` 第 2 行为该 `.vspgeom` 的**绝对路径**（D-12D-004 V1 两次失败的直接根因之一：缺 vkey/csf + vkey 内路径不对）。
 5. 运行：`D:/OpenVSP-3.55.0/OpenVSP-3.55.0-win64/vspaero.exe -omp 4 <base>`，cwd = 执行目录；串行，≤4 核，≤16 GB，单次 ≤900 s。
-6. 启动前：`python scripts/vspaero7_runner_v1frozen.py check-dir --dir <case_dir>`（v2 就绪后换 v2），必须 PASS。
+6. 启动前门禁（v2 已就绪，A0-aero ab29a0c）：`D:/RCAIDE/envs/RCAIDE/python.exe -E -s -B scripts/vspaero7_runner_v2.py check-case-dir --dir <case_dir> --evidence evidence/a0/setup_generation.json --case-id <case_id>`，必须 `status=PASS`（Lead 已用 S0/S5 bundle 端到端验证：contract 17 断言、vspgeom sha、vkey/csf、StopBeforeRun=1、无 solver 产物全过）。注意 CLI 退出码在管道里可能显示 0，须以 JSON status 判定。
 7. 启动后：用 v1frozen/v2 的 `validate_polar_file` / `validate_history_file` 复核；v1frozen 的 polar 校验是 **6.2 旧表头**，在 v2（LD-002）就绪前**不得**用它判定 7.2.2 结果有效。
 
 判定（第 1 关 S0，先看符号/量纲/残差/尾迹有界，再看是否落入解析区间）：
@@ -134,10 +134,10 @@ CLiw CDiw CSiw CFwxtot ... LoDw Ew StallFactor
 
 ## 9. 文件与哈希
 
-- 生成脚本：`scripts/a0_analyze_v1_divergence.py`（9,749 B）、`scripts/a0_generate_setups.py`（18,583 B）、`scripts/a0_verify_cases.py`（10,034 B）
-- 冻结基线：`scripts/vspaero7_runner_v1frozen.py`（30,373 B / sha256 `b77b56526acab6ac03ee07838d06970f2bd98d298aae597997bf393474128a36`）、`scripts/test_vspaero7_runner_v1frozen.py`（8,199 B）
+- 生成/校验脚本：`scripts/a0_analyze_v1_divergence.py`、`scripts/a0_generate_setups.py`、`scripts/a0_finalize_evidence_v2.py`、`scripts/a0_verify_cases.py`（逐文件双形态哈希见 `setup_generation.json` 的 `scripts` 数组）
+- 冻结基线：`scripts/vspaero7_runner_v1frozen.py`（30,373 B / sha256 `b77b56526acab6ac03ee07838d06970f2bd98d298aae597997bf393474128a36`）、`scripts/test_vspaero7_runner_v1frozen.py`（8,217 B；import 已修，22 tests OK，日志 `evidence/a0/v1frozen_test_run.log`）
 - 关键哈希：OpenVSP 3.55.0 / `vspaero.exe` sha256 `db71c4412489af82398833408ea30fb73327bdd9434de2ef530d31375b9fddad`；12D 模型 sha256 `9a788b467095...`（完整值见 `setup_generation.json`）
-- 完整 `data_manifest.json` 在本阶段**未生成**；A0 阶段的逐文件哈希在 `evidence/a0/setup_generation.json` 与 `evidence/a0/a0_verification.json` 内。整包 manifest 将在 A 线执行包冻结时统一生成（与 D-12D-004 V1 相同的 canonical-LF 约定）。
+- 完整 `data_manifest.json` 在本阶段**未生成**；A0 阶段的逐文件哈希在 `evidence/a0/setup_generation.json` 与 `evidence/a0/a0_verification.json` 内，采用 raw + canonical-LF 双形态记录（见 §13）。整包 manifest 将在 A 线执行包冻结时统一生成（与 D-12D-004 V1 相同的 canonical-LF 约定）。
 
 ## 10. 明确不声明（non-claims）
 
@@ -151,12 +151,30 @@ CLiw CDiw CSiw CFwxtot ... LoDw Ew StallFactor
 
 ```bat
 cd D:/RCAIDE-d12d005/research/concorde_metaopt/optimization_runs/d12d005-20261104T0430Z
-D:/RCAIDE/envs/RCAIDE/python.exe -E -s -B -c "import sys; sys.path.insert(0, 'scripts'); import a0_verify_cases as v; print(v.main())"
+D:/RCAIDE/envs/RCAIDE/python.exe -E -s -B scripts/a0_verify_cases.py --run-dir .
 ```
 
 - setup 生成（会调用 OpenVSP 3.55 API，但 StopBeforeRun=1，不启动求解器）：
   `D:/RCAIDE/envs/RCAIDE/python.exe -E -s -B scripts/a0_generate_setups.py`
 - 归档诊断（纯只读解析）：`D:/RCAIDE/envs/RCAIDE/python.exe -E -s -B scripts/a0_analyze_v1_divergence.py`
+
+
+- 也可从任意位置的完整 checkout 副本复核（run 内路径全部相对化）：
+  D:/RCAIDE/envs/RCAIDE/python.exe -E -s -B <root>/research/concorde_metaopt/optimization_runs/d12d005-20261104T0430Z/scripts/a0_verify_cases.py --run-dir <root>/research/concorde_metaopt/optimization_runs/d12d005-20261104T0430Z
+
+## 13. 复核整改（evidence revision 2，A5 task-97）
+
+A5 首轮复核 verdict CHANGES_REQUESTED（0 blocker / 1 major / 4 minor），本 revision 2 逐项处置：
+
+| 编号 | 级别 | 问题 | 处置 |
+| --- | --- | --- | --- |
+| F-A0-01 | MAJOR | 逐文件哈希按提交前 CRLF 记录；clean checkout 是 canonical LF（.gitattributes 为 text=auto/eol=lf），复跑 24/163 失败 | 所有文本文件记录改为 raw + canonical-LF 双形态（bytes_raw/sha256_raw/bytes_canonical_lf/sha256_canonical_lf/hash_mode/eol），case 路径改为 run 目录相对路径；README 的 163/0 表述改为引用 a0_verification.json 的 checks_total |
+| F-A0-02 | minor | test_vspaero7_runner_v1frozen.py import 旧模块名，A0 包内死测试 | 改为 import vspaero7_runner_v1frozen 与 HERE/模块名；实跑 22 tests OK，日志 evidence/a0/v1frozen_test_run.log |
+| F-A0-03 | minor | §5 写每案 6 文件但列了 7 个 | 改为 7 文件 |
+| F-A0-04 | minor | 脚本无进程启动的扫描只覆盖 2 个脚本 | 扫描扩展到 setup_generation.json 的 scripts 全部 8 个记录，改为 AST 导入/调用扫描；两个 unittest 的 child-process CLI 作为例外显式记录（process_spawn_scan.documented_exception） |
+| F-A0-05 | minor | S5 的 Vinf 直接继承 V0 冻结值，未注明与公式推导差 6.0e-8 m/s | S5 增加 reference_velocity 块：来源、公式值 596.0373971680001、差值 5.99e-8 m/s（相对 1.0e-10）、保留冻结值的理由（与已复核 V0 逐字节一致） |
+
+**哈希约定**：文本文件按 canonical LF 计哈希（等于提交后的 git blob 内容）；外部 thin .vspgeom（outside_git = true）按 raw 字节计哈希。复跑方式见 §11（--run-dir 支持任意 checkout 根）。
 
 ## 12. 下一步（等待门禁）
 

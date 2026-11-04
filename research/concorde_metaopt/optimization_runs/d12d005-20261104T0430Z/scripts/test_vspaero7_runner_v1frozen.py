@@ -16,7 +16,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 
-import vspaero7_runner as R  # noqa: E402
+import vspaero7_runner_v1frozen as R  # noqa: E402
 
 
 CANONICAL_SETUP = """Sref = 358.25
@@ -200,7 +200,7 @@ class CliTests(Base):
     def test_cli_smoke(self):
         src = self.write("in.vspaero", CANONICAL_SETUP)
         out = self.tmp / "out.vspaero"
-        runner = str(HERE / "vspaero7_runner.py")
+        runner = str(HERE / "vspaero7_runner_v1frozen.py")
 
         norm = subprocess.run(
             [sys.executable, runner, "normalize", "--input", str(src), "--output", str(out)],
