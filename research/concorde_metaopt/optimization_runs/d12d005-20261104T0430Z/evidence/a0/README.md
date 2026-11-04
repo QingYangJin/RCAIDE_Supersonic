@@ -174,7 +174,7 @@ A5 首轮复核 verdict CHANGES_REQUESTED（0 blocker / 1 major / 4 minor），�
 | F-A0-04 | minor | 脚本无进程启动的扫描只覆盖 2 个脚本 | 扫描扩展到 setup_generation.json 的 scripts 全部 8 个记录，改为 AST 导入/调用扫描；两个 unittest 的 child-process CLI 作为例外显式记录（process_spawn_scan.documented_exception） |
 | F-A0-05 | minor | S5 的 Vinf 直接继承 V0 冻结值，未注明与公式推导差 6.0e-8 m/s | S5 增加 reference_velocity 块：来源、公式值 596.0373971680001、差值 5.99e-8 m/s（相对 1.0e-10）、保留冻结值的理由（与已复核 V0 逐字节一致） |
 
-**哈希约定**：文本文件按 canonical LF 计哈希（等于提交后的 git blob 内容）；外部 thin .vspgeom（outside_git = true）按 raw 字节计哈希。复跑方式见 §11（--run-dir 支持任意 checkout 根）。
+**哈希约定**：文本文件按 canonical LF 计哈希（等于提交后的 git blob 内容）；外部 thin .vspgeom（outside_git = true）按 raw 字节计哈希。raw 形态只在生成机存在（Windows CRLF）：在干净 checkout 中文本文件只有 canonical-LF 形态，校验器对 raw_hash 判为 checkout_normalised（raw 仅作生成机证据，不作为 clean checkout 判据）。复跑方式见 §11（--run-dir 支持任意 checkout 根）。
 
 ## 12. 下一步（等待门禁）
 

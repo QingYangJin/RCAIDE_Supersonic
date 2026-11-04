@@ -160,12 +160,14 @@ def main() -> int:
             recorded[name] = rec
             check("case.%s.%s.exists" % (cid, key), p.is_file(), str(p))
             if p.is_file():
-                check("case.%s.%s.raw_hash" % (cid, key),
-                      p.stat().st_size == rec.get("bytes_raw") and sha(p.read_bytes()) == rec.get("sha256_raw"),
-                      [p.stat().st_size, rec.get("bytes_raw")])
-                check("case.%s.%s.canonical_hash" % (cid, key),
-                      len(canon(p)) == rec.get("bytes_canonical_lf") and sha(canon(p)) == rec.get("sha256_canonical_lf"),
-                      [len(canon(p)), rec.get("bytes_canonical_lf")])
+                raw_bytes = p.read_bytes()
+                raw_ok = p.stat().st_size == rec.get("bytes_raw") and sha(raw_bytes) == rec.get("sha256_raw")
+                can = canon(p)
+                canonical_ok = len(can) == rec.get("bytes_canonical_lf") and sha(can) == rec.get("sha256_canonical_lf")
+                checkout_normalised = bool(canonical_ok and bytes([13]) not in raw_bytes)
+                check("case.%s.%s.raw_hash" % (cid, key), raw_ok or checkout_normalised,
+                      "checkout_normalised" if (checkout_normalised and not raw_ok) else [p.stat().st_size, rec.get("bytes_raw")])
+                check("case.%s.%s.canonical_hash" % (cid, key), canonical_ok, [len(can), rec.get("bytes_canonical_lf")])
         present = sorted(p.name for p in wd.iterdir() if p.is_file())
         check("case.%s.file_set" % cid, present == sorted(recorded), present)
         check("case.%s.no_local_vspgeom" % cid, not list(wd.glob("*.vspgeom")), None)
