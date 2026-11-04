@@ -87,7 +87,7 @@
 - preregistration.json
 - solver_validation.csv
 - metrics/training_history.csv
-- metrics/optimization_history.csv
+- metrics/optimization_history.csv（打包时外置到仓库外输出目录，仓库内不含该文件；raw sha256/bytes 见 data_manifest.json external_artifacts）
 - metrics/optimization_summary.csv
 - metrics/metrics.csv
 - metrics/statistics.csv
@@ -100,6 +100,20 @@
 - README.md
 - summary.json
 - data_manifest.json
+
+### 打包新增（Lead，非 solver 产物）
+
+- figures/fig1_meta_training_loss.png（A2 生成，300 dpi 中文）
+- figures/fig3_feasible_rate.png（A2 生成，300 dpi 中文）
+- figures/fig4_equal_budget_gap.png（A2 生成，300 dpi 中文）
+- figures/fig5_fairness_audit.png（A2 生成，300 dpi 中文）
+- scripts/gen_figures_m5.py（图生成脚本，A2）
+- scripts/build_report_m5.py（报告生成脚本，A2）
+- evidence/packaging_note.md（打包说明与披露）
+- evidence/a5_m5_results_review.json（A5 结果复核证据）
+- evidence/a3_m5_run_audit.json（A3 run 审计证据）
+- evidence/a2_status_final.json（A2 定稿状态）
+- SHA256SUMS.txt（canonical-LF / raw 口径校验和；data_manifest.json 与 SHA256SUMS.txt 不在 manifest 的 35 条内）
 
 - 图状态：{'fig1_meta_training_loss': 'DATA_READY', 'fig2_k_shot_adaptation': 'NOT_APPLICABLE_THIS_STAGE', 'fig3_feasible_rate': 'DATA_READY', 'fig4_equal_budget_gap': 'DATA_READY', 'fig5_fairness_audit': 'DATA_READY', 'fig6_airframe_gate_progress': 'NOT_RUN'}
 - 本阶段只落盘图数据（figure_data.json）与状态（figure_status.json）；PNG 由 A2/M5 报告阶段从 CSV 生成。fig2 归 M6；fig6 归 Issue #4 D-12D-004，缺失图一律记 NOT_RUN/NOT_APPLICABLE，禁止假图。

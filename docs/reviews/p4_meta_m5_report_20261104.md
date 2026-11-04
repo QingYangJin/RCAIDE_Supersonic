@@ -1,9 +1,9 @@
-# P4 元学习 M5 正式 run（FORMAL）中文报告：合成任务族上的等预算优化对照（rev4 定稿）
+# P4 元学习 M5 正式 run（FORMAL）中文报告：合成任务族上的等预算优化对照（rev5 定稿）
 
 - run_id：p4-meta-m5-formal-20261104T1018Z
-- 版本：rev4 final（2026-11-05T04:52:36.946190+08:00，A2 定稿，不待复审）；相对 attempt2 rev3 仅改头注并补 run 启动/结束 HEAD 披露，数字与结论不变。
-- A5 复核状态：task-170 判 APPROVE_FOR_M5_REPORTING（0 blocker / 0 major / 2 minor = A5-M5A2-02 与 A5-M5A2-03）；本 rev 关闭 A5-M5A2-02、A5-M5A2-03（A5-M5A2-01 已于复核过程中关闭），A5-M5-04 为既有 minor（OPEN_PREEXISTING_DISCLOSED，见 §7）。历史：task-153 曾对 attempt1 判 CHANGES_REQUESTED（1 blocker / 2 major / 4 minor），已由 attempt2 修正。
-- 生成：A2（零求解、只读证据）；本文件为 rev4 定稿报告（final），提交目标路径 docs/reviews/p4_meta_m5_report_20261104.md
+- 版本：rev5 final（2026-11-05T05:30:07.273565+08:00，A2 定稿）；相对 rev4（922d0a94）仅 §4.5 数据源声明一行绝对路径改为 EXT 相对路径（A5-M5A2-04，rev5 已修），数字/表格/结论不变；本 rev 仅将头注版本与批准链对齐 A5-M5PKG-02。
+- A5 复核状态：task-170 判 APPROVE_FOR_M5_REPORTING（0 blocker / 0 major / 2 minor = A5-M5A2-02 与 A5-M5A2-03，均已在 rev4 关闭）；task-175 判 CHANGES_REQUESTED（唯一 minor A5-M5A2-04，rev5 修复并关闭）；task-177 判 APPROVE_FOR_M5_PACKAGING（0 blocker / 0 major / 0 minor new）。A5-M5-04 为既有 minor（OPEN_PREEXISTING_DISCLOSED，见 §7）。历史：task-153 曾对 attempt1 判 CHANGES_REQUESTED（1 blocker / 2 major / 4 minor），已由 attempt2 修正。
+- 生成：A2（零求解、只读证据）；本文件为 rev5 定稿报告（final），提交目标路径 docs/reviews/p4_meta_m5_report_20261104.md
 - 状态：VALID（study_scale=FORMAL, stage=holdout）；数据来源 SYNTHETIC_TEST；物理调用 physical_call_count=0
 - 本报告所有数字来自该 run 的 summary.json / statistics.csv / endpoint_summary.csv / optimization_summary.csv / figure_data.json；已做一致性核对（见第 8 节），未运行任何求解器、未写仓库、未访问网络。
 
