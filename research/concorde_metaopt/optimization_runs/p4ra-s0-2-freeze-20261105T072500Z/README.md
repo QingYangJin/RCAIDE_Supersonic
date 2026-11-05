@@ -19,9 +19,9 @@
 | budget_fairness_report.json | 64,723 | 834398189899bc3644c6c2eac558b9a1c441d4a5611eac33e01e9ad8deb0dfc6 |
 | digest_manifest.json | 2,074 | 68aaa106ac4473a71cb3d43da1c97efddd3ea7f11ec321de1d7390fe897c68dd |
 | freeze_summary.json | 6,115 | 1b6309b6d2d385777d701ce4fccaa6d46d82f3e33216c3d45d0a2725436359ad |
-| determinism_report.json | 4,948 | 5ea7ff81de087029174a1e88845f79cad471df7f8c517d49608ce560cd1d251e |
+| determinism_report.json | 4,948 | 4fc514e91a805329025be9e17304baea09ec5d8f11c0305bbb44335ad18b40e8（入库 canonical-LF） |
 
-另含 `SHA256SUMS.txt`（本目录 9 个 JSON 的 sha256）。canonical-LF 哈希见 `freeze_summary.json` 与 `digest_manifest.json` 的 stored_sha256 字段。
+另含 `SHA256SUMS.txt`（本目录 8 个 payload JSON 的 raw sha256）。8 个 payload 的 raw 与入库 blob 逐字节相同；`determinism_report.json` 在生成机为 CRLF raw（sha256 5ea7ff81de087029174a1e88845f79cad471df7f8c517d49608ce560cd1d251e），入库后被 git 规范化为 LF（表中为入库形态）。canonical-LF 哈希见 `freeze_summary.json` 与 `digest_manifest.json` 的 stored_sha256 字段。
 
 ## 生成方式与确定性
 
