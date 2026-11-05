@@ -1,0 +1,2150 @@
+{
+  "arms": [
+    "RAND-BO",
+    "PRETRAIN-KSHOT-BO",
+    "FOMAML-ZERO-BO",
+    "FOMAML-KSHOT-BO",
+    "DE"
+  ],
+  "assertion": "ALL_ARMS_BILLABLE_EQUALS_B_AND_K_COUNTED",
+  "budgets": [
+    64,
+    128
+  ],
+  "clone_pairs": [
+    {
+      "K": 0,
+      "canonical_arm": "FOMAML-ZERO-BO",
+      "clone_arm": "FOMAML-KSHOT-BO"
+    }
+  ],
+  "created_utc": "2026-11-05T21:50:00+00:00",
+  "family_id": "F-QE-feasible-v3",
+  "inference_eligible": {
+    "0": [
+      "RAND-BO",
+      "PRETRAIN-KSHOT-BO",
+      "FOMAML-ZERO-BO",
+      "DE"
+    ],
+    "1": [
+      "RAND-BO",
+      "PRETRAIN-KSHOT-BO",
+      "FOMAML-ZERO-BO",
+      "FOMAML-KSHOT-BO",
+      "DE"
+    ],
+    "3": [
+      "RAND-BO",
+      "PRETRAIN-KSHOT-BO",
+      "FOMAML-ZERO-BO",
+      "FOMAML-KSHOT-BO",
+      "DE"
+    ],
+    "5": [
+      "RAND-BO",
+      "PRETRAIN-KSHOT-BO",
+      "FOMAML-ZERO-BO",
+      "FOMAML-KSHOT-BO",
+      "DE"
+    ]
+  },
+  "initial_design_count": 8,
+  "k_values": [
+    0,
+    1,
+    3,
+    5
+  ],
+  "physical_call_count": 0,
+  "plan_count": 40,
+  "plans": [
+    {
+      "B": 64,
+      "K": 0,
+      "arm": "RAND-BO",
+      "budget": {
+        "B_total": 64,
+        "K_support": 0,
+        "initial_design_evaluations": 8,
+        "initial_designs": 8,
+        "main_search_evaluations": 56,
+        "support_evaluations_counted": true
+      },
+      "clone_of": null,
+      "evaluations": {
+        "billable": 64,
+        "non_billable": 0,
+        "physical_call_count": 0
+      },
+      "inference_eligible": true,
+      "initial_design_evaluations": 8,
+      "main_search_evaluations": 56,
+      "notes": [],
+      "stages": [
+        {
+          "counted_in_billable": true,
+          "evaluations": 0,
+          "note": "任务支持池固定前 K 点（固定 seed/顺序）；所有臂共享同一批支持点、标签与顺序。",
+          "stage": "support"
+        },
+        {
+          "counted_in_billable": true,
+          "evaluations": 8,
+          "note": "代理/随机机制补 8-K 个新点；DE 臂的这 8-K 点同时作为初始 population 的一部分。",
+          "stage": "initial_designs"
+        },
+        {
+          "counted_in_billable": true,
+          "evaluations": 56,
+          "note": "BO 臂为 B-8 次 BO 迭代；DE 臂为 B-8 次 DE 世代评价；不得额外评价。",
+          "stage": "main_search"
+        }
+      ],
+      "support": {
+        "K": 0,
+        "counted_in_billable": true,
+        "evaluated_count": 0,
+        "labels_visible_to_arm": false,
+        "shared_by_all_arms": true,
+        "used_for_adaptation": false
+      },
+      "support_evaluations": 0
+    },
+    {
+      "B": 64,
+      "K": 0,
+      "arm": "PRETRAIN-KSHOT-BO",
+      "budget": {
+        "B_total": 64,
+        "K_support": 0,
+        "initial_design_evaluations": 8,
+        "initial_designs": 8,
+        "main_search_evaluations": 56,
+        "support_evaluations_counted": true
+      },
+      "clone_of": null,
+      "evaluations": {
+        "billable": 64,
+        "non_billable": 0,
+        "physical_call_count": 0
+      },
+      "inference_eligible": true,
+      "initial_design_evaluations": 8,
+      "main_search_evaluations": 56,
+      "notes": [],
+      "stages": [
+        {
+          "counted_in_billable": true,
+          "evaluations": 0,
+          "note": "任务支持池固定前 K 点（固定 seed/顺序）；所有臂共享同一批支持点、标签与顺序。",
+          "stage": "support"
+        },
+        {
+          "counted_in_billable": true,
+          "evaluations": 8,
+          "note": "代理/随机机制补 8-K 个新点；DE 臂的这 8-K 点同时作为初始 population 的一部分。",
+          "stage": "initial_designs"
+        },
+        {
+          "counted_in_billable": true,
+          "evaluations": 56,
+          "note": "BO 臂为 B-8 次 BO 迭代；DE 臂为 B-8 次 DE 世代评价；不得额外评价。",
+          "stage": "main_search"
+        }
+      ],
+      "support": {
+        "K": 0,
+        "counted_in_billable": true,
+        "evaluated_count": 0,
+        "labels_visible_to_arm": false,
+        "shared_by_all_arms": true,
+        "used_for_adaptation": false
+      },
+      "support_evaluations": 0
+    },
+    {
+      "B": 64,
+      "K": 0,
+      "arm": "FOMAML-ZERO-BO",
+      "budget": {
+        "B_total": 64,
+        "K_support": 0,
+        "initial_design_evaluations": 8,
+        "initial_designs": 8,
+        "main_search_evaluations": 56,
+        "support_evaluations_counted": true
+      },
+      "clone_of": null,
+      "evaluations": {
+        "billable": 64,
+        "non_billable": 0,
+        "physical_call_count": 0
+      },
+      "inference_eligible": true,
+      "initial_design_evaluations": 8,
+      "main_search_evaluations": 56,
+      "notes": [],
+      "stages": [
+        {
+          "counted_in_billable": true,
+          "evaluations": 0,
+          "note": "任务支持池固定前 K 点（固定 seed/顺序）；所有臂共享同一批支持点、标签与顺序。",
+          "stage": "support"
+        },
+        {
+          "counted_in_billable": true,
+          "evaluations": 8,
+          "note": "代理/随机机制补 8-K 个新点；DE 臂的这 8-K 点同时作为初始 population 的一部分。",
+          "stage": "initial_designs"
+        },
+        {
+          "counted_in_billable": true,
+          "evaluations": 56,
+          "note": "BO 臂为 B-8 次 BO 迭代；DE 臂为 B-8 次 DE 世代评价；不得额外评价。",
+          "stage": "main_search"
+        }
+      ],
+      "support": {
+        "K": 0,
+        "counted_in_billable": true,
+        "evaluated_count": 0,
+        "labels_visible_to_arm": false,
+        "shared_by_all_arms": true,
+        "used_for_adaptation": false
+      },
+      "support_evaluations": 0
+    },
+    {
+      "B": 64,
+      "K": 0,
+      "arm": "FOMAML-KSHOT-BO",
+      "budget": {
+        "B_total": 64,
+        "K_support": 0,
+        "initial_design_evaluations": 8,
+        "initial_designs": 8,
+        "main_search_evaluations": 56,
+        "support_evaluations_counted": true
+      },
+      "clone_of": "FOMAML-ZERO-BO",
+      "evaluations": {
+        "billable": 64,
+        "non_billable": 0,
+        "physical_call_count": 0
+      },
+      "inference_eligible": false,
+      "initial_design_evaluations": 8,
+      "main_search_evaluations": 56,
+      "notes": [
+        "K=0 时 FOMAML-KSHOT-BO 与 FOMAML-ZERO-BO 同构：登记 CLONE 并排除推断。"
+      ],
+      "stages": [
+        {
+          "counted_in_billable": true,
+          "evaluations": 0,
+          "note": "任务支持池固定前 K 点（固定 seed/顺序）；所有臂共享同一批支持点、标签与顺序。",
+          "stage": "support"
+        },
+        {
+          "counted_in_billable": true,
+          "evaluations": 8,
+          "note": "代理/随机机制补 8-K 个新点；DE 臂的这 8-K 点同时作为初始 population 的一部分。",
+          "stage": "initial_designs"
+        },
+        {
+          "counted_in_billable": true,
+          "evaluations": 56,
+          "note": "BO 臂为 B-8 次 BO 迭代；DE 臂为 B-8 次 DE 世代评价；不得额外评价。",
+          "stage": "main_search"
+        }
+      ],
+      "support": {
+        "K": 0,
+        "counted_in_billable": true,
+        "evaluated_count": 0,
+        "labels_visible_to_arm": false,
+        "shared_by_all_arms": true,
+        "used_for_adaptation": false
+      },
+      "support_evaluations": 0
+    },
+    {
+      "B": 64,
+      "K": 0,
+      "arm": "DE",
+      "budget": {
+        "B_total": 64,
+        "K_support": 0,
+        "initial_design_evaluations": 8,
+        "initial_designs": 8,
+        "main_search_evaluations": 56,
+        "support_evaluations_counted": true
+      },
+      "clone_of": null,
+      "evaluations": {
+        "billable": 64,
+        "non_billable": 0,
+        "physical_call_count": 0
+      },
+      "inference_eligible": true,
+      "initial_design_evaluations": 8,
+      "main_search_evaluations": 56,
+      "notes": [],
+      "stages": [
+        {
+          "counted_in_billable": true,
+          "evaluations": 0,
+          "note": "任务支持池固定前 K 点（固定 seed/顺序）；所有臂共享同一批支持点、标签与顺序。",
+          "stage": "support"
+        },
+        {
+          "counted_in_billable": true,
+          "evaluations": 8,
+          "note": "代理/随机机制补 8-K 个新点；DE 臂的这 8-K 点同时作为初始 population 的一部分。",
+          "stage": "initial_designs"
+        },
+        {
+          "counted_in_billable": true,
+          "evaluations": 56,
+          "note": "BO 臂为 B-8 次 BO 迭代；DE 臂为 B-8 次 DE 世代评价；不得额外评价。",
+          "stage": "main_search"
+        }
+      ],
+      "support": {
+        "K": 0,
+        "counted_in_billable": true,
+        "evaluated_count": 0,
+        "labels_visible_to_arm": false,
+        "shared_by_all_arms": true,
+        "used_for_adaptation": false
+      },
+      "support_evaluations": 0
+    },
+    {
+      "B": 128,
+      "K": 0,
+      "arm": "RAND-BO",
+      "budget": {
+        "B_total": 128,
+        "K_support": 0,
+        "initial_design_evaluations": 8,
+        "initial_designs": 8,
+        "main_search_evaluations": 120,
+        "support_evaluations_counted": true
+      },
+      "clone_of": null,
+      "evaluations": {
+        "billable": 128,
+        "non_billable": 0,
+        "physical_call_count": 0
+      },
+      "inference_eligible": true,
+      "initial_design_evaluations": 8,
+      "main_search_evaluations": 120,
+      "notes": [],
+      "stages": [
+        {
+          "counted_in_billable": true,
+          "evaluations": 0,
+          "note": "任务支持池固定前 K 点（固定 seed/顺序）；所有臂共享同一批支持点、标签与顺序。",
+          "stage": "support"
+        },
+        {
+          "counted_in_billable": true,
+          "evaluations": 8,
+          "note": "代理/随机机制补 8-K 个新点；DE 臂的这 8-K 点同时作为初始 population 的一部分。",
+          "stage": "initial_designs"
+        },
+        {
+          "counted_in_billable": true,
+          "evaluations": 120,
+          "note": "BO 臂为 B-8 次 BO 迭代；DE 臂为 B-8 次 DE 世代评价；不得额外评价。",
+          "stage": "main_search"
+        }
+      ],
+      "support": {
+        "K": 0,
+        "counted_in_billable": true,
+        "evaluated_count": 0,
+        "labels_visible_to_arm": false,
+        "shared_by_all_arms": true,
+        "used_for_adaptation": false
+      },
+      "support_evaluations": 0
+    },
+    {
+      "B": 128,
+      "K": 0,
+      "arm": "PRETRAIN-KSHOT-BO",
+      "budget": {
+        "B_total": 128,
+        "K_support": 0,
+        "initial_design_evaluations": 8,
+        "initial_designs": 8,
+        "main_search_evaluations": 120,
+        "support_evaluations_counted": true
+      },
+      "clone_of": null,
+      "evaluations": {
+        "billable": 128,
+        "non_billable": 0,
+        "physical_call_count": 0
+      },
+      "inference_eligible": true,
+      "initial_design_evaluations": 8,
+      "main_search_evaluations": 120,
+      "notes": [],
+      "stages": [
+        {
+          "counted_in_billable": true,
+          "evaluations": 0,
+          "note": "任务支持池固定前 K 点（固定 seed/顺序）；所有臂共享同一批支持点、标签与顺序。",
+          "stage": "support"
+        },
+        {
+          "counted_in_billable": true,
+          "evaluations": 8,
+          "note": "代理/随机机制补 8-K 个新点；DE 臂的这 8-K 点同时作为初始 population 的一部分。",
+          "stage": "initial_designs"
+        },
+        {
+          "counted_in_billable": true,
+          "evaluations": 120,
+          "note": "BO 臂为 B-8 次 BO 迭代；DE 臂为 B-8 次 DE 世代评价；不得额外评价。",
+          "stage": "main_search"
+        }
+      ],
+      "support": {
+        "K": 0,
+        "counted_in_billable": true,
+        "evaluated_count": 0,
+        "labels_visible_to_arm": false,
+        "shared_by_all_arms": true,
+        "used_for_adaptation": false
+      },
+      "support_evaluations": 0
+    },
+    {
+      "B": 128,
+      "K": 0,
+      "arm": "FOMAML-ZERO-BO",
+      "budget": {
+        "B_total": 128,
+        "K_support": 0,
+        "initial_design_evaluations": 8,
+        "initial_designs": 8,
+        "main_search_evaluations": 120,
+        "support_evaluations_counted": true
+      },
+      "clone_of": null,
+      "evaluations": {
+        "billable": 128,
+        "non_billable": 0,
+        "physical_call_count": 0
+      },
+      "inference_eligible": true,
+      "initial_design_evaluations": 8,
+      "main_search_evaluations": 120,
+      "notes": [],
+      "stages": [
+        {
+          "counted_in_billable": true,
+          "evaluations": 0,
+          "note": "任务支持池固定前 K 点（固定 seed/顺序）；所有臂共享同一批支持点、标签与顺序。",
+          "stage": "support"
+        },
+        {
+          "counted_in_billable": true,
+          "evaluations": 8,
+          "note": "代理/随机机制补 8-K 个新点；DE 臂的这 8-K 点同时作为初始 population 的一部分。",
+          "stage": "initial_designs"
+        },
+        {
+          "counted_in_billable": true,
+          "evaluations": 120,
+          "note": "BO 臂为 B-8 次 BO 迭代；DE 臂为 B-8 次 DE 世代评价；不得额外评价。",
+          "stage": "main_search"
+        }
+      ],
+      "support": {
+        "K": 0,
+        "counted_in_billable": true,
+        "evaluated_count": 0,
+        "labels_visible_to_arm": false,
+        "shared_by_all_arms": true,
+        "used_for_adaptation": false
+      },
+      "support_evaluations": 0
+    },
+    {
+      "B": 128,
+      "K": 0,
+      "arm": "FOMAML-KSHOT-BO",
+      "budget": {
+        "B_total": 128,
+        "K_support": 0,
+        "initial_design_evaluations": 8,
+        "initial_designs": 8,
+        "main_search_evaluations": 120,
+        "support_evaluations_counted": true
+      },
+      "clone_of": "FOMAML-ZERO-BO",
+      "evaluations": {
+        "billable": 128,
+        "non_billable": 0,
+        "physical_call_count": 0
+      },
+      "inference_eligible": false,
+      "initial_design_evaluations": 8,
+      "main_search_evaluations": 120,
+      "notes": [
+        "K=0 时 FOMAML-KSHOT-BO 与 FOMAML-ZERO-BO 同构：登记 CLONE 并排除推断。"
+      ],
+      "stages": [
+        {
+          "counted_in_billable": true,
+          "evaluations": 0,
+          "note": "任务支持池固定前 K 点（固定 seed/顺序）；所有臂共享同一批支持点、标签与顺序。",
+          "stage": "support"
+        },
+        {
+          "counted_in_billable": true,
+          "evaluations": 8,
+          "note": "代理/随机机制补 8-K 个新点；DE 臂的这 8-K 点同时作为初始 population 的一部分。",
+          "stage": "initial_designs"
+        },
+        {
+          "counted_in_billable": true,
+          "evaluations": 120,
+          "note": "BO 臂为 B-8 次 BO 迭代；DE 臂为 B-8 次 DE 世代评价；不得额外评价。",
+          "stage": "main_search"
+        }
+      ],
+      "support": {
+        "K": 0,
+        "counted_in_billable": true,
+        "evaluated_count": 0,
+        "labels_visible_to_arm": false,
+        "shared_by_all_arms": true,
+        "used_for_adaptation": false
+      },
+      "support_evaluations": 0
+    },
+    {
+      "B": 128,
+      "K": 0,
+      "arm": "DE",
+      "budget": {
+        "B_total": 128,
+        "K_support": 0,
+        "initial_design_evaluations": 8,
+        "initial_designs": 8,
+        "main_search_evaluations": 120,
+        "support_evaluations_counted": true
+      },
+      "clone_of": null,
+      "evaluations": {
+        "billable": 128,
+        "non_billable": 0,
+        "physical_call_count": 0
+      },
+      "inference_eligible": true,
+      "initial_design_evaluations": 8,
+      "main_search_evaluations": 120,
+      "notes": [],
+      "stages": [
+        {
+          "counted_in_billable": true,
+          "evaluations": 0,
+          "note": "任务支持池固定前 K 点（固定 seed/顺序）；所有臂共享同一批支持点、标签与顺序。",
+          "stage": "support"
+        },
+        {
+          "counted_in_billable": true,
+          "evaluations": 8,
+          "note": "代理/随机机制补 8-K 个新点；DE 臂的这 8-K 点同时作为初始 population 的一部分。",
+          "stage": "initial_designs"
+        },
+        {
+          "counted_in_billable": true,
+          "evaluations": 120,
+          "note": "BO 臂为 B-8 次 BO 迭代；DE 臂为 B-8 次 DE 世代评价；不得额外评价。",
+          "stage": "main_search"
+        }
+      ],
+      "support": {
+        "K": 0,
+        "counted_in_billable": true,
+        "evaluated_count": 0,
+        "labels_visible_to_arm": false,
+        "shared_by_all_arms": true,
+        "used_for_adaptation": false
+      },
+      "support_evaluations": 0
+    },
+    {
+      "B": 64,
+      "K": 1,
+      "arm": "RAND-BO",
+      "budget": {
+        "B_total": 64,
+        "K_support": 1,
+        "initial_design_evaluations": 7,
+        "initial_designs": 8,
+        "main_search_evaluations": 56,
+        "support_evaluations_counted": true
+      },
+      "clone_of": null,
+      "evaluations": {
+        "billable": 64,
+        "non_billable": 0,
+        "physical_call_count": 0
+      },
+      "inference_eligible": true,
+      "initial_design_evaluations": 7,
+      "main_search_evaluations": 56,
+      "notes": [],
+      "stages": [
+        {
+          "counted_in_billable": true,
+          "evaluations": 1,
+          "note": "任务支持池固定前 K 点（固定 seed/顺序）；所有臂共享同一批支持点、标签与顺序。",
+          "stage": "support"
+        },
+        {
+          "counted_in_billable": true,
+          "evaluations": 7,
+          "note": "代理/随机机制补 8-K 个新点；DE 臂的这 8-K 点同时作为初始 population 的一部分。",
+          "stage": "initial_designs"
+        },
+        {
+          "counted_in_billable": true,
+          "evaluations": 56,
+          "note": "BO 臂为 B-8 次 BO 迭代；DE 臂为 B-8 次 DE 世代评价；不得额外评价。",
+          "stage": "main_search"
+        }
+      ],
+      "support": {
+        "K": 1,
+        "counted_in_billable": true,
+        "evaluated_count": 1,
+        "labels_visible_to_arm": false,
+        "shared_by_all_arms": true,
+        "used_for_adaptation": false
+      },
+      "support_evaluations": 1
+    },
+    {
+      "B": 64,
+      "K": 1,
+      "arm": "PRETRAIN-KSHOT-BO",
+      "budget": {
+        "B_total": 64,
+        "K_support": 1,
+        "initial_design_evaluations": 7,
+        "initial_designs": 8,
+        "main_search_evaluations": 56,
+        "support_evaluations_counted": true
+      },
+      "clone_of": null,
+      "evaluations": {
+        "billable": 64,
+        "non_billable": 0,
+        "physical_call_count": 0
+      },
+      "inference_eligible": true,
+      "initial_design_evaluations": 7,
+      "main_search_evaluations": 56,
+      "notes": [],
+      "stages": [
+        {
+          "counted_in_billable": true,
+          "evaluations": 1,
+          "note": "任务支持池固定前 K 点（固定 seed/顺序）；所有臂共享同一批支持点、标签与顺序。",
+          "stage": "support"
+        },
+        {
+          "counted_in_billable": true,
+          "evaluations": 7,
+          "note": "代理/随机机制补 8-K 个新点；DE 臂的这 8-K 点同时作为初始 population 的一部分。",
+          "stage": "initial_designs"
+        },
+        {
+          "counted_in_billable": true,
+          "evaluations": 56,
+          "note": "BO 臂为 B-8 次 BO 迭代；DE 臂为 B-8 次 DE 世代评价；不得额外评价。",
+          "stage": "main_search"
+        }
+      ],
+      "support": {
+        "K": 1,
+        "counted_in_billable": true,
+        "evaluated_count": 1,
+        "labels_visible_to_arm": true,
+        "shared_by_all_arms": true,
+        "used_for_adaptation": true
+      },
+      "support_evaluations": 1
+    },
+    {
+      "B": 64,
+      "K": 1,
+      "arm": "FOMAML-ZERO-BO",
+      "budget": {
+        "B_total": 64,
+        "K_support": 1,
+        "initial_design_evaluations": 7,
+        "initial_designs": 8,
+        "main_search_evaluations": 56,
+        "support_evaluations_counted": true
+      },
+      "clone_of": null,
+      "evaluations": {
+        "billable": 64,
+        "non_billable": 0,
+        "physical_call_count": 0
+      },
+      "inference_eligible": true,
+      "initial_design_evaluations": 7,
+      "main_search_evaluations": 56,
+      "notes": [],
+      "stages": [
+        {
+          "counted_in_billable": true,
+          "evaluations": 1,
+          "note": "任务支持池固定前 K 点（固定 seed/顺序）；所有臂共享同一批支持点、标签与顺序。",
+          "stage": "support"
+        },
+        {
+          "counted_in_billable": true,
+          "evaluations": 7,
+          "note": "代理/随机机制补 8-K 个新点；DE 臂的这 8-K 点同时作为初始 population 的一部分。",
+          "stage": "initial_designs"
+        },
+        {
+          "counted_in_billable": true,
+          "evaluations": 56,
+          "note": "BO 臂为 B-8 次 BO 迭代；DE 臂为 B-8 次 DE 世代评价；不得额外评价。",
+          "stage": "main_search"
+        }
+      ],
+      "support": {
+        "K": 1,
+        "counted_in_billable": true,
+        "evaluated_count": 1,
+        "labels_visible_to_arm": false,
+        "shared_by_all_arms": true,
+        "used_for_adaptation": false
+      },
+      "support_evaluations": 1
+    },
+    {
+      "B": 64,
+      "K": 1,
+      "arm": "FOMAML-KSHOT-BO",
+      "budget": {
+        "B_total": 64,
+        "K_support": 1,
+        "initial_design_evaluations": 7,
+        "initial_designs": 8,
+        "main_search_evaluations": 56,
+        "support_evaluations_counted": true
+      },
+      "clone_of": null,
+      "evaluations": {
+        "billable": 64,
+        "non_billable": 0,
+        "physical_call_count": 0
+      },
+      "inference_eligible": true,
+      "initial_design_evaluations": 7,
+      "main_search_evaluations": 56,
+      "notes": [],
+      "stages": [
+        {
+          "counted_in_billable": true,
+          "evaluations": 1,
+          "note": "任务支持池固定前 K 点（固定 seed/顺序）；所有臂共享同一批支持点、标签与顺序。",
+          "stage": "support"
+        },
+        {
+          "counted_in_billable": true,
+          "evaluations": 7,
+          "note": "代理/随机机制补 8-K 个新点；DE 臂的这 8-K 点同时作为初始 population 的一部分。",
+          "stage": "initial_designs"
+        },
+        {
+          "counted_in_billable": true,
+          "evaluations": 56,
+          "note": "BO 臂为 B-8 次 BO 迭代；DE 臂为 B-8 次 DE 世代评价；不得额外评价。",
+          "stage": "main_search"
+        }
+      ],
+      "support": {
+        "K": 1,
+        "counted_in_billable": true,
+        "evaluated_count": 1,
+        "labels_visible_to_arm": true,
+        "shared_by_all_arms": true,
+        "used_for_adaptation": true
+      },
+      "support_evaluations": 1
+    },
+    {
+      "B": 64,
+      "K": 1,
+      "arm": "DE",
+      "budget": {
+        "B_total": 64,
+        "K_support": 1,
+        "initial_design_evaluations": 7,
+        "initial_designs": 8,
+        "main_search_evaluations": 56,
+        "support_evaluations_counted": true
+      },
+      "clone_of": null,
+      "evaluations": {
+        "billable": 64,
+        "non_billable": 0,
+        "physical_call_count": 0
+      },
+      "inference_eligible": true,
+      "initial_design_evaluations": 7,
+      "main_search_evaluations": 56,
+      "notes": [],
+      "stages": [
+        {
+          "counted_in_billable": true,
+          "evaluations": 1,
+          "note": "任务支持池固定前 K 点（固定 seed/顺序）；所有臂共享同一批支持点、标签与顺序。",
+          "stage": "support"
+        },
+        {
+          "counted_in_billable": true,
+          "evaluations": 7,
+          "note": "代理/随机机制补 8-K 个新点；DE 臂的这 8-K 点同时作为初始 population 的一部分。",
+          "stage": "initial_designs"
+        },
+        {
+          "counted_in_billable": true,
+          "evaluations": 56,
+          "note": "BO 臂为 B-8 次 BO 迭代；DE 臂为 B-8 次 DE 世代评价；不得额外评价。",
+          "stage": "main_search"
+        }
+      ],
+      "support": {
+        "K": 1,
+        "counted_in_billable": true,
+        "evaluated_count": 1,
+        "labels_visible_to_arm": false,
+        "shared_by_all_arms": true,
+        "used_for_adaptation": false
+      },
+      "support_evaluations": 1
+    },
+    {
+      "B": 128,
+      "K": 1,
+      "arm": "RAND-BO",
+      "budget": {
+        "B_total": 128,
+        "K_support": 1,
+        "initial_design_evaluations": 7,
+        "initial_designs": 8,
+        "main_search_evaluations": 120,
+        "support_evaluations_counted": true
+      },
+      "clone_of": null,
+      "evaluations": {
+        "billable": 128,
+        "non_billable": 0,
+        "physical_call_count": 0
+      },
+      "inference_eligible": true,
+      "initial_design_evaluations": 7,
+      "main_search_evaluations": 120,
+      "notes": [],
+      "stages": [
+        {
+          "counted_in_billable": true,
+          "evaluations": 1,
+          "note": "任务支持池固定前 K 点（固定 seed/顺序）；所有臂共享同一批支持点、标签与顺序。",
+          "stage": "support"
+        },
+        {
+          "counted_in_billable": true,
+          "evaluations": 7,
+          "note": "代理/随机机制补 8-K 个新点；DE 臂的这 8-K 点同时作为初始 population 的一部分。",
+          "stage": "initial_designs"
+        },
+        {
+          "counted_in_billable": true,
+          "evaluations": 120,
+          "note": "BO 臂为 B-8 次 BO 迭代；DE 臂为 B-8 次 DE 世代评价；不得额外评价。",
+          "stage": "main_search"
+        }
+      ],
+      "support": {
+        "K": 1,
+        "counted_in_billable": true,
+        "evaluated_count": 1,
+        "labels_visible_to_arm": false,
+        "shared_by_all_arms": true,
+        "used_for_adaptation": false
+      },
+      "support_evaluations": 1
+    },
+    {
+      "B": 128,
+      "K": 1,
+      "arm": "PRETRAIN-KSHOT-BO",
+      "budget": {
+        "B_total": 128,
+        "K_support": 1,
+        "initial_design_evaluations": 7,
+        "initial_designs": 8,
+        "main_search_evaluations": 120,
+        "support_evaluations_counted": true
+      },
+      "clone_of": null,
+      "evaluations": {
+        "billable": 128,
+        "non_billable": 0,
+        "physical_call_count": 0
+      },
+      "inference_eligible": true,
+      "initial_design_evaluations": 7,
+      "main_search_evaluations": 120,
+      "notes": [],
+      "stages": [
+        {
+          "counted_in_billable": true,
+          "evaluations": 1,
+          "note": "任务支持池固定前 K 点（固定 seed/顺序）；所有臂共享同一批支持点、标签与顺序。",
+          "stage": "support"
+        },
+        {
+          "counted_in_billable": true,
+          "evaluations": 7,
+          "note": "代理/随机机制补 8-K 个新点；DE 臂的这 8-K 点同时作为初始 population 的一部分。",
+          "stage": "initial_designs"
+        },
+        {
+          "counted_in_billable": true,
+          "evaluations": 120,
+          "note": "BO 臂为 B-8 次 BO 迭代；DE 臂为 B-8 次 DE 世代评价；不得额外评价。",
+          "stage": "main_search"
+        }
+      ],
+      "support": {
+        "K": 1,
+        "counted_in_billable": true,
+        "evaluated_count": 1,
+        "labels_visible_to_arm": true,
+        "shared_by_all_arms": true,
+        "used_for_adaptation": true
+      },
+      "support_evaluations": 1
+    },
+    {
+      "B": 128,
+      "K": 1,
+      "arm": "FOMAML-ZERO-BO",
+      "budget": {
+        "B_total": 128,
+        "K_support": 1,
+        "initial_design_evaluations": 7,
+        "initial_designs": 8,
+        "main_search_evaluations": 120,
+        "support_evaluations_counted": true
+      },
+      "clone_of": null,
+      "evaluations": {
+        "billable": 128,
+        "non_billable": 0,
+        "physical_call_count": 0
+      },
+      "inference_eligible": true,
+      "initial_design_evaluations": 7,
+      "main_search_evaluations": 120,
+      "notes": [],
+      "stages": [
+        {
+          "counted_in_billable": true,
+          "evaluations": 1,
+          "note": "任务支持池固定前 K 点（固定 seed/顺序）；所有臂共享同一批支持点、标签与顺序。",
+          "stage": "support"
+        },
+        {
+          "counted_in_billable": true,
+          "evaluations": 7,
+          "note": "代理/随机机制补 8-K 个新点；DE 臂的这 8-K 点同时作为初始 population 的一部分。",
+          "stage": "initial_designs"
+        },
+        {
+          "counted_in_billable": true,
+          "evaluations": 120,
+          "note": "BO 臂为 B-8 次 BO 迭代；DE 臂为 B-8 次 DE 世代评价；不得额外评价。",
+          "stage": "main_search"
+        }
+      ],
+      "support": {
+        "K": 1,
+        "counted_in_billable": true,
+        "evaluated_count": 1,
+        "labels_visible_to_arm": false,
+        "shared_by_all_arms": true,
+        "used_for_adaptation": false
+      },
+      "support_evaluations": 1
+    },
+    {
+      "B": 128,
+      "K": 1,
+      "arm": "FOMAML-KSHOT-BO",
+      "budget": {
+        "B_total": 128,
+        "K_support": 1,
+        "initial_design_evaluations": 7,
+        "initial_designs": 8,
+        "main_search_evaluations": 120,
+        "support_evaluations_counted": true
+      },
+      "clone_of": null,
+      "evaluations": {
+        "billable": 128,
+        "non_billable": 0,
+        "physical_call_count": 0
+      },
+      "inference_eligible": true,
+      "initial_design_evaluations": 7,
+      "main_search_evaluations": 120,
+      "notes": [],
+      "stages": [
+        {
+          "counted_in_billable": true,
+          "evaluations": 1,
+          "note": "任务支持池固定前 K 点（固定 seed/顺序）；所有臂共享同一批支持点、标签与顺序。",
+          "stage": "support"
+        },
+        {
+          "counted_in_billable": true,
+          "evaluations": 7,
+          "note": "代理/随机机制补 8-K 个新点；DE 臂的这 8-K 点同时作为初始 population 的一部分。",
+          "stage": "initial_designs"
+        },
+        {
+          "counted_in_billable": true,
+          "evaluations": 120,
+          "note": "BO 臂为 B-8 次 BO 迭代；DE 臂为 B-8 次 DE 世代评价；不得额外评价。",
+          "stage": "main_search"
+        }
+      ],
+      "support": {
+        "K": 1,
+        "counted_in_billable": true,
+        "evaluated_count": 1,
+        "labels_visible_to_arm": true,
+        "shared_by_all_arms": true,
+        "used_for_adaptation": true
+      },
+      "support_evaluations": 1
+    },
+    {
+      "B": 128,
+      "K": 1,
+      "arm": "DE",
+      "budget": {
+        "B_total": 128,
+        "K_support": 1,
+        "initial_design_evaluations": 7,
+        "initial_designs": 8,
+        "main_search_evaluations": 120,
+        "support_evaluations_counted": true
+      },
+      "clone_of": null,
+      "evaluations": {
+        "billable": 128,
+        "non_billable": 0,
+        "physical_call_count": 0
+      },
+      "inference_eligible": true,
+      "initial_design_evaluations": 7,
+      "main_search_evaluations": 120,
+      "notes": [],
+      "stages": [
+        {
+          "counted_in_billable": true,
+          "evaluations": 1,
+          "note": "任务支持池固定前 K 点（固定 seed/顺序）；所有臂共享同一批支持点、标签与顺序。",
+          "stage": "support"
+        },
+        {
+          "counted_in_billable": true,
+          "evaluations": 7,
+          "note": "代理/随机机制补 8-K 个新点；DE 臂的这 8-K 点同时作为初始 population 的一部分。",
+          "stage": "initial_designs"
+        },
+        {
+          "counted_in_billable": true,
+          "evaluations": 120,
+          "note": "BO 臂为 B-8 次 BO 迭代；DE 臂为 B-8 次 DE 世代评价；不得额外评价。",
+          "stage": "main_search"
+        }
+      ],
+      "support": {
+        "K": 1,
+        "counted_in_billable": true,
+        "evaluated_count": 1,
+        "labels_visible_to_arm": false,
+        "shared_by_all_arms": true,
+        "used_for_adaptation": false
+      },
+      "support_evaluations": 1
+    },
+    {
+      "B": 64,
+      "K": 3,
+      "arm": "RAND-BO",
+      "budget": {
+        "B_total": 64,
+        "K_support": 3,
+        "initial_design_evaluations": 5,
+        "initial_designs": 8,
+        "main_search_evaluations": 56,
+        "support_evaluations_counted": true
+      },
+      "clone_of": null,
+      "evaluations": {
+        "billable": 64,
+        "non_billable": 0,
+        "physical_call_count": 0
+      },
+      "inference_eligible": true,
+      "initial_design_evaluations": 5,
+      "main_search_evaluations": 56,
+      "notes": [],
+      "stages": [
+        {
+          "counted_in_billable": true,
+          "evaluations": 3,
+          "note": "任务支持池固定前 K 点（固定 seed/顺序）；所有臂共享同一批支持点、标签与顺序。",
+          "stage": "support"
+        },
+        {
+          "counted_in_billable": true,
+          "evaluations": 5,
+          "note": "代理/随机机制补 8-K 个新点；DE 臂的这 8-K 点同时作为初始 population 的一部分。",
+          "stage": "initial_designs"
+        },
+        {
+          "counted_in_billable": true,
+          "evaluations": 56,
+          "note": "BO 臂为 B-8 次 BO 迭代；DE 臂为 B-8 次 DE 世代评价；不得额外评价。",
+          "stage": "main_search"
+        }
+      ],
+      "support": {
+        "K": 3,
+        "counted_in_billable": true,
+        "evaluated_count": 3,
+        "labels_visible_to_arm": false,
+        "shared_by_all_arms": true,
+        "used_for_adaptation": false
+      },
+      "support_evaluations": 3
+    },
+    {
+      "B": 64,
+      "K": 3,
+      "arm": "PRETRAIN-KSHOT-BO",
+      "budget": {
+        "B_total": 64,
+        "K_support": 3,
+        "initial_design_evaluations": 5,
+        "initial_designs": 8,
+        "main_search_evaluations": 56,
+        "support_evaluations_counted": true
+      },
+      "clone_of": null,
+      "evaluations": {
+        "billable": 64,
+        "non_billable": 0,
+        "physical_call_count": 0
+      },
+      "inference_eligible": true,
+      "initial_design_evaluations": 5,
+      "main_search_evaluations": 56,
+      "notes": [],
+      "stages": [
+        {
+          "counted_in_billable": true,
+          "evaluations": 3,
+          "note": "任务支持池固定前 K 点（固定 seed/顺序）；所有臂共享同一批支持点、标签与顺序。",
+          "stage": "support"
+        },
+        {
+          "counted_in_billable": true,
+          "evaluations": 5,
+          "note": "代理/随机机制补 8-K 个新点；DE 臂的这 8-K 点同时作为初始 population 的一部分。",
+          "stage": "initial_designs"
+        },
+        {
+          "counted_in_billable": true,
+          "evaluations": 56,
+          "note": "BO 臂为 B-8 次 BO 迭代；DE 臂为 B-8 次 DE 世代评价；不得额外评价。",
+          "stage": "main_search"
+        }
+      ],
+      "support": {
+        "K": 3,
+        "counted_in_billable": true,
+        "evaluated_count": 3,
+        "labels_visible_to_arm": true,
+        "shared_by_all_arms": true,
+        "used_for_adaptation": true
+      },
+      "support_evaluations": 3
+    },
+    {
+      "B": 64,
+      "K": 3,
+      "arm": "FOMAML-ZERO-BO",
+      "budget": {
+        "B_total": 64,
+        "K_support": 3,
+        "initial_design_evaluations": 5,
+        "initial_designs": 8,
+        "main_search_evaluations": 56,
+        "support_evaluations_counted": true
+      },
+      "clone_of": null,
+      "evaluations": {
+        "billable": 64,
+        "non_billable": 0,
+        "physical_call_count": 0
+      },
+      "inference_eligible": true,
+      "initial_design_evaluations": 5,
+      "main_search_evaluations": 56,
+      "notes": [],
+      "stages": [
+        {
+          "counted_in_billable": true,
+          "evaluations": 3,
+          "note": "任务支持池固定前 K 点（固定 seed/顺序）；所有臂共享同一批支持点、标签与顺序。",
+          "stage": "support"
+        },
+        {
+          "counted_in_billable": true,
+          "evaluations": 5,
+          "note": "代理/随机机制补 8-K 个新点；DE 臂的这 8-K 点同时作为初始 population 的一部分。",
+          "stage": "initial_designs"
+        },
+        {
+          "counted_in_billable": true,
+          "evaluations": 56,
+          "note": "BO 臂为 B-8 次 BO 迭代；DE 臂为 B-8 次 DE 世代评价；不得额外评价。",
+          "stage": "main_search"
+        }
+      ],
+      "support": {
+        "K": 3,
+        "counted_in_billable": true,
+        "evaluated_count": 3,
+        "labels_visible_to_arm": false,
+        "shared_by_all_arms": true,
+        "used_for_adaptation": false
+      },
+      "support_evaluations": 3
+    },
+    {
+      "B": 64,
+      "K": 3,
+      "arm": "FOMAML-KSHOT-BO",
+      "budget": {
+        "B_total": 64,
+        "K_support": 3,
+        "initial_design_evaluations": 5,
+        "initial_designs": 8,
+        "main_search_evaluations": 56,
+        "support_evaluations_counted": true
+      },
+      "clone_of": null,
+      "evaluations": {
+        "billable": 64,
+        "non_billable": 0,
+        "physical_call_count": 0
+      },
+      "inference_eligible": true,
+      "initial_design_evaluations": 5,
+      "main_search_evaluations": 56,
+      "notes": [],
+      "stages": [
+        {
+          "counted_in_billable": true,
+          "evaluations": 3,
+          "note": "任务支持池固定前 K 点（固定 seed/顺序）；所有臂共享同一批支持点、标签与顺序。",
+          "stage": "support"
+        },
+        {
+          "counted_in_billable": true,
+          "evaluations": 5,
+          "note": "代理/随机机制补 8-K 个新点；DE 臂的这 8-K 点同时作为初始 population 的一部分。",
+          "stage": "initial_designs"
+        },
+        {
+          "counted_in_billable": true,
+          "evaluations": 56,
+          "note": "BO 臂为 B-8 次 BO 迭代；DE 臂为 B-8 次 DE 世代评价；不得额外评价。",
+          "stage": "main_search"
+        }
+      ],
+      "support": {
+        "K": 3,
+        "counted_in_billable": true,
+        "evaluated_count": 3,
+        "labels_visible_to_arm": true,
+        "shared_by_all_arms": true,
+        "used_for_adaptation": true
+      },
+      "support_evaluations": 3
+    },
+    {
+      "B": 64,
+      "K": 3,
+      "arm": "DE",
+      "budget": {
+        "B_total": 64,
+        "K_support": 3,
+        "initial_design_evaluations": 5,
+        "initial_designs": 8,
+        "main_search_evaluations": 56,
+        "support_evaluations_counted": true
+      },
+      "clone_of": null,
+      "evaluations": {
+        "billable": 64,
+        "non_billable": 0,
+        "physical_call_count": 0
+      },
+      "inference_eligible": true,
+      "initial_design_evaluations": 5,
+      "main_search_evaluations": 56,
+      "notes": [],
+      "stages": [
+        {
+          "counted_in_billable": true,
+          "evaluations": 3,
+          "note": "任务支持池固定前 K 点（固定 seed/顺序）；所有臂共享同一批支持点、标签与顺序。",
+          "stage": "support"
+        },
+        {
+          "counted_in_billable": true,
+          "evaluations": 5,
+          "note": "代理/随机机制补 8-K 个新点；DE 臂的这 8-K 点同时作为初始 population 的一部分。",
+          "stage": "initial_designs"
+        },
+        {
+          "counted_in_billable": true,
+          "evaluations": 56,
+          "note": "BO 臂为 B-8 次 BO 迭代；DE 臂为 B-8 次 DE 世代评价；不得额外评价。",
+          "stage": "main_search"
+        }
+      ],
+      "support": {
+        "K": 3,
+        "counted_in_billable": true,
+        "evaluated_count": 3,
+        "labels_visible_to_arm": false,
+        "shared_by_all_arms": true,
+        "used_for_adaptation": false
+      },
+      "support_evaluations": 3
+    },
+    {
+      "B": 128,
+      "K": 3,
+      "arm": "RAND-BO",
+      "budget": {
+        "B_total": 128,
+        "K_support": 3,
+        "initial_design_evaluations": 5,
+        "initial_designs": 8,
+        "main_search_evaluations": 120,
+        "support_evaluations_counted": true
+      },
+      "clone_of": null,
+      "evaluations": {
+        "billable": 128,
+        "non_billable": 0,
+        "physical_call_count": 0
+      },
+      "inference_eligible": true,
+      "initial_design_evaluations": 5,
+      "main_search_evaluations": 120,
+      "notes": [],
+      "stages": [
+        {
+          "counted_in_billable": true,
+          "evaluations": 3,
+          "note": "任务支持池固定前 K 点（固定 seed/顺序）；所有臂共享同一批支持点、标签与顺序。",
+          "stage": "support"
+        },
+        {
+          "counted_in_billable": true,
+          "evaluations": 5,
+          "note": "代理/随机机制补 8-K 个新点；DE 臂的这 8-K 点同时作为初始 population 的一部分。",
+          "stage": "initial_designs"
+        },
+        {
+          "counted_in_billable": true,
+          "evaluations": 120,
+          "note": "BO 臂为 B-8 次 BO 迭代；DE 臂为 B-8 次 DE 世代评价；不得额外评价。",
+          "stage": "main_search"
+        }
+      ],
+      "support": {
+        "K": 3,
+        "counted_in_billable": true,
+        "evaluated_count": 3,
+        "labels_visible_to_arm": false,
+        "shared_by_all_arms": true,
+        "used_for_adaptation": false
+      },
+      "support_evaluations": 3
+    },
+    {
+      "B": 128,
+      "K": 3,
+      "arm": "PRETRAIN-KSHOT-BO",
+      "budget": {
+        "B_total": 128,
+        "K_support": 3,
+        "initial_design_evaluations": 5,
+        "initial_designs": 8,
+        "main_search_evaluations": 120,
+        "support_evaluations_counted": true
+      },
+      "clone_of": null,
+      "evaluations": {
+        "billable": 128,
+        "non_billable": 0,
+        "physical_call_count": 0
+      },
+      "inference_eligible": true,
+      "initial_design_evaluations": 5,
+      "main_search_evaluations": 120,
+      "notes": [],
+      "stages": [
+        {
+          "counted_in_billable": true,
+          "evaluations": 3,
+          "note": "任务支持池固定前 K 点（固定 seed/顺序）；所有臂共享同一批支持点、标签与顺序。",
+          "stage": "support"
+        },
+        {
+          "counted_in_billable": true,
+          "evaluations": 5,
+          "note": "代理/随机机制补 8-K 个新点；DE 臂的这 8-K 点同时作为初始 population 的一部分。",
+          "stage": "initial_designs"
+        },
+        {
+          "counted_in_billable": true,
+          "evaluations": 120,
+          "note": "BO 臂为 B-8 次 BO 迭代；DE 臂为 B-8 次 DE 世代评价；不得额外评价。",
+          "stage": "main_search"
+        }
+      ],
+      "support": {
+        "K": 3,
+        "counted_in_billable": true,
+        "evaluated_count": 3,
+        "labels_visible_to_arm": true,
+        "shared_by_all_arms": true,
+        "used_for_adaptation": true
+      },
+      "support_evaluations": 3
+    },
+    {
+      "B": 128,
+      "K": 3,
+      "arm": "FOMAML-ZERO-BO",
+      "budget": {
+        "B_total": 128,
+        "K_support": 3,
+        "initial_design_evaluations": 5,
+        "initial_designs": 8,
+        "main_search_evaluations": 120,
+        "support_evaluations_counted": true
+      },
+      "clone_of": null,
+      "evaluations": {
+        "billable": 128,
+        "non_billable": 0,
+        "physical_call_count": 0
+      },
+      "inference_eligible": true,
+      "initial_design_evaluations": 5,
+      "main_search_evaluations": 120,
+      "notes": [],
+      "stages": [
+        {
+          "counted_in_billable": true,
+          "evaluations": 3,
+          "note": "任务支持池固定前 K 点（固定 seed/顺序）；所有臂共享同一批支持点、标签与顺序。",
+          "stage": "support"
+        },
+        {
+          "counted_in_billable": true,
+          "evaluations": 5,
+          "note": "代理/随机机制补 8-K 个新点；DE 臂的这 8-K 点同时作为初始 population 的一部分。",
+          "stage": "initial_designs"
+        },
+        {
+          "counted_in_billable": true,
+          "evaluations": 120,
+          "note": "BO 臂为 B-8 次 BO 迭代；DE 臂为 B-8 次 DE 世代评价；不得额外评价。",
+          "stage": "main_search"
+        }
+      ],
+      "support": {
+        "K": 3,
+        "counted_in_billable": true,
+        "evaluated_count": 3,
+        "labels_visible_to_arm": false,
+        "shared_by_all_arms": true,
+        "used_for_adaptation": false
+      },
+      "support_evaluations": 3
+    },
+    {
+      "B": 128,
+      "K": 3,
+      "arm": "FOMAML-KSHOT-BO",
+      "budget": {
+        "B_total": 128,
+        "K_support": 3,
+        "initial_design_evaluations": 5,
+        "initial_designs": 8,
+        "main_search_evaluations": 120,
+        "support_evaluations_counted": true
+      },
+      "clone_of": null,
+      "evaluations": {
+        "billable": 128,
+        "non_billable": 0,
+        "physical_call_count": 0
+      },
+      "inference_eligible": true,
+      "initial_design_evaluations": 5,
+      "main_search_evaluations": 120,
+      "notes": [],
+      "stages": [
+        {
+          "counted_in_billable": true,
+          "evaluations": 3,
+          "note": "任务支持池固定前 K 点（固定 seed/顺序）；所有臂共享同一批支持点、标签与顺序。",
+          "stage": "support"
+        },
+        {
+          "counted_in_billable": true,
+          "evaluations": 5,
+          "note": "代理/随机机制补 8-K 个新点；DE 臂的这 8-K 点同时作为初始 population 的一部分。",
+          "stage": "initial_designs"
+        },
+        {
+          "counted_in_billable": true,
+          "evaluations": 120,
+          "note": "BO 臂为 B-8 次 BO 迭代；DE 臂为 B-8 次 DE 世代评价；不得额外评价。",
+          "stage": "main_search"
+        }
+      ],
+      "support": {
+        "K": 3,
+        "counted_in_billable": true,
+        "evaluated_count": 3,
+        "labels_visible_to_arm": true,
+        "shared_by_all_arms": true,
+        "used_for_adaptation": true
+      },
+      "support_evaluations": 3
+    },
+    {
+      "B": 128,
+      "K": 3,
+      "arm": "DE",
+      "budget": {
+        "B_total": 128,
+        "K_support": 3,
+        "initial_design_evaluations": 5,
+        "initial_designs": 8,
+        "main_search_evaluations": 120,
+        "support_evaluations_counted": true
+      },
+      "clone_of": null,
+      "evaluations": {
+        "billable": 128,
+        "non_billable": 0,
+        "physical_call_count": 0
+      },
+      "inference_eligible": true,
+      "initial_design_evaluations": 5,
+      "main_search_evaluations": 120,
+      "notes": [],
+      "stages": [
+        {
+          "counted_in_billable": true,
+          "evaluations": 3,
+          "note": "任务支持池固定前 K 点（固定 seed/顺序）；所有臂共享同一批支持点、标签与顺序。",
+          "stage": "support"
+        },
+        {
+          "counted_in_billable": true,
+          "evaluations": 5,
+          "note": "代理/随机机制补 8-K 个新点；DE 臂的这 8-K 点同时作为初始 population 的一部分。",
+          "stage": "initial_designs"
+        },
+        {
+          "counted_in_billable": true,
+          "evaluations": 120,
+          "note": "BO 臂为 B-8 次 BO 迭代；DE 臂为 B-8 次 DE 世代评价；不得额外评价。",
+          "stage": "main_search"
+        }
+      ],
+      "support": {
+        "K": 3,
+        "counted_in_billable": true,
+        "evaluated_count": 3,
+        "labels_visible_to_arm": false,
+        "shared_by_all_arms": true,
+        "used_for_adaptation": false
+      },
+      "support_evaluations": 3
+    },
+    {
+      "B": 64,
+      "K": 5,
+      "arm": "RAND-BO",
+      "budget": {
+        "B_total": 64,
+        "K_support": 5,
+        "initial_design_evaluations": 3,
+        "initial_designs": 8,
+        "main_search_evaluations": 56,
+        "support_evaluations_counted": true
+      },
+      "clone_of": null,
+      "evaluations": {
+        "billable": 64,
+        "non_billable": 0,
+        "physical_call_count": 0
+      },
+      "inference_eligible": true,
+      "initial_design_evaluations": 3,
+      "main_search_evaluations": 56,
+      "notes": [],
+      "stages": [
+        {
+          "counted_in_billable": true,
+          "evaluations": 5,
+          "note": "任务支持池固定前 K 点（固定 seed/顺序）；所有臂共享同一批支持点、标签与顺序。",
+          "stage": "support"
+        },
+        {
+          "counted_in_billable": true,
+          "evaluations": 3,
+          "note": "代理/随机机制补 8-K 个新点；DE 臂的这 8-K 点同时作为初始 population 的一部分。",
+          "stage": "initial_designs"
+        },
+        {
+          "counted_in_billable": true,
+          "evaluations": 56,
+          "note": "BO 臂为 B-8 次 BO 迭代；DE 臂为 B-8 次 DE 世代评价；不得额外评价。",
+          "stage": "main_search"
+        }
+      ],
+      "support": {
+        "K": 5,
+        "counted_in_billable": true,
+        "evaluated_count": 5,
+        "labels_visible_to_arm": false,
+        "shared_by_all_arms": true,
+        "used_for_adaptation": false
+      },
+      "support_evaluations": 5
+    },
+    {
+      "B": 64,
+      "K": 5,
+      "arm": "PRETRAIN-KSHOT-BO",
+      "budget": {
+        "B_total": 64,
+        "K_support": 5,
+        "initial_design_evaluations": 3,
+        "initial_designs": 8,
+        "main_search_evaluations": 56,
+        "support_evaluations_counted": true
+      },
+      "clone_of": null,
+      "evaluations": {
+        "billable": 64,
+        "non_billable": 0,
+        "physical_call_count": 0
+      },
+      "inference_eligible": true,
+      "initial_design_evaluations": 3,
+      "main_search_evaluations": 56,
+      "notes": [],
+      "stages": [
+        {
+          "counted_in_billable": true,
+          "evaluations": 5,
+          "note": "任务支持池固定前 K 点（固定 seed/顺序）；所有臂共享同一批支持点、标签与顺序。",
+          "stage": "support"
+        },
+        {
+          "counted_in_billable": true,
+          "evaluations": 3,
+          "note": "代理/随机机制补 8-K 个新点；DE 臂的这 8-K 点同时作为初始 population 的一部分。",
+          "stage": "initial_designs"
+        },
+        {
+          "counted_in_billable": true,
+          "evaluations": 56,
+          "note": "BO 臂为 B-8 次 BO 迭代；DE 臂为 B-8 次 DE 世代评价；不得额外评价。",
+          "stage": "main_search"
+        }
+      ],
+      "support": {
+        "K": 5,
+        "counted_in_billable": true,
+        "evaluated_count": 5,
+        "labels_visible_to_arm": true,
+        "shared_by_all_arms": true,
+        "used_for_adaptation": true
+      },
+      "support_evaluations": 5
+    },
+    {
+      "B": 64,
+      "K": 5,
+      "arm": "FOMAML-ZERO-BO",
+      "budget": {
+        "B_total": 64,
+        "K_support": 5,
+        "initial_design_evaluations": 3,
+        "initial_designs": 8,
+        "main_search_evaluations": 56,
+        "support_evaluations_counted": true
+      },
+      "clone_of": null,
+      "evaluations": {
+        "billable": 64,
+        "non_billable": 0,
+        "physical_call_count": 0
+      },
+      "inference_eligible": true,
+      "initial_design_evaluations": 3,
+      "main_search_evaluations": 56,
+      "notes": [],
+      "stages": [
+        {
+          "counted_in_billable": true,
+          "evaluations": 5,
+          "note": "任务支持池固定前 K 点（固定 seed/顺序）；所有臂共享同一批支持点、标签与顺序。",
+          "stage": "support"
+        },
+        {
+          "counted_in_billable": true,
+          "evaluations": 3,
+          "note": "代理/随机机制补 8-K 个新点；DE 臂的这 8-K 点同时作为初始 population 的一部分。",
+          "stage": "initial_designs"
+        },
+        {
+          "counted_in_billable": true,
+          "evaluations": 56,
+          "note": "BO 臂为 B-8 次 BO 迭代；DE 臂为 B-8 次 DE 世代评价；不得额外评价。",
+          "stage": "main_search"
+        }
+      ],
+      "support": {
+        "K": 5,
+        "counted_in_billable": true,
+        "evaluated_count": 5,
+        "labels_visible_to_arm": false,
+        "shared_by_all_arms": true,
+        "used_for_adaptation": false
+      },
+      "support_evaluations": 5
+    },
+    {
+      "B": 64,
+      "K": 5,
+      "arm": "FOMAML-KSHOT-BO",
+      "budget": {
+        "B_total": 64,
+        "K_support": 5,
+        "initial_design_evaluations": 3,
+        "initial_designs": 8,
+        "main_search_evaluations": 56,
+        "support_evaluations_counted": true
+      },
+      "clone_of": null,
+      "evaluations": {
+        "billable": 64,
+        "non_billable": 0,
+        "physical_call_count": 0
+      },
+      "inference_eligible": true,
+      "initial_design_evaluations": 3,
+      "main_search_evaluations": 56,
+      "notes": [],
+      "stages": [
+        {
+          "counted_in_billable": true,
+          "evaluations": 5,
+          "note": "任务支持池固定前 K 点（固定 seed/顺序）；所有臂共享同一批支持点、标签与顺序。",
+          "stage": "support"
+        },
+        {
+          "counted_in_billable": true,
+          "evaluations": 3,
+          "note": "代理/随机机制补 8-K 个新点；DE 臂的这 8-K 点同时作为初始 population 的一部分。",
+          "stage": "initial_designs"
+        },
+        {
+          "counted_in_billable": true,
+          "evaluations": 56,
+          "note": "BO 臂为 B-8 次 BO 迭代；DE 臂为 B-8 次 DE 世代评价；不得额外评价。",
+          "stage": "main_search"
+        }
+      ],
+      "support": {
+        "K": 5,
+        "counted_in_billable": true,
+        "evaluated_count": 5,
+        "labels_visible_to_arm": true,
+        "shared_by_all_arms": true,
+        "used_for_adaptation": true
+      },
+      "support_evaluations": 5
+    },
+    {
+      "B": 64,
+      "K": 5,
+      "arm": "DE",
+      "budget": {
+        "B_total": 64,
+        "K_support": 5,
+        "initial_design_evaluations": 3,
+        "initial_designs": 8,
+        "main_search_evaluations": 56,
+        "support_evaluations_counted": true
+      },
+      "clone_of": null,
+      "evaluations": {
+        "billable": 64,
+        "non_billable": 0,
+        "physical_call_count": 0
+      },
+      "inference_eligible": true,
+      "initial_design_evaluations": 3,
+      "main_search_evaluations": 56,
+      "notes": [],
+      "stages": [
+        {
+          "counted_in_billable": true,
+          "evaluations": 5,
+          "note": "任务支持池固定前 K 点（固定 seed/顺序）；所有臂共享同一批支持点、标签与顺序。",
+          "stage": "support"
+        },
+        {
+          "counted_in_billable": true,
+          "evaluations": 3,
+          "note": "代理/随机机制补 8-K 个新点；DE 臂的这 8-K 点同时作为初始 population 的一部分。",
+          "stage": "initial_designs"
+        },
+        {
+          "counted_in_billable": true,
+          "evaluations": 56,
+          "note": "BO 臂为 B-8 次 BO 迭代；DE 臂为 B-8 次 DE 世代评价；不得额外评价。",
+          "stage": "main_search"
+        }
+      ],
+      "support": {
+        "K": 5,
+        "counted_in_billable": true,
+        "evaluated_count": 5,
+        "labels_visible_to_arm": false,
+        "shared_by_all_arms": true,
+        "used_for_adaptation": false
+      },
+      "support_evaluations": 5
+    },
+    {
+      "B": 128,
+      "K": 5,
+      "arm": "RAND-BO",
+      "budget": {
+        "B_total": 128,
+        "K_support": 5,
+        "initial_design_evaluations": 3,
+        "initial_designs": 8,
+        "main_search_evaluations": 120,
+        "support_evaluations_counted": true
+      },
+      "clone_of": null,
+      "evaluations": {
+        "billable": 128,
+        "non_billable": 0,
+        "physical_call_count": 0
+      },
+      "inference_eligible": true,
+      "initial_design_evaluations": 3,
+      "main_search_evaluations": 120,
+      "notes": [],
+      "stages": [
+        {
+          "counted_in_billable": true,
+          "evaluations": 5,
+          "note": "任务支持池固定前 K 点（固定 seed/顺序）；所有臂共享同一批支持点、标签与顺序。",
+          "stage": "support"
+        },
+        {
+          "counted_in_billable": true,
+          "evaluations": 3,
+          "note": "代理/随机机制补 8-K 个新点；DE 臂的这 8-K 点同时作为初始 population 的一部分。",
+          "stage": "initial_designs"
+        },
+        {
+          "counted_in_billable": true,
+          "evaluations": 120,
+          "note": "BO 臂为 B-8 次 BO 迭代；DE 臂为 B-8 次 DE 世代评价；不得额外评价。",
+          "stage": "main_search"
+        }
+      ],
+      "support": {
+        "K": 5,
+        "counted_in_billable": true,
+        "evaluated_count": 5,
+        "labels_visible_to_arm": false,
+        "shared_by_all_arms": true,
+        "used_for_adaptation": false
+      },
+      "support_evaluations": 5
+    },
+    {
+      "B": 128,
+      "K": 5,
+      "arm": "PRETRAIN-KSHOT-BO",
+      "budget": {
+        "B_total": 128,
+        "K_support": 5,
+        "initial_design_evaluations": 3,
+        "initial_designs": 8,
+        "main_search_evaluations": 120,
+        "support_evaluations_counted": true
+      },
+      "clone_of": null,
+      "evaluations": {
+        "billable": 128,
+        "non_billable": 0,
+        "physical_call_count": 0
+      },
+      "inference_eligible": true,
+      "initial_design_evaluations": 3,
+      "main_search_evaluations": 120,
+      "notes": [],
+      "stages": [
+        {
+          "counted_in_billable": true,
+          "evaluations": 5,
+          "note": "任务支持池固定前 K 点（固定 seed/顺序）；所有臂共享同一批支持点、标签与顺序。",
+          "stage": "support"
+        },
+        {
+          "counted_in_billable": true,
+          "evaluations": 3,
+          "note": "代理/随机机制补 8-K 个新点；DE 臂的这 8-K 点同时作为初始 population 的一部分。",
+          "stage": "initial_designs"
+        },
+        {
+          "counted_in_billable": true,
+          "evaluations": 120,
+          "note": "BO 臂为 B-8 次 BO 迭代；DE 臂为 B-8 次 DE 世代评价；不得额外评价。",
+          "stage": "main_search"
+        }
+      ],
+      "support": {
+        "K": 5,
+        "counted_in_billable": true,
+        "evaluated_count": 5,
+        "labels_visible_to_arm": true,
+        "shared_by_all_arms": true,
+        "used_for_adaptation": true
+      },
+      "support_evaluations": 5
+    },
+    {
+      "B": 128,
+      "K": 5,
+      "arm": "FOMAML-ZERO-BO",
+      "budget": {
+        "B_total": 128,
+        "K_support": 5,
+        "initial_design_evaluations": 3,
+        "initial_designs": 8,
+        "main_search_evaluations": 120,
+        "support_evaluations_counted": true
+      },
+      "clone_of": null,
+      "evaluations": {
+        "billable": 128,
+        "non_billable": 0,
+        "physical_call_count": 0
+      },
+      "inference_eligible": true,
+      "initial_design_evaluations": 3,
+      "main_search_evaluations": 120,
+      "notes": [],
+      "stages": [
+        {
+          "counted_in_billable": true,
+          "evaluations": 5,
+          "note": "任务支持池固定前 K 点（固定 seed/顺序）；所有臂共享同一批支持点、标签与顺序。",
+          "stage": "support"
+        },
+        {
+          "counted_in_billable": true,
+          "evaluations": 3,
+          "note": "代理/随机机制补 8-K 个新点；DE 臂的这 8-K 点同时作为初始 population 的一部分。",
+          "stage": "initial_designs"
+        },
+        {
+          "counted_in_billable": true,
+          "evaluations": 120,
+          "note": "BO 臂为 B-8 次 BO 迭代；DE 臂为 B-8 次 DE 世代评价；不得额外评价。",
+          "stage": "main_search"
+        }
+      ],
+      "support": {
+        "K": 5,
+        "counted_in_billable": true,
+        "evaluated_count": 5,
+        "labels_visible_to_arm": false,
+        "shared_by_all_arms": true,
+        "used_for_adaptation": false
+      },
+      "support_evaluations": 5
+    },
+    {
+      "B": 128,
+      "K": 5,
+      "arm": "FOMAML-KSHOT-BO",
+      "budget": {
+        "B_total": 128,
+        "K_support": 5,
+        "initial_design_evaluations": 3,
+        "initial_designs": 8,
+        "main_search_evaluations": 120,
+        "support_evaluations_counted": true
+      },
+      "clone_of": null,
+      "evaluations": {
+        "billable": 128,
+        "non_billable": 0,
+        "physical_call_count": 0
+      },
+      "inference_eligible": true,
+      "initial_design_evaluations": 3,
+      "main_search_evaluations": 120,
+      "notes": [],
+      "stages": [
+        {
+          "counted_in_billable": true,
+          "evaluations": 5,
+          "note": "任务支持池固定前 K 点（固定 seed/顺序）；所有臂共享同一批支持点、标签与顺序。",
+          "stage": "support"
+        },
+        {
+          "counted_in_billable": true,
+          "evaluations": 3,
+          "note": "代理/随机机制补 8-K 个新点；DE 臂的这 8-K 点同时作为初始 population 的一部分。",
+          "stage": "initial_designs"
+        },
+        {
+          "counted_in_billable": true,
+          "evaluations": 120,
+          "note": "BO 臂为 B-8 次 BO 迭代；DE 臂为 B-8 次 DE 世代评价；不得额外评价。",
+          "stage": "main_search"
+        }
+      ],
+      "support": {
+        "K": 5,
+        "counted_in_billable": true,
+        "evaluated_count": 5,
+        "labels_visible_to_arm": true,
+        "shared_by_all_arms": true,
+        "used_for_adaptation": true
+      },
+      "support_evaluations": 5
+    },
+    {
+      "B": 128,
+      "K": 5,
+      "arm": "DE",
+      "budget": {
+        "B_total": 128,
+        "K_support": 5,
+        "initial_design_evaluations": 3,
+        "initial_designs": 8,
+        "main_search_evaluations": 120,
+        "support_evaluations_counted": true
+      },
+      "clone_of": null,
+      "evaluations": {
+        "billable": 128,
+        "non_billable": 0,
+        "physical_call_count": 0
+      },
+      "inference_eligible": true,
+      "initial_design_evaluations": 3,
+      "main_search_evaluations": 120,
+      "notes": [],
+      "stages": [
+        {
+          "counted_in_billable": true,
+          "evaluations": 5,
+          "note": "任务支持池固定前 K 点（固定 seed/顺序）；所有臂共享同一批支持点、标签与顺序。",
+          "stage": "support"
+        },
+        {
+          "counted_in_billable": true,
+          "evaluations": 3,
+          "note": "代理/随机机制补 8-K 个新点；DE 臂的这 8-K 点同时作为初始 population 的一部分。",
+          "stage": "initial_designs"
+        },
+        {
+          "counted_in_billable": true,
+          "evaluations": 120,
+          "note": "BO 臂为 B-8 次 BO 迭代；DE 臂为 B-8 次 DE 世代评价；不得额外评价。",
+          "stage": "main_search"
+        }
+      ],
+      "support": {
+        "K": 5,
+        "counted_in_billable": true,
+        "evaluated_count": 5,
+        "labels_visible_to_arm": false,
+        "shared_by_all_arms": true,
+        "used_for_adaptation": false
+      },
+      "support_evaluations": 5
+    }
+  ],
+  "schema_version": "p4ra-budget-fairness-1",
+  "sha256": "92f374a6e51c5757913e8eaeb245265be184753de698887e32c58a22eb382c17",
+  "status": "PASS"
+}
