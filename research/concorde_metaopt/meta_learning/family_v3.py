@@ -8,7 +8,7 @@
 不调用 RCAIDE Mission / VSPAERO / SU2 / Gmsh，不运行任何真实优化。
 
 硬约束（全部程序化 fail-closed）：
-1. family_id=F-QE-feasible-v3 / family_version=v3 / formula_version=p4-task-family-v3；
+1. family_id=F-QE-feasible-v3 / family_version=p4ra-family-v3 / formula_version=p4-task-family-v3；
 2. task_id 唯一格式 ^p4ra-FQE3-v3-(TR|VA|TE|OD|NC)-[0-9]{3}$，五 split 60/20/20/10/10；
 3. 与旧 M2/M5/M6 任务清单 task_id/task_fingerprint 零交集（非空即抛错）；
 4. family_fingerprint / split_hash / frozen sha256 / prereg sha256 全部可重算；
@@ -20,6 +20,7 @@ import hashlib
 import json
 import math
 import re
+from datetime import datetime
 from dataclasses import replace
 from pathlib import Path
 from typing import Any, Iterable, Mapping, Sequence
@@ -50,6 +51,15 @@ __all__ = [
     "PRIMARY_ENDPOINTS",
     "FORBIDDEN_ENDPOINT_ALIASES",
     "SECONDARY_ENDPOINTS",
+    "SECONDARY_METRICS",
+    "ENDPOINT_ROW_KEYS",
+    "FAILURE_RULES",
+    "MULTIPLE_COMPARISON",
+    "ANALYSIS_PLAN",
+    "ANALYSIS_PLAN_DIGEST",
+    "PREREG_REQUIRED_FIELDS",
+    "assert_endpoint_row_coverage",
+    "compute_prereg_digest",
     "REFERENCE_SOLUTION",
     "GAP_DEFINITION",
     "NULL_POLICY",
@@ -91,11 +101,11 @@ __all__ = [
 ]
 
 FAMILY_ID = tf.V3_FAMILY_ID
-FAMILY_VERSION = "v3"
+FAMILY_VERSION = tf.V3_FAMILY_VERSION
 FORMULA_VERSION = tf.V3_FORMULA_VERSION
 FAMILY_SEED = tf.V3_FAMILY_SEED
 TASK_ID_PREFIX = tf.V3_TASK_ID_PREFIX
-TASK_ID_PATTERN = re.compile(r"^p4ra-FQE3-v3-(TR|VA|TE|OD|NC)-([0-9]{3})$")
+TASK_ID_PATTERN = re.compile(r"^p4ra-FQE3-v3-(TR|VA|TE|OD|NC)-[0-9]{3}$")  # 合同 §7 精确字面量
 
 SPLIT_ORDER: tuple[str, ...] = tuple(SPLITS)
 SPLIT_CODES = {
@@ -140,6 +150,34 @@ SECONDARY_ENDPOINTS = (
     "n_failed_evals",
     "wall_s",
 )
+# 合同 §7：secondary_metrics 为 [string]；与 SECONDARY_ENDPOINTS 同源但单独冻结，供统计分析脚本引用。
+SECONDARY_METRICS = (
+    "rmse_objective",
+    "mae_objective",
+    "feasible_hit_rate",
+    "surrogate_fit_time_s",
+    "peak_memory_mb",
+)
+# D-S0-2-02 / R-05：S1 分析 CSV/图表只允许读取这 9 个登记键（4 主端点 + 3 补充 + 2 覆盖统计）。
+ENDPOINT_ROW_KEYS = (
+    *PRIMARY_ENDPOINTS,
+    "first_feasible_in_support",
+    "first_feasible_after_support_index",
+    "feasible_hit_rate_non_support",
+    "n_nonnull",
+    "null_rate",
+)
+FAILURE_RULES = (
+    "任一冻结产物 sha256/fingerprint/split_hash 校验失败 -> 立即 fail-closed，不产出主结论。",
+    "任一预算/K/CLONE 公平性校验失败 -> 该 run 作废，不得进入聚合。",
+    "主端点 null 率 >70% -> 判 INCONCLUSIVE，不插补、不转 0。",
+    "发现 meta_test/meta_test_ood 信息参与调参/选臂/选端点 -> 该阶段结果作废。",
+)
+MULTIPLE_COMPARISON = {
+    "method": "Holm-Bonferroni",
+    "family": "同 K 内臂对 x 预算 x 主端点（4 主端点）",
+    "alpha": 0.05,
+}
 REFERENCE_SOLUTION = "c"
 GAP_DEFINITION = "f(u_best)-f(u*)"
 
@@ -165,6 +203,22 @@ STATISTICS_PLAN = {
         "first_feasible_eval_index_improvement": "ceil(0.05*B)（仅同 K 内比较）",
     },
     "null_handling": NULL_POLICY,
+}
+# 合同 §7 analysis_plan_digest 绑定的 S1 分析计划（无绝对路径、确定性 canonical 载荷）。
+ANALYSIS_PLAN = {
+    "schema_version": "p4ra-analysis-plan-1",
+    "endpoint_row_keys": list(ENDPOINT_ROW_KEYS),
+    "primary_endpoints": list(PRIMARY_ENDPOINTS),
+    "secondary_metrics": list(SECONDARY_METRICS),
+    "statistics": dict(STATISTICS_PLAN),
+    "null_policy": NULL_POLICY,
+    "multiple_comparison": dict(MULTIPLE_COMPARISON),
+    "main_population": "仅 meta_test 20 个任务进入主统计",
+    "seed_aggregation": "单 run -> (task,meta_seed) 内对 optimization seed 取均值；meta_seed 等权；任务为一级统计单位",
+    "bootstrap_seed": FAMILY_SEED,
+    "csv_columns": list(ENDPOINT_ROW_KEYS),
+    "fail_closed_rules": list(FAILURE_RULES),
+    "analysis_script_requirement": "S1 分析脚本必须校验 ENDPOINT_ROW_KEYS 与 analysis_plan_digest 后才能读 CSV。",
 }
 STOPPING_RULES = (
     "阶段门禁：只有 frozen_family.json + meta_task_split.json + preregistration.json 三方 sha256/fingerprint/split_hash 全部校验通过后，才允许一次性构造并评估 meta_test/meta_test_ood。",
@@ -224,6 +278,9 @@ def digest(value: Any) -> str:
     return hashlib.sha256(canonical_json(value).encode("utf-8")).hexdigest()
 
 
+ANALYSIS_PLAN_DIGEST = digest(ANALYSIS_PLAN)
+
+
 def file_sha256(path: str | Path) -> str:
     """文件实际 UTF-8 字节 sha256（raw digest，不做 CRLF 归一化）。"""
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
@@ -248,16 +305,19 @@ def write_json(path: str | Path, payload: Mapping[str, Any]) -> Path:
 
 
 def write_json_artifact(path: str | Path, payload: Mapping[str, Any]) -> dict[str, Any]:
-    """写盘并返回 canonical + raw 双 digest（raw 为磁盘实际字节 sha256）。"""
+    """写盘并返回 canonical + raw 双 digest（A5 m03/m04：逻辑文件名、无绝对路径、空 sha 不落 null）。"""
     target = write_json(path, payload)
     body = {key: value for key, value in payload.items() if key != "sha256"}
-    return {
-        "path": str(target.resolve()),
+    artifact: dict[str, Any] = {
+        "path": target.name,
         "bytes": target.stat().st_size,
         "canonical_sha256": digest(body),
         "raw_sha256": file_sha256(target),
-        "stored_sha256": payload.get("sha256"),
     }
+    stored = payload.get("sha256")
+    if isinstance(stored, str):
+        artifact["stored_sha256"] = stored
+    return artifact
 
 
 # ---------------------------------------------------------------------------
@@ -334,7 +394,8 @@ def parse_task_id(task_id: str) -> tuple[str, int]:
     validate_task_id(task_id)
     match = TASK_ID_PATTERN.match(task_id)
     assert match is not None
-    code, index = match.group(1), int(match.group(2))
+    code = match.group(1)
+    index = int(task_id[-3:])
     split = {value: key for key, value in SPLIT_CODES.items()}[code]
     return split, index
 
@@ -606,9 +667,12 @@ def build_isolation_report(
     legacy: Mapping[str, Any],
     created_utc: str,
 ) -> dict[str, Any]:
-    """生成 v3_isolation_report.json（交集=0 才通过，否则抛错不产出报告）。"""
-    if not isinstance(created_utc, str) or not created_utc.strip():
-        raise FamilyV3Error("created_utc 必须是非空字符串（确定性重跑要求显式传入）")
+    """生成 v3_isolation_report.json（R-06 fail-closed）。
+
+    task_id 零交集（实质证据）与 task_fingerprint 零交集（旧源无指纹时不可判定）
+    必须分列表述；全部无交集且计数一致才产出报告。
+    """
+    _validate_iso8601_utc(created_utc, "created_utc")
     assert_zero_intersection(
         legacy, v3_task_ids=v3_task_ids, v3_task_fingerprints=v3_task_fingerprints
     )
@@ -616,10 +680,50 @@ def build_isolation_report(
     v3_fps = sorted(str(value) for value in v3_task_fingerprints)
     if len(v3_ids) != TOTAL_TASKS:
         raise FamilyV3Error(f"v3 task_id 数必须是 {TOTAL_TASKS}，实际 {len(v3_ids)}")
+    if len(v3_fps) != TOTAL_TASKS:
+        raise FamilyV3Error(f"v3 task_fingerprint 数必须是 {TOTAL_TASKS}，实际 {len(v3_fps)}")
     if len(set(v3_ids)) != len(v3_ids):
         raise FamilyV3Error("v3 task_id 存在重复")
+    if len(set(v3_fps)) != len(v3_fps):
+        raise FamilyV3Error("v3 task_fingerprint 存在重复")
     legacy_ids = sorted(str(value) for value in legacy.get("task_ids", ()))
     legacy_fps = sorted(str(value) for value in legacy.get("task_fingerprints", ()))
+    id_overlap = sorted(set(v3_ids) & set(legacy_ids))
+    fp_overlap = sorted(set(v3_fps) & set(legacy_fps))
+    if id_overlap or fp_overlap:  # assert_zero_intersection 已 fail-closed，这里保留显式证据
+        raise FamilyV3Error(f"v3 与旧族交集非空: ids={id_overlap[:5]} fps={fp_overlap[:5]}")
+    task_id_block: dict[str, Any] = {
+        "assertion": "TASK_ID_ZERO_INTERSECTION",
+        "status": "PASS",
+        "evidence_class": "SUBSTANTIVE",
+        "v3_task_id_count": len(v3_ids),
+        "legacy_task_id_count": len(legacy_ids),
+        "overlap_count": 0,
+        "overlap_sample": [],
+        "note": "v3 120 个 task_id 与旧 M2/M5/M6 清单 task_id 实际集合交集为空。",
+    }
+    if legacy_fps:
+        fingerprint_block: dict[str, Any] = {
+            "assertion": "TASK_FINGERPRINT_ZERO_INTERSECTION",
+            "status": "PASS",
+            "evidence_class": "SUBSTANTIVE",
+            "v3_task_fingerprint_count": len(v3_fps),
+            "legacy_task_fingerprint_count": len(legacy_fps),
+            "overlap_count": 0,
+            "overlap_sample": [],
+            "note": "旧源含 task_fingerprint，交集为空为实质证据。",
+        }
+    else:
+        fingerprint_block = {
+            "assertion": "TASK_FINGERPRINT_INTERSECTION_UNDETERMINABLE",
+            "status": "NOT_DETERMINABLE",
+            "evidence_class": "UNAVAILABLE",
+            "v3_task_fingerprint_count": len(v3_fps),
+            "legacy_task_fingerprint_count": 0,
+            "overlap_count": 0,
+            "overlap_sample": [],
+            "note": "旧 M2/M5/M6 只读清单均无 task_fingerprint 字段；交集为空属平凡成立，不能证明指纹零交集。",
+        }
     payload: dict[str, Any] = {
         "schema_version": ISOLATION_SCHEMA_VERSION,
         "created_utc": created_utc,
@@ -638,8 +742,14 @@ def build_isolation_report(
             "task_fingerprint_count": len(legacy_fps),
             "sources": [dict(source) for source in legacy.get("sources", ())],
         },
+        "task_id_intersection": task_id_block,
+        "task_fingerprint_intersection": fingerprint_block,
         "intersections": {"task_ids": [], "task_fingerprints": []},
-        "assertion": "ZERO_INTERSECTION",
+        "limitations": [
+            "task_fingerprint 交集的不可判定性来自旧源字段缺失，不是 v3 侧缺陷；补充旧源指纹后需重跑本报告。",
+            "零交集只证明命名空间隔离，不证明任务难度/分布与旧族独立。",
+        ],
+        "assertion": "TASK_ID_ZERO_INTERSECTION",
         "status": "PASS",
         "physical_call_count": 0,
     }
@@ -653,10 +763,47 @@ def verify_isolation_report(payload: Mapping[str, Any]) -> bool:
     body = {key: value for key, value in payload.items() if key != "sha256"}
     if payload.get("sha256") != digest(body):
         raise FamilyV3Error("isolation report sha256 校验失败")
+    if payload.get("family_version") != FAMILY_VERSION:
+        raise FamilyV3Error("isolation report family_version 不符")
     if payload.get("status") != "PASS":
         raise FamilyV3Error(f"isolation report status 必须为 PASS，实际 {payload.get('status')!r}")
-    if payload.get("assertion") != "ZERO_INTERSECTION":
-        raise FamilyV3Error("isolation report 缺少 ZERO_INTERSECTION 断言")
+    if payload.get("assertion") != "TASK_ID_ZERO_INTERSECTION":
+        raise FamilyV3Error("isolation report 顶层断言必须是 TASK_ID_ZERO_INTERSECTION")
+    if int(payload.get("physical_call_count", -1)) != 0:
+        raise FamilyV3Error("isolation report physical_call_count 必须为 0")
+    v3_block = payload.get("v3")
+    legacy_block = payload.get("legacy")
+    if not isinstance(v3_block, Mapping) or not isinstance(legacy_block, Mapping):
+        raise FamilyV3Error("isolation report 缺少 v3/legacy 计数块")
+    task_id_block = payload.get("task_id_intersection")
+    if not isinstance(task_id_block, Mapping):
+        raise FamilyV3Error("isolation report 缺少 task_id_intersection 分列块")
+    if task_id_block.get("assertion") != "TASK_ID_ZERO_INTERSECTION":
+        raise FamilyV3Error("task_id_intersection assertion 不符")
+    if task_id_block.get("status") != "PASS" or task_id_block.get("evidence_class") != "SUBSTANTIVE":
+        raise FamilyV3Error("task_id_intersection 必须是 PASS/SUBSTANTIVE 实质证据")
+    if int(task_id_block.get("overlap_count", -1)) != 0 or task_id_block.get("overlap_sample"):
+        raise FamilyV3Error("task_id_intersection 交集非空")
+    if int(task_id_block.get("v3_task_id_count", -1)) != int(v3_block.get("task_id_count", -2)):
+        raise FamilyV3Error("task_id_intersection v3 计数不一致")
+    if int(task_id_block.get("legacy_task_id_count", -1)) != int(legacy_block.get("task_id_count", -2)):
+        raise FamilyV3Error("task_id_intersection legacy 计数不一致")
+    fingerprint_block = payload.get("task_fingerprint_intersection")
+    if not isinstance(fingerprint_block, Mapping):
+        raise FamilyV3Error("isolation report 缺少 task_fingerprint_intersection 分列块")
+    legacy_fp_count = int(legacy_block.get("task_fingerprint_count", -1))
+    if int(fingerprint_block.get("legacy_task_fingerprint_count", -2)) != legacy_fp_count:
+        raise FamilyV3Error("task_fingerprint_intersection legacy 计数不一致")
+    if int(fingerprint_block.get("overlap_count", -1)) != 0 or fingerprint_block.get("overlap_sample"):
+        raise FamilyV3Error("task_fingerprint_intersection 交集非空")
+    if legacy_fp_count == 0:
+        if fingerprint_block.get("status") != "NOT_DETERMINABLE" or fingerprint_block.get("evidence_class") != "UNAVAILABLE":
+            raise FamilyV3Error("legacy 无指纹时 task_fingerprint_intersection 必须是 NOT_DETERMINABLE/UNAVAILABLE")
+        if fingerprint_block.get("assertion") != "TASK_FINGERPRINT_INTERSECTION_UNDETERMINABLE":
+            raise FamilyV3Error("legacy 无指纹时 assertion 必须是 TASK_FINGERPRINT_INTERSECTION_UNDETERMINABLE")
+    else:
+        if fingerprint_block.get("status") != "PASS" or fingerprint_block.get("evidence_class") != "SUBSTANTIVE":
+            raise FamilyV3Error("legacy 含指纹且交集为空时 task_fingerprint_intersection 必须是 PASS/SUBSTANTIVE")
     intersections = payload.get("intersections", {})
     if intersections.get("task_ids") or intersections.get("task_fingerprints"):
         raise FamilyV3Error("isolation report 交集非空")
@@ -683,6 +830,47 @@ def normalize_endpoints(primary_endpoints: Sequence[str]) -> list[str]:
             f"primary_endpoints 必须精确等于 {PRIMARY_ENDPOINTS}，实际 {tuple(values)}"
         )
     return list(PRIMARY_ENDPOINTS)
+
+
+def assert_endpoint_row_coverage(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    """R-05：S1 分析 CSV 行必须精确使用 ENDPOINT_ROW_KEYS，且主端点不得全 null。
+
+    参考 M5 故障：主端点列全 null（4800/4800）导致分析无信息量。本函数 fail-closed：
+    - rows 非空；
+    - 每行键集合精确等于登记键（缺键/多键均抛错）；
+    - 4 个主端点在所有行中至少各有一个非 null；
+    返回 n_nonnull/null_rate 覆盖统计（供 analysis CSV 顶部 metadata）。
+    """
+    if isinstance(rows, Mapping) or not isinstance(rows, Sequence):
+        raise FamilyV3Error("assert_endpoint_row_coverage 需要行序列（list[Mapping]）")
+    if not rows:
+        raise FamilyV3Error("端点 CSV 行不能为空")
+    expected = set(ENDPOINT_ROW_KEYS)
+    counts = {key: 0 for key in ENDPOINT_ROW_KEYS}
+    for index, row in enumerate(rows):
+        if not isinstance(row, Mapping):
+            raise FamilyV3Error(f"端点 CSV 第 {index} 行必须是 object")
+        keys = set(row)
+        if keys != expected:
+            missing = sorted(expected - keys)
+            extra = sorted(keys - expected)
+            raise FamilyV3Error(
+                f"端点 CSV 第 {index} 行键与 ENDPOINT_ROW_KEYS 不一致（缺 {missing}，多 {extra}）"
+            )
+        for key in ENDPOINT_ROW_KEYS:
+            if row[key] is not None:
+                counts[key] += 1
+    total = len(rows)
+    for endpoint in PRIMARY_ENDPOINTS:
+        if counts[endpoint] == 0:
+            raise FamilyV3Error(
+                f"主端点 {endpoint} 在所有 {total} 行中均为 null（fail-closed，参考 M5 4800/4800 全 null 故障）"
+            )
+    return {
+        "row_count": total,
+        "nonnull_counts": dict(counts),
+        "null_rates": {key: (total - counts[key]) / total for key in ENDPOINT_ROW_KEYS},
+    }
 
 
 def normalize_stopping_rules(value: Any) -> list[str]:
@@ -720,6 +908,8 @@ FROZEN_REQUIRED_FIELDS = (
     "radius_base",
     "reference_solution",
     "gap_definition",
+    "endpoint_row_keys",
+    "analysis_plan_digest",
     "task_id_namespace",
     "task_id_pattern",
     "split",
@@ -849,6 +1039,8 @@ def build_frozen_family_v3(
             "task_ids": split_task_ids,
         },
         "primary_endpoints": list(PRIMARY_ENDPOINTS),
+        "endpoint_row_keys": list(ENDPOINT_ROW_KEYS),
+        "analysis_plan_digest": ANALYSIS_PLAN_DIGEST,
         "secondary_endpoints": list(SECONDARY_ENDPOINTS),
         "arms": list(ARM_IDS),
         "budgets": list(BUDGETS),
@@ -918,6 +1110,10 @@ def verify_frozen_family_v3(payload: Mapping[str, Any]) -> bool:
             validate_task_id(task_id)
     if normalize_endpoints(tuple(payload.get("primary_endpoints", ()))) != list(PRIMARY_ENDPOINTS):
         raise FamilyV3Error("frozen primary_endpoints 不符")
+    if list(payload.get("endpoint_row_keys", ())) != list(ENDPOINT_ROW_KEYS):
+        raise FamilyV3Error("frozen endpoint_row_keys 不符")
+    if payload.get("analysis_plan_digest") != ANALYSIS_PLAN_DIGEST:
+        raise FamilyV3Error("frozen analysis_plan_digest 不符")
     if list(payload.get("secondary_endpoints", ())) != list(SECONDARY_ENDPOINTS):
         raise FamilyV3Error("frozen secondary_endpoints 不符")
     if tuple(payload.get("arms", ())) != ARM_IDS:
@@ -947,11 +1143,161 @@ def frozen_to_v3_config(payload: Mapping[str, Any]) -> tf.TaskFamilyConfig:
 # ---------------------------------------------------------------------------
 # preregistration.json（p4ra-prereg-v1）
 # ---------------------------------------------------------------------------
+# ---------------------------------------------------------------------------
+# preregistration.json（p4ra-prereg-v1，合同 §7 17 个规范字段 + 旧名别名）
+# ---------------------------------------------------------------------------
+PREREG_REQUIRED_FIELDS = (
+    "schema_version",
+    "prereg_id",
+    "family_version",
+    "split_counts",
+    "split_digest",
+    "task_id_regex",
+    "frozen_at_utc",
+    "primary_endpoints",
+    "secondary_metrics",
+    "budget_plan",
+    "task_counts",
+    "seeds",
+    "stopping_rules",
+    "failure_rules",
+    "multiple_comparison",
+    "analysis_plan_digest",
+    "prereg_digest",
+)
+_PREREG_ID_PATTERN = re.compile(r"^p4ra-prereg-v3-[0-9a-f]{16}$")
+_SHA256_PATTERN = re.compile(r"^[0-9a-f]{64}$")
+
+
+def _budget_fairness_module():
+    """延迟导入：budget_fairness 顶层依赖本模块，避免循环导入。"""
+    from . import budget_fairness as bf
+
+    return bf
+
+
+def _validate_iso8601_utc(value: Any, name: str) -> str:
+    if not isinstance(value, str) or not value.strip():
+        raise FamilyV3Error(f"{name} 必须是非空 ISO-8601 时间戳")
+    text = value.strip()
+    try:
+        parsed = datetime.fromisoformat(text.replace("Z", "+00:00"))
+    except ValueError as exc:
+        raise FamilyV3Error(f"{name} 必须是 ISO-8601 时间戳，实际 {value!r}") from exc
+    if parsed.tzinfo is None:
+        raise FamilyV3Error(f"{name} 必须带时区偏移（ISO-8601），实际 {value!r}")
+    return text
+
+
+def _normalize_string_list(value: Any, name: str, *, min_items: int = 1) -> list[str]:
+    if isinstance(value, str) or not isinstance(value, (list, tuple)):
+        raise FamilyV3Error(f"{name} 必须是 list[str]（禁止裸 str）")
+    result: list[str] = []
+    for index, item in enumerate(value):
+        if not isinstance(item, str):
+            raise FamilyV3Error(f"{name}[{index}] 必须是 str，实际 {type(item).__name__}")
+        text = item.strip()
+        if not text:
+            raise FamilyV3Error(f"{name}[{index}] 不能为空字符串")
+        if len(text) < 2:
+            raise FamilyV3Error(f"{name}[{index}] strip 后长度必须 >= 2，实际 {item!r}")
+        result.append(text)
+    if len(result) < min_items:
+        raise FamilyV3Error(f"{name} 至少需要 {min_items} 项")
+    if len(set(result)) != len(result):
+        raise FamilyV3Error(f"{name} 存在重复项")
+    return result
+
+
+def _validate_multiple_comparison(value: Any) -> dict[str, Any]:
+    if isinstance(value, str) or not isinstance(value, Mapping):
+        raise FamilyV3Error("multiple_comparison 必须是 object（禁止 str）")
+    payload = dict(value)
+    method = payload.get("method")
+    family = payload.get("family")
+    if not isinstance(method, str) or not method.strip():
+        raise FamilyV3Error("multiple_comparison.method 必须是非空 str")
+    if not isinstance(family, str) or not family.strip():
+        raise FamilyV3Error("multiple_comparison.family 必须是非空 str")
+    alpha = payload.get("alpha")
+    if alpha is not None and (not isinstance(alpha, (int, float)) or not (0.0 < float(alpha) < 1.0)):
+        raise FamilyV3Error("multiple_comparison.alpha 必须在 (0,1)")
+    return payload
+
+
+def _validate_analysis_plan(plan: Any) -> dict[str, Any]:
+    if not isinstance(plan, Mapping):
+        raise FamilyV3Error("analysis_plan 必须是 object")
+    payload = dict(plan)
+    if list(payload.get("endpoint_row_keys", ())) != list(ENDPOINT_ROW_KEYS):
+        raise FamilyV3Error(
+            f"analysis_plan.endpoint_row_keys 必须精确等于 ENDPOINT_ROW_KEYS={list(ENDPOINT_ROW_KEYS)}"
+        )
+    if list(payload.get("primary_endpoints", ())) != list(PRIMARY_ENDPOINTS):
+        raise FamilyV3Error("analysis_plan.primary_endpoints 必须等于 4 个规范主端点")
+    if list(payload.get("csv_columns", ())) != list(ENDPOINT_ROW_KEYS):
+        raise FamilyV3Error("analysis_plan.csv_columns 必须等于 ENDPOINT_ROW_KEYS")
+    if not isinstance(payload.get("statistics"), Mapping):
+        raise FamilyV3Error("analysis_plan.statistics 必须是 object")
+    if not isinstance(payload.get("null_policy"), str) or not payload["null_policy"].strip():
+        raise FamilyV3Error("analysis_plan.null_policy 必须是非空 str")
+    _validate_multiple_comparison(payload.get("multiple_comparison"))
+    return payload
+
+
+def _prereg_digest(payload: Mapping[str, Any]) -> str:
+    """自身 digest：计算时 prereg_digest 置空、排除外层 sha256（合同 §7）。"""
+    body = dict(payload)
+    body.pop("sha256", None)
+    body["prereg_digest"] = ""
+    return digest(body)
+
+
+def _budget_plan_payload(plans: Sequence[Mapping[str, Any]], bf: Any) -> dict[str, Any]:
+    clone_pairs: list[dict[str, Any]] = []
+    seen_pairs: set[tuple[int, str, str]] = set()
+    for plan in plans:
+        if plan.get("clone_of"):
+            key = (int(plan["K"]), str(plan["arm"]), str(plan["clone_of"]))
+            if key in seen_pairs:
+                continue
+            seen_pairs.add(key)
+            clone_pairs.append(
+                {
+                    "K": key[0],
+                    "clone_arm": key[1],
+                    "canonical_arm": key[2],
+                }
+            )
+    clone_pairs.sort(key=lambda item: (item["K"], item["clone_arm"]))
+    inference_excluded: dict[str, list[str]] = {}
+    for k_shot in K_VALUES:
+        excluded = sorted(bf.clone_map(k_shot))
+        if excluded:
+            inference_excluded[str(k_shot)] = excluded
+    return {
+        "schema_version": bf.FAIRNESS_SCHEMA_VERSION,
+        "arms": list(ARM_IDS),
+        "budgets": list(BUDGETS),
+        "k_values": list(K_VALUES),
+        "initial_designs": INITIAL_DESIGN_COUNT,
+        "support_counted": True,
+        "support_counted_in_B": True,
+        "billable_rule": "所有臂 billable=B；阶段 support(K)+initial(8-K)+main(B-8)，K 个支持评价计入 B",
+        "plan_count": len(plans),
+        "plans_digest": digest(plans),
+        "clone_pairs": clone_pairs,
+        "inference_excluded": inference_excluded,
+        "physical_call_count": 0,
+    }
+
+
 def build_preregistration_v3(
     frozen_family: Mapping[str, Any],
     *,
     run_id: str,
     created_utc: str,
+    frozen_at_utc: str | None = None,
     arms: Sequence[str] = ARM_IDS,
     budgets: Sequence[int] = BUDGETS,
     k_values: Sequence[int] = K_VALUES,
@@ -959,15 +1305,26 @@ def build_preregistration_v3(
     meta_seeds: Sequence[int] = (0, 1, 2),
     primary_endpoints: Sequence[str] = PRIMARY_ENDPOINTS,
     secondary_endpoints: Sequence[str] = SECONDARY_ENDPOINTS,
+    secondary_metrics: Sequence[str] = SECONDARY_METRICS,
     statistics: Mapping[str, Any] | None = None,
     null_policy: str = NULL_POLICY,
     stopping_rules: Sequence[str] = STOPPING_RULES,
-    multiple_comparison: str = "Holm-Bonferroni（同 K 内臂对 x 预算 x 主端点）",
+    failure_rules: Sequence[str] = FAILURE_RULES,
+    multiple_comparison: Mapping[str, Any] | None = None,
+    analysis_plan: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
-    """构造预注册载荷（写测试集前生成，绑定 frozen sha256/family/split）。"""
+    """构造预注册载荷（写测试集前生成，绑定 frozen sha256/family/split）。
+
+    合同 §7：17 个规范字段全部落盘；旧名 split_hash/task_id_pattern/created_utc/
+    secondary_endpoints/split_counts/optimization_seeds/meta_seeds 作为附加别名保留。
+    """
     verify_frozen_family_v3(frozen_family)
-    if not isinstance(created_utc, str) or not created_utc.strip():
-        raise FamilyV3Error("created_utc 必须是非空字符串（确定性重跑要求显式传入）")
+    created = _validate_iso8601_utc(created_utc, "created_utc")
+    frozen_utc = (
+        created if frozen_at_utc is None else _validate_iso8601_utc(frozen_at_utc, "frozen_at_utc")
+    )
+    if frozen_utc != created:
+        raise FamilyV3Error(f"frozen_at_utc 必须等于 created_utc（确定性重跑）：{frozen_utc!r} != {created!r}")
     if not isinstance(run_id, str) or not run_id.strip():
         raise FamilyV3Error("run_id 必须是非空字符串")
     if tuple(arms) != ARM_IDS:
@@ -981,39 +1338,66 @@ def build_preregistration_v3(
         raise FamilyV3Error("optimization_seeds 至少 10 个且不得重复")
     meta_seed_values = [int(value) for value in meta_seeds]
     if len(meta_seed_values) < 3 or len(set(meta_seed_values)) != len(meta_seed_values):
-        raise FamilyV3Error("meta_seeds 至少 3 个且不得重复")
+        raise FamilyV3Error("meta_train_seeds 至少 3 个且不得重复")
     endpoints = normalize_endpoints(primary_endpoints)
     rules = normalize_stopping_rules(stopping_rules)
+    failures = _normalize_string_list(failure_rules, "failure_rules")
+    metrics = _normalize_string_list(secondary_metrics, "secondary_metrics")
+    multiple = _validate_multiple_comparison(
+        MULTIPLE_COMPARISON if multiple_comparison is None else multiple_comparison
+    )
+    plan = _validate_analysis_plan(ANALYSIS_PLAN if analysis_plan is None else analysis_plan)
+    plan_digest = digest(plan)
+    bf = _budget_fairness_module()
+    budget_plans = bf.build_all_budget_plans()
+    bf.assert_budget_fairness(budget_plans)
+    budget_plan = _budget_plan_payload(budget_plans, bf)
+    fingerprint = str(frozen_family["family_fingerprint"])
+    split_hash = str(frozen_family["split"]["split_hash"])
     payload: dict[str, Any] = {
         "schema_version": PREREGISTRATION_SCHEMA_VERSION,
-        "created_utc": created_utc,
-        "run_id": run_id,
-        "physical_call_count": 0,
-        "frozen_family_sha256": frozen_family["sha256"],
+        "prereg_id": f"p4ra-prereg-v3-{fingerprint[:16]}",
         "family_id": frozen_family["family_id"],
         "family_version": frozen_family["family_version"],
         "formula_version": frozen_family["formula_version"],
         "family_seed": frozen_family["family_seed"],
-        "family_fingerprint": frozen_family["family_fingerprint"],
+        "family_fingerprint": fingerprint,
         "radius_base": float(frozen_family["radius_base"]),
+        "run_id": run_id,
+        "physical_call_count": 0,
+        "frozen_family_sha256": frozen_family["sha256"],
+        "created_utc": created,
+        "frozen_at_utc": frozen_utc,
         "task_id_namespace": frozen_family["task_id_namespace"],
-        "task_id_pattern": frozen_family["task_id_pattern"],
-        "split_hash": frozen_family["split"]["split_hash"],
+        "task_id_regex": TASK_ID_PATTERN.pattern,
+        "task_id_pattern": TASK_ID_PATTERN.pattern,
+        "split_digest": split_hash,
+        "split_hash": split_hash,
         "split_counts": dict(frozen_family["split"]["counts"]),
-        "evaluator": "synthetic-analytic",
-        "physics_validation_status": "NOT_APPLICABLE",
+        "task_counts": dict(SPLIT_COUNTS),
         "primary_endpoints": endpoints,
+        "secondary_metrics": metrics,
         "secondary_endpoints": list(secondary_endpoints),
         "arms": list(arms),
         "budgets": list(budgets),
         "k_values": list(k_values),
         "initial_design_count": INITIAL_DESIGN_COUNT,
+        "seeds": {
+            "meta_train_seeds": meta_seed_values,
+            "optimization_seeds": opt_seeds,
+        },
         "optimization_seeds": opt_seeds,
         "meta_seeds": meta_seed_values,
         "statistics": dict(statistics if statistics is not None else STATISTICS_PLAN),
         "null_policy": null_policy,
         "stopping_rules": rules,
-        "multiple_comparison": multiple_comparison,
+        "failure_rules": failures,
+        "multiple_comparison": multiple,
+        "budget_plan": budget_plan,
+        "analysis_plan": plan,
+        "analysis_plan_digest": plan_digest,
+        "evaluator": "synthetic-analytic",
+        "physics_validation_status": "NOT_APPLICABLE",
         "reference_solution": frozen_family["reference_solution"],
         "gap_definition": frozen_family["gap_definition"],
         "meta_test_tuning_policy": frozen_family["meta_test_tuning_policy"],
@@ -1021,6 +1405,7 @@ def build_preregistration_v3(
             "本预注册只绑定合成解析任务；physical_call_count=0；不代表真实飞机/CFD 性能。",
         ],
     }
+    payload["prereg_digest"] = _prereg_digest(payload)
     payload["sha256"] = digest(payload)
     return payload
 
@@ -1028,23 +1413,65 @@ def build_preregistration_v3(
 def verify_preregistration_v3(
     payload: Mapping[str, Any], frozen_family: Mapping[str, Any] | None = None
 ) -> bool:
-    """校验 p4ra-prereg-v1：schema/sha256/端点/stopping_rules/冻结绑定/物理调用=0。"""
+    """严格校验 p4ra-prereg-v1（合同 §7）：缺字段/别名缺规范名/错类型/自 digest 不符均 fail-closed。"""
     if payload.get("schema_version") != PREREGISTRATION_SCHEMA_VERSION:
         raise FamilyV3Error(f"prereg schema 不符: {payload.get('schema_version')!r}")
+    for name in PREREG_REQUIRED_FIELDS:
+        if name not in payload:
+            raise FamilyV3Error(f"prereg 缺少合同 §7 必填字段 {name!r}")
     body = {key: value for key, value in payload.items() if key != "sha256"}
     if payload.get("sha256") != digest(body):
         raise FamilyV3Error("preregistration sha256 校验失败（预注册被修改）")
-    if "stopping_rules" not in payload:
-        raise FamilyV3Error("preregistration 缺少 stopping_rules 字段")
-    normalize_stopping_rules(payload["stopping_rules"])
+    prereg_digest = payload.get("prereg_digest")
+    if not isinstance(prereg_digest, str) or not _SHA256_PATTERN.match(prereg_digest):
+        raise FamilyV3Error("prereg_digest 必须是 64 位小写十六进制 sha256")
+    if prereg_digest != _prereg_digest(payload):
+        raise FamilyV3Error("prereg_digest 重算不一致（预注册被修改）")
+    fingerprint = payload.get("family_fingerprint")
+    if not isinstance(fingerprint, str) or not _SHA256_PATTERN.match(fingerprint):
+        raise FamilyV3Error("family_fingerprint 必须是 64 位小写十六进制 sha256")
+    expected_prereg_id = f"p4ra-prereg-v3-{fingerprint[:16]}"
+    if payload.get("prereg_id") != expected_prereg_id:
+        raise FamilyV3Error(f"prereg_id 必须为 {expected_prereg_id!r}（与 family_fingerprint 关联）")
+    if payload.get("family_version") != FAMILY_VERSION:
+        raise FamilyV3Error(f"prereg family_version 必须为 {FAMILY_VERSION!r}")
+    created = _validate_iso8601_utc(payload.get("created_utc"), "created_utc")
+    frozen_utc = _validate_iso8601_utc(payload.get("frozen_at_utc"), "frozen_at_utc")
+    if created != frozen_utc:
+        raise FamilyV3Error("prereg created_utc 与 frozen_at_utc 必须一致")
+    split_counts = payload.get("split_counts")
+    if not isinstance(split_counts, Mapping) or dict(split_counts) != dict(SPLIT_COUNTS):
+        raise FamilyV3Error("prereg split_counts 不符")
+    task_counts = payload.get("task_counts")
+    if not isinstance(task_counts, Mapping) or dict(task_counts) != dict(SPLIT_COUNTS):
+        raise FamilyV3Error("prereg task_counts 不符（必须与 split_counts 一致，meta_test=20）")
+    split_digest = payload.get("split_digest")
+    split_hash = payload.get("split_hash")
+    if not isinstance(split_digest, str) or not _SHA256_PATTERN.match(split_digest):
+        raise FamilyV3Error("split_digest 必须是 64 位小写十六进制 sha256")
+    if split_hash != split_digest:
+        raise FamilyV3Error("split_hash 别名必须等于 split_digest")
+    if payload.get("task_id_regex") != TASK_ID_PATTERN.pattern:
+        raise FamilyV3Error("task_id_regex 必须精确等于合同冻结字面量")
+    if payload.get("task_id_pattern") != TASK_ID_PATTERN.pattern:
+        raise FamilyV3Error("task_id_pattern 别名必须等于 task_id_regex")
+    if payload.get("task_id_namespace") != TASK_ID_PREFIX:
+        raise FamilyV3Error("task_id_namespace 不符")
     if normalize_endpoints(tuple(payload.get("primary_endpoints", ()))) != list(PRIMARY_ENDPOINTS):
-        raise FamilyV3Error("prereg primary_endpoints 不符")
+        raise FamilyV3Error("prereg primary_endpoints 不符（禁止别名）")
+    metrics = _normalize_string_list(payload.get("secondary_metrics"), "secondary_metrics")
+    if metrics != list(SECONDARY_METRICS):
+        raise FamilyV3Error(f"secondary_metrics 必须为 {list(SECONDARY_METRICS)}")
+    if list(payload.get("secondary_endpoints", ())) != list(SECONDARY_ENDPOINTS):
+        raise FamilyV3Error("secondary_endpoints 别名不符")
     if tuple(payload.get("arms", ())) != ARM_IDS:
         raise FamilyV3Error(f"prereg arms 必须为 {ARM_IDS}")
     if tuple(payload.get("budgets", ())) != BUDGETS:
         raise FamilyV3Error(f"prereg budgets 必须为 {BUDGETS}")
     if tuple(payload.get("k_values", ())) != K_VALUES:
         raise FamilyV3Error(f"prereg k_values 必须为 {K_VALUES}")
+    if int(payload.get("initial_design_count", -1)) != INITIAL_DESIGN_COUNT:
+        raise FamilyV3Error("prereg initial_design_count 不符")
     if int(payload.get("physical_call_count", -1)) != 0:
         raise FamilyV3Error("prereg physical_call_count 必须为 0")
     if payload.get("evaluator") != "synthetic-analytic":
@@ -1053,19 +1480,91 @@ def verify_preregistration_v3(
         raise FamilyV3Error("prereg physics_validation_status 必须是 NOT_APPLICABLE")
     if not payload.get("meta_test_tuning_policy"):
         raise FamilyV3Error("prereg 缺少 meta_test 调参禁止声明")
-    split_counts = payload.get("split_counts")
-    if not isinstance(split_counts, Mapping) or dict(split_counts) != dict(SPLIT_COUNTS):
-        raise FamilyV3Error("prereg split_counts 不符")
+    bf = _budget_fairness_module()
+    budget_plan = payload.get("budget_plan")
+    if not isinstance(budget_plan, Mapping):
+        raise FamilyV3Error("budget_plan 必须是 object")
+    budget_plans = bf.build_all_budget_plans()
+    bf.assert_budget_fairness(budget_plans)
+    if int(budget_plan.get("plan_count", -1)) != len(budget_plans):
+        raise FamilyV3Error("budget_plan.plan_count 不符")
+    if budget_plan.get("plans_digest") != digest(budget_plans):
+        raise FamilyV3Error("budget_plan.plans_digest 重算不一致")
+    if budget_plan.get("schema_version") != bf.FAIRNESS_SCHEMA_VERSION:
+        raise FamilyV3Error("budget_plan.schema_version 不符")
+    if tuple(budget_plan.get("arms", ())) != ARM_IDS:
+        raise FamilyV3Error("budget_plan.arms 不符")
+    if tuple(budget_plan.get("budgets", ())) != BUDGETS:
+        raise FamilyV3Error("budget_plan.budgets 不符")
+    if tuple(budget_plan.get("k_values", ())) != K_VALUES:
+        raise FamilyV3Error("budget_plan.k_values 不符")
+    if int(budget_plan.get("initial_designs", -1)) != INITIAL_DESIGN_COUNT:
+        raise FamilyV3Error("budget_plan.initial_designs 不符")
+    if budget_plan.get("support_counted") is not True:
+        raise FamilyV3Error("budget_plan.support_counted 必须为 True（K 个支持评价计入 B）")
+    expected_clone_pairs = [
+        {"K": 0, "clone_arm": bf.K0_CLONE_ARM, "canonical_arm": bf.ZERO_SHOT_ARM}
+    ]
+    if [dict(item) for item in budget_plan.get("clone_pairs", ())] != expected_clone_pairs:
+        raise FamilyV3Error("budget_plan.clone_pairs 必须登记 K=0 的 FOMAML-KSHOT-BO=CLONE")
+    if budget_plan.get("inference_excluded", {}).get("0") != [bf.K0_CLONE_ARM]:
+        raise FamilyV3Error("budget_plan.inference_excluded 必须排除 K=0 CLONE 臂")
+    seeds = payload.get("seeds")
+    if not isinstance(seeds, Mapping) or set(seeds) != {"meta_train_seeds", "optimization_seeds"}:
+        raise FamilyV3Error("seeds 必须是仅含 meta_train_seeds/optimization_seeds 的 object")
+    meta_train_seeds = [int(value) for value in seeds["meta_train_seeds"]]
+    optimization_seeds = [int(value) for value in seeds["optimization_seeds"]]
+    if len(meta_train_seeds) < 3 or len(set(meta_train_seeds)) != len(meta_train_seeds):
+        raise FamilyV3Error("seeds.meta_train_seeds 至少 3 个且不得重复")
+    if len(optimization_seeds) < 10 or len(set(optimization_seeds)) != len(optimization_seeds):
+        raise FamilyV3Error("seeds.optimization_seeds 至少 10 个且不得重复")
+    if list(payload.get("optimization_seeds", ())) != optimization_seeds:
+        raise FamilyV3Error("optimization_seeds 别名必须等于 seeds.optimization_seeds")
+    if list(payload.get("meta_seeds", ())) != meta_train_seeds:
+        raise FamilyV3Error("meta_seeds 别名必须等于 seeds.meta_train_seeds")
+    rules = normalize_stopping_rules(payload.get("stopping_rules"))
+    if list(payload.get("stopping_rules", ())) != rules:
+        raise FamilyV3Error("stopping_rules 必须已 strip 为规范 list[str]")
+    _normalize_string_list(payload.get("failure_rules"), "failure_rules")
+    multiple = _validate_multiple_comparison(payload.get("multiple_comparison"))
+    plan = _validate_analysis_plan(payload.get("analysis_plan"))
+    plan_digest = payload.get("analysis_plan_digest")
+    if not isinstance(plan_digest, str) or not _SHA256_PATTERN.match(plan_digest):
+        raise FamilyV3Error("analysis_plan_digest 必须是 64 位小写十六进制 sha256")
+    if digest(plan) != plan_digest:
+        raise FamilyV3Error("analysis_plan_digest 重算不一致")
+    if plan.get("multiple_comparison") != multiple:
+        raise FamilyV3Error("analysis_plan.multiple_comparison 与 prereg 不一致")
     if frozen_family is not None:
         verify_frozen_family_v3(frozen_family)
         if payload.get("frozen_family_sha256") != frozen_family.get("sha256"):
             raise FamilyV3Error("prereg 未正确绑定 frozen_family sha256")
-        for name in ("family_fingerprint", "radius_base"):
+        for name in (
+            "family_id",
+            "family_version",
+            "formula_version",
+            "family_seed",
+            "family_fingerprint",
+            "radius_base",
+            "reference_solution",
+            "gap_definition",
+            "meta_test_tuning_policy",
+        ):
             if payload.get(name) != frozen_family.get(name):
                 raise FamilyV3Error(f"prereg 与 frozen 的 {name} 不一致")
-        if payload.get("split_hash") != frozen_family.get("split", {}).get("split_hash"):
+        frozen_split_hash = frozen_family.get("split", {}).get("split_hash")
+        if payload.get("split_digest") != frozen_split_hash:
             raise FamilyV3Error("prereg 与 frozen 的 split_hash 不一致")
+        if split_digest != digest(_split_hash_payload(frozen_family["split"]["task_ids"])):
+            raise FamilyV3Error("split_digest 与 frozen split task_ids 重算不一致")
+        if dict(payload.get("split_counts", {})) != dict(frozen_family["split"]["counts"]):
+            raise FamilyV3Error("prereg 与 frozen 的 split counts 不一致")
     return True
+
+
+def compute_prereg_digest(payload: Mapping[str, Any]) -> str:
+    """公开辅助：重算 prereg 自身 digest（prereg_digest 置空）。"""
+    return _prereg_digest(payload)
 
 
 # ---------------------------------------------------------------------------
@@ -1075,8 +1574,7 @@ def build_digest_manifest(
     artifacts: Sequence[Mapping[str, Any]], *, created_utc: str
 ) -> dict[str, Any]:
     """汇总各冻结产物的 canonical/raw 双 digest（供确定性重跑逐位比对）。"""
-    if not isinstance(created_utc, str) or not created_utc.strip():
-        raise FamilyV3Error("created_utc 必须是非空字符串")
+    _validate_iso8601_utc(created_utc, "created_utc")
     entries = []
     for artifact in artifacts:
         entry = {key: artifact[key] for key in ("path", "bytes", "canonical_sha256", "raw_sha256")}
@@ -1103,14 +1601,28 @@ def build_freeze_bundle(
     legacy_paths: Sequence[str | Path] = (),
     legacy: Mapping[str, Any] | None = None,
     calibration_status: str = "PENDING_A2_CALIBRATION",
+    radius_base: float | None = None,
 ) -> dict[str, Any]:
-    """一次构造 tasks/split/frozen/prereg/isolation 五个载荷（不写盘，纯确定性）。"""
+    """一次构造 tasks/split/frozen/prereg/isolation 五个载荷（不写盘，纯确定性）。
+
+    radius_base：A2 校准后冻结值由 CLI 显式传入（R-02 = 0.64）；config=None 时用它
+    构造 v3 配置，config 已提供时必须一致（否则 fail-closed）。
+    """
     if legacy is None:
         if not legacy_paths:
             raise FamilyV3Error("build_freeze_bundle 必须提供 legacy_paths 或 legacy 集合（零交集断言）")
         legacy = collect_legacy_task_ids(legacy_paths)
-    family_config = config if config is not None else build_v3_family_config()
+    if config is None:
+        overrides: dict[str, Any] = {}
+        if radius_base is not None:
+            overrides["radius_base"] = float(radius_base)
+        family_config = build_v3_family_config(**overrides)
+    else:
+        family_config = config
+        if radius_base is not None and abs(float(radius_base) - float(family_config.radius_base)) > 1e-12:
+            raise FamilyV3Error("radius_base 参数与 config.radius_base 不一致")
     assert_family_v3_identity(family_config)
+    selected_radius = float(family_config.radius_base)
     tasks = assign_v3_task_ids(tf.build_task_family(family_config))
     records = build_task_records(tasks)
     split_manifest = build_split_manifest_v3(tasks, family_config=family_config)
@@ -1126,6 +1638,7 @@ def build_freeze_bundle(
         git_sha=git_sha,
         created_utc=created_utc,
         code_sha=code_sha,
+        radius_base=selected_radius,
         calibration_status=calibration_status,
     )
     preregistration = build_preregistration_v3(

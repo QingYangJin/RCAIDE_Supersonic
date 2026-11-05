@@ -151,6 +151,7 @@ class FrozenGate:
     frozen_sha256: str
     preregistration_sha256: str
     split_manifest_sha256: str
+    legacy_warnings: tuple[str, ...] = ()
 
     @property
     def family_id(self) -> str:
@@ -229,6 +230,8 @@ class FrozenGate:
             "frozen_family_sha256": self.frozen_sha256,
             "preregistration_sha256": self.preregistration_sha256,
             "split_manifest_sha256": self.split_manifest_sha256,
+            "preregistration_schema_version": str(self.preregistration.get("schema_version") or ""),
+            "preregistration_legacy_warnings": list(self.legacy_warnings),
             "physical_call_count": 0,
             "preregistered_arms": list(self.preregistration.get("arms") or ()),
             "preregistered_budgets": list(self.preregistration.get("budgets") or ()),
@@ -316,13 +319,25 @@ def load_frozen_gate(
     if not (float(frozen["radius_base"]) > 0.0):
         raise M6FrozenGateError("frozen_family.radius_base 必须为正数")
 
+    # 历史只读路径：M6 门禁读取旧 M5 run 的 p4-m5-prereg-v1，必须显式
+    # allow_legacy=True 并保留 legacy_warning；新 schema 仍走同一条严格校验链。
+    legacy_warnings: list[str] = []
     try:
-        if fv2.verify_preregistration(preregistration, frozen) is False:
+        if fv2.verify_preregistration(
+            preregistration,
+            frozen,
+            allow_legacy=True,
+            legacy_warnings=legacy_warnings,
+        ) is False:
             raise M6FrozenGateError("preregistration 校验返回 False")
     except M6FrozenGateError:
         raise
     except Exception as error:
-        raise M6FrozenGateError("preregistration 校验失败：%s" % error) from error
+        legacy = getattr(error, "legacy_warning", None)
+        detail = "preregistration 校验失败：%s" % error
+        if legacy:
+            detail += "（legacy_warning=%s）" % legacy
+        raise M6FrozenGateError(detail) from error
     for key in ("arms", "budgets", "optimization_seeds", "meta_seeds"):
         if not preregistration.get(key):
             raise M6FrozenGateError("preregistration 缺少 %s（未预注册不得开 holdout）" % key)
@@ -355,6 +370,7 @@ def load_frozen_gate(
         frozen_sha256=_sha256_file(paths["frozen_family"]),
         preregistration_sha256=_sha256_file(paths["preregistration"]),
         split_manifest_sha256=_sha256_file(paths["split_manifest"]),
+        legacy_warnings=tuple(legacy_warnings),
     )
 
 # ---------------------------------------------------------------------------

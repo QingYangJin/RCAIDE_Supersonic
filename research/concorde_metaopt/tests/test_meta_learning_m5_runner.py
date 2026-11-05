@@ -498,6 +498,41 @@ class M5FreezeStageTests(unittest.TestCase):
         self.assertFalse((config.run_dir / "metrics").exists())
 
 
+    def test_10a_holdout_prerequisites_accept_legacy_prereg_with_warning(self) -> None:
+        """回归：旧 M5 run（p4-m5-prereg-v1）只读门禁可通过，但必须带 legacy_warning。"""
+        study = _study()
+        source = Path(study["run_dir"])
+        base_config = study["holdout_config"]
+
+        root = _new_root()
+        destination = root / "legacy-prereg"
+        _copy_prerequisites(source, destination)
+        prereg_path = destination / "preregistration.json"
+        payload = _read_json(prereg_path)
+        payload["schema_version"] = "p4-m5-prereg-v1"
+        payload["stopping_rules"] = list("历史只读预注册规则")
+        payload.pop("sha256", None)
+        payload["sha256"] = fv2.digest(payload)
+        _write_json_raw(prereg_path, payload)
+
+        config = _variant_paths(base_config, root=root, run_id="legacy-prereg", destination=destination)
+        unlocked = m5.load_holdout_prerequisites(config)
+        self.assertEqual(unlocked["status"], "UNLOCKED")
+        self.assertEqual(unlocked["preregistration_schema_version"], "p4-m5-prereg-v1")
+        self.assertEqual(len(unlocked["legacy_warnings"]), 1)
+        self.assertIn("p4-m5-prereg-v1", unlocked["legacy_warnings"][0])
+
+        # 底层 verify 默认仍 fail-closed（新 run 路径不受影响）
+        frozen = fv2.load_frozen_family(destination / "frozen_family.json")
+        with self.assertRaises(fv2.FeasibleV2Error):
+            fv2.verify_preregistration(payload, frozen)
+
+        # legacy payload 被篡改且未重签 → fail-closed
+        payload["family_fingerprint"] = "0" * 64
+        _write_json_raw(prereg_path, payload)
+        with self.assertRaises(fv2.FeasibleV2Error):
+            m5.load_holdout_prerequisites(config)
+
 
 class M5HoldoutStageTests(unittest.TestCase):
     """holdout 阶段：四方门禁、等预算、null 披露、确定性、物理守卫。"""

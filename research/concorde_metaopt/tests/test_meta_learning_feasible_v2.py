@@ -582,15 +582,35 @@ class PreregistrationTests(unittest.TestCase):
         self.assertEqual(prereg["stopping_rules"], ["合法规则文本"])
         self.assertTrue(fv.verify_preregistration(prereg, self.frozen))
 
-    def test_26e_legacy_v1_bad_stopping_rules_still_verifies(self):
-        """旧 run 兼容：p4-m5-prereg-v1 历史工件（含逐字符数组）仍可验证。"""
+    def test_26e_legacy_v1_fail_closed_unless_allow_legacy(self):
+        """R-04/M01：新 run 默认拒绝 legacy schema；历史只读显式 allow_legacy=True 才放行并记 warning。"""
         legacy = dict(fv.build_preregistration(self.frozen, run_id="test-run"))
         legacy["schema_version"] = fv.LEGACY_PREREGISTRATION_SCHEMA_VERSIONS[0]
         legacy["stopping_rules"] = list(legacy["stopping_rules"][0])
         body = {key: value for key, value in legacy.items() if key != "sha256"}
         legacy["sha256"] = fv.digest(body)
-        self.assertTrue(fv.verify_preregistration(legacy, self.frozen))
-        fv.validate_preregistration_schema(legacy)  # 不抛异常
+        with self.assertRaises(fv.FeasibleV2Error) as ctx:
+            fv.verify_preregistration(legacy, self.frozen)
+        self.assertIn("legacy_warning", str(ctx.exception))
+        self.assertTrue(hasattr(ctx.exception, "legacy_warning"))
+        warnings_list: list[str] = []
+        self.assertTrue(
+            fv.verify_preregistration(
+                legacy, self.frozen, allow_legacy=True, legacy_warnings=warnings_list
+            )
+        )
+        self.assertEqual(len(warnings_list), 1)
+        self.assertIn("p4-m5-prereg-v1", warnings_list[0])
+        fv.validate_preregistration_schema(legacy)  # 历史只读宽松 schema 校验本身不抛
+
+    def test_26h_new_schema_never_needs_allow_legacy(self):
+        """R-04：新 schema（v2）默认路径验证，不产生 legacy_warning。"""
+        prereg = fv.build_preregistration(self.frozen, run_id="test-run")
+        warnings_list: list[str] = []
+        self.assertTrue(
+            fv.verify_preregistration(prereg, self.frozen, legacy_warnings=warnings_list)
+        )
+        self.assertEqual(warnings_list, [])
 
 
 

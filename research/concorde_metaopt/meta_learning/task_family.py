@@ -97,6 +97,8 @@ V2_RADIUS_MAX = 1.20
 # P4 路线A S1 任务族 v3（Issue #7 D-P4-003；task-198 / D-S0-2-05）：
 # 与 v2 同解析族（F-QE 径向投影），只改参数分布/seed/task_id 命名空间，旧 v1/v2 逐位不变。
 V3_FAMILY_ID = "F-QE-feasible-v3"
+# 合同 §7 冻结的族版本字符串（Lead task-206 裁定 B01：不得再用简写 "v3"）
+V3_FAMILY_VERSION = "p4ra-family-v3"
 V3_FORMULA_VERSION = "p4-task-family-v3"
 V3_FAMILY_SEED = 20261105
 V3_RADIUS_JITTER = 0.20
@@ -249,11 +251,15 @@ class TaskFamilyConfig:
             raise TaskFamilyError("negative_control_tasks 不能超过 meta-train 任务数（需由不同 meta-train 任务派生）")
         if not math.isfinite(self.reference_tolerance) or self.reference_tolerance <= 0:
             raise TaskFamilyError("reference_tolerance 必须是正有限数")
-        if self.family_version not in ("v1", "v2", "v3"):
-            raise TaskFamilyError(f"family_version 必须是 v1/v2/v3，实际 {self.family_version!r}")
+        if self.family_version not in ("v1", "v2", "v3", V3_FAMILY_VERSION):
+            raise TaskFamilyError(
+                f"family_version 必须是 v1/v2/v3/{V3_FAMILY_VERSION}，实际 {self.family_version!r}"
+            )
         if self.family_id == V3_FAMILY_ID:
-            if self.family_version != "v3":
-                raise TaskFamilyError(f"{V3_FAMILY_ID} 必须显式声明 family_version='v3'")
+            if self.family_version != V3_FAMILY_VERSION:
+                raise TaskFamilyError(
+                    f"{V3_FAMILY_ID} 必须显式声明 family_version={V3_FAMILY_VERSION!r}"
+                )
             if self.radius_base is None:
                 raise TaskFamilyError(f"{V3_FAMILY_ID} 必须提供 radius_base（校准后冻结）")
             if not math.isfinite(float(self.radius_base)) or not (0.05 < float(self.radius_base) <= 2.0):
@@ -368,10 +374,10 @@ def family_fingerprint(config: TaskFamilyConfig) -> str:
             },
             "reference_kind": "ANALYTIC_RADIAL_PROJECTION",
         }
-    elif config.family_version == "v3":
+    elif config.family_version == V3_FAMILY_VERSION:
         # v3 版本化：独立 formula_version/分布/耦合/OOD/命名空间（设计文档 §4.1）
         payload["formula_version"] = V3_FORMULA_VERSION
-        payload["config"]["family_version"] = "v3"
+        payload["config"]["family_version"] = V3_FAMILY_VERSION
         payload["config"]["radius_base"] = float(config.radius_base)
         payload["design_bounds"] = [[float(lo), float(hi)] for lo, hi in zip(DESIGN_LOWER, DESIGN_UPPER)]
         payload["param_distributions"] = dict(V3_PARAM_DISTRIBUTIONS)
@@ -506,7 +512,7 @@ def _make_task(
             params["radius_bounds"] = [V2_RADIUS_MIN, V2_RADIUS_MAX]
         if family == V3_FAMILY_ID:
             # v3 版本化任务参数（进入 task_id canonical json/fingerprint，便于审计与逐位复现）
-            params["family_version"] = "v3"
+            params["family_version"] = V3_FAMILY_VERSION
             params["formula_version"] = V3_FORMULA_VERSION
             params["radius_base"] = float(config.radius_base)
             params["radius_jitter"] = V3_RADIUS_JITTER

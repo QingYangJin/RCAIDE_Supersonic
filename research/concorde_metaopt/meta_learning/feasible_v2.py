@@ -20,6 +20,7 @@ from __future__ import annotations
 import dataclasses
 import hashlib
 import json
+import logging
 import math
 import time
 from dataclasses import dataclass
@@ -82,6 +83,11 @@ PREREGISTRATION_SCHEMA_VERSION = "p4-m5-prereg-v2"
 # 历史预注册 schema：旧 run 的 preregistration.json 按原样只读校验（不含 v2 的
 # stopping_rules 类型强校验），避免历史工件因旧序列化缺陷被追溯判为不可验证。
 LEGACY_PREREGISTRATION_SCHEMA_VERSIONS: tuple[str, ...] = ("p4-m5-prereg-v1",)
+# R-04：legacy schema 只允许历史只读路径显式放行；默认 fail-closed 并携带该 warning。
+LEGACY_PREREGISTRATION_WARNING = (
+    "legacy_warning: 只读历史 M5 工件使用 p4-m5-prereg-v1；新 run 必须使用 "
+    "p4-m5-prereg-v2 或 p4ra-prereg-v1，禁止复用 legacy 预注册。"
+)
 CALIBRATION_SCHEMA_VERSION = "p4-m5-calibration-1"
 
 SELECTION_RULE = (
@@ -1192,12 +1198,34 @@ def build_preregistration(
     return payload
 
 
-def verify_preregistration(prereg: Mapping[str, Any], frozen_family: Mapping[str, Any]) -> bool:
-    """校验预注册 hash 与 frozen 绑定；任一不符 → fail-closed（禁止开测试集）。"""
+def verify_preregistration(
+    prereg: Mapping[str, Any],
+    frozen_family: Mapping[str, Any],
+    *,
+    allow_legacy: bool = False,
+    legacy_warnings: list[str] | None = None,
+) -> bool:
+    """校验预注册 hash 与 frozen 绑定；任一不符 → fail-closed（禁止开测试集）。
+
+    R-04/M01：默认拒绝 p4-m5-prereg-v1（新 run 标 legacy 即 fail-closed）；
+    仅历史只读路径显式 allow_legacy=True 时放行，并记录 legacy_warning。
+    """
     verify_frozen_payload(frozen_family)
     schema = prereg.get("schema_version")
     if schema not in (PREREGISTRATION_SCHEMA_VERSION, *LEGACY_PREREGISTRATION_SCHEMA_VERSIONS):
         raise FeasibleV2Error(f"prereg schema 不符: {schema!r}")
+    if schema in LEGACY_PREREGISTRATION_SCHEMA_VERSIONS:
+        warning = LEGACY_PREREGISTRATION_WARNING + f"（实际 schema={schema!r}）"
+        if not allow_legacy:
+            error = FeasibleV2Error(
+                f"新 run 禁止使用 legacy prereg schema {schema!r}；"
+                f"历史只读路径必须显式 allow_legacy=True。{warning}"
+            )
+            setattr(error, "legacy_warning", warning)
+            raise error
+        if legacy_warnings is not None:
+            legacy_warnings.append(warning)
+        logging.getLogger(__name__).warning(warning)
     validate_preregistration_schema(prereg)
     body = {key: value for key, value in prereg.items() if key != "sha256"}
     if prereg.get("sha256") != digest(body):
@@ -1241,10 +1269,20 @@ def assert_holdout_unlocked(
     preregistration: Mapping[str, Any],
     split_manifest: Mapping[str, Any],
     calibration_report: CalibrationReport,
+    allow_legacy: bool = False,
+    legacy_warnings: list[str] | None = None,
 ) -> dict[str, Any]:
-    """holdout 阶段入口门禁：frozen/prereg/split/校准 四方一致才允许构造 test/ood。"""
+    """holdout 阶段入口门禁：frozen/prereg/split/校准 四方一致才允许构造 test/ood。
+
+    allow_legacy/legacy_warnings 仅用于历史只读复核；新 run 必须走默认 fail-closed。
+    """
     verify_frozen_payload(frozen_family)
-    verify_preregistration(preregistration, frozen_family)
+    verify_preregistration(
+        preregistration,
+        frozen_family,
+        allow_legacy=allow_legacy,
+        legacy_warnings=legacy_warnings,
+    )
     verify_split_manifest(split_manifest, family_config=frozen_to_config(frozen_family))
     if calibration_report.selected_radius_base is None:
         raise FeasibleV2Error("校准未选出半径，禁止开测试集")
@@ -1254,13 +1292,16 @@ def assert_holdout_unlocked(
         raise FeasibleV2Error("frozen split_hash 与当前 split manifest 不符")
     if calibration_report.sha256 != frozen_family["calibration"]["report_sha256"]:
         raise FeasibleV2Error("frozen 校准报告 sha256 与当前报告不符")
-    return {
+    result = {
         "status": "UNLOCKED",
         "frozen_family_sha256": frozen_family["sha256"],
         "preregistration_sha256": preregistration["sha256"],
         "split_hash": split_manifest["split_hash"],
         "radius_base": float(frozen_family["radius_base"]),
     }
+    if legacy_warnings:
+        result["legacy_warnings"] = list(legacy_warnings)
+    return result
 
 
 __all__ = [
@@ -1295,6 +1336,7 @@ __all__ = [
     "SPLIT_SCHEMA_VERSION",
     "PREREGISTRATION_SCHEMA_VERSION",
     "LEGACY_PREREGISTRATION_SCHEMA_VERSIONS",
+    "LEGACY_PREREGISTRATION_WARNING",
     "STOPPING_RULE_MIN_LENGTH",
     "normalize_stopping_rules",
     "validate_preregistration_schema",

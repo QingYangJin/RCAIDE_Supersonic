@@ -1337,3 +1337,64 @@ class M6FormalScaleFailClosedTests(unittest.TestCase):
         )
         self.assertIn("禁止以最后一个族", l3["new_family_aggregation_rule"])
         self.assertEqual(l3["combined_status"], "NEW_FAMILY_MIXED")
+
+
+class M6LegacyPreregistrationGateTests(unittest.TestCase):
+    """回归：M6 门禁读取旧 M5 run（p4-m5-prereg-v1）必须放行且保留 legacy_warning。"""
+
+    def _legacy_gate_dir(self) -> Path:
+        source = _frozen_gate_dir()
+        gate_dir = _TMP_ROOT / "legacy-frozen-run"
+        if (gate_dir / "preregistration.json").is_file():
+            return gate_dir
+        gate_dir.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(source / "frozen_family.json", gate_dir / "frozen_family.json")
+        shutil.copyfile(source / "meta_task_split.json", gate_dir / "meta_task_split.json")
+        payload = dict(_GATE["preregistration"])  # type: ignore[arg-type]
+        payload["schema_version"] = "p4-m5-prereg-v1"
+        payload["stopping_rules"] = list("历史只读预注册规则")
+        payload.pop("sha256", None)
+        payload["sha256"] = fv2.digest(payload)
+        orun.write_json(gate_dir / "preregistration.json", payload)
+        return gate_dir
+
+    def test_legacy_v1_preregistration_passes_gate_with_warning(self) -> None:
+        gate = m6_frozen.load_frozen_gate(frozen_run_dir=self._legacy_gate_dir())
+        self.assertEqual(gate.preregistration["schema_version"], "p4-m5-prereg-v1")
+        self.assertEqual(len(gate.legacy_warnings), 1)
+        self.assertIn("p4-m5-prereg-v1", gate.legacy_warnings[0])
+        self.assertIn("legacy_warning", gate.legacy_warnings[0])
+        summary = gate.to_dict()
+        self.assertEqual(summary["status"], "PASS")
+        self.assertEqual(summary["preregistration_schema_version"], "p4-m5-prereg-v1")
+        self.assertEqual(summary["preregistration_legacy_warnings"], list(gate.legacy_warnings))
+        self.assertEqual(summary["physical_call_count"], 0)
+
+    def test_legacy_v1_tampered_payload_still_fail_closed(self) -> None:
+        source = self._legacy_gate_dir()
+        tampered = _TMP_ROOT / "legacy-frozen-run-tampered"
+        shutil.rmtree(tampered, ignore_errors=True)
+        shutil.copytree(source, tampered)
+        path = tampered / "preregistration.json"
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        payload["radius_base"] = float(payload["radius_base"]) + 0.1
+        orun.write_json(path, payload)
+        with self.assertRaises(m6_frozen.M6FrozenGateError):
+            m6_frozen.load_frozen_gate(frozen_run_dir=tampered)
+
+    def test_current_v2_preregistration_has_no_legacy_warning_and_stays_strict(self) -> None:
+        gate = _gate()
+        self.assertEqual(gate.legacy_warnings, ())
+        self.assertEqual(
+            gate.to_dict()["preregistration_schema_version"],
+            fv2.PREREGISTRATION_SCHEMA_VERSION,
+        )
+        tampered = _TMP_ROOT / "v2-frozen-run-tampered"
+        shutil.rmtree(tampered, ignore_errors=True)
+        shutil.copytree(_frozen_gate_dir(), tampered)
+        path = tampered / "preregistration.json"
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        payload["meta_test_tuning_policy"] = "允许在 meta_test 上调参（篡改）"
+        orun.write_json(path, payload)
+        with self.assertRaises(m6_frozen.M6FrozenGateError):
+            m6_frozen.load_frozen_gate(frozen_run_dir=tampered)

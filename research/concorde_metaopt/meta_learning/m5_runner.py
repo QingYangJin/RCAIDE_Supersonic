@@ -1647,11 +1647,15 @@ def load_holdout_prerequisites(config: M5RunnerConfig) -> dict[str, Any]:
     frozen = fv2.load_frozen_family(frozen_path)
     split_manifest = json.loads(Path(split_path).read_text(encoding="utf-8"))
     preregistration = fv2.load_preregistration(prereg_path)
+    # 历史只读路径：旧 M5 run 的 prereg 是 p4-m5-prereg-v1，显式放行并保留 warning。
+    legacy_warnings: list[str] = []
     unlocked = fv2.assert_holdout_unlocked(
         frozen_family=frozen,
         preregistration=preregistration,
         split_manifest=split_manifest,
         calibration_report=report,
+        allow_legacy=True,
+        legacy_warnings=legacy_warnings,
     )
     family_config = fv2.frozen_to_config(frozen)
     return {
@@ -1661,6 +1665,8 @@ def load_holdout_prerequisites(config: M5RunnerConfig) -> dict[str, Any]:
         "frozen_family": frozen,
         "split_manifest": split_manifest,
         "preregistration": preregistration,
+        "preregistration_schema_version": str(preregistration.get("schema_version") or ""),
+        "legacy_warnings": list(legacy_warnings),
         "family_config": family_config,
         "radius_base": float(frozen["radius_base"]),
         "paths": {

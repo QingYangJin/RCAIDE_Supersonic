@@ -9,7 +9,7 @@
 
 ### 1.1 目的
 
-1. 在旧 M2/M5/M6 之外建立**独立版本**的合成任务族（family_version = v3），使 S1 的 K-shot → 响应代理初始化 → 普通约束 BO 实验拥有新的、未被使用过的 meta_test 盲测集；
+1. 在旧 M2/M5/M6 之外建立**独立版本**的合成任务族（family_version = p4ra-family-v3），使 S1 的 K-shot → 响应代理初始化 → 普通约束 BO 实验拥有新的、未被使用过的 meta_test 盲测集；
 2. 明确 v3 与旧族的隔离规则（family/formula/seed/task_id 四重隔离），杜绝"拿已公开 holdout 当新盲测"的泄漏；
 3. 固定 v3 的 family_fingerprint 生成方法与冻结流程，使"冻结后不可暗中改生成规则"可程序化审计；
 4. 给出 S1 的 K ∈ {0,1,3,5} 支持集与 B ∈ {64,128} 预算映射（K 次计入 B、8 初始点补 8−K），并给出五臂等预算与 K=0 CLONE 的代码级断言。
@@ -58,7 +58,7 @@ v3 任务与预注册的**字段语义、枚举、fail-closed 编号**沿用 A4 
 | 字段 | v2（旧，只读） | v3（本文件，已实施） |
 |---|---|---|
 | family_id | F-QE-feasible-v2 | **F-QE-feasible-v3** |
-| family_version | v2 | **v3** |
+| family_version | v2 | **p4ra-family-v3**（D-S0-2-05；A5-S0P1-B01 裁定） |
 | formula_version | p4-task-family-v2 | **p4-task-family-v3** |
 | family_seed | 20261102 | **20261105** |
 | task_id | 12 位 sha1 | **p4ra-FQE3-v3-<SPLIT>-<NNN>**（新命名空间） |
@@ -73,7 +73,8 @@ V3_FAMILY_SEED = 20261105
 V3_RADIUS_JITTER = 0.20
 V3_RADIUS_MIN = 0.15
 V3_RADIUS_MAX = 1.10
-V3_RADIUS_BASE_DEFAULT = 0.32
+V3_FAMILY_VERSION = "p4ra-family-v3"   # D-S0-2-05；A5-S0P1-B01 裁定（原 v3 作废）
+V3_RADIUS_BASE_DEFAULT = 0.32            # 设计初值；冻结使用 A2 校准值 0.64（见 R-02）
 V3_TASK_ID_PREFIX = "p4ra-FQE3-v3-"
 V3_OOD_RADIUS_SCALE = 0.75
 V3_OOD_CONTEXT_SHIFT = 0.25
@@ -95,7 +96,7 @@ V3_CONTEXT_COUPLING_SCALE = 0.45
 | d | clip(c + N(0, 0.25), 0.05, 0.95) | clip(c + N(0, 0.20), 0.10, 0.90) | 偏移项降低噪声 |
 | a, w | logU(0.5, 5.0) | logU(0.5, 4.0) | 曲率/权重 |
 | b | U(-1, 1) | U(-0.9, 0.9) | 目标偏置 |
-| radius_base | M5 冻结 0.75（v2 默认自适应） | 默认 0.32，jitter 0.20，截断 [0.15, 1.10] | **待 A2 校准后冻结**（当前 calibration_status=PENDING_A2_CALIBRATION） |
+| radius_base | M5 冻结 0.75（v2 默认自适应） | **0.64（A2 校准，CALIBRATED）**，jitter 0.20，截断 [0.15, 1.10] | A2 2026-11-05：pooled success 16/24=0.6667，逐 seed [0.750,0.688,0.750]，Wilson95 [0.467,0.820]；设计初值 0.32 实测 success=0.0 已弃用（Lead 裁定 R-02） |
 | OOD 半径缩放 | 0.70 | 0.75 | OOD 难度略高 |
 | OOD context 偏移 | 0.20 | 0.25 | OOD 分布外程度 |
 | context coupling | 0.50 | 0.45 | 降低耦合 |
@@ -103,7 +104,7 @@ V3_CONTEXT_COUPLING_SCALE = 0.45
 
 实现位置：`task_family.py:415-428`（v3 采样分支）、`task_family.py:507-513`（v3 params 记录 family_version/formula_version/radius_base/radius_jitter/radius_bounds）、`task_family.py:373-401`（v3 fingerprint 分支）、`task_family.py:254-258`（v3 config 校验）。
 
-注意：表中分布与默认半径是**已落地的 S0-2 提案**。冻结前允许 A2 用 meta_train/meta_validation 校准 radius_base（与 M5 同协议）；**禁止**用 meta_test/OOD 的任何信息调参；一旦 family_fingerprint 冻结，任何分布/种子/半径改动必须升 family_version = v4 并重新预注册（A4 合同 FC-10）。
+注意：表中分布已落地；radius_base 已由 A2 在 meta_train/meta_validation 上校准为 0.64（见 §2.1 常量与 Lead 裁定 R-02，第二判据退化为「带内最大半径」的口径须在 prereg 明示）。**禁止**用 meta_test/OOD 的任何信息调参；一旦 family_fingerprint 冻结，任何分布/种子/半径改动必须升 family_version = v4 并重新预注册（A4 合同 FC-10）。
 
 ### 2.4 种子与 task_id 生成（D-S0-2-05 定稿）
 
