@@ -31,6 +31,18 @@ __all__ = [
     "V2_RADIUS_JITTER",
     "V2_RADIUS_MIN",
     "V2_RADIUS_MAX",
+    "V3_FAMILY_ID",
+    "V3_FORMULA_VERSION",
+    "V3_FAMILY_SEED",
+    "V3_RADIUS_JITTER",
+    "V3_RADIUS_MIN",
+    "V3_RADIUS_MAX",
+    "V3_RADIUS_BASE_DEFAULT",
+    "V3_TASK_ID_PREFIX",
+    "V3_OOD_RADIUS_SCALE",
+    "V3_OOD_CONTEXT_SHIFT",
+    "V3_CONTEXT_COUPLING_SCALE",
+    "V3_PARAM_DISTRIBUTIONS",
     "SYNTHETIC_CONSTRAINT_SLOTS",
     "TaskFamilyConfig",
     "SyntheticTask",
@@ -54,7 +66,7 @@ DESIGN_LOWER = np.array([300.0, 1.5, 62.0, 40.0, 66.0, 0.35, 0.85, 0.30, 0.08, -
 DESIGN_UPPER = np.array([420.0, 2.2, 72.0, 56.0, 76.0, 0.58, 0.98, 0.50, 0.20, 4.0, 40.0, 10.0])
 
 CONTEXT_NAMES = ("context_1", "context_2")
-FAMILIES = ("F-QE", "F-LIN", "F-NC", "F-MF", "F-QE-feasible-v2")
+FAMILIES = ("F-QE", "F-LIN", "F-NC", "F-MF", "F-QE-feasible-v2", "F-QE-feasible-v3")
 FORMULA_VERSION = "p4-task-family-v1"
 SYNTHETIC_CONSTRAINT_SLOTS = ("synth_c01", "synth_c02", "synth_c03")
 # 合成槽位固定占用 10 项物理约束名的前 3 个（§4.4），其余 7 项未启用置 null
@@ -82,6 +94,30 @@ V2_FORMULA_VERSION = "p4-task-family-v2"
 V2_RADIUS_JITTER = 0.15
 V2_RADIUS_MIN = 0.20
 V2_RADIUS_MAX = 1.20
+# P4 路线A S1 任务族 v3（Issue #7 D-P4-003；task-198 / D-S0-2-05）：
+# 与 v2 同解析族（F-QE 径向投影），只改参数分布/seed/task_id 命名空间，旧 v1/v2 逐位不变。
+V3_FAMILY_ID = "F-QE-feasible-v3"
+V3_FORMULA_VERSION = "p4-task-family-v3"
+V3_FAMILY_SEED = 20261105
+V3_RADIUS_JITTER = 0.20
+V3_RADIUS_MIN = 0.15
+V3_RADIUS_MAX = 1.10
+V3_RADIUS_BASE_DEFAULT = 0.32
+V3_TASK_ID_PREFIX = "p4ra-FQE3-v3-"
+V3_OOD_RADIUS_SCALE = 0.75
+V3_OOD_CONTEXT_SHIFT = 0.25
+V3_CONTEXT_COUPLING_SCALE = 0.45
+# v3 参数分布（进入 family_fingerprint 与 frozen_family，任何改动必须升 family_version）
+V3_PARAM_DISTRIBUTIONS = {
+    "c": "uniform(0.20, 0.80) per coordinate",
+    "d": "clip(c + normal(0, 0.20), 0.10, 0.90)",
+    "a": "loguniform(0.5, 4.0)",
+    "w": "loguniform(0.5, 4.0)",
+    "r": "clip(radius_base*(1+0.20*z), 0.15, 1.10); ood *= 0.75 then clipped",
+    "b": "uniform(-0.9, 0.9)",
+    "context": "uniform(0.6, 1.4)",
+    "context_ood": "uniform(0.85, 1.65)",
+}
 
 _PARAM_DISTRIBUTIONS = {
     "c": "uniform(0.15, 0.85) per coordinate",
@@ -153,14 +189,21 @@ def _lhs_designs(count: int, seed: int) -> np.ndarray:
     return np.asarray(sampler.random(count), dtype=np.float64)
 
 
-def _sample_context(rng: np.random.Generator, ood: bool) -> dict[str, float]:
-    low, high = ((0.8, 1.6) if ood else (0.6, 1.4))
+def _sample_context(rng: np.random.Generator, ood: bool, family: str | None = None) -> dict[str, float]:
+    if family == V3_FAMILY_ID:
+        # v3 OOD context 偏移 0.25（D-S0-2 / 设计文档 §2.3）：U(0.85,1.65) = U(0.6,1.4)+0.25
+        low, high = ((0.85, 1.65) if ood else (0.6, 1.4))
+    else:
+        low, high = ((0.8, 1.6) if ood else (0.6, 1.4))
     return {name: float(rng.uniform(low, high)) for name in CONTEXT_NAMES}
 
 
-def _context_offset(context: Mapping[str, float]) -> float:
-    """CONTRACT_AMBIGUITY A1：context 耦合 b_eff = b + 0.5*(context_1+context_2-2)。"""
-    return CONTEXT_COUPLING_SCALE * (float(context[CONTEXT_NAMES[0]]) + float(context[CONTEXT_NAMES[1]]) - 2.0)
+def _context_offset(context: Mapping[str, float], scale: float = CONTEXT_COUPLING_SCALE) -> float:
+    """CONTRACT_AMBIGUITY A1：context 耦合 b_eff = b + scale*(context_1+context_2-2)。
+
+    v3 使用 V3_CONTEXT_COUPLING_SCALE=0.45，v1/v2 保持 0.5（旧指纹逐位不变）。
+    """
+    return float(scale) * (float(context[CONTEXT_NAMES[0]]) + float(context[CONTEXT_NAMES[1]]) - 2.0)
 
 
 @dataclass(frozen=True)
@@ -206,9 +249,16 @@ class TaskFamilyConfig:
             raise TaskFamilyError("negative_control_tasks 不能超过 meta-train 任务数（需由不同 meta-train 任务派生）")
         if not math.isfinite(self.reference_tolerance) or self.reference_tolerance <= 0:
             raise TaskFamilyError("reference_tolerance 必须是正有限数")
-        if self.family_version not in ("v1", "v2"):
-            raise TaskFamilyError(f"family_version 必须是 v1/v2，实际 {self.family_version!r}")
-        if self.family_id == V2_FAMILY_ID:
+        if self.family_version not in ("v1", "v2", "v3"):
+            raise TaskFamilyError(f"family_version 必须是 v1/v2/v3，实际 {self.family_version!r}")
+        if self.family_id == V3_FAMILY_ID:
+            if self.family_version != "v3":
+                raise TaskFamilyError(f"{V3_FAMILY_ID} 必须显式声明 family_version='v3'")
+            if self.radius_base is None:
+                raise TaskFamilyError(f"{V3_FAMILY_ID} 必须提供 radius_base（校准后冻结）")
+            if not math.isfinite(float(self.radius_base)) or not (0.05 < float(self.radius_base) <= 2.0):
+                raise TaskFamilyError(f"radius_base 必须在 (0.05, 2.0]，实际 {self.radius_base!r}")
+        elif self.family_id == V2_FAMILY_ID:
             if self.family_version != "v2":
                 raise TaskFamilyError(f"{V2_FAMILY_ID} 必须显式声明 family_version='v2'")
             if self.radius_base is None:
@@ -219,7 +269,7 @@ class TaskFamilyConfig:
             if self.family_version != "v1":
                 raise TaskFamilyError(f"未版本化任务族 {self.family_id!r} 只能使用 family_version='v1'")
             if self.radius_base is not None:
-                raise TaskFamilyError("radius_base 仅适用于 F-QE-feasible-v2，旧族必须为 None")
+                raise TaskFamilyError("radius_base 仅适用于 F-QE-feasible-v2/v3，旧族必须为 None")
 
 
 def default_task_family_config(**overrides: Any) -> TaskFamilyConfig:
@@ -318,6 +368,40 @@ def family_fingerprint(config: TaskFamilyConfig) -> str:
             },
             "reference_kind": "ANALYTIC_RADIAL_PROJECTION",
         }
+    elif config.family_version == "v3":
+        # v3 版本化：独立 formula_version/分布/耦合/OOD/命名空间（设计文档 §4.1）
+        payload["formula_version"] = V3_FORMULA_VERSION
+        payload["config"]["family_version"] = "v3"
+        payload["config"]["radius_base"] = float(config.radius_base)
+        payload["design_bounds"] = [[float(lo), float(hi)] for lo, hi in zip(DESIGN_LOWER, DESIGN_UPPER)]
+        payload["param_distributions"] = dict(V3_PARAM_DISTRIBUTIONS)
+        payload["context_coupling"] = {
+            "scale": V3_CONTEXT_COUPLING_SCALE,
+            "formula": "b_eff = b + scale*(context_1 + context_2 - 2.0)",
+        }
+        payload["ood_protocol"] = {
+            "context_shift": V3_OOD_CONTEXT_SHIFT,
+            "radius_scale": V3_OOD_RADIUS_SCALE,
+        }
+        payload["task_id_namespace"] = V3_TASK_ID_PREFIX
+        payload["v3"] = {
+            "family_id": V3_FAMILY_ID,
+            "family_seed": int(config.seed),
+            "formula": {
+                "objective": "b_eff + sum_i a_i*(u_i-c_i)^2",
+                "constraint": "sum_i w_i*(u_i-c_i)^2 - r_v3^2 <= 0",
+                "d": "c",
+            },
+            "radius_mapping": {
+                "formula": "clip(radius_base*(1+jitter*z), min, max)",
+                "jitter": V3_RADIUS_JITTER,
+                "min": V3_RADIUS_MIN,
+                "max": V3_RADIUS_MAX,
+                "z": "normal(0,1) from task seed",
+                "ood_radius_scale": V3_OOD_RADIUS_SCALE,
+            },
+            "reference_kind": "ANALYTIC_RADIAL_PROJECTION",
+        }
     return _digest_text(_canonical_json(payload))
 
 
@@ -328,6 +412,29 @@ def family_fingerprint(config: TaskFamilyConfig) -> str:
 def _sample_common_params(
     rng: np.random.Generator, family: str, ood: bool, radius_base: float | None = None
 ) -> dict[str, Any]:
+    if family == V3_FAMILY_ID:
+        # v3 独立采样路径（D-S0-2-05 / 设计文档 §2.3）；绘制顺序固定以保证逐位复现。
+        if radius_base is None:
+            raise TaskFamilyError(f"{V3_FAMILY_ID} 采样必须提供 radius_base")
+        c = rng.uniform(0.20, 0.80, size=DESIGN_DIM)
+        d = np.clip(c + rng.normal(0.0, 0.20, size=DESIGN_DIM), 0.10, 0.90)
+        a = np.exp(rng.uniform(math.log(0.5), math.log(4.0), size=DESIGN_DIM))
+        w = np.exp(rng.uniform(math.log(0.5), math.log(4.0), size=DESIGN_DIM))
+        z = float(rng.normal())
+        r = float(np.clip(float(radius_base) * (1.0 + V3_RADIUS_JITTER * z), V3_RADIUS_MIN, V3_RADIUS_MAX))
+        if ood:
+            r = float(np.clip(r * V3_OOD_RADIUS_SCALE, V3_RADIUS_MIN, V3_RADIUS_MAX))
+        b = float(rng.uniform(-0.9, 0.9))
+        params: dict[str, Any] = {
+            "c": [float(v) for v in c],
+            "d": [float(v) for v in d],
+            "a": [float(v) for v in a],
+            "w": [float(v) for v in w],
+            "r": r,
+            "b": b,
+            "constraint_slots": list(CONSTRAINT_SLOT_NAMES[:1]),
+        }
+        return params
     c = rng.uniform(0.15, 0.85, size=DESIGN_DIM)
     d = np.clip(c + rng.normal(0.0, 0.25, size=DESIGN_DIM), 0.05, 0.95)
     a = np.exp(rng.uniform(math.log(0.5), math.log(5.0), size=DESIGN_DIM))
@@ -397,9 +504,16 @@ def _make_task(
             params["radius_base"] = float(config.radius_base)
             params["radius_jitter"] = V2_RADIUS_JITTER
             params["radius_bounds"] = [V2_RADIUS_MIN, V2_RADIUS_MAX]
+        if family == V3_FAMILY_ID:
+            # v3 版本化任务参数（进入 task_id canonical json/fingerprint，便于审计与逐位复现）
+            params["family_version"] = "v3"
+            params["formula_version"] = V3_FORMULA_VERSION
+            params["radius_base"] = float(config.radius_base)
+            params["radius_jitter"] = V3_RADIUS_JITTER
+            params["radius_bounds"] = [V3_RADIUS_MIN, V3_RADIUS_MAX]
         params["support_pool_size"] = config.support_pool_size
         params["query_size"] = config.query_size
-        context = _sample_context(rng, ood)
+        context = _sample_context(rng, ood, family)
         probe = SyntheticTask("REFERENCE_PROBE", split, family, context, params, seed)
         try:
             reference = probe.reference()
@@ -600,7 +714,8 @@ class SyntheticTask:
         return value
 
     def _b_effective(self) -> float:
-        return self._scalar("b") + _context_offset(self.context)
+        scale = V3_CONTEXT_COUPLING_SCALE if self.family == V3_FAMILY_ID else CONTEXT_COUPLING_SCALE
+        return self._scalar("b") + _context_offset(self.context, scale)
 
     # -- 参考解 -----------------------------------------------------------
     def reference(self) -> dict[str, Any]:
@@ -608,7 +723,7 @@ class SyntheticTask:
         if self.is_negative_control:
             raise TaskFamilyError("负控制伪任务没有参考解（label-shuffle 破坏解析结构）")
         family = self.family
-        if family == V2_FAMILY_ID:
+        if family in (V2_FAMILY_ID, V3_FAMILY_ID):
             return self._reference_feasible_v2()
         if family == "F-QE":
             return self._reference_quadratic_ellipsoid()
@@ -749,7 +864,7 @@ class SyntheticTask:
         names = self.enabled_constraint_names
         if family == "F-QE":
             objective, constraints = self._truth_quadratic_ellipsoid(u)
-        elif family == V2_FAMILY_ID:
+        elif family in (V2_FAMILY_ID, V3_FAMILY_ID):
             objective, constraints = self._truth_feasible_v2(u)
         elif family == "F-LIN":
             objective, constraints = self._truth_linear(u)

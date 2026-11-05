@@ -78,7 +78,10 @@ SPHERE_VOLUME_12 = math.pi ** 6 / math.factorial(6)
 
 FROZEN_SCHEMA_VERSION = "p4-m5-frozen-v2-1"
 SPLIT_SCHEMA_VERSION = "p4-m5-split-1"
-PREREGISTRATION_SCHEMA_VERSION = "p4-m5-prereg-v1"
+PREREGISTRATION_SCHEMA_VERSION = "p4-m5-prereg-v2"
+# 历史预注册 schema：旧 run 的 preregistration.json 按原样只读校验（不含 v2 的
+# stopping_rules 类型强校验），避免历史工件因旧序列化缺陷被追溯判为不可验证。
+LEGACY_PREREGISTRATION_SCHEMA_VERSIONS: tuple[str, ...] = ("p4-m5-prereg-v1",)
 CALIBRATION_SCHEMA_VERSION = "p4-m5-calibration-1"
 
 SELECTION_RULE = (
@@ -129,8 +132,9 @@ STATISTICS_PLAN = {
 }
 STOPPING_RULES = (
     "两阶段：calibration 只开 train/validation；holdout 仅在 frozen_family + "
-    "preregistration 的 sha256 校验通过后一次性构造 meta_test/ood。"
+    "preregistration 的 sha256 校验通过后一次性构造 meta_test/ood。",
 )
+STOPPING_RULE_MIN_LENGTH = 2
 NON_CLAIMS = (
     "SYNTHETIC_ONLY：合成解析任务，不代表真实飞机/CFD 性能；"
     "physical_call_count=0；旧 F-QE 压力测试结果单独成表，不与 v2 混算绝对目标。",
@@ -139,6 +143,76 @@ NON_CLAIMS = (
 
 class FeasibleV2Error(ValueError):
     """v2 校准/冻结/预注册协议违规。"""
+
+
+# ---------------------------------------------------------------------------
+# preregistration.stopping_rules 序列化与类型校验
+# ---------------------------------------------------------------------------
+def normalize_stopping_rules(value):
+    """把 stopping_rules 规范化为非空 list[str]（fail-closed）。
+
+    - 单个 str 视为一条规则（旧 API 允许直接传 STOPPING_RULES 常量）；
+    - Sequence 逐项必须是 str，strip 后非空且长度 >= STOPPING_RULE_MIN_LENGTH；
+    - 拒绝逐字符拆分形态（如 list(字符串) 产生的单字符数组）、空列表与
+      非字符串元素，异常信息直接给出修复方向。
+
+    根因背景：STOPPING_RULES 常量漏写尾逗号时是单个 str，旧实现
+    list(stopping_rules) 会把中文逐字符拆成数组写进 preregistration.json。
+    """
+    if isinstance(value, str):
+        raw = [value]
+    elif isinstance(value, (list, tuple)):
+        raw = list(value)
+    else:
+        raise FeasibleV2Error(
+            "preregistration.stopping_rules 必须是 list[str] 或 str，实际 %s"
+            % type(value).__name__
+        )
+    if not raw:
+        raise FeasibleV2Error("preregistration.stopping_rules 不能为空")
+    rules = []
+    for index, item in enumerate(raw):
+        if not isinstance(item, str):
+            raise FeasibleV2Error(
+                "preregistration.stopping_rules[%d] 必须是 str，实际 %s"
+                % (index, type(item).__name__)
+            )
+        if not item.strip():
+            raise FeasibleV2Error(
+                "preregistration.stopping_rules[%d] 不能为空字符串" % index
+            )
+        if len(item.strip()) < STOPPING_RULE_MIN_LENGTH:
+            raise FeasibleV2Error(
+                "preregistration.stopping_rules[%d] 长度必须 >= %d（当前 %r）"
+                "；疑似把字符串误用 list() 拆成单字符数组"
+                % (index, STOPPING_RULE_MIN_LENGTH, item)
+            )
+        # 落盘前统一 strip（A5 m07：不允许残留首尾空白）
+        rules.append(item.strip())
+    return rules
+
+
+def validate_preregistration_schema(prereg):
+    """校验预注册 schema 版本与 stopping_rules 存储类型（fail-closed）。
+
+    v2（当前 schema）要求 stopping_rules 已序列化为非空 JSON 数组，每项为
+    非空且长度 >= 2 的 str；历史 schema 仅校验版本可识别，保持旧 run 兼容。
+    """
+    schema = prereg.get("schema_version")
+    if schema == PREREGISTRATION_SCHEMA_VERSION:
+        if "stopping_rules" not in prereg:
+            raise FeasibleV2Error("preregistration 缺少 stopping_rules 字段")
+        stored = prereg["stopping_rules"]
+        if isinstance(stored, str) or not isinstance(stored, (list, tuple)):
+            raise FeasibleV2Error(
+                "preregistration.stopping_rules 必须序列化为 JSON 数组（list[str]），"
+                "实际 %s" % type(stored).__name__
+            )
+        normalize_stopping_rules(stored)
+        return
+    if schema in LEGACY_PREREGISTRATION_SCHEMA_VERSIONS:
+        return
+    raise FeasibleV2Error("prereg schema 不符: %r" % (schema,))
 
 
 # ---------------------------------------------------------------------------
@@ -1074,7 +1148,7 @@ def build_preregistration(
     secondary_endpoints: Sequence[str] = SECONDARY_ENDPOINTS,
     statistics: Mapping[str, Any] | None = None,
     null_policy: str = NULL_POLICY,
-    stopping_rules: Sequence[str] = STOPPING_RULES,
+    stopping_rules: str | Sequence[str] = STOPPING_RULES,
     multiple_comparison: str | None = None,
     created_utc: str | None = None,
 ) -> dict[str, Any]:
@@ -1108,7 +1182,7 @@ def build_preregistration(
         "secondary_endpoints": list(secondary_endpoints),
         "statistics": dict(statistics or STATISTICS_PLAN),
         "null_policy": null_policy,
-        "stopping_rules": list(stopping_rules),
+        "stopping_rules": normalize_stopping_rules(stopping_rules),
         "multiple_comparison": multiple_comparison or STATISTICS_PLAN["multiple_comparison"],
         "reference_solution": frozen_family["reference_solution"],
         "gap_definition": frozen_family["gap_definition"],
@@ -1121,8 +1195,10 @@ def build_preregistration(
 def verify_preregistration(prereg: Mapping[str, Any], frozen_family: Mapping[str, Any]) -> bool:
     """校验预注册 hash 与 frozen 绑定；任一不符 → fail-closed（禁止开测试集）。"""
     verify_frozen_payload(frozen_family)
-    if prereg.get("schema_version") != PREREGISTRATION_SCHEMA_VERSION:
-        raise FeasibleV2Error(f"prereg schema 不符: {prereg.get('schema_version')!r}")
+    schema = prereg.get("schema_version")
+    if schema not in (PREREGISTRATION_SCHEMA_VERSION, *LEGACY_PREREGISTRATION_SCHEMA_VERSIONS):
+        raise FeasibleV2Error(f"prereg schema 不符: {schema!r}")
+    validate_preregistration_schema(prereg)
     body = {key: value for key, value in prereg.items() if key != "sha256"}
     if prereg.get("sha256") != digest(body):
         raise FeasibleV2Error("preregistration sha256 校验失败（预注册被修改）")
@@ -1218,6 +1294,10 @@ __all__ = [
     "FROZEN_SCHEMA_VERSION",
     "SPLIT_SCHEMA_VERSION",
     "PREREGISTRATION_SCHEMA_VERSION",
+    "LEGACY_PREREGISTRATION_SCHEMA_VERSIONS",
+    "STOPPING_RULE_MIN_LENGTH",
+    "normalize_stopping_rules",
+    "validate_preregistration_schema",
     "CALIBRATION_SCHEMA_VERSION",
     "FeasibleV2Error",
     "canonical_json",

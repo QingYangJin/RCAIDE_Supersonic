@@ -500,6 +500,99 @@ class PreregistrationTests(unittest.TestCase):
             loaded = fv.load_preregistration(path)
             self.assertTrue(fv.verify_preregistration(loaded, self.frozen))
 
+    # -- 26a-26e：stopping_rules 序列化缺陷修复与旧 run 兼容回归 ------------
+    def test_26a_stopping_rules_constant_and_payload(self):
+        """常量必须是 tuple/list[str]（修复前是缺尾逗号的单个 str）。"""
+        self.assertIsInstance(fv.STOPPING_RULES, tuple)
+        self.assertGreaterEqual(len(fv.STOPPING_RULES), 1)
+        self.assertTrue(all(isinstance(item, str) for item in fv.STOPPING_RULES))
+        self.assertTrue(
+            all(len(item.strip()) >= fv.STOPPING_RULE_MIN_LENGTH for item in fv.STOPPING_RULES)
+        )
+        prereg = fv.build_preregistration(self.frozen, run_id="test-run")
+        self.assertEqual(prereg["schema_version"], fv.PREREGISTRATION_SCHEMA_VERSION)
+        stored = prereg["stopping_rules"]
+        self.assertIsInstance(stored, list)
+        self.assertEqual(stored, list(fv.STOPPING_RULES))
+        self.assertTrue(
+            all(isinstance(item, str) and len(item.strip()) >= fv.STOPPING_RULE_MIN_LENGTH for item in stored)
+        )
+        self.assertTrue(fv.verify_preregistration(prereg, self.frozen))
+
+    def test_26b_stopping_rules_str_accepted_and_normalized(self):
+        """旧 API 传单个 str 时规范化为单元素 list（不再逐字符拆分）。"""
+        prereg = fv.build_preregistration(
+            self.frozen, run_id="test-run", stopping_rules=fv.STOPPING_RULES[0]
+        )
+        self.assertEqual(prereg["stopping_rules"], list(fv.STOPPING_RULES))
+        self.assertTrue(fv.verify_preregistration(prereg, self.frozen))
+
+    def test_26c_stopping_rules_invalid_build_inputs_rejected(self):
+        """负控：空列表/逐字符形态/空串/过短/非 str 元素必须 fail-closed。"""
+        bad_values = [
+            [],
+            list(fv.STOPPING_RULES[0]),  # 旧坏数据形态：逐字符数组
+            [""],
+            ["x"],
+            ["合法规则文本", 1],
+            None,
+        ]
+        for bad in bad_values:
+            with self.subTest(bad=repr(bad)[:40]):
+                with self.assertRaises(fv.FeasibleV2Error):
+                    fv.build_preregistration(
+                        self.frozen, run_id="test-run", stopping_rules=bad
+                    )
+
+    def test_26d_tampered_new_schema_stopping_rules_rejected(self):
+        """负控：v2 schema 的已签名载荷篡改 stopping_rules 后必须拒绝。"""
+        prereg = fv.build_preregistration(self.frozen, run_id="test-run")
+        bad_values = [
+            [],
+            list(prereg["stopping_rules"][0]),
+            [""],
+            ["x"],
+            ["合法规则文本", 1],
+            prereg["stopping_rules"][0],  # 字符串而非 JSON 数组
+        ]
+        for bad in bad_values:
+            payload = dict(prereg)
+            payload["stopping_rules"] = bad
+            body = {key: value for key, value in payload.items() if key != "sha256"}
+            payload["sha256"] = fv.digest(body)
+            with self.subTest(bad=repr(bad)[:40]):
+                with self.assertRaises(fv.FeasibleV2Error):
+                    fv.verify_preregistration(payload, self.frozen)
+
+    def test_26f_v2_missing_stopping_rules_rejected(self):
+        """负控（A5 m08）：v2 schema 缺少 stopping_rules 字段必须 fail-closed。"""
+        prereg = fv.build_preregistration(self.frozen, run_id="test-run")
+        payload = dict(prereg)
+        payload.pop("stopping_rules")
+        body = {key: value for key, value in payload.items() if key != "sha256"}
+        payload["sha256"] = fv.digest(body)
+        with self.assertRaises(fv.FeasibleV2Error):
+            fv.verify_preregistration(payload, self.frozen)
+
+    def test_26g_stopping_rules_items_are_stripped(self):
+        """A5 m07：落盘 stopping_rules 每项去除首尾空白（不再原样保留）。"""
+        prereg = fv.build_preregistration(
+            self.frozen, run_id="test-run", stopping_rules=["  合法规则文本  "]
+        )
+        self.assertEqual(prereg["stopping_rules"], ["合法规则文本"])
+        self.assertTrue(fv.verify_preregistration(prereg, self.frozen))
+
+    def test_26e_legacy_v1_bad_stopping_rules_still_verifies(self):
+        """旧 run 兼容：p4-m5-prereg-v1 历史工件（含逐字符数组）仍可验证。"""
+        legacy = dict(fv.build_preregistration(self.frozen, run_id="test-run"))
+        legacy["schema_version"] = fv.LEGACY_PREREGISTRATION_SCHEMA_VERSIONS[0]
+        legacy["stopping_rules"] = list(legacy["stopping_rules"][0])
+        body = {key: value for key, value in legacy.items() if key != "sha256"}
+        legacy["sha256"] = fv.digest(body)
+        self.assertTrue(fv.verify_preregistration(legacy, self.frozen))
+        fv.validate_preregistration_schema(legacy)  # 不抛异常
+
+
 
 class HoldoutGateTests(unittest.TestCase):
     @classmethod
