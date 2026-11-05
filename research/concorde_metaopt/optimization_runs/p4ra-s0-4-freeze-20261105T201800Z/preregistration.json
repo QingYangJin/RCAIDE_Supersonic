@@ -1,0 +1,339 @@
+{
+  "analysis_plan": {
+    "analysis_script_requirement": "S1 分析脚本必须校验 ENDPOINT_ROW_KEYS 与 analysis_plan_digest 后才能读 CSV。",
+    "bootstrap_seed": 20261105,
+    "csv_columns": [
+      "best_feasible_value",
+      "gap_to_reference",
+      "first_feasible_eval_index",
+      "feasible_hit_rate",
+      "first_feasible_in_support",
+      "first_feasible_after_support_index",
+      "feasible_hit_rate_non_support",
+      "n_nonnull",
+      "null_rate"
+    ],
+    "endpoint_row_keys": [
+      "best_feasible_value",
+      "gap_to_reference",
+      "first_feasible_eval_index",
+      "feasible_hit_rate",
+      "first_feasible_in_support",
+      "first_feasible_after_support_index",
+      "feasible_hit_rate_non_support",
+      "n_nonnull",
+      "null_rate"
+    ],
+    "fail_closed_rules": [
+      "任一冻结产物 sha256/fingerprint/split_hash 校验失败 -> 立即 fail-closed，不产出主结论。",
+      "任一预算/K/CLONE 公平性校验失败 -> 该 run 作废，不得进入聚合。",
+      "主端点 null 率 >70% -> 判 INCONCLUSIVE，不插补、不转 0。",
+      "发现 meta_test/meta_test_ood 信息参与调参/选臂/选端点 -> 该阶段结果作废。"
+    ],
+    "main_population": "仅 meta_test 20 个任务进入主统计",
+    "multiple_comparison": {
+      "alpha": 0.05,
+      "c5_in_holm": false,
+      "excluded_comparisons": [
+        "C5"
+      ],
+      "family": "唯一 Holm 族=(primary_endpoint,budget_B,K)；成员=该族键下可推断的 C1-C4；C5 永不进 Holm 族、不做 benefit/harm 推断；pair-level STRUCTURALLY_IDENTICAL 行按行排除，族大小可 <4，禁止写死 4。",
+      "family_key": [
+        "primary_endpoint",
+        "budget_B",
+        "K"
+      ],
+      "family_members": [
+        "C1",
+        "C2",
+        "C3",
+        "C4"
+      ],
+      "method": "Holm-Bonferroni"
+    },
+    "null_policy": "不可行/失败评价保留 objective=null 且计入预算；空值不插补、不转 0；主端点 null 率 >70% 时标 INCONCLUSIVE 并给出原因，不补假曲线。",
+    "primary_endpoints": [
+      "best_feasible_value",
+      "gap_to_reference",
+      "first_feasible_eval_index",
+      "feasible_hit_rate"
+    ],
+    "schema_version": "p4ra-analysis-plan-1",
+    "secondary_metrics": [
+      "rmse_objective",
+      "mae_objective",
+      "feasible_hit_rate",
+      "surrogate_fit_time_s",
+      "peak_memory_mb"
+    ],
+    "seed_aggregation": "单 run -> (task,meta_seed) 内对 optimization seed 取均值；meta_seed 等权；任务为一级统计单位",
+    "statistics": {
+      "bootstrap_samples": 10000,
+      "confidence": 0.95,
+      "effect_size": "paired_cohen_d / rank_biserial",
+      "main_population": "仅 meta_test 20 个任务进入主统计；meta_validation 只调参；OOD 单独描述层",
+      "multiplicity": "唯一 Holm 族=(primary_endpoint,budget_B,K)；成员=该族键下可推断的 C1-C4；C5 永不进 Holm 族、不做 benefit/harm 推断；pair-level STRUCTURALLY_IDENTICAL 行按行排除，族大小可 <4，禁止写死 4。",
+      "null_handling": "不可行/失败评价保留 objective=null 且计入预算；空值不插补、不转 0；主端点 null 率 >70% 时标 INCONCLUSIVE 并给出原因，不补假曲线。",
+      "paired_differences": "(task, meta_seed, budget, K) 配对差；任务为一级统计单位",
+      "seed_aggregation": "单 run -> (task,meta_seed) 内对 10 个 optimization seed 取均值；meta_seed 等权",
+      "test": "wilcoxon_signed_rank",
+      "thresholds": {
+        "best_feasible_value_relative_improvement": 0.01,
+        "feasible_hit_rate_absolute_difference": 0.05,
+        "first_feasible_eval_index_improvement": "ceil(0.05*B)（仅同 K 内比较）",
+        "gap_to_reference_relative_improvement": 0.01
+      },
+      "unit": "task"
+    }
+  },
+  "analysis_plan_digest": "5222af0dacd08c6cd37e40f7308b12347e67e19abbbd9fa4b5aef0a41430f0fa",
+  "arms": [
+    "RAND-BO",
+    "PRETRAIN-KSHOT-BO",
+    "FOMAML-ZERO-BO",
+    "FOMAML-KSHOT-BO",
+    "DE"
+  ],
+  "budget_plan": {
+    "arms": [
+      "RAND-BO",
+      "PRETRAIN-KSHOT-BO",
+      "FOMAML-ZERO-BO",
+      "FOMAML-KSHOT-BO",
+      "DE"
+    ],
+    "billable_rule": "所有臂 billable=B；阶段 support(K)+initial(8-K)+main(B-8)，K 个支持评价计入 B",
+    "budgets": [
+      64,
+      128
+    ],
+    "clone_pairs": [
+      {
+        "K": 0,
+        "canonical_arm": "FOMAML-ZERO-BO",
+        "clone_arm": "FOMAML-KSHOT-BO"
+      }
+    ],
+    "inference_excluded": {
+      "0": [
+        "FOMAML-KSHOT-BO"
+      ]
+    },
+    "initial_designs": 8,
+    "k_values": [
+      0,
+      1,
+      3,
+      5
+    ],
+    "physical_call_count": 0,
+    "plan_count": 40,
+    "plans_digest": "a72d71a96fc68453f23fbac47cb9a149bbd2aa5c673ad56bc9c7b858520c7208",
+    "schema_version": "p4ra-budget-fairness-1",
+    "support_counted": true,
+    "support_counted_in_B": true
+  },
+  "budgets": [
+    64,
+    128
+  ],
+  "c5_policy": {
+    "below_min_conclusion": "NOT_ESTIMABLE_STRUCTURAL_IDENTIFIABILITY",
+    "c5_benefit_harm_inference": false,
+    "c5_in_holm": false,
+    "min_estimable_tasks": 10,
+    "mode": "C5_B_STRUCTURAL_IDENTIFIABILITY",
+    "overlap_threshold": 0.9
+  },
+  "confirmatory_eligible": true,
+  "created_utc": "2026-11-05T20:18:00+00:00",
+  "evaluator": "synthetic-analytic",
+  "failure_rules": [
+    "任一冻结产物 sha256/fingerprint/split_hash 校验失败 -> 立即 fail-closed，不产出主结论。",
+    "任一预算/K/CLONE 公平性校验失败 -> 该 run 作废，不得进入聚合。",
+    "主端点 null 率 >70% -> 判 INCONCLUSIVE，不插补、不转 0。",
+    "发现 meta_test/meta_test_ood 信息参与调参/选臂/选端点 -> 该阶段结果作废。"
+  ],
+  "family_fingerprint": "a1f9462c35ea641d0559485354c63b47eec2e6fb4696e86f94efa1f3d19daf2e",
+  "family_id": "F-QE-feasible-v3",
+  "family_seed": 20261105,
+  "family_version": "p4ra-family-v4",
+  "formula_version": "p4-task-family-v3",
+  "frozen_at_utc": "2026-11-05T20:18:00+00:00",
+  "frozen_family_sha256": "18d5d62ee84ebe713881c1493ce832ac5198fc538efd91d14ef72bb8158d9e58",
+  "gap_definition": "f(u_best)-f(u*)",
+  "holdout_package": {
+    "family_version": "p4ra-family-v4",
+    "frozen_family_sha256": "18d5d62ee84ebe713881c1493ce832ac5198fc538efd91d14ef72bb8158d9e58",
+    "holdout_seed": 20261106,
+    "package_path": "research/concorde_metaopt/optimization_runs/p4ra-s0-4-freeze-20261105T201800Z",
+    "run_id": "p4ra-s0-4-freeze-20261105T201800Z",
+    "split_counts": {
+      "meta_test": 20,
+      "meta_test_ood": 10
+    },
+    "task_count": 30
+  },
+  "holdout_seed": 20261106,
+  "holdout_splits": {
+    "meta_test": 20,
+    "meta_test_ood": 10
+  },
+  "holdout_task_count": 30,
+  "initial_design_count": 8,
+  "k_values": [
+    0,
+    1,
+    3,
+    5
+  ],
+  "meta_seeds": [
+    0,
+    1,
+    2
+  ],
+  "meta_test_tuning_policy": "禁止使用 meta_test/meta_test_ood 的任何信息（成功率/误差/gap/秩）调参、选半径、选臂或选终点；测试集只在 frozen_family + split_manifest + preregistration 的 sha256/fingerprint/split_hash 校验通过后一次性构造并评估一次。",
+  "multiple_comparison": {
+    "alpha": 0.05,
+    "c5_in_holm": false,
+    "excluded_comparisons": [
+      "C5"
+    ],
+    "family": "唯一 Holm 族=(primary_endpoint,budget_B,K)；成员=该族键下可推断的 C1-C4；C5 永不进 Holm 族、不做 benefit/harm 推断；pair-level STRUCTURALLY_IDENTICAL 行按行排除，族大小可 <4，禁止写死 4。",
+    "family_key": [
+      "primary_endpoint",
+      "budget_B",
+      "K"
+    ],
+    "family_members": [
+      "C1",
+      "C2",
+      "C3",
+      "C4"
+    ],
+    "method": "Holm-Bonferroni"
+  },
+  "notes": [
+    "本预注册只绑定合成解析任务；physical_call_count=0；不代表真实飞机/CFD 性能。"
+  ],
+  "null_policy": "不可行/失败评价保留 objective=null 且计入预算；空值不插补、不转 0；主端点 null 率 >70% 时标 INCONCLUSIVE 并给出原因，不补假曲线。",
+  "optimization_seeds": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
+  "physical_call_count": 0,
+  "physics_validation_status": "NOT_APPLICABLE",
+  "prereg_digest": "2ea60ba7f903978407e6d156e7b3f390dbd70bf759725152327be15487a7bd8f",
+  "prereg_id": "p4ra-prereg-v3-a1f9462c35ea641d",
+  "primary_endpoints": [
+    "best_feasible_value",
+    "gap_to_reference",
+    "first_feasible_eval_index",
+    "feasible_hit_rate"
+  ],
+  "radius_base": 0.64,
+  "reference_solution": "c",
+  "run_id": "p4ra-s0-4-freeze-20261105T201800Z",
+  "schema_version": "p4ra-prereg-v1",
+  "secondary_endpoints": [
+    "best_objective_raw",
+    "min_constraint_violation_sum",
+    "first_feasible_in_support",
+    "first_feasible_after_support_index",
+    "feasible_hit_rate_non_support",
+    "true_evals_used",
+    "cache_hits",
+    "n_failed_evals",
+    "wall_s"
+  ],
+  "secondary_metrics": [
+    "rmse_objective",
+    "mae_objective",
+    "feasible_hit_rate",
+    "surrogate_fit_time_s",
+    "peak_memory_mb"
+  ],
+  "seeds": {
+    "meta_train_seeds": [
+      0,
+      1,
+      2
+    ],
+    "optimization_seeds": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ]
+  },
+  "sha256": "6103f265c3e96addb94e176e05bf62bbde1e97a44844dfaf7cd3274f808bbdf4",
+  "split_counts": {
+    "meta_test": 20,
+    "meta_test_ood": 10,
+    "meta_train": 60,
+    "meta_validation": 20,
+    "negative_control": 10
+  },
+  "split_digest": "cd597d01bd4024d13c765a0a723449c3d67172bc260040012bea9d67d2af76ae",
+  "split_hash": "cd597d01bd4024d13c765a0a723449c3d67172bc260040012bea9d67d2af76ae",
+  "statistics": {
+    "bootstrap_samples": 10000,
+    "confidence": 0.95,
+    "effect_size": "paired_cohen_d / rank_biserial",
+    "main_population": "仅 meta_test 20 个任务进入主统计；meta_validation 只调参；OOD 单独描述层",
+    "multiplicity": "唯一 Holm 族=(primary_endpoint,budget_B,K)；成员=该族键下可推断的 C1-C4；C5 永不进 Holm 族、不做 benefit/harm 推断；pair-level STRUCTURALLY_IDENTICAL 行按行排除，族大小可 <4，禁止写死 4。",
+    "null_handling": "不可行/失败评价保留 objective=null 且计入预算；空值不插补、不转 0；主端点 null 率 >70% 时标 INCONCLUSIVE 并给出原因，不补假曲线。",
+    "paired_differences": "(task, meta_seed, budget, K) 配对差；任务为一级统计单位",
+    "seed_aggregation": "单 run -> (task,meta_seed) 内对 10 个 optimization seed 取均值；meta_seed 等权",
+    "test": "wilcoxon_signed_rank",
+    "thresholds": {
+      "best_feasible_value_relative_improvement": 0.01,
+      "feasible_hit_rate_absolute_difference": 0.05,
+      "first_feasible_eval_index_improvement": "ceil(0.05*B)（仅同 K 内比较）",
+      "gap_to_reference_relative_improvement": 0.01
+    },
+    "unit": "task"
+  },
+  "stopping_rules": [
+    "阶段门禁：只有 frozen_family.json + meta_task_split.json + preregistration.json 三方 sha256/fingerprint/split_hash 全部校验通过后，才允许一次性构造并评估 meta_test/meta_test_ood。",
+    "数据边界：禁止用 meta_test/meta_test_ood 的任何信息调参、选半径、选臂或改终点；meta_validation 仅用于调参与校准旁证。",
+    "统计边界：主统计分母仅为 meta_test 的 20 个任务；负控制只做负控结论，不进主终点。",
+    "失败即停：任何 hash/字段/预算校验失败立刻 fail-closed，不得用默认值静默填充。"
+  ],
+  "structural_identifiability": {
+    "exclude_from_benefit_harm_inference": true,
+    "exclude_from_holm": true,
+    "overlap_definition": "交集行数 / 较大集合行数",
+    "pair_overlap_threshold": 0.9,
+    "pair_status_above_threshold": "STRUCTURALLY_IDENTICAL",
+    "pair_status_below_threshold": "IDENTIFIABLE",
+    "post_hoc_task_exclusion": false,
+    "report_c5_estimable_task_count": true,
+    "report_structural_exclusion_counts": true
+  },
+  "task_counts": {
+    "meta_test": 20,
+    "meta_test_ood": 10,
+    "meta_train": 60,
+    "meta_validation": 20,
+    "negative_control": 10
+  },
+  "task_family_version": "p4ra-family-v3",
+  "task_id_namespace": "p4ra-FQE3-v3-",
+  "task_id_pattern": "^p4ra-FQE3-v3-(TR|VA|TE|OD|NC)-[0-9]{3}$",
+  "task_id_regex": "^p4ra-FQE3-v3-(TR|VA|TE|OD|NC)-[0-9]{3}$"
+}
