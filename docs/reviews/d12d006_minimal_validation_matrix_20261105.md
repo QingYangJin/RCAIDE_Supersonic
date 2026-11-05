@@ -2,7 +2,7 @@
 
 - 任务：task-193（D12-A5 独立审查 + 最小 VSPAERO 验证矩阵，零求解）
 - 工作树：<repo-d12d006> @ aef2cb71e07aa28abfc28e34b14bf9dc1579c2e3（分支 research/d12d006-aero-improvements；只读）
-- 审查对象：D-12D-005 归档 run d12d005-20261104T0430Z 的 14 次 A 类 VSPAERO 7.2.2 执行、A1 零求解审计、A2 Batch1 只读重算、D-12D-006 授权与 A4 门禁矩阵
+- 审查对象：D-12D-005 归档 run d12d005-20261104T0430Z 的 14 次 A 类 VSPAERO 7.2.2 执行、A1 零求解审计、A2 全量 14/14 只读重算、D-12D-006 授权与 A4 门禁矩阵
 - 审查方式：只读静态审查 + 既有证据解析；physical_call_count = 0；solver_starts = 0；未改仓库、未 commit/push、未做 GitHub 写操作
 - 日期：2026-11-05；审阅人：A5（a5-code-reviewer）
 - 路径占位：<repo>=RCAIDE 主仓库根；<repo-d12d006>=D-12D-006 工作树根；<EXT>=外部记忆根（.../d12d006）。本入库副本仅将机器绝对路径替换为占位，数值/结论/哈希未改；外部原件 sha256 a0684638… 保留于 EXT。
@@ -11,7 +11,7 @@
 
 **verdict = MATRIX_READY_FOR_OWNER_BUDGET_REVIEW；本文件不构成任何求解授权。**
 
-1. **solver_internal_valid = CONDITIONAL_PASS（有限范围）**：14 次 A 类执行的“合同 → 执行 setup → 求解器回显 → .polar/.history → 矩阵/报告”链路可复核；A1 审计 513/513 文件双形态 SHA、40/40 v1 manifest、37 项 external 全部匹配；A2 对 Batch1 四案六项主系数 24/24 逐位一致（绝对差 ≤1e-12）；A5 既有探针亦对 14 案 polar/矩阵/结果 JSON 做过 0 差复核。该通过只证明“同一求解器、同一设置、同一归档内的内部一致”，不证明物理正确。
+1. **solver_internal_valid = CONDITIONAL_PASS（有限范围）**：14 次 A 类执行的“合同 → 执行 setup → 求解器回显 → .polar/.history → 矩阵/报告”链路可复核；A1 审计 513/513 文件双形态 SHA、40/40 v1 manifest、37 项 external 全部匹配；A2 对全部 14 案 226/226 项系数逐位一致（最大绝对差 0 ≤1e-12）、148/152 派生自检无 FAIL、75 项归档 deltas 71 PASS+4 非有限解释；14/14 polar 与 9/9 关键 JSON 双哈希链匹配；A5 既有探针亦对 14 案 polar/矩阵/结果 JSON 做过 0 差复核。该通过只证明“同一求解器、同一设置、同一归档内的内部一致”，不证明物理正确。
 2. **external_physics_validated = NOT_VALIDATED / 当前 A 类不可达**：现有证据没有风洞、飞行试验、独立 CFD 或带黏性/激波/机身的参考解；VSPAERO 为 thin-LF VLM，CDo 是内部寄生项而非真实阻力，CDtot 不得当作整机阻力/燃油目标；LF-M2.02 维持 **NOT_VALIDATED**，BODY-CORR 维持 **BLOCKED**。
 3. **A 类预算现状**：已用 14/20，剩余 6 次 **CLOSED / NOT_AUTHORIZED / 不结转**；B 类 RCAIDE LF 0/12、C 类 SU2 0/4 **LOCKED**。本矩阵提出的 10 次 A 类新启动上限（Tier 0 六次 + Tier 1 四次）属于**新封顶预算建议**，必须 owner 书面批准后才可启动；批准前一次也不得运行。
 4. **最小矩阵的核心判断**：现有内部证据足以支持“CL/CDi 同工况趋势可比较”，但不足以支持“物理阻力/燃油/配平/静稳定/CG 结论”；需要先做 6 次 Tier 0（重复性、密度收敛、12D 尾迹、符号）关闭内部数值缺口，再决定是否批准 4 次 Tier 1（12D 迎角/马赫趋势）。外部物理验证另需 C 类 4 次，当前 NOT_AUTHORIZED，且即使执行也不能单独把 CDtot 变成真实阻力。
@@ -23,7 +23,7 @@
 | 证据 | 内容 | A5 判定 |
 |---|---|---|
 | A1 零求解审计 | 14 案合同/执行/回显/极线 5 层一致；513/513 文件 raw+canonical、40/40 v1 manifest、37 项 external 全匹配；14/14 矩阵与原始 polar 一致 | PASS（证据链）；CG-01/CG-02/sign 另列 |
-| A2 Batch1 重算 | S0–S3 六项主系数 24/24、恒等式 12/12 通过；最大绝对差 0；physical 0 | PASS（Batch1 四案） |
+| A2 全量重算 | 14/14 案 226/226 系数 PASS（Batch1 52、Batch1b 30、Batch2 144；最大绝对差 0）；148/152 派生自检无 FAIL；75 项 deltas 71 PASS+4 非有限解释；polar 14/14、关键 JSON 9/9 双哈希；physical 0 | PASS_WITH_DOC_FINDINGS（14/14；Z-01 关闭；DOC-A2-01 minor） |
 | A5 既有探针 | 14 案 polar vs evaluations、矩阵 vs 结果 JSON 均 0 差；预算 14/20、retries 0 | PASS（抽查口径） |
 | 既有资源 | 14 starts；总 wall 50.246 s；单次最大 28.314 s；最大 RSS 3.493 GB；batch2 8 次总 9.846 s、单次最大 1.762 s、RSS 0.294 GB | 有界，可作新预算资源基线 |
 
@@ -64,7 +64,7 @@
 | ID | 验证问题 | 交付/判据 | 预期判断 | 启动上限 | 资源 | 停止条件 | 类别 | 状态 |
 |---|---|---|---|---|---|---|---|---|
 | Z-00 | CG-01/CG-02/符号/合同是否先冻结？ | 书面冻结“X_cg=机翼 AC 为工程约定”或“用全机 CG 重建合同”；质量基线二选一并写入 TaskSpec；坐标轴/力/CM 符号约定独立文件 | 未冻结前，CM/质量/配平结论一律禁止；矩阵 Tier 1 不得解释 CM | 0 | 0 | 未冻结 → 不启动任何新求解 | not_applicable | 待 owner/A1/A4 |
-| Z-01 | Batch2 八案是否独立重算？ | A2 扩展：B2-01..07 六项主系数 + 恒等式，容差 1e-12；0 物理 | 14/14 与归档一致才可进入 Tier 0 | 0 | 0 | 任一不一致 → 先查归档，不启动 | solver_internal_valid（零求解） | A2 目前只完成 Batch1 四案 |
+| Z-01 | Batch2 八案是否独立重算？ | A2 扩展：B2-01..07 六项主系数 + 恒等式，容差 1e-12；0 物理 | 14/14 与归档一致才可进入 Tier 0 | 0 | 0 | 任一不一致 → 先查归档，不启动 | solver_internal_valid（零求解） | A2 已完成全量 14/14（226/226 系数、14/14 polar、9/9 JSON；0 物理）；PASS_WITH_DOC_FINDINGS，Z-01 关闭 |
 
 ### 3.2 Tier 0：内部数值闭合（6 次启动，必须先全部通过）
 
@@ -100,7 +100,7 @@
 
 | 阶段 | 内容 | A 类启动上限 | 前置条件 | 失败处理 |
 |---|---|---|---|---|
-| Stage 0 | Z-00/Z-01 零求解冻结/重算 | 0 | owner/A1/A4/A2 完成；A5 复核 | 未完成 → 不启动 |
+| Stage 0 | Z-00 零求解冻结（Z-01 已 PASS） | 0 | owner/A1/A4 完成 Z-00；A5 复核 Z-00 | 未完成 → 不启动；Z-01 不再阻塞 |
 | Stage 1 | I-01..I-04 | 6 | Stage 0 全 PASS；owner 书面批准 6 次新预算 | 任一 FAIL 即停；不自动补跑 |
 | Stage 2 | I-05..I-06 | 4 | Stage 1 全 PASS；owner 书面扩额到 10 次 | 任一 FAIL 即停；不自动补跑 |
 | E | E-01 外部参考 | 4（C 类） | 单独 C 类授权；不占用 A 类 | 当前 LOCKED |
@@ -165,7 +165,7 @@
 
 - 本文件只做只读审查与矩阵设计；**未启动任何 VSPAERO/SU2/RCAIDE Mission/Gmsh/DOE/BO/DE/MAML 求解或训练**；physical_call_count = 0；solver_starts = 0。
 - 未修改 <repo-d12d006> 任何文件；未 commit/push/checkout/stash；未做 GitHub 写操作；未新增 run 目录。
-- 既有 14 案的所有数字来自归档文件；A1/A2 的独立复核数字来自其报告/JSON，A5 未重跑其脚本。
+- 既有 14 案的所有数字来自归档文件；A1/A2 的独立复核数字来自其报告/JSON；A5 另以独立解析脚本对 A2 的 226 系数、14 polar、9 关键 JSON 做交叉核对（0 差），未重跑 A2 生成脚本。
 - 资源上限是计划值，不是实测承诺；实际执行必须由 runner 硬超时/内存限制和授权账本约束。
 - 本矩阵不构成对 VSPAERO 物理有效性的认可，也不构成对 owner 预算的替代批准；启动前必须由 owner 书面批准新封顶预算，并由 Lead/A1 落授权文件。
 
@@ -175,9 +175,10 @@
 |---|---|---|
 | A1 审计报告 | <repo-d12d006>/docs/reviews/d12d006_vspaero_audit_20261105.md | 57,377 B；sha256 da8fdc15…（路径清洗后入库版；清洗前原件 57,447 B / 50fc0630…） |
 | A1 审计证据 JSON | <EXT>/a1/d12d006_vspaero_audit_evidence.json | 751,556 B；sha256 9b9d1a32f1097392706d820c7876d438e22ef3bc877dfffcedea6c4684acd167 |
-| A2 Batch1 重算 | <EXT>/a2/recompute_batch1_onepage.md | 3,972 B；sha256 0eac2a116daa87af9709ba59aaf34222119303929b34ad88fd8306f5c56bd622 |
+| A2 全量重算 | <repo-d12d006>/docs/reviews/d12d006_readonly_recompute_20261105.md | 30,254 B；sha256 086297ecc0c2700591f081f0e9f587067ed2b9fbea47af51aa8c5d2f765906d5（入库版；EXT 原件 30,150 B / 7b587bd5d1c30cb37e9149edd3f172acd3c3377955ce9e1502e8353b509e6629） |
+| A2 全量重算 JSON | <EXT>/a2/out/full_recompute.json | 207,475 B；sha256 15d678da0a0e6729e52a418957a643c23597034123a76baff4251a13c0a29924 |
 | A4 门禁矩阵 | <EXT>/a4/issue4_7_gate_matrix.md | 9,858 B；sha256 36789457ee87bf0d430bc663f018e46e9ad862f678437ae57d9689f99f1c6d07 |
 | D-12D-006 原文 | <EXT>/a4/raw/d12d006_body.txt | 授权边界/分工/中文要求 |
 | 归档 run | <repo-d12d006>/research/concorde_metaopt/optimization_runs/d12d005-20261104T0430Z/ | 14 案原始 polar/history/矩阵/汇总 |
 
-**最终判定**：现有 14 案可判 **solver_internal_valid = CONDITIONAL_PASS（仅内部趋势）**；**external_physics_validated = NOT_VALIDATED**；维持 **LF-M2.02 = NOT_VALIDATED、CDo/CDtot 非真实阻力、lifting-surfaces-only**。建议 owner 先审 Z-00/Z-01 与 Tier 0 六次新预算；未书面批准前不启动任何求解。
+**最终判定**：现有 14 案可判 **solver_internal_valid = CONDITIONAL_PASS（仅内部趋势）**；**external_physics_validated = NOT_VALIDATED**；维持 **LF-M2.02 = NOT_VALIDATED、CDo/CDtot 非真实阻力、lifting-surfaces-only**。Z-01 已 PASS；建议 owner 先审 Z-00 与 Tier 0 六次新预算；未书面批准前不启动任何求解。
