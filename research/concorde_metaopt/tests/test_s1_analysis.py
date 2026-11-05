@@ -2366,7 +2366,6 @@ def _build_v4c_confirmatory_package(
         "run_id": run_id,
         "git_sha": "0" * 40,
         "code_sha": frozen["code_sha"],
-        "confirmatory_eligible": True,
         "family_id": family_v3.FAMILY_ID,
         "family_version": frozen["family_version"],
         "family_seed": family_v3.FAMILY_SEED,
@@ -3419,6 +3418,647 @@ class FreezeSummarySchemaCompatTests(TempDirMixin):
             "legacy.task_id_count",
         )
 
+
+# ---------------------------------------------------------------------------
+# task-259（R-V4-09）：schema-3 双布局冻结包校验（确证 9/7 与 legacy 8/6）
+# 只读使用仓库内 S0-4（确证）与 S0-3（legacy）包；负控在临时目录副本上注入，
+# 不修改仓库文件、不启动任何求解器、physical_call_count=0。
+# ---------------------------------------------------------------------------
+
+CONFIRMATORY_V4D_DIR = (
+    REPO_ROOT
+    / "research"
+    / "concorde_metaopt"
+    / "optimization_runs"
+    / "p4ra-s0-4-freeze-20261105T201800Z"
+)
+LEGACY_V4D_DIR = (
+    REPO_ROOT
+    / "research"
+    / "concorde_metaopt"
+    / "optimization_runs"
+    / "p4ra-s0-3-freeze-20261105T155925Z"
+)
+
+
+def _json_write(path, payload):
+    data = (json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True) + "\n").encode("utf-8")
+    path.write_bytes(data)
+    return data
+
+
+def _read_sums(directory):
+    text = (Path(directory) / "SHA256SUMS.txt").read_text(encoding="utf-8")
+    sums = {}
+    order = []
+    for line in text.splitlines():
+        if not line.strip():
+            continue
+        digest, _, rest = line.partition(" ")
+        name = rest.lstrip("*").strip()
+        sums[name] = digest
+        order.append(name)
+    return sums, order
+
+
+def _write_sums(directory, sums, order):
+    lines = [sums[name] + " *" + name for name in order]
+    (Path(directory) / "SHA256SUMS.txt").write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
+def _refresh_sums(directory, *names):
+    sums, order = _read_sums(directory)
+    for name in names:
+        sums[name] = hashlib.sha256((Path(directory) / name).read_bytes()).hexdigest()
+        if name not in order:
+            order.append(name)
+    _write_sums(directory, sums, order)
+
+
+class DualLayoutFreezePackageTests(TempDirMixin):
+    """R-V4-09 双布局：确证正例、legacy exploratory、混合/残缺 fail-closed。"""
+
+    def _copy_package(self, src):
+        base = self.make_temp_dir()
+        directory = base / Path(src).name
+        shutil.copytree(src, directory)
+        return directory
+
+    def _load_summary(self, directory):
+        return json.loads((Path(directory) / "freeze_summary.json").read_text(encoding="utf-8"))
+
+    def _write_summary(self, directory, summary):
+        _json_write(Path(directory) / "freeze_summary.json", summary)
+        _refresh_sums(directory, "freeze_summary.json")
+
+    def _assert_rejected(self, directory, needle, **load_kwargs):
+        with self.assertRaises(A.S1FreezeValidationError) as ctx:
+            A.load_frozen_bundle(directory, **load_kwargs)
+        self.assertIn(needle, str(ctx.exception))
+        return ctx.exception
+
+    # 正例
+    def test_confirmatory_layout_loads_with_determinism_report(self):
+        bundle = A.load_frozen_bundle(CONFIRMATORY_V4D_DIR)
+        self.assertEqual(bundle.freeze_layout, A.FREEZE_LAYOUT_CONFIRMATORY)
+        self.assertEqual(bundle.freeze_layout, "confirmatory")
+        self.assertEqual(len(bundle.raw_sha256), 9)
+        self.assertIn(A.DETERMINISM_REPORT_FILE, bundle.raw_sha256)
+        self.assertEqual(len(bundle.freeze_summary["artifacts"]), 7)
+        self.assertTrue(bundle.freeze_summary["confirmatory_eligible"])
+        self.assertTrue(bundle.frozen_family["confirmatory_eligible"])
+        self.assertTrue(bundle.preregistration["confirmatory_eligible"])
+        orchestration = bundle.freeze_summary["orchestration"]
+        self.assertEqual(orchestration["determinism_report_status"], "PASS")
+        self.assertEqual(
+            orchestration["determinism_report_sha256"],
+            hashlib.sha256(
+                (Path(CONFIRMATORY_V4D_DIR) / A.DETERMINISM_REPORT_FILE).read_bytes()
+            ).hexdigest(),
+        )
+
+    def test_confirmatory_layout_formal_rejected_by_code_sha_drift(self):
+        bundle = A.load_frozen_bundle(CONFIRMATORY_V4D_DIR)
+        with self.assertRaises(A.S1FreezeValidationError) as ctx:
+            A.verify_analysis_freeze(bundle, analysis_mode=A.ANALYSIS_MODE_FORMAL)
+        self.assertIn(A.S1_ANALYSIS_CODE_SHA_DRIFT, str(ctx.exception))
+
+    def test_legacy_layout_loads_and_formal_rejected(self):
+        bundle = A.load_frozen_bundle(LEGACY_V4D_DIR)
+        self.assertEqual(bundle.freeze_layout, A.FREEZE_LAYOUT_LEGACY)
+        self.assertEqual(len(bundle.raw_sha256), 8)
+        self.assertNotIn(A.DETERMINISM_REPORT_FILE, bundle.raw_sha256)
+        with self.assertRaises(A.S1FreezeValidationError) as ctx:
+            A.verify_analysis_freeze(bundle, analysis_mode=A.ANALYSIS_MODE_FORMAL)
+        self.assertIn(A.S1_ANALYSIS_LEGACY_PACKAGE, str(ctx.exception))
+        compliance = A.verify_analysis_freeze(
+            bundle,
+            analysis_mode=A.ANALYSIS_MODE_EXPLORATORY,
+            allow_legacy=True,
+            allow_code_delta=True,
+        )
+        self.assertFalse(compliance["confirmatory_eligible"])
+        self.assertTrue(compliance["legacy_package"])
+        self.assertTrue(compliance["warnings"])
+
+    def test_legacy_layout_ignores_unsealed_determinism_file(self):
+        # S0-3 目录里遗留了未封存的 determinism_report.json，不得进入包内容。
+        bundle = A.load_frozen_bundle(LEGACY_V4D_DIR)
+        self.assertTrue((Path(LEGACY_V4D_DIR) / A.DETERMINISM_REPORT_FILE).is_file())
+        self.assertNotIn(A.DETERMINISM_REPORT_FILE, bundle.raw_sha256)
+        self.assertNotIn(A.DETERMINISM_REPORT_FILE, bundle.canonical_sha256)
+
+    # 负控：确证布局字段残缺/矛盾
+    def test_missing_confirmatory_flag_rejected(self):
+        directory = self._copy_package(CONFIRMATORY_V4D_DIR)
+        summary = self._load_summary(directory)
+        summary.pop("confirmatory_eligible")
+        self._write_summary(directory, summary)
+        self._assert_rejected(directory, "confirmatory_eligible")
+
+    def test_false_confirmatory_flag_rejected(self):
+        directory = self._copy_package(CONFIRMATORY_V4D_DIR)
+        summary = self._load_summary(directory)
+        summary["confirmatory_eligible"] = False
+        self._write_summary(directory, summary)
+        self._assert_rejected(directory, "confirmatory_eligible")
+
+    def test_artifacts_missing_determinism_rejected(self):
+        directory = self._copy_package(CONFIRMATORY_V4D_DIR)
+        summary = self._load_summary(directory)
+        summary["artifacts"].pop(A.DETERMINISM_REPORT_FILE)
+        self._write_summary(directory, summary)
+        self._assert_rejected(directory, "封存证据不一致")
+
+    def test_digest_manifest_missing_determinism_rejected(self):
+        directory = self._copy_package(CONFIRMATORY_V4D_DIR)
+        manifest_path = Path(directory) / "digest_manifest.json"
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        manifest["artifacts"] = [
+            entry
+            for entry in manifest["artifacts"]
+            if entry.get("path") != A.DETERMINISM_REPORT_FILE
+        ]
+        manifest_bytes = _json_write(manifest_path, manifest)
+        summary = self._load_summary(directory)
+        summary["digest_manifest"] = {
+            "path": "digest_manifest.json",
+            "raw_sha256": hashlib.sha256(manifest_bytes).hexdigest(),
+            "canonical_sha256": A._canonical_artifact_digest(manifest),
+            "bytes": len(manifest_bytes),
+        }
+        self._write_summary(directory, summary)
+        _refresh_sums(directory, "digest_manifest.json")
+        self._assert_rejected(directory, "封存证据不一致")
+
+    def test_sha256sums_missing_determinism_rejected(self):
+        directory = self._copy_package(CONFIRMATORY_V4D_DIR)
+        sums, order = _read_sums(directory)
+        sums.pop(A.DETERMINISM_REPORT_FILE)
+        order = [name for name in order if name != A.DETERMINISM_REPORT_FILE]
+        _write_sums(directory, sums, order)
+        self._assert_rejected(directory, "封存证据不一致")
+
+    def test_sha256sums_extra_unsealed_entry_rejected(self):
+        directory = self._copy_package(CONFIRMATORY_V4D_DIR)
+        sums, order = _read_sums(directory)
+        sums["README.md"] = hashlib.sha256((Path(directory) / "README.md").read_bytes()).hexdigest()
+        order.append("README.md")
+        _write_sums(directory, sums, order)
+        self._assert_rejected(directory, "未封存条目")
+
+    def test_determinism_file_missing_rejected(self):
+        directory = self._copy_package(CONFIRMATORY_V4D_DIR)
+        (Path(directory) / A.DETERMINISM_REPORT_FILE).unlink()
+        self._assert_rejected(directory, "缺少 determinism_report.json 文件")
+
+    def test_determinism_report_hash_tampered_rejected(self):
+        directory = self._copy_package(CONFIRMATORY_V4D_DIR)
+        summary = self._load_summary(directory)
+        summary["orchestration"]["determinism_report_sha256"] = "0" * 64
+        self._write_summary(directory, summary)
+        self._assert_rejected(directory, "determinism_report_sha256")
+
+    def test_determinism_report_canonical_tampered_rejected(self):
+        directory = self._copy_package(CONFIRMATORY_V4D_DIR)
+        summary = self._load_summary(directory)
+        summary["orchestration"]["determinism_report_canonical_sha256"] = "0" * 64
+        self._write_summary(directory, summary)
+        self._assert_rejected(directory, "determinism_report_canonical_sha256")
+
+    def test_determinism_status_not_pass_rejected(self):
+        directory = self._copy_package(CONFIRMATORY_V4D_DIR)
+        summary = self._load_summary(directory)
+        summary["orchestration"]["determinism_report_status"] = "FAIL"
+        self._write_summary(directory, summary)
+        self._assert_rejected(directory, "determinism_report_status")
+
+    # 负控：legacy/确证混合
+    def test_legacy_summary_claiming_confirmatory_rejected(self):
+        directory = self._copy_package(LEGACY_V4D_DIR)
+        summary = self._load_summary(directory)
+        summary["confirmatory_eligible"] = True
+        self._write_summary(directory, summary)
+        self._assert_rejected(directory, "未被封存")
+
+    def test_schema_1_with_sealed_determinism_rejected(self):
+        directory = self._copy_package(LEGACY_V4D_DIR)
+        summary = self._load_summary(directory)
+        summary["schema_version"] = "p4ra-freeze-summary-1"
+        self._write_summary(directory, summary)
+        sums, order = _read_sums(directory)
+        sums[A.DETERMINISM_REPORT_FILE] = hashlib.sha256(
+            (Path(directory) / A.DETERMINISM_REPORT_FILE).read_bytes()
+        ).hexdigest()
+        order.append(A.DETERMINISM_REPORT_FILE)
+        _write_sums(directory, sums, order)
+        self._assert_rejected(directory, "schema 1/2 不得封存")
+
+    def test_boundary_constant_layout_sets(self):
+        self.assertEqual(len(A.FROZEN_LEGACY_PAYLOAD_FILES), 6)
+        self.assertEqual(len(A.FROZEN_CONFIRMATORY_PAYLOAD_FILES), 7)
+        self.assertEqual(len(A.FROZEN_LEGACY_REQUIRED_FILES), 8)
+        self.assertEqual(len(A.FROZEN_CONFIRMATORY_REQUIRED_FILES), 9)
+        self.assertIn(A.DETERMINISM_REPORT_FILE, A.FROZEN_CONFIRMATORY_REQUIRED_FILES)
+        self.assertNotIn(A.DETERMINISM_REPORT_FILE, A.FROZEN_LEGACY_REQUIRED_FILES)
+        self.assertEqual(
+            set(A.FREEZE_LAYOUT_REQUIRED_FILES),
+            {A.FREEZE_LAYOUT_LEGACY, A.FREEZE_LAYOUT_CONFIRMATORY},
+        )
+
+
+class FreezeLayoutDisclosureTests(unittest.TestCase):
+    """aggregate.freeze_echo 必须披露布局（合成 v4c 包为 legacy 布局 + 确证标志）。"""
+
+    def test_aggregate_discloses_freeze_layout(self):
+        run = full_e2e_run()
+        aggregate = run["aggregate"]
+        self.assertEqual(aggregate["freeze_echo"]["freeze_layout"], "legacy")
+        self.assertTrue(aggregate["freeze_echo"]["confirmatory_eligible"])
+
+
+
+
+class FreezeLayoutDetectorUnitTests(unittest.TestCase):
+    """R-V4-09-01：_detect_freeze_layout 必须以封存证据一致判定布局，混合/残缺 fail-closed。"""
+
+    def _base(self, *, with_file):
+        import tempfile
+        base = Path(tempfile.mkdtemp(prefix="s1-layout-detect-"))
+        self.addCleanup(shutil.rmtree, base, ignore_errors=True)
+        if with_file:
+            (base / A.DETERMINISM_REPORT_FILE).write_bytes(b"{}\n")
+        return base
+
+    def _summary(self, *, sealed_artifact=False, sealed_orchestration=False, confirmatory=False,
+                 schema=A.FREEZE_SUMMARY_SCHEMA_V4, orchestration_count=None):
+        artifacts = {}
+        if sealed_artifact:
+            artifacts[A.DETERMINISM_REPORT_FILE] = {"path": A.DETERMINISM_REPORT_FILE}
+        orchestration = {"physical_call_count": 0}
+        fields = sorted(A.FREEZE_SUMMARY_V4_ORCHESTRATION_DETERMINISM_FIELDS)
+        if sealed_orchestration:
+            count = len(fields) if orchestration_count is None else orchestration_count
+            for name in fields[:count]:
+                orchestration[name] = "0" * 64
+        summary = {"schema_version": schema, "artifacts": artifacts, "orchestration": orchestration}
+        if confirmatory:
+            summary["confirmatory_eligible"] = True
+        return summary
+
+    def _manifest(self, *, sealed):
+        return {"artifacts": ([{"path": A.DETERMINISM_REPORT_FILE}] if sealed else [])}
+
+    def _sums(self, *, sealed):
+        return ({A.DETERMINISM_REPORT_FILE: "0" * 64} if sealed else {})
+
+    def _detect(self, base, *, summary, manifest, sums, verify=True):
+        try:
+            return A._detect_freeze_layout(
+                base,
+                summary=summary,
+                manifest=manifest,
+                sums=sums,
+                verify_sha256sums=verify,
+            )
+        except A.S1FreezeValidationError as exc:
+            return "ERR:" + str(exc)
+
+    def test_no_evidence_returns_legacy(self):
+        base = self._base(with_file=False)
+        result = self._detect(base, summary=self._summary(), manifest=self._manifest(sealed=False), sums=self._sums(sealed=False))
+        self.assertEqual(result, A.FREEZE_LAYOUT_LEGACY)
+
+    def test_unsealed_file_only_returns_legacy(self):
+        base = self._base(with_file=True)
+        result = self._detect(base, summary=self._summary(), manifest=self._manifest(sealed=False), sums=self._sums(sealed=False))
+        self.assertEqual(result, A.FREEZE_LAYOUT_LEGACY)
+
+    def test_full_evidence_returns_confirmatory(self):
+        base = self._base(with_file=True)
+        result = self._detect(
+            base,
+            summary=self._summary(sealed_artifact=True, sealed_orchestration=True, confirmatory=True),
+            manifest=self._manifest(sealed=True),
+            sums=self._sums(sealed=True),
+        )
+        self.assertEqual(result, A.FREEZE_LAYOUT_CONFIRMATORY)
+
+    def test_artifacts_only_evidence_rejected(self):
+        base = self._base(with_file=True)
+        result = self._detect(
+            base,
+            summary=self._summary(sealed_artifact=True, sealed_orchestration=True, confirmatory=True),
+            manifest=self._manifest(sealed=False),
+            sums=self._sums(sealed=False),
+        )
+        self.assertIn("封存证据不一致", result)
+
+    def test_digest_manifest_only_evidence_rejected(self):
+        base = self._base(with_file=True)
+        result = self._detect(
+            base,
+            summary=self._summary(sealed_orchestration=True, confirmatory=True),
+            manifest=self._manifest(sealed=True),
+            sums=self._sums(sealed=False),
+        )
+        self.assertIn("封存证据不一致", result)
+
+    def test_sha256sums_only_evidence_rejected(self):
+        base = self._base(with_file=True)
+        result = self._detect(
+            base,
+            summary=self._summary(sealed_orchestration=True, confirmatory=True),
+            manifest=self._manifest(sealed=False),
+            sums=self._sums(sealed=True),
+        )
+        self.assertIn("封存证据不一致", result)
+
+    def test_orchestration_partial_fields_rejected(self):
+        base = self._base(with_file=True)
+        result = self._detect(
+            base,
+            summary=self._summary(sealed_artifact=True, sealed_orchestration=True, orchestration_count=2),
+            manifest=self._manifest(sealed=True),
+            sums=self._sums(sealed=True),
+        )
+        self.assertIn("orchestration 确定性摘要字段残缺", result)
+
+    def test_confirmatory_layout_without_file_rejected(self):
+        base = self._base(with_file=False)
+        result = self._detect(
+            base,
+            summary=self._summary(sealed_artifact=True, sealed_orchestration=True, confirmatory=True),
+            manifest=self._manifest(sealed=True),
+            sums=self._sums(sealed=True),
+        )
+        self.assertIn("缺少 determinism_report.json 文件", result)
+
+    def test_confirmatory_layout_without_flag_rejected(self):
+        base = self._base(with_file=True)
+        result = self._detect(
+            base,
+            summary=self._summary(sealed_artifact=True, sealed_orchestration=True, confirmatory=False),
+            manifest=self._manifest(sealed=True),
+            sums=self._sums(sealed=True),
+        )
+        self.assertIn("confirmatory_eligible=true", result)
+
+    def test_legacy_claiming_confirmatory_rejected(self):
+        base = self._base(with_file=True)
+        result = self._detect(
+            base,
+            summary=self._summary(confirmatory=True),
+            manifest=self._manifest(sealed=False),
+            sums=self._sums(sealed=False),
+        )
+        self.assertIn("未被封存", result)
+
+    def test_schema_1_with_sealed_evidence_rejected(self):
+        base = self._base(with_file=True)
+        result = self._detect(
+            base,
+            summary=self._summary(schema="p4ra-freeze-summary-1"),
+            manifest=self._manifest(sealed=False),
+            sums=self._sums(sealed=True),
+        )
+        self.assertIn("schema 1/2 不得封存", result)
+
+    def test_unknown_schema_rejected(self):
+        base = self._base(with_file=False)
+        result = self._detect(
+            base,
+            summary=self._summary(schema="p4ra-freeze-summary-9"),
+            manifest=self._manifest(sealed=False),
+            sums=self._sums(sealed=False),
+        )
+        self.assertIn("schema 不符", result)
+
+    def test_unknown_layout_payload_helper_rejected(self):
+        with self.assertRaises(A.S1FreezeValidationError) as ctx:
+            A._freeze_layout_payload_files("bogus")
+        self.assertIn("未知冻结包布局", str(ctx.exception))
+
+
+class ConfirmatoryLayoutExtraTests(TempDirMixin):
+    """确证布局 9/7 的附加负控：orchestration/artifacts/digest_manifest/SHA256SUMS 漂移。"""
+
+    def _copy_package(self, src):
+        base = self.make_temp_dir()
+        directory = base / Path(src).name
+        shutil.copytree(src, directory)
+        return directory
+
+    def _load_summary(self, directory):
+        return json.loads((Path(directory) / "freeze_summary.json").read_text(encoding="utf-8"))
+
+    def _write_summary(self, directory, summary):
+        _json_write(Path(directory) / "freeze_summary.json", summary)
+        _refresh_sums(directory, "freeze_summary.json")
+
+    def _assert_rejected(self, directory, needle, **load_kwargs):
+        with self.assertRaises(A.S1FreezeValidationError) as ctx:
+            A.load_frozen_bundle(directory, **load_kwargs)
+        self.assertIn(needle, str(ctx.exception))
+        return ctx.exception
+
+    def test_orchestration_missing_determinism_status_rejected(self):
+        directory = self._copy_package(CONFIRMATORY_V4D_DIR)
+        summary = self._load_summary(directory)
+        summary["orchestration"].pop("determinism_report_status")
+        self._write_summary(directory, summary)
+        self._assert_rejected(directory, "orchestration 确定性摘要字段残缺")
+
+    def test_orchestration_unknown_field_rejected(self):
+        directory = self._copy_package(CONFIRMATORY_V4D_DIR)
+        summary = self._load_summary(directory)
+        summary["orchestration"]["determinism_report_extra"] = "x"
+        self._write_summary(directory, summary)
+        self._assert_rejected(directory, "orchestration 字段集合不符")
+
+    def test_artifacts_extra_entry_rejected(self):
+        directory = self._copy_package(CONFIRMATORY_V4D_DIR)
+        summary = self._load_summary(directory)
+        summary["artifacts"]["README.md"] = {"path": "README.md"}
+        self._write_summary(directory, summary)
+        self._assert_rejected(directory, "artifacts 产物清单不符")
+
+    def test_digest_manifest_missing_nondeterminism_entry_rejected(self):
+        directory = self._copy_package(CONFIRMATORY_V4D_DIR)
+        manifest_path = Path(directory) / "digest_manifest.json"
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        manifest["artifacts"] = [
+            entry for entry in manifest["artifacts"] if entry.get("path") != "tasks.json"
+        ]
+        manifest_bytes = _json_write(manifest_path, manifest)
+        summary = self._load_summary(directory)
+        summary["digest_manifest"] = {
+            "path": "digest_manifest.json",
+            "raw_sha256": hashlib.sha256(manifest_bytes).hexdigest(),
+            "canonical_sha256": A._canonical_artifact_digest(manifest),
+            "bytes": len(manifest_bytes),
+        }
+        self._write_summary(directory, summary)
+        _refresh_sums(directory, "digest_manifest.json")
+        self._assert_rejected(directory, "digest_manifest 产物清单不符")
+
+    def test_sha256sums_other_file_tampered_rejected(self):
+        directory = self._copy_package(CONFIRMATORY_V4D_DIR)
+        sums, order = _read_sums(directory)
+        sums["frozen_family.json"] = "0" * 64
+        _write_sums(directory, sums, order)
+        self._assert_rejected(directory, "冻结后被修改")
+
+    def test_confirmatory_layout_identity_and_determinism_evidence(self):
+        bundle = A.load_frozen_bundle(CONFIRMATORY_V4D_DIR)
+        self.assertEqual(bundle.freeze_layout, A.FREEZE_LAYOUT_CONFIRMATORY)
+        five = bundle.identity_five()
+        self.assertEqual(five["prereg_digest"], "2ea60ba7f903978407e6d156e7b3f390dbd70bf759725152327be15487a7bd8f")
+        self.assertEqual(
+            five["analysis_plan_digest"],
+            "5222af0dacd08c6cd37e40f7308b12347e67e19abbbd9fa4b5aef0a41430f0fa",
+        )
+        determinism = json.loads(
+            (Path(CONFIRMATORY_V4D_DIR) / A.DETERMINISM_REPORT_FILE).read_text(encoding="utf-8")
+        )
+        self.assertEqual(determinism.get("status"), "PASS")
+
+
+class PackageListAndIdentityTests(unittest.TestCase):
+    """S0-4（确证 9/7）与 S0-3 / S0-2（legacy 8/6）包清单与身份差异。"""
+
+    S0_2_DIR = (
+        Path(__file__).resolve().parents[3]
+        / "research"
+        / "concorde_metaopt"
+        / "optimization_runs"
+        / "p4ra-s0-2-freeze-20261105T072500Z"
+    )
+
+    def test_confirmatory_artifact_lists_are_seven(self):
+        directory = Path(CONFIRMATORY_V4D_DIR)
+        summary = json.loads((directory / "freeze_summary.json").read_text(encoding="utf-8"))
+        manifest = json.loads((directory / "digest_manifest.json").read_text(encoding="utf-8"))
+        sums, order = _read_sums(directory)
+        self.assertEqual(len(summary["artifacts"]), 7)
+        self.assertEqual(len(manifest["artifacts"]), 7)
+        self.assertEqual(len(sums), 9)
+        self.assertEqual(len(order), 9)
+        self.assertIn(A.DETERMINISM_REPORT_FILE, summary["artifacts"])
+        self.assertIn(A.DETERMINISM_REPORT_FILE, {entry["path"] for entry in manifest["artifacts"]})
+
+    def test_legacy_artifact_lists_are_six(self):
+        directory = Path(LEGACY_V4D_DIR)
+        summary = json.loads((directory / "freeze_summary.json").read_text(encoding="utf-8"))
+        manifest = json.loads((directory / "digest_manifest.json").read_text(encoding="utf-8"))
+        sums, order = _read_sums(directory)
+        self.assertEqual(len(summary["artifacts"]), 6)
+        self.assertEqual(len(manifest["artifacts"]), 6)
+        self.assertEqual(len(sums), 8)
+        self.assertNotIn(A.DETERMINISM_REPORT_FILE, summary["artifacts"])
+
+    def test_s0_2_legacy_layout_loads(self):
+        bundle = A.load_frozen_bundle(self.S0_2_DIR)
+        self.assertEqual(bundle.freeze_layout, A.FREEZE_LAYOUT_LEGACY)
+        self.assertEqual(len(bundle.raw_sha256), 8)
+        self.assertNotIn(A.DETERMINISM_REPORT_FILE, bundle.raw_sha256)
+
+    def test_formal_rejects_s0_2_legacy_package(self):
+        bundle = A.load_frozen_bundle(self.S0_2_DIR)
+        with self.assertRaises(A.S1FreezeValidationError) as ctx:
+            A.verify_analysis_freeze(bundle, analysis_mode=A.ANALYSIS_MODE_FORMAL)
+        self.assertIn(A.S1_ANALYSIS_LEGACY_PACKAGE, str(ctx.exception))
+
+    def test_legacy_and_confirmatory_prereg_digests_differ(self):
+        confirmatory = A.load_frozen_bundle(CONFIRMATORY_V4D_DIR)
+        legacy = A.load_frozen_bundle(LEGACY_V4D_DIR)
+        self.assertEqual(
+            legacy.identity_five()["prereg_digest"],
+            "aa806767445421335874322321145af4b5ed5bc52826dc732a05c0f8f3feb948",
+        )
+        self.assertNotEqual(
+            confirmatory.identity_five()["prereg_digest"],
+            legacy.identity_five()["prereg_digest"],
+        )
+
+
+class CliDualLayoutTests(TempDirMixin):
+    """CLI 端到端：legacy 仅 exploratory，确证布局 formal 走既有 code_sha drift。"""
+
+    def _write_records(self, bundle):
+        records = sparse_records(bundle, tasks=2, meta_seeds=(0,), opt_seeds=(0,))
+        directory = self.make_temp_dir()
+        return directory, write_record_files(directory, records)
+
+    def _run(self, args):
+        import contextlib
+        import io
+        out, err = io.StringIO(), io.StringIO()
+        with contextlib.redirect_stdout(out), contextlib.redirect_stderr(err):
+            code = A.main(args)
+        return code, out.getvalue(), err.getvalue()
+
+    def _base_args(self, freeze_dir, records_path, output_dir):
+        return [
+            "--freeze-dir", str(freeze_dir),
+            "--run-records", str(records_path),
+            "--output-dir", str(output_dir),
+            "--allow-incomplete-grid",
+            "--no-figures",
+        ]
+
+    def test_cli_exploratory_legacy_s0_3_passes(self):
+        bundle = A.load_frozen_bundle(LEGACY_V4D_DIR)
+        records_dir, records_path = self._write_records(bundle)
+        output_dir = self.make_temp_dir() / "out"
+        args = self._base_args(LEGACY_V4D_DIR, records_path, output_dir) + [
+            "--analysis-mode", "exploratory",
+            "--identifiability-mode", "exploratory",
+            "--allow-legacy",
+            "--allow-code-delta",
+            "--allow-missing-identifiability-report",
+        ]
+        code, stdout, stderr = self._run(args)
+        self.assertEqual(code, 0, stderr)
+        payload = json.loads(stdout)
+        self.assertEqual(payload["status"], "PASS")
+        self.assertFalse(payload["confirmatory_eligible"])
+        self.assertTrue((output_dir / "aggregate.json").is_file())
+
+    def test_cli_formal_legacy_s0_3_fails_with_legacy_code(self):
+        bundle = A.load_frozen_bundle(LEGACY_V4D_DIR)
+        _, records_path = self._write_records(bundle)
+        output_dir = self.make_temp_dir() / "out"
+        args = self._base_args(LEGACY_V4D_DIR, records_path, output_dir) + ["--analysis-mode", "formal"]
+        code, stdout, stderr = self._run(args)
+        self.assertEqual(code, 2)
+        self.assertIn(A.S1_ANALYSIS_LEGACY_PACKAGE, stderr)
+
+    def test_cli_formal_confirmatory_s0_4_fails_with_code_sha_drift(self):
+        bundle = A.load_frozen_bundle(CONFIRMATORY_V4D_DIR)
+        _, records_path = self._write_records(bundle)
+        output_dir = self.make_temp_dir() / "out"
+        args = self._base_args(CONFIRMATORY_V4D_DIR, records_path, output_dir) + ["--analysis-mode", "formal"]
+        code, stdout, stderr = self._run(args)
+        self.assertEqual(code, 2)
+        self.assertIn(A.S1_ANALYSIS_CODE_SHA_DRIFT, stderr)
+
+    def test_cli_exploratory_confirmatory_s0_4_allows_code_delta(self):
+        bundle = A.load_frozen_bundle(CONFIRMATORY_V4D_DIR)
+        _, records_path = self._write_records(bundle)
+        output_dir = self.make_temp_dir() / "out"
+        args = self._base_args(CONFIRMATORY_V4D_DIR, records_path, output_dir) + [
+            "--analysis-mode", "exploratory",
+            "--identifiability-mode", "exploratory",
+            "--allow-code-delta",
+            "--allow-missing-identifiability-report",
+        ]
+        code, stdout, stderr = self._run(args)
+        self.assertEqual(code, 0, stderr)
+        payload = json.loads(stdout)
+        self.assertEqual(payload["status"], "PASS")
+        aggregate = json.loads((output_dir / "aggregate.json").read_text(encoding="utf-8"))
+        self.assertEqual(aggregate["freeze_echo"]["freeze_layout"], "confirmatory")
 
 if __name__ == "__main__":
     unittest.main()

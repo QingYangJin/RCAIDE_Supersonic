@@ -561,6 +561,41 @@ FROZEN_REQUIRED_FILES = (
     "freeze_summary.json",
 )
 FROZEN_PAYLOAD_FILES = tuple(name for name in FROZEN_REQUIRED_FILES if name not in ("digest_manifest.json", "freeze_summary.json"))
+# R-V4-09-01：schema-3 冻结包支持两种布局，禁止默认值/宽容：
+#   legacy（S0-2/S0-3）：8 个文件 / 6 个 artifacts，无 determinism_report.json；
+#   confirmatory（S0-4 及以后）：9 个文件 / 7 个 artifacts，带 determinism_report.json 与三处
+#   confirmatory_eligible=true。任何混合/残缺布局一律 fail-closed。
+DETERMINISM_REPORT_FILE = "determinism_report.json"
+FREEZE_LAYOUT_LEGACY = "legacy"
+FREEZE_LAYOUT_CONFIRMATORY = "confirmatory"
+FREEZE_LAYOUTS = (FREEZE_LAYOUT_LEGACY, FREEZE_LAYOUT_CONFIRMATORY)
+FROZEN_LEGACY_PAYLOAD_FILES = FROZEN_PAYLOAD_FILES
+FROZEN_CONFIRMATORY_PAYLOAD_FILES = FROZEN_PAYLOAD_FILES + (DETERMINISM_REPORT_FILE,)
+FROZEN_LEGACY_REQUIRED_FILES = FROZEN_REQUIRED_FILES
+FROZEN_CONFIRMATORY_REQUIRED_FILES = FROZEN_REQUIRED_FILES + (DETERMINISM_REPORT_FILE,)
+FREEZE_LAYOUT_PAYLOAD_FILES = {
+    FREEZE_LAYOUT_LEGACY: FROZEN_LEGACY_PAYLOAD_FILES,
+    FREEZE_LAYOUT_CONFIRMATORY: FROZEN_CONFIRMATORY_PAYLOAD_FILES,
+}
+FREEZE_LAYOUT_REQUIRED_FILES = {
+    FREEZE_LAYOUT_LEGACY: FROZEN_LEGACY_REQUIRED_FILES,
+    FREEZE_LAYOUT_CONFIRMATORY: FROZEN_CONFIRMATORY_REQUIRED_FILES,
+}
+FREEZE_SUMMARY_V4_CONFIRMATORY_FIELDS = ("confirmatory_eligible",)
+FREEZE_SUMMARY_V4_ORCHESTRATION_DETERMINISM_FIELDS = frozenset(
+    (
+        "determinism_report_sha256",
+        "determinism_report_canonical_sha256",
+        "determinism_report_status",
+    )
+)
+
+
+def _freeze_layout_payload_files(layout: str) -> tuple[str, ...]:
+    """R-V4-09-01：按布局返回载荷集合；未知布局 fail-closed。"""
+    if layout not in FREEZE_LAYOUT_PAYLOAD_FILES:
+        raise S1FreezeValidationError(f"未知冻结包布局：{layout!r}")
+    return FREEZE_LAYOUT_PAYLOAD_FILES[layout]
 
 
 class S1AnalysisError(ValueError):
@@ -807,6 +842,8 @@ class FrozenBundle:
     sha256sums: Mapping[str, str] = field(default_factory=dict)
     identity_source: str = IDENTITY_SOURCE_PACKAGE
     expected_identity_fields: tuple[str, ...] = ()
+    # R-V4-09-01：legacy（8/6）或 confirmatory（9/7）布局，由包内结构判定后写入。
+    freeze_layout: str = FREEZE_LAYOUT_LEGACY
 
     @property
     def family_id(self) -> str:
@@ -914,7 +951,11 @@ def _parse_sha256sums(path: Path) -> dict[str, str]:
 
 
 def _verify_digest_manifest(
-    manifest: Mapping[str, Any], payloads: Mapping[str, Any], raw: Mapping[str, bytes]
+    manifest: Mapping[str, Any],
+    payloads: Mapping[str, Any],
+    raw: Mapping[str, bytes],
+    *,
+    expected_payload_files: Sequence[str] | None = None,
 ) -> dict[str, dict[str, Any]]:
     if manifest.get("schema_version") != family_v3.DIGEST_MANIFEST_SCHEMA_VERSION:
         raise S1FreezeValidationError(f"digest_manifest schema 不符：{manifest.get('schema_version')!r}")
@@ -956,7 +997,7 @@ def _verify_digest_manifest(
             if payload_sha is not None and stored != payload_sha:
                 raise S1FreezeValidationError(f"digest_manifest.{path}.stored_sha256 与载荷 sha256 不符")
         entries[path] = dict(entry)
-    expected_paths = set(FROZEN_PAYLOAD_FILES)
+    expected_paths = set(FROZEN_PAYLOAD_FILES if expected_payload_files is None else expected_payload_files)
     if set(entries) != expected_paths:
         missing = sorted(expected_paths - set(entries))
         extra = sorted(set(entries) - expected_paths)
@@ -964,11 +1005,17 @@ def _verify_digest_manifest(
     return entries
 
 
-def _verify_sha256sums(sums: Mapping[str, str], base: Path) -> None:
-    required = set(FROZEN_REQUIRED_FILES)
+def _verify_sha256sums(
+    sums: Mapping[str, str], base: Path, *, required_files: Sequence[str] | None = None
+) -> None:
+    required = set(FROZEN_REQUIRED_FILES if required_files is None else required_files)
     missing = sorted(required - set(sums))
     if missing:
         raise S1FreezeValidationError(f"SHA256SUMS.txt 缺少冻结产物：{missing}")
+    # R-V4-09-01：列表必须恰为布局规定的封存产物，未封存条目一律拒绝（不允许多余条目）。
+    extra = sorted(set(sums) - required)
+    if extra:
+        raise S1FreezeValidationError(f"SHA256SUMS.txt 含未封存条目：{extra}")
     for name, expected in sums.items():
         target = base / name
         if not target.is_file():
@@ -984,6 +1031,8 @@ def _verify_freeze_summary(
     payloads: Mapping[str, Any],
     raw: Mapping[str, bytes],
     expected_bundle_sha: Mapping[str, str],
+    layout: str = FREEZE_LAYOUT_LEGACY,
+    payload_files: Sequence[str] = FROZEN_PAYLOAD_FILES,
 ) -> None:
     schema_version = summary.get("schema_version")
     if schema_version not in ALLOWED_FREEZE_SUMMARY_SCHEMAS:
@@ -1004,7 +1053,7 @@ def _verify_freeze_summary(
     artifacts = summary.get("artifacts")
     if not isinstance(artifacts, Mapping):
         raise S1FreezeValidationError("freeze_summary.artifacts 必须是 object")
-    for name in FROZEN_PAYLOAD_FILES:
+    for name in payload_files:
         entry = artifacts.get(name)
         if not isinstance(entry, Mapping):
             raise S1FreezeValidationError(f"freeze_summary.artifacts 缺少 {name}")
@@ -1060,7 +1109,7 @@ def _verify_freeze_summary(
             if dm_ref.get("bytes") is not None and int(dm_ref["bytes"]) != len(raw["digest_manifest.json"]):
                 raise S1FreezeValidationError("freeze_summary.digest_manifest.bytes 不符")
     if schema_version == FREEZE_SUMMARY_SCHEMA_V4:
-        _verify_freeze_summary_v4(summary, payloads=payloads, raw=raw)
+        _verify_freeze_summary_v4(summary, payloads=payloads, raw=raw, layout=layout)
 
 
 def _verify_freeze_summary_v4(
@@ -1068,6 +1117,7 @@ def _verify_freeze_summary_v4(
     *,
     payloads: Mapping[str, Any],
     raw: Mapping[str, bytes],
+    layout: str = FREEZE_LAYOUT_LEGACY,
 ) -> None:
     """schema 3（S0-3 v4 冻结包）严格校验。
 
@@ -1075,10 +1125,17 @@ def _verify_freeze_summary_v4(
     类型以及 freeze_summary 与冻结载荷（frozen_family / meta_task_split /
     preregistration）的一致性，任何缺失、未知或篡改都 fail-closed。
     """
-    unknown = sorted(set(summary) - FREEZE_SUMMARY_V4_ALLOWED_FIELDS)
+    if layout not in FREEZE_LAYOUTS:
+        raise S1FreezeValidationError(f"freeze_summary(schema 3) 布局非法：{layout!r}")
+    confirmatory_layout = layout == FREEZE_LAYOUT_CONFIRMATORY
+    required_fields = FREEZE_SUMMARY_V4_REQUIRED_FIELDS + (
+        FREEZE_SUMMARY_V4_CONFIRMATORY_FIELDS if confirmatory_layout else ()
+    )
+    allowed_fields = frozenset(required_fields)
+    unknown = sorted(set(summary) - allowed_fields)
     if unknown:
         raise S1FreezeValidationError(f"freeze_summary(schema 3) 出现未登记字段：{unknown}")
-    missing = sorted(set(FREEZE_SUMMARY_V4_REQUIRED_FIELDS) - set(summary))
+    missing = sorted(set(required_fields) - set(summary))
     if missing:
         raise S1FreezeValidationError(f"freeze_summary(schema 3) 缺少字段：{missing}")
 
@@ -1087,6 +1144,27 @@ def _verify_freeze_summary_v4(
     prereg = payloads["preregistration.json"]
     if not isinstance(frozen, Mapping) or not isinstance(split, Mapping) or not isinstance(prereg, Mapping):
         raise S1FreezeValidationError("freeze_summary(schema 3) 依赖的冻结载荷不是 object")
+    # R-V4-09-01：布局与三处 confirmatory_eligible 标记必须一致，混合布局 fail-closed。
+    if confirmatory_layout:
+        if summary.get("confirmatory_eligible") is not True:
+            raise S1FreezeValidationError(
+                "freeze_summary(schema 3, confirmatory).confirmatory_eligible 必须为 true"
+            )
+        for name, payload in (("frozen_family", frozen), ("preregistration", prereg)):
+            if payload.get("confirmatory_eligible") is not True:
+                raise S1FreezeValidationError(
+                    f"{name}.confirmatory_eligible 必须为 true（确证布局）"
+                )
+    else:
+        if summary.get("confirmatory_eligible") not in (None, False):
+            raise S1FreezeValidationError(
+                "freeze_summary(schema 3, legacy).confirmatory_eligible 不得为 true（混合布局）"
+            )
+        for name, payload in (("frozen_family", frozen), ("preregistration", prereg)):
+            if payload.get("confirmatory_eligible") is True:
+                raise S1FreezeValidationError(
+                    f"{name}.confirmatory_eligible=true 但包为 legacy 布局（混合布局）"
+                )
 
     def require_str(field: str) -> str:
         value = summary.get(field)
@@ -1209,11 +1287,12 @@ def _verify_freeze_summary_v4(
     artifacts = summary["artifacts"]
     if not isinstance(artifacts, Mapping):
         raise S1FreezeValidationError("freeze_summary(schema 3).artifacts 必须是 object")
-    if set(artifacts) != set(FROZEN_PAYLOAD_FILES):
+    expected_artifacts = set(_freeze_layout_payload_files(layout))
+    if set(artifacts) != expected_artifacts:
         raise S1FreezeValidationError(
             f"freeze_summary(schema 3).artifacts 产物清单不符：{sorted(artifacts)}"
         )
-    for name in FROZEN_PAYLOAD_FILES:
+    for name in _freeze_layout_payload_files(layout):
         entry = artifacts[name]
         if not isinstance(entry, Mapping):
             raise S1FreezeValidationError(f"freeze_summary(schema 3).artifacts.{name} 必须是 object")
@@ -1253,8 +1332,11 @@ def _verify_freeze_summary_v4(
     orchestration = summary["orchestration"]
     if not isinstance(orchestration, Mapping):
         raise S1FreezeValidationError("freeze_summary(schema 3).orchestration 必须是 object")
-    unknown_orchestration = sorted(set(orchestration) - FREEZE_SUMMARY_V4_ORCHESTRATION_FIELDS)
-    missing_orchestration = sorted(FREEZE_SUMMARY_V4_ORCHESTRATION_FIELDS - set(orchestration))
+    orchestration_fields = frozenset(FREEZE_SUMMARY_V4_ORCHESTRATION_FIELDS)
+    if confirmatory_layout:
+        orchestration_fields = orchestration_fields | FREEZE_SUMMARY_V4_ORCHESTRATION_DETERMINISM_FIELDS
+    unknown_orchestration = sorted(set(orchestration) - orchestration_fields)
+    missing_orchestration = sorted(orchestration_fields - set(orchestration))
     if unknown_orchestration or missing_orchestration:
         raise S1FreezeValidationError(
             "freeze_summary(schema 3).orchestration 字段集合不符："
@@ -1337,6 +1419,30 @@ def _verify_freeze_summary_v4(
         "evidence_class"
     ]:
         raise S1FreezeValidationError("task_fingerprint_intersection.evidence_class 必须是非空字符串")
+
+    if confirmatory_layout:
+        # R-V4-09-01：determinism_report.json 必须被 orchestration 的 raw/canonical 摘要与
+        # PASS 状态同时绑定，任一不符即拒绝（不接受默认值或弱校验）。
+        determinism_payload = payloads.get(DETERMINISM_REPORT_FILE)
+        determinism_raw = raw.get(DETERMINISM_REPORT_FILE)
+        if determinism_raw is None or determinism_payload is None:
+            raise S1FreezeValidationError(
+                "确证布局缺少 determinism_report.json 载荷"
+            )
+        if orchestration.get("determinism_report_sha256") != _raw_sha256(determinism_raw):
+            raise S1FreezeValidationError(
+                "freeze_summary(schema 3, confirmatory).orchestration.determinism_report_sha256 与实际文件不符"
+            )
+        if orchestration.get("determinism_report_canonical_sha256") != _canonical_artifact_digest(
+            determinism_payload
+        ):
+            raise S1FreezeValidationError(
+                "freeze_summary(schema 3, confirmatory).orchestration.determinism_report_canonical_sha256 重算不一致"
+            )
+        if orchestration.get("determinism_report_status") != "PASS":
+            raise S1FreezeValidationError(
+                "freeze_summary(schema 3, confirmatory).orchestration.determinism_report_status 必须为 PASS"
+            )
 
     legacy = orchestration.get("legacy")
     if not isinstance(legacy, Mapping):
@@ -1602,6 +1708,94 @@ def _cross_check_echo_chain(
         raise S1FreezeValidationError(f"optimization seeds 不符：{opt_seeds}")
 
 
+def _detect_freeze_layout(
+    base: Path,
+    *,
+    summary: Mapping[str, Any],
+    manifest: Mapping[str, Any],
+    sums: Mapping[str, str],
+    verify_sha256sums: bool,
+) -> str:
+    """R-V4-09-01：按封存证据判定 schema-3 冻结包布局（legal legacy 8/6 或 confirmatory 9/7）。
+
+    判定证据必须一致：determinism_report.json 同时出现在 digest_manifest entries、
+    freeze_summary.artifacts、SHA256SUMS（若启用校验）以及 orchestration 的三个确定性
+    摘要字段中，且文件存在、freeze_summary.confirmatory_eligible is True，才是
+    confirmatory 布局；证据全部不出现才是 legacy 布局。
+
+    注意：历史 legacy 包（S0-2/S0-3）目录内遗留了未封存的 determinism_report.json，
+    该文件不属于包内容（未进入 SHA256SUMS/digest_manifest/artifacts/orchestration），
+    按未封存忽略，不读取也不校验。其余任何组合（部分封存、标志与证据矛盾、
+    确证布局缺文件）一律视为混合/残缺布局 fail-closed。
+    """
+    if not isinstance(summary, Mapping):
+        raise S1FreezeValidationError("freeze_summary 不是 object")
+    if not isinstance(manifest, Mapping):
+        raise S1FreezeValidationError("digest_manifest 不是 object")
+    schema_version = summary.get("schema_version")
+    if schema_version not in ALLOWED_FREEZE_SUMMARY_SCHEMAS:
+        raise S1FreezeValidationError(f"freeze_summary schema 不符：{schema_version!r}")
+    artifacts = summary.get("artifacts")
+    orchestration = summary.get("orchestration")
+    raw_entries = manifest.get("artifacts")
+    manifest_paths: set[str] = set()
+    if isinstance(raw_entries, list):
+        for entry in raw_entries:
+            if isinstance(entry, Mapping) and isinstance(entry.get("path"), str):
+                manifest_paths.add(entry["path"])
+    if not isinstance(artifacts, Mapping):
+        raise S1FreezeValidationError("freeze_summary.artifacts 不是 object")
+    if not isinstance(orchestration, Mapping):
+        raise S1FreezeValidationError("freeze_summary.orchestration 不是 object")
+    orchestration_fields = set(orchestration) & FREEZE_SUMMARY_V4_ORCHESTRATION_DETERMINISM_FIELDS
+    evidence = {
+        "file": (base / DETERMINISM_REPORT_FILE).is_file(),
+        "digest_manifest": DETERMINISM_REPORT_FILE in manifest_paths,
+        "freeze_summary.artifacts": DETERMINISM_REPORT_FILE in artifacts,
+        "orchestration_fields": orchestration_fields == set(FREEZE_SUMMARY_V4_ORCHESTRATION_DETERMINISM_FIELDS),
+    }
+    if verify_sha256sums:
+        evidence["sha256sums"] = DETERMINISM_REPORT_FILE in sums
+    sealed_names = [name for name in evidence if name not in ("file",)]
+    sealed = [name for name in sealed_names if evidence[name]]
+    if schema_version in FREEZE_SUMMARY_SCHEMAS_V1_V2:
+        if sealed:
+            raise S1FreezeValidationError(
+                "冻结包布局混合：schema 1/2 不得封存 determinism_report.json"
+                f"（证据={sorted(sealed)}，R-V4-09-01）"
+            )
+        if summary.get("confirmatory_eligible") is True:
+            raise S1FreezeValidationError(
+                "冻结包布局混合：schema 1/2 不得声明 confirmatory_eligible=true（R-V4-09-01）"
+            )
+        return FREEZE_LAYOUT_LEGACY
+    if orchestration_fields and not evidence["orchestration_fields"]:
+        raise S1FreezeValidationError(
+            "冻结包布局混合：orchestration 确定性摘要字段残缺"
+            f"（{sorted(orchestration_fields)}，R-V4-09-01）"
+        )
+    if len(sealed) == len(sealed_names):
+        if not evidence["file"]:
+            raise S1FreezeValidationError(
+                "冻结包布局混合：确证布局缺少 determinism_report.json 文件（R-V4-09-01）"
+            )
+        if summary.get("confirmatory_eligible") is not True:
+            raise S1FreezeValidationError(
+                "冻结包布局混合：确证布局要求 freeze_summary.confirmatory_eligible=true（R-V4-09-01）"
+            )
+        return FREEZE_LAYOUT_CONFIRMATORY
+    if not sealed:
+        if summary.get("confirmatory_eligible") is True:
+            raise S1FreezeValidationError(
+                "冻结包布局混合：confirmatory_eligible=true 但 determinism_report.json 未被封存（R-V4-09-01）"
+            )
+        return FREEZE_LAYOUT_LEGACY
+    sealed_view = {name: evidence[name] for name in sorted(evidence)}
+    raise S1FreezeValidationError(
+        f"冻结包布局混合：determinism_report.json 封存证据不一致（{sealed_view}，R-V4-09-01）"
+    )
+
+
 def load_frozen_bundle(
     freeze_dir: str | Path,
     *,
@@ -1623,20 +1817,48 @@ def load_frozen_bundle(
     payloads: dict[str, Any] = {}
     raw: dict[str, bytes] = {}
     raw_sha: dict[str, str] = {}
-    for name in FROZEN_REQUIRED_FILES:
+    # R-V4-09-01：先读 freeze_summary / digest_manifest / SHA256SUMS，以“封存证据”判定布局
+    # （legacy 8/6 或 confirmatory 9/7），再按布局读取其余载荷。
+    sums: dict[str, str] = {}
+    if verify_sha256sums:
+        sums = _parse_sha256sums(base / "SHA256SUMS.txt")
+    for name in ("freeze_summary.json", "digest_manifest.json"):
         payload, raw_bytes = _read_json_file(base / name, name)
         payloads[name] = payload
         raw[name] = raw_bytes
         raw_sha[name] = _raw_sha256(raw_bytes)
-    sums: dict[str, str] = {}
+    layout = _detect_freeze_layout(
+        base,
+        summary=payloads["freeze_summary.json"],
+        manifest=payloads["digest_manifest.json"],
+        sums=sums,
+        verify_sha256sums=verify_sha256sums,
+    )
+    payload_files = _freeze_layout_payload_files(layout)
+    required_files = FREEZE_LAYOUT_REQUIRED_FILES[layout]
+    for name in required_files:
+        if name in payloads:
+            continue
+        payload, raw_bytes = _read_json_file(base / name, name)
+        payloads[name] = payload
+        raw[name] = raw_bytes
+        raw_sha[name] = _raw_sha256(raw_bytes)
     if verify_sha256sums:
-        sums = _parse_sha256sums(base / "SHA256SUMS.txt")
-        _verify_sha256sums(sums, base)
+        _verify_sha256sums(sums, base, required_files=required_files)
     entries: dict[str, dict[str, Any]] = {}
     if verify_checksums:
-        entries = _verify_digest_manifest(payloads["digest_manifest.json"], payloads, raw)
-    expected_bundle_sha = {name: _canonical_artifact_digest(payloads[name]) for name in FROZEN_PAYLOAD_FILES}
-    _verify_freeze_summary(payloads["freeze_summary.json"], payloads=payloads, raw=raw, expected_bundle_sha=expected_bundle_sha)
+        entries = _verify_digest_manifest(
+            payloads["digest_manifest.json"], payloads, raw, expected_payload_files=payload_files
+        )
+    expected_bundle_sha = {name: _canonical_artifact_digest(payloads[name]) for name in payload_files}
+    _verify_freeze_summary(
+        payloads["freeze_summary.json"],
+        payloads=payloads,
+        raw=raw,
+        expected_bundle_sha=expected_bundle_sha,
+        layout=layout,
+        payload_files=payload_files,
+    )
     frozen = payloads["frozen_family.json"]
     prereg = payloads["preregistration.json"]
     split = payloads["meta_task_split.json"]
@@ -1672,7 +1894,7 @@ def load_frozen_bundle(
     _cross_check_echo_chain(
         frozen, prereg, split, payloads["freeze_summary.json"], raw=raw, identity=identity
     )
-    canonical_sha = {name: _canonical_artifact_digest(payloads[name]) for name in FROZEN_REQUIRED_FILES}
+    canonical_sha = {name: _canonical_artifact_digest(payloads[name]) for name in required_files}
     return FrozenBundle(
         freeze_dir=base,
         frozen_family=frozen,
@@ -1688,6 +1910,7 @@ def load_frozen_bundle(
         sha256sums=sums,
         identity_source=identity_source,
         expected_identity_fields=provided_identity_fields,
+        freeze_layout=layout,
     )
 
 # ---------------------------------------------------------------------------
@@ -4822,6 +5045,7 @@ def run_s1_analysis(
             expected_identity_source=expected_identity_source,
         ),
         "freeze_echo": {
+            "freeze_layout": bundle.freeze_layout,
             "identity_source": bundle.identity_source,
             "identity_five": bundle.identity_five(),
             "identity_expected_fields": list(bundle.expected_identity_fields),
