@@ -64,6 +64,15 @@ FORMAL_GRID_STRATUM_NAMES: tuple[str, ...] = tuple(
     str(stratum["name"]) for stratum in FORMAL_GRID_STRATA
 )
 
+# 臂语义可辨识性（task-227 / S1-B03）：模型打分臂初始设计组内重叠率审计。
+IDENTIFIABILITY_SCHEMA_VERSION = "p4ra-s1-identifiability-1"
+IDENTIFIABILITY_OVERLAP_THRESHOLD = 0.90
+IDENTIFIABILITY_REQUIRED_PAIRS: tuple[tuple[str, str], ...] = (
+    (m5.S1_FOMAML_ZERO_BO, m5.S1_FOMAML_KSHOT_BO),
+    (m5.S1_PRETRAIN_KSHOT_BO, m5.S1_FOMAML_ZERO_BO),
+    (m5.S1_PRETRAIN_KSHOT_BO, m5.S1_FOMAML_KSHOT_BO),
+)
+
 
 class S1RunnerError(RuntimeError):
     """S1 runner 的 fail-closed 错误。"""
@@ -462,6 +471,8 @@ def run_single(
         "meta_seed": int(meta_seed),
         "opt_seed": int(opt_seed),
         "grid_stratum": settled_grid_stratum,
+        "initial_designs_sha256": None,
+        "initial_design_row_digests": None,
         "identifiability": str(identifiability["identifiability"]),
         "clone_of": identifiability["clone_of"],
         "inference_eligible": bool(identifiability["inference_eligible"]),
@@ -520,6 +531,14 @@ def run_single(
         record["support_evals"] = int(result.cache_hits)
         record["initial_evals"] = int(plan["initial_evals"])
         record["bo_evals"] = int(plan["bo_evals"])
+        scoring = result.proxy_scoring_cost
+        if isinstance(scoring, Mapping):
+            model_scoring = scoring.get("model_scoring")
+            if isinstance(model_scoring, Mapping):
+                record["initial_designs_sha256"] = model_scoring.get("initial_designs_sha256")
+                row_digests = model_scoring.get("initial_design_row_digests")
+                if row_digests is not None:
+                    record["initial_design_row_digests"] = [str(value) for value in row_digests]
         record["endpoint_values"] = compute_endpoint_values(
             result, task, budget=budget, k_shot=k_shot
         )
@@ -820,6 +839,98 @@ def compare_run_records(left: Sequence[Mapping[str, Any]], right: Sequence[Mappi
     return problems
 
 
+def initial_design_overlap(rows_a: Sequence[str], rows_b: Sequence[str]) -> dict[str, Any]:
+    """两个臂的初始设计行指纹重叠率（分母取较大集合，与 M5 可辨识性审计口径一致）。"""
+    set_a = {str(value) for value in rows_a}
+    set_b = {str(value) for value in rows_b}
+    denominator = max(len(set_a), len(set_b))
+    shared = len(set_a & set_b)
+    return {
+        "shared_rows": shared,
+        "row_count": denominator,
+        "overlap_rate": (shared / denominator) if denominator else 0.0,
+    }
+
+
+def ranking_identifiability_report(
+    records: Sequence[Mapping[str, Any]],
+    *,
+    threshold: float = IDENTIFIABILITY_OVERLAP_THRESHOLD,
+) -> dict[str, Any]:
+    """按 (task,B,K,meta_seed) 组统计模型打分臂初始设计重叠率并登记可辨识性。
+
+    判定（预注册）：组内两两重叠率的最大值与平均值同时 >=90% 时登记
+    RANKING_INDISTINGUISHABLE（该组不用于推断），否则 IDENTIFIABLE。
+    """
+    if not 0.0 < float(threshold) <= 1.0:
+        raise S1RunnerError(f"threshold 必须在 (0,1]，实际 {threshold!r}")
+    grouped: dict[tuple[str, int, int, int], dict[str, list[str]]] = {}
+    for record in records:
+        arm = str(record.get("arm"))
+        if arm not in m5.S1_MODEL_SCORED_ARMS:
+            continue
+        rows = record.get("initial_design_row_digests")
+        if not isinstance(rows, (list, tuple)) or not rows:
+            continue
+        key = (
+            str(record.get("task_id")),
+            int(record.get("budget_B")),
+            int(record.get("K")),
+            int(record.get("meta_seed")),
+        )
+        grouped.setdefault(key, {})[arm] = [str(value) for value in rows]
+    groups: list[dict[str, Any]] = []
+    pair_coverage: dict[str, int] = {
+        f"{left}|{right}": 0 for left, right in IDENTIFIABILITY_REQUIRED_PAIRS
+    }
+    status_counts: dict[str, int] = {}
+    for key in sorted(grouped):
+        arms = grouped[key]
+        names = sorted(arms)
+        if len(names) < 2:
+            continue
+        pairwise: list[dict[str, Any]] = []
+        rates: list[float] = []
+        for index, arm_a in enumerate(names):
+            for arm_b in names[index + 1:]:
+                overlap = initial_design_overlap(arms[arm_a], arms[arm_b])
+                rates.append(float(overlap["overlap_rate"]))
+                pairwise.append({"arm_a": arm_a, "arm_b": arm_b, **overlap})
+                for left, right in IDENTIFIABILITY_REQUIRED_PAIRS:
+                    if {arm_a, arm_b} == {left, right}:
+                        pair_coverage[f"{left}|{right}"] += 1
+        max_rate = max(rates)
+        mean_rate = sum(rates) / len(rates)
+        status = (
+            "RANKING_INDISTINGUISHABLE"
+            if max_rate >= float(threshold) and mean_rate >= float(threshold)
+            else "IDENTIFIABLE"
+        )
+        status_counts[status] = status_counts.get(status, 0) + 1
+        groups.append(
+            {
+                "task_id": key[0],
+                "budget_B": key[1],
+                "K": key[2],
+                "meta_seed": key[3],
+                "arms": names,
+                "pairwise": pairwise,
+                "max_overlap_rate": max_rate,
+                "mean_overlap_rate": mean_rate,
+                "ranking_status": status,
+                "inference_allowed": status == "IDENTIFIABLE",
+            }
+        )
+    return {
+        "schema_version": IDENTIFIABILITY_SCHEMA_VERSION,
+        "threshold": float(threshold),
+        "group_count": len(groups),
+        "status_counts": status_counts,
+        "pair_coverage": pair_coverage,
+        "groups": groups,
+    }
+
+
 def write_run_bundle(
     outdir: str | Path,
     *,
@@ -834,6 +945,8 @@ def write_run_bundle(
     directory.mkdir(parents=True, exist_ok=True)
     write_jsonl_file(directory / "run_records.jsonl", records)
     write_json_file(directory / "run_config.json", run_config)
+    identifiability = ranking_identifiability_report(records)
+    write_json_file(directory / "identifiability_report.json", identifiability)
     summary = {
         "schema_version": S1_SUMMARY_SCHEMA_VERSION,
         "run_id": run_id,
@@ -846,11 +959,17 @@ def write_run_bundle(
             int(record.get("physics", {}).get("physical_call_count", 0)) for record in records
         ),
         "identity": frozen_identity_for_run(package),
+        "ranking_identifiability": identifiability,
         "run_records_sha256": sha256_file(directory / "run_records.jsonl"),
     }
     write_json_file(directory / "run_summary.json", summary)
     artifacts = []
-    for name in ("run_records.jsonl", "run_config.json", "run_summary.json"):
+    for name in (
+        "run_records.jsonl",
+        "run_config.json",
+        "run_summary.json",
+        "identifiability_report.json",
+    ):
         path = directory / name
         payload = load_json_file(path) if name.endswith(".json") else None
         artifacts.append(

@@ -594,6 +594,145 @@ class RecordValidationTests(TempDirMixin):
         self.assertEqual(validation.counts_by_status, {"OK": 1})
         self.assertEqual(validation.clone_equivalence_checked, 0)
 
+    # B01（task-226）：runner 写 grid_stratum，分析端必须接受合法分层并与 (B,K) 交叉校验。
+    def test_grid_stratum_main_accepted(self):
+        record = make_record(self.bundle, grid_stratum="main")
+        validation = A.validate_run_records([record], self.bundle)
+        self.assertEqual(validation.record_count, 1)
+        self.assertEqual(A.expected_grid_stratum(64, 0), "main")
+        self.assertEqual(A.expected_grid_stratum(64, 3), "main")
+        self.assertEqual(A.expected_grid_stratum(64, 5), "main")
+
+    def test_grid_stratum_secondary_accepted(self):
+        record = make_record(self.bundle, budget_B=128, K=3, grid_stratum="secondary")
+        A.validate_run_records([record], self.bundle)
+        self.assertEqual(A.expected_grid_stratum(128, 3), "secondary")
+        self.assertEqual(A.expected_grid_stratum(128, 5), "secondary")
+
+    def test_grid_stratum_exploratory_accepted(self):
+        record = make_record(self.bundle, budget_B=64, K=1, grid_stratum="exploratory")
+        A.validate_run_records([record], self.bundle)
+        self.assertEqual(A.expected_grid_stratum(64, 1), "exploratory")
+        self.assertEqual(A.expected_grid_stratum(128, 1), "exploratory")
+
+    def test_grid_stratum_null_or_absent_accepted(self):
+        A.validate_run_records([make_record(self.bundle, grid_stratum=None)], self.bundle)
+        record = make_record(self.bundle)
+        record.pop("grid_stratum", None)
+        A.validate_run_records([record], self.bundle)
+
+    def test_grid_stratum_unknown_rejected(self):
+        record = make_record(self.bundle, grid_stratum="bogus")
+        self.assert_rejected([record], "grid_stratum 非法")
+
+    def test_grid_stratum_non_string_rejected(self):
+        record = make_record(self.bundle, grid_stratum=3)
+        self.assert_rejected([record], "grid_stratum 必须是 str 或 null")
+
+    def test_grid_stratum_mismatch_rejected(self):
+        record = make_record(self.bundle, budget_B=128, K=3, grid_stratum="main")
+        self.assert_rejected([record], "grid_stratum 与 (budget_B,K) 不一致")
+
+    def test_grid_stratum_on_non_formal_grid_rejected(self):
+        # (B=128, K=0) 不属于 formal 网格（K=0 只在 B=64 main），登记分层必须拒绝。
+        self.assertIsNone(A.expected_grid_stratum(128, 0))
+        record = make_record(self.bundle, budget_B=128, K=0, grid_stratum="main")
+        self.assert_rejected([record], "不属于 formal 网格")
+
+    # B01 续（task-226）：runner 的可辨识性审计字段（task-227 / S1-B03）也必须被分析端接受并校验。
+    def test_initial_design_fields_null_accepted(self):
+        record = make_record(
+            self.bundle,
+            initial_designs_sha256=None,
+            initial_design_row_digests=None,
+        )
+        validation = A.validate_run_records([record], self.bundle)
+        self.assertEqual(validation.record_count, 1)
+
+    def test_initial_design_fields_valid_accepted(self):
+        row_digests = [sha256_text(f"row-{index}") for index in range(A.INITIAL_DESIGN_COUNT)]
+        record = make_record(
+            self.bundle,
+            initial_designs_sha256=sha256_text("initial-designs"),
+            initial_design_row_digests=row_digests,
+        )
+        validation = A.validate_run_records([record], self.bundle)
+        self.assertEqual(validation.record_count, 1)
+
+    def test_initial_design_fields_k_shot_rows_accepted(self):
+        row_digests = [sha256_text(f"k3-row-{index}") for index in range(A.INITIAL_DESIGN_COUNT - 3)]
+        record = make_record(
+            self.bundle,
+            arm="RAND-BO",
+            K=3,
+            initial_designs_sha256=sha256_text("initial-designs-k3"),
+            initial_design_row_digests=row_digests,
+        )
+        validation = A.validate_run_records([record], self.bundle)
+        self.assertEqual(validation.record_count, 1)
+
+    def test_initial_design_row_count_mismatch_rejected(self):
+        row_digests = [sha256_text(f"row-{index}") for index in range(A.INITIAL_DESIGN_COUNT - 1)]
+        record = make_record(self.bundle, initial_design_row_digests=row_digests)
+        self.assert_rejected([record], "initial_design_row_digests")
+
+    def test_initial_design_row_bad_hex_rejected(self):
+        row_digests = [sha256_text(f"row-{index}") for index in range(A.INITIAL_DESIGN_COUNT)]
+        row_digests[3] = "z" * 64
+        record = make_record(self.bundle, initial_design_row_digests=row_digests)
+        self.assert_rejected([record], "initial_design_row_digests[3]")
+
+    def test_initial_designs_sha256_bad_format_rejected(self):
+        record = make_record(self.bundle, initial_designs_sha256="NOT-A-SHA256")
+        self.assert_rejected([record], "initial_designs_sha256")
+
+    # A2-B01b / B01 续（task-226）：runner 的 cost.proxy_scoring_cost 是 object（模型打分明细），
+    # 分析器容错 object 并 fail-closed 校验子字段（数值有限、键为 str、JSON 值）。
+    def test_proxy_scoring_cost_object_accepted(self):
+        record = make_record(self.bundle)
+        record["cost"] = dict(record["cost"])
+        record["cost"]["proxy_scoring_cost"] = {
+            "kind": "model_scoring",
+            "billable_evals": 64,
+            "bo_evals": 59,
+            "model_scoring": {
+                "wall_s": 0.5,
+                "initial_designs_sha256": sha256_text("initial-designs"),
+                "initial_design_row_digests": [
+                    sha256_text(f"row-{index}") for index in range(A.INITIAL_DESIGN_COUNT)
+                ],
+            },
+        }
+        record = rehash_record(record)
+        validation = A.validate_run_records([record], self.bundle)
+        self.assertEqual(validation.record_count, 1)
+
+    def test_proxy_scoring_cost_object_nonfinite_rejected(self):
+        record = make_record(self.bundle)
+        record["cost"] = dict(record["cost"])
+        record["cost"]["proxy_scoring_cost"] = {"wall_s": float("nan")}
+        record = rehash_record(record)
+        self.assert_rejected([record], "有限")
+
+    def test_proxy_scoring_cost_object_non_json_rejected(self):
+        # 直接调用校验器：set 无法写入 record_digest 的规范化 JSON，故在 cost 校验层做负控。
+        cost = {
+            "adaptation_wall_s": 0.0,
+            "proxy_scoring_cost": {"wall_s": {1, 2}},
+            "peak_memory_mb": None,
+            "total_wall_s": 0.0,
+        }
+        with self.assertRaises(A.S1RecordValidationError) as ctx:
+            A._validate_cost(cost, 0)
+        self.assertIn("不是合法 JSON 值", str(ctx.exception))
+
+    def test_proxy_scoring_cost_negative_number_rejected(self):
+        record = make_record(self.bundle)
+        record["cost"] = dict(record["cost"])
+        record["cost"]["proxy_scoring_cost"] = -1.0
+        record = rehash_record(record)
+        self.assert_rejected([record], "必须是非负有限数")
+
     def test_k0_clone_equivalence_checked(self):
         values = build_endpoint_values(K=0, budget_B=64, best_feasible_value=1.15, first_feasible_eval_index=2)
         history = sha256_text("clone-pair")
@@ -935,20 +1074,147 @@ class StatisticsTests(unittest.TestCase):
             test={"n_effective": 20},
             p_adjusted=0.001,
             improvement=0.2,
+            ci_low=-0.3,
+            ci_high=-0.1,
         )
         self.assertEqual(decision["decision"], A.DECISION_BENEFIT)
+        self.assertTrue(decision["ci_defined"])
+        self.assertAlmostEqual(decision["ci_low"], -0.3, places=15)
+        self.assertAlmostEqual(decision["ci_high"], -0.1, places=15)
 
     def test_decide_endpoint_harm(self):
         decision = A.decide_endpoint(
-            self._paired(), test={"n_effective": 20}, p_adjusted=0.001, improvement=-0.2
+            self._paired(),
+            test={"n_effective": 20},
+            p_adjusted=0.001,
+            improvement=-0.2,
+            ci_low=0.1,
+            ci_high=0.3,
         )
         self.assertEqual(decision["decision"], A.DECISION_HARM)
 
     def test_decide_endpoint_no_evidence_below_threshold(self):
         decision = A.decide_endpoint(
-            self._paired(), test={"n_effective": 20}, p_adjusted=0.001, improvement=0.0
+            self._paired(),
+            test={"n_effective": 20},
+            p_adjusted=0.001,
+            improvement=0.0,
+            ci_low=-0.01,
+            ci_high=0.01,
         )
         self.assertEqual(decision["decision"], A.DECISION_NONE)
+
+    # B02（task-226）：bootstrap 95% CI 必须参与判定，跨 0 不得判 SUPPORTED_*。
+    def test_decide_endpoint_significant_but_ci_crosses_zero(self):
+        decision = A.decide_endpoint(
+            self._paired(),
+            test={"n_effective": 20},
+            p_adjusted=0.001,
+            improvement=0.2,
+            ci_low=-0.05,
+            ci_high=0.4,
+        )
+        self.assertEqual(decision["decision"], A.DECISION_NONE)
+        self.assertTrue(any("CI" in reason and "跨 0" in reason for reason in decision["decision_reasons"]))
+
+    def test_decide_endpoint_harm_ci_crosses_zero(self):
+        decision = A.decide_endpoint(
+            self._paired(),
+            test={"n_effective": 20},
+            p_adjusted=0.001,
+            improvement=-0.2,
+            ci_low=-0.4,
+            ci_high=0.05,
+        )
+        self.assertEqual(decision["decision"], A.DECISION_NONE)
+
+    # B02（task-226）方向矩阵：4 端点 x benefit / harm / 跨 0 / 方向不符，
+    # 防止把「越小越好」端点（best_feasible_value/gap_to_reference/first_feasible_eval_index）
+    # 的 CI 方向判反，也防止只对 feasible_hit_rate 正确。
+    def test_decide_endpoint_ci_direction_matrix_for_all_primary_endpoints(self):
+        cases = {
+            # 每个端点的 beneficial CI（配对差值 treatment-reference 的方向）与达标改善量。
+            "best_feasible_value": {"improvement": 0.2, "benefit_ci": (-0.3, -0.1)},
+            "gap_to_reference": {"improvement": 0.2, "benefit_ci": (-0.3, -0.1)},
+            "first_feasible_eval_index": {"improvement": 10.0, "benefit_ci": (-3.0, -1.0)},
+            "feasible_hit_rate": {"improvement": 0.2, "benefit_ci": (0.1, 0.3)},
+        }
+        for endpoint, spec in cases.items():
+            improvement = float(spec["improvement"])
+            low, high = (float(value) for value in spec["benefit_ci"])
+            paired = self._paired(endpoint=endpoint)
+            with self.subTest(endpoint=endpoint, case="benefit"):
+                decision = A.decide_endpoint(
+                    paired,
+                    test={"n_effective": 20},
+                    p_adjusted=0.001,
+                    improvement=improvement,
+                    ci_low=low,
+                    ci_high=high,
+                )
+                self.assertEqual(decision["decision"], A.DECISION_BENEFIT)
+            with self.subTest(endpoint=endpoint, case="harm"):
+                decision = A.decide_endpoint(
+                    paired,
+                    test={"n_effective": 20},
+                    p_adjusted=0.001,
+                    improvement=-improvement,
+                    ci_low=-high,
+                    ci_high=-low,
+                )
+                self.assertEqual(decision["decision"], A.DECISION_HARM)
+            with self.subTest(endpoint=endpoint, case="cross_zero"):
+                decision = A.decide_endpoint(
+                    paired,
+                    test={"n_effective": 20},
+                    p_adjusted=0.001,
+                    improvement=improvement,
+                    ci_low=-abs(low),
+                    ci_high=abs(high),
+                )
+                self.assertEqual(decision["decision"], A.DECISION_NONE)
+                self.assertTrue(
+                    any("跨 0" in reason for reason in decision["decision_reasons"]),
+                    msg=f"{endpoint} 跨 0 的 reason 未说明：{decision['decision_reasons']}",
+                )
+            with self.subTest(endpoint=endpoint, case="direction_mismatch"):
+                # CI 不跨 0 但方向与「改善」相反：不得判 BENEFIT。
+                decision = A.decide_endpoint(
+                    paired,
+                    test={"n_effective": 20},
+                    p_adjusted=0.001,
+                    improvement=improvement,
+                    ci_low=-high,
+                    ci_high=-low,
+                )
+                self.assertEqual(decision["decision"], A.DECISION_NONE)
+                self.assertTrue(
+                    any("方向" in reason for reason in decision["decision_reasons"]),
+                    msg=f"{endpoint} 方向不符的 reason 未说明：{decision['decision_reasons']}",
+                )
+
+    def test_decide_endpoint_missing_ci_is_inconclusive(self):
+        decision = A.decide_endpoint(
+            self._paired(),
+            test={"n_effective": 20},
+            p_adjusted=0.001,
+            improvement=0.2,
+        )
+        self.assertEqual(decision["decision"], A.DECISION_INCONCLUSIVE)
+        self.assertFalse(decision["ci_defined"])
+        self.assertTrue(any("bootstrap CI" in reason for reason in decision["decision_reasons"]))
+
+    def test_decide_endpoint_nonfinite_ci_is_inconclusive(self):
+        decision = A.decide_endpoint(
+            self._paired(),
+            test={"n_effective": 20},
+            p_adjusted=0.001,
+            improvement=0.2,
+            ci_low=float("nan"),
+            ci_high=0.3,
+        )
+        self.assertEqual(decision["decision"], A.DECISION_INCONCLUSIVE)
+        self.assertFalse(decision["ci_defined"])
 
     def test_decide_endpoint_inconclusive_small_n(self):
         decision = A.decide_endpoint(
@@ -994,6 +1260,62 @@ class StatisticsTests(unittest.TestCase):
         self.assertEqual(row["decision"], A.DECISION_INCONCLUSIVE)
         self.assertIsNone(row["improvement"])
         self.assertIsNone(row["ci_low"])
+
+    # M01（task-226）：预注册改善量用中位数，不用均值；配对子集两臂均非 null。
+    def test_endpoint_improvement_uses_median_not_mean(self):
+        treatment = [1.0] * 19 + [100.0]
+        reference = [1.0] * 20
+        paired = self._paired(
+            treatment_values=treatment,
+            reference_values=reference,
+            differences=[left - right for left, right in zip(treatment, reference)],
+        )
+        improvement = A.endpoint_improvement(paired)
+        # 中位数：处理臂 1.0、参考臂 1.0 -> 相对改善 0；均值法则会给出约 -4.95（严重离群）。
+        self.assertAlmostEqual(improvement, 0.0, places=15)
+        mean_based = (1.0 - (sum(treatment) / len(treatment))) / 1.0
+        self.assertLess(mean_based, -4.0)
+        row = A.analyze_pair(paired, p_adjusted=0.001)
+        self.assertEqual(row["improvement_method"], "median_paired_subset")
+        self.assertAlmostEqual(row["improvement"], 0.0, places=15)
+
+    def test_endpoint_improvement_feasible_hit_rate_uses_median(self):
+        treatment = [0.1] * 19 + [0.9]
+        reference = [0.2] * 20
+        paired = self._paired(
+            endpoint="feasible_hit_rate",
+            treatment_values=treatment,
+            reference_values=reference,
+            differences=[left - right for left, right in zip(treatment, reference)],
+        )
+        # 处理臂中位数 0.1，参考臂中位数 0.2 -> 绝对改善 -0.1；均值法为 -0.06。
+        self.assertAlmostEqual(A.endpoint_improvement(paired), -0.1, places=15)
+
+    def test_endpoint_improvement_first_feasible_uses_median(self):
+        treatment = [2.0, 4.0, 6.0, 8.0, 100.0]
+        reference = [10.0] * 5
+        paired = self._paired(
+            endpoint="first_feasible_eval_index",
+            task_ids=[f"task-{index}" for index in range(5)],
+            paired_task_ids=[f"task-{index}" for index in range(5)],
+            treatment_values=treatment,
+            reference_values=reference,
+            differences=[left - right for left, right in zip(treatment, reference)],
+        )
+        # 处理臂中位数 6、参考臂中位数 10 -> 改善 4（评价次数更少更好）。
+        self.assertAlmostEqual(A.endpoint_improvement(paired), 4.0, places=15)
+
+    def test_endpoint_improvement_filters_unpaired_null_before_median(self):
+        paired = self._paired(
+            task_ids=["task-0", "task-1"],
+            paired_task_ids=["task-1"],
+            treatment_values=[None, 2.0],
+            reference_values=[1.0, 2.2],
+            differences=[2.0 - 2.2],
+        )
+        self.assertEqual(paired.n_pairs, 1)
+        improvement = A.endpoint_improvement(paired)
+        self.assertAlmostEqual(improvement, (2.2 - 2.0) / 2.2, places=15)
 
 
 # ---------------------------------------------------------------------------
@@ -1164,6 +1486,154 @@ class EndToEndTests(TempDirMixin):
         self.assertEqual(list(directory.glob("*.png")), [])
         for key, value in status["figures"].items():
             self.assertIn(value, (F.STATUS_NOT_RUN, F.STATUS_NOT_APPLICABLE), msg=key)
+
+
+# ---------------------------------------------------------------------------
+# M02（task-226）：Holm 族 = 同 (端点, 预算, K) 内的 5 个比较
+# ---------------------------------------------------------------------------
+
+
+class HolmFamilyTests(unittest.TestCase):
+    """M02：Holm 族必须按端点分组（每族 5 个比较），不得按 K 汇总 40 个检验。"""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.aggregate = full_e2e_run()["aggregate"]
+
+    def test_family_size_and_count_are_reported(self):
+        population = self.aggregate["primary_population"]
+        self.assertEqual(population["holm_family_size"], 5)
+        self.assertEqual(population["holm_family_count"], 24)
+        self.assertIn("5 个比较", population["holm_family"])
+        sizes = self.aggregate["statistical_rules"]["holm_family_sizes"]
+        self.assertEqual(len(sizes), 24)
+        self.assertEqual(set(sizes.values()), {5})
+        # 端点 4 个 x 预算 2 个 x 推断 K 3 个 = 24 个族。
+        self.assertEqual(len({key.split("|")[0] for key in sizes}), 4)
+
+    def test_holm_adjustment_grouped_by_endpoint_budget_and_k(self):
+        rows = [row for row in self.aggregate["endpoint_rows"] if row.get("row_type") == "comparison"]
+        self.assertEqual(len(rows), 120)
+        families: dict[tuple[str, int, int], list[dict]] = {}
+        for row in rows:
+            key = (str(row["endpoint"]), int(row["budget_B"]), int(row["K"]))
+            families.setdefault(key, []).append(row)
+        self.assertEqual(len(families), 24)
+        for key in sorted(families):
+            family = families[key]
+            self.assertEqual(len(family), 5, msg=str(key))
+            expected = A.holm_adjust([row["p_raw"] for row in family])
+            for row, adjusted in zip(family, expected):
+                self.assertAlmostEqual(row["p_adjusted"], adjusted, places=15, msg=str(key))
+
+    def test_c1_k3_best_endpoint_uses_family_of_five(self):
+        rows = [
+            row
+            for row in self.aggregate["endpoint_rows"]
+            if row.get("row_type") == "comparison"
+            and row["comparison_id"] == "C1"
+            and int(row["budget_B"]) == 64
+            and int(row["K"]) == 3
+            and row["endpoint"] == "best_feasible_value"
+        ]
+        self.assertEqual(len(rows), 1)
+        row = rows[0]
+        # 每族 5 个检验：p_adj 至多 min(1, 5*p_raw)，绝不可能再按 40 个检验放大。
+        self.assertLessEqual(row["p_adjusted"], min(1.0, 5.0 * row["p_raw"]) + 1e-15)
+
+
+# ---------------------------------------------------------------------------
+# B01 回归：runner 正式网格记录（含 grid_stratum）-> 分析端端到端可分析
+# ---------------------------------------------------------------------------
+
+
+class RunnerToAnalysisIntegrationTests(TempDirMixin):
+    """用 runner 的 selftest 口径生成 1 条正式网格记录，验证 analysis 能加载/校验/出产物。"""
+
+    @classmethod
+    def setUpClass(cls):
+        import importlib
+
+        cls.runner = importlib.import_module("research.concorde_metaopt.meta_learning.s1_runner")
+        cls.bundle = frozen_bundle()
+        cls.task_id = cls.bundle.task_ids_for(A.MAIN_SPLIT)[0]
+
+    def _runner_bundle_dir(self):
+        directory = self.make_temp_dir() / "runner-bundle"
+        package = self.runner.load_frozen_package(FROZEN_DIR)
+        plan = [
+            {
+                "split": A.MAIN_SPLIT,
+                "task_id": self.task_id,
+                "arm": "RAND-BO",
+                "budget_B": 64,
+                "K": 3,
+                "meta_seed": 0,
+                "opt_seed": 0,
+                "grid_stratum": "main",
+            }
+        ]
+        run_id = "s1-selftest-analysis-integration"
+        records = self.runner.execute_runs(package, run_id=run_id, plan=plan)
+        self.assertEqual(len(records), 1)
+        self.assertEqual(records[0]["grid_stratum"], "main")
+        # 只读回归：runner 记录字段必须全部被 analysis 认识（防止 runner/analysis 记录 schema 静默漂移）。
+        unknown = sorted(set(records[0]) - set(A.RECORD_KNOWN_FIELDS))
+        self.assertEqual(unknown, [], msg=f"runner 记录出现 analysis 未登记字段：{unknown}")
+        # 可辨识性审计字段：runner 必须写 8 行初始设计的 sha256（analysis 只做格式/行数校验）。
+        self.assertRegex(records[0]["initial_designs_sha256"], r"^[0-9a-f]{64}$")
+        # CONTRACT_AMBIGUITY：字段名似「全部初始设计」，但 runner 实际记录新初始点 = 8-K 行。
+        self.assertEqual(
+            len(records[0]["initial_design_row_digests"]),
+            A.INITIAL_DESIGN_COUNT - int(records[0]["K"]),
+        )
+        for digest in records[0]["initial_design_row_digests"]:
+            self.assertRegex(digest, r"^[0-9a-f]{64}$")
+        run_config = self.runner.build_grid_run_config(
+            package,
+            run_id=run_id,
+            plan=plan,
+            grid_mode=self.runner.FORMAL_GRID_MODE,
+        )
+        self.runner.write_run_bundle(
+            directory,
+            run_id=run_id,
+            package=package,
+            records=records,
+            run_config=run_config,
+        )
+        return directory
+
+    def test_runner_records_accepted_and_analyzed(self):
+        bundle_dir = self._runner_bundle_dir()
+        records, sources = A.load_run_records(bundle_dir)
+        self.assertEqual(len(sources), 1)
+        self.assertEqual(len(records), 1)
+        self.assertEqual(records[0]["grid_stratum"], "main")
+        self.assertEqual(records[0]["physics"]["physical_call_count"], 0)
+        validation = A.validate_run_records(records, self.bundle)
+        self.assertEqual(validation.record_count, 1)
+        self.assertEqual(validation.counts_by_status, {"OK": 1})
+        self.assertEqual(validation.counts_by_arm, {"RAND-BO": 1})
+
+        out_dir = self.make_temp_dir() / "analysis-out"
+        aggregate = A.run_s1_analysis(
+            FROZEN_DIR,
+            bundle_dir,
+            out_dir,
+            make_figures=False,
+            require_complete_grid=False,
+        )
+        self.assertEqual(aggregate["validation"]["record_count"], 1)
+        self.assertEqual(aggregate["grid"]["status"], "SKIPPED_BY_CALLER")
+        for name in A.S1_OUTPUT_FILES:
+            self.assertTrue((out_dir / name).is_file(), msg=f"缺少产物 {name}")
+        self.assertEqual(
+            aggregate["figure_status"]["figures"]["fig1_meta_training_loss"], "NOT_RUN"
+        )
+        self.assertEqual(
+            aggregate["limitations"][0].count("physical_call_count=0"), 1
+        )
 
 
 # ---------------------------------------------------------------------------

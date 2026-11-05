@@ -172,6 +172,18 @@ def designs_digest(designs: Any) -> str:
     return hashlib.sha256(header + payload).hexdigest()
 
 
+def design_row_digests(designs: Any) -> list[str]:
+    """逐行设计指纹（与 designs_digest 相同的 1e-12 舍入），用于臂间初始设计重叠率。"""
+    matrix = np.asarray(designs, dtype=np.float64)
+    if matrix.ndim != 2 or matrix.shape[1] != DESIGN_DIM:
+        raise M5ArmError(f"设计矩阵必须为 (n,{DESIGN_DIM})，实际 {matrix.shape}")
+    rounded = np.round(matrix, 12)
+    return [
+        hashlib.sha256(np.ascontiguousarray(row, dtype="<f8").tobytes()).hexdigest()
+        for row in rounded
+    ]
+
+
 def artifact_sha256(artifact: Any) -> str:
     """代理 artifact 指纹：参数字节 + 结构配置（跨进程确定性）。"""
     from .maml import ParameterSet
@@ -1056,6 +1068,7 @@ __all__ = [
     "build_m5_model_artifacts",
     "build_m5_pretrain_artifact",
     "canonical_digest",
+    "design_row_digests",
     "designs_digest",
     "identifiability_audit",
     "identifiability_rows",
@@ -1328,6 +1341,7 @@ def s1_new_initial_designs(
                 "true_evaluation_budget_used": 0,
                 "wall_s": 0.0,
                 "initial_designs_sha256": designs_digest(designs),
+                "initial_design_row_digests": design_row_digests(designs),
             },
         }
     if design_space is None:
@@ -1336,8 +1350,11 @@ def s1_new_initial_designs(
         raise S1ArmError(f"{arm} 需要 model_artifact（代理打分选初始点）")
     if arm == S1_PRETRAIN_KSHOT_BO:
         method = "fine_tuning" if k_shot > 0 else "none"
+    elif arm == S1_FOMAML_KSHOT_BO:
+        method = "maml" if k_shot > 0 else "none"
     else:
-        method = "maml"
+        # 合同：FOMAML-ZERO-BO 在任何 K 下都不做支持集适应（支持点仍真实评价并计入预算）。
+        method = "none"
     adapt_k = int(k_shot) if method in ("maml", "fine_tuning") else 0
     if adapt_k > 0:
         if support_features is None or support_targets is None:
@@ -1362,6 +1379,8 @@ def s1_new_initial_designs(
     cost["kind"] = "s1_model_scored_init"
     cost["method"] = method
     cost["support_evals"] = int(k_shot)
+    cost["initial_designs_sha256"] = designs_digest(designs)
+    cost["initial_design_row_digests"] = design_row_digests(designs)
     return {
         "designs": designs,
         "method": method,

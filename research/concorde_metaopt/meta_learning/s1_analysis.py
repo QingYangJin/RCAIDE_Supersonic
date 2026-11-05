@@ -772,9 +772,103 @@ def load_frozen_bundle(
 # run_records 加载与记录级强校验
 # ---------------------------------------------------------------------------
 S1_RECORD_SCHEMA_VERSION = "p4ra-s1-run-record-1"
-RECORD_KNOWN_FIELDS = set(RECORD_REQUIRED_FIELDS) | {"schema_version", "clone_of", "inference_eligible"}
+RECORD_KNOWN_FIELDS = set(RECORD_REQUIRED_FIELDS) | {
+    "schema_version",
+    "clone_of",
+    "inference_eligible",
+    # B01（task-226）：runner 的 formal 网格写 grid_stratum；分析端必须认识并校验，否则 formal run 无法分析。
+    "grid_stratum",
+    # B01 续（task-226）：runner 的可辨识性审计（task-227 / S1-B03）写两个可选字段；
+    # formal run 记录会携带它们，分析端必须接受并做格式校验，否则仍无法分析。
+    "initial_designs_sha256",
+    "initial_design_row_digests",
+}
 FAILURE_REASONS = tuple(FAILURE_REASONS_REQUIRED_FOR)
 TRUE_NULL_RATE_TOL = 1e-12
+
+# formal 网格分层（与 s1_runner.py 的 FORMAL_GRID_STRATA 保持一致；此处只做只读校验，不 import runner）。
+GRID_STRATUM_NAMES = ("main", "secondary", "exploratory")
+GRID_STRATUM_RULES = {
+    "main": {"budgets": (64,), "k_values": (0, 3, 5)},
+    "secondary": {"budgets": (128,), "k_values": (3, 5)},
+    "exploratory": {"budgets": (64, 128), "k_values": (1,)},
+}
+
+
+def expected_grid_stratum(budget_B: int, K: int) -> str | None:
+    """按 formal 网格返回 (B,K) 所属分层；不属于 formal 网格返回 None。"""
+    for name in GRID_STRATUM_NAMES:
+        rule = GRID_STRATUM_RULES[name]
+        if int(budget_B) in rule["budgets"] and int(K) in rule["k_values"]:
+            return name
+    return None
+
+
+def _validate_grid_stratum(record: Mapping[str, Any], index: int) -> None:
+    """B01：grid_stratum 若出现则必须是合法分层且与 (B,K) 一致；缺省/null 兼容 cartesian 记录。"""
+    if "grid_stratum" not in record or record.get("grid_stratum") is None:
+        return
+    value = record.get("grid_stratum")
+    if not isinstance(value, str):
+        raise S1RecordValidationError(
+            f"[{index}] grid_stratum 必须是 str 或 null（实际 {type(value).__name__}）"
+        )
+    if value not in GRID_STRATUM_NAMES:
+        raise S1RecordValidationError(
+            f"[{index}] grid_stratum 非法：{value!r}（允许 {GRID_STRATUM_NAMES}）"
+        )
+    expected = expected_grid_stratum(int(record["budget_B"]), int(record["K"]))
+    if expected is None:
+        raise S1RecordValidationError(
+            f"[{index}] (budget_B={record['budget_B']}, K={record['K']}) 不属于 formal 网格，"
+            f"不得登记 grid_stratum={value!r}"
+        )
+    if value != expected:
+        raise S1RecordValidationError(
+            f"[{index}] grid_stratum 与 (budget_B,K) 不一致：登记 {value!r}，按 formal 网格应为 {expected!r}"
+        )
+
+
+def _validate_design_identifiability_fields(record: Mapping[str, Any], index: int) -> None:
+    """B01 续（task-226）：校验 runner 的可辨识性审计字段（可空，非空必须规范）。
+
+    runner（task-227 / S1-B03）在模型打分臂上写：
+    - initial_designs_sha256：新初始设计整体 sha256（64 位小写十六进制）；
+    - initial_design_row_digests：逐行 sha256 列表。
+    CONTRACT_AMBIGUITY（已报告 Lead）：字段名像「全部初始设计」，但 runner 实际记录的是
+    支持集之外的新初始点，行数 = INITIAL_DESIGN_COUNT - K（8 个共享初始点中 K 个用于支持集）；
+    因此校验按 8-K 行 fail-closed，而不是固定 8 行。
+    analysis 只做格式/行数校验，不重算造型语义（由 runner 负责）。
+    """
+    prefix = f"[{index}] "
+    sha = record.get("initial_designs_sha256")
+    if sha is not None:
+        if not isinstance(sha, str) or SHA256_RE.match(sha) is None:
+            raise S1RecordValidationError(
+                prefix + "initial_designs_sha256 必须为 null 或 64 位小写十六进制 sha256"
+            )
+    rows = record.get("initial_design_row_digests")
+    if rows is not None:
+        if not isinstance(rows, (list, tuple)):
+            raise S1RecordValidationError(
+                prefix + "initial_design_row_digests 必须为 null 或 sha256 列表"
+            )
+        k_shot = record.get("K")
+        expected_rows = INITIAL_DESIGN_COUNT - k_shot if _is_int(k_shot) else None
+        if expected_rows is None or expected_rows < 0:
+            raise S1RecordValidationError(prefix + "K 缺失/非法，无法校验 initial_design_row_digests 行数")
+        if len(rows) != expected_rows:
+            raise S1RecordValidationError(
+                prefix
+                + f"initial_design_row_digests 必须为 null 或恰 {expected_rows} 行"
+                + f"（INITIAL_DESIGN_COUNT({INITIAL_DESIGN_COUNT}) - K({k_shot})），实际 {len(rows)} 行"
+            )
+        for row_index, digest in enumerate(rows):
+            if not isinstance(digest, str) or SHA256_RE.match(digest) is None:
+                raise S1RecordValidationError(
+                    prefix
+                    + f"initial_design_row_digests[{row_index}] 必须为 64 位小写十六进制 sha256"
+                )
 
 
 @dataclass
@@ -873,6 +967,29 @@ def _validate_physics(physics: Any, index: int) -> None:
         raise S1RecordValidationError(f"[{index}] physics.physics_guard 必须为 PASS")
 
 
+def _validate_finite_json(value: Any, *, index: int, path: str) -> None:
+    """校验嵌套成本明细为 JSON 值且数值有限（fail-closed，禁止 NaN/inf）。"""
+    if value is None or isinstance(value, (bool, int)):
+        return
+    if isinstance(value, float):
+        if not math.isfinite(value):
+            raise S1RecordValidationError(f"[{index}] {path} 的数值必须有限（实际 {value!r}）")
+        return
+    if isinstance(value, str):
+        return
+    if isinstance(value, Mapping):
+        for key, item in value.items():
+            if not isinstance(key, str):
+                raise S1RecordValidationError(f"[{index}] {path} 的键必须是 str（实际 {key!r}）")
+            _validate_finite_json(item, index=index, path=f"{path}.{key}")
+        return
+    if isinstance(value, (list, tuple)):
+        for position, item in enumerate(value):
+            _validate_finite_json(item, index=index, path=f"{path}[{position}]")
+        return
+    raise S1RecordValidationError(f"[{index}] {path} 不是合法 JSON 值（{type(value).__name__}）")
+
+
 def _validate_cost(cost: Any, index: int) -> None:
     if not isinstance(cost, Mapping):
         raise S1RecordValidationError(f"[{index}] cost 必须是 object")
@@ -881,8 +998,14 @@ def _validate_cost(cost: Any, index: int) -> None:
         raise S1RecordValidationError(f"[{index}] cost 键必须为 {sorted(expected)}，实际 {sorted(cost)}")
     for name in expected:
         value = cost[name]
+        # CONTRACT_AMBIGUITY（task-226，已报告 Lead）：合同示例把 proxy_scoring_cost 记为数值，
+        # 但 runner 在 S1 模型打分臂上写嵌套映射（kind/initial_designs_sha256/model_scoring 明细）。
+        # 分析端 fail-closed 地接受「非负有限数 | null | 有限 JSON 映射」，其余照旧拒绝。
+        if name == "proxy_scoring_cost" and isinstance(value, Mapping):
+            _validate_finite_json(value, index=index, path="cost.proxy_scoring_cost")
+            continue
         if value is not None and (not _is_number(value) or not math.isfinite(float(value)) or float(value) < 0):
-            raise S1RecordValidationError(f"[{index}] cost.{name} 必须是非负有限数或 null")
+            raise S1RecordValidationError(f"[{index}] cost.{name} 必须是非负有限数、null 或有限 JSON 映射")
 
 
 def _validate_endpoint_values(values: Any, *, status: str, budget_B: int, K: int, index: int) -> None:
@@ -1157,7 +1280,9 @@ def validate_run_records(
         if record.get("run_group_id") not in groups:
             groups.append(str(record["run_group_id"]))
         _validate_budget_fields(record, index)
+        _validate_grid_stratum(record, index)
         _validate_identifiability(record, index)
+        _validate_design_identifiability_fields(record, index)
         _validate_endpoint_values(
             record.get("endpoint_values"),
             status=str(record.get("status")),
@@ -1701,27 +1826,66 @@ def _endpoint_threshold(endpoint: str, budget_B: int) -> float:
     return RELATIVE_IMPROVEMENT_THRESHOLD
 
 
-def endpoint_improvement(paired: PairedEndpoint) -> float | None:
-    """正数表示处理臂优于参考臂（按端点方向统一符号）。
+def _median(values: Sequence[float]) -> float | None:
+    """样本中位数（偶数取中间两值均值）；空序列返回 None。"""
+    ordered = sorted(float(value) for value in values)
+    count = len(ordered)
+    if count == 0:
+        return None
+    middle = count // 2
+    if count % 2 == 1:
+        return float(ordered[middle])
+    return float((ordered[middle - 1] + ordered[middle]) / 2.0)
 
-    - best_feasible_value / gap_to_reference：相对改善 =(参考均值 - 处理均值)/max(|参考均值|,1e-12)
-    - feasible_hit_rate：绝对改善 = 处理均值 - 参考均值
-    - first_feasible_eval_index：绝对改善 = 参考均值 - 处理均值（评价次数越少越好）
+
+def _paired_endpoint_values(paired: PairedEndpoint) -> tuple[list[float], list[float]]:
+    """取两臂均非 null 的配对子集（与 Wilcoxon/CI 使用同一配对规则，不做单臂插补）。"""
+    treatment: list[float] = []
+    reference: list[float] = []
+    for left, right in zip(paired.treatment_values, paired.reference_values):
+        if left is None or right is None:
+            continue
+        treatment.append(float(left))
+        reference.append(float(right))
+    return treatment, reference
+
+
+def _ci_supports_direction(endpoint: str, ci_low: float, ci_high: float, *, beneficial: bool) -> bool:
+    """B02（task-226）：bootstrap CI 必须与端点方向一致且不跨 0。
+
+    配对差值定义为 treatment - reference：
+    - feasible_hit_rate 越大越好 -> BENEFIT 要求 CI 下界 > 0；HARM 要求 CI 上界 < 0；
+    - best_feasible_value / gap_to_reference / first_feasible_eval_index 越小越好
+      -> BENEFIT 要求 CI 上界 < 0；HARM 要求 CI 下界 > 0。
+    """
+    if endpoint == "feasible_hit_rate":
+        return ci_low > 0.0 if beneficial else ci_high < 0.0
+    return ci_high < 0.0 if beneficial else ci_low > 0.0
+
+
+def endpoint_improvement(paired: PairedEndpoint) -> float | None:
+    """预注册改善量：在配对（两臂均非 null）子集上取中位数，正数表示处理臂更优。
+
+    M01（task-226）：统计计划要求效应量用中位数而非均值；
+    - best_feasible_value / gap_to_reference：相对改善 =(参考中位数 - 处理中位数)/max(|参考中位数|,1e-12)
+    - feasible_hit_rate：绝对改善 = 处理中位数 - 参考中位数
+    - first_feasible_eval_index：绝对改善 = 参考中位数 - 处理中位数（评价次数越少越好）
     """
     if paired.n_pairs == 0:
         return None
-    treatment = [value for value in paired.treatment_values if value is not None]
-    reference = [value for value in paired.reference_values if value is not None]
+    treatment, reference = _paired_endpoint_values(paired)
     if not treatment or not reference:
         return None
-    treatment_mean = sum(treatment) / len(treatment)
-    reference_mean = sum(reference) / len(reference)
+    treatment_median = _median(treatment)
+    reference_median = _median(reference)
+    if treatment_median is None or reference_median is None:
+        return None
     if paired.endpoint in ("best_feasible_value", "gap_to_reference"):
-        return float((reference_mean - treatment_mean) / max(abs(reference_mean), 1e-12))
+        return float((reference_median - treatment_median) / max(abs(reference_median), 1e-12))
     if paired.endpoint == "feasible_hit_rate":
-        return float(treatment_mean - reference_mean)
+        return float(treatment_median - reference_median)
     if paired.endpoint == "first_feasible_eval_index":
-        return float(reference_mean - treatment_mean)
+        return float(reference_median - treatment_median)
     raise S1AnalysisError(f"端点 {paired.endpoint!r} 不属于 4 个主端点")
 
 
@@ -1731,8 +1895,15 @@ def decide_endpoint(
     test: Mapping[str, Any],
     p_adjusted: float | None,
     improvement: float | None,
+    ci_low: float | None = None,
+    ci_high: float | None = None,
 ) -> dict[str, Any]:
-    """按预注册阈值给出单端点判定（fail-closed：缺信息一律 INCONCLUSIVE）。"""
+    """按预注册阈值给出单端点判定（fail-closed：缺信息一律 INCONCLUSIVE）。
+
+    B02（task-226）：统计计划要求 SUPPORTED_BENEFIT 同时满足
+    Holm p<0.05、95% bootstrap CI 不跨 0 且方向与端点一致、方向有利且达到阈值；
+    CI 缺失/非有限 → INCONCLUSIVE；CI 跨 0/方向不一致 → 不得判 SUPPORTED_*（NO_EVIDENCE）。
+    """
     endpoint = paired.endpoint
     budget = paired.budget_B
     threshold = _endpoint_threshold(endpoint, budget)
@@ -1742,6 +1913,14 @@ def decide_endpoint(
         "reference": paired.null_rate_reference,
     }
     max_null_rate = max(null_rates.values()) if null_rates else 1.0
+    ci_defined = (
+        ci_low is not None
+        and ci_high is not None
+        and _is_finite_number(ci_low)
+        and _is_finite_number(ci_high)
+    )
+    ci_low_value = float(ci_low) if ci_defined else None
+    ci_high_value = float(ci_high) if ci_defined else None
     decision = DECISION_NONE
     if paired.n_pairs < WILCOXON_MIN_PAIRS:
         decision = DECISION_INCONCLUSIVE
@@ -1755,20 +1934,57 @@ def decide_endpoint(
     elif p_adjusted is None or improvement is None or not math.isfinite(float(improvement)):
         decision = DECISION_INCONCLUSIVE
         reasons.append("调整后 p 值或改善量缺失/非有限")
+    elif not ci_defined:
+        decision = DECISION_INCONCLUSIVE
+        reasons.append("95% bootstrap CI 缺失/非有限（CI 必须参与判定）")
     elif float(p_adjusted) < ALPHA and float(improvement) >= threshold:
-        decision = DECISION_BENEFIT
-        reasons.append(f"p_adj={float(p_adjusted):.6g} < {ALPHA} 且改善 {float(improvement):.6g} >= 阈值 {threshold:.6g}")
+        if ci_low_value is not None and ci_high_value is not None and _ci_supports_direction(
+            endpoint, ci_low_value, ci_high_value, beneficial=True
+        ):
+            decision = DECISION_BENEFIT
+            reasons.append(
+                f"p_adj={float(p_adjusted):.6g} < {ALPHA}、改善 {float(improvement):.6g} >= 阈值 {threshold:.6g} "
+                f"且 95% CI [{ci_low_value:.6g}, {ci_high_value:.6g}] 不跨 0 且方向有利（{endpoint}）"
+            )
+        else:
+            decision = DECISION_NONE
+            reasons.append(
+                f"p_adj={float(p_adjusted):.6g} 显著且改善达阈值，但 95% CI [{ci_low_value:.6g}, {ci_high_value:.6g}] 跨 0 或方向与端点不一致（{endpoint}），"
+                "不得判 SUPPORTED_BENEFIT"
+            )
     elif float(p_adjusted) < ALPHA and float(improvement) <= -threshold:
-        decision = DECISION_HARM
-        reasons.append(f"p_adj={float(p_adjusted):.6g} < {ALPHA} 且恶化 {float(improvement):.6g} <= -阈值 {-threshold:.6g}")
+        if ci_low_value is not None and ci_high_value is not None and _ci_supports_direction(
+            endpoint, ci_low_value, ci_high_value, beneficial=False
+        ):
+            decision = DECISION_HARM
+            reasons.append(
+                f"p_adj={float(p_adjusted):.6g} < {ALPHA}、恶化 {float(improvement):.6g} <= -阈值 {-threshold:.6g} "
+                f"且 95% CI [{ci_low_value:.6g}, {ci_high_value:.6g}] 不跨 0 且方向不利（{endpoint}）"
+            )
+        else:
+            decision = DECISION_NONE
+            reasons.append(
+                f"p_adj={float(p_adjusted):.6g} 显著且恶化达阈值，但 95% CI [{ci_low_value:.6g}, {ci_high_value:.6g}] 跨 0 或方向与端点不一致（{endpoint}），"
+                "不得判 SUPPORTED_HARM"
+            )
+    elif float(p_adjusted) >= ALPHA:
+        reasons.append(
+            f"p_adj={float(p_adjusted):.6g} >= {ALPHA}（Holm 后不显著）；"
+            f"改善 {float(improvement):.6g}，阈值 {threshold:.6g}"
+        )
     else:
-        reasons.append(f"p_adj={p_adjusted if p_adjusted is None else format(float(p_adjusted), '.6g')} 或改善 {improvement if improvement is None else format(float(improvement), '.6g')} 未达显著/阈值")
+        reasons.append(
+            f"p_adj={float(p_adjusted):.6g} 显著但改善 {float(improvement):.6g} 未达阈值 {threshold:.6g}"
+        )
     return {
         "decision": decision,
         "decision_reasons": reasons,
         "threshold": float(threshold),
         "improvement": None if improvement is None else float(improvement),
         "p_adjusted": None if p_adjusted is None else float(p_adjusted),
+        "ci_low": ci_low_value,
+        "ci_high": ci_high_value,
+        "ci_defined": bool(ci_defined),
         "n_pairs": paired.n_pairs,
         "max_null_rate": float(max_null_rate),
         "null_rate_treatment": float(null_rates["treatment"]),
@@ -1796,7 +2012,14 @@ def analyze_pair(
         ),
     )
     improvement = endpoint_improvement(paired)
-    decision = decide_endpoint(paired, test=test, p_adjusted=p_adjusted, improvement=improvement)
+    decision = decide_endpoint(
+        paired,
+        test=test,
+        p_adjusted=p_adjusted,
+        improvement=improvement,
+        ci_low=ci["low"],
+        ci_high=ci["high"],
+    )
     row: dict[str, Any] = {
         "comparison_id": paired.comparison_id,
         "role": str(COMPARISON_BY_ID[paired.comparison_id]["role"]),
@@ -1815,8 +2038,10 @@ def analyze_pair(
         "cohens_d": effects["cohens_d"],
         "rank_biserial": effects["rank_biserial"],
         "improvement": improvement,
+        "improvement_method": "median_paired_subset",
         "ci_low": ci["low"],
         "ci_high": ci["high"],
+        "ci_method": ci["method"],
         "wilcoxon_statistic": test["statistic"],
         "wilcoxon_w_plus": test["w_plus"],
         "wilcoxon_w_minus": test["w_minus"],
@@ -1839,7 +2064,11 @@ def collect_hypotheses(
     split: str,
     inference_ks: Sequence[int] = (1, 3, 5),
 ) -> dict[str, Any]:
-    """构造全部可检验配对（C1..C5 x B x K x 4 主端点），并做 Holm（族=K）。"""
+    """构造全部可检验配对（C1..C5 x B x K x 4 主端点），并按预注册做 Holm。
+
+    M02（task-226）：Holm 族 = 同 (端点, 预算, K) 内的 5 个比较（每族 5 次检验），
+    而非按 K 汇总 40 个检验；这样与统计计划“每个端点内 5 个比较”一致。
+    """
     pairs: list[PairedEndpoint] = []
     for K in inference_ks:
         for budget in MAIN_POPULATION_BUDGETS:
@@ -1856,17 +2085,20 @@ def collect_hypotheses(
                     )
                     if paired is not None:
                         pairs.append(paired)
-    # 先原始 p 值，再按 K 分组 Holm。
+    # 先原始 p 值，再按 (端点, 预算, K) 分组 Holm（M02：每族 5 个比较）。
     raw: list[tuple[PairedEndpoint, dict[str, Any]]] = []
     for paired in pairs:
         test = wilcoxon_signed_rank(paired.differences)
         raw.append((paired, test))
-    by_k: dict[int, list[int]] = {}
-    for index, (paired, _) in enumerate(raw):
-        by_k.setdefault(int(paired.K), []).append(index)
+    by_family: dict[tuple[str, int, int], list[int]] = {}
+    for index, (paired, _test) in enumerate(raw):
+        key = (str(paired.endpoint), int(paired.budget_B), int(paired.K))
+        by_family.setdefault(key, []).append(index)
     adjusted = [None] * len(raw)
-    for K in sorted(by_k):
-        indices = by_k[K]
+    family_sizes: dict[str, int] = {}
+    for key in sorted(by_family):
+        indices = by_family[key]
+        family_sizes[f"{key[0]}|B{key[1]}|K{key[2]}"] = len(indices)
         values = [raw[index][1]["p_value"] for index in indices]
         for index, value in zip(indices, holm_adjust(values)):
             adjusted[index] = value
@@ -1876,7 +2108,10 @@ def collect_hypotheses(
     return {
         "split": split,
         "n_hypotheses": len(rows),
-        "holm_family_definition": "同 K 内全部比较 x 2 预算 x 4 主端点",
+        "holm_family_definition": "同 (端点, 预算, K) 内的 5 个比较为一个 Holm 族",
+        "holm_family_size": 5,
+        "holm_family_count": len(by_family),
+        "holm_family_sizes": family_sizes,
         "rows": rows,
         "pairs": pairs,
     }
@@ -2177,9 +2412,16 @@ def build_arm_summary_rows(
 def _hypothesis_rows(
     cells: Mapping[tuple[str, int, int, str], AggregatedCell],
     bundle: FrozenBundle,
-) -> list[dict[str, Any]]:
+) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    """返回假设行与 Holm 族信息（M02：族大小、族计数必须随 aggregate 输出）。"""
     collected = collect_hypotheses(cells, bundle, split=MAIN_SPLIT, inference_ks=INFERENCE_KS)
-    return list(collected["rows"])
+    family_info = {
+        "holm_family_definition": collected["holm_family_definition"],
+        "holm_family_size": collected["holm_family_size"],
+        "holm_family_count": collected["holm_family_count"],
+        "holm_family_sizes": collected["holm_family_sizes"],
+    }
+    return list(collected["rows"]), family_info
 
 
 def _endpoint_table_rows(
@@ -2420,7 +2662,7 @@ def run_s1_analysis(
         else {"status": "SKIPPED_BY_CALLER", "split": [MAIN_SPLIT]}
     )
     cells = aggregate_run_records(all_records, bundle)
-    hypotheses = _hypothesis_rows(cells, bundle)
+    hypotheses, holm_family_info = _hypothesis_rows(cells, bundle)
     endpoint_rows = _endpoint_table_rows(cells, bundle, hypotheses)
     primary = primary_conclusion(hypotheses)
     reproduction = secondary_reproduction_conclusion(hypotheses)
@@ -2489,7 +2731,9 @@ def run_s1_analysis(
             "exploratory_ks": list(EXPLORATORY_KS),
             "excluded_ks": [0],
             "excluded_note": "K=0 时 FOMAML-KSHOT-BO 与 FOMAML-ZERO-BO 同构（CLONE），排除推断",
-            "holm_family": "同 K 内全部比较 x 2 预算 x 4 主端点",
+            "holm_family": "同 (端点, 预算, K) 内的 5 个比较为一个 Holm 族（M02 修复后）",
+            "holm_family_size": 5,
+            "holm_family_count": holm_family_info["holm_family_count"],
             "alpha": ALPHA,
             "bootstrap": {"samples": BOOTSTRAP_SAMPLES, "seed": BOOTSTRAP_SEED, "confidence": CONFIDENCE_LEVEL},
         },
@@ -2505,8 +2749,11 @@ def run_s1_analysis(
             "unit": "task",
             "aggregation": "opt seed -> (task, meta_seed) 均值；meta_seed 等权 -> 任务级",
             "test": "双侧 Wilcoxon 符号秩（n<=20 无并列用精确分布；并列用正态近似+并列/连续性修正）",
-            "multiple_comparison": "Holm-Bonferroni（族=同 K 内比较 x 预算 x 4 主端点）",
+            "multiple_comparison": "Holm-Bonferroni（族=同 (端点, 预算, K) 内的 5 个比较）",
+            "holm_family_sizes": holm_family_info["holm_family_sizes"],
+            "improvement": "预注册中位数（配对且两臂均非 null 的子集；best/gap 相对改善，hit/first 绝对差）",
             "ci": "配对差值均值的百分位 bootstrap（10000 次，seed=20261105）",
+            "ci_decision_rule": "SUPPORTED_* 需 Holm p<0.05 且 95% bootstrap CI 不跨 0 且方向有利且达阈值；CI 缺失→INCONCLUSIVE",
             "null_policy": "null 不插补、不转 0；主端点 null 率>70% 判 INCONCLUSIVE",
             "min_pairs": WILCOXON_MIN_PAIRS,
             "thresholds": {

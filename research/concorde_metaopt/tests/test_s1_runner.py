@@ -886,5 +886,260 @@ class GridStratumRecordTests(unittest.TestCase):
         )
 
 
+class ArmSemanticsB03Tests(unittest.TestCase):
+    """S1-B03 修复：FOMAML-ZERO-BO 任意 K 均不适配；K-shots 臂语义与可辨识性证据。"""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.package = s1.load_frozen_package(FROZEN)
+        cls.design_space = load_design_space_12d()
+        train_tasks = [task for task in cls.package["tasks"] if task.split == "meta_train"][:2]
+        blocks = build_task_blocks(train_tasks)
+        raw = m5.build_m5_model_artifacts(
+            blocks, train_tasks, meta_seed=0, maml_steps=1, pretrain_steps=1
+        )
+        cls.bundle = {
+            "schema_version": "p4ra-s1-model-artifacts-1",
+            "meta_seed": 0,
+            "target_names": list(raw["target_names"]),
+            "pretrain": s1.serialize_model_artifact(raw["pretrain"]),
+            "maml": s1.serialize_model_artifact(raw["maml"]),
+            "artifacts_sha256": raw["artifacts_sha256"],
+            "physical_call_count": 0,
+        }
+        meta_test_ids = list(cls.package["split"]["task_ids"]["meta_test"])
+        cls.task = cls.package["tasks_by_id"][meta_test_ids[0]]
+        cls.te003 = cls.package["tasks_by_id"][meta_test_ids[3]]
+
+    def _support(self, task, k_shot=5, meta_seed=0):
+        support = s1.select_support_designs(task, k_shot=k_shot, meta_seed=meta_seed)
+        if k_shot == 0:
+            return support, None, None
+        features, targets = m5._s1_support_xy(task, support)
+        return support, features, targets
+
+    def _initial(self, task, arm, k_shot=5, targets=None, features=None):
+        support, sf, st = self._support(task, k_shot=k_shot)
+        if features is not None:
+            sf = features
+        if targets is not None:
+            st = targets
+        return m5.s1_new_initial_designs(
+            arm,
+            task,
+            seed=0,
+            k_shot=k_shot,
+            design_space=self.design_space,
+            model_artifact=s1.artifact_for_arm(self.bundle, arm),
+            support_features=sf,
+            support_targets=st,
+        )
+
+    def _context(self, task):
+        return s1.RunContext(
+            task=task,
+            design_space=self.design_space,
+            model_artifact=self.bundle,
+            identity=_identity(self.package),
+            run_id="p4ra-s1-b03-test",
+        )
+
+    def test_zero_shot_never_adapts_for_any_k(self):
+        artifact = s1.artifact_for_arm(self.bundle, m5.S1_FOMAML_ZERO_BO)
+        for k_shot in (1, 3, 5):
+            initial = self._initial(self.te003, m5.S1_FOMAML_ZERO_BO, k_shot=k_shot)
+            cost = initial["proxy_scoring_cost"]
+            self.assertEqual(initial["method"], "none")
+            self.assertEqual(cost["adaptation_k_shot"], 0)
+            self.assertEqual(cost["method"], "none")
+            plan = m5.s1_expected_budget(k_shot, 64)
+            baseline = m5.score_m5_init_designs(
+                artifact,
+                self.design_space,
+                self.te003,
+                seed=0,
+                method="none",
+                k_shot=0,
+                initial_design_count=int(plan["initial_evals"]),
+            )
+            self.assertEqual(
+                m5.designs_digest(initial["designs"]),
+                m5.designs_digest(baseline["designs"]),
+            )
+
+    def test_k_shot_arms_adapt_with_expected_method(self):
+        kshot = self._initial(self.te003, m5.S1_FOMAML_KSHOT_BO)
+        self.assertEqual(kshot["method"], "maml")
+        self.assertEqual(kshot["proxy_scoring_cost"]["adaptation_k_shot"], 5)
+        pretrain = self._initial(self.te003, m5.S1_PRETRAIN_KSHOT_BO)
+        self.assertEqual(pretrain["method"], "fine_tuning")
+        self.assertEqual(pretrain["proxy_scoring_cost"]["adaptation_k_shot"], 5)
+        zero_k0 = self._initial(self.te003, m5.S1_FOMAML_ZERO_BO, k_shot=0)
+        kshot_k0 = self._initial(self.te003, m5.S1_FOMAML_KSHOT_BO, k_shot=0)
+        self.assertEqual(zero_k0["method"], "none")
+        self.assertEqual(kshot_k0["method"], "none")
+        self.assertEqual(
+            m5.designs_digest(zero_k0["designs"]), m5.designs_digest(kshot_k0["designs"])
+        )
+
+    def test_zero_and_k_shot_differ_on_distinguishable_task(self):
+        zero = self._initial(self.te003, m5.S1_FOMAML_ZERO_BO)
+        kshot = self._initial(self.te003, m5.S1_FOMAML_KSHOT_BO)
+        pretrain = self._initial(self.te003, m5.S1_PRETRAIN_KSHOT_BO)
+        self.assertNotEqual(
+            m5.designs_digest(zero["designs"]), m5.designs_digest(kshot["designs"])
+        )
+        self.assertNotEqual(
+            m5.designs_digest(kshot["designs"]), m5.designs_digest(pretrain["designs"])
+        )
+
+    def test_label_permutation_changes_k_shot_predictions_only(self):
+        support, sf, st = self._support(self.te003)
+        permutation = np.array([1, 0, 2, 3, 4])
+        from research.concorde_metaopt.meta_learning.baseline_arms import (
+            derive_arm_seed,
+            generate_initial_designs,
+            predict_proxy_targets,
+        )
+        from research.concorde_metaopt.meta_learning.data_contract import CONTEXT_NAMES
+        from research.concorde_metaopt.meta_learning.surrogate import encode_features
+
+        candidates = generate_initial_designs(
+            np.zeros(12), np.ones(12), 128,
+            seed=derive_arm_seed(str(self.te003.task_id), 0, "label_probe"),
+            method="lhs",
+        )
+        features = encode_features(candidates, dict(self.te003.context), tuple(CONTEXT_NAMES))
+        artifact = self.bundle["maml"]["artifact"]
+        plain = predict_proxy_targets(
+            artifact, features, method="maml", support_features=sf,
+            support_targets=st, k_shot=5,
+        )
+        permuted = predict_proxy_targets(
+            artifact, features, method="maml", support_features=sf,
+            support_targets=st[permutation], k_shot=5,
+        )
+        self.assertGreater(float(np.max(np.abs(plain - permuted))), 0.0)
+
+    def test_zero_shot_initial_designs_ignore_permuted_labels(self):
+        support, sf, st = self._support(self.te003)
+        permutation = np.array([1, 0, 2, 3, 4])
+        plain = self._initial(self.te003, m5.S1_FOMAML_ZERO_BO, features=sf, targets=st)
+        permuted = self._initial(
+            self.te003, m5.S1_FOMAML_ZERO_BO, features=sf, targets=st[permutation]
+        )
+        self.assertEqual(
+            m5.designs_digest(plain["designs"]), m5.designs_digest(permuted["designs"])
+        )
+
+    def _run(self, task, arm, *, budget=64, k_shot=5, permutation=None):
+        return s1.run_single(
+            self._context(task),
+            arm=arm,
+            budget=budget,
+            k_shot=k_shot,
+            meta_seed=0,
+            opt_seed=0,
+            support_label_permutation=permutation,
+        )
+
+    def test_record_carries_initial_design_evidence_and_budget(self):
+        record = self._run(self.te003, m5.S1_FOMAML_ZERO_BO)
+        self.assertEqual(record["status"], "OK")
+        self.assertEqual(record["billable_evals"], 64)
+        self.assertEqual(record["support_evals"], 5)
+        self.assertEqual(record["initial_evals"], 3)
+        self.assertEqual(record["bo_evals"], 56)
+        self.assertRegex(record["initial_designs_sha256"], r"^[0-9a-f]{64}$")
+        self.assertEqual(len(record["initial_design_row_digests"]), 3)
+        self.assertEqual(record["physics"]["physical_call_count"], 0)
+
+    def test_zero_shot_label_shuffle_has_no_effect(self):
+        plain = self._run(self.te003, m5.S1_FOMAML_ZERO_BO)
+        shuffled = self._run(
+            self.te003, m5.S1_FOMAML_ZERO_BO, permutation=[1, 0, 2, 3, 4]
+        )
+        self.assertEqual(plain["history_digest"], shuffled["history_digest"])
+        self.assertEqual(plain["initial_designs_sha256"], shuffled["initial_designs_sha256"])
+        self.assertEqual(plain["billable_evals"], shuffled["billable_evals"])
+
+    def test_identifiability_report_marks_identifiable_group(self):
+        records = [
+            self._run(self.te003, arm)
+            for arm in (
+                m5.S1_PRETRAIN_KSHOT_BO,
+                m5.S1_FOMAML_ZERO_BO,
+                m5.S1_FOMAML_KSHOT_BO,
+            )
+        ]
+        report = s1.ranking_identifiability_report(records)
+        self.assertEqual(report["schema_version"], s1.IDENTIFIABILITY_SCHEMA_VERSION)
+        self.assertEqual(report["threshold"], 0.90)
+        self.assertEqual(report["group_count"], 1)
+        group = report["groups"][0]
+        self.assertEqual(group["task_id"], self.te003.task_id)
+        self.assertEqual(group["ranking_status"], "IDENTIFIABLE")
+        self.assertTrue(group["inference_allowed"])
+        for pair in s1.IDENTIFIABILITY_REQUIRED_PAIRS:
+            key = f"{pair[0]}|{pair[1]}"
+            self.assertIn(key, report["pair_coverage"])
+            self.assertEqual(report["pair_coverage"][key], 1)
+
+    def test_identifiability_report_flags_indistinguishable_rows(self):
+        rows = ["a" * 64, "a" * 64, "a" * 64]
+        base = {
+            "task_id": "p4ra-FQE3-v3-TE-000",
+            "budget_B": 64,
+            "K": 5,
+            "meta_seed": 0,
+            "initial_designs_sha256": "d" * 64,
+        }
+        records = []
+        for arm, row in zip(m5.S1_MODEL_SCORED_ARMS, rows):
+            records.append(dict(base, arm=arm, initial_design_row_digests=[row, row, row]))
+        report = s1.ranking_identifiability_report(records)
+        group = report["groups"][0]
+        self.assertEqual(group["ranking_status"], "RANKING_INDISTINGUISHABLE")
+        self.assertFalse(group["inference_allowed"])
+        self.assertEqual(group["max_overlap_rate"], 1.0)
+        self.assertEqual(report["status_counts"], {"RANKING_INDISTINGUISHABLE": 1})
+
+    def test_identifiability_report_rejects_bad_threshold(self):
+        for bad in (0.0, -0.1, 1.5):
+            with self.assertRaises(s1.S1RunnerError):
+                s1.ranking_identifiability_report([], threshold=bad)
+
+    def test_write_run_bundle_includes_identifiability_artifact(self):
+        records = [
+            self._run(self.te003, arm)
+            for arm in (m5.S1_FOMAML_ZERO_BO, m5.S1_FOMAML_KSHOT_BO)
+        ]
+        with tempfile.TemporaryDirectory() as tmp:
+            outdir = Path(tmp) / "bundle"
+            summary = s1.write_run_bundle(
+                outdir,
+                run_id="p4ra-s1-b03-bundle",
+                package=self.package,
+                records=records,
+                run_config=s1.build_run_config(
+                    self.package,
+                    run_id="p4ra-s1-b03-bundle",
+                    splits=("meta_test",),
+                    task_limit=1,
+                    arm="ALL",
+                    budget=64,
+                    k_shot=5,
+                    meta_seed=0,
+                    opt_seed=0,
+                ),
+            )
+            self.assertTrue((outdir / "identifiability_report.json").is_file())
+            self.assertEqual(summary["ranking_identifiability"]["group_count"], 1)
+            manifest = json.loads((outdir / "manifest.json").read_text(encoding="utf-8"))
+            artifact_paths = {item["path"] for item in manifest["artifacts"]}
+            self.assertIn("identifiability_report.json", artifact_paths)
+
+
 if __name__ == "__main__":
     unittest.main()
+
