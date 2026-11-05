@@ -28,6 +28,13 @@ FROZEN = (
     / "optimization_runs"
     / "p4ra-s0-2-freeze-20261105T072500Z"
 )
+FROZEN_V4 = (
+    REPO_ROOT
+    / "research"
+    / "concorde_metaopt"
+    / "optimization_runs"
+    / "p4ra-s0-3-freeze-20261105T155925Z"
+)
 
 EXPECTED_FAMILY_FINGERPRINT = (
     "e56e6921be6b94e6611a24618a6e331cd7e4417597926d089d71b00da8c1c0c3"
@@ -157,7 +164,7 @@ class FrozenPackageV4Tests(unittest.TestCase):
         v3_records = json.loads((FROZEN / "tasks.json").read_text(encoding="utf-8"))
         cls.v3_fingerprints = tuple(record["task_fingerprint"] for record in v3_records)
         cls.tmp = tempfile.TemporaryDirectory()
-        root = Path(cls.tmp.name) / "p4ra-s0-3-unittest"
+        root = Path(cls.tmp.name) / "p4ra-s0-3-freeze-20261105T000000Z"
         root.mkdir(parents=True)
         legacy = {
             "task_ids": ["m2-deadbeef0001", "m5-deadbeef0002"],
@@ -165,7 +172,7 @@ class FrozenPackageV4Tests(unittest.TestCase):
             "sources": [{"path": "<fixture>", "bytes": 0, "sha256": "f" * 64}],
         }
         bundle = fv3.build_freeze_bundle(
-            run_id="p4ra-s0-3-unittest",
+            run_id="p4ra-s0-3-freeze-20261105T000000Z",
             git_sha="3ebd777595bf747edc855be5fb583f51cc17352f",
             created_utc="2026-11-05T00:00:00+00:00",
             code_sha="unit-test-code-sha",
@@ -179,6 +186,7 @@ class FrozenPackageV4Tests(unittest.TestCase):
         fv3.write_json(root / "frozen_family.json", bundle["frozen_family"])
         fv3.write_json(root / "preregistration.json", bundle["preregistration"])
         cls.bundle = bundle
+        cls.root = root
         cls.package = s1.load_frozen_package(root)
 
     @classmethod
@@ -194,11 +202,25 @@ class FrozenPackageV4Tests(unittest.TestCase):
         self.assertFalse(identity["legacy_frozen_package"])
         self.assertTrue(identity["confirmatory_eligible"])
         self.assertEqual(identity["holdout_seed"], 20261106)
-        self.assertEqual(identity["holdout_splits"], ["meta_test", "meta_test_ood"])
+        self.assertEqual(identity["holdout_splits"], {"meta_test": 20, "meta_test_ood": 10})
         self.assertEqual(identity["holdout_task_count"], 30)
+        self.assertEqual(identity["evaluation_mode"], "confirmatory")
+        self.assertEqual(identity["prereg_v4c_blocks_status"], "PRESENT")
+        self.assertEqual(self.package["evaluation_mode"], "confirmatory")
+        self.assertEqual(self.package["prereg_v4c_blocks_status"], "PRESENT")
         self.assertEqual(dict(identity["task_counts"]), dict(fv3.SPLIT_COUNTS))
         self.assertNotEqual(identity["family_fingerprint"], EXPECTED_FAMILY_FINGERPRINT)
         self.assertEqual(identity["split_hash"], EXPECTED_SPLIT_HASH)
+
+    def test_v4c_require_confirmatory_accepts_package(self):
+        package = s1.load_frozen_package(self.root, require_confirmatory=True)
+        self.assertEqual(package["identity"]["evaluation_mode"], "confirmatory")
+
+    def test_run_config_records_evaluation_mode(self):
+        plan = s1.iter_run_plan(self.package, task_limit=1, meta_seeds=(0,), opt_seeds=(0,), arms=(m5.S1_RANDOM_BO,))
+        config = s1.build_grid_run_config(self.package, run_id="p4ra-s0-3-freeze-20261105T000000Z", plan=plan)
+        self.assertEqual(config["evaluation_mode"], "confirmatory")
+        self.assertTrue(config["confirmatory_eligible"])
 
     def test_v4_run_record_carries_family_version_without_paths(self):
         task = next(task for task in self.package["tasks"] if task.split == "meta_train")
@@ -766,7 +788,9 @@ class FormalGridTests(unittest.TestCase):
 
         buffer = io.StringIO()
         with contextlib.redirect_stdout(buffer):
-            code = s1._main(["grid", "--frozen", str(FROZEN), "--grid", "formal"])
+            code = s1._main(
+                ["grid", "--frozen", str(FROZEN), "--grid", "formal", "--allow-legacy"]
+            )
         self.assertEqual(code, 0)
         payload = json.loads(buffer.getvalue())
         self.assertEqual(payload["grid_mode"], "formal")
@@ -784,7 +808,7 @@ class FormalGridTests(unittest.TestCase):
 
         buffer = io.StringIO()
         with contextlib.redirect_stdout(buffer):
-            code = s1._main(["grid", "--frozen", str(FROZEN)])
+            code = s1._main(["grid", "--frozen", str(FROZEN), "--allow-legacy"])
         self.assertEqual(code, 0)
         payload = json.loads(buffer.getvalue())
         self.assertEqual(payload["grid_mode"], "cartesian")
@@ -1286,6 +1310,478 @@ class ArmSemanticsB03Tests(unittest.TestCase):
             manifest = json.loads((outdir / "manifest.json").read_text(encoding="utf-8"))
             artifact_paths = {item["path"] for item in manifest["artifacts"]}
             self.assertIn("identifiability_report.json", artifact_paths)
+
+
+
+
+class MergeSubcommandTests(unittest.TestCase):
+    """R-V4-07：并行分片 + merge 子命令（缩放网格，不启动 21,000）。"""
+
+    RUN_ID = "p4ra-s1-merge-test"
+    SCALED_ARGS = {
+        "splits": "meta_test",
+        "arms": "RAND-BO,DE",
+        "budgets": "64,128",
+        "k_values": "0,1,3,5",
+        "meta_seeds": "0",
+        "opt_seeds": "0,1",
+        "task_limit": 1,
+    }
+
+    @classmethod
+    def setUpClass(cls):
+        cls.package = s1.load_frozen_package(FROZEN_V4)
+        cls.args = SimpleNamespace(**cls.SCALED_ARGS)
+        cls.plan = s1.merge_plan_from_args(cls.package, cls.args)
+        design_space = load_design_space_12d()
+        cls.records = s1.execute_runs(
+            cls.package, run_id=cls.RUN_ID, plan=cls.plan, design_space=design_space
+        )
+        cls.serial_dir = Path(tempfile.mkdtemp(prefix="s1-merge-serial-"))
+        cls.addClassCleanup(shutil.rmtree, cls.serial_dir, True)
+        s1.write_run_bundle(
+            cls.serial_dir,
+            run_id=cls.RUN_ID,
+            package=cls.package,
+            records=cls.records,
+            run_config=s1.build_grid_run_config(
+                cls.package, run_id=cls.RUN_ID, plan=cls.plan, grid_mode=s1.FORMAL_GRID_MODE
+            ),
+        )
+
+    def setUp(self):
+        self._tmp = tempfile.TemporaryDirectory(prefix="s1-merge-")
+        self.addCleanup(self._tmp.cleanup)
+        self.root = Path(self._tmp.name)
+        self.shards_root = self.root / "shards"
+        self._write_shards(self.shards_root, self._shard_records())
+
+    @classmethod
+    def _shard_records(cls):
+        return {
+            seed: [dict(record) for record in cls.records if int(record["opt_seed"]) == seed]
+            for seed in (0, 1)
+        }
+
+    def _subplan(self, opt_seed):
+        return [item for item in self.plan if int(item["opt_seed"]) == opt_seed]
+
+    def _write_shard(self, root, name, records, plan):
+        directory = root / name
+        s1.write_jsonl_file(directory / "run_records.jsonl", records)
+        s1.write_json_file(
+            directory / "run_config.json",
+            s1.build_grid_run_config(
+                self.package, run_id=self.RUN_ID, plan=plan, grid_mode=s1.FORMAL_GRID_MODE
+            ),
+        )
+
+    def _write_shards(self, root, records_by_opt):
+        root.mkdir(parents=True, exist_ok=True)
+        for seed, records in records_by_opt.items():
+            self._write_shard(root, f"ms0_os{seed}", records, self._subplan(seed))
+
+    @staticmethod
+    def _retamper(record, **changes):
+        payload = dict(record)
+        payload.update(changes)
+        payload.pop("record_digest", None)
+        payload["record_digest"] = s1.digest(payload)
+        return payload
+
+    def _merge(self, outdir=None, shards_root=None):
+        target = Path(outdir) if outdir is not None else (self.root / "merged")
+        manifest = s1.merge_run_shards(
+            self.package,
+            shards_root=shards_root or self.shards_root,
+            outdir=target,
+            run_id=self.RUN_ID,
+            plan=self.plan,
+            allow_legacy=True,
+        )
+        return manifest, target
+
+    def _failed_manifest(self, outdir):
+        path = Path(outdir) / "merge_manifest.json"
+        self.assertTrue(path.is_file())
+        return json.loads(path.read_text(encoding="utf-8"))
+
+    def test_default_merge_plan_is_21000(self):
+        args = SimpleNamespace(
+            splits="meta_test",
+            arms="all",
+            budgets="64,128",
+            k_values="0,1,3,5",
+            meta_seeds=None,
+            opt_seeds=None,
+            task_limit=None,
+        )
+        plan = s1.merge_plan_from_args(self.package, args)
+        self.assertEqual(len(plan), s1.FORMAL_GRID_TOTAL_RUNS)
+        self.assertEqual(
+            s1._plan_stratum_counts(plan), {"main": 9000, "secondary": 6000, "exploratory": 6000}
+        )
+        self.assertFalse(any(int(item["budget_B"]) == 128 and int(item["K"]) == 0 for item in plan))
+
+    def test_shard_definitions_cover_fifteen_shards(self):
+        shards = s1.shard_definitions()
+        self.assertEqual(len(shards), 15)
+        self.assertEqual(len({shard["name"] for shard in shards}), 15)
+        self.assertTrue(all(shard["expected_runs"] == 1400 for shard in shards))
+        self.assertEqual(
+            sorted(seed for shard in shards for seed in shard["meta_seeds"]),
+            sorted([0, 1, 2] * 5),
+        )
+        self.assertEqual(
+            sorted(seed for shard in shards for seed in shard["opt_seeds"]),
+            sorted(list(range(10)) * 3),
+        )
+
+    def test_merge_two_shards_matches_serial_bundle(self):
+        manifest, outdir = self._merge()
+        self.assertEqual(manifest["status"], "PASS")
+        self.assertEqual(manifest["expected_run_count"], len(self.plan))
+        self.assertEqual(manifest["actual_record_count"], len(self.plan))
+        self.assertEqual(manifest["shard_count"], 2)
+        self.assertEqual(manifest["missing_run_count"], 0)
+        self.assertEqual(manifest["extra_run_count"], 0)
+        self.assertEqual(manifest["duplicate_run_id_count"], 0)
+        self.assertEqual(manifest["duplicate_key_count"], 0)
+        self.assertEqual(manifest["physical_call_count_total"], 0)
+        self.assertEqual(manifest["b128_k0_count"], 0)
+        self.assertEqual([row["actual_runs"] for row in manifest["strata"]], [12, 8, 8])
+        self.assertEqual([row["expected_runs"] for row in manifest["strata"]], [12, 8, 8])
+        self.assertEqual([row["global_expected_runs"] for row in manifest["strata"]], [9000, 6000, 6000])
+        for name in (
+            "run_records.jsonl",
+            "run_config.json",
+            "run_summary.json",
+            "identifiability_report.json",
+            "manifest.json",
+        ):
+            self.assertEqual(
+                (self.serial_dir / name).read_bytes(), (outdir / name).read_bytes(), name
+            )
+        self.assertEqual(
+            manifest["merged"]["run_records_sha256"], s1.sha256_file(outdir / "run_records.jsonl")
+        )
+        self.assertEqual(manifest["merged"]["manifest_sha256"], s1.sha256_file(outdir / "manifest.json"))
+        stored = json.loads((outdir / "merge_manifest.json").read_text(encoding="utf-8"))
+        self.assertEqual(stored["schema_version"], s1.MERGE_MANIFEST_SCHEMA_VERSION)
+        self.assertEqual(stored["status"], "PASS")
+        self.assertEqual(stored["identity"], s1.frozen_identity_for_run(self.package))
+        self.assertEqual(stored["frozen_run_id"], self.package["identity"]["frozen_run_id"])
+        self.assertEqual(len(stored["shards"]), 2)
+        for shard in stored["shards"]:
+            for key in (
+                "path",
+                "run_records_sha256",
+                "run_records_bytes",
+                "record_count",
+                "run_config_sha256",
+                "meta_seeds",
+                "opt_seeds",
+                "arms",
+                "budgets",
+                "k_values",
+                "splits",
+            ):
+                self.assertIn(key, shard)
+            self.assertEqual(shard["record_count"], len(self.plan) // 2)
+        self.assertIn(stored["clone_pairs"]["status"], ("NOT_APPLICABLE", "PASS"))
+
+    def test_merge_executed_shards_core_matches_serial(self):
+        design_space = load_design_space_12d()
+        exec_root = self.root / "exec_shards"
+        for seed in (0, 1):
+            subplan = self._subplan(seed)
+            subrecords = s1.execute_runs(
+                self.package, run_id=self.RUN_ID, plan=subplan, design_space=design_space
+            )
+            self._write_shard(exec_root, f"ms0_os{seed}", subrecords, subplan)
+        manifest = s1.merge_run_shards(
+            self.package,
+            shards_root=exec_root,
+            outdir=self.root / "merged_exec",
+            run_id=self.RUN_ID,
+            plan=self.plan,
+            allow_legacy=True,
+        )
+        self.assertEqual(manifest["status"], "PASS")
+        merged = s1.load_jsonl_file(self.root / "merged_exec" / "run_records.jsonl")
+        self.assertEqual(
+            [record["run_id"] for record in merged], [record["run_id"] for record in self.records]
+        )
+        serial_by_id = {record["run_id"]: record for record in self.records}
+        for record in merged:
+            self.assertEqual(s1._record_core(record), s1._record_core(serial_by_id[record["run_id"]]))
+
+    def test_merge_missing_shard_fails_closed(self):
+        records = self._shard_records()
+        shards = self.root / "missing_shards"
+        self._write_shards(shards, {0: records[0]})
+        with self.assertRaises(s1.S1RunnerError):
+            s1.merge_run_shards(
+                self.package,
+                shards_root=shards,
+                outdir=self.root / "merged_missing",
+                run_id=self.RUN_ID,
+                plan=self.plan,
+                allow_legacy=True,
+            )
+        stored = self._failed_manifest(self.root / "merged_missing")
+        self.assertEqual(stored["status"], "FAIL")
+        self.assertEqual(stored["missing_run_count"], len(self.plan) // 2)
+        self.assertEqual(stored["shard_count"], 1)
+        self.assertFalse((self.root / "merged_missing" / "run_records.jsonl").exists())
+
+    def test_merge_extra_record_fails_closed(self):
+        records = self._shard_records()
+        base = records[0][0]
+        extra = self._retamper(
+            base,
+            opt_seed=2,
+            run_id=s1.make_run_id(
+                self.RUN_ID,
+                arm=base["arm"],
+                budget=int(base["budget_B"]),
+                k_shot=int(base["K"]),
+                task_id=base["task_id"],
+                meta_seed=int(base["meta_seed"]),
+                opt_seed=2,
+            ),
+        )
+        records[0].append(extra)
+        self._write_shards(self.shards_root, records)
+        with self.assertRaises(s1.S1RunnerError):
+            self._merge()
+        stored = self._failed_manifest(self.root / "merged")
+        self.assertEqual(stored["status"], "FAIL")
+        self.assertEqual(stored["extra_run_count"], 1)
+        self.assertEqual(stored["actual_record_count"], len(self.plan) + 1)
+
+    def test_merge_duplicate_run_id_fails_closed(self):
+        records = self._shard_records()
+        records[0].append(dict(records[0][0]))
+        self._write_shards(self.shards_root, records)
+        with self.assertRaises(s1.S1RunnerError):
+            self._merge()
+        stored = self._failed_manifest(self.root / "merged")
+        self.assertEqual(stored["status"], "FAIL")
+        self.assertEqual(stored["duplicate_run_id_count"], 1)
+        self.assertEqual(stored["actual_record_count"], len(self.plan) + 1)
+
+    def test_merge_overlap_duplicate_key_fails_closed(self):
+        records = self._shard_records()
+        base = records[1][0]
+        overlap = self._retamper(base, run_id=base["run_id"] + "-overlap")
+        records[0].append(overlap)
+        self._write_shards(self.shards_root, records)
+        with self.assertRaises(s1.S1RunnerError):
+            self._merge()
+        stored = self._failed_manifest(self.root / "merged")
+        self.assertEqual(stored["status"], "FAIL")
+        self.assertEqual(stored["duplicate_key_count"], 1)
+        self.assertEqual(stored["duplicate_run_id_count"], 0)
+
+    def test_merge_identity_drift_fails_closed(self):
+        records = self._shard_records()
+        records[0][0] = self._retamper(records[0][0], family_fingerprint="0" * 64)
+        self._write_shards(self.shards_root, records)
+        with self.assertRaises(s1.S1RunnerError):
+            self._merge()
+        stored = self._failed_manifest(self.root / "merged")
+        self.assertEqual(stored["status"], "FAIL")
+        self.assertGreater(stored["problem_count"], 0)
+
+    def test_merge_budget_mismatch_fails_closed(self):
+        records = self._shard_records()
+        records[0][0] = self._retamper(records[0][0], billable_evals=1)
+        self._write_shards(self.shards_root, records)
+        with self.assertRaises(s1.S1RunnerError):
+            self._merge()
+        stored = self._failed_manifest(self.root / "merged")
+        self.assertEqual(stored["status"], "FAIL")
+        self.assertGreater(stored["problem_count"], 0)
+
+    def test_merge_physical_call_fails_closed(self):
+        records = self._shard_records()
+        record = records[0][0]
+        physics = dict(record["physics"])
+        physics["physical_call_count"] = 1
+        records[0][0] = self._retamper(record, physics=physics)
+        self._write_shards(self.shards_root, records)
+        with self.assertRaises(s1.S1RunnerError):
+            self._merge()
+        stored = self._failed_manifest(self.root / "merged")
+        self.assertEqual(stored["status"], "FAIL")
+        self.assertEqual(stored["physical_call_count_total"], 1)
+
+    def test_merge_stratum_mismatch_fails_closed(self):
+        records = self._shard_records()
+        record = records[0][0]
+        wrong = "secondary" if record["grid_stratum"] == "main" else "main"
+        records[0][0] = self._retamper(record, grid_stratum=wrong)
+        self._write_shards(self.shards_root, records)
+        with self.assertRaises(s1.S1RunnerError):
+            self._merge()
+        stored = self._failed_manifest(self.root / "merged")
+        self.assertEqual(stored["status"], "FAIL")
+        self.assertGreater(stored["problem_count"], 0)
+
+    def test_merge_b128_k0_record_fails_closed(self):
+        records = self._shard_records()
+        candidates = [record for record in records[1] if int(record["budget_B"]) == 128]
+        record = dict(candidates[0])
+        wrong = self._retamper(
+            record,
+            K=0,
+            support_evals=0,
+            initial_evals=8,
+            bo_evals=120,
+            bo_calls=120,
+            billable_evals=128,
+            grid_stratum="secondary",
+            run_id=s1.make_run_id(
+                self.RUN_ID,
+                arm=record["arm"],
+                budget=128,
+                k_shot=0,
+                task_id=record["task_id"],
+                meta_seed=int(record["meta_seed"]),
+                opt_seed=int(record["opt_seed"]),
+            ),
+        )
+        records[1] = [item for item in records[1] if item["run_id"] != record["run_id"]]
+        records[1].append(wrong)
+        self._write_shards(self.shards_root, records)
+        with self.assertRaises(s1.S1RunnerError):
+            self._merge()
+        stored = self._failed_manifest(self.root / "merged")
+        self.assertEqual(stored["status"], "FAIL")
+        self.assertEqual(stored["b128_k0_count"], 1)
+        self.assertEqual(stored["expected_b128_k0_count"], 0)
+
+    def test_merge_is_idempotent_byte_for_byte(self):
+        first, first_dir = self._merge(outdir=self.root / "merged_a")
+        second, second_dir = self._merge(outdir=self.root / "merged_b")
+        self.assertEqual(first["status"], "PASS")
+        self.assertEqual(second["status"], "PASS")
+        for name in (
+            "run_records.jsonl",
+            "run_config.json",
+            "run_summary.json",
+            "identifiability_report.json",
+            "manifest.json",
+            "merge_manifest.json",
+        ):
+            self.assertEqual((first_dir / name).read_bytes(), (second_dir / name).read_bytes(), name)
+
+    def test_merge_cli_pass_and_fail_exit_codes(self):
+        import contextlib
+        import io
+
+        buffer = io.StringIO()
+        argv = [
+            "merge",
+            "--frozen",
+            str(FROZEN_V4),
+            "--shards-root",
+            str(self.shards_root),
+            "--outdir",
+            str(self.root / "cli_merged"),
+            "--run-id",
+            self.RUN_ID,
+            "--splits",
+            "meta_test",
+            "--arms",
+            "RAND-BO,DE",
+            "--budgets",
+            "64,128",
+            "--k-values",
+            "0,1,3,5",
+            "--meta-seeds",
+            "0",
+            "--opt-seeds",
+            "0,1",
+            "--task-limit",
+            "1",
+            "--allow-legacy",
+        ]
+        with contextlib.redirect_stdout(buffer):
+            code = s1._main(argv)
+        self.assertEqual(code, 0)
+        payload = json.loads(buffer.getvalue())
+        self.assertEqual(payload["status"], "PASS")
+        self.assertEqual(payload["record_count"], len(self.plan))
+        self.assertEqual(payload["shard_count"], 2)
+        missing_root = self.root / "missing_cli"
+        self._write_shards(missing_root, {0: self._shard_records()[0]})
+        argv[argv.index(str(self.shards_root))] = str(missing_root)
+        argv[argv.index(str(self.root / "cli_merged"))] = str(self.root / "cli_missing")
+        buffer = io.StringIO()
+        with contextlib.redirect_stdout(buffer):
+            code = s1._main(argv)
+        self.assertEqual(code, 1)
+        self.assertEqual(json.loads(buffer.getvalue())["status"], "FAIL")
+
+
+class V4cFormalGateTests(unittest.TestCase):
+    """R-V4-08：formal（确证）路径必须拒绝非确证冻结包；旧包只能只读（--allow-legacy）。"""
+
+    def test_require_confirmatory_rejects_legacy_packages(self):
+        for root in (FROZEN, FROZEN_V4):
+            with self.assertRaises(s1.S1RunnerError):
+                s1.load_frozen_package(root, require_confirmatory=True)
+
+    def test_default_load_flags_legacy_package_as_exploratory(self):
+        package = s1.load_frozen_package(FROZEN_V4)
+        identity = package["identity"]
+        self.assertFalse(identity["confirmatory_eligible"])
+        self.assertEqual(identity["evaluation_mode"], "exploratory")
+        self.assertEqual(identity["prereg_v4c_blocks_status"], "ABSENT")
+        self.assertEqual(package["evaluation_mode"], "exploratory")
+        self.assertFalse(package["confirmatory_eligible"])
+
+    def test_cli_grid_requires_allow_legacy(self):
+        with self.assertRaises(s1.S1RunnerError):
+            s1._main(["grid", "--frozen", str(FROZEN_V4), "--grid", "formal"])
+        import contextlib
+        import io
+
+        buffer = io.StringIO()
+        with contextlib.redirect_stdout(buffer):
+            code = s1._main(
+                ["grid", "--frozen", str(FROZEN_V4), "--grid", "formal", "--allow-legacy"]
+            )
+        self.assertEqual(code, 0)
+        payload = json.loads(buffer.getvalue())
+        self.assertEqual(payload["evaluation_mode"], "exploratory")
+        self.assertFalse(payload["confirmatory_eligible"])
+
+    def test_merge_without_allow_legacy_rejects_legacy_package(self):
+        package = s1.load_frozen_package(FROZEN_V4)
+        plan = [
+            {
+                "split": "meta_test",
+                "task_id": package["split"]["task_ids"]["meta_test"][0],
+                "arm": m5.S1_RANDOM_BO,
+                "budget_B": 64,
+                "K": 0,
+                "grid_stratum": "main",
+                "meta_seed": 0,
+                "opt_seed": 0,
+            }
+        ]
+        with tempfile.TemporaryDirectory() as raw:
+            with self.assertRaises(s1.S1RunnerError):
+                s1.merge_run_shards(
+                    package,
+                    shards_root=Path(raw) / "shards",
+                    outdir=Path(raw) / "out",
+                    run_id="p4ra-s1-gate-test",
+                    plan=plan,
+                )
 
 
 if __name__ == "__main__":

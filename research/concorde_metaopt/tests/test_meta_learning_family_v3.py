@@ -27,7 +27,7 @@ from research.concorde_metaopt.meta_learning import task_family as tf
 
 GIT_SHA = "3ebd777595bf747edc855be5fb583f51cc17352f"
 CREATED_UTC = "2026-11-05T00:00:00+00:00"
-RUN_ID = "p4ra-s0-3-unittest"
+RUN_ID = "p4ra-s0-3-freeze-20261105T000000Z"
 CODE_SHA = "unit-test-code-sha"
 
 
@@ -562,7 +562,7 @@ class V3FreezeBundleTests(unittest.TestCase):
 
 
 class V3PreregContractSchemaTests(unittest.TestCase):
-    """合同 §7：17 个规范字段 + 别名 + 严格 fail-closed 负控（B02/R-03）。"""
+    """合同 §7：v4c 20 个规范字段（17 基础 + 3 v4c 块）+ 别名 + 严格 fail-closed 负控（B02/R-03/R-V4-08）。"""
 
     @classmethod
     def setUpClass(cls):
@@ -581,9 +581,9 @@ class V3PreregContractSchemaTests(unittest.TestCase):
     def _resigned_copy(self) -> dict:
         return json.loads(json.dumps(self.prereg))
 
-    def test_01_seventeen_contract_fields_present(self):
+    def test_01_prereg_contract_fields_present(self):
         prereg = self.prereg
-        self.assertEqual(len(f3.PREREG_REQUIRED_FIELDS), 17)
+        self.assertEqual(len(f3.PREREG_REQUIRED_FIELDS), 20)
         expected = {
             "schema_version",
             "prereg_id",
@@ -602,7 +602,7 @@ class V3PreregContractSchemaTests(unittest.TestCase):
             "multiple_comparison",
             "analysis_plan_digest",
             "prereg_digest",
-        }
+        } | set(f3.PREREG_V4C_FIELDS)
         self.assertEqual(set(f3.PREREG_REQUIRED_FIELDS), expected)
         for name in expected:
             self.assertIn(name, prereg)
@@ -612,7 +612,30 @@ class V3PreregContractSchemaTests(unittest.TestCase):
         self.assertEqual(prereg["family_version"], f3.FAMILY_VERSION)
         self.assertEqual(prereg["task_family_version"], f3.TASK_FAMILY_VERSION)
         self.assertEqual(prereg["holdout_seed"], f3.HOLDOUT_SEED)
-        self.assertEqual(prereg["holdout_splits"], list(f3.HOLDOUT_SPLITS))
+        self.assertEqual(
+            prereg["holdout_splits"],
+            {"meta_test": 20, "meta_test_ood": 10},
+        )
+        holdout_package = prereg["holdout_package"]
+        self.assertEqual(
+            set(holdout_package),
+            set(f3.HOLDOUT_PACKAGE_REQUIRED_FIELDS),
+        )
+        self.assertEqual(holdout_package["run_id"], RUN_ID)
+        self.assertEqual(holdout_package["family_version"], f3.FAMILY_VERSION)
+        self.assertEqual(holdout_package["holdout_seed"], f3.HOLDOUT_SEED)
+        self.assertEqual(holdout_package["split_counts"], {"meta_test": 20, "meta_test_ood": 10})
+        self.assertEqual(holdout_package["task_count"], 30)
+        self.assertEqual(holdout_package["frozen_family_sha256"], self.frozen["sha256"])
+        self.assertEqual(
+            holdout_package["package_path"],
+            "research/concorde_metaopt/optimization_runs/" + RUN_ID,
+        )
+        self.assertEqual(dict(prereg["c5_policy"]), dict(f3.C5_POLICY))
+        self.assertEqual(
+            dict(prereg["structural_identifiability"]),
+            dict(f3.STRUCTURAL_IDENTIFIABILITY),
+        )
         self.assertEqual(prereg["holdout_task_count"], 30)
         self.assertEqual(prereg["split_counts"], dict(f3.SPLIT_COUNTS))
         self.assertEqual(prereg["task_counts"], dict(f3.SPLIT_COUNTS))
@@ -1048,7 +1071,11 @@ class V4HoldoutReseedTests(unittest.TestCase):
         self.assertEqual(prereg["split_hash"], frozen["split"]["split_hash"])
         self.assertEqual(prereg["frozen_family_sha256"], frozen["sha256"])
         self.assertEqual(frozen["holdout_seed"], prereg["holdout_seed"])
-        self.assertEqual(frozen["holdout_splits"], prereg["holdout_splits"])
+        self.assertEqual(frozen["holdout_splits"], list(f3.HOLDOUT_SPLITS))
+        self.assertEqual(
+            prereg["holdout_splits"], {"meta_test": 20, "meta_test_ood": 10}
+        )
+        self.assertEqual(prereg["holdout_package"]["frozen_family_sha256"], frozen["sha256"])
 
 
 class BudgetFairnessTests(unittest.TestCase):

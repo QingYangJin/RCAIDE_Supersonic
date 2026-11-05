@@ -64,6 +64,15 @@ FORMAL_GRID_STRATUM_NAMES: tuple[str, ...] = tuple(
     str(stratum["name"]) for stratum in FORMAL_GRID_STRATA
 )
 
+# 并行分片合并（R-V4-07）：15 个分片 -> 确定性合并为完整 21,000-run formal bundle。
+MERGE_MANIFEST_SCHEMA_VERSION = "p4ra-s1-merge-manifest-1"
+MERGE_STATUS_PASS = "PASS"
+MERGE_STATUS_FAIL = "FAIL"
+MERGE_RECORD_STATUSES = ("OK",)
+MERGE_PROBLEM_DETAIL_LIMIT = 20
+MERGE_OPT_SEED_PAIRS: tuple[tuple[int, int], ...] = ((0, 1), (2, 3), (4, 5), (6, 7), (8, 9))
+
+
 # 臂语义可辨识性（task-227 / S1-B03）：模型打分臂初始设计组内重叠率审计。
 IDENTIFIABILITY_SCHEMA_VERSION = "p4ra-s1-identifiability-1"
 IDENTIFIABILITY_OVERLAP_THRESHOLD = 0.90
@@ -120,6 +129,28 @@ def write_jsonl_file(path: str | Path, rows: Sequence[Mapping[str, Any]]) -> Non
             handle.write("\n")
 
 
+
+def load_jsonl_file(path: str | Path) -> list[dict[str, Any]]:
+    '''读取 UTF-8 JSONL；空行跳过，非对象/坏 JSON -> S1RunnerError（fail-closed）。'''
+    target = Path(path)
+    if not target.is_file():
+        raise S1RunnerError(f"文件不存在: {target}")
+    rows: list[dict[str, Any]] = []
+    with target.open("r", encoding="utf-8") as handle:
+        for line_number, line in enumerate(handle, start=1):
+            text = line.strip()
+            if not text:
+                continue
+            try:
+                payload = json.loads(text)
+            except json.JSONDecodeError as exc:
+                raise S1RunnerError(f"JSONL 解析失败: {target}:{line_number}: {exc}") from exc
+            if not isinstance(payload, Mapping):
+                raise S1RunnerError(f"JSONL 行不是 JSON 对象: {target}:{line_number}")
+            rows.append(dict(payload))
+    return rows
+
+
 # ---------------------------------------------------------------------------
 # 冻结包加载与身份校验
 # ---------------------------------------------------------------------------
@@ -134,8 +165,15 @@ def _task_from_record(record: Mapping[str, Any]) -> SyntheticTask:
     )
 
 
-def load_frozen_package(root: str | Path) -> dict[str, Any]:
-    """加载并严格校验 S0-2 冻结包；返回 tasks/split/frozen/prereg 与身份摘要。"""
+def load_frozen_package(
+    root: str | Path, *, require_confirmatory: bool = False
+) -> dict[str, Any]:
+    """加载冻结包并校验；返回 tasks/split/frozen/prereg 与身份摘要。
+
+    require_confirmatory=True 时只接受 v4c 确证包（R-V4-08-04）：family_version=p4ra-family-v4、
+    frozen/prereg confirmatory_eligible=true、prereg 三块齐全（holdout_package/c5_policy/
+    structural_identifiability）。默认 False 保留只读/探索兼容（A6 分析层与单元测试直接调用）。
+    """
     package = Path(root)
     if not package.is_dir():
         raise S1RunnerError(f"冻结包目录不存在: {package}")
@@ -160,6 +198,33 @@ def load_frozen_package(root: str | Path) -> dict[str, Any]:
             + repr(list(allowed_family_versions))
         )
     legacy_frozen_package = family_version in fv3.LEGACY_FAMILY_VERSIONS
+    v4_frozen = family_version == fv3.FAMILY_VERSION
+    frozen_confirmatory_flag = frozen.get("confirmatory_eligible")
+    if frozen_confirmatory_flag is not None and frozen_confirmatory_flag is not True:
+        raise S1RunnerError("frozen_family.confirmatory_eligible 只允许为 true（否则不是确证冻结包）")
+    prereg_v4c_blocks = [name for name in fv3.PREREG_V4C_FIELDS if name in prereg]
+    if prereg_v4c_blocks and len(prereg_v4c_blocks) != len(fv3.PREREG_V4C_FIELDS):
+        missing = sorted(set(fv3.PREREG_V4C_FIELDS) - set(prereg_v4c_blocks))
+        raise S1RunnerError("preregistration.json v4c 三块不完整，缺少 " + repr(missing))
+    prereg_v4c_complete = len(prereg_v4c_blocks) == len(fv3.PREREG_V4C_FIELDS)
+    confirmatory = bool(
+        v4_frozen
+        and frozen_confirmatory_flag is True
+        and prereg_v4c_complete
+        and prereg.get("confirmatory_eligible") is True
+    )
+    if require_confirmatory and not confirmatory:
+        raise S1RunnerError(
+            "要求确证 v4c 冻结包（要求 family_version="
+            + fv3.FAMILY_VERSION
+            + "、frozen/prereg confirmatory_eligible=true、prereg 三块齐全）；实际 family_version="
+            + repr(family_version)
+            + "、frozen_confirmatory="
+            + repr(frozen_confirmatory_flag)
+            + "、v4c_blocks="
+            + str(len(prereg_v4c_blocks))
+            + "/3；只读/探索模式需显式 allow_legacy"
+        )
     task_family_version = str(frozen.get("task_family_version", fv3.TASK_FAMILY_VERSION))
     if task_family_version != fv3.TASK_FAMILY_VERSION:
         raise S1RunnerError(
@@ -176,7 +241,14 @@ def load_frozen_package(root: str | Path) -> dict[str, Any]:
         raise S1RunnerError("preregistration.json task_family_version 与任务族版本不一致")
     fv3.verify_split_manifest_v3(split)
     fv3.verify_frozen_family_v3(frozen)
-    fv3.verify_preregistration_v3(prereg, frozen)
+    try:
+        fv3.verify_preregistration_v3(
+            prereg, frozen, allow_legacy_schema=not prereg_v4c_complete
+        )
+    except Exception:
+        if require_confirmatory and not confirmatory:
+            raise S1RunnerError("冻结包不是确证 v4c 包，prereg 无法按确证合同校验") from None
+        raise
     counts = dict(split.get("counts", {}))
     if counts != dict(fv3.SPLIT_COUNTS):
         raise S1RunnerError(f"冻结 split counts 不符: {counts!r}")
@@ -198,9 +270,15 @@ def load_frozen_package(root: str | Path) -> dict[str, Any]:
         "analysis_plan_digest": str(frozen["analysis_plan_digest"]),
         "task_family_version": task_family_version,
         "legacy_frozen_package": legacy_frozen_package,
-        "confirmatory_eligible": not legacy_frozen_package,
+        "evaluation_mode": "confirmatory" if confirmatory else "exploratory",
+        "confirmatory_eligible": confirmatory,
+        "prereg_v4c_blocks_status": "PRESENT" if prereg_v4c_complete else "ABSENT",
         "holdout_seed": frozen.get("holdout_seed"),
-        "holdout_splits": list(frozen.get("holdout_splits") or ()),
+        "holdout_splits": (
+            dict(prereg.get("holdout_splits") or {})
+            if prereg_v4c_complete
+            else list(frozen.get("holdout_splits") or ())
+        ),
         "holdout_task_count": frozen.get("holdout_task_count"),
         "radius_base": float(frozen["radius_base"]),
         "reference_solution": str(frozen["reference_solution"]),
@@ -231,7 +309,9 @@ def load_frozen_package(root: str | Path) -> dict[str, Any]:
         "family_version": family_version,
         "task_family_version": task_family_version,
         "legacy_frozen_package": legacy_frozen_package,
-        "confirmatory_eligible": not legacy_frozen_package,
+        "evaluation_mode": "confirmatory" if confirmatory else "exploratory",
+        "confirmatory_eligible": confirmatory,
+        "prereg_v4c_blocks_status": "PRESENT" if prereg_v4c_complete else "ABSENT",
     }
 
 
@@ -1017,6 +1097,8 @@ def write_run_bundle(
     summary = {
         "schema_version": S1_SUMMARY_SCHEMA_VERSION,
         "run_id": run_id,
+        "evaluation_mode": str(package["identity"].get("evaluation_mode", "exploratory")),
+        "confirmatory_eligible": bool(package["identity"].get("confirmatory_eligible", False)),
         "record_count": len(records),
         "status_counts": _count_by(records, "status"),
         "split_counts": _count_by(records, "split"),
@@ -1050,6 +1132,8 @@ def write_run_bundle(
     manifest = {
         "schema_version": S1_MANIFEST_SCHEMA_VERSION,
         "run_id": run_id,
+        "evaluation_mode": str(package["identity"].get("evaluation_mode", "exploratory")),
+        "confirmatory_eligible": bool(package["identity"].get("confirmatory_eligible", False)),
         "identity": frozen_identity_for_run(package),
         "artifacts": artifacts,
     }
@@ -1083,6 +1167,8 @@ def build_run_config(
         "runner": "s1_runner",
         "identity": frozen_identity_for_run(package),
         "frozen_run_id": package["identity"]["frozen_run_id"],
+        "evaluation_mode": str(package["identity"].get("evaluation_mode", "exploratory")),
+        "confirmatory_eligible": bool(package["identity"].get("confirmatory_eligible", False)),
         "split": list(splits),
         "task_limit": task_limit,
         "arm": arm,
@@ -1355,6 +1441,8 @@ def build_grid_run_config(
         "runner": "s1_runner",
         "grid_mode": mode,
         "grid_strata": grid_strata,
+        "evaluation_mode": str(package["identity"].get("evaluation_mode", "exploratory")),
+        "confirmatory_eligible": bool(package["identity"].get("confirmatory_eligible", False)),
         "identity": frozen_identity_for_run(package),
         "frozen_run_id": package["identity"]["frozen_run_id"],
         "record_count": len(items),
@@ -1433,6 +1521,433 @@ def clone_pairs_check(records: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
             problems.append(f"K=0 CLONE 不等价: {record['task_id']} B={record['budget_B']} ms={record['meta_seed']} os={record['opt_seed']}")
     status = "PASS" if pairs and not problems else ("NOT_APPLICABLE" if not pairs else "FAIL")
     return {"status": status, "pairs": pairs, "skipped": skipped, "problems": problems}
+
+
+
+
+# ---------------------------------------------------------------------------
+# 并行分片合并（R-V4-07）：分片 run_records -> 完整 formal bundle
+# ---------------------------------------------------------------------------
+def _merge_key(item: Mapping[str, Any]) -> tuple[str, int, int, str, int, int]:
+    """(arm, B, K, task, meta_seed, opt_seed) 全局唯一键（计划与记录共用）。"""
+    return (
+        str(item["arm"]),
+        int(item["budget_B"]),
+        int(item["K"]),
+        str(item["task_id"]),
+        int(item["meta_seed"]),
+        int(item["opt_seed"]),
+    )
+
+
+def _merge_expected_run_id(run_id: str, item: Mapping[str, Any]) -> str:
+    return make_run_id(
+        run_id,
+        arm=str(item["arm"]),
+        budget=int(item["budget_B"]),
+        k_shot=int(item["K"]),
+        task_id=str(item["task_id"]),
+        meta_seed=int(item["meta_seed"]),
+        opt_seed=int(item["opt_seed"]),
+    )
+
+
+def _plan_stratum_counts(plan: Sequence[Mapping[str, Any]]) -> dict[str, int]:
+    counts = {name: 0 for name in FORMAL_GRID_STRATUM_NAMES}
+    for item in plan:
+        stratum = str(item.get("grid_stratum"))
+        if stratum not in counts:
+            raise S1RunnerError(f"计划含未知分层: {stratum!r}")
+        counts[stratum] += 1
+    return counts
+
+
+def shard_definitions() -> tuple[dict[str, Any], ...]:
+    """R-V4-07 第 1 节：3 meta_seed x 5 opt_seed 对 = 15 个分片，每片 1,400 runs。"""
+    if FORMAL_GRID_TOTAL_RUNS % 15 != 0:
+        raise S1RunnerError("正式网格总 runs 不能被 15 分片整除")
+    expected = FORMAL_GRID_TOTAL_RUNS // 15
+    return tuple(
+        {
+            "name": f"ms{int(meta_seed)}_os{int(left)}-{int(right)}",
+            "meta_seeds": (int(meta_seed),),
+            "opt_seeds": (int(left), int(right)),
+            "expected_runs": expected,
+        }
+        for meta_seed in FORMAL_GRID_DEFAULT_META_SEEDS
+        for left, right in MERGE_OPT_SEED_PAIRS
+    )
+
+
+def _artifact_filter_value(config: Mapping[str, Any] | None, name: str) -> list[Any] | None:
+    if not isinstance(config, Mapping):
+        return None
+    value = config.get(name)
+    if isinstance(value, (list, tuple)):
+        return list(value)
+    return None
+
+
+def _merge_record_problems(
+    record: Any,
+    *,
+    package: Mapping[str, Any],
+    run_id: str,
+    shard_name: str,
+    index: int,
+) -> list[str]:
+    """单条分片记录的 fail-closed 校验；返回问题列表（空 = 通过）。"""
+    prefix = f"{shard_name}[{index}]"
+    if not isinstance(record, Mapping):
+        return [f"{prefix}: 记录不是 JSON 对象"]
+    problems: list[str] = []
+    if record.get("schema_version") != S1_RECORD_SCHEMA_VERSION:
+        problems.append(f"{prefix}: schema_version 非法 {record.get('schema_version')!r}")
+    for name, expected in frozen_identity_for_run(package).items():
+        value = record.get(name)
+        if str(value) != str(expected):
+            problems.append(f"{prefix}: identity {name} 漂移 {value!r} != {expected!r}")
+    if str(record.get("run_group_id")) != str(run_id):
+        problems.append(f"{prefix}: run_group_id 漂移 {record.get('run_group_id')!r} != {run_id!r}")
+    try:
+        arm, budget, k_shot, task_id, meta_seed, opt_seed = _merge_key(record)
+    except (KeyError, TypeError, ValueError):
+        return problems + [f"{prefix}: 缺少唯一键字段（arm/budget_B/K/task_id/meta_seed/opt_seed）"]
+    if budget not in m5.S1_BUDGETS:
+        problems.append(f"{prefix}: budget_B 非法 {budget!r}")
+    if k_shot not in m5.S1_K_VALUES:
+        problems.append(f"{prefix}: K 非法 {k_shot!r}")
+    if meta_seed not in FORMAL_GRID_DEFAULT_META_SEEDS:
+        problems.append(f"{prefix}: meta_seed 非法 {meta_seed!r}")
+    if opt_seed not in FORMAL_GRID_DEFAULT_OPT_SEEDS:
+        problems.append(f"{prefix}: opt_seed 非法 {opt_seed!r}")
+    if arm not in m5.S1_ARM_IDS:
+        problems.append(f"{prefix}: arm 非法 {arm!r}")
+    expected_stratum: str | None = None
+    if budget in m5.S1_BUDGETS and k_shot in m5.S1_K_VALUES:
+        try:
+            expected_stratum = formal_grid_stratum(budget, k_shot)
+        except S1RunnerError:
+            problems.append(f"{prefix}: (B={budget},K={k_shot}) 不属于正式分层网格")
+    if expected_stratum is not None and str(record.get("grid_stratum")) != expected_stratum:
+        problems.append(
+            f"{prefix}: grid_stratum 与 (B={budget},K={k_shot}) 不一致 "
+            f"{record.get('grid_stratum')!r} != {expected_stratum!r}"
+        )
+    expected_run_id = _merge_expected_run_id(run_id, record)
+    if str(record.get("run_id")) != expected_run_id:
+        problems.append(f"{prefix}: run_id 漂移 {record.get('run_id')!r} != {expected_run_id!r}")
+    if str(record.get("split")) != PRIMARY_SPLIT:
+        problems.append(f"{prefix}: split 非主统计层 {record.get('split')!r}")
+    if record.get("status") not in MERGE_RECORD_STATUSES:
+        problems.append(f"{prefix}: status 非 OK {record.get('status')!r}")
+    expected_counts = {
+        "billable_evals": budget,
+        "initial_designs": m5.S1_INITIAL_DESIGN_COUNT,
+        "bo_calls": budget - m5.S1_INITIAL_DESIGN_COUNT,
+        "support_evals": k_shot,
+        "initial_evals": m5.S1_INITIAL_DESIGN_COUNT - k_shot,
+        "bo_evals": budget - m5.S1_INITIAL_DESIGN_COUNT,
+    }
+    for name, expected in expected_counts.items():
+        value = record.get(name)
+        try:
+            actual = int(value)
+        except (TypeError, ValueError):
+            problems.append(f"{prefix}: {name} 非整数 {value!r}")
+            continue
+        if actual != expected:
+            problems.append(f"{prefix}: {name} {actual} != {expected}")
+    physics = record.get("physics")
+    expected_physics = {"physical_call_count": 0, "physical_call_sources": [], "physics_guard": "PASS"}
+    if not isinstance(physics, Mapping) or dict(physics) != expected_physics:
+        problems.append(f"{prefix}: physics 非零物理/结构非法 {physics!r}")
+    endpoints = record.get("endpoint_values")
+    if not isinstance(endpoints, Mapping) or set(endpoints) != set(ENDPOINT_KEYS):
+        problems.append(f"{prefix}: endpoint_values 键集不符")
+    stored = record.get("record_digest")
+    payload = {name: value for name, value in record.items() if name != "record_digest"}
+    if not isinstance(stored, str) or stored != digest(payload):
+        problems.append(f"{prefix}: record_digest 无效")
+    return problems
+
+
+def merge_plan_from_args(package: Mapping[str, Any], args: argparse.Namespace) -> list[dict[str, Any]]:
+    """merge 期望计划：默认完整 formal 21,000；复现/测试可通过过滤参数缩放。"""
+    splits = _parse_str_list(
+        getattr(args, "splits", PRIMARY_SPLIT),
+        allowed=tuple(package["split"]["task_ids"]),
+        default=[PRIMARY_SPLIT],
+        label="split",
+    )
+    arms = _parse_str_list(
+        getattr(args, "arms", "all"), allowed=m5.S1_ARM_IDS, default=m5.S1_ARM_IDS, label="arm"
+    )
+    budgets_raw = str(getattr(args, "budgets", "64,128")).strip()
+    budgets = None if budgets_raw == "64,128" else _parse_int_list(budgets_raw, allowed=m5.S1_BUDGETS, label="budget")
+    k_raw = str(getattr(args, "k_values", "0,1,3,5")).strip()
+    k_values = None if k_raw == "0,1,3,5" else _parse_int_list(k_raw, allowed=m5.S1_K_VALUES, label="K")
+    meta_raw = getattr(args, "meta_seeds", None)
+    meta_seeds = (
+        FORMAL_GRID_DEFAULT_META_SEEDS
+        if meta_raw in (None, "", "all")
+        else tuple(_parse_int_list(meta_raw, label="meta_seed"))
+    )
+    opt_raw = getattr(args, "opt_seeds", None)
+    opt_seeds = (
+        FORMAL_GRID_DEFAULT_OPT_SEEDS
+        if opt_raw in (None, "", "all")
+        else tuple(_parse_int_list(opt_raw, label="opt_seed"))
+    )
+    return list(
+        iter_formal_run_plan(
+            package,
+            splits=tuple(splits),
+            arms=tuple(arms),
+            budgets=budgets,
+            k_values=k_values,
+            meta_seeds=meta_seeds,
+            opt_seeds=opt_seeds,
+            task_limit=getattr(args, "task_limit", None),
+        )
+    )
+
+
+def merge_run_shards(
+    package: Mapping[str, Any],
+    *,
+    shards_root: str | Path,
+    outdir: str | Path,
+    run_id: str,
+    plan: Sequence[Mapping[str, Any]] | None = None,
+    allow_legacy: bool = False,
+) -> dict[str, Any]:
+    """把分片 run_records 合并为完整 formal bundle；失败 fail-closed 并留 merge_manifest。
+
+    默认只接受 v4c 确证冻结包；只读/探索包必须显式 allow_legacy=True。
+    """
+    if not str(run_id).strip():
+        raise S1RunnerError("merge 的 run_id 不能为空")
+    evaluation_mode = str(package["identity"].get("evaluation_mode", "exploratory"))
+    if evaluation_mode != "confirmatory" and not allow_legacy:
+        raise S1RunnerError(
+            "merge 只接受确证 v4c 冻结包（evaluation_mode=confirmatory）；"
+            "只读/探索需显式 allow_legacy/--allow-legacy"
+        )
+    root = Path(shards_root)
+    if not root.is_dir():
+        raise S1RunnerError(f"shards-root 不存在或不是目录: {root}")
+    plan_items = list(plan) if plan is not None else list(iter_formal_run_plan(package))
+    if not plan_items:
+        raise S1RunnerError("merge 期望计划为空")
+    identity = frozen_identity_for_run(package)
+    expected_run_ids: dict[str, tuple[str, int, int, str, int, int]] = {}
+    expected_run_id_set: set[str] = set()
+    expected_order: list[tuple[str, int, int, str, int, int]] = []
+    problems: list[str] = []
+    for item in plan_items:
+        key = _merge_key(item)
+        expected_order.append(key)
+        expected_run_id = _merge_expected_run_id(run_id, item)
+        if key in expected_run_ids:
+            problems.append(f"期望计划重复唯一键: {key}")
+        if expected_run_id in expected_run_id_set:
+            problems.append(f"期望计划重复 run_id: {expected_run_id}")
+        expected_run_id_set.add(expected_run_id)
+        expected_run_ids[expected_run_id] = key
+    expected_strata = _plan_stratum_counts(plan_items)
+    shard_dirs = sorted((path for path in root.iterdir() if path.is_dir()), key=lambda path: path.name)
+    if not shard_dirs:
+        raise S1RunnerError(f"shards-root 下没有分片目录: {root}")
+    records_by_run_id: dict[str, dict[str, Any]] = {}
+    key_to_run_id: dict[tuple[str, int, int, str, int, int], str] = {}
+    duplicate_run_id_count = 0
+    duplicate_key_count = 0
+    loaded_record_count = 0
+    shards: list[dict[str, Any]] = []
+    for shard_dir in shard_dirs:
+        shard_name = shard_dir.name
+        records_path = shard_dir / "run_records.jsonl"
+        config_path = shard_dir / "run_config.json"
+        if not records_path.is_file():
+            problems.append(f"{shard_name}: 缺少 run_records.jsonl")
+            continue
+        try:
+            shard_records = load_jsonl_file(records_path)
+        except S1RunnerError as exc:
+            problems.append(f"{shard_name}: {exc}")
+            continue
+        loaded_record_count += len(shard_records)
+        config_payload: Mapping[str, Any] | None = None
+        if config_path.is_file():
+            try:
+                config_payload = load_json_file(config_path)
+            except (S1RunnerError, ValueError) as exc:
+                problems.append(f"{shard_name}: run_config.json 无法解析: {exc}")
+        else:
+            problems.append(f"{shard_name}: 缺少 run_config.json")
+        for index, record in enumerate(shard_records):
+            problems.extend(
+                _merge_record_problems(
+                    record, package=package, run_id=run_id, shard_name=shard_name, index=index
+                )
+            )
+            if not isinstance(record, Mapping):
+                continue
+            record_run_id = record.get("run_id")
+            if not isinstance(record_run_id, str):
+                continue
+            if record_run_id in records_by_run_id:
+                duplicate_run_id_count += 1
+                problems.append(f"{shard_name}[{index}]: 重复 run_id {record_run_id}")
+            else:
+                records_by_run_id[record_run_id] = dict(record)
+            try:
+                key = _merge_key(record)
+            except (KeyError, TypeError, ValueError):
+                continue
+            existing = key_to_run_id.get(key)
+            if existing is not None and existing != record_run_id:
+                duplicate_key_count += 1
+                problems.append(f"{shard_name}[{index}]: 唯一键重复 {key}（{existing} vs {record_run_id}）")
+            elif existing is None:
+                key_to_run_id[key] = record_run_id
+        shards.append(
+            {
+                "path": shard_name,
+                "run_records_sha256": sha256_file(records_path),
+                "run_records_bytes": records_path.stat().st_size,
+                "record_count": len(shard_records),
+                "run_config_sha256": sha256_file(config_path) if config_path.is_file() else None,
+                "meta_seeds": _artifact_filter_value(config_payload, "meta_seeds"),
+                "opt_seeds": _artifact_filter_value(config_payload, "opt_seeds"),
+                "arms": _artifact_filter_value(config_payload, "arms"),
+                "budgets": _artifact_filter_value(config_payload, "budgets"),
+                "k_values": _artifact_filter_value(config_payload, "k_values"),
+                "splits": _artifact_filter_value(config_payload, "splits"),
+            }
+        )
+    expected_keys = set(expected_run_ids.values())
+    actual_keys = set(key_to_run_id)
+    missing_keys = sorted(expected_keys - actual_keys)
+    extra_keys = sorted(actual_keys - expected_keys)
+    missing_run_ids = sorted(set(expected_run_ids) - set(records_by_run_id))
+    extra_run_ids = sorted(set(records_by_run_id) - set(expected_run_ids))
+    actual_strata = {name: 0 for name in FORMAL_GRID_STRATUM_NAMES}
+    physical_total = 0
+    for key in expected_order:
+        record_run_id = key_to_run_id.get(key)
+        if record_run_id is None:
+            continue
+        record = records_by_run_id.get(record_run_id) or {}
+        stratum = str(record.get("grid_stratum"))
+        if stratum in actual_strata:
+            actual_strata[stratum] += 1
+    for record in records_by_run_id.values():
+        physics = record.get("physics")
+        if isinstance(physics, Mapping):
+            try:
+                physical_total += int(physics.get("physical_call_count") or 0)
+            except (TypeError, ValueError):
+                pass
+    b128_k0_count = sum(1 for key in actual_keys if key[1] == 128 and key[2] == 0)
+    expected_b128_k0_count = sum(
+        1 for item in plan_items if int(item["budget_B"]) == 128 and int(item["K"]) == 0
+    )
+    if missing_keys:
+        problems.append(f"missing keys: {len(missing_keys)}")
+    if extra_keys:
+        problems.append(f"extra keys: {len(extra_keys)}")
+    if missing_run_ids:
+        problems.append(f"missing runs: {len(missing_run_ids)}")
+    if extra_run_ids:
+        problems.append(f"extra runs: {len(extra_run_ids)}")
+    if duplicate_run_id_count:
+        problems.append(f"重复 run_id: {duplicate_run_id_count}")
+    if duplicate_key_count:
+        problems.append(f"重复唯一键: {duplicate_key_count}")
+    for name in FORMAL_GRID_STRATUM_NAMES:
+        if actual_strata[name] != expected_strata[name]:
+            problems.append(f"分层 {name} 计数 {actual_strata[name]} != {expected_strata[name]}")
+    if b128_k0_count:
+        problems.append(f"出现计划外 B=128 x K=0 记录 {b128_k0_count}")
+    status = MERGE_STATUS_PASS if not problems else MERGE_STATUS_FAIL
+    clone_report: dict[str, Any] | None = None
+    merged_hashes: dict[str, Any] = {}
+    ordered_records: list[dict[str, Any]] = []
+    directory = Path(outdir)
+    if status == MERGE_STATUS_PASS:
+        for item in plan_items:
+            record_run_id = key_to_run_id[_merge_key(item)]
+            ordered_records.append(records_by_run_id[record_run_id])
+        clone_report = clone_pairs_check(ordered_records)
+        if clone_report["status"] == MERGE_STATUS_FAIL:
+            problems.extend(f"clone: {problem}" for problem in clone_report["problems"])
+            status = MERGE_STATUS_FAIL
+    if status == MERGE_STATUS_PASS:
+        run_config = build_grid_run_config(
+            package, run_id=run_id, plan=plan_items, grid_mode=FORMAL_GRID_MODE
+        )
+        write_run_bundle(
+            directory, run_id=run_id, package=package, records=ordered_records, run_config=run_config
+        )
+        merged_hashes = {
+            "run_records_sha256": sha256_file(directory / "run_records.jsonl"),
+            "run_records_canonical_sha256": digest(ordered_records),
+            "run_config_sha256": sha256_file(directory / "run_config.json"),
+            "run_summary_sha256": sha256_file(directory / "run_summary.json"),
+            "identifiability_report_sha256": sha256_file(directory / "identifiability_report.json"),
+            "manifest_sha256": sha256_file(directory / "manifest.json"),
+        }
+    else:
+        if directory.exists() and any(directory.iterdir()):
+            raise S1RunnerError(f"输出目录非空，拒绝覆盖: {directory}")
+        directory.mkdir(parents=True, exist_ok=True)
+    global_expected = {str(row["name"]): int(row["expected_runs"]) for row in FORMAL_GRID_STRATA}
+    manifest = {
+        "schema_version": MERGE_MANIFEST_SCHEMA_VERSION,
+        "status": status,
+        "run_id": run_id,
+        "grid_mode": FORMAL_GRID_MODE,
+        "evaluation_mode": evaluation_mode,
+        "confirmatory_eligible": bool(package["identity"].get("confirmatory_eligible", False)),
+        "identity": identity,
+        "frozen_run_id": package["identity"]["frozen_run_id"],
+        "expected_run_count": len(plan_items),
+        "actual_record_count": loaded_record_count,
+        "unique_run_count": len(records_by_run_id),
+        "shard_count": len(shards),
+        "missing_run_count": len(missing_run_ids),
+        "extra_run_count": len(extra_run_ids),
+        "duplicate_run_id_count": duplicate_run_id_count,
+        "duplicate_key_count": duplicate_key_count,
+        "missing_run_ids": missing_run_ids[:MERGE_PROBLEM_DETAIL_LIMIT],
+        "extra_run_ids": extra_run_ids[:MERGE_PROBLEM_DETAIL_LIMIT],
+        "strata": [
+            {
+                "name": name,
+                "expected_runs": expected_strata[name],
+                "actual_runs": actual_strata[name],
+                "global_expected_runs": global_expected[name],
+            }
+            for name in FORMAL_GRID_STRATUM_NAMES
+        ],
+        "b128_k0_count": b128_k0_count,
+        "expected_b128_k0_count": expected_b128_k0_count,
+        "shards": shards,
+        "merged": merged_hashes,
+        "physical_call_count_total": physical_total,
+        "clone_pairs": clone_report,
+        "problems": problems[:200],
+        "problem_count": len(problems),
+    }
+    write_json_file(directory / "merge_manifest.json", manifest)
+    if status == MERGE_STATUS_FAIL:
+        raise S1RunnerError(
+            f"merge 校验失败（{len(problems)} 项，详见 merge_manifest.json）: {problems[:3]}"
+        )
+    return manifest
+
 
 
 def run_determinism(
@@ -1621,12 +2136,14 @@ def _build_parser() -> argparse.ArgumentParser:
     selftest.add_argument("--opt-seed", type=int, default=0)
     selftest.add_argument("--task-limit", type=int, default=2)
     selftest.add_argument("--split", default=PRIMARY_SPLIT)
+    selftest.add_argument("--allow-legacy", action="store_true", help="只读/探索：允许非确证冻结包")
     prepare = sub.add_parser("prepare-artifacts", help="训练并落盘 meta_seed 代理工件（仅 meta_train）")
     prepare.add_argument("--frozen", required=True)
     prepare.add_argument("--outdir", required=True)
     prepare.add_argument("--meta-seeds", default="0,1,2")
     prepare.add_argument("--maml-steps", type=int, default=None)
     prepare.add_argument("--pretrain-steps", type=int, default=None)
+    prepare.add_argument("--allow-legacy", action="store_true", help="只读/探索：允许非确证冻结包")
     run = sub.add_parser("run", help="按网格计划执行并写 run bundle（A2 授权后使用）")
     run.add_argument("--frozen", required=True)
     run.add_argument("--outdir", required=True)
@@ -1640,6 +2157,7 @@ def _build_parser() -> argparse.ArgumentParser:
     run.add_argument("--opt-seeds", default="0,1,2,3,4,5,6,7,8,9")
     run.add_argument("--task-limit", type=int, default=None)
     run.add_argument("--grid", choices=list(GRID_MODES), default=CARTESIAN_GRID_MODE)
+    run.add_argument("--allow-legacy", action="store_true", help="只读/探索：允许非确证冻结包")
     det = sub.add_parser("determinism", help="确定性重跑子集（200 runs x N）")
     det.add_argument("--frozen", required=True)
     det.add_argument("--outdir", required=True)
@@ -1653,6 +2171,7 @@ def _build_parser() -> argparse.ArgumentParser:
     det.add_argument("--opt-seeds", default="0")
     det.add_argument("--task-limit", type=int, default=None)
     det.add_argument("--repeats", type=int, default=3)
+    det.add_argument("--allow-legacy", action="store_true", help="只读/探索：允许非确证冻结包")
     shuffle = sub.add_parser("label-shuffle", help="标签打乱负控诊断（只置换支持标签）")
     shuffle.add_argument("--frozen", required=True)
     shuffle.add_argument("--outdir", required=True)
@@ -1665,16 +2184,33 @@ def _build_parser() -> argparse.ArgumentParser:
     shuffle.add_argument("--meta-seeds", default="0")
     shuffle.add_argument("--opt-seeds", default="0")
     shuffle.add_argument("--task-limit", type=int, default=2)
+    shuffle.add_argument("--allow-legacy", action="store_true", help="只读/探索：允许非确证冻结包")
     grid = sub.add_parser("grid", help="打印全量网格计数（不执行）")
     grid.add_argument("--frozen", required=True)
     grid.add_argument("--tasks", type=int, default=None)
     grid.add_argument("--grid", choices=list(GRID_MODES), default=CARTESIAN_GRID_MODE)
+    grid.add_argument("--allow-legacy", action="store_true", help="只读/探索：允许非确证冻结包")
+    merge = sub.add_parser("merge", help="合并 15 个分片的 run_records 为完整 formal bundle（R-V4-07）")
+    merge.add_argument("--frozen", required=True)
+    merge.add_argument("--artifacts-root", default=None)
+    merge.add_argument("--shards-root", required=True)
+    merge.add_argument("--outdir", required=True)
+    merge.add_argument("--run-id", required=True)
+    merge.add_argument("--splits", default=PRIMARY_SPLIT)
+    merge.add_argument("--arms", default="all")
+    merge.add_argument("--budgets", default="64,128")
+    merge.add_argument("--k-values", default="0,1,3,5")
+    merge.add_argument("--meta-seeds", default=None)
+    merge.add_argument("--opt-seeds", default=None)
+    merge.add_argument("--task-limit", type=int, default=None)
+    merge.add_argument("--allow-legacy", action="store_true", help="只读/探索：允许非确证冻结包")
     return parser
 
 
 def _main(argv: Sequence[str] | None = None) -> int:
     args = _build_parser().parse_args(argv)
-    package = load_frozen_package(args.frozen)
+    allow_legacy = bool(getattr(args, "allow_legacy", False))
+    package = load_frozen_package(args.frozen, require_confirmatory=not allow_legacy)
     if args.command == "grid":
         grid_mode = str(args.grid)
         if grid_mode == FORMAL_GRID_MODE:
@@ -1692,7 +2228,36 @@ def _main(argv: Sequence[str] | None = None) -> int:
         else:
             raise S1RunnerError(f"未知 grid 模式: {grid_mode!r}")
         payload["identity"] = frozen_identity_for_run(package)
+        payload["evaluation_mode"] = str(package["identity"].get("evaluation_mode", "exploratory"))
+        payload["confirmatory_eligible"] = bool(
+            package["identity"].get("confirmatory_eligible", False)
+        )
         print(canonical_json(payload))
+        return 0
+    if args.command == "merge":
+        try:
+            plan = merge_plan_from_args(package, args)
+            manifest = merge_run_shards(
+                package,
+                shards_root=args.shards_root,
+                outdir=args.outdir,
+                run_id=args.run_id,
+                plan=plan,
+                allow_legacy=allow_legacy,
+            )
+        except S1RunnerError as exc:
+            print(canonical_json({"status": MERGE_STATUS_FAIL, "error": str(exc)}))
+            return 1
+        print(
+            canonical_json(
+                {
+                    "status": manifest["status"],
+                    "record_count": manifest["actual_record_count"],
+                    "shard_count": manifest["shard_count"],
+                    "problems": manifest["problems"][:MERGE_PROBLEM_DETAIL_LIMIT],
+                }
+            )
+        )
         return 0
     if args.command == "prepare-artifacts":
         meta_seeds = _parse_int_list(args.meta_seeds, label="meta_seed")

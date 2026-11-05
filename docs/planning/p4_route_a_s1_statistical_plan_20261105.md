@@ -1,7 +1,7 @@
-# P4 路线A S1 统计分析计划（v1.1）
+# P4 路线A S1 统计分析计划（v1.2）
 
 > 状态：S0-2 修订版（Lead task-186/190 集成），已按 A5 S0 审阅的 A5-S0-M02/M03/M04 与 D-S0-2-02/03/04 裁定回填；**仍待 A5 复审，不构成 S1 放行**。
-> 依据：Issue #7 D-P4-003 §3 S1、docs/planning/p4_route_a_stage_improvement_plan_20261105.md、docs/planning/p4_route_a_s0_design_contract.md（A4 v1.0）、docs/reviews/p4_route_a_s0_baseline_snapshot_20261105.md。
+> 依据：Issue #7 D-P4-003 §3 S1、docs/planning/p4_route_a_stage_improvement_plan_20261105.md、docs/planning/p4_route_a_s0_design_contract.md（v1.3）、docs/reviews/p4_route_a_s0_baseline_snapshot_20261105.md。
 > 约束：physical_call_count=0；只允许全合成解析任务；不合并 main；结论允许为“无改进/INCONCLUSIVE”。
 
 ## 1. 目标与问题
@@ -97,7 +97,7 @@ null 政策：null 不插补、不计 0；报告 n_nonnull/null_rate；主端点
 - 检验：双侧 Wilcoxon signed-rank（配对任务差）；n_tasks=20；全零或 n<10 → INCONCLUSIVE。
 - 效应量：配对差中位数（端点单位）、rank-biserial correlation、Cohen's d（报告但不用作判据）。
 - 置信区间：task 级配对差 bootstrap 10,000 次（百分位法，固定 seed=20261105）。
-- 多重校正：**每个端点内**对其可用的 5 个比较做 Holm-Bonferroni；alpha=0.05 双侧。
+- 多重校正（R-V4-08-01 唯一口径）：Holm-Bonferroni 族键 = `(primary_endpoint, budget_B, K)`；族内为 C1–C4 全部可推断臂对比较（C5 永不进族；pair-level STRUCTURALLY_IDENTICAL 行级排除后族大小可 <4）；alpha=0.05 双侧。禁止“同 K 内 32 检验”“每个端点内 5 个比较”等其它口径。
 - 实际显著性阈值（预注册，D-S0-2-04.6）：best 相对改进 =(median_base−median_arm)/max(|median_base|,1e-12) ≥1%；gap 相对改进 =(gap_base−gap_arm)/max(|gap_base|,1e-12) ≥1%；feasible_hit_rate 绝对差 ≥0.05；first_feasible 改善 = idx_base−idx_arm ≥ ceil(0.05×B)（同 K 内比较）。
 
 ## 7. 判定与结论规则
@@ -159,3 +159,4 @@ null 政策：主端点 null（无可行）不计 0、不插补；报告 n_nonnu
 |---|---|---|---|
 | v1.0 | 2026-11-05 | Lead（task-186） | 首次生成 S1 统计分析与预注册计划草案 |
 | v1.1 | 2026-11-05 | Lead（task-190/S0-2） | 按 A5-S0-M02/M03/M04 与 D-S0-2-02/03/04 关闭端点 ID、预算映射、端点语义；五 split 与 split_digest 覆盖明确 |
+| v1.2 | 2026-11-06 | Lead（R-V4-08） | Holm 唯一族键 (primary_endpoint,budget_B,K)、成员 C1–C4、C5 排除、动态族大小；与合同 v1.3/prereg 冻结口径一致 |

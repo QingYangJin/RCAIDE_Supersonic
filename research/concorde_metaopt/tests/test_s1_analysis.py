@@ -7,7 +7,8 @@
 - 统计函数（Wilcoxon 精确/并列近似、Holm、bootstrap、效应量）与判定规则，不产生假数据；
 - 端到端 21,000 条记录 -> 8 数据产物 + 7 张规范图、无绝对路径、physical=0；
 - task-239 冻结身份解耦：五项身份从冻结包派生（v3 legacy / 合成 v4 包），expected_identity 提供时必须逐项一致；
-- CLI 成功/失败返回码。
+- CLI 成功/失败返回码；
+- task-250（R-V4-08）：formal 模式 code_sha 绑定、legacy 包拒绝、prereg 三键强校验、Holm 族动态大小。
 
 全部测试纯离线：不 import 也不启动任何真实 Mission/SU2/VSPAERO/OpenVSP/RCAIDE 求解器。
 """
@@ -1569,8 +1570,8 @@ def full_e2e_run():
     """模块级缓存一次完整端到端运行（21,000 条），避免重复抽样拖慢测试。"""
     global _E2E
     if _E2E is None:
-        bundle = frozen_bundle()
-        directory = Path(tempfile.mkdtemp(prefix="s1-e2e-"))
+        directory, _identity = synthetic_v4c_confirmatory_freeze_package()
+        bundle = A.load_frozen_bundle(directory)
         records = full_meta_test_records(bundle)
         records_path = write_record_files(directory, records)
         write_identifiability_report(directory, records)
@@ -1581,7 +1582,7 @@ def full_e2e_run():
         )
         out_dir = directory / "out"
         aggregate = A.run_s1_analysis(
-            FROZEN_DIR, records_path, out_dir, make_figures=True, meta_training_log=meta_log
+            directory, records_path, out_dir, make_figures=True, meta_training_log=meta_log
         )
         _E2E = {
             "aggregate": aggregate,
@@ -1674,12 +1675,12 @@ class EndToEndTests(TempDirMixin):
 
 
 # ---------------------------------------------------------------------------
-# M02（task-226）：Holm 族 = 同 (端点, 预算, K) 内的 5 个比较
+# R-V4-08-01：唯一 Holm 族 = 同 (主端点, 预算_B, K) 内的全部可推断比较（C1-C4）
 # ---------------------------------------------------------------------------
 
 
 class HolmFamilyTests(unittest.TestCase):
-    """M02：Holm 族必须按端点分组（每族 5 个比较），不得按 K 汇总 40 个检验。"""
+    """R-V4-08-01：Holm 族键=(主端点, 预算_B, K)，成员 C1-C4（C5 不进族），族大小动态。"""
 
     @classmethod
     def setUpClass(cls):
@@ -1687,10 +1688,16 @@ class HolmFamilyTests(unittest.TestCase):
 
     def test_family_size_and_count_are_reported(self):
         population = self.aggregate["primary_population"]
-        # R-V4-02：C5 不进 Holm，族内仅 4 个可推断比较（C1..C4）。
-        self.assertEqual(population["holm_family_size"], 4)
+        # R-V4-08-01：族键=(主端点, 预算_B, K)，成员为 C1..C4（C5 不进族），族大小动态记录。
+        self.assertEqual(population["holm_family_key_fields"], ["primary_endpoint", "budget_B", "K"])
+        self.assertTrue(population["holm_family_size_dynamic"])
+        self.assertEqual(population["holm_family_max_size"], 4)
+        self.assertEqual(population["holm_family_size_min"], 4)
+        self.assertEqual(population["holm_family_size_max"], 4)
+        self.assertEqual(population["holm_family_size_counts"], {"4": 24})
         self.assertEqual(population["holm_family_count"], 24)
-        self.assertIn("4 个", population["holm_family"])
+        self.assertIn("R-V4-08-01", population["holm_family"])
+        self.assertEqual(population["inference_comparison_ids"], ["C1", "C2", "C3", "C4"])
         self.assertEqual(population["excluded_comparison_ids"], ["C5"])
         sizes = self.aggregate["statistical_rules"]["holm_family_sizes"]
         self.assertEqual(len(sizes), 24)
@@ -1812,7 +1819,11 @@ class RunnerToAnalysisIntegrationTests(TempDirMixin):
             out_dir,
             make_figures=False,
             require_complete_grid=False,
+            analysis_mode=A.ANALYSIS_MODE_EXPLORATORY,
+            allow_legacy=True,
+            allow_code_delta=True,
         )
+        self.assertFalse(aggregate["confirmatory_eligible"])
         self.assertEqual(aggregate["validation"]["record_count"], 1)
         self.assertEqual(aggregate["grid"]["status"], "SKIPPED_BY_CALLER")
         for name in A.S1_OUTPUT_FILES:
@@ -1856,7 +1867,8 @@ def sparse_records(bundle, *, tasks=3, meta_seeds=(0, 1), opt_seeds=(0, 1)):
 
 class CliTests(TempDirMixin):
     def test_cli_success_returns_zero_and_writes_outputs(self):
-        bundle = frozen_bundle()
+        freeze_dir, _identity = synthetic_v4c_confirmatory_freeze_package()
+        bundle = A.load_frozen_bundle(freeze_dir)
         directory = self.make_temp_dir()
         records = sparse_records(bundle)
         path = write_record_files(directory, records)
@@ -1868,7 +1880,7 @@ class CliTests(TempDirMixin):
             code = A.main(
                 [
                     "--freeze-dir",
-                    str(FROZEN_DIR),
+                    str(freeze_dir),
                     "--run-records",
                     str(path),
                     "--output-dir",
@@ -1881,13 +1893,16 @@ class CliTests(TempDirMixin):
         self.assertNotIn("S1_ANALYSIS_FAILED", stderr.getvalue())
         payload = json.loads(stdout.getvalue())
         self.assertEqual(payload["status"], "PASS")
-        self.assertEqual(payload["n_records"], len(sparse_records(bundle)))
+        self.assertEqual(payload["n_records"], len(records))
+        self.assertEqual(payload["analysis_mode"], A.ANALYSIS_MODE_FORMAL)
+        self.assertTrue(payload["confirmatory_eligible"])
         self.assertEqual(payload["c5_structural_identifiability"], A.C5_NOT_ESTIMABLE)
         self.assertTrue((out_dir / "aggregate.json").is_file())
         self.assertTrue((out_dir / "s1_structural_identifiability.csv").is_file())
 
     def test_cli_record_failure_returns_two(self):
-        bundle = frozen_bundle()
+        freeze_dir, _identity = synthetic_v4c_confirmatory_freeze_package()
+        bundle = A.load_frozen_bundle(freeze_dir)
         directory = self.make_temp_dir()
         records = sparse_records(bundle, tasks=1, meta_seeds=(0,), opt_seeds=(0,))
         records[0].pop("physics")
@@ -1898,7 +1913,7 @@ class CliTests(TempDirMixin):
             code = A.main(
                 [
                     "--freeze-dir",
-                    str(FROZEN_DIR),
+                    str(freeze_dir),
                     "--run-records",
                     str(path),
                     "--output-dir",
@@ -1971,7 +1986,7 @@ def synthetic_v4_freeze_package():
             ],
         }
         bundle = family_v3.build_freeze_bundle(
-            run_id="p4ra-s0-3-freeze-tests",
+            run_id="p4ra-s0-3-freeze-20261106T000000Z",
             git_sha="0" * 40,
             created_utc=created,
             legacy=legacy,
@@ -2023,7 +2038,7 @@ def synthetic_v4_freeze_package():
         summary = {
             "schema_version": "p4ra-freeze-summary-2",
             "created_utc": created,
-            "run_id": "p4ra-s0-3-freeze-tests",
+            "run_id": "p4ra-s0-3-freeze-20261106T000000Z",
             "git_sha": "0" * 40,
             "code_sha": "tests",
             "family_id": family_v3.FAMILY_ID,
@@ -2086,7 +2101,10 @@ class IdentityDecouplingTests(TempDirMixin):
         self.assertNotEqual(bundle.identity.family_fingerprint, v3.identity.family_fingerprint)
         self.assertNotEqual(bundle.identity.prereg_digest, v3.identity.prereg_digest)
         self.assertEqual(bundle.identity.split_hash, v3.identity.split_hash)
-        self.assertEqual(bundle.identity.analysis_plan_digest, v3.identity.analysis_plan_digest)
+        # R-V4-08-01 后 v4 采用新 analysis_plan（Holm 族唯一口径）；v3 legacy 包用旧 digest。
+        self.assertEqual(bundle.identity.analysis_plan_digest, family_v3.ANALYSIS_PLAN_DIGEST)
+        self.assertEqual(v3.identity.analysis_plan_digest, family_v3.LEGACY_ANALYSIS_PLAN_DIGEST)
+        self.assertNotEqual(bundle.identity.analysis_plan_digest, v3.identity.analysis_plan_digest)
         self.assertAlmostEqual(bundle.identity.radius_base, 0.64, places=12)
 
     def test_synthetic_v4_expected_identity_roundtrip(self):
@@ -2146,19 +2164,20 @@ class IdentityDecouplingTests(TempDirMixin):
             A.load_frozen_bundle(tampered)
 
     def _sparse_analysis_inputs(self):
-        bundle = frozen_bundle()
+        freeze_dir, _identity = synthetic_v4c_confirmatory_freeze_package()
+        bundle = A.load_frozen_bundle(freeze_dir)
         directory = self.make_temp_dir()
         records = sparse_records(bundle, tasks=1, meta_seeds=(0,), opt_seeds=(0,))
         path = write_record_files(directory, records)
         write_identifiability_report(directory, records)
-        return bundle, directory, path
+        return bundle, directory, path, freeze_dir
 
     def test_run_s1_analysis_records_identity_source(self):
-        bundle, directory, path = self._sparse_analysis_inputs()
+        bundle, directory, path, freeze_dir = self._sparse_analysis_inputs()
         expected = bundle.identity_five()
         out_dir = directory / "out"
         aggregate = A.run_s1_analysis(
-            FROZEN_DIR,
+            freeze_dir,
             path,
             out_dir,
             make_figures=False,
@@ -2181,13 +2200,13 @@ class IdentityDecouplingTests(TempDirMixin):
         self.assertEqual(rows[0]["expected_identity_fields"], ";".join(A.IDENTITY_FIELDS))
 
     def test_run_s1_analysis_wrong_expected_identity_fails_closed(self):
-        bundle, directory, path = self._sparse_analysis_inputs()
+        bundle, directory, path, freeze_dir = self._sparse_analysis_inputs()
         bad = bundle.identity_five()
         bad["prereg_digest"] = "0" * 64
         out_dir = directory / "out-bad"
         with self.assertRaises(A.S1FreezeValidationError):
             A.run_s1_analysis(
-                FROZEN_DIR,
+                freeze_dir,
                 path,
                 out_dir,
                 make_figures=False,
@@ -2197,7 +2216,7 @@ class IdentityDecouplingTests(TempDirMixin):
         self.assertFalse((out_dir / "aggregate.json").exists())
 
     def test_cli_expected_identity_json_records_source(self):
-        bundle, directory, path = self._sparse_analysis_inputs()
+        bundle, directory, path, freeze_dir = self._sparse_analysis_inputs()
         identity_path = directory / "expected_identity.json"
         identity_path.write_text(
             json.dumps(bundle.identity_five(), ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
@@ -2209,7 +2228,7 @@ class IdentityDecouplingTests(TempDirMixin):
             code = A.main(
                 [
                     "--freeze-dir",
-                    str(FROZEN_DIR),
+                    str(freeze_dir),
                     "--run-records",
                     str(path),
                     "--output-dir",
@@ -2227,13 +2246,13 @@ class IdentityDecouplingTests(TempDirMixin):
         self.assertTrue((out_dir / "s1_freeze_identity.csv").is_file())
 
     def test_cli_missing_expected_identity_json_returns_two(self):
-        _bundle, directory, path = self._sparse_analysis_inputs()
+        _bundle, directory, path, freeze_dir = self._sparse_analysis_inputs()
         stderr = io.StringIO()
         with contextlib.redirect_stderr(stderr):
             code = A.main(
                 [
                     "--freeze-dir",
-                    str(FROZEN_DIR),
+                    str(freeze_dir),
                     "--run-records",
                     str(path),
                     "--output-dir",
@@ -2248,8 +2267,567 @@ class IdentityDecouplingTests(TempDirMixin):
         self.assertIn("S1_ANALYSIS_FAILED", stderr.getvalue())
 
 
-if __name__ == "__main__":
-    unittest.main()
+# ---------------------------------------------------------------------------
+# task-250（R-V4-08）：v4c 确证冻结包三键、confirmatory_eligible、code_sha 绑定、
+# legacy 拒绝与 Holm 族动态大小（物理解析式、随机性全部显式 seed；不读真实 meta_test/OOD）
+# ---------------------------------------------------------------------------
+
+_V4C_PACKAGE = None
+V4C_RUN_ID = "p4ra-s0-4-freeze-20261106T000000Z"
+V4C_CREATED_UTC = "2026-11-06T00:00:00Z"
+
+
+def _build_v4c_confirmatory_package(
+    src_dir,
+    *,
+    run_id=V4C_RUN_ID,
+    created_utc=V4C_CREATED_UTC,
+    code_sha=None,
+    frozen_mutator=None,
+    prereg_mutator=None,
+):
+    """由 task-239 的合成 v4 包构造 v4c 确证包（R-V4-08-02 三键 + confirmatory_eligible）。
+
+    仅重写冻结载荷并重算 SHA256/prereg_digest 链；不触碰任务族内容、不生成真实包。
+    返回新包目录（目录名即 run_id）。frozen_mutator/prereg_mutator 供负控注入漂移。
+    """
+    payloads = {
+        name: json.loads((Path(src_dir) / name).read_text(encoding="utf-8"))
+        for name in A.FROZEN_PAYLOAD_FILES
+    }
+    frozen = payloads["frozen_family.json"]
+    prereg = payloads["preregistration.json"]
+    split = payloads["meta_task_split.json"]
+    frozen["run_id"] = run_id
+    frozen["holdout_splits"] = dict(A.V4C_HOLDOUT_SPLIT_COUNTS)
+    frozen["confirmatory_eligible"] = True
+    if code_sha is not None:
+        frozen["code_sha"] = code_sha
+    if frozen_mutator is not None:
+        frozen_mutator(frozen)
+    frozen["sha256"] = family_v3.digest(
+        {key: value for key, value in frozen.items() if key != "sha256"}
+    )
+    prereg["run_id"] = run_id
+    prereg["holdout_splits"] = dict(A.V4C_HOLDOUT_SPLIT_COUNTS)
+    prereg["confirmatory_eligible"] = True
+    prereg["frozen_family_sha256"] = frozen["sha256"]
+    prereg["holdout_package"] = {
+        "run_id": run_id,
+        "family_version": A.CONFIRMATORY_FAMILY_VERSION,
+        "holdout_seed": prereg["holdout_seed"],
+        "split_counts": dict(A.V4C_HOLDOUT_SPLIT_COUNTS),
+        "task_count": A.V4C_HOLDOUT_TASK_COUNT,
+        "frozen_family_sha256": frozen["sha256"],
+        "package_path": "research/concorde_metaopt/optimization_runs/" + run_id,
+    }
+    prereg["c5_policy"] = dict(A.V4C_C5_POLICY)
+    prereg["structural_identifiability"] = dict(A.V4C_STRUCTURAL_IDENTIFIABILITY)
+    if prereg_mutator is not None:
+        prereg_mutator(prereg)
+    prereg["prereg_digest"] = family_v3.compute_prereg_digest(prereg)
+    prereg["sha256"] = family_v3.digest(
+        {key: value for key, value in prereg.items() if key != "sha256"}
+    )
+    directory = Path(tempfile.mkdtemp(prefix="s1-v4c-freeze-")) / run_id
+    directory.mkdir(parents=True)
+    raw = {}
+    for name in A.FROZEN_PAYLOAD_FILES:
+        data = (
+            json.dumps(payloads[name], ensure_ascii=False, indent=2, sort_keys=True) + "\n"
+        ).encode("utf-8")
+        (directory / name).write_bytes(data)
+        raw[name] = data
+    artifacts = []
+    for name in A.FROZEN_PAYLOAD_FILES:
+        payload = payloads[name]
+        entry = {
+            "path": name,
+            "bytes": len(raw[name]),
+            "canonical_sha256": A._canonical_artifact_digest(payload),
+            "raw_sha256": hashlib.sha256(raw[name]).hexdigest(),
+        }
+        if isinstance(payload, dict) and isinstance(payload.get("sha256"), str):
+            entry["stored_sha256"] = payload["sha256"]
+        artifacts.append(entry)
+    manifest = family_v3.build_digest_manifest(artifacts, created_utc=created_utc)
+    manifest_bytes = (
+        json.dumps(manifest, ensure_ascii=False, indent=2, sort_keys=True) + "\n"
+    ).encode("utf-8")
+    (directory / "digest_manifest.json").write_bytes(manifest_bytes)
+    raw["digest_manifest.json"] = manifest_bytes
+    canonical = {
+        name: A._canonical_artifact_digest(payloads[name])
+        for name in A.FROZEN_PAYLOAD_FILES
+    }
+    summary = {
+        "schema_version": "p4ra-freeze-summary-2",
+        "created_utc": created_utc,
+        "run_id": run_id,
+        "git_sha": "0" * 40,
+        "code_sha": frozen["code_sha"],
+        "confirmatory_eligible": True,
+        "family_id": family_v3.FAMILY_ID,
+        "family_version": frozen["family_version"],
+        "family_seed": family_v3.FAMILY_SEED,
+        "formula_version": family_v3.FORMULA_VERSION,
+        "radius_base": frozen["radius_base"],
+        "frozen_at_utc": created_utc,
+        "calibration_status": frozen["calibration"]["status"],
+        "artifacts": {
+            name: {
+                "raw_sha256": hashlib.sha256(raw[name]).hexdigest(),
+                "canonical_sha256": canonical[name],
+                "bytes": len(raw[name]),
+            }
+            for name in A.FROZEN_PAYLOAD_FILES
+        },
+        "digest_manifest": {
+            "raw_sha256": hashlib.sha256(manifest_bytes).hexdigest(),
+            "canonical_sha256": A._canonical_artifact_digest(manifest),
+            "bytes": len(manifest_bytes),
+        },
+        "orchestration": {
+            "physical_call_count": 0,
+            "family_fingerprint": frozen["family_fingerprint"],
+            "split_hash": split["split_hash"],
+            "prereg_digest": prereg["prereg_digest"],
+            "analysis_plan_digest": frozen["analysis_plan_digest"],
+            "radius_base": frozen["radius_base"],
+            "frozen_family_sha256": canonical["frozen_family.json"],
+            "preregistration_sha256": canonical["preregistration.json"],
+            "budget_fairness_report_sha256": canonical["budget_fairness_report.json"],
+            "isolation_report_sha256": canonical["v3_isolation_report.json"],
+            "split_counts": dict(split["counts"]),
+            "task_count": family_v3.TOTAL_TASKS,
+        },
+    }
+    summary_bytes = (
+        json.dumps(summary, ensure_ascii=False, indent=2, sort_keys=True) + "\n"
+    ).encode("utf-8")
+    (directory / "freeze_summary.json").write_bytes(summary_bytes)
+    raw["freeze_summary.json"] = summary_bytes
+    sums = [
+        hashlib.sha256(raw[name]).hexdigest() + " *" + name
+        for name in A.FROZEN_REQUIRED_FILES
+    ]
+    (directory / "SHA256SUMS.txt").write_text("\n".join(sums) + "\n", encoding="utf-8")
+    return directory
+
+
+def synthetic_v4c_confirmatory_freeze_package():
+    """模块级缓存：自洽的 v4c 确证冻结包（三键 + confirmatory_eligible=true）。"""
+    global _V4C_PACKAGE
+    if _V4C_PACKAGE is None:
+        source_dir, _identity = synthetic_v4_freeze_package()
+        directory = _build_v4c_confirmatory_package(source_dir)
+        bundle = A.load_frozen_bundle(directory)
+        _V4C_PACKAGE = (directory, bundle.identity_five())
+    return _V4C_PACKAGE
+
+
+def _sparse_records_and_paths(bundle, directory, *, tasks=2):
+    records = sparse_records(bundle, tasks=tasks, meta_seeds=(0,), opt_seeds=(0,))
+    path = write_record_files(directory, records)
+    write_identifiability_report(directory, records)
+    return records, path
+
+
+class V4CConfirmatoryPackageTests(TempDirMixin):
+    """R-V4-08-02/03/04：三键消费、legacy 拒绝、code_sha 绑定与非确证输出标记。"""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.freeze_dir, cls.expected_identity = synthetic_v4c_confirmatory_freeze_package()
+        cls.bundle = A.load_frozen_bundle(cls.freeze_dir)
+
+    def test_formal_compliance_pass_on_confirmatory_package(self):
+        compliance = A.verify_analysis_freeze(self.bundle, analysis_mode=A.ANALYSIS_MODE_FORMAL)
+        self.assertTrue(compliance["confirmatory_eligible"])
+        self.assertFalse(compliance["legacy_package"])
+        self.assertTrue(compliance["code_sha"]["match"])
+        blocks = compliance["prereg_v4c_blocks"]
+        self.assertEqual(blocks["status"], "PASS")
+        self.assertEqual(blocks["rule"], "R-V4-08-02")
+        values = blocks["values"]
+        self.assertEqual(values["holdout_splits"], dict(A.V4C_HOLDOUT_SPLIT_COUNTS))
+        self.assertEqual(values["holdout_package_run_id"], self.freeze_dir.name)
+        self.assertTrue(values["holdout_package_package_path"].endswith(self.freeze_dir.name))
+        self.assertFalse(values["c5_in_holm"])
+        self.assertEqual(values["min_estimable_tasks"], 10)
+        self.assertEqual(values["pair_overlap_threshold"], 0.90)
+
+    def test_formal_analysis_marks_confirmatory_and_writes_outputs(self):
+        directory = self.make_temp_dir()
+        _records, path = _sparse_records_and_paths(self.bundle, directory)
+        out_dir = directory / "out"
+        aggregate = A.run_s1_analysis(
+            self.freeze_dir,
+            path,
+            out_dir,
+            make_figures=False,
+            require_complete_grid=False,
+            expected_identity=self.expected_identity,
+            expected_identity_source="run_config.json",
+        )
+        self.assertEqual(aggregate["analysis_mode"], A.ANALYSIS_MODE_FORMAL)
+        self.assertTrue(aggregate["confirmatory_eligible"])
+        self.assertEqual(aggregate["freeze_compliance"]["prereg_v4c_blocks"]["status"], "PASS")
+        self.assertTrue(aggregate["freeze_echo"]["confirmatory_eligible"])
+        self.assertEqual(aggregate["freeze_echo"]["identity_source"], A.IDENTITY_SOURCE_EXPECTED)
+        self.assertEqual(
+            aggregate["primary_population"]["holm_family_size_counts"], {"4": 24}
+        )
+        for name in A.S1_OUTPUT_FILES:
+            self.assertTrue((out_dir / name).is_file(), msg=name)
+
+    def test_formal_rejects_legacy_v3_package(self):
+        bundle = frozen_bundle()
+        directory = self.make_temp_dir()
+        _records, path = _sparse_records_and_paths(bundle, directory, tasks=1)
+        out_dir = directory / "out"
+        with self.assertRaises(A.S1FreezeValidationError) as ctx:
+            A.run_s1_analysis(
+                FROZEN_DIR, path, out_dir, make_figures=False, require_complete_grid=False
+            )
+        self.assertIn(A.S1_ANALYSIS_LEGACY_PACKAGE, str(ctx.exception))
+        self.assertFalse((out_dir / "aggregate.json").exists())
+
+    def test_formal_rejects_old_v4_package_without_confirmatory_flag(self):
+        # S0-3 是 v4 但缺三键/confirmatory_eligible 的只读历史包：formal 必须拒绝。
+        old_dir = FROZEN_V4_DIR
+        bundle = A.load_frozen_bundle(old_dir)
+        directory = self.make_temp_dir()
+        _records, path = _sparse_records_and_paths(bundle, directory, tasks=1)
+        with self.assertRaises(A.S1FreezeValidationError) as ctx:
+            A.run_s1_analysis(
+                old_dir,
+                path,
+                directory / "out",
+                make_figures=False,
+                require_complete_grid=False,
+            )
+        self.assertIn(A.S1_ANALYSIS_LEGACY_PACKAGE, str(ctx.exception))
+
+    def test_exploratory_allows_legacy_with_non_confirmatory_outputs(self):
+        bundle = frozen_bundle()  # noqa: F841 - 保持旧 fixture 语义，records 由 sparse_records 生成
+        directory = self.make_temp_dir()
+        _records, path = _sparse_records_and_paths(bundle, directory, tasks=2)
+        aggregate = A.run_s1_analysis(
+            FROZEN_DIR,
+            path,
+            directory / "out",
+            make_figures=False,
+            require_complete_grid=False,
+            analysis_mode=A.ANALYSIS_MODE_EXPLORATORY,
+            allow_legacy=True,
+            allow_code_delta=True,
+        )
+        self.assertEqual(aggregate["analysis_mode"], A.ANALYSIS_MODE_EXPLORATORY)
+        self.assertFalse(aggregate["confirmatory_eligible"])
+        self.assertEqual(aggregate["primary_conclusion"]["overall"], A.OVERALL_INCONCLUSIVE)
+        self.assertFalse(aggregate["primary_conclusion"]["confirmatory_eligible"])
+        self.assertIn("non_confirmatory_reason", aggregate["primary_conclusion"])
+        # ② legacy 放行必须写 warning，且输出明确 confirmatory_eligible=false。
+        warnings = aggregate["freeze_compliance"]["warnings"]
+        self.assertTrue(any("--allow-legacy" in str(item) for item in warnings), msg=str(warnings))
+        self.assertFalse(aggregate["freeze_echo"]["confirmatory_eligible"])
+        self.assertEqual(
+            aggregate["secondary_reproduction"]["status"], A.REPRODUCTION_NOT_AVAILABLE
+        )
+
+    def test_formal_code_sha_drift_fails_closed(self):
+        source_dir, _identity = synthetic_v4_freeze_package()
+        drift_dir = _build_v4c_confirmatory_package(source_dir, code_sha="0" * 64)
+        bundle = A.load_frozen_bundle(drift_dir)
+        directory = self.make_temp_dir()
+        _records, path = _sparse_records_and_paths(bundle, directory, tasks=2)
+        out_dir = directory / "out"
+        with self.assertRaises(A.S1FreezeValidationError) as ctx:
+            A.run_s1_analysis(
+                drift_dir, path, out_dir, make_figures=False, require_complete_grid=False
+            )
+        self.assertIn(A.S1_ANALYSIS_CODE_SHA_DRIFT, str(ctx.exception))
+        self.assertFalse((out_dir / "aggregate.json").exists())
+
+    def test_exploratory_allows_code_delta_but_stays_non_confirmatory(self):
+        source_dir, _identity = synthetic_v4_freeze_package()
+        drift_dir = _build_v4c_confirmatory_package(source_dir, code_sha="0" * 64)
+        bundle = A.load_frozen_bundle(drift_dir)
+        directory = self.make_temp_dir()
+        _records, path = _sparse_records_and_paths(bundle, directory, tasks=2)
+        aggregate = A.run_s1_analysis(
+            drift_dir,
+            path,
+            directory / "out",
+            make_figures=False,
+            require_complete_grid=False,
+            analysis_mode=A.ANALYSIS_MODE_EXPLORATORY,
+            allow_code_delta=True,
+        )
+        self.assertFalse(aggregate["confirmatory_eligible"])
+        self.assertTrue(aggregate["freeze_compliance"]["code_sha"]["allow_code_delta"])
+        self.assertEqual(aggregate["primary_conclusion"]["overall"], A.OVERALL_INCONCLUSIVE)
+
+    def test_cli_formal_legacy_returns_two(self):
+        bundle = frozen_bundle()
+        directory = self.make_temp_dir()
+        _records, path = _sparse_records_and_paths(bundle, directory, tasks=1)
+        stderr = io.StringIO()
+        with contextlib.redirect_stderr(stderr):
+            code = A.main(
+                [
+                    "--freeze-dir",
+                    str(FROZEN_DIR),
+                    "--run-records",
+                    str(path),
+                    "--output-dir",
+                    str(directory / "out"),
+                    "--allow-incomplete-grid",
+                    "--no-figures",
+                ]
+            )
+        self.assertEqual(code, 2)
+        self.assertIn("S1_ANALYSIS_FAILED", stderr.getvalue())
+        self.assertIn(A.S1_ANALYSIS_LEGACY_PACKAGE, stderr.getvalue())
+
+    def test_cli_exploratory_legacy_returns_zero(self):
+        bundle = frozen_bundle()
+        directory = self.make_temp_dir()
+        _records, path = _sparse_records_and_paths(bundle, directory, tasks=2)
+        stdout = io.StringIO()
+        stderr = io.StringIO()
+        with contextlib.redirect_stdout(stdout), contextlib.redirect_stderr(stderr):
+            code = A.main(
+                [
+                    "--freeze-dir",
+                    str(FROZEN_DIR),
+                    "--run-records",
+                    str(path),
+                    "--output-dir",
+                    str(directory / "out"),
+                    "--allow-incomplete-grid",
+                    "--no-figures",
+                    "--analysis-mode",
+                    "exploratory",
+                    "--allow-legacy",
+                    "--allow-code-delta",
+                ]
+            )
+        self.assertEqual(code, 0, msg=stderr.getvalue())
+        payload = json.loads(stdout.getvalue())
+        self.assertEqual(payload["analysis_mode"], A.ANALYSIS_MODE_EXPLORATORY)
+        self.assertFalse(payload["confirmatory_eligible"])
+
+
+class PreregV4CBlocksTests(unittest.TestCase):
+    """R-V4-08-02：prereg 三键（holdout_splits/holdout_package/c5_policy/structural）强校验。"""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.freeze_dir, _identity = synthetic_v4c_confirmatory_freeze_package()
+        cls.bundle = A.load_frozen_bundle(cls.freeze_dir)
+        cls.prereg = copy.deepcopy(cls.bundle.preregistration)
+        cls.frozen = copy.deepcopy(cls.bundle.frozen_family)
+
+    def _verify(self, prereg):
+        return A.verify_prereg_v4c_blocks(
+            prereg, frozen=self.frozen, freeze_dir_name=self.freeze_dir.name
+        )
+
+    def _drifted(self, mutate):
+        prereg = copy.deepcopy(self.prereg)
+        mutate(prereg)
+        return prereg
+
+    def test_blocks_pass_on_confirmatory_package(self):
+        values = self._verify(self.prereg)
+        self.assertEqual(values["holdout_package_run_id"], self.freeze_dir.name)
+        self.assertEqual(values["holdout_splits"], dict(A.V4C_HOLDOUT_SPLIT_COUNTS))
+        self.assertFalse(values["c5_in_holm"])
+        self.assertEqual(values["min_estimable_tasks"], 10)
+
+    def test_missing_blocks_fail_closed(self):
+        for name in (
+            "holdout_splits",
+            "holdout_package",
+            "c5_policy",
+            "structural_identifiability",
+        ):
+            with self.subTest(block=name):
+                prereg = copy.deepcopy(self.prereg)
+                prereg.pop(name)
+                with self.assertRaises(A.S1FreezeValidationError) as ctx:
+                    self._verify(prereg)
+                self.assertIn(A.S1_ANALYSIS_PREREG_BLOCK_MISSING, str(ctx.exception))
+                self.assertIn(name, str(ctx.exception))
+
+    def test_drift_negative_controls(self):
+        run_id = self.freeze_dir.name
+
+        def _set_holdout_package(**fields):
+            def mutate(prereg):
+                prereg["holdout_package"].update(fields)
+
+            return mutate
+
+        def _set_c5(**fields):
+            def mutate(prereg):
+                prereg["c5_policy"].update(fields)
+
+            return mutate
+
+        def _set_structural(**fields):
+            def mutate(prereg):
+                prereg["structural_identifiability"].update(fields)
+
+            return mutate
+
+        def _drop_structural(key):
+            def mutate(prereg):
+                prereg["structural_identifiability"].pop(key)
+
+            return mutate
+
+        cases = [
+            ("holdout_splits_is_list", lambda p: p.__setitem__("holdout_splits", ["meta_test", "meta_test_ood"])),
+            ("holdout_splits_missing_key", lambda p: p.__setitem__("holdout_splits", {"meta_test": 20})),
+            ("holdout_splits_wrong_count", lambda p: p.__setitem__("holdout_splits", {"meta_test": 19, "meta_test_ood": 10})),
+            ("run_id_mismatch", _set_holdout_package(run_id="p4ra-s0-4-freeze-20260101T000000Z")),
+            ("run_id_bad_pattern", _set_holdout_package(run_id="not-a-run-id")),
+            ("package_path_absolute", _set_holdout_package(package_path="D:/abs/" + run_id)),
+            ("package_path_not_run_id", _set_holdout_package(package_path="research/concorde_metaopt/optimization_runs/other")),
+            ("family_version_wrong", _set_holdout_package(family_version="p4ra-family-v3")),
+            ("holdout_seed_wrong", _set_holdout_package(holdout_seed=20260101)),
+            ("split_counts_wrong", _set_holdout_package(split_counts={"meta_test": 19, "meta_test_ood": 10})),
+            ("task_count_wrong", _set_holdout_package(task_count=29)),
+            ("frozen_sha_zero", _set_holdout_package(frozen_family_sha256="0" * 64)),
+            ("c5_in_holm_true", _set_c5(c5_in_holm=True)),
+            ("c5_threshold_shift", _set_c5(overlap_threshold=0.8)),
+            ("c5_min_estimable_tasks", _set_c5(min_estimable_tasks=20)),
+            ("c5_mode_wrong", _set_c5(mode="C5_PERMUTATION")),
+            ("c5_benefit_harm_true", _set_c5(c5_benefit_harm_inference=True)),
+            ("structural_post_hoc_true", _set_structural(post_hoc_task_exclusion=True)),
+            ("structural_overlap_definition_wrong", _set_structural(overlap_definition="min / max")),
+            ("structural_pair_status_wrong", _set_structural(pair_status_above_threshold="CLONE")),
+            ("structural_threshold_shift", _set_structural(pair_overlap_threshold=0.8)),
+        ]
+        for name, mutate in cases:
+            with self.subTest(case=name):
+                with self.assertRaises(A.S1FreezeValidationError) as ctx:
+                    self._verify(self._drifted(mutate))
+                self.assertIn(A.S1_ANALYSIS_PREREG_BLOCK_DRIFT, str(ctx.exception))
+
+    def test_structural_subkey_missing_is_block_missing(self):
+        prereg = copy.deepcopy(self.prereg)
+        prereg["structural_identifiability"].pop("exclude_from_holm")
+        with self.assertRaises(A.S1FreezeValidationError) as ctx:
+            self._verify(prereg)
+        self.assertIn(A.S1_ANALYSIS_PREREG_BLOCK_MISSING, str(ctx.exception))
+        self.assertIn("exclude_from_holm", str(ctx.exception))
+
+
+class V4CMissingBlockIntegrationTests(TempDirMixin):
+    """R-V4-08-02 集成：缺三键时 formal fail-closed，exploratory 显式降级且不确证。"""
+
+    def test_missing_c5_policy_fails_formal_and_degrades_exploratory(self):
+        source_dir, _identity = synthetic_v4_freeze_package()
+
+        def _drop_c5_policy(prereg):
+            prereg.pop("c5_policy")
+
+        broken_dir = _build_v4c_confirmatory_package(source_dir, prereg_mutator=_drop_c5_policy)
+        bundle = A.load_frozen_bundle(broken_dir)
+        directory = self.make_temp_dir()
+        _records, path = _sparse_records_and_paths(bundle, directory, tasks=2)
+        with self.assertRaises(A.S1FreezeValidationError) as ctx:
+            A.run_s1_analysis(
+                broken_dir,
+                path,
+                directory / "out-formal",
+                make_figures=False,
+                require_complete_grid=False,
+            )
+        self.assertIn(A.S1_ANALYSIS_PREREG_BLOCK_MISSING, str(ctx.exception))
+        self.assertFalse((directory / "out-formal" / "aggregate.json").exists())
+
+        aggregate = A.run_s1_analysis(
+            broken_dir,
+            path,
+            directory / "out-exploratory",
+            make_figures=False,
+            require_complete_grid=False,
+            analysis_mode=A.ANALYSIS_MODE_EXPLORATORY,
+        )
+        self.assertFalse(aggregate["confirmatory_eligible"])
+        self.assertEqual(
+            aggregate["freeze_compliance"]["prereg_v4c_blocks"]["status"],
+            "NOT_VERIFIED_EXPLORATORY",
+        )
+        self.assertEqual(aggregate["primary_conclusion"]["overall"], A.OVERALL_INCONCLUSIVE)
+
+
+class DynamicHolmFamilyTests(unittest.TestCase):
+    """R-V4-08-01：Holm 族大小动态（缺 C3/DE 臂时族大小为 3），C5 永不进族。"""
+
+    @classmethod
+    def setUpClass(cls):
+        freeze_dir, _identity = synthetic_v4c_confirmatory_freeze_package()
+        cls.bundle = A.load_frozen_bundle(freeze_dir)
+        records = [
+            record
+            for record in sparse_records(
+                cls.bundle, tasks=3, meta_seeds=(0, 1), opt_seeds=(0, 1)
+            )
+            if record["arm"] != "DE"
+        ]
+        cells = A.aggregate_run_records(records, cls.bundle)
+        cls.collected = A.collect_hypotheses(
+            cells, cls.bundle, split=A.MAIN_SPLIT, inference_ks=(3,)
+        )
+
+    def test_family_size_is_dynamic(self):
+        collected = self.collected
+        # sparse records 覆盖 B=64/128 两个预算 x 4 主端点 = 8 个族，缺 DE 臂后每族 3 个成员。
+        self.assertEqual(collected["holm_family_size_counts"], {"3": 8})
+        self.assertEqual(collected["holm_family_size_min"], 3)
+        self.assertEqual(collected["holm_family_size_max"], 3)
+        self.assertEqual(collected["holm_family_max_size"], 4)
+        self.assertTrue(collected["holm_family_size_dynamic"])
+        self.assertEqual(collected["holm_family_key_fields"], ["primary_endpoint", "budget_B", "K"])
+        self.assertEqual(collected["holm_family_count"], 8)
+        self.assertEqual(collected["n_hypotheses"], 24)
+
+    def test_missing_de_arm_removes_only_c3(self):
+        ids = {row["comparison_id"] for row in self.collected["rows"]}
+        self.assertEqual(ids, {"C1", "C2", "C4"})
+        self.assertNotIn("C5", ids)
+        # ① C5 永不出现在任何 p_adj 行。
+        self.assertFalse(
+            any(row["comparison_id"] == "C5" and "p_adjusted" in row for row in self.collected["rows"])
+        )
+        self.assertEqual(self.collected["excluded_comparison_ids"], ["C5"])
+
+    def test_holm_adjustment_matches_manual_family_of_three(self):
+        families = {}
+        for row in self.collected["rows"]:
+            key = (str(row["endpoint"]), int(row["budget_B"]), int(row["K"]))
+            families.setdefault(key, []).append(row)
+        self.assertEqual(len(families), 8)
+        for key, family in families.items():
+            self.assertEqual(len(family), 3, msg=str(key))
+            raw = [row["p_raw"] for row in family]
+            expected = A.holm_adjust(raw)
+            for row, adjusted in zip(family, expected):
+                self.assertAlmostEqual(row["p_adjusted"], adjusted, places=15, msg=str(key))
+            finite = [value for value in raw if isinstance(value, float) and math.isfinite(value)]
+            if len(finite) == 3:
+                ordered = sorted(finite)
+                manual = [min(1.0, 3.0 * ordered[0]), min(1.0, 2.0 * ordered[1]), min(1.0, ordered[2])]
+                self.assertEqual(len(manual), 3)
+                self.assertAlmostEqual(min(manual[0], 1.0), min(expected), places=15)
+
+
 
 
 
@@ -2505,7 +3083,9 @@ class StructuralExclusionTests(TempDirMixin):
         )
         ids = {row["comparison_id"] for row in collected["rows"]}
         self.assertEqual(ids, {"C1", "C2", "C3", "C4"})
-        self.assertEqual(collected["holm_family_size"], 4)
+        self.assertEqual(collected["holm_family_max_size"], 4)
+        self.assertEqual(collected["holm_family_size_counts"], {"4": 8})
+        self.assertEqual(collected["holm_family_size_dynamic"], True)
         self.assertEqual(collected["excluded_comparison_ids"], ["C5"])
         self.assertEqual(collected["n_hypotheses"], 4 * 2 * 4)
         for row in collected["rows"]:
@@ -2838,3 +3418,7 @@ class FreezeSummarySchemaCompatTests(TempDirMixin):
             lambda summary: summary["orchestration"]["legacy"].__setitem__("task_id_count", 279),
             "legacy.task_id_count",
         )
+
+
+if __name__ == "__main__":
+    unittest.main()

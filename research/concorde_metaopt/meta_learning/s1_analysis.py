@@ -69,6 +69,355 @@ ALLOWED_FAMILY_VERSIONS = tuple(
     dict.fromkeys((family_v3.FAMILY_VERSION, *family_v3.LEGACY_FAMILY_VERSIONS))
 )
 
+# task-250（R-V4-08-01/03/04）：分析模式、正式/探索放行开关与冻结包合规校验。
+ANALYSIS_MODE_FORMAL = "formal"
+ANALYSIS_MODE_EXPLORATORY = "exploratory"
+ANALYSIS_MODES = (ANALYSIS_MODE_FORMAL, ANALYSIS_MODE_EXPLORATORY)
+CONFIRMATORY_FAMILY_VERSION = "p4ra-family-v4"
+S1_ANALYSIS_LEGACY_PACKAGE = "S1_ANALYSIS_LEGACY_PACKAGE"
+S1_ANALYSIS_CODE_SHA_DRIFT = "S1_ANALYSIS_CODE_SHA_DRIFT"
+S1_ANALYSIS_PREREG_BLOCK_MISSING = "S1_ANALYSIS_PREREG_BLOCK_MISSING"
+S1_ANALYSIS_PREREG_BLOCK_DRIFT = "S1_ANALYSIS_PREREG_BLOCK_DRIFT"
+V4C_HOLDOUT_SPLIT_COUNTS = {"meta_test": 20, "meta_test_ood": 10}
+V4C_HOLDOUT_TASK_COUNT = 30
+V4C_HOLDOUT_PACKAGE_RUN_ID_RE = re.compile(r"^p4ra-s0-[0-9]+-freeze-[0-9]{8}T[0-9]{6}Z$")
+V4C_HOLDOUT_PACKAGE_REQUIRED_FIELDS = (
+    "run_id",
+    "family_version",
+    "holdout_seed",
+    "split_counts",
+    "task_count",
+    "frozen_family_sha256",
+    "package_path",
+)
+V4C_C5_POLICY = {
+    "mode": "C5_B_STRUCTURAL_IDENTIFIABILITY",
+    "overlap_threshold": 0.90,
+    "c5_benefit_harm_inference": False,
+    "c5_in_holm": False,
+    "min_estimable_tasks": 10,
+    "below_min_conclusion": "NOT_ESTIMABLE_STRUCTURAL_IDENTIFIABILITY",
+}
+V4C_STRUCTURAL_IDENTIFIABILITY = {
+    "pair_overlap_threshold": 0.90,
+    "pair_status_above_threshold": "STRUCTURALLY_IDENTICAL",
+    "pair_status_below_threshold": "IDENTIFIABLE",
+    "overlap_definition": "交集行数 / 较大集合行数",
+    "exclude_from_benefit_harm_inference": True,
+    "exclude_from_holm": True,
+    "post_hoc_task_exclusion": False,
+    "report_structural_exclusion_counts": True,
+    "report_c5_estimable_task_count": True,
+}
+V4C_FLOAT_TOLERANCE = 1e-12
+
+
+def _freeze_bundle_confirmatory_eligible(bundle: "FrozenBundle") -> bool:
+    """R-V4-08-04：确认包必须显式 confirmatory_eligible=true（legacy/S0-2/S0-3 均无此字段）。"""
+    observed = []
+    for container in (bundle.freeze_summary, bundle.frozen_family, bundle.preregistration):
+        if isinstance(container, Mapping) and isinstance(container.get("confirmatory_eligible"), bool):
+            observed.append(bool(container["confirmatory_eligible"]))
+    return bool(observed) and all(observed)
+
+
+def _freeze_bundle_code_sha(bundle: "FrozenBundle") -> dict[str, Any]:
+    frozen_code = bundle.frozen_family.get("code_sha")
+    summary_code = bundle.freeze_summary.get("code_sha")
+    return {
+        "frozen_family_code_sha": frozen_code if isinstance(frozen_code, str) else None,
+        "freeze_summary_code_sha": summary_code if isinstance(summary_code, str) else None,
+    }
+
+
+def _current_analysis_code_sha() -> str:
+    """R-V4-08-03：分析进程当前代码的 package_code_sha()（与冻结包同一算法）。"""
+    return str(family_v3.package_code_sha())
+
+
+def _v4c_block_error(code: str, message: str) -> "S1FreezeValidationError":
+    return S1FreezeValidationError(f"{code}: {message}")
+
+
+def _require_v4c_block(prereg: Mapping[str, Any], name: str) -> Mapping[str, Any]:
+    if name not in prereg:
+        raise _v4c_block_error(
+            S1_ANALYSIS_PREREG_BLOCK_MISSING,
+            f"新冻结 prereg 缺必填块 {name}（R-V4-08-02）",
+        )
+    value = prereg[name]
+    if not isinstance(value, Mapping):
+        raise _v4c_block_error(
+            S1_ANALYSIS_PREREG_BLOCK_DRIFT,
+            f"prereg.{name} 必须是 object，实际 {type(value).__name__}",
+        )
+    return value
+
+
+def _check_v4c_expected_fields(block: Mapping[str, Any], expected: Mapping[str, Any], label: str) -> None:
+    for key, want in expected.items():
+        if key not in block:
+            raise _v4c_block_error(
+                S1_ANALYSIS_PREREG_BLOCK_MISSING,
+                f"{label} 缺字段 {key}（R-V4-08-02）",
+            )
+        got = block[key]
+        if isinstance(want, float):
+            if isinstance(got, bool) or not _is_number(got) or abs(float(got) - want) > V4C_FLOAT_TOLERANCE:
+                raise _v4c_block_error(
+                    S1_ANALYSIS_PREREG_BLOCK_DRIFT,
+                    f"{label}.{key} 必须为 {want!r}，实际 {got!r}",
+                )
+        elif isinstance(want, bool):
+            if not isinstance(got, bool) or bool(got) is not want:
+                raise _v4c_block_error(
+                    S1_ANALYSIS_PREREG_BLOCK_DRIFT,
+                    f"{label}.{key} 必须为 {want!r}，实际 {got!r}",
+                )
+        else:
+            if got != want:
+                raise _v4c_block_error(
+                    S1_ANALYSIS_PREREG_BLOCK_DRIFT,
+                    f"{label}.{key} 必须为 {want!r}，实际 {got!r}",
+                )
+
+
+def verify_prereg_v4c_blocks(
+    prereg: Mapping[str, Any],
+    *,
+    frozen: Mapping[str, Any],
+    freeze_dir_name: str,
+) -> dict[str, Any]:
+    """R-V4-08-02：formal 模式强校验 prereg 的四个新块。
+
+    holdout_splits（object）/holdout_package/c5_policy/structural_identifiability；
+    任一缺失或漂移均抛 S1FreezeValidationError。
+    """
+    if not isinstance(prereg, Mapping):
+        raise _v4c_block_error(S1_ANALYSIS_PREREG_BLOCK_DRIFT, "prereg 必须是 object")
+    blocks = {
+        name: _require_v4c_block(prereg, name)
+        for name in ("holdout_splits", "holdout_package", "c5_policy", "structural_identifiability")
+    }
+    # holdout_splits：精确 object {meta_test:20, meta_test_ood:10}，与 split_counts/split task_count 自洽。
+    holdout_splits = blocks["holdout_splits"]
+    if set(holdout_splits) != set(V4C_HOLDOUT_SPLIT_COUNTS):
+        raise _v4c_block_error(
+            S1_ANALYSIS_PREREG_BLOCK_DRIFT,
+            f"prereg.holdout_splits 键必须恰为 {sorted(V4C_HOLDOUT_SPLIT_COUNTS)}，实际 {sorted(holdout_splits)}",
+        )
+    for split_name, expected_count in V4C_HOLDOUT_SPLIT_COUNTS.items():
+        value = holdout_splits.get(split_name)
+        if isinstance(value, bool) or not _is_int(value) or int(value) != expected_count:
+            raise _v4c_block_error(
+                S1_ANALYSIS_PREREG_BLOCK_DRIFT,
+                f"prereg.holdout_splits.{split_name} 必须为 {expected_count}，实际 {value!r}",
+            )
+    split_counts = prereg.get("split_counts")
+    if isinstance(split_counts, Mapping):
+        for split_name, expected_count in V4C_HOLDOUT_SPLIT_COUNTS.items():
+            if split_counts.get(split_name) != expected_count:
+                raise _v4c_block_error(
+                    S1_ANALYSIS_PREREG_BLOCK_DRIFT,
+                    f"prereg.split_counts.{split_name} 必须与 holdout_splits 一致（{expected_count}）",
+                )
+    if sum(int(value) for value in holdout_splits.values()) != V4C_HOLDOUT_TASK_COUNT:
+        raise _v4c_block_error(
+            S1_ANALYSIS_PREREG_BLOCK_DRIFT,
+            f"holdout_splits 总数必须为 {V4C_HOLDOUT_TASK_COUNT}",
+        )
+    # holdout_package：run_id/包目录/家族版本/seed/split_counts/task_count/frozen sha/相对路径。
+    holdout_package = blocks["holdout_package"]
+    for name in V4C_HOLDOUT_PACKAGE_REQUIRED_FIELDS:
+        if name not in holdout_package:
+            raise _v4c_block_error(
+                S1_ANALYSIS_PREREG_BLOCK_MISSING,
+                f"prereg.holdout_package 缺字段 {name}",
+            )
+    run_id = holdout_package.get("run_id")
+    if not isinstance(run_id, str) or not V4C_HOLDOUT_PACKAGE_RUN_ID_RE.match(run_id):
+        raise _v4c_block_error(
+            S1_ANALYSIS_PREREG_BLOCK_DRIFT,
+            f"holdout_package.run_id 不符合 ^p4ra-s0-<n>-freeze-<UTC>Z$: {run_id!r}",
+        )
+    if run_id != str(freeze_dir_name):
+        raise _v4c_block_error(
+            S1_ANALYSIS_PREREG_BLOCK_DRIFT,
+            f"holdout_package.run_id 必须等于冻结包目录名 {freeze_dir_name!r}，实际 {run_id!r}",
+        )
+    if holdout_package.get("family_version") != CONFIRMATORY_FAMILY_VERSION:
+        raise _v4c_block_error(
+            S1_ANALYSIS_PREREG_BLOCK_DRIFT,
+            f"holdout_package.family_version 必须为 {CONFIRMATORY_FAMILY_VERSION!r}",
+        )
+    if holdout_package.get("holdout_seed") != prereg.get("holdout_seed"):
+        raise _v4c_block_error(
+            S1_ANALYSIS_PREREG_BLOCK_DRIFT,
+            "holdout_package.holdout_seed 必须与 prereg.holdout_seed 一致",
+        )
+    package_split_counts = holdout_package.get("split_counts")
+    if not isinstance(package_split_counts, Mapping) or dict(package_split_counts) != V4C_HOLDOUT_SPLIT_COUNTS:
+        raise _v4c_block_error(
+            S1_ANALYSIS_PREREG_BLOCK_DRIFT,
+            f"holdout_package.split_counts 必须为 {V4C_HOLDOUT_SPLIT_COUNTS}",
+        )
+    if holdout_package.get("task_count") != V4C_HOLDOUT_TASK_COUNT:
+        raise _v4c_block_error(
+            S1_ANALYSIS_PREREG_BLOCK_DRIFT,
+            f"holdout_package.task_count 必须为 {V4C_HOLDOUT_TASK_COUNT}",
+        )
+    frozen_sha = frozen.get("sha256")
+    if holdout_package.get("frozen_family_sha256") != frozen_sha:
+        raise _v4c_block_error(
+            S1_ANALYSIS_PREREG_BLOCK_DRIFT,
+            "holdout_package.frozen_family_sha256 必须等于 frozen_family.sha256",
+        )
+    package_path = holdout_package.get("package_path")
+    if not isinstance(package_path, str) or not package_path:
+        raise _v4c_block_error(S1_ANALYSIS_PREREG_BLOCK_DRIFT, "holdout_package.package_path 必须是非空字符串")
+    normalized_path = package_path.replace("\\", "/")
+    if normalized_path.startswith("/") or ":" in normalized_path.split("/")[0] or ".." in normalized_path.split("/"):
+        raise _v4c_block_error(
+            S1_ANALYSIS_PREREG_BLOCK_DRIFT,
+            f"holdout_package.package_path 必须是仓库相对路径（不含盘符/绝对路径）：{package_path!r}",
+        )
+    if not normalized_path.rstrip("/").endswith(run_id):
+        raise _v4c_block_error(
+            S1_ANALYSIS_PREREG_BLOCK_DRIFT,
+            f"holdout_package.package_path 必须以 run_id {run_id!r} 结尾",
+        )
+    # c5_policy / structural_identifiability：子集精确匹配（额外字段允许）。
+    _check_v4c_expected_fields(blocks["c5_policy"], V4C_C5_POLICY, "prereg.c5_policy")
+    _check_v4c_expected_fields(
+        blocks["structural_identifiability"],
+        V4C_STRUCTURAL_IDENTIFIABILITY,
+        "prereg.structural_identifiability",
+    )
+    # c5_policy 阈值必须与 structural_identifiability 阈值一致。
+    c5_threshold = blocks["c5_policy"].get("overlap_threshold")
+    structural_threshold = blocks["structural_identifiability"].get("pair_overlap_threshold")
+    if isinstance(c5_threshold, bool) or not _is_number(c5_threshold):
+        raise _v4c_block_error(S1_ANALYSIS_PREREG_BLOCK_DRIFT, "prereg.c5_policy.overlap_threshold 必须是数值")
+    if abs(float(c5_threshold) - float(structural_threshold)) > V4C_FLOAT_TOLERANCE:
+        raise _v4c_block_error(
+            S1_ANALYSIS_PREREG_BLOCK_DRIFT,
+            "c5_policy.overlap_threshold 必须等于 structural_identifiability.pair_overlap_threshold",
+        )
+    return {
+        "holdout_splits": dict(holdout_splits),
+        "holdout_package_run_id": run_id,
+        "holdout_package_package_path": package_path,
+        "c5_policy": dict(blocks["c5_policy"]),
+        "structural_identifiability": dict(blocks["structural_identifiability"]),
+        "pair_overlap_threshold": float(c5_threshold),
+        "c5_in_holm": bool(blocks["c5_policy"].get("c5_in_holm", True)),
+        "min_estimable_tasks": int(blocks["c5_policy"].get("min_estimable_tasks", -1)),
+    }
+
+
+def verify_analysis_freeze(
+    bundle: "FrozenBundle",
+    *,
+    analysis_mode: str,
+    allow_code_delta: bool = False,
+    allow_legacy: bool = False,
+) -> dict[str, Any]:
+    """R-V4-08-03/04 与 R-V4-08-02：按分析模式强校验冻结包合规性。
+
+    formal：legacy/非确认包、code_sha 漂移、prereg 四块缺失/漂移均 fail-closed。
+    exploratory：legacy 需 allow_legacy、code 漂移需 allow_code_delta，四块缺失降级为 warning；不得进入确认统计。
+    """
+    mode = str(analysis_mode)
+    if mode not in ANALYSIS_MODES:
+        raise S1AnalysisError(f"analysis_mode 必须属于 {list(ANALYSIS_MODES)}，实际 {analysis_mode!r}")
+    family_version = bundle.family_version
+    confirmatory_eligible = _freeze_bundle_confirmatory_eligible(bundle)
+    is_legacy = (family_version != CONFIRMATORY_FAMILY_VERSION) or (not confirmatory_eligible)
+    warnings: list[str] = []
+    if is_legacy:
+        details = (
+            f"family_version={family_version!r}（需 {CONFIRMATORY_FAMILY_VERSION!r}），"
+            f"confirmatory_eligible={confirmatory_eligible!r}（需 true）"
+        )
+        if mode == ANALYSIS_MODE_FORMAL:
+            raise _v4c_block_error(
+                S1_ANALYSIS_LEGACY_PACKAGE,
+                f"formal 模式拒绝 legacy/非确认冻结包（R-V4-08-04）：{details}",
+            )
+        if not allow_legacy:
+            raise _v4c_block_error(
+                S1_ANALYSIS_LEGACY_PACKAGE,
+                f"exploratory 模式使用 legacy/非确认冻结包必须显式 --allow-legacy：{details}",
+            )
+        warnings.append(f"legacy/非确认冻结包已由 --allow-legacy 放行（{details}）；本次不得进入确认统计")
+    code_shas = _freeze_bundle_code_sha(bundle)
+    current_code_sha = _current_analysis_code_sha()
+    sha_values = [code_shas["frozen_family_code_sha"], code_shas["freeze_summary_code_sha"], current_code_sha]
+    code_sha_ok = all(
+        isinstance(value, str) and SHA256_RE.match(value) for value in sha_values
+    ) and len(set(sha_values)) == 1
+    if not code_sha_ok:
+        code_message = (
+            f"当前分析代码 package_code_sha()={current_code_sha}，"
+            f"frozen_family.code_sha={code_shas['frozen_family_code_sha']}，"
+            f"freeze_summary.code_sha={code_shas['freeze_summary_code_sha']}"
+        )
+        if mode == ANALYSIS_MODE_FORMAL or not allow_code_delta:
+            raise _v4c_block_error(
+                S1_ANALYSIS_CODE_SHA_DRIFT,
+                f"formal 模式要求当前代码与冻结包 code_sha 一致（R-V4-08-03）：{code_message}",
+            )
+        warnings.append(f"code_sha 漂移已由 --allow-code-delta 放行：{code_message}")
+    blocks: dict[str, Any] | None
+    blocks_status: str
+    try:
+        blocks = verify_prereg_v4c_blocks(
+            bundle.preregistration,
+            frozen=bundle.frozen_family,
+            freeze_dir_name=Path(bundle.freeze_dir).name,
+        )
+        blocks_status = "PASS"
+    except S1FreezeValidationError as exc:
+        if mode == ANALYSIS_MODE_FORMAL:
+            raise
+        blocks = None
+        blocks_status = "NOT_VERIFIED_EXPLORATORY"
+        warnings.append(f"prereg 四块未通过（exploratory 降级）：{exc}")
+    confirmatory = bool(mode == ANALYSIS_MODE_FORMAL and not is_legacy and code_sha_ok and blocks is not None)
+    return {
+        "analysis_mode": mode,
+        "confirmatory_eligible": confirmatory,
+        "family_version": family_version,
+        "confirmatory_package": bool(not is_legacy),
+        "legacy_package": bool(is_legacy),
+        "allow_legacy": bool(allow_legacy),
+        "code_sha": {
+            "current_package_code_sha": current_code_sha,
+            "frozen_family_code_sha": code_shas["frozen_family_code_sha"],
+            "freeze_summary_code_sha": code_shas["freeze_summary_code_sha"],
+            "match": bool(code_sha_ok),
+            "allow_code_delta": bool(allow_code_delta),
+        },
+        "prereg_v4c_blocks": {
+            "status": blocks_status,
+            "required": ["holdout_splits", "holdout_package", "c5_policy", "structural_identifiability"],
+            "values": blocks,
+            "rule": "R-V4-08-02",
+        },
+        "warnings": warnings,
+    }
+
+
+def _non_confirmatory_primary(primary: Mapping[str, Any], reason: str) -> dict[str, Any]:
+    """R-V4-08-04：非确认分析的主结论必须降为 INCONCLUSIVE，不得进入确认统计。"""
+    result = dict(primary)
+    result["overall"] = OVERALL_INCONCLUSIVE
+    result["confirmatory_eligible"] = False
+    result["non_confirmatory_reason"] = reason
+    return result
+
+
+
 # task-241（A2-V4-B01）：S0-3 v4 冻结包 freeze_summary schema 升为 3。
 # 已知 schema 1/2 维持既有校验；schema 3 按 v4 包实际字段逐项严格校验；未知版本 fail-closed。
 FREEZE_SUMMARY_SCHEMAS_V1_V2 = ("p4ra-freeze-summary-1", "p4ra-freeze-summary-2")
@@ -1291,9 +1640,16 @@ def load_frozen_bundle(
     frozen = payloads["frozen_family.json"]
     prereg = payloads["preregistration.json"]
     split = payloads["meta_task_split.json"]
+    # R-V4-08-02/04：旧 S0-3 等只读历史包缺三键，按 legacy schema 校验（由调用层在
+    # analysis_mode=exploratory + --allow-legacy 下才允许进入分析；formal 由合规门禁拒绝）。
+    legacy_prereg_schema = not all(
+        name in prereg for name in ("holdout_package", "c5_policy", "structural_identifiability")
+    )
     try:
         family_v3.verify_frozen_family_v3(frozen)
-        family_v3.verify_preregistration_v3(prereg, frozen_family=frozen)
+        family_v3.verify_preregistration_v3(
+            prereg, frozen_family=frozen, allow_legacy_schema=legacy_prereg_schema
+        )
         family_v3.verify_split_manifest_v3(split)
     except family_v3.FamilyV3Error as exc:
         raise S1FreezeValidationError(f"冻结载荷自校验失败：{exc}") from exc
@@ -2692,9 +3048,12 @@ def collect_hypotheses(
 ) -> dict[str, Any]:
     """构造全部可检验配对（C1..C4 x B x K x 4 主端点），并按预注册做 Holm。
 
-    M02（task-226）：Holm 族 = 同 (端点, 预算, K) 内的比较（每族 4 次检验）。
-    R-V4-02（task-230）：C5 不进 Holm、不做 benefit/harm，仅由 c5_structural_summary 描述；
-    其余比较在构造配对时按 pair-level STRUCTURALLY_IDENTICAL 行级排除（不剔除任务）。
+    R-V4-08-01（唯一口径）：Holm 族键 =(主端点, 预算_B, K)；族成员 = 该族键下全部
+    可推断臂对比较 C1–C4（唯一来源 INFERENCE_COMPARISON_IDS）；C5 永不进族、不做
+    benefit/harm。pair-level STRUCTURALLY_IDENTICAL 行级排除后族大小可 <4，必须动态
+    记录（holm_family_size_counts / holm_family_sizes / holm_family_members），禁止写死 4。
+    R-V4-02（task-230）：C5 仅由 c5_structural_summary 描述；其余比较在构造配对时按
+    pair-level STRUCTURALLY_IDENTICAL 行级排除（不剔除任务）。
     """
     pairs: list[PairedEndpoint] = []
     inference_comparisons = [
@@ -2727,22 +3086,44 @@ def collect_hypotheses(
         by_family.setdefault(key, []).append(index)
     adjusted = [None] * len(raw)
     family_sizes: dict[str, int] = {}
+    family_members: dict[str, list[str]] = {}
+    family_raw_p: dict[str, list[float]] = {}
     for key in sorted(by_family):
         indices = by_family[key]
-        family_sizes[f"{key[0]}|B{key[1]}|K{key[2]}"] = len(indices)
+        label = f"{key[0]}|B{key[1]}|K{key[2]}"
+        family_sizes[label] = len(indices)
+        family_members[label] = sorted(
+            str(raw[index][0].comparison_id) for index in indices
+        )
+        family_raw_p[label] = [float(raw[index][1]["p_value"]) for index in indices]
         values = [raw[index][1]["p_value"] for index in indices]
         for index, value in zip(indices, holm_adjust(values)):
             adjusted[index] = value
+    size_values = sorted(family_sizes.values())
+    family_size_counts = {
+        str(size): int(size_values.count(size)) for size in sorted(set(size_values))
+    }
     rows: list[dict[str, Any]] = []
     for index, (paired, _test) in enumerate(raw):
         rows.append(analyze_pair(paired, p_adjusted=adjusted[index]))
     return {
         "split": split,
         "n_hypotheses": len(rows),
-        "holm_family_definition": "同 (端点, 预算, K) 内的 4 个可推断比较为一个 Holm 族（C5 描述性、不进族）",
-        "holm_family_size": 4,
+        "holm_family_definition": (
+            "唯一 Holm 族（R-V4-08-01）：族键=(主端点, 预算_B, K)，成员=该族键下全部可推断比较"
+            "（C1–C4；C5 永不进族）；pair-level STRUCTURALLY_IDENTICAL 行级排除后族大小可 <4，动态记录"
+        ),
+        "holm_family_key_fields": ["primary_endpoint", "budget_B", "K"],
+        "holm_family_size_dynamic": True,
+        "holm_family_max_size": len(INFERENCE_COMPARISON_IDS),
+        "holm_family_size_min": size_values[0] if size_values else 0,
+        "holm_family_size_max": size_values[-1] if size_values else 0,
+        "holm_family_size_counts": family_size_counts,
+        "holm_family_members": family_members,
+        "holm_family_raw_p": family_raw_p,
         "holm_family_count": len(by_family),
         "holm_family_sizes": family_sizes,
+        "inference_comparison_ids": list(INFERENCE_COMPARISON_IDS),
         "excluded_comparison_ids": [C5_COMPARISON_ID],
         "structural_index_present": bool(
             structural_index is not None and structural_index.present
@@ -4072,9 +4453,15 @@ def _hypothesis_rows(
     )
     family_info = {
         "holm_family_definition": collected["holm_family_definition"],
-        "holm_family_size": collected["holm_family_size"],
+        "holm_family_key_fields": list(collected["holm_family_key_fields"]),
+        "holm_family_size_dynamic": bool(collected["holm_family_size_dynamic"]),
+        "holm_family_max_size": int(collected["holm_family_max_size"]),
+        "holm_family_size_min": int(collected["holm_family_size_min"]),
+        "holm_family_size_max": int(collected["holm_family_size_max"]),
+        "holm_family_size_counts": dict(collected["holm_family_size_counts"]),
         "holm_family_count": collected["holm_family_count"],
         "holm_family_sizes": collected["holm_family_sizes"],
+        "inference_comparison_ids": list(collected["inference_comparison_ids"]),
         "excluded_comparison_ids": collected["excluded_comparison_ids"],
         "structural_index_present": collected["structural_index_present"],
         "structural_exclusion_total": collected["structural_exclusion_total"],
@@ -4303,6 +4690,9 @@ def run_s1_analysis(
     identifiability_reports: Sequence[str | Path] | None = None,
     expected_identity: Mapping[str, Any] | None = None,
     expected_identity_source: str | None = None,
+    analysis_mode: str = ANALYSIS_MODE_FORMAL,
+    allow_code_delta: bool = False,
+    allow_legacy: bool = False,
 ) -> dict[str, Any]:
     """S1 只读分析入口：校验 -> 聚合 -> 统计 -> 判定 -> 写出合同产物。
 
@@ -4313,6 +4703,14 @@ def run_s1_analysis(
     校验 schema/组覆盖/与 run_records 的 (task,B,K,meta_seed,arm) 一致；formal 缺失即 fail-closed；
     pair-level STRUCTURALLY_IDENTICAL 从 benefit/harm 推断排除（不做事后任务剔除）；
     C5 仅描述、不进 Holm；aggregate/CSV 披露排除计数与 C5 可估计任务数。
+
+    task-250（R-V4-08-01/03/04）：formal（默认）要求冻结包为 confirmatory v4
+    （family_version=p4ra-family-v4 且 confirmatory_eligible=true）、当前代码
+    package_code_sha() 与包内 frozen_family/summary 的 code_sha 三者一致、并按
+    R-V4-08-02 强校验 prereg 的 holdout_splits/holdout_package/c5_policy/
+    structural_identifiability 四块；任一不满足 fail-closed。exploratory 模式可用
+    allow_legacy/allow_code_delta 显式放行，但 confirmatory_eligible=false 且主结论
+    强制 INCONCLUSIVE、不得进入确证统计。Holm 族按 R-V4-08-01 唯一口径动态计数。
     """
     bundle = load_frozen_bundle(
         freeze_dir,
@@ -4321,6 +4719,14 @@ def run_s1_analysis(
         expected_identity=expected_identity,
         expected_identity_source=expected_identity_source,
     )
+    # task-250：在读取任何 run_records/统计前先固定合规门禁（fail-closed）。
+    freeze_compliance = verify_analysis_freeze(
+        bundle,
+        analysis_mode=analysis_mode,
+        allow_code_delta=allow_code_delta,
+        allow_legacy=allow_legacy,
+    )
+    confirmatory_eligible = bool(freeze_compliance["confirmatory_eligible"])
     paths = [run_records] if isinstance(run_records, (str, Path)) else list(run_records)
     if not paths:
         raise S1AnalysisError("至少需要一个 run_records 路径")
@@ -4359,6 +4765,16 @@ def run_s1_analysis(
     structural_rows = structural_identifiability_rows(structural_index, bundle, c5_summary)
     primary = primary_conclusion(hypotheses)
     reproduction = secondary_reproduction_conclusion(hypotheses)
+    if not confirmatory_eligible:
+        # R-V4-08-04：exploratory/legacy/code-delta 放行的分析不得进入确证统计。
+        reason = (
+            "analysis_mode=exploratory" if freeze_compliance["analysis_mode"] != ANALYSIS_MODE_FORMAL else "freeze compliance gate"
+        )
+        primary = _non_confirmatory_primary(primary, reason)
+        reproduction = dict(reproduction)
+        reproduction["status"] = REPRODUCTION_NOT_AVAILABLE
+        reproduction["confirmatory_eligible"] = False
+        reproduction["non_confirmatory_reason"] = reason
     exploratory = [
         summarize_layer(hypotheses, comparison_id="C1", budget_B=int(budget), K=1)
         for budget in MAIN_POPULATION_BUDGETS
@@ -4393,6 +4809,9 @@ def run_s1_analysis(
         "analysis_schema_version": S1_ANALYSIS_SCHEMA_VERSION,
         "figure_status_schema_version": S1_FIGURE_STATUS_SCHEMA_VERSION,
         "endpoint_table_schema_version": S1_ENDPOINT_TABLE_SCHEMA_VERSION,
+        "analysis_mode": freeze_compliance["analysis_mode"],
+        "confirmatory_eligible": confirmatory_eligible,
+        "freeze_compliance": freeze_compliance,
         "input": _input_manifest(
             bundle,
             all_sources,
@@ -4406,6 +4825,8 @@ def run_s1_analysis(
             "identity_source": bundle.identity_source,
             "identity_five": bundle.identity_five(),
             "identity_expected_fields": list(bundle.expected_identity_fields),
+            "confirmatory_eligible": confirmatory_eligible,
+            "code_sha": freeze_compliance["code_sha"]["frozen_family_code_sha"],
             "family_id": bundle.family_id,
             "family_version": bundle.family_version,
             "family_fingerprint": bundle.family_fingerprint,
@@ -4429,9 +4850,15 @@ def run_s1_analysis(
             "exploratory_ks": list(EXPLORATORY_KS),
             "excluded_ks": [0],
             "excluded_note": "K=0 时 FOMAML-KSHOT-BO 与 FOMAML-ZERO-BO 同构（CLONE），排除推断",
-            "holm_family": "同 (端点, 预算, K) 内的 4 个可推断比较为一个 Holm 族（C5 描述性、不进族）",
-            "holm_family_size": 4,
+            "holm_family": holm_family_info["holm_family_definition"],
+            "holm_family_key_fields": list(holm_family_info["holm_family_key_fields"]),
+            "holm_family_size_dynamic": bool(holm_family_info["holm_family_size_dynamic"]),
+            "holm_family_max_size": int(holm_family_info["holm_family_max_size"]),
+            "holm_family_size_min": int(holm_family_info["holm_family_size_min"]),
+            "holm_family_size_max": int(holm_family_info["holm_family_size_max"]),
+            "holm_family_size_counts": dict(holm_family_info["holm_family_size_counts"]),
             "holm_family_count": holm_family_info["holm_family_count"],
+            "inference_comparison_ids": list(holm_family_info["inference_comparison_ids"]),
             "excluded_comparison_ids": list(holm_family_info["excluded_comparison_ids"]),
             "structural_exclusion_total": int(holm_family_info["structural_exclusion_total"]),
             "structural_identifiability_rule": (
@@ -4457,7 +4884,13 @@ def run_s1_analysis(
             "unit": "task",
             "aggregation": "opt seed -> (task, meta_seed) 均值；meta_seed 等权 -> 任务级",
             "test": "双侧 Wilcoxon 符号秩（n<=20 无并列用精确分布；并列用正态近似+并列/连续性修正）",
-            "multiple_comparison": "Holm-Bonferroni（族=同 (端点, 预算, K) 内的 4 个可推断比较；C5 不进族）",
+            "multiple_comparison": (
+                "Holm-Bonferroni（唯一口径 R-V4-08-01：族键=(主端点, 预算_B, K)，"
+                "成员=该族键下全部可推断比较 C1–C4；C5 永不进族；pair-level 排除后族大小可 <4，动态记录）"
+            ),
+            "holm_family_key_fields": list(holm_family_info["holm_family_key_fields"]),
+            "holm_family_max_size": int(holm_family_info["holm_family_max_size"]),
+            "holm_family_size_counts": dict(holm_family_info["holm_family_size_counts"]),
             "holm_family_sizes": holm_family_info["holm_family_sizes"],
             "structural_identifiability": (
                 "R-V4-02/R-V4-04：消费每个 run 的 identifiability_report.json（schema/组覆盖/臂覆盖强校验）；"
@@ -4490,6 +4923,17 @@ def run_s1_analysis(
             "pair-level 结构不可辨识（STRUCTURALLY_IDENTICAL）组已从 benefit/harm 推断排除，但任务保留、不做事后剔除",
             "C5 仅描述性报告（不进 Holm、不做 benefit/harm），可估计任务数<10 时为 NOT_ESTIMABLE_STRUCTURAL_IDENTIFIABILITY",
             "R-V4-01 的 v4 holdout（p4ra-family-v4）环境未重建；本分析消费调用方提供的冻结包与 run_records",
+            (
+                "R-V4-08-03/04：formal 模式要求 confirmatory v4 包（confirmatory_eligible=true）且当前代码 "
+                "package_code_sha() 与冻结包 code_sha 一致；本次 analysis_mode="
+                + freeze_compliance["analysis_mode"]
+                + "，confirmatory_eligible="
+                + str(confirmatory_eligible)
+            ),
+            (
+                "R-V4-08-01：Holm 族为动态大小（族键=(主端点,B,K)，成员=C1–C4；C5 永不进族），"
+                "pair-level 排除后族大小可 <4"
+            ),
         ],
         "contract_ambiguities": [
             "执行计划 §6 只规定 C1 单层规则（>=2 BENEFIT 且 0 HARM），未规定 K=3 与 K=5 如何合成；"
@@ -4588,6 +5032,22 @@ def main(argv: Sequence[str] | None = None) -> int:
             "analysis_plan_digest/radius_base）；正式 run 由 run_config 传入，提供时必须逐项相等"
         ),
     )
+    parser.add_argument(
+        "--analysis-mode",
+        default=ANALYSIS_MODE_FORMAL,
+        choices=list(ANALYSIS_MODES),
+        help="分析模式：formal（默认；confirmatory v4 包 + code_sha 绑定 + prereg 四块强校验）/ exploratory",
+    )
+    parser.add_argument(
+        "--allow-code-delta",
+        action="store_true",
+        help="仅 exploratory：允许当前代码 package_code_sha() 与冻结包 code_sha 不一致（记录 warning）",
+    )
+    parser.add_argument(
+        "--allow-legacy",
+        action="store_true",
+        help="仅 exploratory：允许 legacy/非确认冻结包（输出 confirmatory_eligible=false，不进入确证统计）",
+    )
     args = parser.parse_args(argv)
     try:
         expected_identity = None
@@ -4616,6 +5076,9 @@ def main(argv: Sequence[str] | None = None) -> int:
             identifiability_reports=args.identifiability_report,
             expected_identity=expected_identity,
             expected_identity_source=expected_identity_source,
+            analysis_mode=args.analysis_mode,
+            allow_code_delta=args.allow_code_delta,
+            allow_legacy=args.allow_legacy,
         )
     except S1AnalysisError as exc:
         print(f"S1_ANALYSIS_FAILED: {exc}", file=sys.stderr)
@@ -4623,6 +5086,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     summary = {
         "status": "PASS",
         "identity_source": aggregate["freeze_echo"]["identity_source"],
+        "analysis_mode": aggregate["analysis_mode"],
+        "confirmatory_eligible": bool(aggregate["confirmatory_eligible"]),
         "n_records": int(aggregate["validation"]["record_count"]),
         "primary_overall": aggregate["primary_conclusion"]["overall"],
         "secondary_reproduction": aggregate["secondary_reproduction"]["status"],

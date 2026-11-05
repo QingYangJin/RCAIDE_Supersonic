@@ -1,6 +1,6 @@
 # P4 路线A S0 数据合同与预注册规范（中文草案）
 
-> 状态：S0-3 / v4 修订（v1.2），供 Lead、A1、A2、A5 审阅；**不构成新物理授权**。
+> 状态：S0-4 / v4c 修订（v1.3），供 Lead、A1、A2、A5 审阅；**不构成新物理授权**。
 > 依据：Issue #7（D-P4-003）§2 S0、§3、§4；docs/planning/p4_route_a_stage_improvement_plan_20261105.md（commit a331639e）；docs/planning/p4_route_a_s0_2_decisions_20261105.md（D-S0-2-01..07，Lead 裁定）；docs/planning/p4_route_a_s1_v4_remediation_rulings_20261105.md（R-V4-01..06，2026-11-05 Lead 裁定，sha256 f71e32a9…）；A5 S0 审阅 `<EXT>/p4-route-a/a5/S0_A5_review.md`；A5 S1 rev2 复审 `<EXT>/p4-route-a/a5/S1_code_review_rev2.md`（CHANGES_REQUESTED，2 blocker / 4 major / 6 minor，sha256 d5a0979a…）。
 > 工作树：本仓库 @ c0cb2cd（v1.2 修订时点；branch research/p4-route-a-s1）。
 > 作者：A4（任务 task-231）。本合同约束新版本数据与运行，**不修改任何旧冻结 run**；旧 S0-2 包只读。
@@ -196,7 +196,7 @@ run_config 与 summary 至少包含：budget.arm_id、budget.B_total、budget.K_
 | family_id | string | 是 | 固定 F-QE-feasible-v3；解析分布未变，仅 holdout 重采样 |
 | holdout_seed | int | 是 | 固定 20261106；仅用于 meta_test 20 + meta_test_ood 10 的重采样 |
 | holdout_splits | object | 是 | 必须精确为 {"meta_test":20,"meta_test_ood":10}；其余 split 计数不变，且与 split_counts 一致 |
-| holdout_package | string | 是 | v4 冻结包 run_id，格式 `p4ra-s0-3-freeze-<UTC>Z`；旧 p4ra-s0-2-freeze-20261105T072500Z 仅 legacy 只读，不得作为 S1 确证输入 |
+| holdout_package | object | 是 | 固定 object：run_id（格式 `p4ra-s0-4-freeze-<UTC>Z`）、family_version="p4ra-family-v4"、holdout_seed=20261106、split_counts={"meta_test":20,"meta_test_ood":10}、task_count=30（=holdout_task_count=计数和）、frozen_family_sha256（64 hex）、package_path="research/concorde_metaopt/optimization_runs/<run_id>"；verifier 强校验 run_id 正则、package_path 为仓库相对路径且无盘符/`..`、frozen_family_sha256 与冻结件一致、task_count=计数和；旧 p4ra-s0-2/s0-3 冻结包仅 legacy 只读，不得作为 S1 确证输入 |
 | split_counts | object | 是 | 必须精确为 {meta_train:60, meta_validation:20, meta_test:20, meta_test_ood:10, negative_control:10}，合计 120 |
 | split_digest | string(64 hex) | 是 | 覆盖全部五个 split 的 120 个 task_id（§3.2 顺序）；与 family v4 split_hash 一致 |
 | task_id_regex | string | 是 | 固定 `^p4ra-FQE3-v3-(TR|VA|TE|OD|NC)-[0-9]{3}$`；附“与 M2/M5/M6 零交集”程序断言 |
@@ -210,7 +210,7 @@ run_config 与 summary 至少包含：budget.arm_id、budget.B_total、budget.K_
 | failure_rules | [string] | 是 | 明确失败/停止/不作结论的条件 |
 | c5_policy | object | 是 | 固定 {mode:"C5_B_STRUCTURAL_IDENTIFIABILITY", overlap_threshold:0.90, c5_benefit_harm_inference:false, c5_in_holm:false, min_estimable_tasks:10, below_min_conclusion:"NOT_ESTIMABLE_STRUCTURAL_IDENTIFIABILITY"}；规则见 §7.2 |
 | structural_identifiability | object | 是 | pair-level 预注册：每个 (task,B,K,meta_seed) 的每个臂对计算初始设计行 digest 的 overlap_rate；>=0.90 判该臂对在该组 STRUCTURALLY_IDENTICAL；排除出 benefit/harm 推断；报告 structural_exclusion_counts 与 C5 可估计任务数；不做事后任务剔除 |
-| multiple_comparison | object | 是 | 方法与家族；预注册；C5 不进入任何 benefit/harm 推断与 Holm 族（C5-B） |
+| multiple_comparison | object | 是 | 方法与家族；预注册；**唯一 Holm 族定义**=(primary_endpoint, budget_B, K)：族内为该组全部可推断臂对比较（C1–C4，C5 排除；pair-level STRUCTURALLY_IDENTICAL 行级排除），族大小≤4；禁止"同 K 内 32 检验"或"每端点 5 检验"等其它口径；C5 不进入任何 benefit/harm 推断与 Holm 族（C5-B） |
 | analysis_plan_digest | string(64 hex) | 是 | 分析脚本 canonical digest；脚本必须使用 ENDPOINT_ROW_KEYS 同一组 ID；必须加载并消费每个 source run 的 identifiability_report.json，缺失即 fail-closed |
 | prereg_digest | string(64 hex) | 是 | 自身 canonical digest（计算时置空该字段） |
 
@@ -228,6 +228,8 @@ run_config 与 summary 至少包含：budget.arm_id、budget.B_total、budget.K_
 3. C5（FOMAML-KSHOT-BO vs FOMAML-ZERO-BO，K>0）**不进入任何 benefit/harm 推断与 Holm 族**，只报告结构克隆率/描述性数值；若可推断组覆盖任务数 < 10，总结论固定为 `NOT_ESTIMABLE_STRUCTURAL_IDENTIFIABILITY`，不得声称适应增益或损害。
 4. `identifiability_report.json` 必须逐 pair 输出 `pair_identifiable`、`structural_status`（IDENTIFIABLE / STRUCTURALLY_IDENTICAL）、`threshold`；顶层输出 `pair_status_counts`；组级 `ranking_status` 仅作描述、不作推断依据。分析脚本必须加载每个 source run 的该报告，校验 schema、组覆盖与 `(task,B,K,meta_seed,arm)` 一致；formal 缺失即 fail-closed；aggregate/CSV 输出 `structural_exclusion_counts` 与 C5 可估计任务数。
 5. C5-B 不改变总体结论仍只依赖 C1 的预注册规则；C5-B 的负结果/不可估计本身不得被写成“MAML 无效”或“MAML 有效”。
+6. **Holm 族唯一定义（R-V4-08-01）**：族键 = `(primary_endpoint, budget_B, K)`；每族包含该族键下全部可推断臂对比较（C1–C4），C5 永不进族；pair-level STRUCTURALLY_IDENTICAL 行按行排除后，族实际大小可 <4，预注册/代码/统计计划必须使用同一动态族大小口径；任何其它口径（如同 K 内 32 检验、每端点 5 检验）一律作废。
+7. prereg 必须落盘 `holdout_package`（object，见 §7 表）、`c5_policy`（object，固定字段 mode/overlap_threshold/c5_benefit_harm_inference/c5_in_holm/min_estimable_tasks/below_min_conclusion）、`structural_identifiability`（object，pair_overlap_threshold=0.90、pair_status_above_threshold="STRUCTURALLY_IDENTICAL"、pair_status_below_threshold="IDENTIFIABLE"、overlap_definition="intersection_size/max(set_size)"、exclude_from_benefit_harm_inference=true、exclude_from_holm=true、post_hoc_task_exclusion=false、report_structural_exclusion_counts=true、report_c5_estimable_task_count=true）；verifier 对三键做类型/取值/交叉一致性强校验；analysis formal 模式必须加载并校验三键；Holm 族按 §7.2 第 6 条唯一口径动态计算。
 
 ## 8. Fail-closed 条件（必须实现为程序化断言）
 
@@ -265,7 +267,7 @@ run_config 与 summary 至少包含：budget.arm_id、budget.B_total、budget.K_
 
 ## 10. 验收标准（S0 可检查项）
 
-1. 本合同（v1.2）被 Lead/A5 审阅，字段与 Issue #7 §2 S0 及 R-V4-01..06 逐条对应；A5-S0-M01/M02/m01/m02/m09 与本版 §7.2/FC-14/FC-15 可逐条核对（§3.2、§3.3、§5、§7、§7.1、§7.2）。
+1. 本合同（v1.3）被 Lead/A5 审阅，字段与 Issue #7 §2 S0、R-V4-01..06、R-V4-08 逐条对应；A5-S0-M01/M02/m01/m02/m09 与本版 §7.2/FC-14/FC-15 可逐条核对（§3.2、§3.3、§5、§7、§7.1、§7.2）。
 2. 新版本 schema 具备 §7 类型校验与 §8 至少 FC-01/02/03/05/06/07/11/12/13/14/15 的程序化断言；五 split enum、120 任务计数、family_version=p4ra-family-v4、holdout_seed=20261106、holdout_splits 有 schema 校验。
 3. 端点 ID 统一为 4 个规范 ID，ENDPOINT_ROW_KEYS 已登记，存在“禁用别名/未登记键 → fail-closed”的负控测试，并有合成端到端非空覆盖断言；C5-B 下 C5 不进入 benefit/harm 与 Holm。
 4. 五臂 × K∈{0,1,3,5} × B∈{64,128} 共 40 组预算公平性单测通过（billable=B），K 未计入即 fail-closed；K=0 的 FOMAML-Kshot/ZeroShot CLONE 识别测试通过。
@@ -273,10 +275,11 @@ run_config 与 summary 至少包含：budget.arm_id、budget.B_total、budget.K_
 6. v4 新任务族与旧 task_id 零交集（程序输出 split/family 清单），task_id 正则单测通过；v4 的 meta_test/meta_test_ood task_fingerprint 与 v3 官方包 120 个 fingerprint 零交集（legacy 280 个 task_id 仅做 task_id 零交集），meta_train/meta_validation/negative_control 映射与 S0-2 逐项相同。
 7. 所有物理调用计数为 0，且 run_config 留痕。
 8. 任一 fail-closed 条件均能产生事件 JSON 与中文报告。
+9. Holm 族动态大小回归（R-V4-08-01）：族内比较由 4 降为 3（行级排除）时 p_adj 必须重算且 C5 不出现在任何 p_adj 行；prereg/统计计划/代码 docstring 使用同一族键 $(primary_endpoint, budget_B, K)$。
 
 ## 11. 待决策项
 
-1. A1 在 v4 代码提交后的干净 detached worktree 生成 S0-3 冻结包（两独立进程 run1/run2 逐字节一致）；Lead 将其写入仓库并提交；A2 重建正式工件/readiness；A5 phase3 复审（v4 包 + 工件 + pair-level 报告/C5-B + M01/M02/M04 关闭）通过后才可申请 APPROVE_FOR_S1_RUN。
+1. A1 在最终代码 commit C 的干净 detached worktree 生成 S0-4 冻结包（run_id p4ra-s0-4-freeze-<UTC>Z；两独立进程 run1/run2 逐字节一致；prereg 含三键；determinism_report 进 payload 链）；Lead 将其写入仓库并提交 commit D；A2 重建正式工件/readiness（v4c）；A3 审计 C/D；A5 phase4 终审（v4c 修复 + merge delta + phase3 findings 关闭）通过后才可申请 APPROVE_FOR_S1_RUN。旧 S0-3 包转历史只读、不得用于 S1 确证。
 2. C5-B 的 prereg 文本、identifiability_report.json schema 与 analysis 消费实现由 A1/A6 落地；A5 在 phase3 核对；C5 不进入 benefit/harm/Holm。
 3. Full MAML 元梯度一致性阈值与统计判定规则（S2 前冻结）。
 4. 是否允许 S1 pilot 后按计划扩大合成训练（仍需 physical_call_count=0）。
@@ -290,3 +293,4 @@ run_config 与 summary 至少包含：budget.arm_id、budget.B_total、budget.K_
 | v1.0 | 2026-11-05 | A4 | 首次生成 S0 数据合同与预注册规范草案 |
 | v1.1 | 2026-11-05 | A4（task-197） | 按 D-S0-2-01..09 与 A5 S0 审阅：五 split（§3.2/§5/§6.2/§7）、端点 ID 与语义（§3.3/§7/§8 FC-11）、stopping_rules len≥2（§7/§7.1）、行号引用修正（§7.1/§9）、task_id 正则（§3/§7）、五臂预算映射（§4.2）；关闭 A5-S0-M01/M02/m01/m02/m09 合同侧口径；未修改旧 run，未执行任何物理计算 |
 | v1.2 | 2026-11-05 | A4（task-231） | 按 A5 S1 rev2（S1R2-B01/B02）与 R-V4-01..06：family_version p4ra-family-v4、holdout_seed=20261106、S0-3 冻结包替代 S0-2 确证用途、旧 S0-2 包只读、prereg 新增 holdout_seed/holdout_splits/holdout_package/c5_policy/structural_identifiability、§7.2 C5-B 规则、FC-14/FC-15、v4 验收项；未修改旧 run，未执行物理计算，未 commit/push |
+| v1.3 | 2026-11-06 | Lead（R-V4-08） | 按 A5 phase3（S1R3-B01/B02/M01/M02/m01-m03）：holdout_splits 改 object、holdout_package 改 object 并补 verifier 级校验、prereg 三键 schema 精确化、Holm 族唯一口径 (endpoint,budget,K) 动态族大小、C5 排除、S0-4 冻结包替代 S0-3 确证用途、determinism_report 进 payload 链、analysis code_sha/legacy fail-closed；§10 增 4→3 p_adj 回归；§11 S0-4 阶段门；未修改旧 run，0 物理，未 commit/push |

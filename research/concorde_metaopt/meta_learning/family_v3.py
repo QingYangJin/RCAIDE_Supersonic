@@ -63,6 +63,9 @@ __all__ = [
     "MULTIPLE_COMPARISON",
     "ANALYSIS_PLAN",
     "ANALYSIS_PLAN_DIGEST",
+    "LEGACY_ANALYSIS_PLAN",
+    "LEGACY_ANALYSIS_PLAN_DIGEST",
+    "LEGACY_MULTIPLE_COMPARISON",
     "PREREG_REQUIRED_FIELDS",
     "assert_endpoint_row_coverage",
     "compute_prereg_digest",
@@ -117,6 +120,24 @@ FAMILY_SEED = tf.V3_FAMILY_SEED
 HOLDOUT_SEED = tf.V4_HOLDOUT_SEED
 HOLDOUT_SPLITS = ("meta_test", "meta_test_ood")
 HOLDOUT_TASK_COUNT = 30
+# R-V4-08-02：v4c 确证冻结包的 holdout 对象/包路径约束（与 A6 s1_analysis.py 常量精确对齐）。
+HOLDOUT_SPLIT_COUNTS = {"meta_test": 20, "meta_test_ood": 10}
+HOLDOUT_PACKAGE_RUN_ID_PATTERN = re.compile(r"^p4ra-s0-[0-9]+-freeze-[0-9]{8}T[0-9]{6}Z$")
+HOLDOUT_PACKAGE_PATH_PREFIX = "research/concorde_metaopt/optimization_runs/"
+HOLDOUT_PACKAGE_REQUIRED_FIELDS = (
+    "run_id",
+    "family_version",
+    "holdout_seed",
+    "split_counts",
+    "task_count",
+    "frozen_family_sha256",
+    "package_path",
+)
+PREREG_V4C_FIELDS = (
+    "holdout_package",
+    "c5_policy",
+    "structural_identifiability",
+)
 TASK_ID_PREFIX = tf.V3_TASK_ID_PREFIX
 TASK_ID_PATTERN = re.compile(r"^p4ra-FQE3-v3-(TR|VA|TE|OD|NC)-[0-9]{3}$")  # 合同 §7 精确字面量
 
@@ -186,9 +207,19 @@ FAILURE_RULES = (
     "主端点 null 率 >70% -> 判 INCONCLUSIVE，不插补、不转 0。",
     "发现 meta_test/meta_test_ood 信息参与调参/选臂/选端点 -> 该阶段结果作废。",
 )
+# R-V4-08-01：唯一 Holm 族=(primary_endpoint,budget_B,K)；成员 C1-C4；C5 永不进 Holm 族、不做 benefit/harm 推断。
+HOLM_FAMILY_RULE = (
+    "唯一 Holm 族=(primary_endpoint,budget_B,K)；成员=该族键下可推断的 C1-C4；"
+    "C5 永不进 Holm 族、不做 benefit/harm 推断；pair-level STRUCTURALLY_IDENTICAL 行按行排除，"
+    "族大小可 <4，禁止写死 4。"
+)
 MULTIPLE_COMPARISON = {
     "method": "Holm-Bonferroni",
-    "family": "同 K 内臂对 x 预算 x 主端点（4 主端点）",
+    "family": HOLM_FAMILY_RULE,
+    "family_key": ["primary_endpoint", "budget_B", "K"],
+    "family_members": ["C1", "C2", "C3", "C4"],
+    "excluded_comparisons": ["C5"],
+    "c5_in_holm": False,
     "alpha": 0.05,
 }
 REFERENCE_SOLUTION = "c"
@@ -199,6 +230,36 @@ NULL_POLICY = (
     "不可行/失败评价保留 objective=null 且计入预算；空值不插补、不转 0；"
     "主端点 null 率 >70% 时标 INCONCLUSIVE 并给出原因，不补假曲线。"
 )
+# R-V4-08-02：C5-B 结构可辨识性策略与 pair-level 规则（冻结后不可变）。
+C5_POLICY = {
+    "mode": "C5_B_STRUCTURAL_IDENTIFIABILITY",
+    "overlap_threshold": 0.90,
+    "c5_benefit_harm_inference": False,
+    "c5_in_holm": False,
+    "min_estimable_tasks": 10,
+    "below_min_conclusion": "NOT_ESTIMABLE_STRUCTURAL_IDENTIFIABILITY",
+}
+STRUCTURAL_IDENTIFIABILITY = {
+    "pair_overlap_threshold": 0.90,
+    "pair_status_above_threshold": "STRUCTURALLY_IDENTICAL",
+    "pair_status_below_threshold": "IDENTIFIABLE",
+    "overlap_definition": "交集行数 / 较大集合行数",
+    "exclude_from_benefit_harm_inference": True,
+    "exclude_from_holm": True,
+    "post_hoc_task_exclusion": False,
+    "report_structural_exclusion_counts": True,
+    "report_c5_estimable_task_count": True,
+}
+CALIBRATION_NOTES = {
+    "PENDING_A2_CALIBRATION": (
+        "本冻结包为 A2 校准前的预校准冻结包（status=PENDING_A2_CALIBRATION）；"
+        "A2 若选出不同半径，必须重新生成任务并升 family fingerprint。"
+    ),
+    "CALIBRATED": (
+        "本冻结包按 A2 校准选定的 radius_base 冻结；冻结后若改 meta_learning/*.py "
+        "或半径，必须重新生成任务并升 family fingerprint。"
+    ),
+}
 STATISTICS_PLAN = {
     "unit": "task",
     "seed_aggregation": "单 run -> (task,meta_seed) 内对 10 个 optimization seed 取均值；meta_seed 等权",
@@ -208,7 +269,7 @@ STATISTICS_PLAN = {
     "confidence": 0.95,
     "test": "wilcoxon_signed_rank",
     "effect_size": "paired_cohen_d / rank_biserial",
-    "multiplicity": "Holm-Bonferroni（同 K 内臂对 x 预算 x 主端点）",
+    "multiplicity": HOLM_FAMILY_RULE,
     "thresholds": {
         "best_feasible_value_relative_improvement": 0.01,
         "gap_to_reference_relative_improvement": 0.01,
@@ -292,6 +353,17 @@ def digest(value: Any) -> str:
 
 
 ANALYSIS_PLAN_DIGEST = digest(ANALYSIS_PLAN)
+# 只读兼容：S0-2/S0-3 历史包的 analysis_plan_digest 由旧 Holm 文本（"同 K 内臂对 x 预算 x 主端点"）生成。
+LEGACY_HOLM_TEXT = "Holm-Bonferroni（同 K 内臂对 x 预算 x 主端点）"
+LEGACY_MULTIPLE_COMPARISON = {
+    "method": "Holm-Bonferroni",
+    "family": "同 K 内臂对 x 预算 x 主端点（4 主端点）",
+    "alpha": 0.05,
+}
+LEGACY_ANALYSIS_PLAN = dict(ANALYSIS_PLAN)
+LEGACY_ANALYSIS_PLAN["statistics"] = dict(STATISTICS_PLAN, multiplicity=LEGACY_HOLM_TEXT)
+LEGACY_ANALYSIS_PLAN["multiple_comparison"] = dict(LEGACY_MULTIPLE_COMPARISON)
+LEGACY_ANALYSIS_PLAN_DIGEST = digest(LEGACY_ANALYSIS_PLAN)
 
 
 def file_sha256(path: str | Path) -> str:
@@ -1161,6 +1233,7 @@ def build_frozen_family_v3(
             "holdout_seed": seed,
             "holdout_splits": list(HOLDOUT_SPLITS),
             "holdout_task_count": HOLDOUT_TASK_COUNT,
+            "confirmatory_eligible": True,
             "holdout_reseed": {
                 "policy": "R-V4-01",
                 "holdout_seed": seed,
@@ -1242,7 +1315,7 @@ def build_frozen_family_v3(
             "status": calibration_status,
             "selected_radius_base": selected_radius,
             "radius_base_source": "design_default" if calibration_status == "PENDING_A2_CALIBRATION" else "A2_calibration",
-            "note": "PENDING 状态下本冻结包为 S0-2 预校准冻结包；A2 若选出不同半径，必须重新生成任务并升 family fingerprint。",
+            "note": CALIBRATION_NOTES[calibration_status],
         },
         "evaluator": "synthetic-analytic",
         "physics_validation_status": "NOT_APPLICABLE",
@@ -1292,6 +1365,8 @@ def verify_frozen_family_v3(payload: Mapping[str, Any]) -> bool:
             "negative_control",
         ]:
             raise FamilyV3Error("v4 frozen holdout_reseed.unchanged_splits 不符")
+        if "confirmatory_eligible" in payload and payload.get("confirmatory_eligible") is not True:
+            raise FamilyV3Error("v4 frozen confirmatory_eligible 只允许为 True（否则不是确证冻结包）")
     elif frozen_version in LEGACY_FAMILY_VERSIONS:
         if "holdout_seed" in payload or "holdout_reseed" in payload:
             raise FamilyV3Error("legacy v3 frozen 不得携带 holdout 字段")
@@ -1336,7 +1411,16 @@ def verify_frozen_family_v3(payload: Mapping[str, Any]) -> bool:
         raise FamilyV3Error("frozen primary_endpoints 不符")
     if list(payload.get("endpoint_row_keys", ())) != list(ENDPOINT_ROW_KEYS):
         raise FamilyV3Error("frozen endpoint_row_keys 不符")
-    if payload.get("analysis_plan_digest") != ANALYSIS_PLAN_DIGEST:
+    if payload.get("confirmatory_eligible") is True:
+        allowed_analysis_plan_digests = (ANALYSIS_PLAN_DIGEST,)
+    else:
+        # 只读兼容：S0-2/S0-3 历史包在 v4c 计划文本升级前生成，digest 为旧值。
+        # 确证（formal）路径必须 confirmatory_eligible=True 且使用新 digest。
+        allowed_analysis_plan_digests = (
+            LEGACY_ANALYSIS_PLAN_DIGEST,
+            ANALYSIS_PLAN_DIGEST,
+        )
+    if payload.get("analysis_plan_digest") not in allowed_analysis_plan_digests:
         raise FamilyV3Error("frozen analysis_plan_digest 不符")
     if list(payload.get("secondary_endpoints", ())) != list(SECONDARY_ENDPOINTS):
         raise FamilyV3Error("frozen secondary_endpoints 不符")
@@ -1370,7 +1454,7 @@ def frozen_to_v3_config(payload: Mapping[str, Any]) -> tf.TaskFamilyConfig:
 # ---------------------------------------------------------------------------
 # preregistration.json（p4ra-prereg-v1，合同 §7 17 个规范字段 + 旧名别名）
 # ---------------------------------------------------------------------------
-PREREG_REQUIRED_FIELDS = (
+LEGACY_PREREG_REQUIRED_FIELDS = (
     "schema_version",
     "prereg_id",
     "family_version",
@@ -1389,6 +1473,8 @@ PREREG_REQUIRED_FIELDS = (
     "analysis_plan_digest",
     "prereg_digest",
 )
+# R-V4-08-02：v4c 新增三块（holdout_package / c5_policy / structural_identifiability）。
+PREREG_REQUIRED_FIELDS = LEGACY_PREREG_REQUIRED_FIELDS + PREREG_V4C_FIELDS
 _PREREG_ID_PATTERN = re.compile(r"^p4ra-prereg-v3-[0-9a-f]{16}$")
 _SHA256_PATTERN = re.compile(r"^[0-9a-f]{64}$")
 
@@ -1447,6 +1533,138 @@ def _validate_multiple_comparison(value: Any) -> dict[str, Any]:
     if alpha is not None and (not isinstance(alpha, (int, float)) or not (0.0 < float(alpha) < 1.0)):
         raise FamilyV3Error("multiple_comparison.alpha 必须在 (0,1)")
     return payload
+
+
+def _validate_holdout_splits_object(value: Any) -> dict[str, int]:
+    if isinstance(value, str) or not isinstance(value, Mapping):
+        raise FamilyV3Error(
+            "holdout_splits 必须是 object（v4c：{'meta_test': 20, 'meta_test_ood': 10}）"
+        )
+    if set(value) != set(HOLDOUT_SPLITS):
+        raise FamilyV3Error(f"holdout_splits 键必须恰为 {list(HOLDOUT_SPLITS)}")
+    result: dict[str, int] = {}
+    for split in HOLDOUT_SPLITS:
+        raw = value[split]
+        if isinstance(raw, bool) or not isinstance(raw, int):
+            raise FamilyV3Error(f"holdout_splits[{split!r}] 必须是 int，实际 {type(raw).__name__}")
+        if raw != HOLDOUT_SPLIT_COUNTS[split]:
+            raise FamilyV3Error(
+                f"holdout_splits[{split!r}] 必须为 {HOLDOUT_SPLIT_COUNTS[split]}，实际 {raw}"
+            )
+        result[split] = raw
+    return result
+
+
+def _validate_holdout_package_run_id(value: Any) -> str:
+    if not isinstance(value, str) or not HOLDOUT_PACKAGE_RUN_ID_PATTERN.match(value):
+        raise FamilyV3Error(
+            f"holdout_package.run_id 非法: {value!r}（要求 ^p4ra-s0-<n>-freeze-<UTC>Z$）"
+        )
+    return value
+
+
+def _validate_repo_relative_path(value: Any, name: str) -> str:
+    if not isinstance(value, str) or not value.strip():
+        raise FamilyV3Error(f"{name} 必须是非空仓库相对路径")
+    text = value.strip().replace(chr(92), "/")
+    if text.startswith("/"):
+        raise FamilyV3Error(f"{name} 不得为绝对路径: {value!r}")
+    parts = text.split("/")
+    if any(part in ("", ".", "..") for part in parts):
+        raise FamilyV3Error(f"{name} 不得含空段/./..: {value!r}")
+    if ":" in parts[0]:
+        raise FamilyV3Error(f"{name} 不得含盘符: {value!r}")
+    return text
+
+
+def _holdout_package_payload(frozen_family: Mapping[str, Any], run_id: str) -> dict[str, Any]:
+    run_id_text = _validate_holdout_package_run_id(run_id)
+    split_counts = frozen_family.get("split", {}).get("counts", {})
+    counts = {split: int(split_counts[split]) for split in HOLDOUT_SPLITS}
+    if counts != dict(HOLDOUT_SPLIT_COUNTS):
+        raise FamilyV3Error(f"冻结包 holdout 计数不符: {counts!r}")
+    return {
+        "run_id": run_id_text,
+        "family_version": FAMILY_VERSION,
+        "holdout_seed": HOLDOUT_SEED,
+        "split_counts": counts,
+        "task_count": sum(counts.values()),
+        "frozen_family_sha256": str(frozen_family["sha256"]),
+        "package_path": HOLDOUT_PACKAGE_PATH_PREFIX + run_id_text,
+    }
+
+
+def _validate_holdout_package(
+    value: Any,
+    *,
+    expected_run_id: Any = None,
+    frozen_family: Mapping[str, Any] | None = None,
+) -> dict[str, Any]:
+    if isinstance(value, str) or not isinstance(value, Mapping):
+        raise FamilyV3Error("holdout_package 必须是 object")
+    payload = dict(value)
+    for name in HOLDOUT_PACKAGE_REQUIRED_FIELDS:
+        if name not in payload:
+            raise FamilyV3Error(f"holdout_package 缺少必填字段 {name!r}")
+    run_id_text = _validate_holdout_package_run_id(payload.get("run_id"))
+    if expected_run_id is not None and run_id_text != expected_run_id:
+        raise FamilyV3Error("holdout_package.run_id 必须等于 prereg run_id")
+    if payload.get("family_version") != FAMILY_VERSION:
+        raise FamilyV3Error("holdout_package.family_version 必须为 " + FAMILY_VERSION)
+    holdout_seed_value = payload.get("holdout_seed")
+    if (
+        isinstance(holdout_seed_value, bool)
+        or not isinstance(holdout_seed_value, int)
+        or holdout_seed_value != HOLDOUT_SEED
+    ):
+        raise FamilyV3Error(f"holdout_package.holdout_seed 必须为 {HOLDOUT_SEED}")
+    split_counts = _validate_holdout_splits_object(payload.get("split_counts"))
+    task_count = payload.get("task_count")
+    if (
+        isinstance(task_count, bool)
+        or not isinstance(task_count, int)
+        or task_count != sum(split_counts.values())
+    ):
+        raise FamilyV3Error("holdout_package.task_count 必须等于 split_counts 之和（30）")
+    frozen_sha = payload.get("frozen_family_sha256")
+    if not isinstance(frozen_sha, str) or not _SHA256_PATTERN.match(frozen_sha):
+        raise FamilyV3Error("holdout_package.frozen_family_sha256 必须是 64 位小写十六进制 sha256")
+    if frozen_family is not None and frozen_sha != str(frozen_family.get("sha256")):
+        raise FamilyV3Error("holdout_package.frozen_family_sha256 必须等于 frozen_family.sha256")
+    package_path = _validate_repo_relative_path(
+        payload.get("package_path"), "holdout_package.package_path"
+    )
+    expected_path = HOLDOUT_PACKAGE_PATH_PREFIX + run_id_text
+    if package_path != expected_path:
+        raise FamilyV3Error(f"holdout_package.package_path 必须为 {expected_path!r}")
+    return payload
+
+
+def _validate_exact_block(value: Any, expected: Mapping[str, Any], name: str) -> dict[str, Any]:
+    if isinstance(value, str) or not isinstance(value, Mapping):
+        raise FamilyV3Error(f"{name} 必须是 object")
+    payload = dict(value)
+    for key, wanted in expected.items():
+        if key not in payload:
+            raise FamilyV3Error(f"{name} 缺少字段 {key!r}")
+        actual = payload[key]
+        if isinstance(wanted, bool) or isinstance(actual, bool):
+            if actual is not wanted:
+                raise FamilyV3Error(f"{name}.{key} 必须为 {wanted!r}")
+        elif isinstance(wanted, (int, float)):
+            if not isinstance(actual, (int, float)) or abs(float(actual) - float(wanted)) > 1e-12:
+                raise FamilyV3Error(f"{name}.{key} 必须为 {wanted!r}")
+        elif actual != wanted:
+            raise FamilyV3Error(f"{name}.{key} 必须为 {wanted!r}")
+    return payload
+
+
+def _validate_c5_policy(value: Any) -> dict[str, Any]:
+    return _validate_exact_block(value, C5_POLICY, "c5_policy")
+
+
+def _validate_structural_identifiability(value: Any) -> dict[str, Any]:
+    return _validate_exact_block(value, STRUCTURAL_IDENTIFIABILITY, "structural_identifiability")
 
 
 def _validate_analysis_plan(plan: Any) -> dict[str, Any]:
@@ -1581,11 +1799,20 @@ def build_preregistration_v3(
     frozen_version = frozen_family["family_version"]
     version_extra: dict[str, Any] = {}
     if frozen_version == FAMILY_VERSION:
+        holdout_counts = {
+            split: int(frozen_family["split"]["counts"][split]) for split in HOLDOUT_SPLITS
+        }
+        if holdout_counts != dict(HOLDOUT_SPLIT_COUNTS):
+            raise FamilyV3Error(f"v4 frozen holdout 计数不符: {holdout_counts!r}")
         version_extra = {
             "task_family_version": frozen_family.get("task_family_version"),
             "holdout_seed": frozen_family.get("holdout_seed"),
-            "holdout_splits": list(frozen_family.get("holdout_splits", ())),
+            "holdout_splits": _validate_holdout_splits_object(holdout_counts),
             "holdout_task_count": frozen_family.get("holdout_task_count"),
+            "holdout_package": _holdout_package_payload(frozen_family, run_id),
+            "c5_policy": dict(C5_POLICY),
+            "structural_identifiability": dict(STRUCTURAL_IDENTIFIABILITY),
+            "confirmatory_eligible": True,
         }
     elif frozen_version in LEGACY_FAMILY_VERSIONS:
         if "task_family_version" in frozen_family:
@@ -1644,18 +1871,54 @@ def build_preregistration_v3(
         ],
     }
     payload.update(version_extra)
+    if frozen_version == FAMILY_VERSION:
+        if payload["multiple_comparison"] != dict(MULTIPLE_COMPARISON):
+            raise FamilyV3Error("v4c prereg multiple_comparison 必须精确等于唯一 Holm 族冻结定义")
+        statistics_payload = payload.get("statistics")
+        if (
+            not isinstance(statistics_payload, Mapping)
+            or statistics_payload.get("multiplicity") != HOLM_FAMILY_RULE
+        ):
+            raise FamilyV3Error("v4c prereg statistics.multiplicity 必须为唯一 Holm 族规则文本")
+        _validate_holdout_package(
+            payload.get("holdout_package"),
+            expected_run_id=payload.get("run_id"),
+            frozen_family=frozen_family,
+        )
+        _validate_holdout_splits_object(payload.get("holdout_splits"))
+        c5_policy = _validate_c5_policy(payload.get("c5_policy"))
+        structural = _validate_structural_identifiability(
+            payload.get("structural_identifiability")
+        )
+        if abs(
+            float(c5_policy["overlap_threshold"])
+            - float(structural["pair_overlap_threshold"])
+        ) > 1e-12:
+            raise FamilyV3Error("c5_policy.overlap_threshold 必须等于 structural pair_overlap_threshold")
+        if payload.get("confirmatory_eligible") is not True:
+            raise FamilyV3Error("v4c prereg confirmatory_eligible 必须为 True")
     payload["prereg_digest"] = _prereg_digest(payload)
     payload["sha256"] = digest(payload)
     return payload
 
 
 def verify_preregistration_v3(
-    payload: Mapping[str, Any], frozen_family: Mapping[str, Any] | None = None
+    payload: Mapping[str, Any],
+    frozen_family: Mapping[str, Any] | None = None,
+    *,
+    allow_legacy_schema: bool = False,
 ) -> bool:
-    """严格校验 p4ra-prereg-v1（合同 §7）：缺字段/别名缺规范名/错类型/自 digest 不符均 fail-closed。"""
+    """严格校验 p4ra-prereg-v1（合同 §7.2）。
+
+    v4c 严格模式（默认）：17+3 字段、holdout_splits object、三块强校验、confirmatory=true。
+    allow_legacy_schema=True：仅用于 S0-2/S0-3 等只读历史包（17 字段 + list holdout_splits）。
+    """
     if payload.get("schema_version") != PREREGISTRATION_SCHEMA_VERSION:
         raise FamilyV3Error(f"prereg schema 不符: {payload.get('schema_version')!r}")
-    for name in PREREG_REQUIRED_FIELDS:
+    prereg_version = payload.get("family_version")
+    strict_v4c = prereg_version == FAMILY_VERSION and not allow_legacy_schema
+    required_fields = PREREG_REQUIRED_FIELDS if strict_v4c else LEGACY_PREREG_REQUIRED_FIELDS
+    for name in required_fields:
         if name not in payload:
             raise FamilyV3Error(f"prereg 缺少合同 §7 必填字段 {name!r}")
     body = {key: value for key, value in payload.items() if key != "sha256"}
@@ -1672,17 +1935,36 @@ def verify_preregistration_v3(
     expected_prereg_id = f"p4ra-prereg-v3-{fingerprint[:16]}"
     if payload.get("prereg_id") != expected_prereg_id:
         raise FamilyV3Error(f"prereg_id 必须为 {expected_prereg_id!r}（与 family_fingerprint 关联）")
-    prereg_version = payload.get("family_version")
     if prereg_version == FAMILY_VERSION:
         if payload.get("task_family_version") != TASK_FAMILY_VERSION:
             raise FamilyV3Error("v4 prereg 缺少/错误 task_family_version")
         prereg_holdout_seed = _validate_holdout_seed(payload.get("holdout_seed"))
         if prereg_holdout_seed != HOLDOUT_SEED:
             raise FamilyV3Error(f"v4 prereg holdout_seed 必须为 {HOLDOUT_SEED}")
-        if list(payload.get("holdout_splits", ())) != list(HOLDOUT_SPLITS):
-            raise FamilyV3Error("v4 prereg holdout_splits 不符")
         if int(payload.get("holdout_task_count", -1)) != HOLDOUT_TASK_COUNT:
             raise FamilyV3Error("v4 prereg holdout_task_count 不符")
+        if strict_v4c:
+            _validate_holdout_splits_object(payload.get("holdout_splits"))
+            _validate_holdout_package(
+                payload.get("holdout_package"),
+                expected_run_id=payload.get("run_id"),
+                frozen_family=frozen_family,
+            )
+            c5_policy = _validate_c5_policy(payload.get("c5_policy"))
+            structural = _validate_structural_identifiability(
+                payload.get("structural_identifiability")
+            )
+            if abs(
+                float(c5_policy["overlap_threshold"])
+                - float(structural["pair_overlap_threshold"])
+            ) > 1e-12:
+                raise FamilyV3Error(
+                    "c5_policy.overlap_threshold 必须等于 structural pair_overlap_threshold"
+                )
+            if payload.get("confirmatory_eligible") is not True:
+                raise FamilyV3Error("v4c prereg confirmatory_eligible 必须为 True")
+        elif list(payload.get("holdout_splits", ())) != list(HOLDOUT_SPLITS):
+            raise FamilyV3Error("v4 prereg holdout_splits 不符")
     elif prereg_version in LEGACY_FAMILY_VERSIONS:
         if "holdout_seed" in payload or "holdout_splits" in payload:
             raise FamilyV3Error("legacy v3 prereg 不得携带 v4 holdout 字段")
@@ -1780,7 +2062,20 @@ def verify_preregistration_v3(
         raise FamilyV3Error("stopping_rules 必须已 strip 为规范 list[str]")
     _normalize_string_list(payload.get("failure_rules"), "failure_rules")
     multiple = _validate_multiple_comparison(payload.get("multiple_comparison"))
+    if strict_v4c:
+        if multiple != dict(MULTIPLE_COMPARISON):
+            raise FamilyV3Error("v4c prereg multiple_comparison 必须精确等于唯一 Holm 族冻结定义")
+        statistics_block = payload.get("statistics")
+        if (
+            not isinstance(statistics_block, Mapping)
+            or statistics_block.get("multiplicity") != HOLM_FAMILY_RULE
+        ):
+            raise FamilyV3Error("v4c prereg statistics.multiplicity 必须为唯一 Holm 族规则文本")
     plan = _validate_analysis_plan(payload.get("analysis_plan"))
+    if strict_v4c and plan != dict(ANALYSIS_PLAN):
+        raise FamilyV3Error(
+            "v4c prereg analysis_plan 必须精确等于冻结 ANALYSIS_PLAN（唯一 Holm 族/C5 排除）"
+        )
     plan_digest = payload.get("analysis_plan_digest")
     if not isinstance(plan_digest, str) or not _SHA256_PATTERN.match(plan_digest):
         raise FamilyV3Error("analysis_plan_digest 必须是 64 位小写十六进制 sha256")
@@ -1806,14 +2101,17 @@ def verify_preregistration_v3(
             if payload.get(name) != frozen_family.get(name):
                 raise FamilyV3Error(f"prereg 与 frozen 的 {name} 不一致")
         if payload.get("family_version") == FAMILY_VERSION:
-            for name in (
-                "task_family_version",
-                "holdout_seed",
-                "holdout_splits",
-                "holdout_task_count",
-            ):
+            for name in ("task_family_version", "holdout_seed", "holdout_task_count"):
                 if payload.get(name) != frozen_family.get(name):
                     raise FamilyV3Error(f"prereg 与 frozen 的 {name} 不一致")
+            if strict_v4c:
+                frozen_holdout_counts = {
+                    split: int(frozen_family["split"]["counts"][split]) for split in HOLDOUT_SPLITS
+                }
+                if dict(payload.get("holdout_splits", {})) != frozen_holdout_counts:
+                    raise FamilyV3Error("prereg holdout_splits 与 frozen split counts 不一致")
+            elif payload.get("holdout_splits") != frozen_family.get("holdout_splits"):
+                raise FamilyV3Error("prereg 与 frozen 的 holdout_splits 不一致")
         frozen_split_hash = frozen_family.get("split", {}).get("split_hash")
         if payload.get("split_digest") != frozen_split_hash:
             raise FamilyV3Error("prereg 与 frozen 的 split_hash 不一致")
