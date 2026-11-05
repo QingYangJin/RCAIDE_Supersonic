@@ -5,7 +5,8 @@
 - run_records 强校验负控（缺必填/未知字段/别名/record_digest/run_id/预算/物理隔离/CLONE）；
 - 聚合（opt seed -> (task, meta_seed) 均值、meta seed 等权 -> task）、null 不插补；
 - 统计函数（Wilcoxon 精确/并列近似、Holm、bootstrap、效应量）与判定规则，不产生假数据；
-- 端到端 21,000 条记录 -> 6 数据产物 + 7 张规范图、无绝对路径、physical=0；
+- 端到端 21,000 条记录 -> 8 数据产物 + 7 张规范图、无绝对路径、physical=0；
+- task-239 冻结身份解耦：五项身份从冻结包派生（v3 legacy / 合成 v4 包），expected_identity 提供时必须逐项一致；
 - CLI 成功/失败返回码。
 
 全部测试纯离线：不 import 也不启动任何真实 Mission/SU2/VSPAERO/OpenVSP/RCAIDE 求解器。
@@ -13,6 +14,7 @@
 
 import contextlib
 import copy
+import csv
 import io
 import hashlib
 import json
@@ -28,6 +30,7 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 from research.concorde_metaopt.meta_learning import family_v3  # noqa: E402
+from research.concorde_metaopt.meta_learning import budget_fairness  # noqa: E402
 from research.concorde_metaopt.meta_learning import s1_analysis as A  # noqa: E402
 from research.concorde_metaopt.meta_learning import s1_figures as F  # noqa: E402
 
@@ -211,6 +214,168 @@ def write_record_files(directory, records, *, name="run_records.jsonl"):
     return path
 
 
+# R-V4-02 / R-V4-04（task-230）：identifiability_report.json fixture（全部解析式、无真实数据）
+IDENTITY_PAIRS = (
+    ("FOMAML-KSHOT-BO", "FOMAML-ZERO-BO"),
+    ("FOMAML-KSHOT-BO", "PRETRAIN-KSHOT-BO"),
+    ("FOMAML-ZERO-BO", "PRETRAIN-KSHOT-BO"),
+)
+
+
+def structural_group_keys(records):
+    """从 records 推导 report 组：{ (task_id,budget_B,K,meta_seed): {model-scored arms} }。"""
+    groups = {}
+    for record in records:
+        arm = record.get("arm")
+        if arm not in A.MODEL_SCORED_ARMS:
+            continue
+        key = (
+            str(record["task_id"]),
+            int(record["budget_B"]),
+            int(record["K"]),
+            int(record["meta_seed"]),
+        )
+        groups.setdefault(key, set()).add(str(arm))
+    return groups
+
+
+def write_identifiability_report(
+    directory,
+    records,
+    *,
+    threshold=0.90,
+    schema_version=A.IDENTIFIABILITY_SCHEMA_VERSION_V4,
+    overlap_map=None,
+    ranking_override=None,
+    drop_groups=(),
+):
+    """写 v4 identifiability_report.json（schema_version 传 v1 时降级为 legacy 报告）。
+
+    overlap_map 键：(task_id, budget_B, K, meta_seed, "arm_a|arm_b")；缺省 overlap_rate=0.0。
+    ranking_override 键：(task_id, budget_B, K, meta_seed)。
+    """
+    overlap_map = dict(overlap_map or {})
+    ranking_override = dict(ranking_override or {})
+    groups_map = structural_group_keys(records)
+    for key in drop_groups:
+        groups_map.pop(key, None)
+    pair_status_counts = {}
+    groups_payload = []
+    for key in sorted(groups_map):
+        arms = groups_map[key]
+        task_id, budget, k_shot, meta_seed = key
+        pairwise = []
+        group_rates = []
+        for arm_a, arm_b in IDENTITY_PAIRS:
+            if arm_a not in arms or arm_b not in arms:
+                continue
+            label = A._pair_label(arm_a, arm_b)
+            rate = float(overlap_map.get(key + (label,), 0.0))
+            group_rates.append(rate)
+            pair = {
+                "arm_a": arm_a,
+                "arm_b": arm_b,
+                "shared_rows": 0,
+                "row_count": 64,
+                "overlap_rate": rate,
+            }
+            if schema_version == A.IDENTIFIABILITY_SCHEMA_VERSION_V4:
+                status = (
+                    A.STRUCTURAL_IDENTICAL
+                    if rate >= threshold
+                    else A.STRUCTURAL_IDENTIFIABLE
+                )
+                pair.update(
+                    {
+                        "threshold": float(threshold),
+                        "pair_identifiable": bool(status == A.STRUCTURAL_IDENTIFIABLE),
+                        "structural_status": status,
+                    }
+                )
+                bucket = pair_status_counts.setdefault(label, {})
+                bucket[status] = bucket.get(status, 0) + 1
+            pairwise.append(pair)
+        max_rate = max(group_rates) if group_rates else 0.0
+        mean_rate = sum(group_rates) / len(group_rates) if group_rates else 0.0
+        groups_payload.append(
+            {
+                "task_id": task_id,
+                "budget_B": int(budget),
+                "K": int(k_shot),
+                "meta_seed": int(meta_seed),
+                "arms": sorted(arms),
+                "pairwise": pairwise,
+                "max_overlap_rate": max_rate,
+                "mean_overlap_rate": mean_rate,
+                "ranking_status": ranking_override.get(
+                    key,
+                    "RANKING_INDISTINGUISHABLE" if max_rate >= threshold else "IDENTIFIABLE",
+                ),
+                "inference_allowed": bool(max_rate < threshold),
+            }
+        )
+    payload = {
+        "schema_version": schema_version,
+        "threshold": float(threshold),
+        "group_count": len(groups_payload),
+        "pair_coverage": {},
+        "groups": groups_payload,
+    }
+    if schema_version == A.IDENTIFIABILITY_SCHEMA_VERSION_V4:
+        payload["pair_status_counts"] = pair_status_counts
+        payload["status_counts"] = {
+            status: sum(
+                1
+                for group in groups_payload
+                for pair in group["pairwise"]
+                if pair.get("structural_status") == status
+            )
+            for status in (A.STRUCTURAL_IDENTIFIABLE, A.STRUCTURAL_IDENTICAL)
+        }
+    target_dir = Path(directory)
+    target_dir.mkdir(parents=True, exist_ok=True)
+    path = target_dir / "identifiability_report.json"
+    path.write_text(
+        json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    return path
+
+
+def structural_records(
+    bundle,
+    *,
+    tasks=20,
+    budgets=(64, 128),
+    ks=(3, 5),
+    metas=(0, 1, 2),
+    arms=None,
+):
+    """构造仅含需要臂的合成记录（用于结构可辨识性/C5 单测）。"""
+    arms = tuple(A.ARM_IDS if arms is None else arms)
+    records = []
+    task_ids = bundle.task_ids_for(A.MAIN_SPLIT)[: int(tasks)]
+    for task_index, task_id in enumerate(task_ids):
+        for meta_seed in metas:
+            for budget in budgets:
+                for k_shot in ks:
+                    for arm in arms:
+                        records.append(
+                            signal_record(
+                                bundle,
+                                arm=arm,
+                                budget_B=int(budget),
+                                K=int(k_shot),
+                                task_id=task_id,
+                                split=A.MAIN_SPLIT,
+                                meta_seed=int(meta_seed),
+                                opt_seed=0,
+                                task_index=task_index,
+                            )
+                        )
+    return records
+
+
 # 信号臂参数：仅用于「有信号」端到端 fixture；数值全部解析式固定，不含真实求解。
 _ARM_BASE = {
     "RAND-BO": 1.30,
@@ -375,22 +540,41 @@ class FrozenBundleValidationTests(TempDirMixin):
         self.assertEqual(bundle.radius_base, 0.64)
         self.assertEqual(bundle.physical_call_count if hasattr(bundle, "physical_call_count") else 0, 0)
 
-    def test_frozen_constants_match_a5_release_values(self):
+    def test_derived_identity_matches_v3_reference_and_is_package_sourced(self):
+        # task-239：不再硬编码 v3 身份常量；五项期望值从冻结包派生。
+        bundle = frozen_bundle()
         self.assertEqual(
-            A.ANALYSIS_PLAN_DIGEST,
-            "37eee53c9018fce34e414fa553ad3986a2d1be87d10409bc28e4f697b63588df",
+            bundle.identity_five(),
+            {
+                "family_fingerprint": "e56e6921be6b94e6611a24618a6e331cd7e4417597926d089d71b00da8c1c0c3",
+                "split_hash": "cd597d01bd4024d13c765a0a723449c3d67172bc260040012bea9d67d2af76ae",
+                "prereg_digest": "6981f503fd6ea5a9fbe5de2d1825ae8993eb17e9fda5d2ff158e9248d88fd3df",
+                "analysis_plan_digest": "37eee53c9018fce34e414fa553ad3986a2d1be87d10409bc28e4f697b63588df",
+                "radius_base": 0.64,
+            },
         )
+        self.assertEqual(bundle.identity_source, A.IDENTITY_SOURCE_PACKAGE)
+        self.assertEqual(bundle.expected_identity_fields, ())
+
+    def test_module_no_longer_hardcodes_v3_identity_as_expectation(self):
+        for name in (
+            "FAMILY_FINGERPRINT",
+            "SPLIT_HASH",
+            "PREREG_DIGEST",
+            "ANALYSIS_PLAN_DIGEST",
+            "RADIUS_BASE",
+            "FAMILY_VERSION",
+        ):
+            self.assertFalse(hasattr(A, name), msg=f"模块仍保留 v3 硬编码常量 {name}")
         self.assertEqual(
-            A.FAMILY_FINGERPRINT,
-            "e56e6921be6b94e6611a24618a6e331cd7e4417597926d089d71b00da8c1c0c3",
-        )
-        self.assertEqual(
-            A.SPLIT_HASH,
-            "cd597d01bd4024d13c765a0a723449c3d67172bc260040012bea9d67d2af76ae",
-        )
-        self.assertEqual(
-            A.PREREG_DIGEST,
-            "6981f503fd6ea5a9fbe5de2d1825ae8993eb17e9fda5d2ff158e9248d88fd3df",
+            tuple(A.IDENTITY_FIELDS),
+            (
+                "family_fingerprint",
+                "split_hash",
+                "prereg_digest",
+                "analysis_plan_digest",
+                "radius_base",
+            ),
         )
 
     def test_endpoint_row_keys_are_exactly_nine_canonical_keys(self):
@@ -1389,6 +1573,7 @@ def full_e2e_run():
         directory = Path(tempfile.mkdtemp(prefix="s1-e2e-"))
         records = full_meta_test_records(bundle)
         records_path = write_record_files(directory, records)
+        write_identifiability_report(directory, records)
         meta_log = directory / "meta_training_log.json"
         meta_log.write_text(
             json.dumps({"history": [{"epoch": index + 1, "loss": 1.0 / (index + 1)} for index in range(8)]}),
@@ -1502,18 +1687,22 @@ class HolmFamilyTests(unittest.TestCase):
 
     def test_family_size_and_count_are_reported(self):
         population = self.aggregate["primary_population"]
-        self.assertEqual(population["holm_family_size"], 5)
+        # R-V4-02：C5 不进 Holm，族内仅 4 个可推断比较（C1..C4）。
+        self.assertEqual(population["holm_family_size"], 4)
         self.assertEqual(population["holm_family_count"], 24)
-        self.assertIn("5 个比较", population["holm_family"])
+        self.assertIn("4 个", population["holm_family"])
+        self.assertEqual(population["excluded_comparison_ids"], ["C5"])
         sizes = self.aggregate["statistical_rules"]["holm_family_sizes"]
         self.assertEqual(len(sizes), 24)
-        self.assertEqual(set(sizes.values()), {5})
+        self.assertEqual(set(sizes.values()), {4})
         # 端点 4 个 x 预算 2 个 x 推断 K 3 个 = 24 个族。
         self.assertEqual(len({key.split("|")[0] for key in sizes}), 4)
 
     def test_holm_adjustment_grouped_by_endpoint_budget_and_k(self):
         rows = [row for row in self.aggregate["endpoint_rows"] if row.get("row_type") == "comparison"]
-        self.assertEqual(len(rows), 120)
+        # 4 个可推断比较 x 2 预算 x 3 个推断 K x 4 主端点 = 96 行（C5 不进推断）。
+        self.assertEqual(len(rows), 96)
+        self.assertEqual({row["comparison_id"] for row in rows}, {"C1", "C2", "C3", "C4"})
         families: dict[tuple[str, int, int], list[dict]] = {}
         for row in rows:
             key = (str(row["endpoint"]), int(row["budget_B"]), int(row["K"]))
@@ -1521,7 +1710,7 @@ class HolmFamilyTests(unittest.TestCase):
         self.assertEqual(len(families), 24)
         for key in sorted(families):
             family = families[key]
-            self.assertEqual(len(family), 5, msg=str(key))
+            self.assertEqual(len(family), 4, msg=str(key))
             expected = A.holm_adjust([row["p_raw"] for row in family])
             for row, adjusted in zip(family, expected):
                 self.assertAlmostEqual(row["p_adjusted"], adjusted, places=15, msg=str(key))
@@ -1538,8 +1727,8 @@ class HolmFamilyTests(unittest.TestCase):
         ]
         self.assertEqual(len(rows), 1)
         row = rows[0]
-        # 每族 5 个检验：p_adj 至多 min(1, 5*p_raw)，绝不可能再按 40 个检验放大。
-        self.assertLessEqual(row["p_adjusted"], min(1.0, 5.0 * row["p_raw"]) + 1e-15)
+        # 每族 4 个检验：p_adj 至多 min(1, 4*p_raw)，绝不可能再按 40 个检验放大。
+        self.assertLessEqual(row["p_adjusted"], min(1.0, 4.0 * row["p_raw"]) + 1e-15)
 
 
 # ---------------------------------------------------------------------------
@@ -1669,7 +1858,9 @@ class CliTests(TempDirMixin):
     def test_cli_success_returns_zero_and_writes_outputs(self):
         bundle = frozen_bundle()
         directory = self.make_temp_dir()
-        path = write_record_files(directory, sparse_records(bundle))
+        records = sparse_records(bundle)
+        path = write_record_files(directory, records)
+        write_identifiability_report(directory, records)
         out_dir = directory / "out"
         stdout = io.StringIO()
         stderr = io.StringIO()
@@ -1691,7 +1882,9 @@ class CliTests(TempDirMixin):
         payload = json.loads(stdout.getvalue())
         self.assertEqual(payload["status"], "PASS")
         self.assertEqual(payload["n_records"], len(sparse_records(bundle)))
+        self.assertEqual(payload["c5_structural_identifiability"], A.C5_NOT_ESTIMABLE)
         self.assertTrue((out_dir / "aggregate.json").is_file())
+        self.assertTrue((out_dir / "s1_structural_identifiability.csv").is_file())
 
     def test_cli_record_failure_returns_two(self):
         bundle = frozen_bundle()
@@ -1744,5 +1937,696 @@ class CliTests(TempDirMixin):
         self.assertIn("S1_ANALYSIS_FAILED", stderr.getvalue())
 
 
+# ---------------------------------------------------------------------------
+# task-239：冻结身份解耦（五项从包派生；expected_identity 可选强校验）
+# ---------------------------------------------------------------------------
+
+_V4_PACKAGE = None
+
+
+def _v3_reference_task_fingerprints():
+    """取 v3 旧冻结包 120 个任务 fingerprint（v4 构建要求的参考指纹集合）。"""
+    payload = json.loads((FROZEN_DIR / "tasks.json").read_text(encoding="utf-8"))
+    return [str(record["task_fingerprint"]) for record in payload]
+
+
+def synthetic_v4_freeze_package():
+    """模块级缓存：构造自洽的合成 v4 冻结包（不读新 meta_test/OOD，不跑任何数值）。
+
+    返回 (directory, expected_identity)：expected_identity 为从包派生的五项。
+    """
+    global _V4_PACKAGE
+    if _V4_PACKAGE is None:
+        created = "2026-11-06T00:00:00Z"
+        legacy = {
+            "task_ids": ["legacy-m2-task-000"],
+            "task_fingerprints": [],
+            "sources": [
+                {
+                    "source": "legacy/tests",
+                    "input_name": "tasks.json",
+                    "task_id_count": 1,
+                    "task_fingerprint_count": 0,
+                }
+            ],
+        }
+        bundle = family_v3.build_freeze_bundle(
+            run_id="p4ra-s0-3-freeze-tests",
+            git_sha="0" * 40,
+            created_utc=created,
+            legacy=legacy,
+            calibration_status="CALIBRATED",
+            radius_base=0.64,
+            holdout_seed=family_v3.HOLDOUT_SEED,
+            v3_reference_task_fingerprints=_v3_reference_task_fingerprints(),
+        )
+        directory = Path(tempfile.mkdtemp(prefix="s1-v4-freeze-"))
+        payloads = {
+            "tasks.json": bundle["task_records"],
+            "meta_task_split.json": bundle["split_manifest"],
+            "v3_isolation_report.json": bundle["isolation_report"],
+            "frozen_family.json": bundle["frozen_family"],
+            "preregistration.json": bundle["preregistration"],
+            "budget_fairness_report.json": budget_fairness.build_fairness_report(created_utc=created),
+        }
+        raw = {}
+        for name, payload in payloads.items():
+            data = (json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True) + "\n").encode("utf-8")
+            (directory / name).write_bytes(data)
+            raw[name] = data
+        artifacts = []
+        for name in A.FROZEN_PAYLOAD_FILES:
+            payload = payloads[name]
+            entry = {
+                "path": name,
+                "bytes": len(raw[name]),
+                "canonical_sha256": A._canonical_artifact_digest(payload),
+                "raw_sha256": hashlib.sha256(raw[name]).hexdigest(),
+            }
+            if isinstance(payload, dict) and isinstance(payload.get("sha256"), str):
+                entry["stored_sha256"] = payload["sha256"]
+            artifacts.append(entry)
+        manifest = family_v3.build_digest_manifest(artifacts, created_utc=created)
+        manifest_bytes = (json.dumps(manifest, ensure_ascii=False, indent=2, sort_keys=True) + "\n").encode("utf-8")
+        (directory / "digest_manifest.json").write_bytes(manifest_bytes)
+        raw["digest_manifest.json"] = manifest_bytes
+        canonical = {
+            name: A._canonical_artifact_digest(payloads[name]) for name in A.FROZEN_PAYLOAD_FILES
+        }
+        frozen = bundle["frozen_family"]
+        split = bundle["split_manifest"]
+        prereg = bundle["preregistration"]
+
+        def rawsha(name):
+            return hashlib.sha256(raw[name]).hexdigest()
+
+        summary = {
+            "schema_version": "p4ra-freeze-summary-2",
+            "created_utc": created,
+            "run_id": "p4ra-s0-3-freeze-tests",
+            "git_sha": "0" * 40,
+            "code_sha": "tests",
+            "family_id": family_v3.FAMILY_ID,
+            "family_version": frozen["family_version"],
+            "family_seed": family_v3.FAMILY_SEED,
+            "formula_version": family_v3.FORMULA_VERSION,
+            "radius_base": frozen["radius_base"],
+            "frozen_at_utc": created,
+            "calibration_status": frozen["calibration"]["status"],
+            "artifacts": {
+                name: {
+                    "raw_sha256": rawsha(name),
+                    "canonical_sha256": canonical[name],
+                    "bytes": len(raw[name]),
+                }
+                for name in A.FROZEN_PAYLOAD_FILES
+            },
+            "digest_manifest": {
+                "raw_sha256": rawsha("digest_manifest.json"),
+                "canonical_sha256": A._canonical_artifact_digest(manifest),
+                "bytes": len(manifest_bytes),
+            },
+            "orchestration": {
+                "physical_call_count": 0,
+                "family_fingerprint": frozen["family_fingerprint"],
+                "split_hash": split["split_hash"],
+                "prereg_digest": prereg["prereg_digest"],
+                "analysis_plan_digest": frozen["analysis_plan_digest"],
+                "radius_base": frozen["radius_base"],
+                "frozen_family_sha256": canonical["frozen_family.json"],
+                "preregistration_sha256": canonical["preregistration.json"],
+                "budget_fairness_report_sha256": canonical["budget_fairness_report.json"],
+                "isolation_report_sha256": canonical["v3_isolation_report.json"],
+                "split_counts": dict(split["counts"]),
+                "task_count": family_v3.TOTAL_TASKS,
+            },
+        }
+        summary_bytes = (json.dumps(summary, ensure_ascii=False, indent=2, sort_keys=True) + "\n").encode("utf-8")
+        (directory / "freeze_summary.json").write_bytes(summary_bytes)
+        raw["freeze_summary.json"] = summary_bytes
+        lines = [rawsha(name) + " *" + name for name in A.FROZEN_REQUIRED_FILES]
+        (directory / "SHA256SUMS.txt").write_text("\n".join(lines) + "\n", encoding="utf-8")
+        expected = A.load_frozen_bundle(directory).identity_five()
+        _V4_PACKAGE = (directory, expected)
+    return _V4_PACKAGE
+
+
+class IdentityDecouplingTests(TempDirMixin):
+    """task-239：v3 旧包与合成 v4 包都通过；expected_identity 错误必须 fail-closed。"""
+
+    def test_synthetic_v4_package_loads_with_package_identity(self):
+        directory, expected = synthetic_v4_freeze_package()
+        bundle = A.load_frozen_bundle(directory)
+        v3 = frozen_bundle()
+        self.assertEqual(bundle.family_version, "p4ra-family-v4")
+        self.assertEqual(bundle.identity_source, A.IDENTITY_SOURCE_PACKAGE)
+        self.assertEqual(bundle.expected_identity_fields, ())
+        self.assertEqual(bundle.identity_five(), expected)
+        # v4 重播种 meta_test/OOD 后 family fingerprint 与 prereg digest 必变；task_id 不变故 split hash 相同。
+        self.assertNotEqual(bundle.identity.family_fingerprint, v3.identity.family_fingerprint)
+        self.assertNotEqual(bundle.identity.prereg_digest, v3.identity.prereg_digest)
+        self.assertEqual(bundle.identity.split_hash, v3.identity.split_hash)
+        self.assertEqual(bundle.identity.analysis_plan_digest, v3.identity.analysis_plan_digest)
+        self.assertAlmostEqual(bundle.identity.radius_base, 0.64, places=12)
+
+    def test_synthetic_v4_expected_identity_roundtrip(self):
+        directory, expected = synthetic_v4_freeze_package()
+        bundle = A.load_frozen_bundle(
+            directory, expected_identity=dict(expected), expected_identity_source="run_config.json"
+        )
+        self.assertEqual(bundle.identity_source, A.IDENTITY_SOURCE_EXPECTED)
+        self.assertEqual(tuple(bundle.expected_identity_fields), tuple(A.IDENTITY_FIELDS))
+        self.assertEqual(bundle.family_version, "p4ra-family-v4")
+
+    def test_wrong_expected_identity_fails_closed(self):
+        for freeze_dir in (FROZEN_DIR, synthetic_v4_freeze_package()[0]):
+            bundle = A.load_frozen_bundle(freeze_dir)
+            bad = bundle.identity_five()
+            bad["family_fingerprint"] = "f" * 64
+            with self.assertRaises(A.S1FreezeValidationError) as ctx:
+                A.load_frozen_bundle(freeze_dir, expected_identity=bad)
+            self.assertIn("与冻结包不一致", str(ctx.exception))
+            bad_radius = bundle.identity_five()
+            bad_radius["radius_base"] = 0.65
+            with self.assertRaises(A.S1FreezeValidationError):
+                A.load_frozen_bundle(freeze_dir, expected_identity=bad_radius)
+
+    def test_expected_identity_missing_extra_or_bad_format_fails(self):
+        expected = frozen_bundle().identity_five()
+        cases = []
+        for missing in A.IDENTITY_FIELDS:
+            payload = dict(expected)
+            payload.pop(missing)
+            cases.append((f"missing {missing}", payload))
+        extra = dict(expected)
+        extra["unknown_field"] = "x"
+        cases.append(("extra field", extra))
+        bad_hex = dict(expected)
+        bad_hex["split_hash"] = "zz"
+        cases.append(("bad hex", bad_hex))
+        bad_radius_type = dict(expected)
+        bad_radius_type["radius_base"] = "0.64"
+        cases.append(("bad radius type", bad_radius_type))
+        for label, payload in cases:
+            with self.subTest(case=label):
+                with self.assertRaises(A.S1FreezeValidationError):
+                    A.load_frozen_bundle(FROZEN_DIR, expected_identity=payload)
+        with self.assertRaises(A.S1FreezeValidationError):
+            A.load_frozen_bundle(FROZEN_DIR, expected_identity=["not", "a", "mapping"])
+
+    def test_tampered_v4_payload_fails_closed(self):
+        directory, _expected = synthetic_v4_freeze_package()
+        tampered = self.make_temp_dir() / "tampered-v4"
+        shutil.copytree(directory, tampered)
+        frozen_path = tampered / "frozen_family.json"
+        text = frozen_path.read_text(encoding="utf-8")
+        self.assertIn("0.64", text)
+        frozen_path.write_text(text.replace("0.64", "0.65", 1), encoding="utf-8")
+        with self.assertRaises(A.S1FreezeValidationError):
+            A.load_frozen_bundle(tampered)
+
+    def _sparse_analysis_inputs(self):
+        bundle = frozen_bundle()
+        directory = self.make_temp_dir()
+        records = sparse_records(bundle, tasks=1, meta_seeds=(0,), opt_seeds=(0,))
+        path = write_record_files(directory, records)
+        write_identifiability_report(directory, records)
+        return bundle, directory, path
+
+    def test_run_s1_analysis_records_identity_source(self):
+        bundle, directory, path = self._sparse_analysis_inputs()
+        expected = bundle.identity_five()
+        out_dir = directory / "out"
+        aggregate = A.run_s1_analysis(
+            FROZEN_DIR,
+            path,
+            out_dir,
+            make_figures=False,
+            require_complete_grid=False,
+            expected_identity=expected,
+            expected_identity_source="run_config.json",
+        )
+        echo = aggregate["freeze_echo"]
+        self.assertEqual(echo["identity_source"], A.IDENTITY_SOURCE_EXPECTED)
+        self.assertEqual(echo["identity_five"], expected)
+        self.assertEqual(tuple(echo["identity_expected_fields"]), tuple(A.IDENTITY_FIELDS))
+        self.assertEqual(aggregate["input"]["identity_source"], A.IDENTITY_SOURCE_EXPECTED)
+        self.assertEqual(aggregate["input"]["expected_identity_source"], "run_config.json")
+        self.assertTrue((out_dir / "s1_freeze_identity.csv").is_file())
+        with (out_dir / "s1_freeze_identity.csv").open("r", encoding="utf-8", newline="") as handle:
+            rows = list(csv.DictReader(handle))
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]["identity_source"], A.IDENTITY_SOURCE_EXPECTED)
+        self.assertEqual(rows[0]["family_fingerprint"], expected["family_fingerprint"])
+        self.assertEqual(rows[0]["expected_identity_fields"], ";".join(A.IDENTITY_FIELDS))
+
+    def test_run_s1_analysis_wrong_expected_identity_fails_closed(self):
+        bundle, directory, path = self._sparse_analysis_inputs()
+        bad = bundle.identity_five()
+        bad["prereg_digest"] = "0" * 64
+        out_dir = directory / "out-bad"
+        with self.assertRaises(A.S1FreezeValidationError):
+            A.run_s1_analysis(
+                FROZEN_DIR,
+                path,
+                out_dir,
+                make_figures=False,
+                require_complete_grid=False,
+                expected_identity=bad,
+            )
+        self.assertFalse((out_dir / "aggregate.json").exists())
+
+    def test_cli_expected_identity_json_records_source(self):
+        bundle, directory, path = self._sparse_analysis_inputs()
+        identity_path = directory / "expected_identity.json"
+        identity_path.write_text(
+            json.dumps(bundle.identity_five(), ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+        )
+        out_dir = directory / "out-cli"
+        stdout = io.StringIO()
+        stderr = io.StringIO()
+        with contextlib.redirect_stdout(stdout), contextlib.redirect_stderr(stderr):
+            code = A.main(
+                [
+                    "--freeze-dir",
+                    str(FROZEN_DIR),
+                    "--run-records",
+                    str(path),
+                    "--output-dir",
+                    str(out_dir),
+                    "--allow-incomplete-grid",
+                    "--no-figures",
+                    "--expected-identity-json",
+                    str(identity_path),
+                ]
+            )
+        self.assertEqual(code, 0, msg=stderr.getvalue())
+        payload = json.loads(stdout.getvalue())
+        self.assertEqual(payload["status"], "PASS")
+        self.assertEqual(payload["identity_source"], A.IDENTITY_SOURCE_EXPECTED)
+        self.assertTrue((out_dir / "s1_freeze_identity.csv").is_file())
+
+    def test_cli_missing_expected_identity_json_returns_two(self):
+        _bundle, directory, path = self._sparse_analysis_inputs()
+        stderr = io.StringIO()
+        with contextlib.redirect_stderr(stderr):
+            code = A.main(
+                [
+                    "--freeze-dir",
+                    str(FROZEN_DIR),
+                    "--run-records",
+                    str(path),
+                    "--output-dir",
+                    str(directory / "out-missing"),
+                    "--allow-incomplete-grid",
+                    "--no-figures",
+                    "--expected-identity-json",
+                    str(directory / "does-not-exist.json"),
+                ]
+            )
+        self.assertEqual(code, 2)
+        self.assertIn("S1_ANALYSIS_FAILED", stderr.getvalue())
+
+
 if __name__ == "__main__":
     unittest.main()
+
+
+
+# ---------------------------------------------------------------------------
+# R-V4-02 / R-V4-04（task-230）：identifiability_report 加载与 fail-closed 负控
+# ---------------------------------------------------------------------------
+
+
+class StructuralIdentifiabilityReportTests(TempDirMixin):
+    @classmethod
+    def setUpClass(cls):
+        cls.bundle = frozen_bundle()
+        cls.records = structural_records(
+            cls.bundle, tasks=2, budgets=(64,), ks=(3,), metas=(0,)
+        )
+        cls.first_key = sorted(structural_group_keys(cls.records))[0]
+
+    def _write(self, **kwargs):
+        directory = self.make_temp_dir()
+        write_identifiability_report(directory, self.records, **kwargs)
+        return directory
+
+    def test_v4_report_loads_and_indexes_pair_status(self):
+        directory = self._write()
+        loaded = A.load_identifiability_report(directory / "identifiability_report.json")
+        self.assertEqual(loaded["schema_version"], A.IDENTIFIABILITY_SCHEMA_VERSION_V4)
+        self.assertEqual(loaded["threshold"], 0.90)
+        self.assertEqual(len(loaded["groups"]), 2)
+        self.assertEqual(
+            loaded["pair_status_counts"]["FOMAML-KSHOT-BO|FOMAML-ZERO-BO"][
+                A.STRUCTURAL_IDENTIFIABLE
+            ],
+            2,
+        )
+        index = A.load_structural_identifiability([directory], self.records, mode="formal")
+        self.assertTrue(index.present)
+        self.assertEqual(index.mode, "formal")
+        self.assertEqual(index.pair_level_fields_source, A.PAIR_LEVEL_FIELDS_SOURCE_RUNNER)
+        self.assertEqual(index.coverage["missing_group_count"], 0)
+        self.assertEqual(index.coverage["arm_gap_count"], 0)
+        self.assertEqual(index.coverage["pair_gap_count"], 0)
+        self.assertEqual(index.structural_exclusion_counts(), {label: 0 for label in (
+            "FOMAML-KSHOT-BO|FOMAML-ZERO-BO",
+            "FOMAML-KSHOT-BO|PRETRAIN-KSHOT-BO",
+            "FOMAML-ZERO-BO|PRETRAIN-KSHOT-BO",
+        )})
+
+    def test_v4_missing_pair_level_fields_rejected(self):
+        directory = self._write()
+        path = directory / "identifiability_report.json"
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        payload["groups"][0]["pairwise"][0].pop("pair_identifiable")
+        payload["groups"][0]["pairwise"][0].pop("structural_status")
+        path.write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
+        with self.assertRaises(A.S1AnalysisError) as ctx:
+            A.load_identifiability_report(path)
+        self.assertIn("pair_identifiable", str(ctx.exception))
+
+    def test_v4_missing_pair_status_counts_rejected(self):
+        directory = self._write()
+        path = directory / "identifiability_report.json"
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        payload.pop("pair_status_counts")
+        path.write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
+        with self.assertRaises(A.S1AnalysisError) as ctx:
+            A.load_identifiability_report(path)
+        self.assertIn("pair_status_counts", str(ctx.exception))
+
+    def test_pair_status_counts_mismatch_rejected(self):
+        directory = self._write()
+        path = directory / "identifiability_report.json"
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        label = "FOMAML-KSHOT-BO|FOMAML-ZERO-BO"
+        payload["pair_status_counts"][label][A.STRUCTURAL_IDENTICAL] = 1
+        path.write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
+        with self.assertRaises(A.S1AnalysisError) as ctx:
+            A.load_identifiability_report(path)
+        self.assertIn("pair_status_counts", str(ctx.exception))
+
+    def test_structural_status_inconsistent_with_overlap_rejected(self):
+        directory = self._write()
+        path = directory / "identifiability_report.json"
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        pair = payload["groups"][0]["pairwise"][0]
+        pair["structural_status"] = A.STRUCTURAL_IDENTICAL
+        pair["pair_identifiable"] = False
+        path.write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
+        with self.assertRaises(A.S1AnalysisError) as ctx:
+            A.load_identifiability_report(path)
+        self.assertIn("不一致", str(ctx.exception))
+
+    def test_v1_legacy_report_derives_pair_level_and_discloses(self):
+        directory = self.make_temp_dir()
+        write_identifiability_report(
+            directory,
+            self.records,
+            schema_version=A.IDENTIFIABILITY_SCHEMA_VERSIONS[0],
+            overlap_map={self.first_key + ("FOMAML-KSHOT-BO|FOMAML-ZERO-BO",): 0.95},
+        )
+        loaded = A.load_identifiability_report(directory / "identifiability_report.json")
+        self.assertEqual(loaded["schema_version"], A.IDENTIFIABILITY_SCHEMA_VERSIONS[0])
+        index = A.load_structural_identifiability([directory], self.records, mode="formal")
+        self.assertEqual(
+            index.pair_level_fields_source, A.PAIR_LEVEL_FIELDS_SOURCE_DERIVED
+        )
+        self.assertTrue(
+            index.is_structurally_identical(
+                self.first_key[0],
+                self.first_key[1],
+                self.first_key[2],
+                self.first_key[3],
+                "FOMAML-KSHOT-BO",
+                "FOMAML-ZERO-BO",
+            )
+        )
+        self.assertTrue(any("v1" in warning for warning in index.warnings))
+
+    def test_missing_groups_formal_fail_closed(self):
+        directory = self._write(drop_groups=[self.first_key])
+        with self.assertRaises(A.S1AnalysisError) as ctx:
+            A.load_structural_identifiability([directory], self.records, mode="formal")
+        self.assertIn("组覆盖不全", str(ctx.exception))
+        with self.assertRaises(A.S1AnalysisError):
+            A.load_structural_identifiability([directory], self.records, mode="exploratory")
+        index = A.load_structural_identifiability(
+            [directory], self.records, mode="exploratory", allow_missing=True
+        )
+        self.assertEqual(index.coverage["missing_group_count"], 1)
+        self.assertTrue(index.warnings)
+
+    def test_missing_report_formal_fail_closed_exploratory_requires_allow(self):
+        empty = self.make_temp_dir()
+        with self.assertRaises(A.S1AnalysisError) as ctx:
+            A.load_structural_identifiability([empty], self.records, mode="formal")
+        self.assertIn("identifiability_report", str(ctx.exception))
+        with self.assertRaises(A.S1AnalysisError):
+            A.load_structural_identifiability([empty], self.records, mode="exploratory")
+        index = A.load_structural_identifiability(
+            [empty], self.records, mode="exploratory", allow_missing=True
+        )
+        self.assertFalse(index.present)
+        self.assertIn(
+            index.pair_level_fields_source, (A.PAIR_LEVEL_FIELDS_SOURCE_NONE,)
+        )
+        self.assertTrue(index.warnings)
+
+    def test_formal_disallows_allow_missing_flag(self):
+        directory = self._write()
+        with self.assertRaises(A.S1AnalysisError) as ctx:
+            A.load_structural_identifiability(
+                [directory], self.records, mode="formal", allow_missing=True
+            )
+        self.assertIn("allow_missing", str(ctx.exception))
+
+    def test_unknown_schema_rejected(self):
+        directory = self._write()
+        path = directory / "identifiability_report.json"
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        payload["schema_version"] = "p4ra-s1-identifiability-999"
+        path.write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
+        with self.assertRaises(A.S1AnalysisError) as ctx:
+            A.load_identifiability_report(path)
+        self.assertIn("schema_version", str(ctx.exception))
+
+
+# ---------------------------------------------------------------------------
+# R-V4-02：pair-level STRUCTURALLY_IDENTICAL 行级排除（不剔除任务）与 C5 描述层
+# ---------------------------------------------------------------------------
+
+
+class StructuralExclusionTests(TempDirMixin):
+    @classmethod
+    def setUpClass(cls):
+        cls.bundle = frozen_bundle()
+        cls.task_ids = list(cls.bundle.task_ids_for(A.MAIN_SPLIT))
+        cls.records = structural_records(
+            cls.bundle, tasks=12, budgets=(64, 128), ks=(3,), metas=(0, 1, 2)
+        )
+        cls.te001 = cls.task_ids[1]
+        cls.exclusion_pairs = []
+        cls.overlap = {}
+        for meta_seed in (1, 2):
+            key = (cls.te001, 64, 3, meta_seed)
+            cls.exclusion_pairs.append(key)
+            cls.overlap[key + ("FOMAML-KSHOT-BO|FOMAML-ZERO-BO",)] = 1.0
+        cls.directory = Path(tempfile.mkdtemp(prefix="s1-structural-"))
+        write_identifiability_report(
+            cls.directory,
+            cls.records,
+            overlap_map=cls.overlap,
+            # 复现 A5 证据的 TE-001 型：组级 ranking 仍 IDENTIFIABLE（旧组级策略漏报）
+            ranking_override={key: "IDENTIFIABLE" for key in cls.exclusion_pairs},
+        )
+        cls.index = A.load_structural_identifiability(
+            [cls.directory], cls.records, mode="formal"
+        )
+        cls.cells = A.aggregate_run_records(cls.records, cls.bundle)
+
+    @classmethod
+    def tearDownClass(cls):
+        shutil.rmtree(cls.directory, ignore_errors=True)
+
+    def test_pair_level_identical_detected_despite_identifiable_group_ranking(self):
+        for key in self.exclusion_pairs:
+            self.assertTrue(
+                self.index.is_structurally_identical(
+                    key[0], key[1], key[2], key[3], "FOMAML-KSHOT-BO", "FOMAML-ZERO-BO"
+                ),
+                msg=str(key),
+            )
+        self.assertEqual(
+            self.index.structural_exclusion_counts()["FOMAML-KSHOT-BO|FOMAML-ZERO-BO"], 2
+        )
+
+    def test_build_paired_endpoint_excludes_identical_meta_groups_only(self):
+        paired = A.build_paired_endpoint(
+            self.cells,
+            self.bundle,
+            comparison_id="C5",
+            split=A.MAIN_SPLIT,
+            budget_B=64,
+            K=3,
+            endpoint="best_feasible_value",
+            structural_index=self.index,
+        )
+        self.assertIsNotNone(paired)
+        self.assertEqual(paired.structural_exclusion_count, 2)
+        self.assertEqual(paired.n_pairs, 12)
+        # 本用例 records 只覆盖 12 个 task，其余 8 个任务无数据（非排除导致）。
+        self.assertEqual(paired.n_tasks_unpaired, 8)
+        # 任务保留（不是事后剔除）：n_tasks 仍为该 split 全部 20 个任务。
+        self.assertEqual(paired.n_tasks, len(self.task_ids))
+        # C1 臂对未被误排除。
+        c1_paired = A.build_paired_endpoint(
+            self.cells,
+            self.bundle,
+            comparison_id="C1",
+            split=A.MAIN_SPLIT,
+            budget_B=64,
+            K=3,
+            endpoint="best_feasible_value",
+            structural_index=self.index,
+        )
+        self.assertEqual(c1_paired.structural_exclusion_count, 0)
+
+    def test_c5_not_in_holm_family(self):
+        collected = A.collect_hypotheses(
+            self.cells,
+            self.bundle,
+            split=A.MAIN_SPLIT,
+            inference_ks=(3,),
+            structural_index=self.index,
+        )
+        ids = {row["comparison_id"] for row in collected["rows"]}
+        self.assertEqual(ids, {"C1", "C2", "C3", "C4"})
+        self.assertEqual(collected["holm_family_size"], 4)
+        self.assertEqual(collected["excluded_comparison_ids"], ["C5"])
+        self.assertEqual(collected["n_hypotheses"], 4 * 2 * 4)
+        for row in collected["rows"]:
+            self.assertNotEqual(row["comparison_id"], "C5")
+
+    def test_c5_descriptive_only_when_estimable_tasks_at_least_ten(self):
+        summary = A.c5_structural_summary(self.cells, self.bundle, self.index)
+        self.assertEqual(summary["status"], A.C5_DESCRIPTIVE_ONLY)
+        self.assertEqual(summary["estimable_tasks"], 12)
+        self.assertEqual(summary["total_groups"], 12 * 3 * 2)
+        self.assertEqual(summary["structurally_identical_groups"], 2)
+        self.assertFalse(summary["in_holm"])
+        self.assertIsNone(summary["benefit_harm_decision"])
+        for row in summary["descriptive_rows"]:
+            self.assertNotIn("p_raw", row)
+            self.assertNotIn("p_adjusted", row)
+            self.assertFalse(row["inference"])
+
+    def test_c5_not_estimable_when_estimable_tasks_below_ten(self):
+        small_records = structural_records(
+            self.bundle, tasks=4, budgets=(64,), ks=(3,), metas=(0, 1, 2)
+        )
+        directory = self.make_temp_dir()
+        write_identifiability_report(directory, small_records)
+        index = A.load_structural_identifiability([directory], small_records, mode="formal")
+        cells = A.aggregate_run_records(small_records, self.bundle)
+        summary = A.c5_structural_summary(cells, self.bundle, index)
+        self.assertEqual(summary["status"], A.C5_NOT_ESTIMABLE)
+        self.assertEqual(summary["estimable_tasks"], 4)
+        self.assertIn("NOT_ESTIMABLE", summary["reason"])
+
+    def test_exclusion_counts_by_comparison(self):
+        counts = A.comparison_structural_exclusion_counts(self.index)
+        self.assertEqual(counts["by_comparison"]["C5"], 2)
+        self.assertEqual(counts["by_comparison"]["C1"], 0)
+        self.assertEqual(counts["total"], 2)
+        self.assertEqual(counts["by_pair"]["FOMAML-KSHOT-BO|FOMAML-ZERO-BO"], 2)
+
+    def test_structural_rows_are_exportable(self):
+        summary = A.c5_structural_summary(self.cells, self.bundle, self.index)
+        rows = A.structural_identifiability_rows(self.index, self.bundle, summary)
+        self.assertTrue(rows)
+        for row in rows:
+            self.assertEqual(set(row), set(A.STRUCTURAL_IDENTIFIABILITY_COLUMNS))
+        row_types = {row["row_type"] for row in rows}
+        self.assertEqual(row_types, {"pair_group", "exclusion_summary", "c5_summary"})
+        pair_rows = [row for row in rows if row["row_type"] == "pair_group"]
+        self.assertEqual(len(pair_rows), len(self.index.groups) * 3)
+        excluded = [
+            row
+            for row in pair_rows
+            if row["structural_status"] == A.STRUCTURAL_IDENTICAL
+        ]
+        self.assertEqual(len(excluded), 2)
+        for row in excluded:
+            self.assertFalse(row["used_in_inference"])
+        c5_rows = [row for row in rows if row["row_type"] == "c5_summary"]
+        # labels=B*meta_seed 层：budgets(2) x inference_ks(3) = 6 行。
+        self.assertEqual(
+            len(c5_rows), len(A.MAIN_POPULATION_BUDGETS) * len(A.INFERENCE_KS)
+        )
+        self.assertEqual(c5_rows[0]["status"], A.C5_DESCRIPTIVE_ONLY)
+
+
+# ---------------------------------------------------------------------------
+# R-V4-02/R-V4-04：端到端 aggregate/CSV/figure_status 的 C5 与排除计数披露
+# ---------------------------------------------------------------------------
+
+
+class StructuralEndToEndDisclosureTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.aggregate = full_e2e_run()["aggregate"]
+
+    def test_c5_reported_as_descriptive_only(self):
+        c5 = self.aggregate["c5_structural_identifiability"]
+        self.assertEqual(c5["status"], A.C5_DESCRIPTIVE_ONLY)
+        self.assertEqual(c5["estimable_tasks"], 20)
+        self.assertFalse(c5["in_holm"])
+        self.assertIsNone(c5["benefit_harm_decision"])
+        rows = [
+            row
+            for row in self.aggregate["endpoint_rows"]
+            if row.get("row_type") == "comparison"
+        ]
+        self.assertNotIn("C5", {row["comparison_id"] for row in rows})
+
+    def test_structural_exclusion_counts_exported(self):
+        counts = self.aggregate["structural_exclusion_counts"]
+        self.assertEqual(counts["total"], 0)
+        self.assertEqual(set(counts["by_comparison"]), {"C1", "C2", "C3", "C4", "C5"})
+        self.assertEqual(
+            self.aggregate["excluded_pair_counts"],
+            {
+                "FOMAML-KSHOT-BO|FOMAML-ZERO-BO": 0,
+                "FOMAML-KSHOT-BO|PRETRAIN-KSHOT-BO": 0,
+                "FOMAML-ZERO-BO|PRETRAIN-KSHOT-BO": 0,
+            },
+        )
+        index_payload = self.aggregate["structural_identifiability"]
+        self.assertTrue(index_payload["present"])
+        self.assertEqual(index_payload["pair_level_fields_source"], A.PAIR_LEVEL_FIELDS_SOURCE_RUNNER)
+        self.assertEqual(index_payload["coverage"]["missing_group_count"], 0)
+        self.assertEqual(index_payload["schema_version"], A.S1_STRUCTURAL_SCHEMA_VERSION)
+
+    def test_structural_csv_written_with_contract_columns(self):
+        out_dir = full_e2e_run()["out_dir"]
+        path = out_dir / "s1_structural_identifiability.csv"
+        self.assertTrue(path.is_file())
+        with path.open(encoding="utf-8", newline="") as handle:
+            reader = csv.DictReader(handle)
+            self.assertEqual(tuple(reader.fieldnames), A.STRUCTURAL_IDENTIFIABILITY_COLUMNS)
+            rows = list(reader)
+        self.assertTrue(rows)
+        self.assertIn("c5_summary", {row["row_type"] for row in rows})
+
+    def test_figure_status_discloses_c5_without_fabricating_figure(self):
+        status = self.aggregate["figure_status"]
+        self.assertEqual(
+            status["c5_structural_identifiability"]["status"], A.C5_DESCRIPTIVE_ONLY
+        )
+        self.assertEqual(len(status["figures"]), 7)
+        self.assertNotIn("c5", " ".join(status["figures"]))
+        self.assertTrue(any("C5" in note for note in status["notes"]))

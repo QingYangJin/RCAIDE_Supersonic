@@ -53,12 +53,21 @@ K_VALUES = tuple(int(value) for value in family_v3.K_VALUES)
 INITIAL_DESIGN_COUNT = int(family_v3.INITIAL_DESIGN_COUNT)
 META_SEEDS = (0, 1, 2)
 OPT_SEEDS = tuple(range(10))
-PREREG_DIGEST = "6981f503fd6ea5a9fbe5de2d1825ae8993eb17e9fda5d2ff158e9248d88fd3df"
-ANALYSIS_PLAN_DIGEST = family_v3.ANALYSIS_PLAN_DIGEST
-FAMILY_VERSION = family_v3.FAMILY_VERSION
-FAMILY_FINGERPRINT = "e56e6921be6b94e6611a24618a6e331cd7e4417597926d089d71b00da8c1c0c3"
-SPLIT_HASH = "cd597d01bd4024d13c765a0a723449c3d67172bc260040012bea9d67d2af76ae"
-RADIUS_BASE = 0.64
+# task-239：冻结身份五项（从冻结包派生；v3 legacy 与 v4 包共用同一分析代码，
+# 禁止再把 v3 字面量当作唯一期望）。
+IDENTITY_FIELDS = (
+    "family_fingerprint",
+    "split_hash",
+    "prereg_digest",
+    "analysis_plan_digest",
+    "radius_base",
+)
+IDENTITY_SOURCE_PACKAGE = "package"
+IDENTITY_SOURCE_EXPECTED = "expected_identity"
+RADIUS_BASE_TOLERANCE = 1e-12
+ALLOWED_FAMILY_VERSIONS = tuple(
+    dict.fromkeys((family_v3.FAMILY_VERSION, *family_v3.LEGACY_FAMILY_VERSIONS))
+)
 
 # 预注册比较（C1 为主假设；C2..C5 为次要比较，不得升级为主结论）。
 COMPARISONS: tuple[dict[str, str], ...] = (
@@ -264,6 +273,121 @@ def _csv_value(value: Any) -> Any:
 # ---------------------------------------------------------------------------
 # 冻结包加载与三方/五方强校验
 # ---------------------------------------------------------------------------
+# ---------------------------------------------------------------------------
+# task-239：冻结身份派生与 expected_identity 校验（v3 legacy / v4 共用）
+# ---------------------------------------------------------------------------
+@dataclass(frozen=True)
+class FrozenIdentity:
+    """从冻结包派生出的身份（五项 + family_version）。"""
+
+    family_version: str
+    family_fingerprint: str
+    split_hash: str
+    prereg_digest: str
+    analysis_plan_digest: str
+    radius_base: float
+
+    def five(self) -> dict[str, Any]:
+        """返回五项规范身份字段（expected_identity 的键集合）。"""
+        return {name: getattr(self, name) for name in IDENTITY_FIELDS}
+
+    def to_dict(self) -> dict[str, Any]:
+        payload: dict[str, Any] = {"family_version": self.family_version}
+        payload.update(self.five())
+        return payload
+
+
+def _identity_digest(value: Any, name: str) -> str:
+    if not isinstance(value, str) or not SHA256_RE.match(value):
+        raise S1FreezeValidationError(f"{name} 必须是 64 位小写十六进制 sha256，实际 {value!r}")
+    return value
+
+
+def _derive_expected_identity(
+    frozen: Mapping[str, Any],
+    prereg: Mapping[str, Any],
+    split: Mapping[str, Any],
+) -> FrozenIdentity:
+    """从冻结包载荷派生身份五项；载荷间不一致或类型非法即 fail-closed。
+
+    唯一期望来自冻结包本身；每个载荷的内部自洽性已由 family_v3.verify_* 保证，
+    载荷间一致性随后由 _cross_check_echo_chain 交叉校验。
+    """
+    family_version = frozen.get("family_version")
+    if family_version not in ALLOWED_FAMILY_VERSIONS:
+        raise S1FreezeValidationError(
+            f"冻结包 family_version 非法：{family_version!r}（允许 {list(ALLOWED_FAMILY_VERSIONS)}）"
+        )
+    frozen_split = frozen.get("split")
+    if not isinstance(frozen_split, Mapping):
+        raise S1FreezeValidationError("frozen_family.split 必须是 object")
+    if frozen_split.get("split_hash") != split.get("split_hash"):
+        raise S1FreezeValidationError(
+            "frozen_family.split.split_hash 与 meta_task_split.split_hash 不一致"
+        )
+    radius = frozen.get("radius_base")
+    if not _is_finite_number(radius):
+        raise S1FreezeValidationError(f"frozen_family.radius_base 必须是有限数，实际 {radius!r}")
+    return FrozenIdentity(
+        family_version=str(family_version),
+        family_fingerprint=_identity_digest(
+            frozen.get("family_fingerprint"), "frozen_family.family_fingerprint"
+        ),
+        split_hash=_identity_digest(
+            split.get("split_hash"), "meta_task_split.split_hash"
+        ),
+        prereg_digest=_identity_digest(
+            prereg.get("prereg_digest"), "preregistration.prereg_digest"
+        ),
+        analysis_plan_digest=_identity_digest(
+            frozen.get("analysis_plan_digest"), "frozen_family.analysis_plan_digest"
+        ),
+        radius_base=float(radius),
+    )
+
+
+def verify_expected_identity(
+    identity: FrozenIdentity,
+    expected: Mapping[str, Any],
+    *,
+    source: str = "expected_identity",
+) -> tuple[str, ...]:
+    """逐项核对调用方提供的期望身份；任一不符/缺字段/未知字段即 fail-closed。
+
+    返回已校验的字段顺序（合同五项，固定 IDENTITY_FIELDS 顺序）。
+    """
+    if not isinstance(expected, Mapping):
+        raise S1FreezeValidationError(f"{source} 必须是 JSON object（Mapping），实际 {type(expected).__name__}")
+    provided = set(expected)
+    required = set(IDENTITY_FIELDS)
+    missing = sorted(required - provided)
+    extra = sorted(provided - required)
+    if missing or extra:
+        raise S1FreezeValidationError(
+            f"{source} 字段必须恰为 {list(IDENTITY_FIELDS)}；缺 {missing}，多 {extra}"
+        )
+    for name in IDENTITY_FIELDS:
+        value = expected[name]
+        observed = getattr(identity, name)
+        if name == "radius_base":
+            if not _is_finite_number(value):
+                raise S1FreezeValidationError(f"{source}.radius_base 必须是有限数，实际 {value!r}")
+            if abs(float(value) - float(observed)) > RADIUS_BASE_TOLERANCE:
+                raise S1FreezeValidationError(
+                    f"{source}.radius_base 与冻结包不一致：expected={value!r} observed={observed!r}"
+                )
+        else:
+            if not isinstance(value, str) or not SHA256_RE.match(value):
+                raise S1FreezeValidationError(
+                    f"{source}.{name} 必须是 64 位小写十六进制 sha256，实际 {value!r}"
+                )
+            if value != observed:
+                raise S1FreezeValidationError(
+                    f"{source}.{name} 与冻结包不一致：expected={value!r} observed={observed!r}"
+                )
+    return tuple(IDENTITY_FIELDS)
+
+
 @dataclass(frozen=True)
 class FrozenBundle:
     """已通过 fail-closed 校验的 S1 冻结包（只读内存视图）。"""
@@ -276,9 +400,12 @@ class FrozenBundle:
     digest_manifest: Mapping[str, Any]
     freeze_summary: Mapping[str, Any]
     budget_fairness_report: Mapping[str, Any]
+    identity: FrozenIdentity
     raw_sha256: Mapping[str, str] = field(default_factory=dict)
     canonical_sha256: Mapping[str, str] = field(default_factory=dict)
     sha256sums: Mapping[str, str] = field(default_factory=dict)
+    identity_source: str = IDENTITY_SOURCE_PACKAGE
+    expected_identity_fields: tuple[str, ...] = ()
 
     @property
     def family_id(self) -> str:
@@ -339,6 +466,27 @@ class FrozenBundle:
     def expected_endpoint_row_keys(self) -> tuple[str, ...]:
         return ENDPOINT_ROW_KEYS
 
+    def identity_five(self) -> dict[str, Any]:
+        """身份五项（family_fingerprint/split_hash/prereg_digest/analysis_plan_digest/radius_base）。"""
+        return self.identity.five()
+
+    def identity_payload(self) -> dict[str, Any]:
+        """身份记录载荷：五项 + family_version + 来源与已校验字段。"""
+        payload = self.identity.to_dict()
+        payload["identity_source"] = self.identity_source
+        payload["expected_identity_fields"] = list(self.expected_identity_fields)
+        return payload
+
+    def identity_csv_row(self) -> dict[str, Any]:
+        """s1_freeze_identity.csv 的单行记录。"""
+        row: dict[str, Any] = {
+            "identity_source": self.identity_source,
+            "family_version": self.identity.family_version,
+        }
+        row.update(self.identity.five())
+        row["expected_identity_fields"] = ";".join(self.expected_identity_fields)
+        return row
+
 
 def _parse_sha256sums(path: Path) -> dict[str, str]:
     if not path.is_file():
@@ -369,8 +517,11 @@ def _verify_digest_manifest(
 ) -> dict[str, dict[str, Any]]:
     if manifest.get("schema_version") != family_v3.DIGEST_MANIFEST_SCHEMA_VERSION:
         raise S1FreezeValidationError(f"digest_manifest schema 不符：{manifest.get('schema_version')!r}")
-    if manifest.get("family_id") != family_v3.FAMILY_ID or manifest.get("family_version") != family_v3.FAMILY_VERSION:
-        raise S1FreezeValidationError("digest_manifest 家族身份不符")
+    manifest_version = manifest.get("family_version")
+    if manifest.get("family_id") != family_v3.FAMILY_ID or manifest_version not in ALLOWED_FAMILY_VERSIONS:
+        raise S1FreezeValidationError(
+            f"digest_manifest 家族身份不符：family_id={manifest.get('family_id')!r} family_version={manifest_version!r}"
+        )
     artifacts = manifest.get("artifacts")
     if not isinstance(artifacts, list):
         raise S1FreezeValidationError("digest_manifest.artifacts 必须是 list")
@@ -437,14 +588,17 @@ def _verify_freeze_summary(
         raise S1FreezeValidationError(f"freeze_summary schema 不符：{summary.get('schema_version')!r}")
     if summary.get("family_id") != family_v3.FAMILY_ID:
         raise S1FreezeValidationError("freeze_summary family_id 不符")
-    if summary.get("family_version") != family_v3.FAMILY_VERSION:
-        raise S1FreezeValidationError("freeze_summary family_version 不符")
+    summary_version = summary.get("family_version")
+    if summary_version not in ALLOWED_FAMILY_VERSIONS:
+        raise S1FreezeValidationError(
+            f"freeze_summary family_version 不符：{summary_version!r}（允许 {list(ALLOWED_FAMILY_VERSIONS)}）"
+        )
     if int(summary.get("family_seed", -1)) != family_v3.FAMILY_SEED:
         raise S1FreezeValidationError("freeze_summary family_seed 不符")
     if summary.get("formula_version") != family_v3.FORMULA_VERSION:
         raise S1FreezeValidationError("freeze_summary formula_version 不符")
-    if not _is_finite_number(summary.get("radius_base")) or abs(float(summary["radius_base"]) - RADIUS_BASE) > 1e-12:
-        raise S1FreezeValidationError(f"freeze_summary radius_base 必须为冻结值 {RADIUS_BASE}")
+    if not _is_finite_number(summary.get("radius_base")):
+        raise S1FreezeValidationError("freeze_summary radius_base 必须是有限数")
     artifacts = summary.get("artifacts")
     if not isinstance(artifacts, Mapping):
         raise S1FreezeValidationError("freeze_summary.artifacts 必须是 object")
@@ -583,8 +737,11 @@ def _cross_check_echo_chain(
     summary: Mapping[str, Any],
     *,
     raw: Mapping[str, bytes],
+    identity: FrozenIdentity | None = None,
 ) -> None:
-    """三方/五方回显一致性：family_fingerprint/split_hash/prereg_digest/analysis_plan_digest 等。"""
+    """三方/五方回显一致性：身份五项以冻结包派生值为唯一期望（task-239）。"""
+    if identity is None:
+        identity = _derive_expected_identity(frozen, prereg, split)
     orchestration = summary["orchestration"]
     family_ids = {
         frozen.get("family_id"),
@@ -600,41 +757,51 @@ def _cross_check_echo_chain(
         split.get("family_version"),
         summary.get("family_version"),
     }
-    if versions != {family_v3.FAMILY_VERSION}:
-        raise S1FreezeValidationError(f"五方 family_version 不一致：{versions}")
+    if versions != {identity.family_version}:
+        raise S1FreezeValidationError(
+            f"五方 family_version 不一致：{versions}（期望 {identity.family_version}）"
+        )
     fingerprints = {
         frozen.get("family_fingerprint"),
         prereg.get("family_fingerprint"),
         split.get("family_fingerprint"),
         orchestration.get("family_fingerprint"),
     }
-    if fingerprints != {FAMILY_FINGERPRINT}:
-        raise S1FreezeValidationError(f"family_fingerprint 回显不一致：{fingerprints}")
+    if fingerprints != {identity.family_fingerprint}:
+        raise S1FreezeValidationError(
+            f"family_fingerprint 回显不一致：{fingerprints}（期望 {identity.family_fingerprint}）"
+        )
     frozen_split_hash = frozen.get("split", {}).get("split_hash")
     split_hashes = {frozen_split_hash, prereg.get("split_hash"), split.get("split_hash"), orchestration.get("split_hash")}
-    if split_hashes != {SPLIT_HASH}:
-        raise S1FreezeValidationError(f"split_hash 回显不一致：{split_hashes}")
-    if prereg.get("split_digest") != SPLIT_HASH:
+    if split_hashes != {identity.split_hash}:
+        raise S1FreezeValidationError(
+            f"split_hash 回显不一致：{split_hashes}（期望 {identity.split_hash}）"
+        )
+    if prereg.get("split_digest") != identity.split_hash:
         raise S1FreezeValidationError("prereg.split_digest 与冻结 split_hash 不一致")
     if frozen.get("split", {}).get("manifest_sha256") != _canonical_artifact_digest(split):
         raise S1FreezeValidationError("frozen.split.manifest_sha256 与 split payload 不一致")
     if prereg.get("frozen_family_sha256") != frozen.get("sha256"):
         raise S1FreezeValidationError("prereg.frozen_family_sha256 与 frozen.sha256 不一致")
     prereg_digests = {prereg.get("prereg_digest"), orchestration.get("prereg_digest")}
-    if prereg_digests != {PREREG_DIGEST}:
-        raise S1FreezeValidationError(f"prereg_digest 回显不一致：{prereg_digests}")
-    if family_v3.compute_prereg_digest(prereg) != PREREG_DIGEST:
+    if prereg_digests != {identity.prereg_digest}:
+        raise S1FreezeValidationError(
+            f"prereg_digest 回显不一致：{prereg_digests}（期望 {identity.prereg_digest}）"
+        )
+    if family_v3.compute_prereg_digest(prereg) != identity.prereg_digest:
         raise S1FreezeValidationError("prereg_digest 重算不一致")
     plan_digests = {
         prereg.get("analysis_plan_digest"),
         frozen.get("analysis_plan_digest"),
         orchestration.get("analysis_plan_digest"),
-        ANALYSIS_PLAN_DIGEST,
+        identity.analysis_plan_digest,
     }
-    if plan_digests != {ANALYSIS_PLAN_DIGEST}:
-        raise S1FreezeValidationError(f"analysis_plan_digest 回显不一致：{plan_digests}")
+    if plan_digests != {identity.analysis_plan_digest}:
+        raise S1FreezeValidationError(
+            f"analysis_plan_digest 回显不一致：{plan_digests}（期望 {identity.analysis_plan_digest}）"
+        )
     analysis_plan = prereg.get("analysis_plan")
-    if not isinstance(analysis_plan, Mapping) or family_v3.digest(analysis_plan) != ANALYSIS_PLAN_DIGEST:
+    if not isinstance(analysis_plan, Mapping) or family_v3.digest(analysis_plan) != identity.analysis_plan_digest:
         raise S1FreezeValidationError("prereg.analysis_plan 与 analysis_plan_digest 不一致")
     endpoint_sets = {
         tuple(frozen.get("endpoint_row_keys", ())),
@@ -689,10 +856,13 @@ def _cross_check_echo_chain(
         float(split.get("radius_base", float("nan"))),
         float(prereg.get("radius_base", float("nan"))),
         float(summary.get("radius_base", float("nan"))),
-        float(orchestration.get("radius_base", RADIUS_BASE)),
+        float(orchestration.get("radius_base", identity.radius_base)),
+        float(identity.radius_base),
     }
-    if len(radii) != 1 or abs(next(iter(radii)) - RADIUS_BASE) > 1e-12:
-        raise S1FreezeValidationError(f"radius_base 回显不一致：{radii}")
+    if len(radii) != 1 or abs(next(iter(radii)) - identity.radius_base) > RADIUS_BASE_TOLERANCE:
+        raise S1FreezeValidationError(
+            f"radius_base 回显不一致：{radii}（期望 {identity.radius_base}）"
+        )
     if int(frozen.get("physical_call_count", -1)) != 0:
         raise S1FreezeValidationError("frozen physical_call_count 必须为 0")
     if int(prereg.get("physical_call_count", -1)) != 0:
@@ -715,8 +885,16 @@ def load_frozen_bundle(
     *,
     verify_checksums: bool = True,
     verify_sha256sums: bool = True,
+    expected_identity: Mapping[str, Any] | None = None,
+    expected_identity_source: str | None = None,
 ) -> FrozenBundle:
-    """加载并强校验 S1 冻结包；任一不通过抛 S1FreezeValidationError（fail-closed）。"""
+    """加载并强校验 S1 冻结包；任一不通过抛 S1FreezeValidationError（fail-closed）。
+
+    task-239：身份五项（family_fingerprint/split_hash/prereg_digest/
+    analysis_plan_digest/radius_base）默认从冻结包派生（identity_source=package）；
+    调用方（正式 run 由 run_config / CLI --expected-identity-json 传入）提供 expected_identity
+    时必须逐项相等，否则 fail-closed（identity_source=expected_identity）。
+    """
     base = Path(freeze_dir)
     if not base.is_dir():
         raise S1FreezeValidationError(f"冻结包目录不存在：{base}")
@@ -746,13 +924,25 @@ def load_frozen_bundle(
         family_v3.verify_split_manifest_v3(split)
     except family_v3.FamilyV3Error as exc:
         raise S1FreezeValidationError(f"冻结载荷自校验失败：{exc}") from exc
+    identity = _derive_expected_identity(frozen, prereg, split)
+    provided_identity_fields: tuple[str, ...] = ()
+    identity_source = IDENTITY_SOURCE_PACKAGE
+    if expected_identity is not None:
+        provided_identity_fields = verify_expected_identity(
+            identity,
+            expected_identity,
+            source=expected_identity_source or "expected_identity",
+        )
+        identity_source = IDENTITY_SOURCE_EXPECTED
     if frozen.get("sha256") != _canonical_artifact_digest(frozen):
         raise S1FreezeValidationError("frozen_family.sha256 自校验失败")
     if prereg.get("sha256") != _canonical_artifact_digest(prereg):
         raise S1FreezeValidationError("preregistration.sha256 自校验失败")
     _verify_budget_fairness(payloads["budget_fairness_report.json"])
     _verify_tasks_payload(payloads["tasks.json"], split)
-    _cross_check_echo_chain(frozen, prereg, split, payloads["freeze_summary.json"], raw=raw)
+    _cross_check_echo_chain(
+        frozen, prereg, split, payloads["freeze_summary.json"], raw=raw, identity=identity
+    )
     canonical_sha = {name: _canonical_artifact_digest(payloads[name]) for name in FROZEN_REQUIRED_FILES}
     return FrozenBundle(
         freeze_dir=base,
@@ -763,9 +953,12 @@ def load_frozen_bundle(
         digest_manifest=payloads["digest_manifest.json"],
         freeze_summary=payloads["freeze_summary.json"],
         budget_fairness_report=payloads["budget_fairness_report.json"],
+        identity=identity,
         raw_sha256=raw_sha,
         canonical_sha256=canonical_sha,
         sha256sums=sums,
+        identity_source=identity_source,
+        expected_identity_fields=provided_identity_fields,
     )
 
 # ---------------------------------------------------------------------------
@@ -1571,6 +1764,9 @@ class PairedEndpoint:
     reference_values: list[float | None]
     paired_task_ids: list[str] = field(default_factory=list)
     differences: list[float] = field(default_factory=list)
+    structural_index_present: bool = False
+    structural_exclusion_count: int = 0
+    n_tasks_unpaired: int = 0
 
     @property
     def n_tasks(self) -> int:
@@ -1602,8 +1798,13 @@ def build_paired_endpoint(
     budget_B: int,
     K: int,
     endpoint: str,
+    structural_index: "StructuralIdentifiabilityIndex | None" = None,
 ) -> PairedEndpoint | None:
-    """构造任务级配对样本；缺少任一臂单元时返回 None（由调用方判定是否 fail-closed）。"""
+    """构造任务级配对样本；缺少任一臂单元时返回 None（由调用方判定是否 fail-closed）。
+
+    R-V4-02：当提供 structural_index 时，按 (task, meta_seed) 行级排除 STRUCTURALLY_IDENTICAL
+    的臂对组（不做事后任务剔除）；任务值 = 剩余 meta_seed 的等权均值。
+    """
     comparison = COMPARISON_BY_ID.get(comparison_id)
     if comparison is None:
         raise S1AnalysisError(f"未知比较：{comparison_id!r}")
@@ -1614,18 +1815,63 @@ def build_paired_endpoint(
     if treatment_cell is None or reference_cell is None:
         return None
     task_ids = list(bundle.task_ids_for(split))
+    structural_present = bool(structural_index is not None and structural_index.present)
     treatment_values: list[float | None] = []
     reference_values: list[float | None] = []
     paired: list[str] = []
     differences: list[float] = []
+    exclusion_count = 0
+    unpaired_tasks = 0
     for task_id in task_ids:
-        left = treatment_cell.endpoint_per_task.get(task_id, {}).get(endpoint)
-        right = reference_cell.endpoint_per_task.get(task_id, {}).get(endpoint)
-        treatment_values.append(left)
-        reference_values.append(right)
-        if left is not None and right is not None:
+        if not structural_present:
+            left = treatment_cell.endpoint_per_task.get(task_id, {}).get(endpoint)
+            right = reference_cell.endpoint_per_task.get(task_id, {}).get(endpoint)
+            treatment_values.append(left)
+            reference_values.append(right)
+            if left is not None and right is not None:
+                paired.append(task_id)
+                differences.append(float(left) - float(right))
+            continue
+        # R-V4-02 行级排除：只剔除被登记为 STRUCTURALLY_IDENTICAL 的 (task,B,K,meta_seed) 组，
+        # 任务保留；任务值 = 剩余 meta_seed 的等权均值（不做事后任务剔除）。
+        left_samples: list[float] = []
+        right_samples: list[float] = []
+        meta_seed_set = set(treatment_cell.endpoint_per_meta_seed) | set(
+            reference_cell.endpoint_per_meta_seed
+        )
+        for meta_seed in sorted(meta_seed_set):
+            if structural_index.is_structurally_identical(
+                task_id,
+                int(budget_B),
+                int(K),
+                int(meta_seed),
+                str(comparison["arm"]),
+                str(comparison["reference"]),
+            ):
+                exclusion_count += 1
+                continue
+            left_meta = (
+                treatment_cell.endpoint_per_meta_seed.get(meta_seed, {})
+                .get(task_id, {})
+                .get(endpoint)
+            )
+            right_meta = (
+                reference_cell.endpoint_per_meta_seed.get(meta_seed, {})
+                .get(task_id, {})
+                .get(endpoint)
+            )
+            if left_meta is not None and right_meta is not None:
+                left_samples.append(float(left_meta))
+                right_samples.append(float(right_meta))
+        left_value = _mean_or_none(left_samples)
+        right_value = _mean_or_none(right_samples)
+        treatment_values.append(left_value)
+        reference_values.append(right_value)
+        if left_value is not None and right_value is not None:
             paired.append(task_id)
-            differences.append(float(left) - float(right))
+            differences.append(float(left_value) - float(right_value))
+        else:
+            unpaired_tasks += 1
     return PairedEndpoint(
         comparison_id=comparison_id,
         split=split,
@@ -1639,6 +1885,9 @@ def build_paired_endpoint(
         reference_values=reference_values,
         paired_task_ids=paired,
         differences=differences,
+        structural_index_present=structural_present,
+        structural_exclusion_count=int(exclusion_count),
+        n_tasks_unpaired=int(unpaired_tasks),
     )
 
 
@@ -2053,6 +2302,9 @@ def analyze_pair(
         "decision_reasons": "；".join(decision["decision_reasons"]),
         "threshold": decision["threshold"],
         "max_null_rate": decision["max_null_rate"],
+        "structural_index_present": bool(paired.structural_index_present),
+        "structural_excluded_groups": int(paired.structural_exclusion_count),
+        "n_tasks_unpaired": int(paired.n_tasks_unpaired),
     }
     return row
 
@@ -2063,16 +2315,21 @@ def collect_hypotheses(
     *,
     split: str,
     inference_ks: Sequence[int] = (1, 3, 5),
+    structural_index: "StructuralIdentifiabilityIndex | None" = None,
 ) -> dict[str, Any]:
-    """构造全部可检验配对（C1..C5 x B x K x 4 主端点），并按预注册做 Holm。
+    """构造全部可检验配对（C1..C4 x B x K x 4 主端点），并按预注册做 Holm。
 
-    M02（task-226）：Holm 族 = 同 (端点, 预算, K) 内的 5 个比较（每族 5 次检验），
-    而非按 K 汇总 40 个检验；这样与统计计划“每个端点内 5 个比较”一致。
+    M02（task-226）：Holm 族 = 同 (端点, 预算, K) 内的比较（每族 4 次检验）。
+    R-V4-02（task-230）：C5 不进 Holm、不做 benefit/harm，仅由 c5_structural_summary 描述；
+    其余比较在构造配对时按 pair-level STRUCTURALLY_IDENTICAL 行级排除（不剔除任务）。
     """
     pairs: list[PairedEndpoint] = []
+    inference_comparisons = [
+        item for item in COMPARISONS if str(item["id"]) in INFERENCE_COMPARISON_IDS
+    ]
     for K in inference_ks:
         for budget in MAIN_POPULATION_BUDGETS:
-            for comparison in COMPARISONS:
+            for comparison in inference_comparisons:
                 for endpoint in PRIMARY_ENDPOINTS:
                     paired = build_paired_endpoint(
                         cells,
@@ -2082,10 +2339,11 @@ def collect_hypotheses(
                         budget_B=int(budget),
                         K=int(K),
                         endpoint=endpoint,
+                        structural_index=structural_index,
                     )
                     if paired is not None:
                         pairs.append(paired)
-    # 先原始 p 值，再按 (端点, 预算, K) 分组 Holm（M02：每族 5 个比较）。
+    # 先原始 p 值，再按 (端点, 预算, K) 分组 Holm（M02：每族 4 个可推断比较；C5 不在族内）。
     raw: list[tuple[PairedEndpoint, dict[str, Any]]] = []
     for paired in pairs:
         test = wilcoxon_signed_rank(paired.differences)
@@ -2108,10 +2366,21 @@ def collect_hypotheses(
     return {
         "split": split,
         "n_hypotheses": len(rows),
-        "holm_family_definition": "同 (端点, 预算, K) 内的 5 个比较为一个 Holm 族",
-        "holm_family_size": 5,
+        "holm_family_definition": "同 (端点, 预算, K) 内的 4 个可推断比较为一个 Holm 族（C5 描述性、不进族）",
+        "holm_family_size": 4,
         "holm_family_count": len(by_family),
         "holm_family_sizes": family_sizes,
+        "excluded_comparison_ids": [C5_COMPARISON_ID],
+        "structural_index_present": bool(
+            structural_index is not None and structural_index.present
+        ),
+        "structural_exclusion_total": int(
+            sum(
+                1
+                for paired in pairs
+                if paired.structural_exclusion_count > 0
+            )
+        ),
         "rows": rows,
         "pairs": pairs,
     }
@@ -2208,15 +2477,996 @@ def secondary_reproduction_conclusion(
 
 
 # ---------------------------------------------------------------------------
+# ---------------------------------------------------------------------------
+# R-V4-02 / R-V4-04（task-230）：pair-level 结构可辨识性消费层
+# ---------------------------------------------------------------------------
+INFERENCE_COMPARISON_IDS: tuple[str, ...] = ("C1", "C2", "C3", "C4")
+C5_COMPARISON_ID = "C5"
+MODEL_SCORED_ARMS: tuple[str, ...] = (
+    "PRETRAIN-KSHOT-BO",
+    "FOMAML-ZERO-BO",
+    "FOMAML-KSHOT-BO",
+)
+IDENTIFIABILITY_REPORT_FILENAME = "identifiability_report.json"
+IDENTIFIABILITY_SCHEMA_VERSION_V4 = "p4ra-s1-identifiability-2"
+IDENTIFIABILITY_SCHEMA_VERSIONS: tuple[str, ...] = (
+    "p4ra-s1-identifiability-1",
+    "p4ra-s1-identifiability-2",
+)
+IDENTIFIABILITY_OVERLAP_THRESHOLD = 0.90
+IDENTIFIABILITY_REQUIRED_PAIRS: tuple[tuple[str, str], ...] = (
+    ("FOMAML-ZERO-BO", "FOMAML-KSHOT-BO"),
+    ("PRETRAIN-KSHOT-BO", "FOMAML-ZERO-BO"),
+    ("PRETRAIN-KSHOT-BO", "FOMAML-KSHOT-BO"),
+)
+STRUCTURAL_IDENTIFIABLE = "IDENTIFIABLE"
+STRUCTURAL_IDENTICAL = "STRUCTURALLY_IDENTICAL"
+PAIR_STATUS_NOT_REPORTED = "PAIR_STATUS_NOT_REPORTED"
+C5_NOT_ESTIMABLE = "NOT_ESTIMABLE_STRUCTURAL_IDENTIFIABILITY"
+C5_DESCRIPTIVE_ONLY = "DESCRIPTIVE_ONLY"
+C5_ESTIMABLE_MIN_TASKS = 10
+IDENTIFIABILITY_MODE_FORMAL = "formal"
+IDENTIFIABILITY_MODE_EXPLORATORY = "exploratory"
+IDENTIFIABILITY_MODES = (IDENTIFIABILITY_MODE_FORMAL, IDENTIFIABILITY_MODE_EXPLORATORY)
+PAIR_LEVEL_FIELDS_SOURCE_RUNNER = "RUNNER_PAIRWISE_FIELDS"
+PAIR_LEVEL_FIELDS_SOURCE_DERIVED = "DERIVED_FROM_OVERLAP_RATE_LEGACY_SCHEMA"
+PAIR_LEVEL_FIELDS_SOURCE_NONE = "NO_REPORT"
+S1_STRUCTURAL_SCHEMA_VERSION = "p4ra-s1-structural-identifiability-1"
+
+
+# ---------------------------------------------------------------------------
+# R-V4-02 / R-V4-04（task-230）：pair-level 结构可辨识性
+# ---------------------------------------------------------------------------
+def _pair_label(arm_a: str, arm_b: str) -> str:
+    """臂对的规范标签：两个臂名排序后以竖线连接（与 runner pair_status_counts 一致）。"""
+    return "|".join(sorted((str(arm_a), str(arm_b))))
+
+
+def _pair_key(arm_a: str, arm_b: str) -> tuple[str, str]:
+    """臂对规范键（排序元组），用于 report 组内查表。"""
+    return tuple(sorted((str(arm_a), str(arm_b))))
+
+
+def _canonical_pair_counts(counts: Mapping[Any, Any]) -> dict[str, dict[str, int]]:
+    """把 pair_status_counts 规范化为 {arm_a|arm_b: {status: count}}。"""
+    normalised: dict[str, dict[str, int]] = {}
+    for label, value in counts.items():
+        key = str(label)
+        if not isinstance(value, Mapping):
+            raise S1AnalysisError("identifiability_report.pair_status_counts 的值必须是 object")
+        bucket: dict[str, int] = {}
+        for status, number in value.items():
+            if not _is_int(number):
+                raise S1AnalysisError("identifiability_report.pair_status_counts 计数必须是整数")
+            bucket[str(status)] = int(number)
+        normalised[key] = bucket
+    return normalised
+
+
+@dataclass
+class StructuralPairStatus:
+    """单个 (task, B, K, meta_seed) 组内一个臂对的结构可辨识性状态。"""
+
+    arm_a: str
+    arm_b: str
+    overlap_rate: float | None
+    threshold: float
+    structural_status: str
+    pair_identifiable: bool
+    schema_source: str
+
+    @property
+    def pair_label(self) -> str:
+        return _pair_label(self.arm_a, self.arm_b)
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "arm_a": self.arm_a,
+            "arm_b": self.arm_b,
+            "overlap_rate": self.overlap_rate,
+            "threshold": float(self.threshold),
+            "pair_identifiable": bool(self.pair_identifiable),
+            "structural_status": self.structural_status,
+            "schema_source": self.schema_source,
+        }
+
+
+@dataclass
+class StructuralIdentifiabilityIndex:
+    """消费 runner identifiability_report.json 的只读索引（pair-level）。"""
+
+    present: bool
+    mode: str
+    schema_versions: list[str]
+    threshold: float | None
+    groups: dict[tuple[str, int, int, int], dict[tuple[str, str], StructuralPairStatus]]
+    source_names: list[str]
+    pair_status_counts: dict[str, dict[str, int]]
+    pair_level_fields_source: str
+    warnings: list[str]
+    coverage: dict[str, Any]
+    report_group_count: int
+
+    def status_for(
+        self,
+        task_id: str,
+        budget_B: int,
+        K: int,
+        meta_seed: int,
+        arm_a: str,
+        arm_b: str,
+    ) -> str:
+        """返回某组内臂对的 pair-level 状态；无报告时返回 PAIR_STATUS_NOT_REPORTED。"""
+        group = self.groups.get((str(task_id), int(budget_B), int(K), int(meta_seed)))
+        if not group:
+            return PAIR_STATUS_NOT_REPORTED
+        status = group.get(_pair_key(arm_a, arm_b))
+        return PAIR_STATUS_NOT_REPORTED if status is None else status.structural_status
+
+    def is_structurally_identical(
+        self,
+        task_id: str,
+        budget_B: int,
+        K: int,
+        meta_seed: int,
+        arm_a: str,
+        arm_b: str,
+    ) -> bool:
+        return self.status_for(task_id, budget_B, K, meta_seed, arm_a, arm_b) == STRUCTURAL_IDENTICAL
+
+    def structural_exclusion_counts(self) -> dict[str, int]:
+        """按臂对输出 STRUCTURALLY_IDENTICAL 的组数（排除计数）。"""
+        counts: dict[str, int] = {}
+        for label in sorted(self.pair_status_counts):
+            counts[label] = int(self.pair_status_counts[label].get(STRUCTURAL_IDENTICAL, 0))
+        return counts
+
+    def to_dict(self) -> dict[str, Any]:
+        report_groups = 0
+        pair_statuses = 0
+        for group in self.groups.values():
+            report_groups += 1
+            pair_statuses += len(group)
+        return {
+            "schema_version": S1_STRUCTURAL_SCHEMA_VERSION,
+            "present": bool(self.present),
+            "mode": self.mode,
+            "report_schema_versions": list(self.schema_versions),
+            "pair_level_fields_source": self.pair_level_fields_source,
+            "threshold": self.threshold,
+            "source_names": list(self.source_names),
+            "report_group_count": int(self.report_group_count),
+            "indexed_group_count": int(report_groups),
+            "indexed_pair_status_count": int(pair_statuses),
+            "pair_status_counts": {
+                label: {status: int(number) for status, number in sorted(counts.items())}
+                for label, counts in sorted(self.pair_status_counts.items())
+            },
+            "structural_exclusion_counts": self.structural_exclusion_counts(),
+            "coverage": dict(self.coverage),
+            "warnings": list(self.warnings),
+            "note": (
+                "pair-level 规则来自 R-V4-02/R-V4-04：overlap_rate>=threshold 判 STRUCTURALLY_IDENTICAL，"
+                "该臂对在该 (task,B,K,meta_seed) 组不进入 benefit/harm 推断，只描述；不做事后任务剔除"
+            ),
+        }
+
+
+def _validate_structural_pairwise(
+    pairwise: Any,
+    *,
+    index: int,
+    report_threshold: float,
+    schema_version: str,
+) -> StructuralPairStatus:
+    """校验并解析一个 pairwise 元素（兼容 v1 旧报告：从 overlap_rate 派生 pair 级状态）。"""
+    if not isinstance(pairwise, Mapping):
+        raise S1AnalysisError(f"identifiability_report.groups[{index}].pairwise 元素必须是 object")
+    arm_a = pairwise.get("arm_a")
+    arm_b = pairwise.get("arm_b")
+    if not isinstance(arm_a, str) or not arm_a:
+        raise S1AnalysisError(f"identifiability_report.groups[{index}].pairwise 缺 arm_a")
+    if not isinstance(arm_b, str) or not arm_b:
+        raise S1AnalysisError(f"identifiability_report.groups[{index}].pairwise 缺 arm_b")
+    overlap = pairwise.get("overlap_rate")
+    if not _is_finite_number(overlap) or not (0.0 <= float(overlap) <= 1.0):
+        raise S1AnalysisError(
+            f"identifiability_report.groups[{index}].pairwise.overlap_rate 必须是 [0,1] 内有限数"
+        )
+    has_pair_fields = ("pair_identifiable" in pairwise) or ("structural_status" in pairwise)
+    if schema_version == IDENTIFIABILITY_SCHEMA_VERSION_V4 or has_pair_fields:
+        # R-V4-04：新 schema 必须带 pair 级字段，且与 overlap_rate/threshold 自洽。
+        if not isinstance(pairwise.get("pair_identifiable"), bool):
+            raise S1AnalysisError(
+                f"identifiability_report.groups[{index}].pairwise.pair_identifiable 必须是 bool（v4 schema）"
+            )
+        structural_status = pairwise.get("structural_status")
+        if structural_status not in (STRUCTURAL_IDENTIFIABLE, STRUCTURAL_IDENTICAL):
+            raise S1AnalysisError(
+                f"identifiability_report.groups[{index}].pairwise.structural_status 必须是 "
+                f"{STRUCTURAL_IDENTIFIABLE}/{STRUCTURAL_IDENTICAL}（v4 schema）"
+            )
+        pair_threshold = pairwise.get("threshold")
+        if not _is_finite_number(pair_threshold) or not (0.0 < float(pair_threshold) <= 1.0):
+            raise S1AnalysisError(
+                f"identifiability_report.groups[{index}].pairwise.threshold 必须在 (0,1]（v4 schema）"
+            )
+        if abs(float(pair_threshold) - float(report_threshold)) > 1e-12:
+            raise S1AnalysisError(
+                f"identifiability_report.groups[{index}].pairwise.threshold 与 report.threshold 不一致"
+            )
+        expected_status = (
+            STRUCTURAL_IDENTICAL
+            if float(overlap) >= float(report_threshold)
+            else STRUCTURAL_IDENTIFIABLE
+        )
+        if structural_status != expected_status:
+            raise S1AnalysisError(
+                f"identifiability_report.groups[{index}].pairwise.structural_status 与 "
+                f"overlap_rate/threshold 不一致（{structural_status} vs {expected_status}）"
+            )
+        if bool(pairwise.get("pair_identifiable")) != (structural_status == STRUCTURAL_IDENTIFIABLE):
+            raise S1AnalysisError(
+                f"identifiability_report.groups[{index}].pairwise.pair_identifiable 与 structural_status 不一致"
+            )
+        source = PAIR_LEVEL_FIELDS_SOURCE_RUNNER
+    else:
+        # 兼容旧 v1 report（无 pair 级字段）：按预注册规则从 overlap_rate 派生，并在 aggregate 披露。
+        expected_status = (
+            STRUCTURAL_IDENTICAL
+            if float(overlap) >= float(report_threshold)
+            else STRUCTURAL_IDENTIFIABLE
+        )
+        structural_status = expected_status
+        source = PAIR_LEVEL_FIELDS_SOURCE_DERIVED
+    return StructuralPairStatus(
+        arm_a=str(arm_a),
+        arm_b=str(arm_b),
+        overlap_rate=float(overlap),
+        threshold=float(report_threshold),
+        structural_status=str(structural_status),
+        pair_identifiable=bool(structural_status == STRUCTURAL_IDENTIFIABLE),
+        schema_source=source,
+    )
+
+
+def load_identifiability_report(path: str | Path) -> dict[str, Any]:
+    """加载并校验单个 identifiability_report.json（schema/threshold/组/pairwise/顶层计数）。"""
+    target = Path(path)
+    payload, _raw = _read_json_file(target, "identifiability_report")
+    if not isinstance(payload, Mapping):
+        raise S1AnalysisError("identifiability_report.json 必须是 JSON object")
+    schema_version = payload.get("schema_version")
+    if schema_version not in IDENTIFIABILITY_SCHEMA_VERSIONS:
+        raise S1AnalysisError(
+            "identifiability_report.schema_version 不受支持："
+            + repr(schema_version)
+            + "；期望 "
+            + repr(list(IDENTIFIABILITY_SCHEMA_VERSIONS))
+        )
+    threshold = payload.get("threshold")
+    if not _is_finite_number(threshold) or not (0.0 < float(threshold) <= 1.0):
+        raise S1AnalysisError("identifiability_report.threshold 必须在 (0,1] 内")
+    groups_payload = payload.get("groups")
+    if not isinstance(groups_payload, list):
+        raise S1AnalysisError("identifiability_report.groups 必须是 list")
+    groups: dict[tuple[str, int, int, int], dict[tuple[str, str], StructuralPairStatus]] = {}
+    computed_counts: dict[str, dict[str, int]] = {}
+    for index, group in enumerate(groups_payload):
+        if not isinstance(group, Mapping):
+            raise S1AnalysisError(f"identifiability_report.groups[{index}] 必须是 object")
+        task_id = group.get("task_id")
+        if not isinstance(task_id, str) or not task_id:
+            raise S1AnalysisError(f"identifiability_report.groups[{index}].task_id 必须是非空字符串")
+        budget = group.get("budget_B")
+        k_shot = group.get("K")
+        meta_seed = group.get("meta_seed")
+        if not _is_int(budget) or not _is_int(k_shot) or not _is_int(meta_seed):
+            raise S1AnalysisError(
+                f"identifiability_report.groups[{index}] 的 budget_B/K/meta_seed 必须是整数"
+            )
+        pairwise_payload = group.get("pairwise")
+        if not isinstance(pairwise_payload, list) or not pairwise_payload:
+            raise S1AnalysisError(
+                f"identifiability_report.groups[{index}].pairwise 必须是非空 list"
+            )
+        key = (task_id, int(budget), int(k_shot), int(meta_seed))
+        if key in groups:
+            raise S1AnalysisError(
+                "identifiability_report 组重复：" + "|".join(str(item) for item in key)
+            )
+        statuses: dict[tuple[str, str], StructuralPairStatus] = {}
+        for pair in pairwise_payload:
+            status = _validate_structural_pairwise(
+                pair,
+                index=index,
+                report_threshold=float(threshold),
+                schema_version=str(schema_version),
+            )
+            pair_key = _pair_key(status.arm_a, status.arm_b)
+            if pair_key in statuses:
+                raise S1AnalysisError(
+                    f"identifiability_report.groups[{index}].pairwise 臂对重复：{status.pair_label}"
+                )
+            statuses[pair_key] = status
+            bucket = computed_counts.setdefault(status.pair_label, {})
+            bucket[status.structural_status] = bucket.get(status.structural_status, 0) + 1
+        arms_listed = group.get("arms")
+        if arms_listed is not None:
+            if not isinstance(arms_listed, list) or any(
+                not isinstance(item, str) for item in arms_listed
+            ):
+                raise S1AnalysisError(
+                    f"identifiability_report.groups[{index}].arms 必须是字符串 list"
+                )
+            reported_arms = set(arms_listed)
+            known_arms = {
+                arm for pair in statuses.values() for arm in (pair.arm_a, pair.arm_b)
+            }
+            if not known_arms <= reported_arms:
+                raise S1AnalysisError(
+                    f"identifiability_report.groups[{index}].arms 与 pairwise 不一致"
+                )
+        groups[key] = statuses
+    declared_counts = payload.get("pair_status_counts")
+    if declared_counts is not None:
+        declared = _canonical_pair_counts(declared_counts)
+        for label in sorted(set(declared) | set(computed_counts)):
+            declared_bucket = declared.get(label, {})
+            computed_bucket = computed_counts.get(label, {})
+            filtered_declared = {
+                key: int(value) for key, value in declared_bucket.items() if int(value) != 0
+            }
+            filtered_computed = {
+                key: int(value) for key, value in computed_bucket.items() if int(value) != 0
+            }
+            if filtered_declared != filtered_computed:
+                raise S1AnalysisError(
+                    "identifiability_report.pair_status_counts 与实际 pairwise 计数不一致：" + label
+                )
+    elif schema_version == IDENTIFIABILITY_SCHEMA_VERSION_V4:
+        raise S1AnalysisError(
+            "v4 identifiability_report 必须提供顶层 pair_status_counts（R-V4-04）"
+        )
+    declared_group_count = payload.get("group_count")
+    if declared_group_count is not None:
+        if not _is_int(declared_group_count) or int(declared_group_count) != len(groups):
+            raise S1AnalysisError(
+                "identifiability_report.group_count 与 groups 实际数量不一致"
+            )
+    declared_status_counts = payload.get("status_counts")
+    if declared_status_counts is not None and not isinstance(declared_status_counts, Mapping):
+        raise S1AnalysisError("identifiability_report.status_counts 必须是 object")
+    return {
+        "schema_version": str(schema_version),
+        "threshold": float(threshold),
+        "groups": groups,
+        "pair_status_counts": computed_counts,
+        "source": target.name,
+    }
+
+
+def _report_dirs_from_sources(sources: Sequence[Any]) -> list[Path]:
+    """从 run_records 来源路径推导 run 目录（用于定位 identifiability_report.json）。"""
+    dirs: list[Path] = []
+    seen: set[str] = set()
+    for source in sources:
+        path = Path(source)
+        directory = path if path.is_dir() else path.parent
+        key = str(directory.resolve())
+        if key not in seen:
+            seen.add(key)
+            dirs.append(directory)
+    return dirs
+
+
+def resolve_identifiability_report_paths(
+    sources: Sequence[Any],
+    *,
+    explicit_paths: Sequence[Any] | None = None,
+) -> tuple[list[Path], list[Path]]:
+    """解析 report 路径：返回 (已存在的 report 路径, 缺 report 的 run 目录）。"""
+    report_paths: list[Path] = []
+    seen_paths: set[str] = set()
+    if explicit_paths is not None:
+        for item in explicit_paths:
+            path = Path(item)
+            if not path.is_file():
+                raise S1AnalysisError(f"显式指定的 identifiability_report 不存在：{path.name}")
+            key = str(path.resolve())
+            if key not in seen_paths:
+                seen_paths.add(key)
+                report_paths.append(path)
+    missing_dirs: list[Path] = []
+    for directory in _report_dirs_from_sources(sources):
+        candidate = directory / IDENTIFIABILITY_REPORT_FILENAME
+        if candidate.is_file():
+            key = str(candidate.resolve())
+            if key not in seen_paths:
+                seen_paths.add(key)
+                report_paths.append(candidate)
+        else:
+            missing_dirs.append(directory)
+    return report_paths, missing_dirs
+
+
+def _empty_structural_index(mode: str, *, warnings: Sequence[str], coverage: Mapping[str, Any]) -> StructuralIdentifiabilityIndex:
+    """构造「无报告」索引（exploratory 允许缺失时使用；formal 永远 fail-closed）。"""
+    return StructuralIdentifiabilityIndex(
+        present=False,
+        mode=str(mode),
+        schema_versions=[],
+        threshold=None,
+        groups={},
+        source_names=[],
+        pair_status_counts={},
+        pair_level_fields_source=PAIR_LEVEL_FIELDS_SOURCE_NONE,
+        warnings=[str(item) for item in warnings],
+        coverage=dict(coverage),
+        report_group_count=0,
+    )
+
+
+def _merge_structural_reports(
+    report_paths: Sequence[Path],
+    *,
+    mode: str,
+) -> dict[str, Any]:
+    """加载并合并多个 report（同组跨 report 必须完全一致）。"""
+    merged: dict[tuple[str, int, int, int], dict[tuple[str, str], StructuralPairStatus]] = {}
+    schema_versions: set[str] = set()
+    thresholds: set[float] = set()
+    source_names: list[str] = []
+    report_group_count = 0
+    sources_seen: set[str] = set()
+    pair_level_sources: set[str] = set()
+    for path in report_paths:
+        loaded = load_identifiability_report(path)
+        schema_versions.add(loaded["schema_version"])
+        thresholds.add(float(loaded["threshold"]))
+        report_group_count += len(loaded["groups"])
+        if path.name not in sources_seen:
+            sources_seen.add(path.name)
+            source_names.append(path.name)
+        for key, statuses in loaded["groups"].items():
+            if key in merged:
+                existing = {
+                    pair_key: status.to_dict() for pair_key, status in merged[key].items()
+                }
+                incoming = {
+                    pair_key: status.to_dict() for pair_key, status in statuses.items()
+                }
+                if existing != incoming:
+                    raise S1AnalysisError(
+                        "同组 report 在多个文件中不一致："
+                        + "|".join(str(item) for item in key)
+                    )
+                continue
+            merged[key] = dict(statuses)
+            pair_level_sources.update(status.schema_source for status in statuses.values())
+    if len(thresholds) > 1:
+        raise S1AnalysisError(
+            "多个 identifiability_report 的 threshold 不一致：" + repr(sorted(thresholds))
+        )
+    if pair_level_sources == {PAIR_LEVEL_FIELDS_SOURCE_RUNNER}:
+        fields_source = PAIR_LEVEL_FIELDS_SOURCE_RUNNER
+    elif pair_level_sources == {PAIR_LEVEL_FIELDS_SOURCE_DERIVED}:
+        fields_source = PAIR_LEVEL_FIELDS_SOURCE_DERIVED
+    elif pair_level_sources:
+        fields_source = "MIXED"
+    else:
+        fields_source = PAIR_LEVEL_FIELDS_SOURCE_NONE
+    return {
+        "groups": merged,
+        "schema_versions": sorted(schema_versions),
+        "threshold": min(thresholds) if thresholds else None,
+        "source_names": sorted(source_names),
+        "report_group_count": int(report_group_count),
+        "pair_level_fields_source": fields_source,
+        "mode": str(mode),
+    }
+
+
+def load_structural_identifiability(
+    sources: Sequence[Any],
+    records: Sequence[Mapping[str, Any]],
+    *,
+    mode: str = "formal",
+    allow_missing: bool = False,
+    explicit_report_paths: Sequence[Any] | None = None,
+) -> StructuralIdentifiabilityIndex:
+    """加载 run 目录的 identifiability_report.json 并校验与 run_records 的组/臂覆盖一致。
+
+    R-V4-02/R-V4-04：
+      - formal 模式：report 缺失、组覆盖不全或臂覆盖不全 → fail-closed（不得出结论）。
+      - exploratory 模式：仅当 allow_missing=True 时允许缺失，降级为 warning。
+      - 规则在读取数据前固定：overlap_rate >= threshold 即 STRUCTURALLY_IDENTICAL，
+        该 (task,B,K,meta_seed) 组的该臂对不进入 benefit/harm 推断，但不做事后任务剔除。
+    """
+    if mode not in IDENTIFIABILITY_MODES:
+        raise S1AnalysisError(
+            "identifiability_mode 必须是 " + "/".join(IDENTIFIABILITY_MODES) + "： " + repr(mode)
+        )
+    if mode == "formal" and allow_missing:
+        raise S1AnalysisError(
+            "formal 模式不允许 allow_missing_identifiability_report=True（缺失必须 fail-closed）"
+        )
+    report_paths, missing_dirs = resolve_identifiability_report_paths(
+        sources, explicit_paths=explicit_report_paths
+    )
+    warnings: list[str] = []
+    if missing_dirs:
+        names = ", ".join(sorted(directory.name for directory in missing_dirs))
+        message = (
+            f"{len(missing_dirs)} 个 run 目录缺少 {IDENTIFIABILITY_REPORT_FILENAME}：{names}"
+        )
+        if mode == "formal":
+            raise S1AnalysisError(
+                message + "；formal 模式必须 fail-closed（R-V4-04），拒绝产出推断结论"
+            )
+        if not allow_missing:
+            raise S1AnalysisError(
+                message + "；exploratory 模式需显式 allow_missing_identifiability_report=True"
+            )
+        warnings.append(message + "；exploratory 模式按 allow_missing 降级，pair 级规则不可用")
+    merged = _merge_structural_reports(report_paths, mode=mode) if report_paths else {
+        "groups": {},
+        "schema_versions": [],
+        "threshold": None,
+        "source_names": [],
+        "report_group_count": 0,
+        "pair_level_fields_source": PAIR_LEVEL_FIELDS_SOURCE_NONE,
+        "mode": str(mode),
+    }
+    groups = merged["groups"]
+    # 从 run_records 推导期望组：凡出现任一 model-scored 臂的 (task,B,K,meta_seed)。
+    expected_arms: dict[tuple[str, int, int, int], set[str]] = {}
+    for item in records:
+        arm = item.get("arm")
+        if arm not in MODEL_SCORED_ARMS:
+            continue
+        task_id = item.get("task_id")
+        budget = item.get("budget_B")
+        k_shot = item.get("K")
+        meta_seed = item.get("meta_seed")
+        if not isinstance(task_id, str):
+            continue
+        if not _is_int(budget) or not _is_int(k_shot) or not _is_int(meta_seed):
+            continue
+        key = (task_id, int(budget), int(k_shot), int(meta_seed))
+        expected_arms.setdefault(key, set()).add(str(arm))
+    missing_groups = sorted({key for key in expected_arms if key not in groups}, key=str)
+    arm_gaps: list[str] = []
+    for key, arms in expected_arms.items():
+        statuses = groups.get(key)
+        if not statuses:
+            continue
+        reported_arms = {arm for pair in statuses.values() for arm in (pair.arm_a, pair.arm_b)}
+        if not arms <= reported_arms:
+            arm_gaps.append("|".join(str(item) for item in key))
+    extra_groups = len(set(groups) - set(expected_arms))
+    pair_gaps: list[str] = []
+    for key, arms in expected_arms.items():
+        statuses = groups.get(key)
+        if not statuses:
+            continue
+        order = sorted(arms)
+        for first_index in range(len(order)):
+            for second_index in range(first_index + 1, len(order)):
+                if _pair_key(order[first_index], order[second_index]) not in statuses:
+                    pair_gaps.append(
+                        "|".join(str(item) for item in key) + "::" + _pair_label(order[first_index], order[second_index])
+                    )
+    coverage = {
+        "model_scored_arms": list(MODEL_SCORED_ARMS),
+        "records_model_scored_groups": len(expected_arms),
+        "report_group_count": int(merged["report_group_count"]),
+        "indexed_group_count": len(groups),
+        "missing_group_count": len(missing_groups),
+        "missing_groups_sample": ["|".join(str(item) for item in key) for key in missing_groups[:5]],
+        "arm_gap_count": len(arm_gaps),
+        "arm_gaps_sample": arm_gaps[:5],
+        "pair_gap_count": len(pair_gaps),
+        "pair_gaps_sample": pair_gaps[:5],
+        "extra_group_count": int(extra_groups),
+        "missing_report_run_dirs": len(missing_dirs),
+        "threshold": merged["threshold"],
+        "pair_level_fields_source": merged["pair_level_fields_source"],
+        "rule": "overlap_rate>=threshold => STRUCTURALLY_IDENTICAL；该组该臂对不进入 benefit/harm 推断；不做事后任务剔除",
+    }
+    problems: list[str] = []
+    if missing_groups:
+        problems.append(
+            f"identifiability_report 组覆盖不全：缺 {len(missing_groups)} 组（前 5：{coverage['missing_groups_sample']}）"
+        )
+    if arm_gaps:
+        problems.append(
+            f"identifiability_report 臂覆盖不全：{len(arm_gaps)} 组（前 5：{coverage['arm_gaps_sample']}）"
+        )
+    if pair_gaps:
+        problems.append(
+            f"identifiability_report 臂对覆盖不全：{len(pair_gaps)} 组（前 5：{coverage['pair_gaps_sample']}）"
+        )
+    if problems:
+        message = "；".join(problems)
+        if mode == "formal":
+            raise S1AnalysisError(
+                message + "；与 run_records 不一致，formal 模式 fail-closed（R-V4-04）"
+            )
+        if not allow_missing:
+            raise S1AnalysisError(
+                message + "；exploratory 模式需显式 allow_missing_identifiability_report=True"
+            )
+        warnings.append(message + "；exploratory 模式按 allow_missing 降级")
+    if merged["pair_level_fields_source"] == PAIR_LEVEL_FIELDS_SOURCE_DERIVED:
+        warnings.append(
+            "identifiability_report 为 v1 旧 schema（无 pair 级字段）；已按预注册规则由 overlap_rate>=threshold 派生，"
+            "正式 v4 工件应由 runner 直接写入 pair_identifiable/structural_status"
+        )
+    pair_status_counts: dict[str, dict[str, int]] = {}
+    for statuses in groups.values():
+        for status in statuses.values():
+            bucket = pair_status_counts.setdefault(status.pair_label, {})
+            bucket[status.structural_status] = bucket.get(status.structural_status, 0) + 1
+    return StructuralIdentifiabilityIndex(
+        present=bool(groups),
+        mode=str(mode),
+        schema_versions=list(merged["schema_versions"]),
+        threshold=merged["threshold"],
+        groups=groups,
+        source_names=list(merged["source_names"]),
+        pair_status_counts=pair_status_counts,
+        pair_level_fields_source=str(merged["pair_level_fields_source"]),
+        warnings=warnings,
+        coverage=coverage,
+        report_group_count=int(merged["report_group_count"]),
+    )
+
+
+def comparison_structural_exclusion_counts(
+    index: StructuralIdentifiabilityIndex,
+    *,
+    comparisons: Sequence[Mapping[str, str]] = COMPARISONS,
+) -> dict[str, Any]:
+    """按预注册比较输出 pair-level STRUCTURALLY_IDENTICAL 组数（R-V4-04 披露要求）。"""
+    by_pair = index.structural_exclusion_counts()
+    by_comparison: dict[str, int] = {}
+    for item in comparisons:
+        label = _pair_label(item["arm"], item["reference"])
+        by_comparison[str(item["id"])] = int(by_pair.get(label, 0))
+    return {
+        "by_pair": {label: int(value) for label, value in sorted(by_pair.items())},
+        "by_comparison": {key: by_comparison[key] for key in sorted(by_comparison)},
+        "total": int(sum(by_pair.values())),
+        "rule": "pair-level：overlap_rate>=threshold => STRUCTURALLY_IDENTICAL；仅排除该 (task,B,K,meta_seed) 组的该臂对，不剔除任务",
+    }
+
+
+def _c5_pair_status(
+    index: StructuralIdentifiabilityIndex,
+    task_id: str,
+    budget: int,
+    k_shot: int,
+    meta_seed: int,
+) -> str:
+    comparison = COMPARISON_BY_ID[C5_COMPARISON_ID]
+    return index.status_for(
+        task_id, budget, k_shot, meta_seed, comparison["arm"], comparison["reference"]
+    )
+
+
+def c5_structural_summary(
+    cells: Mapping[tuple[str, int, int, str], AggregatedCell],
+    bundle: FrozenBundle,
+    index: StructuralIdentifiabilityIndex,
+    *,
+    split: str = MAIN_SPLIT,
+    budgets: Sequence[int] = MAIN_POPULATION_BUDGETS,
+    inference_ks: Sequence[int] | None = None,
+) -> dict[str, Any]:
+    """C5（FOMAML-KSHOT-BO vs FOMAML-ZERO-BO）描述层：不进 Holm、不做 benefit/harm 判定。
+
+    R-V4-02：C5 只报告结构性克隆率与描述性数值；若可估计任务数 < C5_ESTIMABLE_MIN_TASKS（10），
+    固定 NOT_ESTIMABLE_STRUCTURAL_IDENTIFIABILITY，不得声称适应增益/损害。
+    """
+    if inference_ks is None:
+        inference_ks = INFERENCE_KS
+    comparison = COMPARISON_BY_ID[C5_COMPARISON_ID]
+    treatment = str(comparison["arm"])
+    reference = str(comparison["reference"])
+    split_tasks = list(bundle.task_ids_for(split))
+    split_task_set = set(split_tasks)
+    pair_label = _pair_label(treatment, reference)
+    layers: list[dict[str, Any]] = []
+    estimable_tasks: set[str] = set()
+    total_groups = 0
+    identical_groups = 0
+    for budget in budgets:
+        for k_shot in inference_ks:
+            layer = {
+                "budget_B": int(budget),
+                "K": int(k_shot),
+                "pair_label": pair_label,
+                "total_groups": 0,
+                "structurally_identical_groups": 0,
+                "estimable_tasks": 0,
+                "estimable_task_ids": [],
+                "clone_rate": None,
+            }
+            treatment_cell = cells.get((split, int(budget), int(k_shot), treatment))
+            reference_cell = cells.get((split, int(budget), int(k_shot), reference))
+            for task_id in split_tasks:
+                usable = False
+                for meta_seed in bundle.meta_seeds:
+                    status = _c5_pair_status(index, task_id, int(budget), int(k_shot), int(meta_seed))
+                    if status == PAIR_STATUS_NOT_REPORTED:
+                        continue
+                    layer["total_groups"] += 1
+                    total_groups += 1
+                    if status == STRUCTURAL_IDENTICAL:
+                        layer["structurally_identical_groups"] += 1
+                        identical_groups += 1
+                    else:
+                        usable = True
+                if usable:
+                    layer["estimable_tasks"] += 1
+                    layer["estimable_task_ids"].append(task_id)
+                    estimable_tasks.add(task_id)
+            if layer["total_groups"]:
+                layer["clone_rate"] = float(
+                    layer["structurally_identical_groups"] / layer["total_groups"]
+                )
+            for endpoint in PRIMARY_ENDPOINTS:
+                treatment_values = [
+                    treatment_cell.endpoint_per_task.get(task_id, {}).get(endpoint)
+                    for task_id in layer["estimable_task_ids"]
+                ] if treatment_cell is not None else []
+                reference_values = [
+                    reference_cell.endpoint_per_task.get(task_id, {}).get(endpoint)
+                    for task_id in layer["estimable_task_ids"]
+                ] if reference_cell is not None else []
+                paired = [
+                    (float(item[0]), float(item[1]))
+                    for item in zip(treatment_values, reference_values)
+                    if item[0] is not None and item[1] is not None
+                ]
+                treatment_mean = (
+                    float(sum(item[0] for item in paired) / len(paired)) if paired else None
+                )
+                reference_mean = (
+                    float(sum(item[1] for item in paired) / len(paired)) if paired else None
+                )
+                mean_difference = (
+                    float(treatment_mean - reference_mean)
+                    if treatment_mean is not None and reference_mean is not None
+                    else None
+                )
+                layer.setdefault("descriptive_rows", []).append(
+                    {
+                        "comparison_id": C5_COMPARISON_ID,
+                        "split": split,
+                        "budget_B": int(budget),
+                        "K": int(k_shot),
+                        "endpoint": endpoint,
+                        "treatment": treatment,
+                        "reference": reference,
+                        "n_tasks_estimable": int(len(paired)),
+                        "treatment_mean": treatment_mean,
+                        "reference_mean": reference_mean,
+                        "mean_difference": mean_difference,
+                        "inference": False,
+                        "note": (
+                            "C5 仅描述：不进 Holm、不做 benefit/harm 判定、无 p 值与 CI；"
+                            "STRUCTURALLY_IDENTICAL 的 (task,B,K,meta_seed) 组不参与均值"
+                        ),
+                    }
+                )
+            layers.append(layer)
+    estimable_count = len(estimable_tasks)
+    clone_rate = float(identical_groups / total_groups) if total_groups else None
+    if (not index.present) or estimable_count < C5_ESTIMABLE_MIN_TASKS:
+        status = C5_NOT_ESTIMABLE
+        if not index.present:
+            reason = "identifiability_report 缺失，C5 结构可辨识性不可得"
+        else:
+            reason = (
+                f"C5 可估计任务数 {estimable_count} < {C5_ESTIMABLE_MIN_TASKS}（R-V4-02），"
+                "固定 NOT_ESTIMABLE_STRUCTURAL_IDENTIFIABILITY，不得声称适应增益/损害"
+            )
+    else:
+        status = C5_DESCRIPTIVE_ONLY
+        reason = (
+            f"C5 可估计任务数 {estimable_count} >= {C5_ESTIMABLE_MIN_TASKS}；"
+            "按 R-V4-02 仅作描述性报告（不进 Holm、不做 benefit/harm 判定）"
+        )
+    descriptive_rows = [
+        row for layer in layers for row in layer.get("descriptive_rows", [])
+    ]
+    return {
+        "schema_version": S1_STRUCTURAL_SCHEMA_VERSION,
+        "comparison_id": C5_COMPARISON_ID,
+        "treatment": treatment,
+        "reference": reference,
+        "split": split,
+        "status": status,
+        "estimable_tasks": int(estimable_count),
+        "total_tasks": int(len(split_tasks)),
+        "min_estimable_tasks": int(C5_ESTIMABLE_MIN_TASKS),
+        "total_groups": int(total_groups),
+        "structurally_identical_groups": int(identical_groups),
+        "clone_rate": clone_rate,
+        "structural_exclusion_count": int(
+            index.structural_exclusion_counts().get(pair_label, 0)
+        ),
+        "in_holm": False,
+        "benefit_harm_decision": None,
+        "layers": layers,
+        "descriptive_rows": descriptive_rows,
+        "reason": reason,
+        "rule": "C5 不进 Holm 族、不做 benefit/harm；STRUCTURALLY_IDENTICAL 组仅描述；不做事后任务剔除",
+    }
+
+
+def _split_for_task(bundle: FrozenBundle, task_id: str) -> str | None:
+    for split in RECORD_SPLITS:
+        if task_id in set(bundle.task_ids_for(split)):
+            return str(split)
+    return None
+
+
+def _inference_pair_labels() -> set[str]:
+    return {
+        _pair_label(item["arm"], item["reference"])
+        for item in COMPARISONS
+        if str(item["id"]) in INFERENCE_COMPARISON_IDS
+    }
+
+
+def structural_identifiability_rows(
+    index: StructuralIdentifiabilityIndex,
+    bundle: FrozenBundle,
+    c5_summary: Mapping[str, Any],
+) -> list[dict[str, Any]]:
+    """生成 s1_structural_identifiability.csv 行（R-V4-04：披露 pair 级排除与 C5 可估计任务数）。"""
+    inference_labels = _inference_pair_labels()
+    c5_label = _pair_label(c5_summary["treatment"], c5_summary["reference"])
+    rows: list[dict[str, Any]] = []
+    for key in sorted(index.groups, key=str):
+        task_id, budget, k_shot, meta_seed = key
+        split = _split_for_task(bundle, task_id)
+        for pair_key in sorted(index.groups[key]):
+            status = index.groups[key][pair_key]
+            identical = status.structural_status == STRUCTURAL_IDENTICAL
+            if status.pair_label == c5_label:
+                inference_role = "C5_DESCRIPTIVE_ONLY"
+                used_in_inference = False
+            elif status.pair_label in inference_labels:
+                inference_role = "INFERENCE_PREREGISTERED"
+                used_in_inference = not identical
+            else:
+                inference_role = "DESCRIPTIVE"
+                used_in_inference = False
+            rows.append(
+                {
+                    "row_type": "pair_group",
+                    "split": split,
+                    "budget_B": int(budget),
+                    "K": int(k_shot),
+                    "task_id": task_id,
+                    "meta_seed": int(meta_seed),
+                    "arm_a": status.arm_a,
+                    "arm_b": status.arm_b,
+                    "overlap_rate": status.overlap_rate,
+                    "threshold": status.threshold,
+                    "pair_identifiable": status.pair_identifiable,
+                    "structural_status": status.structural_status,
+                    "inference_role": inference_role,
+                    "used_in_inference": bool(used_in_inference),
+                    "n_groups": None,
+                    "n_structurally_identical": None,
+                    "n_identifiable": None,
+                    "exclusion_rate": None,
+                    "c5_estimable_tasks": None,
+                    "status": status.structural_status,
+                    "note": (
+                        "pair-level 排除规则（R-V4-02/R-V4-04）：STRUCTURALLY_IDENTICAL 组不进入 benefit/harm 推断；"
+                        "不做事后任务剔除"
+                    ),
+                }
+            )
+    pair_counts: dict[str, dict[str, int]] = index.pair_status_counts
+    for label in sorted(pair_counts):
+        bucket = pair_counts[label]
+        total = int(sum(bucket.values()))
+        identical = int(bucket.get(STRUCTURAL_IDENTICAL, 0))
+        identifiable = int(bucket.get(STRUCTURAL_IDENTIFIABLE, 0))
+        arms = label.split("|")
+        if label == c5_label:
+            inference_role = "C5_DESCRIPTIVE_ONLY"
+        elif label in inference_labels:
+            inference_role = "INFERENCE_PREREGISTERED"
+        else:
+            inference_role = "DESCRIPTIVE"
+        rows.append(
+            {
+                "row_type": "exclusion_summary",
+                "split": None,
+                "budget_B": None,
+                "K": None,
+                "task_id": None,
+                "meta_seed": None,
+                "arm_a": arms[0] if len(arms) > 0 else None,
+                "arm_b": arms[1] if len(arms) > 1 else None,
+                "overlap_rate": None,
+                "threshold": index.threshold,
+                "pair_identifiable": None,
+                "structural_status": None,
+                "inference_role": inference_role,
+                "used_in_inference": None,
+                "n_groups": total,
+                "n_structurally_identical": identical,
+                "n_identifiable": identifiable,
+                "exclusion_rate": float(identical / total) if total else None,
+                "c5_estimable_tasks": None,
+                "status": "EXCLUSION_SUMMARY",
+                "note": "按臂对聚合的 STRUCTURALLY_IDENTICAL 组数（R-V4-04 structural_exclusion_counts）",
+            }
+        )
+    for layer in c5_summary.get("layers", []):
+        rows.append(
+            {
+                "row_type": "c5_summary",
+                "split": c5_summary.get("split"),
+                "budget_B": int(layer["budget_B"]),
+                "K": int(layer["K"]),
+                "task_id": None,
+                "meta_seed": None,
+                "arm_a": c5_summary["treatment"],
+                "arm_b": c5_summary["reference"],
+                "overlap_rate": None,
+                "threshold": index.threshold,
+                "pair_identifiable": None,
+                "structural_status": None,
+                "inference_role": "C5_DESCRIPTIVE_ONLY",
+                "used_in_inference": False,
+                "n_groups": int(layer["total_groups"]),
+                "n_structurally_identical": int(layer["structurally_identical_groups"]),
+                "n_identifiable": int(
+                    layer["total_groups"] - layer["structurally_identical_groups"]
+                ),
+                "exclusion_rate": layer.get("clone_rate"),
+                "c5_estimable_tasks": int(layer["estimable_tasks"]),
+                "status": c5_summary.get("status"),
+                "note": "C5 仅描述（不进 Holm、无 p 值/CI/benefit-harm 判定）：" + str(
+                    c5_summary.get("reason")
+                ),
+            }
+        )
+    return rows
+
+
 # 输出层：聚合产物、CSV、figure_status 与 CLI
 # ---------------------------------------------------------------------------
 S1_OUTPUT_FILES = (
     "aggregate.json",
     "s1_endpoint_tables.csv",
     "s1_identifiability_table.csv",
+    "s1_structural_identifiability.csv",
     "s1_budget_audit.csv",
     "s1_negative_controls.csv",
+    "s1_freeze_identity.csv",
     "figure_status.json",
+)
+# task-239：冻结身份（五项 + 来源）记录列；正式 run 必须由 run_config 传入期望值。
+FREEZE_IDENTITY_COLUMNS = (
+    "identity_source",
+    "family_version",
+    "family_fingerprint",
+    "split_hash",
+    "prereg_digest",
+    "analysis_plan_digest",
+    "radius_base",
+    "expected_identity_fields",
 )
 FIGURE_KEYS = (
     "fig1_meta_training_loss",
@@ -2299,6 +3549,29 @@ IDENTIFIABILITY_COLUMNS = (
     "inference_eligible",
     "note",
 )
+STRUCTURAL_IDENTIFIABILITY_COLUMNS = (
+    "row_type",
+    "split",
+    "budget_B",
+    "K",
+    "task_id",
+    "meta_seed",
+    "arm_a",
+    "arm_b",
+    "overlap_rate",
+    "threshold",
+    "pair_identifiable",
+    "structural_status",
+    "inference_role",
+    "used_in_inference",
+    "n_groups",
+    "n_structurally_identical",
+    "n_identifiable",
+    "exclusion_rate",
+    "c5_estimable_tasks",
+    "status",
+    "note",
+)
 BUDGET_AUDIT_COLUMNS = (
     "split",
     "arm",
@@ -2319,6 +3592,8 @@ NON_INFERENTIAL_NOTE = "K=0 CLONE 仅描述、排除推断"
 PRIMARY_KS = (3, 5)
 EXPLORATORY_KS = (1,)
 INFERENCE_KS = EXPLORATORY_KS + PRIMARY_KS
+
+
 
 
 def _stats(values: Sequence[float]) -> dict[str, float | None]:
@@ -2412,14 +3687,24 @@ def build_arm_summary_rows(
 def _hypothesis_rows(
     cells: Mapping[tuple[str, int, int, str], AggregatedCell],
     bundle: FrozenBundle,
+    structural_index: "StructuralIdentifiabilityIndex | None" = None,
 ) -> tuple[list[dict[str, Any]], dict[str, Any]]:
     """返回假设行与 Holm 族信息（M02：族大小、族计数必须随 aggregate 输出）。"""
-    collected = collect_hypotheses(cells, bundle, split=MAIN_SPLIT, inference_ks=INFERENCE_KS)
+    collected = collect_hypotheses(
+        cells,
+        bundle,
+        split=MAIN_SPLIT,
+        inference_ks=INFERENCE_KS,
+        structural_index=structural_index,
+    )
     family_info = {
         "holm_family_definition": collected["holm_family_definition"],
         "holm_family_size": collected["holm_family_size"],
         "holm_family_count": collected["holm_family_count"],
         "holm_family_sizes": collected["holm_family_sizes"],
+        "excluded_comparison_ids": collected["excluded_comparison_ids"],
+        "structural_index_present": collected["structural_index_present"],
+        "structural_exclusion_total": collected["structural_exclusion_total"],
     }
     return list(collected["rows"]), family_info
 
@@ -2605,15 +3890,27 @@ def _input_manifest(
     *,
     meta_training_log: str | Path | None,
     determinism_report: str | Path | None,
+    structural_index: "StructuralIdentifiabilityIndex | None" = None,
+    expected_identity_source: str | None = None,
 ) -> dict[str, Any]:
+    index = structural_index
     return {
         "freeze_dir_name": bundle.freeze_dir.name,
+        "identity_source": bundle.identity_source,
+        "identity_five": bundle.identity_five(),
+        "identity_expected_fields": list(bundle.expected_identity_fields),
+        "expected_identity_source": expected_identity_source,
         "freeze_raw_sha256": {name: str(value) for name, value in sorted(bundle.raw_sha256.items())},
         "run_records_files": [Path(source).name for source in sources],
         "n_run_record_files": len(sources),
         "record_count": int(record_count),
         "meta_training_log_name": None if meta_training_log is None else Path(meta_training_log).name,
         "determinism_report_name": None if determinism_report is None else Path(determinism_report).name,
+        "identifiability_report_files": [] if index is None else list(index.source_names),
+        "identifiability_mode": None if index is None else str(index.mode),
+        "identifiability_pair_level_fields_source": (
+            None if index is None else str(index.pair_level_fields_source)
+        ),
     }
 
 
@@ -2628,16 +3925,28 @@ def run_s1_analysis(
     require_complete_grid: bool = True,
     verify_checksums: bool = True,
     verify_sha256sums: bool = True,
+    identifiability_mode: str = IDENTIFIABILITY_MODE_FORMAL,
+    allow_missing_identifiability_report: bool = False,
+    identifiability_reports: Sequence[str | Path] | None = None,
+    expected_identity: Mapping[str, Any] | None = None,
+    expected_identity_source: str | None = None,
 ) -> dict[str, Any]:
     """S1 只读分析入口：校验 -> 聚合 -> 统计 -> 判定 -> 写出合同产物。
 
     fail-closed：冻结包、run_records、CLONE 等价性、主 split 网格完整性任一失败即抛
     S1AnalysisError/S1FreezeValidationError/S1RecordValidationError，不产出部分结论。
+
+    R-V4-02/R-V4-04（task-230）：必须加载每个 source run 目录的 identifiability_report.json，
+    校验 schema/组覆盖/与 run_records 的 (task,B,K,meta_seed,arm) 一致；formal 缺失即 fail-closed；
+    pair-level STRUCTURALLY_IDENTICAL 从 benefit/harm 推断排除（不做事后任务剔除）；
+    C5 仅描述、不进 Holm；aggregate/CSV 披露排除计数与 C5 可估计任务数。
     """
     bundle = load_frozen_bundle(
         freeze_dir,
         verify_checksums=verify_checksums,
         verify_sha256sums=verify_sha256sums,
+        expected_identity=expected_identity,
+        expected_identity_source=expected_identity_source,
     )
     paths = [run_records] if isinstance(run_records, (str, Path)) else list(run_records)
     if not paths:
@@ -2661,9 +3970,20 @@ def run_s1_analysis(
         if require_complete_grid
         else {"status": "SKIPPED_BY_CALLER", "split": [MAIN_SPLIT]}
     )
+    # R-V4-02：在读取数据后、任何统计前固定 pair-level 排除规则；formal 缺失报告即 fail-closed。
+    structural_index = load_structural_identifiability(
+        all_sources,
+        all_records,
+        mode=identifiability_mode,
+        allow_missing=allow_missing_identifiability_report,
+        explicit_report_paths=identifiability_reports,
+    )
     cells = aggregate_run_records(all_records, bundle)
-    hypotheses, holm_family_info = _hypothesis_rows(cells, bundle)
+    hypotheses, holm_family_info = _hypothesis_rows(cells, bundle, structural_index)
     endpoint_rows = _endpoint_table_rows(cells, bundle, hypotheses)
+    c5_summary = c5_structural_summary(cells, bundle, structural_index)
+    structural_exclusions = comparison_structural_exclusion_counts(structural_index)
+    structural_rows = structural_identifiability_rows(structural_index, bundle, c5_summary)
     primary = primary_conclusion(hypotheses)
     reproduction = secondary_reproduction_conclusion(hypotheses)
     exploratory = [
@@ -2706,8 +4026,13 @@ def run_s1_analysis(
             len(all_records),
             meta_training_log=meta_training_log,
             determinism_report=determinism_report,
+            structural_index=structural_index,
+            expected_identity_source=expected_identity_source,
         ),
         "freeze_echo": {
+            "identity_source": bundle.identity_source,
+            "identity_five": bundle.identity_five(),
+            "identity_expected_fields": list(bundle.expected_identity_fields),
             "family_id": bundle.family_id,
             "family_version": bundle.family_version,
             "family_fingerprint": bundle.family_fingerprint,
@@ -2731,9 +4056,15 @@ def run_s1_analysis(
             "exploratory_ks": list(EXPLORATORY_KS),
             "excluded_ks": [0],
             "excluded_note": "K=0 时 FOMAML-KSHOT-BO 与 FOMAML-ZERO-BO 同构（CLONE），排除推断",
-            "holm_family": "同 (端点, 预算, K) 内的 5 个比较为一个 Holm 族（M02 修复后）",
-            "holm_family_size": 5,
+            "holm_family": "同 (端点, 预算, K) 内的 4 个可推断比较为一个 Holm 族（C5 描述性、不进族）",
+            "holm_family_size": 4,
             "holm_family_count": holm_family_info["holm_family_count"],
+            "excluded_comparison_ids": list(holm_family_info["excluded_comparison_ids"]),
+            "structural_exclusion_total": int(holm_family_info["structural_exclusion_total"]),
+            "structural_identifiability_rule": (
+                "pair-level：identifiability_report 中 overlap_rate>=threshold 判 STRUCTURALLY_IDENTICAL，"
+                "该 (task,B,K,meta_seed) 组的该臂对不进入 benefit/harm 推断；不做事后任务剔除"
+            ),
             "alpha": ALPHA,
             "bootstrap": {"samples": BOOTSTRAP_SAMPLES, "seed": BOOTSTRAP_SEED, "confidence": CONFIDENCE_LEVEL},
         },
@@ -2745,12 +4076,25 @@ def run_s1_analysis(
         "negative_controls": negative,
         "budget_audit": budget_rows,
         "identifiability": identifiability_rows,
+        "structural_identifiability": structural_index.to_dict(),
+        "structural_exclusion_counts": structural_exclusions,
+        "excluded_pair_counts": structural_index.structural_exclusion_counts(),
+        "c5_structural_identifiability": c5_summary,
         "statistical_rules": {
             "unit": "task",
             "aggregation": "opt seed -> (task, meta_seed) 均值；meta_seed 等权 -> 任务级",
             "test": "双侧 Wilcoxon 符号秩（n<=20 无并列用精确分布；并列用正态近似+并列/连续性修正）",
-            "multiple_comparison": "Holm-Bonferroni（族=同 (端点, 预算, K) 内的 5 个比较）",
+            "multiple_comparison": "Holm-Bonferroni（族=同 (端点, 预算, K) 内的 4 个可推断比较；C5 不进族）",
             "holm_family_sizes": holm_family_info["holm_family_sizes"],
+            "structural_identifiability": (
+                "R-V4-02/R-V4-04：消费每个 run 的 identifiability_report.json（schema/组覆盖/臂覆盖强校验）；"
+                "pair-level STRUCTURALLY_IDENTICAL 组从 benefit/harm 推断排除，不剔除任务；排除计数披露于 "
+                "structural_exclusion_counts 与 s1_structural_identifiability.csv"
+            ),
+            "c5_policy": (
+                "C5（FOMAML-KSHOT-BO vs FOMAML-ZERO-BO）仅描述：不进 Holm、不做 benefit/harm 判定、无 p 值/CI；"
+                "可估计任务数<10 固定 NOT_ESTIMABLE_STRUCTURAL_IDENTIFIABILITY"
+            ),
             "improvement": "预注册中位数（配对且两臂均非 null 的子集；best/gap 相对改善，hit/first 绝对差）",
             "ci": "配对差值均值的百分位 bootstrap（10000 次，seed=20261105）",
             "ci_decision_rule": "SUPPORTED_* 需 Holm p<0.05 且 95% bootstrap CI 不跨 0 且方向有利且达阈值；CI 缺失→INCONCLUSIVE",
@@ -2770,12 +4114,19 @@ def run_s1_analysis(
             "B=128 为次级复现层，只描述不升级主结论",
             "OOD 与 negative_control 仅描述，不进入主统计",
             "跨 K=3/K=5 合成规则采用保守合取（合同未规定）",
+            "pair-level 结构不可辨识（STRUCTURALLY_IDENTICAL）组已从 benefit/harm 推断排除，但任务保留、不做事后剔除",
+            "C5 仅描述性报告（不进 Holm、不做 benefit/harm），可估计任务数<10 时为 NOT_ESTIMABLE_STRUCTURAL_IDENTIFIABILITY",
+            "R-V4-01 的 v4 holdout（p4ra-family-v4）环境未重建；本分析消费调用方提供的冻结包与 run_records",
         ],
         "contract_ambiguities": [
             "执行计划 §6 只规定 C1 单层规则（>=2 BENEFIT 且 0 HARM），未规定 K=3 与 K=5 如何合成；"
             "本实现取保守合取并在 primary_conclusion 中披露，待 Lead 裁决",
             "first_feasible_eval_index 的改善阈值按 ceil(0.05*B) 取整；"
             "合同写“仅同 K 内比较”，本实现按任务级配对差判定",
+            "R-V4-04 未规定 identifiability_report 的臂对覆盖是否为全部 3 对；本实现按 run_records 中实际出现的 "
+            "model-scored 臂全集做覆盖校验，缺任一对即 fail-closed（exploratory 可显式 allow_missing 降级）",
+            "旧 v1 identifiability_report（p4ra-s1-identifiability-1）无 pair 级字段；本实现按预注册规则由 "
+            "overlap_rate>=threshold 派生并在 aggregate 披露 pair_level_fields_source，待 A1 落 v4 schema 后切换",
         ],
     }
     figure_status: dict[str, Any]
@@ -2793,12 +4144,34 @@ def run_s1_analysis(
             "figures": {key: "NOT_RUN" for key in FIGURE_KEYS},
             "note": "调用方指定 make_figures=False",
         }
+    # C5 结构可辨识性同步进 figure_status（s1_figures 不绘制 C5 图；此处只披露状态，不伪造曲线）。
+    figure_status["c5_structural_identifiability"] = {
+        "status": str(c5_summary["status"]),
+        "estimable_tasks": int(c5_summary["estimable_tasks"]),
+        "total_groups": int(c5_summary["total_groups"]),
+        "structurally_identical_groups": int(c5_summary["structurally_identical_groups"]),
+        "clone_rate": c5_summary["clone_rate"],
+        "note": "C5 不绘制（仅描述）；状态来自 identifiability_report pair-level 规则",
+    }
+    notes = list(figure_status.get("notes") or [])
+    notes.append("C5 仅描述（不进 Holm、不做 benefit/harm），s1_figures 不绘制 C5 曲线")
+    figure_status["notes"] = notes
     aggregate["figure_status"] = figure_status
     _write_json(output_dir_path / "aggregate.json", aggregate)
     _write_csv(output_dir_path / "s1_endpoint_tables.csv", endpoint_rows, ENDPOINT_TABLE_COLUMNS)
     _write_csv(output_dir_path / "s1_identifiability_table.csv", identifiability_rows, IDENTIFIABILITY_COLUMNS)
+    _write_csv(
+        output_dir_path / "s1_structural_identifiability.csv",
+        structural_rows,
+        STRUCTURAL_IDENTIFIABILITY_COLUMNS,
+    )
     _write_csv(output_dir_path / "s1_budget_audit.csv", budget_rows, BUDGET_AUDIT_COLUMNS)
     _write_csv(output_dir_path / "s1_negative_controls.csv", negative["rows"], NEGATIVE_CONTROL_COLUMNS)
+    _write_csv(
+        output_dir_path / "s1_freeze_identity.csv",
+        [bundle.identity_csv_row()],
+        FREEZE_IDENTITY_COLUMNS,
+    )
     _write_json(output_dir_path / "figure_status.json", figure_status)
     return aggregate
 
@@ -2817,8 +4190,44 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--no-figures", action="store_true", help="不生成图（仅数据产物）")
     parser.add_argument("--allow-incomplete-grid", action="store_true", help="允许主 split 网格不完整（仅调试）")
     parser.add_argument("--skip-checksums", action="store_true", help="跳过 digest_manifest/SHA256SUMS 校验（仅调试）")
+    parser.add_argument(
+        "--identifiability-mode",
+        default=IDENTIFIABILITY_MODE_FORMAL,
+        choices=list(IDENTIFIABILITY_MODES),
+        help="结构可辨识性报告模式：formal（缺失即 fail-closed，默认）/ exploratory",
+    )
+    parser.add_argument(
+        "--allow-missing-identifiability-report",
+        action="store_true",
+        help="仅 exploratory 模式允许缺 identifiability_report.json（降级为 warning）",
+    )
+    parser.add_argument(
+        "--identifiability-report",
+        action="append",
+        default=None,
+        help="显式指定 identifiability_report.json（可多次；默认从 run 目录自动发现）",
+    )
+    parser.add_argument(
+        "--expected-identity-json",
+        default=None,
+        help=(
+            "可选：期望冻结身份 JSON（五项 family_fingerprint/split_hash/prereg_digest/"
+            "analysis_plan_digest/radius_base）；正式 run 由 run_config 传入，提供时必须逐项相等"
+        ),
+    )
     args = parser.parse_args(argv)
     try:
+        expected_identity = None
+        expected_identity_source = None
+        if args.expected_identity_json is not None:
+            identity_path = Path(args.expected_identity_json)
+            if not identity_path.is_file():
+                raise S1AnalysisError(f"expected_identity JSON 不存在：{identity_path}")
+            identity_payload, _identity_raw = _read_json_file(identity_path, "expected_identity")
+            if not isinstance(identity_payload, Mapping):
+                raise S1AnalysisError("expected_identity JSON 必须是 object")
+            expected_identity = dict(identity_payload)
+            expected_identity_source = identity_path.name
         aggregate = run_s1_analysis(
             args.freeze_dir,
             args.run_records,
@@ -2829,16 +4238,25 @@ def main(argv: Sequence[str] | None = None) -> int:
             require_complete_grid=not args.allow_incomplete_grid,
             verify_checksums=not args.skip_checksums,
             verify_sha256sums=not args.skip_checksums,
+            identifiability_mode=args.identifiability_mode,
+            allow_missing_identifiability_report=args.allow_missing_identifiability_report,
+            identifiability_reports=args.identifiability_report,
+            expected_identity=expected_identity,
+            expected_identity_source=expected_identity_source,
         )
     except S1AnalysisError as exc:
         print(f"S1_ANALYSIS_FAILED: {exc}", file=sys.stderr)
         return 2
     summary = {
         "status": "PASS",
+        "identity_source": aggregate["freeze_echo"]["identity_source"],
         "n_records": int(aggregate["validation"]["record_count"]),
         "primary_overall": aggregate["primary_conclusion"]["overall"],
         "secondary_reproduction": aggregate["secondary_reproduction"]["status"],
         "negative_controls": aggregate["negative_controls"]["status"],
+        "c5_structural_identifiability": aggregate["c5_structural_identifiability"]["status"],
+        "c5_estimable_tasks": aggregate["c5_structural_identifiability"]["estimable_tasks"],
+        "structural_exclusion_total": aggregate["structural_exclusion_counts"]["total"],
         "output_dir": str(Path(args.output_dir)),
     }
     print(json.dumps(summary, ensure_ascii=False, indent=2, sort_keys=True))

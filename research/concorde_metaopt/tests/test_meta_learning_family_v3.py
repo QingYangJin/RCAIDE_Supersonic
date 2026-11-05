@@ -27,8 +27,33 @@ from research.concorde_metaopt.meta_learning import task_family as tf
 
 GIT_SHA = "3ebd777595bf747edc855be5fb583f51cc17352f"
 CREATED_UTC = "2026-11-05T00:00:00+00:00"
-RUN_ID = "p4ra-s0-2-unittest"
+RUN_ID = "p4ra-s0-3-unittest"
 CODE_SHA = "unit-test-code-sha"
+
+
+V3_PACKAGE_ROOT = (
+    Path(__file__).resolve().parents[2]
+    / "concorde_metaopt"
+    / "optimization_runs"
+    / "p4ra-s0-2-freeze-20261105T072500Z"
+)
+_V3_PACKAGE_RECORDS: list[dict] | None = None
+
+
+def v3_package_records() -> list[dict]:
+    """只读加载 S0-2 v3 官方冻结包 tasks.json（120 条记录，含 task_fingerprint）。"""
+    global _V3_PACKAGE_RECORDS
+    if _V3_PACKAGE_RECORDS is None:
+        records = json.loads((V3_PACKAGE_ROOT / "tasks.json").read_text(encoding="utf-8"))
+        if len(records) != 120:
+            raise AssertionError("v3 package task count mismatch: " + str(len(records)))
+        _V3_PACKAGE_RECORDS = records
+    return _V3_PACKAGE_RECORDS
+
+
+def v3_reference_fingerprints() -> tuple[str, ...]:
+    """v3 官方包 120 个 task_fingerprint（v4 holdout 零交集断言的实质参照）。"""
+    return tuple(record["task_fingerprint"] for record in v3_package_records())
 
 
 def make_fake_legacy() -> dict:
@@ -47,6 +72,7 @@ def build_bundle(legacy: dict | None = None) -> dict:
         created_utc=CREATED_UTC,
         code_sha=CODE_SHA,
         legacy=legacy if legacy is not None else make_fake_legacy(),
+        v3_reference_task_fingerprints=v3_reference_fingerprints(),
     )
 
 
@@ -54,16 +80,26 @@ class V3FamilyIdentityTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.config = f3.build_v3_family_config()
-        cls.tasks = f3.assign_v3_task_ids(tf.build_task_family(cls.config))
+        cls.tasks = f3.assign_v3_task_ids(
+            tf.build_task_family(cls.config, holdout_seed=f3.HOLDOUT_SEED)
+        )
         cls.records = f3.build_task_records(cls.tasks)
-        cls.manifest = f3.build_split_manifest_v3(cls.tasks, family_config=cls.config)
+        cls.manifest = f3.build_split_manifest_v3(
+            cls.tasks, family_config=cls.config, holdout_seed=f3.HOLDOUT_SEED
+        )
 
     def test_01_config_identity(self):
         config = self.config
         self.assertEqual(config.family_id, "F-QE-feasible-v3")
+        # 任务参数层仍为 p4ra-family-v3（数学任务族未变）；包/记录层升 p4ra-family-v4
         self.assertEqual(config.family_version, "p4ra-family-v3")
-        self.assertEqual(config.family_version, f3.FAMILY_VERSION)
+        self.assertEqual(config.family_version, f3.TASK_FAMILY_VERSION)
         self.assertEqual(config.family_version, tf.V3_FAMILY_VERSION)
+        self.assertEqual(f3.FAMILY_VERSION, "p4ra-family-v4")
+        self.assertEqual(f3.LEGACY_FAMILY_VERSIONS, ("p4ra-family-v3",))
+        self.assertEqual(f3.HOLDOUT_SEED, tf.V4_HOLDOUT_SEED)
+        self.assertEqual(f3.HOLDOUT_SPLITS, ("meta_test", "meta_test_ood"))
+        self.assertEqual(f3.HOLDOUT_TASK_COUNT, 30)
         self.assertEqual(int(config.seed), 20261105)
         self.assertAlmostEqual(float(config.radius_base), 0.32, places=12)
         self.assertEqual(
@@ -153,11 +189,12 @@ class V3FamilyIdentityTests(unittest.TestCase):
             f3.assign_v3_task_ids(many)
 
     def test_07_family_fingerprint_stable_and_sensitive(self):
-        self.assertEqual(self.manifest["family_fingerprint"], tf.family_fingerprint(self.config))
+        self.assertEqual(self.manifest["family_fingerprint"], f3.package_family_fingerprint(self.config))
+        self.assertNotEqual(f3.package_family_fingerprint(self.config), tf.family_fingerprint(self.config))
         other_radius = f3.build_v3_family_config(radius_base=0.31)
-        self.assertNotEqual(tf.family_fingerprint(other_radius), self.manifest["family_fingerprint"])
+        self.assertNotEqual(f3.package_family_fingerprint(other_radius), self.manifest["family_fingerprint"])
         other_seed = f3.build_v3_family_config(seed=20261106)
-        self.assertNotEqual(tf.family_fingerprint(other_seed), self.manifest["family_fingerprint"])
+        self.assertNotEqual(f3.package_family_fingerprint(other_seed), self.manifest["family_fingerprint"])
         # v2 旧 fingerprint 保持不变是回归约束，此处 v3 与 v2 必须不同
         v2 = tf.TaskFamilyConfig(
             family_id=tf.V2_FAMILY_ID,
@@ -176,6 +213,7 @@ class V3FamilyIdentityTests(unittest.TestCase):
             family_version="v2",
             radius_base=0.80,
         )
+        self.assertNotEqual(tf.family_fingerprint(v2), tf.family_fingerprint(self.config))
         self.assertNotEqual(tf.family_fingerprint(v2), self.manifest["family_fingerprint"])
 
     def test_08_task_fingerprint_excludes_split_index_seed(self):
@@ -360,8 +398,14 @@ class V3FreezeBundleTests(unittest.TestCase):
         self.assertEqual(frozen["physical_call_count"], 0)
         self.assertEqual(frozen["evaluator"], "synthetic-analytic")
         self.assertEqual(frozen["physics_validation_status"], "NOT_APPLICABLE")
-        self.assertEqual(frozen["family_version"], "p4ra-family-v3")
+        self.assertEqual(frozen["family_version"], "p4ra-family-v4")
         self.assertEqual(frozen["family_version"], f3.FAMILY_VERSION)
+        self.assertEqual(frozen["task_family_version"], f3.TASK_FAMILY_VERSION)
+        self.assertEqual(frozen["holdout_seed"], f3.HOLDOUT_SEED)
+        self.assertEqual(frozen["holdout_splits"], list(f3.HOLDOUT_SPLITS))
+        self.assertEqual(frozen["holdout_task_count"], 30)
+        self.assertEqual(frozen["holdout_reseed"]["policy"], "R-V4-01")
+        self.assertEqual(frozen["holdout_reseed"]["unchanged_splits"], ["meta_train", "meta_validation", "negative_control"])
         self.assertEqual(frozen["task_id_pattern"], f3.TASK_ID_PATTERN.pattern)
         self.assertEqual(frozen["split"]["split_hash"], bundle["split_manifest"]["split_hash"])
         self.assertEqual(frozen["split"]["counts"], dict(f3.SPLIT_COUNTS))
@@ -564,7 +608,12 @@ class V3PreregContractSchemaTests(unittest.TestCase):
             self.assertIn(name, prereg)
         self.assertEqual(prereg["schema_version"], f3.PREREGISTRATION_SCHEMA_VERSION)
         self.assertTrue(f3._PREREG_ID_PATTERN.match(prereg["prereg_id"]))
-        self.assertEqual(prereg["family_version"], "p4ra-family-v3")
+        self.assertEqual(prereg["family_version"], "p4ra-family-v4")
+        self.assertEqual(prereg["family_version"], f3.FAMILY_VERSION)
+        self.assertEqual(prereg["task_family_version"], f3.TASK_FAMILY_VERSION)
+        self.assertEqual(prereg["holdout_seed"], f3.HOLDOUT_SEED)
+        self.assertEqual(prereg["holdout_splits"], list(f3.HOLDOUT_SPLITS))
+        self.assertEqual(prereg["holdout_task_count"], 30)
         self.assertEqual(prereg["split_counts"], dict(f3.SPLIT_COUNTS))
         self.assertEqual(prereg["task_counts"], dict(f3.SPLIT_COUNTS))
         self.assertEqual(len(prereg["split_digest"]), 64)
@@ -840,6 +889,7 @@ class V3RadiusCalibrationTests(unittest.TestCase):
             legacy=make_fake_legacy(),
             radius_base=0.64,
             calibration_status="CALIBRATED",
+            v3_reference_task_fingerprints=v3_reference_fingerprints(),
         )
         cls.default = build_bundle()
 
@@ -862,7 +912,7 @@ class V3RadiusCalibrationTests(unittest.TestCase):
         self.assertNotEqual(calibrated["family_fingerprint"], default["family_fingerprint"])
         self.assertEqual(calibrated["split"]["split_hash"], default["split"]["split_hash"])
         self.assertEqual(
-            calibrated["family_fingerprint"], tf.family_fingerprint(self.calibrated["config"])
+            calibrated["family_fingerprint"], f3.package_family_fingerprint(self.calibrated["config"])
         )
 
     def test_03_config_supplied_must_match_radius(self):
@@ -877,6 +927,128 @@ class V3RadiusCalibrationTests(unittest.TestCase):
                 radius_base=0.64,
                 calibration_status="CALIBRATED",
             )
+
+
+class V4HoldoutReseedTests(unittest.TestCase):
+    """R-V4-01：仅 meta_test/meta_test_ood 重播种为 v4 族；train/val/NC 逐项不变。"""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.bundle = f3.build_freeze_bundle(
+            run_id=RUN_ID,
+            git_sha=GIT_SHA,
+            created_utc=CREATED_UTC,
+            code_sha=CODE_SHA,
+            legacy=make_fake_legacy(),
+            radius_base=0.64,
+            calibration_status="CALIBRATED",
+            v3_reference_task_fingerprints=v3_reference_fingerprints(),
+        )
+        cls.v3_records = v3_package_records()
+        cls.v3_by_id = {record["task_id"]: record for record in cls.v3_records}
+        cls.v4_records = cls.bundle["task_records"]
+        cls.v3_manifest = json.loads(
+            (V3_PACKAGE_ROOT / "meta_task_split.json").read_text(encoding="utf-8")
+        )
+        cls.v3_frozen = json.loads(
+            (V3_PACKAGE_ROOT / "frozen_family.json").read_text(encoding="utf-8")
+        )
+        cls.v3_prereg = json.loads(
+            (V3_PACKAGE_ROOT / "preregistration.json").read_text(encoding="utf-8")
+        )
+
+    def test_01_non_holdout_fingerprints_unchanged(self):
+        for record in self.v4_records:
+            if record["split"] in f3.HOLDOUT_SPLITS:
+                continue
+            reference = self.v3_by_id[record["task_id"]]
+            self.assertEqual(record["task_fingerprint"], reference["task_fingerprint"], record["task_id"])
+            self.assertEqual(record["params_digest"], reference["params_digest"], record["task_id"])
+            self.assertEqual(record["seed"], reference["seed"], record["task_id"])
+        holdout = [r for r in self.v4_records if r["split"] in f3.HOLDOUT_SPLITS]
+        self.assertEqual(len(holdout), 30)
+
+    def test_02_holdout_fingerprints_all_changed_and_zero_intersection(self):
+        holdout = [r for r in self.v4_records if r["split"] in f3.HOLDOUT_SPLITS]
+        v4_holdout_fps = {r["task_fingerprint"] for r in holdout}
+        self.assertEqual(len(v4_holdout_fps), 30)
+        for record in holdout:
+            self.assertNotEqual(record["task_fingerprint"], self.v3_by_id[record["task_id"]]["task_fingerprint"], record["task_id"])
+        v3_fps = {record["task_fingerprint"] for record in self.v3_records}
+        self.assertEqual(v3_fps & v4_holdout_fps, set())
+        holdout_block = self.bundle["isolation_report"]["holdout_fingerprint_intersection"]
+        self.assertEqual(holdout_block["assertion"], "HOLDOUT_FINGERPRINT_ZERO_INTERSECTION")
+        self.assertEqual(holdout_block["status"], "PASS")
+        self.assertEqual(holdout_block["evidence_class"], "SUBSTANTIVE")
+        self.assertEqual(holdout_block["holdout_task_count"], 30)
+        self.assertEqual(holdout_block["v3_reference_task_fingerprint_count"], 120)
+        self.assertEqual(holdout_block["overlap_count"], 0)
+        self.assertTrue(f3.verify_isolation_report(self.bundle["isolation_report"]))
+
+    def test_03_split_hash_unchanged_task_id_namespace_stable(self):
+        ids = [task.task_id for task in self.bundle["tasks"]]
+        self.assertEqual(len(ids), 120)
+        self.assertEqual(len(set(ids)), 120)
+        self.assertEqual(len(set(ids) & set(self.v3_by_id)), 120)
+        self.assertEqual(
+            self.bundle["split_manifest"]["split_hash"],
+            self.v3_manifest["split_hash"],
+        )
+        self.assertEqual(self.bundle["split_manifest"]["family_version"], f3.FAMILY_VERSION)
+        self.assertEqual(self.bundle["split_manifest"]["task_family_version"], f3.TASK_FAMILY_VERSION)
+
+    def test_04_legacy_v3_package_still_verifies(self):
+        self.assertTrue(f3.verify_frozen_family_v3(self.v3_frozen))
+        self.assertTrue(f3.verify_preregistration_v3(self.v3_prereg, self.v3_frozen))
+        self.assertTrue(f3.verify_split_manifest_v3(self.v3_manifest))
+        self.assertEqual(self.v3_frozen["family_version"], "p4ra-family-v3")
+        self.assertNotIn("holdout_fingerprint_intersection", f3.build_isolation_report(
+            v3_task_ids=[record["task_id"] for record in self.v3_records],
+            v3_task_fingerprints=[record["task_fingerprint"] for record in self.v3_records],
+            legacy=make_fake_legacy(),
+            created_utc=CREATED_UTC,
+        ))
+
+    def test_05_v4_tamper_fail_closed(self):
+        for mutation in (
+            lambda payload: payload.update({"holdout_seed": 20261107}),
+            lambda payload: payload.update({"holdout_splits": ["meta_test"]}),
+            lambda payload: payload.update({"task_family_version": "p4ra-family-v4"}),
+            lambda payload: payload.update({"holdout_task_count": 20}),
+            lambda payload: payload["holdout_reseed"].update({"policy": "R-V4-99"}),
+        ):
+            payload = json.loads(json.dumps(self.bundle["frozen_family"]))
+            mutation(payload)
+            body = {key: value for key, value in payload.items() if key != "sha256"}
+            payload["sha256"] = f3.digest(body)
+            with self.subTest(mutation=mutation):
+                with self.assertRaises(f3.FamilyV3Error):
+                    f3.verify_frozen_family_v3(payload)
+        for mutation in (
+            lambda payload: payload.update({"holdout_seed": 20261107}),
+            lambda payload: payload.update({"holdout_splits": ["meta_test"]}),
+            lambda payload: payload.update({"task_family_version": "p4ra-family-v4"}),
+        ):
+            payload = json.loads(json.dumps(self.bundle["preregistration"]))
+            mutation(payload)
+            body = {key: value for key, value in payload.items() if key != "sha256"}
+            payload["prereg_digest"] = f3.compute_prereg_digest(body | {"sha256": None})
+            body = {key: value for key, value in payload.items() if key != "sha256"}
+            payload["sha256"] = f3.digest(body)
+            with self.subTest(mutation=mutation):
+                with self.assertRaises(f3.FamilyV3Error):
+                    f3.verify_preregistration_v3(payload, self.bundle["frozen_family"])
+
+    def test_06_v4_identity_bound_across_artifacts(self):
+        frozen = self.bundle["frozen_family"]
+        prereg = self.bundle["preregistration"]
+        manifest = self.bundle["split_manifest"]
+        self.assertEqual(manifest["family_fingerprint"], frozen["family_fingerprint"])
+        self.assertEqual(prereg["family_fingerprint"], frozen["family_fingerprint"])
+        self.assertEqual(prereg["split_hash"], frozen["split"]["split_hash"])
+        self.assertEqual(prereg["frozen_family_sha256"], frozen["sha256"])
+        self.assertEqual(frozen["holdout_seed"], prereg["holdout_seed"])
+        self.assertEqual(frozen["holdout_splits"], prereg["holdout_splits"])
 
 
 class BudgetFairnessTests(unittest.TestCase):

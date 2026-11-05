@@ -150,6 +150,30 @@ def load_frozen_package(root: str | Path) -> dict[str, Any]:
     prereg = load_json_file(paths["preregistration.json"])
     if not isinstance(tasks_payload, list):
         raise S1RunnerError("tasks.json 必须是任务记录列表")
+    family_version = str(frozen.get("family_version", ""))
+    allowed_family_versions = (fv3.FAMILY_VERSION, *fv3.LEGACY_FAMILY_VERSIONS)
+    if family_version not in allowed_family_versions:
+        raise S1RunnerError(
+            "冻结包 family_version 非法: "
+            + repr(family_version)
+            + "，允许 "
+            + repr(list(allowed_family_versions))
+        )
+    legacy_frozen_package = family_version in fv3.LEGACY_FAMILY_VERSIONS
+    task_family_version = str(frozen.get("task_family_version", fv3.TASK_FAMILY_VERSION))
+    if task_family_version != fv3.TASK_FAMILY_VERSION:
+        raise S1RunnerError(
+            "冻结包 task_family_version 非法: "
+            + repr(task_family_version)
+            + "，要求 "
+            + repr(fv3.TASK_FAMILY_VERSION)
+        )
+    if str(split.get("family_version", "")) != family_version:
+        raise S1RunnerError("meta_task_split.json family_version 与 frozen_family.json 不一致")
+    if str(prereg.get("family_version", "")) != family_version:
+        raise S1RunnerError("preregistration.json family_version 与 frozen_family.json 不一致")
+    if not legacy_frozen_package and str(prereg.get("task_family_version", "")) != fv3.TASK_FAMILY_VERSION:
+        raise S1RunnerError("preregistration.json task_family_version 与任务族版本不一致")
     fv3.verify_split_manifest_v3(split)
     fv3.verify_frozen_family_v3(frozen)
     fv3.verify_preregistration_v3(prereg, frozen)
@@ -172,6 +196,12 @@ def load_frozen_package(root: str | Path) -> dict[str, Any]:
         "prereg_id": str(prereg.get("prereg_id", "")),
         "prereg_digest": str(prereg["prereg_digest"]),
         "analysis_plan_digest": str(frozen["analysis_plan_digest"]),
+        "task_family_version": task_family_version,
+        "legacy_frozen_package": legacy_frozen_package,
+        "confirmatory_eligible": not legacy_frozen_package,
+        "holdout_seed": frozen.get("holdout_seed"),
+        "holdout_splits": list(frozen.get("holdout_splits") or ()),
+        "holdout_task_count": frozen.get("holdout_task_count"),
         "radius_base": float(frozen["radius_base"]),
         "reference_solution": str(frozen["reference_solution"]),
         "task_counts": counts,
@@ -198,6 +228,10 @@ def load_frozen_package(root: str | Path) -> dict[str, Any]:
         "prereg": prereg,
         "identity": identity,
         "raw_sha256": raw_sha256,
+        "family_version": family_version,
+        "task_family_version": task_family_version,
+        "legacy_frozen_package": legacy_frozen_package,
+        "confirmatory_eligible": not legacy_frozen_package,
     }
 
 
@@ -460,7 +494,7 @@ def run_single(
         "schema_version": S1_RECORD_SCHEMA_VERSION,
         "run_id": run_id,
         "run_group_id": context.run_id,
-        **{name: str(value) for name, value in context.identity.items()},
+        **frozen_identity_for_run({"identity": context.identity}),
         "split": str(split or task.split),
         "task_id": task.task_id,
         "arm": arm,
@@ -852,6 +886,14 @@ def initial_design_overlap(rows_a: Sequence[str], rows_b: Sequence[str]) -> dict
     }
 
 
+def _pair_key(arm_a: str, arm_b: str) -> str:
+    """把臂对规范化为预注册顺序（required pairs 用冻结顺序，其余按字典序）。"""
+    for left, right in IDENTIFIABILITY_REQUIRED_PAIRS:
+        if {arm_a, arm_b} == {left, right}:
+            return f"{left}|{right}"
+    return "|".join(sorted((str(arm_a), str(arm_b))))
+
+
 def ranking_identifiability_report(
     records: Sequence[Mapping[str, Any]],
     *,
@@ -859,8 +901,10 @@ def ranking_identifiability_report(
 ) -> dict[str, Any]:
     """按 (task,B,K,meta_seed) 组统计模型打分臂初始设计重叠率并登记可辨识性。
 
-    判定（预注册）：组内两两重叠率的最大值与平均值同时 >=90% 时登记
-    RANKING_INDISTINGUISHABLE（该组不用于推断），否则 IDENTIFIABLE。
+    判定（预注册 R-V4-02/R-V4-04）：pair 级 overlap>=threshold 即
+    STRUCTURALLY_IDENTICAL（pair_identifiable=False，不进入 benefit/harm 推断）；
+    组级 max/mean 同时 >=threshold 时登记 RANKING_INDISTINGUISHABLE（仅描述，
+    不作推断依据），否则 IDENTIFIABLE。
     """
     if not 0.0 < float(threshold) <= 1.0:
         raise S1RunnerError(f"threshold 必须在 (0,1]，实际 {threshold!r}")
@@ -884,6 +928,10 @@ def ranking_identifiability_report(
         f"{left}|{right}": 0 for left, right in IDENTIFIABILITY_REQUIRED_PAIRS
     }
     status_counts: dict[str, int] = {}
+    pair_status_counts: dict[str, dict[str, int]] = {
+        f"{left}|{right}": {"IDENTIFIABLE": 0, "STRUCTURALLY_IDENTICAL": 0}
+        for left, right in IDENTIFIABILITY_REQUIRED_PAIRS
+    }
     for key in sorted(grouped):
         arms = grouped[key]
         names = sorted(arms)
@@ -894,8 +942,26 @@ def ranking_identifiability_report(
         for index, arm_a in enumerate(names):
             for arm_b in names[index + 1:]:
                 overlap = initial_design_overlap(arms[arm_a], arms[arm_b])
-                rates.append(float(overlap["overlap_rate"]))
-                pairwise.append({"arm_a": arm_a, "arm_b": arm_b, **overlap})
+                rate = float(overlap["overlap_rate"])
+                rates.append(rate)
+                pair_identifiable = rate < float(threshold)
+                pair_status = (
+                    "IDENTIFIABLE" if pair_identifiable else "STRUCTURALLY_IDENTICAL"
+                )
+                pair_status_counts.setdefault(
+                    _pair_key(arm_a, arm_b),
+                    {"IDENTIFIABLE": 0, "STRUCTURALLY_IDENTICAL": 0},
+                )[pair_status] += 1
+                pairwise.append(
+                    {
+                        "arm_a": arm_a,
+                        "arm_b": arm_b,
+                        **overlap,
+                        "threshold": float(threshold),
+                        "pair_identifiable": pair_identifiable,
+                        "structural_status": pair_status,
+                    }
+                )
                 for left, right in IDENTIFIABILITY_REQUIRED_PAIRS:
                     if {arm_a, arm_b} == {left, right}:
                         pair_coverage[f"{left}|{right}"] += 1
@@ -927,6 +993,7 @@ def ranking_identifiability_report(
         "group_count": len(groups),
         "status_counts": status_counts,
         "pair_coverage": pair_coverage,
+        "pair_status_counts": pair_status_counts,
         "groups": groups,
     }
 

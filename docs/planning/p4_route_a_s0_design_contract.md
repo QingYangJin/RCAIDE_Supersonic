@@ -1,10 +1,10 @@
 # P4 路线A S0 数据合同与预注册规范（中文草案）
 
-> 状态：S0-2 修订（v1.1），供 Lead、A1、A2、A5 审阅；**不构成新物理授权**。
-> 依据：Issue #7（D-P4-003）§2 S0、§3、§4；docs/planning/p4_route_a_stage_improvement_plan_20261105.md（commit a331639e）；docs/planning/p4_route_a_s0_2_decisions_20261105.md（D-S0-2-01..09，Lead 裁定，唯一可引用口径）；A5 S0 审阅 `<EXT>/p4-route-a/a5/S0_A5_review.md`（APPROVE_FOR_S1_PREP，0 blocker / 4 major / 10 minor）。
-> 工作树：本仓库 @ a331639e（v1.1 修订时点）。
-> 作者：A4（任务 task-197）。本合同约束新版本数据与运行，**不修改任何旧冻结 run**。
-> v1.1 变更：在合同侧关闭 A5-S0-M01（五 split）、A5-S0-M02（端点 ID）、A5-S0-m01（stopping_rules 每项长度口径）、A5-S0-m02（行号引用）、A5-S0-m09（task_id 正则）；预算映射与端点语义按 D-S0-2-03/04 固化，详细实现口径以 Lead 统计计划 v1.1 为准。
+> 状态：S0-3 / v4 修订（v1.2），供 Lead、A1、A2、A5 审阅；**不构成新物理授权**。
+> 依据：Issue #7（D-P4-003）§2 S0、§3、§4；docs/planning/p4_route_a_stage_improvement_plan_20261105.md（commit a331639e）；docs/planning/p4_route_a_s0_2_decisions_20261105.md（D-S0-2-01..07，Lead 裁定）；docs/planning/p4_route_a_s1_v4_remediation_rulings_20261105.md（R-V4-01..06，2026-11-05 Lead 裁定，sha256 f71e32a9…）；A5 S0 审阅 `<EXT>/p4-route-a/a5/S0_A5_review.md`；A5 S1 rev2 复审 `<EXT>/p4-route-a/a5/S1_code_review_rev2.md`（CHANGES_REQUESTED，2 blocker / 4 major / 6 minor，sha256 d5a0979a…）。
+> 工作树：本仓库 @ c0cb2cd（v1.2 修订时点；branch research/p4-route-a-s1）。
+> 作者：A4（任务 task-231）。本合同约束新版本数据与运行，**不修改任何旧冻结 run**；旧 S0-2 包只读。
+> v1.2 变更：按 A5 S1 rev2（S1R2-B01/B02）与 R-V4-01..06，将确证性任务族升级为 p4ra-family-v4（family_id 仍 F-QE-feasible-v3），新增 holdout_seed=20261106 / holdout_splits 与 S0-3 冻结包规则；旧 p4ra-family-v3/S0-2 包降为只读历史复现；预注册 C5-B 结构性不可辨识规则（C5 不进 benefit/harm 与 Holm，pair-level overlap>=0.90 判 STRUCTURALLY_IDENTICAL）；新增 FC-14/FC-15。v1.1 已关闭 A5-S0-M01/M02/m01/m02/m09，预算与端点语义继续有效。
 
 ## 1. 目的与适用范围
 
@@ -25,7 +25,9 @@
 | task_id | 全局唯一、稳定、可追溯的任务标识；格式与正则见 §3，新任务族不得与旧 M2/M5/M6 任务重名 |
 | family_version | 任务分布版本；冻结后不得在不升版本的情况下改变生成规则 |
 | split | 五值枚举：meta_train / meta_validation / meta_test / meta_test_ood / negative_control；规范见 §3.2 |
-| split_digest | 覆盖全部五个 split（120 任务）的 task_id 有序列表 canonical digest；与 family v3 的 split_hash 覆盖集合一致 |
+| split_digest | 覆盖全部五个 split（120 任务）的 task_id 有序列表 canonical digest；与 family v4 的 split_hash 覆盖集合一致 |
+| holdout_seed | 仅用于 meta_test 20 + meta_test_ood 10 重采样的种子；v4 固定 20261106；不得用于 meta_train/meta_validation/negative_control |
+| S0-3 冻结包 | v4 确证性冻结包，命名 `p4ra-s0-3-freeze-<UTC>Z`；旧 S0-2 包（p4ra-s0-2-freeze-20261105T072500Z）只读，仅历史复现/负控 |
 | B | 单个 run 的**真实合成评价**总预算（函数评价次数），不含代理前向/训练/适应墙钟 |
 | K | 部署时允许的已评价支持样本数；K 次评价必须计入 B |
 | support | 目标任务上已由真实合成评估器评价过的 K 个设计点及其目标/约束标签；同一任务的 B 个评价中前 K 个固定为支持评价 |
@@ -41,10 +43,11 @@
 
 | 字段 | 类型 | 必填 | 约束/说明 |
 |---|---|---|---|
-| schema_version | string | 是 | 固定 "p4ra-task-v1"；不兼容变更必须升 v2。S0-2 冻结前修订枚举不升版；若冻结前已生成任何 v1 工件则必须升 v2（当前无） |
-| task_id | string | 是 | 唯一格式：`^p4ra-FQE3-v3-(TR|VA|TE|OD|NC)-[0-9]{3}$`；split 代码见 §3.2；与 M2/M5/M6 全部 task_id 零交集（程序断言，非空即 fail-closed） |
-| family_id | string | 是 | 固定 "F-QE-feasible-v3"；与 family_version 绑定 |
-| family_version | string | 是 | 固定 "p4ra-family-v3"；family_seed=20261105；冻结后不得改 |
+| schema_version | string | 是 | 固定 "p4ra-task-v1"；不兼容变更必须升 v2。S0-3 冻结前修订枚举不升版；若冻结前已生成任何 v1 工件则必须升 v2（当前无） |
+| task_id | string | 是 | 唯一格式：`^p4ra-FQE3-v3-(TR|VA|TE|OD|NC)-[0-9]{3}$`；v4 接受沿用该字面量，但必须同时携带 family_version=p4ra-family-v4；split 代码见 §3.2；与 M2/M5/M6 全部 task_id 零交集（程序断言，非空即 fail-closed） |
+| family_id | string | 是 | 固定 "F-QE-feasible-v3"；与 family_version 绑定；v4 仅重采样 holdout，解析分布未变，不得称 v4 为新公式族 |
+| family_version | string | 是 | 固定 "p4ra-family-v4"；family_seed=20261105；holdout_seed=20261106；冻结后不得改，禁止 v3/v4 跨版本混用 |
+| holdout_seed | int | 是（仅 TE/OD） | 固定 20261106；仅 meta_test / meta_test_ood 任务携带，并用于该两类 split 的重采样；其他 split 不得用该字段改 seed |
 | task_fingerprint | string(64 hex) | 是 | 任务内容 canonical digest（不含 split/seed） |
 | split | enum | 是 | 五值：meta_train / meta_validation / meta_test / meta_test_ood / negative_control（§3.2）；同一 task_id 不得跨 split |
 | seed | int ≥0 | 是 | 任务生成种子；不得与 split 混用 |
@@ -86,17 +89,18 @@
 2. 合同 split enum 必须为上述五值；FC-06/FC-07 的跨 split 唯一/零交集检查覆盖全部 120 任务。
 3. 主统计分母只有 meta_test 的 20 个任务；meta_test_ood 与 negative_control 单独成表，不得与主结论合并；任务级聚合按 §3.3 第 7 条。
 4. 任务数 60/20/20/10/10 必须在 preregistration.split_counts 与冻结清单中一致；任何增减须在打开 meta_test 前完成并重签 split_digest。
+5. v4 只对 meta_test（20）与 meta_test_ood（10）使用 holdout_seed=20261106 重采样；meta_train 60 / meta_validation 20 / negative_control 10 的 task_id→task_fingerprint 映射与 S0-2 逐项相同；五集合 task_id 仍两两互斥；主统计仍为 meta_test 20 任务，不做事后任务剔除。
 
 ### 3.3 主终点 ID 与语义登记（关闭 A5-S0-M02；依据 D-S0-2-02/04）
 
 **规范 ID（唯一，禁止别名静默映射）**：`best_feasible_value`、`gap_to_reference`、`first_feasible_eval_index`、`feasible_hit_rate`。
 
-- `first_feasible_evaluation_index` 为**禁用别名**；合同、统计计划、family v3、prereg schema、分析代码、CSV 列名与图表键必须使用统一 ID。
+- `first_feasible_evaluation_index` 为**禁用别名**；合同、统计计划、family_id=F-QE-feasible-v3 的任务元数据、prereg schema、分析代码、CSV 列名与图表键必须使用统一 ID。
 - preregistration.primary_endpoints 只允许上述 4 个 ID，且不得为空。
 - ENDPOINT_ROW_KEYS 必须显式登记主端点键与附加字段键，至少覆盖：4 个规范 ID、`first_feasible_in_support`、`first_feasible_after_support_index`、`feasible_hit_rate_non_support`、`n_nonnull`、`null_rate`。统计 CSV 生成器与图表脚本只允许读取登记键。
 - 合成端到端测试必须断言该端点在统计 CSV 中的非空覆盖数与预期一致（参考 M5 A5-M5-01：键名不一致导致 4800/4800 全 null 的真实故障模式）。
 
-端点语义（S0-2 冻结，统计实现以 Lead 统计计划 v1.1 为准；本合同固化字段与公式）：
+端点语义（S0-3 沿用 S0-2 统计口径，不因 holdout 重播种改变；统计实现以 Lead 统计计划 v1.1 为准；本合同固化字段与公式）：
 
 | 端点/字段 | 定义 |
 |---|---|
@@ -145,13 +149,14 @@
 
 run_config 与 summary 至少包含：budget.arm_id、budget.B_total、budget.K_support、budget.initial_designs=8、budget.standard_bo_calls=B−8、budget.support_evaluations_counted=true、budget.billable_must_equal_B=true、evaluations.billable（必须 = B）、evaluations.non_billable、proxy_scoring_cost.wall_s、adaptation_wall_s、physical_call_count、physical_call_sources=[]。
 
-## 5. 任务族隔离与旧 holdout 规则
+## 5. 任务族隔离、v4 holdout 与旧包只读规则
 
-1. **新任务族**必须使用新的 family_version（p4ra-family-v3）与全新 task_id 命名空间；禁止复用 M2/M5/M6 的 task_id、任务生成种子序列与 meta_test 任务；程序断言与旧 task_id 零交集。
-2. 旧 M2/M5/M6 的 meta_test 已公开，只能用于**诊断性复现/历史对照**，不得作为新方法“未见盲测”；新方法主结论只能来自新冻结 family_version 的独立 meta_test。
-3. split 必须是任务级切分：同一 task_id 不能同时出现在五个 split 任一之中；split_digest 覆盖全部五个 split 的 120 个任务并由程序计算、复核。
-4. 任务数（60/20/20/10/10）、B、seed 数量必须在 preregistration 中冻结；打开 meta_test 后不得增删任务或改终点；OOD/负控结果不得并入主结论。
-5. 旧冻结 run 的 run_config.json/summary.json/data_manifest.json 与产物文件不得修改；新版本只新增文件与新的 digest 记录。
+1. **新任务族**使用 family_version=p4ra-family-v4（family_id 仍 F-QE-feasible-v3）；仅重采样 holdout 两类集合（meta_test 20 + meta_test_ood 10），meta_train 60 / meta_validation 20 / negative_control 10 的 task_id→task_fingerprint 逐位不变。v4 的 holdout task_fingerprint 必须与 v3 官方包 120 个 task_fingerprint 零交集（程序断言，非空即 fail-closed）；对旧 M2/M5/M6 的 280 个 legacy task_id 只做 task_id 零交集（旧清单无 task_fingerprint 字段）。
+2. 旧 M2/M5/M6 的 meta_test 已公开，只能用于**诊断性复现/历史对照**；旧 p4ra-family-v3 / p4ra-s0-2-freeze-20261105T072500Z 包保持只读可验证，仅用于历史复现/负控，**不得用于 S1 确证性 formal**，也不得作为“新未见盲测”。
+3. 确证性 S1 只接受新的 S0-3 冻结包 `p4ra-s0-3-freeze-<UTC>Z`；pack 内 frozen_family/prereg/freeze_summary/digest_manifest 必须写入 family_version=p4ra-family-v4、holdout_seed=20261106、run_id、git_sha、code_sha，并禁止 v3/v4 跨版本混用。
+4. split 必须是任务级切分：同一 task_id 不能同时出现在五个 split 任一之中；split_digest 覆盖全部五个 split 的 120 个任务并由程序计算、复核；五集合 task_id 两两互斥。
+5. 任务数（60/20/20/10/10）、B、seed 数量必须在 preregistration 中冻结；打开 meta_test 后不得增删任务或改终点；OOD/负控结果不得并入主结论；不做事后任务剔除。
+6. 旧冻结 run 的 run_config.json/summary.json/data_manifest.json 与产物文件不得修改；新版本只新增文件与新的 digest 记录。旧 S0-2 白名单只允许 legacy 只读复现，不得被改写或重签。
 
 ## 6. 确定性 digest 规范
 
@@ -166,7 +171,7 @@ run_config 与 summary 至少包含：budget.arm_id、budget.B_total、budget.K_
 | digest 名称 | 覆盖内容 | 生成时机 |
 |---|---|---|
 | task_fingerprint | 任务定义（不含 split/seed） | 任务生成时 |
-| family_digest | 整个 family 生成配置 | family 冻结时 |
+| family_digest | 整个 family 生成配置（含 family_version、family_seed、holdout_seed、生成规则与 evaluator 配置） | family 冻结时 |
 | split_digest | 全部五个 split（120 任务）的 task_id 有序列表，按 §3.2 表顺序串联 canonical JSON 后哈希 | 冻结时 |
 | prereg_digest | preregistration.json canonical digest | 冻结时 |
 | run_config_digest | run_config.json canonical digest | run 启动前 |
@@ -187,9 +192,13 @@ run_config 与 summary 至少包含：budget.arm_id、budget.B_total、budget.K_
 |---|---|---|---|
 | schema_version | string | 是 | 固定 p4ra-prereg-v1（本阶段冻结名）；若复用 A1 已实现的 p4-m5-prereg-v2 校验路径，须在报告中显式声明并保持 stopping_rules 规则一致（D-S0-2-06） |
 | prereg_id | string | 是 | 唯一；与 family_version 关联 |
-| family_version | string | 是 | 固定 p4ra-family-v3；与任务文件一致 |
+| family_version | string | 是 | 固定 p4ra-family-v4；与任务文件一致；禁止 v3/v4 跨版本混用 |
+| family_id | string | 是 | 固定 F-QE-feasible-v3；解析分布未变，仅 holdout 重采样 |
+| holdout_seed | int | 是 | 固定 20261106；仅用于 meta_test 20 + meta_test_ood 10 的重采样 |
+| holdout_splits | object | 是 | 必须精确为 {"meta_test":20,"meta_test_ood":10}；其余 split 计数不变，且与 split_counts 一致 |
+| holdout_package | string | 是 | v4 冻结包 run_id，格式 `p4ra-s0-3-freeze-<UTC>Z`；旧 p4ra-s0-2-freeze-20261105T072500Z 仅 legacy 只读，不得作为 S1 确证输入 |
 | split_counts | object | 是 | 必须精确为 {meta_train:60, meta_validation:20, meta_test:20, meta_test_ood:10, negative_control:10}，合计 120 |
-| split_digest | string(64 hex) | 是 | 覆盖全部五个 split 的 120 个 task_id（§3.2 顺序）；与 family v3 split_hash 一致 |
+| split_digest | string(64 hex) | 是 | 覆盖全部五个 split 的 120 个 task_id（§3.2 顺序）；与 family v4 split_hash 一致 |
 | task_id_regex | string | 是 | 固定 `^p4ra-FQE3-v3-(TR|VA|TE|OD|NC)-[0-9]{3}$`；附“与 M2/M5/M6 零交集”程序断言 |
 | frozen_at_utc | string | 是 | ISO-8601；冻结后不得改 |
 | primary_endpoints | [enum] | 是 | 只允许 best_feasible_value、gap_to_reference、first_feasible_eval_index、feasible_hit_rate；禁止别名 first_feasible_evaluation_index；不得为空 |
@@ -199,8 +208,10 @@ run_config 与 summary 至少包含：budget.arm_id、budget.B_total、budget.K_
 | seeds | object | 是 | meta_train_seeds≥3、optimization_seeds≥10 |
 | stopping_rules | [string] | 是 | **必须是非空 list[str]，每项 strip 后长度≥2**；禁止 str 被序列化成单字符数组；新 run 标 v1 一律 fail-closed |
 | failure_rules | [string] | 是 | 明确失败/停止/不作结论的条件 |
-| multiple_comparison | object | 是 | 方法与家族；预注册 |
-| analysis_plan_digest | string(64 hex) | 是 | 分析脚本 canonical digest；脚本必须使用 ENDPOINT_ROW_KEYS 同一组 ID |
+| c5_policy | object | 是 | 固定 {mode:"C5_B_STRUCTURAL_IDENTIFIABILITY", overlap_threshold:0.90, c5_benefit_harm_inference:false, c5_in_holm:false, min_estimable_tasks:10, below_min_conclusion:"NOT_ESTIMABLE_STRUCTURAL_IDENTIFIABILITY"}；规则见 §7.2 |
+| structural_identifiability | object | 是 | pair-level 预注册：每个 (task,B,K,meta_seed) 的每个臂对计算初始设计行 digest 的 overlap_rate；>=0.90 判该臂对在该组 STRUCTURALLY_IDENTICAL；排除出 benefit/harm 推断；报告 structural_exclusion_counts 与 C5 可估计任务数；不做事后任务剔除 |
+| multiple_comparison | object | 是 | 方法与家族；预注册；C5 不进入任何 benefit/harm 推断与 Holm 族（C5-B） |
+| analysis_plan_digest | string(64 hex) | 是 | 分析脚本 canonical digest；脚本必须使用 ENDPOINT_ROW_KEYS 同一组 ID；必须加载并消费每个 source run 的 identifiability_report.json，缺失即 fail-closed |
 | prereg_digest | string(64 hex) | 是 | 自身 canonical digest（计算时置空该字段） |
 
 ### 7.1 旧缺陷修正（只作用于新版本）
@@ -209,6 +220,14 @@ run_config 与 summary 至少包含：budget.arm_id、budget.B_total、budget.K_
 - 新版本必须按上表做类型校验：stopping_rules 为 list[str] 且每项 strip 后 len≥2；反序列化后再次校验。旧冻结 run 的 preregistration.json 保持原样，不修补、不重写；修正只在新 schema 与新增校验中体现。
 - legacy 路径（D-S0-2-06）：legacy v1 仅用于只读验证历史 M5；新 run 目录/新 prereg 标 v1 → fail-closed；校验结果记录 legacy_warning 供 A5/Lead 确认。
 - 校验失败抛 DataContractError/FeasibleV2Error 类异常并 fail-closed，不得用默认值静默填充。
+
+### 7.2 C5-B 结构性不可辨识预注册规则（R-V4-02 / R-V4-04）
+
+1. 对每个 `(task, budget_B, K, meta_seed)` 组，对每个臂对计算初始设计行 digest 的 `overlap_rate`（定义：交集行数 / 较大集合行数；实现须与 A5 S1R2-m03 口径一致）；`overlap_rate >= 0.90` 判该臂对在该组 `STRUCTURALLY_IDENTICAL`。
+2. 结构性相同臂对不进入 benefit/harm 推断，只作描述性记录；不做事后任务剔除；每个比较的排除率必须在 aggregate/CSV 中披露。
+3. C5（FOMAML-KSHOT-BO vs FOMAML-ZERO-BO，K>0）**不进入任何 benefit/harm 推断与 Holm 族**，只报告结构克隆率/描述性数值；若可推断组覆盖任务数 < 10，总结论固定为 `NOT_ESTIMABLE_STRUCTURAL_IDENTIFIABILITY`，不得声称适应增益或损害。
+4. `identifiability_report.json` 必须逐 pair 输出 `pair_identifiable`、`structural_status`（IDENTIFIABLE / STRUCTURALLY_IDENTICAL）、`threshold`；顶层输出 `pair_status_counts`；组级 `ranking_status` 仅作描述、不作推断依据。分析脚本必须加载每个 source run 的该报告，校验 schema、组覆盖与 `(task,B,K,meta_seed,arm)` 一致；formal 缺失即 fail-closed；aggregate/CSV 输出 `structural_exclusion_counts` 与 C5 可估计任务数。
+5. C5-B 不改变总体结论仍只依赖 C1 的预注册规则；C5-B 的负结果/不可估计本身不得被写成“MAML 无效”或“MAML 有效”。
 
 ## 8. Fail-closed 条件（必须实现为程序化断言）
 
@@ -227,6 +246,8 @@ run_config 与 summary 至少包含：budget.arm_id、budget.B_total、budget.K_
 | FC-11 | 端点 ID 不在 ENDPOINT_ROW_KEYS、prereg 使用禁用别名 first_feasible_evaluation_index，或统计列键未登记 | 拒绝运行/作废统计 |
 | FC-12 | 新 run 使用 legacy prereg schema v1 | 拒绝启动 |
 | FC-13 | task_id 不匹配 §3 正则，或 family_id/family_version 与冻结值不一致 | 拒绝生成/启动 |
+| FC-14 | 使用旧 p4ra-family-v3/S0-2 包做 S1 确证、holdout_seed/holdout_splits 缺失或与 20261106 不一致、或把 v3/v4 任务/工件跨版本混用 | 拒绝启动；旧包只允许历史复现/负控 |
+| FC-15 | 在 C5-B 下仍对 C5 做 benefit/harm/Holm 推断，或 C5 可估计任务数<10 仍给 C5 结论 | 拒绝/作废 C5 推断，只保留结构性诊断 |
 
 事件 JSON 至少含：event_code、run_id、task_id、detected_at_utc、evidence_path、action_taken、notified_to=[Lead,A5]。
 
@@ -244,22 +265,23 @@ run_config 与 summary 至少包含：budget.arm_id、budget.B_total、budget.K_
 
 ## 10. 验收标准（S0 可检查项）
 
-1. 本合同被 Lead/A5 审阅，字段与 Issue #7 §2 S0 要求逐条对应；A5-S0-M01/M02/m01/m02/m09 的合同侧关闭条件在本版可逐条核对（§3.2、§3.3、§7、§7.1）。
-2. 新版本 schema 具备 §7 类型校验与 §8 至少 FC-01/02/03/05/06/07/11/12/13 的程序化断言；五 split enum 与 120 任务计数有 schema 校验。
-3. 端点 ID 统一为 4 个规范 ID，ENDPOINT_ROW_KEYS 已登记，存在“禁用别名/未登记键 → fail-closed”的负控测试，并有合成端到端非空覆盖断言。
+1. 本合同（v1.2）被 Lead/A5 审阅，字段与 Issue #7 §2 S0 及 R-V4-01..06 逐条对应；A5-S0-M01/M02/m01/m02/m09 与本版 §7.2/FC-14/FC-15 可逐条核对（§3.2、§3.3、§5、§7、§7.1、§7.2）。
+2. 新版本 schema 具备 §7 类型校验与 §8 至少 FC-01/02/03/05/06/07/11/12/13/14/15 的程序化断言；五 split enum、120 任务计数、family_version=p4ra-family-v4、holdout_seed=20261106、holdout_splits 有 schema 校验。
+3. 端点 ID 统一为 4 个规范 ID，ENDPOINT_ROW_KEYS 已登记，存在“禁用别名/未登记键 → fail-closed”的负控测试，并有合成端到端非空覆盖断言；C5-B 下 C5 不进入 benefit/harm 与 Holm。
 4. 五臂 × K∈{0,1,3,5} × B∈{64,128} 共 40 组预算公平性单测通过（billable=B），K 未计入即 fail-closed；K=0 的 FOMAML-Kshot/ZeroShot CLONE 识别测试通过。
-5. 旧 M2/M5/M6 与 D-12D-005 工件的 SHA256 前后一致（A3 出具只读证明）。
-6. 新任务族与旧 task_id 零交集（程序输出 split/family 清单），task_id 正则单测通过。
+5. 旧 M2/M5/M6、D-12D-005 与旧 p4ra-s0-2-freeze-20261105T072500Z 的 SHA256 前后一致（A3 出具只读证明）；旧包不得改写、不得用于 S1 确证。
+6. v4 新任务族与旧 task_id 零交集（程序输出 split/family 清单），task_id 正则单测通过；v4 的 meta_test/meta_test_ood task_fingerprint 与 v3 官方包 120 个 fingerprint 零交集（legacy 280 个 task_id 仅做 task_id 零交集），meta_train/meta_validation/negative_control 映射与 S0-2 逐项相同。
 7. 所有物理调用计数为 0，且 run_config 留痕。
 8. 任一 fail-closed 条件均能产生事件 JSON 与中文报告。
 
 ## 11. 待决策项
 
-1. A1 v3 生成器与 frozen_family/prereg/isolation/determinism 冻结包完成后，由 A5 执行 S0-2 复审；通过后才可申请 APPROVE_FOR_S1_FORMAL。
-2. Full MAML 元梯度一致性阈值与统计判定规则（S2 前冻结）。
-3. 是否允许 S1 pilot 后按计划扩大合成训练（仍需 physical_call_count=0）。
-4. 数据合同是否在 S4 复用同一 schema_version，或另立 p4ra-aero-api-v1。
-5. A1 代码与 S0-2 文档由 Lead 提交固定 commit 的时间点与 SHA 记录（关闭 A5-S0-m10）。
+1. A1 在 v4 代码提交后的干净 detached worktree 生成 S0-3 冻结包（两独立进程 run1/run2 逐字节一致）；Lead 将其写入仓库并提交；A2 重建正式工件/readiness；A5 phase3 复审（v4 包 + 工件 + pair-level 报告/C5-B + M01/M02/M04 关闭）通过后才可申请 APPROVE_FOR_S1_RUN。
+2. C5-B 的 prereg 文本、identifiability_report.json schema 与 analysis 消费实现由 A1/A6 落地；A5 在 phase3 核对；C5 不进入 benefit/harm/Holm。
+3. Full MAML 元梯度一致性阈值与统计判定规则（S2 前冻结）。
+4. 是否允许 S1 pilot 后按计划扩大合成训练（仍需 physical_call_count=0）。
+5. 数据合同是否在 S4 复用同一 schema_version，或另立 p4ra-aero-api-v1。
+6. 旧 S0-2 包/旧 A5 批准范围收窄的 Issue #7 回执披露时点（A5-S1R2-M03）。
 
 ## 12. 版本记录
 
@@ -267,3 +289,4 @@ run_config 与 summary 至少包含：budget.arm_id、budget.B_total、budget.K_
 |---|---|---|---|
 | v1.0 | 2026-11-05 | A4 | 首次生成 S0 数据合同与预注册规范草案 |
 | v1.1 | 2026-11-05 | A4（task-197） | 按 D-S0-2-01..09 与 A5 S0 审阅：五 split（§3.2/§5/§6.2/§7）、端点 ID 与语义（§3.3/§7/§8 FC-11）、stopping_rules len≥2（§7/§7.1）、行号引用修正（§7.1/§9）、task_id 正则（§3/§7）、五臂预算映射（§4.2）；关闭 A5-S0-M01/M02/m01/m02/m09 合同侧口径；未修改旧 run，未执行任何物理计算 |
+| v1.2 | 2026-11-05 | A4（task-231） | 按 A5 S1 rev2（S1R2-B01/B02）与 R-V4-01..06：family_version p4ra-family-v4、holdout_seed=20261106、S0-3 冻结包替代 S0-2 确证用途、旧 S0-2 包只读、prereg 新增 holdout_seed/holdout_splits/holdout_package/c5_policy/structural_identifiability、§7.2 C5-B 规则、FC-14/FC-15、v4 验收项；未修改旧 run，未执行物理计算，未 commit/push |

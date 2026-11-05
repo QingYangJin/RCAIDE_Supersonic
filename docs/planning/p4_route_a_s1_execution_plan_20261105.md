@@ -1,7 +1,7 @@
-# P4 路线A S1 执行计划与接口合同（v1.0）
+# P4 路线A S1 执行计划与接口合同（v1.2）
 
-> 状态：S0-2 已由 A5 判定 COMPLETE / APPROVE_FOR_S1_FORMAL（`S0_2_A5_review_phase2.md`，sha256 `ea9b2eb7…`），本文件是 S1 formal 的实现合同。
-> 约束：全合成解析任务、physical_call_count=0；不合并 main；不新开 PR；仅 Lead 写 GitHub；旧 M2/M5/M6 只读。
+> 状态：v1.2（2026-11-05）。S0-2 包与 A5 phase2 `APPROVE_FOR_S1_FORMAL` 只对 S0-2 静态/测试范围有效；A5 S1 rev2（`S1_code_review_rev2.md`，sha256 `d5a0979a…`）判定 CHANGES_REQUESTED（2 blocker / 4 major / 6 minor），该批准在确证性用途上被收窄（S1R2-M03）。确证性 S1 formal **尚未获准**，须等待 S0-3 v4 冻结包 + c0cb2cd 之后干净树重建的正式工件 + A5 phase3 `APPROVE_FOR_S1_RUN` + Lead 书面授权。
+> 约束：全合成解析任务、physical_call_count=0；不合并 main；不新开 PR；仅 Lead 写 GitHub；旧 M2/M5/M6 与旧 S0-2 包只读；readiness/诊断不得读取新 meta_test/meta_test_ood。
 
 ## 1. 目标
 
@@ -9,22 +9,29 @@
 
 结论只允许三类：SUPPORTED_IMPROVEMENT / NO_SIGNIFICANT_IMPROVEMENT / INCONCLUSIVE。允许负结果。
 
-## 2. 已冻结输入（不得修改）
+## 2. 已冻结/待冻结输入（旧包只读；v4 以 S0-3 为准）
 
-- 冻结包：`research/concorde_metaopt/optimization_runs/p4ra-s0-2-freeze-20261105T072500Z/`
+- **旧 S0-2 包（只读，历史复现/负控，不得用于确证 S1）**：`research/concorde_metaopt/optimization_runs/p4ra-s0-2-freeze-20261105T072500Z/`
   - 8 payload：tasks / meta_task_split / v3_isolation_report / frozen_family / preregistration / budget_fairness_report / digest_manifest / freeze_summary。
-  - 冻结不变量：family_version=`p4ra-family-v3`；family_fingerprint=`e56e6921…`；split_hash=`cd597d01…`；prereg_digest=`6981f503…`；analysis_plan_digest=`37eee53c…`；radius_base=0.64；计数 60/20/20/10/10。
-- 统计计划：`docs/planning/p4_route_a_s1_statistical_plan_20261105.md`（v1.1）。
-- S0-2 设计合同：`docs/planning/p4_route_a_s0_design_contract.md`（v1.1，五 split / 预算映射 / 端点 ID / task_id 格式 / FC-01..13）。
+  - v3 冻结不变量（仅 legacy）：family_version=`p4ra-family-v3`；family_fingerprint=`e56e6921…`；split_hash=`cd597d01…`；prereg_digest=`6981f503…`；analysis_plan_digest=`37eee53c…`；radius_base=0.64；计数 60/20/20/10/10。
+  - 旧 A5 phase2 报告与旧 A2 readiness（`BASELINE_989FC0A`）不得作为 v4 formal 就绪证据。
+- **确证性 v4 输入（S0-3，待 A1 生成、Lead 提交、A5 phase3 审）**：
+  - family_version=`p4ra-family-v4`；family_id=`F-QE-feasible-v3`；holdout_seed=`20261106`；五 split 计数 60/20/20/10/10；仅 meta_test 20 + meta_test_ood 10 重采样；meta_train/meta_validation/negative_control 与 S0-2 逐位相同。
+  - 冻结包命名：`p4ra-s0-3-freeze-<UTC>Z`；产物、run_id、git_sha、code_sha、holdout_seed 必须写入 frozen_family/prereg/freeze_summary/digest_manifest。
+  - family_fingerprint / split_hash / prereg_digest / analysis_plan_digest 以 S0-3 `freeze_summary.json` 的实际值为准；本文件不预填、不得沿用 v3 哈希。
+  - radius_base=0.64 的校准证据在 meta_train/meta_validation 上仍有效（仅 holdout 重采样）；旧 S0-2 包不得改写。
+- 统计计划：`docs/planning/p4_route_a_s1_statistical_plan_20261105.md`（v1.1；C5-B/pair-level 补丁以 R-V4-02/R-V4-04 为准）。
+- 设计合同：`docs/planning/p4_route_a_s0_design_contract.md`（v1.2，五 split / 预算映射 / 端点 ID / task_id 格式 / C5-B / FC-01..15）。
+- v4 整改裁定：`docs/planning/p4_route_a_s1_v4_remediation_rulings_20261105.md`（R-V4-01..06，sha256 `f71e32a9…`）。
 
 ## 3. 实现模块与文件所有权（互不重叠）
 
 ### 3.1 S1 runner / 臂闭环（A1）
 
-- 新增：`research/concorde_metaopt/meta_learning/s1_runner.py`
+- 已存在（c0cb2cd）：`research/concorde_metaopt/meta_learning/s1_runner.py`
 - 修改：`research/concorde_metaopt/meta_learning/m5_arms.py`（K-shot 闭环、预算记账、五臂）
-- 新增测试：`research/concorde_metaopt/tests/test_s1_runner.py`
-- 责任：按冻结包生成 **21,000 run 分层正式网格**；每个 run 执行「K 支持评价 → 8−K 新初始点 → B−8 主搜索」；逐 run 断言 billable=B；输出 `run_records.jsonl`；确定性重跑子集；标签打乱负控；raw_digest_manifest；不做统计推断。
+- 已存在测试：`research/concorde_metaopt/tests/test_s1_runner.py`
+- 责任：按 S0-3 冻结包生成 **21,000 run 分层正式网格**；每个 run 执行「K 支持评价 → 8−K 新初始点 → B−8 主搜索」；逐 run 断言 billable=B；输出 `run_records.jsonl` 与 run 级 `identifiability_report.json`（pair-level 字段）；确定性重跑子集；标签打乱负控；raw_digest_manifest；不做统计推断。
 - 正式网格（`s1_runner.py --grid formal`，必须 fail-closed 校验）：
 
 | 层 `grid_stratum` | B | K | 组合数 |
@@ -37,10 +44,10 @@
 
 ### 3.2 S1 统计 / 图表 / 校验（A6）
 
-- 新增：`research/concorde_metaopt/meta_learning/s1_analysis.py`
-- 新增：`research/concorde_metaopt/meta_learning/s1_figures.py`
-- 新增测试：`research/concorde_metaopt/tests/test_s1_analysis.py`
-- 责任：读取 `run_records.jsonl`，先做冻结/端点/预算/CLONE 强校验，再按统计计划输出 `aggregate.json`、主表 CSV、7 张图与 `figure_status.json`、结论层；不做 runner 执行。
+- 已存在（c0cb2cd）：`research/concorde_metaopt/meta_learning/s1_analysis.py`
+- 已存在（c0cb2cd）：`research/concorde_metaopt/meta_learning/s1_figures.py`
+- 已存在测试：`research/concorde_metaopt/tests/test_s1_analysis.py`
+- 责任：读取 `run_records.jsonl` 与每个 source run 的 `identifiability_report.json`，先做冻结/端点/预算/CLONE/pair 覆盖强校验，再按统计计划输出 `aggregate.json`（含 `structural_exclusion_counts`、C5 可估计任务数）、主表 CSV、7 类规范图（图面英文；图注/结论中文）与 `figure_status.json`、结论层；C5-B 下 C5 不做 benefit/harm 与 Holm；不做 runner 执行。
 
 ### 3.3 文档 / 需求矩阵（A4）
 
@@ -98,7 +105,10 @@
 5. 实际显著性阈值：best/gap 相对改进 ≥1%；feasible_hit_rate 绝对差 ≥0.05；first_feasible 改善 ≥ceil(0.05×B)（同 K 内）。
 6. 判定：SUPPORTED_BENEFIT / SUPPORTED_HARM / NO_EVIDENCE / INCONCLUSIVE；总体结论需 C1 在 4 主端点至少 2 个 SUPPORTED_BENEFIT 且 0 个 SUPPORTED_HARM，否则 NO_SIGNIFICANT_IMPROVEMENT 或 INCONCLUSIVE。
 7. null 率 >70% → 该端点 INCONCLUSIVE，不换终点。
-8. 输出：`aggregate.json`、`s1_endpoint_tables.csv`、`s1_identifiability_table.csv`、`s1_budget_audit.csv`、`s1_negative_controls.csv`、`figure_status.json`、7 张 PNG。
+8. 输出：`aggregate.json`、`s1_endpoint_tables.csv`、`s1_identifiability_table.csv`、`s1_budget_audit.csv`、`s1_negative_controls.csv`、`figure_status.json`、7 张 PNG；run 级 `identifiability_report.json` 列入分析合同产物，analysis 必须加载并消费。
+9. **Pair-level 结构性规则（R-V4-02/R-V4-04）**：每个 `(task,B,K,meta_seed)` 组，对每个臂对计算初始设计行 digest 的 `overlap_rate`（交集行数/较大集合行数）；`>=0.90` 判该臂对在该组 `STRUCTURALLY_IDENTICAL`，不进入 benefit/harm 推断，只作描述；不做事后任务剔除；每个比较的排除率必须披露。
+10. **C5-B**：C5（FOMAML-KSHOT-BO vs FOMAML-ZERO-BO，K>0）不进入任何 benefit/harm 推断与 Holm 族，只报告结构克隆率/描述性数值；若可推断组覆盖任务数 <10，总固定结论 `NOT_ESTIMABLE_STRUCTURAL_IDENTIFIABILITY`，不得声称适应增益/损害；总体结论仍只依赖 C1。C5 不进入 Holm 并不意味着其他比较可以跳过校正。
+11. **Identifiability report 消费**：`identifiability_report.json` 逐 pair 输出 `pair_identifiable`、`structural_status`、`threshold`；顶层 `pair_status_counts`；analysis 校验 schema/组覆盖/与 run_records 的 `(task,B,K,meta_seed,arm)` 一致，缺失即 fail-closed；`aggregate.json`/CSV 输出 `structural_exclusion_counts` 与 C5 可估计任务数。
 
 ## 7. 确定性 / 负控 / 泄漏
 
@@ -107,6 +117,8 @@
 - 标签打乱负控：在同一支持集上打乱标签重跑诊断性子集；MAML 优势应消失/缩小，否则结论降级并披露。
 - 泄漏检查：支持/query 索引不得重叠；reference_solution 不得进入支持标签。
 - 物理隔离：逐 run `physical_call_count=0`、`physical_call_sources=[]`、`physics_guard=PASS`。
+- **readiness/诊断隔离（R-V4-05）**：A1/A2/A6/A5 的 readiness、label-shuffle、克隆率与诊断只能读 meta_train/meta_validation 或合成 pilot 任务；**不得读取新 meta_test/meta_test_ood**；A5 phase3 前对新 holdout 做暴露扫描（EXT/run_records 中不得出现 v4 meta_test 任务）。
+- **正式工件重建（R-V4-03）**：在 v4 代码提交后的干净 worktree，用 `s1_runner prepare-artifacts --frozen <S0-3 package> --meta-seeds 0,1,2` 默认参数（maml 200 steps / pretrain 50 steps）重建；artifact sha256 写入 A2 readiness 与 run_config；旧 A2 readiness（BASELINE_989FC0A）不得作为 v4 formal 就绪证据；A2 在 v4 提交后重跑 readiness。
 
 ## 8. 图（规范键名，A6 实现；A5 核对键-文件一一对应）
 
@@ -120,19 +132,37 @@
 
 `figure_status.json` 必须把每个键映射到文件名或 `NOT_APPLICABLE`/`NOT_RUN`，禁止旧键名/文件名漂移。
 
-## 9. 验收（A5 放行 S1 run 的条件）
+## 9. 验收（A5 phase3 放行 S1 run 的条件）
 
-1. 604 基线测试 + 新增 S1 测试全绿（skipped 只允许 RealOpenVSPIntegrationTests 等既有 skip）。
+1. 768 基线测试 + 新增 S1 测试全绿（A5 rev2 独立复跑 768 tests / OK(skipped=1)；v4 修复后必须重跑，不得引用旧 604/768 数字作为 v4 证据）。
 2. 预算公平：5 臂 × K{0,1,3,5} × B{64,128} 共 40 组合，每组合断言 billable=B；K=0 CLONE 排除；负控测试。
 3. 端点：9 键齐全、null 语义、alias 拒绝、负控测试。
 4. 统计：Wilcoxon/bootstrap/Holm/阈值/决策规则的单测（含全零、n<10、null>70%、全 null、方向相反等边界）。
-5. 冻结校验：篡改 family_fingerprint/split_hash/prereg_digest/analysis_plan_digest/endpoint keys 任一 → fail-closed。
+5. 冻结校验：篡改 family_version/holdout_seed/family_fingerprint/split_hash/prereg_digest/analysis_plan_digest/endpoint keys 任一 → fail-closed。
 6. 确定性：bundle 两次独立运行逐字节一致；200 runs × 3 mismatch=0；K=0 逐字节等价。
 7. 0 物理：全代码路径 physical_call_count=0，无 solver import/启动。
 8. 0 绝对路径、无凭据；旧 run/main/P5 未变。
 9. 正式网格：`grid --grid formal` 输出 run_count=21,000 且分 9,000/6,000/6,000，`(B=128,K=0)` 为 0；run_config 记录 grid_mode=formal 与 grid_strata 明细；两独立进程输出逐字节一致。
+10. **v4 holdout 隔离**：S0-3 包由干净 detached worktree 两独立进程逐字节一致；meta_train/meta_validation/negative_control 映射与 S0-2 相同；meta_test/meta_test_ood fingerprint 全部变化且与 v3 官方包 120 个 fingerprint 零交集（legacy 280 个 task_id 仅 task_id 零交集）；A5 phase3 暴露扫描=0。
+11. **pair-level/C5-B**：identifiability_report.json 含 pair 级字段与 pair_status_counts；analysis 消费并输出 structural_exclusion_counts/C5 可估计任务数；C5 不进 Holm；可估计任务数<10 → `NOT_ESTIMABLE_STRUCTURAL_IDENTIFIABILITY`；不做事后任务剔除。
+12. **正式工件与 readiness**：v4 代码提交后干净树 prepare-artifacts 默认 200/50 重建，artifact sha 冻结并绑定 run_config/prereg；A2 readiness 在 v4 提交后 PASS；旧 readiness 不得复用。
 
-## 10. 阶段门
+## 10. 阶段门（v4）
 
-- 实现完成 → A5 审阅（task 见板）→ 若 APPROVE_FOR_S1_RUN → Lead 书面授权 A2 启动 formal run（21,000 runs，预计 ~12 h，零物理）→ run 完成后 A5 统计/证据复核 + A3 隔离审计 → Lead 发布 Issue #7 S1 回执。
+1. A1/A6 修复 → Lead 提交 commit V4 并 push（不合并 main）。
+2. A1 在干净 detached worktree 生成 S0-3 v4 冻结包（两独立进程 run1/run2 逐字节一致）→ Lead 将冻结包写入仓库并提交。
+3. A2 用 v4 代码干净树重建正式工件（默认 200/50）+ readiness + K=5 正式工件克隆率复核（只读 meta_train/meta_validation）。
+4. A5 phase3 审阅：v4 包 + 正式工件 + pair-level 报告/分析 + C5-B + M01/M02/M04 关闭；readiness/诊断不得读取新 meta_test/meta_test_ood。
+5. A3 隔离审计（旧 S0-2/M2/M5/M6、main、P5、0 solver）。
+6. 只有 A5 给出 `APPROVE_FOR_S1_RUN` 且 Lead 书面授权后，A2 才可启动 21,000 formal run（预计 ~12 h，零物理）。
+7. run 完成后 A5 统计/证据复核 + A3 隔离审计 → Lead 发布 Issue #7 S1 回执；回执须披露 holdout 污染事实、H1、C5 结构不可辨识、旧 APPROVE 范围收窄、0 物理、未合并 main。
 - S1 formal 网格与 run_id 在启动前由 Lead 写入 run_config（grid_mode=formal、grid_strata、run_count=21,000）并冻结；启动后不得改终点/比较集/任务/网格分层。
+- physical_call_count 全程 0；RCAIDE/SU2/WaveDrag LOCKED；旧 PR #3/#6 保持 open 不合并 main。
+
+## 11. 版本记录
+
+| 版本 | 日期 | 作者 | 变更 |
+|---|---|---|---|
+| v1.0 | 2026-11-05 | A4/Lead | 首次生成 S1 执行计划与接口合同 |
+| v1.1 | 2026-11-05 | Lead | 集成 S1 实现/统计口径与 A5 前置映射 |
+| v1.2 | 2026-11-05 | A4（task-231） | 按 A5 S1 rev2 与 R-V4-01..06：S0-3/v4 输入、旧 S0-2 只读、identifiability_report 产物、pair-level/C5-B 规则、readiness 不读 test/OOD、正式工件重建、A5 phase3 门；未 commit/push、未执行物理计算 |

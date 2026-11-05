@@ -43,6 +43,8 @@ __all__ = [
     "V3_OOD_CONTEXT_SHIFT",
     "V3_CONTEXT_COUPLING_SCALE",
     "V3_PARAM_DISTRIBUTIONS",
+    "V4_HOLDOUT_SEED",
+    "RESEEDED_SPLITS",
     "SYNTHETIC_CONSTRAINT_SLOTS",
     "TaskFamilyConfig",
     "SyntheticTask",
@@ -120,6 +122,11 @@ V3_PARAM_DISTRIBUTIONS = {
     "context": "uniform(0.6, 1.4)",
     "context_ood": "uniform(0.85, 1.65)",
 }
+# P4 路线A S1 v4（R-V4-01，H1 holdout 重播种，task-229）：
+# 只对 meta_test/meta_test_ood 追加 holdout_seed 派生，meta_train/meta_validation/
+# negative_control 的 seed 派生逐位不变（以此保证旧 task_fingerprint 不漂移）。
+V4_HOLDOUT_SEED = 20261106
+RESEEDED_SPLITS = ("meta_test", "meta_test_ood")
 
 _PARAM_DISTRIBUTIONS = {
     "c": "uniform(0.15, 0.85) per coordinate",
@@ -495,13 +502,28 @@ def _sample_common_params(
 
 
 def _make_task(
-    config: TaskFamilyConfig, split: str, index: int, ood: bool
+    config: TaskFamilyConfig,
+    split: str,
+    index: int,
+    ood: bool,
+    *,
+    holdout_seed: int | None = None,
 ) -> SyntheticTask:
-    """生成单个任务：拒绝采样直到参考解落在 [0,1]^12 且参考断言通过。"""
+    """生成单个任务：拒绝采样直到参考解落在 [0,1]^12 且参考断言通过。
+
+    R-V4-01：holdout_seed 仅对 RESEEDED_SPLITS 追加进 seed 派生；其余 split 走
+    原派生路径（逐位不变），从而 meta_train/meta_validation/negative_control 的
+    task_id/params/task_fingerprint 与旧 v3 包保持一致。
+    """
     family = config.family_id
     last_error: Exception | None = None
     for attempt in range(_MAX_REFERENCE_RESAMPLES + 1):
-        seed = derive_seed(family, split, index, attempt, config.seed)
+        if holdout_seed is not None and split in RESEEDED_SPLITS:
+            seed = derive_seed(
+                family, split, index, attempt, config.seed, "holdout", holdout_seed
+            )
+        else:
+            seed = derive_seed(family, split, index, attempt, config.seed)
         rng = np.random.default_rng(seed)
         params = _sample_common_params(rng, family, ood, getattr(config, "radius_base", None))
         if family == V2_FAMILY_ID:
@@ -575,15 +597,27 @@ def _derive_negative_control(source: SyntheticTask, shuffle_seed: int) -> Synthe
     )
 
 
-def build_task_family(config: TaskFamilyConfig) -> list[SyntheticTask]:
+def build_task_family(
+    config: TaskFamilyConfig, *, holdout_seed: int | None = None
+) -> list[SyntheticTask]:
     """构造任务族全部五个集合（meta_train/meta_validation/meta_test/meta_test_ood/negative_control）。
 
     顺序：meta_train -> meta_validation -> meta_test -> meta_test_ood -> negative_control；
     OOD 任务使用平移后的 context 中心并把 r 缩小 30%（§4.3），负控制由前
     negative_control_tasks 个不同 meta-train 任务派生，五集合 task_id 两两互斥。
+
+    R-V4-01（task-229）：holdout_seed 非 None 时只对 meta_test/meta_test_ood 追加
+    holdout 重播种；meta_train/meta_validation/negative_control 逐位不变。
     """
     if not isinstance(config, TaskFamilyConfig):
         raise TaskFamilyError("build_task_family 需要 TaskFamilyConfig")
+    if holdout_seed is not None:
+        if type(holdout_seed) is not int or holdout_seed < 0:
+            raise TaskFamilyError(f"holdout_seed 必须是非负整数，实际 {holdout_seed!r}")
+        if holdout_seed > 2**31 - 1:
+            raise TaskFamilyError("holdout_seed 超出 32 位范围")
+        if config.family_id != V3_FAMILY_ID:
+            raise TaskFamilyError("holdout_seed 只适用于 F-QE-feasible-v3 数学族（R-V4-01）")
     tasks: list[SyntheticTask] = []
     plan = (
         ("meta_train", config.train_tasks, False),
@@ -593,7 +627,10 @@ def build_task_family(config: TaskFamilyConfig) -> list[SyntheticTask]:
     )
     splits: dict[str, list[SyntheticTask]] = {}
     for split, count, ood in plan:
-        split_tasks = [_make_task(config, split, index, ood) for index in range(count)]
+        split_tasks = [
+            _make_task(config, split, index, ood, holdout_seed=holdout_seed)
+            for index in range(count)
+        ]
         splits[split] = split_tasks
         tasks.extend(split_tasks)
     negative: list[SyntheticTask] = []

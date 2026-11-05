@@ -1,9 +1,9 @@
 # P4 路线A S0 需求矩阵（Issue #7 · S0–S4 → 交付物 / 角色 / 验收证据 / 状态）
 
-> 文档性质：S0–S4 需求矩阵与门禁关系表，供 Lead、A5 与本机团队审阅；S0 已完成、S1 未开始；**不构成新的物理授权，不构成算法性能结论**。
-> 依据：Issue #7 正文（D-P4-003，2026-11-05 读取，repo QingYangJin/RCAIDE_Supersonic）+ 中文计划 docs/planning/p4_route_a_stage_improvement_plan_20261105.md（V1.0，commit a331639e）+ docs/planning/p4_route_a_s0_2_decisions_20261105.md（D-S0-2-01..07，Lead S0-2 裁定）+ A5 S0-2 复审 <EXT>/p4-route-a/a5/S0_2_A5_review_phase2.md（sha256 ea9b2eb7…，APPROVE_FOR_S1_FORMAL，0 blocker / 0 major / 8 minor）+ A3 S0-2 隔离审计 <EXT>/EXT/p4-route-a/a3/S0_2_phase2_isolation.md（sha256 23bac611…，PASS 11/11）+ 冻结包 p4ra-s0-2-freeze-20261105T072500Z + Issue #7 回执 6653167378。
-> 作者：A4（a4-issue-liaison）；任务：task-188 初版 + task-197 S0-2 状态更新 + task-212/217 最终事实；工作树：本仓库分支 research/p4-route-a-s1 @ 43fcfc8（只读核实；A4 未 commit/push）。
-> 状态口径：PASS＝已有独立复核通过的验收证据；PASS_WITH_MINOR＝通过但仍有非阻断 minor 待修；PARTIAL＝部分产出或口径已冻结但实现/复审未完成；PENDING＝尚未提交可验收产物；READ_ONLY_VERIFIED＝A4 已只读核实源文件/字段存在（不代表验收通过）；BLOCKED＝受未授权/未批准预算阻断。physical_call_count=0。
+> 文档性质：S0–S4 需求矩阵与门禁关系表，供 Lead、A5 与本机团队审阅；**S0-2 为历史 COMPLETE，S0-3 v4 remediation IN_PROGRESS，S1 代码部分实现但确证性 formal 未放行**；不构成新的物理授权，不构成算法性能结论。
+> 依据：Issue #7 正文（D-P4-003，2026-11-05 读取，repo QingYangJin/RCAIDE_Supersonic）+ 中文计划 docs/planning/p4_route_a_stage_improvement_plan_20261105.md（V1.0，commit a331639e）+ docs/planning/p4_route_a_s0_2_decisions_20261105.md（D-S0-2-01..07）+ docs/planning/p4_route_a_s1_v4_remediation_rulings_20261105.md（R-V4-01..06）+ A5 S0-2 复审 <EXT>/p4-route-a/a5/S0_2_A5_review_phase2.md（sha256 ea9b2eb7…，APPROVE_FOR_S1_FORMAL，仅旧范围）+ A5 S1 rev2 <EXT>/p4-route-a/a5/S1_code_review_rev2.md（sha256 d5a0979a…，CHANGES_REQUESTED，2B/4M/6m）+ A3 S0-2 隔离审计 <EXT>/p4-route-a/a3/S0_2_phase2_isolation.md（sha256 23bac611…，PASS 11/11）+ 旧 S0-2 冻结包（只读）+ Issue #7 回执 6653167378。
+> 作者：A4（a4-issue-liaison）；任务：task-188 初版 + task-197 S0-2 状态更新 + task-212/217 最终事实 + task-231 S1 v4 文档；工作树：本仓库分支 research/p4-route-a-s1 @ c0cb2cd（并发有 A1/A6 未提交改动；A4 只读，未 commit/push）。
+> 状态口径：PASS＝已有独立复核通过的验收证据；PASS_WITH_MINOR＝通过但仍有非阻断 minor 待修；IN_PROGRESS＝实现/整改已启动但未关闭；PARTIAL＝部分产出或口径已冻结但实现/复审未完成；PENDING＝尚未提交可验收产物；READ_ONLY_VERIFIED＝A4 已只读核实源文件/字段存在（不代表验收通过）；BLOCKED＝受未授权/未批准预算或前置冻结阻断。physical_call_count=0。
 
 ## 1. 总体边界（所有需求共同前提）
 
@@ -18,7 +18,7 @@
 
 ### 2.1 S0｜基线与预注册冻结（Issue #7 §2 S0）
 
-**S0 总状态：COMPLETE（2026-11-05 阶段二闭环）**。A5 phase2 verdict=APPROVE_FOR_S1_FORMAL（0 blocker / 0 major / 8 minor；S0-2=COMPLETE；S1 formal=APPROVED）；A3 phase2 PASS 11/11；Lead 集成提交 766a59c→a79959c→43fcfc8；Issue #7 回执 6653167378。S1 实现与正式 run 尚未开始；8 个 A5-S0P2 minor 开放但不阻断 S1 formal 准备。
+**S0 总状态：S0-2 COMPLETE（历史，2026-11-05 阶段二闭环）；S0-3 v4 remediation IN_PROGRESS；S1 确证性 formal 未放行。** A5 phase2 verdict=APPROVE_FOR_S1_FORMAL（0 blocker / 0 major / 8 minor；S0-2=COMPLETE）只对旧静态/测试范围有效，已被 A5 S1 rev2 S1R2-M03 收窄，**不得作为当前 S1 formal 放行依据**；A3 phase2 PASS 11/11；Lead 集成提交 766a59c→a79959c→43fcfc8；Issue #7 回执 6653167378。S1 代码已在 c0cb2cd 部分实现，但 A5 rev2 判 CHANGES_REQUESTED，S0-3 尚未冻结；8 个 A5-S0P2 minor 开放。
 
 | 需求ID | 原文位置 | 要求（摘要） | 交付物/证据 | 角色 | 验收证据 | 状态 |
 |---|---|---|---|---|---|---|
@@ -31,7 +31,15 @@
 | S0-07 | §2 S0 | 提交中文设计合同（task_id/family_version/split/seed/prereg 字段/确定性 digest/预算口径） | docs/planning/p4_route_a_s0_design_contract.md | A4（A5 复审） | 本合同 v1.1（25,880 B，sha256 3f622570…）；五 split、端点 ID/ENDPOINT_ROW_KEYS、stopping_rules len≥2、行号修正、task_id 正则、五臂预算映射 | PASS（A5 phase2 合同侧通过；A5-S0-M01/M02/m01/m02/m09 关闭） |
 | S0-08 | §2 S0 | 提交中文风险清单（query 泄漏、支持样本免费先验、克隆臂、旧工件改写、物理调用、过拟合 meta_test 等） | docs/reviews/p4_route_a_s0_risk_register.md | A4 | 风险清单 R-01..R-20（9,723 B，sha 294432ff…） | PASS（A5 S0 审阅 §2 判 PASS） |
 | S0-09 | §2 S0 | 提交基线统计快照（M2/M5/M6 现有数字与负结果，不重跑） | 基线统计快照（数字+来源文件+字段） | Lead+A2 | docs/reviews/p4_route_a_s0_baseline_snapshot_20261105.md/.csv；A5 判 PASS 附 m04/m05 minor；快照 md:15 与 CSV 第 2 行已同步 | PASS（A5 phase2 未再列 finding） |
-| S0-10 | §2 S0 | 各角色审查记录齐全，A5 审核并确认新任务冻结边界后才可开始 S1 | A5 S0 审查记录（PASS/CHANGES_REQUESTED） | A5+Lead | A5 phase2 APPROVE_FOR_S1_FORMAL（报告 sha256 ea9b2eb7…）；A3 phase2 PASS 11/11（报告 sha256 23bac611…） | PASS（S0-2=COMPLETE；S1 formal=APPROVED） |
+| S0-10 | §2 S0 | 各角色审查记录齐全，A5 审核并确认新任务冻结边界后才可开始 S1 | A5 S0 审查记录（PASS/CHANGES_REQUESTED） | A5+Lead | A5 phase2 APPROVE_FOR_S1_FORMAL（报告 sha256 ea9b2eb7…）；A3 phase2 PASS 11/11（报告 sha256 23bac611…） | PASS（S0-2=COMPLETE；仅历史范围，S1 确证性未放行） |
+
+#### 2.1.0 S0-3 v4 重播种整改（R-V4-01；替代 S0-2 用于确证 S1）
+
+| 需求ID | 原文位置 | 要求（摘要） | 交付物/证据 | 角色 | 验收证据 | 状态 |
+|---|---|---|---|---|---|---|
+| S0-3（v4 remediation） | A5 S1 rev2 S1R2-B01；R-V4-01/R-V4-05；Issue #7 §2 S0 | 旧 S0-2 meta_test 已被读取，不能用于确证；只重播种 meta_test 20 + meta_test_ood 10，保留 meta_train 60/meta_validation 20/negative_control 10 逐位不变；family_version=p4ra-family-v4，holdout_seed=20261106；新包名 p4ra-s0-3-freeze-（UTC）Z；旧 S0-2 包只读 | S0-3 冻结包（frozen_family/prereg/freeze_summary/digest_manifest/tasks/split/isolation/determinism/budget fairness/SHA256SUMS）；两进程逐字节一致记录；Lead 提交的固定 commit | A1 生成；A2 readiness；A3 隔离；A5 phase3 审查；Lead 提交 | meta_test/ood fingerprint 全变且与 v3 280 个旧 fingerprint 零交集；其余三 split 映射逐项相同；五集合互斥；60/20/20/10/10 不变；旧包未改写 | IN_PROGRESS（裁定已冻结；包未生成，A5 phase3 未开始） |
+
+> 旧 S0-2 包仍为历史 COMPLETE，但**只读、只用于复现/负控，不得用于确证 S1 formal**；S0-3 冻结并通过 A5 phase3 前，S1-08/S1-12 保持 BLOCKED。
 
 #### 2.1.1 S0-2 关闭对照表（A5-S0-M01..M04 / m01..m10，14 条）
 
@@ -69,22 +77,22 @@
 
 ### 2.2 S1｜K-shot→目标代理适应→BO 初始选点闭环（Issue #7 §2 S1，最高优先级）
 
-> 详细实现文件/测试/验收证据映射见 docs/reviews/p4_route_a_s1_requirement_matrix.md（v1.0，task-217）；本表保留 12 条跨阶段需求视图，两表 ID 一致。
+> 详细实现文件/测试/验收证据映射见 docs/reviews/p4_route_a_s1_requirement_matrix.md（v1.1，task-231）；本表保留 12 条跨阶段需求视图，两表 ID 一致。S1 状态已按 A5 S1 rev2 与 v4 裁定更新；旧 phase2 APPROVE 不代表 S1 已获准。
 
 | 需求ID | 原文位置 | 要求（摘要） | 交付物/证据 | 角色 | 验收证据 | 状态 |
 |---|---|---|---|---|---|---|
-| S1-01 | §2 S1-1 | 扩展 adaptation.py / baseline_arms.py / m5_arms.py / m5_runner.py：K 次目标任务已评价样本的特征与目标/约束标签进入内循环，用适应后代理评分；不得读 query 标签、不得解析最优点、不得把代理预测写入 BO 真实 observations | 新接口 + 单测（支持样本进入/query 不可见/observations 只含真实评价） | A1 | 单测与代码审查；泄漏负控通过 | PENDING |
-| S1-02 | §2 S1-2 | B∈{64,128}、K∈{0,1,3,5}；各臂共享同一 K 次目标任务评价，K 次必须计入 B；非物理代理时间单列 | run_config/budget ledger 字段 + 一致性断言 | A1+A2 | 每臂真实合成评价次数精确等于 B；支持评价已计费；五臂×K×B 预算表见合同 §4.2 | PENDING |
-| S1-03 | §2 S1-2 | 8 个 BO 初始点由 K 个支持点+代理/随机补 8−K 个新点，再普通 BO B−8 次；K=0 复现旧初始化行为 | 初始化记录（designs sha256、来源标签）+ K=0 回归对照 | A1 | 初始点来源可区分、总数=8、K=0 与旧代码结果一致；DE 的 8−K 新点并入 population | PENDING |
-| S1-04 | §2 S1-3 | 公平臂至少 Random-BO、Pretrain-Kshot-BO、FOMAML-ZeroShot-BO、FOMAML-Kshot-BO、DE；同任务/种子/候选池/约束 | arm 配置矩阵 + 公平性审计表 | A1+A2 | 各臂仅初始化路径不同；其余条件逐项一致 | PENDING |
-| S1-05 | §2 S1-3 | 克隆识别、缓存与 null 规则一致；代理评分墙钟/缓存账单独记录 | 克隆判定报告 + 缓存/时间账 | A2+A5 | 机制相同标 clone 并排除因果推断；K=0 的 FOMAML-Kshot/ZeroShot 登记 CLONE；null 不补值 | PENDING |
-| S1-06 | §2 S1-3 | 训练 episode 支持样本数与部署 K 匹配（5/10 或混合 K）；旧 128 样本内循环为消融基线 | episode 采样实现 + K_train∈{5,10,混合} 对比计划 | A1+A2 | K_train 与部署 K 对齐；旧 128 仅作消融 | PENDING |
-| S1-07 | §2 S1-4 | 先做零物理单测：任务泄漏负控、真实合成评价预算精确一致、K>0 确实改变模型参数与初始选点 | 单测清单与日志 | A1 | 全部单测通过且失败会 fail-closed | PENDING |
-| S1-08 | §2 S1-4 | 验证集小样本 pilot 通过后，A5 APPROVE_FOR_S1_FORMAL 才执行新独立 holdout；允许无改进 | pilot 报告 + A5 放行记录 | A1+A5 | A5 书面 APPROVE 后才有正式 holdout 运行 | PENDING |
-| S1-09 | §2 S1-4、§4 | 按 B=64/128 分层报告主终点：best_feasible_value、gap_to_reference、first_feasible_eval_index、feasible_hit_rate | statistics.csv + 图 + 中文报告 | A2 | 终点定义与预注册一致；不可行保留 null；列键按 ENDPOINT_ROW_KEYS | PENDING |
-| S1-10 | §0、§2 S1 | 不得为让 MAML 获胜调参；负结果如实记录；正式 meta_test 一次性打开 | 分析与结论审查记录 | A1+A2+A5 | A5 核查无 meta_test 后调参、无有利任务筛选 | PENDING |
-| S1-11 | §1 缺口（m5_arms.py） | 修复 score_m5_init_designs() 无 support_features/support_targets 参数、run_m5_bo_arm() 不传 k_shot/support 导致默认 k_shot=0 的闭环缺口 | 接口变更 + 兼容性单测 + K=0 回归 | A1 | K>0 支持样本真实进入适应；K=0 与旧行为逐位一致 | READ_ONLY_VERIFIED（缺口已核实，修复未做） |
-| S1-12 | §2 S1、§4 | 产物齐全：preregistration.json、run_config.json、train_val_test_split.json、data_manifest.json、SHA256SUMS、CSV、图数据/PNG、中文报告 | 交付目录 + 清单 | A1+A2+A4 | 文件存在、SHA 可校验、缺数据标 NOT_RUN | PENDING |
+| S1-01 | §2 S1-1 | 扩展 adaptation.py / baseline_arms.py / m5_arms.py / m5_runner.py：K 次目标任务已评价样本的特征与目标/约束标签进入内循环，用适应后代理评分；不得读 query 标签、不得解析最优点、不得把代理预测写入 BO 真实 observations | 新接口 + 单测（支持样本进入/query 不可见/observations 只含真实评价） | A1 | c0cb2cd 已落盘；A5 rev2 复跑 768 tests OK；B03 代码层 closed；C5 结构问题待整改 | IN_PROGRESS |
+| S1-02 | §2 S1-2 | B∈{64,128}、K∈{0,1,3,5}；各臂共享同一 K 次目标任务评价，K 次必须计入 B；非物理代理时间单列 | run_config/budget ledger 字段 + 一致性断言 | A1+A2 | 单测层存在；正式 21,000 网格未运行 | IN_PROGRESS |
+| S1-03 | §2 S1-2 | 8 个 BO 初始点由 K 个支持点+代理/随机补 8−K 个新点，再普通 BO B−8 次；K=0 复现旧初始化行为 | 初始化记录（designs sha256、来源标签）+ K=0 回归对照 | A1 | 实现存在；v4 重跑待做 | IN_PROGRESS |
+| S1-04 | §2 S1-3 | 公平臂至少 Random-BO、Pretrain-Kshot-BO、FOMAML-ZeroShot-BO、FOMAML-Kshot-BO、DE；同任务/种子/候选池/约束 | arm 配置矩阵 + 公平性审计表 | A1+A2 | 实现存在；正式工件未重建（M01） | IN_PROGRESS |
+| S1-05 | §2 S1-3；R-V4-02 | 克隆识别、缓存与 null 规则一致；代理评分墙钟/缓存账单独记录；C5-B：pair 级 overlap≥0.90 判 STRUCTURALLY_IDENTICAL，C5 不做 benefit/harm、不进 Holm | 克隆判定报告 + pair-level identifiability_report + 缓存/时间账 | A2+A5 | 旧报告仅组级 max/mean（A5-M02）；pair 级字段缺失 | PARTIAL |
+| S1-06 | §2 S1-3 | 训练 episode 支持样本数与部署 K 匹配（5/10 或混合 K）；旧 128 样本内循环为消融基线 | episode 采样实现 + K_train∈{5,10,混合} 对比计划 | A1+A2 | 实现存在；v4 复验待做 | IN_PROGRESS |
+| S1-07 | §2 S1-4 | 先做零物理单测：任务泄漏负控、真实合成评价预算精确一致、K>0 确实改变模型参数与初始选点 | 单测清单与日志 | A1 | A5 rev2 复跑 768 tests OK；v4 变更后须重跑 | PARTIAL |
+| S1-08 | §2 S1-4；R-V4-05 | 验证集小样本 pilot 通过后，A5 phase3 APPROVE_FOR_S1_RUN 且 Lead 授权，才执行新独立 holdout；允许无改进 | pilot 报告 + A5 phase3 放行记录 + Lead 授权 | A1+A5+Lead | 旧 S0-2 holdout 已污染（B01）；S0-3 未冻结；无 pilot/formal | BLOCKED |
+| S1-09 | §2 S1-4、§4；R-V4-04 | 按 B=64/128 分层报告主终点：best_feasible_value、gap_to_reference、first_feasible_eval_index、feasible_hit_rate；pair 报告消费与 C5-B；图面英文但图注/结论中文 | statistics.csv + identifiability_report + 图 + 中文报告 | A2+A6 | 分析已实现；pair 消费/C5-B/图面口径待整改（A5-M02/m05） | PARTIAL |
+| S1-10 | §0、§2 S1；R-V4-06 | 不得为让 MAML 获胜调参；负结果如实记录；正式 meta_test 一次性打开；回执披露污染/H1/C5/旧 APPROVE 收窄 | 分析与结论审查记录 | A1+A2+A5 | 旧 phase2 APPROVE 已收窄（M03）；v4 prereg 未冻结 | PARTIAL |
+| S1-11 | §1 缺口（m5_arms.py） | 修复 score_m5_init_designs() 无 support_features/support_targets 参数、run_m5_bo_arm() 不传 k_shot/support 导致默认 k_shot=0 的闭环缺口 | 接口变更 + 兼容性单测 + K=0 回归 | A1 | c0cb2cd 已改；A5 rev2 判 B03 代码层 CLOSED；v4 回归待做 | IN_PROGRESS |
+| S1-12 | §2 S1、§4；R-V4-03 | 产物齐全：preregistration.json、run_config.json、train_val_test_split.json、data_manifest.json、SHA256SUMS、run_records、CSV、identifiability_report、图数据/PNG、中文报告 | 交付目录 + 清单 | A1+A2+A4 | 正式工件未从 c0cb2cd 干净树重建（M01）；无 formal 产物 | BLOCKED |
 
 ### 2.3 S2｜完整二阶 MAML（Issue #7 §2 S2，S1 审查通过后）
 
@@ -147,7 +155,7 @@
 | SAFE-05 | §3、§4 | 旧 PR #3/#6 保持 open 不合并 main；成果单独 PR 以 research/p4-meta-learning 为基线，最终合并策略由负责人确认 | 分支/PR 状态记录 | A3+Lead | PR #3/#6 merged=false；无 main 合并 | READ_ONLY_VERIFIED（2026-11-05 11:49 实测） |
 | SAFE-06 | §3 | 不删除/覆盖历史运行与历史 PR；旧冻结工件只读 | 只读保护记录 | A3 | SHA 对比无变化 | PENDING |
 
-> 统计：本矩阵共 10（S0）+12（S1）+9（S2）+7（S3）+6（S4）+19（跨阶段）= 63 条唯一需求ID。每条均可回查到 Issue #7 §2 对应小节或 §3/§4 段落。S0-2 关闭对照表另列 14 条 A5 finding（M01..M04/m01..m10），不计入 63 条需求；A5 phase2 另有 8 个开放 minor（A5-S0P2-m01..m08），非阻断、单列。
+> 统计：本矩阵共 10（S0）+12（S1）+9（S2）+7（S3）+6（S4）+19（跨阶段）= 63 条唯一需求ID。每条均可回查到 Issue #7 §2 对应小节或 §3/§4 段落。§2.1.0 的 S0-3 v4 remediation 另列 1 行，不计入 63 条需求（属 S0 冻结输入整改，非新增研究需求）。S0-2 关闭对照表另列 14 条 A5 finding（M01..M04/m01..m10），不计入 63 条需求；A5 phase2 另有 8 个开放 minor（A5-S0P2-m01..m08），非阻断、单列。
 
 ## 3. Issue #4 / #5 / #7 门禁关系表
 
@@ -159,10 +167,11 @@
 | BODY-CORR | BLOCKED：面积律 NOT_VALIDATED，未注入机身修正 | 合成任务无机身修正 | 不涉及 | #7 不得用 #4 内部 CDtot 拟合“机身修正” | A2/A5 |
 | MISSION-DATA | PARTIAL：任务数据合同未变，无新 Mission 运行 | 历史合成数据合同可参考 | #7 只用合成解析任务；S4 只设计接口 | RCAIDE Mission 保持暂停 | A3 |
 | BUDGET | GATED：A 14/20，剩余 6 关闭不结转；B 0/12、C 0/4 锁定；D/E/P4 0 | 历史 run 不新增预算 | physical_call_count=0；任何新物理预算需负责人书面批准 | #7 不得自动复活 #4 剩余 6 次或 B/C 类 | Lead |
-| 算法阶段门禁 | 不开放 P4/P5/P6；#4 不启动 BO/DE/MAML | M2/M5/M6 为历史算法证据（负结果保留） | S0 COMPLETE；S1 实现未开始；S1→S2→S3→S4 每阶段 A5 放行 | #4 的“不启动 P4”与 #7 的“路线A算法开发”互不替代：后者仅合成离线 | A5/Lead |
+| 算法阶段门禁 | 不开放 P4/P5/P6；#4 不启动 BO/DE/MAML | M2/M5/M6 为历史算法证据（负结果保留） | S0-2 历史 COMPLETE；S0-3 v4 IN_PROGRESS；S1 代码部分实现（A5 rev2 CHANGES_REQUESTED，formal 未放行）；S1→S2→S3→S4 每阶段 A5 放行 | #4 的“不启动 P4”与 #7 的“路线A算法开发”互不替代：后者仅合成离线 | A5/Lead |
 | APPROVED_FOR_NEXT_STAGE | false（D-12D-005 结论） | A5 APPROVE_FOR_ISSUE5_RECEIPT 仅为软件/证据交付批准 | 阶段放行为 A5 APPROVE，不等于物理验证或最终发布 | 任何阶段批准不得被解读为物理门禁通过 | Lead |
 | 证据冻结 | d12d005-20261104T0430Z 只读 | M2/M5/M6 归档只读 | S0 只读校验，不可重跑覆盖 | 三处一致：旧工件不可改写 | A3+A5 |
-| 分支/PR 边界 | PR #3 open（head e5140fc，未合并） | PR #6 open（head ff6280f，未合并） | research/p4-route-a-s1 @ 43fcfc8，尚无 PR | 旧 PR 不合并 main；成果单独 PR，合并由负责人确认 | A3+Lead |
+| 分支/PR 边界 | PR #3 open（head e5140fc，未合并） | PR #6 open（head ff6280f，未合并） | research/p4-route-a-s1 @ c0cb2cd（工作树有 A1/A6 未提交改动），尚无 PR | 旧 PR 不合并 main；成果单独 PR，合并由负责人确认 | A3+Lead |
+| holdout 完整性 | 不涉及物理气动 | 旧 M5/M6 holdout 已公开，只能作历史对照 | 旧 S0-2 meta_test 已被读取（B01：608 条记录/3 任务；8/20 入内存），不得用于确证 S1；S0-3 重播种待冻结 | 旧 S0-2 只读；S0-3 + A5 phase3 前不得启动 formal | A1+A5+Lead |
 
 **门禁关系结论（关键 5 条）：**
 
@@ -177,22 +186,31 @@
 ```
 S0（基线冻结/预注册/设计合同/风险清单/基线快照）
   └─ A5 S0 审阅 APPROVE_FOR_S1_PREP（条件式）
-       └─ S0-2（五 split/端点/预算/代码 minor 关闭 + frozen_family/prereg/isolation/determinism/预算公平测试）
-            └─ A5 S0-2 复审 APPROVE_FOR_S1_FORMAL（ea9b2eb7…）+ A3 PASS 11/11（23bac611…）+ Lead 集成提交 766a59c/a79959c/43fcfc8 + Issue #7 回执 6653167378
-                 └─ S1（K-shot→BO 闭环；实现未开始；先单测→pilot→A5 APPROVE_FOR_S1_RUN→Lead 授权 A2 formal run）
-                      └─ S2（FULL_MAML；元梯度门禁 + A5 审查）
-                           └─ S3（约束感知初始化/ANIL 消融；条件开启）
-                                └─ S4（航空接口合同，只离线）
+       └─ S0-2 历史 COMPLETE（五 split/端点/预算/代码 minor 关闭 + frozen_family/prereg/isolation/determinism/预算公平测试）
+            └─ A5 phase2 APPROVE_FOR_S1_FORMAL（ea9b2eb7…，仅旧范围，被 M03 收窄）+ A3 PASS 11/11（23bac611…）+ Lead 提交 766a59c/a79959c/43fcfc8 + Issue #7 回执 6653167378
+                 └─ S0-3 v4 remediation（R-V4-01：只重播种 meta_test 20 + ood 10；family_version=p4ra-family-v4；holdout_seed=20261106；旧包只读）
+                      ├─ A1/A6 修复 + Lead commit V4
+                      ├─ 干净 detached worktree 生成 S0-3 冻结包（两进程逐字节一致）+ Lead 提交
+                      ├─ A2 重建正式工件（默认 200/50）+ readiness（不得读 test/OOD；旧 readiness 不可用）
+                      └─ A5 phase3（S0-3 包+正式工件+pair 报告/C5-B+M01/M02/M04 关闭）→ A3 隔离
+                           └─ A5 APPROVE_FOR_S1_RUN + Lead 授权
+                                └─ S1 formal（21,000 真实合成评价；新 v4 holdout；pair/C5-B；允许无改进）
+                                     └─ S2（FULL_MAML；元梯度门禁 + A5 审查）
+                                          └─ S3（约束感知初始化/ANIL 消融；条件开启）
+                                               └─ S4（航空接口合同，只离线）
 任何阶段出现泄漏/预算不一致/真实物理调用非零/旧工件改写 → 停止该 run 并上报。
 ```
 
 ## 5. 待 Lead/负责人决策项
 
-1. 已关闭：S0-2 经 A5 phase2 判 APPROVE_FOR_S1_FORMAL（0 blocker/0 major/8 minor），Issue #7 回执 6653167378 已由 Lead 发布。
-2. S1 实现→A5 审阅 APPROVE_FOR_S1_RUN→Lead 授权 A2 formal run；当前 S1 未开始，正式 holdout 未打开。
-3. Full MAML 的梯度一致性阈值与“无收益则保留 FOMAML”的判定规则需在 S2 前冻结。
-4. A5 phase2 8 个 minor 的关闭责任：A1/Lead（m01..m04）、A2/Lead（m05/m06）、A3/Lead（m07）、A6/A5（m08）；不阻断 S1 formal，但 m08 必须在 S1 分析脚本实现。
-5. 任何新增物理预算仍须负责人书面批准；#4 的 A 类剩余 6 次 CLOSED 不结转、B/C 类 LOCKED 不变。
+1. 已关闭（历史）：S0-2 经 A5 phase2 判 APPROVE_FOR_S1_FORMAL（0 blocker/0 major/8 minor），Issue #7 回执 6653167378 已由 Lead 发布；该 APPROVE 仅对旧 S0-2 范围有效，已被 A5 S1 rev2 M03 收窄，**不能作为当前 S1 formal 的放行依据**。
+2. S0-3 v4 重播种（R-V4-01 已裁定 H1）：A1/A6 修复并 Lead commit V4 后，在干净 detached worktree 生成 S0-3 冻结包（两进程逐字节一致）并提交；需确认包名 UTC 时点、冻结包哈希与 A5 phase3 时点。旧 S0-2 包转为只读，不改写。
+3. 正式工件重建（R-V4-03）：v4 提交后从干净树以 prepare-artifacts 默认参数（maml 200/pretrain 50）重建，artifact sha 写入 A2 readiness 与 run_config；旧 readiness 仅标 BASELINE_989FC0A，不得作为 v4 formal 依据，A2 需重跑。
+4. S1 formal 放行链：S0-3 + A2 readiness + A5 phase3（pair 报告/C5-B/M01/M02/M04 关闭）→ A3 隔离 → A5 APPROVE_FOR_S1_RUN → Lead 授权，才可执行 21,000 正式合成评价；当前 S1 formal BLOCKED，holdout 未打开。
+5. C5-B/pair 责任：A2/A6 在 identifiability_report.json 输出 pair 级 overlap/structural_status 与 pair_status_counts，analysis 必须加载校验（缺失 fail-closed），aggregate/CSV 输出 structural_exclusion_counts 与 C5 可估计任务数；A5 phase3 复核。C5 不得进入 benefit/harm 与 Holm。
+6. Full MAML 的梯度一致性阈值与“无收益则保留 FOMAML”的判定规则需在 S2 前冻结。
+7. A5 phase2 8 个 minor 的关闭责任：A1/Lead（m01..m04）、A2/Lead（m05/m06）、A3/Lead（m07）、A6/A5（m08）；不阻断 S1 准备，但 m08 必须在 S1 分析脚本实现。A5 S1 rev2 的 2 blocker/4 major/6 minor 中，B01 由 S0-3 重播种处理，B02/M01/M02/M03/M04 进入 v4 阶段门。
+8. 任何新增物理预算仍须负责人书面批准；#4 的 A 类剩余 6 次 CLOSED 不结转、B/C 类 LOCKED 不变；#7 physical_call_count=0。
 
 ## 6. 证据与读取记录
 
@@ -200,11 +218,14 @@ S0（基线冻结/预注册/设计合同/风险清单/基线快照）
 - Issue #4：state=open，comments=15；最新评论 6647827491（D-12D-006）。
 - Issue #5：state=open，comments=3；最新终态回执 6643119583（2026-11-04T21:55:56Z）。
 - PR #3/#6：open、merged=false、mergeable clean；PR #7 不存在（404）。
-- S0-2 裁定：docs/planning/p4_route_a_s0_2_decisions_20261105.md（Lead，D-S0-2-01..07）；冻结包 p4ra-s0-2-freeze-20261105T072500Z。
-- A5 phase2：<EXT>/p4-route-a/a5/S0_2_A5_review_phase2.md（sha256 ea9b2eb708fa660fb84a913bc1b5f63624a7303337fff574ad2c4c05905068d8；0 blocker/0 major/8 minor；独立复跑 604 tests OK(skipped=1)/37.687s；8 payload 逐字节一致；determinism 29/29；physical=0）。
-- A3 phase2：<EXT>/EXT/p4-route-a/a3/S0_2_phase2_isolation.md（sha256 23bac611159b76064a39789a27837e7e5c92e31a573585f2f137ef9aec92858d；PASS 11/11；三提交单父非 merge；旧 M2/M5/M6 tree_agg 未变；0 solver）。
-- 本地 HEAD（读取时点）：S1 工作树 = 43fcfc851525bd74935b20c85dfbea2d932e436e，branch research/p4-route-a-s1；porcelain 仅 1 个未跟踪 S1 执行计划（A4 未 commit、未改代码/冻结包）。D12 工作树 = aef2cb7；主库 = e5140fc（research/concorde-metaopt，含历史未提交改动，未触碰）。
-- 本文件与设计合同/风险清单为 A4 文档交付；未执行任何物理计算、GitHub 写操作、git commit/push。S1 详细映射见 docs/reviews/p4_route_a_s1_requirement_matrix.md。
+- S0-2 裁定（历史）：docs/planning/p4_route_a_s0_2_decisions_20261105.md（Lead，D-S0-2-01..07）；冻结包 p4ra-s0-2-freeze-20261105T072500Z，现只读。
+- v4 整改裁定：docs/planning/p4_route_a_s1_v4_remediation_rulings_20261105.md（sha256 f71e32a9…，5,715 B/84 行，R-V4-01..06；A4 于 2026-11-05 只读核对；该文件尚未提交，属 Lead 提供）。
+- A5 S1 rev2：<EXT>/p4-route-a/a5/S1_code_review_rev2.md（sha256 d5a0979a…，269 行；审阅 c0cb2cd；CHANGES_REQUESTED，2 blocker/4 major/6 minor；B01 旧 holdout 污染、B02 K=5 结构克隆 22/24、M01 正式工件未重建、M02 pair 报告未消费、M03 旧 APPROVE 收窄、M04 10/24 为诊断工件）。
+- A5 phase2（历史）：<EXT>/p4-route-a/a5/S0_2_A5_review_phase2.md（sha256 ea9b2eb708fa660fb84a913bc1b5f63624a7303337fff574ad2c4c05905068d8；0 blocker/0 major/8 minor；独立复跑 604 tests OK(skipped=1)/37.687s；8 payload 逐字节一致；determinism 29/29；physical=0；仅旧 S0-2 范围）。
+- A3 phase2：<EXT>/p4-route-a/a3/S0_2_phase2_isolation.md（sha256 23bac611159b76064a39789a27837e7e5c92e31a573585f2f137ef9aec92858d；PASS 11/11；三提交单父非 merge；旧 M2/M5/M6 tree_agg 未变；0 solver）。
+- S1 代码/测试：commit c0cb2cd（5 文件，+1,147/−37），s1_runner.py 1,733 行、s1_analysis.py 2,849 行、s1_figures.py 632 行、test_s1_runner.py 1,145 行、test_s1_analysis.py 1,748 行；A4 只读核实存在，未改动。
+- 本地 HEAD（读取时点）：S1 工作树 branch research/p4-route-a-s1 HEAD=c0cb2cd；porcelain 含 A4 本次修改 3 份文档（contract/execution plan/S1 matrix）及本次新增 S0 矩阵修改、A1/A6 并发修改 6 个代码/测试文件（family_v3.py、s1_analysis.py、s1_runner.py、task_family.py、test_meta_learning_family_v3.py、test_s1_runner.py）、未跟踪 v4 裁定 1 份；A4 未 commit、未改代码/冻结包。D12 工作树 HEAD=aef2cb7；主库 HEAD=e5140fc（research/concorde-metaopt，含历史未提交改动，未触碰）。
+- 本文件、设计合同、执行计划、S1 矩阵为 A4 文档交付；A4 未执行任何物理计算、未读新 meta_test/ood 结果、未进行 GitHub 写操作、未 git commit/push。S1 详细映射见 docs/reviews/p4_route_a_s1_requirement_matrix.md。
 
 ## 7. 版本记录
 
@@ -213,3 +234,4 @@ S0（基线冻结/预注册/设计合同/风险清单/基线快照）
 | v1.0 | 2026-11-05 | A4 | 首次生成 63 条需求矩阵与 #4/#5/#7 门禁关系表（S0 预注册草案） |
 | v1.1 | 2026-11-05 | A4（task-197） | 按 D-S0-2 与 A5 S0 审阅更新 S0-01..S0-10 状态/责任人/证据；新增 §2.1.1 S0-2 关闭对照表（A5-S0-M01..M04/m01/m02/m03/m09）；S0 总状态标 NOT_COMPLETE；阶段依赖加入 S0-2 复审；未执行物理计算与 GitHub 写操作 |
 | v1.2 | 2026-11-05 | A4（task-212/217） | S0 总状态 COMPLETE；S0-01..10 全 PASS；关闭对照表扩至 14 条 A5 finding 并新增 A5 phase2 8 minor 单列；引用 A5 phase2 ea9b2eb7…/A3 23bac611…/冻结包/604 tests/Issue #7 回执 6653167378；更正 D-S0-2 为 01..07；阶段依赖、决策项、证据与版本更新；新增 S1 详细矩阵指针；未执行物理计算与 GitHub 写操作 |
+| v1.3 | 2026-11-05 | A4（task-231） | 按 A5 S1 rev2（B01/B02/M01..M04/m01..m06）与 v4 整改裁定（R-V4-01..06）更新：S0-2 标历史 COMPLETE/只读、A5 phase2 APPROVE 仅旧范围并被 M03 收窄；新增 §2.1.0 S0-3 v4 重播种整改行（IN_PROGRESS）；S1-01..12 改 IN_PROGRESS/PARTIAL/BLOCKED；§2.2 同步；§3 算法门禁/分支/holdout 行更新；§4 阶段依赖加 S0-3/A2 工件/A5 phase3/21,000 授权链；§5 决策改 S0-3/工件重建/C5-B；§6 补 v4 裁定/A5 rev2/S1 代码与工作树实况；未执行物理计算、未读新 meta_test/ood、未 GitHub 写、未 commit/push |

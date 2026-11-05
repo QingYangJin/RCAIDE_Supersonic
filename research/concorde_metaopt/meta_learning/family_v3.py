@@ -8,7 +8,7 @@
 不调用 RCAIDE Mission / VSPAERO / SU2 / Gmsh，不运行任何真实优化。
 
 硬约束（全部程序化 fail-closed）：
-1. family_id=F-QE-feasible-v3 / family_version=p4ra-family-v3 / formula_version=p4-task-family-v3；
+1. 包层 family_version=p4ra-family-v4（legacy p4ra-family-v3 只读兼容）；数学任务族仍是 p4ra-family-v3；formula_version=p4-task-family-v3；
 2. task_id 唯一格式 ^p4ra-FQE3-v3-(TR|VA|TE|OD|NC)-[0-9]{3}$，五 split 60/20/20/10/10；
 3. 与旧 M2/M5/M6 任务清单 task_id/task_fingerprint 零交集（非空即抛错）；
 4. family_fingerprint / split_hash / frozen sha256 / prereg sha256 全部可重算；
@@ -34,8 +34,14 @@ __all__ = [
     "FamilyV3Error",
     "FAMILY_ID",
     "FAMILY_VERSION",
+    "LEGACY_FAMILY_VERSIONS",
+    "TASK_FAMILY_VERSION",
     "FORMULA_VERSION",
     "FAMILY_SEED",
+    "HOLDOUT_SEED",
+    "HOLDOUT_SPLITS",
+    "HOLDOUT_TASK_COUNT",
+    "package_family_fingerprint",
     "TASK_ID_PREFIX",
     "TASK_ID_PATTERN",
     "SPLIT_ORDER",
@@ -101,9 +107,16 @@ __all__ = [
 ]
 
 FAMILY_ID = tf.V3_FAMILY_ID
-FAMILY_VERSION = tf.V3_FAMILY_VERSION
+# 包/记录层版本（task-229 R-V4-01）：v4 只重播种 holdout 两类；
+# 数学任务族版本仍是 p4ra-family-v3（任务参数/fingerprint 不漂移）。
+FAMILY_VERSION = "p4ra-family-v4"
+LEGACY_FAMILY_VERSIONS = (tf.V3_FAMILY_VERSION,)
+TASK_FAMILY_VERSION = tf.V3_FAMILY_VERSION
 FORMULA_VERSION = tf.V3_FORMULA_VERSION
 FAMILY_SEED = tf.V3_FAMILY_SEED
+HOLDOUT_SEED = tf.V4_HOLDOUT_SEED
+HOLDOUT_SPLITS = ("meta_test", "meta_test_ood")
+HOLDOUT_TASK_COUNT = 30
 TASK_ID_PREFIX = tf.V3_TASK_ID_PREFIX
 TASK_ID_PATTERN = re.compile(r"^p4ra-FQE3-v3-(TR|VA|TE|OD|NC)-[0-9]{3}$")  # 合同 §7 精确字面量
 
@@ -323,6 +336,37 @@ def write_json_artifact(path: str | Path, payload: Mapping[str, Any]) -> dict[st
 # ---------------------------------------------------------------------------
 # v3 配置与恒等式
 # ---------------------------------------------------------------------------
+def _validate_holdout_seed(value: Any) -> int:
+    if type(value) is not int or value < 0 or value > 2**31 - 1:
+        raise FamilyV3Error(f"holdout_seed 必须是 [0, 2^31-1] 内的整数，实际 {value!r}")
+    return int(value)
+
+
+def package_family_fingerprint(
+    config: tf.TaskFamilyConfig, *, holdout_seed: int = HOLDOUT_SEED
+) -> str:
+    """v4 包级 family_fingerprint（R-V4-01）：任务族指纹 + 包版本 + holdout 重播种声明。
+
+    数学任务族指纹 tf.family_fingerprint(config) 保持 v3 逐位不变（train/val/NC 不漂移）；
+    包级指纹单独覆盖 holdout seed/splits/count 与包版本，用于 v4 冻结包/预注册绑定。
+    """
+    if not isinstance(config, tf.TaskFamilyConfig):
+        raise FamilyV3Error("package_family_fingerprint 需要 TaskFamilyConfig")
+    seed = _validate_holdout_seed(holdout_seed)
+    payload = {
+        "schema_version": "p4ra-family-fingerprint-v4-1",
+        "task_family_fingerprint": tf.family_fingerprint(config),
+        "family_id": config.family_id,
+        "family_version": FAMILY_VERSION,
+        "task_family_version": TASK_FAMILY_VERSION,
+        "formula_version": FORMULA_VERSION,
+        "holdout_seed": seed,
+        "holdout_splits": list(HOLDOUT_SPLITS),
+        "holdout_task_count": HOLDOUT_TASK_COUNT,
+    }
+    return digest(payload)
+
+
 def build_v3_family_config(**overrides: Any) -> tf.TaskFamilyConfig:
     """构造 v3 任务族配置（默认 60/20/20/10/10、seed=20261105、radius_base=0.32）。"""
     base: dict[str, Any] = dict(
@@ -339,7 +383,7 @@ def build_v3_family_config(**overrides: Any) -> tf.TaskFamilyConfig:
         support_pool_size=128,
         query_size=64,
         reference_tolerance=tf.REFERENCE_ABS_TOL,
-        family_version=FAMILY_VERSION,
+        family_version=TASK_FAMILY_VERSION,
         radius_base=tf.V3_RADIUS_BASE_DEFAULT,
     )
     base.update(overrides)
@@ -352,8 +396,10 @@ def assert_family_v3_identity(config: tf.TaskFamilyConfig) -> None:
         raise FamilyV3Error("assert_family_v3_identity 需要 TaskFamilyConfig")
     if config.family_id != FAMILY_ID:
         raise FamilyV3Error(f"family_id 必须是 {FAMILY_ID!r}，实际 {config.family_id!r}")
-    if config.family_version != FAMILY_VERSION:
-        raise FamilyV3Error(f"family_version 必须是 {FAMILY_VERSION!r}，实际 {config.family_version!r}")
+    if config.family_version != TASK_FAMILY_VERSION:
+        raise FamilyV3Error(
+            f"数学任务族 family_version 必须是 {TASK_FAMILY_VERSION!r}，实际 {config.family_version!r}"
+        )
     if int(config.seed) != FAMILY_SEED:
         raise FamilyV3Error(f"family seed 必须是 {FAMILY_SEED}，实际 {config.seed!r}")
     if config.radius_base is None:
@@ -433,7 +479,7 @@ def task_fingerprint(task: tf.SyntheticTask) -> str:
         raise FamilyV3Error("task_fingerprint 需要 SyntheticTask")
     payload = {
         "family_id": task.family,
-        "family_version": FAMILY_VERSION,
+        "family_version": TASK_FAMILY_VERSION,
         "formula_version": FORMULA_VERSION,
         "design_dim": tf.DESIGN_DIM,
         "params": dict(task.params),
@@ -464,7 +510,7 @@ def build_task_records(tasks: Sequence[tf.SyntheticTask]) -> list[dict[str, Any]
                 "task_fingerprint": fingerprint,
                 "split": task.split,
                 "family": task.family,
-                "family_version": FAMILY_VERSION,
+                "family_version": TASK_FAMILY_VERSION,
                 "formula_version": FORMULA_VERSION,
                 "design_dim": tf.DESIGN_DIM,
                 "context": {name: float(value) for name, value in task.context.items()},
@@ -510,9 +556,16 @@ def _task_summary(task: tf.SyntheticTask) -> dict[str, Any]:
 
 
 def build_split_manifest_v3(
-    tasks: Sequence[tf.SyntheticTask], *, family_config: tf.TaskFamilyConfig
+    tasks: Sequence[tf.SyntheticTask],
+    *,
+    family_config: tf.TaskFamilyConfig,
+    holdout_seed: int | None = None,
 ) -> dict[str, Any]:
-    """构造 meta_task_split.json 载荷：五 split 有序 task_id + 逐任务摘要 + split_hash。"""
+    """构造 meta_task_split.json 载荷：五 split 有序 task_id + 逐任务摘要 + split_hash。
+
+    holdout_seed=None 为 legacy v3 载荷（逐位兼容旧包）；给定 holdout_seed 时为 v4 包
+    （包层 family_version=p4ra-family-v4 + holdout_seed/splits/count + 包级指纹）。
+    """
     if not tasks:
         raise FamilyV3Error("build_split_manifest_v3 需要非空任务列表")
     counts: dict[str, int] = {split: 0 for split in SPLIT_ORDER}
@@ -533,13 +586,29 @@ def build_split_manifest_v3(
                 "params_summary": _task_summary(task),
             }
         )
+    if holdout_seed is None:
+        payload_family_version = TASK_FAMILY_VERSION
+        family_fingerprint_value = tf.family_fingerprint(family_config)
+        holdout_extra: dict[str, Any] = {}
+    else:
+        seed = _validate_holdout_seed(holdout_seed)
+        payload_family_version = FAMILY_VERSION
+        family_fingerprint_value = package_family_fingerprint(
+            family_config, holdout_seed=seed
+        )
+        holdout_extra = {
+            "task_family_version": TASK_FAMILY_VERSION,
+            "holdout_seed": seed,
+            "holdout_splits": list(HOLDOUT_SPLITS),
+            "holdout_task_count": HOLDOUT_TASK_COUNT,
+        }
     payload: dict[str, Any] = {
         "schema_version": SPLIT_SCHEMA_VERSION,
         "family_id": family_config.family_id,
-        "family_version": family_config.family_version,
+        "family_version": payload_family_version,
         "family_seed": int(family_config.seed),
         "radius_base": float(family_config.radius_base),
-        "family_fingerprint": tf.family_fingerprint(family_config),
+        "family_fingerprint": family_fingerprint_value,
         "task_id_pattern": TASK_ID_PATTERN.pattern,
         "split_order": list(SPLIT_ORDER),
         "counts": counts,
@@ -547,6 +616,7 @@ def build_split_manifest_v3(
         "task_ids": task_ids,
         "tasks": entries,
     }
+    payload.update(holdout_extra)
     payload["split_hash"] = digest(_split_hash_payload(task_ids))
     return payload
 
@@ -572,15 +642,43 @@ def verify_split_manifest_v3(
     for split in SPLIT_ORDER:
         if int(counts.get(split, -1)) != len(task_ids.get(split, ())):
             raise FamilyV3Error(f"split manifest counts 与 task_ids 不一致: {split}")
+    manifest_version = manifest.get("family_version")
+    if manifest_version == FAMILY_VERSION:
+        if manifest.get("task_family_version") != TASK_FAMILY_VERSION:
+            raise FamilyV3Error("v4 split manifest 缺少/错误 task_family_version")
+        if list(manifest.get("holdout_splits", ())) != list(HOLDOUT_SPLITS):
+            raise FamilyV3Error(f"v4 split manifest holdout_splits 必须为 {list(HOLDOUT_SPLITS)}")
+        if int(manifest.get("holdout_task_count", -1)) != HOLDOUT_TASK_COUNT:
+            raise FamilyV3Error(f"v4 split manifest holdout_task_count 必须为 {HOLDOUT_TASK_COUNT}")
+        manifest_holdout_seed = _validate_holdout_seed(manifest.get("holdout_seed"))
+        if manifest_holdout_seed != HOLDOUT_SEED:
+            raise FamilyV3Error(
+                f"v4 split manifest holdout_seed 必须为冻结值 {HOLDOUT_SEED}，实际 {manifest_holdout_seed}"
+            )
+    elif manifest_version in LEGACY_FAMILY_VERSIONS:
+        if "task_family_version" in manifest:
+            raise FamilyV3Error("legacy v3 split manifest 不得携带 task_family_version 包层字段")
+        manifest_holdout_seed = None
+    else:
+        raise FamilyV3Error(f"split manifest family_version 非法: {manifest_version!r}")
     if family_config is not None:
-        if manifest.get("family_fingerprint") != tf.family_fingerprint(family_config):
+        if family_config.family_version != TASK_FAMILY_VERSION:
+            raise FamilyV3Error("split manifest 校验要求数学任务族 family_version=p4ra-family-v3")
+        expected_fingerprint = (
+            tf.family_fingerprint(family_config)
+            if manifest_holdout_seed is None
+            else package_family_fingerprint(family_config, holdout_seed=manifest_holdout_seed)
+        )
+        if manifest.get("family_fingerprint") != expected_fingerprint:
             raise FamilyV3Error("split manifest family_fingerprint 与当前配置不符")
         if manifest.get("family_id") != family_config.family_id:
             raise FamilyV3Error("split manifest family_id 与当前配置不符")
     if tasks is not None:
         if family_config is None:
             raise FamilyV3Error("verify_split_manifest_v3 比对 tasks 时必须给 family_config")
-        rebuilt = build_split_manifest_v3(tasks, family_config=family_config)
+        rebuilt = build_split_manifest_v3(
+            tasks, family_config=family_config, holdout_seed=manifest_holdout_seed
+        )
         if rebuilt != dict(manifest):
             raise FamilyV3Error("split manifest 与当前任务/配置不一致（禁止静默改 split）")
     return True
@@ -666,6 +764,7 @@ def build_isolation_report(
     v3_task_fingerprints: Sequence[str],
     legacy: Mapping[str, Any],
     created_utc: str,
+    holdout: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     """生成 v3_isolation_report.json（R-06 fail-closed）。
 
@@ -724,11 +823,44 @@ def build_isolation_report(
             "overlap_sample": [],
             "note": "旧 M2/M5/M6 只读清单均无 task_fingerprint 字段；交集为空属平凡成立，不能证明指纹零交集。",
         }
+    holdout_block: dict[str, Any] | None = None
+    if holdout is not None:
+        holdout_fps = sorted(str(value) for value in holdout.get("task_fingerprints", ()))
+        reference_fps = sorted(
+            str(value) for value in holdout.get("reference_task_fingerprints", ())
+        )
+        if len(holdout_fps) != HOLDOUT_TASK_COUNT:
+            raise FamilyV3Error(
+                f"v4 holdout task_fingerprint 数必须是 {HOLDOUT_TASK_COUNT}，实际 {len(holdout_fps)}"
+            )
+        if len(set(holdout_fps)) != len(holdout_fps):
+            raise FamilyV3Error("v4 holdout task_fingerprint 存在重复")
+        if len(reference_fps) != TOTAL_TASKS:
+            raise FamilyV3Error(
+                f"v3 参考 task_fingerprint 数必须是 {TOTAL_TASKS}，实际 {len(reference_fps)}"
+            )
+        holdout_overlap = sorted(set(holdout_fps) & set(reference_fps))
+        if holdout_overlap:
+            raise FamilyV3Error(
+                f"v4 holdout 与 v3 参考 task_fingerprint 存在交集（R-V4-01 fail-closed）: {holdout_overlap[:5]}"
+            )
+        holdout_block = {
+            "assertion": "HOLDOUT_FINGERPRINT_ZERO_INTERSECTION",
+            "status": "PASS",
+            "evidence_class": "SUBSTANTIVE",
+            "holdout_task_count": len(holdout_fps),
+            "holdout_splits": list(HOLDOUT_SPLITS),
+            "v3_reference_task_fingerprint_count": len(reference_fps),
+            "overlap_count": 0,
+            "overlap_sample": [],
+            "note": "v4 重播种的 meta_test/meta_test_ood 30 个 task_fingerprint 与 v3 官方包 120 个 task_fingerprint 零交集（实质证据）。",
+        }
+    package_version = FAMILY_VERSION if holdout is not None else TASK_FAMILY_VERSION
     payload: dict[str, Any] = {
         "schema_version": ISOLATION_SCHEMA_VERSION,
         "created_utc": created_utc,
         "family_id": FAMILY_ID,
-        "family_version": FAMILY_VERSION,
+        "family_version": package_version,
         "formula_version": FORMULA_VERSION,
         "family_seed": FAMILY_SEED,
         "task_id_pattern": TASK_ID_PATTERN.pattern,
@@ -753,6 +885,12 @@ def build_isolation_report(
         "status": "PASS",
         "physical_call_count": 0,
     }
+    if holdout_block is not None:
+        payload["holdout_fingerprint_intersection"] = holdout_block
+        payload["limitations"].append(
+            "旧 M2/M5/M6 legacy 清单无 task_fingerprint 字段；holdout 零交集断言只对 v3 官方包 "
+            "120 个 task_fingerprint 实质成立，对 legacy 280 个 task_id 只能做 task_id 零交集。"
+        )
     payload["sha256"] = digest(payload)
     return payload
 
@@ -763,8 +901,9 @@ def verify_isolation_report(payload: Mapping[str, Any]) -> bool:
     body = {key: value for key, value in payload.items() if key != "sha256"}
     if payload.get("sha256") != digest(body):
         raise FamilyV3Error("isolation report sha256 校验失败")
-    if payload.get("family_version") != FAMILY_VERSION:
-        raise FamilyV3Error("isolation report family_version 不符")
+    isolation_version = payload.get("family_version")
+    if isolation_version not in (FAMILY_VERSION, *LEGACY_FAMILY_VERSIONS):
+        raise FamilyV3Error(f"isolation report family_version 非法: {isolation_version!r}")
     if payload.get("status") != "PASS":
         raise FamilyV3Error(f"isolation report status 必须为 PASS，实际 {payload.get('status')!r}")
     if payload.get("assertion") != "TASK_ID_ZERO_INTERSECTION":
@@ -807,6 +946,24 @@ def verify_isolation_report(payload: Mapping[str, Any]) -> bool:
     intersections = payload.get("intersections", {})
     if intersections.get("task_ids") or intersections.get("task_fingerprints"):
         raise FamilyV3Error("isolation report 交集非空")
+    if isolation_version == FAMILY_VERSION:
+        holdout_block = payload.get("holdout_fingerprint_intersection")
+        if not isinstance(holdout_block, Mapping):
+            raise FamilyV3Error("v4 isolation report 缺少 holdout_fingerprint_intersection 分列块")
+        if holdout_block.get("assertion") != "HOLDOUT_FINGERPRINT_ZERO_INTERSECTION":
+            raise FamilyV3Error("holdout_fingerprint_intersection assertion 不符")
+        if holdout_block.get("status") != "PASS" or holdout_block.get("evidence_class") != "SUBSTANTIVE":
+            raise FamilyV3Error("holdout_fingerprint_intersection 必须是 PASS/SUBSTANTIVE 实质证据")
+        if int(holdout_block.get("holdout_task_count", -1)) != HOLDOUT_TASK_COUNT:
+            raise FamilyV3Error("holdout_fingerprint_intersection holdout_task_count 不符")
+        if list(holdout_block.get("holdout_splits", ())) != list(HOLDOUT_SPLITS):
+            raise FamilyV3Error("holdout_fingerprint_intersection holdout_splits 不符")
+        if int(holdout_block.get("v3_reference_task_fingerprint_count", -1)) != TOTAL_TASKS:
+            raise FamilyV3Error("holdout_fingerprint_intersection v3 参考指纹数不符")
+        if int(holdout_block.get("overlap_count", -1)) != 0 or holdout_block.get("overlap_sample"):
+            raise FamilyV3Error("holdout_fingerprint_intersection 交集非空")
+    elif "holdout_fingerprint_intersection" in payload:
+        raise FamilyV3Error("legacy v3 isolation report 不得携带 holdout 分列块")
     return True
 
 
@@ -958,6 +1115,7 @@ def build_frozen_family_v3(
     family_config: tf.TaskFamilyConfig,
     *,
     split_manifest: Mapping[str, Any],
+    holdout_seed: int | None = None,
     run_id: str,
     git_sha: str,
     created_utc: str,
@@ -984,6 +1142,33 @@ def build_frozen_family_v3(
         raise FamilyV3Error(f"radius_base 必须在 [{tf.V3_RADIUS_MIN}, {tf.V3_RADIUS_MAX}]")
     if calibration_status not in ("PENDING_A2_CALIBRATION", "CALIBRATED"):
         raise FamilyV3Error(f"未知 calibration_status: {calibration_status!r}")
+    if holdout_seed is None:
+        payload_family_version = TASK_FAMILY_VERSION
+        family_fingerprint_value = tf.family_fingerprint(family_config)
+        holdout_extra: dict[str, Any] = {}
+    else:
+        seed = _validate_holdout_seed(holdout_seed)
+        if seed != HOLDOUT_SEED:
+            raise FamilyV3Error(
+                f"v4 冻结包 holdout_seed 必须为 {HOLDOUT_SEED}，实际 {seed}"
+            )
+        payload_family_version = FAMILY_VERSION
+        family_fingerprint_value = package_family_fingerprint(
+            family_config, holdout_seed=seed
+        )
+        holdout_extra = {
+            "task_family_version": TASK_FAMILY_VERSION,
+            "holdout_seed": seed,
+            "holdout_splits": list(HOLDOUT_SPLITS),
+            "holdout_task_count": HOLDOUT_TASK_COUNT,
+            "holdout_reseed": {
+                "policy": "R-V4-01",
+                "holdout_seed": seed,
+                "holdout_splits": list(HOLDOUT_SPLITS),
+                "unchanged_splits": ["meta_train", "meta_validation", "negative_control"],
+                "derivation": "seed=derive_seed(family,split,index,attempt,config.seed,'holdout',holdout_seed)",
+            },
+        }
     split_task_ids = {split: list(split_manifest.get("task_ids", {}).get(split, ())) for split in SPLIT_ORDER}
     if any(len(split_task_ids[split]) != SPLIT_COUNTS[split] for split in SPLIT_ORDER):
         raise FamilyV3Error("split manifest 的 split 任务数与冻结规模不一致")
@@ -995,10 +1180,10 @@ def build_frozen_family_v3(
         "code_sha": code_sha if code_sha is not None else package_code_sha(),
         "physical_call_count": 0,
         "family_id": FAMILY_ID,
-        "family_version": FAMILY_VERSION,
+        "family_version": payload_family_version,
         "formula_version": FORMULA_VERSION,
         "family_seed": FAMILY_SEED,
-        "family_fingerprint": tf.family_fingerprint(family_config),
+        "family_fingerprint": family_fingerprint_value,
         "family_config": _serialize_v3_config(family_config),
         "radius_base": selected_radius,
         "radius_mapping": {
@@ -1064,6 +1249,7 @@ def build_frozen_family_v3(
         "meta_test_tuning_policy": META_TEST_TUNING_POLICY,
         "notes": [str(note) for note in notes],
     }
+    payload.update(holdout_extra)
     payload["sha256"] = digest(payload)
     return payload
 
@@ -1078,15 +1264,53 @@ def verify_frozen_family_v3(payload: Mapping[str, Any]) -> bool:
     body = {key: value for key, value in payload.items() if key != "sha256"}
     if payload.get("sha256") != digest(body):
         raise FamilyV3Error("frozen_family sha256 校验失败（冻结后被修改）")
-    if payload.get("family_id") != FAMILY_ID or payload.get("family_version") != FAMILY_VERSION:
-        raise FamilyV3Error("frozen_family 家族身份不符")
+    if payload.get("family_id") != FAMILY_ID:
+        raise FamilyV3Error("frozen_family 家族身份不符（family_id）")
+    frozen_version = payload.get("family_version")
+    if frozen_version == FAMILY_VERSION:
+        if payload.get("task_family_version") != TASK_FAMILY_VERSION:
+            raise FamilyV3Error("v4 frozen 缺少/错误 task_family_version")
+        holdout_reseed = payload.get("holdout_reseed")
+        if not isinstance(holdout_reseed, Mapping):
+            raise FamilyV3Error("v4 frozen 缺少 holdout_reseed 声明块")
+        if holdout_reseed.get("policy") != "R-V4-01":
+            raise FamilyV3Error("v4 frozen holdout_reseed.policy 必须是 R-V4-01")
+        holdout_seed_value = _validate_holdout_seed(payload.get("holdout_seed"))
+        if holdout_seed_value != HOLDOUT_SEED:
+            raise FamilyV3Error(f"v4 frozen holdout_seed 必须为 {HOLDOUT_SEED}")
+        if int(holdout_reseed.get("holdout_seed", -1)) != holdout_seed_value:
+            raise FamilyV3Error("v4 frozen holdout_reseed 与 holdout_seed 不一致")
+        if list(payload.get("holdout_splits", ())) != list(HOLDOUT_SPLITS):
+            raise FamilyV3Error("v4 frozen holdout_splits 不符")
+        if int(payload.get("holdout_task_count", -1)) != HOLDOUT_TASK_COUNT:
+            raise FamilyV3Error("v4 frozen holdout_task_count 不符")
+        if list(holdout_reseed.get("holdout_splits", ())) != list(HOLDOUT_SPLITS):
+            raise FamilyV3Error("v4 frozen holdout_reseed.holdout_splits 不符")
+        if list(holdout_reseed.get("unchanged_splits", ())) != [
+            "meta_train",
+            "meta_validation",
+            "negative_control",
+        ]:
+            raise FamilyV3Error("v4 frozen holdout_reseed.unchanged_splits 不符")
+    elif frozen_version in LEGACY_FAMILY_VERSIONS:
+        if "holdout_seed" in payload or "holdout_reseed" in payload:
+            raise FamilyV3Error("legacy v3 frozen 不得携带 holdout 字段")
+    else:
+        raise FamilyV3Error(f"frozen_family family_version 非法: {frozen_version!r}")
     if payload.get("formula_version") != FORMULA_VERSION:
         raise FamilyV3Error("frozen_family formula_version 不符")
     if int(payload.get("family_seed", -1)) != FAMILY_SEED:
         raise FamilyV3Error("frozen_family family_seed 不符")
     config = _deserialize_v3_config(payload["family_config"])
-    if tf.family_fingerprint(config) != payload.get("family_fingerprint"):
-        raise FamilyV3Error("frozen family_fingerprint 与 family_config 不符")
+    if config.family_version != TASK_FAMILY_VERSION:
+        raise FamilyV3Error("frozen family_config.family_version 必须是 p4ra-family-v3（数学任务族）")
+    expected_fingerprint = (
+        tf.family_fingerprint(config)
+        if frozen_version in LEGACY_FAMILY_VERSIONS
+        else package_family_fingerprint(config, holdout_seed=holdout_seed_value)
+    )
+    if expected_fingerprint != payload.get("family_fingerprint"):
+        raise FamilyV3Error("frozen family_fingerprint 与 family_config/包版本不符")
     if config.radius_base is None or abs(float(config.radius_base) - float(payload["radius_base"])) > 1e-12:
         raise FamilyV3Error("frozen radius_base 与 family_config.radius_base 不符")
     if payload.get("reference_solution") != REFERENCE_SOLUTION:
@@ -1354,6 +1578,20 @@ def build_preregistration_v3(
     budget_plan = _budget_plan_payload(budget_plans, bf)
     fingerprint = str(frozen_family["family_fingerprint"])
     split_hash = str(frozen_family["split"]["split_hash"])
+    frozen_version = frozen_family["family_version"]
+    version_extra: dict[str, Any] = {}
+    if frozen_version == FAMILY_VERSION:
+        version_extra = {
+            "task_family_version": frozen_family.get("task_family_version"),
+            "holdout_seed": frozen_family.get("holdout_seed"),
+            "holdout_splits": list(frozen_family.get("holdout_splits", ())),
+            "holdout_task_count": frozen_family.get("holdout_task_count"),
+        }
+    elif frozen_version in LEGACY_FAMILY_VERSIONS:
+        if "task_family_version" in frozen_family:
+            raise FamilyV3Error("legacy v3 frozen 不得携带 task_family_version 包层字段")
+    else:
+        raise FamilyV3Error(f"未知 frozen family_version: {frozen_version!r}")
     payload: dict[str, Any] = {
         "schema_version": PREREGISTRATION_SCHEMA_VERSION,
         "prereg_id": f"p4ra-prereg-v3-{fingerprint[:16]}",
@@ -1405,6 +1643,7 @@ def build_preregistration_v3(
             "本预注册只绑定合成解析任务；physical_call_count=0；不代表真实飞机/CFD 性能。",
         ],
     }
+    payload.update(version_extra)
     payload["prereg_digest"] = _prereg_digest(payload)
     payload["sha256"] = digest(payload)
     return payload
@@ -1433,8 +1672,22 @@ def verify_preregistration_v3(
     expected_prereg_id = f"p4ra-prereg-v3-{fingerprint[:16]}"
     if payload.get("prereg_id") != expected_prereg_id:
         raise FamilyV3Error(f"prereg_id 必须为 {expected_prereg_id!r}（与 family_fingerprint 关联）")
-    if payload.get("family_version") != FAMILY_VERSION:
-        raise FamilyV3Error(f"prereg family_version 必须为 {FAMILY_VERSION!r}")
+    prereg_version = payload.get("family_version")
+    if prereg_version == FAMILY_VERSION:
+        if payload.get("task_family_version") != TASK_FAMILY_VERSION:
+            raise FamilyV3Error("v4 prereg 缺少/错误 task_family_version")
+        prereg_holdout_seed = _validate_holdout_seed(payload.get("holdout_seed"))
+        if prereg_holdout_seed != HOLDOUT_SEED:
+            raise FamilyV3Error(f"v4 prereg holdout_seed 必须为 {HOLDOUT_SEED}")
+        if list(payload.get("holdout_splits", ())) != list(HOLDOUT_SPLITS):
+            raise FamilyV3Error("v4 prereg holdout_splits 不符")
+        if int(payload.get("holdout_task_count", -1)) != HOLDOUT_TASK_COUNT:
+            raise FamilyV3Error("v4 prereg holdout_task_count 不符")
+    elif prereg_version in LEGACY_FAMILY_VERSIONS:
+        if "holdout_seed" in payload or "holdout_splits" in payload:
+            raise FamilyV3Error("legacy v3 prereg 不得携带 v4 holdout 字段")
+    else:
+        raise FamilyV3Error(f"prereg family_version 非法: {prereg_version!r}")
     created = _validate_iso8601_utc(payload.get("created_utc"), "created_utc")
     frozen_utc = _validate_iso8601_utc(payload.get("frozen_at_utc"), "frozen_at_utc")
     if created != frozen_utc:
@@ -1552,6 +1805,15 @@ def verify_preregistration_v3(
         ):
             if payload.get(name) != frozen_family.get(name):
                 raise FamilyV3Error(f"prereg 与 frozen 的 {name} 不一致")
+        if payload.get("family_version") == FAMILY_VERSION:
+            for name in (
+                "task_family_version",
+                "holdout_seed",
+                "holdout_splits",
+                "holdout_task_count",
+            ):
+                if payload.get(name) != frozen_family.get(name):
+                    raise FamilyV3Error(f"prereg 与 frozen 的 {name} 不一致")
         frozen_split_hash = frozen_family.get("split", {}).get("split_hash")
         if payload.get("split_digest") != frozen_split_hash:
             raise FamilyV3Error("prereg 与 frozen 的 split_hash 不一致")
@@ -1602,6 +1864,8 @@ def build_freeze_bundle(
     legacy: Mapping[str, Any] | None = None,
     calibration_status: str = "PENDING_A2_CALIBRATION",
     radius_base: float | None = None,
+    holdout_seed: int | None = HOLDOUT_SEED,
+    v3_reference_task_fingerprints: Sequence[str] = (),
 ) -> dict[str, Any]:
     """一次构造 tasks/split/frozen/prereg/isolation 五个载荷（不写盘，纯确定性）。
 
@@ -1623,17 +1887,49 @@ def build_freeze_bundle(
             raise FamilyV3Error("radius_base 参数与 config.radius_base 不一致")
     assert_family_v3_identity(family_config)
     selected_radius = float(family_config.radius_base)
-    tasks = assign_v3_task_ids(tf.build_task_family(family_config))
+    if holdout_seed is not None:
+        _validate_holdout_seed(holdout_seed)
+        if holdout_seed != HOLDOUT_SEED:
+            raise FamilyV3Error(f"冻结包 holdout_seed 必须为 {HOLDOUT_SEED}，实际 {holdout_seed}")
+        reference_fps = [str(value) for value in v3_reference_task_fingerprints]
+        if len(reference_fps) != TOTAL_TASKS:
+            raise FamilyV3Error(
+                "v4 冻结包必须提供 v3 官方包 120 个参考 task_fingerprint（holdout 零交集断言），"
+                f"实际 {len(reference_fps)}"
+            )
+    else:
+        reference_fps = []
+    tasks = assign_v3_task_ids(tf.build_task_family(family_config, holdout_seed=holdout_seed))
     records = build_task_records(tasks)
-    split_manifest = build_split_manifest_v3(tasks, family_config=family_config)
+    split_manifest = build_split_manifest_v3(
+        tasks, family_config=family_config, holdout_seed=holdout_seed
+    )
     v3_ids = [record["task_id"] for record in records]
     v3_fps = [record["task_fingerprint"] for record in records]
+    holdout_payload: dict[str, Any] | None = None
+    if holdout_seed is not None:
+        holdout_tasks = [
+            task for split in HOLDOUT_SPLITS for task in tasks if task.split == split
+        ]
+        if len(holdout_tasks) != HOLDOUT_TASK_COUNT:
+            raise FamilyV3Error(
+                f"holdout 任务数必须是 {HOLDOUT_TASK_COUNT}，实际 {len(holdout_tasks)}"
+            )
+        holdout_payload = {
+            "task_fingerprints": [task_fingerprint(task) for task in holdout_tasks],
+            "reference_task_fingerprints": reference_fps,
+        }
     isolation_report = build_isolation_report(
-        v3_task_ids=v3_ids, v3_task_fingerprints=v3_fps, legacy=legacy, created_utc=created_utc
+        v3_task_ids=v3_ids,
+        v3_task_fingerprints=v3_fps,
+        legacy=legacy,
+        created_utc=created_utc,
+        holdout=holdout_payload,
     )
     frozen = build_frozen_family_v3(
         family_config,
         split_manifest=split_manifest,
+        holdout_seed=holdout_seed,
         run_id=run_id,
         git_sha=git_sha,
         created_utc=created_utc,

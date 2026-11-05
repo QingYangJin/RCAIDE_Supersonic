@@ -60,6 +60,17 @@ class FrozenPackageTests(unittest.TestCase):
         self.assertEqual(self.identity["prereg_digest"], EXPECTED_PREREG_DIGEST)
         self.assertEqual(self.identity["analysis_plan_digest"], EXPECTED_ANALYSIS_PLAN_DIGEST)
 
+    def test_legacy_v3_package_is_flagged_non_confirmatory(self):
+        identity = self.package["identity"]
+        self.assertTrue(self.package["legacy_frozen_package"])
+        self.assertFalse(self.package["confirmatory_eligible"])
+        self.assertTrue(identity["legacy_frozen_package"])
+        self.assertFalse(identity["confirmatory_eligible"])
+        self.assertEqual(identity["family_version"], "p4ra-family-v3")
+        self.assertEqual(identity["task_family_version"], "p4ra-family-v3")
+        self.assertIsNone(identity["holdout_seed"])
+        self.assertEqual(identity["holdout_splits"], [])
+
     def test_split_counts_and_task_id_pattern(self):
         split = self.package["split"]
         self.assertEqual(dict(split["counts"]), dict(fv3.SPLIT_COUNTS))
@@ -136,6 +147,82 @@ class FrozenPackageTests(unittest.TestCase):
             )
             with self.assertRaises((s1.S1RunnerError, ValueError)):
                 s1.load_frozen_package(dest)
+
+
+class FrozenPackageV4Tests(unittest.TestCase):
+    """R-V4-01/02：v4 冻结包（holdout 重播种）加载、身份字段与 run record 身份。"""
+
+    @classmethod
+    def setUpClass(cls):
+        v3_records = json.loads((FROZEN / "tasks.json").read_text(encoding="utf-8"))
+        cls.v3_fingerprints = tuple(record["task_fingerprint"] for record in v3_records)
+        cls.tmp = tempfile.TemporaryDirectory()
+        root = Path(cls.tmp.name) / "p4ra-s0-3-unittest"
+        root.mkdir(parents=True)
+        legacy = {
+            "task_ids": ["m2-deadbeef0001", "m5-deadbeef0002"],
+            "task_fingerprints": [],
+            "sources": [{"path": "<fixture>", "bytes": 0, "sha256": "f" * 64}],
+        }
+        bundle = fv3.build_freeze_bundle(
+            run_id="p4ra-s0-3-unittest",
+            git_sha="3ebd777595bf747edc855be5fb583f51cc17352f",
+            created_utc="2026-11-05T00:00:00+00:00",
+            code_sha="unit-test-code-sha",
+            legacy=legacy,
+            radius_base=0.64,
+            calibration_status="CALIBRATED",
+            v3_reference_task_fingerprints=cls.v3_fingerprints,
+        )
+        fv3.write_json(root / "tasks.json", bundle["task_records"])
+        fv3.write_json(root / "meta_task_split.json", bundle["split_manifest"])
+        fv3.write_json(root / "frozen_family.json", bundle["frozen_family"])
+        fv3.write_json(root / "preregistration.json", bundle["preregistration"])
+        cls.bundle = bundle
+        cls.package = s1.load_frozen_package(root)
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.tmp.cleanup()
+
+    def test_v4_package_identity(self):
+        identity = self.package["identity"]
+        self.assertEqual(identity["family_version"], "p4ra-family-v4")
+        self.assertEqual(identity["task_family_version"], "p4ra-family-v3")
+        self.assertFalse(self.package["legacy_frozen_package"])
+        self.assertTrue(self.package["confirmatory_eligible"])
+        self.assertFalse(identity["legacy_frozen_package"])
+        self.assertTrue(identity["confirmatory_eligible"])
+        self.assertEqual(identity["holdout_seed"], 20261106)
+        self.assertEqual(identity["holdout_splits"], ["meta_test", "meta_test_ood"])
+        self.assertEqual(identity["holdout_task_count"], 30)
+        self.assertEqual(dict(identity["task_counts"]), dict(fv3.SPLIT_COUNTS))
+        self.assertNotEqual(identity["family_fingerprint"], EXPECTED_FAMILY_FINGERPRINT)
+        self.assertEqual(identity["split_hash"], EXPECTED_SPLIT_HASH)
+
+    def test_v4_run_record_carries_family_version_without_paths(self):
+        task = next(task for task in self.package["tasks"] if task.split == "meta_train")
+        record = s1.run_single(
+            s1.RunContext(
+                task=task,
+                design_space=load_design_space_12d(),
+                model_artifact=None,
+                identity=s1.frozen_identity_for_run(self.package),
+                run_id="p4ra-s0-3-unittest-run",
+            ),
+            arm=m5.S1_RANDOM_BO,
+            budget=64,
+            k_shot=0,
+            meta_seed=0,
+            opt_seed=0,
+        )
+        self.assertEqual(record["status"], "OK")
+        self.assertEqual(record["family_version"], "p4ra-family-v4")
+        self.assertEqual(record["family_fingerprint"], self.package["identity"]["family_fingerprint"])
+        for forbidden in ("frozen_package", "raw_sha256", "frozen_run_id"):
+            self.assertNotIn(forbidden, record)
+        self.assertEqual(record["billable_evals"], 64)
+        self.assertEqual(record["physics"]["physical_call_count"], 0)
 
 
 class EndpointSemanticsTests(unittest.TestCase):
@@ -1084,6 +1171,27 @@ class ArmSemanticsB03Tests(unittest.TestCase):
             key = f"{pair[0]}|{pair[1]}"
             self.assertIn(key, report["pair_coverage"])
             self.assertEqual(report["pair_coverage"][key], 1)
+        self.assertEqual(
+            set(report["pair_status_counts"]),
+            {f"{left}|{right}" for left, right in s1.IDENTIFIABILITY_REQUIRED_PAIRS},
+        )
+        for pair in group["pairwise"]:
+            self.assertEqual(pair["threshold"], 0.90)
+            self.assertIsInstance(pair["pair_identifiable"], bool)
+            self.assertIn(
+                pair["structural_status"], ("IDENTIFIABLE", "STRUCTURALLY_IDENTICAL")
+            )
+            self.assertEqual(
+                pair["pair_identifiable"], pair["structural_status"] == "IDENTIFIABLE"
+            )
+        c5 = next(
+            item
+            for item in group["pairwise"]
+            if {item["arm_a"], item["arm_b"]}
+            == {m5.S1_FOMAML_ZERO_BO, m5.S1_FOMAML_KSHOT_BO}
+        )
+        self.assertTrue(c5["pair_identifiable"])
+        self.assertEqual(c5["structural_status"], "IDENTIFIABLE")
 
     def test_identifiability_report_flags_indistinguishable_rows(self):
         rows = ["a" * 64, "a" * 64, "a" * 64]
@@ -1103,6 +1211,46 @@ class ArmSemanticsB03Tests(unittest.TestCase):
         self.assertFalse(group["inference_allowed"])
         self.assertEqual(group["max_overlap_rate"], 1.0)
         self.assertEqual(report["status_counts"], {"RANKING_INDISTINGUISHABLE": 1})
+        for pair in group["pairwise"]:
+            self.assertFalse(pair["pair_identifiable"])
+            self.assertEqual(pair["structural_status"], "STRUCTURALLY_IDENTICAL")
+        for counts in report["pair_status_counts"].values():
+            self.assertEqual(counts["IDENTIFIABLE"], 0)
+            self.assertEqual(counts["STRUCTURALLY_IDENTICAL"], 1)
+
+    def test_pair_level_c5_structural_identity_not_masked_by_group_mean(self):
+        rows_zero = ["a" * 64, "a" * 64, "a" * 64]
+        base = {
+            "task_id": "p4ra-FQE3-v3-TE-001",
+            "budget_B": 64,
+            "K": 5,
+            "meta_seed": 0,
+        }
+        records = [
+            dict(base, arm=m5.S1_FOMAML_ZERO_BO, initial_design_row_digests=rows_zero),
+            dict(base, arm=m5.S1_FOMAML_KSHOT_BO, initial_design_row_digests=list(rows_zero)),
+            dict(
+                base,
+                arm=m5.S1_PRETRAIN_KSHOT_BO,
+                initial_design_row_digests=["b" * 64, "c" * 64, "d" * 64],
+            ),
+        ]
+        report = s1.ranking_identifiability_report(records)
+        group = report["groups"][0]
+        self.assertEqual(group["ranking_status"], "IDENTIFIABLE")
+        self.assertLess(group["mean_overlap_rate"], 0.90)
+        c5 = next(
+            item
+            for item in group["pairwise"]
+            if {item["arm_a"], item["arm_b"]}
+            == {m5.S1_FOMAML_ZERO_BO, m5.S1_FOMAML_KSHOT_BO}
+        )
+        self.assertFalse(c5["pair_identifiable"])
+        self.assertEqual(c5["structural_status"], "STRUCTURALLY_IDENTICAL")
+        key = f"{m5.S1_FOMAML_ZERO_BO}|{m5.S1_FOMAML_KSHOT_BO}"
+        self.assertIn(key, report["pair_status_counts"])
+        self.assertEqual(report["pair_status_counts"][key]["STRUCTURALLY_IDENTICAL"], 1)
+        self.assertEqual(report["pair_status_counts"][key]["IDENTIFIABLE"], 0)
 
     def test_identifiability_report_rejects_bad_threshold(self):
         for bad in (0.0, -0.1, 1.5):
