@@ -512,6 +512,8 @@ def score_m5_init_designs(
     initial_design_count: int = M5_INITIAL_DESIGN_COUNT,
     diversity_candidate_count: int = M5_DIVERSITY_CANDIDATE_COUNT,
     k_shot: int = 0,
+    support_features: np.ndarray | None = None,
+    support_targets: np.ndarray | None = None,
 ) -> dict[str, Any]:
     """用代理对候选池打分并选出初始设计（预测标签只用于排序，不进 observations）。
 
@@ -520,8 +522,8 @@ def score_m5_init_designs(
     """
     if not isinstance(model_artifact, Mapping) or "artifact" not in model_artifact:
         raise M5ArmError("model_artifact 必须包含 'artifact'（build_m5_model_artifacts 的输出）")
-    if method not in ("none", "maml"):
-        raise M5ArmError(f"method 必须为 'none' 或 'maml'，实际 {method!r}")
+    if method not in ("none", "maml", "fine_tuning"):
+        raise M5ArmError(f"method 必须为 'none' / 'maml' / 'fine_tuning'，实际 {method!r}")
     artifact = model_artifact["artifact"]
     expected_sha = model_artifact.get("artifact_sha256")
     actual_sha = artifact_sha256(artifact)
@@ -538,6 +540,8 @@ def score_m5_init_designs(
         diversity_candidate_count=diversity_candidate_count,
         method=method,
         k_shot=k_shot,
+        support_features=support_features,
+        support_targets=support_targets,
         target_names=tuple(model_artifact.get("target_names") or ()),
         context_names=tuple(CONTEXT_NAMES),
     )
@@ -1059,4 +1063,635 @@ __all__ = [
     "run_m5_bo_arm",
     "run_m5_de_arm",
     "score_m5_init_designs",
+    "S1ArmError",
+    "S1_ARM_IDS",
+    "S1_BUDGETS",
+    "S1_CLONE_ARM",
+    "S1_CLONE_IDENTIFIABILITY",
+    "S1_CLONE_TARGET",
+    "S1_DE",
+    "S1_FOMAML_KSHOT_BO",
+    "S1_FOMAML_ZERO_BO",
+    "S1_IDENTIFIABLE",
+    "S1_INITIAL_DESIGN_COUNT",
+    "S1_INITIAL_PHASE",
+    "S1_K_VALUES",
+    "S1_MODEL_SCORED_ARMS",
+    "S1_PRETRAIN_KSHOT_BO",
+    "S1_RANDOM_BO",
+    "S1_STAGE",
+    "S1_SUPPORT_PHASE",
+    "make_s1_support_cache_evaluator",
+    "run_s1_arm",
+    "run_s1_bo_arm",
+    "run_s1_de_arm",
+    "s1_expected_budget",
+    "s1_identifiability",
+    "s1_new_initial_designs",
 ]
+
+
+# ===========================================================================
+# S1（task-215）：K-shot 支持评价计入预算的五臂闭环
+# ===========================================================================
+S1_ARM_IDS: tuple[str, ...] = (
+    "RAND-BO",
+    "PRETRAIN-KSHOT-BO",
+    "FOMAML-ZERO-BO",
+    "FOMAML-KSHOT-BO",
+    "DE",
+)
+S1_RANDOM_BO = "RAND-BO"
+S1_PRETRAIN_KSHOT_BO = "PRETRAIN-KSHOT-BO"
+S1_FOMAML_ZERO_BO = "FOMAML-ZERO-BO"
+S1_FOMAML_KSHOT_BO = "FOMAML-KSHOT-BO"
+S1_DE = "DE"
+S1_MODEL_SCORED_ARMS: tuple[str, ...] = (
+    S1_PRETRAIN_KSHOT_BO,
+    S1_FOMAML_ZERO_BO,
+    S1_FOMAML_KSHOT_BO,
+)
+S1_K_VALUES: tuple[int, ...] = (0, 1, 3, 5)
+S1_BUDGETS: tuple[int, ...] = (64, 128)
+S1_INITIAL_DESIGN_COUNT = 8
+S1_SUPPORT_PHASE = "support"
+S1_INITIAL_PHASE = "initial"
+S1_STAGE = "P4-S1"
+S1_CLONE_ARM = S1_FOMAML_KSHOT_BO
+S1_CLONE_TARGET = S1_FOMAML_ZERO_BO
+S1_IDENTIFIABLE = "IDENTIFIABLE"
+S1_CLONE_IDENTIFIABILITY = "CLONE_OF_FOMAML-ZERO-BO"
+
+
+class S1ArmError(M5ArmError):
+    """S1 K-shot 闭环错误（fail-closed：预算/支持集/克隆标记不一致）。"""
+
+
+def s1_expected_budget(k_shot: int, budget: int) -> dict[str, int]:
+    """合同 §4/§6 的逐 run 预算分解：K + (8-K) + (B-8) = B。"""
+    if type(k_shot) is not int or k_shot not in S1_K_VALUES:
+        raise S1ArmError(f"k_shot 必须是 {S1_K_VALUES} 之一，实际 {k_shot!r}")
+    if type(budget) is not int or budget not in S1_BUDGETS:
+        raise S1ArmError(f"budget 必须是 {S1_BUDGETS} 之一，实际 {budget!r}")
+    if budget < S1_INITIAL_DESIGN_COUNT:
+        raise S1ArmError(f"budget 必须 >= {S1_INITIAL_DESIGN_COUNT}，实际 {budget!r}")
+    return {
+        "budget_B": int(budget),
+        "K": int(k_shot),
+        "initial_designs": int(S1_INITIAL_DESIGN_COUNT),
+        "support_evals": int(k_shot),
+        "initial_evals": int(S1_INITIAL_DESIGN_COUNT - k_shot),
+        "bo_evals": int(budget - S1_INITIAL_DESIGN_COUNT),
+        "billable_evals": int(budget),
+    }
+
+
+def s1_identifiability(arm: str, k_shot: int) -> dict[str, Any]:
+    """K=0 时 FOMAML-KSHOT-BO 与 FOMAML-ZERO-BO 同构：登记 CLONE 并排除推断。"""
+    if arm not in S1_ARM_IDS:
+        raise S1ArmError(f"arm 必须是 {S1_ARM_IDS} 之一，实际 {arm!r}")
+    if type(k_shot) is not int or k_shot not in S1_K_VALUES:
+        raise S1ArmError(f"k_shot 必须是 {S1_K_VALUES} 之一，实际 {k_shot!r}")
+    if arm == S1_CLONE_ARM and k_shot == 0:
+        return {
+            "identifiability": S1_CLONE_IDENTIFIABILITY,
+            "clone_of": S1_CLONE_TARGET,
+            "inference_eligible": False,
+        }
+    return {
+        "identifiability": S1_IDENTIFIABLE,
+        "clone_of": None,
+        "inference_eligible": True,
+    }
+
+
+def _s1_design_key(design: Any) -> tuple[float, ...]:
+    vector = np.asarray(design, dtype=np.float64).reshape(-1)
+    if vector.shape != (DESIGN_DIM,):
+        raise S1ArmError(f"设计向量必须为 {DESIGN_DIM} 维，实际 {vector.shape}")
+    if not np.all(np.isfinite(vector)):
+        raise S1ArmError("设计向量必须有限")
+    return tuple(float(value) for value in np.round(vector, 12))
+
+
+def _s1_as_unit_designs(
+    values: Any,
+    *,
+    label: str,
+    expected_rows: int | None = None,
+) -> np.ndarray:
+    designs = np.asarray(values, dtype=np.float64)
+    if designs.ndim != 2 or designs.shape[1] != DESIGN_DIM:
+        raise S1ArmError(f"{label} 必须为 (n, {DESIGN_DIM})，实际 {designs.shape}")
+    if expected_rows is not None and designs.shape[0] != expected_rows:
+        raise S1ArmError(f"{label} 行数必须为 {expected_rows}，实际 {designs.shape[0]}")
+    if not np.all(np.isfinite(designs)):
+        raise S1ArmError(f"{label} 必须有限")
+    if np.any(designs < 0.0) or np.any(designs > 1.0):
+        raise S1ArmError(f"{label} 必须位于 [0,1]^{DESIGN_DIM}")
+    return designs
+
+
+def _s1_as_support_designs(k_shot: int, support_designs: Any) -> np.ndarray:
+    if k_shot == 0:
+        if support_designs is None:
+            return np.zeros((0, DESIGN_DIM), dtype=np.float64)
+        designs = np.asarray(support_designs, dtype=np.float64)
+        if designs.size == 0:
+            return np.zeros((0, DESIGN_DIM), dtype=np.float64)
+        if designs.ndim != 2 or designs.shape != (0, DESIGN_DIM):
+            raise S1ArmError(f"K=0 时 support_designs 必须为空，实际 {designs.shape}")
+        return designs
+    return _s1_as_unit_designs(support_designs, label="support_designs", expected_rows=k_shot)
+
+
+def _s1_assert_support_prefix(initial_designs: np.ndarray, support_designs: np.ndarray) -> None:
+    rows = support_designs.shape[0]
+    for index in range(rows):
+        if _s1_design_key(initial_designs[index]) != _s1_design_key(support_designs[index]):
+            raise S1ArmError(f"initial_designs 前 {rows} 行必须逐位等于 support_designs（第 {index} 行不符）")
+
+
+def make_s1_support_cache_evaluator(
+    base_evaluate: Callable[[np.ndarray], Mapping[str, Any]],
+    support_designs: Any,
+    support_results: Sequence[Mapping[str, Any]],
+):
+    """把 K 个支持评价包装为缓存命中（billable=False），不重复消耗真实预算。"""
+    if not callable(base_evaluate):
+        raise S1ArmError("base_evaluate 必须可调用")
+    support = _s1_as_unit_designs(support_designs, label="support_designs")
+    results = list(support_results)
+    if len(results) != support.shape[0]:
+        raise S1ArmError(
+            f"support_results 长度 {len(results)} 与 support_designs 行数 {support.shape[0]} 不一致"
+        )
+    table: dict[tuple[float, ...], tuple[int, dict[str, Any]]] = {}
+    for index, (design, result) in enumerate(zip(support, results), start=1):
+        if not isinstance(result, Mapping):
+            raise S1ArmError(f"support_results[{index - 1}] 必须是映射")
+        key = _s1_design_key(design)
+        if key in table:
+            raise S1ArmError("support_designs 存在重复点，缓存键冲突")
+        table[key] = (index, dict(result))
+
+    def evaluate(design: Any) -> Mapping[str, Any]:
+        vector = np.asarray(design, dtype=np.float64).reshape(-1)
+        entry = table.get(_s1_design_key(vector))
+        if entry is None:
+            return base_evaluate(vector)
+        support_index, payload = entry
+        result = dict(payload)
+        result["cache_hit"] = True
+        result["billable"] = False
+        result["support_eval_index"] = int(support_index)
+        return result
+
+    return evaluate
+
+
+def _s1_support_xy(task: Any, support_designs: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+    """K 个支持点的代理特征/标签（供 K-shot 适配打分；标签只用于排序）。"""
+    from .data_contract import CONTEXT_NAMES as S1_CONTEXT_NAMES
+    from .surrogate import encode_features
+
+    designs = _s1_as_unit_designs(support_designs, label="support_designs")
+    features = np.asarray(
+        encode_features(designs, dict(getattr(task, "context", {})), S1_CONTEXT_NAMES),
+        dtype=np.float64,
+    )
+    labels = task.truth(designs)
+    target_names = ("objective",) + tuple(getattr(task, "enabled_constraint_names", ()))
+    columns = []
+    for name in target_names:
+        if name not in labels:
+            raise S1ArmError(f"task.truth 缺少目标列 {name!r}")
+        columns.append(np.asarray(labels[name], dtype=np.float64))
+    targets = np.column_stack(columns)
+    if features.shape[0] != designs.shape[0] or targets.shape[0] != designs.shape[0]:
+        raise S1ArmError("支持集特征/标签行数与设计点数不一致")
+    return features, targets
+
+
+def s1_new_initial_designs(
+    arm: str,
+    task: Any,
+    *,
+    seed: int,
+    k_shot: int,
+    design_space: Any = None,
+    model_artifact: Mapping[str, Any] | None = None,
+    support_features: np.ndarray | None = None,
+    support_targets: np.ndarray | None = None,
+    candidate_count: int = M5_CANDIDATE_POOL_SIZE,
+    diversity_candidate_count: int = M5_DIVERSITY_CANDIDATE_COUNT,
+) -> dict[str, Any]:
+    """构造 8-K 个新初始点（支持集之外），返回设计与代理打分成本。"""
+    if arm not in S1_ARM_IDS:
+        raise S1ArmError(f"arm 必须是 {S1_ARM_IDS} 之一，实际 {arm!r}")
+    if type(seed) is not int or seed < 0:
+        raise S1ArmError(f"seed 必须是非负整数，实际 {seed!r}")
+    plan = s1_expected_budget(k_shot, M5_BUDGETS[0])
+    count = int(plan["initial_evals"])
+    task_id = str(getattr(task, "task_id", ""))
+    if not task_id:
+        raise S1ArmError("task 缺少 task_id")
+    if count == 0:
+        return {
+            "designs": np.zeros((0, DESIGN_DIM), dtype=np.float64),
+            "method": "none",
+            "k_shot": int(k_shot),
+            "artifact_sha256": None,
+            "proxy_scoring_cost": {
+                "kind": "no_initial_design",
+                "model_forward_predictions": 0,
+                "adaptation_k_shot": int(k_shot),
+                "true_evaluation_budget_used": 0,
+            },
+        }
+    if arm in (S1_RANDOM_BO, S1_DE):
+        from .baseline_arms import shared_initial_designs
+
+        shared = shared_initial_designs(task_id, seed, count=S1_INITIAL_DESIGN_COUNT)
+        designs = np.asarray(shared[:count], dtype=np.float64)
+        return {
+            "designs": designs,
+            "method": "none",
+            "k_shot": int(k_shot),
+            "artifact_sha256": None,
+            "proxy_scoring_cost": {
+                "kind": "shared_lhs_init",
+                "initial_design_count": int(S1_INITIAL_DESIGN_COUNT),
+                "candidates_scored": 0,
+                "model_forward_predictions": 0,
+                "adaptation_k_shot": int(k_shot),
+                "true_evaluation_budget_used": 0,
+                "wall_s": 0.0,
+                "initial_designs_sha256": designs_digest(designs),
+            },
+        }
+    if design_space is None:
+        raise S1ArmError(f"{arm} 需要 12D 合成设计空间做单位门禁")
+    if model_artifact is None:
+        raise S1ArmError(f"{arm} 需要 model_artifact（代理打分选初始点）")
+    if arm == S1_PRETRAIN_KSHOT_BO:
+        method = "fine_tuning" if k_shot > 0 else "none"
+    else:
+        method = "maml"
+    adapt_k = int(k_shot) if method in ("maml", "fine_tuning") else 0
+    if adapt_k > 0:
+        if support_features is None or support_targets is None:
+            raise S1ArmError(f"{arm} 在 k_shot={k_shot} 时必须提供支持集特征/标签做适配")
+    scored = score_m5_init_designs(
+        model_artifact,
+        design_space,
+        task,
+        seed=seed,
+        method=method,
+        candidate_count=candidate_count,
+        initial_design_count=count,
+        diversity_candidate_count=diversity_candidate_count,
+        k_shot=adapt_k,
+        support_features=support_features,
+        support_targets=support_targets,
+    )
+    designs = np.asarray(scored["designs"], dtype=np.float64)
+    if designs.shape != (count, DESIGN_DIM):
+        raise S1ArmError(f"{arm} 代理打分设计形状不符：{designs.shape} != {(count, DESIGN_DIM)}")
+    cost = dict(scored["proxy_scoring_cost"])
+    cost["kind"] = "s1_model_scored_init"
+    cost["method"] = method
+    cost["support_evals"] = int(k_shot)
+    return {
+        "designs": designs,
+        "method": method,
+        "k_shot": int(k_shot),
+        "artifact_sha256": scored["artifact_sha256"],
+        "proxy_scoring_cost": cost,
+    }
+
+
+def _s1_initial_metadata(k_shot: int, initial_count: int) -> list[dict[str, Any]]:
+    metadata: list[dict[str, Any]] = []
+    for index in range(initial_count):
+        if index < k_shot:
+            metadata.append(
+                {
+                    "initializer": "s1_support_k_shot",
+                    "index": index,
+                    "phase": S1_SUPPORT_PHASE,
+                    "support_eval_index": index + 1,
+                    "k_shot": int(k_shot),
+                }
+            )
+        else:
+            metadata.append(
+                {
+                    "initializer": "s1_initial_design",
+                    "index": index,
+                    "phase": S1_INITIAL_PHASE,
+                    "k_shot": int(k_shot),
+                }
+            )
+    return metadata
+
+
+def run_s1_bo_arm(
+    arm: str,
+    evaluate: Callable[[np.ndarray], Mapping[str, Any]],
+    *,
+    task: Any,
+    seed: int,
+    budget: int,
+    k_shot: int,
+    initial_designs: Any,
+    model_scoring_cost: Mapping[str, Any] | None = None,
+    reference_objective: float | None = None,
+    run_id: str = "",
+) -> ArmResult:
+    """S1 BO 臂：前 K 次为支持评价（缓存命中），随后 8-K 新初始点，再 BO B-8 次。"""
+    if arm not in (S1_RANDOM_BO, S1_PRETRAIN_KSHOT_BO, S1_FOMAML_ZERO_BO, S1_FOMAML_KSHOT_BO):
+        raise S1ArmError(f"run_s1_bo_arm 不接受 arm={arm!r}")
+    plan = s1_expected_budget(k_shot, budget)
+    designs = _s1_as_unit_designs(
+        initial_designs, label="initial_designs", expected_rows=S1_INITIAL_DESIGN_COUNT
+    )
+    task_id = str(getattr(task, "task_id", ""))
+    split = str(getattr(task, "split", ""))
+    family = str(getattr(task, "family", ""))
+    metadata = _s1_initial_metadata(k_shot, designs.shape[0])
+    result = run_bo_arm(
+        LEGACY_BO_ARM,
+        evaluate,
+        task_id=task_id,
+        split=split,
+        family=family,
+        seed=seed,
+        budget=budget,
+        initial_designs=designs,
+        initial_design_metadata=metadata,
+        reference_objective=reference_objective,
+        candidate_count=512,
+        run_id=run_id,
+    )
+    if result.requested_evaluations != budget:
+        raise S1ArmError(
+            f"{arm} requested_evaluations={result.requested_evaluations} != budget={budget}"
+        )
+    if result.cache_hits != k_shot:
+        raise S1ArmError(f"{arm} cache_hits={result.cache_hits} != k_shot={k_shot}")
+    if result.true_evals_used != budget - k_shot:
+        raise S1ArmError(
+            f"{arm} true_evals_used={result.true_evals_used} != budget-k_shot={budget - k_shot}"
+        )
+    proxy = {
+        "kind": "s1_k_shot_bo",
+        "support_evals": int(k_shot),
+        "initial_evals": int(plan["initial_evals"]),
+        "bo_evals": int(plan["bo_evals"]),
+        "billable_evals": int(budget),
+        "model_scoring": dict(model_scoring_cost) if model_scoring_cost is not None else None,
+    }
+    return dataclasses.replace(result, arm=arm, implementation=f"{S1_STAGE}:{arm}", proxy_scoring_cost=proxy)
+
+
+def run_s1_de_arm(
+    evaluate: Callable[[np.ndarray], Mapping[str, Any]],
+    *,
+    task: Any,
+    seed: int,
+    budget: int,
+    k_shot: int,
+    initial_designs: Any,
+    model_scoring_cost: Mapping[str, Any] | None = None,
+    reference_objective: float | None = None,
+    run_id: str = "",
+) -> ArmResult:
+    """S1 DE 臂：初始种群 = K 支持点（缓存）+ 8-K 新点；恰好 B 次评价。"""
+    from .baseline_arms import (
+        DE_CROSSOVER_RATE,
+        DE_MUTATION_FACTOR,
+        DE_POPULATION_SIZE,
+        _de_better,
+        _record_from_result,
+        _summarize_arm,
+        derive_arm_seed,
+    )
+
+    plan = s1_expected_budget(k_shot, budget)
+    designs = _s1_as_unit_designs(
+        initial_designs, label="initial_designs", expected_rows=S1_INITIAL_DESIGN_COUNT
+    )
+    if designs.shape[0] != DE_POPULATION_SIZE:
+        raise S1ArmError(f"DE 初始种群必须为 {DE_POPULATION_SIZE}，实际 {designs.shape[0]}")
+    task_id = str(getattr(task, "task_id", ""))
+    split = str(getattr(task, "split", ""))
+    family = str(getattr(task, "family", ""))
+    rng = np.random.default_rng(derive_arm_seed(task_id, seed, "s1-de"))
+    records: list[Any] = []
+    wall_start = time.perf_counter()
+
+    def _evaluate(vector: np.ndarray, phase: str, generation: int, target_index: int) -> dict[str, Any]:
+        clipped = np.clip(np.asarray(vector, dtype=np.float64), 0.0, 1.0)
+        result = evaluate(clipped.copy())
+        if not isinstance(result, Mapping):
+            raise S1ArmError(f"评估器必须返回映射，实际 {type(result).__name__}")
+        record = _record_from_result(
+            eval_index=len(records) + 1,
+            design_u=clipped,
+            result=result,
+            fallback_status="EVALUATION_FAILED",
+        )
+        records.append(record)
+        return {
+            "vector": clipped,
+            "result": dict(result),
+            "record": record,
+            "phase": phase,
+            "generation": generation,
+            "target_index": target_index,
+        }
+
+    population: list[dict[str, Any]] = []
+    for index, vector in enumerate(designs):
+        phase = S1_SUPPORT_PHASE if index < k_shot else S1_INITIAL_PHASE
+        population.append(_evaluate(np.asarray(vector, dtype=np.float64), phase, 0, index))
+    if len(records) != S1_INITIAL_DESIGN_COUNT:
+        raise S1ArmError(f"DE 初始评价数 {len(records)} != {S1_INITIAL_DESIGN_COUNT}")
+    support_hits = sum(1 for record in records if record.cache_hit)
+    if support_hits != k_shot:
+        raise S1ArmError(f"DE 支持集缓存命中 {support_hits} != k_shot={k_shot}")
+    generation = 1
+    accepted_trials = 0
+    rejected_trials = 0
+    generations_completed = 0
+    stagnation_generations = 0
+    termination_reason = "search_finished"
+    while True:
+        if len(records) >= budget:
+            termination_reason = "budget_exhausted"
+            break
+        generation_accepted = 0
+        for target_index in range(len(population)):
+            if len(records) >= budget:
+                termination_reason = "budget_exhausted"
+                break
+            picks = [index for index in range(len(population)) if index != target_index]
+            r1, r2, r3 = (int(value) for value in rng.choice(picks, size=3, replace=False))
+            mutant = np.clip(
+                population[r1]["vector"]
+                + DE_MUTATION_FACTOR * (population[r2]["vector"] - population[r3]["vector"]),
+                0.0,
+                1.0,
+            )
+            forced_index = int(rng.integers(0, DESIGN_DIM))
+            trial = np.array(
+                [
+                    mutant[index]
+                    if rng.random() < DE_CROSSOVER_RATE or index == forced_index
+                    else population[target_index]["vector"][index]
+                    for index in range(DESIGN_DIM)
+                ],
+                dtype=np.float64,
+            )
+            candidate = _evaluate(trial, "generation", generation, target_index)
+            accepted = _de_better(candidate["result"], population[target_index]["result"])
+            candidate["accepted"] = bool(accepted)
+            if accepted:
+                accepted_trials += 1
+                generation_accepted += 1
+                population[target_index] = candidate
+            else:
+                rejected_trials += 1
+        if termination_reason == "budget_exhausted":
+            break
+        generations_completed = generation
+        if generation_accepted == 0:
+            stagnation_generations += 1
+        generation += 1
+    if len(records) != budget:
+        raise S1ArmError(f"DE 评价数 {len(records)} != budget={budget}")
+    cache_hits = sum(1 for record in records if record.cache_hit)
+    if cache_hits != k_shot:
+        raise S1ArmError(f"DE 总缓存命中 {cache_hits} != k_shot={k_shot}")
+    wall_s = time.perf_counter() - wall_start
+    proxy = {
+        "kind": "s1_k_shot_de",
+        "population_size": int(len(population)),
+        "generations_requested": int(max(1, (budget - S1_INITIAL_DESIGN_COUNT) // len(population) + 1)),
+        "generations_completed": int(generations_completed),
+        "accepted_trials": int(accepted_trials),
+        "rejected_trials": int(rejected_trials),
+        "stagnation_generations": int(stagnation_generations),
+        "support_evals": int(k_shot),
+        "initial_evals": int(plan["initial_evals"]),
+        "bo_evals": int(plan["bo_evals"]),
+        "billable_evals": int(budget),
+        "model_scoring": dict(model_scoring_cost) if model_scoring_cost is not None else None,
+    }
+    return _summarize_arm(
+        arm=S1_DE,
+        task_id=task_id,
+        split=split,
+        family=family,
+        seed=seed,
+        budget=budget,
+        observations=records,
+        wall_s=wall_s,
+        termination_reason=termination_reason,
+        implementation=f"{S1_STAGE}:{S1_DE}",
+        initial_count=S1_INITIAL_DESIGN_COUNT,
+        proxy_scoring_cost=proxy,
+        reference_objective=reference_objective,
+    )
+
+
+def run_s1_arm(
+    arm: str,
+    evaluate: Callable[[np.ndarray], Mapping[str, Any]],
+    *,
+    task: Any,
+    seed: int,
+    budget: int,
+    k_shot: int,
+    support_designs: Any,
+    design_space: Any = None,
+    model_artifact: Mapping[str, Any] | None = None,
+    reference_objective: float | None = None,
+    run_id: str = "",
+    support_label_permutation: Sequence[int] | None = None,
+) -> ArmResult:
+    """S1 五臂入口：支持集评价（缓存、计入预算）+ 新初始点 + 主搜索，共恰好 B 次。
+
+    support_label_permutation 仅用于标签打乱负控诊断：支持集特征/评价保持真实，
+    只把用于适配的 K 个支持标签按给定置换重排（K>=2 时有效）。
+    """
+    if arm not in S1_ARM_IDS:
+        raise S1ArmError(f"arm 必须是 {S1_ARM_IDS} 之一，实际 {arm!r}")
+    plan = s1_expected_budget(k_shot, budget)
+    support = _s1_as_support_designs(k_shot, support_designs)
+    support_features: np.ndarray | None = None
+    support_targets: np.ndarray | None = None
+    support_results: list[dict[str, Any]] = []
+    for index, vector in enumerate(support):
+        result = evaluate(np.array(vector, dtype=np.float64).copy())
+        if not isinstance(result, Mapping):
+            raise S1ArmError(f"支持集第 {index + 1} 个评价必须返回映射")
+        support_results.append(dict(result))
+    cached_evaluate = make_s1_support_cache_evaluator(evaluate, support, support_results)
+    if k_shot > 0 and arm in S1_MODEL_SCORED_ARMS:
+        support_features, support_targets = _s1_support_xy(task, support)
+        if support_label_permutation is not None:
+            permutation = [int(value) for value in support_label_permutation]
+            if k_shot < 2:
+                raise S1ArmError("标签打乱负控要求 k_shot >= 2")
+            if len(permutation) != k_shot or sorted(permutation) != list(range(k_shot)):
+                raise S1ArmError(f"support_label_permutation 必须是 0..{k_shot - 1} 的置换")
+            support_targets = support_targets[permutation]
+    initial = s1_new_initial_designs(
+        arm,
+        task,
+        seed=seed,
+        k_shot=k_shot,
+        design_space=design_space,
+        model_artifact=model_artifact,
+        support_features=support_features,
+        support_targets=support_targets,
+    )
+    new_designs = np.asarray(initial["designs"], dtype=np.float64)
+    if new_designs.shape != (plan["initial_evals"], DESIGN_DIM):
+        raise S1ArmError(f"新初始点形状不符：{new_designs.shape}")
+    for row in new_designs:
+        if _s1_design_key(row) in {_s1_design_key(item) for item in support}:
+            raise S1ArmError("新初始点与支持集重叠（泄漏）")
+    combined = (
+        np.vstack([support, new_designs]) if support.shape[0] else new_designs
+    )
+    if combined.shape != (S1_INITIAL_DESIGN_COUNT, DESIGN_DIM):
+        raise S1ArmError(f"初始设计总数 {combined.shape[0]} != {S1_INITIAL_DESIGN_COUNT}")
+    _s1_assert_support_prefix(combined, support)
+    if arm == S1_DE:
+        return run_s1_de_arm(
+            cached_evaluate,
+            task=task,
+            seed=seed,
+            budget=budget,
+            k_shot=k_shot,
+            initial_designs=combined,
+            model_scoring_cost=initial["proxy_scoring_cost"],
+            reference_objective=reference_objective,
+            run_id=run_id,
+        )
+    return run_s1_bo_arm(
+        arm,
+        cached_evaluate,
+        task=task,
+        seed=seed,
+        budget=budget,
+        k_shot=k_shot,
+        initial_designs=combined,
+        model_scoring_cost=initial["proxy_scoring_cost"],
+        reference_objective=reference_objective,
+        run_id=run_id,
+    )
+

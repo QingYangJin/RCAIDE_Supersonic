@@ -947,7 +947,7 @@ def predict_proxy_targets(
 ) -> np.ndarray:
     """用（可能已适应的）代理模型做候选点预测；不消耗真实评估预算。"""
     from .adaptation import predict_parameters
-    from .maml import TaskEpisode, init_parameters, inner_adapt
+    from .maml import MAMLConfig, TaskEpisode, init_parameters, inner_adapt
 
     parameters, config = _artifact_parts(artifact)
     matrix = np.asarray(features, dtype=float)
