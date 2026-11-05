@@ -1,0 +1,490 @@
+{
+  "schema_version": "p4ra-s0-3-determinism-report-1",
+  "generated_utc": "2026-11-05T16:04:08+00:00",
+  "run_id": "p4ra-s0-3-freeze-20261105T155925Z",
+  "created_utc": "2026-11-05T15:59:25+00:00",
+  "git_sha": "7c1e2ce9eb4aac1725003537fdbaf4a3425be5cb",
+  "code_sha": "c926653d83a57164b8b3079ea7cf2f8ae944dd92f7a971041d5b87208f67bf9e",
+  "worktree": {
+    "head": "7c1e2ce9eb4aac1725003537fdbaf4a3425be5cb",
+    "clean_after_generation": true
+  },
+  "generator": {
+    "path": "EXT/p4-route-a/a1/s1_v4_evidence/make_freeze_v4.py",
+    "sha256": "658a89e71b7729c0e1da322880b37fb8820d1582dd7e677c2f7dddf78feeec12"
+  },
+  "independent_processes": true,
+  "rerun_count": 2,
+  "python": "3.11.17",
+  "inputs": {
+    "v3_reference_package": "p4ra-s0-2-freeze-20261105T072500Z",
+    "v3_reference_task_fingerprint_count": 120,
+    "legacy_task_id_count": 280,
+    "legacy_task_fingerprint_count": 0,
+    "radius_base": 0.64,
+    "calibration_status": "CALIBRATED"
+  },
+  "files": {
+    "tasks.json": {
+      "bytes": 340443,
+      "run1_sha256": "59f66a41f3579b9bb493e94d59e666c3175eb78d11272e77615865beb21334d6",
+      "run2_sha256": "59f66a41f3579b9bb493e94d59e666c3175eb78d11272e77615865beb21334d6",
+      "identical": true
+    },
+    "meta_task_split.json": {
+      "bytes": 79128,
+      "run1_sha256": "589f77e5ae3186c7705f6e0a8f5b4bdda954cb6a8eef91154d4cc3fb0767a31c",
+      "run2_sha256": "589f77e5ae3186c7705f6e0a8f5b4bdda954cb6a8eef91154d4cc3fb0767a31c",
+      "identical": true
+    },
+    "v3_isolation_report.json": {
+      "bytes": 4170,
+      "run1_sha256": "ce3fdb5f0803bc7ba60857e952684654db9a05359d98be3ebbeb06f2efbd2daa",
+      "run2_sha256": "ce3fdb5f0803bc7ba60857e952684654db9a05359d98be3ebbeb06f2efbd2daa",
+      "identical": true
+    },
+    "frozen_family.json": {
+      "bytes": 10209,
+      "run1_sha256": "82ec384d3eaa729af682646d01a856464979738d9b3c025d00901c97f16700b9",
+      "run2_sha256": "82ec384d3eaa729af682646d01a856464979738d9b3c025d00901c97f16700b9",
+      "identical": true
+    },
+    "preregistration.json": {
+      "bytes": 9972,
+      "run1_sha256": "f35c12086003a6ad4c217a870db5072c55f58625723f1d9811e4e9f681d2c5f3",
+      "run2_sha256": "f35c12086003a6ad4c217a870db5072c55f58625723f1d9811e4e9f681d2c5f3",
+      "identical": true
+    },
+    "budget_fairness_report.json": {
+      "bytes": 64723,
+      "run1_sha256": "bca9190ace2a783e2659edc4fd4791469b9bf2011281440f6e2056dc12644570",
+      "run2_sha256": "bca9190ace2a783e2659edc4fd4791469b9bf2011281440f6e2056dc12644570",
+      "identical": true
+    },
+    "digest_manifest.json": {
+      "bytes": 2075,
+      "run1_sha256": "c4e01551da7b2a98b6a9963d9e8f9c77ec8678e3a99750cb6b8bd884a1699c75",
+      "run2_sha256": "c4e01551da7b2a98b6a9963d9e8f9c77ec8678e3a99750cb6b8bd884a1699c75",
+      "identical": true
+    },
+    "freeze_summary.json": {
+      "bytes": 6647,
+      "run1_sha256": "99bee2c2f88582469dc37e25263a8c5ccdfa01c4060c2b0b55bdbdee09225687",
+      "run2_sha256": "99bee2c2f88582469dc37e25263a8c5ccdfa01c4060c2b0b55bdbdee09225687",
+      "identical": true
+    }
+  },
+  "identity": {
+    "family_id": "F-QE-feasible-v3",
+    "family_version": "p4ra-family-v4",
+    "task_family_version": "p4ra-family-v3",
+    "formula_version": "p4-task-family-v3",
+    "family_seed": 20261105,
+    "holdout_seed": 20261106,
+    "holdout_splits": [
+      "meta_test",
+      "meta_test_ood"
+    ],
+    "holdout_task_count": 30,
+    "family_fingerprint": "a1f9462c35ea641d0559485354c63b47eec2e6fb4696e86f94efa1f3d19daf2e",
+    "split_hash": "cd597d01bd4024d13c765a0a723449c3d67172bc260040012bea9d67d2af76ae",
+    "prereg_digest": "aa806767445421335874322321145af4b5ed5bc52826dc732a05c0f8f3feb948",
+    "prereg_id": "p4ra-prereg-v3-a1f9462c35ea641d",
+    "analysis_plan_digest": "37eee53c9018fce34e414fa553ad3986a2d1be87d10409bc28e4f697b63588df",
+    "preregistration_sha256": "0c342934503079b4141401025470c73b235713d757aceef8f7c758c67b93fb50",
+    "frozen_family_sha256": "6e5b357c04e0e40672560694c1b1ba3fecfdb1fd053789ac566643385e0c2769",
+    "isolation_report_sha256": "afddde13be6b75b8b2415b91f5e49469a50a76b98486afa9b051ee587c9260a5",
+    "budget_fairness_report_sha256": "cd9fefd375e112f961906e9075cdebaca05868e8d78ac6dcea889c8c081531ca",
+    "freeze_summary_sha256": "99bee2c2f88582469dc37e25263a8c5ccdfa01c4060c2b0b55bdbdee09225687",
+    "radius_base": 0.64,
+    "split_counts": {
+      "meta_test": 20,
+      "meta_test_ood": 10,
+      "meta_train": 60,
+      "meta_validation": 20,
+      "negative_control": 10
+    },
+    "task_count": 120,
+    "physical_call_count": 0
+  },
+  "v3_comparison": {
+    "v3_package": "p4ra-s0-2-freeze-20261105T072500Z",
+    "non_holdout_task_count": 90,
+    "non_holdout_fingerprint_equal_count": 90,
+    "holdout_task_count": 30,
+    "holdout_fingerprint_changed_count": 30,
+    "holdout_intersection_with_v3_all_fingerprints": 0,
+    "task_id_set_equal": true,
+    "split_hash_equal": true,
+    "family_fingerprint_before": "e56e6921be6b94e6611a24618a6e331cd7e4417597926d089d71b00da8c1c0c3",
+    "family_fingerprint_after": "a1f9462c35ea641d0559485354c63b47eec2e6fb4696e86f94efa1f3d19daf2e"
+  },
+  "checks": {
+    "byte_identical_tasks.json": {
+      "ok": true,
+      "detail": {
+        "sha256": "59f66a41f3579b9bb493e94d59e666c3175eb78d11272e77615865beb21334d6",
+        "bytes": 340443
+      }
+    },
+    "byte_identical_meta_task_split.json": {
+      "ok": true,
+      "detail": {
+        "sha256": "589f77e5ae3186c7705f6e0a8f5b4bdda954cb6a8eef91154d4cc3fb0767a31c",
+        "bytes": 79128
+      }
+    },
+    "byte_identical_v3_isolation_report.json": {
+      "ok": true,
+      "detail": {
+        "sha256": "ce3fdb5f0803bc7ba60857e952684654db9a05359d98be3ebbeb06f2efbd2daa",
+        "bytes": 4170
+      }
+    },
+    "byte_identical_frozen_family.json": {
+      "ok": true,
+      "detail": {
+        "sha256": "82ec384d3eaa729af682646d01a856464979738d9b3c025d00901c97f16700b9",
+        "bytes": 10209
+      }
+    },
+    "byte_identical_preregistration.json": {
+      "ok": true,
+      "detail": {
+        "sha256": "f35c12086003a6ad4c217a870db5072c55f58625723f1d9811e4e9f681d2c5f3",
+        "bytes": 9972
+      }
+    },
+    "byte_identical_budget_fairness_report.json": {
+      "ok": true,
+      "detail": {
+        "sha256": "bca9190ace2a783e2659edc4fd4791469b9bf2011281440f6e2056dc12644570",
+        "bytes": 64723
+      }
+    },
+    "byte_identical_digest_manifest.json": {
+      "ok": true,
+      "detail": {
+        "sha256": "c4e01551da7b2a98b6a9963d9e8f9c77ec8678e3a99750cb6b8bd884a1699c75",
+        "bytes": 2075
+      }
+    },
+    "byte_identical_freeze_summary.json": {
+      "ok": true,
+      "detail": {
+        "sha256": "99bee2c2f88582469dc37e25263a8c5ccdfa01c4060c2b0b55bdbdee09225687",
+        "bytes": 6647
+      }
+    },
+    "sha256sums_identical": {
+      "ok": true,
+      "detail": null
+    },
+    "sha256sums_cover_8_files": {
+      "ok": true,
+      "detail": null
+    },
+    "sha256sums_match_files": {
+      "ok": true,
+      "detail": null
+    },
+    "git_sha_matches_v4": {
+      "ok": true,
+      "detail": "7c1e2ce9eb4aac1725003537fdbaf4a3425be5cb"
+    },
+    "tasks_count_120": {
+      "ok": true,
+      "detail": 120
+    },
+    "task_ids_unique": {
+      "ok": true,
+      "detail": null
+    },
+    "task_fingerprints_unique": {
+      "ok": true,
+      "detail": null
+    },
+    "task_id_pattern_all_match": {
+      "ok": true,
+      "detail": null
+    },
+    "task_schema": {
+      "ok": true,
+      "detail": null
+    },
+    "task_layer_family_version": {
+      "ok": true,
+      "detail": {
+        "record_layer": [
+          "p4ra-family-v3"
+        ],
+        "non_negative_control_params": [
+          "p4ra-family-v3"
+        ],
+        "negative_control_without_task_family_version": 10
+      }
+    },
+    "split_counts": {
+      "ok": true,
+      "detail": {
+        "meta_train": 60,
+        "meta_validation": 20,
+        "negative_control": 10,
+        "meta_test": 20,
+        "meta_test_ood": 10
+      }
+    },
+    "split_manifest_verifies": {
+      "ok": true,
+      "detail": null
+    },
+    "split_manifest_schema": {
+      "ok": true,
+      "detail": null
+    },
+    "split_manifest_family_version_v4": {
+      "ok": true,
+      "detail": null
+    },
+    "split_manifest_task_family_version_v3": {
+      "ok": true,
+      "detail": null
+    },
+    "split_manifest_split_hash": {
+      "ok": true,
+      "detail": null
+    },
+    "split_manifest_holdout_seed": {
+      "ok": true,
+      "detail": null
+    },
+    "split_manifest_holdout_splits": {
+      "ok": true,
+      "detail": null
+    },
+    "split_manifest_holdout_count": {
+      "ok": true,
+      "detail": null
+    },
+    "frozen_verifies": {
+      "ok": true,
+      "detail": null
+    },
+    "frozen_schema": {
+      "ok": true,
+      "detail": null
+    },
+    "frozen_family_version_v4": {
+      "ok": true,
+      "detail": "p4ra-family-v4"
+    },
+    "frozen_task_family_version_v3": {
+      "ok": true,
+      "detail": null
+    },
+    "frozen_holdout_seed": {
+      "ok": true,
+      "detail": null
+    },
+    "frozen_holdout_reseed_policy": {
+      "ok": true,
+      "detail": null
+    },
+    "frozen_holdout_unchanged_splits": {
+      "ok": true,
+      "detail": null
+    },
+    "frozen_radius_064": {
+      "ok": true,
+      "detail": 0.64
+    },
+    "frozen_physical_zero": {
+      "ok": true,
+      "detail": null
+    },
+    "frozen_arms_budgets_k": {
+      "ok": true,
+      "detail": null
+    },
+    "frozen_family_fingerprint_package": {
+      "ok": true,
+      "detail": null
+    },
+    "prereg_verifies": {
+      "ok": true,
+      "detail": null
+    },
+    "prereg_schema": {
+      "ok": true,
+      "detail": null
+    },
+    "prereg_family_version_v4": {
+      "ok": true,
+      "detail": null
+    },
+    "prereg_task_family_version_v3": {
+      "ok": true,
+      "detail": null
+    },
+    "prereg_holdout_fields": {
+      "ok": true,
+      "detail": null
+    },
+    "prereg_radius_064": {
+      "ok": true,
+      "detail": null
+    },
+    "prereg_7_contract_fields": {
+      "ok": true,
+      "detail": null
+    },
+    "prereg_primary_endpoints": {
+      "ok": true,
+      "detail": null
+    },
+    "prereg_one_clone_pair": {
+      "ok": true,
+      "detail": null
+    },
+    "prereg_budget_plan_count": {
+      "ok": true,
+      "detail": null
+    },
+    "prereg_prereg_digest": {
+      "ok": true,
+      "detail": null
+    },
+    "prereg_analysis_plan_digest": {
+      "ok": true,
+      "detail": null
+    },
+    "isolation_verifies": {
+      "ok": true,
+      "detail": null
+    },
+    "isolation_schema": {
+      "ok": true,
+      "detail": null
+    },
+    "isolation_task_id_zero": {
+      "ok": true,
+      "detail": null
+    },
+    "isolation_holdout_fingerprint_zero": {
+      "ok": true,
+      "detail": null
+    },
+    "isolation_legacy_fingerprint_not_determinable": {
+      "ok": true,
+      "detail": null
+    },
+    "isolation_legacy_task_id_count": {
+      "ok": true,
+      "detail": null
+    },
+    "fairness_40_plans": {
+      "ok": true,
+      "detail": null
+    },
+    "summary_schema": {
+      "ok": true,
+      "detail": "p4ra-freeze-summary-3"
+    },
+    "summary_identity": {
+      "ok": true,
+      "detail": null
+    },
+    "summary_run_id": {
+      "ok": true,
+      "detail": null
+    },
+    "summary_created_utc": {
+      "ok": true,
+      "detail": null
+    },
+    "summary_radius": {
+      "ok": true,
+      "detail": null
+    },
+    "summary_physical_zero": {
+      "ok": true,
+      "detail": null
+    },
+    "summary_holdout_overlap_zero": {
+      "ok": true,
+      "detail": null
+    },
+    "summary_no_absolute_paths": {
+      "ok": true,
+      "detail": []
+    },
+    "all_payloads_no_absolute_paths": {
+      "ok": true,
+      "detail": []
+    },
+    "code_sha_clean_lf": {
+      "ok": true,
+      "detail": {
+        "computed": "c926653d83a57164b8b3079ea7cf2f8ae944dd92f7a971041d5b87208f67bf9e",
+        "summary": "c926653d83a57164b8b3079ea7cf2f8ae944dd92f7a971041d5b87208f67bf9e"
+      }
+    },
+    "code_sha_in_frozen": {
+      "ok": true,
+      "detail": {
+        "frozen_code_sha": "c926653d83a57164b8b3079ea7cf2f8ae944dd92f7a971041d5b87208f67bf9e",
+        "computed": "c926653d83a57164b8b3079ea7cf2f8ae944dd92f7a971041d5b87208f67bf9e"
+      }
+    },
+    "digest_manifest_matches_files": {
+      "ok": true,
+      "detail": null
+    },
+    "v3_non_holdout_90_same": {
+      "ok": true,
+      "detail": 90
+    },
+    "v3_holdout_30_all_changed": {
+      "ok": true,
+      "detail": 30
+    },
+    "v3_holdout_zero_intersection_120": {
+      "ok": true,
+      "detail": 0
+    },
+    "v3_task_id_set_equal": {
+      "ok": true,
+      "detail": null
+    },
+    "v3_split_hash_equal": {
+      "ok": true,
+      "detail": {
+        "v4": "cd597d01bd4024d13c765a0a723449c3d67172bc260040012bea9d67d2af76ae",
+        "v3": "cd597d01bd4024d13c765a0a723449c3d67172bc260040012bea9d67d2af76ae"
+      }
+    },
+    "v3_family_fingerprint_changed": {
+      "ok": true,
+      "detail": {
+        "v4": "a1f9462c35ea641d0559485354c63b47eec2e6fb4696e86f94efa1f3d19daf2e",
+        "v3": "e56e6921be6b94e6611a24618a6e331cd7e4417597926d089d71b00da8c1c0c3"
+      }
+    },
+    "worktree_clean_after_generation": {
+      "ok": true,
+      "detail": ""
+    },
+    "worktree_head_v4": {
+      "ok": true,
+      "detail": "7c1e2ce9eb4aac1725003537fdbaf4a3425be5cb"
+    }
+  },
+  "failed_checks": [],
+  "status": "PASS",
+  "notes": [
+    "零求解：未启动 VSPAERO/SU2/RCAIDE Mission/优化；未评估 meta_test/meta_test_ood 结果。",
+    "两进程使用相同 created_utc/run_id/git_sha/radius/code，输出目录不同；8 个 payload 逐字节一致。",
+    "run1/run2 的 SHA256SUMS.txt 亦逐字节一致。",
+    "legacy 280 个旧清单只有 task_id、无 task_fingerprint，故指纹交集为 NOT_DETERMINABLE；holdout 指纹零交集仅对 v3 官方包 120 个指纹作实质断言。"
+  ]
+}
