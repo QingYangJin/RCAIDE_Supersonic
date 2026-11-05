@@ -69,6 +69,58 @@ ALLOWED_FAMILY_VERSIONS = tuple(
     dict.fromkeys((family_v3.FAMILY_VERSION, *family_v3.LEGACY_FAMILY_VERSIONS))
 )
 
+# task-241（A2-V4-B01）：S0-3 v4 冻结包 freeze_summary schema 升为 3。
+# 已知 schema 1/2 维持既有校验；schema 3 按 v4 包实际字段逐项严格校验；未知版本 fail-closed。
+FREEZE_SUMMARY_SCHEMAS_V1_V2 = ("p4ra-freeze-summary-1", "p4ra-freeze-summary-2")
+FREEZE_SUMMARY_SCHEMA_V4 = "p4ra-freeze-summary-3"
+ALLOWED_FREEZE_SUMMARY_SCHEMAS = FREEZE_SUMMARY_SCHEMAS_V1_V2 + (FREEZE_SUMMARY_SCHEMA_V4,)
+FREEZE_SUMMARY_V4_REQUIRED_FIELDS = (
+    "schema_version",
+    "created_utc",
+    "frozen_at_utc",
+    "run_id",
+    "git_sha",
+    "code_sha",
+    "family_id",
+    "family_version",
+    "family_seed",
+    "formula_version",
+    "radius_base",
+    "calibration_status",
+    "task_family_version",
+    "holdout_seed",
+    "holdout_splits",
+    "holdout_task_count",
+    "artifacts",
+    "digest_manifest",
+    "orchestration",
+)
+FREEZE_SUMMARY_V4_ALLOWED_FIELDS = frozenset(FREEZE_SUMMARY_V4_REQUIRED_FIELDS)
+FREEZE_SUMMARY_V4_ORCHESTRATION_FIELDS = frozenset(
+    (
+        "physical_call_count",
+        "family_fingerprint",
+        "split_hash",
+        "task_family_fingerprint",
+        "prereg_digest",
+        "analysis_plan_digest",
+        "frozen_family_sha256",
+        "preregistration_sha256",
+        "budget_fairness_report_sha256",
+        "isolation_report_sha256",
+        "split_counts",
+        "task_count",
+        "task_id_intersection",
+        "holdout_fingerprint_intersection",
+        "task_fingerprint_intersection",
+        "legacy",
+    )
+)
+V4_HOLDOUT_SPLITS = (MAIN_SPLIT, "meta_test_ood")
+V4_CALIBRATION_STATUSES = ("CALIBRATED", "PENDING_A2_CALIBRATION")
+_HEX40_RE = re.compile(r"^[0-9a-f]{40}$")
+
+
 # 预注册比较（C1 为主假设；C2..C5 为次要比较，不得升级为主结论）。
 COMPARISONS: tuple[dict[str, str], ...] = (
     {"id": "C1", "arm": "FOMAML-KSHOT-BO", "reference": "PRETRAIN-KSHOT-BO", "role": "primary"},
@@ -584,7 +636,8 @@ def _verify_freeze_summary(
     raw: Mapping[str, bytes],
     expected_bundle_sha: Mapping[str, str],
 ) -> None:
-    if summary.get("schema_version") not in ("p4ra-freeze-summary-2", "p4ra-freeze-summary-1"):
+    schema_version = summary.get("schema_version")
+    if schema_version not in ALLOWED_FREEZE_SUMMARY_SCHEMAS:
         raise S1FreezeValidationError(f"freeze_summary schema 不符：{summary.get('schema_version')!r}")
     if summary.get("family_id") != family_v3.FAMILY_ID:
         raise S1FreezeValidationError("freeze_summary family_id 不符")
@@ -657,6 +710,326 @@ def _verify_freeze_summary(
                 raise S1FreezeValidationError("freeze_summary.digest_manifest.canonical_sha256 不符")
             if dm_ref.get("bytes") is not None and int(dm_ref["bytes"]) != len(raw["digest_manifest.json"]):
                 raise S1FreezeValidationError("freeze_summary.digest_manifest.bytes 不符")
+    if schema_version == FREEZE_SUMMARY_SCHEMA_V4:
+        _verify_freeze_summary_v4(summary, payloads=payloads, raw=raw)
+
+
+def _verify_freeze_summary_v4(
+    summary: Mapping[str, Any],
+    *,
+    payloads: Mapping[str, Any],
+    raw: Mapping[str, bytes],
+) -> None:
+    """schema 3（S0-3 v4 冻结包）严格校验。
+
+    与 schema 1/2 一样保留通用校验；此处额外按 v4 包实际结构逐项核对字段集合、
+    类型以及 freeze_summary 与冻结载荷（frozen_family / meta_task_split /
+    preregistration）的一致性，任何缺失、未知或篡改都 fail-closed。
+    """
+    unknown = sorted(set(summary) - FREEZE_SUMMARY_V4_ALLOWED_FIELDS)
+    if unknown:
+        raise S1FreezeValidationError(f"freeze_summary(schema 3) 出现未登记字段：{unknown}")
+    missing = sorted(set(FREEZE_SUMMARY_V4_REQUIRED_FIELDS) - set(summary))
+    if missing:
+        raise S1FreezeValidationError(f"freeze_summary(schema 3) 缺少字段：{missing}")
+
+    frozen = payloads["frozen_family.json"]
+    split = payloads["meta_task_split.json"]
+    prereg = payloads["preregistration.json"]
+    if not isinstance(frozen, Mapping) or not isinstance(split, Mapping) or not isinstance(prereg, Mapping):
+        raise S1FreezeValidationError("freeze_summary(schema 3) 依赖的冻结载荷不是 object")
+
+    def require_str(field: str) -> str:
+        value = summary.get(field)
+        if not isinstance(value, str) or not value:
+            raise S1FreezeValidationError(f"freeze_summary(schema 3).{field} 必须是非空字符串")
+        return value
+
+    def require_str_field(container: Mapping[str, Any], field: str, where: str) -> str:
+        value = container.get(field)
+        if not isinstance(value, str) or not value:
+            raise S1FreezeValidationError(f"{where}.{field} 必须是非空字符串")
+        return value
+
+    # 1) 冻结运行标识与时间戳：summary <=> frozen_family <=> preregistration。
+    run_id = require_str("run_id")
+    for name, payload in (("frozen_family", frozen), ("preregistration", prereg)):
+        if payload.get("run_id") != run_id:
+            raise S1FreezeValidationError(f"freeze_summary(schema 3).run_id 与 {name} 不一致")
+    created_utc = require_str("created_utc")
+    for name, payload in (("frozen_family", frozen), ("preregistration", prereg)):
+        if payload.get("created_utc") != created_utc:
+            raise S1FreezeValidationError(f"freeze_summary(schema 3).created_utc 与 {name} 不一致")
+    frozen_at_utc = require_str("frozen_at_utc")
+    if frozen_at_utc != prereg.get("frozen_at_utc"):
+        raise S1FreezeValidationError("freeze_summary(schema 3).frozen_at_utc 与 preregistration 不一致")
+    git_sha = require_str("git_sha")
+    if not _HEX40_RE.match(git_sha):
+        raise S1FreezeValidationError("freeze_summary(schema 3).git_sha 必须是 40 位小写 hex")
+    if git_sha != frozen.get("git_sha"):
+        raise S1FreezeValidationError("freeze_summary(schema 3).git_sha 与 frozen_family 不一致")
+    code_sha = require_str("code_sha")
+    if not SHA256_RE.match(code_sha):
+        raise S1FreezeValidationError("freeze_summary(schema 3).code_sha 必须是 64 位小写 hex")
+    if code_sha != frozen.get("code_sha"):
+        raise S1FreezeValidationError("freeze_summary(schema 3).code_sha 与 frozen_family 不一致")
+
+    # 2) 校准状态：必须与 frozen_family.calibration 一致且属于已知状态。
+    calibration_status = require_str("calibration_status")
+    if calibration_status not in V4_CALIBRATION_STATUSES:
+        raise S1FreezeValidationError(
+            f"freeze_summary(schema 3).calibration_status 非法：{calibration_status!r}"
+        )
+    calibration = frozen.get("calibration")
+    if not isinstance(calibration, Mapping) or calibration.get("status") != calibration_status:
+        raise S1FreezeValidationError("freeze_summary(schema 3).calibration_status 与 frozen_family 不一致")
+
+    # 3) 家族身份与半径：summary <=> frozen_family（通用校验已核对契约常量）。
+    for field in ("family_id", "family_version", "formula_version"):
+        if summary.get(field) != frozen.get(field):
+            raise S1FreezeValidationError(f"freeze_summary(schema 3).{field} 与 frozen_family 不一致")
+    if int(summary.get("family_seed", -1)) != int(frozen.get("family_seed", -2)):
+        raise S1FreezeValidationError("freeze_summary(schema 3).family_seed 与 frozen_family 不一致")
+    if not _is_finite_number(frozen.get("radius_base")):
+        raise S1FreezeValidationError("frozen_family.radius_base 必须是有限数")
+    if abs(float(summary["radius_base"]) - float(frozen["radius_base"])) > RADIUS_BASE_TOLERANCE:
+        raise S1FreezeValidationError("freeze_summary(schema 3).radius_base 与 frozen_family 不一致")
+
+    # 4) 任务族版本与 holdout 重播种合同（R-V4-01）。
+    task_family_version = require_str("task_family_version")
+    expected_task_family_version = family_v3.TASK_FAMILY_VERSION
+    if task_family_version != expected_task_family_version:
+        raise S1FreezeValidationError(
+            f"freeze_summary(schema 3).task_family_version 不符：{task_family_version!r}"
+        )
+    for name, payload in (("frozen_family", frozen), ("meta_task_split", split), ("preregistration", prereg)):
+        if payload.get("task_family_version") != expected_task_family_version:
+            raise S1FreezeValidationError(f"{name}.task_family_version 不符")
+    holdout_seed = summary.get("holdout_seed")
+    if not _is_int(holdout_seed) or int(holdout_seed) != int(family_v3.HOLDOUT_SEED):
+        raise S1FreezeValidationError(
+            f"freeze_summary(schema 3).holdout_seed 必须为 {int(family_v3.HOLDOUT_SEED)}"
+        )
+    for name, payload in (("frozen_family", frozen), ("meta_task_split", split), ("preregistration", prereg)):
+        if int(payload.get("holdout_seed", -1)) != int(holdout_seed):
+            raise S1FreezeValidationError(f"{name}.holdout_seed 与 freeze_summary 不一致")
+    holdout_splits = summary.get("holdout_splits")
+    if not isinstance(holdout_splits, list) or tuple(holdout_splits) != V4_HOLDOUT_SPLITS:
+        raise S1FreezeValidationError(
+            f"freeze_summary(schema 3).holdout_splits 必须为 {list(V4_HOLDOUT_SPLITS)}"
+        )
+    for name, payload in (("frozen_family", frozen), ("meta_task_split", split), ("preregistration", prereg)):
+        if tuple(payload.get("holdout_splits") or ()) != V4_HOLDOUT_SPLITS:
+            raise S1FreezeValidationError(f"{name}.holdout_splits 与 freeze_summary 不一致")
+    holdout_task_count = summary.get("holdout_task_count")
+    if not _is_int(holdout_task_count) or int(holdout_task_count) <= 0:
+        raise S1FreezeValidationError("freeze_summary(schema 3).holdout_task_count 必须是正整数")
+    split_counts = split.get("counts")
+    if not isinstance(split_counts, Mapping):
+        raise S1FreezeValidationError("meta_task_split.counts 必须是 object")
+    observed_holdout_count = 0
+    for split_name in V4_HOLDOUT_SPLITS:
+        if not _is_int(split_counts.get(split_name)):
+            raise S1FreezeValidationError(f"meta_task_split.counts 缺少 {split_name}")
+        observed_holdout_count += int(split_counts[split_name])
+    if observed_holdout_count != int(holdout_task_count):
+        raise S1FreezeValidationError(
+            "freeze_summary(schema 3).holdout_task_count 与 meta_task_split.counts 之和不一致"
+        )
+    for name, payload in (("frozen_family", frozen), ("preregistration", prereg)):
+        if int(payload.get("holdout_task_count", -1)) != int(holdout_task_count):
+            raise S1FreezeValidationError(f"{name}.holdout_task_count 与 freeze_summary 不一致")
+    holdout_reseed = frozen.get("holdout_reseed")
+    if not isinstance(holdout_reseed, Mapping):
+        raise S1FreezeValidationError("frozen_family.holdout_reseed 必须是 object（schema 3 要求显式记录重播种）")
+    if int(holdout_reseed.get("holdout_seed", -1)) != int(holdout_seed):
+        raise S1FreezeValidationError("frozen_family.holdout_reseed.holdout_seed 与 freeze_summary 不一致")
+    if tuple(holdout_reseed.get("holdout_splits") or ()) != V4_HOLDOUT_SPLITS:
+        raise S1FreezeValidationError("frozen_family.holdout_reseed.holdout_splits 与 freeze_summary 不一致")
+    require_str_field(holdout_reseed, "policy", "frozen_family.holdout_reseed")
+    unchanged_splits = holdout_reseed.get("unchanged_splits")
+    if not isinstance(unchanged_splits, list) or not unchanged_splits:
+        raise S1FreezeValidationError("frozen_family.holdout_reseed.unchanged_splits 必须是非空列表")
+    expected_unchanged = sorted(name for name in split_counts if name not in V4_HOLDOUT_SPLITS)
+    if sorted(unchanged_splits) != expected_unchanged:
+        raise S1FreezeValidationError(
+            f"frozen_family.holdout_reseed.unchanged_splits 与 split 集合不一致：{sorted(unchanged_splits)}"
+        )
+
+    # 5) artifacts / digest_manifest 块：schema 3 要求带 path 与 stored_sha256，且集合恰好为六个载荷。
+    artifacts = summary["artifacts"]
+    if not isinstance(artifacts, Mapping):
+        raise S1FreezeValidationError("freeze_summary(schema 3).artifacts 必须是 object")
+    if set(artifacts) != set(FROZEN_PAYLOAD_FILES):
+        raise S1FreezeValidationError(
+            f"freeze_summary(schema 3).artifacts 产物清单不符：{sorted(artifacts)}"
+        )
+    for name in FROZEN_PAYLOAD_FILES:
+        entry = artifacts[name]
+        if not isinstance(entry, Mapping):
+            raise S1FreezeValidationError(f"freeze_summary(schema 3).artifacts.{name} 必须是 object")
+        if entry.get("path") != name:
+            raise S1FreezeValidationError(f"freeze_summary(schema 3).artifacts.{name}.path 不符")
+        stored = entry.get("stored_sha256")
+        if stored is not None and (not isinstance(stored, str) or not SHA256_RE.match(stored)):
+            raise S1FreezeValidationError(f"freeze_summary(schema 3).artifacts.{name}.stored_sha256 非法")
+        payload = payloads[name]
+        payload_sha = payload.get("sha256") if isinstance(payload, Mapping) else None
+        if payload_sha is not None:
+            if stored is None:
+                raise S1FreezeValidationError(
+                    f"freeze_summary(schema 3).artifacts.{name} 缺少 stored_sha256"
+                )
+            if stored != payload_sha:
+                raise S1FreezeValidationError(
+                    f"freeze_summary(schema 3).artifacts.{name}.stored_sha256 与载荷 sha256 不符"
+                )
+    digest_manifest_ref = summary["digest_manifest"]
+    if not isinstance(digest_manifest_ref, Mapping):
+        raise S1FreezeValidationError("freeze_summary(schema 3).digest_manifest 必须是 object")
+    if digest_manifest_ref.get("path") != "digest_manifest.json":
+        raise S1FreezeValidationError("freeze_summary(schema 3).digest_manifest.path 不符")
+    if digest_manifest_ref.get("raw_sha256") != _raw_sha256(raw["digest_manifest.json"]):
+        raise S1FreezeValidationError("freeze_summary(schema 3).digest_manifest.raw_sha256 不符")
+    if digest_manifest_ref.get("canonical_sha256") != _canonical_artifact_digest(
+        payloads["digest_manifest.json"]
+    ):
+        raise S1FreezeValidationError("freeze_summary(schema 3).digest_manifest.canonical_sha256 不符")
+    if not _is_int(digest_manifest_ref.get("bytes")) or int(
+        digest_manifest_ref["bytes"]
+    ) != len(raw["digest_manifest.json"]):
+        raise S1FreezeValidationError("freeze_summary(schema 3).digest_manifest.bytes 不符")
+
+    # 6) orchestration 块：逐项核对与载荷一致，并校验交集/血缘断言。
+    orchestration = summary["orchestration"]
+    if not isinstance(orchestration, Mapping):
+        raise S1FreezeValidationError("freeze_summary(schema 3).orchestration 必须是 object")
+    unknown_orchestration = sorted(set(orchestration) - FREEZE_SUMMARY_V4_ORCHESTRATION_FIELDS)
+    missing_orchestration = sorted(FREEZE_SUMMARY_V4_ORCHESTRATION_FIELDS - set(orchestration))
+    if unknown_orchestration or missing_orchestration:
+        raise S1FreezeValidationError(
+            "freeze_summary(schema 3).orchestration 字段集合不符："
+            f"missing={missing_orchestration}, unknown={unknown_orchestration}"
+        )
+    if int(orchestration.get("physical_call_count", -1)) != 0:
+        raise S1FreezeValidationError("freeze_summary(schema 3).orchestration.physical_call_count 必须为 0")
+    if orchestration.get("family_fingerprint") != frozen.get("family_fingerprint"):
+        raise S1FreezeValidationError("freeze_summary(schema 3).orchestration.family_fingerprint 不符")
+    if not isinstance(orchestration.get("task_family_fingerprint"), str) or not SHA256_RE.match(
+        orchestration["task_family_fingerprint"]
+    ):
+        raise S1FreezeValidationError(
+            "freeze_summary(schema 3).orchestration.task_family_fingerprint 必须是 64 位小写 hex"
+        )
+    if orchestration.get("split_hash") != split.get("split_hash"):
+        raise S1FreezeValidationError("freeze_summary(schema 3).orchestration.split_hash 不符")
+    if orchestration.get("prereg_digest") != prereg.get("prereg_digest"):
+        raise S1FreezeValidationError("freeze_summary(schema 3).orchestration.prereg_digest 不符")
+    for payload in (frozen, prereg):
+        if orchestration.get("analysis_plan_digest") != payload.get("analysis_plan_digest"):
+            raise S1FreezeValidationError(
+                "freeze_summary(schema 3).orchestration.analysis_plan_digest 不符"
+            )
+    observed_split_counts = {
+        str(key): int(value) for key, value in dict(orchestration.get("split_counts", {})).items()
+    }
+    expected_split_counts = {split_name: int(count) for split_name, count in split_counts.items()}
+    if observed_split_counts != expected_split_counts:
+        raise S1FreezeValidationError("freeze_summary(schema 3).orchestration.split_counts 与 meta_task_split 载荷不符")
+    if int(orchestration.get("task_count", -1)) != int(family_v3.TOTAL_TASKS):
+        raise S1FreezeValidationError("freeze_summary(schema 3).orchestration.task_count 不符")
+    if split.get("total_tasks") is not None and int(split["total_tasks"]) != int(family_v3.TOTAL_TASKS):
+        raise S1FreezeValidationError("meta_task_split.total_tasks 不符")
+
+    task_id_intersection = orchestration.get("task_id_intersection")
+    if not isinstance(task_id_intersection, Mapping):
+        raise S1FreezeValidationError("freeze_summary(schema 3).orchestration.task_id_intersection 必须是 object")
+    if task_id_intersection.get("status") != "PASS":
+        raise S1FreezeValidationError("task_id_intersection.status 必须为 PASS")
+    if task_id_intersection.get("assertion") != "TASK_ID_ZERO_INTERSECTION":
+        raise S1FreezeValidationError("task_id_intersection.assertion 不符")
+    if int(task_id_intersection.get("overlap_count", -1)) != 0:
+        raise S1FreezeValidationError("task_id_intersection.overlap_count 必须为 0")
+
+    holdout_intersection = orchestration.get("holdout_fingerprint_intersection")
+    if not isinstance(holdout_intersection, Mapping):
+        raise S1FreezeValidationError(
+            "freeze_summary(schema 3).orchestration.holdout_fingerprint_intersection 必须是 object"
+        )
+    if holdout_intersection.get("status") != "PASS":
+        raise S1FreezeValidationError("holdout_fingerprint_intersection.status 必须为 PASS")
+    if holdout_intersection.get("assertion") != "HOLDOUT_FINGERPRINT_ZERO_INTERSECTION":
+        raise S1FreezeValidationError("holdout_fingerprint_intersection.assertion 不符")
+    if int(holdout_intersection.get("overlap_count", -1)) != 0:
+        raise S1FreezeValidationError("holdout_fingerprint_intersection.overlap_count 必须为 0")
+    if int(holdout_intersection.get("holdout_task_count", -1)) != int(holdout_task_count):
+        raise S1FreezeValidationError("holdout_fingerprint_intersection.holdout_task_count 不符")
+    reference_count = holdout_intersection.get("v3_reference_task_fingerprint_count")
+    if not _is_int(reference_count) or int(reference_count) < int(family_v3.TOTAL_TASKS):
+        raise S1FreezeValidationError(
+            "holdout_fingerprint_intersection.v3_reference_task_fingerprint_count 不足"
+        )
+
+    task_fp_intersection = orchestration.get("task_fingerprint_intersection")
+    if not isinstance(task_fp_intersection, Mapping):
+        raise S1FreezeValidationError(
+            "freeze_summary(schema 3).orchestration.task_fingerprint_intersection 必须是 object"
+        )
+    if task_fp_intersection.get("status") not in ("PASS", "NOT_DETERMINABLE"):
+        raise S1FreezeValidationError("task_fingerprint_intersection.status 非法")
+    if task_fp_intersection.get("assertion") not in (
+        "TASK_FINGERPRINT_ZERO_INTERSECTION",
+        "TASK_FINGERPRINT_INTERSECTION_UNDETERMINABLE",
+    ):
+        raise S1FreezeValidationError("task_fingerprint_intersection.assertion 非法")
+    if int(task_fp_intersection.get("overlap_count", -1)) != 0:
+        raise S1FreezeValidationError("task_fingerprint_intersection.overlap_count 必须为 0")
+    if not isinstance(task_fp_intersection.get("evidence_class"), str) or not task_fp_intersection[
+        "evidence_class"
+    ]:
+        raise S1FreezeValidationError("task_fingerprint_intersection.evidence_class 必须是非空字符串")
+
+    legacy = orchestration.get("legacy")
+    if not isinstance(legacy, Mapping):
+        raise S1FreezeValidationError("freeze_summary(schema 3).orchestration.legacy 必须是 object")
+    legacy_task_count = legacy.get("task_id_count")
+    if not _is_int(legacy_task_count) or int(legacy_task_count) < 0:
+        raise S1FreezeValidationError("freeze_summary(schema 3).orchestration.legacy.task_id_count 必须是正整数")
+    legacy_fp_count = legacy.get("task_fingerprint_count")
+    if not _is_int(legacy_fp_count) or int(legacy_fp_count) < 0:
+        raise S1FreezeValidationError(
+            "freeze_summary(schema 3).orchestration.legacy.task_fingerprint_count 必须是非负整数"
+        )
+    legacy_sources = legacy.get("sources")
+    if not isinstance(legacy_sources, list) or not legacy_sources:
+        raise S1FreezeValidationError("freeze_summary(schema 3).orchestration.legacy.sources 必须是非空列表")
+    observed_legacy_ids = 0
+    observed_legacy_fps = 0
+    for position, source in enumerate(legacy_sources):
+        if not isinstance(source, Mapping):
+            raise S1FreezeValidationError(f"legacy.sources[{position}] 必须是 object")
+        for required_field in ("source", "input_name", "sha256"):
+            if not isinstance(source.get(required_field), str) or not source[required_field]:
+                raise S1FreezeValidationError(f"legacy.sources[{position}].{required_field} 必须是非空字符串")
+        if not SHA256_RE.match(source["sha256"]):
+            raise S1FreezeValidationError(f"legacy.sources[{position}].sha256 必须是 64 位小写 hex")
+        if not _is_int(source.get("bytes")) or int(source["bytes"]) < 0:
+            raise S1FreezeValidationError(f"legacy.sources[{position}].bytes 必须是非负整数")
+        for count_field in ("task_id_count", "task_fingerprint_count"):
+            if not _is_int(source.get(count_field)) or int(source[count_field]) < 0:
+                raise S1FreezeValidationError(
+                    f"legacy.sources[{position}].{count_field} 必须是非负整数"
+                )
+        observed_legacy_ids += int(source["task_id_count"])
+        observed_legacy_fps += int(source["task_fingerprint_count"])
+    if observed_legacy_ids != int(legacy_task_count):
+        raise S1FreezeValidationError(
+            "freeze_summary(schema 3).orchestration.legacy.task_id_count 与 sources 之和不一致"
+        )
+    if observed_legacy_fps != int(legacy_fp_count):
+        raise S1FreezeValidationError(
+            "freeze_summary(schema 3).orchestration.legacy.task_fingerprint_count 与 sources 之和不一致"
+        )
 
 
 def _verify_budget_fairness(report: Mapping[str, Any]) -> None:

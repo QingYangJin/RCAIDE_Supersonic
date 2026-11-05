@@ -2630,3 +2630,211 @@ class StructuralEndToEndDisclosureTests(unittest.TestCase):
         self.assertEqual(len(status["figures"]), 7)
         self.assertNotIn("c5", " ".join(status["figures"]))
         self.assertTrue(any("C5" in note for note in status["notes"]))
+# ---------------------------------------------------------------------------
+# task-241（A2-V4-B01）：S0-3 v4 冻结包 freeze_summary schema 3 兼容与严格校验
+# ---------------------------------------------------------------------------
+
+FROZEN_V4_DIR = (
+    REPO_ROOT
+    / "research"
+    / "concorde_metaopt"
+    / "optimization_runs"
+    / "p4ra-s0-3-freeze-20261105T155925Z"
+)
+
+
+def _rewrite_freeze_summary_and_sums(package_dir, mutate):
+    """改写 freeze_summary.json 并只重算 SHA256SUMS.txt 中该行的摘要。"""
+    summary_path = package_dir / "freeze_summary.json"
+    summary = json.loads(summary_path.read_text(encoding="utf-8"))
+    mutate(summary)
+    summary_path.write_text(
+        json.dumps(summary, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+    )
+    sums_path = package_dir / "SHA256SUMS.txt"
+    new_sha = hashlib.sha256(summary_path.read_bytes()).hexdigest()
+    rewritten = []
+    for line in sums_path.read_text(encoding="utf-8").splitlines():
+        digest, separator, name = line.partition(" *")
+        if separator and name.strip() == "freeze_summary.json":
+            line = new_sha + " *freeze_summary.json"
+        elif not separator:
+            raise AssertionError("Unexpected SHA256SUMS line: " + line)
+        rewritten.append(line)
+    sums_path.write_text("\n".join(rewritten) + "\n", encoding="utf-8")
+
+
+class FreezeSummarySchemaCompatTests(TempDirMixin):
+    """task-241 / A2-V4-B01：schema 1/2/3 正向兼容，未知版本与关键字段漂移 fail-closed。"""
+
+    def _copy_package(self, source):
+        target = self.make_temp_dir() / source.name
+        shutil.copytree(source, target)
+        return target
+
+    def _copy_and_load(self, source, mutate):
+        package = self._copy_package(source)
+        _rewrite_freeze_summary_and_sums(package, mutate)
+        return A.load_frozen_bundle(package)
+
+    def _assert_rejected(self, source, mutate, needle):
+        with self.assertRaises(A.S1FreezeValidationError) as ctx:
+            self._copy_and_load(source, mutate)
+        self.assertIn(needle, str(ctx.exception))
+
+    # ---- 正向：schema 3（真实 S0-3 v4 包） ----
+    def test_v4_package_schema_3_loads(self):
+        summary = json.loads(
+            (FROZEN_V4_DIR / "freeze_summary.json").read_text(encoding="utf-8")
+        )
+        self.assertEqual(summary["schema_version"], "p4ra-freeze-summary-3")
+        bundle = A.load_frozen_bundle(FROZEN_V4_DIR)
+        self.assertEqual(bundle.family_version, "p4ra-family-v4")
+        self.assertEqual(
+            bundle.identity.family_fingerprint,
+            "a1f9462c35ea641d0559485354c63b47eec2e6fb4696e86f94efa1f3d19daf2e",
+        )
+        self.assertEqual(
+            bundle.identity.prereg_digest,
+            "aa806767445421335874322321145af4b5ed5bc52826dc732a05c0f8f3feb948",
+        )
+        self.assertEqual(bundle.identity.radius_base, 0.64)
+        self.assertEqual(len(bundle.task_ids_for("meta_test")), 20)
+
+    # ---- 正向：schema 2（v3 legacy 包） ----
+    def test_v3_legacy_package_schema_2_still_loads(self):
+        summary = json.loads((FROZEN_DIR / "freeze_summary.json").read_text(encoding="utf-8"))
+        self.assertEqual(summary["schema_version"], "p4ra-freeze-summary-2")
+        bundle = A.load_frozen_bundle(FROZEN_DIR)
+        self.assertEqual(bundle.family_version, "p4ra-family-v3")
+        self.assertEqual(bundle.identity.radius_base, 0.64)
+
+    # ---- 正向：schema 1（历史兼容） ----
+    def test_schema_1_variant_accepted(self):
+        package = self._copy_package(FROZEN_DIR)
+        _rewrite_freeze_summary_and_sums(
+            package, lambda summary: summary.__setitem__("schema_version", "p4ra-freeze-summary-1")
+        )
+        bundle = A.load_frozen_bundle(package)
+        self.assertEqual(bundle.family_version, "p4ra-family-v3")
+
+    # ---- 负向：未知/缺失 schema ----
+    def test_schema_4_rejected(self):
+        self._assert_rejected(
+            FROZEN_V4_DIR,
+            lambda summary: summary.__setitem__("schema_version", "p4ra-freeze-summary-4"),
+            "schema 不符",
+        )
+
+    def test_missing_schema_version_rejected(self):
+        self._assert_rejected(
+            FROZEN_V4_DIR, lambda summary: summary.pop("schema_version"), "schema 不符"
+        )
+
+    # ---- 负向：schema 3 顶层字段集合 ----
+    def test_unknown_top_level_field_rejected(self):
+        self._assert_rejected(
+            FROZEN_V4_DIR,
+            lambda summary: summary.__setitem__("unexpected_field", 1),
+            "未登记字段",
+        )
+
+    def test_missing_holdout_seed_rejected(self):
+        self._assert_rejected(
+            FROZEN_V4_DIR, lambda summary: summary.pop("holdout_seed"), "缺少字段"
+        )
+
+    # ---- 负向：holdout / 校准 / 家族身份漂移 ----
+    def test_tampered_holdout_seed_rejected(self):
+        self._assert_rejected(
+            FROZEN_V4_DIR,
+            lambda summary: summary.__setitem__("holdout_seed", 20261107),
+            "holdout_seed",
+        )
+
+    def test_tampered_holdout_splits_rejected(self):
+        self._assert_rejected(
+            FROZEN_V4_DIR,
+            lambda summary: summary.__setitem__("holdout_splits", ["meta_test"]),
+            "holdout_splits",
+        )
+
+    def test_tampered_holdout_task_count_rejected(self):
+        self._assert_rejected(
+            FROZEN_V4_DIR,
+            lambda summary: summary.__setitem__("holdout_task_count", 29),
+            "holdout_task_count",
+        )
+
+    def test_tampered_calibration_status_rejected(self):
+        self._assert_rejected(
+            FROZEN_V4_DIR,
+            lambda summary: summary.__setitem__("calibration_status", "PENDING_A2_CALIBRATION"),
+            "calibration_status",
+        )
+
+    def test_tampered_family_version_rejected(self):
+        self._assert_rejected(
+            FROZEN_V4_DIR,
+            lambda summary: summary.__setitem__("family_version", "p4ra-family-v3"),
+            "family_version",
+        )
+
+    def test_tampered_code_sha_rejected(self):
+        self._assert_rejected(
+            FROZEN_V4_DIR,
+            lambda summary: summary.__setitem__("code_sha", "0" * 64),
+            "code_sha",
+        )
+
+    # ---- 负向：artifacts / digest_manifest ----
+    def test_missing_artifact_entry_rejected(self):
+        self._assert_rejected(
+            FROZEN_V4_DIR,
+            lambda summary: summary["artifacts"].pop("tasks.json"),
+            "artifacts",
+        )
+
+    def test_tampered_artifact_stored_sha256_rejected(self):
+        def mutate(summary):
+            summary["artifacts"]["frozen_family.json"]["stored_sha256"] = "0" * 64
+
+        self._assert_rejected(FROZEN_V4_DIR, mutate, "stored_sha256")
+
+    def test_tampered_digest_manifest_block_rejected(self):
+        self._assert_rejected(
+            FROZEN_V4_DIR,
+            lambda summary: summary["digest_manifest"].__setitem__("bytes", 1),
+            "digest_manifest.bytes",
+        )
+
+    # ---- 负向：orchestration ----
+    def test_tampered_physical_call_count_rejected(self):
+        self._assert_rejected(
+            FROZEN_V4_DIR,
+            lambda summary: summary["orchestration"].__setitem__("physical_call_count", 1),
+            "physical_call_count",
+        )
+
+    def test_missing_orchestration_field_rejected(self):
+        self._assert_rejected(
+            FROZEN_V4_DIR,
+            lambda summary: summary["orchestration"].pop("legacy"),
+            "orchestration 字段集合不符",
+        )
+
+    def test_tampered_task_id_intersection_rejected(self):
+        self._assert_rejected(
+            FROZEN_V4_DIR,
+            lambda summary: summary["orchestration"]["task_id_intersection"].__setitem__(
+                "status", "FAIL"
+            ),
+            "task_id_intersection.status",
+        )
+
+    def test_tampered_legacy_counts_rejected(self):
+        self._assert_rejected(
+            FROZEN_V4_DIR,
+            lambda summary: summary["orchestration"]["legacy"].__setitem__("task_id_count", 279),
+            "legacy.task_id_count",
+        )
