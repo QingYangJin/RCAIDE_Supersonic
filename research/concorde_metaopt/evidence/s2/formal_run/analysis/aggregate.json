@@ -1,0 +1,1400 @@
+{
+ "analysis_id": "s2-analysis-s2-formal-20261106T1810Z",
+ "checks": [
+  {
+   "check": "run_data_boundary",
+   "detail": "holdout_rows_used=0, holdout_metrics_read=false",
+   "status": "PASS"
+  },
+  {
+   "check": "run_arms",
+   "detail": "pinned 形态；两臂 config 相同且与 prereg 一致",
+   "status": "PASS"
+  },
+  {
+   "check": "run_config",
+   "detail": "run_mode=FORMAL; prereg digest/code_sha/frozen_package/边界/预算/网格一致",
+   "status": "PASS"
+  },
+  {
+   "check": "record_files",
+   "detail": "run_records.jsonl",
+   "status": "PASS"
+  },
+  {
+   "check": "record_coverage",
+   "detail": "FORMAL 1200 train + 4800 eval / 组 6 / 任务 20 / K=0,1,5,10 / draws=10",
+   "status": "PASS"
+  },
+  {
+   "check": "run_records_core_sha256",
+   "detail": "summary 声明 c9460daedbf1868b44e7f2cb5456d6d95da2cbeb64cd692f94e1a5050dafb08f；核心记录摘要口径未在接口文档中定义，分析层不伪造复核 PASS",
+   "status": "DISCLOSED"
+  },
+  {
+   "check": "run_summary_fd_gate_sha_format",
+   "detail": "run_summary.fd_gate_sha256=7950bcb05d322a41b0688e752b270ac47df6c97ed912b9fd83dd7023a8d5dec6（fd_gate.json raw sha；一致性由 fd_gate_artifact 复核）",
+   "status": "PASS"
+  },
+  {
+   "check": "run_summary",
+   "detail": "v2 30 字段/record_counts/status_counts/resources/边界/physical=0 一致（FORMAL）",
+   "status": "PASS"
+  },
+  {
+   "check": "fd_pilot_evidence_micro",
+   "detail": "research/concorde_metaopt/evidence/s2/s2_fd_pilot_micro.json (n=32, max_rel=1.2780446719818776e-09)",
+   "status": "PASS"
+  },
+  {
+   "check": "fd_pilot_evidence_full_size",
+   "detail": "research/concorde_metaopt/evidence/s2/s2_fd_pilot_full.json (n=8, max_rel=3.975211759696654e-10)",
+   "status": "PASS"
+  },
+  {
+   "check": "fd_gate_artifact",
+   "detail": "raw sha256/n_checked/max_rel 与 config 及 summary 一致",
+   "status": "PASS"
+  },
+  {
+   "check": "data_manifest_artifact",
+   "detail": "raw sha256/holdout=0/physical=0/任务数一致",
+   "status": "PASS"
+  },
+  {
+   "check": "summary_sha_run_config.json",
+   "detail": "run_config.json",
+   "status": "PASS"
+  },
+  {
+   "check": "summary_sha_run_records.jsonl",
+   "detail": "run_records.jsonl",
+   "status": "PASS"
+  },
+  {
+   "check": "run_load",
+   "detail": "1200 train + 4800 eval 行",
+   "status": "PASS"
+  },
+  {
+   "check": "resource_endpoints",
+   "detail": "资源指标仅描述，不参与 benefit/harm 判定",
+   "status": "PASS"
+  },
+  {
+   "check": "integrity_flags",
+   "detail": "run_status=COMPLETED, degraded_arms=[]",
+   "status": "PASS"
+  },
+  {
+   "check": "task_aggregation",
+   "detail": "20 tasks, 2 inference endpoints",
+   "status": "PASS"
+  },
+  {
+   "check": "statistics",
+   "detail": "2 inference endpoints, holm family_size=2",
+   "status": "PASS"
+  }
+ ],
+ "code_sha": "3e6ece85a78f1cbb5a8639e279e8388d790213da5358ab35464c8cb37e67a5bb",
+ "coverage": {
+  "complete": true,
+  "eval_groups": [
+   {
+    "arm": "FULL_MAML",
+    "complete": true,
+    "expected_records": 800,
+    "meta_seed": 0,
+    "records": 800
+   },
+   {
+    "arm": "FULL_MAML",
+    "complete": true,
+    "expected_records": 800,
+    "meta_seed": 1,
+    "records": 800
+   },
+   {
+    "arm": "FULL_MAML",
+    "complete": true,
+    "expected_records": 800,
+    "meta_seed": 2,
+    "records": 800
+   },
+   {
+    "arm": "FOMAML",
+    "complete": true,
+    "expected_records": 800,
+    "meta_seed": 0,
+    "records": 800
+   },
+   {
+    "arm": "FOMAML",
+    "complete": true,
+    "expected_records": 800,
+    "meta_seed": 1,
+    "records": 800
+   },
+   {
+    "arm": "FOMAML",
+    "complete": true,
+    "expected_records": 800,
+    "meta_seed": 2,
+    "records": 800
+   }
+  ],
+  "expected": {
+   "K": [
+    0,
+    1,
+    5,
+    10
+   ],
+   "draws": 10,
+   "eval_records": 4800,
+   "eval_records_per_group": 800,
+   "run_mode": "FORMAL",
+   "tasks": 20,
+   "train_records": 1200
+  },
+  "tasks": [
+   "p4ra-FQE3-v3-VA-000",
+   "p4ra-FQE3-v3-VA-001",
+   "p4ra-FQE3-v3-VA-002",
+   "p4ra-FQE3-v3-VA-003",
+   "p4ra-FQE3-v3-VA-004",
+   "p4ra-FQE3-v3-VA-005",
+   "p4ra-FQE3-v3-VA-006",
+   "p4ra-FQE3-v3-VA-007",
+   "p4ra-FQE3-v3-VA-008",
+   "p4ra-FQE3-v3-VA-009",
+   "p4ra-FQE3-v3-VA-010",
+   "p4ra-FQE3-v3-VA-011",
+   "p4ra-FQE3-v3-VA-012",
+   "p4ra-FQE3-v3-VA-013",
+   "p4ra-FQE3-v3-VA-014",
+   "p4ra-FQE3-v3-VA-015",
+   "p4ra-FQE3-v3-VA-016",
+   "p4ra-FQE3-v3-VA-017",
+   "p4ra-FQE3-v3-VA-018",
+   "p4ra-FQE3-v3-VA-019"
+  ],
+  "train_groups": [
+   {
+    "arm": "FULL_MAML",
+    "complete": true,
+    "expected_records": 200,
+    "meta_seed": 0,
+    "records": 200
+   },
+   {
+    "arm": "FULL_MAML",
+    "complete": true,
+    "expected_records": 200,
+    "meta_seed": 1,
+    "records": 200
+   },
+   {
+    "arm": "FULL_MAML",
+    "complete": true,
+    "expected_records": 200,
+    "meta_seed": 2,
+    "records": 200
+   },
+   {
+    "arm": "FOMAML",
+    "complete": true,
+    "expected_records": 200,
+    "meta_seed": 0,
+    "records": 200
+   },
+   {
+    "arm": "FOMAML",
+    "complete": true,
+    "expected_records": 200,
+    "meta_seed": 1,
+    "records": 200
+   },
+   {
+    "arm": "FOMAML",
+    "complete": true,
+    "expected_records": 200,
+    "meta_seed": 2,
+    "records": 200
+   }
+  ]
+ },
+ "created_utc": "2026-11-06T18:12:15+00:00",
+ "data_boundary": {
+  "holdout_metrics_read": false,
+  "holdout_rows_used": 0,
+  "note": "分析层只读取 meta_validation 评估行；run_config.data_boundary 已由 _validate_run_config 校验 holdout_rows_used=0。",
+  "splits_seen": [
+   "meta_validation"
+  ]
+ },
+ "decisions": {
+  "post_adaptation_rmse_raw_k10": {
+   "alpha": 0.05,
+   "criteria": {
+    "ci_excludes_zero": true,
+    "full_lower_than_fomaml": false,
+    "holm_p_available": true,
+    "holm_significant": true,
+    "null_ratio_ok": true,
+    "relative_improvement_ge_threshold": false,
+    "runtime_integrity_ok": true,
+    "sufficient_pairs": true
+   },
+   "decision": "SUPPORTED_HARM",
+   "endpoint_id": "post_adaptation_rmse_raw_k10",
+   "holm_p_adjusted": 3.814697265625e-06,
+   "reasons": [
+    "HOLM_SIGNIFICANT_CI_EXCLUDES_ZERO_RELATIVE_DEGRADATION"
+   ],
+   "relative_improvement_threshold": 0.01
+  },
+  "post_adaptation_rmse_raw_k5": {
+   "alpha": 0.05,
+   "criteria": {
+    "ci_excludes_zero": true,
+    "full_lower_than_fomaml": false,
+    "holm_p_available": true,
+    "holm_significant": true,
+    "null_ratio_ok": true,
+    "relative_improvement_ge_threshold": false,
+    "runtime_integrity_ok": true,
+    "sufficient_pairs": true
+   },
+   "decision": "SUPPORTED_HARM",
+   "endpoint_id": "post_adaptation_rmse_raw_k5",
+   "holm_p_adjusted": 3.814697265625e-06,
+   "reasons": [
+    "HOLM_SIGNIFICANT_CI_EXCLUDES_ZERO_RELATIVE_DEGRADATION"
+   ],
+   "relative_improvement_threshold": 0.01
+  }
+ },
+ "descriptive": {
+  "metrics": {
+   "post_adaptation_mae_raw_k5": {
+    "K": 5,
+    "endpoint_id": "post_adaptation_mae_raw_k5",
+    "field": "query_mae_raw",
+    "n_tasks": 20,
+    "note": "描述性指标：不做 benefit/harm 推断。",
+    "null_ratio": 0.0,
+    "per_task": {
+     "p4ra-FQE3-v3-VA-000": {
+      "FOMAML": 1.0717975629571608,
+      "FULL_MAML": 1.1110142820871545
+     },
+     "p4ra-FQE3-v3-VA-001": {
+      "FOMAML": 0.7453802279347802,
+      "FULL_MAML": 0.7595214824980836
+     },
+     "p4ra-FQE3-v3-VA-002": {
+      "FOMAML": 0.7872964543177944,
+      "FULL_MAML": 0.8113474576485279
+     },
+     "p4ra-FQE3-v3-VA-003": {
+      "FOMAML": 0.5029730954006373,
+      "FULL_MAML": 0.5475129821700863
+     },
+     "p4ra-FQE3-v3-VA-004": {
+      "FOMAML": 0.5563855650316213,
+      "FULL_MAML": 0.5917348428481615
+     },
+     "p4ra-FQE3-v3-VA-005": {
+      "FOMAML": 0.5079064808326915,
+      "FULL_MAML": 0.5679678556002834
+     },
+     "p4ra-FQE3-v3-VA-006": {
+      "FOMAML": 0.5989061179605734,
+      "FULL_MAML": 0.5726900226996908
+     },
+     "p4ra-FQE3-v3-VA-007": {
+      "FOMAML": 0.5660024787618433,
+      "FULL_MAML": 0.5847987022430114
+     },
+     "p4ra-FQE3-v3-VA-008": {
+      "FOMAML": 0.6814810420995472,
+      "FULL_MAML": 0.686755486591296
+     },
+     "p4ra-FQE3-v3-VA-009": {
+      "FOMAML": 1.1000913906718248,
+      "FULL_MAML": 1.1506507513095208
+     },
+     "p4ra-FQE3-v3-VA-010": {
+      "FOMAML": 0.5978966048817236,
+      "FULL_MAML": 0.6135671360928115
+     },
+     "p4ra-FQE3-v3-VA-011": {
+      "FOMAML": 0.9772004003559175,
+      "FULL_MAML": 1.0138525941213568
+     },
+     "p4ra-FQE3-v3-VA-012": {
+      "FOMAML": 0.8544470135200685,
+      "FULL_MAML": 0.881840639451324
+     },
+     "p4ra-FQE3-v3-VA-013": {
+      "FOMAML": 0.861667351382675,
+      "FULL_MAML": 0.9138381457864962
+     },
+     "p4ra-FQE3-v3-VA-014": {
+      "FOMAML": 0.6890972226335652,
+      "FULL_MAML": 0.726858633045974
+     },
+     "p4ra-FQE3-v3-VA-015": {
+      "FOMAML": 1.038628412975336,
+      "FULL_MAML": 1.0728275864090284
+     },
+     "p4ra-FQE3-v3-VA-016": {
+      "FOMAML": 0.8981301015862869,
+      "FULL_MAML": 0.9567527045605888
+     },
+     "p4ra-FQE3-v3-VA-017": {
+      "FOMAML": 0.5448276976323118,
+      "FULL_MAML": 0.6223969621514879
+     },
+     "p4ra-FQE3-v3-VA-018": {
+      "FOMAML": 0.7708687502634023,
+      "FULL_MAML": 0.7897352457541084
+     },
+     "p4ra-FQE3-v3-VA-019": {
+      "FOMAML": 0.9085159344890542,
+      "FULL_MAML": 0.9438565631896
+     }
+    }
+   },
+   "post_adaptation_rmse_raw_k0": {
+    "K": 0,
+    "endpoint_id": "post_adaptation_rmse_raw_k0",
+    "field": "query_rmse_raw",
+    "n_tasks": 20,
+    "note": "描述性指标：不做 benefit/harm 推断。",
+    "null_ratio": 0.0,
+    "per_task": {
+     "p4ra-FQE3-v3-VA-000": {
+      "FOMAML": 2.1111787484837143,
+      "FULL_MAML": 2.998436754524134
+     },
+     "p4ra-FQE3-v3-VA-001": {
+      "FOMAML": 0.9240703812146102,
+      "FULL_MAML": 1.4510902432819925
+     },
+     "p4ra-FQE3-v3-VA-002": {
+      "FOMAML": 0.9532406870598948,
+      "FULL_MAML": 1.4618487027349267
+     },
+     "p4ra-FQE3-v3-VA-003": {
+      "FOMAML": 0.6531173196311556,
+      "FULL_MAML": 1.4467316686703955
+     },
+     "p4ra-FQE3-v3-VA-004": {
+      "FOMAML": 0.7141303318712658,
+      "FULL_MAML": 1.4068376875283628
+     },
+     "p4ra-FQE3-v3-VA-005": {
+      "FOMAML": 0.6856611270775287,
+      "FULL_MAML": 1.4922727452718947
+     },
+     "p4ra-FQE3-v3-VA-006": {
+      "FOMAML": 0.9092903697540908,
+      "FULL_MAML": 0.8701988500410677
+     },
+     "p4ra-FQE3-v3-VA-007": {
+      "FOMAML": 0.7235200927038203,
+      "FULL_MAML": 1.112038200194596
+     },
+     "p4ra-FQE3-v3-VA-008": {
+      "FOMAML": 1.0170862440839226,
+      "FULL_MAML": 0.9354725036680244
+     },
+     "p4ra-FQE3-v3-VA-009": {
+      "FOMAML": 2.5249781327083,
+      "FULL_MAML": 3.470399363885061
+     },
+     "p4ra-FQE3-v3-VA-010": {
+      "FOMAML": 0.8118548906323558,
+      "FULL_MAML": 1.024325532202524
+     },
+     "p4ra-FQE3-v3-VA-011": {
+      "FOMAML": 2.0946332363015956,
+      "FULL_MAML": 3.0139359447968253
+     },
+     "p4ra-FQE3-v3-VA-012": {
+      "FOMAML": 1.1757010900206906,
+      "FULL_MAML": 1.9528774737232981
+     },
+     "p4ra-FQE3-v3-VA-013": {
+      "FOMAML": 1.7553955852342484,
+      "FULL_MAML": 2.6835898471547353
+     },
+     "p4ra-FQE3-v3-VA-014": {
+      "FOMAML": 1.3486687335028267,
+      "FULL_MAML": 2.2647516643955794
+     },
+     "p4ra-FQE3-v3-VA-015": {
+      "FOMAML": 2.125811570516064,
+      "FULL_MAML": 3.0326554484872292
+     },
+     "p4ra-FQE3-v3-VA-016": {
+      "FOMAML": 1.68186926816308,
+      "FULL_MAML": 2.589255634055162
+     },
+     "p4ra-FQE3-v3-VA-017": {
+      "FOMAML": 1.0413041393123035,
+      "FULL_MAML": 1.9819369662680832
+     },
+     "p4ra-FQE3-v3-VA-018": {
+      "FOMAML": 0.9052935682409493,
+      "FULL_MAML": 1.283413969788499
+     },
+     "p4ra-FQE3-v3-VA-019": {
+      "FOMAML": 2.0945361637136903,
+      "FULL_MAML": 3.045640109605477
+     }
+    }
+   },
+   "post_adaptation_rmse_raw_k1": {
+    "K": 1,
+    "endpoint_id": "post_adaptation_rmse_raw_k1",
+    "field": "query_rmse_raw",
+    "n_tasks": 20,
+    "note": "描述性指标：不做 benefit/harm 推断。",
+    "null_ratio": 0.0,
+    "per_task": {
+     "p4ra-FQE3-v3-VA-000": {
+      "FOMAML": 1.7525705177677267,
+      "FULL_MAML": 2.2486601068735914
+     },
+     "p4ra-FQE3-v3-VA-001": {
+      "FOMAML": 0.93711144555588,
+      "FULL_MAML": 1.2144420527017665
+     },
+     "p4ra-FQE3-v3-VA-002": {
+      "FOMAML": 0.9695194398527418,
+      "FULL_MAML": 1.2436272162975668
+     },
+     "p4ra-FQE3-v3-VA-003": {
+      "FOMAML": 0.6462445570368872,
+      "FULL_MAML": 1.107834162275141
+     },
+     "p4ra-FQE3-v3-VA-004": {
+      "FOMAML": 0.7155434361915519,
+      "FULL_MAML": 1.0833177162821819
+     },
+     "p4ra-FQE3-v3-VA-005": {
+      "FOMAML": 0.6807409774176922,
+      "FULL_MAML": 1.1831197767026689
+     },
+     "p4ra-FQE3-v3-VA-006": {
+      "FOMAML": 0.8118007025673456,
+      "FULL_MAML": 0.7895337225092178
+     },
+     "p4ra-FQE3-v3-VA-007": {
+      "FOMAML": 0.725890144893467,
+      "FULL_MAML": 0.9324380102624907
+     },
+     "p4ra-FQE3-v3-VA-008": {
+      "FOMAML": 0.9354794695603412,
+      "FULL_MAML": 0.8884371103849237
+     },
+     "p4ra-FQE3-v3-VA-009": {
+      "FOMAML": 2.063166509394045,
+      "FULL_MAML": 2.5919038122935594
+     },
+     "p4ra-FQE3-v3-VA-010": {
+      "FOMAML": 0.7705806988524916,
+      "FULL_MAML": 0.9051799602399259
+     },
+     "p4ra-FQE3-v3-VA-011": {
+      "FOMAML": 1.683673057465528,
+      "FULL_MAML": 2.1850630124082486
+     },
+     "p4ra-FQE3-v3-VA-012": {
+      "FOMAML": 1.092838808732796,
+      "FULL_MAML": 1.4941798510382232
+     },
+     "p4ra-FQE3-v3-VA-013": {
+      "FOMAML": 1.407440367544213,
+      "FULL_MAML": 1.934674813739839
+     },
+     "p4ra-FQE3-v3-VA-014": {
+      "FOMAML": 1.164919360603724,
+      "FULL_MAML": 1.7077447809477497
+     },
+     "p4ra-FQE3-v3-VA-015": {
+      "FOMAML": 1.8113776628063245,
+      "FULL_MAML": 2.32435214631771
+     },
+     "p4ra-FQE3-v3-VA-016": {
+      "FOMAML": 1.434742520926194,
+      "FULL_MAML": 1.9672089666217207
+     },
+     "p4ra-FQE3-v3-VA-017": {
+      "FOMAML": 0.8993414084465298,
+      "FULL_MAML": 1.4696441361969068
+     },
+     "p4ra-FQE3-v3-VA-018": {
+      "FOMAML": 0.9174524078569087,
+      "FULL_MAML": 1.1216732979886777
+     },
+     "p4ra-FQE3-v3-VA-019": {
+      "FOMAML": 1.7795411254545763,
+      "FULL_MAML": 2.375120166839526
+     }
+    }
+   },
+   "post_adaptation_rmse_std_k10": {
+    "K": 10,
+    "endpoint_id": "post_adaptation_rmse_std_k10",
+    "field": "query_rmse_standardized",
+    "n_tasks": 20,
+    "note": "描述性指标：不做 benefit/harm 推断。",
+    "null_ratio": 0.0,
+    "per_task": {
+     "p4ra-FQE3-v3-VA-000": {
+      "FOMAML": 1.31457782252819,
+      "FULL_MAML": 1.3209331170667957
+     },
+     "p4ra-FQE3-v3-VA-001": {
+      "FOMAML": 1.4933191810046111,
+      "FULL_MAML": 1.5153023109363943
+     },
+     "p4ra-FQE3-v3-VA-002": {
+      "FOMAML": 1.1185282721846943,
+      "FULL_MAML": 1.1295833905891257
+     },
+     "p4ra-FQE3-v3-VA-003": {
+      "FOMAML": 1.0685032468004896,
+      "FULL_MAML": 1.0869476312370137
+     },
+     "p4ra-FQE3-v3-VA-004": {
+      "FOMAML": 1.2596716542458888,
+      "FULL_MAML": 1.2798288563538216
+     },
+     "p4ra-FQE3-v3-VA-005": {
+      "FOMAML": 1.2081001205375275,
+      "FULL_MAML": 1.2494436456422509
+     },
+     "p4ra-FQE3-v3-VA-006": {
+      "FOMAML": 1.2081873885511676,
+      "FULL_MAML": 1.2181277239409827
+     },
+     "p4ra-FQE3-v3-VA-007": {
+      "FOMAML": 1.3663587976621352,
+      "FULL_MAML": 1.380748534195476
+     },
+     "p4ra-FQE3-v3-VA-008": {
+      "FOMAML": 1.3679150863254776,
+      "FULL_MAML": 1.403389888059256
+     },
+     "p4ra-FQE3-v3-VA-009": {
+      "FOMAML": 1.163424745662824,
+      "FULL_MAML": 1.1672585474527906
+     },
+     "p4ra-FQE3-v3-VA-010": {
+      "FOMAML": 1.162218524350324,
+      "FULL_MAML": 1.1849151854398021
+     },
+     "p4ra-FQE3-v3-VA-011": {
+      "FOMAML": 1.2868622390657753,
+      "FULL_MAML": 1.2907705874020199
+     },
+     "p4ra-FQE3-v3-VA-012": {
+      "FOMAML": 1.2393432352980038,
+      "FULL_MAML": 1.254489167261003
+     },
+     "p4ra-FQE3-v3-VA-013": {
+      "FOMAML": 1.1602317824107329,
+      "FULL_MAML": 1.174672916388298
+     },
+     "p4ra-FQE3-v3-VA-014": {
+      "FOMAML": 1.1309334663765258,
+      "FULL_MAML": 1.1370104787801998
+     },
+     "p4ra-FQE3-v3-VA-015": {
+      "FOMAML": 1.1587387935973565,
+      "FULL_MAML": 1.1668626601885346
+     },
+     "p4ra-FQE3-v3-VA-016": {
+      "FOMAML": 1.0263499370879503,
+      "FULL_MAML": 1.0359122036736468
+     },
+     "p4ra-FQE3-v3-VA-017": {
+      "FOMAML": 1.0483120590951964,
+      "FULL_MAML": 1.0695479192714112
+     },
+     "p4ra-FQE3-v3-VA-018": {
+      "FOMAML": 1.4422447721753262,
+      "FULL_MAML": 1.4693984647909577
+     },
+     "p4ra-FQE3-v3-VA-019": {
+      "FOMAML": 1.1018368613573364,
+      "FULL_MAML": 1.1036969077267094
+     }
+    }
+   },
+   "post_adaptation_rmse_std_k5": {
+    "K": 5,
+    "endpoint_id": "post_adaptation_rmse_std_k5",
+    "field": "query_rmse_standardized",
+    "n_tasks": 20,
+    "note": "描述性指标：不做 benefit/harm 推断。",
+    "null_ratio": 0.0,
+    "per_task": {
+     "p4ra-FQE3-v3-VA-000": {
+      "FOMAML": 1.7046019380336321,
+      "FULL_MAML": 1.783300571254677
+     },
+     "p4ra-FQE3-v3-VA-001": {
+      "FOMAML": 1.498120564223843,
+      "FULL_MAML": 1.5298381004334523
+     },
+     "p4ra-FQE3-v3-VA-002": {
+      "FOMAML": 1.4052506712316892,
+      "FULL_MAML": 1.4624874506503758
+     },
+     "p4ra-FQE3-v3-VA-003": {
+      "FOMAML": 1.3757682552606945,
+      "FULL_MAML": 1.4869920287230798
+     },
+     "p4ra-FQE3-v3-VA-004": {
+      "FOMAML": 1.4185448224188526,
+      "FULL_MAML": 1.5291171384103166
+     },
+     "p4ra-FQE3-v3-VA-005": {
+      "FOMAML": 1.7516951959444238,
+      "FULL_MAML": 1.9914776201415076
+     },
+     "p4ra-FQE3-v3-VA-006": {
+      "FOMAML": 1.7594447388767678,
+      "FULL_MAML": 1.7761907752740533
+     },
+     "p4ra-FQE3-v3-VA-007": {
+      "FOMAML": 1.38566349735523,
+      "FULL_MAML": 1.4501180746871674
+     },
+     "p4ra-FQE3-v3-VA-008": {
+      "FOMAML": 2.061385400211345,
+      "FULL_MAML": 2.1711445304340207
+     },
+     "p4ra-FQE3-v3-VA-009": {
+      "FOMAML": 1.3999160959687353,
+      "FULL_MAML": 1.4716415108010654
+     },
+     "p4ra-FQE3-v3-VA-010": {
+      "FOMAML": 1.398117600480777,
+      "FULL_MAML": 1.4858871209618096
+     },
+     "p4ra-FQE3-v3-VA-011": {
+      "FOMAML": 1.638839716031167,
+      "FULL_MAML": 1.7050282676466093
+     },
+     "p4ra-FQE3-v3-VA-012": {
+      "FOMAML": 1.4512009431506059,
+      "FULL_MAML": 1.5219350649339907
+     },
+     "p4ra-FQE3-v3-VA-013": {
+      "FOMAML": 1.1216490147643758,
+      "FULL_MAML": 1.1916229231244584
+     },
+     "p4ra-FQE3-v3-VA-014": {
+      "FOMAML": 1.1512716616655274,
+      "FULL_MAML": 1.2152093610680348
+     },
+     "p4ra-FQE3-v3-VA-015": {
+      "FOMAML": 1.5925437350531375,
+      "FULL_MAML": 1.6648870376969753
+     },
+     "p4ra-FQE3-v3-VA-016": {
+      "FOMAML": 1.2263623854749304,
+      "FULL_MAML": 1.3066221698138538
+     },
+     "p4ra-FQE3-v3-VA-017": {
+      "FOMAML": 1.32884209030258,
+      "FULL_MAML": 1.4913815407273987
+     },
+     "p4ra-FQE3-v3-VA-018": {
+      "FOMAML": 1.689046656986133,
+      "FULL_MAML": 1.778505202569339
+     },
+     "p4ra-FQE3-v3-VA-019": {
+      "FOMAML": 1.247723779955001,
+      "FULL_MAML": 1.3148828074142944
+     }
+    }
+   }
+  },
+  "resources": {
+   "metric_definitions": {
+    "peak_memory_mb": "arm 级峰值显存（MB）：该 arm 全部 OK 记录 peak_memory_mb 的最大值。",
+    "train_wall_seconds_ratio": "arm 级训练墙钟比：mean_over_meta_seed(sum(OK train wall_s)) 的 FULL_MAML / FOMAML；FOMAML 为 0 时记 null。"
+   },
+   "peak_memory_mb": {
+    "fomaml_peak_memory_mb": 261.57421875,
+    "per_arm": {
+     "FOMAML": 261.57421875,
+     "FULL_MAML": 256.72265625
+    },
+    "reason": null,
+    "value": 256.72265625
+   },
+   "per_arm": {
+    "FOMAML": {
+     "eval_wall_seconds_mean": 1.1256700332354133,
+     "n_train_seed_groups": 3,
+     "peak_memory_mb_max": 261.57421875,
+     "train_wall_seconds_mean": 2.5632127992964038,
+     "train_wall_seconds_per_meta_seed": [
+      2.5440147985937074,
+      2.5987728002946824,
+      2.546850799000822
+     ]
+    },
+    "FULL_MAML": {
+     "eval_wall_seconds_mean": 1.1228846330195665,
+     "n_train_seed_groups": 3,
+     "peak_memory_mb_max": 256.72265625,
+     "train_wall_seconds_mean": 3.6831412338651717,
+     "train_wall_seconds_per_meta_seed": [
+      3.668945301324129,
+      3.713840300333686,
+      3.6666380999376997
+     ]
+    }
+   },
+   "train_wall_seconds_ratio": {
+    "denominator": "FOMAML",
+    "numerator": "FULL_MAML",
+    "reason": null,
+    "value": 1.4369237056229534
+   }
+  }
+ },
+ "development_set": "meta_validation",
+ "disclosed_checks": [
+  {
+   "check": "run_records_core_sha256",
+   "detail": "summary 声明 c9460daedbf1868b44e7f2cb5456d6d95da2cbeb64cd692f94e1a5050dafb08f；核心记录摘要口径未在接口文档中定义，分析层不伪造复核 PASS",
+   "status": "DISCLOSED"
+  }
+ ],
+ "endpoint_rows": [
+  {
+   "ci_high": 0.05986980980200832,
+   "ci_low": 0.04110944269599093,
+   "comparison_id": "C1",
+   "decision": "SUPPORTED_HARM",
+   "decision_reasons": "HOLM_SIGNIFICANT_CI_EXCLUDES_ZERO_RELATIVE_DEGRADATION",
+   "endpoint": "post_adaptation_rmse_raw_k5",
+   "endpoint_role": "primary",
+   "family_id": "s2-primary-secondary-2tests",
+   "family_size": 2,
+   "median_difference": 0.03132444017229297,
+   "n_pairs": 20,
+   "n_tasks": 20,
+   "null_rate_max": 0.0,
+   "p_adjusted": 3.814697265625e-06,
+   "p_raw": 3.814697265625e-06,
+   "reference_arm": "FOMAML",
+   "reference_mean": 0.9589177466107437,
+   "reference_median": 0.9228326803629854,
+   "relative_improvement": -0.03394379158741091,
+   "treatment_arm": "FULL_MAML",
+   "treatment_mean": 1.0096595945946287,
+   "treatment_median": 0.9541571205352783,
+   "wilcoxon_method": "exact",
+   "wilcoxon_statistic": 1.0
+  },
+  {
+   "ci_high": 0.011701881656536987,
+   "ci_low": 0.007323951140872326,
+   "comparison_id": "C1",
+   "decision": "SUPPORTED_HARM",
+   "decision_reasons": "HOLM_SIGNIFICANT_CI_EXCLUDES_ZERO_RELATIVE_DEGRADATION",
+   "endpoint": "post_adaptation_rmse_raw_k10",
+   "endpoint_role": "secondary_inferential",
+   "family_id": "s2-primary-secondary-2tests",
+   "family_size": 2,
+   "median_difference": 0.01450084111954375,
+   "n_pairs": 20,
+   "n_tasks": 20,
+   "null_rate_max": 0.0,
+   "p_adjusted": 3.814697265625e-06,
+   "p_raw": 1.9073486328125e-06,
+   "reference_arm": "FOMAML",
+   "reference_mean": 0.9003567157566167,
+   "reference_median": 0.8957137631101255,
+   "relative_improvement": -0.016189146261628796,
+   "treatment_arm": "FULL_MAML",
+   "treatment_mean": 0.9097952349242538,
+   "treatment_median": 0.9102146042296693,
+   "wilcoxon_method": "exact",
+   "wilcoxon_statistic": 0.0
+  }
+ ],
+ "evidence_scope": "DEVELOPMENT_VALIDATION_ONLY",
+ "figure_status": {
+  "figures": {
+   "fig1_training_loss_curves": {
+    "path": "fig1_training_loss_curves.png",
+    "reason": null,
+    "status": "RENDERED"
+   },
+   "fig2_post_adaptation_rmse_k5_k10": {
+    "path": "fig2_post_adaptation_rmse_k5_k10.png",
+    "reason": null,
+    "status": "RENDERED"
+   },
+   "fig3_rmse_vs_K": {
+    "path": "fig3_rmse_vs_K.png",
+    "reason": null,
+    "status": "RENDERED"
+   },
+   "fig4_meta_gradient_fd": {
+    "path": "fig4_meta_gradient_fd.png",
+    "reason": null,
+    "status": "RENDERED"
+   },
+   "fig5_effect_size_ci": {
+    "path": "fig5_effect_size_ci.png",
+    "reason": null,
+    "status": "RENDERED"
+   },
+   "fig6_descriptive_k0_k1_standardized": {
+    "path": "fig6_descriptive_k0_k1_standardized.png",
+    "reason": null,
+    "status": "RENDERED"
+   },
+   "fig7_determinism_and_negative_controls": {
+    "path": "fig7_determinism_and_negative_controls.png",
+    "reason": null,
+    "status": "RENDERED"
+   },
+   "fig8_performance_cost": {
+    "path": "fig8_performance_cost.png",
+    "reason": null,
+    "status": "RENDERED"
+   },
+   "fig9_task_family_diagnostics": {
+    "path": "fig9_task_family_diagnostics.png",
+    "reason": null,
+    "status": "RENDERED"
+   }
+  },
+  "generated_utc": "2026-11-06T18:12:17+00:00",
+  "schema_version": "p4ra-s2-figure-status-1",
+  "summary": {
+   "n_figures": 9,
+   "n_not_applicable": 0,
+   "n_not_run": 0,
+   "n_rendered": 9
+  }
+ },
+ "frozen_package": {
+  "code_sha": "7304d32e524b0e1e28b0e83e7a2ed7822ce88fc14963ca4d769098841e6201ed",
+  "git_sha": "004156c232f31a450f7446c3b280772de47423df",
+  "package_family_version": "p4ra-family-v4",
+  "package_path": "research/concorde_metaopt/optimization_runs/p4ra-s0-7-freeze-20261106T024200Z",
+  "run_id": "p4ra-s0-7-freeze-20261106T024200Z",
+  "sha256sums_sha256": "59aa81cdc1f1abdc66966822eb24b567904ba4c62924ab041ae09bd9badf41f2",
+  "task_family_version": "p4ra-family-v3"
+ },
+ "holm": {
+  "adjusted_p": {
+   "post_adaptation_rmse_raw_k10": 3.814697265625e-06,
+   "post_adaptation_rmse_raw_k5": 3.814697265625e-06
+  },
+  "alpha": 0.05,
+  "family_id": "s2-primary-secondary-2tests",
+  "family_key": "s2_primary_secondary",
+  "family_size": 2,
+  "members": [
+   {
+    "comparison": "C1",
+    "endpoint": "post_adaptation_rmse_raw_k5"
+   },
+   {
+    "comparison": "C1",
+    "endpoint": "post_adaptation_rmse_raw_k10"
+   }
+  ],
+  "method": "holm",
+  "note": "唯一多重比较族，family_size=2；不得按端点再拆分族。",
+  "raw_p": {
+   "post_adaptation_rmse_raw_k10": 1.9073486328125e-06,
+   "post_adaptation_rmse_raw_k5": 3.814697265625e-06
+  },
+  "reject": [
+   "post_adaptation_rmse_raw_k5",
+   "post_adaptation_rmse_raw_k10"
+  ]
+ },
+ "inference": [
+  {
+   "bootstrap": {
+    "ci_excludes_zero": true,
+    "ci_high": 0.05986980980200832,
+    "ci_low": 0.04110944269599093,
+    "confidence_level": 0.95,
+    "mean_difference": 0.050741847983885126,
+    "method": "percentile_bootstrap_of_task_mean",
+    "n_resamples": 10000,
+    "seed": 20261105
+   },
+   "comparison_id": "C1",
+   "difference": "FULL_MAML - FOMAML",
+   "endpoint_id": "post_adaptation_rmse_raw_k5",
+   "mean_difference": 0.050741847983885126,
+   "n_pairs": 20,
+   "null_ratio": 0.0,
+   "null_task_ids": [],
+   "paired_task_ids": [
+    "p4ra-FQE3-v3-VA-000",
+    "p4ra-FQE3-v3-VA-001",
+    "p4ra-FQE3-v3-VA-002",
+    "p4ra-FQE3-v3-VA-003",
+    "p4ra-FQE3-v3-VA-004",
+    "p4ra-FQE3-v3-VA-005",
+    "p4ra-FQE3-v3-VA-006",
+    "p4ra-FQE3-v3-VA-007",
+    "p4ra-FQE3-v3-VA-008",
+    "p4ra-FQE3-v3-VA-009",
+    "p4ra-FQE3-v3-VA-010",
+    "p4ra-FQE3-v3-VA-011",
+    "p4ra-FQE3-v3-VA-012",
+    "p4ra-FQE3-v3-VA-013",
+    "p4ra-FQE3-v3-VA-014",
+    "p4ra-FQE3-v3-VA-015",
+    "p4ra-FQE3-v3-VA-016",
+    "p4ra-FQE3-v3-VA-017",
+    "p4ra-FQE3-v3-VA-018",
+    "p4ra-FQE3-v3-VA-019"
+   ],
+   "relative_improvement": {
+    "fomaml_median": 0.9228326803629854,
+    "full_median": 0.9541571205352783,
+    "reason": null,
+    "value": -0.03394379158741091
+   },
+   "wilcoxon": {
+    "method": "wilcoxon_signed_rank_two_sided",
+    "n_nonzero": 20,
+    "n_pairs": 20,
+    "p_value": 3.814697265625e-06,
+    "p_value_method": "exact",
+    "statistic": 1.0,
+    "w_minus": 1.0,
+    "w_plus": 209.0
+   }
+  },
+  {
+   "bootstrap": {
+    "ci_excludes_zero": true,
+    "ci_high": 0.011701881656536987,
+    "ci_low": 0.007323951140872326,
+    "confidence_level": 0.95,
+    "mean_difference": 0.009438519167637188,
+    "method": "percentile_bootstrap_of_task_mean",
+    "n_resamples": 10000,
+    "seed": 20261105
+   },
+   "comparison_id": "C1",
+   "difference": "FULL_MAML - FOMAML",
+   "endpoint_id": "post_adaptation_rmse_raw_k10",
+   "mean_difference": 0.009438519167637188,
+   "n_pairs": 20,
+   "null_ratio": 0.0,
+   "null_task_ids": [],
+   "paired_task_ids": [
+    "p4ra-FQE3-v3-VA-000",
+    "p4ra-FQE3-v3-VA-001",
+    "p4ra-FQE3-v3-VA-002",
+    "p4ra-FQE3-v3-VA-003",
+    "p4ra-FQE3-v3-VA-004",
+    "p4ra-FQE3-v3-VA-005",
+    "p4ra-FQE3-v3-VA-006",
+    "p4ra-FQE3-v3-VA-007",
+    "p4ra-FQE3-v3-VA-008",
+    "p4ra-FQE3-v3-VA-009",
+    "p4ra-FQE3-v3-VA-010",
+    "p4ra-FQE3-v3-VA-011",
+    "p4ra-FQE3-v3-VA-012",
+    "p4ra-FQE3-v3-VA-013",
+    "p4ra-FQE3-v3-VA-014",
+    "p4ra-FQE3-v3-VA-015",
+    "p4ra-FQE3-v3-VA-016",
+    "p4ra-FQE3-v3-VA-017",
+    "p4ra-FQE3-v3-VA-018",
+    "p4ra-FQE3-v3-VA-019"
+   ],
+   "relative_improvement": {
+    "fomaml_median": 0.8957137631101255,
+    "full_median": 0.9102146042296693,
+    "reason": null,
+    "value": -0.016189146261628796
+   },
+   "wilcoxon": {
+    "method": "wilcoxon_signed_rank_two_sided",
+    "n_nonzero": 20,
+    "n_pairs": 20,
+    "p_value": 1.9073486328125e-06,
+    "p_value_method": "exact",
+    "statistic": 0.0,
+    "w_minus": 0.0,
+    "w_plus": 210.0
+   }
+  }
+ ],
+ "integrity": {
+  "degraded_arms": [],
+  "determinism": {
+   "note": "determinism 重跑字节一致性由 A1 run 层产物的 run_summary 承载；本分析输入未见确定性的逐字段证据，按 NOT_VERIFIABLE_IN_ANALYSIS 披露（不伪造 PASS）。",
+   "verifiable_from_analysis_inputs": false
+  },
+  "failed_eval_records": 0,
+  "failed_train_records": 0,
+  "fd_gate_evidence": {
+   "full_size": {
+    "coordinates_available": 497,
+    "coordinates_requested": 8,
+    "max_relative_error": 3.975211759696654e-10,
+    "mode": "full",
+    "n_checked": 8,
+    "path": "research/concorde_metaopt/evidence/s2/s2_fd_pilot_full.json",
+    "resolved_name": "s2_fd_pilot_full.json",
+    "sha256": "e8f425ad9297dd954aca4af79413b2e2e9c18df7e0d20e074fc53aabaf4d0b59",
+    "sha256_verified": true,
+    "status": "PASS",
+    "threshold": 1e-06,
+    "tolerance": 1e-06
+   },
+   "micro": {
+    "coordinates_available": 185,
+    "coordinates_requested": 32,
+    "max_relative_error": 1.2780446719818776e-09,
+    "mode": "full",
+    "n_checked": 32,
+    "path": "research/concorde_metaopt/evidence/s2/s2_fd_pilot_micro.json",
+    "resolved_name": "s2_fd_pilot_micro.json",
+    "sha256": "1db9d7d65122fd6a56a8e02ad83766f9645641fe636fde8c8bef2752bcfc8e21",
+    "sha256_verified": true,
+    "status": "PASS",
+    "threshold": 1e-06,
+    "tolerance": 1e-06
+   }
+  },
+  "primary_should_be_inconclusive": false,
+  "run_status": "COMPLETED"
+ },
+ "metric_definitions": {
+  "aggregation": "每个 (arm, meta_seed, task, K) 先对 10 个 draw 取算术均值；再对 3 个 meta_seed 取算术均值；得到每个 task 的分析单位值。",
+  "missing_policy": "任一 draw 缺失/FAILED/数值为 null 时，该 (arm,meta_seed,task,K) 单元记为 null；任一 meta_seed 单元为 null 时该 task 端点值记为 null（不插补、不丢弃任务）。",
+  "pairing": "C1 = FULL_MAML - FOMAML，按 task 配对（同一 task_id、同一端点）。",
+  "peak_memory_mb": "arm 级峰值显存（MB）：该 arm 全部 OK 记录 peak_memory_mb 的最大值。",
+  "train_wall_seconds_ratio": "arm 级训练墙钟比：mean_over_meta_seed(sum(OK train wall_s)) 的 FULL_MAML / FOMAML；FOMAML 为 0 时记 null。"
+ },
+ "negative_controls": [
+  {
+   "category": "physical_isolation",
+   "check_id": "NC-01",
+   "expected": "physical_call_count=0（边界+run_config+run_summary）",
+   "note": "分析层不 import/启动任何真实求解器，只读 run 产物。",
+   "observed": "prereg=0;run_config=0",
+   "status": "PASS"
+  },
+  {
+   "category": "data_boundary",
+   "check_id": "NC-02",
+   "expected": "eval 记录 split 仅 meta_validation，holdout 行 0",
+   "note": "holdout 数据行不进入分析层任何计算。",
+   "observed": "meta_validation",
+   "status": "PASS"
+  },
+  {
+   "category": "prereg_contract",
+   "check_id": "NC-03",
+   "expected": "prereg_id/prereg_digest/analysis_plan_digest 自洽",
+   "note": "canonical JSON + 换行；三个摘要独立复算（校验器逐项记录 PASS 才是 PASS）。",
+   "observed": "prereg_id=p4ra-s2-prereg-2751c162904d5a4f;digests=prereg_id:PASS,prereg_digest:PASS,analysis_plan_digest:PASS",
+   "status": "PASS"
+  },
+  {
+   "category": "frozen_package",
+   "check_id": "NC-04",
+   "expected": "S0-7 冻结包 6 字段恒等 + SHA256SUMS raw sha",
+   "note": "冻结包不可变；SKIPPED（开发模式）记 DISCLOSED，不伪造 PASS。",
+   "observed": "sha256sums=PASS;run_id=p4ra-s0-7-freeze-20261106T024200Z",
+   "status": "PASS"
+  },
+  {
+   "category": "fairness",
+   "check_id": "NC-05",
+   "expected": "两臂 config 除 first_order 外逐字段相同",
+   "note": "等预算/等结构公平性由 prereg 校验器强制；本条按 run_config 实际臂配置复核。",
+   "observed": "run_arms=PASS;arms_equal=True",
+   "status": "PASS"
+  },
+  {
+   "category": "multiple_comparison",
+   "check_id": "NC-06",
+   "expected": "唯一 Holm 族 family_size=2（C1×k5,k10）",
+   "note": "不得按端点拆分族、不得另行校正。",
+   "observed": "s2-primary-secondary-2tests",
+   "status": "PASS"
+  },
+  {
+   "category": "run_schema",
+   "check_id": "NC-07",
+   "expected": "train 12 字段 / eval 16 字段精确集合；canonical JSONL",
+   "note": "字段缺失或多余均 fail-closed；本条按实际记录键集独立复核。",
+   "observed": "train=1200,eval=4800,fields_ok=True",
+   "status": "PASS"
+  },
+  {
+   "category": "coverage",
+   "check_id": "NC-08",
+   "expected": "6000 行（按 run_mode 派生：train_expected+eval_expected）/ 20 任务 / K=0,1,5,10 / draw=0..9",
+   "note": "正式 run 必须完整；SMOKE/allow_incomplete_run 显式披露，不伪造完整。",
+   "observed": "train=1200,eval=4800,expected=6000,complete=True,run_mode=FORMAL",
+   "status": "PASS"
+  },
+  {
+   "category": "fd_gate",
+   "check_id": "NC-09",
+   "expected": "FD pilot micro/full_size 证据存在、raw sha 匹配、嵌套 fd_gate 结构无 FAIL；fd_gate.json raw sha 一致",
+   "note": "FD gate 失败则分析拒绝启动；仅可校验 sha、结构不可读时记 DISCLOSED。",
+   "observed": "micro:PASS;full_size:PASS;artifact=PASS",
+   "status": "PASS"
+  },
+  {
+   "category": "determinism",
+   "check_id": "NC-10",
+   "expected": "determinism reruns=2 字节一致性",
+   "note": "由 A1 run 层产物承载；本层不伪造 PASS。",
+   "observed": "NOT_VERIFIABLE_IN_ANALYSIS",
+   "status": "DISCLOSED"
+  },
+  {
+   "category": "null_disclosure",
+   "check_id": "NC-11",
+   "expected": "null 率与原因逐层披露，不得把 null 写 0",
+   "note": "逐 task/arm 核对 meta_seed 单元数与 null 传播（null 不插补、不写 0）；null_ratio>0.70 → INCONCLUSIVE。",
+   "observed": "max_null_rate=0.0,null_cells=0/240",
+   "status": "PASS"
+  },
+  {
+   "category": "decision_rules",
+   "check_id": "NC-12",
+   "expected": "Holm p<0.05 且 CI 不跨 0 且 FULL<FOMAML 且相对改善>=1% → BENEFIT；对称 HARM",
+   "note": "按 §6 规则从 inference/holm 独立重放，与记录决策逐端点比对；决策原因记录在 aggregate.json / CSV。",
+   "observed": "overall=SUPPORTED_HARM,overall_replay_ok=True,decisions_replay_ok=True",
+   "status": "PASS"
+  },
+  {
+   "category": "endpoint_scope",
+   "check_id": "NC-13",
+   "expected": "K=0/K=1/标准化/MAE/资源仅描述，不做 benefit/harm",
+   "note": "推断端点仅 k5 主 + k10 次；描述性端点不进入决策层。",
+   "observed": "inference_endpoints=post_adaptation_rmse_raw_k5,post_adaptation_rmse_raw_k10;decisions=post_adaptation_rmse_raw_k10,post_adaptation_rmse_raw_k5",
+   "status": "PASS"
+  },
+  {
+   "category": "aggregation_unit",
+   "check_id": "NC-14",
+   "expected": "task 为分析单位，不跨任务混合 draw",
+   "note": "先 draw 后 meta_seed，最后 task 配对；逐 task 复核 difference=FULL-FOMAML。",
+   "observed": "n_tasks=20,checked_pairs=40,expected_tasks=20",
+   "status": "PASS"
+  }
+ ],
+ "null_disclosure": [
+  {
+   "arm": "BOTH",
+   "endpoint": "post_adaptation_rmse_raw_k5",
+   "expected": 40,
+   "null_rate": 0.0,
+   "observed_nonnull": 40,
+   "observed_null": 0,
+   "policy": "task 端点值：任一 meta_seed 单元为 null 即整 task 记 null（不插补、不丢弃任务）",
+   "scope": "task_arm_values"
+  },
+  {
+   "arm": "FULL_MAML",
+   "endpoint": "post_adaptation_rmse_raw_k5",
+   "expected": 60,
+   "null_rate": 0.0,
+   "observed_nonnull": 60,
+   "observed_null": 0,
+   "policy": "meta_seed 单元：任一 draw 缺失/FAILED/null 即整单元记 null",
+   "scope": "meta_seed_cells"
+  },
+  {
+   "arm": "FOMAML",
+   "endpoint": "post_adaptation_rmse_raw_k5",
+   "expected": 60,
+   "null_rate": 0.0,
+   "observed_nonnull": 60,
+   "observed_null": 0,
+   "policy": "meta_seed 单元：任一 draw 缺失/FAILED/null 即整单元记 null",
+   "scope": "meta_seed_cells"
+  },
+  {
+   "arm": "BOTH",
+   "endpoint": "post_adaptation_rmse_raw_k10",
+   "expected": 40,
+   "null_rate": 0.0,
+   "observed_nonnull": 40,
+   "observed_null": 0,
+   "policy": "task 端点值：任一 meta_seed 单元为 null 即整 task 记 null（不插补、不丢弃任务）",
+   "scope": "task_arm_values"
+  },
+  {
+   "arm": "FULL_MAML",
+   "endpoint": "post_adaptation_rmse_raw_k10",
+   "expected": 60,
+   "null_rate": 0.0,
+   "observed_nonnull": 60,
+   "observed_null": 0,
+   "policy": "meta_seed 单元：任一 draw 缺失/FAILED/null 即整单元记 null",
+   "scope": "meta_seed_cells"
+  },
+  {
+   "arm": "FOMAML",
+   "endpoint": "post_adaptation_rmse_raw_k10",
+   "expected": 60,
+   "null_rate": 0.0,
+   "observed_nonnull": 60,
+   "observed_null": 0,
+   "policy": "meta_seed 单元：任一 draw 缺失/FAILED/null 即整单元记 null",
+   "scope": "meta_seed_cells"
+  },
+  {
+   "arm": "BOTH",
+   "endpoint": "train_wall_seconds_ratio",
+   "expected": 1,
+   "null_rate": 0.0,
+   "observed_nonnull": 1,
+   "observed_null": 0,
+   "policy": "资源指标仅描述；缺失时记 null 并在报告中披露",
+   "scope": "resource_metric"
+  },
+  {
+   "arm": "BOTH",
+   "endpoint": "peak_memory_mb",
+   "expected": 1,
+   "null_rate": 0.0,
+   "observed_nonnull": 1,
+   "observed_null": 0,
+   "policy": "资源指标仅描述；缺失时记 null 并在报告中披露",
+   "scope": "resource_metric"
+  }
+ ],
+ "outputs": [
+  "aggregate.json",
+  "s2_endpoint_tables.csv",
+  "s2_per_task_aggregates.csv",
+  "s2_holm_family.csv",
+  "s2_null_disclosure.csv",
+  "s2_negative_controls.csv",
+  "s2_prereg_echo.json",
+  "figure_status.json",
+  "fig1_training_loss_curves.png",
+  "fig2_post_adaptation_rmse_k5_k10.png",
+  "fig3_rmse_vs_K.png",
+  "fig4_meta_gradient_fd.png",
+  "fig5_effect_size_ci.png",
+  "fig6_descriptive_k0_k1_standardized.png",
+  "fig7_determinism_and_negative_controls.png",
+  "fig8_performance_cost.png",
+  "fig9_task_family_diagnostics.png"
+ ],
+ "overall": {
+  "decision": "SUPPORTED_HARM",
+  "development_set": "meta_validation",
+  "evidence_scope": "DEVELOPMENT_VALIDATION_ONLY",
+  "primary_decision": "SUPPORTED_HARM",
+  "primary_endpoint": "post_adaptation_rmse_raw_k5",
+  "rule": "主终点决策映射总体结论；次要端点决策仅并列披露，不改变主终点（执行计划 §6）。",
+  "secondary_decisions": {
+   "post_adaptation_rmse_raw_k10": "SUPPORTED_HARM"
+  }
+ },
+ "prereg": {
+  "analysis_plan_digest": "43ac6ce0464461e371bdc2e694be9145816ffad3855d7ba9dd307459a9ed60c4",
+  "path": "research\\concorde_metaopt\\evidence\\s2\\s2_preregistration.json",
+  "prereg_digest": "c767f2066b720a10db20779507b9a71f21a6ee90e3c752b66e4588e0e98aec83",
+  "prereg_id": "p4ra-s2-prereg-2751c162904d5a4f",
+  "source_sha256": "fde3ef33bab53c67f5f595472a28538b13fbecbc5918903cdc6904c85ad692cd"
+ },
+ "prereg_echo_summary": {
+  "analysis_plan_digest": "43ac6ce0464461e371bdc2e694be9145816ffad3855d7ba9dd307459a9ed60c4",
+  "digest_self_consistent": true,
+  "prereg_digest": "c767f2066b720a10db20779507b9a71f21a6ee90e3c752b66e4588e0e98aec83",
+  "prereg_id": "p4ra-s2-prereg-2751c162904d5a4f",
+  "schema_version": "p4ra-s2-prereg-echo-1"
+ },
+ "record_counts": {
+  "eval": 4800,
+  "expected_eval": 4800,
+  "expected_train": 1200,
+  "run_mode": "FORMAL",
+  "total": 6000,
+  "train": 1200
+ },
+ "run_dir": "EXT/p4-route-a\\a2\\s2_formal\\s2-formal-20261106T1810Z",
+ "run_grid": {
+  "draws": 10,
+  "eval_expected": 4800,
+  "eval_tasks": 20,
+  "k_values": [
+   0,
+   1,
+   5,
+   10
+  ],
+  "meta_seeds": [
+   0,
+   1,
+   2
+  ],
+  "outer_steps": 200,
+  "train_expected": 1200
+ },
+ "run_id": "s2-formal-20261106T1810Z",
+ "run_mode": "FORMAL",
+ "run_status": "COMPLETED",
+ "run_summary_status_counts": {
+  "eval": {
+   "FAILED": 0,
+   "OK": 4800
+  },
+  "train": {
+   "FAILED": 0,
+   "OK": 1200
+  }
+ },
+ "schema_version": "p4ra-s2-aggregate-1",
+ "smoke": false,
+ "source_files": [
+  {
+   "bytes": 2186063,
+   "name": "run_records.jsonl",
+   "sha256": "32fbd2c65b6eb6e50e1bb3ca338a0b7da0a90e196242721961c73f344e0a9a25"
+  },
+  {
+   "bytes": 3939,
+   "name": "run_config.json",
+   "sha256": "9522d467f6b6fcc0bdd75694966d111f36a0ec4ae6c02eb4b98367fc5a6853e0"
+  },
+  {
+   "bytes": 3908,
+   "name": "run_summary.json",
+   "sha256": "77d10cd62bc7295dc5d9d2477bed02bb9d83c627448356d421e8c657c652335e"
+  }
+ ]
+}

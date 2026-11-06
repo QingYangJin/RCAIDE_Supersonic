@@ -1,0 +1,15 @@
+check_id,category,status,expected,observed,note
+NC-01,physical_isolation,PASS,physical_call_count=0（边界+run_config+run_summary）,prereg=0;run_config=0,分析层不 import/启动任何真实求解器，只读 run 产物。
+NC-02,data_boundary,PASS,eval 记录 split 仅 meta_validation，holdout 行 0,meta_validation,holdout 数据行不进入分析层任何计算。
+NC-03,prereg_contract,PASS,prereg_id/prereg_digest/analysis_plan_digest 自洽,"prereg_id=p4ra-s2-prereg-2751c162904d5a4f;digests=prereg_id:PASS,prereg_digest:PASS,analysis_plan_digest:PASS",canonical JSON + 换行；三个摘要独立复算（校验器逐项记录 PASS 才是 PASS）。
+NC-04,frozen_package,PASS,S0-7 冻结包 6 字段恒等 + SHA256SUMS raw sha,sha256sums=PASS;run_id=p4ra-s0-7-freeze-20261106T024200Z,冻结包不可变；SKIPPED（开发模式）记 DISCLOSED，不伪造 PASS。
+NC-05,fairness,PASS,两臂 config 除 first_order 外逐字段相同,run_arms=PASS;arms_equal=True,等预算/等结构公平性由 prereg 校验器强制；本条按 run_config 实际臂配置复核。
+NC-06,multiple_comparison,PASS,"唯一 Holm 族 family_size=2（C1×k5,k10）",s2-primary-secondary-2tests,不得按端点拆分族、不得另行校正。
+NC-07,run_schema,PASS,train 12 字段 / eval 16 字段精确集合；canonical JSONL,"train=1200,eval=4800,fields_ok=True",字段缺失或多余均 fail-closed；本条按实际记录键集独立复核。
+NC-08,coverage,PASS,"6000 行（按 run_mode 派生：train_expected+eval_expected）/ 20 任务 / K=0,1,5,10 / draw=0..9","train=1200,eval=4800,expected=6000,complete=True,run_mode=FORMAL",正式 run 必须完整；SMOKE/allow_incomplete_run 显式披露，不伪造完整。
+NC-09,fd_gate,PASS,FD pilot micro/full_size 证据存在、raw sha 匹配、嵌套 fd_gate 结构无 FAIL；fd_gate.json raw sha 一致,micro:PASS;full_size:PASS;artifact=PASS,FD gate 失败则分析拒绝启动；仅可校验 sha、结构不可读时记 DISCLOSED。
+NC-10,determinism,DISCLOSED,determinism reruns=2 字节一致性,NOT_VERIFIABLE_IN_ANALYSIS,由 A1 run 层产物承载；本层不伪造 PASS。
+NC-11,null_disclosure,PASS,null 率与原因逐层披露，不得把 null 写 0,"max_null_rate=0.0,null_cells=0/240",逐 task/arm 核对 meta_seed 单元数与 null 传播（null 不插补、不写 0）；null_ratio>0.70 → INCONCLUSIVE。
+NC-12,decision_rules,PASS,Holm p<0.05 且 CI 不跨 0 且 FULL<FOMAML 且相对改善>=1% → BENEFIT；对称 HARM,"overall=SUPPORTED_HARM,overall_replay_ok=True,decisions_replay_ok=True",按 §6 规则从 inference/holm 独立重放，与记录决策逐端点比对；决策原因记录在 aggregate.json / CSV。
+NC-13,endpoint_scope,PASS,K=0/K=1/标准化/MAE/资源仅描述，不做 benefit/harm,"inference_endpoints=post_adaptation_rmse_raw_k5,post_adaptation_rmse_raw_k10;decisions=post_adaptation_rmse_raw_k10,post_adaptation_rmse_raw_k5",推断端点仅 k5 主 + k10 次；描述性端点不进入决策层。
+NC-14,aggregation_unit,PASS,task 为分析单位，不跨任务混合 draw,"n_tasks=20,checked_pairs=40,expected_tasks=20",先 draw 后 meta_seed，最后 task 配对；逐 task 复核 difference=FULL-FOMAML。

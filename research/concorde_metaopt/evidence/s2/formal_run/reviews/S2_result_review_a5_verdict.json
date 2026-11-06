@@ -1,0 +1,58 @@
+{
+ "boundary": {
+  "github_writes": false,
+  "physical_call_count": 0,
+  "re_ran_analysis": false,
+  "read_only": true,
+  "repo_writes": false,
+  "tampered_original": false
+ },
+ "checks": {
+  "data_boundary": "PASS",
+  "determinism_run_level": "PASS (run_config byte-identical; core sha 3/3 c9460dae; base/r1/r2 compare true)",
+  "fd_gate": "32/32 PASS max_rel=1.144759989428372e-09",
+  "figures": "9/9 RENDERED",
+  "holdout_rows_used": "0",
+  "physical": "0",
+  "records": "6000/6000 PASS",
+  "shasums": "60/60 PASS",
+  "statistics": "independent recompute exact match",
+  "tamper_probes": "6/6 PASS"
+ },
+ "conditions": [
+  "修正 A5-S2R-01 报告文字后发布 S2 回执；无需重跑 run/analysis。",
+  "回执标明 DEVELOPMENT_VALIDATION_ONLY 与 holdout=0；不得外推真实气动。"
+ ],
+ "counts": {
+  "blocker": 0,
+  "info": 1,
+  "major": 0,
+  "minor": 1
+ },
+ "evidence": {
+  "recompute": "recompute_results.json（140 checks/0 fail）",
+  "tamper": "tamper_probes/tamper_results.json（all_ok=true, n=6）"
+ },
+ "headline": {
+  "ci_k5": [
+   0.04110944269599093,
+   0.05986980980200832
+  ],
+  "holm_p_k5": 3.814697265625e-06,
+  "median_diff_k5": 0.03132444017229297,
+  "n_pairs": 20,
+  "overall": "SUPPORTED_HARM",
+  "primary_decision": "SUPPORTED_HARM",
+  "primary_endpoint": "post_adaptation_rmse_raw_k5",
+  "relative_k5": -0.03394379158741091,
+  "secondary_k10": "SUPPORTED_HARM"
+ },
+ "object": {
+  "report": "EXT/p4-route-a/a2/S2_formal_run_report.md",
+  "report_sha256": "20ee8874cc7831c53e96d0c27b9761d4ac2b95998f0c9f5e591c9d58f02a0cb2",
+  "run_id": "s2-formal-20261106T1810Z",
+  "run_root": "EXT/p4-route-a/a2/s2_formal/s2-formal-20261106T1810Z",
+  "source_commit": "994cda8e0942060072d65eb50dde790c44d32194"
+ },
+ "verdict": "APPROVE_FOR_S2_RECEIPT"
+}

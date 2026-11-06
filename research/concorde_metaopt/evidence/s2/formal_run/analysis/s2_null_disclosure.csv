@@ -1,0 +1,9 @@
+scope,endpoint,arm,expected,observed_nonnull,observed_null,null_rate,policy
+task_arm_values,post_adaptation_rmse_raw_k5,BOTH,40,40,0,0.0,task 端点值：任一 meta_seed 单元为 null 即整 task 记 null（不插补、不丢弃任务）
+meta_seed_cells,post_adaptation_rmse_raw_k5,FULL_MAML,60,60,0,0.0,meta_seed 单元：任一 draw 缺失/FAILED/null 即整单元记 null
+meta_seed_cells,post_adaptation_rmse_raw_k5,FOMAML,60,60,0,0.0,meta_seed 单元：任一 draw 缺失/FAILED/null 即整单元记 null
+task_arm_values,post_adaptation_rmse_raw_k10,BOTH,40,40,0,0.0,task 端点值：任一 meta_seed 单元为 null 即整 task 记 null（不插补、不丢弃任务）
+meta_seed_cells,post_adaptation_rmse_raw_k10,FULL_MAML,60,60,0,0.0,meta_seed 单元：任一 draw 缺失/FAILED/null 即整单元记 null
+meta_seed_cells,post_adaptation_rmse_raw_k10,FOMAML,60,60,0,0.0,meta_seed 单元：任一 draw 缺失/FAILED/null 即整单元记 null
+resource_metric,train_wall_seconds_ratio,BOTH,1,1,0,0.0,资源指标仅描述；缺失时记 null 并在报告中披露
+resource_metric,peak_memory_mb,BOTH,1,1,0,0.0,资源指标仅描述；缺失时记 null 并在报告中披露

@@ -1,0 +1,358 @@
+{
+ "analysis_plan_digest": "43ac6ce0464461e371bdc2e694be9145816ffad3855d7ba9dd307459a9ed60c4",
+ "digest_self_consistent": true,
+ "evidence_scope": "DEVELOPMENT_VALIDATION_ONLY",
+ "prereg": {
+  "analysis_plan_digest": "43ac6ce0464461e371bdc2e694be9145816ffad3855d7ba9dd307459a9ed60c4",
+  "arms": [
+   {
+    "config": {
+     "backend": "torch",
+     "hidden_sizes": [
+      16,
+      16
+     ],
+     "inner_lr": 0.01,
+     "inner_steps": 5,
+     "input_dim": 12,
+     "outer_lr": 0.001,
+     "output_dim": 1,
+     "seed": 42,
+     "tasks_per_batch": 8
+    },
+    "first_order": false,
+    "id": "FULL_MAML"
+   },
+   {
+    "config": {
+     "backend": "torch",
+     "hidden_sizes": [
+      16,
+      16
+     ],
+     "inner_lr": 0.01,
+     "inner_steps": 5,
+     "input_dim": 12,
+     "outer_lr": 0.001,
+     "output_dim": 1,
+     "seed": 42,
+     "tasks_per_batch": 8
+    },
+    "first_order": true,
+    "id": "FOMAML"
+   }
+  ],
+  "code_sha": "3e6ece85a78f1cbb5a8639e279e8388d790213da5358ab35464c8cb37e67a5bb",
+  "comparison": {
+   "aggregation": "mean over 3 meta_seeds x 10 draws per task",
+   "arms": [
+    "FULL_MAML",
+    "FOMAML"
+   ],
+   "difference": "FULL_MAML - FOMAML",
+   "id": "C1",
+   "unit": "task"
+  },
+  "created_utc": "2026-11-06T17:43:39+00:00",
+  "data_boundary": {
+   "allowed_splits": [
+    "meta_train",
+    "meta_validation"
+   ],
+   "forbidden_splits": [
+    "meta_test",
+    "meta_test_ood",
+    "negative_control"
+   ],
+   "holdout_rows_used": 0,
+   "holdout_task_ids_sha256": "cdc8ea1a5a4afbe4f016846ed320ecdddd2c9533a7a659df6997cb7f29ae5337",
+   "meta_train_task_ids_sha256": "56f3313c687e126536291d88d994f5c0a4fe457c83e8a80bce95a14bb217d4aa",
+   "meta_validation_task_ids_sha256": "c2171f31722c9b57b8ebcfc93344f44b742524aac4a3c0f2c8a5d7102dcd7a4e",
+   "split_counts": {
+    "meta_test": 20,
+    "meta_test_ood": 10,
+    "meta_train": 60,
+    "meta_validation": 20,
+    "negative_control": 10
+   }
+  },
+  "determinism": {
+   "fail_closed": true,
+   "requires_byte_identical": [
+    "train_episode_bank_manifest",
+    "run_config",
+    "run_records_core"
+   ],
+   "reruns": 2
+  },
+  "endpoints": {
+   "descriptive": [
+    "post_adaptation_rmse_raw_k0",
+    "post_adaptation_rmse_raw_k1",
+    "post_adaptation_rmse_std_k5",
+    "post_adaptation_rmse_std_k10",
+    "post_adaptation_mae_raw_k5",
+    "train_wall_seconds_ratio",
+    "peak_memory_mb"
+   ],
+   "primary": {
+    "K": 5,
+    "direction": "lower_is_better",
+    "id": "post_adaptation_rmse_raw_k5",
+    "space": "raw"
+   },
+   "secondary_inferential": [
+    {
+     "K": 10,
+     "direction": "lower_is_better",
+     "id": "post_adaptation_rmse_raw_k10",
+     "space": "raw"
+    }
+   ]
+  },
+  "episode_contract": {
+   "eval_K": [
+    0,
+    1,
+    5,
+    10
+   ],
+   "eval_draws": 10,
+   "eval_query": 64,
+   "seed_scopes": [
+    "S2-train-support",
+    "S2-train-query",
+    "S2-train-order",
+    "S2-eval-support",
+    "S2-eval-query"
+   ],
+   "standardization": "raw_primary; standardized descriptive for K>=2 with support std>=1e-8 else null",
+   "train_episode_bank_sha256": "6954b053fa5c005554c42bc6f60fc8b9be1d5a307ede49ce4f776d9f67c828a3",
+   "train_query": 32,
+   "train_support": 16
+  },
+  "evaluation_grid": {
+   "K": [
+    0,
+    1,
+    5,
+    10
+   ],
+   "draws": 10,
+   "eval_records_expected": 4800,
+   "meta_validation_tasks": 20
+  },
+  "failure_rules": [
+   "nonfinite_loss_or_grad -> arm/seed FAILED, stop, no retry",
+   "resource_limit(per_seed_train_wall_s>1200 or peak_memory_mb>8192) -> RESOURCE_LIMIT, stop entire run, no retry",
+   "any seed failed -> arm DEGRADED and primary INCONCLUSIVE"
+  ],
+  "fd_gate": {
+   "coordinates": 32,
+   "denominator": "max(|numeric|, |analytic|, 1e-12)",
+   "epsilon": "1e-6 * max(1, |theta_j|)",
+   "fail_closed": true,
+   "max_relative_error": 1e-06,
+   "mode": "full",
+   "pilot_artifacts": {
+    "full_size": {
+     "path": "research/concorde_metaopt/evidence/s2/s2_fd_pilot_full.json",
+     "sha256": "e8f425ad9297dd954aca4af79413b2e2e9c18df7e0d20e074fc53aabaf4d0b59"
+    },
+    "micro": {
+     "path": "research/concorde_metaopt/evidence/s2/s2_fd_pilot_micro.json",
+     "sha256": "1db9d7d65122fd6a56a8e02ad83766f9645641fe636fde8c8bef2752bcfc8e21"
+    }
+   }
+  },
+  "frozen_package": {
+   "code_sha": "7304d32e524b0e1e28b0e83e7a2ed7822ce88fc14963ca4d769098841e6201ed",
+   "git_sha": "004156c232f31a450f7446c3b280772de47423df",
+   "package_family_version": "p4ra-family-v4",
+   "package_path": "research/concorde_metaopt/optimization_runs/p4ra-s0-7-freeze-20261106T024200Z",
+   "run_id": "p4ra-s0-7-freeze-20261106T024200Z",
+   "sha256sums_sha256": "59aa81cdc1f1abdc66966822eb24b567904ba4c62924ab041ae09bd9badf41f2",
+   "task_family_version": "p4ra-family-v3"
+  },
+  "physical_call_count": 0,
+  "prereg_digest": "c767f2066b720a10db20779507b9a71f21a6ee90e3c752b66e4588e0e98aec83",
+  "prereg_id": "p4ra-s2-prereg-2751c162904d5a4f",
+  "resource_limits": {
+   "peak_memory_mb": 8192,
+   "per_seed_train_wall_s": 1200,
+   "total_wall_s": 7200
+  },
+  "schema_version": "p4ra-s2-prereg-v1",
+  "statistical_plan": {
+   "bootstrap": {
+    "ci": 0.95,
+    "n_resamples": 10000,
+    "seed": 20261105
+   },
+   "decision_rules": {
+    "benefit": "holm_p<0.05 and ci_excludes_zero and full<fomaml and relative_improvement>=0.01",
+    "else": "NO_EVIDENCE",
+    "harm": "symmetric",
+    "inconclusive": "null_rate>0.70"
+   },
+   "evidence_scope": "DEVELOPMENT_VALIDATION_ONLY",
+   "multiple_comparison": {
+    "family_id": "s2-primary-secondary-2tests",
+    "family_key": "s2_primary_secondary",
+    "family_size": 2,
+    "members": [
+     {
+      "comparison": "C1",
+      "endpoint": "post_adaptation_rmse_raw_k5"
+     },
+     {
+      "comparison": "C1",
+      "endpoint": "post_adaptation_rmse_raw_k10"
+     }
+    ],
+    "method": "holm"
+   },
+   "n_tasks": 20,
+   "test": "wilcoxon_signed_rank_two_sided"
+  },
+  "stopping_rules": [
+   "stop_on_nonfinite",
+   "stop_on_data_boundary_violation",
+   "stop_on_fd_gate_failure",
+   "stop_on_code_sha_mismatch",
+   "total_wall_s>7200 -> stop, report partial products"
+  ],
+  "training_budget": {
+   "meta_seeds": [
+    0,
+    1,
+    2
+   ],
+   "outer_steps": 200,
+   "train_records_expected": 1200
+  },
+  "upstream": {
+   "decision": "D-P4-003",
+   "issue": "#7",
+   "s1_receipt_comment_id": 6684142041,
+   "stage": "S2"
+  }
+ },
+ "prereg_digest": "c767f2066b720a10db20779507b9a71f21a6ee90e3c752b66e4588e0e98aec83",
+ "prereg_id": "p4ra-s2-prereg-2751c162904d5a4f",
+ "recomputed": {
+  "analysis_plan_digest": "43ac6ce0464461e371bdc2e694be9145816ffad3855d7ba9dd307459a9ed60c4",
+  "prereg_digest": "c767f2066b720a10db20779507b9a71f21a6ee90e3c752b66e4588e0e98aec83",
+  "prereg_id": "p4ra-s2-prereg-2751c162904d5a4f"
+ },
+ "schema_version": "p4ra-s2-prereg-echo-1",
+ "source_path": "research\\concorde_metaopt\\evidence\\s2\\s2_preregistration.json",
+ "source_sha256": "fde3ef33bab53c67f5f595472a28538b13fbecbc5918903cdc6904c85ad692cd",
+ "validation_checks": [
+  {
+   "check": "schema_version",
+   "detail": "p4ra-s2-prereg-v1",
+   "status": "PASS"
+  },
+  {
+   "check": "placeholder_rejection",
+   "detail": "无 <...>/TBD/TODO/PLACEHOLDER 字符串",
+   "status": "PASS"
+  },
+  {
+   "check": "required_fields",
+   "detail": "22 个顶层字段",
+   "status": "PASS"
+  },
+  {
+   "check": "prereg_id",
+   "detail": "p4ra-s2-prereg-2751c162904d5a4f",
+   "status": "PASS"
+  },
+  {
+   "check": "prereg_digest",
+   "detail": "c767f2066b720a10db20779507b9a71f21a6ee90e3c752b66e4588e0e98aec83",
+   "status": "PASS"
+  },
+  {
+   "check": "analysis_plan_digest",
+   "detail": "43ac6ce0464461e371bdc2e694be9145816ffad3855d7ba9dd307459a9ed60c4",
+   "status": "PASS"
+  },
+  {
+   "check": "frozen_package_sha256sums",
+   "detail": "59aa81cdc1f1abdc66966822eb24b567904ba4c62924ab041ae09bd9badf41f2",
+   "status": "PASS"
+  },
+  {
+   "check": "frozen_package_freeze_summary",
+   "detail": "freeze_summary.json",
+   "status": "PASS"
+  },
+  {
+   "check": "data_boundary",
+   "detail": "holdout_rows_used=0；仅 meta_train/meta_validation",
+   "status": "PASS"
+  },
+  {
+   "check": "episode_contract",
+   "detail": "support/query/K/draws/seed_scopes 一致",
+   "status": "PASS"
+  },
+  {
+   "check": "arms_parity",
+   "detail": "两臂 config 除 first_order 外逐字段相同",
+   "status": "PASS"
+  },
+  {
+   "check": "budget_and_grid",
+   "detail": "1200 train / 4800 eval / 200 steps / seeds 0,1,2",
+   "status": "PASS"
+  },
+  {
+   "check": "endpoint_ids",
+   "detail": "primary=k5, secondary=k10, K=0/1 仅描述",
+   "status": "PASS"
+  },
+  {
+   "check": "comparison",
+   "detail": "C1 = FULL_MAML - FOMAML，unit=task",
+   "status": "PASS"
+  },
+  {
+   "check": "holm_single_family",
+   "detail": "s2-primary-secondary-2tests family_size=2",
+   "status": "PASS"
+  },
+  {
+   "check": "fd_pilot_artifact_micro",
+   "detail": "research/concorde_metaopt/evidence/s2/s2_fd_pilot_micro.json",
+   "status": "SKIPPED"
+  },
+  {
+   "check": "fd_pilot_artifact_full_size",
+   "detail": "research/concorde_metaopt/evidence/s2/s2_fd_pilot_full.json",
+   "status": "SKIPPED"
+  },
+  {
+   "check": "resource_limits",
+   "detail": "per_seed_train_wall_s=1200；peak_memory_mb=8192；total_wall_s=7200",
+   "status": "PASS"
+  },
+  {
+   "check": "failure_stopping_rules",
+   "detail": "失败/停止规则与执行计划一致",
+   "status": "PASS"
+  },
+  {
+   "check": "code_sha_recompute",
+   "detail": "3e6ece85a78f1cbb5a8639e279e8388d790213da5358ab35464c8cb37e67a5bb",
+   "status": "PASS"
+  },
+  {
+   "check": "physical_call_count",
+   "detail": "0",
+   "status": "PASS"
+  }
+ ]
+}
