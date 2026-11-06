@@ -1,11 +1,12 @@
 # P4 路线A S2 执行计划（FULL_MAML 二阶元梯度 vs FOMAML 等预算对照）
 
-- 版本：v1.3a（2026-11-06T13:15Z，Lead 起草；v1.1 响应 A5 S2-M0 3B/6M/6m；v1.2 响应 A5 S2-M0R 2B/1M：B04/B03R/M07；v1.3 响应 A5 S2-M0R2 M01/N01/N02 并获 A5 APPROVE_FOR_S2_CODE（对象 969c0e7，plan sha 35c486b9…）；v1.3a 仅修 A5 建议的 2 项文档 minor：§7 code_sha 示例顺序、§11/§13 版本标注）
+- 版本：v1.4（2026-11-06T13:35Z，Lead 起草；v1.1 响应 A5 S2-M0 3B/6M/6m；v1.2 响应 A5 S2-M0R 2B/1M：B04/B03R/M07；v1.3 响应 A5 S2-M0R2 M01/N01/N02 并获 A5 APPROVE_FOR_S2_CODE（对象 969c0e7，plan sha 35c486b9…）；v1.3a 仅 2 项文档 minor；v1.4 响应 A4 S2 需求矩阵 C-01..C-07：单 seed 资源阈值与总硬截止统一（§5/§9）、新增 §8.1 图表合同（C-03）、prereg 双层 family 版本（C-04）、R-S2-01A 版本优先（§14/C-02）、阶段门与 M0R3 处置更新（§11/§13）、旧 v1.2 说明更正（C-05）；A5 批准对象为 v1.3 的 969c0e7，v1.4 须经 A5 M0R4 限定 diff 复审后方可作为代码与图合同基线）
 - 上游：Issue #7 D-P4-003 §2 S2；S1_RUN=EXECUTED_AND_RESULT_REVIEWED（commentId 6684142041，不含 S2 授权）
 - 分支/工作树：research/p4-route-a-s2 @ D:/RCAIDE-s2-dev；base 1a2b242（S1 closeout docs v1.8），首个 S2 提交 b0acdf2 为本文 v1.0；v1.1 提交见 git log
 - 硬边界：physical_call_count=0（全合成解析评价器，无 VSPAERO/SU2/RCAIDE/CFD/WaveDrag）；不合并 main；不新建 PR；仅 Lead 写 GitHub；旧 M2/M5/M6/S0-2..S0-7 只读；S2 不使用 S1 holdout（meta_test/meta_test_ood/negative_control）
 - 证据范围：S2 仅使用 S0-7 的 meta_train(60) 训练、meta_validation(20) 评估。meta_validation 在 S1 已用于调参/校准，因此 S2 结论定位为 DEVELOPMENT_VALIDATION_ONLY（开发/验证集证据），不得表述为未见任务上的确证性泛化。
 - 本版关闭的 A5 findings：M0 的 B01/B02/B03、M01-M06、m01-m06（§13）；M0R 的 B04/B03R/M07；M0R2 的 M01/N01/N02（§13、§4.4、§7、§12）。
+- 本版处置的 A4-S2C findings：C-01 资源口径、C-02 裁定优先级、C-03 图表合同、C-04 双层 family 版本、C-05 旧说明更正、C-06 版本标注、C-07 A5 审阅对象衔接（§14）；不改变对 A5 M0R3 结论的引用。
 
 ## 1. 目标与可证伪问题
 
@@ -75,7 +76,7 @@ S2 在同一合成任务族、同一元训练预算（episodes/内步/外步/批
 - 评估记录（每行）：run_id、arm、meta_seed、task_id、split=meta_validation、K、draw、query_rmse_raw、query_rmse_standardized、query_mae_raw、support_size、query_size、adaptation_inner_steps、wall_s、status。
 - 训练记录（每行）：run_id、arm、meta_seed、outer_step、train_loss、grad_norm、inner_loss_first、inner_loss_last、wall_s、peak_memory_mb、status。
 - 预期行数：训练 2 arms x 3 seeds x 200 steps = 1,200；评估 2 x 3 x 20 x 4 x 10 = 4,800；合计 6,000 行（K=0 也 10 draws）。
-- 资源：记录每进程峰值内存（peak_memory_mb，psutil 或 resource 实测；不得写 null 冒充 0）；FULL 相对 FOMAML 的时间/内存硬上限：若 FULL 单 seed 训练墙钟 > 2 h 或峰值内存 > 8 GB，该 run 标记 RESOURCE_LIMIT，不重试，报告披露。
+- 资源（C-01 统一口径）：记录每进程峰值内存（peak_memory_mb，psutil 或 resource 实测；不得写 null 冒充 0）；FULL 相对 FOMAML 的时间/内存上限：单 (arm, meta_seed) 训练墙钟 > 20 min 或峰值内存 > 8 GB -> 该 seed 记 RESOURCE_LIMIT，立即停止整个正式 run（不重试）并报告部分产物；正式 run 总硬截止仍为 2 h（§9），总超时同样停止并报部分产物。上述两规则不冲突：总截止是全局上界，单 seed 阈值是更早的分支停止条件；训练/评估代码须输出 1 outer-step 实测 timing，供运行前资源预估与报告披露。
 
 ## 6. 端点、统计与决策（关闭 B02、M03）
 
@@ -109,7 +110,7 @@ S2 在同一合成任务族、同一元训练预算（episodes/内步/外步/批
       "prereg_id": "p4ra-s2-prereg-0123456789abcdef",
       "created_utc": "2026-11-06T12:30:00+00:00",
       "upstream": {"issue": "#7", "decision": "D-P4-003", "stage": "S2", "s1_receipt_comment_id": 6684142041},
-      "frozen_package": {"run_id": "p4ra-s0-7-freeze-20261106T024200Z", "package_path": "research/concorde_metaopt/optimization_runs/p4ra-s0-7-freeze-20261106T024200Z", "sha256sums_sha256": "59aa81cdc1f1abdc66966822eb24b567904ba4c62924ab041ae09bd9badf41f2", "code_sha": "7304d32e524b0e1e28b0e83e7a2ed7822ce88fc14963ca4d769098841e6201ed", "git_sha": "004156c232f31a450f7446c3b280772de47423df", "family_version": "p4ra-family-v4"},
+      "frozen_package": {"run_id": "p4ra-s0-7-freeze-20261106T024200Z", "package_path": "research/concorde_metaopt/optimization_runs/p4ra-s0-7-freeze-20261106T024200Z", "sha256sums_sha256": "59aa81cdc1f1abdc66966822eb24b567904ba4c62924ab041ae09bd9badf41f2", "code_sha": "7304d32e524b0e1e28b0e83e7a2ed7822ce88fc14963ca4d769098841e6201ed", "git_sha": "004156c232f31a450f7446c3b280772de47423df", "package_family_version": "p4ra-family-v4", "task_family_version": "p4ra-family-v3"},
       "data_boundary": {"allowed_splits": ["meta_train","meta_validation"], "forbidden_splits": ["meta_test","meta_test_ood","negative_control"], "split_counts": {"meta_train": 60, "meta_validation": 20, "meta_test": 20, "meta_test_ood": 10, "negative_control": 10}, "meta_train_task_ids_sha256": "<required>", "meta_validation_task_ids_sha256": "<required>", "holdout_task_ids_sha256": "<required>", "holdout_rows_used": 0},
       "episode_contract": {"train_support": 16, "train_query": 32, "eval_K": [0,1,5,10], "eval_draws": 10, "eval_query": 64, "seed_scopes": ["S2-train-support","S2-train-query","S2-train-order","S2-eval-support","S2-eval-query"], "standardization": "raw_primary; standardized descriptive for K>=2 with support std>=1e-8 else null", "train_episode_bank_sha256": "<required>"},
       "arms": [{"id": "FULL_MAML", "first_order": false, "config": {"input_dim": 12, "output_dim": 1, "hidden_sizes": [16,16], "inner_lr": 0.01, "inner_steps": 5, "outer_lr": 0.001, "tasks_per_batch": 8, "seed": 42, "backend": "torch"}}, {"id": "FOMAML", "first_order": true, "config": {"input_dim": 12, "output_dim": 1, "hidden_sizes": [16,16], "inner_lr": 0.01, "inner_steps": 5, "outer_lr": 0.001, "tasks_per_batch": 8, "seed": 42, "backend": "torch"}}],
@@ -138,11 +139,29 @@ S2 在同一合成任务族、同一元训练预算（episodes/内步/外步/批
 - Lead 书面缩小 scope：S2 以 RMSE/MAE（适应质量）、FD 正确性、稳定性/资源为证据；feasible_hit_rate/first_feasible_eval/best_feasible_value 在 summary 记 NOT_APPLICABLE_S2_SURROGATE_SCOPE，并附理由。
 - peak_memory_mb 与训练墙钟必须实测并记录（不得伪造）；HVP/微型网络/K>1 数值稳定性测试纳入验收（§4.3）。
 
+## 8.1 S2 图表合同（关闭 C-03）
+
+Issue #7 §4 要求 7 类中文图。图键、内容、数据源与缺失处置如下；图必须由正式 run 产物生成，不得手工填数、不得平滑/插值伪造，也不得用分析代码内置常量冒充数据。
+
+| 图键 | 内容 | 数据源 | 中文标题/轴 | 缺失处置 |
+|---|---|---|---|---|
+| fig1_training_loss_curves | 两臂 train_loss 随 outer_step 的 3 seed 曲线（均值+范围） | run_records 训练行 | 训练损失曲线 / outer step, train loss | 无训练行 -> NOT_RUN |
+| fig2_post_adaptation_rmse_k5_k10 | task 级配对 raw RMSE，K=5（主）与 K=10（次要） | run_summary / aggregate | 适应后 RMSE（K=5/10）/ arm, RMSE | 缺端点 -> NOT_RUN |
+| fig3_rmse_vs_K | K in {0,1,5,10} 的 raw RMSE 描述性均值±95% CI | aggregate | RMSE 随 K 变化 / K, RMSE | 缺 K 网格 -> 对应点 NOT_RUN |
+| fig4_meta_gradient_fd | 两臂 FD max relative error 与 1e-6 阈值线 | FD pilot JSON + run_config | 元梯度有限差分校验 / 坐标, 相对误差 | pilot 缺失/fail -> NOT_RUN 并写明 S2_META_GRAD_FD_FAIL |
+| fig5_effect_size_ci | C1=FULL-FOMAML 的 task 级均值与 bootstrap 95% CI（K=5 主、K=10 次要），含 0 线 | aggregate | 效应量及 95% CI / 端点, 差值 | 缺 bootstrap 结果 -> NOT_RUN |
+| fig6_descriptive_k0_k1_standardized | K=0/K=1 描述性 RMSE、标准化空间 K>=2 RMSE、raw MAE K=5 | aggregate | 描述性指标 / 指标, 值 | 缺标准化条件 -> 对应子图 NOT_RUN |
+| fig7_determinism_and_negative_controls | 确定性重跑逐字节一致性与 3 项数据边界负控状态 | run_config / analysis summary | 确定性与负控 / 项目, 通过状态 | 缺重跑或负控记录 -> NOT_RUN |
+
+- 公共规则：每图必须标注 evidence_scope=DEVELOPMENT_VALIDATION_ONLY 与数据来源文件；中文标题、轴标签、图例、注释；输出 PNG（>=150 dpi）与支撑 CSV；图中不得出现未由数据计算的数值；任何 NOT_RUN 必须在图注和分析报告中写明原因，不得静默省略。
+- 图键为唯一规范键，A6 的 s2_figures.py 只允许输出以上 7 个键；额外图必须标注 diagnostic_ 前缀且不得替代 7 图。
+- A4 矩阵与 A6 实现均以本节为图合同；若 Issue #7 要求与本合同冲突，以 Issue 原文为准并由 Lead 更新本节。
+
 ## 9. 失败/停止规则（关闭 m04）
 
 - 任一训练步出现非有限 loss/grad：该 (arm, meta_seed) 记 FAILED，停止该 seed；不重试；其余 seed 继续；若某 arm 任一 seed FAILED，该 arm 记 DEGRADED，主终点 INCONCLUSIVE。
 - 数据边界违反、FD gate FAIL、code_sha 不匹配、prereg 校验失败：立即停止，不产生正式结果。
-- 硬时限：正式 run 2 h；超时停止并报告部分产物状态（不伪造完整）。
+- 硬时限：正式 run 总硬截止 2 h（自 run 启动起算）；单 (arm, meta_seed) 训练 > 20 min 或峰值内存 > 8 GB 立即停止并记 RESOURCE_LIMIT；两类停止均报告部分产物状态（不伪造完整、不重试）。
 - 评估记录 status in {OK, FAILED}；FAILED 原因写入 run_summary。
 
 ## 10. 文件与产物所有权（关闭 M06）
@@ -157,9 +176,9 @@ S2 在同一合成任务族、同一元训练预算（episodes/内步/外步/批
 
 ## 11. 阶段门与放行链（更新，含 prereg 核验门）
 
-1. A5 M0/M0R/M0R2 限定 diff 复审（本计划 v1.3 + prereg schema）-> APPROVE_FOR_S2_CODE（已于 969c0e7 取得）。
-2. A1 实现+测试；A6 分析+图；A4 文档（可并行，均以 M0 通过为前置）。
-3. A5 代码审阅 -> APPROVE_FOR_S2_FORMAL。
+1. A5 M0/M0R/M0R2/M0R3 限定 diff 复审（计划 v1.3 + prereg schema）-> APPROVE_FOR_S2_CODE（已于 969c0e7 取得）；v1.4 的 C-01..C-07 修订须经 A5 M0R4 限定 diff 复审（20 min 内）-> APPROVE_FOR_S2_CODE_AMENDED，作为代码与图合同基线。
+2. A1 实现+测试；A6 分析+图；A4 文档（可并行，均以 M0R3 通过为前置；A6 图代码以 §8.1 为合同）。
+3. A5 代码审阅 -> APPROVE_FOR_S2_FORMAL；首步须确认 3d22c12 相对 A5 批准对象 969c0e7 仅文档 diff（C-07），并核对 v1.4 修订未回退 v1.2/v1.3 修复。
 4. Lead 按 §7 算法生成/冻结 S2 prereg（build 计算 prereg_id/code_sha/analysis_plan_digest/prereg_digest；verify 独立复算并拒绝占位）并提交 -> A5 独立核验冻结 prereg -> APPROVE_FOR_S2_RUN。
 5. Lead 书面授权（绑定 commit/prereg digest/S0-7/数据边界/时限）-> A2 正式 run（零物理）。
 6. A5 结果复核 -> A3 审计 -> Issue #7 S2 回执 -> S3。
@@ -177,11 +196,13 @@ S2 在同一合成任务族、同一元训练预算（episodes/内步/外步/批
 - [ ] code_sha 文件清单为 sorted() 字典序（maml.py/s2_prereg.py/s2_runner.py），固定测试向量通过
 - [ ] pilot_artifacts.path 相对仓库根解析，错误路径/sha/绝对路径负控通过
 - [ ] 正式 run 记录完整：训练 1,200 行 + 评估 4,800 行；physical_call_count=0
+- [ ] §8.1 图合同 7 图全部产出或按原因标 NOT_RUN；每图有 CSV 支撑且标注 DEVELOPMENT_VALIDATION_ONLY
+- [ ] 资源口径一致：单 seed >20 min 或 >8 GB 记 RESOURCE_LIMIT 即停；总硬截止 2 h；1 outer-step timing 已记录
 - [ ] 分析脚本强制 prereg digest/端点 ID/证据范围标签；统计规则与 §6 一致
 - [ ] 报告事实/推断/局限分节；结论允许 null；不使用确证性泛化措辞
 - [ ] A5 四次 verdict + A3 审计 + Issue #7 回执
 
-## 13. A5 M0/M0R/M0R2 findings 处置（v1.3a）
+## 13. A5 M0/M0R/M0R2/M0R3 findings 处置（v1.4）
 
 | ID | 处置 | 位置 |
 |---|---|---|
@@ -206,3 +227,18 @@ S2 在同一合成任务族、同一元训练预算（episodes/内步/外步/批
 | A5-S2M0R2-M01 | 关闭：code_sha 文件清单改为 sorted() 字典序（maml.py/s2_prereg.py/s2_runner.py）；增固定测试向量要求 | §7/§12 |
 | A5-S2M0R2-N01 | 关闭：§4.4 补 seed=42/backend=torch 与 build/verify 双重断言、S2_ARM_CONFIG_MISMATCH、run_config 三重复核 | §4.4 |
 | A5-S2M0R2-N02 | 关闭：pilot_artifacts.path 明确相对仓库根解析并须位于仓库根内；增错误路径/错误 sha/绝对路径三类负控 | §7/§12 |
+| A5-S2M0R3-M01 | 关闭（v1.3a）：§7 code_sha 示例顺序改为 sorted() 字典序并加固定测试向量要求 | §7/§12 |
+| A5-S2M0R3-N01 | 关闭（v1.3a）：§11/§13 版本标注更新 | §11/§13 |
+| A5-S2M0R3 结论 | APPROVE_FOR_S2_CODE（0B/0M/2m；对象 969c0e7；v1.4 修订后由 M0R4 复审） | 头部/§11 |
+
+## 14. A4-S2C findings 处置（v1.4）
+
+| ID | 级别 | 处置 | 位置 |
+|---|---|---|---|
+| A4-S2C-01 | major | 关闭：单 seed 资源阈值改 20 min/8 GB 并明确总截止 2 h 为全局上界，二者为分支停止与全局截止关系，不冲突；prereg 仅保留该统一预算 | §5/§9/§12 |
+| A4-S2C-02 | major | 关闭：发布 R-S2-01A 版本优先规则（最新 A5 APPROVE 计划优先，R-S2-01 仅为设计理由），并更新 R-S2-01 文末优先级 | §14/EXT R-S2-01A |
+| A4-S2C-03 | gap | 关闭：新增 §8.1 七类中文图合同（图键/数据源/NOT_RUN/中文标签/evidence_scope） | §8.1/§12 |
+| A4-S2C-04 | minor | 关闭：prereg frozen_package 拆 package_family_version=p4ra-family-v4 与 task_family_version=p4ra-family-v3 | §7 |
+| A4-S2C-05 | minor | 关闭：EXT 旧 v1.2 变更说明标注已被 v1.3/v1.3a 取代（不回写历史文件内容） | EXT 说明/本表 |
+| A4-S2C-06 | minor | 关闭：§11 增 M0R3/M0R4，§13 增 M0R3 行，版本标注更新到 v1.4 | §11/§13 |
+| A4-S2C-07 | minor | 关闭：A5 代码审阅首步确认 3d22c12 仅文档 diff 且 v1.4 未回退修复 | §11 第 3 步 |
