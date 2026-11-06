@@ -1,6 +1,6 @@
 # P4 路线A S2 执行计划（FULL_MAML 二阶元梯度 vs FOMAML 等预算对照）
 
-- 版本：v1.3（2026-11-06T13:20Z，Lead 起草；v1.1 响应 A5 S2-M0 3B/6M/6m；v1.2 响应 A5 S2-M0R 2B/1M：B04/B03R/M07；v1.3 响应 A5 S2-M0R2 M01/N01/N02）
+- 版本：v1.3a（2026-11-06T13:15Z，Lead 起草；v1.1 响应 A5 S2-M0 3B/6M/6m；v1.2 响应 A5 S2-M0R 2B/1M：B04/B03R/M07；v1.3 响应 A5 S2-M0R2 M01/N01/N02 并获 A5 APPROVE_FOR_S2_CODE（对象 969c0e7，plan sha 35c486b9…）；v1.3a 仅修 A5 建议的 2 项文档 minor：§7 code_sha 示例顺序、§11/§13 版本标注）
 - 上游：Issue #7 D-P4-003 §2 S2；S1_RUN=EXECUTED_AND_RESULT_REVIEWED（commentId 6684142041，不含 S2 授权）
 - 分支/工作树：research/p4-route-a-s2 @ D:/RCAIDE-s2-dev；base 1a2b242（S1 closeout docs v1.8），首个 S2 提交 b0acdf2 为本文 v1.0；v1.1 提交见 git log
 - 硬边界：physical_call_count=0（全合成解析评价器，无 VSPAERO/SU2/RCAIDE/CFD/WaveDrag）；不合并 main；不新建 PR；仅 Lead 写 GitHub；旧 M2/M5/M6/S0-2..S0-7 只读；S2 不使用 S1 holdout（meta_test/meta_test_ood/negative_control）
@@ -122,7 +122,7 @@ S2 在同一合成任务族、同一元训练预算（episodes/内步/外步/批
       "determinism": {"reruns": 2, "requires_byte_identical": ["train_episode_bank_manifest","run_config","run_records_core"], "fail_closed": true},
       "failure_rules": ["nonfinite_loss_or_grad -> arm/seed FAILED, stop, no retry", "resource_limit -> RESOURCE_LIMIT, no retry", "any seed failed -> arm DEGRADED and primary INCONCLUSIVE"],
       "stopping_rules": ["stop_on_nonfinite", "stop_on_data_boundary_violation", "stop_on_fd_gate_failure", "stop_on_code_sha_mismatch", "hard_deadline_2h"],
-      "code_sha": "<computed by §7 file-list algorithm over maml.py+s2_runner.py+s2_prereg.py>",
+      "code_sha": "<computed by §7 sorted file-list algorithm over maml.py+s2_prereg.py+s2_runner.py>",
       "analysis_plan_digest": "<computed by §7 algorithm over endpoints+comparison+statistical_plan+fd_gate>",
       "physical_call_count": 0,
       "prereg_digest": "<self-excluded sha256>"
@@ -157,7 +157,7 @@ S2 在同一合成任务族、同一元训练预算（episodes/内步/外步/批
 
 ## 11. 阶段门与放行链（更新，含 prereg 核验门）
 
-1. A5 M0/M0R 限定 diff 复审（本计划 v1.2 + prereg schema）-> APPROVE_FOR_S2_CODE。
+1. A5 M0/M0R/M0R2 限定 diff 复审（本计划 v1.3 + prereg schema）-> APPROVE_FOR_S2_CODE（已于 969c0e7 取得）。
 2. A1 实现+测试；A6 分析+图；A4 文档（可并行，均以 M0 通过为前置）。
 3. A5 代码审阅 -> APPROVE_FOR_S2_FORMAL。
 4. Lead 按 §7 算法生成/冻结 S2 prereg（build 计算 prereg_id/code_sha/analysis_plan_digest/prereg_digest；verify 独立复算并拒绝占位）并提交 -> A5 独立核验冻结 prereg -> APPROVE_FOR_S2_RUN。
@@ -181,7 +181,7 @@ S2 在同一合成任务族、同一元训练预算（episodes/内步/外步/批
 - [ ] 报告事实/推断/局限分节；结论允许 null；不使用确证性泛化措辞
 - [ ] A5 四次 verdict + A3 审计 + Issue #7 回执
 
-## 13. A5 M0/M0R findings 处置（v1.2）
+## 13. A5 M0/M0R/M0R2 findings 处置（v1.3a）
 
 | ID | 处置 | 位置 |
 |---|---|---|
