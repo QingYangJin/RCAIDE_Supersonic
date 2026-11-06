@@ -1,11 +1,12 @@
-# P4 路线A S1 需求矩阵（v1.6）
+# P4 路线A S1 需求矩阵（v1.7）
 
 > 文档性质：Issue #7 S1 的只读需求—证据—状态核对表；**不是验收结论，不是 S1_RUN 授权**。
-> 当前位置：HEAD=commit K 8118234（父 J 004156c，J 父 I 36619cf）；branch research/p4-route-a-s1；worktree clean；S0-7 确证冻结包已由 J 生成、K 入库；A5 phase4b 结论 CHANGES_REQUESTED（1 blocker/0 major/4 minor）；B01 已由 J 修复（CLOSED_IN_J_PENDING_PHASE4C）；m01-m04 分别由本版文档/A1 修正/A2 v4e 披露关闭，m04 待 A3 登记；A5 phase4c 尚未开始；S1_RUN=NOT_APPROVED；formal 21,000 NOT_RUN；15 分片未启动；physical=0。
-> 依据：Issue #7 §2 S1/S4、§3–§4；执行计划 v1.6；数据合同 v1.5；统计计划 v1.4；R-V4-01..11；A5 phase4b 报告（<EXT>/p4-route-a/a5/S1_phase4b_review.md，sha256 def5c059…）与 findings_phase4b.csv（sha256 ffb5dcf0…）；Lead commit J 后全量测试日志 <EXT>/p4-route-a/lead/commitJ_full_tests.log（8,956 B，sha256 6f584635…；Ran 949 tests in 442.006s / OK (skipped=1)）。
-> 读取时点：2026-11-06（A4 task-224）。
+> 当前位置：HEAD=commit L 8f34e91（父 K 8118234，K 父 J 004156c，J 父 I 36619cf）；branch research/p4-route-a-s1；worktree clean；S0-7 确证冻结包由 J 生成、K 入库；A2 readiness v4f COMPLETE（7/7 gate，READY_PENDING_LEAD_AUTHORIZATION）；A3 v4f 审计 PASS（40/40）+ L addendum + m04 登记 addendum；A5 phase4b 1B/0M/4m 已关闭（B01 由 J 修复，m04 经 A3 登记）；A5 phase4c 结论 CHANGES_REQUESTED（0 blocker/1 major/2 minor，均为治理/文档项），A4 本版将 m04 标 CLOSED，待 A5 final re-verdict；S1_RUN=NOT_APPROVED；formal 21,000 NOT_RUN；15 分片未启动；physical=0。
+> 依据：Issue #7 §2 S1/S4、§3–§4；执行计划 v1.7；数据合同 v1.6；统计计划 v1.5；R-V4-01..11；A5 phase4b 报告（<EXT>/p4-route-a/a5/S1_phase4b_review.md，sha256 def5c059…）与 findings_phase4b.csv（sha256 ffb5dcf0…）；A5 phase4c 报告（<EXT>/p4-route-a/a5/S1_phase4c_review.md，sha256 db8e3106…）、findings_phase4c.csv（sha256 f66e2b9a…）、verdict_phase4c.txt（sha256 5fe0afc5…）；A2 readiness v4f（<EXT>/p4-route-a/a2/s1_prep_v4f/S1_formal_readiness.md，sha256 77db3e24…）；A3 v4f 审计（<EXT>/p4-route-a/a3/S1_v4f_isolation.md，sha256 ef694d55…）与 addenda（d1c597a9…、ae5cf638…）；Lead commit J 后全量测试日志 <EXT>/p4-route-a/lead/commitJ_full_tests.log（8,956 B，sha256 6f584635…；Ran 949 tests in 442.006s / OK (skipped=1)）。
+> 读取时点：2026-11-06 12:05+08（A4 task-224；A2/A3/A5 phase4c 交付均已读取）。
 > v1.6 变更：S0-7 替代 S0-6 成为唯一确证包；commit J/K；949 tests；A5 phase4b 1B/0M/4m 逐条映射；新增 §4.8/§4.9；phase4 M01/M02/M04 状态按 phase4b 实际更新；15 片窗口改为 A2 v4e B128 实测 2.58–3.01h（首片核对）；S1 状态改为 COMMITTED_PENDING_A5_PHASE4C；明确确证包 code_sha 绝对 fail-closed（FC-20）。
-> 状态口径：PASS / PARTIAL / BLOCKED / NOT_RUN / IMPLEMENTED_PENDING_A5 / CLOSED_* / PENDING_*；未获 A5 phase4c verdict 的项不得写 PASS。
+> v1.7 变更：同步 L、A2 readiness v4f（COMPLETE，7/7 gate）、A3 v4f（PASS 40/40 + addenda）、A5 phase4c（CHANGES_REQUESTED 0B/1M/2m，仅治理/文档项；待 final re-verdict）；m04 经 A3 addendum 登记后 CLOSED，m01 由文档同步关闭、m02 声明 final_verify 15/15 为包外证据（sha256 ecee6971…，不补写冻结包）；窗口按 A2 v4f 实测改为 2.55–2.97h；S1_RUN 仍 NOT_APPROVED。
+> 状态口径：PASS / PARTIAL / BLOCKED / NOT_RUN / IMPLEMENTED_PENDING_A5 / CLOSED_* / PENDING_*；未获 A5 final re-verdict 的项不得写 PASS；A4 文档对 m04 的 CLOSED 属文档映射，最终关闭权归 A5 final re-verdict。
 
 ## 1. 当前状态与硬边界
 
@@ -16,16 +17,18 @@
 | S0-4 冻结包 | SUPERSEDED_LEGACY | commit D ae013ed；旧确证包；只读 |
 | S0-5 冻结包 | SUPERSEDED_LEGACY | commit F fe8bdc9；A5 phase4 审查对象；code_sha=25f726f8… 已漂移；只读 |
 | S0-6 冻结包 | SUPERSEDED_LEGACY | commit H e95f9dc 入库；code_sha 1f244984…；被 S0-7 取代；只读 |
-| S0-7 冻结包 | COMPLETE_GENERATED_AND_COMMITTED | commit J 生成、K 入库；9/9、determinism PASS、final_verify 15/15；唯一确证包 |
-| S1 实现 | COMMITTED_PENDING_A5_PHASE4C | commit J 修复 S1R4b-B01；949 tests；A5 phase4c 未开始 |
+| S0-7 冻结包 | COMPLETE_GENERATED_AND_COMMITTED | commit J 生成、K 入库；9/9、determinism PASS；final_verify 15/15 为包外证据（sha256 ecee6971…，A5 phase4c m02）；唯一确证包 |
+| A2 readiness v4f | COMPLETE_READY_PENDING_LEAD_AUTHORIZATION | 7/7 gate；md 11,863 B sha256 77db3e24…；json 45,235 B sha256 b883e691…；runs_executed=0；physical=0；正式 21,000 未启动 |
+| A3 v4f 审计 | PASS | S1_v4f_isolation.md sha256 ef694d55…（40/40）；addendum L sha d1c597a9…；m04 登记 addendum sha ae5cf638…（8/8 PASS，H01–H08） |
+| S1 实现 | COMMITTED_PENDING_A5_FINAL_REVERDICT | commit J 修复 S1R4b-B01；949 tests；A5 phase4c CHANGES_REQUESTED（0B/1M/2m，治理项），待 final re-verdict |
 | A5 phase3 | CHANGES_REQUESTED 已修复 | 2B/2M/6m；实现层由 G 关闭，phase4/4b 复核 |
 | A5 phase4 | CHANGES_REQUESTED（1B/4M/5m） | B01/M01 CLOSED_IN_J_PENDING_PHASE4C；M02 CLOSED；M03 CLOSED_IN_DOCS；M04 CLOSED_WITH_RESIDUAL |
-| A5 phase4b | CHANGES_REQUESTED（1B/0M/4m） | B01 OPEN→J 修复 CLOSED_IN_J_PENDING_PHASE4C；m01 CLOSED_BY_THIS_DOC；m02 CLOSED_BY_A1；m03 CLOSED_WITH_RESIDUAL；m04 OPEN_PENDING_A3 |
-| A5 phase4c | NOT_STARTED | 待 A2 readiness v4f + A3 审计 J/K/S0-7 |
+| A5 phase4b | CHANGES_REQUESTED（1B/0M/4m）已关闭 | B01 CLOSED_IN_J_PENDING_PHASE4C；m01 CLOSED_BY_THIS_DOC；m02 CLOSED_BY_A1；m03 CLOSED_WITH_RESIDUAL；m04 CLOSED（A3 m04 登记 addendum sha ae5cf638…；A5 final 确认） |
+| A5 phase4c | CHANGES_REQUESTED（0B/1M/2m） | 已终审 J/K/L；B01 独立 12/12 DRIFT 负控、949 tests、真实 e2e/merge/analysis 均通过；m04 经 A3 addendum 登记、m01/m02 由 A4 文档关闭/声明；待 final re-verdict |
 | S1 formal run（21,000） | NOT_RUN / NOT_APPROVED | 无授权；15 分片未启动 |
-| 真实 holdout | 未读指标 | TE 20 任务只在授权后一次性打开；m04 已披露 TE-000/001 任务定义受控读取 |
-| K-shot 闭环 | IMPLEMENTED_PENDING_A5_PHASE4C | 支持集进入内循环；K 计入 B；R-V4-10-03 e2e 待 phase4c 复核 |
-| 15 分片/merge | IMPLEMENTED_PENDING_A5_PHASE4C | merge canonical 子集口径；窗口 2.58–3.01h（首片核对） |
+| 真实 holdout | 未读指标 | TE 20 任务只在授权后一次性打开；A2 G05/A5 phase4b/phase4c e2e 对 TE-000/001 任务定义的受控读取已由 A3 m04 addendum 登记（各 8 records、0 物理、未读指标），正式分析须披露 |
+| K-shot 闭环 | IMPLEMENTED_PENDING_A5_FINAL | 支持集进入内循环；K 计入 B；R-V4-10-03 e2e 待 phase4c 复核 |
+| 15 分片/merge | IMPLEMENTED_PENDING_A5_FINAL_REVERDICT | merge canonical 子集口径；窗口 2.55–2.97h（A2 v4f 实测，首片核对） |
 | 物理调用 | 0 | 无 solver；无 RCAIDE Mission；无 VSPAERO |
 | Issue #4 门禁 | GEO-12D=PARTIAL / LF-M2.02=NOT_VALIDATED / HF-M2.02=PARTIAL / BODY-CORR=BLOCKED / MISSION-DATA=PARTIAL / BUDGET=GATED | approved_for_next_stage=false |
 | 旧证据/PR | 只读/open | PR #3/#6 保持 open，不合并 main；PR #7 未创建 |
@@ -79,18 +82,18 @@ v4 首版确证包（p4ra-s0-3-freeze-20261105T155925Z）；15 文件；8 payloa
 
 | ID | 要求 | 实现/证据 | 状态 | 责任 |
 |---|---|---|---|---|
-| S1-01 | K-shot 支持集进入适应内循环并用适应后代理评分 | m5_arms.py 支持集参数与调用链；K∈{0,1,3,5}；K=0 兼容 | IMPLEMENTED_PENDING_A5_PHASE4C | A1 |
-| S1-02 | 五臂（Random/Pretrain/FOMAML-Zero/FOMAML-Kshot/DE）与预算公平 | 40 组预算单测；billable=B；K 计入 B | TESTED_PENDING_A5_PHASE4C | A1/A2 |
-| S1-03 | run_records.jsonl 字段/确定性/record_digest | 合同 §4；200×3 确定性测试；949 tests 基线 | TESTED_PENDING_A5_PHASE4C | A1 |
-| S1-04 | 九端点、null 规则、聚合口径 | s1_analysis.py/s1_figures.py；端点表；null 不插值 | IMPLEMENTED_PENDING_A5_PHASE4C | A1 |
-| S1-05 | C1–C4/C5-B、Wilcoxon/bootstrap/Holm 唯一族 | 统计计划 v1.4；Holm 族键 (endpoint,B,K)；C5 排除 | IMPLEMENTED_PENDING_A5_PHASE4C | A1/A2 |
-| S1-06 | 七类中文图 | s1_figures.py；图题图注中文；数据来源标注 | IMPLEMENTED_PENDING_A5_PHASE4C | A1/A2 |
-| S1-07 | 15 分片×1,400、merge、S1_RUN 门禁 | J 后 merge canonical 子集；949 tests；窗口 2.58–3.01h 待首片核对 | TESTED_949_PENDING_A5_PHASE4C | A1 |
-| S1-08 | launcher 预检（S0-7 路径/SHA256SUMS/code_sha/HEAD/artifacts/TOP run_id/15 片/21,000） | commit G 实现；--dry-run；预检失败 exit≠0；须绑定 S0-7/K | IMPLEMENTED_PENDING_A5_PHASE4C | A1 |
+| S1-01 | K-shot 支持集进入适应内循环并用适应后代理评分 | m5_arms.py 支持集参数与调用链；K∈{0,1,3,5}；K=0 兼容 | IMPLEMENTED_PENDING_A5_FINAL | A1 |
+| S1-02 | 五臂（Random/Pretrain/FOMAML-Zero/FOMAML-Kshot/DE）与预算公平 | 40 组预算单测；billable=B；K 计入 B | TESTED_PENDING_A5_FINAL | A1/A2 |
+| S1-03 | run_records.jsonl 字段/确定性/record_digest | 合同 §4；200×3 确定性测试；949 tests 基线 | TESTED_PENDING_A5_FINAL | A1 |
+| S1-04 | 九端点、null 规则、聚合口径 | s1_analysis.py/s1_figures.py；端点表；null 不插值 | IMPLEMENTED_PENDING_A5_FINAL | A1 |
+| S1-05 | C1–C4/C5-B、Wilcoxon/bootstrap/Holm 唯一族 | 统计计划 v1.5；Holm 族键 (endpoint,B,K)；C5 排除 | IMPLEMENTED_PENDING_A5_FINAL | A1/A2 |
+| S1-06 | 七类中文图 | s1_figures.py；图题图注中文；数据来源标注 | IMPLEMENTED_PENDING_A5_FINAL | A1/A2 |
+| S1-07 | 15 分片×1,400、merge、S1_RUN 门禁 | J 后 merge canonical 子集；949 tests；窗口按 A2 v4f 实测 2.55–2.97h 待首片核对 | TESTED_949_PENDING_A5_FINAL | A1 |
+| S1-08 | launcher 预检（S0-7 路径/SHA256SUMS/code_sha/HEAD/artifacts/TOP run_id/15 片/21,000） | commit G 实现；--dry-run；预检失败 exit≠0；须绑定 S0-7/K | IMPLEMENTED_PENDING_A5_FINAL | A1 |
 | S1-09 | code_sha fail-closed 与 --allow-code-delta 仅 exploratory | commit J：确证包绝对 fail-closed（S1_FROZEN_CODE_SHA_DRIFT）；负控 S0-5/S0-6 四命令 DRIFT 无产物；正控 S0-2 双 sha | CLOSED_IN_J_PENDING_PHASE4C | A1 |
-| S1-10 | 真实 runner→analysis e2e（串行与 merge） | R-V4-10-03；B64/K∈{0,3}/2 任务/2 臂/0 物理；G 修复 B01；待 phase4c 复跑 | IMPLEMENTED_PENDING_A5_PHASE4C | A1/A5 |
-| S1-11 | 预注册/S0-7 冻结包与不变量 | S0-7；9/9；determinism PASS；final_verify 15/15；SHA256SUMS 59aa81cd… | COMPLETE_PENDING_A5_PHASE4C | A1/A2 |
-| S1-12 | 中文回执/交付包 | A4 回执草稿 v5（未发布）；合同 v1.5/执行计划 v1.6/统计计划 v1.4/矩阵 v1.6 | IN_PROGRESS | A4 |
+| S1-10 | 真实 runner→analysis e2e（串行与 merge） | R-V4-10-03；B64/K∈{0,3}/2 任务/2 臂/0 物理；G 修复 B01；phase4c e2e 8 records/merge PASS/analysis exit 0/C5 NOT_ESTIMABLE | PASSED_PHASE4C_PENDING_A5_FINAL | A1/A5 |
+| S1-11 | 预注册/S0-7 冻结包与不变量 | S0-7；9/9；determinism PASS；final_verify 15/15；SHA256SUMS 59aa81cd… | COMPLETE_PENDING_A5_FINAL | A1/A2 |
+| S1-12 | 中文回执/交付包 | A4 回执草稿 v5（未发布）；合同 v1.6/执行计划 v1.7/统计计划 v1.5/矩阵 v1.7 | IN_PROGRESS | A4 |
 
 ## 4. 历史 finding 与裁定
 
@@ -100,7 +103,7 @@ split 计数与 digest、task_id 正则、stopping_rules 长度/类型、canonic
 
 ### 4.2 V4-01..06（v4 修订项）
 
-V4-01 S0-7 冻结包与不变量（CLOSED_IN_K）；V4-02 code_sha 绑定（CLOSED_IN_J）；V4-03 pair 标签统一（CLOSED_IN_G）；V4-04 真实 e2e（CLOSED_IN_G_PENDING_PHASE4C）；V4-05 B128 实测（CLOSED_WITH_RESIDUAL：A2 G06 5 runs/1 任务/K=3，measured/predicted=0.8333983992，窗口 2.58–3.01h，峰值 4.5743 GiB，A2-V4E-B03 披露）；V4-06 文档同步（CLOSED_BY_THIS_DOC）。
+V4-01 S0-7 冻结包与不变量（CLOSED_IN_K）；V4-02 code_sha 绑定（CLOSED_IN_J）；V4-03 pair 标签统一（CLOSED_IN_G）；V4-04 真实 e2e（CLOSED_IN_G_PENDING_PHASE4C）；V4-05 B128 实测（CLOSED_WITH_RESIDUAL：A2 G06 首测 5 runs/1 任务/K=3，measured/predicted=0.8333983992、2.58–3.01h；A2 readiness v4f 复测 0.8226、2.55–2.97h、311.492 MB/进程）；V4-06 文档同步（CLOSED_BY_THIS_DOC）。
 
 ### 4.3 S1R2 findings（A5 S1 rev2：2B/4M/6m）
 
@@ -108,23 +111,25 @@ S1R2-B01/B02、M01..M04、m01..m06：实现层已由 phase3 修复，A5 phase4 �
 
 ### 4.4 R-V4-07：15 分片与 merge
 
-- 15 分片×1,400 run=21,000（9,000/6,000/6,000）；分片窗口按 A2 v4e B128 实测 2.58–3.01h、峰值 4.5743 GiB（A2-V4E-B03；5 runs/1 任务/K=3，measured/predicted=0.8333983992，20% 内）；首片核对，3.5h 硬上限。
+- 15 分片×1,400 run=21,000（9,000/6,000/6,000）；分片窗口按 A2 readiness v4f 实测每片 2.1216h、窗口 2.55–2.97h、峰值 311.492 MB/进程（15 进程约 4.56 GiB）（5 runs/1 任务/K=3，measured/predicted=0.8226，20% 内）；首片核对，3.5h 硬上限。
 - merge 子命令：serial/merged 仅 cost.total_wall_s 与 record_digest 可不同；去掉这两项的 canonical 子集必须逐字节一致；analysis 用 canonical 子集校验。
 - merge 测试：A1 已实现；A5 merge delta 未开始。
-- 资源：A2 v4d 外推理论 2.4601h、推荐 2.95–3.44h、15 进程 4.4583 GiB；A2 v4e B128 实测 2.58–3.01h、峰值 4.5743 GiB（5 runs/1 任务/K=3）；首片核对。
+- 资源：A2 v4d 外推理论 2.4601h、推荐 2.95–3.44h、15 进程 4.4583 GiB；A2 v4e 首测 2.58–3.01h；A2 readiness v4f 复测 2.55–2.97h、峰值 311.492 MB/进程；首片核对。
 - S1_RUN 门禁顺序：J→K→A2 readiness v4f→A3 审计 J/K/S0-7/readiness→A5 phase4c→APPROVE+Lead 授权→15 片+merge→A5/A3→回执。
 
 ### 4.5 A5 phase3 findings（S1R3-B01/B02/M01/M02/m01..m06）
 
 phase3 结论 CHANGES_REQUESTED（2B/2M/6m）；commit G 修复 B01/M01 等；A5 phase4 确认 B01/B02/M01/M02 实现层 CLOSED；minor 由文档/代码同步。状态 CLOSED_PENDING_PHASE4C。
 
-### 4.6 v1.6 同步证据
+### 4.6 v1.7 同步证据
 
-1. S0-7 入库（commit K）与 9/9、determinism PASS、final_verify 15/15；
+1. S0-7 入库（commit K）与 9/9、determinism PASS；final_verify 15/15 为包外证据（sha256 ecee6971…，A5 phase4c m02）；
 2. commit J 修复确证包 delta 逃生（s1_runner.py:281-307；测试 :2035/:2088/:2101/:2154/:2209/:2272/:2326）与 949 tests；
-3. 合同 v1.5、执行计划 v1.6、统计计划 v1.4 同步；
-4. A2 readiness v4f 未定稿（仅脚本）；A3 审计 J/K/S0-7 未开始；A5 phase4c 未开始；
-5. S1_RUN 未批准。
+3. 合同 v1.6、执行计划 v1.7、统计计划 v1.5 同步；
+4. A2 readiness v4f COMPLETE（7/7 gate，sha 77db3e24…，runs_executed=0）；
+5. A3 v4f 审计 PASS（40/40，sha ef694d55…）+ L addendum（d1c597a9…）+ m04 addendum（ae5cf638…）；
+6. A5 phase4c CHANGES_REQUESTED（0B/1M/2m，治理/文档项），待 final re-verdict；m04 已由 A4 标 CLOSED；
+7. S1_RUN 未批准，21,000 NOT_RUN。
 
 ### 4.7 A5 phase4 findings 逐条映射（1B/4M/5m）
 
@@ -133,23 +138,23 @@ phase3 结论 CHANGES_REQUESTED（2B/2M/6m）；commit G 修复 B01/M01 等；A5
 | S1R4-B01 | blocker | runner required-order pair 标签与 analysis 字典序不一致；真实 16-run serial/merged analysis 均 EXIT=2（S1_ANALYSIS_FAILED … FOMAML-ZERO-BO|PRETRAIN-KSHOT-BO） | commit G 48403e5 统一 pair 标签函数；analysis 归一/计数严格相等；R-V4-10-01/-03；真实 e2e 测试 | CLOSED_IN_G_PENDING_PHASE4C |
 | S1R4-M01 | major | S0-4 仍被 runner grid 接受（run_count=21000）；launcher 未绑定 S0-5/S0-6 | commit G code_sha fail-closed + --allow-code-delta 限制；phase4b 判 PARTIAL_BLOCKER；J 确证包绝对 fail-closed + S0-7 重生成；R-V4-11 | CLOSED_IN_J_PENDING_PHASE4C |
 | S1R4-M02 | major | A2 G05 用合成 report，未覆盖真实 runner→analysis | A2 readiness v4e 改用真实 runner 小样本并断言 analysis 重算一致；R-V4-10-03；phase4b 确认 | CLOSED |
-| S1R4-M03 | major | 合同/执行计划/矩阵仍以 S0-4/v1.4/867 tests 为基线 | 合同 v1.5、执行计划 v1.6、统计计划 v1.4、矩阵 v1.6；949 tests | CLOSED_IN_DOCS |
-| S1R4-M04 | major | B128 资源未实测；15 片窗口为外推 | A2 readiness v4e G06 实测（5 runs/1 任务/K=3）；窗口 2.58–3.01h、峰值 4.5743 GiB；A2-V4E-B03；首片核对 | CLOSED_WITH_RESIDUAL |
+| S1R4-M03 | major | 合同/执行计划/矩阵仍以 S0-4/v1.4/867 tests 为基线 | 合同 v1.5、执行计划 v1.7、统计计划 v1.5、矩阵 v1.6；949 tests（现行为合同 v1.6、统计计划 v1.5、矩阵 v1.7） | CLOSED_IN_DOCS |
+| S1R4-M04 | major | B128 资源未实测；15 片窗口为外推 | A2 readiness v4e G06 首测（5 runs/1 任务/K=3）；A2 readiness v4f 复测 0.8226、窗口 2.55–2.97h、311.492 MB/进程；首片核对 | CLOSED_WITH_RESIDUAL |
 | S1R4-m01 | minor | A3 报告引用旧 sha；最终版 13,550 B / sha f7f467dc… | 文档引用最终版；A3 保持最终版 | CLOSED_BY_A3_FINAL_PENDING_PHASE4C |
 | S1R4-m02 | minor | merge serial 61,740 B vs merged 61,741 B，仅 cost.total_wall_s 差异；口径未写明 | R-V4-10-07 canonical 子集；§4.4 | CLOSED_BY_R_V4_10_07_PENDING_PHASE4C |
 | S1R4-m03 | minor | analysis 自动发现 report 可能重复加载 | R-V4-10-01/-03 e2e；CLI 文档 | CLOSED_BY_R_V4_10_01_PENDING_PHASE4C |
 | S1R4-m04 | minor | A2 synthetic aggregate 中文 mojibake | A2 统一 UTF-8 输出/显式 encoding；v4e 复核 | CLOSED_WITH_RESIDUAL_PENDING_PHASE4C |
-| S1R4-m05 | minor | A6 legacy 诊断文案（LEGACY_PACKAGE vs CODE_SHA_DRIFT） | analysis 文档补区分 | PENDING_A5_PHASE4C |
+| S1R4-m05 | minor | A6 legacy 诊断文案（LEGACY_PACKAGE vs CODE_SHA_DRIFT） | analysis 文档补区分 | PENDING_A5_FINAL |
 
 ### 4.8 A5 phase4b findings 逐条映射（1B/0M/4m）
 
 | ID | 等级 | 事实（摘要） | 落点/证据 | 状态 |
 |---|---|---|---|---|
 | S1R4b-B01 | blocker | commit G 的 code_sha 门禁只判 require_code_sha_match+allow_code_delta，未判 exploratory/confirmatory；A5 复现 grid --frozen S0-5 --grid formal --allow-code-delta EXIT=0、evaluation_mode=confirmatory、run_count=21000；run --frozen S0-5 ... EXIT=0 且 confirmatory_eligible=true；测试 :2070/:2122 反向固化 | commit J：s1_runner.py:281-307 先判 confirmatory 直接抛 S1_FROZEN_CODE_SHA_DRIFT；flag 仅非确证包生效；测试 :2035/:2088/:2101/:2154/:2209/:2272/:2326；负控 S0-5/S0-6 四命令 DRIFT 无产物；正控 S0-2 双 sha/evaluation_mode=exploratory；证据 sha 541b7ac6…（7/7） | CLOSED_IN_J_PENDING_PHASE4C |
-| S1R4b-m01 | minor | 矩阵/文档状态 stale（仍写 M01 CLOSED_IN_G、M02/M04 PENDING_A2_V4E） | 合同 v1.5、执行计划 v1.6、统计计划 v1.4、矩阵 v1.6 更新；§4.7 状态按 phase4b 实际 | CLOSED_BY_THIS_DOC |
+| S1R4b-m01 | minor | 矩阵/文档状态 stale（仍写 M01 CLOSED_IN_G、M02/M04 PENDING_A2_V4E） | 合同 v1.6、执行计划 v1.7、统计计划 v1.5、矩阵 v1.7 更新；§4.7 状态按 phase4b 实际；phase4c S1R4c-m01 一并关闭 | CLOSED_BY_THIS_DOC |
 | S1R4b-m02 | minor | A1 v4e 修复报告 :14/:56/:66 漏写「仅非确证包可 --allow-code-delta」 | A1 已就地修正 S1_v4e_b01_fix_report.md（13,862 B，sha256 c385887f…，追加 §7） | CLOSED_BY_A1 |
 | S1R4b-m03 | minor | B128 资源仅 5 runs/1 任务/K=3，未覆盖完整矩阵 | A2-V4E-B03 披露：measured/predicted=0.8333983992（20% 内），窗口 2.58–3.01h、峰值 4.5743 GiB；首片核对 | CLOSED_WITH_RESIDUAL |
-| S1R4b-m04 | minor | A2 G05 与 A5 e2e 读取 meta_test TE-000/001 任务定义（各 8 records，合成解析，0 物理，未看指标） | 须 A3 登记并在正式报告披露；不得作为指标证据 | OPEN_PENDING_A3_REGISTRATION_AND_DISCLOSURE |
+| S1R4b-m04 | minor | A2 G05 与 A5 e2e 读取 meta_test TE-000/001 任务定义（各 8 records，合成解析，0 物理，未看指标） | A3 m04 登记 addendum（`<EXT>/p4-route-a/a3/S1_v4f_holdout_registration_addendum.md`，sha256 ae5cf638…）登记 A2 G05、A5 phase4b e2e、A5 phase4c e2e；正式分析披露 TE-000/001 仅用于链路验证、不据此调参、不作科学结论 | CLOSED（A3 登记完成；A5 final re-verdict 确认） |
 
 ### 4.9 R-V4-11：S0-7 与 phase4c 门禁
 
@@ -160,24 +165,34 @@ phase3 结论 CHANGES_REQUESTED（2B/2M/6m）；commit G 修复 B01/M01 等；A5
 5. R-V4-11-05 放行链：A1 修→Lead J→A1 S0-7→Lead K→A2 readiness v4f→A3 审计 J/K/S0-7/readiness→A5 phase4c（含 B01 负控复现、947+ tests、真实 e2e）→APPROVE_FOR_S1_RUN→Lead 书面授权（S0-7 路径/SHA256SUMS/run_id/15 片/3.5h 上限）→A2 启动 15 片 21,000。
 6. R-V4-11-06 边界：physical=0；RCAIDE/SU2/VSPAERO/WaveDrag LOCKED；不合 main；不新开 PR；仅 Lead 写 GitHub；旧冻结件只读；A5 不得以书面 deviation 替代修复。
 
+### 4.10 A5 phase4c findings 逐条映射（0B/1M/2m；2026-11-06）
+
+| ID | 等级 | 事实（摘要） | 落点/证据 | 状态 |
+|---|---|---|---|---|
+| S1R4c-M01 | major | A3 未登记 A5 对 meta_test TE-000/001 的受控 e2e 读取（程序性/治理，无代码/包缺陷） | A3 m04 登记 addendum（sha256 ae5cf638…）登记 A2 G05、A5 phase4b e2e（run_records sha 00cf0692…）、A5 phase4c e2e（run_records sha 26b50ae9…）；A4 合同 §10.1/矩阵 §4.8 同步标 CLOSED | CLOSED_BY_A3_REGISTRATION_PENDING_A5_FINAL |
+| S1R4c-m01 | minor | L 时点文档仍写 A2 readiness v4f 未定稿、A3 未开始、A5 phase4c 未开始 | 合同 v1.6、执行计划 v1.7、统计计划 v1.5、矩阵 v1.7 状态同步；A2 md sha 77db3e24…、A3 md sha ef694d55… | CLOSED_BY_THIS_DOC |
+| S1R4c-m02 | minor | S0-7 11 文件包不含 final_verify_report.json；README/文档引用 15/15 但未声明外部路径 | 合同 §10 第 13 项与矩阵 §6 声明：A1 外部 `<EXT>/p4-route-a/a1/s0_7_freeze_official/final_verify_report.json`（5,110 B，sha256 ecee6971…，15/15 PASS）；冻结包不可变、不补写 | CLOSED_BY_THIS_DOC |
+
+A5 phase4c 独立事实：worktree detached L、clean；独立 949 tests（Ran 949 tests in 448.714s / OK (skipped=1)，log sha 8ba8dcca…）；B01 12/12 DRIFT 负控 + S0-2 正控 exploratory；S0-7 两进程 grid 逐字节一致 21,000；e2e 8 records/merge PASS/analysis exit 0/C5 NOT_ESTIMABLE；physical=0；verdict=S1_RUN NOT_APPROVED。
+
 ## 5. 统计计划映射
 
 | 统计项 | 合同/计划 | 矩阵状态 |
 |---|---|---|
-| 主终点 best_feasible_value | 统计计划 v1.4 §5–§7 | IMPLEMENTED_PENDING_A5_PHASE4C |
-| C1–C4 四比较 | 统计计划 v1.4 §6 | IMPLEMENTED_PENDING_A5_PHASE4C |
-| C5-B 结构性不可辨识 | 合同 §7.2 / 统计计划 v1.4 §6 | IMPLEMENTED_PENDING_A5_PHASE4C |
-| Holm 唯一族 (endpoint,B,K) | 合同 §7.2 / 统计计划 v1.4 §6 | IMPLEMENTED_PENDING_A5_PHASE4C |
-| pair 标签字典序规范化 | R-V4-10-01 / 统计计划 v1.4 §6 | CLOSED_IN_G_PENDING_A5_PHASE4C |
-| null/缺失处理 | 统计计划 v1.4 §5 | IMPLEMENTED_PENDING_A5_PHASE4C |
-| 七类图 | 执行计划 v1.6 §8 | IMPLEMENTED_PENDING_A5_PHASE4C |
-| 确定性/负控/泄漏 | 执行计划 v1.6 §7 | TESTED_PENDING_A5_PHASE4C |
+| 主终点 best_feasible_value | 统计计划 v1.5 §5–§7 | IMPLEMENTED_PENDING_A5_FINAL |
+| C1–C4 四比较 | 统计计划 v1.5 §6 | IMPLEMENTED_PENDING_A5_FINAL |
+| C5-B 结构性不可辨识 | 合同 §7.2 / 统计计划 v1.5 §6 | IMPLEMENTED_PENDING_A5_FINAL |
+| Holm 唯一族 (endpoint,B,K) | 合同 §7.2 / 统计计划 v1.5 §6 | IMPLEMENTED_PENDING_A5_FINAL |
+| pair 标签字典序规范化 | R-V4-10-01 / 统计计划 v1.5 §6 | CLOSED_IN_G_PENDING_A5_FINAL |
+| null/缺失处理 | 统计计划 v1.5 §5 | IMPLEMENTED_PENDING_A5_FINAL |
+| 七类图 | 执行计划 v1.7 §8 | IMPLEMENTED_PENDING_A5_FINAL |
+| 确定性/负控/泄漏 | 执行计划 v1.7 §7 | TESTED_PENDING_A5_FINAL |
 
 ## 6. 文件与测试存在性
 
 | 文件/对象 | 证据 | 状态 |
 |---|---|---|
-| research/concorde_metaopt/optimization_runs/p4ra-s0-7-freeze-20261106T024200Z/ | 11 文件；SHA256SUMS.txt sha256 59aa81cd…；9/9；determinism PASS；final_verify 15/15 | COMMITTED（K） |
+| research/concorde_metaopt/optimization_runs/p4ra-s0-7-freeze-20261106T024200Z/ | 11 文件；SHA256SUMS.txt sha256 59aa81cd…；9/9；determinism PASS；final_verify 15/15 为包外证据（见下行） | COMMITTED（K） |
 | s0-7 tasks.json | 340,443 B；sha256 59f66a41… | VERIFIED |
 | s0-7 meta_task_split.json | 79,128 B；sha256 589f77e5… | VERIFIED |
 | s0-7 frozen_family.json | 10,259 B；sha256 246729d4… | VERIFIED |
@@ -186,25 +201,26 @@ phase3 结论 CHANGES_REQUESTED（2B/2M/6m）；commit G 修复 B01/M01 等；A5
 | s0-7 determinism_report.json | 3,297 B；sha256 dafba4f5… | VERIFIED |
 | s0-7 digest_manifest.json / freeze_summary.json | 2,332 B / 7,217 B；sha 6cd0aa4c… / ea1d7931… | VERIFIED |
 | s0-7 v3_isolation_report.json | 4,170 B；sha256 fe80047d… | VERIFIED |
+| final_verify_report.json（包外） | <EXT>/p4-route-a/a1/s0_7_freeze_official/final_verify_report.json；5,110 B；sha256 ecee6971…；15/15 PASS | VERIFIED_EXTERNAL |
 | s1_runner.py / test_s1_runner.py | commit J 修复；2,463 行/110,377 B（sha 11ca2452…）、2,425 行/101,294 B（sha 41bbf924…）；模块 93 tests OK | TESTED |
-| 949 tests 全量 | Lead commitJ_full_tests.log（8,956 B，sha 6f584635…；442.006s）；A1 full_suite_v4f.log（sha 261da8ce…；442.712s） | TESTED（非 A5 verdict） |
+| 949 tests 全量 | Lead commitJ_full_tests.log（8,956 B，sha 6f584635…；442.006s）；A1 full_suite_v4f.log（sha 261da8ce…；442.712s）；A5 phase4c 独立 s1_phase4c_949tests.log（448.714s，sha 8ba8dcca…） | TESTED（非 A5 verdict） |
 | R-V4-11 裁定文件 | docs/planning/p4_route_a_s1_v4f_rulings_20261106.md（37 行，随 J 入库） | READ |
 | A5 phase4b 报告/findings/verdict | <EXT>/p4-route-a/a5/S1_phase4b_review.md（sha def5c059…）；findings_phase4b.csv（sha ffb5dcf0…）；verdict_phase4b.txt（sha ef35bb36…） | READ |
 | A1 v4f 修复报告/证据 | S1_v4f_b01_fix_report.md；v4f_b01_escape_evidence.json（9,971 B，sha 541b7ac6…，7/7） | READ |
-| A2 readiness v4f | 仅 <EXT>/p4-route-a/a2/s1_prep_v4f/scripts/build_plan_v4f.py、make_readiness_v4f.py | NOT_DELIVERED |
-| A3 J/K/S0-7 审计 | 无文件 | NOT_STARTED |
-| A5 phase4c | 无文件 | NOT_STARTED |
+| A2 readiness v4f | <EXT>/p4-route-a/a2/s1_prep_v4f/S1_formal_readiness.md（11,863 B，sha256 77db3e24…）、.json（45,235 B，sha b883e691…）、SUMS（sha e8f9a874…）；7/7 gate | PASS_READY_PENDING_LEAD_AUTHORIZATION |
+| A3 v4f 审计 | S1_v4f_isolation.md（sha ef694d55…，40/40）；addendum L（sha d1c597a9…）；m04 addendum（sha ae5cf638…） | PASS（8/8 PASS） |
+| A5 phase4c | S1_phase4c_review.md（sha db8e3106…）、findings（sha f66e2b9a…）、verdict（sha 5fe0afc5…）；独立 949 tests 448.714s | CHANGES_REQUESTED（0B/1M/2m） |
 
 ## 7. 阶段门、当前位置与验收
 
 ### 7.1 阶段门
 
-修复→Lead 全量测试→commit J→A1 干净 detached worktree 生成 S0-7→Lead 入库 commit K→A2 readiness v4f→A4 文档→A3 审计 J/K/S0-7→A5 phase4c→A5 APPROVE_FOR_S1_RUN + Lead 书面授权→15 分片+merge→A5/A3 复核→A4 中文回执（经 Lead 发布）。
+修复→Lead 全量测试→commit J→A1 干净 detached worktree 生成 S0-7→Lead 入库 commit K→A2 readiness v4f（已完成）→A4 文档 v1.7（L 之后单独文档提交）→A3 v4f 审计（PASS + addenda）→A5 phase4c（CHANGES_REQUESTED 0B/1M/2m）→A3 m04 登记 + A4 m04 CLOSED→A5 final re-verdict（APPROVE_FOR_S1_RUN）+ Lead 书面授权→15 分片+merge→A5/A3 复核→A4 中文回执（经 Lead 发布）。
 
 ### 7.2 当前位置
 
-- 已完成：J、K、S0-7、949 tests、A4 文档同步 v1.5/v1.6/v1.4；
-- 未开始：A2 readiness v4f（仅脚本）、A3 审计 J/K/S0-7、A5 phase4c；
+- 已完成：J、K、L、S0-7、949 tests、A4 文档同步 v1.6/v1.7/v1.5/v1.7、A2 readiness v4f（7/7 gate）、A3 v4f（PASS 40/40 + addenda）、A5 phase4c 终审（0B/1M/2m）；
+- 未完成：A5 final re-verdict；
 - 未批准：S1_RUN、21,000、真实 holdout 指标、新物理。
 
 ### 7.3 交付证据包（12 项）
@@ -217,11 +233,11 @@ run_config、summary.json、preregistration、data_manifest、run_records.jsonl�
 2. 40 组预算公平单测，五臂 billable=B，K 计入 B。
 3. 九端点键完整、null 规则正确。
 4. 统计计划 C1–C4/C5-B/Holm 可执行。
-5. 冻结包 S0-7，SHA256SUMS.txt sha256 59aa81cd…、9/9、determinism PASS、final_verify 15/15。
+5. 冻结包 S0-7，SHA256SUMS.txt sha256 59aa81cd…、9/9、determinism PASS；final_verify 15/15 为包外证据（5,110 B，sha ecee6971…，不补写冻结包）。
 6. 确定性 200×3 与负控通过。
 7. physical_call_count=0。
 8. 文档 0 绝对路径、中文、无 AI 记忆。
-9. 21,000 网格=9,000/6,000/6,000，15×1,400；窗口 2.58–3.01h（首片核对，3.5h 硬上限）。
+9. 21,000 网格=9,000/6,000/6,000，15×1,400；窗口 2.55–2.97h（A2 v4f 实测，首片核对，3.5h 硬上限）。
 10. v4 holdout 隔离，TE 20 任务；旧包不进 formal。
 11. pair 标签/计数严格一致；C5-B 不进 Holm。
 12. 正式工件/readiness 可重建。
@@ -229,6 +245,8 @@ run_config、summary.json、preregistration、data_manifest、run_records.jsonl�
 14. 确证包 code_sha 绝对 fail-closed 负控（S0-5/S0-6 四命令 DRIFT 无产物；S0-2 正控双 sha）。
 15. launcher 六项预检（含 --dry-run）并绑定 S0-7/K。
 16. merge canonical 子集逐字节一致。
+17. A3 m04 登记 addendum 已登记 A2 G05/A5 phase4b/phase4c 对 TE-000/001 的受控读取（各 8 records、0 物理、未读指标），正式报告须披露。
+18. A2 readiness v4f 7/7 gate、A3 v4f 40/40 PASS 与 m04 登记均在 A5 final re-verdict 前完成；S1_RUN 未批准前不得启动 21,000。
 
 ## 8. 风险与待决策
 
@@ -239,7 +257,7 @@ run_config、summary.json、preregistration、data_manifest、run_records.jsonl�
 | R-03 | pair 标签再次不一致 | 唯一函数 + analysis 归一 + 计数严格相等 |
 | R-04 | code_sha 漂移导致旧包混入 | fail-closed + --allow-code-delta 仅 exploratory |
 | R-05 | launcher 未绑定 S0-7 | 六项预检；失败不启动 |
-| R-06 | B128 资源超预期 | A2 v4e G06 实测比值 0.833；窗口 2.58–3.01h；3.5h 硬上限 |
+| R-06 | B128 资源超预期 | A2 readiness v4f 复测比值 0.8226；窗口 2.55–2.97h；3.5h 硬上限 |
 | R-07 | merge 口径不一致 | canonical 子集逐字节比较 |
 | R-08 | 旧工件被改写 | 只读；A3 审计；fail-closed |
 | R-09 | 旧任务当新盲测 | 新任务族/seed；冻结预注册 |
@@ -250,7 +268,7 @@ run_config、summary.json、preregistration、data_manifest、run_records.jsonl�
 | R-14 | 文档与代码不一致 | 本版同步；A5 phase4b 复核 |
 | R-15 | A2 G05 仍用合成数据 | M02 PENDING_A2_V4E；真实 runner 产物 |
 | R-16 | 资源/墙钟外推失真 | M04；B128 实测后定窗口 |
-| R-17 | 中文乱码/mojibake | UTF-8 显式 encoding；v4e 复核 |
+| R-17 | 中文乱码/mojibake | UTF-8 显式 encoding；A2 统一输出（v4f 交付）；A5 复核 |
 | R-18 | 自动发现 report 重复加载 | 显式 report 路径；分析测试 |
 | R-19 | legacy 诊断混淆 | 文档区分 LEGACY_PACKAGE/CODE_SHA_DRIFT |
 | R-20 | A5 未出 verdict 即启动 | S1_RUN 门禁；Lead 书面授权 |
@@ -263,12 +281,15 @@ run_config、summary.json、preregistration、data_manifest、run_records.jsonl�
 | R-27 | 回执提前宣称放行 | 回执写 NOT_APPROVED/待 phase4b |
 | R-28 | 确证包 delta 逃生再次出现 | J 修复 + FC-20 + 负控；A5 phase4c 复现 |
 | R-29 | S0-7 未绑定 readiness/审计 | A2/A3/A5 全部绑定同一 S0-7；门禁 |
+| R-30 | A3 m04 addendum 读取中间版本时曾见 H05 FAIL 与总结 FAIL 0 不一致；最终版为 8/8 PASS（H01–H08，fails=[]） | 已按最终版 sha256 ae5cf638…（82 行/7,569 B）修正文档引用；不构成开放风险 |
+| R-31 | final_verify 15/15 为包外证据，离线复现易漏 | 合同 §10 第 13 项/矩阵 §6 声明外部路径与 sha256；冻结包不可变、不补写 |
 
-待决策：1) A2 readiness v4f 的真实 runner 覆盖范围与首片窗口复核；2) A3 对 J/K/S0-7 审计与 m04 登记；3) A5 phase4c verdict（B01 负控、949 tests、真实 e2e、merge delta）；4) Lead 授权范围（S0-7 路径/SHA256SUMS/run_id/15 片/3.5h/停跑）；5) 是否在 S1 后进入 S2（按统计门禁与成本，不在本轮）。
+待决策：1) 首片窗口 2.55–2.97h 的复核（A2 v4f 实测）；2) A5 final re-verdict（B01 负控、949 tests、真实 e2e、merge delta 已通过，m04 登记已闭环）；3) Lead 授权范围（S0-7 路径/SHA256SUMS/run_id/15 片/3.5h/停跑）；4) 是否在 S1 后进入 S2（按统计门禁与成本，不在本轮）。
 
 ## 9. 读取记录
 
-- 2026-11-06：读取 commit K（8118234）、J（004156c）、I（36619cf）、S0-7 包全部 11 文件、SHA256SUMS 9/9、determinism_report、A1 v4f 修复报告与证据 JSON、A5 phase4b 报告/findings/verdict、Lead 949 tests 日志、R-V4-11 裁定、合同 v1.4→v1.5、执行计划 v1.5→v1.6、统计计划 v1.3→v1.4、矩阵 v1.5→v1.6；核查 A2/A3/A5 目录（v4f/phase4c 无定稿）。
+- 2026-11-06（v1.6）：读取 commit K（8118234）、J（004156c）、I（36619cf）、S0-7 包全部 11 文件、SHA256SUMS 9/9、determinism_report、A1 v4f 修复报告与证据 JSON、A5 phase4b 报告/findings/verdict、Lead 949 tests 日志、R-V4-11 裁定、合同 v1.4→v1.5、执行计划 v1.5→v1.6、统计计划 v1.3→v1.4、矩阵 v1.5→v1.6。
+- 2026-11-06（v1.7）：读取 commit L（8f34e91）、A2 readiness v4f（md/json/SUMS）、A3 S1_v4f_isolation.md + addendum L + m04 登记 addendum、A5 phase4c 报告/findings/verdict/949 日志、A1 final_verify_report.json（5,110 B，sha ecee6971…）；按 A3 addendum 最终版（sha256 ae5cf638…，82 行/7,569 B，8/8 PASS）校正文档引用。
 - 未读取真实 holdout 指标；未启动 solver；未写 GitHub。
 
 ## 10. 版本记录
@@ -282,3 +303,4 @@ run_config、summary.json、preregistration、data_manifest、run_records.jsonl�
 | v1.4 | 2026-11-06 | A4 | 按 A5 phase3/S0-4 同步 390 行；A5 phase4 PENDING |
 | v1.5 | 2026-11-06 | A4（task-224） | 同步 S0-6/G/H/947 tests；A5 phase4 1B/4M/5m 逐条映射；新增 §4.7；15 片窗口待 B128；S1_RUN=NOT_APPROVED；未 commit/push，0 物理 |
 | v1.6 | 2026-11-06 | A4（task-224） | 按 R-V4-11 与 A5 phase4b（1B/0M/4m）：S0-7（J 生成/K 入库）、commit J code_sha 绝对 fail-closed、949 tests、§4.8/§4.9、phase4 M01/M02/M04 状态更新、15 片窗口 2.58–3.01h、S1_RUN=NOT_APPROVED；未 commit/push，0 物理 |
+| v1.7 | 2026-11-06 | A4（task-224） | 按 L/A2 readiness v4f/A3 v4f/A5 phase4c：A2 COMPLETE（77db3e24…）、A3 PASS（ef694d55…）+ addenda（d1c597a9…/ae5cf638…）、A5 phase4c 0B/1M/2m 逐条（§4.10）、m04 CLOSED、m02 final_verify 包外声明、窗口 2.55–2.97h、S1_RUN=NOT_APPROVED；未 commit/push，0 物理 |

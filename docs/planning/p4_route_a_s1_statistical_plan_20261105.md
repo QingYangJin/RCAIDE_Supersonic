@@ -1,6 +1,6 @@
-# P4 路线A S1 统计计划（v1.4）
+# P4 路线A S1 统计计划（v1.5）
 
-> 状态：v1.4（2026-11-06，A4 task-224）；依据数据合同 v1.5、R-V4-11 与 A5 phase4b 结论。**本计划不构成 S1_RUN 放行**；S1_RUN=NOT_APPROVED，formal 21,000 NOT_RUN，待 A5 phase4c 与 Lead 书面授权（S0-7）。
+> 状态：v1.5（2026-11-06，A4 task-224）；依据数据合同 v1.6、R-V4-11、A2 readiness v4f、A3 v4f 与 A5 phase4c 结论。**本计划不构成 S1_RUN 放行**；S1_RUN=NOT_APPROVED，formal 21,000 NOT_RUN，待 A5 final re-verdict 与 Lead 书面授权（S0-7）。
 > 范围：S1（K-shot→BO 初始化闭环）的预注册、端点、比较、判定与报告；S2/S3 不在本计划。
 > 0 物理；不读真实 holdout；不修改旧 run；不 commit/push。
 
@@ -17,7 +17,7 @@
 - family_version=p4ra-family-v4；family_id=F-QE-feasible-v3；family_fingerprint=a1f9462c…；split_hash=cd597d01…；holdout_seed=20261106；radius_base=0.64。
 - 五 split：TR 60 / VA 20 / TE 20 / OD 10 / NC 10，共 120 任务；仅 TE（20 任务）进入主统计；VA 用于调参/资格；OD/NC 用于分布外与负控。
 - 每任务 support 128 / query 64（旧 v2 的 128 内循环仅作消融基线）；目标/约束标签按合同 §3。
-- 冻结包 S0-7：run_id=p4ra-s0-7-freeze-20261106T024200Z；commit K 8118234 入库；git_sha=J 004156c；code_sha=7304d32e…；9 payload+README+SHA256SUMS（sha256 59aa81cd…）、9/9、determinism PASS、final_verify 15/15；S0-6 标 SUPERSEDED_LEGACY 只读。
+- 冻结包 S0-7：run_id=p4ra-s0-7-freeze-20261106T024200Z；commit K 8118234 入库；git_sha=J 004156c；code_sha=7304d32e…；9 payload+README+SHA256SUMS（sha256 59aa81cd…）、9/9、determinism PASS、final_verify 15/15（包外证据，5,110 B，sha256 ecee6971…，不补写冻结包）；S0-6 标 SUPERSEDED_LEGACY 只读。
 - 确证包 code_sha 绝对 fail-closed（R-V4-11/FC-20）：包内 code_sha≠当前 package_code_sha() 时，即使 `--allow-code-delta` 也拒绝 grid/run/merge；该 flag 仅 legacy/exploratory 包可用并记录双 sha/evaluation_mode=exploratory。
 - 预注册一旦冻结，不得按结果调阈值/换终点/换任务；旧 M5/M6 任务已公开，不得当新盲测。
 
@@ -31,13 +31,15 @@
 | FOMAML-Kshot-BO | FOMAML + K-shot 适应 + BO | B |
 | DE | 差分进化基线（population 计预算） | B |
 
-B∈{64,128}；K∈{0,1,3,5}。五臂共享同一 K 次目标任务评价，且这 K 次必须计入 B；初始化 8 个点中不足 8−K 的由普通策略补足；主搜索 B−8；billable_evals=B（K=0 时 CLONE 规则）。正式网格 21,000 run：9,000/6,000/6,000（对应配置以矩阵 v1.6 与预注册为准）；15 分片×1,400；1,920,000 次合成评价；A2 v4e B128 实测窗口 2.58–3.01h、峰值 4.5743 GiB（A2-V4E-B03，5 runs/1 任务/K=3，measured/predicted=0.8333983992）；首片核对，3.5h 硬上限。
+B∈{64,128}；K∈{0,1,3,5}。五臂共享同一 K 次目标任务评价，且这 K 次必须计入 B；初始化 8 个点中不足 8−K 的由普通策略补足；主搜索 B−8；billable_evals=B（K=0 时 CLONE 规则）。正式网格 21,000 run：9,000/6,000/6,000（对应配置以矩阵 v1.7 与预注册为准）；15 分片×1,400；1,920,000 次合成评价；A2 v4f readiness（COMPLETE）实测：B64 20-run 均值 2.4754674 s/run；B128×K3 5 runs 均值 9.4289874 s/进程，measured/predicted=0.8226（低 17.7%，20% 阈值内）；每片 2.1216h、15 片并行理论 2.1216h、建议执行窗口 2.55–2.97h；峰值 311.492 MB/进程、15 进程约 4.56 GiB；records 66,487,200 B、磁盘预留 1 GiB；首片核对，3.5h 硬上限（A2-V4F-B03：B128 仅 5 runs/1 个 meta_validation 任务，点估计非分布）。
 
 ## 4. 预注册（p4ra-prereg-v1）
 
 字段：schema_version、run_id、git_sha、code_sha、family_version/family_id/family_fingerprint、split_hash、split_counts、split_digest、holdout_seed、radius_base、arms、budgets_B、K_values、task_id_regex、primary_endpoint、secondary_endpoints、comparisons、holm_family_key、alpha、bootstrap、stopping_rules、analysis_plan_digest、digest。
 
 强校验：五 split 计数和=120；split_digest 覆盖 120 task_id；task_id 正则 ^p4ra-FQE3-v3-(TR|VA|TE|OD|NC)-[0-9]{3}$；holdout_package 为 object 且字段完整；stopping_rules 每项 strip 后 len≥2；canonical JSON 排序/无浮点歧义；冻结后 digest 不匹配即 fail-closed。**确证包（confirmatory_eligible=true）在 code_sha≠当前 package_code_sha() 时必须失败，`--allow-code-delta` 不适用**（R-V4-11-01/FC-20）。
+
+受控 holdout 披露（A3 m04 登记 addendum，sha256 ae5cf638…）：A2 G05（run_id p4ra-s1-v4f-g05-20261106T025500Z）、A5 phase4b e2e（run_id p4ra-s1-v4e-a5-phase4b-e2e-20261106T093000Z）与 A5 phase4c e2e（run_id p4ra-s1-v4f-a5-phase4c-e2e-20261106T112500Z）各读取 meta_test TE-000/001 任务定义（各 8 records、合成解析、0 物理、未读指标）；正式分析报告须披露该受控读取（R-V4-10-08 同一例外）、不得据此调参、不得作为科学结论或指标证据。
 
 ## 5. 端点定义
 
@@ -106,11 +108,11 @@ run_config、summary.json、preregistration、data_manifest、run_records.jsonl�
 
 ## 11. 待审阅
 
-- 合同 v1.5 与统计计划 v1.4 的一致性；
+- 合同 v1.6 与统计计划 v1.5 的一致性；
 - C1–C4 族键、alpha、bootstrap seed、最小可检出效应；
 - C5-B 的“不可判定”措辞；
-- 15 片窗口 2.58–3.01h 在首片启动前的复核；
-- A5 phase4c verdict 与 Lead 授权范围（S0-7/SHA256SUMS/run_id/15 片/3.5h）。
+- 15 片窗口 2.55–2.97h 在首片启动前的复核（A2 v4f 实测）；
+- A5 final re-verdict 与 Lead 授权范围（S0-7/SHA256SUMS/run_id/15 片/3.5h）。
 
 ## 12. 版本记录
 
@@ -121,3 +123,4 @@ run_config、summary.json、preregistration、data_manifest、run_records.jsonl�
 | v1.2 | 2026-11-06 | A4 | 按 R-V4-08 补 Holm 唯一族键、C5 排除、动态族大小；867 tests 基线 |
 | v1.3 | 2026-11-06 | A4（task-224） | 同步合同 v1.4/S0-6/R-V4-10/947 tests；§6 新增 pair 标签字典序规范化（Holm 族定义不变）；未 commit/push，0 物理 |
 | v1.4 | 2026-11-06 | A4（task-224） | 按 R-V4-11 与 A5 phase4b：S0-7（J 生成/K 入库）、确证包 code_sha 绝对 fail-closed（FC-20）、949 tests、15 片窗口 2.58–3.01h、phase4c 待审；未 commit/push，0 物理 |
+| v1.5 | 2026-11-06 | A4（task-224） | 按 A2 readiness v4f/A3 v4f/A5 phase4c 与 L：合同 v1.6；A2 实测窗口 2.55–2.97h、峰值 311.492 MB/进程；m04 受控读取披露进 §4；A5 final re-verdict 待审；未 commit/push，0 物理 |
