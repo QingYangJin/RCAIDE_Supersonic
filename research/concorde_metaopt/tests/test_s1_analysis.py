@@ -8,7 +8,9 @@
 - 端到端 21,000 条记录 -> 8 数据产物 + 7 张规范图、无绝对路径、physical=0；
 - task-239 冻结身份解耦：五项身份从冻结包派生（v3 legacy / 合成 v4 包），expected_identity 提供时必须逐项一致；
 - CLI 成功/失败返回码；
-- task-250（R-V4-08）：formal 模式 code_sha 绑定、legacy 包拒绝、prereg 三键强校验、Holm 族动态大小。
+- task-250（R-V4-08）：formal 模式 code_sha 绑定、legacy 包拒绝、prereg 三键强校验、Holm 族动态大小；
+- task-259 rev7（S1R4-B01/m03/m05）：pair 标签字典序归一、显式 report 独占、两类冻结错误码文案区分、
+  真实 runner->analysis e2e（单 run bundle + merge 产物，0 物理调用）。
 
 全部测试纯离线：不 import 也不启动任何真实 Mission/SU2/VSPAERO/OpenVSP/RCAIDE 求解器。
 """
@@ -4059,6 +4061,698 @@ class CliDualLayoutTests(TempDirMixin):
         self.assertEqual(payload["status"], "PASS")
         aggregate = json.loads((output_dir / "aggregate.json").read_text(encoding="utf-8"))
         self.assertEqual(aggregate["freeze_echo"]["freeze_layout"], "confirmatory")
+
+
+# ---------------------------------------------------------------------------
+# S1-V4E-A6（task-259 rev7）：S1R4-B01 pair 标签归一、S1R4-m03 显式 report 独占、
+# S1R4-m05 两类错误码诊断文案、真实 runner→analysis e2e（含 merge 产物）。
+# ---------------------------------------------------------------------------
+
+S0_5_DIR = (
+    REPO_ROOT
+    / "research"
+    / "concorde_metaopt"
+    / "optimization_runs"
+    / "p4ra-s0-5-freeze-20261105T215000Z"
+)
+_REAL_E2E_RESULTS = None
+
+
+def _reverse_pair_label(label):
+    """把「arm_a|arm_b」逆序（用于模拟旧 runner 的预注册顺序标签）。"""
+    return "|".join(reversed(str(label).split("|")))
+
+
+def _reverse_arm_order(payload):
+    """把 report payload 的 pairwise 臂顺序与 pair_status_counts 键改成预注册顺序。"""
+    target = copy.deepcopy(payload)
+    for group in target.get("groups") or []:
+        pairwise = []
+        for pair in group.get("pairwise") or []:
+            item = dict(pair)
+            item["arm_a"], item["arm_b"] = pair.get("arm_b"), pair.get("arm_a")
+            pairwise.append(item)
+        group["pairwise"] = pairwise
+    if "pair_status_counts" in target:
+        counts = {}
+        for label, bucket in (target.get("pair_status_counts") or {}).items():
+            counts[_reverse_pair_label(label)] = dict(bucket)
+        target["pair_status_counts"] = counts
+    return target
+
+
+def _write_report_payload(directory, payload, *, name="identifiability_report.json"):
+    path = Path(directory) / name
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    return path
+
+
+def _overlap_map_all(records, *, rate):
+    """为 records 中所有出现过的 model-scored 臂对生成 overlap_map（rate 统一）。"""
+    overlap = {}
+    for (task_id, budget, k_shot, meta_seed), arms in structural_group_keys(records).items():
+        for arm_a, arm_b in A.IDENTIFIABILITY_REQUIRED_PAIRS:
+            if arm_a in arms and arm_b in arms:
+                overlap[(task_id, budget, k_shot, meta_seed, A._pair_label(arm_a, arm_b))] = float(rate)
+    return overlap
+
+
+def _write_prereg_ordered_report(directory, records, *, rate):
+    """写一份「标签/臂顺序为预注册顺序」的 v4 report（供 B01 归一测试）。"""
+    base_dir = Path(directory) / "base_report"
+    base_path = write_identifiability_report(
+        base_dir, records, overlap_map=_overlap_map_all(records, rate=rate)
+    )
+    payload = json.loads(base_path.read_text(encoding="utf-8"))
+    return _write_report_payload(
+        directory, _reverse_arm_order(payload), name="prereg_ordered_report.json"
+    )
+
+
+class B01PairLabelNormalisationTests(TempDirMixin):
+    """S1R4-B01：identifiability_report 的臂对标签必须按字典序归一后使用。"""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.freeze_dir, _identity = synthetic_v4c_confirmatory_freeze_package()
+        cls.bundle = A.load_frozen_bundle(cls.freeze_dir)
+        cls.c5_label = A._pair_label("FOMAML-KSHOT-BO", "FOMAML-ZERO-BO")
+        cls.reversed_c5_label = _reverse_pair_label(cls.c5_label)
+
+    def setUp(self):
+        self.directory = self.make_temp_dir()
+        self.records, self.records_path = _sparse_records_and_paths(
+            self.bundle, self.directory, tasks=2
+        )
+        self.group_count = len(structural_group_keys(self.records))
+
+    def test_prereg_ordered_report_is_normalised_on_load(self):
+        report_dir = self.make_temp_dir() / "prereg"
+        path = _write_prereg_ordered_report(report_dir, self.records, rate=0.0)
+        raw = json.loads(path.read_text(encoding="utf-8"))
+        # fixture 自检：确实是预注册（逆序）标签。
+        self.assertIn(self.reversed_c5_label, raw["pair_status_counts"])
+        self.assertNotIn(self.c5_label, raw["pair_status_counts"])
+        loaded = A.load_identifiability_report(path)
+        labels = set(loaded["pair_status_counts"])
+        self.assertIn(self.c5_label, labels)
+        self.assertNotIn(self.reversed_c5_label, labels)
+        for label in labels:
+            self.assertEqual(label, A._pair_label(*label.split("|")))
+        self.assertEqual(
+            loaded["pair_status_counts"][self.c5_label].get(A.STRUCTURAL_IDENTIFIABLE),
+            self.group_count,
+        )
+
+    def test_structural_exclusion_counts_use_normalised_labels(self):
+        report_dir = self.make_temp_dir() / "prereg"
+        path = _write_prereg_ordered_report(report_dir, self.records, rate=1.0)
+        index = A.load_structural_identifiability(
+            [self.records_path],
+            self.records,
+            mode="formal",
+            explicit_report_paths=[path],
+        )
+        self.assertEqual(index.coverage["report_selection_mode"], "explicit")
+        counts = index.structural_exclusion_counts()
+        self.assertEqual(counts.get(self.c5_label), self.group_count)
+        self.assertNotIn(self.reversed_c5_label, counts)
+        self.assertEqual(sum(counts.values()), self.group_count * 3)
+
+    def test_v1_report_pair_order_is_normalised(self):
+        report_dir = self.make_temp_dir() / "v1"
+        base = write_identifiability_report(
+            report_dir,
+            self.records,
+            schema_version="p4ra-s1-identifiability-1",
+            overlap_map=_overlap_map_all(self.records, rate=1.0),
+        )
+        payload = json.loads(base.read_text(encoding="utf-8"))
+        path = _write_report_payload(
+            report_dir, _reverse_arm_order(payload), name="v1_reversed.json"
+        )
+        index = A.load_structural_identifiability(
+            [self.records_path],
+            self.records,
+            mode="formal",
+            explicit_report_paths=[path],
+        )
+        self.assertEqual(index.structural_exclusion_counts().get(self.c5_label), self.group_count)
+
+    def test_declared_counts_mismatch_after_normalisation_rejected(self):
+        report_dir = self.make_temp_dir() / "mismatch"
+        path = _write_prereg_ordered_report(report_dir, self.records, rate=0.0)
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        label = self.reversed_c5_label
+        payload["pair_status_counts"][label][A.STRUCTURAL_IDENTIFIABLE] += 1
+        bad = _write_report_payload(report_dir, payload, name="mismatch.json")
+        with self.assertRaises(A.S1AnalysisError) as ctx:
+            A.load_identifiability_report(bad)
+        self.assertIn("pair_status_counts 与实际 pairwise 计数不一致", str(ctx.exception))
+
+    def test_pairwise_duplicate_after_normalisation_rejected(self):
+        report_dir = self.make_temp_dir() / "dup_pairwise"
+        path = _write_prereg_ordered_report(report_dir, self.records, rate=0.0)
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        group = payload["groups"][0]
+        duplicate = None
+        for pair in group["pairwise"]:
+            if set((pair["arm_a"], pair["arm_b"])) == {"FOMAML-KSHOT-BO", "FOMAML-ZERO-BO"}:
+                duplicate = dict(pair)
+        self.assertIsNotNone(duplicate)
+        duplicate["arm_a"], duplicate["arm_b"] = (
+            duplicate["arm_b"],
+            duplicate["arm_a"],
+        )
+        group["pairwise"].append(duplicate)
+        bad = _write_report_payload(report_dir, payload, name="dup_pairwise.json")
+        with self.assertRaises(A.S1AnalysisError) as ctx:
+            A.load_identifiability_report(bad)
+        self.assertIn("臂对重复", str(ctx.exception))
+
+    def test_unknown_arm_in_pairwise_rejected(self):
+        report_dir = self.make_temp_dir() / "bad_arm"
+        path = _write_prereg_ordered_report(report_dir, self.records, rate=0.0)
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        group = payload["groups"][0]
+        bad_pair = dict(group["pairwise"][0])
+        bad_pair["arm_a"] = "RAND-BO"
+        group["pairwise"].append(bad_pair)
+        group["arms"] = sorted(set(group["arms"]) | {"RAND-BO"})
+        bad = _write_report_payload(report_dir, payload, name="bad_arm.json")
+        with self.assertRaises(A.S1AnalysisError) as ctx:
+            A.load_identifiability_report(bad)
+        message = str(ctx.exception)
+        self.assertTrue(
+            "非 model-scored" in message or "未知" in message, msg=message
+        )
+
+    def test_illegal_pair_labels_rejected(self):
+        normalise = A._normalise_pair_label
+        cases = {
+            "非字符串": (1,),
+            "只有一段": ("FOMAML-KSHOT-BO",),
+            "空段": ("FOMAML-KSHOT-BO|",),
+            "两段相同": ("FOMAML-ZERO-BO|FOMAML-ZERO-BO",),
+            "未知臂": ("RAND-BO|FOMAML-ZERO-BO",),
+        }
+        for expected, args in cases.items():
+            with self.subTest(case=expected):
+                with self.assertRaises(A.S1AnalysisError) as ctx:
+                    normalise(*args, context="unit")
+                message = str(ctx.exception)
+                self.assertIn("unit", message)
+                if expected == "非字符串":
+                    self.assertIn("必须是字符串", message)
+                elif expected == "只有一段":
+                    self.assertIn("恰含 2 段", message)
+                elif expected == "空段":
+                    self.assertIn("空臂名", message)
+                elif expected == "两段相同":
+                    self.assertIn("两段相同", message)
+                else:
+                    self.assertTrue("未知" in message or "非 model-scored" in message)
+
+    def test_pair_status_counts_duplicate_after_normalisation_rejected(self):
+        with self.assertRaises(A.S1AnalysisError) as ctx:
+            A._canonical_pair_counts(
+                {
+                    "FOMAML-ZERO-BO|FOMAML-KSHOT-BO": {A.STRUCTURAL_IDENTIFIABLE: 1},
+                    "FOMAML-KSHOT-BO|FOMAML-ZERO-BO": {A.STRUCTURAL_IDENTIFIABLE: 1},
+                }
+            )
+        self.assertIn("归一后臂对重复", str(ctx.exception))
+
+
+class M03ExplicitReportSelectionTests(TempDirMixin):
+    """S1R4-m03：CLI/参数显式指定 identifiability_report 时禁止父目录自动发现。"""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.freeze_dir, _identity = synthetic_v4c_confirmatory_freeze_package()
+        cls.bundle = A.load_frozen_bundle(cls.freeze_dir)
+
+    def setUp(self):
+        self.directory = self.make_temp_dir()
+        self.records, self.records_path = _sparse_records_and_paths(
+            self.bundle, self.directory, tasks=2
+        )
+        self.auto_report = self.directory / "identifiability_report.json"
+        self.explicit_dir = self.make_temp_dir() / "explicit"
+        self.explicit_report = write_identifiability_report(
+            self.explicit_dir,
+            self.records,
+            overlap_map=_overlap_map_all(self.records, rate=1.0),
+        )
+
+    def test_resolver_explicit_is_exclusive(self):
+        paths, missing = A.resolve_identifiability_report_paths(
+            [self.records_path], explicit_paths=[self.explicit_report]
+        )
+        self.assertEqual(missing, [])
+        self.assertEqual([Path(p).resolve() for p in paths], [self.explicit_report.resolve()])
+
+    def test_resolver_auto_discovery_when_not_explicit(self):
+        paths, missing = A.resolve_identifiability_report_paths([self.records_path])
+        self.assertEqual(missing, [])
+        self.assertIn(self.auto_report.resolve(), [Path(p).resolve() for p in paths])
+        self.assertNotIn(
+            self.explicit_report.resolve(), [Path(p).resolve() for p in paths]
+        )
+
+    def test_missing_explicit_report_fails_closed(self):
+        ghost = self.make_temp_dir() / "does-not-exist.json"
+        with self.assertRaises(A.S1AnalysisError) as ctx:
+            A.resolve_identifiability_report_paths(
+                [self.records_path], explicit_paths=[ghost]
+            )
+        self.assertIn("显式指定的 identifiability_report 不存在", str(ctx.exception))
+
+    def test_run_uses_only_explicit_report(self):
+        out_dir = self.make_temp_dir() / "analysis-explicit"
+        aggregate = A.run_s1_analysis(
+            self.freeze_dir,
+            self.records_path,
+            out_dir,
+            make_figures=False,
+            require_complete_grid=False,
+            identifiability_reports=[self.explicit_report],
+        )
+        self.assertEqual(
+            aggregate["input"]["identifiability_report_files"],
+            [self.explicit_report.name],
+        )
+        coverage = aggregate["structural_identifiability"]["coverage"]
+        self.assertEqual(coverage["report_selection_mode"], "explicit")
+        self.assertEqual(coverage["explicit_report_count"], 1)
+        counts = aggregate["structural_exclusion_counts"]["by_pair"]
+        expected = len(structural_group_keys(self.records))
+        label = A._pair_label("FOMAML-KSHOT-BO", "FOMAML-ZERO-BO")
+        self.assertEqual(counts.get(label), expected)
+        # 自动发现的 report 全 IDENTIFIABLE（overlap=0）；若被误加载会导致 0 排除或双载冲突。
+        auto_out = self.make_temp_dir() / "analysis-auto"
+        auto_aggregate = A.run_s1_analysis(
+            self.freeze_dir,
+            self.records_path,
+            auto_out,
+            make_figures=False,
+            require_complete_grid=False,
+        )
+        auto_coverage = auto_aggregate["structural_identifiability"]["coverage"]
+        self.assertEqual(auto_coverage["report_selection_mode"], "auto_discovered")
+        self.assertEqual(auto_aggregate["structural_exclusion_counts"]["total"], 0)
+
+    def test_cli_explicit_report_returns_zero(self):
+        out_dir = self.make_temp_dir() / "cli-explicit"
+        stdout, stderr = io.StringIO(), io.StringIO()
+        with contextlib.redirect_stdout(stdout), contextlib.redirect_stderr(stderr):
+            code = A.main(
+                [
+                    "--freeze-dir",
+                    str(self.freeze_dir),
+                    "--run-records",
+                    str(self.records_path),
+                    "--output-dir",
+                    str(out_dir),
+                    "--identifiability-report",
+                    str(self.explicit_report),
+                    "--allow-incomplete-grid",
+                    "--no-figures",
+                ]
+            )
+        self.assertEqual(code, 0, msg=stderr.getvalue())
+        payload = json.loads(stdout.getvalue().strip())
+        self.assertEqual(payload["status"], "PASS")
+        self.assertEqual(payload["n_records"], len(self.records))
+        self.assertTrue((out_dir / "aggregate.json").is_file())
+
+    def test_cli_missing_explicit_report_returns_two(self):
+        out_dir = self.make_temp_dir() / "cli-missing"
+        ghost = self.make_temp_dir() / "missing.json"
+        stderr = io.StringIO()
+        with contextlib.redirect_stderr(stderr):
+            code = A.main(
+                [
+                    "--freeze-dir",
+                    str(self.freeze_dir),
+                    "--run-records",
+                    str(self.records_path),
+                    "--output-dir",
+                    str(out_dir),
+                    "--identifiability-report",
+                    str(ghost),
+                    "--allow-incomplete-grid",
+                    "--no-figures",
+                ]
+            )
+        self.assertEqual(code, 2)
+        self.assertIn("S1_ANALYSIS_FAILED", stderr.getvalue())
+        self.assertIn("显式指定的 identifiability_report 不存在", stderr.getvalue())
+
+
+class M05DiagnosticMessageTests(TempDirMixin):
+    """S1R4-m05：legacy/v3 诊断文案必须区分 LEGACY_PACKAGE 与 CODE_SHA_DRIFT。"""
+
+    def test_legacy_package_message_distinguishes_codes(self):
+        bundle = A.load_frozen_bundle(LEGACY_V4D_DIR)
+        with self.assertRaises(A.S1FreezeValidationError) as ctx:
+            A.verify_analysis_freeze(bundle, analysis_mode=A.ANALYSIS_MODE_FORMAL)
+        message = str(ctx.exception)
+        self.assertIn(A.S1_ANALYSIS_LEGACY_PACKAGE, message)
+        self.assertIn("不是代码版本问题", message)
+        self.assertIn("已符合", message)
+        self.assertIn("未全部为 true", message)
+        self.assertNotIn(A.S1_ANALYSIS_CODE_SHA_DRIFT, message)
+
+    def test_legacy_family_version_message_lists_required_version(self):
+        bundle = A.load_frozen_bundle(FROZEN_DIR)
+        with self.assertRaises(A.S1FreezeValidationError) as ctx:
+            A.verify_analysis_freeze(bundle, analysis_mode=A.ANALYSIS_MODE_FORMAL)
+        message = str(ctx.exception)
+        self.assertIn(A.S1_ANALYSIS_LEGACY_PACKAGE, message)
+        self.assertIn("family_version", message)
+        self.assertIn("p4ra-family-v4", message)
+        self.assertIn("--allow-legacy", message)
+        self.assertNotIn(A.S1_ANALYSIS_CODE_SHA_DRIFT, message)
+
+    def test_code_drift_message_distinguishes_codes(self):
+        bundle = A.load_frozen_bundle(CONFIRMATORY_V4D_DIR)
+        with self.assertRaises(A.S1FreezeValidationError) as ctx:
+            A.verify_analysis_freeze(bundle, analysis_mode=A.ANALYSIS_MODE_FORMAL)
+        message = str(ctx.exception)
+        self.assertIn(A.S1_ANALYSIS_CODE_SHA_DRIFT, message)
+        self.assertIn("不是 legacy 包问题", message)
+        self.assertIn("冻结包布局/确认标记/身份校验均已通过", message)
+        self.assertIn("--allow-code-delta", message)
+        self.assertNotIn(A.S1_ANALYSIS_LEGACY_PACKAGE, message)
+
+    def test_analysis_limitations_disclose_both_codes(self):
+        run = full_e2e_run()
+        text = "\n".join(run["aggregate"]["limitations"])
+        self.assertIn(A.S1_ANALYSIS_LEGACY_PACKAGE, text)
+        self.assertIn(A.S1_ANALYSIS_CODE_SHA_DRIFT, text)
+        self.assertIn("语义不同", text)
+
+
+@contextlib.contextmanager
+def _patched_analysis_code_sha(value):
+    """临时把 analysis 的当前代码 sha 固定为冻结包 code_sha（模拟「同一 commit」语义）。"""
+    original = A._current_analysis_code_sha
+    A._current_analysis_code_sha = lambda: value
+    try:
+        yield
+    finally:
+        A._current_analysis_code_sha = original
+
+
+def real_runner_e2e():
+    """真实 runner -> analysis 端到端（极小样本、0 物理调用），模块级缓存。
+
+    覆盖：runner 单 run bundle（8 条）+ merge shard 产物（8 条），analysis 直接消费其
+    真实 identifiability_report.json（不使用任何合成 report）。
+    """
+    global _REAL_E2E_RESULTS
+    if _REAL_E2E_RESULTS is not None:
+        return _REAL_E2E_RESULTS
+    import atexit
+    import importlib
+
+    runner = importlib.import_module("research.concorde_metaopt.meta_learning.s1_runner")
+    package = runner.load_frozen_package(S0_5_DIR, require_confirmatory=True)
+    frozen_code_sha = package["frozen"]["code_sha"]
+    model_bundle = dict(
+        runner.build_model_artifact_bundle(
+            package, meta_seed=0, maml_steps=1, pretrain_steps=1
+        )
+    )
+    model_bundle["schema_version"] = "p4ra-s1-model-artifacts-1"
+    root = Path(tempfile.mkdtemp(prefix="s1-v4e-real-e2e-"))
+    atexit.register(shutil.rmtree, str(root), True)
+
+    model_arms = ("FOMAML-ZERO-BO", "FOMAML-KSHOT-BO")
+    task_ids = list(package["split"]["task_ids"]["meta_test"])[:2]
+    single_run_id = "s1-v4e-real-e2e-single"
+    single_plan = []
+    for task_id in task_ids:
+        for arm in model_arms:
+            for k_shot in (0, 3):
+                single_plan.append(
+                    {
+                        "split": A.MAIN_SPLIT,
+                        "task_id": task_id,
+                        "arm": arm,
+                        "budget_B": 64,
+                        "K": int(k_shot),
+                        "meta_seed": 0,
+                        "opt_seed": 0,
+                        "grid_stratum": runner.formal_grid_stratum(64, k_shot),
+                    }
+                )
+    single_records = runner.execute_runs(
+        package, run_id=single_run_id, plan=single_plan, bundles={0: model_bundle}
+    )
+    single_dir = root / "single-bundle"
+    runner.write_run_bundle(
+        single_dir,
+        run_id=single_run_id,
+        package=package,
+        records=single_records,
+        run_config=runner.build_grid_run_config(
+            package, run_id=single_run_id, plan=single_plan, grid_mode=runner.FORMAL_GRID_MODE
+        ),
+    )
+    single_report = json.loads(
+        (single_dir / "identifiability_report.json").read_text(encoding="utf-8")
+    )
+    exploratory_out = root / "single-analysis-exploratory"
+    exploratory_aggregate = A.run_s1_analysis(
+        S0_5_DIR,
+        single_dir,
+        exploratory_out,
+        make_figures=False,
+        require_complete_grid=False,
+        analysis_mode=A.ANALYSIS_MODE_EXPLORATORY,
+        allow_code_delta=True,
+    )
+    cli_out = root / "single-analysis-cli"
+    cli_stdout, cli_stderr = io.StringIO(), io.StringIO()
+    with contextlib.redirect_stdout(cli_stdout), contextlib.redirect_stderr(cli_stderr):
+        cli_code = A.main(
+            [
+                "--freeze-dir",
+                str(S0_5_DIR),
+                "--run-records",
+                str(single_dir),
+                "--output-dir",
+                str(cli_out),
+                "--analysis-mode",
+                A.ANALYSIS_MODE_EXPLORATORY,
+                "--allow-code-delta",
+                "--allow-incomplete-grid",
+                "--no-figures",
+            ]
+        )
+    formal_patched_out = root / "single-analysis-formal"
+    with _patched_analysis_code_sha(frozen_code_sha):
+        formal_patched_aggregate = A.run_s1_analysis(
+            S0_5_DIR,
+            single_dir,
+            formal_patched_out,
+            make_figures=False,
+            require_complete_grid=False,
+            analysis_mode=A.ANALYSIS_MODE_FORMAL,
+        )
+    drift_out = root / "single-analysis-drift"
+    drift_message = None
+    try:
+        A.run_s1_analysis(
+            S0_5_DIR,
+            single_dir,
+            drift_out,
+            make_figures=False,
+            require_complete_grid=False,
+            analysis_mode=A.ANALYSIS_MODE_FORMAL,
+        )
+    except A.S1FreezeValidationError as exc:  # 真实代码 sha 与 S0-5 包不同 -> drift
+        drift_message = str(exc)
+
+    merge_run_id = "s1-v4e-real-e2e-merge"
+    merge_plan = list(
+        runner.iter_formal_run_plan(
+            package,
+            splits=(A.MAIN_SPLIT,),
+            arms=model_arms,
+            budgets=(64, 128),
+            k_values=(1, 3),
+            meta_seeds=(0,),
+            opt_seeds=(0,),
+            task_limit=1,
+        )
+    )
+    merge_records = runner.execute_runs(
+        package, run_id=merge_run_id, plan=merge_plan, bundles={0: model_bundle}
+    )
+    shards_root = root / "shards"
+    shards_root.mkdir(parents=True, exist_ok=True)
+    for shard_index in range(2):
+        indexes = list(range(shard_index, len(merge_plan), 2))
+        sub_plan = [merge_plan[index] for index in indexes]
+        sub_records = [merge_records[index] for index in indexes]
+        shard_dir = shards_root / ("shard-{}".format(shard_index))
+        shard_dir.mkdir(parents=True, exist_ok=True)
+        with (shard_dir / "run_records.jsonl").open("w", encoding="utf-8", newline="\n") as handle:
+            for record in sub_records:
+                handle.write(json.dumps(record, ensure_ascii=False, sort_keys=True))
+                handle.write("\n")
+        config = runner.build_grid_run_config(
+            package, run_id=merge_run_id, plan=sub_plan, grid_mode=runner.FORMAL_GRID_MODE
+        )
+        (shard_dir / "run_config.json").write_text(
+            json.dumps(config, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+        )
+    merged_dir = root / "merged-bundle"
+    merge_manifest = runner.merge_run_shards(
+        package,
+        shards_root=shards_root,
+        outdir=merged_dir,
+        run_id=merge_run_id,
+        plan=merge_plan,
+    )
+    merged_out = root / "merged-analysis-formal"
+    with _patched_analysis_code_sha(frozen_code_sha):
+        merged_aggregate = A.run_s1_analysis(
+            S0_5_DIR,
+            merged_dir,
+            merged_out,
+            make_figures=False,
+            require_complete_grid=False,
+            analysis_mode=A.ANALYSIS_MODE_FORMAL,
+        )
+    _REAL_E2E_RESULTS = {
+        "runner": runner,
+        "package": package,
+        "frozen_code_sha": frozen_code_sha,
+        "single_dir": single_dir,
+        "single_records": single_records,
+        "single_plan": single_plan,
+        "single_report": single_report,
+        "exploratory_out": exploratory_out,
+        "exploratory_aggregate": exploratory_aggregate,
+        "cli_code": cli_code,
+        "cli_stdout": cli_stdout.getvalue(),
+        "cli_stderr": cli_stderr.getvalue(),
+        "formal_patched_out": formal_patched_out,
+        "formal_patched_aggregate": formal_patched_aggregate,
+        "drift_message": drift_message,
+        "merge_plan": merge_plan,
+        "merge_records": merge_records,
+        "merge_manifest": merge_manifest,
+        "merged_dir": merged_dir,
+        "merged_out": merged_out,
+        "merged_aggregate": merged_aggregate,
+    }
+    return _REAL_E2E_RESULTS
+
+
+class RealRunnerToAnalysisE2ETests(TempDirMixin):
+    """S1R4-B01：真实 s1_runner 产物直接进入 s1_analysis（单 run bundle + merge 产物）。"""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.e2e = real_runner_e2e()
+
+    def test_single_run_bundle_records_and_report(self):
+        records = self.e2e["single_records"]
+        self.assertEqual(len(records), len(self.e2e["single_plan"]))
+        for record in records:
+            self.assertEqual(record["status"], "OK")
+            self.assertEqual(record["physics"]["physical_call_count"], 0)
+        report = self.e2e["single_report"]
+        self.assertEqual(
+            report["schema_version"], self.e2e["runner"].IDENTIFIABILITY_SCHEMA_VERSION
+        )
+        self.assertEqual(report["group_count"], 4)
+        for label in report["pair_status_counts"]:
+            self.assertEqual(label, A._pair_label(*label.split("|")))
+
+    def test_analysis_consumes_runner_bundle_in_exploratory_mode(self):
+        aggregate = self.e2e["exploratory_aggregate"]
+        self.assertEqual(aggregate["analysis_mode"], A.ANALYSIS_MODE_EXPLORATORY)
+        self.assertFalse(aggregate["confirmatory_eligible"])
+        self.assertEqual(aggregate["freeze_echo"]["freeze_layout"], "confirmatory")
+        self.assertEqual(aggregate["freeze_echo"]["identity_source"], "package")
+        self.assertEqual(
+            aggregate["validation"]["record_count"], len(self.e2e["single_plan"])
+        )
+        label = A._pair_label("FOMAML-KSHOT-BO", "FOMAML-ZERO-BO")
+        counts = aggregate["structural_exclusion_counts"]["by_pair"]
+        self.assertEqual(counts.get(label), 4)
+        for comparison_id in ("C1", "C2", "C3", "C4"):
+            self.assertEqual(aggregate["structural_exclusion_counts"]["by_comparison"][comparison_id], 0)
+        self.assertEqual(
+            aggregate["c5_structural_identifiability"]["status"],
+            aggregate["c5_structural_identifiability"]["status"], A.C5_NOT_ESTIMABLE
+        )
+        for name in A.S1_OUTPUT_FILES:
+            self.assertTrue(
+                (self.e2e["exploratory_out"] / name).is_file(), msg="缺少产物 " + name
+            )
+
+    def test_cli_consumes_runner_bundle_returns_zero(self):
+        self.assertEqual(self.e2e["cli_code"], 0, msg=self.e2e["cli_stderr"])
+        payload = json.loads(self.e2e["cli_stdout"].strip())
+        self.assertEqual(payload["status"], "PASS")
+        self.assertEqual(payload["n_records"], len(self.e2e["single_plan"]))
+        self.assertEqual(payload["analysis_mode"], A.ANALYSIS_MODE_EXPLORATORY)
+        self.assertFalse(payload["confirmatory_eligible"])
+
+    def test_formal_mode_consumes_runner_bundle_with_matched_code_sha(self):
+        aggregate = self.e2e["formal_patched_aggregate"]
+        self.assertEqual(aggregate["analysis_mode"], A.ANALYSIS_MODE_FORMAL)
+        self.assertTrue(aggregate["confirmatory_eligible"])
+        self.assertTrue(aggregate["freeze_compliance"]["code_sha"]["match"])
+        self.assertEqual(
+            aggregate["validation"]["record_count"], len(self.e2e["single_plan"])
+        )
+        self.assertEqual(
+            aggregate["primary_conclusion"]["overall"], A.OVERALL_INCONCLUSIVE
+        )
+
+    def test_code_sha_drift_message_available_from_real_package(self):
+        message = self.e2e["drift_message"]
+        self.assertIsNotNone(message, msg="S0-5 真实包未触发 code_sha drift，fixture 失效")
+        self.assertIn(A.S1_ANALYSIS_CODE_SHA_DRIFT, message)
+        self.assertIn("不是 legacy 包问题", message)
+        self.assertNotIn(A.S1_ANALYSIS_LEGACY_PACKAGE, message)
+
+    def test_merge_bundle_then_analysis(self):
+        runner = self.e2e["runner"]
+        plan = self.e2e["merge_plan"]
+        manifest = self.e2e["merge_manifest"]
+        self.assertEqual(manifest["status"], "PASS")
+        self.assertEqual(manifest["expected_run_count"], len(plan))
+        self.assertEqual(manifest["actual_record_count"], len(plan))
+        self.assertTrue(
+            (self.e2e["merged_dir"] / "identifiability_report.json").is_file()
+        )
+        aggregate = self.e2e["merged_aggregate"]
+        self.assertEqual(aggregate["analysis_mode"], A.ANALYSIS_MODE_FORMAL)
+        self.assertTrue(aggregate["confirmatory_eligible"])
+        self.assertEqual(aggregate["validation"]["record_count"], len(plan))
+        self.assertEqual(len(self.e2e["merge_records"]), len(plan))
+        self.assertEqual(
+            {item["grid_stratum"] for item in plan},
+            {"main", "secondary", "exploratory"},
+        )
+        for name in A.S1_OUTPUT_FILES:
+            self.assertTrue(
+                (self.e2e["merged_out"] / name).is_file(), msg="缺少产物 " + name
+            )
 
 if __name__ == "__main__":
     unittest.main()

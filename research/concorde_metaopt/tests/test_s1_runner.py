@@ -54,6 +54,34 @@ def _identity(package):
     return s1.frozen_identity_for_run(package)
 
 
+def _write_synthetic_v4_package(root, *, code_sha=None):
+    """写一个合成 v4c 确证冻结包（含可选 code_sha 漂移），供 code_sha 门禁测试用。"""
+    v3_records = json.loads((FROZEN / "tasks.json").read_text(encoding="utf-8"))
+    fingerprints = tuple(record["task_fingerprint"] for record in v3_records)
+    root = Path(root)
+    root.mkdir(parents=True, exist_ok=True)
+    legacy = {
+        "task_ids": ["m2-deadbeef0001", "m5-deadbeef0002"],
+        "task_fingerprints": [],
+        "sources": [{"path": "<fixture>", "bytes": 0, "sha256": "f" * 64}],
+    }
+    bundle = fv3.build_freeze_bundle(
+        run_id=root.name,
+        git_sha="3ebd777595bf747edc855be5fb583f51cc17352f",
+        created_utc="2026-11-06T00:00:00+00:00",
+        code_sha=code_sha,
+        legacy=legacy,
+        radius_base=0.64,
+        calibration_status="CALIBRATED",
+        v3_reference_task_fingerprints=fingerprints,
+    )
+    fv3.write_json(root / "tasks.json", bundle["task_records"])
+    fv3.write_json(root / "meta_task_split.json", bundle["split_manifest"])
+    fv3.write_json(root / "frozen_family.json", bundle["frozen_family"])
+    fv3.write_json(root / "preregistration.json", bundle["preregistration"])
+    return bundle
+
+
 class FrozenPackageTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -175,7 +203,7 @@ class FrozenPackageV4Tests(unittest.TestCase):
             run_id="p4ra-s0-3-freeze-20261105T000000Z",
             git_sha="3ebd777595bf747edc855be5fb583f51cc17352f",
             created_utc="2026-11-05T00:00:00+00:00",
-            code_sha="unit-test-code-sha",
+            code_sha=None,
             legacy=legacy,
             radius_base=0.64,
             calibration_status="CALIBRATED",
@@ -206,6 +234,10 @@ class FrozenPackageV4Tests(unittest.TestCase):
         self.assertEqual(identity["holdout_task_count"], 30)
         self.assertEqual(identity["evaluation_mode"], "confirmatory")
         self.assertEqual(identity["prereg_v4c_blocks_status"], "PRESENT")
+        self.assertTrue(identity["code_sha_match"])
+        self.assertFalse(identity["code_sha_delta_allowed"])
+        self.assertEqual(identity["code_sha"], identity["current_code_sha"])
+        self.assertEqual(identity["code_sha"], str(fv3.package_code_sha()))
         self.assertEqual(self.package["evaluation_mode"], "confirmatory")
         self.assertEqual(self.package["prereg_v4c_blocks_status"], "PRESENT")
         self.assertEqual(dict(identity["task_counts"]), dict(fv3.SPLIT_COUNTS))
@@ -789,7 +821,15 @@ class FormalGridTests(unittest.TestCase):
         buffer = io.StringIO()
         with contextlib.redirect_stdout(buffer):
             code = s1._main(
-                ["grid", "--frozen", str(FROZEN), "--grid", "formal", "--allow-legacy"]
+                [
+                    "grid",
+                    "--frozen",
+                    str(FROZEN),
+                    "--grid",
+                    "formal",
+                    "--allow-legacy",
+                    "--allow-code-delta",
+                ]
             )
         self.assertEqual(code, 0)
         payload = json.loads(buffer.getvalue())
@@ -808,7 +848,15 @@ class FormalGridTests(unittest.TestCase):
 
         buffer = io.StringIO()
         with contextlib.redirect_stdout(buffer):
-            code = s1._main(["grid", "--frozen", str(FROZEN), "--allow-legacy"])
+            code = s1._main(
+                [
+                    "grid",
+                    "--frozen",
+                    str(FROZEN),
+                    "--allow-legacy",
+                    "--allow-code-delta",
+                ]
+            )
         self.assertEqual(code, 0)
         payload = json.loads(buffer.getvalue())
         self.assertEqual(payload["grid_mode"], "cartesian")
@@ -1191,14 +1239,14 @@ class ArmSemanticsB03Tests(unittest.TestCase):
         self.assertEqual(group["task_id"], self.te003.task_id)
         self.assertEqual(group["ranking_status"], "IDENTIFIABLE")
         self.assertTrue(group["inference_allowed"])
-        for pair in s1.IDENTIFIABILITY_REQUIRED_PAIRS:
-            key = f"{pair[0]}|{pair[1]}"
+        expected_pair_keys = {
+            s1._pair_label(left, right) for left, right in s1.IDENTIFIABILITY_REQUIRED_PAIRS
+        }
+        for key in expected_pair_keys:
             self.assertIn(key, report["pair_coverage"])
             self.assertEqual(report["pair_coverage"][key], 1)
-        self.assertEqual(
-            set(report["pair_status_counts"]),
-            {f"{left}|{right}" for left, right in s1.IDENTIFIABILITY_REQUIRED_PAIRS},
-        )
+            self.assertEqual(key, "|".join(sorted(key.split("|"))))
+        self.assertEqual(set(report["pair_status_counts"]), expected_pair_keys)
         for pair in group["pairwise"]:
             self.assertEqual(pair["threshold"], 0.90)
             self.assertIsInstance(pair["pair_identifiable"], bool)
@@ -1271,7 +1319,7 @@ class ArmSemanticsB03Tests(unittest.TestCase):
         )
         self.assertFalse(c5["pair_identifiable"])
         self.assertEqual(c5["structural_status"], "STRUCTURALLY_IDENTICAL")
-        key = f"{m5.S1_FOMAML_ZERO_BO}|{m5.S1_FOMAML_KSHOT_BO}"
+        key = s1._pair_label(m5.S1_FOMAML_ZERO_BO, m5.S1_FOMAML_KSHOT_BO)
         self.assertIn(key, report["pair_status_counts"])
         self.assertEqual(report["pair_status_counts"][key]["STRUCTURALLY_IDENTICAL"], 1)
         self.assertEqual(report["pair_status_counts"][key]["IDENTIFIABLE"], 0)
@@ -1707,6 +1755,7 @@ class MergeSubcommandTests(unittest.TestCase):
             "--task-limit",
             "1",
             "--allow-legacy",
+            "--allow-code-delta",
         ]
         with contextlib.redirect_stdout(buffer):
             code = s1._main(argv)
@@ -1724,6 +1773,197 @@ class MergeSubcommandTests(unittest.TestCase):
             code = s1._main(argv)
         self.assertEqual(code, 1)
         self.assertEqual(json.loads(buffer.getvalue())["status"], "FAIL")
+
+    def test_merge_model_arm_pair_keys_lexicographic(self):
+        args = SimpleNamespace(
+            splits="meta_test",
+            arms="PRETRAIN-KSHOT-BO,FOMAML-ZERO-BO",
+            budgets="64,128",
+            k_values="0,1,3,5",
+            meta_seeds="0",
+            opt_seeds="0,1",
+            task_limit=1,
+        )
+        plan = s1.merge_plan_from_args(self.package, args)
+        self.assertEqual(len(plan), 28)
+        template = next(
+            record
+            for record in self.records
+            if int(record["budget_B"]) == 64 and int(record["K"]) == 5
+        )
+        records = []
+        for item in plan:
+            record = dict(template)
+            budget = int(item["budget_B"])
+            k_shot = int(item["K"])
+            record.update(
+                arm=item["arm"],
+                budget_B=budget,
+                K=k_shot,
+                support_evals=k_shot,
+                initial_evals=8 - k_shot,
+                bo_evals=budget - 8,
+                bo_calls=budget - 8,
+                billable_evals=budget,
+                task_id=item["task_id"],
+                meta_seed=int(item["meta_seed"]),
+                opt_seed=int(item["opt_seed"]),
+                grid_stratum=item["grid_stratum"],
+                run_id=s1.make_run_id(
+                    self.RUN_ID,
+                    arm=item["arm"],
+                    budget=int(item["budget_B"]),
+                    k_shot=int(item["K"]),
+                    task_id=item["task_id"],
+                    meta_seed=int(item["meta_seed"]),
+                    opt_seed=int(item["opt_seed"]),
+                ),
+                initial_design_row_digests=[
+                    s1.digest({"arm": item["arm"], "index": index}) for index in range(3)
+                ],
+            )
+            record.pop("record_digest", None)
+            record["record_digest"] = s1.digest(record)
+            records.append(record)
+        shards_root = self.root / "model_shards"
+        shard_dir = shards_root / "ms0_os0-1"
+        shard_dir.mkdir(parents=True)
+        s1.write_jsonl_file(shard_dir / "run_records.jsonl", records)
+        s1.write_json_file(
+            shard_dir / "run_config.json",
+            s1.build_grid_run_config(
+                self.package, run_id=self.RUN_ID, plan=plan, grid_mode=s1.FORMAL_GRID_MODE
+            ),
+        )
+        outdir = self.root / "model_merged"
+        manifest = s1.merge_run_shards(
+            self.package,
+            shards_root=shards_root,
+            outdir=outdir,
+            run_id=self.RUN_ID,
+            plan=plan,
+            allow_legacy=True,
+        )
+        self.assertEqual(manifest["status"], "PASS")
+        self.assertEqual(manifest["actual_record_count"], len(plan))
+        report = json.loads(
+            (outdir / "identifiability_report.json").read_text(encoding="utf-8")
+        )
+        expected = {
+            s1._pair_label(left, right) for left, right in s1.IDENTIFIABILITY_REQUIRED_PAIRS
+        }
+        self.assertEqual(set(report["pair_status_counts"]), expected)
+        self.assertEqual(set(report["pair_coverage"]), expected)
+        for key in expected:
+            self.assertEqual(key, "|".join(sorted(key.split("|"))))
+        self.assertGreaterEqual(report["group_count"], 1)
+
+
+class PairLabelCanonicalizationTests(unittest.TestCase):
+    """S1R4-B01：runner pair 标签必须与 s1_analysis 的字典序规范一致（单一 _pair_label）。"""
+
+    def test_pair_label_is_lexicographic_and_symmetric(self):
+        self.assertEqual(
+            s1._pair_label(m5.S1_PRETRAIN_KSHOT_BO, m5.S1_FOMAML_ZERO_BO),
+            "FOMAML-ZERO-BO|PRETRAIN-KSHOT-BO",
+        )
+        self.assertEqual(
+            s1._pair_label(m5.S1_FOMAML_ZERO_BO, m5.S1_PRETRAIN_KSHOT_BO),
+            "FOMAML-ZERO-BO|PRETRAIN-KSHOT-BO",
+        )
+        for left, right in s1.IDENTIFIABILITY_REQUIRED_PAIRS:
+            label = s1._pair_label(left, right)
+            self.assertEqual(label, "|".join(sorted(label.split("|"))))
+            self.assertEqual(label, s1._pair_label(right, left))
+        self.assertEqual(s1._pair_label("DELTA-BO", "ALPHA-BO"), "ALPHA-BO|DELTA-BO")
+
+    @staticmethod
+    def _records(rows):
+        base = {
+            "task_id": "p4ra-FQE3-v3-TE-000",
+            "budget_B": 64,
+            "K": 5,
+            "meta_seed": 0,
+            "initial_designs_sha256": "d" * 64,
+        }
+        return [
+            dict(base, arm=arm, initial_design_row_digests=list(row))
+            for arm, row in zip(m5.S1_MODEL_SCORED_ARMS, rows)
+        ]
+
+    def test_report_pair_keys_are_lexicographic(self):
+        records = self._records(
+            [["a" * 64, "a" * 64, "a" * 64] for _ in m5.S1_MODEL_SCORED_ARMS]
+        )
+        report = s1.ranking_identifiability_report(records)
+        expected = {
+            s1._pair_label(left, right) for left, right in s1.IDENTIFIABILITY_REQUIRED_PAIRS
+        }
+        self.assertEqual(set(report["pair_coverage"]), expected)
+        self.assertEqual(set(report["pair_status_counts"]), expected)
+        for key in expected:
+            self.assertEqual(key, "|".join(sorted(key.split("|"))))
+        self.assertEqual(report["status_counts"], {"RANKING_INDISTINGUISHABLE": 1})
+        for counts in report["pair_status_counts"].values():
+            self.assertEqual(counts["STRUCTURALLY_IDENTICAL"], 1)
+            self.assertEqual(counts["IDENTIFIABLE"], 0)
+
+    def test_write_run_bundle_identifiability_keys_are_lexicographic(self):
+        package = s1.load_frozen_package(FROZEN)
+        package_identity = package["identity"]
+        records = self._records(
+            [["b" * 64, "c" * 64, "e" * 64] for _ in m5.S1_MODEL_SCORED_ARMS]
+        )
+        run_id = "p4ra-s1-pair-label"
+        config = s1.build_run_config(
+            package,
+            run_id=run_id,
+            splits=[s1.PRIMARY_SPLIT],
+            task_limit=1,
+            arm=m5.S1_PRETRAIN_KSHOT_BO,
+            budget=64,
+            k_shot=3,
+            meta_seed=0,
+            opt_seed=0,
+        )
+        self.assertEqual(config["code_sha"], package_identity["code_sha"])
+        with tempfile.TemporaryDirectory(prefix="s1-pair-label-") as raw:
+            outdir = Path(raw) / "bundle"
+            summary = s1.write_run_bundle(
+                outdir,
+                run_id=run_id,
+                package=package,
+                records=records,
+                run_config=config,
+            )
+            report = json.loads(
+                (outdir / "identifiability_report.json").read_text(encoding="utf-8")
+            )
+            expected = {
+                s1._pair_label(left, right)
+                for left, right in s1.IDENTIFIABILITY_REQUIRED_PAIRS
+            }
+            self.assertEqual(set(report["pair_coverage"]), expected)
+            self.assertEqual(set(report["pair_status_counts"]), expected)
+            for key in expected:
+                self.assertEqual(key, "|".join(sorted(key.split("|"))))
+            stored_summary = json.loads(
+                (outdir / "run_summary.json").read_text(encoding="utf-8")
+            )
+            self.assertEqual(
+                set(stored_summary["ranking_identifiability"]["pair_status_counts"]),
+                expected,
+            )
+            manifest = json.loads((outdir / "manifest.json").read_text(encoding="utf-8"))
+            self.assertEqual(manifest["code_sha"], package_identity["code_sha"])
+            self.assertEqual(
+                manifest["current_code_sha"], package_identity["current_code_sha"]
+            )
+            self.assertEqual(
+                manifest["code_sha_match"], package_identity["code_sha_match"]
+            )
+            self.assertFalse(manifest["code_sha_delta_allowed"])
+            self.assertEqual(summary["code_sha"], package_identity["code_sha"])
 
 
 class V4cFormalGateTests(unittest.TestCase):
@@ -1752,7 +1992,15 @@ class V4cFormalGateTests(unittest.TestCase):
         buffer = io.StringIO()
         with contextlib.redirect_stdout(buffer):
             code = s1._main(
-                ["grid", "--frozen", str(FROZEN_V4), "--grid", "formal", "--allow-legacy"]
+                [
+                    "grid",
+                    "--frozen",
+                    str(FROZEN_V4),
+                    "--grid",
+                    "formal",
+                    "--allow-legacy",
+                    "--allow-code-delta",
+                ]
             )
         self.assertEqual(code, 0)
         payload = json.loads(buffer.getvalue())
@@ -1782,6 +2030,218 @@ class V4cFormalGateTests(unittest.TestCase):
                     run_id="p4ra-s1-gate-test",
                     plan=plan,
                 )
+
+
+class FrozenCodeShaGateTests(unittest.TestCase):
+    """S1R4-M01：grid/run/merge 冻结包 code_sha 漂移 fail-closed；--allow-code-delta 显式放行。"""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.tmp = tempfile.TemporaryDirectory(prefix="s1-code-sha-")
+        base = Path(cls.tmp.name)
+        cls.match_root = base / "p4ra-s0-3-freeze-20261106T000001Z"
+        cls.drift_root = base / "p4ra-s0-3-freeze-20261106T000002Z"
+        _write_synthetic_v4_package(cls.match_root, code_sha=None)
+        _write_synthetic_v4_package(cls.drift_root, code_sha="f" * 64)
+        cls.current_code_sha = str(fv3.package_code_sha())
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.tmp.cleanup()
+
+    def test_matching_package_passes_strict_gate(self):
+        package = s1.load_frozen_package(
+            self.match_root, require_confirmatory=True, require_code_sha_match=True
+        )
+        identity = package["identity"]
+        self.assertTrue(identity["code_sha_match"])
+        self.assertFalse(identity["code_sha_delta_allowed"])
+        self.assertEqual(identity["code_sha"], self.current_code_sha)
+        self.assertEqual(identity["current_code_sha"], self.current_code_sha)
+
+    def test_drift_fails_closed_by_default(self):
+        with self.assertRaises(s1.S1RunnerError) as ctx:
+            s1.load_frozen_package(
+                self.drift_root, require_confirmatory=True, require_code_sha_match=True
+            )
+        self.assertIn(s1.CODE_SHA_DRIFT_ERROR, str(ctx.exception))
+        self.assertEqual(getattr(ctx.exception, "code", None), s1.CODE_SHA_DRIFT_ERROR)
+
+    def test_drift_allowed_with_explicit_flag(self):
+        package = s1.load_frozen_package(
+            self.drift_root,
+            require_confirmatory=True,
+            require_code_sha_match=True,
+            allow_code_delta=True,
+        )
+        identity = package["identity"]
+        self.assertFalse(identity["code_sha_match"])
+        self.assertTrue(identity["code_sha_delta_allowed"])
+        self.assertEqual(identity["code_sha"], "f" * 64)
+        plan = s1.iter_run_plan(
+            package, task_limit=1, meta_seeds=(0,), opt_seeds=(0,), arms=(m5.S1_RANDOM_BO,)
+        )
+        config = s1.build_grid_run_config(package, run_id="p4ra-s1-code-delta", plan=plan)
+        self.assertEqual(config["code_sha"], "f" * 64)
+        self.assertEqual(config["current_code_sha"], self.current_code_sha)
+        self.assertFalse(config["code_sha_match"])
+        self.assertTrue(config["code_sha_delta_allowed"])
+        task = next(task for task in package["tasks"] if task.split == s1.PRIMARY_SPLIT)
+        record = s1.run_single(
+            s1.RunContext(
+                task=task,
+                design_space=load_design_space_12d(),
+                model_artifact=None,
+                identity=s1.frozen_identity_for_run(package),
+                run_id="p4ra-s1-code-delta",
+            ),
+            arm=m5.S1_RANDOM_BO,
+            budget=64,
+            k_shot=0,
+            meta_seed=0,
+            opt_seed=0,
+        )
+        self.assertEqual(record["status"], "OK")
+        with tempfile.TemporaryDirectory(prefix="s1-code-delta-") as raw:
+            outdir = Path(raw) / "bundle"
+            summary = s1.write_run_bundle(
+                outdir,
+                run_id="p4ra-s1-code-delta",
+                package=package,
+                records=[record],
+                run_config=config,
+            )
+            self.assertEqual(summary["code_sha"], "f" * 64)
+            self.assertTrue(summary["code_sha_delta_allowed"])
+            manifest = json.loads((outdir / "manifest.json").read_text(encoding="utf-8"))
+            self.assertEqual(manifest["code_sha"], "f" * 64)
+            self.assertEqual(manifest["current_code_sha"], self.current_code_sha)
+            self.assertFalse(manifest["code_sha_match"])
+            self.assertTrue(manifest["code_sha_delta_allowed"])
+
+    def test_cli_grid_drift_three_states(self):
+        import contextlib
+        import io
+
+        with self.assertRaises(s1.S1RunnerError) as ctx:
+            s1._main(
+                ["grid", "--frozen", str(self.drift_root), "--grid", "formal", "--tasks", "1"]
+            )
+        self.assertIn(s1.CODE_SHA_DRIFT_ERROR, str(ctx.exception))
+        buffer = io.StringIO()
+        with contextlib.redirect_stdout(buffer):
+            code = s1._main(
+                [
+                    "grid",
+                    "--frozen",
+                    str(self.drift_root),
+                    "--grid",
+                    "formal",
+                    "--tasks",
+                    "1",
+                    "--allow-code-delta",
+                ]
+            )
+        self.assertEqual(code, 0)
+        payload = json.loads(buffer.getvalue())
+        self.assertFalse(payload["code_sha_match"])
+        self.assertTrue(payload["code_sha_delta_allowed"])
+        buffer = io.StringIO()
+        with contextlib.redirect_stdout(buffer):
+            code = s1._main(
+                ["grid", "--frozen", str(self.match_root), "--grid", "formal", "--tasks", "1"]
+            )
+        self.assertEqual(code, 0)
+        payload = json.loads(buffer.getvalue())
+        self.assertTrue(payload["code_sha_match"])
+        self.assertFalse(payload["code_sha_delta_allowed"])
+
+    def test_cli_run_drift_three_states(self):
+        import contextlib
+        import io
+
+        with tempfile.TemporaryDirectory(prefix="s1-code-run-") as raw:
+            base_argv = [
+                "run",
+                "--frozen",
+                str(self.drift_root),
+                "--run-id",
+                "p4ra-s1-code-delta-run",
+                "--arms",
+                "RAND-BO",
+                "--budgets",
+                "64",
+                "--k-values",
+                "0",
+                "--meta-seeds",
+                "0",
+                "--opt-seeds",
+                "0",
+                "--task-limit",
+                "1",
+            ]
+            with self.assertRaises(s1.S1RunnerError) as ctx:
+                s1._main(base_argv + ["--outdir", str(Path(raw) / "denied")])
+            self.assertIn(s1.CODE_SHA_DRIFT_ERROR, str(ctx.exception))
+            buffer = io.StringIO()
+            with contextlib.redirect_stdout(buffer):
+                code = s1._main(
+                    base_argv
+                    + ["--outdir", str(Path(raw) / "allowed"), "--allow-code-delta"]
+                )
+            self.assertEqual(code, 0)
+            outdir = Path(raw) / "allowed"
+            config = json.loads((outdir / "run_config.json").read_text(encoding="utf-8"))
+            self.assertEqual(config["code_sha"], "f" * 64)
+            self.assertEqual(config["current_code_sha"], self.current_code_sha)
+            self.assertFalse(config["code_sha_match"])
+            self.assertTrue(config["code_sha_delta_allowed"])
+            summary = json.loads((outdir / "run_summary.json").read_text(encoding="utf-8"))
+            self.assertEqual(summary["code_sha"], "f" * 64)
+            self.assertFalse(summary["code_sha_match"])
+            self.assertTrue(summary["code_sha_delta_allowed"])
+            self.assertEqual(summary["physical_call_count_total"], 0)
+
+    def test_cli_merge_drift_three_states(self):
+        import contextlib
+        import io
+
+        with tempfile.TemporaryDirectory(prefix="s1-code-merge-") as raw:
+            shards = Path(raw) / "shards"
+            shards.mkdir(parents=True)
+            base_argv = [
+                "merge",
+                "--frozen",
+                str(self.drift_root),
+                "--shards-root",
+                str(shards),
+                "--outdir",
+                str(Path(raw) / "merged"),
+                "--run-id",
+                "p4ra-s1-code-delta-merge",
+                "--arms",
+                "RAND-BO",
+                "--budgets",
+                "64",
+                "--k-values",
+                "0",
+                "--meta-seeds",
+                "0",
+                "--opt-seeds",
+                "0",
+                "--task-limit",
+                "1",
+            ]
+            with self.assertRaises(s1.S1RunnerError) as ctx:
+                s1._main(base_argv)
+            self.assertIn(s1.CODE_SHA_DRIFT_ERROR, str(ctx.exception))
+            buffer = io.StringIO()
+            with contextlib.redirect_stdout(buffer):
+                code = s1._main(base_argv + ["--allow-code-delta"])
+            self.assertEqual(code, 1)
+            payload = json.loads(buffer.getvalue())
+            self.assertEqual(payload["status"], "FAIL")
+            self.assertNotIn(s1.CODE_SHA_DRIFT_ERROR, payload["error"])
 
 
 if __name__ == "__main__":

@@ -326,6 +326,12 @@ def verify_analysis_freeze(
 
     formal：legacy/非确认包、code_sha 漂移、prereg 四块缺失/漂移均 fail-closed。
     exploratory：legacy 需 allow_legacy、code 漂移需 allow_code_delta，四块缺失降级为 warning；不得进入确认统计。
+
+    S1R4-m05 两类错误码语义不同：
+      - S1_ANALYSIS_LEGACY_PACKAGE：包身份/确认标记不满足确证合同（legacy 布局或 confirmatory_eligible
+        未全 true）；只能 exploratory + --allow-legacy 读取，输出 confirmatory_eligible=false。
+      - S1_ANALYSIS_CODE_SHA_DRIFT：包合规但当前分析代码 package_code_sha() 与包内 code_sha 不一致；
+        formal 须在生成该包的同一 commit 上运行，exploratory 需 --allow-code-delta。
     """
     mode = str(analysis_mode)
     if mode not in ANALYSIS_MODES:
@@ -335,21 +341,51 @@ def verify_analysis_freeze(
     is_legacy = (family_version != CONFIRMATORY_FAMILY_VERSION) or (not confirmatory_eligible)
     warnings: list[str] = []
     if is_legacy:
-        details = (
-            f"family_version={family_version!r}（需 {CONFIRMATORY_FAMILY_VERSION!r}），"
-            f"confirmatory_eligible={confirmatory_eligible!r}（需 true）"
+        unmet: list[str] = []
+        if family_version != CONFIRMATORY_FAMILY_VERSION:
+            unmet.append(
+                f"family_version={family_version!r}（需 {CONFIRMATORY_FAMILY_VERSION!r}）"
+            )
+        else:
+            unmet.append(f"family_version={family_version!r} 已符合")
+        if not confirmatory_eligible:
+            observed_flags = {
+                name: container.get("confirmatory_eligible")
+                for name, container in (
+                    ("freeze_summary", bundle.freeze_summary),
+                    ("frozen_family", bundle.frozen_family),
+                    ("preregistration", bundle.preregistration),
+                )
+                if isinstance(container, Mapping)
+            }
+            unmet.append(
+                "confirmatory_eligible 未全部为 true（三处实际值："
+                + repr(observed_flags)
+                + "）"
+            )
+        else:
+            unmet.append("confirmatory_eligible=true 已符合")
+        details = "；".join(unmet)
+        legacy_hint = (
+            "S1_ANALYSIS_LEGACY_PACKAGE 表示包身份/确认标记不满足确证合同（不是代码版本问题）；"
+            "S0-2/S0-3/S0-4 等 legacy/非确认布局只能 exploratory + --allow-legacy 读取并在输出中"
+            "标记 confirmatory_eligible=false"
         )
         if mode == ANALYSIS_MODE_FORMAL:
             raise _v4c_block_error(
                 S1_ANALYSIS_LEGACY_PACKAGE,
-                f"formal 模式拒绝 legacy/非确认冻结包（R-V4-08-04）：{details}",
+                f"formal 模式拒绝 legacy/非确认冻结包（R-V4-08-04）：{details}。{legacy_hint}",
             )
         if not allow_legacy:
             raise _v4c_block_error(
                 S1_ANALYSIS_LEGACY_PACKAGE,
-                f"exploratory 模式使用 legacy/非确认冻结包必须显式 --allow-legacy：{details}",
+                f"exploratory 模式使用 legacy/非确认冻结包必须显式 --allow-legacy：{details}。"
+                f"{legacy_hint}",
             )
-        warnings.append(f"legacy/非确认冻结包已由 --allow-legacy 放行（{details}）；本次不得进入确认统计")
+        warnings.append(
+            f"legacy/非确认冻结包已由 --allow-legacy 放行（{details}）；本次不得进入确认统计。"
+            f"{legacy_hint}"
+        )
     code_shas = _freeze_bundle_code_sha(bundle)
     current_code_sha = _current_analysis_code_sha()
     sha_values = [code_shas["frozen_family_code_sha"], code_shas["freeze_summary_code_sha"], current_code_sha]
@@ -362,10 +398,16 @@ def verify_analysis_freeze(
             f"frozen_family.code_sha={code_shas['frozen_family_code_sha']}，"
             f"freeze_summary.code_sha={code_shas['freeze_summary_code_sha']}"
         )
+        drift_hint = (
+            "S1_ANALYSIS_CODE_SHA_DRIFT 表示冻结包布局/确认标记/身份校验均已通过，仅当前分析代码与"
+            "包生成时的 code_sha 不一致（不是 legacy 包问题）；formal 必须在生成该包的同一 commit "
+            "上运行，exploratory 可用 --allow-code-delta 显式放行并记录 warning"
+        )
         if mode == ANALYSIS_MODE_FORMAL or not allow_code_delta:
             raise _v4c_block_error(
                 S1_ANALYSIS_CODE_SHA_DRIFT,
-                f"formal 模式要求当前代码与冻结包 code_sha 一致（R-V4-08-03）：{code_message}",
+                f"formal 模式要求当前代码与冻结包 code_sha 一致（R-V4-08-03）：{code_message}。"
+                f"{drift_hint}",
             )
         warnings.append(f"code_sha 漂移已由 --allow-code-delta 放行：{code_message}")
     blocks: dict[str, Any] | None
@@ -3464,6 +3506,9 @@ MODEL_SCORED_ARMS: tuple[str, ...] = (
     "FOMAML-ZERO-BO",
     "FOMAML-KSHOT-BO",
 )
+# S1R4-B01：report 的 pair 标签可能按 runner 预注册顺序书写（如 ZERO|KSHOT），
+# analysis 内部一律归一到字典序（KSHOT|ZERO）后再比较。
+MODEL_SCORED_ARM_SET: frozenset[str] = frozenset(MODEL_SCORED_ARMS)
 IDENTIFIABILITY_REPORT_FILENAME = "identifiability_report.json"
 IDENTIFIABILITY_SCHEMA_VERSION_V4 = "p4ra-s1-identifiability-2"
 IDENTIFIABILITY_SCHEMA_VERSIONS: tuple[str, ...] = (
@@ -3504,18 +3549,60 @@ def _pair_key(arm_a: str, arm_b: str) -> tuple[str, str]:
     return tuple(sorted((str(arm_a), str(arm_b))))
 
 
+def _normalise_pair_label(label: object, *, context: str) -> str:
+    """S1R4-B01：把任意顺序的臂对标签归一为字典序「arm_a|arm_b」。
+
+    runner 顶层 pair_status_counts 的键使用预注册顺序（如 FOMAML-ZERO-BO|FOMAML-KSHOT-BO），
+    而 analysis 的规范标签按字典序（FOMAML-KSHOT-BO|FOMAML-ZERO-BO）；不归一会导致误报
+    「pair_status_counts 与实际 pairwise 计数不一致」。
+    非法格式（非字符串 / 非恰 2 段 / 空段 / 两段相同 / 未知臂）一律 fail-closed。
+    """
+    if not isinstance(label, str):
+        raise S1AnalysisError(
+            f"{context} 的臂对标签必须是字符串，实际 {type(label).__name__}"
+        )
+    parts = label.strip().split("|")
+    if len(parts) != 2:
+        raise S1AnalysisError(
+            f"{context} 的臂对标签必须恰含 2 段（arm_a|arm_b），实际 {label!r}"
+        )
+    arm_a, arm_b = (part.strip() for part in parts)
+    if not arm_a or not arm_b:
+        raise S1AnalysisError(f"{context} 的臂对标签含空臂名：{label!r}")
+    if arm_a == arm_b:
+        raise S1AnalysisError(f"{context} 的臂对标签两段相同：{label!r}")
+    for arm in (arm_a, arm_b):
+        if arm not in MODEL_SCORED_ARM_SET:
+            raise S1AnalysisError(
+                f"{context} 的臂对标签含未知/非 model-scored 臂 {arm!r}；"
+                f"允许 {sorted(MODEL_SCORED_ARM_SET)}"
+            )
+    return "|".join(sorted((arm_a, arm_b)))
+
+
 def _canonical_pair_counts(counts: Mapping[Any, Any]) -> dict[str, dict[str, int]]:
-    """把 pair_status_counts 规范化为 {arm_a|arm_b: {status: count}}。"""
+    """把 pair_status_counts 规范化为 {arm_a|arm_b: {status: count}}（S1R4-B01：标签先归一）。"""
     normalised: dict[str, dict[str, int]] = {}
     for label, value in counts.items():
-        key = str(label)
         if not isinstance(value, Mapping):
             raise S1AnalysisError("identifiability_report.pair_status_counts 的值必须是 object")
+        key = _normalise_pair_label(
+            label, context="identifiability_report.pair_status_counts"
+        )
+        if key in normalised:
+            raise S1AnalysisError(
+                "identifiability_report.pair_status_counts 归一后臂对重复：" + key
+            )
         bucket: dict[str, int] = {}
         for status, number in value.items():
             if not _is_int(number):
                 raise S1AnalysisError("identifiability_report.pair_status_counts 计数必须是整数")
-            bucket[str(status)] = int(number)
+            count = int(number)
+            if count < 0:
+                raise S1AnalysisError(
+                    "identifiability_report.pair_status_counts 计数不能为负：" + key
+                )
+            bucket[str(status)] = count
         normalised[key] = bucket
     return normalised
 
@@ -3645,6 +3732,13 @@ def _validate_structural_pairwise(
         raise S1AnalysisError(f"identifiability_report.groups[{index}].pairwise 缺 arm_a")
     if not isinstance(arm_b, str) or not arm_b:
         raise S1AnalysisError(f"identifiability_report.groups[{index}].pairwise 缺 arm_b")
+    for arm in (arm_a, arm_b):
+        if arm not in MODEL_SCORED_ARM_SET:
+            raise S1AnalysisError(
+                f"identifiability_report.groups[{index}].pairwise 含未知/非 model-scored 臂 "
+                f"{arm!r}；允许 {sorted(MODEL_SCORED_ARM_SET)}"
+            )
+    normalised_arm_a, normalised_arm_b = sorted((arm_a, arm_b))
     overlap = pairwise.get("overlap_rate")
     if not _is_finite_number(overlap) or not (0.0 <= float(overlap) <= 1.0):
         raise S1AnalysisError(
@@ -3697,8 +3791,8 @@ def _validate_structural_pairwise(
         structural_status = expected_status
         source = PAIR_LEVEL_FIELDS_SOURCE_DERIVED
     return StructuralPairStatus(
-        arm_a=str(arm_a),
-        arm_b=str(arm_b),
+        arm_a=normalised_arm_a,
+        arm_b=normalised_arm_b,
         overlap_rate=float(overlap),
         threshold=float(report_threshold),
         structural_status=str(structural_status),
@@ -3842,7 +3936,12 @@ def resolve_identifiability_report_paths(
     *,
     explicit_paths: Sequence[Any] | None = None,
 ) -> tuple[list[Path], list[Path]]:
-    """解析 report 路径：返回 (已存在的 report 路径, 缺 report 的 run 目录）。"""
+    """解析 report 路径：返回 (已存在的 report 路径, 缺 report 的 run 目录）。
+
+    S1R4-m03：显式指定 --identifiability-report 时该参数独占，禁止再自动发现 run 目录内的
+    report（否则同一/多份 report 会被重复加载并可能互相覆盖）；此时缺失由
+    load_structural_identifiability 的组覆盖校验按模式 fail-closed/降级处理。
+    """
     report_paths: list[Path] = []
     seen_paths: set[str] = set()
     if explicit_paths is not None:
@@ -3854,6 +3953,8 @@ def resolve_identifiability_report_paths(
             if key not in seen_paths:
                 seen_paths.add(key)
                 report_paths.append(path)
+        # 显式模式独占：不再扫描 run 目录（避免双载冲突）。
+        return report_paths, []
     missing_dirs: list[Path] = []
     for directory in _report_dirs_from_sources(sources):
         candidate = directory / IDENTIFIABILITY_REPORT_FILENAME
@@ -4035,6 +4136,12 @@ def load_structural_identifiability(
                         "|".join(str(item) for item in key) + "::" + _pair_label(order[first_index], order[second_index])
                     )
     coverage = {
+        "report_selection_mode": (
+            "explicit" if explicit_report_paths is not None else "auto_discovered"
+        ),
+        "explicit_report_count": (
+            len(report_paths) if explicit_report_paths is not None else 0
+        ),
         "model_scored_arms": list(MODEL_SCORED_ARMS),
         "records_model_scored_groups": len(expected_arms),
         "report_group_count": int(merged["report_group_count"]),
@@ -5158,6 +5265,12 @@ def run_s1_analysis(
                 "R-V4-08-01：Holm 族为动态大小（族键=(主端点,B,K)，成员=C1–C4；C5 永不进族），"
                 "pair-level 排除后族大小可 <4"
             ),
+            (
+                "S1_ANALYSIS_LEGACY_PACKAGE 与 S1_ANALYSIS_CODE_SHA_DRIFT 语义不同：前者为包身份/"
+                "确认标记不满足确证合同（只能 exploratory + --allow-legacy）；后者为包合规但当前代码 "
+                "package_code_sha() 与包内 code_sha 不一致（formal 须同 commit 运行，exploratory 需 "
+                "--allow-code-delta）"
+            ),
         ],
         "contract_ambiguities": [
             "执行计划 §6 只规定 C1 单层规则（>=2 BENEFIT 且 0 HARM），未规定 K=3 与 K=5 如何合成；"
@@ -5246,7 +5359,10 @@ def main(argv: Sequence[str] | None = None) -> int:
         "--identifiability-report",
         action="append",
         default=None,
-        help="显式指定 identifiability_report.json（可多次；默认从 run 目录自动发现）",
+        help=(
+            "显式指定 identifiability_report.json（可多次）；显式指定时独占，不再自动发现 "
+            "run 目录内 report；缺省时从 run 目录自动发现"
+        ),
     )
     parser.add_argument(
         "--expected-identity-json",

@@ -82,6 +82,11 @@ IDENTIFIABILITY_REQUIRED_PAIRS: tuple[tuple[str, str], ...] = (
     (m5.S1_PRETRAIN_KSHOT_BO, m5.S1_FOMAML_KSHOT_BO),
 )
 
+# 冻结包 code_sha 漂移门禁（S1R4-M01）：grid/run/merge 默认 fail-closed，显式
+# --allow-code-delta 才放行并在 run_config/summary/manifest 记录双 sha 与放行标志。
+CODE_SHA_DRIFT_ERROR = "S1_FROZEN_CODE_SHA_DRIFT"
+CODE_SHA_STRICT_COMMANDS: tuple[str, ...] = ("grid", "run", "merge")
+
 
 class S1RunnerError(RuntimeError):
     """S1 runner 的 fail-closed 错误。"""
@@ -166,13 +171,23 @@ def _task_from_record(record: Mapping[str, Any]) -> SyntheticTask:
 
 
 def load_frozen_package(
-    root: str | Path, *, require_confirmatory: bool = False
+    root: str | Path,
+    *,
+    require_confirmatory: bool = False,
+    require_code_sha_match: bool = False,
+    allow_code_delta: bool = False,
 ) -> dict[str, Any]:
     """加载冻结包并校验；返回 tasks/split/frozen/prereg 与身份摘要。
 
     require_confirmatory=True 时只接受 v4c 确证包（R-V4-08-04）：family_version=p4ra-family-v4、
     frozen/prereg confirmatory_eligible=true、prereg 三块齐全（holdout_package/c5_policy/
     structural_identifiability）。默认 False 保留只读/探索兼容（A6 分析层与单元测试直接调用）。
+
+    require_code_sha_match=True（CLI grid/run/merge 的默认门禁，S1R4-M01）时，冻结包
+    frozen_family.code_sha 必须等于当前代码 family_v3.package_code_sha()；不一致时：
+    - allow_code_delta=False（默认）-> fail-closed 抛 S1_FROZEN_CODE_SHA_DRIFT；
+    - allow_code_delta=True -> 放行，身份/配置记录 code_sha_delta_allowed=true 与双 sha。
+    库默认 require_code_sha_match=False，保留 A6 分析层与只读复现的直接加载兼容。
     """
     package = Path(root)
     if not package.is_dir():
@@ -258,6 +273,25 @@ def load_frozen_package(
     expected_ids = [task_id for split_name in fv3.SPLIT_ORDER for task_id in split["task_ids"][split_name]]
     if [task.task_id for task in tasks] != list(tasks_payload and [record["task_id"] for record in tasks_payload]) or sorted(expected_ids) != sorted(task.task_id for task in tasks):
         raise S1RunnerError("tasks.json 与 meta_task_split.json 的 task_id 集合不一致")
+    frozen_code_sha_raw = frozen.get("code_sha")
+    frozen_code_sha = frozen_code_sha_raw if isinstance(frozen_code_sha_raw, str) else ""
+    current_code_sha = str(fv3.package_code_sha())
+    code_sha_match = bool(frozen_code_sha) and frozen_code_sha == current_code_sha
+    code_sha_delta_allowed = False
+    if require_code_sha_match and not code_sha_match:
+        if allow_code_delta:
+            code_sha_delta_allowed = True
+        else:
+            drift = S1RunnerError(
+                CODE_SHA_DRIFT_ERROR
+                + ": 冻结包 code_sha 与当前代码不一致（frozen="
+                + repr(frozen_code_sha)
+                + "，current="
+                + current_code_sha
+                + "）；请用当前提交重新生成冻结包，或仅以 --allow-code-delta 做只读/探索运行"
+            )
+            setattr(drift, "code", CODE_SHA_DRIFT_ERROR)
+            raise drift
     identity = {
         "frozen_package": str(package),
         "frozen_run_id": str(frozen.get("run_id", "")),
@@ -285,6 +319,10 @@ def load_frozen_package(
         "task_counts": counts,
         "physical_call_count": 0,
         "raw_sha256": raw_sha256,
+        "code_sha": frozen_code_sha,
+        "current_code_sha": current_code_sha,
+        "code_sha_match": code_sha_match,
+        "code_sha_delta_allowed": code_sha_delta_allowed,
     }
     if abs(identity["radius_base"] - DEFAULT_RADIUS_BASE) > 1e-12:
         raise S1RunnerError(f"冻结 radius_base={identity['radius_base']} != {DEFAULT_RADIUS_BASE}")
@@ -312,6 +350,10 @@ def load_frozen_package(
         "evaluation_mode": "confirmatory" if confirmatory else "exploratory",
         "confirmatory_eligible": confirmatory,
         "prereg_v4c_blocks_status": "PRESENT" if prereg_v4c_complete else "ABSENT",
+        "code_sha": frozen_code_sha,
+        "current_code_sha": current_code_sha,
+        "code_sha_match": code_sha_match,
+        "code_sha_delta_allowed": code_sha_delta_allowed,
     }
 
 
@@ -966,11 +1008,12 @@ def initial_design_overlap(rows_a: Sequence[str], rows_b: Sequence[str]) -> dict
     }
 
 
-def _pair_key(arm_a: str, arm_b: str) -> str:
-    """把臂对规范化为预注册顺序（required pairs 用冻结顺序，其余按字典序）。"""
-    for left, right in IDENTIFIABILITY_REQUIRED_PAIRS:
-        if {arm_a, arm_b} == {left, right}:
-            return f"{left}|{right}"
+def _pair_label(arm_a: str, arm_b: str) -> str:
+    """把臂对规范化为字典序标签（与 s1_analysis._pair_label 完全一致，单一实现）。
+
+    两个 arm 名按字典序排序后用 "|" 连接；required pairs 与任意两两组合一律使用该函数，
+    禁止使用预注册顺序拼接，避免 runner 报告与 A6 分析口径漂移（S1R4-B01）。
+    """
     return "|".join(sorted((str(arm_a), str(arm_b))))
 
 
@@ -1005,11 +1048,11 @@ def ranking_identifiability_report(
         grouped.setdefault(key, {})[arm] = [str(value) for value in rows]
     groups: list[dict[str, Any]] = []
     pair_coverage: dict[str, int] = {
-        f"{left}|{right}": 0 for left, right in IDENTIFIABILITY_REQUIRED_PAIRS
+        _pair_label(left, right): 0 for left, right in IDENTIFIABILITY_REQUIRED_PAIRS
     }
     status_counts: dict[str, int] = {}
     pair_status_counts: dict[str, dict[str, int]] = {
-        f"{left}|{right}": {"IDENTIFIABLE": 0, "STRUCTURALLY_IDENTICAL": 0}
+        _pair_label(left, right): {"IDENTIFIABLE": 0, "STRUCTURALLY_IDENTICAL": 0}
         for left, right in IDENTIFIABILITY_REQUIRED_PAIRS
     }
     for key in sorted(grouped):
@@ -1029,7 +1072,7 @@ def ranking_identifiability_report(
                     "IDENTIFIABLE" if pair_identifiable else "STRUCTURALLY_IDENTICAL"
                 )
                 pair_status_counts.setdefault(
-                    _pair_key(arm_a, arm_b),
+                    _pair_label(arm_a, arm_b),
                     {"IDENTIFIABLE": 0, "STRUCTURALLY_IDENTICAL": 0},
                 )[pair_status] += 1
                 pairwise.append(
@@ -1044,7 +1087,7 @@ def ranking_identifiability_report(
                 )
                 for left, right in IDENTIFIABILITY_REQUIRED_PAIRS:
                     if {arm_a, arm_b} == {left, right}:
-                        pair_coverage[f"{left}|{right}"] += 1
+                        pair_coverage[_pair_label(left, right)] += 1
         max_rate = max(rates)
         mean_rate = sum(rates) / len(rates)
         status = (
@@ -1099,6 +1142,10 @@ def write_run_bundle(
         "run_id": run_id,
         "evaluation_mode": str(package["identity"].get("evaluation_mode", "exploratory")),
         "confirmatory_eligible": bool(package["identity"].get("confirmatory_eligible", False)),
+        "code_sha": str(package["identity"].get("code_sha", "")),
+        "current_code_sha": str(package["identity"].get("current_code_sha", "")),
+        "code_sha_match": bool(package["identity"].get("code_sha_match", False)),
+        "code_sha_delta_allowed": bool(package["identity"].get("code_sha_delta_allowed", False)),
         "record_count": len(records),
         "status_counts": _count_by(records, "status"),
         "split_counts": _count_by(records, "split"),
@@ -1134,6 +1181,10 @@ def write_run_bundle(
         "run_id": run_id,
         "evaluation_mode": str(package["identity"].get("evaluation_mode", "exploratory")),
         "confirmatory_eligible": bool(package["identity"].get("confirmatory_eligible", False)),
+        "code_sha": str(package["identity"].get("code_sha", "")),
+        "current_code_sha": str(package["identity"].get("current_code_sha", "")),
+        "code_sha_match": bool(package["identity"].get("code_sha_match", False)),
+        "code_sha_delta_allowed": bool(package["identity"].get("code_sha_delta_allowed", False)),
         "identity": frozen_identity_for_run(package),
         "artifacts": artifacts,
     }
@@ -1169,6 +1220,10 @@ def build_run_config(
         "frozen_run_id": package["identity"]["frozen_run_id"],
         "evaluation_mode": str(package["identity"].get("evaluation_mode", "exploratory")),
         "confirmatory_eligible": bool(package["identity"].get("confirmatory_eligible", False)),
+        "code_sha": str(package["identity"].get("code_sha", "")),
+        "current_code_sha": str(package["identity"].get("current_code_sha", "")),
+        "code_sha_match": bool(package["identity"].get("code_sha_match", False)),
+        "code_sha_delta_allowed": bool(package["identity"].get("code_sha_delta_allowed", False)),
         "split": list(splits),
         "task_limit": task_limit,
         "arm": arm,
@@ -1443,6 +1498,10 @@ def build_grid_run_config(
         "grid_strata": grid_strata,
         "evaluation_mode": str(package["identity"].get("evaluation_mode", "exploratory")),
         "confirmatory_eligible": bool(package["identity"].get("confirmatory_eligible", False)),
+        "code_sha": str(package["identity"].get("code_sha", "")),
+        "current_code_sha": str(package["identity"].get("current_code_sha", "")),
+        "code_sha_match": bool(package["identity"].get("code_sha_match", False)),
+        "code_sha_delta_allowed": bool(package["identity"].get("code_sha_delta_allowed", False)),
         "identity": frozen_identity_for_run(package),
         "frozen_run_id": package["identity"]["frozen_run_id"],
         "record_count": len(items),
@@ -1911,6 +1970,10 @@ def merge_run_shards(
         "grid_mode": FORMAL_GRID_MODE,
         "evaluation_mode": evaluation_mode,
         "confirmatory_eligible": bool(package["identity"].get("confirmatory_eligible", False)),
+        "code_sha": str(package["identity"].get("code_sha", "")),
+        "current_code_sha": str(package["identity"].get("current_code_sha", "")),
+        "code_sha_match": bool(package["identity"].get("code_sha_match", False)),
+        "code_sha_delta_allowed": bool(package["identity"].get("code_sha_delta_allowed", False)),
         "identity": identity,
         "frozen_run_id": package["identity"]["frozen_run_id"],
         "expected_run_count": len(plan_items),
@@ -2158,6 +2221,7 @@ def _build_parser() -> argparse.ArgumentParser:
     run.add_argument("--task-limit", type=int, default=None)
     run.add_argument("--grid", choices=list(GRID_MODES), default=CARTESIAN_GRID_MODE)
     run.add_argument("--allow-legacy", action="store_true", help="只读/探索：允许非确证冻结包")
+    run.add_argument("--allow-code-delta", action="store_true", help="只读/探索：允许冻结包 code_sha 漂移")
     det = sub.add_parser("determinism", help="确定性重跑子集（200 runs x N）")
     det.add_argument("--frozen", required=True)
     det.add_argument("--outdir", required=True)
@@ -2190,6 +2254,7 @@ def _build_parser() -> argparse.ArgumentParser:
     grid.add_argument("--tasks", type=int, default=None)
     grid.add_argument("--grid", choices=list(GRID_MODES), default=CARTESIAN_GRID_MODE)
     grid.add_argument("--allow-legacy", action="store_true", help="只读/探索：允许非确证冻结包")
+    grid.add_argument("--allow-code-delta", action="store_true", help="只读/探索：允许冻结包 code_sha 漂移")
     merge = sub.add_parser("merge", help="合并 15 个分片的 run_records 为完整 formal bundle（R-V4-07）")
     merge.add_argument("--frozen", required=True)
     merge.add_argument("--artifacts-root", default=None)
@@ -2204,13 +2269,20 @@ def _build_parser() -> argparse.ArgumentParser:
     merge.add_argument("--opt-seeds", default=None)
     merge.add_argument("--task-limit", type=int, default=None)
     merge.add_argument("--allow-legacy", action="store_true", help="只读/探索：允许非确证冻结包")
+    merge.add_argument("--allow-code-delta", action="store_true", help="只读/探索：允许冻结包 code_sha 漂移")
     return parser
 
 
 def _main(argv: Sequence[str] | None = None) -> int:
     args = _build_parser().parse_args(argv)
     allow_legacy = bool(getattr(args, "allow_legacy", False))
-    package = load_frozen_package(args.frozen, require_confirmatory=not allow_legacy)
+    allow_code_delta = bool(getattr(args, "allow_code_delta", False))
+    package = load_frozen_package(
+        args.frozen,
+        require_confirmatory=not allow_legacy,
+        require_code_sha_match=args.command in CODE_SHA_STRICT_COMMANDS,
+        allow_code_delta=allow_code_delta,
+    )
     if args.command == "grid":
         grid_mode = str(args.grid)
         if grid_mode == FORMAL_GRID_MODE:
@@ -2231,6 +2303,12 @@ def _main(argv: Sequence[str] | None = None) -> int:
         payload["evaluation_mode"] = str(package["identity"].get("evaluation_mode", "exploratory"))
         payload["confirmatory_eligible"] = bool(
             package["identity"].get("confirmatory_eligible", False)
+        )
+        payload["code_sha"] = str(package["identity"].get("code_sha", ""))
+        payload["current_code_sha"] = str(package["identity"].get("current_code_sha", ""))
+        payload["code_sha_match"] = bool(package["identity"].get("code_sha_match", False))
+        payload["code_sha_delta_allowed"] = bool(
+            package["identity"].get("code_sha_delta_allowed", False)
         )
         print(canonical_json(payload))
         return 0
@@ -2254,6 +2332,10 @@ def _main(argv: Sequence[str] | None = None) -> int:
                     "status": manifest["status"],
                     "record_count": manifest["actual_record_count"],
                     "shard_count": manifest["shard_count"],
+                    "code_sha": manifest["code_sha"],
+                    "current_code_sha": manifest["current_code_sha"],
+                    "code_sha_match": manifest["code_sha_match"],
+                    "code_sha_delta_allowed": manifest["code_sha_delta_allowed"],
                     "problems": manifest["problems"][:MERGE_PROBLEM_DETAIL_LIMIT],
                 }
             )
