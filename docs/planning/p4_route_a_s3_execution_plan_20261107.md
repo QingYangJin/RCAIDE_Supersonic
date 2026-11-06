@@ -1,11 +1,11 @@
 # P4 路线A S3 执行计划：约束感知初始化与低成本适应消融
 
 - 文档路径：`docs/planning/p4_route_a_s3_execution_plan_20261107.md`
-- 版本：v1.2（2026-11-07T05:35Z 修订；v1.0 初稿见提交 `7bef3cf`）
-- 状态：DRAFT_FOR_A5_M0R2_REVIEW（未经 A5 M0R2 APPROVE 前不构成执行合同；v1.1 已被 A5 S3-M0R 判 CHANGES_REQUESTED）
+- 版本：v1.2a（2026-11-07T06:10Z 文档状态勘误；v1.2 执行合同见提交 `f81f69b`，v1.0 初稿见提交 `7bef3cf`）
+- 状态：M0R2 已 APPROVE_FOR_S3_CODE（对象提交 `f81f69b`，A5 S3-M0R2 0 blocker/0 major/3 minor/1 observation）；本 v1.2a 仅做文档状态勘误（A5-S3M0R2-01..04），不改变任何执行合同；A5 在 M1 代码审阅时确认勘误
 - 作者/唯一集成者：Lead（teammate 不得提交、不得写 GitHub）
 - 上游合同：Issue #7（D-P4-003，body 5,150 字符）；`docs/planning/p4_route_a_stage_improvement_plan_20261105.md` 的 S3 条；S1 回执 commentId 6684142041；S2 回执 commentId 6693991661；A5 S3-M0 审阅（CHANGES_REQUESTED，S3-M0-01..16）；A5 S3-M0R 审阅（CHANGES_REQUESTED，S3-M0R-01..09，对象 dd2bab2）；A4 矩阵 v1.1（NEW-01..09）
-- 基线提交：`8da84fc105755825561829d4fb371f2baea57438`（research/p4-route-a-s3 的父提交，S2 docs closeout）；v1.0 计划提交 `7bef3cf8218df2328d997dbb12e4dd626704005f`；v1.1 提交 `dd2bab2`（父 7bef3cf）；v1.2 为其后续修订的待提交版本（随附 `research/concorde_metaopt/evidence/s3/hash_vectors.json`）
+- 基线提交：`8da84fc105755825561829d4fb371f2baea57438`（research/p4-route-a-s3 的父提交，S2 docs closeout）；v1.0 计划提交 `7bef3cf8218df2328d997dbb12e4dd626704005f`；v1.1 提交 `dd2bab2`（父 7bef3cf）；v1.2 提交 `f81f69b0cbf27a26e3e17be34844df3a1147a297`（随附 `research/concorde_metaopt/evidence/s3/hash_vectors.json`，12,472 B sha256 `bde487fb6ed49768ca76e328a31c0efab77d2bd39d41c0ac99def4bb8e876203`）；v1.2a 为文档状态勘误提交
 - 工作树：`<repo-s3>`（S3 专用 worktree，绝对路径不入库），分支 `research/p4-route-a-s3`
 - 证据根（仓库内）：`research/concorde_metaopt/evidence/s3/`
 - 外部记忆根（不得入库）：`<EXT>/p4-route-a/`（`<EXT>` 为用户级 RCAIDE_Supersonic_agent_state 目录）
@@ -76,9 +76,9 @@ Issue #7 §2/§4 规定：S3（约束感知初始化与方法效率消融）在 
 
 | 门 | 产出 | 放行条件 |
 |---|---|---|
-| M0 设计门 | 本计划 v1.1 + S3 阶段开启记录 | A5: APPROVE_FOR_S3_CODE |
-| M0R 修订门 | v1.1 限定 diff（相对 7bef3cf） | A5: APPROVE_FOR_S3_CODE（或 APPROVE_FOR_S3_CODE_AMENDED）；结论 CHANGES_REQUESTED（S3-M0R-01..09） |
-| M0R2 复审门 | v1.2 限定 diff（相对 dd2bab2：计划 + hash_vectors.json） | A5: APPROVE_FOR_S3_CODE（或 APPROVE_FOR_S3_CODE_AMENDED） |
+| M0 设计门 | 本计划 v1.0（7bef3cf）+ S3 阶段开启记录 | A5 实际结论：CHANGES_REQUESTED（S3-M0-01..16） |
+| M0R 修订门 | v1.1 限定 diff（相对 7bef3cf，对象 dd2bab2） | A5 实际结论：CHANGES_REQUESTED（S3-M0R-01..09） |
+| M0R2 复审门 | v1.2 限定 diff（相对 dd2bab2：计划 + hash_vectors.json，对象 f81f69b） | A5 实际结论：APPROVE_FOR_S3_CODE（task-256 rev63，0B/0M/3m/1obs） |
 | M1 代码/校准门 | 家族实现+校准报告+ANIL+臂+runner+prereg 生成器+测试 | A5: APPROVE_FOR_S3_FORMAL（代码审阅） |
 | M2 预注册门 | 新族冻结包、prereg JSON、FD/梯度门、冻结记录 | A5: APPROVE_FOR_S3_RUN |
 | M3 正式 run 授权 | Lead 书面授权（task/worktree/out_dir/预算/停止规则） | Lead 签发 |
@@ -398,6 +398,8 @@ v1.0 的 12D 全维椭球构造经 A5 独立探针与 Lead 数值探针证明不
 ### 6.2 哈希固定向量（随计划提交）
 
 - 文件：`research/concorde_metaopt/evidence/s3/hash_vectors.json`；当前提交版本 12,472 B、raw sha256 `bde487fb6ed49768ca76e328a31c0efab77d2bd39d41c0ac99def4bb8e876203`。
+- A5-S3M0R2-01 处置（v1.2a）：V11（`family_package_sha256`）的输入是族包文件的原始字节，无法在 JSON 内无损内嵌，故该向量不含 `canonical_payload`；其 `input` 记录被测快照标识，校验方式为对所指原始字节取 sha256。
+- A5-S3M0R2-02 处置（v1.2a）：V02/V03 的 `files` 映射是为验证行算法而构造的固定输入（不代表仓库当前真实代码）；M1 测试必须分开两类断言：(i) 用向量内 `files` 复算 `canonical_payload`/`expected_sha256` 验证算法；(ii) 用仓库真实 7 个代码文件重算 `code_sha`/`analysis_code_sha` 并断言与 prereg 记录一致。
 - 顶层：`schema_version=p4ra-s3-hash-vectors-1`、`generated_utc`、`algorithms`（§6.1 规则的结构化副本）、`vectors`（V01..V11，每项含 input、精确中间串 `canonical_payload`、`expected_sha256`）、`self_check`（all_ok）。
 - 覆盖：canonical_json、code_sha（7 文件合成）、analysis_code_sha、task_fingerprint、task_ids_sha256、analysis_plan_digest、package_sha256、prereg_digest、record_digest、episode_digest、family_package_sha256。
 - 该文件 sha256 写入 prereg 的 `frozen_package.hash_vectors_sha256`；若其字节变化而代码未变，prereg 冻结前必须重新签发向量文件并记录原因。
@@ -452,7 +454,8 @@ v1.0 的 12D 全维椭球构造经 A5 独立探针与 Lead 数值探针证明不
 | 阶段 | 内容 | 估算 |
 |---|---|---|
 | M0R | A5 v1.1 复审（限定 diff） | 0.5–1 h |
-| M1 | A1/A6 实现 + 单测（并行）+ Lead 集成 | 4–6 h |
+| M0R2 | A5 v1.2 复审（限定 diff：计划 + hash_vectors.json） | 0.5–1 h |
+| M1 | A1/A6 实现 + 单测（并行）+ Lead 集成（2026-11-07T05:49Z 起） | 4–6 h |
 | M2 | 模型训练（3×FOMAML + 3×ANIL，SMOKE 规模守护）+ 校准 + FD 门 + prereg 冻结 + A5 核验 | 1–2 h |
 | M3 | Lead 授权 + A2 正式 run（<=2 h 硬截止）+ 确定性重跑 | 2–3 h |
 | M4 | A5 结果复核 | 1–2 h |
@@ -466,9 +469,9 @@ v1.0 的 12D 全维椭球构造经 A5 独立探针与 Lead 数值探针证明不
 
 | 门 | 内容 | 通过条件 | 执行者 |
 |---|---|---|---|
-| M0 | 设计审阅 | A5 `APPROVE_FOR_S3_CODE` | A5 |
-| M0R | v1.1 修订复审 | A5 `APPROVE_FOR_S3_CODE`（限定 diff）；结论 CHANGES_REQUESTED（S3-M0R-01..09） | A5 |
-| M0R2 | v1.2 修订复审 | A5 `APPROVE_FOR_S3_CODE`（限定 diff：计划 + hash_vectors.json） | A5 |
+| M0 | 设计审阅 | 实际：CHANGES_REQUESTED（S3-M0-01..16），由 M0R 修订门接续 | A5 |
+| M0R | v1.1 修订复审 | 实际：CHANGES_REQUESTED（S3-M0R-01..09），由 M0R2 复审门接续 | A5 |
+| M0R2 | v1.2 修订复审 | 实际：APPROVE_FOR_S3_CODE（f81f69b，限定 diff：计划 + hash_vectors.json）；v1.2a 文档勘误随 M1 审阅确认 | A5 |
 | M1 | 实现 + 单测 + 集成 | A5 `APPROVE_FOR_S3_FORMAL`；全量测试绿；公平性/预算/哈希/e2e 测试齐备 | A5 |
 | M2 | 校准 + 模型 + FD 门 + prereg 冻结 | 校准报告满足 §2.5 接受条件；FD 门 PASS；prereg build/verify 两遍；A5 `APPROVE_FOR_S3_RUN` | A5 |
 | M3 | 正式 run 授权与执行 | Lead 书面授权（含 owner 指令复核）+ A2 执行（<=2 h、physical=0、无重试） | Lead/A2 |
@@ -515,6 +518,7 @@ v1.0 的 12D 全维椭球构造经 A5 独立探针与 Lead 数值探针证明不
 | v1.0 | 2026-11-07 | commit 7bef3cf | 初版设计（12D 椭球族、9 图、Holm 2、6,000 runs） |
 | v1.1 | 2026-11-07 | 本文件 | 处置 A5 S3-M0（1 blocker + 10 major + 5 minor）与 A4 DEV-01..09：线性多面体族、phase-scoped 数据边界、gap_to_reference/MAE、OOD 网格、7 文件 code_sha/analysis_plan_digest、episode/ANIL 合同、哈希 canonical 与固定向量、FD 门合同、fig10 图⑦、BO 随机流合同、Wilcoxon ties/zeros、R-S3-01 授权链、R-S3-02 降网格审批、10 图映射、预算记账 6,900 runs |
 | v1.2 | 2026-11-07 | 本文件 + `research/concorde_metaopt/evidence/s3/hash_vectors.json` | 处置 A5 S3-M0R-01..09 与 A4 NEW-01..09：C1/C2 comparator 改 CON−OBJ、提交哈希固定向量与完整算法（7 文件 code_sha/analysis_code_sha/task_ids_sha256/package_sha256）、R-S3-02 算术更正 3,780/362,880、phase-scoped 与 campaign 语义、RANDOM 多样性统一、决策枚举互斥穷尽、radius_base→delta1_base、episode 消耗披露 |
+| v1.2a | 2026-11-07 | 本文件 | 文档状态勘误（A5 S3-M0R2-01..04）：版本/状态/基线提交、§0.3/§10/§11 补 M0R2 门与实际结论、§6.2 注 V11 原始字节语义与 V02/V03 合成输入、§16 注 params_digest 旧承诺处置、§20 处置表；不改变执行合同 |
 
 ## 15. Issue #7 对齐表
 
@@ -559,6 +563,8 @@ v1.0 的 12D 全维椭球构造经 A5 独立探针与 Lead 数值探针证明不
 | S3-M0-15 | minor | §6 task_fingerprint 算法与固定向量 |
 | S3-M0-16 | minor | §2.2 负控制 seed 派生公式（sha256）与固定向量 |
 
+注（v1.2a，A5-S3M0R2-04）：S3-M0-07 行所述 `params_digest`/`reference_cert_digests` 为 v1.0 旧承诺，未在 §6.1 单列，现不新增；params 由 `task_fingerprint` 覆盖，参考证书完整性由 `references_sealed_sha256`（原始字节）承担。
+
 ## 17. Lead 裁决与 A4 DEV 处置
 
 - **R-S3-01（S3 授权链）**：Issue #7 正文授权路线 A“算法代码 + 全合成解析任务的训练与正式离线对照（physical_call_count=0 硬隔离）”，§2 将 S3 列为“S1/S2 验收后条件开启”，§4 明确“Leader 负责 S0→S3 阶段批准”。S1、S2 均已完成并经 A5 APPROVE 与回执发布，Issue #7 无相反指令。据此裁决：(a) S3 的 M0–M2（设计、代码、单测、校准、prereg 冻结）在 Issue #7 授权范围内推进，不需要新的负责人预算；(b) M3 正式 run 前 Lead 必须再次复核 Issue #7/#4 是否有相反指令，确认后签发书面授权，并在授权中写明依据；(c) S3 阶段验收仍由负责人签发，本计划与回执不得声称已获阶段验收；(d) 若负责人发布任何相反指令，S3 立即停止；(e) S2 closeout 中“S3 需负责人书面授权”的保守表述以本裁决为准并记录于回执。
@@ -592,3 +598,12 @@ v1.0 的 12D 全维椭球构造经 A5 独立探针与 Lead 数值探针证明不
 | NEW-06 | major | 见 S3-M0R-07：决策枚举互斥穷尽 |
 | NEW-07 | major | 见 S3-M0R-02/03：`analysis_code_sha` 已定义 |
 | NEW-08 | major | 见 S3-M0R-08：radius_base 与 w/r 清除 |
+
+## 20. A5 S3-M0R2 findings 处置（v1.2a）
+
+| id | 严重度 | 处置 |
+|---|---|---|
+| A5-S3M0R2-01 | minor | §6.2 增注 V11（family_package_sha256）原始字节语义：不含 canonical_payload 为设计选择，校验方式为对所指原始字节取 sha256；不改 hash_vectors.json（避免字节变化导致 prereg 冻结前重新签发） |
+| A5-S3M0R2-02 | minor | §6.2 增注 V02/V03 的 files 为合成固定输入；M1 测试分两类：(i) 向量算法自检；(ii) 用仓库真实 7 个代码文件重算 code_sha/analysis_code_sha 并与 prereg 记录一致（A5 明确要求） |
+| A5-S3M0R2-03 | minor | 本文件 L4/L5/L8 状态更新；§0.3/§10/§11 补 M0R2 门与实际结论；§14 增 v1.2a 行 |
+| A5-S3M0R2-04 | observation | §16 注：params_digest/reference_cert_digests 为旧承诺，以 §6.1 实际枚举为准，不新增摘要 |
