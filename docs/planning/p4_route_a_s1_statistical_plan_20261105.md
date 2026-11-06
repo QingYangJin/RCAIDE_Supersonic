@@ -1,162 +1,121 @@
-# P4 路线A S1 统计分析计划（v1.2）
+# P4 路线A S1 统计计划（v1.3）
 
-> 状态：S0-2 修订版（Lead task-186/190 集成），已按 A5 S0 审阅的 A5-S0-M02/M03/M04 与 D-S0-2-02/03/04 裁定回填；**仍待 A5 复审，不构成 S1 放行**。
-> 依据：Issue #7 D-P4-003 §3 S1、docs/planning/p4_route_a_stage_improvement_plan_20261105.md、docs/planning/p4_route_a_s0_design_contract.md（v1.3）、docs/reviews/p4_route_a_s0_baseline_snapshot_20261105.md。
-> 约束：physical_call_count=0；只允许全合成解析任务；不合并 main；结论允许为“无改进/INCONCLUSIVE”。
+> 状态：v1.3（2026-11-06，A4 task-224）；依据数据合同 v1.4、R-V4-10 与 A5 phase4 结论。**本计划不构成 S1_RUN 放行**；S1_RUN=NOT_APPROVED，formal 21,000 NOT_RUN，待 A5 phase4b 与 Lead 书面授权。
+> 范围：S1（K-shot→BO 初始化闭环）的预注册、端点、比较、判定与报告；S2/S3 不在本计划。
+> 0 物理；不读真实 holdout；不修改旧 run；不 commit/push。
 
-## 1. 目标与问题
+## 1. 目标与三个问题
 
-S1 要回答的**单一主问题**：在任务级未见的新合成任务族上，把 K-shot 支持集真实评价计入预算并闭环进 BO 初始化后，**FOMAML-Kshot-BO 是否比预处理初始化（Pretrain-Kshot-BO）、随机初始化（Random-BO）与 DE 取得可复现的约束优化改进**？
+1. K-shot 适应是否按合同进入正式 BO 初始化，且五臂预算公平、无泄漏；
+2. 相对普通 BO/Pretrain-Kshot-BO/FOMAML-ZeroShot-BO/DE，主终点是否有预注册可检验的改善；
+3. 结果是否支持进入 S2（完整二阶 MAML），或应保留 FOMAML、停止扩展。
 
-次要问题（预注册，不得升级为主结论）：
-1. K-shot 适应本身是否带来增益（FOMAML-Kshot-BO vs FOMAML-ZeroShot-BO，K>0）；
-2. 增益是否随 K∈{1,3,5} 单调/稳定变化（只作描述与预注册对比，不做事后挑选）；
-3. 改进是否以更多代理/适应墙钟为代价（成本端点描述）。
+结论口径只有三类：“改善”“未观察到显著改善”“不确定/不可判定”；不得按事后挑选的终点写获胜。
 
-## 2. 任务族与数据（新 family v3）
+## 2. 任务族与冻结
 
-| 项 | 规定 |
-|---|---|
-| family_version | 新版本（建议 p4ra-family-v3，最终以 A1 task-185 草案 + A5 审阅为准）；冻结后不升版本不得改生成规则 |
-| task_id | 全新命名空间；必须与 M2/M5/M6 全部 task_id **零交集**（程序输出交集报告，非空即 fail-closed） |
-| split | 五 split：meta_train 60 / meta_validation 20 / meta_test 20 / meta_test_ood 10 / negative_control 10（任务级切分，同一 task_id 不得跨 split；split_digest/split_hash 覆盖全部五个 split，见 D-S0-2-01） |
-| 生成种子 | family_seed 新值，且不得与旧族 seed 序列重叠；split_digest 冻结 |
-| 评估器 | 固定 evaluator_id 与解析函数；config_hash 变化视为新族，必须重新冻结 |
-| 支持池 | support_pool_size=128、query_size=64（延用 M5 口径；v3 若变更须在 prereg 冻结） |
-| 标签 | 只由合成 evaluator 产生；禁止真实求解器输出、禁止旧 run 内部 CD/油耗当标签/终点 |
+- family_version=p4ra-family-v4；family_id=F-QE-feasible-v3；family_fingerprint=a1f9462c…；split_hash=cd597d01…；holdout_seed=20261106；radius_base=0.64。
+- 五 split：TR 60 / VA 20 / TE 20 / OD 10 / NC 10，共 120 任务；仅 TE（20 任务）进入主统计；VA 用于调参/资格；OD/NC 用于分布外与负控。
+- 每任务 support 128 / query 64（旧 v2 的 128 内循环仅作消融基线）；目标/约束标签按合同 §3。
+- 冻结包 S0-6：run_id=p4ra-s0-6-freeze-20261106T003500Z；commit H e95f9dc；git_sha=G 48403e5；code_sha=1f244984…；9 payload、SHA256SUMS 9/9、determinism PASS、final_verify 15/15。
+- 预注册一旦冻结，不得按结果调阈值/换终点/换任务；旧 M5/M6 任务已公开，不得当新盲测。
 
-旧 M2/M5/M6 的 meta_test 已被历史报告公开，**只能作诊断性对照，不得作为 S1 的“未见盲测”**；S1 主结论只来自新族 meta_test。
+## 3. 设计、臂与预算
 
-## 3. 实验设计（arms × K × B）
-
-- 臂（5）：Random-BO、Pretrain-Kshot-BO、FOMAML-ZeroShot-BO、FOMAML-Kshot-BO、DE。
-- 预算：B∈{64,128}；initial_designs=8；standard_bo_calls=B−8；K 个支持评价真实发生且计入 B；各臂每 run 的真实评价次数必须精确相等。
-- K∈{0,1,3,5}；K 次支持评价来自支持池的真实评价，各臂共享同一组支持点与标签；补 8−K 个初始点后再 BO B−8 次。
-
-**五臂预算映射（D-S0-2-03，唯一口径）**：所有臂均执行「K 支持评价 → 8−K 新初始点 → B−8 主搜索」，合计恰为 B；Random-BO/DE 不把支持标签用于适应但仍计入 K 次评价；DE 的初始 8 点即其初始 population 的一部分，B−8 为其世代评价；任何臂 billable≠B 即作废。K=0 时 FOMAML-Kshot-BO 与 FOMAML-ZeroShot-BO 同构（CLONE，排除推断）。
-- **可辨识性（预注册）**：K=0 时 FOMAML-Kshot-BO 无支持标签可用，与 FOMAML-ZeroShot-BO 同构，登记为 CLONE_OF_FOMAML-ZeroShot-BO，**排除出 K=0 的推断与主统计**（仅作描述）；K>0 时 5 臂均可辨识。若 A5 代码审阅发现其他臂同构，按同一规则登记并披露。
-- 网格划分（预先固定，不按结果调整）：
-
-| 层级 | B | K | 任务 | opt seeds | meta seeds | run 数 |
-|---|---|---|---|---|---|---|
-| 主确认性 | 64 | 0,3,5 | 20 meta_test | 0..9 | 0,1,2 | 5×3×20×10×3 = 9,000 |
-| 次级复现 | 128 | 3,5 | 20 meta_test | 0..9 | 0,1,2 | 6,000 |
-| 探索性（不进主结论） | 64/128 | 1 | 20 meta_test | 0..9 | 0,1,2 | 6,000 |
-| 合计 | | | | | | 21,000 runs |
-
-- 评价次数：9,000×64 + 6,000×128 + 3,000×64 + 3,000×128 = **1,920,000 次**（另加确定性重跑，见 §8）。
-- 墙钟估计：以 M5 实测速率（460,800 次评价 / 8,960 s ≈ 51.4 次/s，16 workers）线性外推约 **10.4 h**；加确定性重跑与打包约 12 h。实际 worker 数、墙钟、峰值内存必须写入 run_config；不设“静默截断”，中断须支持从检查点续跑并保持 digest 一致。
-
-## 4. 冻结与预注册（p4ra-prereg-v1）
-
-1. 先在**未打开 meta_test** 的情况下生成并冻结：family v3 定义、split、preregistration.json、分析脚本（analysis_plan_digest）。
-2. preregistration 必填（对齐 A4 设计合同 §7，本计划只补充统计字段）：
-   - 基础：schema_version=p4ra-prereg-v1、prereg_id、family_version、frozen_at_utc、seeds、task_counts；
-   - 设计：arms、budgets（B 与 K 集合）、identifiability_map、comparison_registry；
-   - 端点：primary_endpoints、secondary_metrics、fallback_endpoints；
-   - 统计：aggregation_rule、statistical_tests、multiple_comparison、decision_rules、null_policy、practical_significance；
-   - 运行：stopping_rules（**非空 list[str]**，禁止再出现单字符串被 list() 拆成单字符）、failure_rules；
-   - digest：analysis_plan_digest、prereg_digest（自身 canonical JSON digest，计算时置空该字段）、old_task_id_disjointness_digest。
-3. **强校验**（fail-closed，A1 task-185 实现 + 负控测试）：
-   - 类型：所有数组字段必须为 list 且元素类型正确；stopping_rules/failure_rules 每项为非空 str（len≥2）、列表非空；
-   - 一致性：B/K/arms/task_counts/seeds 与 run_config 完全一致；
-   - 不可变性：冻结后任何字段变化 → 拒绝运行并作废；
-   - 旧件：M2/M5/M6 的 preregistration/summary/manifest 只读，不修补。
-4. 冻结顺序：family 生成 → split/family digest → prereg build → validate → 冻结宣告（A5 APPROVE_FOR_S1_FORMAL）→ 创建 run 目录 → 打开 meta_test **一次**。
-5. 打开 meta_test 后禁止：调参、改终点、按结果剔除任务、改比较集；违反即结果作废（合同 FC-07/FC-10）。
-
-## 5. 端点定义（规范 ID，D-S0-2-02/04）
-
-> 唯一规范 ID 为 `best_feasible_value`、`gap_to_reference`、`first_feasible_eval_index`、`feasible_hit_rate`；`first_feasible_evaluation_index` 为禁用别名。
-
-| 类型 | 端点 | 方向 | 定义 |
-|---|---|---|---|
-| 主 | best_feasible_value | lower | B 个评价中所有满足全部约束点的最小目标值；无可行点=null（不插补、不计 0） |
-| 主 | gap_to_reference | lower | f* = reference_solution.best_feasible_value（数值或 null）；f_best 或 f* 任一 null → null；否则 `gap=(f_best−f*)/max(|f*|,1e-12)`（有符号，不截断） |
-| 主 | first_feasible_eval_index | lower | B 个评价按真实评价顺序的 1-based 序号（支持评价占 1..K），首次可行即记录；无可行=null；附加 `first_feasible_in_support`（bool）与 `first_feasible_after_support_index`（序号−K，支持集内则 null）；跨 K 比较须声明 K 依赖性 |
-| 主 | feasible_hit_rate | higher | 可行评价数 / B（分母恒为 B）；附加 `feasible_hit_rate_non_support` = 非支持可行数/(B−K)，B>K 时 |
-| 次 | best_objective_raw | lower | 不剔除不可行的最优原始目标（fallback） |
-| 次 | min_constraint_violation_sum | lower | 最小约束违反和（fallback） |
-| 次 | rmse_norm | lower | 代理/适应后预测的归一化 RMSE（机制诊断，不作 BO 主结论） |
-| 成本 | adaptation_wall_s / proxy_scoring_cost / peak_memory | 描述 | 与公平性审计一起报告 |
-
-聚合规则（预注册）：单 run 端点 → (task, meta_seed) 内对 10 个 opt seeds 取均值 → 对 20 个 meta_test 任务做配对统计；meta_seed 等权平均为主分析（同时报告逐 meta_seed 敏感性）。**任务是一级统计单位**，禁止以 run/评价为单位夸大样本量。
-
-null 政策：null 不插补、不计 0；报告 n_nonnull/null_rate；主端点 null 率 >70% → 该端点 INCONCLUSIVE，不据此更换终点（D-S0-2-04.8）。
-
-## 6. 预注册比较、检验与多重校正
-
-| ID | 比较 | 适用条件 |
+| 臂 | 说明 | 预算 |
 |---|---|---|
-| C1 | FOMAML-Kshot-BO vs Pretrain-Kshot-BO | 主假设（K>0） |
-| C2 | FOMAML-Kshot-BO vs Random-BO | K>0 |
-| C3 | FOMAML-Kshot-BO vs DE | K>0 |
-| C4 | Pretrain-Kshot-BO vs Random-BO | K>0 |
-| C5 | FOMAML-Kshot-BO vs FOMAML-ZeroShot-BO | K>0（验证适应增益） |
+| Random-BO | 随机初始化 + 普通 BO | B |
+| Pretrain-Kshot-BO | 预训练代理 + K-shot 适应 + BO | B |
+| FOMAML-ZeroShot-BO | 旧 FOMAML 零样本初始化 + BO | B |
+| FOMAML-Kshot-BO | FOMAML + K-shot 适应 + BO | B |
+| DE | 差分进化基线（population 计预算） | B |
 
-- 检验：双侧 Wilcoxon signed-rank（配对任务差）；n_tasks=20；全零或 n<10 → INCONCLUSIVE。
-- 效应量：配对差中位数（端点单位）、rank-biserial correlation、Cohen's d（报告但不用作判据）。
-- 置信区间：task 级配对差 bootstrap 10,000 次（百分位法，固定 seed=20261105）。
-- 多重校正（R-V4-08-01 唯一口径）：Holm-Bonferroni 族键 = `(primary_endpoint, budget_B, K)`；族内为 C1–C4 全部可推断臂对比较（C5 永不进族；pair-level STRUCTURALLY_IDENTICAL 行级排除后族大小可 <4）；alpha=0.05 双侧。禁止“同 K 内 32 检验”“每个端点内 5 个比较”等其它口径。
-- 实际显著性阈值（预注册，D-S0-2-04.6）：best 相对改进 =(median_base−median_arm)/max(|median_base|,1e-12) ≥1%；gap 相对改进 =(gap_base−gap_arm)/max(|gap_base|,1e-12) ≥1%；feasible_hit_rate 绝对差 ≥0.05；first_feasible 改善 = idx_base−idx_arm ≥ ceil(0.05×B)（同 K 内比较）。
+B∈{64,128}；K∈{0,1,3,5}。五臂共享同一 K 次目标任务评价，且这 K 次必须计入 B；初始化 8 个点中不足 8−K 的由普通策略补足；主搜索 B−8；billable_evals=B（K=0 时 CLONE 规则）。正式网格 21,000 run：9,000/6,000/6,000（对应配置以矩阵 v1.5 与预注册为准）；15 分片×1,400；1,920,000 次合成评价；理论墙钟约 10.4h（分片窗口待 A2 v4e 的 B128 实测确定，建议 3.5–4.5h）。
 
-## 7. 判定与结论规则
+## 4. 预注册（p4ra-prereg-v1）
 
-每个（端点×比较）给出：SUPPORTED_BENEFIT / SUPPORTED_HARM / NO_EVIDENCE / INCONCLUSIVE。
+字段：schema_version、run_id、git_sha、code_sha、family_version/family_id/family_fingerprint、split_hash、split_counts、split_digest、holdout_seed、radius_base、arms、budgets_B、K_values、task_id_regex、primary_endpoint、secondary_endpoints、comparisons、holm_family_key、alpha、bootstrap、stopping_rules、analysis_plan_digest、digest。
 
-- SUPPORTED_BENEFIT：Holm p<0.05 且 bootstrap CI 不跨 0 且效应方向有利且达到实际显著性阈值；
-- SUPPORTED_HARM：对称定义；
-- INCONCLUSIVE：null 率 >70%、n<10、全零差、或与冻结计划不一致。
+强校验：五 split 计数和=120；split_digest 覆盖 120 task_id；task_id 正则 ^p4ra-FQE3-v3-(TR|VA|TE|OD|NC)-[0-9]{3}$；holdout_package 为 object 且字段完整；stopping_rules 每项 strip 后 len≥2；canonical JSON 排序/无浮点歧义；冻结后 digest 不匹配即 fail-closed。
 
-S1 总体结论“改进得到支持”需**同时**满足：
-1. C1 在 4 个主端点中至少 2 个 SUPPORTED_BENEFIT；
-2. C1 在 4 个主端点中 0 个 SUPPORTED_HARM；
-否则输出 “NO_SIGNIFICANT_IMPROVEMENT” 或 “INCONCLUSIVE” 并给出具体原因（允许负结果）。
+## 5. 端点定义
 
-null 政策：主端点 null（无可行）不计 0、不插补；报告 n_nonnull/null_rate；若多数为 null，按预注册 fallback 端点做描述性报告并明确“不可与非约束目标直接比较”，禁止事后换终点造结论。
+| 端点 | 定义 | 方向 | 缺失 |
+|---|---|---|---|
+| best_feasible_value | 预算内可行解的最优目标值 | 越小越好 | 无可行解 null |
+| gap_to_reference | (best_feasible−reference)/reference 尺度 | 越小越好 | 无可行解/无参考 null |
+| first_feasible_eval_index | 首次可行评价序号（1-based） | 越小越好 | 无可行解 null |
+| feasible_hit_rate | 可行评价数/计费评价数 | 越大越好 | 分母 0 null |
+| final_best_objective | 最终代理预测最优目标 | 越小越好（仅诊断） | 缺失 null |
+| constraint_violation_min | 最小约束违反 | 越小越好（仅诊断） | 缺失 null |
+| bo_initial_best | BO 初始化阶段最优目标 | 越小越好（仅诊断） | 缺失 null |
+| bo_initial_feasible | BO 初始化阶段是否已有可行解 | 布尔 | 缺失 null |
+| n_feasible | 可行评价计数 | 越大越好 | 0 保留 |
 
-## 8. 确定性、负控与泄漏检查
+聚合：任务为一级统计单位；每任务每臂一个值；随机种子只在任务内平均，不把种子当任务。null 不插值、不补零；报告 null 比例与原因。端点表、CSV、图注使用同一 ID，禁用别名。
 
-| 检查 | 规定 |
+## 6. 比较与检验
+
+- C1：FOMAML-Kshot-BO vs Random-BO（主闭环是否有效）。
+- C2：FOMAML-Kshot-BO vs Pretrain-Kshot-BO（元学习初始化是否优于普通预训练）。
+- C3：FOMAML-Kshot-BO vs FOMAML-ZeroShot-BO（K-shot 适应增量）。
+- C4：FOMAML-Kshot-BO vs DE（对强基线）。
+- C5-B：结构不可辨识诊断；C5 不出现在任何 benefit/harm 与 Holm 行；仅当可估计任务数≥10 且 pair-level overlap<0.90 时才可解释，否则写 STRUCTURALLY_IDENTICAL/不可判定。
+
+检验：对配对任务差做 Wilcoxon 符号秩（双侧，alpha=0.05）；效应量用配对差中位数/均值与相对变化；bootstrap 10,000 次固定 seed 给 95% CI；多重比较用 Holm，族键唯一 `(primary_endpoint, budget_B, K)`，族内比较由 4 降为 3 时 p_adj 重算。**pair 标签规范化（R-V4-10-01，v1.3 新增）**：两臂名按字典序排序后用单竖线连接 `<lex_smaller>|<lex_larger>`；runner 只用同一函数生成；analysis 加载 identifiability_report 时对每个 pair 键 split("|") 排序归一，非法（非 2 段/空段/未知 arm/重复 arm）fail-closed；归一后与实际 pairwise 计数严格相等，否则 fail-closed。**Holm 族定义不变**：仍按 (primary_endpoint,budget_B,K)，不因 pair 标签顺序变化增删族成员。
+
+主终点=best_feasible_value；其余为预注册次要/诊断端点。禁止按结果更换主终点、用未校正的多个端点挑显著、或把不可辨识的 C5 当结论。
+
+## 7. 判定规则
+
+1. 仅当主终点在 Holm 校正后显著、方向与预注册一致、bootstrap CI 支持、且无泄漏/预算违规，写“改善”。
+2. 主终点不显著但次要端点一致改善，只写“未观察到主终点显著改善；次要端点提示…（探索性）”，不得写成获胜。
+3. 主终点显著但方向相反或 CI 跨 0，写“无改善/不确定”。
+4. 无可行解比例过高导致主终点不可估计，写“不可判定”，报告 null 比例与原因。
+5. 任何臂预算不等、K 未计入 B、query 泄漏、旧工件改写、物理调用>0，整批作废并 fail-closed。
+6. 总体结论按预注册主终点写；不得用“MAML 更优”之类未经验证的总结替代统计结果。
+
+## 8. 确定性、负控与泄漏
+
+| 项 | 要求 |
 |---|---|
-| raw digest | 每 run 落盘 raw_digest_manifest：产品文件 canonical sha256 + 评价历史 CSV digest（修正 M5 的 NOT_STORED 缺陷） |
-| 确定性重跑 | 固定子集：5 臂 × K{0,3} × B=64 × 20 任务 × opt seed 0 × meta seed 0 = 200 runs，重跑 3 次；mismatch>0 → fail-closed；全量重跑视为可选加固 |
-| K=0 回归/CLONE | FOMAML-Kshot-BO 与 FOMAML-ZeroShot-BO 在 K=0 必须逐字节等价（历史 CSV digest 相同）；否则 CLONE 声明无效并 abort |
-| 泄漏负控 | 支持/query 污染检测（FC-01）；标签打乱负控：MAML 优势应消失/缩小，若仍显著 → 机制解释失败，结论降级 |
-| 旧件隔离 | A3 在 run 前后校验 M2/M5/M6 与 D-12D-005 归档 SHA；任何变化 → fail-closed |
-| 物理隔离 | physical_call_count=0、physical_call_sources=[]、physics_guard=PASS，每 run 落盘 |
+| 确定性 | 200 runs×3 固定种子，record_digest 一致；K=0 复现旧行为 |
+| 负控 | pair 标签非法/顺序不一致 fail-closed；code_sha 匹配/不匹配/escape 三态；merge canonical 子集 |
+| 泄漏 | 不读 query 标签、不解析最优点、不把代理预测写入真实 observations；支持集标签可入内循环但计入 B |
+| 物理 | physical_call_count=0；不启动 solver；不读真实 holdout |
+| 旧工件 | 不改写；旧 S0-3/S0-4/S0-5 只读，S0-5/S0-4 标 SUPERSEDED_LEGACY |
+| 报告 | 每数字可追溯 run_records/端点表；失败与缺失如实统计 |
 
-## 9. 停止规则（stopping_rules，新 schema 必须为非空 list[str]）
+## 9. stopping_rules（预注册）
 
-1. “physical_call_count 大于 0 或出现任何真实求解器启动记录时立即停止并上报负责人。”
-2. “任一臂每 run 真实评价次数不等于 B，或支持评价未计入 B 时，作废该 run 并停止。”
-3. “B、K、arms、task_counts、seeds 与冻结 preregistration 不一致时拒绝启动。”
-4. “旧 M2/M5/M6 或 D-12D-005 冻结工件 SHA 发生变化时立即停止并通知 A3/A5。”
-5. “确定性重跑 mismatch 大于 0 时立即停止，相关结果作废。”
-6. “检测到支持集/query 标签泄漏或参考最优点被当作支持标签时立即停止并记录事件。”
-7. “meta_test 打开后出现调参、改终点、按效果剔除任务时结果作废并停止。”
-8. “task_id 跨 split 重复或与旧任务族交集非空时拒绝生成/启动。”
-9. “主端点 null 率超过 70% 时该端点判 INCONCLUSIVE，不据此选择替代终点。”
-10. “任一臂实现被审阅判定与其他臂同构（CLONE）时，将其排除出推断并在报告中披露。”
+1. 同一分片连续 3 次非确定性失败→停该分片并报告。
+2. 预算/计费不一致或 billable≠B→停跑。
+3. 检测到 query 标签读取/泄漏→停跑。
+4. physical_call_count>0→停跑。
+5. 冻结包/code_sha 身份不一致且非 exploratory escape→停跑。
+6. holdout 污染（TE 任务出现在训练/调参）→停跑。
+7. 资源超 4.5h 硬上限或内存超披露上限→停跑并保留现场。
+8. 分片 merge 冲突/canonical 子集不一致→停跑。
+9. 旧工件被改写→停跑。
+10. A5/A3 要求停止的其他 fail-closed 条件→停跑。
 
-## 10. 交付物（S1 阶段）
+## 10. 交付物
 
-- 7 张中文图（规范键名 + 文件名 + figure_status.json，键与文件一一对应；修正 M6 历史漂移）：
-  fig1_meta_training_loss、fig2_k_shot_adaptation、fig3_feasible_rate、fig4_equal_budget_gap、fig5_fairness_audit、fig6_k_sweep_delta、fig7_negative_control_and_determinism。
-- 主表：每端点每比较的 n_tasks、null_rate、median diff、bootstrap CI、Holm p、effect size、verdict；可辨识性映射表；预算/支持评价审计表；负控与确定性表。
-- 中文报告 docs/reviews/p4_route_a_s1_formal_report_<run_id>.md；run 目录含 run_config/summary/data_manifest/SHA256SUMS/raw_digest_manifest。
-- 结论层：只允许“支持改进 / 无显著改进 / INCONCLUSIVE”三类，附限定条件；不写物理/真实飞机外推。
+run_config、summary.json、preregistration、data_manifest、run_records.jsonl、CSV（端点/配对/预算/可辨识性）、figures PNG（七类中文图）、中文报告；所有交付物带 SHA256 与来源说明；不得只交成功子集。
 
-## 11. 待审阅/待裁决项
+## 11. 待审阅
 
-1. 已由 D-S0-2 关闭：五 split（D-01）、端点 ID 与语义（D-02/04）、预算映射（D-03）、task_id 格式（D-05）、legacy v1 路径（D-06）。
-2. 仍待 A5/负责人确认：确定性重跑子集（200 runs×3）是否足够；S1 计算资源与墙钟上限（当前估计 ~12 h，无物理调用）；v3 冻结包生成后是否按 APPROVE_FOR_S1_FORMAL 一次打开 meta_test。
-3. 本计划中 meta_test 任务数 20 与 family v3 一致；OOD/负控不进入主统计分母。
+- 合同 v1.4 与统计计划 v1.3 的一致性；
+- C1–C4 族键、alpha、bootstrap seed、最小可检出效应；
+- C5-B 的“不可判定”措辞；
+- 15 片窗口在 A2 v4e B128 实测后是否调整；
+- A5 phase4b verdict 与 Lead 授权范围。
 
 ## 12. 版本记录
 
 | 版本 | 日期 | 作者 | 变更 |
 |---|---|---|---|
-| v1.0 | 2026-11-05 | Lead（task-186） | 首次生成 S1 统计分析与预注册计划草案 |
-| v1.1 | 2026-11-05 | Lead（task-190/S0-2） | 按 A5-S0-M02/M03/M04 与 D-S0-2-02/03/04 关闭端点 ID、预算映射、端点语义；五 split 与 split_digest 覆盖明确 |
-| v1.2 | 2026-11-06 | Lead（R-V4-08） | Holm 唯一族键 (primary_endpoint,budget_B,K)、成员 C1–C4、C5 排除、动态族大小；与合同 v1.3/prereg 冻结口径一致 |
+| v1.0 | 2026-11-05 | A4 | 初稿：任务族、五臂、端点、C1–C5、判定、stopping |
+| v1.1 | 2026-11-05 | A4 | 按 R-V4-02/-03 补预注册校验、null 规则、readiness 隔离 |
+| v1.2 | 2026-11-06 | A4 | 按 R-V4-08 补 Holm 唯一族键、C5 排除、动态族大小；867 tests 基线 |
+| v1.3 | 2026-11-06 | A4（task-224） | 同步合同 v1.4/S0-6/R-V4-10/947 tests；§6 新增 pair 标签字典序规范化（Holm 族定义不变）；未 commit/push，0 物理 |
