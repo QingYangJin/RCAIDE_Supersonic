@@ -1,11 +1,11 @@
 # P4 路线A S2 执行计划（FULL_MAML 二阶元梯度 vs FOMAML 等预算对照）
 
-- 版本：v1.2（2026-11-06T13:05Z，Lead 起草；v1.1 响应 A5 S2-M0 3B/6M/6m；v1.2 响应 A5 S2-M0R 2B/1M：B04/B03R/M07）
+- 版本：v1.3（2026-11-06T13:20Z，Lead 起草；v1.1 响应 A5 S2-M0 3B/6M/6m；v1.2 响应 A5 S2-M0R 2B/1M：B04/B03R/M07；v1.3 响应 A5 S2-M0R2 M01/N01/N02）
 - 上游：Issue #7 D-P4-003 §2 S2；S1_RUN=EXECUTED_AND_RESULT_REVIEWED（commentId 6684142041，不含 S2 授权）
 - 分支/工作树：research/p4-route-a-s2 @ D:/RCAIDE-s2-dev；base 1a2b242（S1 closeout docs v1.8），首个 S2 提交 b0acdf2 为本文 v1.0；v1.1 提交见 git log
 - 硬边界：physical_call_count=0（全合成解析评价器，无 VSPAERO/SU2/RCAIDE/CFD/WaveDrag）；不合并 main；不新建 PR；仅 Lead 写 GitHub；旧 M2/M5/M6/S0-2..S0-7 只读；S2 不使用 S1 holdout（meta_test/meta_test_ood/negative_control）
 - 证据范围：S2 仅使用 S0-7 的 meta_train(60) 训练、meta_validation(20) 评估。meta_validation 在 S1 已用于调参/校准，因此 S2 结论定位为 DEVELOPMENT_VALIDATION_ONLY（开发/验证集证据），不得表述为未见任务上的确证性泛化。
-- 本版关闭的 A5 findings：M0 的 B01/B02/B03、M01-M06、m01-m06（§13）；M0R 的 B04/B03R/M07（§13、§4.4、§6、§7、§11）。
+- 本版关闭的 A5 findings：M0 的 B01/B02/B03、M01-M06、m01-m06（§13）；M0R 的 B04/B03R/M07；M0R2 的 M01/N01/N02（§13、§4.4、§7、§12）。
 
 ## 1. 目标与可证伪问题
 
@@ -64,8 +64,8 @@ S2 在同一合成任务族、同一元训练预算（episodes/内步/外步/批
 - 测试补充：多步内循环（inner_steps>=2）FD；小网络 HVP/解析对照测试（autograd 二阶梯度 vs 有限差分，容差 1e-6）；微型网络 K>1 数值稳定性。
 
 ### 4.4 等预算与公平性
-- 两臂 MAMLConfig 逐字段相同（input_dim=12、output_dim=1、hidden_sizes=(16,16)、inner_lr=0.01、inner_steps=5、outer_lr=1e-3、tasks_per_batch=8），仅 first_order 不同（FOMAML=True，FULL=False）。hidden=(16,16) 与既有 offline_runner/m5_arms 的 HIDDEN_SIZES 一致，降低二阶图内存；不做超参搜索。
-- outer_steps=200、meta_seed in {0,1,2}、episode bank 相同；自动比对 run_config 的 arms 配置，除 first_order 外任一差异 -> fail-closed。
+- 两臂 MAMLConfig 逐字段相同（input_dim=12、output_dim=1、hidden_sizes=(16,16)、inner_lr=0.01、inner_steps=5、outer_lr=1e-3、tasks_per_batch=8、seed=42、backend=torch），仅 first_order 不同（FOMAML=True，FULL=False）。hidden=(16,16) 与既有 offline_runner/m5_arms 的 HIDDEN_SIZES 一致，降低二阶图内存；不做超参搜索。
+- outer_steps=200、meta_seed in {0,1,2}、episode bank 相同；build 写入前与 verify 读入后都断言两臂 config 除 first_order 外逐字段相同（含 seed/backend/hidden_sizes），任一差异 -> fail-closed S2_ARM_CONFIG_MISMATCH；run_config 的 arms 配置再比对一次。
 
 ## 5. 训练与评估合同
 
@@ -99,7 +99,7 @@ S2 在同一合成任务族、同一元训练预算（episodes/内步/外步/批
 - canonical JSON：json.dumps(obj, sort_keys=True, separators=(",",":"), ensure_ascii=False, allow_nan=False) + 末尾换行。
 - prereg_id（去循环）：base = canonical JSON of prereg with BOTH prereg_id and prereg_digest omitted；prereg_id = "p4ra-s2-prereg-" + sha256(base)[:16]；随后写入 prereg_id。
 - prereg_digest = sha256(canonical JSON of prereg with ONLY prereg_digest omitted，此时 prereg_id 已固定)；再写回 prereg_digest。verify 必须从文件独立复算两者并与字段逐字节比较（不相等 -> S2_PREREG_DIGEST_MISMATCH）。
-- code_sha 算法（可机械复算）：文件清单按字典序 ["research/concorde_metaopt/meta_learning/maml.py","research/concorde_metaopt/meta_learning/s2_runner.py","research/concorde_metaopt/meta_learning/s2_prereg.py"]；对每个文件写 path.encode("utf-8") + b"\n" + sha256(raw bytes).hexdigest().encode("ascii") + b"\n"，拼接后整体 sha256 = code_sha。冻结时与当前工作树逐文件比对；run 启动前再比对一次（不一致 -> 拒绝启动）。
+- code_sha 算法（可机械复算）：文件清单按文件路径的 Python sorted() 字典序（即 maml.py、s2_prereg.py、s2_runner.py；完整相对路径 research/concorde_metaopt/meta_learning/{maml.py,s2_prereg.py,s2_runner.py}）；对每个文件写 path.encode("utf-8") + b"\n" + sha256(raw bytes).hexdigest().encode("ascii") + b"\n"，拼接后整体 sha256 = code_sha。冻结时与当前工作树逐文件比对；run 启动前再比对一次（不一致 -> 拒绝启动）。固定测试向量：tests/test_s2_prereg.py 内置 3 个内容固定的小型 fixture 文件及独立计算的期望 code_sha，断言算法实现得到同一值（不得仅用同一实现自证）。
 - analysis_plan_digest = sha256(canonical JSON of object {"endpoints":<endpoints 节>,"comparison":<comparison 节>,"statistical_plan":<statistical_plan 节>,"fd_gate":<fd_gate 节>})；字段本身不在被哈希对象内，无循环；verify 复算比较。
 - arms 公平性：两臂 config 除 first_order 外必须逐字段相同（含 seed、backend、hidden_sizes）；build 写入前与 verify 读入后都断言，不一致 -> S2_ARM_CONFIG_MISMATCH。
 - 必填字段（v1）与示例：
@@ -129,7 +129,7 @@ S2 在同一合成任务族、同一元训练预算（episodes/内步/外步/批
     }
 
 - 冻结/核验流程：Lead 写 prereg -> A1 生成 s2_prereg.py 的 build/verify 实现 -> Lead 冻结并提交 -> A5 独立核验（digest、字段、S0-7 身份、端点、Holm 单族、预算、FD gate 路径/sha、arms 公平性、code_sha/analysis_plan_digest 复算）-> A5 verdict APPROVE_FOR_S2_RUN -> Lead 书面授权 -> A2 正式 run。
-- 占位拒绝（fail-closed）：verify 遇到任何字符串匹配 ^<.*>$ 或等于 TBD/TODO/PENDING/PLACEHOLDER/REPLACE_ME 立即抛 S2_PREREG_PLACEHOLDER_REJECTED；pilot_artifacts 每项必须为 {path, sha256} 且文件存在、sha256 匹配；必填字段缺失/空串同样拒绝。
+- 占位拒绝（fail-closed）：verify 遇到任何字符串匹配 ^<.*>$ 或等于 TBD/TODO/PENDING/PLACEHOLDER/REPLACE_ME 立即抛 S2_PREREG_PLACEHOLDER_REJECTED；pilot_artifacts 每项必须为 {path, sha256}，path 相对仓库根目录解析（resolve 后必须位于仓库根内），文件存在且 sha256(raw bytes) 匹配；错误路径/错误 sha/绝对路径三类负控测试。必填字段缺失/空串同样拒绝。
 - 正式 run 启动前 fail-closed 校验：prereg digest 自洽；S0-7 SHA256SUMS 9/9；code_sha 与当前代码一致；FD gate PASS 且 sha 匹配；episode bank manifest sha 匹配；否则拒绝启动。
 
 ## 8. 指标范围说明（关闭 M05 的 scope 部分）
@@ -174,6 +174,8 @@ S2 在同一合成任务族、同一元训练预算（episodes/内步/外步/批
 - [ ] prereg_id/prereg_digest 去循环可复算；code_sha 文件清单算法可机械复算；analysis_plan_digest 由四节复算；占位拒绝负控通过
 - [ ] 两臂 config 含 seed=42/backend=torch 且除 first_order 外逐字段相同（build 与 verify 双重断言）
 - [ ] Holm 唯一族 family_size=2，分析脚本按 family 对象执行、不按 endpoint 拆分；2 检验 Holm 单测
+- [ ] code_sha 文件清单为 sorted() 字典序（maml.py/s2_prereg.py/s2_runner.py），固定测试向量通过
+- [ ] pilot_artifacts.path 相对仓库根解析，错误路径/sha/绝对路径负控通过
 - [ ] 正式 run 记录完整：训练 1,200 行 + 评估 4,800 行；physical_call_count=0
 - [ ] 分析脚本强制 prereg digest/端点 ID/证据范围标签；统计规则与 §6 一致
 - [ ] 报告事实/推断/局限分节；结论允许 null；不使用确证性泛化措辞
@@ -201,3 +203,6 @@ S2 在同一合成任务族、同一元训练预算（episodes/内步/外步/批
 | A5-S2M0R-B04 | 关闭：arms 两臂 hidden_sizes 统一 [16,16]（删除 FOMAML [64,64]）；增 seed=42/backend=torch；build/verify 断言除 first_order 外逐字段相同 | §4.4/§7/§12 |
 | A5-S2M0R-B03R | 关闭：prereg_id 去循环（同时排除 prereg_id+prereg_digest）；code_sha 文件清单算法、analysis_plan_digest 四节算法写入 §7；arms 增 seed/backend；占位拒绝规则 | §7/§11/§12 |
 | A5-S2M0R-M07 | 关闭：唯一 Holm 族 family_id/family_key/family_size/members 明确，禁止按 endpoint 拆分；分析脚本与 2 检验 Holm 单测 | §6/§7/§12 |
+| A5-S2M0R2-M01 | 关闭：code_sha 文件清单改为 sorted() 字典序（maml.py/s2_prereg.py/s2_runner.py）；增固定测试向量要求 | §7/§12 |
+| A5-S2M0R2-N01 | 关闭：§4.4 补 seed=42/backend=torch 与 build/verify 双重断言、S2_ARM_CONFIG_MISMATCH、run_config 三重复核 | §4.4 |
+| A5-S2M0R2-N02 | 关闭：pilot_artifacts.path 明确相对仓库根解析并须位于仓库根内；增错误路径/错误 sha/绝对路径三类负控 | §7/§12 |
