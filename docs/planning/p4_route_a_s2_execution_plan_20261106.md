@@ -1,11 +1,11 @@
 # P4 路线A S2 执行计划（FULL_MAML 二阶元梯度 vs FOMAML 等预算对照）
 
-- 版本：v1.1（2026-11-06T12:30Z，Lead 起草；响应 A5 S2-M0 审阅 3B/6M/6m）
+- 版本：v1.2（2026-11-06T13:05Z，Lead 起草；v1.1 响应 A5 S2-M0 3B/6M/6m；v1.2 响应 A5 S2-M0R 2B/1M：B04/B03R/M07）
 - 上游：Issue #7 D-P4-003 §2 S2；S1_RUN=EXECUTED_AND_RESULT_REVIEWED（commentId 6684142041，不含 S2 授权）
 - 分支/工作树：research/p4-route-a-s2 @ D:/RCAIDE-s2-dev；base 1a2b242（S1 closeout docs v1.8），首个 S2 提交 b0acdf2 为本文 v1.0；v1.1 提交见 git log
 - 硬边界：physical_call_count=0（全合成解析评价器，无 VSPAERO/SU2/RCAIDE/CFD/WaveDrag）；不合并 main；不新建 PR；仅 Lead 写 GitHub；旧 M2/M5/M6/S0-2..S0-7 只读；S2 不使用 S1 holdout（meta_test/meta_test_ood/negative_control）
 - 证据范围：S2 仅使用 S0-7 的 meta_train(60) 训练、meta_validation(20) 评估。meta_validation 在 S1 已用于调参/校准，因此 S2 结论定位为 DEVELOPMENT_VALIDATION_ONLY（开发/验证集证据），不得表述为未见任务上的确证性泛化。
-- 本版关闭的 A5 M0 findings：B01/B02/B03（见 §13）、M01-M06、m01-m06。
+- 本版关闭的 A5 findings：M0 的 B01/B02/B03、M01-M06、m01-m06（§13）；M0R 的 B04/B03R/M07（§13、§4.4、§6、§7、§11）。
 
 ## 1. 目标与可证伪问题
 
@@ -83,7 +83,7 @@ S2 在同一合成任务族、同一元训练预算（episodes/内步/外步/批
 - 主比较 C1=FULL_MAML - FOMAML（负值=有益）。
 - 主终点：post_adaptation_rmse_raw_k5（唯一主终点）。
 - 次要推断端点：post_adaptation_rmse_raw_k10。
-- 多重校正：Holm 族 = {K=5 主终点, K=10 次要端点} 共 2 个检验（族键=endpoint，成员=C1 在该 K）；K=0/K=1 及标准化空间/MAE/资源指标均不进入 Holm，不做 benefit/harm 推断。
+- 多重校正：唯一 Holm 族 family_id=s2-primary-secondary-2tests、family_key=s2_primary_secondary、family_size=2，成员=[{comparison:C1,endpoint:post_adaptation_rmse_raw_k5},{comparison:C1,endpoint:post_adaptation_rmse_raw_k10}]；禁止按 endpoint 拆成两个单成员族。K=0/K=1 及标准化空间/MAE/资源指标均不进入 Holm，不做 benefit/harm 推断。
 - 检验：配对 Wilcoxon 符号秩（n=20，双侧）；bootstrap 10,000 次（seed 20261105）95% CI（配对差）；Holm 调整后 p。
 - 决策：
   - SUPPORTED_BENEFIT：Holm p<0.05 且 95% CI 不跨 0 且方向 FULL<FOMAML 且相对改善 >=1%（相对 FOMAML 该端点的中位数）。
@@ -96,34 +96,40 @@ S2 在同一合成任务族、同一元训练预算（episodes/内步/外步/批
 ## 7. Prereg schema（关闭 B03）
 
 - 文件：s2_preregistration.json（正式 run 前由 Lead 冻结，之后不得修改）。
-- canonical JSON：json.dumps(obj, sort_keys=True, separators=(",",":"), ensure_ascii=False, allow_nan=False) + 末尾换行；digest = sha256(canonical bytes with prereg_digest omitted)；再写回 prereg_digest 字段。
+- canonical JSON：json.dumps(obj, sort_keys=True, separators=(",",":"), ensure_ascii=False, allow_nan=False) + 末尾换行。
+- prereg_id（去循环）：base = canonical JSON of prereg with BOTH prereg_id and prereg_digest omitted；prereg_id = "p4ra-s2-prereg-" + sha256(base)[:16]；随后写入 prereg_id。
+- prereg_digest = sha256(canonical JSON of prereg with ONLY prereg_digest omitted，此时 prereg_id 已固定)；再写回 prereg_digest。verify 必须从文件独立复算两者并与字段逐字节比较（不相等 -> S2_PREREG_DIGEST_MISMATCH）。
+- code_sha 算法（可机械复算）：文件清单按字典序 ["research/concorde_metaopt/meta_learning/maml.py","research/concorde_metaopt/meta_learning/s2_runner.py","research/concorde_metaopt/meta_learning/s2_prereg.py"]；对每个文件写 path.encode("utf-8") + b"\n" + sha256(raw bytes).hexdigest().encode("ascii") + b"\n"，拼接后整体 sha256 = code_sha。冻结时与当前工作树逐文件比对；run 启动前再比对一次（不一致 -> 拒绝启动）。
+- analysis_plan_digest = sha256(canonical JSON of object {"endpoints":<endpoints 节>,"comparison":<comparison 节>,"statistical_plan":<statistical_plan 节>,"fd_gate":<fd_gate 节>})；字段本身不在被哈希对象内，无循环；verify 复算比较。
+- arms 公平性：两臂 config 除 first_order 外必须逐字段相同（含 seed、backend、hidden_sizes）；build 写入前与 verify 读入后都断言，不一致 -> S2_ARM_CONFIG_MISMATCH。
 - 必填字段（v1）与示例：
 
     {
       "schema_version": "p4ra-s2-prereg-v1",
-      "prereg_id": "p4ra-s2-prereg-<digest16>",
+      "prereg_id": "p4ra-s2-prereg-0123456789abcdef",
       "created_utc": "2026-11-06T12:30:00+00:00",
       "upstream": {"issue": "#7", "decision": "D-P4-003", "stage": "S2", "s1_receipt_comment_id": 6684142041},
       "frozen_package": {"run_id": "p4ra-s0-7-freeze-20261106T024200Z", "package_path": "research/concorde_metaopt/optimization_runs/p4ra-s0-7-freeze-20261106T024200Z", "sha256sums_sha256": "59aa81cdc1f1abdc66966822eb24b567904ba4c62924ab041ae09bd9badf41f2", "code_sha": "7304d32e524b0e1e28b0e83e7a2ed7822ce88fc14963ca4d769098841e6201ed", "git_sha": "004156c232f31a450f7446c3b280772de47423df", "family_version": "p4ra-family-v4"},
       "data_boundary": {"allowed_splits": ["meta_train","meta_validation"], "forbidden_splits": ["meta_test","meta_test_ood","negative_control"], "split_counts": {"meta_train": 60, "meta_validation": 20, "meta_test": 20, "meta_test_ood": 10, "negative_control": 10}, "meta_train_task_ids_sha256": "<required>", "meta_validation_task_ids_sha256": "<required>", "holdout_task_ids_sha256": "<required>", "holdout_rows_used": 0},
       "episode_contract": {"train_support": 16, "train_query": 32, "eval_K": [0,1,5,10], "eval_draws": 10, "eval_query": 64, "seed_scopes": ["S2-train-support","S2-train-query","S2-train-order","S2-eval-support","S2-eval-query"], "standardization": "raw_primary; standardized descriptive for K>=2 with support std>=1e-8 else null", "train_episode_bank_sha256": "<required>"},
-      "arms": [{"id": "FULL_MAML", "first_order": false, "config": {"input_dim": 12, "output_dim": 1, "hidden_sizes": [16,16], "inner_lr": 0.01, "inner_steps": 5, "outer_lr": 0.001, "tasks_per_batch": 8}}, {"id": "FOMAML", "first_order": true, "config": {"input_dim": 12, "output_dim": 1, "hidden_sizes": [64,64], "inner_lr": 0.01, "inner_steps": 5, "outer_lr": 0.001, "tasks_per_batch": 8}}],
+      "arms": [{"id": "FULL_MAML", "first_order": false, "config": {"input_dim": 12, "output_dim": 1, "hidden_sizes": [16,16], "inner_lr": 0.01, "inner_steps": 5, "outer_lr": 0.001, "tasks_per_batch": 8, "seed": 42, "backend": "torch"}}, {"id": "FOMAML", "first_order": true, "config": {"input_dim": 12, "output_dim": 1, "hidden_sizes": [16,16], "inner_lr": 0.01, "inner_steps": 5, "outer_lr": 0.001, "tasks_per_batch": 8, "seed": 42, "backend": "torch"}}],
       "training_budget": {"outer_steps": 200, "meta_seeds": [0,1,2], "train_records_expected": 1200},
       "evaluation_grid": {"meta_validation_tasks": 20, "K": [0,1,5,10], "draws": 10, "eval_records_expected": 4800},
       "endpoints": {"primary": {"id": "post_adaptation_rmse_raw_k5", "direction": "lower_is_better", "K": 5, "space": "raw"}, "secondary_inferential": [{"id": "post_adaptation_rmse_raw_k10", "direction": "lower_is_better", "K": 10, "space": "raw"}], "descriptive": ["post_adaptation_rmse_raw_k0","post_adaptation_rmse_raw_k1","post_adaptation_rmse_std_k5","post_adaptation_rmse_std_k10","post_adaptation_mae_raw_k5","train_wall_seconds_ratio","peak_memory_mb"]},
       "comparison": {"id": "C1", "arms": ["FULL_MAML","FOMAML"], "difference": "FULL_MAML - FOMAML", "unit": "task", "aggregation": "mean over 3 meta_seeds x 10 draws per task"},
-      "statistical_plan": {"test": "wilcoxon_signed_rank_two_sided", "n_tasks": 20, "bootstrap": {"n_resamples": 10000, "seed": 20261105, "ci": 0.95}, "multiple_comparison": {"family_key": "endpoint", "members": ["post_adaptation_rmse_raw_k5","post_adaptation_rmse_raw_k10"], "method": "holm"}, "decision_rules": {"benefit": "holm_p<0.05 and ci_excludes_zero and full<fomaml and relative_improvement>=0.01", "harm": "symmetric", "inconclusive": "null_rate>0.70", "else": "NO_EVIDENCE"}, "evidence_scope": "DEVELOPMENT_VALIDATION_ONLY"},
-      "fd_gate": {"mode": "full", "max_relative_error": 1e-6, "coordinates": 32, "epsilon": "1e-6 * max(1, |theta_j|)", "denominator": "max(|numeric|, |analytic|, 1e-12)", "fail_closed": true, "pilot_artifacts": {"micro": "<path+sha256>", "full_size": "<path+sha256>"}},
+      "statistical_plan": {"test": "wilcoxon_signed_rank_two_sided", "n_tasks": 20, "bootstrap": {"n_resamples": 10000, "seed": 20261105, "ci": 0.95}, "multiple_comparison": {"family_id": "s2-primary-secondary-2tests", "family_key": "s2_primary_secondary", "method": "holm", "family_size": 2, "members": [{"comparison": "C1", "endpoint": "post_adaptation_rmse_raw_k5"}, {"comparison": "C1", "endpoint": "post_adaptation_rmse_raw_k10"}]}, "decision_rules": {"benefit": "holm_p<0.05 and ci_excludes_zero and full<fomaml and relative_improvement>=0.01", "harm": "symmetric", "inconclusive": "null_rate>0.70", "else": "NO_EVIDENCE"}, "evidence_scope": "DEVELOPMENT_VALIDATION_ONLY"},
+      "fd_gate": {"mode": "full", "max_relative_error": 1e-6, "coordinates": 32, "epsilon": "1e-6 * max(1, |theta_j|)", "denominator": "max(|numeric|, |analytic|, 1e-12)", "fail_closed": true, "pilot_artifacts": {"micro": {"path": "evidence/s2_fd_pilot_micro.json", "sha256": "<64hex computed at build>"}, "full_size": {"path": "evidence/s2_fd_pilot_full.json", "sha256": "<64hex computed at build>"}}},
       "determinism": {"reruns": 2, "requires_byte_identical": ["train_episode_bank_manifest","run_config","run_records_core"], "fail_closed": true},
       "failure_rules": ["nonfinite_loss_or_grad -> arm/seed FAILED, stop, no retry", "resource_limit -> RESOURCE_LIMIT, no retry", "any seed failed -> arm DEGRADED and primary INCONCLUSIVE"],
       "stopping_rules": ["stop_on_nonfinite", "stop_on_data_boundary_violation", "stop_on_fd_gate_failure", "stop_on_code_sha_mismatch", "hard_deadline_2h"],
-      "code_sha": "<required: package_code_sha-like sha256 of meta_learning/*.py at run commit>",
-      "analysis_plan_digest": "<required>",
+      "code_sha": "<computed by §7 file-list algorithm over maml.py+s2_runner.py+s2_prereg.py>",
+      "analysis_plan_digest": "<computed by §7 algorithm over endpoints+comparison+statistical_plan+fd_gate>",
       "physical_call_count": 0,
       "prereg_digest": "<self-excluded sha256>"
     }
 
-- 冻结/核验流程：Lead 写 prereg -> A1 生成 s2_prereg.py 的 build/verify 实现 -> Lead 冻结并提交 -> A5 独立核验（digest、字段、S0-7 身份、端点、Holm、预算、FD gate 路径/sha、code_sha）-> A5 verdict APPROVE_FOR_S2_RUN -> Lead 书面授权 -> A2 正式 run。
+- 冻结/核验流程：Lead 写 prereg -> A1 生成 s2_prereg.py 的 build/verify 实现 -> Lead 冻结并提交 -> A5 独立核验（digest、字段、S0-7 身份、端点、Holm 单族、预算、FD gate 路径/sha、arms 公平性、code_sha/analysis_plan_digest 复算）-> A5 verdict APPROVE_FOR_S2_RUN -> Lead 书面授权 -> A2 正式 run。
+- 占位拒绝（fail-closed）：verify 遇到任何字符串匹配 ^<.*>$ 或等于 TBD/TODO/PENDING/PLACEHOLDER/REPLACE_ME 立即抛 S2_PREREG_PLACEHOLDER_REJECTED；pilot_artifacts 每项必须为 {path, sha256} 且文件存在、sha256 匹配；必填字段缺失/空串同样拒绝。
 - 正式 run 启动前 fail-closed 校验：prereg digest 自洽；S0-7 SHA256SUMS 9/9；code_sha 与当前代码一致；FD gate PASS 且 sha 匹配；episode bank manifest sha 匹配；否则拒绝启动。
 
 ## 8. 指标范围说明（关闭 M05 的 scope 部分）
@@ -151,10 +157,10 @@ S2 在同一合成任务族、同一元训练预算（episodes/内步/外步/批
 
 ## 11. 阶段门与放行链（更新，含 prereg 核验门）
 
-1. A5 M0 设计审阅（本计划 v1.1 + prereg schema）-> APPROVE_FOR_S2_CODE。
+1. A5 M0/M0R 限定 diff 复审（本计划 v1.2 + prereg schema）-> APPROVE_FOR_S2_CODE。
 2. A1 实现+测试；A6 分析+图；A4 文档（可并行，均以 M0 通过为前置）。
 3. A5 代码审阅 -> APPROVE_FOR_S2_FORMAL。
-4. Lead 生成/冻结 S2 prereg 并提交 -> A5 独立核验冻结 prereg -> APPROVE_FOR_S2_RUN。
+4. Lead 按 §7 算法生成/冻结 S2 prereg（build 计算 prereg_id/code_sha/analysis_plan_digest/prereg_digest；verify 独立复算并拒绝占位）并提交 -> A5 独立核验冻结 prereg -> APPROVE_FOR_S2_RUN。
 5. Lead 书面授权（绑定 commit/prereg digest/S0-7/数据边界/时限）-> A2 正式 run（零物理）。
 6. A5 结果复核 -> A3 审计 -> Issue #7 S2 回执 -> S3。
 
@@ -165,12 +171,15 @@ S2 在同一合成任务族、同一元训练预算（episodes/内步/外步/批
 - [ ] 两臂配置除 first_order 外逐字段相同（自动比对）
 - [ ] 训练 episode bank 两独立进程逐字节一致；manifest sha 写入 run_config
 - [ ] 数据边界负控 3 项通过；holdout_rows_used=0
+- [ ] prereg_id/prereg_digest 去循环可复算；code_sha 文件清单算法可机械复算；analysis_plan_digest 由四节复算；占位拒绝负控通过
+- [ ] 两臂 config 含 seed=42/backend=torch 且除 first_order 外逐字段相同（build 与 verify 双重断言）
+- [ ] Holm 唯一族 family_size=2，分析脚本按 family 对象执行、不按 endpoint 拆分；2 检验 Holm 单测
 - [ ] 正式 run 记录完整：训练 1,200 行 + 评估 4,800 行；physical_call_count=0
 - [ ] 分析脚本强制 prereg digest/端点 ID/证据范围标签；统计规则与 §6 一致
 - [ ] 报告事实/推断/局限分节；结论允许 null；不使用确证性泛化措辞
 - [ ] A5 四次 verdict + A3 审计 + Issue #7 回执
 
-## 13. A5 M0 findings 处置（本版）
+## 13. A5 M0/M0R findings 处置（v1.2）
 
 | ID | 处置 | 位置 |
 |---|---|---|
@@ -189,3 +198,6 @@ S2 在同一合成任务族、同一元训练预算（episodes/内步/外步/批
 | A5-S2M0-N04 | 关闭：非有限/资源/失败规则 | §9 |
 | A5-S2M0-N05 | 关闭：FD gate 结果 path/sha 写入 run_config 并在 run 前校验 | §4.3/§7 |
 | A5-S2M0-N06 | 关闭：新增 A5 prereg 冻结核验门（第 4 步） | §11 |
+| A5-S2M0R-B04 | 关闭：arms 两臂 hidden_sizes 统一 [16,16]（删除 FOMAML [64,64]）；增 seed=42/backend=torch；build/verify 断言除 first_order 外逐字段相同 | §4.4/§7/§12 |
+| A5-S2M0R-B03R | 关闭：prereg_id 去循环（同时排除 prereg_id+prereg_digest）；code_sha 文件清单算法、analysis_plan_digest 四节算法写入 §7；arms 增 seed/backend；占位拒绝规则 | §7/§11/§12 |
+| A5-S2M0R-M07 | 关闭：唯一 Holm 族 family_id/family_key/family_size/members 明确，禁止按 endpoint 拆分；分析脚本与 2 检验 Holm 单测 | §6/§7/§12 |
