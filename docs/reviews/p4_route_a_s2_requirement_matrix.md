@@ -1,10 +1,11 @@
-# P4 路线A S2 需求矩阵（v1.3）
+# P4 路线A S2 需求矩阵（v1.4）
 
 - 文档性质：Issue #7 S2 的只读需求—证据—状态核对表，供 Lead/A5/A1/A6/A3 使用；不是阶段验收结论，不替代 A5 verdict，不构成 S3 授权或真实飞机/真实气动结论。
-- 仓库替换目标：docs/reviews/p4_route_a_s2_requirement_matrix.md；本文件为 A4 写给 Lead 的替代文本，A4 未写仓库、未 commit、未 push。
-- 位置：分支 research/p4-route-a-s2；HEAD=origin=12940c5a426e3a1215d53eeb4f41488d4da82926；main=origin/main=ec65e5a9a723bc52df8075a395fcaf9e0fd0fc2b；base=1a2b242；S2 专用 worktree（路径用 <repo>/<EXT> 占位）。
-- 依据：Issue #7 正文 §2 S2 与 §4；S2 执行计划 v1.5（commit 89fd8d9，39,246 B/290 行，sha256 f156b250…）；当前计划文件 46,118 B/2a046260…（A5 delta 审阅对象，见 A5 报告）；A5 S2-M0..M0R5、代码审阅/delta、prereg 核验、结果复核、证据包 rev3 复核；A3 rev3 隔离审计；S0-7 冻结包；S1 收尾矩阵。
+- 仓库状态：docs/reviews/p4_route_a_s2_requirement_matrix.md 已由 Lead 提交（docs-only commit d78dc97，父 12940c5）；本 v1.4 为 Lead 在 A4 v1.3 基础上更新回执发布状态，A4 原文仍为 EXT 副本。
+- 位置：分支 research/p4-route-a-s2；证据包 rev3=12940c5；当前 HEAD=origin=d78dc97（docs-only 3 文件）；main=origin/main=ec65e5a9a723bc52df8075a395fcaf9e0fd0fc2b；base=1a2b242；S2 专用 worktree（路径用 <repo>/<EXT> 占位）。
+- 依据：Issue #7 正文 §2 S2 与 §4；S2 执行计划 v1.5（commit 89fd8d9，39,246 B/290 行，sha256 f156b250…）为 M0R5 批准基线；v1.6（983e6b8，44,689 B/ec3c2823…）与 v1.6a（5a32665，46,118 B/2a046260…）为 A5 代码审阅整改计划版本；A5 S2-M0..M0R5、代码审阅/delta、prereg 核验、结果复核、证据包 rev3 复核；A3 rev3 隔离审计；S0-7 冻结包；S1 收尾矩阵。
 - 读取时点：2026-11-07 03:30 +08（2026-11-06T19:30Z）。
+- 变更：v1.4（2026-11-07T03:55+08）：Issue #7 S2 回执已由 Lead 发布（commentId 6693991661）；仓库 docs 归档 commit d78dc97（矩阵 v1.3 + A5 包 rev3 复核 + A3 rev3 报告）；S2 回执 PENDING→PUBLISHED；阶段验收仍 NOT_ISSUED、S3=NOT_APPROVED。
 - 变更：v1.3（2026-11-07T03:30+08）：S2 由设计/待运行更新为「执行 + 结果复核 COMPLETED」；写入 6,000 条正式 run、A5 结果复核/证据包 rev3、A3 rev3、主/次端点 HARM 结果、9 图与七类映射；S2 阶段验收仍为 NOT_ISSUED，S3=NOT_APPROVED；仓库写入待 Lead。
 - 变更：v1.2a（2026-11-06T22:15+08）：修正 R-S2-01A 引用沿革（raw 7d6f9739…；LF canonical 49ffa9c5…；A5 M0R5 文本 4b2a7901… 为审阅时旧版本）；v1.2a 的完整 S2-01..S2-12、X-01..X-11、A5 26 行 findings 历史仍保留在仓库版本与本文件 §5/§6 摘要中。
 - 状态口径：COMPLETED 表示该需求已由正式 run/证据满足并经独立复核，不等于阶段验收；COMPLETED_REVIEWED 表示结果/包已复核但阶段验收未签发；FROZEN_VERIFIED 表示 prereg 已冻结并核验；PASS_WITH_WARNINGS 表示 A3 全项 PASS、warnings 为 info；NOT_ISSUED/NOT_APPROVED 表示未签发/未授权；ACTIVE_BOUNDARY 表示现行硬边界；SEPARATE_BOUNDARY 表示独立轨道。
@@ -14,7 +15,7 @@
 
 | 项目 | 当前事实 | 证据 | 状态 |
 |---|---|---|---|
-| S2 总体 | 正式 run 6,000 条已执行；A5 结果复核/证据包 rev3 已 APPROVE；A3 rev3 PASS_WITH_WARNINGS；阶段验收与回执发布未签发 | 本文件 §7；A5 result/package verdict；A3 rev3 | 执行+结果复核 COMPLETED；阶段验收 NOT_ISSUED；回执 PENDING_LEAD |
+| S2 总体 | 正式 run 6,000 条已执行；A5 结果复核/证据包 rev3 已 APPROVE；A3 rev3 PASS_WITH_WARNINGS；S2 回执已发布（commentId 6693991661）；阶段验收未签发 | 本文件 §7；A5 result/package verdict；A3 rev3；Issue #7 评论 | 执行+结果复核 COMPLETED；阶段验收 NOT_ISSUED；回执 PUBLISHED |
 | S2 设计门 | A5 S2-M0R5 APPROVE_FOR_S2_CODE_AMENDED（0B/0M/1 非阻断 minor），对象 89fd8d9（计划 v1.5，39,246 B/290 行、sha f156b250…）；M0R4 对 v1.4 的 CHANGES_REQUESTED 已由 v1.5 关闭 | <EXT>/p4-route-a/a5/S2_M0R5_review.md（8,178 B/sha b1465858…）；计划 v1.5 | APPROVED（历史设计门） |
 | S2 代码 | commit 3d576bd（12 files，+10,828）→ 修复 983e6b8/5a32665/f4ab43f；A5 初始代码审阅 CHANGES_REQUESTED 2B/2M/5m（对象 3d576bd），delta 审阅 APPROVE_FOR_S2_FORMAL 0B/0M/3m（对象 f4ab43f；8 files +2,560/−356；1,174 tests OK/1 skipped；8 e2e OK） | <EXT>/p4-route-a/a5/S2_code_review.md；S2_delta_verdict.json（1,764 B/sha 18467e0b…）；<repo>/git log | COMPLETED |
 | S2 prereg | 文件 4,916 B、raw sha fde3ef33…；prereg_id p4ra-s2-prereg-2751c162904d5a4f；prereg_digest c767f206…；code_sha 3e6ece85…；训练 bank sha 6954b053…；冻结 commit 994cda8；A5 核验 APPROVE_FOR_S2_RUN（104 checks/0 fail；8/8 负控；21 gates PASS） | <repo>/research/concorde_metaopt/evidence/s2/s2_preregistration.json；<EXT>/p4-route-a/a5/S2_prereg_verification/verdict.json（3,322 B/sha 282984a0…） | FROZEN_VERIFIED |
@@ -28,10 +29,10 @@
 | 文档/证据链 | 计划 v1.5/89fd8d9（39,246 B/f156b250…）为执行基线；当前计划文件 46,118 B/2a046260…为 A5 delta 审阅对象；A5 六阶段门与结果/包复核已完成；A3 rev3 完成；A2 报告 repo-ready 31,771 B/f97b8eb5…、外部版 31,971 B/48e0a274… | 本文件 §5/§10；A5/A2/A3 文件 | COMPLETED（阶段验收除外） |
 | Issue #4 | 独立 VSPAERO/气动验证轨道；S2 不调用任何气动求解器、不修改 Issue #4 六门禁；S2 的 0 物理结果不得当作 VSPAERO 验证或真实阻力证据 | Issue #4；D-12D-006；本文件 §11 | SEPARATE_BOUNDARY |
 | Issue #5 / PR #6 | 历史基线；S2 不复用/不覆盖其运行与结果；不合并 main | Issue #7 §1；计划头部 | CLOSED_HISTORICAL |
-| PR #3 / main | PR #3/#6 保持 open；main=origin/main=ec65e5a，未合并；S2 分支 research/p4-route-a-s2，HEAD=origin=12940c5；未新开 PR | <repo>/git log；PR 元数据 | OPEN_NOT_MERGED / ACTIVE_BOUNDARY |
+| PR #3 / main | PR #3/#6 保持 open；main=origin/main=ec65e5a，未合并；S2 分支 research/p4-route-a-s2，HEAD=origin=d78dc97（证据包 rev3=12940c5）；未新开 PR | <repo>/git log；PR 元数据 | OPEN_NOT_MERGED / ACTIVE_BOUNDARY |
 | S2 阶段验收 | NOT_ISSUED；A5 结果复核仅 APPROVE_FOR_S2_RECEIPT（回执级），不是阶段验收；S2 阶段验收/S3 放行由 Lead/负责人另行签发 | A5 result verdict；本文件 §9 | NOT_ISSUED |
 | S3 | NOT_APPROVED；需负责人书面授权 + 新 prereg；不得以 S2 结果自动放行 | Issue #7 §2/§4；A5 result verdict 边界 | NOT_APPROVED |
-| A4 输出 | 本矩阵 v1.3（EXT 替代文本）；Issue #7 S2 回执草稿（DRAFT_FOR_LEAD_REVIEW）；task263 交付报告 | <EXT>/p4-route-a/a4/ | PENDING_LEAD |
+| A4 输出 | 本矩阵 v1.3（EXT 替代文本；Lead 已提交 d78dc97 并更新为 v1.4）；Issue #7 S2 回执草稿→Lead 发布（commentId 6693991661）；task263 交付报告 | <EXT>/p4-route-a/a4/ | PUBLISHED_BY_LEAD（回执）；矩阵 v1.4 待 A3 docs 审计 |
 
 ## 2. S2 需求矩阵（S2-01 至 S2-12）
 
@@ -177,22 +178,22 @@
 | S2 证据包 | APPROVE_FOR_S2_RECEIPT_PACKAGE | 2 个非阻断 minor 已披露 |
 | A3 rev3 | PASS_WITH_WARNINGS | 27 项 PASS/0 FAIL；W01–W04 info |
 | S2 阶段验收 | NOT_ISSUED | Lead/负责人另行签发 |
-| S2 回执 | PENDING_LEAD | A4 草稿已写；GitHub 仅 Lead 发布 |
+| S2 回执 | PUBLISHED（commentId 6693991661） | 由 Lead 发布；GitHub 写入仅 Lead |
 | S3 | NOT_APPROVED | 需负责人书面授权 + 新 prereg；不得自动放行 |
 | Issue #4 | 独立轨道 | 六门禁不变；D-12D-006 另线等待新预算 |
 | main/PR#3/#6 | 未合并/open | PR #3/#6 保持 open；未新开 PR |
 
-- A4 交付：本矩阵 v1.3（EXT 替代文本）、<EXT>/p4-route-a/a4/issue7_s2_result_receipt_draft.md（DRAFT_FOR_LEAD_REVIEW）、<EXT>/p4-route-a/a4/task263_delivery_report.md（交付报告）。
-- 仓库写入：docs/reviews/p4_route_a_s2_requirement_matrix.md 由 Lead 执行；A4 不写仓库。
-- 下一步：Lead 审核回执并决定是否发布；S2 阶段验收与 S3 授权分开处理；S3/S4/Issue #4 均需另行授权，不得由本矩阵自动放行。
-- 若 Lead 发布回执：建议同时记录 S2_RUN=EXECUTED_AND_RESULT_REVIEWED、阶段验收=NOT_ISSUED、S3=NOT_APPROVED；不把 A5 回执级 APPROVE 写成阶段验收。
+- A4 交付：矩阵 v1.3（EXT 替代文本，Lead 已提交 d78dc97）、<EXT>/p4-route-a/a4/issue7_s2_result_receipt_draft.md（DRAFT_FOR_LEAD_REVIEW，Lead 审核并发布 commentId 6693991661）、<EXT>/p4-route-a/a4/task263_delivery_report.md（交付报告）。
+- 仓库写入：docs/reviews/p4_route_a_s2_requirement_matrix.md 由 Lead 提交（d78dc97 为矩阵 v1.3；v1.4 为发布状态更新）；A4 不写仓库。
+- 下一步：S2 回执已发布；S2 阶段验收与 S3 授权分开处理；S3/S4/Issue #4 均需另行授权，不得由本矩阵自动放行。
+- 发布记录：Issue #7 commentId 6693991661（2026-11-06T19:49:49Z）；GitHub 正文 15,564 字符/sha256 3b473e7b…；本地发布快照 22,542 B/sha256 b795b468…；S2_RUN=EXECUTED_AND_RESULT_REVIEWED、阶段验收=NOT_ISSUED、S3=NOT_APPROVED。
 
 ## 10. 证据清单（哈希）
 
 | 证据 | 路径 | 大小/行数 | sha256 |
 |---|---|---|---|
 | S2 计划 v1.5 | <repo>/docs/planning/p4_route_a_s2_execution_plan_20261106.md（历史对象 89fd8d9） | 39,246 B/290 行 | f156b250df40395dc3a3bce5957a1ebe3156025d68f4e798d31ea04be6aded6f |
-| S2 计划当前文件 | 同路径（A5 delta 对象） | 46,118 B | 2a046260dc0bcb05d0bafdd4c0c3143400b170edc015661263e72b00a85b4774 |
+| S2 计划当前文件 | 同路径（v1.6a，A5 代码审阅整改计划版本） | 46,118 B | 2a046260dc0bcb05d0bafdd4c0c3143400b170edc015661263e72b00a85b4774 |
 | S2 prereg | <repo>/research/concorde_metaopt/evidence/s2/s2_preregistration.json | 4,916 B | fde3ef33bab53c67f5f595472a28538b13fbecbc5918903cdc6904c85ad692cd |
 | run_config | <repo>/.../evidence/s2/formal_run/run_config.json | 3,939 B | 9522d467… |
 | run_summary | 同目录 run_summary.json | 3,908 B | 77d10cd6… |
@@ -211,14 +212,16 @@
 | A5 prereg verdict | <EXT>/p4-route-a/a5/S2_prereg_verification/verdict.json | 3,322 B | 282984a0… |
 | A5 delta verdict | <EXT>/p4-route-a/a5/S2_delta_verdict.json | 1,764 B | 18467e0b… |
 | A5 包 rev3 verdict | <EXT>/p4-route-a/a5/S2_package_review_rev3/verdict.json | 1,456 B | 700b80e0… |
-| A3 隔离审计 | <EXT>/EXT/p4-route-a/a3/S2_package_isolation_12940c5.md | 16,471 B | 7df8d496… |
+| A3 隔离审计 | <EXT>/p4-route-a/a3/S2_package_isolation_12940c5.md | 16,471 B | 7df8d496… |
 | A3 facts | 同目录 S2_package_isolation_12940c5_facts.json | 37,366 B | ca5bfcd5… |
 | A3 SHA256SUMS | 同目录 SHA256SUMS.txt | 204 B | 5d593032… |
+| 仓库文档归档 | <repo>/docs/reviews/（矩阵 v1.3、A5 包 rev3 复核、A3 rev3 报告） | 3 files +514/−152 | commit d78dc97；父 12940c5 |
+| Issue #7 回执 | Issue #7 评论（本矩阵对应回执） | 15,564 字符（GitHub） | commentId 6693991661；sha256 3b473e7b… |
 | S0-7 SHA256SUMS | <repo>/research/concorde_metaopt/optimization_runs/p4ra-s0-7-freeze-20261106T024200Z/SHA256SUMS.txt | 784 B | 59aa81cd… |
 
 ## 11. 边界声明
 
-- 本文件只读核对，不修改仓库代码/计划/冻结包/旧 run；A4 未 commit、未 push、未写 GitHub。
+- 本文件只读核对，不修改仓库代码/计划/冻结包/旧 run；A4 未 commit、未 push、未写 GitHub；Lead 已提交矩阵 v1.3/d78dc97 并发布 Issue #7 回执（commentId 6693991661）。
 - physical_call_count=0；无 VSPAERO/SU2/RCAIDE Mission/CFD/WaveDrag/DOE 调用；6,000 条为合成解析评价记录，不是物理调用。
 - 本文件不替代 A5 verdict、不替代 Lead 签发；S2 阶段验收/S3 授权/PR 合并/Issue #4 门禁变更均不在本文件授权范围内。
-- 所有状态以 2026-11-07T03:30+08 读取时点为准；A5/A3 文件后续变更由各自 owner 更新，A4 不代写。
+- 所有状态以 2026-11-07T03:55+08 为准（A4 读取时点 03:30+08；回执发布 03:49+08）；A5/A3 文件后续变更由各自 owner 更新，A4 不代写。
