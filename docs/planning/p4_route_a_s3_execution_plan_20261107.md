@@ -1,11 +1,11 @@
 # P4 路线A S3 执行计划：约束感知初始化与低成本适应消融
 
 - 文档路径：`docs/planning/p4_route_a_s3_execution_plan_20261107.md`
-- 版本：v1.1（2026-11-06T20:58Z 修订；v1.0 初稿见提交 `7bef3cf`）
-- 状态：DRAFT_FOR_A5_M0R_REVIEW（未经 A5 M0R APPROVE 前不构成执行合同）
+- 版本：v1.2（2026-11-07T05:35Z 修订；v1.0 初稿见提交 `7bef3cf`）
+- 状态：DRAFT_FOR_A5_M0R2_REVIEW（未经 A5 M0R2 APPROVE 前不构成执行合同；v1.1 已被 A5 S3-M0R 判 CHANGES_REQUESTED）
 - 作者/唯一集成者：Lead（teammate 不得提交、不得写 GitHub）
-- 上游合同：Issue #7（D-P4-003，body 5,150 字符）；`docs/planning/p4_route_a_stage_improvement_plan_20261105.md` 的 S3 条；S1 回执 commentId 6684142041；S2 回执 commentId 6693991661；A5 S3-M0 审阅（CHANGES_REQUESTED，S3-M0-01..16）
-- 基线提交：`8da84fc105755825561829d4fb371f2baea57438`（research/p4-route-a-s3 的父提交，S2 docs closeout）；v1.0 计划提交 `7bef3cf8218df2328d997dbb12e4dd626704005f`；v1.1 为其后续修订的待提交版本
+- 上游合同：Issue #7（D-P4-003，body 5,150 字符）；`docs/planning/p4_route_a_stage_improvement_plan_20261105.md` 的 S3 条；S1 回执 commentId 6684142041；S2 回执 commentId 6693991661；A5 S3-M0 审阅（CHANGES_REQUESTED，S3-M0-01..16）；A5 S3-M0R 审阅（CHANGES_REQUESTED，S3-M0R-01..09，对象 dd2bab2）；A4 矩阵 v1.1（NEW-01..09）
+- 基线提交：`8da84fc105755825561829d4fb371f2baea57438`（research/p4-route-a-s3 的父提交，S2 docs closeout）；v1.0 计划提交 `7bef3cf8218df2328d997dbb12e4dd626704005f`；v1.1 提交 `dd2bab2`（父 7bef3cf）；v1.2 为其后续修订的待提交版本（随附 `research/concorde_metaopt/evidence/s3/hash_vectors.json`）
 - 工作树：`<repo-s3>`（S3 专用 worktree，绝对路径不入库），分支 `research/p4-route-a-s3`
 - 证据根（仓库内）：`research/concorde_metaopt/evidence/s3/`
 - 外部记忆根（不得入库）：`<EXT>/p4-route-a/`（`<EXT>` 为用户级 RCAIDE_Supersonic_agent_state 目录）
@@ -17,15 +17,27 @@
 3. 端点合同对齐 Issue #7 §4：新增 gap_to_reference、正式诊断端点 RMSE/MAE、best/first 的角色与配对检验（A5 S3-M0-02；A4 DEV-02/03/04）。
 4. 数据边界改为 phase-scoped holdout 访问合同，消除“正式评估 split={meta_test}”与“训练 split⊆{train,val}”冲突（A5 S3-M0-03）；参考解封存件与运行期评估器分离。
 5. 新增 OOD 正式运行网格与 OOD 偏移定义（A5 S3-M0-04；fig7 有数据）。
-6. code_sha 固定覆盖 7 个实现文件（含 s3_analysis.py/s3_figures.py），禁止新增 s3_arms.py；定义 analysis_plan_digest（A5 S3-M0-05；A4 DEV 允许的开放选项删除）。
+6. code_sha 固定覆盖 7 个实现文件（§6.1 逐文件枚举；含 s3_analysis.py/s3_figures.py），禁止新增 s3_arms.py；定义 analysis_plan_digest（A5 S3-M0-05；A4 DEV 允许的开放选项删除）。
 7. 训练 episode bank 与 ANIL 参数分区、优化器、seed 公式、digest 全部写死（A5 S3-M0-06）。
-8. 新增哈希与 canonicalization 子节，覆盖 package/task_ids/params/reference/analysis_plan/record/history/prereg 与 task_fingerprint，并给出固定测试向量（A5 S3-M0-07/15）。
+8. 新增哈希与 canonicalization 子节，覆盖 package/task_ids/params/reference/analysis_plan/record/history/prereg 与 task_fingerprint，并给出固定测试向量；向量文件 `research/concorde_metaopt/evidence/s3/hash_vectors.json` 随计划提交（A5 S3-M0-07/15、A5-S3M0R-02）。
 9. 新增 fd_or_gradient_gate 合同（目标模型、坐标、eps、tol、产物、错误码、时点、负控）（A5 S3-M0-08）。
 10. 新增 fig10_vspaero_gate_status（Issue #7 图⑦），只读引用 D-12D-005，不伪造数据（A5 S3-M0-09）。
 11. 固定四 BO 臂随机流与包装函数：引擎 seed 不含 arm、候选池共享、初始点 3 点唯一差异、LEGACY_BO_ARM 合同化（A5 S3-M0-10）。
 12. Wilcoxon 改为 tie-aware 精确符号翻转枚举检验，零差丢弃并报告 n_zero，附敏感性分析（A5 S3-M0-11）。
 13. 确定性子集与 opt_seed 降级同步、负控制网格理由、fig2 K-sweep 诊断网格、负控制置换 seed 全部写死（A5 S3-M0-12/13/14/16）。
 14. 处置 A4 DEV-01..09：R-S3-01 授权链裁决、降网格 R-S3-02 书面审批、多样性进入 Wave A、Meta-SGD 显式排除、总体结论映射规则、头标措辞一致（§16）。
+
+**v1.2 修订摘要（相对 v1.1）**
+
+1. C1/C2 的 comparator 由 RANDOM 回归修正为 `S3-BO-FOMAML-OBJ`（与 §1.3 H0 一致；A5-S3M0R-01 blocker）；RANDOM/DE 仅描述性，禁止进入推断（§5.2、fig3/fig4）。
+2. 提交 `research/concorde_metaopt/evidence/s3/hash_vectors.json`（11 个固定向量，含精确中间串与期望 sha256），并在 §6.1 逐项定义 7 文件 code_sha、analysis_code_sha、task_ids_sha256、task_fingerprint、analysis_plan_digest、package_sha256、prereg/record/episode digest 与原始字节摘要（A5-S3M0R-02/03；A4 NEW-01/07/09）。
+3. R-S3-02 降网格算术更正为 3,780 runs/362,880 evals（负控/OOD 保持 300/28,800，确定性 180/17,280；A5-S3M0R-04）。
+4. phase-scoped 边界改写：TRAIN/DEV 禁读 holdout truth；EVAL 允许读被测 task 的 support 标签做 K=5 适配（`support_truth_read` 记录）；query truth 仅端点计算读取；每 task 一次授权**评估 campaign**（A5-S3M0R-05）。
+5. RANDOM 臂统一执行多样性规则（仅在自己的共享候选序列内取点），删除“RANDOM 豁免”（A5-S3M0R-06；A4 NEW-05）。
+6. 决策枚举改为互斥穷尽判定表 + 总体唯一优先级，附 3×3 组合单测（A5-S3M0R-07；A4 NEW-06）。
+7. 哈希规则中 `radius_base` 改为 `delta1_base`；BO trace 一致性合同改为引擎四元组 + 初始观测前抽样序列（A5-S3M0R-08；A4 NEW-04/NEW-08）。
+8. episode 消耗披露：唯一 4,800、模型-episode 9,600（3 FOMAML + 3 ANIL 各 1,600），计入 auxiliary_compute（A5-S3M0R-09）。
+9. 门禁链新增 M0R2（v1.2 限定 diff：计划 + hash_vectors.json）；新增 §18/§19 逐项处置表。
 
 ## 0. 阶段前提、授权口径与硬边界
 
@@ -65,7 +77,8 @@ Issue #7 §2/§4 规定：S3（约束感知初始化与方法效率消融）在 
 | 门 | 产出 | 放行条件 |
 |---|---|---|
 | M0 设计门 | 本计划 v1.1 + S3 阶段开启记录 | A5: APPROVE_FOR_S3_CODE |
-| M0R 修订门 | v1.1 限定 diff（相对 7bef3cf） | A5: APPROVE_FOR_S3_CODE（或 APPROVE_FOR_S3_CODE_AMENDED） |
+| M0R 修订门 | v1.1 限定 diff（相对 7bef3cf） | A5: APPROVE_FOR_S3_CODE（或 APPROVE_FOR_S3_CODE_AMENDED）；结论 CHANGES_REQUESTED（S3-M0R-01..09） |
+| M0R2 复审门 | v1.2 限定 diff（相对 dd2bab2：计划 + hash_vectors.json） | A5: APPROVE_FOR_S3_CODE（或 APPROVE_FOR_S3_CODE_AMENDED） |
 | M1 代码/校准门 | 家族实现+校准报告+ANIL+臂+runner+prereg 生成器+测试 | A5: APPROVE_FOR_S3_FORMAL（代码审阅） |
 | M2 预注册门 | 新族冻结包、prereg JSON、FD/梯度门、冻结记录 | A5: APPROVE_FOR_S3_RUN |
 | M3 正式 run 授权 | Lead 书面授权（task/worktree/out_dir/预算/停止规则） | Lead 签发 |
@@ -98,19 +111,21 @@ S3 的唯一干预目标是：**在目标最优点严格不可行的多面体冲
 
 - H0：在相同预算、相同支持集、相同 BO 引擎下，联合打分与目标打分的任务级平均 `feasible_hit_rate` 无差异。
 - 主检验族 C1 = {`feasible_hit_rate`，B=64；`feasible_hit_rate`，B=128}，共 2 个检验，Holm 校正，双侧 tie-aware 精确符号翻转检验（§5.2），alpha=0.05；效应阈值 = 绝对 +0.02（2 个百分点）。
-- 决策枚举（每个预算层分别判定；逐层规则与 §5.2 完全一致）：
-  - `SUPPORTED_BENEFIT`：Holm 校正后 p<0.05、效应方向为获益且 |效应| ≥ 阈值（0.02）；
-  - `SUPPORTED_HARM`：Holm p<0.05、方向为损害且 |效应| ≥ 0.02；
-  - `NEGLIGIBLE_SIGNIFICANT`：Holm p<0.05 但 |效应| < 0.02；
-  - `NULL`：p≥0.05 且点估计方向为获益；
-  - `DIRECTION_INCONSISTENT`：p≥0.05 且点估计方向为损害；
-  - `INCONCLUSIVE`：有效配对任务 n_eff<15 或检验不可计算。
-- 总体 S3 结论映射（A4 DEV-08 处置；预注册、防选择性汇报）：
-  1. 两层均 `SUPPORTED_BENEFIT` → 总体 `BENEFIT`；
+- 决策枚举（每个预算层分别判定；**互斥穷尽、优先级从上到下**；与 §5.2 完全一致；A5-S3M0R-07 处置）：
+  1. `INCONCLUSIVE`：有效配对任务 n_eff<15，或检验不可计算；
+  2. `SUPPORTED_BENEFIT`：Holm 校正后 p<0.05、效应方向为获益且 |效应| ≥ 阈值（0.02）；
+  3. `SUPPORTED_HARM`：Holm p<0.05、方向为损害且 |效应| ≥ 0.02；
+  4. `NEGLIGIBLE_SIGNIFICANT`：Holm p<0.05 但 |效应| < 0.02；
+  5. `DIRECTION_INCONSISTENT`：p≥0.05、点估计方向为损害（差<0）且 |效应| ≥ 0.02；
+  6. `NULL`：其余（p≥0.05 且非 `DIRECTION_INCONSISTENT`）。
+- 总体 S3 结论映射（A5-S3M0R-07 + A4 DEV-08 处置；预注册、防选择性汇报；两层 = C1@B64 与 C1@B128 的可行命中率层）：
+  1. 任一层 `INCONCLUSIVE` → 总体 `INCONCLUSIVE`；
   2. 任一层 `SUPPORTED_HARM` → 总体 `HARM`；
-  3. 一层 `SUPPORTED_BENEFIT`、另一层为 `NULL`/`NEGLIGIBLE_SIGNIFICANT`/`INCONCLUSIVE`/`DIRECTION_INCONSISTENT` → 总体 `DIRECTION_INCONSISTENT`；
-  4. 任一层 `INCONCLUSIVE` → 总体 `INCONCLUSIVE`；
-  5. 否则 → 总体 `NO_EVIDENCE`。
+  3. 任一层 `DIRECTION_INCONSISTENT` → 总体 `DIRECTION_INCONSISTENT`；
+  4. 两层均 `SUPPORTED_BENEFIT` → 总体 `BENEFIT`；
+  5. 一层 `SUPPORTED_BENEFIT`、另一层为 `NULL`/`NEGLIGIBLE_SIGNIFICANT` → 总体 `NO_EVIDENCE`；
+  6. 其余 → 总体 `NO_EVIDENCE`。
+- 判定必须由固定查表函数产生（不允许自由文本结论），并附 3×3 组合单测。
 - 端点空值规则：`best_feasible_value`/`gap_to_reference` 在 run 内无可行点时 = null（不插补、不以惩罚值替代）；`feasible_hit_rate` 分母固定为 B，恒有定义；null 计数必须披露。
 - 禁止：事后按任务筛选、按结果调半径/权重、只报告有利预算、把 INCONCLUSIVE 写成 benefit、把 Wave B 探索性结果写成确证性结论。
 
@@ -126,7 +141,7 @@ v1.0 的 12D 全维椭球构造经 A5 独立探针与 Lead 数值探针证明不
 - 目标：`f(u; c, a) = sum_i a_i (u_i - c_i)^2`；无约束最优点为 c。
 - 约束 1（线性半空间，目标点严格不可行）：`g1(u) = b1 · (u - c) + delta1 <= 0`；因为 `g1(c) = delta1 > 0`，c 不可行，c 到 g1 边界的欧氏距离为 `delta1`。
 - 参考解（闭式 KKT）：`S = sum_i b1_i^2 / a_i`；`lambda = delta1 / S`；`u_star = c - lambda * (b1 / a)`（逐元素）；则 `g1(u_star) = 0` 精确成立、`kkt_residual = max_i | 2 a_i (u_star_i - c_i) + 2 lambda b1_i | = 0`（解析恒等，浮点实现应 <= 1e-12）。
-- 参考目标与 regret：`f_star = f(u_star) = delta1^2 / S`（因 f(c)=0 且 `u_star - c = -lambda b1/a`）；`objective_regret = f(c) - f(u_star) = delta1^2 / S`；`conflict_ratio = delta1`（c 到可行边界的距离）。
+- 参考目标与 regret：`f_star = f(u_star) = delta1^2 / S`（因 f(c)=0 且 `u_star - c = -lambda b1/a`）；`objective_regret = f(u_star) - f(c) = delta1^2 / S > 0`；`conflict_ratio = delta1`（c 到可行边界的距离）。
 - 约束 2（第二线性半空间，在参考点不活跃）：`delta2 = - b2 · (u_star - c) - m2`；`g2(u) = b2 · (u - c) + delta2 <= 0`；于是 `g2(u_star) = -m2`（精确负值，`margin_m = m2`）；`g2` 切掉可行域的一个角，使“多约束”成立且参考点仍可行。
 - 真值：`truth(u) = (f(u), g1(u), g2(u))`；feasible 当且仅当 `u in [0.02,0.98]^12` 且 `g1(u) <= 0` 且 `g2(u) <= 0`（比较容差 1e-12）。
 - 参考证书断言（生成期逐一 fail-closed；任一失败则该 task seed 重采样，最多 50 次，记录 retry_count）：
@@ -151,12 +166,12 @@ v1.0 的 12D 全维椭球构造经 A5 独立探针与 Lead 数值探针证明不
 | meta_test_negative_control | 10 | 标签打乱负控制 | 否 |
 
 - 种子：`FAMILY_SEED = 20261107`（meta_train/meta_validation/negative control）；`HOLDOUT_SEED = 20261108`（meta_test/meta_test_ood 追加进 seed 派生，参照 v3 的 RESEEDED_SPLITS 机制）；每个 task 的 seed = `int.from_bytes(sha256(f"{split}|{family_id}|{formula_version}|{index}|{split_seed}").digest()[:8], "big") % (2**31)`。
-- 任务 id：`p4ra-FQEC-v1-<sha1(family_id|formula_version|canonical(params)|seed) 前 16 hex>`；`task_fingerprint = sha256(canonical JSON({family_id, formula_version, task_id, seed, params}))[:16]`（§6.2）。
+- 任务 id：`p4ra-FQEC-v1-<sha1(family_id|formula_version|canonical(params)|seed) 前 16 hex>`；`task_fingerprint = sha256(canonical JSON({family_id, formula_version, task_id, seed, params}))[:16]`（唯一算法，见 §6.1；`params={a,c,b1,b2,delta1,delta2,m2}`，不含 w/r）。
 - OOD 定义（A5 S3-M0-04 处置）：OOD 任务使用同一族公式，但 `delta1_ood = delta1_base + 0.05`（冲突更强），且在 b1 上叠加确定性偏移：`b1_ood = normalize(b1 + 0.30 * e_rand)`，其中 `e_rand` 为 12 维标准高斯单位向量、seed 由 `HOLDOUT_SEED|ood-direction|index` 派生；`m2` 与 b2 采样分布不变。参考证书断言与 §2.1 相同；OOD 仍为 `reference_kind=POLYHEDRAL_KKT_CERTIFIED`；`task_context.ood_flag = 1`，且该 flag 不进入代理输入特征（§3.2）。
 - 负控制定义（A5 S3-M0-16 处置）：负控制任务沿用 meta_test 前 10 个任务的几何与 design points，仅对 query 标签做置换：`shuffle_seed = int.from_bytes(sha256(f"{FAMILY_SEED}|{task_id}|label-shuffle").digest()[:8], "big") % (2**31)`；置换仅作用于 query 的 3 维标签行（f/g1/g2 同时置换，保持行内一致），support 标签不变；`reference_kind=LABEL_SHUFFLED_NO_REFERENCE`，参考类端点对这些任务为 null 并披露。
-- 冻结包路径：`research/concorde_metaopt/evidence/s3/family_package/p4ra_fqec_v1_family_package.json`；包内含 `family_id`、`formula_version`、参数分布、每任务 `task_id/task_fingerprint/split/params/seed/reference_digest`、split→task_ids 映射、`package_sha256`、生成 code_sha、生成 UTC。
+- 冻结包路径：`research/concorde_metaopt/evidence/s3/family_package/p4ra_fqec_v1_family_package.json`；包内含 `family_id`、`formula_version`、参数分布、每任务 `task_id/task_fingerprint/split/params/seed/reference_digest`、split→task_ids 映射、`family_package_sha256`（= 包文件原始字节 sha256）、生成 code_sha、生成 UTC。
 - 参考解封存（A5 S3-M0-03 处置）：完整参考解（u_star/f_star/lambda 等）写入**独立封存件** `research/concorde_metaopt/evidence/s3/references_sealed/p4ra_fqec_v1_references_sealed.json`，其 `sealed_reference_sha256` 写入 prereg；runner 在正式 run 期间**不得加载封存件**，只有 analysis 在 run 完成后可加载；冻结包只含 `reference_digest`（SHA-256 前 32 hex），不含 u_star/f_star 数值。
-- 冻结件 sha256 写入 prereg（`frozen_package.package_sha256`、`task_ids_sha256`、`references_sealed_sha256`、`split_counts`）；正式 run 前 A5 独立核验。
+- 冻结件 sha256 写入 prereg（`frozen_package.family_package_sha256`、`hash_vectors_sha256`、`task_ids_sha256`、`references_sealed_sha256`、`split_counts`）；正式 run 前 A5 独立核验。
 - 旧族（F-QE-feasible-v2/v3）只允许作为“历史诊断对照”只读引用，不得出现在 S3 任何训练/评估/统计中。
 
 ### 2.3 数据边界、split 白名单与 phase-scoped holdout 访问合同
@@ -165,12 +180,14 @@ v1.0 的 12D 全维椭球构造经 A5 独立探针与 Lead 数值探针证明不
 - 阶段（phase）枚举：`TRAIN`（meta_train）、`DEV`（dev/meta_validation）、`EVAL`（meta_test）、`OOD`（meta_test_ood）、`NEGATIVE_CONTROL`（meta_test_negative_control）。每条评估记录必须写 `phase`。
 - phase-scoped 泄漏标志（runner 与 analysis 双重校验；替代 S2 的单一 `holdout_metrics_read=false`）：
   1. `holdout_truth_used_for_training = false`：训练/episode bank 只读 meta_train；
-  2. `holdout_truth_used_for_adaptation = false`：适配/支持集只读 meta_train 或 meta_validation 的 support 设计；
-  3. `holdout_truth_used_for_bo_ranking = false`：BO 候选排序只用 support 标签，不得用 query 标签或参考解；
-  4. `holdout_truth_read_for_evaluation = true`（仅 EVAL/OOD/NEGATIVE_CONTROL 阶段）：正式评估时评估器对算法已选设计返回 truth，仅用于计算端点；每 task 只允许一次授权 run，记录 `evaluation_phase_read_utc`。
+  2. `holdout_truth_used_for_adaptation = false`：TRAIN/DEV 阶段的适配/支持集只读 meta_train 或 meta_validation 的 support 设计；
+  3. `support_truth_read`（仅 EVAL/OOD/NEGATIVE_CONTROL 阶段）：正式评估时允许读取被测 task 的 support 标签用于 K=5 适配（算法输入，不是泄漏），记录布尔值与 `support_truth_read_utc`；
+  4. `holdout_truth_used_for_bo_ranking = false`：BO 候选排序只用 support 标签，不得用 query 标签或参考解；
+  5. `holdout_truth_read_for_evaluation = true`：仅评估器对算法已选设计返回 query truth、且仅用于计算端点；query truth 在 run 内只允许在端点计算时读取一次，记录 `evaluation_phase_read_utc`。
 - 参考解使用边界：runner 不得读取 `references_sealed`；analysis 在 run 完成后读取并计算 `gap_to_reference`；任何 runner 进程读取封存件即 fail-closed（`S3_LEAKAGE_SEALED_REFERENCE_READ`）。
-- 盲测：meta_test/meta_test_ood/negative control 在 prereg 冻结（M2）前不生成任何评估记录；冻结后只允许 A2 在 Lead 授权下执行一次正式 run；A5 可在复核时读取 run 产物但不得改动。
+- 盲测：meta_test/meta_test_ood/negative control 在 prereg 冻结（M2）前不生成任何评估记录；冻结后只允许 A2 在 Lead 授权下执行一次正式评估 campaign（定义见下一条）；A5 可在复核时读取 run 产物但不得改动。
 - 其他硬检查：support 与 query 设计不得相交（1e-12 不相交保证）；support 与初始点不得重叠；代理训练/适配只使用 support 标签。
+- 授权 campaign（A5-S3M0R-05 处置）：每个 meta_test/meta_test_ood/negative control task 只允许一次**授权评估 campaign**；campaign 覆盖该 task 在预注册网格内的全部 runs（5 臂 × 2 预算 × opt_seed × meta_seed）与确定性重跑，`campaign_authorization_id`/`campaign_authorization_utc` 写入 run_config 与 data_manifest；campaign 内每个 run 仍独立记账与校验。
 
 ### 2.4 评估器与计费口径（S3 是合成评估，不是物理评估）
 
@@ -206,7 +223,7 @@ v1.0 的 12D 全维椭球构造经 A5 独立探针与 Lead 数值探针证明不
 - 随机流合同（A5 S3-M0-10 处置）：
   1. BO 引擎 seed = `int.from_bytes(sha256(f"{task_id}|{opt_seed}|{meta_seed}|s3-bo-engine").digest()[:8], "big") % (2**31)`；**不含 arm 名、不含 budget**，故四个 BO 臂与两个预算共享同一引擎随机流；
   2. 候选池由 `shared_candidate_pool(task_id)` 生成（task 的 128 点 support LHS 去掉 5 个 support 点，共 123 点；sha256 写入 run 记录），四臂与两预算共用；
-  3. 初始 3 点由各臂的确定性规则产生（打分/随机基线），不消耗 BO 引擎 RNG；BO 主搜索从固定初始点出发、以引擎 seed 驱动，四臂除初始 3 点外轨迹必须逐位一致（单测断言 trace 相等）；
+  3. 初始 3 点由各臂的确定性规则产生（打分/随机基线），不消耗 BO 引擎 RNG；BO 主搜索从固定初始点出发、以引擎 seed 驱动，四臂共享同一 `(engine_seed, candidate_pool_sha256, candidate_count=512, bo_config_sha256)` 四元组，单测断言四元组相等、`bo_engine_draws_sha256`（引擎在首个观测前的候选抽样序列）逐位相等；**不要求**初始 3 点之后的完整 trace 逐位一致（BO 后验依赖各臂初始观测，必然分叉；A4 NEW-04），改记 `bo_trace_first_divergence_index` 供审计；
   4. DE seed = `int.from_bytes(sha256(f"{task_id}|{opt_seed}|{meta_seed}|s3-de").digest()[:8], "big") % (2**31)`；DE 与 BO 不共享流；
   5. `shared_initial_designs(task_id, opt_seed, 8)` 由 `(task_id, opt_seed, "shared-init")` 派生，五臂共享；RANDOM 臂按索引顺序取满足多样性规则的前 3 点，其余臂的 support 5 点来自同一支持集，两集合不相交由构造保证。
 - 所有 BO 臂共享同一 `maml_opt.bayesian.ConstrainedBayesianOptimizer/run_search` 引擎（不修改、不调参），候选数 512；唯一干预差异 = 8−K=3 个新初始点的选择（及 FOMAML/ANIL 适配方法）。
@@ -216,7 +233,7 @@ v1.0 的 12D 全维椭球构造经 A5 独立探针与 Lead 数值探针证明不
 ### 3.2 代理、联合评分与初始点多样性（精确公式，冻结）
 
 - 代理网络：`MAMLConfig(input_dim=12, output_dim=3, hidden_sizes=(64,64), inner_lr=0.01, inner_steps=5, outer_lr=1e-3, tasks_per_batch=8, first_order=True, seed=meta_seed, backend="torch")`；输出 3 维 = [f, g1, g2]；输入仅 12 维设计向量（不含 task_id/context/truth/ood_flag 特征）。
-- 训练 episode 合同（A5 S3-M0-06 处置；详见 §4.1）：每 meta_seed 一个模型；200 outer steps × 8 tasks = 1,600 episodes/模型；3 个 meta_seed 共 4,800 episodes；episode bank 先构建后训练，sha256 写入 prereg 与 run_config。
+- 训练 episode 合同（A5 S3-M0-06 处置；详见 §4.1）：每 meta_seed 一个模型；200 outer steps × 8 tasks = 1,600 episodes/模型；3 个 meta_seed 共 4,800 **唯一** episodes；模型-episode 消耗 = 9,600（3 FOMAML 模型 + 3 ANIL 模型各 1,600，A5-S3M0R-09），计入 `resources.auxiliary_compute` 披露；episode bank 先构建后训练，sha256 写入 prereg 与 run_config。
 - 每任务标签归一化（仅用 support 标签，K=5）：`f_scale = max(std(f_support), 1e-6)`；`g_scale_k = max(sqrt(mean(g_k_support^2)), 1e-6)`，k∈{1,2}；标准化 `f_tilde = (f - mean(f_support))/f_scale`，`g_tilde_k = g_k / g_scale_k`。该归一化在训练 episode、适配、打分中一致使用；最优/最差 run 的归一化参数必须记录。
 - 联合评分（CON/ANIL 臂）：候选 x 的 `S_joint(x) = f_tilde_hat(x) + 10.0 * (max(0, g1_tilde_hat(x)) + max(0, g2_tilde_hat(x)))^2`；按 `(S_joint 升序, 候选索引升序)` 取满足多样性规则的 3 个互异设计。
 - 目标评分（OBJ 臂）：`S_obj(x) = f_tilde_hat(x)`；按 `(S_obj 升序, 候选索引升序)` 取满足多样性规则的 3 个。
@@ -267,7 +284,7 @@ v1.0 的 12D 全维椭球构造经 A5 独立探针与 Lead 数值探针证明不
 
 - 负控制只用一个 meta_seed（A5 S3-M0-13 处置）：标签置换破坏 support→query 关系，模型间差异不是该诊断的目标；固定 meta_seed=0 以控制成本，并在 prereg/报告披露“负控制不用于跨模型比较”。
 - OOD 描述性（A5 S3-M0-04 处置）：OOD 段只作描述（fig7、描述统计），不进入 C1/C2；OOD 任务定义见 §2.2。
-- 计时试点：M2 在 meta_validation 上跑 1 task × 5 臂 × B=128 × 1 opt × 1 meta = 5 runs，记录墙钟与峰值，外推正式段；若预计正式段 > 5,400 s（留 25% 余量），则 Lead 在 prereg 冻结前签发 **R-S3-02 降网格批准**：opt_seed 10→5，主统计 3,000 runs/288,000 evals，负控制 150/14,400，OOD 150/14,400，确定性 180 runs/17,280 evals，合计 3,480 runs/334,080 evals。R-S3-02 必须写入 prereg 与计划 §17 处置表，A5 M2 核验其与本节条件一致；冻结后不得再降级。
+- 计时试点：M2 在 meta_validation 上跑 1 task × 5 臂 × B=128 × 1 opt × 1 meta = 5 runs，记录墙钟与峰值，外推正式段；若预计正式段 > 5,400 s（留 25% 余量），则 Lead 在 prereg 冻结前签发 **R-S3-02 降网格批准**：opt_seed 10→5，主统计 3,000 runs/288,000 evals，负控制 300/28,800（每 task 3 opt_seed，不随 opt_seed 降级），OOD 300/28,800，确定性 180 runs/17,280 evals（3×60 runs），合计 **3,780 runs/362,880 evals**（A5-S3M0R-04 更正）。R-S3-02 必须写入 prereg 与计划 §17 处置表，A5 M2 核验其与本节条件一致；冻结后不得再降级。
 - 正式 run 必须使用 clean worktree；run 目录：`<EXT>/p4-route-a/a2/s3_formal/s3-formal-<UTC>/`；不得写仓库；跑完由 Lead 做哈希核验与打包。
 - 运行停止规则：单 run 墙钟 > 60 s 或峰值 > 8,192 MB → 立即停止整个 run，报 RESOURCE_LIMIT，不重试；总墙钟 > 7,200 s → 停止并交部分产物；任何物理/网络调用 → fail-closed；任何预算不符 → 该 run FAILED（不重试），失败率 > 1% 时停止并报 A5。
 - 确定性（A5 S3-M0-12 处置）：正式 run 之后执行 3 次确定性重跑，子集 = meta_test 前 2 个 task（按 task_id 排序）× 5 臂 × 2 预算 × 5 opt_seed（0..4）× 1 meta_seed(0) = 100 runs/次；要求 `run_records` 逐记录 core digest 一致（core 排除 `wall_s`/`peak_memory_mb`/时间戳字段）；同时要求 3 次 `run_config` 的网格字段一致、`analysis` 对同一产物生成 byte-identical aggregate（排除 `generated_utc`）；子集与 opt_seed 降网格联动规则：若 R-S3-02 降网格，子集 opt_seed 改为 {0,1,2} → 60 runs/次、180 runs 总计，并在 prereg 写死。披露“确定性仅覆盖该分层子集，不是全网格”。
@@ -317,13 +334,14 @@ v1.0 的 12D 全维椭球构造经 A5 独立探针与 Lead 数值探针证明不
 ### 5.2 聚合与推断
 
 - 一级统计单位 = task（n=20，meta_test）。对每个 (task, budget, arm)：先对 opt_seed（10 或 R-S3-02 后的 5）与 meta_seed（3）取均值 → 得到该 task 的端点值；null 端点（无可行点）按缺失处理并在 null_disclosure 报告数量，不插值。
-- 主族 C1（Holm family size=2，family_id=`s3-feasible-hit-2tests`）：C1a = `feasible_hit_rate` FOMAML-CON − RANDOM @ B=128；C1b = 同上 @ B=64；预期方向 = FOMAML-CON 更高；检验为双侧 exact；获益阈值 +0.02，损害阈值 −0.02。
-- 次族 C2（Holm size=2，family_id=`s3-gap-to-ref-2tests`）：C2a = `gap_to_reference` FOMAML-CON − RANDOM @ B=128；C2b = @ B=64；预期方向 = FOMAML-CON 更低（gap 更小）；检验为双侧 exact；获益阈值 = 相对 −1%，损害阈值 = 相对 +1%（相对 RANDOM 均值，分母 max(|mean_RANDOM|,1e-06)，null 按缺失处理）。
+- 主族 C1（Holm family size=2，family_id=`s3-feasible-hit-2tests`；comparator 固定 = `S3-BO-FOMAML-OBJ`，A5-S3M0R-01）：C1a = `feasible_hit_rate` FOMAML-CON − FOMAML-OBJ @ B=128；C1b = 同上 @ B=64；预期方向 = FOMAML-CON 更高；检验为双侧 exact；获益阈值 +0.02，损害阈值 −0.02。RANDOM/DE 仅描述性报告，不进入 C1。
+- 次族 C2（Holm size=2，family_id=`s3-gap-to-ref-2tests`；comparator 固定 = `S3-BO-FOMAML-OBJ`）：C2a = `gap_to_reference` FOMAML-CON − FOMAML-OBJ @ B=128；C2b = @ B=64；预期方向 = FOMAML-CON 更低（gap 更小）；检验为双侧 exact；获益阈值 = 相对 −1%，损害阈值 = 相对 +1%（相对 FOMAML-OBJ 均值，分母 max(|mean_OBJ|,1e-06)，null 按缺失处理）。
+- comparator 断言（单测）：C1/C2 的 (arm_a, arm_b) 必须等于 (`S3-BO-FOMAML-CON`, `S3-BO-FOMAML-OBJ`)；RANDOM/DE 出现在推断表即 `FAILED_COMPARATOR_MISMATCH`。
 - 检验：task 级配对差做 Wilcoxon signed-rank 精确检验（tie-aware 精确符号翻转枚举，2^n 全枚举，n<=20 可行）；零差处理（A5 S3-M0-11 处置）：主分析丢弃零差并报告 `n_zero`、`n_eff`，`n_eff<15` → INCONCLUSIVE；敏感性分析 (a) Pratt 含零差秩、(b) 10,000 次符号置换（seed=20261107）报告 p 值一致性；ties 用精确符号翻转分布（不依赖正态近似）。
 - 多重比较：C1、C2 各自独立 Holm（m=2）；ANIL、DE、first_feasible、RMSE/MAE、OOD、负控制全部为描述性，不做推断，报告点估计 + 任务级 bootstrap 95% CI（10,000 次，重采样 task，seed=20261107）。
-- 决策（每个端点层）：`SUPPORTED_BENEFIT` = Holm 校正后 p<0.05 且效应方向为获益且 |效应| >= 阈值；`SUPPORTED_HARM` = 显著且方向为损害且 |效应| >= 阈值；`NULL` = 不显著且 |效应| < 阈值；`DIRECTION_INCONSISTENT` = 不显著但点估计方向与阈值相反；显著但 |效应| < 阈值 → `NEGLIGIBLE_SIGNIFICANT`。总体 S3 决策（A5 S3-M0 决策映射 + A4 DEV-08 处置）：两预算层都 BENEFIT → `BENEFIT`；任一层 HARM → `HARM`；一层 BENEFIT 另一层 NULL/INCONCLUSIVE/NEGLIGIBLE → `DIRECTION_INCONSISTENT`；任一层 INCONCLUSIVE → `INCONCLUSIVE`；否则 `NO_EVIDENCE`。
+- 决策（每个端点层；互斥穷尽、优先级从上到下；与 §1.3 完全一致）：(1) `INCONCLUSIVE` = n_eff<15 或不可计算；(2) `SUPPORTED_BENEFIT` = p<0.05 且效应 ≥ 阈值；(3) `SUPPORTED_HARM` = p<0.05 且效应 ≤ −阈值；(4) `NEGLIGIBLE_SIGNIFICANT` = p<0.05 且 |效应| < 阈值；(5) `DIRECTION_INCONSISTENT` = p≥0.05 且效应 ≤ −阈值；(6) `NULL` = 其余（p≥0.05 且非 DIRECTION_INCONSISTENT）。总体 S3 决策（唯一优先级；A4 DEV-08/A5-S3M0R-07）：(1) 任一层 INCONCLUSIVE → `INCONCLUSIVE`；(2) 任一层 SUPPORTED_HARM → `HARM`；(3) 任一层 DIRECTION_INCONSISTENT → `DIRECTION_INCONSISTENT`；(4) 两层 SUPPORTED_BENEFIT → `BENEFIT`；(5) 一层 SUPPORTED_BENEFIT 另一层 NULL/NEGLIGIBLE_SIGNIFICANT → `NO_EVIDENCE`；(6) 其余 → `NO_EVIDENCE`。判定必须由固定查表函数产生并附 3×3 组合单测。
 - ANIL 消融决策：若 ANIL 的 feasible_hit_rate 不低于 RANDOM 均值 − 0.02 且 ANIL 适配+训练成本 <= FOMAML-CON 的 75% → `ANIL_COST_EFFICIENT`；若 ANIL 显著低于 RANDOM（描述性 CI 上界 < −0.02）→ `ANIL_INFERIOR`；否则 `ANIL_INCONCLUSIVE`。DE 作为等预算基线：报告与 RANDOM 的配对差（描述性），不参与 C1/C2。
-- 负控制分析：比较真实标签与打乱标签的 `feasible_hit_rate`/gap 差异；若打乱后 CON−RANDOM 差异仍 >= 真实差异的 50%，标 `NEGATIVE_CONTROL_SUSPICIOUS`。
+- 负控制分析：比较真实标签与打乱标签的 `feasible_hit_rate`/gap 差异；若打乱后 CON−OBJ 差异仍 >= 真实 CON−OBJ 差异的 50%，RANDOM/DE 仅描述，标 `NEGATIVE_CONTROL_SUSPICIOUS`。
 - 全部汇总写 `s3_endpoint_tables.csv`、`s3_per_task_endpoint_values.csv`、`s3_holm_family.csv`、`s3_null_disclosure.csv`、`s3_negative_controls.csv`、`s3_ood_descriptives.csv`、`s3_cost_table.csv`、`aggregate.json`。
 
 ### 5.3 图（10 个键；Issue #7 §4 七类映射见 §5.4）
@@ -332,8 +350,8 @@ v1.0 的 12D 全维椭球构造经 A5 独立探针与 Lead 数值探针证明不
 |---|---|---|---|
 | fig1_training_loss_and_full_meta_grad | 训练 loss 曲线（FOMAML/ANIL）+ FD 门 num vs ana 散点（①） | model_manifest、fd_or_gradient_gate.json | 必须真实数据 |
 | fig2_kshot_rmse_k0_k1_k3_k5 | K-shot 后 query RMSE f/g1/g2（②） | K-sweep 诊断（M1，DEV_VALIDATION_ONLY） | 未执行则 NOT_RUN |
-| fig3_feasible_hit_rate_by_arm | 五臂 feasible_hit_rate 分布（③） | aggregate/per-task CSV | 主图 |
-| fig4_best_feasible_and_first_feasible | best_feasible_value / gap / first_feasible 分布（④） | per-task CSV | 主图 |
+| fig3_feasible_hit_rate_by_arm | 五臂 feasible_hit_rate 分布（③）；主对比 CON−OBJ，RANDOM/DE 仅描述 | aggregate/per-task CSV | 主图 |
+| fig4_best_feasible_and_first_feasible | best_feasible_value / gap / first_feasible 分布（④）；主对比 CON−OBJ | per-task CSV | 主图 |
 | fig5_fomaml_vs_full_vs_anil_cost | S2 FULL/FOMAML 成本-性能（只读）+ S3 ANIL 成本（⑤） | S2 归档 aggregate + S3 cost CSV | 说明跨阶段口径 |
 | fig6_task_family_diagnostics | 族内几何诊断（δ1、m2、f_ref、可行比例）⑥ | family package 只读字段 + calibration | 不声称族间差异 |
 | fig7_ood_diagnostics | OOD 段与 ID 段的描述性对比（⑥） | OOD records | 描述性 |
@@ -362,9 +380,27 @@ v1.0 的 12D 全维椭球构造经 A5 独立探针与 Lead 数值探针证明不
 ## 6. 预注册（prereg）与冻结
 
 - 文件：`research/concorde_metaopt/evidence/s3/s3_preregistration.json`（canonical JSON + LF），冻结提交后只读。
-- 必需字段：schema_version、created_utc、family（family_id=F-QE-conflict-v1、formula_version=polyhedral-v1、FAMILY_SEED=20261107、HOLDOUT_SEED=20261108、package_version、package_sha256、task_ids_sha256、task_fingerprint 算法与 20 个值、splits 计数 60/20/20/10/10）、references_sealed（每 task 的 f_ref/u* 证书 digest）、calibration（候选表、选中 radius_base、中位可行比例、任务构造统计）、episode_bank（三 bank sha、条数 1,600×3）、models（fomaml/anil 的 config、episode_bank_sha、模型产物 sha —— 模型在 M2 训练后、prereg 冻结前生成，冻结时写真实 sha）、arms（五臂 + 方法声明 + RNG 合同）、budgets（B 集合、K、seeds、网格与 run 数）、endpoints（C1/C2 定义、阈值、方向）、statistics（Wilcoxon 精确 tie-aware、零差处理、bootstrap 10k seed、Holm 2×2、决策映射）、figures（10 键）、negative_controls（10 任务、seed 公式、reference_kind）、ood（10 任务、偏移公式、seed）、determinism（子集与规则）、resource_limits（per_run 60s、peak 8192MB、total 7200s）、analysis_plan_digest、code_sha（7 文件）、physical_call_count=0、data_boundary、R-S3-01/R-S3-02 引用。
+- 必需字段：schema_version、created_utc、family（family_id=F-QE-conflict-v1、formula_version=polyhedral-v1、FAMILY_SEED=20261107、HOLDOUT_SEED=20261108、package_version、family_package_sha256、task_ids_sha256、hash_vectors_sha256、task_fingerprint 算法与 20 个值、splits 计数 60/20/20/10/10）、references_sealed（每 task 的 f_ref/u* 证书 digest）、calibration（候选表、选中 delta1_base、中位可行比例、任务构造统计）、episode_bank（三 bank sha、条数 1,600×3、唯一 4,800、模型-episode 9,600）、models（fomaml/anil 的 config、episode_bank_sha、模型产物 sha —— 模型在 M2 训练后、prereg 冻结前生成，冻结时写真实 sha）、arms（五臂 + 方法声明 + RNG 合同）、budgets（B 集合、K、seeds、网格与 run 数）、endpoints（C1/C2 定义、comparator=S3-BO-FOMAML-OBJ、阈值、方向）、statistics（Wilcoxon 精确 tie-aware、零差处理、bootstrap 10k seed、Holm 2×2、决策映射）、figures（10 键）、negative_controls（10 任务、seed 公式、reference_kind）、campaign（授权 campaign 规则）、ood（10 任务、偏移公式、seed）、determinism（子集与规则）、resource_limits（per_run 60s、peak 8192MB、total 7200s）、analysis_plan_digest、code_sha（7 文件）、physical_call_count=0、data_boundary、R-S3-01/R-S3-02 引用。
 - 冻结流程（M2）：Lead 在 clean worktree 用 build→verify 两遍（写前/读后）生成 prereg；写入仓库并提交（单独 commit）；A5 独立核验（M2 gate）；核验通过后 Lead 签发正式 run 授权（M3），A2 执行。
-- 哈希规则（A5 S3-M0-07 处置）：所有 `*_sha256` 均为小写 hex；JSON canonical = `json.dumps(obj, sort_keys=True, separators=(",",":"), ensure_ascii=False).encode("utf-8")`；`code_sha` = 对 7 个文件的 `(相对路径, sha256(文件字节))` 按路径排序后用 `"\n"` 连接（末尾无换行）再取 sha256；`task_fingerprint` = sha256(canonical {task_id, split, a, c, b1, b2, delta1, m2, w, r}) 前 16 hex；`record_digest` = sha256(canonical 记录去掉 record_digest)；`analysis_plan_digest` = sha256(canonical {endpoints, statistics, figures, analysis_code_sha})；`package_sha256` = 对包内文件（不含 package_sha256 自身与 SHA256SUMS）按路径排序的 `(path, sha256)` 行拼接后 sha256；`prereg_digest` = sha256(canonical prereg 去掉 prereg_id/prereg_digest)。固定测试向量见 EXT `STATE/p4-route-a/lead/s3/hash_vectors.json`，A1/A6 必须写单测匹配。
+### 6.1 哈希与摘要定义（A5 S3-M0-07、A5-S3M0R-02/03；唯一权威文本；固定向量见 §6.2）
+
+- `canonical_json(obj)` = `json.dumps(obj, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")`；所有 `*_sha256` 均为小写 hex。
+- `code_sha`：7 个文件（相对仓库根，按路径字典序）：`research/concorde_metaopt/meta_learning/m5_arms.py`、`research/concorde_metaopt/meta_learning/maml.py`、`research/concorde_metaopt/meta_learning/s3_analysis.py`、`research/concorde_metaopt/meta_learning/s3_figures.py`、`research/concorde_metaopt/meta_learning/s3_prereg.py`、`research/concorde_metaopt/meta_learning/s3_runner.py`、`research/concorde_metaopt/meta_learning/task_family.py`；对每个文件取 sha256(原始字节)，构造行 `f"{path}\t{hex}"`，按 path 排序，`"\n".join(lines)`（末尾无换行），再取 sha256。
+- `analysis_code_sha`：`s3_analysis.py`、`s3_figures.py` 两文件（仓库相对路径按字典序），行算法与 `code_sha` 相同。
+- `task_ids_sha256`：`sorted(task_ids)` 以 `"\n"` join（末尾无换行）后取 sha256。
+- `task_fingerprint`：`sha256(canonical_json({family_id, formula_version, task_id, seed, params}))[:16]`；`params={a,c,b1,b2,delta1,delta2,m2}`。
+- `analysis_plan_digest`：`sha256(canonical_json({endpoints, statistics, figures, analysis_code_sha}))`；inputs 见 §5.1/§5.2/§5.3。
+- `record_digest`：记录去掉 `record_digest` 键后 canonical_json 的 sha256；`episode_digest` 同理；`history_digest` = 按记录顺序 join 各 `record_digest` 的 `"\n"` 后 sha256。
+- `prereg_digest`：prereg 去掉 `prereg_id`/`prereg_digest` 后 canonical_json 的 sha256。
+- `family_package_sha256` / `references_sealed_sha256` / `episode_bank_sha256` / `model_sha256` / `fd_gate_sha256` / `hash_vectors_sha256`：对应文件原始字节的 sha256（不重编码）。
+- `package_sha256`（M5 打包用，不写入 prereg）：`research/concorde_metaopt/evidence/s3/` 下全部文件（排除 `PACKAGE_MANIFEST.json` 与 `SHA256SUMS.txt`，relpath 相对该目录），行 `f"{relpath}\t{sha256(原始字节)}"` 按 relpath 排序后 `"\n".join` 再 sha256；包内含 `hash_vectors.json` 本身。
+
+### 6.2 哈希固定向量（随计划提交）
+
+- 文件：`research/concorde_metaopt/evidence/s3/hash_vectors.json`；当前提交版本 12,472 B、raw sha256 `bde487fb6ed49768ca76e328a31c0efab77d2bd39d41c0ac99def4bb8e876203`。
+- 顶层：`schema_version=p4ra-s3-hash-vectors-1`、`generated_utc`、`algorithms`（§6.1 规则的结构化副本）、`vectors`（V01..V11，每项含 input、精确中间串 `canonical_payload`、`expected_sha256`）、`self_check`（all_ok）。
+- 覆盖：canonical_json、code_sha（7 文件合成）、analysis_code_sha、task_fingerprint、task_ids_sha256、analysis_plan_digest、package_sha256、prereg_digest、record_digest、episode_digest、family_package_sha256。
+- 该文件 sha256 写入 prereg 的 `frozen_package.hash_vectors_sha256`；若其字节变化而代码未变，prereg 冻结前必须重新签发向量文件并记录原因。
 
 ## 7. 写域、只读边界与角色
 
@@ -389,12 +425,12 @@ v1.0 的 12D 全维椭球构造经 A5 独立探针与 Lead 数值探针证明不
 - 单元测试（新增，目标 >= 55 tests）：
   1. 族几何：构造断言（box、g1(c)=δ1、g2(u*)=−m2、KKT<=1e-6、u* 在 box 内、regret>0）、参考证书可复算、task_fingerprint 固定向量、OOD 偏移公式与 ood_flag、负控制置换确定性与 seed 公式。
   2. 校准：候选表 {0.20,0.22,0.25} 在 meta_validation 上重算可复现、选中规则（中位可行比例 ∈[0.02,0.50] 且 minpts>=1 且 20 任务全构造成功）判定函数。
-  3. 随机流：shared_candidate_pool/shared_initial_designs/BO seed/DE seed 公式固定向量；四 BO 臂在相同 task/seed 下除初始 3 点外 trace 逐位一致；初始点不消耗引擎 RNG。
-  4. 臂与预算：五臂 B 记账、support 共享、克隆检测、diversity 规则（含 relaxed 分支）、RANDOM 臂不做多样性过滤但记录。
+  3. 随机流：shared_candidate_pool/shared_initial_designs/BO seed/DE seed 公式固定向量；四臂在相同 task/seed 下 `(engine_seed,candidate_pool_sha256,candidate_count,bo_config_sha256)` 四元组相等、`bo_engine_draws_sha256` 逐位相等、`bo_trace_first_divergence_index` 已记录；初始点不消耗引擎 RNG；不要求完整 trace 逐位一致。
+  4. 臂与预算：五臂 B 记账、support 共享、克隆检测、diversity 规则（含 relaxed 分支）、五臂（含 RANDOM）统一执行 `d_norm>=0.10` 过滤，RANDOM 只在自己的共享候选序列内按索引取点；RANDOM 多样性单测。
   5. ANIL：head_only 与 first_order=False 互斥 fail-closed；body 内循环逐位冻结；外循环更新全部参数；与 FOMAML episode 逐位一致；K=0 不调内循环；9 条专项测试。
   6. FD 门：解析 vs 数值在容差内、篡改坐标 FAIL、ANIL body 冻结、K=0 等价、gate JSON schema 与 sha 稳定性。
   7. episode bank：3 bank 条数 1,600、sha 稳定、support/query 不重叠、K_train 50/50 交错、digest 固定向量。
-  8. 哈希：canonical JSON、code_sha、task_fingerprint、record_digest、analysis_plan_digest、package_sha256、prereg_digest 的固定向量（与 EXT hash_vectors.json 一致）。
+  8. 哈希：canonical JSON、code_sha、task_fingerprint、record_digest、analysis_plan_digest、package_sha256、prereg_digest 的固定向量（与仓库内 `research/concorde_metaopt/evidence/s3/hash_vectors.json` 逐项一致）。
   9. 统计：Wilcoxon tie-aware 精确（含 ties/zeros/全零/n_eff<15 分支）、bootstrap CI 固定 seed、Holm 校正、决策映射（含 DIRECTION_INCONSISTENT/INCONCLUSIVE/NEGLIGIBLE_SIGNIFICANT）、固定测试向量。
   10. runner/analysis e2e（SMOKE）：run_experiment(SMOKE) → load → analyze 成功，产出 aggregate + CSV；负控 6 类篡改 fail-closed；schema 单源断言。
   11. 图：10 键齐全；缺数据 → NOT_RUN；中文标签/evidence_scope/数据源脚注存在；CSV 与 PNG 对应。
@@ -431,7 +467,8 @@ v1.0 的 12D 全维椭球构造经 A5 独立探针与 Lead 数值探针证明不
 | 门 | 内容 | 通过条件 | 执行者 |
 |---|---|---|---|
 | M0 | 设计审阅 | A5 `APPROVE_FOR_S3_CODE` | A5 |
-| M0R | v1.1 修订复审 | A5 `APPROVE_FOR_S3_CODE`（限定 diff） | A5 |
+| M0R | v1.1 修订复审 | A5 `APPROVE_FOR_S3_CODE`（限定 diff）；结论 CHANGES_REQUESTED（S3-M0R-01..09） | A5 |
+| M0R2 | v1.2 修订复审 | A5 `APPROVE_FOR_S3_CODE`（限定 diff：计划 + hash_vectors.json） | A5 |
 | M1 | 实现 + 单测 + 集成 | A5 `APPROVE_FOR_S3_FORMAL`；全量测试绿；公平性/预算/哈希/e2e 测试齐备 | A5 |
 | M2 | 校准 + 模型 + FD 门 + prereg 冻结 | 校准报告满足 §2.5 接受条件；FD 门 PASS；prereg build/verify 两遍；A5 `APPROVE_FOR_S3_RUN` | A5 |
 | M3 | 正式 run 授权与执行 | Lead 书面授权（含 owner 指令复核）+ A2 执行（<=2 h、physical=0、无重试） | Lead/A2 |
@@ -465,10 +502,10 @@ v1.0 的 12D 全维椭球构造经 A5 独立探针与 Lead 数值探针证明不
 | 确定性 | 300 | 28,800 | 3 次 × 100 runs（每次 9,600） |
 | 合计 | 6,900 | 662,400 | 硬截止 7,200 s |
 | K-sweep 诊断 | 240 | 15,360 | M1，DEV_VALIDATION_ONLY，不进正式段 |
-| 训练 | — | 4,800 episodes（每模型 1,600） | 6 模型（3 FOMAML + 3 ANIL） |
+| 训练 | — | 4,800 唯一 episodes / 9,600 模型-episode（每模型 1,600） | 6 模型（3 FOMAML + 3 ANIL），计入 auxiliary_compute |
 | FD 门 | — | 32 坐标 × 2 方向 × 2 模型 = 128 次 episode 重跑 | auxiliary_compute 披露 |
 
-- R-S3-02 降网格（若触发）：主 3,000/288,000、负控 150/14,400、OOD 150/14,400、确定性 180/17,280（3×60 runs，每次 5,760），合计 3,480/334,080。
+- R-S3-02 降网格（若触发）：主 3,000/288,000、负控 300/28,800、OOD 300/28,800、确定性 180/17,280（3×60 runs，每次 5,760），合计 **3,780/362,880**（A5-S3M0R-04 更正；负控/OOD 不随 opt_seed 降级）。
 - 物理调用 = 0（fail-closed，prereg/run_summary 双处断言）；任何 >0 即整体作废。
 
 ## 14. 版本记录
@@ -477,6 +514,7 @@ v1.0 的 12D 全维椭球构造经 A5 独立探针与 Lead 数值探针证明不
 |---|---|---|---|
 | v1.0 | 2026-11-07 | commit 7bef3cf | 初版设计（12D 椭球族、9 图、Holm 2、6,000 runs） |
 | v1.1 | 2026-11-07 | 本文件 | 处置 A5 S3-M0（1 blocker + 10 major + 5 minor）与 A4 DEV-01..09：线性多面体族、phase-scoped 数据边界、gap_to_reference/MAE、OOD 网格、7 文件 code_sha/analysis_plan_digest、episode/ANIL 合同、哈希 canonical 与固定向量、FD 门合同、fig10 图⑦、BO 随机流合同、Wilcoxon ties/zeros、R-S3-01 授权链、R-S3-02 降网格审批、10 图映射、预算记账 6,900 runs |
+| v1.2 | 2026-11-07 | 本文件 + `research/concorde_metaopt/evidence/s3/hash_vectors.json` | 处置 A5 S3-M0R-01..09 与 A4 NEW-01..09：C1/C2 comparator 改 CON−OBJ、提交哈希固定向量与完整算法（7 文件 code_sha/analysis_code_sha/task_ids_sha256/package_sha256）、R-S3-02 算术更正 3,780/362,880、phase-scoped 与 campaign 语义、RANDOM 多样性统一、决策枚举互斥穷尽、radius_base→delta1_base、episode 消耗披露 |
 
 ## 15. Issue #7 对齐表
 
@@ -525,6 +563,32 @@ v1.0 的 12D 全维椭球构造经 A5 独立探针与 Lead 数值探针证明不
 
 - **R-S3-01（S3 授权链）**：Issue #7 正文授权路线 A“算法代码 + 全合成解析任务的训练与正式离线对照（physical_call_count=0 硬隔离）”，§2 将 S3 列为“S1/S2 验收后条件开启”，§4 明确“Leader 负责 S0→S3 阶段批准”。S1、S2 均已完成并经 A5 APPROVE 与回执发布，Issue #7 无相反指令。据此裁决：(a) S3 的 M0–M2（设计、代码、单测、校准、prereg 冻结）在 Issue #7 授权范围内推进，不需要新的负责人预算；(b) M3 正式 run 前 Lead 必须再次复核 Issue #7/#4 是否有相反指令，确认后签发书面授权，并在授权中写明依据；(c) S3 阶段验收仍由负责人签发，本计划与回执不得声称已获阶段验收；(d) 若负责人发布任何相反指令，S3 立即停止；(e) S2 closeout 中“S3 需负责人书面授权”的保守表述以本裁决为准并记录于回执。
 - **R-S3-02（降网格审批）**：若 M2 计时试点外推正式段 > 5,400 s，Lead 在 prereg 冻结前书面签发 R-S3-02，按 §4.2 降 opt_seed 10→5；该条件在 v1.1 中预先写明，A5 M2 核验，冻结后不得再降级；若不触发则必须保持 10 opt_seed。
-- A4 DEV-01 → R-S3-01；(DEV-02/03/04) → §5.1；(DEV-05) → R-S3-02 与 §4.2；(DEV-06) → §3.2 排除；(DEV-07) → §3.2 Wave A 多样性；(DEV-08) → §5.2 决策映射；(DEV-09) → 头部状态与 §0.1 一致（v1.1 为设计修订、代码未开始、A5 M0R 待审）。
+- A4 DEV-01 → R-S3-01；(DEV-02/03/04) → §5.1；(DEV-05) → R-S3-02 与 §4.2；(DEV-06) → §3.2 排除；(DEV-07) → §3.2 Wave A 多样性；(DEV-08) → §5.2 决策映射；(DEV-09) → 头部状态与 §0.1 一致（v1.1 为设计修订、代码未开始、A5 M0R 待审；v1.2 处置见 §18/§19）。
 - 旧件只读、0 物理、不合并 main、仅 Lead 写 GitHub 的边界贯穿全阶段；违反即 fail-closed。
 
+## 18. A5 S3-M0R findings 处置（v1.2）
+
+| id | 严重度 | 处置 |
+|---|---|---|
+| S3-M0R-01 | blocker | §5.2 C1/C2 comparator 改为 FOMAML-CON − FOMAML-OBJ（与 §1.3 H0 一致）；RANDOM/DE 仅描述；新增 comparator 单测与 `FAILED_COMPARATOR_MISMATCH`；§1.3/§5.2/fig3/fig4/prereg 同步 |
+| S3-M0R-02 | major | 提交 `research/concorde_metaopt/evidence/s3/hash_vectors.json`（12,472 B，sha bde487fb…）；§6.1 固定算法；fingerprint 统一定义；`analysis_code_sha`/`task_ids_sha256` 已定义；删除 §6.2 旧引用 |
+| S3-M0R-03 | major | §6.1 枚举 7 文件 code_sha、analysis_code_sha（2 文件）、package_sha256 的精确包含清单与排除项 |
+| S3-M0R-04 | major | §4.2/§13 R-S3-02 改为 3,780 runs/362,880 evals；负控/OOD 保持 300/28,800；旧 R-S3-02 算术行已删除（A5-S3M0R-04） |
+| S3-M0R-05 | major | §2.3 重写 phase-scoped 标志（`support_truth_read`）；query truth 仅端点读取一次；每 task 一次授权评估 campaign（campaign_authorization_id/utc） |
+| S3-M0R-06 | major | §3.2/§8 五臂统一 `d_norm>=0.10`；RANDOM 仅在自己的候选序列内取点，不再豁免；RANDOM 多样性单测 |
+| S3-M0R-07 | major | §1.3/§5.2 改为互斥穷尽判定表 + 总体唯一优先级 + 固定查表函数 + 3×3 组合单测 |
+| S3-M0R-08 | minor | §6.1 `radius_base` → `delta1_base`；`w/r` 残留清除 |
+| S3-M0R-09 | minor | §3.2/§13 披露唯一 4,800 episodes 与 9,600 模型-episode，计入 auxiliary_compute |
+
+## 19. A4 矩阵 v1.1 NEW findings 处置（v1.2）
+
+| id | 严重度 | 处置 |
+|---|---|---|
+| NEW-01 / NEW-09 | major | `task_fingerprint` 统一为 §2.2/§6.1 单一定义（params={a,c,b1,b2,delta1,delta2,m2}），删除不存在的 §6.2 引用 |
+| NEW-02 | major | §2.1 regret 更正为 `f(u_star) - f(c) = delta1^2 / S > 0` |
+| NEW-03 | major | 见 S3-M0R-05：phase-scoped + campaign 语义重写 |
+| NEW-04 | major | §3.1/§8 BO 一致性改为 `(engine_seed,candidate_pool_sha256,candidate_count,bo_config_sha256)` 四元组 + `bo_engine_draws_sha256` + `bo_trace_first_divergence_index`；不要求完整 trace 逐位一致 |
+| NEW-05 | major | 见 S3-M0R-06：RANDOM 统一多样性规则 |
+| NEW-06 | major | 见 S3-M0R-07：决策枚举互斥穷尽 |
+| NEW-07 | major | 见 S3-M0R-02/03：`analysis_code_sha` 已定义 |
+| NEW-08 | major | 见 S3-M0R-08：radius_base 与 w/r 清除 |
