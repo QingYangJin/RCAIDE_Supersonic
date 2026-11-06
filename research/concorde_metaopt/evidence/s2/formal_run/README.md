@@ -1,6 +1,6 @@
 # S2 正式运行证据包：FULL_MAML 二阶 vs FOMAML（全合成、physical=0）
 
-本目录是 Issue #7（D-P4-003）S2 阶段**正式离线运行**的可提交证据包，由 Lead 从本机外部记忆目录的原始运行产物打包并做路径脱敏生成。
+本目录是 Issue #7（D-P4-003）S2 阶段**正式离线运行**的可提交证据包，由 Lead 从本机外部记忆目录的原始运行产物打包并做路径脱敏生成。包 revision 2：manifest 采用**双哈希口径**（工作树 raw + git blob canonical LF），SHA256SUMS 采用 canonical-LF 口径，详见第 8 节。
 所有产物为**合成解析任务离线训练/评估**，未调用任何真实气动求解器（VSPAERO/SU2/RCAIDE），未读取任何 holdout 真实飞机数据。
 
 ## 1. 来源与绑定
@@ -48,13 +48,14 @@ null 端点缺失：0/240。负控 13 PASS + 1 DISCLOSED。全部 9 张图（fig
 - `analysis/`：aggregate.json（脱敏）、s2_prereg_echo.json（脱敏）、6 个统计 CSV、figure_status.json、fig1..fig9 PNG 与对应 support CSV。
 - `determinism/compare_r1.json`、`compare_r2.json`：确定性重跑对比。
 - `reviews/`：A5 结果复核（md + verdict JSON，脱敏）、A3 隔离审计报告（脱敏）。
-- `PACKAGE_MANIFEST.json`：逐文件 bytes/sha256/来源/脱敏标记；`SHA256SUMS.txt`：38 条 payload 校验和（不含 manifest 与自身）。
+- `PACKAGE_MANIFEST.json`：逐文件 `bytes_raw`/`sha256_raw`（工作树原始字节）与 `bytes_lf`/`sha256_lf`（git blob canonical LF），含来源与脱敏标记；`SHA256SUMS.txt`：38 条 payload 校验和（canonical-LF 口径，不含 manifest 与自身）。
 - 仓库内同时提交 `docs/reviews/p4_route_a_s2_formal_run_report_20261107.md`（A2 正式报告 repo-ready 副本，31,771 B，sha256 f97b8eb5edf273145a497305a64e2edaa4f52dbcd79b5d699ac7c190617d3372）。
 
 ## 5. 复核链
 
 - A5 结果复核：APPROVE_FOR_S2_RECEIPT，0 blocker / 0 major / 1 minor（A5-S2R-01，报告 §7.4 null 口径措辞，已在修正版报告中关闭）；A5 独立复算 140 checks PASS/0 FAIL。
 - A3 隔离审计：PASS_WITH_WARNINGS，20/20 PASS、0 FAIL；SHA256SUMS 60/60 独立重算一致；0 solver / 0 仓库写 / 0 GitHub 写；6 条仅披露类告警。
+- A3 证据包 delta 审计（27c935e）：PASS_WITH_WARNINGS，C01–C19 全 PASS、0 FAIL；W01–W06 均 info。
 - Lead 独立核验：重算 k5/k10 均值差与 aggregate 一致；40 余项探针与篡改负控全部 fail-closed。
 
 ## 6. 复现
@@ -74,5 +75,20 @@ git checkout 994cda8e0942060072d65eb50dde790c44d32194
 - 本证据包**不**构成真实飞机/真实气动验证；仅合成解析任务开发验证。
 - 不合并 main；不改动 M2/M5/M6/S0-2..S0-7/S1 的既有冻结证据；physical_call_count=0。
 - 脱敏披露：`analysis/aggregate.json`、`analysis/s2_prereg_echo.json`、`reviews/*` 中的本机绝对路径已替换为 `EXT/…`、`source-repo`、`source-repo-worktree`、`primary-repo`、`USERPROFILE` 等相对标记；JSON 数值/结构逐项保持不变（见 PACKAGE_MANIFEST 的 sanitized 字段）。`run_config.json`/`run_summary.json`/`fd_gate.json`/`data_manifest.json`/`run_records.jsonl` 保持原始字节（实测无本机绝对路径）。
+- EOL 披露：7 个 payload 文件在 Windows 工作树为 CRLF，而 git blob 为 canonical LF（Δ313 B）；其余为 LF。manifest 双哈希并存，SHA256SUMS 用 canonical LF。
 - A3 告警 W03：3 个辅助脚本在 EXT 原始树中含本机路径，不在本包内。
+
+## 8. 哈希口径与校验
+
+- `PACKAGE_MANIFEST.json` 每文件两套：`sha256_raw`/`bytes_raw` 按工作树原始字节；`sha256_lf`/`bytes_lf` 按 git blob（canonical LF）。`eol` 字段标注 `LF` 或 `CRLF`。
+- `SHA256SUMS.txt` 全部使用 `sha256_lf`（canonical LF），因此任何平台 clone 后可用下述命令逐条校验：
+
+```
+# canonical LF 校验（推荐，跨平台可复现）
+git cat-file blob HEAD:research/concorde_metaopt/evidence/s2/formal_run/run_config.json | sha256sum
+# 工作树 raw 校验（Windows autocrlf 下 7 个 CRLF 文件会与 raw 值一致）
+sha256sum research/concorde_metaopt/evidence/s2/formal_run/run_config.json
+```
+
+`SHA256SUMS.txt` 自身与 `PACKAGE_MANIFEST.json` 不在 sums 覆盖范围；manifest 记录 sums 的 sha256 与条数，A3/A5 可交叉核验。
 
