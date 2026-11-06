@@ -1,0 +1,396 @@
+{
+  "analysis_plan_digest": "5222af0dacd08c6cd37e40f7308b12347e67e19abbbd9fa4b5aef0a41430f0fa",
+  "arms": [
+    "RAND-BO",
+    "PRETRAIN-KSHOT-BO",
+    "FOMAML-ZERO-BO",
+    "FOMAML-KSHOT-BO",
+    "DE"
+  ],
+  "budgets": [
+    64,
+    128
+  ],
+  "calibration": {
+    "note": "本冻结包按 A2 校准选定的 radius_base 冻结；冻结后若改 meta_learning/*.py 或半径，必须重新生成任务并升 family fingerprint。",
+    "radius_base_source": "A2_calibration",
+    "selected_radius_base": 0.64,
+    "status": "CALIBRATED"
+  },
+  "code_sha": "7304d32e524b0e1e28b0e83e7a2ed7822ce88fc14963ca4d769098841e6201ed",
+  "confirmatory_eligible": true,
+  "context_coupling": {
+    "formula": "b_eff = b + scale*(context_1 + context_2 - 2.0)",
+    "scale": 0.45
+  },
+  "created_utc": "2026-11-06T02:42:00+00:00",
+  "design": {
+    "design_bounds": [
+      [
+        300.0,
+        420.0
+      ],
+      [
+        1.5,
+        2.2
+      ],
+      [
+        62.0,
+        72.0
+      ],
+      [
+        40.0,
+        56.0
+      ],
+      [
+        66.0,
+        76.0
+      ],
+      [
+        0.35,
+        0.58
+      ],
+      [
+        0.85,
+        0.98
+      ],
+      [
+        0.3,
+        0.5
+      ],
+      [
+        0.08,
+        0.2
+      ],
+      [
+        -4.0,
+        4.0
+      ],
+      [
+        28.0,
+        40.0
+      ],
+      [
+        -10.0,
+        10.0
+      ]
+    ],
+    "design_dim": 12,
+    "design_lower": [
+      300.0,
+      1.5,
+      62.0,
+      40.0,
+      66.0,
+      0.35,
+      0.85,
+      0.3,
+      0.08,
+      -4.0,
+      28.0,
+      -10.0
+    ],
+    "design_names": [
+      "wing_area",
+      "aspect_ratio",
+      "sweep_1",
+      "sweep_2",
+      "sweep_3",
+      "span_location_2",
+      "span_location_3",
+      "chord_ratio_2",
+      "chord_ratio_3",
+      "tip_twist",
+      "vertical_tail_area",
+      "vertical_tail_sweep_delta"
+    ],
+    "design_upper": [
+      420.0,
+      2.2,
+      72.0,
+      56.0,
+      76.0,
+      0.58,
+      0.98,
+      0.5,
+      0.2,
+      4.0,
+      40.0,
+      10.0
+    ]
+  },
+  "endpoint_row_keys": [
+    "best_feasible_value",
+    "gap_to_reference",
+    "first_feasible_eval_index",
+    "feasible_hit_rate",
+    "first_feasible_in_support",
+    "first_feasible_after_support_index",
+    "feasible_hit_rate_non_support",
+    "n_nonnull",
+    "null_rate"
+  ],
+  "evaluator": "synthetic-analytic",
+  "family_config": {
+    "context_names": [
+      "context_1",
+      "context_2"
+    ],
+    "design_dim": 12,
+    "designs_per_task": 192,
+    "family_id": "F-QE-feasible-v3",
+    "family_version": "p4ra-family-v3",
+    "negative_control_tasks": 10,
+    "ood_tasks": 10,
+    "query_size": 64,
+    "radius_base": 0.64,
+    "reference_tolerance": 1e-10,
+    "seed": 20261105,
+    "support_pool_size": 128,
+    "test_tasks": 20,
+    "train_tasks": 60,
+    "validation_tasks": 20
+  },
+  "family_fingerprint": "a1f9462c35ea641d0559485354c63b47eec2e6fb4696e86f94efa1f3d19daf2e",
+  "family_id": "F-QE-feasible-v3",
+  "family_seed": 20261105,
+  "family_version": "p4ra-family-v4",
+  "formula_version": "p4-task-family-v3",
+  "gap_definition": "f(u_best)-f(u*)",
+  "git_sha": "004156c232f31a450f7446c3b280772de47423df",
+  "holdout_reseed": {
+    "derivation": "seed=derive_seed(family,split,index,attempt,config.seed,'holdout',holdout_seed)",
+    "holdout_seed": 20261106,
+    "holdout_splits": [
+      "meta_test",
+      "meta_test_ood"
+    ],
+    "policy": "R-V4-01",
+    "unchanged_splits": [
+      "meta_train",
+      "meta_validation",
+      "negative_control"
+    ]
+  },
+  "holdout_seed": 20261106,
+  "holdout_splits": [
+    "meta_test",
+    "meta_test_ood"
+  ],
+  "holdout_task_count": 30,
+  "initial_design_count": 8,
+  "k_values": [
+    0,
+    1,
+    3,
+    5
+  ],
+  "meta_test_tuning_policy": "禁止使用 meta_test/meta_test_ood 的任何信息（成功率/误差/gap/秩）调参、选半径、选臂或选终点；测试集只在 frozen_family + split_manifest + preregistration 的 sha256/fingerprint/split_hash 校验通过后一次性构造并评估一次。",
+  "notes": [],
+  "ood_protocol": {
+    "context_shift": 0.25,
+    "radius_scale": 0.75
+  },
+  "param_distributions": {
+    "a": "loguniform(0.5, 4.0)",
+    "b": "uniform(-0.9, 0.9)",
+    "c": "uniform(0.20, 0.80) per coordinate",
+    "context": "uniform(0.6, 1.4)",
+    "context_ood": "uniform(0.85, 1.65)",
+    "d": "clip(c + normal(0, 0.20), 0.10, 0.90)",
+    "r": "clip(radius_base*(1+0.20*z), 0.15, 1.10); ood *= 0.75 then clipped",
+    "w": "loguniform(0.5, 4.0)"
+  },
+  "physical_call_count": 0,
+  "physics_validation_status": "NOT_APPLICABLE",
+  "primary_endpoints": [
+    "best_feasible_value",
+    "gap_to_reference",
+    "first_feasible_eval_index",
+    "feasible_hit_rate"
+  ],
+  "radius_base": 0.64,
+  "radius_mapping": {
+    "formula": "clip(radius_base*(1+jitter*z), min, max)",
+    "jitter": 0.2,
+    "max": 1.1,
+    "min": 0.15,
+    "ood_radius_scale": 0.75,
+    "z": "normal(0,1) from task seed"
+  },
+  "reference_solution": "c",
+  "run_id": "p4ra-s0-7-freeze-20261106T024200Z",
+  "schema_version": "p4ra-frozen-v3-1",
+  "secondary_endpoints": [
+    "best_objective_raw",
+    "min_constraint_violation_sum",
+    "first_feasible_in_support",
+    "first_feasible_after_support_index",
+    "feasible_hit_rate_non_support",
+    "true_evals_used",
+    "cache_hits",
+    "n_failed_evals",
+    "wall_s"
+  ],
+  "sha256": "1cfda5b88ef1679a691c93874a2eaacde5b0c46b0d8cbea15cf789ab83f6b5cb",
+  "split": {
+    "counts": {
+      "meta_test": 20,
+      "meta_test_ood": 10,
+      "meta_train": 60,
+      "meta_validation": 20,
+      "negative_control": 10
+    },
+    "manifest_sha256": "9a5d7587bd0ac955097c03e577280caaf0fc0e574e8452006c15dd4518d769cb",
+    "split_hash": "cd597d01bd4024d13c765a0a723449c3d67172bc260040012bea9d67d2af76ae",
+    "split_order": [
+      "meta_train",
+      "meta_validation",
+      "meta_test",
+      "meta_test_ood",
+      "negative_control"
+    ],
+    "task_ids": {
+      "meta_test": [
+        "p4ra-FQE3-v3-TE-000",
+        "p4ra-FQE3-v3-TE-001",
+        "p4ra-FQE3-v3-TE-002",
+        "p4ra-FQE3-v3-TE-003",
+        "p4ra-FQE3-v3-TE-004",
+        "p4ra-FQE3-v3-TE-005",
+        "p4ra-FQE3-v3-TE-006",
+        "p4ra-FQE3-v3-TE-007",
+        "p4ra-FQE3-v3-TE-008",
+        "p4ra-FQE3-v3-TE-009",
+        "p4ra-FQE3-v3-TE-010",
+        "p4ra-FQE3-v3-TE-011",
+        "p4ra-FQE3-v3-TE-012",
+        "p4ra-FQE3-v3-TE-013",
+        "p4ra-FQE3-v3-TE-014",
+        "p4ra-FQE3-v3-TE-015",
+        "p4ra-FQE3-v3-TE-016",
+        "p4ra-FQE3-v3-TE-017",
+        "p4ra-FQE3-v3-TE-018",
+        "p4ra-FQE3-v3-TE-019"
+      ],
+      "meta_test_ood": [
+        "p4ra-FQE3-v3-OD-000",
+        "p4ra-FQE3-v3-OD-001",
+        "p4ra-FQE3-v3-OD-002",
+        "p4ra-FQE3-v3-OD-003",
+        "p4ra-FQE3-v3-OD-004",
+        "p4ra-FQE3-v3-OD-005",
+        "p4ra-FQE3-v3-OD-006",
+        "p4ra-FQE3-v3-OD-007",
+        "p4ra-FQE3-v3-OD-008",
+        "p4ra-FQE3-v3-OD-009"
+      ],
+      "meta_train": [
+        "p4ra-FQE3-v3-TR-000",
+        "p4ra-FQE3-v3-TR-001",
+        "p4ra-FQE3-v3-TR-002",
+        "p4ra-FQE3-v3-TR-003",
+        "p4ra-FQE3-v3-TR-004",
+        "p4ra-FQE3-v3-TR-005",
+        "p4ra-FQE3-v3-TR-006",
+        "p4ra-FQE3-v3-TR-007",
+        "p4ra-FQE3-v3-TR-008",
+        "p4ra-FQE3-v3-TR-009",
+        "p4ra-FQE3-v3-TR-010",
+        "p4ra-FQE3-v3-TR-011",
+        "p4ra-FQE3-v3-TR-012",
+        "p4ra-FQE3-v3-TR-013",
+        "p4ra-FQE3-v3-TR-014",
+        "p4ra-FQE3-v3-TR-015",
+        "p4ra-FQE3-v3-TR-016",
+        "p4ra-FQE3-v3-TR-017",
+        "p4ra-FQE3-v3-TR-018",
+        "p4ra-FQE3-v3-TR-019",
+        "p4ra-FQE3-v3-TR-020",
+        "p4ra-FQE3-v3-TR-021",
+        "p4ra-FQE3-v3-TR-022",
+        "p4ra-FQE3-v3-TR-023",
+        "p4ra-FQE3-v3-TR-024",
+        "p4ra-FQE3-v3-TR-025",
+        "p4ra-FQE3-v3-TR-026",
+        "p4ra-FQE3-v3-TR-027",
+        "p4ra-FQE3-v3-TR-028",
+        "p4ra-FQE3-v3-TR-029",
+        "p4ra-FQE3-v3-TR-030",
+        "p4ra-FQE3-v3-TR-031",
+        "p4ra-FQE3-v3-TR-032",
+        "p4ra-FQE3-v3-TR-033",
+        "p4ra-FQE3-v3-TR-034",
+        "p4ra-FQE3-v3-TR-035",
+        "p4ra-FQE3-v3-TR-036",
+        "p4ra-FQE3-v3-TR-037",
+        "p4ra-FQE3-v3-TR-038",
+        "p4ra-FQE3-v3-TR-039",
+        "p4ra-FQE3-v3-TR-040",
+        "p4ra-FQE3-v3-TR-041",
+        "p4ra-FQE3-v3-TR-042",
+        "p4ra-FQE3-v3-TR-043",
+        "p4ra-FQE3-v3-TR-044",
+        "p4ra-FQE3-v3-TR-045",
+        "p4ra-FQE3-v3-TR-046",
+        "p4ra-FQE3-v3-TR-047",
+        "p4ra-FQE3-v3-TR-048",
+        "p4ra-FQE3-v3-TR-049",
+        "p4ra-FQE3-v3-TR-050",
+        "p4ra-FQE3-v3-TR-051",
+        "p4ra-FQE3-v3-TR-052",
+        "p4ra-FQE3-v3-TR-053",
+        "p4ra-FQE3-v3-TR-054",
+        "p4ra-FQE3-v3-TR-055",
+        "p4ra-FQE3-v3-TR-056",
+        "p4ra-FQE3-v3-TR-057",
+        "p4ra-FQE3-v3-TR-058",
+        "p4ra-FQE3-v3-TR-059"
+      ],
+      "meta_validation": [
+        "p4ra-FQE3-v3-VA-000",
+        "p4ra-FQE3-v3-VA-001",
+        "p4ra-FQE3-v3-VA-002",
+        "p4ra-FQE3-v3-VA-003",
+        "p4ra-FQE3-v3-VA-004",
+        "p4ra-FQE3-v3-VA-005",
+        "p4ra-FQE3-v3-VA-006",
+        "p4ra-FQE3-v3-VA-007",
+        "p4ra-FQE3-v3-VA-008",
+        "p4ra-FQE3-v3-VA-009",
+        "p4ra-FQE3-v3-VA-010",
+        "p4ra-FQE3-v3-VA-011",
+        "p4ra-FQE3-v3-VA-012",
+        "p4ra-FQE3-v3-VA-013",
+        "p4ra-FQE3-v3-VA-014",
+        "p4ra-FQE3-v3-VA-015",
+        "p4ra-FQE3-v3-VA-016",
+        "p4ra-FQE3-v3-VA-017",
+        "p4ra-FQE3-v3-VA-018",
+        "p4ra-FQE3-v3-VA-019"
+      ],
+      "negative_control": [
+        "p4ra-FQE3-v3-NC-000",
+        "p4ra-FQE3-v3-NC-001",
+        "p4ra-FQE3-v3-NC-002",
+        "p4ra-FQE3-v3-NC-003",
+        "p4ra-FQE3-v3-NC-004",
+        "p4ra-FQE3-v3-NC-005",
+        "p4ra-FQE3-v3-NC-006",
+        "p4ra-FQE3-v3-NC-007",
+        "p4ra-FQE3-v3-NC-008",
+        "p4ra-FQE3-v3-NC-009"
+      ]
+    }
+  },
+  "support_policy": {
+    "K_support_counted_in_B": true,
+    "initial_designs": 8,
+    "main_search_evaluations": "-",
+    "note": "K 个支持评价计入 B；阶段2 初始设计 8-K；阶段3 主搜索 B-8；合计精确 B。",
+    "support_shared_by_all_arms": true
+  },
+  "task_family_version": "p4ra-family-v3",
+  "task_id_namespace": "p4ra-FQE3-v3-",
+  "task_id_pattern": "^p4ra-FQE3-v3-(TR|VA|TE|OD|NC)-[0-9]{3}$"
+}

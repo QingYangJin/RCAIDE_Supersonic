@@ -1,0 +1,73 @@
+{
+  "all_content_payloads_byte_identical": true,
+  "checks": {
+    "all_files_identical": true,
+    "all_status_pass": true,
+    "file_count_is_6": true,
+    "independent_processes": true
+  },
+  "code_sha": "7304d32e524b0e1e28b0e83e7a2ed7822ce88fc14963ca4d769098841e6201ed",
+  "created_utc": "2026-11-06T02:42:00+00:00",
+  "file_count": 6,
+  "files": [
+    {
+      "bytes": 340443,
+      "canonical_sha256": "173a4cdc802a5b8887755763d8ad737c44c84eb15c4c043f2c032607de819fc0",
+      "identical": true,
+      "path": "tasks.json",
+      "raw_sha256_run1": "59f66a41f3579b9bb493e94d59e666c3175eb78d11272e77615865beb21334d6",
+      "raw_sha256_run2": "59f66a41f3579b9bb493e94d59e666c3175eb78d11272e77615865beb21334d6"
+    },
+    {
+      "bytes": 79128,
+      "canonical_sha256": "9a5d7587bd0ac955097c03e577280caaf0fc0e574e8452006c15dd4518d769cb",
+      "identical": true,
+      "path": "meta_task_split.json",
+      "raw_sha256_run1": "589f77e5ae3186c7705f6e0a8f5b4bdda954cb6a8eef91154d4cc3fb0767a31c",
+      "raw_sha256_run2": "589f77e5ae3186c7705f6e0a8f5b4bdda954cb6a8eef91154d4cc3fb0767a31c"
+    },
+    {
+      "bytes": 4170,
+      "canonical_sha256": "eced4981e8447c7d60bd0a95309018ccc6eb165cf5836c5174ce8a9eef5a53d3",
+      "identical": true,
+      "path": "v3_isolation_report.json",
+      "raw_sha256_run1": "fe80047d2ca75c199791db13d9a9307fb86f81c43c3705dd9539b94741cff74e",
+      "raw_sha256_run2": "fe80047d2ca75c199791db13d9a9307fb86f81c43c3705dd9539b94741cff74e"
+    },
+    {
+      "bytes": 10259,
+      "canonical_sha256": "1cfda5b88ef1679a691c93874a2eaacde5b0c46b0d8cbea15cf789ab83f6b5cb",
+      "identical": true,
+      "path": "frozen_family.json",
+      "raw_sha256_run1": "246729d479918215d05f5828ea594500e8a9c031888585c59c9e3fb2733104c8",
+      "raw_sha256_run2": "246729d479918215d05f5828ea594500e8a9c031888585c59c9e3fb2733104c8"
+    },
+    {
+      "bytes": 12368,
+      "canonical_sha256": "cba5bfd70b301f4f1fa05dc094b9e3bd32c89b129c4f763a3f386aa70c5538cf",
+      "identical": true,
+      "path": "preregistration.json",
+      "raw_sha256_run1": "ffd33764aef3f348a3d3076c96963d81afcaa6c95db23797fa1777432a7b9306",
+      "raw_sha256_run2": "ffd33764aef3f348a3d3076c96963d81afcaa6c95db23797fa1777432a7b9306"
+    },
+    {
+      "bytes": 64723,
+      "canonical_sha256": "2b2c59b99649dc6c9bcafefc0ef41bac51b4e01db527ddcbbeba8615b5c0fb2b",
+      "identical": true,
+      "path": "budget_fairness_report.json",
+      "raw_sha256_run1": "f2033257c4041d3456f219f09b35828cf6932f0beadbaf0178a644b23e7c72f8",
+      "raw_sha256_run2": "f2033257c4041d3456f219f09b35828cf6932f0beadbaf0178a644b23e7c72f8"
+    }
+  ],
+  "git_sha": "004156c232f31a450f7446c3b280772de47423df",
+  "physical_call_count": 0,
+  "rerun": {
+    "comparison_scope": "stage-1 content payloads（6 个）",
+    "independent_processes": true,
+    "note": "digest_manifest.json 与 freeze_summary.json 在 finalize 阶段由 6 个内容载荷与本报告确定性派生；两进程最终 9 个文件逐字节一致由顶层 final_verify_report.json 独立验证。本报告不收录 digest_manifest/freeze_summary 的哈希，以避免报告->manifest->报告循环依赖。",
+    "rerun_count": 2
+  },
+  "run_id": "p4ra-s0-7-freeze-20261106T024200Z",
+  "schema_version": "p4ra-s0-7-determinism-report-1",
+  "status": "PASS"
+}
