@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 import re
 from datetime import datetime, timezone
 from pathlib import Path
@@ -20,6 +21,9 @@ from typing import Any, Iterable, Mapping, Sequence
 
 SCHEMA_VERSION = "p4ra-s2-prereg-v1"
 PREREG_ID_PREFIX = "p4ra-s2-prereg-"
+
+
+
 DEFAULT_REPO_ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_PACKAGE_PATH = "research/concorde_metaopt/optimization_runs/p4ra-s0-7-freeze-20261106T024200Z"
 DEFAULT_PILOT_ARTIFACTS = {
@@ -69,6 +73,119 @@ TRAINING_BUDGET = {"outer_steps": 200, "meta_seeds": [0, 1, 2], "train_records_e
 EVALUATION_GRID = {"meta_validation_tasks": 20, "K": [0, 1, 5, 10], "draws": 10, "eval_records_expected": 4800}
 # v1.5 §7：固定资源上限（int，供 verify 机械核验并纳入 prereg_digest）
 RESOURCE_LIMITS = {"per_seed_train_wall_s": 1200, "peak_memory_mb": 8192, "total_wall_s": 7200}
+
+# =============================================================================
+# 共享接口 schema v2（A5 代码审阅 B01/B02；单源定义）
+# s2_runner.py 与 s2_analysis.py 必须导入本区常量，不得复制字段清单。
+# 本区变更自动纳入 §7 code_sha（s2_prereg.py 已在 3 文件清单内）。
+# =============================================================================
+RUN_CONFIG_SCHEMA_VERSION = "p4ra-s2-run-config-v2"
+RUN_SUMMARY_SCHEMA_VERSION = "p4ra-s2-run-summary-v2"
+RUN_CONFIG_REQUIRED_FIELDS = (
+    "schema_version",
+    "run_id",
+    "run_mode",
+    "prereg_id",
+    "prereg_digest",
+    "analysis_plan_digest",
+    "code_sha",
+    "frozen_package",
+    "data_boundary",
+    "arms",
+    "training_budget",
+    "evaluation_grid",
+    "episode_bank",
+    "fd_gate",
+    "determinism",
+    "record_counts",
+    "record_schemas",
+    "resource_limits",
+    "physical_call_count",
+    "evidence_scope",
+    "development_set",
+    "scope_notes",
+)
+RUN_CONFIG_OPTIONAL_FIELDS = ("smoke_overrides",)
+EPISODE_BANK_FIELDS = (
+    "sha256",
+    "episodes",
+    "meta_seeds",
+    "outer_steps",
+    "batch_size",
+    "support_size",
+    "query_size",
+)
+FD_GATE_FIELDS = (
+    "mode",
+    "tolerance",
+    "coordinates",
+    "coordinates_requested",
+    "coordinates_available",
+    "n_checked",
+    "status",
+    "max_relative_error",
+    "fd_gate_sha256",
+    "override",
+    "pilot_artifacts",
+)
+RUN_SUMMARY_REQUIRED_FIELDS = (
+    "schema_version",
+    "run_id",
+    "run_mode",
+    "status",
+    "created_utc",
+    "prereg_id",
+    "prereg_digest",
+    "code_sha",
+    "record_counts",
+    "status_counts",
+    "failures",
+    "resource_stop",
+    "episode_bank_sha256",
+    "run_config_sha256",
+    "run_records_sha256",
+    "run_records_core_sha256",
+    "fd_gate_sha256",
+    "data_manifest_sha256",
+    "outer_step_timing",
+    "per_arm_seed",
+    "fd_pilot_artifacts",
+    "scope_notes",
+    "resources",
+    "resource_limits",
+    "torch_threads",
+    "environment",
+    "physical_call_count",
+    "evidence_scope",
+    "development_set",
+    "smoke",
+)
+RUN_SUMMARY_RESOURCES_FIELDS = (
+    "per_seed",
+    "per_arm",
+    "train_wall_seconds_ratio",
+    "run_wall_s",
+    "resource_limits",
+    "auxiliary_compute",
+)
+PER_SEED_RESOURCE_FIELDS = ("arm", "meta_seed", "status", "training_wall_s", "peak_memory_mb")
+PER_ARM_RESOURCE_FIELDS = (
+    "meta_seeds",
+    "train_wall_seconds_per_meta_seed",
+    "train_wall_seconds_mean",
+    "peak_memory_mb_max",
+)
+AUXILIARY_COMPUTE_FIELDS = (
+    "outer_step_timing_measurements",
+    "physical_call_count",
+    "note",
+)
+RUN_STATUSES = ("COMPLETED", "PARTIAL", "FAILED", "RESOURCE_LIMIT", "DEADLINE_EXCEEDED")
+SEED_STATUSES = ("OK", "FAILED", "RESOURCE_LIMIT", "DEADLINE_EXCEEDED")
+RUN_RESOURCE_LIMITS = RESOURCE_LIMITS
+RECORD_STATUS_COUNTS = ("OK", "FAILED")
+PILOT_ARTIFACT_NAMES = ("micro", "full_size")
+PILOT_EXPECTED_N_CHECKED = {"micro": 32, "full_size": 8}
 ENDPOINTS = {
     "primary": {"id": "post_adaptation_rmse_raw_k5", "direction": "lower_is_better", "K": 5, "space": "raw"},
     "secondary_inferential": [
@@ -374,13 +491,66 @@ def inspect_frozen_package(package_dir: Path | str) -> dict[str, Any]:
 # -- 构建 --------------------------------------------------------------------
 
 
+def _read_pilot_payload(path: Path) -> Any:
+    """读取 pilot JSON（强制 utf-8，避免 Windows 默认 gbk 解码失败）。"""
+    try:
+        return json.loads(Path(path).read_text(encoding="utf-8"))
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise S2PreregError(
+            f"{S2_PILOT_ARTIFACT_INVALID}: 无法读取 pilot 文件 {path}: {type(exc).__name__}: {exc}"
+        ) from exc
+
+
+def _validate_pilot_payload(name: str, payload: Any) -> None:
+    """校验 pilot 内嵌 fd_gate 状态/精度/坐标数（micro=32、full_size=8；计划 §4.3/v1.6 §7）。"""
+    code = S2_PILOT_ARTIFACT_INVALID
+    _require(name in PILOT_ARTIFACT_NAMES, code, f"未知 pilot 名称: {name!r}")
+    payload_map = _require_mapping(payload, code, f"pilot.{name}")
+    gate = _require_mapping(payload_map.get("fd_gate"), code, f"pilot.{name}.fd_gate")
+    expected_n_checked = PILOT_EXPECTED_N_CHECKED[name]
+    _require_exact(gate.get("mode"), "full", code, f"pilot.{name}.fd_gate.mode")
+    _require_exact(gate.get("tolerance"), 1e-6, code, f"pilot.{name}.fd_gate.tolerance")
+    _require_exact(gate.get("status"), "PASS", code, f"pilot.{name}.fd_gate.status")
+    n_checked = gate.get("n_checked")
+    _require(
+        type(n_checked) is int and n_checked == expected_n_checked,
+        code,
+        f"pilot.{name}.fd_gate.n_checked 应为 {expected_n_checked}，实际 {n_checked!r}",
+    )
+    coordinates_requested = gate.get("coordinates_requested")
+    _require(
+        type(coordinates_requested) is int and coordinates_requested == n_checked,
+        code,
+        f"pilot.{name}.fd_gate.coordinates_requested 应等于 n_checked={n_checked}，实际 {coordinates_requested!r}",
+    )
+    coordinates_available = gate.get("coordinates_available")
+    _require(
+        type(coordinates_available) is int and coordinates_available >= n_checked,
+        code,
+        f"pilot.{name}.fd_gate.coordinates_available 应 >= {n_checked}，实际 {coordinates_available!r}",
+    )
+    max_relative_error = gate.get("max_relative_error")
+    _require(
+        isinstance(max_relative_error, (int, float))
+        and not isinstance(max_relative_error, bool)
+        and math.isfinite(float(max_relative_error)),
+        code,
+        f"pilot.{name}.fd_gate.max_relative_error 必须为有限数值，实际 {max_relative_error!r}",
+    )
+    _require(
+        float(max_relative_error) <= 1e-6,
+        code,
+        f"pilot.{name}.fd_gate.max_relative_error 必须 <= 1e-6，实际 {max_relative_error!r}",
+    )
+
+
 def _pilot_artifact_entries(
     repo_root: Path, pilot_paths: Mapping[str, str] | None
 ) -> dict[str, dict[str, str]]:
     paths = dict(DEFAULT_PILOT_ARTIFACTS if pilot_paths is None else pilot_paths)
     entries: dict[str, dict[str, str]] = {}
     root_resolved = repo_root.resolve()
-    for name in ("micro", "full_size"):
+    for name in PILOT_ARTIFACT_NAMES:
         _require(name in paths, S2_PILOT_ARTIFACT_INVALID, f"pilot_artifacts 缺少 {name}")
         relative = Path(str(paths[name]))
         _require(not relative.is_absolute(), S2_PILOT_ARTIFACT_INVALID, f"pilot 路径必须是仓库根相对路径，实际 {relative}")
@@ -392,8 +562,8 @@ def _pilot_artifact_entries(
         )
         _require(resolved.is_file(), S2_PILOT_ARTIFACT_INVALID, f"pilot 文件不存在: {relative}")
         entries[name] = {"path": relative.as_posix(), "sha256": sha256_file(resolved)}
+        _validate_pilot_payload(name, _read_pilot_payload(resolved))
     return entries
-
 
 def build_preregistration(
     *,
@@ -570,10 +740,10 @@ def _check_fd_gate(fd_gate: Any, repo_root: Path) -> None:
     _require_exact(gate.get("denominator"), "max(|numeric|, |analytic|, 1e-12)", S2_PREREG_SCHEMA_ERROR, "fd_gate.denominator")
     _require_exact(gate.get("fail_closed"), True, S2_PREREG_SCHEMA_ERROR, "fd_gate.fail_closed")
     artifacts = _require_mapping(gate.get("pilot_artifacts"), S2_PILOT_ARTIFACT_INVALID, "fd_gate.pilot_artifacts")
-    _require(set(artifacts) == {"micro", "full_size"}, S2_PILOT_ARTIFACT_INVALID, "pilot_artifacts 必须含 micro/full_size")
+    _require(set(artifacts) == set(PILOT_ARTIFACT_NAMES), S2_PILOT_ARTIFACT_INVALID, "pilot_artifacts 必须恰含 micro/full_size")
     root_resolved = (repo_root if repo_root.is_absolute() else repo_root.resolve()).resolve()
-    for name, entry in artifacts.items():
-        entry = _require_mapping(entry, S2_PILOT_ARTIFACT_INVALID, f"pilot_artifacts.{name}")
+    for name in PILOT_ARTIFACT_NAMES:
+        entry = _require_mapping(artifacts[name], S2_PILOT_ARTIFACT_INVALID, f"pilot_artifacts.{name}")
         _require(set(entry) == {"path", "sha256"}, S2_PILOT_ARTIFACT_INVALID, f"pilot_artifacts.{name} 必须恰含 path/sha256")
         relative = Path(str(entry["path"]))
         _require(not relative.is_absolute(), S2_PILOT_ARTIFACT_INVALID, f"pilot 路径不得为绝对路径: {relative}")
@@ -587,6 +757,7 @@ def _check_fd_gate(fd_gate: Any, repo_root: Path) -> None:
         _require_hex64(str(entry["sha256"]), S2_PILOT_ARTIFACT_INVALID, f"pilot_artifacts.{name}.sha256")
         actual = sha256_file(resolved)
         _require(actual == entry["sha256"], S2_PILOT_ARTIFACT_INVALID, f"pilot sha 不匹配: {relative} 期望 {entry['sha256']} 实际 {actual}")
+        _validate_pilot_payload(name, _read_pilot_payload(resolved))
 
 
 def verify_preregistration(
@@ -730,6 +901,23 @@ __all__ = [
     "TASK_FAMILY_VERSION",
     "TRAINING_BUDGET",
     "UPSTREAM",
+    "AUXILIARY_COMPUTE_FIELDS",
+    "EPISODE_BANK_FIELDS",
+    "FD_GATE_FIELDS",
+    "PER_ARM_RESOURCE_FIELDS",
+    "PER_SEED_RESOURCE_FIELDS",
+    "PILOT_ARTIFACT_NAMES",
+    "PILOT_EXPECTED_N_CHECKED",
+    "RECORD_STATUS_COUNTS",
+    "RUN_CONFIG_OPTIONAL_FIELDS",
+    "RUN_CONFIG_REQUIRED_FIELDS",
+    "RUN_CONFIG_SCHEMA_VERSION",
+    "RUN_RESOURCE_LIMITS",
+    "RUN_STATUSES",
+    "RUN_SUMMARY_REQUIRED_FIELDS",
+    "RUN_SUMMARY_RESOURCES_FIELDS",
+    "RUN_SUMMARY_SCHEMA_VERSION",
+    "SEED_STATUSES",
     "S2PreregError",
     "analysis_plan_digest",
     "build_preregistration",

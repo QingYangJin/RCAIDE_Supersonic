@@ -16,6 +16,7 @@ import json
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 from research.concorde_metaopt.meta_learning import s2_prereg as sp
 
@@ -365,6 +366,104 @@ class PreregistrationVerifyNegativeTests(unittest.TestCase):
         prereg = self.fresh()
         prereg["schema_version"] = "p4ra-s2-prereg-v9"
         self.assert_rejected(prereg, sp.S2_PREREG_SCHEMA_ERROR)
+
+
+class SharedSchemaV2AndPilotPayloadTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.base = sp.build_preregistration(
+            repo_root=REPO_ROOT,
+            created_utc=CREATED_UTC,
+            train_episode_bank_sha256=BANK_SHA,
+        )
+        cls.micro = sp._read_pilot_payload(REPO_ROOT / sp.DEFAULT_PILOT_ARTIFACTS["micro"])
+        cls.full = sp._read_pilot_payload(REPO_ROOT / sp.DEFAULT_PILOT_ARTIFACTS["full_size"])
+
+    def test_01_shared_schema_constants_v2(self):
+        self.assertEqual(sp.RUN_CONFIG_SCHEMA_VERSION, "p4ra-s2-run-config-v2")
+        self.assertEqual(sp.RUN_SUMMARY_SCHEMA_VERSION, "p4ra-s2-run-summary-v2")
+        self.assertEqual(len(sp.RUN_CONFIG_REQUIRED_FIELDS), 22)
+        self.assertEqual(len(sp.RUN_SUMMARY_REQUIRED_FIELDS), 30)
+        self.assertEqual(len(sp.RUN_SUMMARY_RESOURCES_FIELDS), 6)
+        self.assertEqual(len(sp.EPISODE_BANK_FIELDS), 7)
+        self.assertEqual(len(sp.FD_GATE_FIELDS), 11)
+        self.assertEqual(len(sp.PER_SEED_RESOURCE_FIELDS), 5)
+        self.assertEqual(len(sp.PER_ARM_RESOURCE_FIELDS), 4)
+        self.assertEqual(len(sp.AUXILIARY_COMPUTE_FIELDS), 3)
+        self.assertEqual(sp.RUN_CONFIG_OPTIONAL_FIELDS, ("smoke_overrides",))
+        for key in ("run_mode", "per_arm_seed", "fd_pilot_artifacts", "scope_notes", "resources"):
+            self.assertIn(key, sp.RUN_SUMMARY_REQUIRED_FIELDS)
+        self.assertEqual(sp.PILOT_ARTIFACT_NAMES, ("micro", "full_size"))
+        self.assertEqual(sp.PILOT_EXPECTED_N_CHECKED, {"micro": 32, "full_size": 8})
+        self.assertEqual(
+            sp.RUN_RESOURCE_LIMITS,
+            {"per_seed_train_wall_s": 1200, "peak_memory_mb": 8192, "total_wall_s": 7200},
+        )
+        self.assertTrue(all(type(value) is int for value in sp.RUN_RESOURCE_LIMITS.values()))
+        self.assertEqual(set(sp.RECORD_STATUS_COUNTS), {"OK", "FAILED"})
+        self.assertNotIn("S2_PREREG_PILOT_ARTIFACT_INVALID", sp.__all__)
+
+    def test_02_real_pilot_payloads_pass_helper(self):
+        sp._validate_pilot_payload("micro", self.micro)
+        sp._validate_pilot_payload("full_size", self.full)
+        with self.assertRaises(sp.S2PreregError) as ctx:
+            sp._validate_pilot_payload("other", self.micro)
+        self.assertIn(sp.S2_PILOT_ARTIFACT_INVALID, str(ctx.exception))
+
+    def test_03_pilot_payload_negative_mutations_use_existing_code(self):
+        mutations = {
+            "status": lambda gate: gate.__setitem__("status", "FAIL"),
+            "mode": lambda gate: gate.__setitem__("mode", "fomaml"),
+            "tolerance": lambda gate: gate.__setitem__("tolerance", 1e-5),
+            "n_checked": lambda gate: gate.__setitem__("n_checked", 31),
+            "coordinates_requested": lambda gate: gate.__setitem__("coordinates_requested", 31),
+            "coordinates_available": lambda gate: gate.__setitem__("coordinates_available", 31),
+            "max_relative_error": lambda gate: gate.__setitem__("max_relative_error", 2e-6),
+        }
+        for name, mutate in mutations.items():
+            payload = copy.deepcopy(self.micro)
+            mutate(payload["fd_gate"])
+            with self.assertRaises(sp.S2PreregError) as ctx:
+                sp._validate_pilot_payload("micro", payload)
+            self.assertIn(sp.S2_PILOT_ARTIFACT_INVALID, str(ctx.exception), name)
+
+        for name in sp.PILOT_ARTIFACT_NAMES:
+            payload = copy.deepcopy(self.micro if name == "micro" else self.full)
+            mutate = lambda gate: gate.__setitem__("n_checked", 31)
+            mutate(payload["fd_gate"])
+            with self.assertRaises(sp.S2PreregError) as ctx:
+                sp._validate_pilot_payload(name, payload)
+            self.assertIn(sp.S2_PILOT_ARTIFACT_INVALID, str(ctx.exception), name)
+
+        without_gate = copy.deepcopy(self.micro)
+        del without_gate["fd_gate"]
+        with self.assertRaises(sp.S2PreregError) as ctx:
+            sp._validate_pilot_payload("micro", without_gate)
+        self.assertIn(sp.S2_PILOT_ARTIFACT_INVALID, str(ctx.exception))
+
+        with self.assertRaises(sp.S2PreregError) as ctx:
+            sp._validate_pilot_payload("micro", ["not", "a", "mapping"])
+        self.assertIn(sp.S2_PILOT_ARTIFACT_INVALID, str(ctx.exception))
+
+    def test_04_build_rejects_bad_pilot_payload(self):
+        bad = copy.deepcopy(self.micro)
+        bad["fd_gate"]["status"] = "FAIL"
+        with mock.patch.object(sp, "_read_pilot_payload", return_value=bad):
+            with self.assertRaises(sp.S2PreregError) as ctx:
+                sp.build_preregistration(
+                    repo_root=REPO_ROOT,
+                    created_utc=CREATED_UTC,
+                    train_episode_bank_sha256=BANK_SHA,
+                )
+        self.assertIn(sp.S2_PILOT_ARTIFACT_INVALID, str(ctx.exception))
+
+    def test_05_verify_rejects_bad_pilot_payload(self):
+        bad = copy.deepcopy(self.full)
+        bad["fd_gate"]["max_relative_error"] = 2e-6
+        with mock.patch.object(sp, "_read_pilot_payload", return_value=bad):
+            with self.assertRaises(sp.S2PreregError) as ctx:
+                sp.verify_preregistration(copy.deepcopy(self.base), repo_root=REPO_ROOT)
+        self.assertIn(sp.S2_PILOT_ARTIFACT_INVALID, str(ctx.exception))
 
 
 if __name__ == "__main__":

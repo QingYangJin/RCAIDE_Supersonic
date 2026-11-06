@@ -1,6 +1,6 @@
 """S2（P4 路线 A / Issue #7 D-P4-003）runner：零物理、解析合成评价器上的等预算算法对照。
 
-合同：docs/planning/p4_route_a_s2_execution_plan_20261106.md（v1.3a）
+合同：docs/planning/p4_route_a_s2_execution_plan_20261106.md（v1.6）
 - §2 数据边界（allowlist + 负控 + task_id 身份）；
 - §3 episode 与确定性合同（seed 公式、bank manifest sha）；
 - §4 算法/等预算/FD 门禁（FULL_MAML vs FOMAML，同一 config 仅 first_order 不同）；
@@ -39,8 +39,9 @@ from . import s2_prereg as sp
 from .task_family import SyntheticTask, TaskFamilyError, derive_seed, sample_designs
 
 S2_RUNNER_SCHEMA_VERSION = "p4ra-s2-runner-v1"
-S2_RUN_CONFIG_SCHEMA_VERSION = "p4ra-s2-run-config-v1"
-S2_RUN_SUMMARY_SCHEMA_VERSION = "p4ra-s2-run-summary-v1"
+# 共享接口 schema v2（计划 v1.6 §7）：版本/字段集单源来自 s2_prereg.py，禁止本地复制
+S2_RUN_CONFIG_SCHEMA_VERSION = sp.RUN_CONFIG_SCHEMA_VERSION
+S2_RUN_SUMMARY_SCHEMA_VERSION = sp.RUN_SUMMARY_SCHEMA_VERSION
 S2_EPISODE_BANK_SCHEMA_VERSION = "p4ra-s2-episode-bank-v1"
 S2_FD_GATE_SCHEMA_VERSION = "p4ra-s2-fd-gate-v1"
 S2_RECORD_SCHEMA_VERSION = "p4ra-s2-run-record-v1"
@@ -84,8 +85,8 @@ EVAL_RECORD_FIELDS = (
     "status",
 )
 RECORD_CORE_EXCLUDED_FIELDS = ("wall_s", "peak_memory_mb")
-EVAL_STATUSES = ("OK", "FAILED")
-TRAIN_STATUSES = ("OK", "FAILED")
+EVAL_STATUSES = sp.RECORD_STATUS_COUNTS
+TRAIN_STATUSES = sp.RECORD_STATUS_COUNTS
 
 # 错误码前缀（消息首段），供上层 fail-closed 判断
 S2_RUNNER_ERROR = "S2_RUNNER_ERROR"
@@ -102,17 +103,14 @@ DEFAULT_EVAL_QUERY_SIZE = 64
 DEFAULT_EVAL_K = (0, 1, 5, 10)
 DEFAULT_EVAL_DRAWS = 10
 
-# §5/§9 资源规则（v1.5 统一口径：与 prereg.resource_limits 三键逐项一致）
-SEED_WALL_CLOCK_LIMIT_S = 1200
-PEAK_MEMORY_LIMIT_MB = 8192
-RUN_HARD_DEADLINE_S = 7200
-RUN_STATUSES = ("COMPLETED", "PARTIAL", "FAILED", "RESOURCE_LIMIT", "DEADLINE_EXCEEDED")
-SEED_STATUSES = ("OK", "FAILED", "RESOURCE_LIMIT", "DEADLINE_EXCEEDED")
-RUN_RESOURCE_LIMITS = {
-    "per_seed_train_wall_s": SEED_WALL_CLOCK_LIMIT_S,
-    "peak_memory_mb": PEAK_MEMORY_LIMIT_MB,
-    "total_wall_s": RUN_HARD_DEADLINE_S,
-}
+# §5/§9 资源规则（v1.6：状态枚举/资源上限/记录状态改为共享接口 schema v2 单源）
+RUN_RESOURCE_LIMITS = dict(sp.RUN_RESOURCE_LIMITS)
+RUN_STATUSES = sp.RUN_STATUSES
+SEED_STATUSES = sp.SEED_STATUSES
+RECORD_STATUS_COUNTS = sp.RECORD_STATUS_COUNTS
+SEED_WALL_CLOCK_LIMIT_S = RUN_RESOURCE_LIMITS["per_seed_train_wall_s"]
+PEAK_MEMORY_LIMIT_MB = RUN_RESOURCE_LIMITS["peak_memory_mb"]
+RUN_HARD_DEADLINE_S = RUN_RESOURCE_LIMITS["total_wall_s"]
 
 
 class S2RunnerError(RuntimeError):
@@ -528,7 +526,7 @@ def summarize_fd_gate(fd_payload: Mapping[str, Any]) -> dict[str, Any]:
     return {
         "mode": "full",
         "tolerance": _round_sig(float(result.get("tolerance", 1e-6)), 6),
-        "coordinates": int(fd_payload.get("batch_size", 0)) * 0 + int(result.get("n_checked") or 0),
+        "coordinates": int(result.get("n_checked") or 0),
         "coordinates_requested": int(result.get("coordinates_requested") or 0),
         "coordinates_available": int(result.get("coordinates_available") or 0),
         "n_checked": int(result.get("n_checked") or 0),
@@ -1220,12 +1218,15 @@ def _aggregate_arm_resources(per_seed_resources: Sequence[Mapping[str, Any]]) ->
 
 
 def _status_counts(records: Sequence[Mapping[str, Any]]) -> dict[str, dict[str, int]]:
-    counts: dict[str, dict[str, int]] = {"train": {}, "eval": {}}
+    """v1.6 共享接口 schema v2：train/eval 两桶恒含 OK/FAILED 两键（缺失补 0）。"""
+    counts: dict[str, dict[str, int]] = {
+        split: {status: 0 for status in sp.RECORD_STATUS_COUNTS} for split in ("train", "eval")
+    }
     for record in records:
         bucket = counts[str(record.get("record_type"))]
         status = str(record.get("status"))
         bucket[status] = bucket.get(status, 0) + 1
-    return {key: dict(sorted(value.items())) for key, value in sorted(counts.items())}
+    return counts
 
 
 def run_experiment(
@@ -1406,6 +1407,14 @@ def run_experiment(
     data_manifest_sha256 = write_json_canonical(target / "data_manifest.json", data_manifest)
 
     arm_resources = _aggregate_arm_resources(per_seed_resources)
+    per_arm_seed: dict[str, list[int]] = {}
+    for item in per_seed_resources:
+        seeds = per_arm_seed.setdefault(str(item["arm"]), [])
+        meta_seed_value = int(item["meta_seed"])
+        if meta_seed_value not in seeds:
+            seeds.append(meta_seed_value)
+    for seeds in per_arm_seed.values():
+        seeds.sort()
     created = (
         datetime.now(timezone.utc).isoformat(timespec="seconds") if created_utc is None else str(created_utc)
     )
@@ -1429,12 +1438,20 @@ def run_experiment(
         "fd_gate_sha256": fd_gate_sha256,
         "data_manifest_sha256": data_manifest_sha256,
         "outer_step_timing": outer_step_timing,
+        "per_arm_seed": per_arm_seed,
+        "fd_pilot_artifacts": json.loads(json.dumps(run_config["fd_gate"]["pilot_artifacts"])),
+        "scope_notes": json.loads(json.dumps(run_config["scope_notes"])),
         "resources": {
             "per_seed": per_seed_resources,
             "per_arm": arm_resources["per_arm"],
             "train_wall_seconds_ratio": arm_resources["train_wall_seconds_ratio"],
             "run_wall_s": time.perf_counter() - run_started,
             "resource_limits": {str(key): int(value) for key, value in budget["resource_limits"].items()},
+            "auxiliary_compute": {
+                "outer_step_timing_measurements": len(outer_step_timing),
+                "physical_call_count": 0,
+                "note": "每 arm 训练前 1 outer-step 实测（measure_outer_step_timing），仅资源预估，非物理计算，不计入训练预算",
+            },
         },
         "resource_limits": {str(key): int(value) for key, value in budget["resource_limits"].items()},
         "torch_threads": 1,
@@ -1479,6 +1496,22 @@ def _is_number(value: Any) -> bool:
     return isinstance(value, (int, float)) and not isinstance(value, bool) and math.isfinite(float(value))
 
 
+def per_arm_seed_from_summary(summary: Mapping[str, Any]) -> dict[str, list[int]]:
+    """从 resources.per_seed 机械重建 per_arm_seed（v1.6 校验用）。"""
+    per_arm_seed: dict[str, list[int]] = {}
+    resources = summary.get("resources") if isinstance(summary.get("resources"), Mapping) else {}
+    for item in resources.get("per_seed") or []:
+        if not isinstance(item, Mapping):
+            continue
+        seeds = per_arm_seed.setdefault(str(item.get("arm")), [])
+        seed_value = int(item.get("meta_seed"))
+        if seed_value not in seeds:
+            seeds.append(seed_value)
+    for seeds in per_arm_seed.values():
+        seeds.sort()
+    return per_arm_seed
+
+
 def validate_run_artifacts(
     run_dir: Path | str,
     *,
@@ -1503,6 +1536,52 @@ def validate_run_artifacts(
 
     check("run_config_schema", config.get("schema_version") == S2_RUN_CONFIG_SCHEMA_VERSION, config.get("schema_version"))
     check("run_summary_schema", summary.get("schema_version") == S2_RUN_SUMMARY_SCHEMA_VERSION, summary.get("schema_version"))
+    config_expected_keys = set(sp.RUN_CONFIG_REQUIRED_FIELDS) | (
+        set(sp.RUN_CONFIG_OPTIONAL_FIELDS) if "smoke_overrides" in config else set()
+    )
+    check(
+        "run_config_fields",
+        set(config) == config_expected_keys,
+        {
+            "missing": sorted(config_expected_keys - set(config)),
+            "extra": sorted(set(config) - config_expected_keys),
+        },
+    )
+    check(
+        "run_summary_fields",
+        set(summary) == set(sp.RUN_SUMMARY_REQUIRED_FIELDS),
+        {
+            "missing": sorted(set(sp.RUN_SUMMARY_REQUIRED_FIELDS) - set(summary)),
+            "extra": sorted(set(summary) - set(sp.RUN_SUMMARY_REQUIRED_FIELDS)),
+        },
+    )
+    summary_resources = summary.get("resources") if isinstance(summary.get("resources"), Mapping) else {}
+    check(
+        "run_summary_resources_fields",
+        set(summary_resources) == set(sp.RUN_SUMMARY_RESOURCES_FIELDS),
+        {"keys": sorted(summary_resources)},
+    )
+    status_counts = summary.get("status_counts") if isinstance(summary.get("status_counts"), Mapping) else {}
+    check(
+        "status_counts_ok_failed",
+        set(status_counts) == {"train", "eval"}
+        and all(
+            isinstance(status_counts.get(split_name), Mapping)
+            and set(status_counts[split_name]) == set(sp.RECORD_STATUS_COUNTS)
+            for split_name in ("train", "eval")
+        ),
+        status_counts,
+    )
+    check(
+        "summary_fields_v2",
+        summary.get("per_arm_seed") == per_arm_seed_from_summary(summary)
+        and summary.get("fd_pilot_artifacts") == config.get("fd_gate", {}).get("pilot_artifacts")
+        and summary.get("scope_notes") == config.get("scope_notes"),
+        {
+            "per_arm_seed": summary.get("per_arm_seed"),
+            "fd_pilot_artifacts": summary.get("fd_pilot_artifacts"),
+        },
+    )
     check("physical_call_count_zero", config.get("physical_call_count") == 0 and summary.get("physical_call_count") == 0)
     check(
         "resource_limits_fixed",

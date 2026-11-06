@@ -170,6 +170,18 @@ class RunnerUtilityTests(unittest.TestCase):
         self.assertNotEqual(sp.compute_prereg_id(tampered), self.prereg["prereg_id"])
 
 
+    def test_10_status_counts_always_two_buckets(self) -> None:
+        counts = runner._status_counts(
+            [
+                {"record_type": "train", "status": "OK"},
+                {"record_type": "train", "status": "FAILED"},
+            ]
+        )
+        self.assertEqual(counts, {"train": {"OK": 1, "FAILED": 1}, "eval": {"OK": 0, "FAILED": 0}})
+        empty = runner._status_counts([])
+        self.assertEqual(empty, {"train": {"OK": 0, "FAILED": 0}, "eval": {"OK": 0, "FAILED": 0}})
+
+
 class DataBoundaryTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
@@ -761,6 +773,11 @@ class SmokeRunTests(unittest.TestCase):
             "summary_fd_gate_sha",
             "summary_data_manifest_sha",
             "summary_episode_bank_sha",
+            "run_config_fields",
+            "run_summary_fields",
+            "run_summary_resources_fields",
+            "status_counts_ok_failed",
+            "summary_fields_v2",
         ):
             self.assertIn(required, names)
         self.assertEqual(result["run_status"], "COMPLETED")
@@ -914,6 +931,230 @@ class SmokeRunTests(unittest.TestCase):
                 smoke_overrides=SMOKE_OVERRIDES,
                 created_utc=CREATED_UTC,
             )
+
+    def test_12_summary_v2_contract(self) -> None:
+        summary = self.summary_a
+        config = json.loads((self.run_a / "run_config.json").read_text(encoding="utf-8"))
+        self.assertEqual(summary["schema_version"], sp.RUN_SUMMARY_SCHEMA_VERSION)
+        self.assertEqual(set(summary), set(sp.RUN_SUMMARY_REQUIRED_FIELDS))
+        self.assertEqual(summary["run_mode"], "SMOKE")
+        self.assertTrue(summary["smoke"])
+        self.assertEqual(
+            summary["status_counts"],
+            {"train": {"OK": 2, "FAILED": 0}, "eval": {"OK": 8, "FAILED": 0}},
+        )
+        self.assertEqual(summary["per_arm_seed"], {"FULL_MAML": [0], "FOMAML": [0]})
+        self.assertEqual(summary["per_arm_seed"], runner.per_arm_seed_from_summary(summary))
+        self.assertEqual(summary["fd_pilot_artifacts"], config["fd_gate"]["pilot_artifacts"])
+        self.assertEqual(summary["scope_notes"], config["scope_notes"])
+        auxiliary = summary["resources"]["auxiliary_compute"]
+        self.assertEqual(set(auxiliary), set(sp.AUXILIARY_COMPUTE_FIELDS))
+        self.assertEqual(auxiliary["outer_step_timing_measurements"], len(summary["outer_step_timing"]))
+        self.assertEqual(auxiliary["physical_call_count"], 0)
+        self.assertIsInstance(auxiliary["note"], str)
+        self.assertTrue(auxiliary["note"])
+
+    def test_13_resources_v2_contract(self) -> None:
+        resources = self.summary_a["resources"]
+        self.assertEqual(set(resources), set(sp.RUN_SUMMARY_RESOURCES_FIELDS))
+        self.assertEqual(resources["resource_limits"], RESOURCE_LIMITS)
+        self.assertGreater(resources["run_wall_s"], 0.0)
+        self.assertIsInstance(resources["train_wall_seconds_ratio"], float)
+        self.assertEqual(len(resources["per_seed"]), 2)
+        for item in resources["per_seed"]:
+            self.assertEqual(set(item), set(sp.PER_SEED_RESOURCE_FIELDS))
+        self.assertEqual(set(resources["per_arm"]), {"FULL_MAML", "FOMAML"})
+        for arm_stats in resources["per_arm"].values():
+            self.assertEqual(set(arm_stats), set(sp.PER_ARM_RESOURCE_FIELDS))
+        self.assertEqual(
+            set(resources["auxiliary_compute"]),
+            set(sp.AUXILIARY_COMPUTE_FIELDS),
+        )
+
+    def test_14_run_config_v2_contract(self) -> None:
+        config = json.loads((self.run_a / "run_config.json").read_text(encoding="utf-8"))
+        self.assertEqual(config["schema_version"], sp.RUN_CONFIG_SCHEMA_VERSION)
+        self.assertEqual(set(config), set(sp.RUN_CONFIG_REQUIRED_FIELDS) | set(sp.RUN_CONFIG_OPTIONAL_FIELDS))
+        self.assertEqual(config["run_mode"], "SMOKE")
+        self.assertEqual(set(config["fd_gate"]), set(sp.FD_GATE_FIELDS))
+        self.assertEqual(set(config["episode_bank"]), set(sp.EPISODE_BANK_FIELDS))
+        self.assertTrue(config["fd_gate"]["override"])
+        self.assertEqual(config["smoke_overrides"]["outer_steps"], 1)
+        self.assertEqual(config["smoke_overrides"]["meta_seeds"], [0])
+        self.assertEqual(config["smoke_overrides"]["K"], [0, 5])
+        self.assertEqual(config["smoke_overrides"]["draws"], 1)
+        self.assertEqual(config["smoke_overrides"]["eval_tasks"], 2)
+        self.assertEqual(config["smoke_overrides"]["fd_coordinates"], 2)
+
+    def test_15_runner_schema_constants_single_source(self) -> None:
+        self.assertEqual(runner.S2_RUN_CONFIG_SCHEMA_VERSION, sp.RUN_CONFIG_SCHEMA_VERSION)
+        self.assertEqual(runner.S2_RUN_SUMMARY_SCHEMA_VERSION, sp.RUN_SUMMARY_SCHEMA_VERSION)
+        self.assertEqual(runner.RUN_RESOURCE_LIMITS, dict(sp.RUN_RESOURCE_LIMITS))
+        self.assertEqual(runner.RUN_STATUSES, sp.RUN_STATUSES)
+        self.assertEqual(runner.SEED_STATUSES, sp.SEED_STATUSES)
+        self.assertEqual(runner.RECORD_STATUS_COUNTS, sp.RECORD_STATUS_COUNTS)
+        self.assertEqual(runner.S2_RUN_CONFIG_SCHEMA_VERSION, "p4ra-s2-run-config-v2")
+
+    def _tampered_run(self, root: str, mutate_config=None, mutate_summary=None) -> Path:
+        broken = Path(root) / "run_tampered_v2"
+        shutil.copytree(self.run_a, broken)
+        if mutate_config is not None:
+            config = json.loads((broken / "run_config.json").read_text(encoding="utf-8"))
+            mutate_config(config)
+            payload = json.dumps(config, ensure_ascii=False) + chr(10)
+            (broken / "run_config.json").write_text(payload, encoding="utf-8")
+        if mutate_summary is not None:
+            summary = json.loads((broken / "run_summary.json").read_text(encoding="utf-8"))
+            mutate_summary(summary)
+            payload = json.dumps(summary, ensure_ascii=False) + chr(10)
+            (broken / "run_summary.json").write_text(payload, encoding="utf-8")
+        return broken
+
+    def _assert_check_fails(self, broken: Path, expected_check: str) -> dict:
+        result = runner.validate_run_artifacts(broken)
+        self.assertFalse(result["ok"])
+        failed = {check["name"] for check in result["checks"] if not check["ok"]}
+        self.assertIn(expected_check, failed, sorted(failed))
+        return result
+
+    def test_16_negative_v2_schema_fail_closed(self) -> None:
+        cases = [
+            ("run_config_fields", lambda config: config.pop("determinism"), None),
+            ("run_config_schema", lambda config: config.__setitem__("schema_version", "p4ra-s2-run-config-v1"), None),
+            ("run_summary_fields", None, lambda summary: summary.pop("run_mode")),
+            ("run_summary_schema", None, lambda summary: summary.__setitem__("schema_version", "p4ra-s2-run-summary-v1")),
+            ("run_summary_resources_fields", None, lambda summary: summary["resources"].pop("auxiliary_compute")),
+            ("status_counts_ok_failed", None, lambda summary: summary["status_counts"]["train"].pop("FAILED")),
+            ("summary_fields_v2", None, lambda summary: summary.__setitem__("per_arm_seed", {})),
+        ]
+        for expected_check, mutate_config, mutate_summary in cases:
+            with tempfile.TemporaryDirectory() as tmp:
+                broken = self._tampered_run(tmp, mutate_config=mutate_config, mutate_summary=mutate_summary)
+                self._assert_check_fails(broken, expected_check)
+
+    def test_17_formal_run_summary_run_mode(self) -> None:
+        prereg = self.prereg
+        task_set = runner.load_s2_tasks(PACKAGE)
+        budget = runner.resolve_budget(prereg, run_mode="FORMAL")
+        configs = {str(arm["id"]): runner.config_from_arm(arm) for arm in prereg["arms"]}
+        fake_bank = {
+            "episodes": [],
+            "meta_seeds": [0, 1, 2],
+            "outer_steps": 200,
+            "batch_size": 8,
+            "support_size": 16,
+            "query_size": 32,
+        }
+        fake_fd = {
+            "result": {
+                "mode": "full",
+                "tolerance": 1e-6,
+                "status": "PASS",
+                "n_checked": 32,
+                "coordinates_requested": 32,
+                "coordinates_available": 185,
+                "max_relative_error": 1e-9,
+            },
+            "fd_gate_sha256": "f" * 64,
+        }
+        pre = {
+            "prereg": prereg,
+            "budget": budget,
+            "task_set": task_set,
+            "eval_tasks": list(task_set.meta_validation),
+            "bank_manifest": fake_bank,
+            "bank_sha256": BANK_SHA,
+            "fd_payload": fake_fd,
+            "arms": prereg["arms"],
+            "configs": configs,
+        }
+
+        def fake_timing(_task_set, **kwargs):
+            return {
+                "arm": str(kwargs.get("arm") if isinstance(kwargs.get("arm"), str) else "FULL_MAML"),
+                "meta_seed": int(kwargs.get("meta_seed", 0)),
+                "outer_step": int(kwargs.get("outer_step", 0)),
+                "wall_s": 0.5,
+                "outer_loss": 1.0,
+                "grad_norm": 0.1,
+                "first_order": False,
+            }
+
+        def fake_train(**kwargs):
+            records = [
+                {
+                    "record_type": "train",
+                    "arm": kwargs["arm_id"],
+                    "meta_seed": kwargs["meta_seed"],
+                    "outer_step": step,
+                    "status": "OK",
+                }
+                for step in range(200)
+            ]
+            return {
+                "arm": kwargs["arm_id"],
+                "meta_seed": kwargs["meta_seed"],
+                "status": "OK",
+                "failure": None,
+                "records": records,
+                "parameters": {"w": 0.0},
+                "training_wall_s": 0.1,
+                "peak_memory_mb": 1.0,
+                "seed_elapsed_s": 0.1,
+            }
+
+        def fake_eval(**kwargs):
+            records = []
+            for task in kwargs["task_set"].meta_validation:
+                for k_shot in kwargs["k_values"]:
+                    for draw in range(kwargs["draws"]):
+                        records.append(
+                            {
+                                "record_type": "eval",
+                                "arm": kwargs["arm_id"],
+                                "meta_seed": kwargs["meta_seed"],
+                                "task_id": task.task_id,
+                                "split": "meta_validation",
+                                "K": k_shot,
+                                "draw": draw,
+                                "status": "OK",
+                            }
+                        )
+            return records
+
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_root = Path(tmp)
+            with mock.patch.object(runner, "preflight", return_value=pre), mock.patch.object(
+                runner, "measure_outer_step_timing", side_effect=fake_timing
+            ), mock.patch.object(runner, "train_arm", side_effect=fake_train), mock.patch.object(
+                runner, "evaluate_arm", side_effect=fake_eval
+            ):
+                summary = runner.run_experiment(
+                    out_dir=tmp_root / "formal_mock",
+                    run_id="formal-mock",
+                    prereg_path=tmp_root / "prereg.json",
+                    run_mode="FORMAL",
+                    created_utc=CREATED_UTC,
+                )
+                config = json.loads((tmp_root / "formal_mock" / "run_config.json").read_text(encoding="utf-8"))
+        self.assertEqual(summary["run_mode"], "FORMAL")
+        self.assertFalse(summary["smoke"])
+        self.assertEqual(summary["record_counts"], {"train": 1200, "eval": 4800, "total": 6000})
+        self.assertEqual(set(summary), set(sp.RUN_SUMMARY_REQUIRED_FIELDS))
+        self.assertEqual(
+            summary["status_counts"],
+            {"train": {"OK": 1200, "FAILED": 0}, "eval": {"OK": 4800, "FAILED": 0}},
+        )
+        self.assertEqual(summary["per_arm_seed"], {"FULL_MAML": [0, 1, 2], "FOMAML": [0, 1, 2]})
+        self.assertEqual(config["run_mode"], "FORMAL")
+        self.assertNotIn("smoke_overrides", config)
+        self.assertEqual(set(config), set(sp.RUN_CONFIG_REQUIRED_FIELDS))
+        self.assertEqual(set(config["fd_gate"]), set(sp.FD_GATE_FIELDS))
+        self.assertEqual(set(config["episode_bank"]), set(sp.EPISODE_BANK_FIELDS))
+        self.assertEqual(config["training_budget"]["outer_steps"], 200)
+        self.assertEqual(config["training_budget"]["train_records_expected"], 1200)
+        self.assertEqual(config["evaluation_grid"]["meta_validation_tasks"], 20)
+        self.assertEqual(config["evaluation_grid"]["eval_records_expected"], 4800)
 
 
 if __name__ == "__main__":

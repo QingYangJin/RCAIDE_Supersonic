@@ -9,6 +9,7 @@ K=0/1 仅描述、7 张规范键图与 NOT_RUN 不伪造、CLI 退出码。
 from __future__ import annotations
 
 import copy
+import dataclasses
 import hashlib
 import json
 import math
@@ -44,23 +45,36 @@ def _write_json(path: Path, payload) -> None:
     )
 
 
-def _pilot_payload(*, max_relative_error=5e-9, coordinates=32, status="PASS"):
-    return {"status": status, "max_relative_error": max_relative_error, "coordinates": coordinates}
+def _pilot_payload(*, max_relative_error=5e-9, n_checked=32, status="PASS"):
+    """FD pilot 证据 payload（A1 契约：顶层 fd_gate 嵌套对象，micro=32 / full_size=8 坐标）。"""
+    return {
+        "fd_gate": {
+            "schema_version": "p4-s2-fd-gate-pilot-1",
+            "status": status,
+            "mode": "full",
+            "tolerance": 1e-6,
+            "n_checked": int(n_checked),
+            "coordinates_requested": int(n_checked),
+            "coordinates_available": 185 if int(n_checked) >= 32 else 497,
+            "max_relative_error": float(max_relative_error),
+        }
+    }
 
 
-def _make_pilot_files(root: Path, *, max_relative_error=5e-9, coordinates=32, status="PASS"):
+def _make_pilot_files(root: Path, *, max_relative_error=5e-9, status="PASS", coordinates=None):
+    """写 FD pilot 证据文件并返回 prereg.pilot_artifacts（paths 相对仓库根 + raw sha256）。"""
     evidence = root / "evidence"
     evidence.mkdir(parents=True, exist_ok=True)
     files = {}
-    for name, filename in (("micro", "s2_fd_pilot_micro.json"), ("full_size", "s2_fd_pilot_full.json")):
+    for name, filename, default_n in (
+        ("micro", "s2_fd_pilot_micro.json", 32),
+        ("full_size", "s2_fd_pilot_full.json", 8),
+    ):
+        n_checked = int(coordinates) if coordinates is not None else default_n
         path = evidence / filename
+        payload = _pilot_payload(max_relative_error=max_relative_error, n_checked=n_checked, status=status)
         path.write_text(
-            json.dumps(
-                _pilot_payload(max_relative_error=max_relative_error, coordinates=coordinates, status=status),
-                ensure_ascii=False,
-                sort_keys=True,
-            )
-            + "\n",
+            json.dumps(payload, ensure_ascii=False, sort_keys=True) + "\n",
             encoding="utf-8",
             newline="\n",
         )
@@ -201,37 +215,37 @@ def _load_prereg(path, root, **overrides):
     return s2.load_s2_prereg(path, **options)
 
 
-def _train_rows(run_id=_RUN_ID, steps=200):
+def _train_rows(run_id=_RUN_ID, steps=200, seeds=(0, 1, 2)):
     rows = []
     for arm in s2.EXPECTED_ARMS:
-        for seed in (0, 1, 2):
+        for seed in seeds:
             for step in range(steps):
                 rows.append(
                     {
                         "record_type": "train",
                         "run_id": run_id,
                         "arm": arm,
-                        "meta_seed": seed,
+                        "meta_seed": int(seed),
                         "outer_step": step,
-                        "train_loss": 0.5 * math.exp(-step / 50.0) + 0.05 + 0.001 * seed,
+                        "train_loss": 0.5 * math.exp(-step / 50.0) + 0.05 + 0.001 * int(seed),
                         "grad_norm": 0.01 + 0.0001 * step,
                         "inner_loss_first": 0.8,
                         "inner_loss_last": 0.1,
                         "wall_s": 0.001,
-                        "peak_memory_mb": 100.0 + seed,
+                        "peak_memory_mb": 100.0 + int(seed),
                         "status": "OK",
                     }
                 )
     return rows
 
 
-def _eval_rows(run_id=_RUN_ID, tasks=_TASKS, draws=10):
+def _eval_rows(run_id=_RUN_ID, tasks=_TASKS, draws=10, seeds=(0, 1, 2), k_values=(0, 1, 5, 10)):
     rows = []
     for arm in s2.EXPECTED_ARMS:
         base = 0.90 if arm == "FULL_MAML" else 1.00
-        for seed in (0, 1, 2):
+        for seed in seeds:
             for task_index, task_id in enumerate(sorted(tasks)):
-                for k_value in (0, 1, 5, 10):
+                for k_value in k_values:
                     for draw in range(draws):
                         if k_value == 0:
                             value = 2.0 + 0.01 * task_index + 1e-6 * draw
@@ -247,17 +261,17 @@ def _eval_rows(run_id=_RUN_ID, tasks=_TASKS, draws=10):
                                 "record_type": "eval",
                                 "run_id": run_id,
                                 "arm": arm,
-                                "meta_seed": seed,
+                                "meta_seed": int(seed),
                                 "task_id": task_id,
                                 "split": "meta_validation",
-                                "K": k_value,
+                                "K": int(k_value),
                                 "draw": draw,
                                 "query_rmse_raw": value,
                                 "query_rmse_standardized": standardized,
                                 "query_mae_raw": value * 0.8,
-                                "support_size": k_value,
+                                "support_size": int(k_value),
                                 "query_size": 64,
-                                "adaptation_inner_steps": k_value,
+                                "adaptation_inner_steps": int(k_value),
                                 "wall_s": 0.002,
                                 "status": "OK",
                             }
@@ -265,15 +279,122 @@ def _eval_rows(run_id=_RUN_ID, tasks=_TASKS, draws=10):
     return rows
 
 
-def _run_config(run_id, prereg_raw):
-    boundary = prereg_raw["data_boundary"]
+_TRAIN_FIELDS = ("record_type",) + tuple(s2.TRAIN_REQUIRED_FIELDS)
+_EVAL_FIELDS = ("record_type",) + tuple(s2.EVAL_REQUIRED_FIELDS)
+
+
+def _scope_notes():
     return {
-        "schema_version": s2.RUN_CONFIG_SCHEMA_VERSION,
+        "objective_source": "S2 合成代理任务（零物理调用）",
+        "lifting_surfaces_only": "NOT_APPLICABLE（S2 无 VLM/CFD 气动求解）",
+        "holdout_metrics_read": False,
+        "physical_call_count": 0,
+    }
+
+
+def _fd_gate_payload(*, n_checked=32, max_relative_error=1e-9):
+    """fd_gate.json 产物 payload（A1 契约：fd_gate_sha256 为自排除 canonical 摘要）。"""
+    result = {
+        "status": "PASS",
+        "mode": "full",
+        "tolerance": 1e-6,
+        "n_checked": int(n_checked),
+        "coordinates_requested": int(n_checked),
+        "coordinates_available": max(int(n_checked), 64),
+        "max_relative_error": float(max_relative_error),
+    }
+    payload = {
+        "schema_version": "p4-s2-fd-gate-artifact-1",
+        "mode": "full",
+        "meta_seed": 0,
+        "outer_step": 0,
+        "batch_size": 8,
+        "support_size": 16,
+        "query_size": 32,
+        "episode_keys_sha256": "a" * 64,
+        "result": result,
+        "physical_call_count": 0,
+    }
+    payload["fd_gate_sha256"] = s2._sha256_hex(s2._canonical_bytes(payload))
+    return payload
+
+
+def _fd_gate_block(payload, prereg_raw, *, override=False):
+    result = payload["result"]
+    return {
+        "mode": "full",
+        "tolerance": 1e-6,
+        "coordinates": int(result["n_checked"]),
+        "coordinates_requested": int(result["coordinates_requested"]),
+        "coordinates_available": int(result["coordinates_available"]),
+        "n_checked": int(result["n_checked"]),
+        "status": "PASS",
+        "max_relative_error": float(result["max_relative_error"]),
+        "fd_gate_sha256": str(payload["fd_gate_sha256"]),
+        "override": bool(override),
+        "pilot_artifacts": copy.deepcopy(prereg_raw["fd_gate"]["pilot_artifacts"]),
+    }
+
+
+def _smoke_plan(overrides):
+    """由 smoke_overrides 派生 SMOKE 预算/网格（与 runner resolve_budget 语义一致）。"""
+    seeds = [int(seed) for seed in overrides["meta_seeds"]]
+    outer_steps = int(overrides["outer_steps"])
+    tasks = int(overrides["eval_tasks"])
+    k_values = [int(k) for k in overrides["K"]]
+    draws = int(overrides["draws"])
+    budget = {
+        "meta_seeds": seeds,
+        "outer_steps": outer_steps,
+        "train_records_expected": 2 * len(seeds) * outer_steps,
+    }
+    grid = {
+        "meta_validation_tasks": tasks,
+        "K": k_values,
+        "draws": draws,
+        "eval_records_expected": 2 * len(seeds) * tasks * len(k_values) * draws,
+    }
+    return budget, grid
+
+
+def _run_config(
+    run_id,
+    prereg_raw,
+    *,
+    train_rows,
+    eval_rows,
+    run_mode="FORMAL",
+    smoke_overrides=None,
+    fd_payload,
+):
+    boundary = prereg_raw["data_boundary"]
+    if run_mode == "SMOKE":
+        overrides = dict(smoke_overrides)
+        budget, grid = _smoke_plan(overrides)
+        seeds = list(budget["meta_seeds"])
+        outer_steps = int(budget["outer_steps"])
+        batch_size = int(overrides.get("batch_size", 8))
+        support_size = int(overrides.get("support_size", 16))
+        query_size = int(overrides.get("query_size", 32))
+        bank_sha = "b" * 64
+        fd_block = _fd_gate_block(fd_payload, prereg_raw, override=True)
+    else:
+        budget = copy.deepcopy(prereg_raw["training_budget"])
+        grid = copy.deepcopy(prereg_raw["evaluation_grid"])
+        seeds = [int(seed) for seed in budget["meta_seeds"]]
+        outer_steps = int(budget["outer_steps"])
+        batch_size = 8
+        support_size = 16
+        query_size = 32
+        bank_sha = prereg_raw["episode_contract"]["train_episode_bank_sha256"]
+        fd_block = _fd_gate_block(fd_payload, prereg_raw, override=False)
+    return {
+        "schema_version": s2.sp.RUN_CONFIG_SCHEMA_VERSION,
         "run_id": run_id,
-        "created_utc": "2026-11-06T12:30:00Z",
-        "record_counts": {"train": 1200, "eval": 4800, "total": 6000},
+        "run_mode": run_mode,
         "prereg_id": prereg_raw["prereg_id"],
         "prereg_digest": prereg_raw["prereg_digest"],
+        "analysis_plan_digest": prereg_raw["analysis_plan_digest"],
         "code_sha": prereg_raw["code_sha"],
         "frozen_package": copy.deepcopy(prereg_raw["frozen_package"]),
         "data_boundary": {
@@ -287,68 +408,207 @@ def _run_config(run_id, prereg_raw):
             "holdout_metrics_read": False,
         },
         "arms": copy.deepcopy(prereg_raw["arms"]),
-        "training_budget": copy.deepcopy(prereg_raw["training_budget"]),
-        "evaluation_grid": copy.deepcopy(prereg_raw["evaluation_grid"]),
+        "training_budget": budget,
+        "evaluation_grid": grid,
         "episode_bank": {
-            "sha256": prereg_raw["episode_contract"]["train_episode_bank_sha256"],
-            "episodes": 1200,
-            "meta_seeds": [0, 1, 2],
-            "outer_steps": 200,
-            "batch_size": 8,
+            "sha256": bank_sha,
+            "episodes": 1200 if run_mode == "FORMAL" else max(8, len(train_rows)),
+            "meta_seeds": seeds,
+            "outer_steps": outer_steps,
+            "batch_size": batch_size,
+            "support_size": support_size,
+            "query_size": query_size,
         },
-        "fd_gate": {
-            "mode": "full",
-            "max_relative_error": 1e-6,
-            "coordinates": 32,
-            "pilot_artifacts": copy.deepcopy(prereg_raw["fd_gate"]["pilot_artifacts"]),
+        "fd_gate": fd_block,
+        "determinism": copy.deepcopy(prereg_raw["determinism"]),
+        "record_counts": {
+            "train": len(train_rows),
+            "eval": len(eval_rows),
+            "total": len(train_rows) + len(eval_rows),
+            "train_expected": int(budget["train_records_expected"]),
+            "eval_expected": int(grid["eval_records_expected"]),
+            "total_expected": int(budget["train_records_expected"]) + int(grid["eval_records_expected"]),
         },
-        "environment": {"python": "3.11.17", "torch": "2.8.0+cpu", "platform": "Windows-11"},
+        "record_schemas": {"train": list(_TRAIN_FIELDS), "eval": list(_EVAL_FIELDS)},
+        "resource_limits": copy.deepcopy(s2.sp.RUN_RESOURCE_LIMITS),
         "physical_call_count": 0,
         "evidence_scope": _EVIDENCE_SCOPE,
         "development_set": "meta_validation",
+        "scope_notes": _scope_notes(),
+        **({"smoke_overrides": dict(smoke_overrides)} if run_mode == "SMOKE" else {}),
     }
 
 
-def _run_summary(run_id, prereg_raw, train_rows, eval_rows):
+def _data_manifest(run_config, prereg_raw):
+    boundary = prereg_raw["data_boundary"]
+    frozen = prereg_raw["frozen_package"]
+    return {
+        "schema_version": s2.DATA_MANIFEST_SCHEMA_VERSION,
+        "frozen_package": {
+            "run_id": frozen["run_id"],
+            "package_path": frozen["package_path"],
+            "sha256sums_sha256": frozen["sha256sums_sha256"],
+            "code_sha": frozen["code_sha"],
+            "git_sha": frozen["git_sha"],
+        },
+        "split_counts": copy.deepcopy(boundary["split_counts"]),
+        "meta_train_task_ids": ["S2TR-%03d" % index for index in range(60)],
+        "meta_validation_task_ids": list(_TASKS),
+        "holdout_task_ids_sha256": boundary["holdout_task_ids_sha256"],
+        "holdout_rows_used": 0,
+        "holdout_metrics_read": False,
+        "episode_bank_sha256": run_config["episode_bank"]["sha256"],
+        "physical_call_count": 0,
+    }
+
+
+def _run_summary(
+    run_id,
+    run_config,
+    train_rows,
+    eval_rows,
+    *,
+    config_sha,
+    records_sha,
+    fd_gate_sha,
+    manifest_sha,
+    run_mode="FORMAL",
+):
     def _status_counts(rows):
         return {
             "OK": sum(1 for row in rows if row["status"] == "OK"),
             "FAILED": sum(1 for row in rows if row["status"] == "FAILED"),
         }
 
+    seeds = [int(seed) for seed in run_config["training_budget"]["meta_seeds"]]
+    per_seed = []
+    per_arm = {}
+    for arm in s2.EXPECTED_ARMS:
+        per_arm[arm] = {
+            "meta_seeds": list(seeds),
+            "train_wall_seconds_per_meta_seed": {str(seed): 0.5 for seed in seeds},
+            "train_wall_seconds_mean": 0.5,
+            "peak_memory_mb_max": 100.0,
+        }
+        for seed in seeds:
+            per_seed.append(
+                {
+                    "arm": arm,
+                    "meta_seed": seed,
+                    "status": "OK",
+                    "training_wall_s": 0.5,
+                    "peak_memory_mb": 100.0,
+                }
+            )
+    timing = []
     return {
-        "schema_version": s2.RUN_SUMMARY_SCHEMA_VERSION,
+        "schema_version": s2.sp.RUN_SUMMARY_SCHEMA_VERSION,
         "run_id": run_id,
+        "run_mode": run_mode,
         "status": "COMPLETED",
-        "record_counts": {"train": 1200, "eval": 4800, "total": 6000},
+        "created_utc": "2026-11-06T12:30:00+00:00",
+        "prereg_id": run_config["prereg_id"],
+        "prereg_digest": run_config["prereg_digest"],
+        "code_sha": run_config["code_sha"],
+        "record_counts": {
+            "train": len(train_rows),
+            "eval": len(eval_rows),
+            "total": len(train_rows) + len(eval_rows),
+        },
         "status_counts": {"train": _status_counts(train_rows), "eval": _status_counts(eval_rows)},
-        "per_arm_seed": {"FULL_MAML": [0, 1, 2], "FOMAML": [0, 1, 2]},
-        "resources": {"peak_memory_mb": 128.0, "training_wall_s": 12.0, "evaluation_wall_s": 25.0},
-        "episode_bank_sha256": prereg_raw["episode_contract"]["train_episode_bank_sha256"],
+        "failures": [],
+        "resource_stop": None,
+        "episode_bank_sha256": run_config["episode_bank"]["sha256"],
+        "run_config_sha256": config_sha,
+        "run_records_sha256": records_sha,
         "run_records_core_sha256": "c" * 64,
-        "fd_pilot_artifacts": copy.deepcopy(prereg_raw["fd_gate"]["pilot_artifacts"]),
+        "fd_gate_sha256": fd_gate_sha,
+        "data_manifest_sha256": manifest_sha,
+        "outer_step_timing": timing,
+        "per_arm_seed": {arm: list(seeds) for arm in s2.EXPECTED_ARMS},
+        "fd_pilot_artifacts": copy.deepcopy(run_config["fd_gate"]["pilot_artifacts"]),
+        "scope_notes": copy.deepcopy(run_config["scope_notes"]),
+        "resources": {
+            "per_seed": per_seed,
+            "per_arm": per_arm,
+            "train_wall_seconds_ratio": 1.0,
+            "run_wall_s": 2.0,
+            "resource_limits": copy.deepcopy(s2.sp.RUN_RESOURCE_LIMITS),
+            "auxiliary_compute": {
+                "outer_step_timing_measurements": len(timing),
+                "physical_call_count": 0,
+                "note": "测试合成摘要（零物理）",
+            },
+        },
+        "resource_limits": copy.deepcopy(s2.sp.RUN_RESOURCE_LIMITS),
+        "torch_threads": 1,
+        "environment": {
+            "python": "3.11.17",
+            "numpy": "2.4.6",
+            "torch": "2.8.0+cpu",
+            "platform": "Windows-11-test",
+        },
         "physical_call_count": 0,
         "evidence_scope": _EVIDENCE_SCOPE,
         "development_set": "meta_validation",
-        "scope_notes": {
-            "feasible_volume_fraction": "NOT_APPLICABLE_S2_SURROGATE_SCOPE",
-            "feasible_hit_rate": "NOT_APPLICABLE_S2_SURROGATE_SCOPE",
-        },
+        "smoke": run_mode == "SMOKE",
     }
 
 
-def _write_run(run_dir, prereg_raw, *, train_rows=None, eval_rows=None, summary=True, config_mutate=None, summary_mutate=None):
+def _write_run(
+    run_dir,
+    prereg_raw,
+    *,
+    train_rows=None,
+    eval_rows=None,
+    summary=True,
+    config_mutate=None,
+    summary_mutate=None,
+    run_mode="FORMAL",
+    smoke_overrides=None,
+):
     run_dir.mkdir(parents=True, exist_ok=True)
-    train_rows = _train_rows() if train_rows is None else train_rows
-    eval_rows = _eval_rows() if eval_rows is None else eval_rows
-    lines = [s2._canonical_json_text(row) for row in list(train_rows) + list(eval_rows)]
-    (run_dir / "run_records.jsonl").write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
-    config = _run_config(_RUN_ID, prereg_raw)
+    train_rows = _train_rows() if train_rows is None else list(train_rows)
+    eval_rows = _eval_rows() if eval_rows is None else list(eval_rows)
+    _write_records(run_dir, train_rows + eval_rows)
+    records_sha = s2._sha256_file(run_dir / "run_records.jsonl")
+    if run_mode == "SMOKE":
+        fd_n = int((smoke_overrides or {}).get("fd_coordinates", 8))
+    else:
+        fd_n = 32
+    fd_payload = _fd_gate_payload(n_checked=fd_n)
+    (run_dir / "fd_gate.json").write_text(
+        s2._canonical_json_text(fd_payload) + "\n", encoding="utf-8", newline="\n"
+    )
+    fd_gate_sha = s2._sha256_file(run_dir / "fd_gate.json")
+    config = _run_config(
+        _RUN_ID,
+        prereg_raw,
+        train_rows=train_rows,
+        eval_rows=eval_rows,
+        run_mode=run_mode,
+        smoke_overrides=smoke_overrides,
+        fd_payload=fd_payload,
+    )
     if config_mutate is not None:
         config_mutate(config)
     _write_json(run_dir / "run_config.json", config)
+    config_sha = s2._sha256_file(run_dir / "run_config.json")
+    manifest = _data_manifest(config, prereg_raw)
+    _write_json(run_dir / "data_manifest.json", manifest)
+    manifest_sha = s2._sha256_file(run_dir / "data_manifest.json")
     if summary:
-        payload = _run_summary(_RUN_ID, prereg_raw, train_rows, eval_rows)
+        payload = _run_summary(
+            _RUN_ID,
+            config,
+            train_rows,
+            eval_rows,
+            config_sha=config_sha,
+            records_sha=records_sha,
+            fd_gate_sha=fd_gate_sha,
+            manifest_sha=manifest_sha,
+            run_mode=run_mode,
+        )
         if summary_mutate is not None:
             summary_mutate(payload)
         _write_json(run_dir / "run_summary.json", payload)
@@ -362,6 +622,32 @@ def _base_run():
         _write_run(run_dir, prereg_raw)
         _BASE["run"] = run_dir
     return _BASE["run"]
+
+
+_SMOKE_OVERRIDES = {
+    "outer_steps": 2,
+    "meta_seeds": [0],
+    "K": [0, 1, 5, 10],
+    "draws": 1,
+    "eval_tasks": 20,
+    "fd_coordinates": 8,
+}
+
+
+def _base_smoke_run():
+    if "smoke_run" not in _BASE:
+        _prereg_path, prereg_raw = _base_prereg()
+        run_dir = _TMP_ROOT / "base-smoke-run"
+        _write_run(
+            run_dir,
+            prereg_raw,
+            train_rows=_train_rows(steps=2, seeds=(0,)),
+            eval_rows=_eval_rows(draws=1, seeds=(0,)),
+            run_mode="SMOKE",
+            smoke_overrides=_SMOKE_OVERRIDES,
+        )
+        _BASE["smoke_run"] = run_dir
+    return _BASE["smoke_run"]
 
 
 def _copy_run(name):
@@ -597,7 +883,7 @@ class RunValidationTests(_S2TestBase):
 
     def test_config_missing_required_field_rejected(self):
         run_dir = _copy_run("run-config-missing")
-        _patch_json(run_dir, "run_config.json", lambda cfg: cfg.pop("environment"))
+        _patch_json(run_dir, "run_config.json", lambda cfg: cfg.pop("run_mode"))
         self.assert_error(s2.ERR_RUN_SCHEMA, _load_run, run_dir)
 
     def test_config_record_counts_mismatch_rejected(self):
@@ -779,6 +1065,199 @@ class FdEvidenceTests(_S2TestBase):
             repo_root=root,
             require_summary=True,
         )
+
+
+def _copy_smoke_run(name):
+    destination = _TMP_ROOT / name
+    if destination.exists():
+        shutil.rmtree(destination)
+    shutil.copytree(_base_smoke_run(), destination)
+    return destination
+
+
+class SmokeRunSemanticsTests(_S2TestBase):
+    """SMOKE 模式合同（Lead rev20）：预算/网格由 smoke_overrides 派生、显式披露、不得冒充 FORMAL。"""
+
+    def test_smoke_run_loads_with_derived_grid(self):
+        run = _load_run(_base_smoke_run())
+        self.assertEqual(run.run_config["run_mode"], "SMOKE")
+        self.assertEqual(run.counts["train"], 4)
+        self.assertEqual(run.counts["eval"], 160)
+        self.assertEqual(run.counts["total"], 164)
+        self.assertEqual(run.counts["expected_train"], 4)
+        self.assertEqual(run.counts["expected_eval"], 160)
+        self.assertEqual(run.grid["run_mode"], "SMOKE")
+        self.assertEqual(run.grid["meta_seeds"], (0,))
+        self.assertEqual(run.grid["outer_steps"], 2)
+        self.assertEqual(run.grid["eval_tasks"], 20)
+        self.assertEqual(run.grid["draws"], 1)
+        self.assertTrue(run.validation["coverage"]["complete"])
+        smoke_checks = [item for item in run.checks if item.get("check") == "smoke_budget"]
+        self.assertEqual(len(smoke_checks), 1)
+        self.assertEqual(smoke_checks[0]["status"], "DISCLOSED")
+
+    def test_smoke_analysis_marks_run_mode_and_disclosures(self):
+        prereg_path, _raw = _base_prereg()
+        output_dir = _TMP_ROOT / "smoke-e2e-out"
+        result = s2.analyze_s2_run(
+            prereg_path=prereg_path,
+            run_dir=_base_smoke_run(),
+            output_dir=output_dir,
+            repo_root=_BASE_ROOT,
+            verify_frozen_package=False,
+            verify_code_sha=False,
+            allow_incomplete_run=True,
+            generate_figures=False,
+        )
+        self.assertEqual(result["status"], "PASS")
+        aggregate = _read_json(output_dir / "aggregate.json")
+        self.assertEqual(aggregate["run_mode"], "SMOKE")
+        self.assertTrue(aggregate["smoke"])
+        disclosed = {item["check"] for item in aggregate["disclosed_checks"]}
+        self.assertIn("smoke_budget", disclosed)
+        self.assertEqual(aggregate["run_grid"]["outer_steps"], 2)
+        self.assertEqual(aggregate["run_grid"]["eval_tasks"], 20)
+        self.assertEqual(aggregate["run_grid"]["meta_seeds"], [0])
+        figure_status = _read_json(output_dir / "figure_status.json")
+        for payload in figure_status["figures"].values():
+            self.assertNotEqual(payload["status"], "RENDERED")
+            self.assertIsNone(payload["path"])
+
+    def test_smoke_missing_overrides_rejected(self):
+        run_dir = _copy_smoke_run("smoke-no-overrides")
+        _patch_json(run_dir, "run_config.json", lambda config: config.pop("smoke_overrides"))
+        self.assert_error(s2.ERR_RUN_SCHEMA, _load_run, run_dir)
+
+    def test_smoke_summary_run_mode_mismatch_rejected(self):
+        run_dir = _copy_smoke_run("smoke-summary-mode")
+        _patch_json(run_dir, "run_summary.json", lambda summary: summary.__setitem__("run_mode", "FORMAL"))
+        self.assert_error(s2.ERR_RUN_CONFIG, _load_run, run_dir)
+
+    def test_smoke_budget_inconsistent_rejected(self):
+        run_dir = _copy_smoke_run("smoke-budget")
+        _patch_json(
+            run_dir,
+            "run_config.json",
+            lambda config: config["training_budget"].__setitem__("outer_steps", 3),
+        )
+        self.assert_error(s2.ERR_RUN_CONFIG, _load_run, run_dir)
+
+    def test_smoke_fd_override_false_rejected(self):
+        run_dir = _copy_smoke_run("smoke-fd-override")
+        _patch_json(run_dir, "run_config.json", lambda config: config["fd_gate"].__setitem__("override", False))
+        self.assert_error(s2.ERR_FD_GATE, _load_run, run_dir)
+
+    def test_formal_fd_override_true_rejected(self):
+        run_dir = _copy_run("formal-fd-override")
+        _patch_json(run_dir, "run_config.json", lambda config: config["fd_gate"].__setitem__("override", True))
+        self.assert_error(s2.ERR_FD_GATE, _load_run, run_dir)
+
+
+class RunArtifactIntegrityTests(_S2TestBase):
+    """A5 M02 负控：run 目录 fd_gate.json / data_manifest.json 被篡改或缺失必须 fail-closed。"""
+
+    def test_fd_gate_result_status_tamper_rejected(self):
+        run_dir = _copy_run("artifact-fd-status")
+        _patch_json(run_dir, "fd_gate.json", lambda payload: payload["result"].__setitem__("status", "FAIL"))
+        self.assert_error(s2.ERR_FD_GATE, _load_run, run_dir)
+
+    def test_fd_gate_config_digest_tamper_rejected(self):
+        run_dir = _copy_run("artifact-fd-digest")
+        _patch_json(
+            run_dir,
+            "run_config.json",
+            lambda config: config["fd_gate"].__setitem__("fd_gate_sha256", "e" * 64),
+        )
+        self.assert_error(s2.ERR_FD_GATE, _load_run, run_dir)
+
+    def test_fd_gate_artifact_missing_rejected(self):
+        run_dir = _copy_run("artifact-fd-missing")
+        (run_dir / "fd_gate.json").unlink()
+        self.assert_error(s2.ERR_FD_GATE, _load_run, run_dir)
+
+    def test_data_manifest_holdout_rows_tamper_rejected(self):
+        run_dir = _copy_run("artifact-manifest-holdout")
+        _patch_json(run_dir, "data_manifest.json", lambda payload: payload.__setitem__("holdout_rows_used", 1))
+        self.assert_error(s2.ERR_DATA_BOUNDARY, _load_run, run_dir)
+
+    def test_data_manifest_task_count_tamper_rejected(self):
+        run_dir = _copy_run("artifact-manifest-tasks")
+        _patch_json(
+            run_dir,
+            "data_manifest.json",
+            lambda payload: payload.__setitem__("meta_validation_task_ids", payload["meta_validation_task_ids"][:-1]),
+        )
+        self.assert_error(s2.ERR_DATA_BOUNDARY, _load_run, run_dir)
+
+    def test_data_manifest_raw_bytes_tamper_rejected(self):
+        run_dir = _copy_run("artifact-manifest-sha")
+        path = run_dir / "data_manifest.json"
+        path.write_bytes(path.read_bytes() + b" ")
+        self.assert_error(s2.ERR_DATA_BOUNDARY, _load_run, run_dir)
+
+    def test_data_manifest_missing_rejected(self):
+        run_dir = _copy_run("artifact-manifest-missing")
+        (run_dir / "data_manifest.json").unlink()
+        self.assert_error(s2.ERR_DATA_BOUNDARY, _load_run, run_dir)
+
+
+class NegativeControlDerivationTests(_S2TestBase):
+    """S2C-08：负控状态必须由实际证据派生（PASS/DISCLOSED/FAIL），不得硬编码 PASS。"""
+
+    def _context(self):
+        run = _load_run(_base_run())
+        prereg = _base_prereg_object()
+        checks: list = []
+        core = s2._build_analysis_core(run, prereg, checks=checks)
+        stats = s2._build_statistics(core, prereg, checks=checks)
+        rows = {row["check_id"]: row for row in s2._build_negative_control_rows(run, prereg, core, stats)}
+        return run, prereg, core, stats, rows
+
+    def test_nc09_pass_when_evidence_and_artifact_pass(self):
+        _run, _prereg, _core, _stats, rows = self._context()
+        self.assertEqual(rows["NC-09"]["status"], "PASS")
+        self.assertIn("micro:PASS", rows["NC-09"]["observed"])
+        self.assertIn("artifact=PASS", rows["NC-09"]["observed"])
+
+    def test_nc09_disclosed_when_only_digests_verifiable(self):
+        run, prereg, core, stats, _rows = self._context()
+        stripped = dataclasses.replace(
+            run,
+            validation={**run.validation, "fd_gate_evidence": {}},
+            checks=[item for item in run.checks if item.get("check") != "fd_gate_artifact"],
+        )
+        rows = {row["check_id"]: row for row in s2._build_negative_control_rows(stripped, prereg, core, stats)}
+        self.assertEqual(rows["NC-09"]["status"], "DISCLOSED")
+
+    def test_nc09_fail_closed_when_evidence_fail(self):
+        run, prereg, core, stats, _rows = self._context()
+        broken = {
+            name: {**item, "status": "FAIL"}
+            for name, item in run.validation["fd_gate_evidence"].items()
+        }
+        tampered = dataclasses.replace(run, validation={**run.validation, "fd_gate_evidence": broken})
+        with self.assertRaises(s2.S2AnalysisError) as context:
+            s2._build_negative_control_rows(tampered, prereg, core, stats)
+        self.assertEqual(context.exception.code, s2.ERR_INPUT)
+
+    def test_nc03_disclosed_when_prereg_digest_check_unavailable(self):
+        run, prereg, core, stats, _rows = self._context()
+        stripped = dataclasses.replace(
+            prereg,
+            checks=[item for item in prereg.checks if item.get("check") != "prereg_digest"],
+        )
+        rows = {row["check_id"]: row for row in s2._build_negative_control_rows(run, stripped, core, stats)}
+        self.assertEqual(rows["NC-03"]["status"], "DISCLOSED")
+
+    def test_nc04_disclosed_when_frozen_package_check_skipped(self):
+        run, prereg, core, stats, _rows = self._context()
+        stripped = dataclasses.replace(prereg, checks=[])
+        run_stripped = dataclasses.replace(
+            run,
+            checks=[item for item in run.checks if item.get("check") != "frozen_package_sha256sums"],
+        )
+        rows = {row["check_id"]: row for row in s2._build_negative_control_rows(run_stripped, stripped, core, stats)}
+        self.assertEqual(rows["NC-04"]["status"], "DISCLOSED")
 
 
 class StatisticsTests(unittest.TestCase):

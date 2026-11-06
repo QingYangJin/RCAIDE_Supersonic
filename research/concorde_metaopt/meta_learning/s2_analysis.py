@@ -41,12 +41,25 @@ from typing import Any, Mapping, Sequence
 
 import numpy as np
 
+# 共享接口 schema v2 常量单源（A5 代码审阅 B01/B02）：run_config/run_summary 的版本号、
+# 必填字段集、状态枚举、FD/资源字段清单只由 s2_prereg.py 定义，本模块只读引用，
+# 不得复制字段清单或保留本地回退常量。
+try:  # 正常路径：包内导入
+    from . import s2_prereg as sp  # type: ignore[no-redef]
+except ImportError:  # pragma: no cover - 直接以脚本方式运行时的同目录导入（仍指向同一文件，非复制）
+    import s2_prereg as sp  # type: ignore[no-redef,import-not-found]
+
 # ---------------------------------------------------------------------------
 # 常量：schema 版本、错误码、预注册合同
 # ---------------------------------------------------------------------------
 
 S2_ANALYSIS_SCHEMA_VERSION = "p4ra-s2-analysis-1"
 S2_AGGREGATE_SCHEMA_VERSION = "p4ra-s2-aggregate-1"
+
+# 共享接口 schema v2 版本号的模块级别名（Lead e2e 单源断言）：source of truth 仍在 s2_prereg.py，
+# 此处只 re-export，不得写入字面量版本号。
+RUN_CONFIG_SCHEMA_VERSION = sp.RUN_CONFIG_SCHEMA_VERSION
+RUN_SUMMARY_SCHEMA_VERSION = sp.RUN_SUMMARY_SCHEMA_VERSION
 S2_PREREG_ECHO_SCHEMA_VERSION = "p4ra-s2-prereg-echo-1"
 S2_FIGURE_STATUS_SCHEMA_VERSION = "p4ra-s2-figure-status-1"
 S2_NEGATIVE_CONTROL_SCHEMA_VERSION = "p4ra-s2-negative-controls-1"
@@ -282,9 +295,10 @@ PREREG_RESOURCE_LIMITS = {
     "peak_memory_mb": 8192,
     "total_wall_s": 7200,
 }
+# 与执行计划 v1.6 §7 模板逐字一致（2026-11-06 核对；计划为权威，A1 s2_prereg.py 同源）
 PREREG_FAILURE_RULES = [
     "nonfinite_loss_or_grad -> arm/seed FAILED, stop, no retry",
-    "resource_limit -> RESOURCE_LIMIT, no retry",
+    "resource_limit(per_seed_train_wall_s>1200 or peak_memory_mb>8192) -> RESOURCE_LIMIT, stop entire run, no retry",
     "any seed failed -> arm DEGRADED and primary INCONCLUSIVE",
 ]
 PREREG_STOPPING_RULES = [
@@ -292,7 +306,7 @@ PREREG_STOPPING_RULES = [
     "stop_on_data_boundary_violation",
     "stop_on_fd_gate_failure",
     "stop_on_code_sha_mismatch",
-    "hard_deadline_2h",
+    "total_wall_s>7200 -> stop, report partial products",
 ]
 PREREG_DECISION_RULES = {
     "benefit": "holm_p<0.05 and ci_excludes_zero and full<fomaml and relative_improvement>=0.01",
@@ -1720,45 +1734,9 @@ def verify_s2_preregistration(
 # 正式 run 目录加载与校验
 # ---------------------------------------------------------------------------
 
-RUN_CONFIG_SCHEMA_VERSION = "p4ra-s2-run-config-v1"
-RUN_SUMMARY_SCHEMA_VERSION = "p4ra-s2-run-summary-v1"
-RUN_CONFIG_REQUIRED_FIELDS = (
-    "schema_version",
-    "run_id",
-    "created_utc",
-    "record_counts",
-    "prereg_id",
-    "prereg_digest",
-    "code_sha",
-    "frozen_package",
-    "data_boundary",
-    "arms",
-    "training_budget",
-    "evaluation_grid",
-    "episode_bank",
-    "fd_gate",
-    "environment",
-    "physical_call_count",
-    "evidence_scope",
-    "development_set",
-)
-RUN_SUMMARY_REQUIRED_FIELDS = (
-    "schema_version",
-    "run_id",
-    "status",
-    "record_counts",
-    "status_counts",
-    "per_arm_seed",
-    "resources",
-    "episode_bank_sha256",
-    "run_records_core_sha256",
-    "fd_pilot_artifacts",
-    "physical_call_count",
-    "evidence_scope",
-    "development_set",
-    "scope_notes",
-)
-RUN_STATUSES = ("COMPLETED", "PARTIAL", "FAILED")
+# run_config / run_summary 的 schema 版本、必填字段集、状态枚举、FD/资源字段清单
+# 一律取自 s2_prereg.py 的共享接口 schema v2 常量区（单源；A5-S2 B01/B02），
+# 本模块不得复制字段清单，也不得保留本地 v1 回退常量。
 SCOPE_NOT_APPLICABLE_FEASIBLE = "NOT_APPLICABLE_S2_SURROGATE_SCOPE"
 
 
@@ -1785,6 +1763,11 @@ class S2RunData:
             return "UNKNOWN"
         return str(self.run_summary["status"])
 
+    @property
+    def grid(self) -> Mapping[str, Any]:
+        """由 run_config 派生的评估/训练网格（FORMAL 与 SMOKE 统一口径）。"""
+        return _derive_run_grid(self.run_config)
+
 
 def _validate_iso_text(value: Any, *, code: str, label: str) -> str:
     text = _require_str(value, code=code, label=label)
@@ -1795,19 +1778,36 @@ def _validate_iso_text(value: Any, *, code: str, label: str) -> str:
     return text
 
 
-def _validate_run_config_record_counts(value: Any, *, code: str = ERR_RUN_CONFIG) -> Mapping[str, int]:
-    mapping = _as_mapping(value, code=code, label="run_config.record_counts")
-    _require_exact_keys(mapping, ("train", "eval", "total"), code=code, label="run_config.record_counts")
-    counts = {
-        key: _require_int(mapping[key], code=code, label="run_config.record_counts." + key)
-        for key in ("train", "eval", "total")
-    }
-    if counts["train"] != TRAIN_RECORDS_EXPECTED:
-        _fail(ERR_RUN_CONFIG, "run_config.record_counts.train 与预算不一致", detail=str(counts["train"]))
-    if counts["eval"] != EVAL_RECORDS_EXPECTED:
-        _fail(ERR_RUN_CONFIG, "run_config.record_counts.eval 与评估网格不一致", detail=str(counts["eval"]))
-    if counts["total"] != TRAIN_RECORDS_EXPECTED + EVAL_RECORDS_EXPECTED:
-        _fail(ERR_RUN_CONFIG, "run_config.record_counts.total 与预算不一致", detail=str(counts["total"]))
+def _validate_run_config_record_counts(
+    value: Any,
+    *,
+    code: str = ERR_RUN_CONFIG,
+    expected_train: int | None = None,
+    expected_eval: int | None = None,
+) -> dict[str, int]:
+    """record_counts 校验（共享接口 schema v2：实际计数 3 项 + 预期计数 3 项；A5 B01）。
+
+    FORMAL 时 expected_train/expected_eval 由 prereg 预算给出；SMOKE 时由 run 实际预算/网格派生。
+    """
+    mapping = _as_mapping(value, code=code, label="record_counts")
+    required = ("train", "eval", "total", "train_expected", "eval_expected", "total_expected")
+    _require_exact_keys(mapping, required, code=code, label="record_counts")
+    counts = {key: _require_int(mapping[key], code=code, label="record_counts." + key) for key in required}
+    for key, number in counts.items():
+        if number < 0:
+            _fail(code, "record_counts." + key + " 不得为负数", detail=str(number))
+    if counts["train"] + counts["eval"] != counts["total"]:
+        _fail(ERR_RUN_CONFIG, "record_counts.total 必须等于 train+eval", detail=str(counts))
+    if counts["train_expected"] + counts["eval_expected"] != counts["total_expected"]:
+        _fail(ERR_RUN_CONFIG, "record_counts.total_expected 必须等于 train_expected+eval_expected", detail=str(counts))
+    if counts["train"] > counts["train_expected"]:
+        _fail(ERR_RUN_CONFIG, "record_counts.train 超过 train_expected", detail=str(counts))
+    if counts["eval"] > counts["eval_expected"]:
+        _fail(ERR_RUN_CONFIG, "record_counts.eval 超过 eval_expected", detail=str(counts))
+    if expected_train is not None and counts["train_expected"] != int(expected_train):
+        _fail(ERR_RUN_CONFIG, "record_counts.train_expected 与预算不一致", detail=f"{counts['train_expected']} != {expected_train}")
+    if expected_eval is not None and counts["eval_expected"] != int(expected_eval):
+        _fail(ERR_RUN_CONFIG, "record_counts.eval_expected 与评估网格不一致", detail=f"{counts['eval_expected']} != {expected_eval}")
     return counts
 
 
@@ -1942,60 +1942,294 @@ def _validate_run_config_data_boundary(value: Any, prereg: S2Prereg, checks: lis
     return mapping
 
 
-def _validate_episode_bank(value: Any, prereg: S2Prereg) -> Mapping[str, Any]:
+RUN_MODES = ("FORMAL", "SMOKE")
+SMOKE_REQUIRED_KEYS = ("outer_steps", "meta_seeds", "K", "draws", "eval_tasks")
+SMOKE_OPTIONAL_KEYS = ("batch_size", "support_size", "query_size", "eval_query_size", "fd_coordinates")
+FD_TOLERANCE = 1e-6
+
+
+def _validate_run_mode(value: Any) -> str:
+    """run_config.run_mode 校验（共享接口 schema v2：FORMAL / SMOKE）。"""
+    mode = _require_str(value, code=ERR_RUN_SCHEMA, label="run_config.run_mode")
+    if mode not in RUN_MODES:
+        _fail(ERR_RUN_SCHEMA, "run_config.run_mode 必须为 FORMAL 或 SMOKE", detail=mode)
+    return mode
+
+
+def _validate_smoke_overrides(value: Any) -> dict[str, Any]:
+    """SMOKE run 的 smoke_overrides 校验（五项必需 + 五项可选；Lead rev20 裁决）。"""
+    mapping = _as_mapping(value, code=ERR_RUN_SCHEMA, label="run_config.smoke_overrides")
+    if not mapping:
+        _fail(ERR_RUN_SCHEMA, "SMOKE run 的 smoke_overrides 不得为空")
+    missing = [key for key in SMOKE_REQUIRED_KEYS if key not in mapping]
+    if missing:
+        _fail(ERR_RUN_SCHEMA, "SMOKE run 的 smoke_overrides 缺少必需键", detail=",".join(missing))
+    unknown = sorted(set(mapping.keys()) - set(SMOKE_REQUIRED_KEYS) - set(SMOKE_OPTIONAL_KEYS))
+    if unknown:
+        _fail(ERR_RUN_SCHEMA, "SMOKE run 的 smoke_overrides 含未知键", detail=",".join(unknown))
+    overrides: dict[str, Any] = {}
+    for key in ("outer_steps", "draws", "eval_tasks"):
+        number = _require_int(mapping[key], code=ERR_RUN_SCHEMA, label="smoke_overrides." + key)
+        if number <= 0:
+            _fail(ERR_RUN_SCHEMA, "smoke_overrides." + key + " 必须为正整数", detail=str(number))
+        overrides[key] = number
+    raw_seeds = list(_as_list(mapping["meta_seeds"], code=ERR_RUN_SCHEMA, label="smoke_overrides.meta_seeds"))
+    if not raw_seeds:
+        _fail(ERR_RUN_SCHEMA, "smoke_overrides.meta_seeds 不得为空")
+    seeds = [_require_int(seed, code=ERR_RUN_SCHEMA, label="smoke_overrides.meta_seeds[]") for seed in raw_seeds]
+    if len(set(seeds)) != len(seeds):
+        _fail(ERR_RUN_SCHEMA, "smoke_overrides.meta_seeds 含重复种子", detail=str(seeds))
+    overrides["meta_seeds"] = seeds
+    raw_k = list(_as_list(mapping["K"], code=ERR_RUN_SCHEMA, label="smoke_overrides.K"))
+    if not raw_k:
+        _fail(ERR_RUN_SCHEMA, "smoke_overrides.K 不得为空")
+    k_values = [_require_int(k, code=ERR_RUN_SCHEMA, label="smoke_overrides.K[]") for k in raw_k]
+    if len(set(k_values)) != len(k_values):
+        _fail(ERR_RUN_SCHEMA, "smoke_overrides.K 含重复值", detail=str(k_values))
+    if 0 not in k_values:
+        _fail(ERR_RUN_SCHEMA, "smoke_overrides.K 必须包含 0（K=0 零样本基线）", detail=str(k_values))
+    overrides["K"] = k_values
+    for key in SMOKE_OPTIONAL_KEYS:
+        if key in mapping:
+            number = _require_int(mapping[key], code=ERR_RUN_SCHEMA, label="smoke_overrides." + key)
+            if number <= 0:
+                _fail(ERR_RUN_SCHEMA, "smoke_overrides." + key + " 必须为正整数", detail=str(number))
+            overrides[key] = number
+    return overrides
+
+
+def _validate_smoke_budget_and_grid(
+    cfg: Mapping[str, Any],
+    overrides: Mapping[str, Any],
+    prereg: S2Prereg,
+    checks: list[dict[str, Any]],
+) -> tuple[dict[str, int], dict[str, int]]:
+    """SMOKE 的 training_budget / evaluation_grid 与 smoke_overrides 自洽校验并披露。"""
+    budget = _as_mapping(cfg["training_budget"], code=ERR_RUN_CONFIG, label="run_config.training_budget")
+    grid = _as_mapping(cfg["evaluation_grid"], code=ERR_RUN_CONFIG, label="run_config.evaluation_grid")
+    seeds = list(_as_list(budget["meta_seeds"], code=ERR_RUN_CONFIG, label="training_budget.meta_seeds"))
+    seed_values = [_require_int(seed, code=ERR_RUN_CONFIG, label="training_budget.meta_seeds[]") for seed in seeds]
+    if seed_values != list(overrides["meta_seeds"]):
+        _fail(ERR_RUN_CONFIG, "SMOKE training_budget.meta_seeds 与 smoke_overrides 不一致", detail=str(seed_values))
+    outer_steps = _require_int(budget["outer_steps"], code=ERR_RUN_CONFIG, label="training_budget.outer_steps")
+    if outer_steps != int(overrides["outer_steps"]):
+        _fail(ERR_RUN_CONFIG, "SMOKE training_budget.outer_steps 与 smoke_overrides 不一致", detail=str(outer_steps))
+    task_count = _require_int(grid["meta_validation_tasks"], code=ERR_RUN_CONFIG, label="evaluation_grid.meta_validation_tasks")
+    if task_count != int(overrides["eval_tasks"]):
+        _fail(ERR_RUN_CONFIG, "SMOKE evaluation_grid.meta_validation_tasks 与 smoke_overrides 不一致", detail=str(task_count))
+    k_values = [
+        _require_int(k, code=ERR_RUN_CONFIG, label="evaluation_grid.K[]")
+        for k in _as_list(grid["K"], code=ERR_RUN_CONFIG, label="evaluation_grid.K")
+    ]
+    if k_values != list(overrides["K"]):
+        _fail(ERR_RUN_CONFIG, "SMOKE evaluation_grid.K 与 smoke_overrides 不一致", detail=str(k_values))
+    draws = _require_int(grid["draws"], code=ERR_RUN_CONFIG, label="evaluation_grid.draws")
+    if draws != int(overrides["draws"]):
+        _fail(ERR_RUN_CONFIG, "SMOKE evaluation_grid.draws 与 smoke_overrides 不一致", detail=str(draws))
+    if task_count != prereg.n_tasks:
+        _fail(ERR_RUN_CONFIG, "SMOKE evaluation_grid.meta_validation_tasks 必须为 20", detail=str(task_count))
+    train_expected = 2 * len(seed_values) * outer_steps
+    eval_expected = 2 * len(seed_values) * task_count * len(k_values) * draws
+    for key, expected in (("train_records_expected", train_expected), ("eval_records_expected", eval_expected)):
+        actual = _require_int(budget[key] if key.startswith("train") else grid[key], code=ERR_RUN_CONFIG, label=key)
+        if actual != expected:
+            _fail(ERR_RUN_CONFIG, "SMOKE " + key + " 预算不自洽", detail=f"{actual} != {expected}")
+    _record_check(
+        checks,
+        "smoke_budget",
+        status="DISCLOSED",
+        detail="SMOKE 开发验证 run：预算/网格来自 smoke_overrides，数值仅用于端到端验证，不用于确证性结论",
+    )
+    return {"train_expected": train_expected, "eval_expected": eval_expected}
+
+
+def _derive_run_grid(cfg: Mapping[str, Any]) -> dict[str, Any]:
+    """从 run_config 派生分析网格（FORMAL/SMOKE 通用；避免依赖 prereg 固定预算）。"""
+    budget = dict(cfg["training_budget"])
+    grid = dict(cfg["evaluation_grid"])
+    counts = dict(cfg["record_counts"])
+    return {
+        "run_mode": str(cfg["run_mode"]),
+        "meta_seeds": tuple(int(seed) for seed in budget["meta_seeds"]),
+        "outer_steps": int(budget["outer_steps"]),
+        "eval_tasks": int(grid["meta_validation_tasks"]),
+        "k_values": tuple(int(k) for k in grid["K"]),
+        "draws": int(grid["draws"]),
+        "train_expected": int(counts["train_expected"]),
+        "eval_expected": int(counts["eval_expected"]),
+        "eval_query_size": int((cfg.get("smoke_overrides") or {}).get("eval_query_size", EVAL_QUERY_SIZE)),
+    }
+
+
+def _validate_episode_bank(
+    value: Any, prereg: S2Prereg, *, run_mode: str, smoke: Mapping[str, Any]
+) -> Mapping[str, Any]:
+    """episode_bank 校验（共享接口 schema v2：7 字段，含 support/query 尺寸；A5 B01）。"""
     mapping = _as_mapping(value, code=ERR_RUN_CONFIG, label="run_config.episode_bank")
-    _require_exact_keys(
-        mapping, ("sha256", "episodes", "meta_seeds", "outer_steps", "batch_size"), code=ERR_RUN_CONFIG, label="episode_bank"
-    )
+    _require_exact_keys(mapping, sp.EPISODE_BANK_FIELDS, code=ERR_RUN_CONFIG, label="run_config.episode_bank")
     sha = _require_sha256(mapping["sha256"], code=ERR_RUN_CONFIG, label="episode_bank.sha256")
-    expected_sha = _require_sha256(
-        prereg.episode_contract["train_episode_bank_sha256"], code=ERR_RUN_CONFIG, label="prereg.train_episode_bank_sha256"
-    )
-    if sha != expected_sha:
-        _fail(ERR_RUN_CONFIG, "episode_bank.sha256 与冻结 prereg 不一致", detail=f"{sha} != {expected_sha}")
+    if run_mode == "FORMAL":
+        expected_sha = _require_sha256(
+            prereg.episode_contract["train_episode_bank_sha256"],
+            code=ERR_RUN_CONFIG,
+            label="prereg.train_episode_bank_sha256",
+        )
+        if sha != expected_sha:
+            _fail(ERR_RUN_CONFIG, "episode_bank.sha256 与冻结 prereg 不一致", detail=f"{sha} != {expected_sha}")
     episodes = _require_int(mapping["episodes"], code=ERR_RUN_CONFIG, label="episode_bank.episodes")
     if episodes <= 0:
         _fail(ERR_RUN_CONFIG, "episode_bank.episodes 必须为正整数", detail=str(episodes))
     seeds = list(_as_list(mapping["meta_seeds"], code=ERR_RUN_CONFIG, label="episode_bank.meta_seeds"))
     seed_values = [_require_int(seed, code=ERR_RUN_CONFIG, label="episode_bank.meta_seeds[]") for seed in seeds]
-    if seed_values != list(prereg.meta_seeds):
-        _fail(ERR_RUN_CONFIG, "episode_bank.meta_seeds 与预注册不一致", detail=str(seed_values))
+    if not seed_values:
+        _fail(ERR_RUN_CONFIG, "episode_bank.meta_seeds 不得为空")
+    if run_mode == "FORMAL":
+        if seed_values != list(prereg.meta_seeds):
+            _fail(ERR_RUN_CONFIG, "episode_bank.meta_seeds 与预注册不一致", detail=str(seed_values))
+    elif seed_values != list(smoke["meta_seeds"]):
+        _fail(ERR_RUN_CONFIG, "episode_bank.meta_seeds 与 smoke_overrides 不一致", detail=str(seed_values))
     outer_steps = _require_int(mapping["outer_steps"], code=ERR_RUN_CONFIG, label="episode_bank.outer_steps")
-    if outer_steps != prereg.outer_steps:
-        _fail(ERR_RUN_CONFIG, "episode_bank.outer_steps 与预注册不一致", detail=str(outer_steps))
+    if outer_steps <= 0:
+        _fail(ERR_RUN_CONFIG, "episode_bank.outer_steps 必须为正整数", detail=str(outer_steps))
+    if run_mode == "FORMAL":
+        if outer_steps != prereg.outer_steps:
+            _fail(ERR_RUN_CONFIG, "episode_bank.outer_steps 与预注册不一致", detail=str(outer_steps))
+    elif outer_steps != int(smoke["outer_steps"]):
+        _fail(ERR_RUN_CONFIG, "episode_bank.outer_steps 与 smoke_overrides 不一致", detail=str(outer_steps))
     batch_size = _require_int(mapping["batch_size"], code=ERR_RUN_CONFIG, label="episode_bank.batch_size")
-    if batch_size != 8:
+    if batch_size <= 0:
+        _fail(ERR_RUN_CONFIG, "episode_bank.batch_size 必须为正整数", detail=str(batch_size))
+    if run_mode == "FORMAL" and batch_size != 8:
         _fail(ERR_RUN_CONFIG, "episode_bank.batch_size 与预注册 tasks_per_batch 不一致", detail=str(batch_size))
+    if run_mode == "SMOKE" and "batch_size" in smoke and batch_size != int(smoke["batch_size"]):
+        _fail(ERR_RUN_CONFIG, "episode_bank.batch_size 与 smoke_overrides 不一致", detail=str(batch_size))
+    support_size = _require_int(mapping["support_size"], code=ERR_RUN_CONFIG, label="episode_bank.support_size")
+    query_size = _require_int(mapping["query_size"], code=ERR_RUN_CONFIG, label="episode_bank.query_size")
+    for label, number in (("support_size", support_size), ("query_size", query_size)):
+        if number <= 0:
+            _fail(ERR_RUN_CONFIG, "episode_bank." + label + " 必须为正整数", detail=str(number))
+    if run_mode == "FORMAL":
+        expected_support = _require_int(
+            prereg.episode_contract["train_support"],
+            code=ERR_RUN_CONFIG,
+            label="prereg.episode_contract.train_support",
+        )
+        expected_query = _require_int(
+            prereg.episode_contract["train_query"],
+            code=ERR_RUN_CONFIG,
+            label="prereg.episode_contract.train_query",
+        )
+        if support_size != expected_support:
+            _fail(
+                ERR_RUN_CONFIG,
+                "episode_bank.support_size 与预注册 train_support 不一致",
+                detail=f"{support_size} != {expected_support}",
+            )
+        if query_size != expected_query:
+            _fail(
+                ERR_RUN_CONFIG,
+                "episode_bank.query_size 与预注册 train_query 不一致",
+                detail=f"{query_size} != {expected_query}",
+            )
+    else:
+        if "support_size" in smoke and support_size != int(smoke["support_size"]):
+            _fail(ERR_RUN_CONFIG, "episode_bank.support_size 与 smoke_overrides 不一致", detail=str(support_size))
+        if "query_size" in smoke and query_size != int(smoke["query_size"]):
+            _fail(ERR_RUN_CONFIG, "episode_bank.query_size 与 smoke_overrides 不一致", detail=str(query_size))
     return mapping
 
 
-def _validate_fd_gate_block(value: Any, prereg: S2Prereg) -> Mapping[str, Any]:
+def _validate_fd_gate_block(value: Any, prereg: S2Prereg, *, run_mode: str) -> Mapping[str, Any]:
+    """run_config.fd_gate 摘要校验（共享接口 schema v2：11 字段；A5 B01/M01）。"""
     mapping = _as_mapping(value, code=ERR_FD_GATE, label="run_config.fd_gate")
-    _require_exact_keys(
-        mapping, ("mode", "max_relative_error", "coordinates", "pilot_artifacts"), code=ERR_FD_GATE, label="run_config.fd_gate"
-    )
+    _require_exact_keys(mapping, sp.FD_GATE_FIELDS, code=ERR_FD_GATE, label="run_config.fd_gate")
     if mapping["mode"] != "full":
         _fail(ERR_FD_GATE, "run_config.fd_gate.mode 必须为 full", detail=str(mapping["mode"]))
-    max_rel = _require_number(mapping["max_relative_error"], code=ERR_FD_GATE, label="run_config.fd_gate.max_relative_error")
-    if float(max_rel) != 1e-6:
-        _fail(ERR_FD_GATE, "run_config.fd_gate.max_relative_error 必须为 1e-6", detail=str(max_rel))
-    coordinates = _require_int(mapping["coordinates"], code=ERR_FD_GATE, label="run_config.fd_gate.coordinates")
-    if coordinates != 32:
-        _fail(ERR_FD_GATE, "run_config.fd_gate.coordinates 必须为 32", detail=str(coordinates))
-    pilot = _as_mapping(mapping["pilot_artifacts"], code=ERR_FD_GATE, label="run_config.fd_gate.pilot_artifacts")
+    tolerance = _require_number(mapping["tolerance"], code=ERR_FD_GATE, label="fd_gate.tolerance")
+    if abs(float(tolerance) - FD_TOLERANCE) > 1e-15:
+        _fail(ERR_FD_GATE, "run_config.fd_gate.tolerance 必须为 1e-6", detail=str(tolerance))
+    max_rel = _require_number(mapping["max_relative_error"], code=ERR_FD_GATE, label="fd_gate.max_relative_error")
+    if not math.isfinite(float(max_rel)) or float(max_rel) < 0.0:
+        _fail(ERR_FD_GATE, "run_config.fd_gate.max_relative_error 必须为非负有限数", detail=str(max_rel))
+    if float(max_rel) > FD_TOLERANCE:
+        _fail(ERR_FD_GATE, "run_config.fd_gate.max_relative_error 超过预注册容差", detail=str(max_rel))
+    status_value = _require_str(mapping["status"], code=ERR_FD_GATE, label="fd_gate.status")
+    if status_value != "PASS":
+        _fail(ERR_FD_GATE, "run_config.fd_gate.status 必须为 PASS", detail=status_value)
+    n_checked = _require_int(mapping["n_checked"], code=ERR_FD_GATE, label="fd_gate.n_checked")
+    coordinates = _require_int(mapping["coordinates"], code=ERR_FD_GATE, label="fd_gate.coordinates")
+    requested = _require_int(mapping["coordinates_requested"], code=ERR_FD_GATE, label="fd_gate.coordinates_requested")
+    available = _require_int(mapping["coordinates_available"], code=ERR_FD_GATE, label="fd_gate.coordinates_available")
+    if n_checked <= 0 or n_checked != coordinates or n_checked != requested:
+        _fail(
+            ERR_FD_GATE,
+            "run_config.fd_gate 坐标计数不自洽",
+            detail=f"n_checked={n_checked}, coordinates={coordinates}, requested={requested}",
+        )
+    if available < n_checked:
+        _fail(ERR_FD_GATE, "run_config.fd_gate.coordinates_available 小于 n_checked", detail=f"{available} < {n_checked}")
+    _require_sha256(mapping["fd_gate_sha256"], code=ERR_FD_GATE, label="fd_gate.fd_gate_sha256")
+    override = _require_bool(mapping["override"], code=ERR_FD_GATE, label="fd_gate.override")
+    if run_mode == "FORMAL":
+        if override:
+            _fail(ERR_FD_GATE, "FORMAL run 的 run_config.fd_gate.override 必须为 false")
+        expected_coordinates = int(prereg.fd_gate["coordinates"])
+        if n_checked != expected_coordinates:
+            _fail(
+                ERR_FD_GATE,
+                "FORMAL run 的 FD 坐标数必须为预注册值",
+                detail=f"{n_checked} != {expected_coordinates}",
+            )
+    else:
+        if not override:
+            _fail(ERR_FD_GATE, "SMOKE run 的 run_config.fd_gate.override 必须为 true")
+    pilot = _as_mapping(mapping["pilot_artifacts"], code=ERR_FD_GATE, label="fd_gate.pilot_artifacts")
     if dict(pilot) != dict(prereg.fd_gate["pilot_artifacts"]):
         _fail(ERR_FD_GATE, "run_config.fd_gate.pilot_artifacts 与冻结 prereg 不一致")
     return mapping
 
 
 def _validate_environment(value: Any) -> Mapping[str, Any]:
-    mapping = _as_mapping(value, code=ERR_RUN_CONFIG, label="run_config.environment")
-    required = ("python", "torch", "platform")
+    """run_summary.environment 校验（共享接口 schema v2：python/numpy/torch/platform 四键；A5 B02）。"""
+    mapping = _as_mapping(value, code=ERR_RUN_SCHEMA, label="run_summary.environment")
+    required = ("python", "numpy", "torch", "platform")
     missing = [key for key in required if key not in mapping]
     if missing:
-        _fail(ERR_RUN_CONFIG, "run_config.environment 缺少字段", detail=",".join(missing))
+        _fail(ERR_RUN_SCHEMA, "run_summary.environment 缺少字段", detail=",".join(missing))
     for key in required:
-        _require_str(mapping[key], code=ERR_RUN_CONFIG, label="run_config.environment." + key)
+        _require_str(mapping[key], code=ERR_RUN_SCHEMA, label="run_summary.environment." + key)
+    return mapping
+
+
+def _validate_scope_notes(value: Any) -> Mapping[str, Any]:
+    """run_config.scope_notes 校验（4 键；holdout/physical 必须为 0/false）。"""
+    mapping = _as_mapping(value, code=ERR_DATA_BOUNDARY, label="run_config.scope_notes")
+    required = ("objective_source", "lifting_surfaces_only", "holdout_metrics_read", "physical_call_count")
+    missing = [key for key in required if key not in mapping]
+    if missing:
+        _fail(ERR_DATA_BOUNDARY, "run_config.scope_notes 缺少字段", detail=",".join(missing))
+    for key in ("objective_source", "lifting_surfaces_only"):
+        _require_str(mapping[key], code=ERR_DATA_BOUNDARY, label="scope_notes." + key)
+    if _require_bool(mapping["holdout_metrics_read"], code=ERR_DATA_BOUNDARY, label="scope_notes.holdout_metrics_read") is not False:
+        _fail(ERR_DATA_BOUNDARY, "run_config.scope_notes.holdout_metrics_read 必须为 false")
+    if _require_int(mapping["physical_call_count"], code=ERR_DATA_BOUNDARY, label="scope_notes.physical_call_count") != 0:
+        _fail(ERR_DATA_BOUNDARY, "run_config.scope_notes.physical_call_count 必须为 0")
+    return mapping
+
+
+def _validate_record_schemas(value: Any) -> Mapping[str, Any]:
+    """run_config.record_schemas 校验：必须与共享记录字段集逐字段相同。"""
+    mapping = _as_mapping(value, code=ERR_RUN_SCHEMA, label="run_config.record_schemas")
+    _require_exact_keys(mapping, ("train", "eval"), code=ERR_RUN_SCHEMA, label="run_config.record_schemas")
+    expected = {
+        "train": set(("record_type",) + TRAIN_REQUIRED_FIELDS),
+        "eval": set(("record_type",) + EVAL_REQUIRED_FIELDS),
+    }
+    for kind in ("train", "eval"):
+        fields = list(_as_list(mapping[kind], code=ERR_RUN_SCHEMA, label="record_schemas." + kind))
+        text_fields = [_require_str(field, code=ERR_RUN_SCHEMA, label="record_schemas." + kind + "[]") for field in fields]
+        if len(text_fields) != len(expected[kind]) or set(text_fields) != expected[kind]:
+            _fail(ERR_RUN_SCHEMA, "run_config.record_schemas." + kind + " 与共享字段集不一致", detail=str(text_fields))
     return mapping
 
 
@@ -2005,22 +2239,31 @@ def _validate_run_config(
     *,
     checks: list[dict[str, Any]],
 ) -> Mapping[str, Any]:
-    """run_config 与冻结 prereg 的一致性校验（fail-closed）。"""
+    """run_config 与冻结 prereg 的一致性校验（共享接口 schema v2；FORMAL/SMOKE 两模式）。"""
     mapping = _as_mapping(cfg, code=ERR_RUN_SCHEMA, label="run_config.json")
-    missing = [key for key in RUN_CONFIG_REQUIRED_FIELDS if key not in mapping]
+    required = tuple(sp.RUN_CONFIG_REQUIRED_FIELDS)
+    optional = tuple(sp.RUN_CONFIG_OPTIONAL_FIELDS)
+    missing = [key for key in required if key not in mapping]
     if missing:
         _fail(ERR_RUN_SCHEMA, "run_config.json 缺少必填字段", detail=",".join(missing))
-    unknown = sorted(set(mapping.keys()) - set(RUN_CONFIG_REQUIRED_FIELDS))
+    unknown = sorted(set(mapping.keys()) - set(required) - set(optional))
     if unknown:
         _record_check(checks, "run_config_extra_fields", status="DISCLOSED", detail=",".join(unknown))
-    if mapping["schema_version"] != RUN_CONFIG_SCHEMA_VERSION:
+    if mapping["schema_version"] != sp.RUN_CONFIG_SCHEMA_VERSION:
         _fail(ERR_RUN_SCHEMA, "run_config.schema_version 非法", detail=str(mapping["schema_version"]))
     _require_str(mapping["run_id"], code=ERR_RUN_SCHEMA, label="run_config.run_id")
-    _validate_iso_text(mapping["created_utc"], code=ERR_RUN_SCHEMA, label="run_config.created_utc")
-    _validate_run_config_record_counts(mapping["record_counts"])
+    run_mode = _validate_run_mode(mapping["run_mode"])
+    smoke: Mapping[str, Any] = {}
+    if run_mode == "SMOKE":
+        if "smoke_overrides" not in mapping:
+            _fail(ERR_RUN_SCHEMA, "SMOKE run 必须包含 smoke_overrides")
+        smoke = _validate_smoke_overrides(mapping["smoke_overrides"])
+    elif "smoke_overrides" in mapping:
+        _fail(ERR_RUN_SCHEMA, "FORMAL run 不得包含 smoke_overrides")
     for key, expected in (
         ("prereg_id", prereg.prereg_id),
         ("prereg_digest", prereg.prereg_digest),
+        ("analysis_plan_digest", prereg.analysis_plan_digest),
         ("code_sha", prereg.code_sha),
     ):
         actual = _require_str(mapping[key], code=ERR_RUN_CONFIG, label="run_config." + key)
@@ -2032,14 +2275,37 @@ def _validate_run_config(
     _validate_run_config_data_boundary(mapping["data_boundary"], prereg, checks)
     _validate_run_config_arms(mapping["arms"], prereg, checks)
     budget = _as_mapping(mapping["training_budget"], code=ERR_RUN_CONFIG, label="run_config.training_budget")
-    if dict(budget) != dict(prereg.training_budget):
-        _fail(ERR_RUN_CONFIG, "run_config.training_budget 与冻结 prereg 不一致")
     grid = _as_mapping(mapping["evaluation_grid"], code=ERR_RUN_CONFIG, label="run_config.evaluation_grid")
-    if dict(grid) != dict(prereg.evaluation_grid):
-        _fail(ERR_RUN_CONFIG, "run_config.evaluation_grid 与冻结 prereg 不一致")
-    _validate_episode_bank(mapping["episode_bank"], prereg)
-    _validate_fd_gate_block(mapping["fd_gate"], prereg)
-    _validate_environment(mapping["environment"])
+    if run_mode == "FORMAL":
+        if dict(budget) != dict(prereg.training_budget):
+            _fail(ERR_RUN_CONFIG, "run_config.training_budget 与冻结 prereg 不一致")
+        if dict(grid) != dict(prereg.evaluation_grid):
+            _fail(ERR_RUN_CONFIG, "run_config.evaluation_grid 与冻结 prereg 不一致")
+        expected_train = int(prereg.training_budget["train_records_expected"])
+        expected_eval = int(prereg.evaluation_grid["eval_records_expected"])
+    else:
+        derived = _validate_smoke_budget_and_grid(mapping, smoke, prereg, checks)
+        expected_train = derived["train_expected"]
+        expected_eval = derived["eval_expected"]
+    bank = _validate_episode_bank(mapping["episode_bank"], prereg, run_mode=run_mode, smoke=smoke)
+    budget_seeds = [int(seed) for seed in budget["meta_seeds"]]
+    if [int(seed) for seed in bank["meta_seeds"]] != budget_seeds:
+        _fail(ERR_RUN_CONFIG, "episode_bank.meta_seeds 与 training_budget.meta_seeds 不一致", detail=str(bank["meta_seeds"]))
+    if int(bank["outer_steps"]) != int(budget["outer_steps"]):
+        _fail(ERR_RUN_CONFIG, "episode_bank.outer_steps 与 training_budget.outer_steps 不一致", detail=str(bank["outer_steps"]))
+    _validate_fd_gate_block(mapping["fd_gate"], prereg, run_mode=run_mode)
+    _validate_record_schemas(mapping["record_schemas"])
+    counts = _validate_run_config_record_counts(
+        mapping["record_counts"], expected_train=expected_train, expected_eval=expected_eval
+    )
+    if counts["train_expected"] != int(budget["train_records_expected"]) and run_mode == "SMOKE":
+        _fail(ERR_RUN_CONFIG, "SMOKE record_counts.train_expected 与 training_budget 不一致")
+    resource_limits = _as_mapping(mapping["resource_limits"], code=ERR_RUN_CONFIG, label="run_config.resource_limits")
+    if dict(resource_limits) != dict(sp.RUN_RESOURCE_LIMITS):
+        _fail(ERR_RUN_CONFIG, "run_config.resource_limits 与预注册资源上限不一致")
+    determinism = _as_mapping(mapping["determinism"], code=ERR_RUN_CONFIG, label="run_config.determinism")
+    if dict(determinism) != dict(prereg.determinism):
+        _fail(ERR_RUN_CONFIG, "run_config.determinism 与冻结 prereg 不一致")
     physical = _require_int(mapping["physical_call_count"], code=ERR_RUN_CONFIG, label="run_config.physical_call_count")
     if physical != 0:
         _fail(ERR_RUN_CONFIG, "run_config.physical_call_count 必须为 0", detail=str(physical))
@@ -2047,7 +2313,13 @@ def _validate_run_config(
         _fail(ERR_PREREG_SCOPE, "run_config.evidence_scope 必须为 DEVELOPMENT_VALIDATION_ONLY", detail=str(mapping["evidence_scope"]))
     if mapping["development_set"] != DEVELOPMENT_SET:
         _fail(ERR_DATA_BOUNDARY, "run_config.development_set 必须为 meta_validation", detail=str(mapping["development_set"]))
-    _record_check(checks, "run_config", status="PASS", detail="prereg digest/code_sha/frozen_package/边界/预算/网格一致")
+    _validate_scope_notes(mapping["scope_notes"])
+    _record_check(
+        checks,
+        "run_config",
+        status="PASS",
+        detail=f"run_mode={run_mode}; prereg digest/code_sha/frozen_package/边界/预算/网格一致",
+    )
     return mapping
 
 # ---------------------------------------------------------------------------
@@ -2094,7 +2366,9 @@ def _parse_jsonl_records(path: Path, *, expected_type: str | None = None) -> lis
     return records
 
 
-def _validate_train_record(rec: Mapping[str, Any], *, index: int, prereg: S2Prereg) -> Mapping[str, Any]:
+def _validate_train_record(
+    rec: Mapping[str, Any], *, index: int, prereg: S2Prereg, grid: Mapping[str, Any]
+) -> Mapping[str, Any]:
     label = f"train[{index}]"
     _require_exact_keys(rec, ("record_type",) + TRAIN_REQUIRED_FIELDS, code=ERR_RECORD_SCHEMA, label=label)
     if rec["record_type"] != "train":
@@ -2104,10 +2378,10 @@ def _validate_train_record(rec: Mapping[str, Any], *, index: int, prereg: S2Prer
     if arm not in EXPECTED_ARMS:
         _fail(ERR_RECORD_VALUE, label + ".arm 非法", detail=arm)
     meta_seed = _require_int(rec["meta_seed"], code=ERR_RECORD_SCHEMA, label=label + ".meta_seed")
-    if meta_seed not in prereg.meta_seeds:
-        _fail(ERR_RECORD_VALUE, label + ".meta_seed 不在预注册元种子内", detail=str(meta_seed))
+    if meta_seed not in grid["meta_seeds"]:
+        _fail(ERR_RECORD_VALUE, label + ".meta_seed 不在 run 预算的元种子内", detail=str(meta_seed))
     outer_step = _require_int(rec["outer_step"], code=ERR_RECORD_SCHEMA, label=label + ".outer_step")
-    if not 0 <= outer_step < prereg.outer_steps:
+    if not 0 <= outer_step < int(grid["outer_steps"]):
         _fail(ERR_RECORD_VALUE, label + ".outer_step 超出预算范围", detail=str(outer_step))
     status = _require_str(rec["status"], code=ERR_RECORD_SCHEMA, label=label + ".status")
     if status not in RECORD_STATUSES:
@@ -2131,7 +2405,9 @@ def _validate_train_record(rec: Mapping[str, Any], *, index: int, prereg: S2Prer
     return rec
 
 
-def _validate_eval_record(rec: Mapping[str, Any], *, index: int, prereg: S2Prereg) -> Mapping[str, Any]:
+def _validate_eval_record(
+    rec: Mapping[str, Any], *, index: int, prereg: S2Prereg, grid: Mapping[str, Any]
+) -> Mapping[str, Any]:
     label = f"eval[{index}]"
     _require_exact_keys(rec, ("record_type",) + EVAL_REQUIRED_FIELDS, code=ERR_RECORD_SCHEMA, label=label)
     if rec["record_type"] != "eval":
@@ -2141,17 +2417,17 @@ def _validate_eval_record(rec: Mapping[str, Any], *, index: int, prereg: S2Prere
     if arm not in EXPECTED_ARMS:
         _fail(ERR_RECORD_VALUE, label + ".arm 非法", detail=arm)
     meta_seed = _require_int(rec["meta_seed"], code=ERR_RECORD_SCHEMA, label=label + ".meta_seed")
-    if meta_seed not in prereg.meta_seeds:
-        _fail(ERR_RECORD_VALUE, label + ".meta_seed 不在预注册元种子内", detail=str(meta_seed))
+    if meta_seed not in grid["meta_seeds"]:
+        _fail(ERR_RECORD_VALUE, label + ".meta_seed 不在 run 预算的元种子内", detail=str(meta_seed))
     _require_str(rec["task_id"], code=ERR_RECORD_SCHEMA, label=label + ".task_id")
     split = _require_str(rec["split"], code=ERR_DATA_BOUNDARY, label=label + ".split")
     if split != SPLIT_EVAL:
         _fail(ERR_DATA_BOUNDARY, label + ".split 必须是 meta_validation（禁止 holdout 行进入分析）", detail=split)
     k_value = _require_int(rec["K"], code=ERR_RECORD_SCHEMA, label=label + ".K")
-    if k_value not in prereg.k_values:
-        _fail(ERR_RECORD_VALUE, label + ".K 不在评估网格内", detail=str(k_value))
+    if k_value not in grid["k_values"]:
+        _fail(ERR_RECORD_VALUE, label + ".K 不在 run 评估网格内", detail=str(k_value))
     draw = _require_int(rec["draw"], code=ERR_RECORD_SCHEMA, label=label + ".draw")
-    if not 0 <= draw < prereg.draws:
+    if not 0 <= draw < int(grid["draws"]):
         _fail(ERR_RECORD_VALUE, label + ".draw 超出评估网格", detail=str(draw))
     status = _require_str(rec["status"], code=ERR_RECORD_SCHEMA, label=label + ".status")
     if status not in RECORD_STATUSES:
@@ -2168,8 +2444,12 @@ def _validate_eval_record(rec: Mapping[str, Any], *, index: int, prereg: S2Prere
             detail=f"K={k_value}, support={support_size}, adaptation={adaptation}",
         )
     query_size = _require_int(rec["query_size"], code=ERR_RECORD_VALUE, label=label + ".query_size")
-    if query_size != EVAL_QUERY_SIZE:
-        _fail(ERR_RECORD_VALUE, label + ".query_size 必须为 64", detail=str(query_size))
+    if query_size != int(grid["eval_query_size"]):
+        _fail(
+            ERR_RECORD_VALUE,
+            label + ".query_size 与评估网格不一致",
+            detail=f"{query_size} != {grid['eval_query_size']}",
+        )
     allow_none = status == "FAILED"
     _require_number(rec["query_rmse_raw"], code=ERR_RECORD_VALUE, label=label + ".query_rmse_raw", allow_none=allow_none, minimum=0.0)
     _require_number(rec["query_mae_raw"], code=ERR_RECORD_VALUE, label=label + ".query_mae_raw", allow_none=allow_none, minimum=0.0)
@@ -2194,10 +2474,19 @@ def _validate_record_coverage(
     eval_records: Sequence[Mapping[str, Any]],
     prereg: S2Prereg,
     *,
+    grid: Mapping[str, Any],
     allow_incomplete_run: bool,
     checks: list[dict[str, Any]],
 ) -> dict[str, Any]:
-    """唯一性 + 完整网格覆盖校验；allow_incomplete_run 时只校验唯一性/子集并披露缺口。"""
+    """唯一性 + 网格覆盖校验；期望计数一律来自 run_config 派生 grid（FORMAL/SMOKE 同一口径）。"""
+    meta_seeds = tuple(int(seed) for seed in grid["meta_seeds"])
+    outer_steps = int(grid["outer_steps"])
+    k_values = tuple(int(k) for k in grid["k_values"])
+    draws = int(grid["draws"])
+    eval_tasks = int(grid["eval_tasks"])
+    expected_train = int(grid["train_expected"])
+    expected_eval = int(grid["eval_expected"])
+    run_mode = str(grid["run_mode"])
     train_keys = [(rec["arm"], rec["meta_seed"], rec["outer_step"]) for rec in train_records]
     if len(set(train_keys)) != len(train_keys):
         seen: set[tuple[Any, ...]] = set()
@@ -2211,7 +2500,7 @@ def _validate_record_coverage(
         duplicates = [key for key in eval_keys if key in seen or seen.add(key)]  # type: ignore[func-returns-value]
         _fail(ERR_RECORD_DUPLICATE, "eval 记录出现重复 (arm,meta_seed,task,K,draw)", detail=str(duplicates[:3]))
 
-    expected_train_groups = {(arm, seed) for arm in EXPECTED_ARMS for seed in prereg.meta_seeds}
+    expected_groups = {(arm, seed) for arm in EXPECTED_ARMS for seed in meta_seeds}
     train_groups: dict[tuple[str, int], set[int]] = {}
     for rec in train_records:
         train_groups.setdefault((rec["arm"], rec["meta_seed"]), set()).add(rec["outer_step"])
@@ -2221,8 +2510,8 @@ def _validate_record_coverage(
 
     strict_ok = True
     train_report: list[dict[str, Any]] = []
-    expected_steps = set(range(prereg.outer_steps))
-    for group in sorted(expected_train_groups, key=lambda item: (EXPECTED_ARMS.index(item[0]), item[1])):
+    expected_steps = set(range(outer_steps))
+    for group in sorted(expected_groups, key=lambda item: (EXPECTED_ARMS.index(item[0]), item[1])):
         steps = train_groups.get(group, set())
         complete = steps == expected_steps
         strict_ok = strict_ok and complete
@@ -2231,13 +2520,13 @@ def _validate_record_coverage(
                 "arm": group[0],
                 "meta_seed": group[1],
                 "records": len(steps),
-                "expected_records": prereg.outer_steps,
+                "expected_records": outer_steps,
                 "complete": complete,
             }
         )
     eval_report: list[dict[str, Any]] = []
-    expected_eval_per_group = prereg.n_tasks * len(prereg.k_values) * prereg.draws
-    for group in sorted(expected_train_groups, key=lambda item: (EXPECTED_ARMS.index(item[0]), item[1])):
+    expected_eval_per_group = eval_tasks * len(k_values) * draws
+    for group in sorted(expected_groups, key=lambda item: (EXPECTED_ARMS.index(item[0]), item[1])):
         cells = eval_groups.get(group, set())
         complete = len(cells) == expected_eval_per_group
         strict_ok = strict_ok and complete
@@ -2250,9 +2539,8 @@ def _validate_record_coverage(
                 "complete": complete,
             }
         )
-    if set(train_groups.keys()) - expected_train_groups or set(eval_groups.keys()) - expected_train_groups:
-        _fail(ERR_RECORD_VALUE, "出现预注册之外的 (arm,meta_seed) 组合")
-    # 任务集合：两臂必须使用完全相同的 20 个 meta_validation task
+    if set(train_groups.keys()) - expected_groups or set(eval_groups.keys()) - expected_groups:
+        _fail(ERR_RECORD_VALUE, "出现 run 预算之外的 (arm,meta_seed) 组合")
     tasks_by_arm: dict[str, set[str]] = {arm: set() for arm in EXPECTED_ARMS}
     for rec in eval_records:
         tasks_by_arm[rec["arm"]].add(rec["task_id"])
@@ -2260,41 +2548,61 @@ def _validate_record_coverage(
     if task_sets[0] != task_sets[1]:
         _fail(ERR_RECORD_VALUE, "两臂使用的 task_id 集合不一致")
     unique_tasks = sorted(task_sets[0]) if task_sets else []
-    if len(unique_tasks) != prereg.n_tasks:
+    if len(unique_tasks) != eval_tasks:
         _fail(
             ERR_RECORD_VALUE,
-            "meta_validation 任务数必须为 20",
-            detail=f"实际={len(unique_tasks)}",
+            "meta_validation 任务数必须与 run 评估网格一致",
+            detail="actual=" + str(len(unique_tasks)) + " expected=" + str(eval_tasks),
         )
-    strict_ok = strict_ok and len(train_records) == TRAIN_RECORDS_EXPECTED and len(eval_records) == EVAL_RECORDS_EXPECTED
+    strict_ok = strict_ok and len(train_records) == expected_train and len(eval_records) == expected_eval
     if not allow_incomplete_run:
-        if len(train_records) != TRAIN_RECORDS_EXPECTED:
+        if len(train_records) != expected_train:
             _fail(
                 ERR_RUN_INCOMPLETE,
-                "train 记录数不是 1200（正式 run 必须完整）",
-                detail=str(len(train_records)),
+                "train 记录数与 run 预算不一致（正式 run 必须完整）",
+                detail=str(len(train_records)) + " != " + str(expected_train),
             )
-        if len(eval_records) != EVAL_RECORDS_EXPECTED:
+        if len(eval_records) != expected_eval:
             _fail(
                 ERR_RUN_INCOMPLETE,
-                "eval 记录数不是 4800（正式 run 必须完整）",
-                detail=str(len(eval_records)),
+                "eval 记录数与 run 评估网格不一致（正式 run 必须完整）",
+                detail=str(len(eval_records)) + " != " + str(expected_eval),
             )
         if not strict_ok:
             _fail(ERR_RUN_INCOMPLETE, "run 记录未覆盖完整评估/训练网格")
-        _record_check(checks, "record_coverage", status="PASS", detail="6000 行 / 6 组 / 20 任务 / K=0,1,5,10 / draw=0..9")
+        _record_check(
+            checks,
+            "record_coverage",
+            status="PASS",
+            detail=(
+                run_mode
+                + " "
+                + str(len(train_records))
+                + " train + "
+                + str(len(eval_records))
+                + " eval / 组 "
+                + str(len(expected_groups))
+                + " / 任务 "
+                + str(eval_tasks)
+                + " / K="
+                + ",".join(str(k) for k in k_values)
+                + " / draws="
+                + str(draws)
+            ),
+        )
     else:
         _record_check(checks, "record_coverage", status="DISCLOSED", detail="allow_incomplete_run=True，网格缺口已披露")
     return {
         "train_groups": train_report,
         "eval_groups": eval_report,
         "expected": {
-            "train_records": TRAIN_RECORDS_EXPECTED,
-            "eval_records": EVAL_RECORDS_EXPECTED,
+            "train_records": expected_train,
+            "eval_records": expected_eval,
             "eval_records_per_group": expected_eval_per_group,
-            "tasks": prereg.n_tasks,
-            "K": list(prereg.k_values),
-            "draws": prereg.draws,
+            "tasks": eval_tasks,
+            "K": list(k_values),
+            "draws": draws,
+            "run_mode": run_mode,
         },
         "tasks": unique_tasks,
         "complete": strict_ok,
@@ -2323,8 +2631,15 @@ def _inspect_fd_evidence(
     run_dir: Path,
     checks: list[dict[str, Any]],
 ) -> dict[str, Any]:
-    """读取并核验 FD pilot 证据（raw sha256 + 状态字段）；FAIL 状态直接 fail-closed。"""
+    """读取并核验 FD pilot 证据：raw sha256 + 嵌套 fd_gate 全字段；FAIL/阈值/坐标不符一律 fail-closed。"""
     evidence: dict[str, Any] = {}
+    threshold = float(prereg.fd_gate["max_relative_error"])
+
+    def _payload_field(payload: Mapping[str, Any], key: str, name: str) -> Any:
+        if key not in payload:
+            _fail(ERR_FD_GATE, "FD pilot 证据 fd_gate 缺少字段", detail=name + "." + key)
+        return payload[key]
+
     for name, item in prereg.fd_gate["pilot_artifacts"].items():
         rel_path = str(item["path"])
         expected_sha = str(item["sha256"])
@@ -2333,45 +2648,266 @@ def _inspect_fd_evidence(
             _fail(ERR_FD_GATE, "FD pilot 证据文件缺失", detail=name + ":" + rel_path)
         actual_sha = _sha256_file(resolved)
         if actual_sha != expected_sha:
-            _fail(ERR_FD_GATE, "FD pilot 证据 sha256 与预注册不一致", detail=f"{name}: {actual_sha} != {expected_sha}")
-        info: dict[str, Any] = {
-            "path": rel_path,
-            "resolved_name": resolved.name,
-            "sha256": actual_sha,
-            "sha256_verified": True,
-            "status": None,
-            "max_relative_error": None,
-            "coordinates": None,
-        }
+            _fail(ERR_FD_GATE, "FD pilot 证据 sha256 与预注册不一致", detail=name + ": " + actual_sha + " != " + expected_sha)
         try:
             payload = json.loads(resolved.read_text(encoding="utf-8"))
         except (UnicodeDecodeError, json.JSONDecodeError) as exc:
             _fail(ERR_FD_GATE, "FD pilot 证据不是合法 UTF-8 JSON", detail=name + " | " + str(exc))
-        if isinstance(payload, Mapping):
-            status_value = payload.get("status")
-            if isinstance(status_value, str):
-                info["status"] = status_value
-            for key in ("max_relative_error", "max_rel_error", "relative_error"):
-                if key in payload and isinstance(payload[key], (int, float)) and not isinstance(payload[key], bool):
-                    info["max_relative_error"] = float(payload[key])
-                    break
-            for key in ("coordinates", "n_coordinates", "coordinate_count"):
-                if key in payload and isinstance(payload[key], int) and not isinstance(payload[key], bool):
-                    info["coordinates"] = int(payload[key])
-                    break
-        evidence[name] = info
-        if info["status"] is not None and str(info["status"]).upper() == "FAIL":
-            _fail(ERR_FD_GATE, "FD pilot 证据状态为 FAIL", detail=name)
-        if info["max_relative_error"] is not None and info["max_relative_error"] > float(prereg.fd_gate["max_relative_error"]):
+        if not isinstance(payload, Mapping):
+            _fail(ERR_FD_GATE, "FD pilot 证据顶层必须是 JSON 对象", detail=name)
+        nested = payload.get("fd_gate")
+        if not isinstance(nested, Mapping) or not nested:
+            _fail(ERR_FD_GATE, "FD pilot 证据缺少嵌套 fd_gate 对象", detail=name)
+        expected_n = int(sp.PILOT_EXPECTED_N_CHECKED[name])
+        status_value = str(_payload_field(nested, "status", name)).upper()
+        mode_value = str(_payload_field(nested, "mode", name))
+        tolerance = float(_payload_field(nested, "tolerance", name))
+        n_checked = int(_payload_field(nested, "n_checked", name))
+        requested = int(_payload_field(nested, "coordinates_requested", name))
+        available = int(_payload_field(nested, "coordinates_available", name))
+        max_rel = float(_payload_field(nested, "max_relative_error", name))
+        if status_value != "PASS":
+            _fail(ERR_FD_GATE, "FD pilot 证据状态不是 PASS", detail=name + ":" + status_value)
+        if mode_value != "full":
+            _fail(ERR_FD_GATE, "FD pilot 证据 mode 不是 full", detail=name + ":" + mode_value)
+        if not math.isfinite(tolerance) or abs(tolerance - FD_TOLERANCE) > 1e-15:
+            _fail(ERR_FD_GATE, "FD pilot 证据 tolerance 不是 1e-6", detail=name + ":" + str(tolerance))
+        if n_checked != expected_n:
+            _fail(ERR_FD_GATE, "FD pilot 证据 n_checked 与接口契约不一致", detail=name + ":" + str(n_checked) + " != " + str(expected_n))
+        if requested != n_checked:
+            _fail(ERR_FD_GATE, "FD pilot 证据 coordinates_requested 与 n_checked 不一致", detail=name)
+        if available < n_checked:
+            _fail(ERR_FD_GATE, "FD pilot 证据 coordinates_available 小于 n_checked", detail=name)
+        if not math.isfinite(max_rel) or max_rel < 0.0 or max_rel > threshold:
+            _fail(ERR_FD_GATE, "FD pilot 相对误差超过预注册阈值", detail=name + ":" + str(max_rel) + " > " + str(threshold))
+        evidence[name] = {
+            "path": rel_path,
+            "resolved_name": resolved.name,
+            "sha256": actual_sha,
+            "sha256_verified": True,
+            "status": status_value,
+            "mode": mode_value,
+            "tolerance": tolerance,
+            "n_checked": n_checked,
+            "coordinates_requested": requested,
+            "coordinates_available": available,
+            "max_relative_error": max_rel,
+            "threshold": threshold,
+        }
+        _record_check(
+            checks,
+            "fd_pilot_evidence_" + name,
+            status="PASS",
+            detail=rel_path + " (n=" + str(n_checked) + ", max_rel=" + str(max_rel) + ")",
+        )
+    return evidence
+
+
+
+
+FD_GATE_ARTIFACT = "fd_gate.json"
+DATA_MANIFEST_ARTIFACT = "data_manifest.json"
+DATA_MANIFEST_SCHEMA_VERSION = "p4ra-s2-data-manifest-v1"
+DATA_MANIFEST_FROZEN_KEYS = ("run_id", "package_path", "sha256sums_sha256", "code_sha", "git_sha")
+
+
+def _read_run_json_artifact(run_dir: Path, name: str, *, code: str) -> tuple[Path, bytes, Mapping[str, Any]]:
+    """读取 run 目录中的必需 JSON 产物；缺失/非法编码/非对象一律 fail-closed。"""
+    path = run_dir / name
+    if not path.is_file():
+        _fail(code, "run 目录缺少必需产物 " + name, detail=str(run_dir))
+    try:
+        raw = path.read_bytes()
+    except OSError as exc:
+        _fail(code, "无法读取 " + name, detail=str(exc))
+    try:
+        payload = json.loads(raw.decode("utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+        _fail(code, name + " 不是合法 UTF-8 JSON", detail=str(exc))
+    if not isinstance(payload, Mapping):
+        _fail(code, name + " 顶层必须是 JSON 对象")
+    return path, raw, payload
+
+
+def _validate_fd_gate_artifact(
+    run_dir: Path,
+    *,
+    run_config: Mapping[str, Any],
+    run_summary: Mapping[str, Any] | None,
+    checks: list[dict[str, Any]],
+) -> dict[str, Any]:
+    """复核 run 目录 fd_gate.json：raw sha256 与 summary/config 一致 + result 全字段；被篡改即 fail-closed。"""
+    path, raw, payload = _read_run_json_artifact(run_dir, FD_GATE_ARTIFACT, code=ERR_FD_GATE)
+    sha = _sha256_hex(raw)
+    config_block = _as_mapping(run_config["fd_gate"], code=ERR_FD_GATE, label="run_config.fd_gate")
+    expected_sha = _require_sha256(config_block["fd_gate_sha256"], code=ERR_FD_GATE, label="run_config.fd_gate.fd_gate_sha256")
+    # A1 契约（s2_runner.py:505-519 + :1385 + :1438）：config.fd_gate.fd_gate_sha256 是
+    # “去掉 fd_gate_sha256 键后的 payload”的 canonical bytes 摘要（自排除摘要）；
+    # run_summary.fd_gate_sha256 才是 fd_gate.json 文件 raw bytes 的摘要。两者口径不同，不可直接相等比较。
+    payload_digest = _sha256_hex(_canonical_bytes({key: value for key, value in payload.items() if key != "fd_gate_sha256"}))
+    if payload_digest != expected_sha:
+        _fail(
+            ERR_FD_GATE,
+            "fd_gate.json payload 自排除摘要与 run_config.fd_gate.fd_gate_sha256 不一致（疑似被篡改）",
+            detail=payload_digest + " != " + expected_sha,
+        )
+    if run_summary is not None:
+        declared = _require_sha256(run_summary["fd_gate_sha256"], code=ERR_RUN_SCHEMA, label="run_summary.fd_gate_sha256")
+        if declared != sha:
             _fail(
                 ERR_FD_GATE,
-                "FD pilot 相对误差超过预注册阈值",
-                detail=f"{name}: {info['max_relative_error']} > {prereg.fd_gate['max_relative_error']}",
+                "fd_gate.json raw sha256 与 run_summary.fd_gate_sha256 不一致（疑似被篡改）",
+                detail=sha + " != " + declared,
             )
-        if info["coordinates"] is not None and info["coordinates"] != int(prereg.fd_gate["coordinates"]):
-            _fail(ERR_FD_GATE, "FD pilot 坐标数与预注册不一致", detail=f"{name}: {info['coordinates']}")
-        _record_check(checks, "fd_pilot_evidence_" + name, status="PASS", detail=rel_path)
-    return evidence
+
+    def _field(source: Mapping[str, Any], key: str, label: str) -> Any:
+        if key not in source:
+            _fail(ERR_FD_GATE, "fd_gate.json 缺少字段", detail=label + "." + key)
+        return source[key]
+
+    schema_version = _field(payload, "schema_version", "fd_gate")
+    if not isinstance(schema_version, str) or not schema_version:
+        _fail(ERR_FD_GATE, "fd_gate.json.schema_version 非法")
+    if payload.get("mode") != "full":
+        _fail(ERR_FD_GATE, "fd_gate.json.mode 必须为 full", detail=str(payload.get("mode")))
+    result = payload.get("result")
+    if not isinstance(result, Mapping):
+        _fail(ERR_FD_GATE, "fd_gate.json 缺少 result 对象")
+    status_value = str(_field(result, "status", "fd_gate.result")).upper()
+    if status_value != "PASS":
+        _fail(ERR_FD_GATE, "fd_gate.result.status 不是 PASS", detail=status_value)
+    if str(_field(result, "mode", "fd_gate.result")) != "full":
+        _fail(ERR_FD_GATE, "fd_gate.result.mode 不是 full")
+    tolerance = float(_field(result, "tolerance", "fd_gate.result"))
+    n_checked = int(_field(result, "n_checked", "fd_gate.result"))
+    requested = int(_field(result, "coordinates_requested", "fd_gate.result"))
+    available = int(_field(result, "coordinates_available", "fd_gate.result"))
+    max_rel = float(_field(result, "max_relative_error", "fd_gate.result"))
+    if not math.isfinite(tolerance) or abs(tolerance - FD_TOLERANCE) > 1e-15:
+        _fail(ERR_FD_GATE, "fd_gate.result.tolerance 不是 1e-6", detail=str(tolerance))
+    if not math.isfinite(max_rel) or max_rel < 0.0 or max_rel > tolerance:
+        _fail(ERR_FD_GATE, "fd_gate.result.max_relative_error 超过 tolerance", detail=str(max_rel))
+    if requested != n_checked:
+        _fail(ERR_FD_GATE, "fd_gate.result.coordinates_requested 与 n_checked 不一致")
+    if available < n_checked:
+        _fail(ERR_FD_GATE, "fd_gate.result.coordinates_available 小于 n_checked")
+    config_n = int(config_block["n_checked"])
+    if n_checked != config_n:
+        _fail(ERR_FD_GATE, "fd_gate.result.n_checked 与 run_config.fd_gate.n_checked 不一致", detail=str(n_checked) + " != " + str(config_n))
+    inner_sha = str(_field(payload, "fd_gate_sha256", "fd_gate"))
+    if inner_sha != expected_sha:
+        _fail(ERR_FD_GATE, "fd_gate.json.fd_gate_sha256 与 run_config 不一致", detail=inner_sha + " != " + expected_sha)
+    physical = int(_field(payload, "physical_call_count", "fd_gate"))
+    if physical != 0:
+        _fail(ERR_PREREG_PHYSICAL, "fd_gate.json.physical_call_count 必须为 0", detail=str(physical))
+    info = {
+        "path": str(path),
+        "sha256": sha,
+        "fd_gate_sha256": expected_sha,
+        "status": status_value,
+        "mode": "full",
+        "tolerance": tolerance,
+        "n_checked": n_checked,
+        "coordinates_requested": requested,
+        "coordinates_available": available,
+        "max_relative_error": max_rel,
+        "override": bool(config_block["override"]),
+    }
+    _record_check(checks, "fd_gate_artifact", status="PASS", detail="raw sha256/n_checked/max_rel 与 config 及 summary 一致")
+    return info
+
+
+def _validate_data_manifest_artifact(
+    run_dir: Path,
+    *,
+    run_config: Mapping[str, Any],
+    run_summary: Mapping[str, Any] | None,
+    prereg: S2Prereg,
+    grid: Mapping[str, Any],
+    checks: list[dict[str, Any]],
+) -> dict[str, Any]:
+    """复核 run 目录 data_manifest.json：raw sha256 与 summary 一致 + holdout=0/物理=0/任务数边界。"""
+    path, raw, payload = _read_run_json_artifact(run_dir, DATA_MANIFEST_ARTIFACT, code=ERR_DATA_BOUNDARY)
+    sha = _sha256_hex(raw)
+    if run_summary is not None:
+        declared = _require_sha256(run_summary["data_manifest_sha256"], code=ERR_RUN_SCHEMA, label="run_summary.data_manifest_sha256")
+        if declared != sha:
+            _fail(
+                ERR_DATA_BOUNDARY,
+                "data_manifest.json raw sha256 与 run_summary.data_manifest_sha256 不一致（疑似被篡改）",
+                detail=sha + " != " + declared,
+            )
+    if payload.get("schema_version") != DATA_MANIFEST_SCHEMA_VERSION:
+        _fail(ERR_DATA_BOUNDARY, "data_manifest.schema_version 非法", detail=str(payload.get("schema_version")))
+    required = (
+        "frozen_package",
+        "split_counts",
+        "meta_train_task_ids",
+        "meta_validation_task_ids",
+        "holdout_task_ids_sha256",
+        "holdout_rows_used",
+        "holdout_metrics_read",
+        "episode_bank_sha256",
+        "physical_call_count",
+    )
+    missing = [key for key in required if key not in payload]
+    if missing:
+        _fail(ERR_DATA_BOUNDARY, "data_manifest.json 缺少字段", detail=",".join(missing))
+    frozen = _as_mapping(payload["frozen_package"], code=ERR_DATA_BOUNDARY, label="data_manifest.frozen_package")
+    config_frozen = _as_mapping(run_config["frozen_package"], code=ERR_DATA_BOUNDARY, label="run_config.frozen_package")
+    for key in DATA_MANIFEST_FROZEN_KEYS:
+        if frozen.get(key) != config_frozen.get(key):
+            _fail(ERR_DATA_BOUNDARY, "data_manifest.frozen_package." + key + " 与 run_config 不一致")
+    split_counts = _as_mapping(payload["split_counts"], code=ERR_DATA_BOUNDARY, label="data_manifest.split_counts")
+    prereg_splits = _as_mapping(prereg.data_boundary["split_counts"], code=ERR_DATA_BOUNDARY, label="prereg.data_boundary.split_counts")
+    if dict(split_counts) != dict(prereg_splits):
+        _fail(ERR_DATA_BOUNDARY, "data_manifest.split_counts 与冻结 prereg 不一致")
+
+    def _id_list(key: str) -> list[str]:
+        values = payload[key]
+        if not isinstance(values, list):
+            _fail(ERR_DATA_BOUNDARY, "data_manifest." + key + " 必须为列表")
+        ids = [str(value) for value in values]
+        if len(set(ids)) != len(ids):
+            _fail(ERR_DATA_BOUNDARY, "data_manifest." + key + " 含重复任务 id")
+        return ids
+
+    train_ids = _id_list("meta_train_task_ids")
+    validation_ids = _id_list("meta_validation_task_ids")
+    if len(validation_ids) != int(grid["eval_tasks"]):
+        _fail(
+            ERR_DATA_BOUNDARY,
+            "data_manifest.meta_validation_task_ids 数量与 run_config.evaluation_grid 不一致",
+            detail=str(len(validation_ids)) + " != " + str(int(grid["eval_tasks"])),
+        )
+    if len(train_ids) != int(prereg_splits["meta_train"]):
+        _fail(ERR_DATA_BOUNDARY, "data_manifest.meta_train_task_ids 数量与冻结 split 不一致", detail=str(len(train_ids)))
+    if int(payload["holdout_rows_used"]) != 0:
+        _fail(ERR_DATA_BOUNDARY, "data_manifest.holdout_rows_used 必须为 0", detail=str(payload["holdout_rows_used"]))
+    if payload["holdout_metrics_read"] is not False:
+        _fail(ERR_DATA_BOUNDARY, "data_manifest.holdout_metrics_read 必须为 false")
+    holdout_sha = _require_sha256(payload["holdout_task_ids_sha256"], code=ERR_DATA_BOUNDARY, label="data_manifest.holdout_task_ids_sha256")
+    prereg_holdout_sha = prereg.data_boundary.get("holdout_task_ids_sha256")
+    if prereg_holdout_sha is not None and holdout_sha != str(prereg_holdout_sha):
+        _fail(ERR_DATA_BOUNDARY, "data_manifest.holdout_task_ids_sha256 与冻结 prereg 不一致")
+    episode_sha = _require_sha256(payload["episode_bank_sha256"], code=ERR_DATA_BOUNDARY, label="data_manifest.episode_bank_sha256")
+    if episode_sha != str(run_config["episode_bank"]["sha256"]):
+        _fail(ERR_DATA_BOUNDARY, "data_manifest.episode_bank_sha256 与 run_config.episode_bank 不一致")
+    physical = _require_int(payload["physical_call_count"], code=ERR_DATA_BOUNDARY, label="data_manifest.physical_call_count")
+    if physical != 0:
+        _fail(ERR_PREREG_PHYSICAL, "data_manifest.physical_call_count 必须为 0", detail=str(physical))
+    info = {
+        "path": str(path),
+        "sha256": sha,
+        "holdout_rows_used": 0,
+        "holdout_metrics_read": False,
+        "meta_validation_tasks": len(validation_ids),
+        "meta_train_tasks": len(train_ids),
+        "physical_call_count": 0,
+    }
+    _record_check(checks, "data_manifest_artifact", status="PASS", detail="raw sha256/holdout=0/physical=0/任务数一致")
+    return info
+
 
 # ---------------------------------------------------------------------------
 # task 级聚合（§6：先 10 draws 再 3 meta_seeds 取均值；task 为分析单位）
@@ -2447,26 +2983,29 @@ def _aggregate_endpoint(
 ) -> dict[str, Any]:
     """按端点聚合：draw -> meta_seed -> task，返回逐 task 行与 null 披露。"""
     k_value, field = ENDPOINT_SOURCES[endpoint_id]
+    grid = run.grid
     per_task: dict[str, dict[str, Any]] = {}
     for task_id in tasks:
         row: dict[str, Any] = {"task_id": task_id}
         for arm in EXPECTED_ARMS:
             seed_cells: dict[str, dict[str, Any]] = {}
             seed_values: list[float] = []
-            reason: str | None = None
-            for meta_seed in prereg.meta_seeds:
+            null_reasons: list[str] = []
+            for meta_seed in grid["meta_seeds"]:
                 value, cell_reason = _aggregate_cell(
                     cells.get((arm, meta_seed, task_id, k_value)),
                     field=field,
-                    draws=prereg.draws,
+                    draws=grid["draws"],
                 )
                 seed_cells[str(meta_seed)] = {"value": value, "reason": cell_reason}
                 if value is None:
-                    reason = f"meta_seed={meta_seed}:{cell_reason}"
-                    seed_values = []
-                    break
-                seed_values.append(value)
-            aggregate = _mean_or_none(seed_values) if reason is None else None
+                    null_reasons.append(f"meta_seed={meta_seed}:{cell_reason}")
+                else:
+                    seed_values.append(value)
+            # S2C-05：任一 seed 为 null 时 task 值仍记 null（不插补），但逐 seed 单元全部保留计数，
+            # 不得提前 break 导致后续 seed 的 null 少计。
+            aggregate = _mean_or_none(seed_values) if not null_reasons else None
+            reason = "; ".join(null_reasons) if null_reasons else None
             row[arm] = {"value": aggregate, "reason": reason, "per_meta_seed": seed_cells}
         full_value = row[ARM_FULL]["value"]
         fomaml_value = row[ARM_FOMAML]["value"]
@@ -2506,7 +3045,7 @@ def _aggregate_resources(run: S2RunData, prereg: S2Prereg, *, checks: list[dict[
     peak: dict[str, list[float]] = {arm: [] for arm in EXPECTED_ARMS}
     eval_wall: dict[str, list[float]] = {arm: [] for arm in EXPECTED_ARMS}
     for arm in EXPECTED_ARMS:
-        for meta_seed in prereg.meta_seeds:
+        for meta_seed in run.grid["meta_seeds"]:
             seed_walls: list[float] = []
             for rec in run.train_records:
                 if rec["arm"] != arm or int(rec["meta_seed"]) != meta_seed:
@@ -2955,66 +3494,204 @@ def _validate_run_summary(
     run_config: Mapping[str, Any],
     prereg: S2Prereg,
     *,
+    grid: Mapping[str, Any],
     actual_train: Mapping[str, int],
     actual_eval: Mapping[str, int],
     checks: list[dict[str, Any]],
 ) -> Mapping[str, Any]:
-    """run_summary 与 run_config/实际记录数的一致性校验（fail-closed）。"""
+    """run_summary v2（30 字段）与 run_config/实际记录/resources 结构一致性校验（fail-closed）。"""
     mapping = _as_mapping(summary, code=ERR_RUN_SCHEMA, label="run_summary.json")
-    missing = [key for key in RUN_SUMMARY_REQUIRED_FIELDS if key not in mapping]
+    required = sp.RUN_SUMMARY_REQUIRED_FIELDS
+    missing = [key for key in required if key not in mapping]
     if missing:
         _fail(ERR_RUN_SCHEMA, "run_summary.json 缺少必填字段", detail=",".join(missing))
-    unknown = sorted(set(mapping.keys()) - set(RUN_SUMMARY_REQUIRED_FIELDS))
+    unknown = sorted(set(mapping.keys()) - set(required))
     if unknown:
         _record_check(checks, "run_summary_extra_fields", status="DISCLOSED", detail=",".join(unknown))
-    if mapping["schema_version"] != RUN_SUMMARY_SCHEMA_VERSION:
-        _fail(ERR_RUN_SCHEMA, "run_summary.schema_version 非法", detail=str(mapping["schema_version"]))
-    if _require_str(mapping["run_id"], code=ERR_RUN_SCHEMA, label="run_summary.run_id") != run_config["run_id"]:
-        _fail(ERR_RUN_CONFIG, "run_summary.run_id 与 run_config 不一致")
-    if _require_str(mapping["status"], code=ERR_RUN_SCHEMA, label="run_summary.status") not in RUN_STATUSES:
-        _fail(ERR_RUN_SCHEMA, "run_summary.status 非法", detail=str(mapping["status"]))
-    counts = _validate_run_config_record_counts(mapping["record_counts"], code=ERR_RUN_SCHEMA)
-    if dict(counts) != dict(run_config["record_counts"]):
-        _fail(ERR_RUN_CONFIG, "run_summary.record_counts 与 run_config 不一致")
+    schema_version = _require_str(mapping["schema_version"], code=ERR_RUN_SCHEMA, label="run_summary.schema_version")
+    if schema_version != sp.RUN_SUMMARY_SCHEMA_VERSION:
+        _fail(ERR_RUN_SCHEMA, "run_summary.schema_version 非法", detail=schema_version)
+    run_id = _require_str(mapping["run_id"], code=ERR_RUN_SCHEMA, label="run_summary.run_id")
+    if run_id != str(run_config["run_id"]):
+        _fail(ERR_RUN_CONFIG, "run_summary.run_id 与 run_config 不一致", detail=run_id)
+    run_mode = _require_str(mapping["run_mode"], code=ERR_RUN_SCHEMA, label="run_summary.run_mode")
+    if run_mode not in RUN_MODES:
+        _fail(ERR_RUN_SCHEMA, "run_summary.run_mode 非法", detail=run_mode)
+    if run_mode != str(run_config["run_mode"]):
+        _fail(ERR_RUN_CONFIG, "run_summary.run_mode 与 run_config 不一致", detail=run_mode + " != " + str(run_config["run_mode"]))
+    status_value = _require_str(mapping["status"], code=ERR_RUN_SCHEMA, label="run_summary.status")
+    if status_value not in sp.RUN_STATUSES:
+        _fail(ERR_RUN_SCHEMA, "run_summary.status 非法", detail=status_value)
+    _validate_iso_text(mapping["created_utc"], code=ERR_RUN_SCHEMA, label="run_summary.created_utc")
+    for key in ("prereg_id", "prereg_digest", "code_sha"):
+        if _require_str(mapping[key], code=ERR_RUN_SCHEMA, label="run_summary." + key) != str(run_config[key]):
+            _fail(ERR_RUN_CONFIG, "run_summary." + key + " 与 run_config 不一致")
+    counts = _as_mapping(mapping["record_counts"], code=ERR_RUN_SCHEMA, label="run_summary.record_counts")
+    _require_exact_keys(counts, ("train", "eval", "total"), code=ERR_RUN_SCHEMA, label="run_summary.record_counts")
+    count_values = {
+        key: _require_int(counts[key], code=ERR_RUN_SCHEMA, label="run_summary.record_counts." + key)
+        for key in ("train", "eval", "total")
+    }
+    actual_counts = {
+        "train": int(sum(actual_train.values())),
+        "eval": int(sum(actual_eval.values())),
+    }
+    actual_counts["total"] = actual_counts["train"] + actual_counts["eval"]
+    if count_values != actual_counts:
+        _fail(ERR_RUN_CONFIG, "run_summary.record_counts 与实际记录数不一致", detail=str(count_values) + " != " + str(actual_counts))
+    config_counts = _as_mapping(run_config["record_counts"], code=ERR_RUN_CONFIG, label="run_config.record_counts")
+    for key in ("train", "eval", "total"):
+        if int(config_counts[key]) != actual_counts[key]:
+            _fail(ERR_RUN_CONFIG, "run_config.record_counts." + key + " 与实际记录数不一致")
     status_counts = _as_mapping(mapping["status_counts"], code=ERR_RUN_SCHEMA, label="run_summary.status_counts")
     _require_exact_keys(status_counts, ("train", "eval"), code=ERR_RUN_SCHEMA, label="run_summary.status_counts")
-    for split_name, actual in (("train", actual_train), ("eval", actual_eval)):
+    split_actual = {"train": dict(actual_train), "eval": dict(actual_eval)}
+    for split_name in ("train", "eval"):
         block = _as_mapping(status_counts[split_name], code=ERR_RUN_SCHEMA, label="run_summary.status_counts." + split_name)
-        _require_exact_keys(block, RECORD_STATUSES, code=ERR_RUN_SCHEMA, label="run_summary.status_counts." + split_name)
+        _require_exact_keys(block, sp.RECORD_STATUS_COUNTS, code=ERR_RUN_SCHEMA, label="run_summary.status_counts." + split_name)
         observed = {
             status: _require_int(block[status], code=ERR_RUN_SCHEMA, label="run_summary.status_counts." + split_name + "." + status)
-            for status in RECORD_STATUSES
+            for status in sp.RECORD_STATUS_COUNTS
         }
-        if observed != dict(actual):
-            _fail(
-                ERR_RUN_CONFIG,
-                "run_summary.status_counts." + split_name + " 与实际记录不一致",
-                detail=f"summary={observed} actual={dict(actual)}",
-            )
-        if observed.get("OK", 0) + observed.get("FAILED", 0) != counts[split_name]:
+        if observed != split_actual[split_name]:
+            _fail(ERR_RUN_CONFIG, "run_summary.status_counts." + split_name + " 与实际记录不一致")
+        if sum(observed.values()) != actual_counts[split_name]:
             _fail(ERR_RUN_CONFIG, "run_summary.status_counts." + split_name + " 之和与 record_counts 不一致")
-    if "per_arm_seed" not in mapping:
-        _fail(ERR_RUN_SCHEMA, "run_summary 缺少 per_arm_seed")
-    per_arm_seed = mapping["per_arm_seed"]
-    if not isinstance(per_arm_seed, (Mapping, list)) or (isinstance(per_arm_seed, (Mapping, list)) and len(per_arm_seed) == 0):
-        _fail(ERR_RUN_SCHEMA, "run_summary.per_arm_seed 必须为非空映射或列表")
-    resources = _as_mapping(mapping["resources"], code=ERR_RUN_SCHEMA, label="run_summary.resources")
-    _require_exact_keys(resources, ("peak_memory_mb", "training_wall_s", "evaluation_wall_s"), code=ERR_RUN_SCHEMA, label="run_summary.resources")
-    for key in ("peak_memory_mb", "training_wall_s", "evaluation_wall_s"):
-        _require_number(resources[key], code=ERR_RUN_SCHEMA, label="run_summary.resources." + key, minimum=0.0)
+    failures = mapping["failures"]
+    if not isinstance(failures, list):
+        _fail(ERR_RUN_SCHEMA, "run_summary.failures 必须为列表")
+    for item in failures:
+        _as_mapping(item, code=ERR_RUN_SCHEMA, label="run_summary.failures[]")
+    resource_stop = mapping["resource_stop"]
+    if resource_stop is not None:
+        stop = _as_mapping(resource_stop, code=ERR_RUN_SCHEMA, label="run_summary.resource_stop")
+        _require_exact_keys(stop, ("arm", "meta_seed", "status", "failure", "resource_limits"), code=ERR_RUN_SCHEMA, label="run_summary.resource_stop")
+        stop_arm = _require_str(stop["arm"], code=ERR_RUN_SCHEMA, label="run_summary.resource_stop.arm")
+        if stop_arm not in EXPECTED_ARMS:
+            _fail(ERR_RUN_CONFIG, "run_summary.resource_stop.arm 非法", detail=stop_arm)
+        _require_int(stop["meta_seed"], code=ERR_RUN_SCHEMA, label="run_summary.resource_stop.meta_seed")
+        stop_status = _require_str(stop["status"], code=ERR_RUN_SCHEMA, label="run_summary.resource_stop.status")
+        if stop_status not in sp.RUN_STATUSES:
+            _fail(ERR_RUN_SCHEMA, "run_summary.resource_stop.status 非法", detail=stop_status)
     episode_bank_sha = _require_sha256(mapping["episode_bank_sha256"], code=ERR_RUN_SCHEMA, label="run_summary.episode_bank_sha256")
-    config_episode_bank = run_config["episode_bank"]
-    if episode_bank_sha != config_episode_bank["sha256"]:
+    if episode_bank_sha != str(run_config["episode_bank"]["sha256"]):
         _fail(ERR_RUN_CONFIG, "run_summary.episode_bank_sha256 与 run_config.episode_bank 不一致")
+    _require_sha256(mapping["run_config_sha256"], code=ERR_RUN_SCHEMA, label="run_summary.run_config_sha256")
+    _require_sha256(mapping["run_records_sha256"], code=ERR_RUN_SCHEMA, label="run_summary.run_records_sha256")
     core_sha = _require_sha256(mapping["run_records_core_sha256"], code=ERR_RUN_SCHEMA, label="run_summary.run_records_core_sha256")
     _record_check(checks, "run_records_core_sha256", status="DISCLOSED", detail="summary 声明 " + core_sha + "；核心记录摘要口径未在接口文档中定义，分析层不伪造复核 PASS")
+    fd_sha = _require_sha256(mapping["fd_gate_sha256"], code=ERR_RUN_SCHEMA, label="run_summary.fd_gate_sha256")
+    _record_check(checks, "run_summary_fd_gate_sha_format", status="PASS", detail="run_summary.fd_gate_sha256=" + fd_sha + "（fd_gate.json raw sha；一致性由 fd_gate_artifact 复核）")
+    _require_sha256(mapping["data_manifest_sha256"], code=ERR_RUN_SCHEMA, label="run_summary.data_manifest_sha256")
+    timing = mapping["outer_step_timing"]
+    if not isinstance(timing, list):
+        _fail(ERR_RUN_SCHEMA, "run_summary.outer_step_timing 必须为列表")
+    for item in timing:
+        _as_mapping(item, code=ERR_RUN_SCHEMA, label="run_summary.outer_step_timing[]")
+    per_arm_seed = _as_mapping(mapping["per_arm_seed"], code=ERR_RUN_SCHEMA, label="run_summary.per_arm_seed")
+    _require_exact_keys(per_arm_seed, EXPECTED_ARMS, code=ERR_RUN_SCHEMA, label="run_summary.per_arm_seed")
+    declared_seeds: dict[str, list[int]] = {}
+    for arm in EXPECTED_ARMS:
+        values = per_arm_seed[arm]
+        if not isinstance(values, list) or not values:
+            _fail(ERR_RUN_SCHEMA, "run_summary.per_arm_seed." + arm + " 必须为非空列表")
+        seeds = [_require_int(seed, code=ERR_RUN_SCHEMA, label="run_summary.per_arm_seed." + arm + "[]") for seed in values]
+        if len(set(seeds)) != len(seeds):
+            _fail(ERR_RUN_SCHEMA, "run_summary.per_arm_seed." + arm + " 含重复 meta_seed")
+        declared_seeds[arm] = seeds
     fd_pilot = _as_mapping(mapping["fd_pilot_artifacts"], code=ERR_RUN_SCHEMA, label="run_summary.fd_pilot_artifacts")
-    _require_exact_keys(fd_pilot, ("micro", "full_size"), code=ERR_RUN_SCHEMA, label="run_summary.fd_pilot_artifacts")
-    for name in ("micro", "full_size"):
+    _require_exact_keys(fd_pilot, sp.PILOT_ARTIFACT_NAMES, code=ERR_RUN_SCHEMA, label="run_summary.fd_pilot_artifacts")
+    for name in sp.PILOT_ARTIFACT_NAMES:
         item = _as_mapping(fd_pilot[name], code=ERR_RUN_SCHEMA, label="run_summary.fd_pilot_artifacts." + name)
         expected = prereg.fd_gate["pilot_artifacts"][name]
         if dict(item) != dict(expected):
             _fail(ERR_RUN_CONFIG, "run_summary.fd_pilot_artifacts." + name + " 与冻结 prereg 不一致")
+    scope_notes = _as_mapping(mapping["scope_notes"], code=ERR_RUN_SCHEMA, label="run_summary.scope_notes")
+    if dict(scope_notes) != dict(run_config["scope_notes"]):
+        _fail(ERR_RUN_CONFIG, "run_summary.scope_notes 与 run_config 不一致")
+    for key in [key for key in scope_notes if str(key).startswith("feasible_")]:
+        if str(scope_notes[key]) != SCOPE_NOT_APPLICABLE_FEASIBLE:
+            _fail(ERR_RUN_CONFIG, "run_summary.scope_notes." + str(key) + " 必须为 NOT_APPLICABLE_S2_SURROGATE_SCOPE")
+    resources = _as_mapping(mapping["resources"], code=ERR_RUN_SCHEMA, label="run_summary.resources")
+    _require_exact_keys(resources, sp.RUN_SUMMARY_RESOURCES_FIELDS, code=ERR_RUN_SCHEMA, label="run_summary.resources")
+    per_seed = resources["per_seed"]
+    if not isinstance(per_seed, list) or not per_seed:
+        _fail(ERR_RUN_SCHEMA, "run_summary.resources.per_seed 必须为非空列表")
+    seeds_by_arm: dict[str, list[int]] = {arm: [] for arm in EXPECTED_ARMS}
+    seen_seed_cells: set[tuple[str, int]] = set()
+    for index, item in enumerate(per_seed):
+        block = _as_mapping(item, code=ERR_RUN_SCHEMA, label="run_summary.resources.per_seed[" + str(index) + "]")
+        _require_exact_keys(block, sp.PER_SEED_RESOURCE_FIELDS, code=ERR_RUN_SCHEMA, label="run_summary.resources.per_seed[]")
+        arm = _require_str(block["arm"], code=ERR_RUN_SCHEMA, label="run_summary.resources.per_seed[].arm")
+        if arm not in EXPECTED_ARMS:
+            _fail(ERR_RUN_CONFIG, "run_summary.resources.per_seed[].arm 非法", detail=arm)
+        meta_seed = _require_int(block["meta_seed"], code=ERR_RUN_SCHEMA, label="run_summary.resources.per_seed[].meta_seed")
+        if (arm, meta_seed) in seen_seed_cells:
+            _fail(ERR_RUN_SCHEMA, "run_summary.resources.per_seed 含重复 (arm,meta_seed)", detail=arm + ":" + str(meta_seed))
+        seen_seed_cells.add((arm, meta_seed))
+        seed_status = _require_str(block["status"], code=ERR_RUN_SCHEMA, label="run_summary.resources.per_seed[].status")
+        if seed_status not in sp.SEED_STATUSES:
+            _fail(ERR_RUN_SCHEMA, "run_summary.resources.per_seed[].status 非法", detail=seed_status)
+        _require_number(block["training_wall_s"], code=ERR_RUN_SCHEMA, label="run_summary.resources.per_seed[].training_wall_s", minimum=0.0)
+        _require_number(block["peak_memory_mb"], code=ERR_RUN_SCHEMA, label="run_summary.resources.per_seed[].peak_memory_mb", allow_none=True, minimum=0.0)
+        seeds_by_arm[arm].append(meta_seed)
+    for arm in EXPECTED_ARMS:
+        if sorted(seeds_by_arm[arm]) != sorted(declared_seeds[arm]):
+            _fail(ERR_RUN_CONFIG, "run_summary.resources.per_seed 与 per_arm_seed 的 " + arm + " 种子集合不一致")
+    per_arm = _as_mapping(resources["per_arm"], code=ERR_RUN_SCHEMA, label="run_summary.resources.per_arm")
+    _require_exact_keys(per_arm, EXPECTED_ARMS, code=ERR_RUN_SCHEMA, label="run_summary.resources.per_arm")
+    for arm in EXPECTED_ARMS:
+        block = _as_mapping(per_arm[arm], code=ERR_RUN_SCHEMA, label="run_summary.resources.per_arm." + arm)
+        _require_exact_keys(block, sp.PER_ARM_RESOURCE_FIELDS, code=ERR_RUN_SCHEMA, label="run_summary.resources.per_arm." + arm)
+        meta_seeds_block = block["meta_seeds"]
+        if not isinstance(meta_seeds_block, list):
+            _fail(ERR_RUN_SCHEMA, "run_summary.resources.per_arm." + arm + ".meta_seeds 必须为列表")
+        meta_seed_values = [
+            _require_int(value, code=ERR_RUN_SCHEMA, label="run_summary.resources.per_arm." + arm + ".meta_seeds[]")
+            for value in meta_seeds_block
+        ]
+        if sorted(meta_seed_values) != sorted(declared_seeds[arm]):
+            _fail(ERR_RUN_CONFIG, "run_summary.resources.per_arm." + arm + ".meta_seeds 与 per_arm_seed 不一致")
+        per_meta = _as_mapping(
+            block["train_wall_seconds_per_meta_seed"],
+            code=ERR_RUN_SCHEMA,
+            label="run_summary.resources.per_arm." + arm + ".train_wall_seconds_per_meta_seed",
+        )
+        expected_keys = {str(seed) for seed in declared_seeds[arm]}
+        if set(per_meta.keys()) != expected_keys:
+            _fail(ERR_RUN_CONFIG, "run_summary.resources.per_arm." + arm + ".train_wall_seconds_per_meta_seed 键集合不一致")
+        for key in sorted(expected_keys):
+            _require_number(
+                per_meta[key],
+                code=ERR_RUN_SCHEMA,
+                label="run_summary.resources.per_arm." + arm + ".train_wall_seconds_per_meta_seed." + key,
+                minimum=0.0,
+            )
+        _require_number(block["train_wall_seconds_mean"], code=ERR_RUN_SCHEMA, label="run_summary.resources.per_arm." + arm + ".train_wall_seconds_mean", allow_none=True, minimum=0.0)
+        _require_number(block["peak_memory_mb_max"], code=ERR_RUN_SCHEMA, label="run_summary.resources.per_arm." + arm + ".peak_memory_mb_max", allow_none=True, minimum=0.0)
+    _require_number(resources["train_wall_seconds_ratio"], code=ERR_RUN_SCHEMA, label="run_summary.resources.train_wall_seconds_ratio", allow_none=True, minimum=0.0)
+    _require_number(resources["run_wall_s"], code=ERR_RUN_SCHEMA, label="run_summary.resources.run_wall_s", minimum=0.0)
+    resource_limits = _as_mapping(resources["resource_limits"], code=ERR_RUN_SCHEMA, label="run_summary.resources.resource_limits")
+    if dict(resource_limits) != dict(sp.RUN_RESOURCE_LIMITS):
+        _fail(ERR_RUN_CONFIG, "run_summary.resources.resource_limits 与预注册资源上限不一致")
+    if dict(resource_limits) != dict(run_config["resource_limits"]):
+        _fail(ERR_RUN_CONFIG, "run_summary.resources.resource_limits 与 run_config 不一致")
+    auxiliary = _as_mapping(resources["auxiliary_compute"], code=ERR_RUN_SCHEMA, label="run_summary.resources.auxiliary_compute")
+    _require_exact_keys(auxiliary, sp.AUXILIARY_COMPUTE_FIELDS, code=ERR_RUN_SCHEMA, label="run_summary.resources.auxiliary_compute")
+    auxiliary_physical = _require_int(auxiliary["physical_call_count"], code=ERR_RUN_SCHEMA, label="run_summary.resources.auxiliary_compute.physical_call_count")
+    if auxiliary_physical != 0:
+        _fail(ERR_PREREG_PHYSICAL, "run_summary.resources.auxiliary_compute.physical_call_count 必须为 0", detail=str(auxiliary_physical))
+    measurements = _require_int(auxiliary["outer_step_timing_measurements"], code=ERR_RUN_SCHEMA, label="run_summary.resources.auxiliary_compute.outer_step_timing_measurements")
+    if measurements != len(timing):
+        _fail(ERR_RUN_CONFIG, "run_summary.resources.auxiliary_compute.outer_step_timing_measurements 与 outer_step_timing 长度不一致")
+    _require_str(auxiliary["note"], code=ERR_RUN_SCHEMA, label="run_summary.resources.auxiliary_compute.note")
+    top_limits = _as_mapping(mapping["resource_limits"], code=ERR_RUN_SCHEMA, label="run_summary.resource_limits")
+    if dict(top_limits) != dict(resource_limits):
+        _fail(ERR_RUN_CONFIG, "run_summary.resource_limits 与 resources.resource_limits 不一致")
+    torch_threads = _require_int(mapping["torch_threads"], code=ERR_RUN_SCHEMA, label="run_summary.torch_threads")
+    if torch_threads < 1:
+        _fail(ERR_RUN_SCHEMA, "run_summary.torch_threads 必须 >= 1", detail=str(torch_threads))
+    _validate_environment(mapping["environment"])
     physical = _require_int(mapping["physical_call_count"], code=ERR_RUN_SCHEMA, label="run_summary.physical_call_count")
     if physical != 0:
         _fail(ERR_PREREG_PHYSICAL, "run_summary.physical_call_count 必须为 0", detail=str(physical))
@@ -3022,13 +3699,31 @@ def _validate_run_summary(
         _fail(ERR_PREREG_SCOPE, "run_summary.evidence_scope 非法", detail=str(mapping["evidence_scope"]))
     if mapping["development_set"] != DEVELOPMENT_SET:
         _fail(ERR_DATA_BOUNDARY, "run_summary.development_set 非法", detail=str(mapping["development_set"]))
-    scope_notes = _as_mapping(mapping["scope_notes"], code=ERR_RUN_SCHEMA, label="run_summary.scope_notes")
-    feasible_keys = [key for key in scope_notes if str(key).startswith("feasible_")]
-    for key in feasible_keys:
-        if str(scope_notes[key]) != SCOPE_NOT_APPLICABLE_FEASIBLE:
-            _fail(ERR_RUN_CONFIG, "run_summary.scope_notes." + key + " 必须为 NOT_APPLICABLE_S2_SURROGATE_SCOPE")
-    _record_check(checks, "run_summary", status="PASS", detail="status/record_counts/status_counts/resources/边界/physical=0 一致")
+    smoke = _require_bool(mapping["smoke"], code=ERR_RUN_SCHEMA, label="run_summary.smoke")
+    if smoke != (run_mode == "SMOKE"):
+        _fail(ERR_RUN_CONFIG, "run_summary.smoke 与 run_mode 不一致")
+    _record_check(
+        checks,
+        "run_summary",
+        status="PASS",
+        detail="v2 30 字段/record_counts/status_counts/resources/边界/physical=0 一致（" + run_mode + "）",
+    )
     return mapping
+
+
+def _assert_declared_file_sha(
+    checks: list[dict[str, Any]],
+    name: str,
+    actual_sha: str,
+    declared: Any,
+    *,
+    label: str,
+) -> None:
+    """校验 run_summary 声明的产物 sha256 与文件 raw sha256 一致（被篡改即 fail-closed）。"""
+    expected = _require_sha256(declared, code=ERR_RUN_SCHEMA, label=label)
+    if actual_sha != expected:
+        _fail(ERR_RUN_CONFIG, "run_summary 声明的 " + name + " sha256 与文件 raw sha256 不一致（疑似被篡改）", detail=actual_sha + " != " + expected)
+    _record_check(checks, "summary_sha_" + name, status="PASS", detail=name)
 
 
 def _discover_run_files(run_dir: Path) -> list[Path]:
@@ -3073,6 +3768,7 @@ def load_s2_run(
         prereg,
         checks=checks,
     )
+    grid = _derive_run_grid(run_config)
     record_files = _discover_run_files(directory)
     if len(record_files) == 1:
         records = _parse_jsonl_records(record_files[0])
@@ -3093,16 +3789,21 @@ def load_s2_run(
         train_raw = _parse_jsonl_records(record_files[0], expected_type="train")
         eval_raw = _parse_jsonl_records(record_files[1], expected_type="eval")
     _record_check(checks, "record_files", status="PASS", detail=",".join(path.name for path in record_files))
-    train_records = [_validate_train_record(record, index=index, prereg=prereg) for index, record in enumerate(train_raw)]
-    eval_records = [_validate_eval_record(record, index=index, prereg=prereg) for index, record in enumerate(eval_raw)]
-    if len(train_records) > TRAIN_RECORDS_EXPECTED:
-        _fail(ERR_RECORD_VALUE, "train 记录数超过预算", detail=str(len(train_records)))
-    if len(eval_records) > EVAL_RECORDS_EXPECTED:
-        _fail(ERR_RECORD_VALUE, "eval 记录数超过评估网格", detail=str(len(eval_records)))
+    train_records = [
+        _validate_train_record(record, index=index, prereg=prereg, grid=grid) for index, record in enumerate(train_raw)
+    ]
+    eval_records = [
+        _validate_eval_record(record, index=index, prereg=prereg, grid=grid) for index, record in enumerate(eval_raw)
+    ]
+    if len(train_records) > int(grid["train_expected"]):
+        _fail(ERR_RECORD_VALUE, "train 记录数超过 run 预算", detail=str(len(train_records)))
+    if len(eval_records) > int(grid["eval_expected"]):
+        _fail(ERR_RECORD_VALUE, "eval 记录数超过 run 评估网格", detail=str(len(eval_records)))
     coverage = _validate_record_coverage(
         train_records,
         eval_records,
         prereg,
+        grid=grid,
         allow_incomplete_run=allow_incomplete_run,
         checks=checks,
     )
@@ -3118,11 +3819,36 @@ def load_s2_run(
             _load_json_file(run_summary_path, code=ERR_RUN_SCHEMA, label="run_summary.json"),
             run_config,
             prereg,
+            grid=grid,
             actual_train=train_status_counts,
             actual_eval=eval_status_counts,
             checks=checks,
         )
     fd_evidence = _inspect_fd_evidence(prereg, repo_root=root, run_dir=directory, checks=checks)
+    fd_gate_artifact = _validate_fd_gate_artifact(
+        directory, run_config=run_config, run_summary=run_summary, checks=checks
+    )
+    data_manifest_artifact = _validate_data_manifest_artifact(
+        directory, run_config=run_config, run_summary=run_summary, prereg=prereg, grid=grid, checks=checks
+    )
+    if run_summary is not None:
+        _assert_declared_file_sha(
+            checks,
+            "run_config.json",
+            _sha256_file(run_config_path),
+            run_summary["run_config_sha256"],
+            label="run_summary.run_config_sha256",
+        )
+        if len(record_files) == 1:
+            _assert_declared_file_sha(
+                checks,
+                record_files[0].name,
+                _sha256_file(record_files[0]),
+                run_summary["run_records_sha256"],
+                label="run_summary.run_records_sha256",
+            )
+        else:
+            _record_check(checks, "run_records_sha256", status="DISCLOSED", detail="split record files；无法按单文件复核 summary.run_records_sha256")
     source_files: list[dict[str, Any]] = []
     for path in (record_files + [run_config_path] + ([run_summary_path] if run_summary_path.is_file() else [])):
         source_files.append(
@@ -3139,13 +3865,16 @@ def load_s2_run(
             "train": len(train_records),
             "eval": len(eval_records),
             "total": len(train_records) + len(eval_records),
-            "expected_train": TRAIN_RECORDS_EXPECTED,
-            "expected_eval": EVAL_RECORDS_EXPECTED,
+            "expected_train": int(grid["train_expected"]),
+            "expected_eval": int(grid["eval_expected"]),
+            "run_mode": str(grid["run_mode"]),
         },
         "status_counts": {"train": train_status_counts, "eval": eval_status_counts},
         "coverage": coverage,
         "source_files": source_files,
         "fd_gate_evidence": fd_evidence,
+        "fd_gate_artifact": fd_gate_artifact,
+        "data_manifest_artifact": data_manifest_artifact,
         "data_boundary": {
             "splits_seen": sorted({str(record["split"]) for record in eval_records}),
             "holdout_rows_used": 0,
@@ -3250,7 +3979,9 @@ def _build_endpoint_table_rows(core: Mapping[str, Any], stats: Mapping[str, Any]
     return rows
 
 
-def _build_per_task_rows(core: Mapping[str, Any], prereg: S2Prereg) -> list[dict[str, Any]]:
+def _build_per_task_rows(
+    core: Mapping[str, Any], prereg: S2Prereg, *, grid: Mapping[str, Any]
+) -> list[dict[str, Any]]:
     rows: list[dict[str, Any]] = []
     blocks: list[tuple[str, Mapping[str, Any]]] = []
     for endpoint_id in INFERENCE_ENDPOINTS:
@@ -3276,7 +4007,7 @@ def _build_per_task_rows(core: Mapping[str, Any], prereg: S2Prereg) -> list[dict
                         "n_null": n_null,
                         "null_rate": (n_null / len(per_seed)) if per_seed else 1.0,
                         "meta_seed_count": len(per_seed),
-                        "draw_count": prereg.draws,
+                        "draw_count": int(grid["draws"]),
                     }
                 )
     return rows
@@ -3308,7 +4039,9 @@ def _build_holm_rows(stats: Mapping[str, Any]) -> list[dict[str, Any]]:
     return rows
 
 
-def _build_null_disclosure_rows(core: Mapping[str, Any], prereg: S2Prereg) -> list[dict[str, Any]]:
+def _build_null_disclosure_rows(
+    core: Mapping[str, Any], prereg: S2Prereg, *, grid: Mapping[str, Any]
+) -> list[dict[str, Any]]:
     rows: list[dict[str, Any]] = []
     policy_task = "task 端点值：任一 meta_seed 单元为 null 即整 task 记 null（不插补、不丢弃任务）"
     policy_cell = "meta_seed 单元：任一 draw 缺失/FAILED/null 即整单元记 null"
@@ -3334,7 +4067,7 @@ def _build_null_disclosure_rows(core: Mapping[str, Any], prereg: S2Prereg) -> li
             }
         )
         for arm in EXPECTED_ARMS:
-            expected_cells = block["n_tasks"] * len(prereg.meta_seeds)
+            expected_cells = block["n_tasks"] * len(grid["meta_seeds"])
             nonnull_cells = 0
             for task_id in block["tasks"]:
                 per_seed = block["per_task"][task_id][arm]["per_meta_seed"]
@@ -3384,6 +4117,119 @@ def _build_negative_control_rows(
         (float(core["endpoints"][endpoint_id]["null_ratio"]) for endpoint_id in INFERENCE_ENDPOINTS),
         default=1.0,
     )
+
+    def _check_status(*names: str) -> str | None:
+        for item in list(prereg.checks) + list(run.checks):
+            if item.get("check") in names:
+                return str(item.get("status"))
+        return None
+
+    train_field_set = set(("record_type",) + TRAIN_REQUIRED_FIELDS)
+    eval_field_set = set(("record_type",) + EVAL_REQUIRED_FIELDS)
+    record_fields_ok = all(set(record.keys()) == train_field_set for record in run.train_records) and all(
+        set(record.keys()) == eval_field_set for record in run.eval_records
+    )
+    # NC-11：逐层核对 null 披露完整性（每个 task/arm 的 meta_seed 单元数与 run 网格一致；
+    # 任一 seed 为 null 时 task 值必须为 null，不得插补或写 0）。
+    null_disclosure_ok = True
+    null_cells = 0
+    total_cells = 0
+    for endpoint_id in INFERENCE_ENDPOINTS:
+        block = core["endpoints"][endpoint_id]
+        for task_id in block["tasks"]:
+            task_row = block["per_task"][task_id]
+            for arm in EXPECTED_ARMS:
+                per_seed = task_row[arm]["per_meta_seed"]
+                if len(per_seed) != len(run.grid["meta_seeds"]):
+                    null_disclosure_ok = False
+                nulls = sum(1 for cell in per_seed.values() if cell["value"] is None)
+                null_cells += nulls
+                total_cells += len(per_seed)
+                if nulls and task_row[arm]["value"] is not None:
+                    null_disclosure_ok = False
+                if nulls and not task_row[arm]["reason"]:
+                    null_disclosure_ok = False
+    # NC-12：按执行计划 §6 独立重放决策规则，与 stats 记录逐端点比对（不硬编码 PASS）。
+    decision_replay_ok = True
+    for endpoint_id in INFERENCE_ENDPOINTS:
+        inference = next(item for item in stats["inferences"] if item["endpoint_id"] == endpoint_id)
+        record = stats["decisions"][endpoint_id]
+        holm_p = record["holm_p_adjusted"]
+        n_pairs = int(inference["n_pairs"])
+        null_ratio_value = float(inference["null_ratio"])
+        runtime_inconclusive = bool(core["integrity"].get("primary_should_be_inconclusive"))
+        mean_diff = inference["mean_difference"]
+        rel = inference["relative_improvement"]["value"]
+        ci_excl = bool(inference["bootstrap"].get("ci_excludes_zero"))
+        if runtime_inconclusive or n_pairs < WILCOXON_MIN_PAIRS or null_ratio_value > NULL_RATE_INCONCLUSIVE:
+            expected_decision = DECISION_INCONCLUSIVE
+        elif (
+            holm_p is not None
+            and float(holm_p) < ALPHA
+            and ci_excl
+            and mean_diff is not None
+            and float(mean_diff) < 0.0
+            and rel is not None
+            and float(rel) >= RELATIVE_IMPROVEMENT_THRESHOLD
+        ):
+            expected_decision = DECISION_BENEFIT
+        elif (
+            holm_p is not None
+            and float(holm_p) < ALPHA
+            and ci_excl
+            and mean_diff is not None
+            and float(mean_diff) > 0.0
+            and rel is not None
+            and float(rel) <= -RELATIVE_IMPROVEMENT_THRESHOLD
+        ):
+            expected_decision = DECISION_HARM
+        else:
+            expected_decision = DECISION_NONE
+        if record["decision"] != expected_decision:
+            decision_replay_ok = False
+        if not isinstance(record.get("criteria"), Mapping):
+            decision_replay_ok = False
+    primary_decision = stats["decisions"][PRIMARY_ENDPOINT]["decision"]
+    expected_overall = {
+        DECISION_BENEFIT: OVERALL_ADVANTAGE,
+        DECISION_HARM: OVERALL_HARM,
+        DECISION_INCONCLUSIVE: OVERALL_INCONCLUSIVE,
+    }.get(primary_decision, OVERALL_NONE)
+    overall_replay_ok = stats["overall"]["decision"] == expected_overall
+    # NC-13：推断端点严格等于 prereg 的 primary + secondary；描述性端点不得混入决策层。
+    endpoint_scope_ok = (
+        set(INFERENCE_ENDPOINTS) == {PRIMARY_ENDPOINT} | set(SECONDARY_ENDPOINTS)
+        and set(stats["decisions"].keys()) == set(INFERENCE_ENDPOINTS)
+        and not (set(INFERENCE_ENDPOINTS) & set(DESCRIPTIVE_ENDPOINTS))
+    )
+    # NC-14：task 为聚合单位，逐 task 校验 difference 恰为 FULL - FOMAML，且任务数等于 run 网格。
+    aggregation_unit_ok = True
+    checked_pairs = 0
+    for endpoint_id in INFERENCE_ENDPOINTS:
+        block = core["endpoints"][endpoint_id]
+        if len(block["tasks"]) != int(run.grid["eval_tasks"]):
+            aggregation_unit_ok = False
+        for task_id in block["tasks"]:
+            task_row = block["per_task"][task_id]
+            diff = task_row["difference"]["value"]
+            full = task_row[ARM_FULL]["value"]
+            fomaml = task_row[ARM_FOMAML]["value"]
+            if diff is None:
+                if full is not None and fomaml is not None:
+                    aggregation_unit_ok = False
+                continue
+            checked_pairs += 1
+            if full is None or fomaml is None or not math.isclose(
+                float(diff), float(full) - float(fomaml), rel_tol=0.0, abs_tol=1e-12
+            ):
+                aggregation_unit_ok = False
+    expected_run_rows = int(run.grid["train_expected"]) + int(run.grid["eval_expected"])
+    arms_config = {str(arm["id"]): dict(arm["config"]) for arm in run.run_config["arms"]}
+    arms_fairness_ok = (
+        len(arms_config) == 2
+        and arms_config.get(ARM_FULL) == arms_config.get(ARM_FOMAML)
+        and _check_status("run_arms") == "PASS"
+    )
     rows: list[dict[str, Any]] = [
         {
             "check_id": "NC-01",
@@ -3404,26 +4250,36 @@ def _build_negative_control_rows(
         {
             "check_id": "NC-03",
             "category": "prereg_contract",
-            "status": "PASS",
+            "status": (
+                "PASS"
+                if all(_check_status(name) == "PASS" for name in ("prereg_id", "prereg_digest", "analysis_plan_digest"))
+                else "DISCLOSED"
+            ),
             "expected": "prereg_id/prereg_digest/analysis_plan_digest 自洽",
-            "observed": prereg.prereg_id,
-            "note": "canonical JSON + 换行；三个摘要独立复算。",
+            "observed": "prereg_id=" + prereg.prereg_id + ";digests=" + ",".join(
+                name + ":" + str(_check_status(name)) for name in ("prereg_id", "prereg_digest", "analysis_plan_digest")
+            ),
+            "note": "canonical JSON + 换行；三个摘要独立复算（校验器逐项记录 PASS 才是 PASS）。",
         },
         {
             "check_id": "NC-04",
             "category": "frozen_package",
-            "status": "PASS",
+            "status": (
+                "PASS"
+                if _check_status("frozen_package_sha256sums") == "PASS"
+                else "DISCLOSED"
+            ),
             "expected": "S0-7 冻结包 6 字段恒等 + SHA256SUMS raw sha",
-            "observed": prereg.frozen_package["run_id"],
-            "note": "冻结包不可变；分析只读。",
+            "observed": "sha256sums=" + str(_check_status("frozen_package_sha256sums")) + ";run_id=" + str(prereg.frozen_package["run_id"]),
+            "note": "冻结包不可变；SKIPPED（开发模式）记 DISCLOSED，不伪造 PASS。",
         },
         {
             "check_id": "NC-05",
             "category": "fairness",
-            "status": "PASS",
+            "status": "PASS" if arms_fairness_ok else "FAIL",
             "expected": "两臂 config 除 first_order 外逐字段相同",
-            "observed": "input_dim=12,hidden=[16,16],inner_lr=0.01,inner_steps=5,outer_lr=0.001,tasks_per_batch=8,seed=42",
-            "note": "等预算/等结构公平性由 prereg 校验器强制。",
+            "observed": "run_arms=" + str(_check_status("run_arms")) + ";arms_equal=" + str(arms_config.get(ARM_FULL) == arms_config.get(ARM_FOMAML)),
+            "note": "等预算/等结构公平性由 prereg 校验器强制；本条按 run_config 实际臂配置复核。",
         },
         {
             "check_id": "NC-06",
@@ -3436,26 +4292,30 @@ def _build_negative_control_rows(
         {
             "check_id": "NC-07",
             "category": "run_schema",
-            "status": "PASS",
+            "status": "PASS" if record_fields_ok else "FAIL",
             "expected": "train 12 字段 / eval 16 字段精确集合；canonical JSONL",
-            "observed": f"train={run.counts['train']},eval={run.counts['eval']}",
-            "note": "字段缺失或多余均 fail-closed。",
+            "observed": f"train={run.counts['train']},eval={run.counts['eval']},fields_ok={record_fields_ok}",
+            "note": "字段缺失或多余均 fail-closed；本条按实际记录键集独立复核。",
         },
         {
             "check_id": "NC-08",
             "category": "coverage",
             "status": "PASS" if run.validation["coverage"]["complete"] else "DISCLOSED",
-            "expected": "6000 行 / 6 组 / 20 任务 / K=0,1,5,10 / draw=0..9",
-            "observed": f"train={run.counts['train']},eval={run.counts['eval']},complete={run.validation['coverage']['complete']}",
-            "note": "正式 run 必须完整；allow_incomplete_run 仅用于开发/测试并显式披露。",
+            "expected": str(expected_run_rows) + " 行（按 run_mode 派生：train_expected+eval_expected）/ 20 任务 / K=0,1,5,10 / draw=0..9",
+            "observed": f"train={run.counts['train']},eval={run.counts['eval']},expected={expected_run_rows},complete={run.validation['coverage']['complete']},run_mode={run.grid['run_mode']}",
+            "note": "正式 run 必须完整；SMOKE/allow_incomplete_run 显式披露，不伪造完整。",
         },
         {
             "check_id": "NC-09",
             "category": "fd_gate",
-            "status": "PASS" if fd_statuses else "DISCLOSED",
-            "expected": "FD pilot micro/full_size 证据存在、raw sha 匹配、无 FAIL",
-            "observed": ";".join(f"{name}:{status}" for name, status in fd_statuses.items()),
-            "note": "FD gate 失败则分析拒绝启动。",
+            "status": (
+                "PASS"
+                if fd_statuses and all(status == "PASS" for status in fd_statuses.values()) and _check_status("fd_gate_artifact") == "PASS"
+                else ("DISCLOSED" if not fd_statuses or _check_status("fd_gate_artifact") is None else "FAIL")
+            ),
+            "expected": "FD pilot micro/full_size 证据存在、raw sha 匹配、嵌套 fd_gate 结构无 FAIL；fd_gate.json raw sha 一致",
+            "observed": ";".join(f"{name}:{status}" for name, status in fd_statuses.items()) + ";artifact=" + str(_check_status("fd_gate_artifact")),
+            "note": "FD gate 失败则分析拒绝启动；仅可校验 sha、结构不可读时记 DISCLOSED。",
         },
         {
             "check_id": "NC-10",
@@ -3468,34 +4328,34 @@ def _build_negative_control_rows(
         {
             "check_id": "NC-11",
             "category": "null_disclosure",
-            "status": "PASS",
+            "status": "PASS" if null_disclosure_ok else "FAIL",
             "expected": "null 率与原因逐层披露，不得把 null 写 0",
-            "observed": f"max_null_rate={max_null_rate}",
-            "note": "null_ratio>0.70 → INCONCLUSIVE。",
+            "observed": f"max_null_rate={max_null_rate},null_cells={null_cells}/{total_cells}",
+            "note": "逐 task/arm 核对 meta_seed 单元数与 null 传播（null 不插补、不写 0）；null_ratio>0.70 → INCONCLUSIVE。",
         },
         {
             "check_id": "NC-12",
             "category": "decision_rules",
-            "status": "PASS",
+            "status": "PASS" if (decision_replay_ok and overall_replay_ok) else "FAIL",
             "expected": "Holm p<0.05 且 CI 不跨 0 且 FULL<FOMAML 且相对改善>=1% → BENEFIT；对称 HARM",
-            "observed": stats["overall"]["decision"],
-            "note": "决策原因逐项记录在 aggregate.json / CSV。",
+            "observed": f"overall={stats['overall']['decision']},overall_replay_ok={overall_replay_ok},decisions_replay_ok={decision_replay_ok}",
+            "note": "按 §6 规则从 inference/holm 独立重放，与记录决策逐端点比对；决策原因记录在 aggregate.json / CSV。",
         },
         {
             "check_id": "NC-13",
             "category": "endpoint_scope",
-            "status": "PASS",
+            "status": "PASS" if endpoint_scope_ok else "FAIL",
             "expected": "K=0/K=1/标准化/MAE/资源仅描述，不做 benefit/harm",
-            "observed": "inference_endpoints=" + ",".join(INFERENCE_ENDPOINTS),
-            "note": "推断端点仅 k5 主 + k10 次。",
+            "observed": "inference_endpoints=" + ",".join(INFERENCE_ENDPOINTS) + ";decisions=" + ",".join(sorted(stats["decisions"].keys())),
+            "note": "推断端点仅 k5 主 + k10 次；描述性端点不进入决策层。",
         },
         {
             "check_id": "NC-14",
             "category": "aggregation_unit",
-            "status": "PASS",
+            "status": "PASS" if aggregation_unit_ok else "FAIL",
             "expected": "task 为分析单位，不跨任务混合 draw",
-            "observed": f"n_tasks={core['n_tasks']}",
-            "note": "先 draw 后 meta_seed，最后 task 配对。",
+            "observed": f"n_tasks={core['n_tasks']},checked_pairs={checked_pairs},expected_tasks={run.grid['eval_tasks']}",
+            "note": "先 draw 后 meta_seed，最后 task 配对；逐 task 复核 difference=FULL-FOMAML。",
         },
     ]
     if any(row["status"] == "FAIL" for row in rows):
@@ -3511,10 +4371,11 @@ def _build_rmse_vs_k(run: S2RunData, prereg: S2Prereg) -> dict[str, Any]:
     """
     cells = _cell_index(run, prereg)
     tasks = _analysis_tasks(run)
+    grid = run.grid
     result: dict[str, Any] = {
-        "K": list(prereg.k_values),
+        "K": list(grid["k_values"]),
         "arms": {},
-        "per_task": {str(k_value): {} for k_value in prereg.k_values},
+        "per_task": {str(k_value): {} for k_value in grid["k_values"]},
         "ci": {arm: {} for arm in EXPECTED_ARMS},
         "bootstrap": {
             "unit": "task",
@@ -3527,17 +4388,17 @@ def _build_rmse_vs_k(run: S2RunData, prereg: S2Prereg) -> dict[str, Any]:
     }
     for arm in EXPECTED_ARMS:
         series: list[float | None] = []
-        for k_value in prereg.k_values:
+        for k_value in grid["k_values"]:
             task_values: dict[str, float] = {}
             null_tasks: list[str] = []
             for task_id in tasks:
                 seed_values: list[float] = []
                 failed = False
-                for meta_seed in prereg.meta_seeds:
+                for meta_seed in grid["meta_seeds"]:
                     value, _reason = _aggregate_cell(
                         cells.get((arm, meta_seed, task_id, k_value)),
                         field="query_rmse_raw",
-                        draws=prereg.draws,
+                        draws=grid["draws"],
                     )
                     if value is None:
                         failed = True
@@ -3632,6 +4493,7 @@ def _build_figure_state(
     return {
         "run_id": aggregate_meta["run_id"],
         "prereg_id": prereg.prereg_id,
+        "run_mode": aggregate_meta["run_mode"],
         "evidence_scope": prereg.evidence_scope,
         "arms": list(EXPECTED_ARMS),
         "train_series": train_series,
@@ -3872,9 +4734,9 @@ def analyze_s2_run(
     run_id = str(run.run_config["run_id"])
     prereg_echo = _build_prereg_echo(prereg)
     endpoint_rows = _build_endpoint_table_rows(core, stats)
-    per_task_rows = _build_per_task_rows(core, prereg)
+    per_task_rows = _build_per_task_rows(core, prereg, grid=run.grid)
     holm_rows = _build_holm_rows(stats)
-    null_rows = _build_null_disclosure_rows(core, prereg)
+    null_rows = _build_null_disclosure_rows(core, prereg, grid=run.grid)
     negative_controls = _build_negative_control_rows(run, prereg, core, stats)
     aggregate_meta = {
         "run_id": run_id,
@@ -3893,6 +4755,17 @@ def analyze_s2_run(
         "record_counts": dict(run.validation["counts"]),
         "source_files": [dict(item) for item in run.validation["source_files"]],
         "run_status": run.run_status,
+        "run_mode": str(run.grid["run_mode"]),
+        "smoke": str(run.grid["run_mode"]) == "SMOKE",
+        "run_grid": {
+            "meta_seeds": list(run.grid["meta_seeds"]),
+            "outer_steps": int(run.grid["outer_steps"]),
+            "eval_tasks": int(run.grid["eval_tasks"]),
+            "k_values": list(run.grid["k_values"]),
+            "draws": int(run.grid["draws"]),
+            "train_expected": int(run.grid["train_expected"]),
+            "eval_expected": int(run.grid["eval_expected"]),
+        },
         "run_summary_status_counts": dict(run.validation["status_counts"]),
         "created_utc": _utc_now_iso(),
         "checks": [dict(check) for check in checks],
@@ -3907,6 +4780,11 @@ def analyze_s2_run(
         {
             "schema_version": S2_AGGREGATE_SCHEMA_VERSION,
             "analysis_id": "s2-analysis-" + run_id,
+            "run_mode": str(run.grid["run_mode"]),
+            "smoke": str(run.grid["run_mode"]) == "SMOKE",
+            "disclosed_checks": [
+                dict(check) for check in checks if str(check.get("status")) in ("DISCLOSED", "SKIPPED")
+            ],
             "endpoint_rows": endpoint_rows,
             "inference": [dict(item) for item in stats["inferences"]],
             "holm": dict(stats["holm"]),
