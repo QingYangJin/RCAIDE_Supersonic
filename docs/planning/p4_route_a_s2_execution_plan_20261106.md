@@ -1,6 +1,6 @@
 # P4 路线A S2 执行计划（FULL_MAML 二阶元梯度 vs FOMAML 等预算对照）
 
-- 版本：v1.6（2026-11-06T15:45Z，Lead 起草；v1.1 响应 A5 S2-M0 3B/6M/6m；v1.2 响应 A5 S2-M0R 2B/1M；v1.3 响应 A5 S2-M0R2 并获 APPROVE_FOR_S2_CODE（对象 969c0e7，plan sha 35c486b9…）；v1.3a 仅 2 项文档 minor；v1.4 响应 A4 C-01..C-07 并新增 §8.1 图合同；A5 M0R4 对 v1.4 判 CHANGES_REQUESTED（0B/2M/3m，F-01..F-05）；v1.5 补 Issue #7 §4 七类映射与 fig8/fig9、fig3 CI 细则、prereg resource_limits、R-S2-01A/R-S2-01 版本更正、旧 v1.2 说明 superseded 标注。A5 批准对象仍为 v1.3/969c0e7；v1.5 须经 A5 M0R5 限定 diff 复审 APPROVE_FOR_S2_CODE_AMENDED 后方可作为代码与图合同基线。v1.5 已于 2026-11-06T14:03Z 获 A5 M0R5 APPROVE_FOR_S2_CODE_AMENDED（对象 89fd8d9、plan sha f156b250…）；v1.6 响应 A5 代码审阅（对象 3d576bd，2B/2M/5m）：新增共享接口 schema v2 单源规则（§7）、澄清 train/eval record 字段边界（§2）、更新 §10/§11/§12/§13 并新增 §16 处置表，不改变端点/统计/预算/图合同；v1.6 提交后请 A5 在同一代码审阅 delta 中复审确认（若 A5 要求单独 M0 gate 则遵从））
+- 版本：v1.6（2026-11-06T15:45Z，Lead 起草；v1.1 响应 A5 S2-M0 3B/6M/6m；v1.2 响应 A5 S2-M0R 2B/1M；v1.3 响应 A5 S2-M0R2 并获 APPROVE_FOR_S2_CODE（对象 969c0e7，plan sha 35c486b9…）；v1.3a 仅 2 项文档 minor；v1.4 响应 A4 C-01..C-07 并新增 §8.1 图合同；A5 M0R4 对 v1.4 判 CHANGES_REQUESTED（0B/2M/3m，F-01..F-05）；v1.5 补 Issue #7 §4 七类映射与 fig8/fig9、fig3 CI 细则、prereg resource_limits、R-S2-01A/R-S2-01 版本更正、旧 v1.2 说明 superseded 标注。A5 批准对象仍为 v1.3/969c0e7；v1.5 须经 A5 M0R5 限定 diff 复审 APPROVE_FOR_S2_CODE_AMENDED 后方可作为代码与图合同基线。v1.5 已于 2026-11-06T14:03Z 获 A5 M0R5 APPROVE_FOR_S2_CODE_AMENDED（对象 89fd8d9、plan sha f156b250…）；v1.6 响应 A5 代码审阅（对象 3d576bd，2B/2M/5m）：新增共享接口 schema v2 单源规则（§7）、澄清 train/eval record 字段边界（§2）、更新 §10/§11/§12/§13 并新增 §16 处置表，不改变端点/统计/预算/图合同；v1.6 提交后请 A5 在同一代码审阅 delta 中复审确认（若 A5 要求单独 M0 gate 则遵从）；v1.6a 仅补充 §7 的 run_mode=SMOKE 分析语义（A5-S2M02 e2e 前提），不改变端点/统计/预算/图合同）
 - 上游：Issue #7 D-P4-003 §2 S2；S1_RUN=EXECUTED_AND_RESULT_REVIEWED（commentId 6684142041，不含 S2 授权）
 - 分支/工作树：research/p4-route-a-s2 @ D:/RCAIDE-s2-dev；base 1a2b242（S1 closeout docs v1.8），首个 S2 提交 b0acdf2 为本文 v1.0；v1.1 提交见 git log
 - 硬边界：physical_call_count=0（全合成解析评价器，无 VSPAERO/SU2/RCAIDE/CFD/WaveDrag）；不合并 main；不新建 PR；仅 Lead 写 GitHub；旧 M2/M5/M6/S0-2..S0-7 只读；S2 不使用 S1 holdout（meta_test/meta_test_ood/negative_control）
@@ -135,6 +135,7 @@ S2 在同一合成任务族、同一元训练预算（episodes/内步/外步/批
 - 正式 run 启动前 fail-closed 校验：prereg digest 自洽；S0-7 SHA256SUMS 9/9；code_sha 与当前代码一致；FD gate PASS 且 sha 匹配；episode bank manifest sha 匹配；否则拒绝启动。
 - resource_limits 固定值核验（A5-M0R4-F-03）：verify 必须要求 resource_limits 恰为 {per_seed_train_wall_s: 1200, peak_memory_mb: 8192, total_wall_s: 7200}（键集合与数值均一致），否则报 S2_PREREG_RESOURCE_LIMITS_INVALID；该字段纳入 prereg_digest。
 - 共享接口 schema 单源（v1.6，关闭 A5 代码审阅 B01/B02 的“两侧同版本号无隔离”）：run_config 与 run_summary 的字段集与版本（p4ra-s2-run-config-v2 / p4ra-s2-run-summary-v2）、episode_bank/fd_gate/资源/auxiliary_compute 字段、RUN_STATUSES、SEED_STATUSES、RECORD_STATUS_COUNTS、RUN_RESOURCE_LIMITS、PILOT_ARTIFACT_NAMES 与 PILOT_EXPECTED_N_CHECKED（micro=32、full_size=8）由 research/concorde_metaopt/meta_learning/s2_prereg.py 的“共享接口 schema v2”常量区单源定义；s2_runner.py 与 s2_analysis.py 必须导入该模块，不得复制或各自定义。该单源不改变 §7 code_sha 的 3 文件清单算法（s2_prereg.py 本就在清单内，常量变更自动纳入 code_sha）。analysis 遇到未知字段只记 DISCLOSED，不得静默通过；必需字段/类型/精确键集合不符即 fail-closed。
+- run_mode 分析语义（v1.6a，A5-S2M02 e2e 前提）：analysis 必须支持 run_config.run_mode 为 FORMAL 或 SMOKE，且与 run_summary.run_mode 一致。FORMAL：training_budget/evaluation_grid/episode_bank 与 prereg 严格一致（现行为不变）。SMOKE：必须存在 run_config.smoke_overrides（非空 mapping，含 outer_steps/meta_seeds/K/draws/eval_tasks 五键并按 runner SMOKE_REQUIRED_OVERRIDES 语义做类型校验），允许 training_budget/evaluation_grid/episode_bank 与 prereg 不同，但必须记 DISCLOSED（code=S2_ANALYSIS_SMOKE_BUDGET_DISCLOSED，说明 SMOKE 为开发验证产物、数值不用于结论）；SMOKE 的记录覆盖期望计数由 run_config 实际预算派生（训练=arms×len(meta_seeds)×outer_steps，评估=arms×len(meta_seeds)×eval_tasks×len(K)×draws），unique tasks 仍须等于 20；其余校验（schema v2 同源、arms parity、data_boundary、prereg_id/prereg_digest/code_sha、fd_gate 11 键与嵌套校验、record 字段集、task_id/split 边界）两模式都严格。该条仅为 M02 e2e 与开发自检服务，不改变正式 run 的 FORMAL 严格性。
 
 ## 8. 指标范围说明（关闭 M05 的 scope 部分）
 
@@ -296,7 +297,7 @@ Issue #7 §4 要求 7 类中文图。S2 的研究对象是代理模型适应误�
 | A5-S2B01 | blocker | 关闭（v1.6）：共享接口 schema v2 单源于 s2_prereg.py；run_config 22 必填字段 + 可选 smoke_overrides，created_utc/environment 仅从 run_summary 读取；fd_gate 改 11 键语义校验；episode_bank 7 键且 support_size/query_size 与 prereg 16/32 对齐；runner/analysis 导入单源、禁止复制 | §7/§10/§12/§16 |
 | A5-S2B02 | blocker | 关闭（v1.6）：run_summary 30 必填字段，新增 per_arm_seed/fd_pilot_artifacts/scope_notes；resources 6 键含 auxiliary_compute；RUN_STATUSES 5 值（含 RESOURCE_LIMIT/DEADLINE_EXCEEDED）；status_counts 恒含 OK/FAILED；analysis 按结构语义校验而非旧的 3 键 resources | §7/§10/§12/§16 |
 | A5-S2M01 | major | 关闭（v1.6）：_inspect_fd_evidence 读嵌套 fd_gate，按 micro=32/full_size=8 校验 status/mode/tolerance/n_checked/coordinates_requested/coordinates_available/max_relative_error；NC-09 由证据派生 PASS/DISCLOSED/FAIL 并写实际 observed；s2_prereg._check_fd_gate 同步强化（S2_PREREG_PILOT_ARTIFACT_INVALID） | §7/§12/§16 |
-| A5-S2M02 | major | 关闭（v1.6）：新增 tests/test_s2_e2e.py（Lead）：SMOKE run_experiment 写临时 run_dir -> s2_analysis.load_s2_run -> aggregate/CSV；负控删必填字段/篡改 fd_gate 断言 fail-closed；断言两侧 schema 常量同源 | §12/§16 |
+| A5-S2M02 | major | 关闭（v1.6；v1.6a 补 SMOKE 分析语义）：新增 tests/test_s2_e2e.py（Lead）：SMOKE run_experiment 写临时 run_dir -> s2_analysis.load_s2_run -> aggregate/CSV；负控删必填字段/篡改 fd_gate 断言 fail-closed；断言两侧 schema 常量同源。SMOKE 模式规则见 §7 run_mode 分析语义 | §7/§12/§16 |
 | A5-S2C-05 | minor | 关闭：缺值即 break 改为逐元素 null 计数，null 率分母用预期元素数 | §16 |
 | A5-S2C-06 | minor | 关闭：§2 澄清 eval record 必须带 task_id+split，train record 字段集按 §5 并由 episode bank manifest/run_config 承载数据边界 | §2 |
 | A5-S2C-07 | minor | 关闭：s2_runner.py 文件头合同版本 v1.3a -> v1.6 | §16 |
@@ -305,4 +306,4 @@ Issue #7 §4 要求 7 类中文图。S2 的研究对象是代理模型适应误�
 | A5 代码审阅结论 | verdict | CHANGES_REQUESTED（对象 3d576bd，2B/2M/5m，不授予 APPROVE_FOR_S2_FORMAL）；修复提交后由 A5 在同一 delta 复审 | §11/§16 |
 | A5 观察 | 披露 | 每 arm 训练前 1 outer-step 计时的额外计算写入 resources.auxiliary_compute（非物理、不计入训练预算）；fd_gate.coordinates 表达式简化 | §7/§16 |
 
-本版为计划 v1.6，仅修改计划文件与 EXT 裁定/说明文件；B01/B02/M01/M02 与 minors 的代码修复随后单独提交并请 A5 在同一代码审阅 delta 复审。本版不生成 prereg、不启动 run、physical_call_count=0。
+本版为计划 v1.6a（在 v1.6 基础上仅补 §7 run_mode=SMOKE 分析语义与 §16 M02 行引用），仅修改计划文件与 EXT 裁定/说明文件；B01/B02/M01/M02 与 minors 的代码修复随后单独提交并请 A5 在同一代码审阅 delta 复审。本版不生成 prereg、不启动 run、physical_call_count=0。
