@@ -2033,7 +2033,8 @@ class V4cFormalGateTests(unittest.TestCase):
 
 
 class FrozenCodeShaGateTests(unittest.TestCase):
-    """S1R4-M01：grid/run/merge 冻结包 code_sha 漂移 fail-closed；--allow-code-delta 显式放行。"""
+    """S1R4-M01/S1R4b-B01：确证包 code_sha 漂移任何 flag 都 fail-closed（禁止 --allow-code-delta 逃生）；
+    仅非确证（exploratory/legacy）包可用 --allow-code-delta 显式放行。"""
 
     @classmethod
     def setUpClass(cls):
@@ -2044,6 +2045,23 @@ class FrozenCodeShaGateTests(unittest.TestCase):
         _write_synthetic_v4_package(cls.match_root, code_sha=None)
         _write_synthetic_v4_package(cls.drift_root, code_sha="f" * 64)
         cls.current_code_sha = str(fv3.package_code_sha())
+        cls.exploratory_root = FROZEN  # legacy/exploratory：允许 --allow-code-delta 显式放行
+        frozen_s0_2 = json.loads(
+            (FROZEN / "frozen_family.json").read_text(encoding="utf-8")
+        )
+        cls.exploratory_code_sha = str(frozen_s0_2["code_sha"])
+        cls.real_confirmatory_roots = (
+            REPO_ROOT
+            / "research"
+            / "concorde_metaopt"
+            / "optimization_runs"
+            / "p4ra-s0-5-freeze-20261105T215000Z",
+            REPO_ROOT
+            / "research"
+            / "concorde_metaopt"
+            / "optimization_runs"
+            / "p4ra-s0-6-freeze-20261106T003500Z",
+        )
 
     @classmethod
     def tearDownClass(cls):
@@ -2067,22 +2085,36 @@ class FrozenCodeShaGateTests(unittest.TestCase):
         self.assertIn(s1.CODE_SHA_DRIFT_ERROR, str(ctx.exception))
         self.assertEqual(getattr(ctx.exception, "code", None), s1.CODE_SHA_DRIFT_ERROR)
 
-    def test_drift_allowed_with_explicit_flag(self):
+    def test_confirmatory_drift_cannot_escape_with_explicit_flag(self):
+        # S1R4b-B01：确证包 code_sha 漂移时 --allow-code-delta 不得逃生。
+        with self.assertRaises(s1.S1RunnerError) as ctx:
+            s1.load_frozen_package(
+                self.drift_root,
+                require_confirmatory=True,
+                require_code_sha_match=True,
+                allow_code_delta=True,
+            )
+        self.assertIn(s1.CODE_SHA_DRIFT_ERROR, str(ctx.exception))
+        self.assertIn("禁止 --allow-code-delta 逃生", str(ctx.exception))
+        self.assertEqual(getattr(ctx.exception, "code", None), s1.CODE_SHA_DRIFT_ERROR)
+
+    def test_exploratory_drift_allowed_with_explicit_flag(self):
+        # 非确证（legacy/exploratory）包仍允许显式 --allow-code-delta 只读/探索。
         package = s1.load_frozen_package(
-            self.drift_root,
-            require_confirmatory=True,
+            self.exploratory_root,
             require_code_sha_match=True,
             allow_code_delta=True,
         )
+        self.assertFalse(package["confirmatory_eligible"])
         identity = package["identity"]
         self.assertFalse(identity["code_sha_match"])
         self.assertTrue(identity["code_sha_delta_allowed"])
-        self.assertEqual(identity["code_sha"], "f" * 64)
+        self.assertEqual(identity["code_sha"], self.exploratory_code_sha)
         plan = s1.iter_run_plan(
             package, task_limit=1, meta_seeds=(0,), opt_seeds=(0,), arms=(m5.S1_RANDOM_BO,)
         )
         config = s1.build_grid_run_config(package, run_id="p4ra-s1-code-delta", plan=plan)
-        self.assertEqual(config["code_sha"], "f" * 64)
+        self.assertEqual(config["code_sha"], self.exploratory_code_sha)
         self.assertEqual(config["current_code_sha"], self.current_code_sha)
         self.assertFalse(config["code_sha_match"])
         self.assertTrue(config["code_sha_delta_allowed"])
@@ -2111,10 +2143,10 @@ class FrozenCodeShaGateTests(unittest.TestCase):
                 records=[record],
                 run_config=config,
             )
-            self.assertEqual(summary["code_sha"], "f" * 64)
+            self.assertEqual(summary["code_sha"], self.exploratory_code_sha)
             self.assertTrue(summary["code_sha_delta_allowed"])
             manifest = json.loads((outdir / "manifest.json").read_text(encoding="utf-8"))
-            self.assertEqual(manifest["code_sha"], "f" * 64)
+            self.assertEqual(manifest["code_sha"], self.exploratory_code_sha)
             self.assertEqual(manifest["current_code_sha"], self.current_code_sha)
             self.assertFalse(manifest["code_sha_match"])
             self.assertTrue(manifest["code_sha_delta_allowed"])
@@ -2128,9 +2160,9 @@ class FrozenCodeShaGateTests(unittest.TestCase):
                 ["grid", "--frozen", str(self.drift_root), "--grid", "formal", "--tasks", "1"]
             )
         self.assertIn(s1.CODE_SHA_DRIFT_ERROR, str(ctx.exception))
-        buffer = io.StringIO()
-        with contextlib.redirect_stdout(buffer):
-            code = s1._main(
+        # 确证包 + --allow-code-delta：仍必须 fail-closed（S1R4b-B01）。
+        with self.assertRaises(s1.S1RunnerError) as escape_ctx:
+            s1._main(
                 [
                     "grid",
                     "--frozen",
@@ -2142,8 +2174,26 @@ class FrozenCodeShaGateTests(unittest.TestCase):
                     "--allow-code-delta",
                 ]
             )
+        self.assertIn(s1.CODE_SHA_DRIFT_ERROR, str(escape_ctx.exception))
+        # 非确证（legacy/exploratory）包 + 显式 flag：允许放行。
+        buffer = io.StringIO()
+        with contextlib.redirect_stdout(buffer):
+            code = s1._main(
+                [
+                    "grid",
+                    "--frozen",
+                    str(self.exploratory_root),
+                    "--grid",
+                    "formal",
+                    "--tasks",
+                    "1",
+                    "--allow-legacy",
+                    "--allow-code-delta",
+                ]
+            )
         self.assertEqual(code, 0)
         payload = json.loads(buffer.getvalue())
+        self.assertEqual(payload["evaluation_mode"], "exploratory")
         self.assertFalse(payload["code_sha_match"])
         self.assertTrue(payload["code_sha_delta_allowed"])
         buffer = io.StringIO()
@@ -2183,21 +2233,38 @@ class FrozenCodeShaGateTests(unittest.TestCase):
             with self.assertRaises(s1.S1RunnerError) as ctx:
                 s1._main(base_argv + ["--outdir", str(Path(raw) / "denied")])
             self.assertIn(s1.CODE_SHA_DRIFT_ERROR, str(ctx.exception))
+            # 确证包 + --allow-code-delta：仍必须 fail-closed（S1R4b-B01）。
+            with self.assertRaises(s1.S1RunnerError) as escape_ctx:
+                s1._main(
+                    base_argv
+                    + ["--outdir", str(Path(raw) / "denied2"), "--allow-code-delta"]
+                )
+            self.assertIn(s1.CODE_SHA_DRIFT_ERROR, str(escape_ctx.exception))
+            # 非确证（legacy/exploratory）包 + 显式 flag：允许放行。
+            exploratory_argv = [
+                str(self.exploratory_root) if value == str(self.drift_root) else value
+                for value in base_argv
+            ]
             buffer = io.StringIO()
             with contextlib.redirect_stdout(buffer):
                 code = s1._main(
-                    base_argv
-                    + ["--outdir", str(Path(raw) / "allowed"), "--allow-code-delta"]
+                    exploratory_argv
+                    + [
+                        "--outdir",
+                        str(Path(raw) / "allowed"),
+                        "--allow-legacy",
+                        "--allow-code-delta",
+                    ]
                 )
             self.assertEqual(code, 0)
             outdir = Path(raw) / "allowed"
             config = json.loads((outdir / "run_config.json").read_text(encoding="utf-8"))
-            self.assertEqual(config["code_sha"], "f" * 64)
+            self.assertEqual(config["code_sha"], self.exploratory_code_sha)
             self.assertEqual(config["current_code_sha"], self.current_code_sha)
             self.assertFalse(config["code_sha_match"])
             self.assertTrue(config["code_sha_delta_allowed"])
             summary = json.loads((outdir / "run_summary.json").read_text(encoding="utf-8"))
-            self.assertEqual(summary["code_sha"], "f" * 64)
+            self.assertEqual(summary["code_sha"], self.exploratory_code_sha)
             self.assertFalse(summary["code_sha_match"])
             self.assertTrue(summary["code_sha_delta_allowed"])
             self.assertEqual(summary["physical_call_count_total"], 0)
@@ -2235,13 +2302,122 @@ class FrozenCodeShaGateTests(unittest.TestCase):
             with self.assertRaises(s1.S1RunnerError) as ctx:
                 s1._main(base_argv)
             self.assertIn(s1.CODE_SHA_DRIFT_ERROR, str(ctx.exception))
+            # 确证包 + --allow-code-delta：仍必须 fail-closed（S1R4b-B01）。
+            with self.assertRaises(s1.S1RunnerError) as escape_ctx:
+                s1._main(base_argv + ["--allow-code-delta"])
+            self.assertIn(s1.CODE_SHA_DRIFT_ERROR, str(escape_ctx.exception))
+            # 非确证（legacy/exploratory）包 + 显式 flag：可进入 merge（空分片 -> FAIL，非 drift）。
+            exploratory_argv = [
+                str(self.exploratory_root) if value == str(self.drift_root) else value
+                for value in base_argv
+            ]
             buffer = io.StringIO()
             with contextlib.redirect_stdout(buffer):
-                code = s1._main(base_argv + ["--allow-code-delta"])
+                code = s1._main(
+                    exploratory_argv + ["--allow-legacy", "--allow-code-delta"]
+                )
             self.assertEqual(code, 1)
             payload = json.loads(buffer.getvalue())
             self.assertEqual(payload["status"], "FAIL")
             self.assertNotIn(s1.CODE_SHA_DRIFT_ERROR, payload["error"])
+            # 该 FAIL 来自空分片校验（未进入 manifest 写盘），故不在此断言 code_sha 四字段；
+            # 四字段断言已由 grid/run 放行路径覆盖。
+
+    def test_real_confirmatory_packages_reject_delta_escape(self):
+        """S1R4b-B01 负控：真实确证包（S0-5/S0-6）code_sha 漂移时 --allow-code-delta 不得逃生。"""
+        checked = 0
+        with tempfile.TemporaryDirectory(prefix="s1-real-confirm-") as raw:
+            base = Path(raw)
+            for root in self.real_confirmatory_roots:
+                package = s1.load_frozen_package(root, require_confirmatory=True)
+                self.assertTrue(package["confirmatory_eligible"])
+                if str(package["identity"]["code_sha"]) == self.current_code_sha:
+                    continue
+                checked += 1
+                with self.subTest(package=root.name, gate="load"):
+                    with self.assertRaises(s1.S1RunnerError) as ctx:
+                        s1.load_frozen_package(
+                            root,
+                            require_confirmatory=True,
+                            require_code_sha_match=True,
+                            allow_code_delta=True,
+                        )
+                    self.assertIn(s1.CODE_SHA_DRIFT_ERROR, str(ctx.exception))
+                    self.assertEqual(
+                        getattr(ctx.exception, "code", None), s1.CODE_SHA_DRIFT_ERROR
+                    )
+                with self.subTest(package=root.name, gate="grid"):
+                    with self.assertRaises(s1.S1RunnerError) as ctx:
+                        s1._main(
+                            [
+                                "grid",
+                                "--frozen",
+                                str(root),
+                                "--grid",
+                                "formal",
+                                "--tasks",
+                                "1",
+                                "--allow-code-delta",
+                            ]
+                        )
+                    self.assertIn(s1.CODE_SHA_DRIFT_ERROR, str(ctx.exception))
+                with self.subTest(package=root.name, gate="run"):
+                    with self.assertRaises(s1.S1RunnerError) as ctx:
+                        s1._main(
+                            [
+                                "run",
+                                "--frozen",
+                                str(root),
+                                "--run-id",
+                                "p4ra-s1-real-confirm-run",
+                                "--arms",
+                                "RAND-BO",
+                                "--budgets",
+                                "64",
+                                "--k-values",
+                                "0",
+                                "--meta-seeds",
+                                "0",
+                                "--opt-seeds",
+                                "0",
+                                "--task-limit",
+                                "1",
+                                "--outdir",
+                                str(base / ("run-" + root.name)),
+                                "--allow-code-delta",
+                            ]
+                        )
+                    self.assertIn(s1.CODE_SHA_DRIFT_ERROR, str(ctx.exception))
+                with self.subTest(package=root.name, gate="merge"):
+                    with self.assertRaises(s1.S1RunnerError) as ctx:
+                        s1._main(
+                            [
+                                "merge",
+                                "--frozen",
+                                str(root),
+                                "--shards-root",
+                                str(base / ("shards-" + root.name)),
+                                "--outdir",
+                                str(base / ("merged-" + root.name)),
+                                "--run-id",
+                                "p4ra-s1-real-confirm-merge",
+                                "--arms",
+                                "RAND-BO",
+                                "--budgets",
+                                "64",
+                                "--k-values",
+                                "0",
+                                "--meta-seeds",
+                                "0",
+                                "--opt-seeds",
+                                "0",
+                                "--task-limit",
+                                "1",
+                                "--allow-code-delta",
+                            ]
+                        )
+                    self.assertIn(s1.CODE_SHA_DRIFT_ERROR, str(ctx.exception))
+        self.assertGreaterEqual(checked, 1)
 
 
 if __name__ == "__main__":

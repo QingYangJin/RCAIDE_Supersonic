@@ -185,8 +185,11 @@ def load_frozen_package(
 
     require_code_sha_match=True（CLI grid/run/merge 的默认门禁，S1R4-M01）时，冻结包
     frozen_family.code_sha 必须等于当前代码 family_v3.package_code_sha()；不一致时：
-    - allow_code_delta=False（默认）-> fail-closed 抛 S1_FROZEN_CODE_SHA_DRIFT；
-    - allow_code_delta=True -> 放行，身份/配置记录 code_sha_delta_allowed=true 与双 sha。
+    - 确证包（confirmatory_eligible=true 且 v4c 三块齐全，S1R4b-B01）-> 无论
+      allow_code_delta 与否一律 fail-closed 抛 S1_FROZEN_CODE_SHA_DRIFT；
+    - 非确证包（exploratory/legacy）：allow_code_delta=False（默认）-> fail-closed 抛
+      S1_FROZEN_CODE_SHA_DRIFT；allow_code_delta=True -> 放行，身份/配置记录
+      code_sha_delta_allowed=true 与双 sha。
     库默认 require_code_sha_match=False，保留 A6 分析层与只读复现的直接加载兼容。
     """
     package = Path(root)
@@ -279,6 +282,19 @@ def load_frozen_package(
     code_sha_match = bool(frozen_code_sha) and frozen_code_sha == current_code_sha
     code_sha_delta_allowed = False
     if require_code_sha_match and not code_sha_match:
+        if confirmatory:
+            # S1R4b-B01：确证包的 code_sha 漂移绝不允许 --allow-code-delta 逃生；
+            # 确证结论必须绑定与生成冻结包完全一致的代码（A5 phase4b blocker）。
+            drift = S1RunnerError(
+                CODE_SHA_DRIFT_ERROR
+                + ": 确证冻结包 code_sha 与当前代码不一致（frozen="
+                + repr(frozen_code_sha)
+                + "，current="
+                + current_code_sha
+                + "）；confirmatory 包禁止 --allow-code-delta 逃生，请用当前提交重新生成冻结包"
+            )
+            setattr(drift, "code", CODE_SHA_DRIFT_ERROR)
+            raise drift
         if allow_code_delta:
             code_sha_delta_allowed = True
         else:
