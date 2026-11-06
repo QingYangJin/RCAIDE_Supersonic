@@ -1,8 +1,8 @@
 # P4 路线A S3 执行计划：约束感知初始化与低成本适应消融
 
 - 文档路径：`docs/planning/p4_route_a_s3_execution_plan_20261107.md`
-- 版本：v1.2a（2026-11-07T06:10Z 文档状态勘误；v1.2 执行合同见提交 `f81f69b`，v1.0 初稿见提交 `7bef3cf`）
-- 状态：M0R2 已 APPROVE_FOR_S3_CODE（对象提交 `f81f69b`，A5 S3-M0R2 0 blocker/0 major/3 minor/1 observation）；本 v1.2a 仅做文档状态勘误（A5-S3M0R2-01..04），不改变任何执行合同；A5 在 M1 代码审阅时确认勘误
+- 版本：v1.2b（2026-11-07T06:35Z 评估记录 schema 冲突裁定 R-S3-03；v1.2 执行合同见提交 `f81f69b`，v1.0 初稿见提交 `7bef3cf`）
+- 状态：M0R2 已 APPROVE_FOR_S3_CODE（对象提交 `f81f69b`，A5 S3-M0R2 0 blocker/0 major/3 minor/1 observation）；v1.2a 为文档状态勘误（A5-S3M0R2-01..04）；本 v1.2b 为评估记录 schema 冲突裁定 R-S3-03（§2.4 与 §4.3/s3_prereg.py 命名差异，裁定 §4.3 为唯一 schema），不改变 19 字段合同；A5 在 M1 代码审阅时确认
 - 作者/唯一集成者：Lead（teammate 不得提交、不得写 GitHub）
 - 上游合同：Issue #7（D-P4-003，body 5,150 字符）；`docs/planning/p4_route_a_stage_improvement_plan_20261105.md` 的 S3 条；S1 回执 commentId 6684142041；S2 回执 commentId 6693991661；A5 S3-M0 审阅（CHANGES_REQUESTED，S3-M0-01..16）；A5 S3-M0R 审阅（CHANGES_REQUESTED，S3-M0R-01..09，对象 dd2bab2）；A4 矩阵 v1.1（NEW-01..09）
 - 基线提交：`8da84fc105755825561829d4fb371f2baea57438`（research/p4-route-a-s3 的父提交，S2 docs closeout）；v1.0 计划提交 `7bef3cf8218df2328d997dbb12e4dd626704005f`；v1.1 提交 `dd2bab2`（父 7bef3cf）；v1.2 提交 `f81f69b0cbf27a26e3e17be34844df3a1147a297`（随附 `research/concorde_metaopt/evidence/s3/hash_vectors.json`，12,472 B sha256 `bde487fb6ed49768ca76e328a31c0efab77d2bd39d41c0ac99def4bb8e876203`）；v1.2a 为文档状态勘误提交
@@ -194,7 +194,7 @@ v1.0 的 12D 全维椭球构造经 A5 独立探针与 Lead 数值探针证明不
 - 评估器：`make_synthetic_task_evaluator(task)`（S3 自实现，纯解析；不调用 RCAIDE/求解器），返回 objective/constraints/feasibility/valid；每次调用记账为 `synthetic_evaluation`。
 - 计数合同：每 run 的 `billable_evals = B` 必须精确成立（support K 次 + 新初始 8−K 次 + 主搜索 B−8 次）；support 评价在每 run 开头真实调用评估器：首次访问记 `cache_hit=false` 并计入 synthetic_call_count；同一 run 内重复访问同一 support 设计记 `cache_hit=true` 且不重复计费；cache 不得跨 run 复用。DE 臂同样恰好 B 次。
 - `physical_call_count = 0` 字段必须存在且为 0；同时记录 `synthetic_call_count = B` 与 `solver_processes_started = 0`；任何真实子进程/网络调用即 fail-closed。
-- 评估记录逐条包含：`eval_index/design_u/objective/constraints/feasible/valid/cache_hit/billable/phase/synthetic`；预算超限或记录数不符立即终止该 run 并标 FAILED_BUDGET_MISMATCH。
+- 评估记录字段以 §4.3 为唯一 schema（`evaluation_index/design/f/g1/g2/feasible/source/phase/holdout_truth_read/wall_s/record_digest`，共 19 字段）；§2.4 原列名为语义清单，映射为：`eval_index→evaluation_index`、`design_u→design`、`objective→f`、`constraints→(g1,g2)`、`valid` 由 box 与数值有限性派生、`synthetic` 由 evidence_scope 与物理计数承担、`cache_hit/billable` 由记录数=B 与 `source` 分布断言承担（R-S3-03）。预算超限或记录数不符立即终止该 run 并标 FAILED_BUDGET_MISMATCH。
 
 ### 2.5 家族校准协议（M1 阶段，仅 meta_validation，不碰 meta_test）
 
@@ -519,6 +519,7 @@ v1.0 的 12D 全维椭球构造经 A5 独立探针与 Lead 数值探针证明不
 | v1.1 | 2026-11-07 | 本文件 | 处置 A5 S3-M0（1 blocker + 10 major + 5 minor）与 A4 DEV-01..09：线性多面体族、phase-scoped 数据边界、gap_to_reference/MAE、OOD 网格、7 文件 code_sha/analysis_plan_digest、episode/ANIL 合同、哈希 canonical 与固定向量、FD 门合同、fig10 图⑦、BO 随机流合同、Wilcoxon ties/zeros、R-S3-01 授权链、R-S3-02 降网格审批、10 图映射、预算记账 6,900 runs |
 | v1.2 | 2026-11-07 | 本文件 + `research/concorde_metaopt/evidence/s3/hash_vectors.json` | 处置 A5 S3-M0R-01..09 与 A4 NEW-01..09：C1/C2 comparator 改 CON−OBJ、提交哈希固定向量与完整算法（7 文件 code_sha/analysis_code_sha/task_ids_sha256/package_sha256）、R-S3-02 算术更正 3,780/362,880、phase-scoped 与 campaign 语义、RANDOM 多样性统一、决策枚举互斥穷尽、radius_base→delta1_base、episode 消耗披露 |
 | v1.2a | 2026-11-07 | 本文件 | 文档状态勘误（A5 S3-M0R2-01..04）：版本/状态/基线提交、§0.3/§10/§11 补 M0R2 门与实际结论、§6.2 注 V11 原始字节语义与 V02/V03 合成输入、§16 注 params_digest 旧承诺处置、§20 处置表；不改变执行合同 |
+| v1.2b | 2026-11-07 | 本文件 | R-S3-03 评估记录 schema 冲突裁定：§2.4 语义清单映射到 §4.3 的 19 字段 schema；billable/cache_hit 由记录数与 source 分布断言；不新增字段、不改 A5 M0R2 已批准合同 |
 
 ## 15. Issue #7 对齐表
 
@@ -570,6 +571,7 @@ v1.0 的 12D 全维椭球构造经 A5 独立探针与 Lead 数值探针证明不
 - **R-S3-01（S3 授权链）**：Issue #7 正文授权路线 A“算法代码 + 全合成解析任务的训练与正式离线对照（physical_call_count=0 硬隔离）”，§2 将 S3 列为“S1/S2 验收后条件开启”，§4 明确“Leader 负责 S0→S3 阶段批准”。S1、S2 均已完成并经 A5 APPROVE 与回执发布，Issue #7 无相反指令。据此裁决：(a) S3 的 M0–M2（设计、代码、单测、校准、prereg 冻结）在 Issue #7 授权范围内推进，不需要新的负责人预算；(b) M3 正式 run 前 Lead 必须再次复核 Issue #7/#4 是否有相反指令，确认后签发书面授权，并在授权中写明依据；(c) S3 阶段验收仍由负责人签发，本计划与回执不得声称已获阶段验收；(d) 若负责人发布任何相反指令，S3 立即停止；(e) S2 closeout 中“S3 需负责人书面授权”的保守表述以本裁决为准并记录于回执。
 - **R-S3-02（降网格审批）**：若 M2 计时试点外推正式段 > 5,400 s，Lead 在 prereg 冻结前书面签发 R-S3-02，按 §4.2 降 opt_seed 10→5；该条件在 v1.1 中预先写明，A5 M2 核验，冻结后不得再降级；若不触发则必须保持 10 opt_seed。
 - A4 DEV-01 → R-S3-01；(DEV-02/03/04) → §5.1；(DEV-05) → R-S3-02 与 §4.2；(DEV-06) → §3.2 排除；(DEV-07) → §3.2 Wave A 多样性；(DEV-08) → §5.2 决策映射；(DEV-09) → 头部状态与 §0.1 一致（v1.1 为设计修订、代码未开始、A5 M0R 待审；v1.2 处置见 §18/§19）。
+- **R-S3-03（评估记录 schema 冲突裁定，v1.2b）**：A4/Lead 核查发现 §2.4 的逐条字段列表（eval_index/design_u/objective/constraints/valid/cache_hit/billable/phase/synthetic）与 §4.3 及 s3_prereg.py 的 19 字段 schema 命名不一致。裁定：**§4.3 + s3_prereg.py 为唯一权威 schema**；§2.4 列表为语义清单（映射见修订后的 §2.4 条目），不新增字段；`billable` 由记录数=B 与 `source` 分布（support 5 / initial 3 / search B-8）断言；`cache_hit` 仅在 run 内部处理，若发生重复访问须在 `scope_notes` 披露；本裁定不改变 A5 M0R2 已批准的 19 字段合同，A5 在 M1 代码审阅时确认。
 - 旧件只读、0 物理、不合并 main、仅 Lead 写 GitHub 的边界贯穿全阶段；违反即 fail-closed。
 
 ## 18. A5 S3-M0R findings 处置（v1.2）
@@ -607,3 +609,4 @@ v1.0 的 12D 全维椭球构造经 A5 独立探针与 Lead 数值探针证明不
 | A5-S3M0R2-02 | minor | §6.2 增注 V02/V03 的 files 为合成固定输入；M1 测试分两类：(i) 向量算法自检；(ii) 用仓库真实 7 个代码文件重算 code_sha/analysis_code_sha 并与 prereg 记录一致（A5 明确要求） |
 | A5-S3M0R2-03 | minor | 本文件 L4/L5/L8 状态更新；§0.3/§10/§11 补 M0R2 门与实际结论；§14 增 v1.2a 行 |
 | A5-S3M0R2-04 | observation | §16 注：params_digest/reference_cert_digests 为旧承诺，以 §6.1 实际枚举为准，不新增摘要 |
+| R-S3-03 | major（Lead 发现，v1.2b） | §2.4 逐条字段列表与 §4.3/s3_prereg.py 19 字段 schema 命名冲突 → 裁定 §4.3/s3_prereg 为唯一 schema；§2.4 改为语义映射；billable 校验记录数=B 与 source 分布；cache_hit 仅内部处理并在 scope_notes 披露；A5 M1 代码审阅确认 |
