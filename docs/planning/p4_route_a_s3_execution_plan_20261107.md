@@ -1,8 +1,8 @@
 # P4 路线A S3 执行计划：约束感知初始化与低成本适应消融
 
 - 文档路径：`docs/planning/p4_route_a_s3_execution_plan_20261107.md`
-- 版本：v1.3（2026-11-07T08:05Z 执行层并行合同 R-S3-05；v1.2b 为评估记录 schema 裁定 R-S3-03；v1.2 执行合同见提交 `f81f69b`，v1.0 初稿见提交 `7bef3cf`）
-- 状态：M0R2 已 APPROVE_FOR_S3_CODE（对象提交 `f81f69b`，A5 S3-M0R2 0 blocker/0 major/3 minor/1 observation）；v1.2a 为文档状态勘误（A5-S3M0R2-01..04）；本 v1.2b 为评估记录 schema 冲突裁定 R-S3-03（§2.4 与 §4.3/s3_prereg.py 命名差异，裁定 §4.3 为唯一 schema），不改变 19 字段合同；A5 在 M1 代码审阅时确认；本 v1.3 为执行层并行合同裁定（R-S3-05：W=8 campaign 并行、方法合同/网格/schema/端点/统计全部不变），待 A5 M0R3 以限定 diff 确认后作为 M1 基线
+-版本：v1.3a（2026-11-07T00:45Z 执行层并行验收与预算口径重裁 R-S3-05A、R-S3-05B（书面接受保守外推 5,509.562 s）+ FORMAL 模型/FD/K 语义 R-S3-06 + R-S3-07 FORMAL train=0 与 gate/model_manifest 绑定；v1.3 对象 36e5820 被 A5 M0R3 判 CHANGES_REQUESTED；v1.2b 为 R-S3-03；v1.2 见 f81f69b，v1.0 见 7bef3cf）
+-状态：M0R2 已 APPROVE_FOR_S3_CODE（对象 f81f69b）；M0R3 对 v1.3（36e5820）判 CHANGES_REQUESTED（2 blocker/4 major/2 minor/1 info：execution_report schema 三方冲突、W=8 微基准不满足 1/8±30% 验收、CPU 预算无硬上限与批准、缺 M2 W=8 必过门/线程固定/fallback、6,900 与 3,780 网格未单值化、M0R3 状态互斥）；本 v1.3a 按 R-S3-05A（并行验收改吞吐外推、sum_run_wall 硬上限 28,000 s、M2 W=8 稳态试点门、fallback、确定性 60-run 子集、单值 3,780 网格）与 R-S3-06（FORMAL 加载冻结模型不重训、FD 门每模型 32 坐标、FORMAL K=5）修订；待 A5 M0R3R 以限定 diff 批准前 M1 不得启动。
 - 作者/唯一集成者：Lead（teammate 不得提交、不得写 GitHub）
 - 上游合同：Issue #7（D-P4-003，body 5,150 字符）；`docs/planning/p4_route_a_stage_improvement_plan_20261105.md` 的 S3 条；S1 回执 commentId 6684142041；S2 回执 commentId 6693991661；A5 S3-M0 审阅（CHANGES_REQUESTED，S3-M0-01..16）；A5 S3-M0R 审阅（CHANGES_REQUESTED，S3-M0R-01..09，对象 dd2bab2）；A4 矩阵 v1.1（NEW-01..09）
 - 基线提交：`8da84fc105755825561829d4fb371f2baea57438`（research/p4-route-a-s3 的父提交，S2 docs closeout）；v1.0 计划提交 `7bef3cf8218df2328d997dbb12e4dd626704005f`；v1.1 提交 `dd2bab2`（父 7bef3cf）；v1.2 提交 `f81f69b0cbf27a26e3e17be34844df3a1147a297`（随附 `research/concorde_metaopt/evidence/s3/hash_vectors.json`，12,472 B sha256 `bde487fb6ed49768ca76e328a31c0efab77d2bd39d41c0ac99def4bb8e876203`）；v1.2a 为文档状态勘误提交
@@ -79,7 +79,8 @@ Issue #7 §2/§4 规定：S3（约束感知初始化与方法效率消融）在 
 | M0 设计门 | 本计划 v1.0（7bef3cf）+ S3 阶段开启记录 | A5 实际结论：CHANGES_REQUESTED（S3-M0-01..16） |
 | M0R 修订门 | v1.1 限定 diff（相对 7bef3cf，对象 dd2bab2） | A5 实际结论：CHANGES_REQUESTED（S3-M0R-01..09） |
 | M0R2 复审门 | v1.2 限定 diff（相对 dd2bab2：计划 + hash_vectors.json，对象 f81f69b） | A5 实际结论：APPROVE_FOR_S3_CODE（task-256 rev63，0B/0M/3m/1obs） |
-| M0R3 执行层修订门 | v1.3 限定 diff（相对 f81f69b：计划新增并行执行合同；对象=本提交） | A5: APPROVE_FOR_S3_CODE_AMENDED（并行合同） |
+| M0R3 执行层修订门 | v1.3 限定 diff（相对 f81f69b，对象 36e5820） | A5 实际：CHANGES_REQUESTED（2B/4M/2m/1i；B01 execution_report schema 冲突、B02 W=8 验收不达标） |
+| M0R3R 执行层重裁复审门 | v1.3a 限定 diff（相对 f81f69b，对象=本提交） | A5: APPROVE_FOR_S3_CODE_AMENDED（R-S3-05A + R-S3-06） |
 | M1 代码/校准门 | 家族实现+校准报告+ANIL+臂+runner+prereg 生成器+测试 | A5: APPROVE_FOR_S3_FORMAL（代码审阅） |
 | M2 预注册门 | 新族冻结包、prereg JSON、FD/梯度门、冻结记录 | A5: APPROVE_FOR_S3_RUN |
 | M3 正式 run 授权 | Lead 书面授权（task/worktree/out_dir/预算/停止规则） | Lead 签发 |
@@ -268,6 +269,8 @@ v1.0 的 12D 全维椭球构造经 A5 独立探针与 Lead 数值探针证明不
 - 训练（FOMAML）：`meta_train` 60 任务；每 outer step 取 8 个 episode；support K_train、query 64；内循环 SGD lr=0.01、5 步、loss=MSE(3 输出等权)；外循环 Adam lr=1e-3；outer_steps=200；first_order=True；每 meta_seed 一个模型。
 - 训练（ANIL 参数分区，A5 S3-M0-06 处置）：模型参数分 body（除末层外全部）与 head（输出层 weight 3×64 + bias 3）；内循环只更新 head（body 逐位不变，单测断言）；外循环更新**全部参数**：head 走适配后 query loss 的梯度，body 走 query loss 对冻结特征的梯度（即 ANIL 的外循环更新 body，但不通过内循环二阶路径）；优化器/学习率/预算/episode 序列与 FOMAML 逐位相同。
 - 模型产物：`evidence/s3/models/fomaml_meta_<seed>.json`、`anil_meta_<seed>.json`（确定性 JSON：参数按名字升序、float 用最短 round-trip repr、LF、无时间戳）+ `model_manifest.json`（每模型 sha256、config、训练统计、episode_bank_sha256）；M2 冻结。
+- M2 冻结后正式 run **只加载、不重训**（R-S3-06）：runner 从 prereg.models 的仓库相对路径加载 fomaml/anil 各 3 个冻结模型并校验 sha256；冻结 model_manifest.json 原样复制到 run 目录并追加 verification 块（loaded_from_prereg=true、prereg_models_sha256、verified_utc）；SMOKE 允许 run 内重训微型模型并 DISCLOSED。
+- **FORMAL 记录语义（R-S3-07）**：正式 run `record_counts.train=0`、`status_counts.train={OK:0,FAILED:0}`、`run_records` 不含 train 行；M2 训练（2 模型 × 3 meta_seed × 200 step = 1,200 训练记录）属 M2 证据，存于 evidence/s3/models/ 与 episode banks，不进正式 run；SMOKE 仍原地训练 2×len(meta_seeds)×outer_steps 并 DISCLOSED models_retrained_in_run。
 - 训练统计：loss 曲线（每 10 step）、wall_s、峰值内存、episode digest 抽样；`train_wall_s` 与 `peak_memory_mb` 写入 run_summary 与模型 manifest。
 - SMOKE 训练：`outer_steps=2`、`meta_seeds=(0,)`、episode bank 16 条、训练/评估预算按 SMOKE 覆盖；用于 e2e 与梯度门，不进入正式统计；SMOKE 语义见 §4.5。
 - 训练不得使用 meta_validation/meta_test/negative control；校准（§2.5）只使用 meta_validation 的几何统计，不训练模型。
@@ -276,24 +279,34 @@ v1.0 的 12D 全维椭球构造经 A5 独立探针与 Lead 数值探针证明不
 
 | 段 | 网格 | run 数 | 合成评估数 | 用途 |
 |---|---|---|---|---|
-| 主统计 | 20 task × 5 臂 × 2 预算 × 10 opt_seed × 3 meta_seed | 6,000 | 576,000 | C1/C2 主/次推断 |
+| 主统计（R-S3-02 后正式段） | 20 task × 5 臂 × 2 预算 × 5 opt_seed × 3 meta_seed | 3,000 | 288,000 | C1/C2 主/次推断 |
 | 负控制 | 10 task × 5 臂 × 2 预算 × 3 opt_seed × 1 meta_seed | 300 | 28,800 | 标签打乱诊断，不进推断 |
 | OOD | 10 task × 5 臂 × 2 预算 × 3 opt_seed × 1 meta_seed | 300 | 28,800 | 描述性 OOD 诊断（fig7） |
-| 确定性 | 2 task × 5 臂 × 2 预算 × 5 opt_seed × 1 meta_seed = 100/次（每次 9,600 次评估），共 3 次 | 300 | 28,800 | 确定性子集，不进推断 |
-| 合计（正式段） | — | 6,900 | 662,400 | 总墙钟 <= 7,200 s |
+| 确定性 | R-S3-05A 预注册规则：每 (arm,shard) 1 run（40）+ 每臂补 2 run（20）= 60/次 × 3 次 | 180 | 17,280 | 确定性子集，不进推断 |
+| 合计（正式段唯一网格） | — | 3,780 | 362,880 | campaign 墙钟 ≤ 7,200 s；sum_run_wall ≤ 28,000 s |
 | K-sweep 诊断（M1，预 run） | 4 task × 5 臂 × B=64 × 3 opt_seed × 1 meta_seed × K∈{0,1,3,5} | 240 | 15,360 | fig2 数据，DEVELOPMENT_VALIDATION_ONLY，不进正式段 |
+
+- **名义上限网格 vs 正式唯一网格（A5-S3M0R3-05 处置）**：opt_seed=10 的 6,000/576,000（加负控/OOD/确定性后 6,900/662,400）仅为名义上限，任何情况下不得执行；R-S3-02 触发后正式段唯一合法网格 = 3,780 runs/362,880 evals，prereg 冻结该单值并由 build/verify 断言。
+- 主统计 5 opt_seed 由 R-S3-02 降网格生效（M2 计时试点串行外推 ≈23,400 s > 5,400 s，必触发）；负控/OOD 不随 opt_seed 降级。
 
 - 负控制只用一个 meta_seed（A5 S3-M0-13 处置）：标签置换破坏 support→query 关系，模型间差异不是该诊断的目标；固定 meta_seed=0 以控制成本，并在 prereg/报告披露“负控制不用于跨模型比较”。
 - OOD 描述性（A5 S3-M0-04 处置）：OOD 段只作描述（fig7、描述统计），不进入 C1/C2；OOD 任务定义见 §2.2。
-- 计时试点：M2 在 meta_validation 上跑 1 task × 5 臂 × B=128 × 1 opt × 1 meta = 5 runs，记录墙钟与峰值，外推正式段；若预计正式段 > 5,400 s（留 25% 余量），则 Lead 在 prereg 冻结前签发 **R-S3-02 降网格批准**：opt_seed 10→5，主统计 3,000 runs/288,000 evals，负控制 300/28,800（每 task 3 opt_seed，不随 opt_seed 降级），OOD 300/28,800，确定性 180 runs/17,280 evals（3×60 runs），合计 **3,780 runs/362,880 evals**（A5-S3M0R-04 更正）。R-S3-02 必须写入 prereg 与计划 §17 处置表，A5 M2 核验其与本节条件一致；冻结后不得再降级。
+- 计时试点与 R-S3-02（A5-S3M0R-04/-05、R-S3-05A）：M2 在 meta_validation 上跑 1 task × 5 臂 × B=128 × 1 opt × 1 meta = 5 runs 记录墙钟与峰值，并执行 §4.2.1 的 W=8 稳态试点门；按实测外推正式段（3,780 runs）> 5,400 s（串行实测 ≈23,400 s）→ **R-S3-02 必触发**，Lead 在 prereg 冻结前书面签发 R-S3-02（opt_seed 10→5）；正式段唯一网格 3,780/362,880，R-S3-02 写入 prereg 与 §17 处置表，A5 M2 核验，冻结后不得再降级。
 - 正式 run 必须使用 clean worktree；run 目录：`<EXT>/p4-route-a/a2/s3_formal/s3-formal-<UTC>/`；不得写仓库；跑完由 Lead 做哈希核验与打包。
 - 运行停止规则：单 run 墙钟 > 60 s 或峰值 > 8,192 MB → 立即停止整个 run，报 RESOURCE_LIMIT，不重试；总墙钟 > 7,200 s → 停止并交部分产物；任何物理/网络调用 → fail-closed；任何预算不符 → 该 run FAILED（不重试），失败率 > 1% 时停止并报 A5。
-- 确定性（A5 S3-M0-12 处置）：正式 run 之后执行 3 次确定性重跑，子集 = meta_test 前 2 个 task（按 task_id 排序）× 5 臂 × 2 预算 × 5 opt_seed（0..4）× 1 meta_seed(0) = 100 runs/次；要求 `run_records` 逐记录 core digest 一致（core 排除 `wall_s`/`peak_memory_mb`/时间戳字段）；同时要求 3 次 `run_config` 的网格字段一致、`analysis` 对同一产物生成 byte-identical aggregate（排除 `generated_utc`）；子集与 opt_seed 降网格联动规则：若 R-S3-02 降网格，子集 opt_seed 改为 {0,1,2} → 60 runs/次、180 runs 总计，并在 prereg 写死。披露“确定性仅覆盖该分层子集，不是全网格”。
-- 运行产物：run_config.json、run_summary.json、run_records.jsonl、model_manifest.json、data_manifest.json、fd_or_gradient_gate.json、execution_report.json（v1.3）、negative_control_{records.jsonl,summary.json}、determinism/{r1,r2,r3}/、analysis/（见 §5）、logs/。
-- **执行层并行合同（v1.3，R-S3-05 裁决）**：方法合同（臂/评分/BO 配置/candidate_count=512/candidate_pool=123/初始 3 点/support 5 缓存/预算 B/K/端点/统计/schema）全部不变；唯一变化是 campaign 层以 W=8 并行执行独立 run。分片规则 `shard = int(sha256(canonical_json(run_key))[:8], 16) % W`，`run_key={arm_id,task_id,budget,opt_seed,meta_seed}`；合并按 `(arm_id,task_id,budget,opt_seed,meta_seed)` 规范排序；worker 编号不得进入 RNG/记录/digest。W=1 必须与串行逐位等价（默认路径）。
+- 确定性（A5 S3-M0-12/-07 处置 + R-S3-05A §6）：正式 run 之后执行 3 次确定性重跑，每次 60 runs（3 次共 180 runs/17,280 evals）：(a) 对 5 臂 × 8 shard 每个组合，在 meta_test 网格中按 canonical run_key sha256 升序取第一个匹配 run（40）；(b) 每臂再取 2 个未选 run，优先不同 budget/task/opt_seed（20）；(c) 子集按 canonical run_key 排序，determinism.subset_rule 与 subset_run_keys_sha256 写入 prereg（M2 冻结），M2 断言子集覆盖 5 臂 × 8 shard 全组合，缺组合 fail-closed。要求 run_records 逐记录 core digest 一致（core 排除 wall_s/peak_memory_mb/时间戳）、3 次 run_config 网格字段一致、analysis 对同一产物字节级一致 aggregate（排除 generated_utc）；披露确定性仅覆盖该预注册子集，不是全网格。
+- 运行产物：run_config.json、run_summary.json、run_records.jsonl、model_manifest.json、data_manifest.json、fd_or_gradient_gate.json、execution_report.json（schema v2）、negative_control_{records.jsonl,summary.json}、determinism/{r1,r2,r3}/、analysis/（见 §5）、logs/。
+- **执行层并行合同（v1.3 R-S3-05；v1.3a 按 R-S3-05A 修订）**：方法合同（臂/评分/BO 配置/candidate_count=512/candidate_pool=123/初始 3 点/support 5 缓存/预算 B/K/端点/统计/schema）全部不变；唯一变化是 campaign 层以 W=8 并行执行独立 run。分片规则 shard = int(sha256(canonical_json(run_key))[:8], 16) % W，run_key={arm_id,task_id,budget,opt_seed,meta_seed}；合并按该 5 元组规范排序；worker 编号不得进入 RNG/记录/digest。W=1 为默认路径，必须与串行逐位等价。线程固定：OMP/MKL/OPENBLAS/NUMEXPR/VECLIB=1，worker 与主进程 torch.set_num_threads(1)。
 - 确定性扩展：单测固定向量断言 W∈{1,2,3,8} 下同一 run_key 集合的 record_digest 序列与 aggregate 完全一致；正式 run 的确定性子集（本节上文）同样在 W=8 下执行 3 次；`compare_deterministic_runs` 语义不变。
-- 计时口径：每个 run 在自己的子进程内测 `wall_s`/`peak_memory_mb`（进入记录）；父进程记录 campaign 并行墙钟 `campaign_wall_s`、`total_cpu_seconds=Σ run wall_s`、`max_run_wall_s`、`max_peak_memory_mb`；`resource_limits.total_wall_s=7,200` 解释为 **campaign 并行墙钟**，单 run 上限 60 s/8,192 MB 仍是单 run 约束。产物新增 `execution_report.json`（schema `p4ra-s3-execution-report-v1`：parallel_workers、execution_rule、shard_runs_sha256、per_shard_counts、run_count_requested/completed、campaign_wall_s、total_cpu_seconds、max_run_wall_s、max_peak_memory_mb、stop_reason、physical_call_count=0、parallel_note），并纳入 `data_manifest.artifact_sha256`。prereg 不新增字段；W 与规则写入 `prereg.campaign.rules` 字符串与 run_config/run_summary 的 `scope_notes`（确定性文本，不含实测值），实测值只在 execution_report。
-- 实测依据（2026-11-07T07:49Z，A1 微基准 8 runs、1 meta_validation task、W=1 vs W=8）：W=1 wall 49.542 s；W=8 cold wall 27.968 s（含一次性池启动 14.694 s，扣除后 compute-only 13.28 s，已接近最慢单 run 12.8 s 的下界）；record_digest 每 run 逐位一致、status/record_counts 全等、total_cpu_seconds 49.54 vs 49.91（无重复工作）、8 worker 峰值上界 2,289.8 MB < 8 GB、无跨 run 状态泄漏。外推：6,900 runs 串行 ≈42,700 s > 5,400 s，**R-S3-02 必触发**；降网格 3,780 runs 串行 ≈23,400 s，W=8 稳态 ≈2,940 s < 7,200 s；6 个 campaign 各建池约 90 s（<1.5% 预算）。
+- 计时口径与硬上限（A5-S3M0R3-03 处置）：每个 run 在子进程内测 wall_s/peak_memory_mb；父进程记录 campaign 并行墙钟 campaign_wall_s、**sum_run_wall_seconds = Σ 单 run wall_s（不是 process CPU 时间）**、max_run_wall_s、max_peak_memory_mb。resource_limits.total_wall_s=7,200 解释为 campaign 并行墙钟；**resource_limits.sum_run_wall_limit_s=28,000**（= 实测 23,400 s 的 1.20×）为 Σ 单 run wall 硬上限；任一超限 → RESOURCE_LIMIT 停止整个 run、不重试、交部分产物并披露（stop_reason=S3_SUM_RUN_WALL_LIMIT 或 S3_CAMPAIGN_WALL_LIMIT）。产物 execution_report.json 唯一 schema p4ra-s3-execution-report-v2（18 字段：schema_version、campaign_id、run_mode、created_utc、parallel_workers、execution_rule、shard_runs_sha256、per_shard_counts、run_count_requested、run_count_completed、campaign_wall_s、sum_run_wall_seconds、max_run_wall_s、max_peak_memory_mb、sum_run_wall_limit_s、stop_reason、physical_call_count、parallel_note），由 s3_runner 写入、validate_run_artifacts 精确键集校验 + 负控，并纳入 data_manifest.artifact_sha256；W 规则写入 campaign.rules 与 scope_notes 确定性文本。
+- 实测依据（R-S3-05A 吞吐外推验收，bench_v13a）：research/concorde_metaopt/evidence/s3/bench/bench_v13a.json（run1）与 bench_v13a_run2.json（run2），27,816 / 27,812 B，sha256 60e22cc9…c06c（run1）/ 5e9f2655…8651（run2）；W=1 wall 177.817 / 176.431 s、W=8 wall 42.267 / 43.727 s（5 臂 × 3 meta_validation task × B∈{64,128}，30 runs，同一 run_key 集合）；W=8 稳态吞吐 0.7098 / 0.6861 runs/s → 3,780 runs 外推 3,518.653–3,712.731 s（吞吐）/ 5,325.653–5,509.562 s（保守；run2 保守值落入 (5,400,7,200] 区间，由 R-S3-05B 书面接受，硬顶 7,200 s 不变）；record_digest 逐位一致 true（30/30，两轮均 first_divergence_index=null）；8 worker 峰值和 2,448.78 / 2,449.03 MB < 8,192 MB；连续两次 wall 差异 0.779%（W1）/ 3.453%（W8） <20%。旧 8-run bench（6,274 B sha 0260237f…）仅历史证据，不再作为判据。
+
+### 4.2.1 W=8 稳态试点门与 fallback（M2 必过，不可跳过；A5-S3M0R3-02/-04 处置）
+
+- 时点与规模：模型训练 + 校准 + FD 门完成后、prereg 冻结前，在 meta_validation 上跑 3 task × 5 臂 × B=128 × 1 opt_seed × 1 meta_seed = 15 runs，W=1 与 W=8 各一次（同一 run_key 集合）。
+- 判据（全 PASS 才可冻结 prereg）：(i) record_digest 序列逐位一致、status/record_counts 全等、合并顺序一致；(ii) 按 W=8 稳态吞吐（排除一次性池启动）外推 3,780 runs ≤ 5,400 s（(5,400, 7,200] 需 Lead 书面接受；>7,200 不得启用 W=8）；(iii) 8 worker 峰值之和 < 8,192 MB、单 run 峰值 < 8,192 MB；(iv) 连续 2 次同集合 campaign wall 差异 < 20%；(v) 线程环境固定 OMP/MKL/OPENBLAS/NUMEXPR/VECLIB=1 与 torch.set_num_threads(1)。
+- 产物：evidence/s3/gate/w8_pilot_gate.json（schema p4ra-s3-w8-pilot-gate-v1：w1_wall_s、w8_wall_s、runs_per_second、projected_3780_wall_s、record_digest_equal、peak_memory_mb、threads_env、verdict），纳入 M2 证据与 A5 M2 核验。
+- Fallback（45 min 内不达标，Lead 书面重裁，只能执行一次）：(a) W=4：campaign 墙钟 7,200 s、sum_run_wall 28,000 s 不变；或 (b) 串行 W=1：resource_limits.total_wall_s 改 25,200 s 并重新授权（3,780 runs ≈23,400 s，留 7.7% 余量），prereg 冻结前写入并由 A5 核验；正式 run 中不得切换并行度。
 
 ### 4.3 run 产物 schema（v1，单源定义）
 
@@ -301,24 +314,31 @@ v1.0 的 12D 全维椭球构造经 A5 独立探针与 Lead 数值探针证明不
 - `run_config.json` 必需字段：schema_version, run_id, run_mode, prereg_id, prereg_digest, analysis_plan_digest, code_sha, family_package, task_ids_sha256, references_sealed_sha256, data_boundary, models, arms, budgets, seeds, episode_bank, evaluation_grid, fd_or_gradient_gate, record_counts, record_schemas, resource_limits, physical_call_count, evidence_scope, scope_notes（可选 smoke_overrides）。
 - `run_records.jsonl` 每行（评估层）：schema_version, run_id, task_id, split, arm_id, budget, opt_seed, meta_seed, evaluation_index, design, f, g1, g2, feasible, source（support/initial/bo/de）, phase, holdout_truth_read, wall_s, record_digest；训练层：schema_version, run_id, meta_seed, outer_step, loss, wall_s, train_episode_digest, record_digest；训练记录字段集按 §4.1（不含 task_id/split，边界由 episode bank 承载）。
 - `run_summary.json` 必需字段：schema_version, run_id, run_mode, created_utc, status, record_counts, status_counts, per_run, models, resources, determinism, fd_or_gradient_gate_sha256, data_manifest_sha256, negative_controls, physical_call_count, evidence_scope, environment, scope_notes。
+- v1.3a 语义：FORMAL 的 run_summary.models 为 prereg 冻结条目（loaded=true，含 sha256/path），resources.auxiliary_compute 披露 models_source=PREREG_FROZEN、model_training_episodes=9,600、fd_gate_episode_reruns=128（均属 M2，不计本次 run）。
+- v1.3a（R-S3-07）：FORMAL `record_counts={train:0,eval:362,880,total:362,880}`、`status_counts.train={OK:0,FAILED:0}`；若出现 train 记录则 analysis fail-closed；SMOKE 按实际训练记录计。
 - 资源字段：`per_run`（arm_id, task_id, budget, opt_seed, meta_seed, status, wall_s, peak_memory_mb）、`resources`（total_wall_s, max_wall_s, max_peak_memory_mb, auxiliary_compute, resource_limits）。
 - `data_manifest.json`：data_boundary（phase 标志）、meta_train/meta_validation/meta_test/negative_control/ood 的 task_id 列表与 sha、references_sealed_sha256、holdout_truth_read_phase（仅 EVAL）、physical_call_count、产物 sha 列表。
+- v1.3a：data_manifest.artifact_sha256 必须包含 execution_report.json 的 sha256，否则产物不完整。
 - `model_manifest.json`：每模型 arm_type（fomaml/anil）、meta_seed、config、path、sha256、train_wall_s、peak_memory_mb、episode_bank_sha256、final_train_loss。
+- v1.3a（R-S3-06）：FORMAL 时 model_manifest 另含 verification 块（loaded_from_prereg、prereg_models_sha256、verified_utc）；train_wall_s/peak_memory_mb/final_train_loss 为 M2 实测值。
+- v1.3a（R-S3-07）：model_manifest 固定于 evidence/s3/models/model_manifest.json；FORMAL run 复制 + verification{loaded_from_prereg,prereg_models_sha256,verified_utc}，每模型 sha256 必须等于 `prereg.models` 对应项；不新增 prereg 字段。
 - 版本/字段不符即 fail-closed（错误码 `S3_ANALYSIS_RUN_SCHEMA_INVALID`），不得静默降级；未知额外字段记 DISCLOSED。
 
 ### 4.4 梯度/FD 门契约（A5 S3-M0-08 处置）
 
-- 目标：对 FOMAML 与 ANIL 各一个 `meta_seed=0` 的模型（SMOKE 训练产物，或正式模型在 M2 前用 SMOKE 训练），验证元梯度实现。
-- 参数：`epsilon = 1e-6 * max(1.0, |θ_i|)`（逐坐标相对尺度）；`tolerance = 1e-6`（最大相对误差）；坐标数 32（从全参数中按 `sha256("s3-gate|param|index")` 排序取前 32，固定）；中心差分 `(L(θ+ε)-L(θ-ε))/(2ε)`。
+- 目标：对 FOMAML 与 ANIL 各一个 meta_seed=0 的冻结模型（M2 产物；SMOKE 可用 SMOKE 训练产物），验证元梯度实现；**每模型 32 坐标、2 个模型、合计 64 坐标条目**（32 坐标 × 2 方向 × 2 模型 = 128 次 episode 重跑，§13）。
+- 参数：epsilon = 1e-6 * max(1.0, |θ_i|)（逐坐标相对尺度）；tolerance = 1e-6（最大相对误差）；坐标数 32（**每模型**从全参数中按 sha256(s3-gate|param|index) 排序取前 32，固定）；中心差分 (L(θ+ε)-L(θ-ε))/(2ε)。
 - 损失：SMOKE 训练同一 episode（`meta_seed=0, step=0, slot=0..3` 共 4 episode 均值，batch=4），内循环 5 步、inner_lr=0.01，与训练路径逐位相同；`K=0` 时不调用内循环（单测断言 `inner_steps=0` 分支等价于直接用初始参数评估）。
 - 计算：解析梯度由 `meta_train_step(second_order=False)` 的 FOMAML 路径（与训练同实现）给出；数值梯度对原始 θ 逐坐标 ±ε 重跑完整 episode 内循环后取 query loss；比较 `|num-ana| / max(|num|,|ana|,1e-12)`，任一坐标超 tol 即 `S3_GATE_FD_FAIL`。
-- 时点：M2 冻结模型前；产物 `evidence/s3/gate/fd_or_gradient_gate.json`（schema、32 坐标的 num/ana/rel_err、status、max_rel_err、config sha、pilot 结果、时间戳固定 created_utc）；sha256 写入 prereg 与 run_config。
+- 时点：M2 冻结模型前；产物 evidence/s3/gate/fd_or_gradient_gate.json（schema p4ra-s3-fd-gate-v1：created_utc、tolerance=1e-6、epsilon_rule、models={fomaml_meta_0:{arm_type,meta_seed,n_checked=32,status,max_relative_error,coordinates[{index,param,analytic,numeric,relative_error} × 32]}, anil_meta_0:{同上}}、negatives={tamper,anil_body_frozen,k0_equivalence}、status、max_relative_error）；sha256 写入 prereg 与 run_config；SMOKE fd_coordinates=N 对每个模型生效。
+- **R-S3-07 路径与绑定**：gate 固定于 evidence/s3/gate/fd_or_gradient_gate.json；M2 `build_preregistration` 必须断言该文件存在且其原始字节 sha256 进入 `prereg.package_sha256` 的 evidence/s3 清单（缺失 → fail-closed，不新增 prereg 字段）；FORMAL runner 读该文件并把 raw sha256 写入 `run_config.fd_or_gradient_gate={sha256, coordinates_per_model:32, coordinates_total:64, mode:"FORMAL", models:{fomaml_meta_0/anil_meta_0 各 path/sha256/n_checked/status/max_relative_error}}`；SMOKE N=fd_coordinates、models 恰两键。
 - 不占用正式 run 预算：这是代码正确性检查，不计入 B、不写入 run_records；但必须在 run_summary.resources.auxiliary_compute 披露计算量与墙钟（`fd_gate` 计算次数）。
 - 负控：篡改坐标数值 1 个 → 门必须 FAIL（`S3_GATE_TAMPER_DETECTED`）；ANIL 的 body 参数在适配前后必须逐位相同（`S3_GATE_ANIL_BODY_FROZEN`）；K=0 等价性（`S3_GATE_K0_EQUIVALENCE`）。
 
 ### 4.5 SMOKE 语义（开发自检，不进入正式统计）
 
 - `run_mode ∈ {FORMAL, SMOKE}`；SMOKE 必须提供 `smoke_overrides`，键集：`outer_steps, meta_seeds, budgets, opt_seeds, eval_tasks, k_sweep, fd_coordinates`；允许与 prereg 不同并记 DISCLOSED（`code=S3_ANALYSIS_SMOKE_BUDGET_DISCLOSED`）。
+- v1.3a：SMOKE 的 fd_coordinates=N 对**每个模型**生效（n_checked=N，允许 1-2 个模型）；FORMAL fd gate 恒为 2 模型 × 每模型 32 坐标，见 §4.4。
 - SMOKE 的 episode bank 使用 `outer_steps=2`、`meta_seeds=(0,)`、16 episodes；评估用 4 task（meta_validation 前 4）×5 臂×2 预算×1 opt×1 meta = 40 runs；仅用于 e2e/图数据形状/门测试。
 - FORMAL 必须与 prereg 严格一致（包 sha、task ids sha、episode bank sha、网格、预算、seeds、阈值）；不一致 fail-closed。
 
@@ -440,7 +460,7 @@ v1.0 的 12D 全维椭球构造经 A5 独立探针与 Lead 数值探针证明不
   9. 统计：Wilcoxon tie-aware 精确（含 ties/zeros/全零/n_eff<15 分支）、bootstrap CI 固定 seed、Holm 校正、决策映射（含 DIRECTION_INCONSISTENT/INCONCLUSIVE/NEGLIGIBLE_SIGNIFICANT）、固定测试向量。
   10. runner/analysis e2e（SMOKE）：run_experiment(SMOKE) → load → analyze 成功，产出 aggregate + CSV；负控 6 类篡改 fail-closed；schema 单源断言。
   11. 图：10 键齐全；缺数据 → NOT_RUN；中文标签/evidence_scope/数据源脚注存在；CSV 与 PNG 对应。
-  12. 并行执行（v1.3）：W∈{1,2,3,8} 固定向量（同一 run_key 集合 record_digest 序列一致）、shard 映射固定向量、worker 编号不进 RNG/记录/digest、execution_report schema、W=1 与串行逐位等价；8-run 微基准墙钟/内存断言可作为慢测（默认跳过，M1 由 A1 手动留证）。
+- 12. 并行执行与执行层（v1.3/v1.3a）：W∈{1,2,3,8} 固定向量（同一 run_key 集合 record_digest 序列一致）、shard 映射固定向量、worker 编号不进 RNG/记录/digest、execution_report v2 18 字段精确键集 + 负控（删/改名/多字段 fail-closed）、W=1 与串行逐位等价；**W=8 稳态试点门必须在 M2 执行且不可默认跳过**（§4.2.1，产物 w8_pilot_gate.json）；FORMAL 模型加载 + sha 篡改 fail-closed；FD 门按模型 32 坐标校验（FORMAL）/N 覆盖（SMOKE）。
 - 回归：全量测试必须保持 `1174 + 新增` 全绿（skipped=1 仅 RealOpenVSPIntegrationTests），A1/A5 独立复跑一致；不得修改既有测试断言（除 A5 批准的 schema v2 适配）。
 - 静态检查：禁止在 s3 代码/测试中出现求解器调用（vspaero/SU2/RCAIDE/OpenVSP）、网络、绝对路径、`random` 无 seed、`time.time()` 进入统计、`eval/exec`；`grep` 扫描 + 单测断言（A5 复核）。
 - 公平性验收：同一 (task,budget,opt_seed,meta_seed) 下五臂 B/K/support/candidate pool/BO 配置一致；预算记账逐 run 校验；克隆检测可用；多样性指标记录。
@@ -468,7 +488,7 @@ v1.0 的 12D 全维椭球构造经 A5 独立探针与 Lead 数值探针证明不
 | M6 | A4 回执 + Lead 发布 + closeout | 0.5–1 h |
 
 - 计算资源：仅 CPU；峰值内存 <= 8 GB；正式 run 总墙钟硬截止 7,200 s（campaign 并行墙钟）；训练（6 模型 × 200 step × 8 tasks × 64 query）预计 <= 30 min，M2 实测后写入资源账本。
-- 并行执行实测（v1.3）：W=8 下 8-run 微基准 wall 27.968 s（W=1 49.542 s，含池启动）；R-S3-02 降网格 3,780 runs 稳态 ≈2,940 s，主网格 6,900 runs W=8 ≈5,350 s；6 个 campaign 各建池 ≈90 s。
+- 并行执行实测与 W=8 稳态试点门（v1.3a）：bench_v13a 覆盖 5 臂 × 3 task × B∈{64,128}、共 30 runs，W=1 wall 177.817 / 176.431 s、W=8 wall 42.267 / 43.727 s，稳态吞吐 0.7098 / 0.6861 runs/s → 3,780 runs 外推 3,518.653–3,712.731 s（吞吐）/ 5,325.653–5,509.562 s（保守；run2 保守值落入 (5,400,7,200] 区间，由 R-S3-05B 书面接受，硬顶 7,200 s 不变）；R-S3-05B 判定与预算接受见 §4.2.1；M2 必须通过 §4.2.1 试点门（产物 w8_pilot_gate.json）后才可冻结 prereg。
 - 物理资源：0；不启动任何求解器；不访问网络。
 
 ## 11. 门禁（Gates，逐门书面结论）
@@ -478,9 +498,11 @@ v1.0 的 12D 全维椭球构造经 A5 独立探针与 Lead 数值探针证明不
 | M0 | 设计审阅 | 实际：CHANGES_REQUESTED（S3-M0-01..16），由 M0R 修订门接续 | A5 |
 | M0R | v1.1 修订复审 | 实际：CHANGES_REQUESTED（S3-M0R-01..09），由 M0R2 复审门接续 | A5 |
 | M0R2 | v1.2 修订复审 | 实际：APPROVE_FOR_S3_CODE（f81f69b，限定 diff：计划 + hash_vectors.json）；v1.2a 文档勘误随 M1 审阅确认 | A5 |
-| M0R3 | v1.3 执行层修订复审 | 实际：待 A5 复审（限定 diff：计划新增 R-S3-05 并行执行合同） | A5 |
+| M0R3 | v1.3 执行层修订复审 | 实际：CHANGES_REQUESTED（2B/4M/2m/1i，对象 36e5820） | A5 |
+| M0R3R | v1.3a 执行层重裁复审 | 待 A5（对象=本提交，限定 diff） | A5 |
 | M1 | 实现 + 单测 + 集成 | A5 `APPROVE_FOR_S3_FORMAL`；全量测试绿；公平性/预算/哈希/e2e 测试齐备 | A5 |
 | M2 | 校准 + 模型 + FD 门 + prereg 冻结 | 校准报告满足 §2.5 接受条件；FD 门 PASS；prereg build/verify 两遍；A5 `APPROVE_FOR_S3_RUN` | A5 |
+| M2 附加门（v1.3a） | W=8 稳态试点门（§4.2.1） | w8_pilot_gate.json 全 PASS（外推 3,780 runs ≤5,400 s）；否则走 fallback 重裁 | A1/Lead |
 | M3 | 正式 run 授权与执行 | Lead 书面授权（含 owner 指令复核）+ A2 执行（<=2 h、physical=0、无重试） | Lead/A2 |
 | M4 | 结果复核 | A5 `APPROVE_FOR_S3_RECEIPT`；端点重算一致；负控/确定性/图合格 | A5 |
 | M5 | 隔离与打包 | A3 `PASS*`；A5 `APPROVE_FOR_S3_RECEIPT_PACKAGE`；双哈希可复现 | A3/A5 |
@@ -498,7 +520,7 @@ v1.0 的 12D 全维椭球构造经 A5 独立探针与 Lead 数值探针证明不
 | 代理 3 输出训练不稳定 | 端点噪声大 | FD 门、训练曲线、任务级聚类、3 模型重复、固定种子 |
 | ANIL 实现错误（body 泄漏更新） | 消融无效 | body 冻结单测 + FD 门 + 逐位断言 |
 | 离散可行率 ties/zeros 多 | 检验无效 | tie-aware 精确检验、敏感性分析、n_eff<15 → INCONCLUSIVE |
-| 单核串行超时（实测 6,900 runs ≈42,700 s，> 7,200 s 硬顶） | 网格不完整 | R-S3-05 W=8 campaign 并行（方法合同不变，实测 1.77× 起、扣除池启动后接近单 run 下界）+ R-S3-02 降网格 + 7,200 s 硬截止；并行墙钟与 CPU 秒双披露 |
+| 单核串行超时（实测 3,780 runs 串行 ≈23,400 s，> 7,200 s 硬顶） | 网格不完整 | R-S3-05A：W=8 campaign 并行（方法合同不变）+ M2 W=8 稳态试点门（外推 3,780 runs ≤5,400 s）+ R-S3-02 单值网格 + campaign 墙钟 7,200 s 与 sum_run_wall 28,000 s 双硬截止；fallback W=4/串行 25,200 s 需 Lead 书面重裁 |
 | 运行超时 | 网格不完整 | 计时试点 + R-S3-02 降网格（预注册条件）+ 硬截止部分产物披露 |
 | 旧件/主库被误改 | 违反边界 | 只读断言、A3 审计、独立 worktree、0 写仓库 run 目录（EXT） |
 | 图/报告数字与 aggregate 不一致 | 回执失真 | 分析器自动生成表/图；A5 逐数核对；报告引用 aggregate sha |
@@ -507,17 +529,17 @@ v1.0 的 12D 全维椭球构造经 A5 独立探针与 Lead 数值探针证明不
 
 | 项 | 正式段 runs | 评估数 | 备注 |
 |---|---|---|---|
-| 主统计 | 6,000 | 576,000 | B∈{64,128} |
+| 主统计（R-S3-02 后） | 3,000 | 288,000 | B∈{64,128}，5 opt_seed |
 | 负控制 | 300 | 28,800 | 1 meta_seed |
 | OOD | 300 | 28,800 | 描述性 |
-| 确定性 | 300 | 28,800 | 3 次 × 100 runs（每次 9,600） |
-| 合计 | 6,900 | 662,400 | 硬截止 7,200 s |
+| 确定性 | 180 | 17,280 | 3 次 × 60 runs（每次 5,760） |
+| 合计（正式段唯一网格） | 3,780 | 362,880 | campaign 墙钟 7,200 s；sum_run_wall 28,000 s |
 | K-sweep 诊断 | 240 | 15,360 | M1，DEV_VALIDATION_ONLY，不进正式段 |
 | 训练 | — | 4,800 唯一 episodes / 9,600 模型-episode（每模型 1,600） | 6 模型（3 FOMAML + 3 ANIL），计入 auxiliary_compute |
 | FD 门 | — | 32 坐标 × 2 方向 × 2 模型 = 128 次 episode 重跑 | auxiliary_compute 披露 |
 
-- R-S3-02 降网格（若触发）：主 3,000/288,000、负控 300/28,800、OOD 300/28,800、确定性 180/17,280（3×60 runs，每次 5,760），合计 **3,780/362,880**（A5-S3M0R-04 更正；负控/OOD 不随 opt_seed 降级）。
-- 执行层并行（v1.3）不改变 runs/eval 预算：主网格 6,900/662,400、R-S3-02 降网格 3,780/362,880；并行仅改变墙钟口径（campaign 墙钟≈2,940 s，单核等效 CPU 秒≈23,400 s），报告/回执必须同时披露二者，不得把并行墙钟当单核计算量。
+- R-S3-02 降网格（v1.3a 单值化）：正式段唯一合法网格 = 主 3,000/288,000、负控 300/28,800、OOD 300/28,800、确定性 180/17,280（3×60 runs，每次 5,760），合计 3,780/362,880；名义上限 6,900/662,400 不得执行；负控/OOD 不随 opt_seed 降级。
+- 执行层并行（v1.3a）不改变 runs/eval 预算，只改变墙钟口径与并行验收：campaign 墙钟硬截止 7,200 s、sum_run_wall_seconds 硬上限 28,000 s（= 实测 23,400 s 的 1.20×）；M2 必须通过 §4.2.1 W=8 稳态试点门（w8_pilot_gate.json）；报告/回执必须同时披露 campaign 墙钟、sum_run_wall、单核等效 CPU 秒、M2 训练与 FD 门 auxiliary_compute（9,600 模型-episode + 128 次 episode 重跑，均属 M2）。
 - 物理调用 = 0（fail-closed，prereg/run_summary 双处断言）；任何 >0 即整体作废。
 
 ## 14. 版本记录
@@ -529,7 +551,8 @@ v1.0 的 12D 全维椭球构造经 A5 独立探针与 Lead 数值探针证明不
 | v1.2 | 2026-11-07 | 本文件 + `research/concorde_metaopt/evidence/s3/hash_vectors.json` | 处置 A5 S3-M0R-01..09 与 A4 NEW-01..09：C1/C2 comparator 改 CON−OBJ、提交哈希固定向量与完整算法（7 文件 code_sha/analysis_code_sha/task_ids_sha256/package_sha256）、R-S3-02 算术更正 3,780/362,880、phase-scoped 与 campaign 语义、RANDOM 多样性统一、决策枚举互斥穷尽、radius_base→delta1_base、episode 消耗披露 |
 | v1.2a | 2026-11-07 | 本文件 | 文档状态勘误（A5 S3-M0R2-01..04）：版本/状态/基线提交、§0.3/§10/§11 补 M0R2 门与实际结论、§6.2 注 V11 原始字节语义与 V02/V03 合成输入、§16 注 params_digest 旧承诺处置、§20 处置表；不改变执行合同 |
 | v1.2b | 2026-11-07 | 本文件 | R-S3-03 评估记录 schema 冲突裁定：§2.4 语义清单映射到 §4.3 的 19 字段 schema；billable/cache_hit 由记录数与 source 分布断言；不新增字段、不改 A5 M0R2 已批准合同 |
-| v1.3 | 2026-11-07 | 本文件 | R-S3-05 执行层并行合同：campaign 层 W=8 分片并行（shard/合并顺序/worker 不进 RNG）、W=1 与串行逐位等价、确定性扩展到 W∈{1,2,3,8}、计时与 execution_report 口径、prereg 不新增字段；附微基准与 R-S3-02 触发实证；不改变方法合同/网格/schema/端点/统计 |
+| v1.3 | 2026-11-07 | 本文件 | R-S3-05 执行层并行合同：campaign 层 W=8 分片并行、W=1 与串行逐位等价、确定性扩展到 W∈{1,2,3,8}、计时与 execution_report 口径、prereg 不新增字段；附微基准与 R-S3-02 触发实证；A5 M0R3 判 CHANGES_REQUESTED（2B/4M/2m/1i） |
+| v1.3a | 2026-11-07 | 本文件 | R-S3-05A + R-S3-06：执行层并行验收改吞吐外推 + M2 W=8 稳态试点门 + fallback + 线程固定；execution_report 唯一 schema v2 18 字段；sum_run_wall_seconds 与 28,000 s 硬上限；确定性 60-run 预注册子集；正式段单值 3,780/362,880；FORMAL 加载冻结模型不重训、FD 门每模型 32 坐标、FORMAL K=5；不改变方法合同/端点/统计 |
 
 ## 15. Issue #7 对齐表
 
@@ -631,3 +654,9 @@ v1.0 的 12D 全维椭球构造经 A5 独立探针与 Lead 数值探针证明不
 | R-S3-05-R3 | — | 披露：报告/回执/README 必须写「W=8 并行、方法合同不变、campaign 墙钟≈2,940 s、单核等效 CPU 秒≈23,400 s、确定性子集已验证」；不得把并行墙钟当单核计算量 |
 | R-S3-05-R4 | — | 触发证据：8-run 微基准（W=1 49.542 s vs W=8 cold 27.968 s，compute-only 13.28 s）、record_digest 逐位一致、8 worker 峰值上界 2,289.8 MB；保留 A1 的 bench/parallel_microbench.json 作为 M2/回执附件引用 |
 | R-S3-05-R5 | — | 门禁：本 v1.3 计划须经 A5 M0R3 限定 diff 批准（APPROVE_FOR_S3_CODE_AMENDED）后方可作为 M1 基线；M1 代码审阅必须核对 W 等价测试与 execution_report schema |
+| R-S3-05A | major（A5 M0R3 B02/M03-M06/-m07/-m08 处置） | 并行验收改吞吐外推（3,780 runs 外推 ≤5,400 s）、M2 W=8 稳态试点门、fallback、线程固定、确定性 60-run 预注册子集、sum_run_wall_limit_s=28,000、正式段单值 3,780；文件 <EXT>/p4-route-a/lead/s3/R-S3-05A_parallel_acceptance_ruling.md（8,346 B sha 8e2eb26e…） |
+| R-S3-05A-B01 | blocker（A5 M0R3） | execution_report 唯一 schema v2、18 字段（§4.2），写入/校验/负控/data_manifest 绑定；旧 v1 10/13/16 字段口径全部作废 |
+| R-S3-05A-B02 | blocker（A5 M0R3） | W=8 验收改为吞吐外推 + M2 必过门（§4.2.1），不再要求墙钟 1/8±30% |
+| R-S3-06 | — | FORMAL 加载冻结模型不重训（§4.1）；FD 门每模型 32 坐标、2 模型（§4.4）；FORMAL k_sweep=[5]（§3.3），[0,1,3,5] 属 M1 K-sweep 诊断（fig2 数据源）；文件 <EXT>/p4-route-a/lead/s3/R-S3-06_formal_model_gate_semantics.md（5,318 B sha fb86fb11…） |
+| R-S3-05B | — | R-S3-05A 判据替换后 W=8 验收通过：30/30 record_digest 一致、峰值 2,449 MB、两次 wall 差 <20%；3,780 runs 吞吐外推 3,518.653–3,712.731 s，保守外推 5,325.653–5,509.562 s（run2 保守值落入 (5,400,7,200]，由 R-S3-05B 书面接受）；6,900 名义网格不可执行（保守 10,057 s > 7,200 s），3,780/362,880 为唯一正式网格；证据 evidence/s3/bench/bench_v13a.json 与 bench_v13a_run2.json；文件 <EXT>/p4-route-a/lead/s3/R-S3-05B_parallel_acceptance_decision.md |
+| R-S3-07 | — | FORMAL 不训练模型：run record_counts.train=0、无 train 行；M2 训练 1,200 条属 M2 证据；FD 门固定路径并纳入 package_sha256、run_config 写 sha256/coordinates_per_model=32/coordinates_total=64；model_manifest 复制+verification，不新增 prereg 字段；文件 <EXT>/p4-route-a/lead/s3/R-S3-07_formal_train_gate_binding.md（4,495 B sha 73171f7d…） |

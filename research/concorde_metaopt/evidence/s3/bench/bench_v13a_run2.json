@@ -1,0 +1,991 @@
+{
+  "schema_version": "p4ra-s3-parallel-bench-v1",
+  "purpose": "R-S3-05 并行合同微基准 + A5 M0R3 B02 重跑（供 Lead 裁决）",
+  "generated_utc": "2026-11-07T00:43:47+00:00",
+  "generated_local": "2026-11-07T08:43:47+0800",
+  "field_meanings": {
+    "wall_s": "该 W 的 campaign 并行墙钟（秒）",
+    "startup_probe_s": "单独建 W 进程池 + initializer + 空 map 的墙钟（含 worker 侧导入）",
+    "compute_only_s": "wall_s - startup_probe_s，纯 run 计算部分",
+    "sum_run_wall_seconds": "Σ 逐 run wall_s（单核等效 CPU 时间口径）",
+    "max_peak_memory_mb": "单 run 峰值内存最大值",
+    "peak_upper_bound_mb": "workers × max_peak_memory_mb（8 worker 峰值和上界）",
+    "by_measured_throughput_s": "campaign_count × startup + target_runs × (compute_only/batch_size)",
+    "by_conservative_batch_s": "ceil(target/batch_size) × wall_s（每批都含启动摊销，保守上界）"
+  },
+  "environment": {
+    "cpu_count": 32,
+    "python": "3.11.17",
+    "numpy": "2.4.6",
+    "thread_env": {
+      "OMP_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "NUMEXPR_NUM_THREADS": "1"
+    },
+    "physical_call_count": 0
+  },
+  "parameter_grid": {
+    "workers": [
+      1,
+      8
+    ],
+    "arms": [
+      "S3-BO-RANDOM",
+      "S3-BO-FOMAML-OBJ",
+      "S3-BO-FOMAML-CON",
+      "S3-BO-ANIL-CON",
+      "S3-DE"
+    ],
+    "tasks": [
+      {
+        "task_id": "p4ra-FQEC-v1-4d27c9390ec241da",
+        "split": "meta_validation",
+        "delta1_base": null
+      },
+      {
+        "task_id": "p4ra-FQEC-v1-52287fc7db1fd038",
+        "split": "meta_validation",
+        "delta1_base": null
+      },
+      {
+        "task_id": "p4ra-FQEC-v1-0cefe5ec2931c48a",
+        "split": "meta_validation",
+        "delta1_base": null
+      }
+    ],
+    "budgets": [
+      64,
+      128
+    ],
+    "opt_seed": 0,
+    "meta_seed": 0,
+    "runs_per_worker_setting": 30,
+    "models": {
+      "fomaml": {
+        "path": "run_smoke_a\\models\\fomaml_meta_0.json",
+        "sha256": "c7d2995e86b3dca059ca58a711fd1125176f57425fceb2ed92549fb158ebc75e"
+      },
+      "anil": {
+        "path": "run_smoke_a\\models\\anil_meta_0.json",
+        "sha256": "84c4bdeac9110a9dac77ad7d90ca6d2dd7057cc84b8d71c7c8732bbe8e086765"
+      }
+    },
+    "cell_design": "5 臂 × 3 task × 2 预算 = 30 runs（B∈{64,128} 都有；全五臂）"
+  },
+  "measurements": {
+    "w1": {
+      "workers": 1,
+      "wall_s": 176.431449,
+      "startup_probe_s": 1.951083,
+      "compute_only_s": 174.480366,
+      "sum_run_wall_seconds": 176.421544,
+      "max_run_wall_s": 11.817959,
+      "max_peak_memory_mb": 311.972656,
+      "peak_upper_bound_mb": 311.972656,
+      "runs_per_s": 0.170038,
+      "per_shard_counts": [
+        30
+      ],
+      "stop_reason": null,
+      "run_count_requested": 30,
+      "run_count_completed": 30
+    },
+    "w8": {
+      "workers": 8,
+      "wall_s": 43.726682,
+      "startup_probe_s": 14.849843,
+      "compute_only_s": 28.876839,
+      "sum_run_wall_seconds": 194.440921,
+      "max_run_wall_s": 13.597592,
+      "max_peak_memory_mb": 306.128906,
+      "peak_upper_bound_mb": 2449.031248,
+      "runs_per_s": 0.68608,
+      "per_shard_counts": [
+        3,
+        6,
+        0,
+        2,
+        5,
+        5,
+        4,
+        5
+      ],
+      "stop_reason": null,
+      "run_count_requested": 30,
+      "run_count_completed": 30
+    },
+    "ratios": {
+      "wall_ratio_w8_over_w1": 0.247839,
+      "wall_ratio_target_range": [
+        0.0875,
+        0.1625
+      ],
+      "wall_ratio_meets_a5_target": false,
+      "compute_ratio_w1_over_w8": 6.042225,
+      "compute_ratio_target_min": 6.15,
+      "compute_ratio_meets_a5_target": false,
+      "total_cpu_seconds_ratio": 1.102138,
+      "wall_ratio_amortized_main_6000": 0.165918,
+      "wall_ratio_amortized_main_6000_meets_a5_target": false,
+      "wall_ratio_amortized_main_3000": 0.166334,
+      "wall_ratio_amortized_main_3000_meets_a5_target": false,
+      "amortized_main_6000_wall_s": {
+        "w1": 34898.024,
+        "w8": 5790.218
+      },
+      "amortized_main_3000_wall_s": {
+        "w1": 17449.988,
+        "w8": 2902.534
+      }
+    }
+  },
+  "determinism": {
+    "n_runs_compared": 30,
+    "record_digest_sequences_equal": true,
+    "first_divergence_index": null,
+    "status_equal": true,
+    "record_counts_equal": true
+  },
+  "per_arm_budget_wall": {
+    "w1": {
+      "S3-BO-ANIL-CON|B128": {
+        "n": 3,
+        "sum_wall_s": 34.931428,
+        "mean_wall_s": 11.643809,
+        "max_wall_s": 11.682627
+      },
+      "S3-BO-ANIL-CON|B64": {
+        "n": 3,
+        "sum_wall_s": 9.68194,
+        "mean_wall_s": 3.227313,
+        "max_wall_s": 3.663277
+      },
+      "S3-BO-FOMAML-CON|B128": {
+        "n": 3,
+        "sum_wall_s": 34.908617,
+        "mean_wall_s": 11.636206,
+        "max_wall_s": 11.652492
+      },
+      "S3-BO-FOMAML-CON|B64": {
+        "n": 3,
+        "sum_wall_s": 8.94717,
+        "mean_wall_s": 2.98239,
+        "max_wall_s": 2.987515
+      },
+      "S3-BO-FOMAML-OBJ|B128": {
+        "n": 3,
+        "sum_wall_s": 34.827259,
+        "mean_wall_s": 11.609086,
+        "max_wall_s": 11.634587
+      },
+      "S3-BO-FOMAML-OBJ|B64": {
+        "n": 3,
+        "sum_wall_s": 8.949896,
+        "mean_wall_s": 2.983299,
+        "max_wall_s": 2.990531
+      },
+      "S3-BO-RANDOM|B128": {
+        "n": 3,
+        "sum_wall_s": 35.138243,
+        "mean_wall_s": 11.712748,
+        "max_wall_s": 11.817959
+      },
+      "S3-BO-RANDOM|B64": {
+        "n": 3,
+        "sum_wall_s": 8.986862,
+        "mean_wall_s": 2.995621,
+        "max_wall_s": 3.022395
+      },
+      "S3-DE|B128": {
+        "n": 3,
+        "sum_wall_s": 0.032068,
+        "mean_wall_s": 0.010689,
+        "max_wall_s": 0.010908
+      },
+      "S3-DE|B64": {
+        "n": 3,
+        "sum_wall_s": 0.018061,
+        "mean_wall_s": 0.00602,
+        "max_wall_s": 0.006092
+      }
+    },
+    "w8": {
+      "S3-BO-ANIL-CON|B128": {
+        "n": 3,
+        "sum_wall_s": 40.096424,
+        "mean_wall_s": 13.365475,
+        "max_wall_s": 13.597592
+      },
+      "S3-BO-ANIL-CON|B64": {
+        "n": 3,
+        "sum_wall_s": 12.850234,
+        "mean_wall_s": 4.283411,
+        "max_wall_s": 4.305145
+      },
+      "S3-BO-FOMAML-CON|B128": {
+        "n": 3,
+        "sum_wall_s": 38.51237,
+        "mean_wall_s": 12.837457,
+        "max_wall_s": 13.591601
+      },
+      "S3-BO-FOMAML-CON|B64": {
+        "n": 3,
+        "sum_wall_s": 11.053202,
+        "mean_wall_s": 3.684401,
+        "max_wall_s": 4.438847
+      },
+      "S3-BO-FOMAML-OBJ|B128": {
+        "n": 3,
+        "sum_wall_s": 36.78113,
+        "mean_wall_s": 12.260377,
+        "max_wall_s": 12.331075
+      },
+      "S3-BO-FOMAML-OBJ|B64": {
+        "n": 3,
+        "sum_wall_s": 9.492338,
+        "mean_wall_s": 3.164113,
+        "max_wall_s": 3.193563
+      },
+      "S3-BO-RANDOM|B128": {
+        "n": 3,
+        "sum_wall_s": 36.167507,
+        "mean_wall_s": 12.055836,
+        "max_wall_s": 12.122283
+      },
+      "S3-BO-RANDOM|B64": {
+        "n": 3,
+        "sum_wall_s": 9.434498,
+        "mean_wall_s": 3.144833,
+        "max_wall_s": 3.172568
+      },
+      "S3-DE|B128": {
+        "n": 3,
+        "sum_wall_s": 0.033909,
+        "mean_wall_s": 0.011303,
+        "max_wall_s": 0.011705
+      },
+      "S3-DE|B64": {
+        "n": 3,
+        "sum_wall_s": 0.019309,
+        "mean_wall_s": 0.006436,
+        "max_wall_s": 0.006633
+      }
+    }
+  },
+  "per_run": {
+    "w1": [
+      {
+        "arm": "S3-BO-ANIL-CON",
+        "task_id": "p4ra-FQEC-v1-0cefe5ec2931c48a",
+        "budget": 64,
+        "opt_seed": 0,
+        "meta_seed": 0,
+        "status": "OK",
+        "wall_s": 3.663277,
+        "peak_memory_mb": 297.074219,
+        "n_records": 64
+      },
+      {
+        "arm": "S3-BO-ANIL-CON",
+        "task_id": "p4ra-FQEC-v1-0cefe5ec2931c48a",
+        "budget": 128,
+        "opt_seed": 0,
+        "meta_seed": 0,
+        "status": "OK",
+        "wall_s": 11.682627,
+        "peak_memory_mb": 306.003906,
+        "n_records": 128
+      },
+      {
+        "arm": "S3-BO-ANIL-CON",
+        "task_id": "p4ra-FQEC-v1-4d27c9390ec241da",
+        "budget": 64,
+        "opt_seed": 0,
+        "meta_seed": 0,
+        "status": "OK",
+        "wall_s": 3.0388,
+        "peak_memory_mb": 306.003906,
+        "n_records": 64
+      },
+      {
+        "arm": "S3-BO-ANIL-CON",
+        "task_id": "p4ra-FQEC-v1-4d27c9390ec241da",
+        "budget": 128,
+        "opt_seed": 0,
+        "meta_seed": 0,
+        "status": "OK",
+        "wall_s": 11.607194,
+        "peak_memory_mb": 306.964844,
+        "n_records": 128
+      },
+      {
+        "arm": "S3-BO-ANIL-CON",
+        "task_id": "p4ra-FQEC-v1-52287fc7db1fd038",
+        "budget": 64,
+        "opt_seed": 0,
+        "meta_seed": 0,
+        "status": "OK",
+        "wall_s": 2.979863,
+        "peak_memory_mb": 306.964844,
+        "n_records": 64
+      },
+      {
+        "arm": "S3-BO-ANIL-CON",
+        "task_id": "p4ra-FQEC-v1-52287fc7db1fd038",
+        "budget": 128,
+        "opt_seed": 0,
+        "meta_seed": 0,
+        "status": "OK",
+        "wall_s": 11.641607,
+        "peak_memory_mb": 308.125,
+        "n_records": 128
+      },
+      {
+        "arm": "S3-BO-FOMAML-CON",
+        "task_id": "p4ra-FQEC-v1-0cefe5ec2931c48a",
+        "budget": 64,
+        "opt_seed": 0,
+        "meta_seed": 0,
+        "status": "OK",
+        "wall_s": 2.978193,
+        "peak_memory_mb": 308.125,
+        "n_records": 64
+      },
+      {
+        "arm": "S3-BO-FOMAML-CON",
+        "task_id": "p4ra-FQEC-v1-0cefe5ec2931c48a",
+        "budget": 128,
+        "opt_seed": 0,
+        "meta_seed": 0,
+        "status": "OK",
+        "wall_s": 11.63764,
+        "peak_memory_mb": 309.039062,
+        "n_records": 128
+      },
+      {
+        "arm": "S3-BO-FOMAML-CON",
+        "task_id": "p4ra-FQEC-v1-4d27c9390ec241da",
+        "budget": 64,
+        "opt_seed": 0,
+        "meta_seed": 0,
+        "status": "OK",
+        "wall_s": 2.987515,
+        "peak_memory_mb": 309.039062,
+        "n_records": 64
+      },
+      {
+        "arm": "S3-BO-FOMAML-CON",
+        "task_id": "p4ra-FQEC-v1-4d27c9390ec241da",
+        "budget": 128,
+        "opt_seed": 0,
+        "meta_seed": 0,
+        "status": "OK",
+        "wall_s": 11.618485,
+        "peak_memory_mb": 309.820312,
+        "n_records": 128
+      },
+      {
+        "arm": "S3-BO-FOMAML-CON",
+        "task_id": "p4ra-FQEC-v1-52287fc7db1fd038",
+        "budget": 64,
+        "opt_seed": 0,
+        "meta_seed": 0,
+        "status": "OK",
+        "wall_s": 2.981462,
+        "peak_memory_mb": 309.820312,
+        "n_records": 64
+      },
+      {
+        "arm": "S3-BO-FOMAML-CON",
+        "task_id": "p4ra-FQEC-v1-52287fc7db1fd038",
+        "budget": 128,
+        "opt_seed": 0,
+        "meta_seed": 0,
+        "status": "OK",
+        "wall_s": 11.652492,
+        "peak_memory_mb": 310.152344,
+        "n_records": 128
+      },
+      {
+        "arm": "S3-BO-FOMAML-OBJ",
+        "task_id": "p4ra-FQEC-v1-0cefe5ec2931c48a",
+        "budget": 64,
+        "opt_seed": 0,
+        "meta_seed": 0,
+        "status": "OK",
+        "wall_s": 2.973272,
+        "peak_memory_mb": 310.152344,
+        "n_records": 64
+      },
+      {
+        "arm": "S3-BO-FOMAML-OBJ",
+        "task_id": "p4ra-FQEC-v1-0cefe5ec2931c48a",
+        "budget": 128,
+        "opt_seed": 0,
+        "meta_seed": 0,
+        "status": "OK",
+        "wall_s": 11.570809,
+        "peak_memory_mb": 310.464844,
+        "n_records": 128
+      },
+      {
+        "arm": "S3-BO-FOMAML-OBJ",
+        "task_id": "p4ra-FQEC-v1-4d27c9390ec241da",
+        "budget": 64,
+        "opt_seed": 0,
+        "meta_seed": 0,
+        "status": "OK",
+        "wall_s": 2.990531,
+        "peak_memory_mb": 310.464844,
+        "n_records": 64
+      },
+      {
+        "arm": "S3-BO-FOMAML-OBJ",
+        "task_id": "p4ra-FQEC-v1-4d27c9390ec241da",
+        "budget": 128,
+        "opt_seed": 0,
+        "meta_seed": 0,
+        "status": "OK",
+        "wall_s": 11.621863,
+        "peak_memory_mb": 310.777344,
+        "n_records": 128
+      },
+      {
+        "arm": "S3-BO-FOMAML-OBJ",
+        "task_id": "p4ra-FQEC-v1-52287fc7db1fd038",
+        "budget": 64,
+        "opt_seed": 0,
+        "meta_seed": 0,
+        "status": "OK",
+        "wall_s": 2.986093,
+        "peak_memory_mb": 310.777344,
+        "n_records": 64
+      },
+      {
+        "arm": "S3-BO-FOMAML-OBJ",
+        "task_id": "p4ra-FQEC-v1-52287fc7db1fd038",
+        "budget": 128,
+        "opt_seed": 0,
+        "meta_seed": 0,
+        "status": "OK",
+        "wall_s": 11.634587,
+        "peak_memory_mb": 311.089844,
+        "n_records": 128
+      },
+      {
+        "arm": "S3-BO-RANDOM",
+        "task_id": "p4ra-FQEC-v1-0cefe5ec2931c48a",
+        "budget": 64,
+        "opt_seed": 0,
+        "meta_seed": 0,
+        "status": "OK",
+        "wall_s": 2.980579,
+        "peak_memory_mb": 311.089844,
+        "n_records": 64
+      },
+      {
+        "arm": "S3-BO-RANDOM",
+        "task_id": "p4ra-FQEC-v1-0cefe5ec2931c48a",
+        "budget": 128,
+        "opt_seed": 0,
+        "meta_seed": 0,
+        "status": "OK",
+        "wall_s": 11.674526,
+        "peak_memory_mb": 311.339844,
+        "n_records": 128
+      },
+      {
+        "arm": "S3-BO-RANDOM",
+        "task_id": "p4ra-FQEC-v1-4d27c9390ec241da",
+        "budget": 64,
+        "opt_seed": 0,
+        "meta_seed": 0,
+        "status": "OK",
+        "wall_s": 3.022395,
+        "peak_memory_mb": 311.339844,
+        "n_records": 64
+      },
+      {
+        "arm": "S3-BO-RANDOM",
+        "task_id": "p4ra-FQEC-v1-4d27c9390ec241da",
+        "budget": 128,
+        "opt_seed": 0,
+        "meta_seed": 0,
+        "status": "OK",
+        "wall_s": 11.645758,
+        "peak_memory_mb": 311.65625,
+        "n_records": 128
+      },
+      {
+        "arm": "S3-BO-RANDOM",
+        "task_id": "p4ra-FQEC-v1-52287fc7db1fd038",
+        "budget": 64,
+        "opt_seed": 0,
+        "meta_seed": 0,
+        "status": "OK",
+        "wall_s": 2.983888,
+        "peak_memory_mb": 311.65625,
+        "n_records": 64
+      },
+      {
+        "arm": "S3-BO-RANDOM",
+        "task_id": "p4ra-FQEC-v1-52287fc7db1fd038",
+        "budget": 128,
+        "opt_seed": 0,
+        "meta_seed": 0,
+        "status": "OK",
+        "wall_s": 11.817959,
+        "peak_memory_mb": 311.972656,
+        "n_records": 128
+      },
+      {
+        "arm": "S3-DE",
+        "task_id": "p4ra-FQEC-v1-0cefe5ec2931c48a",
+        "budget": 64,
+        "opt_seed": 0,
+        "meta_seed": 0,
+        "status": "OK",
+        "wall_s": 0.006072,
+        "peak_memory_mb": 311.972656,
+        "n_records": 64
+      },
+      {
+        "arm": "S3-DE",
+        "task_id": "p4ra-FQEC-v1-0cefe5ec2931c48a",
+        "budget": 128,
+        "opt_seed": 0,
+        "meta_seed": 0,
+        "status": "OK",
+        "wall_s": 0.010576,
+        "peak_memory_mb": 311.972656,
+        "n_records": 128
+      },
+      {
+        "arm": "S3-DE",
+        "task_id": "p4ra-FQEC-v1-4d27c9390ec241da",
+        "budget": 64,
+        "opt_seed": 0,
+        "meta_seed": 0,
+        "status": "OK",
+        "wall_s": 0.006092,
+        "peak_memory_mb": 311.972656,
+        "n_records": 64
+      },
+      {
+        "arm": "S3-DE",
+        "task_id": "p4ra-FQEC-v1-4d27c9390ec241da",
+        "budget": 128,
+        "opt_seed": 0,
+        "meta_seed": 0,
+        "status": "OK",
+        "wall_s": 0.010584,
+        "peak_memory_mb": 311.972656,
+        "n_records": 128
+      },
+      {
+        "arm": "S3-DE",
+        "task_id": "p4ra-FQEC-v1-52287fc7db1fd038",
+        "budget": 64,
+        "opt_seed": 0,
+        "meta_seed": 0,
+        "status": "OK",
+        "wall_s": 0.005897,
+        "peak_memory_mb": 311.972656,
+        "n_records": 64
+      },
+      {
+        "arm": "S3-DE",
+        "task_id": "p4ra-FQEC-v1-52287fc7db1fd038",
+        "budget": 128,
+        "opt_seed": 0,
+        "meta_seed": 0,
+        "status": "OK",
+        "wall_s": 0.010908,
+        "peak_memory_mb": 311.972656,
+        "n_records": 128
+      }
+    ],
+    "w8": [
+      {
+        "arm": "S3-BO-ANIL-CON",
+        "task_id": "p4ra-FQEC-v1-0cefe5ec2931c48a",
+        "budget": 64,
+        "opt_seed": 0,
+        "meta_seed": 0,
+        "status": "OK",
+        "wall_s": 4.305145,
+        "peak_memory_mb": 295.273438,
+        "n_records": 64
+      },
+      {
+        "arm": "S3-BO-ANIL-CON",
+        "task_id": "p4ra-FQEC-v1-0cefe5ec2931c48a",
+        "budget": 128,
+        "opt_seed": 0,
+        "meta_seed": 0,
+        "status": "OK",
+        "wall_s": 13.307987,
+        "peak_memory_mb": 304.535156,
+        "n_records": 128
+      },
+      {
+        "arm": "S3-BO-ANIL-CON",
+        "task_id": "p4ra-FQEC-v1-4d27c9390ec241da",
+        "budget": 64,
+        "opt_seed": 0,
+        "meta_seed": 0,
+        "status": "OK",
+        "wall_s": 4.275368,
+        "peak_memory_mb": 295.832031,
+        "n_records": 64
+      },
+      {
+        "arm": "S3-BO-ANIL-CON",
+        "task_id": "p4ra-FQEC-v1-4d27c9390ec241da",
+        "budget": 128,
+        "opt_seed": 0,
+        "meta_seed": 0,
+        "status": "OK",
+        "wall_s": 13.597592,
+        "peak_memory_mb": 305.011719,
+        "n_records": 128
+      },
+      {
+        "arm": "S3-BO-ANIL-CON",
+        "task_id": "p4ra-FQEC-v1-52287fc7db1fd038",
+        "budget": 64,
+        "opt_seed": 0,
+        "meta_seed": 0,
+        "status": "OK",
+        "wall_s": 4.269721,
+        "peak_memory_mb": 295.800781,
+        "n_records": 64
+      },
+      {
+        "arm": "S3-BO-ANIL-CON",
+        "task_id": "p4ra-FQEC-v1-52287fc7db1fd038",
+        "budget": 128,
+        "opt_seed": 0,
+        "meta_seed": 0,
+        "status": "OK",
+        "wall_s": 13.190845,
+        "peak_memory_mb": 304.847656,
+        "n_records": 128
+      },
+      {
+        "arm": "S3-BO-FOMAML-CON",
+        "task_id": "p4ra-FQEC-v1-0cefe5ec2931c48a",
+        "budget": 64,
+        "opt_seed": 0,
+        "meta_seed": 0,
+        "status": "OK",
+        "wall_s": 4.438847,
+        "peak_memory_mb": 296.386719,
+        "n_records": 64
+      },
+      {
+        "arm": "S3-BO-FOMAML-CON",
+        "task_id": "p4ra-FQEC-v1-0cefe5ec2931c48a",
+        "budget": 128,
+        "opt_seed": 0,
+        "meta_seed": 0,
+        "status": "OK",
+        "wall_s": 13.591601,
+        "peak_memory_mb": 304.558594,
+        "n_records": 128
+      },
+      {
+        "arm": "S3-BO-FOMAML-CON",
+        "task_id": "p4ra-FQEC-v1-4d27c9390ec241da",
+        "budget": 64,
+        "opt_seed": 0,
+        "meta_seed": 0,
+        "status": "OK",
+        "wall_s": 3.300195,
+        "peak_memory_mb": 297.53125,
+        "n_records": 64
+      },
+      {
+        "arm": "S3-BO-FOMAML-CON",
+        "task_id": "p4ra-FQEC-v1-4d27c9390ec241da",
+        "budget": 128,
+        "opt_seed": 0,
+        "meta_seed": 0,
+        "status": "OK",
+        "wall_s": 12.461623,
+        "peak_memory_mb": 305.09375,
+        "n_records": 128
+      },
+      {
+        "arm": "S3-BO-FOMAML-CON",
+        "task_id": "p4ra-FQEC-v1-52287fc7db1fd038",
+        "budget": 64,
+        "opt_seed": 0,
+        "meta_seed": 0,
+        "status": "OK",
+        "wall_s": 3.31416,
+        "peak_memory_mb": 296.988281,
+        "n_records": 64
+      },
+      {
+        "arm": "S3-BO-FOMAML-CON",
+        "task_id": "p4ra-FQEC-v1-52287fc7db1fd038",
+        "budget": 128,
+        "opt_seed": 0,
+        "meta_seed": 0,
+        "status": "OK",
+        "wall_s": 12.459146,
+        "peak_memory_mb": 304.875,
+        "n_records": 128
+      },
+      {
+        "arm": "S3-BO-FOMAML-OBJ",
+        "task_id": "p4ra-FQEC-v1-0cefe5ec2931c48a",
+        "budget": 64,
+        "opt_seed": 0,
+        "meta_seed": 0,
+        "status": "OK",
+        "wall_s": 3.116942,
+        "peak_memory_mb": 297.640625,
+        "n_records": 64
+      },
+      {
+        "arm": "S3-BO-FOMAML-OBJ",
+        "task_id": "p4ra-FQEC-v1-0cefe5ec2931c48a",
+        "budget": 128,
+        "opt_seed": 0,
+        "meta_seed": 0,
+        "status": "OK",
+        "wall_s": 12.331075,
+        "peak_memory_mb": 304.242188,
+        "n_records": 128
+      },
+      {
+        "arm": "S3-BO-FOMAML-OBJ",
+        "task_id": "p4ra-FQEC-v1-4d27c9390ec241da",
+        "budget": 64,
+        "opt_seed": 0,
+        "meta_seed": 0,
+        "status": "OK",
+        "wall_s": 3.181833,
+        "peak_memory_mb": 297.761719,
+        "n_records": 64
+      },
+      {
+        "arm": "S3-BO-FOMAML-OBJ",
+        "task_id": "p4ra-FQEC-v1-4d27c9390ec241da",
+        "budget": 128,
+        "opt_seed": 0,
+        "meta_seed": 0,
+        "status": "OK",
+        "wall_s": 12.154279,
+        "peak_memory_mb": 305.621094,
+        "n_records": 128
+      },
+      {
+        "arm": "S3-BO-FOMAML-OBJ",
+        "task_id": "p4ra-FQEC-v1-52287fc7db1fd038",
+        "budget": 64,
+        "opt_seed": 0,
+        "meta_seed": 0,
+        "status": "OK",
+        "wall_s": 3.193563,
+        "peak_memory_mb": 304.535156,
+        "n_records": 64
+      },
+      {
+        "arm": "S3-BO-FOMAML-OBJ",
+        "task_id": "p4ra-FQEC-v1-52287fc7db1fd038",
+        "budget": 128,
+        "opt_seed": 0,
+        "meta_seed": 0,
+        "status": "OK",
+        "wall_s": 12.295776,
+        "peak_memory_mb": 306.128906,
+        "n_records": 128
+      },
+      {
+        "arm": "S3-BO-RANDOM",
+        "task_id": "p4ra-FQEC-v1-0cefe5ec2931c48a",
+        "budget": 64,
+        "opt_seed": 0,
+        "meta_seed": 0,
+        "status": "OK",
+        "wall_s": 3.172568,
+        "peak_memory_mb": 304.558594,
+        "n_records": 64
+      },
+      {
+        "arm": "S3-BO-RANDOM",
+        "task_id": "p4ra-FQEC-v1-0cefe5ec2931c48a",
+        "budget": 128,
+        "opt_seed": 0,
+        "meta_seed": 0,
+        "status": "OK",
+        "wall_s": 12.122283,
+        "peak_memory_mb": 305.828125,
+        "n_records": 128
+      },
+      {
+        "arm": "S3-BO-RANDOM",
+        "task_id": "p4ra-FQEC-v1-4d27c9390ec241da",
+        "budget": 64,
+        "opt_seed": 0,
+        "meta_seed": 0,
+        "status": "OK",
+        "wall_s": 3.143107,
+        "peak_memory_mb": 304.535156,
+        "n_records": 64
+      },
+      {
+        "arm": "S3-BO-RANDOM",
+        "task_id": "p4ra-FQEC-v1-4d27c9390ec241da",
+        "budget": 128,
+        "opt_seed": 0,
+        "meta_seed": 0,
+        "status": "OK",
+        "wall_s": 12.029329,
+        "peak_memory_mb": 305.238281,
+        "n_records": 128
+      },
+      {
+        "arm": "S3-BO-RANDOM",
+        "task_id": "p4ra-FQEC-v1-52287fc7db1fd038",
+        "budget": 64,
+        "opt_seed": 0,
+        "meta_seed": 0,
+        "status": "OK",
+        "wall_s": 3.118823,
+        "peak_memory_mb": 304.558594,
+        "n_records": 64
+      },
+      {
+        "arm": "S3-BO-RANDOM",
+        "task_id": "p4ra-FQEC-v1-52287fc7db1fd038",
+        "budget": 128,
+        "opt_seed": 0,
+        "meta_seed": 0,
+        "status": "OK",
+        "wall_s": 12.015895,
+        "peak_memory_mb": 305.0,
+        "n_records": 128
+      },
+      {
+        "arm": "S3-DE",
+        "task_id": "p4ra-FQEC-v1-0cefe5ec2931c48a",
+        "budget": 64,
+        "opt_seed": 0,
+        "meta_seed": 0,
+        "status": "OK",
+        "wall_s": 0.006633,
+        "peak_memory_mb": 304.535156,
+        "n_records": 64
+      },
+      {
+        "arm": "S3-DE",
+        "task_id": "p4ra-FQEC-v1-0cefe5ec2931c48a",
+        "budget": 128,
+        "opt_seed": 0,
+        "meta_seed": 0,
+        "status": "OK",
+        "wall_s": 0.011705,
+        "peak_memory_mb": 304.535156,
+        "n_records": 128
+      },
+      {
+        "arm": "S3-DE",
+        "task_id": "p4ra-FQEC-v1-4d27c9390ec241da",
+        "budget": 64,
+        "opt_seed": 0,
+        "meta_seed": 0,
+        "status": "OK",
+        "wall_s": 0.00621,
+        "peak_memory_mb": 304.535156,
+        "n_records": 64
+      },
+      {
+        "arm": "S3-DE",
+        "task_id": "p4ra-FQEC-v1-4d27c9390ec241da",
+        "budget": 128,
+        "opt_seed": 0,
+        "meta_seed": 0,
+        "status": "OK",
+        "wall_s": 0.010745,
+        "peak_memory_mb": 304.535156,
+        "n_records": 128
+      },
+      {
+        "arm": "S3-DE",
+        "task_id": "p4ra-FQEC-v1-52287fc7db1fd038",
+        "budget": 64,
+        "opt_seed": 0,
+        "meta_seed": 0,
+        "status": "OK",
+        "wall_s": 0.006466,
+        "peak_memory_mb": 304.535156,
+        "n_records": 64
+      },
+      {
+        "arm": "S3-DE",
+        "task_id": "p4ra-FQEC-v1-52287fc7db1fd038",
+        "budget": 128,
+        "opt_seed": 0,
+        "meta_seed": 0,
+        "status": "OK",
+        "wall_s": 0.011459,
+        "peak_memory_mb": 304.535156,
+        "n_records": 128
+      }
+    ]
+  },
+  "projection": {
+    "w1": {
+      "3780": {
+        "by_measured_throughput_s": 21994.282,
+        "by_conservative_batch_s": 22230.363,
+        "campaign_count_assumed": 5,
+        "batch_size": 30
+      },
+      "6900": {
+        "by_measured_throughput_s": 40140.24,
+        "by_conservative_batch_s": 40579.233,
+        "campaign_count_assumed": 5,
+        "batch_size": 30
+      },
+      "runs_per_s": 0.170038,
+      "per_run_compute_s": 5.816012
+    },
+    "w8": {
+      "3780": {
+        "by_measured_throughput_s": 3712.731,
+        "by_conservative_batch_s": 5509.562,
+        "campaign_count_assumed": 5,
+        "batch_size": 30
+      },
+      "6900": {
+        "by_measured_throughput_s": 6715.922,
+        "by_conservative_batch_s": 10057.137,
+        "campaign_count_assumed": 5,
+        "batch_size": 30
+      },
+      "runs_per_s": 0.68608,
+      "per_run_compute_s": 0.962561
+    },
+    "campaign_count_assumed": 5,
+    "campaign_count_note": "FORMAL 共 5 次 campaign：main + NC + OOD + 2 次确定性重复（首次 100 个 run 复用 main 结果）；每次有独立进程池启动成本",
+    "drivers": [
+      "启动探针（含 8 个 worker 各自导入 numpy/torch）",
+      "B128 BO run 的 numpy 打分（candidate_count=512）是单 run 瓶颈",
+      "DE run 极快（毫秒级）导致负载不均"
+    ]
+  },
+  "notes": [
+    "全部纯解析合成评估，physical_call_count=0，无真实求解器。",
+    "bench 使用的模型来自 run_smoke_a/models（SMOKE 训练产物），仅用于计时，不是 M2 冻结模型。",
+    "W=1 与 W=8 的 record_digest 序列逐位比较；worker 编号不进入 RNG/记录。",
+    "W=8 墙钟包含约 startup_probe_s 的一次性进程池启动成本；稳态 compute-only 见 measurements。",
+    "W=1 与 W=8 使用同一 campaign_id=\"bench\"（Lead m07182 修正：campaign_id 进入 run_id，run_id 进入 record_core，必须一致才可比较）；worker 数只记录在 execution_report.parallel_workers。",
+    "wall_ratio_amortized_main_* 按单次 main campaign 规模（6,000 / 3,000 runs）摊薄一次进程池启动后的 W8/W1 墙钟比，反映正式 run 真实并行收益。"
+  ]
+}
