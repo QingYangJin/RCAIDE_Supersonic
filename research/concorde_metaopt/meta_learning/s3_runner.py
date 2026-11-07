@@ -1171,6 +1171,57 @@ def worker_payload_for_state(
     }
 
 
+# ---------------------------------------------------------------------------
+# 资源停止判定（单源；计划 L298/L303、R-S3-05A、A5-S3M1-M01/M02、Lead m08211）
+# ---------------------------------------------------------------------------
+def _mark_resource_limit(result: dict[str, Any], violation: str) -> None:
+    """把已完成 run 标记为资源超限停止（只标状态，不改已完成的评估记录）。"""
+    result["status"] = S3_RUNNER_RESOURCE_LIMIT
+    run = result.get("run")
+    if isinstance(run, dict):
+        run["status"] = S3_RUNNER_RESOURCE_LIMIT
+        run["resource_violation"] = str(violation)
+
+
+def resource_stop_reason(
+    result: Mapping[str, Any],
+    *,
+    completed_sum_wall_s: float,
+    campaign_wall_s: float,
+) -> str | None:
+    """单一资源停止判定（唯一事实源）：每完成一个 run 立即调用。
+
+    A5-S3M1-M01/M02：per-run wall > per_run_wall_s 或单 run 峰值内存 >
+    peak_memory_mb 时先把该 run 置 RESOURCE_LIMIT 并立即停止；随后判定累计
+    Σrun wall（> sum_run_wall_limit_s；跨 campaign 累计）与 campaign 墙钟
+    （> total_wall_s）。返回 None 表示未超限。
+    """
+    limits = sp.S3_RESOURCE_LIMITS
+    run_entry = result.get("run")
+    run = run_entry if isinstance(run_entry, Mapping) else {}
+    violation: str | None = None
+    wall_s = run.get("wall_s")
+    if isinstance(wall_s, (int, float)) and float(wall_s) > float(limits["per_run_wall_s"]):
+        violation = "per_run_wall_s"
+    else:
+        peak_mb = run.get("peak_memory_mb")
+        if isinstance(peak_mb, (int, float)) and float(peak_mb) > float(limits["peak_memory_mb"]):
+            violation = "peak_memory_mb"
+    if violation is not None:
+        _mark_resource_limit(result, violation)
+        return S3_RUNNER_RESOURCE_LIMIT
+    if (
+        str(result.get("status")) == S3_RUNNER_RESOURCE_LIMIT
+        or str(run.get("status")) == S3_RUNNER_RESOURCE_LIMIT
+    ):
+        return S3_RUNNER_RESOURCE_LIMIT
+    if float(completed_sum_wall_s) > float(limits["sum_run_wall_limit_s"]):
+        return S3_RUNNER_SUM_RUN_WALL_LIMIT
+    if float(campaign_wall_s) > float(limits["total_wall_s"]):
+        return S3_RUNNER_DEADLINE_EXCEEDED
+    return None
+
+
 def execute_campaign(
     specs: Sequence[Mapping[str, Any]],
     *,
@@ -1178,39 +1229,53 @@ def execute_campaign(
     state: Mapping[str, Any],
     campaign_id: str,
     run_mode: str = "FORMAL",
+    prior_sum_run_wall_s: float = 0.0,
+    clock: Callable[[], float] | None = None,
 ) -> dict[str, Any]:
-    """按固定排序执行 run 列表；W=1 串行等价，W>1 使用 spawn 子进程池。"""
+    """按固定排序执行 run 列表；W=1 串行等价，W>1 有界并发逐结果消费。
+
+    A5-S3M1-M01/M02：每个 run 完成即调用 resource_stop_reason（唯一事实源）；超限
+    立即停止当前 campaign，不再启动新 run，停止前已完成的结果保留。W>1 使用
+    spawn 子进程池 + imap_unordered(chunksize=1)：结果到达即判定，超限 terminate
+    未完成任务；无超限时结果按 run_key 规范排序合并，故与 W=1 逐位一致。
+    分片（shard_map）是账目口径（execution_report.per_shard_counts /
+    shard_runs_sha256），实际执行不按 shard 绑定 worker；worker 编号不进入
+    RNG/记录/digest。prior_sum_run_wall_s 用于跨 campaign 累计 Σrun wall 判定。
+    """
     _require(type(workers) is int and 1 <= workers <= S3_RUNNER_MAX_WORKERS, S3_RUNNER_ERROR, "workers 越界")
+    _require(
+        type(prior_sum_run_wall_s) in (int, float) and float(prior_sum_run_wall_s) >= 0.0,
+        S3_RUNNER_ERROR,
+        "prior_sum_run_wall_s 必须是非负数",
+    )
     ordered = sorted((dict(spec, campaign_id=campaign_id) for spec in specs), key=run_sort_key)
     plan = shard_map(ordered, workers)
     set_thread_environment()
-    campaign_started = time.perf_counter()
+    now = clock if clock is not None else time.perf_counter
+    campaign_started = now()
     results: list[dict[str, Any]] = []
     stop_reason: str | None = None
     sum_limit_s = float(sp.S3_RESOURCE_LIMITS["sum_run_wall_limit_s"])
     total_limit_s = float(sp.S3_RESOURCE_LIMITS["total_wall_s"])
+    completed_sum = [float(prior_sum_run_wall_s)]
 
-    def _completed_sum_wall() -> float:
-        return sum(
-            float(item["run"]["wall_s"])
-            for item in results
-            if isinstance(item.get("run", {}).get("wall_s"), (int, float))
+    def _accept(result: dict[str, Any]) -> str | None:
+        results.append(result)
+        wall_s = (result.get("run") or {}).get("wall_s")
+        if isinstance(wall_s, (int, float)):
+            completed_sum[0] = completed_sum[0] + float(wall_s)
+        return resource_stop_reason(
+            result,
+            completed_sum_wall_s=completed_sum[0],
+            campaign_wall_s=now() - campaign_started,
         )
 
     if workers == 1:
         _worker_init(state)
         try:
             for spec in ordered:
-                result = _worker_entry(spec)
-                results.append(result)
-                if result.get("status") in (S3_RUNNER_RESOURCE_LIMIT, "RESOURCE_LIMIT"):
-                    stop_reason = S3_RUNNER_RESOURCE_LIMIT
-                    break
-                if _completed_sum_wall() > sum_limit_s:
-                    stop_reason = S3_RUNNER_SUM_RUN_WALL_LIMIT
-                    break
-                if time.perf_counter() - campaign_started > total_limit_s:
-                    stop_reason = S3_RUNNER_DEADLINE_EXCEEDED
+                stop_reason = _accept(_worker_entry(spec))
+                if stop_reason is not None:
                     break
         finally:
             global _WORKER_STATE
@@ -1222,16 +1287,14 @@ def execute_campaign(
             initializer=_worker_init,
             initargs=(dict(state),),
         ) as pool:
-            results = list(pool.map(_worker_entry, ordered, chunksize=1))
-    campaign_wall_s = time.perf_counter() - campaign_started
-    for result in results:
-        loaded = result.get("run", {}).get("wall_s")
-        if result.get("status") == "OK" and isinstance(loaded, (int, float)):
-            limit = float(sp.S3_RESOURCE_LIMITS["per_run_wall_s"])
-            if float(loaded) > limit:
-                result["status"] = S3_RUNNER_RESOURCE_LIMIT
-                result["run"]["status"] = S3_RUNNER_RESOURCE_LIMIT
-                stop_reason = S3_RUNNER_RESOURCE_LIMIT
+            for result in pool.imap_unordered(_worker_entry, ordered, chunksize=1):
+                stop_reason = _accept(result)
+                if stop_reason is not None:
+                    # 立即停止：丢弃排队任务并终止在飞 worker（Pool.__exit__ 再 terminate 为 no-op）
+                    pool.terminate()
+                    break
+    results.sort(key=lambda item: run_sort_key(item["spec"]))
+    campaign_wall_s = now() - campaign_started
     wall_values = [
         float(result["run"]["wall_s"])
         for result in results
@@ -1265,7 +1328,13 @@ def execute_campaign(
         "sum_run_wall_limit_s": int(sp.S3_RESOURCE_LIMITS["sum_run_wall_limit_s"]),
         "stop_reason": stop_reason,
         "physical_call_count": 0,
-        "parallel_note": "run 级并行仅执行层；每 run 随机流由 (arm,task,budget,opt_seed,meta_seed) 派生，worker 编号不进入 RNG/记录；合并顺序按 run_key 规范排序；sum_run_wall_seconds=sum(逐 run wall_s)，campaign_wall_s 为并行墙钟",
+        "parallel_note": (
+            "run 级并行仅执行层；分片 shard=sha256(canonical(run_key))%%W 仅用于账目口径"
+            "（execution_report.per_shard_counts/shard_runs_sha256），实际执行为有界并发"
+            "（W=1 串行；W>1 spawn 池 imap_unordered(chunksize=1) 逐结果消费、超限 terminate），"
+            "结果按 run_key 规范排序合并；worker 编号不进入 RNG/记录/digest；"
+            "sum_run_wall_seconds=sum(本 campaign 逐 run wall_s)，campaign_wall_s 为墙钟"
+        ),
     }
     _require(tuple(report) == S3_EXECUTION_REPORT_FIELDS, S3_RUNNER_VALIDATION_ERROR, "execution_report 字段集/顺序不符")
     return {"results": results, "execution_report": report}
@@ -2222,6 +2291,16 @@ def _record_field_sets() -> tuple[set[str], set[str]]:
     return set(sp.S3_TRAIN_RECORD_FIELDS), set(sp.S3_EVAL_RECORD_FIELDS)
 
 
+def _run_early_stopped(summary: Mapping[str, Any], execution_report: Mapping[str, Any]) -> bool:
+    """资源限制早停判定（A5-S3M1-m03）：run_status 或最终 execution_report.stop_reason 反映停止。"""
+    if isinstance(summary, Mapping) and str(summary.get("status")) in (
+        S3_RUNNER_RESOURCE_LIMIT,
+        S3_RUNNER_DEADLINE_EXCEEDED,
+    ):
+        return True
+    return isinstance(execution_report, Mapping) and execution_report.get("stop_reason") is not None
+
+
 def validate_run_artifacts(
     run_dir: str | Path,
     *,
@@ -2249,6 +2328,9 @@ def validate_run_artifacts(
     data_manifest = read_json_file(root / S3_RUNNER_DATA_MANIFEST_FILE)
     gate = read_json_file(root / S3_RUNNER_GATE_FILE)
     records = read_jsonl(root / S3_RUNNER_RECORD_FILE)
+    execution_report = read_json_file(root / S3_RUNNER_EXECUTION_REPORT_FILE)
+    early_stop = _run_early_stopped(summary, execution_report)
+    _check(checks, "run_early_stopped", True, early_stop)
     _check(checks, "run_config_is_mapping", isinstance(config, Mapping), type(config).__name__)
     _check(checks, "run_summary_is_mapping", isinstance(summary, Mapping), type(summary).__name__)
     if not isinstance(config, Mapping) or not isinstance(summary, Mapping):
@@ -2263,7 +2345,7 @@ def validate_run_artifacts(
             _det_record_relpath(index) for index in range(1, int(sp.S3_DETERMINISM_REPEATS) + 1)
         ]
         missing_streams = [name for name in stream_required if not (root / name).is_file()]
-        _check(checks, "record_stream_artifacts", not missing_streams, {"missing": missing_streams})
+        _check(checks, "record_stream_artifacts", early_stop or not missing_streams, {"missing": missing_streams, "early_stop": early_stop})
     _check(checks, "run_config_schema", config.get("schema_version") == sp.S3_RUN_CONFIG_SCHEMA_VERSION, config.get("schema_version"))
     expected_fields = set(sp.S3_RUN_CONFIG_REQUIRED_FIELDS)
     if run_mode == "SMOKE":
@@ -2404,7 +2486,6 @@ def validate_run_artifacts(
             bool(prereg_gate_sha) and gate_sha == prereg_gate_sha,
             {"prereg": prereg_gate_sha, "run": gate_sha},
         )
-    execution_report = read_json_file(root / S3_RUNNER_EXECUTION_REPORT_FILE)
     execution_fields_ok = isinstance(execution_report, Mapping) and set(execution_report) == set(S3_EXECUTION_REPORT_FIELDS)
     _check(checks, "execution_report_fields", execution_fields_ok, sorted(set(execution_report) ^ set(S3_EXECUTION_REPORT_FIELDS)) if isinstance(execution_report, Mapping) else type(execution_report).__name__)
     _check(checks, "execution_report_schema", isinstance(execution_report, Mapping) and execution_report.get("schema_version") == S3_EXECUTION_REPORT_SCHEMA_VERSION, None if not isinstance(execution_report, Mapping) else execution_report.get("schema_version"))
@@ -2430,7 +2511,7 @@ def validate_run_artifacts(
         stream_artifacts_ok = isinstance(artifacts_map, Mapping) and all(
             artifacts_map.get(name) == _raw_sha(root / name) for name in stream_artifact_names
         )
-        _check(checks, "record_stream_artifact_sha", stream_artifacts_ok, None)
+        _check(checks, "record_stream_artifact_sha", early_stop or stream_artifacts_ok, {"early_stop": early_stop})
     train_fields, eval_fields = _record_field_sets()
     record_ok = True
     record_detail: list[Any] = []
@@ -2463,7 +2544,7 @@ def validate_run_artifacts(
     det_streams: list[list[dict[str, Any]]] = []
     stream_rows_ok = True
     stream_detail: dict[str, Any] = {}
-    if run_mode == "FORMAL":
+    if run_mode == "FORMAL" and not early_stop:
         nc_rows = read_jsonl(root / S3_RUNNER_NC_RECORDS_FILE)
         ood_rows = read_jsonl(root / S3_RUNNER_OOD_RECORDS_FILE)
         for stream, rows, split, phase in (
@@ -2573,7 +2654,11 @@ def validate_run_artifacts(
     _check(checks, "status_counts_equal", isinstance(status_counts, Mapping) and dict(status_counts) == expected_status, {"expected": expected_status})
     grid = config.get("evaluation_grid") or {}
     eval_run_ids = set(budget_by_run)
-    _check(checks, "eval_run_count", len(eval_run_ids) == int(grid.get("main_runs", -1)), {"actual": len(eval_run_ids), "expected": grid.get("main_runs")})
+    expected_main_runs = int(grid.get("main_runs", -1))
+    eval_run_count_ok = len(eval_run_ids) == expected_main_runs or (
+        early_stop and 0 <= len(eval_run_ids) <= expected_main_runs
+    )
+    _check(checks, "eval_run_count", eval_run_count_ok, {"actual": len(eval_run_ids), "expected": expected_main_runs, "early_stop": early_stop})
     train_expected = 2 * len(config.get("seeds", {}).get("meta_seeds") or [])
     _check(checks, "train_record_count_formula", False, None)  # 占位，下面用真实值覆盖
     del checks["train_record_count_formula"]
@@ -2581,6 +2666,23 @@ def validate_run_artifacts(
     _check(checks, "summary_resources", isinstance(resources, Mapping) and {"total_wall_s", "max_wall_s", "max_peak_memory_mb", "sum_run_wall_seconds", "sum_run_wall_limit_s", "auxiliary_compute", "resource_limits"} <= set(resources), sorted(resources) if isinstance(resources, Mapping) else resources)
     _check(checks, "resource_limits_fixed", isinstance(resources, Mapping) and dict(resources.get("resource_limits") or {}) == dict(sp.S3_RESOURCE_LIMITS), None)
     _check(checks, "sum_run_wall_limit_fixed", isinstance(resources, Mapping) and int(resources.get("sum_run_wall_limit_s", -1)) == int(sp.S3_RESOURCE_LIMITS["sum_run_wall_limit_s"]) and isinstance(execution_report, Mapping) and int(execution_report.get("sum_run_wall_limit_s", -1)) == int(sp.S3_RESOURCE_LIMITS["sum_run_wall_limit_s"]), None)
+    consistency_ok = False
+    consistency_detail: dict[str, Any] = {}
+    if isinstance(execution_report, Mapping) and isinstance(resources, Mapping):
+        try:
+            consistency_ok = (
+                execution_report.get("stop_reason") == resources.get("stop_reason")
+                and float(execution_report.get("sum_run_wall_seconds")) == float(resources.get("sum_run_wall_seconds"))
+                and int(execution_report.get("parallel_workers")) == int(resources.get("parallel_workers"))
+            )
+            consistency_detail = {
+                "stop_reason": [execution_report.get("stop_reason"), resources.get("stop_reason")],
+                "sum_run_wall_seconds": [execution_report.get("sum_run_wall_seconds"), resources.get("sum_run_wall_seconds")],
+                "parallel_workers": [execution_report.get("parallel_workers"), resources.get("parallel_workers")],
+            }
+        except (TypeError, ValueError):
+            consistency_ok = False
+    _check(checks, "execution_report_summary_consistency", consistency_ok, consistency_detail)
     _check(checks, "data_manifest_fields", set(data_manifest) == set(sp.S3_DATA_MANIFEST_FIELDS), sorted(set(data_manifest) ^ set(sp.S3_DATA_MANIFEST_FIELDS)))
     split_ids = data_manifest.get("split_task_ids") or {}
     split_ok = isinstance(split_ids, Mapping) and set(split_ids) == set(sp.S3_ALLOWED_SPLITS)
@@ -2591,8 +2693,36 @@ def validate_run_artifacts(
     per_run = summary.get("per_run")
     if isinstance(per_run, list) and per_run and all(isinstance(row, Mapping) and "s3_provenance" in row for row in per_run):
         try:
-            fairness = m5_arms.s3_fairness_report(per_run)
-            _check(checks, "fairness", bool(fairness.get("ok")), fairness.get("problems"))
+            fairness_rows = list(per_run)
+            if early_stop:
+                # 资源早停时记录只含实际完成 run，一个臂组可能没有跑满 5 臂；
+                # 公平性断言只对完整臂组生效，不完整组在 detail 中披露（不伪造、不放宽正常路径）。
+                group_counts: dict[tuple[Any, ...], int] = {}
+                keys: list[tuple[Any, ...]] = []
+                for row in fairness_rows:
+                    key = (
+                        str(row.get("task_id")),
+                        int(row.get("budget", -1)),
+                        int(row.get("opt_seed", -1)),
+                        int(row.get("meta_seed", -1)),
+                    )
+                    keys.append(key)
+                    group_counts[key] = group_counts.get(key, 0) + 1
+                fairness_rows = [
+                    row
+                    for row, key in zip(fairness_rows, keys)
+                    if group_counts[key] == len(m5_arms.S3_ARM_IDS)
+                ]
+            if fairness_rows:
+                fairness = m5_arms.s3_fairness_report(fairness_rows)
+                _check(checks, "fairness", bool(fairness.get("ok")), fairness.get("problems"))
+            else:
+                _check(
+                    checks,
+                    "fairness",
+                    bool(early_stop),
+                    {"early_stop": True, "complete_groups": 0, "rows": len(per_run), "detail": "无完整臂组可断言"},
+                )
         except Exception as exc:
             _check(checks, "fairness", False, type(exc).__name__ + ": " + str(exc))
     else:
@@ -2843,6 +2973,39 @@ def _outer_step_timing(train: Mapping[str, Any]) -> list[dict[str, Any]]:
     return timings
 
 
+def build_final_execution_report(
+    main_report: Mapping[str, Any],
+    *,
+    stop_reason: str | None,
+    sum_run_wall_seconds: float,
+    max_run_wall_s: float,
+    max_peak_memory_mb: float,
+    campaign_wall_s: float,
+) -> dict[str, Any]:
+    """把 main campaign 报告扩展为整个 run 的最终 execution_report（A5-S3M1-m03）。
+
+    18 字段 schema/顺序不变，只把 stop_reason/Σrun wall/max run wall/max peak/
+    campaign wall 覆盖为全部已执行 campaign 的最终口径；落盘只写这一次最终版，
+    且与 run_summary.resources 的 stop_reason/sum_run_wall_seconds/parallel_workers
+    完全一致。
+    """
+    report = dict(main_report)
+    report["campaign_wall_s"] = _round6(float(campaign_wall_s))
+    report["sum_run_wall_seconds"] = _round6(float(sum_run_wall_seconds))
+    report["max_run_wall_s"] = _round6(float(max_run_wall_s))
+    report["max_peak_memory_mb"] = _round6(float(max_peak_memory_mb))
+    report["stop_reason"] = None if stop_reason is None else str(stop_reason)
+    report["parallel_note"] = (
+        "run 级并行仅执行层；分片为账目口径（shard=sha256(canonical(run_key))%W，"
+        "仅用于 execution_report.per_shard_counts/shard_runs_sha256），实际执行为有界并发"
+        "有序合并（W=1 串行；W>1 spawn 池 imap_unordered(chunksize=1) 逐结果消费、超限 terminate）；"
+        "worker 编号不进入 RNG/记录/digest；合并顺序按 run_key 规范排序；"
+        "sum_run_wall_seconds=Σ(全部已执行 campaign 的逐 run wall_s)；campaign_wall_s=Σ(各 campaign 墙钟)"
+    )
+    _require(tuple(report) == S3_EXECUTION_REPORT_FIELDS, S3_RUNNER_VALIDATION_ERROR, "最终 execution_report 字段集/顺序不符")
+    return report
+
+
 def run_experiment(
     *,
     out_dir: str | Path,
@@ -2896,7 +3059,21 @@ def run_experiment(
     )
     main = execute_campaign(main_specs, workers=int(parallel_workers), state=state, campaign_id=str(run_id), run_mode=run_mode)
     main_results = main["results"]
+    main_stop_reason = main["execution_report"].get("stop_reason")
+    if main_stop_reason is not None:
+        main_stop_reason = str(main_stop_reason)
+    # A5-S3M1-m02：main campaign 未资源停止时必须全 OK，否则 fail-closed（不再保留死变量）
     enforces_ok = all(result.get("status") == "OK" for result in main_results)
+    _require(
+        main_stop_reason is not None or enforces_ok,
+        S3_RUNNER_RESOURCE_ERROR,
+        "main campaign 未资源停止但存在非 OK run: "
+        + repr([
+            {"run_id": result["run"].get("run_id"), "status": result.get("status"), "error": result.get("error")}
+            for result in main_results
+            if result.get("status") != "OK"
+        ]),
+    )
     eval_records = [record for result in main_results for record in result.get("records", [])]
     train_records = list(train["train_records"])
     failures = [
@@ -2926,6 +3103,8 @@ def run_experiment(
         ],
     }
     aux_runs = 0
+    run_stop_reason: str | None = main_stop_reason
+    total_sum_run_wall = float(main["execution_report"]["sum_run_wall_seconds"])
     if run_mode == "FORMAL":
         nc_tasks = list(by_split["meta_test_negative_control"])
         ood_tasks = list(by_split["meta_test_ood"])
@@ -2943,91 +3122,154 @@ def run_experiment(
             opt_seeds=list(budget["opt_seeds"])[:3],
             meta_seeds=[0],
         )
-        nc = execute_campaign(nc_specs, workers=int(parallel_workers), state=state, campaign_id=str(run_id) + "--NC", run_mode=run_mode)
-        ood = execute_campaign(ood_specs, workers=int(parallel_workers), state=state, campaign_id=str(run_id) + "--OOD", run_mode=run_mode)
-        for campaign in (nc, ood):
+        det_specs = select_determinism_specs(main_specs, prereg=prereg)
+        det_count = int(len(det_specs))
+        main_by_run_id = {result["run"].get("run_id"): result for result in main_results}
+        det_streams = []
+        det_core: list[list[dict[str, Any]]] = []
+
+        def _record_campaign(campaign: Mapping[str, Any]) -> str | None:
+            """记录一个已执行 campaign 的资源账目并返回其 stop_reason（A5-S3M1-m03）。"""
+            nonlocal total_sum_run_wall, aux_runs
             report = campaign["execution_report"]
             campaign_walls.append(float(report["campaign_wall_s"]))
             campaign_peaks.append(float(report["max_peak_memory_mb"]))
             campaign_max_run_walls.append(float(report["max_run_wall_s"]))
             campaign_sum_run_walls.append(float(report["sum_run_wall_seconds"]))
-            campaign_stop_reasons.append(report.get("stop_reason"))
-        aux_runs = len(nc["results"]) + len(ood["results"])
-        aux_records["negative_control"] = [record for result in nc["results"] for record in result.get("records", [])]
-        aux_records["ood"] = [record for result in ood["results"] for record in result.get("records", [])]
-        negative_controls = {
-            "executed": True,
-            "runs": len(nc["results"]),
-            "records": len(aux_records["negative_control"]),
-            "ood_runs": len(ood["results"]),
-            "ood_records": len(aux_records["ood"]),
-            "failures": len([result for result in nc["results"] + ood["results"] if result.get("status") != "OK"]),
-        }
-        det_specs = select_determinism_specs(main_specs, prereg=prereg)
-        det_count = int(len(det_specs))
-        main_by_run_id = {result["run"].get("run_id"): result for result in main_results}
-        det_core: list[list[dict[str, Any]]] = []
-        for repeat in range(int(sp.S3_DETERMINISM_REPEATS)):
-            if repeat == 0:
-                det_rows: list[dict[str, Any]] = []
-                for spec in det_specs:
-                    run_key = _run_id_for(spec, str(run_id))
-                    result = main_by_run_id.get(run_key)
-                    _require(result is not None, S3_RUNNER_ERROR, "确定性子集 run 缺失于主 campaign: " + str(run_key))
-                    det_rows.extend(result.get("records", []))
+            total_sum_run_wall = total_sum_run_wall + float(report["sum_run_wall_seconds"])
+            aux_runs = aux_runs + len(campaign.get("results") or [])
+            reason = report.get("stop_reason")
+            if reason is not None:
+                campaign_stop_reasons.append(reason)
+                return str(reason)
+            return None
+
+        # A5-S3M1-M01：任一 campaign 资源停止后不再启动后续 campaign。
+        if run_stop_reason is None:
+            nc = execute_campaign(
+                nc_specs,
+                workers=int(parallel_workers),
+                state=state,
+                campaign_id=str(run_id) + "--NC",
+                run_mode=run_mode,
+                prior_sum_run_wall_s=total_sum_run_wall,
+            )
+            aux_records["negative_control"] = [record for result in nc["results"] for record in result.get("records", [])]
+            negative_controls = {
+                "executed": True,
+                "runs": len(nc["results"]),
+                "records": len(aux_records["negative_control"]),
+                "ood_runs": 0,
+                "ood_records": 0,
+                "failures": len([result for result in nc["results"] if result.get("status") != "OK"]),
+            }
+            run_stop_reason = _record_campaign(nc)
+        if run_stop_reason is None:
+            ood = execute_campaign(
+                ood_specs,
+                workers=int(parallel_workers),
+                state=state,
+                campaign_id=str(run_id) + "--OOD",
+                run_mode=run_mode,
+                prior_sum_run_wall_s=total_sum_run_wall,
+            )
+            aux_records["ood"] = [record for result in ood["results"] for record in result.get("records", [])]
+            negative_controls["executed"] = True
+            negative_controls["ood_runs"] = len(ood["results"])
+            negative_controls["ood_records"] = len(aux_records["ood"])
+            negative_controls["failures"] = int(negative_controls.get("failures", 0)) + len(
+                [result for result in ood["results"] if result.get("status") != "OK"]
+            )
+            run_stop_reason = _record_campaign(ood)
+        if run_stop_reason is not None and not negative_controls.get("executed"):
+            negative_controls = {"executed": False, "reason": "资源停止：" + str(run_stop_reason)}
+        if run_stop_reason is None:
+            det_stopped: str | None = None
+            for repeat in range(int(sp.S3_DETERMINISM_REPEATS)):
+                if repeat == 0:
+                    det_rows: list[dict[str, Any]] = []
+                    for spec in det_specs:
+                        run_key = _run_id_for(spec, str(run_id))
+                        result = main_by_run_id.get(run_key)
+                        _require(result is not None, S3_RUNNER_ERROR, "确定性子集 run 缺失于主 campaign: " + str(run_key))
+                        det_rows.extend(result.get("records", []))
+                else:
+                    det_campaign = execute_campaign(
+                        det_specs,
+                        workers=int(parallel_workers),
+                        state=state,
+                        # R-S3-08 / Lead m07182：重复 campaign 必须与主 campaign 同 campaign_id。
+                        campaign_id=str(run_id),
+                        run_mode=run_mode,
+                        prior_sum_run_wall_s=total_sum_run_wall,
+                    )
+                    det_rows = [record for result in det_campaign["results"] for record in result.get("records", [])]
+                    det_stopped = _record_campaign(det_campaign)
+                det_dir = out / S3_RUNNER_DET_DIR / ("r" + str(repeat + 1))
+                det_dir.mkdir(parents=True, exist_ok=True)
+                write_jsonl(det_dir / S3_RUNNER_RECORD_FILE, det_rows)
+                det_streams.append(det_rows)
+                det_core.append(_record_core_list(det_rows))
+                if det_stopped is not None:
+                    run_stop_reason = det_stopped
+                    break
+            if det_stopped is None:
+                determinism = {
+                    "mode": run_mode,
+                    "reruns": int(sp.S3_DETERMINISM_REPEATS),
+                    "subset_runs": det_count,
+                    "subset_run_keys_sha256": str((prereg.get("determinism") or {}).get("subset_run_keys_sha256")),
+                    "executed": True,
+                    "record_digest_excluded_fields": ["wall_s", "peak_memory_mb", "record_digest"],
+                    "byte_identical_artifacts": [
+                        "run_config.json",
+                        "episode_bank_sha256",
+                        "model_sha256",
+                        "fd_or_gradient_gate_sha256",
+                        "record_core",
+                    ],
+                    "record_core_equal": all(core == det_core[0] for core in det_core),
+                    "record_core_sha256": [sp.canonical_sha256(core) for core in det_core],
+                    "record_streams": {
+                        "main": S3_RUNNER_RECORD_FILE,
+                        "nc": S3_RUNNER_NC_RECORDS_FILE,
+                        "ood": S3_RUNNER_OOD_RECORDS_FILE,
+                        "det": [_det_record_relpath(index) for index in range(1, int(sp.S3_DETERMINISM_REPEATS) + 1)],
+                    },
+                }
+                write_json_canonical(out / S3_RUNNER_DET_CHECK_FILE, determinism)
             else:
-                det_campaign = execute_campaign(
-                    det_specs,
-                    workers=int(parallel_workers),
-                    state=state,
-                    # R-S3-08 / Lead m07182：重复 campaign 必须与主 campaign 同 campaign_id。
-                    # campaign_id 进入 run_id，run_id 进入 record_core，故任何后缀都会使
-                    # record_core_equal 恒为 False（假不确定性）。worker 数只记录在 execution_report。
-                    campaign_id=str(run_id),
-                    run_mode=run_mode,
-                )
-                det_rows = [record for result in det_campaign["results"] for record in result.get("records", [])]
-                report = det_campaign["execution_report"]
-                campaign_walls.append(float(report["campaign_wall_s"]))
-                campaign_peaks.append(float(report["max_peak_memory_mb"]))
-                campaign_max_run_walls.append(float(report["max_run_wall_s"]))
-                campaign_sum_run_walls.append(float(report["sum_run_wall_seconds"]))
-                campaign_stop_reasons.append(report.get("stop_reason"))
-            det_dir = out / S3_RUNNER_DET_DIR / ("r" + str(repeat + 1))
-            det_dir.mkdir(parents=True, exist_ok=True)
-            write_jsonl(det_dir / S3_RUNNER_RECORD_FILE, det_rows)
-            det_streams.append(det_rows)
-            det_core.append(_record_core_list(det_rows))
-        determinism = {
-            "mode": run_mode,
-            "reruns": int(sp.S3_DETERMINISM_REPEATS),
-            "subset_runs": det_count,
-            "subset_run_keys_sha256": str((prereg.get("determinism") or {}).get("subset_run_keys_sha256")),
-            "executed": True,
-            "record_digest_excluded_fields": ["wall_s", "peak_memory_mb", "record_digest"],
-            "byte_identical_artifacts": [
-                "run_config.json",
-                "episode_bank_sha256",
-                "model_sha256",
-                "fd_or_gradient_gate_sha256",
-                "record_core",
-            ],
-            "record_core_equal": all(core == det_core[0] for core in det_core),
-            "record_core_sha256": [sp.canonical_sha256(core) for core in det_core],
-            "record_streams": {
-                "main": S3_RUNNER_RECORD_FILE,
-                "nc": S3_RUNNER_NC_RECORDS_FILE,
-                "ood": S3_RUNNER_OOD_RECORDS_FILE,
-                "det": [_det_record_relpath(index) for index in range(1, int(sp.S3_DETERMINISM_REPEATS) + 1)],
-            },
-        }
-        write_json_canonical(out / S3_RUNNER_DET_CHECK_FILE, determinism)
+                determinism = {
+                    "mode": run_mode,
+                    "reruns": 0,
+                    "executed": False,
+                    "record_digest_excluded_fields": ["wall_s", "peak_memory_mb", "record_digest"],
+                    "byte_identical_artifacts": [
+                        "run_config.json",
+                        "episode_bank_sha256",
+                        "model_sha256",
+                        "fd_or_gradient_gate_sha256",
+                        "record_core",
+                    ],
+                    "reason": "资源停止：" + str(run_stop_reason),
+                }
+        else:
+            determinism = {
+                "mode": run_mode,
+                "reruns": 0,
+                "executed": False,
+                "record_digest_excluded_fields": ["wall_s", "peak_memory_mb", "record_digest"],
+                "byte_identical_artifacts": [
+                    "run_config.json",
+                    "episode_bank_sha256",
+                    "model_sha256",
+                    "fd_or_gradient_gate_sha256",
+                    "record_core",
+                ],
+                "reason": "资源停止：" + str(run_stop_reason),
+            }
     total_sum_run_wall = float(sum(campaign_sum_run_walls))
-    run_stop_reason = main["execution_report"].get("stop_reason")
-    for reason in campaign_stop_reasons:
-        if reason is not None and run_stop_reason is None:
-            run_stop_reason = reason
-    if total_sum_run_wall > float(sp.S3_RESOURCE_LIMITS["sum_run_wall_limit_s"]):
+    if run_stop_reason is None and total_sum_run_wall > float(sp.S3_RESOURCE_LIMITS["sum_run_wall_limit_s"]):
         run_stop_reason = S3_RUNNER_SUM_RUN_WALL_LIMIT
     status = "COMPLETED"
     if run_stop_reason in (S3_RUNNER_RESOURCE_LIMIT, S3_RUNNER_SUM_RUN_WALL_LIMIT):
@@ -3104,7 +3346,15 @@ def run_experiment(
         candidate = out / str(row["path"])
         if candidate.is_file():
             artifact_sha256[str(row["path"])] = str(row["sha256"])
-    execution_info = write_json_canonical(out / S3_RUNNER_EXECUTION_REPORT_FILE, main["execution_report"])
+    final_execution_report = build_final_execution_report(
+        main["execution_report"],
+        stop_reason=run_stop_reason,
+        sum_run_wall_seconds=total_sum_run_wall,
+        max_run_wall_s=max(campaign_max_run_walls) if campaign_max_run_walls else 0.0,
+        max_peak_memory_mb=max(campaign_peaks) if campaign_peaks else 0.0,
+        campaign_wall_s=sum(campaign_walls),
+    )
+    execution_info = write_json_canonical(out / S3_RUNNER_EXECUTION_REPORT_FILE, final_execution_report)
     artifact_sha256[S3_RUNNER_EXECUTION_REPORT_FILE] = execution_info["sha256"]
     if run_mode == "FORMAL":
         artifact_sha256[S3_RUNNER_DET_CHECK_FILE] = _raw_sha(out / S3_RUNNER_DET_CHECK_FILE) or ""
@@ -3149,6 +3399,8 @@ def run_experiment(
         "max_peak_memory_mb": _round6(float(max(campaign_peaks)) if campaign_peaks else 0.0),
         "sum_run_wall_seconds": _round6(total_sum_run_wall),
         "sum_run_wall_limit_s": int(sp.S3_RESOURCE_LIMITS["sum_run_wall_limit_s"]),
+        "parallel_workers": int(parallel_workers),
+        "stop_reason": run_stop_reason,
         "auxiliary_compute": auxiliary_compute,
         "resource_limits": dict(sp.S3_RESOURCE_LIMITS),
     }
@@ -3185,7 +3437,7 @@ def run_experiment(
         "data_manifest_sha256": data_info["sha256"],
         "model_manifest_sha256": prepared["model_manifest_info"]["sha256"],
         "gate_sha256": prepared["gate"]["sha256"],
-        "execution_report": main["execution_report"],
+        "execution_report": final_execution_report,
     }
 
 

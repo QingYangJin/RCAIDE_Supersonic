@@ -3782,3 +3782,569 @@ class QuickHelperTests(unittest.TestCase):
         self.assertIn("a,b", text)
         self.assertIn("1,", text)
         self.assertIn("2,3", text)
+
+
+# ---------------------------------------------------------------------------
+# F 段：A5-S3M1-B01 —— Holm 校正后决策回填（raw p 不参与判定）
+# ---------------------------------------------------------------------------
+def _csv_rows(path):
+    import csv
+
+    with Path(path).open("r", encoding="utf-8", newline="") as handle:
+        return list(csv.DictReader(handle))
+
+
+def _json_file(path):
+    path = Path(path)
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def _holmb01_mock_wilcoxon(testcase, p_values):
+    """把精确 Wilcoxon 替换为受控 p 值序列（仅用于决策回填单测）。"""
+    import unittest.mock as mock
+
+    side_effect = [
+        {
+            "p_two_sided": float(p),
+            "n_zero": 0,
+            "n_eff": 20,
+            "w_plus": 10.0,
+            "method": "exact_sign_flip_tie_aware",
+        }
+        for p in p_values
+    ]
+    return mock.patch.object(an, "wilcoxon_signed_rank_exact", side_effect=side_effect)
+
+
+def _holmb01_endpoints(tasks, *, c1_delta=0.10, c2_delta=-0.05):
+    """构造受控端点行：C1（feasible_hit_rate，CON−OBJ 均值=c1_delta）、C2（gap，相对效应由 c2_delta 决定）。"""
+    rows = []
+    for budget in (64, 128):
+        for task in tasks:
+            for arm in sp.S3_ARMS:
+                if arm == "S3-BO-FOMAML-CON":
+                    c1 = 0.50 + c1_delta
+                    c2 = 0.10 + c2_delta
+                else:
+                    c1 = 0.50
+                    c2 = 0.10
+                rows.append(
+                    {
+                        "task_id": str(task),
+                        "budget": int(budget),
+                        "arm_id": str(arm),
+                        "split": "meta_test",
+                        "feasible_hit_rate": float(c1),
+                        "gap_to_reference": float(c2),
+                    }
+                )
+    return rows
+
+
+class HolmCorrectedDecisionTests(unittest.TestCase):
+    """A5-S3M1-B01：所有 test/层/overall 决策都必须由 Holm 校正后的 p_holm 经 decide_layer 重算。"""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.s3_run = load_fixture_run()
+        cls.grid = dict(cls.s3_run.grid)
+        cls.tasks = sorted(cls.grid["task_ids"])
+
+    def _infer(self, endpoints, p_values):
+        checks = []
+        with _holmb01_mock_wilcoxon(self, p_values):
+            inference = an.build_inference(endpoints, tasks=self.tasks, grid=self.grid, checks=checks)
+        return inference, checks
+
+    def _holm_by_id(self, inference):
+        return {row["test_id"]: row for row in inference["holm_rows"]}
+
+    def test_holm_row_contract_has_p_raw_p_holm_decision(self):
+        inference, checks = self._infer(_holmb01_endpoints(self.tasks), [0.04, 0.02, 0.04, 0.02])
+        self.assertEqual(len(inference["holm_rows"]), 4)
+        for row in inference["holm_rows"]:
+            for field in ("p_raw", "p_holm", "decision", "family_id", "test_id", "rank", "reject"):
+                self.assertIn(field, row)
+        statuses = {str(item.get("check")): str(item.get("status")) for item in checks}
+        self.assertEqual(statuses.get("holm_decision_recomputed"), "PASS")
+
+    def test_raw_004_becomes_holm_008_not_significant(self):
+        # 族内 m=2：raw 0.04 → p_holm 0.08 ≥ 0.05 → B64 层不得 BENEFIT/HARM；overall 不得 BENEFIT/HARM。
+        inference, _ = self._infer(_holmb01_endpoints(self.tasks), [0.04, 0.06, 0.02, 0.02])
+        rows = self._holm_by_id(inference)
+        self.assertAlmostEqual(rows["C1b"]["p_raw"], 0.04)
+        # Holm（m=2，step-down）：min raw 0.04 x2 = 0.08；max raw 0.06 取 max(0.06, 0.08)=0.08。
+        self.assertAlmostEqual(rows["C1b"]["p_holm"], 0.08)
+        self.assertAlmostEqual(rows["C1a"]["p_holm"], 0.08)
+        self.assertNotIn(inference["c1_decisions"]["B64"], (an.D_SUPPORTED_BENEFIT, an.D_SUPPORTED_HARM))
+        self.assertEqual(inference["c1_decisions"]["B64"], an.D_NULL)
+        self.assertEqual(rows["C1b"]["decision"], an.D_NULL)
+        self.assertNotIn(inference["overall_decision"], (an.O_BENEFIT, an.O_HARM))
+
+    def test_raw_002_becomes_holm_004_significant(self):
+        # raw 0.02 → p_holm 0.04 < 0.05 → 按效应方向显著（positive → BENEFIT）。
+        inference, _ = self._infer(_holmb01_endpoints(self.tasks), [0.02, 0.02, 0.02, 0.02])
+        rows = self._holm_by_id(inference)
+        self.assertAlmostEqual(rows["C1a"]["p_holm"], 0.04)
+        self.assertEqual(inference["c1_decisions"]["B64"], an.D_SUPPORTED_BENEFIT)
+        self.assertEqual(inference["c1_decisions"]["B128"], an.D_SUPPORTED_BENEFIT)
+        self.assertEqual(inference["overall_decision"], an.O_BENEFIT)
+        self.assertEqual(rows["C1b"]["decision"], an.D_SUPPORTED_BENEFIT)
+
+    def test_p_holm_equal_005_not_significant(self):
+        # raw 0.025 → p_holm==0.05，严格小于才显著（边界测试）。
+        inference, _ = self._infer(_holmb01_endpoints(self.tasks), [0.025, 0.05, 0.025, 0.05])
+        rows = self._holm_by_id(inference)
+        self.assertEqual(float(rows["C1b"]["p_holm"]), 0.05)
+        self.assertEqual(inference["c1_decisions"]["B64"], an.D_NULL)
+        self.assertEqual(an.decide_layer(p_value=0.05, effect=1.0, threshold=0.02, benefit_direction="positive", n_eff=20), an.D_NULL)
+        self.assertEqual(
+            an.decide_layer(p_value=0.049999, effect=1.0, threshold=0.02, benefit_direction="positive", n_eff=20),
+            an.D_SUPPORTED_BENEFIT,
+        )
+
+    def test_decision_is_function_of_p_holm_invariant(self):
+        # 不变量：每个 test 的 decision == decide_layer(p_holm, effect, threshold, direction, n_eff)。
+        inference, _ = self._infer(_holmb01_endpoints(self.tasks), [0.04, 0.02, 0.04, 0.02])
+        for tests in inference["families"].values():
+            for item in tests:
+                expected = an.decide_layer(
+                    p_value=item["p_holm"],
+                    effect=item["effect"],
+                    threshold=item["threshold"],
+                    benefit_direction=item["benefit_direction"],
+                    n_eff=item["n_eff"],
+                )
+                self.assertEqual(item["decision"], expected, msg=item["test_id"])
+        for row in inference["holm_rows"]:
+            self.assertEqual(row["decision"], self._holm_by_id(inference)[row["test_id"]]["decision"])
+
+    def test_decision_is_function_of_p_holm_invariant_real_fixture(self):
+        # 真实统计（n_eff<15 → 全 INCONCLUSIVE）下不变量仍成立，且 holm 行与 family 行一致。
+        checks = []
+        endpoints = an.compute_run_endpoints(self.s3_run, an.load_references_sealed(load_fixture_prereg(), repo_root=workspace()["evidence"]["root"], checks=[]), checks=checks)
+        main, _ = an.split_main_and_aux(endpoints)
+        inference = an.build_inference(main, tasks=self.tasks, grid=self.grid, checks=checks)
+        for row in inference["holm_rows"]:
+            tests = inference["families"][row["family_id"]]
+            item = [value for value in tests if value["test_id"] == row["test_id"]][0]
+            expected = an.decide_layer(
+                p_value=item["p_holm"],
+                effect=item["effect"],
+                threshold=item["threshold"],
+                benefit_direction=item["benefit_direction"],
+                n_eff=item["n_eff"],
+            )
+            self.assertEqual(item["decision"], expected)
+            self.assertEqual(row["decision"], expected)
+
+    def test_harm_direction_after_holm(self):
+        # C1 反向（CON 比 OBJ 低 0.10）→ raw 0.02 → p_holm 0.04 → HARM；overall 也为 HARM。
+        inference, _ = self._infer(_holmb01_endpoints(self.tasks, c1_delta=-0.10, c2_delta=0.05), [0.02, 0.02, 0.02, 0.02])
+        self.assertEqual(inference["c1_decisions"]["B64"], an.D_SUPPORTED_HARM)
+        self.assertEqual(inference["c1_decisions"]["B128"], an.D_SUPPORTED_HARM)
+        self.assertEqual(inference["overall_decision"], an.O_HARM)
+        self.assertEqual(inference["c2_decisions"]["B64"], an.D_SUPPORTED_HARM)
+
+    def test_harm_direction_not_reported_when_holm_not_significant(self):
+        # 同反向数据但 raw 0.04（p_holm 0.08）→ 不得判 HARM（B64=NULL），overall 不得 HARM。
+        inference, _ = self._infer(_holmb01_endpoints(self.tasks, c1_delta=-0.10, c2_delta=0.05), [0.04, 0.06, 0.04, 0.06])
+        self.assertEqual(inference["c1_decisions"]["B64"], an.D_DIRECTION_INCONSISTENT)
+        self.assertNotEqual(inference["overall_decision"], an.O_HARM)
+        self.assertNotEqual(inference["c1_decisions"]["B64"], an.D_SUPPORTED_HARM)
+        self.assertEqual(inference["overall_decision"], an.O_DIRECTION_INCONSISTENT)
+
+    def test_overall_only_uses_c1_pair(self):
+        # C2 显著不影响 overall：C1 两层均为 NULL 时 overall 恒 NO_EVIDENCE，即使 C2=BENEFIT。
+        inference, _ = self._infer(_holmb01_endpoints(self.tasks), [0.04, 0.04, 0.02, 0.02])
+        self.assertEqual(inference["c1_decisions"], {"B64": an.D_NULL, "B128": an.D_NULL})
+        self.assertEqual(inference["c2_decisions"]["B64"], an.D_SUPPORTED_BENEFIT)
+        self.assertEqual(inference["overall_decision"], an.O_NO_EVIDENCE)
+
+    def test_overall_decision_priority_matrix(self):
+        # 3×3（B64/B128 层判定组合）固定优先级：INCONCLUSIVE > HARM > DIRECTION_INCONSISTENT > 双层 BENEFIT > 其余 NO_EVIDENCE。
+        pairs = [
+            ((an.D_SUPPORTED_BENEFIT, an.D_SUPPORTED_BENEFIT), an.O_BENEFIT),
+            ((an.D_SUPPORTED_BENEFIT, an.D_NULL), an.O_NO_EVIDENCE),
+            ((an.D_SUPPORTED_BENEFIT, an.D_NEGLIGIBLE_SIGNIFICANT), an.O_NO_EVIDENCE),
+            ((an.D_SUPPORTED_BENEFIT, an.D_INCONCLUSIVE), an.O_INCONCLUSIVE),
+            ((an.D_SUPPORTED_HARM, an.D_SUPPORTED_BENEFIT), an.O_HARM),
+            ((an.D_SUPPORTED_HARM, an.D_INCONCLUSIVE), an.O_INCONCLUSIVE),
+            ((an.D_DIRECTION_INCONSISTENT, an.D_SUPPORTED_BENEFIT), an.O_DIRECTION_INCONSISTENT),
+            ((an.D_NULL, an.D_NULL), an.O_NO_EVIDENCE),
+            ((an.D_NEGLIGIBLE_SIGNIFICANT, an.D_NEGLIGIBLE_SIGNIFICANT), an.O_NO_EVIDENCE),
+        ]
+        for pair, expected in pairs:
+            self.assertEqual(an.decide_overall({"B64": pair[0], "B128": pair[1]}), expected, msg=str(pair))
+
+    def test_decision_layer_requires_holm_p_less_than_alpha(self):
+        # decide_layer 单独语义：p_holm≥0.05 时任何正向大效应都只能是 NULL（only-p 决定显著性）。
+        for effect in (0.02, 0.10, 1.00):
+            self.assertEqual(an.decide_layer(p_value=0.05, effect=effect, threshold=0.02, benefit_direction="positive", n_eff=20), an.D_NULL)
+        self.assertEqual(an.decide_layer(p_value=None, effect=1.0, threshold=0.02, benefit_direction="positive", n_eff=20), an.D_INCONCLUSIVE)
+        self.assertEqual(an.decide_layer(p_value=0.01, effect=1.0, threshold=0.02, benefit_direction="positive", n_eff=14), an.D_INCONCLUSIVE)
+
+    def test_aggregate_and_csv_expose_holm_decision(self):
+        # aggregate.json 与 s3_holm_family.csv 每个 test 同时含 p_raw/p_holm/decision。
+        runs = _e2e_runs()
+        aggregate = _json_file(Path(runs["plain_dir"]) / an.S3_AGGREGATE_JSON)
+        for row in aggregate["inference"]["families"][an.C1_FAMILY_ID]:
+            for field in ("p_raw", "p_holm", "decision"):
+                self.assertIn(field, row)
+        self.assertTrue(all("decision" in row for row in aggregate["inference"]["holm_rows"]))
+        csv_rows = _csv_rows(Path(runs["plain_dir"]) / "s3_holm_family.csv")
+        self.assertTrue(csv_rows)
+        for field in ("p_raw", "p_holm", "decision"):
+            self.assertIn(field, csv_rows[0])
+
+
+# ---------------------------------------------------------------------------
+# G 段：A5-S3M1-m04 —— FORMAL 形状结构级 e2e（不物化 362,880 行记录）
+# ---------------------------------------------------------------------------
+class FormalShapeStructuralTests(unittest.TestCase):
+    """FORMAL 形状 config/summary/manifest/gate 结构级校验链。
+
+    说明（如实披露）：FORMAL 网格固定 20 tasks × 5 arms × 2 budgets × 5 opt × 3 meta（3,000 runs）
+    以及 NC/OOD/DET 辅助流合计 362,880 条评估记录；为在单测内可运行，这里物化 FORMAL 形状的
+    run_config/run_summary/data_manifest/model_manifest/FD gate 最小文件（不写 362,880 行记录），
+    然后直接调用 load_s3_run 内部同源校验函数链（_validate_run_config → _derive_run_grid →
+    _validate_run_summary → _validate_data_manifest → _validate_model_manifest → _validate_gate_artifact
+    → _validate_record_stream_counts）做结构级断言；记录级 362,880 行校验由正式 run 保证。
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        ws = workspace()
+        cls.ws = ws
+        cls.prereg = load_fixture_prereg()
+        cls.run_dir = ws["run"]["run_dir"]
+        cls.base_config = json.loads((cls.run_dir / "run_config.json").read_text(encoding="utf-8"))
+        cls.base_summary = json.loads((cls.run_dir / "run_summary.json").read_text(encoding="utf-8"))
+        cls.base_manifest = json.loads((cls.run_dir / "data_manifest.json").read_text(encoding="utf-8"))
+        cls.base_model_manifest = json.loads((cls.run_dir / "model_manifest.json").read_text(encoding="utf-8"))
+        cls.formal_config = cls._formal_config()
+        cls.formal_summary = cls._formal_summary()
+        cls.formal_data_manifest = cls._formal_data_manifest()
+        cls.formal_model_manifest = cls._formal_model_manifest()
+        cls.formal_gate = cls._formal_gate_artifact()
+        cls.formal_dir = ws["base"] / "formal-shape"
+        cls.formal_dir.mkdir(parents=True, exist_ok=True)
+        _write_json(cls.formal_dir / "run_config.json", cls.formal_config)
+        _write_json(cls.formal_dir / "run_summary.json", cls.formal_summary)
+        _write_json(cls.formal_dir / "data_manifest.json", cls.formal_data_manifest)
+        _write_json(cls.formal_dir / "model_manifest.json", cls.formal_model_manifest)
+        _write_json(cls.formal_dir / "fd_or_gradient_gate.json", cls.formal_gate)
+        (cls.formal_dir / "run_records.jsonl").write_bytes(b"")
+
+    # --- FORMAL 形状构造 ---------------------------------------------------
+    @classmethod
+    def _formal_config(cls):
+        config = json.loads(json.dumps(cls.base_config))
+        config["run_mode"] = "FORMAL"
+        config.pop("smoke_overrides", None)
+        config["budgets"] = {"budgets": list(sp.S3_BUDGETS), "k_shot": sp.S3_K_SHOT}
+        config["seeds"] = {"opt_seeds": [0, 1, 2, 3, 4], "meta_seeds": [0, 1, 2], "k_shot": sp.S3_K_SHOT}
+        config["evaluation_grid"] = {
+            "eval_split": sp.S3_EVAL_SPLIT,
+            "eval_tasks": 20,
+            "budgets": list(sp.S3_BUDGETS),
+            "K": [sp.S3_K_SHOT],
+            "meta_seeds": [0, 1, 2],
+            "opt_seeds": [0, 1, 2, 3, 4],
+            "main_runs": 3000,
+            "main_evals": 288000,
+        }
+        config["episode_bank"] = {
+            "banks": dict(cls.prereg.obj["episode_bank"]["banks"]),
+            "episodes": int(sp.S3_EPISODE_BANK_EPISODES_PER_BANK),
+        }
+        config["k_sweep"] = [int(sp.S3_K_SHOT)]
+        config["record_counts"] = {
+            "train": 0,
+            "eval": 362880,
+            "total": 362880,
+            "train_expected": 0,
+            "eval_expected": 362880,
+        }
+        config["fd_or_gradient_gate"] = {
+            "sha256": str(cls.prereg.obj["fd_gate_sha256"]),
+            "coordinates_per_model": int(sp.S3_FD_MAX_COORDINATES),
+            "coordinates_total": 64,
+            "mode": "FORMAL",
+            "override": False,
+            "models": {
+                "fomaml_meta_0": {
+                    "path": sp.S3_GATE_RELPATH,
+                    "sha256": "b" * 64,
+                    "n_checked": int(sp.S3_FD_MAX_COORDINATES),
+                    "status": "PASS",
+                    "max_relative_error": 3.2e-09,
+                },
+                "anil_meta_0": {
+                    "path": sp.S3_GATE_RELPATH,
+                    "sha256": "b" * 64,
+                    "n_checked": int(sp.S3_FD_MAX_COORDINATES),
+                    "status": "PASS",
+                    "max_relative_error": 3.2e-09,
+                },
+            },
+        }
+        return config
+
+    @classmethod
+    def _formal_summary(cls):
+        summary = json.loads(json.dumps(cls.base_summary))
+        summary["run_mode"] = "FORMAL"
+        summary["record_counts"] = {"train": 0, "eval": 362880, "total": 362880}
+        summary["status_counts"] = {
+            "train": {"OK": 0, "FAILED": 0},
+            "eval": {"OK": 362880, "FAILED": 0},
+        }
+        return summary
+
+    @classmethod
+    def _formal_data_manifest(cls):
+        manifest = json.loads(json.dumps(cls.base_manifest))
+        artifact = dict(manifest.get("artifact_sha256") or {})
+        artifact["negative_control_records.jsonl"] = "1" * 64
+        artifact["ood_records.jsonl"] = "2" * 64
+        for name in an.DETERMINISM_REPEAT_NAMES:
+            artifact[an.DETERMINISM_DIR + "/" + str(name) + "/" + an.RUN_RECORDS_FILE] = "3" * 64
+        manifest["artifact_sha256"] = artifact
+        return manifest
+
+    @classmethod
+    def _formal_model_manifest(cls):
+        manifest = json.loads(json.dumps(cls.base_model_manifest))
+        manifest["run_id"] = "p4ra-s3-m2-frozen-run"
+        manifest["verification"] = {
+            "loaded_from_prereg": True,
+            "prereg_models_sha256": "d" * 64,
+            "verified_utc": FIXTURE_CREATED_UTC,
+        }
+        for entry in manifest["models"]:
+            entry["meta_seed"] = int(entry["meta_seed"])
+        return manifest
+
+    @classmethod
+    def _formal_gate_artifact(cls):
+        coordinates = [
+            {
+                "index": index,
+                "param": "param_%03d" % index,
+                "analytic": 1.0 + index,
+                "numeric": 1.0 + index + 1e-10 * (index + 1),
+                "relative_error": 1e-10 * (index + 1),
+            }
+            for index in range(int(sp.S3_FD_MAX_COORDINATES))
+        ]
+        return {
+            "schema_version": "p4ra-s3-fd-gate-v1",
+            "created_utc": FIXTURE_CREATED_UTC,
+            "status": "PASS",
+            "mode": sp.S3_FD_MODE,
+            "tolerance": 1e-06,
+            "epsilon_rule": "1e-6*max(1,|theta|)",
+            "coordinates_per_model": int(sp.S3_FD_MAX_COORDINATES),
+            "coordinates_total": 64,
+            "max_relative_error": 3.2e-09,
+            "models": {
+                "fomaml_meta_0": {
+                    "arm_type": "fomaml",
+                    "meta_seed": 0,
+                    "n_checked": int(sp.S3_FD_MAX_COORDINATES),
+                    "status": "PASS",
+                    "max_relative_error": 3.2e-09,
+                    "coordinates": [dict(item) for item in coordinates],
+                },
+                "anil_meta_0": {
+                    "arm_type": "anil",
+                    "meta_seed": 0,
+                    "n_checked": int(sp.S3_FD_MAX_COORDINATES),
+                    "status": "PASS",
+                    "max_relative_error": 3.2e-09,
+                    "coordinates": [dict(item) for item in coordinates],
+                },
+            },
+            "negatives": {"tamper": "PASS", "anil_body_frozen": "PASS", "k0_equivalence": "PASS"},
+            "physical_call_count": 0,
+        }
+
+    @classmethod
+    def _streams(cls, grid):
+        expected = an._expected_stream_counts(grid, cls.prereg)
+        aux = {
+            "available": True,
+            "nc": {
+                "runs": int(expected["nc"]["runs"]),
+                "records": int(expected["nc"]["records"]),
+                "status_counts": {"OK": int(expected["nc"]["records"]), "FAILED": 0},
+            },
+            "ood": {
+                "runs": int(expected["ood"]["runs"]),
+                "records": int(expected["ood"]["records"]),
+                "status_counts": {"OK": int(expected["ood"]["records"]), "FAILED": 0},
+            },
+            "det": {
+                "repeats": [
+                    {
+                        "name": name,
+                        "runs": int(expected["det"]["runs_per_repeat"]),
+                        "records": int(expected["det"]["records_per_repeat"]),
+                        "status_counts": {"OK": int(expected["det"]["records_per_repeat"]), "FAILED": 0},
+                    }
+                    for name in an.DETERMINISM_REPEAT_NAMES
+                ],
+                "runs": int(expected["det"]["runs"]),
+                "records": int(expected["det"]["records"]),
+                "status_counts": {"OK": int(expected["det"]["records"]), "FAILED": 0},
+            },
+        }
+        return expected, aux
+
+    # --- 测试 --------------------------------------------------------------
+    def test_formal_config_and_grid_structural_pass(self):
+        checks = []
+        config = an._validate_run_config(json.loads(json.dumps(self.formal_config)), self.prereg, checks=checks)
+        grid = an._derive_run_grid(config, self.prereg, checks=checks)
+        self.assertEqual(grid["run_mode"], "FORMAL")
+        self.assertEqual(grid["train_expected"], 0)
+        self.assertEqual(grid["outer_steps"], 200)
+        self.assertEqual(grid["run_count"], 3000)
+        self.assertEqual(grid["eval_records_expected"], 288000)
+        self.assertEqual(grid["eval_tasks"], 20)
+        self.assertEqual(tuple(grid["budgets"]), tuple(sp.S3_BUDGETS))
+        names = {str(item.get("check")) for item in checks}
+        for name in ("run_grid_formal_k_sweep", "run_grid_formal_train0", "fd_gate_config", "k_sweep_config", "record_counts"):
+            self.assertIn(name, names)
+
+    def test_formal_summary_manifests_and_gate_structural_pass(self):
+        checks = []
+        config = an._validate_run_config(json.loads(json.dumps(self.formal_config)), self.prereg, checks=checks)
+        grid = an._derive_run_grid(config, self.prereg, checks=checks)
+        summary = an._validate_run_summary(
+            json.loads(json.dumps(self.formal_summary)),
+            config,
+            self.prereg,
+            grid,
+            actual_counts={"train": 0, "eval": 362880, "total": 362880},
+            checks=checks,
+        )
+        self.assertEqual(summary["status_counts"]["train"], {"OK": 0, "FAILED": 0})
+        an._validate_data_manifest(json.loads(json.dumps(self.formal_data_manifest)), config, self.prereg, grid, checks=checks)
+        an._validate_model_manifest(json.loads(json.dumps(self.formal_model_manifest)), config, self.prereg, checks=checks)
+        an._validate_gate_artifact(json.loads(json.dumps(self.formal_gate)), config, self.prereg, checks=checks)
+        names = {str(item.get("check")) for item in checks}
+        for name in ("run_summary_schema", "data_manifest_boundary", "fd_gate_artifact", "fd_gate_negatives", "fd_gate_artifact_models"):
+            self.assertIn(name, names)
+        self.assertFalse({str(item.get("status")) for item in checks} & {"FAIL"})
+
+    def test_formal_five_record_streams_pass(self):
+        checks = []
+        config = an._validate_run_config(json.loads(json.dumps(self.formal_config)), self.prereg, checks=checks)
+        grid = an._derive_run_grid(config, self.prereg, checks=checks)
+        expected, aux = self._streams(grid)
+        self.assertEqual(int(expected["total"]["records"]), 362880)
+        self.assertEqual(int(expected["total"]["runs"]), 3780)
+        self.assertEqual(int(expected["main"]["records"]), 288000)
+        self.assertEqual(int(expected["nc"]["records"]), 28800)
+        self.assertEqual(int(expected["ood"]["records"]), 28800)
+        self.assertEqual(int(expected["det"]["records"]), 17280)
+        stream_config = json.loads(json.dumps(config))
+        stream_config["record_counts"] = {"train": 0, "eval": 362880, "total": 362880}
+        by_stream = an._validate_record_stream_counts(
+            config=stream_config,
+            summary=json.loads(json.dumps(self.formal_summary)),
+            grid=grid,
+            prereg=self.prereg,
+            main_counts={"train": 0, "eval": 288000, "eval_ok": 288000, "eval_failed": 0},
+            aux_streams=aux,
+            data_manifest=json.loads(json.dumps(self.formal_data_manifest)),
+            checks=checks,
+        )
+        self.assertEqual(int(by_stream["total"]["records"]), 362880)
+        self.assertEqual(int(by_stream["total"]["runs"]), 3780)
+        self.assertEqual(by_stream["total"]["status_counts"], {"OK": 362880, "FAILED": 0})
+        statuses = {str(item.get("check")): str(item.get("status")) for item in checks}
+        self.assertEqual(statuses.get("record_stream_counts"), "PASS")
+
+    def test_formal_record_counts_361000_fail_closed(self):
+        checks = []
+        config = an._validate_run_config(json.loads(json.dumps(self.formal_config)), self.prereg, checks=checks)
+        grid = an._derive_run_grid(config, self.prereg, checks=checks)
+        _, aux = self._streams(grid)
+        bad_config = json.loads(json.dumps(config))
+        bad_summary = json.loads(json.dumps(self.formal_summary))
+        bad_config["record_counts"] = {"train": 0, "eval": 361000, "total": 361000}
+        bad_summary["record_counts"] = {"train": 0, "eval": 361000, "total": 361000}
+        bad_summary["status_counts"] = {"train": {"OK": 0, "FAILED": 0}, "eval": {"OK": 361000, "FAILED": 0}}
+        error = expect_error(
+            self,
+            an.S3_ANALYSIS_RECORD_COUNTS_MISMATCH,
+            lambda: an._validate_record_stream_counts(
+                config=bad_config,
+                summary=bad_summary,
+                grid=grid,
+                prereg=self.prereg,
+                main_counts={"train": 0, "eval": 288000, "eval_ok": 288000, "eval_failed": 0},
+                aux_streams=aux,
+                data_manifest=json.loads(json.dumps(self.formal_data_manifest)),
+                checks=[],
+            ),
+        )
+        self.assertIn("361000", str(findattr(error, "detail", "")))
+
+    def test_formal_train_records_nonzero_rejected(self):
+        checks = []
+        config = json.loads(json.dumps(self.formal_config))
+        config["record_counts"] = {"train": 4, "eval": 362880, "total": 362884, "train_expected": 0, "eval_expected": 362880}
+        error = expect_error(self, an.S3_ANALYSIS_RECORD_INVALID, lambda: an._validate_run_config(config, self.prereg, checks=checks))
+        self.assertIn("训练记录", str(error.message))
+
+    def test_formal_k_sweep_must_be_five(self):
+        config = json.loads(json.dumps(self.formal_config))
+        config["k_sweep"] = [0, 1, 3, 5]
+        expect_error(self, an.S3_ANALYSIS_BUDGET_MISMATCH, lambda: an._validate_run_config(config, self.prereg, checks=[]))
+        config = json.loads(json.dumps(self.formal_config))
+        config["k_sweep"] = [5, 5]
+        expect_error(self, an.S3_ANALYSIS_RUN_SCHEMA_INVALID, lambda: an._validate_run_config(config, self.prereg, checks=[]))
+
+    def test_formal_gate_prereg_binding_fail_closed(self):
+        config = json.loads(json.dumps(self.formal_config))
+        config["fd_or_gradient_gate"]["sha256"] = "e" * 64
+        expect_error(self, an.S3_ANALYSIS_RUN_BINDING_MISMATCH, lambda: an._validate_run_config(config, self.prereg, checks=[]))
+
+    def test_formal_status_counts_semantics(self):
+        checks = []
+        config = an._validate_run_config(json.loads(json.dumps(self.formal_config)), self.prereg, checks=checks)
+        grid = an._derive_run_grid(config, self.prereg, checks=checks)
+        bad = json.loads(json.dumps(self.formal_summary))
+        bad["status_counts"]["train"] = {"OK": 1, "FAILED": 0}
+        expect_error(
+            self,
+            an.S3_ANALYSIS_RECORD_INVALID,
+            lambda: an._validate_run_summary(
+                bad, config, self.prereg, grid, actual_counts={"train": 0, "eval": 362880, "total": 362880}, checks=[]
+            ),
+        )
+
+    def test_formal_shape_files_written(self):
+        for name in ("run_config.json", "run_summary.json", "data_manifest.json", "model_manifest.json", "fd_or_gradient_gate.json", "run_records.jsonl"):
+            path = self.formal_dir / name
+            self.assertTrue(path.is_file(), msg=name)
+        config = json.loads((self.formal_dir / "run_config.json").read_text(encoding="utf-8"))
+        summary = json.loads((self.formal_dir / "run_summary.json").read_text(encoding="utf-8"))
+        self.assertEqual(config["run_mode"], "FORMAL")
+        self.assertEqual(config["record_counts"]["train"], 0)
+        self.assertEqual(summary["record_counts"]["eval"], 362880)
+        self.assertEqual((self.formal_dir / "run_records.jsonl").stat().st_size, 0)
+
+    def test_smoke_run_still_fully_analyzed(self):
+        runs = _e2e_runs()
+        plain = runs["plain"]
+        self.assertEqual(plain["status"], "PASS")
+        self.assertEqual(len(plain["artifacts"]), 9)
+        self.assertEqual(plain["overall_decision"], an.O_INCONCLUSIVE)
+        aggregate = _json_file(Path(runs["plain_dir"]) / an.S3_AGGREGATE_JSON)
+        self.assertEqual(aggregate["run_mode"], "SMOKE")
+        self.assertEqual(aggregate["record_counts_by_stream"]["total"]["records"], 3840)

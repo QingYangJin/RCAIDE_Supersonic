@@ -51,7 +51,7 @@ def _assert_error_code(testcase, code, fn, *args, **kwargs):
 # ---------------------------------------------------------------------------
 # fake campaign worker：结果完全由 spec 决定（确定性、无训练）
 # ---------------------------------------------------------------------------
-def _fake_result(spec, *, wall=None, status="OK"):
+def _fake_result(spec, *, wall=None, status="OK", peak=None):
     spec = dict(spec)
     campaign = str(spec.get("campaign_id") or "S3")
     run_id = runner._run_id_for(spec, campaign)
@@ -94,7 +94,7 @@ def _fake_result(spec, *, wall=None, status="OK"):
         "opt_seed": opt,
         "meta_seed": meta,
         "wall_s": float(wall),
-        "peak_memory_mb": 100.0 + opt,
+        "peak_memory_mb": (100.0 + opt) if peak is None else float(peak),
         "status": str(status),
         "n_records": len(rows),
         "source_counts": {"support": len(rows)},
@@ -108,6 +108,11 @@ class _FakePool:
         self.initializer = initializer
         self.initargs = tuple(initargs)
         self.mapped = 0
+        self.started = 0
+        self.yielded = 0
+        self.terminated = False
+        self.closed = False
+        self.joined = False
 
     def __enter__(self):
         if self.initializer is not None:
@@ -115,12 +120,32 @@ class _FakePool:
         return self
 
     def __exit__(self, exc_type, exc, tb):
+        # 与 multiprocessing.Pool.__exit__ 一致：退出即 terminate（并发停止路径的兜底）
+        self.terminate()
         return False
 
     def map(self, func, iterable, chunksize=1):
         items = list(iterable)
         self.mapped = len(items)
         return [func(item) for item in items]
+
+    def imap_unordered(self, func, iterable, chunksize=1):
+        items = list(iterable)
+        self.started = len(items)
+        for item in items:
+            if self.terminated:
+                break
+            self.yielded += 1
+            yield func(item)
+
+    def terminate(self):
+        self.terminated = True
+
+    def close(self):
+        self.closed = True
+
+    def join(self):
+        self.joined = True
 
 
 class _FakeContext:
@@ -158,9 +183,20 @@ class _CampaignCase(unittest.TestCase):
     def tearDown(self):
         runner._WORKER_STATE = self._worker_state
 
-    def _run(self, specs, workers, campaign_id="S3-TEST", entry=None, wall=None, status="OK"):
+    def _run(
+        self,
+        specs,
+        workers,
+        campaign_id="S3-TEST",
+        entry=None,
+        wall=None,
+        status="OK",
+        peak=None,
+        prior_sum_run_wall_s=0.0,
+        clock=None,
+    ):
         def fake(spec):
-            return _fake_result(spec, wall=wall, status=status)
+            return _fake_result(spec, wall=wall, status=status, peak=peak)
 
         context = _FakeContext()
         with mock.patch.object(runner, "_worker_entry", side_effect=entry or fake), mock.patch.object(
@@ -172,6 +208,8 @@ class _CampaignCase(unittest.TestCase):
                 state={"fake": True},
                 campaign_id=str(campaign_id),
                 run_mode="SMOKE",
+                prior_sum_run_wall_s=float(prior_sum_run_wall_s),
+                clock=clock,
             )
         return result, context
 
@@ -395,16 +433,67 @@ class CampaignTests(_CampaignCase):
         self.assertEqual(report["stop_reason"], runner.S3_RUNNER_RESOURCE_LIMIT)
         self.assertEqual(result["results"][0]["status"], "RESOURCE_LIMIT")
 
-    def test_per_run_wall_limit_marks_result(self):
+    def test_per_run_wall_limit_stops_immediately(self):
+        # A5-S3M1-M01：per-run wall 超限后立即停止，后续 run 不再执行。
         specs = _campaign_specs(3)
-        result, _ = self._run(specs, 1, wall=61.0)
+        calls = []
+
+        def fake(spec):
+            calls.append(runner.canonical_run_key(spec))
+            return _fake_result(spec, wall=61.0)
+
+        result, _ = self._run(specs, 1, entry=fake)
         report = result["execution_report"]
-        self.assertEqual(report["run_count_completed"], 3)
+        self.assertEqual(report["run_count_requested"], 3)
+        self.assertEqual(report["run_count_completed"], 1)
+        self.assertEqual(len(calls), 1)
         self.assertEqual(report["stop_reason"], runner.S3_RUNNER_RESOURCE_LIMIT)
         self.assertEqual(report["max_run_wall_s"], 61.0)
-        for item in result["results"]:
-            self.assertEqual(item["status"], "RESOURCE_LIMIT")
-            self.assertEqual(item["run"]["status"], "RESOURCE_LIMIT")
+        item = result["results"][0]
+        self.assertEqual(item["status"], "RESOURCE_LIMIT")
+        self.assertEqual(item["run"]["status"], "RESOURCE_LIMIT")
+        self.assertEqual(item["run"]["resource_violation"], "per_run_wall_s")
+
+    def test_peak_memory_limit_stops_immediately(self):
+        # A5-S3M1-M02：单 run 峰值内存超过 8192MB 立即停止。
+        specs = _campaign_specs(3)
+        result, _ = self._run(specs, 1, peak=9000.0)
+        report = result["execution_report"]
+        self.assertEqual(report["run_count_completed"], 1)
+        self.assertEqual(report["stop_reason"], runner.S3_RUNNER_RESOURCE_LIMIT)
+        self.assertEqual(result["results"][0]["run"]["resource_violation"], "peak_memory_mb")
+
+    def test_campaign_wall_limit_stops(self):
+        # campaign 墙钟 > 7200s（注入 clock，不真 sleep）。
+        ticks = iter([0.0, 7201.0, 7201.0])
+        specs = _campaign_specs(3)
+        result, _ = self._run(specs, 1, clock=lambda: next(ticks))
+        report = result["execution_report"]
+        self.assertEqual(report["run_count_completed"], 1)
+        self.assertEqual(report["stop_reason"], runner.S3_RUNNER_DEADLINE_EXCEEDED)
+
+    def test_prior_sum_run_wall_stops_across_campaigns(self):
+        # 跨 campaign 累计 Σrun wall：前序 campaign 已用 27999.9s，本 campaign 首个 run 即超 28000。
+        specs = _campaign_specs(3)
+        result, _ = self._run(specs, 1, prior_sum_run_wall_s=27999.9)
+        report = result["execution_report"]
+        self.assertEqual(report["run_count_completed"], 1)
+        self.assertEqual(report["stop_reason"], runner.S3_RUNNER_SUM_RUN_WALL_LIMIT)
+        # campaign 报告仍为单 campaign 口径（sum 不含 prior）。
+        self.assertLess(report["sum_run_wall_seconds"], 1.0)
+
+    def test_w8_resource_stop_immediate(self):
+        # W>1：超限立即停止，未完成的 run 不再执行（记录数 < 请求数）。
+        specs = _campaign_specs(10)
+        result, context = self._run(specs, 8, wall=61.0)
+        report = result["execution_report"]
+        self.assertEqual(report["run_count_requested"], 10)
+        self.assertEqual(report["run_count_completed"], 1)
+        self.assertEqual(report["stop_reason"], runner.S3_RUNNER_RESOURCE_LIMIT)
+        self.assertEqual(len(context.pools), 1)
+        pool = context.pools[0]
+        self.assertTrue(pool.terminated)
+        self.assertLess(pool.yielded, 10)
 
     def test_campaign_rejects_bad_workers(self):
         specs = _campaign_specs(2)

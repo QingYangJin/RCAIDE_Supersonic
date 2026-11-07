@@ -4298,14 +4298,8 @@ def build_inference(
                 effect = mean_diff
                 threshold = C1_THRESHOLD_ABS
                 direction = "positive"
-            decision = decide_layer(
-                p_value=wilcoxon.get("p_two_sided"),
-                effect=effect,
-                threshold=threshold,
-                benefit_direction=direction,
-                n_eff=wilcoxon.get("n_eff"),
-            )
-            layer_decisions.setdefault(("C2" if is_c2 else "C1"), {})["B" + str(int(budget))] = decision
+            # A5-S3M1-B01：层决策必须用 Holm 校正后的 p_holm 判定（族内 Holm 在下方统一回填），
+            # 此处不预计算 decision，避免 raw Wilcoxon p 泄漏到层决策/总体决策。
             family_tests[family_id].append({
                 "test_id": test_id,
                 "family_id": family_id,
@@ -4326,7 +4320,6 @@ def build_inference(
                 "effect": effect,
                 "threshold": threshold,
                 "benefit_direction": direction,
-                "decision": decision,
                 "wilcoxon_method": wilcoxon.get("method"),
                 "pratt_p": pratt.get("p_two_sided"),
                 "permutation_p": permutation.get("p_two_sided"),
@@ -4344,6 +4337,16 @@ def build_inference(
             item["p_holm"] = adjustment.get("p_holm")
             item["holm_rank"] = adjustment.get("rank")
             item["holm_reject"] = adjustment.get("reject")
+            # A5-S3M1-B01：族内 Holm 校正完成后，用 p_holm 经单一固定查表函数 decide_layer 重算该检验决策；
+            # raw p 不再直接决定任何决策，层决策/overall 均只消费此处回填的 decision。
+            item["decision"] = decide_layer(
+                p_value=item["p_holm"],
+                effect=item["effect"],
+                threshold=item["threshold"],
+                benefit_direction=item["benefit_direction"],
+                n_eff=item["n_eff"],
+            )
+            layer_decisions.setdefault(("C2" if family_id == C2_FAMILY_ID else "C1"), {})["B" + str(int(item["budget"]))] = item["decision"]
             holm_rows.append({
                 "family_id": family_id,
                 "test_id": item["test_id"],
@@ -4351,15 +4354,23 @@ def build_inference(
                 "budget": item["budget"],
                 "p_raw": item["p_raw"],
                 "p_holm": item["p_holm"],
+                "decision": item["decision"],
                 "rank": item["holm_rank"],
                 "reject": item["holm_reject"],
                 "family_size": len(tests),
                 "alpha": ALPHA,
             })
+    _checks(
+        checks,
+        "holm_decision_recomputed",
+        "PASS",
+        "A5-S3M1-B01：全部检验的 decision 均由 Holm 校正后 p_holm 经 decide_layer 单一查表重算（raw p 不参与判定）",
+    )
     c1_decisions = {
         "B64": layer_decisions.get("C1", {}).get("B64", D_INCONCLUSIVE),
         "B128": layer_decisions.get("C1", {}).get("B128", D_INCONCLUSIVE),
     }
+    # A5-S3M1-B01：总体决策只由 C1 两层（B64/B128）经固定优先级查表得出，C2 不参与 overall。
     overall = decide_overall(c1_decisions)
     c2_decisions = {
         "B64": layer_decisions.get("C2", {}).get("B64", D_INCONCLUSIVE),

@@ -5,6 +5,7 @@
 """
 import unittest
 from pathlib import Path
+from unittest import mock
 
 from research.concorde_metaopt.meta_learning import m5_arms as m5
 from research.concorde_metaopt.meta_learning import s3_prereg as sp
@@ -359,6 +360,244 @@ class S3SmokeEndToEndTests(unittest.TestCase):
         # run_records.jsonl 含 wall_s/peak_memory_mb 等运行时字段，原始 sha 允许不同；
         # 确定性以 record_core（排除运行时段）比较为准（见 test_deterministic_runs_byte_identical）。
         self.assertNotEqual(self.result_a["run_records_sha256"], self.result_b["run_records_sha256"])
+
+    def test_main_nonstoppable_failure_fail_closed(self):
+        """A5-S3M1-m02：main campaign 未资源停止却有非 OK run -> fail-closed（S3_RUNNER_RESOURCE_ERROR）。"""
+        fake_main = {
+            "results": [
+                {
+                    "run": {"run_id": "fake-run", "wall_s": 0.5, "peak_memory_mb": 1.0},
+                    "status": "FAILED",
+                    "error": "synthetic failure",
+                    "records": [],
+                }
+            ],
+            "execution_report": {"stop_reason": None},
+        }
+        out = Path(self.tmp.name) / "run_m02_fail_closed"
+        with mock.patch.object(runner, "execute_campaign", return_value=fake_main):
+            with self.assertRaises(runner.S3RunnerError) as caught:
+                runner.run_experiment(
+                    out_dir=out,
+                    run_id=_RUN_ID,
+                    prereg_path=self.info["prereg_path"],
+                    repo_root=self.info["repo"],
+                    run_mode="SMOKE",
+                    smoke_overrides=_SMOKE,
+                    parallel_workers=1,
+                    created_utc=support.CREATED_UTC,
+                    verify_code_sha=False,
+                )
+        self.assertEqual(caught.exception.code, runner.S3_RUNNER_RESOURCE_ERROR)
+        self.assertFalse((out / runner.S3_RUNNER_SUMMARY_FILE).exists())
+
+
+class S3SmokeResourceStopEndToEndTests(unittest.TestCase):
+    """A5-S3M1-M01/M02/m03：SMOKE 真 run 的资源停止（per_run_wall_s 注入 0，不真 sleep）。"""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.case = support.SyntheticRepoCase()
+        cls.info = cls.case.get_repo()
+        cls.tmp = support.tempfile.TemporaryDirectory(prefix="s3-e2e-stop-")
+        cls.run_dir = Path(cls.tmp.name) / "run_stop"
+        # 预注册结构校验要求 resource_limits 与默认结构一致，故在预注册加载/校验通过之后再收紧
+        # per-run 墙钟上限（0s），以便在不真实 sleep 的情况下触发资源停止路径。
+        original_limits = dict(sp.S3_RESOURCE_LIMITS)
+        real_resolve = runner._resolve_prereg_and_family
+
+        def resolve_then_tighten(*args, **kwargs):
+            resolved = real_resolve(*args, **kwargs)
+            sp.S3_RESOURCE_LIMITS["per_run_wall_s"] = 0.0
+            return resolved
+
+        try:
+            with mock.patch.object(runner, "_resolve_prereg_and_family", side_effect=resolve_then_tighten):
+                cls.result = runner.run_experiment(
+                    out_dir=cls.run_dir,
+                    run_id="s3-e2e-stop",
+                    prereg_path=cls.info["prereg_path"],
+                    repo_root=cls.info["repo"],
+                    run_mode="SMOKE",
+                    smoke_overrides=_SMOKE,
+                    parallel_workers=1,
+                    created_utc=support.CREATED_UTC,
+                    verify_code_sha=False,
+                )
+        finally:
+            sp.S3_RESOURCE_LIMITS.clear()
+            sp.S3_RESOURCE_LIMITS.update(original_limits)
+        cls.summary = cls.result["summary"]
+        cls.report = cls.result["execution_report"]
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.case.cleanup_repo()
+        cls.tmp.cleanup()
+
+    def test_resource_stop_status_and_report(self):
+        self.assertEqual(self.summary["status"], "RESOURCE_LIMIT")
+        self.assertEqual(self.report["stop_reason"], runner.S3_RUNNER_RESOURCE_LIMIT)
+        self.assertEqual(self.report["run_count_completed"], 1)
+        self.assertEqual(self.report["run_count_requested"], _EXPECTED_MAIN_RUNS)
+        failed = {key: value for key, value in self.result["validation"]["checks"].items() if not value["ok"]}
+        self.assertTrue(self.result["validation"]["ok"], failed)
+        resources = self.summary["resources"]
+        # m03：execution_report 与 run_summary.resources 完全一致。
+        self.assertEqual(resources["stop_reason"], self.report["stop_reason"])
+        self.assertEqual(resources["sum_run_wall_seconds"], self.report["sum_run_wall_seconds"])
+        self.assertEqual(resources["parallel_workers"], self.report["parallel_workers"])
+        self.assertEqual(self.report["sum_run_wall_seconds"], self.report["max_run_wall_s"])
+
+    def test_no_aux_campaigns_and_determinism_not_executed(self):
+        self.assertFalse(self.summary["determinism"]["executed"])
+        self.assertFalse(self.summary["negative_controls"]["executed"])
+        for name in (
+            runner.S3_RUNNER_NC_RECORDS_FILE,
+            runner.S3_RUNNER_OOD_RECORDS_FILE,
+            runner.S3_RUNNER_DET_CHECK_FILE,
+        ):
+            self.assertFalse((self.run_dir / name).is_file(), name)
+
+
+class S3FormalCampaignPropagationTests(unittest.TestCase):
+    """A5-S3M1-M01/m03/m04：FORMAL 多 campaign 停止传播 + FORMAL 形状（不跑 3,780 run 全网格）。"""
+
+    _RUN_ID = "s3-e2e-formal-stop"
+
+    @classmethod
+    def setUpClass(cls):
+        cls.case = support.SyntheticRepoCase()
+        cls.info = cls.case.get_repo()
+        cls.tmp = support.tempfile.TemporaryDirectory(prefix="s3-e2e-formal-stop-")
+        cls.run_dir = Path(cls.tmp.name) / "run_formal_stop"
+        cls.calls = []
+        real_campaign = runner.execute_campaign
+        def pick_fair_group(specs):
+            by_key = {}
+            for spec in specs:
+                key = (
+                    str(spec["task_id"]),
+                    int(spec["budget"]),
+                    int(spec["opt_seed"]),
+                    int(spec["meta_seed"]),
+                )
+                by_key.setdefault(key, {})[str(spec["arm"])] = spec
+            for key in sorted(by_key):
+                arms = by_key[key]
+                if set(arms) == set(m5.S3_ARM_IDS):
+                    return [arms[arm] for arm in m5.S3_ARM_IDS]
+            raise AssertionError("主网格中找不到完整臂组")
+
+
+        def stop_report(campaign_id):
+            return {
+                "schema_version": runner.S3_EXECUTION_REPORT_SCHEMA_VERSION,
+                "campaign_id": str(campaign_id),
+                "run_mode": "FORMAL",
+                "created_utc": support.CREATED_UTC,
+                "parallel_workers": 1,
+                "execution_rule": "mock",
+                "shard_runs_sha256": "0" * 64,
+                "per_shard_counts": [0],
+                "run_count_requested": 1,
+                "run_count_completed": 0,
+                "campaign_wall_s": 0.0,
+                "sum_run_wall_seconds": 0.0,
+                "max_run_wall_s": 0.0,
+                "max_peak_memory_mb": 0.0,
+                "sum_run_wall_limit_s": int(sp.S3_RESOURCE_LIMITS["sum_run_wall_limit_s"]),
+                "stop_reason": runner.S3_RUNNER_RESOURCE_LIMIT,
+                "physical_call_count": 0,
+                "parallel_note": "mock",
+            }
+
+        def fake_campaign(specs, **kwargs):
+            campaign_id = str(kwargs.get("campaign_id"))
+            cls.calls.append(campaign_id)
+            if campaign_id == cls._RUN_ID:
+                # 主 campaign 只真实执行“一个完整臂组”（同一 task/budget/opt/meta 的 5 臂），
+                # 满足公平性断言的同时不跑 3,000 run 全网格。
+                return real_campaign(pick_fair_group(list(specs)), **kwargs)
+            if campaign_id.endswith("--NC"):
+                return {"results": [], "execution_report": stop_report(campaign_id)}
+            raise AssertionError("资源停止后不应启动后续 campaign: " + campaign_id)
+
+        real_load_frozen_models = runner.load_frozen_models
+
+        def load_transposed_fixture(**kwargs):
+            # 披露（fixture 限制，非 runner 缺陷）：test_s3_support 的合成冻结模型按
+            # torch Linear 布局 (out,in) 生成，而 maml.ParameterSet/m5_arms.S3ModelScorer
+            # 的前向约定为 (in,out)；真实 M2 冻结模型由 maml 训练产出即 (in,out)。
+            # 故此处仅在加载后转置合成张量，以打通 FORMAL 形状级 e2e（不写回任何文件）。
+            models = real_load_frozen_models(**kwargs)
+            fixed = {}
+            for key, entry in models.items():
+                parameters = entry["parameters"]
+                tensors = [
+                    (tensor.T if getattr(tensor, "ndim", 0) == 2 else tensor)
+                    for tensor in parameters.tensors
+                ]
+                updated = dict(entry)
+                updated["parameters"] = type(parameters)(tensors)
+                fixed[key] = updated
+            return fixed
+
+        with mock.patch.object(runner, "load_frozen_models", side_effect=load_transposed_fixture), mock.patch.object(
+            runner, "execute_campaign", side_effect=fake_campaign
+        ):
+            cls.result = runner.run_experiment(
+                out_dir=cls.run_dir,
+                run_id=cls._RUN_ID,
+                prereg_path=cls.info["prereg_path"],
+                repo_root=cls.info["repo"],
+                run_mode="FORMAL",
+                parallel_workers=1,
+                created_utc=support.CREATED_UTC,
+                verify_code_sha=False,
+            )
+        cls.summary = cls.result["summary"]
+        cls.report = cls.result["execution_report"]
+        cls.config = runner.read_json_file(cls.run_dir / runner.S3_RUNNER_CONFIG_FILE)
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.case.cleanup_repo()
+        cls.tmp.cleanup()
+
+    def test_campaign_stop_propagation(self):
+        self.assertEqual(self.calls, [self._RUN_ID, self._RUN_ID + "--NC"])
+        self.assertEqual(self.summary["status"], "RESOURCE_LIMIT")
+        self.assertEqual(self.report["stop_reason"], runner.S3_RUNNER_RESOURCE_LIMIT)
+        self.assertEqual(self.summary["resources"]["stop_reason"], runner.S3_RUNNER_RESOURCE_LIMIT)
+        self.assertFalse(self.summary["determinism"]["executed"])
+        failed = {key: value for key, value in self.result["validation"]["checks"].items() if not value["ok"]}
+        self.assertTrue(self.result["validation"]["ok"], failed)
+        self.assertFalse((self.run_dir / runner.S3_RUNNER_OOD_RECORDS_FILE).is_file())
+        self.assertFalse((self.run_dir / runner.S3_RUNNER_DET_CHECK_FILE).is_file())
+
+    def test_formal_shape_without_full_grid(self):
+        self.assertEqual(self.config["run_mode"], "FORMAL")
+        self.assertEqual(self.config["k_sweep"], [5])
+        gate = self.config["fd_or_gradient_gate"]
+        self.assertEqual(gate["mode"], "FORMAL")
+        self.assertFalse(gate["override"])
+        self.assertEqual(gate["coordinates_per_model"], int(sp.S3_FD_GATE_COORDINATES_PER_MODEL))
+        self.assertEqual(
+            gate["coordinates_total"],
+            int(sp.S3_FD_GATE_COORDINATES_PER_MODEL) * len(sp.S3_FD_GATE_MODEL_KEYS),
+        )
+        self.assertEqual(self.config["record_counts"]["train"], 0)
+        grid = self.config["evaluation_grid"]
+        self.assertEqual(grid["main_runs"], int(sp.S3_MAIN_RUNS))
+        self.assertEqual(grid["main_evals"], int(sp.S3_MAIN_EVALS))
+        self.assertEqual(tuple(self.report), runner.S3_EXECUTION_REPORT_FIELDS)
+        self.assertEqual(self.report["run_mode"], "FORMAL")
+        # 披露：本测试为形状级 e2e（主 campaign 仅执行 2 run 后由 NC 停止），
+        # 正式全网格 3,780 runs / 362,880 evals 未执行，仅为常量级断言。
+        self.assertEqual(int(sp.S3_TOTAL_RUNS), 3780)
+        self.assertEqual(int(sp.S3_TOTAL_EVALS), 362880)
+        self.assertLess(self.config["record_counts"]["eval"], int(sp.S3_TOTAL_EVALS))
 
 
 if __name__ == "__main__":
