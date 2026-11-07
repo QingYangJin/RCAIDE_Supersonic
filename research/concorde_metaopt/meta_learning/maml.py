@@ -10,6 +10,7 @@
 from __future__ import annotations
 
 import copy
+import hashlib
 import json
 import math
 from dataclasses import dataclass, field
@@ -44,6 +45,18 @@ FD_FULL_EPSILON_SCALE = 1e-6
 FD_FULL_RELATIVE_TOLERANCE = 1e-6
 FD_FULL_DENOMINATOR_FLOOR = 1e-12
 S2_META_GRAD_FD_FAIL = "S2_META_GRAD_FD_FAIL"
+
+# S3 ANIL 与梯度门禁（S3 计划 §4.4；A5-S3M0 处置）
+S3_GATE_SCHEMA_VERSION = "p4ra-s3-gate-1"
+S3_GATE_MODES = ("fomaml", "anil")
+S3_GATE_EPSILON_SCALE = 1e-6
+S3_GATE_RELATIVE_TOLERANCE = 1e-6
+S3_GATE_COORDINATES = 32
+S3_GATE_DENOMINATOR_FLOOR = 1e-12
+S3_GATE_FD_FAIL = "S3_GATE_FD_FAIL"
+S3_GATE_ANIL_BODY_FROZEN = "S3_GATE_ANIL_BODY_FROZEN"
+S3_GATE_K0_EQUIVALENCE = "S3_GATE_K0_EQUIVALENCE"
+S3_GATE_TAMPER_DETECTED = "S3_GATE_TAMPER_DETECTED"
 
 
 class MAMLError(RuntimeError):
@@ -82,6 +95,7 @@ class MAMLConfig:
     first_order: bool = True
     seed: int = 42
     backend: str = "torch"
+    head_only: bool = False
 
     def __post_init__(self) -> None:
         if type(self.input_dim) is not int or self.input_dim <= 0:
@@ -106,6 +120,10 @@ class MAMLConfig:
             raise MAMLError("seed 必须是 int")
         if self.backend not in SUPPORTED_BACKENDS:
             raise MAMLError(f"backend 只支持 {SUPPORTED_BACKENDS}，实际 {self.backend!r}")
+        if type(self.head_only) is not bool:
+            raise MAMLError("head_only 必须是 bool")
+        if self.head_only and not self.first_order:
+            raise MAMLError("head_only=True 要求 first_order=True：ANIL 不支持二阶元梯度")
 
     @property
     def layer_sizes(self) -> tuple[int, ...]:
@@ -125,6 +143,29 @@ class MAMLConfig:
             "seed": self.seed,
             "backend": self.backend,
         }
+
+    def to_arm_dict(self) -> dict[str, Any]:
+        """模型/臂清单配置：to_dict（旧 10 键冻结）基础上显式记录 head_only。
+
+        to_dict 是旧冻结合同，不得加入 head_only（会改变旧指纹/固定向量）；
+        S3 model_manifest 等新产物用本方法，保证 ANIL 配置可无损重建。
+        """
+        payload = self.to_dict()
+        payload["head_only"] = self.head_only
+        return payload
+
+
+def config_from_dict(payload: Mapping[str, Any]) -> MAMLConfig:
+    """从配置字典重建 MAMLConfig；旧 10 键字典（无 head_only）行为不变。"""
+    if not isinstance(payload, Mapping):
+        raise MAMLError("config_from_dict 需要 Mapping")
+    data = dict(payload)
+    head_only = data.pop("head_only", None)
+    if head_only is None:
+        return MAMLConfig(**data)
+    if type(head_only) is not bool:
+        raise MAMLError("head_only 必须是 bool")
+    return MAMLConfig(head_only=head_only, **data)
 
 
 @dataclass(frozen=True)
@@ -361,6 +402,78 @@ def _inner_adapt_episodes(
     return adapted_sets, firsts, lasts
 
 
+def _head_tensor_indices(parameters_or_tensors: Any) -> tuple[int, int]:
+    """ANIL 头参数索引：输出层 weight/bias = 最后两个张量（2L-2, 2L-1）。"""
+    tensors = (
+        parameters_or_tensors.tensors
+        if isinstance(parameters_or_tensors, ParameterSet)
+        else list(parameters_or_tensors)
+    )
+    if len(tensors) < 2 or len(tensors) % 2 != 0:
+        raise MAMLError("ANIL 需要按 weight/bias 成对排列的参数，且至少一层")
+    return len(tensors) - 2, len(tensors) - 1
+
+
+def _inner_adapt_anil_torch(
+    tensors: list[Any], support_features: Any, support_targets: Any, config: MAMLConfig
+) -> tuple[list[Any], list[float]]:
+    """ANIL 内循环：仅更新输出层 weight/bias，body 参数逐位不变。"""
+    losses: list[float] = []
+    if config.inner_steps == 0:
+        return tensors, losses
+    head = list(_head_tensor_indices(tensors))
+    for _ in range(config.inner_steps):
+        prediction = _forward_torch(tensors, support_features)
+        loss = _mse_torch(prediction, support_targets)
+        grads = torch.autograd.grad(loss, [tensors[index] for index in head], create_graph=False)
+        losses.append(float(loss.detach().item()))
+        for index, grad in zip(head, grads):
+            tensors[index].data = tensors[index].data - config.inner_lr * grad.detach()
+    return tensors, losses
+
+
+def _inner_adapt_anil_episodes(
+    parameters: ParameterSet, episodes: Sequence[TaskEpisode], config: MAMLConfig
+) -> tuple[list[ParameterSet], list[float], list[float]]:
+    """对每个任务做 ANIL 头-only 内循环；返回与 _inner_adapt_episodes 同构三元组。"""
+    _require_torch()
+    adapted_sets: list[ParameterSet] = []
+    firsts: list[float] = []
+    lasts: list[float] = []
+    for episode in episodes:
+        support_x = torch.tensor(episode.support_features, dtype=torch.float64)
+        support_y = torch.tensor(episode.support_targets, dtype=torch.float64)
+        tensors = _to_torch(parameters.tensors, requires_grad=True)
+        _, inner_losses = _inner_adapt_anil_torch(tensors, support_x, support_y, config)
+        if inner_losses:
+            firsts.append(inner_losses[0])
+            lasts.append(inner_losses[-1])
+        adapted_sets.append(ParameterSet([tensor.detach().numpy().copy() for tensor in tensors]))
+    return adapted_sets, firsts, lasts
+
+
+def inner_adapt_anil(
+    params: ParameterSet, support: Any, config: MAMLConfig
+) -> tuple[ParameterSet, list[float]]:
+    """ANIL 单任务适配：只更新输出层（最后两个张量），返回 (适配后参数, support loss)。"""
+    if not isinstance(params, ParameterSet):
+        raise MAMLError("inner_adapt_anil 需要 ParameterSet")
+    if not isinstance(config, MAMLConfig):
+        raise MAMLError("inner_adapt_anil 需要 MAMLConfig")
+    if not config.head_only:
+        raise MAMLError("inner_adapt_anil 需要 head_only=True 的 MAMLConfig")
+    episode = _as_episode(support)
+    if episode.support_features.shape[1] != config.input_dim:
+        raise MAMLError("support 特征维度与 config.input_dim 不一致")
+    _require_torch()
+    tensors = _to_torch(params.tensors, requires_grad=True)
+    support_x = torch.tensor(episode.support_features, dtype=torch.float64)
+    support_y = torch.tensor(episode.support_targets, dtype=torch.float64)
+    _, losses = _inner_adapt_anil_torch(tensors, support_x, support_y, config)
+    adapted = ParameterSet([tensor.detach().numpy().copy() for tensor in tensors])
+    return adapted, losses
+
+
 def _query_loss_per_task(
     adapted_sets: Sequence[ParameterSet], episodes: Sequence[TaskEpisode]
 ) -> list[float]:
@@ -506,25 +619,33 @@ def meta_train_step(
     if not isinstance(params, ParameterSet):
         raise MAMLError("meta_train_step 需要 ParameterSet")
     episodes = _episode_batch(batch)
-    full_mode = bool(second_order) or (not config.first_order)
-    if full_mode:
-        outer_loss, grads, firsts, lasts = _full_maml_loss_and_grads(params, episodes, config)
-        if not firsts:
-            # inner_steps=0：无内循环 loss 可记录，用初始点 support loss 作为首/末值（有限可记录）
-            base_tensors = _to_torch(params.tensors, requires_grad=False)
-            support_losses: list[float] = []
-            for episode in episodes:
-                support_x = torch.tensor(episode.support_features, dtype=torch.float64)
-                support_y = torch.tensor(episode.support_targets, dtype=torch.float64)
-                with torch.no_grad():
-                    support_losses.append(
-                        float(_mse_torch(_forward_torch(base_tensors, support_x), support_y).item())
-                    )
-            firsts = support_losses
-            lasts = list(support_losses)
-    else:
-        adapted_sets, firsts, lasts = _inner_adapt_episodes(params, episodes, config)
+    if config.head_only:
+        if second_order or not config.first_order:
+            raise MAMLError(
+                "head_only=True 时禁止 second_order/FULL_MAML：ANIL 只支持一阶外循环"
+            )
+        adapted_sets, firsts, lasts = _inner_adapt_anil_episodes(params, episodes, config)
         outer_loss, grads = _fomaml_outer_gradient(adapted_sets, episodes)
+    else:
+        full_mode = bool(second_order) or (not config.first_order)
+        if full_mode:
+            outer_loss, grads, firsts, lasts = _full_maml_loss_and_grads(params, episodes, config)
+            if not firsts:
+                # inner_steps=0：无内循环 loss 可记录，用初始点 support loss 作为首/末值（有限可记录）
+                base_tensors = _to_torch(params.tensors, requires_grad=False)
+                support_losses: list[float] = []
+                for episode in episodes:
+                    support_x = torch.tensor(episode.support_features, dtype=torch.float64)
+                    support_y = torch.tensor(episode.support_targets, dtype=torch.float64)
+                    with torch.no_grad():
+                        support_losses.append(
+                            float(_mse_torch(_forward_torch(base_tensors, support_x), support_y).item())
+                        )
+                firsts = support_losses
+                lasts = list(support_losses)
+        else:
+            adapted_sets, firsts, lasts = _inner_adapt_episodes(params, episodes, config)
+            outer_loss, grads = _fomaml_outer_gradient(adapted_sets, episodes)
     new_tensors = [
         tensor - config.outer_lr * grad for tensor, grad in zip(params.tensors, grads)
     ]
@@ -907,6 +1028,278 @@ def finite_difference_gradient_check(
     )
 
 
+# -- S3 梯度门禁（计划 §4.4） -------------------------------------------------
+
+
+def _s3_gate_canonical_json(payload: Mapping[str, Any]) -> str:
+    return json.dumps(
+        dict(payload), sort_keys=True, separators=(",", ":"), ensure_ascii=False, allow_nan=False
+    )
+
+
+def s3_gate_coordinate_plan(
+    parameters: ParameterSet,
+    *,
+    max_coordinates: int = S3_GATE_COORDINATES,
+    head_only: bool = False,
+) -> dict[str, Any]:
+    """按 sha256("s3-gate|param|index") 排序选前 max_coordinates 个坐标。
+
+    param 用 ParameterSet.names（layer_{i}_weight/bias）；index 用该张量展平后的下标。
+    返回 {requested, available, selected}；available 不足 requested 时 fail-closed。
+    """
+    if type(max_coordinates) is not int or max_coordinates <= 0:
+        raise MAMLError("max_coordinates 必须是正整数")
+    if not isinstance(parameters, ParameterSet):
+        raise MAMLError("s3_gate_coordinate_plan 需要 ParameterSet")
+    tensors = parameters.tensors
+    if len(tensors) < 2 or len(tensors) % 2 != 0:
+        raise MAMLError("梯度门参数必须按 weight/bias 成对排列")
+    names = parameters.names
+    if head_only:
+        indices = list(_head_tensor_indices(parameters))
+    else:
+        indices = list(range(len(tensors)))
+    entries: list[dict[str, Any]] = []
+    for tensor_index in indices:
+        flat = np.asarray(tensors[tensor_index], dtype=np.float64).reshape(-1)
+        for flat_index in range(int(flat.shape[0])):
+            sort_key = hashlib.sha256(
+                f"s3-gate|{names[tensor_index]}|{flat_index}".encode("utf-8")
+            ).hexdigest()
+            entries.append(
+                {
+                    "parameter_name": names[tensor_index],
+                    "tensor_index": int(tensor_index),
+                    "flat_index": int(flat_index),
+                    "sort_key": sort_key,
+                }
+            )
+    entries.sort(key=lambda item: (item["sort_key"], item["tensor_index"], item["flat_index"]))
+    if len(entries) < max_coordinates:
+        raise MAMLError(
+            f"{S3_GATE_FD_FAIL}: 可抽查坐标仅 {len(entries)} 个，少于 {max_coordinates}；"
+            "梯度门禁不得在证据不足时判定通过（fail-closed）"
+        )
+    return {
+        "requested": int(max_coordinates),
+        "available": len(entries),
+        "selected": entries[:max_coordinates],
+    }
+
+
+def s3_gradient_gate(
+    parameters: ParameterSet,
+    episodes: Sequence[Any],
+    config: MAMLConfig,
+    *,
+    mode: str = "fomaml",
+    max_coordinates: int = S3_GATE_COORDINATES,
+    tolerance: float = S3_GATE_RELATIVE_TOLERANCE,
+    epsilon_scale: float = S3_GATE_EPSILON_SCALE,
+) -> dict[str, Any]:
+    """S3 计划 §4.4 梯度门禁（FOMAML 全参数 / ANIL 仅 head，适配点中心差分，fail-closed）。
+
+    解析梯度：FOMAML 路径 = mean_t ∂L_q(θ'_t)/∂θ'_t（_fomaml_outer_gradient）；
+    ANIL 路径同上，但内循环只更新输出层，门禁坐标只取 head（body 冻结断言）。
+    数值梯度在适配后参数点 θ' 上做中心差分（FOMAML 一阶梯度定义即 adapted 点，
+    不能在原始 θ 上重跑内循环后比较，否则 O(inner_lr) 截断误差远大于 1e-6）。
+    相对误差分母 max(|numeric|, |analytic|, 1e-12)，阈值 1e-6；任何失败抛 MAMLError。
+    """
+    if not isinstance(parameters, ParameterSet):
+        raise MAMLError("s3_gradient_gate 需要 ParameterSet")
+    if not isinstance(config, MAMLConfig):
+        raise MAMLError("s3_gradient_gate 需要 MAMLConfig")
+    if mode not in S3_GATE_MODES:
+        raise MAMLError(f"梯度门 mode 只支持 {S3_GATE_MODES}，实际 {mode!r}")
+    if type(max_coordinates) is not int or max_coordinates <= 0:
+        raise MAMLError("max_coordinates 必须是正整数")
+    if not math.isfinite(tolerance) or tolerance <= 0.0:
+        raise MAMLError("tolerance 必须为正有限数")
+    if not math.isfinite(epsilon_scale) or epsilon_scale <= 0.0:
+        raise MAMLError("epsilon_scale 必须为正有限数")
+    if not config.first_order:
+        raise MAMLError(f"{S3_GATE_FD_FAIL}: 梯度门只支持 first_order=True（FOMAML/ANIL）")
+    if mode == "anil" and not config.head_only:
+        raise MAMLError(f"{S3_GATE_FD_FAIL}: mode='anil' 需要 head_only=True 的 MAMLConfig")
+    if mode == "fomaml" and config.head_only:
+        raise MAMLError(f"{S3_GATE_FD_FAIL}: mode='fomaml' 需要 head_only=False 的 MAMLConfig")
+    episodes = _episode_batch(episodes)
+    for episode in episodes:
+        if episode.support_features.shape[1] != config.input_dim:
+            raise MAMLError("batch 特征维度与 config.input_dim 不一致")
+        if episode.support_targets.shape[1] != config.output_dim:
+            raise MAMLError("batch 标签维度与 config.output_dim 不一致")
+    _require_torch()
+    body_frozen: bool | None = None
+    if mode == "anil":
+        head_start, _ = _head_tensor_indices(parameters)
+        before_body = [
+            np.array(tensor, dtype=np.float64, copy=True) for tensor in parameters.tensors[:head_start]
+        ]
+        adapted_sets, _, _ = _inner_adapt_anil_episodes(parameters, episodes, config)
+        body_frozen = True
+        for adapted in adapted_sets:
+            for index, before in enumerate(before_body):
+                if not np.array_equal(before, np.asarray(adapted.tensors[index], dtype=np.float64)):
+                    raise MAMLError(
+                        f"{S3_GATE_ANIL_BODY_FROZEN}: episode {episode.task_id!r} body 参数 "
+                        f"{parameters.names[index]} 在内循环中被修改"
+                    )
+    else:
+        adapted_sets, _, _ = _inner_adapt_episodes(parameters, episodes, config)
+    outer_loss, analytic_grads = _fomaml_outer_gradient(adapted_sets, episodes)
+    plan = s3_gate_coordinate_plan(
+        adapted_sets[0], max_coordinates=max_coordinates, head_only=(mode == "anil")
+    )
+    base = adapted_sets[0]
+    names = parameters.names
+    checks: list[dict[str, Any]] = []
+    max_relative_error = 0.0
+    failures: list[dict[str, Any]] = []
+    for entry in plan["selected"]:
+        tensor_index = int(entry["tensor_index"])
+        flat_index = int(entry["flat_index"])
+        analytic = float(
+            np.asarray(analytic_grads[tensor_index], dtype=np.float64).reshape(-1)[flat_index]
+        )
+        theta_j = float(
+            np.asarray(base.tensors[tensor_index], dtype=np.float64).reshape(-1)[flat_index]
+        )
+        epsilon = float(epsilon_scale * max(1.0, abs(theta_j)))
+        plus = [_perturb(adapted, tensor_index, flat_index, epsilon) for adapted in adapted_sets]
+        minus = [_perturb(adapted, tensor_index, flat_index, -epsilon) for adapted in adapted_sets]
+        numeric = (
+            _outer_loss_at_adapted(plus, episodes) - _outer_loss_at_adapted(minus, episodes)
+        ) / (2.0 * epsilon)
+        denominator = max(abs(numeric), abs(analytic), S3_GATE_DENOMINATOR_FLOOR)
+        relative_error = abs(numeric - analytic) / denominator
+        max_relative_error = max(max_relative_error, relative_error)
+        check = {
+            "parameter_name": names[tensor_index],
+            "tensor_index": tensor_index,
+            "flat_index": flat_index,
+            "analytic": analytic,
+            "numeric": float(numeric),
+            "abs_error": float(abs(numeric - analytic)),
+            "relative_error": float(relative_error),
+            "epsilon": epsilon,
+            "tolerance": float(tolerance),
+            "status": "PASS" if relative_error <= tolerance else "FAIL",
+        }
+        checks.append(check)
+        if check["status"] != "PASS":
+            failures.append(check)
+    k0_equivalence: bool | None = None
+    if config.inner_steps == 0:
+        k0_equivalence = all(
+            np.array_equal(np.asarray(parameters.tensors[index], dtype=np.float64),
+                           np.asarray(adapted_sets[0].tensors[index], dtype=np.float64))
+            for index in range(len(parameters.tensors))
+        )
+        if not k0_equivalence:
+            raise MAMLError(
+                f"{S3_GATE_K0_EQUIVALENCE}: inner_steps=0 时适配后参数必须与初始参数逐位相同"
+            )
+    result = {
+        "schema_version": S3_GATE_SCHEMA_VERSION,
+        "mode": mode,
+        "backend": config.backend,
+        "equivalence_claimed": False,
+        "fd_point": "adapted_parameters",
+        "epsilon_policy": "1e-6 * max(1, |theta_adapted_j|)",
+        "tolerance": float(tolerance),
+        "denominator_policy": "max(|numeric|, |analytic|, 1e-12)",
+        "coordinates_requested": int(max_coordinates),
+        "coordinates_available": int(plan["available"]),
+        "n_checked": len(checks),
+        "max_relative_error": float(max_relative_error),
+        "status": "FAIL" if failures else "PASS",
+        "outer_loss": float(outer_loss),
+        "anil_body_frozen": body_frozen,
+        "k0_equivalence": k0_equivalence,
+        "inner_steps": int(config.inner_steps),
+        "config": config.to_arm_dict(),
+        "checks": checks,
+    }
+    if failures:
+        raise MAMLError(
+            f"{S3_GATE_FD_FAIL}: max_relative_error={max_relative_error:.6e} > "
+            f"tolerance={tolerance:.1e}（n_checked={len(checks)}，fail-closed）"
+        )
+    return result
+
+
+def s3_gate_sha256(payload: Mapping[str, Any]) -> str:
+    """梯度门载荷的 canonical JSON sha256（文件原始字节 sha 由落盘函数返回）。"""
+    return hashlib.sha256(_s3_gate_canonical_json(payload).encode("utf-8")).hexdigest()
+
+
+def write_s3_gate_result(result: Mapping[str, Any], path: str | Any) -> str:
+    """写 s3 梯度门 JSON（canonical + LF），返回文件原始字节 sha256。"""
+    from pathlib import Path
+
+    data = (_s3_gate_canonical_json(result) + "\n").encode("utf-8")
+    target = Path(path)
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_bytes(data)
+    return hashlib.sha256(data).hexdigest()
+
+
+def assert_s3_gate_consistent(payload: Mapping[str, Any]) -> bool:
+    """负控：校验门禁载荷内部自洽；任一篡改抛 S3_GATE_TAMPER_DETECTED。"""
+    if not isinstance(payload, Mapping):
+        raise MAMLError(f"{S3_GATE_TAMPER_DETECTED}: 载荷必须是 mapping")
+    if payload.get("schema_version") != S3_GATE_SCHEMA_VERSION:
+        raise MAMLError(f"{S3_GATE_TAMPER_DETECTED}: schema_version 不符")
+    checks = payload.get("checks")
+    if not isinstance(checks, list) or not checks:
+        raise MAMLError(f"{S3_GATE_TAMPER_DETECTED}: checks 缺失或为空")
+    if payload.get("n_checked") != len(checks):
+        raise MAMLError(f"{S3_GATE_TAMPER_DETECTED}: n_checked 与 checks 数量不符")
+    if payload.get("mode") not in S3_GATE_MODES:
+        raise MAMLError(f"{S3_GATE_TAMPER_DETECTED}: mode 非法")
+    tolerance = payload.get("tolerance")
+    if not isinstance(tolerance, (int, float)) or not math.isfinite(float(tolerance)):
+        raise MAMLError(f"{S3_GATE_TAMPER_DETECTED}: tolerance 非有限")
+    seen: set[tuple[int, int]] = set()
+    max_relative_error = 0.0
+    all_pass = True
+    for check in checks:
+        try:
+            tensor_index = int(check["tensor_index"])
+            flat_index = int(check["flat_index"])
+            analytic = float(check["analytic"])
+            numeric = float(check["numeric"])
+            relative_error = float(check["relative_error"])
+            status = check["status"]
+        except Exception as exc:
+            raise MAMLError(f"{S3_GATE_TAMPER_DETECTED}: check 字段缺失/类型错: {exc}") from exc
+        key = (tensor_index, flat_index)
+        if key in seen:
+            raise MAMLError(f"{S3_GATE_TAMPER_DETECTED}: 坐标重复 {key}")
+        seen.add(key)
+        recomputed = abs(numeric - analytic) / max(
+            abs(numeric), abs(analytic), S3_GATE_DENOMINATOR_FLOOR
+        )
+        if abs(recomputed - relative_error) > 1e-12:
+            raise MAMLError(f"{S3_GATE_TAMPER_DETECTED}: relative_error 与 num/ana 不符")
+        expected_status = "PASS" if relative_error <= float(tolerance) else "FAIL"
+        if status != expected_status:
+            raise MAMLError(f"{S3_GATE_TAMPER_DETECTED}: check status 与阈值不符")
+        if expected_status != "PASS":
+            all_pass = False
+        max_relative_error = max(max_relative_error, relative_error)
+    if abs(max_relative_error - float(payload.get("max_relative_error", float("nan")))) > 1e-12:
+        raise MAMLError(f"{S3_GATE_TAMPER_DETECTED}: max_relative_error 不一致")
+    expected = "PASS" if all_pass else "FAIL"
+    if payload.get("status") != expected:
+        raise MAMLError(f"{S3_GATE_TAMPER_DETECTED}: status 与 checks 不一致")
+    if expected != "PASS":
+        raise MAMLError(f"{S3_GATE_FD_FAIL}: 门禁载荷本身为 FAIL")
+    return True
+
+
 def write_finite_difference_check(result: Mapping[str, Any], path: str | Any) -> None:
     """把 FD 结果落盘为 finite_difference_check.json（非有限值写成 null）。"""
     from pathlib import Path
@@ -951,13 +1344,30 @@ __all__ = [
     "SUPPORTED_BACKENDS",
     "TaskEpisode",
     "S2_META_GRAD_FD_FAIL",
+    "S3_GATE_ANIL_BODY_FROZEN",
+    "S3_GATE_COORDINATES",
+    "S3_GATE_DENOMINATOR_FLOOR",
+    "S3_GATE_EPSILON_SCALE",
+    "S3_GATE_FD_FAIL",
+    "S3_GATE_K0_EQUIVALENCE",
+    "S3_GATE_MODES",
+    "S3_GATE_RELATIVE_TOLERANCE",
+    "S3_GATE_SCHEMA_VERSION",
+    "S3_GATE_TAMPER_DETECTED",
+    "assert_s3_gate_consistent",
     "build_small_model",
+    "config_from_dict",
     "finite_difference_gradient_check",
     "init_parameters",
     "inner_adapt",
+    "inner_adapt_anil",
     "meta_train",
     "meta_train_step",
     "torch_available",
+    "s3_gate_coordinate_plan",
+    "s3_gate_sha256",
+    "s3_gradient_gate",
     "torch_import_error",
     "write_finite_difference_check",
+    "write_s3_gate_result",
 ]

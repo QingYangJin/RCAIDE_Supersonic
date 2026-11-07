@@ -42,6 +42,11 @@ from .baseline_arms import (
     BO_INITIAL_DESIGN_COUNT,
     DEDUP_TOLERANCE,
     DESIGN_DIM,
+    EvaluationRecord,
+    _constraints_or_none,
+    _finite_or_none,
+    _record_from_result,
+    _summarize_arm,
     assert_synthetic_design_space,
     derive_arm_seed,
     run_bo_arm,
@@ -1714,3 +1719,1285 @@ def run_s1_arm(
         run_id=run_id,
     )
 
+
+
+
+
+
+# ===========================================================================
+# S3（task-261 rev36）：F-QE-conflict-v1 五臂闭环、联合评分与 RNG 合同
+# 计划 docs/planning/p4_route_a_s3_execution_plan_20261107.md v1.2a §3/§4.1/§5.1
+# 全部纯 CPU 合成评估；physical_call_count=0；不 import 任何真实求解器入口。
+#
+# CONTRACT_AMBIGUITY（已上报 Lead，不自行改合同）：
+# 1) §3.1 要求每臂内部走 baseline_arms.run_bo_arm 的 LEGACY_BO_ARM 合同路径，但
+#    run_bo_arm 的引擎 seed=derive_arm_seed(task_id, seed, "bo", arm) 含 arm 名，
+#    与 §3.1-1 冻结公式（不含 arm/budget）冲突。本段按更具体的 RNG 合同直接使用
+#    maml_opt.bayesian.ConstrainedBayesianOptimizer + run_search，并复用
+#    baseline_arms._record_from_result / _summarize_arm 生成逐字段兼容的结果。
+# 2) 克隆检测会命中 S3-BO-RANDOM / S3-DE：两者初始 8 点按 §3.1-5 与 §3.3 同为
+#    support(5)+shared(3)，故对这对由合同强制的相同初始点做豁免并披露。
+# ===========================================================================
+
+S3_ARM_IDS: tuple[str, ...] = (
+    "S3-BO-RANDOM",
+    "S3-BO-FOMAML-OBJ",
+    "S3-BO-FOMAML-CON",
+    "S3-BO-ANIL-CON",
+    "S3-DE",
+)
+S3_BO_RANDOM = "S3-BO-RANDOM"
+S3_BO_FOMAML_OBJ = "S3-BO-FOMAML-OBJ"
+S3_BO_FOMAML_CON = "S3-BO-FOMAML-CON"
+S3_BO_ANIL_CON = "S3-BO-ANIL-CON"
+S3_DE = "S3-DE"
+S3_BO_ARM_IDS: tuple[str, ...] = S3_ARM_IDS[:4]
+S3_STAGE = "P4-S3"
+S3_K_SHOT = 5
+S3_BUDGETS: tuple[int, ...] = (64, 128)
+S3_INITIAL_DESIGN_COUNT = 8
+S3_NEW_INITIAL_COUNT = 3
+S3_CANDIDATE_POOL_SIZE = 123
+S3_CANDIDATE_COUNT = 512
+S3_DIVERSITY_MIN_NORM = 0.10
+S3_JOINT_PENALTY = 10.0
+S3_OUTPUT_DIM = 3
+S3_EVAL_SOURCES: tuple[str, ...] = ("support", "initial", "bo", "de")
+S3_CLONE_IDENTIFIABILITY = "CLONE"
+S3_LIMITED_IDENTIFIABILITY = "IDENTIFIABILITY_LIMITED"
+S3_IDENTIFIABLE = "IDENTIFIABLE"
+S3_CLONE_RATE_THRESHOLD = 0.20
+S3_DE_POPULATION_SIZE = 8
+S3_DE_MUTATION_FACTOR = 0.5
+S3_DE_CROSSOVER_RATE = 0.7
+S3_DE_MAX_RETRY = 100
+S3_SCORE_OBJ = "S_obj"
+S3_SCORE_JOINT = "S_joint"
+S3_SCORE_NONE = "none"
+S3_CALIBRATION = "NOT_PERFORMED"
+S3_BO_CONFIG: dict[str, Any] = {
+    "engine": "maml_opt.bayesian.ConstrainedBayesianOptimizer",
+    "strategy": "bayesian",
+    "candidate_count": S3_CANDIDATE_COUNT,
+    "minimum_model_observations": 5,
+    "alpha": 1e-6,
+    "exploration": 0.01,
+}
+S3_CLONE_EXEMPT_PAIRS: tuple[tuple[str, str], ...] = ((S3_BO_RANDOM, S3_DE),)
+
+
+class S3ArmError(M5ArmError):
+    """S3 五臂闭环错误（fail-closed：预算/公平/RNG/泄漏合同不一致）。"""
+
+
+def _s3_require_int(value: Any, label: str, *, minimum: int = 0) -> int:
+    if type(value) is not int or value < minimum:
+        raise S3ArmError(f"{label} 必须是 >= {minimum} 的整数，实际 {value!r}")
+    return int(value)
+
+
+def _s3_require_task(task: Any) -> Any:
+    for name in ("task_id", "split", "family"):
+        if not hasattr(task, name):
+            raise S3ArmError(f"task 缺少属性 {name}")
+    for name in ("support_designs", "support_subset", "truth"):
+        if not callable(getattr(task, name, None)):
+            raise S3ArmError(f"task 缺少方法 {name}()")
+    return task
+
+
+def _s3_require_evaluate(evaluate: Any) -> Callable[[np.ndarray], Mapping[str, Any]]:
+    if not callable(evaluate):
+        raise S3ArmError("evaluate 必须可调用")
+    return evaluate
+
+
+def _s3_round_designs(designs: Any, label: str) -> np.ndarray:
+    matrix = np.asarray(designs, dtype=np.float64)
+    if matrix.ndim != 2 or matrix.shape[1] != DESIGN_DIM:
+        raise S3ArmError(f"{label} 必须为 (n, {DESIGN_DIM})，实际 {matrix.shape}")
+    if not np.all(np.isfinite(matrix)):
+        raise S3ArmError(f"{label} 必须有限")
+    return matrix
+
+
+def _s3_pairs_distance_stats(designs: np.ndarray) -> tuple[float, float]:
+    matrix = _s3_round_designs(designs, "designs")
+    count = matrix.shape[0]
+    if count < 2:
+        return 0.0, 0.0
+    pairwise = matrix[:, np.newaxis, :] - matrix[np.newaxis, :, :]
+    distances = np.sqrt(np.sum(pairwise**2, axis=2)) / math.sqrt(float(DESIGN_DIM))
+    mask = np.triu(np.ones((count, count), dtype=bool), k=1)
+    values = distances[mask]
+    return float(np.min(values)), float(np.max(values))
+
+
+def _s3_min_norm(design: np.ndarray, references: np.ndarray) -> float:
+    if references.shape[0] == 0:
+        return float("inf")
+    deltas = references - np.asarray(design, dtype=np.float64)[np.newaxis, :]
+    return float(np.min(np.sqrt(np.sum(deltas**2, axis=1)) / math.sqrt(float(DESIGN_DIM))))
+
+
+def s3_bo_engine_seed(task_id: str, opt_seed: int, meta_seed: int) -> int:
+    """计划 §3.1-1：BO 引擎 seed，不含 arm/budget，四臂两预算共享。"""
+    if not isinstance(task_id, str) or not task_id:
+        raise S3ArmError("task_id 必须是非空字符串")
+    opt = _s3_require_int(opt_seed, "opt_seed")
+    meta = _s3_require_int(meta_seed, "meta_seed")
+    text = f"{task_id}|{opt}|{meta}|s3-bo-engine"
+    digest = hashlib.sha256(text.encode("utf-8")).digest()
+    return int.from_bytes(digest[:8], "big") % (2**31)
+
+
+def s3_de_engine_seed(task_id: str, opt_seed: int, meta_seed: int) -> int:
+    """计划 §3.1-4：DE seed 与 BO 不共享随机流。"""
+    if not isinstance(task_id, str) or not task_id:
+        raise S3ArmError("task_id 必须是非空字符串")
+    opt = _s3_require_int(opt_seed, "opt_seed")
+    meta = _s3_require_int(meta_seed, "meta_seed")
+    text = f"{task_id}|{opt}|{meta}|s3-de"
+    digest = hashlib.sha256(text.encode("utf-8")).digest()
+    return int.from_bytes(digest[:8], "big") % (2**31)
+
+
+def s3_support_seed(task_id: str, meta_seed: int) -> int:
+    """支持集 seed：与 s1_runner.support_seed 逐位一致（{task}|s1-support|{meta}）。"""
+    if not isinstance(task_id, str) or not task_id:
+        raise S3ArmError("task_id 必须是非空字符串")
+    meta = _s3_require_int(meta_seed, "meta_seed")
+    text = f"{task_id}|s1-support|{meta}"
+    return int(hashlib.sha256(text.encode("utf-8")).hexdigest()[:8], 16) % (2**31 - 1)
+
+
+def s3_select_support_designs(task: Any, *, k_shot: int = S3_K_SHOT, meta_seed: int = 0) -> np.ndarray:
+    """计划 §3.1：同一 task/meta_seed 下五臂支持集逐位相同（K=5）。"""
+    task = _s3_require_task(task)
+    if type(k_shot) is not int or k_shot != S3_K_SHOT:
+        raise S3ArmError(f"k_shot 固定为 {S3_K_SHOT}，实际 {k_shot!r}")
+    seed = s3_support_seed(str(task.task_id), meta_seed)
+    support = np.asarray(task.support_subset(k_shot, seed), dtype=np.float64)
+    return _s3_round_designs(support, "support_designs")
+
+
+def s3_shared_initial_designs(task_id: str, opt_seed: int, *, count: int = S3_INITIAL_DESIGN_COUNT) -> np.ndarray:
+    """计划 §3.1-5：由 (task_id, opt_seed, "shared-init") 派生的五臂共享初始点。
+
+    两步派生：先对 "task_id|opt_seed|shared-init" 取 8 字节整数作为
+    baseline_arms.shared_initial_designs 的 seed，再调用其 LHS 生成器；结果对
+    (task_id, opt_seed, count) 完全确定。
+    """
+    if not isinstance(task_id, str) or not task_id:
+        raise S3ArmError("task_id 必须是非空字符串")
+    opt = _s3_require_int(opt_seed, "opt_seed")
+    if type(count) is not int or count <= 0:
+        raise S3ArmError(f"count 必须是正整数，实际 {count!r}")
+    text = f"{task_id}|{opt}|shared-init"
+    seed = int(hashlib.sha256(text.encode("utf-8")).hexdigest()[:8], 16) % (2**31)
+    designs = shared_initial_designs(task_id, seed, count=count)
+    return _s3_round_designs(designs, "shared_initial_designs")
+
+
+def s3_candidate_pool(task: Any, *, meta_seed: int = 0) -> np.ndarray:
+    """计划 §3.2：support LHS 128 点去掉 5 个 support 点后的 123 点共享候选池。"""
+    task = _s3_require_task(task)
+    pool = _s3_round_designs(np.asarray(task.support_designs(), dtype=np.float64), "support_designs")
+    support = s3_select_support_designs(task, k_shot=S3_K_SHOT, meta_seed=meta_seed)
+    support_keys = {_s1_design_key(row) for row in support}
+    keep = [index for index, row in enumerate(pool) if _s1_design_key(row) not in support_keys]
+    candidates = np.asarray(pool[keep], dtype=np.float64)
+    if candidates.shape[0] != S3_CANDIDATE_POOL_SIZE:
+        raise S3ArmError(
+            f"候选池大小必须为 {S3_CANDIDATE_POOL_SIZE}，实际 {candidates.shape[0]}"
+        )
+    return candidates
+
+
+def s3_candidate_pool_sha256(task: Any, *, meta_seed: int = 0) -> str:
+    return designs_digest(s3_candidate_pool(task, meta_seed=meta_seed))
+
+
+def s3_bo_engine_draws(engine_seed: int, *, candidate_count: int = S3_CANDIDATE_COUNT) -> np.ndarray:
+    """引擎在首个观测前的候选抽样序列（与 maml_opt 的 _candidate_pool 逐位一致）。
+
+    maml_opt 的候选池 = qmc.LatinHypercube(d, seed=engine_seed + _ask_count).random(n)
+    再缩放到 [lower, upper]；本函数复算 _ask_count=0 时的结果（不调用私有属性），
+    单测断言与 ConstrainedBayesianOptimizer._candidate_pool() 逐位相等。
+    """
+    seed = _s3_require_int(engine_seed, "engine_seed")
+    if type(candidate_count) is not int or candidate_count <= 0:
+        raise S3ArmError(f"candidate_count 必须是正整数，实际 {candidate_count!r}")
+    from scipy.stats import qmc
+
+    sampler = qmc.LatinHypercube(d=DESIGN_DIM, seed=seed)
+    unit = sampler.random(candidate_count)
+    lower = np.zeros(DESIGN_DIM, dtype=np.float64)
+    upper = np.ones(DESIGN_DIM, dtype=np.float64)
+    return np.asarray(qmc.scale(unit, lower, upper), dtype=np.float64)
+
+
+def s3_bo_engine_draws_sha256(engine_seed: int, *, candidate_count: int = S3_CANDIDATE_COUNT) -> str:
+    return designs_digest(s3_bo_engine_draws(engine_seed, candidate_count=candidate_count))
+
+
+def s3_bo_config_sha256() -> str:
+    return canonical_digest(S3_BO_CONFIG)
+
+
+def s3_expected_budget(budget: int) -> dict[str, int]:
+    """计划 §3.3：B = 5 support + 3 new initial + (B-8) 主搜索 = B 次计费评估。"""
+    if type(budget) is not int or budget not in S3_BUDGETS:
+        raise S3ArmError(f"budget 必须是 {S3_BUDGETS} 之一，实际 {budget!r}")
+    if budget < S3_INITIAL_DESIGN_COUNT:
+        raise S3ArmError(f"budget 必须 >= {S3_INITIAL_DESIGN_COUNT}，实际 {budget!r}")
+    return {
+        "budget_B": int(budget),
+        "K": int(S3_K_SHOT),
+        "initial_designs": int(S3_INITIAL_DESIGN_COUNT),
+        "support_evals": int(S3_K_SHOT),
+        "initial_evals": int(S3_NEW_INITIAL_COUNT),
+        "bo_or_de_evals": int(budget - S3_INITIAL_DESIGN_COUNT),
+        "billable_evals": int(budget),
+    }
+
+
+def s3_normalization(f_support: Any, g_support: Any) -> dict[str, Any]:
+    """计划 §3.2：仅用 support 标签的逐任务归一化参数（ddof=0，尺度下限 1e-6）。"""
+    f_values = np.asarray(f_support, dtype=np.float64).reshape(-1)
+    if f_values.size == 0 or not np.all(np.isfinite(f_values)):
+        raise S3ArmError("f_support 必须是非空有限向量")
+    g_values = np.asarray(g_support, dtype=np.float64)
+    if g_values.ndim != 2 or g_values.shape[0] != f_values.size or g_values.shape[1] != 2:
+        raise S3ArmError(f"g_support 必须为 ({f_values.size}, 2)，实际 {g_values.shape}")
+    if not np.all(np.isfinite(g_values)):
+        raise S3ArmError("g_support 必须有限")
+    f_mean = float(np.mean(f_values))
+    f_scale = max(float(np.std(f_values)), 1e-6)
+    g_scale = [
+        max(float(math.sqrt(float(np.mean(g_values[:, k] ** 2)))), 1e-6) for k in range(2)
+    ]
+    return {"f_mean": f_mean, "f_scale": f_scale, "g_scale": g_scale}
+
+
+def s3_standardize_labels(f: Any, g1: Any, g2: Any, normalization: Mapping[str, Any]) -> np.ndarray:
+    f_values = np.asarray(f, dtype=np.float64).reshape(-1)
+    g1_values = np.asarray(g1, dtype=np.float64).reshape(-1)
+    g2_values = np.asarray(g2, dtype=np.float64).reshape(-1)
+    if not (f_values.size == g1_values.size == g2_values.size):
+        raise S3ArmError("f/g1/g2 长度必须一致")
+    f_mean = float(normalization["f_mean"])
+    f_scale = float(normalization["f_scale"])
+    g_scale = list(normalization["g_scale"])
+    if f_scale <= 0.0 or len(g_scale) != 2 or min(g_scale) <= 0.0:
+        raise S3ArmError("归一化尺度必须为正")
+    return np.stack(
+        [
+            (f_values - f_mean) / f_scale,
+            g1_values / float(g_scale[0]),
+            g2_values / float(g_scale[1]),
+        ],
+        axis=1,
+    )
+
+
+def s3_joint_score(f_tilde_hat: Any, g1_tilde_hat: Any, g2_tilde_hat: Any) -> np.ndarray:
+    """计划 §3.2 冻结公式 S_joint = f_tilde_hat + 10*(max(0,g1)+max(0,g2))^2。"""
+    f_hat = np.asarray(f_tilde_hat, dtype=np.float64).reshape(-1)
+    g1_hat = np.asarray(g1_tilde_hat, dtype=np.float64).reshape(-1)
+    g2_hat = np.asarray(g2_tilde_hat, dtype=np.float64).reshape(-1)
+    if not (f_hat.size == g1_hat.size == g2_hat.size):
+        raise S3ArmError("f/g1/g2 预测长度必须一致")
+    violation = np.maximum(0.0, g1_hat) + np.maximum(0.0, g2_hat)
+    return f_hat + S3_JOINT_PENALTY * np.square(violation)
+
+
+def _s3_extract_support_labels(results: Sequence[Mapping[str, Any]]) -> tuple[np.ndarray, np.ndarray]:
+    f_values: list[float] = []
+    g_values: list[list[float]] = []
+    for position, result in enumerate(results):
+        if not isinstance(result, Mapping):
+            raise S3ArmError(f"支持评估结果必须是映射，第 {position} 条为 {type(result).__name__}")
+        objective = result.get("objective")
+        constraints = result.get("constraints_g_le_zero")
+        if not isinstance(constraints, Mapping):
+            raise S3ArmError(f"支持评估结果缺少 constraints_g_le_zero（第 {position} 条）")
+        if not {"g1", "g2"} <= set(constraints):
+            raise S3ArmError(f"约束名必须包含 g1/g2，实际 {sorted(constraints)}")
+        try:
+            f_values.append(float(objective))
+        except (TypeError, ValueError) as exc:
+            raise S3ArmError(f"objective 非法（第 {position} 条）: {exc}") from exc
+        g_values.append([float(constraints["g1"]), float(constraints["g2"])])
+    f_array = np.asarray(f_values, dtype=np.float64)
+    g_array = np.asarray(g_values, dtype=np.float64)
+    if not np.all(np.isfinite(f_array)) or not np.all(np.isfinite(g_array)):
+        raise S3ArmError("支持集标签出现非有限值")
+    return f_array, g_array
+
+
+def _s3_scorer_spec(scorer: Any) -> dict[str, Any]:
+    if scorer is None:
+        return {"meta_seed": None, "head_only": None, "config": None}
+    predict = getattr(scorer, "predict", None)
+    adapt = getattr(scorer, "adapt", None)
+    if not callable(predict) or not callable(adapt):
+        raise S3ArmError("scorer 必须提供 adapt(...) 与 predict(...)")
+    config = getattr(scorer, "config", None)
+    config_payload = None
+    if config is not None and hasattr(config, "to_dict"):
+        config_payload = config.to_dict()
+    return {
+        "meta_seed": getattr(scorer, "meta_seed", None),
+        "head_only": getattr(scorer, "head_only", None),
+        "config": config_payload,
+    }
+
+
+def _s3_adapt_and_predict(
+    scorer: Any,
+    support_designs: np.ndarray,
+    support_labels_standardized: np.ndarray,
+    designs: np.ndarray,
+) -> tuple[np.ndarray, float, int]:
+    if scorer is None:
+        raise S3ArmError("该臂需要代理 scorer（OBJ/CON/ANIL）")
+    started = time.perf_counter()
+    adapted = scorer.adapt(support_designs, support_labels_standardized)
+    predictions = adapted.predict(designs)
+    elapsed = time.perf_counter() - started
+    array = np.asarray(predictions, dtype=np.float64)
+    if array.shape != (designs.shape[0], S3_OUTPUT_DIM):
+        raise S3ArmError(f"scorer.predict 形状必须为 ({designs.shape[0]}, 3)，实际 {array.shape}")
+    if not np.all(np.isfinite(array)):
+        raise S3ArmError("scorer.predict 出现非有限值")
+    return array, elapsed, int(designs.shape[0])
+
+
+def s3_select_diverse_designs(
+    candidates: Any,
+    *,
+    reference_designs: Any,
+    count: int = S3_NEW_INITIAL_COUNT,
+    scores: Any = None,
+    min_distance: float = S3_DIVERSITY_MIN_NORM,
+) -> dict[str, Any]:
+    """计划 §3.2 多样性规则：d_norm>=0.10；不足时按已选点最小距离降序补足并标记 relaxed。"""
+    matrix = _s3_round_designs(candidates, "candidates")
+    references = _s3_round_designs(reference_designs, "reference_designs")
+    if type(count) is not int or count <= 0:
+        raise S3ArmError(f"count 必须是正整数，实际 {count!r}")
+    if count > matrix.shape[0]:
+        raise S3ArmError(f"候选数不足：需要 {count}，实际 {matrix.shape[0]}")
+    if not math.isfinite(float(min_distance)) or min_distance < 0.0:
+        raise S3ArmError(f"min_distance 必须是非负有限值，实际 {min_distance!r}")
+    if scores is None:
+        order = list(range(matrix.shape[0]))
+        score_values = None
+    else:
+        score_values = np.asarray(scores, dtype=np.float64).reshape(-1)
+        if score_values.size != matrix.shape[0] or not np.all(np.isfinite(score_values)):
+            raise S3ArmError("scores 必须是与候选数一致的有限向量")
+        order = sorted(range(matrix.shape[0]), key=lambda index: (float(score_values[index]), index))
+    selected: list[int] = []
+    relaxed = False
+    for index in order:
+        if len(selected) >= count:
+            break
+        chosen = matrix[np.asarray(selected, dtype=np.int64)] if selected else references
+        pool = np.vstack([references, chosen]) if selected else references
+        if _s3_min_norm(matrix[index], pool) >= min_distance:
+            selected.append(index)
+    if len(selected) < count:
+        relaxed = True
+        remaining = [index for index in order if index not in selected]
+        while len(selected) < count and remaining:
+            best_index = None
+            best_distance = -1.0
+            for index in remaining:
+                chosen = matrix[np.asarray(selected, dtype=np.int64)] if selected else references
+                pool = np.vstack([references, chosen]) if selected else references
+                distance = _s3_min_norm(matrix[index], pool)
+                if distance > best_distance:
+                    best_distance = distance
+                    best_index = index
+            if best_index is None:
+                break
+            selected.append(int(best_index))
+            remaining.remove(int(best_index))
+    chosen_designs = matrix[np.asarray(selected, dtype=np.int64)]
+    return {
+        "designs": chosen_designs,
+        "indices": [int(index) for index in selected],
+        "scores": [float(score_values[index]) for index in selected] if score_values is not None else None,
+        "diversity_relaxed": bool(relaxed),
+        "min_distance": float(min_distance),
+    }
+
+
+def _s3_new_initial_designs(
+    arm: str,
+    *,
+    task: Any,
+    meta_seed: int,
+    opt_seed: int,
+    scorer: Any,
+    support_designs: np.ndarray,
+    support_labels: np.ndarray,
+    normalization: Mapping[str, Any],
+) -> dict[str, Any]:
+    shared = s3_shared_initial_designs(str(task.task_id), opt_seed, count=S3_INITIAL_DESIGN_COUNT)
+    shared_keys = {_s1_design_key(row) for row in shared}
+    support_keys = {_s1_design_key(row) for row in support_designs}
+    if shared_keys & support_keys:
+        raise S3ArmError("FAILED_LEAKAGE: shared_initial_designs 与 support 集重叠")
+    if arm in (S3_BO_RANDOM, S3_DE):
+        picked = s3_select_diverse_designs(
+            shared,
+            reference_designs=support_designs,
+            count=S3_NEW_INITIAL_COUNT,
+        )
+        return {
+            "designs": picked["designs"],
+            "indices": picked["indices"],
+            "source": "shared_initial_designs",
+            "score_kind": S3_SCORE_NONE,
+            "scores": None,
+            "diversity_relaxed": picked["diversity_relaxed"],
+            "scoring_wall_s": 0.0,
+            "forward_predictions": 0,
+            "candidates_scored": 0,
+        }
+    if arm not in S3_BO_ARM_IDS:
+        raise S3ArmError(f"未知 S3 臂: {arm!r}；允许 {S3_ARM_IDS}")
+    pool = s3_candidate_pool(task, meta_seed=meta_seed)
+    score_kind = S3_SCORE_OBJ if arm == S3_BO_FOMAML_OBJ else S3_SCORE_JOINT
+    predictions, elapsed, forward_count = _s3_adapt_and_predict(
+        scorer,
+        support_designs,
+        support_labels,
+        pool,
+    )
+    f_hat = predictions[:, 0]
+    g1_hat = predictions[:, 1]
+    g2_hat = predictions[:, 2]
+    scores = f_hat if score_kind == S3_SCORE_OBJ else s3_joint_score(f_hat, g1_hat, g2_hat)
+    picked = s3_select_diverse_designs(
+        pool,
+        reference_designs=support_designs,
+        count=S3_NEW_INITIAL_COUNT,
+        scores=scores,
+    )
+    return {
+        "designs": picked["designs"],
+        "indices": picked["indices"],
+        "source": "candidate_pool",
+        "score_kind": score_kind,
+        "scores": picked["scores"],
+        "diversity_relaxed": picked["diversity_relaxed"],
+        "scoring_wall_s": float(elapsed),
+        "forward_predictions": int(forward_count),
+        "candidates_scored": int(pool.shape[0]),
+    }
+
+
+def _s3_record_from_result(
+    *,
+    eval_index: int,
+    design_u: np.ndarray,
+    result: Mapping[str, Any] | None,
+) -> EvaluationRecord:
+    return _record_from_result(
+        eval_index=eval_index,
+        design_u=design_u,
+        result=result,
+        fallback_status="EVALUATION_FAILED",
+    )
+
+
+def _s3_provenance(
+    *,
+    arm: str,
+    task: Any,
+    budget: int,
+    opt_seed: int,
+    meta_seed: int,
+    budget_plan: Mapping[str, int],
+    support_designs: np.ndarray,
+    initial_designs: np.ndarray,
+    new_initial: Mapping[str, Any],
+    normalization: Mapping[str, Any] | None,
+    scorer: Any,
+    records: Sequence[EvaluationRecord],
+    rng: Mapping[str, Any],
+    trace: np.ndarray | None,
+    adaptation_wall_s: float,
+) -> dict[str, Any]:
+    initial_rows = np.asarray(initial_designs, dtype=np.float64)
+    diversity_min, diversity_max = _s3_pairs_distance_stats(initial_rows)
+    source_counts = {source: 0 for source in S3_EVAL_SOURCES}
+    for record in records:
+        index = record.eval_index
+        if index <= S3_K_SHOT:
+            source_counts["support"] += 1
+        elif index <= S3_INITIAL_DESIGN_COUNT:
+            source_counts["initial"] += 1
+        else:
+            source_counts["bo" if arm in S3_BO_ARM_IDS else "de"] += 1
+        if not record.billable:
+            raise S3ArmError(f"第 {index} 条评估记录 billable=False，违反预算记账合同")
+    billable_evals = sum(1 for record in records if record.billable)
+    payload = {
+        "arm": arm,
+        "task_id": str(task.task_id),
+        "split": str(task.split),
+        "family": str(task.family),
+        "budget": int(budget),
+        "opt_seed": int(opt_seed),
+        "meta_seed": int(meta_seed),
+        "budget_plan": dict(budget_plan),
+        "budget_sources": source_counts,
+        "billable_evals": int(billable_evals),
+        "records": int(len(records)),
+        "rng": dict(rng),
+        "initial": {
+            "support_designs_sha256": designs_digest(support_designs),
+            "initial_designs_sha256": designs_digest(initial_rows),
+            "initial_design_row_digests": design_row_digests(initial_rows),
+            "new_initial_indices": list(new_initial["indices"]),
+            "new_initial_source": str(new_initial["source"]),
+            "initial_diversity_min": float(diversity_min),
+            "initial_diversity_max": float(diversity_max),
+            "diversity_relaxed": bool(new_initial["diversity_relaxed"]),
+        },
+        "scoring": {
+            "score_kind": str(new_initial["score_kind"]),
+            "scores": list(new_initial["scores"]) if new_initial.get("scores") is not None else None,
+            "scorer": _s3_scorer_spec(scorer),
+            "normalization": dict(normalization) if normalization is not None else None,
+            "scoring_wall_s": float(new_initial["scoring_wall_s"]),
+            "forward_predictions": int(new_initial["forward_predictions"]),
+            "candidates_scored": int(new_initial["candidates_scored"]),
+        },
+        "adaptation_wall_s": float(adaptation_wall_s),
+        "trace": {
+            "trace_sha256": designs_digest(trace) if trace is not None and len(trace) else None,
+            "trace_row_digests": design_row_digests(trace) if trace is not None and len(trace) else [],
+            "trace_length": int(len(trace)) if trace is not None else 0,
+        },
+        "uncertainty": None,
+        "calibration": S3_CALIBRATION,
+        "s3_provenance_schema": "p4ra-s3-arm-provenance-v1",
+    }
+    expected = dict(budget_plan)
+    if payload["records"] != expected["billable_evals"]:
+        raise S3ArmError(
+            f"FAILED_BUDGET_MISMATCH: 记录数 {payload['records']} != B {expected['billable_evals']}"
+        )
+    if payload["billable_evals"] != expected["billable_evals"]:
+        raise S3ArmError(
+            f"FAILED_BUDGET_MISMATCH: billable {payload['billable_evals']} != B {expected['billable_evals']}"
+        )
+    if source_counts["support"] != expected["support_evals"]:
+        raise S3ArmError("FAILED_BUDGET_MISMATCH: support 评价数不符")
+    if source_counts["initial"] != expected["initial_evals"]:
+        raise S3ArmError("FAILED_BUDGET_MISMATCH: initial 评价数不符")
+    search_key = "bo" if arm in S3_BO_ARM_IDS else "de"
+    if source_counts[search_key] != expected["bo_or_de_evals"]:
+        raise S3ArmError("FAILED_BUDGET_MISMATCH: 主搜索评价数不符")
+    return payload
+
+
+def _s3_run_bo_search(
+    *,
+    arm: str,
+    evaluate: Callable[[np.ndarray], Mapping[str, Any]],
+    task: Any,
+    budget: int,
+    opt_seed: int,
+    meta_seed: int,
+    support_designs: np.ndarray,
+    support_results: Sequence[Mapping[str, Any]],
+    initial_designs: np.ndarray,
+) -> tuple[list[EvaluationRecord], np.ndarray, str]:
+    from maml_opt.bayesian import ConstrainedBayesianOptimizer, run_search
+
+    engine_seed = s3_bo_engine_seed(str(task.task_id), opt_seed, meta_seed)
+    optimizer = ConstrainedBayesianOptimizer(
+        np.zeros(DESIGN_DIM, dtype=np.float64),
+        np.ones(DESIGN_DIM, dtype=np.float64),
+        seed=engine_seed,
+        candidate_count=S3_CANDIDATE_COUNT,
+        minimum_model_observations=S3_BO_CONFIG["minimum_model_observations"],
+        alpha=float(S3_BO_CONFIG["alpha"]),
+        exploration=float(S3_BO_CONFIG["exploration"]),
+    )
+    support_cache = {
+        _s1_design_key(design): result for design, result in zip(support_designs, support_results)
+    }
+    records: list[EvaluationRecord] = []
+
+    def cached_evaluate(design: np.ndarray) -> Mapping[str, Any]:
+        key = _s1_design_key(design)
+        if key in support_cache:
+            base = dict(support_cache[key])
+            base["cache_hit"] = True
+            base["billable"] = False
+            base["analysis_calls"] = 0
+            return base
+        return evaluate(np.asarray(design, dtype=np.float64).copy())
+
+    def on_observation(observation: Mapping[str, Any], result: Mapping[str, Any]) -> None:
+        index = len(records) + 1
+        design = np.asarray(observation["design_vector"], dtype=np.float64)
+        payload = result
+        if index <= S3_K_SHOT:
+            payload = dict(result)
+            payload["cache_hit"] = False
+            payload["billable"] = True
+        records.append(_s3_record_from_result(eval_index=index, design_u=design, result=payload))
+
+    search = run_search(
+        optimizer,
+        cached_evaluate,
+        initial_designs,
+        budget,
+        strategy="bayesian",
+        on_observation=on_observation,
+    )
+    trace = np.asarray(
+        [np.asarray(item["design_vector"], dtype=np.float64) for item in search["history"]],
+        dtype=np.float64,
+    )
+    if trace.shape[0] != budget:
+        raise S3ArmError(f"BO 评估次数必须为 {budget}，实际 {trace.shape[0]}")
+    return records, trace, str(search.get("termination_reason") or "UNKNOWN")
+
+
+def _s3_de_better(
+    trial_objective: float | None,
+    trial_constraints: Mapping[str, float] | None,
+    incumbent_objective: float | None,
+    incumbent_constraints: Mapping[str, float] | None,
+) -> bool:
+    from ..evaluation.contract import FEASIBILITY_TOLERANCE
+
+    def feasible(objective: float | None, constraints: Mapping[str, float] | None) -> bool:
+        return (
+            objective is not None
+            and constraints is not None
+            and bool(constraints)
+            and all(value <= FEASIBILITY_TOLERANCE for value in constraints.values())
+        )
+
+    trial_ok = feasible(trial_objective, trial_constraints)
+    incumbent_ok = feasible(incumbent_objective, incumbent_constraints)
+    if trial_ok != incumbent_ok:
+        return trial_ok
+    if trial_ok and trial_objective is not None and incumbent_objective is not None:
+        return trial_objective < incumbent_objective
+    trial_violation = sum(max(0.0, value) for value in (trial_constraints or {}).values())
+    incumbent_violation = sum(max(0.0, value) for value in (incumbent_constraints or {}).values())
+    return trial_violation < incumbent_violation
+
+
+def _s3_run_de_search(
+    *,
+    task: Any,
+    budget: int,
+    opt_seed: int,
+    meta_seed: int,
+    evaluate: Callable[[np.ndarray], Mapping[str, Any]],
+    support_designs: np.ndarray,
+    support_results: Sequence[Mapping[str, Any]],
+    initial_designs: np.ndarray,
+) -> tuple[list[EvaluationRecord], np.ndarray, str]:
+    engine_seed = s3_de_engine_seed(str(task.task_id), opt_seed, meta_seed)
+    rng = np.random.default_rng(engine_seed)
+    records: list[EvaluationRecord] = []
+    for design, result in zip(support_designs, support_results):
+        records.append(_s3_record_from_result(eval_index=len(records) + 1, design_u=design, result=result))
+    population_designs = [np.asarray(design, dtype=np.float64) for design in initial_designs]
+    population_results: list[Mapping[str, Any]] = []
+    for index in range(S3_NEW_INITIAL_COUNT):
+        design = np.asarray(initial_designs[S3_K_SHOT + index], dtype=np.float64).copy()
+        result = evaluate(design)
+        population_results.append(result)
+        records.append(_s3_record_from_result(eval_index=len(records) + 1, design_u=design, result=result))
+    population = list(zip(population_designs[:S3_K_SHOT], list(support_results)))
+    population.extend(zip(population_designs[S3_K_SHOT:], population_results))
+    if len(population) != S3_INITIAL_DESIGN_COUNT:
+        raise S3ArmError("DE 初始种群必须为 8 个点")
+    seen_keys = {_s1_design_key(item[0]) for item in population}
+    attempts = 0
+    while len(records) < budget:
+        if len(population) < S3_DE_POPULATION_SIZE:
+            raise S3ArmError("DE 种群不足 8 个初始点")
+        indices = rng.choice(len(population), size=3, replace=False)
+        a = np.asarray(population[int(indices[0])][0], dtype=np.float64)
+        b = np.asarray(population[int(indices[1])][0], dtype=np.float64)
+        c = np.asarray(population[int(indices[2])][0], dtype=np.float64)
+        target_index = int(rng.integers(0, len(population)))
+        target = np.asarray(population[target_index][0], dtype=np.float64)
+        mutant = np.clip(a + S3_DE_MUTATION_FACTOR * (b - c), 0.0, 1.0)
+        crossover = rng.random(DESIGN_DIM) < S3_DE_CROSSOVER_RATE
+        if not np.any(crossover):
+            crossover[int(rng.integers(0, DESIGN_DIM))] = True
+        trial = np.where(crossover, mutant, target)
+        if _s1_design_key(trial) in seen_keys:
+            attempts += 1
+            if attempts > S3_DE_MAX_RETRY * budget:
+                raise S3ArmError("DE 无法生成未评估的新设计（候选耗尽）")
+            continue
+        attempts = 0
+        trial_result = evaluate(np.asarray(trial, dtype=np.float64).copy())
+        records.append(
+            _s3_record_from_result(eval_index=len(records) + 1, design_u=trial, result=trial_result)
+        )
+        seen_keys.add(_s1_design_key(trial))
+        incumbent_design, incumbent_result = population[target_index]
+        if _s3_de_better(
+            _finite_or_none(trial_result.get("objective")) if isinstance(trial_result, Mapping) else None,
+            _constraints_or_none(trial_result.get("constraints_g_le_zero")) if isinstance(trial_result, Mapping) else None,
+            _finite_or_none(incumbent_result.get("objective")) if isinstance(incumbent_result, Mapping) else None,
+            _constraints_or_none(incumbent_result.get("constraints_g_le_zero")) if isinstance(incumbent_result, Mapping) else None,
+        ):
+            population[target_index] = (trial, trial_result)
+    trace = np.asarray(
+        [np.asarray(record.design_u, dtype=np.float64) for record in records],
+        dtype=np.float64,
+    )
+    if trace.shape[0] != budget:
+        raise S3ArmError(f"DE 评估次数必须为 {budget}，实际 {trace.shape[0]}")
+    return records, trace, "MAX_DESIGN_EVALUATIONS"
+
+
+def run_s3_bo_arm(
+    arm: str,
+    evaluate: Callable[[np.ndarray], Mapping[str, Any]],
+    *,
+    task: Any,
+    budget: int,
+    opt_seed: int,
+    meta_seed: int,
+    scorer: Any = None,
+    run_id: str = "",
+    reference_objective: float | None = None,
+) -> ArmResult:
+    """S3 BO 臂（RANDOM/OBJ/CON/ANIL）：返回与 S1/M5 BO 路径逐字段兼容的 ArmResult。
+
+    审计元数据（RNG 四元组、初始点指纹、多样性、轨迹摘要、预算记账）放在
+    ArmResult.proxy_scoring_cost["s3_provenance"]。
+    """
+    if arm not in S3_BO_ARM_IDS:
+        raise S3ArmError(f"arm 必须是 {S3_BO_ARM_IDS} 之一，实际 {arm!r}")
+    task = _s3_require_task(task)
+    evaluate = _s3_require_evaluate(evaluate)
+    if type(budget) is not int or budget not in S3_BUDGETS:
+        raise S3ArmError(f"budget 必须是 {S3_BUDGETS} 之一，实际 {budget!r}")
+    _s3_require_int(opt_seed, "opt_seed")
+    _s3_require_int(meta_seed, "meta_seed")
+    budget_plan = s3_expected_budget(budget)
+    wall_start = time.perf_counter()
+    support_designs = s3_select_support_designs(task, k_shot=S3_K_SHOT, meta_seed=meta_seed)
+    support_results = [evaluate(np.asarray(row, dtype=np.float64).copy()) for row in support_designs]
+    f_support, g_support = _s3_extract_support_labels(support_results)
+    normalization = s3_normalization(f_support, g_support)
+    support_labels = s3_standardize_labels(f_support, g_support[:, 0], g_support[:, 1], normalization)
+    new_initial = _s3_new_initial_designs(
+        arm,
+        task=task,
+        meta_seed=meta_seed,
+        opt_seed=opt_seed,
+        scorer=scorer,
+        support_designs=support_designs,
+        support_labels=support_labels,
+        normalization=normalization,
+    )
+    initial_designs = np.vstack([support_designs, np.asarray(new_initial["designs"], dtype=np.float64)])
+    if initial_designs.shape[0] != S3_INITIAL_DESIGN_COUNT:
+        raise S3ArmError("初始设计总数必须为 8")
+    initial_keys = {_s1_design_key(row) for row in initial_designs}
+    if len(initial_keys) != S3_INITIAL_DESIGN_COUNT:
+        raise S3ArmError("FAILED_LEAKAGE: 初始设计出现重复点")
+    records, trace, termination_reason = _s3_run_bo_search(
+        arm=arm,
+        evaluate=evaluate,
+        task=task,
+        budget=budget,
+        opt_seed=opt_seed,
+        meta_seed=meta_seed,
+        support_designs=support_designs,
+        support_results=support_results,
+        initial_designs=initial_designs,
+    )
+    wall_s = time.perf_counter() - wall_start
+    engine_seed = s3_bo_engine_seed(str(task.task_id), opt_seed, meta_seed)
+    rng = {
+        "bo_engine_seed": int(engine_seed),
+        "bo_engine_draws_sha256": s3_bo_engine_draws_sha256(engine_seed),
+        "candidate_pool_sha256": s3_candidate_pool_sha256(task, meta_seed=meta_seed),
+        "candidate_count": int(S3_CANDIDATE_COUNT),
+        "bo_config_sha256": s3_bo_config_sha256(),
+        "de_engine_seed": None,
+    }
+    provenance = _s3_provenance(
+        arm=arm,
+        task=task,
+        budget=budget,
+        opt_seed=opt_seed,
+        meta_seed=meta_seed,
+        budget_plan=budget_plan,
+        support_designs=support_designs,
+        initial_designs=initial_designs,
+        new_initial=new_initial,
+        normalization=normalization,
+        scorer=scorer,
+        records=records,
+        rng=rng,
+        trace=trace,
+        adaptation_wall_s=float(new_initial["scoring_wall_s"]),
+    )
+    return _summarize_arm(
+        arm=arm,
+        task_id=str(task.task_id),
+        split=str(task.split),
+        family=str(task.family),
+        seed=int(opt_seed),
+        budget=int(budget),
+        observations=records,
+        wall_s=float(wall_s),
+        termination_reason=termination_reason,
+        implementation="S3-BO-diagnostic-v1",
+        initial_count=S3_INITIAL_DESIGN_COUNT,
+        proxy_scoring_cost={
+            "s3_provenance": provenance,
+            "scoring_wall_s": float(new_initial["scoring_wall_s"]),
+            "forward_predictions": int(new_initial["forward_predictions"]),
+            "candidates_scored": int(new_initial["candidates_scored"]),
+        },
+        reference_objective=reference_objective,
+    )
+
+
+def run_s3_de_arm(
+    evaluate: Callable[[np.ndarray], Mapping[str, Any]],
+    *,
+    task: Any,
+    budget: int,
+    opt_seed: int,
+    meta_seed: int,
+    run_id: str = "",
+    reference_objective: float | None = None,
+) -> ArmResult:
+    """S3-DE：support(5)+shared(3) 初始种群，DE/rand/1/bin，总评估 B 次。"""
+    task = _s3_require_task(task)
+    evaluate = _s3_require_evaluate(evaluate)
+    if type(budget) is not int or budget not in S3_BUDGETS:
+        raise S3ArmError(f"budget 必须是 {S3_BUDGETS} 之一，实际 {budget!r}")
+    _s3_require_int(opt_seed, "opt_seed")
+    _s3_require_int(meta_seed, "meta_seed")
+    budget_plan = s3_expected_budget(budget)
+    wall_start = time.perf_counter()
+    support_designs = s3_select_support_designs(task, k_shot=S3_K_SHOT, meta_seed=meta_seed)
+    support_results = [evaluate(np.asarray(row, dtype=np.float64).copy()) for row in support_designs]
+    f_support, g_support = _s3_extract_support_labels(support_results)
+    normalization = s3_normalization(f_support, g_support)
+    new_initial = _s3_new_initial_designs(
+        S3_DE,
+        task=task,
+        meta_seed=meta_seed,
+        opt_seed=opt_seed,
+        scorer=None,
+        support_designs=support_designs,
+        support_labels=np.zeros((S3_K_SHOT, S3_OUTPUT_DIM), dtype=np.float64),
+        normalization=normalization,
+    )
+    initial_designs = np.vstack([support_designs, np.asarray(new_initial["designs"], dtype=np.float64)])
+    if initial_designs.shape[0] != S3_INITIAL_DESIGN_COUNT:
+        raise S3ArmError("初始设计总数必须为 8")
+    records, trace, termination_reason = _s3_run_de_search(
+        task=task,
+        budget=budget,
+        opt_seed=opt_seed,
+        meta_seed=meta_seed,
+        evaluate=evaluate,
+        support_designs=support_designs,
+        support_results=support_results,
+        initial_designs=initial_designs,
+    )
+    wall_s = time.perf_counter() - wall_start
+    engine_seed = s3_de_engine_seed(str(task.task_id), opt_seed, meta_seed)
+    rng = {
+        "bo_engine_seed": None,
+        "bo_engine_draws_sha256": None,
+        "candidate_pool_sha256": s3_candidate_pool_sha256(task, meta_seed=meta_seed),
+        "candidate_count": int(S3_CANDIDATE_COUNT),
+        "bo_config_sha256": s3_bo_config_sha256(),
+        "de_engine_seed": int(engine_seed),
+    }
+    provenance = _s3_provenance(
+        arm=S3_DE,
+        task=task,
+        budget=budget,
+        opt_seed=opt_seed,
+        meta_seed=meta_seed,
+        budget_plan=budget_plan,
+        support_designs=support_designs,
+        initial_designs=initial_designs,
+        new_initial=new_initial,
+        normalization=normalization,
+        scorer=None,
+        records=records,
+        rng=rng,
+        trace=trace,
+        adaptation_wall_s=0.0,
+    )
+    return _summarize_arm(
+        arm=S3_DE,
+        task_id=str(task.task_id),
+        split=str(task.split),
+        family=str(task.family),
+        seed=int(opt_seed),
+        budget=int(budget),
+        observations=records,
+        wall_s=float(wall_s),
+        termination_reason=termination_reason,
+        implementation="S3-DE-diagnostic-v1",
+        initial_count=S3_INITIAL_DESIGN_COUNT,
+        proxy_scoring_cost={"s3_provenance": provenance},
+        reference_objective=reference_objective,
+    )
+
+
+def run_s3_arm(
+    arm: str,
+    evaluate: Callable[[np.ndarray], Mapping[str, Any]],
+    *,
+    task: Any,
+    budget: int,
+    opt_seed: int,
+    meta_seed: int,
+    scorer: Any = None,
+    run_id: str = "",
+    reference_objective: float | None = None,
+) -> ArmResult:
+    """S3 五臂统一调度入口（返回 ArmResult，provenance 见 proxy_scoring_cost）。"""
+    if arm in S3_BO_ARM_IDS:
+        return run_s3_bo_arm(
+            arm,
+            evaluate,
+            task=task,
+            budget=budget,
+            opt_seed=opt_seed,
+            meta_seed=meta_seed,
+            scorer=scorer,
+            run_id=run_id,
+            reference_objective=reference_objective,
+        )
+    if arm == S3_DE:
+        return run_s3_de_arm(
+            evaluate,
+            task=task,
+            budget=budget,
+            opt_seed=opt_seed,
+            meta_seed=meta_seed,
+            run_id=run_id,
+            reference_objective=reference_objective,
+        )
+    raise S3ArmError(f"未知 S3 臂: {arm!r}；允许 {S3_ARM_IDS}")
+
+
+def s3_arm_provenance(result: ArmResult) -> dict[str, Any]:
+    """提取 run_s3_arm/run_s3_bo_arm/run_s3_de_arm 写入的 S3 审计元数据。"""
+    if not isinstance(result, ArmResult):
+        raise S3ArmError(f"result 必须是 ArmResult，实际 {type(result).__name__}")
+    payload = result.proxy_scoring_cost.get("s3_provenance")
+    if not isinstance(payload, Mapping):
+        raise S3ArmError("ArmResult 缺少 s3_provenance（不是 S3 臂结果？）")
+    return dict(payload)
+
+
+def s3_trace_first_divergence(trace_a: Sequence[str], trace_b: Sequence[str]) -> int | None:
+    """两条逐行设计指纹序列的首个分叉索引；完全相同返回 None。"""
+    for index, (digest_a, digest_b) in enumerate(zip(trace_a, trace_b)):
+        if digest_a != digest_b:
+            return int(index)
+    if len(trace_a) != len(trace_b):
+        return int(min(len(trace_a), len(trace_b)))
+    return None
+
+
+def s3_fairness_report(runs: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    """计划 §3.3 公平性断言 + 克隆检测（fail-closed 汇总，不修改 run 数据）。
+
+    runs 每条需含 arm/task_id/budget/opt_seed/meta_seed 与 s3_provenance。
+    """
+    groups: dict[tuple[str, int, int, int], dict[str, dict[str, Any]]] = {}
+    problems: list[str] = []
+    for position, run in enumerate(runs):
+        if not isinstance(run, Mapping):
+            raise S3ArmError(f"runs[{position}] 必须是映射")
+        required = ("arm", "task_id", "budget", "opt_seed", "meta_seed", "s3_provenance")
+        for name in required:
+            if name not in run:
+                raise S3ArmError(f"runs[{position}] 缺少 {name}")
+        arm = str(run["arm"])
+        if arm not in S3_ARM_IDS:
+            raise S3ArmError(f"runs[{position}].arm 非法: {arm!r}")
+        key = (
+            str(run["task_id"]),
+            int(run["budget"]),
+            int(run["opt_seed"]),
+            int(run["meta_seed"]),
+        )
+        provenance = run["s3_provenance"]
+        if not isinstance(provenance, Mapping):
+            raise S3ArmError(f"runs[{position}].s3_provenance 必须是映射")
+        if arm in groups.setdefault(key, {}):
+            raise S3ArmError(f"重复 run：group={key} arm={arm}")
+        groups[key][arm] = dict(provenance)
+    group_reports: list[dict[str, Any]] = []
+    clone_pairs: list[dict[str, Any]] = []
+    for key in sorted(groups):
+        task_id, budget, opt_seed, meta_seed = key
+        arms = groups[key]
+        group_problems: list[str] = []
+        if set(arms) != set(S3_ARM_IDS):
+            group_problems.append(
+                f"臂集合不完整：缺少 {sorted(set(S3_ARM_IDS) - set(arms))}"
+            )
+        base = arms.get(S3_BO_RANDOM) or next(iter(arms.values()))
+        reference_fields = {
+            "budget": int(budget),
+            "budget_plan.budget_B": int(budget),
+            "budget_plan.K": int(S3_K_SHOT),
+            "budget_plan.initial_designs": int(S3_INITIAL_DESIGN_COUNT),
+            "initial.support_designs_sha256": base["initial"]["support_designs_sha256"],
+            "rng.candidate_pool_sha256": base["rng"]["candidate_pool_sha256"],
+            "rng.candidate_count": int(base["rng"]["candidate_count"]),
+            "rng.bo_config_sha256": base["rng"]["bo_config_sha256"],
+        }
+        for arm, provenance in arms.items():
+            checks = {
+                "budget": int(provenance["budget"]),
+                "budget_plan.budget_B": int(provenance["budget_plan"]["budget_B"]),
+                "budget_plan.K": int(provenance["budget_plan"]["K"]),
+                "budget_plan.initial_designs": int(provenance["budget_plan"]["initial_designs"]),
+                "initial.support_designs_sha256": provenance["initial"]["support_designs_sha256"],
+                "rng.candidate_pool_sha256": provenance["rng"]["candidate_pool_sha256"],
+                "rng.candidate_count": int(provenance["rng"]["candidate_count"]),
+                "rng.bo_config_sha256": provenance["rng"]["bo_config_sha256"],
+            }
+            for name, expected in reference_fields.items():
+                if checks[name] != expected:
+                    group_problems.append(f"{arm}: {name} 不一致（{checks[name]!r} != {expected!r}）")
+        bo_engines = {
+            arm: provenance["rng"]["bo_engine_seed"]
+            for arm, provenance in arms.items()
+            if arm in S3_BO_ARM_IDS
+        }
+        if bo_engines and len(set(bo_engines.values())) != 1:
+            group_problems.append(f"BO 引擎 seed 不一致: {bo_engines}")
+        bo_draws = {
+            arm: provenance["rng"]["bo_engine_draws_sha256"]
+            for arm, provenance in arms.items()
+            if arm in S3_BO_ARM_IDS
+        }
+        if bo_draws and len(set(bo_draws.values())) != 1:
+            group_problems.append("bo_engine_draws_sha256 不一致")
+        for arm, provenance in arms.items():
+            plan = provenance["budget_plan"]
+            sources = provenance["budget_sources"]
+            if int(provenance["billable_evals"]) != int(plan["billable_evals"]):
+                group_problems.append(f"{arm}: billable_evals != B")
+            if int(sources.get("support", -1)) != int(plan["support_evals"]):
+                group_problems.append(f"{arm}: support_evals 不符")
+            if int(sources.get("initial", -1)) != int(plan["initial_evals"]):
+                group_problems.append(f"{arm}: initial_evals 不符")
+            if arm in S3_BO_ARM_IDS and "bo" in sources:
+                if int(sources["bo"]) != int(plan["bo_or_de_evals"]):
+                    group_problems.append(f"{arm}: bo_evals 不符")
+            if arm == S3_DE and "de" in sources:
+                if int(sources["de"]) != int(plan["bo_or_de_evals"]):
+                    group_problems.append(f"{arm}: de_evals 不符")
+        initial_hashes: dict[str, str] = {
+            arm: str(provenance["initial"]["initial_designs_sha256"])
+            for arm, provenance in arms.items()
+        }
+        arm_pairs = [
+            (left, right)
+            for index, left in enumerate(S3_ARM_IDS)
+            for right in S3_ARM_IDS[index + 1 :]
+            if left in arms and right in arms
+        ]
+        pair_clones: list[tuple[str, str]] = []
+        for left, right in arm_pairs:
+            if initial_hashes[left] != initial_hashes[right]:
+                continue
+            if (left, right) in S3_CLONE_EXEMPT_PAIRS or (right, left) in S3_CLONE_EXEMPT_PAIRS:
+                continue
+            pair_clones.append((left, right))
+            clone_pairs.append(
+                {
+                    "task_id": task_id,
+                    "budget": budget,
+                    "opt_seed": opt_seed,
+                    "meta_seed": meta_seed,
+                    "arms": [left, right],
+                    "initial_designs_sha256": initial_hashes[left],
+                }
+            )
+        group_reports.append(
+            {
+                "task_id": task_id,
+                "budget": budget,
+                "opt_seed": opt_seed,
+                "meta_seed": meta_seed,
+                "arms": sorted(arms),
+                "consistent": not group_problems,
+                "problems": group_problems,
+                "clone_pairs": [list(pair) for pair in pair_clones],
+                "initial_designs_sha256": initial_hashes,
+            }
+        )
+    clone_rate_by_budget: dict[str, float] = {}
+    identifiability_by_budget: dict[str, str] = {}
+    pair_totals: dict[int, int] = {}
+    pair_clones_count: dict[int, int] = {}
+    for group in group_reports:
+        budget = int(group["budget"])
+        pair_totals[budget] = pair_totals.get(budget, 0) + len(S3_ARM_IDS) * (len(S3_ARM_IDS) - 1) // 2
+        pair_clones_count[budget] = pair_clones_count.get(budget, 0) + len(group["clone_pairs"])
+    for budget in sorted(pair_totals):
+        rate = pair_clones_count.get(budget, 0) / float(pair_totals[budget])
+        clone_rate_by_budget[str(budget)] = float(rate)
+        identifiability_by_budget[str(budget)] = (
+            S3_LIMITED_IDENTIFIABILITY if rate > S3_CLONE_RATE_THRESHOLD else S3_IDENTIFIABLE
+        )
+        if rate > S3_CLONE_RATE_THRESHOLD:
+            problems.append(
+                f"budget {budget} 克隆率 {rate:.4f} > {S3_CLONE_RATE_THRESHOLD}（IDENTIFIABILITY_LIMITED）"
+            )
+    for group in group_reports:
+        problems.extend(group["problems"])
+    return {
+        "schema_version": "p4ra-s3-fairness-v1",
+        "groups": group_reports,
+        "problems": problems,
+        "clone_pairs": clone_pairs,
+        "clone_rate_by_budget": clone_rate_by_budget,
+        "identifiability_by_budget": identifiability_by_budget,
+        "exempt_pairs": [list(pair) for pair in S3_CLONE_EXEMPT_PAIRS],
+        "ok": not problems,
+    }
+
+
+class S3ModelScorer:
+    """把已训练 maml ParameterSet 包成 S3 五臂所需的适配-预测接口。
+
+    - adapt(support_x, support_y) -> S3ModelScorer：FOMAML 用 inner_adapt、
+      ANIL（config.head_only=True）用 inner_adapt_anil；内循环步数/学习率来自 config；
+    - predict(designs) -> (n,3)：纯 numpy 前向（Linear + 中间 tanh + 末层线性），
+      与 maml._forward_torch 逐位同构，不依赖 torch。
+    """
+
+    def __init__(self, parameters: Any, config: Any, *, meta_seed: int, model_sha256: str | None = None):
+        from .maml import MAMLConfig, ParameterSet
+
+        if not isinstance(parameters, ParameterSet):
+            raise S3ArmError("S3ModelScorer 需要 maml.ParameterSet")
+        if not isinstance(config, MAMLConfig):
+            raise S3ArmError("S3ModelScorer 需要 maml.MAMLConfig")
+        if config.output_dim != S3_OUTPUT_DIM:
+            raise S3ArmError(f"S3 代理输出维度必须为 {S3_OUTPUT_DIM}，实际 {config.output_dim}")
+        if config.input_dim != DESIGN_DIM:
+            raise S3ArmError(f"S3 代理输入维度必须为 {DESIGN_DIM}，实际 {config.input_dim}")
+        self.parameters = parameters
+        self.config = config
+        self.meta_seed = _s3_require_int(meta_seed, "meta_seed")
+        self.model_sha256 = model_sha256
+        self.head_only = bool(config.head_only)
+
+    def adapt(self, support_x: Any, support_y: Any) -> "S3ModelScorer":
+        from .maml import TaskEpisode, inner_adapt, inner_adapt_anil
+
+        features = np.asarray(support_x, dtype=np.float64)
+        targets = np.asarray(support_y, dtype=np.float64)
+        if features.ndim != 2 or features.shape[1] != self.config.input_dim:
+            raise S3ArmError(f"support_x 必须为 (n,{self.config.input_dim})，实际 {features.shape}")
+        if targets.ndim != 2 or targets.shape[1] != self.config.output_dim:
+            raise S3ArmError(f"support_y 必须为 (n,{self.config.output_dim})，实际 {targets.shape}")
+        if features.shape[0] != targets.shape[0]:
+            raise S3ArmError("support_x/support_y 行数不一致")
+        episode = TaskEpisode(
+            support_features=features,
+            support_targets=targets,
+            query_features=features,
+            query_targets=targets,
+        )
+        if self.head_only:
+            adapted, _losses = inner_adapt_anil(self.parameters, episode, self.config)
+        else:
+            adapted, _losses = inner_adapt(self.parameters, episode, self.config)
+        return S3ModelScorer(adapted, self.config, meta_seed=self.meta_seed, model_sha256=self.model_sha256)
+
+    def predict(self, designs: Any) -> np.ndarray:
+        matrix = _s3_round_designs(designs, "designs")
+        tensors = self.parameters.tensors
+        if len(tensors) % 2 != 0:
+            raise S3ArmError("参数张量必须成对（weight/bias）")
+        n_layers = len(tensors) // 2
+        current = matrix
+        for layer in range(n_layers):
+            weight = np.asarray(tensors[2 * layer], dtype=np.float64)
+            bias = np.asarray(tensors[2 * layer + 1], dtype=np.float64)
+            current = current @ weight + bias
+            if layer < n_layers - 1:
+                current = np.tanh(current)
+        return np.asarray(current, dtype=np.float64)
+
+
+__all__ = [
+    *__all__,
+    "S3ArmError",
+    "S3_ARM_IDS",
+    "S3_BO_ARM_IDS",
+    "S3_BO_RANDOM",
+    "S3_BO_FOMAML_OBJ",
+    "S3_BO_FOMAML_CON",
+    "S3_BO_ANIL_CON",
+    "S3_DE",
+    "S3_BUDGETS",
+    "S3_K_SHOT",
+    "S3_INITIAL_DESIGN_COUNT",
+    "S3_NEW_INITIAL_COUNT",
+    "S3_CANDIDATE_COUNT",
+    "S3_CANDIDATE_POOL_SIZE",
+    "S3_DIVERSITY_MIN_NORM",
+    "S3_JOINT_PENALTY",
+    "S3_BO_CONFIG",
+    "S3_CLONE_EXEMPT_PAIRS",
+    "S3ModelScorer",
+    "run_s3_arm",
+    "run_s3_bo_arm",
+    "run_s3_de_arm",
+    "s3_arm_provenance",
+    "s3_bo_config_sha256",
+    "s3_bo_engine_draws",
+    "s3_bo_engine_draws_sha256",
+    "s3_bo_engine_seed",
+    "s3_candidate_pool",
+    "s3_candidate_pool_sha256",
+    "s3_de_engine_seed",
+    "s3_expected_budget",
+    "s3_fairness_report",
+    "s3_joint_score",
+    "s3_normalization",
+    "s3_select_diverse_designs",
+    "s3_select_support_designs",
+    "s3_shared_initial_designs",
+    "s3_standardize_labels",
+    "s3_support_seed",
+    "s3_trace_first_divergence",
+]
