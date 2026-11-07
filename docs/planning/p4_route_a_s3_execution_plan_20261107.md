@@ -1,8 +1,8 @@
 # P4 路线A S3 执行计划：约束感知初始化与低成本适应消融
 
 - 文档路径：`docs/planning/p4_route_a_s3_execution_plan_20261107.md`
-- 版本：v1.3c（2026-11-07T02:10Z；处置 A5 M0R3R2 的 1B/3M/5m：确定性 60-run 子集 budget 配额 20/20/10/10、去过去时表述、R3/R4/R5 标 SUPERSEDED、R-S3-07 去 package_sha256 字面量并重算哈希；方法合同/端点/统计/图/物理=0 边界不变）。历史：v1.3b 2026-11-07T01:20Z、v1.3a 2026-11-07T00:45Z（R-S3-05B 书面接受保守外推 5,509.562 s）、v1.3 由 36e5820 经 A5 M0R3 CHANGES_REQUESTED、v1.2b 为 R-S3-03、v1.2 为 f81f69b、v1.0 为 7bef3cf。
-- 状态：M0R3 CHANGES_REQUESTED（2B/4M/2m/1i）、M0R3R CHANGES_REQUESTED（2B/1M/4m/1i）、M0R3R2 CHANGES_REQUESTED（1B/3M/5m，A5 2026-11-07T01:55Z）；v1.3c 提交后 M0R3R3 PENDING_A5_REVIEW；M0R3R3 APPROVE_FOR_S3_CODE_AMENDED 之前 M1 不启动（不冻结 prereg、不授权正式 run）。
+- 版本：v1.3d（2026-11-07T02:44Z；A5 M0R3R3 两条 minor 文本修补：门表/§11 表占位符替换为 cf18770、§6.1 绑定链标题 v1.3b→v1.3c；方法/预算/端点/统计/图不变）。历史：v1.3c 2026-11-07T02:10Z（处置 A5 M0R3R2 1B/3M/5m：确定性 budget 配额 20/20/10/10、去过去时、R3/R4/R5 SUPERSEDED、R-S3-07 去 package_sha256）、v1.3b 2026-11-07T01:20Z、v1.3a 2026-11-07T00:45Z（R-S3-05B 书面接受保守外推 5,509.562 s）、v1.3 由 36e5820 经 A5 M0R3 CHANGES_REQUESTED、v1.2b 为 R-S3-03、v1.2 为 f81f69b、v1.0 为 7bef3cf。
+- 状态：M0R3 CHANGES_REQUESTED、M0R3R CHANGES_REQUESTED、M0R3R2 CHANGES_REQUESTED；M0R3R3 APPROVE_FOR_S3_CODE_AMENDED（0B/0M/2m，A5 2026-11-07T02:32Z，对象 cf18770），m1_start_allowed=true；M1 已开启（Lead 2026-11-07T02:42Z 通知）；M2 冻结前须完成 v1.3d（本版）文本修补核验。
 - 作者/唯一集成者：Lead（teammate 不得提交、不得写 GitHub）
 - 上游合同：Issue #7（D-P4-003，body 5,150 字符）；`docs/planning/p4_route_a_stage_improvement_plan_20261105.md` 的 S3 条；S1 回执 commentId 6684142041；S2 回执 commentId 6693991661；A5 S3-M0 审阅（CHANGES_REQUESTED，S3-M0-01..16）；A5 S3-M0R 审阅（CHANGES_REQUESTED，S3-M0R-01..09，对象 dd2bab2）；A4 矩阵 v1.1（NEW-01..09）
 - 基线提交：`8da84fc105755825561829d4fb371f2baea57438`（research/p4-route-a-s3 的父提交，S2 docs closeout）；v1.0 计划提交 `7bef3cf8218df2328d997dbb12e4dd626704005f`；v1.1 提交 `dd2bab2`（父 7bef3cf）；v1.2 提交 `f81f69b0cbf27a26e3e17be34844df3a1147a297`（随附 `research/concorde_metaopt/evidence/s3/hash_vectors.json`，12,472 B sha256 `bde487fb6ed49768ca76e328a31c0efab77d2bd39d41c0ac99def4bb8e876203`）；v1.2a 为文档状态勘误提交
@@ -82,7 +82,7 @@ Issue #7 §2/§4 规定：S3（约束感知初始化与方法效率消融）在 
 | M0R3 执行层限定 diff | 80f1612..36e5820（1 file +27/−6） | A5 实际：CHANGES_REQUESTED（2B/4M/2m/1i；B01 execution_report schema 冲突、B02 W=8 验收不达标） |
 | M0R3R 执行层 v1.3a 限定 diff | 36e5820..d7040fc（3 files +2,036/−25，含 bench JSON） | A5 实际：CHANGES_REQUESTED（2B/1M/4m/1i；v1.3b 处置） |
 | M0R3R2 执行层 v1.3b 限定 diff | d7040fc..8a72060（1 file +22/−17） | A5 实际：CHANGES_REQUESTED（1B/3M/5m；v1.3c 处置） |
-| M0R3R3 执行层 v1.3c 限定 diff | 8a72060..=<v1.3c 提交>（仅计划 1 文件） | A5: PENDING_A5_REVIEW；APPROVE_FOR_S3_CODE_AMENDED 后才放行 M1 |
+| M0R3R3 执行层 v1.3c 限定 diff | 8a72060..cf18770（1 file +23/−21） | A5 实际：APPROVE_FOR_S3_CODE_AMENDED（0B/0M/2m；2026-11-07T02:32Z）；m1_start_allowed=true |
 | M1 代码/校准门 | 家族实现+校准报告+ANIL+臂+runner+prereg 生成器+测试 | A5: APPROVE_FOR_S3_FORMAL（代码审阅） |
 | M2 预注册门 | 新族冻结包、prereg JSON、FD/梯度门、冻结记录 | A5: APPROVE_FOR_S3_RUN |
 | M3 正式 run 授权 | Lead 书面授权（task/worktree/out_dir/预算/停止规则） | Lead 签发 |
@@ -420,7 +420,7 @@ v1.0 的 12D 全维椭球构造经 A5 独立探针与 Lead 数值探针证明不
 - `prereg_digest`：prereg 去掉 `prereg_id`/`prereg_digest` 后 canonical_json 的 sha256。
 - `family_package_sha256` / `references_sealed_sha256` / `episode_bank_sha256` / `model_sha256` / `fd_gate_sha256` / `hash_vectors_sha256`：对应文件原始字节的 sha256（不重编码）。
 - `package_sha256`（M5 打包用，不写入 prereg）：`research/concorde_metaopt/evidence/s3/` 下全部文件（排除 `PACKAGE_MANIFEST.json` 与 `SHA256SUMS.txt`，relpath 相对该目录），行 `f"{relpath}\t{sha256(原始字节)}"` 按 relpath 排序后 `"\n".join` 再 sha256；包内含 `hash_vectors.json` 本身。
-- **v1.3b 绑定链（S3-M0R3R-03 方案 A）**：`fd_gate_sha256` 为 prereg 必需字段（见 §6）；M2 `build_preregistration` 断言其等于 evidence/s3/gate/fd_or_gradient_gate.json 原始字节 sha256；`run_config.fd_or_gradient_gate.sha256` 必须等于该值；analysis 校验三方绑定（prereg == run_config == 门文件 raw sha），任一不符 fail-closed。`package_sha256`（M5 打包）仍不写入 prereg。
+- **v1.3c 绑定链（S3-M0R3R-03 方案 A；v1.3d 仅改标题）**：`fd_gate_sha256` 为 prereg 必需字段（见 §6）；M2 `build_preregistration` 断言其等于 evidence/s3/gate/fd_or_gradient_gate.json 原始字节 sha256；`run_config.fd_or_gradient_gate.sha256` 必须等于该值；analysis 校验三方绑定（prereg == run_config == 门文件 raw sha），任一不符 fail-closed。`package_sha256`（M5 打包）仍不写入 prereg。
 
 ### 6.2 哈希固定向量（随计划提交）
 
@@ -504,7 +504,7 @@ v1.0 的 12D 全维椭球构造经 A5 独立探针与 Lead 数值探针证明不
 | M0R3 | v1.3 执行层限定 diff | 实际：CHANGES_REQUESTED（2B/4M/2m/1i；对象 36e5820；base 80f1612） | A5 |
 | M0R3R | v1.3a 执行层 v1.3b 依据 | 实际：CHANGES_REQUESTED（2B/1M/4m/1i；对象 d7040fc） | A5 |
 | M0R3R2 | v1.3b 执行层 v1.3c 依据 | 实际：CHANGES_REQUESTED（1B/3M/5m；对象 8a72060） | A5 |
-| M0R3R3 | v1.3c 执行层限定 diff | 待 A5（对象=待提交；APPROVE_FOR_S3_CODE_AMENDED 后放行 M1） | A5 |
+| M0R3R3 | v1.3c 执行层限定 diff | 实际：APPROVE_FOR_S3_CODE_AMENDED（0B/0M/2m；对象 cf18770；2026-11-07T02:32Z） | A5 |
 | M1 | 实现 + 单测 + 集成 | A5 `APPROVE_FOR_S3_FORMAL`；全量测试绿；公平性/预算/哈希/e2e 测试齐备 | A5 |
 | M2 | 校准 + 模型 + FD 门 + prereg 冻结 | 校准报告满足 §2.5 接受条件；FD 门 PASS；prereg build/verify 两遍；A5 `APPROVE_FOR_S3_RUN` | A5 |
 | M2 附加门（v1.3a） | W=8 稳态试点门（§4.2.1） | w8_pilot_gate.json 全 PASS（外推 3,780 runs ≤5,400 s）；否则走 fallback 重裁 | A1/Lead |
