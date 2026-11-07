@@ -13,6 +13,7 @@ from unittest import mock
 
 from research.concorde_metaopt.meta_learning import s3_prereg as sp
 from research.concorde_metaopt.meta_learning import s3_runner as runner
+from research.concorde_metaopt.meta_learning import task_family as tf
 from research.concorde_metaopt.tests import test_s3_support as support
 
 
@@ -891,6 +892,94 @@ class ConfigTests(unittest.TestCase):
             self.main_specs, prereg=tampered,
         )
 
+
+# ---------------------------------------------------------------------------
+# W=8 试点门 family 块：真实族包 payload 字段（R2 字段错位回归）
+# ---------------------------------------------------------------------------
+class W8PilotGateFamilyBlockTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.tmp = tempfile.TemporaryDirectory(prefix="s3-runner-w8-family-")
+        cls.tasks = tf.build_s3_conflict_family(delta1_base=0.20)
+        payload = tf.build_s3_family_package(
+            cls.tasks,
+            delta1_base=0.20,
+            created_utc=support.CREATED_UTC,
+            code_sha="a" * 64,
+        )
+        cls.package_path = Path(cls.tmp.name) / "family_package_s3.json"
+        cls.written = tf.write_s3_family_package(cls.package_path, payload)
+        cls.package = runner.load_family_package(cls.package_path)
+        cls.selection = sorted(
+            (task for task in cls.tasks if task.split == "meta_validation"),
+            key=lambda task: task.task_id,
+        )[: int(sp.S3_W8_PILOT_TASKS)]
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.tmp.cleanup()
+
+    def _block(self):
+        return runner._w8_family_block(
+            self.package,
+            package_relpath=sp.S3_FAMILY_PACKAGE_RELPATH,
+            tasks=self.selection,
+        )
+
+    def test_family_block_reads_payload_fields(self):
+        # 根因回归：family_id/formula_version 在 package["payload"] 内，不在顶层。
+        self.assertNotIn("family_id", self.package)
+        self.assertNotIn("formula_version", self.package)
+        self.assertEqual(self.package["payload"]["family_id"], tf.S3_FAMILY_ID)
+        self.assertEqual(self.package["payload"]["formula_version"], tf.S3_FORMULA_VERSION)
+        block = self._block()
+        self.assertEqual(
+            list(block),
+            [
+                "family_id",
+                "formula_version",
+                "family_package_path",
+                "family_package_sha256",
+                "task_ids",
+                "task_ids_sha256",
+            ],
+        )
+        self.assertEqual(block["family_id"], tf.S3_FAMILY_ID)
+        self.assertEqual(block["formula_version"], tf.S3_FORMULA_VERSION)
+        self.assertEqual(block["family_package_path"], sp.S3_FAMILY_PACKAGE_RELPATH)
+        self.assertEqual(block["family_package_sha256"], self.written["family_package_sha256"])
+        self.assertEqual(block["family_package_sha256"], self.package["sha256"])
+        self.assertEqual(block["task_ids"], [task.task_id for task in self.selection])
+        self.assertEqual(len(block["task_ids"]), int(sp.S3_W8_PILOT_TASKS))
+        self.assertEqual(block["task_ids_sha256"], sp.task_ids_sha256(block["task_ids"]))
+        self.assertNotEqual(block["task_ids_sha256"], self.package["task_ids_sha256"])
+
+    def test_family_block_rejects_missing_payload(self):
+        exc = _assert_error_code(
+            self, runner.S3_RUNNER_FAMILY_ERROR, runner._w8_family_block,
+            {"sha256": "0" * 64, "bytes": 0},
+            package_relpath="x.json",
+            tasks=self.selection,
+        )
+        self.assertIn("payload", str(exc))
+
+    def test_family_block_rejects_payload_mismatch(self):
+        tampered = {"sha256": self.package["sha256"], "payload": json.loads(json.dumps(self.package["payload"]))}
+        tampered["payload"]["family_id"] = "F-OTHER"
+        _assert_error_code(
+            self, runner.S3_RUNNER_FAMILY_ERROR, runner._w8_family_block,
+            tampered,
+            package_relpath="x.json",
+            tasks=self.selection,
+        )
+        tampered2 = {"sha256": self.package["sha256"], "payload": json.loads(json.dumps(self.package["payload"]))}
+        tampered2["payload"]["split_counts"] = {"meta_train": 1}
+        _assert_error_code(
+            self, runner.S3_RUNNER_FAMILY_ERROR, runner._w8_family_block,
+            tampered2,
+            package_relpath="x.json",
+            tasks=self.selection,
+        )
 
 if __name__ == "__main__":
     unittest.main()

@@ -3487,6 +3487,54 @@ def _pilot_run_digests(results: Sequence[Mapping[str, Any]]) -> tuple[dict[str, 
     return digests, order, per_run
 
 
+def _w8_family_block(
+    package: Mapping[str, Any],
+    *,
+    package_relpath: str,
+    tasks: Sequence[tf.S3ConflictTask],
+) -> dict[str, Any]:
+    """W=8 试点门 family 块：族标识从 load_family_package 的 payload 读取。
+
+    R2 缺陷根因：load_family_package 顶层是 {path,sha256,bytes,payload,tasks,by_split,
+task_ids_sha256}，family_id/formula_version 实际在 payload 内；W=8 试点门曾按顶层
+取值而 KeyError。本 helper 统一取值并 fail-closed 复核 payload 的族常量，输出键集合
+与修复前 6 键完全一致（不改 evidence schema）。
+    """
+    payload = package.get("payload")
+    _require(isinstance(payload, Mapping), S3_RUNNER_FAMILY_ERROR, "W=8 试点门族包缺少 payload mapping")
+    family_id = str(payload.get("family_id") or "")
+    formula_version = str(payload.get("formula_version") or "")
+    _require(family_id == str(sp.S3_FAMILY_ID), S3_RUNNER_FAMILY_ERROR, "W=8 试点门族包 payload family_id 不符")
+    _require(
+        formula_version == str(sp.S3_FORMULA_VERSION),
+        S3_RUNNER_FAMILY_ERROR,
+        "W=8 试点门族包 payload formula_version 不符",
+    )
+    _require(
+        payload.get("family_seed") == int(sp.S3_FAMILY_SEED),
+        S3_RUNNER_FAMILY_ERROR,
+        "W=8 试点门族包 payload family_seed 不符",
+    )
+    _require(
+        payload.get("holdout_seed") == int(sp.S3_HOLDOUT_SEED),
+        S3_RUNNER_FAMILY_ERROR,
+        "W=8 试点门族包 payload holdout_seed 不符",
+    )
+    _require(
+        dict(payload.get("split_counts") or {}) == dict(sp.S3_SPLIT_COUNTS),
+        S3_RUNNER_FAMILY_ERROR,
+        "W=8 试点门族包 payload split_counts 不符",
+    )
+    task_ids = [task.task_id for task in tasks]
+    return {
+        "family_id": family_id,
+        "formula_version": formula_version,
+        "family_package_path": str(package_relpath),
+        "family_package_sha256": str(package["sha256"]),
+        "task_ids": task_ids,
+        "task_ids_sha256": sp.task_ids_sha256(task_ids),
+    }
+
 def build_w8_pilot_gate(
     *,
     repo_root: str | Path,
@@ -3590,14 +3638,11 @@ def build_w8_pilot_gate(
         "schema_version": str(sp.S3_W8_PILOT_GATE_SCHEMA_VERSION),
         "created_utc": str(created_utc or utc_now()),
         "campaign_id": str(campaign_id),
-        "family": {
-            "family_id": str(package["family_id"]),
-            "formula_version": str(package["formula_version"]),
-            "family_package_path": str(package_relpath),
-            "family_package_sha256": str(package["sha256"]),
-            "task_ids": [task.task_id for task in tasks],
-            "task_ids_sha256": sp.task_ids_sha256([task.task_id for task in tasks]),
-        },
+        "family": _w8_family_block(
+            package,
+            package_relpath=str(package_relpath),
+            tasks=tasks,
+        ),
         "models": {
             "kind": "fomaml+anil",
             "meta_seed": int(sp.S3_W8_PILOT_META_SEED),
