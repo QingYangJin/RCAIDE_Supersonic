@@ -1,0 +1,43 @@
+# S3-M4 commands executed by a7-code-reviewer (read-only; reconstructed from tool calls)
+# WORKDIR for probes: <REPO_ROOT>
+
+# 0) task / inputs read
+# tools.team_task_get task-268
+# tools.read S3_M3_AUTHORIZATION.json / S3_M3_EXECUTION_RECORD.json / run_config.json / data_manifest.json / model_manifest.json / run_summary.json / execution_report.json
+
+# 1) validate rerun via Lead external launcher
+pwsh -Command "& '<PYTHON_EXE>' -E -s -B '<STATE_ROOT>/p4-route-a/lead/s3/launch_s3_formal.py' validate --run-dir '<STATE_ROOT>/s3_runs/p4ra-s3-formal-20261109T1310Z' --prereg '<REPO_ROOT>/research/concorde_metaopt/evidence/s3/s3_preregistration.json' --repo-root '<REPO_ROOT>' > '<STATE_ROOT>/EXT/p4-route-a/a7/s3_m4/validate_with_repo_root.out.json' 2> '<STATE_ROOT>/EXT/p4-route-a/a7/s3_m4/validate_with_repo_root.err.log'; $LASTEXITCODE | Out-File -Encoding ascii '<STATE_ROOT>/EXT/p4-route-a/a7/s3_m4/validate_with_repo_root.exit.txt'"
+# same command without --repo-root  -> validate_no_repo_root.out.json
+# same command without --prereg    -> validate_no_prereg.out.json
+
+# 2) independent recompute probes (python -E -s -B = no site/user site, no bytecode writes)
+<PYTHON_EXE> -E -s -B <STATE_ROOT>/EXT/p4-route-a/a7/s3_m4/probe1_meta.py
+<PYTHON_EXE> -E -s -B <STATE_ROOT>/EXT/p4-route-a/a7/s3_m4/probe2_artifacts.py
+<PYTHON_EXE> -E -s -B <STATE_ROOT>/EXT/p4-route-a/a7/s3_m4/probe3_verify.py
+<PYTHON_EXE> -E -s -B <STATE_ROOT>/EXT/p4-route-a/a7/s3_m4/probe5_prereg_det.py
+<PYTHON_EXE> -E -s -B <STATE_ROOT>/EXT/p4-route-a/a7/s3_m4/probe5b_det.py
+<PYTHON_EXE> -E -s -B <STATE_ROOT>/EXT/p4-route-a/a7/s3_m4/probe6_plan_digest.py
+<PYTHON_EXE> -E -s -B <STATE_ROOT>/EXT/p4-route-a/a7/s3_m4/probe7_plan.py
+<PYTHON_EXE> -E -s -B <STATE_ROOT>/EXT/p4-route-a/a7/s3_m4/probe8_validated_digest.py
+
+# 3) hash / artifact table generation + SHA256SUMS (Node crypto; no writes outside OUT)
+# node -e script reads outputs and writes model_sha_table.md/json, bindings.json, logs
+
+# 4) read-only confirmations
+git -C <REPO_ROOT> status --porcelain   # empty
+git -C <REPO_ROOT> rev-parse HEAD        # 691f554012b8fe50d4aca3559cb1ccc1ba717276
+
+# 5) decisive F-01 counter-probe: run validate with repo-root pointed at the evidence root
+#    (PowerShell Tee-Object writes stdout as UTF-16LE; bytes were decoded and re-encoded to UTF-8 by the reviewer)
+<PYTHON_EXE> -E -s -B <STATE_ROOT>/p4-route-a/lead/s3/launch_s3_formal.py validate --run-dir <STATE_ROOT>/s3_runs/p4ra-s3-formal-20261109T1310Z --prereg <REPO_ROOT>/research/concorde_metaopt/evidence/s3/s3_preregistration.json --repo-root <REPO_ROOT>/research/concorde_metaopt/evidence/s3
+#    -> validate_repo_root_evidence.out.json: {"command":"validate","failed_checks":["formal_gate_matches_repo"],"ok":false,...}
+#    => model_manifest_models PASSES when the evidence root is used; the only remaining failure is the
+#       expected side effect of substituting repo_root. Confirms F-01 is a validator base-path defect.
+
+# 6) review report + machine-readable findings/verdict (written only under OUT)
+#    review.md 28,146 B; findings.json 11,019 B; verdict.json 7,159 B (UTF-8, trailing newline)
+#    verdict=APPROVE_FOR_S3_ANALYSIS; data_integrity=PASS; 0 blocker / 3 major / 2 minor / 3 info
+
+# 7) checksum manifest
+#    SHA256SUMS.txt generated over every regular file in OUT except SHA256SUMS.txt itself,
+#    then verified 1:1 with node crypto (all OK).

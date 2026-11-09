@@ -1,0 +1,47 @@
+{
+ "schema_version": "p4ra-s3-ood-supplementary-1",
+ "label": "LEAD_AUXILIARY_NOT_FROM_FROZEN_ANALYZER",
+ "purpose": "S3 预注册 OOD 描述性端点；冻结分析器 build_ood_rows 未接入独立 OOD 记录流（A5-S3M5-01 / A7-F-03），本文件为 Lead 辅助脚本对该流的描述性汇总，非确认性推断，不替代冻结分析器产物。",
+ "source_file": "<STATE_ROOT>/p4-route-a/s3_runs/p4ra-s3-formal-20261109T1310Z\\ood_records.jsonl",
+ "source_bytes": 22430606,
+ "source_sha256": "e8372903b82e5a2730bdc3b557d5d367d3ebe5d90b5d1d1d204be4415f2539ba",
+ "record_count": 28800,
+ "run_count": 300,
+ "task_count": 10,
+ "budgets": [
+  64,
+  128
+ ],
+ "arms": [
+  "S3-BO-ANIL-CON",
+  "S3-BO-FOMAML-CON",
+  "S3-BO-FOMAML-OBJ",
+  "S3-BO-RANDOM",
+  "S3-DE"
+ ],
+ "seeds_per_cell": "meta_seed 0 x opt_seed 0..2 = 3 次 run per (task,budget,arm) cell",
+ "aggregation": "先对每 (task,budget,arm) 的 3 次 run 取 feasible_hit_rate 均值，再对 10 个 OOD task 取均值",
+ "evidence_scope": "DEVELOPMENT_VALIDATION_ONLY",
+ "inference": "NONE_DESCRIPTIVE_ONLY",
+ "arm_means_by_budget": {
+  "64": {
+   "S3-BO-ANIL-CON": 0.7828125000000001,
+   "S3-BO-FOMAML-CON": 0.7848958333333333,
+   "S3-BO-FOMAML-OBJ": 0.79375,
+   "S3-BO-RANDOM": 0.7869791666666667,
+   "S3-DE": 0.4213541666666667
+  },
+  "128": {
+   "S3-BO-ANIL-CON": 0.8221354166666666,
+   "S3-BO-FOMAML-CON": 0.8151041666666666,
+   "S3-BO-FOMAML-OBJ": 0.8268229166666667,
+   "S3-BO-RANDOM": 0.8229166666666667,
+   "S3-DE": 0.6052083333333333
+  }
+ },
+ "con_minus_obj_by_budget": {
+  "64": -0.008854166666666607,
+  "128": -0.011718750000000111
+ },
+ "csv_sha256": "963350d4044eadd0a8e83d5965e2325fafa99e42f05eb465bff53ed10cfb7da7"
+}

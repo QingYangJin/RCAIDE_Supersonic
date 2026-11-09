@@ -1,0 +1,95 @@
+{
+  "schema_version": "s3-m5-a5-verdict-1",
+  "task_id": "task-264",
+  "reviewer": "a5-code-reviewer",
+  "reviewed_at_utc": "2026-11-09T15:00:00Z",
+  "object": {
+    "run_id": "p4ra-s3-formal-20261109T1310Z",
+    "run_mode": "FORMAL",
+    "analysis_dir": "<STATE_ROOT>/s3_analysis/p4ra-s3-formal-20261109T1310Z",
+    "lead_record": "<STATE_ROOT>/p4-route-a/lead/s3/S3_M4_ANALYSIS_RECORD.json",
+    "lead_patch": "<STATE_ROOT>/p4-route-a/lead/s3/run_s3_analysis_leadpatched.py",
+    "prereg": "<REPO_ROOT>/research/concorde_metaopt/evidence/s3/s3_preregistration.json",
+    "code_head": "691f554"
+  },
+  "verdict": "CHANGES_REQUESTED",
+  "counts": {
+    "blocker": 1,
+    "major": 2,
+    "minor": 3,
+    "info": 0
+  },
+  "artifact_receipt_allowed": false,
+  "confirmatory_result_reproduced": true,
+  "overall_decision_official": "NO_EVIDENCE",
+  "overall_decision_independent": "NO_EVIDENCE",
+  "c1_decisions": {
+    "B64": "NULL",
+    "B128": "NULL"
+  },
+  "c2_decisions": {
+    "B64": "NULL",
+    "B128": "NULL"
+  },
+  "anil_decision": "ANIL_INCONCLUSIVE",
+  "independent_checks": {
+    "official_csv_equal_to_a5_rerun": "7/7",
+    "official_outputs_bytes_sha_match": "22/22",
+    "aggregate_mismatches": [],
+    "physical_call_count": 0,
+    "solver_starts": 0,
+    "repo_writes": 0,
+    "github_writes": 0
+  },
+  "findings": [
+    {
+      "id": "A5-S3M5-01",
+      "severity": "blocker",
+      "status": "OPEN",
+      "title": "OOD 被错误标为 NOT_RUN/数据不存在"
+    },
+    {
+      "id": "A5-S3M5-02",
+      "severity": "major",
+      "status": "OPEN",
+      "title": "NC-15 未计算，DISCLOSED 不是 PASS"
+    },
+    {
+      "id": "A5-S3M5-03",
+      "severity": "major",
+      "status": "OPEN",
+      "title": "成本表全 0，ANIL cost_ratio 是预算比"
+    },
+    {
+      "id": "A5-S3M5-04",
+      "severity": "minor",
+      "status": "OPEN",
+      "title": "官方未复算 analysis_plan_digest，补丁未覆盖 P1"
+    },
+    {
+      "id": "A5-S3M5-05",
+      "severity": "minor",
+      "status": "OPEN",
+      "title": "补丁仅 FORMAL、bytes/额外字段未绑定、审计缺校验开关"
+    },
+    {
+      "id": "A5-S3M5-06",
+      "severity": "minor",
+      "status": "OPEN",
+      "title": "官方 prereg.endpoints 含注入键 comparator/c1_tests/c2_tests"
+    }
+  ],
+  "blockers": [
+    "A5-S3M5-01"
+  ],
+  "majors": [
+    "A5-S3M5-02",
+    "A5-S3M5-03"
+  ],
+  "minors": [
+    "A5-S3M5-04",
+    "A5-S3M5-05",
+    "A5-S3M5-06"
+  ],
+  "summary": "C1/C2 NO_EVIDENCE and ANIL_INCONCLUSIVE reproduce exactly; however OOD is falsely reported as absent despite 28,800 raw records, NC-15 is uncomputed, and the cost table is all-zero with a budget-ratio ANIL cost_ratio. Statistical conclusion stands, artifact cannot be accepted as-is."
+}

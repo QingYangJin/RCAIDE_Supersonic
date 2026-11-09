@@ -1,0 +1,56 @@
+{
+ "out": "<STATE_ROOT>/p4-route-a/a1\\s3_preview\\bench\\bench_v13a.json",
+ "w1_wall": 177.816794,
+ "w8_wall": 42.267089,
+ "ratios": {
+  "wall_ratio_w8_over_w1": 0.2377,
+  "wall_ratio_target_range": [
+   0.0875,
+   0.1625
+  ],
+  "wall_ratio_meets_a5_target": false,
+  "compute_ratio_w1_over_w8": 6.436784,
+  "compute_ratio_target_min": 6.15,
+  "compute_ratio_meets_a5_target": true,
+  "total_cpu_seconds_ratio": 1.061842,
+  "wall_ratio_amortized_main_6000": 0.155773,
+  "wall_ratio_amortized_main_6000_meets_a5_target": true,
+  "wall_ratio_amortized_main_3000": 0.156189,
+  "wall_ratio_amortized_main_3000_meets_a5_target": true,
+  "amortized_main_6000_wall_s": {
+   "w1": 35189.462,
+   "w8": 5481.575
+  },
+  "amortized_main_3000_wall_s": {
+   "w1": 17595.671,
+   "w8": 2748.254
+  }
+ },
+ "startup": {
+  "w1": 1.878876,
+  "w8": 14.933885
+ },
+ "determinism": {
+  "n_runs_compared": 30,
+  "record_digest_sequences_equal": true,
+  "first_divergence_index": null,
+  "status_equal": true,
+  "record_counts_equal": true
+ },
+ "projection_w8": {
+  "3780": {
+   "by_measured_throughput_s": 3518.653,
+   "by_conservative_batch_s": 5325.653,
+   "campaign_count_assumed": 5,
+   "batch_size": 30
+  },
+  "6900": {
+   "by_measured_throughput_s": 6361.306,
+   "by_conservative_batch_s": 9721.43,
+   "campaign_count_assumed": 5,
+   "batch_size": 30
+  },
+  "runs_per_s": 0.709772,
+  "per_run_compute_s": 0.911107
+ }
+}

@@ -1,0 +1,16 @@
+control_id,expected,name,observed,status
+NC-01,必须自洽,prereg_digest 自洽（重算 canonical sha256）,prereg_digest 重算一致,PASS
+NC-02,必须一致,族包 sha256 与 prereg 绑定,族包 sha256 一致,PASS
+NC-03,必须一致,code_sha 与仓库实算一致,code_sha 实算一致,PASS
+NC-04,必须一致,episode bank sha 绑定,episode bank 合同与 sha 已校验,PASS
+NC-05,精确相等,记录字段集精确匹配 19/8 字段,字段集与 s3_prereg 单源一致,PASS
+NC-06,billable_evals==B,逐 run 预算记账 billable=B,每 run 恰 B 条且索引 1..B,PASS
+NC-07,四 false + EVAL 一次 true,phase-scoped 数据边界标志,训练/适配/BO 排序未读 holdout truth,PASS
+NC-08,必须为 0,物理调用 0（prereg/run/data_manifest）,physical_call_count=0,PASS
+NC-09,status=PASS/max_rel<=1e-6,FD/梯度门 32 坐标 PASS,FD 门产物 32 坐标 PASS,PASS
+NC-10,run 阶段禁止读取,run 阶段不得读封存参考解,run 产物记录 holdout_truth_read_phase=EVAL,PASS
+NC-11,CON−OBJ,comparator 固定 CON−OBJ（RANDOM/DE 不入推断）,C1/C2 arm 对固定,PASS
+NC-12,逐记录 core digest 一致,确定性重跑记录 core digest 一致,3 次重跑 digest 一致,PASS
+NC-13,分母=预期单元格数,null 披露（不插值）,null 单元格已计数披露,PASS
+NC-14,缺数据=NOT_RUN,图状态 NOT_RUN 不伪造,负控派生时图状态尚未登记（见 figure_status.json，DISCLOSED 不伪造）,DISCLOSED
+NC-15,打乱标签后 CON−OBJ 差异应显著缩小,标签置换负控制（CON−OBJ 效应是否消失）,负控产物存在但缺少可比字段,DISCLOSED

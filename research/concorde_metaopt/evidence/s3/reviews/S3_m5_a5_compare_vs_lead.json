@@ -1,0 +1,456 @@
+{
+  "csv": [
+    {
+      "file": "s3_cost_table.csv",
+      "lead_sha256": "3c331882dc6c6248424ed74f2fba725a1e38917557aafca1a8456e829ceff261",
+      "a5_sha256": "3c331882dc6c6248424ed74f2fba725a1e38917557aafca1a8456e829ceff261",
+      "equal": true
+    },
+    {
+      "file": "s3_endpoint_tables.csv",
+      "lead_sha256": "08c9d0529641461fcb21a1530a2471e462b73d24b16de58377257a6d68031eb4",
+      "a5_sha256": "08c9d0529641461fcb21a1530a2471e462b73d24b16de58377257a6d68031eb4",
+      "equal": true
+    },
+    {
+      "file": "s3_holm_family.csv",
+      "lead_sha256": "aab407dd56388f6272a03ec8578599093ce19f347822d6f85c1c8f29b0974150",
+      "a5_sha256": "aab407dd56388f6272a03ec8578599093ce19f347822d6f85c1c8f29b0974150",
+      "equal": true
+    },
+    {
+      "file": "s3_negative_controls.csv",
+      "lead_sha256": "07a439a653043fc54a31b1925e4df75eaed201f6b19fc34c7720ea58eacc8198",
+      "a5_sha256": "07a439a653043fc54a31b1925e4df75eaed201f6b19fc34c7720ea58eacc8198",
+      "equal": true
+    },
+    {
+      "file": "s3_null_disclosure.csv",
+      "lead_sha256": "47dd0f2914fa86a9e13afd83c57c09e17234b2bef1738469d7d86848ecc65417",
+      "a5_sha256": "47dd0f2914fa86a9e13afd83c57c09e17234b2bef1738469d7d86848ecc65417",
+      "equal": true
+    },
+    {
+      "file": "s3_ood_descriptives.csv",
+      "lead_sha256": "61d349e8eefefbca4a726a575a4ef3d64b993aedec6a127a5a1122a428e07eec",
+      "a5_sha256": "61d349e8eefefbca4a726a575a4ef3d64b993aedec6a127a5a1122a428e07eec",
+      "equal": true
+    },
+    {
+      "file": "s3_per_task_endpoint_values.csv",
+      "lead_sha256": "7de822fe43de8f959419608a5abef08182c0b8b1a885d6a8ef11203bfea255e4",
+      "a5_sha256": "7de822fe43de8f959419608a5abef08182c0b8b1a885d6a8ef11203bfea255e4",
+      "equal": true
+    }
+  ],
+  "a5_missing_figure_csv": [
+    "fig3_feasible_hit_rate_by_arm_data.csv",
+    "fig4_best_feasible_and_first_feasible_data.csv",
+    "fig5_fomaml_vs_full_vs_anil_cost_data.csv",
+    "fig6_task_family_diagnostics_data.csv",
+    "fig8_negative_controls_data.csv",
+    "fig9_determinism_and_budget_data.csv"
+  ],
+  "diff_total": 63,
+  "diff_by_top": {
+    "checks": 6,
+    "created_utc": 1,
+    "disclosed_checks": 2,
+    "figure_data_files": 6,
+    "figure_status": 37,
+    "outputs": 8,
+    "prereg": 3
+  },
+  "diff_non_volatile": [
+    {
+      "path": "disclosed_checks.length",
+      "lead": 6,
+      "a5": 7
+    },
+    {
+      "path": "disclosed_checks[6]",
+      "a5": {
+        "check": "figures",
+        "detail": "图生成被调用方关闭（--no-generate-figures）",
+        "status": "SKIPPED"
+      }
+    },
+    {
+      "path": "figure_data_files.fig3_feasible_hit_rate_by_arm",
+      "lead": "<STATE_ROOT>/s3_analysis/p4ra-s3-formal-20261109T1310Z\\fig3_feasible_hit_rate_by_arm_data.csv",
+      "a5": null
+    },
+    {
+      "path": "figure_data_files.fig4_best_feasible_and_first_feasible",
+      "lead": "<STATE_ROOT>/s3_analysis/p4ra-s3-formal-20261109T1310Z\\fig4_best_feasible_and_first_feasible_data.csv",
+      "a5": null
+    },
+    {
+      "path": "figure_data_files.fig5_fomaml_vs_full_vs_anil_cost",
+      "lead": "<STATE_ROOT>/s3_analysis/p4ra-s3-formal-20261109T1310Z\\fig5_fomaml_vs_full_vs_anil_cost_data.csv",
+      "a5": null
+    },
+    {
+      "path": "figure_data_files.fig6_task_family_diagnostics",
+      "lead": "<STATE_ROOT>/s3_analysis/p4ra-s3-formal-20261109T1310Z\\fig6_task_family_diagnostics_data.csv",
+      "a5": null
+    },
+    {
+      "path": "figure_data_files.fig8_negative_controls",
+      "lead": "<STATE_ROOT>/s3_analysis/p4ra-s3-formal-20261109T1310Z\\fig8_negative_controls_data.csv",
+      "a5": null
+    },
+    {
+      "path": "figure_data_files.fig9_determinism_and_budget",
+      "lead": "<STATE_ROOT>/s3_analysis/p4ra-s3-formal-20261109T1310Z\\fig9_determinism_and_budget_data.csv",
+      "a5": null
+    },
+    {
+      "path": "prereg.endpoints.c1_tests",
+      "lead": [
+        "B128",
+        "B64"
+      ],
+      "a5": "<missing>"
+    },
+    {
+      "path": "prereg.endpoints.c2_tests",
+      "lead": [
+        "B128",
+        "B64"
+      ],
+      "a5": "<missing>"
+    },
+    {
+      "path": "prereg.endpoints.comparator",
+      "lead": "S3-BO-FOMAML-OBJ",
+      "a5": "<missing>"
+    }
+  ],
+  "diff_all": [
+    {
+      "path": "checks[19].check",
+      "lead": "analysis_plan_digest_format",
+      "a5": "analysis_plan_digest"
+    },
+    {
+      "path": "checks[19].detail",
+      "lead": "analysis_plan_digest 格式校验通过（未复算）",
+      "a5": "analysis_plan_digest 实算一致: 31ac71d730cfc58a1ff669488ca431dcb930cc8f6861418504e11ffc5f799c05"
+    },
+    {
+      "path": "checks[30].detail",
+      "lead": "FORMAL per-model sha equal (Lead normalized 4-way binding): fomaml",
+      "a5": "FORMAL 冻结模型 3-seed 全字段绑定: fomaml"
+    },
+    {
+      "path": "checks[31].detail",
+      "lead": "FORMAL per-model sha equal (Lead normalized 4-way binding): anil",
+      "a5": "FORMAL 冻结模型 3-seed 全字段绑定: anil"
+    },
+    {
+      "path": "checks[89].detail",
+      "lead": "图渲染: 6/10 RENDERED",
+      "a5": "图生成被调用方关闭（--no-generate-figures）"
+    },
+    {
+      "path": "checks[89].status",
+      "lead": "PASS",
+      "a5": "SKIPPED"
+    },
+    {
+      "path": "created_utc",
+      "lead": "2026-11-09T14:39:02Z",
+      "a5": "2026-11-09T14:53:31Z"
+    },
+    {
+      "path": "disclosed_checks.length",
+      "lead": 6,
+      "a5": 7
+    },
+    {
+      "path": "disclosed_checks[6]",
+      "a5": {
+        "check": "figures",
+        "detail": "图生成被调用方关闭（--no-generate-figures）",
+        "status": "SKIPPED"
+      }
+    },
+    {
+      "path": "figure_data_files.fig3_feasible_hit_rate_by_arm",
+      "lead": "<STATE_ROOT>/s3_analysis/p4ra-s3-formal-20261109T1310Z\\fig3_feasible_hit_rate_by_arm_data.csv",
+      "a5": null
+    },
+    {
+      "path": "figure_data_files.fig4_best_feasible_and_first_feasible",
+      "lead": "<STATE_ROOT>/s3_analysis/p4ra-s3-formal-20261109T1310Z\\fig4_best_feasible_and_first_feasible_data.csv",
+      "a5": null
+    },
+    {
+      "path": "figure_data_files.fig5_fomaml_vs_full_vs_anil_cost",
+      "lead": "<STATE_ROOT>/s3_analysis/p4ra-s3-formal-20261109T1310Z\\fig5_fomaml_vs_full_vs_anil_cost_data.csv",
+      "a5": null
+    },
+    {
+      "path": "figure_data_files.fig6_task_family_diagnostics",
+      "lead": "<STATE_ROOT>/s3_analysis/p4ra-s3-formal-20261109T1310Z\\fig6_task_family_diagnostics_data.csv",
+      "a5": null
+    },
+    {
+      "path": "figure_data_files.fig8_negative_controls",
+      "lead": "<STATE_ROOT>/s3_analysis/p4ra-s3-formal-20261109T1310Z\\fig8_negative_controls_data.csv",
+      "a5": null
+    },
+    {
+      "path": "figure_data_files.fig9_determinism_and_budget",
+      "lead": "<STATE_ROOT>/s3_analysis/p4ra-s3-formal-20261109T1310Z\\fig9_determinism_and_budget_data.csv",
+      "a5": null
+    },
+    {
+      "path": "figure_status.figures.fig10_vspaero_gate_status.reason",
+      "lead": "未找到只读 VSPAERO 门禁归档: 未找到 VSPAERO 门禁归档",
+      "a5": "FIGURE_GENERATION_DISABLED_BY_REQUEST"
+    },
+    {
+      "path": "figure_status.figures.fig1_training_loss_and_full_meta_grad.reason",
+      "lead": "train record 缺失，无法绘制训练损失",
+      "a5": "FIGURE_GENERATION_DISABLED_BY_REQUEST"
+    },
+    {
+      "path": "figure_status.figures.fig2_kshot_rmse_k0_k1_k3_k5.reason",
+      "lead": "S3 记录不含 K-shot 适配曲线（K∈{0,1,3,5}），fig2 记 NOT_RUN",
+      "a5": "FIGURE_GENERATION_DISABLED_BY_REQUEST"
+    },
+    {
+      "path": "figure_status.figures.fig3_feasible_hit_rate_by_arm.csv_path",
+      "lead": "<STATE_ROOT>/s3_analysis/p4ra-s3-formal-20261109T1310Z\\fig3_feasible_hit_rate_by_arm_data.csv",
+      "a5": null
+    },
+    {
+      "path": "figure_status.figures.fig3_feasible_hit_rate_by_arm.data_sha256",
+      "lead": "054e391b1da288a2ce40e0cad81b407cf1a949ea452bcd7adfe207bcb8e7a31b",
+      "a5": null
+    },
+    {
+      "path": "figure_status.figures.fig3_feasible_hit_rate_by_arm.path",
+      "lead": "<STATE_ROOT>/s3_analysis/p4ra-s3-formal-20261109T1310Z\\fig3_feasible_hit_rate_by_arm.png",
+      "a5": null
+    },
+    {
+      "path": "figure_status.figures.fig3_feasible_hit_rate_by_arm.reason",
+      "lead": "",
+      "a5": "FIGURE_GENERATION_DISABLED_BY_REQUEST"
+    },
+    {
+      "path": "figure_status.figures.fig3_feasible_hit_rate_by_arm.status",
+      "lead": "RENDERED",
+      "a5": "NOT_RUN"
+    },
+    {
+      "path": "figure_status.figures.fig4_best_feasible_and_first_feasible.csv_path",
+      "lead": "<STATE_ROOT>/s3_analysis/p4ra-s3-formal-20261109T1310Z\\fig4_best_feasible_and_first_feasible_data.csv",
+      "a5": null
+    },
+    {
+      "path": "figure_status.figures.fig4_best_feasible_and_first_feasible.data_sha256",
+      "lead": "da59c14f13bc31764360f3a885e74e38f79ee4a47d72077f44069c63adf0e6ac",
+      "a5": null
+    },
+    {
+      "path": "figure_status.figures.fig4_best_feasible_and_first_feasible.path",
+      "lead": "<STATE_ROOT>/s3_analysis/p4ra-s3-formal-20261109T1310Z\\fig4_best_feasible_and_first_feasible.png",
+      "a5": null
+    },
+    {
+      "path": "figure_status.figures.fig4_best_feasible_and_first_feasible.reason",
+      "lead": "",
+      "a5": "FIGURE_GENERATION_DISABLED_BY_REQUEST"
+    },
+    {
+      "path": "figure_status.figures.fig4_best_feasible_and_first_feasible.status",
+      "lead": "RENDERED",
+      "a5": "NOT_RUN"
+    },
+    {
+      "path": "figure_status.figures.fig5_fomaml_vs_full_vs_anil_cost.csv_path",
+      "lead": "<STATE_ROOT>/s3_analysis/p4ra-s3-formal-20261109T1310Z\\fig5_fomaml_vs_full_vs_anil_cost_data.csv",
+      "a5": null
+    },
+    {
+      "path": "figure_status.figures.fig5_fomaml_vs_full_vs_anil_cost.data_sha256",
+      "lead": "df792f5b3bd58ffe445ec7ae70190027f8f7bbab3948a817f8da8a09cba5d954",
+      "a5": null
+    },
+    {
+      "path": "figure_status.figures.fig5_fomaml_vs_full_vs_anil_cost.path",
+      "lead": "<STATE_ROOT>/s3_analysis/p4ra-s3-formal-20261109T1310Z\\fig5_fomaml_vs_full_vs_anil_cost.png",
+      "a5": null
+    },
+    {
+      "path": "figure_status.figures.fig5_fomaml_vs_full_vs_anil_cost.reason",
+      "lead": "",
+      "a5": "FIGURE_GENERATION_DISABLED_BY_REQUEST"
+    },
+    {
+      "path": "figure_status.figures.fig5_fomaml_vs_full_vs_anil_cost.status",
+      "lead": "RENDERED",
+      "a5": "NOT_RUN"
+    },
+    {
+      "path": "figure_status.figures.fig6_task_family_diagnostics.csv_path",
+      "lead": "<STATE_ROOT>/s3_analysis/p4ra-s3-formal-20261109T1310Z\\fig6_task_family_diagnostics_data.csv",
+      "a5": null
+    },
+    {
+      "path": "figure_status.figures.fig6_task_family_diagnostics.data_sha256",
+      "lead": "c3183eca0f9b023514c9ff0a96372bff9d163184bb3092a16b37e72e8039cd60",
+      "a5": null
+    },
+    {
+      "path": "figure_status.figures.fig6_task_family_diagnostics.path",
+      "lead": "<STATE_ROOT>/s3_analysis/p4ra-s3-formal-20261109T1310Z\\fig6_task_family_diagnostics.png",
+      "a5": null
+    },
+    {
+      "path": "figure_status.figures.fig6_task_family_diagnostics.reason",
+      "lead": "",
+      "a5": "FIGURE_GENERATION_DISABLED_BY_REQUEST"
+    },
+    {
+      "path": "figure_status.figures.fig6_task_family_diagnostics.status",
+      "lead": "RENDERED",
+      "a5": "NOT_RUN"
+    },
+    {
+      "path": "figure_status.figures.fig7_ood_diagnostics.reason",
+      "lead": "run 产物不含 OOD 段（OOD 分析 NOT_RUN）",
+      "a5": "FIGURE_GENERATION_DISABLED_BY_REQUEST"
+    },
+    {
+      "path": "figure_status.figures.fig8_negative_controls.csv_path",
+      "lead": "<STATE_ROOT>/s3_analysis/p4ra-s3-formal-20261109T1310Z\\fig8_negative_controls_data.csv",
+      "a5": null
+    },
+    {
+      "path": "figure_status.figures.fig8_negative_controls.data_sha256",
+      "lead": "899222ba28d887ffe1fff7287202bbd2008344473d5641244f9bd5f9088f9548",
+      "a5": null
+    },
+    {
+      "path": "figure_status.figures.fig8_negative_controls.path",
+      "lead": "<STATE_ROOT>/s3_analysis/p4ra-s3-formal-20261109T1310Z\\fig8_negative_controls.png",
+      "a5": null
+    },
+    {
+      "path": "figure_status.figures.fig8_negative_controls.reason",
+      "lead": "",
+      "a5": "FIGURE_GENERATION_DISABLED_BY_REQUEST"
+    },
+    {
+      "path": "figure_status.figures.fig8_negative_controls.status",
+      "lead": "RENDERED",
+      "a5": "NOT_RUN"
+    },
+    {
+      "path": "figure_status.figures.fig9_determinism_and_budget.csv_path",
+      "lead": "<STATE_ROOT>/s3_analysis/p4ra-s3-formal-20261109T1310Z\\fig9_determinism_and_budget_data.csv",
+      "a5": null
+    },
+    {
+      "path": "figure_status.figures.fig9_determinism_and_budget.data_sha256",
+      "lead": "51f3f03ac7638868a43499dbcbd054bc91bc76f3938895732ec0f5d13e332e0c",
+      "a5": null
+    },
+    {
+      "path": "figure_status.figures.fig9_determinism_and_budget.path",
+      "lead": "<STATE_ROOT>/s3_analysis/p4ra-s3-formal-20261109T1310Z\\fig9_determinism_and_budget.png",
+      "a5": null
+    },
+    {
+      "path": "figure_status.figures.fig9_determinism_and_budget.reason",
+      "lead": "",
+      "a5": "FIGURE_GENERATION_DISABLED_BY_REQUEST"
+    },
+    {
+      "path": "figure_status.figures.fig9_determinism_and_budget.status",
+      "lead": "RENDERED",
+      "a5": "NOT_RUN"
+    },
+    {
+      "path": "figure_status.generated_utc",
+      "lead": "2026-11-09T14:39:02Z",
+      "a5": "2026-11-09T14:53:31Z"
+    },
+    {
+      "path": "figure_status.summary.not_run",
+      "lead": 4,
+      "a5": 10
+    },
+    {
+      "path": "figure_status.summary.rendered",
+      "lead": 6,
+      "a5": 0
+    },
+    {
+      "path": "outputs.figure_status.json",
+      "lead": "<STATE_ROOT>/s3_analysis/p4ra-s3-formal-20261109T1310Z\\figure_status.json",
+      "a5": "<STATE_ROOT>\\EXT\\p4-route-a\\a5\\s3_m5\\analysis_rerun_a5\\figure_status.json"
+    },
+    {
+      "path": "outputs.s3_cost_table.csv",
+      "lead": "<STATE_ROOT>/s3_analysis/p4ra-s3-formal-20261109T1310Z\\s3_cost_table.csv",
+      "a5": "<STATE_ROOT>\\EXT\\p4-route-a\\a5\\s3_m5\\analysis_rerun_a5\\s3_cost_table.csv"
+    },
+    {
+      "path": "outputs.s3_endpoint_tables.csv",
+      "lead": "<STATE_ROOT>/s3_analysis/p4ra-s3-formal-20261109T1310Z\\s3_endpoint_tables.csv",
+      "a5": "<STATE_ROOT>\\EXT\\p4-route-a\\a5\\s3_m5\\analysis_rerun_a5\\s3_endpoint_tables.csv"
+    },
+    {
+      "path": "outputs.s3_holm_family.csv",
+      "lead": "<STATE_ROOT>/s3_analysis/p4ra-s3-formal-20261109T1310Z\\s3_holm_family.csv",
+      "a5": "<STATE_ROOT>\\EXT\\p4-route-a\\a5\\s3_m5\\analysis_rerun_a5\\s3_holm_family.csv"
+    },
+    {
+      "path": "outputs.s3_negative_controls.csv",
+      "lead": "<STATE_ROOT>/s3_analysis/p4ra-s3-formal-20261109T1310Z\\s3_negative_controls.csv",
+      "a5": "<STATE_ROOT>\\EXT\\p4-route-a\\a5\\s3_m5\\analysis_rerun_a5\\s3_negative_controls.csv"
+    },
+    {
+      "path": "outputs.s3_null_disclosure.csv",
+      "lead": "<STATE_ROOT>/s3_analysis/p4ra-s3-formal-20261109T1310Z\\s3_null_disclosure.csv",
+      "a5": "<STATE_ROOT>\\EXT\\p4-route-a\\a5\\s3_m5\\analysis_rerun_a5\\s3_null_disclosure.csv"
+    },
+    {
+      "path": "outputs.s3_ood_descriptives.csv",
+      "lead": "<STATE_ROOT>/s3_analysis/p4ra-s3-formal-20261109T1310Z\\s3_ood_descriptives.csv",
+      "a5": "<STATE_ROOT>\\EXT\\p4-route-a\\a5\\s3_m5\\analysis_rerun_a5\\s3_ood_descriptives.csv"
+    },
+    {
+      "path": "outputs.s3_per_task_endpoint_values.csv",
+      "lead": "<STATE_ROOT>/s3_analysis/p4ra-s3-formal-20261109T1310Z\\s3_per_task_endpoint_values.csv",
+      "a5": "<STATE_ROOT>\\EXT\\p4-route-a\\a5\\s3_m5\\analysis_rerun_a5\\s3_per_task_endpoint_values.csv"
+    },
+    {
+      "path": "prereg.endpoints.c1_tests",
+      "lead": [
+        "B128",
+        "B64"
+      ],
+      "a5": "<missing>"
+    },
+    {
+      "path": "prereg.endpoints.c2_tests",
+      "lead": [
+        "B128",
+        "B64"
+      ],
+      "a5": "<missing>"
+    },
+    {
+      "path": "prereg.endpoints.comparator",
+      "lead": "S3-BO-FOMAML-OBJ",
+      "a5": "<missing>"
+    }
+  ]
+}

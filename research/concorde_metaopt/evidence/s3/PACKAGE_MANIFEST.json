@@ -1,0 +1,1156 @@
+{
+ "schema_version": "p4ra-s3-evidence-package-1",
+ "created_utc": "2026-11-09T15:30:00Z",
+ "package_root": "research/concorde_metaopt/evidence/s3",
+ "run_id": "p4ra-s3-formal-20261109T1310Z",
+ "run_mode": "FORMAL",
+ "physical_call_count": 0,
+ "solver_processes_started": 0,
+ "phase_status": {
+  "s3_run": "EXECUTED",
+  "result_receipt": "PENDING",
+  "stage_acceptance": "NOT_ISSUED",
+  "s4": "NOT_APPROVED",
+  "approved_for_next_stage": false
+ },
+ "hash_convention": "sha256_lf = sha256 over canonical LF bytes (CRLF->LF); sha256_raw = sha256 over worktree bytes",
+ "counts": {
+  "files": 77,
+  "bytes_raw_total": 5228512,
+  "by_category": {
+   "meta": 3,
+   "analysis_aggregate": 1,
+   "analysis_table": 12,
+   "figure_png": 6,
+   "figure_data_csv": 6,
+   "repro": 5,
+   "bench": 4,
+   "frozen_input": 3,
+   "gate": 2,
+   "frozen_model": 10,
+   "review": 17,
+   "run_record": 8
+  }
+ },
+ "eol_summary": {
+  "crlf_count": 19,
+  "crlf_worktree_lf_blob": [
+   "research/concorde_metaopt/evidence/s3/analysis/fig3_feasible_hit_rate_by_arm_data.csv",
+   "research/concorde_metaopt/evidence/s3/analysis/fig4_best_feasible_and_first_feasible_data.csv",
+   "research/concorde_metaopt/evidence/s3/analysis/fig5_fomaml_vs_full_vs_anil_cost_data.csv",
+   "research/concorde_metaopt/evidence/s3/analysis/fig6_task_family_diagnostics_data.csv",
+   "research/concorde_metaopt/evidence/s3/analysis/fig8_negative_controls_data.csv",
+   "research/concorde_metaopt/evidence/s3/analysis/fig9_determinism_and_budget_data.csv",
+   "research/concorde_metaopt/evidence/s3/analysis/figure_generation_summary.json",
+   "research/concorde_metaopt/evidence/s3/analysis/s3_cost_table.csv",
+   "research/concorde_metaopt/evidence/s3/analysis/s3_endpoint_tables.csv",
+   "research/concorde_metaopt/evidence/s3/analysis/s3_holm_family.csv",
+   "research/concorde_metaopt/evidence/s3/analysis/s3_negative_controls.csv",
+   "research/concorde_metaopt/evidence/s3/analysis/s3_null_disclosure.csv",
+   "research/concorde_metaopt/evidence/s3/analysis/s3_ood_descriptives.csv",
+   "research/concorde_metaopt/evidence/s3/analysis/s3_per_task_endpoint_values.csv",
+   "research/concorde_metaopt/evidence/s3/analysis/repro/leadpatch_audit.json",
+   "research/concorde_metaopt/evidence/s3/reviews/S3_m5_a5_nc15_final.json",
+   "research/concorde_metaopt/evidence/s3/reviews/S3_m5_a5_ood_recompute.csv",
+   "research/concorde_metaopt/evidence/s3/reviews/S3_m5_a5_recompute_stats.json",
+   "research/concorde_metaopt/evidence/s3/reviews/S3_m5_a5_verify_outputs.json"
+  ],
+  "note": "Windows core.autocrlf: 工作树 CRLF、提交 blob canonical LF；SHA256SUMS 采用 lf。"
+ },
+ "sanitization": {
+  "policy": "absolute host paths replaced by <STATE_ROOT>/<REPO_ROOT> placeholders",
+  "file_count": 25,
+  "files": [
+   {
+    "path": "research/concorde_metaopt/evidence/s3/README.md",
+    "origin_sha256_unsanitized": "03f62b2938d5778531b1a13bccc9f0ad582857683c6662c09171cf9d013897ca",
+    "sanitized_sha256": "b141c8385895cae5f8272b2e0587b3fb06ddabc115ba47f44cb9586dd3034052",
+    "substitutions": 3
+   },
+   {
+    "path": "research/concorde_metaopt/evidence/s3/analysis/aggregate.json",
+    "origin_sha256_unsanitized": "27bb5f17c4650dab5b20228abad1b0f82507f017d66918676b608dd15f3fca94",
+    "sanitized_sha256": "7e54b1c973ba776d2664e453d59a879347f5cfb81dda8a6ca9a6065e245e29e4",
+    "substitutions": 39
+   },
+   {
+    "path": "research/concorde_metaopt/evidence/s3/analysis/figure_generation_summary.json",
+    "origin_sha256_unsanitized": "09497bfde2f243a7307e273db22abaf92fc30f2d283242efdeeddcf6f266e0ff",
+    "sanitized_sha256": "10655be86b611c4ede3ffe5ea4a8909800b9116e62683facbe677ceb5f604810",
+    "substitutions": 12
+   },
+   {
+    "path": "research/concorde_metaopt/evidence/s3/analysis/figure_status.json",
+    "origin_sha256_unsanitized": "868f93d242c56f8f9a10a9e934d90162ada02e961367ef50241e4147e2c52da7",
+    "sanitized_sha256": "88b75c6996ac267c7c8a9659ff535a4de515312a8d0117053ce6324e8fcb6a2e",
+    "substitutions": 12
+   },
+   {
+    "path": "research/concorde_metaopt/evidence/s3/analysis/ood_supplementary_summary.json",
+    "origin_sha256_unsanitized": "a30cfc73798b97b4bd061834f0ae3eadeba17662f452480c54219fc5e4e0164a",
+    "sanitized_sha256": "751243d11f9b6abc1b25dab69bd3ee9c78612c23b2cd2682f5095e401ee0c64b",
+    "substitutions": 1
+   },
+   {
+    "path": "research/concorde_metaopt/evidence/s3/analysis/repro/analysis_source_run.log",
+    "origin_sha256_unsanitized": "23acc630219e4b8146b7dd847a60de26ae375a22ca843beeb779d8713b831c2a",
+    "sanitized_sha256": "b8dcd007cd04ab8b70f57ad8050e6095abb328e6ce66d98b2f54b9a06c1a759a",
+    "substitutions": 8
+   },
+   {
+    "path": "research/concorde_metaopt/evidence/s3/analysis/repro/leadpatch_audit.json",
+    "origin_sha256_unsanitized": "39ea855b5679c3d805bf0c48fa331287c0f0030e4339a850c5d1f847094ec90c",
+    "sanitized_sha256": "2c4efc73740351d0223dfb0ba7af15f209707414b5f85319aa666594d7e21e45",
+    "substitutions": 13
+   },
+   {
+    "path": "research/concorde_metaopt/evidence/s3/analysis/repro/leadpatched.log",
+    "origin_sha256_unsanitized": "69ca69a00b08b2db4abd175cd8568be0a6f37d9276eec4390d91108bd581149d",
+    "sanitized_sha256": "c1f682f8bc639b25c05a5846f032049f6163f2313d40b84a6a310b756299c2b2",
+    "substitutions": 1
+   },
+   {
+    "path": "research/concorde_metaopt/evidence/s3/analysis/repro/ood_supplementary.py",
+    "origin_sha256_unsanitized": "f0c79b7208185538f856764677b96990bbe2c3558f125f72ecbb689e328fc977",
+    "sanitized_sha256": "bbc16c6647933aa180e71e81513a1cb84b0ed6998a8c38b8209521747dc93e20",
+    "substitutions": 2
+   },
+   {
+    "path": "research/concorde_metaopt/evidence/s3/analysis/repro/run_s3_analysis_leadpatched.py",
+    "origin_sha256_unsanitized": "a3aac137f5ca9f4343288d0beb34c1a33f3b35e387e64909ad6029afb863aba4",
+    "sanitized_sha256": "5656ee902d5b3bdd00983c7c91a785590e68ce962deb0a3739e82adf4e20886f",
+    "substitutions": 1
+   },
+   {
+    "path": "research/concorde_metaopt/evidence/s3/bench/bench_v13a_console_run2.log",
+    "origin_sha256_unsanitized": "dfc829b08df9e2303b9840c8a2aeec76a32ba26e7db0e2d48d12fcbecb06ff56",
+    "sanitized_sha256": "92c7e549e78ca862505b755afaabee7567be38cd34c9d9d47720bc6f05e9522d",
+    "substitutions": 1
+   },
+   {
+    "path": "research/concorde_metaopt/evidence/s3/bench/bench_v13a_console_v2.log",
+    "origin_sha256_unsanitized": "d7638207846dce21fc9a93c14ee9c5cd7b1b6d8d3d6b7607d0ba8c29d54aa643",
+    "sanitized_sha256": "f20d6b61b4fc0822de504f78893f2af823d94174c12b495e2f57b9842a70c433",
+    "substitutions": 1
+   },
+   {
+    "path": "research/concorde_metaopt/evidence/s3/reviews/S3_m4_a7_commands.log",
+    "origin_sha256_unsanitized": "47e70bc148ceb008151ce156f6c0f288bca9812e03bfe48b10448ba19e779349",
+    "sanitized_sha256": "aaadc34a6e5af647403c750397f0fcb85a2a09be66948c9e4891a937701681bf",
+    "substitutions": 32
+   },
+   {
+    "path": "research/concorde_metaopt/evidence/s3/reviews/S3_m4_a7_findings.json",
+    "origin_sha256_unsanitized": "94e588c3f582575b88146ae175a4fc973e56eb26933d4d41417582ae56847806",
+    "sanitized_sha256": "c2847e477f3b6b5dad30ad1be02ac001878c3cd38e0229ac4e4252f97352c583",
+    "substitutions": 13
+   },
+   {
+    "path": "research/concorde_metaopt/evidence/s3/reviews/S3_m4_a7_independent_recompute.log",
+    "origin_sha256_unsanitized": "6d6c2f384e2f3bf0a5ac896b4f054aec252e7aa4ffc1bab121707b09f83d414a",
+    "sanitized_sha256": "8b64a9b7ff5367fa6231054dd9ebb6687f0dd94b3072769df92fe5d32235a49a",
+    "substitutions": 3
+   },
+   {
+    "path": "research/concorde_metaopt/evidence/s3/reviews/S3_m4_a7_model_sha_table.md",
+    "origin_sha256_unsanitized": "fc7b1f40317fd8df5a17b491a08ca673524c5371b4c53d5c76d9db1f2ea545d1",
+    "sanitized_sha256": "6d1e6f1e5f8ff59d98291b8ce7f679888d6849648cfbfc57d3b24b17e2b9fc15",
+    "substitutions": 2
+   },
+   {
+    "path": "research/concorde_metaopt/evidence/s3/reviews/S3_m4_a7_result_review.md",
+    "origin_sha256_unsanitized": "2b21f3b1ab0e8c592d71c0eff61124a4f7c0c2a82012903a4a7f0e94dc4c988d",
+    "sanitized_sha256": "96c2bdc27f7699ca1afa1b994c116d03fc4f5e336c8f1e356f2327b1975e64b9",
+    "substitutions": 20
+   },
+   {
+    "path": "research/concorde_metaopt/evidence/s3/reviews/S3_m4_a7_verdict.json",
+    "origin_sha256_unsanitized": "49bddbd48c20933ac33994908ceb686d3734f2c562f7fdf66a172d088cb7db04",
+    "sanitized_sha256": "c2a8bf03d4c1500dc6e2fb963b4b5d6bdd96274796ad6a9617fd8f0070575672",
+    "substitutions": 2
+   },
+   {
+    "path": "research/concorde_metaopt/evidence/s3/reviews/S3_m5_a5_compare_vs_lead.json",
+    "origin_sha256_unsanitized": "23d0675dce61572c414dea3f38a37bf199a4818e1691ad7562cdaab5a133a2ea",
+    "sanitized_sha256": "58fece439876bc2a452db210ef2beecef3a7d2021a434becce6992a961aecfc9",
+    "substitutions": 40
+   },
+   {
+    "path": "research/concorde_metaopt/evidence/s3/reviews/S3_m5_a5_result_review.md",
+    "origin_sha256_unsanitized": "e533dc0f5a7b92a6af52f3513e7c7a4308c578a0e161db6019f6931231d0331c",
+    "sanitized_sha256": "39c98aba21500bd4f4caa79bfb32bba366e92491e6f6a3437632553f50e01a18",
+    "substitutions": 5
+   },
+   {
+    "path": "research/concorde_metaopt/evidence/s3/reviews/S3_m5_a5_review_01_defects.md",
+    "origin_sha256_unsanitized": "09ec9e588056891d6947cd4808d0ec71922b2cb367d9256836fd06411c954135",
+    "sanitized_sha256": "b918e18556f23708bc2f166a802a583186e68bb8bd8b580b773d5787b6408c50",
+    "substitutions": 1
+   },
+   {
+    "path": "research/concorde_metaopt/evidence/s3/reviews/S3_m5_a5_review_02_patch.md",
+    "origin_sha256_unsanitized": "e40d511e540a3ed8ca3de4b86ea79ec62934ef4f4dac82af3bb08013df4ea4a4",
+    "sanitized_sha256": "4c902d1d8e49bce37dab58b10544b56154a1c1537f039344ff350ee531b8dfee",
+    "substitutions": 3
+   },
+   {
+    "path": "research/concorde_metaopt/evidence/s3/reviews/S3_m5_a5_review_03_decision.md",
+    "origin_sha256_unsanitized": "3ba38f6796458396d00cc90fc1f0110845ccfa4c940fd33d60e6c4197dcda6d8",
+    "sanitized_sha256": "b4860baa5a93aea8efa096b4c817fa67be15128d6b5e5ae9d7a42a9dc782e191",
+    "substitutions": 5
+   },
+   {
+    "path": "research/concorde_metaopt/evidence/s3/reviews/S3_m5_a5_verdict.json",
+    "origin_sha256_unsanitized": "f7fd779d2b9c7a6d6409ebf8bc256a14fb78b470391917b398be7df787066112",
+    "sanitized_sha256": "d35ba0412ebc066bcc3119985c2b679da423a093fb9612ceb2b68edcfd9d6d0c",
+    "substitutions": 4
+   },
+   {
+    "path": "research/concorde_metaopt/evidence/s3/run/run_artifacts_manifest.json",
+    "origin_sha256_unsanitized": "ec13f6da798528c511676950e579681ae35e4f78e54411a98486f4b04d460d5e",
+    "sanitized_sha256": "a8228c58997e977f379b84a63209e432eb148b5c6d27d5f0ca7a57ba0668b00c",
+    "substitutions": 8
+   }
+  ]
+ },
+ "externalized": [
+  {
+   "path": "determinism/r1/run_records.jsonl",
+   "bytes": 4436840,
+   "sha256": "fba07081f39a40b6d7f98022b0c54d62cc12a06ef9c69a125d0913b6bc3ce618",
+   "storage": "externalized",
+   "external_path_token": "<STATE_ROOT>/p4-route-a/s3_runs/p4ra-s3-formal-20261109T1310Z/determinism/r1/run_records.jsonl",
+   "read_note": "仓库外权威目录，按 sha256+bytes 校验，不提交 git"
+  },
+  {
+   "path": "determinism/r2/run_records.jsonl",
+   "bytes": 4436840,
+   "sha256": "fba07081f39a40b6d7f98022b0c54d62cc12a06ef9c69a125d0913b6bc3ce618",
+   "storage": "externalized",
+   "external_path_token": "<STATE_ROOT>/p4-route-a/s3_runs/p4ra-s3-formal-20261109T1310Z/determinism/r2/run_records.jsonl",
+   "read_note": "仓库外权威目录，按 sha256+bytes 校验，不提交 git"
+  },
+  {
+   "path": "determinism/r3/run_records.jsonl",
+   "bytes": 4436840,
+   "sha256": "fba07081f39a40b6d7f98022b0c54d62cc12a06ef9c69a125d0913b6bc3ce618",
+   "storage": "externalized",
+   "external_path_token": "<STATE_ROOT>/p4-route-a/s3_runs/p4ra-s3-formal-20261109T1310Z/determinism/r3/run_records.jsonl",
+   "read_note": "仓库外权威目录，按 sha256+bytes 校验，不提交 git"
+  },
+  {
+   "path": "negative_control_records.jsonl",
+   "bytes": 23153628,
+   "sha256": "117b46cbde79be6952723e52786c85cb8aec15f6587398fbe37f6f93b9d539a6",
+   "storage": "externalized",
+   "external_path_token": "<STATE_ROOT>/p4-route-a/s3_runs/p4ra-s3-formal-20261109T1310Z/negative_control_records.jsonl",
+   "read_note": "仓库外权威目录，按 sha256+bytes 校验，不提交 git"
+  },
+  {
+   "path": "ood_records.jsonl",
+   "bytes": 22430606,
+   "sha256": "e8372903b82e5a2730bdc3b557d5d367d3ebe5d90b5d1d1d204be4415f2539ba",
+   "storage": "externalized",
+   "external_path_token": "<STATE_ROOT>/p4-route-a/s3_runs/p4ra-s3-formal-20261109T1310Z/ood_records.jsonl",
+   "read_note": "仓库外权威目录，按 sha256+bytes 校验，不提交 git"
+  },
+  {
+   "path": "run_records.jsonl",
+   "bytes": 221974782,
+   "sha256": "f6e0d02ad7603605406858f216337b762324809ebee154842eba108ae7128ddf",
+   "storage": "externalized",
+   "external_path_token": "<STATE_ROOT>/p4-route-a/s3_runs/p4ra-s3-formal-20261109T1310Z/run_records.jsonl",
+   "read_note": "仓库外权威目录，按 sha256+bytes 校验，不提交 git"
+  },
+  {
+   "path": "run_summary.json",
+   "bytes": 28092573,
+   "sha256": "f5225e1e61d7c5944336b521b0f10d950b969669de808aef924b8953a0b876d2",
+   "storage": "externalized",
+   "external_path_token": "<STATE_ROOT>/p4-route-a/s3_runs/p4ra-s3-formal-20261109T1310Z/run_summary.json",
+   "read_note": "仓库外权威目录，按 sha256+bytes 校验，不提交 git"
+  }
+ ],
+ "excluded_from_package": [
+  {
+   "path": "仓库外 EXT 目录中的 A7/A5 探针脚本、命令日志与中间 JSON",
+   "reason": "本包仅保留主报告/结论/复核日志；其余中间物在仓库外 EXT 目录"
+  },
+  {
+   "path": "run_records.jsonl / ood_records.jsonl / negative_control_records.jsonl / determinism/r*/run_records.jsonl",
+   "reason": "大记录流外置（见 externalized），仓库只登记 sha256+bytes"
+  }
+ ],
+ "files": [
+  {
+   "path": "research/concorde_metaopt/evidence/s3/README.md",
+   "category": "meta",
+   "bytes_raw": 20822,
+   "bytes_lf": 20822,
+   "sha256_raw": "b141c8385895cae5f8272b2e0587b3fb06ddabc115ba47f44cb9586dd3034052",
+   "sha256_lf": "b141c8385895cae5f8272b2e0587b3fb06ddabc115ba47f44cb9586dd3034052",
+   "eol": "LF",
+   "sanitized": true,
+   "origin_sha256_unsanitized": "03f62b2938d5778531b1a13bccc9f0ad582857683c6662c09171cf9d013897ca",
+   "origin_bytes_unsanitized": 19063,
+   "sanitization_rule": "absolute-path-token-replacement",
+   "substitutions": 3
+  },
+  {
+   "path": "research/concorde_metaopt/evidence/s3/analysis/aggregate.json",
+   "category": "analysis_aggregate",
+   "bytes_raw": 161933,
+   "bytes_lf": 161933,
+   "sha256_raw": "7e54b1c973ba776d2664e453d59a879347f5cfb81dda8a6ca9a6065e245e29e4",
+   "sha256_lf": "7e54b1c973ba776d2664e453d59a879347f5cfb81dda8a6ca9a6065e245e29e4",
+   "eol": "LF",
+   "sanitized": true,
+   "origin_sha256_unsanitized": "27bb5f17c4650dab5b20228abad1b0f82507f017d66918676b608dd15f3fca94",
+   "origin_bytes_unsanitized": 164295,
+   "sanitization_rule": "absolute-path-token-replacement",
+   "substitutions": 39
+  },
+  {
+   "path": "research/concorde_metaopt/evidence/s3/analysis/analysis_disclosures.json",
+   "category": "analysis_table",
+   "bytes_raw": 5390,
+   "bytes_lf": 5390,
+   "sha256_raw": "b2886867d445285f4a8d32fcee44dd021b9835142c853c4fdba3c757f5c9bf22",
+   "sha256_lf": "b2886867d445285f4a8d32fcee44dd021b9835142c853c4fdba3c757f5c9bf22",
+   "eol": "LF",
+   "sanitized": false
+  },
+  {
+   "path": "research/concorde_metaopt/evidence/s3/analysis/fig3_feasible_hit_rate_by_arm.png",
+   "category": "figure_png",
+   "bytes_raw": 60341,
+   "bytes_lf": 60341,
+   "sha256_raw": "d13cf8dd1672c44d095a5cd2e3d3113559016278caa9d2c43c198171c12add2b",
+   "sha256_lf": "d13cf8dd1672c44d095a5cd2e3d3113559016278caa9d2c43c198171c12add2b",
+   "eol": "BINARY",
+   "sanitized": false
+  },
+  {
+   "path": "research/concorde_metaopt/evidence/s3/analysis/fig3_feasible_hit_rate_by_arm_data.csv",
+   "category": "figure_data_csv",
+   "bytes_raw": 788,
+   "bytes_lf": 777,
+   "sha256_raw": "054e391b1da288a2ce40e0cad81b407cf1a949ea452bcd7adfe207bcb8e7a31b",
+   "sha256_lf": "4a0ea7faa4ee8a36a67a0fb8a48b922b80ec696ca03aaada30df6505e8f9407a",
+   "eol": "CRLF",
+   "sanitized": false
+  },
+  {
+   "path": "research/concorde_metaopt/evidence/s3/analysis/fig4_best_feasible_and_first_feasible.png",
+   "category": "figure_png",
+   "bytes_raw": 88935,
+   "bytes_lf": 88935,
+   "sha256_raw": "4b6cdb7db0136aa86c314273297a8d4c5c8d467442fdfe27f69bc0bad71524c2",
+   "sha256_lf": "4b6cdb7db0136aa86c314273297a8d4c5c8d467442fdfe27f69bc0bad71524c2",
+   "eol": "BINARY",
+   "sanitized": false
+  },
+  {
+   "path": "research/concorde_metaopt/evidence/s3/analysis/fig4_best_feasible_and_first_feasible_data.csv",
+   "category": "figure_data_csv",
+   "bytes_raw": 1198,
+   "bytes_lf": 1177,
+   "sha256_raw": "da59c14f13bc31764360f3a885e74e38f79ee4a47d72077f44069c63adf0e6ac",
+   "sha256_lf": "cec0f5aebf2a1017935d98c7d4df11cb2e1618cc41572d8d1eaae908ba5c3f6e",
+   "eol": "CRLF",
+   "sanitized": false
+  },
+  {
+   "path": "research/concorde_metaopt/evidence/s3/analysis/fig5_fomaml_vs_full_vs_anil_cost.png",
+   "category": "figure_png",
+   "bytes_raw": 57233,
+   "bytes_lf": 57233,
+   "sha256_raw": "b870c49be2b4893bdd51e30ab9fc7e2b47d5f8c74fd090b8ef3c4d75c114b6ea",
+   "sha256_lf": "b870c49be2b4893bdd51e30ab9fc7e2b47d5f8c74fd090b8ef3c4d75c114b6ea",
+   "eol": "BINARY",
+   "sanitized": false
+  },
+  {
+   "path": "research/concorde_metaopt/evidence/s3/analysis/fig5_fomaml_vs_full_vs_anil_cost_data.csv",
+   "category": "figure_data_csv",
+   "bytes_raw": 330,
+   "bytes_lf": 319,
+   "sha256_raw": "df792f5b3bd58ffe445ec7ae70190027f8f7bbab3948a817f8da8a09cba5d954",
+   "sha256_lf": "4bcced6e5b3e21ac15eae52d1e14882885b6dfd91aa48c4c3232a60c456f4f0d",
+   "eol": "CRLF",
+   "sanitized": false
+  },
+  {
+   "path": "research/concorde_metaopt/evidence/s3/analysis/fig6_task_family_diagnostics.png",
+   "category": "figure_png",
+   "bytes_raw": 58910,
+   "bytes_lf": 58910,
+   "sha256_raw": "d08c674c1b3092e8d911a59641387a8a902cf4abbe9a364b08b197cadbca2668",
+   "sha256_lf": "d08c674c1b3092e8d911a59641387a8a902cf4abbe9a364b08b197cadbca2668",
+   "eol": "BINARY",
+   "sanitized": false
+  },
+  {
+   "path": "research/concorde_metaopt/evidence/s3/analysis/fig6_task_family_diagnostics_data.csv",
+   "category": "figure_data_csv",
+   "bytes_raw": 8420,
+   "bytes_lf": 8309,
+   "sha256_raw": "c3183eca0f9b023514c9ff0a96372bff9d163184bb3092a16b37e72e8039cd60",
+   "sha256_lf": "a6846810e73af1859bb5e6404c00adc3c732f8268ce3145ef05a13414e16011c",
+   "eol": "CRLF",
+   "sanitized": false
+  },
+  {
+   "path": "research/concorde_metaopt/evidence/s3/analysis/fig8_negative_controls.png",
+   "category": "figure_png",
+   "bytes_raw": 47875,
+   "bytes_lf": 47875,
+   "sha256_raw": "3436dabdd1670a1d95fedf616881747bceea56e0c9f516bf69743cd86bf1aa12",
+   "sha256_lf": "3436dabdd1670a1d95fedf616881747bceea56e0c9f516bf69743cd86bf1aa12",
+   "eol": "BINARY",
+   "sanitized": false
+  },
+  {
+   "path": "research/concorde_metaopt/evidence/s3/analysis/fig8_negative_controls_data.csv",
+   "category": "figure_data_csv",
+   "bytes_raw": 1612,
+   "bytes_lf": 1596,
+   "sha256_raw": "899222ba28d887ffe1fff7287202bbd2008344473d5641244f9bd5f9088f9548",
+   "sha256_lf": "7bfc03e16ba23fef2453716246d895e8dd3a5fe454997ecd3d2f26cf415199c5",
+   "eol": "CRLF",
+   "sanitized": false
+  },
+  {
+   "path": "research/concorde_metaopt/evidence/s3/analysis/fig9_determinism_and_budget.png",
+   "category": "figure_png",
+   "bytes_raw": 60000,
+   "bytes_lf": 60000,
+   "sha256_raw": "d9e5d0990a3402b9a206680e1ac52118a71e33a6ed2289bae7b0b7ae225abed4",
+   "sha256_lf": "d9e5d0990a3402b9a206680e1ac52118a71e33a6ed2289bae7b0b7ae225abed4",
+   "eol": "BINARY",
+   "sanitized": false
+  },
+  {
+   "path": "research/concorde_metaopt/evidence/s3/analysis/fig9_determinism_and_budget_data.csv",
+   "category": "figure_data_csv",
+   "bytes_raw": 1241,
+   "bytes_lf": 1227,
+   "sha256_raw": "51f3f03ac7638868a43499dbcbd054bc91bc76f3938895732ec0f5d13e332e0c",
+   "sha256_lf": "fc9f42b93e0f14c6b4ea1a28f9cc9289d5c68f63c0c863eb47ba44142f0c7cb7",
+   "eol": "CRLF",
+   "sanitized": false
+  },
+  {
+   "path": "research/concorde_metaopt/evidence/s3/analysis/figure_generation_summary.json",
+   "category": "analysis_table",
+   "bytes_raw": 2955,
+   "bytes_lf": 2886,
+   "sha256_raw": "bdb7c8fcf90f0543eb390bce1c4e79fa03c2cc9a335a37a4acae7e90afadda86",
+   "sha256_lf": "10655be86b611c4ede3ffe5ea4a8909800b9116e62683facbe677ceb5f604810",
+   "eol": "CRLF",
+   "sanitized": true,
+   "origin_sha256_unsanitized": "09497bfde2f243a7307e273db22abaf92fc30f2d283242efdeeddcf6f266e0ff",
+   "origin_bytes_unsanitized": 3699,
+   "sanitization_rule": "absolute-path-token-replacement",
+   "substitutions": 12
+  },
+  {
+   "path": "research/concorde_metaopt/evidence/s3/analysis/figure_status.json",
+   "category": "analysis_table",
+   "bytes_raw": 2956,
+   "bytes_lf": 2956,
+   "sha256_raw": "88b75c6996ac267c7c8a9659ff535a4de515312a8d0117053ce6324e8fcb6a2e",
+   "sha256_lf": "88b75c6996ac267c7c8a9659ff535a4de515312a8d0117053ce6324e8fcb6a2e",
+   "eol": "LF",
+   "sanitized": true,
+   "origin_sha256_unsanitized": "868f93d242c56f8f9a10a9e934d90162ada02e961367ef50241e4147e2c52da7",
+   "origin_bytes_unsanitized": 3700,
+   "sanitization_rule": "absolute-path-token-replacement",
+   "substitutions": 12
+  },
+  {
+   "path": "research/concorde_metaopt/evidence/s3/analysis/ood_supplementary_descriptives.csv",
+   "category": "analysis_table",
+   "bytes_raw": 6464,
+   "bytes_lf": 6464,
+   "sha256_raw": "963350d4044eadd0a8e83d5965e2325fafa99e42f05eb465bff53ed10cfb7da7",
+   "sha256_lf": "963350d4044eadd0a8e83d5965e2325fafa99e42f05eb465bff53ed10cfb7da7",
+   "eol": "LF",
+   "sanitized": false
+  },
+  {
+   "path": "research/concorde_metaopt/evidence/s3/analysis/ood_supplementary_summary.json",
+   "category": "analysis_table",
+   "bytes_raw": 1696,
+   "bytes_lf": 1696,
+   "sha256_raw": "751243d11f9b6abc1b25dab69bd3ee9c78612c23b2cd2682f5095e401ee0c64b",
+   "sha256_lf": "751243d11f9b6abc1b25dab69bd3ee9c78612c23b2cd2682f5095e401ee0c64b",
+   "eol": "LF",
+   "sanitized": true,
+   "origin_sha256_unsanitized": "a30cfc73798b97b4bd061834f0ae3eadeba17662f452480c54219fc5e4e0164a",
+   "origin_bytes_unsanitized": 1739,
+   "sanitization_rule": "absolute-path-token-replacement",
+   "substitutions": 1
+  },
+  {
+   "path": "research/concorde_metaopt/evidence/s3/analysis/repro/analysis_source_run.log",
+   "category": "repro",
+   "bytes_raw": 2110,
+   "bytes_lf": 2110,
+   "sha256_raw": "b8dcd007cd04ab8b70f57ad8050e6095abb328e6ce66d98b2f54b9a06c1a759a",
+   "sha256_lf": "b8dcd007cd04ab8b70f57ad8050e6095abb328e6ce66d98b2f54b9a06c1a759a",
+   "eol": "LF",
+   "sanitized": true,
+   "origin_sha256_unsanitized": "23acc630219e4b8146b7dd847a60de26ae375a22ca843beeb779d8713b831c2a",
+   "origin_bytes_unsanitized": 4220,
+   "sanitization_rule": "absolute-path-token-replacement",
+   "substitutions": 8
+  },
+  {
+   "path": "research/concorde_metaopt/evidence/s3/analysis/repro/leadpatch_audit.json",
+   "category": "repro",
+   "bytes_raw": 5693,
+   "bytes_lf": 5551,
+   "sha256_raw": "cd01c9e8610b6189c17c10cc56f88159e5c889b89c0118292b1901cb9246f8c8",
+   "sha256_lf": "2c4efc73740351d0223dfb0ba7af15f209707414b5f85319aa666594d7e21e45",
+   "eol": "CRLF",
+   "sanitized": true,
+   "origin_sha256_unsanitized": "39ea855b5679c3d805bf0c48fa331287c0f0030e4339a850c5d1f847094ec90c",
+   "origin_bytes_unsanitized": 6499,
+   "sanitization_rule": "absolute-path-token-replacement",
+   "substitutions": 13
+  },
+  {
+   "path": "research/concorde_metaopt/evidence/s3/analysis/repro/leadpatched.log",
+   "category": "repro",
+   "bytes_raw": 354,
+   "bytes_lf": 354,
+   "sha256_raw": "c1f682f8bc639b25c05a5846f032049f6163f2313d40b84a6a310b756299c2b2",
+   "sha256_lf": "c1f682f8bc639b25c05a5846f032049f6163f2313d40b84a6a310b756299c2b2",
+   "eol": "LF",
+   "sanitized": true,
+   "origin_sha256_unsanitized": "69ca69a00b08b2db4abd175cd8568be0a6f37d9276eec4390d91108bd581149d",
+   "origin_bytes_unsanitized": 740,
+   "sanitization_rule": "absolute-path-token-replacement",
+   "substitutions": 1
+  },
+  {
+   "path": "research/concorde_metaopt/evidence/s3/analysis/repro/ood_supplementary.py",
+   "category": "repro",
+   "bytes_raw": 3593,
+   "bytes_lf": 3593,
+   "sha256_raw": "bbc16c6647933aa180e71e81513a1cb84b0ed6998a8c38b8209521747dc93e20",
+   "sha256_lf": "bbc16c6647933aa180e71e81513a1cb84b0ed6998a8c38b8209521747dc93e20",
+   "eol": "LF",
+   "sanitized": true,
+   "origin_sha256_unsanitized": "f0c79b7208185538f856764677b96990bbe2c3558f125f72ecbb689e328fc977",
+   "origin_bytes_unsanitized": 3679,
+   "sanitization_rule": "absolute-path-token-replacement",
+   "substitutions": 2
+  },
+  {
+   "path": "research/concorde_metaopt/evidence/s3/analysis/repro/run_s3_analysis_leadpatched.py",
+   "category": "repro",
+   "bytes_raw": 6985,
+   "bytes_lf": 6985,
+   "sha256_raw": "5656ee902d5b3bdd00983c7c91a785590e68ce962deb0a3739e82adf4e20886f",
+   "sha256_lf": "5656ee902d5b3bdd00983c7c91a785590e68ce962deb0a3739e82adf4e20886f",
+   "eol": "LF",
+   "sanitized": true,
+   "origin_sha256_unsanitized": "a3aac137f5ca9f4343288d0beb34c1a33f3b35e387e64909ad6029afb863aba4",
+   "origin_bytes_unsanitized": 6990,
+   "sanitization_rule": "absolute-path-token-replacement",
+   "substitutions": 1
+  },
+  {
+   "path": "research/concorde_metaopt/evidence/s3/analysis/s3_cost_table.csv",
+   "category": "analysis_table",
+   "bytes_raw": 984,
+   "bytes_lf": 973,
+   "sha256_raw": "3c331882dc6c6248424ed74f2fba725a1e38917557aafca1a8456e829ceff261",
+   "sha256_lf": "093c6d7e56829d3aa95c2062967f591263a48807880225af83718f39f1e75215",
+   "eol": "CRLF",
+   "sanitized": false
+  },
+  {
+   "path": "research/concorde_metaopt/evidence/s3/analysis/s3_endpoint_tables.csv",
+   "category": "analysis_table",
+   "bytes_raw": 15384,
+   "bytes_lf": 15283,
+   "sha256_raw": "08c9d0529641461fcb21a1530a2471e462b73d24b16de58377257a6d68031eb4",
+   "sha256_lf": "966acf3c2d9b6e868ccb686fbc00a28f4a45114c7efc3622d430805caf56cf0e",
+   "eol": "CRLF",
+   "sanitized": false
+  },
+  {
+   "path": "research/concorde_metaopt/evidence/s3/analysis/s3_holm_family.csv",
+   "category": "analysis_table",
+   "bytes_raw": 544,
+   "bytes_lf": 539,
+   "sha256_raw": "aab407dd56388f6272a03ec8578599093ce19f347822d6f85c1c8f29b0974150",
+   "sha256_lf": "53b20c3e4ab8de4293a9864fee000b7ddce83822ca2c691b227a97f506cc45eb",
+   "eol": "CRLF",
+   "sanitized": false
+  },
+  {
+   "path": "research/concorde_metaopt/evidence/s3/analysis/s3_negative_controls.csv",
+   "category": "analysis_table",
+   "bytes_raw": 1612,
+   "bytes_lf": 1596,
+   "sha256_raw": "07a439a653043fc54a31b1925e4df75eaed201f6b19fc34c7720ea58eacc8198",
+   "sha256_lf": "d863c6de07b6765572eb1189c100cc4117c5671b4033eb2f8609322b25385ede",
+   "eol": "CRLF",
+   "sanitized": false
+  },
+  {
+   "path": "research/concorde_metaopt/evidence/s3/analysis/s3_null_disclosure.csv",
+   "category": "analysis_table",
+   "bytes_raw": 12179,
+   "bytes_lf": 12078,
+   "sha256_raw": "47dd0f2914fa86a9e13afd83c57c09e17234b2bef1738469d7d86848ecc65417",
+   "sha256_lf": "2bb8c75be77d18bca494e5e098927cbcb998ba709f327b2025543bc24c947ee4",
+   "eol": "CRLF",
+   "sanitized": false
+  },
+  {
+   "path": "research/concorde_metaopt/evidence/s3/analysis/s3_ood_descriptives.csv",
+   "category": "analysis_table",
+   "bytes_raw": 588,
+   "bytes_lf": 577,
+   "sha256_raw": "61d349e8eefefbca4a726a575a4ef3d64b993aedec6a127a5a1122a428e07eec",
+   "sha256_lf": "3591fe419776adab4944f35d86c58e49983021f6756bd89e8915bde1c24a85f2",
+   "eol": "CRLF",
+   "sanitized": false
+  },
+  {
+   "path": "research/concorde_metaopt/evidence/s3/analysis/s3_per_task_endpoint_values.csv",
+   "category": "analysis_table",
+   "bytes_raw": 36153,
+   "bytes_lf": 35752,
+   "sha256_raw": "7de822fe43de8f959419608a5abef08182c0b8b1a885d6a8ef11203bfea255e4",
+   "sha256_lf": "a545adb880674678f28afa49e632d58a6ad1ad3d15d8eb608fb194e56cf2e11c",
+   "eol": "CRLF",
+   "sanitized": false
+  },
+  {
+   "path": "research/concorde_metaopt/evidence/s3/bench/bench_v13a.json",
+   "category": "bench",
+   "bytes_raw": 26825,
+   "bytes_lf": 26825,
+   "sha256_raw": "16fbb1f587a2b4d7ae0ce1650fa57c3043cd586fc95b96cceae57901aa553d16",
+   "sha256_lf": "16fbb1f587a2b4d7ae0ce1650fa57c3043cd586fc95b96cceae57901aa553d16",
+   "eol": "LF",
+   "sanitized": false
+  },
+  {
+   "path": "research/concorde_metaopt/evidence/s3/bench/bench_v13a_console_run2.log",
+   "category": "bench",
+   "bytes_raw": 1406,
+   "bytes_lf": 1406,
+   "sha256_raw": "92c7e549e78ca862505b755afaabee7567be38cd34c9d9d47720bc6f05e9522d",
+   "sha256_lf": "92c7e549e78ca862505b755afaabee7567be38cd34c9d9d47720bc6f05e9522d",
+   "eol": "LF",
+   "sanitized": true,
+   "origin_sha256_unsanitized": "dfc829b08df9e2303b9840c8a2aeec76a32ba26e7db0e2d48d12fcbecb06ff56",
+   "origin_bytes_unsanitized": 3026,
+   "sanitization_rule": "absolute-path-token-replacement",
+   "substitutions": 1
+  },
+  {
+   "path": "research/concorde_metaopt/evidence/s3/bench/bench_v13a_console_v2.log",
+   "category": "bench",
+   "bytes_raw": 1400,
+   "bytes_lf": 1400,
+   "sha256_raw": "f20d6b61b4fc0822de504f78893f2af823d94174c12b495e2f57b9842a70c433",
+   "sha256_lf": "f20d6b61b4fc0822de504f78893f2af823d94174c12b495e2f57b9842a70c433",
+   "eol": "LF",
+   "sanitized": true,
+   "origin_sha256_unsanitized": "d7638207846dce21fc9a93c14ee9c5cd7b1b6d8d3d6b7607d0ba8c29d54aa643",
+   "origin_bytes_unsanitized": 3014,
+   "sanitization_rule": "absolute-path-token-replacement",
+   "substitutions": 1
+  },
+  {
+   "path": "research/concorde_metaopt/evidence/s3/bench/bench_v13a_run2.json",
+   "category": "bench",
+   "bytes_raw": 26821,
+   "bytes_lf": 26821,
+   "sha256_raw": "004bbe644f6e2f7c8a1e1350d265fa78d99c29d7f787ea7deb11ccbd3382a331",
+   "sha256_lf": "004bbe644f6e2f7c8a1e1350d265fa78d99c29d7f787ea7deb11ccbd3382a331",
+   "eol": "LF",
+   "sanitized": false
+  },
+  {
+   "path": "research/concorde_metaopt/evidence/s3/calibration/family_calibration_20261109T120826Z.json",
+   "category": "frozen_input",
+   "bytes_raw": 2283,
+   "bytes_lf": 2283,
+   "sha256_raw": "8895eb4882b2f7cae2f87565be361a0bab09458d3285ffe420a93779547cc01d",
+   "sha256_lf": "8895eb4882b2f7cae2f87565be361a0bab09458d3285ffe420a93779547cc01d",
+   "eol": "LF",
+   "sanitized": false
+  },
+  {
+   "path": "research/concorde_metaopt/evidence/s3/family_package/p4ra_fqec_v1_family_package.json",
+   "category": "frozen_input",
+   "bytes_raw": 202120,
+   "bytes_lf": 202120,
+   "sha256_raw": "70075498062e03dba7e2d258d3b4f7700f5a7b8a48ffbd37bef72f390deca23e",
+   "sha256_lf": "70075498062e03dba7e2d258d3b4f7700f5a7b8a48ffbd37bef72f390deca23e",
+   "eol": "LF",
+   "sanitized": false
+  },
+  {
+   "path": "research/concorde_metaopt/evidence/s3/gate/fd_or_gradient_gate.json",
+   "category": "gate",
+   "bytes_raw": 9768,
+   "bytes_lf": 9768,
+   "sha256_raw": "651593e930807721ddb4a5795d5a6d7c4cee5827d38c581a9b242d417c8cb1cd",
+   "sha256_lf": "651593e930807721ddb4a5795d5a6d7c4cee5827d38c581a9b242d417c8cb1cd",
+   "eol": "LF",
+   "sanitized": false
+  },
+  {
+   "path": "research/concorde_metaopt/evidence/s3/gate/w8_pilot_gate.json",
+   "category": "gate",
+   "bytes_raw": 17233,
+   "bytes_lf": 17233,
+   "sha256_raw": "f6ad0de9989045cbad783968262e7160da308e79e3362e985c33cc7600b8a4cf",
+   "sha256_lf": "f6ad0de9989045cbad783968262e7160da308e79e3362e985c33cc7600b8a4cf",
+   "eol": "LF",
+   "sanitized": false
+  },
+  {
+   "path": "research/concorde_metaopt/evidence/s3/hash_vectors.json",
+   "category": "meta",
+   "bytes_raw": 12472,
+   "bytes_lf": 12472,
+   "sha256_raw": "bde487fb6ed49768ca76e328a31c0efab77d2bd39d41c0ac99def4bb8e876203",
+   "sha256_lf": "bde487fb6ed49768ca76e328a31c0efab77d2bd39d41c0ac99def4bb8e876203",
+   "eol": "LF",
+   "sanitized": false
+  },
+  {
+   "path": "research/concorde_metaopt/evidence/s3/models/anil_meta_0.json",
+   "category": "frozen_model",
+   "bytes_raw": 107370,
+   "bytes_lf": 107370,
+   "sha256_raw": "37201fcf2462d317906721f2716a741ada3a19e1e79f9991bf1ef309031eba29",
+   "sha256_lf": "37201fcf2462d317906721f2716a741ada3a19e1e79f9991bf1ef309031eba29",
+   "eol": "LF",
+   "sanitized": false
+  },
+  {
+   "path": "research/concorde_metaopt/evidence/s3/models/anil_meta_1.json",
+   "category": "frozen_model",
+   "bytes_raw": 107387,
+   "bytes_lf": 107387,
+   "sha256_raw": "604b0e54b00805819805306e79dce24b20806ec0a6843af371e30f59c773aae1",
+   "sha256_lf": "604b0e54b00805819805306e79dce24b20806ec0a6843af371e30f59c773aae1",
+   "eol": "LF",
+   "sanitized": false
+  },
+  {
+   "path": "research/concorde_metaopt/evidence/s3/models/anil_meta_2.json",
+   "category": "frozen_model",
+   "bytes_raw": 107378,
+   "bytes_lf": 107378,
+   "sha256_raw": "8a2bb85e92ff2b1eea66331cebe17a2140e8db418e32f66eb6cba2ac0c278055",
+   "sha256_lf": "8a2bb85e92ff2b1eea66331cebe17a2140e8db418e32f66eb6cba2ac0c278055",
+   "eol": "LF",
+   "sanitized": false
+  },
+  {
+   "path": "research/concorde_metaopt/evidence/s3/models/episode_bank_meta_0.jsonl",
+   "category": "frozen_model",
+   "bytes_raw": 1104518,
+   "bytes_lf": 1104518,
+   "sha256_raw": "64f0be6432007c1fc317f1b52263aa81e6c2f387ae78d73b9c608c47d44cf3f5",
+   "sha256_lf": "64f0be6432007c1fc317f1b52263aa81e6c2f387ae78d73b9c608c47d44cf3f5",
+   "eol": "LF",
+   "sanitized": false
+  },
+  {
+   "path": "research/concorde_metaopt/evidence/s3/models/episode_bank_meta_1.jsonl",
+   "category": "frozen_model",
+   "bytes_raw": 1104561,
+   "bytes_lf": 1104561,
+   "sha256_raw": "26c2c2013aa1e39f286dda943f53d82f7ce6eee27cbed44d89088fb2bba589b1",
+   "sha256_lf": "26c2c2013aa1e39f286dda943f53d82f7ce6eee27cbed44d89088fb2bba589b1",
+   "eol": "LF",
+   "sanitized": false
+  },
+  {
+   "path": "research/concorde_metaopt/evidence/s3/models/episode_bank_meta_2.jsonl",
+   "category": "frozen_model",
+   "bytes_raw": 1104561,
+   "bytes_lf": 1104561,
+   "sha256_raw": "e3e55f491f6ecc93d52aa7e062f8088bb724aec93b49dfdae6c3f477f1260629",
+   "sha256_lf": "e3e55f491f6ecc93d52aa7e062f8088bb724aec93b49dfdae6c3f477f1260629",
+   "eol": "LF",
+   "sanitized": false
+  },
+  {
+   "path": "research/concorde_metaopt/evidence/s3/models/fomaml_meta_0.json",
+   "category": "frozen_model",
+   "bytes_raw": 107426,
+   "bytes_lf": 107426,
+   "sha256_raw": "520d6ba465f80c910df6add0707a600b8e948cc2c01b9bd58a994b2a3945c6c6",
+   "sha256_lf": "520d6ba465f80c910df6add0707a600b8e948cc2c01b9bd58a994b2a3945c6c6",
+   "eol": "LF",
+   "sanitized": false
+  },
+  {
+   "path": "research/concorde_metaopt/evidence/s3/models/fomaml_meta_1.json",
+   "category": "frozen_model",
+   "bytes_raw": 107429,
+   "bytes_lf": 107429,
+   "sha256_raw": "346ad98742e9a9eab06b9f999a93612055317f471cd8c562dd4cb0f190722478",
+   "sha256_lf": "346ad98742e9a9eab06b9f999a93612055317f471cd8c562dd4cb0f190722478",
+   "eol": "LF",
+   "sanitized": false
+  },
+  {
+   "path": "research/concorde_metaopt/evidence/s3/models/fomaml_meta_2.json",
+   "category": "frozen_model",
+   "bytes_raw": 107363,
+   "bytes_lf": 107363,
+   "sha256_raw": "8ecd4623043dd20dc15ae7ecc1510157cbfbbfde777a1c70c33d68fd1a7da183",
+   "sha256_lf": "8ecd4623043dd20dc15ae7ecc1510157cbfbbfde777a1c70c33d68fd1a7da183",
+   "eol": "LF",
+   "sanitized": false
+  },
+  {
+   "path": "research/concorde_metaopt/evidence/s3/models/model_manifest.json",
+   "category": "frozen_model",
+   "bytes_raw": 3223,
+   "bytes_lf": 3223,
+   "sha256_raw": "6a0a5033c577d8d199294c49f737135e652b816f5e323b23796878c686220450",
+   "sha256_lf": "6a0a5033c577d8d199294c49f737135e652b816f5e323b23796878c686220450",
+   "eol": "LF",
+   "sanitized": false
+  },
+  {
+   "path": "research/concorde_metaopt/evidence/s3/references_sealed/p4ra_fqec_v1_references_sealed.json",
+   "category": "frozen_input",
+   "bytes_raw": 78955,
+   "bytes_lf": 78955,
+   "sha256_raw": "b8575a3e31ce01a62e09ddcc49735f37f8d1d1234805ac7250f2d0411a6d392c",
+   "sha256_lf": "b8575a3e31ce01a62e09ddcc49735f37f8d1d1234805ac7250f2d0411a6d392c",
+   "eol": "LF",
+   "sanitized": false
+  },
+  {
+   "path": "research/concorde_metaopt/evidence/s3/reviews/S3_m4_a7_commands.log",
+   "category": "review",
+   "bytes_raw": 3402,
+   "bytes_lf": 3402,
+   "sha256_raw": "aaadc34a6e5af647403c750397f0fcb85a2a09be66948c9e4891a937701681bf",
+   "sha256_lf": "aaadc34a6e5af647403c750397f0fcb85a2a09be66948c9e4891a937701681bf",
+   "eol": "LF",
+   "sanitized": true,
+   "origin_sha256_unsanitized": "47e70bc148ceb008151ce156f6c0f288bca9812e03bfe48b10448ba19e779349",
+   "origin_bytes_unsanitized": 4304,
+   "sanitization_rule": "absolute-path-token-replacement",
+   "substitutions": 32
+  },
+  {
+   "path": "research/concorde_metaopt/evidence/s3/reviews/S3_m4_a7_findings.json",
+   "category": "review",
+   "bytes_raw": 10807,
+   "bytes_lf": 10807,
+   "sha256_raw": "c2847e477f3b6b5dad30ad1be02ac001878c3cd38e0229ac4e4252f97352c583",
+   "sha256_lf": "c2847e477f3b6b5dad30ad1be02ac001878c3cd38e0229ac4e4252f97352c583",
+   "eol": "LF",
+   "sanitized": true,
+   "origin_sha256_unsanitized": "94e588c3f582575b88146ae175a4fc973e56eb26933d4d41417582ae56847806",
+   "origin_bytes_unsanitized": 11019,
+   "sanitization_rule": "absolute-path-token-replacement",
+   "substitutions": 13
+  },
+  {
+   "path": "research/concorde_metaopt/evidence/s3/reviews/S3_m4_a7_independent_recompute.log",
+   "category": "review",
+   "bytes_raw": 12473,
+   "bytes_lf": 12473,
+   "sha256_raw": "8b64a9b7ff5367fa6231054dd9ebb6687f0dd94b3072769df92fe5d32235a49a",
+   "sha256_lf": "8b64a9b7ff5367fa6231054dd9ebb6687f0dd94b3072769df92fe5d32235a49a",
+   "eol": "LF",
+   "sanitized": true,
+   "origin_sha256_unsanitized": "6d6c2f384e2f3bf0a5ac896b4f054aec252e7aa4ffc1bab121707b09f83d414a",
+   "origin_bytes_unsanitized": 12537,
+   "sanitization_rule": "absolute-path-token-replacement",
+   "substitutions": 3
+  },
+  {
+   "path": "research/concorde_metaopt/evidence/s3/reviews/S3_m4_a7_model_sha_table.md",
+   "category": "review",
+   "bytes_raw": 2753,
+   "bytes_lf": 2753,
+   "sha256_raw": "6d1e6f1e5f8ff59d98291b8ce7f679888d6849648cfbfc57d3b24b17e2b9fc15",
+   "sha256_lf": "6d1e6f1e5f8ff59d98291b8ce7f679888d6849648cfbfc57d3b24b17e2b9fc15",
+   "eol": "LF",
+   "sanitized": true,
+   "origin_sha256_unsanitized": "fc7b1f40317fd8df5a17b491a08ca673524c5371b4c53d5c76d9db1f2ea545d1",
+   "origin_bytes_unsanitized": 2763,
+   "sanitization_rule": "absolute-path-token-replacement",
+   "substitutions": 2
+  },
+  {
+   "path": "research/concorde_metaopt/evidence/s3/reviews/S3_m4_a7_result_review.md",
+   "category": "review",
+   "bytes_raw": 27729,
+   "bytes_lf": 27729,
+   "sha256_raw": "96c2bdc27f7699ca1afa1b994c116d03fc4f5e336c8f1e356f2327b1975e64b9",
+   "sha256_lf": "96c2bdc27f7699ca1afa1b994c116d03fc4f5e336c8f1e356f2327b1975e64b9",
+   "eol": "LF",
+   "sanitized": true,
+   "origin_sha256_unsanitized": "2b21f3b1ab0e8c592d71c0eff61124a4f7c0c2a82012903a4a7f0e94dc4c988d",
+   "origin_bytes_unsanitized": 28146,
+   "sanitization_rule": "absolute-path-token-replacement",
+   "substitutions": 20
+  },
+  {
+   "path": "research/concorde_metaopt/evidence/s3/reviews/S3_m4_a7_verdict.json",
+   "category": "review",
+   "bytes_raw": 7149,
+   "bytes_lf": 7149,
+   "sha256_raw": "c2a8bf03d4c1500dc6e2fb963b4b5d6bdd96274796ad6a9617fd8f0070575672",
+   "sha256_lf": "c2a8bf03d4c1500dc6e2fb963b4b5d6bdd96274796ad6a9617fd8f0070575672",
+   "eol": "LF",
+   "sanitized": true,
+   "origin_sha256_unsanitized": "49bddbd48c20933ac33994908ceb686d3734f2c562f7fdf66a172d088cb7db04",
+   "origin_bytes_unsanitized": 7159,
+   "sanitization_rule": "absolute-path-token-replacement",
+   "substitutions": 2
+  },
+  {
+   "path": "research/concorde_metaopt/evidence/s3/reviews/S3_m5_a5_compare_vs_lead.json",
+   "category": "review",
+   "bytes_raw": 16017,
+   "bytes_lf": 16017,
+   "sha256_raw": "58fece439876bc2a452db210ef2beecef3a7d2021a434becce6992a961aecfc9",
+   "sha256_lf": "58fece439876bc2a452db210ef2beecef3a7d2021a434becce6992a961aecfc9",
+   "eol": "LF",
+   "sanitized": true,
+   "origin_sha256_unsanitized": "23d0675dce61572c414dea3f38a37bf199a4818e1691ad7562cdaab5a133a2ea",
+   "origin_bytes_unsanitized": 18385,
+   "sanitization_rule": "absolute-path-token-replacement",
+   "substitutions": 40
+  },
+  {
+   "path": "research/concorde_metaopt/evidence/s3/reviews/S3_m5_a5_findings.csv",
+   "category": "review",
+   "bytes_raw": 3119,
+   "bytes_lf": 3119,
+   "sha256_raw": "3eff66cb115ec4b2fb0681bb75d988783dee3c734d1020d98492b55b7cfa287a",
+   "sha256_lf": "3eff66cb115ec4b2fb0681bb75d988783dee3c734d1020d98492b55b7cfa287a",
+   "eol": "LF",
+   "sanitized": false
+  },
+  {
+   "path": "research/concorde_metaopt/evidence/s3/reviews/S3_m5_a5_nc15_final.json",
+   "category": "review",
+   "bytes_raw": 5980,
+   "bytes_lf": 5771,
+   "sha256_raw": "7a70ec407924b6746998bc4a15e42964e08e2e08845c2e1661eae8e0389171ce",
+   "sha256_lf": "5bd0be44a53afdacf945cf49d41ab228633f7d734d0e505304347bd394963803",
+   "eol": "CRLF",
+   "sanitized": false
+  },
+  {
+   "path": "research/concorde_metaopt/evidence/s3/reviews/S3_m5_a5_ood_recompute.csv",
+   "category": "review",
+   "bytes_raw": 427,
+   "bytes_lf": 416,
+   "sha256_raw": "cffdfa17f32dd1bb11c262245e94771e2a34d9f8599d53bb11194dd4013a4729",
+   "sha256_lf": "8a176d7afb3394dda8dc5108032be39aba19536b597c7a05d5e7dc2ff1996974",
+   "eol": "CRLF",
+   "sanitized": false
+  },
+  {
+   "path": "research/concorde_metaopt/evidence/s3/reviews/S3_m5_a5_recompute_stats.json",
+   "category": "review",
+   "bytes_raw": 4518,
+   "bytes_lf": 4366,
+   "sha256_raw": "9bb62638a9fc8c6fb377e55ec8b54351a7a0cfe1b97cc273f61e61e414b935ec",
+   "sha256_lf": "a3752cba8350f115d2366c3e4e13571e496765241a856bc277378593e7e2819d",
+   "eol": "CRLF",
+   "sanitized": false
+  },
+  {
+   "path": "research/concorde_metaopt/evidence/s3/reviews/S3_m5_a5_result_review.md",
+   "category": "review",
+   "bytes_raw": 6487,
+   "bytes_lf": 6487,
+   "sha256_raw": "39c98aba21500bd4f4caa79bfb32bba366e92491e6f6a3437632553f50e01a18",
+   "sha256_lf": "39c98aba21500bd4f4caa79bfb32bba366e92491e6f6a3437632553f50e01a18",
+   "eol": "LF",
+   "sanitized": true,
+   "origin_sha256_unsanitized": "e533dc0f5a7b92a6af52f3513e7c7a4308c578a0e161db6019f6931231d0331c",
+   "origin_bytes_unsanitized": 6637,
+   "sanitization_rule": "absolute-path-token-replacement",
+   "substitutions": 5
+  },
+  {
+   "path": "research/concorde_metaopt/evidence/s3/reviews/S3_m5_a5_review_01_defects.md",
+   "category": "review",
+   "bytes_raw": 5618,
+   "bytes_lf": 5618,
+   "sha256_raw": "b918e18556f23708bc2f166a802a583186e68bb8bd8b580b773d5787b6408c50",
+   "sha256_lf": "b918e18556f23708bc2f166a802a583186e68bb8bd8b580b773d5787b6408c50",
+   "eol": "LF",
+   "sanitized": true,
+   "origin_sha256_unsanitized": "09ec9e588056891d6947cd4808d0ec71922b2cb367d9256836fd06411c954135",
+   "origin_bytes_unsanitized": 5623,
+   "sanitization_rule": "absolute-path-token-replacement",
+   "substitutions": 1
+  },
+  {
+   "path": "research/concorde_metaopt/evidence/s3/reviews/S3_m5_a5_review_02_patch.md",
+   "category": "review",
+   "bytes_raw": 8517,
+   "bytes_lf": 8517,
+   "sha256_raw": "4c902d1d8e49bce37dab58b10544b56154a1c1537f039344ff350ee531b8dfee",
+   "sha256_lf": "4c902d1d8e49bce37dab58b10544b56154a1c1537f039344ff350ee531b8dfee",
+   "eol": "LF",
+   "sanitized": true,
+   "origin_sha256_unsanitized": "e40d511e540a3ed8ca3de4b86ea79ec62934ef4f4dac82af3bb08013df4ea4a4",
+   "origin_bytes_unsanitized": 8619,
+   "sanitization_rule": "absolute-path-token-replacement",
+   "substitutions": 3
+  },
+  {
+   "path": "research/concorde_metaopt/evidence/s3/reviews/S3_m5_a5_review_03_decision.md",
+   "category": "review",
+   "bytes_raw": 11576,
+   "bytes_lf": 11576,
+   "sha256_raw": "b4860baa5a93aea8efa096b4c817fa67be15128d6b5e5ae9d7a42a9dc782e191",
+   "sha256_lf": "b4860baa5a93aea8efa096b4c817fa67be15128d6b5e5ae9d7a42a9dc782e191",
+   "eol": "LF",
+   "sanitized": true,
+   "origin_sha256_unsanitized": "3ba38f6796458396d00cc90fc1f0110845ccfa4c940fd33d60e6c4197dcda6d8",
+   "origin_bytes_unsanitized": 11676,
+   "sanitization_rule": "absolute-path-token-replacement",
+   "substitutions": 5
+  },
+  {
+   "path": "research/concorde_metaopt/evidence/s3/reviews/S3_m5_a5_verdict.json",
+   "category": "review",
+   "bytes_raw": 2768,
+   "bytes_lf": 2768,
+   "sha256_raw": "d35ba0412ebc066bcc3119985c2b679da423a093fb9612ceb2b68edcfd9d6d0c",
+   "sha256_lf": "d35ba0412ebc066bcc3119985c2b679da423a093fb9612ceb2b68edcfd9d6d0c",
+   "eol": "LF",
+   "sanitized": true,
+   "origin_sha256_unsanitized": "f7fd779d2b9c7a6d6409ebf8bc256a14fb78b470391917b398be7df787066112",
+   "origin_bytes_unsanitized": 2913,
+   "sanitization_rule": "absolute-path-token-replacement",
+   "substitutions": 4
+  },
+  {
+   "path": "research/concorde_metaopt/evidence/s3/reviews/S3_m5_a5_verify_outputs.json",
+   "category": "review",
+   "bytes_raw": 8054,
+   "bytes_lf": 7833,
+   "sha256_raw": "4b403f0c2d724b5eebda96415f1339da850f8f18b66ffe3d1e61b94bb1a2b9e6",
+   "sha256_lf": "e03625586b2ba85d84c08c543f2d1cfb6e80c9b3bfd392b92f120e57526d8ddc",
+   "eol": "CRLF",
+   "sanitized": false
+  },
+  {
+   "path": "research/concorde_metaopt/evidence/s3/run/data_manifest.json",
+   "category": "run_record",
+   "bytes_raw": 7018,
+   "bytes_lf": 7018,
+   "sha256_raw": "f7119bde48df5238b5b1563d03023a0902ab6042aa885961f86604e0c2bbc47c",
+   "sha256_lf": "f7119bde48df5238b5b1563d03023a0902ab6042aa885961f86604e0c2bbc47c",
+   "eol": "LF",
+   "sanitized": false
+  },
+  {
+   "path": "research/concorde_metaopt/evidence/s3/run/determinism_check.json",
+   "category": "run_record",
+   "bytes_raw": 829,
+   "bytes_lf": 829,
+   "sha256_raw": "1c9f0ea57e7610daf3293d0ba71469f6a8de20e8ac08a1332774855039c2f539",
+   "sha256_lf": "1c9f0ea57e7610daf3293d0ba71469f6a8de20e8ac08a1332774855039c2f539",
+   "eol": "LF",
+   "sanitized": false
+  },
+  {
+   "path": "research/concorde_metaopt/evidence/s3/run/execution_report.json",
+   "category": "run_record",
+   "bytes_raw": 1142,
+   "bytes_lf": 1142,
+   "sha256_raw": "e70a5a5a10d5e8127d92f6a7519e9c5cb37fce5d510d04e6a08b0589306bfb91",
+   "sha256_lf": "e70a5a5a10d5e8127d92f6a7519e9c5cb37fce5d510d04e6a08b0589306bfb91",
+   "eol": "LF",
+   "sanitized": false
+  },
+  {
+   "path": "research/concorde_metaopt/evidence/s3/run/fd_or_gradient_gate.json",
+   "category": "run_record",
+   "bytes_raw": 9768,
+   "bytes_lf": 9768,
+   "sha256_raw": "651593e930807721ddb4a5795d5a6d7c4cee5827d38c581a9b242d417c8cb1cd",
+   "sha256_lf": "651593e930807721ddb4a5795d5a6d7c4cee5827d38c581a9b242d417c8cb1cd",
+   "eol": "LF",
+   "sanitized": false
+  },
+  {
+   "path": "research/concorde_metaopt/evidence/s3/run/model_manifest.json",
+   "category": "run_record",
+   "bytes_raw": 3478,
+   "bytes_lf": 3478,
+   "sha256_raw": "f91e6109b02a7a9f24a859826aeb2b8a961ea30de35264bfe5261321a5f651d6",
+   "sha256_lf": "f91e6109b02a7a9f24a859826aeb2b8a961ea30de35264bfe5261321a5f651d6",
+   "eol": "LF",
+   "sanitized": false
+  },
+  {
+   "path": "research/concorde_metaopt/evidence/s3/run/negative_control_summary.json",
+   "category": "run_record",
+   "bytes_raw": 1680,
+   "bytes_lf": 1680,
+   "sha256_raw": "1a17774d5fa310c86f909b0063aaa8a1e58d3cb9ec37cf581ed9952e96d7d038",
+   "sha256_lf": "1a17774d5fa310c86f909b0063aaa8a1e58d3cb9ec37cf581ed9952e96d7d038",
+   "eol": "LF",
+   "sanitized": false
+  },
+  {
+   "path": "research/concorde_metaopt/evidence/s3/run/run_artifacts_manifest.json",
+   "category": "run_record",
+   "bytes_raw": 5845,
+   "bytes_lf": 5845,
+   "sha256_raw": "a8228c58997e977f379b84a63209e432eb148b5c6d27d5f0ca7a57ba0668b00c",
+   "sha256_lf": "a8228c58997e977f379b84a63209e432eb148b5c6d27d5f0ca7a57ba0668b00c",
+   "eol": "LF",
+   "sanitized": true,
+   "origin_sha256_unsanitized": "ec13f6da798528c511676950e579681ae35e4f78e54411a98486f4b04d460d5e",
+   "origin_bytes_unsanitized": 6189,
+   "sanitization_rule": "absolute-path-token-replacement",
+   "substitutions": 8
+  },
+  {
+   "path": "research/concorde_metaopt/evidence/s3/run/run_config.json",
+   "category": "run_record",
+   "bytes_raw": 11273,
+   "bytes_lf": 11273,
+   "sha256_raw": "0a4ec865610a471de0b90001a3f8b37e8e560700b96734f1f670100c24134a0c",
+   "sha256_lf": "0a4ec865610a471de0b90001a3f8b37e8e560700b96734f1f670100c24134a0c",
+   "eol": "LF",
+   "sanitized": false
+  },
+  {
+   "path": "research/concorde_metaopt/evidence/s3/s3_preregistration.json",
+   "category": "meta",
+   "bytes_raw": 34308,
+   "bytes_lf": 34308,
+   "sha256_raw": "192dd36a3bc1fefcb6debf0fc2e73cea0df4d28af499691de17e9e9b0bd3d42b",
+   "sha256_lf": "192dd36a3bc1fefcb6debf0fc2e73cea0df4d28af499691de17e9e9b0bd3d42b",
+   "eol": "LF",
+   "sanitized": false
+  }
+ ]
+}

@@ -1,0 +1,142 @@
+{
+  "c1_decisions": {
+    "B128": "NULL",
+    "B64": "NULL"
+  },
+  "c2_decisions": {
+    "B128": "NULL",
+    "B64": "NULL"
+  },
+  "figure_status": {
+    "figures": {
+      "fig10_vspaero_gate_status": {
+        "csv_path": null,
+        "data_sha256": null,
+        "path": null,
+        "reason": "未找到只读 VSPAERO 门禁归档: 未找到 VSPAERO 门禁归档",
+        "status": "NOT_RUN"
+      },
+      "fig1_training_loss_and_full_meta_grad": {
+        "csv_path": null,
+        "data_sha256": null,
+        "path": null,
+        "reason": "train record 缺失，无法绘制训练损失",
+        "status": "NOT_RUN"
+      },
+      "fig2_kshot_rmse_k0_k1_k3_k5": {
+        "csv_path": null,
+        "data_sha256": null,
+        "path": null,
+        "reason": "S3 记录不含 K-shot 适配曲线（K∈{0,1,3,5}），fig2 记 NOT_RUN",
+        "status": "NOT_RUN"
+      },
+      "fig3_feasible_hit_rate_by_arm": {
+        "csv_path": "<STATE_ROOT>/s3_analysis/p4ra-s3-formal-20261109T1310Z\\fig3_feasible_hit_rate_by_arm_data.csv",
+        "data_sha256": "054e391b1da288a2ce40e0cad81b407cf1a949ea452bcd7adfe207bcb8e7a31b",
+        "path": "<STATE_ROOT>/s3_analysis/p4ra-s3-formal-20261109T1310Z\\fig3_feasible_hit_rate_by_arm.png",
+        "reason": "",
+        "status": "RENDERED"
+      },
+      "fig4_best_feasible_and_first_feasible": {
+        "csv_path": "<STATE_ROOT>/s3_analysis/p4ra-s3-formal-20261109T1310Z\\fig4_best_feasible_and_first_feasible_data.csv",
+        "data_sha256": "da59c14f13bc31764360f3a885e74e38f79ee4a47d72077f44069c63adf0e6ac",
+        "path": "<STATE_ROOT>/s3_analysis/p4ra-s3-formal-20261109T1310Z\\fig4_best_feasible_and_first_feasible.png",
+        "reason": "",
+        "status": "RENDERED"
+      },
+      "fig5_fomaml_vs_full_vs_anil_cost": {
+        "csv_path": "<STATE_ROOT>/s3_analysis/p4ra-s3-formal-20261109T1310Z\\fig5_fomaml_vs_full_vs_anil_cost_data.csv",
+        "data_sha256": "df792f5b3bd58ffe445ec7ae70190027f8f7bbab3948a817f8da8a09cba5d954",
+        "path": "<STATE_ROOT>/s3_analysis/p4ra-s3-formal-20261109T1310Z\\fig5_fomaml_vs_full_vs_anil_cost.png",
+        "reason": "",
+        "status": "RENDERED"
+      },
+      "fig6_task_family_diagnostics": {
+        "csv_path": "<STATE_ROOT>/s3_analysis/p4ra-s3-formal-20261109T1310Z\\fig6_task_family_diagnostics_data.csv",
+        "data_sha256": "c3183eca0f9b023514c9ff0a96372bff9d163184bb3092a16b37e72e8039cd60",
+        "path": "<STATE_ROOT>/s3_analysis/p4ra-s3-formal-20261109T1310Z\\fig6_task_family_diagnostics.png",
+        "reason": "",
+        "status": "RENDERED"
+      },
+      "fig7_ood_diagnostics": {
+        "csv_path": null,
+        "data_sha256": null,
+        "path": null,
+        "reason": "run 产物不含 OOD 段（OOD 分析 NOT_RUN）",
+        "status": "NOT_RUN"
+      },
+      "fig8_negative_controls": {
+        "csv_path": "<STATE_ROOT>/s3_analysis/p4ra-s3-formal-20261109T1310Z\\fig8_negative_controls_data.csv",
+        "data_sha256": "899222ba28d887ffe1fff7287202bbd2008344473d5641244f9bd5f9088f9548",
+        "path": "<STATE_ROOT>/s3_analysis/p4ra-s3-formal-20261109T1310Z\\fig8_negative_controls.png",
+        "reason": "",
+        "status": "RENDERED"
+      },
+      "fig9_determinism_and_budget": {
+        "csv_path": "<STATE_ROOT>/s3_analysis/p4ra-s3-formal-20261109T1310Z\\fig9_determinism_and_budget_data.csv",
+        "data_sha256": "51f3f03ac7638868a43499dbcbd054bc91bc76f3938895732ec0f5d13e332e0c",
+        "path": "<STATE_ROOT>/s3_analysis/p4ra-s3-formal-20261109T1310Z\\fig9_determinism_and_budget.png",
+        "reason": "",
+        "status": "RENDERED"
+      }
+    },
+    "generated_utc": "2026-11-09T14:39:02Z",
+    "schema_version": "p4ra-s3-figure-status-v1",
+    "summary": {
+      "not_applicable": 0,
+      "not_run": 4,
+      "rendered": 6
+    }
+  },
+  "lead_patch_audit": {
+    "checks": [
+      {
+        "aggregate_diff_reason": "runner rows drop bytes and use run-relative paths",
+        "kind": "fomaml",
+        "normalized_prereg_aggregate": "e90a05c5234e82f0e9052c6726811264aa8043299746f3c13d30ba965a306336",
+        "per_model_sha_set_equal": true,
+        "prereg_aggregate": "731a699872b0e8d0d42d3833abb5705bc894b1c092fdc92fe86591f368294a8d",
+        "run_aggregate": "e90a05c5234e82f0e9052c6726811264aa8043299746f3c13d30ba965a306336"
+      },
+      {
+        "aggregate_diff_reason": "runner rows drop bytes and use run-relative paths",
+        "kind": "anil",
+        "normalized_prereg_aggregate": "9b421cce88db4d27bad876a0b019d1c7b4c9e43d20acc7dde27f807e5777d8ff",
+        "per_model_sha_set_equal": true,
+        "prereg_aggregate": "3dfe78a318ad1ea983b1ad573ddee3660bc2afaec1154bd1756c21d8856b5d52",
+        "run_aggregate": "9b421cce88db4d27bad876a0b019d1c7b4c9e43d20acc7dde27f807e5777d8ff"
+      }
+    ],
+    "patched": true,
+    "per_model_equal": true,
+    "record_digest_patch": {
+      "excluded_fields": [
+        "wall_s",
+        "peak_memory_mb",
+        "record_digest"
+      ],
+      "runner_eval_excluded": [
+        "wall_s",
+        "peak_memory_mb",
+        "record_digest"
+      ],
+      "runner_train_excluded": [
+        "wall_s",
+        "peak_memory_mb",
+        "record_digest"
+      ]
+    }
+  },
+  "n_tasks": 20,
+  "output_dir": "<STATE_ROOT>/s3_analysis/p4ra-s3-formal-20261109T1310Z",
+  "overall_decision": "NO_EVIDENCE",
+  "prereg_id": "p4ra-s3-prereg-b31044c7614cced4",
+  "record_counts": {
+    "eval": 362880,
+    "total": 362880,
+    "train": 0
+  },
+  "run_id": "p4ra-s3-formal-20261109T1310Z",
+  "run_mode": "FORMAL",
+  "status": "PASS"
+}

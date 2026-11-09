@@ -1,0 +1,146 @@
+{
+ "schema_version": "p4ra-s3-run-artifacts-1",
+ "run_id": "p4ra-s3-formal-20261109T1310Z",
+ "run_mode": "FORMAL",
+ "campaign_authorization_id": "R-S3-M3-CAMPAIGN-20261109T1310Z",
+ "source_dir": "<STATE_ROOT>/p4-route-a/s3_runs/p4ra-s3-formal-20261109T1310Z",
+ "artifact_count": 17,
+ "total_bytes": 312310937,
+ "storage_summary": {
+  "committed": 7,
+  "dedup_committed": 3,
+  "externalized": 7
+ },
+ "committed_bytes": 35188,
+ "files": [
+  {
+   "path": "data_manifest.json",
+   "bytes": 7018,
+   "sha256": "f7119bde48df5238b5b1563d03023a0902ab6042aa885961f86604e0c2bbc47c",
+   "storage": "committed",
+   "evidence_path": "run/data_manifest.json"
+  },
+  {
+   "path": "determinism/r1/run_records.jsonl",
+   "bytes": 4436840,
+   "sha256": "fba07081f39a40b6d7f98022b0c54d62cc12a06ef9c69a125d0913b6bc3ce618",
+   "storage": "externalized",
+   "external_path": "<STATE_ROOT>/p4-route-a/s3_runs/p4ra-s3-formal-20261109T1310Z/determinism/r1/run_records.jsonl",
+   "read_note": "正式 run 大产物，位于仓库外权威目录；按 sha256+bytes 校验，不提交 git"
+  },
+  {
+   "path": "determinism/r2/run_records.jsonl",
+   "bytes": 4436840,
+   "sha256": "fba07081f39a40b6d7f98022b0c54d62cc12a06ef9c69a125d0913b6bc3ce618",
+   "storage": "externalized",
+   "external_path": "<STATE_ROOT>/p4-route-a/s3_runs/p4ra-s3-formal-20261109T1310Z/determinism/r2/run_records.jsonl",
+   "read_note": "正式 run 大产物，位于仓库外权威目录；按 sha256+bytes 校验，不提交 git"
+  },
+  {
+   "path": "determinism/r3/run_records.jsonl",
+   "bytes": 4436840,
+   "sha256": "fba07081f39a40b6d7f98022b0c54d62cc12a06ef9c69a125d0913b6bc3ce618",
+   "storage": "externalized",
+   "external_path": "<STATE_ROOT>/p4-route-a/s3_runs/p4ra-s3-formal-20261109T1310Z/determinism/r3/run_records.jsonl",
+   "read_note": "正式 run 大产物，位于仓库外权威目录；按 sha256+bytes 校验，不提交 git"
+  },
+  {
+   "path": "determinism_check.json",
+   "bytes": 829,
+   "sha256": "1c9f0ea57e7610daf3293d0ba71469f6a8de20e8ac08a1332774855039c2f539",
+   "storage": "committed",
+   "evidence_path": "run/determinism_check.json"
+  },
+  {
+   "path": "execution_report.json",
+   "bytes": 1142,
+   "sha256": "e70a5a5a10d5e8127d92f6a7519e9c5cb37fce5d510d04e6a08b0589306bfb91",
+   "storage": "committed",
+   "evidence_path": "run/execution_report.json"
+  },
+  {
+   "path": "fd_or_gradient_gate.json",
+   "bytes": 9768,
+   "sha256": "651593e930807721ddb4a5795d5a6d7c4cee5827d38c581a9b242d417c8cb1cd",
+   "storage": "committed",
+   "evidence_path": "run/fd_or_gradient_gate.json"
+  },
+  {
+   "path": "model_manifest.json",
+   "bytes": 3478,
+   "sha256": "f91e6109b02a7a9f24a859826aeb2b8a961ea30de35264bfe5261321a5f651d6",
+   "storage": "committed",
+   "evidence_path": "run/model_manifest.json"
+  },
+  {
+   "path": "models/episode_bank_meta_0.jsonl",
+   "bytes": 1104518,
+   "sha256": "64f0be6432007c1fc317f1b52263aa81e6c2f387ae78d73b9c608c47d44cf3f5",
+   "storage": "dedup_committed",
+   "evidence_path": "models/episode_bank_meta_0.jsonl",
+   "dedup_note": "与 evidence/s3/models/ 下冻结 episode bank 逐字节相同，不重复提交"
+  },
+  {
+   "path": "models/episode_bank_meta_1.jsonl",
+   "bytes": 1104561,
+   "sha256": "26c2c2013aa1e39f286dda943f53d82f7ce6eee27cbed44d89088fb2bba589b1",
+   "storage": "dedup_committed",
+   "evidence_path": "models/episode_bank_meta_1.jsonl",
+   "dedup_note": "与 evidence/s3/models/ 下冻结 episode bank 逐字节相同，不重复提交"
+  },
+  {
+   "path": "models/episode_bank_meta_2.jsonl",
+   "bytes": 1104561,
+   "sha256": "e3e55f491f6ecc93d52aa7e062f8088bb724aec93b49dfdae6c3f477f1260629",
+   "storage": "dedup_committed",
+   "evidence_path": "models/episode_bank_meta_2.jsonl",
+   "dedup_note": "与 evidence/s3/models/ 下冻结 episode bank 逐字节相同，不重复提交"
+  },
+  {
+   "path": "negative_control_records.jsonl",
+   "bytes": 23153628,
+   "sha256": "117b46cbde79be6952723e52786c85cb8aec15f6587398fbe37f6f93b9d539a6",
+   "storage": "externalized",
+   "external_path": "<STATE_ROOT>/p4-route-a/s3_runs/p4ra-s3-formal-20261109T1310Z/negative_control_records.jsonl",
+   "read_note": "正式 run 大产物，位于仓库外权威目录；按 sha256+bytes 校验，不提交 git"
+  },
+  {
+   "path": "negative_control_summary.json",
+   "bytes": 1680,
+   "sha256": "1a17774d5fa310c86f909b0063aaa8a1e58d3cb9ec37cf581ed9952e96d7d038",
+   "storage": "committed",
+   "evidence_path": "run/negative_control_summary.json"
+  },
+  {
+   "path": "ood_records.jsonl",
+   "bytes": 22430606,
+   "sha256": "e8372903b82e5a2730bdc3b557d5d367d3ebe5d90b5d1d1d204be4415f2539ba",
+   "storage": "externalized",
+   "external_path": "<STATE_ROOT>/p4-route-a/s3_runs/p4ra-s3-formal-20261109T1310Z/ood_records.jsonl",
+   "read_note": "正式 run 大产物，位于仓库外权威目录；按 sha256+bytes 校验，不提交 git"
+  },
+  {
+   "path": "run_config.json",
+   "bytes": 11273,
+   "sha256": "0a4ec865610a471de0b90001a3f8b37e8e560700b96734f1f670100c24134a0c",
+   "storage": "committed",
+   "evidence_path": "run/run_config.json"
+  },
+  {
+   "path": "run_records.jsonl",
+   "bytes": 221974782,
+   "sha256": "f6e0d02ad7603605406858f216337b762324809ebee154842eba108ae7128ddf",
+   "storage": "externalized",
+   "external_path": "<STATE_ROOT>/p4-route-a/s3_runs/p4ra-s3-formal-20261109T1310Z/run_records.jsonl",
+   "read_note": "正式 run 大产物，位于仓库外权威目录；按 sha256+bytes 校验，不提交 git"
+  },
+  {
+   "path": "run_summary.json",
+   "bytes": 28092573,
+   "sha256": "f5225e1e61d7c5944336b521b0f10d950b969669de808aef924b8953a0b876d2",
+   "storage": "externalized",
+   "external_path": "<STATE_ROOT>/p4-route-a/s3_runs/p4ra-s3-formal-20261109T1310Z/run_summary.json",
+   "read_note": "正式 run 大产物，位于仓库外权威目录；按 sha256+bytes 校验，不提交 git"
+  }
+ ]
+}

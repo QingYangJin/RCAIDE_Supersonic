@@ -1,0 +1,200 @@
+{
+  "task": "task-268",
+  "review": "S3-M4 independent result review",
+  "reviewer": "a7-code-reviewer",
+  "generated_utc": "2026-11-09T14:45:50Z",
+  "verdict": "APPROVE_FOR_S3_ANALYSIS",
+  "data_integrity": "PASS",
+  "validation_ok_false_attribution": "VALIDATOR_PATH_DEFECT",
+  "statement": "validation_ok=false 属校验器缺陷，数据可用于分析",
+  "scope": "仅裁定 run 产物数据是否可信、能否作为 S3 分析输入；不解除 F-01/F-02/F-03 工具链修复义务，不授权修改 run 产物或重跑 campaign。",
+  "blocker_major_minor_info": {
+    "blocker": 0,
+    "major": 3,
+    "minor": 2,
+    "info": 3
+  },
+  "evidence": {
+    "runs": {
+      "main": 3000,
+      "ood": 300,
+      "negative_control": 300,
+      "determinism": 180,
+      "total": 3780
+    },
+    "evals": {
+      "main": 288000,
+      "ood": 28800,
+      "negative_control": 28800,
+      "determinism": 17280,
+      "total": 362880
+    },
+    "limits": {
+      "campaign_wall_s": 2941.921272,
+      "campaign_wall_cap_s": 7200,
+      "sum_run_wall_s": 22759.797742,
+      "sum_run_wall_cap_s": 28000,
+      "max_run_wall_s": 13.290802,
+      "per_run_wall_cap_s": 60,
+      "max_peak_memory_mb": 313.34375,
+      "peak_cap_mb": 8192,
+      "physical_call_count": 0,
+      "solver_processes_started": 0,
+      "stop_reason": null,
+      "parallel_workers": 8
+    },
+    "determinism": {
+      "files_byte_identical": true,
+      "file_sha256": "fba07081f39a40b6d7f98022b0c54d62cc12a06ef9c69a125d0913b6bc3ce618",
+      "core_sha256": "645e9f9c471269be37a8d219a88a1d9154824ba5458f1dbfbfc80b423315d4d8",
+      "subset_run_keys_sha256": "0704a23ead63533f3659148b1167c6a81063089724e0015f3b9b1c43ec78ae5c",
+      "passes": 3
+    },
+    "bindings": {
+      "code_sha": "75f7bfce4e313f8792b6e971358d2ca315dcf08f607602640e8b3fbbd350f920",
+      "prereg_digest": "b31044c7614cced440d70ccdd8d12f6ee39e349fe3edf899708c03507fbd1ce8",
+      "prereg_id": "p4ra-s3-prereg-b31044c7614cced4",
+      "analysis_plan_digest": "31ac71d730cfc58a1ff669488ca431dcb930cc8f6861418504e11ffc5f799c05",
+      "family_package_sha256": "70075498…",
+      "family_package_bytes": 202120,
+      "task_ids_sha256": "6695346afba7fac008b562d4112db8a0421b4c14cf5a3e9b2f9875dc418c886f",
+      "references_sealed_sha256": "b8575a3e31ce01a62e09ddcc49735f37f8d1d1234805ac7250f2d0411a6d392c",
+      "fd_gate_sha256": "651593e930807721ddb4a5795d5a6d7c4cee5827d38c581a9b242d417c8cb1cd",
+      "fd_gate_bytes": 9768,
+      "fd_gate_max_rel_fomaml": 4.318417995663093e-7,
+      "fd_gate_max_rel_anil": 2.5145570109047648e-8,
+      "fd_gate_status": "PASS",
+      "run_model_manifest_sha256": "f91e6109b02a7a9f24a859826aeb2b8a961ea30de35264bfe5261321a5f651d6",
+      "run_model_manifest_bytes": 3478,
+      "prereg_models_sha256": "c128f987…",
+      "data_manifest_sha256": "f7119bde48df5238b5b1563d03023a0902ab6042aa885961f86604e0c2bbc47c",
+      "run_records_sha256": "f6e0d02ad7603605406858f216337b762324809ebee154842eba108ae7128ddf",
+      "run_summary_sha256": "f5225e1e61d7c5944336b521b0f10d950b969669de808aef924b8953a0b876d2",
+      "campaign_authorization_id": "R-S3-M3-CAMPAIGN-20261109T1310Z",
+      "campaign_authorization_utc": "2026-11-09T13:10:00+00:00",
+      "artifacts_covered_by_data_manifest": 14,
+      "artifacts_mismatch": 0
+    },
+    "models": {
+      "resolution_base": "repo_root/research/concorde_metaopt/evidence/s3",
+      "verified": 6,
+      "total": 6,
+      "checks": [
+        {
+          "path": "models/fomaml_meta_0.json",
+          "bytes": 107426,
+          "sha256": "520d6ba465f80c910df6add0707a600b8e948cc2c01b9bd58a994b2a3945c6c6"
+        },
+        {
+          "path": "models/fomaml_meta_1.json",
+          "bytes": 107429,
+          "sha256": "346ad98742e9a9eab06b9f999a93612055317f471cd8c562dd4cb0f190722478"
+        },
+        {
+          "path": "models/fomaml_meta_2.json",
+          "bytes": 107363,
+          "sha256": "8ecd4623043dd20dc15ae7ecc1510157cbfbbfde777a1c70c33d68fd1a7da183"
+        },
+        {
+          "path": "models/anil_meta_0.json",
+          "bytes": 107370,
+          "sha256": "37201fcf2462d317906721f2716a741ada3a19e1e79f9991bf1ef309031eba29"
+        },
+        {
+          "path": "models/anil_meta_1.json",
+          "bytes": 107387,
+          "sha256": "604b0e54b00805819805306e79dce24b20806ec0a6843af371e30f59c773aae1"
+        },
+        {
+          "path": "models/anil_meta_2.json",
+          "bytes": 107378,
+          "sha256": "8a2bb85e92ff2b1eea66331cebe17a2140e8db418e32f66eb6cba2ac0c278055"
+        }
+      ]
+    },
+    "splits": {
+      "meta_train": 60,
+      "meta_validation": 20,
+      "meta_test": 20,
+      "meta_test_ood": 10,
+      "meta_test_negative_control": 10,
+      "dev": 0,
+      "unique_tasks": 120,
+      "overlap": 0
+    },
+    "status": "COMPLETED",
+    "failures": [],
+    "evidence_scope": "DEVELOPMENT_VALIDATION_ONLY"
+  },
+  "validation_reruns": [
+    {
+      "variant": "with_repo_root",
+      "repo_root": "<REPO_ROOT>",
+      "failed_checks": [
+        "model_manifest_models"
+      ],
+      "ok": false,
+      "exit_code": 1
+    },
+    {
+      "variant": "no_repo_root",
+      "failed_checks": [
+        "model_manifest_models"
+      ],
+      "ok": false,
+      "exit_code": 1
+    },
+    {
+      "variant": "no_prereg",
+      "failed_checks": [
+        "formal_gate_prereg_binding",
+        "model_manifest_models"
+      ],
+      "ok": false,
+      "exit_code": 1
+    },
+    {
+      "variant": "repo_root_evidence_s3",
+      "repo_root": "<REPO_ROOT>/research/concorde_metaopt/evidence/s3",
+      "failed_checks": [
+        "formal_gate_matches_repo"
+      ],
+      "ok": false,
+      "exit_code": 1,
+      "note": "model_manifest_models PASSES; remaining failure is expected side effect of replacing repo root with evidence/s3"
+    }
+  ],
+  "findings_summary": {
+    "blocker": 0,
+    "major": [
+      "F-01",
+      "F-02",
+      "F-03"
+    ],
+    "minor": [
+      "F-04",
+      "F-05"
+    ],
+    "info": [
+      "F-06",
+      "F-07",
+      "F-08"
+    ]
+  },
+  "conditions": [
+    "修复 F-01（s3_runner.py:2527-2531 增加 evidence-root 解析）后，只读重跑 validate 得到 ok=true 并归档；不得修改 run 目录。",
+    "修复 F-02、F-03（或使用经独立审计的等价补丁）后再产出最终分析结论；模型绑定以逐模型 sha 集合为准，OOD/fig7 必须接线。",
+    "分析报告必须披露 F-05（execution_report.created_utc 陈旧）、F-06（日志混合编码）、F-08（负控 9/10 suspicious）及本报告对 validation false 的归因。",
+    "禁止以『validation 已通过』表述当前 run；应表述为『validation 因 validator 基址缺陷报 false，已独立复算 6/6 模型一致，修复后重验』。",
+    "本复核不授权修改 run 产物或重跑 campaign；如需重跑，另立任务。"
+  ],
+  "evidence_artifacts": {
+    "review_md": "review.md",
+    "findings_json": "findings.json",
+    "validate_log": "validate_rerun.log",
+    "model_table": "model_sha_table.md",
+    "bindings": "bindings.json",
+    "recompute_log": "independent_recompute.log",
+    "checksums": "SHA256SUMS.txt"
+  }
+}

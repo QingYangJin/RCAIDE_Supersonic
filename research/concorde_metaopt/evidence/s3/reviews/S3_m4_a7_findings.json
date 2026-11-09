@@ -1,0 +1,186 @@
+{
+  "task": "task-268",
+  "review": "S3-M4 independent result review",
+  "reviewer": "a7-code-reviewer",
+  "generated_utc": "2026-11-09T14:45:50Z",
+  "repo": {
+    "path": "<REPO_ROOT>",
+    "head_commit": "691f554012b8fe50d4aca3559cb1ccc1ba717276",
+    "branch": "research/p4-route-a-s3"
+  },
+  "run": {
+    "run_id": "p4ra-s3-formal-20261109T1310Z",
+    "out_dir": "<STATE_ROOT>/s3_runs/p4ra-s3-formal-20261109T1310Z",
+    "files": 17,
+    "bytes": 312310937
+  },
+  "verdict": "APPROVE_FOR_S3_ANALYSIS",
+  "data_integrity": "PASS",
+  "validation_ok_false_attribution": "VALIDATOR_PATH_DEFECT",
+  "statement": "validation_ok=false 属校验器缺陷，数据可用于分析",
+  "counts": {
+    "blocker": 0,
+    "major": 3,
+    "minor": 2,
+    "info": 3,
+    "total": 8
+  },
+  "findings": [
+    {
+      "id": "F-01",
+      "severity": "major",
+      "category": "validator",
+      "title": "模型文件解析缺 evidence-root 前缀，造成 validation_ok=false 假阴性",
+      "locations": [
+        {
+          "file": "<REPO_ROOT>/research/concorde_metaopt/meta_learning/s3_runner.py",
+          "lines": "2527-2531"
+        }
+      ],
+      "evidence": [
+        "run 目录 models/ 仅 3 个 episode_bank_meta_*.jsonl，无 6 个权重 json；权重按计划 §4.3 line 327 固定于 evidence/s3/models/，run 只复制 manifest。",
+        "4 组 validate 复跑中，带 --repo-root REPO 与不带 --repo-root 均唯一失败 model_manifest_models；不带 --prereg 额外失败 formal_gate_prereg_binding（预期）。",
+        "反证：--repo-root .../concorde_metaopt/evidence/s3 时 model_manifest_models 通过，只剩 formal_gate_matches_repo（错置 repo root 的预期副作用）。输出 validate_repo_root_evidence.out.json。",
+        "6/6 模型实际 sha256 与 bytes == run model_manifest == M2 冻结 manifest == prereg（model_sha_table.md）。",
+        "代码：rel_path=str(row['path']); path=root/rel_path; if not path.is_file() and repo_root is not None: path=Path(repo_root)/rel_path; raw=_raw_sha(path)；缺 sp.S3_EVIDENCE_ROOT_RELPATH='research/concorde_metaopt/evidence/s3'（s3_prereg.py:641）前缀。"
+      ],
+      "impact": "validate 返回 ok=false、exit 1；不影响数据内容。下游若把 validation_ok 当作数据门槛会误判。",
+      "recommendation": "fallback 增加 repo_root/sp.S3_EVIDENCE_ROOT_RELPATH/rel_path 解析（优先 run 目录，其次 evidence root）；补回归测试；修复后只读重跑 validate 记录 ok=true，不改 run 目录。"
+    },
+    {
+      "id": "F-02",
+      "severity": "major",
+      "category": "analysis-contract",
+      "title": "run_config.models.<arm>.sha256 与 prereg.models.<arm>.sha256 比较不同规范化对象，FORMAL 分析 fail-closed",
+      "locations": [
+        {
+          "file": "<REPO_ROOT>/research/concorde_metaopt/meta_learning/s3_analysis.py",
+          "lines": "2240-2248"
+        },
+        {
+          "file": "<REPO_ROOT>/research/concorde_metaopt/meta_learning/s3_runner.py",
+          "lines": "1654"
+        },
+        {
+          "file": "<REPO_ROOT>/research/concorde_metaopt/meta_learning/s3_prereg.py",
+          "lines": "2282"
+        }
+      ],
+      "evidence": [
+        "fomaml run 聚合 e90a05c5234e82f0e9052c6726811264aa8043299746f3c13d30ba965a306336；prereg 聚合 731a699872b0e8d0d42d3833abb5705bc894b1c092fdc92fe86591f368294a8d。anil run 9b421cce88db4d27bad876a0b019d1c7b4c9e43d20acc7dde27f807e5777d8ff；prereg 3dfe78a318ad1ea983b1ad573ddee3660bc2afaec1154bd1756c21d8856b5d52。",
+        "把 prereg 行去 bytes、path 归一化为 models/<kind>_meta_<seed>.json 后，两臂 canonical 聚合 sha 精确等于 run 聚合 e90a05c5…/9b421cce…；6 个逐模型 sha 全部相同（probe9_10_results.json）。",
+        "s3_analysis 日志 <STATE_ROOT>/s3_analysis/p4ra-s3-formal-20261109T1310Z.log（4,220 B，sha 23acc630219e4b8146b7dd847a60de26ae375a22ca843beeb779d8713b831c2a，UTF-16LE，mtime 14:30:28Z）记录 S3_ANALYSIS_RUN_BINDING_MISMATCH：FORMAL run_config.models.fomaml.sha256 必须等于预注册模型 sha。",
+        "计划 §4.3 line 317 只列 models 字段未定义聚合语义；line 320 称 run_summary.models 为 prereg 冻结条目；分析侧按等于 prereg 聚合解释——契约未单源化。"
+      ],
+      "impact": "官方分析器在 FORMAL 下拒绝该 run；数据本身完好（逐模型 6/6 一致），修复前无法用原始分析器产出最终结果。",
+      "recommendation": "优先让分析器逐模型比对（6 个 sha 集合相等）或比对 model_manifest.verification.prereg_models_sha256，并在计划/schema 明确 run_config.models.<arm>.sha256 是 run 归一化摘要；备选是 runner 写 prereg 聚合（需重跑，代价高）。修复或经审计等价补丁后重跑分析，不得改 run 产物。"
+    },
+    {
+      "id": "F-03",
+      "severity": "major",
+      "category": "analysis-ood",
+      "title": "OOD 记录流未被分析器消费，fig7 被判 NOT_RUN",
+      "locations": [
+        {
+          "file": "<REPO_ROOT>/research/concorde_metaopt/meta_learning/s3_analysis.py",
+          "lines": "3961-3968, 4038, 4065-4123, 4933-4934, 4956, 4601-4606"
+        }
+      ],
+      "evidence": [
+        "run 目录 ood_records.jsonl 22,430,606 B、28,800 行、300 run、sha e8372903… 真实存在；_scan_aux_streams 已校验 split/phase/count/sha（record_streams PASS: NC=28800 OOD=28800 DET=17280），但只用于计数与来源记录。",
+        "per_run 只来自主 run_records.jsonl；compute_run_endpoints 只遍历 run.per_run；build_ood_rows 从 aux_endpoints 中筛 split=='meta_test_ood'，主端点不可能含该 split，故恒 NOT_RUN。",
+        "Lead 侧补丁日志 figure_status 显示 fig7_ood_diagnostics=NOT_RUN，原因『run 产物不含 OOD 段』。"
+      ],
+      "impact": "计划 §5.3 line 384 要求的 OOD 描述性对比（fig7）缺失；不影响 C1/C2 主推断（计划 line 295 明确 OOD 不进推断），但属计划内分析交付缺口。",
+      "recommendation": "从 ood_records.jsonl 构建 OOD 端点并接入 build_ood_rows；新增测试：存在 OOD 流时 fig7 必须 RENDERED，OOD 行数=arms×budgets。"
+    },
+    {
+      "id": "F-04",
+      "severity": "minor",
+      "category": "analysis-digest",
+      "title": "--verify-analysis-plan-digest 用被增补的 sections 重算 digest，必然不等",
+      "locations": [
+        {
+          "file": "<REPO_ROOT>/research/concorde_metaopt/meta_learning/s3_analysis.py",
+          "lines": "1738-1752, 1343-1344"
+        }
+      ],
+      "evidence": [
+        "用校验后 sections 重算得 d5b2ac24f8f614f2b641466b3d7f92e77f23d3e9090996f7f29cc08a0ad04ec1 != 声明 31ac71d730cfc58a1ff669488ca431dcb930cc8f6861418504e11ffc5f799c05。",
+        "用 prereg 原始 endpoints/statistics/figures + compute_analysis_code_sha(REPO)=45ab8962e7aa1bf471b704e0ce73ad5c3102966b92110de4dad649f86b05053a 重算精确等于声明值（probe7/8）。",
+        "_validate_endpoints_section 返回时增补 c1_tests/c2_tests/comparator 三键。"
+      ],
+      "impact": "仅显式开关 --verify-analysis-plan-digest 时失败；默认 CLI 路径不带该开关，不影响常规分析，但会误导审计者。",
+      "recommendation": "verify 重算使用 prereg 原始 sections，或让 _validate_endpoints_section 不改写输入；补单测。"
+    },
+    {
+      "id": "F-05",
+      "severity": "minor",
+      "category": "accounting",
+      "title": "最终 execution_report.created_utc 未更新",
+      "locations": [
+        {
+          "file": "<REPO_ROOT>/research/concorde_metaopt/meta_learning/s3_runner.py",
+          "lines": "3085-3115"
+        }
+      ],
+      "evidence": [
+        "execution_report.created_utc=2026-11-09T14:07:08+00:00；campaign 日志 END_UTC=2026-11-09T14:17:54Z；run_summary.created_utc=14:17:46Z。",
+        "build_final_execution_report 用 dict(main_report) 只覆盖 campaign_wall_s/sum_run_wall_seconds/max_run_wall_s/max_peak_memory_mb/stop_reason/parallel_note，不更新 created_utc。"
+      ],
+      "impact": "最终报告时间早于实际完成约 10m46s，属账目陈旧；不影响记录/计数/哈希。",
+      "recommendation": "显式写当前 UTC，或重命名字段为 main_campaign_completed_utc 并附 finalized_utc。"
+    },
+    {
+      "id": "F-06",
+      "severity": "info",
+      "category": "artifact-encoding",
+      "title": "campaign 日志混合 UTF-16LE/ASCII 编码",
+      "locations": [
+        {
+          "file": "<STATE_ROOT>/s3_runs/p4ra-s3-formal-20261109T1310Z.log",
+          "lines": "whole file"
+        }
+      ],
+      "evidence": [
+        "3,536 B，sha256 d4cb89f8151d513b9ff42b93425779ffb588e19145e6f8fd2099efd75e08b6df；首字节 FF FE，JSON 主体 UTF-16LE，尾部 EXIT=1/END_UTC 为 ASCII；内容可完整恢复。analysis 日志同为 UTF-16LE。"
+      ],
+      "impact": "机器解析需容忍两种编码；不影响证据内容。",
+      "recommendation": "日志统一 UTF-8（无 BOM），或在记录中声明编码。"
+    },
+    {
+      "id": "F-07",
+      "severity": "info",
+      "category": "packaging",
+      "title": "s3_runner.py 无 __main__ 入口",
+      "locations": [
+        {
+          "file": "<REPO_ROOT>/research/concorde_metaopt/meta_learning/s3_runner.py",
+          "lines": "whole file"
+        }
+      ],
+      "evidence": [
+        "全文无 if __name__ == '__main__'；python -m ...s3_runner 会静默 no-op。本次用外部 launcher（500 B，sha 9b66b007e2d8a964369c508ad8e7cc4a010ac9c7fb2eee156f79fa1ad1514fd6），S3_M3_EXECUTION_RECORD.json 已披露，未影响 run 产物。"
+      ],
+      "impact": "可重复性依赖外部文件；对既有 run 无影响。",
+      "recommendation": "加入标准入口或把 launcher 纳入仓库并加 smoke test。"
+    },
+    {
+      "id": "F-08",
+      "severity": "info",
+      "category": "negative-control",
+      "title": "负控 9/10 组被 runner 自身标记 suspicious",
+      "locations": [
+        {
+          "file": "<REPO_ROOT>/research/concorde_metaopt/meta_learning/s3_runner.py",
+          "lines": "3558-3580 (esp. 3572)"
+        }
+      ],
+      "evidence": [
+        "negative_control_summary.json（1,680 B，sha 1a17774d…）10 组中 9 组 feasible_rate>0.50（0.609896–0.851302）；唯一非 suspicious 为 S3-DE B64=0.448958；阈值代码 float(row['feasible_rate']) > 0.50。"
+      ],
+      "impact": "属负控诊断信号（标签置换后可行率未如预期塌缩），不是数据完整性失败；必须在分析报告中披露并解释，不得用它反向推断主结果。",
+      "recommendation": "报告列出阈值、9/10 分布与解释；若后续版本需要更强负控判据，应单源定义。"
+    }
+  ]
+}

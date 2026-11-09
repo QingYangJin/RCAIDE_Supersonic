@@ -1,0 +1,89 @@
+{
+ "schema_version": "p4ra-s3-analysis-disclosures-1",
+ "analysis_object": "s3_analysis outputs for run p4ra-s3-formal-20261109T1310Z",
+ "frozen_analyzer_untouched": true,
+ "note": "本文件为 Lead 对冻结分析器产物的更正与披露侧车（sidecar）：不修改任何冻结产物字节，逐项说明与更正其口径。",
+ "items": [
+  {
+   "id": "A5-S3M5-01",
+   "severity": "blocker",
+   "status": "CORRECTED_BY_SIDECAR_AND_SUPPLEMENTARY",
+   "fact": "figure_status.json fig7 与 s3_ood_descriptives.csv 10 行理由写 run 产物不含 OOD 段，与磁盘事实矛盾：run 侧存在 ood_records.jsonl 22,430,606 B / 28,800 行 / 300 runs / 10 tasks（sha256 e8372903b82e5a2730bdc3b557d5d367d3ebe5d90b5d1d1d204be4415f2539ba）。",
+   "root_cause": "s3_analysis.py:4601-4606 build_ood_rows 只从主 run_records 端点里找 split==meta_test_ood，从不读取 run.record_streams.ood / ood_records.jsonl，故返回 NOT_RUN；正确理由应为分析器未接入独立 OOD 记录流，而非 run 不含 OOD 段。",
+   "correction": "正确理由以本侧车为准；OOD 描述性汇总见 analysis/ood_supplementary_descriptives.csv 与 ood_supplementary_summary.json（label=LEAD_AUXILIARY_NOT_FROM_FROZEN_ANALYZER，脚本 analysis/repro/ood_supplementary.py）。fig7 仍为 NOT_RUN，因冻结分析器未实现该图；不得据此声称 OOD 已验证或已推断。"
+  },
+  {
+   "id": "A5-S3M5-02",
+   "severity": "major",
+   "status": "DISCLOSED_NOT_COMPUTED",
+   "fact": "预注册负控 NC-15（打乱标签后 CON−OBJ >= 真实差异 50% 判 suspicious）在冻结分析器中未计算：negative_control_summary.json 缺 shuffled_con_minus_obj_feasible_hit_rate 等三键，s3_analysis.py:4573-4587 直接把 NC-15 标 DISCLOSED；negative_controls.csv 的 NC-15 status=DISCLOSED，不是 PASS。",
+   "independent_descriptive": {
+    "nc_con_minus_obj": {
+     "64": 0.016145833333333637,
+     "128": 0.009895833333333326
+    },
+    "real_main_con_minus_obj": {
+     "64": 0.009635416666666664,
+     "128": 0.0033593749999999978
+    },
+    "abs_ratio": {
+     "64": 1.6756756756757076,
+     "128": 2.945736434108527
+    },
+    "merged_ratio": 2.004008016032088,
+    "task_overlap": "NC task 与主 meta_test 20 task 交集为 0，prereg 未定义跨 task 集比较规则，故该比例仅为描述性，不构成 prereg 判定。"
+   },
+   "correction": "不得把 NC-15 报告为负控通过；只能报告 DISCLOSED_NOT_COMPUTED 并给出上述描述性比例。"
+  },
+  {
+   "id": "A5-S3M5-03",
+   "severity": "major",
+   "status": "NOT_AVAILABLE_LABELLED",
+   "fact": "s3_cost_table.csv 全部 total_cost=0、adaptation_cost 等于 budget：s3_runner.py:1035 每条记录 wall_s=0.0（逐点计时未实现），s3_analysis.py:4115-4116 用 wall_s 定义 total_cost，故恒 0；ANIL cost_ratio=1.0 实为预算比，不是运行成本比。",
+   "available_wall_clock": {
+    "campaign_wall_s": 2941.921272,
+    "sum_run_wall_seconds": 22759.797742,
+    "max_run_wall_s": 13.290802,
+    "parallel_workers": 8
+   },
+   "correction": "成本端点标注 NOT_AVAILABLE（逐 run 成本不可用）；fig5 与 s3_cost_table.csv 不得用于成本效率论证；ANIL 决策仍为 ANIL_INCONCLUSIVE（命中率未显示优势且成本比不可用）。"
+  },
+  {
+   "id": "A7-F-05",
+   "severity": "minor",
+   "status": "DISCLOSED",
+   "fact": "execution_report.created_utc=14:07:08Z 早于 campaign END 14:17:54Z（陈旧字段）。",
+   "correction": "以 campaign END / run_summary.created_utc 为准；execution_report.created_utc 不作为完成时间。"
+  }
+ ],
+ "figure_reason_corrections": {
+  "fig7_ood_diagnostics": "NOT_RUN（冻结分析器未接入独立 OOD 记录流；run 侧 ood_records.jsonl 存在 28,800 条）。原产物理由 run 产物不含 OOD 段 作废，以本条为准。"
+ },
+ "artifacts": [
+  {
+   "path": "analysis/ood_supplementary_descriptives.csv",
+   "bytes": 6464,
+   "sha256": "963350d4044eadd0a8e83d5965e2325fafa99e42f05eb465bff53ed10cfb7da7",
+   "bytes_package_current": 6464,
+   "sha256_package_current": "963350d4044eadd0a8e83d5965e2325fafa99e42f05eb465bff53ed10cfb7da7",
+   "sha256_scope": "current package file bytes (post-sanitization); sha256/bytes fields above are the pre-sanitization originals when they differ"
+  },
+  {
+   "path": "analysis/ood_supplementary_summary.json",
+   "bytes": 1739,
+   "sha256": "a30cfc73798b97b4bd061834f0ae3eadeba17662f452480c54219fc5e4e0164a",
+   "bytes_package_current": 1696,
+   "sha256_package_current": "751243d11f9b6abc1b25dab69bd3ee9c78612c23b2cd2682f5095e401ee0c64b",
+   "sha256_scope": "current package file bytes (post-sanitization); sha256/bytes fields above are the pre-sanitization originals when they differ"
+  },
+  {
+   "path": "analysis/repro/ood_supplementary.py",
+   "bytes": 3679,
+   "sha256": "f0c79b7208185538f856764677b96990bbe2c3558f125f72ecbb689e328fc977",
+   "bytes_package_current": 3593,
+   "sha256_package_current": "bbc16c6647933aa180e71e81513a1cb84b0ed6998a8c38b8209521747dc93e20",
+   "sha256_scope": "current package file bytes (post-sanitization); sha256/bytes fields above are the pre-sanitization originals when they differ"
+  }
+ ],
+ "artifacts_note": "artifacts 条目的 sha256/bytes 为生成时（脱敏前）值；sha256_package_current/bytes_package_current 为本包内当前文件值，打包校验以 PACKAGE_MANIFEST.json 为准。"
+}

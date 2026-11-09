@@ -1,0 +1,32 @@
+python.exe : Traceback (most recent call last):
+所在位置 行:4 字符: 1
++ & <PYTHON_EXE> -E -s -B -u -m research.concorde_m ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Traceback (most recent call last)::String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "<REPO_ROOT>\research\concorde_metaopt\meta_learning\s3_analysis.py", line 5174, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "<REPO_ROOT>\research\concorde_metaopt\meta_learning\s3_analysis.py", line 5123, in main
+    result = analyze_s3_run(
+             ^^^^^^^^^^^^^^^
+  File "<REPO_ROOT>\research\concorde_metaopt\meta_learning\s3_analysis.py", line 4932, in analyze_s3_run
+    run = load_s3_run(run_dir, prereg, allow_incomplete_run=allow_incomplete_run, verify_record_digests=verify_record_d
+igests, checks=checks)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^
+  File "<REPO_ROOT>\research\concorde_metaopt\meta_learning\s3_analysis.py", line 3957, in load_s3_run
+    config = _validate_run_config(config_raw, prereg, checks=checks)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<REPO_ROOT>\research\concorde_metaopt\meta_learning\s3_analysis.py", line 2434, in _validate_run_config
+    _validate_model_sha_binding(models_section, prereg, run_mode=str(grid["run_mode"]), checks=checks)
+  File "<REPO_ROOT>\research\concorde_metaopt\meta_learning\s3_analysis.py", line 2244, in _validate_model_sha_bin
+ding
+    _fail(
+  File "<REPO_ROOT>\research\concorde_metaopt\meta_learning\s3_analysis.py", line 296, in _fail
+    raise S3AnalysisError(code, message, detail)
+S3AnalysisError: S3_ANALYSIS_RUN_BINDING_MISMATCH: FORMAL run_config.models.fomaml.sha256 �������Ԥע��ģ�� sha
+塅呉ㄽ਍乁䱁卙卉䑟乏彅呕㵃〲㘲ㄭⴱ㤰ㅔ㨴〳㈺娸਍

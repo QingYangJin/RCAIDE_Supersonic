@@ -1,0 +1,153 @@
+{
+  "n_tasks": 20,
+  "tests": {
+    "s3-feasible-hit-2tests": [
+      {
+        "n": 20,
+        "n_eff": 19,
+        "p_raw": 0.1785125732421875,
+        "p_perm": 0.17798220177982202,
+        "p_pratt": 0.192474365234375,
+        "mean_diff": 0.009635416666666664,
+        "median_diff": 0.006770833333333337,
+        "effect": 0.009635416666666664,
+        "threshold": 0.02,
+        "direction": "positive",
+        "ci_low": -0.0014583333333333284,
+        "ci_high": 0.02151041666666666,
+        "w_plus": 129.0,
+        "n_zero": 1,
+        "test_id": "C1b",
+        "budget": 64,
+        "p_holm": 0.357025146484375,
+        "holm_rank": 1,
+        "reject": false,
+        "decision": "NULL"
+      },
+      {
+        "n": 20,
+        "n_eff": 20,
+        "p_raw": 0.43577003479003906,
+        "p_perm": 0.43625637436256376,
+        "p_pratt": 0.43577003479003906,
+        "mean_diff": 0.0033593749999999978,
+        "median_diff": 0.004166666666666596,
+        "effect": 0.0033593749999999978,
+        "threshold": 0.02,
+        "direction": "positive",
+        "ci_low": -0.0033339843750000205,
+        "ci_high": 0.010234374999999967,
+        "w_plus": 126.5,
+        "n_zero": 0,
+        "test_id": "C1a",
+        "budget": 128,
+        "p_holm": 0.43577003479003906,
+        "holm_rank": 2,
+        "reject": false,
+        "decision": "NULL"
+      }
+    ],
+    "s3-gap-to-ref-2tests": [
+      {
+        "n": 20,
+        "n_eff": 20,
+        "p_raw": 0.8408222198486328,
+        "p_perm": 0.843015698430157,
+        "p_pratt": 0.8408222198486328,
+        "mean_diff": -0.003088326615239502,
+        "median_diff": 0.0001546520132102991,
+        "effect": -0.011233867492171538,
+        "threshold": 0.01,
+        "direction": "negative",
+        "ci_low": -0.014384482303944438,
+        "ci_high": 0.006972196318877517,
+        "w_plus": 99.0,
+        "n_zero": 0,
+        "test_id": "C2b",
+        "budget": 64,
+        "p_holm": 1.0,
+        "holm_rank": 2,
+        "reject": false,
+        "decision": "NULL"
+      },
+      {
+        "n": 20,
+        "n_eff": 19,
+        "p_raw": 0.7982521057128906,
+        "p_perm": 0.7997200279972003,
+        "p_pratt": 0.7981758117675781,
+        "mean_diff": 0.000543500921137538,
+        "median_diff": 3.311007208138539e-05,
+        "effect": 0.002654621142214754,
+        "threshold": 0.01,
+        "direction": "negative",
+        "ci_low": -0.0017178974779196797,
+        "ci_high": 0.0027917714450128917,
+        "w_plus": 102.0,
+        "n_zero": 1,
+        "test_id": "C2a",
+        "budget": 128,
+        "p_holm": 1.0,
+        "holm_rank": 1,
+        "reject": false,
+        "decision": "NULL"
+      }
+    ]
+  },
+  "aggregate_mismatches": [],
+  "c1_decisions": {
+    "B64": "NULL",
+    "B128": "NULL"
+  },
+  "overall": "NO_EVIDENCE",
+  "anil_means": {
+    "S3-BO-ANIL-CON_B64": 0.7922916666666666,
+    "S3-BO-RANDOM_B64": 0.7866666666666666,
+    "S3-BO-FOMAML-CON_B64": 0.7886979166666667,
+    "S3-BO-ANIL-CON_B128": 0.8324479166666666,
+    "S3-BO-RANDOM_B128": 0.8288020833333333,
+    "S3-BO-FOMAML-CON_B128": 0.827421875
+  },
+  "nc_records": {
+    "tasks": 10,
+    "cells": 100,
+    "contrast": {
+      "B64_mean_con_minus_obj": 0.016145833333333325,
+      "B64_n_tasks": 10,
+      "B128_mean_con_minus_obj": 0.009895833333333316,
+      "B128_n_tasks": 10
+    }
+  },
+  "ood_records": {
+    "tasks": 10,
+    "cells": 100,
+    "contrast": {
+      "B64_mean_con_minus_obj": -0.008854166666666673,
+      "B64_n_tasks": 10,
+      "B128_mean_con_minus_obj": -0.011718749999999967,
+      "B128_n_tasks": 10
+    },
+    "descriptives": {
+      "S3-BO-RANDOM_B64": 0.7869791666666667,
+      "S3-BO-FOMAML-OBJ_B64": 0.79375,
+      "S3-BO-FOMAML-CON_B64": 0.7848958333333333,
+      "S3-BO-ANIL-CON_B64": 0.7828125,
+      "S3-DE_B64": 0.4213541666666667,
+      "S3-BO-RANDOM_B128": 0.8229166666666666,
+      "S3-BO-FOMAML-OBJ_B128": 0.8268229166666666,
+      "S3-BO-FOMAML-CON_B128": 0.8151041666666666,
+      "S3-BO-ANIL-CON_B128": 0.8221354166666666,
+      "S3-DE_B128": 0.6052083333333333
+    }
+  },
+  "real_contrast": {
+    "B64_mean_con_minus_obj": 0.009635416666666664,
+    "B128_mean_con_minus_obj": 0.0033593749999999978
+  },
+  "nc15": {
+    "real_mean": 0.006497395833333331,
+    "shuffled_mean_from_records": 0.01302083333333332,
+    "ratio": 2.004008016032063,
+    "suspicious_if_ge_0.5": true
+  }
+}
