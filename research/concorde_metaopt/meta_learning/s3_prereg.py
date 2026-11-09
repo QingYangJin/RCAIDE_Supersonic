@@ -45,6 +45,8 @@ S3_RUN_CONFIG_REQUIRED_FIELDS = (
     "prereg_digest",
     "analysis_plan_digest",
     "code_sha",
+    "campaign_authorization_id",
+    "campaign_authorization_utc",
     "family_package",
     "task_ids_sha256",
     "references_sealed_sha256",
@@ -123,6 +125,8 @@ S3_TRAIN_RECORD_FIELDS = (
 S3_DATA_MANIFEST_FIELDS = (
     "schema_version",
     "run_id",
+    "campaign_authorization_id",
+    "campaign_authorization_utc",
     "data_boundary",
     "split_task_ids",
     "split_task_ids_sha256",
@@ -935,13 +939,13 @@ S3_NEGATIVE_CONTROLS = {
 }
 
 S3_CAMPAIGN = {
-    "authorization": "每 task 正式评估前由 Lead 一次性授权，写 campaign_authorization_id 与 UTC",
+    "authorization": "每次 FORMAL campaign 执行（一次 run_experiment 调用/一个输出目录，覆盖该 campaign 内全部 task 的预注册 runs）由 Lead 一次性书面授权，run 级记录该授权",
     "rules": {
-        "required_record_fields": ["campaign_authorization_id", "campaign_authorized_utc"],
+        "required_record_fields": ["campaign_authorization_id", "campaign_authorization_utc"],
         "single_evaluation_campaign_per_task": True,
     },
-    "authorization_rule": "每 task 正式评估前一次性授权，写 campaign_authorization_id 与 UTC",
-    "required_record_fields": ["campaign_authorization_id", "campaign_authorized_utc"],
+    "authorization_rule": "每次 FORMAL campaign 执行前一次性书面授权，写 campaign_authorization_id 与 campaign_authorization_utc",
+    "required_record_fields": ["campaign_authorization_id", "campaign_authorization_utc"],
     "runner_assert": True,
     "holdout_phase": "EVAL",
     "single_evaluation_campaign_per_task": True,

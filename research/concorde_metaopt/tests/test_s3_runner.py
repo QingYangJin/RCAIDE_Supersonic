@@ -16,6 +16,11 @@ from research.concorde_metaopt.meta_learning import s3_runner as runner
 from research.concorde_metaopt.meta_learning import task_family as tf
 from research.concorde_metaopt.tests import test_s3_support as support
 
+FORMAL_CAMPAIGN_AUTH = {
+    "campaign_authorization_id": "R-S3-M3-TEST-CAMPAIGN-0001",
+    "campaign_authorization_utc": "2026-11-09T00:00:00+00:00",
+}
+
 
 # ---------------------------------------------------------------------------
 # 合成证据仓（模块级复用；含已构建 prereg）
@@ -805,6 +810,7 @@ class ConfigTests(unittest.TestCase):
             main_specs=self.main_specs,
             record_counts=record_counts,
             scope_notes=notes,
+            campaign_authorization=FORMAL_CAMPAIGN_AUTH,
         )
         self.assertEqual(tuple(config), sp.S3_RUN_CONFIG_REQUIRED_FIELDS)
         self.assertEqual(config["k_sweep"], [5])
@@ -844,6 +850,7 @@ class ConfigTests(unittest.TestCase):
             main_specs=self.main_specs,
             record_counts=record_counts,
             scope_notes=notes,
+            campaign_authorization=FORMAL_CAMPAIGN_AUTH,
         )
 
     def test_build_data_manifest(self):
@@ -853,6 +860,8 @@ class ConfigTests(unittest.TestCase):
             by_split=self.artifacts["by_split"],
             synthetic_call_count=0,
             artifact_sha256={"b": "2", "a": "1"},
+            run_mode="FORMAL",
+            campaign_authorization=FORMAL_CAMPAIGN_AUTH,
         )
         self.assertEqual(tuple(manifest), sp.S3_DATA_MANIFEST_FIELDS)
         self.assertEqual(set(manifest["split_task_ids"]), set(sp.S3_ALLOWED_SPLITS))
@@ -940,6 +949,7 @@ class W8PilotGateFamilyBlockTests(unittest.TestCase):
                 "formula_version",
                 "family_package_path",
                 "family_package_sha256",
+                "family_package_bytes",
                 "task_ids",
                 "task_ids_sha256",
             ],
@@ -949,6 +959,7 @@ class W8PilotGateFamilyBlockTests(unittest.TestCase):
         self.assertEqual(block["family_package_path"], sp.S3_FAMILY_PACKAGE_RELPATH)
         self.assertEqual(block["family_package_sha256"], self.written["family_package_sha256"])
         self.assertEqual(block["family_package_sha256"], self.package["sha256"])
+        self.assertEqual(block["family_package_bytes"], self.package["bytes"])
         self.assertEqual(block["task_ids"], [task.task_id for task in self.selection])
         self.assertEqual(len(block["task_ids"]), int(sp.S3_W8_PILOT_TASKS))
         self.assertEqual(block["task_ids_sha256"], sp.task_ids_sha256(block["task_ids"]))
@@ -983,3 +994,260 @@ class W8PilotGateFamilyBlockTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+# ---------------------------------------------------------------------------
+# B01（M2R）：campaign 一次性授权字段
+# ---------------------------------------------------------------------------
+class CampaignAuthorizationConfigTests(ConfigTests):
+    def _config_kwargs(self):
+        record_counts = runner._expected_record_counts(
+            run_mode="FORMAL", train_models_count=0, outer_steps=200, main_specs=self.main_specs
+        )
+        notes = runner._scope_notes(
+            run_mode="FORMAL", workers=1, smoke_overrides=None,
+            record_streams={"main": len(self.main_specs), "nc": 0, "ood": 0, "det": 0},
+        )
+        return dict(
+            run_id="formal-config",
+            run_mode="FORMAL",
+            budget=self.budget,
+            prereg=self.prereg,
+            family_package=self.package,
+            episode_banks=self.artifacts["episode_banks"],
+            model_block=self.artifacts["train"],
+            gate=self.artifacts["gate"],
+            main_specs=self.main_specs,
+            record_counts=record_counts,
+            scope_notes=notes,
+        )
+
+    def test_formal_config_records_authorization(self):
+        config = runner.build_run_config(**self._config_kwargs(), campaign_authorization=FORMAL_CAMPAIGN_AUTH)
+        self.assertEqual(config["campaign_authorization_id"], FORMAL_CAMPAIGN_AUTH["campaign_authorization_id"])
+        self.assertEqual(config["campaign_authorization_utc"], FORMAL_CAMPAIGN_AUTH["campaign_authorization_utc"])
+        self.assertLess(
+            tuple(config).index("code_sha"),
+            tuple(config).index("campaign_authorization_id"),
+        )
+
+    def test_formal_config_requires_authorization(self):
+        _assert_error_code(
+            self, runner.S3_RUNNER_CAMPAIGN_AUTH_ERROR, runner.build_run_config, **self._config_kwargs()
+        )
+
+    def test_authorization_patterns(self):
+        good = dict(FORMAL_CAMPAIGN_AUTH)
+        self.assertEqual(runner.validate_campaign_authorization("FORMAL", good), good)
+        self.assertIsNone(runner.validate_campaign_authorization("SMOKE", None))
+        bad_cases = [
+            ({"campaign_authorization_id": "short", "campaign_authorization_utc": good["campaign_authorization_utc"]}, "id too short"),
+            ({"campaign_authorization_id": "BAD ID WITH SPACE", "campaign_authorization_utc": good["campaign_authorization_utc"]}, "id space"),
+            ({"campaign_authorization_id": good["campaign_authorization_id"], "campaign_authorization_utc": "2026-11-09 00:00:00"}, "utc bad"),
+            ({**good, "extra": "x"}, "extra key"),
+            ("not-a-mapping", "not mapping"),
+        ]
+        for payload, label in bad_cases:
+            with self.subTest(label=label):
+                _assert_error_code(self, runner.S3_RUNNER_CAMPAIGN_AUTH_ERROR, runner.validate_campaign_authorization, "FORMAL", payload)
+
+    def test_smoke_manifest_authorization_none(self):
+        manifest = runner.build_data_manifest(
+            run_id="smoke-auth",
+            prereg=self.prereg,
+            by_split=self.artifacts["by_split"],
+            synthetic_call_count=0,
+            artifact_sha256={},
+            run_mode="SMOKE",
+        )
+        self.assertIsNone(manifest["campaign_authorization_id"])
+        self.assertIsNone(manifest["campaign_authorization_utc"])
+
+    def test_formal_manifest_requires_authorization(self):
+        _assert_error_code(
+            self, runner.S3_RUNNER_CAMPAIGN_AUTH_ERROR, runner.build_data_manifest,
+            run_id="formal-auth",
+            prereg=self.prereg,
+            by_split=self.artifacts["by_split"],
+            synthetic_call_count=0,
+            artifact_sha256={},
+            run_mode="FORMAL",
+        )
+
+    def test_formal_manifest_matches_config(self):
+        config = runner.build_run_config(**self._config_kwargs(), campaign_authorization=FORMAL_CAMPAIGN_AUTH)
+        manifest = runner.build_data_manifest(
+            run_id="formal-config",
+            prereg=self.prereg,
+            by_split=self.artifacts["by_split"],
+            synthetic_call_count=0,
+            artifact_sha256={},
+            run_mode="FORMAL",
+            campaign_authorization=FORMAL_CAMPAIGN_AUTH,
+        )
+        self.assertEqual(manifest["campaign_authorization_id"], config["campaign_authorization_id"])
+        self.assertEqual(manifest["campaign_authorization_utc"], config["campaign_authorization_utc"])
+
+
+# ---------------------------------------------------------------------------
+# M01（M2R）：W=8 试点门 verifier fail-closed 负控
+# ---------------------------------------------------------------------------
+def _test_w8_payload(root):
+    sha = "a" * 64
+    run_keys = {
+        ("run-%02d" % index): {"status": "OK", "n_records": 384, "digests_sha256": sha}
+        for index in range(15)
+    }
+    campaign = {
+        "parallel_workers": 8,
+        "campaign_wall_s": 139.3,
+        "sum_run_wall_seconds": 188.8,
+        "max_run_wall_s": 10.0,
+        "max_peak_memory_mb": 306.1,
+        "run_count_requested": 15,
+        "run_count_completed": 15,
+        "stop_reason": None,
+        "execution_report_sha256": sha,
+    }
+    w1 = dict(campaign, parallel_workers=1, campaign_wall_s=177.8)
+    campaigns = {"W1": w1, "W8": campaign}
+    determinism = {
+        "record_digest_sequences_equal": True,
+        "first_divergence": None,
+        "n_runs_compared": 15,
+        "per_run": run_keys,
+        "per_run_by_worker": {"W1": run_keys, "W8": run_keys},
+    }
+    family = {
+        "family_id": sp.S3_FAMILY_ID,
+        "formula_version": sp.S3_FORMULA_VERSION,
+        "family_package_path": sp.S3_FAMILY_PACKAGE_RELPATH,
+        "family_package_sha256": sha,
+        "family_package_bytes": 123,
+        "task_ids": ["task-a", "task-b", "task-c"],
+        "task_ids_sha256": sp.task_ids_sha256(["task-a", "task-b", "task-c"]),
+    }
+    models_sha = {"anil": sha, "fomaml": sha}
+    models_files = {
+        "anil": {"path": "m/anil.json", "sha256": sha, "bytes": 10},
+        "fomaml": {"path": "m/fomaml.json", "sha256": sha, "bytes": 10},
+    }
+    grid = {
+        "tasks": 3,
+        "arms": [str(arm) for arm in sp.S3_ARMS],
+        "budget": 128,
+        "opt_seed": 0,
+        "meta_seed": 0,
+        "runs_per_campaign": 15,
+        "evals_per_campaign": 1920,
+        "total_runs": 30,
+        "total_evals": 3840,
+        "run_keys_sha256": sha,
+    }
+    return runner._w8_gate_payload(
+        repo_root=root,
+        campaign_id="w8-pilot-test",
+        created_utc="2026-11-09T00:00:00+00:00",
+        family=family,
+        models_sha=models_sha,
+        models_files=models_files,
+        grid=grid,
+        workers=(1, 8),
+        campaigns=campaigns,
+        determinism_block=determinism,
+    )
+
+
+class W8PilotGateVerifierTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.payload = _test_w8_payload(support.REPO_ROOT)
+        cls.tmp = tempfile.TemporaryDirectory(prefix="s3-w8-gate-")
+        cls.gate_path = Path(cls.tmp.name) / "w8_pilot_gate.json"
+        cls.info = runner.write_json_canonical(cls.gate_path, cls.payload)
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.tmp.cleanup()
+
+    def _copy(self):
+        return json.loads(json.dumps(self.payload))
+
+    def test_positive_structural(self):
+        self.assertTrue(runner.verify_w8_pilot_gate(self.payload))
+        self.assertEqual(self.payload["verdict"], "PASS")
+
+    def test_positive_file_bytes(self):
+        self.assertTrue(
+            runner.verify_w8_pilot_gate(self.payload, gate_path=self.gate_path, file_sha256=self.info["sha256"])
+        )
+
+    def test_tamper_family_task_ids_sha(self):
+        bad = self._copy()
+        bad["family"]["task_ids_sha256"] = "b" * 64
+        _assert_error_code(self, runner.S3_RUNNER_VALIDATION_ERROR, runner.verify_w8_pilot_gate, bad)
+
+    def test_tamper_family_task_ids(self):
+        bad = self._copy()
+        bad["family"]["task_ids"] = ["task-a", "task-b", "task-z"]
+        _assert_error_code(self, runner.S3_RUNNER_VALIDATION_ERROR, runner.verify_w8_pilot_gate, bad)
+
+    def test_tamper_model_sha(self):
+        bad = self._copy()
+        bad["models"]["sha256"]["fomaml"] = "c" * 64
+        _assert_error_code(self, runner.S3_RUNNER_VALIDATION_ERROR, runner.verify_w8_pilot_gate, bad)
+
+    def test_tamper_per_run_by_worker(self):
+        bad = self._copy()
+        bad["determinism"]["per_run_by_worker"]["W1"] = {}
+        _assert_error_code(self, runner.S3_RUNNER_VALIDATION_ERROR, runner.verify_w8_pilot_gate, bad)
+
+    def test_tamper_per_run(self):
+        bad = self._copy()
+        bad["determinism"]["per_run"] = {}
+        _assert_error_code(self, runner.S3_RUNNER_VALIDATION_ERROR, runner.verify_w8_pilot_gate, bad)
+
+    def test_tamper_conservative_projection(self):
+        bad = self._copy()
+        bad["throughput_extrapolation"]["projected_3780_conservative_s"] = 1000.0
+        _assert_error_code(self, runner.S3_RUNNER_VALIDATION_ERROR, runner.verify_w8_pilot_gate, bad)
+
+    def test_tamper_remove_acceptance(self):
+        bad = self._copy()
+        del bad["throughput_extrapolation"]["acceptance"]
+        _assert_error_code(self, runner.S3_RUNNER_VALIDATION_ERROR, runner.verify_w8_pilot_gate, bad)
+
+    def test_wrong_file_sha(self):
+        _assert_error_code(
+            self, runner.S3_RUNNER_VALIDATION_ERROR, runner.verify_w8_pilot_gate,
+            self.payload, gate_path=self.gate_path, file_sha256="d" * 64,
+        )
+
+    def test_file_sha_requires_gate_path(self):
+        _assert_error_code(
+            self, runner.S3_RUNNER_VALIDATION_ERROR, runner.verify_w8_pilot_gate,
+            self.payload, file_sha256=self.info["sha256"],
+        )
+
+    def test_tamper_threads_env(self):
+        bad = self._copy()
+        bad["threads_env"]["OMP_NUM_THREADS"] = "2"
+        _assert_error_code(self, runner.S3_RUNNER_VALIDATION_ERROR, runner.verify_w8_pilot_gate, bad)
+
+    def test_tamper_verdict(self):
+        bad = self._copy()
+        bad["verdict"] = "FAIL"
+        _assert_error_code(self, runner.S3_RUNNER_VALIDATION_ERROR, runner.verify_w8_pilot_gate, bad)
+
+    def test_build_calls_verifier_statically(self):
+        import inspect
+        source = inspect.getsource(runner.build_w8_pilot_gate)
+        self.assertIn("verify_w8_pilot_gate(", source)
+
+    def test_verifier_recomputes_repo_family_and_bench_statically(self):
+        import inspect
+        source = inspect.getsource(runner.verify_w8_pilot_gate)
+        self.assertIn("_w8_family_block(", source)
+        self.assertIn("_w8_throughput_block(", source)
+        self.assertIn("package_bytes", source)
+        self.assertIn("family_package_sha256", source)

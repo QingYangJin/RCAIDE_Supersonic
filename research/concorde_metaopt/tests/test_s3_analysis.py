@@ -343,6 +343,8 @@ def build_smoke_run(evidence, run_dir):
     data_manifest = {
         "schema_version": sp.S3_DATA_MANIFEST_SCHEMA_VERSION,
         "run_id": FIXTURE_RUN_ID,
+        "campaign_authorization_id": None,
+        "campaign_authorization_utc": None,
         "data_boundary": {"flags": dict(prereg["data_boundary"]["flags"])},
         "split_task_ids": split_ids,
         "split_task_ids_sha256": split_sha,
@@ -387,6 +389,9 @@ def build_smoke_run(evidence, run_dir):
         "prereg_digest": prereg["prereg_digest"],
         "analysis_plan_digest": prereg["analysis_plan_digest"],
         "code_sha": prereg["code_sha"],
+        # 计划 v1.3e / A5 B01：FORMAL campaign 授权字段为 run_config 必需键；SMOKE 允许 null。
+        "campaign_authorization_id": None,
+        "campaign_authorization_utc": None,
         "family_package": {"family_package_sha256": evidence["package_sha256"]},
         "task_ids_sha256": prereg["family"]["task_ids_sha256"],
         "references_sealed_sha256": prereg["references_sealed"]["sha256"],

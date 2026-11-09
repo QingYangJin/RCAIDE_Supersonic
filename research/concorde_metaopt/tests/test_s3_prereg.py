@@ -571,3 +571,26 @@ class WriteReadTests(support.SyntheticRepoCase, unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+# ---------------------------------------------------------------------------
+# B01（M2R）：campaign 授权字段与数据清单字段顺序
+# ---------------------------------------------------------------------------
+class CampaignAuthorizationPreregTests(unittest.TestCase):
+    def test_run_config_fields_order(self):
+        fields = list(sp.S3_RUN_CONFIG_REQUIRED_FIELDS)
+        self.assertEqual(fields[fields.index("code_sha") + 1], "campaign_authorization_id")
+        self.assertEqual(fields[fields.index("code_sha") + 2], "campaign_authorization_utc")
+        self.assertIn("campaign_authorization_id", sp.S3_DATA_MANIFEST_FIELDS)
+        self.assertIn("campaign_authorization_utc", sp.S3_DATA_MANIFEST_FIELDS)
+
+    def test_campaign_contract_fields(self):
+        expected = ["campaign_authorization_id", "campaign_authorization_utc"]
+        self.assertEqual(sp.S3_CAMPAIGN["required_record_fields"], expected)
+        self.assertEqual(sp.S3_CAMPAIGN["rules"]["required_record_fields"], expected)
+        self.assertNotIn("campaign_authorized_utc", json.dumps(sp.S3_CAMPAIGN, ensure_ascii=False))
+
+    def test_analysis_plan_digest_stored_and_hex(self):
+        prereg = support.SyntheticRepoCase().get_repo()["prereg"]
+        self.assertEqual(len(prereg["analysis_plan_digest"]), 64)
+        int(prereg["analysis_plan_digest"], 16)

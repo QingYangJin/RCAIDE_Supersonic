@@ -555,10 +555,15 @@ class S3FormalCampaignPropagationTests(unittest.TestCase):
                 parallel_workers=1,
                 created_utc=support.CREATED_UTC,
                 verify_code_sha=False,
+                campaign_authorization={
+                    "campaign_authorization_id": "R-S3-M3-TEST-CAMPAIGN-0001",
+                    "campaign_authorization_utc": "2026-11-09T00:00:00+00:00",
+                },
             )
         cls.summary = cls.result["summary"]
         cls.report = cls.result["execution_report"]
         cls.config = runner.read_json_file(cls.run_dir / runner.S3_RUNNER_CONFIG_FILE)
+        cls.data_manifest = runner.read_json_file(cls.run_dir / runner.S3_RUNNER_DATA_MANIFEST_FILE)
 
     @classmethod
     def tearDownClass(cls):
@@ -575,6 +580,16 @@ class S3FormalCampaignPropagationTests(unittest.TestCase):
         self.assertTrue(self.result["validation"]["ok"], failed)
         self.assertFalse((self.run_dir / runner.S3_RUNNER_OOD_RECORDS_FILE).is_file())
         self.assertFalse((self.run_dir / runner.S3_RUNNER_DET_CHECK_FILE).is_file())
+
+    def test_formal_campaign_authorization_propagation(self):
+        self.assertEqual(self.config["campaign_authorization_id"], "R-S3-M3-TEST-CAMPAIGN-0001")
+        self.assertEqual(self.config["campaign_authorization_utc"], "2026-11-09T00:00:00+00:00")
+        self.assertEqual(
+            self.data_manifest["campaign_authorization_id"], self.config["campaign_authorization_id"]
+        )
+        self.assertEqual(
+            self.data_manifest["campaign_authorization_utc"], self.config["campaign_authorization_utc"]
+        )
 
     def test_formal_shape_without_full_grid(self):
         self.assertEqual(self.config["run_mode"], "FORMAL")

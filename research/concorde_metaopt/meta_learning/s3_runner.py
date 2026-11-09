@@ -23,6 +23,7 @@ import math
 import multiprocessing
 import os
 import platform
+import re
 import sys
 import time
 import traceback
@@ -152,6 +153,34 @@ S3_RUNNER_STATUSES = (
     "DEADLINE_EXCEEDED",
 )
 
+# B01（M2R）：FORMAL campaign 一次性书面授权字段
+S3_RUNNER_CAMPAIGN_AUTH_ERROR = "S3_RUNNER_CAMPAIGN_AUTH_ERROR"
+CAMPAIGN_AUTHORIZATION_ID_PATTERN = re.compile(r"^[A-Za-z0-9._:-]{8,128}$")
+CAMPAIGN_AUTHORIZATION_UTC_PATTERN = re.compile(
+    r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$"
+)
+
+# M02（M2R）：3780 runs 外推权威口径 = bench_v13a + bench_v13a_run2（R-S3-05B）
+S3_W8_BENCH_RELPATHS = (
+    "research/concorde_metaopt/evidence/s3/bench/bench_v13a.json",
+    "research/concorde_metaopt/evidence/s3/bench/bench_v13a_run2.json",
+)
+S3_W8_BENCH_FILE_SHA256 = {
+    "research/concorde_metaopt/evidence/s3/bench/bench_v13a.json":
+        "16fbb1f587a2b4d7ae0ce1650fa57c3043cd586fc95b96cceae57901aa553d16",
+    "research/concorde_metaopt/evidence/s3/bench/bench_v13a_run2.json":
+        "004bbe644f6e2f7c8a1e1350d265fa78d99c29d7f787ea7deb11ccbd3382a331",
+}
+S3_W8_TARGET_RUNS = 3780
+S3_W8_PROJECTED_3780_WALL_S = 5509.562
+S3_W8_PROJECTED_3780_THROUGHPUT_S = 3712.731
+S3_W8_HARD_CAP_S = 7200
+S3_W8_SECOND_CAMPAIGN_WALL_DELTA_LIMIT_PCT = 20.0
+S3_W8_ACCEPTANCE_RULING = "R-S3-05B"
+S3_W8_ACCEPTANCE_RULING_SHA256 = "e72f1ec90c7ef9f6c0ef8c2625c75aee345871856e0b380671b9a777601dd23f"
+S3_W8_ACCEPTANCE_UPPER_BOUND_S = 5509.562
+S3_W8_ACCEPTANCE_WITHIN_5400 = False
+
 
 class S3RunnerError(RuntimeError):
     """S3 runner 错误（fail-closed，带机器可读错误码）。"""
@@ -165,6 +194,49 @@ class S3RunnerError(RuntimeError):
 def _require(condition: Any, code: str, message: str) -> None:
     if not condition:
         raise S3RunnerError(code, message)
+
+
+def _is_sha256_hex(value: Any) -> bool:
+    text = str(value or "")
+    return len(text) == 64 and all(ch in "0123456789abcdef" for ch in text)
+
+
+def validate_campaign_authorization(
+    run_mode: str, campaign_authorization: Any
+) -> dict[str, str] | None:
+    """B01：校验 FORMAL campaign 一次性授权（id/utc）；SMOKE 允许 None。"""
+    if campaign_authorization is None:
+        _require(
+            run_mode != "FORMAL",
+            S3_RUNNER_CAMPAIGN_AUTH_ERROR,
+            "FORMAL run 必须提供 campaign_authorization（id/utc）",
+        )
+        return None
+    _require(
+        isinstance(campaign_authorization, Mapping),
+        S3_RUNNER_CAMPAIGN_AUTH_ERROR,
+        "campaign_authorization 必须是 mapping",
+    )
+    _require(
+        set(campaign_authorization) == {"campaign_authorization_id", "campaign_authorization_utc"},
+        S3_RUNNER_CAMPAIGN_AUTH_ERROR,
+        "campaign_authorization 键集必须恰为 id/utc",
+    )
+    auth_id = campaign_authorization.get("campaign_authorization_id")
+    auth_utc = campaign_authorization.get("campaign_authorization_utc")
+    _require(
+        isinstance(auth_id, str)
+        and bool(auth_id.strip())
+        and bool(CAMPAIGN_AUTHORIZATION_ID_PATTERN.fullmatch(auth_id)),
+        S3_RUNNER_CAMPAIGN_AUTH_ERROR,
+        "campaign_authorization_id 非法",
+    )
+    _require(
+        isinstance(auth_utc, str) and bool(CAMPAIGN_AUTHORIZATION_UTC_PATTERN.fullmatch(auth_utc)),
+        S3_RUNNER_CAMPAIGN_AUTH_ERROR,
+        "campaign_authorization_utc 非法",
+    )
+    return {"campaign_authorization_id": auth_id, "campaign_authorization_utc": auth_utc}
 
 
 # ---------------------------------------------------------------------------
@@ -2154,7 +2226,9 @@ def build_run_config(
     main_specs: Sequence[Mapping[str, Any]],
     record_counts: Mapping[str, int],
     scope_notes: Sequence[str],
+    campaign_authorization: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
+    auth = validate_campaign_authorization(run_mode, campaign_authorization)
     family = prereg.get("family") or {}
     references = prereg.get("references_sealed") or {}
     models_summary = {
@@ -2176,6 +2250,8 @@ def build_run_config(
         "prereg_digest": str(prereg.get("prereg_digest")),
         "analysis_plan_digest": str(prereg.get("analysis_plan_digest")),
         "code_sha": str(prereg.get("code_sha")),
+        "campaign_authorization_id": (auth["campaign_authorization_id"] if auth else None),
+        "campaign_authorization_utc": (auth["campaign_authorization_utc"] if auth else None),
         "family_package": {
             "path": str(sp.S3_FAMILY_PACKAGE_RELPATH),
             "sha256": str(family.get("family_package_sha256")),
@@ -2247,7 +2323,10 @@ def build_data_manifest(
     by_split: Mapping[str, Sequence[tf.S3ConflictTask]],
     synthetic_call_count: int,
     artifact_sha256: Mapping[str, str],
+    run_mode: str = "SMOKE",
+    campaign_authorization: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
+    auth = validate_campaign_authorization(run_mode, campaign_authorization)
     split_ids, _split_hashes = _split_task_ids(by_split)
     expected_counts = {split: len(ids) for split, ids in split_ids.items()}
     for split in sp.S3_ALLOWED_SPLITS:
@@ -2261,6 +2340,8 @@ def build_data_manifest(
     return {
         "schema_version": sp.S3_DATA_MANIFEST_SCHEMA_VERSION,
         "run_id": str(run_id),
+        "campaign_authorization_id": (auth["campaign_authorization_id"] if auth else None),
+        "campaign_authorization_utc": (auth["campaign_authorization_utc"] if auth else None),
         "data_boundary": dict(prereg.get("data_boundary") or {}),
         "split_task_ids": split_ids,
         "split_task_ids_sha256": {split: sp.canonical_sha256(ids) for split, ids in split_ids.items()},
@@ -2351,6 +2432,34 @@ def validate_run_artifacts(
     if run_mode == "SMOKE":
         expected_fields |= set(sp.S3_RUN_CONFIG_OPTIONAL_FIELDS)
     _check(checks, "run_config_fields", set(config) == expected_fields, sorted(set(config) ^ expected_fields))
+    auth_id = config.get("campaign_authorization_id")
+    auth_utc = config.get("campaign_authorization_utc")
+    has_auth_fields = {"campaign_authorization_id", "campaign_authorization_utc"} <= set(config)
+    if run_mode == "FORMAL":
+        run_config_auth_ok = (
+            has_auth_fields
+            and isinstance(auth_id, str)
+            and bool(CAMPAIGN_AUTHORIZATION_ID_PATTERN.fullmatch(auth_id))
+            and isinstance(auth_utc, str)
+            and bool(CAMPAIGN_AUTHORIZATION_UTC_PATTERN.fullmatch(auth_utc))
+        )
+    else:
+        smoke_auth_ok = (auth_id is None and auth_utc is None) or (
+            isinstance(auth_id, str)
+            and bool(CAMPAIGN_AUTHORIZATION_ID_PATTERN.fullmatch(auth_id))
+            and isinstance(auth_utc, str)
+            and bool(CAMPAIGN_AUTHORIZATION_UTC_PATTERN.fullmatch(auth_utc))
+        )
+        run_config_auth_ok = has_auth_fields and smoke_auth_ok
+    _check(checks, "run_config_campaign_authorization", run_config_auth_ok, {"id": auth_id, "utc": auth_utc})
+    data_manifest_auth_ok = (
+        isinstance(data_manifest, Mapping)
+        and {"campaign_authorization_id", "campaign_authorization_utc"} <= set(data_manifest)
+        and data_manifest.get("campaign_authorization_id") == auth_id
+        and data_manifest.get("campaign_authorization_utc") == auth_utc
+        and (run_mode != "FORMAL" or (auth_id is not None and auth_utc is not None))
+    )
+    _check(checks, "data_manifest_campaign_authorization", data_manifest_auth_ok, {"id": data_manifest.get("campaign_authorization_id") if isinstance(data_manifest, Mapping) else None, "utc": data_manifest.get("campaign_authorization_utc") if isinstance(data_manifest, Mapping) else None})
     k_sweep = config.get("k_sweep")
     _check(
         checks,
@@ -3017,9 +3126,11 @@ def run_experiment(
     parallel_workers: int = S3_RUNNER_DEFAULT_WORKERS,
     created_utc: str | None = None,
     verify_code_sha: bool | None = None,
+    campaign_authorization: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     """完整 S3 run：准备模型/bank/梯度门 → 主 campaign（可选负控/OOD/确定性） → 产物 + 校验。"""
     _require(run_mode in S3_RUNNER_EXECUTION_MODES, S3_RUNNER_ERROR, "run_mode 非法")
+    auth = validate_campaign_authorization(run_mode, campaign_authorization)
     root = Path(repo_root) if repo_root is not None else Path(__file__).resolve().parents[3]
     out = Path(out_dir)
     _require(not (out / S3_RUNNER_CONFIG_FILE).exists(), S3_RUNNER_FILE_ERROR, "run 目录已有产物: " + str(out))
@@ -3316,6 +3427,7 @@ def run_experiment(
         main_specs=main_specs,
         record_counts=record_counts,
         scope_notes=scope_notes,
+        campaign_authorization=auth,
     )
     config_info = write_json_canonical(out / S3_RUNNER_CONFIG_FILE, run_config)
     records_info = write_jsonl(out / S3_RUNNER_RECORD_FILE, train_records + eval_records)
@@ -3364,6 +3476,8 @@ def run_experiment(
         by_split=by_split,
         synthetic_call_count=int(eval_total),
         artifact_sha256=artifact_sha256,
+        run_mode=run_mode,
+        campaign_authorization=auth,
     )
     data_info = write_json_canonical(out / S3_RUNNER_DATA_MANIFEST_FILE, data_manifest)
     timings = _outer_step_timing(train)
@@ -3497,8 +3611,8 @@ def _w8_family_block(
 
     R2 缺陷根因：load_family_package 顶层是 {path,sha256,bytes,payload,tasks,by_split,
 task_ids_sha256}，family_id/formula_version 实际在 payload 内；W=8 试点门曾按顶层
-取值而 KeyError。本 helper 统一取值并 fail-closed 复核 payload 的族常量，输出键集合
-与修复前 6 键完全一致（不改 evidence schema）。
+取值而 KeyError。本 helper 统一取值并 fail-closed 复核 payload 的族常量；M01/M02
+（计划 v1.3e）追加 family_package_bytes 用于字节级复核（输出 7 键）。
     """
     payload = package.get("payload")
     _require(isinstance(payload, Mapping), S3_RUNNER_FAMILY_ERROR, "W=8 试点门族包缺少 payload mapping")
@@ -3531,9 +3645,197 @@ task_ids_sha256}，family_id/formula_version 实际在 payload 内；W=8 试点�
         "formula_version": formula_version,
         "family_package_path": str(package_relpath),
         "family_package_sha256": str(package["sha256"]),
+        "family_package_bytes": int(package["bytes"]),
         "task_ids": task_ids,
         "task_ids_sha256": sp.task_ids_sha256(task_ids),
     }
+
+# ---------------------------------------------------------------------------
+# M2R（M01/M02）：W=8 试点门 payload 组装、bench 外推块与复算
+# ---------------------------------------------------------------------------
+def _canonical_lf_sha256(data: bytes) -> str:
+    """按 canonical LF 字节算 sha（构建/校验 bench/gate/family 文件一致口径）。"""
+    return sp.sha256_bytes(data.replace(b"\r\n", b"\n"))
+
+
+def _w8_bench_block(repo_root: str | Path) -> dict[str, Any]:
+    """读取 bench_v13a / bench_v13a_run2（R-S3-05B）：校验 canonical LF sha 并抽取外推数字。"""
+    root = Path(repo_root)
+    bench: dict[str, Any] = {}
+    for rel_path in S3_W8_BENCH_RELPATHS:
+        path = root / str(rel_path)
+        _require(path.is_file(), S3_RUNNER_VALIDATION_ERROR, "缺少 W8 外推 bench 文件: " + str(rel_path))
+        raw = path.read_bytes()
+        sha = _canonical_lf_sha256(raw)
+        _require(
+            sha == str(S3_W8_BENCH_FILE_SHA256[str(rel_path)]),
+            S3_RUNNER_VALIDATION_ERROR,
+            "W8 外推 bench 文件 canonical LF sha 不符: " + str(rel_path),
+        )
+        try:
+            data = json.loads(raw.decode("utf-8"))
+        except Exception as exc:  # noqa: BLE001 - fail-closed 包装
+            raise S3RunnerError(S3_RUNNER_VALIDATION_ERROR, "W8 外推 bench JSON 解析失败: " + str(rel_path)) from exc
+        measurements = data.get("measurements") or {}
+        w1 = measurements.get("w1") or {}
+        w8 = measurements.get("w8") or {}
+        projection = ((data.get("projection") or {}).get("w8") or {}).get(str(int(S3_W8_TARGET_RUNS))) or {}
+        try:
+            entry = {
+                "path": str(rel_path),
+                "sha256": str(S3_W8_BENCH_FILE_SHA256[str(rel_path)]),
+                "w1_wall_s": float(w1["wall_s"]),
+                "w8_wall_s": float(w8["wall_s"]),
+                "runs_per_second": float(w8["runs_per_s"]),
+                "projected_3780_by_measured_throughput_s": float(projection["by_measured_throughput_s"]),
+                "projected_3780_by_conservative_batch_s": float(projection["by_conservative_batch_s"]),
+            }
+        except (KeyError, TypeError, ValueError) as exc:
+            raise S3RunnerError(S3_RUNNER_VALIDATION_ERROR, "W8 外推 bench 字段缺失: " + str(rel_path)) from exc
+        _require(
+            entry["w1_wall_s"] > 0 and entry["w8_wall_s"] > 0 and entry["runs_per_second"] > 0,
+            S3_RUNNER_VALIDATION_ERROR,
+            "W8 外推 bench wall/runs_per_s 必须 > 0: " + str(rel_path),
+        )
+        bench[path.stem] = entry
+    _require(
+        set(bench) == {"bench_v13a", "bench_v13a_run2"},
+        S3_RUNNER_VALIDATION_ERROR,
+        "W8 外推 bench 文件集合不符",
+    )
+    return bench
+
+
+def _w8_throughput_block(repo_root: str | Path) -> dict[str, Any]:
+    """组装 3780 runs 外推块（权威口径 = 两次 bench 的最保守 max）。"""
+    bench = _w8_bench_block(repo_root)
+    first = bench["bench_v13a"]
+    second = bench["bench_v13a_run2"]
+    projected_throughput = round(
+        max(float(entry["projected_3780_by_measured_throughput_s"]) for entry in bench.values()), 3
+    )
+    projected_conservative = round(
+        max(float(entry["projected_3780_by_conservative_batch_s"]) for entry in bench.values()), 3
+    )
+    _require(
+        projected_throughput == float(S3_W8_PROJECTED_3780_THROUGHPUT_S),
+        S3_RUNNER_VALIDATION_ERROR,
+        "W8 外推 throughput 与 R-S3-05B 权威值不符: " + repr(projected_throughput),
+    )
+    _require(
+        projected_conservative == float(S3_W8_PROJECTED_3780_WALL_S),
+        S3_RUNNER_VALIDATION_ERROR,
+        "W8 外推 conservative 与 R-S3-05B 权威值不符: " + repr(projected_conservative),
+    )
+    delta_pct = abs(float(second["w8_wall_s"]) - float(first["w8_wall_s"])) / float(first["w8_wall_s"]) * 100.0
+    delta_pct = float(round(delta_pct, 6))
+    acceptance = {
+        "lead_ruling": str(S3_W8_ACCEPTANCE_RULING),
+        "ruling_sha256": str(S3_W8_ACCEPTANCE_RULING_SHA256),
+        "accepted_upper_bound_s": float(projected_conservative),
+        "within_5400": bool(float(projected_conservative) <= 5400.0),
+        "accepted": bool(float(projected_conservative) <= float(S3_W8_HARD_CAP_S)),
+    }
+    return {
+        "basis": "bench_v13a+bench_v13a_run2 (R-S3-05B)",
+        "bench": bench,
+        "projected_3780_throughput_s": float(projected_throughput),
+        "projected_3780_conservative_s": float(projected_conservative),
+        "second_campaign_wall_delta_pct": float(delta_pct),
+        "second_campaign_wall_delta_pass": bool(delta_pct < float(S3_W8_SECOND_CAMPAIGN_WALL_DELTA_LIMIT_PCT)),
+        "hard_cap_s": int(S3_W8_HARD_CAP_S),
+        "acceptance": acceptance,
+    }
+
+
+def _w8_gate_payload(
+    *,
+    repo_root: str | Path,
+    campaign_id: str,
+    created_utc: str,
+    family: Mapping[str, Any],
+    models_sha: Mapping[str, str],
+    models_files: Mapping[str, Mapping[str, Any]],
+    grid: Mapping[str, Any],
+    workers: Sequence[int],
+    campaigns: Mapping[str, Mapping[str, Any]],
+    determinism_block: Mapping[str, Any],
+) -> dict[str, Any]:
+    """组装 W=8 试点门 payload（§4.2.1 字段；本地 wall 只披露、不外推 3780）。"""
+    root = Path(repo_root)
+    throughput = _w8_throughput_block(root)
+    w1 = campaigns["W1"]
+    w8 = campaigns["W8"]
+    w1_wall = float(w1["campaign_wall_s"])
+    w8_wall = float(w8["campaign_wall_s"])
+    _require(w1_wall > 0 and w8_wall > 0, S3_RUNNER_VALIDATION_ERROR, "W=8 试点门 campaign wall 必须 > 0")
+    det_equal = bool(determinism_block.get("record_digest_sequences_equal"))
+    all_completed = all(
+        int(block.get("run_count_completed") or 0) == int(sp.S3_W8_PILOT_RUNS_PER_CAMPAIGN)
+        for block in campaigns.values()
+    )
+    status = "PASS" if det_equal and all_completed else "FAIL"
+    peak_memory = max(float(w1["max_peak_memory_mb"]), float(w8["max_peak_memory_mb"]))
+    peak_upper = peak_memory * float(max(int(item) for item in workers))
+    threads_env = {name: "1" for name in S3_THREAD_ENV_VARS}
+    criteria = {
+        "record_digest_equal": bool(det_equal),
+        "extrapolation_within_hard_cap": bool(
+            float(throughput["projected_3780_conservative_s"]) <= float(throughput["hard_cap_s"])
+        ),
+        "lead_acceptance": bool(throughput["acceptance"]["accepted"]),
+        "peak_memory_within_limit": bool(peak_memory < float(sp.S3_RESOURCE_LIMITS["peak_memory_mb"])),
+        "repeat_wall_delta_below_20pct": bool(throughput["second_campaign_wall_delta_pass"]),
+        "thread_env_fixed": True,
+    }
+    verdict = "PASS" if status == "PASS" and all(bool(value) for value in criteria.values()) else "FAIL"
+    return {
+        "schema_version": str(sp.S3_W8_PILOT_GATE_SCHEMA_VERSION),
+        "created_utc": str(created_utc),
+        "campaign_id": str(campaign_id),
+        "family": dict(family),
+        "models": {
+            "kind": "fomaml+anil",
+            "meta_seed": int(sp.S3_W8_PILOT_META_SEED),
+            "sha256": {str(kind): str(value) for kind, value in sorted(models_sha.items())},
+            "files": {
+                str(kind): {
+                    "path": str(entry["path"]),
+                    "sha256": str(entry["sha256"]),
+                    "bytes": int(entry["bytes"]),
+                }
+                for kind, entry in sorted(models_files.items())
+            },
+        },
+        "grid": dict(grid),
+        "workers": [int(item) for item in workers],
+        "campaigns": dict(campaigns),
+        "determinism": dict(determinism_block),
+        "w1_wall_s": float(w1_wall),
+        "w8_wall_s": float(w8_wall),
+        "runs_per_second": float(int(sp.S3_W8_PILOT_RUNS_PER_CAMPAIGN) / w8_wall),
+        "projected_3780_wall_s": float(throughput["projected_3780_conservative_s"]),
+        "projected_3780_throughput_s": float(throughput["projected_3780_throughput_s"]),
+        "record_digest_equal": bool(det_equal),
+        "peak_memory_mb": float(peak_memory),
+        "peak_upper_bound_mb": float(peak_upper),
+        "threads_env": threads_env,
+        "threads_env_fixed": True,
+        "throughput_extrapolation": dict(throughput),
+        "criteria": criteria,
+        "verdict": str(verdict),
+        "parallel": {
+            "speedup": float(w1_wall / w8_wall),
+            "peak_upper_bound_mb": float(peak_upper),
+            "peak_memory_limit_mb": float(sp.S3_RESOURCE_LIMITS["peak_memory_mb"]),
+            "sum_run_wall_limit_s": int(sp.S3_RESOURCE_LIMITS["sum_run_wall_limit_s"]),
+            "thread_env": dict(threads_env),
+        },
+        "status": str(status),
+        "physical_call_count": 0,
+        "solver_processes_started": 0,
+    }
+
 
 def build_w8_pilot_gate(
     *,
@@ -3632,56 +3934,52 @@ def build_w8_pilot_gate(
     completed = {int(count): int(campaigns["W" + str(int(count))]["run_count_completed"]) for count in worker_list}
     all_completed = all(value == runs_expected for value in completed.values())
     status = "PASS" if bool(equal) and all_completed else "FAIL"
-    w1 = campaigns["W1"]
-    w8 = campaigns["W8"]
-    payload: dict[str, Any] = {
-        "schema_version": str(sp.S3_W8_PILOT_GATE_SCHEMA_VERSION),
-        "created_utc": str(created_utc or utc_now()),
-        "campaign_id": str(campaign_id),
-        "family": _w8_family_block(
-            package,
-            package_relpath=str(package_relpath),
-            tasks=tasks,
-        ),
-        "models": {
-            "kind": "fomaml+anil",
-            "meta_seed": int(sp.S3_W8_PILOT_META_SEED),
-            "sha256": {str(kind): str(entry["sha256"]) for (kind, _seed), entry in sorted(models.items())},
-        },
-        "grid": {
-            "tasks": int(sp.S3_W8_PILOT_TASKS),
-            "arms": [str(arm) for arm in sp.S3_ARMS],
-            "budget": int(sp.S3_W8_PILOT_BUDGET),
-            "opt_seed": int(sp.S3_W8_PILOT_OPT_SEED),
-            "meta_seed": int(sp.S3_W8_PILOT_META_SEED),
-            "runs_per_campaign": runs_expected,
-            "evals_per_campaign": int(sp.S3_W8_PILOT_EVALS_PER_CAMPAIGN),
-            "total_runs": int(sp.S3_W8_PILOT_TOTAL_RUNS),
-            "total_evals": int(sp.S3_W8_PILOT_TOTAL_EVALS),
-            "run_keys_sha256": sp.sha256_text("\n".join(baseline)),
-        },
-        "workers": [int(item) for item in worker_list],
-        "campaigns": campaigns,
-        "determinism": {
-            "record_digest_sequences_equal": bool(equal),
-            "first_divergence": first_divergence,
-            "n_runs_compared": len(baseline),
-            "per_run": per_run_by_worker[1],
-        },
-        "parallel": {
-            "speedup": (float(w1["campaign_wall_s"]) / float(w8["campaign_wall_s"])) if float(w8["campaign_wall_s"]) > 0 else None,
-            "peak_upper_bound_mb": float(w8["max_peak_memory_mb"]) * float(len(worker_list) and 8),
-            "peak_memory_limit_mb": float(sp.S3_RESOURCE_LIMITS["peak_memory_mb"]),
-            "sum_run_wall_limit_s": int(sp.S3_RESOURCE_LIMITS["sum_run_wall_limit_s"]),
-            "thread_env": dict(S3_THREAD_ENV_VARS if isinstance(S3_THREAD_ENV_VARS, Mapping) else {name: "1" for name in S3_THREAD_ENV_VARS}),
-        },
-        "status": status,
-        "physical_call_count": 0,
-        "solver_processes_started": 0,
+    models_sha = {str(kind): str(entry["sha256"]) for (kind, _seed), entry in sorted(models.items())}
+    models_files = {str(kind): entry for (kind, _seed), entry in sorted(models.items())}
+    grid = {
+        "tasks": int(sp.S3_W8_PILOT_TASKS),
+        "arms": [str(arm) for arm in sp.S3_ARMS],
+        "budget": int(sp.S3_W8_PILOT_BUDGET),
+        "opt_seed": int(sp.S3_W8_PILOT_OPT_SEED),
+        "meta_seed": int(sp.S3_W8_PILOT_META_SEED),
+        "runs_per_campaign": runs_expected,
+        "evals_per_campaign": int(sp.S3_W8_PILOT_EVALS_PER_CAMPAIGN),
+        "total_runs": int(sp.S3_W8_PILOT_TOTAL_RUNS),
+        "total_evals": int(sp.S3_W8_PILOT_TOTAL_EVALS),
+        "run_keys_sha256": sp.sha256_text("\n".join(baseline)),
     }
+    determinism_block = {
+        "record_digest_sequences_equal": bool(equal),
+        "first_divergence": first_divergence,
+        "n_runs_compared": len(baseline),
+        "per_run": per_run_by_worker[1],
+        "per_run_by_worker": {
+            "W1": per_run_by_worker[1],
+            "W8": per_run_by_worker[8],
+        },
+    }
+    payload = _w8_gate_payload(
+        repo_root=root,
+        campaign_id=str(campaign_id),
+        created_utc=str(created_utc or utc_now()),
+        family=_w8_family_block(package, package_relpath=str(package_relpath), tasks=tasks),
+        models_sha=models_sha,
+        models_files=models_files,
+        grid=grid,
+        workers=worker_list,
+        campaigns=campaigns,
+        determinism_block=determinism_block,
+    )
     target = Path(out_path) if out_path is not None else root / sp.S3_W8_PILOT_GATE_RELPATH
     target.parent.mkdir(parents=True, exist_ok=True)
     info = write_json_canonical(target, payload)
+    # M2R M01 生产调用点：写盘后立即用 file_sha256 + repo_root 全量复核，失败 fail-closed
+    verify_w8_pilot_gate(
+        payload,
+        gate_path=target,
+        file_sha256=str(info["sha256"]),
+        repo_root=root,
+    )
     try:
         rel_path = target.resolve().relative_to(root).as_posix()
     except ValueError:
@@ -3689,29 +3987,359 @@ def build_w8_pilot_gate(
     return {"path": rel_path, "absolute_path": str(target), "bytes": int(info["bytes"]), "sha256": str(info["sha256"]), "payload": payload}
 
 
-def verify_w8_pilot_gate(payload: Any, *, file_sha256: str | None = None) -> bool:
-    """校验 M2 W=8 试点门结构；失败 fail-closed。"""
+def verify_w8_pilot_gate(
+    payload: Any,
+    *,
+    gate_path: str | Path | None = None,
+    file_sha256: str | None = None,
+    repo_root: str | Path | None = None,
+) -> bool:
+    """M2R M01：逐项 fail-closed 校验 M2 W=8 试点门（结构/哈希/外推/文件字节）。"""
     _require(isinstance(payload, Mapping), S3_RUNNER_VALIDATION_ERROR, "W=8 试点门必须是 mapping")
-    _require(payload.get("schema_version") == sp.S3_W8_PILOT_GATE_SCHEMA_VERSION, S3_RUNNER_VALIDATION_ERROR, "W=8 试点门 schema 不符")
+    _require(
+        payload.get("schema_version") == sp.S3_W8_PILOT_GATE_SCHEMA_VERSION,
+        S3_RUNNER_VALIDATION_ERROR,
+        "W=8 试点门 schema 不符",
+    )
     _require(payload.get("status") == "PASS", S3_RUNNER_VALIDATION_ERROR, "W=8 试点门 status 必须为 PASS")
-    _require(tuple(payload.get("workers") or ()) == tuple(int(item) for item in sp.S3_W8_PILOT_WORKERS), S3_RUNNER_VALIDATION_ERROR, "W=8 试点门 workers 必须为 [1, 8]")
-    determinism = payload.get("determinism") or {}
-    _require(determinism.get("record_digest_sequences_equal") is True, S3_RUNNER_VALIDATION_ERROR, "W=8 试点门 W=1 与 W=8 record_digest 序列不一致")
+    _require(payload.get("verdict") == "PASS", S3_RUNNER_VALIDATION_ERROR, "W=8 试点门 verdict 必须为 PASS")
+    _require(
+        tuple(payload.get("workers") or ()) == tuple(int(item) for item in sp.S3_W8_PILOT_WORKERS),
+        S3_RUNNER_VALIDATION_ERROR,
+        "W=8 试点门 workers 必须为 [1, 8]",
+    )
+    campaigns = payload.get("campaigns")
+    _require(
+        isinstance(campaigns, Mapping) and set(campaigns) == {"W1", "W8"},
+        S3_RUNNER_VALIDATION_ERROR,
+        "W=8 试点门 campaigns 必须恰含 W1/W8",
+    )
+    runs_expected = int(sp.S3_W8_PILOT_RUNS_PER_CAMPAIGN)
+    for count in sp.S3_W8_PILOT_WORKERS:
+        block = campaigns.get("W" + str(int(count)))
+        _require(isinstance(block, Mapping), S3_RUNNER_VALIDATION_ERROR, "W=8 试点门缺少 W" + str(int(count)) + " campaign")
+        _require(
+            int(block.get("parallel_workers") or -1) == int(count),
+            S3_RUNNER_VALIDATION_ERROR,
+            "W=" + str(int(count)) + " parallel_workers 不符",
+        )
+        _require(
+            int(block.get("run_count_completed") or 0) == runs_expected
+            and int(block.get("run_count_requested") or 0) == runs_expected,
+            S3_RUNNER_VALIDATION_ERROR,
+            "W=" + str(int(count)) + " run_count_completed/requested 不符",
+        )
+        _require(float(block.get("campaign_wall_s") or 0) > 0, S3_RUNNER_VALIDATION_ERROR, "W=" + str(int(count)) + " campaign_wall_s 必须 > 0")
+        _require(
+            float(block.get("sum_run_wall_seconds") or 0) > 0,
+            S3_RUNNER_VALIDATION_ERROR,
+            "W=" + str(int(count)) + " sum_run_wall_seconds 必须 > 0",
+        )
+        _require(
+            float(block.get("max_peak_memory_mb") or 0) < float(sp.S3_RESOURCE_LIMITS["peak_memory_mb"]),
+            S3_RUNNER_VALIDATION_ERROR,
+            "W=" + str(int(count)) + " max_peak_memory_mb 超限",
+        )
+        _require(
+            _is_sha256_hex(block.get("execution_report_sha256")),
+            S3_RUNNER_VALIDATION_ERROR,
+            "W=" + str(int(count)) + " execution_report_sha256 非法",
+        )
+    determinism = payload.get("determinism")
+    _require(isinstance(determinism, Mapping), S3_RUNNER_VALIDATION_ERROR, "W=8 试点门 determinism 必须是 mapping")
+    _require(
+        determinism.get("record_digest_sequences_equal") is True,
+        S3_RUNNER_VALIDATION_ERROR,
+        "W=8 试点门 W=1 与 W=8 record_digest 序列不一致",
+    )
     _require(determinism.get("first_divergence") is None, S3_RUNNER_VALIDATION_ERROR, "W=8 试点门存在 first_divergence")
-    _require(int(determinism.get("n_runs_compared") or 0) == int(sp.S3_W8_PILOT_RUNS_PER_CAMPAIGN), S3_RUNNER_VALIDATION_ERROR, "W=8 试点门比较 run 数不符")
-    grid = payload.get("grid") or {}
-    _require(int(grid.get("runs_per_campaign") or 0) == int(sp.S3_W8_PILOT_RUNS_PER_CAMPAIGN), S3_RUNNER_VALIDATION_ERROR, "W=8 试点门 grid.runs_per_campaign 不符")
+    _require(
+        int(determinism.get("n_runs_compared") or 0) == runs_expected,
+        S3_RUNNER_VALIDATION_ERROR,
+        "W=8 试点门比较 run 数不符",
+    )
+    per_run_by_worker = determinism.get("per_run_by_worker")
+    _require(
+        isinstance(per_run_by_worker, Mapping) and set(per_run_by_worker) == {"W1", "W8"},
+        S3_RUNNER_VALIDATION_ERROR,
+        "W=8 试点门 per_run_by_worker 必须恰含 W1/W8",
+    )
+    for worker in ("W1", "W8"):
+        rows = per_run_by_worker.get(worker)
+        _require(
+            isinstance(rows, Mapping) and len(rows) == runs_expected,
+            S3_RUNNER_VALIDATION_ERROR,
+            "W=8 试点门 " + worker + " per_run_by_worker 必须有 15 个 run_key",
+        )
+        for run_key, entry in rows.items():
+            _require(isinstance(run_key, str) and bool(run_key), S3_RUNNER_VALIDATION_ERROR, "W=8 试点门 run_key 必须为非空字符串")
+            _require(isinstance(entry, Mapping), S3_RUNNER_VALIDATION_ERROR, "W=8 试点门 per_run 条目必须是 mapping")
+            _require(
+                isinstance(entry.get("status"), str) and bool(entry.get("status")),
+                S3_RUNNER_VALIDATION_ERROR,
+                "W=8 试点门 per_run.status 非法",
+            )
+            _require(int(entry.get("n_records") or 0) > 0, S3_RUNNER_VALIDATION_ERROR, "W=8 试点门 per_run.n_records 必须 > 0")
+            _require(
+                _is_sha256_hex(entry.get("digests_sha256")),
+                S3_RUNNER_VALIDATION_ERROR,
+                "W=8 试点门 per_run.digests_sha256 非法",
+            )
+    _require(
+        per_run_by_worker.get("W1") == per_run_by_worker.get("W8"),
+        S3_RUNNER_VALIDATION_ERROR,
+        "W=8 试点门两 worker 每 run 的 digest 序列不一致",
+    )
+    _require(
+        determinism.get("per_run") == per_run_by_worker.get("W1"),
+        S3_RUNNER_VALIDATION_ERROR,
+        "W=8 试点门 determinism.per_run 与 per_run_by_worker.W1 不一致",
+    )
+    grid = payload.get("grid")
+    _require(isinstance(grid, Mapping), S3_RUNNER_VALIDATION_ERROR, "W=8 试点门 grid 必须是 mapping")
+    _require(
+        [str(arm) for arm in grid.get("arms") or []] == [str(arm) for arm in sp.S3_ARMS],
+        S3_RUNNER_VALIDATION_ERROR,
+        "W=8 试点门 grid.arms 不符",
+    )
+    _require(int(grid.get("runs_per_campaign") or 0) == runs_expected, S3_RUNNER_VALIDATION_ERROR, "W=8 试点门 grid.runs_per_campaign 不符")
     _require(int(grid.get("total_runs") or 0) == int(sp.S3_W8_PILOT_TOTAL_RUNS), S3_RUNNER_VALIDATION_ERROR, "W=8 试点门 grid.total_runs 不符")
     _require(int(grid.get("total_evals") or 0) == int(sp.S3_W8_PILOT_TOTAL_EVALS), S3_RUNNER_VALIDATION_ERROR, "W=8 试点门 grid.total_evals 不符")
+    _require(_is_sha256_hex(grid.get("run_keys_sha256")), S3_RUNNER_VALIDATION_ERROR, "W=8 试点门 grid.run_keys_sha256 非法")
+    family = payload.get("family")
+    _require(isinstance(family, Mapping), S3_RUNNER_VALIDATION_ERROR, "W=8 试点门 family 必须是 mapping")
+    task_ids = family.get("task_ids")
+    _require(
+        isinstance(task_ids, list) and len(task_ids) == int(sp.S3_W8_PILOT_TASKS),
+        S3_RUNNER_VALIDATION_ERROR,
+        "W=8 试点门 family.task_ids 数量不符",
+    )
+    task_id_texts = [str(item) for item in task_ids]
+    _require(
+        task_id_texts == sorted(task_id_texts),
+        S3_RUNNER_VALIDATION_ERROR,
+        "W=8 试点门 family.task_ids 未按 task_id 排序",
+    )
+    _require(
+        family.get("task_ids_sha256") == sp.task_ids_sha256(task_id_texts),
+        S3_RUNNER_VALIDATION_ERROR,
+        "W=8 试点门 family.task_ids_sha256 不符",
+    )
+    _require(_is_sha256_hex(family.get("family_package_sha256")), S3_RUNNER_VALIDATION_ERROR, "W=8 试点门 family.family_package_sha256 非法")
+    _require(
+        isinstance(family.get("family_package_bytes"), int) and int(family["family_package_bytes"]) > 0,
+        S3_RUNNER_VALIDATION_ERROR,
+        "W=8 试点门 family.family_package_bytes 非正",
+    )
+    models_block = payload.get("models")
+    _require(isinstance(models_block, Mapping), S3_RUNNER_VALIDATION_ERROR, "W=8 试点门 models 必须是 mapping")
+    sha_map = models_block.get("sha256")
+    files_map = models_block.get("files")
+    _require(
+        isinstance(sha_map, Mapping) and set(sha_map) == {"fomaml", "anil"} and all(_is_sha256_hex(value) for value in sha_map.values()),
+        S3_RUNNER_VALIDATION_ERROR,
+        "W=8 试点门 models.sha256 必须恰含 fomaml/anil 64hex",
+    )
+    _require(
+        isinstance(files_map, Mapping) and set(files_map) == {"fomaml", "anil"},
+        S3_RUNNER_VALIDATION_ERROR,
+        "W=8 试点门 models.files 必须恰含 fomaml/anil",
+    )
+    for kind in ("fomaml", "anil"):
+        entry = files_map.get(kind)
+        _require(isinstance(entry, Mapping), S3_RUNNER_VALIDATION_ERROR, "W=8 试点门 models.files." + kind + " 非法")
+        _require(
+            isinstance(entry.get("path"), str) and bool(entry.get("path")),
+            S3_RUNNER_VALIDATION_ERROR,
+            "W=8 试点门 models.files." + kind + ".path 非法",
+        )
+        _require(
+            str(entry.get("sha256")) == str(sha_map.get(kind)),
+            S3_RUNNER_VALIDATION_ERROR,
+            "W=8 试点门 models.files." + kind + ".sha256 与 models.sha256 不一致",
+        )
+        _require(int(entry.get("bytes") or 0) > 0, S3_RUNNER_VALIDATION_ERROR, "W=8 试点门 models.files." + kind + ".bytes 非正")
     _require(payload.get("physical_call_count") == 0, S3_RUNNER_VALIDATION_ERROR, "W=8 试点门 physical_call_count 必须为 0")
     _require(payload.get("solver_processes_started") == 0, S3_RUNNER_VALIDATION_ERROR, "W=8 试点门 solver_processes_started 必须为 0")
+    expected_threads_env = {name: "1" for name in S3_THREAD_ENV_VARS}
+    _require(
+        isinstance(payload.get("threads_env"), Mapping) and dict(payload["threads_env"]) == expected_threads_env,
+        S3_RUNNER_VALIDATION_ERROR,
+        "W=8 试点门 threads_env 必须精确等于单线程展开",
+    )
+    _require(payload.get("threads_env_fixed") is True, S3_RUNNER_VALIDATION_ERROR, "W=8 试点门 threads_env_fixed 必须为 True")
+    # ---- 3780 runs 外推块：内部自洽 + 权威值 ----
+    extrapolation = payload.get("throughput_extrapolation")
+    _require(isinstance(extrapolation, Mapping), S3_RUNNER_VALIDATION_ERROR, "W=8 试点门缺 throughput_extrapolation")
+    bench = extrapolation.get("bench")
+    _require(
+        isinstance(bench, Mapping) and set(bench) == {"bench_v13a", "bench_v13a_run2"},
+        S3_RUNNER_VALIDATION_ERROR,
+        "W=8 试点门 throughput_extrapolation.bench 必须恰含两次 bench",
+    )
+    for name, entry in bench.items():
+        _require(isinstance(entry, Mapping), S3_RUNNER_VALIDATION_ERROR, "W=8 试点门 bench." + str(name) + " 必须是 mapping")
+        for field in (
+            "path",
+            "sha256",
+            "w1_wall_s",
+            "w8_wall_s",
+            "runs_per_second",
+            "projected_3780_by_measured_throughput_s",
+            "projected_3780_by_conservative_batch_s",
+        ):
+            _require(field in entry, S3_RUNNER_VALIDATION_ERROR, "W=8 试点门 bench." + str(name) + " 缺字段 " + field)
+        _require(_is_sha256_hex(entry.get("sha256")), S3_RUNNER_VALIDATION_ERROR, "W=8 试点门 bench." + str(name) + ".sha256 非法")
+        _require(float(entry["w8_wall_s"]) > 0, S3_RUNNER_VALIDATION_ERROR, "W=8 试点门 bench." + str(name) + ".w8_wall_s 非正")
+    expected_throughput = max(float(entry["projected_3780_by_measured_throughput_s"]) for entry in bench.values())
+    expected_conservative = max(float(entry["projected_3780_by_conservative_batch_s"]) for entry in bench.values())
+    _require(
+        abs(float(extrapolation.get("projected_3780_throughput_s")) - expected_throughput) <= 1e-9,
+        S3_RUNNER_VALIDATION_ERROR,
+        "W=8 试点门外推 throughput 与 bench 复算不一致",
+    )
+    _require(
+        abs(float(extrapolation.get("projected_3780_conservative_s")) - expected_conservative) <= 1e-9,
+        S3_RUNNER_VALIDATION_ERROR,
+        "W=8 试点门外推 conservative 与 bench 复算不一致",
+    )
+    _require(
+        abs(expected_throughput - float(S3_W8_PROJECTED_3780_THROUGHPUT_S)) <= 1e-9,
+        S3_RUNNER_VALIDATION_ERROR,
+        "W=8 试点门外推 throughput 与 R-S3-05B 权威值不符",
+    )
+    _require(
+        abs(expected_conservative - float(S3_W8_PROJECTED_3780_WALL_S)) <= 1e-9,
+        S3_RUNNER_VALIDATION_ERROR,
+        "W=8 试点门外推 conservative 与 R-S3-05B 权威值不符",
+    )
+    first = bench["bench_v13a"]
+    second = bench["bench_v13a_run2"]
+    expected_delta_pct = abs(float(second["w8_wall_s"]) - float(first["w8_wall_s"])) / float(first["w8_wall_s"]) * 100.0
+    _require(
+        abs(float(extrapolation.get("second_campaign_wall_delta_pct")) - expected_delta_pct) <= 1e-6,
+        S3_RUNNER_VALIDATION_ERROR,
+        "W=8 试点门第二次 campaign wall 差异与复算不一致",
+    )
+    _require(
+        extrapolation.get("second_campaign_wall_delta_pass") is True
+        and expected_delta_pct < float(S3_W8_SECOND_CAMPAIGN_WALL_DELTA_LIMIT_PCT),
+        S3_RUNNER_VALIDATION_ERROR,
+        "W=8 试点门第二次 campaign wall 差异超 20%",
+    )
+    hard_cap = float(extrapolation.get("hard_cap_s"))
+    _require(hard_cap == float(S3_W8_HARD_CAP_S), S3_RUNNER_VALIDATION_ERROR, "W=8 试点门 hard_cap_s 必须为 7200")
+    _require(expected_conservative <= hard_cap, S3_RUNNER_VALIDATION_ERROR, "W=8 试点门外推 conservative 超硬顶")
+    acceptance = extrapolation.get("acceptance")
+    _require(isinstance(acceptance, Mapping), S3_RUNNER_VALIDATION_ERROR, "W=8 试点门缺 acceptance")
+    _require(
+        acceptance.get("lead_ruling") == str(S3_W8_ACCEPTANCE_RULING),
+        S3_RUNNER_VALIDATION_ERROR,
+        "W=8 试点门 acceptance.lead_ruling 不符",
+    )
+    _require(
+        acceptance.get("ruling_sha256") == str(S3_W8_ACCEPTANCE_RULING_SHA256),
+        S3_RUNNER_VALIDATION_ERROR,
+        "W=8 试点门 acceptance.ruling_sha256 不符",
+    )
+    _require(
+        float(acceptance.get("accepted_upper_bound_s") or 0) >= expected_conservative,
+        S3_RUNNER_VALIDATION_ERROR,
+        "W=8 试点门 acceptance.accepted_upper_bound_s 低于外推值",
+    )
+    _require(
+        bool(acceptance.get("within_5400")) == bool(expected_conservative <= 5400.0),
+        S3_RUNNER_VALIDATION_ERROR,
+        "W=8 试点门 acceptance.within_5400 与复算不一致",
+    )
+    _require(
+        expected_conservative <= 5400.0 or acceptance.get("accepted") is True,
+        S3_RUNNER_VALIDATION_ERROR,
+        "W=8 试点门 conservative > 5400 时必须书面接受",
+    )
+    _require(acceptance.get("accepted") is True, S3_RUNNER_VALIDATION_ERROR, "W=8 试点门外推口径未被接受")
+    # ---- 顶层派生字段一致性 ----
+    w1 = campaigns["W1"]
+    w8 = campaigns["W8"]
+    _require(abs(float(payload.get("w1_wall_s")) - float(w1["campaign_wall_s"])) <= 1e-9, S3_RUNNER_VALIDATION_ERROR, "W=8 试点门 w1_wall_s 与 W1 campaign 不一致")
+    _require(abs(float(payload.get("w8_wall_s")) - float(w8["campaign_wall_s"])) <= 1e-9, S3_RUNNER_VALIDATION_ERROR, "W=8 试点门 w8_wall_s 与 W8 campaign 不一致")
+    _require(
+        abs(float(payload.get("runs_per_second")) - float(runs_expected) / float(payload.get("w8_wall_s"))) <= 1e-9,
+        S3_RUNNER_VALIDATION_ERROR,
+        "W=8 试点门 runs_per_second 与本地 W8 wall 不一致",
+    )
+    _require(
+        abs(float(payload.get("projected_3780_wall_s")) - expected_conservative) <= 1e-9
+        and abs(float(payload.get("projected_3780_throughput_s")) - expected_throughput) <= 1e-9,
+        S3_RUNNER_VALIDATION_ERROR,
+        "W=8 试点门顶层 projected_3780 与外推块不一致",
+    )
+    _require(payload.get("record_digest_equal") is True, S3_RUNNER_VALIDATION_ERROR, "W=8 试点门 record_digest_equal 必须为 True")
+    peak_memory = max(float(w1["max_peak_memory_mb"]), float(w8["max_peak_memory_mb"]))
+    worker_max = float(max(int(item) for item in sp.S3_W8_PILOT_WORKERS))
+    _require(abs(float(payload.get("peak_memory_mb")) - peak_memory) <= 1e-9, S3_RUNNER_VALIDATION_ERROR, "W=8 试点门 peak_memory_mb 与 campaign 不一致")
+    _require(abs(float(payload.get("peak_upper_bound_mb")) - peak_memory * worker_max) <= 1e-9, S3_RUNNER_VALIDATION_ERROR, "W=8 试点门 peak_upper_bound_mb 与复算不一致")
+    criteria = payload.get("criteria")
+    _require(isinstance(criteria, Mapping), S3_RUNNER_VALIDATION_ERROR, "W=8 试点门缺 criteria")
+    expected_criteria = {
+        "record_digest_equal": True,
+        "extrapolation_within_hard_cap": bool(expected_conservative <= hard_cap),
+        "lead_acceptance": True,
+        "peak_memory_within_limit": bool(peak_memory < float(sp.S3_RESOURCE_LIMITS["peak_memory_mb"])),
+        "repeat_wall_delta_below_20pct": bool(expected_delta_pct < float(S3_W8_SECOND_CAMPAIGN_WALL_DELTA_LIMIT_PCT)),
+        "thread_env_fixed": True,
+    }
+    _require(dict(criteria) == expected_criteria, S3_RUNNER_VALIDATION_ERROR, "W=8 试点门 criteria 与复算不一致")
+    _require(all(bool(value) for value in criteria.values()), S3_RUNNER_VALIDATION_ERROR, "W=8 试点门存在未通过 criteria")
+    _require(payload.get("verdict") == "PASS", S3_RUNNER_VALIDATION_ERROR, "W=8 试点门 verdict 与 criteria 不一致")
+    # ---- repo_root：族包/模型文件字节与 bench 文件复算 ----
+    if repo_root is not None:
+        root = Path(repo_root)
+        package_relpath = str(family.get("family_package_path") or sp.S3_FAMILY_PACKAGE_RELPATH)
+        package_file = root / package_relpath
+        _require(package_file.is_file(), S3_RUNNER_VALIDATION_ERROR, "W=8 试点门族包文件不存在: " + package_relpath)
+        package_bytes = package_file.read_bytes()
+        _require(
+            _canonical_lf_sha256(package_bytes) == str(family.get("family_package_sha256")),
+            S3_RUNNER_VALIDATION_ERROR,
+            "W=8 试点门族包 canonical LF sha 不符",
+        )
+        _require(
+            len(package_bytes) == int(family.get("family_package_bytes")),
+            S3_RUNNER_VALIDATION_ERROR,
+            "W=8 试点门族包 bytes 不符",
+        )
+        package = load_family_package(package_file)
+        validation_tasks = sorted(package["by_split"]["meta_validation"], key=lambda task: task.task_id)
+        expected_family = _w8_family_block(
+            package,
+            package_relpath=package_relpath,
+            tasks=validation_tasks[: int(sp.S3_W8_PILOT_TASKS)],
+        )
+        _require(dict(family) == expected_family, S3_RUNNER_VALIDATION_ERROR, "W=8 试点门 family 块与族包复算不一致")
+        for kind in ("fomaml", "anil"):
+            entry = files_map[kind]
+            model_file = root / str(entry["path"])
+            _require(model_file.is_file(), S3_RUNNER_VALIDATION_ERROR, "W=8 试点门模型文件不存在: " + str(entry["path"]))
+            raw = model_file.read_bytes()
+            _require(len(raw) == int(entry["bytes"]), S3_RUNNER_VALIDATION_ERROR, "W=8 试点门模型 bytes 不符: " + str(entry["path"]))
+            file_sha = _canonical_lf_sha256(raw)
+            _require(file_sha == str(entry["sha256"]), S3_RUNNER_VALIDATION_ERROR, "W=8 试点门模型 canonical LF sha 不符: " + str(entry["path"]))
+            _require(file_sha == str(sha_map[kind]), S3_RUNNER_VALIDATION_ERROR, "W=8 试点门模型 sha 与 models.sha256 不一致")
+        expected_extrapolation = _w8_throughput_block(root)
+        _require(dict(extrapolation) == expected_extrapolation, S3_RUNNER_VALIDATION_ERROR, "W=8 试点门外推块与 bench 文件复算不一致")
+    # ---- 文件字节复核（M01：build 写盘后生产调用点） ----
     if file_sha256 is not None:
-        _require(str(file_sha256) == str(file_sha256).lower() and len(str(file_sha256)) == 64, S3_RUNNER_VALIDATION_ERROR, "W=8 试点门文件 sha 格式不符")
-    for count in sp.S3_W8_PILOT_WORKERS:
-        block = (payload.get("campaigns") or {}).get("W" + str(int(count)))
-        _require(isinstance(block, Mapping), S3_RUNNER_VALIDATION_ERROR, "W=8 试点门缺少 W" + str(int(count)) + " campaign")
-        _require(int(block.get("run_count_completed") or 0) == int(sp.S3_W8_PILOT_RUNS_PER_CAMPAIGN), S3_RUNNER_VALIDATION_ERROR, "W=" + str(int(count)) + " run_count_completed 不符")
-        _require(float(block.get("campaign_wall_s") or 0) > 0, S3_RUNNER_VALIDATION_ERROR, "W=" + str(int(count)) + " campaign_wall_s 必须 > 0")
+        _require(gate_path is not None, S3_RUNNER_VALIDATION_ERROR, "提供 file_sha256 时必须同时提供 gate_path")
+        gate_file = Path(gate_path)
+        _require(gate_file.is_file(), S3_RUNNER_VALIDATION_ERROR, "W=8 试点门 gate 文件不存在: " + str(gate_path))
+        require_sha = str(file_sha256).lower()
+        _require(_is_sha256_hex(require_sha), S3_RUNNER_VALIDATION_ERROR, "W=8 试点门 file_sha256 格式不符")
+        _require(
+            _canonical_lf_sha256(gate_file.read_bytes()) == require_sha,
+            S3_RUNNER_VALIDATION_ERROR,
+            "W=8 试点门 gate 文件 canonical LF sha 不符",
+        )
     return True
 
 
@@ -3805,6 +4433,19 @@ def command_run(args: argparse.Namespace) -> int:
     verify_code_sha: bool | None = None
     if args.verify_code_sha != "auto":
         verify_code_sha = args.verify_code_sha == "true"
+    campaign_authorization = None
+    auth_id = getattr(args, "campaign_authorization_id", None)
+    auth_utc = getattr(args, "campaign_authorization_utc", None)
+    _require(
+        (auth_id is None) == (auth_utc is None),
+        S3_RUNNER_CAMPAIGN_AUTH_ERROR,
+        "--campaign-authorization-id 与 --campaign-authorization-utc 必须同时提供",
+    )
+    if auth_id is not None:
+        campaign_authorization = {
+            "campaign_authorization_id": auth_id,
+            "campaign_authorization_utc": auth_utc,
+        }
     result = run_experiment(
         out_dir=args.out,
         run_id=args.run_id,
@@ -3815,6 +4456,7 @@ def command_run(args: argparse.Namespace) -> int:
         parallel_workers=int(args.workers),
         created_utc=args.created_utc,
         verify_code_sha=verify_code_sha,
+        campaign_authorization=campaign_authorization,
     )
     summary = result["summary"]
     _print_json(
@@ -3914,6 +4556,8 @@ def build_parser() -> argparse.ArgumentParser:
     run.add_argument("--repo-root", default=None, help="仓库根")
     run.add_argument("--created-utc", default=None, help="created_utc 覆盖（仅测试/复现用）")
     run.add_argument("--verify-code-sha", choices=("auto", "true", "false"), default="auto", help="prereg code_sha 复算策略")
+    run.add_argument("--campaign-authorization-id", default=None, help="FORMAL campaign 一次性授权 id（SMOKE 可省）")
+    run.add_argument("--campaign-authorization-utc", default=None, help="FORMAL campaign 一次性授权 UTC（SMOKE 可省）")
     run.set_defaults(func=command_run)
 
     validate = sub.add_parser("validate", help="校验 run 目录产物")
@@ -3997,6 +4641,10 @@ __all__ = [
     "S3_LEAKAGE_SEALED_REFERENCE_READ",
     "S3_RUNNER_TAMPER_DETECTED",
     "S3_RUNNER_STATUSES",
+    "S3_RUNNER_CAMPAIGN_AUTH_ERROR",
+    "validate_campaign_authorization",
+    "CAMPAIGN_AUTHORIZATION_ID_PATTERN",
+    "CAMPAIGN_AUTHORIZATION_UTC_PATTERN",
     "S3_W8_PILOT_GATE_SCHEMA_VERSION",
     "S3_W8_PILOT_GATE_RELPATH",
     "S3RunnerError",
