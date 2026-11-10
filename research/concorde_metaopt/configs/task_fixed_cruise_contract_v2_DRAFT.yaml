@@ -1,0 +1,172 @@
+# D-NEXT-001 F 线：固定巡航任务合同 v2（草案，未冻结）
+#
+# 状态：DRAFT_NOT_FROZEN —— 本文件是**提案**，不是生效合同，也不代表任何物理 PASS。
+# 它只把 M0 审计（docs/planning/dnext001_m0_baseline_and_gate_audit.md）里
+# 已经能确定的"定义口径"与"必须保持 NOT_VALIDATED 的量"显式写开，
+# 供 owner 批复；在 owner 明确签字前，任何代码路径不得把本文件当作 frozen 合同加载。
+#
+# 与 v1 的关系：extends configs/task_fixed_cruise.yaml（task_id: concorde-fixed-cruise-p2-v1，
+# version p2-2026-10-29b）。v1 中 mass_contract.status: frozen 指的是"任务描述冻结"，
+# 不是"油耗已物理验证"；本草案不改变 v1 的任何数值，只补充口径与门禁声明。
+
+schema_version: "2-DRAFT"
+contract_status: DRAFT_NOT_FROZEN
+supersedes: null                    # 尚未取代 v1；获批后才可置为 configs/task_fixed_cruise.yaml
+extends: configs/task_fixed_cruise.yaml
+created_utc: "2026-11-10T00:00:00Z"
+issue: "#8 D-NEXT-001"
+owner_approval_required: true
+approved_by: null
+approved_utc: null
+
+task:
+  task_id: concorde-fixed-cruise-p2-v1
+  version: p2-2026-10-29b
+  objective:
+    name: fuel_burn_kg
+    unit: kg
+    definition: mass_start_kg - mass_end_kg（单个固定超声速巡航段）
+    status: not_frozen          # 定义可冻结；其物理数值不可冻结
+  cruise:
+    altitude_m: 18288.0
+    mach_number: 2.02
+    distance_m: 3028020.0
+    atmosphere: "1976 US Standard（沿用 RCAIDE 内置）"
+  design_set: 12d_lifting_surfaces
+  design_dim: 12
+  design_space_config: configs/design_space_12d_lifting_surfaces.yaml
+  design_space_frozen: false
+  design_space_bounds_status: provisional_until_geometry_perturbation
+  variable_ids: [W01, W02, W03, W04, W05, W06, W07, W08, W09, W10, V01, V02]
+  fixed_variable_ids: [F01, F02, F03]      # 固定但不得删除
+  v01_v02_retained: true                   # 禁止以任何"简化"理由删除 V01/V02
+
+mass_contract:
+  # 只描述"任务进入状态"，不是称重结果，也不是 MTOW。
+  status: frozen_task_description_only
+  start_mass_kg: 136000.0                  # 单巡航进入质量，不是 MTOW
+  fuel_loaded_kg: 46800.0
+  operating_empty_kg: 78700.0              # 上游声明 OEW，未称重
+  payload_kg: 9500.0
+  cargo_kg: 1000.0
+  computed_zero_fuel_kg: 89200.0           # 78700 + 9500 + 1000
+  mass_balance_check_kg: 0.0               # 136000 - (89200 + 46800) = 0
+  max_takeoff_kg: 185000.0                 # 任务合同上限
+  max_zero_fuel_kg: 92000.0
+  max_fuel_kg: 95680.0
+  geometry_model_mtow_kg: 184880.0         # 几何模型推算，不可冻结、不可与 136000 归一化互证
+  geometry_mtow_status: DIAGNOSTIC_ONLY
+  normalized_fuel_burn_allowed: false      # CG/BODY-CORR 未解决前禁止质量归一化油耗
+
+reference_quantities:
+  # 口径可冻结；数值必须随 12D 设计变量由派生规则重算后显式注入求解器。
+  sref:
+    definition: main_wing reference/exposed area
+    baseline_value_m2: 358.25
+    frozen: definition_only
+    recompute_rule: "wing_area（W01）"
+  cref:
+    definition: main_wing mean aerodynamic chord
+    baseline_value_m: 18.489893
+    frozen: definition_only
+  bref:
+    definition: main_wing projected span = sqrt(wing_area * aspect_ratio)
+    baseline_value_m: 25.604638
+    frozen: definition_only
+    recompute_rule: "W01 + W02"
+  ref_flag: 0                               # 必须显式注入参考量，禁止求解器默认值
+  injection_verification_required: true     # 求解后必须回读 Sref/Cref/Bref 交叉核对（Sref=1.0 缺陷教训）
+
+moment_reference:
+  # 两个数必须分开写，禁止混用。
+  full_aircraft_cg_x_m: 28.287395109126685          # 几何模型诊断 CG，非称重、非配平结果
+  full_aircraft_cg_status: PROVISIONAL_NOT_FROZEN
+  wing_ac_x_m: 16.821978259514246                   # 机翼气动中心，不是全机 CG
+  wing_ac_allowed_use: "仅可作为机翼内部气动系数的力矩参考点，且必须显式声明 moment reference = wing AC"
+  wing_ac_as_cg_allowed: false                      # 硬性禁止
+  static_margin: 0.13707938483236962                # 几何 AC 间距比，不是气动导数意义静稳定裕度
+  static_margin_status: GEOMETRIC_DIAGNOSTIC_ONLY
+
+force_axes:
+  status: NOT_VALIDATED
+  current_evidence: "仅输入准备归档（StopBeforeRun=1）；力轴/符号约定尚未经真实求解核对"
+  declared_free_stream: "+X 方向，Mach 2.02，AlphaStart=2.0 deg，Beta=0"
+  audit_case: "Tier0 T0-5（若获批）"
+  whole_aircraft_drag_allowed: false        # 需先过 BODY-CORR
+  cl_cdi_as_aircraft_performance_allowed: false
+
+constraints:
+  # 名称/顺序/单位/g<=0 方向可冻结；6-10 的物理语义保持 NOT_VALIDATED。
+  schema_order:
+    - geometry_invalid
+    - task_mass_balance
+    - fuel_capacity_excess
+    - zero_fuel_excess
+    - takeoff_excess
+    - fuel_remaining_deficit
+    - max_throttle
+    - cruise_range_error
+    - mission_convergence
+    - trim_attitude_limit
+  feasibility_tolerance: 1.0e-12
+  residual_limit: 1.0e-4
+  max_attitude_deg: 12.0
+  physically_validated:
+    geometry_invalid: true
+    task_mass_balance: true
+    fuel_capacity_excess: true
+    zero_fuel_excess: true
+    takeoff_excess: true
+    fuel_remaining_deficit: false
+    max_throttle: false
+    cruise_range_error: false
+    mission_convergence: false
+    trim_attitude_limit: false
+  note: "false 表示其判定能力依赖尚未验证的真实气动/推进/任务求解，只能以 NOT_VALIDATED 记录"
+
+gates:
+  # 不得改写；任何 PASS 都需要新证据与 owner 签字。
+  - id: VSPAERO-LF-M2.02
+    status: NOT_VALIDATED
+    evidence: docs/reviews/p1p3_fullchain_validation_report_20261031.md
+  - id: BODY-CORR
+    status: BLOCKED
+    evidence: docs/reviews/p1p3_fullchain_validation_report_20261031.md
+  - id: HF-M2.02
+    status: PARTIAL
+    evidence: docs/reviews/p1p3_fullchain_validation_report_20261031.md
+  - id: CG-AND-TRIM
+    status: NOT_VALIDATED
+    evidence: docs/planning/dnext001_m0_baseline_and_gate_audit.md
+
+frozen_items:
+  - "12D 变量集合（含 V01/V02）与固定机身 F01-F03 的'固定但不删除'地位"
+  - "任务巡航定义 Mach 2.02 / 18288 m / 3028020 m"
+  - "objective 名称与单位 fuel_burn_kg [kg]"
+  - "质量合同数值（仅作为任务描述）"
+  - "Sref/Cref/Bref 的定义口径与 RefFlag=0 显式注入要求"
+  - "10 项约束的名称、顺序、单位与 g<=0 方向"
+
+not_frozen_items:
+  - "VSPAERO 超声速升阻精度与收敛性"
+  - "机身阻力/干扰修正（BODY-CORR）"
+  - "CG / 静稳定 / 配平能力"
+  - "整机阻力、油耗、航程"
+  - "12D 变量边界数值（provisional）"
+  - "垂尾派生几何偏差（tail span 5.009331 m vs 上游 6.0 m）"
+  - "任何质量归一化油耗指标"
+
+prohibited:
+  - "把 16.821978259514246 m 当作全机 CG 或配平参考点"
+  - "删除 V01/V02 或把固定机身从合同中移除"
+  - "把 VSPAERO 内部 CL/CDi 当作整机油耗/阻力"
+  - "把 136000 kg 当作 MTOW，或与 184880 kg 归一化互证"
+  - "在没有新证据与 owner 签字的情况下把任何门禁改为 PASS"
+  - "在本合同为 DRAFT_NOT_FROZEN 期间用它驱动任何真实求解调用"
+
+approval_checklist:
+  - "M0 审计（docs/planning/dnext001_m0_baseline_and_gate_audit.md）已评审"
+  - "Tier0 预算申请（docs/planning/dnext001_f_tier0_budget_proposal.md）已单独批复"
+  - "参考量重算与注入核对通过"
+  - "CG/AC 口径在评审记录中确认"
+  - "owner 签字（approved_by / approved_utc 填实）"
