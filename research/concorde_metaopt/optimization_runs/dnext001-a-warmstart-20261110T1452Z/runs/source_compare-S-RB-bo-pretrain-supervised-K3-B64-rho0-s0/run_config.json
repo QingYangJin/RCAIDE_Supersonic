@@ -1,0 +1,71 @@
+{
+  "run_id": "source_compare-S-RB-bo-pretrain-supervised-K3-B64-rho0-s0",
+  "matrix_tag": "source_compare",
+  "stage": "D-NEXT-001-A",
+  "route": "A",
+  "backend": "bo",
+  "source": "pretrain_supervised",
+  "task_id": "80c23acd1d01",
+  "task_family": "S-RB",
+  "task_context": [
+    -0.7,
+    0.45
+  ],
+  "design_dimension": 12,
+  "design_set": "synthetic_12d_unit_cube",
+  "evaluator_id": "synthetic_analogue_truth_S-RB",
+  "fidelity": "SYNTHETIC",
+  "source_kind": "SYNTHETIC_ANALOGUE",
+  "physical_validation_status": "NOT_APPLICABLE_SYNTHETIC",
+  "solver_version": "route-a-synthetic-truth-v1",
+  "budget_B": 64,
+  "K": 3,
+  "diversity_weight_rho": 0.0,
+  "seed": 0,
+  "initial_population_size": 4,
+  "support_size": 3,
+  "physical_call_count": 0,
+  "surrogate_version": "warm-start-surrogate-v1",
+  "bo_adapter_version": "route-a-warm-bo-v1",
+  "elapsed_seconds": 2.4211,
+  "proposal": {
+    "model_sha": "116bb3d5c36ca8f26fc30bb2e1320ce4c47003d376fbf13f9069b8c1eef70f80",
+    "uniformity_distance": 1.092175113327319,
+    "min_support_distance": 0.9616714438815909,
+    "predicted_feasibility_mean": null,
+    "predicted_feasible_count_at_0.5": null,
+    "true_feasible_count": null,
+    "n_new": 4,
+    "source": "pretrain_supervised",
+    "true_feasibility_of_proposal": null
+  },
+  "status": "completed",
+  "termination_reason": "budget_exhausted",
+  "diversity": null,
+  "first_feasible_evaluation_backend": 8,
+  "best_feasible_backend": {
+    "objective": 0.1560040708567115,
+    "iteration": 58,
+    "unit_vector": [
+      0.4035070692446937,
+      0.428978934352799,
+      0.5763257296316073,
+      0.3471747673603059,
+      0.7636444897277914,
+      0.4815752828163584,
+      0.5602526147592873,
+      0.47859299880255884,
+      0.4773040325297238,
+      0.4932205228780394,
+      0.38240031437571376,
+      0.9059595663608778
+    ]
+  },
+  "duplicates_ignored": 0,
+  "result_meta": {
+    "evaluations": 64,
+    "support_size": 3,
+    "initial_size": 4,
+    "bo_evaluations": 57
+  }
+}

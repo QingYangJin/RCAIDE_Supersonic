@@ -23,9 +23,10 @@ wins. Invalid/failed evaluations never replace an incumbent.
 from __future__ import annotations
 
 import json
+import math
 import time
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Mapping, Optional, Sequence
+from typing import Any, Callable, Dict, List, Mapping, Optional, Sequence, Tuple
 
 import numpy as np
 
@@ -126,6 +127,17 @@ def _better(candidate: Mapping[str, Any], incumbent: Mapping[str, Any]) -> bool:
     return _constraint_violation(candidate) < _constraint_violation(incumbent)
 
 
+def _population_diversity(vectors: Any) -> float:
+    """归一化群体多样性：平均成对欧氏距离 / sqrt(dimension)，取值约在 [0,1]。"""
+    array = np.asarray(vectors, dtype=float)
+    if array.ndim != 2 or array.shape[0] < 2:
+        return 0.0
+    diff = array[:, None, :] - array[None, :, :]
+    distance = np.sqrt(np.sum(diff * diff, axis=2))
+    upper = distance[np.triu_indices(array.shape[0], k=1)]
+    return float(np.mean(upper) / math.sqrt(array.shape[1]))
+
+
 class DifferentialEvolutionBaseline:
     """Deterministic DE/rand/1/bin over a bounded unit hypercube."""
 
@@ -139,6 +151,8 @@ class DifferentialEvolutionBaseline:
         crossover_rate: float = DEFAULT_CROSSOVER_RATE,
         lower_bounds: Optional[Sequence[float]] = None,
         upper_bounds: Optional[Sequence[float]] = None,
+        initial_population: Optional[Any] = None,
+        concentration_threshold: float = 0.10,
     ) -> None:
         if type(dimension) is not int or dimension < 1:
             raise BaselineError("dimension must be a positive integer")
@@ -170,15 +184,94 @@ class DifferentialEvolutionBaseline:
         if np.any(self.lower_bounds >= self.upper_bounds):
             raise BaselineError("every lower bound must be below its upper bound")
         self.rng = np.random.default_rng(seed)
+        self.concentration_threshold = float(concentration_threshold)
+        if not 0.0 <= self.concentration_threshold <= 1.0:
+            raise BaselineError("concentration threshold must be in [0, 1]")
+        self.initial_population = self._validate_initial_population(initial_population)
+        if self.initial_population is not None:
+            if population_size is None:
+                self.population_size = int(self.initial_population.shape[0])
+            if self.initial_population.shape[0] != self.population_size:
+                raise BaselineError("initial population row count must equal population size")
+            if self.population_size > budget:
+                raise BaselineError("population size must not exceed the evaluation budget")
         self._requests = 0
         self._physical_calls = 0
         self._evaluations_used = 0
 
     def _budget_left(self) -> bool:
+        # 真实预算（物理调用）与合成预算（真实评价次数，physical_call_count=0）
+        # 取更严格者，避免零物理调用的合成 evaluator 无法收敛预算。
         return (
             self._physical_calls < self.budget
+            and self._evaluations_used < self.budget
             and self._requests < int(MAX_REQUESTS_PER_BUDGET * self.budget)
         )
+
+    def _validate_initial_population(self, initial_population: Optional[Any]) -> Optional[np.ndarray]:
+        """外部初始种群：单位超立方体坐标 (Np, dimension)，Np>=4。"""
+        if initial_population is None:
+            return None
+        matrix = np.asarray(initial_population, dtype=float)
+        if matrix.ndim != 2 or matrix.shape[1] != self.dimension:
+            raise BaselineError("initial population must be a (Np, dimension) matrix")
+        if matrix.shape[0] < MIN_POPULATION_SIZE:
+            raise BaselineError("initial population must contain at least %d rows" % MIN_POPULATION_SIZE)
+        if not np.all(np.isfinite(matrix)):
+            raise BaselineError("initial population must be finite")
+        if np.any(matrix < -1e-9) or np.any(matrix > 1.0 + 1e-9):
+            raise BaselineError("initial population must lie in the unit hypercube [0, 1]")
+        return np.clip(matrix, 0.0, 1.0)
+
+    def _prepare_initial_population(
+        self,
+        baseline_vector: Optional[Sequence[float]],
+    ) -> Tuple[np.ndarray, Dict[str, Any]]:
+        """返回初始种群向量与多样性诊断；外部种群过度集中时用 LHS 补齐后半段。"""
+        span = self.upper_bounds - self.lower_bounds
+        if self.initial_population is None:
+            generated = generate_initial_designs(
+                self.lower_bounds,
+                self.upper_bounds,
+                self.population_size,
+                seed=self.seed,
+                baseline=np.asarray(baseline_vector, dtype=float) if baseline_vector is not None else None,
+                method="lhs",
+            )
+            vectors = np.asarray(generated, dtype=float)
+            return vectors, {
+                "initial_population_source": "lhs",
+                "initial_population_diversity": _population_diversity(vectors),
+                "initial_population_concentrated": False,
+                "lhs_supplement_count": 0,
+                "initial_population_size": int(vectors.shape[0]),
+            }
+        if baseline_vector is not None:
+            raise BaselineError("baseline_vector cannot be combined with an external initial population")
+        vectors = np.clip(self.lower_bounds + self.initial_population * span, self.lower_bounds, self.upper_bounds)
+        diversity = _population_diversity(vectors)
+        concentrated = diversity < self.concentration_threshold
+        supplement = 0
+        if concentrated:
+            keep = max(MIN_POPULATION_SIZE // 2, self.population_size // 2)
+            supplement = self.population_size - keep
+            if supplement > 0:
+                fill = generate_initial_designs(
+                    self.lower_bounds,
+                    self.upper_bounds,
+                    supplement,
+                    seed=self.seed + 911,
+                    method="lhs",
+                )
+                vectors = vectors.copy()
+                vectors[keep:] = np.asarray(fill, dtype=float)
+        return vectors, {
+            "initial_population_source": "external",
+            "initial_population_diversity": diversity,
+            "initial_population_concentrated": bool(concentrated),
+            "lhs_supplement_count": int(supplement),
+            "initial_population_size": int(vectors.shape[0]),
+        }
 
     def _evaluate(
         self,
@@ -225,14 +318,7 @@ class DifferentialEvolutionBaseline:
         on_record: Optional[TraceCallback] = None,
         baseline_vector: Optional[Sequence[float]] = None,
     ) -> Dict[str, Any]:
-        initial = generate_initial_designs(
-            self.lower_bounds,
-            self.upper_bounds,
-            self.population_size,
-            seed=self.seed,
-            baseline=np.asarray(baseline_vector, dtype=float) if baseline_vector is not None else None,
-            method="lhs",
-        )
+        initial, population_diagnostics = self._prepare_initial_population(baseline_vector)
         population: List[Dict[str, Any]] = []
         trace: List[Dict[str, Any]] = []
         stop_reason = None
@@ -350,6 +436,12 @@ class DifferentialEvolutionBaseline:
                 )
                 for index in range(len(trace))
             ],
+            "initial_population_size": int(initial.shape[0]),
+            "initial_population_source": population_diagnostics["initial_population_source"],
+            "initial_population_diversity": population_diagnostics["initial_population_diversity"],
+            "initial_population_concentrated": population_diagnostics["initial_population_concentrated"],
+            "lhs_supplement_count": population_diagnostics["lhs_supplement_count"],
+            "final_population_diversity": _population_diversity([item["vector"] for item in population]),
             "trace": trace,
             "final_population": [
                 {"unit_vector": [float(value) for value in item["vector"]], "result": item["result"]}

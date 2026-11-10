@@ -1,0 +1,214 @@
+{
+  "experiment_id": "dnext001-a-warmstart-20261110T1452Z",
+  "stage": "D-NEXT-001-A",
+  "route": "A",
+  "baseline_commit": "ea8ad97833eb5ceab291faae643c141a2b219749",
+  "git_head_at_run": "ea8ad97833eb5ceab291faae643c141a2b219749",
+  "git_dirty_at_run": true,
+  "code_sha256": {
+    "research/concorde_metaopt/warm_start/synthetic.py": "6da1df23e5ffb9284b4b94f987b030f02ecb9feba666776b5361972a7bb57206",
+    "research/concorde_metaopt/warm_start/surrogate.py": "7f896d7db80b8fc0055ddf89ab4695475ee6374798f74903b45e4191914ba9d1",
+    "research/concorde_metaopt/warm_start/sampler.py": "29b0ec00deaa05225ca5b37351f8f8c936e9c043c93cbca0e57fbef7595fde62",
+    "research/concorde_metaopt/warm_start/bo_adapter.py": "101273ca517950d8092f9de7cf7d9731f1c6bceb61c5b7b9f629243cc177c654",
+    "research/concorde_metaopt/warm_start/experiment.py": "7382ce88608f09045834c4dbf6b313c459e81011fd9780176b74f135d0d3caeb",
+    "research/concorde_metaopt/optimization/baseline_de.py": "1dff58c3871bc77a8a698e438530e190a65fbf62191d6100ea29d971173ce3c5",
+    "research/concorde_metaopt/optimization/baseline_pso.py": "f9378a5aa5ca9b44cea0c759f51cbccd99ca7003cc2ed2a76a725a4d0defe5e0"
+  },
+  "physical_call_count": 0,
+  "source_kind": "SYNTHETIC_ANALOGUE",
+  "evaluator": {
+    "kind": "synthetic_analytic_truth",
+    "families": [
+      "S-QC",
+      "S-RB"
+    ],
+    "physical_validation_status": "NOT_APPLICABLE_SYNTHETIC"
+  },
+  "tasks": [
+    {
+      "task_id": "67137470f0c3",
+      "family": "S-QC",
+      "context": [
+        0.55,
+        -0.65
+      ],
+      "seed": 20261110,
+      "source_kind": "SYNTHETIC_ANALOGUE",
+      "physical_call_count": 0,
+      "constraint_names": [
+        "g_ball_obj_shift",
+        "g_ball_context_shift"
+      ]
+    },
+    {
+      "task_id": "80c23acd1d01",
+      "family": "S-RB",
+      "context": [
+        -0.7,
+        0.45
+      ],
+      "seed": 20261110,
+      "source_kind": "SYNTHETIC_ANALOGUE",
+      "physical_call_count": 0,
+      "constraint_names": [
+        "g_mean_upper",
+        "g_mean_lower",
+        "g_second_moment"
+      ]
+    }
+  ],
+  "references": {
+    "67137470f0c3": {
+      "task_id": "67137470f0c3",
+      "family": "S-QC",
+      "context": [
+        0.55,
+        -0.65
+      ],
+      "status": "VALID",
+      "objective_star": -0.21436230947617546,
+      "design_star": [
+        0.5178301418170139,
+        0.5142857468702262,
+        0.3485797414293952,
+        0.28230620554067015,
+        0.574844593136305,
+        0.44247415740120777,
+        0.490308378305094,
+        0.5208817017325427,
+        0.5110567603369701,
+        0.46826901316718017,
+        0.42489922603634667,
+        0.413768908474969
+      ],
+      "constraints": {
+        "g_ball_obj_shift": -0.0627890544531237,
+        "g_ball_context_shift": -0.06990541238414864
+      },
+      "method": "scipy.optimize.minimize(method=SLSQP, multistart, deterministic seed)",
+      "n_starts": 32,
+      "n_prefilter": 4000,
+      "source_kind": "SYNTHETIC_ANALOGUE",
+      "physical_call_count": 0,
+      "reference_sha256": "5287df6e3fc720fab6ead96924bae3f448c493e29482389f573fc2b7f94089f6"
+    },
+    "80c23acd1d01": {
+      "task_id": "80c23acd1d01",
+      "family": "S-RB",
+      "context": [
+        -0.7,
+        0.45
+      ],
+      "status": "VALID",
+      "objective_star": -0.22041741577683438,
+      "design_star": [
+        0.0,
+        0.9038963716681931,
+        0.787744594676601,
+        0.651463475871858,
+        0.5368007084150995,
+        0.4217314537332767,
+        0.42214937976155215,
+        0.4180824224699171,
+        0.7397758549864364,
+        0.6104069391397616,
+        0.5242539015509389,
+        0.45769489772636535
+      ],
+      "constraints": {
+        "g_mean_upper": -3.469446951953614e-17,
+        "g_mean_lower": -0.16549999999999998,
+        "g_second_moment": -0.09627266411550067
+      },
+      "method": "scipy.optimize.minimize(method=SLSQP, multistart, deterministic seed)",
+      "n_starts": 32,
+      "n_prefilter": 4000,
+      "source_kind": "SYNTHETIC_ANALOGUE",
+      "physical_call_count": 0,
+      "reference_sha256": "2b185a31ac925b2d9186f2f70514494e0cca1797607b3a8fe22927b0ad597bd9"
+    }
+  },
+  "matrix": {
+    "smoke": {
+      "budgets": [
+        16,
+        32,
+        64,
+        128
+      ],
+      "K": [
+        0,
+        5
+      ],
+      "rho": [
+        0.0
+      ],
+      "sources": [
+        "random",
+        "fomaml_kshot"
+      ]
+    },
+    "extension": {
+      "budgets": [
+        64
+      ],
+      "K": [
+        1,
+        3
+      ],
+      "rho": [
+        0.0,
+        0.25,
+        0.5,
+        0.75
+      ],
+      "sources": [
+        "fomaml_kshot"
+      ]
+    },
+    "source_compare": {
+      "budgets": [
+        64
+      ],
+      "K": [
+        3
+      ],
+      "rho": [
+        0.0
+      ],
+      "sources": [
+        "zero_shot_surrogate",
+        "pretrain_supervised"
+      ]
+    },
+    "backends": [
+      "bo",
+      "de",
+      "pso"
+    ],
+    "seeds": [
+      0
+    ],
+    "note": "最小可复跑矩阵：覆盖全部 B 与 K∈{0,1,3,5}；rho 只作局部扩展；单 seed 冒烟，非全网格。"
+  },
+  "snapshots": {
+    "build_seconds": 1.62,
+    "meta_tasks": 12,
+    "meta_designs_per_task": 40,
+    "model_sha": {
+      "zero_shot_surrogate": "263fe516aeeac48669a02afe3b862e9c3942f62202042acaab7c2cc438ef35a1",
+      "pretrain_supervised": "f2af120203b4efa94fdb7b388005861b7c689b667a2be21e7801924885d12a3c",
+      "fomaml_kshot": "797cea3b834b38661770f025c17cb6214f5881b5cf7ed19d8a5ac636dcc5d6e5"
+    },
+    "kinds": {
+      "zero_shot_surrogate": "zero_shot_surrogate",
+      "pretrain_supervised": "pretrain_supervised",
+      "fomaml_kshot": "fomaml_kshot"
+    }
+  },
+  "limits": [
+    "单 seed（0），不足以做显著性检验；配对比较只报告方向性。",
+    "代理可行性预测校准偏差较大（预测概率高估），本轮如实记录为负结果。",
+    "所有真值均为合成解析函数，不得外推为真实气动/任务性能。"
+  ]
+}
