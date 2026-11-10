@@ -1,0 +1,167 @@
+{
+  "kind": "dnext001_g0_env_check",
+  "physical_call_count": 0,
+  "data_source": "synthetic",
+  "timestamp": "2026-11-10T14:32:31+0800",
+  "device": {
+    "python": "3.11.17",
+    "executable": "D:\\RCAIDE\\dnext001\\gpu-env\\Scripts\\python.exe",
+    "platform": "Windows-10-10.0.26200-SP0",
+    "torch_version": "2.8.0+cu128",
+    "torch_cuda_build": "12.8",
+    "torch_cudnn": 91002,
+    "cuda_available": true,
+    "physical_call_count": 0,
+    "nvidia_smi_name_driver": "NVIDIA GeForce RTX 5060, 610.88",
+    "nvidia_smi_memory_total_mib": "8151 MiB",
+    "nvidia_smi_compute_cap": "12.0",
+    "device_count": 1,
+    "device_name": "NVIDIA GeForce RTX 5060",
+    "device_capability": [
+      12,
+      0
+    ],
+    "device_total_memory_mb": 8150.6,
+    "device_multiprocessors": 30,
+    "cudnn_enabled": true,
+    "cudnn_version": 91002
+  },
+  "forward_backward": [
+    {
+      "device": "cpu",
+      "dtype": "float64",
+      "forward_max_abs_error": 0.0,
+      "forward_rel_error": 0.0,
+      "grad_w_max_abs_error": 0.0,
+      "grad_w_rel_error": 0.0,
+      "grad_x_max_abs_error": 0.0,
+      "grad_x_rel_error": 0.0,
+      "grad_w_finite": true,
+      "grad_w_nonzero": true,
+      "executed_on_device": "cpu",
+      "precision_note": "FP32 在 GPU 上的误差应与 float32 舍入量级一致（~1e-5 相对）"
+    },
+    {
+      "device": "cpu",
+      "dtype": "float32",
+      "forward_max_abs_error": 1.3494885082177e-06,
+      "forward_rel_error": 3.8068093738694043e-07,
+      "grad_w_max_abs_error": 8.587342784949215e-05,
+      "grad_w_rel_error": 3.0208259347817996e-07,
+      "grad_x_max_abs_error": 2.643073774954985e-06,
+      "grad_x_rel_error": 2.702052525490694e-07,
+      "grad_w_finite": true,
+      "grad_w_nonzero": true,
+      "executed_on_device": "cpu",
+      "precision_note": "FP32 在 GPU 上的误差应与 float32 舍入量级一致（~1e-5 相对）"
+    },
+    {
+      "device": "cuda",
+      "dtype": "float64",
+      "forward_max_abs_error": 8.881784197001252e-16,
+      "forward_rel_error": 2.5054870146678616e-16,
+      "grad_w_max_abs_error": 9.947598300641403e-14,
+      "grad_w_rel_error": 3.4993319456207803e-16,
+      "grad_x_max_abs_error": 6.661338147750939e-15,
+      "grad_x_rel_error": 6.809982277390073e-16,
+      "grad_w_finite": true,
+      "grad_w_nonzero": true,
+      "executed_on_device": "cuda:0",
+      "precision_note": "FP32 在 GPU 上的误差应与 float32 舍入量级一致（~1e-5 相对）"
+    },
+    {
+      "device": "cuda",
+      "dtype": "float32",
+      "forward_max_abs_error": 1.1143091103171798e-06,
+      "forward_rel_error": 3.143385320224751e-07,
+      "grad_w_max_abs_error": 8.945208315935815e-05,
+      "grad_w_rel_error": 3.146714641479698e-07,
+      "grad_x_max_abs_error": 2.299027991092828e-06,
+      "grad_x_rel_error": 2.3503295475026883e-07,
+      "grad_w_finite": true,
+      "grad_w_nonzero": true,
+      "executed_on_device": "cuda:0",
+      "precision_note": "FP32 在 GPU 上的误差应与 float32 舍入量级一致（~1e-5 相对）"
+    }
+  ],
+  "determinism": [
+    {
+      "device": "cpu",
+      "dtype": "float64",
+      "repeats": 3,
+      "max_grad_delta_between_repeats": 0.0,
+      "bitwise_identical": true,
+      "cudnn_benchmark": false,
+      "cudnn_deterministic": false
+    },
+    {
+      "device": "cpu",
+      "dtype": "float32",
+      "repeats": 3,
+      "max_grad_delta_between_repeats": 0.0,
+      "bitwise_identical": true,
+      "cudnn_benchmark": false,
+      "cudnn_deterministic": false
+    },
+    {
+      "device": "cuda",
+      "dtype": "float64",
+      "repeats": 3,
+      "max_grad_delta_between_repeats": 0.0,
+      "bitwise_identical": true,
+      "cudnn_benchmark": false,
+      "cudnn_deterministic": false
+    },
+    {
+      "device": "cuda",
+      "dtype": "float32",
+      "repeats": 3,
+      "max_grad_delta_between_repeats": 0.0,
+      "bitwise_identical": true,
+      "cudnn_benchmark": false,
+      "cudnn_deterministic": false
+    }
+  ],
+  "gemm": [
+    {
+      "device": "cpu",
+      "dtype": "float64",
+      "size": 2048,
+      "iterations": 10,
+      "wall_s": 0.3106751999875996,
+      "gflops": 552.9848917675348,
+      "checksum": 151399087.55828974
+    },
+    {
+      "device": "cpu",
+      "dtype": "float32",
+      "size": 2048,
+      "iterations": 10,
+      "wall_s": 0.14017860000603832,
+      "gflops": 1225.5700358870727,
+      "checksum": 151510983.92977494
+    },
+    {
+      "device": "cuda",
+      "dtype": "float64",
+      "size": 2048,
+      "iterations": 10,
+      "wall_s": 0.6364148000138812,
+      "gflops": 269.9476690929451,
+      "checksum": null,
+      "peak_memory_allocated_mb": 144.2,
+      "peak_memory_reserved_mb": 174.0
+    },
+    {
+      "device": "cuda",
+      "dtype": "float32",
+      "size": 2048,
+      "iterations": 10,
+      "wall_s": 0.014560200012056157,
+      "gflops": 11799.198616622505,
+      "checksum": null,
+      "peak_memory_allocated_mb": 80.2,
+      "peak_memory_reserved_mb": 174.0
+    }
+  ]
+}

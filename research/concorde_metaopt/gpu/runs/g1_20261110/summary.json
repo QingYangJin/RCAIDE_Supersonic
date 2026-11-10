@@ -1,0 +1,239 @@
+{
+  "run_id": "g1_default_20261110T143305",
+  "task_id": "D-NEXT-001",
+  "role": "A4",
+  "work_package": "G1",
+  "git_sha": "ea8ad97833eb5ceab291faae643c141a2b219749",
+  "argv": [
+    "D:\\RCAIDE\\dnext001\\wt-a4\\research\\concorde_metaopt\\gpu\\bench_gpu.py",
+    "--out",
+    "research/concorde_metaopt/gpu/runs/g1_20261110",
+    "--configs",
+    "cpu-fp64,cuda-fp64,cuda-fp32",
+    "--repeat",
+    "3"
+  ],
+  "physical_call_count": 0,
+  "source_kind": "synthetic_analogue",
+  "physical_validation_status": "NOT_APPLICABLE_SYNTHETIC",
+  "tag": "default",
+  "seeds": {
+    "family": 20261110,
+    "episodes": 20261111,
+    "val": 20261112,
+    "candidates": 20261114
+  },
+  "hyperparameters": {
+    "inner_lr": 0.05,
+    "inner_steps": 5,
+    "outer_lr": 0.02,
+    "pretrain_steps": 30,
+    "batch_size": 8,
+    "k_shot_eval": 10,
+    "candidates": 200000,
+    "repeat": 3
+  },
+  "environment": {
+    "python": "3.11.17",
+    "platform": "Windows-10-10.0.26200-SP0",
+    "processor": "AMD64 Family 26 Model 68 Stepping 0, AuthenticAMD",
+    "torch": "2.8.0+cu128",
+    "torch_cuda_build": "12.8",
+    "cuda_available": true,
+    "deterministic_algorithms": false,
+    "threads": 16,
+    "interop_threads": 16,
+    "device_name": "NVIDIA GeForce RTX 5060",
+    "compute_capability": "12.0",
+    "total_memory_gb": 7.96,
+    "device_count": 1,
+    "cudnn_version": 91002,
+    "cudnn_deterministic": false,
+    "cudnn_benchmark": false,
+    "nvidia_smi": "NVIDIA GeForce RTX 5060, 610.88, 8151 MiB, 12.0",
+    "peak_rss_mb": 447.4375
+  },
+  "skipped_configs": [],
+  "configs": [
+    "cpu-fp64",
+    "cuda-fp64",
+    "cuda-fp32"
+  ],
+  "results": {
+    "cpu-fp64": {
+      "workloads": {
+        "fomaml_pretrain": {
+          "wall_s_median": 0.250899099977687,
+          "wall_s_min": 0.23347629999625497,
+          "wall_s_max": 0.2967042999807745,
+          "wall_s_mean": 0.2603598999849055,
+          "peak_gpu_mb": 0.0,
+          "peak_rss_mb": 461.69140625,
+          "nan_count": 0,
+          "query_rmse_median": 0.41632008968689443,
+          "loss_first": 0.18206585465029768,
+          "loss_last": 0.24431845396434057
+        },
+        "kshot_adapt": {
+          "wall_s_median": 0.010635099984938279,
+          "wall_s_min": 0.010572099999990314,
+          "wall_s_max": 0.010952400014502928,
+          "wall_s_mean": 0.010719866666477174,
+          "peak_gpu_mb": 0.0,
+          "peak_rss_mb": 461.7265625,
+          "nan_count": 0,
+          "query_rmse_median": 0.4432920645829359
+        },
+        "surrogate_batch_score": {
+          "wall_s_median": 0.05620120000094175,
+          "wall_s_min": 0.052058400004170835,
+          "wall_s_max": 0.05963450000854209,
+          "wall_s_mean": 0.05596470000455156,
+          "peak_gpu_mb": 0.0,
+          "peak_rss_mb": 1485.43359375,
+          "nan_count": 0,
+          "query_rmse_median": NaN
+        },
+        "gemm_probe": {
+          "wall_s_median": 0.6795793000201229,
+          "wall_s_min": 0.6667339999985415,
+          "wall_s_max": 0.7955455000046641,
+          "wall_s_mean": 0.7139529333411095,
+          "peak_gpu_mb": 0.0,
+          "peak_rss_mb": 1611.12890625,
+          "nan_count": 0,
+          "tflops_median": 0.6067236897942462
+        }
+      },
+      "score_checksum": 142956.80878448373,
+      "determinism_max_param_delta": 0.0,
+      "gradient_vs_cpu_fp64": {
+        "rel_l2": 0.0,
+        "max_abs": 0.0,
+        "note": "reference"
+      }
+    },
+    "cuda-fp64": {
+      "workloads": {
+        "fomaml_pretrain": {
+          "wall_s_median": 0.7631421000114642,
+          "wall_s_min": 0.7553057999757584,
+          "wall_s_max": 0.8928797999978997,
+          "wall_s_mean": 0.8037758999950407,
+          "peak_gpu_mb": 16.595703125,
+          "peak_rss_mb": 1855.453125,
+          "nan_count": 0,
+          "query_rmse_median": 0.41632008968689443,
+          "loss_first": 0.18206585465029773,
+          "loss_last": 0.24431845396434054
+        },
+        "kshot_adapt": {
+          "wall_s_median": 0.034225900017190725,
+          "wall_s_min": 0.03359810000983998,
+          "wall_s_max": 0.03528919999371283,
+          "wall_s_mean": 0.034371066673581176,
+          "peak_gpu_mb": 16.47998046875,
+          "peak_rss_mb": 1855.46875,
+          "nan_count": 0,
+          "query_rmse_median": 0.4432920645829359
+        },
+        "surrogate_batch_score": {
+          "wall_s_median": 0.016271800006506965,
+          "wall_s_min": 0.01625040001817979,
+          "wall_s_max": 0.019556799990823492,
+          "wall_s_mean": 0.01735966667183675,
+          "peak_gpu_mb": 328.599609375,
+          "peak_rss_mb": 1860.32421875,
+          "nan_count": 0,
+          "query_rmse_median": NaN
+        },
+        "gemm_probe": {
+          "wall_s_median": 1.5124911000020802,
+          "wall_s_min": 1.5111527999979444,
+          "wall_s_max": 1.515247699979227,
+          "wall_s_mean": 1.5129638666597505,
+          "peak_gpu_mb": 144.2890625,
+          "peak_rss_mb": 1887.67578125,
+          "nan_count": 0,
+          "tflops_median": 0.2726077928097778
+        }
+      },
+      "score_checksum": 142956.80878448384,
+      "determinism_max_param_delta": 0.0,
+      "gradient_vs_cpu_fp64": {
+        "rel_l2": 8.941456524287972e-16,
+        "max_abs": 3.885780586188048e-16
+      }
+    },
+    "cuda-fp32": {
+      "workloads": {
+        "fomaml_pretrain": {
+          "wall_s_median": 0.7971948999911547,
+          "wall_s_min": 0.7958151000202633,
+          "wall_s_max": 0.8589054000040051,
+          "wall_s_mean": 0.8173051333384743,
+          "peak_gpu_mb": 16.50927734375,
+          "peak_rss_mb": 2063.96875,
+          "nan_count": 0,
+          "query_rmse_median": 0.41632009614259,
+          "loss_first": 0.1820658715441823,
+          "loss_last": 0.2443184854928404
+        },
+        "kshot_adapt": {
+          "wall_s_median": 0.035251199995400384,
+          "wall_s_min": 0.034495400002924725,
+          "wall_s_max": 0.03558690001955256,
+          "wall_s_mean": 0.03511116667262589,
+          "peak_gpu_mb": 16.4482421875,
+          "peak_rss_mb": 2064.00390625,
+          "nan_count": 0,
+          "query_rmse_median": 0.44329205217460793
+        },
+        "surrogate_batch_score": {
+          "wall_s_median": 0.0029005999967921525,
+          "wall_s_min": 0.0027452000067569315,
+          "wall_s_max": 0.005891899985726923,
+          "wall_s_mean": 0.0038458999964253358,
+          "peak_gpu_mb": 172.33203125,
+          "peak_rss_mb": 2083.67578125,
+          "nan_count": 0,
+          "query_rmse_median": NaN
+        },
+        "gemm_probe": {
+          "wall_s_median": 0.03390159999253228,
+          "wall_s_min": 0.03348030001507141,
+          "wall_s_max": 0.03430359999765642,
+          "wall_s_mean": 0.03389516666842004,
+          "peak_gpu_mb": 80.3486328125,
+          "peak_rss_mb": 2096.6328125,
+          "nan_count": 0,
+          "tflops_median": 12.16216522249167
+        }
+      },
+      "score_checksum": 142956.80705194175,
+      "determinism_max_param_delta": 0.0,
+      "gradient_vs_cpu_fp64": {
+        "rel_l2": 1.3772461317714415e-07,
+        "max_abs": 6.094908067133531e-08
+      }
+    }
+  },
+  "gradient_reference": "cpu-fp64",
+  "gradient_errors": {
+    "cuda-fp64": {
+      "rel_l2": 8.941456524287972e-16,
+      "max_abs": 3.885780586188048e-16
+    },
+    "cuda-fp32": {
+      "rel_l2": 1.3772461317714415e-07,
+      "max_abs": 6.094908067133531e-08
+    }
+  },
+  "determinism": {
+    "cpu-fp64": 0.0,
+    "cuda-fp64": 0.0,
+    "cuda-fp32": 0.0
+  },
+  "peak_rss_mb": 2096.77734375,
+  "status": "COMPLETED"
+}
