@@ -79,7 +79,7 @@ class BranchReport:
     dirty: list[str] = field(default_factory=list)
 
 
-def audit_branch(repo: Path, branch: str, wt: Path | None) -> BranchReport:
+def audit_branch(repo: Path, branch: str, wt: Path | None, strict_dirty: bool = False, integration: bool = False) -> BranchReport:
     rep = BranchReport(branch=branch, worktree=str(wt) if wt else None)
     rep.head = git(repo, "rev-parse", branch).strip()
     rep.starts_at_base = subprocess.run(
@@ -90,7 +90,11 @@ def audit_branch(repo: Path, branch: str, wt: Path | None) -> BranchReport:
     rep.merge_commits = [l for l in git(repo, "rev-list", "--merges", f"{BASE}..{branch}").splitlines() if l]
     for m in rep.merge_commits:
         subj = git(repo, "log", "-1", "--format=%s", m).strip()
-        rep.violations.append(f"存在合并提交 {m[:12]}: {subj}（禁止 main/跨线合并）")
+        if integration and re.match(r"^Merge branch 'research/dnext001-[a-z0-9-]+'", subj):
+            # Lead 集成分支只允许合并专题子分支
+            rep.warnings.append(f"集成分支合并提交 {m[:12]}: {subj}")
+        else:
+            rep.violations.append(f"存在合并提交 {m[:12]}: {subj}（禁止 main/跨线合并）")
 
     numstat = git(repo, "diff", "--numstat", f"{BASE}...{branch}")
     stat = git(repo, "diff", "--name-status", f"{BASE}...{branch}")
@@ -117,7 +121,12 @@ def audit_branch(repo: Path, branch: str, wt: Path | None) -> BranchReport:
         elif line.startswith("+") and not line.startswith("+++"):
             added = line[1:]
             if SOLVER_RE.search(added) and LAUNCH_RE.search(added):
-                rep.violations.append(f"疑似真实求解器启动: {cur_file}: {added.strip()[:120]}")
+                msg = f"疑似真实求解器启动: {cur_file}: {added.strip()[:120]}"
+                # 测试夹具（含 tests/ 路径的）只告警，由人工确认不含真实启动
+                if cur_file and ("/tests/" in cur_file or cur_file.startswith("tests/")):
+                    rep.warnings.append(msg + "（测试夹具，需人工确认）")
+                else:
+                    rep.violations.append(msg)
 
     # physical_call_count 非 0 检查（新增 json/csv）
     for status, path in rep.changed:
@@ -134,7 +143,11 @@ def audit_branch(repo: Path, branch: str, wt: Path | None) -> BranchReport:
         dirty = git(wt, "status", "--porcelain").splitlines()
         rep.dirty = [d for d in dirty if d.strip()]
         if rep.dirty:
-            rep.violations.append(f"工作区不洁净（{len(rep.dirty)} 项未提交）")
+            msg = f"工作区不洁净（{len(rep.dirty)} 项未提交）"
+            if strict_dirty:
+                rep.violations.append(msg)
+            else:
+                rep.warnings.append(msg + "（交付前必须洁净；最终集成审计用 --strict-dirty）")
     return rep
 
 
@@ -143,6 +156,7 @@ def main() -> int:
     ap.add_argument("--repo", default=r"D:\RCAIDE\dnext001\repo")
     ap.add_argument("--json", default=None)
     ap.add_argument("--include-integration", action="store_true", default=True)
+    ap.add_argument("--strict-dirty", action="store_true", help="把未提交改动视为违规（最终集成审计用）")
     args = ap.parse_args()
     repo = Path(args.repo)
     wts = worktrees(repo)
@@ -150,7 +164,10 @@ def main() -> int:
     order = ["f-real-evaluator", "a-warmstart", "b-meta-acquisition", "gpu-benchmark", "a5-review", "integration"]
     branches.sort(key=lambda b: next((i for i, k in enumerate(order) if b.endswith(k)), 99))
 
-    reports = [audit_branch(repo, b, wts.get(b)) for b in branches]
+    reports = [
+        audit_branch(repo, b, wts.get(b), strict_dirty=args.strict_dirty, integration=b.endswith("/integration"))
+        for b in branches
+    ]
     payload = {
         "base": BASE,
         "branches": [
