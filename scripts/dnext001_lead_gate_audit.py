@@ -165,7 +165,7 @@ def main() -> int:
     branches.sort(key=lambda b: next((i for i, k in enumerate(order) if b.endswith(k)), 99))
 
     reports = [
-        audit_branch(repo, b, wts.get(b), strict_dirty=args.strict_dirty, integration=b.endswith("/integration"))
+        audit_branch(repo, b, wts.get(b), strict_dirty=args.strict_dirty, integration=b.rsplit("/", 1)[-1].endswith("integration"))
         for b in branches
     ]
     payload = {
