@@ -1,0 +1,71 @@
+{
+  "run_id": "extension-S-RB-bo-fomaml-kshot-K3-B64-rho0p25-s0",
+  "matrix_tag": "extension",
+  "stage": "D-NEXT-001-A",
+  "route": "A",
+  "backend": "bo",
+  "source": "fomaml_kshot",
+  "task_id": "80c23acd1d01",
+  "task_family": "S-RB",
+  "task_context": [
+    -0.7,
+    0.45
+  ],
+  "design_dimension": 12,
+  "design_set": "synthetic_12d_unit_cube",
+  "evaluator_id": "synthetic_analogue_truth_S-RB",
+  "fidelity": "SYNTHETIC",
+  "source_kind": "SYNTHETIC_ANALOGUE",
+  "physical_validation_status": "NOT_APPLICABLE_SYNTHETIC",
+  "solver_version": "route-a-synthetic-truth-v1",
+  "budget_B": 64,
+  "K": 3,
+  "diversity_weight_rho": 0.25,
+  "seed": 0,
+  "initial_population_size": 4,
+  "support_size": 3,
+  "physical_call_count": 0,
+  "surrogate_version": "warm-start-surrogate-v1",
+  "bo_adapter_version": "route-a-warm-bo-v1",
+  "elapsed_seconds": 2.2761,
+  "proposal": {
+    "model_sha": "b06528e722d11a1766cade207ea216c87271135aca32a6f0bbf60389a74d6178",
+    "uniformity_distance": 1.2747277199548714,
+    "min_support_distance": 1.2177616252979915,
+    "predicted_feasibility_mean": null,
+    "predicted_feasible_count_at_0.5": null,
+    "true_feasible_count": null,
+    "n_new": 4,
+    "source": "fomaml_kshot",
+    "true_feasibility_of_proposal": null
+  },
+  "status": "completed",
+  "termination_reason": "budget_exhausted",
+  "diversity": null,
+  "first_feasible_evaluation_backend": 8,
+  "best_feasible_backend": {
+    "objective": 0.11976713617104107,
+    "iteration": 52,
+    "unit_vector": [
+      0.708254116668898,
+      0.5316554436265853,
+      0.2324360812264448,
+      0.7016368166556186,
+      0.44323964700864404,
+      0.7400015353236485,
+      0.43940699635959846,
+      0.38140052403551483,
+      0.40345519103455924,
+      0.3508134632942175,
+      0.4013456429855789,
+      0.30325002261741846
+    ]
+  },
+  "duplicates_ignored": 0,
+  "result_meta": {
+    "evaluations": 64,
+    "support_size": 3,
+    "initial_size": 4,
+    "bo_evaluations": 57
+  }
+}

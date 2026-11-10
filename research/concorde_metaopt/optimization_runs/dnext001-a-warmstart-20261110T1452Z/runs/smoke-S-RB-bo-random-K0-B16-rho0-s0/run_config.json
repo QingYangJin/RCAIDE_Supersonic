@@ -1,0 +1,71 @@
+{
+  "run_id": "smoke-S-RB-bo-random-K0-B16-rho0-s0",
+  "matrix_tag": "smoke",
+  "stage": "D-NEXT-001-A",
+  "route": "A",
+  "backend": "bo",
+  "source": "random",
+  "task_id": "80c23acd1d01",
+  "task_family": "S-RB",
+  "task_context": [
+    -0.7,
+    0.45
+  ],
+  "design_dimension": 12,
+  "design_set": "synthetic_12d_unit_cube",
+  "evaluator_id": "synthetic_analogue_truth_S-RB",
+  "fidelity": "SYNTHETIC",
+  "source_kind": "SYNTHETIC_ANALOGUE",
+  "physical_validation_status": "NOT_APPLICABLE_SYNTHETIC",
+  "solver_version": "route-a-synthetic-truth-v1",
+  "budget_B": 16,
+  "K": 0,
+  "diversity_weight_rho": 0.0,
+  "seed": 0,
+  "initial_population_size": 4,
+  "support_size": 0,
+  "physical_call_count": 0,
+  "surrogate_version": "warm-start-surrogate-v1",
+  "bo_adapter_version": "route-a-warm-bo-v1",
+  "elapsed_seconds": 0.1627,
+  "proposal": {
+    "model_sha": "bb0f0e7b9566ed584a7651a5cf420e190d813b65f7d09064014089d8875b50a8",
+    "uniformity_distance": 1.4719248021299638,
+    "min_support_distance": 1.9192828944358764,
+    "predicted_feasibility_mean": null,
+    "predicted_feasible_count_at_0.5": null,
+    "true_feasible_count": null,
+    "n_new": 4,
+    "source": "random",
+    "true_feasibility_of_proposal": null
+  },
+  "status": "completed",
+  "termination_reason": "budget_exhausted",
+  "diversity": null,
+  "first_feasible_evaluation_backend": 12,
+  "best_feasible_backend": {
+    "objective": 0.15066285580118635,
+    "iteration": 13,
+    "unit_vector": [
+      0.1752255187275678,
+      0.9423566020795514,
+      0.5221455594829258,
+      0.4137852607316164,
+      0.7975105021344775,
+      0.41814290984853014,
+      0.47033570443029526,
+      0.7302235743935148,
+      0.4287545876741687,
+      0.6613266404144852,
+      0.2627177961866068,
+      0.0817102745686075
+    ]
+  },
+  "duplicates_ignored": 0,
+  "result_meta": {
+    "evaluations": 16,
+    "support_size": 0,
+    "initial_size": 4,
+    "bo_evaluations": 12
+  }
+}

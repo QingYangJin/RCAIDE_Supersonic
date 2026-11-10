@@ -1,0 +1,71 @@
+{
+  "run_id": "smoke-S-RB-bo-fomaml-kshot-K0-B128-rho0-s0",
+  "matrix_tag": "smoke",
+  "stage": "D-NEXT-001-A",
+  "route": "A",
+  "backend": "bo",
+  "source": "fomaml_kshot",
+  "task_id": "80c23acd1d01",
+  "task_family": "S-RB",
+  "task_context": [
+    -0.7,
+    0.45
+  ],
+  "design_dimension": 12,
+  "design_set": "synthetic_12d_unit_cube",
+  "evaluator_id": "synthetic_analogue_truth_S-RB",
+  "fidelity": "SYNTHETIC",
+  "source_kind": "SYNTHETIC_ANALOGUE",
+  "physical_validation_status": "NOT_APPLICABLE_SYNTHETIC",
+  "solver_version": "route-a-synthetic-truth-v1",
+  "budget_B": 128,
+  "K": 0,
+  "diversity_weight_rho": 0.0,
+  "seed": 0,
+  "initial_population_size": 4,
+  "support_size": 0,
+  "physical_call_count": 0,
+  "surrogate_version": "warm-start-surrogate-v1",
+  "bo_adapter_version": "route-a-warm-bo-v1",
+  "elapsed_seconds": 7.4459,
+  "proposal": {
+    "model_sha": "797cea3b834b38661770f025c17cb6214f5881b5cf7ed19d8a5ac636dcc5d6e5",
+    "uniformity_distance": 1.3146315553285883,
+    "min_support_distance": 1.749259053636479,
+    "predicted_feasibility_mean": null,
+    "predicted_feasible_count_at_0.5": null,
+    "true_feasible_count": null,
+    "n_new": 4,
+    "source": "fomaml_kshot",
+    "true_feasibility_of_proposal": null
+  },
+  "status": "completed",
+  "termination_reason": "budget_exhausted",
+  "diversity": null,
+  "first_feasible_evaluation_backend": 15,
+  "best_feasible_backend": {
+    "objective": 0.048109424457213945,
+    "iteration": 123,
+    "unit_vector": [
+      0.3351649813715772,
+      0.46612834120835095,
+      0.5405801147001814,
+      0.24077583028847538,
+      0.8354406905387679,
+      0.7844540323583379,
+      0.3311003879079749,
+      0.7735886428029846,
+      0.41589749143279064,
+      0.390287818851581,
+      0.6380750859197124,
+      0.5194275688444852
+    ]
+  },
+  "duplicates_ignored": 0,
+  "result_meta": {
+    "evaluations": 128,
+    "support_size": 0,
+    "initial_size": 4,
+    "bo_evaluations": 124
+  }
+}
