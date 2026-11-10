@@ -1,15 +1,3 @@
-* text=auto eol=lf
-*.py text eol=lf
-*.md text eol=lf
-*.txt text eol=lf
-*.toml text eol=lf
-*.yml text eol=lf
-*.yaml text eol=lf
-*.json text eol=lf
-*.cmd text eol=crlf
-*.ipynb -text
-*.gltf -text
-*.pkl -text
-*.png binary
-*.jpg binary
-LICENSE -text
+# 证据目录按字节原样保存（run 产物含 SHA256 校验，禁止 EOL 归一化）
+runs/** -text
+research/concorde_metaopt/route_b/** -text
