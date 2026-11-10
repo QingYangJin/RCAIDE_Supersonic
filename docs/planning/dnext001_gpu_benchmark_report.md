@@ -132,7 +132,7 @@
 - `no_merge_commits_current_branch` / `no_main_merge_into_current` / `current_branch_no_upstream`：当前分支无 merge commit、未把 main 合并进来、无 upstream（未推送）；
 - `other_branch_merges_observed`：仅**记录**到 Lead 的集成分支有 1 个 merge commit（属 Lead 作用域，不影响本树判定）；
 - `write_scope_uncommitted` / `write_scope_committed`：本树改动只落在 `research/concorde_metaopt/gpu/`、`docs/planning/dnext001_gpu_*`、`docs/receipts/dnext001/a4_*`、`research/concorde_metaopt/tests/test_{gpu_benchmark,repo_isolation_check}.py`；
-- `frozen_artifacts_untouched`：`research/concorde_metaopt/{optimization_runs,evidence,reports}/` 与 `docs/receipts/` 下的冻结产物零改动。
+- `frozen_artifacts_untouched`：`research/concorde_metaopt/{optimization_runs,evidence,reports}/` 下冻结产物零改动；`docs/receipts/` 只允许新增回执，**改写或删除既有回执即判 FAIL**（首次运行曾因把本轮新回执误判为“改动冻结产物”而 FAIL，已按“新增允许、改写禁止”修正判定口径）。
 
 **边界声明（不得夸大）**：该检查只证明“本树的结构性事实与可观测 git 状态”。它**不能**证明其他 agent 未在各自工作树里写入、**不能**离线验证是否发生了 push（无远端凭据校验）、也**不替代 A5 的独立复核**；A3 复核是否完成不由本报告宣称。
 

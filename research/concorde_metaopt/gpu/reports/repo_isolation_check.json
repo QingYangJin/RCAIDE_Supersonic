@@ -1,11 +1,11 @@
 {
   "kind": "repo_isolation_check",
   "physical_call_count": 0,
-  "generated_at_utc": "2026-11-10T06:35:20.931920+00:00",
+  "generated_at_utc": "2026-11-10T06:37:18.895657+00:00",
   "common_repo": "D:\\RCAIDE\\dnext001\\repo",
   "current_worktree": "D:\\RCAIDE\\dnext001\\wt-a4",
   "current_branch": "research/dnext001-gpu-benchmark",
-  "head": "ea8ad97833eb5ceab291faae643c141a2b219749",
+  "head": "1f492f727fad0abf4489434f675b526cc9c8e463",
   "base": "ea8ad97833eb5ceab291faae643c141a2b219749",
   "allowed_prefixes": [
     "research/concorde_metaopt/gpu/",
@@ -148,11 +148,33 @@
     {
       "check_id": "write_scope_uncommitted",
       "ok": true,
-      "detail": "未提交改动 51 个文件，全部在声明作用域内",
+      "detail": "未提交改动 4 个文件，全部在声明作用域内",
       "evidence": {
         "changed": [
+          "research/concorde_metaopt/gpu/repo_isolation_check.py",
+          "research/concorde_metaopt/gpu/reports/repo_isolation_check.json",
+          "research/concorde_metaopt/gpu/reports/repo_isolation_check.md",
+          "research/concorde_metaopt/tests/test_repo_isolation_check.py"
+        ],
+        "outside": [],
+        "allowed": [
+          "research/concorde_metaopt/gpu/",
+          "docs/planning/dnext001_gpu_",
+          "docs/receipts/dnext001/a4_",
+          "research/concorde_metaopt/tests/test_gpu_benchmark.py",
+          "research/concorde_metaopt/tests/test_repo_isolation_check.py"
+        ]
+      }
+    },
+    {
+      "check_id": "write_scope_committed",
+      "ok": true,
+      "detail": "基线以来提交改动 52 个文件，全部在声明作用域内",
+      "evidence": {
+        "committed": [
           "docs/planning/dnext001_gpu_benchmark_report.md",
           "docs/planning/dnext001_gpu_environment_report.md",
+          "docs/receipts/dnext001/a4_task_receipt.md",
           "research/concorde_metaopt/gpu/__init__.py",
           "research/concorde_metaopt/gpu/bench_gpu.py",
           "research/concorde_metaopt/gpu/cpu_concurrency.py",
@@ -203,38 +225,23 @@
           "research/concorde_metaopt/tests/test_gpu_benchmark.py",
           "research/concorde_metaopt/tests/test_repo_isolation_check.py"
         ],
-        "outside": [],
-        "allowed": [
-          "research/concorde_metaopt/gpu/",
-          "docs/planning/dnext001_gpu_",
-          "docs/receipts/dnext001/a4_",
-          "research/concorde_metaopt/tests/test_gpu_benchmark.py",
-          "research/concorde_metaopt/tests/test_repo_isolation_check.py"
-        ]
-      }
-    },
-    {
-      "check_id": "write_scope_committed",
-      "ok": true,
-      "detail": "基线以来提交改动 0 个文件，全部在声明作用域内",
-      "evidence": {
-        "committed": [],
         "leaked": []
       }
     },
     {
       "check_id": "frozen_artifacts_untouched",
       "ok": true,
-      "detail": "冻结产物目录在基线之后无改动",
+      "detail": "冻结产物目录在基线之后无改动（receipts 仅允许新增回执）",
       "evidence": {
         "base": "ea8ad97833eb5ceab291faae643c141a2b219749",
         "touched": [],
+        "receipts_rewritten": [],
         "frozen_prefixes": [
           "research/concorde_metaopt/optimization_runs/",
           "research/concorde_metaopt/evidence/",
-          "research/concorde_metaopt/reports/",
-          "docs/receipts/"
-        ]
+          "research/concorde_metaopt/reports/"
+        ],
+        "frozen_receipts_prefix": "docs/receipts/"
       }
     }
   ],

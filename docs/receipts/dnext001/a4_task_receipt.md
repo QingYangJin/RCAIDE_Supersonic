@@ -144,6 +144,7 @@ cd D:\RCAIDE\dnext001\wt-a4
 | RTX 5060 FP64 吞吐 | **未证实（且实测劣于 CPU-FP64）** | 实测 GEMM 2048³ CUDA-FP64 = 269.9 GFLOPS，仅 CPU-FP64（553.0）的 0.49×。**不得宣称 FP64 加速**。 |
 | 全局确定性 | **未承诺** | 只证明同配置同进程内重复 bitwise 一致；未设 `cudnn.deterministic=True`，未做跨进程/跨驱动位级复现承诺。 |
 | 测量噪声 | 存在 | 机器同时有其他 agent 计算，CPU 并发吞吐在 8–16 进程区间波动（rep1/rep2/rep3 三次数值差异见报告）；报告只给区间与结论方向，不宣称精确倍数。 |
+| 隔离检查判定口径修正 | 已修 | 首次 post-commit 复跑时 `frozen_artifacts_untouched` 误报（把本轮**新增**的 `docs/receipts/dnext001/a4_task_receipt.md` 当作“改动冻结产物”）。已将冻结判定拆为两类：`research/concorde_metaopt/{optimization_runs,evidence,reports}/` 严格禁止任何改动；`docs/receipts/` 允许新增回执，仅 `--diff-filter=MDR`（改写/删除既有回执）判 FAIL。修正后 14 tests 通过、检查 all_passed=true、exit 0。 |
 | A3/A5 复核 | **未完成（非本角色职责）** | 本隔离检查只证明结构性 + 可观测事实，**不能证明其他 agent 未在其自身工作树写入，也无法离线验证是否 push 过远端**，因此**不替代 A5 独立复核**，更不能宣称 A3 复核已完成。 |
 | 原环境使用 | 未改动 | RCAIDE 环境仍为 `torch 2.8.0+cpu`；CUDA 依赖全部装在独立 venv `D:\RCAIDE\dnext001\gpu-env`。 |
 | 工作树外残留 | 已知 | `D:\RCAIDE` 根下仍有安装期间 pip 生成的临时目录（`pip-unpack-*` 等）。**未删除**：当时无法确认其他 agent 是否正在使用同类临时目录，避免误删他人正在进行的 pip 进程产物；这些目录不在任何 git 工作树内，不影响仓库状态。 |

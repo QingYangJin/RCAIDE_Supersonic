@@ -28,12 +28,14 @@ from pathlib import Path
 from typing import Any
 
 DEFAULT_BASE = "ea8ad97833eb5ceab291faae643c141a2b219749"
+# 冻结目录：基线之后任何改动（含新增）都视为破坏冻结。
 FROZEN_PREFIXES = (
     "research/concorde_metaopt/optimization_runs/",
     "research/concorde_metaopt/evidence/",
     "research/concorde_metaopt/reports/",
-    "docs/receipts/",
 )
+# receipts 目录每轮都会新增回执（合法交付）；只把“改写/删除既有回执”视为冻结破坏。
+FROZEN_RECEIPTS_PREFIX = "docs/receipts/"
 SKIP_TOP_LEVEL = {".git"}
 
 
@@ -351,15 +353,30 @@ def check_write_scope(
     )
 
     code, out = git(["diff", "--name-only", base + "..HEAD", "--", *FROZEN_PREFIXES], current)
-    frozen_touched = [line for line in out.splitlines() if line.strip()]
+    frozen_touched = [line.replace("\\", "/") for line in out.splitlines() if line.strip()]
+    # 回执目录允许新增，但不允许改写或删除既有回执。
+    code, out = git(
+        ["diff", "--name-only", "--diff-filter=MDR", base + "..HEAD", "--", FROZEN_RECEIPTS_PREFIX],
+        current,
+    )
+    receipts_rewritten = [line.replace("\\", "/") for line in out.splitlines() if line.strip()]
+    ok = not frozen_touched and not receipts_rewritten
+    if ok:
+        detail = "冻结产物目录在基线之后无改动（receipts 仅允许新增回执）"
+    else:
+        detail = "冻结产物被改动：" + str(frozen_touched + receipts_rewritten)
     checks.append(
         Check(
             "frozen_artifacts_untouched",
-            not frozen_touched,
-            "冻结产物目录在基线之后无改动"
-            if not frozen_touched
-            else "冻结产物被改动：" + str(frozen_touched),
-            {"base": base, "touched": frozen_touched, "frozen_prefixes": list(FROZEN_PREFIXES)},
+            ok,
+            detail,
+            {
+                "base": base,
+                "touched": frozen_touched,
+                "receipts_rewritten": receipts_rewritten,
+                "frozen_prefixes": list(FROZEN_PREFIXES),
+                "frozen_receipts_prefix": FROZEN_RECEIPTS_PREFIX,
+            },
         )
     )
     return checks

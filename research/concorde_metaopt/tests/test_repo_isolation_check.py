@@ -47,7 +47,9 @@ def test_frozen_prefixes_cover_evidence_dirs() -> None:
     assert any("optimization_runs" in p for p in ric.FROZEN_PREFIXES)
     assert any("evidence" in p for p in ric.FROZEN_PREFIXES)
     assert any("reports" in p for p in ric.FROZEN_PREFIXES)
-    assert any("docs/receipts" in p for p in ric.FROZEN_PREFIXES)
+    # 回执目录单独处理：允许新增，禁止改写既有回执
+    assert ric.FROZEN_RECEIPTS_PREFIX == "docs/receipts/"
+    assert all("docs/receipts" not in p for p in ric.FROZEN_PREFIXES)
 
 
 def test_relative_inside_only_matches_true_descendants(tmp_path: Path) -> None:
