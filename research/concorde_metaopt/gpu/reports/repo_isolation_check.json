@@ -1,0 +1,243 @@
+{
+  "kind": "repo_isolation_check",
+  "physical_call_count": 0,
+  "generated_at_utc": "2026-11-10T06:35:20.931920+00:00",
+  "common_repo": "D:\\RCAIDE\\dnext001\\repo",
+  "current_worktree": "D:\\RCAIDE\\dnext001\\wt-a4",
+  "current_branch": "research/dnext001-gpu-benchmark",
+  "head": "ea8ad97833eb5ceab291faae643c141a2b219749",
+  "base": "ea8ad97833eb5ceab291faae643c141a2b219749",
+  "allowed_prefixes": [
+    "research/concorde_metaopt/gpu/",
+    "docs/planning/dnext001_gpu_",
+    "docs/receipts/dnext001/a4_",
+    "research/concorde_metaopt/tests/test_gpu_benchmark.py",
+    "research/concorde_metaopt/tests/test_repo_isolation_check.py"
+  ],
+  "checks": [
+    {
+      "check_id": "worktree_list_available",
+      "ok": true,
+      "detail": "发现 7 个 worktree：D:\\RCAIDE\\dnext001\\repo, D:\\RCAIDE\\dnext001\\wt-a1, D:\\RCAIDE\\dnext001\\wt-a2, D:\\RCAIDE\\dnext001\\wt-a3, D:\\RCAIDE\\dnext001\\wt-a4, D:\\RCAIDE\\dnext001\\wt-a5, D:\\RCAIDE\\dnext001\\wt-lead",
+      "evidence": {
+        "count": 7,
+        "paths": [
+          "D:\\RCAIDE\\dnext001\\repo",
+          "D:\\RCAIDE\\dnext001\\wt-a1",
+          "D:\\RCAIDE\\dnext001\\wt-a2",
+          "D:\\RCAIDE\\dnext001\\wt-a3",
+          "D:\\RCAIDE\\dnext001\\wt-a4",
+          "D:\\RCAIDE\\dnext001\\wt-a5",
+          "D:\\RCAIDE\\dnext001\\wt-lead"
+        ]
+      }
+    },
+    {
+      "check_id": "worktree_paths_unique",
+      "ok": true,
+      "detail": "worktree 路径唯一",
+      "evidence": {
+        "paths": [
+          "D:\\RCAIDE\\dnext001\\repo",
+          "D:\\RCAIDE\\dnext001\\wt-a1",
+          "D:\\RCAIDE\\dnext001\\wt-a2",
+          "D:\\RCAIDE\\dnext001\\wt-a3",
+          "D:\\RCAIDE\\dnext001\\wt-a4",
+          "D:\\RCAIDE\\dnext001\\wt-a5",
+          "D:\\RCAIDE\\dnext001\\wt-lead"
+        ]
+      }
+    },
+    {
+      "check_id": "worktree_branches_unique",
+      "ok": true,
+      "detail": "每个 worktree 的检出分支互不相同",
+      "evidence": {
+        "branches": [
+          "refs/heads/research/dnext001-f-real-evaluator",
+          "refs/heads/research/dnext001-a-warmstart",
+          "refs/heads/research/dnext001-b-meta-acquisition",
+          "refs/heads/research/dnext001-gpu-benchmark",
+          "refs/heads/research/dnext001-a5-review",
+          "refs/heads/research/dnext001-integration"
+        ]
+      }
+    },
+    {
+      "check_id": "worktree_gitdir_wiring",
+      "ok": true,
+      "detail": "linked worktree 的 gitdir 接线全部正确",
+      "evidence": {
+        "D:\\RCAIDE\\dnext001\\repo": "main worktree (.git 目录)",
+        "D:\\RCAIDE\\dnext001\\wt-a1": "D:\\RCAIDE\\dnext001\\repo\\.git\\worktrees\\wt-a1",
+        "D:\\RCAIDE\\dnext001\\wt-a2": "D:\\RCAIDE\\dnext001\\repo\\.git\\worktrees\\wt-a2",
+        "D:\\RCAIDE\\dnext001\\wt-a3": "D:\\RCAIDE\\dnext001\\repo\\.git\\worktrees\\wt-a3",
+        "D:\\RCAIDE\\dnext001\\wt-a4": "D:\\RCAIDE\\dnext001\\repo\\.git\\worktrees\\wt-a4",
+        "D:\\RCAIDE\\dnext001\\wt-a5": "D:\\RCAIDE\\dnext001\\repo\\.git\\worktrees\\wt-a5",
+        "D:\\RCAIDE\\dnext001\\wt-lead": "D:\\RCAIDE\\dnext001\\repo\\.git\\worktrees\\wt-lead"
+      }
+    },
+    {
+      "check_id": "no_cross_tree_links",
+      "ok": true,
+      "detail": "worktree 顶层无越界链接",
+      "evidence": {}
+    },
+    {
+      "check_id": "current_worktree_branch",
+      "ok": true,
+      "detail": "当前分支 research/dnext001-gpu-benchmark（期望 research/dnext001-gpu-benchmark）",
+      "evidence": {
+        "branch": "research/dnext001-gpu-benchmark",
+        "expected": "research/dnext001-gpu-benchmark"
+      }
+    },
+    {
+      "check_id": "base_is_ancestor_of_head",
+      "ok": true,
+      "detail": "基线 commit 是当前分支的祖先",
+      "evidence": {
+        "base": "ea8ad97833eb5ceab291faae643c141a2b219749",
+        "is_ancestor": true,
+        "errors": []
+      }
+    },
+    {
+      "check_id": "no_merge_commits_current_branch",
+      "ok": true,
+      "detail": "当前分支 research/dnext001-gpu-benchmark 在基线之后无 merge commit",
+      "evidence": {
+        "branch": "research/dnext001-gpu-benchmark",
+        "merge_count": 0
+      }
+    },
+    {
+      "check_id": "no_main_merge_into_current",
+      "ok": true,
+      "detail": "当前分支未把 main 合并进来",
+      "evidence": {
+        "main_exists": true,
+        "offenders": []
+      }
+    },
+    {
+      "check_id": "current_branch_no_upstream",
+      "ok": true,
+      "detail": "当前分支未配置 upstream（本地提交，未推送）",
+      "evidence": {
+        "upstream": null
+      }
+    },
+    {
+      "check_id": "other_branch_merges_observed",
+      "ok": true,
+      "detail": "其他分支合并情况（仅记录，不判定）：{'research/dnext001-integration': 4}",
+      "evidence": {
+        "merge_counts": {
+          "research/dnext001-f-real-evaluator": 0,
+          "research/dnext001-a-warmstart": 0,
+          "research/dnext001-b-meta-acquisition": 0,
+          "research/dnext001-gpu-benchmark": 0,
+          "research/dnext001-a5-review": 0,
+          "research/dnext001-integration": 4
+        },
+        "upstreams": {},
+        "note": "其他 worktree 分支的提交行为属于对应角色作用域，本检查不代替其自证，也不代替 A5 独立复核。"
+      }
+    },
+    {
+      "check_id": "write_scope_uncommitted",
+      "ok": true,
+      "detail": "未提交改动 51 个文件，全部在声明作用域内",
+      "evidence": {
+        "changed": [
+          "docs/planning/dnext001_gpu_benchmark_report.md",
+          "docs/planning/dnext001_gpu_environment_report.md",
+          "research/concorde_metaopt/gpu/__init__.py",
+          "research/concorde_metaopt/gpu/bench_gpu.py",
+          "research/concorde_metaopt/gpu/cpu_concurrency.py",
+          "research/concorde_metaopt/gpu/env_check.py",
+          "research/concorde_metaopt/gpu/make_figures.py",
+          "research/concorde_metaopt/gpu/repo_isolation_check.py",
+          "research/concorde_metaopt/gpu/reports/g0_env_check.json",
+          "research/concorde_metaopt/gpu/reports/repo_isolation_check.json",
+          "research/concorde_metaopt/gpu/reports/repo_isolation_check.md",
+          "research/concorde_metaopt/gpu/runs/cpu_concurrency_20261110_rep1/cpu_concurrency.csv",
+          "research/concorde_metaopt/gpu/runs/cpu_concurrency_20261110_rep1/fig_cpu_concurrency.png",
+          "research/concorde_metaopt/gpu/runs/cpu_concurrency_20261110_rep1/summary.json",
+          "research/concorde_metaopt/gpu/runs/cpu_concurrency_20261110_rep2/cpu_concurrency.csv",
+          "research/concorde_metaopt/gpu/runs/cpu_concurrency_20261110_rep2/fig_cpu_concurrency.png",
+          "research/concorde_metaopt/gpu/runs/cpu_concurrency_20261110_rep2/summary.json",
+          "research/concorde_metaopt/gpu/runs/cpu_concurrency_rep3/cpu_concurrency.csv",
+          "research/concorde_metaopt/gpu/runs/cpu_concurrency_rep3/fig_cpu_concurrency.png",
+          "research/concorde_metaopt/gpu/runs/cpu_concurrency_rep3/summary.json",
+          "research/concorde_metaopt/gpu/runs/g1_20261110/SHA256SUMS.txt",
+          "research/concorde_metaopt/gpu/runs/g1_20261110/data_manifest.json",
+          "research/concorde_metaopt/gpu/runs/g1_20261110/figures/fig1_walltime.png",
+          "research/concorde_metaopt/gpu/runs/g1_20261110/figures/fig2_speedup.png",
+          "research/concorde_metaopt/gpu/runs/g1_20261110/figures/fig3_precision.png",
+          "research/concorde_metaopt/gpu/runs/g1_20261110/figures/figure_index.json",
+          "research/concorde_metaopt/gpu/runs/g1_20261110/gradients/cpu-fp64_grad_0.npy",
+          "research/concorde_metaopt/gpu/runs/g1_20261110/gradients/cpu-fp64_grad_1.npy",
+          "research/concorde_metaopt/gpu/runs/g1_20261110/gradients/cpu-fp64_grad_2.npy",
+          "research/concorde_metaopt/gpu/runs/g1_20261110/gradients/cpu-fp64_grad_3.npy",
+          "research/concorde_metaopt/gpu/runs/g1_20261110/gradients/cpu-fp64_grad_4.npy",
+          "research/concorde_metaopt/gpu/runs/g1_20261110/gradients/cpu-fp64_grad_5.npy",
+          "research/concorde_metaopt/gpu/runs/g1_20261110/gradients/cuda-fp32_grad_0.npy",
+          "research/concorde_metaopt/gpu/runs/g1_20261110/gradients/cuda-fp32_grad_1.npy",
+          "research/concorde_metaopt/gpu/runs/g1_20261110/gradients/cuda-fp32_grad_2.npy",
+          "research/concorde_metaopt/gpu/runs/g1_20261110/gradients/cuda-fp32_grad_3.npy",
+          "research/concorde_metaopt/gpu/runs/g1_20261110/gradients/cuda-fp32_grad_4.npy",
+          "research/concorde_metaopt/gpu/runs/g1_20261110/gradients/cuda-fp32_grad_5.npy",
+          "research/concorde_metaopt/gpu/runs/g1_20261110/gradients/cuda-fp64_grad_0.npy",
+          "research/concorde_metaopt/gpu/runs/g1_20261110/gradients/cuda-fp64_grad_1.npy",
+          "research/concorde_metaopt/gpu/runs/g1_20261110/gradients/cuda-fp64_grad_2.npy",
+          "research/concorde_metaopt/gpu/runs/g1_20261110/gradients/cuda-fp64_grad_3.npy",
+          "research/concorde_metaopt/gpu/runs/g1_20261110/gradients/cuda-fp64_grad_4.npy",
+          "research/concorde_metaopt/gpu/runs/g1_20261110/gradients/cuda-fp64_grad_5.npy",
+          "research/concorde_metaopt/gpu/runs/g1_20261110/gradients/gradient_index.json",
+          "research/concorde_metaopt/gpu/runs/g1_20261110/metrics.csv",
+          "research/concorde_metaopt/gpu/runs/g1_20261110/run_config.json",
+          "research/concorde_metaopt/gpu/runs/g1_20261110/summary.json",
+          "research/concorde_metaopt/gpu/torch_fomaml.py",
+          "research/concorde_metaopt/tests/test_gpu_benchmark.py",
+          "research/concorde_metaopt/tests/test_repo_isolation_check.py"
+        ],
+        "outside": [],
+        "allowed": [
+          "research/concorde_metaopt/gpu/",
+          "docs/planning/dnext001_gpu_",
+          "docs/receipts/dnext001/a4_",
+          "research/concorde_metaopt/tests/test_gpu_benchmark.py",
+          "research/concorde_metaopt/tests/test_repo_isolation_check.py"
+        ]
+      }
+    },
+    {
+      "check_id": "write_scope_committed",
+      "ok": true,
+      "detail": "基线以来提交改动 0 个文件，全部在声明作用域内",
+      "evidence": {
+        "committed": [],
+        "leaked": []
+      }
+    },
+    {
+      "check_id": "frozen_artifacts_untouched",
+      "ok": true,
+      "detail": "冻结产物目录在基线之后无改动",
+      "evidence": {
+        "base": "ea8ad97833eb5ceab291faae643c141a2b219749",
+        "touched": [],
+        "frozen_prefixes": [
+          "research/concorde_metaopt/optimization_runs/",
+          "research/concorde_metaopt/evidence/",
+          "research/concorde_metaopt/reports/",
+          "docs/receipts/"
+        ]
+      }
+    }
+  ],
+  "all_passed": true,
+  "scope_note": "本检查只证明结构性与可观测事实；不能证明其他 agent 未在其自身工作树写入，也无法离线验证是否 push 过远端，因此不替代 A5 独立复核。"
+}

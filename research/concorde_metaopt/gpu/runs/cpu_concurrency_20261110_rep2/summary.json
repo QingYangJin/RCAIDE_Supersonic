@@ -1,0 +1,169 @@
+{
+  "kind": "cpu_concurrency_sweep",
+  "physical_call_count": 0,
+  "data_source": "synthetic",
+  "generated_at_utc": "2026-11-10T06:14:26.377581+00:00",
+  "workload": {
+    "description": "单线程 torch FP64 三层 MLP 批量代理打分",
+    "n_candidates": 4000,
+    "hidden": 128,
+    "iterations": 20,
+    "n_input": 12,
+    "threads_per_process": 1
+  },
+  "machine": {
+    "cpu": "AMD Ryzen 9 9950X 16-Core Processor",
+    "logical_cpus": 32,
+    "platform": "Windows-10-10.0.26200-SP0",
+    "python": "3.11.17"
+  },
+  "rows": [
+    {
+      "processes": 1,
+      "wall_s": 0.3031854000000749,
+      "aggregate_candidates": 80000,
+      "throughput_candidates_per_s": 263864.94864192087,
+      "per_process_throughput_candidates_per_s": 703873.41553909,
+      "parallel_efficiency": 1.0,
+      "mean_worker_wall_s": 0.11365679997834377,
+      "max_worker_peak_rss_mb": 0.0,
+      "sum_worker_peak_rss_mb": 0.0,
+      "checksum_spread": 0.0,
+      "pids": [
+        3592
+      ]
+    },
+    {
+      "processes": 2,
+      "wall_s": 0.33119060000171885,
+      "aggregate_candidates": 160000,
+      "throughput_candidates_per_s": 483105.4987646679,
+      "per_process_throughput_candidates_per_s": 663075.6580708949,
+      "parallel_efficiency": 0.9154408367825095,
+      "mean_worker_wall_s": 0.12066200000117533,
+      "max_worker_peak_rss_mb": 0.0,
+      "sum_worker_peak_rss_mb": 0.0,
+      "checksum_spread": 0.0,
+      "pids": [
+        11056,
+        28292
+      ]
+    },
+    {
+      "processes": 4,
+      "wall_s": 0.427270199987106,
+      "aggregate_candidates": 320000,
+      "throughput_candidates_per_s": 748940.6001393424,
+      "per_process_throughput_candidates_per_s": 516240.4996986669,
+      "parallel_efficiency": 0.7095870482173209,
+      "mean_worker_wall_s": 0.15503852499386994,
+      "max_worker_peak_rss_mb": 0.0,
+      "sum_worker_peak_rss_mb": 0.0,
+      "checksum_spread": 0.0,
+      "pids": [
+        6196,
+        5916,
+        12304,
+        23328
+      ]
+    },
+    {
+      "processes": 8,
+      "wall_s": 0.5317881999944802,
+      "aggregate_candidates": 640000,
+      "throughput_candidates_per_s": 1203486.6512770366,
+      "per_process_throughput_candidates_per_s": 392010.10935960966,
+      "parallel_efficiency": 0.5701243465034047,
+      "mean_worker_wall_s": 0.21022461249958724,
+      "max_worker_peak_rss_mb": 0.0,
+      "sum_worker_peak_rss_mb": 0.0,
+      "checksum_spread": 0.0,
+      "pids": [
+        27116,
+        27312,
+        11904,
+        29448,
+        20992,
+        16864,
+        12672,
+        24156
+      ]
+    },
+    {
+      "processes": 16,
+      "wall_s": 0.9286700999946333,
+      "aggregate_candidates": 1280000,
+      "throughput_candidates_per_s": 1378315.0765889813,
+      "per_process_throughput_candidates_per_s": 170067.90690321478,
+      "parallel_efficiency": 0.3264726623607533,
+      "mean_worker_wall_s": 0.4737623187556892,
+      "max_worker_peak_rss_mb": 0.0,
+      "sum_worker_peak_rss_mb": 0.0,
+      "checksum_spread": 0.0,
+      "pids": [
+        16980,
+        10608,
+        688,
+        25552,
+        700,
+        18436,
+        29324,
+        9360,
+        28320,
+        796,
+        29040,
+        26836,
+        17372,
+        11792,
+        2920,
+        23644
+      ]
+    },
+    {
+      "processes": 32,
+      "wall_s": 1.9007076999987476,
+      "aggregate_candidates": 2560000,
+      "throughput_candidates_per_s": 1346866.7486335153,
+      "per_process_throughput_candidates_per_s": 72203.15497333552,
+      "parallel_efficiency": 0.15951184919189557,
+      "mean_worker_wall_s": 1.1168140343752384,
+      "max_worker_peak_rss_mb": 0.0,
+      "sum_worker_peak_rss_mb": 0.0,
+      "checksum_spread": 0.0,
+      "pids": [
+        29016,
+        5436,
+        10040,
+        28724,
+        29376,
+        27236,
+        27452,
+        10852,
+        25808,
+        26852,
+        28728,
+        25896,
+        24532,
+        25348,
+        4708,
+        27080,
+        4172,
+        26168,
+        7152,
+        28344,
+        24088,
+        28572,
+        29060,
+        4516,
+        3048,
+        2856,
+        27256,
+        20176,
+        9736,
+        26412,
+        27640,
+        8012
+      ]
+    }
+  ]
+}
