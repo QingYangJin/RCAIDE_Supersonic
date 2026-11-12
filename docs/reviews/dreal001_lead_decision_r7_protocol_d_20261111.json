@@ -1,0 +1,134 @@
+{
+  "schema": "dreal001.lead_decision.v1",
+  "decision_id": "L-09",
+  "created_utc": "2026-11-11T13:58:00Z",
+  "decision": "CONTINUE_R7_WITH_INVALID_EVALUATION_TOLERANCE_PROTOCOL_D",
+  "supersedes_decision": "L-07 (R-line terminated) superseded by user instruction m01474 and L-08",
+  "physical_authorization": false,
+  "basis": {
+    "user_instruction": "m01474 2026-11-11T13:03:07Z: 为什么Issue#9发布的任务没有完成？继续执行任务",
+    "l08_path": "D:\\RCAIDE\\dnext001\\wt-real-lead\\docs\\reviews\\dreal001_lead_decision_r7_continue_20261111.md",
+    "l08_sha256": "27898d2e281efb6a38b59c1e9e9e37e1ba872b6dee2b18241d9dad44641b8ddf",
+    "a2_phase_d_commit": "6c098ec825d9b69b23ffc3b668c2de65281ccc3a",
+    "a2_memo_path": "docs/evidence/dreal001/r7_protocol_options_memo_20261111.md",
+    "a2_memo_sha256": "62d24bd1c0f4b8a68d0e2ec1f4b8b8b1c6f0f5c8e0d2b7a4f6c9e1d0d098f0a819"
+  },
+  "rejected_option": {
+    "option": "B mesh-QC data gate",
+    "reason": "QC metrics not validated against solver outcome: CAL-W10p-f483x418 solved successfully with self_int_pairs=101 (>d15 75), nonplanar_faces=120, nonplan_max=0.00158 (inside A2 proposed reject threshold nonplan>1e-3); d16/d17 also exceed proposed thresholds, so gate would reject all 3 initial designs while still passing known-solvable W10p, i.e. not a valid discriminator and risk of data-selection bias",
+    "calibration_table": "L-09 section 2"
+  },
+  "protocol_d": {
+    "name": "R7_INVALID_EVALUATION_TOLERANCE_PLUS_DIAGNOSTIC",
+    "code_changes": [
+      "observe fix: design_hash(canonical_x12(X)) -> design_hash(X) at 7 sites (already commit 6c098ec)",
+      "invalid numerical evaluation tolerance: non-SOLVED_VALID / null or non-finite objective => INVALID_NUMERICAL, excluded from objective, arm continues",
+      "optimizer tolerance: BO skip invalid observations; DE/PSO handle invalid without crash; fix DE/PSO population init defect (3 seeds < 4)",
+      "arm exception path must persist minimal preflight_result.json/batch_summary.json"
+    ],
+    "diagnostic_phase": {
+      "count": 2,
+      "starts": 2,
+      "internal_cases": 14,
+      "cases": [
+        {
+          "id": "DIAG-01",
+          "design_hash": "eb00b7ad545243e6",
+          "design_index": 16
+        },
+        {
+          "id": "DIAG-02",
+          "design_hash": "dc96d2438a6dddc3",
+          "design_index": 17
+        }
+      ],
+      "pass_criteria": "status SOLVED_VALID and finite non-null objective",
+      "gate": "if both fail -> main NOT_RUN and clean stop with receipt; if >=1 passes -> main proceeds",
+      "excluded_from_endpoints": true
+    },
+    "identity": {
+      "batch_id": "DREAL001-P2-20261111-12",
+      "run_id": "DREAL001-P2A2R7-20261111-01",
+      "run_dir": "D:\\RCAIDE\\dnext001\\wt-real-a2-optimizers\\research\\concorde_metaopt\\dreal001\\runs\\DREAL001-P2A2R7-20261111-01",
+      "window_start_utc": "2026-11-11T14:00:00Z",
+      "window_end_utc": "2026-11-12T04:00:00Z",
+      "window_token": "WINDOW_OK-P2AV2R7-20261111T1400Z-20261112T0400Z",
+      "exec_start_deadline_utc": "2026-11-11T19:00:00Z",
+      "clean_stop_utc": "2026-11-12T02:30:00Z",
+      "hard_stop_utc": "2026-11-12T04:00:00Z",
+      "planned_starts": 388,
+      "planned_internal_cases": 2716,
+      "breakdown": {
+        "preflight": 2,
+        "diagnostic": 2,
+        "main": 384
+      },
+      "caps": {
+        "starts": 451,
+        "internal_cases": 3157
+      },
+      "prior_charged": {
+        "starts": 50,
+        "internal_cases": 362
+      },
+      "cumulative": {
+        "starts": 438,
+        "internal_cases": 3078
+      },
+      "headroom": {
+        "starts": 13,
+        "internal_cases": 79
+      },
+      "supersedes": {
+        "approval_path": "D:\\RCAIDE\\dnext001\\wt-real-a2-optimizers\\research\\concorde_metaopt\\dreal001\\runs\\DREAL001-P2A2R6-20261111-01\\approval.json",
+        "approval_sha256": "72b95e03130fbe958c52528f1b8f484eae4872140a7336709094b9108964f98f",
+        "approval_bytes": 67063,
+        "physical_call_count_at_supersede": 50,
+        "run_id": "DREAL001-P2A2R6-20261111-01"
+      },
+      "amendment_seq7": {
+        "action": "R7_OBSERVE_AND_INVALID_TOLERANCE_FIX",
+        "physical_call_count_at_amendment": 50
+      }
+    },
+    "stop_rules": {
+      "hard_stop": [
+        "preflight not PASS_BYTE",
+        "ledger/accounting inconsistency",
+        "window violation",
+        "hardware failure",
+        "non-per-case execution error (executor crash)",
+        "unregistered protocol deviation"
+      ],
+      "scientific_auto_stop": [
+        "after >=48 main evaluations invalid fraction >25%",
+        ">=6 consecutive invalid in one arm",
+        "cumulative invalid >64"
+      ],
+      "per_case_invalid_is_not_stop": true
+    },
+    "endpoints": "E1-E6 only from R7 main valid evaluations; R1-R6 and diagnostics excluded; no winner/significance; fuel_burn_kg=null; physical NOT_VALIDATED",
+    "a1_binding_unchanged": {
+      "a1_head": "2a57632b3f7d5d567556d9774913ec40a5d72272",
+      "evaluator_sha256": "f74a4752...",
+      "freeze_api_sha256": "31d78182...",
+      "openvsp_model_sha256": "c40b11df...",
+      "design_space_sha256": "8f9b893c13195c80ff1ee88598134e3f44fef0495452249780d114c9e0593b89",
+      "config_sha256": "8b29d1e3833edc2af248d68cd6b7b4c94ebf775f25c86d80062a3850765a499e",
+      "config_bytes": 10846,
+      "bundle_manifest_sha256": "995bb12fff738d3ebb0bde08c0d5c5bfeb9532aebe536847ef307a2332013aa5"
+    }
+  },
+  "responsibilities": {
+    "a2": "build R7 package with protocol D; report package commit + 8 file SHA + launcher/executor SHA + smoke by 14:45Z (hard 15:00Z)",
+    "a5": "independent review of A2 phase-D diagnosis and Lead calibration; G-P2AV2R7-PRE gate template; verdict within 20 min of package (hard 15:20Z); record dissent and Lead responsibility",
+    "lead": "sign approval after A5 gate; GO after C gate; final Issue #9 receipt"
+  },
+  "compliance": {
+    "physical_call_count": 0,
+    "solver_started": false,
+    "a1_bytes_unchanged": true,
+    "r1_r6_evidence_untouched": true,
+    "pushed": false
+  }
+}

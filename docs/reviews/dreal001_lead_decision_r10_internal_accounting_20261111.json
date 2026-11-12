@@ -1,0 +1,130 @@
+{
+  "decision_id": "L-12",
+  "created_utc": "2026-11-11T18:05:00Z",
+  "decided_by": "lead",
+  "physical_authorization": false,
+  "decision": "ACCEPT_R9_S1_STOP_DIAGNOSTICS_ACCOUNTING_INCONSISTENT_AND_OPEN_R10_INTERNAL_ACCOUNTING_FIX",
+  "final_attempt": true,
+  "r11_authorized": false,
+  "r9": {
+    "batch_id": "DREAL001-P2-20261111-14",
+    "run_id": "DREAL001-P2A2R9-20261111-01",
+    "approval_sha256": "b502b484e50c71707e484c758b5baaf0409c423c4838094c8300c36202bdd991",
+    "approval_bytes": 76257,
+    "go_record_sha256": "62dd594253c41688a5cf7f2415c79d0a878e1fa1e6051202f6090fa65165eff3",
+    "started_utc": "2026-11-11T18:02:19Z",
+    "stopped_utc": "2026-11-11T18:02:45Z",
+    "status": "STOP_DIAGNOSTICS_ACCOUNTING_INCONSISTENT",
+    "main_starts": 0,
+    "charged_starts": 6,
+    "charged_internal_cases": 42,
+    "recorded_internal_cases": 0,
+    "preflight_polar_sha256": [
+      "455082e2ac8029216a811c89aaa20b34fd9d73faa319eed23da5348e3de4bc87",
+      "0287afe0d7e5a91bc286c0b6cbd1ca5623d8aafe65110862fe263925129dd33f"
+    ],
+    "preflight_overall": "PREFLIGHT_PASS_BYTE",
+    "diagnostics": [
+      {
+        "case_id": "DIAG-01",
+        "design_hash": "eb00b7ad545243e6",
+        "status": "SOLVED_VALID",
+        "objective": 0.01289480742004768,
+        "passed": true
+      },
+      {
+        "case_id": "DIAG-02",
+        "design_hash": "dc96d2438a6dddc3",
+        "status": "SOLVED_VALID",
+        "objective": 0.021752395563484656,
+        "passed": true
+      }
+    ],
+    "evidence": {
+      "batch_summary": "038feee3b7c10b05cb3b362bff2621e162e817552e5b2cd2f31365d0fd37ed31",
+      "stop_report": "19f7a502a0c4f67d84600ee9c6cad7a7aca2c0b097103ac2c9db6c5433b68dfe",
+      "preflight_result": "cf25c1305a5c71881d385aea0cd58a14264a5506b52adcefbb682ea5d75a8302",
+      "solver_attempts": "c0669bb32d9796884847f1030a987ed941351dd396fecd47b272e42a851dd447",
+      "executor_prestart": "c5df82ad869d65cd873a54491824903fa2dca15640b976149dcefeb7e82dc9ed",
+      "prestart_prefrozen_gate": "ae701e00e502ce6adb9cf2b713c26a1d04c7031aceb0c8ee388ea87761b3458e"
+    },
+    "excluded_from_endpoints": true,
+    "artifacts_preserved": true
+  },
+  "r10": {
+    "batch_id": "DREAL001-P2-20261111-15",
+    "run_id": "DREAL001-P2A2R10-20261111-01",
+    "run_dir": "D:\\RCAIDE\\dnext001\\wt-real-a2-optimizers\\research\\concorde_metaopt\\dreal001\\runs\\DREAL001-P2A2R10-20261111-01",
+    "window": {
+      "start_utc": "2026-11-11T18:30:00Z",
+      "end_utc": "2026-11-12T04:00:00Z",
+      "token": "WINDOW_OK-P2AV2R10-20261111T1830Z-20261112T0400Z"
+    },
+    "planned_starts": 386,
+    "planned_internal_cases": 2702,
+    "max_starts": 451,
+    "max_internal_cases": 3157,
+    "reserve_starts": 64,
+    "cumulative_starts": 448,
+    "cumulative_internal_cases": 3148,
+    "diagnostics_in_r10": false,
+    "r9_diagnostics_reused_as_feasibility_evidence_only": true,
+    "supersedes": {
+      "run_id": "DREAL001-P2A2R9-20261111-01",
+      "approval_sha256": "b502b484e50c71707e484c758b5baaf0409c423c4838094c8300c36202bdd991",
+      "bytes": 76257,
+      "physical_call_count_at_supersede": 62
+    },
+    "amendment": {
+      "seq": 10,
+      "action": "R10_INTERNAL_ACCOUNTING_FIX",
+      "physical_call_count_at_amendment": 62
+    },
+    "a1_bindings_unchanged": {
+      "evaluator": "f74a4752",
+      "freeze_api": "31d78182",
+      "openvsp_model": "c40b11df",
+      "design_space": "8f9b893c",
+      "config": "8b29d1e3",
+      "bundle": "995bb12f"
+    },
+    "fixes": [
+      "P1 internal_solver_cases derived as 7 x physical starts (INTERNAL_PER_START_POLICY) for all evaluation rows; conservation sum(internal)=7*starts at phase boundaries and final summary",
+      "P2 polar_sha256 recorded where available, null disclosed otherwise",
+      "P3 zero-physical smoke exercising full main-path accounting with fake/recorded solver",
+      "P4 diagnostics not re-run; R9 diagnostics referenced as evidence only",
+      "P5 retain R9 fixes: prefrozen flat-row reuse, observe fix, x12 domain, invalid tolerance, launcher preload/env shim, exception-path dumps"
+    ],
+    "stop_rules": [
+      "preflight non-PASS_BYTE",
+      "ledger/window/hardware/execution-layer anomaly",
+      "accounting conservation failure",
+      "invalid auto-stop: >25% after >=48 main evals, or >=6 consecutive in one arm, or cumulative >64",
+      "hard 2026-11-12T04:00:00Z; clean 02:30:00Z; start deadline 2026-11-11T21:00:00Z",
+      "no retry; serial 1; OMP 1; timeout 60s"
+    ]
+  },
+  "next_chain": [
+    "A2 fix+package+tools+zero-physical smoke",
+    "A5 FAIL-09 + G-P2AV2R10-PRE",
+    "Lead sign approval",
+    "A2 byte-commit + real post-approval dry-run",
+    "A5 C-P2AV2R10-02",
+    "Lead GO",
+    "A2 execute 2 preflight + 384 main",
+    "A5 post-run audit + A3 E1-E6 + A4 evidence",
+    "A5 signed Chinese final receipt",
+    "Lead publish Issue #9"
+  ],
+  "on_r10_success": [
+    "E1-E6 only from R10 main valid evaluations",
+    "no winner/significance/cross-family pooling claims",
+    "fuel_burn_kg null; physical NOT_VALIDATED; three layers separate"
+  ],
+  "on_r10_failure": [
+    "terminate R line, no R11",
+    "A5 FAIL-10 + incident receipt",
+    "publish Issue #9"
+  ],
+  "responsibility": "Lead owns the R10 continuation decision; A5 dissent to be recorded verbatim in gate and receipt"
+}

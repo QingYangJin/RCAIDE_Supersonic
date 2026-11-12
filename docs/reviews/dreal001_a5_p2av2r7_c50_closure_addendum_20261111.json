@@ -1,0 +1,224 @@
+{
+ "schema": "dreal001.a5.c50_closure_addendum.v1",
+ "gate_id": "G-P2AV2R7-PRE",
+ "review_id": "A5-P2AV2R7-C50",
+ "created_utc": "2026-11-11T15:34:36Z",
+ "author": "a5-review",
+ "review_type": "C50_CLOSURE_INDEPENDENT_VERIFICATION",
+ "verdict": "A5-P2AV2R7-C50-CLOSURE-DG1-DG2-DG3-PASS-NO-GATE-REISSUE-SEQ7-TEXT-DISCLOSED",
+ "verdict_note": "C50 PASS_PENDING -> PASS. No gate re-issue; a5_review remains the gate commit; this addendum does not change the gate 52 conditions or its scientific conclusions and is not an execution authorization.",
+ "physical_call_count": 0,
+ "solver_started": false,
+ "gate_commit": "040dbd0ade0a24a124040b38dbb046da59b33ef7",
+ "gate_json_sha256": "AECA052BABE8FC7F679E4ED91BF20E080EE8FB9DE432243A6A8FC429E970FA87",
+ "a2_commit_c": "c3de1de3cc34cf5f12da372f47eabf823a1b0cdc",
+ "a2_parent_commit": "893cf456cc2c8daf522d3c29debc60b9a20209fa",
+ "files": [
+  {
+   "path": "docs/evidence/dreal001/r7_dg_correction_20261111.md",
+   "bytes": 9358,
+   "sha256": "bbdc46a43968bcc8c637bde88a697a3ce31a9f8c1d21c4536a692ecf11ef8ee1",
+   "status": "A (new)"
+  },
+  {
+   "path": "docs/evidence/dreal001/r7_r6_nan_zero_physical_diagnosis_20261111.md",
+   "bytes": 16547,
+   "sha256": "8677cedcd1ba9ae5430e7fd41bd86f15ca4412a1a6466067d5101418aa135af3",
+   "status": "M"
+  },
+  {
+   "path": "docs/evidence/dreal001/r7_nan_diagnosis_data_20261111T2142Z.json",
+   "bytes": 31097,
+   "sha256": "9a98f6feff227665b969eea9858259140f6d964be0a332ed3cd0cc82501a2ceb",
+   "status": "M"
+  },
+  {
+   "path": "docs/evidence/dreal001/r7_nan_diagnosis_geom_20261111T2148Z.json",
+   "bytes": 34631,
+   "sha256": "18f1f3446266a48abe9567967144efc6183b3422411a76b4a37e01f00672da77",
+   "status": "M"
+  },
+  {
+   "path": "docs/evidence/dreal001/r7_nan_diag_fix_20261111.py",
+   "bytes": 19917,
+   "sha256": "253dc5a2d1a8fd04e3bf0ea206500a3afcba569153b0146cf5e3d7731af50d24",
+   "status": "A (new)"
+  }
+ ],
+ "superseded_versions": [
+  {
+   "old": "cc168063b8b1a65cffa12010bace5dd158a96c2ff4e6049682ad6cb23ac60dca / 35,775",
+   "now": "9a98f6fe... / 31,097"
+  },
+  {
+   "old": "44f2d1fba443791e67fe690910a597bf21e6bbce6081ad0afeebc553f24feb4f / 16,446",
+   "now": "18f1f344... / 34,631"
+  },
+  {
+   "old": "86fdbe6de96ac0bfbff39acc890b5356be5a4f3b071bd38fc2d609bc11a041e8 / 10,077",
+   "now": "8677cedc... / 16,547"
+  }
+ ],
+ "scope": {
+  "only_docs_evidence": true,
+  "gate_bound_bytes_changed": false,
+  "reissue_required": false
+ },
+ "d_g1": {
+  "status": "CLOSED",
+  "root_cause": "old face_data() summed Newell area over quad faces only, omitting 11-32 non-quad faces per mesh; f1/f2 area discrepancy 8.9%",
+  "fix": "all-face Newell sum (script line 271) plus fan cross-check",
+  "independent_alignment": {
+   "compared": 8,
+   "max_abs_diff_m2": 4.4e-7,
+   "criterion_m2": 0.000001,
+   "result": "8/8 PASS"
+  },
+  "node_face_counts": "8/8 match A1 canonical",
+  "old_values": "retained only as supersedes metadata, not active metrics"
+ },
+ "d_g2": {
+  "status": "CLOSED",
+  "strict_json_parse": "PASS (both files)",
+  "nan_infinity_literals": false,
+  "common_leaves_compared": {
+   "data": 99,
+   "geom": 20,
+   "changed": 0
+  },
+  "raw_tokens_preserved": true
+ },
+ "d_g3": {
+  "status": "CLOSED",
+  "definitions_recorded": true,
+  "tolerances_recorded": true,
+  "implementation_entry": "r7_nan_diag_fix_20261111.py:analyze()",
+  "reproduction_command": "D:\\\\RCAIDE\\\\envs\\\\RCAIDE\\\\python.exe docs/evidence/dreal001/r7_nan_diag_fix_20261111.py (cwd=A2 worktree)",
+  "compile_check": "OK (Python 3.11.17, in-memory)",
+  "discriminability_disclosure": "CAL-W10p 101 self-int/120 nonplanar > d15 75; CAL-W05p 0/0; PRE sliver 6/7; metrics not proven predictive",
+  "data_gate": false,
+  "lead_decision_compliance": "L-09 (no mesh-QC data gate) respected"
+ },
+ "c50_transition": {
+  "before": "PASS_PENDING",
+  "after": "PASS",
+  "basis": [
+   "A2 commit c3de1de3cc34cf5f12da372f47eabf823a1b0cdc byte-verified",
+   "A5 independent D-G1/G2/G3 verification (checks C50-04..C50-11)",
+   "independent Newell+fan 8/8 alignment",
+   "pre-correction/post-correction value equality 0 changes"
+  ]
+ },
+ "gate_reissue": {
+  "decision": "NO_REISSUE",
+  "reason": "commit C changes only docs/evidence/; no gate-bound byte changed; re-issuing would change a5_review/gate commit without binding or scientific benefit (R6 rev2 precedent: record, do not re-sign)",
+  "signing_instruction": "Lead signs per M1 with a5_review=040dbd0ade0a24a124040b38dbb046da59b33ef7; cite this addendum commit as independent C50 closure evidence in signature evidence, C-P2AV2R7-02 and the final Issue #9 receipt"
+ },
+ "seq7_disclosure": {
+  "item": "gate.signature_requirements.seq7_semantics says 14:35:00Z but DRAFT/signed amendment_log seq7 at_utc=2026-11-11T14:56:59Z",
+  "resolution": "authoritative value is DRAFT/signed bytes; 14:35:00Z is gate text typo with no binding effect; M4 (amendment_log identical to DRAFT) unchanged",
+  "binding_effect": "none"
+ },
+ "checks": [
+  {
+   "id": "C50-01",
+   "item": "A2 commit C exists and is a single coherent evidence commit",
+   "status": "PASS",
+   "detail": "c3de1de3cc34cf5f12da372f47eabf823a1b0cdc parent 893cf45, 5 files +2102/-1277, only docs/evidence/dreal001/"
+  },
+  {
+   "id": "C50-02",
+   "item": "disk bytes == commit blob for all 5 files",
+   "status": "PASS",
+   "detail": "git diff --exit-code 0 for each; rev-parse blob == hash-object, 5/5"
+  },
+  {
+   "id": "C50-03",
+   "item": "commit C scope does not touch gate-bound bytes",
+   "status": "PASS",
+   "detail": "no package/launcher/executor/common/runtime/p2a_v2/A1/plan/prereg/identity/DRAFT changes; gate re-issue not required"
+  },
+  {
+   "id": "C50-04",
+   "item": "D-G1 root cause identified (quad-only area sum)",
+   "status": "PASS",
+   "detail": "non-quad faces (11-32 per mesh) omitted; f1/f2 8.9% discrepancy reproduced from old code"
+  },
+  {
+   "id": "C50-05",
+   "item": "D-G1 fix sums Newell area over ALL faces with fan cross-check",
+   "status": "PASS",
+   "detail": "r7_nan_diag_fix_20261111.py:271 all-face Newell sum; fan cross-check reported"
+  },
+  {
+   "id": "C50-06",
+   "item": "D-G1 corrected areas match A5 independent Newell+fan values",
+   "status": "PASS",
+   "detail": "8/8 within 4.4e-7 m2 (< 1e-6 criterion); d15/d16 families identical, d17 5e-13"
+  },
+  {
+   "id": "C50-07",
+   "item": "mesh node/face counts match A1 canonical",
+   "status": "PASS",
+   "detail": "8/8 geometry counts match; a1_canonical_cross_check nodes_match/elements_match true"
+  },
+  {
+   "id": "C50-08",
+   "item": "D-G2 strict JSON parses with no NaN/Infinity literals",
+   "status": "PASS",
+   "detail": "Node JSON.parse OK for both files; sanitize+allow_nan=False verified in code"
+  },
+  {
+   "id": "C50-09",
+   "item": "D-G2 finite values unchanged vs pre-correction evidence",
+   "status": "PASS",
+   "detail": "data 99 common leaves / geom 20 common leaves, 0 changed"
+  },
+  {
+   "id": "C50-10",
+   "item": "D-G3 definitions, tolerances, entry point, reproduction command recorded",
+   "status": "PASS",
+   "detail": "metric_definitions + correction md section 3; compile OK; analyze() entry; exact command"
+  },
+  {
+   "id": "C50-11",
+   "item": "D-G3 discriminability disclosed; no data gate",
+   "status": "PASS",
+   "detail": "CAL-W10p 101 self-int/120 nonplanar > d15 75; CAL-W05p 0; PRE sliver 6/7; metrics observational only, L-09 respected"
+  },
+  {
+   "id": "C50-12",
+   "item": "C50 transition PASS_PENDING -> PASS and no gate re-issue",
+   "status": "PASS",
+   "detail": "gate 040dbd0ade0a24a124040b38dbb046da59b33ef7 keeps its 52 conditions/scientific wording; a5_review stays 040dbd0; addendum commit is independent evidence"
+  },
+  {
+   "id": "C50-13",
+   "item": "seq7 text inconsistency recorded and resolved by DRAFT bytes",
+   "status": "PASS",
+   "detail": "gate seq7_semantics 14:35:00Z vs DRAFT 14:56:59Z; authoritative = DRAFT/signed bytes; M4 unchanged"
+  },
+  {
+   "id": "C50-14",
+   "item": "A5 zero physical",
+   "status": "PASS",
+   "detail": "physical_call_count=0, solver_started=false throughout"
+  }
+ ],
+ "checks_total": 14,
+ "checks_passed": 14,
+ "checks_fail": 0,
+ "disclosures": [
+  "D-add-1 seq7 text time inconsistency (gate typo; DRAFT authoritative)",
+  "D-add-2 A2 wording \"all old area numbers removed\" is slightly broad: old values remain only in supersedes metadata as retraction history",
+  "D-add-3 A5 did not execute the A2 reproduction script (it overwrites A2 evidence files); used independent parser + old/new leaf comparison + code review + in-memory compile",
+  "D-add-4 D-G metrics are observational only, not a data gate, no change to L-09 protocol D or E1-E6 endpoints",
+  "D-add-5 A5 physical_call_count=0, solver_started=false, no execution authorization"
+ ],
+ "signature": {
+  "reviewer": "a5-review",
+  "a5_review_commit_for_signing": "040dbd0ade0a24a124040b38dbb046da59b33ef7",
+  "addendum_commit": "the git commit containing this file (reported to Lead in the accompanying message)",
+  "date_utc": "2026-11-11T15:34:36Z"
+ }
+}

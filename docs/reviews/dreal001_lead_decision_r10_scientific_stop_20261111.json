@@ -1,0 +1,97 @@
+{
+  "schema": "dreal001.lead_decision.v1",
+  "decision_id": "L-14",
+  "decision": "ACCEPT_R10_SCIENTIFIC_AUTO_STOP_AND_CLOSE_R_EXECUTION",
+  "physical_authorization": false,
+  "batch_id": "DREAL001-P2-20261111-15",
+  "run_id": "DREAL001-P2A2R10-20261111-01",
+  "created_utc": "2026-11-11T19:16:00Z",
+  "stop": {
+    "created_utc": "2026-11-11T19:13:55Z",
+    "phase": "scientific_auto_stop",
+    "arm_id": "DE",
+    "message": "ARM_STOPPED_STOPPED_SCIENTIFIC_INVALID_RATIO",
+    "rule": "main_evaluations>=48 and invalid ratio>25%",
+    "main_evaluations": 48,
+    "invalid_evaluations": 13,
+    "invalid_ratio": 0.2708333333333333,
+    "valid_evaluations": 35
+  },
+  "arms": {
+    "BO": {
+      "status": "COMPLETED",
+      "evaluations": 32,
+      "valid": 23,
+      "invalid": 9,
+      "starts": 59,
+      "best_primary": 0.010006880012223485
+    },
+    "DE": {
+      "status": "STOPPED_SCIENTIFIC_INVALID_RATIO",
+      "evaluations": 16,
+      "valid": 12,
+      "invalid": 4,
+      "starts": 30,
+      "best_primary": 0.01289480742004768
+    },
+    "PSO": "NOT_RUN",
+    "A-BO": "NOT_RUN",
+    "A-DE": "NOT_RUN",
+    "A-PSO": "NOT_RUN"
+  },
+  "preflight": {
+    "status": "PREFLIGHT_PASS_BYTE",
+    "polar_sha256": [
+      "455082e2ac8029216a811c89aaa20b34fd9d73faa319eed23da5348e3de4bc87",
+      "0287afe0d7e5a91bc286c0b6cbd1ca5623d8aafe65110862fe263925129dd33f"
+    ]
+  },
+  "diagnostics": {
+    "status": "DIAGNOSTICS_NOT_IN_MATRIX",
+    "starts": 0,
+    "internal": 0
+  },
+  "accounting": {
+    "r10_starts": 91,
+    "r10_internal": 637,
+    "preflight": [
+      2,
+      14
+    ],
+    "diagnostics": [
+      0,
+      0
+    ],
+    "main": [
+      89,
+      623
+    ],
+    "cumulative_starts": 448,
+    "cumulative_internal": 3148,
+    "caps": [
+      451,
+      3157
+    ],
+    "headroom": [
+      3,
+      9
+    ]
+  },
+  "evidence": {
+    "batch_summary_sha256": "a4ea4840ccdeea0e00cc8496c5fc8c69aea901afcabe9884394d3064285a36a9",
+    "stop_report_sha256": "a23964eba50a15a703bfb1f736ad97c6d7b8a040844ef23f70a84eca4c35db8b",
+    "final_run_manifest_sha256": "2522f951f91c01c7b8c82294d94abb3d58dc36878cbdb424d112a7cfc2404cca",
+    "solver_attempts_sha256": "0614c0182958a50b6fdac2b463141afd005c6551498174514424b063eb840409",
+    "evaluations_sha256": "01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a",
+    "preflight_result_sha256": "daf047e62e043ce193aad5c0fc84e0ec8561d823f9893037e9c440b65aea3e47"
+  },
+  "no_r11": true,
+  "conditions": [
+    "R10 approval not reopened; R1-R10 evidence read-only",
+    "A2 append-only evidence commit incl. merged log + launcher diff + full SHA list",
+    "A5 independent post-run audit + Chinese signed receipt for Issue #9",
+    "A3 descriptive stats only on existing 48 evaluations",
+    "A4 final end-state figure/table package",
+    "no winner/significance/cross-family pooling; fuel null; physics NOT_VALIDATED"
+  ]
+}

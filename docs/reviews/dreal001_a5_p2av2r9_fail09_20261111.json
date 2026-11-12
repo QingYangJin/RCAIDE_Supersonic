@@ -1,0 +1,442 @@
+{
+ "schema": "dreal001.p2a_v2.a5_fail09.v1",
+ "audit_id": "A5-P2AV2R9-FAIL-09",
+ "created_utc": "2026-11-11T18:11:54Z",
+ "auditor": "a5-review",
+ "physical_call_count": 0,
+ "verdict": "R9_S1_STOP_DIAGNOSTICS_ACCOUNTING_INCONSISTENT_UPHELD__MAIN_NOT_RUN__R9_EXCLUDED",
+ "run": {
+  "batch_id": "DREAL001-P2-20261111-14",
+  "run_id": "DREAL001-P2A2R9-20261111-01",
+  "run_dir": "D:\\RCAIDE\\dnext001\\wt-real-a2-optimizers\\research\\concorde_metaopt\\dreal001\\runs\\DREAL001-P2A2R9-20261111-01",
+  "window": {
+   "start": "2026-11-11T17:30:00Z",
+   "end": "2026-11-12T04:00:00Z",
+   "token": "WINDOW_OK-P2AV2R9-20261111T1730Z-20261112T0400Z"
+  },
+  "started_utc": "2026-11-11T18:02:19Z",
+  "stopped_utc": "2026-11-11T18:02:45Z",
+  "approval": {
+   "sha256": "b502b484e50c71707e484c758b5baaf0409c423c4838094c8300c36202bdd991",
+   "bytes": 76257
+  },
+  "go": {
+   "sha256": "62dd594253c41688a5cf7f2415c79d0a878e1fa1e6051202f6090fa65165eff3",
+   "bytes": 9082,
+   "token": "LEAD_GO_P2AV2R9_EXEC_20261111T180109Z"
+  }
+ },
+ "evidence": {
+  "preflight_result": {
+   "sha256": "cf25c1305a5c71881d385aea0cd58a14264a5506b52adcefbb682ea5d75a8302",
+   "bytes": 5771
+  },
+  "batch_summary": {
+   "sha256": "038feee3b7c10b05cb3b362bff2621e162e817552e5b2cd2f31365d0fd37ed31",
+   "bytes": 19285
+  },
+  "stop_report": {
+   "sha256": "19f7a502a0c4f67d84600ee9c6cad7a7aca2c0b097103ac2c9db6c5433b68dfe",
+   "bytes": 830
+  },
+  "solver_attempts": {
+   "sha256": "c0669bb32d9796884847f1030a987ed941351dd396fecd47b272e42a851dd447",
+   "bytes": 4477
+  },
+  "executor_prestart": {
+   "sha256": "c5df82ad869d65cd873a54491824903fa2dca15640b976149dcefeb7e82dc9ed",
+   "bytes": 12552
+  },
+  "prestart_prefrozen_gate": {
+   "sha256": "ae701e00e502ce6adb9cf2b713c26a1d04c7031aceb0c8ee388ea87761b3458e",
+   "bytes": 37476
+  },
+  "executor_run_log": {
+   "sha256": "5601580c53acb91e324709ef598e56088d75c4a184d2fb46f69aa9c9c0686177",
+   "bytes": 1700
+  }
+ },
+ "preflight": {
+  "overall": "PREFLIGHT_PASS_BYTE",
+  "cases": 2,
+  "passed": 2,
+  "polar_sha256": [
+   "455082e2ac8029216a811c89aaa20b34fd9d73faa319eed23da5348e3de4bc87",
+   "0287afe0d7e5a91bc286c0b6cbd1ca5623d8aafe65110862fe263925129dd33f"
+  ],
+  "physical_starts": 2,
+  "internal_recorded": 0,
+  "internal_charged": 14
+ },
+ "diagnostics": {
+  "status": "DIAGNOSTICS_ACCOUNTING_INCONSISTENT",
+  "cases": [
+   {
+    "case_id": "DIAG-01",
+    "design_index": 16,
+    "design_hash": "eb00b7ad545243e6",
+    "status": "SOLVED_VALID",
+    "objective": 0.01289480742004768,
+    "starts": 2,
+    "internal_recorded": 0,
+    "charged_internal": 14,
+    "passed": true
+   },
+   {
+    "case_id": "DIAG-02",
+    "design_index": 17,
+    "design_hash": "dc96d2438a6dddc3",
+    "status": "SOLVED_VALID",
+    "objective": 0.021752395563484656,
+    "starts": 2,
+    "internal_recorded": 0,
+    "charged_internal": 14,
+    "passed": true
+   }
+  ],
+  "planned_starts": 4,
+  "planned_internal": 28,
+  "actual_starts": 4,
+  "actual_internal_recorded": 0,
+  "charged_internal": 28,
+  "accounting_ok": false
+ },
+ "main": {
+  "status": "NOT_RUN",
+  "starts": 0,
+  "planned_starts": 384,
+  "arms": {}
+ },
+ "ledger": {
+  "lines": 12,
+  "starts": 6,
+  "ends": 6,
+  "pending": 0,
+  "retries": 0
+ },
+ "root_cause": {
+  "a1_record": {
+   "file": "evaluator_v12.py",
+   "line": 963,
+   "fact": "internal_evals only under rec[\"replay\"] (REPLAY mode); RUNTIME record has no internal_solver_cases"
+  },
+  "a2_adapter": {
+   "file": "p2a_v2_executor.py",
+   "lines": [
+    549,
+    571
+   ],
+   "fact": "solver=record.get(\"solver\") or {}; internal_solver_cases=int(solver.get(\"internal_solver_cases\") or 0) -> 0"
+  },
+  "a2_check": {
+   "file": "p2a_v2_executor.py",
+   "lines": "1404-1420",
+   "fact": "starts==4 and internal==28 else DIAGNOSTICS_ACCOUNTING_INCONSISTENT"
+  },
+  "version_attribution": {
+   "r7_executor": "da1056c0:534 default 7 (no conservation check)",
+   "r8_executor": "ff3f5639:570 default 0; :1403-1419 conservation check added",
+   "r9_executor": "c2bdfb68:571/:1404-1420 inherited; R9 diff only flat-row helper + utc_now import",
+   "a2_claim": "“R9 P3 removed default 7” imprecise; change was R8 P3, exposed first in R9"
+  }
+ },
+ "accounting": {
+  "r9_charged": {
+   "starts": 6,
+   "internal": 42
+  },
+  "policy": {
+   "internal_per_start": 7,
+   "source": "pre-registered policy constant"
+  },
+  "prior": {
+   "starts": 56,
+   "internal": 404
+  },
+  "cumulative": {
+   "starts": 62,
+   "internal": 446
+  },
+  "caps": {
+   "max_starts": 451,
+   "max_internal": 3157
+  },
+  "headroom": {
+   "starts": 389,
+   "internal": 2711
+  },
+  "r10": {
+   "planned_starts": 386,
+   "planned_internal": 2702,
+   "cumulative_starts": 448,
+   "cumulative_internal": 3148,
+   "headroom_starts": 3,
+   "headroom_internal": 9
+  }
+ },
+ "window_compliance": true,
+ "retry": false,
+ "nan_inf_stop": false,
+ "timeout": false,
+ "exclusion": {
+  "r9_excluded_from_endpoints": true,
+  "diagnostics_evidence_only": true,
+  "approval_not_reused": true,
+  "evidence_read_only": true,
+  "run_dir_files": 165
+ },
+ "identities_unchanged": {
+  "a1": {
+   "evaluator": "f74a4752495fd6c5330edcaf7edb4bcbe93f99c2a76bac06b5670d1f765ae20d/58291",
+   "freeze_api": "31d781821516bb80fc158238e4ef485c361afea674ca3b962efbb89d5a737173/27288",
+   "openvsp_model": "c40b11df29e9a41889b81f5c608c9a12cd921cf62d01c5318a6ab8eb91f859f6/36902",
+   "mesh_identity": "a4f119e69730508587b570d7027884c995ca2b1010945211f4c1df8cd4d4b9f6/6837"
+  },
+  "r1_r8_approvals": [
+   "9e5c29b0/38476",
+   "eee7868a/47081",
+   "18865f8f/52695",
+   "6e2aebcf/59125",
+   "ca0bdc7b/63264",
+   "72b95e03/67063",
+   "1a552267/69405",
+   "fa0d94a2/75166"
+  ]
+ },
+ "lead_decision": {
+  "id": "L-12",
+  "commit": "1b5728a",
+  "decision": "ACCEPT_R9_S1_STOP_AND_OPEN_R10_INTERNAL_ACCOUNTING_FIX",
+  "final_attempt": true,
+  "r11_authorized": false,
+  "supersedes_r9": {
+   "sha256": "b502b484e50c71707e484c758b5baaf0409c423c4838094c8300c36202bdd991",
+   "bytes": 76257,
+   "physical_call_count": 62
+  },
+  "amendment": {
+   "seq": 10,
+   "action": "R10_INTERNAL_ACCOUNTING_FIX",
+   "physical": 62
+  }
+ },
+ "a5_opinion": {
+  "position": "R10 minimal fix technically acceptable; standing risk dissent recorded",
+  "dissent": "R4 advised termination; R5/R7/R8/R9 warned of main-path execution-layer risk; if R10 main fails on execution-layer defect, no further attempt (consistent with no R11), issue incident receipt",
+  "hardening": [
+   "P1 internal=7*starts bound to prereg policy constant; conservation fail-closed at phase boundaries",
+   "P3 zero-physical smoke must exercise real executor main-path accounting incl. preflight+main",
+   "R9 diagnostics referenced by SHA; R9 run dir immutable",
+   "R1–R9 excluded; E1–E6 only R10 main valid evals if success"
+  ]
+ },
+ "checks": [
+  {
+   "id": "C01",
+   "name": "run 身份",
+   "detail": "R9 run dir 存在，batch DREAL001-P2-20261111-14 / run DREAL001-P2A2R9-20261111-01，pre-exec 8 文件 + approval + post-approval dry-run",
+   "result": "PASS"
+  },
+  {
+   "id": "C02",
+   "name": "preflight_result 字节",
+   "detail": "cf25c1305a5c71881d385aea0cd58a14264a5506b52adcefbb682ea5d75a8302 / 5,771 B（与 A2/Lead 报一致）",
+   "result": "PASS"
+  },
+  {
+   "id": "C03",
+   "name": "preflight 判据",
+   "detail": "overall=PREFLIGHT_PASS_BYTE，2/2 PASS_BYTE；PRE-01 polar 455082e2…、PRE-02 0287afe0…（=approval 期望）；physical 2 starts",
+   "result": "PASS"
+  },
+  {
+   "id": "C04",
+   "name": "诊断科学结果",
+   "detail": "DIAG-01 design16 eb00b7ad545243e6 SOLVED_VALID =0.01289480742004768；DIAG-02 design17 dc96d2438a6dddc3 SOLVED_VALID =0.021752395563484656；均 passed=true",
+   "result": "PASS"
+  },
+  {
+   "id": "C05",
+   "name": "batch_summary 字节/状态",
+   "detail": "038feee3b7c10b05cb3b362bff2621e162e817552e5b2cd2f31365d0fd37ed31 / 19,285 B；status=STOP_DIAGNOSTICS_ACCOUNTING_INCONSISTENT；main_starts=0；arms={}",
+   "result": "PASS"
+  },
+  {
+   "id": "C06",
+   "name": "stop_report 字节/语义",
+   "detail": "19f7a502a0c4f67d84600ee9c6cad7a7aca2c0b097103ac2c9db6c5433b68dfe / 830 B；phase=diagnostics；message=\"diagnostic phase DIAGNOSTICS_ACCOUNTING_INCONSISTENT: starts=4 internal=0 planned=4/28\"；created 18:02:45Z",
+   "result": "PASS"
+  },
+  {
+   "id": "C07",
+   "name": "ledger 守恒/无 retry",
+   "detail": "c0669bb32d9796884847f1030a987ed941351dd396fecd47b272e42a851dd447 / 4,477 B；12 行=6 start/6 end；每 case 恰 1 start/1 end；pending_starts_repaired 0；无重复/重试",
+   "result": "PASS"
+  },
+  {
+   "id": "C08",
+   "name": "main NOT_RUN",
+   "detail": "main_starts=0/384；arms/ 仅 DIAG 4 个 pair 目录；无 main 评估/无 main case dir；batch_summary arms={}",
+   "result": "PASS"
+  },
+  {
+   "id": "C09",
+   "name": "physical 计数",
+   "detail": "physical_solver_starts=physical_call_count=6（2 preflight + 4 diagnostics）；internal 记录 0；ledger 6/6",
+   "result": "PASS"
+  },
+  {
+   "id": "C10",
+   "name": "根因（A1 记录侧）",
+   "detail": "A1 evaluator_v12.py:963 仅在 replay 块写 rec[\"replay\"][\"internal_evals\"]（default 7）；runtime 模式 record 无 internal_solver_cases 字段；A1 ledger 只审 physical start/end",
+   "result": "PASS"
+  },
+  {
+   "id": "C11",
+   "name": "根因（A2 适配/检查侧）",
+   "detail": "R7 executor da1056c0:534 以 default 7 兜底；R8 executor ff3f5639:570 改为 default 0 并新增诊断守恒检查 :1403-1419；R9 executor c2bdfb68:571/:1404-1420 继承。R9 相对 R8 仅 flat-row helper + utc_now import，未改 internal 记账",
+   "result": "PASS"
+  },
+  {
+   "id": "C12",
+   "name": "停批归因",
+   "detail": "A2 报“R9 P3 移除默认 7”表述不精确：默认 7→0 与守恒检查实际引入于 R8 P3（ff3f5639）；R8 未跑到诊断未暴露，R9 首次执行诊断即触发 0≠28 fail-closed",
+   "result": "PASS_WITH_DISCLOSURE"
+  },
+  {
+   "id": "C13",
+   "name": "preflight internal 记录缺陷",
+   "detail": "preflight 2 case 的 internal_cases 均 0（同一字段映射缺陷），但 preflight 检查只读 starts/status，未 fail-closed；按政策常量 2×7=14 计",
+   "result": "PASS"
+  },
+  {
+   "id": "C14",
+   "name": "诊断 polar_sha256 披露缺陷",
+   "detail": "diagnostics cases polar_sha256=null；实际 DIAG pair polar 文件存在且为 7,933 B（如 DIAG-eb00b7ad…-f1 polar 11ff632b…/7,933 B）；属记录/证据引用缺陷非求解失败",
+   "result": "PASS_WITH_DISCLOSURE"
+  },
+  {
+   "id": "C15",
+   "name": "窗口合规",
+   "detail": "启动 18:02:19Z、停 18:02:45Z，均在 window 17:30Z–11-12T04:00Z 内；无窗口违规",
+   "result": "PASS"
+  },
+  {
+   "id": "C16",
+   "name": "无其它停批诱因",
+   "detail": "无 NaN/Inf 停批、无 timeout、无硬件/ledger 不一致（ledger 6/6）、无 retry；诊断科学判据 2/2 通过",
+   "result": "PASS"
+  },
+  {
+   "id": "C17",
+   "name": "prestart 零物理 gate",
+   "detail": "prestart_prefrozen_gate.json ae701e00…/37,476 B：PASS、static_index 119、A1 runtime guard all_equal=True、triples 6、physical 0",
+   "result": "PASS"
+  },
+  {
+   "id": "C18",
+   "name": "executor prestart 绑定",
+   "detail": "executor_prestart.json c5df82ad…/12,552 B；executor_run.log 5601580c…/1,700 B：GO token/SHA、approval SHA、dry-run SHA 绑定，单 STARTED_UTC",
+   "result": "PASS"
+  },
+  {
+   "id": "C19",
+   "name": "approval/启动前证据不变",
+   "detail": "approval.json b502b484e50c71707e484c758b5baaf0409c423c4838094c8300c36202bdd991 / 76,257 B；post-approval dry-run 196d19ac…/17,073 B；均与 R9 C gate 时一致",
+   "result": "PASS"
+  },
+  {
+   "id": "C20",
+   "name": "R9 approval 不复用",
+   "detail": "R9 approval 状态仍 APPROVED_FOR_EXECUTION_PENDING_POST_APPROVAL_DRY_RUN / approved=true / physical 0；R9 已停批，L-12 明确不复用",
+   "result": "PASS"
+  },
+  {
+   "id": "C21",
+   "name": "A1 字节未变",
+   "detail": "evaluator_v12.py f74a4752…/58,291；freeze_api.py 31d78182…/27,288；openvsp_model.py c40b11df…/36,902；mesh_identity.py a4f119e6…/6,837；bundle 995bb12f…/3,262",
+   "result": "PASS"
+  },
+  {
+   "id": "C22",
+   "name": "R1–R8 approval 字节未变",
+   "detail": "9e5c29b0/38,476（R1）、eee7868a/47,081（R2）、18865f8f/52,695（R3）、6e2aebcf/59,125（R4）、ca0bdc7b/63,264（R5）、72b95e03/67,063（R6）、1a552267/69,405（R7）、fa0d94a2/75,166（R8）",
+   "result": "PASS"
+  },
+  {
+   "id": "C23",
+   "name": "R9 证据只读保留",
+   "detail": "run dir 共 165 文件；A5 复算 key 证据 SHA 与停批时记录一致（batch_summary/stop/ledger/preflight/prestart/log）；无字节改动",
+   "result": "PASS"
+  },
+  {
+   "id": "C24",
+   "name": "R9 排除端点",
+   "detail": "R9 不进入 E1–E6；preflight/diagnostics 仅作求解循环与数值可行性证据（排除端点）；不产生优化增益/物理结论",
+   "result": "PASS"
+  },
+  {
+   "id": "C25",
+   "name": "记账口径",
+   "detail": "R9 charged = 6 starts / 42 internal（政策常量 7/start：preflight 2×7 + 诊断 4×7）；记录 0 为报告缺陷；R9 前累计 56/404 → R9 后 62/446，≤ caps 451/3157",
+   "result": "PASS"
+  },
+  {
+   "id": "C26",
+   "name": "L-12 决策记录",
+   "detail": "L-12（Lead commit 1b5728a）：接受 R9 S1 STOP；R9 永久排除、证据只读、approval 不复用；开 R10（最后尝试，无 R11）；R10 batch 15 / run P2A2R10-20261111-01 / window 18:30Z–04:00Z / planned 386/2702（不再重跑诊断）/ caps 451/3157 / cumulative 448/3148 / supersedes R9 b502b484/76,257/physical 62 / seq10 R10_INTERNAL_ACCOUNTING_FIX",
+   "result": "PASS"
+  },
+  {
+   "id": "C27",
+   "name": "R10 预算算术",
+   "detail": "prior 62/446 + planned 386/2702 = 448/3148 ≤ 451/3157（余 3 starts / 9 internal）；无 retry/额外诊断空间；诊断不重跑",
+   "result": "PASS"
+  },
+  {
+   "id": "C28",
+   "name": "R10 边界要求",
+   "detail": "P1 internal=7×starts（INTERNAL_PER_START_POLICY，不以 A1 ledger 推断、不静默兜底）；守恒 sum(internal)=7×starts；P2 polar 记录；P3 零物理 main-path smoke（含 preflight+main）；P4 诊断证据引用 SHA；P5 保留 R9 修复；A1/plan 科学字节不得改",
+   "result": "PASS_PENDING_R10_PACKAGE"
+  },
+  {
+   "id": "C29",
+   "name": "A5 独立意见/异议",
+   "detail": "A5 记录对继续 R 线的保留意见（R4/R5 曾建议终止、R7–R9 多次提示风险）；R9 根因属可定位执行层记账缺陷，R10 最小范围可审计；但 main-path 仍可能暴露新执行层缺陷，且余量仅 3/9 → 任何 retry/记账再不一致必须立即终止出事故回执",
+   "result": "PASS"
+  },
+  {
+   "id": "C30",
+   "name": "A5 physical=0",
+   "detail": "A5 全程未启动 solver；本审计仅读取字节与运行纯静态/git/文件哈希检查，physical_call_count=0",
+   "result": "PASS"
+  },
+  {
+   "id": "C31",
+   "name": "政策不越权",
+   "detail": "本审计不修改 R9 证据/approval/政策；不宣布 winner/显著性/跨族比较；fuel_burn_kg=null；物理 NOT_VALIDATED",
+   "result": "PASS"
+  },
+  {
+   "id": "C32",
+   "name": "可复算性",
+   "detail": "本文所有 SHA/bytes 均由 A5 独立实算；R9 主证据路径固定，供 Lead/Issue 回执引用",
+   "result": "PASS"
+  }
+ ],
+ "checks_summary": {
+  "total": 32,
+  "pass": 29,
+  "pass_with_disclosure": 2,
+  "pass_pending": 1,
+  "fail": 0
+ },
+ "disclosures": [
+  "D1 R9 recorded internal=0 is an execution-layer reporting defect; caps accounting charges 42 by policy constant",
+  "D2 A2 wording “R9 P3 removed default 7” imprecise: change introduced in R8 P3 (ff3f5639), first exposed in R9",
+  "D3 diagnostics polar_sha256 null is a recording defect; actual polar files exist (7,933 B each)",
+  "D4 preflight internal records also 0 (same defect); preflight has no internal conservation check",
+  "D5 no winner/significance/cross-family/cross-run numeric comparison; fuel_burn_kg=null; physics NOT_VALIDATED",
+  "D6 A5 physical_call_count=0"
+ ]
+}

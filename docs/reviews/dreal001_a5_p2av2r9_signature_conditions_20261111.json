@@ -1,0 +1,217 @@
+{
+  "schema": "dreal001.a5.r9.signature_conditions.v1",
+  "gate_id": "G-P2AV2R9-PRE",
+  "gate_commit_placeholder": "PENDING_A5_GATE_COMMIT",
+  "generated_utc": "2026-11-11T17:52:57Z",
+  "conditions_total": 52,
+  "conditions": [
+    {
+      "id": "R3-BASE-01",
+      "text": "A5 Q2=A sequential runtime freeze; approval binds policy+code+initial seeds only, not future designs."
+    },
+    {
+      "id": "R3-BASE-02",
+      "text": "Before any solver start for a design: A1 FreezeAPI arm-blind K=10 discovery + <=40 builds per target family -> two families frozen -> PRE SHA -> append-only record -> then start."
+    },
+    {
+      "id": "R3-BASE-03",
+      "text": "A1 evaluator MODE_RUNTIME must verify the design record exists and both family SHAs match; otherwise 0 start."
+    },
+    {
+      "id": "R3-BASE-04",
+      "text": "One freeze per design shared by all six arms; no recompute, no family picking, no overwrite."
+    },
+    {
+      "id": "R3-BASE-05",
+      "text": "Any unreachable family -> entire design VOID for every arm; no single-arm discard and no single-family primary."
+    },
+    {
+      "id": "R3-BASE-06",
+      "text": "End of run: final pair manifest + complete append-only log for A5 review."
+    },
+    {
+      "id": "R3-BASE-07",
+      "text": "Initial three LHS designs are zero-physical pre-frozen and exactly listed in the initial manifest."
+    },
+    {
+      "id": "R3-BASE-08",
+      "text": "If A1 cannot satisfy the runtime checks, fall back to B (split windows); A2 must not re-implement freeze."
+    },
+    {
+      "id": "R3-BASE-09",
+      "text": "The single canonical solver_attempts.jsonl writer is the A1 TwoFamilyEvaluator (event=start/end rows); A1 solver_ledger.SolverLedger is not invoked; A2 only reads/pairs by case_id and never writes a second schema."
+    },
+    {
+      "id": "R3-BASE-10",
+      "text": "No retry: any non-SOLVED result -> S2 stop; timeout is a charged start, no retry."
+    },
+    {
+      "id": "R3-BASE-11",
+      "text": "Single seed=42 descriptive only; no winner; no optimizer PASS; cross-family numeric comparison forbidden."
+    },
+    {
+      "id": "R3-BASE-12",
+      "text": "A1 evaluator v1.2 real path is implemented and verified by the A1 probe v3 (10/10 SECURE, physical=0); no main-batch evaluation has completed a valid SOLVED_VALID family pair yet (R1-R8 preflights/setups/arm stops and the single R6 main start are historical, excluded from E1-E6 and counted toward the cumulative caps; see R1-R2-R3-R4-R5-R6-R7-R8-HIST-01). Before R9 the actual cumulative consumption is 56 starts / 404 internal (R8 setup stop charged 0/0) (39/285 prior + R1 2/14 + R2 2/14 + R3 2/14 + R4 2/14 + R5 0/0 + R6 3/21 + R7 6/42), counted toward the caps. R9 is the current planned execution batch (batch DREAL001-P2-20261111-14) and the first batch that may execute the 384-slot main matrix; its first real start requires this signed approval, A5 C-P2AV2R9-02 PASS and a Lead GO."
+    },
+    {
+      "id": "R3-BASE-13",
+      "text": "Physical validation remains NOT_VALIDATED; fuel_burn_kg is null."
+    },
+    {
+      "id": "R3-BASE-14",
+      "text": "This approval governs only batch_id DREAL001-P2-20261111-14 / run_id DREAL001-P2A2R9-20261111-01; the approved plan bytes and all bound identities must not change after signature; any byte change voids this approval (Lead must re-sign)."
+    },
+    {
+      "id": "R3-BASE-15",
+      "text": "After signature A2 must run the post-approval dry-run in this run dir and report DRY_RUN_OK with approval_sha256/plan_sha256, 390 planned starts / 2730 planned internal / 451 max starts / 3157 max internal and 0 physical starts, then wait for a Lead GO before the first solver start."
+    },
+    {
+      "id": "R3-BASE-16",
+      "text": "Window: no solver start before 2026-11-11T17:30:00Z or after 2026-11-12T04:00:00Z; token WINDOW_OK-P2AV2R9-20261111T1730Z-20261112T0400Z must be present both at approval top level and in approval.window.token."
+    },
+    {
+      "id": "R3-BASE-17",
+      "text": "Physical starts are capped at 451 (390 planned: 2 B2 preflight + 4 pre-registered diagnostic starts from 2 diagnostic designs x 2 families + 384 main arm slots; 64 reserve) and internal solver cases at 3157 (2730 planned); every start must be ledgered in the single canonical run_dir/solver_attempts.jsonl written by the A1 TwoFamilyEvaluator event ledger (event=start/end, keyed by case_id); on exhaustion the batch stops, never retries, never starts without a ledger row. Before R9 the actual cumulative consumption is 56 starts / 404 internal (39/285 prior + R1 2/14 + R2 2/14 + R3 2/14 + R4 2/14 + R5 0/0 + R6 3/21 + R7 6/42 + R8 0/0); with the R9 plan including the pre-registered diagnostics it is 446 starts / 3134 internal, still within 451 / 3157 (headroom 5 starts / 23 internal)."
+    },
+    {
+      "id": "R3-BASE-18",
+      "text": "Preflight runs first: only PRE-01 and PRE-02 replay cases are authorized; each bills exactly 1 start / 7 internal; any non-PASS_BYTE outcome (byte mismatched polar, missing approval bundle bytes, spawn failure) stops the batch (S1) before the diagnostic phase and the 384-slot main matrix; no retry, no unilateral numeric tolerance. After preflight PASS_BYTE, the pre-registered diagnostic phase runs before main: DIAG-01 (design 16, design_hash eb00b7ad545243e6) and DIAG-02 (design 17, design_hash dc96d2438a6dddc3); each diagnostic design runs through the full main chain with BOTH families, i.e. 2 real starts / 14 internal per design, 4 starts / 28 internal total (this 4/28 is the R9 pre-registered count; R7's 2/14 registration was a counting defect and is disclosed); pass criterion SOLVED_VALID with finite non-null objective per design pair; both designs failing => main NOT_RUN with diagnostic evidence and receipt; at least one design passing => proceed to 384 main; diagnostics never enter E1-E6."
+    },
+    {
+      "id": "R3-BASE-19",
+      "text": "Per-design runtime freeze must precede any solver start for that design: A1 FreezeAPI K=10 arm-blind discovery, exactly two families, <=40 forced builds per family, PRE SHA verification, append-only hash-chained record; any failure voids the design for all six arms (0 start) and no single-family fallback is allowed."
+    },
+    {
+      "id": "R3-BASE-20",
+      "text": "B2 frozen-geometry waiver is approved only for this batch/run: frozen .vspgeom/.vkey bytes are batch-scoped, must be generated by the bound A1 builder/FreezeAPI, must never be reused from P1/P1C/P1R runs or across runs, and every start must re-verify the frozen SHA before spawn."
+    },
+    {
+      "id": "R3-BASE-21",
+      "text": "A5 must complete the post-execution independent audit of the ledger/batch summary/manifest before any result is reported as an optimizer outcome; A5 signs continuation/result only within its stated scope."
+    },
+    {
+      "id": "R3-BASE-22",
+      "text": "No optimizer ranking, no statistical significance claim, no winner, no fuel burn, no aerodynamic PASS, no 12D_ACTIVE validation, and no physical validation may be claimed from this single-seed descriptive batch; fuel_burn_kg remains null and physical_validation_status remains NOT_VALIDATED."
+    },
+    {
+      "id": "R3-BASE-23",
+      "text": "Preflight evaluator isolation: PRE-01 (design 8bd5a6c7c8311938, 543x472) and PRE-02 (design bc52a54ecefaac4c, 483x418) are distinct cells; each preflight case must use a fresh A1 TwoFamilyEvaluator instance with independent _seen_cells. PRE-03 is retired and must not run. Reusing one instance (DUPLICATE_DESIGN_FAMILY_CELL) or asking A1 to waive dedupe is not authorized."
+    },
+    {
+      "id": "R3-BASE-24",
+      "text": "Executor blob freeze: approval.a2_executor_sha256 must equal the SHA256 of p2a_v2_executor.py (c2bdfb6825d156b71713ad57b9c982ebc06ec5a08bbfadf4324839ce8625af54); executor_blob.a2 must list p2a_v2_common.py, p2a_v2_runtime.py, p2a_v2.py and p2a_v2_executor.py with the SHAs recorded at signature. Any A2 code change after signature voids this approval. The run command is: python -m research.concorde_metaopt.dreal001.optimizers.p2a_v2 run --out <run dir> --a1-root <A1 root>."
+    },
+    {
+      "id": "R3-BASE-25",
+      "text": "A1 code binding: evaluator_v12.py f74a4752495fd6c5330edcaf7edb4bcbe93f99c2a76bac06b5670d1f765ae20d, freeze_api.py 31d781821516bb80fc158238e4ef485c361afea674ca3b962efbb89d5a737173, a1_v1_2_code_sha 2a57632b3f7d5d567556d9774913ec40a5d72272, executable geometry commit 6753eb39b710035187db13ceb3328301c645c1ba (freeze path). The R1 2-case replay bundle (re-bound unchanged for R9) commit 2a57632b3f7d5d567556d9774913ec40a5d72272 with bundle_manifest 995bb12fff738d3ebb0bde08c0d5c5bfeb9532aebe536847ef307a2332013aa5 (2 cases PRE-01/02; PRE-03 retired) is immutable and must be SHA-verified before preflight."
+    },
+    {
+      "id": "R3-BASE-26",
+      "text": "Preflight PASS requires the actual polar SHA to equal approval.replay_bundles.cases polar SHA (PASS_BYTE). PASS_NUMERIC (7 rows max rel <= 1e-9, same mesh) is accepted only with prior written Lead and A5 acceptance; otherwise S1 stops the batch and the main matrix is NOT_RUN. A2 alone may not accept numeric equivalence."
+    },
+    {
+      "id": "R3-BASE-27",
+      "text": "Per-row backend must be explicit and non-inheritable: main-batch rows REAL_VSPAERO; preflight rows REPLAY_B2 with preflight=true. A3/A5 audit row-level backend evidence; run-level inheritance is not allowed."
+    },
+    {
+      "id": "R3-BASE-28",
+      "text": "This approval binds policy, code and initial seeds, not future designs. Every runtime design must be arm-blind frozen and appended to the hash-chained append-only log before any solver start for that design; final_run_manifest_required=true and the final manifest must be complete. A design may not be frozen or replaced after its first solver start."
+    },
+    {
+      "id": "R3-BASE-29",
+      "text": "A2 executes; A1 is read-only witness. Only the Lead may authorize continuation or results release; A5's result signature scope is limited to its stated audit scope."
+    },
+    {
+      "id": "R3-BASE-30",
+      "text": "Any deviation (protocol, retry, accounting mismatch, preflight failure, ledger gap, or design re-freeze) must stop the batch and be disclosed as an incident; no result may be reported as an optimizer outcome before A5's independent post-execution audit."
+    },
+    {
+      "id": "R3-BASE-31",
+      "text": "Execution protocol for the A1 single-writer ledger: exactly one canonical run_dir/solver_attempts.jsonl; exactly one evaluator instance alive at a time (each preflight case, then each main arm, constructed in scope and closed in finally; six evaluators must not be pre-constructed). The ledger must never be deleted, truncated or recreated; a stale lock is a fail-closed incident and must never be silently removed."
+    },
+    {
+      "id": "R3-BASE-32",
+      "text": "Per-arm evaluator max_starts is the arm budget (or the global remainder), never 451; A2 independently tracks global starts from the canonical ledger and stops at 451."
+    },
+    {
+      "id": "R3-BASE-33",
+      "text": "Case identity: every start/end pair is keyed by case_id, which must be non-empty and globally unique; start/end pairing and start counts are audited by case_id with event=start. attempt_id is informational only and may repeat across arms; A3/A5 must key on case_id."
+    },
+    {
+      "id": "R3-BASE-34",
+      "text": "Sref(x) must be resolved and validated (zero-physical, from x12) and written into the case record before evaluator.evaluate is called; an unresolved Sref means 0 starts and a fail-closed ExecutorRefused."
+    },
+    {
+      "id": "R3-BASE-35",
+      "text": "After an evaluator close and only with no live ledger writer, an orphan start may be repaired by appending an EXECUTOR_EXCEPTION end row (no refund); no end row may be fabricated without a recorded start; the normal path must never have A2 write the ledger directly."
+    },
+    {
+      "id": "R3-BASE-36",
+      "text": "Run end must call A1 build_final_run_manifest(..., allow_invalid=false); an invalid or refused final manifest is a failed batch with stop_report, never COMPLETED; batch_summary must record the final manifest SHA."
+    },
+    {
+      "id": "R3-BASE-37",
+      "text": "Before the first start, A2 must verify the initial_designs_manifest file SHA and its approval binding, and recompute design_hash from x12 for initial designs 15/16/17; any mismatch is fail-closed with zero starts."
+    },
+    {
+      "id": "R3-BASE-38",
+      "text": "Internal solver cases must be derived from evaluations/records, not from the evaluator event ledger (event rows do not carry internal_solver_cases); batch_summary must report ledger_starts and record_internal_cases separately and must never substitute 0 for a missing internal count."
+    },
+    {
+      "id": "R3-BASE-39",
+      "text": "If preflight fails, A2 must close the evaluator, repair orphan starts only after the writer is closed, recompute physical starts from the canonical ledger, write stop_report, and only then write batch_summary; no summary may report 0 physical while the ledger has unpaired starts."
+    },
+    {
+      "id": "R1-HIST-01",
+      "text": "R1-HIST-01: plan.json and P2A_V2_PREREGISTRATION.md may carry the task49 probe 9757bcf1.../status BOUND as HISTORICAL_TASK49_SNAPSHOT; it is not an active binding and must never be cited as A1 evaluator v1.2 evidence or in any post-run audit. The active A1 evidence remains the R1 signed approval-bound identity.a5_r1_probe_* (SHA 1264e9c0..., evaluator f74a4752..., overall SECURE, physical=0); the R9 identity need not restate a5_r1_probe_* and no R9 launch decision may depend on it; the R1-03 copy handoff carries forward (see R1-03). R1-R8 (R1 batch DREAL001-P2-20261111-06 / run DREAL001-P2A2R-20261111-01, plus R2-R7) are historical, read-only and excluded from E1-E6; their charged counts (R1-R4 2/14 each, R5 0/0, R6 3/21, R7 6/42 = 17 starts / 119 internal) remain included in the cumulative totals (prior 39/285 + 17/119 = pre-R9 actual 56 starts / 404 internal); R9 is planned at 390 starts / 2730 internal cases, so the cumulative becomes 446/3134 against caps 451/3157; R9 must not cite the task49 probe as active evidence. R1/R2/R3/R4/R5/R6/R7 runs are excluded from E1-E6; their preflight/diagnostic/main starts are counted in the cumulative caps."
+    },
+    {
+      "id": "R1-02",
+      "text": "R1-02: the p2a_v2_executor.py:6-7 docstring text \"three REPLAY_B2 preflight cases\" / \"PRE-01 and PRE-03\" is a stale comment; the actual preflight is exactly PRE-01/PRE-02 (p2a_v2_common.py:88-115) with no PRE-03. The comment does not change the execution contract; A2 patches it after this batch; the executor bytes must not be changed before signature except the approved execution-layer fixes: R3 status-literal fix (SOLVED_VALID), R5 x12 unit<->physical boundary fix, R7 observe design_hash fix + invalid-numerical tolerance + arm-exception persistence + DE/PSO population fix, R9 pre-frozen manifest reuse + diagnostic pair pre-registration + accounting pseudo-count fixes (all retained unchanged in the R9 executor c2bdfb6825d156b71713ad57b9c982ebc06ec5a08bbfadf4324839ce8625af54), and their unit tests. The R9 launcher compatibility shim (R4 env shim/sitecustomize retained byte-identical, plus design-space preload) is a separate bound artifact and must be byte-frozen with the package; changes to it after signature void this approval."
+    },
+    {
+      "id": "R1-03",
+      "text": "R1-03: the R1 identity.a5_r1_probe_path points to the A5 worktree absolute path; its SHA256 1264e9c0... was verified at R1 signature. R9 identity may not carry this field, but A2 must still save a byte-identical copy of the A5 R1 probe in the R9 run dir or A2 docs/evidence before batch closeout and disclose it in the report; the A5 path remains provenance. This is not a launch blocker. The R9 launcher shim copy of the A5 R1 probe handoff remains required at batch closeout."
+    },
+    {
+      "id": "R9-PKG-01",
+      "text": "R9-PKG-01: The A5 G-P2AV2R9-PRE audit object is the A2 R9 package commit a4e9ded2f358035eff2dd55965b4408cb89dc96a (recorded by Lead as approval_refs.a2_package_commit) with the 8-file package (plan.json, approval.DRAFT.json, identity_binding.json, initial_designs_manifest.json, P2A_V2_PREREGISTRATION.md with R9 addendum, dry_run.json, executor_dry_run.json, SHA256SUMS.txt), the new executor/runtime/common/p2a_v2 bytes (executor c2bdfb6825d156b71713ad57b9c982ebc06ec5a08bbfadf4324839ce8625af54; runtime cc6e100427ac97a8183d9afd237334a007d487eb8a4150c4528a4d5556e3454e), and the R9 launcher/gate/smoke/dry-run tool set pinned to those bytes. The package must not contain R8 approval bytes, R8 plan SHA, or stale R8 window/token/run-id text; pre-execution run dir must contain exactly the 8 package files (no cases/ledger/approval.json/batch_summary/stop_report)."
+    },
+    {
+      "id": "R9-PREFROZEN-FLAT-01",
+      "text": "R9-PREFROZEN-FLAT-01: The R9 prefrozen flat/nested fix must be execution-layer only, exactly two read-side contract sites plus their tests, with A1 bytes unchanged: (i) p2a_v2_runtime.py _reuse_prefrozen family frozen descriptor resolution accepts the initial_designs_manifest FLAT family row (fields frozen_vspgeom_path/sha256/bytes, frozen_vkey_sha256, frozen_vsp3_sha256, canonical_mesh_sha256 directly on the family row) as well as the A1 family_pair_manifest nested \"frozen\" form, with explicit precedence and no silent fallback to a rebuild; (ii) p2a_v2_executor.py _prefrozen_reuse_gate mf resolution accepts the same FLAT row while the record side rf stays nested under record.families[label].frozen; any field missing, path absent, vkey/vsp3 sibling missing, or SHA mismatch must fail closed with zero starts; FreezeBuilder must never be invoked for designs 15/16/17, and a static-index hit not resolved via PREFROZEN_MANIFEST_REUSE must remain fail-closed (no rebuild). Unit tests must cover: flat PASS, nested PASS, missing frozen field FAIL, missing model.vkey/model.vsp3 sibling FAIL, tampered SHA FAIL, and executor-gate mf/rf mixed-shape PASS."
+    },
+    {
+      "id": "R9-EXECGATE-01",
+      "text": "R9-EXECGATE-01: Before any solver start, the executor OWN code path (p2a_v2_executor.py _prefrozen_reuse_gate, not only the launcher-side gate module) must be executed zero-physically on the REAL R9 initial_designs_manifest (3 designs x 2 families) and must PASS with static_index_count=119, no FreezeBuilder invocation, physical_call_count=0, solver_started=false, and no cases/ledger written; the evidence JSON (path/SHA256/bytes) must be in the R9 package and A5 must independently replay the same code path with physical=0 before signing G-P2AV2R9-PRE. Launcher-side gate PASS alone is insufficient (R8 defect). The launcher-side prefrozen gate and the executor-side gate must be shown equivalent on the same manifest: same PASS/FAIL conditions (per-family vspgeom/canonical/vkey/vsp3 SHA equality, record PAIR_READY/arm_blind/2 families/source_kind PREFROZEN_MANIFEST_REUSE/reused_prefrozen/attempts 0, static 119), and the gate report must record both results."
+    },
+    {
+      "id": "R9-ACCT-01",
+      "text": "R9-ACCT-01: Accounting baseline is 56 starts / 404 internal (prior 39/285 + R1 2/14 + R2 2/14 + R3 2/14 + R4 2/14 + R5 0/0 + R6 3/21 + R7 6/42 + R8 0/0 setup stop), and the R8 attempt-1 zero-physical setup stop is charged 0 starts / 0 internal and permanently excluded. R9 planned is 390 starts / 2730 internal (2 preflight + 4 pre-registered diagnostic starts from 2 designs x 2 families + 384 main arm slots; 64 reserve), so the projected cumulative is 446 starts / 3134 internal against caps 451 / 3157 (headroom 5 starts / 23 internal). Any R9 charge beyond the approved figures requires a new written Lead approval; charged+planned>caps must fail closed (ACCOUNTING_INCONSISTENT)."
+    },
+    {
+      "id": "R9-HIST-01",
+      "text": "R9-HIST-01: R1, R2, R3, R4, R5, R6, R7 and R8 are historical and permanently excluded from E1-E6 and from any optimizer/physics result; their run dirs, signed approvals, evidence files and SHA256SUMS are READ-ONLY and must not be modified, re-signed, re-used as approval basis, or relabelled as gate PASS. R8 attempt-1 (batch DREAL001-P2-20261111-13 / run DREAL001-P2A2R8-20261111-01) is a zero-physical setup stop (FreezeRecordError PREFROZEN_GEOM_MISSING, 0 starts/0 internal, main NOT_RUN) and is excluded in full; its 15-file run dir is read-only and its evidence is append-only. R1-R8 charged counts remain in the cumulative caps: R1-R4 2/14 each, R5 0/0, R6 3/21, R7 6/42, R8 0/0; total 56 starts/404 internal. R7 approval 1a552267.../69,405 B and R8 approval fa0d94a2.../75,166 B are superseded and non-reusable."
+    },
+    {
+      "id": "R9-WINDOW-01",
+      "text": "R9-WINDOW-01: The valid R9 execution window is 2026-11-11T17:30:00Z to 2026-11-12T04:00:00Z with token WINDOW_OK-P2AV2R9-20261111T1730Z-20261112T0400Z present both at approval top level and in approval.window.token; no solver start outside the window; the launcher and executor window gate must fail closed on a missing/late/expired token; no window extension may be granted by anyone other than the Lead in writing and re-signed."
+    },
+    {
+      "id": "R9-DECISION-01",
+      "text": "R9-DECISION-01: Lead decision trail: L-10 authorized R8 (prefrozen reuse + 4/28 diagnostics); R8 attempt-1 stopped in setup with 0 physical (flat-vs-nested manifest read contract in runtime:574 and executor:1131; launcher gate module already flat-compatible); A5 FAIL-08 (commit 974104b) independently upheld the zero-physical setup stop and root cause; Lead m02945 (2026-11-11T17:19Z) closes R8 as SETUP_STOP and authorizes R9 as the LAST execution attempt under the caps (no R10; a main-phase failure ends the series with a receipt) with a two-line execution-layer fix, new batch/run/approval and seq9 amendment. Protocol D remains in force (invalid-numerical tolerance, no mesh QC data gate); no winner/significance/cross-family comparison; fuel_burn_kg null; physical NOT_VALIDATED. A5 position: conditionally accepts R9 as the final attempt under G1-G8/R9 conditions, flags that this is the 8th consecutive execution-layer defect and that GO-time zero-physical evidence must now cover the executor code path, not only the launcher module; the earlier A5 termination recommendation is not re-litigated."
+    },
+    {
+      "id": "R9-REFS-01",
+      "text": "R9-REFS-01: The Lead-signed approval must carry the corrected 14-key approval_refs (no DRAFT placeholders): a1_bundle_commit = a1_bundle_commit_full = 2a57632b3f7d5d567556d9774913ec40a5d72272, a1_bundle_manifest_sha256 = 995bb12fff738d3ebb0bde08c0d5c5bfeb9532aebe536847ef307a2332013aa5, a1_bundle_path = D:\\RCAIDE\\dnext001\\wt-real-a1-geometry-solver\\research\\concorde_metaopt\\dreal001\\geometry\\replay_bundles\\P2A_V2_PREFLIGHT_20261111_R1, a1_bundle_note, a1_executable_commit = a1_task49_commit = 6753eb39b710035187db13ceb3328301c645c1ba, a1_execution_code = 6979802, a1_execution_code_note, a1_execution_head = a1_head = 2a57632b3f7d5d567556d9774913ec40a5d72272, a2_execution_code = c2bdfb6825d156b71713ad57b9c982ebc06ec5a08bbfadf4324839ce8625af54, a2_package_commit = a4e9ded2f358035eff2dd55965b4408cb89dc96a, a5_review = A5 G-P2AV2R9-PRE review commit SHA (this gate commit). Any placeholder or R8 approval SHA in these keys voids the signature."
+    },
+    {
+      "id": "R9-SIGN-01",
+      "text": "R9-SIGN-01: The signature must expand approval.conditions from the DRAFT to this 52-item R9 set (R1 signed conditions 1-42 adapted; R3/R4/R5/R6/R7/R8-era items 43-52 re-scoped for R9 per R9-PKG-01/PREFROZEN-FLAT-01/EXECGATE-01/ACCT-01/HIST-01/WINDOW-01/DECISION-01/REFS-01/SIGN-01/DISC-01), and must apply M1-M6: 14-key refs, 52 conditions byte-identical to docs/reviews/dreal001_a5_p2av2r9_signature_conditions_20261111.json, status/approved/approved_by/approved_at_utc/authorization + window.status=APPROVED + b2_waiver, amendment_log byte-identical to DRAFT (seq1-seq8 = R8 signed history; seq9 = R9_PREFROZEN_MANIFEST_FLAT_ROW_FIX at DRAFT at_utc with physical_call_count_at_amendment=56), no other binding/scientific-policy byte change; A2 commits the signed approval byte-identically and runs the real R9 post-approval dry-run with the bound R9 tool (390 planned/0 emitted/2730 internal/physical 0), then A5 C-P2AV2R9-02, then Lead GO; C gate hard line 2026-11-11T18:45:00Z."
+    },
+    {
+      "id": "R9-DISC-01",
+      "text": "R9-DISC-01 (non-blocking disclosures that must appear in the A5 gate and final receipt): (a) R1-R8 series exclusion: charged 17 starts/119 internal (R1-R4 2/14 each, R5 0/0, R6 3/21, R7 6/42, R8 0/0), cumulative baseline 56/404; R9 plan 390/2730, projected cumulative 446/3134 vs caps 451/3157, headroom only 5 starts/23 internal; (b) R8 attempt-1 setup stop: launcher gate PASS 79 checks/static 119/guard all_equal, executor own gate raised PREFROZEN_GEOM_MISSING for d51866f7d3c49303/462x401 because initial manifest families rows are FLAT while runtime:574 and executor:1131 read nested \"frozen\"; 0 physical, no cases/ledger/solver_attempts/preflight/batch/evaluations; (c) R9 fix is execution-layer only and zero-physical-verified; A1 bytes unchanged; design15 f1 prefrozen bytes produced an all-NaN polar in R6 so an R9 main INVALID_NUMERICAL remains possible under protocol D; (d) R6 NaN mechanism NOT proven and no mesh QC data gate adopted (L-09 rejection retained); (e) accounting pseudo-count fixes retained (no default 7 internal on 0-start rows; batch_summary per phase/total; diagnostics polar_sha256; charged+planned<=caps assertion); (f) C10_executor_sha remains a definitional false negative in package dry_run.json (executor file SHA vs aggregate digest), non-blocking; (g) A5 physical_call_count=0 and solver_started=false; this gate is not an execution authorization and no R10 exists by default."
+    }
+  ]
+}

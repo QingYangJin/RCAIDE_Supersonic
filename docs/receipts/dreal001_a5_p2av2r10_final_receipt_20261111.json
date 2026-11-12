@@ -1,0 +1,355 @@
+{
+  "schema": "dreal001.a5.p2av2r10.final_receipt.v1",
+  "receipt_id": "A5-P2A-V2-R10-FINAL-RECEIPT-20261111",
+  "issued_by": "A5",
+  "issued_role": "independent review and sign-off",
+  "issued_utc": "2026-11-11",
+  "batch_id": "DREAL001-P2-20261111-15",
+  "run_id": "DREAL001-P2A2R10-20261111-01",
+  "window": {
+    "start": "2026-11-11T18:30:00Z",
+    "end": "2026-11-12T04:00:00Z",
+    "token": "WINDOW_OK-P2AV2R10-20261111T1830Z-20261112T0400Z"
+  },
+  "governance": {
+    "lead_decisions": [
+      "L-14",
+      "L-15",
+      "L-13",
+      "L-12",
+      "L-09",
+      "L-10"
+    ],
+    "approval_sha256": "4e67eac52833d8dfab8b8027a0838b68de15f26d9a072edb0515ece22414068c",
+    "approval_bytes": 84140,
+    "go_sha256": "260e284a5c9939b9be2ee08e9a2e986d43345818e682ce34ecff91926a91b83a",
+    "go_token": "LEAD_GO_P2AV2R10_EXEC_20261111T185534Z",
+    "L14_md": "e13435d3f16eb5ac0d33c19681f99dcf595e56a4ab521382fdfd8e2e350ea395",
+    "L15_md": "1c76a34d95db8c29e92e53bcde6d023181f42b4b9a0010434be06fa83e3f7976",
+    "a5_gate_commit": "48b91bf67b6b9f0f9e27e69fb6b5aca1fec3a15f",
+    "a5_c_gate_commit": "6f1498119c3a8e5d5283386dddda73ce0773c506",
+    "a5_audit_commit": "9ac700427ba92283894d147cc862ef7850d5dc77",
+    "a5_audit_initial_commit": "563d95fe36f57bcee8312aab5ef878c9cd1f4b84",
+    "a3_stats_commit": "699ce2abfcbeef3a47934bfa88bb173ec00ac489"
+  },
+  "verdict": "R10_SCIENTIFIC_AUTO_STOP_VALID_UPHELD__SIX_ARM_PILOT_NOT_COMPLETED__E1_E6_NOT_COMPUTABLE__NO_OPTIMIZATION_GAIN__EXTERNAL_PHYSICS_NOT_VALIDATED__R1_R10_EXCLUDED__NO_R11__R_LINE_CLOSED",
+  "three_layer_conclusions": {
+    "SOLVER_LOOP_VERIFIED": {
+      "status": "PARTIAL",
+      "verified": [
+        "real VSPAERO invocation chain",
+        "preflight 2/2 PASS_BYTE with polar bytes equal to approval expectations",
+        "R10 total 91 physical starts (main 89, preflight 2) / 35 valid main evaluations / ledger 91 start-91 end / single writer 27588"
+      ],
+      "not_verified": [
+        "six-arm main optimization loop (BO complete, DE partial, four arms not run)"
+      ]
+    },
+    "INTERNAL_AERO_OPTIMIZATION_GAIN": {
+      "status": "NOT_COMPUTABLE",
+      "reason": "six-arm pilot not completed; single seed; DE right-censored; no baseline/pairing",
+      "forbidden_claims": [
+        "winner",
+        "ranking",
+        "significance/CI",
+        "percentage improvement",
+        "cross-arm or cross-family pooling"
+      ]
+    },
+    "EXTERNAL_PHYSICS_SUPPORTED": {
+      "status": "NOT_VALIDATED",
+      "fuel_burn_kg": null
+    }
+  },
+  "execution": {
+    "started_utc": "2026-11-11T18:58:01Z",
+    "launcher_pid": 27588,
+    "gate": "PASS",
+    "prestart_gate": "PASS 79 checks / 119 static / A1 guard all_equal / physical 0",
+    "stopped_utc": "2026-11-11T19:13:55Z",
+    "stop_phase": "scientific_auto_stop",
+    "duration_s": 954
+  },
+  "counts": {
+    "preflight": {
+      "starts": 2,
+      "internal": 14
+    },
+    "diagnostics": {
+      "starts": 0,
+      "internal": 0,
+      "status": "DIAGNOSTICS_NOT_IN_MATRIX"
+    },
+    "main": {
+      "starts": 89,
+      "internal": 623,
+      "evaluations": 48,
+      "valid": 35,
+      "invalid": 13
+    },
+    "total": {
+      "starts": 91,
+      "internal": 637,
+      "internal_per_start": 7
+    }
+  },
+  "ledger": {
+    "lines": 182,
+    "starts": 91,
+    "ends": 91,
+    "unique_cases": 91,
+    "retry": 0,
+    "pending": 0,
+    "writer_pid": 27588,
+    "end_status": {
+      "SOLVED_VALID": 78,
+      "LIFT_MATCH_FAILED": 6,
+      "SOLVER_FAILED": 7
+    }
+  },
+  "auto_stop": {
+    "rule": {
+      "invalid_ratio_min_evaluations": 48,
+      "invalid_ratio_max": 0.25,
+      "invalid_consecutive_max": 6,
+      "invalid_total_max": 64,
+      "invalid_status": "INVALID_NUMERICAL"
+    },
+    "trigger_evaluation": 48,
+    "invalid_at_trigger": 13,
+    "invalid_ratio": 0.2708333333,
+    "consecutive_max": 2,
+    "total_invalid": 13,
+    "arms": {
+      "BO": "COMPLETED",
+      "DE": "STOPPED_SCIENTIFIC_INVALID_RATIO",
+      "PSO": "NOT_RUN",
+      "ABO": "NOT_RUN",
+      "ADE": "NOT_RUN",
+      "APSO": "NOT_RUN"
+    },
+    "classification": "PRE_REGISTERED_SCIENTIFIC_RULE_NOT_FAILURE"
+  },
+  "accounting": {
+    "caps": {
+      "starts": 451,
+      "internal": 3157
+    },
+    "charged_projected": {
+      "r10": {
+        "starts": 386,
+        "internal": 2702
+      },
+      "cumulative": {
+        "starts": 448,
+        "internal": 3148
+      },
+      "headroom": {
+        "starts": 3,
+        "internal": 9
+      },
+      "semantics": "prior charged 62/446 + R10 planned reservation 386/2702; authorization basis"
+    },
+    "physical_actual": {
+      "r10": {
+        "starts": 91,
+        "internal": 637
+      },
+      "cumulative": {
+        "starts": 153,
+        "internal": 1083
+      },
+      "headroom": {
+        "starts": 298,
+        "internal": 2074
+      },
+      "semantics": "prior actual 62/446 + R10 actual 91/637; ledger basis"
+    },
+    "note": "448/3148 is CHARGED_PROJECTED not consumed physical budget (L-15)"
+  },
+  "e1_e6": {
+    "E1": {
+      "status": "NOT_COMPUTABLE_AS_SIX_ARM_ENDPOINT",
+      "BO": {
+        "n": 23,
+        "mean": 0.01682448853313789,
+        "median": 0.016228040308768787,
+        "min": 0.010006880012223485,
+        "max": 0.02325079054346792
+      },
+      "DE": {
+        "n": 12,
+        "mean": 0.016841321637533272,
+        "median": 0.015326776728803579,
+        "min": 0.01289480742004768,
+        "max": 0.02488524308335461
+      },
+      "all": {
+        "n": 35,
+        "mean": 0.016830259883216306,
+        "median": 0.016228040308768787,
+        "min": 0.010006880012223485,
+        "max": 0.02488524308335461
+      }
+    },
+    "E2": {
+      "status": "NOT_COMPUTABLE",
+      "BO": "32/32 descriptive best",
+      "DE": "16/32 right-censored observed-best-only"
+    },
+    "E3": {
+      "status": "NOT_COMPUTABLE",
+      "reason": "no frozen objective baseline"
+    },
+    "E4": {
+      "status": "NOT_COMPUTABLE_AS_COMPARISON",
+      "BO": "23/32=71.875%",
+      "DE": "12/16=75.0%"
+    },
+    "E5": {
+      "status": "NOT_COMPUTABLE",
+      "reason": "SINGLE_SEED_42 repeats 0"
+    },
+    "E6": {
+      "status": "NOT_COMPUTABLE",
+      "reason": "no cold-start baseline/pairing"
+    }
+  },
+  "descriptive_stats": {
+    "primary_definition": "0.5*CDi(f1)+0.5*CDi(f2) within-design",
+    "secondary": "D_i descriptive only",
+    "BO_secondary": {
+      "n": 23,
+      "mean": 126409.1036,
+      "min": 86017.3742755832,
+      "max": 157083.37602074133
+    },
+    "DE_secondary": {
+      "n": 12,
+      "mean": 126828.12189370421,
+      "min": 107563.71028418571,
+      "max": 153638.2368186653
+    }
+  },
+  "excluded_rounds": {
+    "R1": "PREFLIGHT_2X_SOLVER_FAILED_2/14",
+    "R2": "PREFLIGHT_NON_SOLVED_REPLAY_2/14",
+    "R3": "MAIN_SETUP_PERMISSION_ERROR_2/14",
+    "R4": "UNIT_BOX_VECTOR_NOT_ACCEPTED_2/14",
+    "R5": "LAUNCHER_IMPORT_SETUP_ABORT_0/0",
+    "R6": "MAIN_S1_LIFT_MATCH_FAILED_3/21",
+    "R7": "MAIN_FROZEN_BYTES_SHA_MISMATCH_6/42",
+    "R8": "SETUP_PREFROZEN_GEOM_MISSING_0/0",
+    "R9": "DIAGNOSTICS_ACCOUNTING_INCONSISTENT_6/42",
+    "R10": "SCIENTIFIC_AUTO_STOP_91/637_ENDPOINTS_EXCLUDED_CLOSED_BY_L14"
+  },
+  "invariants": {
+    "a1_evaluator": "f74a4752495fd6c5330edcaf7edb4bcbe93f99c2a76bac06b5670d1f765ae20d",
+    "a1_freeze_api": "31d781821516bb80fc158238e4ef485c361afea674ca3b962efbb89d5a737173",
+    "a1_bundle_manifest": "995bb12fff738d3ebb0bde08c0d5c5bfeb9532aebe536847ef307a2332013aa5",
+    "plan": "ba6eaa49e181b2cacc048362dd00e57458ceba73165b68f1776ae4f3af43b4d4",
+    "executor": "ed0f2324f91ffc649e9b8d997051d515ff7e248f027c46ba1c9125e2f575704c",
+    "launcher_executed": "23106df237add53c99e54642b616349fc8d7bf411fc1488df1456f9d7d65861b",
+    "launcher_pre_d11": "476481e65674d30450b03eb85f7fc44bca06323213161d53ddc652c218690bc8",
+    "r1_r9_approvals_unchanged": 9
+  },
+  "evidence": {
+    "batch_summary": "a4ea4840ccdeea0e00cc8496c5fc8c69aea901afcabe9884394d3064285a36a9",
+    "stop_report": "a23964eba50a15a703bfb1f736ad97c6d7b8a040844ef23f70a84eca4c35db8b",
+    "solver_attempts": "0614c0182958a50b6fdac2b463141afd005c6551498174514424b063eb840409",
+    "evaluations": "01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a",
+    "preflight_result": "daf047e62e043ce193aad5c0fc84e0ec8561d823f9893037e9c440b65aea3e47",
+    "diagnostics": "4976fda2d9ea3b903ac7353802f2492400dd92aead2f829aeff1f69315341613",
+    "final_run_manifest": "2522f951f91c01c7b8c82294d94abb3d58dc36878cbdb424d112a7cfc2404cca",
+    "inventory_digest": "105f3bc9363d11227a9de39cbc77c1ae6fb289b1863ad648540ceb08bee5bbea",
+    "inventory_files": 2228,
+    "inventory_bytes": 207718755,
+    "a2_stop_note_v2": "fc0e81ef273b4c272359ba72002ff229199002b649a139c9b8fd6321a15f671f",
+    "a2_l15_addendum": "66f20f8b3004acff8ddce0fbba146f66c6a3d37ac63ffe9a8e2706a3fa9c0950",
+    "a3_stats_json": "5705269ba2bb7015f703fb2c9bb24da2f300bda0e7c2d83848a369e8d562daf9",
+    "a3_stats_md": "0728ccae856d913cfc2ff6984e2e32d05cfd2413345693eab0a983ffeec526eb",
+    "a3_stats_csv": "007e1a9b22fa1f16223bb5fc257990ac0c742830344b504c1beccca791b1c3df"
+  },
+  "disclosures": [
+    {
+      "id": "D-01",
+      "level": "PROCESS",
+      "text": "post-GO launcher conditions precheck 52->57 single line (476481e6->23106df2, same 29,361 B, old bytes preserved); L-13 ratified; A5 confirmed zero-physical; C gate 6f14981 anchored old launcher; both anchors recorded; no further execution-layer changes (R-line closed)."
+    },
+    {
+      "id": "D-02",
+      "level": "RECORD",
+      "text": "batch_summary DE valid_designs=11 vs evaluations 12 (stop-path counter); evaluations authoritative; stop rule unaffected."
+    },
+    {
+      "id": "D-03",
+      "level": "RECORD",
+      "text": "INVALID rows family fields incomplete; recomputed from ledger case suffix; counts unchanged."
+    },
+    {
+      "id": "D-04",
+      "level": "RECORD",
+      "text": "preflight case-level polar_sha256=null; recomputed polar file SHAs match approval expected; PASS_BYTE valid."
+    },
+    {
+      "id": "D-05",
+      "level": "MAJOR_ACCOUNTING_SEMANTICS",
+      "text": "448/3148 is CHARGED_PROJECTED (authorization basis), not consumed physical budget; physical actual cumulative 153/1083 (headroom 298/2074); A2 stop note/L-14 wording lacked basis label (disclosure defect not factual error); L-15 and A2 addendum clarify."
+    },
+    {
+      "id": "D-06",
+      "level": "RECORD",
+      "text": "final_run_manifest physical_call_count=0 is builder counter; run physical count from ledger/batch/stop = 91."
+    },
+    {
+      "id": "D-07",
+      "level": "RECORD",
+      "text": "executor_run.log coalesced: REFUSED first line 18:56:53 (zero physical), formal start 18:58:01; physical only canonical ledger start events 91."
+    },
+    {
+      "id": "D-08",
+      "level": "RECORD",
+      "text": "A2_R10_STOP_NOTE.md added 19:16:35Z post-stop disclosure; not execution artifact."
+    },
+    {
+      "id": "D-09",
+      "level": "RECORD",
+      "text": "48 evaluations/45 distinct designs; 3 prefrozen designs in both arms; per-design frozen definition; no cross-arm/family pooling."
+    },
+    {
+      "id": "D-10",
+      "level": "PROCESS",
+      "text": "C-P2AV2R10-02 issued before D-11 with old launcher anchor; L-13 no re-sign; A5 preserves traceability."
+    },
+    {
+      "id": "D-11",
+      "level": "RECORD",
+      "text": "A3 stats external (commit 699ce2a); A5 verified bytes and cross-checked counts; A5 did not run A3 tool."
+    },
+    {
+      "id": "D-12",
+      "level": "RECORD",
+      "text": "stop_report internal_solver_cases=null; internal derived 7*starts and recorded 637; ledger internal 0 not accepted as actual."
+    },
+    {
+      "id": "D-13",
+      "level": "GOVERNANCE",
+      "text": "L-14/L-15 close R-line: no R11, no new execution authorization, approval not reused; this receipt is not an authorization."
+    }
+  ],
+  "limitations": [
+    "Receipt is not an execution authorization; R-line closed, no R11.",
+    "No pilot completion, no optimization gain, no winner/significance/cross-family comparison.",
+    "fuel_burn_kg=null; external physics NOT_VALIDATED."
+  ],
+  "attestation": {
+    "physical_call_count": 0,
+    "solver_started": false,
+    "push": false,
+    "checks_passed": 85,
+    "checks_failed": 0,
+    "writes_scope": "A5 working tree docs/reviews and docs/receipts only",
+    "run_dir_modified": false,
+    "old_evidence_modified": false
+  }
+}

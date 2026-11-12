@@ -1,0 +1,290 @@
+{
+ "schema": "a4.p2av2.r10_final.summary.v1",
+ "package_id": "A4-P2AV2-R10-FINAL-20261111",
+ "title": "A4 R10 六臂基础设施/证据状态图与表（描述性；无性能结论）",
+ "generated_at_utc": "2026-11-11T20:14:06Z",
+ "declaration": "SIX_ARM_PILOT_NOT_COMPLETED / E1–E6 NOT_COMPUTABLE — NO PERFORMANCE DATA",
+ "policy": {
+  "physical_call_count_a4": 0,
+  "performance_figures": false,
+  "endpoints": "E1–E6 六臂全部 NOT_COMPUTABLE；R1–R10 永久排除",
+  "part_of_a5_signed_receipt": false,
+  "issue9_figure_numbers": false,
+  "a5_r10_post_run_audit": "AUDIT_AND_RECEIPT_DELIVERED",
+  "a5_r10_audit": {
+   "commit": "9ac700427ba92283894d147cc862ef7850d5dc77",
+   "previous_commit": "563d95fe36f57bcee8312aab5ef878c9cd1f4b84",
+   "md_sha256": "09444da39541299508cab9aea534b0f5c676a43c24803d964fef40caf286bceb",
+   "md_bytes": 18698,
+   "json_sha256": "bf60d63c49629e8ba57d695d60e1c87efb20a21759d72ca2ce426914347b3756",
+   "json_bytes": 23483,
+   "json_checks": "85/85 PASS"
+  },
+  "a5_r10_receipt": {
+   "receipt_id": "A5-P2A-V2-R10-FINAL-RECEIPT-20261111",
+   "commit": "964a451a0b43c037e5a64f0c81a006a27eaa7058",
+   "md_sha256": "af33d0844ae6e6340aff9b2ece78659ab660f21728bd845f5e56b2ae8fe58198",
+   "md_bytes": 17238,
+   "json_sha256": "7bfdb45f9ef2fdc78dc36c5dba2c10269e3be3bbf9edb20a9f836ab4052e0a3c",
+   "json_bytes": 12412
+  },
+  "accounting_bases": [
+   "charged_projected 448/3148",
+   "physical_actual 153/1083"
+  ]
+ },
+ "verdict": {
+  "six_arm_pilot": "NOT_COMPLETED",
+  "endpoints_e1_e6": "NOT_COMPUTABLE",
+  "bo": {
+   "status": "COMPLETED",
+   "evaluations": 32,
+   "valid": 23
+  },
+  "de": {
+   "status": "STOPPED_SCIENTIFIC_INVALID_RATIO",
+   "evaluations": 16,
+   "valid": 12
+  },
+  "not_run": [
+   "PSO",
+   "ABO",
+   "ADE",
+   "APSO"
+  ]
+ },
+ "accounting": {
+  "charged_projected": {
+   "starts": 448,
+   "internal": 3148,
+   "headroom_starts": 3,
+   "headroom_internal": 9
+  },
+  "physical_actual": {
+   "starts": 153,
+   "internal": 1083,
+   "headroom_starts": 298,
+   "headroom_internal": 2074
+  },
+  "caps": {
+   "starts": 451,
+   "internal": 3157
+  }
+ },
+ "r10": {
+  "batch_id": "DREAL001-P2-20261111-15",
+  "run_id": "DREAL001-P2A2R10-20261111-01",
+  "window": [
+   "2026-11-11T18:30:00Z",
+   "2026-11-12T04:00:00Z"
+  ],
+  "window_token": "WINDOW_OK-P2AV2R10-20261111T1830Z-20261112T0400Z",
+  "run_status": "STOPPED",
+  "scientific_stop": true,
+  "stop": {
+   "phase": "scientific_auto_stop",
+   "arm_id": "DE",
+   "message": "ARM_STOPPED_STOPPED_SCIENTIFIC_INVALID_RATIO",
+   "created_utc": "2026-11-11T19:13:55Z"
+  },
+  "invalid_ratio": 0.2708333333333333,
+  "invalid_tolerance": {
+   "ratio_min_evaluations": 48,
+   "ratio_max": 0.25,
+   "consecutive_max": 6,
+   "total_max": 64,
+   "invalid_status": "INVALID_NUMERICAL"
+  },
+  "preflight": {
+   "overall": "PREFLIGHT_PASS_BYTE",
+   "cases": 2,
+   "starts": 2,
+   "internal": 14,
+   "counted_in_e1_e6": false,
+   "expected_polar_sha256": {
+    "PRE-01": "455082e2ac8029216a811c89aaa20b34fd9d73faa319eed23da5348e3de4bc87",
+    "PRE-02": "0287afe0d7e5a91bc286c0b6cbd1ca5623d8aafe65110862fe263925129dd33f"
+   }
+  },
+  "diagnostics": {
+   "status": "DIAGNOSTICS_NOT_IN_MATRIX",
+   "starts": 0,
+   "internal_cases": 0,
+   "in_r10_matrix": false,
+   "excluded_from_endpoints": true
+  },
+  "backend": "REAL_VSPAERO",
+  "reused_frozen_pair": true
+ },
+ "groups": {
+  "pre_r1": {
+   "starts": 39,
+   "internal": 285,
+   "note": "前序历史批次（R1 前，A3 accounting baseline 组件）"
+  },
+  "r1_r6": {
+   "starts": 11,
+   "internal": 77,
+   "rounds": [
+    "R1",
+    "R2",
+    "R3",
+    "R4",
+    "R5",
+    "R6"
+   ]
+  },
+  "r7_r10": {
+   "starts": 103,
+   "internal": 721,
+   "rounds": [
+    "R7",
+    "R8",
+    "R9",
+    "R10"
+   ]
+  },
+  "cumulative_physical_actual": {
+   "starts": 153,
+   "internal": 1083
+  },
+  "cumulative_charged_projected": {
+   "starts": 448,
+   "internal": 3148
+  },
+  "caps": {
+   "starts": 451,
+   "internal": 3157
+  }
+ },
+ "counts": {
+  "figures": 6,
+  "tables": 6,
+  "deliverable_files": 23,
+  "fail_closed_checks": 35
+ },
+ "outputs": [
+  {
+   "path": "README.md",
+   "sha256": "c05610e4c69b723354f88bcfe5db153e8ee17e6405792fcf09fa5cd2d97defa0",
+   "bytes": 2283
+  },
+  {
+   "path": "data_sources.json",
+   "sha256": "34b69bd9a5a6ed93024770bdca31f3d7df2c5277c0cc0b27656ef7ce43613916",
+   "bytes": 17115
+  },
+  {
+   "path": "evidence.json",
+   "sha256": "acf57988dd476aa07904585169c2df059cab51c3220860a82c8cd3c915d05967",
+   "bytes": 96198
+  },
+  {
+   "path": "figure_notes_zh.md",
+   "sha256": "321285e274bfda10024c939f3ebff3fcad397760c126f744f9f8a00d022181aa",
+   "bytes": 9619
+  },
+  {
+   "path": "figures/fig1_objective_distribution_trajectory.pdf",
+   "sha256": "5169d92b3da697315cb9cb26a386ae55269b41bb04ca0d09982d1f712e27661c",
+   "bytes": 75316
+  },
+  {
+   "path": "figures/fig1_objective_distribution_trajectory.png",
+   "sha256": "1b839fea428e6494bb8abca52e00e46cddff43c9556533a188368de22056b817",
+   "bytes": 350087
+  },
+  {
+   "path": "figures/fig2_validity_and_invalid_reasons.pdf",
+   "sha256": "fd90ccacf8ad53d1267809b01992e388ebcf2494aa9ef503a9f25d1be689b42a",
+   "bytes": 59176
+  },
+  {
+   "path": "figures/fig2_validity_and_invalid_reasons.png",
+   "sha256": "adcded58cccbb83b3c9cec3ad333ef76ec5d9d6c1db8790f4ddcb8f8e4d611f9",
+   "bytes": 251600
+  },
+  {
+   "path": "figures/fig3_endpoint_availability_e1_e6.pdf",
+   "sha256": "7284e53b0e9e54c0b58e7f71f662b6f567287e45ac64bc5f9e76c4abb5918c14",
+   "bytes": 61350
+  },
+  {
+   "path": "figures/fig3_endpoint_availability_e1_e6.png",
+   "sha256": "df11a45a882693562fdbf96c5131aaf94ee5151938b20e85ce9aa55ccf2ae9e7",
+   "bytes": 255720
+  },
+  {
+   "path": "figures/fig4_accounting_two_bases.pdf",
+   "sha256": "29fd2071da942c749a865acd6529b647f7ec13aef6b259b82e32eed39b72d568",
+   "bytes": 58430
+  },
+  {
+   "path": "figures/fig4_accounting_two_bases.png",
+   "sha256": "a49d7d9764c81fd0e601219d44262f555d478b8b73caed210da7309139aac045",
+   "bytes": 301682
+  },
+  {
+   "path": "figures/fig5_preflight_byte_identity.pdf",
+   "sha256": "82132795fcb757328ea8a9b87dd89bc8da8a6c5187bb96e1a28e2bc2abb8992b",
+   "bytes": 75363
+  },
+  {
+   "path": "figures/fig5_preflight_byte_identity.png",
+   "sha256": "ae8ec64751e3952b8f03a1e8683771f14dab42f4ee6a60005a963fb8150b8f7c",
+   "bytes": 318734
+  },
+  {
+   "path": "figures/fig6_r1r10_timeline.pdf",
+   "sha256": "7ffca68d5e9bc702a07fbc8e725029b9be1a5f17533ed53c83e599722256c088",
+   "bytes": 81857
+  },
+  {
+   "path": "figures/fig6_r1r10_timeline.png",
+   "sha256": "fec8f8bfc8eac6adccff51c5d5829d502876bd2de6751e529de13db7a989ac61",
+   "bytes": 299733
+  },
+  {
+   "path": "tables/table1_r1r10_attempt_ledger.csv",
+   "sha256": "a9b5e72d6a8682c655aeca9605425d7e5cdfe068d179eab2e7d1a06a94934a0d",
+   "bytes": 7565
+  },
+  {
+   "path": "tables/table2_six_arm_status.csv",
+   "sha256": "01473ce53a5f99f18dde7ca55400d5b9466444cdf34b52c0cfab8213d515b41b",
+   "bytes": 920
+  },
+  {
+   "path": "tables/table3_objective_descriptive_stats.csv",
+   "sha256": "56b1615500a8001651a89348e83d825847e3d5a873f76a2551b7dd340b49c51c",
+   "bytes": 1502
+  },
+  {
+   "path": "tables/table4_endpoint_availability_e1_e6.csv",
+   "sha256": "445d7e48d6e3579fb3a0c29f6c8f481c5ff35742425496ff06b87c1016555c89",
+   "bytes": 2027
+  },
+  {
+   "path": "tables/table5_accounting_two_bases.csv",
+   "sha256": "3b74bf16ebf385374f9546211ca14d0eda0c0fa742eb4ccfefa3fc73667665d8",
+   "bytes": 903
+  },
+  {
+   "path": "tables/table6_preflight_byte_evidence.csv",
+   "sha256": "6b28c1e9e922f13865d44fd4605b4aad679cb31bd998f55d54e72e89c16c6c1e",
+   "bytes": 6890
+  }
+ ],
+ "sha256sums": {
+  "path": "SHA256SUMS.txt",
+  "sha256": "3c4023a3ba05ffd630abc5f4b1ed0e10b95326b99d5e29dbc4495b52e10e9f93",
+  "bytes": 2372
+ },
+ "verify": {
+  "status": "PASS",
+  "files_checked": 23,
+  "declaration_present": true,
+  "manifest_sha256": "3c4023a3ba05ffd630abc5f4b1ed0e10b95326b99d5e29dbc4495b52e10e9f93",
+  "manifest_bytes": 2372
+ }
+}

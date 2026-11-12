@@ -1,0 +1,83 @@
+{
+  "schema": "dreal001.lead_decision.v1",
+  "decision_id": "L-11",
+  "decision": "CONTINUE_WITH_R9_PREFROZEN_MANIFEST_FLAT_ROW_FIX",
+  "decision_utc": "2026-11-11T17:20:00Z",
+  "physical_authorization": false,
+  "policy_basis": [
+    "protocol D (L-09)",
+    "R8 prefrozen reuse (L-10)",
+    "user m01474"
+  ],
+  "r8_attempt1": {
+    "start_utc": "2026-11-11T17:14:09Z",
+    "stop_utc": "2026-11-11T17:14:11Z",
+    "stop_phase": "setup",
+    "error": "FreezeRecordError: PREFROZEN_GEOM_MISSING d51866f7d3c49303/462x401",
+    "physical_call_count": 0,
+    "charged_starts": 0,
+    "charged_internal_cases": 0,
+    "stop_report_sha256": "729eae0f339558881139cf593bfc998f9498a5fb5a4c63139cc5b5a5edc07cb6b",
+    "stop_report_bytes": 2303,
+    "executor_prestart_sha256": "72a51f0c9121af10d20cd6cd1e617fa36dbb85e11e92dab7dd37d15f83bdc160",
+    "executor_prestart_bytes": 12545,
+    "launcher_prefrozen_gate_sha256": "533263b7ce6982cf79e6ed20345c68dd4f90a4e4ad945633c5fd44ff68e8321b",
+    "launcher_prefrozen_gate_bytes": 37476,
+    "ledger_present": false,
+    "cases_present": false,
+    "batch_summary_present": false,
+    "root_cause": "initial_designs_manifest family rows are flat; A2 runtime:574 / executor:1131 read only nested row['frozen']",
+    "process_gap": "executor-side _prefrozen_reuse_gate was not exercised in any pre-GO smoke"
+  },
+  "r9_identity": {
+    "batch_id": "DREAL001-P2-20261111-14",
+    "run_id": "DREAL001-P2A2R9-20261111-01",
+    "run_dir": "D:\\RCAIDE\\dnext001\\wt-real-a2-optimizers\\research\\concorde_metaopt\\dreal001\\runs\\DREAL001-P2A2R9-20261111-01",
+    "window": {
+      "start_utc": "2026-11-11T17:30:00Z",
+      "end_utc": "2026-11-12T04:00:00Z",
+      "token": "WINDOW_OK-P2AV2R9-20261111T1730Z-20261112T0400Z"
+    },
+    "start_deadline_utc": "2026-11-11T21:00:00Z",
+    "clean_stop_utc": "2026-11-12T02:30:00Z",
+    "hard_stop_utc": "2026-11-12T04:00:00Z",
+    "planned_starts": 390,
+    "planned_internal_cases": 2730,
+    "max_starts": 451,
+    "max_internal_cases": 3157,
+    "reserve_starts": 64,
+    "cumulative_starts": 446,
+    "cumulative_internal_cases": 3134,
+    "supersedes": {
+      "path": "D:\\RCAIDE\\dnext001\\wt-real-a2-optimizers\\research\\concorde_metaopt\\dreal001\\runs\\DREAL001-P2A2R8-20261111-01\\approval.json",
+      "sha256": "fa0d94a2be7ea2dcb6828b85b0cc032885829a9c8fe904e993bb40535c981f46",
+      "bytes": 75166,
+      "physical_call_count_at_supersede": 56,
+      "run_id": "DREAL001-P2A2R8-20261111-01"
+    },
+    "amendment_seq_9": {
+      "action": "R9_PREFROZEN_MANIFEST_FLAT_ROW_FIX",
+      "physical_call_count_at_amendment": 56
+    }
+  },
+  "final_attempt": true,
+  "r10_authorized": false,
+  "fix_boundary": {
+    "permitted": [
+      "A2 runtime/executor flat-row compatibility",
+      "unit tests",
+      "executor-side prefrozen gate zero-physical smoke",
+      "R9 package/launcher/dry-run tool"
+    ],
+    "forbidden": [
+      "A1 frozen bytes",
+      "plan scientific fields",
+      "protocol D policy",
+      "caps/planned numbers",
+      "R1-R8 evidence bytes",
+      "R8 run dir changes",
+      "retry",
+      "pre-GO solver start"
+    ]
+  }
+}

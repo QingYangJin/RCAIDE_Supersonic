@@ -1,0 +1,9 @@
+basis,starts,internal_cases,semantics,source
+prior_actual,62,446,R1 之前的实际累计（A3 baseline_prior_actual）,A3 accounting.cumulative.baseline_prior_actual
+r10_planned_reservation,386,2702,R10 approval 计划预留（含未执行预算），非实际,A3 accounting.cumulative.r10_planned_reservation
+r10_actual,91,637,R10 真实物理消耗：preflight 2/14 + diagnostics 0/0 + main 89/623,A3 accounting.run_local
+charged_projected,448,3148,前序 62/446 + R10 计划 386/2702；caps 按此口径执法；不得表述为实际消耗,L-15 / A3 accounting.cumulative.charged_projected
+physical_actual,153,1083,前序 62/446 + R10 实际 91/637；真实物理消耗,L-15 / A3 accounting.cumulative.physical_actual
+caps,451,3157,任务授权 caps,A3 accounting.cumulative.caps
+headroom_charged,3,9,451−448 / 3157−3148,计算
+headroom_physical,298,2074,451−153 / 3157−1083,计算

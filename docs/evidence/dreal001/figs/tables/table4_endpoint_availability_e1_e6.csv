@@ -1,0 +1,7 @@
+endpoint,definition,BO,DE,PSO,ABO,ADE,APSO,overall,reason
+E1,per-design primary = 0.5*CDi(f1)+0.5*CDi(f2)（冻结定义，within-design 加权均值）,COMPUTED_DESCRIPTIVE,COMPUTED_DESCRIPTIVE_PARTIAL,NOT_RUN,NOT_RUN,NOT_RUN,NOT_RUN,NOT_COMPUTABLE_AS_SIX_ARM_ENDPOINT,BO 23/32 valid、DE 12/16 valid 的 per-design primary 可描述性列出；BO 9 / DE 4 invalid 无 primary。PSO/ABO/ADE/APSO NOT_RUN（0 评估）。六臂 E1 端点不可计算。
+E2,best-at-budget（在每臂预注册评估预算 B=32 处取 best primary）,COMPUTED_DESCRIPTIVE_AT_BUDGET,NOT_COMPUTABLE_AT_BUDGET,NOT_RUN,NOT_RUN,NOT_RUN,NOT_RUN,NOT_COMPUTABLE,BO 完成 32/32 评估，best_primary 可描述；DE 仅 16/32（右删失，预算未耗尽），按冻结定义不得作 at-budget 端点（仅可列 observed best-so-far）；其余 4 臂 NOT_RUN。
+E3,starts-to-baseline（达到基线目标所需的 solver starts）,NOT_COMPUTABLE,NOT_COMPUTABLE,NOT_RUN,NOT_RUN,NOT_RUN,NOT_RUN,NOT_COMPUTABLE,R10 package 内未绑定冻结的优化目标 baseline（approval 中 baseline 仅指 accounting baseline 62/446，不是 objective baseline）；无 baseline 目标值即无法定义 starts-to-baseline。
+E4,可行率 = valid evaluations / evaluations（每臂）,COMPUTED_DESCRIPTIVE,COMPUTED_DESCRIPTIVE_PARTIAL,NOT_RUN,NOT_RUN,NOT_RUN,NOT_RUN,NOT_COMPUTABLE_AS_SIX_ARM_COMPARISON,BO 23/32=71.875%、DE 12/16=75.0% 可描述性报告；DE 因科学停批右删失、两臂预算不等且单 seed，禁止比较/排名。其余 4 臂 NOT_RUN。
+E5,SINGLE_SEED_42 稳定性/重复性端点,NOT_COMPUTABLE,NOT_COMPUTABLE,NOT_RUN,NOT_RUN,NOT_RUN,NOT_RUN,NOT_COMPUTABLE,单 seed=42、无重复运行、无重复设计评估；冻结结论 E5=SINGLE_SEED_42 NOT_COMPUTABLE。
+E6,冷启动增益（cold-start baseline 与优化臂的配对增益）,NOT_COMPUTABLE,NOT_COMPUTABLE,NOT_RUN,NOT_RUN,NOT_RUN,NOT_RUN,NOT_COMPUTABLE,无冷启动 baseline 目标/配对对照；仅 BO 完成、DE 部分，无配对可比，且禁止跨臂比较。

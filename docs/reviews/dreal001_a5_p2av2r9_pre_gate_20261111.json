@@ -1,0 +1,760 @@
+{
+  "schema": "dreal001.a5.r9.pre_gate.v1",
+  "gate_id": "G-P2AV2R9-PRE",
+  "created_utc": "2026-11-11T17:52:57Z",
+  "reviewer": "a5-review",
+  "run_id": "DREAL001-P2A2R9-20261111-01",
+  "batch_id": "DREAL001-P2-20261111-14",
+  "window": {
+    "start": "2026-11-11T17:30:00Z",
+    "end": "2026-11-12T04:00:00Z",
+    "token": "WINDOW_OK-P2AV2R9-20261111T1730Z-20261112T0400Z"
+  },
+  "verdict": "PASS_WITH_MANDATORY_SIGNATURE_CORRECTIONS",
+  "checks_total": 52,
+  "checks_pass": 52,
+  "checks_fail": 0,
+  "checks": [
+    {
+      "id": "C01",
+      "item": "A2 R9 package commit resolves and contains the 8 package files",
+      "expected": "resolved a4e9ded; 8 files in commit",
+      "actual": "a4e9ded2f358035eff2dd55965b4408cb89dc96a resolved; run_dir_entries=8; commit has all 8=true",
+      "verdict": "PASS",
+      "note": ""
+    },
+    {
+      "id": "C02",
+      "item": "disk bytes == commit blobs for all 8 package files",
+      "expected": "8/8 identical (git diff --exit-code)",
+      "actual": "identical",
+      "verdict": "PASS",
+      "note": ""
+    },
+    {
+      "id": "C03",
+      "item": "plan.json bytes/SHA",
+      "expected": "3450034d/48,619",
+      "actual": "3450034d54960dcb2c06c61d84f87c9b67604a369d63264603d7d0907c8b84c4 / 48619",
+      "verdict": "PASS",
+      "note": ""
+    },
+    {
+      "id": "C04",
+      "item": "approval.DRAFT.json bytes/SHA",
+      "expected": "b57f9f6c/52,781",
+      "actual": "b57f9f6c551159e0cb1be490bc46e441f69e0005b9de448693c2516314ce0517 / 52781",
+      "verdict": "PASS",
+      "note": ""
+    },
+    {
+      "id": "C05",
+      "item": "identity_binding.json file SHA and canonical identity_sha256",
+      "expected": "f2ae7ced/10,445 + canonical present",
+      "actual": "f2ae7ced21229e616eb2d572c1c823060ab0448e530e50d1adc42a30a9d9893b / 10445 / canonical 5a2f9b33bd595bc1ad137f742079575f8d3af1c7a04567ef97a14fb3228be59b",
+      "verdict": "PASS",
+      "note": ""
+    },
+    {
+      "id": "C06",
+      "item": "initial_designs_manifest.json SHA/bytes and 3 initial designs",
+      "expected": "93a078e3/14,822; 3 designs",
+      "actual": "93a078e3dcae1b7bf04e3f39a02632d87ef9fbcd26368dda4236ba8f517efe47 / 14822; designs=3",
+      "verdict": "PASS",
+      "note": ""
+    },
+    {
+      "id": "C07",
+      "item": "prereg SHA + R9 addendum + no stale R8 addendum + R9 window/run text",
+      "expected": "887f9880/17,578; R9 section",
+      "actual": "887f9880e6b9f53a5b99e2cddf9825b2a77fed2adc79dfd626a19e3a7e1be89b / 17578 addendum=true staleR8=false window=true run=true",
+      "verdict": "PASS",
+      "note": ""
+    },
+    {
+      "id": "C08",
+      "item": "dry_run.json and executor_dry_run.json SHAs/bytes",
+      "expected": "ff54772e/10,930 ; d8e92cd9/2,438",
+      "actual": "ff54772e5e7d940408b457bfb4e856edb962d9cbb3c11e1312fa21d19f28573e / 10930 ; d8e92cd9e93dd9f29662154d068d316d681657e7a5e846c4bab66670030043b3 / 2438",
+      "verdict": "PASS",
+      "note": ""
+    },
+    {
+      "id": "C09",
+      "item": "SHA256SUMS.txt self-consistency",
+      "expected": "7/7 recomputed match",
+      "actual": "7/7 PASS; sums sha 2f5d3c6c890b209a0b1d1ce7d970b3a5e5ddfe21b037c0c550cd2ea36d55fbe4",
+      "verdict": "PASS",
+      "note": ""
+    },
+    {
+      "id": "C10",
+      "item": "package dry_run non-PASS checks triage",
+      "expected": "C10 definitional FAIL only; C16/C19 NV; C23/C32 PASS",
+      "actual": "[\"C10_executor_sha\"] / NV [\"C16_window_requested\",\"C19_a1_runtime_constructor\"] (of 22 checks)",
+      "verdict": "PASS",
+      "note": "known definitional false negative disclosed"
+    },
+    {
+      "id": "C11",
+      "item": "executor dry-run",
+      "expected": "390 planned / 0 emitted / 2,730 internal / physical 0",
+      "actual": "{\"status\":\"DRY_RUN_BLOCKED_NOT_APPROVED\",\"planned\":390,\"emitted\":0,\"internal\":2730,\"physical\":0,\"failed\":[{\"check_id\":\"D01_plan_sha\",\"status\":\"PASS\",\"expected\":\"3450034d54960dcb2c06c61d84f87c9b67604a369d63264603d7d0907c8b84c4\",\"actual\":\"3450034d54960dcb2c06c61d84f87c9b67604a369d63264603d7d0907c8b84c4\"},{\"check_id\":\"D02_draft_not_approved\",\"status\":\"PASS\",\"expected\":false,\"actual\":false},{\"check_id\":\"D03_caps\",\"status\":\"PASS\",\"expected\":[390,451],\"actual\":[390,451]},{\"check_id\":\"D04_window\",\"status\":\"PASS\",\"expected\":\"WINDOW_OK-P2AV2R9-20261111T1730Z-20261112T0400Z\",\"actual\":\"WINDOW_OK-P2AV2R9-20261111T1730Z-20261112T0400Z\"},{\"check_id\":\"D05_executor_blob\",\"status\":\"PASS\",\"expected\":true,\"actual\":true},{\"check_id\":\"D06_a1_real_path\",\"status\":\"PASS\",\"expected\":true,\"actual\":true},{\"check_id\":\"D07_solver_contract_exe\",\"status\":\"PASS\",\"expected\":\"db71c4412489af82398833408ea30fb73327bdd9434de2ef530d31375b9fddad\",\"actual\":\"db71c4412489af82398833408ea30fb73327bdd9434de2ef530d31375b9fddad\"}]}",
+      "verdict": "PASS",
+      "note": ""
+    },
+    {
+      "id": "C12",
+      "item": "R9 pre-execution run dir has no execution artifacts",
+      "expected": "8 package files only; no cases/ledger/evaluations/approval.json/batch_summary/stop_report",
+      "actual": "8 files; extra=[]",
+      "verdict": "PASS",
+      "note": ""
+    },
+    {
+      "id": "C13",
+      "item": "DRAFT identity",
+      "expected": "batch 14 / run R9 / window 17:30Z-11-12T04:00Z / token / planned 390-2730 / caps 451-3157",
+      "actual": "{\"batch\":\"DREAL001-P2-20261111-14\",\"run\":\"DREAL001-P2A2R9-20261111-01\",\"window\":{\"start_utc\":\"2026-11-11T17:30:00Z\",\"end_utc\":\"2026-11-12T04:00:00Z\",\"token\":\"WINDOW_OK-P2AV2R9-20261111T1730Z-20261112T0400Z\",\"status\":\"REQUESTED_NOT_SIGNED\"},\"planned\":[390,2730],\"caps\":[451,3157]}",
+      "verdict": "PASS",
+      "note": ""
+    },
+    {
+      "id": "C14",
+      "item": "DRAFT supersedes R8 signed approval",
+      "expected": "fa0d94a2.../75,166 B / physical 56 / seq9",
+      "actual": "{\"approval_path\":\"D:\\\\RCAIDE\\\\dnext001\\\\wt-real-a2-optimizers\\\\research\\\\concorde_metaopt\\\\dreal001\\\\runs\\\\DREAL001-P2A2R8-20261111-01\\\\approval.json\",\"sha256\":\"fa0d94a2be7ea2dcb6828b85b0cc032885829a9c8fe904e993bb40535c981f46\",\"bytes\":75166,\"run_id\":\"DREAL001-P2A2R8-20261111-01\",\"physical_call_count_at_supersede\":56,\"superseded_at_utc\":\"2026-11-11T17:31:53Z\",\"reason\":\"R8 is preserved read-only and excluded from endpoints. Its only attempt stopped in the setup phase with zero physical calls: the executor-side prefrozen reuse gate raised FreezeRecordError PREFROZEN_GEOM_MISSING d51866f7d3c49303/462x401 because the initial manifest stores family rows FLAT while p2a_v2_runtime._reuse_prefrozen and the executor gate expected a nested frozen dict; no preflight, diagnostic or main case ran and no ledger/cases existed, so R8 charged 0 starts / 0 internal cases. R9 is a minimal A2 execution-layer fix: (a) both readers accept nested or flat family rows (nested preferred, flat fallback to the row itself) with the same three-file SHA/vkey/vsp3/canonical fail-closed checks; (b) the executor imports the utc_now helper its gate needs (latent NameError surfaced by the zero-physical executor gate probe); (c) a new zero-physical smoke exercises the executor prefrozen gate end-to-end on the real R9 initial manifest before GO. No A1 bytes, no executor science policy, no plan scientific policy and no endpoint changes. Protocol D is unchanged.\"}",
+      "verdict": "PASS",
+      "note": ""
+    },
+    {
+      "id": "C15",
+      "item": "amendment_log seq1-seq8 == R8 signed history seq9 R9 fix at physical 56",
+      "expected": "{\"draft_n\":9,\"equal_first_n\":8,\"seq9\":{\"seq\":9,\"action\":\"R9_PREFROZEN_MANIFEST_FLAT_ROW_FIX\",\"at_utc\":\"2026-11-11T17:31:53Z\",\"physical_call_count_at_amendment\":56,\"reason\":\"R8 is preserved read-only and excluded from endpoints. Its only attempt stopped in the setup phase with zero physical calls: the executor-side prefrozen reuse gate raised FreezeRecordError PREFROZEN_GEOM_MISSING d51866f7d3c49303/462x401 because the initial manifest stores family rows FLAT while p2a_v2_runtime._reuse_prefrozen and the executor gate expected a nested frozen dict; no preflight, diagnostic or main case ran and no ledger/cases existed, so R8 charged 0 starts / 0 internal cases. R9 is a minimal A2 execution-layer fix: (a) both readers accept nested or flat family rows (nested preferred, flat fallback to the row itself) with the same three-file SHA/vkey/vsp3/canonical fail-closed checks; (b) the executor imports the utc_now helper its gate needs (latent NameError surfaced by the zero-physical executor gate probe); (c) a new zero-physical smoke exercises the executor prefrozen gate end-to-end on the real R9 initial manifest before GO. No A1 bytes, no executor science policy, no plan scientific policy and no endpoint changes. Protocol D is unchanged.\",\"supersedes_approval_path\":\"D:\\\\RCAIDE\\\\dnext001\\\\wt-real-a2-optimizers\\\\research\\\\concorde_metaopt\\\\dreal001\\\\runs\\\\DREAL001-P2A2R8-20261111-01\\\\approval.json\",\"supersedes_approval_sha256\":\"fa0d94a2be7ea2dcb6828b85b0cc032885829a9c8fe904e993bb40535c981f46\"}}",
+      "actual": true,
+      "verdict": "PASS",
+      "note": ""
+    },
+    {
+      "id": "C16",
+      "item": "R8 setup-stop facts disclosed",
+      "expected": "SETUP_STOP_PREFROZEN_GEOM_MISSING; charged 0/0; launcher gate PASS",
+      "actual": "{\"batch_id\":\"DREAL001-P2-20261111-13\",\"run_id\":\"DREAL001-P2A2R8-20261111-01\",\"status\":\"SETUP_STOP_PREFROZEN_GEOM_MISSING\",\"charged_starts\":0,\"charged_internal_cases\":0,\"main_starts\":0,\"stop_report_sha256\":\"729eae0f339558881139cf593bfc998f9498a5fb5a4c63139ccb5a5edc07cb6b\",\"stop_report_bytes\":2303,\"executor_prestart_sha256\":\"72a51f0c9121af10d20cd6cd1e617fa36dbb85e11e92dab7dd37d15f83bdc160\",\"executor_prestart_bytes\":12545,\"launcher_gate_sha256\":\"533263b7ce6982cf79e6ed20345c68dd4f90a4e4ad945633c5fd44ff68e8321b\",\"launcher_gate_bytes\":37476,\"root_cause\":\"executor-side prefrozen reuse gate assumed the nested A1 family_pair_manifest row shape while the packaged initial_designs_manifest carries flat family rows (frozen_vspgeom_path and the vkey/vsp3 checks at row level); the launcher gate already accepted both shapes, so it passed and the failure surfaced only after executor start, before any solver spawn or ledger write\",\"excluded_from_endpoints\":true,\"artifacts_preserved\":true,\"superseded_approval_sha256\":\"fa0d94a2be7ea2dcb6828b85b0cc032885829a9c8fe904e993bb40535c981f46\"}",
+      "verdict": "PASS",
+      "note": ""
+    },
+    {
+      "id": "C17",
+      "item": "flat/nested read fix is execution-layer only",
+      "expected": "runtime family_frozen_payload; executor mf=family_frozen_payload(fam_row); no A1 byte change",
+      "actual": "{\"executor_mf_flat\":true,\"runtime_helper\":true,\"static_guard\":true}",
+      "verdict": "PASS",
+      "note": ""
+    },
+    {
+      "id": "C18",
+      "item": "executor OWN prefrozen gate zero-physical smoke",
+      "expected": "e15776f190a4721e75ae704ce05c009b331004fb172827c3dbf2622d1ec3bca9",
+      "actual": "{\"status\":\"PREFROZEN_REUSE_GATE_PASS\",\"static\":119,\"designs_ok\":{\"15\":true,\"16\":true,\"17\":true},\"builds\":0,\"physical\":0,\"solver\":false}",
+      "verdict": "PASS",
+      "note": ""
+    },
+    {
+      "id": "C19",
+      "item": "executor gate reuse evidence for 3 designs x 2 families",
+      "expected": "PAIR_READY / PREFROZEN_MANIFEST_REUSE / attempts 0",
+      "actual": "{\"status\":\"PREFROZEN_REUSE_GATE_PASS\",\"static\":119,\"designs\":[[15,\"PAIR_READY\",\"PREFROZEN_MANIFEST_REUSE\",0],[16,\"PAIR_READY\",\"PREFROZEN_MANIFEST_REUSE\",0],[17,\"PAIR_READY\",\"PREFROZEN_MANIFEST_REUSE\",0]]}",
+      "verdict": "PASS",
+      "note": ""
+    },
+    {
+      "id": "C20",
+      "item": "launcher-side prefrozen gate + selftest PASS",
+      "expected": "31c6a3ac70cd89eed6735736a1b5bff2a46b7030444552398cf9bf60dd2e3e54 / 7d7d63a977d6d5d213e6fbb3c0dd11bcdb50ff908f654775b536a52bf1f23236",
+      "actual": "{\"status\":\"PASS\",\"checks\":79,\"static\":119,\"physical\":0}",
+      "verdict": "PASS",
+      "note": ""
+    },
+    {
+      "id": "C21",
+      "item": "launcher-side and executor-side gates equivalent",
+      "expected": "same static_index 119, same 3 designs, same manifest, guard all_equal",
+      "actual": "{\"tool_static\":119,\"launcher_static\":119,\"launcher_guard\":true,\"triples\":6}",
+      "verdict": "PASS",
+      "note": ""
+    },
+    {
+      "id": "C22",
+      "item": "flat/nested fail-closed unit test matrix + pytest green",
+      "expected": "test_r9_family_frozen_payload_flat_and_nested, test_r9_prefrozen_gate_flat_nested_and_fail_closed_matrix",
+      "actual": "{\"n\":45,\"r9\":[\"test_r9_family_frozen_payload_flat_and_nested\",\"test_r9_prefrozen_gate_flat_nested_and_fail_closed_matrix\"],\"flat_nested\":true,\"fail_closed\":true}",
+      "verdict": "PASS",
+      "note": ""
+    },
+    {
+      "id": "C23",
+      "item": "accounting: planned 390/2,730; cumulative 446/3,134 <= 451/3,157; headroom 5/23",
+      "expected": "{\"planned_starts\":390,\"planned_internal\":2730,\"caps_starts\":451,\"caps_internal\":3157,\"cumulative_starts\":446,\"cumulative_internal\":3134,\"prior_starts\":56,\"prior_internal\":404,\"headroom_starts\":5,\"headroom_internal\":23,\"check\":true}",
+      "actual": "{\"planned_starts\":390,\"planned_internal\":2730,\"caps_starts\":451,\"caps_internal\":3157,\"cumulative_starts\":446,\"cumulative_internal\":3134,\"prior_starts\":56,\"prior_internal\":404,\"headroom_starts\":5,\"headroom_internal\":23,\"check\":true}",
+      "verdict": "PASS",
+      "note": ""
+    },
+    {
+      "id": "C24",
+      "item": "A1 frozen bytes unchanged",
+      "expected": "evaluator f74a4752/58,291; freeze 31d78182/27,288; openvsp_model c40b11df/36,902; design_space 8f9b893c/33,660; config 8b29d1e3/10,846; bundle 995bb12f/3,262",
+      "actual": "{\"evaluator\":{\"bytes\":58291,\"sha256\":\"f74a4752495fd6c5330edcaf7edb4bcbe93f99c2a76bac06b5670d1f765ae20d\",\"path\":\"D:\\\\RCAIDE\\\\dnext001\\\\wt-real-a1-geometry-solver\\\\research\\\\concorde_metaopt\\\\dreal001\\\\geometry\\\\evaluator_v12.py\"},\"freeze_api\":{\"bytes\":27288,\"sha256\":\"31d781821516bb80fc158238e4ef485c361afea674ca3b962efbb89d5a737173\",\"path\":\"D:\\\\RCAIDE\\\\dnext001\\\\wt-real-a1-geometry-solver\\\\research\\\\concorde_metaopt\\\\dreal001\\\\geometry\\\\freeze_api.py\"},\"openvsp_model\":{\"bytes\":36902,\"sha256\":\"c40b11df29e9a41889b81f5c608c9a12cd921cf62d01c5318a6ab8eb91f859f6\",\"path\":\"D:\\\\RCAIDE\\\\dnext001\\\\wt-real-a1-geometry-solver\\\\research\\\\concorde_metaopt\\\\dreal001\\\\geometry\\\\openvsp_model.py\"},\"mesh_identity\":{\"bytes\":6837,\"sha256\":\"a4f119e69730508587b570d7027884c995ca2b1010945211f4c1df8cd4d4b9f6\",\"path\":\"D:\\\\RCAIDE\\\\dnext001\\\\wt-real-a1-geometry-solver\\\\research\\\\concorde_metaopt\\\\dreal001\\\\geometry\\\\mesh_identity.py\"},\"design_space\":{\"bytes\":33660,\"sha256\":\"8f9b893c13195c80ff1ee88598134e3f44fef0495452249780d114c9e0593b89\",\"path\":\"D:\\\\RCAIDE\\\\dnext001\\\\wt-real-a1-geometry-solver\\\\research\\\\concorde_metaopt\\\\aircraft\\\\design_space.py\"},\"design_space_config\":{\"bytes\":10846,\"sha256\":\"8b29d1e3833edc2af248d68cd6b7b4c94ebf775f25c86d80062a3850765a499e\",\"path\":\"D:\\\\RCAIDE\\\\dnext001\\\\wt-real-a1-geometry-solver\\\\research\\\\concorde_metaopt\\\\configs\\\\design_space_12d_lifting_surfaces.yaml\"},\"bundle_manifest\":{\"bytes\":3262,\"sha256\":\"995bb12fff738d3ebb0bde08c0d5c5bfeb9532aebe536847ef307a2332013aa5\",\"path\":\"D:\\\\RCAIDE\\\\dnext001\\\\wt-real-a1-geometry-solver\\\\research\\\\concorde_metaopt\\\\dreal001\\\\geometry\\\\\\\\replay_bundles\\\\P2A_V2_PREFLIGHT_20261111_R1\\\\bundle_manifest.json\"},\"executable\":{\"bytes\":811520,\"sha256\":\"db71c4412489af82398833408ea30fb73327bdd9434de2ef530d31375b9fddad\",\"path\":\"D:\\\\OpenVSP-3.55.0\\\\OpenVSP-3.55.0-win64\\\\vspaero.exe\"}}",
+      "verdict": "PASS",
+      "note": ""
+    },
+    {
+      "id": "C25",
+      "item": "A2 R9 execution bytes",
+      "expected": "{\"executor\":\"c2bdfb6825d156b71713ad57b9c982ebc06ec5a08bbfadf4324839ce8625af54\",\"runtime\":\"cc6e100427ac97a8183d9afd237334a007d487eb8a4150c4528a4d5556e3454e\",\"common\":\"565ed3382a0f1525a7c09df45842b74201ca5cb169ab8b25a1033a6638f65358\",\"p2a_v2\":\"254f3e2e95fe473b2d52b4907e2b3d4babb48a9134b734d82bdb62c94fbd174e\"}",
+      "actual": "{\"executor\":\"c2bdfb6825d156b71713ad57b9c982ebc06ec5a08bbfadf4324839ce8625af54\",\"runtime\":\"cc6e100427ac97a8183d9afd237334a007d487eb8a4150c4528a4d5556e3454e\",\"common\":\"565ed3382a0f1525a7c09df45842b74201ca5cb169ab8b25a1033a6638f65358\",\"p2a_v2\":\"254f3e2e95fe473b2d52b4907e2b3d4babb48a9134b734d82bdb62c94fbd174e\"}",
+      "verdict": "PASS",
+      "note": ""
+    },
+    {
+      "id": "C26",
+      "item": "plan deep diff vs R8 limited to identity/history/derived whitelist; scientific policy equal",
+      "expected": "369 leaf paths; outside=[]; policy_equal=true",
+      "actual": "{\"stage\":1,\"batch_id\":1,\"canonical_batch_id\":1,\"run_id\":1,\"run_dir\":1,\"run_dir_name\":1,\"batch_vs_run\":3,\"created_utc\":1,\"window\":2,\"window_start\":1,\"window_token\":1,\"policy_doc\":2,\"policy_doc_sha256\":1,\"policy_doc_path\":1,\"initial_designs_manifest_sha256\":1,\"initial_designs\":2,\"b2_waiver\":3,\"runtime_binding\":10,\"disclosures\":1,\"r9_addendum\":178,\"r8_addendum\":156}",
+      "verdict": "PASS",
+      "note": ""
+    },
+    {
+      "id": "C27",
+      "item": "cumulative budget",
+      "expected": "prior 56/404 + R9 390/2,730 = 446/3,134 <= 451/3,157",
+      "actual": "{\"planned_starts\":390,\"planned_internal\":2730,\"caps_starts\":451,\"caps_internal\":3157,\"cumulative_starts\":446,\"cumulative_internal\":3134,\"prior_starts\":56,\"prior_internal\":404,\"headroom_starts\":5,\"headroom_internal\":23,\"check\":true}",
+      "verdict": "PASS",
+      "note": ""
+    },
+    {
+      "id": "C28",
+      "item": "window / token / deadlines",
+      "expected": "17:30Z-11-12T04:00Z / token / start 21:00Z / clean 02:30Z / hard 04:00Z",
+      "actual": "{\"start_utc\":\"2026-11-11T17:30:00Z\",\"end_utc\":\"2026-11-12T04:00:00Z\",\"token\":\"WINDOW_OK-P2AV2R9-20261111T1730Z-20261112T0400Z\",\"status\":\"REQUESTED_NOT_SIGNED\"}",
+      "verdict": "PASS",
+      "note": ""
+    },
+    {
+      "id": "C29",
+      "item": "preflight authorization limited to PASS_BYTE",
+      "expected": "PASS_NUMERIC not pre-authorized",
+      "actual": "{}",
+      "verdict": "PASS",
+      "note": ""
+    },
+    {
+      "id": "C30",
+      "item": "R1-R7 signed approvals unchanged",
+      "expected": "9ea/eee/188/6e2/ca0/72b/1a5",
+      "actual": "{\"R1\":{\"bytes\":38476,\"sha256\":\"9e5c29b0ac482f36dc0d9bbe694a94afb7a3cf4a8557b549919dbe180cfe9b9b\",\"path\":\"D:\\\\RCAIDE\\\\dnext001\\\\wt-real-a2-optimizers\\\\research\\\\concorde_metaopt\\\\dreal001\\\\runs\\\\DREAL001-P2A2R-20261111-01\\\\approval.json\"},\"R2\":{\"bytes\":47081,\"sha256\":\"eee7868a4ea3892a5df1a8d51595e1b8dee78c34996d5fd9ccf2293363e2808f\",\"path\":\"D:\\\\RCAIDE\\\\dnext001\\\\wt-real-a2-optimizers\\\\research\\\\concorde_metaopt\\\\dreal001\\\\runs\\\\DREAL001-P2A2R2-20261111-01\\\\approval.json\"},\"R3\":{\"bytes\":52695,\"sha256\":\"18865f8f4e8206135f1673e5f8706bd201465bc617473c604b262ba440dd7f60\",\"path\":\"D:\\\\RCAIDE\\\\dnext001\\\\wt-real-a2-optimizers\\\\research\\\\concorde_metaopt\\\\dreal001\\\\runs\\\\DREAL001-P2A2R3-20261111-01\\\\approval.json\"},\"R4\":{\"bytes\":59125,\"sha256\":\"6e2aebcf7b5cbced471d0dfc6d7200d761e990660ac6f384517940600a2063ab\",\"path\":\"D:\\\\RCAIDE\\\\dnext001\\\\wt-real-a2-optimizers\\\\research\\\\concorde_metaopt\\\\dreal001\\\\runs\\\\DREAL001-P2A2R4-20261111-01\\\\approval.json\"},\"R5\":{\"bytes\":63264,\"sha256\":\"ca0bdc7b34bc29dc0a9e8a2157da28069be5279ca4a59d3ad5194e9646b528bf\",\"path\":\"D:\\\\RCAIDE\\\\dnext001\\\\wt-real-a2-optimizers\\\\research\\\\concorde_metaopt\\\\dreal001\\\\runs\\\\DREAL001-P2A2R5-20261111-01\\\\approval.json\"},\"R6\":{\"bytes\":67063,\"sha256\":\"72b95e03130fbe958c52528f1b8f484eae4872140a7336709094b9108964f98f\",\"path\":\"D:\\\\RCAIDE\\\\dnext001\\\\wt-real-a2-optimizers\\\\research\\\\concorde_metaopt\\\\dreal001\\\\runs\\\\DREAL001-P2A2R6-20261111-01\\\\approval.json\"},\"R7\":{\"bytes\":69405,\"sha256\":\"1a552267ab0070ee4f690815ed1de1db6d5976c1ada8356421f017bb84d72e37\",\"path\":\"D:\\\\RCAIDE\\\\dnext001\\\\wt-real-a2-optimizers\\\\research\\\\concorde_metaopt\\\\dreal001\\\\runs\\\\DREAL001-P2A2R7-20261111-01\\\\approval.json\"}}",
+      "verdict": "PASS",
+      "note": ""
+    },
+    {
+      "id": "C31",
+      "item": "R1-R8 excluded and charged counts disclosed",
+      "expected": "R1-R4 2/14 each; R5 0/0; R6 3/21; R7 6/42; R8 0/0; total 17/119 prior 56/404",
+      "actual": "{\"keys\":[\"r1\",\"r2\",\"r3\",\"r4\",\"r5\",\"r6\",\"r7\",\"cumulative_charged\",\"r8\"],\"r8\":{\"batch\":\"DREAL001-P2-20261111-13\",\"run\":\"DREAL001-P2A2R8-20261111-01\",\"status\":\"SETUP_STOP_PREFROZEN_GEOM_MISSING\",\"starts\":0,\"internal\":0,\"excluded_from_endpoints\":true}}",
+      "verdict": "PASS",
+      "note": ""
+    },
+    {
+      "id": "C32",
+      "item": "L-10 decision, Lead m02945 and A5 dissent recorded",
+      "expected": "present in gate/conditions",
+      "actual": "{\"lead_decision\":\"Lead m02945 (2026-11-11T17:19Z): R8 attempt-1 closed as SETUP_STOP with physical 0/0; R9 = last execution attempt under caps (batch DREAL001-P2-20261111-14, run DREAL001-P2A2R9-20261111-01, window 2026-11-11T17:30:00Z-2026-11-12T04:00:00Z, token WINDOW_OK-P2AV2R9-20261111T1730Z-20261112T0400Z, planned 390/2730, caps 451/3157, cumulative 446/3134, supersedes R8 approval fa0d94a2.../75,166 B, seq9=physical 56).\",\"a5_position\":\"A5 FAIL-08 upheld the R8 setup stop and root cause; A5 conditionally accepts R9 as the final attempt subject to R9-PREFROZEN-FLAT-01 / R9-EXECGATE-01 (executor-own gate zero-physical evidence + A5 independent replay) and all 52 conditions; A5 records that this is the 8th consecutive execution-layer defect and that a further setup/main failure with no receipt-grade scientific output would close the series NOT_RUN/NOT_COMPUTABLE.\",\"no_r9_by_default\":false,\"no_r10_by_default\":true}",
+      "verdict": "PASS",
+      "note": ""
+    },
+    {
+      "id": "C33",
+      "item": "launcher bindings, safety pins, live gate order",
+      "expected": "{\"len\":29320,\"pins\":{\"executor\":true,\"plan\":true,\"identity\":true},\"prefixes\":{\"pre\":true,\"c\":true},\"env\":{\"a5\":true,\"c\":true},\"planned\":true,\"cumulative\":true,\"order\":{\"verify\":20878,\"live_gate\":21461,\"spawn\":27621,\"ok\":true},\"smoke_gate\":true,\"refuses_cases\":true,\"prestart_zero\":true,\"conditions_52\":true,\"gate_fail_raise\":true}",
+      "actual": "{\"pins\":{\"executor\":true,\"plan\":true,\"identity\":true},\"prefixes\":{\"pre\":true,\"c\":true},\"env\":{\"a5\":true,\"c\":true},\"order\":{\"verify\":20878,\"live_gate\":21461,\"spawn\":27621,\"ok\":true},\"planned\":true,\"cumulative\":true,\"refuses\":true}",
+      "verdict": "PASS",
+      "note": ""
+    },
+    {
+      "id": "C34",
+      "item": "zero-physical launcher smoke",
+      "expected": "25649de1df1f92296460f0b462c42c864c41abeba5907c94c52485b5992cf7ae",
+      "actual": "{\"mode\":\"SMOKE_NO_SOLVER\",\"gate\":\"PASS\",\"checks\":79,\"static\":119,\"physical\":0,\"solver\":false}",
+      "verdict": "PASS",
+      "note": ""
+    },
+    {
+      "id": "C35",
+      "item": "post-approval dry-run tool registered and physically inert",
+      "expected": "3ae662660cabb93c6a0b01239395f47bb04e1d393447de6416741f5568d6a790",
+      "actual": "{\"len\":22322,\"codes\":45,\"d43\":true,\"d44\":true,\"d45\":true,\"selftest\":\"POST_APPROVAL_DRY_RUN_READY_NOT_RUN\",\"passed\":45,\"total\":45}",
+      "verdict": "PASS",
+      "note": ""
+    },
+    {
+      "id": "C36",
+      "item": "r9_addendum status / R8 reference / retained fixes",
+      "expected": "{\"status\":\"R9_PREFROZEN_MANIFEST_FLAT_ROW_FIX\",\"r8ref\":{\"batch_id\":\"DREAL001-P2-20261111-13\",\"run_id\":\"DREAL001-P2A2R8-20261111-01\",\"status\":\"SETUP_STOP_PREFROZEN_GEOM_MISSING\",\"charged_starts\":0,\"charged_internal_cases\":0,\"main_starts\":0,\"stop_report_sha256\":\"729eae0f339558881139cf593bfc998f9498a5fb5a4c63139ccb5a5edc07cb6b\",\"stop_report_bytes\":2303,\"executor_prestart_sha256\":\"72a51f0c9121af10d20cd6cd1e617fa36dbb85e11e92dab7dd37d15f83bdc160\",\"executor_prestart_bytes\":12545,\"launcher_gate_sha256\":\"533263b7ce6982cf79e6ed20345c68dd4f90a4e4ad945633c5fd44ff68e8321b\",\"launcher_gate_bytes\":37476,\"root_cause\":\"executor-side prefrozen reuse gate assumed the nested A1 family_pair_manifest row shape while the packaged initial_designs_manifest carries flat family rows (frozen_vspgeom_path and the vkey/vsp3 checks at row level); the launcher gate already accepted both shapes, so it passed and the failure surfaced only after executor start, before any solver spawn or ledger write\",\"excluded_from_endpoints\":true,\"artifacts_preserved\":true,\"superseded_approval_sha256\":\"fa0d94a2be7ea2dcb6828b85b0cc032885829a9c8fe904e993bb40535c981f46\"},\"retained\":11}",
+      "actual": "{\"status\":\"R9_PREFROZEN_MANIFEST_FLAT_ROW_FIX\",\"r1_reference\":{\"batch_id\":\"DREAL001-P2-20261111-06\",\"run_id\":\"DREAL001-P2A2R-20261111-01\",\"status\":\"PREFLIGHT_FAIL_MAIN_BATCH_NOT_RUN\",\"charged_starts\":2,\"charged_internal_cases\":14,\"main_starts\":0,\"root_cause\":\"A2 spawn basename concorde_baseline but A1 materialised model.vspgeom/model.vkey; VSPAERO found no basename geometry\",\"excluded_from_endpoints\":true,\"artifacts_preserved\":true},\"r2_reference\":{\"batch_id\":\"DREAL001-P2-20261111-07\",\"run_id\":\"DREAL001-P2A2R2-20261111-01\",\"status\":\"PREFLIGHT_FAIL_MAIN_BATCH_NOT_RUN\",\"charged_starts\":2,\"charge",
+      "verdict": "PASS",
+      "note": ""
+    },
+    {
+      "id": "C37",
+      "item": "A5 signature conditions prepared",
+      "expected": "52 items",
+      "actual": "52",
+      "verdict": "PASS",
+      "note": ""
+    },
+    {
+      "id": "C38",
+      "item": "approval_refs_final 14 keys prepared",
+      "expected": "14 keys; only a5_review/a2 anchors substituted at signature",
+      "actual": "[\"a1_bundle_commit\",\"a1_bundle_commit_full\",\"a1_bundle_manifest_sha256\",\"a1_bundle_path\",\"a1_bundle_note\",\"a1_executable_commit\",\"a1_task49_commit\",\"a1_execution_code\",\"a1_execution_code_note\",\"a1_execution_head\",\"a1_head\",\"a2_execution_code\",\"a2_package_commit\",\"a5_review\"]",
+      "verdict": "PASS",
+      "note": ""
+    },
+    {
+      "id": "C39",
+      "item": "draft-to-signed delta whitelist",
+      "expected": "9 top-level paths",
+      "actual": "[\"approved\",\"approved_at_utc\",\"approved_by\",\"approval_refs\",\"authorization\",\"b2_waiver\",\"conditions\",\"status\",\"window\"]",
+      "verdict": "PASS",
+      "note": ""
+    },
+    {
+      "id": "C40",
+      "item": "fail-closed unit tests for missing/tampered prefrozen bytes",
+      "expected": "missing + tamper cases present",
+      "actual": "{\"flat_nested\":true,\"fail_closed\":true,\"missing\":true,\"tamper\":true,\"static119\":true}",
+      "verdict": "PASS",
+      "note": ""
+    },
+    {
+      "id": "C41",
+      "item": "pytest R9 suite green",
+      "expected": "16 passed / 31 deselected",
+      "actual": "\"................                                                         [100%]\\r\\n16 passed, 31 deselected in 2.25s\\r\\n\"",
+      "verdict": "PASS",
+      "note": ""
+    },
+    {
+      "id": "C42",
+      "item": "no stale R7/R8 identity text",
+      "expected": "R9 addendum present; no R8 current run claim",
+      "actual": "{\"r9add\":true,\"staleR8\":false,\"r8runCurrent\":false}",
+      "verdict": "PASS",
+      "note": ""
+    },
+    {
+      "id": "C43",
+      "item": "design-space binding retained",
+      "expected": "A1 design_space 8f9b893c + config 8b29d1e3",
+      "actual": "{\"ds\":\"8f9b893c13195c80ff1ee88598134e3f44fef0495452249780d114c9e0593b89\",\"cfg\":\"8b29d1e3833edc2af248d68cd6b7b4c94ebf775f25c86d80062a3850765a499e\"}",
+      "verdict": "PASS",
+      "note": ""
+    },
+    {
+      "id": "C44",
+      "item": "GO / gate prefix bindings",
+      "expected": "G-P2AV2R9-PRE:PASS / C-P2AV2R9-02:PASS:",
+      "actual": "{\"pre\":true,\"c\":true}",
+      "verdict": "PASS",
+      "note": ""
+    },
+    {
+      "id": "C45",
+      "item": "static_index_count=119",
+      "expected": "119",
+      "actual": "{\"tool\":119,\"launcher\":119,\"replay\":119}",
+      "verdict": "PASS",
+      "note": ""
+    },
+    {
+      "id": "C46",
+      "item": "3 designs x 2 families prefrozen triples equal",
+      "expected": "12/12 families",
+      "actual": "{\"triples\":6,\"guard\":true,\"replay_designs\":3,\"replay_detail\":3}",
+      "verdict": "PASS",
+      "note": ""
+    },
+    {
+      "id": "C47",
+      "item": "R7 H1 evidence retained",
+      "expected": "r7_verify_prefrozen json+py present",
+      "actual": "{\"json\":true,\"py\":true}",
+      "verdict": "PASS",
+      "note": ""
+    },
+    {
+      "id": "C48",
+      "item": "no mesh QC data gate",
+      "expected": "L-09 option B rejected",
+      "actual": "{\"mesh_qc_gate\":false}",
+      "verdict": "PASS",
+      "note": ""
+    },
+    {
+      "id": "C49",
+      "item": "no winner/significance/cross-family; fuel null; physical NOT_VALIDATED",
+      "expected": "not claimed",
+      "actual": "{\"policy_equal\":true,\"endpoint\":[\"E1\",\"E2\",\"E3\",\"E4\",\"E5\",\"E6\"],\"statistics\":[\"single_seed\",\"designs_per_arm\",\"descriptive_only\",\"significance_testing\",\"winner_declaration\",\"paired_scope\",\"within_design\",\"equal_weight_family_average\",\"significance_claim_allowed\",\"significance_policy\",\"scope_note\",\"no_winner\",\"optimizer_pass\"]}",
+      "verdict": "PASS",
+      "note": ""
+    },
+    {
+      "id": "C50",
+      "item": "no R10 default; R9 = last attempt",
+      "expected": "no_r10_by_default true",
+      "actual": "{\"noR10\":true,\"noR9\":false}",
+      "verdict": "PASS",
+      "note": ""
+    },
+    {
+      "id": "C51",
+      "item": "A5 physical_call_count=0 / solver_started=false",
+      "expected": "0 / false",
+      "actual": "{\"replay_physical\":0,\"replay_solver\":false,\"exec_smoke_physical\":0}",
+      "verdict": "PASS",
+      "note": ""
+    },
+    {
+      "id": "C52",
+      "item": "R9 pre-exec run dir exactly 8 files; R8 dir untouched",
+      "expected": "8 files; R8 clean vs 62a6231",
+      "actual": "{\"run\":8,\"extra\":0,\"r8_diff_exit\":0,\"r8_files\":14}",
+      "verdict": "PASS",
+      "note": ""
+    }
+  ],
+  "anchors": {
+    "package_commit": "a4e9ded2f358035eff2dd55965b4408cb89dc96a",
+    "tools_commit": "0603597c0a87f6ded231ae4ee1781bb9dea5f1b6",
+    "gate_selftest_commit": "851b1a647e5bc7b80d5461bc271c8d472b9f8107",
+    "launcher": {
+      "sha256": "d959fdea33b553a06204df4257ff697ee969f96a53b19d9f24500ae8a9b4b97e",
+      "bytes": 29320,
+      "path": "docs/evidence/dreal001/p2av2r9_launch.py"
+    },
+    "executor": {
+      "sha256": "c2bdfb6825d156b71713ad57b9c982ebc06ec5a08bbfadf4324839ce8625af54",
+      "bytes": 92318
+    },
+    "runtime": {
+      "sha256": "cc6e100427ac97a8183d9afd237334a007d487eb8a4150c4528a4d5556e3454e",
+      "bytes": 57882
+    },
+    "common": {
+      "sha256": "565ed3382a0f1525a7c09df45842b74201ca5cb169ab8b25a1033a6638f65358",
+      "bytes": 24714
+    },
+    "p2a_v2": {
+      "sha256": "254f3e2e95fe473b2d52b4907e2b3d4babb48a9134b734d82bdb62c94fbd174e",
+      "bytes": 146797
+    },
+    "launcher_gate": {
+      "sha256": "31c6a3ac70cd89eed6735736a1b5bff2a46b7030444552398cf9bf60dd2e3e54",
+      "bytes": 19666
+    },
+    "launcher_gate_selftest": {
+      "sha256": "97ecd67f5da6df5df6e679712d454d59c247a648edbc0035724c307b43567dc6",
+      "bytes": 4611
+    },
+    "exec_gate_smoke": {
+      "sha256": "e15776f190a4721e75ae704ce05c009b331004fb172827c3dbf2622d1ec3bca9",
+      "bytes": 13041
+    },
+    "exec_gate_evidence": {
+      "sha256": "ae098245cc526f9fa12dd82004b77d86dd041a380f21ac6219ae922d801b588a",
+      "bytes": 10073
+    },
+    "launcher_smoke": {
+      "sha256": "25649de1df1f92296460f0b462c42c864c41abeba5907c94c52485b5992cf7ae",
+      "bytes": 13019
+    },
+    "dry_run_tool": {
+      "sha256": "3ae662660cabb93c6a0b01239395f47bb04e1d393447de6416741f5568d6a790",
+      "bytes": 22322
+    },
+    "dry_run_selftest": {
+      "sha256": "9a63cce3afd970403f9602de6fe5b52614ec70a8b5f1c4eae3dd71de5f1091aa",
+      "bytes": 1641
+    },
+    "a5_executor_gate_replay": {
+      "sha256": "1e7594661785f2e2fef2ae375901d7e320be81ded1dee603176db84f8f1f069e",
+      "bytes": 14252
+    },
+    "a1": {
+      "evaluator": "f74a4752495fd6c5330edcaf7edb4bcbe93f99c2a76bac06b5670d1f765ae20d/58291",
+      "freeze_api": "31d781821516bb80fc158238e4ef485c361afea674ca3b962efbb89d5a737173/27288",
+      "openvsp_model": "c40b11df.../36902",
+      "design_space": "8f9b893c13195c80ff1ee88598134e3f44fef0495452249780d114c9e0593b89/33660",
+      "config": "8b29d1e3833edc2af248d68cd6b7b4c94ebf775f25c86d80062a3850765a499e/10846",
+      "bundle": "995bb12fff738d3ebb0bde08c0d5c5bfeb9532aebe536847ef307a2332013aa5/3262"
+    },
+    "r1_r8_approvals": {
+      "R1": {
+        "bytes": 38476,
+        "sha256": "9e5c29b0ac482f36dc0d9bbe694a94afb7a3cf4a8557b549919dbe180cfe9b9b",
+        "path": "D:\\RCAIDE\\dnext001\\wt-real-a2-optimizers\\research\\concorde_metaopt\\dreal001\\runs\\DREAL001-P2A2R-20261111-01\\approval.json"
+      },
+      "R2": {
+        "bytes": 47081,
+        "sha256": "eee7868a4ea3892a5df1a8d51595e1b8dee78c34996d5fd9ccf2293363e2808f",
+        "path": "D:\\RCAIDE\\dnext001\\wt-real-a2-optimizers\\research\\concorde_metaopt\\dreal001\\runs\\DREAL001-P2A2R2-20261111-01\\approval.json"
+      },
+      "R3": {
+        "bytes": 52695,
+        "sha256": "18865f8f4e8206135f1673e5f8706bd201465bc617473c604b262ba440dd7f60",
+        "path": "D:\\RCAIDE\\dnext001\\wt-real-a2-optimizers\\research\\concorde_metaopt\\dreal001\\runs\\DREAL001-P2A2R3-20261111-01\\approval.json"
+      },
+      "R4": {
+        "bytes": 59125,
+        "sha256": "6e2aebcf7b5cbced471d0dfc6d7200d761e990660ac6f384517940600a2063ab",
+        "path": "D:\\RCAIDE\\dnext001\\wt-real-a2-optimizers\\research\\concorde_metaopt\\dreal001\\runs\\DREAL001-P2A2R4-20261111-01\\approval.json"
+      },
+      "R5": {
+        "bytes": 63264,
+        "sha256": "ca0bdc7b34bc29dc0a9e8a2157da28069be5279ca4a59d3ad5194e9646b528bf",
+        "path": "D:\\RCAIDE\\dnext001\\wt-real-a2-optimizers\\research\\concorde_metaopt\\dreal001\\runs\\DREAL001-P2A2R5-20261111-01\\approval.json"
+      },
+      "R6": {
+        "bytes": 67063,
+        "sha256": "72b95e03130fbe958c52528f1b8f484eae4872140a7336709094b9108964f98f",
+        "path": "D:\\RCAIDE\\dnext001\\wt-real-a2-optimizers\\research\\concorde_metaopt\\dreal001\\runs\\DREAL001-P2A2R6-20261111-01\\approval.json"
+      },
+      "R7": {
+        "bytes": 69405,
+        "sha256": "1a552267ab0070ee4f690815ed1de1db6d5976c1ada8356421f017bb84d72e37",
+        "path": "D:\\RCAIDE\\dnext001\\wt-real-a2-optimizers\\research\\concorde_metaopt\\dreal001\\runs\\DREAL001-P2A2R7-20261111-01\\approval.json"
+      }
+    }
+  },
+  "accounting": {
+    "baseline": {
+      "prior_39_285": true,
+      "r1": {
+        "starts": 2,
+        "internal": 14
+      },
+      "r2": {
+        "starts": 2,
+        "internal": 14
+      },
+      "r3": {
+        "starts": 2,
+        "internal": 14
+      },
+      "r4": {
+        "starts": 2,
+        "internal": 14
+      },
+      "r5": {
+        "starts": 0,
+        "internal": 0
+      },
+      "r6": {
+        "starts": 3,
+        "internal": 21
+      },
+      "r7": {
+        "starts": 6,
+        "internal": 42
+      },
+      "total_starts": 56,
+      "total_internal": 404,
+      "r8": {
+        "starts": 0,
+        "internal": 0
+      }
+    },
+    "rule": "any physical count beyond the approved figures requires a new written Lead approval; no retry, no silent budget change",
+    "r9": {
+      "planned_starts": 390,
+      "planned_internal": 2730,
+      "preflight_starts": 2,
+      "diagnostic_starts": 4,
+      "diagnostic_designs": 2,
+      "main_starts": 384,
+      "reserve": 64,
+      "cumulative_starts": 446,
+      "cumulative_internal": 3134,
+      "caps": {
+        "max_starts": 451,
+        "max_internal": 3157
+      },
+      "headroom_starts": 5,
+      "headroom_internal": 23,
+      "prior_starts": 56,
+      "prior_internal": 404
+    }
+  },
+  "protocol_d": {
+    "lead_decision": "Lead m02945 (2026-11-11T17:19Z) closes R8 attempt-1 as zero-physical SETUP_STOP (FreezeRecordError PREFROZEN_GEOM_MISSING d51866f7d3c49303/462x401; flat family rows vs nested read at runtime:574 and executor:1131; launcher gate module already flat-compatible) and authorizes R9 as the LAST execution attempt under the caps (no R10; a main-phase failure ends the series with a receipt) with a two-line execution-layer fix, new batch/run/approval and seq9 amendment. Protocol D remains in force (invalid-numerical tolerance, no mesh-QC gate); Lead bears risk; A5 dissent on record.",
+    "a5_independent_review": "A5 FAIL-08 (commit 974104b) independently upheld the R8 zero-physical setup stop and root cause (flat initial_designs_manifest families rows vs nested .frozen read in runtime:574/executor:1131; launcher-side prefrozen gate module already flat-compatible); A5 conditionally accepts R9 as the final attempt under R9 conditions, requires the executor OWN gate code path to be executed zero-physically with evidence before signing (R8 gap: only launcher-side gate was exercised), flags this as the 8th consecutive execution-layer defect and headroom 5/23, and does not re-litigate protocol D.",
+    "prefrozen_reuse": "initial designs 15/16/17 resolved only from A1 static family_pair_manifest.json (119 records) via frozen_vspgeom_path + sibling model.vkey/model.vsp3; SHA equality required for all three; A1 describe_mesh canonical equality; source_kind=PREFROZEN_MANIFEST_REUSE, reused_prefrozen=true, attempts=0; no FreezeBuilder; vsp3 missing/mismatch fail-closed; static hit without prefrozen source fail-closed; A1 bytes unchanged.",
+    "invalid_numerical": "non-SOLVED_VALID or objective null/non-finite => INVALID_NUMERICAL with raw status + polar SHA recorded, excluded from objective statistics, arm continues; genuine execution-layer errors still hard-fail",
+    "auto_stop": "main evaluations >=48 and invalid ratio >25%, or >=6 consecutive invalid in an arm, or >64 cumulative invalid => scientific stop; a single invalid case is not a stop condition",
+    "diagnostics": "DIAG-01 design16 eb00b7ad545243e6, DIAG-02 design17 dc96d2438a6dddc3; after 2 preflight and before 384 main; each design runs both families => 2 starts/14 internal per design, 4 starts/28 internal total; pass = SOLVED_VALID + finite objective per design pair; both fail => main NOT_RUN; excluded from endpoints",
+    "observe_fix": "7 call sites design_hash(canonical_x12(X)) -> design_hash(X) retained",
+    "de_pso_fix": "DE/PSO population padded to >=5 retained",
+    "arm_failure_evidence": "arm-exception path persists minimal preflight_result.json and batch_summary.json retained",
+    "accounting_fix": "no default 7 internal on 0-start rows; batch_summary per-phase and total; diagnostics polar_sha256 extracted; charged+planned<=caps assertion fail-closed",
+    "mesh_qc_gate": false,
+    "r6_nan_mechanism": "R6 NaN phenomenon confirmed, mechanism NOT proven (H1/H2/H3)",
+    "prefrozen_flat_fix": "R9 changes exactly the read-side family frozen descriptor resolution: runtime _reuse_prefrozen must resolve the FLAT initial-manifest family row as well as the nested A1 family_pair_manifest form; executor _prefrozen_reuse_gate mf resolution must accept the FLAT row while the record side rf stays nested r ecord.families[label].frozen; precedence explicit, no silent rebuild; A1 bytes unchanged; all SHA/canonical/vkey/vsp3 equality checks retained; fail-closed on any missing/mismatch."
+  },
+  "exclusions": {
+    "r1": {
+      "batch": "DREAL001-P2-20261111-06",
+      "run": "DREAL001-P2A2R-20261111-01",
+      "status": "PREFLIGHT_FAIL_MAIN_BATCH_NOT_RUN",
+      "starts": 2,
+      "internal": 14,
+      "excluded_from_endpoints": true
+    },
+    "r2": {
+      "batch": "DREAL001-P2-20261111-07",
+      "run": "DREAL001-P2A2R2-20261111-01",
+      "status": "PREFLIGHT_FAIL_MAIN_BATCH_NOT_RUN",
+      "starts": 2,
+      "internal": 14,
+      "excluded_from_endpoints": true
+    },
+    "r3": {
+      "batch": "DREAL001-P2-20261111-08",
+      "run": "DREAL001-P2A2R3-20261111-01",
+      "status": "EXECUTOR_ARM_ABORT_MAIN_BATCH_NOT_RUN",
+      "starts": 2,
+      "internal": 14,
+      "excluded_from_endpoints": true
+    },
+    "r4": {
+      "batch": "DREAL001-P2-20261111-09",
+      "run": "DREAL001-P2A2R4-20261111-01",
+      "status": "EXECUTOR_ARM_ABORT_MAIN_BATCH_NOT_RUN",
+      "starts": 2,
+      "internal": 14,
+      "excluded_from_endpoints": true
+    },
+    "r5": {
+      "batch": "DREAL001-P2-20261111-10",
+      "run": "DREAL001-P2A2R5-20261111-01",
+      "status": "SETUP_STOP_DESIGN_SPACE_IMPORT",
+      "starts": 0,
+      "internal": 0,
+      "excluded_from_endpoints": true
+    },
+    "r6": {
+      "batch": "DREAL001-P2-20261111-11",
+      "run": "DREAL001-P2A2R6-20261111-01",
+      "status": "S1_STOP_MAIN_FIRST_EVALUATION",
+      "starts": 3,
+      "internal": 21,
+      "excluded_from_endpoints": true
+    },
+    "r7": {
+      "batch": "DREAL001-P2-20261111-12",
+      "run": "DREAL001-P2A2R7-20261111-01",
+      "status": "S1_STOP_FROZEN_BYTES_SHA_MISMATCH",
+      "starts": 6,
+      "internal": 42,
+      "excluded_from_endpoints": true
+    },
+    "cumulative_charged": {
+      "starts": 56,
+      "internal": 404
+    },
+    "r8": {
+      "batch": "DREAL001-P2-20261111-13",
+      "run": "DREAL001-P2A2R8-20261111-01",
+      "status": "SETUP_STOP_PREFROZEN_GEOM_MISSING",
+      "starts": 0,
+      "internal": 0,
+      "excluded_from_endpoints": true
+    }
+  },
+  "lead_decision_and_a5_dissent": {
+    "lead_decision": "Lead m02945 (2026-11-11T17:19Z): R8 attempt-1 closed as SETUP_STOP with physical 0/0; R9 = last execution attempt under caps (batch DREAL001-P2-20261111-14, run DREAL001-P2A2R9-20261111-01, window 2026-11-11T17:30:00Z-2026-11-12T04:00:00Z, token WINDOW_OK-P2AV2R9-20261111T1730Z-20261112T0400Z, planned 390/2730, caps 451/3157, cumulative 446/3134, supersedes R8 approval fa0d94a2.../75,166 B, seq9=physical 56).",
+    "a5_position": "A5 FAIL-08 upheld the R8 setup stop and root cause; A5 conditionally accepts R9 as the final attempt subject to R9-PREFROZEN-FLAT-01 / R9-EXECGATE-01 (executor-own gate zero-physical evidence + A5 independent replay) and all 52 conditions; A5 records that this is the 8th consecutive execution-layer defect and that a further setup/main failure with no receipt-grade scientific output would close the series NOT_RUN/NOT_COMPUTABLE.",
+    "no_r9_by_default": false,
+    "no_r10_by_default": true
+  },
+  "disclosures": [
+    "R1-R8 series exclusion: charged 17 starts/119 internal (R1-R4 2/14 each, R5 0/0, R6 3/21, R7 6/42, R8 0/0 setup stop); cumulative baseline 56/404; R9 plan 390/2730; projected cumulative 446/3134 vs caps 451/3157; headroom only 5 starts/23 internal.",
+    "R8 attempt-1 setup stop facts: launcher-side prefrozen gate PASS (79 checks, static_index_count=119, a1_runtime_guard all_equal, 6 triples), prestart evidence written, then executor own _prefrozen_reuse_gate raised FreezeRecordError PREFROZEN_GEOM_MISSING for d51866f7d3c49303/462x401 because the initial_designs_manifest family rows store frozen fields FLAT while runtime:574 and executor:1131 read nested \"frozen\"; 0 physical, no cases/ledger/solver_attempts/preflight/batch/evaluations; run dir 15 files, read-only; R8 charged 0/0 and excluded in full.",
+    "R9 flat/nested fix is execution-layer only and zero-physical: A1 bytes unchanged, plan scientific fields unchanged, no solver started to verify it; correctness is byte/canonical equality only and is not a solve claim.",
+    "Manifest field facts: initial_designs_manifest family rows are FLAT (frozen_vspgeom_path/sha256/bytes, frozen_vkey_sha256, frozen_vsp3_sha256, canonical_mesh_sha256); A1 family_pair_manifest records are NESTED under families[label].frozen; no frozen_vkey_path/frozen_vsp3_path fields exist; vkey/vsp3 are siblings model.vkey/model.vsp3 of frozen_vspgeom_path; static_index_count=119; a static-index hit not resolved via PREFROZEN_MANIFEST_REUSE must fail closed.",
+    "design15 f1 462x401 prefrozen bytes previously produced an all-NaN polar in R6; an R9 main first-case INVALID_NUMERICAL is possible; protocol D tolerance applies to scientific invalids only and requires per-arm invalid counts, per-case status/polar SHA/reason, invalid-ratio time series and separate diagnostic reporting; mechanism NOT proven and no mesh QC data gate adopted.",
+    "Accounting pseudo-count fixes retained: no default 7 internal on 0-start rows; batch_summary per-phase and total; diagnostics polar_sha256 extracted; charged+planned<=caps assertion fail-closed. R8 charged 0/0 keeps cumulative at 56/404.",
+    "C10_executor_sha remains a definitional false negative in package dry_run.json (executor file SHA vs recomputed aggregate digest), present since R1, non-blocking; C16/C19 are NV by design; spawn exit_code/stdout_tail persistence remains a future improvement.",
+    "R9 is the last execution attempt under the caps: no R10 by default; a further setup or main failure ends the series with an A5-signed receipt stating P2a pilot NOT_RUN / NOT_COMPUTABLE, R1-R8+R9 exclusion, fuel_burn_kg=null, physical NOT_VALIDATED.",
+    "A5 physical_call_count=0 and solver_started=false; this gate is not an execution authorization; after signature the real dry-run, A5 C-P2AV2R9-02 and Lead GO remain mandatory; R9 pre-exec run dir must contain exactly the 8 package files plus signed approval and dry-run evidence (no cases/ledger/batch_summary/stop_report); no R9 execution may start after the approved window.",
+    "R9 supersedes R8 approval fa0d94a2.../75,166 B; R7 approval 1a552267.../69,405 B and all R1-R6 approvals remain read-only historical bytes; no approval is reusable across batches."
+  ],
+  "mandatory_signature_corrections": [
+    "M1: replace the 8 placeholder approval_refs with the 14-key refs_final in this gate; a5_review must be the commit SHA of this G-P2AV2R9-PRE gate.",
+    "M2: expand DRAFT conditions 15 -> exactly the 52 conditions in docs/reviews/dreal001_a5_p2av2r9_signature_conditions_20261111.json (byte-identical texts and order).",
+    "M3: set status/approved/approved_by/approved_at_utc/authorization, window.status=APPROVED, and b2_waiver (APPROVED_BY_LEAD_FOR_THIS_BATCH_ONLY, approver, approved_at_utc, a5_pre_review_commit=gate commit).",
+    "M4: amendment_log must remain byte-identical to the DRAFT (seq1-seq8 = R8 signed history; seq9 R9_PREFROZEN_MANIFEST_FLAT_ROW_FIX at the DRAFT at_utc with physical_call_count_at_amendment=56).",
+    "M5: no other binding or scientific-policy byte may change; A2 must commit the signed approval byte-identically, run the real post-approval dry-run with the bound R9 tool, then A5 C-P2AV2R9-02, then Lead GO; C gate hard line 18:45Z.",
+    "M6: the R9 package must deliver (i) the two-line flat/nested read fix diff with unit tests (flat PASS/nested PASS/missing FAIL/tampered SHA FAIL/missing vkey-vsp3 sibling FAIL/executor mf-rf mixed-shape PASS), (ii) zero-physical evidence from the executor OWN _prefrozen_reuse_gate code path on the real R9 initial manifest (PASS, static 119, no FreezeBuilder, physical 0, no cases/ledger), and (iii) launcher-side gate equivalence report; A5 independently replays the executor gate with physical=0 before signing; if any item is missing the Lead must record an explicit evidence-quality debt acceptance in the signed approval."
+  ],
+  "signature_requirements": {
+    "mandatory_replacements": [
+      "approval_refs placeholders -> 14-key corrected refs (see R9-REFS-01)",
+      "conditions 15 (DRAFT) -> 52 (this set)",
+      "status/approved/approved_by/approved_at_utc/authorization",
+      "window.status=APPROVED",
+      "b2_waiver status/approved_at_utc/a5_pre_review_commit",
+      "amendment_log must equal DRAFT byte-for-byte (seq1-seq8 = R8 signed history; seq9 = R9_PREFROZEN_MANIFEST_FLAT_ROW_FIX at DRAFT at_utc with physical_call_count_at_amendment=56)"
+    ],
+    "allowed_draft_to_signed_top_level_deltas": [
+      "approved",
+      "approved_at_utc",
+      "approved_by",
+      "approval_refs",
+      "authorization",
+      "b2_waiver",
+      "conditions",
+      "status",
+      "window"
+    ],
+    "invariants_unchanged": [
+      "scientific plan fields",
+      "caps/planned/budget fields (planned 390/2730, max 451/3157, reserve 64)",
+      "initial designs manifest 93a078e3dcae1b7bf04e3f39a02632d87ef9fbcd26368dda4236ba8f517efe47/14,822 B (3 designs 15/16/17 prefrozen family rows; designs data byte-identical to R8 initial cba91f17..., only created_utc and manifest_sha256 differ)",
+      "preflight bundle and expected polar SHAs",
+      "solver executable binding",
+      "A1 bindings (evaluator/freeze_api/openvsp_model/design_space/config/bundle)",
+      "pair_manifest_sha256 55e63f39... and static_index_count=119",
+      "window start/end/token (only window.status changes)",
+      "amendment_log seq1-seq8"
+    ],
+    "seq8_semantics": "seq1-seq8 are R8 signed history and must remain byte-identical: seq1-seq7 are the R7-era history, seq8 action R8_PREFROZEN_REUSE_AND_DIAG_PAIR_PREREG_FIX at the R8 batch time with physical_call_count_at_amendment=56, superseding R7 approval 1a552267.../69,405 bytes. seq9 is R9_PREFROZEN_MANIFEST_FLAT_ROW_FIX at the R9 DRAFT at_utc with physical_call_count_at_amendment=56 (R8 setup stop charged 0/0), superseding R8 approval fa0d94a2.../75,166 bytes; the flat/nested read fix is execution-layer only and must not change plan scientific policy, caps or planned counts."
+  },
+  "refs_final": {
+    "a1_bundle_commit": "2a57632b3f7d5d567556d9774913ec40a5d72272",
+    "a1_bundle_commit_full": "2a57632b3f7d5d567556d9774913ec40a5d72272",
+    "a1_bundle_manifest_sha256": "995bb12fff738d3ebb0bde08c0d5c5bfeb9532aebe536847ef307a2332013aa5",
+    "a1_bundle_path": "D:\\RCAIDE\\dnext001\\wt-real-a1-geometry-solver\\research\\concorde_metaopt\\dreal001\\geometry\\replay_bundles\\P2A_V2_PREFLIGHT_20261111_R1",
+    "a1_bundle_note": "old 3-case bundle 20999b3e.../0598441 superseded; R1 2-case bundle re-bound unchanged",
+    "a1_executable_commit": "6753eb39b710035187db13ceb3328301c645c1ba",
+    "a1_task49_commit": "6753eb39b710035187db13ceb3328301c645c1ba",
+    "a1_execution_code": "6979802",
+    "a1_execution_code_note": "legacy execution code id retained; frozen byte bindings are evaluator f74a4752... / freeze_api 31d78182... / openvsp_model c40b11df...",
+    "a1_execution_head": "2a57632b3f7d5d567556d9774913ec40a5d72272",
+    "a1_head": "2a57632b3f7d5d567556d9774913ec40a5d72272",
+    "a2_execution_code": "c2bdfb6825d156b71713ad57b9c982ebc06ec5a08bbfadf4324839ce8625af54",
+    "a2_package_commit": "a4e9ded2f358035eff2dd55965b4408cb89dc96a",
+    "a5_review": "A5 G-P2AV2R9-PRE gate commit (placeholder; Lead substitutes the committed gate SHA at signature)"
+  },
+  "conditions_total": 52,
+  "a5_statement": "A5 independent review: package a4e9ded, tools 0603597, launcher d959fdea, executor c2bdfb68. 52/52 checks PASS. R8 setup stop independently upheld (FAIL-08). flat/nested fix verified as execution-layer-only by byte/canonical evidence, zero-physical executor-own gate smoke (PREFROZEN_REUSE_GATE_PASS 79 checks/static 119/3 designs/0 FreezeBuilder/physical 0) plus A5 independent replay of the executor gate on final bytes (1e759466/14,252 B, PASS) and launcher/executor equivalence. Not an execution authorization. A5 physical_call_count=0.",
+  "physical_call_count": 0
+}

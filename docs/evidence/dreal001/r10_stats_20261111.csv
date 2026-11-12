@@ -1,0 +1,567 @@
+section,item,arm,family_slot,metric,value,unit,n,source_file,source_sha256,source_line,note
+data_source,evaluations.jsonl,,,sha256,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,sha256,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,评估级权威（48 行，仅 main）
+data_source,batch_summary.json,,,sha256,a4ea4840ccdeea0e00cc8496c5fc8c69aea901afcabe9884394d3064285a36a9,sha256,,batch_summary.json,a4ea4840ccdeea0e00cc8496c5fc8c69aea901afcabe9884394d3064285a36a9,,臂状态/汇总/记账
+data_source,final_run_manifest.json,,,sha256,2522f951f91c01c7b8c82294d94abb3d58dc36878cbdb424d112a7cfc2404cca,sha256,,final_run_manifest.json,2522f951f91c01c7b8c82294d94abb3d58dc36878cbdb424d112a7cfc2404cca,,designs 45 / 冻结对
+data_source,solver_attempts.jsonl,,,sha256,0614c0182958a50b6fdac2b463141afd005c6551498174514424b063eb840409,sha256,,solver_attempts.jsonl,0614c0182958a50b6fdac2b463141afd005c6551498174514424b063eb840409,,canonical ledger（91 start/91 end）
+data_source,preflight_result.json,,,sha256,daf047e62e043ce193aad5c0fc84e0ec8561d823f9893037e9c440b65aea3e47,sha256,,preflight_result.json,daf047e62e043ce193aad5c0fc84e0ec8561d823f9893037e9c440b65aea3e47,,preflight 2/2 PASS_BYTE
+data_source,diagnostics.json,,,sha256,4976fda2d9ea3b903ac7353802f2492400dd92aead2f829aeff1f69315341613,sha256,,diagnostics.json,4976fda2d9ea3b903ac7353802f2492400dd92aead2f829aeff1f69315341613,,诊断 0/0 skipped/excluded
+data_source,stop_report.json,,,sha256,a23964eba50a15a703bfb1f736ad97c6d7b8a040844ef23f70a84eca4c35db8b,sha256,,stop_report.json,a23964eba50a15a703bfb1f736ad97c6d7b8a040844ef23f70a84eca4c35db8b,,科学自动停
+data_source,plan.json,,,sha256,ba6eaa49e181b2cacc048362dd00e57458ceba73165b68f1776ae4f3af43b4d4,sha256,,plan.json,ba6eaa49e181b2cacc048362dd00e57458ceba73165b68f1776ae4f3af43b4d4,,R10 预注册包
+data_source,approval.json,,,sha256,4e67eac52833d8dfab8b8027a0838b68de15f26d9a072edb0515ece22414068c,sha256,,approval.json,4e67eac52833d8dfab8b8027a0838b68de15f26d9a072edb0515ece22414068c,,Lead 签署 57 conditions
+data_source,a2_r10_arm_invalid_decomposition.json,,,sha256,080c12904e4ad43476d22ce8bedf046d098c6f10de3a48e37c097a240a597f52,sha256,,a2_r10_arm_invalid_decomposition.json,080c12904e4ad43476d22ce8bedf046d098c6f10de3a48e37c097a240a597f52,,A2 机器可读分解（独立复核对象）
+data_source,a2_r10_scientific_auto_stop.md,,,sha256,fc0e81ef273b4c272359ba72002ff229199002b649a139c9b8fd6321a15f671f,sha256,,a2_r10_scientific_auto_stop.md,fc0e81ef273b4c272359ba72002ff229199002b649a139c9b8fd6321a15f671f,,A2 停止说明
+data_source,lead_decision_l14.md,,,sha256,e13435d3f16eb5ac0d33c19681f99dcf595e56a4ab521382fdfd8e2e350ea395,sha256,,lead_decision_l14.md,e13435d3f16eb5ac0d33c19681f99dcf595e56a4ab521382fdfd8e2e350ea395,,Lead L-14
+data_source,lead_decision_l14.json,,,sha256,3391996b4406ace288f5ac344263fa86e48e75059d659d10f41d9428826ba1c9,sha256,,lead_decision_l14.json,3391996b4406ace288f5ac344263fa86e48e75059d659d10f41d9428826ba1c9,,Lead L-14 机器可读
+r10_fact,main_evaluations,,,count,48,evaluations,48,batch_summary.json,a4ea4840ccdeea0e00cc8496c5fc8c69aea901afcabe9884394d3064285a36a9,,
+r10_fact,invalid_evaluations,,,count,13,evaluations,48,batch_summary.json,a4ea4840ccdeea0e00cc8496c5fc8c69aea901afcabe9884394d3064285a36a9,,
+r10_fact,invalid_ratio,,,ratio,0.2708333333333333,ratio,48,batch_summary.json,a4ea4840ccdeea0e00cc8496c5fc8c69aea901afcabe9884394d3064285a36a9,,
+arm,BO,BO,,status,COMPLETED,,32,batch_summary.json/evaluations.jsonl,,,
+arm,BO,BO,,evaluations,32,evals,32,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+arm,BO,BO,,valid,23,evals,32,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+arm,BO,BO,,invalid,9,evals,32,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+arm,BO,BO,,feasible_rate,0.71875,ratio,32,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+arm,BO,BO,,starts_sum,59,starts,32,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+arm,BO,BO,,internal_sum,413,internal,32,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+invalid_reason,LIFT_MATCH_FAILED,BO,,count,4,evals,9,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+invalid_reason,SOLVER_FAILED,BO,,count,5,evals,9,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+descriptive,best_primary_observed,BO,,primary,0.010006880012223485,CDi,23,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,descriptive only; DE not at-budget
+objective_stats,n,BO,,n,23,CDi,23,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+objective_stats,min,BO,,min,0.010006880012223485,CDi,23,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+objective_stats,q1,BO,,q1,0.014146939024371755,CDi,23,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+objective_stats,median,BO,,median,0.016228040308768787,CDi,23,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+objective_stats,q3,BO,,q3,0.019760867685849094,CDi,23,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+objective_stats,max,BO,,max,0.02325079054346792,CDi,23,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+objective_stats,iqr,BO,,iqr,0.005613928661477339,CDi,23,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+objective_stats,mean,BO,,mean,0.01682448853313789,CDi,23,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+objective_stats,sd,BO,,sd,0.0035184999190431957,CDi,23,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+family_slot_stats,n,BO,f1,n,23,CDi,23,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,min,BO,f1,min,0.009824061828577351,CDi,23,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,q1,BO,f1,q1,0.013711761727401323,CDi,23,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,median,BO,f1,median,0.015926297276718043,CDi,23,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,q3,BO,f1,q3,0.01902072524761024,CDi,23,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,max,BO,f1,max,0.022610091496386722,CDi,23,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,iqr,BO,f1,iqr,0.0053089635202089175,CDi,23,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,mean,BO,f1,mean,0.016321498788517047,CDi,23,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,sd,BO,f1,sd,0.003392130884833626,CDi,23,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,n,BO,f2,n,23,CDi,23,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,min,BO,f2,min,0.010189698195869618,CDi,23,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,q1,BO,f2,q1,0.014582116321342192,CDi,23,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,median,BO,f2,median,0.016529783340819528,CDi,23,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,q3,BO,f2,q3,0.02050101012408794,CDi,23,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,max,BO,f2,max,0.02389148959054912,CDi,23,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,iqr,BO,f2,iqr,0.00591889380274575,CDi,23,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,mean,BO,f2,mean,0.017327478277758733,CDi,23,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,sd,BO,f2,sd,0.0036568411809847637,CDi,23,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+arm,DE,DE,,status,STOPPED_SCIENTIFIC_INVALID_RATIO,,16,batch_summary.json/evaluations.jsonl,,,
+arm,DE,DE,,evaluations,16,evals,16,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+arm,DE,DE,,valid,12,evals,16,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+arm,DE,DE,,invalid,4,evals,16,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+arm,DE,DE,,feasible_rate,0.75,ratio,16,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+arm,DE,DE,,starts_sum,30,starts,16,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+arm,DE,DE,,internal_sum,210,internal,16,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+invalid_reason,LIFT_MATCH_FAILED,DE,,count,2,evals,4,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+invalid_reason,SOLVER_FAILED,DE,,count,2,evals,4,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+descriptive,best_primary_observed,DE,,primary,0.01289480742004768,CDi,12,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,descriptive only; DE not at-budget
+objective_stats,n,DE,,n,12,CDi,12,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+objective_stats,min,DE,,min,0.01289480742004768,CDi,12,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+objective_stats,q1,DE,,q1,0.013615954703695466,CDi,12,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+objective_stats,median,DE,,median,0.015326776728803579,CDi,12,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+objective_stats,q3,DE,,q3,0.019357831213462563,CDi,12,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+objective_stats,max,DE,,max,0.02488524308335461,CDi,12,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+objective_stats,iqr,DE,,iqr,0.0057418765097670965,CDi,12,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+objective_stats,mean,DE,,mean,0.01684132163753327,CDi,12,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+objective_stats,sd,DE,,sd,0.004087138227218326,CDi,12,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+family_slot_stats,n,DE,f1,n,12,CDi,12,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,min,DE,f1,min,0.012427799952662829,CDi,12,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,q1,DE,f1,q1,0.01327699674412588,CDi,12,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,median,DE,f1,median,0.015012957471149682,CDi,12,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,q3,DE,f1,q3,0.018773152514418863,CDi,12,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,max,DE,f1,max,0.02438872885576112,CDi,12,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,iqr,DE,f1,iqr,0.005496155770292983,CDi,12,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,mean,DE,f1,mean,0.016397135303893442,CDi,12,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,sd,DE,f1,sd,0.003971436937092659,CDi,12,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,n,DE,f2,n,12,CDi,12,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,min,DE,f2,min,0.013361814887432532,CDi,12,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,q1,DE,f2,q1,0.013929148918732806,CDi,12,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,median,DE,f2,median,0.015640595986457475,CDi,12,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,q3,DE,f2,q3,0.01991353412604794,CDi,12,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,max,DE,f2,max,0.0253817573109481,CDi,12,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,iqr,DE,f2,iqr,0.005984385207315134,CDi,12,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,mean,DE,f2,mean,0.017285507971173102,CDi,12,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,sd,DE,f2,sd,0.004209164037191775,CDi,12,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+arm,PSO,PSO,,status,NOT_RUN,,0,batch_summary.json/evaluations.jsonl,,,
+arm,PSO,PSO,,evaluations,0,evals,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+arm,PSO,PSO,,valid,0,evals,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+arm,PSO,PSO,,invalid,0,evals,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+arm,PSO,PSO,,feasible_rate,,ratio,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+arm,PSO,PSO,,starts_sum,0,starts,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+arm,PSO,PSO,,internal_sum,0,internal,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+objective_stats,n,PSO,,n,0,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+objective_stats,min,PSO,,min,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+objective_stats,q1,PSO,,q1,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+objective_stats,median,PSO,,median,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+objective_stats,q3,PSO,,q3,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+objective_stats,max,PSO,,max,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+objective_stats,iqr,PSO,,iqr,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+objective_stats,mean,PSO,,mean,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+objective_stats,sd,PSO,,sd,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+family_slot_stats,n,PSO,f1,n,0,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,min,PSO,f1,min,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,q1,PSO,f1,q1,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,median,PSO,f1,median,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,q3,PSO,f1,q3,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,max,PSO,f1,max,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,iqr,PSO,f1,iqr,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,mean,PSO,f1,mean,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,sd,PSO,f1,sd,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,n,PSO,f2,n,0,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,min,PSO,f2,min,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,q1,PSO,f2,q1,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,median,PSO,f2,median,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,q3,PSO,f2,q3,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,max,PSO,f2,max,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,iqr,PSO,f2,iqr,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,mean,PSO,f2,mean,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,sd,PSO,f2,sd,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+arm,ABO,ABO,,status,NOT_RUN,,0,batch_summary.json/evaluations.jsonl,,,
+arm,ABO,ABO,,evaluations,0,evals,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+arm,ABO,ABO,,valid,0,evals,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+arm,ABO,ABO,,invalid,0,evals,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+arm,ABO,ABO,,feasible_rate,,ratio,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+arm,ABO,ABO,,starts_sum,0,starts,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+arm,ABO,ABO,,internal_sum,0,internal,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+objective_stats,n,ABO,,n,0,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+objective_stats,min,ABO,,min,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+objective_stats,q1,ABO,,q1,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+objective_stats,median,ABO,,median,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+objective_stats,q3,ABO,,q3,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+objective_stats,max,ABO,,max,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+objective_stats,iqr,ABO,,iqr,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+objective_stats,mean,ABO,,mean,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+objective_stats,sd,ABO,,sd,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+family_slot_stats,n,ABO,f1,n,0,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,min,ABO,f1,min,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,q1,ABO,f1,q1,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,median,ABO,f1,median,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,q3,ABO,f1,q3,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,max,ABO,f1,max,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,iqr,ABO,f1,iqr,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,mean,ABO,f1,mean,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,sd,ABO,f1,sd,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,n,ABO,f2,n,0,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,min,ABO,f2,min,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,q1,ABO,f2,q1,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,median,ABO,f2,median,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,q3,ABO,f2,q3,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,max,ABO,f2,max,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,iqr,ABO,f2,iqr,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,mean,ABO,f2,mean,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,sd,ABO,f2,sd,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+arm,ADE,ADE,,status,NOT_RUN,,0,batch_summary.json/evaluations.jsonl,,,
+arm,ADE,ADE,,evaluations,0,evals,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+arm,ADE,ADE,,valid,0,evals,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+arm,ADE,ADE,,invalid,0,evals,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+arm,ADE,ADE,,feasible_rate,,ratio,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+arm,ADE,ADE,,starts_sum,0,starts,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+arm,ADE,ADE,,internal_sum,0,internal,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+objective_stats,n,ADE,,n,0,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+objective_stats,min,ADE,,min,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+objective_stats,q1,ADE,,q1,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+objective_stats,median,ADE,,median,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+objective_stats,q3,ADE,,q3,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+objective_stats,max,ADE,,max,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+objective_stats,iqr,ADE,,iqr,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+objective_stats,mean,ADE,,mean,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+objective_stats,sd,ADE,,sd,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+family_slot_stats,n,ADE,f1,n,0,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,min,ADE,f1,min,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,q1,ADE,f1,q1,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,median,ADE,f1,median,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,q3,ADE,f1,q3,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,max,ADE,f1,max,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,iqr,ADE,f1,iqr,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,mean,ADE,f1,mean,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,sd,ADE,f1,sd,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,n,ADE,f2,n,0,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,min,ADE,f2,min,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,q1,ADE,f2,q1,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,median,ADE,f2,median,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,q3,ADE,f2,q3,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,max,ADE,f2,max,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,iqr,ADE,f2,iqr,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,mean,ADE,f2,mean,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,sd,ADE,f2,sd,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+arm,APSO,APSO,,status,NOT_RUN,,0,batch_summary.json/evaluations.jsonl,,,
+arm,APSO,APSO,,evaluations,0,evals,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+arm,APSO,APSO,,valid,0,evals,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+arm,APSO,APSO,,invalid,0,evals,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+arm,APSO,APSO,,feasible_rate,,ratio,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+arm,APSO,APSO,,starts_sum,0,starts,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+arm,APSO,APSO,,internal_sum,0,internal,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+objective_stats,n,APSO,,n,0,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+objective_stats,min,APSO,,min,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+objective_stats,q1,APSO,,q1,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+objective_stats,median,APSO,,median,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+objective_stats,q3,APSO,,q3,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+objective_stats,max,APSO,,max,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+objective_stats,iqr,APSO,,iqr,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+objective_stats,mean,APSO,,mean,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+objective_stats,sd,APSO,,sd,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,
+family_slot_stats,n,APSO,f1,n,0,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,min,APSO,f1,min,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,q1,APSO,f1,q1,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,median,APSO,f1,median,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,q3,APSO,f1,q3,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,max,APSO,f1,max,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,iqr,APSO,f1,iqr,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,mean,APSO,f1,mean,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,sd,APSO,f1,sd,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,n,APSO,f2,n,0,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,min,APSO,f2,min,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,q1,APSO,f2,q1,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,median,APSO,f2,median,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,q3,APSO,f2,q3,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,max,APSO,f2,max,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,iqr,APSO,f2,iqr,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,mean,APSO,f2,mean,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+family_slot_stats,sd,APSO,f2,sd,,CDi,0,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,slot-level descriptive only; labels vary by design; no cross-family pooling
+e1_e6_availability,E1,BO,,status,COMPUTED_DESCRIPTIVE,,,evaluations.jsonl/batch_summary.json,,,BO 23/32 valid、DE 12/16 valid 的 per-design primary 可描述性列出；BO 9 / DE 4 invalid 无 primary。PSO/ABO/ADE/APSO NOT_RUN（0 评估）。六臂 E1 端点不可计算。
+e1_e6_availability,E1,DE,,status,COMPUTED_DESCRIPTIVE_PARTIAL,,,evaluations.jsonl/batch_summary.json,,,BO 23/32 valid、DE 12/16 valid 的 per-design primary 可描述性列出；BO 9 / DE 4 invalid 无 primary。PSO/ABO/ADE/APSO NOT_RUN（0 评估）。六臂 E1 端点不可计算。
+e1_e6_availability,E1,PSO,,status,NOT_RUN,,,evaluations.jsonl/batch_summary.json,,,BO 23/32 valid、DE 12/16 valid 的 per-design primary 可描述性列出；BO 9 / DE 4 invalid 无 primary。PSO/ABO/ADE/APSO NOT_RUN（0 评估）。六臂 E1 端点不可计算。
+e1_e6_availability,E1,ABO,,status,NOT_RUN,,,evaluations.jsonl/batch_summary.json,,,BO 23/32 valid、DE 12/16 valid 的 per-design primary 可描述性列出；BO 9 / DE 4 invalid 无 primary。PSO/ABO/ADE/APSO NOT_RUN（0 评估）。六臂 E1 端点不可计算。
+e1_e6_availability,E1,ADE,,status,NOT_RUN,,,evaluations.jsonl/batch_summary.json,,,BO 23/32 valid、DE 12/16 valid 的 per-design primary 可描述性列出；BO 9 / DE 4 invalid 无 primary。PSO/ABO/ADE/APSO NOT_RUN（0 评估）。六臂 E1 端点不可计算。
+e1_e6_availability,E1,APSO,,status,NOT_RUN,,,evaluations.jsonl/batch_summary.json,,,BO 23/32 valid、DE 12/16 valid 的 per-design primary 可描述性列出；BO 9 / DE 4 invalid 无 primary。PSO/ABO/ADE/APSO NOT_RUN（0 评估）。六臂 E1 端点不可计算。
+e1_e6_availability,E1,,,overall,NOT_COMPUTABLE_AS_SIX_ARM_ENDPOINT,,,evaluations.jsonl/batch_summary.json,,,per-design primary = 0.5*CDi(f1)+0.5*CDi(f2)（冻结定义，within-design 加权均值）
+e1_e6_availability,E2,BO,,status,COMPUTED_DESCRIPTIVE_AT_BUDGET,,,evaluations.jsonl/batch_summary.json,,,BO 完成 32/32 评估，best_primary 可描述；DE 仅 16/32（右删失，预算未耗尽），按冻结定义不得作 at-budget 端点（仅可列 observed best-so-far）；其余 4 臂 NOT_RUN。
+e1_e6_availability,E2,DE,,status,NOT_COMPUTABLE_AT_BUDGET,,,evaluations.jsonl/batch_summary.json,,,BO 完成 32/32 评估，best_primary 可描述；DE 仅 16/32（右删失，预算未耗尽），按冻结定义不得作 at-budget 端点（仅可列 observed best-so-far）；其余 4 臂 NOT_RUN。
+e1_e6_availability,E2,PSO,,status,NOT_RUN,,,evaluations.jsonl/batch_summary.json,,,BO 完成 32/32 评估，best_primary 可描述；DE 仅 16/32（右删失，预算未耗尽），按冻结定义不得作 at-budget 端点（仅可列 observed best-so-far）；其余 4 臂 NOT_RUN。
+e1_e6_availability,E2,ABO,,status,NOT_RUN,,,evaluations.jsonl/batch_summary.json,,,BO 完成 32/32 评估，best_primary 可描述；DE 仅 16/32（右删失，预算未耗尽），按冻结定义不得作 at-budget 端点（仅可列 observed best-so-far）；其余 4 臂 NOT_RUN。
+e1_e6_availability,E2,ADE,,status,NOT_RUN,,,evaluations.jsonl/batch_summary.json,,,BO 完成 32/32 评估，best_primary 可描述；DE 仅 16/32（右删失，预算未耗尽），按冻结定义不得作 at-budget 端点（仅可列 observed best-so-far）；其余 4 臂 NOT_RUN。
+e1_e6_availability,E2,APSO,,status,NOT_RUN,,,evaluations.jsonl/batch_summary.json,,,BO 完成 32/32 评估，best_primary 可描述；DE 仅 16/32（右删失，预算未耗尽），按冻结定义不得作 at-budget 端点（仅可列 observed best-so-far）；其余 4 臂 NOT_RUN。
+e1_e6_availability,E2,,,overall,NOT_COMPUTABLE,,,evaluations.jsonl/batch_summary.json,,,best-at-budget（在每臂预注册评估预算 B=32 处取 best primary）
+e1_e6_availability,E3,BO,,status,NOT_COMPUTABLE,,,evaluations.jsonl/batch_summary.json,,,R10 package 内未绑定冻结的优化目标 baseline（approval 中 baseline 仅指 accounting baseline 62/446，不是 objective baseline）；无 baseline 目标值即无法定义 starts-to-baseline。
+e1_e6_availability,E3,DE,,status,NOT_COMPUTABLE,,,evaluations.jsonl/batch_summary.json,,,R10 package 内未绑定冻结的优化目标 baseline（approval 中 baseline 仅指 accounting baseline 62/446，不是 objective baseline）；无 baseline 目标值即无法定义 starts-to-baseline。
+e1_e6_availability,E3,PSO,,status,NOT_RUN,,,evaluations.jsonl/batch_summary.json,,,R10 package 内未绑定冻结的优化目标 baseline（approval 中 baseline 仅指 accounting baseline 62/446，不是 objective baseline）；无 baseline 目标值即无法定义 starts-to-baseline。
+e1_e6_availability,E3,ABO,,status,NOT_RUN,,,evaluations.jsonl/batch_summary.json,,,R10 package 内未绑定冻结的优化目标 baseline（approval 中 baseline 仅指 accounting baseline 62/446，不是 objective baseline）；无 baseline 目标值即无法定义 starts-to-baseline。
+e1_e6_availability,E3,ADE,,status,NOT_RUN,,,evaluations.jsonl/batch_summary.json,,,R10 package 内未绑定冻结的优化目标 baseline（approval 中 baseline 仅指 accounting baseline 62/446，不是 objective baseline）；无 baseline 目标值即无法定义 starts-to-baseline。
+e1_e6_availability,E3,APSO,,status,NOT_RUN,,,evaluations.jsonl/batch_summary.json,,,R10 package 内未绑定冻结的优化目标 baseline（approval 中 baseline 仅指 accounting baseline 62/446，不是 objective baseline）；无 baseline 目标值即无法定义 starts-to-baseline。
+e1_e6_availability,E3,,,overall,NOT_COMPUTABLE,,,evaluations.jsonl/batch_summary.json,,,starts-to-baseline（达到基线目标所需的 solver starts）
+e1_e6_availability,E4,BO,,status,COMPUTED_DESCRIPTIVE,,,evaluations.jsonl/batch_summary.json,,,BO 23/32=71.875%、DE 12/16=75.0% 可描述性报告；DE 因科学停批右删失、两臂预算不等且单 seed，禁止比较/排名。其余 4 臂 NOT_RUN。
+e1_e6_availability,E4,DE,,status,COMPUTED_DESCRIPTIVE_PARTIAL,,,evaluations.jsonl/batch_summary.json,,,BO 23/32=71.875%、DE 12/16=75.0% 可描述性报告；DE 因科学停批右删失、两臂预算不等且单 seed，禁止比较/排名。其余 4 臂 NOT_RUN。
+e1_e6_availability,E4,PSO,,status,NOT_RUN,,,evaluations.jsonl/batch_summary.json,,,BO 23/32=71.875%、DE 12/16=75.0% 可描述性报告；DE 因科学停批右删失、两臂预算不等且单 seed，禁止比较/排名。其余 4 臂 NOT_RUN。
+e1_e6_availability,E4,ABO,,status,NOT_RUN,,,evaluations.jsonl/batch_summary.json,,,BO 23/32=71.875%、DE 12/16=75.0% 可描述性报告；DE 因科学停批右删失、两臂预算不等且单 seed，禁止比较/排名。其余 4 臂 NOT_RUN。
+e1_e6_availability,E4,ADE,,status,NOT_RUN,,,evaluations.jsonl/batch_summary.json,,,BO 23/32=71.875%、DE 12/16=75.0% 可描述性报告；DE 因科学停批右删失、两臂预算不等且单 seed，禁止比较/排名。其余 4 臂 NOT_RUN。
+e1_e6_availability,E4,APSO,,status,NOT_RUN,,,evaluations.jsonl/batch_summary.json,,,BO 23/32=71.875%、DE 12/16=75.0% 可描述性报告；DE 因科学停批右删失、两臂预算不等且单 seed，禁止比较/排名。其余 4 臂 NOT_RUN。
+e1_e6_availability,E4,,,overall,NOT_COMPUTABLE_AS_SIX_ARM_COMPARISON,,,evaluations.jsonl/batch_summary.json,,,可行率 = valid evaluations / evaluations（每臂）
+e1_e6_availability,E5,BO,,status,NOT_COMPUTABLE,,,evaluations.jsonl/batch_summary.json,,,单 seed=42、无重复运行、无重复设计评估；冻结结论 E5=SINGLE_SEED_42 NOT_COMPUTABLE。
+e1_e6_availability,E5,DE,,status,NOT_COMPUTABLE,,,evaluations.jsonl/batch_summary.json,,,单 seed=42、无重复运行、无重复设计评估；冻结结论 E5=SINGLE_SEED_42 NOT_COMPUTABLE。
+e1_e6_availability,E5,PSO,,status,NOT_RUN,,,evaluations.jsonl/batch_summary.json,,,单 seed=42、无重复运行、无重复设计评估；冻结结论 E5=SINGLE_SEED_42 NOT_COMPUTABLE。
+e1_e6_availability,E5,ABO,,status,NOT_RUN,,,evaluations.jsonl/batch_summary.json,,,单 seed=42、无重复运行、无重复设计评估；冻结结论 E5=SINGLE_SEED_42 NOT_COMPUTABLE。
+e1_e6_availability,E5,ADE,,status,NOT_RUN,,,evaluations.jsonl/batch_summary.json,,,单 seed=42、无重复运行、无重复设计评估；冻结结论 E5=SINGLE_SEED_42 NOT_COMPUTABLE。
+e1_e6_availability,E5,APSO,,status,NOT_RUN,,,evaluations.jsonl/batch_summary.json,,,单 seed=42、无重复运行、无重复设计评估；冻结结论 E5=SINGLE_SEED_42 NOT_COMPUTABLE。
+e1_e6_availability,E5,,,overall,NOT_COMPUTABLE,,,evaluations.jsonl/batch_summary.json,,,SINGLE_SEED_42 稳定性/重复性端点
+e1_e6_availability,E6,BO,,status,NOT_COMPUTABLE,,,evaluations.jsonl/batch_summary.json,,,无冷启动 baseline 目标/配对对照；仅 BO 完成、DE 部分，无配对可比，且禁止跨臂比较。
+e1_e6_availability,E6,DE,,status,NOT_COMPUTABLE,,,evaluations.jsonl/batch_summary.json,,,无冷启动 baseline 目标/配对对照；仅 BO 完成、DE 部分，无配对可比，且禁止跨臂比较。
+e1_e6_availability,E6,PSO,,status,NOT_RUN,,,evaluations.jsonl/batch_summary.json,,,无冷启动 baseline 目标/配对对照；仅 BO 完成、DE 部分，无配对可比，且禁止跨臂比较。
+e1_e6_availability,E6,ABO,,status,NOT_RUN,,,evaluations.jsonl/batch_summary.json,,,无冷启动 baseline 目标/配对对照；仅 BO 完成、DE 部分，无配对可比，且禁止跨臂比较。
+e1_e6_availability,E6,ADE,,status,NOT_RUN,,,evaluations.jsonl/batch_summary.json,,,无冷启动 baseline 目标/配对对照；仅 BO 完成、DE 部分，无配对可比，且禁止跨臂比较。
+e1_e6_availability,E6,APSO,,status,NOT_RUN,,,evaluations.jsonl/batch_summary.json,,,无冷启动 baseline 目标/配对对照；仅 BO 完成、DE 部分，无配对可比，且禁止跨臂比较。
+e1_e6_availability,E6,,,overall,NOT_COMPUTABLE,,,evaluations.jsonl/batch_summary.json,,,冷启动增益（cold-start baseline 与优化臂的配对增益）
+per_design,d51866f7d3c49303,BO,,status,INVALID_NUMERICAL,,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,1,
+per_design,d51866f7d3c49303,BO,,starts,1,starts,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,1,
+per_design,d51866f7d3c49303,BO,,internal,7,internal,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,1,
+per_design,d51866f7d3c49303,BO,,validation_error,LIFT_MATCH_FAILED,,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,1,
+per_design,eb00b7ad545243e6,BO,,status,SOLVED_VALID,,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,2,
+per_design,eb00b7ad545243e6,BO,,starts,2,starts,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,2,
+per_design,eb00b7ad545243e6,BO,,internal,14,internal,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,2,
+per_design,eb00b7ad545243e6,BO,,primary,0.01289480742004768,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,2,
+per_design,eb00b7ad545243e6,BO,f1,cdi,0.012427799952662829,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,2,
+per_design,eb00b7ad545243e6,BO,f2,cdi,0.013361814887432532,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,2,
+per_design,dc96d2438a6dddc3,BO,,status,SOLVED_VALID,,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,3,
+per_design,dc96d2438a6dddc3,BO,,starts,2,starts,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,3,
+per_design,dc96d2438a6dddc3,BO,,internal,14,internal,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,3,
+per_design,dc96d2438a6dddc3,BO,,primary,0.021752395563484656,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,3,
+per_design,dc96d2438a6dddc3,BO,f1,cdi,0.020833226657484404,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,3,
+per_design,dc96d2438a6dddc3,BO,f2,cdi,0.02267156446948491,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,3,
+per_design,c50a5bc80b15ada0,BO,,status,SOLVED_VALID,,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,4,
+per_design,c50a5bc80b15ada0,BO,,starts,2,starts,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,4,
+per_design,c50a5bc80b15ada0,BO,,internal,14,internal,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,4,
+per_design,c50a5bc80b15ada0,BO,,primary,0.010006880012223485,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,4,
+per_design,c50a5bc80b15ada0,BO,f1,cdi,0.009824061828577351,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,4,
+per_design,c50a5bc80b15ada0,BO,f2,cdi,0.010189698195869618,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,4,
+per_design,51795ed3d0bb01ec,BO,,status,SOLVED_VALID,,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,5,
+per_design,51795ed3d0bb01ec,BO,,starts,2,starts,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,5,
+per_design,51795ed3d0bb01ec,BO,,internal,14,internal,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,5,
+per_design,51795ed3d0bb01ec,BO,,primary,0.013090987086835041,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,5,
+per_design,51795ed3d0bb01ec,BO,f1,cdi,0.012685635508911167,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,5,
+per_design,51795ed3d0bb01ec,BO,f2,cdi,0.013496338664758915,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,5,
+per_design,9e1872d140afc1f6,BO,,status,INVALID_NUMERICAL,,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,6,
+per_design,9e1872d140afc1f6,BO,,starts,2,starts,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,6,
+per_design,9e1872d140afc1f6,BO,,internal,14,internal,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,6,
+per_design,9e1872d140afc1f6,BO,,validation_error,SOLVER_FAILED,,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,6,
+per_design,e72b25d7a7dbd88c,BO,,status,INVALID_NUMERICAL,,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,7,
+per_design,e72b25d7a7dbd88c,BO,,starts,2,starts,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,7,
+per_design,e72b25d7a7dbd88c,BO,,internal,14,internal,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,7,
+per_design,e72b25d7a7dbd88c,BO,,validation_error,SOLVER_FAILED,,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,7,
+per_design,2f6243903587add3,BO,,status,SOLVED_VALID,,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,8,
+per_design,2f6243903587add3,BO,,starts,2,starts,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,8,
+per_design,2f6243903587add3,BO,,internal,14,internal,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,8,
+per_design,2f6243903587add3,BO,,primary,0.017865557815363975,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,8,
+per_design,2f6243903587add3,BO,f1,cdi,0.0175696845593691,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,8,
+per_design,2f6243903587add3,BO,f2,cdi,0.018161431071358845,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,8,
+per_design,236fe08691dc2310,BO,,status,SOLVED_VALID,,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,9,
+per_design,236fe08691dc2310,BO,,starts,2,starts,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,9,
+per_design,236fe08691dc2310,BO,,internal,14,internal,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,9,
+per_design,236fe08691dc2310,BO,,primary,0.018712660699474346,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,9,
+per_design,236fe08691dc2310,BO,f1,cdi,0.01837416922739918,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,9,
+per_design,236fe08691dc2310,BO,f2,cdi,0.01905115217154951,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,9,
+per_design,e8b9eb4d0c8b634b,BO,,status,SOLVED_VALID,,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,10,
+per_design,e8b9eb4d0c8b634b,BO,,starts,2,starts,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,10,
+per_design,e8b9eb4d0c8b634b,BO,,internal,14,internal,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,10,
+per_design,e8b9eb4d0c8b634b,BO,,primary,0.016228040308768787,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,10,
+per_design,e8b9eb4d0c8b634b,BO,f1,cdi,0.015926297276718043,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,10,
+per_design,e8b9eb4d0c8b634b,BO,f2,cdi,0.016529783340819528,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,10,
+per_design,dd1dece0ad573cdb,BO,,status,SOLVED_VALID,,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,11,
+per_design,dd1dece0ad573cdb,BO,,starts,2,starts,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,11,
+per_design,dd1dece0ad573cdb,BO,,internal,14,internal,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,11,
+per_design,dd1dece0ad573cdb,BO,,primary,0.014407789311505166,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,11,
+per_design,dd1dece0ad573cdb,BO,f1,cdi,0.013876710371991494,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,11,
+per_design,dd1dece0ad573cdb,BO,f2,cdi,0.01493886825101884,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,11,
+per_design,b8beee6d07ee1b21,BO,,status,SOLVED_VALID,,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,12,
+per_design,b8beee6d07ee1b21,BO,,starts,2,starts,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,12,
+per_design,b8beee6d07ee1b21,BO,,internal,14,internal,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,12,
+per_design,b8beee6d07ee1b21,BO,,primary,0.0131140278766873,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,12,
+per_design,b8beee6d07ee1b21,BO,f1,cdi,0.012708135226000838,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,12,
+per_design,b8beee6d07ee1b21,BO,f2,cdi,0.013519920527373759,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,12,
+per_design,827dca19d0bc94d0,BO,,status,SOLVED_VALID,,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,13,
+per_design,827dca19d0bc94d0,BO,,starts,2,starts,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,13,
+per_design,827dca19d0bc94d0,BO,,internal,14,internal,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,13,
+per_design,827dca19d0bc94d0,BO,,primary,0.012840186720469549,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,13,
+per_design,827dca19d0bc94d0,BO,f1,cdi,0.012170076127404833,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,13,
+per_design,827dca19d0bc94d0,BO,f2,cdi,0.013510297313534262,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,13,
+per_design,d437c862c0dcf8e8,BO,,status,SOLVED_VALID,,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,14,
+per_design,d437c862c0dcf8e8,BO,,starts,2,starts,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,14,
+per_design,d437c862c0dcf8e8,BO,,internal,14,internal,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,14,
+per_design,d437c862c0dcf8e8,BO,,primary,0.013886088737238346,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,14,
+per_design,d437c862c0dcf8e8,BO,f1,cdi,0.013546813082811152,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,14,
+per_design,d437c862c0dcf8e8,BO,f2,cdi,0.014225364391665541,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,14,
+per_design,3a28be940017b4a1,BO,,status,INVALID_NUMERICAL,,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,15,
+per_design,3a28be940017b4a1,BO,,starts,1,starts,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,15,
+per_design,3a28be940017b4a1,BO,,internal,7,internal,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,15,
+per_design,3a28be940017b4a1,BO,,validation_error,LIFT_MATCH_FAILED,,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,15,
+per_design,d3870cf70fae4b44,BO,,status,INVALID_NUMERICAL,,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,16,
+per_design,d3870cf70fae4b44,BO,,starts,1,starts,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,16,
+per_design,d3870cf70fae4b44,BO,,internal,7,internal,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,16,
+per_design,d3870cf70fae4b44,BO,,validation_error,LIFT_MATCH_FAILED,,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,16,
+per_design,d9a3ae0bc8bf5106,BO,,status,SOLVED_VALID,,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,17,
+per_design,d9a3ae0bc8bf5106,BO,,starts,2,starts,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,17,
+per_design,d9a3ae0bc8bf5106,BO,,internal,14,internal,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,17,
+per_design,d9a3ae0bc8bf5106,BO,,primary,0.01489330913265793,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,17,
+per_design,d9a3ae0bc8bf5106,BO,f1,cdi,0.01455066389924357,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,17,
+per_design,d9a3ae0bc8bf5106,BO,f2,cdi,0.01523595436607229,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,17,
+per_design,c6c7baf1657378f1,BO,,status,SOLVED_VALID,,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,18,
+per_design,c6c7baf1657378f1,BO,,starts,2,starts,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,18,
+per_design,c6c7baf1657378f1,BO,,internal,14,internal,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,18,
+per_design,c6c7baf1657378f1,BO,,primary,0.015263458026858799,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,18,
+per_design,c6c7baf1657378f1,BO,f1,cdi,0.014954001163784866,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,18,
+per_design,c6c7baf1657378f1,BO,f2,cdi,0.015572914889932732,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,18,
+per_design,6dbcc258198aa8a9,BO,,status,SOLVED_VALID,,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,19,
+per_design,6dbcc258198aa8a9,BO,,starts,2,starts,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,19,
+per_design,6dbcc258198aa8a9,BO,,internal,14,internal,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,19,
+per_design,6dbcc258198aa8a9,BO,,primary,0.017432652202150463,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,19,
+per_design,6dbcc258198aa8a9,BO,f1,cdi,0.017172964855707608,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,19,
+per_design,6dbcc258198aa8a9,BO,f2,cdi,0.017692339548593315,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,19,
+per_design,0f55119852c9ba40,BO,,status,SOLVED_VALID,,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,20,
+per_design,0f55119852c9ba40,BO,,starts,2,starts,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,20,
+per_design,0f55119852c9ba40,BO,,internal,14,internal,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,20,
+per_design,0f55119852c9ba40,BO,,primary,0.02223808315568626,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,20,
+per_design,0f55119852c9ba40,BO,f1,cdi,0.021185099338142735,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,20,
+per_design,0f55119852c9ba40,BO,f2,cdi,0.023291066973229788,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,20,
+per_design,7243b873b6a090c3,BO,,status,SOLVED_VALID,,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,21,
+per_design,7243b873b6a090c3,BO,,starts,2,starts,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,21,
+per_design,7243b873b6a090c3,BO,,internal,14,internal,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,21,
+per_design,7243b873b6a090c3,BO,,primary,0.019773894735011892,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,21,
+per_design,7243b873b6a090c3,BO,f1,cdi,0.0191417501349735,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,21,
+per_design,7243b873b6a090c3,BO,f2,cdi,0.02040603933505028,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,21,
+per_design,cc0f9ada19a81cb4,BO,,status,SOLVED_VALID,,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,22,
+per_design,cc0f9ada19a81cb4,BO,,starts,2,starts,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,22,
+per_design,cc0f9ada19a81cb4,BO,,internal,14,internal,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,22,
+per_design,cc0f9ada19a81cb4,BO,,primary,0.02068359944229497,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,22,
+per_design,cc0f9ada19a81cb4,BO,f1,cdi,0.02026671683158968,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,22,
+per_design,cc0f9ada19a81cb4,BO,f2,cdi,0.021100482053000257,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,22,
+per_design,6f1a4f916b0ec55b,BO,,status,SOLVED_VALID,,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,23,
+per_design,6f1a4f916b0ec55b,BO,,starts,2,starts,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,23,
+per_design,6f1a4f916b0ec55b,BO,,internal,14,internal,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,23,
+per_design,6f1a4f916b0ec55b,BO,,primary,0.01726922602656745,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,23,
+per_design,6f1a4f916b0ec55b,BO,f1,cdi,0.016319873829838554,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,23,
+per_design,6f1a4f916b0ec55b,BO,f2,cdi,0.01821857822329635,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,23,
+per_design,acabfea98cfa0a9d,BO,,status,SOLVED_VALID,,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,24,
+per_design,acabfea98cfa0a9d,BO,,starts,2,starts,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,24,
+per_design,acabfea98cfa0a9d,BO,,internal,14,internal,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,24,
+per_design,acabfea98cfa0a9d,BO,,primary,0.019747840636686293,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,24,
+per_design,acabfea98cfa0a9d,BO,f1,cdi,0.01889970036024698,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,24,
+per_design,acabfea98cfa0a9d,BO,f2,cdi,0.020595980913125606,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,24,
+per_design,a74fae0f277e3704,BO,,status,INVALID_NUMERICAL,,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,25,
+per_design,a74fae0f277e3704,BO,,starts,1,starts,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,25,
+per_design,a74fae0f277e3704,BO,,internal,7,internal,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,25,
+per_design,a74fae0f277e3704,BO,,validation_error,LIFT_MATCH_FAILED,,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,25,
+per_design,d7c9e3ca52d426c8,BO,,status,INVALID_NUMERICAL,,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,26,
+per_design,d7c9e3ca52d426c8,BO,,starts,1,starts,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,26,
+per_design,d7c9e3ca52d426c8,BO,,internal,7,internal,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,26,
+per_design,d7c9e3ca52d426c8,BO,,validation_error,SOLVER_FAILED,,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,26,
+per_design,74a4e49f973f3243,BO,,status,SOLVED_VALID,,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,27,
+per_design,74a4e49f973f3243,BO,,starts,2,starts,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,27,
+per_design,74a4e49f973f3243,BO,,internal,14,internal,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,27,
+per_design,74a4e49f973f3243,BO,,primary,0.01552866127940844,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,27,
+per_design,74a4e49f973f3243,BO,f1,cdi,0.015278128530685553,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,27,
+per_design,74a4e49f973f3243,BO,f2,cdi,0.015779194028131327,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,27,
+per_design,581e935e4afe8d5e,BO,,status,SOLVED_VALID,,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,28,
+per_design,581e935e4afe8d5e,BO,,starts,2,starts,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,28,
+per_design,581e935e4afe8d5e,BO,,internal,14,internal,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,28,
+per_design,581e935e4afe8d5e,BO,,primary,0.020159374414194006,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,28,
+per_design,581e935e4afe8d5e,BO,f1,cdi,0.019676392173756576,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,28,
+per_design,581e935e4afe8d5e,BO,f2,cdi,0.02064235665463144,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,28,
+per_design,d4d30ba2d72c0b14,BO,,status,INVALID_NUMERICAL,,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,29,
+per_design,d4d30ba2d72c0b14,BO,,starts,2,starts,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,29,
+per_design,d4d30ba2d72c0b14,BO,,internal,14,internal,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,29,
+per_design,d4d30ba2d72c0b14,BO,,validation_error,SOLVER_FAILED,,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,29,
+per_design,8a6723c57bb4e7f7,BO,,status,INVALID_NUMERICAL,,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,30,
+per_design,8a6723c57bb4e7f7,BO,,starts,2,starts,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,30,
+per_design,8a6723c57bb4e7f7,BO,,internal,14,internal,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,30,
+per_design,8a6723c57bb4e7f7,BO,,validation_error,SOLVER_FAILED,,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,30,
+per_design,d5c3fe40869fc765,BO,,status,SOLVED_VALID,,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,31,
+per_design,d5c3fe40869fc765,BO,,starts,2,starts,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,31,
+per_design,d5c3fe40869fc765,BO,,internal,14,internal,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,31,
+per_design,d5c3fe40869fc765,BO,,primary,0.015922925115088752,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,31,
+per_design,d5c3fe40869fc765,BO,f1,cdi,0.015396479702205392,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,31,
+per_design,d5c3fe40869fc765,BO,f2,cdi,0.016449370527972112,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,31,
+per_design,77ebdd62d183c468,BO,,status,SOLVED_VALID,,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,32,
+per_design,77ebdd62d183c468,BO,,starts,2,starts,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,32,
+per_design,77ebdd62d183c468,BO,,internal,14,internal,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,32,
+per_design,77ebdd62d183c468,BO,,primary,0.02325079054346792,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,32,
+per_design,77ebdd62d183c468,BO,f1,cdi,0.022610091496386722,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,32,
+per_design,77ebdd62d183c468,BO,f2,cdi,0.02389148959054912,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,32,
+per_design,d51866f7d3c49303,DE,,status,INVALID_NUMERICAL,,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,33,
+per_design,d51866f7d3c49303,DE,,starts,1,starts,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,33,
+per_design,d51866f7d3c49303,DE,,internal,7,internal,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,33,
+per_design,d51866f7d3c49303,DE,,validation_error,LIFT_MATCH_FAILED,,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,33,
+per_design,eb00b7ad545243e6,DE,,status,SOLVED_VALID,,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,34,
+per_design,eb00b7ad545243e6,DE,,starts,2,starts,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,34,
+per_design,eb00b7ad545243e6,DE,,internal,14,internal,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,34,
+per_design,eb00b7ad545243e6,DE,,primary,0.01289480742004768,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,34,
+per_design,eb00b7ad545243e6,DE,f1,cdi,0.012427799952662829,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,34,
+per_design,eb00b7ad545243e6,DE,f2,cdi,0.013361814887432532,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,34,
+per_design,dc96d2438a6dddc3,DE,,status,SOLVED_VALID,,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,35,
+per_design,dc96d2438a6dddc3,DE,,starts,2,starts,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,35,
+per_design,dc96d2438a6dddc3,DE,,internal,14,internal,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,35,
+per_design,dc96d2438a6dddc3,DE,,primary,0.021752395563484656,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,35,
+per_design,dc96d2438a6dddc3,DE,f1,cdi,0.020833226657484404,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,35,
+per_design,dc96d2438a6dddc3,DE,f2,cdi,0.02267156446948491,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,35,
+per_design,36500c4bf8685345,DE,,status,SOLVED_VALID,,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,36,
+per_design,36500c4bf8685345,DE,,starts,2,starts,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,36,
+per_design,36500c4bf8685345,DE,,internal,14,internal,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,36,
+per_design,36500c4bf8685345,DE,,primary,0.017609708070089377,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,36,
+per_design,36500c4bf8685345,DE,f1,cdi,0.017406791475885808,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,36,
+per_design,36500c4bf8685345,DE,f2,cdi,0.017812624664292946,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,36,
+per_design,8efba9e5c533f643,DE,,status,INVALID_NUMERICAL,,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,37,
+per_design,8efba9e5c533f643,DE,,starts,2,starts,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,37,
+per_design,8efba9e5c533f643,DE,,internal,14,internal,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,37,
+per_design,8efba9e5c533f643,DE,,validation_error,SOLVER_FAILED,,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,37,
+per_design,d98707d7dc9d47bd,DE,,status,SOLVED_VALID,,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,38,
+per_design,d98707d7dc9d47bd,DE,,starts,2,starts,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,38,
+per_design,d98707d7dc9d47bd,DE,,internal,14,internal,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,38,
+per_design,d98707d7dc9d47bd,DE,,primary,0.014005394315105706,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,38,
+per_design,d98707d7dc9d47bd,DE,f1,cdi,0.013648499599914593,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,38,
+per_design,d98707d7dc9d47bd,DE,f2,cdi,0.014362289030296821,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,38,
+per_design,a857301c79d4113f,DE,,status,SOLVED_VALID,,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,39,
+per_design,a857301c79d4113f,DE,,starts,2,starts,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,39,
+per_design,a857301c79d4113f,DE,,internal,14,internal,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,39,
+per_design,a857301c79d4113f,DE,,primary,0.021656907520067867,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,39,
+per_design,a857301c79d4113f,DE,f1,cdi,0.0209491298033177,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,39,
+per_design,a857301c79d4113f,DE,f2,cdi,0.022364685236818036,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,39,
+per_design,c27f0d32c7136b1f,DE,,status,SOLVED_VALID,,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,40,
+per_design,c27f0d32c7136b1f,DE,,starts,2,starts,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,40,
+per_design,c27f0d32c7136b1f,DE,,internal,14,internal,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,40,
+per_design,c27f0d32c7136b1f,DE,,primary,0.02488524308335461,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,40,
+per_design,c27f0d32c7136b1f,DE,f1,cdi,0.02438872885576112,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,40,
+per_design,c27f0d32c7136b1f,DE,f2,cdi,0.0253817573109481,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,40,
+per_design,1ecd1953a8e9f56e,DE,,status,SOLVED_VALID,,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,41,
+per_design,1ecd1953a8e9f56e,DE,,starts,2,starts,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,41,
+per_design,1ecd1953a8e9f56e,DE,,internal,14,internal,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,41,
+per_design,1ecd1953a8e9f56e,DE,,primary,0.01325678012408952,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,41,
+per_design,1ecd1953a8e9f56e,DE,f1,cdi,0.012837836502007493,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,41,
+per_design,1ecd1953a8e9f56e,DE,f2,cdi,0.013675723746171547,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,41,
+per_design,6b1e6ff98b874742,DE,,status,SOLVED_VALID,,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,42,
+per_design,6b1e6ff98b874742,DE,,starts,2,starts,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,42,
+per_design,6b1e6ff98b874742,DE,,internal,14,internal,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,42,
+per_design,6b1e6ff98b874742,DE,,primary,0.01664815914250145,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,42,
+per_design,6b1e6ff98b874742,DE,f1,cdi,0.016377415342384773,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,42,
+per_design,6b1e6ff98b874742,DE,f2,cdi,0.01691890294261813,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,42,
+per_design,c5d1b592667b6e4a,DE,,status,SOLVED_VALID,,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,43,
+per_design,c5d1b592667b6e4a,DE,,starts,2,starts,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,43,
+per_design,c5d1b592667b6e4a,DE,,internal,14,internal,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,43,
+per_design,c5d1b592667b6e4a,DE,,primary,0.018591472444594127,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,43,
+per_design,c5d1b592667b6e4a,DE,f1,cdi,0.018086461133397014,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,43,
+per_design,c5d1b592667b6e4a,DE,f2,cdi,0.01909648375579124,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,43,
+per_design,489dd5563f726c3b,DE,,status,SOLVED_VALID,,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,44,
+per_design,489dd5563f726c3b,DE,,starts,2,starts,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,44,
+per_design,489dd5563f726c3b,DE,,internal,14,internal,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,44,
+per_design,489dd5563f726c3b,DE,,primary,0.013669264341156014,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,44,
+per_design,489dd5563f726c3b,DE,f1,cdi,0.013366955971350633,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,44,
+per_design,489dd5563f726c3b,DE,f2,cdi,0.013971572710961392,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,44,
+per_design,b02df4979249bfcb,DE,,status,SOLVED_VALID,,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,45,
+per_design,b02df4979249bfcb,DE,,starts,2,starts,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,45,
+per_design,b02df4979249bfcb,DE,,internal,14,internal,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,45,
+per_design,b02df4979249bfcb,DE,,primary,0.013456025791313823,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,45,
+per_design,b02df4979249bfcb,DE,f1,cdi,0.013110174040580605,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,45,
+per_design,b02df4979249bfcb,DE,f2,cdi,0.013801877542047042,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,45,
+per_design,3917573675ce8daa,DE,,status,INVALID_NUMERICAL,,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,46,
+per_design,3917573675ce8daa,DE,,starts,1,starts,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,46,
+per_design,3917573675ce8daa,DE,,internal,7,internal,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,46,
+per_design,3917573675ce8daa,DE,,validation_error,LIFT_MATCH_FAILED,,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,46,
+per_design,0870dfc4d70b2341,DE,,status,INVALID_NUMERICAL,,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,47,
+per_design,0870dfc4d70b2341,DE,,starts,2,starts,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,47,
+per_design,0870dfc4d70b2341,DE,,internal,14,internal,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,47,
+per_design,0870dfc4d70b2341,DE,,validation_error,SOLVER_FAILED,,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,47,
+per_design,e2bd64901b6f1754,DE,,status,SOLVED_VALID,,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,48,
+per_design,e2bd64901b6f1754,DE,,starts,2,starts,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,48,
+per_design,e2bd64901b6f1754,DE,,internal,14,internal,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,48,
+per_design,e2bd64901b6f1754,DE,,primary,0.013669701834594409,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,48,
+per_design,e2bd64901b6f1754,DE,f1,cdi,0.013332604311974305,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,48,
+per_design,e2bd64901b6f1754,DE,f2,cdi,0.014006799357214512,CDi,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,48,
+accounting_check,A01,,,preflight starts/internal,PASS,,,preflight_result.json,daf047e62e043ce193aad5c0fc84e0ec8561d823f9893037e9c440b65aea3e47,,"{""starts"": 2, ""internal"": 14, ""overall"": ""PREFLIGHT_PASS_BYTE"", ""cases"": 2, ""excluded_from_e1_e6"": true}"
+accounting_check,A02,,,diagnostics zero-spawn / excluded,PASS,,,diagnostics.json,4976fda2d9ea3b903ac7353802f2492400dd92aead2f829aeff1f69315341613,,"{""starts"": 0, ""internal"": 0, ""status"": ""DIAGNOSTICS_NOT_IN_MATRIX"", ""skipped"": true, ""excluded_from_endpoints"": true}"
+accounting_check,A03,,,main starts = sum eval starts,PASS,,,batch_summary.json/evaluations.jsonl,,,"{""batch_summary_main_starts"": 89, ""evaluations_starts_sum"": 89}"
+accounting_check,A04,,,main internal = sum eval internal = 7*starts,PASS,,,batch_summary.json/evaluations.jsonl,,,"{""batch_summary_main_internal"": 623, ""evaluations_internal_sum"": 623, ""7x_starts"": 623}"
+accounting_check,A05,,,total 91/637 conservation (7x),PASS,,,batch_summary.json,a4ea4840ccdeea0e00cc8496c5fc8c69aea901afcabe9884394d3064285a36a9,,"{""total_starts"": 91, ""total_internal"": 637, ""7x_total_starts"": 637, ""preflight_plus_main_internal"": 637}"
+accounting_check,A06,,,"ledger 91 start/91 end, 1:1, pending 0",PASS,,,solver_attempts.jsonl/stop_report.json,,,"{""starts"": 91, ""ends"": 91, ""missing_end"": 0, ""orphan_end"": 0, ""duplicate_start_ids"": 0, ""stop_report_pending_repaired"": 0}"
+accounting_check,A07,,,zero retry / single writer,PASS,,,solver_attempts.jsonl/plan.json,,,"{""duplicate_case_starts"": 0, ""writer_pids"": [27588], ""infra_retries_allowed"": 0, ""evaluator_lifecycle"": ""SEQUENTIAL_ONE_PER_ARM""}"
+accounting_check,A08,,,phase conservation preflight+diagnostic+main,PASS,,,batch_summary.json,a4ea4840ccdeea0e00cc8496c5fc8c69aea901afcabe9884394d3064285a36a9,,"{""phase_internal_cases"": {""preflight"": 14, ""diagnostic"": 0, ""main"": 623, ""total"": 637}, ""phase_conservation_ok"": {""preflight"": {""starts"": 2, ""expected_internal_cases"": 14, ""recorded_internal_cases"": 14, ""ok"": true, ""source"": ""INTERNAL_PER_START_POLICY""}, ""diagnostic"": {""starts"": 0, ""expected_internal_cases"": 0, ""recorded_internal_cases"": 0, ""ok"": true, ""source"": ""INTERNAL_PER_START_POLICY""}, ""main"": {""starts"": 89, ""expected_internal_cases"": 623, ""recorded_internal_cases"": 623, ""ok"": true, ""source"": ""INTERNAL_PER_START_POLICY""}}}"
+accounting_check,A09,,,main-only evaluations (preflight/diagnostics excluded),PASS,,,evaluations.jsonl/preflight_result.json/diagnostics.json,,,"{""n_evaluations"": 48, ""eval_hashes_in_preflight"": [], ""preflight_counted_in_e1_e6"": false, ""diagnostics_excluded"": true}"
+accounting_check,A10,,,all main rows REAL_VSPAERO; reused_frozen_pair distribution,PASS,,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,"{""n"": 48, ""backend_counts"": {""REAL_VSPAERO"": 48}, ""reused_frozen_pair_true"": 6, ""reused_frozen_pair_false"": 42, ""note"": ""reused=true 仅初始 3 designs/臂（冻结预建对，6 行）；其余 42 行为新设计现场 build/freeze，false 属预期""}"
+accounting_check,A11,,,primary == 0.5*CDi(f1)+0.5*CDi(f2),PASS,,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,"{""max_abs_deviation"": 0.0, ""n_valid"": 35}"
+accounting_check,A12,,,invalid ratio 13/48 triggers pre-registered stop,PASS,,,batch_summary.json/stop_report.json,,,"{""main_evaluations"": 48, ""invalid_evaluations"": 13, ""invalid_ratio"": 0.2708333333333333, ""rule"": {""ratio_min_evaluations"": 48, ""ratio_max"": 0.25, ""consecutive_max"": 6, ""total_max"": 64, ""invalid_status"": ""INVALID_NUMERICAL""}, ""stop"": {""phase"": ""scientific_auto_stop"", ""arm_id"": ""DE"", ""message"": ""ARM_STOPPED_STOPPED_SCIENTIFIC_INVALID_RATIO""}}"
+accounting_check,A13,,,manifest designs 45 == unique eval designs; roles match,PASS,,,final_run_manifest.json/evaluations.jsonl,,,"{""manifest_designs"": 45, ""unique_eval_designs"": 45, ""eval_missing_from_manifest"": [], ""manifest_only"": [], ""eval_role_checks_matched"": ""35/35"", ""designs_total"": 45, ""shared_initial_designs"": 3}"
+accounting_check,A14,,,cumulative CHARGED_PROJECTED 448/3148 vs caps,PASS,,,batch_summary.json/approval.json/plan.json,,,"{""batch_summary_cumulative"": [448, 3148], ""baseline"": [62, 446], ""r10_planned"": [386, 2702], ""projected"": [448, 3148], ""caps"": [451, 3157], ""headroom"": [3, 9], ""semantics"": ""CHARGED_PROJECTED（授权/headroom 口径，不是实际物理消耗）""}"
+accounting_check,A15,,,cumulative PHYSICAL_ACTUAL 153/1083 vs caps,PASS,,,approval.json/batch_summary.json/stop_report.json,,,"{""baseline"": [62, 446], ""r10_actual"": [91, 637], ""actual_cumulative"": [153, 1083], ""caps"": [451, 3157], ""headroom"": [298, 2074], ""semantics"": ""PHYSICAL_ACTUAL（实际 solver spawn 计数）""}"
+accounting_check,A16,,,accounting baseline chain arithmetic 62/446,PASS,,,approval.json R10-ACCT-01,,,"{""components"": [[39, 285], [2, 14], [2, 14], [2, 14], [2, 14], [0, 0], [3, 21], [6, 42], [0, 0], [6, 42]], ""component_sums"": [62, 446], ""declared_baseline"": [62, 446]}"
+accounting_check,A17,,,DE batch_summary valid_designs vs evaluations,FAIL,,,batch_summary.json/evaluations.jsonl,,,"{""batch_summary_DE_valid_designs"": 11, ""evaluations_DE_valid"": 12, ""authority"": ""evaluations.jsonl（16th DE eval SOLVED_VALID 已追加，stop_check 返回后才停，bs 未自增）""}"
+accounting_check,A18,,,starts < 2*evals explained by fail-fast,PASS,,,evaluations.jsonl,01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a,,"{""evaluations"": 48, ""2x_evaluations"": 96, ""actual_starts"": 89, ""n_one_start_invalid"": 7, ""gap"": 7}"
+accounting_check,A19,,,stop_report ledger closed & scientific phase,PASS,,,stop_report.json,a23964eba50a15a703bfb1f736ad97c6d7b8a040844ef23f70a84eca4c35db8b,,"{""phase"": ""scientific_auto_stop"", ""arm_id"": ""DE"", ""message"": ""ARM_STOPPED_STOPPED_SCIENTIFIC_INVALID_RATIO"", ""ledger_starts"": 91, ""ledger_ends"": 91, ""physical_solver_starts"": 91, ""pending_starts_repaired"": 0}"
+accounting_check,A20,,,execution window compliance,PASS,,,solver_attempts.jsonl/plan.json,,,"{""window"": [""2026-11-11T18:30:00Z"", ""2026-11-12T04:00:00Z""], ""first_ts"": ""2026-11-11T18:58:04Z"", ""last_ts"": ""2026-11-11T19:13:55Z"", ""stop_created_utc"": ""2026-11-11T19:13:55Z""}"
+accounting_check,A21,,,phase starts sum 2+0+89=91,PASS,,,solver_attempts.jsonl,0614c0182958a50b6fdac2b463141afd005c6551498174514424b063eb840409,,"{""preflight_mode_starts"": 2, ""main_mode_starts"": 89, ""b2_replay_rows"": 4}"
+cumulative,baseline_prior_actual,,,starts,62,starts,,batch_summary.json/approval.json/plan.json,,,
+cumulative,baseline_prior_actual,,,internal,446,internal,,batch_summary.json/approval.json/plan.json,,,
+cumulative,r10_planned_reservation,,,starts,386,starts,,batch_summary.json/approval.json/plan.json,,,
+cumulative,r10_planned_reservation,,,internal,2702,internal,,batch_summary.json/approval.json/plan.json,,,
+cumulative,r10_actual_physical,,,starts,91,starts,,batch_summary.json/approval.json/plan.json,,,
+cumulative,r10_actual_physical,,,internal,637,internal,,batch_summary.json/approval.json/plan.json,,,
+cumulative,charged_projected,,,starts,448,starts,,batch_summary.json/approval.json/plan.json,,,
+cumulative,charged_projected,,,internal,3148,internal,,batch_summary.json/approval.json/plan.json,,,
+cumulative,physical_actual,,,starts,153,starts,,batch_summary.json/approval.json/plan.json,,,
+cumulative,physical_actual,,,internal,1083,internal,,batch_summary.json/approval.json/plan.json,,,
+discrepancy,D1,,,累计 448/3148 是 CHARGED_PROJECTED（授权口径），不是实际物理消耗,MAJOR_ACCOUNTING_SEMANTICS,,,approval.json R10-ACCT-01; batch_summary.json cumulative_*; stop_report.json physical 91; plan budget 386/2702,,,
+discrepancy,D2,,,DE batch_summary valid_designs=11 vs evaluations 12,MINOR,,,batch_summary.arms.DE.valid_designs=11; evaluations DE valid=12,,,
+discrepancy,D3,,,INVALID 行 family 归因字段不完整，需从 ledger 重算,MINOR,,,evaluations.jsonl invalid rows; solver_attempts.jsonl,,,
+discrepancy,D4,,,preflight_result case-level polar_sha256 字段为 null,MINOR,,,preflight_result.json; approval.json preflight.expected_polar_sha256,,,
+discrepancy,D5,,,final_run_manifest physical_call_count=0/solver_started=false 是 manifest builder 计数,INFO,,,final_run_manifest.json,2522f951f91c01c7b8c82294d94abb3d58dc36878cbdb424d112a7cfc2404cca,,

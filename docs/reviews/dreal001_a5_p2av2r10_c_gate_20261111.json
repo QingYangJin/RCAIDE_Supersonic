@@ -1,0 +1,333 @@
+{
+  "schema": "dreal001.a5.c_gate.v1",
+  "gate_id": "C-P2AV2R10-02",
+  "review_id": "A5-P2AV2R10-C02",
+  "created_utc": "2026-11-11T18:54:35Z",
+  "reviewer": "a5-review",
+  "review_type": "POST_APPROVAL_DRY_RUN_INDEPENDENT_REVIEW",
+  "verdict": "PASS",
+  "verdict_note": "PASS is not an execution authorization; a Lead GO bound to this C gate, the signed approval and the real dry-run is still required.",
+  "batch_id": "DREAL001-P2-20261111-15",
+  "run_id": "DREAL001-P2A2R10-20261111-01",
+  "physical_call_count": 0,
+  "solver_started": false,
+  "checks_total": 27,
+  "checks_passed": 27,
+  "checks_review": 0,
+  "checks_fail": 0,
+  "checks": [
+    {
+      "id": "C01",
+      "item": "Signed approval exists with approved status and Lead signer",
+      "expected": "approved=true; status APPROVED_FOR_EXECUTION_PENDING_POST_APPROVAL_DRY_RUN; approved_by=lead; approved_at set",
+      "actual": "4e67eac52833d8dfab8b8027a0838b68de15f26d9a072edb0515ece22414068c / 84140 B; status=APPROVED_FOR_EXECUTION_PENDING_POST_APPROVAL_DRY_RUN; approved=true; approved_by=lead; approved_at=2026-11-11T18:51:14Z",
+      "status": "PASS",
+      "note": ""
+    },
+    {
+      "id": "C02",
+      "item": "A2 commits the signed approval byte-identically",
+      "expected": "single-file commit; git diff --exit-code = 0",
+      "actual": "814631778753848a934b1125fac0cb3e5d860584; diffExit=0; numstatLines=1",
+      "status": "PASS",
+      "note": ""
+    },
+    {
+      "id": "C03",
+      "item": "Signed conditions = A5 conditions file (57, same text/order)",
+      "expected": "57 strings byte-identical",
+      "actual": "count=57; textsEqual=true; file=c54818e5deb3ca7a5ee029c3b5ee5dc92cef55ce435ad26dc561ffbbc7391020 / 26230 B",
+      "status": "PASS",
+      "note": ""
+    },
+    {
+      "id": "C04",
+      "item": "approval_refs = 14-key refs_final; a5_review = gate commit",
+      "expected": "14 keys; no placeholders; a5_review=48b91bf67b6b9f0f9e27e69fb6b5aca1fec3a15f",
+      "actual": "keys=14; refDiffs=[]; a5_review=48b91bf67b6b9f0f9e27e69fb6b5aca1fec3a15f; noPlaceholder=true",
+      "status": "PASS",
+      "note": ""
+    },
+    {
+      "id": "C05",
+      "item": "b2_waiver approved for this batch only and binds the gate commit",
+      "expected": "APPROVED_BY_LEAD_FOR_THIS_BATCH_ONLY; a5_pre_review_commit=48b91bf67b6b9f0f9e27e69fb6b5aca1fec3a15f; approved_at set",
+      "actual": "status=APPROVED_BY_LEAD_FOR_THIS_BATCH_ONLY; approver=lead; approved_at=2026-11-11T18:51:14Z; a5_pre_review_commit=48b91bf67b6b9f0f9e27e69fb6b5aca1fec3a15f",
+      "status": "PASS",
+      "note": ""
+    },
+    {
+      "id": "C06",
+      "item": "Window approved with correct interval and token",
+      "expected": "2026-11-11T18:30:00Z..2026-11-12T04:00:00Z; token WINDOW_OK-P2AV2R10-20261111T1830Z-20261112T0400Z; status APPROVED",
+      "actual": "start=2026-11-11T18:30:00Z; end=2026-11-12T04:00:00Z; status=APPROVED; window.token=WINDOW_OK-P2AV2R10-20261111T1830Z-20261112T0400Z; top.token=WINDOW_OK-P2AV2R10-20261111T1830Z-20261112T0400Z",
+      "status": "PASS",
+      "note": ""
+    },
+    {
+      "id": "C07",
+      "item": "amendment_log identical to DRAFT; seq1-8 = R8 signed; seq9 pre-registered",
+      "expected": "10 entries; seq1-9 field-equal to R9; seq10 R10_INTERNAL_ACCOUNTING_FIX physical=62",
+      "actual": "len=10; draftEqual=true; seq1_8EqR8=true; seq9={\"action\":\"R10_INTERNAL_ACCOUNTING_FIX\",\"physical\":62,\"utc\":\"2026-11-11T18:32:44Z\",\"supersedes\":false}",
+      "status": "PASS",
+      "note": ""
+    },
+    {
+      "id": "C08",
+      "item": "Supersedes R8 approval with honest physical count",
+      "expected": "R9 approval b502b484...; 76,257 B; physical=62; run R9",
+      "actual": "sha=b502b484e50c71707e484c758b5baaf0409c423c4838094c8300c36202bdd991; bytes=76257; physical=62; run=DREAL001-P2A2R9-20261111-01",
+      "status": "PASS",
+      "note": ""
+    },
+    {
+      "id": "C09",
+      "item": "DRAFT->signed delta limited to the 9 allowed top-level fields",
+      "expected": "changed subset of 9; window only status; b2_waiver only status/approved_at/approver/a5_pre_review_commit",
+      "actual": "changed=[\"status\",\"approved\",\"approved_by\",\"approved_at_utc\",\"authorization\",\"b2_waiver\",\"window\",\"conditions\",\"approval_refs\"]; windowChanged=[\"status\"]; b2Changed=[\"status\",\"approved_at_utc\",\"a5_pre_review_commit\"]; outsideAllowed=[]",
+      "status": "PASS",
+      "note": ""
+    },
+    {
+      "id": "C10",
+      "item": "Lead signature evidence file present and binds approval",
+      "expected": "lead_signature_r10*.json exists and references approval SHA",
+      "actual": "lead_signature_r10_20261112T0251Z.json; 1f15cf9ad0367e1cf3df7206c185aed8b5d1d0ae3c197e9e32cfad9eddef0d2c / 16628 B; bindsApproval=true",
+      "status": "PASS",
+      "note": ""
+    },
+    {
+      "id": "C11",
+      "item": "Real post-approval dry-run status and checks",
+      "expected": "POST_APPROVAL_DRY_RUN_READY_NOT_RUN; checks all PASS; failed=[]; gate_error=null",
+      "actual": "file=post_approval_dry_run.R10_20261111T185212Z.json; e9f3471dcd4d6b89e3cf0daf7e6d8a6236741225f3867e4b4cedd7fee2c3cec1 / 19427 B; status=POST_APPROVAL_DRY_RUN_READY_NOT_RUN; checks=46/46; failed=[]; gate_error=null",
+      "status": "PASS",
+      "note": ""
+    },
+    {
+      "id": "C12",
+      "item": "Dry-run binds approval/plan/identity/executor/package and planned 386/0/2702",
+      "expected": "approval sha+bytes match signed; plan ba6eaa49; identity 7e339188; executor ed0f2324; package 79e8f6a; planned 386/2702",
+      "actual": "{\"approval_sha256\":\"4e67eac52833d8dfab8b8027a0838b68de15f26d9a072edb0515ece22414068c\",\"plan\":\"ba6eaa49e181b2cacc048362dd00e57458ceba73165b68f1776ae4f3af43b4d4\",\"identity\":\"7e339188a58b780f22fa6f786040387a61866e8639170ab65927ad59be1cb1b1\",\"executor\":\"ed0f2324f91ffc649e9b8d997051d515ff7e248f027c46ba1c9125e2f575704c\",\"package\":\"79e8f6a8133422c3865d99a841f8b68e8cc039d6\"}; planned=386; emitted=0; internal=2702; caps={\"max_internal_cases\":3157,\"max_refine_starts\":0,\"max_starts\":451,\"planned_internal_cases\":2702,\"planned_starts\":386,\"reserve_starts\":64}",
+      "status": "PASS",
+      "note": ""
+    },
+    {
+      "id": "C13",
+      "item": "Dry-run proves zero physical execution and no ledger/cases",
+      "expected": "physical 0; no solver/vspaero; ledger false; cases/batch_summary/stop_report absent",
+      "actual": "{\"physical_call_count\":0,\"physical_solver_starts\":0,\"solver_processes\":0,\"vspaero_processes\":0,\"ledger_created\":false,\"cases_dir_exists\":false,\"batch_summary_created\":false,\"stop_report_created\":false}",
+      "status": "PASS",
+      "note": ""
+    },
+    {
+      "id": "C14",
+      "item": "A2 commits the dry-run evidence byte-identically",
+      "expected": "single-file commit; diff exit 0",
+      "actual": "a925ff91bce5822821b01375cc3cbeb254b02adf; diffExit=0; numstatLines=1",
+      "status": "PASS",
+      "note": ""
+    },
+    {
+      "id": "C15",
+      "item": "Pre-execution run dir contains exactly package + approval + dry-run",
+      "expected": "no cases/ledger/runtime/arms/prestart; exactly 10 files",
+      "actual": "files=10; dirs=[]; forbidden=[]; extra=[]; missing=[]",
+      "status": "PASS",
+      "note": ""
+    },
+    {
+      "id": "C16",
+      "item": "R10 package bytes unchanged since gate",
+      "expected": "8/8 same SHA/bytes",
+      "actual": "[]",
+      "status": "PASS",
+      "note": ""
+    },
+    {
+      "id": "C17",
+      "item": "Launcher, solver exe, R10 executor and A1 frozen bytes unchanged",
+      "expected": "launcher 476481e65674; exe db71c441/811,520; executor ed0f2324f91f; A1 5 files unchanged",
+      "actual": "launcher=476481e65674d30450b03eb85f7fc44bca06323213161d53ddc652c218690bc8/29361; exe=db71c4412489af82398833408ea30fb73327bdd9434de2ef530d31375b9fddad/811520; executor=ed0f2324f91ffc649e9b8d997051d515ff7e248f027c46ba1c9125e2f575704c; a1Bad=[]",
+      "status": "PASS",
+      "note": ""
+    },
+    {
+      "id": "C18",
+      "item": "R1-R9 approvals unchanged (read-only history)",
+      "expected": "9/9 SHA+bytes unchanged",
+      "actual": "[]",
+      "status": "PASS",
+      "note": ""
+    },
+    {
+      "id": "C19",
+      "item": "Accounting: prior 62/446 + R10 planned 386/2702 = 448/3148 <= caps 451/3157",
+      "expected": "448 starts / 3,148 internal; headroom 3/9",
+      "actual": "cumulative=448/3148; caps=451/3157; headroom=3/9",
+      "status": "PASS",
+      "note": ""
+    },
+    {
+      "id": "C20",
+      "item": "R1-R9 recorded as excluded from E1-E6 endpoints",
+      "expected": "r1..r9 present with exclusion record",
+      "actual": "[\"r1\",\"r2\",\"r3\",\"r4\",\"r5\",\"r6\",\"r7\",\"r8\",\"r9\",\"rule\"]",
+      "status": "PASS",
+      "note": ""
+    },
+    {
+      "id": "C21",
+      "item": "Real dry-run used the bound R9 tool",
+      "expected": "post_approval_dry_run_r10.py 3ae66266.../22,322 B",
+      "actual": "bf283ec0295634059a7f6a14f5070196cfc97fed7bddffca0ad02d19b272cc08 / 22795 B",
+      "status": "PASS",
+      "note": ""
+    },
+    {
+      "id": "C22",
+      "item": "Approval conditions stored as 57 strings (signer format)",
+      "expected": "array of 57 strings",
+      "actual": "type=string; len=57",
+      "status": "PASS",
+      "note": ""
+    },
+    {
+      "id": "C23",
+      "item": "Dry-run executed after signature (ordering)",
+      "expected": "dry-run created_utc > approved_at_utc",
+      "actual": "approved=2026-11-11T18:51:14Z; dry=2026-11-11T18:52:12Z",
+      "status": "PASS",
+      "note": ""
+    },
+    {
+      "id": "C24",
+      "item": "a5_review binds this gate commit in the signed approval",
+      "expected": "signed approval_refs 14 keys; a5_review=48b91bf67b6b9f0f9e27e69fb6b5aca1fec3a15f",
+      "actual": "signedRefs=14; a5_review=48b91bf67b6b9f0f9e27e69fb6b5aca1fec3a15f",
+      "status": "PASS",
+      "note": ""
+    },
+    {
+      "id": "C25",
+      "item": "A5 is zero-physical throughout this review",
+      "expected": "A5 physical_call_count=0, solver_started=false",
+      "actual": "A5 physical_call_count=0, solver_started=false",
+      "status": "PASS",
+      "note": ""
+    },
+    {
+      "id": "C26",
+      "item": "No R10 execution has started (no prestart/cases/ledger/arms)",
+      "expected": "folder absent",
+      "actual": "[]",
+      "status": "PASS",
+      "note": ""
+    },
+    {
+      "id": "C27",
+      "item": "M6 evidence: prefrozen reuse tamper test + zero-physical prestart gate delivered and A5-verified",
+      "expected": "gate C18/C19/C20/C21 PASS; executor-own gate smoke + launcher gate evidence present",
+      "actual": "C18=PASS_WITH_DISCLOSURE; C19=PASS; C20=PASS; C21=PASS",
+      "status": "PASS",
+      "note": ""
+    }
+  ],
+  "approval": {
+    "path": "D:\\RCAIDE\\dnext001\\wt-real-a2-optimizers\\research\\concorde_metaopt\\dreal001\\runs\\DREAL001-P2A2R10-20261111-01\\approval.json",
+    "bytes": 84140,
+    "sha256": "4e67eac52833d8dfab8b8027a0838b68de15f26d9a072edb0515ece22414068c",
+    "commit": "814631778753848a934b1125fac0cb3e5d860584",
+    "conditions": 57,
+    "approval_refs": {
+      "a1_bundle_commit": "2a57632b3f7d5d567556d9774913ec40a5d72272",
+      "a1_bundle_commit_full": "2a57632b3f7d5d567556d9774913ec40a5d72272",
+      "a1_bundle_manifest_sha256": "995bb12fff738d3ebb0bde08c0d5c5bfeb9532aebe536847ef307a2332013aa5",
+      "a1_bundle_path": "D:\\RCAIDE\\dnext001\\wt-real-a1-geometry-solver\\research\\concorde_metaopt\\dreal001\\geometry\\replay_bundles\\P2A_V2_PREFLIGHT_20261111_R1",
+      "a1_bundle_note": "old 3-case bundle 20999b3e.../0598441 superseded; R1 2-case bundle re-bound unchanged",
+      "a1_executable_commit": "6753eb39b710035187db13ceb3328301c645c1ba",
+      "a1_task49_commit": "6753eb39b710035187db13ceb3328301c645c1ba",
+      "a1_execution_code": "6979802",
+      "a1_execution_code_note": "legacy execution code id retained; frozen byte bindings are evaluator f74a4752... / freeze_api 31d78182... / openvsp_model c40b11df...",
+      "a1_execution_head": "2a57632b3f7d5d567556d9774913ec40a5d72272",
+      "a1_head": "2a57632b3f7d5d567556d9774913ec40a5d72272",
+      "a2_execution_code": "ed0f2324f91ffc649e9b8d997051d515ff7e248f027c46ba1c9125e2f575704c",
+      "a2_package_commit": "79e8f6a8133422c3865d99a841f8b68e8cc039d6",
+      "a5_review": "48b91bf67b6b9f0f9e27e69fb6b5aca1fec3a15f"
+    }
+  },
+  "dry_run": {
+    "path": "D:\\RCAIDE\\dnext001\\wt-real-a2-optimizers\\research\\concorde_metaopt\\dreal001\\runs\\DREAL001-P2A2R10-20261111-01\\post_approval_dry_run.R10_20261111T185212Z.json",
+    "bytes": 19427,
+    "sha256": "e9f3471dcd4d6b89e3cf0daf7e6d8a6236741225f3867e4b4cedd7fee2c3cec1",
+    "status": "POST_APPROVAL_DRY_RUN_READY_NOT_RUN",
+    "checks": 46,
+    "failed": 0,
+    "commit": "a925ff91bce5822821b01375cc3cbeb254b02adf"
+  },
+  "run_dir_state": [
+    "P2A_V2_PREREGISTRATION.md",
+    "SHA256SUMS.txt",
+    "approval.DRAFT.json",
+    "approval.json",
+    "dry_run.json",
+    "executor_dry_run.json",
+    "identity_binding.json",
+    "initial_designs_manifest.json",
+    "plan.json",
+    "post_approval_dry_run.R10_20261111T185212Z.json"
+  ],
+  "pre_gate": {
+    "path": "D:\\RCAIDE\\dnext001\\wt-real-a5-review\\docs\\reviews\\dreal001_a5_p2av2r10_pre_gate_20261111.json",
+    "commit": "48b91bf67b6b9f0f9e27e69fb6b5aca1fec3a15f",
+    "sha256": "82708c4df1b9ebda5b3330204a8ddbeb037bbc9797e5dfb5175efd38bf6cb7a6"
+  },
+  "conditions_file": {
+    "path": "D:\\RCAIDE\\dnext001\\wt-real-a5-review\\docs\\reviews\\dreal001_a5_p2av2r10_signature_conditions_20261111.json",
+    "sha256": "c54818e5deb3ca7a5ee029c3b5ee5dc92cef55ce435ad26dc561ffbbc7391020",
+    "bytes": 26230,
+    "count": 57
+  },
+  "accounting": {
+    "prior": {
+      "starts": 62,
+      "internal": 446
+    },
+    "r10_planned": {
+      "starts": 386,
+      "internal": 2702
+    },
+    "cumulative": {
+      "starts": 448,
+      "internal": 3148
+    },
+    "caps": {
+      "starts": 451,
+      "internal": 3157
+    },
+    "headroom": {
+      "starts": 3,
+      "internal": 9
+    }
+  },
+  "exclusions": [
+    "r1",
+    "r2",
+    "r3",
+    "r4",
+    "r5",
+    "r6",
+    "r7",
+    "r8",
+    "r9",
+    "rule"
+  ],
+  "disclosures": [
+    "C10_executor_sha 为定义性假阴性（dry-run 工具把文件字节 SHA 与 JSON 聚合 SHA 比较，永不相等），与 R1-R9 同口径，非阻断披露。",
+    "本 C 复核 PASS 不是执行授权；须 Lead 签发 GO（绑定 approval SHA、dry-run SHA、本 C gate commit、R10 window/token）。",
+    "R1-R9 永久排除，不进 E1-E6；R10 单 seed 描述性，不宣布 winner/显著性；跨族不可比较；fuel_burn_kg=null；物理 NOT_VALIDATED。",
+    "A5 physical_call_count=0，未启动任何 solver/VSPAERO；未改 A1/A2/R1-R9 字节；未 push。",
+    "Lead 签署器仅做一处 schema 兜底：gate anchors 未含 a1 块时从 refs_final 取 a1_bundle_manifest_sha256；未放宽任何签名语义、未改任何绑定字节；记录为非阻断披露。"
+  ],
+  "next_step": "Lead GO bound to approval sha, dry-run sha, this C gate commit and the R9 window/token; then 2 preflight PASS_BYTE -> diagnostics skipped (0/0, not in matrix) -> 384 main; no retry."
+}

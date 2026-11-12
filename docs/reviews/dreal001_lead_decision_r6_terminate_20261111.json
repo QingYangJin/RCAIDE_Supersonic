@@ -1,0 +1,44 @@
+{
+  "schema": "dreal001.lead_decision.v1",
+  "decision_id": "L-07",
+  "created_utc": "2026-11-11T11:32:00Z",
+  "decision": "TERMINATE_R_LINE_R6_FINAL_NO_R7",
+  "scope": {
+    "batch_id": "DREAL001-P2-20261111-11",
+    "run_id": "DREAL001-P2A2R6-20261111-01"
+  },
+  "r6_characterization": "MAIN_STAGE_S1_STOP",
+  "r6_no_r7": true,
+  "basis": [
+    "signed R6 approval and Lead GO declare R6 the final execution attempt with no R7; Lead cannot relax signed conditions",
+    "R6 main-stage failure is structural executor defect, not an environment glitch",
+    "7 callsites design_hash(canonical_x12(...)) misuse confirmed by code read; R1-R5 never reached main evaluation callback",
+    "A5 recommended termination at R5; Lead overrode for R6; after R6 main failure Lead accepts termination"
+  ],
+  "accounting": {
+    "r6_starts": 3,
+    "r6_internal": 21,
+    "cumulative_starts": 50,
+    "cumulative_internal": 362,
+    "caps_starts": 451,
+    "caps_internal": 3157,
+    "r1_r5_excluded": true,
+    "r6_excluded": true
+  },
+  "corrections": [
+    "A2 early 43/313 accounting superseded by 47/341 pre-R6 and 50/362 post-R6",
+    "A2 early claim of traceback in executor_run.log is inaccurate: log has only REFUSED_OR_ERROR line; stop_report.traceback is NoneType: None"
+  ],
+  "evidence_sha256": {
+    "approval": "72b95e03130fbe958c52528f1b8f484eae4872140a7336709094b9108964f98f",
+    "dry_run": "5f61343ff0bd724c8cd8f08bbba48753b563d92e6670cf7d52b2f9f7f3094ded",
+    "stop_report": "e74d7e2db802b6d81446d93727c3823565544c8264bb737f0e68379285240def",
+    "executor_prestart": "9ca155d234654ea1a64e146246cc6e6d6d8f01c163a6db867557daa9cdeae29f",
+    "executor_run_log": "f569ebb26879bea0294307b488be6a5546fe70bafbd790f3182ee9a14a36bfb1",
+    "solver_attempts": "c214cfa5677274368fb2b5cba6cd19e4413432778aa618e62575b5b4e9eccb2b",
+    "main_polar": "58b8438df1225b07b3ef8dc327670575d99a6866b204f2c0840de074324d489a",
+    "go_record": "c1afbc9daf0dfc6438941c08a234c9921a8734d0041db9741b5e01ed073b17ce"
+  },
+  "no_further_execution_authorization": true,
+  "signed_by": "lead"
+}

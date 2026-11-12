@@ -1,0 +1,85 @@
+{
+  "schema": "dreal001.lead_decision.v1",
+  "decision_id": "L-15",
+  "decision": "CLARIFY_R10_ACCOUNTING_TWO_BASES_NO_POLICY_CHANGE",
+  "physical_authorization": false,
+  "created_utc": "2026-11-11T19:34:00Z",
+  "trigger_ref": {
+    "a3_commit": "699ce2abfcbeef3a47934bfa88bb173ec00ac489",
+    "stats_json_sha256": "5705269ba2bb7015f703fb2c9bb24da2f300bda0e7c2d83848a369e8d562daf9",
+    "stats_md_sha256": "0728ccae856d913cfc2ff6984e2e32d05cfd2413345693eab0a983ffeec526eb"
+  },
+  "charged_basis": {
+    "r10_planned_reservation": [
+      386,
+      2702
+    ],
+    "cumulative_charged": [
+      448,
+      3148
+    ],
+    "caps": [
+      451,
+      3157
+    ],
+    "headroom": [
+      3,
+      9
+    ],
+    "note": "authorization/reservation basis; caps enforced here"
+  },
+  "actual_physical_basis": {
+    "r10_actual": [
+      91,
+      637
+    ],
+    "preflight": [
+      2,
+      14
+    ],
+    "diagnostics": [
+      0,
+      0
+    ],
+    "main": [
+      89,
+      623
+    ],
+    "prior_actual": [
+      62,
+      446
+    ],
+    "cumulative_actual": [
+      153,
+      1083
+    ],
+    "remaining_vs_caps": [
+      298,
+      2074
+    ]
+  },
+  "decisions_taken": [
+    "no policy/approval/caps/package/evidence byte change",
+    "R10 remains final attempt (no R11)",
+    "all downstream reporting must state both bases",
+    "never describe 448/3148 as consumed physical budget",
+    "A2 stop-note wording to be corrected by disclosure/addendum, not byte edit"
+  ],
+  "pilot_status": {
+    "six_arm": "NOT_COMPLETED",
+    "preflight": "PREFLIGHT_PASS_BYTE",
+    "diagnostics": "DIAGNOSTICS_NOT_IN_MATRIX",
+    "stop": "SCIENTIFIC_AUTO_STOP invalid 13/48=27.08%",
+    "arms": {
+      "BO": "COMPLETED 32/23/9",
+      "DE": "STOPPED 16/12/4",
+      "PSO": "NOT_RUN",
+      "A-BO": "NOT_RUN",
+      "A-DE": "NOT_RUN",
+      "A-PSO": "NOT_RUN"
+    },
+    "endpoints": "E1-E6 NOT_COMPUTABLE",
+    "fuel_burn_kg": null,
+    "physical_validation_status": "NOT_VALIDATED"
+  }
+}

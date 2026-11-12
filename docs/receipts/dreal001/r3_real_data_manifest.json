@@ -1,0 +1,109 @@
+{
+  "schema_version": "dreal001-real-data-manifest-v1",
+  "run_id": "D-REAL-001_P2_TBD",
+  "authorization_id": "NOT_ISSUED",
+  "status": "NOT_RUN",
+  "created_utc": "2026-11-10T13:30:00Z",
+  "updated_utc": "2026-11-10T13:30:00Z",
+  "owner": "r3-stats",
+  "physical_solver_starts": 0,
+  "purpose": "A3 收口时的真实数据状态占位：P2 真实 VSPAERO 优化批次尚未执行（Lead 尚未排程、P1 数值物理验收未签），因此 status=NOT_RUN、physical_solver_starts=0。P2 实际产出后必须把本清单更新为 PARTIAL/AVAILABLE 并补齐 SHA256；禁止在真实数据未产生时把合成/回放结果写成本清单产物。",
+  "artifact_root": "artifacts/dreal001/real/p2_pilot/run_000",
+  "expected_artifacts": [
+    {
+      "name": "evaluations_jsonl",
+      "path": "artifacts/dreal001/real/p2_pilot/run_000/evaluations.jsonl",
+      "required": true,
+      "description": "逐次评价记录；每条必须含 physical_solver_starts、objective、status、feasible、alpha、design_id"
+    },
+    {
+      "name": "optimization_history_csv",
+      "path": "artifacts/dreal001/real/p2_pilot/run_000/optimization_history.csv",
+      "required": true,
+      "description": "优化历史长表；列至少 run_id, task_id, seed, iteration, physical_solver_starts, objective, feasible"
+    },
+    {
+      "name": "metrics_csv",
+      "path": "artifacts/dreal001/real/p2_pilot/run_000/metrics.csv",
+      "required": true,
+      "description": "run 级指标；列至少 run_id, task_id, seed, method, budget, source_kind, physical_solver_starts, best_valid_Di_N, lift_residual_N, valid_solve_rate"
+    },
+    {
+      "name": "run_config_json",
+      "path": "artifacts/dreal001/real/p2_pilot/run_000/run_config.json",
+      "required": true,
+      "description": "冻结配置：12D 设计变量、基准 L_ref、Mach/高度、grid/wake、solver 版本、git_sha"
+    },
+    {
+      "name": "summary_json",
+      "path": "artifacts/dreal001/real/p2_pilot/run_000/summary.json",
+      "required": true,
+      "description": "run 摘要：physical_solver_starts 总计、评价数、失败/超时计数、authorization_id"
+    },
+    {
+      "name": "solver_attempts_jsonl",
+      "path": "artifacts/dreal001/real/p2_pilot/run_000/solver_attempts.jsonl",
+      "required": false,
+      "description": "每次真实 solver 启动尝试（含失败/超时）；用于 physical_solver_starts 对账"
+    },
+    {
+      "name": "approval_json",
+      "path": "artifacts/dreal001/real/p2_pilot/run_000/approval.json",
+      "required": false,
+      "description": "Lead 批次批准记录（authorization_id、批准范围、上限）"
+    },
+    {
+      "name": "numerical_validation_csv",
+      "path": "artifacts/dreal001/real/p2_pilot/run_000/numerical_validation.csv",
+      "required": false,
+      "description": "P1 I-01..I-06 数值物理验收记录（A5 签字）"
+    },
+    {
+      "name": "data_manifest_json",
+      "path": "artifacts/dreal001/real/p2_pilot/run_000/data_manifest.json",
+      "required": false,
+      "description": "产物清单与 SHA256"
+    },
+    {
+      "name": "sha256sums_txt",
+      "path": "artifacts/dreal001/real/p2_pilot/run_000/SHA256SUMS.txt",
+      "required": false,
+      "description": "字节级 SHA256 清单"
+    }
+  ],
+  "stats_adapter_contract": {
+    "module": "research/concorde_metaopt/dreal001/stats",
+    "evidence_isolation": "本清单声明的产物必须 source_kind=real_solver；load_evaluations_jsonl/load_run_table_csv 读入后 evidence_class 必须是 EVIDENCE_REAL_SOLVER，混入合成记录会被 isolation 断言拒绝",
+    "anytime_x_axis": "按 cumulative physical_solver_starts 对齐，不按墙钟时间或评价次数；每步缺该字段时 cumulative_solver_starts 抛错（missing=error），缺失评价以 NOT_RUN 标记而不是补 0",
+    "required_per_step_fields": [
+      "physical_solver_starts",
+      "objective",
+      "status",
+      "feasible"
+    ],
+    "required_run_columns": [
+      "run_id",
+      "task_id",
+      "seed",
+      "method",
+      "budget",
+      "source_kind",
+      "physical_solver_starts"
+    ],
+    "primary_endpoints": [
+      "best_valid_Di_N",
+      "lift_residual_N",
+      "delta_Di_N",
+      "first_feasible_solver_start",
+      "valid_solve_rate",
+      "anytime_best_valid_Di_auc"
+    ],
+    "units": "统计单元 = (task_id, seed) 配对；跨 seed 聚合用 compare_paired_across_seeds",
+    "notes": "P2 数据一到位即可用 compare_to_references + plot_paired_forest + anytime_curve_from_solver_starts 生成对照与图；本清单只做状态声明，不含任何数值"
+  },
+  "notes": [
+    "status=NOT_RUN 表示 P2 真实优化批次尚未执行；不得据此声称任何真实气动收益或燃油收益（fuel_burn_kg=null）。",
+    "本仓库当前只有纯合成/回放证据（route B gate 为 synthetic_analogue，physical_solver_starts=0）。",
+    "更新规则：任一 expected_artifact 落盘后必须立即更新 status（有必需产物但不齐 -> PARTIAL；齐全 -> AVAILABLE）并补 sha256，然后运行 pytest tests/test_dreal001_r3_stats_p2_ready.py 中的清单契约测试。"
+  ]
+}

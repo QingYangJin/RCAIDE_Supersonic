@@ -1,0 +1,2323 @@
+{
+  "schema": "dreal001.p2a_v2.r10_stats.v1",
+  "tool": "a3-r10-descriptive-stats-v1.0.0",
+  "generated_utc": "2026-11-11T19:30:03Z",
+  "role": "A3_STATS (independent read-only summarization)",
+  "physical_call_count": 0,
+  "tool_started_solvers": false,
+  "task": "task-14: R10 E1-E6 six-arm stats & endpoint availability (R10 main-only, R1-R9 & diagnostics excluded)",
+  "identity": {
+    "batch_id": "DREAL001-P2-20261111-15",
+    "run_id": "DREAL001-P2A2R10-20261111-01",
+    "window": [
+      "2026-11-11T18:30:00Z",
+      "2026-11-12T04:00:00Z"
+    ],
+    "window_token": "WINDOW_OK-P2AV2R10-20261111T1830Z-20261112T0400Z",
+    "run_status": "STOPPED",
+    "scientific_stop": true,
+    "stop": {
+      "phase": "scientific_auto_stop",
+      "arm_id": "DE",
+      "message": "ARM_STOPPED_STOPPED_SCIENTIFIC_INVALID_RATIO",
+      "created_utc": "2026-11-11T19:13:55Z"
+    },
+    "lead_decision": {
+      "id": "L-14",
+      "file_sha256": "e13435d3f16eb5ac0d33c19681f99dcf595e56a4ab521382fdfd8e2e350ea395"
+    }
+  },
+  "non_result_boundary": {
+    "classification": "NON_RESULT / SIX_ARM_PILOT_NOT_COMPLETED",
+    "pilots_completed": false,
+    "arms": {
+      "BO": "COMPLETED",
+      "DE": "STOPPED_SCIENTIFIC_INVALID_RATIO",
+      "PSO": "NOT_RUN",
+      "ABO": "NOT_RUN",
+      "ADE": "NOT_RUN",
+      "APSO": "NOT_RUN"
+    },
+    "arms_run": [
+      "BO",
+      "DE"
+    ],
+    "e1_e6_overall": "NOT_COMPUTABLE",
+    "allowed_claims": [
+      "BO/DE 描述性统计（单 seed、非完整六臂）",
+      "preflight PASS_BYTE",
+      "科学停批事实与记账"
+    ],
+    "forbidden_claims": [
+      "winner/排名",
+      "显著性/p 值/置信区间",
+      "跨族（f1/f2 或不同几何族）合并/比较",
+      "六臂 E1-E6 端点结论",
+      "优化增益结论",
+      "fuel/物理验证结论"
+    ],
+    "fuel_burn_kg": null,
+    "physical_validation_status": "NOT_VALIDATED"
+  },
+  "data_sources": [
+    {
+      "name": "evaluations.jsonl",
+      "path": "D:\\RCAIDE\\dnext001\\wt-real-a2-optimizers\\research\\concorde_metaopt\\dreal001\\runs\\DREAL001-P2A2R10-20261111-01\\evaluations.jsonl",
+      "sha256": "01585d23e0b00403bd83eddfdad9499f3373decef851686922da08630f5a431a",
+      "bytes": 63990,
+      "role": "评估级权威（48 行，仅 main）"
+    },
+    {
+      "name": "batch_summary.json",
+      "path": "D:\\RCAIDE\\dnext001\\wt-real-a2-optimizers\\research\\concorde_metaopt\\dreal001\\runs\\DREAL001-P2A2R10-20261111-01\\batch_summary.json",
+      "sha256": "a4ea4840ccdeea0e00cc8496c5fc8c69aea901afcabe9884394d3064285a36a9",
+      "bytes": 100838,
+      "role": "臂状态/汇总/记账"
+    },
+    {
+      "name": "final_run_manifest.json",
+      "path": "D:\\RCAIDE\\dnext001\\wt-real-a2-optimizers\\research\\concorde_metaopt\\dreal001\\runs\\DREAL001-P2A2R10-20261111-01\\final_run_manifest.json",
+      "sha256": "2522f951f91c01c7b8c82294d94abb3d58dc36878cbdb424d112a7cfc2404cca",
+      "bytes": 203583,
+      "role": "designs 45 / 冻结对"
+    },
+    {
+      "name": "solver_attempts.jsonl",
+      "path": "D:\\RCAIDE\\dnext001\\wt-real-a2-optimizers\\research\\concorde_metaopt\\dreal001\\runs\\DREAL001-P2A2R10-20261111-01\\solver_attempts.jsonl",
+      "sha256": "0614c0182958a50b6fdac2b463141afd005c6551498174514424b063eb840409",
+      "bytes": 68461,
+      "role": "canonical ledger（91 start/91 end）"
+    },
+    {
+      "name": "preflight_result.json",
+      "path": "D:\\RCAIDE\\dnext001\\wt-real-a2-optimizers\\research\\concorde_metaopt\\dreal001\\runs\\DREAL001-P2A2R10-20261111-01\\preflight_result.json",
+      "sha256": "daf047e62e043ce193aad5c0fc84e0ec8561d823f9893037e9c440b65aea3e47",
+      "bytes": 5771,
+      "role": "preflight 2/2 PASS_BYTE"
+    },
+    {
+      "name": "diagnostics.json",
+      "path": "D:\\RCAIDE\\dnext001\\wt-real-a2-optimizers\\research\\concorde_metaopt\\dreal001\\runs\\DREAL001-P2A2R10-20261111-01\\diagnostics.json",
+      "sha256": "4976fda2d9ea3b903ac7353802f2492400dd92aead2f829aeff1f69315341613",
+      "bytes": 1973,
+      "role": "诊断 0/0 skipped/excluded"
+    },
+    {
+      "name": "stop_report.json",
+      "path": "D:\\RCAIDE\\dnext001\\wt-real-a2-optimizers\\research\\concorde_metaopt\\dreal001\\runs\\DREAL001-P2A2R10-20261111-01\\stop_report.json",
+      "sha256": "a23964eba50a15a703bfb1f736ad97c6d7b8a040844ef23f70a84eca4c35db8b",
+      "bytes": 802,
+      "role": "科学自动停"
+    },
+    {
+      "name": "plan.json",
+      "path": "D:\\RCAIDE\\dnext001\\wt-real-a2-optimizers\\research\\concorde_metaopt\\dreal001\\runs\\DREAL001-P2A2R10-20261111-01\\plan.json",
+      "sha256": "ba6eaa49e181b2cacc048362dd00e57458ceba73165b68f1776ae4f3af43b4d4",
+      "bytes": 52774,
+      "role": "R10 预注册包"
+    },
+    {
+      "name": "approval.json",
+      "path": "D:\\RCAIDE\\dnext001\\wt-real-a2-optimizers\\research\\concorde_metaopt\\dreal001\\runs\\DREAL001-P2A2R10-20261111-01\\approval.json",
+      "sha256": "4e67eac52833d8dfab8b8027a0838b68de15f26d9a072edb0515ece22414068c",
+      "bytes": 84140,
+      "role": "Lead 签署 57 conditions"
+    },
+    {
+      "name": "a2_r10_arm_invalid_decomposition.json",
+      "path": "D:\\RCAIDE\\dnext001\\wt-real-a2-optimizers\\docs\\evidence\\dreal001\\r10_arm_invalid_decomposition_20261111T1913Z.json",
+      "sha256": "080c12904e4ad43476d22ce8bedf046d098c6f10de3a48e37c097a240a597f52",
+      "bytes": 6500,
+      "role": "A2 机器可读分解（独立复核对象）"
+    },
+    {
+      "name": "a2_r10_scientific_auto_stop.md",
+      "path": "D:\\RCAIDE\\dnext001\\wt-real-a2-optimizers\\docs\\evidence\\dreal001\\a2_r10_scientific_auto_stop_20261111T1913Z.md",
+      "sha256": "fc0e81ef273b4c272359ba72002ff229199002b649a139c9b8fd6321a15f671f",
+      "bytes": 12243,
+      "role": "A2 停止说明"
+    },
+    {
+      "name": "lead_decision_l14.md",
+      "path": "D:\\RCAIDE\\dnext001\\wt-real-lead\\docs\\reviews\\dreal001_lead_decision_r10_scientific_stop_20261111.md",
+      "sha256": "e13435d3f16eb5ac0d33c19681f99dcf595e56a4ab521382fdfd8e2e350ea395",
+      "bytes": 4966,
+      "role": "Lead L-14"
+    },
+    {
+      "name": "lead_decision_l14.json",
+      "path": "D:\\RCAIDE\\dnext001\\wt-real-lead\\docs\\reviews\\dreal001_lead_decision_r10_scientific_stop_20261111.json",
+      "sha256": "3391996b4406ace288f5ac344263fa86e48e75059d659d10f41d9428826ba1c9",
+      "bytes": 2886,
+      "role": "Lead L-14 机器可读"
+    }
+  ],
+  "r10_facts": {
+    "main_evaluations": 48,
+    "invalid_evaluations": 13,
+    "invalid_ratio": 0.2708333333333333,
+    "invalid_tolerance": {
+      "ratio_min_evaluations": 48,
+      "ratio_max": 0.25,
+      "consecutive_max": 6,
+      "total_max": 64,
+      "invalid_status": "INVALID_NUMERICAL"
+    },
+    "diagnostics": {
+      "status": "DIAGNOSTICS_NOT_IN_MATRIX",
+      "starts": 0,
+      "internal_cases": 0,
+      "in_r10_matrix": false,
+      "excluded_from_endpoints": true
+    },
+    "backend": "REAL_VSPAERO",
+    "reused_frozen_pair": true,
+    "preflight": {
+      "overall": "PREFLIGHT_PASS_BYTE",
+      "cases": 2,
+      "starts": 2,
+      "internal": 14,
+      "counted_in_e1_e6": false,
+      "expected_polar_sha256": {
+        "PRE-01": "455082e2ac8029216a811c89aaa20b34fd9d73faa319eed23da5348e3de4bc87",
+        "PRE-02": "0287afe0d7e5a91bc286c0b6cbd1ca5623d8aafe65110862fe263925129dd33f"
+      }
+    }
+  },
+  "arms": {
+    "BO": {
+      "status": "COMPLETED",
+      "evaluations": 32,
+      "valid": 23,
+      "invalid": 9,
+      "feasible_rate": 0.71875,
+      "starts_sum": 59,
+      "internal_solver_cases_sum": 413,
+      "invalid_reasons": {
+        "LIFT_MATCH_FAILED": 4,
+        "SOLVER_FAILED": 5
+      },
+      "invalid_starts_distribution": {
+        "1": 5,
+        "2": 4
+      },
+      "objective_stats": {
+        "n": 23,
+        "min": 0.010006880012223485,
+        "q1": 0.014146939024371755,
+        "median": 0.016228040308768787,
+        "q3": 0.019760867685849094,
+        "max": 0.02325079054346792,
+        "iqr": 0.005613928661477339,
+        "mean": 0.01682448853313789,
+        "sd": 0.0035184999190431957
+      },
+      "family_slot_stats": {
+        "f1": {
+          "n": 23,
+          "min": 0.009824061828577351,
+          "q1": 0.013711761727401323,
+          "median": 0.015926297276718043,
+          "q3": 0.01902072524761024,
+          "max": 0.022610091496386722,
+          "iqr": 0.0053089635202089175,
+          "mean": 0.016321498788517047,
+          "sd": 0.003392130884833626
+        },
+        "f2": {
+          "n": 23,
+          "min": 0.010189698195869618,
+          "q1": 0.014582116321342192,
+          "median": 0.016529783340819528,
+          "q3": 0.02050101012408794,
+          "max": 0.02389148959054912,
+          "iqr": 0.00591889380274575,
+          "mean": 0.017327478277758733,
+          "sd": 0.0036568411809847637
+        }
+      },
+      "family_label_note": "f1/f2 族标签逐设计不同（18/18 个不同标签），仅槽位层描述，禁止跨族合并/比较",
+      "best_primary_observed": {
+        "primary": 0.010006880012223485,
+        "design_index": 4,
+        "design_hash": "c50a5bc80b15ada0"
+      },
+      "batch_summary": {
+        "status": "COMPLETED",
+        "valid_designs": 23,
+        "invalid_designs": 9,
+        "starts": 59,
+        "best_primary": 0.010006880012223485
+      }
+    },
+    "DE": {
+      "status": "STOPPED_SCIENTIFIC_INVALID_RATIO",
+      "evaluations": 16,
+      "valid": 12,
+      "invalid": 4,
+      "feasible_rate": 0.75,
+      "starts_sum": 30,
+      "internal_solver_cases_sum": 210,
+      "invalid_reasons": {
+        "LIFT_MATCH_FAILED": 2,
+        "SOLVER_FAILED": 2
+      },
+      "invalid_starts_distribution": {
+        "1": 2,
+        "2": 2
+      },
+      "objective_stats": {
+        "n": 12,
+        "min": 0.01289480742004768,
+        "q1": 0.013615954703695466,
+        "median": 0.015326776728803579,
+        "q3": 0.019357831213462563,
+        "max": 0.02488524308335461,
+        "iqr": 0.0057418765097670965,
+        "mean": 0.01684132163753327,
+        "sd": 0.004087138227218326
+      },
+      "family_slot_stats": {
+        "f1": {
+          "n": 12,
+          "min": 0.012427799952662829,
+          "q1": 0.01327699674412588,
+          "median": 0.015012957471149682,
+          "q3": 0.018773152514418863,
+          "max": 0.02438872885576112,
+          "iqr": 0.005496155770292983,
+          "mean": 0.016397135303893442,
+          "sd": 0.003971436937092659
+        },
+        "f2": {
+          "n": 12,
+          "min": 0.013361814887432532,
+          "q1": 0.013929148918732806,
+          "median": 0.015640595986457475,
+          "q3": 0.01991353412604794,
+          "max": 0.0253817573109481,
+          "iqr": 0.005984385207315134,
+          "mean": 0.017285507971173102,
+          "sd": 0.004209164037191775
+        }
+      },
+      "family_label_note": "f1/f2 族标签逐设计不同（10/7 个不同标签），仅槽位层描述，禁止跨族合并/比较",
+      "best_primary_observed": {
+        "primary": 0.01289480742004768,
+        "design_index": 2,
+        "design_hash": "eb00b7ad545243e6"
+      },
+      "batch_summary": {
+        "status": "STOPPED_SCIENTIFIC_INVALID_RATIO",
+        "valid_designs": 11,
+        "invalid_designs": 4,
+        "starts": 30,
+        "best_primary": 0.01289480742004768
+      }
+    },
+    "PSO": {
+      "status": "NOT_RUN",
+      "evaluations": 0,
+      "valid": 0,
+      "invalid": 0,
+      "feasible_rate": null,
+      "starts_sum": 0,
+      "internal_solver_cases_sum": 0,
+      "invalid_reasons": {},
+      "invalid_starts_distribution": {},
+      "objective_stats": {
+        "n": 0,
+        "min": null,
+        "q1": null,
+        "median": null,
+        "q3": null,
+        "max": null,
+        "iqr": null,
+        "mean": null,
+        "sd": null
+      },
+      "family_slot_stats": {
+        "f1": {
+          "n": 0,
+          "min": null,
+          "q1": null,
+          "median": null,
+          "q3": null,
+          "max": null,
+          "iqr": null,
+          "mean": null,
+          "sd": null
+        },
+        "f2": {
+          "n": 0,
+          "min": null,
+          "q1": null,
+          "median": null,
+          "q3": null,
+          "max": null,
+          "iqr": null,
+          "mean": null,
+          "sd": null
+        }
+      },
+      "family_label_note": "f1/f2 族标签逐设计不同（0/0 个不同标签），仅槽位层描述，禁止跨族合并/比较",
+      "best_primary_observed": null,
+      "batch_summary": {
+        "status": null,
+        "valid_designs": null,
+        "invalid_designs": null,
+        "starts": null,
+        "best_primary": null
+      }
+    },
+    "ABO": {
+      "status": "NOT_RUN",
+      "evaluations": 0,
+      "valid": 0,
+      "invalid": 0,
+      "feasible_rate": null,
+      "starts_sum": 0,
+      "internal_solver_cases_sum": 0,
+      "invalid_reasons": {},
+      "invalid_starts_distribution": {},
+      "objective_stats": {
+        "n": 0,
+        "min": null,
+        "q1": null,
+        "median": null,
+        "q3": null,
+        "max": null,
+        "iqr": null,
+        "mean": null,
+        "sd": null
+      },
+      "family_slot_stats": {
+        "f1": {
+          "n": 0,
+          "min": null,
+          "q1": null,
+          "median": null,
+          "q3": null,
+          "max": null,
+          "iqr": null,
+          "mean": null,
+          "sd": null
+        },
+        "f2": {
+          "n": 0,
+          "min": null,
+          "q1": null,
+          "median": null,
+          "q3": null,
+          "max": null,
+          "iqr": null,
+          "mean": null,
+          "sd": null
+        }
+      },
+      "family_label_note": "f1/f2 族标签逐设计不同（0/0 个不同标签），仅槽位层描述，禁止跨族合并/比较",
+      "best_primary_observed": null,
+      "batch_summary": {
+        "status": null,
+        "valid_designs": null,
+        "invalid_designs": null,
+        "starts": null,
+        "best_primary": null
+      }
+    },
+    "ADE": {
+      "status": "NOT_RUN",
+      "evaluations": 0,
+      "valid": 0,
+      "invalid": 0,
+      "feasible_rate": null,
+      "starts_sum": 0,
+      "internal_solver_cases_sum": 0,
+      "invalid_reasons": {},
+      "invalid_starts_distribution": {},
+      "objective_stats": {
+        "n": 0,
+        "min": null,
+        "q1": null,
+        "median": null,
+        "q3": null,
+        "max": null,
+        "iqr": null,
+        "mean": null,
+        "sd": null
+      },
+      "family_slot_stats": {
+        "f1": {
+          "n": 0,
+          "min": null,
+          "q1": null,
+          "median": null,
+          "q3": null,
+          "max": null,
+          "iqr": null,
+          "mean": null,
+          "sd": null
+        },
+        "f2": {
+          "n": 0,
+          "min": null,
+          "q1": null,
+          "median": null,
+          "q3": null,
+          "max": null,
+          "iqr": null,
+          "mean": null,
+          "sd": null
+        }
+      },
+      "family_label_note": "f1/f2 族标签逐设计不同（0/0 个不同标签），仅槽位层描述，禁止跨族合并/比较",
+      "best_primary_observed": null,
+      "batch_summary": {
+        "status": null,
+        "valid_designs": null,
+        "invalid_designs": null,
+        "starts": null,
+        "best_primary": null
+      }
+    },
+    "APSO": {
+      "status": "NOT_RUN",
+      "evaluations": 0,
+      "valid": 0,
+      "invalid": 0,
+      "feasible_rate": null,
+      "starts_sum": 0,
+      "internal_solver_cases_sum": 0,
+      "invalid_reasons": {},
+      "invalid_starts_distribution": {},
+      "objective_stats": {
+        "n": 0,
+        "min": null,
+        "q1": null,
+        "median": null,
+        "q3": null,
+        "max": null,
+        "iqr": null,
+        "mean": null,
+        "sd": null
+      },
+      "family_slot_stats": {
+        "f1": {
+          "n": 0,
+          "min": null,
+          "q1": null,
+          "median": null,
+          "q3": null,
+          "max": null,
+          "iqr": null,
+          "mean": null,
+          "sd": null
+        },
+        "f2": {
+          "n": 0,
+          "min": null,
+          "q1": null,
+          "median": null,
+          "q3": null,
+          "max": null,
+          "iqr": null,
+          "mean": null,
+          "sd": null
+        }
+      },
+      "family_label_note": "f1/f2 族标签逐设计不同（0/0 个不同标签），仅槽位层描述，禁止跨族合并/比较",
+      "best_primary_observed": null,
+      "batch_summary": {
+        "status": null,
+        "valid_designs": null,
+        "invalid_designs": null,
+        "starts": null,
+        "best_primary": null
+      }
+    }
+  },
+  "e1_e6_availability": [
+    {
+      "endpoint": "E1",
+      "definition": "per-design primary = 0.5*CDi(f1)+0.5*CDi(f2)（冻结定义，within-design 加权均值）",
+      "arm_status": {
+        "BO": "COMPUTED_DESCRIPTIVE",
+        "DE": "COMPUTED_DESCRIPTIVE_PARTIAL"
+      },
+      "overall": "NOT_COMPUTABLE_AS_SIX_ARM_ENDPOINT",
+      "reason": "BO 23/32 valid、DE 12/16 valid 的 per-design primary 可描述性列出；BO 9 / DE 4 invalid 无 primary。PSO/ABO/ADE/APSO NOT_RUN（0 评估）。六臂 E1 端点不可计算。",
+      "detail": {
+        "BO_valid": 23,
+        "DE_valid": 12,
+        "BO_invalid_no_primary": 9,
+        "DE_invalid_no_primary": 4
+      }
+    },
+    {
+      "endpoint": "E2",
+      "definition": "best-at-budget（在每臂预注册评估预算 B=32 处取 best primary）",
+      "arm_status": {
+        "BO": "COMPUTED_DESCRIPTIVE_AT_BUDGET",
+        "DE": "NOT_COMPUTABLE_AT_BUDGET"
+      },
+      "overall": "NOT_COMPUTABLE",
+      "reason": "BO 完成 32/32 评估，best_primary 可描述；DE 仅 16/32（右删失，预算未耗尽），按冻结定义不得作 at-budget 端点（仅可列 observed best-so-far）；其余 4 臂 NOT_RUN。",
+      "detail": {
+        "BO_budget": "32/32",
+        "DE_budget": "16/32",
+        "DE_observed_best_only_descriptive": true
+      }
+    },
+    {
+      "endpoint": "E3",
+      "definition": "starts-to-baseline（达到基线目标所需的 solver starts）",
+      "arm_status": {
+        "BO": "NOT_COMPUTABLE",
+        "DE": "NOT_COMPUTABLE"
+      },
+      "overall": "NOT_COMPUTABLE",
+      "reason": "R10 package 内未绑定冻结的优化目标 baseline（approval 中 baseline 仅指 accounting baseline 62/446，不是 objective baseline）；无 baseline 目标值即无法定义 starts-to-baseline。",
+      "detail": {
+        "baseline_binding": "ABSENT",
+        "approval_baseline": "ACCOUNTING_ONLY_62/446"
+      }
+    },
+    {
+      "endpoint": "E4",
+      "definition": "可行率 = valid evaluations / evaluations（每臂）",
+      "arm_status": {
+        "BO": "COMPUTED_DESCRIPTIVE",
+        "DE": "COMPUTED_DESCRIPTIVE_PARTIAL"
+      },
+      "overall": "NOT_COMPUTABLE_AS_SIX_ARM_COMPARISON",
+      "reason": "BO 23/32=71.875%、DE 12/16=75.0% 可描述性报告；DE 因科学停批右删失、两臂预算不等且单 seed，禁止比较/排名。其余 4 臂 NOT_RUN。",
+      "detail": {
+        "BO": "23/32",
+        "DE": "12/16",
+        "comparison_allowed": false
+      }
+    },
+    {
+      "endpoint": "E5",
+      "definition": "SINGLE_SEED_42 稳定性/重复性端点",
+      "arm_status": {
+        "BO": "NOT_COMPUTABLE",
+        "DE": "NOT_COMPUTABLE",
+        "PSO": "NOT_RUN",
+        "ABO": "NOT_RUN",
+        "ADE": "NOT_RUN",
+        "APSO": "NOT_RUN"
+      },
+      "overall": "NOT_COMPUTABLE",
+      "reason": "单 seed=42、无重复运行、无重复设计评估；冻结结论 E5=SINGLE_SEED_42 NOT_COMPUTABLE。",
+      "detail": {
+        "seed": 42,
+        "repeats": 0
+      }
+    },
+    {
+      "endpoint": "E6",
+      "definition": "冷启动增益（cold-start baseline 与优化臂的配对增益）",
+      "arm_status": {
+        "BO": "NOT_COMPUTABLE",
+        "DE": "NOT_COMPUTABLE"
+      },
+      "overall": "NOT_COMPUTABLE",
+      "reason": "无冷启动 baseline 目标/配对对照；仅 BO 完成、DE 部分，无配对可比，且禁止跨臂比较。",
+      "detail": {
+        "cold_start_baseline": "ABSENT",
+        "paired_arms": 0
+      }
+    }
+  ],
+  "per_design": [
+    {
+      "arm": "BO",
+      "design_index": 1,
+      "design_hash": "d51866f7d3c49303",
+      "status": "INVALID_NUMERICAL",
+      "primary": null,
+      "secondary": null,
+      "family_cdi_f1": null,
+      "family_cdi_f2": null,
+      "family_label_f1": null,
+      "family_label_f2": null,
+      "feasible": false,
+      "starts": 1,
+      "internal_solver_cases": 7,
+      "validation_error": "LIFT_MATCH_FAILED",
+      "failed_family_slot": "f1",
+      "failed_family_status": "LIFT_MATCH_FAILED",
+      "backend": "REAL_VSPAERO",
+      "reused_frozen_pair": true,
+      "source_line": 1,
+      "source_file": "evaluations.jsonl"
+    },
+    {
+      "arm": "BO",
+      "design_index": 2,
+      "design_hash": "eb00b7ad545243e6",
+      "status": "SOLVED_VALID",
+      "primary": 0.01289480742004768,
+      "secondary": 107563.71028418571,
+      "family_cdi_f1": 0.012427799952662829,
+      "family_cdi_f2": 0.013361814887432532,
+      "family_label_f1": "456x395",
+      "family_label_f2": "548x474",
+      "feasible": true,
+      "starts": 2,
+      "internal_solver_cases": 14,
+      "validation_error": null,
+      "failed_family_slot": null,
+      "failed_family_status": null,
+      "backend": "REAL_VSPAERO",
+      "reused_frozen_pair": true,
+      "source_line": 2,
+      "source_file": "evaluations.jsonl"
+    },
+    {
+      "arm": "BO",
+      "design_index": 3,
+      "design_hash": "dc96d2438a6dddc3",
+      "status": "SOLVED_VALID",
+      "primary": 0.021752395563484656,
+      "secondary": 143070.1513463299,
+      "family_cdi_f1": 0.020833226657484404,
+      "family_cdi_f2": 0.02267156446948491,
+      "family_label_f1": "481x416",
+      "family_label_f2": "539x468",
+      "feasible": true,
+      "starts": 2,
+      "internal_solver_cases": 14,
+      "validation_error": null,
+      "failed_family_slot": null,
+      "failed_family_status": null,
+      "backend": "REAL_VSPAERO",
+      "reused_frozen_pair": true,
+      "source_line": 3,
+      "source_file": "evaluations.jsonl"
+    },
+    {
+      "arm": "BO",
+      "design_index": 4,
+      "design_hash": "c50a5bc80b15ada0",
+      "status": "SOLVED_VALID",
+      "primary": 0.010006880012223485,
+      "secondary": 86017.3742755832,
+      "family_cdi_f1": 0.009824061828577351,
+      "family_cdi_f2": 0.010189698195869618,
+      "family_label_f1": "477x412",
+      "family_label_f2": "545x474",
+      "feasible": true,
+      "starts": 2,
+      "internal_solver_cases": 14,
+      "validation_error": null,
+      "failed_family_slot": null,
+      "failed_family_status": null,
+      "backend": "REAL_VSPAERO",
+      "reused_frozen_pair": false,
+      "source_line": 4,
+      "source_file": "evaluations.jsonl"
+    },
+    {
+      "arm": "BO",
+      "design_index": 5,
+      "design_hash": "51795ed3d0bb01ec",
+      "status": "SOLVED_VALID",
+      "primary": 0.013090987086835041,
+      "secondary": 112543.10628739747,
+      "family_cdi_f1": 0.012685635508911167,
+      "family_cdi_f2": 0.013496338664758915,
+      "family_label_f1": "468x408",
+      "family_label_f2": "542x470",
+      "feasible": true,
+      "starts": 2,
+      "internal_solver_cases": 14,
+      "validation_error": null,
+      "failed_family_slot": null,
+      "failed_family_status": null,
+      "backend": "REAL_VSPAERO",
+      "reused_frozen_pair": false,
+      "source_line": 5,
+      "source_file": "evaluations.jsonl"
+    },
+    {
+      "arm": "BO",
+      "design_index": 6,
+      "design_hash": "9e1872d140afc1f6",
+      "status": "INVALID_NUMERICAL",
+      "primary": null,
+      "secondary": null,
+      "family_cdi_f1": null,
+      "family_cdi_f2": null,
+      "family_label_f1": null,
+      "family_label_f2": null,
+      "feasible": false,
+      "starts": 2,
+      "internal_solver_cases": 14,
+      "validation_error": "SOLVER_FAILED",
+      "failed_family_slot": "f2",
+      "failed_family_status": "SOLVER_FAILED",
+      "backend": "REAL_VSPAERO",
+      "reused_frozen_pair": false,
+      "source_line": 6,
+      "source_file": "evaluations.jsonl"
+    },
+    {
+      "arm": "BO",
+      "design_index": 7,
+      "design_hash": "e72b25d7a7dbd88c",
+      "status": "INVALID_NUMERICAL",
+      "primary": null,
+      "secondary": null,
+      "family_cdi_f1": null,
+      "family_cdi_f2": null,
+      "family_label_f1": null,
+      "family_label_f2": null,
+      "feasible": false,
+      "starts": 2,
+      "internal_solver_cases": 14,
+      "validation_error": "SOLVER_FAILED",
+      "failed_family_slot": "f2",
+      "failed_family_status": "SOLVER_FAILED",
+      "backend": "REAL_VSPAERO",
+      "reused_frozen_pair": false,
+      "source_line": 7,
+      "source_file": "evaluations.jsonl"
+    },
+    {
+      "arm": "BO",
+      "design_index": 8,
+      "design_hash": "2f6243903587add3",
+      "status": "SOLVED_VALID",
+      "primary": 0.017865557815363975,
+      "secondary": 132275.34659139012,
+      "family_cdi_f1": 0.0175696845593691,
+      "family_cdi_f2": 0.018161431071358845,
+      "family_label_f1": "481x416",
+      "family_label_f2": "540x470",
+      "feasible": true,
+      "starts": 2,
+      "internal_solver_cases": 14,
+      "validation_error": null,
+      "failed_family_slot": null,
+      "failed_family_status": null,
+      "backend": "REAL_VSPAERO",
+      "reused_frozen_pair": false,
+      "source_line": 8,
+      "source_file": "evaluations.jsonl"
+    },
+    {
+      "arm": "BO",
+      "design_index": 9,
+      "design_hash": "236fe08691dc2310",
+      "status": "SOLVED_VALID",
+      "primary": 0.018712660699474346,
+      "secondary": 133366.06170498143,
+      "family_cdi_f1": 0.01837416922739918,
+      "family_cdi_f2": 0.01905115217154951,
+      "family_label_f1": "490x425",
+      "family_label_f2": "541x470",
+      "feasible": true,
+      "starts": 2,
+      "internal_solver_cases": 14,
+      "validation_error": null,
+      "failed_family_slot": null,
+      "failed_family_status": null,
+      "backend": "REAL_VSPAERO",
+      "reused_frozen_pair": false,
+      "source_line": 9,
+      "source_file": "evaluations.jsonl"
+    },
+    {
+      "arm": "BO",
+      "design_index": 10,
+      "design_hash": "e8b9eb4d0c8b634b",
+      "status": "SOLVED_VALID",
+      "primary": 0.016228040308768787,
+      "secondary": 134099.8856070598,
+      "family_cdi_f1": 0.015926297276718043,
+      "family_cdi_f2": 0.016529783340819528,
+      "family_label_f1": "477x412",
+      "family_label_f2": "544x473",
+      "feasible": true,
+      "starts": 2,
+      "internal_solver_cases": 14,
+      "validation_error": null,
+      "failed_family_slot": null,
+      "failed_family_status": null,
+      "backend": "REAL_VSPAERO",
+      "reused_frozen_pair": false,
+      "source_line": 10,
+      "source_file": "evaluations.jsonl"
+    },
+    {
+      "arm": "BO",
+      "design_index": 11,
+      "design_hash": "dd1dece0ad573cdb",
+      "status": "SOLVED_VALID",
+      "primary": 0.014407789311505166,
+      "secondary": 120306.81011424189,
+      "family_cdi_f1": 0.013876710371991494,
+      "family_cdi_f2": 0.01493886825101884,
+      "family_label_f1": "433x378",
+      "family_label_f2": "551x476",
+      "feasible": true,
+      "starts": 2,
+      "internal_solver_cases": 14,
+      "validation_error": null,
+      "failed_family_slot": null,
+      "failed_family_status": null,
+      "backend": "REAL_VSPAERO",
+      "reused_frozen_pair": false,
+      "source_line": 11,
+      "source_file": "evaluations.jsonl"
+    },
+    {
+      "arm": "BO",
+      "design_index": 12,
+      "design_hash": "b8beee6d07ee1b21",
+      "status": "SOLVED_VALID",
+      "primary": 0.0131140278766873,
+      "secondary": 111464.98428238559,
+      "family_cdi_f1": 0.012708135226000838,
+      "family_cdi_f2": 0.013519920527373759,
+      "family_label_f1": "501x436",
+      "family_label_f2": "545x475",
+      "feasible": true,
+      "starts": 2,
+      "internal_solver_cases": 14,
+      "validation_error": null,
+      "failed_family_slot": null,
+      "failed_family_status": null,
+      "backend": "REAL_VSPAERO",
+      "reused_frozen_pair": false,
+      "source_line": 12,
+      "source_file": "evaluations.jsonl"
+    },
+    {
+      "arm": "BO",
+      "design_index": 13,
+      "design_hash": "827dca19d0bc94d0",
+      "status": "SOLVED_VALID",
+      "primary": 0.012840186720469549,
+      "secondary": 107762.12651212809,
+      "family_cdi_f1": 0.012170076127404833,
+      "family_cdi_f2": 0.013510297313534262,
+      "family_label_f1": "420x369",
+      "family_label_f2": "554x478",
+      "feasible": true,
+      "starts": 2,
+      "internal_solver_cases": 14,
+      "validation_error": null,
+      "failed_family_slot": null,
+      "failed_family_status": null,
+      "backend": "REAL_VSPAERO",
+      "reused_frozen_pair": false,
+      "source_line": 13,
+      "source_file": "evaluations.jsonl"
+    },
+    {
+      "arm": "BO",
+      "design_index": 14,
+      "design_hash": "d437c862c0dcf8e8",
+      "status": "SOLVED_VALID",
+      "primary": 0.013886088737238346,
+      "secondary": 114183.50810444374,
+      "family_cdi_f1": 0.013546813082811152,
+      "family_cdi_f2": 0.014225364391665541,
+      "family_label_f1": "403x360",
+      "family_label_f2": "554x478",
+      "feasible": true,
+      "starts": 2,
+      "internal_solver_cases": 14,
+      "validation_error": null,
+      "failed_family_slot": null,
+      "failed_family_status": null,
+      "backend": "REAL_VSPAERO",
+      "reused_frozen_pair": false,
+      "source_line": 14,
+      "source_file": "evaluations.jsonl"
+    },
+    {
+      "arm": "BO",
+      "design_index": 15,
+      "design_hash": "3a28be940017b4a1",
+      "status": "INVALID_NUMERICAL",
+      "primary": null,
+      "secondary": null,
+      "family_cdi_f1": null,
+      "family_cdi_f2": null,
+      "family_label_f1": null,
+      "family_label_f2": null,
+      "feasible": false,
+      "starts": 1,
+      "internal_solver_cases": 7,
+      "validation_error": "LIFT_MATCH_FAILED",
+      "failed_family_slot": "f1",
+      "failed_family_status": "LIFT_MATCH_FAILED",
+      "backend": "REAL_VSPAERO",
+      "reused_frozen_pair": false,
+      "source_line": 15,
+      "source_file": "evaluations.jsonl"
+    },
+    {
+      "arm": "BO",
+      "design_index": 16,
+      "design_hash": "d3870cf70fae4b44",
+      "status": "INVALID_NUMERICAL",
+      "primary": null,
+      "secondary": null,
+      "family_cdi_f1": null,
+      "family_cdi_f2": null,
+      "family_label_f1": null,
+      "family_label_f2": null,
+      "feasible": false,
+      "starts": 1,
+      "internal_solver_cases": 7,
+      "validation_error": "LIFT_MATCH_FAILED",
+      "failed_family_slot": "f1",
+      "failed_family_status": "LIFT_MATCH_FAILED",
+      "backend": "REAL_VSPAERO",
+      "reused_frozen_pair": false,
+      "source_line": 16,
+      "source_file": "evaluations.jsonl"
+    },
+    {
+      "arm": "BO",
+      "design_index": 17,
+      "design_hash": "d9a3ae0bc8bf5106",
+      "status": "SOLVED_VALID",
+      "primary": 0.01489330913265793,
+      "secondary": 120146.73980930427,
+      "family_cdi_f1": 0.01455066389924357,
+      "family_cdi_f2": 0.01523595436607229,
+      "family_label_f1": "472x407",
+      "family_label_f2": "543x472",
+      "feasible": true,
+      "starts": 2,
+      "internal_solver_cases": 14,
+      "validation_error": null,
+      "failed_family_slot": null,
+      "failed_family_status": null,
+      "backend": "REAL_VSPAERO",
+      "reused_frozen_pair": false,
+      "source_line": 17,
+      "source_file": "evaluations.jsonl"
+    },
+    {
+      "arm": "BO",
+      "design_index": 18,
+      "design_hash": "c6c7baf1657378f1",
+      "status": "SOLVED_VALID",
+      "primary": 0.015263458026858799,
+      "secondary": 125639.82013283287,
+      "family_cdi_f1": 0.014954001163784866,
+      "family_cdi_f2": 0.015572914889932732,
+      "family_label_f1": "463x402",
+      "family_label_f2": "547x475",
+      "feasible": true,
+      "starts": 2,
+      "internal_solver_cases": 14,
+      "validation_error": null,
+      "failed_family_slot": null,
+      "failed_family_status": null,
+      "backend": "REAL_VSPAERO",
+      "reused_frozen_pair": false,
+      "source_line": 18,
+      "source_file": "evaluations.jsonl"
+    },
+    {
+      "arm": "BO",
+      "design_index": 19,
+      "design_hash": "6dbcc258198aa8a9",
+      "status": "SOLVED_VALID",
+      "primary": 0.017432652202150463,
+      "secondary": 131952.76523892177,
+      "family_cdi_f1": 0.017172964855707608,
+      "family_cdi_f2": 0.017692339548593315,
+      "family_label_f1": "495x430",
+      "family_label_f2": "544x473",
+      "feasible": true,
+      "starts": 2,
+      "internal_solver_cases": 14,
+      "validation_error": null,
+      "failed_family_slot": null,
+      "failed_family_status": null,
+      "backend": "REAL_VSPAERO",
+      "reused_frozen_pair": false,
+      "source_line": 19,
+      "source_file": "evaluations.jsonl"
+    },
+    {
+      "arm": "BO",
+      "design_index": 20,
+      "design_hash": "0f55119852c9ba40",
+      "status": "SOLVED_VALID",
+      "primary": 0.02223808315568626,
+      "secondary": 145986.2611731107,
+      "family_cdi_f1": 0.021185099338142735,
+      "family_cdi_f2": 0.023291066973229788,
+      "family_label_f1": "464x403",
+      "family_label_f2": "542x470",
+      "feasible": true,
+      "starts": 2,
+      "internal_solver_cases": 14,
+      "validation_error": null,
+      "failed_family_slot": null,
+      "failed_family_status": null,
+      "backend": "REAL_VSPAERO",
+      "reused_frozen_pair": false,
+      "source_line": 20,
+      "source_file": "evaluations.jsonl"
+    },
+    {
+      "arm": "BO",
+      "design_index": 21,
+      "design_hash": "7243b873b6a090c3",
+      "status": "SOLVED_VALID",
+      "primary": 0.019773894735011892,
+      "secondary": 134883.0699489517,
+      "family_cdi_f1": 0.0191417501349735,
+      "family_cdi_f2": 0.02040603933505028,
+      "family_label_f1": "454x393",
+      "family_label_f2": "546x473",
+      "feasible": true,
+      "starts": 2,
+      "internal_solver_cases": 14,
+      "validation_error": null,
+      "failed_family_slot": null,
+      "failed_family_status": null,
+      "backend": "REAL_VSPAERO",
+      "reused_frozen_pair": false,
+      "source_line": 21,
+      "source_file": "evaluations.jsonl"
+    },
+    {
+      "arm": "BO",
+      "design_index": 22,
+      "design_hash": "cc0f9ada19a81cb4",
+      "status": "SOLVED_VALID",
+      "primary": 0.02068359944229497,
+      "secondary": 140147.73138330004,
+      "family_cdi_f1": 0.02026671683158968,
+      "family_cdi_f2": 0.021100482053000257,
+      "family_label_f1": "499x434",
+      "family_label_f2": "544x473",
+      "feasible": true,
+      "starts": 2,
+      "internal_solver_cases": 14,
+      "validation_error": null,
+      "failed_family_slot": null,
+      "failed_family_status": null,
+      "backend": "REAL_VSPAERO",
+      "reused_frozen_pair": false,
+      "source_line": 22,
+      "source_file": "evaluations.jsonl"
+    },
+    {
+      "arm": "BO",
+      "design_index": 23,
+      "design_hash": "6f1a4f916b0ec55b",
+      "status": "SOLVED_VALID",
+      "primary": 0.01726922602656745,
+      "secondary": 127119.15188375262,
+      "family_cdi_f1": 0.016319873829838554,
+      "family_cdi_f2": 0.01821857822329635,
+      "family_label_f1": "416x366",
+      "family_label_f2": "553x477",
+      "feasible": true,
+      "starts": 2,
+      "internal_solver_cases": 14,
+      "validation_error": null,
+      "failed_family_slot": null,
+      "failed_family_status": null,
+      "backend": "REAL_VSPAERO",
+      "reused_frozen_pair": false,
+      "source_line": 23,
+      "source_file": "evaluations.jsonl"
+    },
+    {
+      "arm": "BO",
+      "design_index": 24,
+      "design_hash": "acabfea98cfa0a9d",
+      "status": "SOLVED_VALID",
+      "primary": 0.019747840636686293,
+      "secondary": 139062.41944776342,
+      "family_cdi_f1": 0.01889970036024698,
+      "family_cdi_f2": 0.020595980913125606,
+      "family_label_f1": "449x389",
+      "family_label_f2": "548x472",
+      "feasible": true,
+      "starts": 2,
+      "internal_solver_cases": 14,
+      "validation_error": null,
+      "failed_family_slot": null,
+      "failed_family_status": null,
+      "backend": "REAL_VSPAERO",
+      "reused_frozen_pair": false,
+      "source_line": 24,
+      "source_file": "evaluations.jsonl"
+    },
+    {
+      "arm": "BO",
+      "design_index": 25,
+      "design_hash": "a74fae0f277e3704",
+      "status": "INVALID_NUMERICAL",
+      "primary": null,
+      "secondary": null,
+      "family_cdi_f1": null,
+      "family_cdi_f2": null,
+      "family_label_f1": null,
+      "family_label_f2": null,
+      "feasible": false,
+      "starts": 1,
+      "internal_solver_cases": 7,
+      "validation_error": "LIFT_MATCH_FAILED",
+      "failed_family_slot": "f1",
+      "failed_family_status": "LIFT_MATCH_FAILED",
+      "backend": "REAL_VSPAERO",
+      "reused_frozen_pair": false,
+      "source_line": 25,
+      "source_file": "evaluations.jsonl"
+    },
+    {
+      "arm": "BO",
+      "design_index": 26,
+      "design_hash": "d7c9e3ca52d426c8",
+      "status": "INVALID_NUMERICAL",
+      "primary": null,
+      "secondary": null,
+      "family_cdi_f1": null,
+      "family_cdi_f2": null,
+      "family_label_f1": null,
+      "family_label_f2": null,
+      "feasible": false,
+      "starts": 1,
+      "internal_solver_cases": 7,
+      "validation_error": "SOLVER_FAILED",
+      "failed_family_slot": "f1",
+      "failed_family_status": "SOLVER_FAILED",
+      "backend": "REAL_VSPAERO",
+      "reused_frozen_pair": false,
+      "source_line": 26,
+      "source_file": "evaluations.jsonl"
+    },
+    {
+      "arm": "BO",
+      "design_index": 27,
+      "design_hash": "74a4e49f973f3243",
+      "status": "SOLVED_VALID",
+      "primary": 0.01552866127940844,
+      "secondary": 123749.11221458488,
+      "family_cdi_f1": 0.015278128530685553,
+      "family_cdi_f2": 0.015779194028131327,
+      "family_label_f1": "496x431",
+      "family_label_f2": "546x475",
+      "feasible": true,
+      "starts": 2,
+      "internal_solver_cases": 14,
+      "validation_error": null,
+      "failed_family_slot": null,
+      "failed_family_status": null,
+      "backend": "REAL_VSPAERO",
+      "reused_frozen_pair": false,
+      "source_line": 27,
+      "source_file": "evaluations.jsonl"
+    },
+    {
+      "arm": "BO",
+      "design_index": 28,
+      "design_hash": "581e935e4afe8d5e",
+      "status": "SOLVED_VALID",
+      "primary": 0.020159374414194006,
+      "secondary": 140738.13768810374,
+      "family_cdi_f1": 0.019676392173756576,
+      "family_cdi_f2": 0.02064235665463144,
+      "family_label_f1": "496x431",
+      "family_label_f2": "543x472",
+      "feasible": true,
+      "starts": 2,
+      "internal_solver_cases": 14,
+      "validation_error": null,
+      "failed_family_slot": null,
+      "failed_family_status": null,
+      "backend": "REAL_VSPAERO",
+      "reused_frozen_pair": false,
+      "source_line": 28,
+      "source_file": "evaluations.jsonl"
+    },
+    {
+      "arm": "BO",
+      "design_index": 29,
+      "design_hash": "d4d30ba2d72c0b14",
+      "status": "INVALID_NUMERICAL",
+      "primary": null,
+      "secondary": null,
+      "family_cdi_f1": null,
+      "family_cdi_f2": null,
+      "family_label_f1": null,
+      "family_label_f2": null,
+      "feasible": false,
+      "starts": 2,
+      "internal_solver_cases": 14,
+      "validation_error": "SOLVER_FAILED",
+      "failed_family_slot": "f2",
+      "failed_family_status": "SOLVER_FAILED",
+      "backend": "REAL_VSPAERO",
+      "reused_frozen_pair": false,
+      "source_line": 29,
+      "source_file": "evaluations.jsonl"
+    },
+    {
+      "arm": "BO",
+      "design_index": 30,
+      "design_hash": "8a6723c57bb4e7f7",
+      "status": "INVALID_NUMERICAL",
+      "primary": null,
+      "secondary": null,
+      "family_cdi_f1": null,
+      "family_cdi_f2": null,
+      "family_label_f1": null,
+      "family_label_f2": null,
+      "feasible": false,
+      "starts": 2,
+      "internal_solver_cases": 14,
+      "validation_error": "SOLVER_FAILED",
+      "failed_family_slot": "f2",
+      "failed_family_status": "SOLVER_FAILED",
+      "backend": "REAL_VSPAERO",
+      "reused_frozen_pair": false,
+      "source_line": 30,
+      "source_file": "evaluations.jsonl"
+    },
+    {
+      "arm": "BO",
+      "design_index": 31,
+      "design_hash": "d5c3fe40869fc765",
+      "status": "SOLVED_VALID",
+      "primary": 0.015922925115088752,
+      "secondary": 118247.73280984053,
+      "family_cdi_f1": 0.015396479702205392,
+      "family_cdi_f2": 0.016449370527972112,
+      "family_label_f1": "456x395",
+      "family_label_f2": "546x472",
+      "feasible": true,
+      "starts": 2,
+      "internal_solver_cases": 14,
+      "validation_error": null,
+      "failed_family_slot": null,
+      "failed_family_status": null,
+      "backend": "REAL_VSPAERO",
+      "reused_frozen_pair": false,
+      "source_line": 31,
+      "source_file": "evaluations.jsonl"
+    },
+    {
+      "arm": "BO",
+      "design_index": 32,
+      "design_hash": "77ebdd62d183c468",
+      "status": "SOLVED_VALID",
+      "primary": 0.02325079054346792,
+      "secondary": 157083.37602074133,
+      "family_cdi_f1": 0.022610091496386722,
+      "family_cdi_f2": 0.02389148959054912,
+      "family_label_f1": "495x430",
+      "family_label_f2": "545x473",
+      "feasible": true,
+      "starts": 2,
+      "internal_solver_cases": 14,
+      "validation_error": null,
+      "failed_family_slot": null,
+      "failed_family_status": null,
+      "backend": "REAL_VSPAERO",
+      "reused_frozen_pair": false,
+      "source_line": 32,
+      "source_file": "evaluations.jsonl"
+    },
+    {
+      "arm": "DE",
+      "design_index": 1,
+      "design_hash": "d51866f7d3c49303",
+      "status": "INVALID_NUMERICAL",
+      "primary": null,
+      "secondary": null,
+      "family_cdi_f1": null,
+      "family_cdi_f2": null,
+      "family_label_f1": null,
+      "family_label_f2": null,
+      "feasible": false,
+      "starts": 1,
+      "internal_solver_cases": 7,
+      "validation_error": "LIFT_MATCH_FAILED",
+      "failed_family_slot": "f1",
+      "failed_family_status": "LIFT_MATCH_FAILED",
+      "backend": "REAL_VSPAERO",
+      "reused_frozen_pair": true,
+      "source_line": 33,
+      "source_file": "evaluations.jsonl"
+    },
+    {
+      "arm": "DE",
+      "design_index": 2,
+      "design_hash": "eb00b7ad545243e6",
+      "status": "SOLVED_VALID",
+      "primary": 0.01289480742004768,
+      "secondary": 107563.71028418571,
+      "family_cdi_f1": 0.012427799952662829,
+      "family_cdi_f2": 0.013361814887432532,
+      "family_label_f1": "456x395",
+      "family_label_f2": "548x474",
+      "feasible": true,
+      "starts": 2,
+      "internal_solver_cases": 14,
+      "validation_error": null,
+      "failed_family_slot": null,
+      "failed_family_status": null,
+      "backend": "REAL_VSPAERO",
+      "reused_frozen_pair": true,
+      "source_line": 34,
+      "source_file": "evaluations.jsonl"
+    },
+    {
+      "arm": "DE",
+      "design_index": 3,
+      "design_hash": "dc96d2438a6dddc3",
+      "status": "SOLVED_VALID",
+      "primary": 0.021752395563484656,
+      "secondary": 143070.1513463299,
+      "family_cdi_f1": 0.020833226657484404,
+      "family_cdi_f2": 0.02267156446948491,
+      "family_label_f1": "481x416",
+      "family_label_f2": "539x468",
+      "feasible": true,
+      "starts": 2,
+      "internal_solver_cases": 14,
+      "validation_error": null,
+      "failed_family_slot": null,
+      "failed_family_status": null,
+      "backend": "REAL_VSPAERO",
+      "reused_frozen_pair": true,
+      "source_line": 35,
+      "source_file": "evaluations.jsonl"
+    },
+    {
+      "arm": "DE",
+      "design_index": 4,
+      "design_hash": "36500c4bf8685345",
+      "status": "SOLVED_VALID",
+      "primary": 0.017609708070089377,
+      "secondary": 130675.92445218591,
+      "family_cdi_f1": 0.017406791475885808,
+      "family_cdi_f2": 0.017812624664292946,
+      "family_label_f1": "495x430",
+      "family_label_f2": "544x473",
+      "feasible": true,
+      "starts": 2,
+      "internal_solver_cases": 14,
+      "validation_error": null,
+      "failed_family_slot": null,
+      "failed_family_status": null,
+      "backend": "REAL_VSPAERO",
+      "reused_frozen_pair": false,
+      "source_line": 36,
+      "source_file": "evaluations.jsonl"
+    },
+    {
+      "arm": "DE",
+      "design_index": 5,
+      "design_hash": "8efba9e5c533f643",
+      "status": "INVALID_NUMERICAL",
+      "primary": null,
+      "secondary": null,
+      "family_cdi_f1": null,
+      "family_cdi_f2": null,
+      "family_label_f1": null,
+      "family_label_f2": null,
+      "feasible": false,
+      "starts": 2,
+      "internal_solver_cases": 14,
+      "validation_error": "SOLVER_FAILED",
+      "failed_family_slot": "f2",
+      "failed_family_status": "SOLVER_FAILED",
+      "backend": "REAL_VSPAERO",
+      "reused_frozen_pair": false,
+      "source_line": 37,
+      "source_file": "evaluations.jsonl"
+    },
+    {
+      "arm": "DE",
+      "design_index": 6,
+      "design_hash": "d98707d7dc9d47bd",
+      "status": "SOLVED_VALID",
+      "primary": 0.014005394315105706,
+      "secondary": 116106.42165437416,
+      "family_cdi_f1": 0.013648499599914593,
+      "family_cdi_f2": 0.014362289030296821,
+      "family_label_f1": "491x426",
+      "family_label_f2": "543x472",
+      "feasible": true,
+      "starts": 2,
+      "internal_solver_cases": 14,
+      "validation_error": null,
+      "failed_family_slot": null,
+      "failed_family_status": null,
+      "backend": "REAL_VSPAERO",
+      "reused_frozen_pair": false,
+      "source_line": 38,
+      "source_file": "evaluations.jsonl"
+    },
+    {
+      "arm": "DE",
+      "design_index": 7,
+      "design_hash": "a857301c79d4113f",
+      "status": "SOLVED_VALID",
+      "primary": 0.021656907520067867,
+      "secondary": 145304.0113917831,
+      "family_cdi_f1": 0.0209491298033177,
+      "family_cdi_f2": 0.022364685236818036,
+      "family_label_f1": "501x436",
+      "family_label_f2": "546x474",
+      "feasible": true,
+      "starts": 2,
+      "internal_solver_cases": 14,
+      "validation_error": null,
+      "failed_family_slot": null,
+      "failed_family_status": null,
+      "backend": "REAL_VSPAERO",
+      "reused_frozen_pair": false,
+      "source_line": 39,
+      "source_file": "evaluations.jsonl"
+    },
+    {
+      "arm": "DE",
+      "design_index": 8,
+      "design_hash": "c27f0d32c7136b1f",
+      "status": "SOLVED_VALID",
+      "primary": 0.02488524308335461,
+      "secondary": 153638.2368186653,
+      "family_cdi_f1": 0.02438872885576112,
+      "family_cdi_f2": 0.0253817573109481,
+      "family_label_f1": "501x436",
+      "family_label_f2": "543x472",
+      "feasible": true,
+      "starts": 2,
+      "internal_solver_cases": 14,
+      "validation_error": null,
+      "failed_family_slot": null,
+      "failed_family_status": null,
+      "backend": "REAL_VSPAERO",
+      "reused_frozen_pair": false,
+      "source_line": 40,
+      "source_file": "evaluations.jsonl"
+    },
+    {
+      "arm": "DE",
+      "design_index": 9,
+      "design_hash": "1ecd1953a8e9f56e",
+      "status": "SOLVED_VALID",
+      "primary": 0.01325678012408952,
+      "secondary": 114051.45853482139,
+      "family_cdi_f1": 0.012837836502007493,
+      "family_cdi_f2": 0.013675723746171547,
+      "family_label_f1": "447x387",
+      "family_label_f2": "550x477",
+      "feasible": true,
+      "starts": 2,
+      "internal_solver_cases": 14,
+      "validation_error": null,
+      "failed_family_slot": null,
+      "failed_family_status": null,
+      "backend": "REAL_VSPAERO",
+      "reused_frozen_pair": false,
+      "source_line": 41,
+      "source_file": "evaluations.jsonl"
+    },
+    {
+      "arm": "DE",
+      "design_index": 10,
+      "design_hash": "6b1e6ff98b874742",
+      "status": "SOLVED_VALID",
+      "primary": 0.01664815914250145,
+      "secondary": 128171.37611122806,
+      "family_cdi_f1": 0.016377415342384773,
+      "family_cdi_f2": 0.01691890294261813,
+      "family_label_f1": "502x437",
+      "family_label_f2": "544x473",
+      "feasible": true,
+      "starts": 2,
+      "internal_solver_cases": 14,
+      "validation_error": null,
+      "failed_family_slot": null,
+      "failed_family_status": null,
+      "backend": "REAL_VSPAERO",
+      "reused_frozen_pair": false,
+      "source_line": 42,
+      "source_file": "evaluations.jsonl"
+    },
+    {
+      "arm": "DE",
+      "design_index": 11,
+      "design_hash": "c5d1b592667b6e4a",
+      "status": "SOLVED_VALID",
+      "primary": 0.018591472444594127,
+      "secondary": 132386.45767470179,
+      "family_cdi_f1": 0.018086461133397014,
+      "family_cdi_f2": 0.01909648375579124,
+      "family_label_f1": "481x416",
+      "family_label_f2": "543x472",
+      "feasible": true,
+      "starts": 2,
+      "internal_solver_cases": 14,
+      "validation_error": null,
+      "failed_family_slot": null,
+      "failed_family_status": null,
+      "backend": "REAL_VSPAERO",
+      "reused_frozen_pair": false,
+      "source_line": 43,
+      "source_file": "evaluations.jsonl"
+    },
+    {
+      "arm": "DE",
+      "design_index": 12,
+      "design_hash": "489dd5563f726c3b",
+      "status": "SOLVED_VALID",
+      "primary": 0.013669264341156014,
+      "secondary": 117600.1653956632,
+      "family_cdi_f1": 0.013366955971350633,
+      "family_cdi_f2": 0.013971572710961392,
+      "family_label_f1": "458x397",
+      "family_label_f2": "546x474",
+      "feasible": true,
+      "starts": 2,
+      "internal_solver_cases": 14,
+      "validation_error": null,
+      "failed_family_slot": null,
+      "failed_family_status": null,
+      "backend": "REAL_VSPAERO",
+      "reused_frozen_pair": false,
+      "source_line": 44,
+      "source_file": "evaluations.jsonl"
+    },
+    {
+      "arm": "DE",
+      "design_index": 13,
+      "design_hash": "b02df4979249bfcb",
+      "status": "SOLVED_VALID",
+      "primary": 0.013456025791313823,
+      "secondary": 115765.61979728224,
+      "family_cdi_f1": 0.013110174040580605,
+      "family_cdi_f2": 0.013801877542047042,
+      "family_label_f1": "484x419",
+      "family_label_f2": "543x472",
+      "feasible": true,
+      "starts": 2,
+      "internal_solver_cases": 14,
+      "validation_error": null,
+      "failed_family_slot": null,
+      "failed_family_status": null,
+      "backend": "REAL_VSPAERO",
+      "reused_frozen_pair": false,
+      "source_line": 45,
+      "source_file": "evaluations.jsonl"
+    },
+    {
+      "arm": "DE",
+      "design_index": 14,
+      "design_hash": "3917573675ce8daa",
+      "status": "INVALID_NUMERICAL",
+      "primary": null,
+      "secondary": null,
+      "family_cdi_f1": null,
+      "family_cdi_f2": null,
+      "family_label_f1": null,
+      "family_label_f2": null,
+      "feasible": false,
+      "starts": 1,
+      "internal_solver_cases": 7,
+      "validation_error": "LIFT_MATCH_FAILED",
+      "failed_family_slot": "f1",
+      "failed_family_status": "LIFT_MATCH_FAILED",
+      "backend": "REAL_VSPAERO",
+      "reused_frozen_pair": false,
+      "source_line": 46,
+      "source_file": "evaluations.jsonl"
+    },
+    {
+      "arm": "DE",
+      "design_index": 15,
+      "design_hash": "0870dfc4d70b2341",
+      "status": "INVALID_NUMERICAL",
+      "primary": null,
+      "secondary": null,
+      "family_cdi_f1": null,
+      "family_cdi_f2": null,
+      "family_label_f1": null,
+      "family_label_f2": null,
+      "feasible": false,
+      "starts": 2,
+      "internal_solver_cases": 14,
+      "validation_error": "SOLVER_FAILED",
+      "failed_family_slot": "f2",
+      "failed_family_status": "SOLVER_FAILED",
+      "backend": "REAL_VSPAERO",
+      "reused_frozen_pair": false,
+      "source_line": 47,
+      "source_file": "evaluations.jsonl"
+    },
+    {
+      "arm": "DE",
+      "design_index": 16,
+      "design_hash": "e2bd64901b6f1754",
+      "status": "SOLVED_VALID",
+      "primary": 0.013669701834594409,
+      "secondary": 117603.92926322992,
+      "family_cdi_f1": 0.013332604311974305,
+      "family_cdi_f2": 0.014006799357214512,
+      "family_label_f1": "455x394",
+      "family_label_f2": "549x476",
+      "feasible": true,
+      "starts": 2,
+      "internal_solver_cases": 14,
+      "validation_error": null,
+      "failed_family_slot": null,
+      "failed_family_status": null,
+      "backend": "REAL_VSPAERO",
+      "reused_frozen_pair": false,
+      "source_line": 48,
+      "source_file": "evaluations.jsonl"
+    }
+  ],
+  "invalid_decomposition": {
+    "by_arm": {
+      "BO": {
+        "invalid": 9,
+        "reasons": {
+          "LIFT_MATCH_FAILED": 4,
+          "SOLVER_FAILED": 5
+        },
+        "starts_distribution": {
+          "1": 5,
+          "2": 4
+        }
+      },
+      "DE": {
+        "invalid": 4,
+        "reasons": {
+          "LIFT_MATCH_FAILED": 2,
+          "SOLVER_FAILED": 2
+        },
+        "starts_distribution": {
+          "1": 2,
+          "2": 2
+        }
+      },
+      "PSO": {
+        "invalid": 0,
+        "reasons": {},
+        "starts_distribution": {}
+      },
+      "ABO": {
+        "invalid": 0,
+        "reasons": {},
+        "starts_distribution": {}
+      },
+      "ADE": {
+        "invalid": 0,
+        "reasons": {},
+        "starts_distribution": {}
+      },
+      "APSO": {
+        "invalid": 0,
+        "reasons": {},
+        "starts_distribution": {}
+      }
+    },
+    "ledger_family_role_attribution": {
+      "BO|f1|LIFT_MATCH_FAILED": 4,
+      "BO|f1|SOLVED_VALID": 27,
+      "BO|f1|SOLVER_FAILED": 1,
+      "BO|f2|SOLVED_VALID": 23,
+      "BO|f2|SOLVER_FAILED": 4,
+      "DE|f1|LIFT_MATCH_FAILED": 2,
+      "DE|f1|SOLVED_VALID": 14,
+      "DE|f2|SOLVED_VALID": 12,
+      "DE|f2|SOLVER_FAILED": 2
+    },
+    "family_role_recomputed_from_ledger": true,
+    "a2_decomposition_cross_check": "COUNTS_MATCH",
+    "invalid_row_field_audit": {
+      "invalid_total": 13,
+      "failed_family_present": 13,
+      "failed_family_slot_f1": 7,
+      "per_family_rows_0": 7,
+      "per_family_with_cdi": 6,
+      "failed_family_slot_f2": 6,
+      "per_family_rows_1": 6
+    }
+  },
+  "accounting": {
+    "run_local": {
+      "preflight": {
+        "starts": 2,
+        "internal": 14
+      },
+      "diagnostics": {
+        "starts": 0,
+        "internal": 0
+      },
+      "main": {
+        "evaluations": 48,
+        "starts": 89,
+        "internal": 623
+      },
+      "total": {
+        "starts": 91,
+        "internal": 637,
+        "internal_per_start": 7
+      },
+      "ledger": {
+        "starts": 91,
+        "ends": 91,
+        "paired": true,
+        "pending": 0,
+        "duplicate_start_ids": 0,
+        "writer_pids": [
+          27588
+        ],
+        "first_ts": "2026-11-11T18:58:04Z",
+        "last_ts": "2026-11-11T19:13:55Z"
+      },
+      "retry": {
+        "infra_retries_allowed": 0,
+        "duplicate_case_starts": 0
+      }
+    },
+    "cumulative": {
+      "caps": {
+        "max_starts": 451,
+        "max_internal_cases": 3157
+      },
+      "baseline_prior_actual": {
+        "starts": 62,
+        "internal": 446,
+        "components": [
+          [
+            39,
+            285
+          ],
+          [
+            2,
+            14
+          ],
+          [
+            2,
+            14
+          ],
+          [
+            2,
+            14
+          ],
+          [
+            2,
+            14
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            3,
+            21
+          ],
+          [
+            6,
+            42
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            6,
+            42
+          ]
+        ],
+        "source": "approval.json R10-ACCT-01"
+      },
+      "r10_planned_reservation": {
+        "starts": 386,
+        "internal": 2702,
+        "source": "plan.budget_and_caps"
+      },
+      "r10_actual_physical": {
+        "starts": 91,
+        "internal": 637,
+        "source": "solver_attempts.jsonl / batch_summary.total_*"
+      },
+      "charged_projected": {
+        "starts": 448,
+        "internal": 3148,
+        "headroom": [
+          3,
+          9
+        ],
+        "declared_in_batch_summary": [
+          448,
+          3148
+        ]
+      },
+      "physical_actual": {
+        "starts": 153,
+        "internal": 1083,
+        "headroom": [
+          298,
+          2074
+        ]
+      },
+      "batch_summary_cumulative_charged_semantics": "CHARGED_PROJECTED (= baseline + planned reservation)；不可解释为实际消耗",
+      "cumulative_accounting_ok_declared": true
+    },
+    "checks": [
+      {
+        "id": "A01",
+        "name": "preflight starts/internal",
+        "status": "PASS",
+        "detail": {
+          "starts": 2,
+          "internal": 14,
+          "overall": "PREFLIGHT_PASS_BYTE",
+          "cases": 2,
+          "excluded_from_e1_e6": true
+        },
+        "evidence": "preflight_result.json"
+      },
+      {
+        "id": "A02",
+        "name": "diagnostics zero-spawn / excluded",
+        "status": "PASS",
+        "detail": {
+          "starts": 0,
+          "internal": 0,
+          "status": "DIAGNOSTICS_NOT_IN_MATRIX",
+          "skipped": true,
+          "excluded_from_endpoints": true
+        },
+        "evidence": "diagnostics.json"
+      },
+      {
+        "id": "A03",
+        "name": "main starts = sum eval starts",
+        "status": "PASS",
+        "detail": {
+          "batch_summary_main_starts": 89,
+          "evaluations_starts_sum": 89
+        },
+        "evidence": "batch_summary.json/evaluations.jsonl"
+      },
+      {
+        "id": "A04",
+        "name": "main internal = sum eval internal = 7*starts",
+        "status": "PASS",
+        "detail": {
+          "batch_summary_main_internal": 623,
+          "evaluations_internal_sum": 623,
+          "7x_starts": 623
+        },
+        "evidence": "batch_summary.json/evaluations.jsonl"
+      },
+      {
+        "id": "A05",
+        "name": "total 91/637 conservation (7x)",
+        "status": "PASS",
+        "detail": {
+          "total_starts": 91,
+          "total_internal": 637,
+          "7x_total_starts": 637,
+          "preflight_plus_main_internal": 637
+        },
+        "evidence": "batch_summary.json"
+      },
+      {
+        "id": "A06",
+        "name": "ledger 91 start/91 end, 1:1, pending 0",
+        "status": "PASS",
+        "detail": {
+          "starts": 91,
+          "ends": 91,
+          "missing_end": 0,
+          "orphan_end": 0,
+          "duplicate_start_ids": 0,
+          "stop_report_pending_repaired": 0
+        },
+        "evidence": "solver_attempts.jsonl/stop_report.json"
+      },
+      {
+        "id": "A07",
+        "name": "zero retry / single writer",
+        "status": "PASS",
+        "detail": {
+          "duplicate_case_starts": 0,
+          "writer_pids": [
+            27588
+          ],
+          "infra_retries_allowed": 0,
+          "evaluator_lifecycle": "SEQUENTIAL_ONE_PER_ARM"
+        },
+        "evidence": "solver_attempts.jsonl/plan.json"
+      },
+      {
+        "id": "A08",
+        "name": "phase conservation preflight+diagnostic+main",
+        "status": "PASS",
+        "detail": {
+          "phase_internal_cases": {
+            "preflight": 14,
+            "diagnostic": 0,
+            "main": 623,
+            "total": 637
+          },
+          "phase_conservation_ok": {
+            "preflight": {
+              "starts": 2,
+              "expected_internal_cases": 14,
+              "recorded_internal_cases": 14,
+              "ok": true,
+              "source": "INTERNAL_PER_START_POLICY"
+            },
+            "diagnostic": {
+              "starts": 0,
+              "expected_internal_cases": 0,
+              "recorded_internal_cases": 0,
+              "ok": true,
+              "source": "INTERNAL_PER_START_POLICY"
+            },
+            "main": {
+              "starts": 89,
+              "expected_internal_cases": 623,
+              "recorded_internal_cases": 623,
+              "ok": true,
+              "source": "INTERNAL_PER_START_POLICY"
+            }
+          }
+        },
+        "evidence": "batch_summary.json"
+      },
+      {
+        "id": "A09",
+        "name": "main-only evaluations (preflight/diagnostics excluded)",
+        "status": "PASS",
+        "detail": {
+          "n_evaluations": 48,
+          "eval_hashes_in_preflight": [],
+          "preflight_counted_in_e1_e6": false,
+          "diagnostics_excluded": true
+        },
+        "evidence": "evaluations.jsonl/preflight_result.json/diagnostics.json"
+      },
+      {
+        "id": "A10",
+        "name": "all main rows REAL_VSPAERO; reused_frozen_pair distribution",
+        "status": "PASS",
+        "detail": {
+          "n": 48,
+          "backend_counts": {
+            "REAL_VSPAERO": 48
+          },
+          "reused_frozen_pair_true": 6,
+          "reused_frozen_pair_false": 42,
+          "note": "reused=true 仅初始 3 designs/臂（冻结预建对，6 行）；其余 42 行为新设计现场 build/freeze，false 属预期"
+        },
+        "evidence": "evaluations.jsonl"
+      },
+      {
+        "id": "A11",
+        "name": "primary == 0.5*CDi(f1)+0.5*CDi(f2)",
+        "status": "PASS",
+        "detail": {
+          "max_abs_deviation": 0.0,
+          "n_valid": 35
+        },
+        "evidence": "evaluations.jsonl"
+      },
+      {
+        "id": "A12",
+        "name": "invalid ratio 13/48 triggers pre-registered stop",
+        "status": "PASS",
+        "detail": {
+          "main_evaluations": 48,
+          "invalid_evaluations": 13,
+          "invalid_ratio": 0.2708333333333333,
+          "rule": {
+            "ratio_min_evaluations": 48,
+            "ratio_max": 0.25,
+            "consecutive_max": 6,
+            "total_max": 64,
+            "invalid_status": "INVALID_NUMERICAL"
+          },
+          "stop": {
+            "phase": "scientific_auto_stop",
+            "arm_id": "DE",
+            "message": "ARM_STOPPED_STOPPED_SCIENTIFIC_INVALID_RATIO"
+          }
+        },
+        "evidence": "batch_summary.json/stop_report.json"
+      },
+      {
+        "id": "A13",
+        "name": "manifest designs 45 == unique eval designs; roles match",
+        "status": "PASS",
+        "detail": {
+          "manifest_designs": 45,
+          "unique_eval_designs": 45,
+          "eval_missing_from_manifest": [],
+          "manifest_only": [],
+          "eval_role_checks_matched": "35/35",
+          "designs_total": 45,
+          "shared_initial_designs": 3
+        },
+        "evidence": "final_run_manifest.json/evaluations.jsonl"
+      },
+      {
+        "id": "A14",
+        "name": "cumulative CHARGED_PROJECTED 448/3148 vs caps",
+        "status": "PASS",
+        "detail": {
+          "batch_summary_cumulative": [
+            448,
+            3148
+          ],
+          "baseline": [
+            62,
+            446
+          ],
+          "r10_planned": [
+            386,
+            2702
+          ],
+          "projected": [
+            448,
+            3148
+          ],
+          "caps": [
+            451,
+            3157
+          ],
+          "headroom": [
+            3,
+            9
+          ],
+          "semantics": "CHARGED_PROJECTED（授权/headroom 口径，不是实际物理消耗）"
+        },
+        "evidence": "batch_summary.json/approval.json/plan.json"
+      },
+      {
+        "id": "A15",
+        "name": "cumulative PHYSICAL_ACTUAL 153/1083 vs caps",
+        "status": "PASS",
+        "detail": {
+          "baseline": [
+            62,
+            446
+          ],
+          "r10_actual": [
+            91,
+            637
+          ],
+          "actual_cumulative": [
+            153,
+            1083
+          ],
+          "caps": [
+            451,
+            3157
+          ],
+          "headroom": [
+            298,
+            2074
+          ],
+          "semantics": "PHYSICAL_ACTUAL（实际 solver spawn 计数）"
+        },
+        "evidence": "approval.json/batch_summary.json/stop_report.json"
+      },
+      {
+        "id": "A16",
+        "name": "accounting baseline chain arithmetic 62/446",
+        "status": "PASS",
+        "detail": {
+          "components": [
+            [
+              39,
+              285
+            ],
+            [
+              2,
+              14
+            ],
+            [
+              2,
+              14
+            ],
+            [
+              2,
+              14
+            ],
+            [
+              2,
+              14
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              3,
+              21
+            ],
+            [
+              6,
+              42
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              6,
+              42
+            ]
+          ],
+          "component_sums": [
+            62,
+            446
+          ],
+          "declared_baseline": [
+            62,
+            446
+          ]
+        },
+        "evidence": "approval.json R10-ACCT-01"
+      },
+      {
+        "id": "A17",
+        "name": "DE batch_summary valid_designs vs evaluations",
+        "status": "FAIL",
+        "detail": {
+          "batch_summary_DE_valid_designs": 11,
+          "evaluations_DE_valid": 12,
+          "authority": "evaluations.jsonl（16th DE eval SOLVED_VALID 已追加，stop_check 返回后才停，bs 未自增）"
+        },
+        "evidence": "batch_summary.json/evaluations.jsonl"
+      },
+      {
+        "id": "A18",
+        "name": "starts < 2*evals explained by fail-fast",
+        "status": "PASS",
+        "detail": {
+          "evaluations": 48,
+          "2x_evaluations": 96,
+          "actual_starts": 89,
+          "n_one_start_invalid": 7,
+          "gap": 7
+        },
+        "evidence": "evaluations.jsonl"
+      },
+      {
+        "id": "A19",
+        "name": "stop_report ledger closed & scientific phase",
+        "status": "PASS",
+        "detail": {
+          "phase": "scientific_auto_stop",
+          "arm_id": "DE",
+          "message": "ARM_STOPPED_STOPPED_SCIENTIFIC_INVALID_RATIO",
+          "ledger_starts": 91,
+          "ledger_ends": 91,
+          "physical_solver_starts": 91,
+          "pending_starts_repaired": 0
+        },
+        "evidence": "stop_report.json"
+      },
+      {
+        "id": "A20",
+        "name": "execution window compliance",
+        "status": "PASS",
+        "detail": {
+          "window": [
+            "2026-11-11T18:30:00Z",
+            "2026-11-12T04:00:00Z"
+          ],
+          "first_ts": "2026-11-11T18:58:04Z",
+          "last_ts": "2026-11-11T19:13:55Z",
+          "stop_created_utc": "2026-11-11T19:13:55Z"
+        },
+        "evidence": "solver_attempts.jsonl/plan.json"
+      },
+      {
+        "id": "A21",
+        "name": "phase starts sum 2+0+89=91",
+        "status": "PASS",
+        "detail": {
+          "preflight_mode_starts": 2,
+          "main_mode_starts": 89,
+          "b2_replay_rows": 4
+        },
+        "evidence": "solver_attempts.jsonl"
+      }
+    ],
+    "checks_summary": {
+      "total": 21,
+      "pass": 20,
+      "fail": 1,
+      "fail_ids": [
+        "A17"
+      ]
+    }
+  },
+  "discrepancies": [
+    {
+      "id": "D1",
+      "severity": "MAJOR_ACCOUNTING_SEMANTICS",
+      "title": "累计 448/3148 是 CHARGED_PROJECTED（授权口径），不是实际物理消耗",
+      "detail": "batch_summary.cumulative_charged_starts/internal = 448/3148 = 前序 baseline 62/446 + R10 计划 386/2702（approval R10-ACCT-01 预测值）；R10 实际仅 91/637。物理实际累计 = 62+91=153 starts / 446+637=1083 internal。A2 stop note/L-14 措辞『累计（含 R10 实际消耗）448/3148』把计划当实际；若被 Issue #9 回执照抄将高估消耗 295 starts/2065 internal。",
+      "evidence": "approval.json R10-ACCT-01; batch_summary.json cumulative_*; stop_report.json physical 91; plan budget 386/2702",
+      "action_recommendation": "A3 不改政策；建议 A5/A2 在最终回执明确双口径：charged_projected=448/3148（授权/caps headroom 3/9）、physical_actual=153/1083（实际消耗，实际 headroom 298/2074）；L-14 措辞建议勘误。"
+    },
+    {
+      "id": "D2",
+      "severity": "MINOR",
+      "title": "DE batch_summary valid_designs=11 vs evaluations 12",
+      "detail": "16th DE eval 是 SOLVED_VALID，已追加到 evaluations.jsonl，但 stop_check 返回后 run_arm 未自增 valid_designs。评估级以 evaluations.jsonl 为准；bs DE best_primary=0.01289480742004768 仍与评估级一致。",
+      "evidence": "batch_summary.arms.DE.valid_designs=11; evaluations DE valid=12",
+      "action_recommendation": "已在 A2 decomp disclosure 记录；本报告按 evaluations 权威统计。"
+    },
+    {
+      "id": "D3",
+      "severity": "MINOR",
+      "title": "INVALID 行 family 归因字段不完整，需从 ledger 重算",
+      "detail": "INVALID_NUMERICAL 行的 failed_family/per_family 字段与成功行不一致；A3 已从 solver_attempts case_id 后缀 -f1/-f2 独立重算，与 A2 分解一致：BO f1 SOLVED 27 / f2 SOLVED 23 / f1 LIFT 4 / f2 SOLVER 4 / f1 SOLVER 1；DE f1 SOLVED 14 / f2 SOLVED 12 / f1 LIFT 2 / f2 SOLVER 2。",
+      "evidence": "evaluations.jsonl invalid rows; solver_attempts.jsonl",
+      "action_recommendation": "计数不受影响；未来批次应补 failed_family 字段。"
+    },
+    {
+      "id": "D4",
+      "severity": "MINOR",
+      "title": "preflight_result case-level polar_sha256 字段为 null",
+      "detail": "preflight_result.json overall=PREFLIGHT_PASS_BYTE、2/2 cases PASS_BYTE，但 case 内 polar_sha256=null；polar 字节相等证据在 approval expected SHAs（455082e2…/0287afe0…）与 stop note/L-14 中。",
+      "evidence": "preflight_result.json; approval.json preflight.expected_polar_sha256",
+      "action_recommendation": "回执引用 PASS_BYTE 时同时引 approval expected SHA；字段缺口披露。"
+    },
+    {
+      "id": "D5",
+      "severity": "INFO",
+      "title": "final_run_manifest physical_call_count=0/solver_started=false 是 manifest builder 计数",
+      "detail": "manifest 由冻结 API 在 main 结束后构建（designs 45），其 physical_call_count=0 指构建器自身未 solver；R10 run 物理计数以 batch_summary/stop_report/ledger=91 为准。",
+      "evidence": "final_run_manifest.json",
+      "action_recommendation": "引用时勿混淆。"
+    }
+  ],
+  "provenance": {
+    "evals_line_count": 48,
+    "per_design_source": "evaluations.jsonl (line numbers in per_design.source_line)",
+    "note": "所有数值均可由 data_sources 中 SHA 锁定文件复算；不含 R1-R9 与诊断行。"
+  }
+}

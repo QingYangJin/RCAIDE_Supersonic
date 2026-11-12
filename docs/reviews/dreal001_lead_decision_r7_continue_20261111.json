@@ -1,0 +1,86 @@
+{
+  "schema": "dreal001.lead_decision.v1",
+  "decision_id": "L-08",
+  "created_utc": "2026-11-11T13:05:00Z",
+  "user_instruction": {
+    "ref": "m01474",
+    "text_zh": "为什么Issue#9发布的任务没有完成？继续执行任务",
+    "received_utc": "2026-11-11T13:03:07Z"
+  },
+  "prior_state": {
+    "r_line_terminated_by": "L-07",
+    "r6_final_receipt_commit": "3801eff",
+    "issue9_comment_id": 6795075732,
+    "p2a_pilot": "NOT_RUN_NOT_COMPUTABLE",
+    "accounting": {
+      "prior": [
+        39,
+        285
+      ],
+      "r1_r6": [
+        11,
+        77
+      ],
+      "cumulative": [
+        50,
+        362
+      ],
+      "caps": [
+        451,
+        3157
+      ]
+    }
+  },
+  "decision": "CONTINUE_WITH_NEW_R7_CYCLE",
+  "r7": {
+    "phase_d_zero_physical": [
+      "fix observe design_hash(canonical_x12) 7 sites",
+      "zero-physical R6 NaN diagnosis from retained VSPAERO artifacts",
+      "protocol amendment options memo"
+    ],
+    "planned_starts": 386,
+    "planned_internal": 2702,
+    "allowed_diagnostics_starts": 2,
+    "allowed_diagnostics_internal": 14,
+    "cumulative_with_plan": [
+      436,
+      3064
+    ],
+    "headroom_after_plan": [
+      15,
+      93
+    ],
+    "window_proposed": {
+      "start_utc": "2026-11-11T14:00:00Z",
+      "end_utc": "2026-11-12T04:00:00Z",
+      "token": "WINDOW_OK-P2AV2R7-20261111T1400Z-20261112T0400Z"
+    },
+    "execution_deadline_utc": "2026-11-11T19:00:00Z",
+    "clean_stop_utc": "2026-11-12T02:30:00Z",
+    "hard_stop_utc": "2026-11-12T04:00:00Z"
+  },
+  "r6_nan_evidence": {
+    "main_case_dir": "D:/RCAIDE/dnext001/wt-real-a2-optimizers/research/concorde_metaopt/dreal001/runs/DREAL001-P2A2R6-20261111-01/arms/BO/BO-d51866f7d3c49303-f1",
+    "main_vspgeom": {
+      "bytes": 191129,
+      "sha256_prefix": "6b00d72d06ac59b2",
+      "header": "462 401 2"
+    },
+    "preflight_pre01_vspgeom": {
+      "bytes": 227247,
+      "sha256_prefix": "40fdd436",
+      "header": "543 472 2"
+    },
+    "history": "7 solver cases; each case iteration-1 finite (CLo~±3e-4, CDo~7.3e-3, CLi=0), iteration-2 all nan/-nan(ind); preflight converges from iteration 2",
+    "conclusion": "solver linear/wake divergence on design-15 462x401 frozen mesh; mechanism to be confirmed zero-physical"
+  },
+  "constraints": [
+    "A1 frozen bytes unchanged",
+    "R1-R6 evidence read-only",
+    "no physical before R7 approval+dry-run+C gate+GO",
+    "serial OMP1 timeout60 no-retry",
+    "fuel null physics NOT_VALIDATED",
+    "no push"
+  ],
+  "physical_authorization": false
+}

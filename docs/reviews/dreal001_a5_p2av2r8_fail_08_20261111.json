@@ -1,0 +1,232 @@
+{
+  "schema": "dreal001.a5.fail_audit.v1",
+  "fail_id": "A5-P2AV2R8-FAIL-08",
+  "round": "R8",
+  "run_id": "DREAL001-P2A2R8-20261111-01",
+  "batch_id": "DREAL001-P2-20261111-13",
+  "generated_utc": "2026-11-11T17:23:06Z",
+  "auditor": "a5-review",
+  "physical_call_count": 0,
+  "solver_started": false,
+  "wrote_other_trees": false,
+  "pushed": false,
+  "verdict": {
+    "setup_stop_zero_physical_upheld": true,
+    "main_not_run": true,
+    "root_cause_execution_layer_flat_vs_nested": true,
+    "r8_permanently_excluded": true,
+    "r9_conditionally_acceptable": true,
+    "conditions": [
+      "G1",
+      "G2",
+      "G3",
+      "G4",
+      "G5",
+      "G6",
+      "G7",
+      "G8"
+    ]
+  },
+  "timeline": {
+    "started_utc": "2026-11-11T17:14:09Z",
+    "stop_utc": "2026-11-11T17:14:11Z",
+    "launcher_gate": "PASS",
+    "executor_gate": "FAIL",
+    "phase": "setup",
+    "error_type": "FreezeRecordError",
+    "message": "PREFROZEN_GEOM_MISSING d51866f7d3c49303/462x401"
+  },
+  "evidence_files": {
+    "stop_report.json": {
+      "sha256": "729eae0f339558881139cf593bfc998f9498a5fb5a4c63139ccb5a5edc07cb6b",
+      "bytes": 2303
+    },
+    "executor_prestart.json": {
+      "sha256": "72a51f0c9121af10d20cd6cd1e617fa36dbb85e11e92dab7dd37d15f83bdc160",
+      "bytes": 12545
+    },
+    "prestart_prefrozen_gate.json": {
+      "sha256": "533263b7ce6982cf79e6ed20345c68dd4f90a4e4ad945633c5fd44ff68e8321b",
+      "bytes": 37476,
+      "status": "PASS",
+      "checks": 79,
+      "static_index_count": 119,
+      "a1_runtime_guard_all_equal": true,
+      "triples": 6
+    },
+    "executor_run.log": {
+      "sha256": "dc27990fd824f5924ea0ff2e7d8b13a00cb0034a93432539d5baa9b0f4e098e0",
+      "bytes": 1784
+    },
+    "initial_designs_manifest.json": {
+      "sha256": "cba91f17e2be4edd8ab125f9795ce3c83fa99b2f8daa49bdd9a3da9adbc1d3a8",
+      "bytes": 14822
+    },
+    "approval.json": {
+      "sha256": "fa0d94a2be7ea2dcb6828b85b0cc032885829a9c8fe904e993bb40535c981f46",
+      "bytes": 75166
+    },
+    "post_approval_dry_run.R8_20261111T170630Z.json": {
+      "sha256": "478186118f507f7124efd5ba2bfb22c2f879d6bd096308356438e6fa57ffb120",
+      "bytes": 16625
+    },
+    "plan.json": {
+      "sha256": "0a14c8f068a7452a5f7a9a67f3e393a32dbc6c26678877908e34c076d6e6b009",
+      "bytes": 46783
+    },
+    "identity_binding.json": {
+      "sha256": "cc2118ded1b43632a59240e3a0bef583279a365f612f2c8748fc408f9b16398a",
+      "bytes": 10445
+    },
+    "lead_go_record": {
+      "sha256": "9f4b88f17c071044cf76a4f346813ad20f697329069f49221296d9f28218c6e1",
+      "bytes": 8436
+    },
+    "executor_executed": {
+      "sha256": "ff3f5639211306276712302e561f2ff931d702396db625eeb96112e6807d3d20",
+      "bytes": 92286
+    },
+    "a1_evaluator_v12": {
+      "sha256": "f74a4752495fd6c5330edcaf7edb4bcbe93f99c2a76bac06b5670d1f765ae20d",
+      "bytes": 58291
+    },
+    "a1_freeze_api": {
+      "sha256": "31d781821516bb80fc158238e4ef485c361afea674ca3b962efbb89d5a737173",
+      "bytes": 27288
+    },
+    "a1_bundle_manifest": {
+      "sha256": "995bb12fff738d3ebb0bde08c0d5c5bfeb9532aebe536847ef307a2332013aa5",
+      "bytes": 3262
+    },
+    "launcher_prefrozen_gate_module": {
+      "sha256": "47160cf2fd0d8b214c119964ab04ffcaa6440e7a8a638522a07d3a2699ee153c",
+      "bytes": 19666
+    }
+  },
+  "root_cause": {
+    "data_side": {
+      "manifest": "initial_designs_manifest.json families rows FLAT (no nested frozen)",
+      "sample_family": "d51866f7d3c49303/462x401",
+      "flat_fields": [
+        "frozen_vspgeom_path",
+        "frozen_vspgeom_sha256",
+        "frozen_vspgeom_bytes",
+        "frozen_vkey_sha256",
+        "frozen_vsp3_sha256",
+        "canonical_mesh_sha256"
+      ],
+      "geom_file_exists": true,
+      "geom_file_bytes": 191129,
+      "geom_file_sha256": "6b00d72d06ac59b210ea93c69840f1aaf0e4ac4d306113d9791faa3bf7c1c220"
+    },
+    "read_side": [
+      {
+        "site": "p2a_v2_runtime.py:574",
+        "code": "frozen = dict((row or {}).get(\"frozen\") or {})",
+        "effect": "flat row -> {} -> Path(\"\") -> PREFROZEN_GEOM_MISSING at :577",
+        "first_failure": true
+      },
+      {
+        "site": "p2a_v2_executor.py:1131",
+        "code": "mf = (fam_row or {}).get(\"frozen\") or {}",
+        "effect": "same flat assumption; family_* sha checks would all FAIL after runtime fix",
+        "first_failure": false
+      }
+    ],
+    "launcher_gate_compatible": {
+      "file": "docs/evidence/dreal001/p2av2r8_prefrozen_gate.py",
+      "lines": "200-203",
+      "code": "nested = fdesc.get(\"frozen\"); frozen = nested if isinstance(nested, dict) and nested else fdesc",
+      "note": "launcher module flat-compatible; executor code path was not"
+    },
+    "call_chain": [
+      "executor:1698 run_batch_executable",
+      "executor:1237 _run_batch_executable_impl",
+      "executor:1117 _prefrozen_reuse_gate",
+      "runtime:535 get_or_freeze",
+      "runtime:577 _reuse_prefrozen raise"
+    ]
+  },
+  "zero_physical": {
+    "physical_call_count": 0,
+    "physical_solver_starts": 0,
+    "internal_solver_cases": null,
+    "ledger_starts": 0,
+    "ledger_ends": 0,
+    "ledger_pending": 0,
+    "cases_dir": false,
+    "solver_attempts_jsonl": false,
+    "preflight_result": false,
+    "batch_summary": false,
+    "evaluations": false,
+    "solver_started": false,
+    "vspaero_process": false
+  },
+  "accounting": {
+    "prior_charged_starts": 56,
+    "prior_charged_internal_cases": 404,
+    "r8_charged_starts": 0,
+    "r8_charged_internal_cases": 0,
+    "cumulative_starts": 56,
+    "cumulative_internal_cases": 404,
+    "r9_planned_starts": 390,
+    "r9_planned_internal_cases": 2730,
+    "projected_cumulative_starts": 446,
+    "projected_cumulative_internal_cases": 3134,
+    "max_starts": 451,
+    "max_internal_cases": 3157
+  },
+  "process_gap": [
+    "pre-GO zero-physical smoke covered launcher gate module only, not executor _prefrozen_reuse_gate",
+    "no flat-vs-nested contract test before R8",
+    "R8 dry-run tool did not reach executor setup prefrozen branch"
+  ],
+  "r9_decision": {
+    "decided_by": "lead",
+    "batch_id": "DREAL001-P2-20261111-14",
+    "run_id": "DREAL001-P2A2R9-20261111-01",
+    "window_start_utc": "2026-11-11T17:30:00Z",
+    "window_end_utc": "2026-11-12T04:00:00Z",
+    "window_token": "WINDOW_OK-P2AV2R9-20261111T1730Z-20261112T0400Z",
+    "planned_starts": 390,
+    "planned_internal_cases": 2730,
+    "caps": {
+      "max_starts": 451,
+      "max_internal_cases": 3157
+    },
+    "cumulative": {
+      "starts": 446,
+      "internal_cases": 3134
+    },
+    "supersedes": {
+      "approval_sha256": "fa0d94a2be7ea2dcb6828b85b0cc032885829a9c8fe904e993bb40535c981f46",
+      "bytes": 75166,
+      "physical_at_supersede": 56
+    },
+    "amendment_seq": 9,
+    "amendment_reason": "R9_PREFROZEN_MANIFEST_FLAT_ROW_FIX",
+    "physical_at_amendment": 56,
+    "no_r10": true
+  },
+  "r9_gate_requirements": [
+    "G1 new identity/new bytes commit/no R8 approval reuse",
+    "G2 flat+nested fail-closed fix with unit tests",
+    "G3 executor-own gate zero-physical evidence on real R9 manifest (A2 + A5 independent rerun)",
+    "G4 launcher/executor gate equivalence",
+    "G5 budget/window/token/seq9/supersedes/cumulative",
+    "G6 A1 bytes unchanged",
+    "G7 R8 run dir read-only 15 files",
+    "G8 upgraded dry-run covering setup path"
+  ],
+  "exclusions": [
+    "R1",
+    "R2",
+    "R3",
+    "R4",
+    "R5",
+    "R6",
+    "R7",
+    "R8"
+  ],
+  "r1_r7_approvals_unchanged": true
+}

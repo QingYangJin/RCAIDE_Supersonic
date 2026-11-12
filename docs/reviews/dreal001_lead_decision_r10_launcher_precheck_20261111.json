@@ -1,0 +1,41 @@
+{
+  "schema": "dreal001.lead_decision.v1",
+  "decision_id": "L-13",
+  "decision": "CONTINUE_R10_AFTER_LAUNCHER_CONDITION_COUNT_PRECHECK_FIX",
+  "physical_authorization": false,
+  "batch_id": "DREAL001-P2-20261111-15",
+  "run_id": "DREAL001-P2A2R10-20261111-01",
+  "created_utc": "2026-11-11T19:02:00Z",
+  "signed_go": {
+    "path": "D:/RCAIDE/dnext001/wt-real-lead/docs/evidence/dreal001/lead_go_r10_20261111T1856Z.json",
+    "sha256": "260e284a5c9939b9be2ee08e9a2e986d43345818e682ce34ecff91926a91b83a",
+    "bytes": 9962,
+    "token": "LEAD_GO_P2AV2R10_EXEC_20261111T185534Z"
+  },
+  "signed_approval": {
+    "sha256": "4e67eac52833d8dfab8b8027a0838b68de15f26d9a072edb0515ece22414068c",
+    "bytes": 84140,
+    "conditions": 57
+  },
+  "a5_gates": {
+    "pre": "48b91bf67b6b9f0f9e27e69fb6b5aca1fec3a15f",
+    "c": "6f1498119c3a8e5d5283386dddda73ce0773c506"
+  },
+  "launcher": {
+    "old_sha256": "476481e65674d30450b03eb85f7fc44bca06323213161d53ddc652c218690bc8",
+    "new_sha256": "23106df237add53c99e54642b616349fc8d7bf411fc1488df1456f9d7d65861b",
+    "bytes": 29361,
+    "change": "line 413 expected conditions count 52 -> 57 (one line, fail-closed pre-start self-check only)",
+    "first_start_refused_utc": "2026-11-11T18:56:53Z",
+    "restart_utc": "2026-11-11T18:58:01Z",
+    "pid": 27588
+  },
+  "zero_physical_at_fix": true,
+  "a5_independent_opinion": "non-substantive, continue, ratify via L-13 and disclose as D-11; no dissent; update launcher anchor to 23106df2 with old anchor traceability",
+  "conditions": [
+    "launcher/executor/gate/plan/approval/A1 bytes unchanged from here on; any further execution-layer byte change is a hard stop",
+    "A2 preserves merged log + old/new launcher + diff in evidence commit",
+    "A5 records D-11 and updates launcher anchor in post-run audit and Issue #9 receipt",
+    "no R11; R10 remains final attempt under L-12"
+  ]
+}

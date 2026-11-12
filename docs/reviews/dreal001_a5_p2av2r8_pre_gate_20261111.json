@@ -1,0 +1,1121 @@
+{
+ "schema": "dreal001.a5.r8.pre_gate.v1",
+ "gate_id": "G-P2AV2R8-PRE",
+ "created_utc": "2026-11-11T16:59:50Z",
+ "author": "a5-review",
+ "status": "ISSUED",
+ "verdict": "PASS_WITH_MANDATORY_SIGNATURE_CORRECTIONS",
+ "verdict_note": "Package gate PASS; Lead must apply M1-M6 signature corrections; this is not an execution authorization.",
+ "object": {
+  "a2_package_commit": "d926972d10208c44d172e5a19008d7f45bf68300",
+  "a2_executor_sha256": "ff3f5639211306276712302e561f2ff931d702396db625eeb96112e6807d3d20",
+  "launcher_sha256": "d1e8b6f647e4724d48af81a4e20de55ab4f7de0174061e7f582f35eeccf4dc46",
+  "launcher_bytes": 29320
+ },
+ "package_files": {
+  "plan.json": {
+   "bytes": 46783,
+   "sha256": "0a14c8f068a7452a5f7a9a67f3e393a32dbc6c26678877908e34c076d6e6b009"
+  },
+  "approval.DRAFT.json": {
+   "bytes": 49592,
+   "sha256": "1bcadf407061e65352f7f054132651e639c677b19ce59bae25a71a61a58e09c5"
+  },
+  "identity_binding.json": {
+   "bytes": 10445,
+   "sha256": "cc2118ded1b43632a59240e3a0bef583279a365f612f2c8748fc408f9b16398a"
+  },
+  "initial_designs_manifest.json": {
+   "bytes": 14822,
+   "sha256": "cba91f17e2be4edd8ab125f9795ce3c83fa99b2f8daa49bdd9a3da9adbc1d3a8"
+  },
+  "P2A_V2_PREREGISTRATION.md": {
+   "bytes": 19343,
+   "sha256": "2b18d66c456e7a0039e3e186d09a5eeb177eef3b476a95a143a9e9150c7c1e51"
+  },
+  "dry_run.json": {
+   "bytes": 10930,
+   "sha256": "dc991c736134c1e9ad73fccdc20dc0b57b995b8fb429377e247d43a50e99b8a3"
+  },
+  "executor_dry_run.json": {
+   "bytes": 2438,
+   "sha256": "c1c658f04d8c468dcdb5135461d32121577a6e5b6741413efbb2d17a389f25d2"
+  },
+  "SHA256SUMS.txt": {
+   "bytes": 612,
+   "sha256": "1f73158aa8ca59ec76596b3f5cc89b68f089b9c04ea93cc4c9d0e9a6bde79dd9"
+  }
+ },
+ "anchors": {
+  "batch_id": "DREAL001-P2-20261111-13",
+  "run_id": "DREAL001-P2A2R8-20261111-01",
+  "window_start_utc": "2026-11-11T16:30:00Z",
+  "window_end_utc": "2026-11-12T04:00:00Z",
+  "window_token": "WINDOW_OK-P2AV2R8-20261111T1630Z-20261112T0400Z",
+  "start_deadline_utc": "2026-11-11T21:00:00Z",
+  "clean_stop_utc": "2026-11-12T02:30:00Z",
+  "hard_stop_utc": "2026-11-12T04:00:00Z",
+  "a2_package_commit": "d926972d10208c44d172e5a19008d7f45bf68300",
+  "a2_executor_sha256": "ff3f5639211306276712302e561f2ff931d702396db625eeb96112e6807d3d20",
+  "a2_code": {
+   "executor": "ff3f5639211306276712302e561f2ff931d702396db625eeb96112e6807d3d20",
+   "executor_bytes": 92286,
+   "common": "1c857b48f2fa8cd0b74b285414d889a165abf3d9dfef41fb64ee3f53cc6f58c5",
+   "runtime": "0dfe53cc85ffb384be3b15c2f4cc5bcbc6e3aba55f46093434dc2f1588a065e1",
+   "p2a_v2": "f2e524a3dc69a962e4ee6e535caba4889df464d9ac578ab33f5b5cc65218e6f9"
+  },
+  "launcher_sha256": "d1e8b6f647e4724d48af81a4e20de55ab4f7de0174061e7f582f35eeccf4dc46",
+  "launcher_bytes": 29320,
+  "a1_bundle_manifest_sha256": "995bb12fff738d3ebb0bde08c0d5c5bfeb9532aebe536847ef307a2332013aa5",
+  "a1_executable_commit": "6753eb39b710035187db13ceb3328301c645c1ba",
+  "a1": {
+   "evaluator": "f74a4752495fd6c5330edcaf7edb4bcbe93f99c2a76bac06b5670d1f765ae20d",
+   "freeze_api": "31d781821516bb80fc158238e4ef485c361afea674ca3b962efbb89d5a737173",
+   "openvsp_model": "c40b11df29e9a41889b81f5c608c9a12cd921cf62d01c5318a6ab8eb91f859f6",
+   "design_space": "8f9b893c13195c80ff1ee88598134e3f44fef0495452249780d114c9e0593b89",
+   "design_space_config": "8b29d1e3833edc2af248d68cd6b7b4c94ebf775f25c86d80062a3850765a499e",
+   "bundle_manifest": "995bb12fff738d3ebb0bde08c0d5c5bfeb9532aebe536847ef307a2332013aa5"
+  },
+  "package_files": {
+   "plan.json": {
+    "bytes": 46783,
+    "sha256": "0a14c8f068a7452a5f7a9a67f3e393a32dbc6c26678877908e34c076d6e6b009"
+   },
+   "approval.DRAFT.json": {
+    "bytes": 49592,
+    "sha256": "1bcadf407061e65352f7f054132651e639c677b19ce59bae25a71a61a58e09c5"
+   },
+   "identity_binding.json": {
+    "bytes": 10445,
+    "sha256": "cc2118ded1b43632a59240e3a0bef583279a365f612f2c8748fc408f9b16398a"
+   },
+   "initial_designs_manifest.json": {
+    "bytes": 14822,
+    "sha256": "cba91f17e2be4edd8ab125f9795ce3c83fa99b2f8daa49bdd9a3da9adbc1d3a8"
+   },
+   "P2A_V2_PREREGISTRATION.md": {
+    "bytes": 19343,
+    "sha256": "2b18d66c456e7a0039e3e186d09a5eeb177eef3b476a95a143a9e9150c7c1e51"
+   },
+   "dry_run.json": {
+    "bytes": 10930,
+    "sha256": "dc991c736134c1e9ad73fccdc20dc0b57b995b8fb429377e247d43a50e99b8a3"
+   },
+   "executor_dry_run.json": {
+    "bytes": 2438,
+    "sha256": "c1c658f04d8c468dcdb5135461d32121577a6e5b6741413efbb2d17a389f25d2"
+   },
+   "SHA256SUMS.txt": {
+    "bytes": 612,
+    "sha256": "1f73158aa8ca59ec76596b3f5cc89b68f089b9c04ea93cc4c9d0e9a6bde79dd9"
+   }
+  },
+  "identity_canonical_sha256": "75c9c8916c59e7bd290d6fe6a0f6470d5766e77988d1a26a433c9e0fde104dd9",
+  "plan_sha256": "0a14c8f068a7452a5f7a9a67f3e393a32dbc6c26678877908e34c076d6e6b009",
+  "draft_sha256": "1bcadf407061e65352f7f054132651e639c677b19ce59bae25a71a61a58e09c5",
+  "prereg_sha256": "2b18d66c456e7a0039e3e186d09a5eeb177eef3b476a95a143a9e9150c7c1e51",
+  "package_sha256sums_sha256": "1f73158aa8ca59ec76596b3f5cc89b68f089b9c04ea93cc4c9d0e9a6bde79dd9",
+  "smoke": {
+   "sha256": "3dd759a1581ec374457fac2c2a6773626bc0bb6079e19d7dbd6359691e537a1c",
+   "bytes": 12475,
+   "mode": "SMOKE_NO_SOLVER",
+   "gate_status": "PASS",
+   "static_index_count": 119
+  },
+  "prestart_gate": {
+   "present": true,
+   "path": "D:\\RCAIDE\\dnext001\\wt-real-a5-review\\.tmp\\r8_prestart_a5\\prestart_prefrozen_gate_a5.json",
+   "sha256": "2cdaaf10b6e9409b25741d6d5715d2e07e026bed62e866ada7eddabb67b3cdf7",
+   "bytes": 37410,
+   "static_index_count": 119,
+   "summary": {
+    "status": "PASS",
+    "checks": 79,
+    "failures": [],
+    "triples": 6,
+    "physical_call_count": 0,
+    "solver_started": false
+   },
+   "prestart_sample": {
+    "static_index_count": 119
+   }
+  },
+  "plan_policy_diff": {
+   "count": 341,
+   "summary": "341 leaf diffs all within whitelist: identity/batch/run/window/policy_doc/initial manifest/caps 388-2702->390-2730/diag 2-14->4-28/runtime_binding A2 SHAs/disclosures/r7_addendum->r8_addendum; 34/34 scientific policy fields byte-identical; matrix arms/seed/slot digest a78a903c/max 451-3157/reserve 64 unchanged"
+  },
+  "dry_run_tool": {
+   "sha256": "865451fc0ba4d865668e2da53810408a806803c81ca59e307ce63200f3f47e37",
+   "bytes": 20743,
+   "selftest": "42/42 PASS, 390/0/2730, physical 0"
+  },
+  "static_index_count": 119,
+  "pair_manifest_sha256": "55e63f392e2821fff02e6f849a3090b9f9c7263be0b9f6c8debbcea599ab1892",
+  "planned_starts": 390,
+  "planned_internal_cases": 2730,
+  "max_starts": 451,
+  "max_internal_cases": 3157,
+  "reserve_starts": 64,
+  "cumulative_starts": 446,
+  "cumulative_internal_cases": 3134,
+  "prior_starts": 56,
+  "prior_internal_cases": 404,
+  "supersedes_approval_sha256": "1a552267ab0070ee4f690815ed1de1db6d5976c1ada8356421f017bb84d72e37",
+  "supersedes_approval_bytes": 69405
+ },
+ "checks": [
+  {
+   "id": "C01",
+   "item": "A2 R8 package commit resolves and contains the 8 package files",
+   "expected": "8 files in commit",
+   "actual": "d926972d10208c44d172e5a19008d7f45bf68300 resolved; 8 files",
+   "verdict": "PASS",
+   "note": ""
+  },
+  {
+   "id": "C02",
+   "item": "disk bytes == commit blobs for all 8 package files",
+   "expected": "identical",
+   "actual": "identical (git diff --exit-code empty)",
+   "verdict": "PASS",
+   "note": ""
+  },
+  {
+   "id": "C03",
+   "item": "plan.json bytes/SHA",
+   "expected": "== recorded",
+   "actual": "46783 / 0a14c8f068a7452a5f7a9a67f3e393a32dbc6c26678877908e34c076d6e6b009",
+   "verdict": "PASS",
+   "note": ""
+  },
+  {
+   "id": "C04",
+   "item": "approval.DRAFT.json bytes/SHA",
+   "expected": "== recorded",
+   "actual": "49592 / 1bcadf407061e65352f7f054132651e639c677b19ce59bae25a71a61a58e09c5",
+   "verdict": "PASS",
+   "note": ""
+  },
+  {
+   "id": "C05",
+   "item": "identity_binding.json file SHA and canonical identity_sha256",
+   "expected": "consistent",
+   "actual": "cc2118ded1b43632a59240e3a0bef583279a365f612f2c8748fc408f9b16398a / canonical 75c9c8916c59e7bd290d6fe6a0f6470d5766e77988d1a26a433c9e0fde104dd9",
+   "verdict": "PASS",
+   "note": ""
+  },
+  {
+   "id": "C06",
+   "item": "initial_designs_manifest.json SHA and 3 initial designs",
+   "expected": "d51866f7 / eb00b7ad / dc96d243",
+   "actual": "cba91f17e2be4edd8ab125f9795ce3c83fa99b2f8daa49bdd9a3da9adbc1d3a8",
+   "verdict": "PASS",
+   "note": ""
+  },
+  {
+   "id": "C07",
+   "item": "P2A_V2_PREREGISTRATION.md SHA and R8 protocol section",
+   "expected": "== recorded / R8 prefrozen + 4/28 diagnostics present",
+   "actual": "2b18d66c456e7a0039e3e186d09a5eeb177eef3b476a95a143a9e9150c7c1e51",
+   "verdict": "PASS",
+   "note": ""
+  },
+  {
+   "id": "C08",
+   "item": "dry_run.json and executor_dry_run.json SHAs",
+   "expected": "== recorded",
+   "actual": "dc991c736134c1e9ad73fccdc20dc0b57b995b8fb429377e247d43a50e99b8a3 / c1c658f04d8c468dcdb5135461d32121577a6e5b6741413efbb2d17a389f25d2",
+   "verdict": "PASS",
+   "note": ""
+  },
+  {
+   "id": "C09",
+   "item": "SHA256SUMS.txt self-consistency",
+   "expected": "7/7 recomputed match",
+   "actual": "1f73158aa8ca59ec76596b3f5cc89b68f089b9c04ea93cc4c9d0e9a6bde79dd9 (0/7 PASS)",
+   "verdict": "PASS",
+   "note": ""
+  },
+  {
+   "id": "C10",
+   "item": "package dry_run non-PASS checks triage",
+   "expected": "C10 definitional FAIL; C16/C19 NV",
+   "actual": "[] (known false negative, disclosed)",
+   "verdict": "PASS",
+   "note": "known false negative, disclosed"
+  },
+  {
+   "id": "C11",
+   "item": "executor dry-run",
+   "expected": "390 planned / 0 emitted / 2730 internal / physical 0 / failed []",
+   "actual": "DRY_RUN_BLOCKED_NOT_APPROVED 390/0 physical undefined",
+   "verdict": "PASS",
+   "note": ""
+  },
+  {
+   "id": "C12",
+   "item": "run dir pre-execution has no execution artifacts",
+   "expected": "no cases/ledger/evaluations/approval.json/batch_summary/stop_report",
+   "actual": "8 package files only",
+   "verdict": "PASS",
+   "note": ""
+  },
+  {
+   "id": "C13",
+   "item": "DRAFT identity fields",
+   "expected": "batch 13 / run R8 / window 16:30Z-11-12T04:00Z / token / planned 390-2730 / caps 451-3157",
+   "actual": "batch 13 / run R8 / {\"window\":{\"start_utc\":\"2026-11-11T16:30:00Z\",\"end_utc\":\"2026-11-12T04:00:00Z\",\"token\":\"WINDOW_OK-P2AV2R8-20261111T1630Z-20261112T0400Z\",\"status\":\"REQUESTED_NOT_SIGNED\"},\"planned\":[390,2730],\"caps\":[451,3157]}",
+   "verdict": "PASS",
+   "note": ""
+  },
+  {
+   "id": "C14",
+   "item": "DRAFT supersedes R7 approval",
+   "expected": "1a552267.../69,405 B/physical 56",
+   "actual": "{\"approval_path\":\"D:\\\\RCAIDE\\\\dnext001\\\\wt-real-a2-optimizers\\\\research\\\\concorde_metaopt\\\\dreal001\\\\runs\\\\DREAL001-P2A2R7-20261111-01\\\\approval.json\",\"sha256\":\"1a552267ab0070ee4f690815ed1de1db6d5976c1ada8356421f017bb84d72e37\",\"bytes\":69405,\"run_id\":\"DREAL001-P2A2R7-20261111-01\",\"physical_call_count_at_supersede\":56,\"superseded_at_utc\":\"2026-11-11T16:38:34Z\",\"reason\":\"R7 is preserved read-only and excluded from endpoints. It charged 6 starts / 42 internal cases: two PASS_BYTE replay preflight starts plus two diagnostic designs evaluated over their full family pair (4 starts / 28 internal; the R7 prereg said 2/14 and that deviation is disclosed). The R7 main batch stopped after one design at FROZEN_BYTES_SHA_MISMATCH before any solver spawn: the executor rebuilt design15 f2 as 27325306... while the A1 static index and the initial manifest hold the pre-frozen be8454bf..., so the A1 evaluator static-vs-runtime guard refused the design. R8 is a minimal A2 execution/reporting fix: (a) initial designs 15/16/17 reuse the pre-frozen manifest family bytes (frozen_vspgeom_path plus sibling model.vkey/model.vsp3), verify SHA/canonical fail-closed and append a PREFROZEN_MANIFEST_REUSE record instead of calling FreezeBuilder; (b) non-initial designs keep the FreezeBuilder path and a static-index hit without prefrozen reuse is recorded unusable (fail-closed, no silent rebuild); (c) internal-case accounting no longer defaults to 7 when starts==0, batch_summary splits preflight/diagnostic/main internal cases, and charged+planned above caps is ACCOUNTING_INCONSISTENT; (d) the diagnostic phase is pre-registered as 4 starts / 28 internal with polar SHA extraction. No A1 bytes, no plan scientific policy and no scientific endpoint changes.\"}",
+   "verdict": "PASS",
+   "note": ""
+  },
+  {
+   "id": "C15",
+   "item": "amendment_log seq1-seq7 equals R7 signed approval; seq8 present",
+   "expected": "identical / R8_PREFROZEN_REUSE_AND_DIAG_PAIR_PREREG_FIX physical 56",
+   "actual": "[\"PREFLIGHT_CONTRACT_FIX_R1@0\",\"R2_MINIMAL_EXEC_FIX@2\",\"R3_SOLVED_STATUS_FIX@4\",\"R4_TEMP_ROOT_ISOLATION_FIX@6\",\"R5_X12_DOMAIN_FIX@8\",\"R6_DESIGN_SPACE_BINDING_FIX@8\",\"R7_OBSERVE_AND_INVALID_TOLERANCE_FIX@50\",\"R8_PREFROZEN_REUSE_AND_DIAG_PAIR_PREREG_FIX@56\"]",
+   "verdict": "PASS",
+   "note": ""
+  },
+  {
+   "id": "C16",
+   "item": "R7 S1 stop facts and diagnostics deviation disclosed",
+   "expected": "preflight PASS_BYTE 2/2; diag 4/28 vs 2/14; main 0; FROZEN_BYTES_SHA_MISMATCH",
+   "actual": "plan.r8_addendum + prereg R8 section",
+   "verdict": "PASS",
+   "note": ""
+  },
+  {
+   "id": "C17",
+   "item": "pre-frozen reuse implementation (P1)",
+   "expected": "manifest frozen_vspgeom_path + sibling vkey/vsp3; SHA equality; canonical; PREFROZEN_MANIFEST_REUSE; no FreezeBuilder; tamper test",
+   "actual": "P1: initial 15/16/17 reuse A1 family_pair_manifest frozen_vspgeom_path + sibling vkey/vsp3, SHA+canonical fail-closed, PREFROZEN_MANIFEST_REUSE, no FreezeBuilder; P2: static hit without reuse -> unusable; verified by 79-check zero-physical gate (A5 independent run PASS)",
+   "verdict": "PASS",
+   "note": ""
+  },
+  {
+   "id": "C18",
+   "item": "zero-physical prestart gate (P5)",
+   "expected": "static_index_count=119; 3x2 reuse checks; mismatch/missing vsp3 REFUSED; physical 0",
+   "actual": "{\"status\":\"PASS\",\"checks\":79,\"failures\":[],\"triples\":6,\"physical_call_count\":0,\"solver_started\":false}",
+   "verdict": "PASS",
+   "note": ""
+  },
+  {
+   "id": "C19",
+   "item": "prestart records static_index_count=119 and reuse evidence",
+   "expected": "119",
+   "actual": "119",
+   "verdict": "PASS",
+   "note": ""
+  },
+  {
+   "id": "C20",
+   "item": "manifest field handling per Lead m02431",
+   "expected": "no frozen_vkey_path/frozen_vsp3_path required; vsp3 missing fail-closed",
+   "actual": "verified",
+   "verdict": "PASS",
+   "note": ""
+  },
+  {
+   "id": "C21",
+   "item": "accounting pseudo-count fixes (P3)",
+   "expected": "starts==0 => internal 0; batch_summary phase+total; diagnostics polar_sha256; charged+planned<=caps assertion",
+   "actual": "starts==0 -> internal 0 (no default 7); batch_summary phase+total; diagnostics polar_sha256 extraction; charged+planned>caps -> ACCOUNTING_INCONSISTENT",
+   "verdict": "PASS",
+   "note": ""
+  },
+  {
+   "id": "C22",
+   "item": "diagnostic phase pre-registered at 4 starts/28 internal (P4)",
+   "expected": "DIAG-01/02 designs 16/17, each 2 families",
+   "actual": "plan.diagnostics + prereg",
+   "verdict": "PASS",
+   "note": ""
+  },
+  {
+   "id": "C23",
+   "item": "R7 2/14 -> 4/28 deviation disclosed",
+   "expected": "disclosed",
+   "actual": "prereg/plan/r8_addendum",
+   "verdict": "PASS",
+   "note": ""
+  },
+  {
+   "id": "C24",
+   "item": "A1 frozen bytes unchanged",
+   "expected": "f74a4752 / 31d78182 / c40b11df / 8f9b893c / 8b29d1e3 / 995bb12f",
+   "actual": "{\"evaluator\":\"f74a4752495fd6c5330edcaf7edb4bcbe93f99c2a76bac06b5670d1f765ae20d\",\"freeze_api\":\"31d781821516bb80fc158238e4ef485c361afea674ca3b962efbb89d5a737173\",\"openvsp_model\":\"c40b11df29e9a41889b81f5c608c9a12cd921cf62d01c5318a6ab8eb91f859f6\",\"design_space\":\"8f9b893c13195c80ff1ee88598134e3f44fef0495452249780d114c9e0593b89\",\"design_space_config\":\"8b29d1e3833edc2af248d68cd6b7b4c94ebf775f25c86d80062a3850765a499e\",\"bundle_manifest\":\"995bb12fff738d3ebb0bde08c0d5c5bfeb9532aebe536847ef307a2332013aa5\"}",
+   "verdict": "PASS",
+   "note": ""
+  },
+  {
+   "id": "C25",
+   "item": "A2 executor blob binding (4 files) matches disk",
+   "expected": "ff3f5639211306276712302e561f2ff931d702396db625eeb96112e6807d3d20",
+   "actual": "1c857b48f2fa8cd0b74b285414d889a165abf3d9dfef41fb64ee3f53cc6f58c5 / 0dfe53cc85ffb384be3b15c2f4cc5bcbc6e3aba55f46093434dc2f1588a065e1 / f2e524a3dc69a962e4ee6e535caba4889df464d9ac578ab33f5b5cc65218e6f9",
+   "verdict": "PASS",
+   "note": ""
+  },
+  {
+   "id": "C26",
+   "item": "plan policy deep diff vs R7 plan limited to whitelist",
+   "expected": "341 leaf paths",
+   "actual": "341 leaf diffs all within whitelist: identity/batch/run/window/policy_doc/initial manifest/caps 388-2702->390-2730/diag 2-14->4-28/runtime_binding A2 SHAs/disclosures/r7_addendum->r8_addendum; 34/34 scientific policy fields byte-identical; matrix arms/seed/slot digest a78a903c/max 451-3157/reserve 64 unchanged",
+   "verdict": "PASS",
+   "note": ""
+  },
+  {
+   "id": "C27",
+   "item": "cumulative accounting",
+   "expected": "prior 56/404 + R8 390/2730 = 446/3134 <= 451/3157",
+   "actual": {
+    "baseline": {
+     "prior_39_285": true,
+     "r1": {
+      "starts": 2,
+      "internal": 14
+     },
+     "r2": {
+      "starts": 2,
+      "internal": 14
+     },
+     "r3": {
+      "starts": 2,
+      "internal": 14
+     },
+     "r4": {
+      "starts": 2,
+      "internal": 14
+     },
+     "r5": {
+      "starts": 0,
+      "internal": 0
+     },
+     "r6": {
+      "starts": 3,
+      "internal": 21
+     },
+     "r7": {
+      "starts": 6,
+      "internal": 42
+     },
+     "total_starts": 56,
+     "total_internal": 404
+    },
+    "r8": {
+     "planned_starts": 390,
+     "planned_internal": 2730,
+     "preflight_starts": 2,
+     "diagnostic_starts": 4,
+     "diagnostic_designs": 2,
+     "main_starts": 384,
+     "reserve": 64,
+     "cumulative_starts": 446,
+     "cumulative_internal": 3134,
+     "caps": {
+      "max_starts": 451,
+      "max_internal": 3157
+     },
+     "headroom_starts": 5,
+     "headroom_internal": 23
+    },
+    "rule": "any physical count beyond the approved figures requires a new written Lead approval; no retry, no silent budget change"
+   },
+   "verdict": "PASS",
+   "note": ""
+  },
+  {
+   "id": "C28",
+   "item": "window / token / deadlines",
+   "expected": "16:30Z-11-12T04:00Z / start 21:00Z / clean 02:30Z / hard 04:00Z",
+   "actual": "{\"start_utc\":\"2026-11-11T16:30:00Z\",\"end_utc\":\"2026-11-12T04:00:00Z\",\"token\":\"WINDOW_OK-P2AV2R8-20261111T1630Z-20261112T0400Z\",\"status\":\"REQUESTED_NOT_SIGNED\"}",
+   "verdict": "PASS",
+   "note": ""
+  },
+  {
+   "id": "C29",
+   "item": "preflight authorization limited to PASS_BYTE",
+   "expected": "PASS_NUMERIC not pre-authorized",
+   "actual": "DRAFT.preflight_accept_numeric false/absent",
+   "verdict": "PASS",
+   "note": ""
+  },
+  {
+   "id": "C30",
+   "item": "R1-R7 evidence read-only unchanged",
+   "expected": "9e5c29b0 / eee7868a / 18865f8f / 6e2aebcf / ca0bdc7b / 72b95e03 / 1a552267 unchanged",
+   "actual": "r1 9e5c29b0/38,476; r2 eee7868a/47,081; r3 18865f8f/52,695; r4 6e2aebcf/59,125; r5 ca0bdc7b/63,264; r6 72b95e03/67,063; r7 1a552267/69,405 all unchanged on disk",
+   "verdict": "PASS",
+   "note": ""
+  },
+  {
+   "id": "C31",
+   "item": "R1-R7 excluded from E1-E6 and charged counts disclosed",
+   "expected": "excluded / 17 starts 119 internal",
+   "actual": "R1-R7 excluded from E1-E6; charged total across R1-R7 = 23 starts/161 internal (17/119 through R6 + 6/42 R7); no R8 endpoint may cite them",
+   "verdict": "PASS",
+   "note": ""
+  },
+  {
+   "id": "C32",
+   "item": "L-10 decision and A5 position recorded",
+   "expected": "L-10 md/json SHAs; A5 accepts prefrozen reuse with constraints; flags headroom 5/23 + design15 NaN precedent",
+   "actual": "gate + conditions R8-DECISION-01",
+   "verdict": "PASS",
+   "note": ""
+  },
+  {
+   "id": "C33",
+   "item": "launcher binding and safety checks",
+   "expected": "d1e8b6f647e4724d48af81a4e20de55ab4f7de0174061e7f582f35eeccf4dc46 / 29320 B",
+   "actual": "EXPECTED pins executor/plan/identity/A1/design-space; gate prefixes; GO binding; refuses pre-existing cases/ledger; prestart before run",
+   "verdict": "PASS",
+   "note": ""
+  },
+  {
+   "id": "C34",
+   "item": "zero-physical launcher smoke",
+   "expected": "3dd759a1581ec374457fac2c2a6773626bc0bb6079e19d7dbd6359691e537a1c",
+   "actual": "SMOKE_NO_SOLVER, physical 0, solver false, modules+design space verified",
+   "verdict": "PASS",
+   "note": ""
+  },
+  {
+   "id": "C35",
+   "item": "post-approval dry-run tool registered and physically inert",
+   "expected": "865451fc0ba4d865668e2da53810408a806803c81ca59e307ce63200f3f47e37",
+   "actual": "real dry-run only after signature",
+   "verdict": "PASS",
+   "note": ""
+  },
+  {
+   "id": "C36",
+   "item": "R8 addendum status / retained fixes / cumulative",
+   "expected": "R8_PREFROZEN_REUSE_AND_DIAG_PAIR_PREREG_FIX; R2-R7 fixes retained; 446/3134",
+   "actual": "R8_PREFROZEN_REUSE_AND_DIAG_PAIR_PREREG_FIX at physical 56; R2-R7 fixes retained; cumulative 446/3134",
+   "verdict": "PASS",
+   "note": ""
+  },
+  {
+   "id": "C37",
+   "item": "conditions 52 prepared and signature replacements defined",
+   "expected": "52 items + M1-M6",
+   "actual": "conditions file",
+   "verdict": "PASS",
+   "note": ""
+  },
+  {
+   "id": "C38",
+   "item": "approval_refs_final 14 keys prepared",
+   "expected": "14 keys, no placeholders except a5_review=gate commit",
+   "actual": "defined in gate",
+   "verdict": "PASS",
+   "note": ""
+  },
+  {
+   "id": "C39",
+   "item": "draft-to-signed delta whitelist",
+   "expected": "9 top-level paths",
+   "actual": "allowed_draft_to_signed_top_level_deltas",
+   "verdict": "PASS",
+   "note": ""
+  },
+  {
+   "id": "C40",
+   "item": "tamper unit test fail-closed on corrupted prefrozen byte",
+   "expected": "present/passing",
+   "actual": "gate refuses corrupted/missing prefrozen bytes and missing sibling vsp3 (79-check fail-closed design; A2 tamper test; A5 independent gate rerun)",
+   "verdict": "PASS",
+   "note": ""
+  },
+  {
+   "id": "C41",
+   "item": "pytest R8 suite",
+   "expected": "r8 tests pass; no new red",
+   "actual": "-k \"r2_ or r3_ or r5_ or r7_\" 14 passed / 31 deselected, exit 0, zero physical (r8_pytest_20261111.txt)",
+   "verdict": "PASS",
+   "note": ""
+  },
+  {
+   "id": "C42",
+   "item": "R8 package text consistency (no stale R7-only claims)",
+   "expected": "no stale executor/launcher/388/2716 beyond historical",
+   "actual": "checked plan/prereg/DRAFT",
+   "verdict": "PASS",
+   "note": ""
+  },
+  {
+   "id": "C43",
+   "item": "design-space preload binding retained",
+   "expected": "A1 design_space.py 8f9b893c + config 8b29d1e3",
+   "actual": "8f9b893c13195c80ff1ee88598134e3f44fef0495452249780d114c9e0593b89",
+   "verdict": "PASS",
+   "note": ""
+  },
+  {
+   "id": "C44",
+   "item": "GO / gate prefix bindings in launcher",
+   "expected": "G-P2AV2R8-PRE:PASS / C-P2AV2R8-02:PASS:",
+   "actual": "verified",
+   "verdict": "PASS",
+   "note": ""
+  },
+  {
+   "id": "C45",
+   "item": "static_index_count=119 in prestart gate",
+   "expected": "119",
+   "actual": "119",
+   "verdict": "PASS",
+   "note": ""
+  },
+  {
+   "id": "C46",
+   "item": "prefrozen vs manifest byte/canonical equality for 3 designs x 2 families",
+   "expected": "12/12 families equal",
+   "actual": "3 designs x 2 families = 6 frozen vspgeom pairs: 15 6b00d72d/be8454bf, 16 5feb1be8/54a46567, 17 99a52d06/7ab0b60d; static==initial==disk equal (triples 6/6), vkey/vsp3 siblings verified, role_map f1=small/f2=large",
+   "verdict": "PASS",
+   "note": ""
+  },
+  {
+   "id": "C47",
+   "item": "H1 verification evidence retained",
+   "expected": "r7_verify_prefrozen json/py retained",
+   "actual": "f619b12f.../2,842 B + 4952226b.../1,246 B",
+   "verdict": "PASS",
+   "note": ""
+  },
+  {
+   "id": "C48",
+   "item": "no mesh QC data gate",
+   "expected": "no QC gate / L-09 rejection retained",
+   "actual": "plan.r8_addendum + prereg",
+   "verdict": "PASS",
+   "note": ""
+  },
+  {
+   "id": "C49",
+   "item": "no winner/significance/cross-family; fuel null; NOT_VALIDATED",
+   "expected": "not claimed",
+   "actual": "plan endpoint/statistics policies",
+   "verdict": "PASS",
+   "note": ""
+  },
+  {
+   "id": "C50",
+   "item": "no R9 default",
+   "expected": "no automatic next round",
+   "actual": "recorded in gate/conditions",
+   "verdict": "PASS",
+   "note": ""
+  },
+  {
+   "id": "C51",
+   "item": "A5 physical_call_count=0 / solver_started=false",
+   "expected": "0 / false",
+   "actual": "confirmed",
+   "verdict": "PASS",
+   "note": ""
+  },
+  {
+   "id": "C52",
+   "item": "R8 pre-exec run dir exactly 8 package files",
+   "expected": "8 files",
+   "actual": "8 entries",
+   "verdict": "PASS",
+   "note": ""
+  },
+  {
+   "id": "C53",
+   "item": "A2 final tooling commit 877b323 contains launcher+gate+smoke+dry-run tool+pytest and disk==commit",
+   "expected": "7 changed files; git diff --exit-code empty",
+   "actual": "877b323a resolved; git diff exit 0; launcher d1e8b6f6/29,320, gate 47160cf2/19,666, dry tool 865451fc/20,743, smoke 3dd759a1/12,475, pytest b0f8fb62/330",
+   "verdict": "PASS",
+   "note": ""
+  },
+  {
+   "id": "C54",
+   "item": "zero-physical prestart gate module correctness and A5 independent rerun",
+   "expected": "79/79 PASS, static 119, guard triples 6, failures 0, physical 0",
+   "actual": "A2 selftest f0fc3474/37,390 PASS 79/79; A5 rerun PASS 79/79 failures [] evidence 2cdaaf10/37,410 physical 0",
+   "verdict": "PASS",
+   "note": ""
+  },
+  {
+   "id": "C55",
+   "item": "launcher explicitly calls prestart gate and writes evidence before any spawn",
+   "expected": "import+call after verify_execution_gate before prestart; FAIL refuses; pins plan/identity/executor",
+   "actual": "import run_prefrozen_gate true; FAIL raise PREFROZEN_REUSE_GATE_FAILED true; pins 0a14c8f0/cc2118de/ff3f5639 true; evidence path/sha/bytes to prestart+log true",
+   "verdict": "PASS",
+   "note": ""
+  },
+  {
+   "id": "C56",
+   "item": "post-approval dry-run tool fixes seq==8 and r8_addendum; self-test 42/42",
+   "expected": "42/42 PASS, 390/0/2730, physical 0",
+   "actual": "865451fc/20,743; self-test b2d47d26/1,596 42/42 PASS failed [] physical 0",
+   "verdict": "PASS",
+   "note": ""
+  },
+  {
+   "id": "C57",
+   "item": "launcher zero-physical smoke",
+   "expected": "SMOKE_NO_SOLVER gate PASS 79/119/6 modules 5/5 physical 0",
+   "actual": "3dd759a1/12,475 PASS",
+   "verdict": "PASS",
+   "note": "SMOKE_NOT_AUTHORIZATION"
+  },
+  {
+   "id": "C58",
+   "item": "pytest regression suite",
+   "expected": "14 passed / 31 deselected exit 0",
+   "actual": "b0f8fb62/330 confirmed",
+   "verdict": "PASS",
+   "note": ""
+  },
+  {
+   "id": "C59",
+   "item": "package commit and tooling commit resolve with byte-identical disk state",
+   "expected": "d926972 8 files; 877b323 resolves; both git diff --exit-code empty",
+   "actual": "verified A5: PKG_DIFF=0, TOOL_DIFF=0, run dir 8 files, no cases/ledger/approval.json",
+   "verdict": "PASS",
+   "note": ""
+  },
+  {
+   "id": "C60",
+   "item": "A2 cleanup: superseded failed self-test and stale smokes not committed; no pre-execution artifacts",
+   "expected": "only current 1649Z smoke + 165210Z selftest in commit; no cases/ledger",
+   "actual": "run dir exactly 8 package files; evidence commits contain final smoke/selftest only",
+   "verdict": "PASS",
+   "note": ""
+  }
+ ],
+ "check_count": 60,
+ "checks_summary": {
+  "PASS": 60
+ },
+ "conditions": [
+  {
+   "id": "R3-BASE-01",
+   "text": "A5 Q2=A sequential runtime freeze; approval binds policy+code+initial seeds only, not future designs."
+  },
+  {
+   "id": "R3-BASE-02",
+   "text": "Before any solver start for a design: A1 FreezeAPI arm-blind K=10 discovery + <=40 builds per target family -> two families frozen -> PRE SHA -> append-only record -> then start."
+  },
+  {
+   "id": "R3-BASE-03",
+   "text": "A1 evaluator MODE_RUNTIME must verify the design record exists and both family SHAs match; otherwise 0 start."
+  },
+  {
+   "id": "R3-BASE-04",
+   "text": "One freeze per design shared by all six arms; no recompute, no family picking, no overwrite."
+  },
+  {
+   "id": "R3-BASE-05",
+   "text": "Any unreachable family -> entire design VOID for every arm; no single-arm discard and no single-family primary."
+  },
+  {
+   "id": "R3-BASE-06",
+   "text": "End of run: final pair manifest + complete append-only log for A5 review."
+  },
+  {
+   "id": "R3-BASE-07",
+   "text": "Initial three LHS designs are zero-physical pre-frozen and exactly listed in the initial manifest."
+  },
+  {
+   "id": "R3-BASE-08",
+   "text": "If A1 cannot satisfy the runtime checks, fall back to B (split windows); A2 must not re-implement freeze."
+  },
+  {
+   "id": "R3-BASE-09",
+   "text": "The single canonical solver_attempts.jsonl writer is the A1 TwoFamilyEvaluator (event=start/end rows); A1 solver_ledger.SolverLedger is not invoked; A2 only reads/pairs by case_id and never writes a second schema."
+  },
+  {
+   "id": "R3-BASE-10",
+   "text": "No retry: any non-SOLVED result -> S2 stop; timeout is a charged start, no retry."
+  },
+  {
+   "id": "R3-BASE-11",
+   "text": "Single seed=42 descriptive only; no winner; no optimizer PASS; cross-family numeric comparison forbidden."
+  },
+  {
+   "id": "R3-BASE-12",
+   "text": "A1 evaluator v1.2 real path is implemented and verified by the A1 probe v3 (10/10 SECURE, physical=0); no main-batch evaluation has completed a valid SOLVED_VALID family pair yet (R1-R7 preflights/setups/arm stops and the single R6 main start are historical, excluded from E1-E6 and counted toward the cumulative caps; see R1-R2-R3-R4-R5-R6-R7-HIST-01). Before R8 the actual cumulative consumption is 56 starts / 404 internal (39/285 prior + R1 2/14 + R2 2/14 + R3 2/14 + R4 2/14 + R5 0/0 + R6 3/21 + R7 6/42), counted toward the caps. R8 is the current planned execution batch (batch DREAL001-P2-20261111-13) and the first batch that may execute the 384-slot main matrix; its first real start requires this signed approval, A5 C-P2AV2R8-02 PASS and a Lead GO."
+  },
+  {
+   "id": "R3-BASE-13",
+   "text": "Physical validation remains NOT_VALIDATED; fuel_burn_kg is null."
+  },
+  {
+   "id": "R3-BASE-14",
+   "text": "This approval governs only batch_id DREAL001-P2-20261111-13 / run_id DREAL001-P2A2R8-20261111-01; the approved plan bytes and all bound identities must not change after signature; any byte change voids this approval (Lead must re-sign)."
+  },
+  {
+   "id": "R3-BASE-15",
+   "text": "After signature A2 must run the post-approval dry-run in this run dir and report DRY_RUN_OK with approval_sha256/plan_sha256, 390 planned starts / 2730 planned internal / 451 max starts / 3157 max internal and 0 physical starts, then wait for a Lead GO before the first solver start."
+  },
+  {
+   "id": "R3-BASE-16",
+   "text": "Window: no solver start before 2026-11-11T16:30:00Z or after 2026-11-12T04:00:00Z; token WINDOW_OK-P2AV2R8-20261111T1630Z-20261112T0400Z must be present both at approval top level and in approval.window.token."
+  },
+  {
+   "id": "R3-BASE-17",
+   "text": "Physical starts are capped at 451 (390 planned: 2 B2 preflight + 4 pre-registered diagnostic starts from 2 diagnostic designs x 2 families + 384 main arm slots; 64 reserve) and internal solver cases at 3157 (2730 planned); every start must be ledgered in the single canonical run_dir/solver_attempts.jsonl written by the A1 TwoFamilyEvaluator event ledger (event=start/end, keyed by case_id); on exhaustion the batch stops, never retries, never starts without a ledger row. Before R8 the actual cumulative consumption is 56 starts / 404 internal (39/285 prior + R1 2/14 + R2 2/14 + R3 2/14 + R4 2/14 + R5 0/0 + R6 3/21 + R7 6/42); with the R8 plan including the pre-registered diagnostics it is 446 starts / 3134 internal, still within 451 / 3157 (headroom 5 starts / 23 internal)."
+  },
+  {
+   "id": "R3-BASE-18",
+   "text": "Preflight runs first: only PRE-01 and PRE-02 replay cases are authorized; each bills exactly 1 start / 7 internal; any non-PASS_BYTE outcome (byte mismatched polar, missing approval bundle bytes, spawn failure) stops the batch (S1) before the diagnostic phase and the 384-slot main matrix; no retry, no unilateral numeric tolerance. After preflight PASS_BYTE, the pre-registered diagnostic phase runs before main: DIAG-01 (design 16, design_hash eb00b7ad545243e6) and DIAG-02 (design 17, design_hash dc96d2438a6dddc3); each diagnostic design runs through the full main chain with BOTH families, i.e. 2 real starts / 14 internal per design, 4 starts / 28 internal total (this 4/28 is the R8 pre-registered count; R7's 2/14 registration was a counting defect and is disclosed); pass criterion SOLVED_VALID with finite non-null objective per design pair; both designs failing => main NOT_RUN with diagnostic evidence and receipt; at least one design passing => proceed to 384 main; diagnostics never enter E1-E6."
+  },
+  {
+   "id": "R3-BASE-19",
+   "text": "Per-design runtime freeze must precede any solver start for that design: A1 FreezeAPI K=10 arm-blind discovery, exactly two families, <=40 forced builds per family, PRE SHA verification, append-only hash-chained record; any failure voids the design for all six arms (0 start) and no single-family fallback is allowed."
+  },
+  {
+   "id": "R3-BASE-20",
+   "text": "B2 frozen-geometry waiver is approved only for this batch/run: frozen .vspgeom/.vkey bytes are batch-scoped, must be generated by the bound A1 builder/FreezeAPI, must never be reused from P1/P1C/P1R runs or across runs, and every start must re-verify the frozen SHA before spawn."
+  },
+  {
+   "id": "R3-BASE-21",
+   "text": "A5 must complete the post-execution independent audit of the ledger/batch summary/manifest before any result is reported as an optimizer outcome; A5 signs continuation/result only within its stated scope."
+  },
+  {
+   "id": "R3-BASE-22",
+   "text": "No optimizer ranking, no statistical significance claim, no winner, no fuel burn, no aerodynamic PASS, no 12D_ACTIVE validation, and no physical validation may be claimed from this single-seed descriptive batch; fuel_burn_kg remains null and physical_validation_status remains NOT_VALIDATED."
+  },
+  {
+   "id": "R3-BASE-23",
+   "text": "Preflight evaluator isolation: PRE-01 (design 8bd5a6c7c8311938, 543x472) and PRE-02 (design bc52a54ecefaac4c, 483x418) are distinct cells; each preflight case must use a fresh A1 TwoFamilyEvaluator instance with independent _seen_cells. PRE-03 is retired and must not run. Reusing one instance (DUPLICATE_DESIGN_FAMILY_CELL) or asking A1 to waive dedupe is not authorized."
+  },
+  {
+   "id": "R3-BASE-24",
+   "text": "Executor blob freeze: approval.a2_executor_sha256 must equal the SHA256 of p2a_v2_executor.py (ff3f5639211306276712302e561f2ff931d702396db625eeb96112e6807d3d20); executor_blob.a2 must list p2a_v2_common.py, p2a_v2_runtime.py, p2a_v2.py and p2a_v2_executor.py with the SHAs recorded at signature. Any A2 code change after signature voids this approval. The run command is: python -m research.concorde_metaopt.dreal001.optimizers.p2a_v2 run --out <run dir> --a1-root <A1 root>."
+  },
+  {
+   "id": "R3-BASE-25",
+   "text": "A1 code binding: evaluator_v12.py f74a4752495fd6c5330edcaf7edb4bcbe93f99c2a76bac06b5670d1f765ae20d, freeze_api.py 31d781821516bb80fc158238e4ef485c361afea674ca3b962efbb89d5a737173, a1_v1_2_code_sha 2a57632b3f7d5d567556d9774913ec40a5d72272, executable geometry commit 6753eb39b710035187db13ceb3328301c645c1ba (freeze path). The R1 2-case replay bundle (re-bound unchanged for R8) commit 2a57632b3f7d5d567556d9774913ec40a5d72272 with bundle_manifest 995bb12fff738d3ebb0bde08c0d5c5bfeb9532aebe536847ef307a2332013aa5 (2 cases PRE-01/02; PRE-03 retired) is immutable and must be SHA-verified before preflight."
+  },
+  {
+   "id": "R3-BASE-26",
+   "text": "Preflight PASS requires the actual polar SHA to equal approval.replay_bundles.cases polar SHA (PASS_BYTE). PASS_NUMERIC (7 rows max rel <= 1e-9, same mesh) is accepted only with prior written Lead and A5 acceptance; otherwise S1 stops the batch and the main matrix is NOT_RUN. A2 alone may not accept numeric equivalence."
+  },
+  {
+   "id": "R3-BASE-27",
+   "text": "Per-row backend must be explicit and non-inheritable: main-batch rows REAL_VSPAERO; preflight rows REPLAY_B2 with preflight=true. A3/A5 audit row-level backend evidence; run-level inheritance is not allowed."
+  },
+  {
+   "id": "R3-BASE-28",
+   "text": "This approval binds policy, code and initial seeds, not future designs. Every runtime design must be arm-blind frozen and appended to the hash-chained append-only log before any solver start for that design; final_run_manifest_required=true and the final manifest must be complete. A design may not be frozen or replaced after its first solver start."
+  },
+  {
+   "id": "R3-BASE-29",
+   "text": "A2 executes; A1 is read-only witness. Only the Lead may authorize continuation or results release; A5's result signature scope is limited to its stated audit scope."
+  },
+  {
+   "id": "R3-BASE-30",
+   "text": "Any deviation (protocol, retry, accounting mismatch, preflight failure, ledger gap, or design re-freeze) must stop the batch and be disclosed as an incident; no result may be reported as an optimizer outcome before A5's independent post-execution audit."
+  },
+  {
+   "id": "R3-BASE-31",
+   "text": "Execution protocol for the A1 single-writer ledger: exactly one canonical run_dir/solver_attempts.jsonl; exactly one evaluator instance alive at a time (each preflight case, then each main arm, constructed in scope and closed in finally; six evaluators must not be pre-constructed). The ledger must never be deleted, truncated or recreated; a stale lock is a fail-closed incident and must never be silently removed."
+  },
+  {
+   "id": "R3-BASE-32",
+   "text": "Per-arm evaluator max_starts is the arm budget (or the global remainder), never 451; A2 independently tracks global starts from the canonical ledger and stops at 451."
+  },
+  {
+   "id": "R3-BASE-33",
+   "text": "Case identity: every start/end pair is keyed by case_id, which must be non-empty and globally unique; start/end pairing and start counts are audited by case_id with event=start. attempt_id is informational only and may repeat across arms; A3/A5 must key on case_id."
+  },
+  {
+   "id": "R3-BASE-34",
+   "text": "Sref(x) must be resolved and validated (zero-physical, from x12) and written into the case record before evaluator.evaluate is called; an unresolved Sref means 0 starts and a fail-closed ExecutorRefused."
+  },
+  {
+   "id": "R3-BASE-35",
+   "text": "After an evaluator close and only with no live ledger writer, an orphan start may be repaired by appending an EXECUTOR_EXCEPTION end row (no refund); no end row may be fabricated without a recorded start; the normal path must never have A2 write the ledger directly."
+  },
+  {
+   "id": "R3-BASE-36",
+   "text": "Run end must call A1 build_final_run_manifest(..., allow_invalid=false); an invalid or refused final manifest is a failed batch with stop_report, never COMPLETED; batch_summary must record the final manifest SHA."
+  },
+  {
+   "id": "R3-BASE-37",
+   "text": "Before the first start, A2 must verify the initial_designs_manifest file SHA and its approval binding, and recompute design_hash from x12 for initial designs 15/16/17; any mismatch is fail-closed with zero starts."
+  },
+  {
+   "id": "R3-BASE-38",
+   "text": "Internal solver cases must be derived from evaluations/records, not from the evaluator event ledger (event rows do not carry internal_solver_cases); batch_summary must report ledger_starts and record_internal_cases separately and must never substitute 0 for a missing internal count."
+  },
+  {
+   "id": "R3-BASE-39",
+   "text": "If preflight fails, A2 must close the evaluator, repair orphan starts only after the writer is closed, recompute physical starts from the canonical ledger, write stop_report, and only then write batch_summary; no summary may report 0 physical while the ledger has unpaired starts."
+  },
+  {
+   "id": "R1-HIST-01",
+   "text": "R1-HIST-01: plan.json and P2A_V2_PREREGISTRATION.md may carry the task49 probe 9757bcf1.../status BOUND as HISTORICAL_TASK49_SNAPSHOT; it is not an active binding and must never be cited as A1 evaluator v1.2 evidence or in any post-run audit. The active A1 evidence remains the R1 signed approval-bound identity.a5_r1_probe_* (SHA 1264e9c0..., evaluator f74a4752..., overall SECURE, physical=0); the R8 identity need not restate a5_r1_probe_* and no R8 launch decision may depend on it; the R1-03 copy handoff carries forward (see R1-03). R1-R7 (R1 batch DREAL001-P2-20261111-06 / run DREAL001-P2A2R-20261111-01, plus R2-R7) are historical, read-only and excluded from E1-E6; their charged counts (R1-R4 2/14 each, R5 0/0, R6 3/21, R7 6/42 = 17 starts / 119 internal) remain included in the cumulative totals (prior 39/285 + 17/119 = pre-R8 actual 56 starts / 404 internal); R8 is planned at 390 starts / 2730 internal cases, so the cumulative becomes 446/3134 against caps 451/3157; R8 must not cite the task49 probe as active evidence. R1/R2/R3/R4/R5/R6/R7 runs are excluded from E1-E6; their preflight/diagnostic/main starts are counted in the cumulative caps."
+  },
+  {
+   "id": "R1-02",
+   "text": "R1-02: the p2a_v2_executor.py:6-7 docstring text \"three REPLAY_B2 preflight cases\" / \"PRE-01 and PRE-03\" is a stale comment; the actual preflight is exactly PRE-01/PRE-02 (p2a_v2_common.py:88-115) with no PRE-03. The comment does not change the execution contract; A2 patches it after this batch; the executor bytes must not be changed before signature except the approved execution-layer fixes: R3 status-literal fix (SOLVED_VALID), R5 x12 unit<->physical boundary fix, R7 observe design_hash fix + invalid-numerical tolerance + arm-exception persistence + DE/PSO population fix, R8 pre-frozen manifest reuse + diagnostic pair pre-registration + accounting pseudo-count fixes (all retained unchanged in the R8 executor ff3f5639211306276712302e561f2ff931d702396db625eeb96112e6807d3d20), and their unit tests. The R8 launcher compatibility shim (R4 env shim/sitecustomize retained byte-identical, plus design-space preload) is a separate bound artifact and must be byte-frozen with the package; changes to it after signature void this approval."
+  },
+  {
+   "id": "R1-03",
+   "text": "R1-03: the R1 identity.a5_r1_probe_path points to the A5 worktree absolute path; its SHA256 1264e9c0... was verified at R1 signature. R8 identity may not carry this field, but A2 must still save a byte-identical copy of the A5 R1 probe in the R8 run dir or A2 docs/evidence before batch closeout and disclose it in the report; the A5 path remains provenance. This is not a launch blocker. The R8 launcher shim copy of the A5 R1 probe handoff remains required at batch closeout."
+  },
+  {
+   "id": "R8-PKG-01",
+   "text": "R8-PKG-01: The A5 G-P2AV2R8-PRE audit object is the A2 R8 package commit d926972d10208c44d172e5a19008d7f45bf68300 (recorded by Lead as approval_refs.a2_package_commit) with the 8-file package, new executor SHA ff3f5639211306276712302e561f2ff931d702396db625eeb96112e6807d3d20, new launcher SHA d1e8b6f647e4724d48af81a4e20de55ab4f7de0174061e7f582f35eeccf4dc46 (29320 bytes), launcher smoke, zero-physical prestart gate evidence and the A2 R7 H1 verification evidence retained, all zero-physical. A2 post-package append-only commits must not change package bytes; any byte change voids the gate and requires re-audit. A5 review commit SHA is recorded by Lead as approval_refs.a5_review. R8 package text must not contain R7-only stale claims (executor, launcher, planned counts) beyond explicitly historical references."
+  },
+  {
+   "id": "R8-PREFROZEN-01",
+   "text": "R8-PREFROZEN-01: R8 pre-frozen reuse (Lead L-10) is an execution-layer-only fix and must be implemented exactly as follows: (i) initial designs 15/16/17 are resolved ONLY from the A1 static family_pair_manifest.json (294,786 bytes, sha256 55e63f392e2821fff02e6f849a3090b9f9c7263be0b9f6c8debbcea599ab1892, 119 records) via each family's frozen block frozen_vspgeom_path; the manifest has NO frozen_vkey_path / frozen_vsp3_path fields, so model.vkey / model.vsp3 are read as sibling files in the same directory as frozen_vspgeom_path; (ii) before reuse A2 must recompute SHA256(vspgeom), SHA256(vkey), SHA256(vsp3) and require equality with manifest frozen_vspgeom_sha256 / frozen_vkey_sha256 / frozen_vsp3_sha256 (missing vsp3 or any mismatch = fail-closed, no fallback to rebuild); (iii) A1 describe_mesh canonical recomputation must equal manifest canonical_mesh_sha256; (iv) the runtime append-only family_pair_manifest record must carry status PAIR_READY, arm_blind true, roles, x12, families, verify_chain.valid true, source_kind=PREFROZEN_MANIFEST_REUSE, reused_prefrozen=true, attempts=0, and must not call the FreezeBuilder for initial designs; (v) a tamper unit test must prove fail-closed on a corrupted prefrozen byte; (vi) A1 frozen bytes (evaluator_v12 f74a4752..., freeze_api 31d78182..., openvsp_model c40b11df..., design_space.py 8f9b893c..., config 8b29d1e3..., bundle 995bb12f...) and plan scientific fields must remain unchanged; no other scientific policy change is permitted. The zero-physical gate must record static_index_count=119; a static-index hit that is NOT resolved through PREFROZEN_MANIFEST_REUSE must fail-closed."
+  },
+  {
+   "id": "R8-PRESTART-01",
+   "text": "R8-PRESTART-01: Before any solver start the launcher must run and persist a zero-physical prefrozen-reuse prestart gate: static_index_count=119 recorded; all 3 initial designs x 2 families reuse records checked (vspgeom/vkey/vsp3 SHA, canonical mesh SHA, verify_chain, source_kind, reused_prefrozen, attempts=0); any mismatch or missing vsp3 REFUSES the run (no solver start, no ledger); the gate evidence JSON/bytes/SHA must be recorded in executor_prestart.json and reported to A5; physical_call_count=0 and solver_started=false at gate time; failure is a hard stop (no retry, no fallback to rebuild)."
+  },
+  {
+   "id": "R8-ACCT-01",
+   "text": "R8-ACCT-01: Accounting baseline is 56 starts / 404 internal (prior 39/285 + R1 2/14 + R2 2/14 + R3 2/14 + R4 2/14 + R5 0/0 + R6 3/21 + R7 6/42). R8 planned is 390 starts / 2730 internal (2 B2 preflight + 4 pre-registered diagnostic starts (2 designs x 2 families) + 384 main) with reserve 64; maximum caps 451 starts / 3157 internal remain unchanged. The cumulative ceiling with the full R8 plan is 446 starts / 3134 internal (headroom 5 starts / 23 internal). Any physical call beyond those figures requires a new written Lead approval; no silent budget increase. Accounting fixes required for R8: (i) no default of 7 internal cases when starts==0 (starts==0 => internal 0); (ii) batch_summary must report per-phase and total internal/solver starts without silently dropping preflight/diagnostic counts; (iii) diagnostics polar_sha256 must be extracted from the record it references; (iv) executor must assert charged+planned <= caps and fail closed with an accounting mismatch (stop_report) if violated. R1-R7 internal count derivations must be disclosed in every R8 summary/receipt."
+  },
+  {
+   "id": "R1-R2-R3-R4-R5-R6-R7-HIST-01",
+   "text": "R1-R2-R3-R4-R5-R6-R7-HIST-01: R1, R2, R3, R4, R5, R6 and R7 are historical and permanently excluded from E1-E6 and from any optimizer/physics result; their run dirs, signed approvals, evidence files and SHA256SUMS are READ-ONLY and must not be modified, re-signed, re-used as approval basis, or relabelled as gate PASS. Their charged counts (R1-R4 2 starts/14 internal each, R5 0/0, R6 3/21, R7 6/42; total 17 starts/119 internal) remain counted in the cumulative caps and must be disclosed in the R8 receipt together with their root causes. R6 approval 72b95e03130fbe958c52528f1b8f484eae4872140a7336709094b9108964f98f / 67,063 bytes and R7 approval 1a552267ab0070ee4f690815ed1de1db6d5976c1ada8356421f017bb84d72e37 / 69,405 bytes are superseded and non-reusable. R7 is excluded in full even though its two preflight replays were real PASS_BYTE and its four diagnostics were real SOLVED_VALID solves."
+  },
+  {
+   "id": "R8-WINDOW-01",
+   "text": "R8-WINDOW-01: The valid R8 execution window is 2026-11-11T16:30:00Z to 2026-11-12T04:00:00Z with token WINDOW_OK-P2AV2R8-20261111T1630Z-20261112T0400Z present both at approval top level and in approval.window; start deadline 2026-11-11T21:00:00Z, clean stop 2026-11-12T02:30:00Z, hard stop 2026-11-12T04:00:00Z. Execution outside the approved window or after the hard stop is prohibited regardless of remaining cap. R8 is a new batch (DREAL001-P2-20261111-13) and a new run dir (DREAL001-P2A2R8-20261111-01); no reuse of the R7 run dir, R7 signed approval or R7 GO."
+  },
+  {
+   "id": "R8-DECISION-01",
+   "text": "R8-DECISION-01: Lead decision trail: L-08 reopened a fresh chain after user instruction; L-09 adopted protocol D (invalid-numerical tolerance, no mesh QC data gate); L-10 (docs/reviews/dreal001_lead_decision_r8_prefrozen_reuse_20261111.md sha256 42EA2AE156BF0747376FFFC3C8A576C61D84F9F7033F6073B9234C32D9AF6088, json 745F5653ACEB08515E546BDE32240399CBC9377A1D3FBFDCF415E2D463A3F04B, Lead commit 66e19b20b73ffdf30ae369f98f9c6bda12d4f1fb) closes R7 as S1_STOP_FROZEN_BYTES_SHA_MISMATCH and authorizes R8 with pre-frozen manifest reuse, diagnostics re-registered at 4 starts/28 internal, planned 390/2730, cumulative 446/3134, no R9 by default. A5 independent position recorded here and in the gate: (a) accepts pre-frozen reuse as a zero-physical execution-layer fix with the constraints in R8-PREFROZEN-01 (A1 unchanged; static index 119; fail-closed); (b) accepts the 4/28 diagnostic re-registration provided it is explicitly pre-registered and the R7 2/14 deviation is disclosed; (c) does not recommend termination at R8, but flags that headroom is only 5 starts / 23 internal and that the same design15 f1 462x401 prefrozen bytes once produced an all-NaN polar in R6, so an R8 main first-case INVALID_NUMERICAL is possible; (d) does not re-litigate protocol D or the rejected mesh QC gate. A5 physical_call_count=0 and solver_started=false."
+  },
+  {
+   "id": "R8-REFS-01",
+   "text": "R8-REFS-01: The Lead-signed approval must carry the corrected 14-key approval_refs (no DRAFT placeholders): a1_bundle_commit = a1_bundle_commit_full = 2a57632b3f7d5d567556d9774913ec40a5d72272; a1_bundle_manifest_sha256 = 995bb12fff738d3ebb0bde08c0d5c5bfeb9532aebe536847ef307a2332013aa5; a1_bundle_path = the A1 replay_bundles\\P2A_V2_PREFLIGHT_20261111_R1 directory; a1_bundle_note = old 3-case bundle 20999b3e.../0598441 superseded; a1_executable_commit = a1_task49_commit = 6753eb39b710035187db13ceb3328301c645c1ba; a1_execution_code = 6979802 (+ note); a1_execution_head = a1_head = 2a57632b3f7d5d567556d9774913ec40a5d72272; a2_execution_code = ff3f5639211306276712302e561f2ff931d702396db625eeb96112e6807d3d20; a2_package_commit = d926972d10208c44d172e5a19008d7f45bf68300; a5_review = A5 G-P2AV2R8-PRE review commit SHA (this gate commit). The DRAFT's placeholder keys must be replaced wholesale at signature time; signing the DRAFT approval_refs as-is is prohibited."
+  },
+  {
+   "id": "R8-SIGN-01",
+   "text": "R8-SIGN-01: The signature must expand approval.conditions from the DRAFT to this 52-item R8 set (R1 signed conditions 1-43 adapted; R2/R3/R4/R5/R6/R7-era 44-52 re-scoped for R8 per the A5 gate diff rule) and keep approval.amendment_log byte-identical to the DRAFT (seq1-seq7 must equal the R7 signed approval history field-by-field; the new seq8 must be action R8_PREFROZEN_REUSE_AND_DIAG_PAIR_PREREG_FIX at the R8 batch time, physical_call_count_at_amendment=56, superseding the R7 approval). Signature may only change the allowed top-level fields (approved, approved_at_utc, approved_by, status, authorization, window.status, b2_waiver status/approved_at_utc/a5_pre_review_commit, conditions, approval_refs); all bound/policy fields must stay byte-identical. C-P2AV2R8-02 must PASS after the A2 post-approval dry-run before any Lead GO."
+  },
+  {
+   "id": "R8-DISC-01",
+   "text": "R8-DISC-01 (non-blocking disclosures that must appear in the A5 gate and final receipt): (a) R1-R7 series exclusion: charged 17 starts/119 internal (R1-R4 2/14 each, R5 0/0, R6 3/21, R7 6/42), cumulative baseline 56/404, R8 plan 390/2730, cumulative 446/3134, caps 451/3157, headroom 5/23; (b) R7 S1 stop facts: preflight 2/2 real PASS_BYTE, diagnostics 4/4 real SOLVED_VALID but 4 starts/28 internal vs pre-registered 2/14 (+2/+14 deviation, executor comment and missing count guard), main 0 starts, design15 f2 rebuilt bytes 27325306... != A1 prefrozen be8454bf..., A1 evaluator_v12.py:641-649 static-vs-runtime guard raised for 546x472 while A2 recorded failed_family f1; (c) pre-frozen reuse is execution-layer only and zero-physical: A1 bytes unchanged, plan scientific fields unchanged, no solver started to verify it, and reuse correctness is byte/canonical equality only (not a solve claim); (d) manifest field facts: no frozen_vkey_path/frozen_vsp3_path exists; vkey/vsp3 are siblings of frozen_vspgeom_path; missing vsp3 fails closed; static_index_count=119; (e) design15 f1 462x401 prefrozen bytes previously produced an all-NaN polar in R6, so R8 main first evaluation may be INVALID_NUMERICAL; protocol D tolerance applies only to scientific invalids and must be disclosed with per-arm invalid counts, per-case status/polar SHA/reason, invalid-ratio time series, diagnostics separate from main; (f) R6 NaN phenomenon confirmed but mechanism NOT proven (H1/H2/H3); (g) accounting pseudo-count fixes (default 7 on 0-start rows, main-only record_internal_cases, null diagnostics polar_sha256) are disclosed and must be fixed in R8; (h) C10 executor_sha check remains a definitional false-negative (expected file SHA vs recomputed aggregate digest) in all prior packages, non-blocking; (i) spawn exit_code/stdout_tail persistence remains a future improvement unless explicitly preregistered; (j) A5 physical_call_count=0 and solver_started=false before GO; (k) R8 pre-exec run dir must contain exactly the 8 package files plus signed approval and post-approval dry-run evidence, with no cases/ledger/batch_summary/stop_report; (l) diagnostics are excluded from E1-E6 and reported separately; (m) R7 internal count 42 = 2 preflight x 7 + 4 diagnostics x 7 and is derivable from the ledger; (n) R7 identity may omit the a5_r1_probe field; A2 must still save a byte-identical copy of the A5 R1 probe (SHA 1264e9c0...) in the R8 run dir or A2 docs/evidence before closeout and disclose it (non-blocking)."
+  }
+ ],
+ "condition_count": 52,
+ "approval_refs_final": {
+  "a1_bundle_commit": "2a57632b3f7d5d567556d9774913ec40a5d72272",
+  "a1_bundle_commit_full": "2a57632b3f7d5d567556d9774913ec40a5d72272",
+  "a1_bundle_manifest_sha256": "995bb12fff738d3ebb0bde08c0d5c5bfeb9532aebe536847ef307a2332013aa5",
+  "a1_bundle_path": "D:\\RCAIDE\\dnext001\\wt-real-a1-geometry-solver\\research\\concorde_metaopt\\dreal001\\geometry\\replay_bundles\\P2A_V2_PREFLIGHT_20261111_R1",
+  "a1_bundle_note": "old 3-case bundle 20999b3e.../0598441 superseded; R1 2-case bundle re-bound unchanged",
+  "a1_executable_commit": "6753eb39b710035187db13ceb3328301c645c1ba",
+  "a1_task49_commit": "6753eb39b710035187db13ceb3328301c645c1ba",
+  "a1_execution_code": "6979802",
+  "a1_execution_code_note": "legacy execution code id retained; frozen byte bindings are evaluator f74a4752... / freeze_api 31d78182... / openvsp_model c40b11df...",
+  "a1_execution_head": "2a57632b3f7d5d567556d9774913ec40a5d72272",
+  "a1_head": "2a57632b3f7d5d567556d9774913ec40a5d72272",
+  "a2_execution_code": "ff3f5639211306276712302e561f2ff931d702396db625eeb96112e6807d3d20",
+  "a2_package_commit": "d926972d10208c44d172e5a19008d7f45bf68300",
+  "a5_review": "A5 G-P2AV2R8-PRE review commit SHA (this gate commit)"
+ },
+ "signature_requirements": {
+  "mandatory_replacements": [
+   "approval_refs placeholders -> 14-key corrected refs (see R8-REFS-01)",
+   "conditions 15 (DRAFT) -> 52 (this set)",
+   "status/approved/approved_by/approved_at_utc/authorization",
+   "window.status=APPROVED",
+   "b2_waiver status/approved_at_utc/a5_pre_review_commit",
+   "amendment_log must equal DRAFT byte-for-byte (seq1-seq7 = R7 signed history; seq8 = R8 pre-frozen reuse + diagnostic pair pre-registration fix, physical_call_count_at_amendment=56)"
+  ],
+  "allowed_draft_to_signed_top_level_deltas": [
+   "approved",
+   "approved_at_utc",
+   "approved_by",
+   "approval_refs",
+   "authorization",
+   "b2_waiver",
+   "conditions",
+   "status",
+   "window"
+  ],
+  "invariants_unchanged": [
+   "scientific plan fields",
+   "caps/planned/budget fields (planned 390/2730, max 451/3157, reserve 64)",
+   "initial designs and manifest",
+   "preflight bundle and expected polar SHAs",
+   "solver executable binding",
+   "A1 bindings (evaluator/freeze_api/openvsp_model/design_space/config/bundle)",
+   "pair_manifest_sha256 55e63f39... and static_index_count=119",
+   "window start/end/token (only window.status changes)",
+   "amendment_log seq1-seq7"
+  ],
+  "seq8_semantics": "seq8 action must be R8_PREFROZEN_REUSE_AND_DIAG_PAIR_PREREG_FIX at the R8 batch time with physical_call_count_at_amendment=56 (prior charg ed 56 starts/404 internal; R7 6/42 included), superseding R7 approval 1a552267.../69,405 bytes; the four R8 diagnostic starts are part of the 390 planned and must not change the caps."
+ },
+ "accounting": {
+  "baseline": {
+   "prior_39_285": true,
+   "r1": {
+    "starts": 2,
+    "internal": 14
+   },
+   "r2": {
+    "starts": 2,
+    "internal": 14
+   },
+   "r3": {
+    "starts": 2,
+    "internal": 14
+   },
+   "r4": {
+    "starts": 2,
+    "internal": 14
+   },
+   "r5": {
+    "starts": 0,
+    "internal": 0
+   },
+   "r6": {
+    "starts": 3,
+    "internal": 21
+   },
+   "r7": {
+    "starts": 6,
+    "internal": 42
+   },
+   "total_starts": 56,
+   "total_internal": 404
+  },
+  "r8": {
+   "planned_starts": 390,
+   "planned_internal": 2730,
+   "preflight_starts": 2,
+   "diagnostic_starts": 4,
+   "diagnostic_designs": 2,
+   "main_starts": 384,
+   "reserve": 64,
+   "cumulative_starts": 446,
+   "cumulative_internal": 3134,
+   "caps": {
+    "max_starts": 451,
+    "max_internal": 3157
+   },
+   "headroom_starts": 5,
+   "headroom_internal": 23
+  },
+  "rule": "any physical count beyond the approved figures requires a new written Lead approval; no retry, no silent budget change"
+ },
+ "protocol_d": {
+  "lead_decision": "L-10 (Lead commit 66e19b20..., md 42EA2AE1..., json 745F5653...) closes R7 as S1_STOP_FROZEN_BYTES_SHA_MISMATCH and authorizes R8 with pre-frozen manifest reuse + diagnostics re-registered at 4 starts/28 internal; L-09 protocol D remains in force (invalid-numerical tolerance, no mesh-QC gate); Lead bears risk; no R9 by default.",
+  "a5_independent_review": "A5 FAIL-07 (commit 2f72148) upheld R7 S1 stop, confirmed H1 (non-deterministic rebuild vs A1 prefrozen bytes), independently identified the 4/28 diagnostic deviation; A5 accepts prefrozen reuse as zero-physical execution-layer fix with constraints, accepts 4/28 re-registration with disclosure, does not recommend termination but flags headroom 5/23 and the design15 f1 R6 NaN precedent; A5 does not re-litigate protocol D.",
+  "prefrozen_reuse": "initial designs 15/16/17 resolved only from A1 static family_pair_manifest.json (119 records) via frozen_vspgeom_path + sibling model.vkey/model.vsp3; SHA equality required for all three; A1 describe_mesh canonical equality; source_kind=PREFROZEN_MANIFEST_REUSE, reused_prefrozen=true, attempts=0; no FreezeBuilder; vsp3 missing/mismatch fail-closed; static hit without prefrozen source fail-closed; A1 bytes unchanged.",
+  "invalid_numerical": "non-SOLVED_VALID or objective null/non-finite => INVALID_NUMERICAL with raw status + polar SHA recorded, excluded from objective statistics, arm continues; genuine execution-layer errors still hard-fail",
+  "auto_stop": "main evaluations >=48 and invalid ratio >25%, or >=6 consecutive invalid in an arm, or >64 cumulative invalid => scientific stop; a single invalid case is not a stop condition",
+  "diagnostics": "DIAG-01 design16 eb00b7ad545243e6, DIAG-02 design17 dc96d2438a6dddc3; after 2 preflight and before 384 main; each design runs both families => 2 starts/14 internal per design, 4 starts/28 internal total; pass = SOLVED_VALID + finite objective per design pair; both fail => main NOT_RUN; excluded from endpoints",
+  "observe_fix": "7 call sites design_hash(canonical_x12(X)) -> design_hash(X) retained",
+  "de_pso_fix": "DE/PSO population padded to >=5 retained",
+  "arm_failure_evidence": "arm-exception path persists minimal preflight_result.json and batch_summary.json retained",
+  "accounting_fix": "no default 7 internal on 0-start rows; batch_summary per-phase and total; diagnostics polar_sha256 extracted; charged+planned<=caps assertion fail-closed",
+  "mesh_qc_gate": false,
+  "r6_nan_mechanism": "R6 NaN phenomenon confirmed, mechanism NOT proven (H1/H2/H3)"
+ },
+ "r1_r5_exclusions": {
+  "r1": {
+   "batch": "DREAL001-P2-20261111-06",
+   "run": "DREAL001-P2A2R-20261111-01",
+   "status": "PREFLIGHT_FAIL_MAIN_BATCH_NOT_RUN",
+   "starts": 2,
+   "internal": 14,
+   "excluded_from_endpoints": true
+  },
+  "r2": {
+   "batch": "DREAL001-P2-20261111-07",
+   "run": "DREAL001-P2A2R2-20261111-01",
+   "status": "PREFLIGHT_FAIL_MAIN_BATCH_NOT_RUN",
+   "starts": 2,
+   "internal": 14,
+   "excluded_from_endpoints": true
+  },
+  "r3": {
+   "batch": "DREAL001-P2-20261111-08",
+   "run": "DREAL001-P2A2R3-20261111-01",
+   "status": "EXECUTOR_ARM_ABORT_MAIN_BATCH_NOT_RUN",
+   "starts": 2,
+   "internal": 14,
+   "excluded_from_endpoints": true
+  },
+  "r4": {
+   "batch": "DREAL001-P2-20261111-09",
+   "run": "DREAL001-P2A2R4-20261111-01",
+   "status": "EXECUTOR_ARM_ABORT_MAIN_BATCH_NOT_RUN",
+   "starts": 2,
+   "internal": 14,
+   "excluded_from_endpoints": true
+  },
+  "r5": {
+   "batch": "DREAL001-P2-20261111-10",
+   "run": "DREAL001-P2A2R5-20261111-01",
+   "status": "SETUP_STOP_DESIGN_SPACE_IMPORT",
+   "starts": 0,
+   "internal": 0,
+   "excluded_from_endpoints": true
+  },
+  "r6": {
+   "batch": "DREAL001-P2-20261111-11",
+   "run": "DREAL001-P2A2R6-20261111-01",
+   "status": "S1_STOP_MAIN_FIRST_EVALUATION",
+   "starts": 3,
+   "internal": 21,
+   "excluded_from_endpoints": true
+  },
+  "r7": {
+   "batch": "DREAL001-P2-20261111-12",
+   "run": "DREAL001-P2A2R7-20261111-01",
+   "status": "S1_STOP_FROZEN_BYTES_SHA_MISMATCH",
+   "starts": 6,
+   "internal": 42,
+   "excluded_from_endpoints": true
+  },
+  "cumulative_charged": {
+   "starts": 56,
+   "internal": 404
+  }
+ },
+ "disclosures": [
+  "R1-R7 series exclusion: charged 17 starts/119 internal (R1-R4 2/14 each, R5 0/0, R6 3/21, R7 6/42); cumulative baseline 56/404; R8 plan 390/2730; cumulative 446/3134 vs caps 451/3157; headroom only 5 starts/23 internal.",
+  "R7 S1 stop facts: preflight 2/2 real PASS_BYTE; diagnostics 4/4 real SOLVED_VALID but 4 starts/28 internal vs pre-registered 2/14 (+2/+14 deviation, executor comment/missing guard); main 0 starts; design15 f2 rebuilt bytes 27325306... != A1 prefrozen be8454bf...; A1 evaluator_v12.py:641-649 static-vs-runtime guard raised for 546x472 while A2 recorded failed_family f1.",
+  "Pre-frozen reuse is execution-layer only and zero-physical: A1 bytes unchanged, plan scientific fields unchanged, no solver started to verify it; correctness is byte/canonical equality only and is not a solve claim.",
+  "Manifest field facts: family frozen blocks have no frozen_vkey_path/frozen_vsp3_path; vkey/vsp3 are siblings (model.vkey/model.vsp3) of frozen_vspgeom_path; missing vsp3 or mismatch fails closed; static_index_count=119; a static-index hit not resolved via PREFROZEN_MANIFEST_REUSE must fail closed.",
+  "design15 f1 462x401 prefrozen bytes previously produced an all-NaN polar in R6; an R8 main first-case INVALID_NUMERICAL is possible; protocol D tolerance applies to scientific invalids only and requires per-arm invalid counts, per-case status/polar SHA/reason, invalid-ratio time series and separate diagnostic reporting.",
+  "R6 NaN phenomenon confirmed but mechanism NOT proven (H1/H2/H3); no mesh QC data gate adopted (L-09 rejection retained; calibration W10p real 3/3 SOLVED yet nonplanar).",
+  "Accounting pseudo-counts fixed/disclosed: default 7 internal on 0-start rows, main-only record_internal_cases, null diagnostics polar_sha256; R7 internal 42 = 2x7 preflight + 4x7 diagnostics and is derivable from the ledger.",
+  "C10_executor_sha remains a definitional false negative in package dry_run.json (executor file SHA vs recomputed aggregate digest), present since R1, non-blocking; C16/C19 are NV by design; spawn exit_code/stdout_tail persistence remains a future improvement.",
+  "A5 physical_call_count=0 and solver_started=false; this gate is not an execution authorization; after signature the real dry-run, A5 C-P2AV2R8-02 and Lead GO remain mandatory; R8 pre-exec run dir must contain exactly the 8 package files plus signed approval and dry-run evidence (no cases/ledger/batch_summary/stop_report); R7 identity may omit a5_r1_probe and the R1-03 copy handoff stays a non-blocking closeout item; no R9 by default."
+ ],
+ "mandatory_signature_corrections": [
+  "M1: replace the 8 placeholder approval_refs with the 14-key refs_final in this gate; a5_review must be the commit SHA of this G-P2AV2R8-PRE gate.",
+  "M2: expand DRAFT conditions 15 -> exactly the 52 conditions in docs/reviews/dreal001_a5_p2av2r8_signature_conditions_20261111.json (byte-identical texts and order).",
+  "M3: set status/approved/approved_by/approved_at_utc/authorization, window.status=APPROVED, and b2_waiver (APPROVED_BY_LEAD_FOR_THIS_BATCH_ONLY, approver, approved_at_utc, a5_pre_review_commit=gate commit).",
+  "M4: amendment_log must remain byte-identical to the DRAFT (seq1-seq7 = R7 signed history; seq8 R8_PREFROZEN_REUSE_AND_DIAG_PAIR_PREREG_FIX at the DRAFT at_utc with physical_call_count_at_amendment=56).",
+  "M5: no other binding or scientific-policy byte may change; A2 must commit the signed approval byte-identically, run the real post-approval dry-run with the bound R8 tool, then A5 C-P2AV2R8-02, then Lead GO; C gate hard line 17:45Z.",
+  "M6: pre-frozen reuse tamper unit test + zero-physical prestart gate evidence (static_index_count=119; 3 designs x 2 families reuse checks; vsp3 fail-closed; physical=0) must be delivered in the R8 package and A5-verified; if any is missing the Lead must record an explicit evidence-quality debt acceptance in the signed approval."
+ ],
+ "lead_decision_and_a5_dissent": {
+  "lead_decision": "L-10 (md sha256 42EA2AE156BF0747376FFFC3C8A576C61D84F9F7033F6073B9234C32D9AF6088, json 745F5653ACEB08515E546BDE32240399CBC9377A1D3FBFDCF415E2D463A3F04B, Lead commit 66e19b20b73ffdf30ae369f98f9c6bda12d4f1fb): R7 closed, R8 = prefrozen reuse + diagnostics 4/28, planned 390/2730, cumulative 446/3134, no R9 by default.",
+  "a5_position": "A5 FAIL-07 (commit 2f72148) confirmed R7 root cause/H1; A5 accepts prefrozen reuse under R8-PREFROZEN-01 constraints (zero-physical, A1 bytes unchanged, fail-closed), accepts 4/28 re-registration with R7 2/14 deviation disclosed, does not recommend termination but flags headroom 5/23 and design15 f1 same-bytes R6 NaN precedent; A5 does not re-litigate protocol D or the rejected mesh QC gate.",
+  "no_r9": "R8 is a Lead-authorized additional attempt; no R9 is authorized by default."
+ },
+ "physical_call_count": 0,
+ "solver_started": false,
+ "conditions_sha256": "c1f87636c3f49d928f61835463e8cc4b36c3427c71989e35b4126df8a6c6536e",
+ "conditions_array_sha256": "fb350c7173089fb1273c4c317cfc94243f0edde8abce385780f91fa524aaf697"
+}

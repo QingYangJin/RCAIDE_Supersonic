@@ -1,6 +1,11 @@
 # Concorde - 12D lifting-surface design space (D-12D-001, Issue #4 P1 section 3)
-# Status: variable set owner-approved (D-12D-001, 2026-10-30); the numerical bounds
-# remain provisional (frozen: false) until the owner freezes them. The 12 declared
+# Status: FROZEN for D-REAL-001 on 2026-11-10 by Lead decision L-03 (commit 3624db7,
+# docs/planning/dreal001_lead_decisions_20261110.md). These 12 bounds are the frozen
+# geometry design space for the DREAL001 P0/P1 solver work; L-01 fixes Sref = 358.25 m^2
+# (the upstream 326.5 m^2 value is NOT adopted) and L-02 fixes the vertical-tail semi-span
+# at the AR = 0.74 derivation 5.009331 m (the upstream 6.0 m value is NOT used for the VLM
+# component). Frozen bounds mean the geometry contract is fixed; they do NOT mean the
+# aerodynamics is validated. The 12 declared
 # variables are W01-W10 (main wing) plus V01-V02 (vertical tail). The fuselage F01-F03
 # are FIXED at the computed geometry-model values (owner decision, 2026-10-30) and are
 # recorded under fixed_variables. The legacy 15D config and every archived 15D result
@@ -12,8 +17,9 @@ stage: P1
 task_id: concorde_fixed_cruise_12d
 design_set: 12d_lifting_surfaces
 units: SI
-frozen: false
-bounds_status: provisional_until_geometry_perturbation
+frozen: true
+bounds_status: frozen_for_dreal001_20261110
+freeze_note: "Frozen for DREAL001 by Lead decision L-03 (commit 3624db7); geometry-only freeze, no aerodynamic validation implied; Sref 358.25 m^2 per L-01 and vertical-tail semi-span 5.009331 m per L-02 are recorded in research/concorde_metaopt/dreal001/geometry/design_space_freeze.json"
 freeze_requires:
   - geometry effect matrix over the 12 declared lifting-surface variables (P1-P3)
   - derived-quantity recomputation checked against RCAIDE geometry for the 12D set
@@ -206,18 +212,18 @@ derived_rules:
     note: no placeholder 601/358.25 ratio remains.
   - name: wing_exposed_area
     formula: equals the reference area in P1
-    note: the fuselage-unexposed span is not modelled; the upstream declaration 326.5 m2 is an unresolved cross-check, not a frozen value.
+    note: the fuselage-unexposed span is not modelled; the upstream declaration 326.5 m2 is superseded by Lead decision L-01 (commit 3624db7) - the frozen reference area is 358.25 m2 and 326.5 m2 is not adopted.
   - name: vertical_tail_span
     formula: sqrt(vertical_tail_area * 0.74)
     note: tail aspect ratio held at 0.74; tail sweep delta V02 applies to all three tail sections. RCAIDE forces the last segment sweep to the previous segment, so the RCAIDE tip sweep is 40 deg while the model tip sweep is 0 deg at baseline.
   - name: vertical_tail_root_chord
     formula: K = sum(0.5 * delta_s_i * (r_i + r_i+1)); root_chord = vertical_tail_area / (tail_span * K) with fixed chord ratios [1.0, 0.517241, 0.186207]
-    note: the derived baseline tail span 5.009331 m differs from the upstream declared 6.0 m; this deviation must be resolved before the design space is frozen.
+    note: the derived baseline tail span 5.009331 m differs from the upstream declared 6.0 m; resolved by Lead decision L-02 (commit 3624db7) - the VLM vertical-tail component uses 5.009331 m and the upstream 6.0 m is not used.
   - name: fixed_fuselage_geometry
     formula: FIXED. nose_length = 4.3 * 2.88; tail_length = nose_length * 6.4 / 4.3; cabin_length = 61.66 - nose_length - tail_length; height = 3.32; wetted area and usable volume from the eight elliptic-cone stations
     note: F01-F03 are removed from the declared optimisation set, not from the vehicle model. Width 2.88 m is fixed by the model; usable volume must stay at or above the required 110 m3.
   - name: mass_and_cg
-    formula: PROVISIONAL_NOT_FROZEN
+    formula: NOT_FROZEN_MASS_CG_DIAGNOSTIC_ONLY
     note: upstream operating empty mass 78700 kg is distributed over component classes and scaled with wing area and fuselage length; CG and static margin are diagnostics only and must not be used as a frozen constraint before P2 TaskSpec approval.
 
 cross_constraints:

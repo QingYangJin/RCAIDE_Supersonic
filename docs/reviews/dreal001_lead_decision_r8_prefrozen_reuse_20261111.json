@@ -1,0 +1,60 @@
+{
+ "schema": "dreal001.lead_decision.v1",
+ "decision_id": "L-10",
+ "created_utc": "2026-11-11T16:05:00Z",
+ "author": "lead",
+ "decision": "CONTINUE_WITH_R8_PREFROZEN_REUSE_AND_DIAG_PAIR_PREREG_FIX",
+ "physical_authorization": false,
+ "r7": {
+  "run_id": "DREAL001-P2A2R7-20261111-01",
+  "charged_starts": 6,
+  "charged_internal": 42,
+  "main_starts": 0,
+  "stop_phase": "s1",
+  "stop_arm": "BO",
+  "stop_error": "ARM_STOPPED_STOP_NOT_VALIDATED",
+  "validation_error": "FROZEN_BYTES_SHA_MISMATCH",
+  "design15_static_f2_sha256": "be8454bfd7db4c4637e73d9637a79391e45f4cbfd66408b956ad35d51f68a689",
+  "design15_runtime_f2_sha256": "27325306c712f1bb1a709aec52e0d6d63dfe7c6a54ef407d66940120c0e9ec14",
+  "excluded_from_endpoints": true
+ },
+ "cumulative_before_r8": {
+  "starts": 56,
+  "internal_cases": 404
+ },
+ "r8_identity": {
+  "batch_id": "DREAL001-P2-20261111-13",
+  "run_id": "DREAL001-P2A2R8-20261111-01",
+  "window_start_utc": "2026-11-11T16:30:00Z",
+  "window_end_utc": "2026-11-12T04:00:00Z",
+  "window_token": "WINDOW_OK-P2AV2R8-20261111T1630Z-20261112T0400Z",
+  "start_deadline_utc": "2026-11-11T21:00:00Z",
+  "clean_stop_utc": "2026-11-12T02:30:00Z",
+  "hard_stop_utc": "2026-11-12T04:00:00Z",
+  "planned_starts": 390,
+  "planned_internal_cases": 2730,
+  "max_starts": 451,
+  "max_internal_cases": 3157,
+  "reserve": 64,
+  "cumulative_starts": 446,
+  "cumulative_internal_cases": 3134,
+  "check": "prior 56/404 + 390/2730 = 446/3134; headroom 5 starts / 23 internal",
+  "supersedes_approval_sha256": "1a552267ab0070ee4f690815ed1de1db6d5976c1ada8356421f017bb84d72e37",
+  "supersedes_approval_bytes": 69405,
+  "physical_call_count_at_supersede": 56
+ },
+ "r8_fixes": [
+  "initial designs 15/16/17 reuse A1 P2AFAM prefrozen pair bytes from initial_designs_manifest (verify SHA256, copy, append PAIR_READY record, reused_prefrozen=true, zero rebuild, fail-closed on tamper)",
+  "diagnostic phase keeps full pair evaluation, preregistered as 4 starts/28 internal total (replaces R7 old 2/14 text)",
+  "batch_summary internal_solver_cases no phantom default 7; per-phase internal + total; ACCOUNTING_INCONSISTENT assertion",
+  "diagnostics[].polar_sha256 populated from actual polar files",
+  "zero-physical prestart gate verifying reuse record vs manifest bytes/canonical before any solver"
+ ],
+ "boundaries": [
+  "A1 frozen bytes unchanged",
+  "plan/prereg scientific policy unchanged",
+  "R1-R7 excluded from endpoints",
+  "no retry, no restart, no solver before signed approval + GO",
+  "no R9 pre-authorized"
+ ]
+}

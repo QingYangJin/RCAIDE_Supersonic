@@ -1,0 +1,173 @@
+{
+ "schema": "dreal001.a5.r7.stage_d_addendum.v1",
+ "audit_id": "A5-P2AV2R7-STAGE-D-ADDENDUM-01",
+ "created_utc": "2026-11-11T14:28:58Z",
+ "author": "a5-review",
+ "physical_call_count": 0,
+ "solver_started": false,
+ "push": false,
+ "verdict": "R7_PROTOCOL_D_ACCEPTABLE_WITH_MANDATORY_DG_CLOSURE_AND_STRICTER_DISCLOSURE_B_GATE_REJECTION_INDEPENDENTLY_SUPPORTED_W10P_NONPLANAR_REAL_SUCCESS_CONFIRMED_A2_ABSOLUTE_GEOM_METRICS_NOT_REPRODUCIBLE_A5_DISSENT_RECORDED_NO_AUTHORIZATION",
+ "inputs": {
+  "lead_l09_md_sha256": "f44641ce908d23835c28af59acce9c6a74c4dc13358de47f941fa9834bfed606",
+  "lead_l09_json_sha256": "ad5bbcc99d4203a8a94806f6aad610e2dcc03cb41026de2a9c106b52d6ab597a",
+  "a5_stage_d_review_commit": "b448c3ea2dca0e1c2211e72571245e1d08f09dc9",
+  "a5_stage_d_review_md_sha256": "0f731c1c1e7d4ec68bd6323dff978fa0950f10b086ee8979c5b97b9c944d28d6",
+  "a2_stage_d_commit": "6c098ec825d9b69b23ffc3b668c2de65281ccc3a"
+ },
+ "w10p_real_success": {
+  "case": "CAL-W10p-f483x418",
+  "runs": 3,
+  "status": [
+   "SOLVED",
+   "SOLVED",
+   "SOLVED"
+  ],
+  "physical_solver_starts_per_case": 1,
+  "objective_value": 125224.6310990786,
+  "polar_bytes": 7933,
+  "data_rows": 7,
+  "finite_coefficients": true,
+  "vspgeom_sha256": "8b45d104eebbb1c46e8b3c0d5f8eae217540deb407fcfffe33d1915c3cf17932",
+  "vspgeom_bytes": 199997
+ },
+ "independent_geometry_metrics": [
+  {
+   "geometry": "W10p-f483x418",
+   "nodes": 483,
+   "faces": 418,
+   "z_extent_m": 0.013587,
+   "nodes_absz_gt_1e4": 116,
+   "area_total": 367.082863,
+   "min_face_area": 0.0008325,
+   "nonplanar_faces_gt_1e3": 0,
+   "nonplanarity_max_m": 0.00060734
+  },
+  {
+   "geometry": "W10p-f543x472",
+   "nodes": 543,
+   "faces": 472,
+   "z_extent_m": 0.013587,
+   "nodes_absz_gt_1e4": 116,
+   "area_total": 367.082863,
+   "min_face_area": 0.003199,
+   "nonplanar_faces_gt_1e3": 0,
+   "nonplanarity_max_m": 0.00060734
+  },
+  {
+   "geometry": "design15-f1-462x401",
+   "nodes": 462,
+   "faces": 401,
+   "z_extent_m": 0.061955,
+   "nodes_absz_gt_1e4": 120,
+   "area_total": 369.271374,
+   "min_face_area": 0.000001343,
+   "nonplanar_faces_gt_1e3": 50,
+   "nonplanarity_max_m": 0.0034213
+  },
+  {
+   "geometry": "design15-f2-546x472",
+   "nodes": 546,
+   "faces": 472,
+   "z_extent_m": 0.061955,
+   "nodes_absz_gt_1e4": 120,
+   "area_total": 369.271374,
+   "min_face_area": 0.0008511,
+   "nonplanar_faces_gt_1e3": 50,
+   "nonplanarity_max_m": 0.0034213
+  },
+  {
+   "geometry": "PRE-01",
+   "nodes": 543,
+   "faces": 472,
+   "z_extent_m": 9.284e-15,
+   "nodes_absz_gt_1e4": 0,
+   "area_total": 367.082666,
+   "min_face_area": 0.003196,
+   "nonplanar_faces_gt_1e3": 0,
+   "nonplanarity_max_m": 2.45e-15
+  },
+  {
+   "geometry": "PRE-02",
+   "nodes": 483,
+   "faces": 418,
+   "z_extent_m": 9.548e-15,
+   "nodes_absz_gt_1e4": 0,
+   "area_total": 379.082666,
+   "min_face_area": 0.0008325,
+   "nonplanar_faces_gt_1e3": 0,
+   "nonplanarity_max_m": 9.1e-16
+  }
+ ],
+ "a2_metric_defects_confirmed": {
+  "D_G1_area_contradiction": {
+   "a2": {
+    "f462x401": 366.9630105291308,
+    "f546x472": 336.9641621779387,
+    "pre01": 337.22384172619815,
+    "pre02": 375.59167684315105
+   },
+   "a5": {
+    "design15_both": 369.271374,
+    "pre01": 367.082666,
+    "pre02": 379.082666,
+    "w10p": 367.082863
+   },
+   "verdict": "A2_IMPLEMENTATION_DEFECT_CONFIRMED"
+  },
+  "D_G2_non_strict_json": {
+   "file": "r7_nan_diagnosis_data_20261111T2142Z.json",
+   "bytes": 35775,
+   "sha256": "cc168063",
+   "json_parse": "FAIL_NAN_LITERAL"
+  },
+  "D_G3_self_intersection_unreproducible": {
+   "a2_self_int_pairs": {
+    "d15": 75,
+    "w10p": 101,
+    "pre01": 0,
+    "pre02": 0
+   },
+   "a5_strict_tri_tri_pairs": {
+    "d15_f1": 0,
+    "d15_f2": 0,
+    "w10p_f483": 0,
+    "w10p_f543": 1,
+    "pre01": 1,
+    "pre02": 0
+   },
+   "verdict": "NOT_REPRODUCIBLE_DEFINITION_SENSITIVE"
+  }
+ },
+ "calibration_conclusion": "LEAD_B_REJECTION_DIRECTIONALLY_INDEPENDENTLY_SUPPORTED_WITHOUT_RELYING_ON_A2_DEFECTIVE_METRICS",
+ "protocol_d_acceptance": {
+  "status": "ACCEPTABLE_WITH_CONDITIONS",
+  "mandatory_closure": [
+   "D-G1/G2/G3 closure and A5 verification",
+   "prereg section 19 + plan.r7_addendum must fix INVALID_NUMERICAL criteria / diagnostic pass criteria / auto-stop thresholds verbatim",
+   "per-case invalid audit fields bound in package (status, polar SHA, reason, per-arm counts, invalid-ratio time series)",
+   "arm-exception minimal preflight_result.json/batch_summary.json persistence",
+   "A1 frozen bytes and plan scientific fields unchanged",
+   "R1-R6 evidence read-only"
+  ],
+  "a5_dissent": [
+   "B+C-lite zero-physical QC precheck not adopted",
+   "R6 NaN-immediate-stop replaced by invalid-tolerance protocol; Lead bears decision"
+  ]
+ },
+ "boundaries": {
+  "three_layer_conclusions_unchanged": true,
+  "no_winner": true,
+  "no_significance": true,
+  "cross_family_incomparable": true,
+  "fuel_burn_kg": null,
+  "physical_validation_status": "NOT_VALIDATED",
+  "no_execution_authorization": true,
+  "no_r8_default": true
+ },
+ "deliverables": {
+  "md_path": "D:\\RCAIDE\\dnext001\\wt-real-a5-review\\docs\\reviews\\dreal001_a5_p2av2r7_stage_d_addendum_20261111.md",
+  "md_bytes": 11771,
+  "md_sha256": "66a100f7dcef209cc2ec647aef8b1af02842f2d30b9135a7292711f447de4ec8",
+  "gate_template_protocol_d_path": "D:\\RCAIDE\\dnext001\\wt-real-a5-review\\docs\\reviews\\dreal001_a5_p2av2r7_gate_template_protocol_d_20261111.json"
+ }
+}

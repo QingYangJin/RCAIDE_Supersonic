@@ -1,0 +1,918 @@
+{
+  "schema": "dreal001.a5.p2av2r7_fail07.v1",
+  "audit_id": "A5-P2AV2R7-FAIL-07",
+  "verdict": "R7_S1_STOP_UPHELD_PREFLIGHT_PASS_BYTE_DIAGNOSTICS_PASS_WITH_PREREG_DEVIATION_MAIN_0_STARTS_FROZEN_BYTES_SHA_MISMATCH_LEAD_HYPOTHESIS_CONFIRMED_R7_PERMANENTLY_EXCLUDED",
+  "generated_utc": "2026-11-11T16:20:00Z",
+  "reviewer": "a5-review",
+  "branch": "research/dreal001-a5-review",
+  "physical_call_count": 0,
+  "solver_started": false,
+  "execution_authorization": false,
+  "run_dir": "D:\\RCAIDE\\dnext001\\wt-real-a2-optimizers\\research\\concorde_metaopt\\dreal001\\runs\\DREAL001-P2A2R7-20261111-01",
+  "identity": {
+    "batch_id": "DREAL001-P2-20261111-12",
+    "run_id": "DREAL001-P2A2R7-20261111-01",
+    "stage": "D-NEXT-001-P2a-v2-R7",
+    "window_start": "2026-11-11T14:00:00Z",
+    "window_end": "2026-11-12T04:00:00Z",
+    "window_token": "WINDOW_OK-P2AV2R7-20261111T1400Z-20261112T0400Z",
+    "planned_starts": 388,
+    "planned_internal_cases": 2716,
+    "max_starts": 451,
+    "max_internal_cases": 3157,
+    "reserve_starts": 64,
+    "approval_sha256": "1a552267ab0070ee4f690815ed1de1db6d5976c1ada8356421f017bb84d72e37",
+    "approval_bytes": 69405,
+    "go_record_sha256": "05565c1e61755a0069fede6151e5b76b0cab21d7751a6cc828cd367695e04e9b",
+    "go_record_bytes": 7512,
+    "go_token": "LEAD_GO_P2AV2R7_EXEC_20261111T154746Z"
+  },
+  "lead_decision": {
+    "id": "L-10",
+    "md_path": "D:\\RCAIDE\\dnext001\\wt-real-lead\\docs\\reviews\\dreal001_lead_decision_r8_prefrozen_reuse_20261111.md",
+    "md_sha256": "42EA2AE156BF0747376FFFC3C8A576C61D84F9F7033F6073B9234C32D9AF6088",
+    "md_bytes": 7996,
+    "json_sha256": "745F5653ACEB08515E546BDE32240399CBC9377A1D3FBFDCF415E2D463A3F04B",
+    "json_bytes": 2519,
+    "lead_commit": "66e19b20b73ffdf30ae369f98f9c6bda12d4f1fb",
+    "summary": "R7 closed as S1_STOP_FROZEN_BYTES_SHA_MISMATCH; R7 approval not reusable; R8 established with prefrozen reuse + diagnostics 4/28; planned 390/2730, cumulative 446/3134, supersedes R7 physical 56, amendment seq8"
+  },
+  "timeline": {
+    "launcher_start_utc": "2026-11-11T15:49:26Z",
+    "launcher_pid": 25752,
+    "gate": "PASS",
+    "preflight": {
+      "start_utc": "2026-11-11T15:49:28Z",
+      "end_utc": "2026-11-11T15:49:36Z"
+    },
+    "diagnostics": {
+      "start_utc": "2026-11-11T15:49:47Z",
+      "end_utc": "2026-11-11T15:50:09Z"
+    },
+    "design15_freeze_utc": "2026-11-11T15:50:13Z",
+    "main_first_eval_utc": "2026-11-11T15:50:23Z",
+    "stop_utc": "2026-11-11T15:50:23Z",
+    "phase": "s1",
+    "arm_id": "BO",
+    "message": "ARM_STOPPED_STOP_NOT_VALIDATED"
+  },
+  "sealed_bytes": {
+    "plan.json": {
+      "sha256": "D2657BC45C2D760E2C56320EE0B9E4CDC0DEA4D7C3B1C7AA14788DDDC5EA34DB",
+      "bytes": 43482
+    },
+    "approval.DRAFT.json": {
+      "sha256": "476901B43BC6F8AEBE9F90202CDC90CBC692F788D191E5A1D9DDF68C2C2E582E",
+      "bytes": 44378
+    },
+    "identity_binding.json": {
+      "sha256": "397860AB93FCEBEE75795C27A6D5F52A4C3714E7B22ED3D1C9F92E56BC74B5AA",
+      "bytes": 10445
+    },
+    "initial_designs_manifest.json": {
+      "sha256": "DC0DB02CDA53D6A38089C530A0160341455028B7129AAEA57ABD2677BBAC4B1F",
+      "bytes": 14822
+    },
+    "P2A_V2_PREREGISTRATION.md": {
+      "sha256": "57A30B8CBE43695F6845599889CF843CE53EAD07645BA2816A0B14F61CA6950B",
+      "bytes": 16896
+    },
+    "dry_run.json": {
+      "sha256": "4FE8A7D13F54DEF62E6A82FE391E5FF0E7A533F731EA3208166B9A35A0C57393",
+      "bytes": 10930
+    },
+    "executor_dry_run.json": {
+      "sha256": "CC5AE9B51236843DA809F17C905FD61944161A2C3653CC4C77274C572F395B62",
+      "bytes": 2438
+    },
+    "SHA256SUMS.txt": {
+      "sha256": "D833E8A9440E3B7888586E413EE12FCAB6D2390341429F1EF86724E2424A49F3",
+      "bytes": 612
+    },
+    "approval.json": {
+      "sha256": "1A552267AB0070EE4F690815ED1DE1DB6D5976C1ADA8356421F017BB84D72E37",
+      "bytes": 69405
+    },
+    "post_approval_dry_run.R7_20261111T153800Z.json": {
+      "sha256": "E0DA29276BC85CE08E8E9C15C20BC3327BD1B7A65782087898E70944F6793911",
+      "bytes": 15120
+    },
+    "executor_prestart.json": {
+      "sha256": "6C045018C88A22A3BEFC47221E62937E73C04CE5641BEBA5EF50E130F64B6670",
+      "bytes": 10556
+    },
+    "executor_run.log": {
+      "sha256": "4AA4EB35D2630AB218D945CA7530AAAB778CAAC58A8E2AF2983556B4F8113D38",
+      "bytes": 1267
+    },
+    "preflight_result.json": {
+      "sha256": "DAF047E62E043CE193AAD5C0FC84E0EC8561D823F9893037E9C440B65AEA3E47",
+      "bytes": 5771
+    },
+    "batch_summary.json": {
+      "sha256": "22D10AA1B50B01C32FAD23D8A67E094E7BEAB5A4C3AF069E53D0299700AD73D7",
+      "bytes": 10737
+    },
+    "stop_report.json": {
+      "sha256": "D2967903659F8CE966B95C62C3765AF3E595D67A0D4A67733A9191EFA7F602EE",
+      "bytes": 765
+    },
+    "evaluations.jsonl": {
+      "sha256": "97607A50F41B08F58885D8A9D8FC35CE7DB656CDD32706407569D7DC1C86B902",
+      "bytes": 667
+    },
+    "solver_attempts.jsonl": {
+      "sha256": "65B60DB185F89B7F578EB4852AD0239D750ECAEBE7BA3196710984BBDF65A09D",
+      "bytes": 4477
+    },
+    "final_run_manifest.json": {
+      "sha256": "1848C472036218CEF96BF7BD3AB09921E86B6E28ACD1937EBCF024880CB06670",
+      "bytes": 14776
+    },
+    "runtime/designs/d51866f7d3c49303/freeze_record.json": {
+      "sha256": "B05F3AE4E016FBE4E1A777D9D5E3A66CB15867E7423E10A1BA7F62846982B78B",
+      "bytes": 8772
+    }
+  },
+  "a2_evidence": {
+    "docs/evidence/dreal001/a2_r7_main_incident_20261111T1550Z.md": {
+      "sha256": "30835C77508667E0C30A2CCECD385969A69F4E94EA1F07A93C8DB3C9EEFA58D8",
+      "bytes": 13656
+    },
+    "docs/evidence/dreal001/r7_evidence_sha256sums_20261111T1550Z.txt": {
+      "sha256": "9A89364C4176C5431CBB90C130699D564A3E42959E74C4DE60D3168403A1D4E6",
+      "bytes": 23235
+    },
+    "docs/evidence/dreal001/r7_verify_prefrozen_20261111.json": {
+      "sha256": "F619B12FCF8FFB6E46861AA139C76369E1AFEB580992CF9EF2EA43404B9F2AF7",
+      "bytes": 2842
+    },
+    "docs/evidence/dreal001/r7_verify_prefrozen_20261111.py": {
+      "sha256": "4952226B3043495C5E68CB196842A64FF58C8D4B78419C117AC14CA417B55B26",
+      "bytes": 1246
+    },
+    "commits": [
+      "4a3c3fe69df242fdc91221b388e144c080eda94d",
+      "d0919a2f6177c6451844bd57d5cd744d2c993446"
+    ],
+    "run_dir_files_tracked": 175
+  },
+  "a1_facts": {
+    "evaluator_v12": {
+      "path": "D:\\RCAIDE\\dnext001\\wt-real-a1-geometry-solver\\research\\concorde_metaopt\\dreal001\\geometry\\evaluator_v12.py",
+      "sha256": "F74A4752495FD6C5330EDCAF7EDB4BCBE93F99C2A76BAC06B5670D1F765AE20D",
+      "bytes": 58291
+    },
+    "freeze_api": {
+      "path": "D:\\RCAIDE\\dnext001\\wt-real-a1-geometry-solver\\research\\concorde_metaopt\\dreal001\\geometry\\freeze_api.py",
+      "sha256": "31D781821516BB80FC158238E4EF485C361AFEA674CA3B962EFBB89D5A737173",
+      "bytes": 27288
+    },
+    "static_manifest": {
+      "path": "D:\\RCAIDE\\dnext001\\wt-real-a1-geometry-solver\\research\\concorde_metaopt\\dreal001\\geometry\\runs\\P2A_FAM_FEASIBILITY_20261111\\family_pair_manifest.json",
+      "sha256": "55E63F392E2821FFF02E6F849A3090B9F9C7263BE0B9F6C8DEBBCEA599AB1892",
+      "bytes": 294786,
+      "records": 119,
+      "physical_call_count": 0,
+      "family_frozen_fields": [
+        "frozen_vspgeom_path",
+        "frozen_vspgeom_sha256",
+        "frozen_vspgeom_bytes",
+        "frozen_vkey_sha256",
+        "frozen_vsp3_sha256",
+        "vspgeom_sha256",
+        "canonical_mesh_sha256"
+      ],
+      "absent_fields": [
+        "frozen_vkey_path",
+        "frozen_vsp3_path"
+      ],
+      "sibling_rule": "vkey/vsp3 are siblings model.vkey/model.vsp3 of frozen_vspgeom_path",
+      "design15": {
+        "design_index": 15,
+        "design_hash": "d51866f7d3c49303",
+        "x12": [
+          362.2679593707106,
+          1.5320502912200284,
+          68.42935456068992,
+          52.691455254635045,
+          75.9435388408652,
+          0.4750555661800948,
+          0.8646227047502165,
+          0.48158262942838,
+          0.18118148033089757,
+          -3.516758398238933,
+          39.67245022227378,
+          6.477854071751626
+        ],
+        "f1": {
+          "mesh_family": "462x401",
+          "vspgeom_sha256": "6b00d72d06ac59b210ea93c69840f1aaf0e4ac4d306113d9791faa3bf7c1c220",
+          "bytes": 191129,
+          "canonical_mesh_sha256": "6960f779b8742130d71579b1f0c4d88bff0f19908199a8d2672729bab5a8eef4",
+          "vkey_sha256": "b73e28caef705a61e3a1a44adc77d2c7792b281a103ebc1b98d4cbacd744304c",
+          "vsp3_sha256": "6754ad57a8611cc2ef27f9f33c5a7916e6789c079e1c18c7b4786e47acfe9a79"
+        },
+        "f2": {
+          "mesh_family": "546x472",
+          "vspgeom_sha256": "be8454bfd7db4c4637e73d9637a79391e45f4cbfd66408b956ad35d51f68a689",
+          "bytes": 228792,
+          "canonical_mesh_sha256": "addf2443586a6050c9aa01b6f2a41f13b5794ed0360ddb02f2db44eefea8eff6",
+          "vkey_sha256": "586cd8e3472e491d62835b82c2c5b02db28aa31abb931266b4d28fc8f03985b0",
+          "vsp3_sha256": "5a8f104f2627fe0e4fa36d5733f3c6f7d594ff8d50d9c6ebacdea728cd2a76f2"
+        }
+      },
+      "design16": {
+        "design_index": 16,
+        "design_hash": "eb00b7ad545243e6",
+        "f1_sha": "5feb1be8f74c536a440750399bc189389f0bb87b9e790df726017925e55540cd",
+        "f2_sha": "54a465673cd441bf1355bb7c9294516918975f4484db9b0cda7e44247b74b27a"
+      },
+      "design17": {
+        "design_index": 17,
+        "design_hash": "dc96d2438a6dddc3",
+        "f1_sha": "99a52d06d57cbe3d84c7678e453f096835a156e536c077ce77c7d917b0c1517f",
+        "f2_sha": "7ab0b60d09060dad9143da2a9bea3e93b8d7a2c888649156d618bc2f4cff02ef"
+      }
+    },
+    "guard": {
+      "file": "evaluator_v12.py",
+      "line_def": "615: def _runtime_resolve(...)",
+      "lines": "641-649",
+      "code": "static = self._index.get(dh); if static is not None: for role in (f1,f2): compare frozen_vspgeom_sha256 static vs runtime; mismatch -> raise KeyError((ERR_RUNTIME_SHA, dh/roles[role]))",
+      "effect": "applies only when design present in static manifest (initial designs 15/16/17)"
+    },
+    "runtime_design15": {
+      "f1": {
+        "sha256": "6b00d72d06ac59b210ea93c69840f1aaf0e4ac4d306113d9791faa3bf7c1c220",
+        "bytes": 191129,
+        "canonical": "6960f779b8742130d71579b1f0c4d88bff0f19908199a8d2672729bab5a8eef4",
+        "matches_static": true
+      },
+      "f2": {
+        "sha256": "27325306c712f1bb1a709aec52e0d6d63dfe7c6a54ef407d66940120c0e9ec14",
+        "bytes": 228792,
+        "canonical": "ffe8d88c88bd3cdc988311482e26607358ecc1beb503c71d72a2272d98de5c98",
+        "matches_static": false,
+        "vkey_sha256": "cc1990095e72ecffd2c8d1f5fb1045b71d7943a0dadb29c1f98a413ad0c96771",
+        "vsp3_sha256": "0cd667e51a332c2189a1214b5e4301b0bb454ad03cc5eff208c95a3cceb9c320"
+      }
+    }
+  },
+  "preflight": {
+    "overall": "PREFLIGHT_PASS_BYTE",
+    "main_batch_may_start": true,
+    "physical_call_count": 2,
+    "ledger_starts": 2,
+    "cases": [
+      {
+        "case_id": "PRE-01",
+        "mesh_family": "543x472",
+        "status": "SOLVED_VALID",
+        "objective": 132401.55562456633,
+        "polar_sha256": "455082e2ac8029216a811c89aaa20b34fd9d73faa319eed23da5348e3de4bc87",
+        "polar_bytes": 7933,
+        "file_checks": "5/5 MATCH",
+        "polar_matches_approval": true
+      },
+      {
+        "case_id": "PRE-02",
+        "mesh_family": "483x418",
+        "status": "SOLVED_VALID",
+        "objective": 122973.4519637892,
+        "polar_sha256": "0287afe0d7e5a91bc286c0b6cbd1ca5623d8aafe65110862fe263925129dd33f",
+        "polar_bytes": 7933,
+        "file_checks": "5/5 MATCH",
+        "polar_matches_approval": true
+      }
+    ]
+  },
+  "diagnostics": {
+    "pre_registered": {
+      "source": "plan.diagnostics = approval.diagnostics",
+      "cases": [
+        {
+          "case_id": "DIAG-01",
+          "design_hash": "eb00b7ad545243e6",
+          "design_index": 16,
+          "planned_starts": 1,
+          "planned_internal_cases": 7
+        },
+        {
+          "case_id": "DIAG-02",
+          "design_hash": "dc96d2438a6dddc3",
+          "design_index": 17,
+          "planned_starts": 1,
+          "planned_internal_cases": 7
+        }
+      ],
+      "planned_starts": 2,
+      "planned_internal_cases": 14,
+      "pass_rule": "status is SOLVED_VALID and objective finite/non-null",
+      "fail_rule": "both cases fail -> main NOT_RUN, clean diagnostic stop",
+      "excluded_from_endpoints": true
+    },
+    "actual": {
+      "status": "DIAGNOSTICS_PASS",
+      "cases": [
+        {
+          "case_id": "DIAG-01",
+          "design_index": 16,
+          "design_hash": "eb00b7ad545243e6",
+          "status": "SOLVED_VALID",
+          "primary": 0.01289480742004768,
+          "starts": 2,
+          "internal_cases": 14,
+          "families": [
+            "456x395",
+            "548x474"
+          ],
+          "polar_sha256": [
+            "11ff632bb870a6c8f24454edc3251da5d9e2868646d122be561b8cc964ae9c89",
+            "aac6e2174c934401f76ccef5c34d2e1f20e77637aaddb14c6061a4f8682ea52b"
+          ],
+          "objectives": [
+            103668.10686135074,
+            111459.31370702067
+          ],
+          "passed": true
+        },
+        {
+          "case_id": "DIAG-02",
+          "design_index": 17,
+          "design_hash": "dc96d2438a6dddc3",
+          "status": "SOLVED_VALID",
+          "primary": 0.021752395563484656,
+          "starts": 2,
+          "internal_cases": 14,
+          "families": [
+            "481x416",
+            "539x468"
+          ],
+          "polar_sha256": [
+            "0540341a1064bfb739efdd8b4a52e226d788efc835a483fda748d84100b848dd",
+            "483479ad9c2f1783331b775fdd88a32da786f25311daeadb25224b2fe3fd95fe"
+          ],
+          "objectives": [
+            137024.58114186686,
+            149115.72155079295
+          ],
+          "passed": true
+        }
+      ],
+      "starts": 4,
+      "internal_cases": 28,
+      "passed_cases": 2
+    },
+    "deviation": {
+      "starts": 2,
+      "internal_cases": 14,
+      "pre_registered_starts": 2,
+      "pre_registered_internal": 14,
+      "actual_starts": 4,
+      "actual_internal": 28,
+      "nature": "pre-registration/implementation counting defect: per-design run_one necessarily evaluates both families (2 starts/14 internal), not 1 start/7 internal as planned",
+      "unregistered": true,
+      "operator_discretion": false,
+      "executor_comment_evidence": "p2a_v2_executor.py:1199-1201 says Two real starts (one per design, 7 internal cases each) mirroring the same wrong assumption",
+      "missing_guard": "executor has no diagnostic planned-count/boundary check and did not stop under L-09 unregistered-deviation clause",
+      "accounting_treatment": "charge actual 4/28; R7 excluded from E1-E6; disclose to R8 prereg and final receipt"
+    }
+  },
+  "main": {
+    "starts": 0,
+    "evaluations": [
+      {
+        "design_index": 1,
+        "design_hash": "d51866f7d3c49303",
+        "status": "NOT_VALIDATED",
+        "primary": null,
+        "starts": 0,
+        "validation_error": "FROZEN_BYTES_SHA_MISMATCH",
+        "freeze_record_sha256": "d12297b53d5e16fb7efe50ce5ffa1f0c8df4631310d7d98f481795ecb2ab3650",
+        "failed_family": {
+          "family_slot": "f1",
+          "family": "462x401",
+          "status": "FROZEN_BYTES_SHA_MISMATCH"
+        },
+        "backend": "REAL_VSPAERO"
+      }
+    ],
+    "arms_bo_dir_exists": false,
+    "no_solver_spawn": true,
+    "ledger_main_rows": 0,
+    "batch": {
+      "status": "STOPPED",
+      "preflight_starts": 2,
+      "diagnostic_starts": 4,
+      "main_starts": 0,
+      "total_starts": 6,
+      "ledger_starts": 6,
+      "physical_call_count": 6,
+      "fuel_burn_kg": null,
+      "physical_validation_status": "NOT_VALIDATED"
+    },
+    "stop": {
+      "phase": "s1",
+      "arm_id": "BO",
+      "error_type": "RuntimeError",
+      "message": "ARM_STOPPED_STOP_NOT_VALIDATED",
+      "physical_solver_starts": 6,
+      "ledger_starts": 6,
+      "ledger_ends": 6,
+      "pending_starts_repaired": 0,
+      "created_utc": "2026-11-11T15:50:23Z"
+    }
+  },
+  "root_cause": {
+    "trigger": "runtime freeze rebuilt design15 geometry instead of reusing A1 pre-frozen bytes; design15 f2 (546x472) rebuilt SHA 27325306... != static be8454bf...",
+    "code_path": [
+      "p2a_v2_executor.py runtime freeze -> rebuilt geometry written to runtime/freeze/{462x401,546x472}",
+      "evaluator_v12.py:615 _runtime_resolve reads runtime append-only record (PAIR_READY, arm_blind, roles, x12 match, design_hash d51866f7d3c49303)",
+      "evaluator_v12.py:641-649 static index hit -> per-role compare frozen_vspgeom_sha256; f1 equal, f2 mismatch -> KeyError(ERR_RUNTIME_SHA, d51866f7d3c49303/546x472)",
+      "A2 A1FamilySolver maps failure to FROZEN_BYTES_SHA_MISMATCH (failed_family recorded as f1 because the loop starts at f1)",
+      "DesignEvaluation NOT_VALIDATED -> arm STOP_NOT_VALIDATED -> batch STOPPED (stop phase=s1); main starts=0"
+    ],
+    "bytes_comparison": {
+      "design15_f1_static_equals_runtime": true,
+      "design15_f2_static_equals_runtime": false,
+      "design16_f1_static_equals_runtime": true,
+      "design16_f2_static_equals_runtime": true,
+      "design17_f1_static_equals_runtime": true,
+      "design17_f2_static_equals_runtime": true
+    },
+    "historical_variants": {
+      "r4_geometry_smoke_design15_f2": "27325306... (same variant as R7)",
+      "r6_design15_f2": "be8454bf... (static; coincidental match)",
+      "r7_design15_f2": "27325306... (variant)"
+    },
+    "non_determinism_note": "same mesh family label and byte length but different node coordinates/topology; canonical mesh differs; at least two variants observed across runs"
+  },
+  "lead_hypothesis": {
+    "statement": "initial designs should reuse P2AFAM pre-frozen bytes (zero physical); R7 rebuilt instead; OpenVSP cross-process mesh non-determinism made design15 f2 differ; R6 matched by luck",
+    "confirmed": true,
+    "evidence": [
+      "A1 static manifest design15 f2 be8454bf... exists on disk in family_pair_freeze/d51866f7d3c49303/546x472/model.vspgeom and equals manifest",
+      "R7 rebuilt 27325306... same bytes/counts but different canonical",
+      "A1 guard is explicit static-vs-runtime comparison",
+      "R6 freeze record design15 f2 was be8454bf...; R4 smoke/R7 were 27325306..."
+    ],
+    "guard_chain_pass_with_prefrozen_reuse_zero_physical_decidable": true,
+    "guard_chain_pass_claim_limits": "byte/canonical equality only; no solver outcome claimed",
+    "residual_risks": [
+      "design15 f1 (462x401) produced NaN polar in R6 main first evaluation on the same pre-frozen bytes; R8 main first evaluation may repeat NaN -> INVALID_NUMERICAL under protocol D",
+      "online proposal designs are not in static manifest so the static guard does not apply; within-run consistency comes from A1 copying the runtime freeze record bytes (no rebuild at evaluate)",
+      "R8 budget headroom is only 5 starts / 23 internal under L-10"
+    ]
+  },
+  "alternatives_excluded": [
+    {
+      "hypothesis": "x12/design_hash mismatch",
+      "verdict": "excluded",
+      "reason": "freeze_record x12 equals initial manifest design15 values; computed design_hash d51866f7d3c49303; static index idx15 hit"
+    },
+    {
+      "hypothesis": "role mapping error",
+      "verdict": "excluded",
+      "reason": "runtime roles {f1:462x401,f2:546x472} equals role_map; f1 bytes matched static"
+    },
+    {
+      "hypothesis": "vkey/canonical-only comparison",
+      "verdict": "excluded",
+      "reason": "guard compares frozen_vspgeom_sha256"
+    },
+    {
+      "hypothesis": "A1 static manifest stale/wrong",
+      "verdict": "excluded",
+      "reason": "frozen paths exist on disk and SHA equals manifest; manifest is the authority"
+    },
+    {
+      "hypothesis": "A1 guard defect",
+      "verdict": "excluded",
+      "reason": "A1 frozen bytes unchangeable; guard is contractual fail-closed behavior"
+    },
+    {
+      "hypothesis": "launcher/shim altered geometry",
+      "verdict": "excluded",
+      "reason": "shim only injects env/TMP/PYTHONPATH and design_space preload; geometry built by unchanged A1 freeze_api; f1 and design16/17 matched static"
+    },
+    {
+      "hypothesis": "hidden extra starts or retry",
+      "verdict": "excluded",
+      "reason": "ledger 12 rows 6 start/6 end, single writer PID 25752, no pending, no main rows, no second launcher"
+    },
+    {
+      "hypothesis": "approval/GO binding error",
+      "verdict": "excluded",
+      "reason": "approval 1a552267/69,405 and GO 05565c1e/7,512 match prestart; A5 recomputed"
+    }
+  ],
+  "accounting": {
+    "charged": {
+      "starts": 6,
+      "internal_cases": 42,
+      "derivation": "2 preflight starts x7 + 4 diagnostic starts x7 (each evaluation = 2 families x 7 internal)"
+    },
+    "prior_to_r7": {
+      "starts": 50,
+      "internal_cases": 362
+    },
+    "cumulative": {
+      "starts": 56,
+      "internal_cases": 404
+    },
+    "caps": {
+      "starts": 451,
+      "internal_cases": 3157
+    },
+    "headroom": {
+      "starts": 395,
+      "internal_cases": 2753
+    },
+    "planned_unconsumed": {
+      "starts": 388,
+      "internal_cases": 2716
+    },
+    "r8_projection_under_L10": {
+      "planned_starts": 390,
+      "planned_internal_cases": 2730,
+      "cumulative_starts": 446,
+      "cumulative_internal_cases": 3134,
+      "headroom_starts": 5,
+      "headroom_internal_cases": 23
+    },
+    "defects": [
+      {
+        "id": "D-ACCT-1",
+        "description": "evaluations main row internal_solver_cases=7 is a default value pseudo-count though starts=0; source p2a_v2_executor.py:534 and :700 int(solver.get(\"internal_solver_cases\", 7) or 7)"
+      },
+      {
+        "id": "D-ACCT-2",
+        "description": "batch_summary.record_internal_cases=7 aggregates only main rows, omitting preflight 14 and diagnostics 28; authoritative internal=42 from ledger+records"
+      },
+      {
+        "id": "D-ACCT-3",
+        "description": "batch_summary.diagnostics[].polar_sha256=null although all four polar files exist (7,933B; SHA 11ff632b/aac6e217/0540341a/483479ad)"
+      }
+    ],
+    "ledger_closed": true,
+    "pending": 0,
+    "duplicate_case_ids": false
+  },
+  "deviation": {
+    "diagnostic_starts_actual": 4,
+    "diagnostic_internal_actual": 28,
+    "diagnostic_starts_preregistered": 2,
+    "diagnostic_internal_preregistered": 14,
+    "excess_starts": 2,
+    "excess_internal": 14,
+    "within_caps": true,
+    "classification": "pre-registration/implementation counting defect plus missing boundary guard; unregistered physical exceeding preregistration; not operator discretion",
+    "r7_accounting": "charge actual 6/42",
+    "required_disclosures": [
+      "R8 prereg/plan r8_addendum must register diagnostics as 4 starts/28 internal (or implement single-family diagnostics)",
+      "R7 2/14 -> 4/28 deviation disclosed in R8 package and final Issue #9 receipt",
+      "executor must add planned-count boundary assertion/hard stop for diagnostics"
+    ]
+  },
+  "governance": {
+    "attempt_scope": "single R7 attempt (L-10 final attempt before R8)",
+    "retries": 0,
+    "restarts": 0,
+    "sealed_bytes_unchanged": true,
+    "run_dir_read_only_preserved": true,
+    "evidence_append_only_commits": [
+      "4a3c3fe69df242fdc91221b388e144c080eda94d",
+      "d0919a2f6177c6451844bd57d5cd744d2c993446"
+    ],
+    "evidence_files_tracked": 175,
+    "unauthorized_mutation": false,
+    "a5_physical_call_count": 0,
+    "a5_solver_started": false,
+    "execution_authorization": false
+  },
+  "exclusions": {
+    "r1": "excluded",
+    "r2": "excluded",
+    "r3": "excluded",
+    "r4": "excluded",
+    "r5": "excluded",
+    "r6": "excluded",
+    "r7": "excluded_permanently",
+    "e1_e6_eligible": false,
+    "note": "R7 has no main valid evaluations and no E1-E6 data"
+  },
+  "three_layer": {
+    "solver_loop_verified": {
+      "status": "PARTIAL_PREFLIGHT_AND_DIAGNOSTIC_ONLY",
+      "preflight_replay_verified": true,
+      "preflight_evidence": "2 real spawns with byte-identical polar in R2/R3/R4/R6/R7",
+      "diagnostic_real_solves": {
+        "design16": true,
+        "design17": true,
+        "design15": false
+      },
+      "main_optimization_loop_verified": false,
+      "main_reason": "main first evaluation rejected by frozen-bytes guard, main starts=0"
+    },
+    "internal_aero_optimization_gain": {
+      "status": "NOT_COMPUTABLE",
+      "reason": "no E1-E6 valid main evaluations; R7 excluded"
+    },
+    "external_physics_supported": {
+      "status": "NOT_VALIDATED"
+    },
+    "fuel_burn_kg": null
+  },
+  "a5_opinions": {
+    "prefrozen_reuse": {
+      "accepted": true,
+      "as": "zero-physical execution-layer fix",
+      "rationale": "A1 static manifest is the sole geometry-byte authority; reuse is byte-equivalent copy with fail-closed SHA checks; no A1/science policy change"
+    },
+    "diagnostics_4_28_reregistration": {
+      "accepted": true,
+      "condition": "must be explicitly registered in R8 prereg/plan/approval with R7 2/14->4/28 deviation disclosed and boundary guard added"
+    },
+    "terminate_r_line": {
+      "recommended": false,
+      "note": "Lead L-10 decided R8; A5 does not recommend termination but flags 5/23 headroom and design15 f1 NaN repeat risk"
+    },
+    "independent_dissent_record": "A5 previously recommended termination before R5/R6; Lead exercised decision authority; R8 decision responsibility rests with Lead"
+  },
+  "r8_requirements": {
+    "identity": {
+      "batch_id": "DREAL001-P2-20261111-13",
+      "run_id": "DREAL001-P2A2R8-20261111-01",
+      "window_start": "2026-11-11T16:30:00Z",
+      "window_end": "2026-11-12T04:00:00Z",
+      "window_token": "WINDOW_OK-P2AV2R8-20261111T1630Z-20261112T0400Z",
+      "planned_starts": 390,
+      "planned_internal_cases": 2730,
+      "max_starts": 451,
+      "max_internal_cases": 3157,
+      "cumulative_starts": 446,
+      "cumulative_internal_cases": 3134,
+      "reserve_starts": 64,
+      "supersedes_approval_sha256": "1a552267ab0070ee4f690815ed1de1db6d5976c1ada8356421f017bb84d72e37",
+      "supersedes_approval_bytes": 69405,
+      "physical_at_supersede": 56,
+      "amendment_seq": 8,
+      "amendment_action": "R8_PREFROZEN_REUSE_AND_DIAG_PAIR_PREREG_FIX",
+      "amendment_physical": 56
+    },
+    "prefrozen_reuse_constraints": [
+      "read only frozen_vspgeom_path from manifest family frozen block; vkey/vsp3 are siblings model.vkey/model.vsp3 (no frozen_vkey_path/frozen_vsp3_path fields exist)",
+      "recompute vspgeom/vkey/vsp3 SHA256 and require equality with manifest; vsp3 missing/mismatch fail-closed",
+      "A1 describe_mesh canonical recomputation must match manifest canonical_mesh_sha256",
+      "runtime append-only record: status PAIR_READY, arm_blind true, roles/x12/families equal manifest, verify_chain valid, source_kind PREFROZEN_MANIFEST_REUSE, reused_prefrozen true, attempts 0",
+      "must not call FreezeBuilder for initial designs; tamper unit test fail-closed",
+      "static_index_count must be recorded as 119; static hit without PREFROZEN_MANIFEST_REUSE must fail-closed",
+      "A1 frozen bytes unchanged"
+    ],
+    "accounting_fixes": [
+      "remove internal_solver_cases default 7; starts==0 -> internal=0; derive internal from records",
+      "batch_summary per phase (preflight/diagnostic/main) + total",
+      "diagnostics polar_sha256 extraction from case artifacts",
+      "accounting assertion cumulative charged+planned <= caps triggerable as ACCOUNTING_INCONSISTENT"
+    ],
+    "budget_risk": "headroom 5 starts / 23 internal; any over-plan physical must hard-stop",
+    "design15_nan_risk": "R6 main first evaluation on identical pre-frozen design15 f1 462x401 produced all-NaN polar; R8 may repeat NaN -> INVALID_NUMERICAL under protocol D; disclosure required",
+    "gate_expectations": [
+      "launcher p2av2r8_launch.py SHA/bytes anchored",
+      "approval_refs_final 14 keys with a5_review placeholder",
+      "52 conditions",
+      "A1 bindings unchanged",
+      "R1-R7 approvals/evidence read-only unchanged",
+      "R1-R7 exclusions recorded",
+      "L-10 decision and A5 opinions/dissent recorded"
+    ]
+  },
+  "checks": [
+    {
+      "id": "C01",
+      "status": "PASS",
+      "detail": "run dir identity batch 12/run R7/stage R7"
+    },
+    {
+      "id": "C02",
+      "status": "PASS",
+      "detail": "8 package files SHA/bytes match sealed bindings"
+    },
+    {
+      "id": "C03",
+      "status": "PASS",
+      "detail": "approval 1a552267/69,405; conditions 52; refs 14 (a5_review 040dbd0)"
+    },
+    {
+      "id": "C04",
+      "status": "PASS",
+      "detail": "GO record 05565c1e/7,512; token; approval/dry-run/two gates bound"
+    },
+    {
+      "id": "C05",
+      "status": "PASS",
+      "detail": "prestart gate PASS; window 14:00-04:00Z; physical 0; exe db71c441/811,520"
+    },
+    {
+      "id": "C06",
+      "status": "PASS",
+      "detail": "preflight overall PREFLIGHT_PASS_BYTE; main_batch_may_start true; physical 2"
+    },
+    {
+      "id": "C07",
+      "status": "PASS",
+      "detail": "PRE-01 polar 455082e2/7,933B equals approval expectation"
+    },
+    {
+      "id": "C08",
+      "status": "PASS",
+      "detail": "PRE-02 polar 0287afe0/7,933B equals approval expectation"
+    },
+    {
+      "id": "C09",
+      "status": "PASS",
+      "detail": "preflight ledger 2 start/2 end closed; file_checks 5/5"
+    },
+    {
+      "id": "C10",
+      "status": "PASS",
+      "detail": "diagnostics 2/2 SOLVED_VALID; primary finite non-null"
+    },
+    {
+      "id": "C11",
+      "status": "PASS_WITH_DISCLOSURE",
+      "detail": "diagnostics actual 4/28 vs planned 2/14; +2/+14 disclosed"
+    },
+    {
+      "id": "C12",
+      "status": "PASS",
+      "detail": "main starts 0; arms/BO dir absent; no main ledger rows"
+    },
+    {
+      "id": "C13",
+      "status": "PASS",
+      "detail": "stop phase s1/arm BO/ARM_STOPPED_STOP_NOT_VALIDATED; physical 6; ledger 6/6; pending 0"
+    },
+    {
+      "id": "C14",
+      "status": "PASS",
+      "detail": "ledger 12 rows; 6 start/end pairs; single writer pid 25752; no pending/duplicates"
+    },
+    {
+      "id": "C15",
+      "status": "PASS",
+      "detail": "no retry/restart; single launcher PID 25752"
+    },
+    {
+      "id": "C16",
+      "status": "PASS",
+      "detail": "evaluations row NOT_VALIDATED, starts 0, FROZEN_BYTES_SHA_MISMATCH"
+    },
+    {
+      "id": "C17",
+      "status": "PASS",
+      "detail": "runtime design15 freeze_record PAIR_READY roles f1 462x401/f2 546x472; f2 27325306"
+    },
+    {
+      "id": "C18",
+      "status": "PASS",
+      "detail": "A1 static design15 f2 be8454bf exists on disk and matches manifest"
+    },
+    {
+      "id": "C19",
+      "status": "PASS",
+      "detail": "A1 evaluator_v12.py:641-649 static-vs-runtime guard is direct trigger"
+    },
+    {
+      "id": "C20",
+      "status": "PASS",
+      "detail": "design16/17 rebuilt bytes equal static (5feb1be8/54a46567; 99a52d06/7ab0b60d)"
+    },
+    {
+      "id": "C21",
+      "status": "PASS",
+      "detail": "batch_summary STOPPED; per-phase counts consistent with stop"
+    },
+    {
+      "id": "C22",
+      "status": "PASS",
+      "detail": "final_run_manifest chain 3 records valid true head d12297b5 physical 0"
+    },
+    {
+      "id": "C23",
+      "status": "PASS",
+      "detail": "sealed executor/launcher/approval/plan/identity/dry-run/SHA256SUMS unchanged"
+    },
+    {
+      "id": "C24",
+      "status": "PASS",
+      "detail": "A1 evaluator/freeze/static manifest unchanged"
+    },
+    {
+      "id": "C25",
+      "status": "PASS",
+      "detail": "R1-R6 approved approvals 6/6 unchanged"
+    },
+    {
+      "id": "C26",
+      "status": "PASS_WITH_DISCLOSURE",
+      "detail": "accounting 6/42 cumulative 56/404; internal default 7 pseudo-count defect disclosed"
+    },
+    {
+      "id": "C27",
+      "status": "PASS_WITH_DISCLOSURE",
+      "detail": "batch_summary.record_internal_cases=7 incomplete (main only)"
+    },
+    {
+      "id": "C28",
+      "status": "PASS_WITH_DISCLOSURE",
+      "detail": "diagnostics polar_sha256 null though polar files exist (4x7,933B)"
+    },
+    {
+      "id": "C29",
+      "status": "PASS",
+      "detail": "R7 excluded from E1-E6; no valid main evaluations"
+    },
+    {
+      "id": "C30",
+      "status": "PASS",
+      "detail": "A5 physical 0; solver_started false; not an execution authorization"
+    }
+  ],
+  "checks_summary": {
+    "total": 30,
+    "pass": 23,
+    "pass_with_disclosure": 7,
+    "fail": 0
+  },
+  "disclosures": [
+    {
+      "id": "D01",
+      "text": "diagnostics actual 4 starts/28 internal vs preregistered 2/14; +2/+14 unregistered physical, within caps; R7 accounted 4/28"
+    },
+    {
+      "id": "D02",
+      "text": "executor comment p2a_v2_executor.py:1199-1201 mirrors the same wrong 1 start/case assumption; run_one necessarily evaluates 2 families"
+    },
+    {
+      "id": "D03",
+      "text": "executor has no diagnostic planned-count boundary check; did not hard-stop under L-09 unregistered-deviation clause"
+    },
+    {
+      "id": "D04",
+      "text": "main row internal_solver_cases=7 is a default pseudo-count with starts=0"
+    },
+    {
+      "id": "D05",
+      "text": "batch_summary.record_internal_cases=7 aggregates main rows only"
+    },
+    {
+      "id": "D06",
+      "text": "diagnostics polar_sha256 null although four polar files exist"
+    },
+    {
+      "id": "D07",
+      "text": "R6 design15 f1 462x401 on identical pre-frozen bytes produced NaN polar; R8 main first evaluation may repeat NaN (protocol D INVALID_NUMERICAL, no auto stop)"
+    },
+    {
+      "id": "D08",
+      "text": "diagnostic passes on design16/17 prove only that their frozen families can be solved; no optimization gain or physics validation"
+    },
+    {
+      "id": "D09",
+      "text": "R7 window remains open until 2026-11-12T04:00Z but R7 approval is closed; any new execution requires a new R8 chain"
+    },
+    {
+      "id": "D10",
+      "text": "A2 R7 evidence committed append-only 4a3c3fe/d0919a2, 175 files; A5 did not modify bytes"
+    },
+    {
+      "id": "D11",
+      "text": "R7 run dir has pre-signature debug executor_run.log history; A2 preserved evidence during package cleanup"
+    },
+    {
+      "id": "D12",
+      "text": "A1 static manifest generated by zero-physical P2CAL/P2AFAM flow; R8 reuse is read-only"
+    },
+    {
+      "id": "D13",
+      "text": "R8 cumulative 446/3134 <= caps 451/3157 but headroom only 5/23; any over-plan physical must hard stop"
+    },
+    {
+      "id": "D14",
+      "text": "FAIL-07 is first independent audit version; R8 establishment recorded in Lead L-10 (md 42EA2AE1/7,996B, json 745F5653/2,519B, commit 66e19b2)"
+    },
+    {
+      "id": "D15",
+      "text": "A1 manifest family frozen block has no frozen_vkey_path/frozen_vsp3_path; vkey/vsp3 are siblings of frozen_vspgeom_path (Lead m02431); R8 gate must not require absent fields; vsp3 missing fail-closed; static_index_count must be 119"
+    }
+  ],
+  "status": {
+    "state": "DELIVERED_FIRST_VERSION",
+    "r7": "closed_S1_stop_frozen_bytes_sha_mismatch",
+    "r8": "established_by_lead_L10_pending_package",
+    "a5_next": "G-P2AV2R8-PRE upon A2 R8 package commit (target 17:15Z, hard 17:25Z)",
+    "execution_authorization": false
+  }
+}
