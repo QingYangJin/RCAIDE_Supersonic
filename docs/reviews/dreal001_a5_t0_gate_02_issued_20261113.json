@@ -1,0 +1,534 @@
+{
+  "schema": "dreal001.a5.t0_gate.v2",
+  "gate_id": "G-T0-READY-02",
+  "status": "ISSUED",
+  "status_label": "ISSUED_T0_CODE_READINESS_PASS",
+  "issued_by": "a5-review",
+  "issued_at_utc": "2026-11-13T04:35:00Z",
+  "reviewer_role": "independent non-author reviewer",
+  "scope": "T0_CODE_READINESS：Issue #10 T0 阶段的可执行代码/合同/单测/冒烟/重放/隔离/可复算证据；不是 REAL_META_TRAINING_ADMISSION，不是 #11 M0/M1 执行/训练/物理授权。",
+  "authority_basis": [
+    {
+      "id": "L-28",
+      "commit": "de727ff27254eb4e719c377c1c9b81152d77083c",
+      "md": "02585f621b9bd9c5efcba6f4fb0c6dc250eeddcd7eacafe28fc491044c0c48c4/5,695",
+      "json": "244270ab9268554fb3c631eebfa72484cba54b2283b2556756b93d66c0fcd5c3/2,244"
+    },
+    {
+      "id": "G-T0-READY-ADD-01",
+      "commit": "7703bce7ce8794bfc21cb10bf2b957b121c55a78",
+      "md": "791ffd5a8b461b213f03028bc2103ab665d40fdeb540f572030cf69142b84675/8,778",
+      "json": "d2ecb16a7e1c813215cfb7c8d2b536865f19d2e43d2c219152022d9bf7d88602/19,868"
+    },
+    {
+      "id": "Issue #10 T0 scope",
+      "note": "T0 最终门禁判据为可执行代码/独立单测+端到端冒烟/固定 seed 重放/任务级无泄漏/真实来源与合成来源隔离/可复算 manifest 及 checkpoint；不把 training script exists 称为 train run completed。"
+    }
+  ],
+  "verdict": "T0_CODE_READINESS_PASS",
+  "ready_for_real_meta_training": false,
+  "counts": {
+    "total": 51,
+    "pass": 42,
+    "pwd": 8,
+    "blocked": 0,
+    "not_applicable": 1,
+    "fail": 0
+  },
+  "checks": [
+    {
+      "id": "C01",
+      "title": "T0-1 TaskSpec/TaskFamily 合同与非法输入",
+      "status": "PASS_WITH_DISCLOSURE",
+      "evidence": "task_spec.py d7267738/81,219; T0-1 contract fb85c9cd/167,540; 18 tasks; readiness T0_1_CONTRACT_READY_APPLICABILITY_DEFERRED_TO_M1; contract_ready=true; real_training_ready=false",
+      "note": "合同/非法输入均有测试；status 是 CONTRACT_READY，不是 READY_FOR_REAL_META_TRAINING；applicability 全 DEFERRED，不得记 PASS"
+    },
+    {
+      "id": "C02",
+      "title": "任务身份与跨族隔离",
+      "status": "PASS",
+      "evidence": "task_spec.py family_sha256=ada424cc…; 18 task fingerprints; T0-4 family 同源; tests",
+      "note": "任务身份按 task 维度；跨族 pool 明令禁止；T0-1/T0-4 同族"
+    },
+    {
+      "id": "C03",
+      "title": "12D mask 与设计空间",
+      "status": "PASS_WITH_DISCLOSURE",
+      "evidence": "ALL_12_ACTIVE; design_space_12d_lifting_surfaces.yaml; task_spec.py mask 逻辑; tests",
+      "note": "本阶段所有 task 均 ALL_12_ACTIVE；10D 条件 mask 未做逐变量经验验证，属设计事实声明而非实测"
+    },
+    {
+      "id": "C04",
+      "title": "fingerprint 确定性",
+      "status": "PASS",
+      "evidence": "task_spec.py fingerprint; T0-1/T0-4 tests",
+      "note": "同一内容重复计算同值；跨工作树无路径依赖"
+    },
+    {
+      "id": "C05",
+      "title": "ContextEncoder 无泄漏",
+      "status": "PASS",
+      "evidence": "task_spec.py ContextEncoder 20 特征; tests",
+      "note": "encoder 只读 task context，不读取 x12 真值"
+    },
+    {
+      "id": "C06",
+      "title": "合成 truth evaluator 按 task 隔离",
+      "status": "PASS_WITH_DISCLOSURE",
+      "evidence": "T0-2 synthetic truth evaluator 按 task 生成标签; BO 8 evals/4 initial; tests",
+      "note": "合成 truth evaluator 按 task 隔离；真实物理 evaluator 与 task mismatch 拒绝未实测"
+    },
+    {
+      "id": "C07",
+      "title": "split 按 task 身份且互斥",
+      "status": "PASS",
+      "evidence": "T0-1 split 11/4/3 seed42; T0-4 split 11/4/3 seed42; task_split_manifest c516e177/14,939; tests",
+      "note": "按 task 身份切分且集合互斥；T0-1/合同 split 与 T0-4 manifest 逐元素相等"
+    },
+    {
+      "id": "C08",
+      "title": "T0-1/T0-4 合同与配置单测",
+      "status": "PASS",
+      "evidence": "A5 独立 pytest: A3 tests_contracts 31 + tests_configs 32 = 63 passed; A2 T0-3 29 + C32 20 = 49 passed; 合计 112 passed/0 failed",
+      "note": "覆盖非法/缺字段/漂移/DEFERRED 不可声明 PASS/生产入口拒绝"
+    },
+    {
+      "id": "C09",
+      "title": "T0-2 record 19 字段",
+      "status": "PASS",
+      "evidence": "interfaces.py b5d3086c/24,016; T0-2 contract records; 49 passed",
+      "note": "19 字段逐一存在，缺字段测试覆盖"
+    },
+    {
+      "id": "C10",
+      "title": "INVALID objective 必须 null",
+      "status": "PASS",
+      "evidence": "interfaces.py 校验; tests",
+      "note": "INVALID objective 强制 null；实测 records 无 0/inf"
+    },
+    {
+      "id": "C11",
+      "title": "source_kind 隔离",
+      "status": "PASS",
+      "evidence": "interfaces.py source_kind 校验; tests",
+      "note": "混合 source 被拒；ARCHIVED 不冒充 REAL"
+    },
+    {
+      "id": "C12",
+      "title": "physics_validation_status",
+      "status": "PASS",
+      "evidence": "interfaces.py; T0-2 contract; tests",
+      "note": "REAL 默认 NOT_VALIDATED；SYNTHETIC 为 NOT_APPLICABLE"
+    },
+    {
+      "id": "C13",
+      "title": "dataset load/save/replay/recover",
+      "status": "PASS_WITH_DISCLOSURE",
+      "evidence": "meta_dataset.py da385389/53,836; tests; replay",
+      "note": "load/save/replay/recover 确定且损坏字节 fail-closed；cache 仅以 cached_reads 账本口径出现，未做独立缓存一致性压力测试"
+    },
+    {
+      "id": "C14",
+      "title": "EpisodeBuilder support/query",
+      "status": "PASS",
+      "evidence": "meta_dataset.py EpisodeBuilder; tests",
+      "note": "support/query 按 task 身份取；无跨 task batch"
+    },
+    {
+      "id": "C15",
+      "title": "split 以 task identity 为单位",
+      "status": "PASS",
+      "evidence": "T0-1/T0-4 split manifest; meta_dataset.py; tests",
+      "note": "split 以 task identity 为单位"
+    },
+    {
+      "id": "C16",
+      "title": "leakage audit 7/7",
+      "status": "PASS",
+      "evidence": "T0-2 leakage_audit 7/7 PASS; T0-1/T0-4 tests; replay",
+      "note": "7 类泄漏检查全 PASS；A4 replay 复核"
+    },
+    {
+      "id": "C17",
+      "title": "meta_dataset 单测",
+      "status": "PASS",
+      "evidence": "A2 T0-3 29 passed; A3 合同/配置 63 passed",
+      "note": "A5 独立 pytest 合计 112 passed"
+    },
+    {
+      "id": "C18",
+      "title": "torch trainer 真实训练循环",
+      "status": "PASS",
+      "evidence": "meta/trainer.py 5ddd1a68/22,700; smoke 30 steps; 18/18 checks",
+      "note": "真实 torch 训练循环，非 stub；合成 labels"
+    },
+    {
+      "id": "C19",
+      "title": "adaptation K=0/1/3/5",
+      "status": "PASS",
+      "evidence": "adaptation.py 5b9d7903/13,234; smoke metrics K=0/1/3/5; tests",
+      "note": "四档均执行并产出指标"
+    },
+    {
+      "id": "C20",
+      "title": "warm_start / BOReceiver",
+      "status": "PASS",
+      "evidence": "warm_start.py 2bdc1f2a/15,207; bo_handoff.py acb52023/14,447; tests",
+      "note": "4 initial designs 被 BO 接收；非法 x12 有单测"
+    },
+    {
+      "id": "C21",
+      "title": "FOMAML 默认 / full MAML gate",
+      "status": "PASS",
+      "evidence": "trainer.py; meta_train_config 2c9736f3/6,853; smoke FOMAML/pretrain",
+      "note": "默认 fomaml；full_maml enabled=false；降级拒绝测试"
+    },
+    {
+      "id": "C22",
+      "title": "full MAML 未执行披露",
+      "status": "PASS_WITH_DISCLOSURE",
+      "evidence": "trainer.py full_maml gate; tests; config full_maml=false",
+      "note": "门禁代码与单测存在；本 T0 未实际执行 full MAML，不构成其性能/可行性证据"
+    },
+    {
+      "id": "C23",
+      "title": "非有限值 fail-closed",
+      "status": "PASS",
+      "evidence": "trainer.py 检测; tests",
+      "note": "非有限值 fail-closed，不进入参数更新"
+    },
+    {
+      "id": "C24",
+      "title": "checkpoint / resume",
+      "status": "PASS",
+      "evidence": "smoke checkpoint; recovery resumed_step 20/history 30; tests",
+      "note": "恢复后 step 与 history 一致；checkpoint 字节有 SHA"
+    },
+    {
+      "id": "C25",
+      "title": "seed 与权重 SHA",
+      "status": "PASS",
+      "evidence": "seed 20261113; initial model a2e95a2c; final checkpoint ebcdbd1b; smoke",
+      "note": "seed 固定；初始/最终权重 SHA 记录"
+    },
+    {
+      "id": "C26",
+      "title": "固定 seed 重放字节一致",
+      "status": "PASS",
+      "evidence": "A2 replay_a/b core 4763a339/9ab5362d; A4 compare 12/12 PASS; A5 independent core 9ab5362d",
+      "note": "A5 独立重跑 core_sha 与证据逐字节同"
+    },
+    {
+      "id": "C27",
+      "title": "BO 与训练接口解耦",
+      "status": "PASS",
+      "evidence": "interfaces/trainer/bo_handoff; tests",
+      "note": "BO 只消费模型输出，训练不依赖优化器内部"
+    },
+    {
+      "id": "C28",
+      "title": "BO 合成 fixture 端到端",
+      "status": "PASS_WITH_DISCLOSURE",
+      "evidence": "warm_start.py/BOReceiver; smoke BO backend=bo 8 evals/4 initial; T0-4 BO not in pilot",
+      "note": "BO 路径在合成 fixture 端到端；真实 evaluator 标签与 T0-4 实际 BO 未接线"
+    },
+    {
+      "id": "C29",
+      "title": "端到端 smoke 18/18",
+      "status": "PASS",
+      "evidence": "A2 smoke cc3527c9/130,897; A5 independent smoke 9da222f2/130,699; 18/18 checks",
+      "note": "A5 独立重跑，18/18 true，physical=0"
+    },
+    {
+      "id": "C30",
+      "title": "label_source 显式",
+      "status": "PASS",
+      "evidence": "T0-2 contract 3ca9c84d/77,782; smoke label_source=SEALED_SYNTHETIC_FIXTURE",
+      "note": "标签来源显式；不冒充真实 VSPAERO"
+    },
+    {
+      "id": "C31",
+      "title": "无生产 mock 入口",
+      "status": "PASS",
+      "evidence": "A2 boundary_scan 14 files forbidden_total=0 PASS; production.py 仅 imports stdlib/meta; C32 21 scenarios",
+      "note": "未发现生产 mock 入口；生产入口无 fixture fallback"
+    },
+    {
+      "id": "C32",
+      "title": "生产训练入口 fail-closed",
+      "status": "PASS",
+      "evidence": "production.py 21d3e807/27,663; production/__init__ 2a642b42/3,236; test 8fe82de7/15,654; 20 passed; C32 evidence dc08949b/86,641（21 scenarios, failed=0, 16 REFUSED）; A5 独立 probe: refused=true, missing_roles=[evaluator,solver,ledger], run_dir_created=false",
+      "note": "生产入口要求显式真实 provider/ledger/authorization/train_config；缺任一即 ProductionEntryRefused 且不建 run dir/不写 ledger/不启 solver；C32 已修"
+    },
+    {
+      "id": "C33",
+      "title": "合成数据不能进入真实训练",
+      "status": "PASS",
+      "evidence": "T0-2 REAL_TRAINING_INGEST 尝试 FAIL（real_training_ingest_has_no_synthetic）; tests",
+      "note": "按设计 fail-closed；合成数据不能进真实训练"
+    },
+    {
+      "id": "C34",
+      "title": "重放证据与 A4 verifier",
+      "status": "PASS",
+      "evidence": "A2 smoke cc3527c9; A5 independent smoke 9da222f2; A4 replay verifier 12/12; core 9ab5362d",
+      "note": "A5 在隔离 .tmp 重跑，core SHA 与 A2 证据相同"
+    },
+    {
+      "id": "C35",
+      "title": "五口径账本字段",
+      "status": "PASS",
+      "evidence": "meta accounting; smoke ledger; T0-3 replay",
+      "note": "physical=0、internal=0、planned=0、design_evals=8、cached=0；五口径字段齐"
+    },
+    {
+      "id": "C36",
+      "title": "internal=7×starts 策略",
+      "status": "NOT_APPLICABLE_BY_DESIGN",
+      "evidence": "T0-3 零物理: starts=0 -> internal=0; 7× 策略未被非零 starts 触发",
+      "note": "T0 阶段无物理 starts；该策略应在 #11 真实 M0/M1 实验中验证，不能用 T0 合成 smoke 冒充"
+    },
+    {
+      "id": "C37",
+      "title": "provenance 与账本事件",
+      "status": "PASS",
+      "evidence": "interfaces.py BudgetFields; events; smoke ledger; tests",
+      "note": "每个 record 带 provenance；账本事件可对账"
+    },
+    {
+      "id": "C38",
+      "title": "per-task 预算字段",
+      "status": "PASS_WITH_DISCLOSURE",
+      "evidence": "T0-4 DRAFT per-task budgets 2942e5db/9,625; MetaCostLedger; tests",
+      "note": "预算在 DRAFT 配置中定义；运行时 per-task 超预算拒绝未实测"
+    },
+    {
+      "id": "C39",
+      "title": "资源 caps",
+      "status": "PASS_WITH_DISCLOSURE",
+      "evidence": "T0-4 caps serial/ncpu1/omp1/mem2048/disk20GB/wall10800; full_maml gate tests",
+      "note": "配置与门禁代码存在；无通用运行期资源监视器，未做资源耗尽实测"
+    },
+    {
+      "id": "C40",
+      "title": "成本分项与汇总",
+      "status": "PASS",
+      "evidence": "smoke cost summary; MetaCostLedger; replay",
+      "note": "train/adapt/inference/BO 成本分项，汇总可复算"
+    },
+    {
+      "id": "C41",
+      "title": "账本负例",
+      "status": "PASS",
+      "evidence": "meta cost ledger 测试; 49 passed",
+      "note": "重复/未记账/超预算/恢复/守恒负例均有断言"
+    },
+    {
+      "id": "C42",
+      "title": "T0-4 18 candidate family",
+      "status": "PASS",
+      "evidence": "T0-4 YAML de1732a5/139,212; Mach{1.8,2.02,2.2}×h{15000,18288,20000}×CL{0.17,0.19}; 18 tasks",
+      "note": "18 candidate tasks；admission 全部 PENDING_M0_BY_DESIGN，不再是 PENDING_F1_F2"
+    },
+    {
+      "id": "C43",
+      "title": "T0-4 data contract",
+      "status": "PASS",
+      "evidence": "T0-4 meta_data_contract b0be72e0/8,797; T0-2 contract 对齐; tests",
+      "note": "source/data 契约与 T0-2 一致"
+    },
+    {
+      "id": "C44",
+      "title": "T0-4 train config",
+      "status": "PASS",
+      "evidence": "T0-4 meta_train_config 2c9736f3/6,853; default fomaml; full_maml false; k_shot 0/1/3/5",
+      "note": "单 seed；inferential disabled；BO in_t0_4_pilot false"
+    },
+    {
+      "id": "C45",
+      "title": "T0-4 split manifest",
+      "status": "PASS",
+      "evidence": "T0-4 task_split_manifest c516e177/14,939; 11/4/3; seed42; tests",
+      "note": "按 task 身份切分，集合互斥；holdout NEVER_EVALUATED_PRIOR_RUN"
+    },
+    {
+      "id": "C46",
+      "title": "T0-4 first batch DRAFT",
+      "status": "PASS",
+      "evidence": "T0-4 first_real_training_batch 2942e5db/9,625; status DRAFT_PENDING_M0_GO; token/approval null; gates 4 条; no F1/F2",
+      "note": "M1 planned 98/686 hard 102/714；非授权；M1 只选 6 tasks（train 4 + val 2，无 test）"
+    },
+    {
+      "id": "C47",
+      "title": "T0-4 prereg README",
+      "status": "PASS",
+      "evidence": "README_T0_4_PREREG 1e9cba0c/10,985",
+      "note": "覆盖范围、标签、预算、K-shot、seed、停止、成本、资源、VSPAERO 上限、物理域"
+    },
+    {
+      "id": "C48",
+      "title": "仓库状态与冻结字节",
+      "status": "PASS",
+      "evidence": "A2 HEAD 9a9e294; A3 HEAD 5832017; A4 HEAD 1c29d0a; T0 路径 disk==HEAD/git diff exit 0; A3 仅无关 stats/p2a_v2.py modified（D-T0-04）",
+      "note": "T0 交付字节冻结；旧 T0-1/T0-4 备份在 t0_revision_history_20261113_r1，旧 SUMS 10/10 OK"
+    },
+    {
+      "id": "C49",
+      "title": "A5 独立复跑",
+      "status": "PASS",
+      "evidence": "A5 pytest 112 passed（A2 49 + A3 63）; A5 independent C32 refusal probe; A5 independent smoke 18/18 core 9ab5362d; A4 verifier 24/24; self-test 12/12; compare 12/12",
+      "note": "A5 未启动 solver；仅合成 fixture；physical_call_count=0"
+    },
+    {
+      "id": "C50",
+      "title": "非授权边界",
+      "status": "PASS",
+      "evidence": "T0-4 not_authorization=true; token/approval null; T0-2 non_result_boundary; gate boundary",
+      "note": "本门禁不构成训练、优化、物理、执行或发布授权"
+    },
+    {
+      "id": "C51",
+      "title": "T0-1 与 T0-4 同源一致",
+      "status": "PASS",
+      "evidence": "T0-1 contract fb85c9cd vs T0-4 YAML de1732a5: family ada424cc 逐字节重算一致; 18 task fingerprints/ids 全等; split 11/4/3 数组全等; readiness {DEFERRED:18}; admission 18/18 PENDING_M0_BY_DESIGN; old 8-task 合同 ec0a73e3 仅在历史目录",
+      "note": "T0-1 已由 T0-4 生成器重建，亚声速 8-task 占位不再在权威族；DEFERRED 不得声明 PASS；admission 留给 #11 M0"
+    }
+  ],
+  "verdict_reason": "T0_CODE_READINESS 范围内 C01–C50 重核通过：T0-1 已改用 T0-4 18 任务族并声明 applicability DEFERRED_TO_M1_REAL_COLLECTION；T0-4 admission 已改为 PENDING_M0_BY_DESIGN；A2 C32 生产入口 fail-closed 已实现并独立复跑（20 passed；A5 直接 probe 拒绝且不建 run dir）；A3/A2 单测 A5 独立 112 passed；T0-1/T0-4 family/fingerprint/18-task/split 逐元素同源；旧 gate 的 out-of-scope blockers 已按 L-28/addendum 归 #11。T0_CODE_READINESS_PASS 不等于真实训练可运行；真实 applicability/标签/训练/admission 全部留给 #11 G-T0-ADMISSION-01。",
+  "blockers": [],
+  "required_actions": [
+    {
+      "id": "RA-11-01",
+      "requirement": "#11 启动前必须另立 G-T0-ADMISSION-01，核验 18 个任务的真实 applicability（solver domain/lift target reachable/cross-task response）及 required evidence schema，全部不能是 DEFERRED/NOT_CHECKED。"
+    },
+    {
+      "id": "RA-11-02",
+      "requirement": "#11 M0 必须冻结任务族/有限首批预算/标签生成协议，并由 Lead 另签 authorization+window token；不得复用本 gate 或 R10 token。"
+    },
+    {
+      "id": "RA-11-03",
+      "requirement": "M1 真实采集/训练前必须 preflight 2/2 与 per-task real applicability 全部通过；失败 ABORT 无 retry。"
+    },
+    {
+      "id": "RA-11-04",
+      "requirement": "T0-4 admission 当前全为 PENDING_M0_BY_DESIGN，不得在 #11 前被引用为 admitted；T0-1 applicability 当前全 DEFERRED，不得在 #10 汇报中记 PASS。"
+    },
+    {
+      "id": "RA-11-05",
+      "requirement": "A4 T0 evidence status snapshot 仍为 2026-11-12T18:57:00Z / NOT_READY（stale）；建议 A4 在 #10 汇报前刷新，但不构成本 gate 的 T0_CODE_READINESS 阻断。"
+    }
+  ],
+  "disclosures": [
+    {
+      "id": "D-T0-12",
+      "text": "旧 G-T0-READY（commit 3b8abc6；json 792dfcad/28,840；md 925bd10b/12,409；checklist 2f656f1e/16,495）保留为历史记录，不被本 gate 改写；本 gate 依据 L-28 与 G-T0-READY-ADD-01 重新按 T0_CODE_READINESS 判。"
+    },
+    {
+      "id": "D-T0-13",
+      "text": "本 gate 只判 T0_CODE_READINESS，不判 REAL_META_TRAINING_ADMISSION；T0-1 18/18 applicability 仍 DEFERRED_TO_M1_REAL_COLLECTION，T0-4 18/18 admission 仍 PENDING_M0_BY_DESIGN。"
+    },
+    {
+      "id": "D-T0-14",
+      "text": "C32 为生产入口代码级 fail-closed 证据：21 scenarios 中 16 REFUSED、1 ACCEPTED_TEST_ONLY、1 BLOCKED_TEST_ONLY_TRAIN；没有任何真实生产 provider 被接受，也没有执行训练。"
+    },
+    {
+      "id": "D-T0-15",
+      "text": "A5 独立 C32 probe 以 evaluator/solver/ledger/authorization/train_config 全缺调用生产入口，得到 refused=true、TRAIN_CONFIG_REQUIRED、missing_roles=[evaluator,solver,ledger]、run_dir_created=false；这不等于真实生产组件已具备。"
+    },
+    {
+      "id": "D-T0-16",
+      "text": "A4 T0 evidence status_snapshot 是 2026-11-12T18:57:00Z 旧快照（gate.current_status=NOT_READY、code_artifacts_present=0/4、a5_review=PENDING）；A4 为 support-only，A5 已独立复核其 SUMS/verifier/replay，但未把旧快照当作本 gate 的当前状态。"
+    },
+    {
+      "id": "D-T0-17",
+      "text": "旧 T0-1 8-task 亚声速占位合同 ec0a73e3/66,349 已移出权威族，保留在 t0_revision_history_20261113_r1（旧 SUMS 10/10 OK）；权威 T0-1 为 18-task T0-4 同源族。"
+    },
+    {
+      "id": "D-T0-18",
+      "text": "T0-4 first_real_training_batch_DRAFT 的 M1 只选 6 tasks（meta_train 4 + meta_val 2），test_tasks_in_M1=0；18 task family 的 meta_test 3 tasks 在 M1 不被训练使用。这是 #11 输入约束，不是本 gate 的训练结果。"
+    },
+    {
+      "id": "D-T0-19",
+      "text": "A3 工作树仍有与 T0 无关的 research/concorde_metaopt/dreal001/stats/p2a_v2.py modified 和未跟踪 probes；T0 路径 disk==HEAD，未改 T0 字节（沿用 D-T0-04）。"
+    },
+    {
+      "id": "D-T0-20",
+      "text": "A4 HEAD=1c29d0a；A4 T0 evidence commit=05743958；其 snapshot 未更新至 A2 C32/A3 task-48 之后，建议刷新但不阻断。"
+    },
+    {
+      "id": "D-T0-21",
+      "text": "本 gate 证据读取时点 2026-11-13T04:35Z；A2 HEAD=9a9e294、A3 HEAD=5832017、A4 HEAD=1c29d0a、Lead L-28 HEAD=de727ff；若交付分支在签发后移动，需以本 gate 绑定字节为准。"
+    },
+    {
+      "id": "D-T0-22",
+      "text": "T0-1/T0-4 采用单 seed（42）与固定 split；本 gate 不提供性能、增益、winner 或显著性证据；T0 不执行真实训练。"
+    },
+    {
+      "id": "D-T0-23",
+      "text": "fuel_burn_kg=null；EXTERNAL_PHYSICS=NOT_VALIDATED；跨族 pooling 禁止；本 gate 不授权 #10 完整汇报发布或 #11 启动。"
+    }
+  ],
+  "refs": {
+    "gate_id": "G-T0-READY-02",
+    "a5_reviewer": "a5-review",
+    "old_gate_commit": "3b8abc69f18747d195e93244a32df6ff7400ddb9",
+    "old_gate_json": "792dfcad56d96d5c829126f9fd2e9a55b94e26839f4341b098bc4d363ad8d28d/28,840",
+    "old_gate_md": "925bd10baaf7a405c01cfb740fdb4bfcbf9eb72de4aba528e1c2cdd3fc28d603/12,409",
+    "scope_addendum_commit": "7703bce7ce8794bfc21cb10bf2b957b121c55a78",
+    "scope_addendum_json": "d2ecb16a7e1c813215cfb7c8d2b536865f19d2e43d2c219152022d9bf7d88602/19,868",
+    "scope_addendum_md": "791ffd5a8b461b213f03028bc2103ab665d40fdeb540f572030cf69142b84675/8,778",
+    "l28_commit": "de727ff27254eb4e719c377c1c9b81152d77083c",
+    "l28_json": "244270ab9268554fb3c631eebfa72484cba54b2283b2556756b93d66c0fcd5c3/2,244",
+    "l28_md": "02585f621b9bd9c5efcba6f4fb0c6dc250eeddcd7eacafe28fc491044c0c48c4/5,695",
+    "a2_t0_3_commit": "660071da0cffb3e8e7556fac567fea1c8e3722c4",
+    "a2_c32_commit": "9a9e294428801e3a3f262cb003408b732299cd8a",
+    "a2_head": "9a9e294428801e3a3f262cb003408b732299cd8a",
+    "a2_production": "21d3e807823e8595cae5731407dd65183c336a9a3728a234739c63ed7dedad1d/27,663",
+    "a2_production_init": "2a642b424463564e694666c8224e11f3861f7a2beb121446835c58cb4c45561a/3,236",
+    "a2_c32_test": "8fe82de7dc02294b558c1a663268c8f1cb43796b07b56108ce91f27987dd5adc/15,654",
+    "a2_c32_evidence": "dc08949bd36928e1c7b0eb25e5a74769c2c14504b0bfdcca8eaefcfd389f09fe/86,641",
+    "a2_c32_sums": "29646ff67347b4317aa26336cac408a86fb1d2db0ec3ea569f0e0364f44e57ac/482",
+    "a2_t0_3_sums": "46bc28fb2ffe7fbd84dda7d983e3d51da265c471ba9ff2014bb14247e67c5c05/3,215",
+    "a2_smoke": "cc3527c9e01ac82a21f64644682fecef06c3c3ac84a56bb80e5b671ca745f483/130,897",
+    "a2_replay_core": "4763a3393bf22e230c9ce6a69aac7a8f74e323708deb6c90e2fa73ddf39bd5c3/110,489",
+    "a2_core_sha": "9ab5362d30e213d181016cdbed9dfc5f3d4132b3be39778afee5bc4268097fa5",
+    "a3_t0_1_2_commit": "702d32632869ead3bf411fd2ea6f2216d724f402",
+    "a3_t0_4_commit": "cd2bff6cf4cd0416e267ce39b44e9f83284a770e",
+    "a3_task48_commit": "58320176f045a7151e6b2d3ef8dd9b822335906e",
+    "a3_head": "58320176f045a7151e6b2d3ef8dd9b822335906e",
+    "task_spec": "d72677380eb42ae3776bb6289d37f6ef78fe82de74ab16ad2849cb8ed11bf8f2/81,219",
+    "t01_contract": "fb85c9cd16c9b1f426af3e064b6b869ba6c72c4c2b97f51d35a1b006c5089705/167,540",
+    "t01_old_contract": "ec0a73e3c0e2d0dc078d6abfd71c8fe3231a348fd9b2fc70e7213b3db3a27172/66,349",
+    "t02_contract": "3ca9c84de99c621520870c4aa00125f69afe4fc49316e5f66bcb85d20e4570ee/77,782",
+    "t02_split": "cfe9a9a848e5b3e45b4723f2c106cffae977a876bdbe9c7cf02b4be8c84f206b/1,737",
+    "t04_yaml": "de1732a5627776b201e7e86ae9c8a31e9fb49c13507d33d6cf8800876226c756/139,212",
+    "t04_data_contract": "b0be72e09be0e8930520bf2bf064d01418b9a098784c27d0756f4eaaf0f4ef62/8,797",
+    "t04_train_config": "2c9736f32abfecc4cd770eeada12a59de277db2deb96f0116d2a04ef72103018/6,853",
+    "t04_split": "c516e1772f8302b7ac187b810f1ef21546e1d10e6b5cd305b490a57dfa71518d/14,939",
+    "t04_batch": "2942e5db7366e93e6266626f3580c5f8eddadf577b4f69574c5b1053783ff1bb/9,625",
+    "t04_readme": "1e9cba0c1f3a8bc712b7c5bc34de2e56abc52ef5ad0a4491fc234fbf013be112/10,985",
+    "t04_sums": "121ec4d4244a9bd9637b8ffffafbb3105c92cc4dc81f98ff4400fe28dd1d8eec/574",
+    "a4_head": "1c29d0a7ab61b775bef59485833445378dba8985",
+    "a4_t0_evidence_commit": "05743958f1f6a8a98b96a965f3b1792d4d40aeff",
+    "a4_sums": "fbeac18f23a08bacf934666a49baf20e828004e55c7157faa449114cece8837c/2,498"
+  },
+  "boundary": {
+    "not_an_execution_authorization": true,
+    "not_a_training_authorization": true,
+    "not_a_physics_validation": true,
+    "no_training_executed": true,
+    "no_performance_data": true,
+    "no_optimization_gain_claim": true,
+    "no_winner_or_significance": true,
+    "fuel_burn_kg": null,
+    "physics_validation_status": "NOT_VALIDATED",
+    "cross_family_pooling": "FORBIDDEN",
+    "ready_for_real_meta_training": false
+  },
+  "signature": {
+    "signed_by": "a5-review",
+    "signed_at_utc": "2026-11-13T04:35:00Z",
+    "attestation": "A5 independent non-author review; zero physical solver starts in this gate; T0_CODE_READINESS only; not an execution/training/physics authorization.",
+    "signature_label": "A5_T0_CODE_READINESS_SIGNED"
+  }
+}
