@@ -1,0 +1,251 @@
+{
+  "addendum_id": "ISSUE10-REPORT-REVIEW-ADD-01",
+  "schema": "dreal001.a5.issue10_report_review_addendum.v1",
+  "status": "ISSUED",
+  "issued_utc": "2026-11-13T05:09:37.533Z",
+  "issuer": "a5-review",
+  "parent_review": {
+    "commit": "896ab6e530b327b82832951aded6eeb3fd809b7f",
+    "json": {
+      "path": "docs/reviews/dreal001_a5_issue10_report_review_20261113.json",
+      "sha256": "67f9f6a9f42ed7802db840e767a7f61e149b15ee5e416b1837368f14fbc30d9d",
+      "bytes": 13556
+    },
+    "md": {
+      "path": "docs/reviews/dreal001_a5_issue10_report_review_20261113.md",
+      "sha256": "95c07daf815035d369e6a06121b857b7376ad9352caadca04737a8c9ce3308ce",
+      "bytes": 10537
+    },
+    "verdict": "ISSUE10_STAGE_REPORT_REVIEW_PASS_WITH_MINOR_CORRECTIONS_REQUIRED",
+    "signature_status": "A5_SIGNED_SUBJECT_TO_LISTED_CORRECTIONS",
+    "required_corrections": [
+      "C-01",
+      "C-02",
+      "C-03",
+      "C-04",
+      "C-05",
+      "C-06",
+      "C-07"
+    ]
+  },
+  "baseline_report": {
+    "path": "D:/RCAIDE/dnext001/wt-real-lead/docs/receipts/dreal001/issue10_stage_report_20261113.md",
+    "sha256": "ff43d5a979ba237a1a18116250060684d65a7af5e3e90bf402eb5de182cbd6a8",
+    "bytes": 19200,
+    "content_lines": 109,
+    "provenance": "Byte-exact reconstruction from the A5 review-time full read archived in compressed block b212; LF line endings plus trailing newline. Original 19,200 B file is no longer present on disk and no 19,200 B git blob was found; reconstruction hash equals the reviewed SHA exactly.",
+    "reconstruction": {
+      "method": "concatenate 109 archived content lines with LF plus trailing newline",
+      "sha256": "ff43d5a979ba237a1a18116250060684d65a7af5e3e90bf402eb5de182cbd6a8",
+      "bytes": 19200,
+      "matches_reviewed_sha": true
+    }
+  },
+  "corrected_report": {
+    "path": "D:/RCAIDE/dnext001/wt-real-lead/docs/receipts/dreal001/issue10_stage_report_20261113.md",
+    "sha256": "4a8200df7ab052252286084897e3aae8dc25a9a17372f0247e10b707f07d373f",
+    "bytes": 20227,
+    "content_lines": 109,
+    "line_ending": "LF",
+    "trailing_newline": true
+  },
+  "delta_check": {
+    "method": "line-by-line LCS comparison of reconstructed baseline (109 lines) against corrected report (109 content lines); all differing lines classified",
+    "old_content_lines": 109,
+    "new_content_lines": 109,
+    "replacements": 9,
+    "insertions": 0,
+    "deletions": 0,
+    "unmatched_changes": 0,
+    "changed_lines": [
+      {
+        "line": 11,
+        "correction_id": "C-06"
+      },
+      {
+        "line": 41,
+        "correction_id": "C-01"
+      },
+      {
+        "line": 44,
+        "correction_id": "C-05"
+      },
+      {
+        "line": 57,
+        "correction_id": "C-06"
+      },
+      {
+        "line": 59,
+        "correction_id": "C-07"
+      },
+      {
+        "line": 64,
+        "correction_id": "C-02"
+      },
+      {
+        "line": 74,
+        "correction_id": "C-03"
+      },
+      {
+        "line": 75,
+        "correction_id": "C-04"
+      },
+      {
+        "line": 99,
+        "correction_id": "SEC8"
+      }
+    ],
+    "conclusion": "ALL_CHANGES_ACCOUNTED_FOR_BY_C01_C07_AND_SECTION8_NO_OTHER_FACT_OR_CONCLUSION_CHANGES"
+  },
+  "corrections": [
+    {
+      "id": "C-06",
+      "line": 11,
+      "applied_status": "APPLIED_EXACT",
+      "old_line": "| F2 普通优化闭环 | **F2R2_PASS_WITH_NO_GAIN_AND_MAJOR_PROTOCOL_DEVIATION_DISCLOSED** | 18 starts/126 internal；14 有效观测+2 失败；真实 ask→build→VSPAERO→升力匹配→D_i_N→tell；无优化增益证据 |",
+      "new_line": "| F2 普通优化闭环 | **F2R2_PASS_WITH_NO_GAIN_AND_MAJOR_PROTOCOL_DEVIATION_DISCLOSED** | 18 starts/126 internal；14 有效观测+2 失败；真实 ask→build→VSPAERO→升力匹配→D_i_N→tell（G1 为 PRE_COMPUTED_DETERMINISTIC_AT_FREEZE，objective 未参与生成、无自适应选择；E3 仅执行链闭环）；无优化增益证据 |"
+    },
+    {
+      "id": "C-01",
+      "line": 41,
+      "applied_status": "APPLIED_EXACT",
+      "old_line": "- 执行 2026-11-12T22:38:41Z–22:40:22Z（101s）：**22/22 SOLVED，22 starts/154 internal**，caps 28/196 未触顶，0 INFRA/0 retry/stop=null。run dir 653 文件；A1 closeout 58ffe4d（SUMS 8a25b2d9/67,752 条 652/652 匹配）。",
+      "new_line": "- 执行 2026-11-12T22:38:41Z–22:40:22Z（101s）：**22/22 SOLVED，22 starts/154 internal**，caps 28/196 未触顶，0 INFRA/0 retry/stop=null。run dir 653 文件；A1 closeout 58ffe4d（SUMS 8a25b2d9…/67,752 B；652/652 条匹配）。"
+    },
+    {
+      "id": "C-05",
+      "line": 44,
+      "applied_status": "APPLIED_EXACT",
+      "old_line": "- 不确定度：U_rep=0、U_wake=0、U_iter=U_within=**7.052110714290113e-08**、2U=1.41042e-7；U_mesh=**NOT_COMPUTABLE**（本批未做网格加密；不得沿用旧 5.84% 跨族带作 U_mesh/增益阈值）。端点 baseline：CDi 0.016905823456482387、D_i_N 124061.21453538346、α* 5.100657553215899、CL 0.18174391741992046、升力残差 0。",
+      "new_line": "- 不确定度：U_rep=0、U_wake=0（仅表示 M1 NumWakeNodes 8→16 在本配置下 polar 字节同；机制未证，不得表述为尾迹不敏感）、U_iter=U_within=**7.052110714290113e-08**、2U=1.41042e-7；U_mesh=**NOT_COMPUTABLE**（本批未做网格加密；不得沿用旧 5.84% 跨族带作 U_mesh/增益阈值）。端点 baseline：CDi 0.016905823456482387、D_i_N 124061.21453538346、α* 5.100657553215899、CL 0.18174391741992046、升力残差 0。"
+    },
+    {
+      "id": "C-06",
+      "line": 57,
+      "applied_status": "APPLIED_EXACT",
+      "old_line": "- main 16：14 有效；DE-G1-02 与 RE-06-G1（同设计 2b7e08bacfd3c25e）SOLVER_NONCONVERGED（exit 0、未超时、objective=null；polar 58b8438d…），失败率 12.5%<25% 且<5 → 未触发科学停；失败计费、无 retry；7 对有效重复 CDi 相对差 0、polar SHA 相同。描述性最小 D_i_N=105466.23760960519（DE-G0-02，CDi 0.012273199825898704，α* 4.360086975080307）。**不得表述为优化增益**（单 seed、U_mesh unavailable、无 2U 增益规则）。",
+      "new_line": "- main 16：14 有效；DE-G1-02 与 RE-06-G1（同设计 2b7e08bacfd3c25e）SOLVER_NONCONVERGED（exit 0、未超时、objective=null；polar 58b8438d…），失败率 12.5%<25% 且<5 → 未触发科学停；失败计费、无 retry；E2 为 7/7 PASS + 1 NOT_COMPUTABLE（RE-06-G1）；7 对有效重复 CDi 相对差 0、polar SHA 相同。描述性最小 D_i_N=105466.23760960519（DE-G0-02，CDi 0.012273199825898704，α* 4.360086975080307）。**不得表述为优化增益**（单 seed、U_mesh unavailable、无 2U 增益规则）。"
+    },
+    {
+      "id": "C-07",
+      "line": 59,
+      "applied_status": "APPLIED_EXACT",
+      "old_line": "- **P-01 重大协议偏差（必须披露）**：F2R_PLAN.json:376 预注册了 `skip_logic`（源 primary 失败则 RE 复评标记 NOT_RUN_PRIMARY_FAILED、0 start），但 executor/runner 未实现该分支，导致 RE-06-G1 在 DE-G1-02 SOLVER_FAILED 后仍执行 1 start/7 internal。实际 18/126；counterfactual 17/119；无新增有效观测、未超 caps、无 retry、无科学停；不属 INFRA/治理/窗口违规。A2 增补 eb4f6b8（F2R2_SKIP_LOGIC_AUDIT 96c811cc、verify 25/25）；A5 要求后续同类运行前完成 RA-01..06（skip 语义+fail-closed 合同+回归测试+dry-run 策略模拟+closeout 对账+门禁 condition）。禁止把本批写成“17/119”或“19/133”。",
+      "new_line": "- **P-01 重大协议偏差（必须披露）**：F2R_PLAN.json:376 预注册了 `skip_logic`（源 primary 失败则 RE 复评标记 NOT_RUN_PRIMARY_FAILED、0 start），但 executor/runner 未实现该分支，导致 RE-06-G1 在 DE-G1-02 SOLVER_FAILED 后仍执行 1 start/7 internal。实际 18/126；counterfactual 17/119；无新增有效观测、未超 caps、无 retry、无科学停；不属 INFRA/治理/窗口违规。A2 增补 eb4f6b8（F2R2_SKIP_LOGIC_AUDIT 96c811cc、verify 25/25）；A5 要求 RA-01、RA-03 为未来 F2-like 运行前置；RA-02/04/05/06 为携带整改/记录项（skip 语义+fail-closed 合同+回归测试+dry-run 策略模拟+closeout 对账+门禁 condition）。禁止把本批写成“17/119”或“19/133”。"
+    },
+    {
+      "id": "C-02",
+      "line": 64,
+      "applied_status": "APPLIED_EXACT",
+      "old_line": "- **T0-2**：`meta/meta_dataset.py` **da385389…**（EvaluationRecord/MetaDataset；support/query 任务内切分、meta_train/val/test 任务身份切分；泄漏 7/7 审计 PASS；sealed fixture 32；REAL_TRAINING_INGEST 默认 fail-closed；22 tests）。",
+      "new_line": "- **T0-2**：`meta/meta_dataset.py` **da385389…**（EvaluationRecord/MetaDataset；support/query 任务内切分、meta_train/val/test 任务身份切分；泄漏 7/7 审计 PASS；sealed fixture 32；REAL_TRAINING_INGEST 默认 fail-closed；T0-1/T0-2 合同测试当前 31 passed（task-48 前 22；新增 9 项；A5 独立复跑））。"
+    },
+    {
+      "id": "C-03",
+      "line": 74,
+      "applied_status": "APPLIED_EXACT",
+      "old_line": "- F1：Group A 同输入 3/3（F1R2 4/4）polar SHA 相同=PASS，否则 |ΔCDi|/|ΔCL|≤1e-9 或 rel+abs≤1e-3 仅披露；同 x12 构建状态 >2 或 E3 则 FAIL（F1R2 单状态，披露）；同升力残差≤1e-4、D_i_N 独立复算≤1e-12；CL-α 预注册 alpha [-2,0,2,4,6,8,10]、线性插值、无 bracket=LIFT_TARGET_UNREACHABLE、NaN=SOLVER_NONCONVERGED、R²≥0.99。",
+      "new_line": "- F1：Group A 同输入 3/3（F1R2 4/4）polar SHA 相同=PASS，否则 |ΔCDi|≤1e-9 且 |ΔCL|≤1e-9 = PASS_WITH_DISCLOSURE；相对/绝对均≤1e-3 = PASS_WITH_DISCLOSURE；更差 FAIL；同 x12 构建状态 >2 或 E3 则 FAIL（F1R2 单状态，披露）；同升力残差≤1e-4、D_i_N 独立复算≤1e-12；CL-α 预注册 alpha [-2,0,2,4,6,8,10]、线性插值、无 bracket=LIFT_TARGET_UNREACHABLE、NaN=SOLVER_NONCONVERGED、R²≥0.99。"
+    },
+    {
+      "id": "C-04",
+      "line": 75,
+      "applied_status": "APPLIED_EXACT",
+      "old_line": "- F2：预注册 invalid+failed/16=25%（≥5）自动停；INFRA_ERROR 硬停不重试，max_retries=0；失败目标 null；全部启动计费；候选独立复评一致性 |ΔCDi|/CDi≤1e-3；U_mesh unavailable、无 2U 增益规则，允许 PASS_WITH_NO_GAIN。",
+      "new_line": "- F2：预注册 invalid+failed/16 >25% 或 numerator≥5 自动停；INFRA_ERROR 硬停不重试，max_retries=0；失败目标 null；全部启动计费；候选独立复评一致性 |ΔCDi|/CDi≤1e-3；U_mesh unavailable、无 2U 增益规则，允许 PASS_WITH_NO_GAIN。"
+    },
+    {
+      "id": "SEC8",
+      "line": 99,
+      "applied_status": "APPLIED_AS_REVIEW_RECORD",
+      "old_line": "- **本阶段汇报的 A5 独立核对记录**：待 A5 对本报告事实/数字/边界签署后补入（签名 SHA、commit、结论）；未签署前本评论不声称“已通过 A5 汇报复核”。",
+      "new_line": "- **A5 独立复核（已签署）**：复核对象为本报告修正前版本 SHA256 ff43d5a9…/19,200B；A5 commit **896ab6e**（docs/reviews/dreal001_a5_issue10_report_review_20261113.json 67F9F6A9…/13,556B、.md 95C07DAF…/10,537B）；verdict **ISSUE10_STAGE_REPORT_REVIEW_PASS_WITH_MINOR_CORRECTIONS_REQUIRED**，signature_status **A5_SIGNED_SUBJECT_TO_LISTED_CORRECTIONS**。核心数字/commit/SHA/预算双口径（actual 65/455、charged 70/490）/三层结论/fuel null/物理 NOT_VALIDATED 均核验一致，未发现越权授权；C-01..C-07 已逐条落实（单位、测试数、容差、停批阈值、U_wake 限定、E3 G1 预计算、RA 范围），修正不改变结论。A5 physical_call_count=0。"
+    }
+  ],
+  "corrections_summary": [
+    {
+      "id": "C-01",
+      "status": "APPLIED_EXACT",
+      "line": 41,
+      "change": "SUMS unit corrected to 67,752 B and 652/652 matched"
+    },
+    {
+      "id": "C-02",
+      "status": "APPLIED_EXACT",
+      "line": 64,
+      "change": "T0-1/T0-2 contract tests corrected to 31 passed (22 before task-48; 9 added; A5 rerun)"
+    },
+    {
+      "id": "C-03",
+      "status": "APPLIED_EXACT",
+      "line": 74,
+      "change": "F1 tolerance wording corrected; explicit better/worse rule"
+    },
+    {
+      "id": "C-04",
+      "status": "APPLIED_EXACT",
+      "line": 75,
+      "change": "F2 science stop corrected to >25% or numerator>=5"
+    },
+    {
+      "id": "C-05",
+      "status": "APPLIED_EXACT",
+      "line": 44,
+      "change": "U_wake=0 limited to byte-identical polar in this configuration; mechanism unproven; tail-insensitivity prohibited"
+    },
+    {
+      "id": "C-06",
+      "status": "APPLIED_EXACT",
+      "lines": [
+        11,
+        57
+      ],
+      "change": "E3 limited to execution-chain closure with G1 PRE_COMPUTED_DETERMINISTIC_AT_FREEZE/objective unused/no adaptive selection; E2 7/7 PASS + 1 NOT_COMPUTABLE"
+    },
+    {
+      "id": "C-07",
+      "status": "APPLIED_EXACT",
+      "line": 59,
+      "change": "RA-01 and RA-03 identified as future F2-like prerequisites; RA-02/04/05/06 as carried remediation/record items"
+    },
+    {
+      "id": "SEC8",
+      "status": "APPLIED_AS_REVIEW_RECORD",
+      "line": 99,
+      "change": "A5 review record inserted: reviewed old SHA, A5 commit, two file SHAs/bytes, verdict, signature_status, physical_call_count=0"
+    }
+  ],
+  "facts_unchanged": {
+    "statement": "All other 100 content lines are byte-identical to the baseline; no change to F0/F1/F2/T0 facts, commit/SHA anchors, budgets, three-layer conclusions, or non-claims.",
+    "f0": "4504bb75; 182 files = 181A+1M+0D",
+    "budgets": "actual 65/455; charged 70/490",
+    "three_layer_conclusions": [
+      "SOLVER_LOOP_VERIFIED=PASS_WITH_DISCLOSURE",
+      "INTERNAL_AERO_OPTIMIZATION_GAIN=NOT_EVALUATED_NO_EVIDENCE",
+      "EXTERNAL_PHYSICS_SUPPORTED=NOT_VALIDATED"
+    ],
+    "f2r2_verdict": "F2R2_PASS_WITH_NO_GAIN_AND_MAJOR_PROTOCOL_DEVIATION_DISCLOSED",
+    "t0": "T0_CODE_READINESS_PASS; ready_for_real_meta_training=false",
+    "fuel_burn_kg": null,
+    "external_physics": "NOT_VALIDATED"
+  },
+  "release": {
+    "verdict": "PUBLISH_APPROVED",
+    "scope": "Publication of the corrected Issue #10 Chinese stage report, with the A5 review record in section 8.",
+    "conditions": [
+      "Publish the corrected report bytes with SHA256 4a8200df7ab052252286084897e3aae8dc25a9a17372f0247e10b707f07d373f and 20,227 B.",
+      "Retain the reviewed baseline SHA256 ff43d5a9.../19,200 B as historical review object.",
+      "Do not represent this approval as an execution/training/physics authorization for Issue #11."
+    ],
+    "not_an_execution_authorization": true,
+    "does_not_authorize_issue11_m0": true
+  },
+  "boundary": {
+    "a5_physical_call_count": 0,
+    "solver_started": false,
+    "run_dir_created": false,
+    "ledger_written": false,
+    "report_bytes_modified_by_a5": false,
+    "old_evidence_overwritten": false
+  }
+}
