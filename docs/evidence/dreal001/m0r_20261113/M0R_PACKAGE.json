@@ -1,0 +1,133 @@
+{
+  "a1_interface": {
+    "clarification": {
+      "bytes": 7673,
+      "path": "D:/RCAIDE/dnext001/wt-real-a1-geometry-solver/docs/receipts/dreal001/a1_m0r_interface_clarification_20261113.json",
+      "sha256": "7731e9c8b6269e50b343f7e2fbb9ade9c123e14bb33db7e0a884a922cc83e948"
+    },
+    "clarification_a5_status": "A5_ACCEPTED_AUTHORITATIVE",
+    "clarification_commit": "e659f15d826de0c55bcfe02944a97a28ba50b824",
+    "code_commit": "0c514151d989de716dbb855973b900a34615b5aa",
+    "dry_run": {
+      "bytes": 43587,
+      "path": "D:/RCAIDE/dnext001/wt-real-a1-geometry-solver/docs/receipts/dreal001/a1_m0r_task_executor_dry_run_20261113.json",
+      "sha256": "8688d25770911af7fadd42587f66a4914091c829fd8cdc89c1f349a53731b4c6"
+    },
+    "evaluator": {
+      "bytes": 63459,
+      "path": "D:/RCAIDE/dnext001/wt-real-a1-geometry-solver/research/concorde_metaopt/dreal001/m1/task_evaluator.py",
+      "sha256": "e88c21775d753c555b1ba8d5076c45d5c3fc956be8c2daf8eb194e73ec777261"
+    },
+    "freeze_commit": "c5698a218fad974e8e96b604573c5cc79b3abb32",
+    "interface": {
+      "bytes": 16925,
+      "path": "D:/RCAIDE/dnext001/wt-real-a1-geometry-solver/docs/receipts/dreal001/a1_m0r_task_evaluator_interface_20261113.md",
+      "sha256": "6ef6b16e181f404ee6219db27a9125769b78d5368de653ec791c2aa21a4e790b"
+    },
+    "n_sums_entries": 7,
+    "required_m0r_wording_zh": {
+      "CL-1-SREF": "SREF_REF 以 post-fix baseline 几何运行时重算值为唯一来源（本次 358.25000000000006），冻结常量仅作 1e-12 校验锚；不得把 358.25 作为计算输入硬编码。",
+      "CL-2-SOLVER-INPUT-SHA": "solver_input_sha256 含 path-dependent/random 的 .vkey，跨进程不可复现；确定性绑定只用 deck_sha256 + vspgeom_sha256（加 solver_sha256/task_fingerprint），vkey 与 input_sha 按 run 记录，不作跨进程 expected。",
+      "CL-3-F1R2-CONTINUITY": "M2.02 仅物理条件与 F1R2 逐位连续（q=20483.940233430174，Mach/Vinf/Rho/ReCref/alpha 网格相同），deck 字节不相等（A1 943B/LF vs F1R2 985B/CRLF，43 行规范化后相同）；不继承 F1R2 expected polar，M1-A 重建 admission baseline。"
+    },
+    "sha256sums": {
+      "bytes": 948,
+      "path": "D:/RCAIDE/dnext001/wt-real-a1-geometry-solver/docs/receipts/dreal001/a1_m0r_SHA256SUMS_20261113.txt",
+      "sha256": "3ca22ec983f4c7f60360075564cf93d255fbcce2156181f0cdbdff07d4f5d302"
+    }
+  },
+  "a5_gate": {
+    "a5_commit": null,
+    "a5_draft_reference": {
+      "commit": "ba1b11f",
+      "status": "DRAFT_NOT_A_GATE"
+    },
+    "gate_id": "G-M0R-ADMISSION-01",
+    "gate_input_status": "FORMAL_PACKAGE_FROZEN_PENDING_A5_FORMAL_GATE",
+    "status": "PENDING_A5_FORMAL_GATE"
+  },
+  "a5_wording_corrections": {
+    "a2_runner_must_not_gate_on_solver_input_sha256": true,
+    "cross_process_deck_identity": "deck_sha256 + vspgeom_sha256",
+    "m1a_rebuilds_admission_baseline": true,
+    "m202_continuity_is_q_physics_only_not_deck_bytes": true,
+    "m202_does_not_inherit_f1r2_expected_polar": true,
+    "solver_input_sha256_is_path_dependent_not_cross_process_expected": true,
+    "sref_anchor_must_not_be_used_as_runtime_input": true,
+    "sref_ref_frozen_is_anchor_constant_only": true,
+    "sref_runtime_is_only_source": true,
+    "vkey_must_be_recorded_per_run_and_may_be_disclosed_nondeterministic": true
+  },
+  "approval": null,
+  "authorization_status": "NOT_CREATED_M0R_ZERO_PHYSICAL",
+  "budget": {
+    "hard_cap_internal_cases": 882,
+    "hard_cap_starts": 126,
+    "labels": 96,
+    "m3_b": "NOT_AUTHORIZED",
+    "planned_internal_cases": 805,
+    "planned_starts": 115,
+    "preflight": 6,
+    "retry": 0
+  },
+  "claims": {
+    "fuel_burn_kg": null,
+    "no_cross_family_average": true,
+    "no_significance": true,
+    "no_winner": true,
+    "physics_status": "NOT_VALIDATED"
+  },
+  "continuity_disclosure": {
+    "deck_byte_continuity": false,
+    "inherits_f1r2_expected_polar": false,
+    "m1a_rebuilds_admission_baseline": true,
+    "m2_02_continuity": "q/physical conditions are continuous with the F1R2 anchor",
+    "note": "A1 f1r2_continuity m2_02 is_byte_continuous_with_f1r2=true is an overstatement: the M202 deck is 943 B/LF while the F1R2 same-content deck is 985 B/CRLF; content is the same but bytes are not equal."
+  },
+  "family_sha256": "98b84f5ecf6e18a7be90e21da41b243dccb664f09034366ea3b58d777f1c0311",
+  "family_sha256_status": "FROZEN_NEW_FAMILY",
+  "files": [
+    "M0R_PACKAGE.json",
+    "M0R_TASK_SPECS.json",
+    "M0R_DECK_FREEZE.json",
+    "M0R_SREF_PROVENANCE.json",
+    "M0R_DESIGN_SPACE_BINDING.json",
+    "M0R_SPLIT_LEAKAGE_AUDIT.json",
+    "M0R_BUDGET_LEDGER.json",
+    "M0R_CTX_PLAN.json",
+    "M0R_STAT_ENDPOINTS.json",
+    "M0R_A1_INTERFACE_BINDING.json",
+    "M0R_A5_REQUIREMENTS_MAP.json",
+    "M0R_ZERO_PHYSICAL_EVIDENCE.json",
+    "M0R_VALIDATION.json",
+    "M0R_PREREGISTRATION_ZH.md",
+    "README_ZH.md",
+    "SHA256SUMS.txt",
+    "pre_draft/ (historical appendix)",
+    "decks/ (6 frozen B0-01 baseline decks; full family deck space 18 = 3 designs x 6 tasks; 12 B1-01/C5 reference entries unfrozen; M1-A 12 slots = 4 M1 tasks x 3 designs (4 frozen B0 + 8 B1/C5 to freeze before authorization); 4 meta_test B1/C5 slots to freeze before M3-A)"
+  ],
+  "ledger": null,
+  "n_tasks": 6,
+  "non_result_boundary": [
+    "Formal M0-R package only; not a run, result, admission or gate.",
+    "A5 independently recomputes and signs G-M0R-ADMISSION-01; M1 not authorized.",
+    "Zero physical; no solver started."
+  ],
+  "old_family_sha256_retired": [
+    "ada424cc...",
+    "40fdd436..."
+  ],
+  "package_id": "DREAL001-M0R-20261113-01",
+  "physical_call_count": 0,
+  "run_dir": null,
+  "schema": "dreal001.m0r_package.v1.package.v1",
+  "solver_started": false,
+  "split": {
+    "meta_test_blind": 2,
+    "meta_train": 3,
+    "meta_val": 1
+  },
+  "status": "M0R_PACKAGE_FROZEN_PENDING_A5_GATE",
+  "token": null,
+  "tool_version": "a3-m0r-package-v1.0.0"
+}

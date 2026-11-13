@@ -1,0 +1,1883 @@
+{
+  "checks": [
+    {
+      "description": "six final tasks in L-30-A01 order",
+      "id": "M0R-TASK-01",
+      "status": "PASS"
+    },
+    {
+      "description": "3 train / 1 val / 2 blind test",
+      "id": "M0R-TASK-02",
+      "status": "PASS"
+    },
+    {
+      "description": "q recomputes rel<=1e-12",
+      "id": "M0R-TASK-03",
+      "status": "PASS"
+    },
+    {
+      "description": "L_ref=q*SREF_REF*CL rel<=1e-12",
+      "id": "M0R-TASK-04",
+      "status": "PASS"
+    },
+    {
+      "description": "mass 100-190 t",
+      "id": "M0R-TASK-05",
+      "status": "PASS"
+    },
+    {
+      "description": "7 alpha points and max_refine_sweeps=0",
+      "id": "M0R-TASK-06",
+      "status": "PASS"
+    },
+    {
+      "description": "new family SHA, not old ada424cc/40fdd436",
+      "id": "M0R-TASK-07",
+      "status": "PASS"
+    },
+    {
+      "description": "task IDs are new M0-R IDs with A1 mapping",
+      "id": "M0R-TASK-08",
+      "status": "PASS"
+    }
+  ],
+  "family_payload_sha256_input": {
+    "a1_task_evaluator_sha256": "e88c21775d753c555b1ba8d5076c45d5c3fc956be8c2daf8eb194e73ec777261",
+    "baseline_vspgeom_sha256": "16da482a1f8e59f6b454378769961caafde5eef87784127db6cce87381943b84",
+    "n_tasks": 6,
+    "openvsp_geometry_sha256": "d20ee7adc38286c7da3ef3ea5aa5be8204596d491d6601b9a635b0ae5213dc56",
+    "raw_design_space_sha256": "8b29d1e3833edc2af248d68cd6b7b4c94ebf775f25c86d80062a3850765a499e",
+    "schema": "dreal001.m0r_family.v1",
+    "solver": {
+      "openvsp_version": "3.55.0",
+      "solver_version": "7.2.2"
+    },
+    "sref_ref_m2": 358.25000000000006,
+    "task_set": [
+      {
+        "task_fingerprint": "86cd3a0a3c925ba50814da3fc740a483f3e7ddb12e3b02e4a752cb75a1f66484",
+        "task_id": "M0R-M202-CL017"
+      },
+      {
+        "task_fingerprint": "cb860199e13205342f5e65277935b39a0aff957c3200c87f15b47d800899ceb1",
+        "task_id": "M0R-M202-CL019"
+      },
+      {
+        "task_fingerprint": "c6c2d6a866a46ab64c1f9501c4e096e39e0ca08798cc4129746099c90f800dbb",
+        "task_id": "M0R-M220-CL017"
+      },
+      {
+        "task_fingerprint": "56bd8c34d94ab3e4166ad49319374809907b8d0bfc473f188f1d8862af877e16",
+        "task_id": "M0R-M220-CL019"
+      },
+      {
+        "task_fingerprint": "9eb6472c86b953dad582ab118942f9312a441175814f19ca675ab737bbaac760",
+        "task_id": "M0R-M180-CL017"
+      },
+      {
+        "task_fingerprint": "e2b7fe8831d42c151137c5f48f7f7c3ba6ff47769528f0137e705cfa46c03c57",
+        "task_id": "M0R-M180-CL019"
+      }
+    ]
+  },
+  "family_sha256": "98b84f5ecf6e18a7be90e21da41b243dccb664f09034366ea3b58d777f1c0311",
+  "family_sha256_algorithm": "sha256(canonical JSON of dreal001.m0r_family.v1)",
+  "family_sha256_status": "FROZEN_NEW_FAMILY_NOT_OLD",
+  "n_fail": 0,
+  "n_tasks": 6,
+  "non_result_boundary": [
+    "Frozen contract only; no real label, run, admission or physics validation.",
+    "New family SHA; old 18-task family ada424cc and old geometry 40fdd436 retired.",
+    "Zero physical: no solver was started."
+  ],
+  "old_family_sha256_retired": [
+    "ada424cc...",
+    "40fdd436..."
+  ],
+  "package_id": "DREAL001-M0R-20261113-01",
+  "schema": "dreal001.m0r_package.v1.task_specs.v1",
+  "splits": {
+    "meta_test_blind": [
+      "M0R-M180-CL017",
+      "M0R-M180-CL019"
+    ],
+    "meta_train": [
+      "M0R-M202-CL017",
+      "M0R-M202-CL019",
+      "M0R-M220-CL017"
+    ],
+    "meta_val": [
+      "M0R-M220-CL019"
+    ]
+  },
+  "status": "M0R_PACKAGE_FROZEN_PENDING_A5_GATE",
+  "task_ids": [
+    "M0R-M202-CL017",
+    "M0R-M202-CL019",
+    "M0R-M220-CL017",
+    "M0R-M220-CL019",
+    "M0R-M180-CL017",
+    "M0R-M180-CL019"
+  ],
+  "tasks": [
+    {
+      "a1_draft_task_fingerprint_status": "A1_DRY_RUN_DRAFT_NOT_FINAL",
+      "a1_interface_task_fingerprint": "0c2b6bb08516e1cf8235fb45638d6977671cbe5deac53ad915cb55c63a938c90",
+      "a1_interface_task_fingerprint_status": "A1_FROZEN_TEMPORARY_TASK_ID_FINGERPRINT_MAPPED_TO_A3_FINAL_ID",
+      "a1_task_id": "T18K_M202_CL017",
+      "active_mask": "12D_ALL_ACTIVE",
+      "alpha_grid_deg": [
+        -2.0,
+        0.0,
+        2.0,
+        4.0,
+        6.0,
+        8.0,
+        10.0
+      ],
+      "alpha_refine_deg": [],
+      "alpha_refine_mode": "FIXED_7_POINT_NO_REFINE",
+      "altitude_m": 18288.0,
+      "atmosphere": {
+        "a_sound_m_s": 295.06801842964956,
+        "atmosphere_id": "ATM-F1R2",
+        "p_static_pa": 7171.544888256813,
+        "r_j_kg_k": 287.05287,
+        "rejected_source": "ISO-1 standard ISA",
+        "rho_kg_m3": 0.1153178340089936,
+        "source": "ATM_F1R2",
+        "t_static_k": 216.65
+      },
+      "cl_target": 0.17,
+      "design_space": {
+        "check_cross_constraints_required_in_m1": true,
+        "cross_constraints": [
+          {
+            "expression": "span_location_2 < span_location_3",
+            "id": "C01",
+            "note": "wing breakpoints must stay ordered."
+          },
+          {
+            "expression": "chord_ratio_3 < chord_ratio_2 < 1.0",
+            "id": "C02",
+            "note": "chord stays positive and monotonically decreasing outboard."
+          },
+          {
+            "expression": "0 < wing_area, 0 < aspect_ratio, 0 < vertical_tail_area, 0 < fuselage_length",
+            "id": "C03",
+            "note": "positive geometric quantities; fuselage_length is the fixed F01 value re-injected by DesignSpace.expand."
+          },
+          {
+            "expression": "0 <= sweep_1, sweep_2, sweep_3 <= 90",
+            "id": "C04",
+            "note": "sweep sanity range in degrees."
+          }
+        ],
+        "design_set": "12d_lifting_surfaces",
+        "fixed_variables": [
+          {
+            "baseline": 61.66,
+            "id": "F01",
+            "name": "fuselage_length",
+            "source": "owner decision 2026-10-30, item 2: adopt the computed geometry-model value instead of the upstream declared value; not deleted from the contract.",
+            "target": "fuselage.lengths.total",
+            "unit": "m"
+          },
+          {
+            "baseline": 4.3,
+            "id": "F02",
+            "name": "fuselage_fineness",
+            "source": "owner decision 2026-10-30, item 2: adopt the computed geometry-model value instead of the upstream declared value; not deleted from the contract.",
+            "target": "fuselage.fineness.nose",
+            "unit": "dimensionless"
+          },
+          {
+            "baseline": 1.152778,
+            "id": "F03",
+            "name": "fuselage_height_width_ratio",
+            "source": "owner decision 2026-10-30, item 2: adopt the computed geometry-model value instead of the upstream declared value; not deleted from the contract.",
+            "target": "fuselage.heights.maximum_over_width",
+            "unit": "dimensionless"
+          }
+        ],
+        "raw_yaml_bytes": 10846,
+        "raw_yaml_sha256": "8b29d1e3833edc2af248d68cd6b7b4c94ebf775f25c86d80062a3850765a499e",
+        "variables": [
+          {
+            "baseline": 358.25,
+            "id": "W01",
+            "lower": 300.0,
+            "name": "wing_area",
+            "scale": 100.0,
+            "target": "main_wing.areas.reference",
+            "unit": "m^2",
+            "upper": 420.0
+          },
+          {
+            "baseline": 1.83,
+            "id": "W02",
+            "lower": 1.5,
+            "name": "aspect_ratio",
+            "scale": 1.0,
+            "target": "main_wing.aspect_ratio",
+            "unit": "dimensionless",
+            "upper": 2.2
+          },
+          {
+            "baseline": 67.0,
+            "id": "W03",
+            "lower": 62.0,
+            "name": "sweep_1",
+            "scale": 10.0,
+            "target": "main_wing.segments.section_1.sweeps.quarter_chord",
+            "unit": "deg",
+            "upper": 72.0
+          },
+          {
+            "baseline": 48.0,
+            "id": "W04",
+            "lower": 40.0,
+            "name": "sweep_2",
+            "scale": 10.0,
+            "target": "main_wing.segments.section_2.sweeps.quarter_chord",
+            "unit": "deg",
+            "upper": 56.0
+          },
+          {
+            "baseline": 71.0,
+            "id": "W05",
+            "lower": 66.0,
+            "name": "sweep_3",
+            "scale": 10.0,
+            "target": "main_wing.segments.section_3.sweeps.quarter_chord",
+            "unit": "deg",
+            "upper": 76.0
+          },
+          {
+            "baseline": 0.480469,
+            "id": "W06",
+            "lower": 0.35,
+            "name": "span_location_2",
+            "scale": 0.1,
+            "target": "main_wing.segments.section_2.percent_span_location",
+            "unit": "dimensionless",
+            "upper": 0.58
+          },
+          {
+            "baseline": 0.945313,
+            "id": "W07",
+            "lower": 0.85,
+            "name": "span_location_3",
+            "scale": 0.1,
+            "target": "main_wing.segments.section_3.percent_span_location",
+            "unit": "dimensionless",
+            "upper": 0.98
+          },
+          {
+            "baseline": 0.408284,
+            "id": "W08",
+            "lower": 0.3,
+            "name": "chord_ratio_2",
+            "scale": 0.1,
+            "target": "main_wing.segments.section_2.root_chord_percent",
+            "unit": "dimensionless",
+            "upper": 0.5
+          },
+          {
+            "baseline": 0.130178,
+            "id": "W09",
+            "lower": 0.08,
+            "name": "chord_ratio_3",
+            "scale": 0.1,
+            "target": "main_wing.segments.section_3.root_chord_percent",
+            "unit": "dimensionless",
+            "upper": 0.2
+          },
+          {
+            "baseline": 0.0,
+            "id": "W10",
+            "lower": -4.0,
+            "name": "tip_twist",
+            "scale": 5.0,
+            "target": "main_wing.segments.tip.twist",
+            "unit": "deg",
+            "upper": 4.0
+          },
+          {
+            "baseline": 33.91,
+            "id": "V01",
+            "lower": 28.0,
+            "name": "vertical_tail_area",
+            "scale": 10.0,
+            "target": "vertical_stabilizer.areas.reference",
+            "unit": "m^2",
+            "upper": 40.0
+          },
+          {
+            "baseline": 0.0,
+            "id": "V02",
+            "lower": -10.0,
+            "name": "vertical_tail_sweep_delta",
+            "scale": 10.0,
+            "target": "vertical_stabilizer.quarter_chord_sweep_delta",
+            "unit": "deg",
+            "upper": 10.0
+          }
+        ]
+      },
+      "evaluator": {
+        "a1_dry_run_sha256": "8688d25770911af7fadd42587f66a4914091c829fd8cdc89c1f349a53731b4c6",
+        "a1_task_evaluator_sha256": "e88c21775d753c555b1ba8d5076c45d5c3fc956be8c2daf8eb194e73ec777261",
+        "interface_status": "A1_INTERFACE_FROZEN",
+        "task_capable": true,
+        "zero_physical_dry_run_verdict": "PASS"
+      },
+      "evidence_status": {
+        "admission": "DEFERRED_TO_M1A_WITH_PRE_REGISTERED_CHECKS",
+        "expected_polar_policy": "M2.02 may use the F1R2 continuity anchor only; M2.2 and M1.8 do not inherit any F1R2 expected polar",
+        "fuel_burn_kg": null,
+        "physics_validation_status": "NOT_VALIDATED",
+        "real_labels": 0
+      },
+      "geometry": {
+        "baseline_vspgeom_bytes": 225414,
+        "baseline_vspgeom_sha256": "16da482a1f8e59f6b454378769961caafde5eef87784127db6cce87381943b84",
+        "f1r2_12d_audit_sha256": "7a90b977fd7ba1778ee44c722a837898b62c9f9d201e4cbd22ca2b7b3afdeea5",
+        "mesh_family": "546x480",
+        "openvsp_geometry_sha256": "d20ee7adc38286c7da3ef3ea5aa5be8204596d491d6601b9a635b0ae5213dc56",
+        "per_design_sref_m2": {
+          "B0-01": {
+            "cl_required": 0.17,
+            "design_hash": "8bd5a6c7c8311938",
+            "sref_m2": 358.25000000000006,
+            "vspgeom_sha256": "16da482a1f8e59f6b454378769961caafde5eef87784127db6cce87381943b84"
+          },
+          "B1-01": {
+            "cl_required": 0.17,
+            "design_hash": "6653517b11d6f891",
+            "sref_m2": 358.25000000000006,
+            "vspgeom_sha256": "6a296aee6e6f6b505083c655c63a667fd52309432e798b25305d01d588d70612"
+          },
+          "C5": {
+            "cl_required": 0.1644902093180284,
+            "design_hash": "bc52a54ecefaac4c",
+            "sref_m2": 370.25,
+            "vspgeom_sha256": "e1ad74cc3820553ee6864d121168ae8f5b72d5602619f15de9cf2c04f1a7bde8"
+          }
+        }
+      },
+      "l_ref_a1_dry_run_n": 1247523.1700664815,
+      "l_ref_from_q_sref_cl_n": 1247523.1700664815,
+      "l_ref_n": 1247523.1700664815,
+      "l_ref_rel_error_vs_a1": 0.0,
+      "mach": 2.02,
+      "mask_policy": "12D_ALL_ACTIVE; 10D_ACTIVE_PLUS_2_INACTIVE=DEFERRED_TO_M1; no zero-effect claim for V01/V02",
+      "mass_bounds_t": [
+        100.0,
+        190.0
+      ],
+      "mass_ok": true,
+      "mass_rel_error_vs_addendum": 2.0300075792885135e-09,
+      "mass_t": 127.21196025824125,
+      "mass_t_addendum": 127.21196,
+      "max_refine_sweeps": 0,
+      "q_pa": 20483.940233430174,
+      "q_pa_a1_executor_formula": 20483.940233430174,
+      "q_recompute_rel_error": 1.7760151443687888e-16,
+      "q_recomputed_from_vinf_rho_pa": 20483.94023343017,
+      "recref": 89397005.8767656,
+      "rho_kg_m3": 0.1153178340089936,
+      "runtime_sref_policy": {
+        "anchor_value_used_only_for_validation": 358.25000000000006,
+        "hardcode_forbidden": true,
+        "runtime_binding": "post-fix baseline vspgeom SHA256 + recomputed value SHA256",
+        "runtime_recompute_required": true,
+        "runtime_source": "post-fix baseline geometry.wing.area_m2 recomputed at runtime"
+      },
+      "schema": "dreal001.m0r_package.v1.task_spec.v1",
+      "solver": {
+        "backend": "REAL_VSPAERO",
+        "expected_internal_cases_per_start": 7,
+        "openvsp_version": "3.55.0",
+        "solver_version": "7.2.2"
+      },
+      "split": "meta_train",
+      "split_role": "train",
+      "sref_ref_m2": 358.25000000000006,
+      "sref_ref_role": "VALIDATION_ANCHOR_ONLY_NOT_A_RUNTIME_HARDCODE",
+      "status": "M0R_PACKAGE_FROZEN_PENDING_A5_GATE",
+      "task_fingerprint": "86cd3a0a3c925ba50814da3fc740a483f3e7ddb12e3b02e4a752cb75a1f66484",
+      "task_fingerprint_algorithm": "sha256(canonical JSON of dreal001.m0r_task_identity.v1; split excluded)",
+      "task_fingerprint_status": "FROZEN_FINAL",
+      "task_id": "M0R-M202-CL017",
+      "task_id_status": "NEW_M0R_ID_NOT_REUSED_FROM_OLD_18_TASK_FAMILY",
+      "vinf_m_s": 596.0373972278921
+    },
+    {
+      "a1_draft_task_fingerprint_status": "A1_DRY_RUN_DRAFT_NOT_FINAL",
+      "a1_interface_task_fingerprint": "03bd6485379c2fa1c785c9ae89baff0f04399aaa582003fbe5a594fbd1032c65",
+      "a1_interface_task_fingerprint_status": "A1_FROZEN_TEMPORARY_TASK_ID_FINGERPRINT_MAPPED_TO_A3_FINAL_ID",
+      "a1_task_id": "T18K_M202_CL019",
+      "active_mask": "12D_ALL_ACTIVE",
+      "alpha_grid_deg": [
+        -2.0,
+        0.0,
+        2.0,
+        4.0,
+        6.0,
+        8.0,
+        10.0
+      ],
+      "alpha_refine_deg": [],
+      "alpha_refine_mode": "FIXED_7_POINT_NO_REFINE",
+      "altitude_m": 18288.0,
+      "atmosphere": {
+        "a_sound_m_s": 295.06801842964956,
+        "atmosphere_id": "ATM-F1R2",
+        "p_static_pa": 7171.544888256813,
+        "r_j_kg_k": 287.05287,
+        "rejected_source": "ISO-1 standard ISA",
+        "rho_kg_m3": 0.1153178340089936,
+        "source": "ATM_F1R2",
+        "t_static_k": 216.65
+      },
+      "cl_target": 0.19,
+      "design_space": {
+        "check_cross_constraints_required_in_m1": true,
+        "cross_constraints": [
+          {
+            "expression": "span_location_2 < span_location_3",
+            "id": "C01",
+            "note": "wing breakpoints must stay ordered."
+          },
+          {
+            "expression": "chord_ratio_3 < chord_ratio_2 < 1.0",
+            "id": "C02",
+            "note": "chord stays positive and monotonically decreasing outboard."
+          },
+          {
+            "expression": "0 < wing_area, 0 < aspect_ratio, 0 < vertical_tail_area, 0 < fuselage_length",
+            "id": "C03",
+            "note": "positive geometric quantities; fuselage_length is the fixed F01 value re-injected by DesignSpace.expand."
+          },
+          {
+            "expression": "0 <= sweep_1, sweep_2, sweep_3 <= 90",
+            "id": "C04",
+            "note": "sweep sanity range in degrees."
+          }
+        ],
+        "design_set": "12d_lifting_surfaces",
+        "fixed_variables": [
+          {
+            "baseline": 61.66,
+            "id": "F01",
+            "name": "fuselage_length",
+            "source": "owner decision 2026-10-30, item 2: adopt the computed geometry-model value instead of the upstream declared value; not deleted from the contract.",
+            "target": "fuselage.lengths.total",
+            "unit": "m"
+          },
+          {
+            "baseline": 4.3,
+            "id": "F02",
+            "name": "fuselage_fineness",
+            "source": "owner decision 2026-10-30, item 2: adopt the computed geometry-model value instead of the upstream declared value; not deleted from the contract.",
+            "target": "fuselage.fineness.nose",
+            "unit": "dimensionless"
+          },
+          {
+            "baseline": 1.152778,
+            "id": "F03",
+            "name": "fuselage_height_width_ratio",
+            "source": "owner decision 2026-10-30, item 2: adopt the computed geometry-model value instead of the upstream declared value; not deleted from the contract.",
+            "target": "fuselage.heights.maximum_over_width",
+            "unit": "dimensionless"
+          }
+        ],
+        "raw_yaml_bytes": 10846,
+        "raw_yaml_sha256": "8b29d1e3833edc2af248d68cd6b7b4c94ebf775f25c86d80062a3850765a499e",
+        "variables": [
+          {
+            "baseline": 358.25,
+            "id": "W01",
+            "lower": 300.0,
+            "name": "wing_area",
+            "scale": 100.0,
+            "target": "main_wing.areas.reference",
+            "unit": "m^2",
+            "upper": 420.0
+          },
+          {
+            "baseline": 1.83,
+            "id": "W02",
+            "lower": 1.5,
+            "name": "aspect_ratio",
+            "scale": 1.0,
+            "target": "main_wing.aspect_ratio",
+            "unit": "dimensionless",
+            "upper": 2.2
+          },
+          {
+            "baseline": 67.0,
+            "id": "W03",
+            "lower": 62.0,
+            "name": "sweep_1",
+            "scale": 10.0,
+            "target": "main_wing.segments.section_1.sweeps.quarter_chord",
+            "unit": "deg",
+            "upper": 72.0
+          },
+          {
+            "baseline": 48.0,
+            "id": "W04",
+            "lower": 40.0,
+            "name": "sweep_2",
+            "scale": 10.0,
+            "target": "main_wing.segments.section_2.sweeps.quarter_chord",
+            "unit": "deg",
+            "upper": 56.0
+          },
+          {
+            "baseline": 71.0,
+            "id": "W05",
+            "lower": 66.0,
+            "name": "sweep_3",
+            "scale": 10.0,
+            "target": "main_wing.segments.section_3.sweeps.quarter_chord",
+            "unit": "deg",
+            "upper": 76.0
+          },
+          {
+            "baseline": 0.480469,
+            "id": "W06",
+            "lower": 0.35,
+            "name": "span_location_2",
+            "scale": 0.1,
+            "target": "main_wing.segments.section_2.percent_span_location",
+            "unit": "dimensionless",
+            "upper": 0.58
+          },
+          {
+            "baseline": 0.945313,
+            "id": "W07",
+            "lower": 0.85,
+            "name": "span_location_3",
+            "scale": 0.1,
+            "target": "main_wing.segments.section_3.percent_span_location",
+            "unit": "dimensionless",
+            "upper": 0.98
+          },
+          {
+            "baseline": 0.408284,
+            "id": "W08",
+            "lower": 0.3,
+            "name": "chord_ratio_2",
+            "scale": 0.1,
+            "target": "main_wing.segments.section_2.root_chord_percent",
+            "unit": "dimensionless",
+            "upper": 0.5
+          },
+          {
+            "baseline": 0.130178,
+            "id": "W09",
+            "lower": 0.08,
+            "name": "chord_ratio_3",
+            "scale": 0.1,
+            "target": "main_wing.segments.section_3.root_chord_percent",
+            "unit": "dimensionless",
+            "upper": 0.2
+          },
+          {
+            "baseline": 0.0,
+            "id": "W10",
+            "lower": -4.0,
+            "name": "tip_twist",
+            "scale": 5.0,
+            "target": "main_wing.segments.tip.twist",
+            "unit": "deg",
+            "upper": 4.0
+          },
+          {
+            "baseline": 33.91,
+            "id": "V01",
+            "lower": 28.0,
+            "name": "vertical_tail_area",
+            "scale": 10.0,
+            "target": "vertical_stabilizer.areas.reference",
+            "unit": "m^2",
+            "upper": 40.0
+          },
+          {
+            "baseline": 0.0,
+            "id": "V02",
+            "lower": -10.0,
+            "name": "vertical_tail_sweep_delta",
+            "scale": 10.0,
+            "target": "vertical_stabilizer.quarter_chord_sweep_delta",
+            "unit": "deg",
+            "upper": 10.0
+          }
+        ]
+      },
+      "evaluator": {
+        "a1_dry_run_sha256": "8688d25770911af7fadd42587f66a4914091c829fd8cdc89c1f349a53731b4c6",
+        "a1_task_evaluator_sha256": "e88c21775d753c555b1ba8d5076c45d5c3fc956be8c2daf8eb194e73ec777261",
+        "interface_status": "A1_INTERFACE_FROZEN",
+        "task_capable": true,
+        "zero_physical_dry_run_verdict": "PASS"
+      },
+      "evidence_status": {
+        "admission": "DEFERRED_TO_M1A_WITH_PRE_REGISTERED_CHECKS",
+        "expected_polar_policy": "M2.02 may use the F1R2 continuity anchor only; M2.2 and M1.8 do not inherit any F1R2 expected polar",
+        "fuel_burn_kg": null,
+        "physics_validation_status": "NOT_VALIDATED",
+        "real_labels": 0
+      },
+      "geometry": {
+        "baseline_vspgeom_bytes": 225414,
+        "baseline_vspgeom_sha256": "16da482a1f8e59f6b454378769961caafde5eef87784127db6cce87381943b84",
+        "f1r2_12d_audit_sha256": "7a90b977fd7ba1778ee44c722a837898b62c9f9d201e4cbd22ca2b7b3afdeea5",
+        "mesh_family": "546x480",
+        "openvsp_geometry_sha256": "d20ee7adc38286c7da3ef3ea5aa5be8204596d491d6601b9a635b0ae5213dc56",
+        "per_design_sref_m2": {
+          "B0-01": {
+            "cl_required": 0.19,
+            "design_hash": "8bd5a6c7c8311938",
+            "sref_m2": 358.25000000000006,
+            "vspgeom_sha256": "16da482a1f8e59f6b454378769961caafde5eef87784127db6cce87381943b84"
+          },
+          "B1-01": {
+            "cl_required": 0.19,
+            "design_hash": "6653517b11d6f891",
+            "sref_m2": 358.25000000000006,
+            "vspgeom_sha256": "6a296aee6e6f6b505083c655c63a667fd52309432e798b25305d01d588d70612"
+          },
+          "C5": {
+            "cl_required": 0.18384199864956116,
+            "design_hash": "bc52a54ecefaac4c",
+            "sref_m2": 370.25,
+            "vspgeom_sha256": "e1ad74cc3820553ee6864d121168ae8f5b72d5602619f15de9cf2c04f1a7bde8"
+          }
+        }
+      },
+      "l_ref_a1_dry_run_n": 1394290.6018390087,
+      "l_ref_from_q_sref_cl_n": 1394290.6018390087,
+      "l_ref_n": 1394290.6018390087,
+      "l_ref_rel_error_vs_a1": 0.0,
+      "mach": 2.02,
+      "mask_policy": "12D_ALL_ACTIVE; 10D_ACTIVE_PLUS_2_INACTIVE=DEFERRED_TO_M1; no zero-effect claim for V01/V02",
+      "mass_bounds_t": [
+        100.0,
+        190.0
+      ],
+      "mass_ok": true,
+      "mass_rel_error_vs_addendum": 1.6162762428638123e-09,
+      "mass_t": 142.17807322979905,
+      "mass_t_addendum": 142.178073,
+      "max_refine_sweeps": 0,
+      "q_pa": 20483.940233430174,
+      "q_pa_a1_executor_formula": 20483.940233430174,
+      "q_recompute_rel_error": 1.7760151443687888e-16,
+      "q_recomputed_from_vinf_rho_pa": 20483.94023343017,
+      "recref": 89397005.8767656,
+      "rho_kg_m3": 0.1153178340089936,
+      "runtime_sref_policy": {
+        "anchor_value_used_only_for_validation": 358.25000000000006,
+        "hardcode_forbidden": true,
+        "runtime_binding": "post-fix baseline vspgeom SHA256 + recomputed value SHA256",
+        "runtime_recompute_required": true,
+        "runtime_source": "post-fix baseline geometry.wing.area_m2 recomputed at runtime"
+      },
+      "schema": "dreal001.m0r_package.v1.task_spec.v1",
+      "solver": {
+        "backend": "REAL_VSPAERO",
+        "expected_internal_cases_per_start": 7,
+        "openvsp_version": "3.55.0",
+        "solver_version": "7.2.2"
+      },
+      "split": "meta_train",
+      "split_role": "train",
+      "sref_ref_m2": 358.25000000000006,
+      "sref_ref_role": "VALIDATION_ANCHOR_ONLY_NOT_A_RUNTIME_HARDCODE",
+      "status": "M0R_PACKAGE_FROZEN_PENDING_A5_GATE",
+      "task_fingerprint": "cb860199e13205342f5e65277935b39a0aff957c3200c87f15b47d800899ceb1",
+      "task_fingerprint_algorithm": "sha256(canonical JSON of dreal001.m0r_task_identity.v1; split excluded)",
+      "task_fingerprint_status": "FROZEN_FINAL",
+      "task_id": "M0R-M202-CL019",
+      "task_id_status": "NEW_M0R_ID_NOT_REUSED_FROM_OLD_18_TASK_FAMILY",
+      "vinf_m_s": 596.0373972278921
+    },
+    {
+      "a1_draft_task_fingerprint_status": "A1_DRY_RUN_DRAFT_NOT_FINAL",
+      "a1_interface_task_fingerprint": "eaeb814528f79e09430b59a019976878cf0b26896153fe8ae6b9b7700ea5b53d",
+      "a1_interface_task_fingerprint_status": "A1_FROZEN_TEMPORARY_TASK_ID_FINGERPRINT_MAPPED_TO_A3_FINAL_ID",
+      "a1_task_id": "T18K_M220_CL017",
+      "active_mask": "12D_ALL_ACTIVE",
+      "alpha_grid_deg": [
+        -2.0,
+        0.0,
+        2.0,
+        4.0,
+        6.0,
+        8.0,
+        10.0
+      ],
+      "alpha_refine_deg": [],
+      "alpha_refine_mode": "FIXED_7_POINT_NO_REFINE",
+      "altitude_m": 18288.0,
+      "atmosphere": {
+        "a_sound_m_s": 295.06801842964956,
+        "atmosphere_id": "ATM-F1R2",
+        "p_static_pa": 7171.544888256813,
+        "r_j_kg_k": 287.05287,
+        "rejected_source": "ISO-1 standard ISA",
+        "rho_kg_m3": 0.1153178340089936,
+        "source": "ATM_F1R2",
+        "t_static_k": 216.65
+      },
+      "cl_target": 0.17,
+      "design_space": {
+        "check_cross_constraints_required_in_m1": true,
+        "cross_constraints": [
+          {
+            "expression": "span_location_2 < span_location_3",
+            "id": "C01",
+            "note": "wing breakpoints must stay ordered."
+          },
+          {
+            "expression": "chord_ratio_3 < chord_ratio_2 < 1.0",
+            "id": "C02",
+            "note": "chord stays positive and monotonically decreasing outboard."
+          },
+          {
+            "expression": "0 < wing_area, 0 < aspect_ratio, 0 < vertical_tail_area, 0 < fuselage_length",
+            "id": "C03",
+            "note": "positive geometric quantities; fuselage_length is the fixed F01 value re-injected by DesignSpace.expand."
+          },
+          {
+            "expression": "0 <= sweep_1, sweep_2, sweep_3 <= 90",
+            "id": "C04",
+            "note": "sweep sanity range in degrees."
+          }
+        ],
+        "design_set": "12d_lifting_surfaces",
+        "fixed_variables": [
+          {
+            "baseline": 61.66,
+            "id": "F01",
+            "name": "fuselage_length",
+            "source": "owner decision 2026-10-30, item 2: adopt the computed geometry-model value instead of the upstream declared value; not deleted from the contract.",
+            "target": "fuselage.lengths.total",
+            "unit": "m"
+          },
+          {
+            "baseline": 4.3,
+            "id": "F02",
+            "name": "fuselage_fineness",
+            "source": "owner decision 2026-10-30, item 2: adopt the computed geometry-model value instead of the upstream declared value; not deleted from the contract.",
+            "target": "fuselage.fineness.nose",
+            "unit": "dimensionless"
+          },
+          {
+            "baseline": 1.152778,
+            "id": "F03",
+            "name": "fuselage_height_width_ratio",
+            "source": "owner decision 2026-10-30, item 2: adopt the computed geometry-model value instead of the upstream declared value; not deleted from the contract.",
+            "target": "fuselage.heights.maximum_over_width",
+            "unit": "dimensionless"
+          }
+        ],
+        "raw_yaml_bytes": 10846,
+        "raw_yaml_sha256": "8b29d1e3833edc2af248d68cd6b7b4c94ebf775f25c86d80062a3850765a499e",
+        "variables": [
+          {
+            "baseline": 358.25,
+            "id": "W01",
+            "lower": 300.0,
+            "name": "wing_area",
+            "scale": 100.0,
+            "target": "main_wing.areas.reference",
+            "unit": "m^2",
+            "upper": 420.0
+          },
+          {
+            "baseline": 1.83,
+            "id": "W02",
+            "lower": 1.5,
+            "name": "aspect_ratio",
+            "scale": 1.0,
+            "target": "main_wing.aspect_ratio",
+            "unit": "dimensionless",
+            "upper": 2.2
+          },
+          {
+            "baseline": 67.0,
+            "id": "W03",
+            "lower": 62.0,
+            "name": "sweep_1",
+            "scale": 10.0,
+            "target": "main_wing.segments.section_1.sweeps.quarter_chord",
+            "unit": "deg",
+            "upper": 72.0
+          },
+          {
+            "baseline": 48.0,
+            "id": "W04",
+            "lower": 40.0,
+            "name": "sweep_2",
+            "scale": 10.0,
+            "target": "main_wing.segments.section_2.sweeps.quarter_chord",
+            "unit": "deg",
+            "upper": 56.0
+          },
+          {
+            "baseline": 71.0,
+            "id": "W05",
+            "lower": 66.0,
+            "name": "sweep_3",
+            "scale": 10.0,
+            "target": "main_wing.segments.section_3.sweeps.quarter_chord",
+            "unit": "deg",
+            "upper": 76.0
+          },
+          {
+            "baseline": 0.480469,
+            "id": "W06",
+            "lower": 0.35,
+            "name": "span_location_2",
+            "scale": 0.1,
+            "target": "main_wing.segments.section_2.percent_span_location",
+            "unit": "dimensionless",
+            "upper": 0.58
+          },
+          {
+            "baseline": 0.945313,
+            "id": "W07",
+            "lower": 0.85,
+            "name": "span_location_3",
+            "scale": 0.1,
+            "target": "main_wing.segments.section_3.percent_span_location",
+            "unit": "dimensionless",
+            "upper": 0.98
+          },
+          {
+            "baseline": 0.408284,
+            "id": "W08",
+            "lower": 0.3,
+            "name": "chord_ratio_2",
+            "scale": 0.1,
+            "target": "main_wing.segments.section_2.root_chord_percent",
+            "unit": "dimensionless",
+            "upper": 0.5
+          },
+          {
+            "baseline": 0.130178,
+            "id": "W09",
+            "lower": 0.08,
+            "name": "chord_ratio_3",
+            "scale": 0.1,
+            "target": "main_wing.segments.section_3.root_chord_percent",
+            "unit": "dimensionless",
+            "upper": 0.2
+          },
+          {
+            "baseline": 0.0,
+            "id": "W10",
+            "lower": -4.0,
+            "name": "tip_twist",
+            "scale": 5.0,
+            "target": "main_wing.segments.tip.twist",
+            "unit": "deg",
+            "upper": 4.0
+          },
+          {
+            "baseline": 33.91,
+            "id": "V01",
+            "lower": 28.0,
+            "name": "vertical_tail_area",
+            "scale": 10.0,
+            "target": "vertical_stabilizer.areas.reference",
+            "unit": "m^2",
+            "upper": 40.0
+          },
+          {
+            "baseline": 0.0,
+            "id": "V02",
+            "lower": -10.0,
+            "name": "vertical_tail_sweep_delta",
+            "scale": 10.0,
+            "target": "vertical_stabilizer.quarter_chord_sweep_delta",
+            "unit": "deg",
+            "upper": 10.0
+          }
+        ]
+      },
+      "evaluator": {
+        "a1_dry_run_sha256": "8688d25770911af7fadd42587f66a4914091c829fd8cdc89c1f349a53731b4c6",
+        "a1_task_evaluator_sha256": "e88c21775d753c555b1ba8d5076c45d5c3fc956be8c2daf8eb194e73ec777261",
+        "interface_status": "A1_INTERFACE_FROZEN",
+        "task_capable": true,
+        "zero_physical_dry_run_verdict": "PASS"
+      },
+      "evidence_status": {
+        "admission": "DEFERRED_TO_M1A_WITH_PRE_REGISTERED_CHECKS",
+        "expected_polar_policy": "M2.02 may use the F1R2 continuity anchor only; M2.2 and M1.8 do not inherit any F1R2 expected polar",
+        "fuel_burn_kg": null,
+        "physics_validation_status": "NOT_VALIDATED",
+        "real_labels": 0
+      },
+      "geometry": {
+        "baseline_vspgeom_bytes": 225414,
+        "baseline_vspgeom_sha256": "16da482a1f8e59f6b454378769961caafde5eef87784127db6cce87381943b84",
+        "f1r2_12d_audit_sha256": "7a90b977fd7ba1778ee44c722a837898b62c9f9d201e4cbd22ca2b7b3afdeea5",
+        "mesh_family": "546x480",
+        "openvsp_geometry_sha256": "d20ee7adc38286c7da3ef3ea5aa5be8204596d491d6601b9a635b0ae5213dc56",
+        "per_design_sref_m2": {
+          "B0-01": {
+            "cl_required": 0.17,
+            "design_hash": "8bd5a6c7c8311938",
+            "sref_m2": 358.25000000000006,
+            "vspgeom_sha256": "16da482a1f8e59f6b454378769961caafde5eef87784127db6cce87381943b84"
+          },
+          "B1-01": {
+            "cl_required": 0.17,
+            "design_hash": "6653517b11d6f891",
+            "sref_m2": 358.25000000000006,
+            "vspgeom_sha256": "6a296aee6e6f6b505083c655c63a667fd52309432e798b25305d01d588d70612"
+          },
+          "C5": {
+            "cl_required": 0.1644902093180284,
+            "design_hash": "bc52a54ecefaac4c",
+            "sref_m2": 370.25,
+            "vspgeom_sha256": "e1ad74cc3820553ee6864d121168ae8f5b72d5602619f15de9cf2c04f1a7bde8"
+          }
+        }
+      },
+      "l_ref_a1_dry_run_n": 1479759.862543322,
+      "l_ref_from_q_sref_cl_n": 1479759.862543322,
+      "l_ref_n": 1479759.862543322,
+      "l_ref_rel_error_vs_a1": 0.0,
+      "mach": 2.2,
+      "mask_policy": "12D_ALL_ACTIVE; 10D_ACTIVE_PLUS_2_INACTIVE=DEFERRED_TO_M1; no zero-effect claim for V01/V02",
+      "mass_bounds_t": [
+        100.0,
+        190.0
+      ],
+      "mass_ok": true,
+      "mass_rel_error_vs_addendum": 2.087177789450452e-09,
+      "mass_t": 150.89351231494157,
+      "mass_t_addendum": 150.893512,
+      "max_refine_sweeps": 0,
+      "q_pa": 24297.194081414087,
+      "q_pa_a1_executor_formula": 24297.194081414087,
+      "q_recompute_rel_error": 0.0,
+      "q_recomputed_from_vinf_rho_pa": 24297.194081414087,
+      "recref": 97363075.70736848,
+      "rho_kg_m3": 0.1153178340089936,
+      "runtime_sref_policy": {
+        "anchor_value_used_only_for_validation": 358.25000000000006,
+        "hardcode_forbidden": true,
+        "runtime_binding": "post-fix baseline vspgeom SHA256 + recomputed value SHA256",
+        "runtime_recompute_required": true,
+        "runtime_source": "post-fix baseline geometry.wing.area_m2 recomputed at runtime"
+      },
+      "schema": "dreal001.m0r_package.v1.task_spec.v1",
+      "solver": {
+        "backend": "REAL_VSPAERO",
+        "expected_internal_cases_per_start": 7,
+        "openvsp_version": "3.55.0",
+        "solver_version": "7.2.2"
+      },
+      "split": "meta_train",
+      "split_role": "train",
+      "sref_ref_m2": 358.25000000000006,
+      "sref_ref_role": "VALIDATION_ANCHOR_ONLY_NOT_A_RUNTIME_HARDCODE",
+      "status": "M0R_PACKAGE_FROZEN_PENDING_A5_GATE",
+      "task_fingerprint": "c6c2d6a866a46ab64c1f9501c4e096e39e0ca08798cc4129746099c90f800dbb",
+      "task_fingerprint_algorithm": "sha256(canonical JSON of dreal001.m0r_task_identity.v1; split excluded)",
+      "task_fingerprint_status": "FROZEN_FINAL",
+      "task_id": "M0R-M220-CL017",
+      "task_id_status": "NEW_M0R_ID_NOT_REUSED_FROM_OLD_18_TASK_FAMILY",
+      "vinf_m_s": 649.1496405452291
+    },
+    {
+      "a1_draft_task_fingerprint_status": "A1_DRY_RUN_DRAFT_NOT_FINAL",
+      "a1_interface_task_fingerprint": "da997438e2815e28317f781b8671f10b69433dfb3ee4c6b2c6a8ca3e24a7dfca",
+      "a1_interface_task_fingerprint_status": "A1_FROZEN_TEMPORARY_TASK_ID_FINGERPRINT_MAPPED_TO_A3_FINAL_ID",
+      "a1_task_id": "T18K_M220_CL019",
+      "active_mask": "12D_ALL_ACTIVE",
+      "alpha_grid_deg": [
+        -2.0,
+        0.0,
+        2.0,
+        4.0,
+        6.0,
+        8.0,
+        10.0
+      ],
+      "alpha_refine_deg": [],
+      "alpha_refine_mode": "FIXED_7_POINT_NO_REFINE",
+      "altitude_m": 18288.0,
+      "atmosphere": {
+        "a_sound_m_s": 295.06801842964956,
+        "atmosphere_id": "ATM-F1R2",
+        "p_static_pa": 7171.544888256813,
+        "r_j_kg_k": 287.05287,
+        "rejected_source": "ISO-1 standard ISA",
+        "rho_kg_m3": 0.1153178340089936,
+        "source": "ATM_F1R2",
+        "t_static_k": 216.65
+      },
+      "cl_target": 0.19,
+      "design_space": {
+        "check_cross_constraints_required_in_m1": true,
+        "cross_constraints": [
+          {
+            "expression": "span_location_2 < span_location_3",
+            "id": "C01",
+            "note": "wing breakpoints must stay ordered."
+          },
+          {
+            "expression": "chord_ratio_3 < chord_ratio_2 < 1.0",
+            "id": "C02",
+            "note": "chord stays positive and monotonically decreasing outboard."
+          },
+          {
+            "expression": "0 < wing_area, 0 < aspect_ratio, 0 < vertical_tail_area, 0 < fuselage_length",
+            "id": "C03",
+            "note": "positive geometric quantities; fuselage_length is the fixed F01 value re-injected by DesignSpace.expand."
+          },
+          {
+            "expression": "0 <= sweep_1, sweep_2, sweep_3 <= 90",
+            "id": "C04",
+            "note": "sweep sanity range in degrees."
+          }
+        ],
+        "design_set": "12d_lifting_surfaces",
+        "fixed_variables": [
+          {
+            "baseline": 61.66,
+            "id": "F01",
+            "name": "fuselage_length",
+            "source": "owner decision 2026-10-30, item 2: adopt the computed geometry-model value instead of the upstream declared value; not deleted from the contract.",
+            "target": "fuselage.lengths.total",
+            "unit": "m"
+          },
+          {
+            "baseline": 4.3,
+            "id": "F02",
+            "name": "fuselage_fineness",
+            "source": "owner decision 2026-10-30, item 2: adopt the computed geometry-model value instead of the upstream declared value; not deleted from the contract.",
+            "target": "fuselage.fineness.nose",
+            "unit": "dimensionless"
+          },
+          {
+            "baseline": 1.152778,
+            "id": "F03",
+            "name": "fuselage_height_width_ratio",
+            "source": "owner decision 2026-10-30, item 2: adopt the computed geometry-model value instead of the upstream declared value; not deleted from the contract.",
+            "target": "fuselage.heights.maximum_over_width",
+            "unit": "dimensionless"
+          }
+        ],
+        "raw_yaml_bytes": 10846,
+        "raw_yaml_sha256": "8b29d1e3833edc2af248d68cd6b7b4c94ebf775f25c86d80062a3850765a499e",
+        "variables": [
+          {
+            "baseline": 358.25,
+            "id": "W01",
+            "lower": 300.0,
+            "name": "wing_area",
+            "scale": 100.0,
+            "target": "main_wing.areas.reference",
+            "unit": "m^2",
+            "upper": 420.0
+          },
+          {
+            "baseline": 1.83,
+            "id": "W02",
+            "lower": 1.5,
+            "name": "aspect_ratio",
+            "scale": 1.0,
+            "target": "main_wing.aspect_ratio",
+            "unit": "dimensionless",
+            "upper": 2.2
+          },
+          {
+            "baseline": 67.0,
+            "id": "W03",
+            "lower": 62.0,
+            "name": "sweep_1",
+            "scale": 10.0,
+            "target": "main_wing.segments.section_1.sweeps.quarter_chord",
+            "unit": "deg",
+            "upper": 72.0
+          },
+          {
+            "baseline": 48.0,
+            "id": "W04",
+            "lower": 40.0,
+            "name": "sweep_2",
+            "scale": 10.0,
+            "target": "main_wing.segments.section_2.sweeps.quarter_chord",
+            "unit": "deg",
+            "upper": 56.0
+          },
+          {
+            "baseline": 71.0,
+            "id": "W05",
+            "lower": 66.0,
+            "name": "sweep_3",
+            "scale": 10.0,
+            "target": "main_wing.segments.section_3.sweeps.quarter_chord",
+            "unit": "deg",
+            "upper": 76.0
+          },
+          {
+            "baseline": 0.480469,
+            "id": "W06",
+            "lower": 0.35,
+            "name": "span_location_2",
+            "scale": 0.1,
+            "target": "main_wing.segments.section_2.percent_span_location",
+            "unit": "dimensionless",
+            "upper": 0.58
+          },
+          {
+            "baseline": 0.945313,
+            "id": "W07",
+            "lower": 0.85,
+            "name": "span_location_3",
+            "scale": 0.1,
+            "target": "main_wing.segments.section_3.percent_span_location",
+            "unit": "dimensionless",
+            "upper": 0.98
+          },
+          {
+            "baseline": 0.408284,
+            "id": "W08",
+            "lower": 0.3,
+            "name": "chord_ratio_2",
+            "scale": 0.1,
+            "target": "main_wing.segments.section_2.root_chord_percent",
+            "unit": "dimensionless",
+            "upper": 0.5
+          },
+          {
+            "baseline": 0.130178,
+            "id": "W09",
+            "lower": 0.08,
+            "name": "chord_ratio_3",
+            "scale": 0.1,
+            "target": "main_wing.segments.section_3.root_chord_percent",
+            "unit": "dimensionless",
+            "upper": 0.2
+          },
+          {
+            "baseline": 0.0,
+            "id": "W10",
+            "lower": -4.0,
+            "name": "tip_twist",
+            "scale": 5.0,
+            "target": "main_wing.segments.tip.twist",
+            "unit": "deg",
+            "upper": 4.0
+          },
+          {
+            "baseline": 33.91,
+            "id": "V01",
+            "lower": 28.0,
+            "name": "vertical_tail_area",
+            "scale": 10.0,
+            "target": "vertical_stabilizer.areas.reference",
+            "unit": "m^2",
+            "upper": 40.0
+          },
+          {
+            "baseline": 0.0,
+            "id": "V02",
+            "lower": -10.0,
+            "name": "vertical_tail_sweep_delta",
+            "scale": 10.0,
+            "target": "vertical_stabilizer.quarter_chord_sweep_delta",
+            "unit": "deg",
+            "upper": 10.0
+          }
+        ]
+      },
+      "evaluator": {
+        "a1_dry_run_sha256": "8688d25770911af7fadd42587f66a4914091c829fd8cdc89c1f349a53731b4c6",
+        "a1_task_evaluator_sha256": "e88c21775d753c555b1ba8d5076c45d5c3fc956be8c2daf8eb194e73ec777261",
+        "interface_status": "A1_INTERFACE_FROZEN",
+        "task_capable": true,
+        "zero_physical_dry_run_verdict": "PASS"
+      },
+      "evidence_status": {
+        "admission": "DEFERRED_TO_M1A_WITH_PRE_REGISTERED_CHECKS",
+        "expected_polar_policy": "M2.02 may use the F1R2 continuity anchor only; M2.2 and M1.8 do not inherit any F1R2 expected polar",
+        "fuel_burn_kg": null,
+        "physics_validation_status": "NOT_VALIDATED",
+        "real_labels": 0
+      },
+      "geometry": {
+        "baseline_vspgeom_bytes": 225414,
+        "baseline_vspgeom_sha256": "16da482a1f8e59f6b454378769961caafde5eef87784127db6cce87381943b84",
+        "f1r2_12d_audit_sha256": "7a90b977fd7ba1778ee44c722a837898b62c9f9d201e4cbd22ca2b7b3afdeea5",
+        "mesh_family": "546x480",
+        "openvsp_geometry_sha256": "d20ee7adc38286c7da3ef3ea5aa5be8204596d491d6601b9a635b0ae5213dc56",
+        "per_design_sref_m2": {
+          "B0-01": {
+            "cl_required": 0.19,
+            "design_hash": "8bd5a6c7c8311938",
+            "sref_m2": 358.25000000000006,
+            "vspgeom_sha256": "16da482a1f8e59f6b454378769961caafde5eef87784127db6cce87381943b84"
+          },
+          "B1-01": {
+            "cl_required": 0.19,
+            "design_hash": "6653517b11d6f891",
+            "sref_m2": 358.25000000000006,
+            "vspgeom_sha256": "6a296aee6e6f6b505083c655c63a667fd52309432e798b25305d01d588d70612"
+          },
+          "C5": {
+            "cl_required": 0.18384199864956116,
+            "design_hash": "bc52a54ecefaac4c",
+            "sref_m2": 370.25,
+            "vspgeom_sha256": "e1ad74cc3820553ee6864d121168ae8f5b72d5602619f15de9cf2c04f1a7bde8"
+          }
+        }
+      },
+      "l_ref_a1_dry_run_n": 1653849.2581366538,
+      "l_ref_from_q_sref_cl_n": 1653849.2581366538,
+      "l_ref_n": 1653849.2581366538,
+      "l_ref_rel_error_vs_a1": 0.0,
+      "mach": 2.2,
+      "mask_policy": "12D_ALL_ACTIVE; 10D_ACTIVE_PLUS_2_INACTIVE=DEFERRED_TO_M1; no zero-effect claim for V01/V02",
+      "mass_bounds_t": [
+        100.0,
+        190.0
+      ],
+      "mass_ok": true,
+      "mass_rel_error_vs_addendum": 1.3895788666700457e-09,
+      "mass_t": 168.6456902343465,
+      "mass_t_addendum": 168.64569,
+      "max_refine_sweeps": 0,
+      "q_pa": 24297.194081414087,
+      "q_pa_a1_executor_formula": 24297.194081414087,
+      "q_recompute_rel_error": 0.0,
+      "q_recomputed_from_vinf_rho_pa": 24297.194081414087,
+      "recref": 97363075.70736848,
+      "rho_kg_m3": 0.1153178340089936,
+      "runtime_sref_policy": {
+        "anchor_value_used_only_for_validation": 358.25000000000006,
+        "hardcode_forbidden": true,
+        "runtime_binding": "post-fix baseline vspgeom SHA256 + recomputed value SHA256",
+        "runtime_recompute_required": true,
+        "runtime_source": "post-fix baseline geometry.wing.area_m2 recomputed at runtime"
+      },
+      "schema": "dreal001.m0r_package.v1.task_spec.v1",
+      "solver": {
+        "backend": "REAL_VSPAERO",
+        "expected_internal_cases_per_start": 7,
+        "openvsp_version": "3.55.0",
+        "solver_version": "7.2.2"
+      },
+      "split": "meta_val",
+      "split_role": "validation",
+      "sref_ref_m2": 358.25000000000006,
+      "sref_ref_role": "VALIDATION_ANCHOR_ONLY_NOT_A_RUNTIME_HARDCODE",
+      "status": "M0R_PACKAGE_FROZEN_PENDING_A5_GATE",
+      "task_fingerprint": "56bd8c34d94ab3e4166ad49319374809907b8d0bfc473f188f1d8862af877e16",
+      "task_fingerprint_algorithm": "sha256(canonical JSON of dreal001.m0r_task_identity.v1; split excluded)",
+      "task_fingerprint_status": "FROZEN_FINAL",
+      "task_id": "M0R-M220-CL019",
+      "task_id_status": "NEW_M0R_ID_NOT_REUSED_FROM_OLD_18_TASK_FAMILY",
+      "vinf_m_s": 649.1496405452291
+    },
+    {
+      "a1_draft_task_fingerprint_status": "A1_DRY_RUN_DRAFT_NOT_FINAL",
+      "a1_interface_task_fingerprint": "0e58197739034b2a19497101eaa38199c2e2dbea3031fe74312faf23066fd2b3",
+      "a1_interface_task_fingerprint_status": "A1_FROZEN_TEMPORARY_TASK_ID_FINGERPRINT_MAPPED_TO_A3_FINAL_ID",
+      "a1_task_id": "T18K_M180_CL017",
+      "active_mask": "12D_ALL_ACTIVE",
+      "alpha_grid_deg": [
+        -2.0,
+        0.0,
+        2.0,
+        4.0,
+        6.0,
+        8.0,
+        10.0
+      ],
+      "alpha_refine_deg": [],
+      "alpha_refine_mode": "FIXED_7_POINT_NO_REFINE",
+      "altitude_m": 18288.0,
+      "atmosphere": {
+        "a_sound_m_s": 295.06801842964956,
+        "atmosphere_id": "ATM-F1R2",
+        "p_static_pa": 7171.544888256813,
+        "r_j_kg_k": 287.05287,
+        "rejected_source": "ISO-1 standard ISA",
+        "rho_kg_m3": 0.1153178340089936,
+        "source": "ATM_F1R2",
+        "t_static_k": 216.65
+      },
+      "cl_target": 0.17,
+      "design_space": {
+        "check_cross_constraints_required_in_m1": true,
+        "cross_constraints": [
+          {
+            "expression": "span_location_2 < span_location_3",
+            "id": "C01",
+            "note": "wing breakpoints must stay ordered."
+          },
+          {
+            "expression": "chord_ratio_3 < chord_ratio_2 < 1.0",
+            "id": "C02",
+            "note": "chord stays positive and monotonically decreasing outboard."
+          },
+          {
+            "expression": "0 < wing_area, 0 < aspect_ratio, 0 < vertical_tail_area, 0 < fuselage_length",
+            "id": "C03",
+            "note": "positive geometric quantities; fuselage_length is the fixed F01 value re-injected by DesignSpace.expand."
+          },
+          {
+            "expression": "0 <= sweep_1, sweep_2, sweep_3 <= 90",
+            "id": "C04",
+            "note": "sweep sanity range in degrees."
+          }
+        ],
+        "design_set": "12d_lifting_surfaces",
+        "fixed_variables": [
+          {
+            "baseline": 61.66,
+            "id": "F01",
+            "name": "fuselage_length",
+            "source": "owner decision 2026-10-30, item 2: adopt the computed geometry-model value instead of the upstream declared value; not deleted from the contract.",
+            "target": "fuselage.lengths.total",
+            "unit": "m"
+          },
+          {
+            "baseline": 4.3,
+            "id": "F02",
+            "name": "fuselage_fineness",
+            "source": "owner decision 2026-10-30, item 2: adopt the computed geometry-model value instead of the upstream declared value; not deleted from the contract.",
+            "target": "fuselage.fineness.nose",
+            "unit": "dimensionless"
+          },
+          {
+            "baseline": 1.152778,
+            "id": "F03",
+            "name": "fuselage_height_width_ratio",
+            "source": "owner decision 2026-10-30, item 2: adopt the computed geometry-model value instead of the upstream declared value; not deleted from the contract.",
+            "target": "fuselage.heights.maximum_over_width",
+            "unit": "dimensionless"
+          }
+        ],
+        "raw_yaml_bytes": 10846,
+        "raw_yaml_sha256": "8b29d1e3833edc2af248d68cd6b7b4c94ebf775f25c86d80062a3850765a499e",
+        "variables": [
+          {
+            "baseline": 358.25,
+            "id": "W01",
+            "lower": 300.0,
+            "name": "wing_area",
+            "scale": 100.0,
+            "target": "main_wing.areas.reference",
+            "unit": "m^2",
+            "upper": 420.0
+          },
+          {
+            "baseline": 1.83,
+            "id": "W02",
+            "lower": 1.5,
+            "name": "aspect_ratio",
+            "scale": 1.0,
+            "target": "main_wing.aspect_ratio",
+            "unit": "dimensionless",
+            "upper": 2.2
+          },
+          {
+            "baseline": 67.0,
+            "id": "W03",
+            "lower": 62.0,
+            "name": "sweep_1",
+            "scale": 10.0,
+            "target": "main_wing.segments.section_1.sweeps.quarter_chord",
+            "unit": "deg",
+            "upper": 72.0
+          },
+          {
+            "baseline": 48.0,
+            "id": "W04",
+            "lower": 40.0,
+            "name": "sweep_2",
+            "scale": 10.0,
+            "target": "main_wing.segments.section_2.sweeps.quarter_chord",
+            "unit": "deg",
+            "upper": 56.0
+          },
+          {
+            "baseline": 71.0,
+            "id": "W05",
+            "lower": 66.0,
+            "name": "sweep_3",
+            "scale": 10.0,
+            "target": "main_wing.segments.section_3.sweeps.quarter_chord",
+            "unit": "deg",
+            "upper": 76.0
+          },
+          {
+            "baseline": 0.480469,
+            "id": "W06",
+            "lower": 0.35,
+            "name": "span_location_2",
+            "scale": 0.1,
+            "target": "main_wing.segments.section_2.percent_span_location",
+            "unit": "dimensionless",
+            "upper": 0.58
+          },
+          {
+            "baseline": 0.945313,
+            "id": "W07",
+            "lower": 0.85,
+            "name": "span_location_3",
+            "scale": 0.1,
+            "target": "main_wing.segments.section_3.percent_span_location",
+            "unit": "dimensionless",
+            "upper": 0.98
+          },
+          {
+            "baseline": 0.408284,
+            "id": "W08",
+            "lower": 0.3,
+            "name": "chord_ratio_2",
+            "scale": 0.1,
+            "target": "main_wing.segments.section_2.root_chord_percent",
+            "unit": "dimensionless",
+            "upper": 0.5
+          },
+          {
+            "baseline": 0.130178,
+            "id": "W09",
+            "lower": 0.08,
+            "name": "chord_ratio_3",
+            "scale": 0.1,
+            "target": "main_wing.segments.section_3.root_chord_percent",
+            "unit": "dimensionless",
+            "upper": 0.2
+          },
+          {
+            "baseline": 0.0,
+            "id": "W10",
+            "lower": -4.0,
+            "name": "tip_twist",
+            "scale": 5.0,
+            "target": "main_wing.segments.tip.twist",
+            "unit": "deg",
+            "upper": 4.0
+          },
+          {
+            "baseline": 33.91,
+            "id": "V01",
+            "lower": 28.0,
+            "name": "vertical_tail_area",
+            "scale": 10.0,
+            "target": "vertical_stabilizer.areas.reference",
+            "unit": "m^2",
+            "upper": 40.0
+          },
+          {
+            "baseline": 0.0,
+            "id": "V02",
+            "lower": -10.0,
+            "name": "vertical_tail_sweep_delta",
+            "scale": 10.0,
+            "target": "vertical_stabilizer.quarter_chord_sweep_delta",
+            "unit": "deg",
+            "upper": 10.0
+          }
+        ]
+      },
+      "evaluator": {
+        "a1_dry_run_sha256": "8688d25770911af7fadd42587f66a4914091c829fd8cdc89c1f349a53731b4c6",
+        "a1_task_evaluator_sha256": "e88c21775d753c555b1ba8d5076c45d5c3fc956be8c2daf8eb194e73ec777261",
+        "interface_status": "A1_INTERFACE_FROZEN",
+        "task_capable": true,
+        "zero_physical_dry_run_verdict": "PASS"
+      },
+      "evidence_status": {
+        "admission": "DEFERRED_TO_M1A_WITH_PRE_REGISTERED_CHECKS",
+        "expected_polar_policy": "M2.02 may use the F1R2 continuity anchor only; M2.2 and M1.8 do not inherit any F1R2 expected polar",
+        "fuel_burn_kg": null,
+        "physics_validation_status": "NOT_VALIDATED",
+        "real_labels": 0
+      },
+      "geometry": {
+        "baseline_vspgeom_bytes": 225414,
+        "baseline_vspgeom_sha256": "16da482a1f8e59f6b454378769961caafde5eef87784127db6cce87381943b84",
+        "f1r2_12d_audit_sha256": "7a90b977fd7ba1778ee44c722a837898b62c9f9d201e4cbd22ca2b7b3afdeea5",
+        "mesh_family": "546x480",
+        "openvsp_geometry_sha256": "d20ee7adc38286c7da3ef3ea5aa5be8204596d491d6601b9a635b0ae5213dc56",
+        "per_design_sref_m2": {
+          "B0-01": {
+            "cl_required": 0.17,
+            "design_hash": "8bd5a6c7c8311938",
+            "sref_m2": 358.25000000000006,
+            "vspgeom_sha256": "16da482a1f8e59f6b454378769961caafde5eef87784127db6cce87381943b84"
+          },
+          "B1-01": {
+            "cl_required": 0.17,
+            "design_hash": "6653517b11d6f891",
+            "sref_m2": 358.25000000000006,
+            "vspgeom_sha256": "6a296aee6e6f6b505083c655c63a667fd52309432e798b25305d01d588d70612"
+          },
+          "C5": {
+            "cl_required": 0.1644902093180284,
+            "design_hash": "bc52a54ecefaac4c",
+            "sref_m2": 370.25,
+            "vspgeom_sha256": "e1ad74cc3820553ee6864d121168ae8f5b72d5602619f15de9cf2c04f1a7bde8"
+          }
+        }
+      },
+      "l_ref_a1_dry_run_n": 990583.0484794137,
+      "l_ref_from_q_sref_cl_n": 990583.0484794137,
+      "l_ref_n": 990583.0484794137,
+      "l_ref_rel_error_vs_a1": 0.0,
+      "mach": 1.8,
+      "mask_policy": "12D_ALL_ACTIVE; 10D_ACTIVE_PLUS_2_INACTIVE=DEFERRED_TO_M1; no zero-effect claim for V01/V02",
+      "mass_bounds_t": [
+        100.0,
+        190.0
+      ],
+      "mass_ok": true,
+      "mass_rel_error_vs_addendum": 4.78714413010504e-09,
+      "mass_t": 101.01135948355594,
+      "mass_t_addendum": 101.011359,
+      "max_refine_sweeps": 0,
+      "q_pa": 16265.063806566453,
+      "q_pa_a1_executor_formula": 16265.063806566455,
+      "q_recompute_rel_error": 0.0,
+      "q_recomputed_from_vinf_rho_pa": 16265.063806566453,
+      "recref": 79660698.30602875,
+      "rho_kg_m3": 0.1153178340089936,
+      "runtime_sref_policy": {
+        "anchor_value_used_only_for_validation": 358.25000000000006,
+        "hardcode_forbidden": true,
+        "runtime_binding": "post-fix baseline vspgeom SHA256 + recomputed value SHA256",
+        "runtime_recompute_required": true,
+        "runtime_source": "post-fix baseline geometry.wing.area_m2 recomputed at runtime"
+      },
+      "schema": "dreal001.m0r_package.v1.task_spec.v1",
+      "solver": {
+        "backend": "REAL_VSPAERO",
+        "expected_internal_cases_per_start": 7,
+        "openvsp_version": "3.55.0",
+        "solver_version": "7.2.2"
+      },
+      "split": "meta_test_blind",
+      "split_role": "blind_test",
+      "sref_ref_m2": 358.25000000000006,
+      "sref_ref_role": "VALIDATION_ANCHOR_ONLY_NOT_A_RUNTIME_HARDCODE",
+      "status": "M0R_PACKAGE_FROZEN_PENDING_A5_GATE",
+      "task_fingerprint": "9eb6472c86b953dad582ab118942f9312a441175814f19ca675ab737bbaac760",
+      "task_fingerprint_algorithm": "sha256(canonical JSON of dreal001.m0r_task_identity.v1; split excluded)",
+      "task_fingerprint_status": "FROZEN_FINAL",
+      "task_id": "M0R-M180-CL017",
+      "task_id_status": "NEW_M0R_ID_NOT_REUSED_FROM_OLD_18_TASK_FAMILY",
+      "vinf_m_s": 531.1224331733692
+    },
+    {
+      "a1_draft_task_fingerprint_status": "A1_DRY_RUN_DRAFT_NOT_FINAL",
+      "a1_interface_task_fingerprint": "d8a75ef3c22732626bff87816e6cf585fea63c00efea02b7fc8bdcd5b675fdf2",
+      "a1_interface_task_fingerprint_status": "A1_FROZEN_TEMPORARY_TASK_ID_FINGERPRINT_MAPPED_TO_A3_FINAL_ID",
+      "a1_task_id": "T18K_M180_CL019",
+      "active_mask": "12D_ALL_ACTIVE",
+      "alpha_grid_deg": [
+        -2.0,
+        0.0,
+        2.0,
+        4.0,
+        6.0,
+        8.0,
+        10.0
+      ],
+      "alpha_refine_deg": [],
+      "alpha_refine_mode": "FIXED_7_POINT_NO_REFINE",
+      "altitude_m": 18288.0,
+      "atmosphere": {
+        "a_sound_m_s": 295.06801842964956,
+        "atmosphere_id": "ATM-F1R2",
+        "p_static_pa": 7171.544888256813,
+        "r_j_kg_k": 287.05287,
+        "rejected_source": "ISO-1 standard ISA",
+        "rho_kg_m3": 0.1153178340089936,
+        "source": "ATM_F1R2",
+        "t_static_k": 216.65
+      },
+      "cl_target": 0.19,
+      "design_space": {
+        "check_cross_constraints_required_in_m1": true,
+        "cross_constraints": [
+          {
+            "expression": "span_location_2 < span_location_3",
+            "id": "C01",
+            "note": "wing breakpoints must stay ordered."
+          },
+          {
+            "expression": "chord_ratio_3 < chord_ratio_2 < 1.0",
+            "id": "C02",
+            "note": "chord stays positive and monotonically decreasing outboard."
+          },
+          {
+            "expression": "0 < wing_area, 0 < aspect_ratio, 0 < vertical_tail_area, 0 < fuselage_length",
+            "id": "C03",
+            "note": "positive geometric quantities; fuselage_length is the fixed F01 value re-injected by DesignSpace.expand."
+          },
+          {
+            "expression": "0 <= sweep_1, sweep_2, sweep_3 <= 90",
+            "id": "C04",
+            "note": "sweep sanity range in degrees."
+          }
+        ],
+        "design_set": "12d_lifting_surfaces",
+        "fixed_variables": [
+          {
+            "baseline": 61.66,
+            "id": "F01",
+            "name": "fuselage_length",
+            "source": "owner decision 2026-10-30, item 2: adopt the computed geometry-model value instead of the upstream declared value; not deleted from the contract.",
+            "target": "fuselage.lengths.total",
+            "unit": "m"
+          },
+          {
+            "baseline": 4.3,
+            "id": "F02",
+            "name": "fuselage_fineness",
+            "source": "owner decision 2026-10-30, item 2: adopt the computed geometry-model value instead of the upstream declared value; not deleted from the contract.",
+            "target": "fuselage.fineness.nose",
+            "unit": "dimensionless"
+          },
+          {
+            "baseline": 1.152778,
+            "id": "F03",
+            "name": "fuselage_height_width_ratio",
+            "source": "owner decision 2026-10-30, item 2: adopt the computed geometry-model value instead of the upstream declared value; not deleted from the contract.",
+            "target": "fuselage.heights.maximum_over_width",
+            "unit": "dimensionless"
+          }
+        ],
+        "raw_yaml_bytes": 10846,
+        "raw_yaml_sha256": "8b29d1e3833edc2af248d68cd6b7b4c94ebf775f25c86d80062a3850765a499e",
+        "variables": [
+          {
+            "baseline": 358.25,
+            "id": "W01",
+            "lower": 300.0,
+            "name": "wing_area",
+            "scale": 100.0,
+            "target": "main_wing.areas.reference",
+            "unit": "m^2",
+            "upper": 420.0
+          },
+          {
+            "baseline": 1.83,
+            "id": "W02",
+            "lower": 1.5,
+            "name": "aspect_ratio",
+            "scale": 1.0,
+            "target": "main_wing.aspect_ratio",
+            "unit": "dimensionless",
+            "upper": 2.2
+          },
+          {
+            "baseline": 67.0,
+            "id": "W03",
+            "lower": 62.0,
+            "name": "sweep_1",
+            "scale": 10.0,
+            "target": "main_wing.segments.section_1.sweeps.quarter_chord",
+            "unit": "deg",
+            "upper": 72.0
+          },
+          {
+            "baseline": 48.0,
+            "id": "W04",
+            "lower": 40.0,
+            "name": "sweep_2",
+            "scale": 10.0,
+            "target": "main_wing.segments.section_2.sweeps.quarter_chord",
+            "unit": "deg",
+            "upper": 56.0
+          },
+          {
+            "baseline": 71.0,
+            "id": "W05",
+            "lower": 66.0,
+            "name": "sweep_3",
+            "scale": 10.0,
+            "target": "main_wing.segments.section_3.sweeps.quarter_chord",
+            "unit": "deg",
+            "upper": 76.0
+          },
+          {
+            "baseline": 0.480469,
+            "id": "W06",
+            "lower": 0.35,
+            "name": "span_location_2",
+            "scale": 0.1,
+            "target": "main_wing.segments.section_2.percent_span_location",
+            "unit": "dimensionless",
+            "upper": 0.58
+          },
+          {
+            "baseline": 0.945313,
+            "id": "W07",
+            "lower": 0.85,
+            "name": "span_location_3",
+            "scale": 0.1,
+            "target": "main_wing.segments.section_3.percent_span_location",
+            "unit": "dimensionless",
+            "upper": 0.98
+          },
+          {
+            "baseline": 0.408284,
+            "id": "W08",
+            "lower": 0.3,
+            "name": "chord_ratio_2",
+            "scale": 0.1,
+            "target": "main_wing.segments.section_2.root_chord_percent",
+            "unit": "dimensionless",
+            "upper": 0.5
+          },
+          {
+            "baseline": 0.130178,
+            "id": "W09",
+            "lower": 0.08,
+            "name": "chord_ratio_3",
+            "scale": 0.1,
+            "target": "main_wing.segments.section_3.root_chord_percent",
+            "unit": "dimensionless",
+            "upper": 0.2
+          },
+          {
+            "baseline": 0.0,
+            "id": "W10",
+            "lower": -4.0,
+            "name": "tip_twist",
+            "scale": 5.0,
+            "target": "main_wing.segments.tip.twist",
+            "unit": "deg",
+            "upper": 4.0
+          },
+          {
+            "baseline": 33.91,
+            "id": "V01",
+            "lower": 28.0,
+            "name": "vertical_tail_area",
+            "scale": 10.0,
+            "target": "vertical_stabilizer.areas.reference",
+            "unit": "m^2",
+            "upper": 40.0
+          },
+          {
+            "baseline": 0.0,
+            "id": "V02",
+            "lower": -10.0,
+            "name": "vertical_tail_sweep_delta",
+            "scale": 10.0,
+            "target": "vertical_stabilizer.quarter_chord_sweep_delta",
+            "unit": "deg",
+            "upper": 10.0
+          }
+        ]
+      },
+      "evaluator": {
+        "a1_dry_run_sha256": "8688d25770911af7fadd42587f66a4914091c829fd8cdc89c1f349a53731b4c6",
+        "a1_task_evaluator_sha256": "e88c21775d753c555b1ba8d5076c45d5c3fc956be8c2daf8eb194e73ec777261",
+        "interface_status": "A1_INTERFACE_FROZEN",
+        "task_capable": true,
+        "zero_physical_dry_run_verdict": "PASS"
+      },
+      "evidence_status": {
+        "admission": "DEFERRED_TO_M1A_WITH_PRE_REGISTERED_CHECKS",
+        "expected_polar_policy": "M2.02 may use the F1R2 continuity anchor only; M2.2 and M1.8 do not inherit any F1R2 expected polar",
+        "fuel_burn_kg": null,
+        "physics_validation_status": "NOT_VALIDATED",
+        "real_labels": 0
+      },
+      "geometry": {
+        "baseline_vspgeom_bytes": 225414,
+        "baseline_vspgeom_sha256": "16da482a1f8e59f6b454378769961caafde5eef87784127db6cce87381943b84",
+        "f1r2_12d_audit_sha256": "7a90b977fd7ba1778ee44c722a837898b62c9f9d201e4cbd22ca2b7b3afdeea5",
+        "mesh_family": "546x480",
+        "openvsp_geometry_sha256": "d20ee7adc38286c7da3ef3ea5aa5be8204596d491d6601b9a635b0ae5213dc56",
+        "per_design_sref_m2": {
+          "B0-01": {
+            "cl_required": 0.18999999999999997,
+            "design_hash": "8bd5a6c7c8311938",
+            "sref_m2": 358.25000000000006,
+            "vspgeom_sha256": "16da482a1f8e59f6b454378769961caafde5eef87784127db6cce87381943b84"
+          },
+          "B1-01": {
+            "cl_required": 0.18999999999999997,
+            "design_hash": "6653517b11d6f891",
+            "sref_m2": 358.25000000000006,
+            "vspgeom_sha256": "6a296aee6e6f6b505083c655c63a667fd52309432e798b25305d01d588d70612"
+          },
+          "C5": {
+            "cl_required": 0.18384199864956113,
+            "design_hash": "bc52a54ecefaac4c",
+            "sref_m2": 370.25,
+            "vspgeom_sha256": "e1ad74cc3820553ee6864d121168ae8f5b72d5602619f15de9cf2c04f1a7bde8"
+          }
+        }
+      },
+      "l_ref_a1_dry_run_n": 1107122.2306534622,
+      "l_ref_from_q_sref_cl_n": 1107122.2306534622,
+      "l_ref_n": 1107122.2306534622,
+      "l_ref_rel_error_vs_a1": 0.0,
+      "mach": 1.8,
+      "mask_policy": "12D_ALL_ACTIVE; 10D_ACTIVE_PLUS_2_INACTIVE=DEFERRED_TO_M1; no zero-effect claim for V01/V02",
+      "mass_bounds_t": [
+        100.0,
+        190.0
+      ],
+      "mass_ok": true,
+      "mass_rel_error_vs_addendum": 1.4654098124191176e-09,
+      "mass_t": 112.89504883456249,
+      "mass_t_addendum": 112.895049,
+      "max_refine_sweeps": 0,
+      "q_pa": 16265.063806566453,
+      "q_pa_a1_executor_formula": 16265.063806566455,
+      "q_recompute_rel_error": 0.0,
+      "q_recomputed_from_vinf_rho_pa": 16265.063806566453,
+      "recref": 79660698.30602875,
+      "rho_kg_m3": 0.1153178340089936,
+      "runtime_sref_policy": {
+        "anchor_value_used_only_for_validation": 358.25000000000006,
+        "hardcode_forbidden": true,
+        "runtime_binding": "post-fix baseline vspgeom SHA256 + recomputed value SHA256",
+        "runtime_recompute_required": true,
+        "runtime_source": "post-fix baseline geometry.wing.area_m2 recomputed at runtime"
+      },
+      "schema": "dreal001.m0r_package.v1.task_spec.v1",
+      "solver": {
+        "backend": "REAL_VSPAERO",
+        "expected_internal_cases_per_start": 7,
+        "openvsp_version": "3.55.0",
+        "solver_version": "7.2.2"
+      },
+      "split": "meta_test_blind",
+      "split_role": "blind_test",
+      "sref_ref_m2": 358.25000000000006,
+      "sref_ref_role": "VALIDATION_ANCHOR_ONLY_NOT_A_RUNTIME_HARDCODE",
+      "status": "M0R_PACKAGE_FROZEN_PENDING_A5_GATE",
+      "task_fingerprint": "e2b7fe8831d42c151137c5f48f7f7c3ba6ff47769528f0137e705cfa46c03c57",
+      "task_fingerprint_algorithm": "sha256(canonical JSON of dreal001.m0r_task_identity.v1; split excluded)",
+      "task_fingerprint_status": "FROZEN_FINAL",
+      "task_id": "M0R-M180-CL019",
+      "task_id_status": "NEW_M0R_ID_NOT_REUSED_FROM_OLD_18_TASK_FAMILY",
+      "vinf_m_s": 531.1224331733692
+    }
+  ],
+  "tool_version": "a3-m0r-package-v1.0.0"
+}

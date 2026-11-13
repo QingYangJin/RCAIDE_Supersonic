@@ -1,0 +1,145 @@
+{
+  "a1_clarification": {
+    "a5_status": "A5_ACCEPTED_AUTHORITATIVE",
+    "commit": "e659f15d826de0c55bcfe02944a97a28ba50b824",
+    "covers": [
+      "CL-1_SREF",
+      "CL-2_solver_input",
+      "CL-3_F1R2_continuity"
+    ],
+    "frozen_bytes_unchanged": true,
+    "json": {
+      "bytes": 7673,
+      "path": "D:/RCAIDE/dnext001/wt-real-a1-geometry-solver/docs/receipts/dreal001/a1_m0r_interface_clarification_20261113.json",
+      "sha256": "7731e9c8b6269e50b343f7e2fbb9ade9c123e14bb33db7e0a884a922cc83e948"
+    },
+    "md": {
+      "bytes": 4294,
+      "path": "D:/RCAIDE/dnext001/wt-real-a1-geometry-solver/docs/receipts/dreal001/a1_m0r_interface_clarification_20261113.md",
+      "sha256": "444fda5ba94adbb8e50f115264581ccbdfae7082dc26f92d4d5160bf00ef7ba5"
+    },
+    "required_m0r_wording_zh": {
+      "CL-1-SREF": "SREF_REF 以 post-fix baseline 几何运行时重算值为唯一来源（本次 358.25000000000006），冻结常量仅作 1e-12 校验锚；不得把 358.25 作为计算输入硬编码。",
+      "CL-2-SOLVER-INPUT-SHA": "solver_input_sha256 含 path-dependent/random 的 .vkey，跨进程不可复现；确定性绑定只用 deck_sha256 + vspgeom_sha256（加 solver_sha256/task_fingerprint），vkey 与 input_sha 按 run 记录，不作跨进程 expected。",
+      "CL-3-F1R2-CONTINUITY": "M2.02 仅物理条件与 F1R2 逐位连续（q=20483.940233430174，Mach/Vinf/Rho/ReCref/alpha 网格相同），deck 字节不相等（A1 943B/LF vs F1R2 985B/CRLF，43 行规范化后相同）；不继承 F1R2 expected polar，M1-A 重建 admission baseline。"
+    },
+    "sums_coverage": "original 7 frozen files only; clarification is an addendum, not part of SUMS"
+  },
+  "a1_code_commit": "0c514151d989de716dbb855973b900a34615b5aa",
+  "a1_conftest": {
+    "bytes": 1024,
+    "path": "D:/RCAIDE/dnext001/wt-real-a1-geometry-solver/research/concorde_metaopt/dreal001/m1/tests/conftest.py",
+    "sha256": "53a678b494f6802a267e987645103364abd8969ed76db711f1ead605c3464b39"
+  },
+  "a1_dry_run": {
+    "bytes": 43587,
+    "path": "D:/RCAIDE/dnext001/wt-real-a1-geometry-solver/docs/receipts/dreal001/a1_m0r_task_executor_dry_run_20261113.json",
+    "sha256": "8688d25770911af7fadd42587f66a4914091c829fd8cdc89c1f349a53731b4c6"
+  },
+  "a1_freeze_commit": "c5698a218fad974e8e96b604573c5cc79b3abb32",
+  "a1_freeze_json": {
+    "bytes": 25639,
+    "path": "D:/RCAIDE/dnext001/wt-real-a1-geometry-solver/docs/receipts/dreal001/a1_m0r_interface_freeze_20261113.json",
+    "sha256": "a2faeda15dd56228ac832dbd1d8db37d80235790bb63c602a66f66805d3c6a02"
+  },
+  "a1_freeze_md": {
+    "bytes": 5996,
+    "path": "D:/RCAIDE/dnext001/wt-real-a1-geometry-solver/docs/receipts/dreal001/a1_m0r_interface_freeze_20261113.md",
+    "sha256": "c81fe1a899044a1cf4a9344070127a8402e9707cf418dcea09d1bdde55a002ab"
+  },
+  "a1_interface_md": {
+    "bytes": 16925,
+    "path": "D:/RCAIDE/dnext001/wt-real-a1-geometry-solver/docs/receipts/dreal001/a1_m0r_task_evaluator_interface_20261113.md",
+    "sha256": "6ef6b16e181f404ee6219db27a9125769b78d5368de653ec791c2aa21a4e790b"
+  },
+  "a1_pytest_log": {
+    "bytes": 104,
+    "path": "D:/RCAIDE/dnext001/wt-real-a1-geometry-solver/docs/receipts/dreal001/a1_m0r_task_evaluator_pytest_20261113.txt",
+    "sha256": "3c8f15fadd1ec0cbbc9dd80f85e2aa7ab21b5435ab7e40aa4e2ebaf593862712"
+  },
+  "a1_sha256sums": {
+    "bytes": 948,
+    "path": "D:/RCAIDE/dnext001/wt-real-a1-geometry-solver/docs/receipts/dreal001/a1_m0r_SHA256SUMS_20261113.txt",
+    "sha256": "3ca22ec983f4c7f60360075564cf93d255fbcce2156181f0cdbdff07d4f5d302"
+  },
+  "a1_sha256sums_entries": [
+    {
+      "bytes": 63459,
+      "path": "research/concorde_metaopt/dreal001/m1/task_evaluator.py",
+      "sha256": "e88c21775d753c555b1ba8d5076c45d5c3fc956be8c2daf8eb194e73ec777261"
+    },
+    {
+      "bytes": 1024,
+      "path": "research/concorde_metaopt/dreal001/m1/tests/conftest.py",
+      "sha256": "53a678b494f6802a267e987645103364abd8969ed76db711f1ead605c3464b39"
+    },
+    {
+      "bytes": 32417,
+      "path": "research/concorde_metaopt/dreal001/m1/tests/test_task_evaluator.py",
+      "sha256": "290485ce262cccec8792e26f67ff9c92c6dc3688ac18c9f308d58cb91c1ffb1c"
+    },
+    {
+      "bytes": 16925,
+      "path": "docs/receipts/dreal001/a1_m0r_task_evaluator_interface_20261113.md",
+      "sha256": "6ef6b16e181f404ee6219db27a9125769b78d5368de653ec791c2aa21a4e790b"
+    },
+    {
+      "bytes": 43587,
+      "path": "docs/receipts/dreal001/a1_m0r_task_executor_dry_run_20261113.json",
+      "sha256": "8688d25770911af7fadd42587f66a4914091c829fd8cdc89c1f349a53731b4c6"
+    },
+    {
+      "bytes": 33508,
+      "path": "docs/receipts/dreal001/a1_m0r_u1_geometry_rebind_20261113.json",
+      "sha256": "d90f2ed5ca3031be6500e4b7a4167253f4aa03828438af1e137b703164ab0e8e"
+    },
+    {
+      "bytes": 104,
+      "path": "docs/receipts/dreal001/a1_m0r_task_evaluator_pytest_20261113.txt",
+      "sha256": "3c8f15fadd1ec0cbbc9dd80f85e2aa7ab21b5435ab7e40aa4e2ebaf593862712"
+    }
+  ],
+  "a1_task_evaluator": {
+    "bytes": 63459,
+    "path": "D:/RCAIDE/dnext001/wt-real-a1-geometry-solver/research/concorde_metaopt/dreal001/m1/task_evaluator.py",
+    "sha256": "e88c21775d753c555b1ba8d5076c45d5c3fc956be8c2daf8eb194e73ec777261"
+  },
+  "a1_task_evaluator_tests": {
+    "bytes": 32417,
+    "path": "D:/RCAIDE/dnext001/wt-real-a1-geometry-solver/research/concorde_metaopt/dreal001/m1/tests/test_task_evaluator.py",
+    "sha256": "290485ce262cccec8792e26f67ff9c92c6dc3688ac18c9f308d58cb91c1ffb1c"
+  },
+  "checks": [
+    {
+      "description": "A1 SHA256SUMS 7 entries",
+      "id": "M0R-A1-01",
+      "status": "PASS"
+    },
+    {
+      "description": "A1 SHA256SUMS SHA 3ca22ec9",
+      "id": "M0R-A1-02",
+      "status": "PASS"
+    },
+    {
+      "description": "frozen expected digests present",
+      "id": "M0R-A1-03",
+      "status": "PASS"
+    },
+    {
+      "description": "freeze json source commit 0c51415",
+      "id": "M0R-A1-04",
+      "status": "PASS"
+    }
+  ],
+  "n_fail": 0,
+  "non_result_boundary": [
+    "Binding is to A1 frozen interface bytes; no A1 source byte was modified by A3."
+  ],
+  "package_id": "DREAL001-M0R-20261113-01",
+  "schema": "dreal001.m0r_package.v1.a1_interface_binding.v1",
+  "status": "M0R_PACKAGE_FROZEN_PENDING_A5_GATE",
+  "task_id_mapping": {
+    "policy": "A1 used temporary T18K task IDs. A3 final IDs are new M0R IDs; each TaskSpec keeps a1_task_id and the A1 interface fingerprint for traceability."
+  },
+  "tool_version": "a3-m0r-package-v1.0.0"
+}

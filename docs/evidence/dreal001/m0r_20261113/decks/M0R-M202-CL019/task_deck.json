@@ -1,0 +1,205 @@
+{
+  "active_mask": "12D_ALL_ACTIVE",
+  "deck": {
+    "alpha_deg": [
+      -2.0,
+      0.0,
+      2.0,
+      4.0,
+      6.0,
+      8.0,
+      10.0
+    ],
+    "applied_overrides": {
+      "Mach": "2.02",
+      "ReCref": "89397005.876765594",
+      "Rho": "0.11531783400899361",
+      "Vinf": "596.03739722789214"
+    },
+    "bytes": 943,
+    "checks": {
+      "alpha_grid_is_frozen": true,
+      "fixed_Beta": true,
+      "fixed_Bref": true,
+      "fixed_Cref": true,
+      "fixed_X_cg": true,
+      "mach_matches_task": true,
+      "q_recompute_rel_le_1e_12": true,
+      "recref_matches_task": true,
+      "rho_matches_atmosphere": true,
+      "sref_matches_geometry": true,
+      "vinf_matches_task": true
+    },
+    "cl_required": 0.19,
+    "fields": {
+      "AoA": "-2, 0, 2, 4, 6, 8, 10",
+      "Beta": "0",
+      "Bref": "25.604638000000001",
+      "Cref": "18.489892999999999",
+      "Mach": "2.02",
+      "ReCref": "89397005.876765594",
+      "Rho": "0.11531783400899361",
+      "Sref": "358.25000000000006",
+      "Vinf": "596.03739722789214",
+      "X_cg": "16.821978259514246"
+    },
+    "path": "_scratch_f1\\m0r_task_evaluator_dryrun_l31\\decks\\B0-01__T18K_M202_CL019\\concorde_baseline.vspaero",
+    "q_recompute_rel_error": 0.0,
+    "q_recomputed_pa": 20483.940233430174,
+    "sha256": "1614a964fc729d42bfa764025a2aa1d3915be8f20dbc6480b72862c15e0c59dc",
+    "source_base_deck_sha256": "3c70d11ae6af74e6fd1cf9b787c71571768bc398a07b1343df9a1340cf93b837"
+  },
+  "design_hash": "8bd5a6c7c8311938",
+  "design_id": "B0-01",
+  "design_label": "baseline",
+  "expected_internal_cases_per_start": 7,
+  "geometry": {
+    "component_metrics": {
+      "main_wing": {
+        "bbox_m": [
+          31.49534375886453,
+          25.604638251691824,
+          2.9919174836412785
+        ],
+        "name": "main_wing",
+        "total_area_m2": 358.25000000000006,
+        "total_span_m": 25.604638251691824
+      },
+      "vertical_tail": {
+        "bbox_m": [
+          13.15761606842186,
+          1.3165253323726676,
+          5.009331292697659
+        ],
+        "name": "vertical_tail",
+        "total_area_m2": 33.91,
+        "total_span_m": 5.009331292697659
+      }
+    },
+    "mesh": {
+      "attempt_history": [
+        {
+          "attempt": 1,
+          "canonical_mesh_sha256": "4fe983df2785f4136290204100c3d7a2273f01cb30ae389614d953a19b429c56",
+          "elements": 480,
+          "mesh_family": "546x480",
+          "nodes": 546,
+          "vsp3_sha256": "ab18117d9e31ace773bb5dbaf5dc65f62f8ec8d74897d42479477d7ee130354d",
+          "vspgeom_bytes": 225414,
+          "vspgeom_sha256": "16da482a1f8e59f6b454378769961caafde5eef87784127db6cce87381943b84"
+        }
+      ],
+      "canonical_mesh_sha256": "4fe983df2785f4136290204100c3d7a2273f01cb30ae389614d953a19b429c56",
+      "elements": 480,
+      "max_mesh_attempts": 12,
+      "mesh_attempts": 1,
+      "mesh_family": "546x480",
+      "nodes": 546,
+      "note": "byte SHA varies across rebuilds even in the target family; canonical_mesh_sha256 removes object-ID/ordering bytes but keeps per-node geometry (occasional ~1e-2 m single-node jitter is disclosed, not normalised away).",
+      "rebuild_strategy": "roundtrip",
+      "roundtrip_vsp3_sha256": "ab18117d9e31ace773bb5dbaf5dc65f62f8ec8d74897d42479477d7ee130354d",
+      "schema": "dreal001.mesh_identity.v1",
+      "target_mesh_family": "546x480",
+      "vspgeom_bytes": 225414,
+      "vspgeom_sha256": "16da482a1f8e59f6b454378769961caafde5eef87784127db6cce87381943b84"
+    },
+    "sref_m2": 358.25000000000006,
+    "vkey": {
+      "bytes": 417,
+      "path": "_scratch_f1\\m0r_task_evaluator_dryrun_l31\\builds\\build-B0-01-a\\concorde_baseline.vkey",
+      "sha256": "553ce28f790769858f37f99810c92f4b4e0d1db6e91c3ef222bb419cfcc427f1"
+    },
+    "vspgeom": {
+      "bytes": 225414,
+      "path": "_scratch_f1\\m0r_task_evaluator_dryrun_l31\\builds\\build-B0-01-a\\concorde_baseline.vspgeom",
+      "sha256": "16da482a1f8e59f6b454378769961caafde5eef87784127db6cce87381943b84"
+    }
+  },
+  "physical_solver_starts": 0,
+  "schema": "dreal001.m1_task_deck.v1",
+  "solver_inputs": {
+    "files": {
+      "csf": {
+        "bytes": 20,
+        "path": "_scratch_f1\\m0r_task_evaluator_dryrun_l31\\decks\\B0-01__T18K_M202_CL019\\concorde_baseline.csf",
+        "sha256": "bb29bf526f4379308ca9c271a8df90c39f4df4235f81f63e370f25e714bb797c"
+      },
+      "vkey": {
+        "bytes": 417,
+        "path": "_scratch_f1\\m0r_task_evaluator_dryrun_l31\\decks\\B0-01__T18K_M202_CL019\\concorde_baseline.vkey",
+        "sha256": "553ce28f790769858f37f99810c92f4b4e0d1db6e91c3ef222bb419cfcc427f1"
+      },
+      "vspaero": {
+        "bytes": 943,
+        "path": "_scratch_f1\\m0r_task_evaluator_dryrun_l31\\decks\\B0-01__T18K_M202_CL019\\concorde_baseline.vspaero",
+        "sha256": "1614a964fc729d42bfa764025a2aa1d3915be8f20dbc6480b72862c15e0c59dc"
+      },
+      "vspgeom": {
+        "bytes": 225414,
+        "path": "_scratch_f1\\m0r_task_evaluator_dryrun_l31\\decks\\B0-01__T18K_M202_CL019\\concorde_baseline.vspgeom",
+        "sha256": "16da482a1f8e59f6b454378769961caafde5eef87784127db6cce87381943b84"
+      }
+    },
+    "input_sha256": "9785548818a7ecba73b2f13c73499b630d04c61e8d6abab395a0ab6ff93b8f4d"
+  },
+  "solver_started": false,
+  "source_kind": "REBUILD_12D",
+  "status": "DECK_READY_NOT_RUN",
+  "task_fingerprint": "03bd6485379c2fa1c785c9ae89baff0f04399aaa582003fbe5a594fbd1032c65",
+  "task_id": "T18K_M202_CL019",
+  "task_spec": {
+    "active_mask": "12D_ALL_ACTIVE",
+    "atmosphere": {
+      "a_sound_m_s": 295.06801842964956,
+      "altitude_m": 18288.0,
+      "atmosphere_id": "ATM-F1R2",
+      "basis": "A1 frozen F1R2/F2R2 injection constants; NOT the ISO standard atmosphere. M2.02/18,288 m is the only anchored condition.",
+      "p_static_pa": 7171.544888256813,
+      "r_j_kg_k": 287.05287,
+      "rho_kg_m3": 0.1153178340089936,
+      "t_static_k": 216.65
+    },
+    "cl_required_baseline": 0.19,
+    "l_ref_n": 1394290.6018390087,
+    "mass_bounds_t": [
+      100.0,
+      190.0
+    ],
+    "mass_t": 142.17807322979905,
+    "q_pa": 20483.940233430174,
+    "q_recompute_rel_error": 0.0,
+    "q_recomputed_pa": 20483.940233430174,
+    "recref": 89397005.8767656,
+    "rho_kg_m3": 0.1153178340089936,
+    "schema": "dreal001.m1_task_spec.v1",
+    "sref_ref_m2": 358.25000000000006,
+    "task_definition": {
+      "active_mask": "12D_ALL_ACTIVE",
+      "altitude_m": 18288.0,
+      "atmosphere_id": "ATM-F1R2",
+      "cl_target": 0.19,
+      "mach": 2.02,
+      "rationale": "same Mach, higher lift",
+      "schema": "dreal001.m1_task_definition.v1",
+      "split": "meta_train",
+      "task_id": "T18K_M202_CL019"
+    },
+    "task_fingerprint": "03bd6485379c2fa1c785c9ae89baff0f04399aaa582003fbe5a594fbd1032c65",
+    "task_id": "T18K_M202_CL019",
+    "vinf_m_s": 596.0373972278921
+  },
+  "x12": [
+    358.25,
+    1.83,
+    67.0,
+    48.0,
+    71.0,
+    0.480469,
+    0.945313,
+    0.408284,
+    0.130178,
+    0.0,
+    33.91,
+    0.0
+  ]
+}

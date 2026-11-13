@@ -1,0 +1,328 @@
+{
+  "condition_counts": {
+    "G": 12,
+    "R": 30,
+    "critical": 36,
+    "high": 5,
+    "info": 1,
+    "total": 42
+  },
+  "conditions": [
+    {
+      "acceptance": "新包 commit/SUMS；family_sha256 非 ada424cc；旧 SHA 只出现在 superseded 披露",
+      "category": "package",
+      "id": "R01",
+      "severity": "CRITICAL",
+      "text": "M0-R 必须是全新包、新 family SHA、新 task ID；不得复用 ada424cc/40fdd436/旧 18-task 字节；旧 T0-4/A3 M0 字节不改，只作历史。"
+    },
+    {
+      "acceptance": "6 tasks geometry_sha256=16da482a…；零物理复建 2/2 字节一致；无 40fd active 引用",
+      "category": "geometry",
+      "id": "R02",
+      "severity": "CRITICAL",
+      "text": "任务族几何必须重绑 post-fix 546x480 链：openvsp_geometry d20ee7ad；baseline vspgeom 16da482a/225,414B/546x480；F1R2 12D audit 7a90b977；40fdd436 不得出现在 active family。"
+    },
+    {
+      "acceptance": "executor 接口/单测；6 deck SHA；M2.02 deck 与 F1R2 同参数（Vinf/Rho/ReCref/Mach/alpha）；spawn=[]；physical=0",
+      "category": "executor",
+      "id": "R03",
+      "severity": "CRITICAL",
+      "text": "task-capable executor：逐任务注入 Mach/alt/CL/Vinf/Rho/ReCref/q；6 个 per-task .vspaero deck；任务缺失 fail-closed；零物理 dry-run。"
+    },
+    {
+      "acceptance": "A5 独立复算 6/6 rel≤1e-12；代码仅一处大气模块；无第二套 q/L_ref",
+      "category": "q_source",
+      "id": "R04",
+      "severity": "CRITICAL",
+      "text": "q 单源 ATM-F1R2；q 由实际注入 Vinf/Rho 复算 rel≤1e-12；6 任务 q 精确等于 20483.940233430174/24297.194081414087/16265.063806566453；禁止 ISO 混用。"
+    },
+    {
+      "acceptance": "6 任务 L_ref/mass 精确匹配 L-30-A01；SREF_REF 运行时字段/SHA；越界或 fallback 即 fail-closed",
+      "category": "lift_reference",
+      "id": "R05",
+      "severity": "CRITICAL",
+      "text": "L_ref=q*SREF_REF*CL_target；SREF_REF 运行时由 post-fix baseline 几何重算并 SHA 绑定，不得硬编码 358.25；m_task=L_ref/g0；质量带 100–190 t；LREF-1..8 fail-closed。"
+    },
+    {
+      "acceptance": "6 tasks 因子/ID/split 全匹配；无 15/20 km task；meta_test 在 M1/M2 不运行、不揭盲",
+      "category": "tasks",
+      "id": "R06",
+      "severity": "CRITICAL",
+      "text": "只保留 L-30-A01 的 6 任务；固定 18,288 m；3 train/1 val/2 test；meta_test 盲；删除全部高度缩放副本。"
+    },
+    {
+      "acceptance": "raw SHA + C01–C04 字段/SHA；负例测试拒绝违反 C01–C04；canonical hash 不能替代 cross constraints",
+      "category": "design_space",
+      "id": "R07",
+      "severity": "CRITICAL",
+      "text": "设计空间同时绑 raw YAML 8b29d1e3…/10,846B 与 C01–C04 cross constraints；M1 sampler/executor 强制执行 check_cross_constraints。"
+    },
+    {
+      "acceptance": "单值 max_refine；alpha_refine 明确；C2 残差独立复算；低 CL 插值不确定性>1e-3 时预注册加密或 A5 预签放宽",
+      "category": "alpha_lift",
+      "id": "R08",
+      "severity": "CRITICAL",
+      "text": "7 点 alpha 固定；max_refine_sweeps 统一（0 或明确 refine 列表）；不得 frozen=0/tasks=2 矛盾；报告独立升力残差与插值不确定性。"
+    },
+    {
+      "acceptance": "mask 字段/文本；F1R2 C3/C4 证据引用；不得声明 V01/V02 无效",
+      "category": "mask",
+      "id": "R09",
+      "severity": "HIGH",
+      "text": "12D_ALL_ACTIVE；10D_ACTIVE_PLUS_2_INACTIVE=DEFERRED_TO_M1；更正 “no zero-effect evidence” 文本。"
+    },
+    {
+      "acceptance": "常量/字段>0；单测；A5 复核阈值定义",
+      "category": "effect_threshold",
+      "id": "R10",
+      "severity": "HIGH",
+      "text": "MIN_EFFECT_REL>0 并预注册；建议 max(2×U_within,1e-3)；不得用 0.0。"
+    },
+    {
+      "acceptance": "CTX-A/B 定义/阈值；4/4 任务可分或 PHYSICAL_TASK_FAMILY_BLOCKED；披露 n=3 限制",
+      "category": "cross_task",
+      "id": "R11",
+      "severity": "CRITICAL",
+      "text": "M1-A CTX-A/B 预注册：4 任务×3 设计；效应量分离 ≥max(2U_within,1e-3)；3 设计下 Spearman 仅描述性，不得做 p 值/显著性；TOO_SIMILAR 规则保留。"
+    },
+    {
+      "acceptance": "预算表/算术；repeat 预注册；无额外设计/任务；五口径",
+      "category": "budget",
+      "id": "R12",
+      "severity": "CRITICAL",
+      "text": "M1-A 15 starts/105 internal，caps 18/126，retry 0；4 任务×3 设计+1 exact repeat+2 preflight；repeat 必须预注册 task/design/deck SHA。"
+    },
+    {
+      "acceptance": "仅 M1-A 通过后单独授权；预算/标签表",
+      "category": "budget",
+      "id": "R13",
+      "severity": "CRITICAL",
+      "text": "M1-B 66/462 caps 70/490；4 任务×16 designs=64 labels+2 preflight；retry 0。"
+    },
+    {
+      "acceptance": "单独授权；揭盲流程；任务级 n=2 描述性",
+      "category": "budget",
+      "id": "R14",
+      "severity": "CRITICAL",
+      "text": "M3-A 34/238 caps 38/266；2 test 任务×16=32 labels+2 preflight；retry 0；M3 前不得运行 meta_test。"
+    },
+    {
+      "acceptance": "汇总算术；M3-B NOT_AUTHORIZED；charged/actual 分离",
+      "category": "budget",
+      "id": "R15",
+      "severity": "CRITICAL",
+      "text": "总预算 planned 115/805，hard 126/882，labels 96，preflight 6，retry 0；M3-B 不授权。"
+    },
+    {
+      "acceptance": "admission 字段；schema；M0-R 无 PASS 声明；M1-A 后才可申请",
+      "category": "admission",
+      "id": "R16",
+      "severity": "CRITICAL",
+      "text": "admission=DEFERRED_TO_M1A_WITH_PRE_REGISTERED_CHECKS；M0/M0-R 不签 admission；首条真实 M1 标签按 validity/status/identity 判定，不按目标值。"
+    },
+    {
+      "acceptance": "physical=0；run_dir/ledger false；not_authorization=true；新 D-META-M1A-001 等仅在未来单独签",
+      "category": "authorization",
+      "id": "R17",
+      "severity": "CRITICAL",
+      "text": "M0-R 零物理；不创建 run dir/ledger/token/authorization；不复用 #9 R10 或 #10 F1R2/F2R2 approval/token。"
+    },
+    {
+      "acceptance": "A5 checklist/gate/SUMS；commit；不 push",
+      "category": "a5",
+      "id": "R18",
+      "severity": "CRITICAL",
+      "text": "A5 独立复核/门禁 G-M0R-ADMISSION-01；M0-R 包到后先 gate，不得先签 admission；A5 physical=0。"
+    },
+    {
+      "acceptance": "新文本/manifest；不得引用不存在的 A5 结论；如保留 1.6/2.4 排除，需新工程理由或校准",
+      "category": "evidence_text",
+      "id": "R19",
+      "severity": "HIGH",
+      "text": "T0-4/M0-R 必须删除 “A5 P1-05 verified envelope 1.8/2.02/2.2”；P1-05 实际 1.8/2.0/2.2、18,288m、旧 58f63/199,997B、TREND_ONLY、2.02 NOT_COMPARABLE。"
+    },
+    {
+      "acceptance": "gate 披露；A1 复核可引用更正",
+      "category": "review_correction",
+      "id": "R20",
+      "severity": "INFO",
+      "text": "A5 记录 A1 F-M0-02 事实更正：40fdd436=543x472/227,247B；199,997B/483x418 是 P1-05 58f63bfc；阻断结论不变。"
+    },
+    {
+      "acceptance": "6 任务表；A5 逐字段复算",
+      "category": "task_metadata",
+      "id": "R21",
+      "severity": "CRITICAL",
+      "text": "每 task 记录 Mach/alt/CL/q/Vinf/Rho/ReCref/L_ref/mass/SREF_REF/task fingerprint/geometry SHA/evaluator/solver；任务 ID 不得复用旧 ada424cc 任务 ID。"
+    },
+    {
+      "acceptance": "6 deck；vspgeom 字节 equality；SHA 表；零物理 dry-run",
+      "category": "deck",
+      "id": "R22",
+      "severity": "CRITICAL",
+      "text": "每 task 独立 .vspaero deck；同一设计跨 task 复用同一 vspgeom 字节（build once）；per-task 记录 vspgeom/polar/deck SHA。"
+    },
+    {
+      "acceptance": "rel≤1e-12；W01 交叉 rel≤1e-6；无第二套公式",
+      "category": "consistency",
+      "id": "R23",
+      "severity": "CRITICAL",
+      "text": "q/L_ref/Sref 三重一致：q 由 deck 实际注入；L_ref=q*SREF_REF*CL；Sref(x) 逐设计；D_i=q*Sref(x)*CDi；A5 独立复算。"
+    },
+    {
+      "acceptance": "per-design vspgeom SHA 字段；baseline 只作族身份",
+      "category": "geometry_identity",
+      "id": "R24",
+      "severity": "HIGH",
+      "text": "baseline SHA 与 per-design SHA 分开；M1 每设计记录 vspgeom SHA；不得用一个 40fd/16da 代表所有设计。"
+    },
+    {
+      "acceptance": "expected/polar 字段；披露；不得用 F1R2 8f4c 作 2.2/1.8 expected",
+      "category": "expected_polar",
+      "id": "R25",
+      "severity": "HIGH",
+      "text": "M2.02 可作 F1R2 连续性锚点；2.2/1.8 不继承 F1R2 expected polar；M1-A 重建 admission baseline。"
+    },
+    {
+      "acceptance": "负例测试；失败码；无 fallback",
+      "category": "fail_closed",
+      "id": "R26",
+      "severity": "CRITICAL",
+      "text": "任何 task/atmosphere/SREF/geometry/mass/q 校验失败必须 fail-closed；禁止回退到 358.25、旧几何、ISO、旧 task 或旧 token。"
+    },
+    {
+      "acceptance": "SUMS 全匹配；A5 独立 pytest/dry-run；spawn=[]；physical=0",
+      "category": "evidence",
+      "id": "R27",
+      "severity": "CRITICAL",
+      "text": "M0-R 包/证据必须含 SUMS、validation、zero-physical dry-run、6 deck、A5 复算、无 solver 证据；commit 不 push。"
+    },
+    {
+      "acceptance": "新 gate json/md/checklist/SUMS；旧字节不改",
+      "category": "gate_process",
+      "id": "R28",
+      "severity": "CRITICAL",
+      "text": "M0-R gate 新 ID G-M0R-ADMISSION-01；旧 G-T0-ADMISSION-01 保持 M0_BLOCKED 历史；不得复用旧 gate commit/SHA。"
+    },
+    {
+      "acceptance": "M1-A 新 gate；M1-A PASS/FAIL；不自动后续",
+      "category": "m1_process",
+      "id": "R29",
+      "severity": "CRITICAL",
+      "text": "M1-A 通过 A5 后单独 authorization/approval/GO；M1-A 结果只给 admission verdict，不自动授权 M1-B/M3。"
+    },
+    {
+      "acceptance": "prereg/回执措辞；无禁用词；披露",
+      "category": "claims",
+      "id": "R30",
+      "severity": "CRITICAL",
+      "text": "不得宣称 winner/显著性/优化增益/跨族可比；fuel_burn_kg=null；外部物理 NOT_VALIDATED；单 seed 描述性；M3 任务级 n=2。"
+    },
+    {
+      "acceptance": "package commit/status；pre-draft 标记",
+      "category": "gate",
+      "id": "G01",
+      "severity": "CRITICAL",
+      "source": "R01/R28",
+      "text": "M0-R 包必须由 A3 task-57 正式冻结并 commit；task-60 pre-draft 不得作为正式包。"
+    },
+    {
+      "acceptance": "新 gate 产物；旧 gate diff=0",
+      "category": "gate",
+      "id": "G02",
+      "severity": "CRITICAL",
+      "source": "R28",
+      "text": "G-M0R-ADMISSION-01 为新 gate ID；不得复用 G-T0-ADMISSION-01 commit/SHA/字节。"
+    },
+    {
+      "acceptance": "SHA/bytes 全匹配",
+      "category": "binding",
+      "id": "G03",
+      "severity": "CRITICAL",
+      "source": "R01",
+      "text": "gate 绑定 L-30 27f8d91、L-30-A01 30166a0、L-31 544629a、A5 requirements f8b70703/16,397/30 条。"
+    },
+    {
+      "acceptance": "包内文件/SUMS N/N",
+      "category": "package",
+      "id": "G04",
+      "severity": "CRITICAL",
+      "source": "R01/R27",
+      "text": "M0-R 包含新 family SHA、6 TaskSpec、6 deck、raw YAML+C01–C04、validation、zero-physical dry-run、SUMS；A5 逐行复算。"
+    },
+    {
+      "acceptance": "独立证据",
+      "category": "zero_physical",
+      "id": "G05",
+      "severity": "CRITICAL",
+      "source": "R17/R18",
+      "text": "A5 gate 全程 physical=0；不启 solver、不建 run dir/ledger/token；spawn=[]。"
+    },
+    {
+      "acceptance": "verdict 字段",
+      "category": "gate_result",
+      "id": "G06",
+      "severity": "CRITICAL",
+      "source": "R16/R18",
+      "text": "verdict 只可 READY_FOR_M1A_ADMISSION 或 M0R_BLOCKED；不得签 admission、不得 ready_for_real_meta_training=true。 verdict 允许 READY_FOR_M1A_ADMISSION 但不得写 admission_signed=true。"
+    },
+    {
+      "acceptance": "后续流程",
+      "category": "m1_authorization",
+      "id": "G07",
+      "severity": "CRITICAL",
+      "source": "R29",
+      "text": "gate PASS 不授权 M1；M1-A 需新 authorization/approval/A5/Lead GO；不复用 #9/#10 token。"
+    },
+    {
+      "acceptance": "预算/repeat 字段",
+      "category": "budget",
+      "id": "G08",
+      "severity": "CRITICAL",
+      "source": "R12",
+      "text": "M1-A 15/105 caps18/126 retry0；repeat 预注册 exact task/design/deck SHA；spare 3/21 不得额外用。 12 个 reference deck 必须在 M1-A authorization 前冻结或确定性重生成，并记录 deck_sha256+vspgeom_sha256；exact repeat 的 task/design/deck SHA 必须在 M1-A authorization 前预注册。"
+    },
+    {
+      "acceptance": "预算/算术",
+      "category": "budget",
+      "id": "G09",
+      "severity": "CRITICAL",
+      "source": "R13-R15",
+      "text": "M1-B 66/462 caps70/490 labels64；M3-A 34/238 caps38/266 labels32；总 115/805 hard126/882 labels96 preflight6 retry0；M3-B 不授权。 M1-B 必须显式预注册 meta_val 标签仅用于验证、不参与拟合；拟合只允许 meta_train 标签；M1-B/M3-A 均需单独 authorization/approval/GO。"
+    },
+    {
+      "acceptance": "CTX 定义/结果",
+      "category": "cross_task",
+      "id": "G10",
+      "severity": "CRITICAL",
+      "source": "R11",
+      "text": "CTX-A/B 4 任务×3 设计；效应量≥max(2U_within,1e-3)；Spearman n=3 只描述性、无 p 值；4/4 可分或 PHYSICAL_TASK_FAMILY_BLOCKED。"
+    },
+    {
+      "acceptance": "prereg/回执措辞",
+      "category": "claims",
+      "id": "G11",
+      "severity": "CRITICAL",
+      "source": "R30",
+      "text": "不得 winner/显著性/优化增益/跨族；fuel=null；外部物理 NOT_VALIDATED；单 seed 描述性；M3 任务级 n=2。"
+    },
+    {
+      "acceptance": "变更记录；新 gate",
+      "category": "change_control",
+      "id": "G12",
+      "severity": "CRITICAL",
+      "source": "R28",
+      "text": "gate 后任何包字节/接口/预算/任务/几何变化必须新 revision + 重出 gate；不得口头/单方面修改。"
+    }
+  ],
+  "gate_id": "G-M0R-ADMISSION-01",
+  "issued_at_utc": "2026-11-13T07:25:55Z",
+  "issued_by": "a5-review",
+  "note": "R01-R30 逐字来自 A5-M0R-REQ-20261113；G01-G12 为 gate 过程/执行边界条件。本文件不是 M1 authorization/approval/GO。",
+  "schema": "dreal001.a5.m0r_gate_conditions.v1",
+  "status": "ISSUED",
+  "target_package": {
+    "commit": "63e93564a7cd2266b9f25e5234155e56460146fb",
+    "family_sha256": "98b84f5ecf6e18a7be90e21da41b243dccb664f09034366ea3b58d777f1c0311"
+  }
+}

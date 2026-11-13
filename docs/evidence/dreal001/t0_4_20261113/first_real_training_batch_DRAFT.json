@@ -1,0 +1,324 @@
+{
+  "accounting": {
+    "charged_vs_actual": "separate columns",
+    "expected_records": 96,
+    "expected_tasks": 6,
+    "invalid_objective": null,
+    "ledger_required": true,
+    "manifest_required": true,
+    "physics_validation_status_expected": "NOT_VALIDATED",
+    "record_fields": [
+      "record_id",
+      "task_id",
+      "task_fingerprint",
+      "x12",
+      "active_mask",
+      "evaluator_id",
+      "source_kind",
+      "physics_validation_status",
+      "objective_Di_N",
+      "constraints",
+      "status",
+      "physical_solver_starts_actual",
+      "internal_solver_cases_actual",
+      "budget_provenance"
+    ],
+    "source_kind_expected": "REAL_VSPAERO"
+  },
+  "authorization": {
+    "approval_json": null,
+    "authorization_id": null,
+    "reuse_issue9_r10_token": false,
+    "token": null
+  },
+  "batch_id": "DREAL001-T0-4-PILOT-DRAFT",
+  "batch_kind": "M1_REAL_TASK_LABEL_COLLECTION",
+  "budget": {
+    "charged_vs_actual": "planned_reserved=CHARGED; ledger=ACTUAL; both recorded, never mixed",
+    "hard_max": {
+      "internal_cases": 714,
+      "reserve_use": "infrastructure failures only; solver failures are not retried",
+      "starts": 102
+    },
+    "main": {
+      "design_evaluations": 96,
+      "internal_cases": 672,
+      "starts": 96
+    },
+    "physical_call_count_at_authoring": 0,
+    "planned": {
+      "internal_cases": 686,
+      "starts": 98
+    },
+    "preflight": {
+      "cases": 2,
+      "internal_cases": 14,
+      "starts": 2
+    }
+  },
+  "caps": {
+    "disk_free_min_gb": 20,
+    "max_parallel_solver_processes": 1,
+    "max_wall_s": 10800,
+    "ncpu": 1,
+    "omp_num_threads": 1,
+    "serial": true,
+    "solver_retry": false,
+    "timeout_s_per_start": 60
+  },
+  "deliverables": [
+    "evaluations.jsonl",
+    "batch_summary.json",
+    "preflight_result.json",
+    "stop_report.json",
+    "solver_attempts.jsonl",
+    "final_run_manifest.json",
+    "SHA256SUMS.txt"
+  ],
+  "design_collection": {
+    "bases": [
+      2,
+      3,
+      5,
+      7,
+      11,
+      13,
+      17,
+      19,
+      23,
+      29,
+      31,
+      37
+    ],
+    "bo_selection_in_M1": false,
+    "mapping": "normalized Halton point -> [lower,upper] for each of the 12 parameters; inactive dims at baseline",
+    "n_per_task": 16,
+    "outcome_dependent_selection": false,
+    "policy": "DETERMINISTIC_HALTON_12D",
+    "query": 8,
+    "seed_rule": "task_fingerprint[:8] used only as digit-scramble seed; same task always yields the same 16 designs",
+    "support": 8
+  },
+  "evaluator": {
+    "alpha_primary_deg": [
+      -2.0,
+      0.0,
+      2.0,
+      4.0,
+      6.0,
+      8.0,
+      10.0
+    ],
+    "evaluator_code_sha256": "f74a4752495fd6c5330edcaf7edb4bcbe93f99c2a76bac06b5670d1f765ae20d",
+    "evaluator_id": "dreal001.evaluator.v12.fixed_cruise",
+    "geometry_id": "CFG-01-thin-12x25-production-baseline",
+    "geometry_sha256": "40fdd4364e01c7fe11ca2ea4530d39c371ae693a434f39e44986f7512d6446f4",
+    "lift_tol_rel": 0.001,
+    "max_refine_sweeps": 0,
+    "objective": "0.5*CDi(f1)+0.5*CDi(f2)",
+    "openvsp_version": "3.55.0",
+    "solver_version": "7.2.2"
+  },
+  "gates_before_execution": [
+    "per-task real applicability evidence for all admitted tasks (M0/M1 REAL_VSPAERO; admission PENDING_M0_BY_DESIGN); F1R2/F2R2 only prove the fixed task domain",
+    "M0 freeze and A5 independent review",
+    "Lead-signed new authorization + window token (R10 token not reused)",
+    "preflight 2/2 PASS; any failure aborts without retry"
+  ],
+  "non_result_boundary": {
+    "cross_family_comparison": "FORBIDDEN",
+    "external_physics_supported": "NOT_VALIDATED",
+    "fuel_burn_kg": null,
+    "physical_call_count_now": 0,
+    "physical_validation_status": "NOT_VALIDATED",
+    "ready_for_real_meta_training": false,
+    "real_labels_collected": 0,
+    "winner_or_significance": "NONE"
+  },
+  "not_authorization": true,
+  "parent": {
+    "issue": "#10 T0-4",
+    "m0_receipt": "docs/receipts/dreal001/issue11_m0_receipt_20261113.md",
+    "m0_status": "M0_NOT_STARTED / GATE_WAITING_ON_#10"
+  },
+  "physical_call_count": 0,
+  "pilot_program_total": {
+    "hard_max_internal_cases": 1078,
+    "hard_max_starts": 154,
+    "n_design_evaluations": 144,
+    "n_preflight_cases": 4,
+    "n_tasks": 9,
+    "planned_internal_cases": 1036,
+    "planned_starts": 148,
+    "wall_cap_s": 16200
+  },
+  "preflight": {
+    "cases": [
+      {
+        "case_id": "PRE-01",
+        "expected": "polar bytes identical to A1 frozen evidence",
+        "purpose": "A1 frozen baseline byte-parity replay",
+        "task": "A1 fixed task 2.02/18288/L_ref=1333704.4"
+      },
+      {
+        "case_id": "PRE-02",
+        "expected": "PASS pipeline contract; not a dataset record",
+        "purpose": "candidate-domain pipeline probe",
+        "task": "dreal001_concorde_supersonic_cruise_12d-2066f5620f26"
+      }
+    ],
+    "failure_action": "ABORT_NO_RETRY",
+    "must_pass": "2/2",
+    "required": 2,
+    "rows_enter_dataset": false
+  },
+  "reserved_followon_M3": {
+    "bo_M3B": "separate budget after M0; not included here",
+    "design_evaluations": 48,
+    "hard_max": {
+      "internal_cases": 364,
+      "starts": 52
+    },
+    "main": {
+      "internal_cases": 336,
+      "starts": 48
+    },
+    "n_tasks": 3,
+    "planned": {
+      "internal_cases": 350,
+      "starts": 50
+    },
+    "preflight": {
+      "cases": 2,
+      "internal_cases": 14,
+      "starts": 2
+    },
+    "protocol": "fixed support 8 + query 8 per task; K=0/1/3/5 offline query scoring; no BO in M3-A",
+    "status": "RESERVED_NOT_AUTHORIZED",
+    "tasks": [
+      {
+        "altitude_m": 15000.0,
+        "cl_target": 0.19,
+        "lift_reference_N": 1859404.648074,
+        "mach": 1.8,
+        "q_Pa": 27317.069792100658,
+        "split": "meta_test",
+        "task_id": "dreal001_concorde_supersonic_cruise_12d-67ab558af463"
+      },
+      {
+        "altitude_m": 15000.0,
+        "cl_target": 0.17,
+        "lift_reference_N": 2095207.120565,
+        "mach": 2.02,
+        "q_Pa": 34402.645549286266,
+        "split": "meta_test",
+        "task_id": "dreal001_concorde_supersonic_cruise_12d-4039e063a161"
+      },
+      {
+        "altitude_m": 18288.0,
+        "cl_target": 0.19,
+        "lift_reference_N": 1394307.923575,
+        "mach": 2.02,
+        "q_Pa": 20484.19471222967,
+        "split": "meta_test",
+        "task_id": "dreal001_concorde_supersonic_cruise_12d-314095054252"
+      }
+    ]
+  },
+  "schema_version": "dreal001.first_real_training_batch_DRAFT.v1",
+  "status": "DRAFT_PENDING_M0_GO",
+  "stop_rules": {
+    "authorization_mismatch": "REFUSE_TO_START",
+    "batch_invalid_ratio": {
+      "action": "ABORT_BATCH",
+      "min_evaluations_before_rule": 24,
+      "threshold": 0.2
+    },
+    "consecutive_infra_errors": {
+      "action": "ABORT",
+      "threshold": 2
+    },
+    "disk_free_below_gb": {
+      "action": "ABORT",
+      "threshold": 20
+    },
+    "per_task_invalid_ratio": {
+      "action": "STOP_TASK",
+      "min_evaluations_before_rule": 8,
+      "threshold": 0.25
+    },
+    "preflight_any_fail": "ABORT",
+    "wall_cap": "STOP_REMAINING_KEEP_COMPLETED"
+  },
+  "task_selection": {
+    "labels_from_meta_test_used_for_training": false,
+    "meta_train_tasks": [
+      {
+        "altitude_m": 15000.0,
+        "cl_target": 0.17,
+        "lift_reference_N": 1663677.843013,
+        "mach": 1.8,
+        "q_Pa": 27317.069792100658,
+        "split": "meta_train",
+        "task_id": "dreal001_concorde_supersonic_cruise_12d-2066f5620f26"
+      },
+      {
+        "altitude_m": 18288.0,
+        "cl_target": 0.17,
+        "lift_reference_N": 1247538.668462,
+        "mach": 2.02,
+        "q_Pa": 20484.19471222967,
+        "split": "meta_train",
+        "task_id": "dreal001_concorde_supersonic_cruise_12d-576f7bfdbdcc"
+      },
+      {
+        "altitude_m": 15000.0,
+        "cl_target": 0.19,
+        "lift_reference_N": 2777629.165641,
+        "mach": 2.2,
+        "q_Pa": 40806.980800545425,
+        "split": "meta_train",
+        "task_id": "dreal001_concorde_supersonic_cruise_12d-9f30c337b993"
+      },
+      {
+        "altitude_m": 20000.0,
+        "cl_target": 0.19,
+        "lift_reference_N": 1064425.722993,
+        "mach": 2.02,
+        "q_Pa": 15637.796642933556,
+        "split": "meta_train",
+        "task_id": "dreal001_concorde_supersonic_cruise_12d-106e141f5f37"
+      }
+    ],
+    "meta_val_tasks": [
+      {
+        "altitude_m": 18288.0,
+        "cl_target": 0.17,
+        "lift_reference_N": 990595.354822,
+        "mach": 1.8,
+        "q_Pa": 16265.265872861519,
+        "split": "meta_val",
+        "task_id": "dreal001_concorde_supersonic_cruise_12d-a820ff5f11e4"
+      },
+      {
+        "altitude_m": 20000.0,
+        "cl_target": 0.19,
+        "lift_reference_N": 1262577.320676,
+        "mach": 2.2,
+        "q_Pa": 18548.901027300857,
+        "split": "meta_val",
+        "task_id": "dreal001_concorde_supersonic_cruise_12d-d0bbe623c78e"
+      }
+    ],
+    "n_tasks": 6,
+    "selection_policy": "pre-registered factor coverage within each split (all Mach/altitude/CL levels represented); not outcome-based",
+    "test_tasks_in_M1": 0
+  },
+  "window": {
+    "duration_cap_s": 10800,
+    "end_utc": null,
+    "note": "window and token are issued only after M0_PASS and Lead GO",
+    "start_utc": null,
+    "status": "NOT_SCHEDULED"
+  }
+}

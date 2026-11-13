@@ -1,0 +1,29 @@
+{
+  "schema": "dreal001.a5.m0r_gate_addendum.v1",
+  "addendum_id": "G-M0R-ADMISSION-01-ADD-01",
+  "gate_id": "G-M0R-ADMISSION-01",
+  "status": "PROVISIONAL_SUPERSEDED_PENDING_A3_REVISION",
+  "issued_by": "a5-review",
+  "issued_at_utc": "2026-11-13T07:28:22Z",
+  "gate_commit": "6eb0059c88f5102fde1ae5393aef85d44ef559a1",
+  "gate_verdict": "READY_FOR_M1A_ADMISSION",
+  "gate_counts": {
+    "total": 60,
+    "pass": 51,
+    "pass_with_disclosure": 9,
+    "fail": 0
+  },
+  "gate_conditions": 42,
+  "basis": "Lead m11577: A3 is making a minimal revision after 63e9356 (SREF provenance disclosure aligned with A1 CL-1/e659f15 + validated_utc + corresponding SHA256SUMS line; not changing 6 task values/budget/split/deck/family). Lead requires the new A3 formal package revision commit/SUMS to be the official gate object; do not finalize on 63e9356.",
+  "disposition": [
+    "Gate 6eb0059 is provisional only; it must not be used for M1-A authorization, admission, or Issue #11 publication.",
+    "Old gate bytes and old A3 package bytes remain unchanged; no overwrite.",
+    "A5 will re-issue the formal gate against A3 new commit/SUMS with new gate artifacts, new commit and new SHA; old gate remains historical.",
+    "If the new A3 diff exceeds SREF disclosure/validated_utc/SUMS line, A5 will report to Lead before issuing."
+  ],
+  "boundary": [
+    "Not an admission; m1a_execution_authorized=false; ready_for_real_meta_training=false.",
+    "A5 physical_call_count=0; no solver/run_dir/ledger/token."
+  ],
+  "new_gate_status": "PENDING_A3_REVISION"
+}

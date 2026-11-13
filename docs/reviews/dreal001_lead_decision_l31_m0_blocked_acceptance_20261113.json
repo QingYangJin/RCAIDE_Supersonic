@@ -1,0 +1,83 @@
+{
+  "decision_id": "L-31",
+  "decided_at_utc": "2026-11-13T06:30:00Z",
+  "decided_by": "lead",
+  "accepts_gate": {
+    "gate_id": "G-T0-ADMISSION-01",
+    "commit": "24ccdb5643747b40361cb970b6645f49f9e51d24",
+    "gate_json_sha256": "422df1b5f911f731af5acba58448a06d13f26b97cd4670c1b9b85b76c3d803f9",
+    "verdict": "M0_BLOCKED",
+    "verdict_class": "PHYSICAL_TASK_FAMILY_BLOCKED"
+  },
+  "next_gate": "G-M0R-ADMISSION-01",
+  "requirements_ref": {
+    "sha256": "f8b70703bd6f6fb20849e8ca1e4e26200d9e3c3898df5ff16195c79b6d59fe61",
+    "bytes": 16397,
+    "count": 30
+  },
+  "m0r_params": {
+    "q_source": "ATM-F1R2",
+    "altitude_m": 18288,
+    "tasks": 6,
+    "split": {
+      "meta_train": 3,
+      "meta_val": 1,
+      "meta_test_blind": 2
+    },
+    "mask": "A_12D_ALL_ACTIVE",
+    "design_space_10d": "DEFERRED_TO_M1",
+    "retry": 0
+  },
+  "budgets": {
+    "M1_A": {
+      "planned_starts": 15,
+      "planned_internal": 105,
+      "caps": [
+        18,
+        126
+      ]
+    },
+    "M1_B": {
+      "planned_starts": 66,
+      "planned_internal": 462,
+      "caps": [
+        70,
+        490
+      ]
+    },
+    "M3_A": {
+      "planned_starts": 34,
+      "planned_internal": 238,
+      "caps": [
+        38,
+        266
+      ]
+    },
+    "total": {
+      "planned_starts": 115,
+      "planned_internal": 805,
+      "hard_caps": [
+        126,
+        882
+      ],
+      "labels": 96,
+      "preflight": 6
+    }
+  },
+  "assignments": {
+    "a1": "task-56 U1/U2",
+    "a3": "task-60 pre-draft then task-57 M0-R package",
+    "a5": "task-59 G-M0R-ADMISSION-01",
+    "a2": "task-58 zero-physical runner prep",
+    "a4": "standby"
+  },
+  "constraints": [
+    "M0-R zero physical",
+    "no run dir/ledger/token/authorization",
+    "no solver before G-M0R-ADMISSION-01",
+    "fresh auth per M1/M2/M3",
+    "fuel_burn_kg=null",
+    "external physics NOT_VALIDATED",
+    "no winner/significance/cross-family claims"
+  ]
+}

@@ -1,0 +1,121 @@
+{
+  "schema": "dreal001.dfixed001_stage_evidence_index.v1",
+  "stage": "D-FIXED-001 Issue #10",
+  "generated_utc": "2026-11-13T04:58:00Z",
+  "report": {
+    "path": "docs/receipts/dfixed001_stage_report_20261113.md",
+    "sha256": "4a8200df7ab052252286084897e3aae8dc25a9a17372f0247e10b707f07d373f",
+    "bytes": 20227,
+    "language": "zh-CN",
+    "remote_path": "docs/receipts/dfixed001_stage_report_20261113.md",
+    "published_sha256": "4a8200df7ab052252286084897e3aae8dc25a9a17372f0247e10b707f07d373f",
+    "published_bytes": 20227
+  },
+  "issue_links": {
+    "issue10": "https://github.com/QingYangJin/RCAIDE_Supersonic/issues/10",
+    "issue11": "https://github.com/QingYangJin/RCAIDE_Supersonic/issues/11"
+  },
+  "remote": {
+    "branch": "research/dfixed001-fixed-loop",
+    "f0_commit": "4504bb75cc32e334cf9f906ad2dcda9a7ff9b471",
+    "f0_parent": "683a868ed5a7014adbe0ca6dce704f9c947872eb",
+    "note": "F0 baseline pushed via GitHub REST; stage report/A5 review added in follow-up commit on same branch.",
+    "stage_report_commit": "86c88b8e81b2c48d79b1f81ff84bceba06cfa560",
+    "stage_report_files": 7
+  },
+  "gates": {
+    "f0": {
+      "commit": "ec62229",
+      "verdict": "REPRO_BASELINE_PASS"
+    },
+    "f1_old": {
+      "commit": "4a2c079",
+      "verdict": "F1_FAIL_ON_PHYSICS",
+      "excluded_from_physics_evidence": true
+    },
+    "f1r2": {
+      "commit": "fd1ab768",
+      "receipt_commit": "abcc3976",
+      "verdict": "F1R2_PASS_WITH_DISCLOSURE"
+    },
+    "f2r2": {
+      "commit": "7ed9c9e4",
+      "receipt_commit": "64549a46",
+      "verdict": "F2R2_PASS_WITH_NO_GAIN_AND_MAJOR_PROTOCOL_DEVIATION_DISCLOSED"
+    },
+    "t0": {
+      "commit": "318c5ac",
+      "verdict": "T0_CODE_READINESS_PASS",
+      "ready_for_real_meta_training": false,
+      "gate_json_sha256": "8f0743dd94851759c16c8e174072db55c59afc32dc9910ba9754f9cffb9aac84",
+      "gate_json_bytes": 25469
+    }
+  },
+  "budget": {
+    "actual": {
+      "physical_solver_starts": 65,
+      "internal_solver_cases": 455
+    },
+    "charged": {
+      "physical_solver_starts": 70,
+      "internal_solver_cases": 490
+    },
+    "note": "Issue #10 cumulative; actual and charged must not be mixed."
+  },
+  "key_code_sha256": {
+    "a1_f1r2_runner": "b5ebe48a4389b833e94463981323be24446d13f66bbe1817a1058f2d11d50194",
+    "a1_f1r2g_runner": "4e595661d97988165b2209c0827243638916f3f4a7e82c6651a93720f7dc7d7a",
+    "a2_f2r_executor": "ed0f2324",
+    "a2_t0_production": "21d3e807823e8595cae5731407dd65183c336a9a3728a234739c63ed7dedad1d",
+    "a2_t0_trainer": "5ddd1a68617be751fe9a9f2e17cb8bad6ec5e64517d0e2c7aa0e5c1d375b09f8",
+    "a2_t0_warm_start": "2bdc1f2a05ab8845ee5ca62759a6eb1cd888a4686395d419d731a2bea636f765",
+    "a3_task_spec": "d72677380eb42ae3776bb6289d37f6ef78fe82de74ab16ad2849cb8ed11bf8f2",
+    "a3_meta_dataset": "da385389589889b0aeb45ab0d6b5ea535aa8a50bed7c76591b7a3aff75d479f5"
+  },
+  "exclusions": [
+    "R1-R10 historical",
+    "F1 old batch geometry invalid",
+    "F1R-01 runner defect",
+    "F2R-01 zero-physical INFRA",
+    "F2R3 not authorized"
+  ],
+  "boundaries": {
+    "fuel_burn_kg": null,
+    "external_physics": "NOT_VALIDATED",
+    "three_layer": {
+      "solver_loop_verified": "PASS_WITH_DISCLOSURE",
+      "internal_aero_optimization_gain": "NOT_EVALUATED_NO_EVIDENCE",
+      "external_physics_supported": "NOT_VALIDATED"
+    },
+    "no_winner": true,
+    "no_significance": true,
+    "no_cross_family_average": true
+  },
+  "a5_report_review": {
+    "commit": "896ab6e",
+    "verdict": "ISSUE10_STAGE_REPORT_REVIEW_PASS_WITH_MINOR_CORRECTIONS_REQUIRED",
+    "json_sha256": "67F9F6A9F42ED7802DB840E767A7F61E149B15EE5E416B1837368F14FBC30D9D",
+    "json_bytes": 13556,
+    "md_sha256": "95C07DAF815035D369E6A06121B857B7376AD9352CAADCA04737A8C9CE3308CE",
+    "md_bytes": 10537,
+    "reviewed_report_sha256": "ff43d5a979ba237a1a18116250060684d65a7af5e3e90bf402eb5de182cbd6a8",
+    "reviewed_report_bytes": 19200,
+    "corrections_applied": [
+      "C-01",
+      "C-02",
+      "C-03",
+      "C-04",
+      "C-05",
+      "C-06",
+      "C-07"
+    ],
+    "corrected_report_sha256": "4a8200df7ab052252286084897e3aae8dc25a9a17372f0247e10b707f07d373f",
+    "corrected_report_bytes": 20227,
+    "addendum_commit": "e150b3cbd547dee46b14316655a68481bc9fb562",
+    "addendum_json_sha256": "7560cf571249101cfd63b1f4561775d887fb37484fd0bd73b5724069edd4fc82",
+    "addendum_json_bytes": 14946,
+    "addendum_md_sha256": "bc7dbe34aa7a04740bcab78eb7044943b5e561701520fe67bce7562e0b6935a9",
+    "addendum_md_bytes": 3673,
+    "release_verdict": "PUBLISH_APPROVED"
+  }
+}

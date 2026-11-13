@@ -1,0 +1,101 @@
+{
+  "addendum_id": "L-30-A01",
+  "parent": "L-30",
+  "parent_commit": "27f8d91",
+  "date": "2026-11-13",
+  "q_source": "ATM_F1R2",
+  "q_source_rejected": "ISO-1 standard ISA",
+  "rationale": [
+    "preserve validated M2.02/18288 F1R2 anchor",
+    "avoid 1.24e-5 q shift at anchor",
+    "single self-consistent atmosphere model"
+  ],
+  "atmosphere": {
+    "p_pa": 7171.544888256813,
+    "T_k": 216.65,
+    "R": 287.05287,
+    "rho": 0.1153178340089936,
+    "a_m_s": 295.06801842964956,
+    "recref": 89397005.8767656,
+    "q_M202": 20483.940233430174,
+    "q_M220": 24297.194081414087,
+    "q_M180": 16265.063806566453
+  },
+  "sref_ref": 358.25000000000006,
+  "g0": 9.80665,
+  "tasks": [
+    {
+      "id": "T18K_M202_CL017",
+      "mach": 2.02,
+      "cl": 0.17,
+      "q": 20483.940233430174,
+      "vinf": 596.0373972278921,
+      "l_ref_n": 1247523.170066,
+      "mass_t": 127.21196,
+      "split": "meta_train"
+    },
+    {
+      "id": "T18K_M202_CL019",
+      "mach": 2.02,
+      "cl": 0.19,
+      "q": 20483.940233430174,
+      "vinf": 596.0373972278921,
+      "l_ref_n": 1394290.601839,
+      "mass_t": 142.178073,
+      "split": "meta_train"
+    },
+    {
+      "id": "T18K_M220_CL017",
+      "mach": 2.2,
+      "cl": 0.17,
+      "q": 24297.194081414087,
+      "vinf": 649.14964,
+      "l_ref_n": 1479759.862543,
+      "mass_t": 150.893512,
+      "split": "meta_train"
+    },
+    {
+      "id": "T18K_M220_CL019",
+      "mach": 2.2,
+      "cl": 0.19,
+      "q": 24297.194081414087,
+      "vinf": 649.14964,
+      "l_ref_n": 1653849.258137,
+      "mass_t": 168.64569,
+      "split": "meta_val"
+    },
+    {
+      "id": "T18K_M180_CL017",
+      "mach": 1.8,
+      "cl": 0.17,
+      "q": 16265.063806566453,
+      "vinf": 531.122433,
+      "l_ref_n": 990583.048479,
+      "mass_t": 101.011359,
+      "split": "meta_test_blind"
+    },
+    {
+      "id": "T18K_M180_CL019",
+      "mach": 1.8,
+      "cl": 0.19,
+      "q": 16265.063806566453,
+      "vinf": 531.122433,
+      "l_ref_n": 1107122.230653,
+      "mass_t": 112.895049,
+      "split": "meta_test_blind"
+    }
+  ],
+  "disclosure": [
+    "ATM-F1R2 vs ISO q rel 1.24e-5",
+    "M2.02 continuous with F1R2",
+    "2.2/1.8 new conditions, no F1R2 expected polar inherited",
+    "M1-A re-establishes admission baseline"
+  ],
+  "budgets_unchanged": "L-30 budgets unchanged",
+  "boundaries": [
+    "not authorization/approval/GO",
+    "zero physical",
+    "fuel null",
+    "external physics NOT_VALIDATED"
+  ]
+}

@@ -1,0 +1,148 @@
+{
+  "decision_id": "L-32",
+  "decided_at_utc": "2026-11-13T08:02:00Z",
+  "status": "ACTIVE",
+  "issue": "#11 D-META-REAL-001",
+  "stage": "M1-A",
+  "authorization_id": "D-META-M1A-001",
+  "run_id": "DREAL001-M1A-20261113-01",
+  "window": {
+    "start_utc": "2026-11-13T08:30:00Z",
+    "end_utc": "2026-11-13T18:00:00Z"
+  },
+  "window_token": "WINDOW_OK_DMETA_M1A_20261113T0830Z-20261113T1800Z",
+  "planned": {
+    "starts": 15,
+    "internal_cases": 105
+  },
+  "caps": {
+    "max_solver_starts": 18,
+    "max_internal_cases": 126,
+    "max_design_evals": 15,
+    "max_retries": 0
+  },
+  "budget_detail": {
+    "preflight": 2,
+    "designs": 12,
+    "exact_repeat": 1,
+    "wall_seconds": 3600,
+    "solver_seconds_per_start": 90,
+    "case_seconds": 180,
+    "rebuild_seconds": 60,
+    "concurrency": 1
+  },
+  "tasks": [
+    "M0R-M202-CL017",
+    "M0R-M202-CL019",
+    "M0R-M220-CL017",
+    "M0R-M220-CL019"
+  ],
+  "designs": [
+    "B0-01",
+    "B1-01",
+    "C5"
+  ],
+  "bindings": {
+    "a5_gate": {
+      "commit": "881226fc059bdfbfbb03704b19845875179b54fa",
+      "sha256": "810bf3d6c369a332d3a73f4519ec39e116d1522a2a364a2e7e08c6930453dbd2",
+      "revision": 2
+    },
+    "a3_package": {
+      "commit": "7128b911f7d8cb064ecd0b619b89f3af7abd27e3",
+      "sums_sha256": "0bf7ce2d141f051e1aff6f607a495f28bf33c0b548ebd06ec8273538c8316800",
+      "family_sha256": "98b84f5ecf6e18a7be90e21da41b243dccb664f09034366ea3b58d777f1c0311",
+      "validation_sha256": "3fc249fe"
+    },
+    "a1_deck_freeze": {
+      "commit": "092a31181cb12107f80bb65204f2469004793431",
+      "manifest_sha256": "fea23ea13df8f196993297c84e5ae657145431b00a0e8710eb35bfa3199f974f",
+      "sums_sha256": "13d1177bb50841cad877340840c4f3d19943b20fadfe5ad5631a5d16671ff733"
+    },
+    "a1_code": {
+      "code_commit": "0c514151d989de716dbb855973b900a34615b5aa",
+      "freeze_commit": "c5698a218fad974e8e96b604573c5cc79b3abb32",
+      "clarification_commit": "e659f15d826de0c55bcfe02944a97a28ba50b824"
+    },
+    "a5_gate_addendum02": {
+      "commit": "1f79fc007c50702d7d15c5051b4e709810483182",
+      "addendum_id": "G-M0R-ADMISSION-01-ADD-02",
+      "json_sha256": "4393d11ebd42341792c88c1d4d8ab11189fde4122754ce97b90f6bc755a2f1ee",
+      "json_bytes": 7323,
+      "md_sha256": "f987c50332b94ca90d59e2a135251cae5f062430b6a51982364f249ab608d444",
+      "md_bytes": 2102,
+      "sums_sha256": "b5ea994aaa233fcbafee8b88eba1549b2e23302691ba5ac5de4172235003b4c1",
+      "effect": "bindings.a3_task_57_commit=7128b91; gate bytes unchanged"
+    }
+  },
+  "authorization_chain": [
+    "A2 package (bind gate rev2+add02+r3+deck freeze)",
+    "A5 M1-A PRE gate",
+    "Lead approval (9 fields only)",
+    "A2 install + SHA256SUMS row update",
+    "in-window post-approval dry-run physical=0",
+    "A5 C-P2AV2M1A-02",
+    "Lead GO",
+    "A2 execute 15 starts/105 internal",
+    "A3 stats",
+    "A5 post-run"
+  ],
+  "not_authorized": [
+    "M1-B",
+    "M2",
+    "M3",
+    "meta_test_unblinding",
+    "cross_batch_token_reuse",
+    "gain/winner/significance claims",
+    "external physics validation"
+  ],
+  "physics_not_validated": true,
+  "fuel_burn_kg": null,
+  "accounting_baseline": {
+    "issue10_actual_starts": 65,
+    "issue10_actual_internal": 455,
+    "issue10_charged_starts": 70,
+    "issue10_charged_internal": 490
+  },
+  "revision": 2,
+  "updated_at_utc": "2026-11-13T08:05:00Z",
+  "exact_repeat": {
+    "task_id": "M0R-M202-CL017",
+    "a3_task_id": "T18K_M202_CL017",
+    "design_id": "B0-01",
+    "deck_sha256": "1614a964fc729d42bfa764025a2aa1d3915be8f20dbc6480b72862c15e0c59dc",
+    "deck_bytes": 943,
+    "vspgeom_sha256": "16da482a1f8e59f6b454378769961caafde5eef87784127db6cce87381943b84",
+    "vspgeom_bytes": 225414,
+    "task_deck_sha256": "dc64a0f2332a22f8d28e6af3f06dfb5034132ebad9901cd337dfe4c3e3213bb3",
+    "slot_manifest_path": "D:/RCAIDE/dnext001/wt-real-a1-geometry-solver/docs/evidence/dreal001/m1a_deck_freeze_20261113/manifest.json",
+    "rule": "same task/design/deck/vspgeom, fresh process; CDi rel <= 1e-9 or disclosed"
+  },
+  "ctx_policy": {
+    "min_effect_rel": "max(2*U_within, 1e-3)",
+    "note": "pre-registered; U_within from M1-A exact repeat/historical 7.05e-8, whichever valid; no 2U gain rule beyond CTX efficiency"
+  },
+  "admission_evidence_schema": {
+    "required_fields": [
+      "source_kind=REAL_VSPAERO",
+      "7 finite polar rows",
+      "lift_residual",
+      "physical_solver_starts_actual",
+      "internal_solver_cases_actual=7*starts",
+      "geometry_sha256=deck+vspgeom",
+      "solver_version_sha256",
+      "task_fingerprint_sha256",
+      "objective_D_i_N finite or null",
+      "failure_class"
+    ],
+    "note": "4 M1 tasks each >=1 admission evidence; recorded in authorization/approval bindings; missing => fail-closed"
+  },
+  "preconditions": [
+    "run dir does not exist or empty",
+    "no #9/#10 token/approval reuse",
+    "A5/Lead new signatures",
+    "exact repeat pre-registered",
+    "CTX min_effect_rel pre-registered",
+    "admission evidence schema present"
+  ]
+}

@@ -1,0 +1,4493 @@
+schema_version: dreal001.real_task_family_candidate.v1
+status: DRAFT_PENDING_M0_GO
+not_authorization: true
+physical_call_count: 0
+family_id: dreal001_concorde_supersonic_cruise_12d
+family_version: dreal001.t0.family.v1
+family_sha256: ada424cce029201aa612cdc3a660e0e4c6edf211034510b3f6d20e98f6ae4e62
+design_space_id: 12d_lifting_surfaces
+design_space_sha256: 175ec5e48a678aa43af8e7b85ef64f93dd3dbefaacbc74bdcafd2d5e4d684db9
+reference_task_fingerprint: 106e141f5f373b725fbcc1cf403c68d1b339116143cdb264ab50c06f56e91847
+task_spec_version: dreal001.t0.task_spec.v1
+frozen_geometry_and_evaluator:
+  geometry_id: CFG-01-thin-12x25-production-baseline
+  geometry_sha256: 40fdd4364e01c7fe11ca2ea4530d39c371ae693a434f39e44986f7512d6446f4
+  evaluator_id: dreal001.evaluator.v12.fixed_cruise
+  evaluator_code_sha256: f74a4752495fd6c5330edcaf7edb4bcbe93f99c2a76bac06b5670d1f765ae20d
+  solver_version: 7.2.2
+  openvsp_version: 3.55.0
+  reference_frame: WING_AC
+  x_ref_m: 16.821978259514246
+  sref_baseline_m2: 358.25
+  lift_tol_rel: 0.001
+  alpha_primary_deg:
+  - -2.0
+  - 0.0
+  - 2.0
+  - 4.0
+  - 6.0
+  - 8.0
+  - 10.0
+  max_refine_sweeps: 0
+  objective_for_meta_learning: 0.5*CDi(f1)+0.5*CDi(f2) (dimensionless composite)
+  physical_drag_objective: D_i_N = q * Sref(x) * CDi at matched lift L_ref (reported,
+    not the meta target)
+  source_config_path: D:\RCAIDE\dnext001\wt-real-a1-geometry-solver\configs\dreal001_task_fixed_cruise_REAL.json
+  source_config_sha256: 0aa64eb25d9fd2ed939f7c9f2bdfa9df4b32ee19cbfd9310fbaae56d4976cf27
+candidate_grid:
+  mach_values:
+  - 1.8
+  - 2.02
+  - 2.2
+  altitude_m_values:
+  - 15000.0
+  - 18288.0
+  - 20000.0
+  cl_target_values:
+  - 0.17
+  - 0.19
+  n_tasks: 18
+  lift_reference_derivation: q(M,h) * SREF_BASELINE_M2 * CL_target; CL_target is pre-registered,
+    not fitted
+  excluded_values:
+  - value: mach 1.6 and 2.4
+    reason: outside the A5 P1-05 verified solver envelope 1.8/2.02/2.2; no physical-domain
+      evidence
+  - value: altitude 21.0 km
+    reason: outside task_spec ISA domain 0-20 km; would require a new atmosphere/solver-domain
+      contract
+  admission_gate: all three physical_domain_checks PASS with REAL_VSPAERO evidence
+    during M0/M1 real applicability collection; otherwise task excluded and family
+    re-frozen (F1R2/F2R2 are fixed-task-domain precedents, not candidate admission
+    evidence)
+active_mask:
+- true
+- true
+- true
+- true
+- true
+- true
+- true
+- true
+- true
+- true
+- true
+- true
+active_dimension_label: ALL_12_ACTIVE
+inactive_dimensions: []
+tasks:
+- schema_version: dreal001.meta_task_spec.v1
+  task_spec_version: dreal001.t0.task_spec.v1
+  task_id: dreal001_concorde_supersonic_cruise_12d-106e141f5f37
+  task_fingerprint: 106e141f5f373b725fbcc1cf403c68d1b339116143cdb264ab50c06f56e91847
+  family_id: dreal001_concorde_supersonic_cruise_12d
+  mach: 2.02
+  altitude_m: 20000.0
+  lift_reference_N: 1064425.722993
+  lift_tol_rel: 0.001
+  alpha_primary_deg:
+  - -2.0
+  - 0.0
+  - 2.0
+  - 4.0
+  - 6.0
+  - 8.0
+  - 10.0
+  alpha_refine_deg: []
+  max_refine_sweeps: 2
+  active_mask:
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  active_dimension_label: ALL_12_ACTIVE
+  n_active: 12
+  design_space_id: 12d_lifting_surfaces
+  design_space_sha256: 175ec5e48a678aa43af8e7b85ef64f93dd3dbefaacbc74bdcafd2d5e4d684db9
+  parameters:
+  - id: W01
+    name: wing_area
+    unit: m^2
+    baseline: 358.25
+    lower: 300.0
+    upper: 420.0
+    scale: 100.0
+    target: main_wing.areas.reference
+  - id: W02
+    name: aspect_ratio
+    unit: dimensionless
+    baseline: 1.83
+    lower: 1.5
+    upper: 2.2
+    scale: 1.0
+    target: main_wing.aspect_ratio
+  - id: W03
+    name: sweep_1
+    unit: deg
+    baseline: 67.0
+    lower: 62.0
+    upper: 72.0
+    scale: 10.0
+    target: main_wing.segments.section_1.sweeps.quarter_chord
+  - id: W04
+    name: sweep_2
+    unit: deg
+    baseline: 48.0
+    lower: 40.0
+    upper: 56.0
+    scale: 10.0
+    target: main_wing.segments.section_2.sweeps.quarter_chord
+  - id: W05
+    name: sweep_3
+    unit: deg
+    baseline: 71.0
+    lower: 66.0
+    upper: 76.0
+    scale: 10.0
+    target: main_wing.segments.section_3.sweeps.quarter_chord
+  - id: W06
+    name: span_location_2
+    unit: dimensionless
+    baseline: 0.480469
+    lower: 0.35
+    upper: 0.58
+    scale: 0.1
+    target: main_wing.segments.section_2.percent_span_location
+  - id: W07
+    name: span_location_3
+    unit: dimensionless
+    baseline: 0.945313
+    lower: 0.85
+    upper: 0.98
+    scale: 0.1
+    target: main_wing.segments.section_3.percent_span_location
+  - id: W08
+    name: chord_ratio_2
+    unit: dimensionless
+    baseline: 0.408284
+    lower: 0.3
+    upper: 0.5
+    scale: 0.1
+    target: main_wing.segments.section_2.root_chord_percent
+  - id: W09
+    name: chord_ratio_3
+    unit: dimensionless
+    baseline: 0.130178
+    lower: 0.08
+    upper: 0.2
+    scale: 0.1
+    target: main_wing.segments.section_3.root_chord_percent
+  - id: W10
+    name: tip_twist
+    unit: deg
+    baseline: 0.0
+    lower: -4.0
+    upper: 4.0
+    scale: 5.0
+    target: main_wing.segments.tip.twist
+  - id: V01
+    name: vertical_tail_area
+    unit: m^2
+    baseline: 33.91
+    lower: 28.0
+    upper: 40.0
+    scale: 10.0
+    target: vertical_stabilizer.areas.reference
+  - id: V02
+    name: vertical_tail_sweep_delta
+    unit: deg
+    baseline: 0.0
+    lower: -10.0
+    upper: 10.0
+    scale: 10.0
+    target: vertical_stabilizer.quarter_chord_sweep_delta
+  fixed_variables:
+  - id: F01
+    name: fuselage_length
+    unit: m
+    baseline: 61.66
+    target: fuselage.lengths.total
+    source: owner decision 2026-10-30 item 2
+  - id: F02
+    name: fuselage_fineness
+    unit: dimensionless
+    baseline: 4.3
+    target: fuselage.fineness.nose
+    source: owner decision 2026-10-30 item 2
+  - id: F03
+    name: fuselage_height_width_ratio
+    unit: dimensionless
+    baseline: 1.152778
+    target: fuselage.heights.maximum_over_width
+    source: owner decision 2026-10-30 item 2
+  solver_version: 7.2.2
+  openvsp_version: 3.55.0
+  solver_config_sha256: ''
+  reference_frame: WING_AC
+  x_ref_m: 16.821978259514246
+  sref_baseline_m2: 358.25
+  source_kind: REAL_VSPAERO
+  physics_validation_status: NOT_VALIDATED
+  applicability:
+    status: DEFERRED_TO_M1_REAL_COLLECTION
+    solver_domain: NOT_CHECKED
+    lift_target_reachable: NOT_CHECKED
+    cross_task_response: NOT_CHECKED
+    evidence_sha256s: []
+    required_evidence_schema:
+      schema_version: dreal001.task_applicability_evidence.v1
+      kind: PER_TASK_REAL_VSPAERO_DOMAIN_EVIDENCE
+      required_fields:
+      - task_fingerprint
+      - source_kind
+      - raw_sha
+      - geometry_sha
+      - solver_version
+      - evaluator_id
+      - run_id
+      - physical_solver_starts_actual
+      - internal_solver_cases_actual
+      - physics_validation_status
+      - checked_utc
+      source_kind_const: REAL_VSPAERO
+      physics_validation_status_const: NOT_VALIDATED
+      raw_sha_pattern: ^[0-9a-f]{64}$
+      geometry_sha_pattern: ^[0-9a-f]{64}$
+      internal_cases_rule: internal_solver_cases_actual == 7 * physical_solver_starts_actual
+      min_physical_solver_starts_actual: 1
+      counts_as_physical_validation: false
+      note: This schema describes the evidence required by M1 to flip a task applicability
+        field to PASS. T0-4 collects none of it; no record with source_kind != REAL_VSPAERO
+        can satisfy it.
+    notes: 'Deferred to M1 real collection: T0-4 has zero physical calls and no per-task
+      REAL_VSPAERO domain evidence; admission stays PENDING_M0_BY_DESIGN.'
+  effect_evidence: []
+  notes: T0-4 candidate (Mach 2.02, altitude 20000 m, CL_target 0.19); zero physical
+    labels collected; freshness applies to the meta split.
+  created_utc: ''
+  derived:
+    rho_kg_m3: 0.08803476221563096
+    speed_of_sound_m_s: 295.0694935090715
+    velocity_m_s: 596.0403768883244
+    q_Pa: 15637.796642933556
+    cl_required_at_baseline_sref: 0.19000000000002146
+  candidate_factors:
+    mach: 2.02
+    altitude_m: 20000.0
+    cl_target: 0.19
+    q_Pa: 15637.796642933556
+    lift_reference_N: 1064425.722993
+    lift_reference_derivation: q(M,h) * SREF_BASELINE_M2 * CL_target
+  split: meta_train
+  evaluator_binding:
+    evaluator_id: dreal001.evaluator.v12.fixed_cruise
+    code_sha256: f74a4752495fd6c5330edcaf7edb4bcbe93f99c2a76bac06b5670d1f765ae20d
+    solver_version: 7.2.2
+    openvsp_version: 3.55.0
+    geometry_id: CFG-01-thin-12x25-production-baseline
+    geometry_sha256: 40fdd4364e01c7fe11ca2ea4530d39c371ae693a434f39e44986f7512d6446f4
+    source_config_path: D:\RCAIDE\dnext001\wt-real-a1-geometry-solver\configs\dreal001_task_fixed_cruise_REAL.json
+    source_config_sha256: 0aa64eb25d9fd2ed939f7c9f2bdfa9df4b32ee19cbfd9310fbaae56d4976cf27
+    timeout_s_per_start: 60
+    ncpu: 1
+    omp_num_threads: 1
+  physical_domain_checks:
+    solver_domain:
+      status: DEFERRED_TO_M1_REAL_COLLECTION
+      required_evidence:
+      - VSPAERO 7.2.2 converged polar at (M,h) within alpha [-2,10]
+      - no LIMIT/UNCONVERGED at this (M,h)
+      evidence_owner: M1 real collection (M0/M1 per-task applicability; F1R2/F2R2
+        are fixed-task-domain precedents only)
+    lift_target_reachable:
+      status: DEFERRED_TO_M1_REAL_COLLECTION
+      required_evidence: lift-matched alpha in [-2,10] with |L-L_ref|/L_ref <= 1e-3
+      evidence_owner: M1 real collection
+    cross_task_response:
+      status: DEFERRED_TO_M1_REAL_COLLECTION
+      required_evidence: objective responds to (M,h,CL) beyond MIN_EFFECT_REL and
+        is not a global scale
+      evidence_owner: M1 real collection
+    required_evidence_schema: TaskApplicability.REQUIRED_APPLICABILITY_EVIDENCE_SCHEMA
+      (REAL_VSPAERO raw_sha/geometry_sha/solver_version/starts/internal, physics NOT_VALIDATED)
+    admission_status: PENDING_M0_BY_DESIGN
+    admitted: false
+- schema_version: dreal001.meta_task_spec.v1
+  task_spec_version: dreal001.t0.task_spec.v1
+  task_id: dreal001_concorde_supersonic_cruise_12d-1109474448f5
+  task_fingerprint: 1109474448f5e4544305b659fba07ee4ef4a9cdaa0ed5d989ae39458c320a9c1
+  family_id: dreal001_concorde_supersonic_cruise_12d
+  mach: 2.2
+  altitude_m: 15000.0
+  lift_reference_N: 2485247.148205
+  lift_tol_rel: 0.001
+  alpha_primary_deg:
+  - -2.0
+  - 0.0
+  - 2.0
+  - 4.0
+  - 6.0
+  - 8.0
+  - 10.0
+  alpha_refine_deg: []
+  max_refine_sweeps: 2
+  active_mask:
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  active_dimension_label: ALL_12_ACTIVE
+  n_active: 12
+  design_space_id: 12d_lifting_surfaces
+  design_space_sha256: 175ec5e48a678aa43af8e7b85ef64f93dd3dbefaacbc74bdcafd2d5e4d684db9
+  parameters:
+  - id: W01
+    name: wing_area
+    unit: m^2
+    baseline: 358.25
+    lower: 300.0
+    upper: 420.0
+    scale: 100.0
+    target: main_wing.areas.reference
+  - id: W02
+    name: aspect_ratio
+    unit: dimensionless
+    baseline: 1.83
+    lower: 1.5
+    upper: 2.2
+    scale: 1.0
+    target: main_wing.aspect_ratio
+  - id: W03
+    name: sweep_1
+    unit: deg
+    baseline: 67.0
+    lower: 62.0
+    upper: 72.0
+    scale: 10.0
+    target: main_wing.segments.section_1.sweeps.quarter_chord
+  - id: W04
+    name: sweep_2
+    unit: deg
+    baseline: 48.0
+    lower: 40.0
+    upper: 56.0
+    scale: 10.0
+    target: main_wing.segments.section_2.sweeps.quarter_chord
+  - id: W05
+    name: sweep_3
+    unit: deg
+    baseline: 71.0
+    lower: 66.0
+    upper: 76.0
+    scale: 10.0
+    target: main_wing.segments.section_3.sweeps.quarter_chord
+  - id: W06
+    name: span_location_2
+    unit: dimensionless
+    baseline: 0.480469
+    lower: 0.35
+    upper: 0.58
+    scale: 0.1
+    target: main_wing.segments.section_2.percent_span_location
+  - id: W07
+    name: span_location_3
+    unit: dimensionless
+    baseline: 0.945313
+    lower: 0.85
+    upper: 0.98
+    scale: 0.1
+    target: main_wing.segments.section_3.percent_span_location
+  - id: W08
+    name: chord_ratio_2
+    unit: dimensionless
+    baseline: 0.408284
+    lower: 0.3
+    upper: 0.5
+    scale: 0.1
+    target: main_wing.segments.section_2.root_chord_percent
+  - id: W09
+    name: chord_ratio_3
+    unit: dimensionless
+    baseline: 0.130178
+    lower: 0.08
+    upper: 0.2
+    scale: 0.1
+    target: main_wing.segments.section_3.root_chord_percent
+  - id: W10
+    name: tip_twist
+    unit: deg
+    baseline: 0.0
+    lower: -4.0
+    upper: 4.0
+    scale: 5.0
+    target: main_wing.segments.tip.twist
+  - id: V01
+    name: vertical_tail_area
+    unit: m^2
+    baseline: 33.91
+    lower: 28.0
+    upper: 40.0
+    scale: 10.0
+    target: vertical_stabilizer.areas.reference
+  - id: V02
+    name: vertical_tail_sweep_delta
+    unit: deg
+    baseline: 0.0
+    lower: -10.0
+    upper: 10.0
+    scale: 10.0
+    target: vertical_stabilizer.quarter_chord_sweep_delta
+  fixed_variables:
+  - id: F01
+    name: fuselage_length
+    unit: m
+    baseline: 61.66
+    target: fuselage.lengths.total
+    source: owner decision 2026-10-30 item 2
+  - id: F02
+    name: fuselage_fineness
+    unit: dimensionless
+    baseline: 4.3
+    target: fuselage.fineness.nose
+    source: owner decision 2026-10-30 item 2
+  - id: F03
+    name: fuselage_height_width_ratio
+    unit: dimensionless
+    baseline: 1.152778
+    target: fuselage.heights.maximum_over_width
+    source: owner decision 2026-10-30 item 2
+  solver_version: 7.2.2
+  openvsp_version: 3.55.0
+  solver_config_sha256: ''
+  reference_frame: WING_AC
+  x_ref_m: 16.821978259514246
+  sref_baseline_m2: 358.25
+  source_kind: REAL_VSPAERO
+  physics_validation_status: NOT_VALIDATED
+  applicability:
+    status: DEFERRED_TO_M1_REAL_COLLECTION
+    solver_domain: NOT_CHECKED
+    lift_target_reachable: NOT_CHECKED
+    cross_task_response: NOT_CHECKED
+    evidence_sha256s: []
+    required_evidence_schema:
+      schema_version: dreal001.task_applicability_evidence.v1
+      kind: PER_TASK_REAL_VSPAERO_DOMAIN_EVIDENCE
+      required_fields:
+      - task_fingerprint
+      - source_kind
+      - raw_sha
+      - geometry_sha
+      - solver_version
+      - evaluator_id
+      - run_id
+      - physical_solver_starts_actual
+      - internal_solver_cases_actual
+      - physics_validation_status
+      - checked_utc
+      source_kind_const: REAL_VSPAERO
+      physics_validation_status_const: NOT_VALIDATED
+      raw_sha_pattern: ^[0-9a-f]{64}$
+      geometry_sha_pattern: ^[0-9a-f]{64}$
+      internal_cases_rule: internal_solver_cases_actual == 7 * physical_solver_starts_actual
+      min_physical_solver_starts_actual: 1
+      counts_as_physical_validation: false
+      note: This schema describes the evidence required by M1 to flip a task applicability
+        field to PASS. T0-4 collects none of it; no record with source_kind != REAL_VSPAERO
+        can satisfy it.
+    notes: 'Deferred to M1 real collection: T0-4 has zero physical calls and no per-task
+      REAL_VSPAERO domain evidence; admission stays PENDING_M0_BY_DESIGN.'
+  effect_evidence: []
+  notes: T0-4 candidate (Mach 2.2, altitude 15000 m, CL_target 0.17); zero physical
+    labels collected; freshness applies to the meta split.
+  created_utc: ''
+  derived:
+    rho_kg_m3: 0.19367362229311477
+    speed_of_sound_m_s: 295.0694935090715
+    velocity_m_s: 649.1528857199573
+    q_Pa: 40806.980800545425
+    cl_required_at_baseline_sref: 0.1699999999999851
+  candidate_factors:
+    mach: 2.2
+    altitude_m: 15000.0
+    cl_target: 0.17
+    q_Pa: 40806.980800545425
+    lift_reference_N: 2485247.148205
+    lift_reference_derivation: q(M,h) * SREF_BASELINE_M2 * CL_target
+  split: meta_train
+  evaluator_binding:
+    evaluator_id: dreal001.evaluator.v12.fixed_cruise
+    code_sha256: f74a4752495fd6c5330edcaf7edb4bcbe93f99c2a76bac06b5670d1f765ae20d
+    solver_version: 7.2.2
+    openvsp_version: 3.55.0
+    geometry_id: CFG-01-thin-12x25-production-baseline
+    geometry_sha256: 40fdd4364e01c7fe11ca2ea4530d39c371ae693a434f39e44986f7512d6446f4
+    source_config_path: D:\RCAIDE\dnext001\wt-real-a1-geometry-solver\configs\dreal001_task_fixed_cruise_REAL.json
+    source_config_sha256: 0aa64eb25d9fd2ed939f7c9f2bdfa9df4b32ee19cbfd9310fbaae56d4976cf27
+    timeout_s_per_start: 60
+    ncpu: 1
+    omp_num_threads: 1
+  physical_domain_checks:
+    solver_domain:
+      status: DEFERRED_TO_M1_REAL_COLLECTION
+      required_evidence:
+      - VSPAERO 7.2.2 converged polar at (M,h) within alpha [-2,10]
+      - no LIMIT/UNCONVERGED at this (M,h)
+      evidence_owner: M1 real collection (M0/M1 per-task applicability; F1R2/F2R2
+        are fixed-task-domain precedents only)
+    lift_target_reachable:
+      status: DEFERRED_TO_M1_REAL_COLLECTION
+      required_evidence: lift-matched alpha in [-2,10] with |L-L_ref|/L_ref <= 1e-3
+      evidence_owner: M1 real collection
+    cross_task_response:
+      status: DEFERRED_TO_M1_REAL_COLLECTION
+      required_evidence: objective responds to (M,h,CL) beyond MIN_EFFECT_REL and
+        is not a global scale
+      evidence_owner: M1 real collection
+    required_evidence_schema: TaskApplicability.REQUIRED_APPLICABILITY_EVIDENCE_SCHEMA
+      (REAL_VSPAERO raw_sha/geometry_sha/solver_version/starts/internal, physics NOT_VALIDATED)
+    admission_status: PENDING_M0_BY_DESIGN
+    admitted: false
+- schema_version: dreal001.meta_task_spec.v1
+  task_spec_version: dreal001.t0.task_spec.v1
+  task_id: dreal001_concorde_supersonic_cruise_12d-11a0dd0e8386
+  task_fingerprint: 11a0dd0e83867097068daa753ba61a196b22cbe7486b542957b37810bc90dea6
+  family_id: dreal001_concorde_supersonic_cruise_12d
+  mach: 2.02
+  altitude_m: 20000.0
+  lift_reference_N: 952380.910046
+  lift_tol_rel: 0.001
+  alpha_primary_deg:
+  - -2.0
+  - 0.0
+  - 2.0
+  - 4.0
+  - 6.0
+  - 8.0
+  - 10.0
+  alpha_refine_deg: []
+  max_refine_sweeps: 2
+  active_mask:
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  active_dimension_label: ALL_12_ACTIVE
+  n_active: 12
+  design_space_id: 12d_lifting_surfaces
+  design_space_sha256: 175ec5e48a678aa43af8e7b85ef64f93dd3dbefaacbc74bdcafd2d5e4d684db9
+  parameters:
+  - id: W01
+    name: wing_area
+    unit: m^2
+    baseline: 358.25
+    lower: 300.0
+    upper: 420.0
+    scale: 100.0
+    target: main_wing.areas.reference
+  - id: W02
+    name: aspect_ratio
+    unit: dimensionless
+    baseline: 1.83
+    lower: 1.5
+    upper: 2.2
+    scale: 1.0
+    target: main_wing.aspect_ratio
+  - id: W03
+    name: sweep_1
+    unit: deg
+    baseline: 67.0
+    lower: 62.0
+    upper: 72.0
+    scale: 10.0
+    target: main_wing.segments.section_1.sweeps.quarter_chord
+  - id: W04
+    name: sweep_2
+    unit: deg
+    baseline: 48.0
+    lower: 40.0
+    upper: 56.0
+    scale: 10.0
+    target: main_wing.segments.section_2.sweeps.quarter_chord
+  - id: W05
+    name: sweep_3
+    unit: deg
+    baseline: 71.0
+    lower: 66.0
+    upper: 76.0
+    scale: 10.0
+    target: main_wing.segments.section_3.sweeps.quarter_chord
+  - id: W06
+    name: span_location_2
+    unit: dimensionless
+    baseline: 0.480469
+    lower: 0.35
+    upper: 0.58
+    scale: 0.1
+    target: main_wing.segments.section_2.percent_span_location
+  - id: W07
+    name: span_location_3
+    unit: dimensionless
+    baseline: 0.945313
+    lower: 0.85
+    upper: 0.98
+    scale: 0.1
+    target: main_wing.segments.section_3.percent_span_location
+  - id: W08
+    name: chord_ratio_2
+    unit: dimensionless
+    baseline: 0.408284
+    lower: 0.3
+    upper: 0.5
+    scale: 0.1
+    target: main_wing.segments.section_2.root_chord_percent
+  - id: W09
+    name: chord_ratio_3
+    unit: dimensionless
+    baseline: 0.130178
+    lower: 0.08
+    upper: 0.2
+    scale: 0.1
+    target: main_wing.segments.section_3.root_chord_percent
+  - id: W10
+    name: tip_twist
+    unit: deg
+    baseline: 0.0
+    lower: -4.0
+    upper: 4.0
+    scale: 5.0
+    target: main_wing.segments.tip.twist
+  - id: V01
+    name: vertical_tail_area
+    unit: m^2
+    baseline: 33.91
+    lower: 28.0
+    upper: 40.0
+    scale: 10.0
+    target: vertical_stabilizer.areas.reference
+  - id: V02
+    name: vertical_tail_sweep_delta
+    unit: deg
+    baseline: 0.0
+    lower: -10.0
+    upper: 10.0
+    scale: 10.0
+    target: vertical_stabilizer.quarter_chord_sweep_delta
+  fixed_variables:
+  - id: F01
+    name: fuselage_length
+    unit: m
+    baseline: 61.66
+    target: fuselage.lengths.total
+    source: owner decision 2026-10-30 item 2
+  - id: F02
+    name: fuselage_fineness
+    unit: dimensionless
+    baseline: 4.3
+    target: fuselage.fineness.nose
+    source: owner decision 2026-10-30 item 2
+  - id: F03
+    name: fuselage_height_width_ratio
+    unit: dimensionless
+    baseline: 1.152778
+    target: fuselage.heights.maximum_over_width
+    source: owner decision 2026-10-30 item 2
+  solver_version: 7.2.2
+  openvsp_version: 3.55.0
+  solver_config_sha256: ''
+  reference_frame: WING_AC
+  x_ref_m: 16.821978259514246
+  sref_baseline_m2: 358.25
+  source_kind: REAL_VSPAERO
+  physics_validation_status: NOT_VALIDATED
+  applicability:
+    status: DEFERRED_TO_M1_REAL_COLLECTION
+    solver_domain: NOT_CHECKED
+    lift_target_reachable: NOT_CHECKED
+    cross_task_response: NOT_CHECKED
+    evidence_sha256s: []
+    required_evidence_schema:
+      schema_version: dreal001.task_applicability_evidence.v1
+      kind: PER_TASK_REAL_VSPAERO_DOMAIN_EVIDENCE
+      required_fields:
+      - task_fingerprint
+      - source_kind
+      - raw_sha
+      - geometry_sha
+      - solver_version
+      - evaluator_id
+      - run_id
+      - physical_solver_starts_actual
+      - internal_solver_cases_actual
+      - physics_validation_status
+      - checked_utc
+      source_kind_const: REAL_VSPAERO
+      physics_validation_status_const: NOT_VALIDATED
+      raw_sha_pattern: ^[0-9a-f]{64}$
+      geometry_sha_pattern: ^[0-9a-f]{64}$
+      internal_cases_rule: internal_solver_cases_actual == 7 * physical_solver_starts_actual
+      min_physical_solver_starts_actual: 1
+      counts_as_physical_validation: false
+      note: This schema describes the evidence required by M1 to flip a task applicability
+        field to PASS. T0-4 collects none of it; no record with source_kind != REAL_VSPAERO
+        can satisfy it.
+    notes: 'Deferred to M1 real collection: T0-4 has zero physical calls and no per-task
+      REAL_VSPAERO domain evidence; admission stays PENDING_M0_BY_DESIGN.'
+  effect_evidence: []
+  notes: T0-4 candidate (Mach 2.02, altitude 20000 m, CL_target 0.17); zero physical
+    labels collected; freshness applies to the meta split.
+  created_utc: ''
+  derived:
+    rho_kg_m3: 0.08803476221563096
+    speed_of_sound_m_s: 295.0694935090715
+    velocity_m_s: 596.0403768883244
+    q_Pa: 15637.796642933556
+    cl_required_at_baseline_sref: 0.16999999999995344
+  candidate_factors:
+    mach: 2.02
+    altitude_m: 20000.0
+    cl_target: 0.17
+    q_Pa: 15637.796642933556
+    lift_reference_N: 952380.910046
+    lift_reference_derivation: q(M,h) * SREF_BASELINE_M2 * CL_target
+  split: meta_train
+  evaluator_binding:
+    evaluator_id: dreal001.evaluator.v12.fixed_cruise
+    code_sha256: f74a4752495fd6c5330edcaf7edb4bcbe93f99c2a76bac06b5670d1f765ae20d
+    solver_version: 7.2.2
+    openvsp_version: 3.55.0
+    geometry_id: CFG-01-thin-12x25-production-baseline
+    geometry_sha256: 40fdd4364e01c7fe11ca2ea4530d39c371ae693a434f39e44986f7512d6446f4
+    source_config_path: D:\RCAIDE\dnext001\wt-real-a1-geometry-solver\configs\dreal001_task_fixed_cruise_REAL.json
+    source_config_sha256: 0aa64eb25d9fd2ed939f7c9f2bdfa9df4b32ee19cbfd9310fbaae56d4976cf27
+    timeout_s_per_start: 60
+    ncpu: 1
+    omp_num_threads: 1
+  physical_domain_checks:
+    solver_domain:
+      status: DEFERRED_TO_M1_REAL_COLLECTION
+      required_evidence:
+      - VSPAERO 7.2.2 converged polar at (M,h) within alpha [-2,10]
+      - no LIMIT/UNCONVERGED at this (M,h)
+      evidence_owner: M1 real collection (M0/M1 per-task applicability; F1R2/F2R2
+        are fixed-task-domain precedents only)
+    lift_target_reachable:
+      status: DEFERRED_TO_M1_REAL_COLLECTION
+      required_evidence: lift-matched alpha in [-2,10] with |L-L_ref|/L_ref <= 1e-3
+      evidence_owner: M1 real collection
+    cross_task_response:
+      status: DEFERRED_TO_M1_REAL_COLLECTION
+      required_evidence: objective responds to (M,h,CL) beyond MIN_EFFECT_REL and
+        is not a global scale
+      evidence_owner: M1 real collection
+    required_evidence_schema: TaskApplicability.REQUIRED_APPLICABILITY_EVIDENCE_SCHEMA
+      (REAL_VSPAERO raw_sha/geometry_sha/solver_version/starts/internal, physics NOT_VALIDATED)
+    admission_status: PENDING_M0_BY_DESIGN
+    admitted: false
+- schema_version: dreal001.meta_task_spec.v1
+  task_spec_version: dreal001.t0.task_spec.v1
+  task_id: dreal001_concorde_supersonic_cruise_12d-14da98e6125b
+  task_fingerprint: 14da98e6125b8003f8a5696bcd3ac3fd2f7779d33e1f63f4b264e793f8592488
+  family_id: dreal001_concorde_supersonic_cruise_12d
+  mach: 2.2
+  altitude_m: 18288.0
+  lift_reference_N: 1653869.804456
+  lift_tol_rel: 0.001
+  alpha_primary_deg:
+  - -2.0
+  - 0.0
+  - 2.0
+  - 4.0
+  - 6.0
+  - 8.0
+  - 10.0
+  alpha_refine_deg: []
+  max_refine_sweeps: 2
+  active_mask:
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  active_dimension_label: ALL_12_ACTIVE
+  n_active: 12
+  design_space_id: 12d_lifting_surfaces
+  design_space_sha256: 175ec5e48a678aa43af8e7b85ef64f93dd3dbefaacbc74bdcafd2d5e4d684db9
+  parameters:
+  - id: W01
+    name: wing_area
+    unit: m^2
+    baseline: 358.25
+    lower: 300.0
+    upper: 420.0
+    scale: 100.0
+    target: main_wing.areas.reference
+  - id: W02
+    name: aspect_ratio
+    unit: dimensionless
+    baseline: 1.83
+    lower: 1.5
+    upper: 2.2
+    scale: 1.0
+    target: main_wing.aspect_ratio
+  - id: W03
+    name: sweep_1
+    unit: deg
+    baseline: 67.0
+    lower: 62.0
+    upper: 72.0
+    scale: 10.0
+    target: main_wing.segments.section_1.sweeps.quarter_chord
+  - id: W04
+    name: sweep_2
+    unit: deg
+    baseline: 48.0
+    lower: 40.0
+    upper: 56.0
+    scale: 10.0
+    target: main_wing.segments.section_2.sweeps.quarter_chord
+  - id: W05
+    name: sweep_3
+    unit: deg
+    baseline: 71.0
+    lower: 66.0
+    upper: 76.0
+    scale: 10.0
+    target: main_wing.segments.section_3.sweeps.quarter_chord
+  - id: W06
+    name: span_location_2
+    unit: dimensionless
+    baseline: 0.480469
+    lower: 0.35
+    upper: 0.58
+    scale: 0.1
+    target: main_wing.segments.section_2.percent_span_location
+  - id: W07
+    name: span_location_3
+    unit: dimensionless
+    baseline: 0.945313
+    lower: 0.85
+    upper: 0.98
+    scale: 0.1
+    target: main_wing.segments.section_3.percent_span_location
+  - id: W08
+    name: chord_ratio_2
+    unit: dimensionless
+    baseline: 0.408284
+    lower: 0.3
+    upper: 0.5
+    scale: 0.1
+    target: main_wing.segments.section_2.root_chord_percent
+  - id: W09
+    name: chord_ratio_3
+    unit: dimensionless
+    baseline: 0.130178
+    lower: 0.08
+    upper: 0.2
+    scale: 0.1
+    target: main_wing.segments.section_3.root_chord_percent
+  - id: W10
+    name: tip_twist
+    unit: deg
+    baseline: 0.0
+    lower: -4.0
+    upper: 4.0
+    scale: 5.0
+    target: main_wing.segments.tip.twist
+  - id: V01
+    name: vertical_tail_area
+    unit: m^2
+    baseline: 33.91
+    lower: 28.0
+    upper: 40.0
+    scale: 10.0
+    target: vertical_stabilizer.areas.reference
+  - id: V02
+    name: vertical_tail_sweep_delta
+    unit: deg
+    baseline: 0.0
+    lower: -10.0
+    upper: 10.0
+    scale: 10.0
+    target: vertical_stabilizer.quarter_chord_sweep_delta
+  fixed_variables:
+  - id: F01
+    name: fuselage_length
+    unit: m
+    baseline: 61.66
+    target: fuselage.lengths.total
+    source: owner decision 2026-10-30 item 2
+  - id: F02
+    name: fuselage_fineness
+    unit: dimensionless
+    baseline: 4.3
+    target: fuselage.fineness.nose
+    source: owner decision 2026-10-30 item 2
+  - id: F03
+    name: fuselage_height_width_ratio
+    unit: dimensionless
+    baseline: 1.152778
+    target: fuselage.heights.maximum_over_width
+    source: owner decision 2026-10-30 item 2
+  solver_version: 7.2.2
+  openvsp_version: 3.55.0
+  solver_config_sha256: ''
+  reference_frame: WING_AC
+  x_ref_m: 16.821978259514246
+  sref_baseline_m2: 358.25
+  source_kind: REAL_VSPAERO
+  physics_validation_status: NOT_VALIDATED
+  applicability:
+    status: DEFERRED_TO_M1_REAL_COLLECTION
+    solver_domain: NOT_CHECKED
+    lift_target_reachable: NOT_CHECKED
+    cross_task_response: NOT_CHECKED
+    evidence_sha256s: []
+    required_evidence_schema:
+      schema_version: dreal001.task_applicability_evidence.v1
+      kind: PER_TASK_REAL_VSPAERO_DOMAIN_EVIDENCE
+      required_fields:
+      - task_fingerprint
+      - source_kind
+      - raw_sha
+      - geometry_sha
+      - solver_version
+      - evaluator_id
+      - run_id
+      - physical_solver_starts_actual
+      - internal_solver_cases_actual
+      - physics_validation_status
+      - checked_utc
+      source_kind_const: REAL_VSPAERO
+      physics_validation_status_const: NOT_VALIDATED
+      raw_sha_pattern: ^[0-9a-f]{64}$
+      geometry_sha_pattern: ^[0-9a-f]{64}$
+      internal_cases_rule: internal_solver_cases_actual == 7 * physical_solver_starts_actual
+      min_physical_solver_starts_actual: 1
+      counts_as_physical_validation: false
+      note: This schema describes the evidence required by M1 to flip a task applicability
+        field to PASS. T0-4 collects none of it; no record with source_kind != REAL_VSPAERO
+        can satisfy it.
+    notes: 'Deferred to M1 real collection: T0-4 has zero physical calls and no per-task
+      REAL_VSPAERO domain evidence; admission stays PENDING_M0_BY_DESIGN.'
+  effect_evidence: []
+  notes: T0-4 candidate (Mach 2.2, altitude 18288 m, CL_target 0.19); zero physical
+    labels collected; freshness applies to the meta split.
+  created_utc: ''
+  derived:
+    rho_kg_m3: 0.11531811366051452
+    speed_of_sound_m_s: 295.0694935090715
+    velocity_m_s: 649.1528857199573
+    q_Pa: 24297.49593353387
+    cl_required_at_baseline_sref: 0.190000000000021
+  candidate_factors:
+    mach: 2.2
+    altitude_m: 18288.0
+    cl_target: 0.19
+    q_Pa: 24297.49593353387
+    lift_reference_N: 1653869.804456
+    lift_reference_derivation: q(M,h) * SREF_BASELINE_M2 * CL_target
+  split: meta_train
+  evaluator_binding:
+    evaluator_id: dreal001.evaluator.v12.fixed_cruise
+    code_sha256: f74a4752495fd6c5330edcaf7edb4bcbe93f99c2a76bac06b5670d1f765ae20d
+    solver_version: 7.2.2
+    openvsp_version: 3.55.0
+    geometry_id: CFG-01-thin-12x25-production-baseline
+    geometry_sha256: 40fdd4364e01c7fe11ca2ea4530d39c371ae693a434f39e44986f7512d6446f4
+    source_config_path: D:\RCAIDE\dnext001\wt-real-a1-geometry-solver\configs\dreal001_task_fixed_cruise_REAL.json
+    source_config_sha256: 0aa64eb25d9fd2ed939f7c9f2bdfa9df4b32ee19cbfd9310fbaae56d4976cf27
+    timeout_s_per_start: 60
+    ncpu: 1
+    omp_num_threads: 1
+  physical_domain_checks:
+    solver_domain:
+      status: DEFERRED_TO_M1_REAL_COLLECTION
+      required_evidence:
+      - VSPAERO 7.2.2 converged polar at (M,h) within alpha [-2,10]
+      - no LIMIT/UNCONVERGED at this (M,h)
+      evidence_owner: M1 real collection (M0/M1 per-task applicability; F1R2/F2R2
+        are fixed-task-domain precedents only)
+    lift_target_reachable:
+      status: DEFERRED_TO_M1_REAL_COLLECTION
+      required_evidence: lift-matched alpha in [-2,10] with |L-L_ref|/L_ref <= 1e-3
+      evidence_owner: M1 real collection
+    cross_task_response:
+      status: DEFERRED_TO_M1_REAL_COLLECTION
+      required_evidence: objective responds to (M,h,CL) beyond MIN_EFFECT_REL and
+        is not a global scale
+      evidence_owner: M1 real collection
+    required_evidence_schema: TaskApplicability.REQUIRED_APPLICABILITY_EVIDENCE_SCHEMA
+      (REAL_VSPAERO raw_sha/geometry_sha/solver_version/starts/internal, physics NOT_VALIDATED)
+    admission_status: PENDING_M0_BY_DESIGN
+    admitted: false
+- schema_version: dreal001.meta_task_spec.v1
+  task_spec_version: dreal001.t0.task_spec.v1
+  task_id: dreal001_concorde_supersonic_cruise_12d-2066f5620f26
+  task_fingerprint: 2066f5620f26f804961003b3bbaf683063733a9fb7b46866b62f1feb56c837f8
+  family_id: dreal001_concorde_supersonic_cruise_12d
+  mach: 1.8
+  altitude_m: 15000.0
+  lift_reference_N: 1663677.843013
+  lift_tol_rel: 0.001
+  alpha_primary_deg:
+  - -2.0
+  - 0.0
+  - 2.0
+  - 4.0
+  - 6.0
+  - 8.0
+  - 10.0
+  alpha_refine_deg: []
+  max_refine_sweeps: 2
+  active_mask:
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  active_dimension_label: ALL_12_ACTIVE
+  n_active: 12
+  design_space_id: 12d_lifting_surfaces
+  design_space_sha256: 175ec5e48a678aa43af8e7b85ef64f93dd3dbefaacbc74bdcafd2d5e4d684db9
+  parameters:
+  - id: W01
+    name: wing_area
+    unit: m^2
+    baseline: 358.25
+    lower: 300.0
+    upper: 420.0
+    scale: 100.0
+    target: main_wing.areas.reference
+  - id: W02
+    name: aspect_ratio
+    unit: dimensionless
+    baseline: 1.83
+    lower: 1.5
+    upper: 2.2
+    scale: 1.0
+    target: main_wing.aspect_ratio
+  - id: W03
+    name: sweep_1
+    unit: deg
+    baseline: 67.0
+    lower: 62.0
+    upper: 72.0
+    scale: 10.0
+    target: main_wing.segments.section_1.sweeps.quarter_chord
+  - id: W04
+    name: sweep_2
+    unit: deg
+    baseline: 48.0
+    lower: 40.0
+    upper: 56.0
+    scale: 10.0
+    target: main_wing.segments.section_2.sweeps.quarter_chord
+  - id: W05
+    name: sweep_3
+    unit: deg
+    baseline: 71.0
+    lower: 66.0
+    upper: 76.0
+    scale: 10.0
+    target: main_wing.segments.section_3.sweeps.quarter_chord
+  - id: W06
+    name: span_location_2
+    unit: dimensionless
+    baseline: 0.480469
+    lower: 0.35
+    upper: 0.58
+    scale: 0.1
+    target: main_wing.segments.section_2.percent_span_location
+  - id: W07
+    name: span_location_3
+    unit: dimensionless
+    baseline: 0.945313
+    lower: 0.85
+    upper: 0.98
+    scale: 0.1
+    target: main_wing.segments.section_3.percent_span_location
+  - id: W08
+    name: chord_ratio_2
+    unit: dimensionless
+    baseline: 0.408284
+    lower: 0.3
+    upper: 0.5
+    scale: 0.1
+    target: main_wing.segments.section_2.root_chord_percent
+  - id: W09
+    name: chord_ratio_3
+    unit: dimensionless
+    baseline: 0.130178
+    lower: 0.08
+    upper: 0.2
+    scale: 0.1
+    target: main_wing.segments.section_3.root_chord_percent
+  - id: W10
+    name: tip_twist
+    unit: deg
+    baseline: 0.0
+    lower: -4.0
+    upper: 4.0
+    scale: 5.0
+    target: main_wing.segments.tip.twist
+  - id: V01
+    name: vertical_tail_area
+    unit: m^2
+    baseline: 33.91
+    lower: 28.0
+    upper: 40.0
+    scale: 10.0
+    target: vertical_stabilizer.areas.reference
+  - id: V02
+    name: vertical_tail_sweep_delta
+    unit: deg
+    baseline: 0.0
+    lower: -10.0
+    upper: 10.0
+    scale: 10.0
+    target: vertical_stabilizer.quarter_chord_sweep_delta
+  fixed_variables:
+  - id: F01
+    name: fuselage_length
+    unit: m
+    baseline: 61.66
+    target: fuselage.lengths.total
+    source: owner decision 2026-10-30 item 2
+  - id: F02
+    name: fuselage_fineness
+    unit: dimensionless
+    baseline: 4.3
+    target: fuselage.fineness.nose
+    source: owner decision 2026-10-30 item 2
+  - id: F03
+    name: fuselage_height_width_ratio
+    unit: dimensionless
+    baseline: 1.152778
+    target: fuselage.heights.maximum_over_width
+    source: owner decision 2026-10-30 item 2
+  solver_version: 7.2.2
+  openvsp_version: 3.55.0
+  solver_config_sha256: ''
+  reference_frame: WING_AC
+  x_ref_m: 16.821978259514246
+  sref_baseline_m2: 358.25
+  source_kind: REAL_VSPAERO
+  physics_validation_status: NOT_VALIDATED
+  applicability:
+    status: DEFERRED_TO_M1_REAL_COLLECTION
+    solver_domain: NOT_CHECKED
+    lift_target_reachable: NOT_CHECKED
+    cross_task_response: NOT_CHECKED
+    evidence_sha256s: []
+    required_evidence_schema:
+      schema_version: dreal001.task_applicability_evidence.v1
+      kind: PER_TASK_REAL_VSPAERO_DOMAIN_EVIDENCE
+      required_fields:
+      - task_fingerprint
+      - source_kind
+      - raw_sha
+      - geometry_sha
+      - solver_version
+      - evaluator_id
+      - run_id
+      - physical_solver_starts_actual
+      - internal_solver_cases_actual
+      - physics_validation_status
+      - checked_utc
+      source_kind_const: REAL_VSPAERO
+      physics_validation_status_const: NOT_VALIDATED
+      raw_sha_pattern: ^[0-9a-f]{64}$
+      geometry_sha_pattern: ^[0-9a-f]{64}$
+      internal_cases_rule: internal_solver_cases_actual == 7 * physical_solver_starts_actual
+      min_physical_solver_starts_actual: 1
+      counts_as_physical_validation: false
+      note: This schema describes the evidence required by M1 to flip a task applicability
+        field to PASS. T0-4 collects none of it; no record with source_kind != REAL_VSPAERO
+        can satisfy it.
+    notes: 'Deferred to M1 real collection: T0-4 has zero physical calls and no per-task
+      REAL_VSPAERO domain evidence; admission stays PENDING_M0_BY_DESIGN.'
+  effect_evidence: []
+  notes: T0-4 candidate (Mach 1.8, altitude 15000 m, CL_target 0.17); zero physical
+    labels collected; freshness applies to the meta split.
+  created_utc: ''
+  derived:
+    rho_kg_m3: 0.19367362229311477
+    speed_of_sound_m_s: 295.0694935090715
+    velocity_m_s: 531.1250883163287
+    q_Pa: 27317.069792100658
+    cl_required_at_baseline_sref: 0.16999999999995807
+  candidate_factors:
+    mach: 1.8
+    altitude_m: 15000.0
+    cl_target: 0.17
+    q_Pa: 27317.069792100658
+    lift_reference_N: 1663677.843013
+    lift_reference_derivation: q(M,h) * SREF_BASELINE_M2 * CL_target
+  split: meta_train
+  evaluator_binding:
+    evaluator_id: dreal001.evaluator.v12.fixed_cruise
+    code_sha256: f74a4752495fd6c5330edcaf7edb4bcbe93f99c2a76bac06b5670d1f765ae20d
+    solver_version: 7.2.2
+    openvsp_version: 3.55.0
+    geometry_id: CFG-01-thin-12x25-production-baseline
+    geometry_sha256: 40fdd4364e01c7fe11ca2ea4530d39c371ae693a434f39e44986f7512d6446f4
+    source_config_path: D:\RCAIDE\dnext001\wt-real-a1-geometry-solver\configs\dreal001_task_fixed_cruise_REAL.json
+    source_config_sha256: 0aa64eb25d9fd2ed939f7c9f2bdfa9df4b32ee19cbfd9310fbaae56d4976cf27
+    timeout_s_per_start: 60
+    ncpu: 1
+    omp_num_threads: 1
+  physical_domain_checks:
+    solver_domain:
+      status: DEFERRED_TO_M1_REAL_COLLECTION
+      required_evidence:
+      - VSPAERO 7.2.2 converged polar at (M,h) within alpha [-2,10]
+      - no LIMIT/UNCONVERGED at this (M,h)
+      evidence_owner: M1 real collection (M0/M1 per-task applicability; F1R2/F2R2
+        are fixed-task-domain precedents only)
+    lift_target_reachable:
+      status: DEFERRED_TO_M1_REAL_COLLECTION
+      required_evidence: lift-matched alpha in [-2,10] with |L-L_ref|/L_ref <= 1e-3
+      evidence_owner: M1 real collection
+    cross_task_response:
+      status: DEFERRED_TO_M1_REAL_COLLECTION
+      required_evidence: objective responds to (M,h,CL) beyond MIN_EFFECT_REL and
+        is not a global scale
+      evidence_owner: M1 real collection
+    required_evidence_schema: TaskApplicability.REQUIRED_APPLICABILITY_EVIDENCE_SCHEMA
+      (REAL_VSPAERO raw_sha/geometry_sha/solver_version/starts/internal, physics NOT_VALIDATED)
+    admission_status: PENDING_M0_BY_DESIGN
+    admitted: false
+- schema_version: dreal001.meta_task_spec.v1
+  task_spec_version: dreal001.t0.task_spec.v1
+  task_id: dreal001_concorde_supersonic_cruise_12d-314095054252
+  task_fingerprint: 314095054252cc4c539a1829cb6275b5a539b9700659d7c5e8f5ecdb55621c66
+  family_id: dreal001_concorde_supersonic_cruise_12d
+  mach: 2.02
+  altitude_m: 18288.0
+  lift_reference_N: 1394307.923575
+  lift_tol_rel: 0.001
+  alpha_primary_deg:
+  - -2.0
+  - 0.0
+  - 2.0
+  - 4.0
+  - 6.0
+  - 8.0
+  - 10.0
+  alpha_refine_deg: []
+  max_refine_sweeps: 2
+  active_mask:
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  active_dimension_label: ALL_12_ACTIVE
+  n_active: 12
+  design_space_id: 12d_lifting_surfaces
+  design_space_sha256: 175ec5e48a678aa43af8e7b85ef64f93dd3dbefaacbc74bdcafd2d5e4d684db9
+  parameters:
+  - id: W01
+    name: wing_area
+    unit: m^2
+    baseline: 358.25
+    lower: 300.0
+    upper: 420.0
+    scale: 100.0
+    target: main_wing.areas.reference
+  - id: W02
+    name: aspect_ratio
+    unit: dimensionless
+    baseline: 1.83
+    lower: 1.5
+    upper: 2.2
+    scale: 1.0
+    target: main_wing.aspect_ratio
+  - id: W03
+    name: sweep_1
+    unit: deg
+    baseline: 67.0
+    lower: 62.0
+    upper: 72.0
+    scale: 10.0
+    target: main_wing.segments.section_1.sweeps.quarter_chord
+  - id: W04
+    name: sweep_2
+    unit: deg
+    baseline: 48.0
+    lower: 40.0
+    upper: 56.0
+    scale: 10.0
+    target: main_wing.segments.section_2.sweeps.quarter_chord
+  - id: W05
+    name: sweep_3
+    unit: deg
+    baseline: 71.0
+    lower: 66.0
+    upper: 76.0
+    scale: 10.0
+    target: main_wing.segments.section_3.sweeps.quarter_chord
+  - id: W06
+    name: span_location_2
+    unit: dimensionless
+    baseline: 0.480469
+    lower: 0.35
+    upper: 0.58
+    scale: 0.1
+    target: main_wing.segments.section_2.percent_span_location
+  - id: W07
+    name: span_location_3
+    unit: dimensionless
+    baseline: 0.945313
+    lower: 0.85
+    upper: 0.98
+    scale: 0.1
+    target: main_wing.segments.section_3.percent_span_location
+  - id: W08
+    name: chord_ratio_2
+    unit: dimensionless
+    baseline: 0.408284
+    lower: 0.3
+    upper: 0.5
+    scale: 0.1
+    target: main_wing.segments.section_2.root_chord_percent
+  - id: W09
+    name: chord_ratio_3
+    unit: dimensionless
+    baseline: 0.130178
+    lower: 0.08
+    upper: 0.2
+    scale: 0.1
+    target: main_wing.segments.section_3.root_chord_percent
+  - id: W10
+    name: tip_twist
+    unit: deg
+    baseline: 0.0
+    lower: -4.0
+    upper: 4.0
+    scale: 5.0
+    target: main_wing.segments.tip.twist
+  - id: V01
+    name: vertical_tail_area
+    unit: m^2
+    baseline: 33.91
+    lower: 28.0
+    upper: 40.0
+    scale: 10.0
+    target: vertical_stabilizer.areas.reference
+  - id: V02
+    name: vertical_tail_sweep_delta
+    unit: deg
+    baseline: 0.0
+    lower: -10.0
+    upper: 10.0
+    scale: 10.0
+    target: vertical_stabilizer.quarter_chord_sweep_delta
+  fixed_variables:
+  - id: F01
+    name: fuselage_length
+    unit: m
+    baseline: 61.66
+    target: fuselage.lengths.total
+    source: owner decision 2026-10-30 item 2
+  - id: F02
+    name: fuselage_fineness
+    unit: dimensionless
+    baseline: 4.3
+    target: fuselage.fineness.nose
+    source: owner decision 2026-10-30 item 2
+  - id: F03
+    name: fuselage_height_width_ratio
+    unit: dimensionless
+    baseline: 1.152778
+    target: fuselage.heights.maximum_over_width
+    source: owner decision 2026-10-30 item 2
+  solver_version: 7.2.2
+  openvsp_version: 3.55.0
+  solver_config_sha256: ''
+  reference_frame: WING_AC
+  x_ref_m: 16.821978259514246
+  sref_baseline_m2: 358.25
+  source_kind: REAL_VSPAERO
+  physics_validation_status: NOT_VALIDATED
+  applicability:
+    status: DEFERRED_TO_M1_REAL_COLLECTION
+    solver_domain: NOT_CHECKED
+    lift_target_reachable: NOT_CHECKED
+    cross_task_response: NOT_CHECKED
+    evidence_sha256s: []
+    required_evidence_schema:
+      schema_version: dreal001.task_applicability_evidence.v1
+      kind: PER_TASK_REAL_VSPAERO_DOMAIN_EVIDENCE
+      required_fields:
+      - task_fingerprint
+      - source_kind
+      - raw_sha
+      - geometry_sha
+      - solver_version
+      - evaluator_id
+      - run_id
+      - physical_solver_starts_actual
+      - internal_solver_cases_actual
+      - physics_validation_status
+      - checked_utc
+      source_kind_const: REAL_VSPAERO
+      physics_validation_status_const: NOT_VALIDATED
+      raw_sha_pattern: ^[0-9a-f]{64}$
+      geometry_sha_pattern: ^[0-9a-f]{64}$
+      internal_cases_rule: internal_solver_cases_actual == 7 * physical_solver_starts_actual
+      min_physical_solver_starts_actual: 1
+      counts_as_physical_validation: false
+      note: This schema describes the evidence required by M1 to flip a task applicability
+        field to PASS. T0-4 collects none of it; no record with source_kind != REAL_VSPAERO
+        can satisfy it.
+    notes: 'Deferred to M1 real collection: T0-4 has zero physical calls and no per-task
+      REAL_VSPAERO domain evidence; admission stays PENDING_M0_BY_DESIGN.'
+  effect_evidence: []
+  notes: T0-4 candidate (Mach 2.02, altitude 18288 m, CL_target 0.19); zero physical
+    labels collected; freshness applies to the meta split.
+  created_utc: ''
+  derived:
+    rho_kg_m3: 0.11531811366051452
+    speed_of_sound_m_s: 295.0694935090715
+    velocity_m_s: 596.0403768883244
+    q_Pa: 20484.19471222967
+    cl_required_at_baseline_sref: 0.1900000000000418
+  candidate_factors:
+    mach: 2.02
+    altitude_m: 18288.0
+    cl_target: 0.19
+    q_Pa: 20484.19471222967
+    lift_reference_N: 1394307.923575
+    lift_reference_derivation: q(M,h) * SREF_BASELINE_M2 * CL_target
+  split: meta_test
+  evaluator_binding:
+    evaluator_id: dreal001.evaluator.v12.fixed_cruise
+    code_sha256: f74a4752495fd6c5330edcaf7edb4bcbe93f99c2a76bac06b5670d1f765ae20d
+    solver_version: 7.2.2
+    openvsp_version: 3.55.0
+    geometry_id: CFG-01-thin-12x25-production-baseline
+    geometry_sha256: 40fdd4364e01c7fe11ca2ea4530d39c371ae693a434f39e44986f7512d6446f4
+    source_config_path: D:\RCAIDE\dnext001\wt-real-a1-geometry-solver\configs\dreal001_task_fixed_cruise_REAL.json
+    source_config_sha256: 0aa64eb25d9fd2ed939f7c9f2bdfa9df4b32ee19cbfd9310fbaae56d4976cf27
+    timeout_s_per_start: 60
+    ncpu: 1
+    omp_num_threads: 1
+  physical_domain_checks:
+    solver_domain:
+      status: DEFERRED_TO_M1_REAL_COLLECTION
+      required_evidence:
+      - VSPAERO 7.2.2 converged polar at (M,h) within alpha [-2,10]
+      - no LIMIT/UNCONVERGED at this (M,h)
+      evidence_owner: M1 real collection (M0/M1 per-task applicability; F1R2/F2R2
+        are fixed-task-domain precedents only)
+    lift_target_reachable:
+      status: DEFERRED_TO_M1_REAL_COLLECTION
+      required_evidence: lift-matched alpha in [-2,10] with |L-L_ref|/L_ref <= 1e-3
+      evidence_owner: M1 real collection
+    cross_task_response:
+      status: DEFERRED_TO_M1_REAL_COLLECTION
+      required_evidence: objective responds to (M,h,CL) beyond MIN_EFFECT_REL and
+        is not a global scale
+      evidence_owner: M1 real collection
+    required_evidence_schema: TaskApplicability.REQUIRED_APPLICABILITY_EVIDENCE_SCHEMA
+      (REAL_VSPAERO raw_sha/geometry_sha/solver_version/starts/internal, physics NOT_VALIDATED)
+    admission_status: PENDING_M0_BY_DESIGN
+    admitted: false
+- schema_version: dreal001.meta_task_spec.v1
+  task_spec_version: dreal001.t0.task_spec.v1
+  task_id: dreal001_concorde_supersonic_cruise_12d-386feed9ce9c
+  task_fingerprint: 386feed9ce9ce9a49348b6a984f6fd88c49af088b5f9107d8dc6fd2097380425
+  family_id: dreal001_concorde_supersonic_cruise_12d
+  mach: 2.2
+  altitude_m: 18288.0
+  lift_reference_N: 1479778.246092
+  lift_tol_rel: 0.001
+  alpha_primary_deg:
+  - -2.0
+  - 0.0
+  - 2.0
+  - 4.0
+  - 6.0
+  - 8.0
+  - 10.0
+  alpha_refine_deg: []
+  max_refine_sweeps: 2
+  active_mask:
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  active_dimension_label: ALL_12_ACTIVE
+  n_active: 12
+  design_space_id: 12d_lifting_surfaces
+  design_space_sha256: 175ec5e48a678aa43af8e7b85ef64f93dd3dbefaacbc74bdcafd2d5e4d684db9
+  parameters:
+  - id: W01
+    name: wing_area
+    unit: m^2
+    baseline: 358.25
+    lower: 300.0
+    upper: 420.0
+    scale: 100.0
+    target: main_wing.areas.reference
+  - id: W02
+    name: aspect_ratio
+    unit: dimensionless
+    baseline: 1.83
+    lower: 1.5
+    upper: 2.2
+    scale: 1.0
+    target: main_wing.aspect_ratio
+  - id: W03
+    name: sweep_1
+    unit: deg
+    baseline: 67.0
+    lower: 62.0
+    upper: 72.0
+    scale: 10.0
+    target: main_wing.segments.section_1.sweeps.quarter_chord
+  - id: W04
+    name: sweep_2
+    unit: deg
+    baseline: 48.0
+    lower: 40.0
+    upper: 56.0
+    scale: 10.0
+    target: main_wing.segments.section_2.sweeps.quarter_chord
+  - id: W05
+    name: sweep_3
+    unit: deg
+    baseline: 71.0
+    lower: 66.0
+    upper: 76.0
+    scale: 10.0
+    target: main_wing.segments.section_3.sweeps.quarter_chord
+  - id: W06
+    name: span_location_2
+    unit: dimensionless
+    baseline: 0.480469
+    lower: 0.35
+    upper: 0.58
+    scale: 0.1
+    target: main_wing.segments.section_2.percent_span_location
+  - id: W07
+    name: span_location_3
+    unit: dimensionless
+    baseline: 0.945313
+    lower: 0.85
+    upper: 0.98
+    scale: 0.1
+    target: main_wing.segments.section_3.percent_span_location
+  - id: W08
+    name: chord_ratio_2
+    unit: dimensionless
+    baseline: 0.408284
+    lower: 0.3
+    upper: 0.5
+    scale: 0.1
+    target: main_wing.segments.section_2.root_chord_percent
+  - id: W09
+    name: chord_ratio_3
+    unit: dimensionless
+    baseline: 0.130178
+    lower: 0.08
+    upper: 0.2
+    scale: 0.1
+    target: main_wing.segments.section_3.root_chord_percent
+  - id: W10
+    name: tip_twist
+    unit: deg
+    baseline: 0.0
+    lower: -4.0
+    upper: 4.0
+    scale: 5.0
+    target: main_wing.segments.tip.twist
+  - id: V01
+    name: vertical_tail_area
+    unit: m^2
+    baseline: 33.91
+    lower: 28.0
+    upper: 40.0
+    scale: 10.0
+    target: vertical_stabilizer.areas.reference
+  - id: V02
+    name: vertical_tail_sweep_delta
+    unit: deg
+    baseline: 0.0
+    lower: -10.0
+    upper: 10.0
+    scale: 10.0
+    target: vertical_stabilizer.quarter_chord_sweep_delta
+  fixed_variables:
+  - id: F01
+    name: fuselage_length
+    unit: m
+    baseline: 61.66
+    target: fuselage.lengths.total
+    source: owner decision 2026-10-30 item 2
+  - id: F02
+    name: fuselage_fineness
+    unit: dimensionless
+    baseline: 4.3
+    target: fuselage.fineness.nose
+    source: owner decision 2026-10-30 item 2
+  - id: F03
+    name: fuselage_height_width_ratio
+    unit: dimensionless
+    baseline: 1.152778
+    target: fuselage.heights.maximum_over_width
+    source: owner decision 2026-10-30 item 2
+  solver_version: 7.2.2
+  openvsp_version: 3.55.0
+  solver_config_sha256: ''
+  reference_frame: WING_AC
+  x_ref_m: 16.821978259514246
+  sref_baseline_m2: 358.25
+  source_kind: REAL_VSPAERO
+  physics_validation_status: NOT_VALIDATED
+  applicability:
+    status: DEFERRED_TO_M1_REAL_COLLECTION
+    solver_domain: NOT_CHECKED
+    lift_target_reachable: NOT_CHECKED
+    cross_task_response: NOT_CHECKED
+    evidence_sha256s: []
+    required_evidence_schema:
+      schema_version: dreal001.task_applicability_evidence.v1
+      kind: PER_TASK_REAL_VSPAERO_DOMAIN_EVIDENCE
+      required_fields:
+      - task_fingerprint
+      - source_kind
+      - raw_sha
+      - geometry_sha
+      - solver_version
+      - evaluator_id
+      - run_id
+      - physical_solver_starts_actual
+      - internal_solver_cases_actual
+      - physics_validation_status
+      - checked_utc
+      source_kind_const: REAL_VSPAERO
+      physics_validation_status_const: NOT_VALIDATED
+      raw_sha_pattern: ^[0-9a-f]{64}$
+      geometry_sha_pattern: ^[0-9a-f]{64}$
+      internal_cases_rule: internal_solver_cases_actual == 7 * physical_solver_starts_actual
+      min_physical_solver_starts_actual: 1
+      counts_as_physical_validation: false
+      note: This schema describes the evidence required by M1 to flip a task applicability
+        field to PASS. T0-4 collects none of it; no record with source_kind != REAL_VSPAERO
+        can satisfy it.
+    notes: 'Deferred to M1 real collection: T0-4 has zero physical calls and no per-task
+      REAL_VSPAERO domain evidence; admission stays PENDING_M0_BY_DESIGN.'
+  effect_evidence: []
+  notes: T0-4 candidate (Mach 2.2, altitude 18288 m, CL_target 0.17); zero physical
+    labels collected; freshness applies to the meta split.
+  created_utc: ''
+  derived:
+    rho_kg_m3: 0.11531811366051452
+    speed_of_sound_m_s: 295.0694935090715
+    velocity_m_s: 649.1528857199573
+    q_Pa: 24297.49593353387
+    cl_required_at_baseline_sref: 0.16999999999999463
+  candidate_factors:
+    mach: 2.2
+    altitude_m: 18288.0
+    cl_target: 0.17
+    q_Pa: 24297.49593353387
+    lift_reference_N: 1479778.246092
+    lift_reference_derivation: q(M,h) * SREF_BASELINE_M2 * CL_target
+  split: meta_val
+  evaluator_binding:
+    evaluator_id: dreal001.evaluator.v12.fixed_cruise
+    code_sha256: f74a4752495fd6c5330edcaf7edb4bcbe93f99c2a76bac06b5670d1f765ae20d
+    solver_version: 7.2.2
+    openvsp_version: 3.55.0
+    geometry_id: CFG-01-thin-12x25-production-baseline
+    geometry_sha256: 40fdd4364e01c7fe11ca2ea4530d39c371ae693a434f39e44986f7512d6446f4
+    source_config_path: D:\RCAIDE\dnext001\wt-real-a1-geometry-solver\configs\dreal001_task_fixed_cruise_REAL.json
+    source_config_sha256: 0aa64eb25d9fd2ed939f7c9f2bdfa9df4b32ee19cbfd9310fbaae56d4976cf27
+    timeout_s_per_start: 60
+    ncpu: 1
+    omp_num_threads: 1
+  physical_domain_checks:
+    solver_domain:
+      status: DEFERRED_TO_M1_REAL_COLLECTION
+      required_evidence:
+      - VSPAERO 7.2.2 converged polar at (M,h) within alpha [-2,10]
+      - no LIMIT/UNCONVERGED at this (M,h)
+      evidence_owner: M1 real collection (M0/M1 per-task applicability; F1R2/F2R2
+        are fixed-task-domain precedents only)
+    lift_target_reachable:
+      status: DEFERRED_TO_M1_REAL_COLLECTION
+      required_evidence: lift-matched alpha in [-2,10] with |L-L_ref|/L_ref <= 1e-3
+      evidence_owner: M1 real collection
+    cross_task_response:
+      status: DEFERRED_TO_M1_REAL_COLLECTION
+      required_evidence: objective responds to (M,h,CL) beyond MIN_EFFECT_REL and
+        is not a global scale
+      evidence_owner: M1 real collection
+    required_evidence_schema: TaskApplicability.REQUIRED_APPLICABILITY_EVIDENCE_SCHEMA
+      (REAL_VSPAERO raw_sha/geometry_sha/solver_version/starts/internal, physics NOT_VALIDATED)
+    admission_status: PENDING_M0_BY_DESIGN
+    admitted: false
+- schema_version: dreal001.meta_task_spec.v1
+  task_spec_version: dreal001.t0.task_spec.v1
+  task_id: dreal001_concorde_supersonic_cruise_12d-4039e063a161
+  task_fingerprint: 4039e063a1618bff74a71e9582c40982f4dc19e042cd050407ce6c09e6501fec
+  family_id: dreal001_concorde_supersonic_cruise_12d
+  mach: 2.02
+  altitude_m: 15000.0
+  lift_reference_N: 2095207.120565
+  lift_tol_rel: 0.001
+  alpha_primary_deg:
+  - -2.0
+  - 0.0
+  - 2.0
+  - 4.0
+  - 6.0
+  - 8.0
+  - 10.0
+  alpha_refine_deg: []
+  max_refine_sweeps: 2
+  active_mask:
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  active_dimension_label: ALL_12_ACTIVE
+  n_active: 12
+  design_space_id: 12d_lifting_surfaces
+  design_space_sha256: 175ec5e48a678aa43af8e7b85ef64f93dd3dbefaacbc74bdcafd2d5e4d684db9
+  parameters:
+  - id: W01
+    name: wing_area
+    unit: m^2
+    baseline: 358.25
+    lower: 300.0
+    upper: 420.0
+    scale: 100.0
+    target: main_wing.areas.reference
+  - id: W02
+    name: aspect_ratio
+    unit: dimensionless
+    baseline: 1.83
+    lower: 1.5
+    upper: 2.2
+    scale: 1.0
+    target: main_wing.aspect_ratio
+  - id: W03
+    name: sweep_1
+    unit: deg
+    baseline: 67.0
+    lower: 62.0
+    upper: 72.0
+    scale: 10.0
+    target: main_wing.segments.section_1.sweeps.quarter_chord
+  - id: W04
+    name: sweep_2
+    unit: deg
+    baseline: 48.0
+    lower: 40.0
+    upper: 56.0
+    scale: 10.0
+    target: main_wing.segments.section_2.sweeps.quarter_chord
+  - id: W05
+    name: sweep_3
+    unit: deg
+    baseline: 71.0
+    lower: 66.0
+    upper: 76.0
+    scale: 10.0
+    target: main_wing.segments.section_3.sweeps.quarter_chord
+  - id: W06
+    name: span_location_2
+    unit: dimensionless
+    baseline: 0.480469
+    lower: 0.35
+    upper: 0.58
+    scale: 0.1
+    target: main_wing.segments.section_2.percent_span_location
+  - id: W07
+    name: span_location_3
+    unit: dimensionless
+    baseline: 0.945313
+    lower: 0.85
+    upper: 0.98
+    scale: 0.1
+    target: main_wing.segments.section_3.percent_span_location
+  - id: W08
+    name: chord_ratio_2
+    unit: dimensionless
+    baseline: 0.408284
+    lower: 0.3
+    upper: 0.5
+    scale: 0.1
+    target: main_wing.segments.section_2.root_chord_percent
+  - id: W09
+    name: chord_ratio_3
+    unit: dimensionless
+    baseline: 0.130178
+    lower: 0.08
+    upper: 0.2
+    scale: 0.1
+    target: main_wing.segments.section_3.root_chord_percent
+  - id: W10
+    name: tip_twist
+    unit: deg
+    baseline: 0.0
+    lower: -4.0
+    upper: 4.0
+    scale: 5.0
+    target: main_wing.segments.tip.twist
+  - id: V01
+    name: vertical_tail_area
+    unit: m^2
+    baseline: 33.91
+    lower: 28.0
+    upper: 40.0
+    scale: 10.0
+    target: vertical_stabilizer.areas.reference
+  - id: V02
+    name: vertical_tail_sweep_delta
+    unit: deg
+    baseline: 0.0
+    lower: -10.0
+    upper: 10.0
+    scale: 10.0
+    target: vertical_stabilizer.quarter_chord_sweep_delta
+  fixed_variables:
+  - id: F01
+    name: fuselage_length
+    unit: m
+    baseline: 61.66
+    target: fuselage.lengths.total
+    source: owner decision 2026-10-30 item 2
+  - id: F02
+    name: fuselage_fineness
+    unit: dimensionless
+    baseline: 4.3
+    target: fuselage.fineness.nose
+    source: owner decision 2026-10-30 item 2
+  - id: F03
+    name: fuselage_height_width_ratio
+    unit: dimensionless
+    baseline: 1.152778
+    target: fuselage.heights.maximum_over_width
+    source: owner decision 2026-10-30 item 2
+  solver_version: 7.2.2
+  openvsp_version: 3.55.0
+  solver_config_sha256: ''
+  reference_frame: WING_AC
+  x_ref_m: 16.821978259514246
+  sref_baseline_m2: 358.25
+  source_kind: REAL_VSPAERO
+  physics_validation_status: NOT_VALIDATED
+  applicability:
+    status: DEFERRED_TO_M1_REAL_COLLECTION
+    solver_domain: NOT_CHECKED
+    lift_target_reachable: NOT_CHECKED
+    cross_task_response: NOT_CHECKED
+    evidence_sha256s: []
+    required_evidence_schema:
+      schema_version: dreal001.task_applicability_evidence.v1
+      kind: PER_TASK_REAL_VSPAERO_DOMAIN_EVIDENCE
+      required_fields:
+      - task_fingerprint
+      - source_kind
+      - raw_sha
+      - geometry_sha
+      - solver_version
+      - evaluator_id
+      - run_id
+      - physical_solver_starts_actual
+      - internal_solver_cases_actual
+      - physics_validation_status
+      - checked_utc
+      source_kind_const: REAL_VSPAERO
+      physics_validation_status_const: NOT_VALIDATED
+      raw_sha_pattern: ^[0-9a-f]{64}$
+      geometry_sha_pattern: ^[0-9a-f]{64}$
+      internal_cases_rule: internal_solver_cases_actual == 7 * physical_solver_starts_actual
+      min_physical_solver_starts_actual: 1
+      counts_as_physical_validation: false
+      note: This schema describes the evidence required by M1 to flip a task applicability
+        field to PASS. T0-4 collects none of it; no record with source_kind != REAL_VSPAERO
+        can satisfy it.
+    notes: 'Deferred to M1 real collection: T0-4 has zero physical calls and no per-task
+      REAL_VSPAERO domain evidence; admission stays PENDING_M0_BY_DESIGN.'
+  effect_evidence: []
+  notes: T0-4 candidate (Mach 2.02, altitude 15000 m, CL_target 0.17); zero physical
+    labels collected; freshness applies to the meta split.
+  created_utc: ''
+  derived:
+    rho_kg_m3: 0.19367362229311477
+    speed_of_sound_m_s: 295.0694935090715
+    velocity_m_s: 596.0403768883244
+    q_Pa: 34402.645549286266
+    cl_required_at_baseline_sref: 0.169999999999967
+  candidate_factors:
+    mach: 2.02
+    altitude_m: 15000.0
+    cl_target: 0.17
+    q_Pa: 34402.645549286266
+    lift_reference_N: 2095207.120565
+    lift_reference_derivation: q(M,h) * SREF_BASELINE_M2 * CL_target
+  split: meta_test
+  evaluator_binding:
+    evaluator_id: dreal001.evaluator.v12.fixed_cruise
+    code_sha256: f74a4752495fd6c5330edcaf7edb4bcbe93f99c2a76bac06b5670d1f765ae20d
+    solver_version: 7.2.2
+    openvsp_version: 3.55.0
+    geometry_id: CFG-01-thin-12x25-production-baseline
+    geometry_sha256: 40fdd4364e01c7fe11ca2ea4530d39c371ae693a434f39e44986f7512d6446f4
+    source_config_path: D:\RCAIDE\dnext001\wt-real-a1-geometry-solver\configs\dreal001_task_fixed_cruise_REAL.json
+    source_config_sha256: 0aa64eb25d9fd2ed939f7c9f2bdfa9df4b32ee19cbfd9310fbaae56d4976cf27
+    timeout_s_per_start: 60
+    ncpu: 1
+    omp_num_threads: 1
+  physical_domain_checks:
+    solver_domain:
+      status: DEFERRED_TO_M1_REAL_COLLECTION
+      required_evidence:
+      - VSPAERO 7.2.2 converged polar at (M,h) within alpha [-2,10]
+      - no LIMIT/UNCONVERGED at this (M,h)
+      evidence_owner: M1 real collection (M0/M1 per-task applicability; F1R2/F2R2
+        are fixed-task-domain precedents only)
+    lift_target_reachable:
+      status: DEFERRED_TO_M1_REAL_COLLECTION
+      required_evidence: lift-matched alpha in [-2,10] with |L-L_ref|/L_ref <= 1e-3
+      evidence_owner: M1 real collection
+    cross_task_response:
+      status: DEFERRED_TO_M1_REAL_COLLECTION
+      required_evidence: objective responds to (M,h,CL) beyond MIN_EFFECT_REL and
+        is not a global scale
+      evidence_owner: M1 real collection
+    required_evidence_schema: TaskApplicability.REQUIRED_APPLICABILITY_EVIDENCE_SCHEMA
+      (REAL_VSPAERO raw_sha/geometry_sha/solver_version/starts/internal, physics NOT_VALIDATED)
+    admission_status: PENDING_M0_BY_DESIGN
+    admitted: false
+- schema_version: dreal001.meta_task_spec.v1
+  task_spec_version: dreal001.t0.task_spec.v1
+  task_id: dreal001_concorde_supersonic_cruise_12d-50f006cea9f1
+  task_fingerprint: 50f006cea9f139aa782dea97f963f70787779933900479cf020a8123f8f2b5d9
+  family_id: dreal001_concorde_supersonic_cruise_12d
+  mach: 1.8
+  altitude_m: 20000.0
+  lift_reference_N: 845196.388221
+  lift_tol_rel: 0.001
+  alpha_primary_deg:
+  - -2.0
+  - 0.0
+  - 2.0
+  - 4.0
+  - 6.0
+  - 8.0
+  - 10.0
+  alpha_refine_deg: []
+  max_refine_sweeps: 2
+  active_mask:
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  active_dimension_label: ALL_12_ACTIVE
+  n_active: 12
+  design_space_id: 12d_lifting_surfaces
+  design_space_sha256: 175ec5e48a678aa43af8e7b85ef64f93dd3dbefaacbc74bdcafd2d5e4d684db9
+  parameters:
+  - id: W01
+    name: wing_area
+    unit: m^2
+    baseline: 358.25
+    lower: 300.0
+    upper: 420.0
+    scale: 100.0
+    target: main_wing.areas.reference
+  - id: W02
+    name: aspect_ratio
+    unit: dimensionless
+    baseline: 1.83
+    lower: 1.5
+    upper: 2.2
+    scale: 1.0
+    target: main_wing.aspect_ratio
+  - id: W03
+    name: sweep_1
+    unit: deg
+    baseline: 67.0
+    lower: 62.0
+    upper: 72.0
+    scale: 10.0
+    target: main_wing.segments.section_1.sweeps.quarter_chord
+  - id: W04
+    name: sweep_2
+    unit: deg
+    baseline: 48.0
+    lower: 40.0
+    upper: 56.0
+    scale: 10.0
+    target: main_wing.segments.section_2.sweeps.quarter_chord
+  - id: W05
+    name: sweep_3
+    unit: deg
+    baseline: 71.0
+    lower: 66.0
+    upper: 76.0
+    scale: 10.0
+    target: main_wing.segments.section_3.sweeps.quarter_chord
+  - id: W06
+    name: span_location_2
+    unit: dimensionless
+    baseline: 0.480469
+    lower: 0.35
+    upper: 0.58
+    scale: 0.1
+    target: main_wing.segments.section_2.percent_span_location
+  - id: W07
+    name: span_location_3
+    unit: dimensionless
+    baseline: 0.945313
+    lower: 0.85
+    upper: 0.98
+    scale: 0.1
+    target: main_wing.segments.section_3.percent_span_location
+  - id: W08
+    name: chord_ratio_2
+    unit: dimensionless
+    baseline: 0.408284
+    lower: 0.3
+    upper: 0.5
+    scale: 0.1
+    target: main_wing.segments.section_2.root_chord_percent
+  - id: W09
+    name: chord_ratio_3
+    unit: dimensionless
+    baseline: 0.130178
+    lower: 0.08
+    upper: 0.2
+    scale: 0.1
+    target: main_wing.segments.section_3.root_chord_percent
+  - id: W10
+    name: tip_twist
+    unit: deg
+    baseline: 0.0
+    lower: -4.0
+    upper: 4.0
+    scale: 5.0
+    target: main_wing.segments.tip.twist
+  - id: V01
+    name: vertical_tail_area
+    unit: m^2
+    baseline: 33.91
+    lower: 28.0
+    upper: 40.0
+    scale: 10.0
+    target: vertical_stabilizer.areas.reference
+  - id: V02
+    name: vertical_tail_sweep_delta
+    unit: deg
+    baseline: 0.0
+    lower: -10.0
+    upper: 10.0
+    scale: 10.0
+    target: vertical_stabilizer.quarter_chord_sweep_delta
+  fixed_variables:
+  - id: F01
+    name: fuselage_length
+    unit: m
+    baseline: 61.66
+    target: fuselage.lengths.total
+    source: owner decision 2026-10-30 item 2
+  - id: F02
+    name: fuselage_fineness
+    unit: dimensionless
+    baseline: 4.3
+    target: fuselage.fineness.nose
+    source: owner decision 2026-10-30 item 2
+  - id: F03
+    name: fuselage_height_width_ratio
+    unit: dimensionless
+    baseline: 1.152778
+    target: fuselage.heights.maximum_over_width
+    source: owner decision 2026-10-30 item 2
+  solver_version: 7.2.2
+  openvsp_version: 3.55.0
+  solver_config_sha256: ''
+  reference_frame: WING_AC
+  x_ref_m: 16.821978259514246
+  sref_baseline_m2: 358.25
+  source_kind: REAL_VSPAERO
+  physics_validation_status: NOT_VALIDATED
+  applicability:
+    status: DEFERRED_TO_M1_REAL_COLLECTION
+    solver_domain: NOT_CHECKED
+    lift_target_reachable: NOT_CHECKED
+    cross_task_response: NOT_CHECKED
+    evidence_sha256s: []
+    required_evidence_schema:
+      schema_version: dreal001.task_applicability_evidence.v1
+      kind: PER_TASK_REAL_VSPAERO_DOMAIN_EVIDENCE
+      required_fields:
+      - task_fingerprint
+      - source_kind
+      - raw_sha
+      - geometry_sha
+      - solver_version
+      - evaluator_id
+      - run_id
+      - physical_solver_starts_actual
+      - internal_solver_cases_actual
+      - physics_validation_status
+      - checked_utc
+      source_kind_const: REAL_VSPAERO
+      physics_validation_status_const: NOT_VALIDATED
+      raw_sha_pattern: ^[0-9a-f]{64}$
+      geometry_sha_pattern: ^[0-9a-f]{64}$
+      internal_cases_rule: internal_solver_cases_actual == 7 * physical_solver_starts_actual
+      min_physical_solver_starts_actual: 1
+      counts_as_physical_validation: false
+      note: This schema describes the evidence required by M1 to flip a task applicability
+        field to PASS. T0-4 collects none of it; no record with source_kind != REAL_VSPAERO
+        can satisfy it.
+    notes: 'Deferred to M1 real collection: T0-4 has zero physical calls and no per-task
+      REAL_VSPAERO domain evidence; admission stays PENDING_M0_BY_DESIGN.'
+  effect_evidence: []
+  notes: T0-4 candidate (Mach 1.8, altitude 20000 m, CL_target 0.19); zero physical
+    labels collected; freshness applies to the meta split.
+  created_utc: ''
+  derived:
+    rho_kg_m3: 0.08803476221563096
+    speed_of_sound_m_s: 295.0694935090715
+    velocity_m_s: 531.1250883163287
+    q_Pa: 12417.032919102227
+    cl_required_at_baseline_sref: 0.19000000000000208
+  candidate_factors:
+    mach: 1.8
+    altitude_m: 20000.0
+    cl_target: 0.19
+    q_Pa: 12417.032919102227
+    lift_reference_N: 845196.388221
+    lift_reference_derivation: q(M,h) * SREF_BASELINE_M2 * CL_target
+  split: meta_train
+  evaluator_binding:
+    evaluator_id: dreal001.evaluator.v12.fixed_cruise
+    code_sha256: f74a4752495fd6c5330edcaf7edb4bcbe93f99c2a76bac06b5670d1f765ae20d
+    solver_version: 7.2.2
+    openvsp_version: 3.55.0
+    geometry_id: CFG-01-thin-12x25-production-baseline
+    geometry_sha256: 40fdd4364e01c7fe11ca2ea4530d39c371ae693a434f39e44986f7512d6446f4
+    source_config_path: D:\RCAIDE\dnext001\wt-real-a1-geometry-solver\configs\dreal001_task_fixed_cruise_REAL.json
+    source_config_sha256: 0aa64eb25d9fd2ed939f7c9f2bdfa9df4b32ee19cbfd9310fbaae56d4976cf27
+    timeout_s_per_start: 60
+    ncpu: 1
+    omp_num_threads: 1
+  physical_domain_checks:
+    solver_domain:
+      status: DEFERRED_TO_M1_REAL_COLLECTION
+      required_evidence:
+      - VSPAERO 7.2.2 converged polar at (M,h) within alpha [-2,10]
+      - no LIMIT/UNCONVERGED at this (M,h)
+      evidence_owner: M1 real collection (M0/M1 per-task applicability; F1R2/F2R2
+        are fixed-task-domain precedents only)
+    lift_target_reachable:
+      status: DEFERRED_TO_M1_REAL_COLLECTION
+      required_evidence: lift-matched alpha in [-2,10] with |L-L_ref|/L_ref <= 1e-3
+      evidence_owner: M1 real collection
+    cross_task_response:
+      status: DEFERRED_TO_M1_REAL_COLLECTION
+      required_evidence: objective responds to (M,h,CL) beyond MIN_EFFECT_REL and
+        is not a global scale
+      evidence_owner: M1 real collection
+    required_evidence_schema: TaskApplicability.REQUIRED_APPLICABILITY_EVIDENCE_SCHEMA
+      (REAL_VSPAERO raw_sha/geometry_sha/solver_version/starts/internal, physics NOT_VALIDATED)
+    admission_status: PENDING_M0_BY_DESIGN
+    admitted: false
+- schema_version: dreal001.meta_task_spec.v1
+  task_spec_version: dreal001.t0.task_spec.v1
+  task_id: dreal001_concorde_supersonic_cruise_12d-576f7bfdbdcc
+  task_fingerprint: 576f7bfdbdccfff736fc79bc1c2df38a20b34532cc1ff517fa93009ee147c9e5
+  family_id: dreal001_concorde_supersonic_cruise_12d
+  mach: 2.02
+  altitude_m: 18288.0
+  lift_reference_N: 1247538.668462
+  lift_tol_rel: 0.001
+  alpha_primary_deg:
+  - -2.0
+  - 0.0
+  - 2.0
+  - 4.0
+  - 6.0
+  - 8.0
+  - 10.0
+  alpha_refine_deg: []
+  max_refine_sweeps: 2
+  active_mask:
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  active_dimension_label: ALL_12_ACTIVE
+  n_active: 12
+  design_space_id: 12d_lifting_surfaces
+  design_space_sha256: 175ec5e48a678aa43af8e7b85ef64f93dd3dbefaacbc74bdcafd2d5e4d684db9
+  parameters:
+  - id: W01
+    name: wing_area
+    unit: m^2
+    baseline: 358.25
+    lower: 300.0
+    upper: 420.0
+    scale: 100.0
+    target: main_wing.areas.reference
+  - id: W02
+    name: aspect_ratio
+    unit: dimensionless
+    baseline: 1.83
+    lower: 1.5
+    upper: 2.2
+    scale: 1.0
+    target: main_wing.aspect_ratio
+  - id: W03
+    name: sweep_1
+    unit: deg
+    baseline: 67.0
+    lower: 62.0
+    upper: 72.0
+    scale: 10.0
+    target: main_wing.segments.section_1.sweeps.quarter_chord
+  - id: W04
+    name: sweep_2
+    unit: deg
+    baseline: 48.0
+    lower: 40.0
+    upper: 56.0
+    scale: 10.0
+    target: main_wing.segments.section_2.sweeps.quarter_chord
+  - id: W05
+    name: sweep_3
+    unit: deg
+    baseline: 71.0
+    lower: 66.0
+    upper: 76.0
+    scale: 10.0
+    target: main_wing.segments.section_3.sweeps.quarter_chord
+  - id: W06
+    name: span_location_2
+    unit: dimensionless
+    baseline: 0.480469
+    lower: 0.35
+    upper: 0.58
+    scale: 0.1
+    target: main_wing.segments.section_2.percent_span_location
+  - id: W07
+    name: span_location_3
+    unit: dimensionless
+    baseline: 0.945313
+    lower: 0.85
+    upper: 0.98
+    scale: 0.1
+    target: main_wing.segments.section_3.percent_span_location
+  - id: W08
+    name: chord_ratio_2
+    unit: dimensionless
+    baseline: 0.408284
+    lower: 0.3
+    upper: 0.5
+    scale: 0.1
+    target: main_wing.segments.section_2.root_chord_percent
+  - id: W09
+    name: chord_ratio_3
+    unit: dimensionless
+    baseline: 0.130178
+    lower: 0.08
+    upper: 0.2
+    scale: 0.1
+    target: main_wing.segments.section_3.root_chord_percent
+  - id: W10
+    name: tip_twist
+    unit: deg
+    baseline: 0.0
+    lower: -4.0
+    upper: 4.0
+    scale: 5.0
+    target: main_wing.segments.tip.twist
+  - id: V01
+    name: vertical_tail_area
+    unit: m^2
+    baseline: 33.91
+    lower: 28.0
+    upper: 40.0
+    scale: 10.0
+    target: vertical_stabilizer.areas.reference
+  - id: V02
+    name: vertical_tail_sweep_delta
+    unit: deg
+    baseline: 0.0
+    lower: -10.0
+    upper: 10.0
+    scale: 10.0
+    target: vertical_stabilizer.quarter_chord_sweep_delta
+  fixed_variables:
+  - id: F01
+    name: fuselage_length
+    unit: m
+    baseline: 61.66
+    target: fuselage.lengths.total
+    source: owner decision 2026-10-30 item 2
+  - id: F02
+    name: fuselage_fineness
+    unit: dimensionless
+    baseline: 4.3
+    target: fuselage.fineness.nose
+    source: owner decision 2026-10-30 item 2
+  - id: F03
+    name: fuselage_height_width_ratio
+    unit: dimensionless
+    baseline: 1.152778
+    target: fuselage.heights.maximum_over_width
+    source: owner decision 2026-10-30 item 2
+  solver_version: 7.2.2
+  openvsp_version: 3.55.0
+  solver_config_sha256: ''
+  reference_frame: WING_AC
+  x_ref_m: 16.821978259514246
+  sref_baseline_m2: 358.25
+  source_kind: REAL_VSPAERO
+  physics_validation_status: NOT_VALIDATED
+  applicability:
+    status: DEFERRED_TO_M1_REAL_COLLECTION
+    solver_domain: NOT_CHECKED
+    lift_target_reachable: NOT_CHECKED
+    cross_task_response: NOT_CHECKED
+    evidence_sha256s: []
+    required_evidence_schema:
+      schema_version: dreal001.task_applicability_evidence.v1
+      kind: PER_TASK_REAL_VSPAERO_DOMAIN_EVIDENCE
+      required_fields:
+      - task_fingerprint
+      - source_kind
+      - raw_sha
+      - geometry_sha
+      - solver_version
+      - evaluator_id
+      - run_id
+      - physical_solver_starts_actual
+      - internal_solver_cases_actual
+      - physics_validation_status
+      - checked_utc
+      source_kind_const: REAL_VSPAERO
+      physics_validation_status_const: NOT_VALIDATED
+      raw_sha_pattern: ^[0-9a-f]{64}$
+      geometry_sha_pattern: ^[0-9a-f]{64}$
+      internal_cases_rule: internal_solver_cases_actual == 7 * physical_solver_starts_actual
+      min_physical_solver_starts_actual: 1
+      counts_as_physical_validation: false
+      note: This schema describes the evidence required by M1 to flip a task applicability
+        field to PASS. T0-4 collects none of it; no record with source_kind != REAL_VSPAERO
+        can satisfy it.
+    notes: 'Deferred to M1 real collection: T0-4 has zero physical calls and no per-task
+      REAL_VSPAERO domain evidence; admission stays PENDING_M0_BY_DESIGN.'
+  effect_evidence: []
+  notes: T0-4 candidate (Mach 2.02, altitude 18288 m, CL_target 0.17); zero physical
+    labels collected; freshness applies to the meta split.
+  created_utc: ''
+  derived:
+    rho_kg_m3: 0.11531811366051452
+    speed_of_sound_m_s: 295.0694935090715
+    velocity_m_s: 596.0403768883244
+    q_Pa: 20484.19471222967
+    cl_required_at_baseline_sref: 0.17000000000005894
+  candidate_factors:
+    mach: 2.02
+    altitude_m: 18288.0
+    cl_target: 0.17
+    q_Pa: 20484.19471222967
+    lift_reference_N: 1247538.668462
+    lift_reference_derivation: q(M,h) * SREF_BASELINE_M2 * CL_target
+  split: meta_train
+  evaluator_binding:
+    evaluator_id: dreal001.evaluator.v12.fixed_cruise
+    code_sha256: f74a4752495fd6c5330edcaf7edb4bcbe93f99c2a76bac06b5670d1f765ae20d
+    solver_version: 7.2.2
+    openvsp_version: 3.55.0
+    geometry_id: CFG-01-thin-12x25-production-baseline
+    geometry_sha256: 40fdd4364e01c7fe11ca2ea4530d39c371ae693a434f39e44986f7512d6446f4
+    source_config_path: D:\RCAIDE\dnext001\wt-real-a1-geometry-solver\configs\dreal001_task_fixed_cruise_REAL.json
+    source_config_sha256: 0aa64eb25d9fd2ed939f7c9f2bdfa9df4b32ee19cbfd9310fbaae56d4976cf27
+    timeout_s_per_start: 60
+    ncpu: 1
+    omp_num_threads: 1
+  physical_domain_checks:
+    solver_domain:
+      status: DEFERRED_TO_M1_REAL_COLLECTION
+      required_evidence:
+      - VSPAERO 7.2.2 converged polar at (M,h) within alpha [-2,10]
+      - no LIMIT/UNCONVERGED at this (M,h)
+      evidence_owner: M1 real collection (M0/M1 per-task applicability; F1R2/F2R2
+        are fixed-task-domain precedents only)
+    lift_target_reachable:
+      status: DEFERRED_TO_M1_REAL_COLLECTION
+      required_evidence: lift-matched alpha in [-2,10] with |L-L_ref|/L_ref <= 1e-3
+      evidence_owner: M1 real collection
+    cross_task_response:
+      status: DEFERRED_TO_M1_REAL_COLLECTION
+      required_evidence: objective responds to (M,h,CL) beyond MIN_EFFECT_REL and
+        is not a global scale
+      evidence_owner: M1 real collection
+    required_evidence_schema: TaskApplicability.REQUIRED_APPLICABILITY_EVIDENCE_SCHEMA
+      (REAL_VSPAERO raw_sha/geometry_sha/solver_version/starts/internal, physics NOT_VALIDATED)
+    admission_status: PENDING_M0_BY_DESIGN
+    admitted: false
+- schema_version: dreal001.meta_task_spec.v1
+  task_spec_version: dreal001.t0.task_spec.v1
+  task_id: dreal001_concorde_supersonic_cruise_12d-67ab558af463
+  task_fingerprint: 67ab558af46399190abfba7d8e15463682182fa6d71192c5a9cb4aea4cf75972
+  family_id: dreal001_concorde_supersonic_cruise_12d
+  mach: 1.8
+  altitude_m: 15000.0
+  lift_reference_N: 1859404.648074
+  lift_tol_rel: 0.001
+  alpha_primary_deg:
+  - -2.0
+  - 0.0
+  - 2.0
+  - 4.0
+  - 6.0
+  - 8.0
+  - 10.0
+  alpha_refine_deg: []
+  max_refine_sweeps: 2
+  active_mask:
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  active_dimension_label: ALL_12_ACTIVE
+  n_active: 12
+  design_space_id: 12d_lifting_surfaces
+  design_space_sha256: 175ec5e48a678aa43af8e7b85ef64f93dd3dbefaacbc74bdcafd2d5e4d684db9
+  parameters:
+  - id: W01
+    name: wing_area
+    unit: m^2
+    baseline: 358.25
+    lower: 300.0
+    upper: 420.0
+    scale: 100.0
+    target: main_wing.areas.reference
+  - id: W02
+    name: aspect_ratio
+    unit: dimensionless
+    baseline: 1.83
+    lower: 1.5
+    upper: 2.2
+    scale: 1.0
+    target: main_wing.aspect_ratio
+  - id: W03
+    name: sweep_1
+    unit: deg
+    baseline: 67.0
+    lower: 62.0
+    upper: 72.0
+    scale: 10.0
+    target: main_wing.segments.section_1.sweeps.quarter_chord
+  - id: W04
+    name: sweep_2
+    unit: deg
+    baseline: 48.0
+    lower: 40.0
+    upper: 56.0
+    scale: 10.0
+    target: main_wing.segments.section_2.sweeps.quarter_chord
+  - id: W05
+    name: sweep_3
+    unit: deg
+    baseline: 71.0
+    lower: 66.0
+    upper: 76.0
+    scale: 10.0
+    target: main_wing.segments.section_3.sweeps.quarter_chord
+  - id: W06
+    name: span_location_2
+    unit: dimensionless
+    baseline: 0.480469
+    lower: 0.35
+    upper: 0.58
+    scale: 0.1
+    target: main_wing.segments.section_2.percent_span_location
+  - id: W07
+    name: span_location_3
+    unit: dimensionless
+    baseline: 0.945313
+    lower: 0.85
+    upper: 0.98
+    scale: 0.1
+    target: main_wing.segments.section_3.percent_span_location
+  - id: W08
+    name: chord_ratio_2
+    unit: dimensionless
+    baseline: 0.408284
+    lower: 0.3
+    upper: 0.5
+    scale: 0.1
+    target: main_wing.segments.section_2.root_chord_percent
+  - id: W09
+    name: chord_ratio_3
+    unit: dimensionless
+    baseline: 0.130178
+    lower: 0.08
+    upper: 0.2
+    scale: 0.1
+    target: main_wing.segments.section_3.root_chord_percent
+  - id: W10
+    name: tip_twist
+    unit: deg
+    baseline: 0.0
+    lower: -4.0
+    upper: 4.0
+    scale: 5.0
+    target: main_wing.segments.tip.twist
+  - id: V01
+    name: vertical_tail_area
+    unit: m^2
+    baseline: 33.91
+    lower: 28.0
+    upper: 40.0
+    scale: 10.0
+    target: vertical_stabilizer.areas.reference
+  - id: V02
+    name: vertical_tail_sweep_delta
+    unit: deg
+    baseline: 0.0
+    lower: -10.0
+    upper: 10.0
+    scale: 10.0
+    target: vertical_stabilizer.quarter_chord_sweep_delta
+  fixed_variables:
+  - id: F01
+    name: fuselage_length
+    unit: m
+    baseline: 61.66
+    target: fuselage.lengths.total
+    source: owner decision 2026-10-30 item 2
+  - id: F02
+    name: fuselage_fineness
+    unit: dimensionless
+    baseline: 4.3
+    target: fuselage.fineness.nose
+    source: owner decision 2026-10-30 item 2
+  - id: F03
+    name: fuselage_height_width_ratio
+    unit: dimensionless
+    baseline: 1.152778
+    target: fuselage.heights.maximum_over_width
+    source: owner decision 2026-10-30 item 2
+  solver_version: 7.2.2
+  openvsp_version: 3.55.0
+  solver_config_sha256: ''
+  reference_frame: WING_AC
+  x_ref_m: 16.821978259514246
+  sref_baseline_m2: 358.25
+  source_kind: REAL_VSPAERO
+  physics_validation_status: NOT_VALIDATED
+  applicability:
+    status: DEFERRED_TO_M1_REAL_COLLECTION
+    solver_domain: NOT_CHECKED
+    lift_target_reachable: NOT_CHECKED
+    cross_task_response: NOT_CHECKED
+    evidence_sha256s: []
+    required_evidence_schema:
+      schema_version: dreal001.task_applicability_evidence.v1
+      kind: PER_TASK_REAL_VSPAERO_DOMAIN_EVIDENCE
+      required_fields:
+      - task_fingerprint
+      - source_kind
+      - raw_sha
+      - geometry_sha
+      - solver_version
+      - evaluator_id
+      - run_id
+      - physical_solver_starts_actual
+      - internal_solver_cases_actual
+      - physics_validation_status
+      - checked_utc
+      source_kind_const: REAL_VSPAERO
+      physics_validation_status_const: NOT_VALIDATED
+      raw_sha_pattern: ^[0-9a-f]{64}$
+      geometry_sha_pattern: ^[0-9a-f]{64}$
+      internal_cases_rule: internal_solver_cases_actual == 7 * physical_solver_starts_actual
+      min_physical_solver_starts_actual: 1
+      counts_as_physical_validation: false
+      note: This schema describes the evidence required by M1 to flip a task applicability
+        field to PASS. T0-4 collects none of it; no record with source_kind != REAL_VSPAERO
+        can satisfy it.
+    notes: 'Deferred to M1 real collection: T0-4 has zero physical calls and no per-task
+      REAL_VSPAERO domain evidence; admission stays PENDING_M0_BY_DESIGN.'
+  effect_evidence: []
+  notes: T0-4 candidate (Mach 1.8, altitude 15000 m, CL_target 0.19); zero physical
+    labels collected; freshness applies to the meta split.
+  created_utc: ''
+  derived:
+    rho_kg_m3: 0.19367362229311477
+    speed_of_sound_m_s: 295.0694935090715
+    velocity_m_s: 531.1250883163287
+    q_Pa: 27317.069792100658
+    cl_required_at_baseline_sref: 0.19000000000001924
+  candidate_factors:
+    mach: 1.8
+    altitude_m: 15000.0
+    cl_target: 0.19
+    q_Pa: 27317.069792100658
+    lift_reference_N: 1859404.648074
+    lift_reference_derivation: q(M,h) * SREF_BASELINE_M2 * CL_target
+  split: meta_test
+  evaluator_binding:
+    evaluator_id: dreal001.evaluator.v12.fixed_cruise
+    code_sha256: f74a4752495fd6c5330edcaf7edb4bcbe93f99c2a76bac06b5670d1f765ae20d
+    solver_version: 7.2.2
+    openvsp_version: 3.55.0
+    geometry_id: CFG-01-thin-12x25-production-baseline
+    geometry_sha256: 40fdd4364e01c7fe11ca2ea4530d39c371ae693a434f39e44986f7512d6446f4
+    source_config_path: D:\RCAIDE\dnext001\wt-real-a1-geometry-solver\configs\dreal001_task_fixed_cruise_REAL.json
+    source_config_sha256: 0aa64eb25d9fd2ed939f7c9f2bdfa9df4b32ee19cbfd9310fbaae56d4976cf27
+    timeout_s_per_start: 60
+    ncpu: 1
+    omp_num_threads: 1
+  physical_domain_checks:
+    solver_domain:
+      status: DEFERRED_TO_M1_REAL_COLLECTION
+      required_evidence:
+      - VSPAERO 7.2.2 converged polar at (M,h) within alpha [-2,10]
+      - no LIMIT/UNCONVERGED at this (M,h)
+      evidence_owner: M1 real collection (M0/M1 per-task applicability; F1R2/F2R2
+        are fixed-task-domain precedents only)
+    lift_target_reachable:
+      status: DEFERRED_TO_M1_REAL_COLLECTION
+      required_evidence: lift-matched alpha in [-2,10] with |L-L_ref|/L_ref <= 1e-3
+      evidence_owner: M1 real collection
+    cross_task_response:
+      status: DEFERRED_TO_M1_REAL_COLLECTION
+      required_evidence: objective responds to (M,h,CL) beyond MIN_EFFECT_REL and
+        is not a global scale
+      evidence_owner: M1 real collection
+    required_evidence_schema: TaskApplicability.REQUIRED_APPLICABILITY_EVIDENCE_SCHEMA
+      (REAL_VSPAERO raw_sha/geometry_sha/solver_version/starts/internal, physics NOT_VALIDATED)
+    admission_status: PENDING_M0_BY_DESIGN
+    admitted: false
+- schema_version: dreal001.meta_task_spec.v1
+  task_spec_version: dreal001.t0.task_spec.v1
+  task_id: dreal001_concorde_supersonic_cruise_12d-777c7d43fde2
+  task_fingerprint: 777c7d43fde2cc39f3c29e34fac3ce17dda95333882fddb2694f0e6991f05edd
+  family_id: dreal001_concorde_supersonic_cruise_12d
+  mach: 1.8
+  altitude_m: 18288.0
+  lift_reference_N: 1107135.984801
+  lift_tol_rel: 0.001
+  alpha_primary_deg:
+  - -2.0
+  - 0.0
+  - 2.0
+  - 4.0
+  - 6.0
+  - 8.0
+  - 10.0
+  alpha_refine_deg: []
+  max_refine_sweeps: 2
+  active_mask:
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  active_dimension_label: ALL_12_ACTIVE
+  n_active: 12
+  design_space_id: 12d_lifting_surfaces
+  design_space_sha256: 175ec5e48a678aa43af8e7b85ef64f93dd3dbefaacbc74bdcafd2d5e4d684db9
+  parameters:
+  - id: W01
+    name: wing_area
+    unit: m^2
+    baseline: 358.25
+    lower: 300.0
+    upper: 420.0
+    scale: 100.0
+    target: main_wing.areas.reference
+  - id: W02
+    name: aspect_ratio
+    unit: dimensionless
+    baseline: 1.83
+    lower: 1.5
+    upper: 2.2
+    scale: 1.0
+    target: main_wing.aspect_ratio
+  - id: W03
+    name: sweep_1
+    unit: deg
+    baseline: 67.0
+    lower: 62.0
+    upper: 72.0
+    scale: 10.0
+    target: main_wing.segments.section_1.sweeps.quarter_chord
+  - id: W04
+    name: sweep_2
+    unit: deg
+    baseline: 48.0
+    lower: 40.0
+    upper: 56.0
+    scale: 10.0
+    target: main_wing.segments.section_2.sweeps.quarter_chord
+  - id: W05
+    name: sweep_3
+    unit: deg
+    baseline: 71.0
+    lower: 66.0
+    upper: 76.0
+    scale: 10.0
+    target: main_wing.segments.section_3.sweeps.quarter_chord
+  - id: W06
+    name: span_location_2
+    unit: dimensionless
+    baseline: 0.480469
+    lower: 0.35
+    upper: 0.58
+    scale: 0.1
+    target: main_wing.segments.section_2.percent_span_location
+  - id: W07
+    name: span_location_3
+    unit: dimensionless
+    baseline: 0.945313
+    lower: 0.85
+    upper: 0.98
+    scale: 0.1
+    target: main_wing.segments.section_3.percent_span_location
+  - id: W08
+    name: chord_ratio_2
+    unit: dimensionless
+    baseline: 0.408284
+    lower: 0.3
+    upper: 0.5
+    scale: 0.1
+    target: main_wing.segments.section_2.root_chord_percent
+  - id: W09
+    name: chord_ratio_3
+    unit: dimensionless
+    baseline: 0.130178
+    lower: 0.08
+    upper: 0.2
+    scale: 0.1
+    target: main_wing.segments.section_3.root_chord_percent
+  - id: W10
+    name: tip_twist
+    unit: deg
+    baseline: 0.0
+    lower: -4.0
+    upper: 4.0
+    scale: 5.0
+    target: main_wing.segments.tip.twist
+  - id: V01
+    name: vertical_tail_area
+    unit: m^2
+    baseline: 33.91
+    lower: 28.0
+    upper: 40.0
+    scale: 10.0
+    target: vertical_stabilizer.areas.reference
+  - id: V02
+    name: vertical_tail_sweep_delta
+    unit: deg
+    baseline: 0.0
+    lower: -10.0
+    upper: 10.0
+    scale: 10.0
+    target: vertical_stabilizer.quarter_chord_sweep_delta
+  fixed_variables:
+  - id: F01
+    name: fuselage_length
+    unit: m
+    baseline: 61.66
+    target: fuselage.lengths.total
+    source: owner decision 2026-10-30 item 2
+  - id: F02
+    name: fuselage_fineness
+    unit: dimensionless
+    baseline: 4.3
+    target: fuselage.fineness.nose
+    source: owner decision 2026-10-30 item 2
+  - id: F03
+    name: fuselage_height_width_ratio
+    unit: dimensionless
+    baseline: 1.152778
+    target: fuselage.heights.maximum_over_width
+    source: owner decision 2026-10-30 item 2
+  solver_version: 7.2.2
+  openvsp_version: 3.55.0
+  solver_config_sha256: ''
+  reference_frame: WING_AC
+  x_ref_m: 16.821978259514246
+  sref_baseline_m2: 358.25
+  source_kind: REAL_VSPAERO
+  physics_validation_status: NOT_VALIDATED
+  applicability:
+    status: DEFERRED_TO_M1_REAL_COLLECTION
+    solver_domain: NOT_CHECKED
+    lift_target_reachable: NOT_CHECKED
+    cross_task_response: NOT_CHECKED
+    evidence_sha256s: []
+    required_evidence_schema:
+      schema_version: dreal001.task_applicability_evidence.v1
+      kind: PER_TASK_REAL_VSPAERO_DOMAIN_EVIDENCE
+      required_fields:
+      - task_fingerprint
+      - source_kind
+      - raw_sha
+      - geometry_sha
+      - solver_version
+      - evaluator_id
+      - run_id
+      - physical_solver_starts_actual
+      - internal_solver_cases_actual
+      - physics_validation_status
+      - checked_utc
+      source_kind_const: REAL_VSPAERO
+      physics_validation_status_const: NOT_VALIDATED
+      raw_sha_pattern: ^[0-9a-f]{64}$
+      geometry_sha_pattern: ^[0-9a-f]{64}$
+      internal_cases_rule: internal_solver_cases_actual == 7 * physical_solver_starts_actual
+      min_physical_solver_starts_actual: 1
+      counts_as_physical_validation: false
+      note: This schema describes the evidence required by M1 to flip a task applicability
+        field to PASS. T0-4 collects none of it; no record with source_kind != REAL_VSPAERO
+        can satisfy it.
+    notes: 'Deferred to M1 real collection: T0-4 has zero physical calls and no per-task
+      REAL_VSPAERO domain evidence; admission stays PENDING_M0_BY_DESIGN.'
+  effect_evidence: []
+  notes: T0-4 candidate (Mach 1.8, altitude 18288 m, CL_target 0.19); zero physical
+    labels collected; freshness applies to the meta split.
+  created_utc: ''
+  derived:
+    rho_kg_m3: 0.11531811366051452
+    speed_of_sound_m_s: 295.0694935090715
+    velocity_m_s: 531.1250883163287
+    q_Pa: 16265.265872861519
+    cl_required_at_baseline_sref: 0.18999999999999975
+  candidate_factors:
+    mach: 1.8
+    altitude_m: 18288.0
+    cl_target: 0.19
+    q_Pa: 16265.265872861519
+    lift_reference_N: 1107135.984801
+    lift_reference_derivation: q(M,h) * SREF_BASELINE_M2 * CL_target
+  split: meta_val
+  evaluator_binding:
+    evaluator_id: dreal001.evaluator.v12.fixed_cruise
+    code_sha256: f74a4752495fd6c5330edcaf7edb4bcbe93f99c2a76bac06b5670d1f765ae20d
+    solver_version: 7.2.2
+    openvsp_version: 3.55.0
+    geometry_id: CFG-01-thin-12x25-production-baseline
+    geometry_sha256: 40fdd4364e01c7fe11ca2ea4530d39c371ae693a434f39e44986f7512d6446f4
+    source_config_path: D:\RCAIDE\dnext001\wt-real-a1-geometry-solver\configs\dreal001_task_fixed_cruise_REAL.json
+    source_config_sha256: 0aa64eb25d9fd2ed939f7c9f2bdfa9df4b32ee19cbfd9310fbaae56d4976cf27
+    timeout_s_per_start: 60
+    ncpu: 1
+    omp_num_threads: 1
+  physical_domain_checks:
+    solver_domain:
+      status: DEFERRED_TO_M1_REAL_COLLECTION
+      required_evidence:
+      - VSPAERO 7.2.2 converged polar at (M,h) within alpha [-2,10]
+      - no LIMIT/UNCONVERGED at this (M,h)
+      evidence_owner: M1 real collection (M0/M1 per-task applicability; F1R2/F2R2
+        are fixed-task-domain precedents only)
+    lift_target_reachable:
+      status: DEFERRED_TO_M1_REAL_COLLECTION
+      required_evidence: lift-matched alpha in [-2,10] with |L-L_ref|/L_ref <= 1e-3
+      evidence_owner: M1 real collection
+    cross_task_response:
+      status: DEFERRED_TO_M1_REAL_COLLECTION
+      required_evidence: objective responds to (M,h,CL) beyond MIN_EFFECT_REL and
+        is not a global scale
+      evidence_owner: M1 real collection
+    required_evidence_schema: TaskApplicability.REQUIRED_APPLICABILITY_EVIDENCE_SCHEMA
+      (REAL_VSPAERO raw_sha/geometry_sha/solver_version/starts/internal, physics NOT_VALIDATED)
+    admission_status: PENDING_M0_BY_DESIGN
+    admitted: false
+- schema_version: dreal001.meta_task_spec.v1
+  task_spec_version: dreal001.t0.task_spec.v1
+  task_id: dreal001_concorde_supersonic_cruise_12d-834bd8eefa69
+  task_fingerprint: 834bd8eefa69e5e98b714075e0767d11ebf47e98d2f9ee966a34f39767770477
+  family_id: dreal001_concorde_supersonic_cruise_12d
+  mach: 1.8
+  altitude_m: 20000.0
+  lift_reference_N: 756228.347356
+  lift_tol_rel: 0.001
+  alpha_primary_deg:
+  - -2.0
+  - 0.0
+  - 2.0
+  - 4.0
+  - 6.0
+  - 8.0
+  - 10.0
+  alpha_refine_deg: []
+  max_refine_sweeps: 2
+  active_mask:
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  active_dimension_label: ALL_12_ACTIVE
+  n_active: 12
+  design_space_id: 12d_lifting_surfaces
+  design_space_sha256: 175ec5e48a678aa43af8e7b85ef64f93dd3dbefaacbc74bdcafd2d5e4d684db9
+  parameters:
+  - id: W01
+    name: wing_area
+    unit: m^2
+    baseline: 358.25
+    lower: 300.0
+    upper: 420.0
+    scale: 100.0
+    target: main_wing.areas.reference
+  - id: W02
+    name: aspect_ratio
+    unit: dimensionless
+    baseline: 1.83
+    lower: 1.5
+    upper: 2.2
+    scale: 1.0
+    target: main_wing.aspect_ratio
+  - id: W03
+    name: sweep_1
+    unit: deg
+    baseline: 67.0
+    lower: 62.0
+    upper: 72.0
+    scale: 10.0
+    target: main_wing.segments.section_1.sweeps.quarter_chord
+  - id: W04
+    name: sweep_2
+    unit: deg
+    baseline: 48.0
+    lower: 40.0
+    upper: 56.0
+    scale: 10.0
+    target: main_wing.segments.section_2.sweeps.quarter_chord
+  - id: W05
+    name: sweep_3
+    unit: deg
+    baseline: 71.0
+    lower: 66.0
+    upper: 76.0
+    scale: 10.0
+    target: main_wing.segments.section_3.sweeps.quarter_chord
+  - id: W06
+    name: span_location_2
+    unit: dimensionless
+    baseline: 0.480469
+    lower: 0.35
+    upper: 0.58
+    scale: 0.1
+    target: main_wing.segments.section_2.percent_span_location
+  - id: W07
+    name: span_location_3
+    unit: dimensionless
+    baseline: 0.945313
+    lower: 0.85
+    upper: 0.98
+    scale: 0.1
+    target: main_wing.segments.section_3.percent_span_location
+  - id: W08
+    name: chord_ratio_2
+    unit: dimensionless
+    baseline: 0.408284
+    lower: 0.3
+    upper: 0.5
+    scale: 0.1
+    target: main_wing.segments.section_2.root_chord_percent
+  - id: W09
+    name: chord_ratio_3
+    unit: dimensionless
+    baseline: 0.130178
+    lower: 0.08
+    upper: 0.2
+    scale: 0.1
+    target: main_wing.segments.section_3.root_chord_percent
+  - id: W10
+    name: tip_twist
+    unit: deg
+    baseline: 0.0
+    lower: -4.0
+    upper: 4.0
+    scale: 5.0
+    target: main_wing.segments.tip.twist
+  - id: V01
+    name: vertical_tail_area
+    unit: m^2
+    baseline: 33.91
+    lower: 28.0
+    upper: 40.0
+    scale: 10.0
+    target: vertical_stabilizer.areas.reference
+  - id: V02
+    name: vertical_tail_sweep_delta
+    unit: deg
+    baseline: 0.0
+    lower: -10.0
+    upper: 10.0
+    scale: 10.0
+    target: vertical_stabilizer.quarter_chord_sweep_delta
+  fixed_variables:
+  - id: F01
+    name: fuselage_length
+    unit: m
+    baseline: 61.66
+    target: fuselage.lengths.total
+    source: owner decision 2026-10-30 item 2
+  - id: F02
+    name: fuselage_fineness
+    unit: dimensionless
+    baseline: 4.3
+    target: fuselage.fineness.nose
+    source: owner decision 2026-10-30 item 2
+  - id: F03
+    name: fuselage_height_width_ratio
+    unit: dimensionless
+    baseline: 1.152778
+    target: fuselage.heights.maximum_over_width
+    source: owner decision 2026-10-30 item 2
+  solver_version: 7.2.2
+  openvsp_version: 3.55.0
+  solver_config_sha256: ''
+  reference_frame: WING_AC
+  x_ref_m: 16.821978259514246
+  sref_baseline_m2: 358.25
+  source_kind: REAL_VSPAERO
+  physics_validation_status: NOT_VALIDATED
+  applicability:
+    status: DEFERRED_TO_M1_REAL_COLLECTION
+    solver_domain: NOT_CHECKED
+    lift_target_reachable: NOT_CHECKED
+    cross_task_response: NOT_CHECKED
+    evidence_sha256s: []
+    required_evidence_schema:
+      schema_version: dreal001.task_applicability_evidence.v1
+      kind: PER_TASK_REAL_VSPAERO_DOMAIN_EVIDENCE
+      required_fields:
+      - task_fingerprint
+      - source_kind
+      - raw_sha
+      - geometry_sha
+      - solver_version
+      - evaluator_id
+      - run_id
+      - physical_solver_starts_actual
+      - internal_solver_cases_actual
+      - physics_validation_status
+      - checked_utc
+      source_kind_const: REAL_VSPAERO
+      physics_validation_status_const: NOT_VALIDATED
+      raw_sha_pattern: ^[0-9a-f]{64}$
+      geometry_sha_pattern: ^[0-9a-f]{64}$
+      internal_cases_rule: internal_solver_cases_actual == 7 * physical_solver_starts_actual
+      min_physical_solver_starts_actual: 1
+      counts_as_physical_validation: false
+      note: This schema describes the evidence required by M1 to flip a task applicability
+        field to PASS. T0-4 collects none of it; no record with source_kind != REAL_VSPAERO
+        can satisfy it.
+    notes: 'Deferred to M1 real collection: T0-4 has zero physical calls and no per-task
+      REAL_VSPAERO domain evidence; admission stays PENDING_M0_BY_DESIGN.'
+  effect_evidence: []
+  notes: T0-4 candidate (Mach 1.8, altitude 20000 m, CL_target 0.17); zero physical
+    labels collected; freshness applies to the meta split.
+  created_utc: ''
+  derived:
+    rho_kg_m3: 0.08803476221563096
+    speed_of_sound_m_s: 295.0694935090715
+    velocity_m_s: 531.1250883163287
+    q_Pa: 12417.032919102227
+    cl_required_at_baseline_sref: 0.17000000000008467
+  candidate_factors:
+    mach: 1.8
+    altitude_m: 20000.0
+    cl_target: 0.17
+    q_Pa: 12417.032919102227
+    lift_reference_N: 756228.347356
+    lift_reference_derivation: q(M,h) * SREF_BASELINE_M2 * CL_target
+  split: meta_train
+  evaluator_binding:
+    evaluator_id: dreal001.evaluator.v12.fixed_cruise
+    code_sha256: f74a4752495fd6c5330edcaf7edb4bcbe93f99c2a76bac06b5670d1f765ae20d
+    solver_version: 7.2.2
+    openvsp_version: 3.55.0
+    geometry_id: CFG-01-thin-12x25-production-baseline
+    geometry_sha256: 40fdd4364e01c7fe11ca2ea4530d39c371ae693a434f39e44986f7512d6446f4
+    source_config_path: D:\RCAIDE\dnext001\wt-real-a1-geometry-solver\configs\dreal001_task_fixed_cruise_REAL.json
+    source_config_sha256: 0aa64eb25d9fd2ed939f7c9f2bdfa9df4b32ee19cbfd9310fbaae56d4976cf27
+    timeout_s_per_start: 60
+    ncpu: 1
+    omp_num_threads: 1
+  physical_domain_checks:
+    solver_domain:
+      status: DEFERRED_TO_M1_REAL_COLLECTION
+      required_evidence:
+      - VSPAERO 7.2.2 converged polar at (M,h) within alpha [-2,10]
+      - no LIMIT/UNCONVERGED at this (M,h)
+      evidence_owner: M1 real collection (M0/M1 per-task applicability; F1R2/F2R2
+        are fixed-task-domain precedents only)
+    lift_target_reachable:
+      status: DEFERRED_TO_M1_REAL_COLLECTION
+      required_evidence: lift-matched alpha in [-2,10] with |L-L_ref|/L_ref <= 1e-3
+      evidence_owner: M1 real collection
+    cross_task_response:
+      status: DEFERRED_TO_M1_REAL_COLLECTION
+      required_evidence: objective responds to (M,h,CL) beyond MIN_EFFECT_REL and
+        is not a global scale
+      evidence_owner: M1 real collection
+    required_evidence_schema: TaskApplicability.REQUIRED_APPLICABILITY_EVIDENCE_SCHEMA
+      (REAL_VSPAERO raw_sha/geometry_sha/solver_version/starts/internal, physics NOT_VALIDATED)
+    admission_status: PENDING_M0_BY_DESIGN
+    admitted: false
+- schema_version: dreal001.meta_task_spec.v1
+  task_spec_version: dreal001.t0.task_spec.v1
+  task_id: dreal001_concorde_supersonic_cruise_12d-86bce7d0e4f2
+  task_fingerprint: 86bce7d0e4f2208cfaa37832aa3ebd64ccf07951f80c75eaf5d82eadd2777795
+  family_id: dreal001_concorde_supersonic_cruise_12d
+  mach: 2.2
+  altitude_m: 20000.0
+  lift_reference_N: 1129674.444815
+  lift_tol_rel: 0.001
+  alpha_primary_deg:
+  - -2.0
+  - 0.0
+  - 2.0
+  - 4.0
+  - 6.0
+  - 8.0
+  - 10.0
+  alpha_refine_deg: []
+  max_refine_sweeps: 2
+  active_mask:
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  active_dimension_label: ALL_12_ACTIVE
+  n_active: 12
+  design_space_id: 12d_lifting_surfaces
+  design_space_sha256: 175ec5e48a678aa43af8e7b85ef64f93dd3dbefaacbc74bdcafd2d5e4d684db9
+  parameters:
+  - id: W01
+    name: wing_area
+    unit: m^2
+    baseline: 358.25
+    lower: 300.0
+    upper: 420.0
+    scale: 100.0
+    target: main_wing.areas.reference
+  - id: W02
+    name: aspect_ratio
+    unit: dimensionless
+    baseline: 1.83
+    lower: 1.5
+    upper: 2.2
+    scale: 1.0
+    target: main_wing.aspect_ratio
+  - id: W03
+    name: sweep_1
+    unit: deg
+    baseline: 67.0
+    lower: 62.0
+    upper: 72.0
+    scale: 10.0
+    target: main_wing.segments.section_1.sweeps.quarter_chord
+  - id: W04
+    name: sweep_2
+    unit: deg
+    baseline: 48.0
+    lower: 40.0
+    upper: 56.0
+    scale: 10.0
+    target: main_wing.segments.section_2.sweeps.quarter_chord
+  - id: W05
+    name: sweep_3
+    unit: deg
+    baseline: 71.0
+    lower: 66.0
+    upper: 76.0
+    scale: 10.0
+    target: main_wing.segments.section_3.sweeps.quarter_chord
+  - id: W06
+    name: span_location_2
+    unit: dimensionless
+    baseline: 0.480469
+    lower: 0.35
+    upper: 0.58
+    scale: 0.1
+    target: main_wing.segments.section_2.percent_span_location
+  - id: W07
+    name: span_location_3
+    unit: dimensionless
+    baseline: 0.945313
+    lower: 0.85
+    upper: 0.98
+    scale: 0.1
+    target: main_wing.segments.section_3.percent_span_location
+  - id: W08
+    name: chord_ratio_2
+    unit: dimensionless
+    baseline: 0.408284
+    lower: 0.3
+    upper: 0.5
+    scale: 0.1
+    target: main_wing.segments.section_2.root_chord_percent
+  - id: W09
+    name: chord_ratio_3
+    unit: dimensionless
+    baseline: 0.130178
+    lower: 0.08
+    upper: 0.2
+    scale: 0.1
+    target: main_wing.segments.section_3.root_chord_percent
+  - id: W10
+    name: tip_twist
+    unit: deg
+    baseline: 0.0
+    lower: -4.0
+    upper: 4.0
+    scale: 5.0
+    target: main_wing.segments.tip.twist
+  - id: V01
+    name: vertical_tail_area
+    unit: m^2
+    baseline: 33.91
+    lower: 28.0
+    upper: 40.0
+    scale: 10.0
+    target: vertical_stabilizer.areas.reference
+  - id: V02
+    name: vertical_tail_sweep_delta
+    unit: deg
+    baseline: 0.0
+    lower: -10.0
+    upper: 10.0
+    scale: 10.0
+    target: vertical_stabilizer.quarter_chord_sweep_delta
+  fixed_variables:
+  - id: F01
+    name: fuselage_length
+    unit: m
+    baseline: 61.66
+    target: fuselage.lengths.total
+    source: owner decision 2026-10-30 item 2
+  - id: F02
+    name: fuselage_fineness
+    unit: dimensionless
+    baseline: 4.3
+    target: fuselage.fineness.nose
+    source: owner decision 2026-10-30 item 2
+  - id: F03
+    name: fuselage_height_width_ratio
+    unit: dimensionless
+    baseline: 1.152778
+    target: fuselage.heights.maximum_over_width
+    source: owner decision 2026-10-30 item 2
+  solver_version: 7.2.2
+  openvsp_version: 3.55.0
+  solver_config_sha256: ''
+  reference_frame: WING_AC
+  x_ref_m: 16.821978259514246
+  sref_baseline_m2: 358.25
+  source_kind: REAL_VSPAERO
+  physics_validation_status: NOT_VALIDATED
+  applicability:
+    status: DEFERRED_TO_M1_REAL_COLLECTION
+    solver_domain: NOT_CHECKED
+    lift_target_reachable: NOT_CHECKED
+    cross_task_response: NOT_CHECKED
+    evidence_sha256s: []
+    required_evidence_schema:
+      schema_version: dreal001.task_applicability_evidence.v1
+      kind: PER_TASK_REAL_VSPAERO_DOMAIN_EVIDENCE
+      required_fields:
+      - task_fingerprint
+      - source_kind
+      - raw_sha
+      - geometry_sha
+      - solver_version
+      - evaluator_id
+      - run_id
+      - physical_solver_starts_actual
+      - internal_solver_cases_actual
+      - physics_validation_status
+      - checked_utc
+      source_kind_const: REAL_VSPAERO
+      physics_validation_status_const: NOT_VALIDATED
+      raw_sha_pattern: ^[0-9a-f]{64}$
+      geometry_sha_pattern: ^[0-9a-f]{64}$
+      internal_cases_rule: internal_solver_cases_actual == 7 * physical_solver_starts_actual
+      min_physical_solver_starts_actual: 1
+      counts_as_physical_validation: false
+      note: This schema describes the evidence required by M1 to flip a task applicability
+        field to PASS. T0-4 collects none of it; no record with source_kind != REAL_VSPAERO
+        can satisfy it.
+    notes: 'Deferred to M1 real collection: T0-4 has zero physical calls and no per-task
+      REAL_VSPAERO domain evidence; admission stays PENDING_M0_BY_DESIGN.'
+  effect_evidence: []
+  notes: T0-4 candidate (Mach 2.2, altitude 20000 m, CL_target 0.17); zero physical
+    labels collected; freshness applies to the meta split.
+  created_utc: ''
+  derived:
+    rho_kg_m3: 0.08803476221563096
+    speed_of_sound_m_s: 295.0694935090715
+    velocity_m_s: 649.1528857199573
+    q_Pa: 18548.901027300857
+    cl_required_at_baseline_sref: 0.16999999999997134
+  candidate_factors:
+    mach: 2.2
+    altitude_m: 20000.0
+    cl_target: 0.17
+    q_Pa: 18548.901027300857
+    lift_reference_N: 1129674.444815
+    lift_reference_derivation: q(M,h) * SREF_BASELINE_M2 * CL_target
+  split: meta_train
+  evaluator_binding:
+    evaluator_id: dreal001.evaluator.v12.fixed_cruise
+    code_sha256: f74a4752495fd6c5330edcaf7edb4bcbe93f99c2a76bac06b5670d1f765ae20d
+    solver_version: 7.2.2
+    openvsp_version: 3.55.0
+    geometry_id: CFG-01-thin-12x25-production-baseline
+    geometry_sha256: 40fdd4364e01c7fe11ca2ea4530d39c371ae693a434f39e44986f7512d6446f4
+    source_config_path: D:\RCAIDE\dnext001\wt-real-a1-geometry-solver\configs\dreal001_task_fixed_cruise_REAL.json
+    source_config_sha256: 0aa64eb25d9fd2ed939f7c9f2bdfa9df4b32ee19cbfd9310fbaae56d4976cf27
+    timeout_s_per_start: 60
+    ncpu: 1
+    omp_num_threads: 1
+  physical_domain_checks:
+    solver_domain:
+      status: DEFERRED_TO_M1_REAL_COLLECTION
+      required_evidence:
+      - VSPAERO 7.2.2 converged polar at (M,h) within alpha [-2,10]
+      - no LIMIT/UNCONVERGED at this (M,h)
+      evidence_owner: M1 real collection (M0/M1 per-task applicability; F1R2/F2R2
+        are fixed-task-domain precedents only)
+    lift_target_reachable:
+      status: DEFERRED_TO_M1_REAL_COLLECTION
+      required_evidence: lift-matched alpha in [-2,10] with |L-L_ref|/L_ref <= 1e-3
+      evidence_owner: M1 real collection
+    cross_task_response:
+      status: DEFERRED_TO_M1_REAL_COLLECTION
+      required_evidence: objective responds to (M,h,CL) beyond MIN_EFFECT_REL and
+        is not a global scale
+      evidence_owner: M1 real collection
+    required_evidence_schema: TaskApplicability.REQUIRED_APPLICABILITY_EVIDENCE_SCHEMA
+      (REAL_VSPAERO raw_sha/geometry_sha/solver_version/starts/internal, physics NOT_VALIDATED)
+    admission_status: PENDING_M0_BY_DESIGN
+    admitted: false
+- schema_version: dreal001.meta_task_spec.v1
+  task_spec_version: dreal001.t0.task_spec.v1
+  task_id: dreal001_concorde_supersonic_cruise_12d-9f30c337b993
+  task_fingerprint: 9f30c337b993bdccae44026a9c2c253e5e136b89c3c7704af0d87efa7841236b
+  family_id: dreal001_concorde_supersonic_cruise_12d
+  mach: 2.2
+  altitude_m: 15000.0
+  lift_reference_N: 2777629.165641
+  lift_tol_rel: 0.001
+  alpha_primary_deg:
+  - -2.0
+  - 0.0
+  - 2.0
+  - 4.0
+  - 6.0
+  - 8.0
+  - 10.0
+  alpha_refine_deg: []
+  max_refine_sweeps: 2
+  active_mask:
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  active_dimension_label: ALL_12_ACTIVE
+  n_active: 12
+  design_space_id: 12d_lifting_surfaces
+  design_space_sha256: 175ec5e48a678aa43af8e7b85ef64f93dd3dbefaacbc74bdcafd2d5e4d684db9
+  parameters:
+  - id: W01
+    name: wing_area
+    unit: m^2
+    baseline: 358.25
+    lower: 300.0
+    upper: 420.0
+    scale: 100.0
+    target: main_wing.areas.reference
+  - id: W02
+    name: aspect_ratio
+    unit: dimensionless
+    baseline: 1.83
+    lower: 1.5
+    upper: 2.2
+    scale: 1.0
+    target: main_wing.aspect_ratio
+  - id: W03
+    name: sweep_1
+    unit: deg
+    baseline: 67.0
+    lower: 62.0
+    upper: 72.0
+    scale: 10.0
+    target: main_wing.segments.section_1.sweeps.quarter_chord
+  - id: W04
+    name: sweep_2
+    unit: deg
+    baseline: 48.0
+    lower: 40.0
+    upper: 56.0
+    scale: 10.0
+    target: main_wing.segments.section_2.sweeps.quarter_chord
+  - id: W05
+    name: sweep_3
+    unit: deg
+    baseline: 71.0
+    lower: 66.0
+    upper: 76.0
+    scale: 10.0
+    target: main_wing.segments.section_3.sweeps.quarter_chord
+  - id: W06
+    name: span_location_2
+    unit: dimensionless
+    baseline: 0.480469
+    lower: 0.35
+    upper: 0.58
+    scale: 0.1
+    target: main_wing.segments.section_2.percent_span_location
+  - id: W07
+    name: span_location_3
+    unit: dimensionless
+    baseline: 0.945313
+    lower: 0.85
+    upper: 0.98
+    scale: 0.1
+    target: main_wing.segments.section_3.percent_span_location
+  - id: W08
+    name: chord_ratio_2
+    unit: dimensionless
+    baseline: 0.408284
+    lower: 0.3
+    upper: 0.5
+    scale: 0.1
+    target: main_wing.segments.section_2.root_chord_percent
+  - id: W09
+    name: chord_ratio_3
+    unit: dimensionless
+    baseline: 0.130178
+    lower: 0.08
+    upper: 0.2
+    scale: 0.1
+    target: main_wing.segments.section_3.root_chord_percent
+  - id: W10
+    name: tip_twist
+    unit: deg
+    baseline: 0.0
+    lower: -4.0
+    upper: 4.0
+    scale: 5.0
+    target: main_wing.segments.tip.twist
+  - id: V01
+    name: vertical_tail_area
+    unit: m^2
+    baseline: 33.91
+    lower: 28.0
+    upper: 40.0
+    scale: 10.0
+    target: vertical_stabilizer.areas.reference
+  - id: V02
+    name: vertical_tail_sweep_delta
+    unit: deg
+    baseline: 0.0
+    lower: -10.0
+    upper: 10.0
+    scale: 10.0
+    target: vertical_stabilizer.quarter_chord_sweep_delta
+  fixed_variables:
+  - id: F01
+    name: fuselage_length
+    unit: m
+    baseline: 61.66
+    target: fuselage.lengths.total
+    source: owner decision 2026-10-30 item 2
+  - id: F02
+    name: fuselage_fineness
+    unit: dimensionless
+    baseline: 4.3
+    target: fuselage.fineness.nose
+    source: owner decision 2026-10-30 item 2
+  - id: F03
+    name: fuselage_height_width_ratio
+    unit: dimensionless
+    baseline: 1.152778
+    target: fuselage.heights.maximum_over_width
+    source: owner decision 2026-10-30 item 2
+  solver_version: 7.2.2
+  openvsp_version: 3.55.0
+  solver_config_sha256: ''
+  reference_frame: WING_AC
+  x_ref_m: 16.821978259514246
+  sref_baseline_m2: 358.25
+  source_kind: REAL_VSPAERO
+  physics_validation_status: NOT_VALIDATED
+  applicability:
+    status: DEFERRED_TO_M1_REAL_COLLECTION
+    solver_domain: NOT_CHECKED
+    lift_target_reachable: NOT_CHECKED
+    cross_task_response: NOT_CHECKED
+    evidence_sha256s: []
+    required_evidence_schema:
+      schema_version: dreal001.task_applicability_evidence.v1
+      kind: PER_TASK_REAL_VSPAERO_DOMAIN_EVIDENCE
+      required_fields:
+      - task_fingerprint
+      - source_kind
+      - raw_sha
+      - geometry_sha
+      - solver_version
+      - evaluator_id
+      - run_id
+      - physical_solver_starts_actual
+      - internal_solver_cases_actual
+      - physics_validation_status
+      - checked_utc
+      source_kind_const: REAL_VSPAERO
+      physics_validation_status_const: NOT_VALIDATED
+      raw_sha_pattern: ^[0-9a-f]{64}$
+      geometry_sha_pattern: ^[0-9a-f]{64}$
+      internal_cases_rule: internal_solver_cases_actual == 7 * physical_solver_starts_actual
+      min_physical_solver_starts_actual: 1
+      counts_as_physical_validation: false
+      note: This schema describes the evidence required by M1 to flip a task applicability
+        field to PASS. T0-4 collects none of it; no record with source_kind != REAL_VSPAERO
+        can satisfy it.
+    notes: 'Deferred to M1 real collection: T0-4 has zero physical calls and no per-task
+      REAL_VSPAERO domain evidence; admission stays PENDING_M0_BY_DESIGN.'
+  effect_evidence: []
+  notes: T0-4 candidate (Mach 2.2, altitude 15000 m, CL_target 0.19); zero physical
+    labels collected; freshness applies to the meta split.
+  created_utc: ''
+  derived:
+    rho_kg_m3: 0.19367362229311477
+    speed_of_sound_m_s: 295.0694935090715
+    velocity_m_s: 649.1528857199573
+    q_Pa: 40806.980800545425
+    cl_required_at_baseline_sref: 0.1899999999999914
+  candidate_factors:
+    mach: 2.2
+    altitude_m: 15000.0
+    cl_target: 0.19
+    q_Pa: 40806.980800545425
+    lift_reference_N: 2777629.165641
+    lift_reference_derivation: q(M,h) * SREF_BASELINE_M2 * CL_target
+  split: meta_train
+  evaluator_binding:
+    evaluator_id: dreal001.evaluator.v12.fixed_cruise
+    code_sha256: f74a4752495fd6c5330edcaf7edb4bcbe93f99c2a76bac06b5670d1f765ae20d
+    solver_version: 7.2.2
+    openvsp_version: 3.55.0
+    geometry_id: CFG-01-thin-12x25-production-baseline
+    geometry_sha256: 40fdd4364e01c7fe11ca2ea4530d39c371ae693a434f39e44986f7512d6446f4
+    source_config_path: D:\RCAIDE\dnext001\wt-real-a1-geometry-solver\configs\dreal001_task_fixed_cruise_REAL.json
+    source_config_sha256: 0aa64eb25d9fd2ed939f7c9f2bdfa9df4b32ee19cbfd9310fbaae56d4976cf27
+    timeout_s_per_start: 60
+    ncpu: 1
+    omp_num_threads: 1
+  physical_domain_checks:
+    solver_domain:
+      status: DEFERRED_TO_M1_REAL_COLLECTION
+      required_evidence:
+      - VSPAERO 7.2.2 converged polar at (M,h) within alpha [-2,10]
+      - no LIMIT/UNCONVERGED at this (M,h)
+      evidence_owner: M1 real collection (M0/M1 per-task applicability; F1R2/F2R2
+        are fixed-task-domain precedents only)
+    lift_target_reachable:
+      status: DEFERRED_TO_M1_REAL_COLLECTION
+      required_evidence: lift-matched alpha in [-2,10] with |L-L_ref|/L_ref <= 1e-3
+      evidence_owner: M1 real collection
+    cross_task_response:
+      status: DEFERRED_TO_M1_REAL_COLLECTION
+      required_evidence: objective responds to (M,h,CL) beyond MIN_EFFECT_REL and
+        is not a global scale
+      evidence_owner: M1 real collection
+    required_evidence_schema: TaskApplicability.REQUIRED_APPLICABILITY_EVIDENCE_SCHEMA
+      (REAL_VSPAERO raw_sha/geometry_sha/solver_version/starts/internal, physics NOT_VALIDATED)
+    admission_status: PENDING_M0_BY_DESIGN
+    admitted: false
+- schema_version: dreal001.meta_task_spec.v1
+  task_spec_version: dreal001.t0.task_spec.v1
+  task_id: dreal001_concorde_supersonic_cruise_12d-a820ff5f11e4
+  task_fingerprint: a820ff5f11e4302fd203717ff7d0ab264ebe8e5db9e2c49e912e283b69b2957a
+  family_id: dreal001_concorde_supersonic_cruise_12d
+  mach: 1.8
+  altitude_m: 18288.0
+  lift_reference_N: 990595.354822
+  lift_tol_rel: 0.001
+  alpha_primary_deg:
+  - -2.0
+  - 0.0
+  - 2.0
+  - 4.0
+  - 6.0
+  - 8.0
+  - 10.0
+  alpha_refine_deg: []
+  max_refine_sweeps: 2
+  active_mask:
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  active_dimension_label: ALL_12_ACTIVE
+  n_active: 12
+  design_space_id: 12d_lifting_surfaces
+  design_space_sha256: 175ec5e48a678aa43af8e7b85ef64f93dd3dbefaacbc74bdcafd2d5e4d684db9
+  parameters:
+  - id: W01
+    name: wing_area
+    unit: m^2
+    baseline: 358.25
+    lower: 300.0
+    upper: 420.0
+    scale: 100.0
+    target: main_wing.areas.reference
+  - id: W02
+    name: aspect_ratio
+    unit: dimensionless
+    baseline: 1.83
+    lower: 1.5
+    upper: 2.2
+    scale: 1.0
+    target: main_wing.aspect_ratio
+  - id: W03
+    name: sweep_1
+    unit: deg
+    baseline: 67.0
+    lower: 62.0
+    upper: 72.0
+    scale: 10.0
+    target: main_wing.segments.section_1.sweeps.quarter_chord
+  - id: W04
+    name: sweep_2
+    unit: deg
+    baseline: 48.0
+    lower: 40.0
+    upper: 56.0
+    scale: 10.0
+    target: main_wing.segments.section_2.sweeps.quarter_chord
+  - id: W05
+    name: sweep_3
+    unit: deg
+    baseline: 71.0
+    lower: 66.0
+    upper: 76.0
+    scale: 10.0
+    target: main_wing.segments.section_3.sweeps.quarter_chord
+  - id: W06
+    name: span_location_2
+    unit: dimensionless
+    baseline: 0.480469
+    lower: 0.35
+    upper: 0.58
+    scale: 0.1
+    target: main_wing.segments.section_2.percent_span_location
+  - id: W07
+    name: span_location_3
+    unit: dimensionless
+    baseline: 0.945313
+    lower: 0.85
+    upper: 0.98
+    scale: 0.1
+    target: main_wing.segments.section_3.percent_span_location
+  - id: W08
+    name: chord_ratio_2
+    unit: dimensionless
+    baseline: 0.408284
+    lower: 0.3
+    upper: 0.5
+    scale: 0.1
+    target: main_wing.segments.section_2.root_chord_percent
+  - id: W09
+    name: chord_ratio_3
+    unit: dimensionless
+    baseline: 0.130178
+    lower: 0.08
+    upper: 0.2
+    scale: 0.1
+    target: main_wing.segments.section_3.root_chord_percent
+  - id: W10
+    name: tip_twist
+    unit: deg
+    baseline: 0.0
+    lower: -4.0
+    upper: 4.0
+    scale: 5.0
+    target: main_wing.segments.tip.twist
+  - id: V01
+    name: vertical_tail_area
+    unit: m^2
+    baseline: 33.91
+    lower: 28.0
+    upper: 40.0
+    scale: 10.0
+    target: vertical_stabilizer.areas.reference
+  - id: V02
+    name: vertical_tail_sweep_delta
+    unit: deg
+    baseline: 0.0
+    lower: -10.0
+    upper: 10.0
+    scale: 10.0
+    target: vertical_stabilizer.quarter_chord_sweep_delta
+  fixed_variables:
+  - id: F01
+    name: fuselage_length
+    unit: m
+    baseline: 61.66
+    target: fuselage.lengths.total
+    source: owner decision 2026-10-30 item 2
+  - id: F02
+    name: fuselage_fineness
+    unit: dimensionless
+    baseline: 4.3
+    target: fuselage.fineness.nose
+    source: owner decision 2026-10-30 item 2
+  - id: F03
+    name: fuselage_height_width_ratio
+    unit: dimensionless
+    baseline: 1.152778
+    target: fuselage.heights.maximum_over_width
+    source: owner decision 2026-10-30 item 2
+  solver_version: 7.2.2
+  openvsp_version: 3.55.0
+  solver_config_sha256: ''
+  reference_frame: WING_AC
+  x_ref_m: 16.821978259514246
+  sref_baseline_m2: 358.25
+  source_kind: REAL_VSPAERO
+  physics_validation_status: NOT_VALIDATED
+  applicability:
+    status: DEFERRED_TO_M1_REAL_COLLECTION
+    solver_domain: NOT_CHECKED
+    lift_target_reachable: NOT_CHECKED
+    cross_task_response: NOT_CHECKED
+    evidence_sha256s: []
+    required_evidence_schema:
+      schema_version: dreal001.task_applicability_evidence.v1
+      kind: PER_TASK_REAL_VSPAERO_DOMAIN_EVIDENCE
+      required_fields:
+      - task_fingerprint
+      - source_kind
+      - raw_sha
+      - geometry_sha
+      - solver_version
+      - evaluator_id
+      - run_id
+      - physical_solver_starts_actual
+      - internal_solver_cases_actual
+      - physics_validation_status
+      - checked_utc
+      source_kind_const: REAL_VSPAERO
+      physics_validation_status_const: NOT_VALIDATED
+      raw_sha_pattern: ^[0-9a-f]{64}$
+      geometry_sha_pattern: ^[0-9a-f]{64}$
+      internal_cases_rule: internal_solver_cases_actual == 7 * physical_solver_starts_actual
+      min_physical_solver_starts_actual: 1
+      counts_as_physical_validation: false
+      note: This schema describes the evidence required by M1 to flip a task applicability
+        field to PASS. T0-4 collects none of it; no record with source_kind != REAL_VSPAERO
+        can satisfy it.
+    notes: 'Deferred to M1 real collection: T0-4 has zero physical calls and no per-task
+      REAL_VSPAERO domain evidence; admission stays PENDING_M0_BY_DESIGN.'
+  effect_evidence: []
+  notes: T0-4 candidate (Mach 1.8, altitude 18288 m, CL_target 0.17); zero physical
+    labels collected; freshness applies to the meta split.
+  created_utc: ''
+  derived:
+    rho_kg_m3: 0.11531811366051452
+    speed_of_sound_m_s: 295.0694935090715
+    velocity_m_s: 531.1250883163287
+    q_Pa: 16265.265872861519
+    cl_required_at_baseline_sref: 0.1700000000000088
+  candidate_factors:
+    mach: 1.8
+    altitude_m: 18288.0
+    cl_target: 0.17
+    q_Pa: 16265.265872861519
+    lift_reference_N: 990595.354822
+    lift_reference_derivation: q(M,h) * SREF_BASELINE_M2 * CL_target
+  split: meta_val
+  evaluator_binding:
+    evaluator_id: dreal001.evaluator.v12.fixed_cruise
+    code_sha256: f74a4752495fd6c5330edcaf7edb4bcbe93f99c2a76bac06b5670d1f765ae20d
+    solver_version: 7.2.2
+    openvsp_version: 3.55.0
+    geometry_id: CFG-01-thin-12x25-production-baseline
+    geometry_sha256: 40fdd4364e01c7fe11ca2ea4530d39c371ae693a434f39e44986f7512d6446f4
+    source_config_path: D:\RCAIDE\dnext001\wt-real-a1-geometry-solver\configs\dreal001_task_fixed_cruise_REAL.json
+    source_config_sha256: 0aa64eb25d9fd2ed939f7c9f2bdfa9df4b32ee19cbfd9310fbaae56d4976cf27
+    timeout_s_per_start: 60
+    ncpu: 1
+    omp_num_threads: 1
+  physical_domain_checks:
+    solver_domain:
+      status: DEFERRED_TO_M1_REAL_COLLECTION
+      required_evidence:
+      - VSPAERO 7.2.2 converged polar at (M,h) within alpha [-2,10]
+      - no LIMIT/UNCONVERGED at this (M,h)
+      evidence_owner: M1 real collection (M0/M1 per-task applicability; F1R2/F2R2
+        are fixed-task-domain precedents only)
+    lift_target_reachable:
+      status: DEFERRED_TO_M1_REAL_COLLECTION
+      required_evidence: lift-matched alpha in [-2,10] with |L-L_ref|/L_ref <= 1e-3
+      evidence_owner: M1 real collection
+    cross_task_response:
+      status: DEFERRED_TO_M1_REAL_COLLECTION
+      required_evidence: objective responds to (M,h,CL) beyond MIN_EFFECT_REL and
+        is not a global scale
+      evidence_owner: M1 real collection
+    required_evidence_schema: TaskApplicability.REQUIRED_APPLICABILITY_EVIDENCE_SCHEMA
+      (REAL_VSPAERO raw_sha/geometry_sha/solver_version/starts/internal, physics NOT_VALIDATED)
+    admission_status: PENDING_M0_BY_DESIGN
+    admitted: false
+- schema_version: dreal001.meta_task_spec.v1
+  task_spec_version: dreal001.t0.task_spec.v1
+  task_id: dreal001_concorde_supersonic_cruise_12d-d0bbe623c78e
+  task_fingerprint: d0bbe623c78e9238c3fce5652a0c4e6a47ae5cb9c1cfe883327d3ed2f6a0d2bc
+  family_id: dreal001_concorde_supersonic_cruise_12d
+  mach: 2.2
+  altitude_m: 20000.0
+  lift_reference_N: 1262577.320676
+  lift_tol_rel: 0.001
+  alpha_primary_deg:
+  - -2.0
+  - 0.0
+  - 2.0
+  - 4.0
+  - 6.0
+  - 8.0
+  - 10.0
+  alpha_refine_deg: []
+  max_refine_sweeps: 2
+  active_mask:
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  active_dimension_label: ALL_12_ACTIVE
+  n_active: 12
+  design_space_id: 12d_lifting_surfaces
+  design_space_sha256: 175ec5e48a678aa43af8e7b85ef64f93dd3dbefaacbc74bdcafd2d5e4d684db9
+  parameters:
+  - id: W01
+    name: wing_area
+    unit: m^2
+    baseline: 358.25
+    lower: 300.0
+    upper: 420.0
+    scale: 100.0
+    target: main_wing.areas.reference
+  - id: W02
+    name: aspect_ratio
+    unit: dimensionless
+    baseline: 1.83
+    lower: 1.5
+    upper: 2.2
+    scale: 1.0
+    target: main_wing.aspect_ratio
+  - id: W03
+    name: sweep_1
+    unit: deg
+    baseline: 67.0
+    lower: 62.0
+    upper: 72.0
+    scale: 10.0
+    target: main_wing.segments.section_1.sweeps.quarter_chord
+  - id: W04
+    name: sweep_2
+    unit: deg
+    baseline: 48.0
+    lower: 40.0
+    upper: 56.0
+    scale: 10.0
+    target: main_wing.segments.section_2.sweeps.quarter_chord
+  - id: W05
+    name: sweep_3
+    unit: deg
+    baseline: 71.0
+    lower: 66.0
+    upper: 76.0
+    scale: 10.0
+    target: main_wing.segments.section_3.sweeps.quarter_chord
+  - id: W06
+    name: span_location_2
+    unit: dimensionless
+    baseline: 0.480469
+    lower: 0.35
+    upper: 0.58
+    scale: 0.1
+    target: main_wing.segments.section_2.percent_span_location
+  - id: W07
+    name: span_location_3
+    unit: dimensionless
+    baseline: 0.945313
+    lower: 0.85
+    upper: 0.98
+    scale: 0.1
+    target: main_wing.segments.section_3.percent_span_location
+  - id: W08
+    name: chord_ratio_2
+    unit: dimensionless
+    baseline: 0.408284
+    lower: 0.3
+    upper: 0.5
+    scale: 0.1
+    target: main_wing.segments.section_2.root_chord_percent
+  - id: W09
+    name: chord_ratio_3
+    unit: dimensionless
+    baseline: 0.130178
+    lower: 0.08
+    upper: 0.2
+    scale: 0.1
+    target: main_wing.segments.section_3.root_chord_percent
+  - id: W10
+    name: tip_twist
+    unit: deg
+    baseline: 0.0
+    lower: -4.0
+    upper: 4.0
+    scale: 5.0
+    target: main_wing.segments.tip.twist
+  - id: V01
+    name: vertical_tail_area
+    unit: m^2
+    baseline: 33.91
+    lower: 28.0
+    upper: 40.0
+    scale: 10.0
+    target: vertical_stabilizer.areas.reference
+  - id: V02
+    name: vertical_tail_sweep_delta
+    unit: deg
+    baseline: 0.0
+    lower: -10.0
+    upper: 10.0
+    scale: 10.0
+    target: vertical_stabilizer.quarter_chord_sweep_delta
+  fixed_variables:
+  - id: F01
+    name: fuselage_length
+    unit: m
+    baseline: 61.66
+    target: fuselage.lengths.total
+    source: owner decision 2026-10-30 item 2
+  - id: F02
+    name: fuselage_fineness
+    unit: dimensionless
+    baseline: 4.3
+    target: fuselage.fineness.nose
+    source: owner decision 2026-10-30 item 2
+  - id: F03
+    name: fuselage_height_width_ratio
+    unit: dimensionless
+    baseline: 1.152778
+    target: fuselage.heights.maximum_over_width
+    source: owner decision 2026-10-30 item 2
+  solver_version: 7.2.2
+  openvsp_version: 3.55.0
+  solver_config_sha256: ''
+  reference_frame: WING_AC
+  x_ref_m: 16.821978259514246
+  sref_baseline_m2: 358.25
+  source_kind: REAL_VSPAERO
+  physics_validation_status: NOT_VALIDATED
+  applicability:
+    status: DEFERRED_TO_M1_REAL_COLLECTION
+    solver_domain: NOT_CHECKED
+    lift_target_reachable: NOT_CHECKED
+    cross_task_response: NOT_CHECKED
+    evidence_sha256s: []
+    required_evidence_schema:
+      schema_version: dreal001.task_applicability_evidence.v1
+      kind: PER_TASK_REAL_VSPAERO_DOMAIN_EVIDENCE
+      required_fields:
+      - task_fingerprint
+      - source_kind
+      - raw_sha
+      - geometry_sha
+      - solver_version
+      - evaluator_id
+      - run_id
+      - physical_solver_starts_actual
+      - internal_solver_cases_actual
+      - physics_validation_status
+      - checked_utc
+      source_kind_const: REAL_VSPAERO
+      physics_validation_status_const: NOT_VALIDATED
+      raw_sha_pattern: ^[0-9a-f]{64}$
+      geometry_sha_pattern: ^[0-9a-f]{64}$
+      internal_cases_rule: internal_solver_cases_actual == 7 * physical_solver_starts_actual
+      min_physical_solver_starts_actual: 1
+      counts_as_physical_validation: false
+      note: This schema describes the evidence required by M1 to flip a task applicability
+        field to PASS. T0-4 collects none of it; no record with source_kind != REAL_VSPAERO
+        can satisfy it.
+    notes: 'Deferred to M1 real collection: T0-4 has zero physical calls and no per-task
+      REAL_VSPAERO domain evidence; admission stays PENDING_M0_BY_DESIGN.'
+  effect_evidence: []
+  notes: T0-4 candidate (Mach 2.2, altitude 20000 m, CL_target 0.19); zero physical
+    labels collected; freshness applies to the meta split.
+  created_utc: ''
+  derived:
+    rho_kg_m3: 0.08803476221563096
+    speed_of_sound_m_s: 295.0694935090715
+    velocity_m_s: 649.1528857199573
+    q_Pa: 18548.901027300857
+    cl_required_at_baseline_sref: 0.19000000000002995
+  candidate_factors:
+    mach: 2.2
+    altitude_m: 20000.0
+    cl_target: 0.19
+    q_Pa: 18548.901027300857
+    lift_reference_N: 1262577.320676
+    lift_reference_derivation: q(M,h) * SREF_BASELINE_M2 * CL_target
+  split: meta_val
+  evaluator_binding:
+    evaluator_id: dreal001.evaluator.v12.fixed_cruise
+    code_sha256: f74a4752495fd6c5330edcaf7edb4bcbe93f99c2a76bac06b5670d1f765ae20d
+    solver_version: 7.2.2
+    openvsp_version: 3.55.0
+    geometry_id: CFG-01-thin-12x25-production-baseline
+    geometry_sha256: 40fdd4364e01c7fe11ca2ea4530d39c371ae693a434f39e44986f7512d6446f4
+    source_config_path: D:\RCAIDE\dnext001\wt-real-a1-geometry-solver\configs\dreal001_task_fixed_cruise_REAL.json
+    source_config_sha256: 0aa64eb25d9fd2ed939f7c9f2bdfa9df4b32ee19cbfd9310fbaae56d4976cf27
+    timeout_s_per_start: 60
+    ncpu: 1
+    omp_num_threads: 1
+  physical_domain_checks:
+    solver_domain:
+      status: DEFERRED_TO_M1_REAL_COLLECTION
+      required_evidence:
+      - VSPAERO 7.2.2 converged polar at (M,h) within alpha [-2,10]
+      - no LIMIT/UNCONVERGED at this (M,h)
+      evidence_owner: M1 real collection (M0/M1 per-task applicability; F1R2/F2R2
+        are fixed-task-domain precedents only)
+    lift_target_reachable:
+      status: DEFERRED_TO_M1_REAL_COLLECTION
+      required_evidence: lift-matched alpha in [-2,10] with |L-L_ref|/L_ref <= 1e-3
+      evidence_owner: M1 real collection
+    cross_task_response:
+      status: DEFERRED_TO_M1_REAL_COLLECTION
+      required_evidence: objective responds to (M,h,CL) beyond MIN_EFFECT_REL and
+        is not a global scale
+      evidence_owner: M1 real collection
+    required_evidence_schema: TaskApplicability.REQUIRED_APPLICABILITY_EVIDENCE_SCHEMA
+      (REAL_VSPAERO raw_sha/geometry_sha/solver_version/starts/internal, physics NOT_VALIDATED)
+    admission_status: PENDING_M0_BY_DESIGN
+    admitted: false
+- schema_version: dreal001.meta_task_spec.v1
+  task_spec_version: dreal001.t0.task_spec.v1
+  task_id: dreal001_concorde_supersonic_cruise_12d-f69f80d39b3d
+  task_fingerprint: f69f80d39b3d9bfa15be706e122d583f0a93897ad0b78353ec38eb2fb433c678
+  family_id: dreal001_concorde_supersonic_cruise_12d
+  mach: 2.02
+  altitude_m: 15000.0
+  lift_reference_N: 2341702.075926
+  lift_tol_rel: 0.001
+  alpha_primary_deg:
+  - -2.0
+  - 0.0
+  - 2.0
+  - 4.0
+  - 6.0
+  - 8.0
+  - 10.0
+  alpha_refine_deg: []
+  max_refine_sweeps: 2
+  active_mask:
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  - true
+  active_dimension_label: ALL_12_ACTIVE
+  n_active: 12
+  design_space_id: 12d_lifting_surfaces
+  design_space_sha256: 175ec5e48a678aa43af8e7b85ef64f93dd3dbefaacbc74bdcafd2d5e4d684db9
+  parameters:
+  - id: W01
+    name: wing_area
+    unit: m^2
+    baseline: 358.25
+    lower: 300.0
+    upper: 420.0
+    scale: 100.0
+    target: main_wing.areas.reference
+  - id: W02
+    name: aspect_ratio
+    unit: dimensionless
+    baseline: 1.83
+    lower: 1.5
+    upper: 2.2
+    scale: 1.0
+    target: main_wing.aspect_ratio
+  - id: W03
+    name: sweep_1
+    unit: deg
+    baseline: 67.0
+    lower: 62.0
+    upper: 72.0
+    scale: 10.0
+    target: main_wing.segments.section_1.sweeps.quarter_chord
+  - id: W04
+    name: sweep_2
+    unit: deg
+    baseline: 48.0
+    lower: 40.0
+    upper: 56.0
+    scale: 10.0
+    target: main_wing.segments.section_2.sweeps.quarter_chord
+  - id: W05
+    name: sweep_3
+    unit: deg
+    baseline: 71.0
+    lower: 66.0
+    upper: 76.0
+    scale: 10.0
+    target: main_wing.segments.section_3.sweeps.quarter_chord
+  - id: W06
+    name: span_location_2
+    unit: dimensionless
+    baseline: 0.480469
+    lower: 0.35
+    upper: 0.58
+    scale: 0.1
+    target: main_wing.segments.section_2.percent_span_location
+  - id: W07
+    name: span_location_3
+    unit: dimensionless
+    baseline: 0.945313
+    lower: 0.85
+    upper: 0.98
+    scale: 0.1
+    target: main_wing.segments.section_3.percent_span_location
+  - id: W08
+    name: chord_ratio_2
+    unit: dimensionless
+    baseline: 0.408284
+    lower: 0.3
+    upper: 0.5
+    scale: 0.1
+    target: main_wing.segments.section_2.root_chord_percent
+  - id: W09
+    name: chord_ratio_3
+    unit: dimensionless
+    baseline: 0.130178
+    lower: 0.08
+    upper: 0.2
+    scale: 0.1
+    target: main_wing.segments.section_3.root_chord_percent
+  - id: W10
+    name: tip_twist
+    unit: deg
+    baseline: 0.0
+    lower: -4.0
+    upper: 4.0
+    scale: 5.0
+    target: main_wing.segments.tip.twist
+  - id: V01
+    name: vertical_tail_area
+    unit: m^2
+    baseline: 33.91
+    lower: 28.0
+    upper: 40.0
+    scale: 10.0
+    target: vertical_stabilizer.areas.reference
+  - id: V02
+    name: vertical_tail_sweep_delta
+    unit: deg
+    baseline: 0.0
+    lower: -10.0
+    upper: 10.0
+    scale: 10.0
+    target: vertical_stabilizer.quarter_chord_sweep_delta
+  fixed_variables:
+  - id: F01
+    name: fuselage_length
+    unit: m
+    baseline: 61.66
+    target: fuselage.lengths.total
+    source: owner decision 2026-10-30 item 2
+  - id: F02
+    name: fuselage_fineness
+    unit: dimensionless
+    baseline: 4.3
+    target: fuselage.fineness.nose
+    source: owner decision 2026-10-30 item 2
+  - id: F03
+    name: fuselage_height_width_ratio
+    unit: dimensionless
+    baseline: 1.152778
+    target: fuselage.heights.maximum_over_width
+    source: owner decision 2026-10-30 item 2
+  solver_version: 7.2.2
+  openvsp_version: 3.55.0
+  solver_config_sha256: ''
+  reference_frame: WING_AC
+  x_ref_m: 16.821978259514246
+  sref_baseline_m2: 358.25
+  source_kind: REAL_VSPAERO
+  physics_validation_status: NOT_VALIDATED
+  applicability:
+    status: DEFERRED_TO_M1_REAL_COLLECTION
+    solver_domain: NOT_CHECKED
+    lift_target_reachable: NOT_CHECKED
+    cross_task_response: NOT_CHECKED
+    evidence_sha256s: []
+    required_evidence_schema:
+      schema_version: dreal001.task_applicability_evidence.v1
+      kind: PER_TASK_REAL_VSPAERO_DOMAIN_EVIDENCE
+      required_fields:
+      - task_fingerprint
+      - source_kind
+      - raw_sha
+      - geometry_sha
+      - solver_version
+      - evaluator_id
+      - run_id
+      - physical_solver_starts_actual
+      - internal_solver_cases_actual
+      - physics_validation_status
+      - checked_utc
+      source_kind_const: REAL_VSPAERO
+      physics_validation_status_const: NOT_VALIDATED
+      raw_sha_pattern: ^[0-9a-f]{64}$
+      geometry_sha_pattern: ^[0-9a-f]{64}$
+      internal_cases_rule: internal_solver_cases_actual == 7 * physical_solver_starts_actual
+      min_physical_solver_starts_actual: 1
+      counts_as_physical_validation: false
+      note: This schema describes the evidence required by M1 to flip a task applicability
+        field to PASS. T0-4 collects none of it; no record with source_kind != REAL_VSPAERO
+        can satisfy it.
+    notes: 'Deferred to M1 real collection: T0-4 has zero physical calls and no per-task
+      REAL_VSPAERO domain evidence; admission stays PENDING_M0_BY_DESIGN.'
+  effect_evidence: []
+  notes: T0-4 candidate (Mach 2.02, altitude 15000 m, CL_target 0.19); zero physical
+    labels collected; freshness applies to the meta split.
+  created_utc: ''
+  derived:
+    rho_kg_m3: 0.19367362229311477
+    speed_of_sound_m_s: 295.0694935090715
+    velocity_m_s: 596.0403768883244
+    q_Pa: 34402.645549286266
+    cl_required_at_baseline_sref: 0.1899999999999965
+  candidate_factors:
+    mach: 2.02
+    altitude_m: 15000.0
+    cl_target: 0.19
+    q_Pa: 34402.645549286266
+    lift_reference_N: 2341702.075926
+    lift_reference_derivation: q(M,h) * SREF_BASELINE_M2 * CL_target
+  split: meta_train
+  evaluator_binding:
+    evaluator_id: dreal001.evaluator.v12.fixed_cruise
+    code_sha256: f74a4752495fd6c5330edcaf7edb4bcbe93f99c2a76bac06b5670d1f765ae20d
+    solver_version: 7.2.2
+    openvsp_version: 3.55.0
+    geometry_id: CFG-01-thin-12x25-production-baseline
+    geometry_sha256: 40fdd4364e01c7fe11ca2ea4530d39c371ae693a434f39e44986f7512d6446f4
+    source_config_path: D:\RCAIDE\dnext001\wt-real-a1-geometry-solver\configs\dreal001_task_fixed_cruise_REAL.json
+    source_config_sha256: 0aa64eb25d9fd2ed939f7c9f2bdfa9df4b32ee19cbfd9310fbaae56d4976cf27
+    timeout_s_per_start: 60
+    ncpu: 1
+    omp_num_threads: 1
+  physical_domain_checks:
+    solver_domain:
+      status: DEFERRED_TO_M1_REAL_COLLECTION
+      required_evidence:
+      - VSPAERO 7.2.2 converged polar at (M,h) within alpha [-2,10]
+      - no LIMIT/UNCONVERGED at this (M,h)
+      evidence_owner: M1 real collection (M0/M1 per-task applicability; F1R2/F2R2
+        are fixed-task-domain precedents only)
+    lift_target_reachable:
+      status: DEFERRED_TO_M1_REAL_COLLECTION
+      required_evidence: lift-matched alpha in [-2,10] with |L-L_ref|/L_ref <= 1e-3
+      evidence_owner: M1 real collection
+    cross_task_response:
+      status: DEFERRED_TO_M1_REAL_COLLECTION
+      required_evidence: objective responds to (M,h,CL) beyond MIN_EFFECT_REL and
+        is not a global scale
+      evidence_owner: M1 real collection
+    required_evidence_schema: TaskApplicability.REQUIRED_APPLICABILITY_EVIDENCE_SCHEMA
+      (REAL_VSPAERO raw_sha/geometry_sha/solver_version/starts/internal, physics NOT_VALIDATED)
+    admission_status: PENDING_M0_BY_DESIGN
+    admitted: false
+split_preview:
+  unit: TASK_IDENTITY
+  seed: 42
+  ratios:
+  - 0.6
+  - 0.2
+  - 0.2
+  holdout_provenance: NEVER_EVALUATED_PRIOR_RUN
+  counts:
+    meta_train: 11
+    meta_val: 4
+    meta_test: 3
+freeze_conditions:
+- M0 freezes this family and split only after per-task real applicability evidence
+  for every admitted task (M0/M1 collection; admission PENDING_M0_BY_DESIGN)
+- no task may be added/removed after M0 without a new pre-registration and Lead approval
+- no real labels exist at T0-4; zero physical calls
+non_result_boundary:
+  physical_validation_status: NOT_VALIDATED
+  fuel_burn_kg: null
+  external_physics_supported: NOT_VALIDATED
+  winner_or_significance: NONE
+  cross_family_comparison: FORBIDDEN

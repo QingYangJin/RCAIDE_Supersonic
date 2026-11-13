@@ -1,0 +1,461 @@
+{
+  "admission_status": "DEFERRED_TO_M1A_WITH_PRE_REGISTERED_CHECKS",
+  "checks": [
+    {
+      "detail": "M0R_TASK_SPECS_PREDRAFT.json",
+      "domain": "package",
+      "id": "V-LOAD-tasks",
+      "status": "PASS"
+    },
+    {
+      "detail": "M0R_SREF_PROVENANCE_PREDRAFT.json",
+      "domain": "package",
+      "id": "V-LOAD-sref",
+      "status": "PASS"
+    },
+    {
+      "detail": "M0R_DECK_SPECS_PREDRAFT.json",
+      "domain": "package",
+      "id": "V-LOAD-decks",
+      "status": "PASS"
+    },
+    {
+      "detail": "M0R_SPLIT_LEAKAGE_AUDIT_PREDRAFT.json",
+      "domain": "package",
+      "id": "V-LOAD-split",
+      "status": "PASS"
+    },
+    {
+      "detail": "M0R_BUDGET_LEDGER_PREDRAFT.json",
+      "domain": "package",
+      "id": "V-LOAD-budget",
+      "status": "PASS"
+    },
+    {
+      "detail": "M0R_ZERO_PHYSICAL_EVIDENCE_PREDRAFT.json",
+      "domain": "package",
+      "id": "V-LOAD-zero",
+      "status": "PASS"
+    },
+    {
+      "detail": "M0R_A5_REQUIREMENTS_MAP_PREDRAFT.json",
+      "domain": "package",
+      "id": "V-LOAD-a5",
+      "status": "PASS"
+    },
+    {
+      "detail": "M0R_PREDRAFT_MANIFEST.json",
+      "domain": "package",
+      "id": "V-LOAD-manifest",
+      "status": "PASS"
+    },
+    {
+      "detail": {
+        "actual": [
+          "T18K_M202_CL017",
+          "T18K_M202_CL019",
+          "T18K_M220_CL017",
+          "T18K_M220_CL019",
+          "T18K_M180_CL017",
+          "T18K_M180_CL019"
+        ],
+        "expected": [
+          "T18K_M202_CL017",
+          "T18K_M202_CL019",
+          "T18K_M220_CL017",
+          "T18K_M220_CL019",
+          "T18K_M180_CL017",
+          "T18K_M180_CL019"
+        ]
+      },
+      "domain": "tasks",
+      "id": "V-TASK-01",
+      "status": "PASS"
+    },
+    {
+      "detail": {
+        "sref_ref_m2": 358.25000000000006
+      },
+      "domain": "tasks",
+      "id": "V-TASK-02",
+      "status": "PASS"
+    },
+    {
+      "detail": {
+        "counts": [
+          3,
+          1,
+          2
+        ]
+      },
+      "domain": "tasks",
+      "id": "V-TASK-03",
+      "status": "PASS"
+    },
+    {
+      "detail": {
+        "rule": "q recompute rel<=1e-12"
+      },
+      "domain": "tasks",
+      "id": "V-TASK-04",
+      "status": "PASS"
+    },
+    {
+      "detail": {
+        "rule": "L_ref=q*SREF_REF*CL rel<=1e-12"
+      },
+      "domain": "tasks",
+      "id": "V-TASK-05",
+      "status": "PASS"
+    },
+    {
+      "detail": {
+        "masses_t": [
+          127.21196025824125,
+          142.17807322979905,
+          150.89351231494157,
+          168.6456902343465,
+          101.01135948355594,
+          112.89504883456249
+        ]
+      },
+      "domain": "tasks",
+      "id": "V-TASK-06",
+      "status": "PASS"
+    },
+    {
+      "detail": {
+        "rule": "7 alpha points, refine 0"
+      },
+      "domain": "tasks",
+      "id": "V-TASK-07",
+      "status": "PASS"
+    },
+    {
+      "detail": {
+        "rule": "no final family SHA/fingerprint in pre-draft"
+      },
+      "domain": "tasks",
+      "id": "V-TASK-08",
+      "status": "PASS"
+    },
+    {
+      "detail": {
+        "anchor": 358.25000000000006,
+        "recomputed": 358.2500000223502,
+        "rel": 6.238702072197911e-11,
+        "tol": 1e-09
+      },
+      "domain": "sref",
+      "id": "V-SREF-01",
+      "status": "PASS"
+    },
+    {
+      "detail": {
+        "sha": "16da482a1f8e59f6b454378769961caafde5eef87784127db6cce87381943b84"
+      },
+      "domain": "sref",
+      "id": "V-SREF-02",
+      "status": "PASS"
+    },
+    {
+      "detail": {
+        "bytes": 225414
+      },
+      "domain": "sref",
+      "id": "V-SREF-03",
+      "status": "PASS"
+    },
+    {
+      "detail": {
+        "bytes": 10846,
+        "sha": "8b29d1e3833edc2af248d68cd6b7b4c94ebf775f25c86d80062a3850765a499e"
+      },
+      "domain": "sref",
+      "id": "V-SREF-04",
+      "status": "PASS"
+    },
+    {
+      "detail": {
+        "cross_constraints": [
+          "C01",
+          "C02",
+          "C03",
+          "C04"
+        ]
+      },
+      "domain": "sref",
+      "id": "V-SREF-05",
+      "status": "PASS"
+    },
+    {
+      "detail": {
+        "n": 18
+      },
+      "domain": "decks",
+      "id": "V-DECK-01",
+      "status": "PASS"
+    },
+    {
+      "detail": {
+        "n": 6
+      },
+      "domain": "decks",
+      "id": "V-DECK-02",
+      "status": "PASS"
+    },
+    {
+      "detail": {
+        "rule": "one vspgeom per design"
+      },
+      "domain": "decks",
+      "id": "V-DECK-03",
+      "status": "PASS"
+    },
+    {
+      "detail": {
+        "physical_call_count": 0,
+        "run_dir_created": false,
+        "solver_started": false
+      },
+      "domain": "decks",
+      "id": "V-DECK-04",
+      "status": "PASS"
+    },
+    {
+      "detail": {
+        "meta_test_blind": 2,
+        "meta_train": 3,
+        "meta_val": 1
+      },
+      "domain": "split",
+      "id": "V-SPLIT-01",
+      "status": "PASS"
+    },
+    {
+      "detail": {
+        "blind": true,
+        "labels": true
+      },
+      "domain": "split",
+      "id": "V-SPLIT-02",
+      "status": "PASS"
+    },
+    {
+      "detail": {},
+      "domain": "split",
+      "id": "V-SPLIT-03",
+      "status": "PASS"
+    },
+    {
+      "detail": {
+        "n_fail": 0
+      },
+      "domain": "split",
+      "id": "V-SPLIT-04",
+      "status": "PASS"
+    },
+    {
+      "detail": {
+        "actual": [
+          15,
+          105,
+          18
+        ],
+        "expected": [
+          15,
+          105,
+          18
+        ]
+      },
+      "domain": "budget",
+      "id": "V-BUD-M1-A",
+      "status": "PASS"
+    },
+    {
+      "detail": {
+        "actual": [
+          66,
+          462,
+          70
+        ],
+        "expected": [
+          66,
+          462,
+          70
+        ]
+      },
+      "domain": "budget",
+      "id": "V-BUD-M1-B",
+      "status": "PASS"
+    },
+    {
+      "detail": {
+        "actual": [
+          34,
+          238,
+          38
+        ],
+        "expected": [
+          34,
+          238,
+          38
+        ]
+      },
+      "domain": "budget",
+      "id": "V-BUD-M3-A",
+      "status": "PASS"
+    },
+    {
+      "detail": {
+        "hard_cap_internal_cases": 882,
+        "hard_cap_starts": 126,
+        "labels": 96,
+        "planned_internal_cases": 805,
+        "planned_starts": 115,
+        "preflight_cases": 6,
+        "retry": 0,
+        "spare_internal_cases": 77,
+        "spare_starts": 11
+      },
+      "domain": "budget",
+      "id": "V-BUD-TOTAL",
+      "status": "PASS"
+    },
+    {
+      "detail": {
+        "labels": 96,
+        "preflight": 6,
+        "retry": 0
+      },
+      "domain": "budget",
+      "id": "V-BUD-LABELS",
+      "status": "PASS"
+    },
+    {
+      "detail": {
+        "approval_id": null,
+        "authorization_id": null,
+        "run_dir": null,
+        "status": "NOT_CREATED_PRE_DRAFT",
+        "token": null
+      },
+      "domain": "budget",
+      "id": "V-BUD-AUTH",
+      "status": "PASS"
+    },
+    {
+      "detail": {
+        "physical_call_count": 0,
+        "physical_solver_starts": 0
+      },
+      "domain": "zero_physical",
+      "id": "V-ZERO-01",
+      "status": "PASS"
+    },
+    {
+      "detail": {},
+      "domain": "zero_physical",
+      "id": "V-ZERO-02",
+      "status": "PASS"
+    },
+    {
+      "detail": {
+        "solver_outputs": [],
+        "spawn_events": []
+      },
+      "domain": "zero_physical",
+      "id": "V-ZERO-03",
+      "status": "PASS"
+    },
+    {
+      "detail": {
+        "authorization_created": false,
+        "ledger_created": false,
+        "run_dir_created": false,
+        "token_created": false
+      },
+      "domain": "zero_physical",
+      "id": "V-ZERO-04",
+      "status": "PASS"
+    },
+    {
+      "detail": {
+        "checklist_mapped": 60,
+        "gate_conditions_mapped": 42,
+        "missing_checklist": [],
+        "missing_gate_conditions": [],
+        "missing_requirements": [],
+        "requirements_mapped": 30
+      },
+      "domain": "a5_map",
+      "id": "V-A5-01",
+      "status": "PASS"
+    },
+    {
+      "detail": {
+        "status": "DRAFT_NOT_A_GATE"
+      },
+      "domain": "a5_map",
+      "id": "V-A5-02",
+      "status": "PASS"
+    },
+    {
+      "detail": {
+        "n_fail": 0
+      },
+      "domain": "a5_map",
+      "id": "V-A5-03",
+      "status": "PASS"
+    },
+    {
+      "detail": {
+        "family_sha256": null,
+        "status": "PRE_DRAFT_NOT_FROZEN"
+      },
+      "domain": "package",
+      "id": "V-MAN-01",
+      "status": "PASS"
+    },
+    {
+      "detail": "NOT_CREATED_PRE_DRAFT",
+      "domain": "package",
+      "id": "V-MAN-02",
+      "status": "PASS"
+    },
+    {
+      "detail": {
+        "ledger": null,
+        "run_dir": null,
+        "token": null
+      },
+      "domain": "package",
+      "id": "V-MAN-03",
+      "status": "PASS"
+    },
+    {
+      "detail": {
+        "bad": [],
+        "entries": 11
+      },
+      "domain": "package",
+      "id": "V-SUMS-01",
+      "status": "PASS"
+    }
+  ],
+  "checks_total": 46,
+  "family_sha256": null,
+  "final_gate": "G-M0R-ADMISSION-01_A5_OWNS_PENDING_TASK_57",
+  "freeze_status": "PRE_DRAFT_NOT_FROZEN",
+  "is_result": false,
+  "n_fail": 0,
+  "n_info": 0,
+  "n_pass": 46,
+  "out_dir": "D:\\RCAIDE\\dnext001\\wt-real-a3-stats-routeb\\docs\\evidence\\dreal001\\m0r_20261113\\pre_draft",
+  "physical_call_count": 0,
+  "predraft_id": "A3-M0R-PREDRAFT-TASK60-20261113",
+  "schema": "dreal001.m0r_predraft.validation.v1",
+  "tool_version": "a3-m0r-predraft-v1.0.0",
+  "validated_utc": "2026-11-13T06:49:17Z",
+  "verdict": "PREDRAFT_VALID_NOT_FROZEN"
+}

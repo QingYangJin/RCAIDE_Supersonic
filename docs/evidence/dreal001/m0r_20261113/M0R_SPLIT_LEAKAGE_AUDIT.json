@@ -1,0 +1,107 @@
+{
+  "a1_task_id_map": {
+    "T18K_M180_CL017": "M0R-M180-CL017",
+    "T18K_M180_CL019": "M0R-M180-CL019",
+    "T18K_M202_CL017": "M0R-M202-CL017",
+    "T18K_M202_CL019": "M0R-M202-CL019",
+    "T18K_M220_CL017": "M0R-M220-CL017",
+    "T18K_M220_CL019": "M0R-M220-CL019"
+  },
+  "all_tasks_altitude_m": 18288.0,
+  "counts": {
+    "meta_test_blind": 2,
+    "meta_train": 3,
+    "meta_val": 1
+  },
+  "family_sha256": "98b84f5ecf6e18a7be90e21da41b243dccb664f09034366ea3b58d777f1c0311",
+  "fit_scope": "META_TRAIN_ONLY",
+  "height_copies_removed": true,
+  "leakage_checks": [
+    {
+      "description": "six tasks partition 3 train / 1 val / 2 blind test by task identity",
+      "id": "SPLIT-01",
+      "status": "PASS"
+    },
+    {
+      "description": "meta_train/meta_val/meta_test task ID sets are disjoint",
+      "id": "SPLIT-02",
+      "status": "PASS"
+    },
+    {
+      "description": "meta_test is blind: no M1/M2 run, no labels read, no early stopping",
+      "id": "SPLIT-03",
+      "status": "PASS"
+    },
+    {
+      "description": "normalization and label transforms fit on meta_train only",
+      "id": "SPLIT-04",
+      "status": "PASS"
+    },
+    {
+      "description": "no query label, held-out optimum or future evaluation is read",
+      "id": "SPLIT-05",
+      "status": "PASS"
+    },
+    {
+      "description": "no height-copy pseudo tasks remain; all tasks are fixed 18,288 m",
+      "id": "SPLIT-06",
+      "status": "PASS"
+    },
+    {
+      "description": "M2.02 has F1R2/F2R2 continuity exposure, but it is meta_train/metadata only",
+      "id": "SPLIT-07",
+      "status": "PASS"
+    },
+    {
+      "description": "M2.2 and M1.8 have no prior real task exposure and no inherited expected polar",
+      "id": "SPLIT-08",
+      "status": "PASS"
+    },
+    {
+      "description": "shared designs across tasks are intentional transfer, not task-identity leakage",
+      "id": "SPLIT-09",
+      "status": "PASS"
+    },
+    {
+      "description": "M3 test labels are only permitted after M1-A/M1-B admission and separate authorization",
+      "id": "SPLIT-10",
+      "status": "PASS"
+    }
+  ],
+  "meta_test_blind": true,
+  "meta_test_excluded_from_m1_m2": true,
+  "meta_test_labels_never_read": true,
+  "n_fail": 0,
+  "non_result_boundary": [
+    "Split/leakage audit is pre-registration only; no data exists yet.",
+    "Meta_test remains blind and is not authorized for M1/M2."
+  ],
+  "package_id": "DREAL001-M0R-20261113-01",
+  "prior_exposure": {
+    "M0R-M180-CL017": "new condition; blind meta_test; no real task label",
+    "M0R-M180-CL019": "new condition; blind meta_test; no real task label",
+    "M0R-M202-CL017": "F1R2/F2R2 continuity anchor; not meta_test; not a task label",
+    "M0R-M202-CL019": "F1R2/F2R2 continuity anchor; not meta_test; not a task label",
+    "M0R-M220-CL017": "new condition; no real task label",
+    "M0R-M220-CL019": "new condition; no real task label"
+  },
+  "schema": "dreal001.m0r_package.v1.split_leakage.v1",
+  "split": {
+    "meta_test_blind": [
+      "M0R-M180-CL017",
+      "M0R-M180-CL019"
+    ],
+    "meta_train": [
+      "M0R-M202-CL017",
+      "M0R-M202-CL019",
+      "M0R-M220-CL017"
+    ],
+    "meta_val": [
+      "M0R-M220-CL019"
+    ]
+  },
+  "status": "M0R_PACKAGE_FROZEN_PENDING_A5_GATE",
+  "task_id_scheme": "M0R_FINAL_IDS_AUTHORITATIVE",
+  "tool_version": "a3-m0r-package-v1.0.0",
+  "unit": "TASK_IDENTITY"
+}

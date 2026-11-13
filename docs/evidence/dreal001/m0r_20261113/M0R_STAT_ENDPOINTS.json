@@ -1,0 +1,86 @@
+{
+  "claims_policy": {
+    "external_physics_supported": "NOT_VALIDATED",
+    "fuel_burn_kg": null,
+    "no_confidence_interval_claim": true,
+    "no_cross_family_average": true,
+    "no_optimization_gain_claim": true,
+    "no_p_value": true,
+    "no_significance": true,
+    "no_winner": true,
+    "single_seed": 42,
+    "single_seed_note": "descriptive only; no statistical inference"
+  },
+  "e1_e6": {
+    "not_reused_from_r10": true,
+    "note": "M0-R is a contract/freeze package with no optimization arms and no physical run. E1-E6 are not computed, not inherited from R10, and not claimed as results.",
+    "status": "NOT_APPLICABLE_TO_M0R_ZERO_PHYSICAL"
+  },
+  "endpoints": [
+    {
+      "computation": "q*Sref*CDi at lift-matched alpha",
+      "id": "EP-01",
+      "name": "per task/design D_i_N",
+      "status": "PRE_REGISTERED_FOR_M1",
+      "winner_claim_allowed": false
+    },
+    {
+      "computation": "abs(L-L_ref)/L_ref <= 1e-4",
+      "id": "EP-02",
+      "name": "lift residual",
+      "status": "PRE_REGISTERED_FOR_M1",
+      "winner_claim_allowed": false
+    },
+    {
+      "computation": "7 finite SOLVED points; OLS R2>=0.99; independent alpha-star",
+      "id": "EP-03",
+      "name": "alpha-star and CL-alpha quality",
+      "status": "PRE_REGISTERED_FOR_M1",
+      "winner_claim_allowed": false
+    },
+    {
+      "computation": "valid/SOLVED over attempted, by task and design",
+      "id": "EP-04",
+      "name": "feasible rate",
+      "status": "PRE_REGISTERED_FOR_M1",
+      "winner_claim_allowed": false
+    },
+    {
+      "computation": "one exact repeat in M1-A; U_rep=max relative CDi difference",
+      "id": "EP-05",
+      "name": "within-task repeatability U_rep",
+      "status": "PRE_REGISTERED_FOR_M1",
+      "winner_claim_allowed": false
+    },
+    {
+      "computation": "4 tasks x 3 designs; effect>=max(2U,1e-3) or Spearman<0.99",
+      "id": "EP-06",
+      "name": "CTX-A/B task separability",
+      "status": "PRE_REGISTERED_FOR_M1",
+      "winner_claim_allowed": false
+    }
+  ],
+  "non_result_boundary": [
+    "Endpoints pre-registered; no value computed in M0-R.",
+    "No winner, ranking, significance, confidence interval or cross-family comparison."
+  ],
+  "package_id": "DREAL001-M0R-20261113-01",
+  "primary_metric": {
+    "forbidden": [
+      "0.5*(f1+f2)",
+      "hardcoded Sref",
+      "cross-family averaging"
+    ],
+    "formula": "D_i_N = q * Sref(x) * CDi(lift_matched)",
+    "fuel_burn_kg": null,
+    "id": "D_I_N",
+    "name": "independent drag force per task/design",
+    "physical_validation_status": "NOT_VALIDATED",
+    "q_source": "ATM-F1R2 injected Vinf/Rho",
+    "sref_ref_anchor_role": "VALIDATION_ANCHOR_ONLY_NOT_A_RUNTIME_HARDCODE",
+    "sref_source": "per-design geometry runtime recompute; frozen SREF_REF is validation anchor only"
+  },
+  "schema": "dreal001.m0r_package.v1.stat_endpoints.v1",
+  "status": "M0R_PACKAGE_FROZEN_PENDING_A5_GATE",
+  "tool_version": "a3-m0r-package-v1.0.0"
+}

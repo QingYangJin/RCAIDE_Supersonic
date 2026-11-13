@@ -1,0 +1,130 @@
+{
+  "authorization": {
+    "approval_id": null,
+    "authorization_id": null,
+    "run_dir": null,
+    "status": "NOT_CREATED_PRE_DRAFT",
+    "token": null
+  },
+  "batches": [
+    {
+      "batch": "M1-A",
+      "composition": "4 tasks x 3 reference designs = 12 CTX/admission labels + 1 exact repeat + 2 preflight",
+      "exact_repeat_cases": 1,
+      "hard_cap_internal_cases": 126,
+      "hard_cap_starts": 18,
+      "labels": 0,
+      "notes": "CTX-A/B admission only; labels here are context probes, not training labels",
+      "planned_internal_cases": 105,
+      "planned_starts": 15,
+      "preflight_cases": 2,
+      "retry": 0,
+      "spare_internal_cases": 21,
+      "spare_starts": 3
+    },
+    {
+      "batch": "M1-B",
+      "composition": "4 tasks x 16 designs = 64 labels + 2 preflight",
+      "exact_repeat_cases": 0,
+      "hard_cap_internal_cases": 490,
+      "hard_cap_starts": 70,
+      "labels": 64,
+      "notes": "only after M1-A admission and separate authorization",
+      "planned_internal_cases": 462,
+      "planned_starts": 66,
+      "preflight_cases": 2,
+      "retry": 0,
+      "spare_internal_cases": 28,
+      "spare_starts": 4
+    },
+    {
+      "batch": "M3-A",
+      "composition": "2 blind test tasks x 16 designs = 32 labels + 2 preflight",
+      "exact_repeat_cases": 0,
+      "hard_cap_internal_cases": 266,
+      "hard_cap_starts": 38,
+      "labels": 32,
+      "notes": "only after M1-A/M1-B and separate authorization; meta_test blind before this",
+      "planned_internal_cases": 238,
+      "planned_starts": 34,
+      "preflight_cases": 2,
+      "retry": 0,
+      "spare_internal_cases": 28,
+      "spare_starts": 4
+    }
+  ],
+  "checks": [
+    {
+      "description": "M1-A is 15 starts / 105 internal with caps 18/126",
+      "id": "BUD-01",
+      "status": "PASS"
+    },
+    {
+      "description": "M1-B is 66 starts / 462 internal with caps 70/490",
+      "id": "BUD-02",
+      "status": "PASS"
+    },
+    {
+      "description": "M3-A is 34 starts / 238 internal with caps 38/266",
+      "id": "BUD-03",
+      "status": "PASS"
+    },
+    {
+      "description": "total planned is 115 starts / 805 internal and hard caps 126/882",
+      "id": "BUD-04",
+      "status": "PASS"
+    },
+    {
+      "description": "total labels=96, preflight=6, retry=0, M3-B not authorized",
+      "id": "BUD-05",
+      "status": "PASS"
+    },
+    {
+      "description": "planned + spare equals hard cap for every batch and total",
+      "id": "BUD-06",
+      "status": "PASS"
+    }
+  ],
+  "five_basis_accounting_template": {
+    "actual": 0,
+    "cached_reads": 0,
+    "charged": 0,
+    "charged_or_actual": "BOTH_ZERO_PRE_DRAFT",
+    "design_evaluations": 0,
+    "internal_solver_cases_actual": 0,
+    "note": "M0-R is zero physical; the 115/805 table is a future authorization budget, not charged usage. Charged vs actual must be reported separately in M1.",
+    "physical_solver_starts_actual": 0,
+    "planned_reserved_solver_starts": 0,
+    "template_only": true
+  },
+  "internal_cases_per_start": 7,
+  "m3_b": {
+    "planned_internal_cases": 0,
+    "planned_starts": 0,
+    "status": "NOT_AUTHORIZED"
+  },
+  "n_fail": 0,
+  "non_result_boundary": [
+    "Budget/ledger template only; no run dir, ledger, token or authorization exists.",
+    "M3-B is explicitly not authorized.",
+    "No spend is charged in M0-R; charged and actual are both zero."
+  ],
+  "retry_policy": {
+    "max_retries": 0,
+    "retry_allowed": false
+  },
+  "schema": "dreal001.m0r_predraft.budget_ledger.v1",
+  "status": "PREDRAFT_BUDGET_TEMPLATE_NOT_AUTHORIZED",
+  "tool_version": "a3-m0r-predraft-v1.0.0",
+  "total": {
+    "hard_cap_internal_cases": 882,
+    "hard_cap_starts": 126,
+    "labels": 96,
+    "planned_internal_cases": 805,
+    "planned_starts": 115,
+    "preflight_cases": 6,
+    "retry": 0,
+    "spare_internal_cases": 77,
+    "spare_starts": 11
+  }
+}

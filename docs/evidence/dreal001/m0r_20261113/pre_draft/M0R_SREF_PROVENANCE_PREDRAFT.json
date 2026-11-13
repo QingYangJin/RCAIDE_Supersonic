@@ -1,0 +1,241 @@
+{
+  "anchor": {
+    "a1_dry_run_field": "sref_ref.sref_m2",
+    "a1_dry_run_sha256": "8688d25770911af7fadd42587f66a4914091c829fd8cdc89c1f349a53731b4c6",
+    "source": "post-fix baseline geometry.wing.area_m2 (runtime recompute)",
+    "value_m2": 358.25000000000006,
+    "vspgeom_sha256": "16da482a1f8e59f6b454378769961caafde5eef87784127db6cce87381943b84"
+  },
+  "checks": [
+    {
+      "actual": "16da482a1f8e59f6b454378769961caafde5eef87784127db6cce87381943b84",
+      "description": "baseline vspgeom SHA equals A1 frozen dry-run identity",
+      "expected": "16da482a1f8e59f6b454378769961caafde5eef87784127db6cce87381943b84",
+      "id": "SREF-01",
+      "status": "PASS"
+    },
+    {
+      "actual": 225414,
+      "description": "baseline vspgeom byte count equals the A1 published 225,414 B",
+      "expected": 225414,
+      "id": "SREF-02",
+      "status": "PASS"
+    },
+    {
+      "actual": "546x480",
+      "description": "mesh family is 546x480",
+      "expected": "546x480",
+      "id": "SREF-03",
+      "status": "PASS"
+    },
+    {
+      "actual": 6.238702072197911e-11,
+      "description": "runtime wing-area recompute matches the A1 runtime anchor within 1e-9 relative",
+      "expected": "rel<=1e-9",
+      "id": "SREF-04",
+      "status": "PASS"
+    },
+    {
+      "actual": 358.2500000223502,
+      "description": "wing Newell area cross-checks OpenVSP component main_wing area",
+      "expected": 358.25000000000006,
+      "id": "SREF-05",
+      "status": "PASS"
+    },
+    {
+      "actual": 33.91000000735031,
+      "description": "tail Newell area cross-checks OpenVSP component vertical_tail area",
+      "expected": 33.91,
+      "id": "SREF-06",
+      "status": "PASS"
+    },
+    {
+      "actual": "8b29d1e3833edc2af248d68cd6b7b4c94ebf775f25c86d80062a3850765a499e",
+      "description": "raw 12D design-space YAML SHA equals the A5-frozen 8b29d1e3 identity",
+      "expected": "8b29d1e3...",
+      "id": "SREF-07",
+      "status": "PASS"
+    },
+    {
+      "actual": 10846,
+      "description": "raw 12D design-space YAML byte count equals 10,846 B",
+      "expected": 10846,
+      "id": "SREF-08",
+      "status": "PASS"
+    }
+  ],
+  "consistency": {
+    "abs_diff_m2": 2.2350150175043382e-08,
+    "disclosure": "A1 task_evaluator currently carries a frozen SREF_REF validation constant and checks it at 1e-12; this pre-draft uses an independent post-fix vspgeom Newell recompute and a 1e-9 pre-registered tolerance. The A1 interface deviation is disclosed to A5/Lead and must be resolved before task-57 freeze.",
+    "rel_diff": 6.238702072197911e-11,
+    "status": "PASS_WITH_DISCLOSURE",
+    "tolerance_rel": 1e-09
+  },
+  "designs": [
+    {
+      "component_metrics": {
+        "main_wing": {
+          "bbox_m": [
+            31.49534375886453,
+            25.604638251691824,
+            2.9919174836412785
+          ],
+          "name": "main_wing",
+          "total_area_m2": 358.25000000000006,
+          "total_span_m": 25.604638251691824
+        },
+        "vertical_tail": {
+          "bbox_m": [
+            13.15761606842186,
+            1.3165253323726676,
+            5.009331292697659
+          ],
+          "name": "vertical_tail",
+          "total_area_m2": 33.91,
+          "total_span_m": 5.009331292697659
+        }
+      },
+      "design_hash": "8bd5a6c7c8311938",
+      "design_id": "B0-01",
+      "design_label": "baseline",
+      "mesh_family": "546x480",
+      "sref_m2": 358.25000000000006,
+      "sref_source": "PER_DESIGN_GEOMETRY_RUNTIME",
+      "vspgeom_bytes": 225414,
+      "vspgeom_sha256": "16da482a1f8e59f6b454378769961caafde5eef87784127db6cce87381943b84"
+    },
+    {
+      "component_metrics": {
+        "main_wing": {
+          "bbox_m": [
+            31.49534375886453,
+            25.604638251691824,
+            2.9919174836412785
+          ],
+          "name": "main_wing",
+          "total_area_m2": 358.25000000000006,
+          "total_span_m": 25.604638251691824
+        },
+        "vertical_tail": {
+          "bbox_m": [
+            13.15761606842186,
+            1.3165253323726676,
+            5.009331292697659
+          ],
+          "name": "vertical_tail",
+          "total_area_m2": 33.91,
+          "total_span_m": 5.009331292697659
+        }
+      },
+      "design_hash": "6653517b11d6f891",
+      "design_id": "B1-01",
+      "design_label": "W05p_sweep3_72",
+      "mesh_family": "546x480",
+      "sref_m2": 358.25000000000006,
+      "sref_source": "PER_DESIGN_GEOMETRY_RUNTIME",
+      "vspgeom_bytes": 225414,
+      "vspgeom_sha256": "6a296aee6e6f6b505083c655c63a667fd52309432e798b25305d01d588d70612"
+    },
+    {
+      "component_metrics": {
+        "main_wing": {
+          "bbox_m": [
+            32.018485597973445,
+            26.029934690659523,
+            3.0416136300570074
+          ],
+          "name": "main_wing",
+          "total_area_m2": 370.25,
+          "total_span_m": 26.029934690659523
+        },
+        "vertical_tail": {
+          "bbox_m": [
+            13.15761606842186,
+            1.3165253323726676,
+            5.009331292697659
+          ],
+          "name": "vertical_tail",
+          "total_area_m2": 33.91,
+          "total_span_m": 5.009331292697659
+        }
+      },
+      "design_hash": "bc52a54ecefaac4c",
+      "design_id": "C5",
+      "design_label": "W01p_wing_area_370.25",
+      "mesh_family": "546x480",
+      "sref_m2": 370.25,
+      "sref_source": "PER_DESIGN_GEOMETRY_RUNTIME",
+      "vspgeom_bytes": 225414,
+      "vspgeom_sha256": "e1ad74cc3820553ee6864d121168ae8f5b72d5602619f15de9cf2c04f1a7bde8"
+    }
+  ],
+  "independent_recompute": {
+    "component_part_mapping": {
+      "main_wing_parts": [
+        1,
+        2
+      ],
+      "vertical_tail_parts": [
+        3
+      ]
+    },
+    "mesh_family": "546x480",
+    "method": "NEWELL_FACE_AREA_TOKEN_STREAM_VSPGEOM_V3",
+    "n_elements": 480,
+    "n_nodes": 546,
+    "parse_method": "TOKEN_STREAM_VSPGEOM_V3",
+    "part_face_counts": {
+      "1": 180,
+      "2": 180,
+      "3": 120
+    },
+    "tail_area_m2": 33.91000000735031,
+    "total_area_m2": 392.1600000297006,
+    "vspgeom_bytes": 225414,
+    "vspgeom_path": "D:\\RCAIDE\\dnext001\\wt-real-a1-geometry-solver\\research\\concorde_metaopt\\dreal001\\f1r2\\runs\\DREAL001-F1R2-20261113-01\\cases\\PRE-01\\concorde_baseline.vspgeom",
+    "vspgeom_sha256": "16da482a1f8e59f6b454378769961caafde5eef87784127db6cce87381943b84",
+    "wing_area_m2": 358.2500000223502
+  },
+  "n_fail": 0,
+  "non_result_boundary": [
+    "Pre-draft provenance only; not a frozen family, not a run, not a physical validation.",
+    "No solver was started; physical_call_count=0.",
+    "Old F1/F2/R10 values are not reused as SREF or lift-reference evidence."
+  ],
+  "raw_design_space": {
+    "bounds_status": "frozen_for_dreal001_20261110",
+    "bytes": 10846,
+    "cross_constraints": [
+      {
+        "expression": "span_location_2 < span_location_3",
+        "id": "C01",
+        "note": "wing breakpoints must stay ordered."
+      },
+      {
+        "expression": "chord_ratio_3 < chord_ratio_2 < 1.0",
+        "id": "C02",
+        "note": "chord stays positive and monotonically decreasing outboard."
+      },
+      {
+        "expression": "0 < wing_area, 0 < aspect_ratio, 0 < vertical_tail_area, 0 < fuselage_length",
+        "id": "C03",
+        "note": "positive geometric quantities; fuselage_length is the fixed F01 value re-injected by DesignSpace.expand."
+      },
+      {
+        "expression": "0 <= sweep_1, sweep_2, sweep_3 <= 90",
+        "id": "C04",
+        "note": "sweep sanity range in degrees."
+      }
+    ],
+    "design_set": "12d_lifting_surfaces",
+    "frozen": true,
+    "parse_mode": "SAFE_LOAD_AFTER_QUOTING_UNQUOTED_COLON_SCALARS",
+    "path": "D:\\RCAIDE\\dnext001\\wt-real-a1-geometry-solver\\research\\concorde_metaopt\\configs\\design_space_12d_lifting_surfaces.yaml",
+    "schema_version": "1",
+    "sha256": "8b29d1e3833edc2af248d68cd6b7b4c94ebf775f25c86d80062a3850765a499e"
+  },
+  "schema": "dreal001.m0r_predraft.sref_provenance.v1",
+  "sref_ref_rule": "L_ref = q(M,18288) * SREF_REF * CL_target; SREF_REF is recomputed from the post-fix baseline geometry at runtime and SHA-bound; no numeric literal fallback is permitted",
+  "status": "PREDRAFT_SREF_PROVENANCE_READY_NOT_FROZEN",
+  "tool_version": "a3-m0r-predraft-v1.0.0"
+}

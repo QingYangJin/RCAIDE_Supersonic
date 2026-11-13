@@ -1,0 +1,160 @@
+{
+  "schema": "dreal001.a5.m0r_gate_addendum.v1",
+  "addendum_id": "G-M0R-ADMISSION-01-ADD-03",
+  "gate_id": "G-M0R-ADMISSION-01",
+  "gate_revision": 2,
+  "gate_commit": "881226fc059bdfbfbb03704b19845875179b54fa",
+  "addendum02": {
+    "path": "D:/RCAIDE/dnext001/wt-real-a5-review/docs/reviews/dreal001_a5_m0r_gate_rev2_addendum02_20261113.json",
+    "sha256": "4393d11ebd42341792c88c1d4d8ab11189fde4122754ce97b90f6bc755a2f1ee",
+    "bytes": 7323
+  },
+  "issued_by": "a5-review",
+  "issued_at_utc": "2026-11-13T08:06:48Z",
+  "status": "ISSUED",
+  "purpose": "A5 独立复核 A1 task-61 M1-A 12-deck freeze payload（G08），确认 62/62 SUMS、12/12 deck/vspgeom/design hash、60/60 copy、A3 r3 未改、零物理；作为 M1-A PRE gate 的前置证据。",
+  "verdict": "PASS",
+  "verification_result": "A5_INDEPENDENT_DECK_FREEZE_VERIFICATION_PASS",
+  "scope": "A1 task-61 commit 092a311 的 12 个 M1-A 槽位；不是 M1-A 执行授权，不是 admission，不启动 solver。",
+  "a1_task_61": {
+    "commit": "092a31181cb12107f80bb65204f2469004793431",
+    "dir": "D:/RCAIDE/dnext001/wt-real-a1-geometry-solver/docs/evidence/dreal001/m1a_deck_freeze_20261113",
+    "manifest": {
+      "path": "D:/RCAIDE/dnext001/wt-real-a1-geometry-solver/docs/evidence/dreal001/m1a_deck_freeze_20261113/manifest.json",
+      "sha256": "fea23ea13df8f196993297c84e5ae657145431b00a0e8710eb35bfa3199f974f",
+      "bytes": 77984
+    },
+    "receipt": {
+      "path": "D:/RCAIDE/dnext001/wt-real-a1-geometry-solver/docs/evidence/dreal001/m1a_deck_freeze_20261113/RECEIPT_ZH.md",
+      "sha256": "1f8620bab41145562f2886bb6654c3b4e2cb6e5ae0624ae222b9d4ef4081ce4d",
+      "bytes": 3988
+    },
+    "sums": {
+      "path": "D:/RCAIDE/dnext001/wt-real-a1-geometry-solver/docs/evidence/dreal001/m1a_deck_freeze_20261113/SHA256SUMS.txt",
+      "sha256": "13d1177bb50841cad877340840c4f3d19943b20fadfe5ad5631a5d16671ff733",
+      "bytes": 10000,
+      "entries": 62
+    },
+    "dir_file_count": 63,
+    "git_head": "092a31181cb12107f80bb65204f2469004793431",
+    "path_clean": true
+  },
+  "authority": {
+    "a3_r3_commit": "7128b911f7d8cb064ecd0b619b89f3af7abd27e3",
+    "a3_r3_sums_sha256": "0bf7ce2d141f051e1aff6f607a495f28bf33c0b548ebd06ec8273538c8316800",
+    "a3_r3_sums_entries": 38,
+    "a3_r3_sums_ok": true,
+    "a3_deck_freeze_sha256": "cb933119a88136b3f10c177fb34487b5d7e01055009e65d0a21af2c43141f2d6",
+    "a3_deck_freeze_bytes": 40496,
+    "a1_u1_dry_run_sha256": "8688d25770911af7fadd42587f66a4914091c829fd8cdc89c1f349a53731b4c6",
+    "a5_m0r_gate_commit": "881226fc059bdfbfbb03704b19845875179b54fa",
+    "a5_m0r_gate_json_sha256": "810bf3d6c369a332d3a73f4519ec39e116d1522a2a364a2e7e08c6930453dbd2",
+    "l32_revision": 2
+  },
+  "checks": [
+    {
+      "id": "A5-DCK-01",
+      "status": "PASS",
+      "detail": "A1 HEAD=092a311；task-61 路径 clean；commit/receipt/manifest/SUMS 与 A1 报告逐字节一致。"
+    },
+    {
+      "id": "A5-DCK-02",
+      "status": "PASS",
+      "detail": "SUMS 62/62 行全部匹配、0 mismatch；目录 63 files（62 SUMS payload + SUMS 自身）。"
+    },
+    {
+      "id": "A5-DCK-03",
+      "status": "PASS",
+      "detail": "12 slots 唯一组合 = 4 M1 tasks × 3 designs；无 M180/meta_test 槽位。"
+    },
+    {
+      "id": "A5-DCK-04",
+      "status": "PASS",
+      "detail": "4 个 B0-01 slots（FROZEN_IN_M0R_PACKAGE）+ 8 个 B1-01/C5 slots（TO_BE_FROZEN_BEFORE_M1A_AUTHORIZATION）。"
+    },
+    {
+      "id": "A5-DCK-05",
+      "status": "PASS",
+      "detail": "12/12 deck SHA 与 A1 U1 dry-run 和 A3 r3 m1a_required_deck_set 双表一致；B0 deck 1614a964/6a022882；C5 deck 1253fa5f/d5d9104e。"
+    },
+    {
+      "id": "A5-DCK-06",
+      "status": "PASS",
+      "detail": "12/12 vspgeom SHA 一致；B0 16da482a/225,414B，B1 6a296aee/225,414B，C5 e1ad74cc/225,414B；546x480 由 vspgeom 字节继承（A1 U1）。"
+    },
+    {
+      "id": "A5-DCK-07",
+      "status": "PASS",
+      "detail": "12/12 design_hash 一致；B0 8bd5a6c7c8311938、B1 6653517b11d6f891、C5 bc52a54ecefaac4c。"
+    },
+    {
+      "id": "A5-DCK-08",
+      "status": "PASS",
+      "detail": "60/60 payload 文件 SHA 与源 SHA 一致；5 files/slot（vspgeom/vkey/vspaero/csf/task_deck.json）。"
+    },
+    {
+      "id": "A5-DCK-09",
+      "status": "PASS",
+      "detail": "A3 r3 SUMS 38/38 逐行匹配，包字节未改；M0R_DECK_FREEZE cb933119/40,496B 未改。"
+    },
+    {
+      "id": "A5-DCK-10",
+      "status": "PASS",
+      "detail": "exact repeat slot M1A-B0-01-M202_CL017：task M0R-M202-CL017/T18K_M202_CL017、design B0-01、deck 1614a964/943B、vspgeom 16da482a/225,414B、task_deck dc64a0f2/6,975B；与 L-32 rev2 一致。"
+    },
+    {
+      "id": "A5-DCK-11",
+      "status": "PASS",
+      "detail": "A1 checks 18/18 PASS；attestations：copy_only=true、physical=0、openvsp/vspaero=false、rebuilt=false、run_dir=false、A3 bytes modified=false。"
+    },
+    {
+      "id": "A5-DCK-12",
+      "status": "PASS",
+      "detail": "A5 独立核验期间未启 OpenVSP/VSPAERO，未重建，未建 run dir；A5 physical_call_count=0。"
+    }
+  ],
+  "exact_repeat": {
+    "task_id": "M0R-M202-CL017",
+    "a3_task_id": "T18K_M202_CL017",
+    "design_id": "B0-01",
+    "deck_sha256": "1614a964fc729d42bfa764025a2aa1d3915be8f20dbc6480b72862c15e0c59dc",
+    "deck_bytes": 943,
+    "vspgeom_sha256": "16da482a1f8e59f6b454378769961caafde5eef87784127db6cce87381943b84",
+    "vspgeom_bytes": 225414,
+    "task_deck_sha256": "dc64a0f2332a22f8d28e6af3f06dfb5034132ebad9901cd337dfe4c3e3213bb3",
+    "task_deck_bytes": 6975,
+    "slot_id": "M1A-B0-01-M202_CL017"
+  },
+  "m1a_pre_gate_binding": [
+    "M1A-PRE-01 必须绑定本 addendum 03 的 json/SHA 与 A1 task-61 commit 092a311 + manifest fea23ea1 + SUMS 13d1177b。",
+    "M1-A authorization 只允许引用 12 个已核验槽位；不得引用未冻结 reference。",
+    "M1-A 执行前仍需 A2 包、A5 M1A-PRE-01、Lead approval、post-approval dry-run、A5 C-P2AV2M1A-02、Lead GO。"
+  ],
+  "disclosures": [
+    {
+      "id": "D-ADD03-01",
+      "severity": "INFO",
+      "text": "A1 B0-01 slots 的 vspaero/task_deck 来自 A3 r3 M0-R 冻结 baseline，vspgeom/vkey/csf 来自 A1 U1 dry-run build；B1-01/C5 全部来自 A1 U1 dry-run。"
+    },
+    {
+      "id": "D-ADD03-02",
+      "severity": "INFO",
+      "text": "vkey 含路径相关字段，仅记录 SHA；跨进程确定性身份使用 deck_sha256+vspgeom_sha256。"
+    },
+    {
+      "id": "D-ADD03-03",
+      "severity": "INFO",
+      "text": "本 addendum 不是 M1-A 执行授权/approval/GO；不签 admission；不改变 G-M0R-ADMISSION-01 rev2 的 60 checks/42 conditions。"
+    },
+    {
+      "id": "D-ADD03-04",
+      "severity": "INFO",
+      "text": "A1 manifest 使用 task_id=T18K_* 与 a3_task_id=M0R-* 双标识；A5 核验两者与 M0-R 4 tasks 对应，授权链应以 M0R-* task_id 为主键。"
+    }
+  ],
+  "scope_boundary": [
+    "A5 physical_call_count=0；未建 run dir/ledger/token/authorization；未启动 solver。",
+    "M1-A 仍需新 authorization/approval/Lead GO；M1-B/M2/M3 不授权。",
+    "fuel_burn_kg=null；physics NOT_VALIDATED；不产生 winner/显著性/跨族结论。"
+  ]
+}

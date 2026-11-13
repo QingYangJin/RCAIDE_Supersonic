@@ -1,0 +1,409 @@
+{
+  "schema": "dreal001.a5.m0r_requirements.v1",
+  "requirement_id": "A5-M0R-REQ-20261113",
+  "issued_by": "a5-review",
+  "issued_at_utc": "2026-11-13T06:12:00Z",
+  "status": "ISSUED_FOR_M0R_PACKAGE",
+  "current_gate": "G-T0-ADMISSION-01",
+  "current_verdict": "M0_BLOCKED",
+  "planned_next_gate": "G-M0R-ADMISSION-01",
+  "scope": "Issue #11 D-META-REAL-001 M0-R：当前 T0-4/A3 M0 字节被 A5 独立判 M0_BLOCKED；以下为最小重冻要求。不是 authorization/approval/GO，不是 admission，不授权 M1。",
+  "decisions": [
+    {
+      "id": "L-30",
+      "commit": "27f8d91",
+      "md_sha256": "f54156c78834f2cd31bc25096a8b6c2a6ab2c994309278ae27067a61fc341b71",
+      "md_bytes": 11483,
+      "json_sha256": "62991bcc64d9f857494d2199dd4fde7c76876ae874fd7a407571bcc4b9cd12ab",
+      "json_bytes": 4431
+    },
+    {
+      "id": "L-30-A01",
+      "commit": "30166a0",
+      "md_sha256": "177dc4be49927023976e4915f37d86ab3046711799d52eb887860d0296f0b80a",
+      "md_bytes": 3689,
+      "json_sha256": "62616a8dccc03156f404be86b619454c240cded383c79c0ea2d28056b7232e5f",
+      "json_bytes": 2460,
+      "note": "L-30 第3节旧 q/L_ref 表作废，以本 addendum 为准"
+    }
+  ],
+  "six_task_table": [
+    {
+      "id": "T18K_M202_CL017",
+      "mach": 2.02,
+      "alt_m": 18288,
+      "cl_target": 0.17,
+      "q_pa": 20483.940233430174,
+      "vinf_m_s": 596.0373972278921,
+      "l_ref_n": 1247523.170066,
+      "mass_t": 127.21196,
+      "split": "meta_train"
+    },
+    {
+      "id": "T18K_M202_CL019",
+      "mach": 2.02,
+      "alt_m": 18288,
+      "cl_target": 0.19,
+      "q_pa": 20483.940233430174,
+      "vinf_m_s": 596.0373972278921,
+      "l_ref_n": 1394290.601839,
+      "mass_t": 142.178073,
+      "split": "meta_train"
+    },
+    {
+      "id": "T18K_M220_CL017",
+      "mach": 2.2,
+      "alt_m": 18288,
+      "cl_target": 0.17,
+      "q_pa": 24297.194081414087,
+      "vinf_m_s": 649.14964,
+      "l_ref_n": 1479759.862543,
+      "mass_t": 150.893512,
+      "split": "meta_train"
+    },
+    {
+      "id": "T18K_M220_CL019",
+      "mach": 2.2,
+      "alt_m": 18288,
+      "cl_target": 0.19,
+      "q_pa": 24297.194081414087,
+      "vinf_m_s": 649.14964,
+      "l_ref_n": 1653849.258137,
+      "mass_t": 168.64569,
+      "split": "meta_val"
+    },
+    {
+      "id": "T18K_M180_CL017",
+      "mach": 1.8,
+      "alt_m": 18288,
+      "cl_target": 0.17,
+      "q_pa": 16265.063806566453,
+      "vinf_m_s": 531.122433,
+      "l_ref_n": 990583.048479,
+      "mass_t": 101.011359,
+      "split": "meta_test_blind"
+    },
+    {
+      "id": "T18K_M180_CL019",
+      "mach": 1.8,
+      "alt_m": 18288,
+      "cl_target": 0.19,
+      "q_pa": 16265.063806566453,
+      "vinf_m_s": 531.122433,
+      "l_ref_n": 1107122.230653,
+      "mass_t": 112.895049,
+      "split": "meta_test_blind"
+    }
+  ],
+  "atmosphere": {
+    "source": "ATM_F1R2",
+    "p_pa": 7171.544888256813,
+    "T_k": 216.65,
+    "R": 287.05287,
+    "rho_kg_m3": 0.1153178340089936,
+    "a_m_s": 295.06801842964956,
+    "recref": 89397005.8767656,
+    "sref_ref_m2": 358.25000000000006,
+    "g0": 9.80665,
+    "q_M202": 20483.940233430174,
+    "q_M220": 24297.194081414087,
+    "q_M180": 16265.063806566453,
+    "disclosure": "ATM-F1R2 vs ISO-1 q rel≈1.24e-5；M2.02 与 F1R2 连续；2.2/1.8 为新条件，不继承 F1R2 expected polar；不得混用 ISO"
+  },
+  "conditions": [
+    {
+      "id": "R01",
+      "category": "package",
+      "severity": "CRITICAL",
+      "requirement": "M0-R 必须是全新包、新 family SHA、新 task ID；不得复用 ada424cc/40fdd436/旧 18-task 字节；旧 T0-4/A3 M0 字节不改，只作历史。",
+      "acceptance": "新包 commit/SUMS；family_sha256 非 ada424cc；旧 SHA 只出现在 superseded 披露"
+    },
+    {
+      "id": "R02",
+      "category": "geometry",
+      "severity": "CRITICAL",
+      "requirement": "任务族几何必须重绑 post-fix 546x480 链：openvsp_geometry d20ee7ad；baseline vspgeom 16da482a/225,414B/546x480；F1R2 12D audit 7a90b977；40fdd436 不得出现在 active family。",
+      "acceptance": "6 tasks geometry_sha256=16da482a…；零物理复建 2/2 字节一致；无 40fd active 引用"
+    },
+    {
+      "id": "R03",
+      "category": "executor",
+      "severity": "CRITICAL",
+      "requirement": "task-capable executor：逐任务注入 Mach/alt/CL/Vinf/Rho/ReCref/q；6 个 per-task .vspaero deck；任务缺失 fail-closed；零物理 dry-run。",
+      "acceptance": "executor 接口/单测；6 deck SHA；M2.02 deck 与 F1R2 同参数（Vinf/Rho/ReCref/Mach/alpha）；spawn=[]；physical=0"
+    },
+    {
+      "id": "R04",
+      "category": "q_source",
+      "severity": "CRITICAL",
+      "requirement": "q 单源 ATM-F1R2；q 由实际注入 Vinf/Rho 复算 rel≤1e-12；6 任务 q 精确等于 20483.940233430174/24297.194081414087/16265.063806566453；禁止 ISO 混用。",
+      "acceptance": "A5 独立复算 6/6 rel≤1e-12；代码仅一处大气模块；无第二套 q/L_ref"
+    },
+    {
+      "id": "R05",
+      "category": "lift_reference",
+      "severity": "CRITICAL",
+      "requirement": "L_ref=q*SREF_REF*CL_target；SREF_REF 运行时由 post-fix baseline 几何重算并 SHA 绑定，不得硬编码 358.25；m_task=L_ref/g0；质量带 100–190 t；LREF-1..8 fail-closed。",
+      "acceptance": "6 任务 L_ref/mass 精确匹配 L-30-A01；SREF_REF 运行时字段/SHA；越界或 fallback 即 fail-closed"
+    },
+    {
+      "id": "R06",
+      "category": "tasks",
+      "severity": "CRITICAL",
+      "requirement": "只保留 L-30-A01 的 6 任务；固定 18,288 m；3 train/1 val/2 test；meta_test 盲；删除全部高度缩放副本。",
+      "acceptance": "6 tasks 因子/ID/split 全匹配；无 15/20 km task；meta_test 在 M1/M2 不运行、不揭盲"
+    },
+    {
+      "id": "R07",
+      "category": "design_space",
+      "severity": "CRITICAL",
+      "requirement": "设计空间同时绑 raw YAML 8b29d1e3…/10,846B 与 C01–C04 cross constraints；M1 sampler/executor 强制执行 check_cross_constraints。",
+      "acceptance": "raw SHA + C01–C04 字段/SHA；负例测试拒绝违反 C01–C04；canonical hash 不能替代 cross constraints"
+    },
+    {
+      "id": "R08",
+      "category": "alpha_lift",
+      "severity": "CRITICAL",
+      "requirement": "7 点 alpha 固定；max_refine_sweeps 统一（0 或明确 refine 列表）；不得 frozen=0/tasks=2 矛盾；报告独立升力残差与插值不确定性。",
+      "acceptance": "单值 max_refine；alpha_refine 明确；C2 残差独立复算；低 CL 插值不确定性>1e-3 时预注册加密或 A5 预签放宽"
+    },
+    {
+      "id": "R09",
+      "category": "mask",
+      "severity": "HIGH",
+      "requirement": "12D_ALL_ACTIVE；10D_ACTIVE_PLUS_2_INACTIVE=DEFERRED_TO_M1；更正 “no zero-effect evidence” 文本。",
+      "acceptance": "mask 字段/文本；F1R2 C3/C4 证据引用；不得声明 V01/V02 无效"
+    },
+    {
+      "id": "R10",
+      "category": "effect_threshold",
+      "severity": "HIGH",
+      "requirement": "MIN_EFFECT_REL>0 并预注册；建议 max(2×U_within,1e-3)；不得用 0.0。",
+      "acceptance": "常量/字段>0；单测；A5 复核阈值定义"
+    },
+    {
+      "id": "R11",
+      "category": "cross_task",
+      "severity": "CRITICAL",
+      "requirement": "M1-A CTX-A/B 预注册：4 任务×3 设计；效应量分离 ≥max(2U_within,1e-3)；3 设计下 Spearman 仅描述性，不得做 p 值/显著性；TOO_SIMILAR 规则保留。",
+      "acceptance": "CTX-A/B 定义/阈值；4/4 任务可分或 PHYSICAL_TASK_FAMILY_BLOCKED；披露 n=3 限制"
+    },
+    {
+      "id": "R12",
+      "category": "budget",
+      "severity": "CRITICAL",
+      "requirement": "M1-A 15 starts/105 internal，caps 18/126，retry 0；4 任务×3 设计+1 exact repeat+2 preflight；repeat 必须预注册 task/design/deck SHA。",
+      "acceptance": "预算表/算术；repeat 预注册；无额外设计/任务；五口径"
+    },
+    {
+      "id": "R13",
+      "category": "budget",
+      "severity": "CRITICAL",
+      "requirement": "M1-B 66/462 caps 70/490；4 任务×16 designs=64 labels+2 preflight；retry 0。",
+      "acceptance": "仅 M1-A 通过后单独授权；预算/标签表"
+    },
+    {
+      "id": "R14",
+      "category": "budget",
+      "severity": "CRITICAL",
+      "requirement": "M3-A 34/238 caps 38/266；2 test 任务×16=32 labels+2 preflight；retry 0；M3 前不得运行 meta_test。",
+      "acceptance": "单独授权；揭盲流程；任务级 n=2 描述性"
+    },
+    {
+      "id": "R15",
+      "category": "budget",
+      "severity": "CRITICAL",
+      "requirement": "总预算 planned 115/805，hard 126/882，labels 96，preflight 6，retry 0；M3-B 不授权。",
+      "acceptance": "汇总算术；M3-B NOT_AUTHORIZED；charged/actual 分离"
+    },
+    {
+      "id": "R16",
+      "category": "admission",
+      "severity": "CRITICAL",
+      "requirement": "admission=DEFERRED_TO_M1A_WITH_PRE_REGISTERED_CHECKS；M0/M0-R 不签 admission；首条真实 M1 标签按 validity/status/identity 判定，不按目标值。",
+      "acceptance": "admission 字段；schema；M0-R 无 PASS 声明；M1-A 后才可申请"
+    },
+    {
+      "id": "R17",
+      "category": "authorization",
+      "severity": "CRITICAL",
+      "requirement": "M0-R 零物理；不创建 run dir/ledger/token/authorization；不复用 #9 R10 或 #10 F1R2/F2R2 approval/token。",
+      "acceptance": "physical=0；run_dir/ledger false；not_authorization=true；新 D-META-M1A-001 等仅在未来单独签"
+    },
+    {
+      "id": "R18",
+      "category": "a5",
+      "severity": "CRITICAL",
+      "requirement": "A5 独立复核/门禁 G-M0R-ADMISSION-01；M0-R 包到后先 gate，不得先签 admission；A5 physical=0。",
+      "acceptance": "A5 checklist/gate/SUMS；commit；不 push"
+    },
+    {
+      "id": "R19",
+      "category": "evidence_text",
+      "severity": "HIGH",
+      "requirement": "T0-4/M0-R 必须删除 “A5 P1-05 verified envelope 1.8/2.02/2.2”；P1-05 实际 1.8/2.0/2.2、18,288m、旧 58f63/199,997B、TREND_ONLY、2.02 NOT_COMPARABLE。",
+      "acceptance": "新文本/manifest；不得引用不存在的 A5 结论；如保留 1.6/2.4 排除，需新工程理由或校准"
+    },
+    {
+      "id": "R20",
+      "category": "review_correction",
+      "severity": "INFO",
+      "requirement": "A5 记录 A1 F-M0-02 事实更正：40fdd436=543x472/227,247B；199,997B/483x418 是 P1-05 58f63bfc；阻断结论不变。",
+      "acceptance": "gate 披露；A1 复核可引用更正"
+    },
+    {
+      "id": "R21",
+      "category": "task_metadata",
+      "severity": "CRITICAL",
+      "requirement": "每 task 记录 Mach/alt/CL/q/Vinf/Rho/ReCref/L_ref/mass/SREF_REF/task fingerprint/geometry SHA/evaluator/solver；任务 ID 不得复用旧 ada424cc 任务 ID。",
+      "acceptance": "6 任务表；A5 逐字段复算"
+    },
+    {
+      "id": "R22",
+      "category": "deck",
+      "severity": "CRITICAL",
+      "requirement": "每 task 独立 .vspaero deck；同一设计跨 task 复用同一 vspgeom 字节（build once）；per-task 记录 vspgeom/polar/deck SHA。",
+      "acceptance": "6 deck；vspgeom 字节 equality；SHA 表；零物理 dry-run"
+    },
+    {
+      "id": "R23",
+      "category": "consistency",
+      "severity": "CRITICAL",
+      "requirement": "q/L_ref/Sref 三重一致：q 由 deck 实际注入；L_ref=q*SREF_REF*CL；Sref(x) 逐设计；D_i=q*Sref(x)*CDi；A5 独立复算。",
+      "acceptance": "rel≤1e-12；W01 交叉 rel≤1e-6；无第二套公式"
+    },
+    {
+      "id": "R24",
+      "category": "geometry_identity",
+      "severity": "HIGH",
+      "requirement": "baseline SHA 与 per-design SHA 分开；M1 每设计记录 vspgeom SHA；不得用一个 40fd/16da 代表所有设计。",
+      "acceptance": "per-design vspgeom SHA 字段；baseline 只作族身份"
+    },
+    {
+      "id": "R25",
+      "category": "expected_polar",
+      "severity": "HIGH",
+      "requirement": "M2.02 可作 F1R2 连续性锚点；2.2/1.8 不继承 F1R2 expected polar；M1-A 重建 admission baseline。",
+      "acceptance": "expected/polar 字段；披露；不得用 F1R2 8f4c 作 2.2/1.8 expected"
+    },
+    {
+      "id": "R26",
+      "category": "fail_closed",
+      "severity": "CRITICAL",
+      "requirement": "任何 task/atmosphere/SREF/geometry/mass/q 校验失败必须 fail-closed；禁止回退到 358.25、旧几何、ISO、旧 task 或旧 token。",
+      "acceptance": "负例测试；失败码；无 fallback"
+    },
+    {
+      "id": "R27",
+      "category": "evidence",
+      "severity": "CRITICAL",
+      "requirement": "M0-R 包/证据必须含 SUMS、validation、zero-physical dry-run、6 deck、A5 复算、无 solver 证据；commit 不 push。",
+      "acceptance": "SUMS 全匹配；A5 独立 pytest/dry-run；spawn=[]；physical=0"
+    },
+    {
+      "id": "R28",
+      "category": "gate_process",
+      "severity": "CRITICAL",
+      "requirement": "M0-R gate 新 ID G-M0R-ADMISSION-01；旧 G-T0-ADMISSION-01 保持 M0_BLOCKED 历史；不得复用旧 gate commit/SHA。",
+      "acceptance": "新 gate json/md/checklist/SUMS；旧字节不改"
+    },
+    {
+      "id": "R29",
+      "category": "m1_process",
+      "severity": "CRITICAL",
+      "requirement": "M1-A 通过 A5 后单独 authorization/approval/GO；M1-A 结果只给 admission verdict，不自动授权 M1-B/M3。",
+      "acceptance": "M1-A 新 gate；M1-A PASS/FAIL；不自动后续"
+    },
+    {
+      "id": "R30",
+      "category": "claims",
+      "severity": "CRITICAL",
+      "requirement": "不得宣称 winner/显著性/优化增益/跨族可比；fuel_burn_kg=null；外部物理 NOT_VALIDATED；单 seed 描述性；M3 任务级 n=2。",
+      "acceptance": "prereg/回执措辞；无禁用词；披露"
+    }
+  ],
+  "m1a_assessment": {
+    "verdict": "ACCEPT_WITH_CONDITIONS",
+    "lead_15_105_caps_18_126": "ACCEPT",
+    "a1_12_84_caps_16_112": "NOT_SUFFICIENT_FOR_CROSS_DESIGN_CTX",
+    "difference": "+3 starts/+21 internal vs A1 draft; 4 tasks×3 designs enables cross-design CTX; 15 = 12 +1 repeat +2 preflight; caps 18/126 leaves 3/21 spare but retry=0, spare not usable without new approval",
+    "conditions": [
+      "repeat exact task/design/deck SHA pre-registered",
+      "CTX-A/B with n=3 designs descriptive only; no p-values",
+      "effect-size separation primary; 4/4 tasks or PHYSICAL_TASK_FAMILY_BLOCKED",
+      "meta_test not run",
+      "no extra designs/tasks under spare caps"
+    ]
+  },
+  "scientific_limitations": [
+    "3 train/1 val/2 test：单 val 任务不足以稳健早停/模型选择；M2 必须预注册固定 epoch 或 leave-one-train-out，不得据单 val 任务宣称泛化",
+    "2 test 任务均为 Mach 1.8，仅低马赫外推；无跨 Mach 测试；不得跨族/跨 Mach 泛化声明",
+    "task-level 2 test tasks：只可描述性/配对区间，NO_EVIDENCE 可能；不得显著性/winner",
+    "6 任务为 Mach×CL，无高度因子；质量 101.011–168.646 t 为目标巡航质量，无燃油模型；fuel=null",
+    "M1-A 3 designs 的 Spearman n=3 不作推断；CTX-A/B 以效应量为主"
+  ],
+  "m1a_budget_table": {
+    "planned_starts": 15,
+    "planned_internal": 105,
+    "caps_starts": 18,
+    "caps_internal": 126,
+    "retry": 0,
+    "composition": {
+      "tasks": 4,
+      "designs_per_task": 3,
+      "main_starts": 12,
+      "repeat": 1,
+      "preflight": 2
+    },
+    "physical_authorization": false
+  },
+  "total_budget": {
+    "M1A": {
+      "starts": 15,
+      "internal": 105,
+      "caps": [
+        18,
+        126
+      ]
+    },
+    "M1B": {
+      "starts": 66,
+      "internal": 462,
+      "caps": [
+        70,
+        490
+      ],
+      "labels": 64
+    },
+    "M3A": {
+      "starts": 34,
+      "internal": 238,
+      "caps": [
+        38,
+        266
+      ],
+      "labels": 32
+    },
+    "total": {
+      "starts": 115,
+      "internal": 805,
+      "hard": [
+        126,
+        882
+      ],
+      "labels": 96,
+      "preflight": 6
+    },
+    "M3B": "NOT_AUTHORIZED",
+    "retry": 0
+  },
+  "boundaries": [
+    "not authorization/approval/GO",
+    "zero physical",
+    "no M1/M2/M3 before M0-R gate and separate Lead GO",
+    "no reuse of R10/F1R2/F2R2 approvals/tokens",
+    "fuel null",
+    "external physics NOT_VALIDATED",
+    "no winner/significance/cross-family"
+  ]
+}

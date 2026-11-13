@@ -1,0 +1,1321 @@
+{
+  "alpha_policy": {
+    "alpha_grid_deg": [
+      -2.0,
+      0.0,
+      2.0,
+      4.0,
+      6.0,
+      8.0,
+      10.0
+    ],
+    "construction_residual_is_not_evidence": true,
+    "independent_lift_residual_required": true,
+    "max_alpha_refine": 0,
+    "refine_mode": "FIXED_7_POINT_NO_REFINE"
+  },
+  "atmosphere": {
+    "a_sound_m_s": 295.06801842964956,
+    "altitude_m": 18288.0,
+    "anchor_mach": 2.02,
+    "anchor_q_pa": 20483.940233430174,
+    "anchor_recref": 89397005.8767656,
+    "anchor_vinf_m_s": 596.0373972278921,
+    "atmosphere_id": "ATM-F1R2",
+    "basis": "A1 frozen F1R2/F2R2 injection constants; NOT the ISO standard atmosphere. M2.02/18,288 m is the only anchored condition.",
+    "cref_m": 18.489892944055953,
+    "p_static_pa": 7171.544888256813,
+    "r_j_kg_k": 287.05287,
+    "rho_kg_m3": 0.1153178340089936,
+    "t_static_k": 216.65,
+    "validation": {
+      "anchor_q_rel_error": 0.0,
+      "anchor_vinf_rel_error": 0.0
+    }
+  },
+  "checks": [
+    {
+      "check_id": "U1-FILE-openvsp_geometry",
+      "detail": {
+        "actual_bytes": 13654,
+        "actual_sha256": "d20ee7adc38286c7da3ef3ea5aa5be8204596d491d6601b9a635b0ae5213dc56",
+        "check_id": "U1-FILE-openvsp_geometry",
+        "exists": true,
+        "expected_bytes": 13654,
+        "expected_sha256": "d20ee7adc38286c7da3ef3ea5aa5be8204596d491d6601b9a635b0ae5213dc56",
+        "ok": true,
+        "path": "research/concorde_metaopt/aircraft/openvsp_geometry.py"
+      },
+      "ok": true
+    },
+    {
+      "check_id": "U1-FILE-f1r_bundle_manifest",
+      "detail": {
+        "actual_bytes": 6083,
+        "actual_sha256": "1b16f5725cf178361f47539db5d727f9687b079e9c8534cc67c153c3d3f8bbe2",
+        "check_id": "U1-FILE-f1r_bundle_manifest",
+        "exists": true,
+        "expected_bytes": 6083,
+        "expected_sha256": "1b16f5725cf178361f47539db5d727f9687b079e9c8534cc67c153c3d3f8bbe2",
+        "ok": true,
+        "path": "research/concorde_metaopt/dreal001/geometry/replay_bundles/DFIXED_F1R_20261113_R1/bundle_manifest.json"
+      },
+      "ok": true
+    },
+    {
+      "check_id": "U1-FILE-f1r_baseline_vspgeom",
+      "detail": {
+        "actual_bytes": 225414,
+        "actual_sha256": "16da482a1f8e59f6b454378769961caafde5eef87784127db6cce87381943b84",
+        "check_id": "U1-FILE-f1r_baseline_vspgeom",
+        "exists": true,
+        "expected_bytes": 225414,
+        "expected_sha256": "16da482a1f8e59f6b454378769961caafde5eef87784127db6cce87381943b84",
+        "ok": true,
+        "path": "research/concorde_metaopt/dreal001/geometry/replay_bundles/DFIXED_F1R_20261113_R1/PRE-01R/geometry.vspgeom"
+      },
+      "ok": true
+    },
+    {
+      "check_id": "U1-FILE-f1r2_zero_physics_audit_12d",
+      "detail": {
+        "actual_bytes": 74850,
+        "actual_sha256": "7a90b977fd7ba1778ee44c722a837898b62c9f9d201e4cbd22ca2b7b3afdeea5",
+        "check_id": "U1-FILE-f1r2_zero_physics_audit_12d",
+        "exists": true,
+        "expected_bytes": 74850,
+        "expected_sha256": "7a90b977fd7ba1778ee44c722a837898b62c9f9d201e4cbd22ca2b7b3afdeea5",
+        "ok": true,
+        "path": "research/concorde_metaopt/dreal001/f1r/DREAL001-F1R-20261113-01/evidence/zero_physics_audit_12d.json"
+      },
+      "ok": true
+    },
+    {
+      "check_id": "U1-FILE-design_space_yaml",
+      "detail": {
+        "actual_bytes": 10846,
+        "actual_sha256": "8b29d1e3833edc2af248d68cd6b7b4c94ebf775f25c86d80062a3850765a499e",
+        "check_id": "U1-FILE-design_space_yaml",
+        "exists": true,
+        "expected_bytes": 10846,
+        "expected_sha256": "8b29d1e3833edc2af248d68cd6b7b4c94ebf775f25c86d80062a3850765a499e",
+        "ok": true,
+        "path": "research/concorde_metaopt/configs/design_space_12d_lifting_surfaces.yaml"
+      },
+      "ok": true
+    },
+    {
+      "check_id": "U1-FILE-design_space_freeze_json",
+      "detail": {
+        "actual_bytes": 41775,
+        "actual_sha256": "fe7e48eba6a70eb76b0b139b1004f775830da68bd5d003604d686e59656e8373",
+        "check_id": "U1-FILE-design_space_freeze_json",
+        "exists": true,
+        "expected_bytes": 41775,
+        "expected_sha256": "fe7e48eba6a70eb76b0b139b1004f775830da68bd5d003604d686e59656e8373",
+        "ok": true,
+        "path": "research/concorde_metaopt/dreal001/geometry/design_space_freeze.json"
+      },
+      "ok": true
+    },
+    {
+      "check_id": "U1-DESIGN-HASHES",
+      "detail": {
+        "check_id": "U1-DESIGN-HASHES",
+        "expected": {
+          "B0-01": "8bd5a6c7c8311938",
+          "B1-01": "6653517b11d6f891",
+          "C5": "bc52a54ecefaac4c"
+        },
+        "observed": {
+          "B0-01": "8bd5a6c7c8311938",
+          "B1-01": "6653517b11d6f891",
+          "C5": "bc52a54ecefaac4c"
+        },
+        "ok": true
+      },
+      "ok": true
+    },
+    {
+      "check_id": "U1-OLD-GEOMETRY-NOT-USED",
+      "detail": {
+        "check_id": "U1-OLD-GEOMETRY-NOT-USED",
+        "detail": "old F1 543x472 geometry 40fdd436 is not referenced by any task deck; all task decks use the post-fix 546x480 chain",
+        "ok": true,
+        "old_task_family_geometry_sha256": "40fdd4364e01c7fe11ca2ea4530d39c371ae693a434f39e44986f7512d6446f4",
+        "used": false
+      },
+      "ok": true
+    },
+    {
+      "check_id": "U1-BASELINE-REBUILD-2X",
+      "detail": {
+        "build_a_sha256": "16da482a1f8e59f6b454378769961caafde5eef87784127db6cce87381943b84",
+        "build_b_sha256": "16da482a1f8e59f6b454378769961caafde5eef87784127db6cce87381943b84",
+        "bundle_sha256": "16da482a1f8e59f6b454378769961caafde5eef87784127db6cce87381943b84",
+        "byte_identical": true,
+        "check_id": "U1-BASELINE-REBUILD-2X",
+        "equals_bundle": true,
+        "ok": true
+      },
+      "ok": true
+    },
+    {
+      "check_id": "U1-F1R2-REBUILD-B1-01",
+      "detail": {
+        "actual_sha256": "6a296aee6e6f6b505083c655c63a667fd52309432e798b25305d01d588d70612",
+        "check_id": "U1-F1R2-REBUILD-B1-01",
+        "design_id": "B1-01",
+        "expected_sha256": "6a296aee6e6f6b505083c655c63a667fd52309432e798b25305d01d588d70612",
+        "ok": true
+      },
+      "ok": true
+    },
+    {
+      "check_id": "U1-F1R2-REBUILD-C5",
+      "detail": {
+        "actual_sha256": "e1ad74cc3820553ee6864d121168ae8f5b72d5602619f15de9cf2c04f1a7bde8",
+        "check_id": "U1-F1R2-REBUILD-C5",
+        "design_id": "C5",
+        "expected_sha256": "e1ad74cc3820553ee6864d121168ae8f5b72d5602619f15de9cf2c04f1a7bde8",
+        "ok": true
+      },
+      "ok": true
+    },
+    {
+      "check_id": "U1-ORIENTATION-B0-01",
+      "detail": {
+        "check_id": "U1-ORIENTATION-B0-01",
+        "ok": true,
+        "orientation": {
+          "ok": true,
+          "tail_bbox": [
+            13.15761606842186,
+            1.3165253323726676,
+            5.009331292697659
+          ],
+          "tail_vertical_structural": true,
+          "wing_bbox": [
+            31.49534375886453,
+            25.604638251691824,
+            2.9919174836412785
+          ],
+          "wing_horizontal": true
+        }
+      },
+      "ok": true
+    },
+    {
+      "check_id": "U1-ORIENTATION-B0-01",
+      "detail": {
+        "check_id": "U1-ORIENTATION-B0-01",
+        "ok": true,
+        "orientation": {
+          "ok": true,
+          "tail_bbox": [
+            13.15761606842186,
+            1.3165253323726676,
+            5.009331292697659
+          ],
+          "tail_vertical_structural": true,
+          "wing_bbox": [
+            31.49534375886453,
+            25.604638251691824,
+            2.9919174836412785
+          ],
+          "wing_horizontal": true
+        }
+      },
+      "ok": true
+    },
+    {
+      "check_id": "U1-ORIENTATION-B1-01",
+      "detail": {
+        "check_id": "U1-ORIENTATION-B1-01",
+        "ok": true,
+        "orientation": {
+          "ok": true,
+          "tail_bbox": [
+            13.15761606842186,
+            1.3165253323726676,
+            5.009331292697659
+          ],
+          "tail_vertical_structural": true,
+          "wing_bbox": [
+            31.49534375886453,
+            25.604638251691824,
+            2.9919174836412785
+          ],
+          "wing_horizontal": true
+        }
+      },
+      "ok": true
+    },
+    {
+      "check_id": "U1-ORIENTATION-C5",
+      "detail": {
+        "check_id": "U1-ORIENTATION-C5",
+        "ok": true,
+        "orientation": {
+          "ok": true,
+          "tail_bbox": [
+            13.15761606842186,
+            1.3165253323726676,
+            5.009331292697659
+          ],
+          "tail_vertical_structural": true,
+          "wing_bbox": [
+            32.018485597973445,
+            26.029934690659523,
+            3.0416136300570074
+          ],
+          "wing_horizontal": true
+        }
+      },
+      "ok": true
+    },
+    {
+      "check_id": "ATM-F1R2-VALIDATE",
+      "detail": {
+        "anchor_q_rel_error": 0.0,
+        "anchor_vinf_rel_error": 0.0
+      },
+      "ok": true
+    },
+    {
+      "check_id": "SREF-REF-RUNTIME",
+      "detail": {
+        "computed_from_geometry": true,
+        "frozen_validation_anchor_m2": 358.25000000000006,
+        "relative_error_vs_frozen_anchor": 0.0,
+        "source": "post-fix baseline geometry.wing.area_m2 (runtime recompute)",
+        "sref_ref_m2": 358.25000000000006,
+        "vspgeom_sha256": "16da482a1f8e59f6b454378769961caafde5eef87784127db6cce87381943b84"
+      },
+      "ok": true
+    },
+    {
+      "check_id": "TASK-COUNT",
+      "detail": {
+        "count": 6
+      },
+      "ok": true
+    },
+    {
+      "check_id": "DECK-COUNT",
+      "detail": {
+        "count": 18
+      },
+      "ok": true
+    },
+    {
+      "check_id": "TASK-MASS-T18K_M202_CL017",
+      "detail": {
+        "bounds_t": [
+          100.0,
+          190.0
+        ],
+        "mass_t": 127.21196025824125
+      },
+      "ok": true
+    },
+    {
+      "check_id": "TASK-MASS-T18K_M202_CL019",
+      "detail": {
+        "bounds_t": [
+          100.0,
+          190.0
+        ],
+        "mass_t": 142.17807322979905
+      },
+      "ok": true
+    },
+    {
+      "check_id": "TASK-MASS-T18K_M220_CL017",
+      "detail": {
+        "bounds_t": [
+          100.0,
+          190.0
+        ],
+        "mass_t": 150.89351231494157
+      },
+      "ok": true
+    },
+    {
+      "check_id": "TASK-MASS-T18K_M220_CL019",
+      "detail": {
+        "bounds_t": [
+          100.0,
+          190.0
+        ],
+        "mass_t": 168.6456902343465
+      },
+      "ok": true
+    },
+    {
+      "check_id": "TASK-MASS-T18K_M180_CL017",
+      "detail": {
+        "bounds_t": [
+          100.0,
+          190.0
+        ],
+        "mass_t": 101.01135948355594
+      },
+      "ok": true
+    },
+    {
+      "check_id": "TASK-MASS-T18K_M180_CL019",
+      "detail": {
+        "bounds_t": [
+          100.0,
+          190.0
+        ],
+        "mass_t": 112.89504883456249
+      },
+      "ok": true
+    },
+    {
+      "check_id": "DECK-Q-T18K_M202_CL017-B0-01",
+      "detail": {
+        "formula": "q = 0.5 * Rho_deck * Vinf_deck^2",
+        "q_pa": 20483.940233430174,
+        "q_recompute_rel_error": 0.0,
+        "q_recomputed_from_deck_pa": 20483.940233430174
+      },
+      "ok": true
+    },
+    {
+      "check_id": "DECK-Q-T18K_M202_CL019-B0-01",
+      "detail": {
+        "formula": "q = 0.5 * Rho_deck * Vinf_deck^2",
+        "q_pa": 20483.940233430174,
+        "q_recompute_rel_error": 0.0,
+        "q_recomputed_from_deck_pa": 20483.940233430174
+      },
+      "ok": true
+    },
+    {
+      "check_id": "DECK-Q-T18K_M220_CL017-B0-01",
+      "detail": {
+        "formula": "q = 0.5 * Rho_deck * Vinf_deck^2",
+        "q_pa": 24297.194081414087,
+        "q_recompute_rel_error": 0.0,
+        "q_recomputed_from_deck_pa": 24297.194081414087
+      },
+      "ok": true
+    },
+    {
+      "check_id": "DECK-Q-T18K_M220_CL019-B0-01",
+      "detail": {
+        "formula": "q = 0.5 * Rho_deck * Vinf_deck^2",
+        "q_pa": 24297.194081414087,
+        "q_recompute_rel_error": 0.0,
+        "q_recomputed_from_deck_pa": 24297.194081414087
+      },
+      "ok": true
+    },
+    {
+      "check_id": "DECK-Q-T18K_M180_CL017-B0-01",
+      "detail": {
+        "formula": "q = 0.5 * Rho_deck * Vinf_deck^2",
+        "q_pa": 16265.063806566455,
+        "q_recompute_rel_error": 1.1183413881300009e-16,
+        "q_recomputed_from_deck_pa": 16265.063806566453
+      },
+      "ok": true
+    },
+    {
+      "check_id": "DECK-Q-T18K_M180_CL019-B0-01",
+      "detail": {
+        "formula": "q = 0.5 * Rho_deck * Vinf_deck^2",
+        "q_pa": 16265.063806566455,
+        "q_recompute_rel_error": 1.1183413881300009e-16,
+        "q_recomputed_from_deck_pa": 16265.063806566453
+      },
+      "ok": true
+    },
+    {
+      "check_id": "DECK-Q-T18K_M202_CL017-B1-01",
+      "detail": {
+        "formula": "q = 0.5 * Rho_deck * Vinf_deck^2",
+        "q_pa": 20483.940233430174,
+        "q_recompute_rel_error": 0.0,
+        "q_recomputed_from_deck_pa": 20483.940233430174
+      },
+      "ok": true
+    },
+    {
+      "check_id": "DECK-Q-T18K_M202_CL019-B1-01",
+      "detail": {
+        "formula": "q = 0.5 * Rho_deck * Vinf_deck^2",
+        "q_pa": 20483.940233430174,
+        "q_recompute_rel_error": 0.0,
+        "q_recomputed_from_deck_pa": 20483.940233430174
+      },
+      "ok": true
+    },
+    {
+      "check_id": "DECK-Q-T18K_M220_CL017-B1-01",
+      "detail": {
+        "formula": "q = 0.5 * Rho_deck * Vinf_deck^2",
+        "q_pa": 24297.194081414087,
+        "q_recompute_rel_error": 0.0,
+        "q_recomputed_from_deck_pa": 24297.194081414087
+      },
+      "ok": true
+    },
+    {
+      "check_id": "DECK-Q-T18K_M220_CL019-B1-01",
+      "detail": {
+        "formula": "q = 0.5 * Rho_deck * Vinf_deck^2",
+        "q_pa": 24297.194081414087,
+        "q_recompute_rel_error": 0.0,
+        "q_recomputed_from_deck_pa": 24297.194081414087
+      },
+      "ok": true
+    },
+    {
+      "check_id": "DECK-Q-T18K_M180_CL017-B1-01",
+      "detail": {
+        "formula": "q = 0.5 * Rho_deck * Vinf_deck^2",
+        "q_pa": 16265.063806566455,
+        "q_recompute_rel_error": 1.1183413881300009e-16,
+        "q_recomputed_from_deck_pa": 16265.063806566453
+      },
+      "ok": true
+    },
+    {
+      "check_id": "DECK-Q-T18K_M180_CL019-B1-01",
+      "detail": {
+        "formula": "q = 0.5 * Rho_deck * Vinf_deck^2",
+        "q_pa": 16265.063806566455,
+        "q_recompute_rel_error": 1.1183413881300009e-16,
+        "q_recomputed_from_deck_pa": 16265.063806566453
+      },
+      "ok": true
+    },
+    {
+      "check_id": "DECK-Q-T18K_M202_CL017-C5",
+      "detail": {
+        "formula": "q = 0.5 * Rho_deck * Vinf_deck^2",
+        "q_pa": 20483.940233430174,
+        "q_recompute_rel_error": 0.0,
+        "q_recomputed_from_deck_pa": 20483.940233430174
+      },
+      "ok": true
+    },
+    {
+      "check_id": "DECK-Q-T18K_M202_CL019-C5",
+      "detail": {
+        "formula": "q = 0.5 * Rho_deck * Vinf_deck^2",
+        "q_pa": 20483.940233430174,
+        "q_recompute_rel_error": 0.0,
+        "q_recomputed_from_deck_pa": 20483.940233430174
+      },
+      "ok": true
+    },
+    {
+      "check_id": "DECK-Q-T18K_M220_CL017-C5",
+      "detail": {
+        "formula": "q = 0.5 * Rho_deck * Vinf_deck^2",
+        "q_pa": 24297.194081414087,
+        "q_recompute_rel_error": 0.0,
+        "q_recomputed_from_deck_pa": 24297.194081414087
+      },
+      "ok": true
+    },
+    {
+      "check_id": "DECK-Q-T18K_M220_CL019-C5",
+      "detail": {
+        "formula": "q = 0.5 * Rho_deck * Vinf_deck^2",
+        "q_pa": 24297.194081414087,
+        "q_recompute_rel_error": 0.0,
+        "q_recomputed_from_deck_pa": 24297.194081414087
+      },
+      "ok": true
+    },
+    {
+      "check_id": "DECK-Q-T18K_M180_CL017-C5",
+      "detail": {
+        "formula": "q = 0.5 * Rho_deck * Vinf_deck^2",
+        "q_pa": 16265.063806566455,
+        "q_recompute_rel_error": 1.1183413881300009e-16,
+        "q_recomputed_from_deck_pa": 16265.063806566453
+      },
+      "ok": true
+    },
+    {
+      "check_id": "DECK-Q-T18K_M180_CL019-C5",
+      "detail": {
+        "formula": "q = 0.5 * Rho_deck * Vinf_deck^2",
+        "q_pa": 16265.063806566455,
+        "q_recompute_rel_error": 1.1183413881300009e-16,
+        "q_recomputed_from_deck_pa": 16265.063806566453
+      },
+      "ok": true
+    },
+    {
+      "check_id": "DECK-Q-ALL",
+      "detail": {
+        "deck_count": 18,
+        "max_q_recompute_rel_error": 1.1183413881300009e-16
+      },
+      "ok": true
+    },
+    {
+      "check_id": "ALPHA-REFINE-POLICY",
+      "detail": {
+        "alpha_grid_deg": [
+          -2.0,
+          0.0,
+          2.0,
+          4.0,
+          6.0,
+          8.0,
+          10.0
+        ],
+        "construction_residual_is_not_evidence": true,
+        "independent_lift_residual_required": true,
+        "max_alpha_refine": 0,
+        "refine_mode": "FIXED_7_POINT_NO_REFINE"
+      },
+      "ok": true
+    },
+    {
+      "check_id": "CROSS-TASK-GEOMETRY-IDENTITY",
+      "detail": {
+        "B0-01": [
+          "16da482a1f8e59f6b454378769961caafde5eef87784127db6cce87381943b84"
+        ],
+        "B1-01": [
+          "6a296aee6e6f6b505083c655c63a667fd52309432e798b25305d01d588d70612"
+        ],
+        "C5": [
+          "e1ad74cc3820553ee6864d121168ae8f5b72d5602619f15de9cf2c04f1a7bde8"
+        ]
+      },
+      "ok": true
+    },
+    {
+      "check_id": "DECK-CASE-DIRS-DISTINCT",
+      "detail": {
+        "deck_count": 18,
+        "distinct_case_dirs": 18
+      },
+      "ok": true
+    },
+    {
+      "check_id": "M202-F1R2-CONTINUITY",
+      "detail": {
+        "f1r2_anchor_q_pa": 20483.940233430174,
+        "new_conditions_do_not_inherit_expected_polar": [
+          "T18K_M220_CL017",
+          "T18K_M220_CL019",
+          "T18K_M180_CL017",
+          "T18K_M180_CL019"
+        ],
+        "q_pa": [
+          20483.940233430174,
+          20483.940233430174
+        ]
+      },
+      "ok": true
+    },
+    {
+      "check_id": "SPAWN-GUARD",
+      "detail": {
+        "spawn_events": []
+      },
+      "ok": true
+    },
+    {
+      "check_id": "PHYSICAL-CALL-COUNT",
+      "detail": {
+        "physical_call_count": 0,
+        "physical_solver_starts": 0,
+        "solver_started": false
+      },
+      "ok": true
+    }
+  ],
+  "checks_failed": 0,
+  "checks_total": 50,
+  "created_utc": "2026-11-13T06:37:39Z",
+  "decks": [
+    {
+      "case_dir": "_scratch_f1\\m0r_task_evaluator_dryrun_l31\\decks\\B0-01__T18K_M202_CL017",
+      "cl_required": 0.17,
+      "deck_bytes": 943,
+      "deck_sha256": "1614a964fc729d42bfa764025a2aa1d3915be8f20dbc6480b72862c15e0c59dc",
+      "design_hash": "8bd5a6c7c8311938",
+      "design_id": "B0-01",
+      "l_ref_n": 1247523.1700664815,
+      "mass_t": 127.21196025824125,
+      "q_pa": 20483.940233430174,
+      "q_recompute_rel_error": 0.0,
+      "q_recomputed_pa": 20483.940233430174,
+      "solver_input_sha256": "9785548818a7ecba73b2f13c73499b630d04c61e8d6abab395a0ab6ff93b8f4d",
+      "sref_m2": 358.25000000000006,
+      "task_id": "T18K_M202_CL017",
+      "vspgeom_sha256": "16da482a1f8e59f6b454378769961caafde5eef87784127db6cce87381943b84"
+    },
+    {
+      "case_dir": "_scratch_f1\\m0r_task_evaluator_dryrun_l31\\decks\\B0-01__T18K_M202_CL019",
+      "cl_required": 0.19,
+      "deck_bytes": 943,
+      "deck_sha256": "1614a964fc729d42bfa764025a2aa1d3915be8f20dbc6480b72862c15e0c59dc",
+      "design_hash": "8bd5a6c7c8311938",
+      "design_id": "B0-01",
+      "l_ref_n": 1394290.6018390087,
+      "mass_t": 142.17807322979905,
+      "q_pa": 20483.940233430174,
+      "q_recompute_rel_error": 0.0,
+      "q_recomputed_pa": 20483.940233430174,
+      "solver_input_sha256": "9785548818a7ecba73b2f13c73499b630d04c61e8d6abab395a0ab6ff93b8f4d",
+      "sref_m2": 358.25000000000006,
+      "task_id": "T18K_M202_CL019",
+      "vspgeom_sha256": "16da482a1f8e59f6b454378769961caafde5eef87784127db6cce87381943b84"
+    },
+    {
+      "case_dir": "_scratch_f1\\m0r_task_evaluator_dryrun_l31\\decks\\B0-01__T18K_M220_CL017",
+      "cl_required": 0.17,
+      "deck_bytes": 957,
+      "deck_sha256": "6a022882fa5b9e4cd9c0800fd428f6b5a8465de0e272be1c2db9b5499d55620e",
+      "design_hash": "8bd5a6c7c8311938",
+      "design_id": "B0-01",
+      "l_ref_n": 1479759.862543322,
+      "mass_t": 150.89351231494157,
+      "q_pa": 24297.194081414087,
+      "q_recompute_rel_error": 0.0,
+      "q_recomputed_pa": 24297.194081414087,
+      "solver_input_sha256": "a9fcf46211151a86a9dea402b7960064b638fbc4688f3f6b9b111e3b380c0dc2",
+      "sref_m2": 358.25000000000006,
+      "task_id": "T18K_M220_CL017",
+      "vspgeom_sha256": "16da482a1f8e59f6b454378769961caafde5eef87784127db6cce87381943b84"
+    },
+    {
+      "case_dir": "_scratch_f1\\m0r_task_evaluator_dryrun_l31\\decks\\B0-01__T18K_M220_CL019",
+      "cl_required": 0.19,
+      "deck_bytes": 957,
+      "deck_sha256": "6a022882fa5b9e4cd9c0800fd428f6b5a8465de0e272be1c2db9b5499d55620e",
+      "design_hash": "8bd5a6c7c8311938",
+      "design_id": "B0-01",
+      "l_ref_n": 1653849.2581366538,
+      "mass_t": 168.6456902343465,
+      "q_pa": 24297.194081414087,
+      "q_recompute_rel_error": 0.0,
+      "q_recomputed_pa": 24297.194081414087,
+      "solver_input_sha256": "a9fcf46211151a86a9dea402b7960064b638fbc4688f3f6b9b111e3b380c0dc2",
+      "sref_m2": 358.25000000000006,
+      "task_id": "T18K_M220_CL019",
+      "vspgeom_sha256": "16da482a1f8e59f6b454378769961caafde5eef87784127db6cce87381943b84"
+    },
+    {
+      "case_dir": "_scratch_f1\\m0r_task_evaluator_dryrun_l31\\decks\\B0-01__T18K_M180_CL017",
+      "cl_required": 0.17,
+      "deck_bytes": 942,
+      "deck_sha256": "9e755cddfb730d4cc71adaf66de4d4a90acbd025bed74c65d198cdbbc097bb80",
+      "design_hash": "8bd5a6c7c8311938",
+      "design_id": "B0-01",
+      "l_ref_n": 990583.0484794137,
+      "mass_t": 101.01135948355594,
+      "q_pa": 16265.063806566455,
+      "q_recompute_rel_error": 1.1183413881300009e-16,
+      "q_recomputed_pa": 16265.063806566453,
+      "solver_input_sha256": "80b5471828b16effa2ad1cd654591f89896749b3d7fe182410740185ed856a14",
+      "sref_m2": 358.25000000000006,
+      "task_id": "T18K_M180_CL017",
+      "vspgeom_sha256": "16da482a1f8e59f6b454378769961caafde5eef87784127db6cce87381943b84"
+    },
+    {
+      "case_dir": "_scratch_f1\\m0r_task_evaluator_dryrun_l31\\decks\\B0-01__T18K_M180_CL019",
+      "cl_required": 0.18999999999999997,
+      "deck_bytes": 942,
+      "deck_sha256": "9e755cddfb730d4cc71adaf66de4d4a90acbd025bed74c65d198cdbbc097bb80",
+      "design_hash": "8bd5a6c7c8311938",
+      "design_id": "B0-01",
+      "l_ref_n": 1107122.2306534622,
+      "mass_t": 112.89504883456249,
+      "q_pa": 16265.063806566455,
+      "q_recompute_rel_error": 1.1183413881300009e-16,
+      "q_recomputed_pa": 16265.063806566453,
+      "solver_input_sha256": "80b5471828b16effa2ad1cd654591f89896749b3d7fe182410740185ed856a14",
+      "sref_m2": 358.25000000000006,
+      "task_id": "T18K_M180_CL019",
+      "vspgeom_sha256": "16da482a1f8e59f6b454378769961caafde5eef87784127db6cce87381943b84"
+    },
+    {
+      "case_dir": "_scratch_f1\\m0r_task_evaluator_dryrun_l31\\decks\\B1-01__T18K_M202_CL017",
+      "cl_required": 0.17,
+      "deck_bytes": 943,
+      "deck_sha256": "1614a964fc729d42bfa764025a2aa1d3915be8f20dbc6480b72862c15e0c59dc",
+      "design_hash": "6653517b11d6f891",
+      "design_id": "B1-01",
+      "l_ref_n": 1247523.1700664815,
+      "mass_t": 127.21196025824125,
+      "q_pa": 20483.940233430174,
+      "q_recompute_rel_error": 0.0,
+      "q_recomputed_pa": 20483.940233430174,
+      "solver_input_sha256": "111494fa314793751a8d281384f65f55d9d1e50c191547b998a4c989c2b3e336",
+      "sref_m2": 358.25000000000006,
+      "task_id": "T18K_M202_CL017",
+      "vspgeom_sha256": "6a296aee6e6f6b505083c655c63a667fd52309432e798b25305d01d588d70612"
+    },
+    {
+      "case_dir": "_scratch_f1\\m0r_task_evaluator_dryrun_l31\\decks\\B1-01__T18K_M202_CL019",
+      "cl_required": 0.19,
+      "deck_bytes": 943,
+      "deck_sha256": "1614a964fc729d42bfa764025a2aa1d3915be8f20dbc6480b72862c15e0c59dc",
+      "design_hash": "6653517b11d6f891",
+      "design_id": "B1-01",
+      "l_ref_n": 1394290.6018390087,
+      "mass_t": 142.17807322979905,
+      "q_pa": 20483.940233430174,
+      "q_recompute_rel_error": 0.0,
+      "q_recomputed_pa": 20483.940233430174,
+      "solver_input_sha256": "111494fa314793751a8d281384f65f55d9d1e50c191547b998a4c989c2b3e336",
+      "sref_m2": 358.25000000000006,
+      "task_id": "T18K_M202_CL019",
+      "vspgeom_sha256": "6a296aee6e6f6b505083c655c63a667fd52309432e798b25305d01d588d70612"
+    },
+    {
+      "case_dir": "_scratch_f1\\m0r_task_evaluator_dryrun_l31\\decks\\B1-01__T18K_M220_CL017",
+      "cl_required": 0.17,
+      "deck_bytes": 957,
+      "deck_sha256": "6a022882fa5b9e4cd9c0800fd428f6b5a8465de0e272be1c2db9b5499d55620e",
+      "design_hash": "6653517b11d6f891",
+      "design_id": "B1-01",
+      "l_ref_n": 1479759.862543322,
+      "mass_t": 150.89351231494157,
+      "q_pa": 24297.194081414087,
+      "q_recompute_rel_error": 0.0,
+      "q_recomputed_pa": 24297.194081414087,
+      "solver_input_sha256": "99df2c769e39aecace64800be9b6a071c76e594aa282c9684b7855f79f8848b8",
+      "sref_m2": 358.25000000000006,
+      "task_id": "T18K_M220_CL017",
+      "vspgeom_sha256": "6a296aee6e6f6b505083c655c63a667fd52309432e798b25305d01d588d70612"
+    },
+    {
+      "case_dir": "_scratch_f1\\m0r_task_evaluator_dryrun_l31\\decks\\B1-01__T18K_M220_CL019",
+      "cl_required": 0.19,
+      "deck_bytes": 957,
+      "deck_sha256": "6a022882fa5b9e4cd9c0800fd428f6b5a8465de0e272be1c2db9b5499d55620e",
+      "design_hash": "6653517b11d6f891",
+      "design_id": "B1-01",
+      "l_ref_n": 1653849.2581366538,
+      "mass_t": 168.6456902343465,
+      "q_pa": 24297.194081414087,
+      "q_recompute_rel_error": 0.0,
+      "q_recomputed_pa": 24297.194081414087,
+      "solver_input_sha256": "99df2c769e39aecace64800be9b6a071c76e594aa282c9684b7855f79f8848b8",
+      "sref_m2": 358.25000000000006,
+      "task_id": "T18K_M220_CL019",
+      "vspgeom_sha256": "6a296aee6e6f6b505083c655c63a667fd52309432e798b25305d01d588d70612"
+    },
+    {
+      "case_dir": "_scratch_f1\\m0r_task_evaluator_dryrun_l31\\decks\\B1-01__T18K_M180_CL017",
+      "cl_required": 0.17,
+      "deck_bytes": 942,
+      "deck_sha256": "9e755cddfb730d4cc71adaf66de4d4a90acbd025bed74c65d198cdbbc097bb80",
+      "design_hash": "6653517b11d6f891",
+      "design_id": "B1-01",
+      "l_ref_n": 990583.0484794137,
+      "mass_t": 101.01135948355594,
+      "q_pa": 16265.063806566455,
+      "q_recompute_rel_error": 1.1183413881300009e-16,
+      "q_recomputed_pa": 16265.063806566453,
+      "solver_input_sha256": "cd432de6e705c87873bae300f35dc3b7ad3970c8ebf12a02aa3d46448fff3638",
+      "sref_m2": 358.25000000000006,
+      "task_id": "T18K_M180_CL017",
+      "vspgeom_sha256": "6a296aee6e6f6b505083c655c63a667fd52309432e798b25305d01d588d70612"
+    },
+    {
+      "case_dir": "_scratch_f1\\m0r_task_evaluator_dryrun_l31\\decks\\B1-01__T18K_M180_CL019",
+      "cl_required": 0.18999999999999997,
+      "deck_bytes": 942,
+      "deck_sha256": "9e755cddfb730d4cc71adaf66de4d4a90acbd025bed74c65d198cdbbc097bb80",
+      "design_hash": "6653517b11d6f891",
+      "design_id": "B1-01",
+      "l_ref_n": 1107122.2306534622,
+      "mass_t": 112.89504883456249,
+      "q_pa": 16265.063806566455,
+      "q_recompute_rel_error": 1.1183413881300009e-16,
+      "q_recomputed_pa": 16265.063806566453,
+      "solver_input_sha256": "cd432de6e705c87873bae300f35dc3b7ad3970c8ebf12a02aa3d46448fff3638",
+      "sref_m2": 358.25000000000006,
+      "task_id": "T18K_M180_CL019",
+      "vspgeom_sha256": "6a296aee6e6f6b505083c655c63a667fd52309432e798b25305d01d588d70612"
+    },
+    {
+      "case_dir": "_scratch_f1\\m0r_task_evaluator_dryrun_l31\\decks\\C5__T18K_M202_CL017",
+      "cl_required": 0.1644902093180284,
+      "deck_bytes": 931,
+      "deck_sha256": "1253fa5f2c0f8be47e0475978ac990f941984050b67084db634ff5360d54ec91",
+      "design_hash": "bc52a54ecefaac4c",
+      "design_id": "C5",
+      "l_ref_n": 1247523.1700664815,
+      "mass_t": 127.21196025824125,
+      "q_pa": 20483.940233430174,
+      "q_recompute_rel_error": 0.0,
+      "q_recomputed_pa": 20483.940233430174,
+      "solver_input_sha256": "3a1fc0bf296b8ec428e6205d81fad3453bcb6c7c209269079913213731585f0c",
+      "sref_m2": 370.25,
+      "task_id": "T18K_M202_CL017",
+      "vspgeom_sha256": "e1ad74cc3820553ee6864d121168ae8f5b72d5602619f15de9cf2c04f1a7bde8"
+    },
+    {
+      "case_dir": "_scratch_f1\\m0r_task_evaluator_dryrun_l31\\decks\\C5__T18K_M202_CL019",
+      "cl_required": 0.18384199864956116,
+      "deck_bytes": 931,
+      "deck_sha256": "1253fa5f2c0f8be47e0475978ac990f941984050b67084db634ff5360d54ec91",
+      "design_hash": "bc52a54ecefaac4c",
+      "design_id": "C5",
+      "l_ref_n": 1394290.6018390087,
+      "mass_t": 142.17807322979905,
+      "q_pa": 20483.940233430174,
+      "q_recompute_rel_error": 0.0,
+      "q_recomputed_pa": 20483.940233430174,
+      "solver_input_sha256": "3a1fc0bf296b8ec428e6205d81fad3453bcb6c7c209269079913213731585f0c",
+      "sref_m2": 370.25,
+      "task_id": "T18K_M202_CL019",
+      "vspgeom_sha256": "e1ad74cc3820553ee6864d121168ae8f5b72d5602619f15de9cf2c04f1a7bde8"
+    },
+    {
+      "case_dir": "_scratch_f1\\m0r_task_evaluator_dryrun_l31\\decks\\C5__T18K_M220_CL017",
+      "cl_required": 0.1644902093180284,
+      "deck_bytes": 945,
+      "deck_sha256": "d5d9104e19304a20f95c34f12349b76430c26e92b5a6f59de741591422eae9bb",
+      "design_hash": "bc52a54ecefaac4c",
+      "design_id": "C5",
+      "l_ref_n": 1479759.862543322,
+      "mass_t": 150.89351231494157,
+      "q_pa": 24297.194081414087,
+      "q_recompute_rel_error": 0.0,
+      "q_recomputed_pa": 24297.194081414087,
+      "solver_input_sha256": "3e123e87f84740afd7d691ab50ce486b841055f6e6254d227c78b15261f891b3",
+      "sref_m2": 370.25,
+      "task_id": "T18K_M220_CL017",
+      "vspgeom_sha256": "e1ad74cc3820553ee6864d121168ae8f5b72d5602619f15de9cf2c04f1a7bde8"
+    },
+    {
+      "case_dir": "_scratch_f1\\m0r_task_evaluator_dryrun_l31\\decks\\C5__T18K_M220_CL019",
+      "cl_required": 0.18384199864956116,
+      "deck_bytes": 945,
+      "deck_sha256": "d5d9104e19304a20f95c34f12349b76430c26e92b5a6f59de741591422eae9bb",
+      "design_hash": "bc52a54ecefaac4c",
+      "design_id": "C5",
+      "l_ref_n": 1653849.2581366538,
+      "mass_t": 168.6456902343465,
+      "q_pa": 24297.194081414087,
+      "q_recompute_rel_error": 0.0,
+      "q_recomputed_pa": 24297.194081414087,
+      "solver_input_sha256": "3e123e87f84740afd7d691ab50ce486b841055f6e6254d227c78b15261f891b3",
+      "sref_m2": 370.25,
+      "task_id": "T18K_M220_CL019",
+      "vspgeom_sha256": "e1ad74cc3820553ee6864d121168ae8f5b72d5602619f15de9cf2c04f1a7bde8"
+    },
+    {
+      "case_dir": "_scratch_f1\\m0r_task_evaluator_dryrun_l31\\decks\\C5__T18K_M180_CL017",
+      "cl_required": 0.16449020931802838,
+      "deck_bytes": 930,
+      "deck_sha256": "a1619d691a1482523952b32fdef600690ef5aaa25492373759c812ded7a898b7",
+      "design_hash": "bc52a54ecefaac4c",
+      "design_id": "C5",
+      "l_ref_n": 990583.0484794137,
+      "mass_t": 101.01135948355594,
+      "q_pa": 16265.063806566455,
+      "q_recompute_rel_error": 1.1183413881300009e-16,
+      "q_recomputed_pa": 16265.063806566453,
+      "solver_input_sha256": "7c2adca281a45d72f73cc226d3b1355adab6bbad4a69f4797723357948afe6dc",
+      "sref_m2": 370.25,
+      "task_id": "T18K_M180_CL017",
+      "vspgeom_sha256": "e1ad74cc3820553ee6864d121168ae8f5b72d5602619f15de9cf2c04f1a7bde8"
+    },
+    {
+      "case_dir": "_scratch_f1\\m0r_task_evaluator_dryrun_l31\\decks\\C5__T18K_M180_CL019",
+      "cl_required": 0.1838419986495611,
+      "deck_bytes": 930,
+      "deck_sha256": "a1619d691a1482523952b32fdef600690ef5aaa25492373759c812ded7a898b7",
+      "design_hash": "bc52a54ecefaac4c",
+      "design_id": "C5",
+      "l_ref_n": 1107122.2306534622,
+      "mass_t": 112.89504883456249,
+      "q_pa": 16265.063806566455,
+      "q_recompute_rel_error": 1.1183413881300009e-16,
+      "q_recomputed_pa": 16265.063806566453,
+      "solver_input_sha256": "7c2adca281a45d72f73cc226d3b1355adab6bbad4a69f4797723357948afe6dc",
+      "sref_m2": 370.25,
+      "task_id": "T18K_M180_CL019",
+      "vspgeom_sha256": "e1ad74cc3820553ee6864d121168ae8f5b72d5602619f15de9cf2c04f1a7bde8"
+    }
+  ],
+  "designs": [
+    {
+      "build_dir": "_scratch_f1\\m0r_task_evaluator_dryrun_l31\\builds\\build-B0-01-a",
+      "build_seconds": 0.357,
+      "component_metrics": {
+        "main_wing": {
+          "bbox_m": [
+            31.49534375886453,
+            25.604638251691824,
+            2.9919174836412785
+          ],
+          "name": "main_wing",
+          "total_area_m2": 358.25000000000006,
+          "total_span_m": 25.604638251691824
+        },
+        "vertical_tail": {
+          "bbox_m": [
+            13.15761606842186,
+            1.3165253323726676,
+            5.009331292697659
+          ],
+          "name": "vertical_tail",
+          "total_area_m2": 33.91,
+          "total_span_m": 5.009331292697659
+        }
+      },
+      "design_hash": "8bd5a6c7c8311938",
+      "design_id": "B0-01",
+      "design_label": "baseline",
+      "elements": 480,
+      "mesh_attempts": 1,
+      "mesh_family": "546x480",
+      "nodes": 546,
+      "orientation": {
+        "ok": true,
+        "tail_bbox": [
+          13.15761606842186,
+          1.3165253323726676,
+          5.009331292697659
+        ],
+        "tail_vertical_structural": true,
+        "wing_bbox": [
+          31.49534375886453,
+          25.604638251691824,
+          2.9919174836412785
+        ],
+        "wing_horizontal": true
+      },
+      "source_case": "B0-01",
+      "sref_m2": 358.25000000000006,
+      "vspgeom_bytes": 225414,
+      "vspgeom_sha256": "16da482a1f8e59f6b454378769961caafde5eef87784127db6cce87381943b84",
+      "wall_s": 0.3587337000062689,
+      "x12": [
+        358.25,
+        1.83,
+        67.0,
+        48.0,
+        71.0,
+        0.480469,
+        0.945313,
+        0.408284,
+        0.130178,
+        0.0,
+        33.91,
+        0.0
+      ]
+    },
+    {
+      "build_dir": "_scratch_f1\\m0r_task_evaluator_dryrun_l31\\builds\\build-B1-01",
+      "build_seconds": 0.2,
+      "component_metrics": {
+        "main_wing": {
+          "bbox_m": [
+            31.49534375886453,
+            25.604638251691824,
+            2.9919174836412785
+          ],
+          "name": "main_wing",
+          "total_area_m2": 358.25000000000006,
+          "total_span_m": 25.604638251691824
+        },
+        "vertical_tail": {
+          "bbox_m": [
+            13.15761606842186,
+            1.3165253323726676,
+            5.009331292697659
+          ],
+          "name": "vertical_tail",
+          "total_area_m2": 33.91,
+          "total_span_m": 5.009331292697659
+        }
+      },
+      "design_hash": "6653517b11d6f891",
+      "design_id": "B1-01",
+      "design_label": "W05p_sweep3_72",
+      "elements": 480,
+      "mesh_attempts": 1,
+      "mesh_family": "546x480",
+      "nodes": 546,
+      "orientation": {
+        "ok": true,
+        "tail_bbox": [
+          13.15761606842186,
+          1.3165253323726676,
+          5.009331292697659
+        ],
+        "tail_vertical_structural": true,
+        "wing_bbox": [
+          31.49534375886453,
+          25.604638251691824,
+          2.9919174836412785
+        ],
+        "wing_horizontal": true
+      },
+      "source_case": "B1-01",
+      "sref_m2": 358.25000000000006,
+      "vspgeom_bytes": 225414,
+      "vspgeom_sha256": "6a296aee6e6f6b505083c655c63a667fd52309432e798b25305d01d588d70612",
+      "wall_s": 0.20185579999815673,
+      "x12": [
+        358.25,
+        1.83,
+        67.0,
+        48.0,
+        72.0,
+        0.480469,
+        0.945313,
+        0.408284,
+        0.130178,
+        0.0,
+        33.91,
+        0.0
+      ]
+    },
+    {
+      "build_dir": "_scratch_f1\\m0r_task_evaluator_dryrun_l31\\builds\\build-C5",
+      "build_seconds": 0.206,
+      "component_metrics": {
+        "main_wing": {
+          "bbox_m": [
+            32.018485597973445,
+            26.029934690659523,
+            3.0416136300570074
+          ],
+          "name": "main_wing",
+          "total_area_m2": 370.25,
+          "total_span_m": 26.029934690659523
+        },
+        "vertical_tail": {
+          "bbox_m": [
+            13.15761606842186,
+            1.3165253323726676,
+            5.009331292697659
+          ],
+          "name": "vertical_tail",
+          "total_area_m2": 33.91,
+          "total_span_m": 5.009331292697659
+        }
+      },
+      "design_hash": "bc52a54ecefaac4c",
+      "design_id": "C5",
+      "design_label": "W01p_wing_area_370.25",
+      "elements": 480,
+      "mesh_attempts": 1,
+      "mesh_family": "546x480",
+      "nodes": 546,
+      "orientation": {
+        "ok": true,
+        "tail_bbox": [
+          13.15761606842186,
+          1.3165253323726676,
+          5.009331292697659
+        ],
+        "tail_vertical_structural": true,
+        "wing_bbox": [
+          32.018485597973445,
+          26.029934690659523,
+          3.0416136300570074
+        ],
+        "wing_horizontal": true
+      },
+      "source_case": "C5",
+      "sref_m2": 370.25,
+      "vspgeom_bytes": 225414,
+      "vspgeom_sha256": "e1ad74cc3820553ee6864d121168ae8f5b72d5602619f15de9cf2c04f1a7bde8",
+      "wall_s": 0.20726350002223626,
+      "x12": [
+        370.25,
+        1.83,
+        67.0,
+        48.0,
+        71.0,
+        0.480469,
+        0.945313,
+        0.408284,
+        0.130178,
+        0.0,
+        33.91,
+        0.0
+      ]
+    }
+  ],
+  "dry_run_id": "M0R-TASK-EVALUATOR-DRYRUN-2026-11-13T063739Z",
+  "f1r2_continuity": {
+    "anchor_q_pa": 20483.940233430174,
+    "anchor_tasks": [
+      "T18K_M202_CL017",
+      "T18K_M202_CL019"
+    ],
+    "m1_a_reestablishes_admission_baseline": true,
+    "m2_02_is_byte_continuous_with_f1r2": true,
+    "new_conditions": [
+      "T18K_M220_CL017",
+      "T18K_M220_CL019",
+      "T18K_M180_CL017",
+      "T18K_M180_CL019"
+    ],
+    "new_conditions_inherit_f1r2_expected_polar": false
+  },
+  "failed_checks": [],
+  "finished_utc": "2026-11-13T06:37:40Z",
+  "identity": {
+    "authorization_id": "DFIXED-F1R2-001",
+    "lead_decision": "L-30",
+    "m0r_deliverable": "U1/U2 task-capable executor dry-run",
+    "run_id": "DREAL001-F1R2-20261113-01"
+  },
+  "notes": [
+    "Zero-physics dry-run: OpenVSP model build + VSPAEROComputeGeometry only; StopBeforeRun=1.",
+    "ATM-F1R2 is the A1 frozen F1R2/F2R2 injection set; it is NOT the ISO standard atmosphere.",
+    "M2.02/18,288 m is exactly continuous with F1R2; M2.2 and M1.8 are new conditions and do not inherit F1R2 expected polars.",
+    "Sref(x) is recomputed per design; the task lift target uses SREF_REF only.",
+    "Same design reuses one vspgeom/vkey byte pair across all six task decks.",
+    "No real run directory is created; all build/deck scratch lives under the dry-run scratch root."
+  ],
+  "physical_call_count": 0,
+  "physical_solver_starts": 0,
+  "run_dir_created": false,
+  "schema": "dreal001.m1_task_evaluator_dry_run.v1",
+  "solver_started": false,
+  "spawn_events": [],
+  "sref_ref": {
+    "computed_from_geometry": true,
+    "frozen_validation_anchor_m2": 358.25000000000006,
+    "relative_error_vs_frozen_anchor": 0.0,
+    "source": "post-fix baseline geometry.wing.area_m2 (runtime recompute)",
+    "sref_m2": 358.25000000000006,
+    "vspgeom_sha256": "16da482a1f8e59f6b454378769961caafde5eef87784127db6cce87381943b84"
+  },
+  "task_decks_baseline": {
+    "T18K_M180_CL017": "9e755cddfb730d4cc71adaf66de4d4a90acbd025bed74c65d198cdbbc097bb80",
+    "T18K_M180_CL019": "9e755cddfb730d4cc71adaf66de4d4a90acbd025bed74c65d198cdbbc097bb80",
+    "T18K_M202_CL017": "1614a964fc729d42bfa764025a2aa1d3915be8f20dbc6480b72862c15e0c59dc",
+    "T18K_M202_CL019": "1614a964fc729d42bfa764025a2aa1d3915be8f20dbc6480b72862c15e0c59dc",
+    "T18K_M220_CL017": "6a022882fa5b9e4cd9c0800fd428f6b5a8465de0e272be1c2db9b5499d55620e",
+    "T18K_M220_CL019": "6a022882fa5b9e4cd9c0800fd428f6b5a8465de0e272be1c2db9b5499d55620e"
+  },
+  "tasks": [
+    {
+      "active_mask": "12D_ALL_ACTIVE",
+      "cl_target": 0.17,
+      "l_ref_n": 1247523.1700664815,
+      "mach": 2.02,
+      "mass_ok": true,
+      "mass_t": 127.21196025824125,
+      "q_pa": 20483.940233430174,
+      "q_recompute_rel_error": 0.0,
+      "q_recomputed_pa": 20483.940233430174,
+      "recref": 89397005.8767656,
+      "rho_kg_m3": 0.1153178340089936,
+      "split": "meta_train",
+      "sref_ref_m2": 358.25000000000006,
+      "task_fingerprint": "0c2b6bb08516e1cf8235fb45638d6977671cbe5deac53ad915cb55c63a938c90",
+      "task_id": "T18K_M202_CL017",
+      "vinf_m_s": 596.0373972278921
+    },
+    {
+      "active_mask": "12D_ALL_ACTIVE",
+      "cl_target": 0.19,
+      "l_ref_n": 1394290.6018390087,
+      "mach": 2.02,
+      "mass_ok": true,
+      "mass_t": 142.17807322979905,
+      "q_pa": 20483.940233430174,
+      "q_recompute_rel_error": 0.0,
+      "q_recomputed_pa": 20483.940233430174,
+      "recref": 89397005.8767656,
+      "rho_kg_m3": 0.1153178340089936,
+      "split": "meta_train",
+      "sref_ref_m2": 358.25000000000006,
+      "task_fingerprint": "03bd6485379c2fa1c785c9ae89baff0f04399aaa582003fbe5a594fbd1032c65",
+      "task_id": "T18K_M202_CL019",
+      "vinf_m_s": 596.0373972278921
+    },
+    {
+      "active_mask": "12D_ALL_ACTIVE",
+      "cl_target": 0.17,
+      "l_ref_n": 1479759.862543322,
+      "mach": 2.2,
+      "mass_ok": true,
+      "mass_t": 150.89351231494157,
+      "q_pa": 24297.194081414087,
+      "q_recompute_rel_error": 0.0,
+      "q_recomputed_pa": 24297.194081414087,
+      "recref": 97363075.70736848,
+      "rho_kg_m3": 0.1153178340089936,
+      "split": "meta_train",
+      "sref_ref_m2": 358.25000000000006,
+      "task_fingerprint": "eaeb814528f79e09430b59a019976878cf0b26896153fe8ae6b9b7700ea5b53d",
+      "task_id": "T18K_M220_CL017",
+      "vinf_m_s": 649.1496405452291
+    },
+    {
+      "active_mask": "12D_ALL_ACTIVE",
+      "cl_target": 0.19,
+      "l_ref_n": 1653849.2581366538,
+      "mach": 2.2,
+      "mass_ok": true,
+      "mass_t": 168.6456902343465,
+      "q_pa": 24297.194081414087,
+      "q_recompute_rel_error": 0.0,
+      "q_recomputed_pa": 24297.194081414087,
+      "recref": 97363075.70736848,
+      "rho_kg_m3": 0.1153178340089936,
+      "split": "meta_val",
+      "sref_ref_m2": 358.25000000000006,
+      "task_fingerprint": "da997438e2815e28317f781b8671f10b69433dfb3ee4c6b2c6a8ca3e24a7dfca",
+      "task_id": "T18K_M220_CL019",
+      "vinf_m_s": 649.1496405452291
+    },
+    {
+      "active_mask": "12D_ALL_ACTIVE",
+      "cl_target": 0.17,
+      "l_ref_n": 990583.0484794137,
+      "mach": 1.8,
+      "mass_ok": true,
+      "mass_t": 101.01135948355594,
+      "q_pa": 16265.063806566455,
+      "q_recompute_rel_error": 1.1183413881300009e-16,
+      "q_recomputed_pa": 16265.063806566453,
+      "recref": 79660698.30602875,
+      "rho_kg_m3": 0.1153178340089936,
+      "split": "meta_test",
+      "sref_ref_m2": 358.25000000000006,
+      "task_fingerprint": "0e58197739034b2a19497101eaa38199c2e2dbea3031fe74312faf23066fd2b3",
+      "task_id": "T18K_M180_CL017",
+      "vinf_m_s": 531.1224331733692
+    },
+    {
+      "active_mask": "12D_ALL_ACTIVE",
+      "cl_target": 0.19,
+      "l_ref_n": 1107122.2306534622,
+      "mach": 1.8,
+      "mass_ok": true,
+      "mass_t": 112.89504883456249,
+      "q_pa": 16265.063806566455,
+      "q_recompute_rel_error": 1.1183413881300009e-16,
+      "q_recomputed_pa": 16265.063806566453,
+      "recref": 79660698.30602875,
+      "rho_kg_m3": 0.1153178340089936,
+      "split": "meta_test",
+      "sref_ref_m2": 358.25000000000006,
+      "task_fingerprint": "d8a75ef3c22732626bff87816e6cf585fea63c00efea02b7fc8bdcd5b675fdf2",
+      "task_id": "T18K_M180_CL019",
+      "vinf_m_s": 531.1224331733692
+    }
+  ],
+  "verdict": "PASS"
+}

@@ -1,0 +1,188 @@
+{
+  "decision_id": "L-30",
+  "date": "2026-11-13",
+  "scope": "Issue #11 D-META-REAL-001 M0 (zero-physical)",
+  "verdict": "M0_BLOCKED_ACCEPT_A1_PHYSICAL_TASK_FAMILY_BLOCKED_START_M0R",
+  "basis": [
+    "A1-M0-DOMAIN-REVIEW-20261113 PHYSICAL_TASK_FAMILY_BLOCKED",
+    "A3 M0 DRAFT commit 1cee3e515afcf89f40a91bac49f5df5c4736ea64",
+    "A5 G-T0-READY-02 T0_CODE_READINESS_PASS not #11 admission",
+    "Issue #11 body"
+  ],
+  "blocking_findings": [
+    "F-M0-01 evaluator no task input",
+    "F-M0-02 old defective geometry 40fdd436",
+    "F-M0-03 L_ref conflict",
+    "F-M0-04 12 height-scaling copies",
+    "F-M0-05 max_refine contradiction"
+  ],
+  "l_ref_decision": {
+    "option": "B_target_lift_with_task_mass_model",
+    "altitude_m": 18288,
+    "task_factor": "Mach x CL_target",
+    "cl_targets": [
+      0.17,
+      0.19
+    ],
+    "sref_ref_runtime": "post-fix baseline wing area 358.25000000000006, SHA-bound, no hardcode",
+    "mass_model": "m_task=L_ref/g0, 100-190 t, declared target cruise mass",
+    "formula": "L_ref=q(M,18288)*SREF_REF*CL_target; CL_required=L_ref/(q*Sref(x)); D_i=q*Sref(x)*CDi",
+    "fail_closed": [
+      "q mismatch rel>1e-12",
+      "mass outside 100-190 t",
+      "Sref SHA mismatch",
+      "fallback to 358.25 forbidden"
+    ]
+  },
+  "tasks": [
+    {
+      "id": "T18K_M202_CL017",
+      "mach": 2.02,
+      "alt_m": 18288,
+      "cl": 0.17,
+      "q_pa": 20483.940233,
+      "l_ref_n": 1247538.668,
+      "mass_t": 127.21,
+      "split": "meta_train"
+    },
+    {
+      "id": "T18K_M202_CL019",
+      "mach": 2.02,
+      "alt_m": 18288,
+      "cl": 0.19,
+      "q_pa": 20483.940233,
+      "l_ref_n": 1394307.924,
+      "mass_t": 142.18,
+      "split": "meta_train"
+    },
+    {
+      "id": "T18K_M220_CL017",
+      "mach": 2.2,
+      "alt_m": 18288,
+      "cl": 0.17,
+      "q_pa": 24297.496,
+      "l_ref_n": 1479778.246,
+      "mass_t": 150.9,
+      "split": "meta_train"
+    },
+    {
+      "id": "T18K_M220_CL019",
+      "mach": 2.2,
+      "alt_m": 18288,
+      "cl": 0.19,
+      "q_pa": 24297.496,
+      "l_ref_n": 1653869.804,
+      "mass_t": 168.65,
+      "split": "meta_val"
+    },
+    {
+      "id": "T18K_M180_CL017",
+      "mach": 1.8,
+      "alt_m": 18288,
+      "cl": 0.17,
+      "q_pa": 16265.266,
+      "l_ref_n": 990595.355,
+      "mass_t": 101.01,
+      "split": "meta_test_blind"
+    },
+    {
+      "id": "T18K_M180_CL019",
+      "mach": 1.8,
+      "alt_m": 18288,
+      "cl": 0.19,
+      "q_pa": 16265.266,
+      "l_ref_n": 1107135.985,
+      "mass_t": 112.9,
+      "split": "meta_test_blind"
+    }
+  ],
+  "split": {
+    "train": 3,
+    "val": 1,
+    "test": 2,
+    "test_mach": 1.8,
+    "test_blind": true
+  },
+  "m0r_requirements": [
+    "U1 geometry rebind post-fix",
+    "U2 task-capable executor per-task atmosphere/Mach",
+    "U3 L_ref mass model",
+    "U4 remove 12 height copies",
+    "U5 raw YAML 8B29D1E3 + C01-C04",
+    "U6 q/Sref consistency LREF-1..8",
+    "U7 alpha/refine/interp uncertainty",
+    "U8 12D mask + 10D deferred",
+    "U9 MIN_EFFECT_REL>0",
+    "U10 new family SHA/new M0 package/new gate"
+  ],
+  "budgets": {
+    "M1A": {
+      "starts": 15,
+      "internal": 105,
+      "caps": [
+        18,
+        126
+      ],
+      "tasks": 4,
+      "designs_per_task": 3,
+      "repeat": 1,
+      "preflight": 2,
+      "retry": 0
+    },
+    "M1B": {
+      "starts": 66,
+      "internal": 462,
+      "caps": [
+        70,
+        490
+      ],
+      "tasks": 4,
+      "designs_per_task": 16,
+      "labels": 64,
+      "retry": 0
+    },
+    "M3A": {
+      "starts": 34,
+      "internal": 238,
+      "caps": [
+        38,
+        266
+      ],
+      "tasks": 2,
+      "designs_per_task": 16,
+      "labels": 32,
+      "retry": 0
+    },
+    "total": {
+      "starts": 115,
+      "internal": 805,
+      "caps": [
+        126,
+        882
+      ],
+      "labels": 96,
+      "preflight": 6
+    }
+  },
+  "authorizations": {
+    "M1A": "D-META-M1A-001",
+    "M1B": "D-META-M1B-001",
+    "M2": "D-META-M2-001",
+    "M3": "D-META-M3-001"
+  },
+  "boundaries": [
+    "no authorization/approval/GO by this decision",
+    "M0-R zero physical",
+    "no solver before M1-A approval",
+    "no reuse of #9 R10 or #10 F1R2/F2R2 approvals",
+    "fuel null",
+    "external physics NOT_VALIDATED",
+    "no gain/winner/significance/cross-family"
+  ],
+  "physical_actual_to_date": {
+    "starts": 65,
+    "internal": 455,
+    "charged_starts": 70,
+    "charged_internal": 490
+  }
+}

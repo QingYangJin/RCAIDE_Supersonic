@@ -1,0 +1,243 @@
+{
+  "acceptance_gates": [
+    "all T0-4 config JSON/YAML parse and pass unit tests",
+    "A5 independent review of task split / leakage / evaluator binding",
+    "per-task real applicability evidence (solver_domain/lift_target_reachable/cross_task_response) from M0/M1 REAL_VSPAERO collection; admission PENDING_M0_BY_DESIGN",
+    "M0 freeze of family, split, evaluator, K-shot, seeds, endpoints and budget",
+    "Lead signs a new authorization/token; Issue #9 R10 token is not reused",
+    "preflight 2/2 PASS before any main evaluation; any failure aborts without retry"
+  ],
+  "budget_accounting": {
+    "charged_vs_actual": "separate columns",
+    "design_evaluation": "one physical solver start with 7 internal alpha cases; refine_sweeps=0 in T0-4 pilot",
+    "expected_charged_starts_M1": 98,
+    "expected_charged_starts_M3": 50,
+    "expected_internal_M1": 686,
+    "expected_internal_M3": 350,
+    "physical_call_count_now": 0,
+    "total_planned_internal": 1036,
+    "total_planned_starts": 148
+  },
+  "dataset_contract": {
+    "CODE_TEST": {
+      "allowed_source_kinds": [
+        "REAL_VSPAERO",
+        "REAL_ARCHIVE_REPLAY",
+        "SEALED_SYNTHETIC_FIXTURE",
+        "SYNTHETIC_FIXTURE",
+        "MOCK"
+      ],
+      "declared_source_kinds_required": true,
+      "never_a_training_source": true
+    },
+    "REAL_TRAINING_INGEST": {
+      "allowed_source_kinds": [
+        "REAL_ARCHIVE_REPLAY",
+        "REAL_VSPAERO"
+      ],
+      "fail_closed_on_unknown_or_mixed": true,
+      "non_real_forbidden": true
+    },
+    "audit_leakage_required": true,
+    "dataset_class": "MetaDataset",
+    "dataset_kinds": [
+      "REAL_TRAINING_INGEST",
+      "CODE_TEST"
+    ],
+    "jsonl_layout": "one EvaluationRecord per line; dataset_sha256 = sha256(canonical manifest of ordered record_sha values)",
+    "manifest_required": true,
+    "split_names": [
+      "meta_train",
+      "meta_val",
+      "meta_test"
+    ],
+    "split_unit": "TASK_IDENTITY"
+  },
+  "ingestion_pipeline": [
+    "1. solver/evaluator writes immutable raw under the run dir; never overwrite R1-R10 bytes",
+    "2. adapter builds EvaluationRecord with raw_sha, geometry_sha, solver_version, evaluator_id, x12, active_mask, alpha, Sref, L_ref, constraints",
+    "3. validate schema, mask, bounds, objective/status, source policy, budget provenance",
+    "4. dedupe on (task_fingerprint, evaluator_id, x12, active_mask); same design twice is an error, not a cache hit",
+    "5. append record JSONL; compute dataset_sha256 and task split manifest; cache reads counted separately",
+    "6. audit_leakage PASS before meta-train; fail-closed otherwise"
+  ],
+  "leakage_control": {
+    "encoder_fit": "meta_train only",
+    "feature_and_label_stats_fit": "meta_train only",
+    "forbidden": [
+      "sample-level split",
+      "pre-reading query labels",
+      "test-task tuning",
+      "synthetic rows in REAL_TRAINING_INGEST"
+    ],
+    "heldout_task_rule": "meta_test tasks never used for meta-train, early stopping, hyper-parameter search, or feature fitting",
+    "preflight_exclusion": "preflight rows are pipeline verification only and never enter a dataset or statistic",
+    "split_unit": "TASK_IDENTITY",
+    "support_query": "within task; disjoint records; query labels never visible to adaptation",
+    "task_groups_disjoint": true
+  },
+  "non_result_boundary": {
+    "cross_family_comparison": "FORBIDDEN",
+    "external_physics_supported": "NOT_VALIDATED",
+    "fuel_burn_kg": null,
+    "physical_validation_status": "NOT_VALIDATED",
+    "ready_for_real_meta_training": false,
+    "real_labels_collected": 0,
+    "winner_or_significance": "NONE"
+  },
+  "not_authorization": true,
+  "parent_contracts": {
+    "meta_dataset": {
+      "path": "research/concorde_metaopt/dreal001/meta/meta_dataset.py",
+      "sha256": "da385389589889b0aeb45ab0d6b5ea535aa8a50bed7c76591b7a3aff75d479f5",
+      "tool_version": "a3-t0-2-meta-dataset-v1.0.0"
+    },
+    "t0_2_contract": {
+      "path": "docs/evidence/dreal001/t0_2_meta_dataset_contract_20261113.json",
+      "sha256": "3ca9c84de99c621520870c4aa00125f69afe4fc49316e5f66bcb85d20e4570ee"
+    },
+    "task_spec": {
+      "path": "research/concorde_metaopt/dreal001/meta/task_spec.py",
+      "sha256": "d72677380eb42ae3776bb6289d37f6ef78fe82de74ab16ad2849cb8ed11bf8f2",
+      "tool_version": "a3-t0-1-task-spec-v1.1.0"
+    }
+  },
+  "physical_call_count": 0,
+  "record_contract": {
+    "all_fields": [
+      "record_id",
+      "task_id",
+      "task_fingerprint",
+      "x12",
+      "active_mask",
+      "evaluator_id",
+      "source_kind",
+      "physics_validation_status",
+      "objective_Di_N",
+      "constraints",
+      "status",
+      "physical_solver_starts_actual",
+      "internal_solver_cases_actual",
+      "budget_provenance",
+      "geometry_sha",
+      "solver_version",
+      "alpha",
+      "Sref",
+      "L_ref",
+      "raw_sha",
+      "objective_definition",
+      "raw_path",
+      "recorded_utc",
+      "notes"
+    ],
+    "budget_provenance": {
+      "charged_or_actual_enum": [
+        "CHARGED",
+        "ACTUAL"
+      ],
+      "class": "BudgetProvenance",
+      "fields": [
+        "ledger_id",
+        "run_id",
+        "authorization_id",
+        "batch_id",
+        "planned_reserved_solver_starts",
+        "design_evaluations",
+        "cached_reads",
+        "charged_or_actual",
+        "recorded_utc"
+      ],
+      "rule": "charged (budget reservation) and actual (ledger) are separate columns; never overwritten or mixed in one total"
+    },
+    "identity_sha_field": "record_sha",
+    "non_real_source_kinds": [
+      "MOCK",
+      "SEALED_SYNTHETIC_FIXTURE",
+      "SYNTHETIC_FIXTURE"
+    ],
+    "objective_definition": "0.5*CDi(f1)+0.5*CDi(f2)",
+    "objective_semantics": {
+      "objective_Di_N": "dimensionless primary 0.5*CDi(f1)+0.5*CDi(f2); legacy field suffix _N is retained for T0-2 compatibility",
+      "physical_drag_N": "reported separately inside constraints as D_i_N = q*Sref(x)*CDi at matched lift; not the meta-learning target"
+    },
+    "optional_or_defaulted_fields": [
+      "geometry_sha",
+      "solver_version",
+      "alpha",
+      "Sref",
+      "L_ref",
+      "raw_sha",
+      "objective_definition",
+      "raw_path",
+      "recorded_utc",
+      "notes"
+    ],
+    "physics_validation_status": {
+      "MOCK": "NOT_APPLICABLE or NOT_VALIDATED; CODE_TEST only",
+      "REAL_ARCHIVE_REPLAY": "NOT_VALIDATED only",
+      "REAL_VSPAERO": "NOT_VALIDATED only (never upgraded by this pipeline)",
+      "SEALED_SYNTHETIC_FIXTURE": "NOT_APPLICABLE or NOT_VALIDATED; CODE_TEST only",
+      "SYNTHETIC_FIXTURE": "NOT_APPLICABLE or NOT_VALIDATED; CODE_TEST only"
+    },
+    "real_record_requirements": [
+      "geometry_sha256 (64 lowercase hex)",
+      "solver_version",
+      "raw_sha for VALID",
+      "alpha/Sref/L_ref for VALID",
+      "evaluator_id",
+      "budget_provenance"
+    ],
+    "real_source_kinds": [
+      "REAL_ARCHIVE_REPLAY",
+      "REAL_VSPAERO"
+    ],
+    "record_class": "research.concorde_metaopt.dreal001.meta.meta_dataset.EvaluationRecord",
+    "required_fields": [
+      "record_id",
+      "task_id",
+      "task_fingerprint",
+      "x12",
+      "active_mask",
+      "evaluator_id",
+      "source_kind",
+      "physics_validation_status",
+      "objective_Di_N",
+      "constraints",
+      "status",
+      "physical_solver_starts_actual",
+      "internal_solver_cases_actual",
+      "budget_provenance"
+    ],
+    "schema_ref": "dreal001.meta_dataset.v1",
+    "source_kind_enum": [
+      "REAL_VSPAERO",
+      "REAL_ARCHIVE_REPLAY",
+      "SEALED_SYNTHETIC_FIXTURE",
+      "SYNTHETIC_FIXTURE",
+      "MOCK"
+    ],
+    "status_enum": [
+      "VALID",
+      "INVALID"
+    ],
+    "status_semantics": {
+      "INVALID": "objective_Di_N must be null; never impute/fabricate an objective",
+      "VALID": "objective_Di_N must be a finite number; alpha/Sref/L_ref/raw_sha required for REAL sources"
+    }
+  },
+  "schema_version": "dreal001.meta_data_contract.v1",
+  "status": "DRAFT_PENDING_M0_GO",
+  "task_identity": {
+    "excluded_from_fingerprint": [
+      "task_id",
+      "source_kind",
+      "effect_evidence",
+      "created_utc",
+      "notes"
+    ],
+    "schema_ref": "dreal001.meta_task_spec.v1",
+    "split_unit": "TASK_IDENTITY",
+    "task_fingerprint": "sha256(canonical physical context: mach, altitude_m, lift_reference_N, lift_tol_rel, alpha grid, active_mask, parameters, fixed variables, solver/OpenVSP, solver_config_sha256, reference_frame, x_ref_m, sref_baseline_m2)",
+    "task_id_rule": "family_id + '-' + task_fingerprint[:12]"
+  }
+}

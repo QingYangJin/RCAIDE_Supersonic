@@ -1,0 +1,223 @@
+{
+  "checks": [
+    {
+      "description": "raw YAML SHA 8b29d1e3",
+      "id": "M0R-DS-01",
+      "status": "PASS"
+    },
+    {
+      "description": "raw YAML 10,846 bytes",
+      "id": "M0R-DS-02",
+      "status": "PASS"
+    },
+    {
+      "description": "C01-C04 present",
+      "id": "M0R-DS-03",
+      "status": "PASS"
+    },
+    {
+      "description": "12 design variables present",
+      "id": "M0R-DS-04",
+      "status": "PASS"
+    },
+    {
+      "description": "A1 interface does not substitute for C01-C04",
+      "id": "M0R-DS-05",
+      "status": "PASS"
+    }
+  ],
+  "cross_constraints": [
+    {
+      "expression": "span_location_2 < span_location_3",
+      "id": "C01",
+      "note": "wing breakpoints must stay ordered."
+    },
+    {
+      "expression": "chord_ratio_3 < chord_ratio_2 < 1.0",
+      "id": "C02",
+      "note": "chord stays positive and monotonically decreasing outboard."
+    },
+    {
+      "expression": "0 < wing_area, 0 < aspect_ratio, 0 < vertical_tail_area, 0 < fuselage_length",
+      "id": "C03",
+      "note": "positive geometric quantities; fuselage_length is the fixed F01 value re-injected by DesignSpace.expand."
+    },
+    {
+      "expression": "0 <= sweep_1, sweep_2, sweep_3 <= 90",
+      "id": "C04",
+      "note": "sweep sanity range in degrees."
+    }
+  ],
+  "enforcement": {
+    "a1_interface_does_not_substitute": true,
+    "disclosure": "A1 states explicitly that C01-C04 cross constraints are enforced by the A3 M0-R package plus the A2 runner; the A1 task evaluator does not substitute for cross-constraint enforcement.",
+    "negative_case_required_in_m1": true,
+    "required_in_m1_sampler_and_executor": true
+  },
+  "fixed_variables": [
+    {
+      "baseline": 61.66,
+      "id": "F01",
+      "name": "fuselage_length",
+      "source": "owner decision 2026-10-30, item 2: adopt the computed geometry-model value instead of the upstream declared value; not deleted from the contract.",
+      "target": "fuselage.lengths.total",
+      "unit": "m"
+    },
+    {
+      "baseline": 4.3,
+      "id": "F02",
+      "name": "fuselage_fineness",
+      "source": "owner decision 2026-10-30, item 2: adopt the computed geometry-model value instead of the upstream declared value; not deleted from the contract.",
+      "target": "fuselage.fineness.nose",
+      "unit": "dimensionless"
+    },
+    {
+      "baseline": 1.152778,
+      "id": "F03",
+      "name": "fuselage_height_width_ratio",
+      "source": "owner decision 2026-10-30, item 2: adopt the computed geometry-model value instead of the upstream declared value; not deleted from the contract.",
+      "target": "fuselage.heights.maximum_over_width",
+      "unit": "dimensionless"
+    }
+  ],
+  "n_fail": 0,
+  "non_result_boundary": [
+    "Binding only; no design-space expansion or evaluation in M0-R."
+  ],
+  "package_id": "DREAL001-M0R-20261113-01",
+  "raw_yaml": {
+    "bounds_status": "frozen_for_dreal001_20261110",
+    "bytes": 10846,
+    "design_set": "12d_lifting_surfaces",
+    "frozen": true,
+    "parse_mode": "SAFE_LOAD_AFTER_QUOTING_UNQUOTED_COLON_SCALARS",
+    "path": "D:\\RCAIDE\\dnext001\\wt-real-a1-geometry-solver\\research\\concorde_metaopt\\configs\\design_space_12d_lifting_surfaces.yaml",
+    "schema_version": "1",
+    "sha256": "8b29d1e3833edc2af248d68cd6b7b4c94ebf775f25c86d80062a3850765a499e"
+  },
+  "schema": "dreal001.m0r_package.v1.design_space_binding.v1",
+  "status": "M0R_PACKAGE_FROZEN_PENDING_A5_GATE",
+  "tool_version": "a3-m0r-package-v1.0.0",
+  "variables_12": [
+    {
+      "baseline": 358.25,
+      "id": "W01",
+      "lower": 300.0,
+      "name": "wing_area",
+      "scale": 100.0,
+      "target": "main_wing.areas.reference",
+      "unit": "m^2",
+      "upper": 420.0
+    },
+    {
+      "baseline": 1.83,
+      "id": "W02",
+      "lower": 1.5,
+      "name": "aspect_ratio",
+      "scale": 1.0,
+      "target": "main_wing.aspect_ratio",
+      "unit": "dimensionless",
+      "upper": 2.2
+    },
+    {
+      "baseline": 67.0,
+      "id": "W03",
+      "lower": 62.0,
+      "name": "sweep_1",
+      "scale": 10.0,
+      "target": "main_wing.segments.section_1.sweeps.quarter_chord",
+      "unit": "deg",
+      "upper": 72.0
+    },
+    {
+      "baseline": 48.0,
+      "id": "W04",
+      "lower": 40.0,
+      "name": "sweep_2",
+      "scale": 10.0,
+      "target": "main_wing.segments.section_2.sweeps.quarter_chord",
+      "unit": "deg",
+      "upper": 56.0
+    },
+    {
+      "baseline": 71.0,
+      "id": "W05",
+      "lower": 66.0,
+      "name": "sweep_3",
+      "scale": 10.0,
+      "target": "main_wing.segments.section_3.sweeps.quarter_chord",
+      "unit": "deg",
+      "upper": 76.0
+    },
+    {
+      "baseline": 0.480469,
+      "id": "W06",
+      "lower": 0.35,
+      "name": "span_location_2",
+      "scale": 0.1,
+      "target": "main_wing.segments.section_2.percent_span_location",
+      "unit": "dimensionless",
+      "upper": 0.58
+    },
+    {
+      "baseline": 0.945313,
+      "id": "W07",
+      "lower": 0.85,
+      "name": "span_location_3",
+      "scale": 0.1,
+      "target": "main_wing.segments.section_3.percent_span_location",
+      "unit": "dimensionless",
+      "upper": 0.98
+    },
+    {
+      "baseline": 0.408284,
+      "id": "W08",
+      "lower": 0.3,
+      "name": "chord_ratio_2",
+      "scale": 0.1,
+      "target": "main_wing.segments.section_2.root_chord_percent",
+      "unit": "dimensionless",
+      "upper": 0.5
+    },
+    {
+      "baseline": 0.130178,
+      "id": "W09",
+      "lower": 0.08,
+      "name": "chord_ratio_3",
+      "scale": 0.1,
+      "target": "main_wing.segments.section_3.root_chord_percent",
+      "unit": "dimensionless",
+      "upper": 0.2
+    },
+    {
+      "baseline": 0.0,
+      "id": "W10",
+      "lower": -4.0,
+      "name": "tip_twist",
+      "scale": 5.0,
+      "target": "main_wing.segments.tip.twist",
+      "unit": "deg",
+      "upper": 4.0
+    },
+    {
+      "baseline": 33.91,
+      "id": "V01",
+      "lower": 28.0,
+      "name": "vertical_tail_area",
+      "scale": 10.0,
+      "target": "vertical_stabilizer.areas.reference",
+      "unit": "m^2",
+      "upper": 40.0
+    },
+    {
+      "baseline": 0.0,
+      "id": "V02",
+      "lower": -10.0,
+      "name": "vertical_tail_sweep_delta",
+      "scale": 10.0,
+      "target": "vertical_stabilizer.quarter_chord_sweep_delta",
+      "unit": "deg",
+      "upper": 10.0
+    }
+  ]
+}

@@ -1,0 +1,91 @@
+{
+  "a3_m0r_action": "Use the required_m0r_wording_zh text in the M0-R package and gate disclosure; bind deterministic values to deck_sha256 + vspgeom_sha256 only; do not copy the overclaimed byte-continuity phrase.",
+  "a5_gate_action": "Cite this addendum for the three corrections; the A1 frozen interface bytes remain 6ef6b16e.../16,925 B and the frozen code remains e88c2177.../63,459 B.",
+  "applies_to": {
+    "code_commit": "0c514151d989de716dbb855973b900a34615b5aa",
+    "dry_run_json": {
+      "bytes": 43587,
+      "path": "docs/receipts/dreal001/a1_m0r_task_executor_dry_run_20261113.json",
+      "sha256": "8688d25770911af7fadd42587f66a4914091c829fd8cdc89c1f349a53731b4c6"
+    },
+    "freeze_commit": "c5698a218fad974e8e96b604573c5cc79b3abb32",
+    "freeze_json": {
+      "bytes": 25639,
+      "path": "docs/receipts/dreal001/a1_m0r_interface_freeze_20261113.json",
+      "sha256": "a2faeda15dd56228ac832dbd1d8db37d80235790bb63c602a66f66805d3c6a02"
+    },
+    "freeze_md": {
+      "bytes": 5996,
+      "path": "docs/receipts/dreal001/a1_m0r_interface_freeze_20261113.md",
+      "sha256": "c81fe1a899044a1cf4a9344070127a8402e9707cf418dcea09d1bdde55a002ab"
+    },
+    "interface_md": {
+      "bytes": 16925,
+      "path": "docs/receipts/dreal001/a1_m0r_task_evaluator_interface_20261113.md",
+      "sha256": "6ef6b16e181f404ee6219db27a9125769b78d5368de653ec791c2aa21a4e790b"
+    },
+    "task_evaluator_py": {
+      "bytes": 63459,
+      "path": "research/concorde_metaopt/dreal001/m1/task_evaluator.py",
+      "sha256": "e88c21775d753c555b1ba8d5076c45d5c3fc956be8c2daf8eb194e73ec777261"
+    },
+    "u1_json": {
+      "bytes": 33508,
+      "path": "docs/receipts/dreal001/a1_m0r_u1_geometry_rebind_20261113.json",
+      "sha256": "d90f2ed5ca3031be6500e4b7a4167253f4aa03828438af1e137b703164ab0e8e"
+    }
+  },
+  "clarification_id": "A1-M0R-INTERFACE-CLARIFICATION-20261113",
+  "clarifications": [
+    {
+      "authoritative_statement": "SREF_REF for L_ref is the runtime post-fix baseline geometry.wing.area_m2 recomputed by the evaluator (this run: 358.25000000000006). SREF_REF_FROZEN is a validation anchor only: build_task_spec takes the runtime sref_ref and rejects it if it differs from the anchor by more than 1e-12 relative. No objective or target formula may use a hard-coded 358.25; all formulas use the TaskSpec sref_ref produced at runtime.",
+      "code_evidence": [
+        "task_evaluator.py:56 SREF_REF_FROZEN = 358.25000000000006",
+        "task_evaluator.py:296-303 build_task_spec(task, sref_ref) validates runtime sref_ref against the frozen anchor and raises TaskSpecInvalid on mismatch",
+        "task_evaluator.py:1169 sref_ref = float(baseline['sref_m2']) from the post-fix baseline build, then passed to build_task_spec"
+      ],
+      "id": "CL-1-SREF",
+      "incorrect_reading": "Interface md said no 358.25 literal is allowed, which can be read as if SREF_REF_FROZEN does not exist.",
+      "interface_md_supersedes": "line 84 and R05 row wording '禁止硬编码 358.25' is narrowed by this clarification; the frozen interface bytes are not rewritten.",
+      "required_m0r_wording_zh": "SREF_REF 以 post-fix baseline 几何运行时重算值为唯一来源（本次 358.25000000000006），冻结常量仅作 1e-12 校验锚；不得把 358.25 作为计算输入硬编码。",
+      "topic": "SREF_REF source policy"
+    },
+    {
+      "authoritative_statement": "solver_input_sha256 is recorded per run and is not deterministic across processes, because the .vkey file embeds an absolute path and a random OpenVSP component object ID. Deterministic bindings for idempotency, expected values, and ledger reconciliation must use deck_sha256 + vspgeom_sha256 (+ solver_sha256 and task_fingerprint). vkey and solver_input_sha256 are per-run metadata only. Do not use A1 dry-run value 9785548818a7ecba73b2f13c73499b630d04c61e8d6abab395a0ab6ff93b8f4d, or the A5 rerun value ebdfb1ff..., as a cross-process expected value.",
+      "code_evidence": [
+        "task_evaluator.py:608-619 solver_input_sha256 hashes vspgeom, vkey, vspaero, csf",
+        "vkey observed content: 417 B, includes absolute path D:/RCAIDE/.../builds/build-B0-01-a/concorde_baseline.vspgeom and random component ID ZCUUDKMFCZ",
+        "A1 dry-run input_sha256 9785548818a7ecba73b2f13c73499b630d04c61e8d6abab395a0ab6ff93b8f4d vs A5 independent rerun ebdfb1ff..., while deck_sha256 1614a964fc729d42bfa764025a2aa1d3915be8f20dbc6480b72862c15e0c59dc and vspgeom_sha256 16da482a1f8e59f6b454378769961caafde5eef87784127db6cce87381943b84 are identical",
+        "evaluation_key uses task_id, task_fingerprint, design_hash, deck_sha256, geometry_sha256, solver_sha256, internal_cases_per_start; it does not use solver_input_sha256"
+      ],
+      "id": "CL-2-SOLVER-INPUT-SHA",
+      "incorrect_reading": "The dry-run solver_input_sha256 was treated as an expected deterministic value.",
+      "required_m0r_wording_zh": "solver_input_sha256 含 path-dependent/random 的 .vkey，跨进程不可复现；确定性绑定只用 deck_sha256 + vspgeom_sha256（加 solver_sha256/task_fingerprint），vkey 与 input_sha 按 run 记录，不作跨进程 expected。",
+      "topic": "solver_input_sha256 is run metadata, not a deterministic cross-process binding"
+    },
+    {
+      "authoritative_statement": "At M2.02/18,288 m the physical conditions are bitwise continuous with F1R2: q=20483.940233430174 Pa and Mach/Vinf/Rho/ReCref/alpha grid are the same. The deck bytes are not equal: A1 M202 deck is 943 B with LF, SHA 1614a964fc729d42bfa764025a2aa1d3915be8f20dbc6480b72862c15e0c59dc; F1R2 preflight deck is 985 B with CRLF, SHA 3c70d11ae6af74e6fd1cf9b787c71571768bc398a07b1343df9a1340cf93b837; after CRLF normalization all 43 lines are identical and the 42-byte difference is exactly the 42 CRLF pairs. M1 does not inherit the F1R2 expected polar; M1-A re-establishes the admission baseline.",
+      "code_evidence": [
+        "dry_run.f1r2_continuity.anchor_q_pa = 20483.940233430174",
+        "A1 deck bytes 943, CRLF count 0, LF count 42, SHA 1614a964fc729d42bfa764025a2aa1d3915be8f20dbc6480b72862c15e0c59dc",
+        "F1R2 deck bytes 985, CRLF count 42, LF count 42, SHA 3c70d11ae6af74e6fd1cf9b787c71571768bc398a07b1343df9a1340cf93b837",
+        "normalized 43 lines equal True; byte difference 42 = CRLF pairs"
+      ],
+      "id": "CL-3-F1R2-CONTINUITY",
+      "incorrect_reading": "dry_run.f1r2_continuity.m2_02_is_byte_continuous_with_f1r2=true overclaims byte continuity.",
+      "required_m0r_wording_zh": "M2.02 仅物理条件与 F1R2 逐位连续（q=20483.940233430174，Mach/Vinf/Rho/ReCref/alpha 网格相同），deck 字节不相等（A1 943B/LF vs F1R2 985B/CRLF，43 行规范化后相同）；不继承 F1R2 expected polar，M1-A 重建 admission baseline。",
+      "supersedes_report_field": "dry_run.f1r2_continuity.m2_02_is_byte_continuous_with_f1r2=true must be read as m2_02_physical_conditions_continuous=true and m2_02_deck_bytes_continuous=false.",
+      "topic": "F1R2 continuity is physical-condition continuity, not deck-byte continuity"
+    }
+  ],
+  "created_utc": "2026-11-13T06:56:44Z",
+  "frozen_files_modified": false,
+  "physical_call_count": 0,
+  "physical_solver_starts": 0,
+  "reason": "A5 independent pre-review (2026-11-13) and Lead accepted three non-blocking wording/semantic corrections. The frozen files are not rewritten; this addendum is the authoritative wording for the M0-R package and the A5 G-M0R-ADMISSION-01 gate.",
+  "run_dir_created": false,
+  "schema": "dreal001.m1_interface_clarification.v1",
+  "solver_started": false,
+  "spawn_events": [],
+  "status": "AUTHORITATIVE_CLARIFICATION_FROZEN_BYTES_UNCHANGED"
+}

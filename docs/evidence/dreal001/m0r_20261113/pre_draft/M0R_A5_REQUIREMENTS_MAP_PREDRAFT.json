@@ -1,0 +1,1546 @@
+{
+  "a5_draft_gate": {
+    "a5_commit": "ba1b11f",
+    "bindings": {
+      "A5_requirements": {
+        "bytes": 16397,
+        "count": 30,
+        "sha256": "f8b70703bd6f6fb20849e8ca1e4e26200d9e3c3898df5ff16195c79b6d59fe61"
+      },
+      "L30": {
+        "commit": "27f8d91",
+        "json_bytes": 4431,
+        "json_sha256": "62991bcc64d9f857494d2199dd4fde7c76876ae874fd7a407571bcc4b9cd12ab",
+        "md_bytes": 11483,
+        "md_sha256": "f54156c78834f2cd31bc25096a8b6c2a6ab2c994309278ae27067a61fc341b71"
+      },
+      "L30A01": {
+        "commit": "30166a0",
+        "json_bytes": 2460,
+        "json_sha256": "62616a8dccc03156f404be86b619454c240cded383c79c0ea2d28056b7232e5f",
+        "md_bytes": 3689,
+        "md_sha256": "177dc4be49927023976e4915f37d86ab3046711799d52eb887860d0296f0b80a"
+      },
+      "L31": {
+        "commit": "544629a",
+        "json_bytes": 1923,
+        "json_sha256": "a1b6c00ba997b6ebbca57296eba4e8a904642a3741570a9dc0561bf1335db7f4",
+        "md_bytes": 1661,
+        "md_sha256": "14fd743538d96498b82cf4016579e7ab08287d308a83cb56d8a0f4274d47e3e1"
+      }
+    },
+    "checklist": {
+      "bytes": 36486,
+      "path": "D:\\RCAIDE\\dnext001\\wt-real-a5-review\\docs\\reviews\\dreal001_a5_m0r_gate_checklist_draft_20261113.json",
+      "sha256": "033794d49ffbe3d94ac29ce4b30d06c6a4c065f92834c2481bb9f395a419d7a5"
+    },
+    "checklist_md": {
+      "bytes": 13012,
+      "path": "D:\\RCAIDE\\dnext001\\wt-real-a5-review\\docs\\reviews\\dreal001_a5_m0r_gate_checklist_draft_20261113.md",
+      "sha256": "201c92803bc24e43f7801c95aebc5db4f0274f811426e9497ffae36e857918fb"
+    },
+    "conditions": {
+      "bytes": 14591,
+      "path": "D:\\RCAIDE\\dnext001\\wt-real-a5-review\\docs\\reviews\\dreal001_a5_m0r_gate_conditions_draft_20261113.json",
+      "sha256": "42dfe3c3c178497eacceffe01a95e7ec4a1e26784815653cdd73b83cbc374a1b"
+    },
+    "conditions_md": {
+      "bytes": 11175,
+      "path": "D:\\RCAIDE\\dnext001\\wt-real-a5-review\\docs\\reviews\\dreal001_a5_m0r_gate_conditions_draft_20261113.md",
+      "sha256": "747bf6948daee85cdb0a7ba3937b0fea4de58ca11889bff24e48a33807048ba1"
+    },
+    "counts": {
+      "total_checks": 60,
+      "total_conditions": 42
+    },
+    "gate_id": "G-M0R-ADMISSION-01",
+    "status": "DRAFT_NOT_A_GATE"
+  },
+  "a5_requirements": {
+    "bytes": 16397,
+    "count": 30,
+    "md": {
+      "bytes": 8735,
+      "path": "D:\\RCAIDE\\dnext001\\wt-real-a5-review\\docs\\reviews\\dreal001_a5_m0r_requirements_20261113.md",
+      "sha256": "5d80b374c7d74aab84a956650ad676b141df46c6711706e25a9de1aa70d7982e"
+    },
+    "path": "D:\\RCAIDE\\dnext001\\wt-real-a5-review\\docs\\reviews\\dreal001_a5_m0r_requirements_20261113.json",
+    "sha256": "f8b70703bd6f6fb20849e8ca1e4e26200d9e3c3898df5ff16195c79b6d59fe61"
+  },
+  "coverage": {
+    "checklist_mapped": 60,
+    "gate_conditions_mapped": 42,
+    "missing_checklist": [],
+    "missing_gate_conditions": [],
+    "missing_requirements": [],
+    "requirements_mapped": 30
+  },
+  "coverage_checks": [
+    {
+      "description": "30 A5 requirements mapped",
+      "id": "MAP-01",
+      "status": "PASS"
+    },
+    {
+      "description": "60 A5 gate draft checks mapped",
+      "id": "MAP-02",
+      "status": "PASS"
+    },
+    {
+      "description": "42 A5 gate draft conditions mapped",
+      "id": "MAP-03",
+      "status": "PASS"
+    },
+    {
+      "description": "no A5 gate is claimed as signed by this pre-draft",
+      "id": "MAP-04",
+      "status": "PASS"
+    },
+    {
+      "description": "A5 draft is not treated as a gate; G-M0R-ADMISSION-01 remains A5-owned",
+      "id": "MAP-05",
+      "status": "PASS"
+    }
+  ],
+  "gate_boundary": [
+    "A5 draft is evidence-organizing input only; A5 signs the formal gate after task-57 freeze.",
+    "This file does not claim PASS, READY_FOR_M1A_ADMISSION, or admission.",
+    "Task-60 pre-draft must not be used as the formal package."
+  ],
+  "gate_checklist_60": [
+    {
+      "category": "package",
+      "expected": "commit/SUMS；旧 SHA 仅出现在 superseded；旧树 diff=0",
+      "id": "MRC-01",
+      "pre_draft_evidence": [
+        "M0R_PREDRAFT_MANIFEST.json",
+        "M0R_VALIDATION_PREDRAFT.json"
+      ],
+      "pre_draft_status": "PENDING_FINAL_PACKAGE_OR_A5_GATE",
+      "requirement": "M0-R 包为全新 commit/目录，不修改旧 T0-4/A3 M0/F1/F2/R1-R10 字节；新 family_sha256 非 ada424cc、非 40fdd436。",
+      "severity": "CRITICAL",
+      "source_requirement": "R01"
+    },
+    {
+      "category": "package",
+      "expected": "SUMS N/N；0 mismatch",
+      "id": "MRC-02",
+      "pre_draft_evidence": [
+        "M0R_PREDRAFT_MANIFEST.json",
+        "M0R_VALIDATION_PREDRAFT.json"
+      ],
+      "pre_draft_status": "PENDING_FINAL_PACKAGE_OR_A5_GATE",
+      "requirement": "M0-R 包内 SHA256SUMS 覆盖全部交付文件；A5 逐行复算全匹配。",
+      "severity": "CRITICAL",
+      "source_requirement": "R27"
+    },
+    {
+      "category": "gate",
+      "expected": "新 gate json/md/checklist/conditions/SUMS；旧 gate 不改",
+      "id": "MRC-03",
+      "pre_draft_evidence": [
+        "M0R_A5_REQUIREMENTS_MAP_PREDRAFT.json"
+      ],
+      "pre_draft_status": "PENDING_FINAL_PACKAGE_OR_A5_GATE",
+      "requirement": "gate 使用新 ID G-M0R-ADMISSION-01，不复用 G-T0-ADMISSION-01 commit/SHA/字节。",
+      "severity": "CRITICAL",
+      "source_requirement": "R28"
+    },
+    {
+      "category": "binding",
+      "expected": "SHA/bytes 全匹配",
+      "id": "MRC-04",
+      "pre_draft_evidence": [
+        "M0R_PREDRAFT_MANIFEST.json",
+        "M0R_A5_REQUIREMENTS_MAP_PREDRAFT.json"
+      ],
+      "pre_draft_status": "PENDING_FINAL_PACKAGE_OR_A5_GATE",
+      "requirement": "gate 绑定 L-30 27f8d91、L-30-A01 30166a0、L-31 544629a、A5 requirements f8b70703…/16,397B/30 条。",
+      "severity": "CRITICAL",
+      "source_requirement": "R01/R28"
+    },
+    {
+      "category": "zero_physical",
+      "expected": "A5 独立检查；spawn=[]；run_dir/ledger false",
+      "id": "MRC-05",
+      "pre_draft_evidence": [
+        "M0R_ZERO_PHYSICAL_EVIDENCE_PREDRAFT.json"
+      ],
+      "pre_draft_status": "PENDING_FINAL_PACKAGE_OR_A5_GATE",
+      "requirement": "M0-R 全程零物理：physical_call_count=0；无 run dir/ledger/token/authorization；无 solver spawn。",
+      "severity": "CRITICAL",
+      "source_requirement": "R17/R27"
+    },
+    {
+      "category": "geometry",
+      "expected": "6 tasks geometry=16da；零物理复建 2/2 字节同",
+      "id": "MRC-06",
+      "pre_draft_evidence": [
+        "M0R_SREF_PROVENANCE_PREDRAFT.json",
+        "M0R_DECK_SPECS_PREDRAFT.json",
+        "M0R_TASK_SPECS_PREDRAFT.json"
+      ],
+      "pre_draft_status": "EVIDENCED_IN_PREDRAFT",
+      "requirement": "任务族几何重绑 post-fix 546x480：baseline vspgeom 16da482a…/225,414B；openvsp_geometry d20ee7ad；F1R2 12D audit 7a90b977。",
+      "severity": "CRITICAL",
+      "source_requirement": "R02"
+    },
+    {
+      "category": "geometry",
+      "expected": "active 引用 0；披露含 40fd 历史",
+      "id": "MRC-07",
+      "pre_draft_evidence": [
+        "M0R_SREF_PROVENANCE_PREDRAFT.json",
+        "M0R_DECK_SPECS_PREDRAFT.json",
+        "M0R_TASK_SPECS_PREDRAFT.json"
+      ],
+      "pre_draft_status": "EVIDENCED_IN_PREDRAFT",
+      "requirement": "40fdd436…/543x472/227,247B 不得出现在 active family；只可作 historical/superseded。",
+      "severity": "CRITICAL",
+      "source_requirement": "R02"
+    },
+    {
+      "category": "geometry",
+      "expected": "per-design 字段；baseline 分开",
+      "id": "MRC-08",
+      "pre_draft_evidence": [
+        "M0R_SREF_PROVENANCE_PREDRAFT.json",
+        "M0R_DECK_SPECS_PREDRAFT.json",
+        "M0R_TASK_SPECS_PREDRAFT.json"
+      ],
+      "pre_draft_status": "EVIDENCED_IN_PREDRAFT",
+      "requirement": "每设计记录 vspgeom SHA；baseline SHA 只作族身份；不得以单一 SHA 代表所有设计。",
+      "severity": "HIGH",
+      "source_requirement": "R24"
+    },
+    {
+      "category": "tasks",
+      "expected": "6/6 字段匹配；alt set={18288}",
+      "id": "MRC-09",
+      "pre_draft_evidence": [
+        "M0R_TASK_SPECS_PREDRAFT.json"
+      ],
+      "pre_draft_status": "EVIDENCED_IN_PREDRAFT",
+      "requirement": "6 任务 ID/因子与 L-30-A01 完全一致；alt 全 18,288 m；无 15/20 km 副本。",
+      "severity": "CRITICAL",
+      "source_requirement": "R06/R21"
+    },
+    {
+      "category": "tasks",
+      "expected": "split 集合/计数；盲测流程",
+      "id": "MRC-10",
+      "pre_draft_evidence": [
+        "M0R_TASK_SPECS_PREDRAFT.json"
+      ],
+      "pre_draft_status": "EVIDENCED_IN_PREDRAFT",
+      "requirement": "split 3 train/1 val/2 blind test；meta_test 盲、不在 M1/M2 运行、不揭盲。",
+      "severity": "CRITICAL",
+      "source_requirement": "R06"
+    },
+    {
+      "category": "tasks",
+      "expected": "6 任务表；A5 逐字段复算",
+      "id": "MRC-11",
+      "pre_draft_evidence": [
+        "M0R_TASK_SPECS_PREDRAFT.json"
+      ],
+      "pre_draft_status": "EVIDENCED_IN_PREDRAFT",
+      "requirement": "每 task 记录 Mach/alt/CL/q/Vinf/Rho/ReCref/L_ref/mass/SREF_REF/fingerprint/geometry/evaluator/solver；ID 非旧 ada424cc。",
+      "severity": "CRITICAL",
+      "source_requirement": "R21"
+    },
+    {
+      "category": "atmosphere",
+      "expected": "字段/复算一致；仅一处大气模块",
+      "id": "MRC-12",
+      "pre_draft_evidence": [
+        "M0R_TASK_SPECS_PREDRAFT.json"
+      ],
+      "pre_draft_status": "EVIDENCED_IN_PREDRAFT",
+      "requirement": "q 单源 ATM-F1R2；p=7171.544888256813、T=216.65、R=287.05287、rho=0.1153178340089936、a=295.06801842964956、ReCref=89,397,005.8767656。",
+      "severity": "CRITICAL",
+      "source_requirement": "R04"
+    },
+    {
+      "category": "atmosphere",
+      "expected": "A5 6/6 复算；无 ISO 混用",
+      "id": "MRC-13",
+      "pre_draft_evidence": [
+        "M0R_TASK_SPECS_PREDRAFT.json"
+      ],
+      "pre_draft_status": "EVIDENCED_IN_PREDRAFT",
+      "requirement": "6 任务 q 精确等于 20,483.940233430174（M2.02）/24,297.194081414087（M2.2）/16,265.063806566453（M1.8），rel≤1e-12。",
+      "severity": "CRITICAL",
+      "source_requirement": "R04"
+    },
+    {
+      "category": "atmosphere",
+      "expected": "6/6 复算",
+      "id": "MRC-14",
+      "pre_draft_evidence": [
+        "M0R_TASK_SPECS_PREDRAFT.json"
+      ],
+      "pre_draft_status": "EVIDENCED_IN_PREDRAFT",
+      "requirement": "Vinf 6 任务精确匹配 596.0373972278921（2.02）/649.14964（2.2）/531.122433（1.8），rel≤1e-12。",
+      "severity": "HIGH",
+      "source_requirement": "R04"
+    },
+    {
+      "category": "atmosphere",
+      "expected": "prereg/task metadata 含披露",
+      "id": "MRC-15",
+      "pre_draft_evidence": [
+        "M0R_TASK_SPECS_PREDRAFT.json"
+      ],
+      "pre_draft_status": "EVIDENCED_IN_PREDRAFT",
+      "requirement": "披露 ATM-F1R2 vs ISO-1 q rel≈1.24e-5；M2.02 与 F1R2 连续；2.2/1.8 不继承 F1R2 expected polar。",
+      "severity": "HIGH",
+      "source_requirement": "R25"
+    },
+    {
+      "category": "lift_reference",
+      "expected": "SREF 字段/SHA；grep 358.25 active=0；负例 fail-closed",
+      "id": "MRC-16",
+      "pre_draft_evidence": [
+        "M0R_SREF_PROVENANCE_PREDRAFT.json",
+        "M0R_TASK_SPECS_PREDRAFT.json"
+      ],
+      "pre_draft_status": "EVIDENCED_IN_PREDRAFT",
+      "requirement": "L_ref=q*SREF_REF*CL_target；SREF_REF 运行时由 post-fix baseline 重算并 SHA 绑定；不得硬编码 358.25，不得 fallback。",
+      "severity": "CRITICAL",
+      "source_requirement": "R05"
+    },
+    {
+      "category": "lift_reference",
+      "expected": "A5 复算 6/6 rel≤1e-12",
+      "id": "MRC-17",
+      "pre_draft_evidence": [
+        "M0R_SREF_PROVENANCE_PREDRAFT.json",
+        "M0R_TASK_SPECS_PREDRAFT.json"
+      ],
+      "pre_draft_status": "EVIDENCED_IN_PREDRAFT",
+      "requirement": "6 任务 L_ref/mass 精确匹配 L-30-A01：1,247,523.170066/127.211960；1,394,290.601839/142.178073；1,479,759.862543/150.893512；1,653,849.258137/168.645690；990,583.048479/101.011359；1,107,122.230653/112.895049。",
+      "severity": "CRITICAL",
+      "source_requirement": "R05"
+    },
+    {
+      "category": "lift_reference",
+      "expected": "min/max 检查；负例",
+      "id": "MRC-18",
+      "pre_draft_evidence": [
+        "M0R_SREF_PROVENANCE_PREDRAFT.json",
+        "M0R_TASK_SPECS_PREDRAFT.json"
+      ],
+      "pre_draft_status": "EVIDENCED_IN_PREDRAFT",
+      "requirement": "质量带 100–190 t；6 任务 mass 全在带内；越界 fail-closed。",
+      "severity": "HIGH",
+      "source_requirement": "R05"
+    },
+    {
+      "category": "lift_reference",
+      "expected": "代码/负例；无 fallback",
+      "id": "MRC-19",
+      "pre_draft_evidence": [
+        "M0R_SREF_PROVENANCE_PREDRAFT.json",
+        "M0R_TASK_SPECS_PREDRAFT.json"
+      ],
+      "pre_draft_status": "EVIDENCED_IN_PREDRAFT",
+      "requirement": "LREF-1..8 fail-closed 检查存在且单测覆盖；不得 fallback 到旧 L_ref/旧几何/ISO。",
+      "severity": "HIGH",
+      "source_requirement": "R26"
+    },
+    {
+      "category": "executor",
+      "expected": "接口/单测；缺任务负例",
+      "id": "MRC-20",
+      "pre_draft_evidence": [
+        "M0R_DECK_SPECS_PREDRAFT.json"
+      ],
+      "pre_draft_status": "PENDING_A1_INTERFACE_FREEZE",
+      "requirement": "task-capable executor 逐任务注入 Mach/alt/CL/Vinf/Rho/ReCref/q；任务缺失 fail-closed。",
+      "severity": "CRITICAL",
+      "source_requirement": "R03"
+    },
+    {
+      "category": "executor",
+      "expected": "6 deck SHA；A5 读 deck 核字段",
+      "id": "MRC-21",
+      "pre_draft_evidence": [
+        "M0R_DECK_SPECS_PREDRAFT.json"
+      ],
+      "pre_draft_status": "PENDING_A1_INTERFACE_FREEZE",
+      "requirement": "6 个 per-task .vspaero deck；deck SHA 进包；M2.02 deck 与 F1R2 参数（Mach 2.02/Vinf/Rho/ReCref/alpha）一致。",
+      "severity": "CRITICAL",
+      "source_requirement": "R03/R22"
+    },
+    {
+      "category": "executor",
+      "expected": "vspgeom equality；SHA 表",
+      "id": "MRC-22",
+      "pre_draft_evidence": [
+        "M0R_DECK_SPECS_PREDRAFT.json"
+      ],
+      "pre_draft_status": "PENDING_A1_INTERFACE_FREEZE",
+      "requirement": "同一设计跨 task 复用同一 vspgeom 字节（build once）；per-task 记录 vspgeom/deck/polar SHA。",
+      "severity": "HIGH",
+      "source_requirement": "R22"
+    },
+    {
+      "category": "dry_run",
+      "expected": "A5 独立 run/复核证据",
+      "id": "MRC-23",
+      "pre_draft_evidence": [
+        "M0R_DECK_SPECS_PREDRAFT.json",
+        "M0R_ZERO_PHYSICAL_EVIDENCE_PREDRAFT.json"
+      ],
+      "pre_draft_status": "PENDING_FINAL_PACKAGE_OR_A5_GATE",
+      "requirement": "零物理 dry-run 覆盖 6 任务×3 参考设计；spawn=[]、solver_outputs=[]、physical=0、无 run dir。",
+      "severity": "CRITICAL",
+      "source_requirement": "R03/R27"
+    },
+    {
+      "category": "design_space",
+      "expected": "raw SHA；C01–C04 字段/SHA",
+      "id": "MRC-24",
+      "pre_draft_evidence": [
+        "M0R_TASK_SPECS_PREDRAFT.json"
+      ],
+      "pre_draft_status": "EVIDENCED_IN_PREDRAFT",
+      "requirement": "设计空间同时绑 raw YAML 8b29d1e3…/10,846B 与 C01–C04 cross constraints。",
+      "severity": "CRITICAL",
+      "source_requirement": "R07"
+    },
+    {
+      "category": "design_space",
+      "expected": "代码/负例；canonical 不替代",
+      "id": "MRC-25",
+      "pre_draft_evidence": [
+        "M0R_TASK_SPECS_PREDRAFT.json"
+      ],
+      "pre_draft_status": "EVIDENCED_IN_PREDRAFT",
+      "requirement": "M1 sampler/executor 强制执行 check_cross_constraints；违反 C01–C04 负例被拒。",
+      "severity": "CRITICAL",
+      "source_requirement": "R07"
+    },
+    {
+      "category": "alpha_lift",
+      "expected": "单值/列表；一致性检查",
+      "id": "MRC-26",
+      "pre_draft_evidence": [
+        "M0R_TASK_SPECS_PREDRAFT.json"
+      ],
+      "pre_draft_status": "EVIDENCED_IN_PREDRAFT",
+      "requirement": "7 点 alpha 固定；max_refine_sweeps 单值（0 或明确列表）；alpha_refine 明确；无 frozen=0/tasks=2 矛盾。",
+      "severity": "CRITICAL",
+      "source_requirement": "R08"
+    },
+    {
+      "category": "alpha_lift",
+      "expected": "独立复算；残差/不确定性",
+      "id": "MRC-27",
+      "pre_draft_evidence": [
+        "M0R_TASK_SPECS_PREDRAFT.json"
+      ],
+      "pre_draft_status": "EVIDENCED_IN_PREDRAFT",
+      "requirement": "报告独立升力残差与插值不确定性；C2 残差不得仅由构造性插值得到。",
+      "severity": "CRITICAL",
+      "source_requirement": "R08"
+    },
+    {
+      "category": "mask",
+      "expected": "mask 字段；corrected text",
+      "id": "MRC-28",
+      "pre_draft_evidence": [
+        "M0R_TASK_SPECS_PREDRAFT.json"
+      ],
+      "pre_draft_status": "EVIDENCED_IN_PREDRAFT",
+      "requirement": "12D_ALL_ACTIVE；10D_ACTIVE_PLUS_2_INACTIVE=DEFERRED_TO_M1；不得声明 V01/V02 零效应。",
+      "severity": "HIGH",
+      "source_requirement": "R09"
+    },
+    {
+      "category": "effect_threshold",
+      "expected": "常量/字段/单测；A5 复核定义",
+      "id": "MRC-29",
+      "pre_draft_evidence": [
+        "M0R_CTX_PLAN_PREDRAFT.json"
+      ],
+      "pre_draft_status": "EVIDENCED_IN_PREDRAFT",
+      "requirement": "MIN_EFFECT_REL>0 且预注册；建议 max(2×U_within,1e-3)；不得 0.0。",
+      "severity": "HIGH",
+      "source_requirement": "R10"
+    },
+    {
+      "category": "cross_task",
+      "expected": "定义/阈值；披露 n=3",
+      "id": "MRC-30",
+      "pre_draft_evidence": [
+        "M0R_CTX_PLAN_PREDRAFT.json"
+      ],
+      "pre_draft_status": "EVIDENCED_IN_PREDRAFT",
+      "requirement": "M1-A CTX-A/B 预注册：4 任务×3 设计；效应量分离≥max(2U_within,1e-3)；Spearman n=3 仅描述性、无 p 值。",
+      "severity": "CRITICAL",
+      "source_requirement": "R11"
+    },
+    {
+      "category": "cross_task",
+      "expected": "CTX 结果/阻断流程",
+      "id": "MRC-31",
+      "pre_draft_evidence": [
+        "M0R_CTX_PLAN_PREDRAFT.json"
+      ],
+      "pre_draft_status": "EVIDENCED_IN_PREDRAFT",
+      "requirement": "4/4 任务可分或 PHYSICAL_TASK_FAMILY_BLOCKED；不得仅整体乘常数的表面迁移。",
+      "severity": "CRITICAL",
+      "source_requirement": "R11"
+    },
+    {
+      "category": "budget",
+      "expected": "预算/算术/repeat 字段",
+      "id": "MRC-32",
+      "pre_draft_evidence": [
+        "M0R_BUDGET_LEDGER_PREDRAFT.json"
+      ],
+      "pre_draft_status": "EVIDENCED_IN_PREDRAFT",
+      "requirement": "M1-A 15/105 caps 18/126 retry0；4 任务×3 设计+1 exact repeat+2 preflight；repeat 预注册 task/design/deck SHA。",
+      "severity": "CRITICAL",
+      "source_requirement": "R12"
+    },
+    {
+      "category": "budget",
+      "expected": "预算/标签/授权边界",
+      "id": "MRC-33",
+      "pre_draft_evidence": [
+        "M0R_BUDGET_LEDGER_PREDRAFT.json"
+      ],
+      "pre_draft_status": "EVIDENCED_IN_PREDRAFT",
+      "requirement": "M1-B 66/462 caps 70/490 retry0；64 labels+2 preflight；仅 M1-A 通过后单独授权。",
+      "severity": "CRITICAL",
+      "source_requirement": "R13"
+    },
+    {
+      "category": "budget",
+      "expected": "预算/揭盲流程",
+      "id": "MRC-34",
+      "pre_draft_evidence": [
+        "M0R_BUDGET_LEDGER_PREDRAFT.json"
+      ],
+      "pre_draft_status": "EVIDENCED_IN_PREDRAFT",
+      "requirement": "M3-A 34/238 caps 38/266 retry0；32 labels+2 preflight；M3 前不运行 meta_test。",
+      "severity": "CRITICAL",
+      "source_requirement": "R14"
+    },
+    {
+      "category": "budget",
+      "expected": "汇总算术；M3-B 字段",
+      "id": "MRC-35",
+      "pre_draft_evidence": [
+        "M0R_BUDGET_LEDGER_PREDRAFT.json"
+      ],
+      "pre_draft_status": "EVIDENCED_IN_PREDRAFT",
+      "requirement": "总 115/805 hard 126/882 labels96 preflight6 retry0；M3-B NOT_AUTHORIZED。",
+      "severity": "CRITICAL",
+      "source_requirement": "R15"
+    },
+    {
+      "category": "accounting",
+      "expected": "账本 schema/模板",
+      "id": "MRC-36",
+      "pre_draft_evidence": [
+        "M0R_BUDGET_LEDGER_PREDRAFT.json"
+      ],
+      "pre_draft_status": "PENDING_FINAL_PACKAGE_OR_A5_GATE",
+      "requirement": "五口径账本（physical/charged/cached/design/planned）分离；charged vs actual 双报；不得混写。",
+      "severity": "CRITICAL",
+      "source_requirement": "R15/R27"
+    },
+    {
+      "category": "admission",
+      "expected": "字段/schema；无 PASS 声明",
+      "id": "MRC-37",
+      "pre_draft_evidence": [
+        "M0R_CTX_PLAN_PREDRAFT.json",
+        "M0R_BUDGET_LEDGER_PREDRAFT.json"
+      ],
+      "pre_draft_status": "PRE_REGISTERED_PENDING_AUTHORIZATION",
+      "requirement": "admission=DEFERRED_TO_M1A_WITH_PRE_REGISTERED_CHECKS；M0/M0-R 不签 admission；首条真实 M1 标签按 validity/status/identity 判定，不按目标值。",
+      "severity": "CRITICAL",
+      "source_requirement": "R16"
+    },
+    {
+      "category": "authorization",
+      "expected": "零物理检查；token/approval 搜索",
+      "id": "MRC-38",
+      "pre_draft_evidence": [
+        "M0R_BUDGET_LEDGER_PREDRAFT.json",
+        "M0R_ZERO_PHYSICAL_EVIDENCE_PREDRAFT.json"
+      ],
+      "pre_draft_status": "PRE_REGISTERED_PENDING_AUTHORIZATION",
+      "requirement": "M0-R 不创建 run dir/ledger/token/authorization；不复用 #9 R10 或 #10 F1R2/F2R2 approval/token。",
+      "severity": "CRITICAL",
+      "source_requirement": "R17"
+    },
+    {
+      "category": "authorization",
+      "expected": "流程字段；无自动继承",
+      "id": "MRC-39",
+      "pre_draft_evidence": [
+        "M0R_BUDGET_LEDGER_PREDRAFT.json",
+        "M0R_ZERO_PHYSICAL_EVIDENCE_PREDRAFT.json"
+      ],
+      "pre_draft_status": "PRE_REGISTERED_PENDING_AUTHORIZATION",
+      "requirement": "M1-A/M1-B/M3 各自新 authorization/approval/A5/Lead GO；M1-A 结果不自动授权后续。",
+      "severity": "CRITICAL",
+      "source_requirement": "R29"
+    },
+    {
+      "category": "evidence_text",
+      "expected": "文本/manifest；不得引用不存在结论",
+      "id": "MRC-40",
+      "pre_draft_evidence": [
+        "M0R_PREDRAFT_MANIFEST.json",
+        "README_M0R_PREDRAFT_ZH.md"
+      ],
+      "pre_draft_status": "EVIDENCED_IN_PREDRAFT",
+      "requirement": "删除 “A5 P1-05 verified envelope 1.8/2.02/2.2”；P1-05 实际 1.8/2.0/2.2、18,288m、58f63bfc/199,997B、TREND_ONLY、2.02 NOT_COMPARABLE。",
+      "severity": "HIGH",
+      "source_requirement": "R19"
+    },
+    {
+      "category": "evidence_text",
+      "expected": "披露/引用",
+      "id": "MRC-41",
+      "pre_draft_evidence": [
+        "M0R_PREDRAFT_MANIFEST.json",
+        "README_M0R_PREDRAFT_ZH.md"
+      ],
+      "pre_draft_status": "EVIDENCED_IN_PREDRAFT",
+      "requirement": "记录 A1 F-M0-02 事实更正：40fd=543x472/227,247B；199,997B/483x418 是 P1-05 58f63bfc。",
+      "severity": "INFO",
+      "source_requirement": "R20"
+    },
+    {
+      "category": "consistency",
+      "expected": "A5 独立复算 rel≤1e-12；无第二公式",
+      "id": "MRC-42",
+      "pre_draft_evidence": [
+        "M0R_SREF_PROVENANCE_PREDRAFT.json",
+        "M0R_TASK_SPECS_PREDRAFT.json"
+      ],
+      "pre_draft_status": "EVIDENCED_IN_PREDRAFT",
+      "requirement": "q/L_ref/Sref 三重一致：q 由 deck 实际注入；L_ref=q*SREF_REF*CL；Sref(x) 逐设计；D_i=q*Sref(x)*CDi。",
+      "severity": "CRITICAL",
+      "source_requirement": "R23"
+    },
+    {
+      "category": "consistency",
+      "expected": "交叉检查/代码搜索",
+      "id": "MRC-43",
+      "pre_draft_evidence": [
+        "M0R_SREF_PROVENANCE_PREDRAFT.json",
+        "M0R_TASK_SPECS_PREDRAFT.json"
+      ],
+      "pre_draft_status": "EVIDENCED_IN_PREDRAFT",
+      "requirement": "W01 交叉校验 rel≤1e-6；q/L_ref/Sref 无第二套硬编码。",
+      "severity": "HIGH",
+      "source_requirement": "R23"
+    },
+    {
+      "category": "fail_closed",
+      "expected": "负例测试；失败码；无 fallback",
+      "id": "MRC-44",
+      "pre_draft_evidence": [
+        "M0R_VALIDATION_PREDRAFT.json"
+      ],
+      "pre_draft_status": "EVIDENCED_IN_PREDRAFT",
+      "requirement": "任何 task/atmosphere/SREF/geometry/mass/q 校验失败必须 fail-closed；禁止回退 358.25/旧几何/ISO/旧 task/旧 token。",
+      "severity": "CRITICAL",
+      "source_requirement": "R26"
+    },
+    {
+      "category": "validation",
+      "expected": "validation/dry-run/证据/SUMS",
+      "id": "MRC-45",
+      "pre_draft_evidence": [
+        "M0R_VALIDATION_PREDRAFT.json"
+      ],
+      "pre_draft_status": "PENDING_FINAL_PACKAGE_OR_A5_GATE",
+      "requirement": "M0-R 包含 validation、zero-physical dry-run、6 deck、A5 复算、无 solver 证据；commit 不 push。",
+      "severity": "CRITICAL",
+      "source_requirement": "R27"
+    },
+    {
+      "category": "claims",
+      "expected": "prereg/回执措辞；无禁用词",
+      "id": "MRC-46",
+      "pre_draft_evidence": [
+        "README_M0R_PREDRAFT_ZH.md",
+        "M0R_CTX_PLAN_PREDRAFT.json"
+      ],
+      "pre_draft_status": "EVIDENCED_IN_PREDRAFT",
+      "requirement": "不得宣称 winner/显著性/优化增益/跨族可比；fuel=null；外部物理 NOT_VALIDATED；单 seed 描述性；M3 任务级 n=2。",
+      "severity": "CRITICAL",
+      "source_requirement": "R30"
+    },
+    {
+      "category": "scientific",
+      "expected": "prereg 文本",
+      "id": "MRC-47",
+      "pre_draft_evidence": [
+        "README_M0R_PREDRAFT_ZH.md",
+        "M0R_CTX_PLAN_PREDRAFT.json"
+      ],
+      "pre_draft_status": "EVIDENCED_IN_PREDRAFT",
+      "requirement": "3 train/1 val/2 test 限制写入 prereg：单 val 不足稳健早停/模型选择；M2 固定 epoch 或 leave-one-train-out；不得据单 val 宣称泛化。",
+      "severity": "HIGH",
+      "source_requirement": "R30/科学限制"
+    },
+    {
+      "category": "scientific",
+      "expected": "prereg 文本",
+      "id": "MRC-48",
+      "pre_draft_evidence": [
+        "README_M0R_PREDRAFT_ZH.md",
+        "M0R_CTX_PLAN_PREDRAFT.json"
+      ],
+      "pre_draft_status": "EVIDENCED_IN_PREDRAFT",
+      "requirement": "2 test 均 Mach 1.8：仅低马赫外推、无跨 Mach 测试；不得跨族/跨 Mach 泛化。",
+      "severity": "HIGH",
+      "source_requirement": "R30/科学限制"
+    },
+    {
+      "category": "scientific",
+      "expected": "prereg 文本",
+      "id": "MRC-49",
+      "pre_draft_evidence": [
+        "README_M0R_PREDRAFT_ZH.md",
+        "M0R_CTX_PLAN_PREDRAFT.json"
+      ],
+      "pre_draft_status": "EVIDENCED_IN_PREDRAFT",
+      "requirement": "task-level 2 test tasks 只可描述性/配对区间；NO_EVIDENCE 可能；不得显著性/winner。",
+      "severity": "HIGH",
+      "source_requirement": "R30/科学限制"
+    },
+    {
+      "category": "scientific",
+      "expected": "prereg 文本",
+      "id": "MRC-50",
+      "pre_draft_evidence": [
+        "README_M0R_PREDRAFT_ZH.md",
+        "M0R_CTX_PLAN_PREDRAFT.json"
+      ],
+      "pre_draft_status": "EVIDENCED_IN_PREDRAFT",
+      "requirement": "6 任务为 Mach×CL、无高度因子；质量为目标巡航质量、无燃油模型；fuel=null。",
+      "severity": "HIGH",
+      "source_requirement": "R30/科学限制"
+    },
+    {
+      "category": "gate_input",
+      "expected": "commit/状态；pre-draft 标记",
+      "id": "MRC-51",
+      "pre_draft_evidence": [
+        "M0R_A5_REQUIREMENTS_MAP_PREDRAFT.json"
+      ],
+      "pre_draft_status": "PENDING_FINAL_PACKAGE_OR_A5_GATE",
+      "requirement": "A3 M0-R 包由 task-57 正式冻结；task-60 pre-draft 不得被当作正式包/不得冻结。",
+      "severity": "CRITICAL",
+      "source_requirement": "R01/R28"
+    },
+    {
+      "category": "gate_input",
+      "expected": "A1 commit/证据；接口 SHA",
+      "id": "MRC-52",
+      "pre_draft_evidence": [
+        "M0R_A5_REQUIREMENTS_MAP_PREDRAFT.json"
+      ],
+      "pre_draft_status": "PENDING_FINAL_PACKAGE_OR_A5_GATE",
+      "requirement": "A1 task-56 U1/U2 已交付且 6-task 零物理 dry-run 冻结；接口变更后 gate 作废重出。",
+      "severity": "CRITICAL",
+      "source_requirement": "R02/R03/R27"
+    },
+    {
+      "category": "gate_input",
+      "expected": "映射表 30/30",
+      "id": "MRC-53",
+      "pre_draft_evidence": [
+        "M0R_A5_REQUIREMENTS_MAP_PREDRAFT.json"
+      ],
+      "pre_draft_status": "EVIDENCED_IN_PREDRAFT",
+      "requirement": "A5 requirements R01–R30 逐条映射到本 checklist/conditions；无遗漏。",
+      "severity": "CRITICAL",
+      "source_requirement": "R01-R30"
+    },
+    {
+      "category": "gate_input",
+      "expected": "L-31 一致性记录",
+      "id": "MRC-54",
+      "pre_draft_evidence": [
+        "M0R_A5_REQUIREMENTS_MAP_PREDRAFT.json"
+      ],
+      "pre_draft_status": "PENDING_FINAL_PACKAGE_OR_A5_GATE",
+      "requirement": "L-31 与 requirements 引用/数字一致；有冲突即先报 Lead 修正，不带冲突签 gate。",
+      "severity": "HIGH",
+      "source_requirement": "L-31"
+    },
+    {
+      "category": "gate_input",
+      "expected": "旧 commit 字节 diff=0",
+      "id": "MRC-55",
+      "pre_draft_evidence": [
+        "M0R_A5_REQUIREMENTS_MAP_PREDRAFT.json"
+      ],
+      "pre_draft_status": "PENDING_FINAL_PACKAGE_OR_A5_GATE",
+      "requirement": "旧 G-T0-ADMISSION-01 保持 M0_BLOCKED 历史；新 gate 不改变旧字节/结论。",
+      "severity": "HIGH",
+      "source_requirement": "R28"
+    },
+    {
+      "category": "process",
+      "expected": "A5 证据；spawn=[]",
+      "id": "MRC-56",
+      "pre_draft_evidence": [
+        "M0R_A5_REQUIREMENTS_MAP_PREDRAFT.json"
+      ],
+      "pre_draft_status": "PENDING_FINAL_PACKAGE_OR_A5_GATE",
+      "requirement": "A5 独立执行：不修补 M0-R 包、不改 A1/A3 字节、不启动 solver、不建 run dir/ledger；physical=0。",
+      "severity": "CRITICAL",
+      "source_requirement": "R18"
+    },
+    {
+      "category": "process",
+      "expected": "verdict/字段",
+      "id": "MRC-57",
+      "pre_draft_evidence": [
+        "M0R_A5_REQUIREMENTS_MAP_PREDRAFT.json"
+      ],
+      "pre_draft_status": "PENDING_FINAL_PACKAGE_OR_A5_GATE",
+      "requirement": "gate 结果只可为 READY_FOR_M1A_ADMISSION 或 M0R_BLOCKED；不得写 admission signed/ready_for_real_meta_training=true。",
+      "severity": "CRITICAL",
+      "source_requirement": "R16/R18"
+    },
+    {
+      "category": "process",
+      "expected": "边界字段",
+      "id": "MRC-58",
+      "pre_draft_evidence": [
+        "M0R_A5_REQUIREMENTS_MAP_PREDRAFT.json"
+      ],
+      "pre_draft_status": "PENDING_FINAL_PACKAGE_OR_A5_GATE",
+      "requirement": "M0-R gate PASS 不授权 M1；M1-A 需单独 authorization/approval/GO；不得复用旧 token。",
+      "severity": "HIGH",
+      "source_requirement": "R29"
+    },
+    {
+      "category": "evidence",
+      "expected": "文件/SHA/commit",
+      "id": "MRC-59",
+      "pre_draft_evidence": [
+        "M0R_PREDRAFT_MANIFEST.json",
+        "M0R_VALIDATION_PREDRAFT.json"
+      ],
+      "pre_draft_status": "PENDING_FINAL_PACKAGE_OR_A5_GATE",
+      "requirement": "gate 产物含 checklist/conditions/gate json/md/SUMS；A5 commit；不 push；旧证据不覆盖。",
+      "severity": "HIGH",
+      "source_requirement": "R18/R27"
+    },
+    {
+      "category": "accounting",
+      "expected": "A5 算术；无 19/133 混写",
+      "id": "MRC-60",
+      "pre_draft_evidence": [
+        "M0R_BUDGET_LEDGER_PREDRAFT.json"
+      ],
+      "pre_draft_status": "EVIDENCED_IN_PREDRAFT",
+      "requirement": "预算/账本算术独立复算：M1-A 15=12+1+2、105=7×15；M1-B 66、462=7×66；M3-A 34、238=7×34；总 115、805=7×115。",
+      "severity": "HIGH",
+      "source_requirement": "R12-R15"
+    }
+  ],
+  "gate_conditions_42": [
+    {
+      "acceptance": "新包 commit/SUMS；family_sha256 非 ada424cc；旧 SHA 只出现在 superseded 披露",
+      "category": "package",
+      "id": "R01",
+      "pre_draft_status": "PENDING_FINAL_PACKAGE_OR_A5_GATE",
+      "severity": "CRITICAL",
+      "text": "M0-R 必须是全新包、新 family SHA、新 task ID；不得复用 ada424cc/40fdd436/旧 18-task 字节；旧 T0-4/A3 M0 字节不改，只作历史。"
+    },
+    {
+      "acceptance": "6 tasks geometry_sha256=16da482a…；零物理复建 2/2 字节一致；无 40fd active 引用",
+      "category": "geometry",
+      "id": "R02",
+      "pre_draft_status": "PENDING_FINAL_PACKAGE_OR_A5_GATE",
+      "severity": "CRITICAL",
+      "text": "任务族几何必须重绑 post-fix 546x480 链：openvsp_geometry d20ee7ad；baseline vspgeom 16da482a/225,414B/546x480；F1R2 12D audit 7a90b977；40fdd436 不得出现在 active family。"
+    },
+    {
+      "acceptance": "executor 接口/单测；6 deck SHA；M2.02 deck 与 F1R2 同参数（Vinf/Rho/ReCref/Mach/alpha）；spawn=[]；physical=0",
+      "category": "executor",
+      "id": "R03",
+      "pre_draft_status": "PENDING_FINAL_PACKAGE_OR_A5_GATE",
+      "severity": "CRITICAL",
+      "text": "task-capable executor：逐任务注入 Mach/alt/CL/Vinf/Rho/ReCref/q；6 个 per-task .vspaero deck；任务缺失 fail-closed；零物理 dry-run。"
+    },
+    {
+      "acceptance": "A5 独立复算 6/6 rel≤1e-12；代码仅一处大气模块；无第二套 q/L_ref",
+      "category": "q_source",
+      "id": "R04",
+      "pre_draft_status": "PENDING_FINAL_PACKAGE_OR_A5_GATE",
+      "severity": "CRITICAL",
+      "text": "q 单源 ATM-F1R2；q 由实际注入 Vinf/Rho 复算 rel≤1e-12；6 任务 q 精确等于 20483.940233430174/24297.194081414087/16265.063806566453；禁止 ISO 混用。"
+    },
+    {
+      "acceptance": "6 任务 L_ref/mass 精确匹配 L-30-A01；SREF_REF 运行时字段/SHA；越界或 fallback 即 fail-closed",
+      "category": "lift_reference",
+      "id": "R05",
+      "pre_draft_status": "PENDING_FINAL_PACKAGE_OR_A5_GATE",
+      "severity": "CRITICAL",
+      "text": "L_ref=q*SREF_REF*CL_target；SREF_REF 运行时由 post-fix baseline 几何重算并 SHA 绑定，不得硬编码 358.25；m_task=L_ref/g0；质量带 100–190 t；LREF-1..8 fail-closed。"
+    },
+    {
+      "acceptance": "6 tasks 因子/ID/split 全匹配；无 15/20 km task；meta_test 在 M1/M2 不运行、不揭盲",
+      "category": "tasks",
+      "id": "R06",
+      "pre_draft_status": "PENDING_FINAL_PACKAGE_OR_A5_GATE",
+      "severity": "CRITICAL",
+      "text": "只保留 L-30-A01 的 6 任务；固定 18,288 m；3 train/1 val/2 test；meta_test 盲；删除全部高度缩放副本。"
+    },
+    {
+      "acceptance": "raw SHA + C01–C04 字段/SHA；负例测试拒绝违反 C01–C04；canonical hash 不能替代 cross constraints",
+      "category": "design_space",
+      "id": "R07",
+      "pre_draft_status": "PENDING_FINAL_PACKAGE_OR_A5_GATE",
+      "severity": "CRITICAL",
+      "text": "设计空间同时绑 raw YAML 8b29d1e3…/10,846B 与 C01–C04 cross constraints；M1 sampler/executor 强制执行 check_cross_constraints。"
+    },
+    {
+      "acceptance": "单值 max_refine；alpha_refine 明确；C2 残差独立复算；低 CL 插值不确定性>1e-3 时预注册加密或 A5 预签放宽",
+      "category": "alpha_lift",
+      "id": "R08",
+      "pre_draft_status": "PENDING_FINAL_PACKAGE_OR_A5_GATE",
+      "severity": "CRITICAL",
+      "text": "7 点 alpha 固定；max_refine_sweeps 统一（0 或明确 refine 列表）；不得 frozen=0/tasks=2 矛盾；报告独立升力残差与插值不确定性。"
+    },
+    {
+      "acceptance": "mask 字段/文本；F1R2 C3/C4 证据引用；不得声明 V01/V02 无效",
+      "category": "mask",
+      "id": "R09",
+      "pre_draft_status": "PENDING_FINAL_PACKAGE_OR_A5_GATE",
+      "severity": "HIGH",
+      "text": "12D_ALL_ACTIVE；10D_ACTIVE_PLUS_2_INACTIVE=DEFERRED_TO_M1；更正 “no zero-effect evidence” 文本。"
+    },
+    {
+      "acceptance": "常量/字段>0；单测；A5 复核阈值定义",
+      "category": "effect_threshold",
+      "id": "R10",
+      "pre_draft_status": "PENDING_FINAL_PACKAGE_OR_A5_GATE",
+      "severity": "HIGH",
+      "text": "MIN_EFFECT_REL>0 并预注册；建议 max(2×U_within,1e-3)；不得用 0.0。"
+    },
+    {
+      "acceptance": "CTX-A/B 定义/阈值；4/4 任务可分或 PHYSICAL_TASK_FAMILY_BLOCKED；披露 n=3 限制",
+      "category": "cross_task",
+      "id": "R11",
+      "pre_draft_status": "PENDING_FINAL_PACKAGE_OR_A5_GATE",
+      "severity": "CRITICAL",
+      "text": "M1-A CTX-A/B 预注册：4 任务×3 设计；效应量分离 ≥max(2U_within,1e-3)；3 设计下 Spearman 仅描述性，不得做 p 值/显著性；TOO_SIMILAR 规则保留。"
+    },
+    {
+      "acceptance": "预算表/算术；repeat 预注册；无额外设计/任务；五口径",
+      "category": "budget",
+      "id": "R12",
+      "pre_draft_status": "PENDING_FINAL_PACKAGE_OR_A5_GATE",
+      "severity": "CRITICAL",
+      "text": "M1-A 15 starts/105 internal，caps 18/126，retry 0；4 任务×3 设计+1 exact repeat+2 preflight；repeat 必须预注册 task/design/deck SHA。"
+    },
+    {
+      "acceptance": "仅 M1-A 通过后单独授权；预算/标签表",
+      "category": "budget",
+      "id": "R13",
+      "pre_draft_status": "PENDING_FINAL_PACKAGE_OR_A5_GATE",
+      "severity": "CRITICAL",
+      "text": "M1-B 66/462 caps 70/490；4 任务×16 designs=64 labels+2 preflight；retry 0。"
+    },
+    {
+      "acceptance": "单独授权；揭盲流程；任务级 n=2 描述性",
+      "category": "budget",
+      "id": "R14",
+      "pre_draft_status": "PENDING_FINAL_PACKAGE_OR_A5_GATE",
+      "severity": "CRITICAL",
+      "text": "M3-A 34/238 caps 38/266；2 test 任务×16=32 labels+2 preflight；retry 0；M3 前不得运行 meta_test。"
+    },
+    {
+      "acceptance": "汇总算术；M3-B NOT_AUTHORIZED；charged/actual 分离",
+      "category": "budget",
+      "id": "R15",
+      "pre_draft_status": "PENDING_FINAL_PACKAGE_OR_A5_GATE",
+      "severity": "CRITICAL",
+      "text": "总预算 planned 115/805，hard 126/882，labels 96，preflight 6，retry 0；M3-B 不授权。"
+    },
+    {
+      "acceptance": "admission 字段；schema；M0-R 无 PASS 声明；M1-A 后才可申请",
+      "category": "admission",
+      "id": "R16",
+      "pre_draft_status": "PENDING_FINAL_PACKAGE_OR_A5_GATE",
+      "severity": "CRITICAL",
+      "text": "admission=DEFERRED_TO_M1A_WITH_PRE_REGISTERED_CHECKS；M0/M0-R 不签 admission；首条真实 M1 标签按 validity/status/identity 判定，不按目标值。"
+    },
+    {
+      "acceptance": "physical=0；run_dir/ledger false；not_authorization=true；新 D-META-M1A-001 等仅在未来单独签",
+      "category": "authorization",
+      "id": "R17",
+      "pre_draft_status": "PENDING_FINAL_PACKAGE_OR_A5_GATE",
+      "severity": "CRITICAL",
+      "text": "M0-R 零物理；不创建 run dir/ledger/token/authorization；不复用 #9 R10 或 #10 F1R2/F2R2 approval/token。"
+    },
+    {
+      "acceptance": "A5 checklist/gate/SUMS；commit；不 push",
+      "category": "a5",
+      "id": "R18",
+      "pre_draft_status": "PENDING_FINAL_PACKAGE_OR_A5_GATE",
+      "severity": "CRITICAL",
+      "text": "A5 独立复核/门禁 G-M0R-ADMISSION-01；M0-R 包到后先 gate，不得先签 admission；A5 physical=0。"
+    },
+    {
+      "acceptance": "新文本/manifest；不得引用不存在的 A5 结论；如保留 1.6/2.4 排除，需新工程理由或校准",
+      "category": "evidence_text",
+      "id": "R19",
+      "pre_draft_status": "PENDING_FINAL_PACKAGE_OR_A5_GATE",
+      "severity": "HIGH",
+      "text": "T0-4/M0-R 必须删除 “A5 P1-05 verified envelope 1.8/2.02/2.2”；P1-05 实际 1.8/2.0/2.2、18,288m、旧 58f63/199,997B、TREND_ONLY、2.02 NOT_COMPARABLE。"
+    },
+    {
+      "acceptance": "gate 披露；A1 复核可引用更正",
+      "category": "review_correction",
+      "id": "R20",
+      "pre_draft_status": "PENDING_FINAL_PACKAGE_OR_A5_GATE",
+      "severity": "INFO",
+      "text": "A5 记录 A1 F-M0-02 事实更正：40fdd436=543x472/227,247B；199,997B/483x418 是 P1-05 58f63bfc；阻断结论不变。"
+    },
+    {
+      "acceptance": "6 任务表；A5 逐字段复算",
+      "category": "task_metadata",
+      "id": "R21",
+      "pre_draft_status": "PENDING_FINAL_PACKAGE_OR_A5_GATE",
+      "severity": "CRITICAL",
+      "text": "每 task 记录 Mach/alt/CL/q/Vinf/Rho/ReCref/L_ref/mass/SREF_REF/task fingerprint/geometry SHA/evaluator/solver；任务 ID 不得复用旧 ada424cc 任务 ID。"
+    },
+    {
+      "acceptance": "6 deck；vspgeom 字节 equality；SHA 表；零物理 dry-run",
+      "category": "deck",
+      "id": "R22",
+      "pre_draft_status": "PENDING_FINAL_PACKAGE_OR_A5_GATE",
+      "severity": "CRITICAL",
+      "text": "每 task 独立 .vspaero deck；同一设计跨 task 复用同一 vspgeom 字节（build once）；per-task 记录 vspgeom/polar/deck SHA。"
+    },
+    {
+      "acceptance": "rel≤1e-12；W01 交叉 rel≤1e-6；无第二套公式",
+      "category": "consistency",
+      "id": "R23",
+      "pre_draft_status": "PENDING_FINAL_PACKAGE_OR_A5_GATE",
+      "severity": "CRITICAL",
+      "text": "q/L_ref/Sref 三重一致：q 由 deck 实际注入；L_ref=q*SREF_REF*CL；Sref(x) 逐设计；D_i=q*Sref(x)*CDi；A5 独立复算。"
+    },
+    {
+      "acceptance": "per-design vspgeom SHA 字段；baseline 只作族身份",
+      "category": "geometry_identity",
+      "id": "R24",
+      "pre_draft_status": "PENDING_FINAL_PACKAGE_OR_A5_GATE",
+      "severity": "HIGH",
+      "text": "baseline SHA 与 per-design SHA 分开；M1 每设计记录 vspgeom SHA；不得用一个 40fd/16da 代表所有设计。"
+    },
+    {
+      "acceptance": "expected/polar 字段；披露；不得用 F1R2 8f4c 作 2.2/1.8 expected",
+      "category": "expected_polar",
+      "id": "R25",
+      "pre_draft_status": "PENDING_FINAL_PACKAGE_OR_A5_GATE",
+      "severity": "HIGH",
+      "text": "M2.02 可作 F1R2 连续性锚点；2.2/1.8 不继承 F1R2 expected polar；M1-A 重建 admission baseline。"
+    },
+    {
+      "acceptance": "负例测试；失败码；无 fallback",
+      "category": "fail_closed",
+      "id": "R26",
+      "pre_draft_status": "PENDING_FINAL_PACKAGE_OR_A5_GATE",
+      "severity": "CRITICAL",
+      "text": "任何 task/atmosphere/SREF/geometry/mass/q 校验失败必须 fail-closed；禁止回退到 358.25、旧几何、ISO、旧 task 或旧 token。"
+    },
+    {
+      "acceptance": "SUMS 全匹配；A5 独立 pytest/dry-run；spawn=[]；physical=0",
+      "category": "evidence",
+      "id": "R27",
+      "pre_draft_status": "PENDING_FINAL_PACKAGE_OR_A5_GATE",
+      "severity": "CRITICAL",
+      "text": "M0-R 包/证据必须含 SUMS、validation、zero-physical dry-run、6 deck、A5 复算、无 solver 证据；commit 不 push。"
+    },
+    {
+      "acceptance": "新 gate json/md/checklist/SUMS；旧字节不改",
+      "category": "gate_process",
+      "id": "R28",
+      "pre_draft_status": "PENDING_FINAL_PACKAGE_OR_A5_GATE",
+      "severity": "CRITICAL",
+      "text": "M0-R gate 新 ID G-M0R-ADMISSION-01；旧 G-T0-ADMISSION-01 保持 M0_BLOCKED 历史；不得复用旧 gate commit/SHA。"
+    },
+    {
+      "acceptance": "M1-A 新 gate；M1-A PASS/FAIL；不自动后续",
+      "category": "m1_process",
+      "id": "R29",
+      "pre_draft_status": "PENDING_FINAL_PACKAGE_OR_A5_GATE",
+      "severity": "CRITICAL",
+      "text": "M1-A 通过 A5 后单独 authorization/approval/GO；M1-A 结果只给 admission verdict，不自动授权 M1-B/M3。"
+    },
+    {
+      "acceptance": "prereg/回执措辞；无禁用词；披露",
+      "category": "claims",
+      "id": "R30",
+      "pre_draft_status": "PENDING_FINAL_PACKAGE_OR_A5_GATE",
+      "severity": "CRITICAL",
+      "text": "不得宣称 winner/显著性/优化增益/跨族可比；fuel_burn_kg=null；外部物理 NOT_VALIDATED；单 seed 描述性；M3 任务级 n=2。"
+    },
+    {
+      "acceptance": "package commit/status；pre-draft 标记",
+      "category": "gate",
+      "id": "G01",
+      "pre_draft_status": "PENDING_FINAL_PACKAGE_OR_A5_GATE",
+      "severity": "CRITICAL",
+      "text": "M0-R 包必须由 A3 task-57 正式冻结并 commit；task-60 pre-draft 不得作为正式包。"
+    },
+    {
+      "acceptance": "新 gate 产物；旧 gate diff=0",
+      "category": "gate",
+      "id": "G02",
+      "pre_draft_status": "PENDING_FINAL_PACKAGE_OR_A5_GATE",
+      "severity": "CRITICAL",
+      "text": "G-M0R-ADMISSION-01 为新 gate ID；不得复用 G-T0-ADMISSION-01 commit/SHA/字节。"
+    },
+    {
+      "acceptance": "SHA/bytes 全匹配",
+      "category": "binding",
+      "id": "G03",
+      "pre_draft_status": "PRE_REGISTERED_IN_PREDRAFT",
+      "severity": "CRITICAL",
+      "text": "gate 绑定 L-30 27f8d91、L-30-A01 30166a0、L-31 544629a、A5 requirements f8b70703/16,397/30 条。"
+    },
+    {
+      "acceptance": "包内文件/SUMS N/N",
+      "category": "package",
+      "id": "G04",
+      "pre_draft_status": "PENDING_FINAL_PACKAGE_OR_A5_GATE",
+      "severity": "CRITICAL",
+      "text": "M0-R 包含新 family SHA、6 TaskSpec、6 deck、raw YAML+C01–C04、validation、zero-physical dry-run、SUMS；A5 逐行复算。"
+    },
+    {
+      "acceptance": "独立证据",
+      "category": "zero_physical",
+      "id": "G05",
+      "pre_draft_status": "EVIDENCED_IN_PREDRAFT",
+      "severity": "CRITICAL",
+      "text": "A5 gate 全程 physical=0；不启 solver、不建 run dir/ledger/token；spawn=[]。"
+    },
+    {
+      "acceptance": "verdict 字段",
+      "category": "gate_result",
+      "id": "G06",
+      "pre_draft_status": "PENDING_FINAL_PACKAGE_OR_A5_GATE",
+      "severity": "CRITICAL",
+      "text": "verdict 只可 READY_FOR_M1A_ADMISSION 或 M0R_BLOCKED；不得签 admission、不得 ready_for_real_meta_training=true。"
+    },
+    {
+      "acceptance": "后续流程",
+      "category": "m1_authorization",
+      "id": "G07",
+      "pre_draft_status": "PENDING_FINAL_PACKAGE_OR_A5_GATE",
+      "severity": "CRITICAL",
+      "text": "gate PASS 不授权 M1；M1-A 需新 authorization/approval/A5/Lead GO；不复用 #9/#10 token。"
+    },
+    {
+      "acceptance": "预算/repeat 字段",
+      "category": "budget",
+      "id": "G08",
+      "pre_draft_status": "PRE_REGISTERED_IN_PREDRAFT",
+      "severity": "CRITICAL",
+      "text": "M1-A 15/105 caps18/126 retry0；repeat 预注册 exact task/design/deck SHA；spare 3/21 不得额外用。"
+    },
+    {
+      "acceptance": "预算/算术",
+      "category": "budget",
+      "id": "G09",
+      "pre_draft_status": "PRE_REGISTERED_IN_PREDRAFT",
+      "severity": "CRITICAL",
+      "text": "M1-B 66/462 caps70/490 labels64；M3-A 34/238 caps38/266 labels32；总 115/805 hard126/882 labels96 preflight6 retry0；M3-B 不授权。"
+    },
+    {
+      "acceptance": "CTX 定义/结果",
+      "category": "ctX",
+      "id": "G10",
+      "pre_draft_status": "PRE_REGISTERED_IN_PREDRAFT",
+      "severity": "CRITICAL",
+      "text": "CTX-A/B 4 任务×3 设计；效应量≥max(2U_within,1e-3)；Spearman n=3 只描述性、无 p 值；4/4 可分或 PHYSICAL_TASK_FAMILY_BLOCKED。"
+    },
+    {
+      "acceptance": "prereg/回执措辞",
+      "category": "claims",
+      "id": "G11",
+      "pre_draft_status": "PENDING_FINAL_PACKAGE_OR_A5_GATE",
+      "severity": "CRITICAL",
+      "text": "不得 winner/显著性/优化增益/跨族；fuel=null；外部物理 NOT_VALIDATED；单 seed 描述性；M3 任务级 n=2。"
+    },
+    {
+      "acceptance": "变更记录；新 gate",
+      "category": "change_control",
+      "id": "G12",
+      "pre_draft_status": "PENDING_FINAL_PACKAGE_OR_A5_GATE",
+      "severity": "CRITICAL",
+      "text": "gate 后任何包字节/接口/预算/任务/几何变化必须新 revision + 重出 gate；不得口头/单方面修改。"
+    }
+  ],
+  "n_fail": 0,
+  "requirements_30": [
+    {
+      "acceptance": "新包 commit/SUMS；family_sha256 非 ada424cc；旧 SHA 只出现在 superseded 披露",
+      "category": "package",
+      "id": "R01",
+      "pre_draft_evidence": [
+        "M0R_PREDRAFT_MANIFEST.json"
+      ],
+      "pre_draft_status": "PENDING_FINAL_PACKAGE",
+      "requirement": "M0-R 必须是全新包、新 family SHA、新 task ID；不得复用 ada424cc/40fdd436/旧 18-task 字节；旧 T0-4/A3 M0 字节不改，只作历史。",
+      "severity": "CRITICAL"
+    },
+    {
+      "acceptance": "6 tasks geometry_sha256=16da482a…；零物理复建 2/2 字节一致；无 40fd active 引用",
+      "category": "geometry",
+      "id": "R02",
+      "pre_draft_evidence": [
+        "M0R_SREF_PROVENANCE_PREDRAFT.json",
+        "M0R_TASK_SPECS_PREDRAFT.json",
+        "M0R_DECK_SPECS_PREDRAFT.json"
+      ],
+      "pre_draft_status": "EVIDENCED_IN_PREDRAFT",
+      "requirement": "任务族几何必须重绑 post-fix 546x480 链：openvsp_geometry d20ee7ad；baseline vspgeom 16da482a/225,414B/546x480；F1R2 12D audit 7a90b977；40fdd436 不得出现在 active family。",
+      "severity": "CRITICAL"
+    },
+    {
+      "acceptance": "executor 接口/单测；6 deck SHA；M2.02 deck 与 F1R2 同参数（Vinf/Rho/ReCref/Mach/alpha）；spawn=[]；physical=0",
+      "category": "executor",
+      "id": "R03",
+      "pre_draft_evidence": [
+        "M0R_DECK_SPECS_PREDRAFT.json",
+        "M0R_ZERO_PHYSICAL_EVIDENCE_PREDRAFT.json"
+      ],
+      "pre_draft_status": "PENDING_A1_INTERFACE_FREEZE",
+      "requirement": "task-capable executor：逐任务注入 Mach/alt/CL/Vinf/Rho/ReCref/q；6 个 per-task .vspaero deck；任务缺失 fail-closed；零物理 dry-run。",
+      "severity": "CRITICAL"
+    },
+    {
+      "acceptance": "A5 独立复算 6/6 rel≤1e-12；代码仅一处大气模块；无第二套 q/L_ref",
+      "category": "q_source",
+      "id": "R04",
+      "pre_draft_evidence": [
+        "M0R_TASK_SPECS_PREDRAFT.json"
+      ],
+      "pre_draft_status": "EVIDENCED_IN_PREDRAFT",
+      "requirement": "q 单源 ATM-F1R2；q 由实际注入 Vinf/Rho 复算 rel≤1e-12；6 任务 q 精确等于 20483.940233430174/24297.194081414087/16265.063806566453；禁止 ISO 混用。",
+      "severity": "CRITICAL"
+    },
+    {
+      "acceptance": "6 任务 L_ref/mass 精确匹配 L-30-A01；SREF_REF 运行时字段/SHA；越界或 fallback 即 fail-closed",
+      "category": "lift_reference",
+      "id": "R05",
+      "pre_draft_evidence": [
+        "M0R_SREF_PROVENANCE_PREDRAFT.json",
+        "M0R_TASK_SPECS_PREDRAFT.json"
+      ],
+      "pre_draft_status": "EVIDENCED_IN_PREDRAFT_WITH_A1_INTERFACE_DISCLOSURE",
+      "requirement": "L_ref=q*SREF_REF*CL_target；SREF_REF 运行时由 post-fix baseline 几何重算并 SHA 绑定，不得硬编码 358.25；m_task=L_ref/g0；质量带 100–190 t；LREF-1..8 fail-closed。",
+      "severity": "CRITICAL"
+    },
+    {
+      "acceptance": "6 tasks 因子/ID/split 全匹配；无 15/20 km task；meta_test 在 M1/M2 不运行、不揭盲",
+      "category": "tasks",
+      "id": "R06",
+      "pre_draft_evidence": [
+        "M0R_TASK_SPECS_PREDRAFT.json",
+        "M0R_SPLIT_LEAKAGE_AUDIT_PREDRAFT.json"
+      ],
+      "pre_draft_status": "EVIDENCED_IN_PREDRAFT",
+      "requirement": "只保留 L-30-A01 的 6 任务；固定 18,288 m；3 train/1 val/2 test；meta_test 盲；删除全部高度缩放副本。",
+      "severity": "CRITICAL"
+    },
+    {
+      "acceptance": "raw SHA + C01–C04 字段/SHA；负例测试拒绝违反 C01–C04；canonical hash 不能替代 cross constraints",
+      "category": "design_space",
+      "id": "R07",
+      "pre_draft_evidence": [
+        "M0R_TASK_SPECS_PREDRAFT.json"
+      ],
+      "pre_draft_status": "EVIDENCED_IN_PREDRAFT",
+      "requirement": "设计空间同时绑 raw YAML 8b29d1e3…/10,846B 与 C01–C04 cross constraints；M1 sampler/executor 强制执行 check_cross_constraints。",
+      "severity": "CRITICAL"
+    },
+    {
+      "acceptance": "单值 max_refine；alpha_refine 明确；C2 残差独立复算；低 CL 插值不确定性>1e-3 时预注册加密或 A5 预签放宽",
+      "category": "alpha_lift",
+      "id": "R08",
+      "pre_draft_evidence": [
+        "M0R_TASK_SPECS_PREDRAFT.json"
+      ],
+      "pre_draft_status": "EVIDENCED_IN_PREDRAFT",
+      "requirement": "7 点 alpha 固定；max_refine_sweeps 统一（0 或明确 refine 列表）；不得 frozen=0/tasks=2 矛盾；报告独立升力残差与插值不确定性。",
+      "severity": "CRITICAL"
+    },
+    {
+      "acceptance": "mask 字段/文本；F1R2 C3/C4 证据引用；不得声明 V01/V02 无效",
+      "category": "mask",
+      "id": "R09",
+      "pre_draft_evidence": [
+        "M0R_TASK_SPECS_PREDRAFT.json"
+      ],
+      "pre_draft_status": "EVIDENCED_IN_PREDRAFT",
+      "requirement": "12D_ALL_ACTIVE；10D_ACTIVE_PLUS_2_INACTIVE=DEFERRED_TO_M1；更正 “no zero-effect evidence” 文本。",
+      "severity": "HIGH"
+    },
+    {
+      "acceptance": "常量/字段>0；单测；A5 复核阈值定义",
+      "category": "effect_threshold",
+      "id": "R10",
+      "pre_draft_evidence": [
+        "M0R_CTX_PLAN_PREDRAFT.json"
+      ],
+      "pre_draft_status": "PRE_REGISTERED_PENDING_M1A_MEASUREMENT",
+      "requirement": "MIN_EFFECT_REL>0 并预注册；建议 max(2×U_within,1e-3)；不得用 0.0。",
+      "severity": "HIGH"
+    },
+    {
+      "acceptance": "CTX-A/B 定义/阈值；4/4 任务可分或 PHYSICAL_TASK_FAMILY_BLOCKED；披露 n=3 限制",
+      "category": "cross_task",
+      "id": "R11",
+      "pre_draft_evidence": [
+        "M0R_CTX_PLAN_PREDRAFT.json"
+      ],
+      "pre_draft_status": "PRE_REGISTERED_PENDING_M1A_DATA",
+      "requirement": "M1-A CTX-A/B 预注册：4 任务×3 设计；效应量分离 ≥max(2U_within,1e-3)；3 设计下 Spearman 仅描述性，不得做 p 值/显著性；TOO_SIMILAR 规则保留。",
+      "severity": "CRITICAL"
+    },
+    {
+      "acceptance": "预算表/算术；repeat 预注册；无额外设计/任务；五口径",
+      "category": "budget",
+      "id": "R12",
+      "pre_draft_evidence": [
+        "M0R_BUDGET_LEDGER_PREDRAFT.json"
+      ],
+      "pre_draft_status": "PRE_REGISTERED_BUDGET",
+      "requirement": "M1-A 15 starts/105 internal，caps 18/126，retry 0；4 任务×3 设计+1 exact repeat+2 preflight；repeat 必须预注册 task/design/deck SHA。",
+      "severity": "CRITICAL"
+    },
+    {
+      "acceptance": "仅 M1-A 通过后单独授权；预算/标签表",
+      "category": "budget",
+      "id": "R13",
+      "pre_draft_evidence": [
+        "M0R_BUDGET_LEDGER_PREDRAFT.json"
+      ],
+      "pre_draft_status": "PRE_REGISTERED_BUDGET",
+      "requirement": "M1-B 66/462 caps 70/490；4 任务×16 designs=64 labels+2 preflight；retry 0。",
+      "severity": "CRITICAL"
+    },
+    {
+      "acceptance": "单独授权；揭盲流程；任务级 n=2 描述性",
+      "category": "budget",
+      "id": "R14",
+      "pre_draft_evidence": [
+        "M0R_BUDGET_LEDGER_PREDRAFT.json"
+      ],
+      "pre_draft_status": "PRE_REGISTERED_BUDGET",
+      "requirement": "M3-A 34/238 caps 38/266；2 test 任务×16=32 labels+2 preflight；retry 0；M3 前不得运行 meta_test。",
+      "severity": "CRITICAL"
+    },
+    {
+      "acceptance": "汇总算术；M3-B NOT_AUTHORIZED；charged/actual 分离",
+      "category": "budget",
+      "id": "R15",
+      "pre_draft_evidence": [
+        "M0R_BUDGET_LEDGER_PREDRAFT.json"
+      ],
+      "pre_draft_status": "PRE_REGISTERED_BUDGET",
+      "requirement": "总预算 planned 115/805，hard 126/882，labels 96，preflight 6，retry 0；M3-B 不授权。",
+      "severity": "CRITICAL"
+    },
+    {
+      "acceptance": "admission 字段；schema；M0-R 无 PASS 声明；M1-A 后才可申请",
+      "category": "admission",
+      "id": "R16",
+      "pre_draft_evidence": [
+        "M0R_CTX_PLAN_PREDRAFT.json",
+        "M0R_BUDGET_LEDGER_PREDRAFT.json"
+      ],
+      "pre_draft_status": "EVIDENCED_IN_PREDRAFT",
+      "requirement": "admission=DEFERRED_TO_M1A_WITH_PRE_REGISTERED_CHECKS；M0/M0-R 不签 admission；首条真实 M1 标签按 validity/status/identity 判定，不按目标值。",
+      "severity": "CRITICAL"
+    },
+    {
+      "acceptance": "physical=0；run_dir/ledger false；not_authorization=true；新 D-META-M1A-001 等仅在未来单独签",
+      "category": "authorization",
+      "id": "R17",
+      "pre_draft_evidence": [
+        "M0R_ZERO_PHYSICAL_EVIDENCE_PREDRAFT.json"
+      ],
+      "pre_draft_status": "EVIDENCED_IN_PREDRAFT",
+      "requirement": "M0-R 零物理；不创建 run dir/ledger/token/authorization；不复用 #9 R10 或 #10 F1R2/F2R2 approval/token。",
+      "severity": "CRITICAL"
+    },
+    {
+      "acceptance": "A5 checklist/gate/SUMS；commit；不 push",
+      "category": "a5",
+      "id": "R18",
+      "pre_draft_evidence": [
+        "M0R_A5_REQUIREMENTS_MAP_PREDRAFT.json"
+      ],
+      "pre_draft_status": "A5_ACTION_PENDING",
+      "requirement": "A5 独立复核/门禁 G-M0R-ADMISSION-01；M0-R 包到后先 gate，不得先签 admission；A5 physical=0。",
+      "severity": "CRITICAL"
+    },
+    {
+      "acceptance": "新文本/manifest；不得引用不存在的 A5 结论；如保留 1.6/2.4 排除，需新工程理由或校准",
+      "category": "evidence_text",
+      "id": "R19",
+      "pre_draft_evidence": [
+        "M0R_PREDRAFT_MANIFEST.json",
+        "README_M0R_PREDRAFT_ZH.md"
+      ],
+      "pre_draft_status": "EVIDENCED_IN_PREDRAFT",
+      "requirement": "T0-4/M0-R 必须删除 “A5 P1-05 verified envelope 1.8/2.02/2.2”；P1-05 实际 1.8/2.0/2.2、18,288m、旧 58f63/199,997B、TREND_ONLY、2.02 NOT_COMPARABLE。",
+      "severity": "HIGH"
+    },
+    {
+      "acceptance": "gate 披露；A1 复核可引用更正",
+      "category": "review_correction",
+      "id": "R20",
+      "pre_draft_evidence": [
+        "M0R_PREDRAFT_MANIFEST.json",
+        "README_M0R_PREDRAFT_ZH.md"
+      ],
+      "pre_draft_status": "EVIDENCED_IN_PREDRAFT",
+      "requirement": "A5 记录 A1 F-M0-02 事实更正：40fdd436=543x472/227,247B；199,997B/483x418 是 P1-05 58f63bfc；阻断结论不变。",
+      "severity": "INFO"
+    },
+    {
+      "acceptance": "6 任务表；A5 逐字段复算",
+      "category": "task_metadata",
+      "id": "R21",
+      "pre_draft_evidence": [
+        "M0R_TASK_SPECS_PREDRAFT.json"
+      ],
+      "pre_draft_status": "EVIDENCED_IN_PREDRAFT",
+      "requirement": "每 task 记录 Mach/alt/CL/q/Vinf/Rho/ReCref/L_ref/mass/SREF_REF/task fingerprint/geometry SHA/evaluator/solver；任务 ID 不得复用旧 ada424cc 任务 ID。",
+      "severity": "CRITICAL"
+    },
+    {
+      "acceptance": "6 deck；vspgeom 字节 equality；SHA 表；零物理 dry-run",
+      "category": "deck",
+      "id": "R22",
+      "pre_draft_evidence": [
+        "M0R_DECK_SPECS_PREDRAFT.json"
+      ],
+      "pre_draft_status": "EVIDENCED_IN_PREDRAFT",
+      "requirement": "每 task 独立 .vspaero deck；同一设计跨 task 复用同一 vspgeom 字节（build once）；per-task 记录 vspgeom/polar/deck SHA。",
+      "severity": "CRITICAL"
+    },
+    {
+      "acceptance": "rel≤1e-12；W01 交叉 rel≤1e-6；无第二套公式",
+      "category": "consistency",
+      "id": "R23",
+      "pre_draft_evidence": [
+        "M0R_TASK_SPECS_PREDRAFT.json",
+        "M0R_SREF_PROVENANCE_PREDRAFT.json"
+      ],
+      "pre_draft_status": "EVIDENCED_IN_PREDRAFT",
+      "requirement": "q/L_ref/Sref 三重一致：q 由 deck 实际注入；L_ref=q*SREF_REF*CL；Sref(x) 逐设计；D_i=q*Sref(x)*CDi；A5 独立复算。",
+      "severity": "CRITICAL"
+    },
+    {
+      "acceptance": "per-design vspgeom SHA 字段；baseline 只作族身份",
+      "category": "geometry_identity",
+      "id": "R24",
+      "pre_draft_evidence": [
+        "M0R_SREF_PROVENANCE_PREDRAFT.json",
+        "M0R_DECK_SPECS_PREDRAFT.json"
+      ],
+      "pre_draft_status": "EVIDENCED_IN_PREDRAFT",
+      "requirement": "baseline SHA 与 per-design SHA 分开；M1 每设计记录 vspgeom SHA；不得用一个 40fd/16da 代表所有设计。",
+      "severity": "HIGH"
+    },
+    {
+      "acceptance": "expected/polar 字段；披露；不得用 F1R2 8f4c 作 2.2/1.8 expected",
+      "category": "expected_polar",
+      "id": "R25",
+      "pre_draft_evidence": [
+        "M0R_TASK_SPECS_PREDRAFT.json"
+      ],
+      "pre_draft_status": "EVIDENCED_IN_PREDRAFT",
+      "requirement": "M2.02 可作 F1R2 连续性锚点；2.2/1.8 不继承 F1R2 expected polar；M1-A 重建 admission baseline。",
+      "severity": "HIGH"
+    },
+    {
+      "acceptance": "负例测试；失败码；无 fallback",
+      "category": "fail_closed",
+      "id": "R26",
+      "pre_draft_evidence": [
+        "M0R_VALIDATION_PREDRAFT.json"
+      ],
+      "pre_draft_status": "EVIDENCED_IN_PREDRAFT",
+      "requirement": "任何 task/atmosphere/SREF/geometry/mass/q 校验失败必须 fail-closed；禁止回退到 358.25、旧几何、ISO、旧 task 或旧 token。",
+      "severity": "CRITICAL"
+    },
+    {
+      "acceptance": "SUMS 全匹配；A5 独立 pytest/dry-run；spawn=[]；physical=0",
+      "category": "evidence",
+      "id": "R27",
+      "pre_draft_evidence": [
+        "M0R_PREDRAFT_MANIFEST.json",
+        "M0R_VALIDATION_PREDRAFT.json",
+        "M0R_A5_REQUIREMENTS_MAP_PREDRAFT.json"
+      ],
+      "pre_draft_status": "PENDING_FINAL_PACKAGE",
+      "requirement": "M0-R 包/证据必须含 SUMS、validation、zero-physical dry-run、6 deck、A5 复算、无 solver 证据；commit 不 push。",
+      "severity": "CRITICAL"
+    },
+    {
+      "acceptance": "新 gate json/md/checklist/SUMS；旧字节不改",
+      "category": "gate_process",
+      "id": "R28",
+      "pre_draft_evidence": [
+        "M0R_A5_REQUIREMENTS_MAP_PREDRAFT.json"
+      ],
+      "pre_draft_status": "PENDING_FINAL_PACKAGE",
+      "requirement": "M0-R gate 新 ID G-M0R-ADMISSION-01；旧 G-T0-ADMISSION-01 保持 M0_BLOCKED 历史；不得复用旧 gate commit/SHA。",
+      "severity": "CRITICAL"
+    },
+    {
+      "acceptance": "M1-A 新 gate；M1-A PASS/FAIL；不自动后续",
+      "category": "m1_process",
+      "id": "R29",
+      "pre_draft_evidence": [
+        "M0R_BUDGET_LEDGER_PREDRAFT.json"
+      ],
+      "pre_draft_status": "EVIDENCED_IN_PREDRAFT",
+      "requirement": "M1-A 通过 A5 后单独 authorization/approval/GO；M1-A 结果只给 admission verdict，不自动授权 M1-B/M3。",
+      "severity": "CRITICAL"
+    },
+    {
+      "acceptance": "prereg/回执措辞；无禁用词；披露",
+      "category": "claims",
+      "id": "R30",
+      "pre_draft_evidence": [
+        "README_M0R_PREDRAFT_ZH.md",
+        "M0R_CTX_PLAN_PREDRAFT.json"
+      ],
+      "pre_draft_status": "EVIDENCED_IN_PREDRAFT",
+      "requirement": "不得宣称 winner/显著性/优化增益/跨族可比；fuel_burn_kg=null；外部物理 NOT_VALIDATED；单 seed 描述性；M3 任务级 n=2。",
+      "severity": "CRITICAL"
+    }
+  ],
+  "schema": "dreal001.m0r_predraft.a5_requirements_map.v1",
+  "status": "PREDRAFT_A5_MAP_READY_NOT_A_GATE",
+  "tool_version": "a3-m0r-predraft-v1.0.0"
+}

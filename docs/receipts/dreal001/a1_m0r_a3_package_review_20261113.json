@@ -1,0 +1,712 @@
+{
+ "schema": "dreal001.a1_m0r_a3_package_review.v1",
+ "review_id": "A1-M0R-A3-R3-REVIEW-20261113",
+ "reviewer": "a1-geometry",
+ "created_utc": "2026-11-13T08:06:59Z",
+ "target": {
+  "package_id": "DREAL001-M0R-20261113-01",
+  "package_dir": "D:\\RCAIDE\\dnext001\\wt-real-a3-stats-routeb\\docs\\evidence\\dreal001\\m0r_20261113",
+  "commit": "7128b911f7d8cb064ecd0b619b89f3af7abd27e3",
+  "revision": "r3",
+  "prior_commit_superseded": "56fba8bf6f47fa201b3abd6b5fe59e56adb3934c",
+  "package_files": 40,
+  "sums_entries": 38,
+  "sums_sha256": "0bf7ce2d141f051e1aff6f607a495f28bf33c0b548ebd06ec8273538c8316800",
+  "sums_bytes": 3861,
+  "family_sha256": "98b84f5ecf6e18a7be90e21da41b243dccb664f09034366ea3b58d777f1c0311",
+  "family_sha256_recomputed": "98b84f5ecf6e18a7be90e21da41b243dccb664f09034366ea3b58d777f1c0311",
+  "family_sha256_algorithm": "sha256(canonical JSON of dreal001.m0r_family.v1)"
+ },
+ "verdict": "FAIL",
+ "summary_zh": "A3 r3 包在任务数值、12D 设计空间、M1-A deck freeze、SREF provenance 与边界声明上通过只读核查；唯一需更正的是一处 SREF provenance 的旧边界文本，属文本级、非科学阻断。",
+ "check_summary": {
+  "total": 29,
+  "status_counts": {
+   "PASS": 24,
+   "FAIL": 1,
+   "PASS_WITH_DISCLOSURE": 1,
+   "CORRECTION_REQUIRED": 1,
+   "OBSERVATION": 2
+  },
+  "findings": 3
+ },
+ "five_checks": [
+  {
+   "id": "Q1",
+   "name": "6 任务数值与 A1 ATM-F1R2/post-fix 几何一致性",
+   "verdict": "PASS"
+  },
+  {
+   "id": "Q2",
+   "name": "12D 设计空间语义（12 vars/3 fixed/C01-C04/active mask）",
+   "verdict": "PASS"
+  },
+  {
+   "id": "Q3",
+   "name": "M1-A deck freeze：6 baseline + 12 reference + 12 M1-A 槽位",
+   "verdict": "PASS"
+  },
+  {
+   "id": "Q4",
+   "name": "SREF provenance 与 CL-1/CL-2/CL-3 引用",
+   "verdict": "PASS_WITH_CORRECTION"
+  },
+  {
+   "id": "Q5",
+   "name": "包边界：无 gate PASS/admission/M1 授权越界表述",
+   "verdict": "PASS"
+  }
+ ],
+ "checks": [
+  {
+   "id": "A1R3-01",
+   "status": "PASS",
+   "detail": {
+    "expected": "7128b911f7d8cb064ecd0b619b89f3af7abd27e3",
+    "actual": "7128b911f7d8cb064ecd0b619b89f3af7abd27e3"
+   }
+  },
+  {
+   "id": "A1R3-02",
+   "status": "PASS",
+   "detail": {
+    "package_files": 40
+   }
+  },
+  {
+   "id": "A1R3-03",
+   "status": "PASS",
+   "detail": {
+    "entries": 38,
+    "bad": [],
+    "sha256": "0bf7ce2d141f051e1aff6f607a495f28bf33c0b548ebd06ec8273538c8316800",
+    "bytes": 3861
+   }
+  },
+  {
+   "id": "A1R3-04",
+   "status": "PASS",
+   "detail": {
+    "not_covered": [
+     "SHA256SUMS.txt",
+     "pre_draft/SHA256SUMS.txt"
+    ],
+    "note": "self-referential SHA256SUMS.txt and historical pre_draft/SHA256SUMS.txt are correctly excluded"
+   }
+  },
+  {
+   "id": "A1R3-05",
+   "status": "PASS",
+   "detail": {
+    "expected": "98b84f5ecf6e18a7be90e21da41b243dccb664f09034366ea3b58d777f1c0311",
+    "recomputed": "98b84f5ecf6e18a7be90e21da41b243dccb664f09034366ea3b58d777f1c0311",
+    "algorithm": "sha256(canonical JSON sort_keys=True separators=(comma,colon) ensure_ascii=False)"
+   }
+  },
+  {
+   "id": "A1R3-06",
+   "status": "FAIL",
+   "detail": {
+    "references": 5,
+    "all_equal": true
+   }
+  },
+  {
+   "id": "A1R3-07",
+   "status": "PASS",
+   "detail": {
+    "tasks": [
+     {
+      "task_id": "T18K_M202_CL017",
+      "mach": 2.02,
+      "cl_target": 0.17,
+      "q_pa": 20483.940233430174,
+      "vinf_m_s": 596.0373972278921,
+      "l_ref_n": 1247523.1700664815,
+      "mass_t": 127.21196025824125,
+      "split_a3": "meta_train",
+      "split_a1": "meta_train",
+      "q_rel_vs_a1": 0.0,
+      "vinf_rel_vs_a1": 0.0,
+      "l_ref_rel_vs_a1": 0.0,
+      "mass_rel_vs_a1": 0.0,
+      "fingerprint_match": true
+     },
+     {
+      "task_id": "T18K_M202_CL019",
+      "mach": 2.02,
+      "cl_target": 0.19,
+      "q_pa": 20483.940233430174,
+      "vinf_m_s": 596.0373972278921,
+      "l_ref_n": 1394290.6018390087,
+      "mass_t": 142.17807322979905,
+      "split_a3": "meta_train",
+      "split_a1": "meta_train",
+      "q_rel_vs_a1": 0.0,
+      "vinf_rel_vs_a1": 0.0,
+      "l_ref_rel_vs_a1": 0.0,
+      "mass_rel_vs_a1": 0.0,
+      "fingerprint_match": true
+     },
+     {
+      "task_id": "T18K_M220_CL017",
+      "mach": 2.2,
+      "cl_target": 0.17,
+      "q_pa": 24297.194081414087,
+      "vinf_m_s": 649.1496405452291,
+      "l_ref_n": 1479759.862543322,
+      "mass_t": 150.89351231494157,
+      "split_a3": "meta_train",
+      "split_a1": "meta_train",
+      "q_rel_vs_a1": 0.0,
+      "vinf_rel_vs_a1": 0.0,
+      "l_ref_rel_vs_a1": 0.0,
+      "mass_rel_vs_a1": 0.0,
+      "fingerprint_match": true
+     },
+     {
+      "task_id": "T18K_M220_CL019",
+      "mach": 2.2,
+      "cl_target": 0.19,
+      "q_pa": 24297.194081414087,
+      "vinf_m_s": 649.1496405452291,
+      "l_ref_n": 1653849.2581366538,
+      "mass_t": 168.6456902343465,
+      "split_a3": "meta_val",
+      "split_a1": "meta_val",
+      "q_rel_vs_a1": 0.0,
+      "vinf_rel_vs_a1": 0.0,
+      "l_ref_rel_vs_a1": 0.0,
+      "mass_rel_vs_a1": 0.0,
+      "fingerprint_match": true
+     },
+     {
+      "task_id": "T18K_M180_CL017",
+      "mach": 1.8,
+      "cl_target": 0.17,
+      "q_pa": 16265.063806566453,
+      "vinf_m_s": 531.1224331733692,
+      "l_ref_n": 990583.0484794137,
+      "mass_t": 101.01135948355594,
+      "split_a3": "meta_test_blind",
+      "split_a1": "meta_test",
+      "q_rel_vs_a1": 1.1183413881300009e-16,
+      "vinf_rel_vs_a1": 0.0,
+      "l_ref_rel_vs_a1": 0.0,
+      "mass_rel_vs_a1": 0.0,
+      "fingerprint_match": true
+     },
+     {
+      "task_id": "T18K_M180_CL019",
+      "mach": 1.8,
+      "cl_target": 0.19,
+      "q_pa": 16265.063806566453,
+      "vinf_m_s": 531.1224331733692,
+      "l_ref_n": 1107122.2306534622,
+      "mass_t": 112.89504883456249,
+      "split_a3": "meta_test_blind",
+      "split_a1": "meta_test",
+      "q_rel_vs_a1": 1.1183413881300009e-16,
+      "vinf_rel_vs_a1": 0.0,
+      "l_ref_rel_vs_a1": 0.0,
+      "mass_rel_vs_a1": 0.0,
+      "fingerprint_match": true
+     }
+    ]
+   }
+  },
+  {
+   "id": "A1R3-08",
+   "status": "PASS",
+   "detail": {
+    "a1_interface_fingerprints": 6,
+    "match": 6
+   }
+  },
+  {
+   "id": "A1R3-09",
+   "status": "PASS",
+   "detail": {
+    "split_counts": {
+     "meta_train": 3,
+     "meta_val": 1,
+     "meta_test_blind": 2
+    }
+   }
+  },
+  {
+   "id": "A1R3-10",
+   "status": "PASS",
+   "detail": {
+    "yaml_path": "D:\\RCAIDE\\dnext001\\wt-real-a1-geometry-solver\\research\\concorde_metaopt\\configs\\design_space_12d_lifting_surfaces.yaml",
+    "sha256": "8b29d1e3833edc2af248d68cd6b7b4c94ebf775f25c86d80062a3850765a499e",
+    "bytes": 10846,
+    "a3_recorded": {
+     "sha256": "8b29d1e3833edc2af248d68cd6b7b4c94ebf775f25c86d80062a3850765a499e",
+     "bytes": 10846
+    }
+   }
+  },
+  {
+   "id": "A1R3-11",
+   "status": "PASS",
+   "detail": {
+    "variables_12": [
+     [
+      "W01",
+      "wing_area",
+      358.25,
+      300.0,
+      420.0
+     ],
+     [
+      "W02",
+      "aspect_ratio",
+      1.83,
+      1.5,
+      2.2
+     ],
+     [
+      "W03",
+      "sweep_1",
+      67.0,
+      62.0,
+      72.0
+     ],
+     [
+      "W04",
+      "sweep_2",
+      48.0,
+      40.0,
+      56.0
+     ],
+     [
+      "W05",
+      "sweep_3",
+      71.0,
+      66.0,
+      76.0
+     ],
+     [
+      "W06",
+      "span_location_2",
+      0.480469,
+      0.35,
+      0.58
+     ],
+     [
+      "W07",
+      "span_location_3",
+      0.945313,
+      0.85,
+      0.98
+     ],
+     [
+      "W08",
+      "chord_ratio_2",
+      0.408284,
+      0.3,
+      0.5
+     ],
+     [
+      "W09",
+      "chord_ratio_3",
+      0.130178,
+      0.08,
+      0.2
+     ],
+     [
+      "W10",
+      "tip_twist",
+      0.0,
+      -4.0,
+      4.0
+     ],
+     [
+      "V01",
+      "vertical_tail_area",
+      33.91,
+      28.0,
+      40.0
+     ],
+     [
+      "V02",
+      "vertical_tail_sweep_delta",
+      0.0,
+      -10.0,
+      10.0
+     ]
+    ],
+    "matches_a1_yaml_expected": true
+   }
+  },
+  {
+   "id": "A1R3-12",
+   "status": "PASS",
+   "detail": {
+    "fixed_variables": [
+     [
+      "F01",
+      "fuselage_length",
+      61.66
+     ],
+     [
+      "F02",
+      "fuselage_fineness",
+      4.3
+     ],
+     [
+      "F03",
+      "fuselage_height_width_ratio",
+      1.152778
+     ]
+    ]
+   }
+  },
+  {
+   "id": "A1R3-13",
+   "status": "PASS",
+   "detail": {
+    "active_masks": [
+     "12D_ALL_ACTIVE"
+    ],
+    "V01_active": true,
+    "V02_active": true,
+    "ten_d_deferred_note": "A3 retains 12D active; 10D is deferred to M1, not a current mask."
+   }
+  },
+  {
+   "id": "A1R3-14",
+   "status": "PASS",
+   "detail": {
+    "counts": {
+     "full": 18,
+     "baseline": 6,
+     "reference": 12,
+     "m1a": 12,
+     "m3a": 4
+    },
+    "n_fail": 0,
+    "revision": "r3"
+   }
+  },
+  {
+   "id": "A1R3-15",
+   "status": "PASS",
+   "detail": {
+    "baseline_files_checked": 12,
+    "bad": []
+   }
+  },
+  {
+   "id": "A1R3-16",
+   "status": "PASS",
+   "detail": {
+    "a3_m1a_slots": 12,
+    "a1_payload_slots": 12,
+    "mismatch": [],
+    "a1_payload_commit": "092a31181cb12107f80bb65204f2469004793431",
+    "a1_manifest_sha256": "fea23ea13df8f196993297c84e5ae657145431b00a0e8710eb35bfa3199f974f",
+    "a1_manifest_bytes": 77984
+   }
+  },
+  {
+   "id": "A1R3-17",
+   "status": "PASS",
+   "detail": {
+    "anchor": {
+     "a1_dry_run_field": "sref_ref.sref_m2",
+     "a1_dry_run_sha256": "8688d25770911af7fadd42587f66a4914091c829fd8cdc89c1f349a53731b4c6",
+     "source": "post-fix baseline geometry.wing.area_m2 (runtime recompute)",
+     "value_m2": 358.25000000000006,
+     "vspgeom_sha256": "16da482a1f8e59f6b454378769961caafde5eef87784127db6cce87381943b84"
+    }
+   }
+  },
+  {
+   "id": "A1R3-18",
+   "status": "PASS_WITH_DISCLOSURE",
+   "detail": {
+    "independent_wing_area_m2": 358.2500000223502,
+    "rel_diff": 6.238702072587126e-11,
+    "tolerance_rel": 1e-09,
+    "method": "NEWELL_FACE_AREA_TOKEN_STREAM_VSPGEOM_V3",
+    "family": "546x480",
+    "nodes": 546,
+    "elements": 480
+   }
+  },
+  {
+   "id": "A1R3-19",
+   "status": "PASS",
+   "detail": {
+    "a1_clarification": {
+     "bytes": 7673,
+     "path": "D:/RCAIDE/dnext001/wt-real-a1-geometry-solver/docs/receipts/dreal001/a1_m0r_interface_clarification_20261113.json",
+     "sha256": "7731e9c8b6269e50b343f7e2fbb9ade9c123e14bb33db7e0a884a922cc83e948"
+    },
+    "cl_1_note": "SREF_REF_FROZEN is a validation anchor; runtime recompute is the sole SREF source."
+   }
+  },
+  {
+   "id": "A1R3-20",
+   "status": "CORRECTION_REQUIRED",
+   "detail": {
+    "field": "M0R_SREF_PROVENANCE.json:non_result_boundary[0]",
+    "stale_text": "Pre-draft provenance only; not a frozen family, not a run, not a physical validation.",
+    "expected": "formal frozen-package boundary wording consistent with M0R_PACKAGE.non_result_boundary[0]",
+    "impact": "text-only; no scientific/geometry/deck value changes"
+   }
+  },
+  {
+   "id": "A1R3-21",
+   "status": "PASS",
+   "detail": {
+    "package_status": "M0R_PACKAGE_FROZEN_PENDING_A5_GATE",
+    "a5_gate": {
+     "a5_commit": null,
+     "a5_draft_reference": {
+      "commit": "ba1b11f",
+      "status": "DRAFT_NOT_A_GATE"
+     },
+     "gate_id": "G-M0R-ADMISSION-01",
+     "gate_input_status": "FORMAL_PACKAGE_FROZEN_PENDING_A5_FORMAL_GATE",
+     "status": "PENDING_A5_FORMAL_GATE"
+    }
+   }
+  },
+  {
+   "id": "A1R3-22",
+   "status": "PASS",
+   "detail": {
+    "authorization_status": "NOT_CREATED_M0R_ZERO_PHYSICAL"
+   }
+  },
+  {
+   "id": "A1R3-23",
+   "status": "PASS",
+   "detail": {
+    "claims": {
+     "fuel_burn_kg": null,
+     "no_cross_family_average": true,
+     "no_significance": true,
+     "no_winner": true,
+     "physics_status": "NOT_VALIDATED"
+    },
+    "package_non_result_boundary": [
+     "Formal M0-R package only; not a run, result, admission or gate.",
+     "A5 independently recomputes and signs G-M0R-ADMISSION-01; M1 not authorized.",
+     "Zero physical; no solver started."
+    ]
+   }
+  },
+  {
+   "id": "A1R3-24",
+   "status": "PASS",
+   "detail": {
+    "physical_call_count": 0,
+    "solver_started": false,
+    "run_dir": null
+   }
+  },
+  {
+   "id": "A1R3-25",
+   "status": "PASS",
+   "detail": {
+    "n_fail": 0,
+    "coverage": {
+     "checklist_mapped": 60,
+     "gate_conditions_mapped": 42,
+     "missing_checklist": [],
+     "missing_gate_conditions": [],
+     "missing_requirements": [],
+     "requirements_mapped": 30
+    }
+   }
+  },
+  {
+   "id": "A1R3-26",
+   "status": "PASS",
+   "detail": {
+    "validation_checks": 19,
+    "statuses": {
+     "PASS": 19
+    },
+    "a5_gate": {
+     "gate_id": "G-M0R-ADMISSION-01",
+     "status": "PENDING_A5_FORMAL_GATE"
+    }
+   }
+  },
+  {
+   "id": "A1R3-27",
+   "status": "OBSERVATION",
+   "detail": {
+    "field": "M0R_PACKAGE.schema",
+    "actual": "dreal001.m0r_package.v1.package.v1",
+    "note": "double v1 suffix is cosmetic; no data impact."
+   }
+  },
+  {
+   "id": "A1R3-28",
+   "status": "OBSERVATION",
+   "detail": {
+    "field": "M0R_TASK_SPECS.splits",
+    "actual": {
+     "meta_test_blind": [
+      "M0R-M180-CL017",
+      "M0R-M180-CL019"
+     ],
+     "meta_train": [
+      "M0R-M202-CL017",
+      "M0R-M202-CL019",
+      "M0R-M220-CL017"
+     ],
+     "meta_val": [
+      "M0R-M220-CL019"
+     ]
+    },
+    "note": "A3 uses meta_test_blind for M180 tasks; A1 uses meta_test. The 6 A1 task_id/fingerprint mappings match exactly; recommend an explicit split-label crosswalk in the next metadata revision."
+   }
+  },
+  {
+   "id": "A1R3-29",
+   "status": "PASS",
+   "detail": {
+    "revision": "r3",
+    "revision_note": "r3 minimal metadata revision: full family deck space is 18 = 3 designs x 6 tasks; 6 B0-01 baseline decks frozen; 12 B1-01/C5 reference entries unfrozen; M1-A requires 12 slots = 4 M1 tasks x 3 designs (4 frozen B0 + 8 B1/C5 to freeze); 4 meta_test B1/C5 slots to freeze before M3-A. No deck byte changed."
+   }
+  }
+ ],
+ "findings": [
+  {
+   "id": "A1-M0R-R3-C01",
+   "severity": "CORRECTION_REQUIRED",
+   "scope": "text only",
+   "file": "docs/evidence/dreal001/m0r_20261113/M0R_SREF_PROVENANCE.json",
+   "field": "non_result_boundary[0]",
+   "actual": "Pre-draft provenance only; not a frozen family, not a run, not a physical validation.",
+   "required": "Replace with formal frozen-package wording, aligned with M0R_PACKAGE.non_result_boundary[0].",
+   "impact": "No scientific, geometry, deck or accounting value changes; A5 gate may accept as errata/addendum."
+  },
+  {
+   "id": "A1-M0R-R3-O01",
+   "severity": "OBSERVATION",
+   "scope": "metadata semantics",
+   "file": "docs/evidence/dreal001/m0r_20261113/M0R_TASK_SPECS.json",
+   "field": "tasks[*].split / splits",
+   "actual": {
+    "meta_test_blind": [
+     "M0R-M180-CL017",
+     "M0R-M180-CL019"
+    ],
+    "meta_train": [
+     "M0R-M202-CL017",
+     "M0R-M202-CL019",
+     "M0R-M220-CL017"
+    ],
+    "meta_val": [
+     "M0R-M220-CL019"
+    ]
+   },
+   "note": "A3 label meta_test_blind vs A1 meta_test; mapping is explicit via a1_task_id and fingerprint 6/6."
+  },
+  {
+   "id": "A1-M0R-R3-O02",
+   "severity": "OBSERVATION",
+   "scope": "schema cosmetics",
+   "file": "docs/evidence/dreal001/m0r_20261113/M0R_PACKAGE.json",
+   "field": "schema",
+   "actual": "dreal001.m0r_package.v1.package.v1",
+   "note": "double v1 suffix; no data impact."
+  }
+ ],
+ "cross_refs": {
+  "a1_m1a_payload": {
+   "commit": "092a31181cb12107f80bb65204f2469004793431",
+   "manifest_path": "D:\\RCAIDE\\dnext001\\wt-real-a1-geometry-solver\\docs\\evidence\\dreal001\\m1a_deck_freeze_20261113\\manifest.json",
+   "manifest_sha256": "fea23ea13df8f196993297c84e5ae657145431b00a0e8710eb35bfa3199f974f",
+   "manifest_bytes": 77984,
+   "slot_count": 12,
+   "slots_matched": 12
+  },
+  "a1_u1_dry_run": {
+   "path": "D:\\RCAIDE\\dnext001\\wt-real-a1-geometry-solver\\docs\\receipts\\dreal001\\a1_m0r_task_executor_dry_run_20261113.json",
+   "sha256": "8688d25770911af7fadd42587f66a4914091c829fd8cdc89c1f349a53731b4c6",
+   "bytes": 43587,
+   "verdict": "PASS",
+   "checks": 50,
+   "failed": 0
+  },
+  "a1_interface": {
+   "code_commit": "0c514151d989de716dbb855973b900a34615b5aa",
+   "freeze_commit": "c5698a218fad974e8e96b604573c5cc79b3abb32"
+  },
+  "a1_clarification": {
+   "bytes": 7673,
+   "path": "D:/RCAIDE/dnext001/wt-real-a1-geometry-solver/docs/receipts/dreal001/a1_m0r_interface_clarification_20261113.json",
+   "sha256": "7731e9c8b6269e50b343f7e2fbb9ade9c123e14bb33db7e0a884a922cc83e948"
+  }
+ },
+ "evidence_index": [
+  {
+   "path": "D:\\RCAIDE\\dnext001\\wt-real-a3-stats-routeb\\docs\\evidence\\dreal001\\m0r_20261113\\M0R_PACKAGE.json",
+   "sha256": "d51af8983cd6ffccce05ae9120a2f6ce06a895a019dc31708dd0853a6d86039f",
+   "bytes": 6052
+  },
+  {
+   "path": "D:\\RCAIDE\\dnext001\\wt-real-a3-stats-routeb\\docs\\evidence\\dreal001\\m0r_20261113\\M0R_TASK_SPECS.json",
+   "sha256": "bdac67b05d20dd2d351611f5c51a36d059029e6a2003c206d34e6416b92babff",
+   "bytes": 70622
+  },
+  {
+   "path": "D:\\RCAIDE\\dnext001\\wt-real-a3-stats-routeb\\docs\\evidence\\dreal001\\m0r_20261113\\M0R_DECK_FREEZE.json",
+   "sha256": "cb933119a88136b3f10c177fb34487b5d7e01055009e65d0a21af2c43141f2d6",
+   "bytes": 40496
+  },
+  {
+   "path": "D:\\RCAIDE\\dnext001\\wt-real-a3-stats-routeb\\docs\\evidence\\dreal001\\m0r_20261113\\M0R_SREF_PROVENANCE.json",
+   "sha256": "12071810c481fcad89d6beafabb5f08f86c05d7f1859a9ab195f1451fd1c071e",
+   "bytes": 10505
+  },
+  {
+   "path": "D:\\RCAIDE\\dnext001\\wt-real-a3-stats-routeb\\docs\\evidence\\dreal001\\m0r_20261113\\M0R_DESIGN_SPACE_BINDING.json",
+   "sha256": "c40046d89622643ee3597a2bce4f4cbc671a0f79a9e40f4810bf195725c53878",
+   "bytes": 6562
+  },
+  {
+   "path": "D:\\RCAIDE\\dnext001\\wt-real-a3-stats-routeb\\docs\\evidence\\dreal001\\m0r_20261113\\M0R_VALIDATION.json",
+   "sha256": "3fc249fea06c96a974cf3ac275046a28d38a2571d701e4b2cb7a84975481ff00",
+   "bytes": 2445
+  },
+  {
+   "path": "D:\\RCAIDE\\dnext001\\wt-real-a3-stats-routeb\\docs\\evidence\\dreal001\\m0r_20261113\\M0R_A5_REQUIREMENTS_MAP.json",
+   "sha256": "ffe3ffd63f07c4b2d18c0c56cff94b03915da1bda1ef6b3a8ca73fe85481c757",
+   "bytes": 65090
+  },
+  {
+   "path": "D:\\RCAIDE\\dnext001\\wt-real-a3-stats-routeb\\docs\\evidence\\dreal001\\m0r_20261113\\SHA256SUMS.txt",
+   "sha256": "0bf7ce2d141f051e1aff6f607a495f28bf33c0b548ebd06ec8273538c8316800",
+   "bytes": 3861
+  },
+  {
+   "path": "D:\\RCAIDE\\dnext001\\wt-real-a1-geometry-solver\\docs\\evidence\\dreal001\\m1a_deck_freeze_20261113\\manifest.json",
+   "sha256": "fea23ea13df8f196993297c84e5ae657145431b00a0e8710eb35bfa3199f974f",
+   "bytes": 77984
+  }
+ ],
+ "attestations": {
+  "physical_call_count": 0,
+  "solver_started": false,
+  "openvsp_started": false,
+  "vspaero_started": false,
+  "a3_package_bytes_modified": false,
+  "run_dir_created": false,
+  "git_push": false
+ },
+ "open_items": [
+  "A3 to replace M0R_SREF_PROVENANCE.json non_result_boundary[0] with formal frozen-package text (text-only correction).",
+  "A5 to decide whether C01 is folded into G-M0R-ADMISSION-01 errata or a package metadata addendum.",
+  "A3 to add explicit M180 split-label crosswalk (meta_test_blind vs meta_test) in a future metadata revision."
+ ]
+}
