@@ -78,7 +78,7 @@ R1 两门通过后，由 A5/Lead 为新 batch 冻结最小矩阵：绝对坐标/
 ## 8. 恢复门禁就绪矩阵（聚合器，离线，不构成 A5 签署）
 
 - 聚合器 [assess_recovery_readiness.py](<.worktrees/drecover001-20261117/docs/evidence/drecover001/assess_recovery_readiness.py>) 只读汇总 R0/R1/M1/M2/备份/A5/真实准入/变更清单证据，产物 [recovery_readiness.json](<.worktrees/drecover001-20261117/docs/evidence/drecover001/recovery_readiness.json>) 与 [recovery_readiness.md](<.worktrees/drecover001-20261117/docs/evidence/drecover001/recovery_readiness.md>)。
-- 当前结果：`status=RECOVERY_READINESS_GATES_CLOSED_EXPECTED`；9 个 gate 中 7 个 `CLOSED`（预期外部签批缺失）、1 个 `CLEAN`（变更清单）、1 个 `WAIVED`（Owner 豁免异机备份）；`violations=0`、`missing_evidence=0`、`blockers=9`。
+- 当前结果：`status=RECOVERY_READINESS_GATES_CLOSED_EXPECTED`；9 个 gate 中 7 个 `CLOSED`（预期外部签批缺失）、1 个 `CLEAN`（变更清单）、1 个 `WAIVED`（Owner 豁免异机备份）；`violations=0`、`missing_evidence=0`、`blockers=10`。
 - 矩阵明确：`physical_solver_starts_actual=0`、`internal_solver_cases_actual=0`、`real_meta_training_executed=false`、`admitted_real_labels=0`；`CLOSED` 是“预期未签”而非 PASS，不能替代 A5 的 `RECOVERY_INVENTORY_PASS` / `RESTORED_CODE_BASELINE_PASS` / `BACKUP_RESTORE_PASS`。
 - 变更清单由 [build_change_manifest.py](<.worktrees/drecover001-20261117/docs/evidence/drecover001/build_change_manifest.py>) 从实际工作树重建；清单自身排除 `__pycache__`、`.pyc` 与聚合器输出。
 - A5 审查包：`build_a5_review_packet.py` 从现有回执聚合 39 项证据（逐文件 SHA256，含 Owner 豁免、两次 A5 verdict/transcript、A5 dossier 与逐项处置矩阵），生成 `a5_review_packet.json` / `.md`；只读、无人类签名、不授予物理 GO。A5 结论记录为 deepseek-flash 子智能体的 `CHANGES_REQUIRED`，两项 major 已修复。
