@@ -925,14 +925,18 @@ def main(argv=None):
     parser.add_argument("--root", default=str(Path(__file__).resolve().parents[3]))
     parser.add_argument("--out", default=None)
     parser.add_argument("--md", default=None)
+    parser.add_argument("--check", action="store_true",
+                        help="compute and report without rewriting readiness JSON/MD")
     args = parser.parse_args(argv)
     out = Path(args.out) if args.out else Path(args.root) / EVIDENCE_REL / "recovery_readiness.json"
     md = Path(args.md) if args.md else Path(args.root) / EVIDENCE_REL / "recovery_readiness.md"
     report = assess(args.root)
-    out.write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
-    md.write_text(render_markdown(report), encoding="utf-8")
+    if not args.check:
+        out.write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
+        md.write_text(render_markdown(report), encoding="utf-8")
     print(json.dumps({"status": report["status"], "counts": report["counts"],
-                      "software_run_id": report["software_run_id"]}, indent=2))
+                      "software_run_id": report["software_run_id"],
+                      "wrote": not args.check}, indent=2))
     return 0 if report["status"] == "RECOVERY_READINESS_GATES_CLOSED_EXPECTED" else 1
 
 

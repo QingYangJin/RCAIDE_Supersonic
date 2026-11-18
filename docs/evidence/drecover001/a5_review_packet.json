@@ -1,6 +1,6 @@
 {
   "schema": "drecover001.a5_review_packet.v1",
-  "generated_utc": "2026-11-18T11:35:29Z",
+  "generated_utc": "2026-11-18T11:45:05Z",
   "root": "D:\\RCAIDE\\.worktrees\\drecover001-20261117",
   "scope": "READ_ONLY_EVIDENCE_AGGREGATION_FOR_INDEPENDENT_A5_REVIEW",
   "attestation": {
@@ -18,7 +18,7 @@
     "new_scientific_evidence_created": false,
     "network_used": false
   },
-  "software_run_id": "DRECOVER001-SOFTWARE-20261118T112826Z",
+  "software_run_id": "DRECOVER001-SOFTWARE-20261118T114410Z",
   "software_tests": {
     "run": 247,
     "failures": 0,
@@ -99,7 +99,7 @@
   "readiness_matrix": {
     "path": "docs/evidence/drecover001/recovery_readiness.json",
     "status": "RECOVERY_READINESS_GATES_CLOSED_EXPECTED",
-    "generated_utc": "2026-11-18T11:35:20Z",
+    "generated_utc": "2026-11-18T11:44:43Z",
     "note": "status is quoted, not hashed, to avoid a self-referential hash cycle; rerun the aggregator to verify"
   },
   "claims": [
@@ -166,7 +166,7 @@
     {
       "path": "docs/evidence/drecover001/recovery_inventory.md",
       "bytes": 25955,
-      "sha256": "9ad7c74bd9dc1eaea6560eb6fe94754962fcd821677d8627aa666645e7009266",
+      "sha256": "1b66f270aa83845d9ed45ec549745b908563798b9507fdc52c0c5dc0751791b7",
       "claim": "R0 human-readable inventory",
       "gate": "R0_INVENTORY",
       "in_change_manifest": true
@@ -214,7 +214,7 @@
     {
       "path": "docs/evidence/drecover001/needed_for_next_run.json",
       "bytes": 21615,
-      "sha256": "a3fc77ac9439f292f994feda29dbab0dce1d6d388997b4bdf00879977ad98589",
+      "sha256": "cdefa2728004850114a6e7467dc87435fa544051967f6e81e02d15d69dfe5038",
       "claim": "R0/R1/R2 handoff requirements",
       "gate": "R0_INVENTORY",
       "in_change_manifest": true
@@ -302,7 +302,7 @@
     {
       "path": "docs/evidence/drecover001/recovery_preflight_receipt.json",
       "bytes": 7639,
-      "sha256": "04dbb7191dcae42f350a8c47f3729694c03d7ae18fb3f27a4db132fd0c25e949",
+      "sha256": "70096ac2a29a7d5d1ba31393a7b2f662f496408ebb001f1c9ad20f95a59cda10",
       "claim": "R1 software preflight receipt",
       "gate": "R1_SOFTWARE",
       "in_change_manifest": true
@@ -341,8 +341,8 @@
     },
     {
       "path": "docs/evidence/drecover001/synthetic_software_training_trace.json",
-      "bytes": 6328,
-      "sha256": "8f745bb2ec78fad93410baa5c50975ba938a9bf87cf9c160e5d43a422bb8573d",
+      "bytes": 6327,
+      "sha256": "7ec0ff3f00dfb02468faf9ea1c0fd39367f978259b3359b4cb9053d14b4abc68",
       "claim": "R1 fixture training trace",
       "gate": "R1_SOFTWARE",
       "in_change_manifest": true
@@ -430,8 +430,8 @@
     },
     {
       "path": "docs/evidence/drecover001/issue12_consolidated_receipt_draft_20261117.md",
-      "bytes": 13890,
-      "sha256": "1e4633486d24c8ade949ea9dedbeeb03f230c5d431c1efee1825aca464742627",
+      "bytes": 13956,
+      "sha256": "48a3df47b2b0846001ff71abbad09954e9b1d394a002788b05d0bd1e81156886",
       "claim": "Issue #12 receipt draft (not posted)",
       "gate": "EVIDENCE_MANIFEST",
       "in_change_manifest": true
@@ -474,7 +474,8 @@
     "Two files named real_openvsp_geometry_probe.json exist: docs/evidence/drecover001/real_openvsp_geometry_probe.json is the pre-repair SURFACE_DIAGNOSTIC_FAIL snapshot; the authoritative post-repair record is docs/evidence/drecover001/a1_thickness_repair/real_openvsp_geometry_probe.json (SURFACE_DIAGNOSTIC_PASS_NOT_FREEZE). Neither is a solver freeze or physics validation.",
     "research/concorde_metaopt/dreal001/meta/m2_rehearsal.py hardcodes three native_probe_status PASS strings into its geometry contract; the rehearsal therefore asserts, rather than reads, those probe statuses.",
     "needed_for_next_run.json had a truncated R1 requirement tail; it is valid JSON now but the lost tail is marked UNKNOWN and is not evidence.",
-    "The evidence tree has uncommitted changes on top of commit 01c9274801474c113a2c488e375d451bcd0297c3. CLI git transport has no configured credential and fails with SEC_E_NO_CREDENTIALS, so this snapshot is not itself a remote commit; earlier snapshots were pushed through the GitHub API.",
+    "Snapshots after 01c9274801474c113a2c488e375d451bcd0297c3 were pushed to branch recovery/drecover001-20261117 through the GitHub Data API because CLI git transport has no configured credential and fails with SEC_E_NO_CREDENTIALS. The GitHub branch head is authoritative for pushed content; the local worktree may temporarily hold newer uncommitted edits.",
+    "assess_recovery_readiness.py --check computes and prints the readiness matrix without rewriting recovery_readiness.json/.md; the committed matrix is a dated report generated at its recorded HEAD and is intentionally excluded from the evidence index.",
     "Some R0 report claims are REPORT_PRESENT only; raw identity is not established for all historical numbers.",
     "A1 geometry freeze v2 validates the declared geometry/reference contract and zero-physical boundary perturbations, not aerodynamics. Force-axis signs, the WING_AC moment origin and mass/CG remain unvalidated; the global-versus-wing-local XCG ambiguity is disclosed as an open item for R2 VSPAERO read-back.",
     "The VSP3/STL/STEP exports are real OpenVSP 3.55 bytes checked by SHA and STL bounds, but byte-identical re-export across machines is not asserted. Re-running verify_geometry_freeze_v2.py requires the same OpenVSP installation.",
@@ -484,7 +485,7 @@
     "run_recovery_preflight.py is deliberately excluded from the non-destructive reproduction list: it assigns a new run_id and overwrites the preflight receipt, trace and checkpoint hashed here. Rerun the suite only inside a restored copy of the bundle, never in this frozen evidence tree."
   ],
   "reproduction": [
-    "D:/Anaconda/envs/RCAIDE/python.exe docs/evidence/drecover001/assess_recovery_readiness.py",
+    "D:/Anaconda/envs/RCAIDE/python.exe docs/evidence/drecover001/assess_recovery_readiness.py --check",
     "D:/Anaconda/envs/RCAIDE/python.exe docs/evidence/drecover001/verify_r0_provenance_extension.py",
     "D:/Anaconda/envs/RCAIDE/python.exe docs/evidence/drecover001/verify_geometry_freeze_v2.py",
     "D:/Anaconda/envs/RCAIDE/python.exe docs/evidence/drecover001/verify_m1_batch_evidence.py",

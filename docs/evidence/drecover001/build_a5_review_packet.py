@@ -242,7 +242,8 @@ def build(root: Path) -> tuple[dict, list[str]]:
             "Two files named real_openvsp_geometry_probe.json exist: docs/evidence/drecover001/real_openvsp_geometry_probe.json is the pre-repair SURFACE_DIAGNOSTIC_FAIL snapshot; the authoritative post-repair record is docs/evidence/drecover001/a1_thickness_repair/real_openvsp_geometry_probe.json (SURFACE_DIAGNOSTIC_PASS_NOT_FREEZE). Neither is a solver freeze or physics validation.",
             "research/concorde_metaopt/dreal001/meta/m2_rehearsal.py hardcodes three native_probe_status PASS strings into its geometry contract; the rehearsal therefore asserts, rather than reads, those probe statuses.",
             "needed_for_next_run.json had a truncated R1 requirement tail; it is valid JSON now but the lost tail is marked UNKNOWN and is not evidence.",
-            "The evidence tree has uncommitted changes on top of commit 01c9274801474c113a2c488e375d451bcd0297c3. CLI git transport has no configured credential and fails with SEC_E_NO_CREDENTIALS, so this snapshot is not itself a remote commit; earlier snapshots were pushed through the GitHub API.",
+            "Snapshots after 01c9274801474c113a2c488e375d451bcd0297c3 were pushed to branch recovery/drecover001-20261117 through the GitHub Data API because CLI git transport has no configured credential and fails with SEC_E_NO_CREDENTIALS. The GitHub branch head is authoritative for pushed content; the local worktree may temporarily hold newer uncommitted edits.",
+            "assess_recovery_readiness.py --check computes and prints the readiness matrix without rewriting recovery_readiness.json/.md; the committed matrix is a dated report generated at its recorded HEAD and is intentionally excluded from the evidence index.",
             "Some R0 report claims are REPORT_PRESENT only; raw identity is not established for all historical numbers.",
             "A1 geometry freeze v2 validates the declared geometry/reference contract and zero-physical boundary perturbations, not aerodynamics. Force-axis signs, the WING_AC moment origin and mass/CG remain unvalidated; the global-versus-wing-local XCG ambiguity is disclosed as an open item for R2 VSPAERO read-back.",
             "The VSP3/STL/STEP exports are real OpenVSP 3.55 bytes checked by SHA and STL bounds, but byte-identical re-export across machines is not asserted. Re-running verify_geometry_freeze_v2.py requires the same OpenVSP installation.",
@@ -252,7 +253,7 @@ def build(root: Path) -> tuple[dict, list[str]]:
             "run_recovery_preflight.py is deliberately excluded from the non-destructive reproduction list: it assigns a new run_id and overwrites the preflight receipt, trace and checkpoint hashed here. Rerun the suite only inside a restored copy of the bundle, never in this frozen evidence tree.",
         ],
         "reproduction": [
-            "D:/Anaconda/envs/RCAIDE/python.exe docs/evidence/drecover001/assess_recovery_readiness.py",
+            "D:/Anaconda/envs/RCAIDE/python.exe docs/evidence/drecover001/assess_recovery_readiness.py --check",
             "D:/Anaconda/envs/RCAIDE/python.exe docs/evidence/drecover001/verify_r0_provenance_extension.py",
             "D:/Anaconda/envs/RCAIDE/python.exe docs/evidence/drecover001/verify_geometry_freeze_v2.py",
             "D:/Anaconda/envs/RCAIDE/python.exe docs/evidence/drecover001/verify_m1_batch_evidence.py",
@@ -317,6 +318,8 @@ def render_md(packet: dict) -> str:
         lines.append("- " + item)
     lines.append("")
     lines.append("## 复核步骤（非破坏性）")
+    lines.append("")
+    lines.append("以下命令均不改写证据文件；`assess_recovery_readiness.py --check` 只计算并打印，不重写 readiness JSON/MD。`run_recovery_preflight.py` 会改写 run_id、receipt、trace 与 checkpoint，故意排除。")
     lines.append("")
     for cmd in packet["reproduction"]:
         lines.append("    " + cmd)
