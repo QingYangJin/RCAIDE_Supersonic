@@ -1,6 +1,6 @@
 {
   "schema": "drecover001.recovery_readiness.v1",
-  "generated_utc": "2026-11-18T11:31:21Z",
+  "generated_utc": "2026-11-18T11:35:20Z",
   "root": "D:\\RCAIDE\\.worktrees\\drecover001-20261117",
   "gates": [
     {
@@ -595,14 +595,9 @@
           "detail": "recorded=171962 actual=171962"
         },
         {
-          "name": "manifest_covers_worktree",
-          "status": "PASS",
-          "detail": "unlisted=0 []"
-        },
-        {
-          "name": "manifest_has_no_ghost_entries",
-          "status": "PASS",
-          "detail": "ghosts=0 []"
+          "name": "manifest_entries_describe_committed_snapshot",
+          "status": "INFO",
+          "detail": "worktree clean at HEAD; 7 entries are the committed change set"
         }
       ],
       "violations": [],
@@ -614,9 +609,9 @@
     }
   ],
   "git": {
-    "head": "7e104f63879ae000d6cd2aabedc6727451f5856f",
+    "head": "13d36d696ac6a25cfa5e9a61d0b1bdd9b458bea7",
     "branch": "recovery/drecover001-20261117",
-    "dirty_paths": 12,
+    "dirty_paths": 0,
     "head_error": null,
     "author_email_configured": false,
     "author_email_error": ""
