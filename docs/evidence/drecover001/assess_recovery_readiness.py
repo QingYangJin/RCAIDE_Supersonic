@@ -203,7 +203,106 @@ def assess_r0(root, report):
             record(node, "%s_sha_matches_archived_bytes" % label,
                    verification.get(field) == sha256_file(candidate),
                    "recorded=%r actual=%r" % (verification.get(field), sha256_file(candidate)))
-    node["blockers"].append("Independent actual 6-terra inventory review is NOT_STARTED; gate remains unsigned")
+    baseline, berr = load_json(root, EVIDENCE_REL / "new_baseline_manifest.json")
+    if baseline is None:
+        node["missing"].append("new_baseline_manifest.json: %s" % berr)
+    else:
+        node["evidence"].append("docs/evidence/drecover001/new_baseline_manifest.json")
+        record(node, "new_baseline_schema",
+               baseline.get("schema") == "drecover001.new_baseline_manifest.v1",
+               "schema=%r" % baseline.get("schema"))
+        record(node, "new_baseline_base_commit",
+               bool(re.fullmatch(r"[0-9a-f]{40}", str(baseline.get("base_commit")))),
+               "base_commit=%r" % baseline.get("base_commit"))
+        history_policy = baseline.get("historical_data_policy") or {}
+        record(node, "historical_data_archived_raw_lost",
+               history_policy.get("status") == "RAW_LOST_ARCHIVED"
+               and history_policy.get("search_policy") == "STOPPED_NO_FURTHER_HISTORY_RECOVERY_SEARCH",
+               "status=%r search=%r" % (history_policy.get("status"),
+                                        history_policy.get("search_policy")))
+        required = (baseline.get("identity_policy") or {}).get("new_physical_runs_require") or []
+        record(node, "new_identity_policy_requires_geometry_and_admission",
+               "new_geometry_sha256" in required and "RealAdmissionManifest" in required
+               and "fresh Lead batch GO" in required,
+               "required=%r" % required)
+        record(node, "new_baseline_zero_physical",
+               baseline.get("physical_solver_starts_actual") == 0
+               and baseline.get("internal_solver_cases_actual") == 0
+               and baseline.get("admitted_scientific_labels") == 0,
+               "physical=%r internal=%r admitted=%r" % (
+                   baseline.get("physical_solver_starts_actual"),
+                   baseline.get("internal_solver_cases_actual"),
+                   baseline.get("admitted_scientific_labels")))
+    node["blockers"].append("Independent A5 review of the new baseline identity is not a human signature; the recorded deepseek-flash verdict is review input only")
+    report["gates"].append(finalize(node))
+
+
+def assess_geometry_freeze(root, report):
+    node = new_gate("A1_GEOMETRY_FREEZE_V2", "A1 geometry freeze v2 (zero physical)")
+    freeze, ferr = load_json(root, EVIDENCE_REL / "geometry_freeze_v2.json")
+    verification, verr = load_json(root, EVIDENCE_REL / "geometry_freeze_v2_verification.json")
+    baseline, berr = load_json(root, EVIDENCE_REL / "new_baseline_manifest.json")
+    if freeze is None or verification is None or baseline is None:
+        node["missing"].append("geometry freeze evidence: %s / %s / %s" % (ferr, verr, berr))
+        return report["gates"].append(finalize(node))
+    node["evidence"] += ["docs/evidence/drecover001/geometry_freeze_v2.json",
+                         "docs/evidence/drecover001/geometry_freeze_v2_verification.json",
+                         "docs/evidence/drecover001/new_baseline_manifest.json"]
+    record(node, "freeze_status_issued", freeze.get("status") == "GEOMETRY_FREEZE_V2_ISSUED_ZERO_PHYSICAL",
+           "status=%r" % freeze.get("status"))
+    record(node, "freeze_scope_geometry_only",
+           freeze.get("scope") == "GEOMETRY_AND_REFERENCE_CONTRACT_ONLY_NO_AERODYNAMIC_VALIDATION",
+           "scope=%r" % freeze.get("scope"))
+    record(node, "freeze_zero_physical",
+           freeze.get("physical_solver_starts_actual") == 0
+           and freeze.get("internal_solver_cases_actual") == 0,
+           "physical=%r internal=%r" % (freeze.get("physical_solver_starts_actual"),
+                                        freeze.get("internal_solver_cases_actual")))
+    record(node, "freeze_contract_sha_format",
+           bool(SHA_RE.fullmatch(str(freeze.get("geometry_contract_sha256")))),
+           "sha=%r" % freeze.get("geometry_contract_sha256"))
+    record(node, "freeze_consistency_all_pass",
+           all(item.get("ok") is True for item in freeze.get("consistency_checks", []))
+           and len(freeze.get("consistency_checks", [])) > 0,
+           "checks=%d" % len(freeze.get("consistency_checks", [])))
+    boundary = freeze.get("boundary_perturbation") or {}
+    record(node, "freeze_boundary_perturbation_all_pass",
+           boundary.get("all_ok") is True
+           and boundary.get("model_cases_ok") == 24
+           and boundary.get("native_cases_ok") == boundary.get("native_cases_total") == 24,
+           "model=%r native=%r/%r" % (boundary.get("model_cases_ok"),
+                                      boundary.get("native_cases_ok"),
+                                      boundary.get("native_cases_total")))
+    export = freeze.get("real_openvsp_export") or {}
+    bad_exports = []
+    for fmt, row in (export.get("exports") or {}).items():
+        path = Path(root) / str(row.get("path"))
+        if not path.is_file() or path.stat().st_size != row.get("bytes") or sha256_file(path) != row.get("sha256"):
+            bad_exports.append(fmt)
+    record(node, "freeze_exports_match_disk", not bad_exports and bool(export.get("exports")),
+           "bad=%r count=%d" % (bad_exports, len(export.get("exports") or {})))
+    record(node, "freeze_verification_status",
+           verification.get("status") == "GEOMETRY_FREEZE_V2_VERIFIED",
+           "status=%r" % verification.get("status"))
+    record(node, "freeze_verification_zero_failures",
+           verification.get("failure_count") == 0 and not verification.get("failures")
+           and isinstance(verification.get("check_count"), int)
+           and verification.get("check_count") >= 100,
+           "checks=%r failures=%r" % (verification.get("check_count"),
+                                      verification.get("failure_count")))
+    freeze_sha = sha256_file(Path(root) / "docs/evidence/drecover001/geometry_freeze_v2.json")
+    verification_sha = sha256_file(Path(root) / "docs/evidence/drecover001/geometry_freeze_v2_verification.json")
+    baseline_status = (baseline.get("geometry_freeze_status") or {})
+    record(node, "baseline_records_freeze_identity",
+           baseline_status.get("current_geometry_contract_sha256") == freeze.get("geometry_contract_sha256")
+           and baseline_status.get("freeze_id") == freeze.get("freeze_id")
+           and baseline_status.get("status") == freeze.get("status"),
+           "freeze_id=%r" % baseline_status.get("freeze_id"))
+    record(node, "baseline_records_freeze_hash",
+           baseline_status.get("freeze_json_sha256") == freeze_sha
+           and baseline_status.get("verification_sha256") == verification_sha,
+           "json_recorded=%r actual=%r" % (baseline_status.get("freeze_json_sha256"), freeze_sha))
+    node["blockers"].append("A1 geometry freeze is geometry/reference only; force-axis signs, WING_AC moment origin and mass/CG remain unvalidated until R2 VSPAERO readback")
     report["gates"].append(finalize(node))
 
 
@@ -267,6 +366,44 @@ def assess_r1(root, report, preflight):
             drift.append("%s changed" % relative)
     record(node, "recorded_sources_still_current", not drift,
            "drift=%d %s" % (len(drift), drift[:5]))
+    a2, a2_err = load_json(root, EVIDENCE_REL / "a2_feedback_rehearsal.json")
+    if a2 is None:
+        node["missing"].append("a2_feedback_rehearsal.json: %s" % a2_err)
+    else:
+        node["evidence"].append("docs/evidence/drecover001/a2_feedback_rehearsal.json")
+        baseline = a2.get("baseline") or {}
+        counterfactual = a2.get("counterfactual") or {}
+        failed = a2.get("failed_objective_branch") or {}
+        record(node, "a2_rehearsal_schema_and_scope",
+               a2.get("schema") == "drecover001.a2_feedback_rehearsal.v1"
+               and a2.get("scope") == "SOFTWARE_FEEDBACK_REHEARSAL_ONLY_NOT_PHYSICAL_EVIDENCE",
+               "schema=%r scope=%r" % (a2.get("schema"), a2.get("scope")))
+        record(node, "a2_rehearsal_zero_physical",
+               a2.get("physical_solver_starts_actual") == 0
+               and baseline.get("physical_solver_starts") == 0,
+               "receipt=%r baseline=%r" % (a2.get("physical_solver_starts_actual"),
+                                           baseline.get("physical_solver_starts")))
+        record(node, "a2_rehearsal_real_arm_feedback",
+               baseline.get("status") == "COMPLETED"
+               and baseline.get("evaluations_requested") == 6
+               and baseline.get("valid_evals") == 6
+               and baseline.get("simulated_solver_starts") == 6,
+               "status=%r requested=%r valid=%r simulated=%r" % (
+                   baseline.get("status"), baseline.get("evaluations_requested"),
+                   baseline.get("valid_evals"), baseline.get("simulated_solver_starts")))
+        record(node, "a2_rehearsal_feedback_is_causal",
+               counterfactual.get("first_two_proposals_identical") is True
+               and counterfactual.get("third_proposal_differs") is True,
+               "first_two_identical=%r third_differs=%r" % (
+                   counterfactual.get("first_two_proposals_identical"),
+                   counterfactual.get("third_proposal_differs")))
+        record(node, "a2_rehearsal_failed_objective_is_null",
+               failed.get("first_row_status") == "FAIL"
+               and failed.get("first_row_valid") is False
+               and failed.get("first_row_objective_D_i_N") is None,
+               "status=%r valid=%r objective=%r" % (
+                   failed.get("first_row_status"), failed.get("first_row_valid"),
+                   failed.get("first_row_objective_D_i_N")))
     current_docs = {"recovery_inventory.md", "needed_for_next_run.json",
                     "issue12_consolidated_receipt_draft_20261117.md",
                     "maml_readiness_20261117.md"}
@@ -538,10 +675,74 @@ def assess_real_admission(root, report, inventory):
                         fail_closed = True
     record(node, "require_real_admission_fails_closed", fail_closed,
            "raise ContractError(REAL_ADMISSION_NOT_IMPLEMENTED) found=%r" % fail_closed)
+    protocol = Path(root) / "research/concorde_metaopt/dreal001/meta/real_admission.py"
+    tests = (Path(root) / "research/concorde_metaopt/tests/"
+             "test_recovery_real_admission.py")
+    if protocol.is_file():
+        node["evidence"].append(
+            "research/concorde_metaopt/dreal001/meta/real_admission.py")
+        try:
+            protocol_text = protocol.read_text(encoding="utf-8")
+            protocol_tree = ast.parse(protocol_text)
+        except (OSError, SyntaxError) as exc:
+            node["violations"].append("real_admission.py unparseable: %s" % exc)
+        else:
+            names = {item.name for item in ast.walk(protocol_tree)
+                     if isinstance(item, (ast.ClassDef, ast.FunctionDef))}
+            required = {"RealAdmissionManifest", "AdmissionCertificate",
+                        "admit_real_manifest", "artifact_sha256"}
+            record(node, "admission_protocol_defines_required_api",
+                   required <= names,
+                   "missing=%s" % sorted(required - names))
+            record(node, "admission_certificate_is_issuer_minted",
+                   "_ISSUER" in protocol_text
+                   and "_issuer is not _ISSUER" in protocol_text
+                   and "EVIDENCE_SCOPE" in protocol_text,
+                   "issuer guard and evidence scope present")
+            record(node, "admission_success_path_verifies_real_raw",
+                   "verify_artifact_bundle" in protocol_text
+                   and "candidate.real_admission" in protocol_text,
+                   "delegates to raw verification and rejects self-admitted candidates")
+            if tests.is_file():
+                node["evidence"].append(
+                    "research/concorde_metaopt/tests/test_recovery_real_admission.py")
+                test_text = tests.read_text(encoding="utf-8")
+                try:
+                    test_tree = ast.parse(test_text)
+                except SyntaxError as exc:
+                    node["violations"].append(
+                        "test_recovery_real_admission.py unparseable: %s" % exc)
+                else:
+                    test_names = {item.name for item in ast.walk(test_tree)
+                                  if isinstance(item, ast.FunctionDef)
+                                  and item.name.startswith("test_")}
+                    record(node, "admission_success_and_refusal_paths_tested",
+                           any("success" in name for name in test_names)
+                           and any("missing" in name for name in test_names)
+                           and any("failed" in name for name in test_names)
+                           and len(test_names) >= 10,
+                           "tests=%d" % len(test_names))
+            else:
+                info(node, "admission_tests_not_present_in_this_tree",
+                     "test_recovery_real_admission.py absent")
+    else:
+        info(node, "admission_protocol_not_present_in_this_tree",
+             "real_admission.py absent")
+    raw_verification = (Path(root) / "research/concorde_metaopt/dreal001/meta/"
+                        "raw_verification.py")
+    raw_text = (raw_verification.read_text(encoding="utf-8")
+                if raw_verification.is_file() else "")
+    safe_flag = ("real_admission=False" in raw_text
+                 or "real_admission: bool = False" in raw_text)
+    unsafe_flag = ("real_admission=True" in raw_text
+                   or "real_admission = True" in raw_text)
+    record(node, "raw_candidate_is_not_self_admitted", safe_flag and not unsafe_flag,
+           "raw_verification keeps real_admission=False")
     admitted = (inventory or {}).get("admitted_scientific_labels_this_recovery")
     record(node, "no_admitted_scientific_labels", admitted == 0,
            "admitted=%r" % admitted)
-    node["blockers"].append("R0 independent audit, R1 audit, independent backup, and A5 admission signature are all absent")
+    node["blockers"].append("No real raw artifact has been admitted or independently audited; "
+                            "the protocol is fixture-tested only")
     report["gates"].append(finalize(node))
 
 
@@ -637,6 +838,7 @@ def assess(root):
     inventory, _ = load_json(root, EVIDENCE_REL / "recovery_inventory.json")
     m1_receipt, _ = load_json(root, EVIDENCE_REL / "m1_batch_software_rehearsal_receipt.json")
     assess_r0(root, report)
+    assess_geometry_freeze(root, report)
     assess_r1(root, report, preflight)
     assess_m1(root, report)
     assess_m2(root, report)

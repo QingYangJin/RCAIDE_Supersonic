@@ -1,0 +1,451 @@
+{
+  "schema": "drecover001.geometry_freeze_v2_verification.v1",
+  "freeze_id": "GBFREEZE2-5f2bb12fe8b1dc68",
+  "geometry_contract_sha256": "5f2bb12fe8b1dc68c67901843c777328ae984cfdbe4ee71176b369a16a133f15",
+  "freeze_json_path": "docs/evidence/drecover001/geometry_freeze_v2.json",
+  "freeze_json_sha256": "401bc6b6c605eafe416bd4b0e925d106b93673b2e4d2c21f1d21e688d7e62bf1",
+  "check_count": 101,
+  "failure_count": 0,
+  "failures": [],
+  "checks": [
+    {
+      "check": "schema_is_freeze_v2",
+      "ok": true
+    },
+    {
+      "check": "status_issued_zero_physical",
+      "ok": true
+    },
+    {
+      "check": "freeze_issued_true",
+      "ok": true
+    },
+    {
+      "check": "scope_is_geometry_only",
+      "ok": true
+    },
+    {
+      "check": "physical_solver_starts_zero",
+      "ok": true
+    },
+    {
+      "check": "internal_solver_cases_zero",
+      "ok": true
+    },
+    {
+      "check": "aerodynamic_mask_not_validated",
+      "ok": true
+    },
+    {
+      "check": "geometry_contract_sha_recomputes",
+      "ok": true,
+      "detail": {
+        "recomputed": "5f2bb12fe8b1dc68c67901843c777328ae984cfdbe4ee71176b369a16a133f15",
+        "recorded": "5f2bb12fe8b1dc68c67901843c777328ae984cfdbe4ee71176b369a16a133f15"
+      }
+    },
+    {
+      "check": "freeze_id_derives_from_contract",
+      "ok": true
+    },
+    {
+      "check": "base_commit_recorded",
+      "ok": true
+    },
+    {
+      "check": "source_sha256_research/concorde_metaopt/aircraft/geometry_model.py",
+      "ok": true,
+      "detail": {
+        "recorded": "5bbcf984c5f7ee48e7aee104e4b3953e7d0fb918502c6d5929f2e48d8d064ce2"
+      }
+    },
+    {
+      "check": "source_sha256_research/concorde_metaopt/aircraft/openvsp_geometry.py",
+      "ok": true,
+      "detail": {
+        "recorded": "4f64d4c0046ca2f72e9cd770fbf8af227fd55b165b868b74a856c7d282c7aa3c"
+      }
+    },
+    {
+      "check": "source_sha256_research/concorde_metaopt/dreal001/optimizers/constants.py",
+      "ok": true,
+      "detail": {
+        "recorded": "cd3d818a60a50917e83aecd307d728050f3d15f5b1ed1245595ec7f55fb10f9d"
+      }
+    },
+    {
+      "check": "source_sha256_research/concorde_metaopt/dreal001/optimizers/task.py",
+      "ok": true,
+      "detail": {
+        "recorded": "06504aae2b165e6ac8be24ff9de9006d8a14f9401b273aea6f006dc8c1c55484"
+      }
+    },
+    {
+      "check": "source_sha256_research/concorde_metaopt/configs/design_space_12d_lifting_surfaces.yaml",
+      "ok": true,
+      "detail": {
+        "recorded": "ebca2b7bb2920ce1e3729a3dedd7c361a1c78d34337918a973866bef48f76efc"
+      }
+    },
+    {
+      "check": "config_sha256_matches",
+      "ok": true
+    },
+    {
+      "check": "openvsp_runtime_binary_sha256_matches",
+      "ok": true
+    },
+    {
+      "check": "design_variable_count_12",
+      "ok": true
+    },
+    {
+      "check": "fixed_variable_count_3",
+      "ok": true
+    },
+    {
+      "check": "baseline_x12_matches_config",
+      "ok": true
+    },
+    {
+      "check": "config_frozen_true",
+      "ok": true
+    },
+    {
+      "check": "bounds_status_recorded",
+      "ok": true
+    },
+    {
+      "check": "sref_equals_wing_area",
+      "ok": true
+    },
+    {
+      "check": "cref_equals_mac",
+      "ok": true
+    },
+    {
+      "check": "bref_equals_span",
+      "ok": true
+    },
+    {
+      "check": "cl_target_recomputes",
+      "ok": true
+    },
+    {
+      "check": "lift_reference_is_contractual",
+      "ok": true
+    },
+    {
+      "check": "structural_masses_sum_to_operating_empty",
+      "ok": true,
+      "detail": {
+        "sum": 78700.0,
+        "operating_empty_kg": 78700.0
+      }
+    },
+    {
+      "check": "mass_budget_sums_to_total_takeoff",
+      "ok": true,
+      "detail": {
+        "sum": 184880.0,
+        "total_takeoff_kg": 184880.0
+      }
+    },
+    {
+      "check": "total_takeoff_matches_geometry",
+      "ok": true
+    },
+    {
+      "check": "cg_matches_geometry",
+      "ok": true
+    },
+    {
+      "check": "static_margin_matches_geometry",
+      "ok": true
+    },
+    {
+      "check": "mass_status_provisional",
+      "ok": true
+    },
+    {
+      "check": "cg_status_disclaims_validation",
+      "ok": true
+    },
+    {
+      "check": "force_axis_status_unvalidated",
+      "ok": true
+    },
+    {
+      "check": "moment_origin_ambiguity_disclosed",
+      "ok": true
+    },
+    {
+      "check": "p2a_xcg_is_wing_local_ac",
+      "ok": true
+    },
+    {
+      "check": "global_ac_adds_origin",
+      "ok": true
+    },
+    {
+      "check": "recorded_consistency_sref_equals_wing_area",
+      "ok": true
+    },
+    {
+      "check": "recorded_consistency_cref_equals_mac",
+      "ok": true
+    },
+    {
+      "check": "recorded_consistency_bref_equals_span",
+      "ok": true
+    },
+    {
+      "check": "recorded_consistency_mass_components_sum_to_total",
+      "ok": true
+    },
+    {
+      "check": "recorded_consistency_cg_inside_fuselage",
+      "ok": true
+    },
+    {
+      "check": "recorded_consistency_baseline_cl_target_finite_positive",
+      "ok": true
+    },
+    {
+      "check": "recorded_consistency_nacelle_not_in_export",
+      "ok": true
+    },
+    {
+      "check": "model_boundary_cases_24",
+      "ok": true
+    },
+    {
+      "check": "model_boundary_cases_all_ok",
+      "ok": true
+    },
+    {
+      "check": "native_boundary_cases_24",
+      "ok": true
+    },
+    {
+      "check": "native_boundary_cases_all_ok",
+      "ok": true
+    },
+    {
+      "check": "native_boundary_cases_count_ok",
+      "ok": true
+    },
+    {
+      "check": "export_vsp3_exists",
+      "ok": true
+    },
+    {
+      "check": "export_vsp3_bytes",
+      "ok": true
+    },
+    {
+      "check": "export_vsp3_sha256",
+      "ok": true
+    },
+    {
+      "check": "export_stl_exists",
+      "ok": true
+    },
+    {
+      "check": "export_stl_bytes",
+      "ok": true
+    },
+    {
+      "check": "export_stl_sha256",
+      "ok": true
+    },
+    {
+      "check": "export_step_exists",
+      "ok": true
+    },
+    {
+      "check": "export_step_bytes",
+      "ok": true
+    },
+    {
+      "check": "export_step_sha256",
+      "ok": true
+    },
+    {
+      "check": "component_stl_main_wing_exists",
+      "ok": true
+    },
+    {
+      "check": "component_stl_main_wing_bytes",
+      "ok": true
+    },
+    {
+      "check": "component_stl_main_wing_sha256",
+      "ok": true
+    },
+    {
+      "check": "component_stl_main_wing_bounds_recompute",
+      "ok": true
+    },
+    {
+      "check": "component_stl_vertical_tail_exists",
+      "ok": true
+    },
+    {
+      "check": "component_stl_vertical_tail_bytes",
+      "ok": true
+    },
+    {
+      "check": "component_stl_vertical_tail_sha256",
+      "ok": true
+    },
+    {
+      "check": "component_stl_vertical_tail_bounds_recompute",
+      "ok": true
+    },
+    {
+      "check": "component_stl_fuselage_exists",
+      "ok": true
+    },
+    {
+      "check": "component_stl_fuselage_bytes",
+      "ok": true
+    },
+    {
+      "check": "component_stl_fuselage_sha256",
+      "ok": true
+    },
+    {
+      "check": "component_stl_fuselage_bounds_recompute",
+      "ok": true
+    },
+    {
+      "check": "assembly_stl_bounds_recompute",
+      "ok": true
+    },
+    {
+      "check": "xform_main_wing_Abs_Or_Relitive_flag",
+      "ok": true
+    },
+    {
+      "check": "xform_main_wing_X_Location",
+      "ok": true
+    },
+    {
+      "check": "xform_main_wing_Y_Location",
+      "ok": true
+    },
+    {
+      "check": "xform_main_wing_Z_Location",
+      "ok": true
+    },
+    {
+      "check": "xform_main_wing_X_Rotation",
+      "ok": true
+    },
+    {
+      "check": "xform_main_wing_Y_Rotation",
+      "ok": true
+    },
+    {
+      "check": "xform_main_wing_Z_Rotation",
+      "ok": true
+    },
+    {
+      "check": "xform_vertical_tail_Abs_Or_Relitive_flag",
+      "ok": true
+    },
+    {
+      "check": "xform_vertical_tail_X_Location",
+      "ok": true
+    },
+    {
+      "check": "xform_vertical_tail_Y_Location",
+      "ok": true
+    },
+    {
+      "check": "xform_vertical_tail_Z_Location",
+      "ok": true
+    },
+    {
+      "check": "xform_vertical_tail_X_Rotation",
+      "ok": true
+    },
+    {
+      "check": "xform_vertical_tail_Y_Rotation",
+      "ok": true
+    },
+    {
+      "check": "xform_vertical_tail_Z_Rotation",
+      "ok": true
+    },
+    {
+      "check": "xform_fuselage_Abs_Or_Relitive_flag",
+      "ok": true
+    },
+    {
+      "check": "xform_fuselage_X_Location",
+      "ok": true
+    },
+    {
+      "check": "xform_fuselage_Y_Location",
+      "ok": true
+    },
+    {
+      "check": "xform_fuselage_Z_Location",
+      "ok": true
+    },
+    {
+      "check": "xform_fuselage_X_Rotation",
+      "ok": true
+    },
+    {
+      "check": "xform_fuselage_Y_Rotation",
+      "ok": true
+    },
+    {
+      "check": "xform_fuselage_Z_Rotation",
+      "ok": true
+    },
+    {
+      "check": "stl_placement_checks_all_ok",
+      "ok": true
+    },
+    {
+      "check": "vsp3_has_three_components",
+      "ok": true,
+      "detail": [
+        "fuselage",
+        "main_wing",
+        "vertical_tail"
+      ]
+    },
+    {
+      "check": "vsp3_wing_area_matches",
+      "ok": true
+    },
+    {
+      "check": "vsp3_wing_span_matches",
+      "ok": true
+    },
+    {
+      "check": "vsp3_wing_xform_matches",
+      "ok": true
+    },
+    {
+      "check": "vsp3_tail_area_matches",
+      "ok": true
+    },
+    {
+      "check": "vsp3_tail_xform_matches",
+      "ok": true
+    },
+    {
+      "check": "vsp3_fuselage_length_matches",
+      "ok": true
+    }
+  ],
+  "status": "GEOMETRY_FREEZE_V2_VERIFIED",
+  "physical_solver_starts_actual": 0,
+  "internal_solver_cases_actual": 0
+}

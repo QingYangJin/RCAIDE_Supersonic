@@ -1,0 +1,226 @@
+{
+  "schema": "drecover001.new_baseline_manifest.v1",
+  "manifest_id": "DRECOVER001-NEW-BASELINE-20261118",
+  "created_utc": "2026-11-18T09:45:00Z",
+  "base_commit": "01c9274801474c113a2c488e375d451bcd0297c3",
+  "base_commit_subject": "恢复快照：D-RECOVER-001 R0/R1 零物理修复、证据与 A5 子智能体审查",
+  "base_tree": "8b2be0a4b122dc1ef2ec9a5b4d01cf113f216861",
+  "branch": "recovery/drecover001-20261117",
+  "remote": "https://github.com/QingYangJin/RCAIDE_Supersonic.git",
+  "authoritative_source": "current code at base_commit plus local uncommitted zero-physical R1 repairs; this manifest is the only identity anchor for new work",
+  "historical_data_policy": {
+    "status": "RAW_LOST_ARCHIVED",
+    "do_not_recover": [
+      "F1R2 original raw",
+      "F2R2 original raw"
+    ],
+    "old_reports_and_receipts": "READ_ONLY_HISTORICAL_REFERENCE",
+    "old_geometry_freeze_identity": "NOT_REUSABLE",
+    "old_checkpoint_identity": "LOST_NOT_REUSABLE",
+    "search_policy": "STOPPED_NO_FURTHER_HISTORY_RECOVERY_SEARCH",
+    "note": "Issue #12 (2026-11-18 revision) forbids treating historical reports as recoverable raw. Lost originals stay RAW_LOST."
+  },
+  "identity_policy": {
+    "new_physical_runs_require": [
+      "new_run_id",
+      "new_batch_id",
+      "new_geometry_sha256",
+      "new_task_family_sha256",
+      "RealAdmissionManifest",
+      "fresh Lead batch GO"
+    ],
+    "allowed_origins": [
+      "REGENERATED_FROM_SPEC",
+      "NEW_PHYSICAL_RUN"
+    ],
+    "forbidden": [
+      "reuse_old_run_id",
+      "reuse_old_batch_id",
+      "reuse_old_geometry_sha256",
+      "reuse_old_checkpoint",
+      "claim_historical_raw_recovered"
+    ],
+    "note": "Regenerated artifacts must be labelled REGENERATED_FROM_SPEC; physical artifacts must be NEW_PHYSICAL_RUN and admitted through real_admission.py."
+  },
+  "current_code_identity": {
+    "research/concorde_metaopt/aircraft/openvsp_geometry.py": {
+      "sha256": "4f64d4c0046ca2f72e9cd770fbf8af227fd55b165b868b74a856c7d282c7aa3c",
+      "bytes": 16299
+    },
+    "research/concorde_metaopt/aircraft/geometry_model.py": {
+      "sha256": "5bbcf984c5f7ee48e7aee104e4b3953e7d0fb918502c6d5929f2e48d8d064ce2",
+      "bytes": 33824
+    },
+    "research/concorde_metaopt/aircraft/design_space.py": {
+      "sha256": "e9db1d7e2940c47f6519683ea3a04a23dddb6166acdd110d10b754f691475eba",
+      "bytes": 33585
+    },
+    "research/concorde_metaopt/dreal001/optimizers/evaluators.py": {
+      "sha256": "49db9a73402d72400494ec423d189b0f67426dee3ccc5b265473cad7c06e4baa",
+      "bytes": 61883
+    },
+    "research/concorde_metaopt/dreal001/optimizers/constants.py": {
+      "sha256": "cd3d818a60a50917e83aecd307d728050f3d15f5b1ed1245595ec7f55fb10f9d",
+      "bytes": 3484
+    },
+    "research/concorde_metaopt/dreal001/geometry/design_identity.py": {
+      "sha256": "63d3f1a96150785b2ebf21eca5a41447d3fdde7f77f99ed209f3500355a3e409",
+      "bytes": 1565
+    },
+    "research/concorde_metaopt/dreal001/optimizers/recovery_bo.py": {
+      "sha256": "d6ac011ce2c909032eaef49eb6debe22400454f09ba6fd1d461a1e4542ca0386",
+      "bytes": 8086
+    },
+    "research/concorde_metaopt/dreal001/optimizers/ledger.py": {
+      "sha256": "a83b406599b8e537bf21ed5a6ef481ee4ee291b599e56f31b2f4a6be8c6d2f17",
+      "bytes": 15021
+    },
+    "research/concorde_metaopt/dreal001/meta/task_spec.py": {
+      "sha256": "601cd1e22de01de68825368f256b5956afb3429933bccb84dbd4b29cb2b32e29",
+      "bytes": 3966
+    },
+    "research/concorde_metaopt/dreal001/meta/meta_dataset.py": {
+      "sha256": "19f5e7f6152e3554a7dba45b106296625e5c8191b240d594595e6909d7b58a40",
+      "bytes": 10405
+    },
+    "research/concorde_metaopt/dreal001/meta/real_admission.py": {
+      "sha256": "b27da1547a4b8c21395b0f637aef3f0410c357e7b7a8300ec59c16d8597cdde7",
+      "bytes": 17896
+    },
+    "research/concorde_metaopt/dreal001/meta/raw_verification.py": {
+      "sha256": "875cbe97ff9f666e2569f4b942ecb97ae48e53f38b30a110962f60c3477cd587",
+      "bytes": 8490
+    },
+    "research/concorde_metaopt/dreal001/meta/production.py": {
+      "sha256": "c97d102b04aa27d424867b6208a6f3173bf24cefc52c9dbd6225be0a45ca9989",
+      "bytes": 22690
+    },
+    "research/concorde_metaopt/dreal001/meta/m1_batch.py": {
+      "sha256": "526d4edfda4962c69dbaa335921c5985a93aa362ee2a11ad2768910473d69e76",
+      "bytes": 26006
+    },
+    "research/concorde_metaopt/tests/test_recovery_real_admission.py": {
+      "sha256": "1171ad3cd9c790c58dd3c0cc355e2c87e3a90473932fa37e7b06904e5f6a540c",
+      "bytes": 13924
+    },
+    "docs/evidence/drecover001/run_recovery_preflight.py": {
+      "sha256": "8f552e44611c1eef0dafc202aad4f16311b32451c2a28a3be3347227f4b475a4",
+      "bytes": 10557
+    }
+  },
+  "current_versions": {
+    "geometry_model_version": "p1-2026-10-28",
+    "evaluate_schema_version": "dreal001.aero_eval.v1",
+    "p2a_evaluate_schema": "dreal001.p2a_evaluate_fn.v1",
+    "design_identity": "sha256(canonical x12 JSON)[:16]; 12D order W01..W10,V01,V02",
+    "real_admission_manifest_schema": "dreal001.real_admission_manifest.v1",
+    "independent_audit_record_schema": "dreal001.independent_audit_record.v1",
+    "recovery_preflight_schema": "drecover001.recovery_preflight.v1",
+    "meta_contract_schemas": {
+      "task_spec": "dreal001.meta.TaskSpec",
+      "meta_dataset": "dreal001.meta.MetaDataset"
+    },
+    "geometry_contract_schema": "drecover001.geometry_contract.v2",
+    "geometry_freeze_id": "GBFREEZE2-5f2bb12fe8b1dc68",
+    "geometry_contract_sha256": "5f2bb12fe8b1dc68c67901843c777328ae984cfdbe4ee71176b369a16a133f15"
+  },
+  "geometry_freeze_status": {
+    "status": "GEOMETRY_FREEZE_V2_ISSUED_ZERO_PHYSICAL",
+    "freeze_id": "GBFREEZE2-5f2bb12fe8b1dc68",
+    "current_geometry_contract_sha256": "5f2bb12fe8b1dc68c67901843c777328ae984cfdbe4ee71176b369a16a133f15",
+    "freeze_json_path": "docs/evidence/drecover001/geometry_freeze_v2.json",
+    "freeze_json_sha256": "401bc6b6c605eafe416bd4b0e925d106b93673b2e4d2c21f1d21e688d7e62bf1",
+    "freeze_md_path": "docs/evidence/drecover001/geometry_freeze_v2.md",
+    "freeze_md_sha256": "1af6ff72afc698269edc83218aa90ce4f7a080dcdabc41020ac4ce0b83d17c21",
+    "verification_path": "docs/evidence/drecover001/geometry_freeze_v2_verification.json",
+    "verification_sha256": "ca1c052b0d3093223706676bcb70cd81bc9627f94ecd3d3c3fbb13e3df763aa4",
+    "verification_check_count": 101,
+    "verification_failure_count": 0,
+    "model_version": "p1-2026-10-28",
+    "reference_contract": {
+      "sref_m2": 358.25,
+      "cref_m": 18.489893,
+      "bref_m": 25.604638,
+      "reference_frame": "WING_AC",
+      "xcg_m": 16.821978259514246,
+      "lift_reference_N": 1333704.4,
+      "q_pa": 20483.940233430174,
+      "lift_tol_rel": 0.001,
+      "cl_target": 0.18174391742
+    },
+    "consistency_checks": "7/7 PASS",
+    "boundary_perturbation": {
+      "model_cases": "24/24 PASS",
+      "native_openvsp_cases": "24/24 PASS"
+    },
+    "stl_placement_checks": "PASS",
+    "exports": {
+      "step": {
+        "bytes": 630057,
+        "path": "docs/evidence/drecover001/geometry_freeze_v2_artifacts/concorde_geometry_freeze_v2.step",
+        "sha256": "3b0d96366ea22bdbeb982232d17aa5eb6e1595b4369f6aa89aa6c76b18751b5f"
+      },
+      "stl": {
+        "bytes": 1245302,
+        "path": "docs/evidence/drecover001/geometry_freeze_v2_artifacts/concorde_geometry_freeze_v2.stl",
+        "sha256": "bae4e17c9c7e594ab50ff2f58db60ddd50fb152fa9a18419a11e9065f734c185"
+      },
+      "vsp3": {
+        "bytes": 301252,
+        "path": "docs/evidence/drecover001/geometry_freeze_v2_artifacts/concorde_geometry_freeze_v2.vsp3",
+        "sha256": "e471be01fab21663d5ad4aa227a811b6fbdf719d5d459dc3bac712ea135ee8d2"
+      }
+    },
+    "xform_readback": {
+      "main_wing": {
+        "Abs_Or_Relitive_flag": 0,
+        "X_Location": 14,
+        "Y_Location": 0,
+        "Z_Location": -0.8,
+        "X_Rotation": 0,
+        "Y_Rotation": 0,
+        "Z_Rotation": 0
+      },
+      "vertical_tail": {
+        "Abs_Or_Relitive_flag": 0,
+        "X_Location": 42,
+        "Y_Location": 0,
+        "Z_Location": 1,
+        "X_Rotation": 90,
+        "Y_Rotation": 0,
+        "Z_Rotation": 0
+      },
+      "fuselage": {
+        "Abs_Or_Relitive_flag": 0,
+        "X_Location": 0,
+        "Y_Location": 0,
+        "Z_Location": 0,
+        "X_Rotation": 0,
+        "Y_Rotation": 0,
+        "Z_Rotation": 0
+      }
+    },
+    "mass_cg_ac_status": "PROVISIONAL_NOT_FROZEN",
+    "open_items": [
+      "Mass and CG are the geometry model's PROVISIONAL estimate; this is not a weight-and-balance validation.",
+      "WING_AC moment-reference origin is ambiguous: P2A xcg_m equals the wing-local AC; applying WING_ORIGIN_X_M gives a different global station.",
+      "Force-axis signs are defined here but not read back from VSPAERO; R2 must validate signs and moment reference.",
+      "Nacelle is not exported by the current worker; it remains reference geometry only.",
+      "Lift reference 136,000 kg differs from the provisional 184,880 kg takeoff mass; L_ref is contractual, not a performance result."
+    ],
+    "old_frozen_geometry_sha256": "d20ee7adc38286c7da3ef3ea5aa5be8204596d491d6601b9a635b0ae5213dc56",
+    "old_identity_reusable": false,
+    "physical_solver_starts_actual": 0,
+    "internal_solver_cases_actual": 0,
+    "note": "A1 geometry freeze v2 issued from the current absolute-XForm worker and re-verified by verify_geometry_freeze_v2.py (101 checks, 0 failures). Exported VSP3/STL/STEP are real OpenVSP artifacts, not solver evidence; no VSPAERO process was started. Old M0R geometry SHA stays not reusable."
+  },
+  "history_audit_refs": [
+    "docs/evidence/drecover001/recovery_inventory.json",
+    "docs/evidence/drecover001/r0_provenance_extension.json",
+    "docs/evidence/drecover001/r0_local_object_store_audit.json"
+  ],
+  "physical_solver_starts_actual": 0,
+  "internal_solver_cases_actual": 0,
+  "admitted_scientific_labels": 0,
+  "updated_utc": "2026-11-18T10:00:00Z"
+}

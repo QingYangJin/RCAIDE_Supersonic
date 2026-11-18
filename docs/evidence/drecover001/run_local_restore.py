@@ -211,7 +211,11 @@ def main(argv=None):
         target = session_root / ".recovery-local-restore" / token
         target.mkdir(parents=True, exist_ok=False)
     baseline = target / "baseline.zip"
-    subprocess.run(["git", "archive", "--format=zip", "-o", str(baseline), head], cwd=ROOT, check=True)
+    # core.autocrlf=true would make git archive rewrite LF blobs as CRLF, so a
+    # restored text evidence file would no longer match its recorded SHA256.
+    # Force the repository bytes for the baseline archive.
+    subprocess.run(["git", "-c", "core.autocrlf=false", "archive", "--format=zip",
+                    "-o", str(baseline), head], cwd=ROOT, check=True)
     overlay = {}
     for rel, digest in source_receipt["source_sha256"].items():
         name = rel.replace("\\", "/")

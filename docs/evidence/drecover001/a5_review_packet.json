@@ -1,6 +1,6 @@
 {
   "schema": "drecover001.a5_review_packet.v1",
-  "generated_utc": "2026-11-18T06:37:42Z",
+  "generated_utc": "2026-11-18T10:41:21Z",
   "root": "D:\\RCAIDE\\.worktrees\\drecover001-20261117",
   "scope": "READ_ONLY_EVIDENCE_AGGREGATION_FOR_INDEPENDENT_A5_REVIEW",
   "attestation": {
@@ -18,15 +18,16 @@
     "new_scientific_evidence_created": false,
     "network_used": false
   },
-  "software_run_id": "DRECOVER001-SOFTWARE-20261118T062546Z",
+  "software_run_id": "DRECOVER001-SOFTWARE-20261118T102149Z",
   "software_tests": {
-    "run": 230,
+    "run": 247,
     "failures": 0,
     "errors": 0,
     "skipped": 0
   },
   "gate_states": {
     "R0_INVENTORY": "CLOSED",
+    "A1_GEOMETRY_FREEZE_V2": "CLOSED",
     "R1_SOFTWARE": "CLOSED",
     "M1_BATCH_CONTROL_PATH": "CLOSED",
     "M2_OFFLINE_REHEARSAL": "CLOSED",
@@ -98,7 +99,7 @@
   "readiness_matrix": {
     "path": "docs/evidence/drecover001/recovery_readiness.json",
     "status": "RECOVERY_READINESS_GATES_CLOSED_EXPECTED",
-    "generated_utc": "2026-11-18T06:37:42Z",
+    "generated_utc": "2026-11-18T10:41:21Z",
     "note": "status is quoted, not hashed, to avoid a self-referential hash cycle; rerun the aggregator to verify"
   },
   "claims": [
@@ -108,7 +109,22 @@
       "state": "CLOSED"
     },
     {
-      "claim": "R1 software baseline passes 230 offline tests; fixture-only training changes parameters and checkpoint roundtrips",
+      "claim": "R0 new-baseline manifest starts from commit 01c9274, archives the historical F1R2/F2R2 raw data as RAW_LOST, stops further history-recovery search, and requires new run/batch/geometry/task-family identities plus a fresh Lead GO",
+      "gate": "R0_INVENTORY",
+      "state": "CLOSED"
+    },
+    {
+      "claim": "A1 geometry freeze v2 issues a 15-variable geometry/reference contract (12D lifting surfaces plus fixed fuselage), 24/24 declared-boundary perturbations in both the pure model and real OpenVSP 3.55, and real VSP3/STL/STEP exports with read-back; force-axis signs, WING_AC moment origin and mass/CG remain unvalidated and provisional",
+      "gate": "A1_GEOMETRY_FREEZE_V2",
+      "state": "CLOSED"
+    },
+    {
+      "claim": "A2 exercises the real ArmHarness/GP-BO feedback path with a deterministic mock evaluator: six evaluations, zero physical starts, swapping the first two returned values changes the third proposal, and a failed design carries a null objective; this is software feedback evidence, not a physical loop",
+      "gate": "R1_SOFTWARE",
+      "state": "CLOSED"
+    },
+    {
+      "claim": "R1 software baseline passes 247 offline tests; fixture-only training changes parameters and checkpoint roundtrips",
       "gate": "R1_SOFTWARE",
       "state": "CLOSED"
     },
@@ -133,7 +149,7 @@
       "state": "CLOSED"
     },
     {
-      "claim": "Real admission remains fail-closed with REAL_ADMISSION_NOT_IMPLEMENTED",
+      "claim": "A RealAdmissionManifest/AdmissionCertificate protocol now exists and is fixture-tested: it recomputes file SHA256, deck conditions, q, matched-lift row and D_i_N=q*Sref*CDi, and refuses tampered/missing/path-escaping artifacts; no real raw artifact has been admitted, and require_real_admission still raises without matching certificates",
       "gate": "REAL_ADMISSION",
       "state": "CLOSED"
     }
@@ -145,12 +161,12 @@
       "sha256": "65df586e7067f20767ff6419d6d00bb2a769df780ad1b2c41be92ac409aa4a43",
       "claim": "R0 loss ledger and provenance inventory",
       "gate": "R0_INVENTORY",
-      "in_change_manifest": true
+      "in_change_manifest": false
     },
     {
       "path": "docs/evidence/drecover001/recovery_inventory.md",
-      "bytes": 20930,
-      "sha256": "43dc411bb4d303bc7db478883c851045504809ee8a6f084f38111b2dc9bc8bae",
+      "bytes": 25626,
+      "sha256": "a83bc12e8aef1013ff34a3dcad36d7bb7df2de5e1ce1b5504d19abdb9d00223b",
       "claim": "R0 human-readable inventory",
       "gate": "R0_INVENTORY",
       "in_change_manifest": true
@@ -161,7 +177,7 @@
       "sha256": "ad8222e8965c5a5fa3834f29b4309ff7cea71d71729100f245d29984e10a1613",
       "claim": "R0 remote-ref byte/blob audit",
       "gate": "R0_INVENTORY",
-      "in_change_manifest": true
+      "in_change_manifest": false
     },
     {
       "path": "docs/evidence/drecover001/reachable_history_audit.json",
@@ -169,7 +185,7 @@
       "sha256": "ba8f65fd5f1bc4f6eebe980dad3992b853360acf9b01ebf508c79d49f001d6dc",
       "claim": "R0 reachable-history audit",
       "gate": "R0_INVENTORY",
-      "in_change_manifest": true
+      "in_change_manifest": false
     },
     {
       "path": "docs/evidence/drecover001/r0_provenance_extension.json",
@@ -177,7 +193,7 @@
       "sha256": "b553857c5ce986e9fbfd7f6fa6de37d7aca42af9ade61075db6e17e87c524c37",
       "claim": "R0 provenance extension records",
       "gate": "R0_INVENTORY",
-      "in_change_manifest": true
+      "in_change_manifest": false
     },
     {
       "path": "docs/evidence/drecover001/r0_provenance_extension_20261117.md",
@@ -185,7 +201,7 @@
       "sha256": "bdf7380e4d0c9368b3128d51b52de652ea21bf06a7d2d107edc674914d54327f",
       "claim": "R0 provenance extension summary",
       "gate": "R0_INVENTORY",
-      "in_change_manifest": true
+      "in_change_manifest": false
     },
     {
       "path": "docs/evidence/drecover001/r0_provenance_extension_verification.json",
@@ -193,28 +209,140 @@
       "sha256": "73b99833c7f86c5ef317dc21ca83a3ae0537170384309c6d1dbf07af7dbcb3b5",
       "claim": "R0 archived-byte self-verification",
       "gate": "R0_INVENTORY",
-      "in_change_manifest": true
+      "in_change_manifest": false
     },
     {
       "path": "docs/evidence/drecover001/needed_for_next_run.json",
-      "bytes": 19663,
-      "sha256": "edceccd8d1be1e54fa064f0c747fd3fb7d18220018172d2f071107dc8395c0f6",
+      "bytes": 21615,
+      "sha256": "45ec96373d6577f7238de6aa7b61099205a988a714015bcc6d17dca512b69830",
       "claim": "R0/R1/R2 handoff requirements",
       "gate": "R0_INVENTORY",
       "in_change_manifest": true
     },
     {
+      "path": "docs/evidence/drecover001/new_baseline_manifest.json",
+      "bytes": 9964,
+      "sha256": "fde9a81343385f0941c3253383e50aae7ab4e8fc26d9cbcda375f4afbf660daa",
+      "claim": "R0 new-baseline identity and RAW_LOST archive policy",
+      "gate": "R0_INVENTORY",
+      "in_change_manifest": true
+    },
+    {
+      "path": "docs/evidence/drecover001/geometry_freeze_v2.json",
+      "bytes": 354374,
+      "sha256": "401bc6b6c605eafe416bd4b0e925d106b93673b2e4d2c21f1d21e688d7e62bf1",
+      "claim": "A1 geometry/reference contract freeze v2 (zero physical)",
+      "gate": "A1_GEOMETRY_FREEZE_V2",
+      "in_change_manifest": true
+    },
+    {
+      "path": "docs/evidence/drecover001/geometry_freeze_v2.md",
+      "bytes": 4099,
+      "sha256": "1af6ff72afc698269edc83218aa90ce4f7a080dcdabc41020ac4ce0b83d17c21",
+      "claim": "A1 human-readable geometry freeze v2",
+      "gate": "A1_GEOMETRY_FREEZE_V2",
+      "in_change_manifest": true
+    },
+    {
+      "path": "docs/evidence/drecover001/geometry_freeze_v2_verification.json",
+      "bytes": 10017,
+      "sha256": "ca1c052b0d3093223706676bcb70cd81bc9627f94ecd3d3c3fbb13e3df763aa4",
+      "claim": "A1 archived-byte geometry freeze verification",
+      "gate": "A1_GEOMETRY_FREEZE_V2",
+      "in_change_manifest": true
+    },
+    {
+      "path": "docs/evidence/drecover001/geometry_freeze_v2_artifacts/concorde_geometry_freeze_v2.vsp3",
+      "bytes": 301252,
+      "sha256": "e471be01fab21663d5ad4aa227a811b6fbdf719d5d459dc3bac712ea135ee8d2",
+      "claim": "A1 real OpenVSP 3.55 model export",
+      "gate": "A1_GEOMETRY_FREEZE_V2",
+      "in_change_manifest": true
+    },
+    {
+      "path": "docs/evidence/drecover001/geometry_freeze_v2_artifacts/concorde_geometry_freeze_v2.stl",
+      "bytes": 1245302,
+      "sha256": "bae4e17c9c7e594ab50ff2f58db60ddd50fb152fa9a18419a11e9065f734c185",
+      "claim": "A1 real OpenVSP assembly STL export",
+      "gate": "A1_GEOMETRY_FREEZE_V2",
+      "in_change_manifest": true
+    },
+    {
+      "path": "docs/evidence/drecover001/geometry_freeze_v2_artifacts/concorde_geometry_freeze_v2.step",
+      "bytes": 630057,
+      "sha256": "3b0d96366ea22bdbeb982232d17aa5eb6e1595b4369f6aa89aa6c76b18751b5f",
+      "claim": "A1 real OpenVSP STEP export",
+      "gate": "A1_GEOMETRY_FREEZE_V2",
+      "in_change_manifest": true
+    },
+    {
+      "path": "docs/evidence/drecover001/geometry_freeze_v2_artifacts/concorde_geometry_freeze_v2_main_wing.stl",
+      "bytes": 653984,
+      "sha256": "f5ff10e9a7c46693a9bd7e316d7fe1e21ea404bc4ae3692b6681958c03ca17b6",
+      "claim": "A1 main-wing STL component placement artifact",
+      "gate": "A1_GEOMETRY_FREEZE_V2",
+      "in_change_manifest": true
+    },
+    {
+      "path": "docs/evidence/drecover001/geometry_freeze_v2_artifacts/concorde_geometry_freeze_v2_vertical_tail.stl",
+      "bytes": 263430,
+      "sha256": "18d8246bcd8a3dced4df96868f32c88f509faa348a3cde24f8d6e29f3e37df8f",
+      "claim": "A1 vertical-tail STL component placement artifact",
+      "gate": "A1_GEOMETRY_FREEZE_V2",
+      "in_change_manifest": true
+    },
+    {
+      "path": "docs/evidence/drecover001/geometry_freeze_v2_artifacts/concorde_geometry_freeze_v2_fuselage.stl",
+      "bytes": 327922,
+      "sha256": "dabd56e97bc480f3227650b282a318e4236d385289b79b3960e27a217a3b167a",
+      "claim": "A1 fuselage STL component placement artifact",
+      "gate": "A1_GEOMETRY_FREEZE_V2",
+      "in_change_manifest": true
+    },
+    {
       "path": "docs/evidence/drecover001/recovery_preflight_receipt.json",
-      "bytes": 7358,
-      "sha256": "cff5cc1f4d3ed81e1f9164a0b877c2bf441d0f27f11f86eccf497c5e793b1e39",
+      "bytes": 7639,
+      "sha256": "4be0e8ad0c7229232d013da61a1bcddd625fa2cb668b6298b27cd18ef09870ad",
       "claim": "R1 software preflight receipt",
       "gate": "R1_SOFTWARE",
       "in_change_manifest": true
     },
     {
+      "path": "docs/evidence/drecover001/a2_feedback_rehearsal.json",
+      "bytes": 7213,
+      "sha256": "b8f5c6950d99be20c982bead819a552046b501746abbbd25ecc02df926f83436",
+      "claim": "A2 executable BO feedback rehearsal (software only, zero physical)",
+      "gate": "R1_SOFTWARE",
+      "in_change_manifest": true
+    },
+    {
+      "path": "docs/evidence/drecover001/run_a2_feedback_rehearsal.py",
+      "bytes": 9649,
+      "sha256": "892920f2a5792fff873bc29a210c3655702e459fd032f683974fe8692afd3573",
+      "claim": "A2 rehearsal generator over the real ArmHarness/GP-BO path",
+      "gate": "R1_SOFTWARE",
+      "in_change_manifest": true
+    },
+    {
+      "path": "research/concorde_metaopt/dreal001/meta/real_admission.py",
+      "bytes": 17896,
+      "sha256": "b27da1547a4b8c21395b0f637aef3f0410c357e7b7a8300ec59c16d8597cdde7",
+      "claim": "A3 real-admission manifest/certificate protocol",
+      "gate": "REAL_ADMISSION",
+      "in_change_manifest": true
+    },
+    {
+      "path": "research/concorde_metaopt/tests/test_recovery_real_admission.py",
+      "bytes": 13924,
+      "sha256": "1171ad3cd9c790c58dd3c0cc355e2c87e3a90473932fa37e7b06904e5f6a540c",
+      "claim": "A3 real-admission fixture tests (synthetic bytes)",
+      "gate": "REAL_ADMISSION",
+      "in_change_manifest": true
+    },
+    {
       "path": "docs/evidence/drecover001/synthetic_software_training_trace.json",
-      "bytes": 6327,
-      "sha256": "290dccc5bc06cd80b445d2bb8c2a36460a1c944eb2a5cf632680f1ffa74fbd65",
+      "bytes": 6328,
+      "sha256": "919933ccefad0b4048f017d92b9771ca9322987231ba257cc4b001c457e43320",
       "claim": "R1 fixture training trace",
       "gate": "R1_SOFTWARE",
       "in_change_manifest": true
@@ -225,7 +353,7 @@
       "sha256": "0211bc97e73418722d60e45c3eb2dd812686cc17cc412f99168b227f0dc7b155",
       "claim": "R1 fixture checkpoint roundtrip artifact",
       "gate": "R1_SOFTWARE",
-      "in_change_manifest": true
+      "in_change_manifest": false
     },
     {
       "path": "docs/evidence/drecover001/m1_batch_software_rehearsal_receipt.json",
@@ -233,7 +361,7 @@
       "sha256": "526d337ae54fb6849fc6822f032560b3c9a3a21ba39395a5c18594f1479ab7f5",
       "claim": "M1 control-path rehearsal receipt",
       "gate": "M1_BATCH_CONTROL_PATH",
-      "in_change_manifest": true
+      "in_change_manifest": false
     },
     {
       "path": "docs/evidence/drecover001/m1_batch_software_result.json",
@@ -241,7 +369,7 @@
       "sha256": "63ee7a6a868f5f1b9abda6a55480e1e72068a6ec4ee9f7fdc075a3e4df96fac8",
       "claim": "M1 control-path result",
       "gate": "M1_BATCH_CONTROL_PATH",
-      "in_change_manifest": true
+      "in_change_manifest": false
     },
     {
       "path": "docs/evidence/drecover001/m1_batch_software_verification.json",
@@ -249,7 +377,7 @@
       "sha256": "e0e678b2c24ded6056e1dc63ec02858d215b4c31ba251f8424584c3dcf657d15",
       "claim": "M1 artifact verification",
       "gate": "M1_BATCH_CONTROL_PATH",
-      "in_change_manifest": true
+      "in_change_manifest": false
     },
     {
       "path": "docs/evidence/drecover001/m2_offline_rehearsal_receipt.json",
@@ -257,7 +385,7 @@
       "sha256": "232551c3a7eb996d7b9edf0fe156d2e3fd6e23d1db574c6e7e4a0cd46dadc0bc",
       "claim": "M2 offline rehearsal receipt",
       "gate": "M2_OFFLINE_REHEARSAL",
-      "in_change_manifest": true
+      "in_change_manifest": false
     },
     {
       "path": "docs/evidence/drecover001/m2_rehearsal_repeat_check.json",
@@ -265,12 +393,12 @@
       "sha256": "8f6ad3e69462f1b3c16970f7cd9194de50b17352e3d540ef251e1c50e9c64c10",
       "claim": "M2 repeatability check",
       "gate": "M2_OFFLINE_REHEARSAL",
-      "in_change_manifest": true
+      "in_change_manifest": false
     },
     {
       "path": "docs/evidence/drecover001/local_restore_receipt.json",
-      "bytes": 2099,
-      "sha256": "6f82dd68db850b693d3ab6e59d5bf251736046f4b8bd2b34d813c247bd223cde",
+      "bytes": 2098,
+      "sha256": "aa3d7532fd8c288a5311d01ae475dc9d105002a28ae5c293dcc76c0abfedda50",
       "claim": "same-host restore test explicitly labelled not an off-machine backup",
       "gate": "BACKUP_INDEPENDENT_FAILURE_DOMAIN",
       "in_change_manifest": false,
@@ -282,7 +410,7 @@
       "sha256": "b9edcaae932060bc684972427d34b6f3247e1dc6cade83a599e7d25c8ac0bb68",
       "claim": "Owner waiver of the off-machine failure-domain backup",
       "gate": "BACKUP_INDEPENDENT_FAILURE_DOMAIN",
-      "in_change_manifest": true
+      "in_change_manifest": false
     },
     {
       "path": "docs/evidence/drecover001/a5_review_verdict.json",
@@ -290,7 +418,7 @@
       "sha256": "e6cfc666c0491b281e0a3c7c621b6de7529d41470ea8f257420d19e5fe9af7df",
       "claim": "A5 verdict from the authorized deepseek-flash subagent (not a human signature)",
       "gate": "A5_INDEPENDENT_REVIEW",
-      "in_change_manifest": true
+      "in_change_manifest": false
     },
     {
       "path": "docs/evidence/drecover001/a5_review_transcript.json",
@@ -298,20 +426,20 @@
       "sha256": "71e08f219ae7c3759f1a20714ccd037138897afed99ecfd5904986c10d943deb",
       "claim": "Read-only A5 inspection transcript (16 tool steps before HTTP 524)",
       "gate": "A5_INDEPENDENT_REVIEW",
-      "in_change_manifest": true
+      "in_change_manifest": false
     },
     {
       "path": "docs/evidence/drecover001/issue12_consolidated_receipt_draft_20261117.md",
-      "bytes": 10259,
-      "sha256": "5c98d20cfbb4d1f6b92c695ad7702aa0db4614fa5c7a0c8f814eb07a8521f3b6",
+      "bytes": 12509,
+      "sha256": "f4b3f1722af092358a435f8d5558355881dd65278d17ce1253c00e3e6ab21acc",
       "claim": "Issue #12 receipt draft (not posted)",
       "gate": "EVIDENCE_MANIFEST",
       "in_change_manifest": true
     },
     {
       "path": "docs/evidence/drecover001/maml_readiness_20261117.md",
-      "bytes": 10287,
-      "sha256": "69bfbdfbfb55fc70cc45fac514fa51509cf74ee751a075cf6352bc5919831e56",
+      "bytes": 11422,
+      "sha256": "201345fe29834178712db633678be0041eba9eb146fc0bbd99cf73cdf50b2f6b",
       "claim": "MAML offline readiness summary",
       "gate": "M2_OFFLINE_REHEARSAL",
       "in_change_manifest": true
@@ -331,7 +459,7 @@
     {
       "gate": "REAL_ADMISSION",
       "state": "CLOSED",
-      "required": "Implement and independently audit raw parsing, signed manifests, task-deck binding and gate checks; this is intentionally blocked now."
+      "required": "The protocol is implemented and fixture-tested but still unexercised on real VSPAERO raw output. A real run must supply mesh/deck/polar/history bytes, a matching audit record and a successful matched-lift row; this packet admits no labels and issues no GO."
     },
     {
       "gate": "R2_BATCH_GO",
@@ -346,8 +474,11 @@
     "Two files named real_openvsp_geometry_probe.json exist: docs/evidence/drecover001/real_openvsp_geometry_probe.json is the pre-repair SURFACE_DIAGNOSTIC_FAIL snapshot; the authoritative post-repair record is docs/evidence/drecover001/a1_thickness_repair/real_openvsp_geometry_probe.json (SURFACE_DIAGNOSTIC_PASS_NOT_FREEZE). Neither is a solver freeze or physics validation.",
     "research/concorde_metaopt/dreal001/meta/m2_rehearsal.py hardcodes three native_probe_status PASS strings into its geometry contract; the rehearsal therefore asserts, rather than reads, those probe statuses.",
     "needed_for_next_run.json had a truncated R1 requirement tail; it is valid JSON now but the lost tail is marked UNKNOWN and is not evidence.",
-    "The evidence tree is uncommitted: no git author identity is configured and github.com is unreachable from this host.",
+    "The evidence tree has uncommitted changes on top of commit 01c9274801474c113a2c488e375d451bcd0297c3. CLI git transport has no configured credential and fails with SEC_E_NO_CREDENTIALS, so this snapshot is not itself a remote commit; earlier snapshots were pushed through the GitHub API.",
     "Some R0 report claims are REPORT_PRESENT only; raw identity is not established for all historical numbers.",
+    "A1 geometry freeze v2 validates the declared geometry/reference contract and zero-physical boundary perturbations, not aerodynamics. Force-axis signs, the WING_AC moment origin and mass/CG remain unvalidated; the global-versus-wing-local XCG ambiguity is disclosed as an open item for R2 VSPAERO read-back.",
+    "The VSP3/STL/STEP exports are real OpenVSP 3.55 bytes checked by SHA and STL bounds, but byte-identical re-export across machines is not asserted. Re-running verify_geometry_freeze_v2.py requires the same OpenVSP installation.",
+    "The RealAdmissionManifest protocol binds a matching independent-audit record by SHA256, but the protocol does not authenticate who produced that audit record; independent review remains an external requirement, and all admission tests use synthetic non-physical bytes.",
     "The M1 run uses a structural placeholder authorization and simulated starts.",
     "The readiness matrix is regenerated evidence; this packet quotes its status but intentionally does not embed its file hash.",
     "run_recovery_preflight.py is deliberately excluded from the non-destructive reproduction list: it assigns a new run_id and overwrites the preflight receipt, trace and checkpoint hashed here. Rerun the suite only inside a restored copy of the bundle, never in this frozen evidence tree."
@@ -355,15 +486,17 @@
   "reproduction": [
     "D:/Anaconda/envs/RCAIDE/python.exe docs/evidence/drecover001/assess_recovery_readiness.py",
     "D:/Anaconda/envs/RCAIDE/python.exe docs/evidence/drecover001/verify_r0_provenance_extension.py",
+    "D:/Anaconda/envs/RCAIDE/python.exe docs/evidence/drecover001/verify_geometry_freeze_v2.py",
     "D:/Anaconda/envs/RCAIDE/python.exe docs/evidence/drecover001/verify_m1_batch_evidence.py",
     "D:/Anaconda/envs/RCAIDE/python.exe docs/evidence/drecover001/build_a5_review_packet.py --check"
   ],
   "review_checklist": [
     "Confirm every evidence_index hash against the bytes on disk.",
     "Confirm physical/internal counters are 0 and no admitted real labels exist.",
-    "Confirm the R0 inventory still says R0_PARTIAL_NOT_AUDITED and keeps RAW_LOST items raw-lost.",
+    "Confirm the R0 inventory still says R0_PARTIAL_NOT_AUDITED and keeps RAW_LOST items raw-lost; confirm new_baseline_manifest.json fixes commit 01c9274 as the new start and requires fresh identities.",
+    "Confirm A1 geometry_freeze_v2.json contract SHA, 24/24 model and native boundary cases, and export bytes match the files on disk.",
     "Confirm R1 changes do not overwrite historical raw data or S1/S2/S3 negative results.",
-    "Confirm REAL_ADMISSION remains fail-closed and no placeholder is presented as a real GO.",
+    "Confirm REAL_ADMISSION still admits no real label, every certificate requires the issuer sentinel and q*Sref*CDi identity, and no placeholder is presented as a real GO.",
     "Confirm the destructive preflight was NOT run in this tree and every evidence_index hash still matches on disk.",
     "Record an explicit verdict: APPROVE_FOR_R2, REJECT, or CHANGES_REQUIRED, with scope and date."
   ],

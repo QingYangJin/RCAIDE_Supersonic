@@ -1,6 +1,6 @@
 {
   "schema": "drecover001.recovery_readiness.v1",
-  "generated_utc": "2026-11-18T06:37:42Z",
+  "generated_utc": "2026-11-18T10:41:34Z",
   "root": "D:\\RCAIDE\\.worktrees\\drecover001-20261117",
   "gates": [
     {
@@ -82,16 +82,114 @@
           "name": "script_sha_matches_archived_bytes",
           "status": "PASS",
           "detail": "recorded='63eb6e468ce40de035b15737b5f69d63d07f0acae369c2b76b4b1e41c0e7bb6e' actual='63eb6e468ce40de035b15737b5f69d63d07f0acae369c2b76b4b1e41c0e7bb6e'"
+        },
+        {
+          "name": "new_baseline_schema",
+          "status": "PASS",
+          "detail": "schema='drecover001.new_baseline_manifest.v1'"
+        },
+        {
+          "name": "new_baseline_base_commit",
+          "status": "PASS",
+          "detail": "base_commit='01c9274801474c113a2c488e375d451bcd0297c3'"
+        },
+        {
+          "name": "historical_data_archived_raw_lost",
+          "status": "PASS",
+          "detail": "status='RAW_LOST_ARCHIVED' search='STOPPED_NO_FURTHER_HISTORY_RECOVERY_SEARCH'"
+        },
+        {
+          "name": "new_identity_policy_requires_geometry_and_admission",
+          "status": "PASS",
+          "detail": "required=['new_run_id', 'new_batch_id', 'new_geometry_sha256', 'new_task_family_sha256', 'RealAdmissionManifest', 'fresh Lead batch GO']"
+        },
+        {
+          "name": "new_baseline_zero_physical",
+          "status": "PASS",
+          "detail": "physical=0 internal=0 admitted=0"
         }
       ],
       "violations": [],
       "missing": [],
       "blockers": [
-        "Independent actual 6-terra inventory review is NOT_STARTED; gate remains unsigned"
+        "Independent A5 review of the new baseline identity is not a human signature; the recorded deepseek-flash verdict is review input only"
       ],
       "evidence": [
         "docs/evidence/drecover001/recovery_inventory.json",
-        "docs\\evidence\\drecover001\\r0_provenance_extension_verification.json"
+        "docs\\evidence\\drecover001\\r0_provenance_extension_verification.json",
+        "docs/evidence/drecover001/new_baseline_manifest.json"
+      ]
+    },
+    {
+      "id": "A1_GEOMETRY_FREEZE_V2",
+      "title": "A1 geometry freeze v2 (zero physical)",
+      "state": "CLOSED",
+      "checks": [
+        {
+          "name": "freeze_status_issued",
+          "status": "PASS",
+          "detail": "status='GEOMETRY_FREEZE_V2_ISSUED_ZERO_PHYSICAL'"
+        },
+        {
+          "name": "freeze_scope_geometry_only",
+          "status": "PASS",
+          "detail": "scope='GEOMETRY_AND_REFERENCE_CONTRACT_ONLY_NO_AERODYNAMIC_VALIDATION'"
+        },
+        {
+          "name": "freeze_zero_physical",
+          "status": "PASS",
+          "detail": "physical=0 internal=0"
+        },
+        {
+          "name": "freeze_contract_sha_format",
+          "status": "PASS",
+          "detail": "sha='5f2bb12fe8b1dc68c67901843c777328ae984cfdbe4ee71176b369a16a133f15'"
+        },
+        {
+          "name": "freeze_consistency_all_pass",
+          "status": "PASS",
+          "detail": "checks=7"
+        },
+        {
+          "name": "freeze_boundary_perturbation_all_pass",
+          "status": "PASS",
+          "detail": "model=24 native=24/24"
+        },
+        {
+          "name": "freeze_exports_match_disk",
+          "status": "PASS",
+          "detail": "bad=[] count=3"
+        },
+        {
+          "name": "freeze_verification_status",
+          "status": "PASS",
+          "detail": "status='GEOMETRY_FREEZE_V2_VERIFIED'"
+        },
+        {
+          "name": "freeze_verification_zero_failures",
+          "status": "PASS",
+          "detail": "checks=101 failures=0"
+        },
+        {
+          "name": "baseline_records_freeze_identity",
+          "status": "PASS",
+          "detail": "freeze_id='GBFREEZE2-5f2bb12fe8b1dc68'"
+        },
+        {
+          "name": "baseline_records_freeze_hash",
+          "status": "PASS",
+          "detail": "json_recorded='401bc6b6c605eafe416bd4b0e925d106b93673b2e4d2c21f1d21e688d7e62bf1' actual='401bc6b6c605eafe416bd4b0e925d106b93673b2e4d2c21f1d21e688d7e62bf1'"
+        }
+      ],
+      "violations": [],
+      "missing": [],
+      "blockers": [
+        "A1 geometry freeze is geometry/reference only; force-axis signs, WING_AC moment origin and mass/CG remain unvalidated until R2 VSPAERO readback"
+      ],
+      "evidence": [
+        "docs/evidence/drecover001/geometry_freeze_v2.json",
+        "docs/evidence/drecover001/geometry_freeze_v2_verification.json",
+        "docs/evidence/drecover001/new_baseline_manifest.json"
       ]
     },
     {
@@ -102,12 +200,12 @@
         {
           "name": "software_run_id_format",
           "status": "PASS",
-          "detail": "run_id='DRECOVER001-SOFTWARE-20261118T062546Z'"
+          "detail": "run_id='DRECOVER001-SOFTWARE-20261118T102149Z'"
         },
         {
           "name": "software_tests_pass",
           "status": "PASS",
-          "detail": "tests=230 status='PASS' failures=0 errors=0 skipped=0"
+          "detail": "tests=247 status='PASS' failures=0 errors=0 skipped=0"
         },
         {
           "name": "zero_physical_counters",
@@ -132,17 +230,42 @@
         {
           "name": "fixture_trace_archived_matches_receipt",
           "status": "PASS",
-          "detail": "recorded='290dccc5bc06cd80b445d2bb8c2a36460a1c944eb2a5cf632680f1ffa74fbd65' actual='290dccc5bc06cd80b445d2bb8c2a36460a1c944eb2a5cf632680f1ffa74fbd65'"
+          "detail": "recorded='919933ccefad0b4048f017d92b9771ca9322987231ba257cc4b001c457e43320' actual='919933ccefad0b4048f017d92b9771ca9322987231ba257cc4b001c457e43320'"
         },
         {
           "name": "source_hash_manifest_non_empty",
           "status": "PASS",
-          "detail": "entries=45"
+          "detail": "entries=47"
         },
         {
           "name": "recorded_sources_still_current",
           "status": "PASS",
           "detail": "drift=0 []"
+        },
+        {
+          "name": "a2_rehearsal_schema_and_scope",
+          "status": "PASS",
+          "detail": "schema='drecover001.a2_feedback_rehearsal.v1' scope='SOFTWARE_FEEDBACK_REHEARSAL_ONLY_NOT_PHYSICAL_EVIDENCE'"
+        },
+        {
+          "name": "a2_rehearsal_zero_physical",
+          "status": "PASS",
+          "detail": "receipt=0 baseline=0"
+        },
+        {
+          "name": "a2_rehearsal_real_arm_feedback",
+          "status": "PASS",
+          "detail": "status='COMPLETED' requested=6 valid=6 simulated=6"
+        },
+        {
+          "name": "a2_rehearsal_feedback_is_causal",
+          "status": "PASS",
+          "detail": "first_two_identical=True third_differs=True"
+        },
+        {
+          "name": "a2_rehearsal_failed_objective_is_null",
+          "status": "PASS",
+          "detail": "status='FAIL' valid=False objective=None"
         },
         {
           "name": "current_state_docs_cite_latest_software_run_id",
@@ -162,7 +285,8 @@
         "Independent failure-domain backup is waived by the Owner (m03569); the same-host restore is not an off-machine backup"
       ],
       "evidence": [
-        "docs/evidence/drecover001/recovery_preflight_receipt.json"
+        "docs/evidence/drecover001/recovery_preflight_receipt.json",
+        "docs/evidence/drecover001/a2_feedback_rehearsal.json"
       ]
     },
     {
@@ -331,7 +455,7 @@
         {
           "name": "bundle_sha_matches_archived_bundle",
           "status": "PASS",
-          "detail": "recorded='aad87db09a166105535016e38411842f20b424d82d7b62de83208cdb0cd9e9f4' actual='aad87db09a166105535016e38411842f20b424d82d7b62de83208cdb0cd9e9f4'"
+          "detail": "recorded='80cd0697fdd29a72328820e4044222e785346cbd43f7367d12495f127273c716' actual='80cd0697fdd29a72328820e4044222e785346cbd43f7367d12495f127273c716'"
         }
       ],
       "violations": [],
@@ -394,6 +518,31 @@
           "detail": "raise ContractError(REAL_ADMISSION_NOT_IMPLEMENTED) found=True"
         },
         {
+          "name": "admission_protocol_defines_required_api",
+          "status": "PASS",
+          "detail": "missing=[]"
+        },
+        {
+          "name": "admission_certificate_is_issuer_minted",
+          "status": "PASS",
+          "detail": "issuer guard and evidence scope present"
+        },
+        {
+          "name": "admission_success_path_verifies_real_raw",
+          "status": "PASS",
+          "detail": "delegates to raw verification and rejects self-admitted candidates"
+        },
+        {
+          "name": "admission_success_and_refusal_paths_tested",
+          "status": "PASS",
+          "detail": "tests=17"
+        },
+        {
+          "name": "raw_candidate_is_not_self_admitted",
+          "status": "PASS",
+          "detail": "raw_verification keeps real_admission=False"
+        },
+        {
           "name": "no_admitted_scientific_labels",
           "status": "PASS",
           "detail": "admitted=0"
@@ -402,10 +551,12 @@
       "violations": [],
       "missing": [],
       "blockers": [
-        "R0 independent audit, R1 audit, independent backup, and A5 admission signature are all absent"
+        "No real raw artifact has been admitted or independently audited; the protocol is fixture-tested only"
       ],
       "evidence": [
-        "research/concorde_metaopt/dreal001/meta/meta_dataset.py"
+        "research/concorde_metaopt/dreal001/meta/meta_dataset.py",
+        "research/concorde_metaopt/dreal001/meta/real_admission.py",
+        "research/concorde_metaopt/tests/test_recovery_real_admission.py"
       ]
     },
     {
@@ -421,12 +572,12 @@
         {
           "name": "manifest_is_non_empty",
           "status": "PASS",
-          "detail": "entries=127"
+          "detail": "entries=30"
         },
         {
           "name": "manifest_file_count_consistent",
           "status": "PASS",
-          "detail": "file_count=127 entries=127"
+          "detail": "file_count=30 entries=30"
         },
         {
           "name": "manifest_paths_exist",
@@ -441,7 +592,7 @@
         {
           "name": "manifest_total_bytes_consistent",
           "status": "PASS",
-          "detail": "recorded=16682567 actual=16682567"
+          "detail": "recorded=4158386 actual=4158386"
         },
         {
           "name": "manifest_covers_worktree",
@@ -463,37 +614,38 @@
     }
   ],
   "git": {
-    "head": "4c51c7df34c9626999ef2e66e5a6c76a2b9c92e2",
+    "head": "01c9274801474c113a2c488e375d451bcd0297c3",
     "branch": "recovery/drecover001-20261117",
-    "dirty_paths": 46,
+    "dirty_paths": 31,
     "head_error": null,
     "author_email_configured": false,
     "author_email_error": ""
   },
   "counts": {
-    "gates": 8,
+    "gates": 9,
     "clean": 1,
-    "closed": 6,
+    "closed": 7,
     "waived": 1,
     "unknown": 0,
     "conflict": 0,
     "violations": 0,
     "missing": 0,
-    "blockers": 8
+    "blockers": 9
   },
   "violations": [],
   "missing_evidence": [],
   "blockers": [
+    "A1 geometry freeze is geometry/reference only; force-axis signs, WING_AC moment origin and mass/CG remain unvalidated until R2 VSPAERO readback",
     "A5 review performed by deepseek-flash subagent (not a human signature): verdict='CHANGES_REQUIRED'; R2/M1 physics is not authorized by this review",
     "Independent A5 review is a recorded deepseek-flash subagent verdict (not a human signature); no human/Owner sign-off exists",
-    "Independent actual 6-terra inventory review is NOT_STARTED; gate remains unsigned",
+    "Independent A5 review of the new baseline identity is not a human signature; the recorded deepseek-flash verdict is review input only",
     "Independent failure-domain backup is waived by the Owner (m03569); the same-host restore is not an off-machine backup",
+    "No real raw artifact has been admitted or independently audited; the protocol is fixture-tested only",
     "Owner waived the off-machine failure-domain backup (WAIVER-OFFMACHINE-BACKUP-20261118); same-host restore is still not an off-machine backup and backup_restore_pass remains false",
-    "R0 independent audit, R1 audit, independent backup, and A5 admission signature are all absent",
     "Real M1 label batch requires a new A5 gate and a Lead batch GO; none issued",
     "Rehearsal is offline-only; M2 real training awaits real admitted labels"
   ],
-  "software_run_id": "DRECOVER001-SOFTWARE-20261118T062546Z",
+  "software_run_id": "DRECOVER001-SOFTWARE-20261118T102149Z",
   "physical_solver_starts_actual": 0,
   "internal_solver_cases_actual": 0,
   "real_meta_training_executed": false,

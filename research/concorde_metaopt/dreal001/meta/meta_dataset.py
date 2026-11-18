@@ -5,6 +5,7 @@ from dataclasses import dataclass
 import math
 import numpy as np
 
+from .real_admission import AdmissionCertificate
 from .task_spec import ContractError, TaskSpec, canonical_sha, validate_task_family
 
 
@@ -53,9 +54,11 @@ class Observation:
 
 
 class MetaDataset:
-    def __init__(self, tasks: tuple[TaskSpec, ...], rows: tuple[Observation, ...]):
+    def __init__(self, tasks: tuple[TaskSpec, ...], rows: tuple[Observation, ...], *,
+                 admissions: tuple[AdmissionCertificate, ...] = ()):
         self.tasks = tuple(tasks)
         self.rows = tuple(rows)
+        self.admissions = tuple(admissions)
         validate_task_family(self.tasks)
         by_id = {t.task_id: t for t in self.tasks}
         if not self.rows or len({r.observation_id for r in self.rows}) != len(self.rows):
@@ -70,6 +73,67 @@ class MetaDataset:
             seen.add(key)
         if len({r.source_kind for r in self.rows}) != 1:
             raise ContractError("real and synthetic sources must never mix")
+        self._validate_admissions()
+
+    @classmethod
+    def from_admitted_certificates(cls, tasks: tuple[TaskSpec, ...],
+                                   certificates) -> "MetaDataset":
+        certificates = tuple(certificates)
+        rows = []
+        for certificate in certificates:
+            if not isinstance(certificate, AdmissionCertificate):
+                raise ContractError("admission certificate must be minted by admit_real_manifest")
+            rows.append(Observation(
+                observation_id=certificate.admission_id,
+                task_id=certificate.task_id,
+                design=certificate.design,
+                partition=certificate.partition,
+                source_kind="vspaero_raw",
+                status=certificate.status,
+                di_n=certificate.di_n,
+                q_pa=certificate.q_pa,
+                sref_m2=certificate.sref_m2,
+                cdi=certificate.cdi,
+                cl=certificate.cl,
+                raw_sha256=certificate.raw_sha256,
+            ))
+        return cls(tuple(tasks), tuple(rows), admissions=certificates)
+
+    def _validate_admissions(self) -> None:
+        if not self.admissions:
+            return
+        if any(not isinstance(item, AdmissionCertificate) for item in self.admissions):
+            raise ContractError("admission certificate must be minted by admit_real_manifest")
+        if any(r.source_kind != "vspaero_raw" for r in self.rows):
+            raise ContractError("admitted dataset may contain only vspaero_raw rows")
+        certificates = {}
+        for certificate in self.admissions:
+            if certificate.admission_id in certificates:
+                raise ContractError("duplicate admission certificate")
+            certificates[certificate.admission_id] = certificate
+        row_ids = {r.observation_id for r in self.rows}
+        if set(certificates) != row_ids:
+            raise ContractError("every raw observation requires exactly one admission certificate")
+        for row in self.rows:
+            certificate = certificates[row.observation_id]
+            if certificate.task_id != row.task_id:
+                raise ContractError("admission certificate task mismatch")
+            if certificate.design_sha256 != row.design_sha256:
+                raise ContractError("admission certificate design mismatch")
+            if certificate.partition != row.partition:
+                raise ContractError("admission certificate partition mismatch")
+            if certificate.status != row.status:
+                raise ContractError("admission certificate status mismatch")
+            if certificate.raw_sha256 != row.raw_sha256:
+                raise ContractError("admission certificate raw hash mismatch")
+            if certificate.q_pa != row.q_pa or certificate.sref_m2 != row.sref_m2:
+                raise ContractError("admission certificate flow condition mismatch")
+            if certificate.status == "ok":
+                if (certificate.di_n != row.di_n or certificate.cdi != row.cdi
+                        or certificate.cl != row.cl):
+                    raise ContractError("admission certificate label mismatch")
+            elif row.di_n is not None or row.cdi is not None or row.cl is not None:
+                raise ContractError("failed admitted row must not carry labels")
 
     def usable(self, task_id: str, partition: str) -> tuple[Observation, ...]:
         return tuple(r for r in self.rows if r.task_id == task_id
@@ -80,10 +144,12 @@ class MetaDataset:
             raise ContractError("software fixture entry rejects real/declared-real data")
 
     def require_real_admission(self) -> None:
-        # Intentionally fail closed even for plausible VSPAERO numbers or PASS strings.
-        # R0/R1/backup/A5, raw parsing, signed manifests and task-deck binding are not
-        # restored yet. This module MUST NOT mint a production admission certificate.
-        raise ContractError("REAL_ADMISSION_NOT_IMPLEMENTED: independent gates and raw verification required")
+        # A declared raw source is not enough. Every row must carry a certificate
+        # minted by admit_real_manifest() after local byte/task/deck/polar/audit checks.
+        # Without that evidence this gate still fails closed with the historical string.
+        if not self.admissions:
+            raise ContractError("REAL_ADMISSION_NOT_IMPLEMENTED: independent gates and raw verification required")
+        self._validate_admissions()
 
 
 @dataclass(frozen=True)

@@ -78,6 +78,45 @@ class Fixture:
             "r0_provenance_extension": {"sha256": sha(json.dumps(ext).encode())}})
         self.write_json("docs/evidence/drecover001/needed_for_next_run.json",
                          {"schema": "fixture", "status": "NO_PHYSICAL_GO"})
+        artifact_rel = "docs/evidence/drecover001/geometry_freeze_v2_artifacts/fixture.vsp3"
+        artifact = b"fixture-vsp3-bytes"
+        self.write(artifact_rel, artifact)
+        freeze = {
+            "status": "GEOMETRY_FREEZE_V2_ISSUED_ZERO_PHYSICAL",
+            "scope": "GEOMETRY_AND_REFERENCE_CONTRACT_ONLY_NO_AERODYNAMIC_VALIDATION",
+            "freeze_id": "GBFREEZE2-fixture",
+            "geometry_contract_sha256": "d" * 64,
+            "physical_solver_starts_actual": 0,
+            "internal_solver_cases_actual": 0,
+            "consistency_checks": [{"name": "fixture", "ok": True}],
+            "boundary_perturbation": {"all_ok": True, "model_cases_ok": 24,
+                                      "native_cases_ok": 24, "native_cases_total": 24},
+            "real_openvsp_export": {"exports": {
+                "vsp3": {"path": artifact_rel, "bytes": len(artifact),
+                         "sha256": sha(artifact)}}}}
+        freeze_bytes = json.dumps(freeze, indent=2).encode("utf-8")
+        self.write("docs/evidence/drecover001/geometry_freeze_v2.json", freeze_bytes)
+        verification = {"status": "GEOMETRY_FREEZE_V2_VERIFIED", "check_count": 101,
+                        "failure_count": 0, "failures": []}
+        verification_bytes = json.dumps(verification, indent=2).encode("utf-8")
+        self.write("docs/evidence/drecover001/geometry_freeze_v2_verification.json",
+                   verification_bytes)
+        self.write_json("docs/evidence/drecover001/new_baseline_manifest.json", {
+            "schema": "drecover001.new_baseline_manifest.v1",
+            "base_commit": "e" * 40,
+            "historical_data_policy": {
+                "status": "RAW_LOST_ARCHIVED",
+                "search_policy": "STOPPED_NO_FURTHER_HISTORY_RECOVERY_SEARCH"},
+            "identity_policy": {"new_physical_runs_require": [
+                "new_geometry_sha256", "RealAdmissionManifest", "fresh Lead batch GO"]},
+            "physical_solver_starts_actual": 0,
+            "internal_solver_cases_actual": 0,
+            "admitted_scientific_labels": 0,
+            "geometry_freeze_status": {
+                "status": freeze["status"], "freeze_id": freeze["freeze_id"],
+                "current_geometry_contract_sha256": freeze["geometry_contract_sha256"],
+                "freeze_json_sha256": sha(freeze_bytes),
+                "verification_sha256": sha(verification_bytes)}})
         self.write_json("docs/evidence/drecover001/recovery_preflight_receipt.json", {
             "run_id": RUN_ID, "tests_run": 205, "failures": 0, "errors": 0, "skipped": 0,
             "software_tests_status": "PASS",
@@ -119,6 +158,18 @@ class Fixture:
             "parameters_sha256_identical": True, "train_task_ids_identical": True,
             "evaluation_identical": True, "training_reports_identical": True,
             "physical_solver_starts_actual": 0})
+        self.write_json("docs/evidence/drecover001/a2_feedback_rehearsal.json", {
+            "schema": "drecover001.a2_feedback_rehearsal.v1",
+            "scope": "SOFTWARE_FEEDBACK_REHEARSAL_ONLY_NOT_PHYSICAL_EVIDENCE",
+            "physical_solver_starts_actual": 0,
+            "baseline": {"status": "COMPLETED", "evaluations_requested": 6,
+                         "valid_evals": 6, "simulated_solver_starts": 6,
+                         "physical_solver_starts": 0},
+            "counterfactual": {"first_two_proposals_identical": True,
+                               "third_proposal_differs": True},
+            "failed_objective_branch": {"first_row_status": "FAIL",
+                                        "first_row_valid": False,
+                                        "first_row_objective_D_i_N": None}})
         bundle = b"fixture-bundle"
         bundle_path = self.root / "backup" / "bundle.bin"
         bundle_path.parent.mkdir(parents=True, exist_ok=True)
@@ -136,6 +187,61 @@ class Fixture:
 
 def require_real_admission(dataset):
     raise ContractError("REAL_ADMISSION_NOT_IMPLEMENTED: independent gates required")
+''')
+        self.write("research/concorde_metaopt/dreal001/meta/real_admission.py", b'''EVIDENCE_SCOPE = "FIXTURE_ONLY"
+_ISSUER = object()
+
+
+class RealAdmissionManifest:
+    pass
+
+
+class AdmissionCertificate:
+    def __post_init__(self):
+        if self._issuer is not _ISSUER:
+            raise ValueError("issuer")
+
+
+def artifact_sha256(files):
+    return ""
+
+
+def admit_real_manifest(**kwargs):
+    verify_artifact_bundle(**kwargs)
+    return candidate.real_admission
+''')
+        self.write("research/concorde_metaopt/dreal001/meta/raw_verification.py",
+                   b"CANDIDATE = dict(real_admission=False)\n")
+        self.write("research/concorde_metaopt/tests/test_recovery_real_admission.py", b'''class T:
+    def test_success_admission(self):
+        pass
+
+    def test_failed_outcome(self):
+        pass
+
+    def test_missing_file(self):
+        pass
+
+    def test_tampered_file(self):
+        pass
+
+    def test_path_escape(self):
+        pass
+
+    def test_bad_design(self):
+        pass
+
+    def test_bad_audit(self):
+        pass
+
+    def test_certificate_tamper(self):
+        pass
+
+    def test_dataset_coverage(self):
+        pass
+
+    def test_no_lift_row(self):
+        pass
 ''')
         self.write("docs/evidence/drecover001/recovery_inventory.md", ("run_id: " + RUN_ID + "\n").encode())
         target = self.ev / "recovery_inventory.md"

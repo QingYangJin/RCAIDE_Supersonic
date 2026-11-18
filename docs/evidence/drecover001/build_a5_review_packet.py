@@ -81,7 +81,21 @@ def build(root: Path) -> tuple[dict, list[str]]:
         ("r0_provenance_extension_20261117.md", "R0 provenance extension summary", "R0_INVENTORY"),
         ("r0_provenance_extension_verification.json", "R0 archived-byte self-verification", "R0_INVENTORY"),
         ("needed_for_next_run.json", "R0/R1/R2 handoff requirements", "R0_INVENTORY"),
+        ("new_baseline_manifest.json", "R0 new-baseline identity and RAW_LOST archive policy", "R0_INVENTORY"),
+        ("geometry_freeze_v2.json", "A1 geometry/reference contract freeze v2 (zero physical)", "A1_GEOMETRY_FREEZE_V2"),
+        ("geometry_freeze_v2.md", "A1 human-readable geometry freeze v2", "A1_GEOMETRY_FREEZE_V2"),
+        ("geometry_freeze_v2_verification.json", "A1 archived-byte geometry freeze verification", "A1_GEOMETRY_FREEZE_V2"),
+        ("geometry_freeze_v2_artifacts/concorde_geometry_freeze_v2.vsp3", "A1 real OpenVSP 3.55 model export", "A1_GEOMETRY_FREEZE_V2"),
+        ("geometry_freeze_v2_artifacts/concorde_geometry_freeze_v2.stl", "A1 real OpenVSP assembly STL export", "A1_GEOMETRY_FREEZE_V2"),
+        ("geometry_freeze_v2_artifacts/concorde_geometry_freeze_v2.step", "A1 real OpenVSP STEP export", "A1_GEOMETRY_FREEZE_V2"),
+        ("geometry_freeze_v2_artifacts/concorde_geometry_freeze_v2_main_wing.stl", "A1 main-wing STL component placement artifact", "A1_GEOMETRY_FREEZE_V2"),
+        ("geometry_freeze_v2_artifacts/concorde_geometry_freeze_v2_vertical_tail.stl", "A1 vertical-tail STL component placement artifact", "A1_GEOMETRY_FREEZE_V2"),
+        ("geometry_freeze_v2_artifacts/concorde_geometry_freeze_v2_fuselage.stl", "A1 fuselage STL component placement artifact", "A1_GEOMETRY_FREEZE_V2"),
         ("recovery_preflight_receipt.json", "R1 software preflight receipt", "R1_SOFTWARE"),
+        ("a2_feedback_rehearsal.json", "A2 executable BO feedback rehearsal (software only, zero physical)", "R1_SOFTWARE"),
+        ("run_a2_feedback_rehearsal.py", "A2 rehearsal generator over the real ArmHarness/GP-BO path", "R1_SOFTWARE"),
+        ("../../../research/concorde_metaopt/dreal001/meta/real_admission.py", "A3 real-admission manifest/certificate protocol", "REAL_ADMISSION"),
+        ("../../../research/concorde_metaopt/tests/test_recovery_real_admission.py", "A3 real-admission fixture tests (synthetic bytes)", "REAL_ADMISSION"),
         ("synthetic_software_training_trace.json", "R1 fixture training trace", "R1_SOFTWARE"),
         ("synthetic_software_checkpoint.json", "R1 fixture checkpoint roundtrip artifact", "R1_SOFTWARE"),
         ("m1_batch_software_rehearsal_receipt.json", "M1 control-path rehearsal receipt", "M1_BATCH_CONTROL_PATH"),
@@ -105,12 +119,16 @@ def build(root: Path) -> tuple[dict, list[str]]:
     evidence_index = []
     for name, claim, gate in entries:
         path = ev / name
+        item_path = EV + "/" + name
+        if name.startswith("../"):
+            path = (ev / name).resolve()
+            item_path = path.relative_to(root.resolve()).as_posix()
         if not path.is_file():
-            problems.append("missing evidence file " + EV + "/" + name)
+            problems.append("missing evidence file " + item_path)
             continue
         data = path.read_bytes()
         digest = sha256_bytes(data)
-        item = {"path": EV + "/" + name, "bytes": len(data), "sha256": digest,
+        item = {"path": item_path, "bytes": len(data), "sha256": digest,
                 "claim": claim, "gate": gate}
         rel = item["path"]
         if rel in manifest_entries:
@@ -182,6 +200,12 @@ def build(root: Path) -> tuple[dict, list[str]]:
         "claims": [
             {"claim": "R0 inventory, provenance and loss ledger are complete as offline records, not independently audited",
              "gate": "R0_INVENTORY", "state": gates.get("R0_INVENTORY")},
+            {"claim": "R0 new-baseline manifest starts from commit 01c9274, archives the historical F1R2/F2R2 raw data as RAW_LOST, stops further history-recovery search, and requires new run/batch/geometry/task-family identities plus a fresh Lead GO",
+             "gate": "R0_INVENTORY", "state": gates.get("R0_INVENTORY")},
+            {"claim": "A1 geometry freeze v2 issues a 15-variable geometry/reference contract (12D lifting surfaces plus fixed fuselage), 24/24 declared-boundary perturbations in both the pure model and real OpenVSP 3.55, and real VSP3/STL/STEP exports with read-back; force-axis signs, WING_AC moment origin and mass/CG remain unvalidated and provisional",
+             "gate": "A1_GEOMETRY_FREEZE_V2", "state": gates.get("A1_GEOMETRY_FREEZE_V2")},
+            {"claim": "A2 exercises the real ArmHarness/GP-BO feedback path with a deterministic mock evaluator: six evaluations, zero physical starts, swapping the first two returned values changes the third proposal, and a failed design carries a null objective; this is software feedback evidence, not a physical loop",
+             "gate": "R1_SOFTWARE", "state": gates.get("R1_SOFTWARE")},
             {"claim": f"R1 software baseline passes {preflight.get('tests_run')} offline tests; fixture-only training changes parameters and checkpoint roundtrips",
              "gate": "R1_SOFTWARE", "state": gates.get("R1_SOFTWARE")},
             {"claim": "M1 batch control path is exercised with a structural placeholder authorization, not a real GO",
@@ -193,7 +217,7 @@ def build(root: Path) -> tuple[dict, list[str]]:
              "gate": "BACKUP_INDEPENDENT_FAILURE_DOMAIN", "state": gates.get("BACKUP_INDEPENDENT_FAILURE_DOMAIN")},
             {"claim": "A5 independent review was performed by the authorized deepseek-flash subagent (read-only tools); its verdict is recorded, it is not a human signature, and it is not an approval for physical runs",
              "gate": "A5_INDEPENDENT_REVIEW", "state": gates.get("A5_INDEPENDENT_REVIEW")},
-            {"claim": "Real admission remains fail-closed with REAL_ADMISSION_NOT_IMPLEMENTED",
+            {"claim": "A RealAdmissionManifest/AdmissionCertificate protocol now exists and is fixture-tested: it recomputes file SHA256, deck conditions, q, matched-lift row and D_i_N=q*Sref*CDi, and refuses tampered/missing/path-escaping artifacts; no real raw artifact has been admitted, and require_real_admission still raises without matching certificates",
              "gate": "REAL_ADMISSION", "state": gates.get("REAL_ADMISSION")},
         ],
         "evidence_index": evidence_index,
@@ -206,7 +230,7 @@ def build(root: Path) -> tuple[dict, list[str]]:
              "required": "WAIVED by Owner (m03569): only a same-host restore is required. The same-host restore is still not an off-machine backup; backup_restore_pass stays false and the receipt must keep the explicit label."},
             {"gate": "REAL_ADMISSION",
              "state": gates.get("REAL_ADMISSION"),
-             "required": "Implement and independently audit raw parsing, signed manifests, task-deck binding and gate checks; this is intentionally blocked now."},
+             "required": "The protocol is implemented and fixture-tested but still unexercised on real VSPAERO raw output. A real run must supply mesh/deck/polar/history bytes, a matching audit record and a successful matched-lift row; this packet admits no labels and issues no GO."},
             {"gate": "R2_BATCH_GO",
              "state": "NOT_ISSUED",
              "required": "After the above, A5 and Lead must pre-register a new batch with new ids, budget, stop conditions and approval; no physical run is authorized by this packet."},
@@ -218,8 +242,11 @@ def build(root: Path) -> tuple[dict, list[str]]:
             "Two files named real_openvsp_geometry_probe.json exist: docs/evidence/drecover001/real_openvsp_geometry_probe.json is the pre-repair SURFACE_DIAGNOSTIC_FAIL snapshot; the authoritative post-repair record is docs/evidence/drecover001/a1_thickness_repair/real_openvsp_geometry_probe.json (SURFACE_DIAGNOSTIC_PASS_NOT_FREEZE). Neither is a solver freeze or physics validation.",
             "research/concorde_metaopt/dreal001/meta/m2_rehearsal.py hardcodes three native_probe_status PASS strings into its geometry contract; the rehearsal therefore asserts, rather than reads, those probe statuses.",
             "needed_for_next_run.json had a truncated R1 requirement tail; it is valid JSON now but the lost tail is marked UNKNOWN and is not evidence.",
-            "The evidence tree is uncommitted: no git author identity is configured and github.com is unreachable from this host.",
+            "The evidence tree has uncommitted changes on top of commit 01c9274801474c113a2c488e375d451bcd0297c3. CLI git transport has no configured credential and fails with SEC_E_NO_CREDENTIALS, so this snapshot is not itself a remote commit; earlier snapshots were pushed through the GitHub API.",
             "Some R0 report claims are REPORT_PRESENT only; raw identity is not established for all historical numbers.",
+            "A1 geometry freeze v2 validates the declared geometry/reference contract and zero-physical boundary perturbations, not aerodynamics. Force-axis signs, the WING_AC moment origin and mass/CG remain unvalidated; the global-versus-wing-local XCG ambiguity is disclosed as an open item for R2 VSPAERO read-back.",
+            "The VSP3/STL/STEP exports are real OpenVSP 3.55 bytes checked by SHA and STL bounds, but byte-identical re-export across machines is not asserted. Re-running verify_geometry_freeze_v2.py requires the same OpenVSP installation.",
+            "The RealAdmissionManifest protocol binds a matching independent-audit record by SHA256, but the protocol does not authenticate who produced that audit record; independent review remains an external requirement, and all admission tests use synthetic non-physical bytes.",
             "The M1 run uses a structural placeholder authorization and simulated starts.",
             "The readiness matrix is regenerated evidence; this packet quotes its status but intentionally does not embed its file hash.",
             "run_recovery_preflight.py is deliberately excluded from the non-destructive reproduction list: it assigns a new run_id and overwrites the preflight receipt, trace and checkpoint hashed here. Rerun the suite only inside a restored copy of the bundle, never in this frozen evidence tree.",
@@ -227,15 +254,17 @@ def build(root: Path) -> tuple[dict, list[str]]:
         "reproduction": [
             "D:/Anaconda/envs/RCAIDE/python.exe docs/evidence/drecover001/assess_recovery_readiness.py",
             "D:/Anaconda/envs/RCAIDE/python.exe docs/evidence/drecover001/verify_r0_provenance_extension.py",
+            "D:/Anaconda/envs/RCAIDE/python.exe docs/evidence/drecover001/verify_geometry_freeze_v2.py",
             "D:/Anaconda/envs/RCAIDE/python.exe docs/evidence/drecover001/verify_m1_batch_evidence.py",
             "D:/Anaconda/envs/RCAIDE/python.exe docs/evidence/drecover001/build_a5_review_packet.py --check",
         ],
         "review_checklist": [
             "Confirm every evidence_index hash against the bytes on disk.",
             "Confirm physical/internal counters are 0 and no admitted real labels exist.",
-            "Confirm the R0 inventory still says R0_PARTIAL_NOT_AUDITED and keeps RAW_LOST items raw-lost.",
+            "Confirm the R0 inventory still says R0_PARTIAL_NOT_AUDITED and keeps RAW_LOST items raw-lost; confirm new_baseline_manifest.json fixes commit 01c9274 as the new start and requires fresh identities.",
+            "Confirm A1 geometry_freeze_v2.json contract SHA, 24/24 model and native boundary cases, and export bytes match the files on disk.",
             "Confirm R1 changes do not overwrite historical raw data or S1/S2/S3 negative results.",
-            "Confirm REAL_ADMISSION remains fail-closed and no placeholder is presented as a real GO.",
+            "Confirm REAL_ADMISSION still admits no real label, every certificate requires the issuer sentinel and q*Sref*CDi identity, and no placeholder is presented as a real GO.",
             "Confirm the destructive preflight was NOT run in this tree and every evidence_index hash still matches on disk.",
             "Record an explicit verdict: APPROVE_FOR_R2, REJECT, or CHANGES_REQUIRED, with scope and date.",
         ],
