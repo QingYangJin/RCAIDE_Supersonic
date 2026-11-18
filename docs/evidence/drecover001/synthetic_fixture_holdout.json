@@ -1,0 +1,256 @@
+{
+  "scope": "SOFTWARE_FIXTURE_HOLDOUT_ONLY",
+  "real_meta_training_executed": false,
+  "physical_solver_starts_actual": 0,
+  "checkpoint_sha256": "0211bc97e73418722d60e45c3eb2dd812686cc17cc412f99168b227f0dc7b155",
+  "train_task_ids": [
+    "fixture-0",
+    "fixture-1"
+  ],
+  "query_labels_used_for_adaptation": false,
+  "base_parameters_unchanged": true,
+  "support_response_perturbation_changes_predictions": true,
+  "direct_inner_adapt_equivalence": "EXACT",
+  "software_candidate_selection": "PASS_NO_PHYSICS",
+  "model_selection_on_heldout": false,
+  "fixture_limit": "one seed; four deterministic query rows per heldout task; not a real MAML efficacy comparison",
+  "results": [
+    {
+      "task_id": "fixture-2",
+      "split": "val",
+      "model": "fomaml",
+      "k": 0,
+      "support_ids": [],
+      "query_ids": [
+        "fixture-2-4",
+        "fixture-2-5",
+        "fixture-2-6",
+        "fixture-2-7"
+      ],
+      "prediction": [
+        105.39090957495632,
+        106.30179715998445,
+        107.10407585115397,
+        107.64851492729169
+      ],
+      "target_for_scoring_only": [
+        110.0,
+        111.0,
+        112.0,
+        113.0
+      ],
+      "query_mse": 23.9813225567083,
+      "repeat_exact": true
+    },
+    {
+      "task_id": "fixture-2",
+      "split": "val",
+      "model": "fomaml",
+      "k": 4,
+      "support_ids": [
+        "fixture-2-0",
+        "fixture-2-1",
+        "fixture-2-2",
+        "fixture-2-3"
+      ],
+      "query_ids": [
+        "fixture-2-4",
+        "fixture-2-5",
+        "fixture-2-6",
+        "fixture-2-7"
+      ],
+      "prediction": [
+        105.27191518355708,
+        105.0351378020368,
+        105.080501443568,
+        105.0737284793653
+      ],
+      "target_for_scoring_only": [
+        110.0,
+        111.0,
+        112.0,
+        113.0
+      ],
+      "query_mse": 42.159901890864425,
+      "repeat_exact": true
+    },
+    {
+      "task_id": "fixture-2",
+      "split": "val",
+      "model": "pretrain",
+      "k": 0,
+      "support_ids": [],
+      "query_ids": [
+        "fixture-2-4",
+        "fixture-2-5",
+        "fixture-2-6",
+        "fixture-2-7"
+      ],
+      "prediction": [
+        105.38328282595664,
+        106.36117025273813,
+        107.20228448344166,
+        107.77129681310045
+      ],
+      "target_for_scoring_only": [
+        110.0,
+        111.0,
+        112.0,
+        113.0
+      ],
+      "query_mse": 23.29755752092667,
+      "repeat_exact": true
+    },
+    {
+      "task_id": "fixture-2",
+      "split": "val",
+      "model": "pretrain",
+      "k": 4,
+      "support_ids": [
+        "fixture-2-0",
+        "fixture-2-1",
+        "fixture-2-2",
+        "fixture-2-3"
+      ],
+      "query_ids": [
+        "fixture-2-4",
+        "fixture-2-5",
+        "fixture-2-6",
+        "fixture-2-7"
+      ],
+      "prediction": [
+        105.25223141990087,
+        105.01814990585414,
+        105.0578886966071,
+        105.04279880080968
+      ],
+      "target_for_scoring_only": [
+        110.0,
+        111.0,
+        112.0,
+        113.0
+      ],
+      "query_mse": 42.458449328025196,
+      "repeat_exact": true
+    },
+    {
+      "task_id": "fixture-3",
+      "split": "test",
+      "model": "fomaml",
+      "k": 0,
+      "support_ids": [],
+      "query_ids": [
+        "fixture-3-4",
+        "fixture-3-5",
+        "fixture-3-6",
+        "fixture-3-7"
+      ],
+      "prediction": [
+        105.39090957495632,
+        106.30179715998445,
+        107.10407585115397,
+        107.64851492729169
+      ],
+      "target_for_scoring_only": [
+        113.0,
+        114.0,
+        115.0,
+        116.0
+      ],
+      "query_mse": 62.31337628662867,
+      "repeat_exact": true
+    },
+    {
+      "task_id": "fixture-3",
+      "split": "test",
+      "model": "fomaml",
+      "k": 4,
+      "support_ids": [
+        "fixture-3-0",
+        "fixture-3-1",
+        "fixture-3-2",
+        "fixture-3-3"
+      ],
+      "query_ids": [
+        "fixture-3-4",
+        "fixture-3-5",
+        "fixture-3-6",
+        "fixture-3-7"
+      ],
+      "prediction": [
+        105.178032122321,
+        104.10676132401682,
+        103.58085521284158,
+        103.13618654239416
+      ],
+      "target_for_scoring_only": [
+        113.0,
+        114.0,
+        115.0,
+        116.0
+      ],
+      "query_mse": 113.73347933039501,
+      "repeat_exact": true
+    },
+    {
+      "task_id": "fixture-3",
+      "split": "test",
+      "model": "pretrain",
+      "k": 0,
+      "support_ids": [],
+      "query_ids": [
+        "fixture-3-4",
+        "fixture-3-5",
+        "fixture-3-6",
+        "fixture-3-7"
+      ],
+      "prediction": [
+        105.38328282595664,
+        106.36117025273813,
+        107.20228448344166,
+        107.77129681310045
+      ],
+      "target_for_scoring_only": [
+        113.0,
+        114.0,
+        115.0,
+        116.0
+      ],
+      "query_mse": 61.22050595807134,
+      "repeat_exact": true
+    },
+    {
+      "task_id": "fixture-3",
+      "split": "test",
+      "model": "pretrain",
+      "k": 4,
+      "support_ids": [
+        "fixture-3-0",
+        "fixture-3-1",
+        "fixture-3-2",
+        "fixture-3-3"
+      ],
+      "query_ids": [
+        "fixture-3-4",
+        "fixture-3-5",
+        "fixture-3-6",
+        "fixture-3-7"
+      ],
+      "prediction": [
+        105.15774900222756,
+        104.08642108467414,
+        103.55352942060142,
+        103.10134268761003
+      ],
+      "target_for_scoring_only": [
+        113.0,
+        114.0,
+        115.0,
+        116.0
+      ],
+      "query_mse": 114.29424920249119,
+      "repeat_exact": true
+    }
+  ],
+  "source_sha256": "26cc0080cb1814881c10b98dc87b822902a5199813949eaceac42c381f7b5da2"
+}

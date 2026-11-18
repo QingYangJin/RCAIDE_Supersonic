@@ -30,25 +30,14 @@ from .evaluators import BaseLiftMatchEvaluator
 from .ledger import SolverBudgetExceeded
 from .records import canonical_x12, design_hash as compute_design_hash, utc_now, write_json_atomic
 
-try:
-    from ...optimization.baseline_de import DifferentialEvolutionBaseline
-    from ...optimization.baseline_pso import ParticleSwarmBaseline
-except Exception as exc:  # pragma: no cover - import guard for partial checkouts
-    DifferentialEvolutionBaseline = None  # type: ignore[assignment]
-    ParticleSwarmBaseline = None  # type: ignore[assignment]
-    _OPT_IMPORT_ERROR = repr(exc)
-else:
-    _OPT_IMPORT_ERROR = ""
+# Callback-only regenerated population backends; no historical mission imports.
+from .recovery_population import RecoveryDifferentialEvolution as DifferentialEvolutionBaseline
+from .recovery_population import RecoveryParticleSwarm as ParticleSwarmBaseline
+from .recovery_population import DE_BACKEND_ID, PSO_BACKEND_ID
 
-try:
-    from maml_opt.bayesian import ConstrainedBayesianOptimizer
-    from maml_opt.initialization import generate_initial_designs
-except Exception as exc:  # pragma: no cover
-    ConstrainedBayesianOptimizer = None  # type: ignore[assignment]
-    generate_initial_designs = None  # type: ignore[assignment]
-    _MAML_IMPORT_ERROR = repr(exc)
-else:
-    _MAML_IMPORT_ERROR = ""
+# Explicit regenerated backend, never a silent substitution for historical maml_opt.
+from .recovery_bo import RecoveryGaussianProcessBO as ConstrainedBayesianOptimizer
+from .recovery_bo import BACKEND_ID as BO_BACKEND_ID, generate_initial_designs
 
 try:
     from ...warm_start.sampler import WarmStartConfig, WarmStartSampler
@@ -205,6 +194,15 @@ class ArmHarness:
         self._guard()
         vector = clip_x12(unit_vector)
         evaluation = self.evaluator.evaluate(vector)
+        if evaluation.status == STATUS_VALID:
+            if (evaluation.D_i_N is None or not np.isfinite(evaluation.D_i_N)
+                    or evaluation.D_i_N < 0.0):
+                raise ValueError("VALID evaluation requires finite nonnegative D_i_N")
+            if (evaluation.lift_rel_error is None or not np.isfinite(evaluation.lift_rel_error)
+                    or evaluation.lift_rel_error < 0.0):
+                raise ValueError("VALID evaluation requires finite nonnegative lift_rel_error")
+        elif evaluation.D_i_N is not None:
+            raise ValueError("failed/invalid evaluation objective must remain null")
         self.evaluation_index += 1
         ledger = self.evaluator.ledger
         starts_now = int(ledger.starts_used)
@@ -220,7 +218,7 @@ class ArmHarness:
             "valid": bool(evaluation.status == STATUS_VALID),
             "feasible": bool(
                 evaluation.status == STATUS_VALID
-                and (evaluation.lift_rel_error is None or float(evaluation.lift_rel_error) <= LIFT_TOL_REL)
+                and float(evaluation.lift_rel_error) <= LIFT_TOL_REL
             ),
             "objective_D_i_N": evaluation.D_i_N,
             "L_N": evaluation.L_N,
@@ -241,7 +239,7 @@ class ArmHarness:
             "phase": str(phase),
         }
         self.history.append(row)
-        if row["valid"] and row["objective_D_i_N"] is not None:
+        if row["feasible"] and row["objective_D_i_N"] is not None:
             value = float(row["objective_D_i_N"])
             if self.best_D_i is None or value < self.best_D_i:
                 self.best_D_i = value
@@ -447,7 +445,7 @@ def warmstart_designs(
 
 def _run_bo(spec: ArmSpec, harness: ArmHarness, design_space: Any) -> Dict[str, Any]:
     if ConstrainedBayesianOptimizer is None or generate_initial_designs is None:
-        raise RuntimeError("maml_opt unavailable: %s" % _MAML_IMPORT_ERROR)
+        raise RuntimeError("recovery BO backend unavailable")
     lower = np.zeros(DIMENSION)
     upper = np.ones(DIMENSION)
     n_initial = spec.bo_initial_designs()
@@ -458,16 +456,21 @@ def _run_bo(spec: ArmSpec, harness: ArmHarness, design_space: Any) -> Dict[str, 
         initial = np.asarray(
             generate_initial_designs(lower, upper, count=n_initial, seed=int(spec.seed), method="lhs"), dtype=float
         ).reshape(-1, DIMENSION)
+    optimizer = ConstrainedBayesianOptimizer(lower, upper, seed=int(spec.seed))
+    initial_evaluated = 0
     for vector in initial:
         try:
-            harness.evaluate(vector, phase="initial")
+            result = harness.evaluate(vector, phase="initial")
         except SolverBudgetExceeded:
             if harness.evaluator.ledger.starts_used < int(spec.budget_starts):
                 harness.budget_exhausted = True
-            return {"optimizer": "bo", "initial_designs": n_initial, "initial_evaluated": int(len(initial)), "warmstart": warm_info}
-    optimizer = ConstrainedBayesianOptimizer(lower, upper, seed=int(spec.seed))
+            return {"optimizer": "bo", "backend": BO_BACKEND_ID, "initial_designs": n_initial,
+                    "initial_evaluated": initial_evaluated, "warmstart": warm_info}
+        # Initial designs are paid observations too. Constructing the optimizer
+        # only after this loop discarded them from its acquisition state.
+        optimizer.tell(vector, result)
+        initial_evaluated += 1
     acquisitions = 0
-    skipped_duplicates = 0
     while True:
         try:
             harness._guard()
@@ -475,10 +478,9 @@ def _run_bo(spec: ArmSpec, harness: ArmHarness, design_space: Any) -> Dict[str, 
             if harness.evaluator.ledger.starts_used < int(spec.budget_starts):
                 harness.budget_exhausted = True
             break
-        try:
-            proposal = optimizer.ask()
-        except Exception:  # noqa: BLE001 - maml_opt internal failure stops the arm
-            break
+        # Propagate backend failures to run_arm's ARM_ERROR receipt. A broken
+        # optimizer must not look like a successfully completed experiment.
+        proposal = optimizer.ask()
         vector = clip_x12(proposal["design_vector"])
         try:
             result = harness.evaluate(vector, phase="bo")
@@ -487,24 +489,21 @@ def _run_bo(spec: ArmSpec, harness: ArmHarness, design_space: Any) -> Dict[str, 
                 harness.budget_exhausted = True
             break
         acquisitions += 1
-        try:
-            optimizer.tell(vector, result)
-        except ValueError:
-            skipped_duplicates += 1
-        except Exception:  # noqa: BLE001
-            break
+        optimizer.tell(vector, result)
     return {
         "optimizer": "bo",
+        "backend": BO_BACKEND_ID,
+        "last_acquisition": dict(getattr(optimizer, "last_acquisition", {})),
         "initial_designs": n_initial,
+        "initial_evaluated": initial_evaluated,
         "acquisitions": acquisitions,
-        "skipped_duplicates": skipped_duplicates,
         "warmstart": warm_info,
     }
 
 
 def _run_de(spec: ArmSpec, harness: ArmHarness, design_space: Any) -> Dict[str, Any]:
     if DifferentialEvolutionBaseline is None:
-        raise RuntimeError("baseline_de unavailable: %s" % _OPT_IMPORT_ERROR)
+        raise RuntimeError("recovery DE backend unavailable")
     population = spec.de_population_size()
     initial = None
     warm_info: Dict[str, Any] = {}
@@ -529,18 +528,23 @@ def _run_de(spec: ArmSpec, harness: ArmHarness, design_space: Any) -> Dict[str, 
         report = {"status": "OPTIMIZER_ERROR", "error": "%s: %s" % (type(exc).__name__, exc)}
     return {
         "optimizer": "de",
+        "backend": DE_BACKEND_ID,
         "population_size": population,
         "status": report.get("status", ""),
+        "error": report.get("error", ""),
         "generations_completed": report.get("generations_completed"),
         "initial_population_source": report.get("initial_population_source", "warmstart" if initial is not None else "lhs"),
         "first_feasible_evaluation": report.get("first_feasible_evaluation"),
+        "evaluations_requested": report.get("evaluations_requested"),
+        "request_cap": report.get("request_cap"),
+        "config": report.get("config", {}),
         "warmstart": warm_info,
     }
 
 
 def _run_pso(spec: ArmSpec, harness: ArmHarness, design_space: Any) -> Dict[str, Any]:
     if ParticleSwarmBaseline is None:
-        raise RuntimeError("baseline_pso unavailable: %s" % _OPT_IMPORT_ERROR)
+        raise RuntimeError("recovery PSO backend unavailable")
     swarm = spec.pso_swarm_size()
     initial = None
     warm_info: Dict[str, Any] = {}
@@ -565,11 +569,16 @@ def _run_pso(spec: ArmSpec, harness: ArmHarness, design_space: Any) -> Dict[str,
         report = {"status": "OPTIMIZER_ERROR", "error": "%s: %s" % (type(exc).__name__, exc)}
     return {
         "optimizer": "pso",
+        "backend": PSO_BACKEND_ID,
         "swarm_size": swarm,
         "status": report.get("status", ""),
+        "error": report.get("error", ""),
         "generations_completed": report.get("generations_completed"),
-        "initial_positions_source": "warmstart" if initial is not None else "random",
+        "initial_positions_source": report.get("initial_positions_source", "warmstart" if initial is not None else "lhs"),
         "first_feasible_evaluation": report.get("first_feasible_evaluation"),
+        "evaluations_requested": report.get("evaluations_requested"),
+        "request_cap": report.get("request_cap"),
+        "config": report.get("config", {}),
         "warmstart": warm_info,
     }
 
@@ -598,6 +607,8 @@ def run_arm(spec: ArmSpec, task: Any, design_space: Any, evaluator: BaseLiftMatc
     except Exception as exc:  # noqa: BLE001 - one arm must not kill a batch
         status = "ARM_ERROR"
         optimizer_info["error"] = "%s: %s" % (type(exc).__name__, exc)
+    if optimizer_info.get("status") == "OPTIMIZER_ERROR":
+        status = "ARM_ERROR"
     if harness.budget_exhausted and status == "COMPLETED":
         status = "BUDGET_EXHAUSTED"
     notes = "" if spec.warmstart is not None or not spec.is_adaptive else "adaptive arm without warmstart spec"

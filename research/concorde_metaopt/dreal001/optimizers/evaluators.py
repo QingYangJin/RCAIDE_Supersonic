@@ -223,22 +223,22 @@ class BaseLiftMatchEvaluator(abc.ABC):
                 reservation = self.ledger.reserve(1)
                 try:
                     result = self._probe_single(vector, alpha, case_id, phase=phase)
-                except BaseException:
-                    self.ledger.cancel(reservation)
+                    self.ledger.settle(reservation, result.launches, internal_solver_cases=result.internal_cases)
+                except BaseException as exc:
+                    self.ledger.quarantine(reservation, reason="probe_single: " + type(exc).__name__)
                     raise
-                self.ledger.settle(reservation, result.launches, internal_solver_cases=result.internal_cases)
                 results.append(result)
             return results
         size = self._reservation_size()
         reservation = None if size <= 0 else self.ledger.reserve(size)
         try:
             result = self._probe_batch(vector, alphas, case_id, phase=phase)
-        except BaseException:
             if reservation is not None:
-                self.ledger.cancel(reservation)
+                self.ledger.settle(reservation, result.launches, internal_solver_cases=result.internal_cases)
+        except BaseException as exc:
+            if reservation is not None:
+                self.ledger.quarantine(reservation, reason="probe_batch: " + type(exc).__name__)
             raise
-        if reservation is not None:
-            self.ledger.settle(reservation, result.launches, internal_solver_cases=result.internal_cases)
         return [result]
 
     def _cache_payload(self, evaluation: AeroEvaluation) -> Dict[str, Any]:

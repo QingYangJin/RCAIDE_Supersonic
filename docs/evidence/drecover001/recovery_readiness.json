@@ -1,0 +1,505 @@
+{
+  "schema": "drecover001.recovery_readiness.v1",
+  "generated_utc": "2026-11-18T06:37:42Z",
+  "root": "D:\\RCAIDE\\.worktrees\\drecover001-20261117",
+  "gates": [
+    {
+      "id": "R0_INVENTORY",
+      "title": "R0 loss ledger and provenance inventory",
+      "state": "CLOSED",
+      "checks": [
+        {
+          "name": "inventory_status_expected",
+          "status": "PASS",
+          "detail": "status='R0_PARTIAL_NOT_AUDITED'"
+        },
+        {
+          "name": "inventory_gate_unsigned",
+          "status": "PASS",
+          "detail": "gate_verdict='NOT_SIGNED_R0_INCOMPLETE'"
+        },
+        {
+          "name": "independent_review_not_started",
+          "status": "PASS",
+          "detail": "independent_review.status='NOT_STARTED'"
+        },
+        {
+          "name": "zero_physical_counters",
+          "status": "PASS",
+          "detail": "physical=0 internal=0"
+        },
+        {
+          "name": "zero_admitted_labels",
+          "status": "PASS",
+          "detail": "admitted=0"
+        },
+        {
+          "name": "byte_audit_present",
+          "status": "PASS",
+          "detail": "evidence='docs/evidence/drecover001/all_ref_blob_audit.json'"
+        },
+        {
+          "name": "raw_git_object_identity_verified",
+          "status": "PASS",
+          "detail": "raw_git_object_identity_verified=True"
+        },
+        {
+          "name": "reachable_history_documented",
+          "status": "PASS",
+          "detail": "commits=200 evidence='docs/evidence/drecover001/reachable_history_audit.json'"
+        },
+        {
+          "name": "provenance_extension_present",
+          "status": "PASS",
+          "detail": "path=docs\\evidence\\drecover001\\r0_provenance_extension.json"
+        },
+        {
+          "name": "provenance_extension_sha_matches_inventory",
+          "status": "PASS",
+          "detail": "inventory='b553857c5ce986e9fbfd7f6fa6de37d7aca42af9ade61075db6e17e87c524c37' actual='b553857c5ce986e9fbfd7f6fa6de37d7aca42af9ade61075db6e17e87c524c37'"
+        },
+        {
+          "name": "provenance_verification_status",
+          "status": "PASS",
+          "detail": "status='R0_PROVENANCE_EXTENSION_EVIDENCE_INTERNALLY_CONSISTENT'"
+        },
+        {
+          "name": "provenance_verification_no_failures",
+          "status": "PASS",
+          "detail": "failure_count=0"
+        },
+        {
+          "name": "provenance_verification_checks_positive",
+          "status": "PASS",
+          "detail": "check_count=328"
+        },
+        {
+          "name": "extension_sha_matches_archived_bytes",
+          "status": "PASS",
+          "detail": "recorded='b553857c5ce986e9fbfd7f6fa6de37d7aca42af9ade61075db6e17e87c524c37' actual='b553857c5ce986e9fbfd7f6fa6de37d7aca42af9ade61075db6e17e87c524c37'"
+        },
+        {
+          "name": "script_sha_matches_archived_bytes",
+          "status": "PASS",
+          "detail": "recorded='63eb6e468ce40de035b15737b5f69d63d07f0acae369c2b76b4b1e41c0e7bb6e' actual='63eb6e468ce40de035b15737b5f69d63d07f0acae369c2b76b4b1e41c0e7bb6e'"
+        }
+      ],
+      "violations": [],
+      "missing": [],
+      "blockers": [
+        "Independent actual 6-terra inventory review is NOT_STARTED; gate remains unsigned"
+      ],
+      "evidence": [
+        "docs/evidence/drecover001/recovery_inventory.json",
+        "docs\\evidence\\drecover001\\r0_provenance_extension_verification.json"
+      ]
+    },
+    {
+      "id": "R1_SOFTWARE",
+      "title": "R1 source recovery and software regression",
+      "state": "CLOSED",
+      "checks": [
+        {
+          "name": "software_run_id_format",
+          "status": "PASS",
+          "detail": "run_id='DRECOVER001-SOFTWARE-20261118T062546Z'"
+        },
+        {
+          "name": "software_tests_pass",
+          "status": "PASS",
+          "detail": "tests=230 status='PASS' failures=0 errors=0 skipped=0"
+        },
+        {
+          "name": "zero_physical_counters",
+          "status": "PASS",
+          "detail": "physical=0 internal=0"
+        },
+        {
+          "name": "fixture_only_training",
+          "status": "PASS",
+          "detail": "training_status='SOFTWARE_FIXTURE_TRAINING_ONLY' real=False admitted=0"
+        },
+        {
+          "name": "fixture_training_changed_parameters",
+          "status": "PASS",
+          "detail": "steps=20 l2={'fomaml': 0.029548995371190743, 'pretrain': 0.03688083091080932}"
+        },
+        {
+          "name": "fixture_checkpoint_hash_format",
+          "status": "PASS",
+          "detail": "sha='0211bc97e73418722d60e45c3eb2dd812686cc17cc412f99168b227f0dc7b155'"
+        },
+        {
+          "name": "fixture_trace_archived_matches_receipt",
+          "status": "PASS",
+          "detail": "recorded='290dccc5bc06cd80b445d2bb8c2a36460a1c944eb2a5cf632680f1ffa74fbd65' actual='290dccc5bc06cd80b445d2bb8c2a36460a1c944eb2a5cf632680f1ffa74fbd65'"
+        },
+        {
+          "name": "source_hash_manifest_non_empty",
+          "status": "PASS",
+          "detail": "entries=45"
+        },
+        {
+          "name": "recorded_sources_still_current",
+          "status": "PASS",
+          "detail": "drift=0 []"
+        },
+        {
+          "name": "current_state_docs_cite_latest_software_run_id",
+          "status": "PASS",
+          "detail": "stale_current=0 []"
+        },
+        {
+          "name": "historical_docs_keep_their_original_run_ids",
+          "status": "INFO",
+          "detail": "historical=3 ['a4_path_injection_20261117.md', 'r1_software_progress_20261117.md', 'a5_review_transcript.json']"
+        }
+      ],
+      "violations": [],
+      "missing": [],
+      "blockers": [
+        "Independent A5 review is a recorded deepseek-flash subagent verdict (not a human signature); no human/Owner sign-off exists",
+        "Independent failure-domain backup is waived by the Owner (m03569); the same-host restore is not an off-machine backup"
+      ],
+      "evidence": [
+        "docs/evidence/drecover001/recovery_preflight_receipt.json"
+      ]
+    },
+    {
+      "id": "M1_BATCH_CONTROL_PATH",
+      "title": "M1 batch control path (software fixture only)",
+      "state": "CLOSED",
+      "checks": [
+        {
+          "name": "scope_offline",
+          "status": "PASS",
+          "detail": "scope='OFFLINE_BATCH_SKELETON_ONLY'"
+        },
+        {
+          "name": "authorization_is_placeholder",
+          "status": "PASS",
+          "detail": "authorization_kind='STRUCTURAL_SOFTWARE_FIXTURE_NOT_A_REAL_GO'"
+        },
+        {
+          "name": "no_a5_signature",
+          "status": "PASS",
+          "detail": "a5='NOT_PERFORMED'"
+        },
+        {
+          "name": "result_complete",
+          "status": "PASS",
+          "detail": "result.status='COMPLETE' receipt.result_status='COMPLETE'"
+        },
+        {
+          "name": "evidence_grade_control_only",
+          "status": "PASS",
+          "detail": "evidence_grade='SOFTWARE_CONTROL_PATH_ONLY'"
+        },
+        {
+          "name": "result_sha_consistent",
+          "status": "PASS",
+          "detail": "receipt='6676695c5e230b1ed9258cb1e25c0289c126008826551e0b8d4855e63114833a' result='6676695c5e230b1ed9258cb1e25c0289c126008826551e0b8d4855e63114833a'"
+        },
+        {
+          "name": "plan_sha_consistent",
+          "status": "PASS",
+          "detail": "receipt='67a5d75c7fffacbf9b88e5eb9e35d55a58f66a4208698238f765c4b01d1fda1b' result='67a5d75c7fffacbf9b88e5eb9e35d55a58f66a4208698238f765c4b01d1fda1b'"
+        },
+        {
+          "name": "fixture_physical_zero",
+          "status": "PASS",
+          "detail": "physical=0 admitted=0"
+        },
+        {
+          "name": "fixture_budget_consistent",
+          "status": "PASS",
+          "detail": "accounting={'cached_reads': 0, 'charged_planned_reserved': 18, 'design_evaluations': 18, 'failed_evaluations': 0, 'internal_solver_cases_actual': 126, 'physical_solver_starts_actual': 0, 'planned_reserved': 18, 'retries_used': 0, 'simulated_solver_starts_actual': 18, 'starts_issued': 18}"
+        },
+        {
+          "name": "placeholder_gate_claims_disclosed",
+          "status": "PASS",
+          "detail": "controls={'a5_verdict': 'R2_FIXED_LOOP_GATE_APPROVED_WITH_DISCLOSURE', 'max_batch_wall_s': 7200, 'max_starts': 24, 'new_r2_gate': True, 'parallel': 1, 'physical_go': True, 'retries': 1, 'solver_timeout_s': 600}"
+        },
+        {
+          "name": "m1_verifier_consistent",
+          "status": "PASS",
+          "detail": "status='M1_BATCH_EVIDENCE_INTERNALLY_CONSISTENT' failures=[]"
+        }
+      ],
+      "violations": [],
+      "missing": [],
+      "blockers": [
+        "Real M1 label batch requires a new A5 gate and a Lead batch GO; none issued"
+      ],
+      "evidence": [
+        "docs\\evidence\\drecover001\\m1_batch_software_rehearsal_receipt.json",
+        "docs\\evidence\\drecover001\\m1_batch_software_result.json",
+        "docs\\evidence\\drecover001\\m1_batch_software_verification.json"
+      ]
+    },
+    {
+      "id": "M2_OFFLINE_REHEARSAL",
+      "title": "M2 offline FOMAML/pretrain rehearsal",
+      "state": "CLOSED",
+      "checks": [
+        {
+          "name": "scope_offline",
+          "status": "PASS",
+          "detail": "scope='OFFLINE_REHEARSAL_ONLY'"
+        },
+        {
+          "name": "zero_physical_counters",
+          "status": "PASS",
+          "detail": "physical=0 internal=0"
+        },
+        {
+          "name": "no_real_meta_training",
+          "status": "PASS",
+          "detail": "real_meta=False admitted=0"
+        },
+        {
+          "name": "evidence_grade_rehearsal",
+          "status": "PASS",
+          "detail": "evidence_grade='OFFLINE_REHEARSAL_NO_PHYSICAL_EVIDENCE'"
+        },
+        {
+          "name": "repeat_check_deterministic",
+          "status": "PASS",
+          "detail": "fields={'parameters_sha256_identical': True, 'train_task_ids_identical': True, 'evaluation_identical': True, 'training_reports_identical': True}"
+        },
+        {
+          "name": "repeat_check_zero_physical",
+          "status": "PASS",
+          "detail": "physical=0"
+        }
+      ],
+      "violations": [],
+      "missing": [],
+      "blockers": [
+        "Rehearsal is offline-only; M2 real training awaits real admitted labels"
+      ],
+      "evidence": [
+        "docs\\evidence\\drecover001\\m2_offline_rehearsal_receipt.json",
+        "docs\\evidence\\drecover001\\m2_rehearsal_repeat_check.json"
+      ]
+    },
+    {
+      "id": "BACKUP_INDEPENDENT_FAILURE_DOMAIN",
+      "title": "Independent failure-domain backup and restore",
+      "state": "WAIVED",
+      "checks": [
+        {
+          "name": "local_restore_status",
+          "status": "PASS",
+          "detail": "status='PASS_NOT_REMOTE_BACKUP'"
+        },
+        {
+          "name": "scope_local_only",
+          "status": "PASS",
+          "detail": "scope='LOCAL_SOFTWARE_RESTORE_ONLY'"
+        },
+        {
+          "name": "same_host_restore_explicitly_labelled",
+          "status": "PASS",
+          "detail": "off_machine_backup=False label='SAME_HOST_RESTORE_NOT_AN_OFF_MACHINE_BACKUP'"
+        },
+        {
+          "name": "owner_waiver_offmachine_backup",
+          "status": "INFO",
+          "detail": "waiver_id='WAIVER-OFFMACHINE-BACKUP-20261118' owner_ref='m03569' scope='OFF_MACHINE_INDEPENDENT_FAILURE_DOMAIN_BACKUP'"
+        },
+        {
+          "name": "independent_failure_domain_absent_but_waived",
+          "status": "PASS",
+          "detail": "independent_failure_domain=False"
+        },
+        {
+          "name": "backup_restore_pass_false_under_waiver",
+          "status": "PASS",
+          "detail": "backup_restore_pass=False"
+        },
+        {
+          "name": "no_pass_without_independent_domain",
+          "status": "PASS",
+          "detail": "backup_restore_pass=False independent=False"
+        },
+        {
+          "name": "zero_physical_counters",
+          "status": "PASS",
+          "detail": "physical=0"
+        },
+        {
+          "name": "bundle_sha_matches_archived_bundle",
+          "status": "PASS",
+          "detail": "recorded='aad87db09a166105535016e38411842f20b424d82d7b62de83208cdb0cd9e9f4' actual='aad87db09a166105535016e38411842f20b424d82d7b62de83208cdb0cd9e9f4'"
+        }
+      ],
+      "violations": [],
+      "missing": [],
+      "blockers": [
+        "Owner waived the off-machine failure-domain backup (WAIVER-OFFMACHINE-BACKUP-20261118); same-host restore is still not an off-machine backup and backup_restore_pass remains false"
+      ],
+      "evidence": [
+        "docs/evidence/drecover001/local_restore_receipt.json"
+      ]
+    },
+    {
+      "id": "A5_INDEPENDENT_REVIEW",
+      "title": "Independent 6-terra A5 review",
+      "state": "CLOSED",
+      "checks": [
+        {
+          "name": "no_unbacked_a5_approval",
+          "status": "PASS",
+          "detail": "unbacked approvals=[]"
+        },
+        {
+          "name": "no_unreviewed_a5_artifact",
+          "status": "PASS",
+          "detail": "a5 artifacts=[]"
+        },
+        {
+          "name": "a5_review_performed",
+          "status": "PASS",
+          "detail": "verdict='CHANGES_REQUIRED' reviewer='deepseek-flash'"
+        },
+        {
+          "name": "a5_reviewer_is_authorized_subagent",
+          "status": "PASS",
+          "detail": "reviewer='deepseek-flash' signature='deepseek-flash independent A5 review; not a human signature'"
+        },
+        {
+          "name": "a5_verdict_not_an_approval_unless_approve",
+          "status": "PASS",
+          "detail": "verdict='CHANGES_REQUIRED'"
+        }
+      ],
+      "violations": [],
+      "missing": [],
+      "blockers": [
+        "A5 review performed by deepseek-flash subagent (not a human signature): verdict='CHANGES_REQUIRED'; R2/M1 physics is not authorized by this review"
+      ],
+      "evidence": [
+        "docs/evidence/drecover001/a5_review_verdict.json"
+      ]
+    },
+    {
+      "id": "REAL_ADMISSION",
+      "title": "Real-label admission gate",
+      "state": "CLOSED",
+      "checks": [
+        {
+          "name": "require_real_admission_fails_closed",
+          "status": "PASS",
+          "detail": "raise ContractError(REAL_ADMISSION_NOT_IMPLEMENTED) found=True"
+        },
+        {
+          "name": "no_admitted_scientific_labels",
+          "status": "PASS",
+          "detail": "admitted=0"
+        }
+      ],
+      "violations": [],
+      "missing": [],
+      "blockers": [
+        "R0 independent audit, R1 audit, independent backup, and A5 admission signature are all absent"
+      ],
+      "evidence": [
+        "research/concorde_metaopt/dreal001/meta/meta_dataset.py"
+      ]
+    },
+    {
+      "id": "EVIDENCE_MANIFEST",
+      "title": "Recovery change manifest freshness",
+      "state": "CLEAN",
+      "checks": [
+        {
+          "name": "current_state_json_parses",
+          "status": "PASS",
+          "detail": "invalid=0 []"
+        },
+        {
+          "name": "manifest_is_non_empty",
+          "status": "PASS",
+          "detail": "entries=127"
+        },
+        {
+          "name": "manifest_file_count_consistent",
+          "status": "PASS",
+          "detail": "file_count=127 entries=127"
+        },
+        {
+          "name": "manifest_paths_exist",
+          "status": "PASS",
+          "detail": "missing=0 []"
+        },
+        {
+          "name": "manifest_hashes_current",
+          "status": "PASS",
+          "detail": "stale=0 []"
+        },
+        {
+          "name": "manifest_total_bytes_consistent",
+          "status": "PASS",
+          "detail": "recorded=16682567 actual=16682567"
+        },
+        {
+          "name": "manifest_covers_worktree",
+          "status": "PASS",
+          "detail": "unlisted=0 []"
+        },
+        {
+          "name": "manifest_has_no_ghost_entries",
+          "status": "PASS",
+          "detail": "ghosts=0 []"
+        }
+      ],
+      "violations": [],
+      "missing": [],
+      "blockers": [],
+      "evidence": [
+        "docs\\evidence\\drecover001\\recovery_change_manifest.json"
+      ]
+    }
+  ],
+  "git": {
+    "head": "4c51c7df34c9626999ef2e66e5a6c76a2b9c92e2",
+    "branch": "recovery/drecover001-20261117",
+    "dirty_paths": 46,
+    "head_error": null,
+    "author_email_configured": false,
+    "author_email_error": ""
+  },
+  "counts": {
+    "gates": 8,
+    "clean": 1,
+    "closed": 6,
+    "waived": 1,
+    "unknown": 0,
+    "conflict": 0,
+    "violations": 0,
+    "missing": 0,
+    "blockers": 8
+  },
+  "violations": [],
+  "missing_evidence": [],
+  "blockers": [
+    "A5 review performed by deepseek-flash subagent (not a human signature): verdict='CHANGES_REQUIRED'; R2/M1 physics is not authorized by this review",
+    "Independent A5 review is a recorded deepseek-flash subagent verdict (not a human signature); no human/Owner sign-off exists",
+    "Independent actual 6-terra inventory review is NOT_STARTED; gate remains unsigned",
+    "Independent failure-domain backup is waived by the Owner (m03569); the same-host restore is not an off-machine backup",
+    "Owner waived the off-machine failure-domain backup (WAIVER-OFFMACHINE-BACKUP-20261118); same-host restore is still not an off-machine backup and backup_restore_pass remains false",
+    "R0 independent audit, R1 audit, independent backup, and A5 admission signature are all absent",
+    "Real M1 label batch requires a new A5 gate and a Lead batch GO; none issued",
+    "Rehearsal is offline-only; M2 real training awaits real admitted labels"
+  ],
+  "software_run_id": "DRECOVER001-SOFTWARE-20261118T062546Z",
+  "physical_solver_starts_actual": 0,
+  "internal_solver_cases_actual": 0,
+  "real_meta_training_executed": false,
+  "admitted_real_labels": 0,
+  "ready_for_physical": false,
+  "ready_for_real_meta_training": false,
+  "status": "RECOVERY_READINESS_GATES_CLOSED_EXPECTED",
+  "disclosure": "Offline evidence aggregation only. No solver start, no network, no new physical evidence, no A5 signature. A CLOSED gate is expected and is not a PASS."
+}

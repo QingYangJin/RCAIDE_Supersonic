@@ -38,7 +38,7 @@ class AccountingViolation(RuntimeError):
     """Raised when actual solver starts exceed the fail-closed reservation."""
 
 
-@dataclass
+@dataclass(frozen=True)
 class Reservation:
     reservation_id: int
     n_starts: int
@@ -61,8 +61,8 @@ class SolverStartLedger:
         attempts_path: Optional[Any] = None,
         mode: Optional[str] = None,
     ) -> None:
-        if int(max_starts) < 0:
-            raise ValueError("max_starts must be >= 0")
+        if type(max_starts) is not int or max_starts < 0:
+            raise ValueError("max_starts must be a nonnegative integer")
         self.run_dir = None if run_dir is None else Path(run_dir)
         self.batch_id = str(batch_id)
         self.run_id = str(run_id)
@@ -92,6 +92,7 @@ class SolverStartLedger:
         self.solver_started_evals = 0
         self.valid_evals = 0
         self._reservations: Dict[int, Reservation] = {}
+        self._unresolved_reservations: Dict[int, str] = {}
         self._next_reservation = 1
         self._attempt_rows_written = 0
 
@@ -109,9 +110,11 @@ class SolverStartLedger:
         return int(self.max_starts) - self.starts_used
 
     def reserve(self, n_starts: int = 1) -> Reservation:
-        requested = int(n_starts)
-        if requested < 1:
-            raise ValueError("reserve() needs at least 1 start")
+        if self._unresolved_reservations:
+            raise AccountingViolation("unresolved probe accounting blocks further starts")
+        if type(n_starts) is not int or n_starts < 1:
+            raise ValueError("reserve() needs a positive integer number of starts")
+        requested = n_starts
         available = int(self.max_starts) - self.starts_used - self.starts_reserved
         if available <= 0:
             raise SolverBudgetExceeded(
@@ -124,21 +127,44 @@ class SolverStartLedger:
         self._reservations[reservation.reservation_id] = reservation
         return reservation
 
+    def _require_owned_reservation(self, reservation: Reservation) -> None:
+        if (not isinstance(reservation, Reservation)
+                or self._reservations.get(reservation.reservation_id) is not reservation):
+            raise AccountingViolation("unknown or foreign reservation %r" % (reservation,))
+
+    def quarantine(self, reservation: Reservation, *, reason: str) -> None:
+        """Retain capacity after uncertain probe outcome; never invent actual usage.
+
+        No automatic release/reconciliation: process/attempt evidence and independent
+        review must resolve the incident outside this in-memory software path.
+        """
+        self._require_owned_reservation(reservation)
+        if reservation.settled:
+            raise AccountingViolation("cannot quarantine an already settled reservation")
+        if not isinstance(reason, str) or not reason.strip():
+            raise AccountingViolation("quarantine requires an incident reason")
+        self._unresolved_reservations.setdefault(reservation.reservation_id, reason)
+
     def settle(self, reservation: Reservation, used: int, *, internal_solver_cases: int = 0) -> None:
-        if reservation.reservation_id not in self._reservations:
-            raise AccountingViolation("unknown reservation %r" % (reservation,))
+        self._require_owned_reservation(reservation)
+        if reservation.reservation_id in self._unresolved_reservations:
+            raise AccountingViolation("unresolved reservation requires external incident reconciliation")
         if reservation.settled:
             raise AccountingViolation("reservation %d settled twice" % reservation.reservation_id)
-        count = int(used)
-        if count < 0:
-            raise AccountingViolation("negative solver-start usage: %d" % count)
+        if type(used) is not int or used < 0:
+            raise AccountingViolation("solver-start usage must be a nonnegative integer")
+        if type(internal_solver_cases) is not int or internal_solver_cases < 0:
+            raise AccountingViolation("internal solver cases must be a nonnegative integer")
+        if used == 0 and internal_solver_cases != 0:
+            raise AccountingViolation("zero starts cannot incur new internal solver cases")
+        count = used
         if count > reservation.n_starts:
             raise AccountingViolation(
                 "actual solver starts (%d) exceed fail-closed reservation (%d) in run %s"
                 % (count, reservation.n_starts, self.run_id)
             )
-        reservation.used = count
-        reservation.settled = True
+        object.__setattr__(reservation, "used", count)
+        object.__setattr__(reservation, "settled", True)
         self.internal_solver_cases += int(internal_solver_cases)
         if self.mode == "REAL":
             self.physical_solver_starts += count
@@ -146,10 +172,15 @@ class SolverStartLedger:
             self.simulated_solver_starts += count
 
     def cancel(self, reservation: Reservation) -> None:
+        self._require_owned_reservation(reservation)
+        if reservation.reservation_id in self._unresolved_reservations:
+            raise AccountingViolation("cannot release an unresolved probe reservation")
         if reservation.settled:
+            if reservation.used:
+                raise AccountingViolation("cannot cancel a reservation with charged solver starts")
             return
-        reservation.settled = True
-        reservation.used = 0
+        object.__setattr__(reservation, "settled", True)
+        object.__setattr__(reservation, "used", 0)
 
     # -- evaluations ----------------------------------------------------
     def register_evaluation(self, *, cache_hit: bool, started: bool, valid: bool) -> None:
@@ -235,6 +266,14 @@ class SolverStartLedger:
             "physical_solver_starts": int(self.physical_solver_starts),
             "simulated_solver_starts": int(self.simulated_solver_starts),
             "starts_used": int(self.starts_used),
+            "starts_reserved": int(self.starts_reserved),
+            "unresolved_reservations": dict(self._unresolved_reservations),
+            # Fail-closed: an open (reserved but unsettled) start has no final
+            # cost classification yet, so accounting is not resolved even when
+            # there is no recorded incident.
+            "accounting_resolved": (
+                not self._unresolved_reservations and self.starts_reserved == 0
+            ),
             "remaining_starts": int(self.remaining_starts),
             "internal_solver_cases": int(self.internal_solver_cases),
             "evaluations_requested": int(self.evaluations_requested),
@@ -256,6 +295,10 @@ class SolverStartLedger:
 
     def assert_conserved(self) -> None:
         summary = self.summary()
+        if not summary["accounting_resolved"]:
+            if self._unresolved_reservations:
+                raise AccountingViolation("unresolved probe accounting; actual cost not established")
+            raise AccountingViolation("open solver-start reservation(s) remain; actual cost not established")
         if not summary["conservation_ok"]:
             raise AccountingViolation("evaluation conservation broken: %s" % summary["evaluations_conservation"])
         if not summary["budget_ok"]:

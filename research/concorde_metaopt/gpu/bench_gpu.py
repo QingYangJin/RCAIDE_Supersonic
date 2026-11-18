@@ -1,8 +1,8 @@
 """D-NEXT-001 A4｜G1 GPU/CPU FOMAML 与代理批量打分基准（合成、零物理调用）。
 
 用法（工作树根目录）：
-  D:\RCAIDE\envs\RCAIDE\python.exe -m research.concorde_metaopt.gpu.bench_gpu --out research/concorde_metaopt/gpu/runs/<run_id>
-  D:\RCAIDE\dnext001\gpu-env\Scripts\python.exe -m research.concorde_metaopt.gpu.bench_gpu --out ... --configs cpu-fp64,cuda-fp64,cuda-fp32
+  <python> -m research.concorde_metaopt.gpu.bench_gpu --out research/concorde_metaopt/gpu/runs/<run_id>
+  <gpu-env-python> -m research.concorde_metaopt.gpu.bench_gpu --out ... --configs cpu-fp64,cuda-fp64,cuda-fp32
 
 设计要点：
 - 三路配置共用同一任务族、同一种子、同一批 support/query 数据；计时前后

@@ -1,0 +1,103 @@
+{
+  "a5_independent_review": "NOT_PERFORMED",
+  "accounting": {
+    "cached_reads": 0,
+    "charged_planned_reserved": 18,
+    "design_evaluations": 18,
+    "failed_evaluations": 0,
+    "internal_solver_cases_actual": 126,
+    "physical_solver_starts_actual": 0,
+    "planned_reserved": 18,
+    "retries_used": 0,
+    "simulated_solver_starts_actual": 18,
+    "starts_issued": 18
+  },
+  "admitted_real_labels": 0,
+  "authorization_kind": "STRUCTURAL_SOFTWARE_FIXTURE_NOT_A_REAL_GO",
+  "authorization_sha256": "c23ff7022c2ecd903d0b7b15afa5a2103e8c4eebd440111a715a8322ceb36a83",
+  "batch_id": "FIXTURE-BATCH-0001",
+  "code_sha256": "526d4edfda4962c69dbaa335921c5985a93aa362ee2a11ad2768910473d69e76",
+  "controls": {
+    "a5_verdict": "R2_FIXED_LOOP_GATE_APPROVED_WITH_DISCLOSURE",
+    "max_batch_wall_s": 7200,
+    "max_starts": 24,
+    "new_r2_gate": true,
+    "parallel": 1,
+    "physical_go": true,
+    "retries": 1,
+    "solver_timeout_s": 600
+  },
+  "design_family": [
+    {
+      "design_hash": "8bd5a6c7c8311938",
+      "design_id": "B0-01"
+    },
+    {
+      "design_hash": "6653517b11d6f891",
+      "design_id": "B1-01"
+    },
+    {
+      "design_hash": "bc52a54ecefaac4c",
+      "design_id": "C5"
+    }
+  ],
+  "note": "Control-path rehearsal only. The evaluator is a software fixture, so these numbers are not solver evidence and grant no budget.",
+  "physical_go": "NOT_ISSUED",
+  "plan_sha256": "67a5d75c7fffacbf9b88e5eb9e35d55a58f66a4208698238f765c4b01d1fda1b",
+  "real_admission": false,
+  "result_file": {
+    "bytes": 12411,
+    "path": "D:\\RCAIDE\\.worktrees\\drecover001-20261117\\docs\\evidence\\drecover001\\m1_batch_software_result.json",
+    "sha256": "63ee7a6a868f5f1b9abda6a55480e1e72068a6ec4ee9f7fdc075a3e4df96fac8"
+  },
+  "result_sha256": "6676695c5e230b1ed9258cb1e25c0289c126008826551e0b8d4855e63114833a",
+  "result_status": "COMPLETE",
+  "run_id": "DRECOVER001-M1-SOFTWARE-20261118T000000Z",
+  "schema": "drecover001.m1_batch_software_rehearsal.v1",
+  "scope": "OFFLINE_BATCH_SKELETON_ONLY",
+  "solver_executable_used": null,
+  "task_family": [
+    {
+      "cl_target": 0.17,
+      "mach": 2.02,
+      "split": "meta_train",
+      "task_fingerprint": "0c2b6bb08516e1cf8235fb45638d6977671cbe5deac53ad915cb55c63a938c90",
+      "task_id": "T18K_M202_CL017"
+    },
+    {
+      "cl_target": 0.19,
+      "mach": 2.02,
+      "split": "meta_train",
+      "task_fingerprint": "03bd6485379c2fa1c785c9ae89baff0f04399aaa582003fbe5a594fbd1032c65",
+      "task_id": "T18K_M202_CL019"
+    },
+    {
+      "cl_target": 0.17,
+      "mach": 2.2,
+      "split": "meta_train",
+      "task_fingerprint": "eaeb814528f79e09430b59a019976878cf0b26896153fe8ae6b9b7700ea5b53d",
+      "task_id": "T18K_M220_CL017"
+    },
+    {
+      "cl_target": 0.19,
+      "mach": 2.2,
+      "split": "meta_val",
+      "task_fingerprint": "da997438e2815e28317f781b8671f10b69433dfb3ee4c6b2c6a8ca3e24a7dfca",
+      "task_id": "T18K_M220_CL019"
+    },
+    {
+      "cl_target": 0.17,
+      "mach": 1.8,
+      "split": "meta_test",
+      "task_fingerprint": "0e58197739034b2a19497101eaa38199c2e2dbea3031fe74312faf23066fd2b3",
+      "task_id": "T18K_M180_CL017"
+    },
+    {
+      "cl_target": 0.19,
+      "mach": 1.8,
+      "split": "meta_test",
+      "task_fingerprint": "d8a75ef3c22732626bff87816e6cf585fea63c00efea02b7fc8bdcd5b675fdf2",
+      "task_id": "T18K_M180_CL019"
+    }
+  ]
+}

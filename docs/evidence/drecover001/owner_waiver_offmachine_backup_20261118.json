@@ -1,0 +1,16 @@
+{
+  "schema": "drecover001.owner_waiver.v1",
+  "waiver_id": "WAIVER-OFFMACHINE-BACKUP-20261118",
+  "recorded_utc": "2026-11-18T06:12:00Z",
+  "recorded_by": "lead",
+  "owner_message_ref": "m03569",
+  "owner_message_quote": "2：这个没有独立存储位置，忽略这一项目，后续只需要在本机及逆行操作",
+  "waived": true,
+  "scope": "OFF_MACHINE_INDEPENDENT_FAILURE_DOMAIN_BACKUP",
+  "effect": "The off-machine/independent failure-domain backup requirement is waived for the Issue #12 recovery. Only a same-host restore is required.",
+  "not_waived": [
+    "same-host restore must be labelled explicitly as NOT an off-machine backup",
+    "backup_restore_pass stays false and independent_failure_domain stays false",
+    "no physical solver start, no real-label admission and no M1/M2 real training is authorized"
+  ]
+}

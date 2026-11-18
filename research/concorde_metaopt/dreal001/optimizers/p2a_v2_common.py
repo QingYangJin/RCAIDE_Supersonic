@@ -6,6 +6,10 @@ both import it without a cycle.
 """
 from __future__ import annotations
 
+import os
+from pathlib import Path
+from typing import Optional
+
 PLAN_SCHEMA = "dreal001.p2a_v2_plan.v1"
 APPROVAL_SCHEMA = "dreal001.approval.v3"
 IDENTITY_SCHEMA = "dreal001.p2a_v2_identity.v1"
@@ -353,13 +357,26 @@ FROZEN_VKEY = ".vkey"
 FROZEN_PAIR_MANIFEST_SHA256 = (
     "55e63f392e2821fff02e6f849a3090b9f9c7263be0b9f6c8debbcea599ab1892"
 )
-A1_PAIR_MANIFEST_PATH = (
-    "D:/RCAIDE/dnext001/wt-real-a1-geometry-solver/research/concorde_metaopt/"
-    "dreal001/geometry/runs/P2A_FAM_FEASIBILITY_20261111/family_pair_manifest.json"
+# Frozen R10 evidence bindings.  The historical path is kept as the default so
+# existing signed plan hashes stay reproducible, but the A1 worktree root can be
+# relocated with RCAIDE_A1_ROOT (clean clone / other machine).
+A1_ROOT_ENV = "RCAIDE_A1_ROOT"
+_A1_ROOT_HISTORICAL = "D:/RCAIDE/dnext001/wt-real-a1-geometry-solver"
+
+
+def a1_artifact_path(relpath: str, a1_root: Optional[str] = None) -> str:
+    """Return a frozen A1 artifact path under the injected A1 root."""
+    root = a1_root or os.environ.get(A1_ROOT_ENV) or _A1_ROOT_HISTORICAL
+    return str(Path(root).joinpath(*relpath.split("/")))
+
+
+A1_PAIR_MANIFEST_PATH = a1_artifact_path(
+    "research/concorde_metaopt/dreal001/geometry/runs/"
+    "P2A_FAM_FEASIBILITY_20261111/family_pair_manifest.json"
 )
-A1_PREFLIGHT_BUNDLE_PATH = (
-    "D:/RCAIDE/dnext001/wt-real-a1-geometry-solver/research/concorde_metaopt/"
-    "dreal001/geometry/replay_bundles/P2A_V2_PREFLIGHT_20261111_R1/bundle_manifest.json"
+A1_PREFLIGHT_BUNDLE_PATH = a1_artifact_path(
+    "research/concorde_metaopt/dreal001/geometry/replay_bundles/"
+    "P2A_V2_PREFLIGHT_20261111_R1/bundle_manifest.json"
 )
 APPEND_ONLY_LOG_PATH = "runtime/family_pair_manifest.append_only.jsonl"
 A1_PREFLIGHT_BUNDLE_SHA256 = (

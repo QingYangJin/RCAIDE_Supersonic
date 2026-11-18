@@ -1,0 +1,230 @@
+{
+  "schema": "drecover001.needed_for_next_run.v2",
+  "status": "NO_PHYSICAL_GO",
+  "execution_handoff": {
+    "goal_round_verified": 16,
+    "native_stl_receipt": "docs/evidence/drecover001/native_stl_export/stl_diagnostic_receipt.json",
+    "native_stl_status": "STL_PLACEMENT_PASS_NOT_SOLVER_MESH; production CLI exports wing2160/tail880/fuselage1088/assembly4128 triangles; finite geometry, placement/union bounds and quantized edge diagnostics pass; solver_mesh_validated=false",
+    "native_12d_response_receipt": "docs/evidence/drecover001/native_12d_response/native_response_receipt.json",
+    "native_12d_response_status": "NATIVE_RESPONSE_PASS_NOT_FREEZE; 14 native builds; baseline repeat exact; 12/12 perturbations alter only expected component; saved coordinates recomputed; aerodynamic_active_mask NOT_VALIDATED",
+    "repaired_openvsp_probe": "docs/evidence/drecover001/a1_thickness_repair/real_openvsp_geometry_probe.json",
+    "repaired_openvsp_status": "SURFACE_DIAGNOSTIC_PASS_NOT_FREEZE; native all wing ThickChord0.03/tail0.04; tail width0.520433716m; original failed evidence retained; solver0",
+    "real_openvsp_probe": "docs/evidence/drecover001/real_openvsp_geometry_probe.json",
+    "real_openvsp_probe_status": "SURFACE_DIAGNOSTIC_FAIL; actual ABS tail placement verified, native ThickChord=0.1 conflicts with model wing0.03/tail0.04; no freeze or solver",
+    "local_restore_receipt": "docs/evidence/drecover001/local_restore_receipt.json",
+    "local_restore_status": "PASS_NOT_REMOTE_BACKUP; bundle sha256 aad87db09a166105535016e38411842f20b424d82d7b62de83208cdb0cd9e9f4; 58105510 bytes; 2222 files verified; 136 overlay files; 230 tests pass; retrained checkpoint and heldout JSON exact; 83 evidence files restored to bundle bytes; bundle_manifest_verified=true; bundle_manifest_sha256=a93143cb040f118e486a1931d3bb1f8d4bf22147e19f70148e3de39960ffcb78; evidence_chain_verified=true; evidence_verifiers=both ok; readiness=RECOVERY_READINESS_GATES_CLOSED_EXPECTED (6 CLOSED+1 CLEAN+1 WAIVED); packet_check_problems=[]; verification_passes=2; off_machine_backup=false; backup_label=SAME_HOST_RESTORE_NOT_AN_OFF_MACHINE_BACKUP; owner_waiver=WAIVER-OFFMACHINE-BACKUP-20261118; independent_failure_domain=false",
+    "latest_issue_number": 12,
+    "independent_team_recheck": "Owner authorized the Lead to create a deepseek-flash subagent for the A5 review (m03569). It ran read-only outside the Agent Teams board and recorded verdict CHANGES_REQUIRED (not a human signature); its two major findings were addressed. The Agent Teams board still has 0 shared tasks and list_agents returns only lead.",
+    "blocking_condition_persistence": "Unresolved: no git identity and no GitHub write (git transport fails); REAL_ADMISSION remains fail-closed with F1R2/F2R2 RAW_LOST; A1 freeze reissue waits for a fresh R2 gate; R2 is not preregistered and NO_PHYSICAL_GO holds. The off-machine backup requirement is waived by the Owner (m03569); A5 was performed by a deepseek-flash subagent, not a human signatory.",
+    "requested_user_actions": [],
+    "execution_policy": "User enabled team collaboration and requested autonomous handling of other matters. Do not repeat environment/storage/identity questions; use existing authorized resources. Missing independent evidence remains unverified, not waived.",
+    "fixture_holdout_receipt": "docs/evidence/drecover001/synthetic_fixture_holdout.json",
+    "fixture_holdout_outcome": "K0/K4 executed on val/test fixture tasks; repeated and direct inner_adapt predictions exactly agree, base weights unchanged. K4 query MSE worsened for both models; no superiority claim or tuning on test.",
+    "resume_sequence": "Dispatch documented work packages, independently audit R0/R1 and actual backup restore, obtain fresh R2 GO, then execute R2/M1/M2/M3. Software tests do not authorize physics.",
+    "training_status": "SOFTWARE_FIXTURE_TRAINING_ONLY",
+    "a5_review": {
+      "performed": true,
+      "reviewer": "deepseek-flash",
+      "reviewer_role": "read-only subagent created by the Lead at the Owner's instruction (m03569)",
+      "verdict": "CHANGES_REQUIRED",
+      "human_signature": false,
+      "verdict_file": "docs/evidence/drecover001/a5_review_verdict.json",
+      "transcript_file": "docs/evidence/drecover001/a5_review_transcript.json",
+      "major_findings": [
+        "same-host restore receipt lacked an explicit not-an-off-machine-backup label",
+        "packet reported the backup gate CLOSED instead of the Owner waiver"
+      ],
+      "major_findings_status": "ADDRESSED_IN_THIS_REVISION; the verdict itself is not an approval and does not authorize physical runs"
+    },
+    "owner_waiver": {
+      "waiver_id": "WAIVER-OFFMACHINE-BACKUP-20261118",
+      "owner_message_ref": "m03569",
+      "scope": "OFF_MACHINE_INDEPENDENT_FAILURE_DOMAIN_BACKUP",
+      "waived": true,
+      "same_host_backup_label": "SAME_HOST_RESTORE_NOT_AN_OFF_MACHINE_BACKUP",
+      "backup_restore_pass": false
+    },
+    "software_run_id": "DRECOVER001-SOFTWARE-20261118T062546Z",
+    "software_tests": {
+      "run": 230,
+      "passed": 230,
+      "skipped": 0
+    },
+    "cpu_environment": "D:/Anaconda/envs/RCAIDE/python.exe; Python3.11.17; torch2.8.0+cpu; PyYAML6.0.3; float64",
+    "training_steps_each_model": 20,
+    "real_meta_training_executed": false,
+    "m2_offline_rehearsal_receipt": "docs/evidence/drecover001/m2_offline_rehearsal_receipt.json",
+    "m2_offline_rehearsal_status": "REHEARSAL_COMPLETE_NOT_REAL_EVIDENCE; run_id=DRECOVER001-M2-REHEARSAL-20261117T160233Z; scope=OFFLINE_REHEARSAL_ONLY; synthetic_fixture labels; fomaml/pretrain/conditional_pretrain/random_init K=0/4/10; NO_META_LEARNING_GAIN_CLAIM; physical=0",
+    "m2_checkpoint_sha256": "1616dc5d7441caf7ab0214aeb753aa9cb3be51fec12c7b7a8c3e4739ea326e49",
+    "a4_path_injection": "docs/evidence/drecover001/a4_path_injection_20261117.md",
+    "a4_env_vars": [
+      "RCAIDE_A1_ROOT",
+      "RCAIDE_S3_ROOT",
+      "RCAIDE_DNEXT_ROOT",
+      "RCAIDE_DNEXT_PARENT"
+    ],
+    "a4_status": "INJECTED_FAIL_CLOSED; 10 new tests; 6 code files still contain documented machine-path literals (historical constant + frozen legacy fixtures); no commit/push",
+    "a1_u1_reference_gap": "docs/evidence/drecover001/a1_u1_reference_gap.json",
+    "a1_freeze_status": "OLD_FREEZE_ID_INVALIDATED_BY_R1_REPAIR; 5 expected freeze artifacts absent in all local trees; design_space yaml actual ebca2b7bb2920ce1e3729a3dedd7c361a1c78d34337918a973866bef48f76efc vs expected 8b29d1e3833edc2af248d68cd6b7b4c94ebf775f25c86d80062a3850765a499e; reissue under new R2 gate only",
+    "maml_readiness": "docs/evidence/drecover001/maml_readiness_20261117.md",
+    "maml_readiness_status": "SOFTWARE_REHEARSAL_READY_REAL_TRAINING_BLOCKED",
+    "m2_repeat_check": "docs/evidence/drecover001/m2_rehearsal_repeat_check.json",
+    "m2_repeat_status": "checkpoint_parameters_sha256/evaluation/training identical on repeat; checkpoint file sha differs only through embedded run_id",
+    "m1_batch_control_path": "docs/evidence/drecover001/m1_batch_software_rehearsal_receipt.json",
+    "m1_batch_status": "OFFLINE_BATCH_SKELETON_ONLY; BatchAuthorization/BatchPlan/run_batch; refuses physical_go=False, placeholder A5/Lead GO, reused old gate, out-of-range controls; 18 fixtures across 6 real task identities x 3 designs; physical=0, simulated=18, internal=126, charged=18, design_evaluations=18, cached=0, failed=0, retries=0; STRUCTURAL_SOFTWARE_FIXTURE_NOT_A_REAL_GO; not solver evidence; evaluator failure with failing quarantine/stop now stops as STOPPED_ACCOUNTING_VIOLATION with failure_kind=ACCOUNTING_VIOLATION and open reservation retained",
+    "m1_batch_plan_sha256": "67a5d75c7fffacbf9b88e5eb9e35d55a58f66a4208698238f765c4b01d1fda1b",
+    "m1_batch_result_sha256": "6676695c5e230b1ed9258cb1e25c0289c126008826551e0b8d4855e63114833a",
+    "m1_batch_code_sha256": "526d4edfda4962c69dbaa335921c5985a93aa362ee2a11ad2768910473d69e76",
+    "recovery_readiness": "docs/evidence/drecover001/recovery_readiness.json",
+    "recovery_readiness_status": "RECOVERY_READINESS_GATES_CLOSED_EXPECTED; 8 gates=6 CLOSED+1 CLEAN+1 WAIVED; violations=0; missing=0; blockers=8; CLOSED means expected-unsigned, not PASS; not an A5 signature; WAIVED refers to the Owner's off-machine backup waiver (m03569)",
+    "recovery_readiness_md": "docs/evidence/drecover001/recovery_readiness.md",
+    "recovery_change_manifest": "docs/evidence/drecover001/recovery_change_manifest.json",
+    "readiness_aggregator": "docs/evidence/drecover001/assess_recovery_readiness.py",
+    "readiness_aggregator_tests": 14,
+    "integrity_note": "The R1 requirement text above was truncated during an earlier edit and its tail is not recoverable from this file; the truncation is marked in place and must be treated as unknown, not as evidence."
+  },
+  "baseline": "4c51c7df34c9626999ef2e66e5a6c76a2b9c92e2",
+  "requirements": [
+    {
+      "id": "AGENTS",
+      "state": "MISSING_CAPABILITY",
+      "required": "The Owner authorized the Lead to create a deepseek-flash subagent for A5 (m03569); it performed a read-only review and recorded verdict CHANGES_REQUIRED, which is not a human signature. The Agent Teams board still has 0 shared tasks; Lead must not self-sign or upgrade a subagent verdict to a human sign-off."
+    },
+    {
+      "id": "R0",
+      "state": "INCOMPLETE_INDEPENDENT_AUDIT_PENDING",
+      "required": "200 reachable commits / 2829 blob identities / 2760 historical paths audited. Older batch2 ledger reconciles 8 distinct completed events, not 16 starts; 80 artifact claims checked, 56 newline-only mismatches remain non-exact. Extended provenance classification beyond batch2 is now complete offline (docs/evidence/drecover001/r0_provenance_extension.json): 25 budget/ledger sources, 58 raw solver outputs, 62 solver logs and 157 input decks classified; no additional recoverable raw found. F1R2/F2R2 originals remain RAW_LOST. Still required: actual independent 6-terra RECOVERY_INVENTORY_PASS."
+    },
+    {
+      "id": "R1",
+      "state": "PARTIAL_SOFTWARE_ONLY",
+      "required": "TaskSpec numeric identities normalized (mach/altitude int-vs-float and signed zero cannot create distinct physics). New TaskSpec/MetaDataset/MetaTrainer/AdaptationRunner/WarmStartSampler recovery contracts added; 230 software/mock/math/backend tests pass (run_id DRECOVER001-SOFTWARE-20261118T062546Z), none skipped; CPU float64 FOMAML and pooled pretraining each executed20steps on synthetic fixtures, parameters changed and local checkpoint roundtrip passed. Training remains SOFTWARE_FIXTURE_TRAINING_ONLY, not real-task training. Absolute XForm/symmetry write/readback repaired with mock rejection tests; real mesh semantics not validated. Portable local restore now verifies the embedded bundle manifest (2222 files) and the restored evidence chain (83 files, 2 verifier+readiness+packet passes) for bundle aad87db09a166105535016e38411842f20b424d82d7b62de83208cdb0cd9e9f4, but it remains same-host PASS_NOT_REMOTE_BACKUP with independent_failure_domain=false. Real production admission deliberately disabled, not T0 readiness PASS. Initial BO tell wiring and error/null/feasible feedback restored; explicit regenerated RECOVERY_NUMPY_RBF_GP_EI_V1 backend mathematically tested, not historical maml_opt recovery or true physics evidence. Regenerated callback-only DE/rand1/bin and synchronous PSO now execute with bounded requests and feedback tests; not original algorithm recovery. YAML provenance quoting repaired without value changes. In-memory ledger ownership and immutable reservations hardened; 12 tests reject forged/foreign tokens, invalid integer costs, double settlement and cancellation of charged costs; Seven additional tests verify single/batch callback exceptions, interruptions and malformed returned costs quarantine the reservation and block new starts without fabricating actual usage; summary refuses accounting completion; an open (reserved but unsettled) start also keeps accounting_resolved=false and assert_conserved refuses to sign off. This quarantine is in-memory only, with no crash recovery or external incident reconciliation; actual spawn/end/raw provenance remains unverified. Legacy integration still blocked by frozen config/loader contradiction and Windows temp/cache permissions (4 setup errors, not passes). Offline raw artifact consistency added with 18 synthetic-byte tests: task/design/geometry plus mesh/deck/polar SHA binding, deck flow/grid checks and only actual matched-lift polar rows; self-consistent fabricated bytes do not authenticate a run and return real_admission=false. Adaptation now rejects support/query coordinate over... (line truncated to 2000 chars)"
+    },
+    {
+      "id": "BACKUP",
+      "state": "WAIVED_BY_OWNER",
+      "required": "The off-machine independent-failure-domain backup is waived by the Owner (m03569). Only a same-host restore is required; it must stay labelled SAME_HOST_RESTORE_NOT_AN_OFF_MACHINE_BACKUP, and backup_restore_pass/independent_failure_domain remain false."
+    },
+    {
+      "id": "R2",
+      "state": "GATE_WAITING",
+      "required": "RESTORED_CODE_BASELINE_PASS + BACKUP_RESTORE_PASS, new finite preregistered batch, A5 review and Lead approval/GO."
+    },
+    {
+      "id": "A1_FREEZE_REISSUE",
+      "state": "BLOCKING_R2",
+      "required": "Issue new freeze/replay identity under a fresh R2 gate: 5 expected U1 freeze artifacts (PRE-01R geometry.vspgeom 16da482a..., f1r zero_physics_audit_12d.json 7a90b977..., design_space_freeze.json fe7e48eb...) are absent from every local tree; design space YAML changed by the R1 thickness repair. Never silently re-freeze or overwrite old run data."
+    },
+    {
+      "id": "M2_REHEARSAL",
+      "state": "COMPLETE_OFFLINE_ONLY",
+      "required": "Offline rehearsal with six real task physics identities plus synthetic labels; FOMAML/pooled/conditional pretraining/random-init; K=0/4/10; validation early stopping; checkpoint SHA 1616dc5d7441caf7ab0214aeb753aa9cb3be51fec12c7b7a8c3e4739ea326e49. Zero physics. Not real-task training and no meta-learning gain claim."
+    },
+    {
+      "id": "MAML_READINESS",
+      "state": "SOFTWARE_REHEARSAL_READY_REAL_TRAINING_BLOCKED",
+      "required": "Blocked on R0 A5 human/Owner acceptance of the subagent verdict, RESTORED_CODE_BASELINE_PASS without an independent failure domain (waived), REAL_ADMISSION_NOT_IMPLEMENTED, A1 freeze reissue, new R2 gate plus Lead batch GO, and a remotely verifiable commit (no git identity / GitHub write)."
+    },
+    {
+      "id": "M1_BATCH_CONTROL_PATH",
+      "state": "COMPLETE_OFFLINE_ONLY",
+      "required": "Software batch control path is ready and tested under STRUCTURAL_SOFTWARE_FIXTURE_NOT_A_REAL_GO: authorisation refuses any missing/placeholder A5 or Lead GO and any reuse of #9/#10 gate; plan caps 24 starts/600s/1 retry/parallel 1; six accounting bases kept separate; 18-item fixture batch physical=0, simulated=18, internal=126. Not solver evidence and no budget granted; real batch still needs A5 review plus fresh Lead GO."
+    },
+    {
+      "id": "R0_PROVENANCE_EXTENSION",
+      "state": "COMPLETE_OFFLINE_ONLY",
+      "required": "Classify provenance of raw/budget sources beyond the reconciled older batch2 and confirm whether any recoverable raw remains. Done offline: no new recoverable raw; F1R2/F2R2 RAW_LOST; historical ledgers are provenance records only."
+    }
+  ],
+  "prohibited": [
+    "reuse historical approval/GO",
+    "fabricate lost raw",
+    "mark code readiness as real training",
+    "merge main or PR3/PR6",
+    "start physical solver before gates"
+  ],
+  "physical_solver_starts_actual_this_recovery": 0,
+  "minimum_recovery_matrix": "docs/evidence/drecover001/recovery_inventory.md",
+  "reachable_history_evidence": "docs/evidence/drecover001/reachable_history_audit.json",
+  "exempt_from_repeat_physics": {
+    "admitted_real_labels": 0,
+    "reason": "No full corrected fixed-loop original raw provenance restored. Matching M1A decks/mesh are geometry assets only."
+  },
+  "diagnostic_plan_status": "DRAFT_NOT_AUTHORIZATION",
+  "historical_raw_reconciliation": "docs/evidence/drecover001/historical_raw_reconciliation.json",
+  "maml_readiness": "docs/evidence/drecover001/maml_readiness_20261117.md",
+  "a4_path_injection_evidence": "docs/evidence/drecover001/a4_path_injection_20261117.md",
+  "m2_rehearsal_receipt": "docs/evidence/drecover001/m2_offline_rehearsal_receipt.json",
+  "a1_u1_reference_gap": "docs/evidence/drecover001/a1_u1_reference_gap.json",
+  "m2_repeat_check": "docs/evidence/drecover001/m2_rehearsal_repeat_check.json",
+  "r0_provenance_extension": {
+    "evidence": "docs/evidence/drecover001/r0_provenance_extension.json",
+    "sha256": "b553857c5ce986e9fbfd7f6fa6de37d7aca42af9ade61075db6e17e87c524c37",
+    "summary_markdown": "docs/evidence/drecover001/r0_provenance_extension_20261117.md",
+    "script": "docs/evidence/drecover001/audit_provenance_extension.py",
+    "script_sha256": "63eb6e468ce40de035b15737b5f69d63d07f0acae369c2b76b4b1e41c0e7bb6e",
+    "state": "COMPLETE_OFFLINE_PENDING_INDEPENDENT_AUDIT",
+    "budget_sources": {
+      "total": 25,
+      "RAW_PRESENT": 3,
+      "REMOTE_PRESENT": 22
+    },
+    "raw_outputs": {
+      "total": 58,
+      "REMOTE_PRESENT": 58
+    },
+    "solver_logs": {
+      "total": 62,
+      "REMOTE_PRESENT": 62
+    },
+    "input_decks": {
+      "total": 157,
+      "REMOTE_PRESENT": 157
+    },
+    "absent_raw_claims": [
+      "F1R2",
+      "F2R2"
+    ],
+    "cross_check": {
+      "pairs": 4,
+      "authoritative_flags": 0,
+      "heuristic_flags": 1
+    },
+    "physical_solver_starts_actual": 0,
+    "internal_solver_cases_actual": 0,
+    "physics_validated": false,
+    "note": "Offline git-blob verification only; not a solver run, not a new raw, not an A5 signature.",
+    "verification": "docs/evidence/drecover001/r0_provenance_extension_verification.json",
+    "verification_script": "docs/evidence/drecover001/verify_r0_provenance_extension.py",
+    "verification_status": "R0_PROVENANCE_EXTENSION_EVIDENCE_INTERNALLY_CONSISTENT",
+    "verification_check_count": 328,
+    "verification_sha256": "73b99833c7f86c5ef317dc21ca83a3ae0537170384309c6d1dbf07af7dbcb3b5",
+    "verification_script_sha256": "00fd4badb85b676cc46c4b0659b6e3e4ab25aa3ec5c1d47a3e405d149638d384"
+  },
+  "r0_local_object_store_audit": {
+    "evidence": "docs/evidence/drecover001/r0_local_object_store_audit.json",
+    "sha256": "adf23138966cb959c941771b3122abbd6972f897afdb04d211bd3b5e0ec1f603",
+    "script": "docs/evidence/drecover001/audit_local_object_store.py",
+    "script_sha256": "1f145c7e45417524145abec0ff0498b4daaf0a0532c6ff542be955188f54c63b",
+    "state": "COMPLETE_OFFLINE_PENDING_INDEPENDENT_AUDIT",
+    "command": "git fsck --full --unreachable --no-reflogs",
+    "refs_total": 24,
+    "tags_total": 0,
+    "objects_in_pack": 4633,
+    "loose_objects": 0,
+    "unreachable_objects": 0,
+    "garbage_count": 1,
+    "garbage_warning": "warning: garbage found: D:/RCAIDE/.git/worktrees/drecover001-20261117/refs (empty directory)",
+    "scope": "LOCAL_GIT_OBJECT_STORE_ONLY_NOT_REMOTE_REAUDIT",
+    "physical_solver_starts_actual": 0,
+    "note": "No dangling local Git object could restore the missing critical paths; local object store only, not a remote re-audit."
+  },
+  "a5_review_packet": {
+    "json": "docs/evidence/drecover001/a5_review_packet.json",
+    "md": "docs/evidence/drecover001/a5_review_packet.md",
+    "generator": "docs/evidence/drecover001/build_a5_review_packet.py",
+    "evidence_count": 19,
+    "a5_verdict": null,
+    "note": "READ_ONLY_AGGREGATION_NOT_A_REVIEW; no signature and no physical GO"
+  }
+}

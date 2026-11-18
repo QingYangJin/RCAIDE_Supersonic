@@ -21,6 +21,7 @@ import hashlib
 import importlib.util
 import json
 import math
+import os
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -38,7 +39,10 @@ ALPHA_GRID = (-2.0, 0.0, 2.0, 4.0, 6.0, 8.0, 10.0)
 MAX_REFINE_SWEEPS = 0
 INTERNAL_PER_START = 7
 
-ROOT = Path("D:/RCAIDE")
+# The historical draft hard-coded the repository parent. The location is now
+# injected (environment or caller-supplied path) so the draft can run from a clean clone.
+DEFAULT_ROOT = Path(__file__).resolve().parents[4].parent
+ROOT = Path(os.environ.get("RCAIDE_DNEXT_PARENT", str(DEFAULT_ROOT)))
 A3 = ROOT / "dnext001" / "wt-real-a3-stats-routeb"
 A1 = ROOT / "dnext001" / "wt-real-a1-geometry-solver"
 A5 = ROOT / "dnext001" / "wt-real-a5-review"

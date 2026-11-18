@@ -1,6 +1,6 @@
 """D-NEXT-001 A4｜G0 独立 CUDA 环境自检（零物理调用）。
 
-用途：在 D:\RCAIDE\dnext001\gpu-env 的独立 venv 中核对
+用途：在注入的 gpu-env 独立 venv（默认 <worktrees-root>/gpu-env，可用 --root 或 RCAIDE_GPU_ENV_ROOT 覆盖）中核对
   * 版本/驱动/计算能力/设备信息；
   * FP32 与 FP64 的前向/反向是否真实在 GPU 上执行，且与 CPU float64 参考一致；
   * 同种子重复运行的确定性；
@@ -9,7 +9,7 @@
 输出 JSON 供中文环境报告引用。
 
 用法：
-  D:\RCAIDE\dnext001\gpu-env\Scripts\python.exe -m research.concorde_metaopt.gpu.env_check \
+  <gpu-env-python> -m research.concorde_metaopt.gpu.env_check \
       --out research/concorde_metaopt/gpu/reports/g0_env_check.json
 """
 

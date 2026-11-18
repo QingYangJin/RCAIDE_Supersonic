@@ -1,0 +1,83 @@
+[
+  {
+    "check_id": "U1-FILE-openvsp_geometry",
+    "path": "research/concorde_metaopt/aircraft/openvsp_geometry.py",
+    "exists": true,
+    "expected_sha256": "d20ee7adc38286c7da3ef3ea5aa5be8204596d491d6601b9a635b0ae5213dc56",
+    "actual_sha256": "4f64d4c0046ca2f72e9cd770fbf8af227fd55b165b868b74a856c7d282c7aa3c",
+    "expected_bytes": 13654,
+    "actual_bytes": 16299,
+    "ok": false
+  },
+  {
+    "check_id": "U1-FILE-f1r_bundle_manifest",
+    "path": "research/concorde_metaopt/dreal001/geometry/replay_bundles/DFIXED_F1R_20261113_R1/bundle_manifest.json",
+    "exists": false,
+    "expected_sha256": "1b16f5725cf178361f47539db5d727f9687b079e9c8534cc67c153c3d3f8bbe2",
+    "actual_sha256": null,
+    "expected_bytes": 6083,
+    "actual_bytes": null,
+    "ok": false
+  },
+  {
+    "check_id": "U1-FILE-f1r_baseline_vspgeom",
+    "path": "research/concorde_metaopt/dreal001/geometry/replay_bundles/DFIXED_F1R_20261113_R1/PRE-01R/geometry.vspgeom",
+    "exists": false,
+    "expected_sha256": "16da482a1f8e59f6b454378769961caafde5eef87784127db6cce87381943b84",
+    "actual_sha256": null,
+    "expected_bytes": 225414,
+    "actual_bytes": null,
+    "ok": false
+  },
+  {
+    "check_id": "U1-FILE-f1r2_zero_physics_audit_12d",
+    "path": "research/concorde_metaopt/dreal001/f1r/DREAL001-F1R-20261113-01/evidence/zero_physics_audit_12d.json",
+    "exists": false,
+    "expected_sha256": "7a90b977fd7ba1778ee44c722a837898b62c9f9d201e4cbd22ca2b7b3afdeea5",
+    "actual_sha256": null,
+    "expected_bytes": 74850,
+    "actual_bytes": null,
+    "ok": false
+  },
+  {
+    "check_id": "U1-FILE-design_space_yaml",
+    "path": "research/concorde_metaopt/configs/design_space_12d_lifting_surfaces.yaml",
+    "exists": true,
+    "expected_sha256": "8b29d1e3833edc2af248d68cd6b7b4c94ebf775f25c86d80062a3850765a499e",
+    "actual_sha256": "ebca2b7bb2920ce1e3729a3dedd7c361a1c78d34337918a973866bef48f76efc",
+    "expected_bytes": 10846,
+    "actual_bytes": 11099,
+    "ok": false
+  },
+  {
+    "check_id": "U1-FILE-design_space_freeze_json",
+    "path": "research/concorde_metaopt/dreal001/geometry/design_space_freeze.json",
+    "exists": false,
+    "expected_sha256": "fe7e48eba6a70eb76b0b139b1004f775830da68bd5d003604d686e59656e8373",
+    "actual_sha256": null,
+    "expected_bytes": 41775,
+    "actual_bytes": null,
+    "ok": false
+  },
+  {
+    "check_id": "U1-DESIGN-HASHES",
+    "observed": {
+      "B0-01": "8bd5a6c7c8311938",
+      "B1-01": "6653517b11d6f891",
+      "C5": "bc52a54ecefaac4c"
+    },
+    "expected": {
+      "B0-01": "8bd5a6c7c8311938",
+      "B1-01": "6653517b11d6f891",
+      "C5": "bc52a54ecefaac4c"
+    },
+    "ok": true
+  },
+  {
+    "check_id": "U1-OLD-GEOMETRY-NOT-USED",
+    "old_task_family_geometry_sha256": "40fdd4364e01c7fe11ca2ea4530d39c371ae693a434f39e44986f7512d6446f4",
+    "used": false,
+    "ok": true,
+    "detail": "old F1 543x472 geometry 40fdd436 is not referenced by any task deck; all task decks use the post-fix 546x480 chain"
+  }
+]

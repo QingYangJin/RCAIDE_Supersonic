@@ -20,6 +20,7 @@ from __future__ import annotations
 import hashlib
 import json
 import math
+import sys
 import time
 from dataclasses import dataclass, replace
 from pathlib import Path
@@ -1899,7 +1900,7 @@ def _render_readme(
     )
     old_root = str(config.old_run_output_root or config.output_root)
     lines.append("- 正式复现命令（A5M6R-02：--frozen-run-dir 为必填，缺省会 fail-closed）：")
-    lines.append("  cd <repo> && D:/RCAIDE/envs/RCAIDE/python.exe -E -s -B -m research.concorde_metaopt.meta_learning.m6_study")
+    lines.append("  cd <repo> && " + sys.executable + " -E -s -B -m research.concorde_metaopt.meta_learning.m6_study")
     lines.append(
         f"  --run-id {config.run_id} --output-root <OUT> --frozen-run-dir {frozen_dir} "
         f"--old-run-output-root {old_root} --ks {','.join(str(k) for k in config.ks)} "

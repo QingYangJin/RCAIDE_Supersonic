@@ -1030,7 +1030,7 @@ class AccountingHooks(Protocol):
 
 
 class A2LedgerHooks:
-    r"""Thin adapter over D:\RCAIDE\dnext001\wt-real-a2-optimizers accounting_ledger.
+    r"""Thin adapter over the injected A2 worktree's accounting_ledger.
 
     This module never imports or rewrites A2 bytes.  The M1 runner constructs
     the A2 ledger object, verifies its SHA against the M0-R package, and passes

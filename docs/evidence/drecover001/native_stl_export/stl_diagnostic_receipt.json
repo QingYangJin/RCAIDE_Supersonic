@@ -1,0 +1,188 @@
+{
+  "scope": "REAL_PRODUCTION_WORKER_STL_DIAGNOSTIC_ONLY",
+  "status": "STL_PLACEMENT_PASS_NOT_SOLVER_MESH",
+  "physical_solver_starts_actual": 0,
+  "internal_solver_cases_actual": 0,
+  "freeze_issued": false,
+  "real_admission": false,
+  "solver_mesh_validated": false,
+  "generated_utc": "2026-11-17T08:22:29.465518+00:00",
+  "command": [
+    "D:\\Anaconda\\envs\\RCAIDE\\python.exe",
+    "-s",
+    "-B",
+    "D:\\RCAIDE\\.worktrees\\drecover001-20261117\\research\\concorde_metaopt\\aircraft\\openvsp_geometry.py",
+    "--request",
+    "D:\\RCAIDE\\.worktrees\\drecover001-20261117\\docs\\evidence\\drecover001\\native_stl_export\\worker_request.json",
+    "--result",
+    "D:\\RCAIDE\\.worktrees\\drecover001-20261117\\docs\\evidence\\drecover001\\native_stl_export\\worker_result.json"
+  ],
+  "worker_returncode": 0,
+  "meshes": {
+    "main_wing": {
+      "sha256": "f5ff10e9a7c46693a9bd7e316d7fe1e21ea404bc4ae3692b6681958c03ca17b6",
+      "bytes": 653984,
+      "format": "ascii",
+      "triangles": 2160,
+      "bounds_m": [
+        [
+          14.0,
+          -12.802319126,
+          -1.2484811961
+        ],
+        [
+          45.495343759,
+          12.802319126,
+          -0.35151880387
+        ]
+      ],
+      "extents_m": [
+        31.495343759,
+        25.604638252,
+        0.89696239223
+      ],
+      "surface_area_m2": 723.3462654490298,
+      "weld_tolerance_m": 1e-08,
+      "zero_area_threshold_m2": 1e-12,
+      "near_zero_area_triangles": 0,
+      "collapsed_faces_after_quantization": 0,
+      "duplicate_triangle_excess": 0,
+      "boundary_edges_after_quantization": 0,
+      "nonmanifold_edges_after_quantization": 0,
+      "min_triangle_area_m2": 2.958264024695057e-06
+    },
+    "vertical_tail": {
+      "sha256": "18d8246bcd8a3dced4df96868f32c88f509faa348a3cde24f8d6e29f3e37df8f",
+      "bytes": 263430,
+      "format": "ascii",
+      "triangles": 880,
+      "bounds_m": [
+        [
+          42.0,
+          -0.26311171403,
+          1.0
+        ],
+        [
+          55.157616068,
+          0.26311171403,
+          6.0093312927
+        ]
+      ],
+      "extents_m": [
+        13.157616068000003,
+        0.52622342806,
+        5.0093312927
+      ],
+      "surface_area_m2": 73.4665150170639,
+      "weld_tolerance_m": 1e-08,
+      "zero_area_threshold_m2": 1e-12,
+      "near_zero_area_triangles": 0,
+      "collapsed_faces_after_quantization": 0,
+      "duplicate_triangle_excess": 0,
+      "boundary_edges_after_quantization": 0,
+      "nonmanifold_edges_after_quantization": 0,
+      "min_triangle_area_m2": 2.50391255470554e-05
+    },
+    "fuselage": {
+      "sha256": "ac8b6dc3cb8348826afa922d54b784424816386c5704fc2e687712236d477618",
+      "bytes": 327922,
+      "format": "ascii",
+      "triangles": 1088,
+      "bounds_m": [
+        [
+          -7.4014868308e-17,
+          -1.6561441904,
+          -1.6794723748
+        ],
+        [
+          61.66,
+          1.6561441904,
+          1.6794723748
+        ]
+      ],
+      "extents_m": [
+        61.66,
+        3.3122883808,
+        3.3589447496
+      ],
+      "surface_area_m2": 546.82146460455,
+      "weld_tolerance_m": 1e-08,
+      "zero_area_threshold_m2": 1e-12,
+      "near_zero_area_triangles": 0,
+      "collapsed_faces_after_quantization": 0,
+      "duplicate_triangle_excess": 0,
+      "boundary_edges_after_quantization": 0,
+      "nonmanifold_edges_after_quantization": 0,
+      "min_triangle_area_m2": 0.02945004443828929
+    },
+    "assembly": {
+      "sha256": "befad92c09f109599298958ec748d6334b008dfea31f923af13809ccfac2f596",
+      "bytes": 1245302,
+      "format": "ascii",
+      "triangles": 4128,
+      "bounds_m": [
+        [
+          -7.4014868308e-17,
+          -12.802319126,
+          -1.6794723748
+        ],
+        [
+          61.66,
+          12.802319126,
+          6.0093312927
+        ]
+      ],
+      "extents_m": [
+        61.66,
+        25.604638252,
+        7.6888036675
+      ],
+      "surface_area_m2": 1343.6342450706438,
+      "weld_tolerance_m": 1e-08,
+      "zero_area_threshold_m2": 1e-12,
+      "near_zero_area_triangles": 0,
+      "collapsed_faces_after_quantization": 0,
+      "duplicate_triangle_excess": 0,
+      "boundary_edges_after_quantization": 0,
+      "nonmanifold_edges_after_quantization": 0,
+      "min_triangle_area_m2": 2.958264024695057e-06
+    }
+  },
+  "placement_checks": {
+    "all_triangles_present_finite": true,
+    "tail_aft_x42": true,
+    "tail_z1_to_model_height": true,
+    "tail_vertical_extent_exceeds_thickness": true,
+    "wing_span_matches_model": true,
+    "assembly_bounds_equal_component_union": true
+  },
+  "topology_checks": {
+    "main_wing": {
+      "no_near_zero_faces": true,
+      "no_duplicate_faces": true,
+      "closed_two_manifold_edges": true
+    },
+    "vertical_tail": {
+      "no_near_zero_faces": true,
+      "no_duplicate_faces": true,
+      "closed_two_manifold_edges": true
+    },
+    "fuselage": {
+      "no_near_zero_faces": true,
+      "no_duplicate_faces": true,
+      "closed_two_manifold_edges": true
+    },
+    "assembly": {
+      "no_near_zero_faces": true,
+      "no_duplicate_faces": true,
+      "closed_two_manifold_edges": true
+    }
+  },
+  "vsp3_sha256": "85e85716f29b6d198580dad18e7f5847ce9250b421d776b99d8e93bc6fc2a57c",
+  "limitations": "One baseline tessellation; quantized edge checks are diagnostic, not repaired topology or CFD/VSPAERO mesh approval. Overlapping assembly surfaces are not boolean-unioned. No aerodynamic or Sref/AC/mass approval.",
+  "source_sha256": {
+    "docs\\evidence\\drecover001\\native_stl_export\\run_stl_diagnostic.py": "a79aac1a41ee20a7f315607fe8fa8c2d0a06115ad855ec211939615a5d63dd5c",
+    "research\\concorde_metaopt\\aircraft\\openvsp_geometry.py": "4f64d4c0046ca2f72e9cd770fbf8af227fd55b165b868b74a856c7d282c7aa3c",
+    "research\\concorde_metaopt\\aircraft\\openvsp_check.py": "ec31397d3441fde68607418fdd18fa6cd595a58e3377e041e9efb7e84d69c74d"
+  }
+}

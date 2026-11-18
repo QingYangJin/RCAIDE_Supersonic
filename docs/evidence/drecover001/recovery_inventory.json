@@ -1,0 +1,374 @@
+{
+  "schema": "drecover001.recovery_inventory.v2",
+  "issue": 12,
+  "status": "R0_PARTIAL_NOT_AUDITED",
+  "baseline": "4c51c7df34c9626999ef2e66e5a6c76a2b9c92e2",
+  "branch": "recovery/drecover001-20261117",
+  "date_local": "2026-11-17",
+  "physical_solver_starts_actual_this_recovery": 0,
+  "internal_solver_cases_actual_this_recovery": 0,
+  "historical_issue10_reported_costs": {
+    "actual_starts": 65,
+    "actual_internal": 455,
+    "charged_starts": 70,
+    "charged_internal": 490,
+    "evidence_status": "REPORT_PRESENT_NOT_RAW_REVALIDATED"
+  },
+  "independent_review": {
+    "required_model": "6-terra",
+    "status": "NOT_STARTED",
+    "reason": "Only lead exists; exposed SDK has no subagent creation/model-selection interface."
+  },
+  "remote_ref_refresh": {
+    "status": "FAILED",
+    "error": "fatal: unable to access 'https://github.com/QingYangJin/RCAIDE_Supersonic.git/': schannel: AcquireCredentialsHandle failed: SEC_E_NO_CREDENTIALS (0x8009030e)",
+    "fallback": "GitHub heads/tags API verified current head identities; raw local objects checked against these pinned SHAs, not inferred solely from cached refs.",
+    "api_heads": {
+      "status": "VERIFIED_CURRENT_HEAD_TIPS",
+      "head_count": 20,
+      "tag_count": 0,
+      "evidence": "docs/evidence/drecover001/remote_refs.json",
+      "note": "All 200 reachable ancestor commits and 2760 historical paths checked. Unreachable server objects, hidden refs, unpushed commits excluded."
+    }
+  },
+  "assets": [
+    {
+      "path": "docs/receipts/dfixed001_stage_report_20261113.md",
+      "classification": "REMOTE_PRESENT",
+      "evidence_kind": "REPORT_PRESENT",
+      "remote_bytes": 20227,
+      "remote_sha256": "4a8200df7ab052252286084897e3aae8dc25a9a17372f0247e10b707f07d373f",
+      "historical_index_match": true,
+      "checkout_bytes": 20336,
+      "checkout_sha256": "58641098ac911d1007457708e8e3c362548a0967baed07d8cd08b09a69a7d38ca",
+      "checkout_note": "core.autocrlf=true; raw checkout digest must not be compared as canonical Git bytes."
+    },
+    {
+      "path": "research/concorde_metaopt/aircraft/openvsp_geometry.py",
+      "classification": "REMOTE_PRESENT",
+      "evidence_kind": "SOURCE_CODE_PRESENT",
+      "remote_bytes": 12391,
+      "remote_sha256": "d43ab35374d27e1c809c421430c60fd9e6501172ac913f2c5956372871b51357",
+      "required_corrected_sha256_from_evaluator": "d20ee7adc38286c7da3ef3ea5aa5be8204596d491d6601b9a635b0ae5213dc56",
+      "required_corrected_bytes": 13654,
+      "corrected_byte_identity": false,
+      "semantic_finding": "Lines 119/121 write XForm directly; no Abs_Or_Relitive_flag occurrence. Reported absolute-transform fix not established in this baseline."
+    },
+    {
+      "path": "research/concorde_metaopt/meta/production.py",
+      "classification": "REGENERATABLE_NEW_ID",
+      "remote_at_baseline": "ABSENT_404",
+      "evidence_kind": "SOURCE_OR_FREEZE_MISSING_AT_BASELINE",
+      "regeneration": "REGENERATABLE_NEW_ID_AFTER_SPEC_REVIEW",
+      "current_remote_heads": "ABSENT_AT_ALL_20_HEAD_TIPS",
+      "ancestors_history_verified": true,
+      "current_remote_reachable_history": "ABSENT_FROM_ALL_200_REACHABLE_TREES",
+      "verification_scope": "All objects reachable from 20 API-verified remote head SHAs; no unreachable server objects, hidden refs or unpushed commits",
+      "api_verified_head_reachable_history_checked": true
+    },
+    {
+      "path": "research/concorde_metaopt/meta/task_spec.py",
+      "classification": "REGENERATABLE_NEW_ID",
+      "remote_at_baseline": "ABSENT_404",
+      "evidence_kind": "SOURCE_OR_FREEZE_MISSING_AT_BASELINE",
+      "regeneration": "REGENERATABLE_NEW_ID_AFTER_SPEC_REVIEW",
+      "current_remote_heads": "ABSENT_AT_ALL_20_HEAD_TIPS",
+      "ancestors_history_verified": true,
+      "current_remote_reachable_history": "ABSENT_FROM_ALL_200_REACHABLE_TREES",
+      "verification_scope": "All objects reachable from 20 API-verified remote head SHAs; no unreachable server objects, hidden refs or unpushed commits",
+      "api_verified_head_reachable_history_checked": true
+    },
+    {
+      "path": "research/concorde_metaopt/meta/meta_dataset.py",
+      "classification": "REGENERATABLE_NEW_ID",
+      "remote_at_baseline": "ABSENT_404",
+      "evidence_kind": "SOURCE_OR_FREEZE_MISSING_AT_BASELINE",
+      "regeneration": "REGENERATABLE_NEW_ID_AFTER_SPEC_REVIEW",
+      "current_remote_heads": "ABSENT_AT_ALL_20_HEAD_TIPS",
+      "ancestors_history_verified": true,
+      "current_remote_reachable_history": "ABSENT_FROM_ALL_200_REACHABLE_TREES",
+      "verification_scope": "All objects reachable from 20 API-verified remote head SHAs; no unreachable server objects, hidden refs or unpushed commits",
+      "api_verified_head_reachable_history_checked": true
+    },
+    {
+      "path": "research/concorde_metaopt/dreal001/geometry/design_space_freeze.json",
+      "classification": "REGENERATABLE_NEW_ID",
+      "remote_at_baseline": "ABSENT_404",
+      "evidence_kind": "SOURCE_OR_FREEZE_MISSING_AT_BASELINE",
+      "regeneration": "REGENERATABLE_NEW_ID_AFTER_SPEC_REVIEW",
+      "current_remote_heads": "ABSENT_AT_ALL_20_HEAD_TIPS",
+      "ancestors_history_verified": true,
+      "current_remote_reachable_history": "ABSENT_FROM_ALL_200_REACHABLE_TREES",
+      "verification_scope": "All objects reachable from 20 API-verified remote head SHAs; no unreachable server objects, hidden refs or unpushed commits",
+      "api_verified_head_reachable_history_checked": true
+    },
+    {
+      "path": "research/concorde_metaopt/dreal001/geometry/replay_bundles/DFIXED_F1R_20261113_R1/bundle_manifest.json",
+      "classification": "REGENERATABLE_NEW_ID",
+      "remote_at_baseline": "ABSENT_404",
+      "evidence_kind": "SOURCE_OR_FREEZE_MISSING_AT_BASELINE",
+      "regeneration": "REGENERATABLE_NEW_ID_AFTER_SPEC_REVIEW",
+      "current_remote_heads": "ABSENT_AT_ALL_20_HEAD_TIPS",
+      "ancestors_history_verified": true,
+      "current_remote_reachable_history": "ABSENT_FROM_ALL_200_REACHABLE_TREES",
+      "verification_scope": "All objects reachable from 20 API-verified remote head SHAs; no unreachable server objects, hidden refs or unpushed commits",
+      "api_verified_head_reachable_history_checked": true
+    },
+    {
+      "path": "F1R2/F2R2 original raw solver outputs",
+      "classification": "RAW_LOST",
+      "evidence_kind": "ORIGINAL_RAW_LOST",
+      "note": "Owner reports no surviving local backup; no F1R2/F2R2-named paths exist among 2,760 historical paths; extended provenance classification explicitly lists F1R2/F2R2 in absent_raw_claims. Older d12d005/other solver outputs survive but are not admitted as F1R2/F2R2 or cached observations. Do not fabricate.",
+      "r0_provenance_extension_sha256": "b553857c5ce986e9fbfd7f6fa6de37d7aca42af9ade61075db6e17e87c524c37"
+    },
+    {
+      "path": "Historical real-training checkpoint",
+      "classification": "UNKNOWN",
+      "evidence_kind": "ORIGINAL_CHECKPOINT_NOT_ESTABLISHED",
+      "note": "No verified historical MAML checkpoint recovered; the only extension candidate in the inventory is an unrelated tutorial pickle. Current synthetic fixture checkpoint is SOFTWARE_FIXTURE_TRAINING_ONLY and is not a historical real-training checkpoint."
+    },
+    {
+      "path": "docs/evidence/dreal001/m1a_deck_freeze_20261113/slots/M1A-B0-01-M202_CL017/concorde_baseline.vspgeom",
+      "classification": "REMOTE_PRESENT",
+      "evidence_kind": "MODEL_OR_MESH_PRESENT",
+      "bytes": 225414,
+      "sha256": "16da482a1f8e59f6b454378769961caafde5eef87784127db6cce87381943b84",
+      "historical_required_byte_identity": true,
+      "missing_original_path": "research/concorde_metaopt/dreal001/geometry/replay_bundles/DFIXED_F1R_20261113_R1/PRE-01R/geometry.vspgeom",
+      "replayable": false,
+      "physics_validated": false,
+      "note": "Preserved under M1A freeze path; exact byte identity is not full replay-bundle recovery or real label admission."
+    }
+  ],
+  "historical_commit_probes": {
+    "local_object_absent": [
+      "74e69df",
+      "660071da",
+      "9a9e294",
+      "5832017",
+      "318c5ac",
+      "fd1ab768",
+      "7ed9c9e4"
+    ],
+    "scope": "local clone only; not remote absence proof"
+  },
+  "outstanding": [
+    "Actual GPT-6-luna agents and independent 6-terra A5 creation capability",
+    "Independent 6-terra audit of the offline inventory and provenance classification; inventory remains unaudited",
+    "Approved independent-failure-domain backup and actual restore verification"
+  ],
+  "gate_verdict": "NOT_SIGNED_R0_INCOMPLETE",
+  "byte_audit": {
+    "evidence": "docs/evidence/drecover001/all_ref_blob_audit.json",
+    "head_count": 20,
+    "unique_blobs": 2392,
+    "unique_blob_bytes": 171334493,
+    "raw_git_object_identity_verified": true,
+    "canonical_baseline_files": 2109,
+    "canonical_baseline_bytes": 164917591,
+    "canonical_export_matches_raw_git_blobs": true,
+    "checksum_matches": 162,
+    "checksum_missing": 2,
+    "m1a_payload_matches": 60,
+    "m1a_payload_total": 60,
+    "m1a_evidence_kind": "ZERO_PHYSICS_DECK_FREEZE_NOT_REAL_LABELS",
+    "normalization_used_for_match": false,
+    "export_command": "git -c core.autocrlf=false -c core.eol=lf archive",
+    "warning": "Initial default git archive applied CRLF conversion; that export is superseded, not proof of remote corruption."
+  },
+  "tests": {
+    "runner": "unittest",
+    "tests_run": 23,
+    "failures": 0,
+    "errors": 0,
+    "physical_starts": 0,
+    "scope": "Inventory audit utility only; not R1 or independent A5",
+    "initial_test_failure": "TemporaryDirectory fixture write outside workspace denied; replaced with in-memory tar fixtures, no permission changes.",
+    "elapsed_seconds": 0.003
+  },
+  "remaining_r0_work": [
+    "Independent actual 6-terra inventory review"
+  ],
+  "reachable_history": {
+    "evidence": "docs/evidence/drecover001/reachable_history_audit.json",
+    "asset_matrix": "docs/evidence/drecover001/historical_asset_matrix.json",
+    "reachable_commits": 200,
+    "reachable_objects": 4633,
+    "unique_blobs": 2829,
+    "unique_blob_bytes": 186537818,
+    "historical_paths": 2760,
+    "shallow_repository": false,
+    "git_blob_identity_verified": true,
+    "index_claim_counts": {
+      "BYTE_IDENTITY_FOUND": 8,
+      "NOT_FOUND_IN_REACHABLE_HISTORY": 8,
+      "ABBREVIATED_NOT_IDENTITY_PROOF": 1
+    },
+    "note": "Counts are index claims, not unique files. Duplicate report hashes count multiple times.",
+    "figure_source_claim_counts": {
+      "BYTE_IDENTITY_FOUND": 13,
+      "NOT_FOUND_IN_REACHABLE_HISTORY": 42
+    },
+    "u1_dependency_counts": {
+      "BYTE_IDENTITY_FOUND": 2,
+      "NOT_FOUND_IN_REACHABLE_HISTORY": 4
+    },
+    "scope": "All objects reachable from 20 API-verified remote head SHAs; no unreachable server objects, hidden refs or unpushed commits",
+    "local_object_store_fsck": {
+      "evidence": "docs/evidence/drecover001/r0_local_object_store_audit.json",
+      "sha256": "adf23138966cb959c941771b3122abbd6972f897afdb04d211bd3b5e0ec1f603",
+      "script": "docs/evidence/drecover001/audit_local_object_store.py",
+      "script_sha256": "1f145c7e45417524145abec0ff0498b4daaf0a0532c6ff542be955188f54c63b",
+      "command": "git fsck --full --unreachable --no-reflogs",
+      "head": "4c51c7df34c9626999ef2e66e5a6c76a2b9c92e2",
+      "refs_total": 24,
+      "tags_total": 0,
+      "objects_in_pack": 4633,
+      "loose_objects": 0,
+      "unreachable_objects": 0,
+      "garbage_count": 1,
+      "garbage_warning": "warning: garbage found: D:/RCAIDE/.git/worktrees/drecover001-20261117/refs (empty directory)",
+      "conclusion": "NO_UNREACHABLE_GIT_OBJECTS; missing critical paths are not recoverable from dangling local objects",
+      "scope": "LOCAL_GIT_OBJECT_STORE_ONLY_NOT_REMOTE_REAUDIT",
+      "physical_solver_starts_actual": 0,
+      "network_used": false
+    }
+  },
+  "evidence_groups": {
+    "HISTORICAL_FIGURE_OR_TABLE_NOT_NEW_PHYSICS": 23,
+    "LEDGER_NAMED_SOURCE_OR_REPORT_NOT_RECONCILED": 27,
+    "M0R_CONTRACT_NOT_REAL_LABEL": 32,
+    "MODEL_OR_DECK_CANDIDATE_NOT_REAL_LABEL": 154,
+    "SOURCE_CODE_PRESENT_NOT_READINESS_PROOF": 272,
+    "SOLVER_OUTPUT_CANDIDATE_NOT_PHYSICS_VALIDATED": 68,
+    "CHECKPOINT_OR_ARRAY_CANDIDATE_NOT_ADMITTED": 1
+  },
+  "surviving_raw_provenance": {
+    "path_count": 68,
+    "run": "d12d005-20261104T0430Z",
+    "source_report_url": "https://github.com/QingYangJin/RCAIDE_Supersonic/blob/aef2cb71e07aa28abfc28e34b14bf9dc1579c2e3/research/concorde_metaopt/optimization_runs/d12d005-20261104T0430Z/evidence/batch2/batch2_report.md",
+    "report_git_oid": "e22164aa744e616878791304b9c0dac4f26b4eac",
+    "report_sha256": "76ac086ce68dce24bf9a2e8018cd5e17f002bf0ecd5e549a13977129e3816efb",
+    "reported_scope": "Main-wing-only 12D or standard rectangular wing, single AoA, internal only, NOT_VALIDATED",
+    "not_f1r2_f2r2": true,
+    "cache_admission": "NONE",
+    "full_raw_provenance_validated": false,
+    "reconciliation_evidence": "docs/evidence/drecover001/historical_raw_reconciliation.json",
+    "batch2_reconciliation": {
+      "ledger_records": 16,
+      "unique_completed_events": 8,
+      "pending_completed_pair_issues": 0,
+      "reported_starts": 8,
+      "reported_retries": 0,
+      "billable_completed_records": 8,
+      "artifact_claims": 80,
+      "exact_path_size_sha_claims": 8,
+      "exact_path_sha_only_claims": 16,
+      "byte_mismatch_claims": 56,
+      "mismatches_explained_by_newlines": 56,
+      "normalization_used_for_exact_match": false,
+      "legacy_infinity_tokens": 8,
+      "full_raw_provenance_validated": false,
+      "reason": "8 binary adb output identities match exactly, 16 input setup/vkey identities match path+SHA without recorded sizes; 56 text output/mesh claims require newline transformation, never upgraded to original raw. Executable/authorization provenance and independent backup not established."
+    }
+  },
+  "admitted_scientific_labels_this_recovery": 0,
+  "remaining_r0_work_completed": [
+    {
+      "item": "Provenance classification for raw/budget sources beyond the reconciled older batch2",
+      "state": "COMPLETED_OFFLINE_PENDING_INDEPENDENT_AUDIT",
+      "evidence": "docs/evidence/drecover001/r0_provenance_extension.json",
+      "evidence_sha256": "b553857c5ce986e9fbfd7f6fa6de37d7aca42af9ade61075db6e17e87c524c37",
+      "script": "docs/evidence/drecover001/audit_provenance_extension.py",
+      "script_sha256": "63eb6e468ce40de035b15737b5f69d63d07f0acae369c2b76b4b1e41c0e7bb6e",
+      "summary_markdown": "docs/evidence/drecover001/r0_provenance_extension_20261117.md",
+      "note": "Offline, zero physical starts; classifications rest on local git cat-file bytes re-verified against reachable_history_audit.json, not on report claims."
+    },
+    {
+      "item": "Local Git object-store dangling/unreachable object audit",
+      "state": "COMPLETED_OFFLINE_PENDING_INDEPENDENT_AUDIT",
+      "evidence": "docs/evidence/drecover001/r0_local_object_store_audit.json",
+      "evidence_sha256": "adf23138966cb959c941771b3122abbd6972f897afdb04d211bd3b5e0ec1f603",
+      "script": "docs/evidence/drecover001/audit_local_object_store.py",
+      "script_sha256": "1f145c7e45417524145abec0ff0498b4daaf0a0532c6ff542be955188f54c63b",
+      "note": "git fsck --full --unreachable --no-reflogs found 0 unreachable objects; local object store only, not a remote re-audit; no solver started."
+    }
+  ],
+  "r0_provenance_extension": {
+    "schema": "drecover001.r0_provenance_extension.v1",
+    "evidence": "docs/evidence/drecover001/r0_provenance_extension.json",
+    "sha256": "b553857c5ce986e9fbfd7f6fa6de37d7aca42af9ade61075db6e17e87c524c37",
+    "budget_sources": {
+      "total": 25,
+      "RAW_PRESENT": 3,
+      "REMOTE_PRESENT": 22
+    },
+    "raw_outputs": {
+      "total": 58,
+      "REMOTE_PRESENT": 58
+    },
+    "solver_logs": {
+      "total": 62,
+      "REMOTE_PRESENT": 62
+    },
+    "input_decks": {
+      "total": 157,
+      "REMOTE_PRESENT": 157
+    },
+    "absent_raw_claims": {
+      "total": 2,
+      "RAW_LOST": 2,
+      "identities": [
+        "F1R2",
+        "F2R2"
+      ]
+    },
+    "claim_groups": {
+      "total": 89,
+      "index_digest_claims": {
+        "BYTE_IDENTITY_FOUND": 8,
+        "NOT_FOUND_IN_REACHABLE_HISTORY": 8,
+        "ABBREVIATED_NOT_IDENTITY_PROOF": 1
+      },
+      "additional_required_digests": {
+        "NOT_FOUND_IN_REACHABLE_HISTORY": 6
+      },
+      "critical_path_claims": {
+        "ABSENT_FROM_ALL_200_REACHABLE_TREES": 5
+      },
+      "u1_dependency_claims": {
+        "BYTE_IDENTITY_FOUND": 2,
+        "NOT_FOUND_IN_REACHABLE_HISTORY": 4
+      },
+      "figure_source_digest_claims": {
+        "BYTE_IDENTITY_FOUND": 13,
+        "NOT_FOUND_IN_REACHABLE_HISTORY": 42
+      }
+    },
+    "external_references": {
+      "total": 4,
+      "without_reachable_digest": 3,
+      "all_point_to_agent_state_dir_outside_git": true
+    },
+    "absolute_path_references": {
+      "total": 121,
+      "OTHER_ABSOLUTE_PATH": 88,
+      "AGENT_STATE_DIR": 32,
+      "OPENVSP_EXECUTABLE_PATH": 1
+    },
+    "ledger_budget_cross_check": {
+      "pairs": 4,
+      "authoritative_flags": 0,
+      "heuristic_flags": 1,
+      "heuristic_flag_detail": "d12d004 config/actual_solver_budget.json counters claim starts_used=0/retries_used=0/billable_events=0 while solver_ledger shows 4 attempts/4 starts/2 retries/4 billable; flagged, not adjudicated"
+    },
+    "legacy_nonstandard_json_tokens": {
+      "Infinity": 10,
+      "policy": "left byte-identical, not relabeled"
+    },
+    "conclusion": "No additional recovered raw was found beyond what earlier audits already recorded; F1R2/F2R2 originals remain RAW_LOST; historical ledgers are provenance records only, not new process witnesses.",
+    "physical_solver_starts_actual": 0,
+    "internal_solver_cases_actual": 0,
+    "physics_validated": false
+  }
+}

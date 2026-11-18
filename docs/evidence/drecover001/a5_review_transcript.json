@@ -1,0 +1,809 @@
+[
+ {
+  "step": 1,
+  "assistant": {
+   "role": "assistant",
+   "content": "I'll start by reading the A5 packet files, then run independent verification.",
+   "tool_calls": [
+    {
+     "function": {
+      "arguments": "{\"path\": \"docs/evidence/drecover001/a5_review_packet.md\", \"max_lines\": 400}",
+      "name": "read_text"
+     },
+     "id": "call_00_97tdgg0cosxe6j4js9n84bjx",
+     "type": "function"
+    },
+    {
+     "function": {
+      "arguments": "{\"path\": \"docs/evidence/drecover001\"}",
+      "name": "list_dir"
+     },
+     "id": "call_01_1gexkjc5plzsikyf2udzundt",
+     "type": "function"
+    }
+   ]
+  },
+  "finish_reason": "tool_calls"
+ },
+ {
+  "step": 1,
+  "tool": "read_text",
+  "args": {
+   "path": "docs/evidence/drecover001/a5_review_packet.md",
+   "max_lines": 400
+  },
+  "result_preview": "{\"path\": \"docs\\\\evidence\\\\drecover001\\\\a5_review_packet.md\", \"total_lines\": 79, \"start_line\": 1, \"returned_lines\": 79, \"text\": \"     1\\t# A5 独立审查包（只读聚合）\\n     2\\t\\n     3\\t- 生成时间（UTC）：2026-11-18T04:56:18Z\\n     4\\t- 范围：READ_ONLY_EVIDENCE_AGGREGATION_FOR_INDEPENDENT_A5_REVIEW\\n     5\\t- 软件 run_id：DRECOVER001-SOFTWARE-20261117T162945Z\\n     6\\t- 离线测试：229 项，失败 0，错误 0，跳过 0\\n     7\\t- 物理求解器启动：0；内部求解案例：0；真实元训练：false；真实标签：0\\n     8\\t- 本包不是 A5 结论，不含签名，不授予物理 GO。\\n     9\\t\\n    10\\t## 门禁状态\\n    11\\t\\n    12\\t- R0_INVENTORY: CLOSED\\n    13\\t- R1_SOFTWARE: CLOSED\\n    14\\t- M1_BATCH_CONTROL_PATH: CLOSED\\n    15\\t- M2_OFFLINE_REHEARSAL: CLOSED\\n    16\\t- BACKUP_INDEPENDENT_FAILURE_DOMAIN: CLOSED\\n    17\\t- A5_INDEPENDENT_REVIEW: CLOSED\\n    18\\t- REAL_ADMISSION: CLOSED\\n    19\\t- EVIDENCE_MANIFEST: CLEAN\\n    20\\t\\n    21\\t## 可复核证据（逐文件 SHA256）\\n    22\\t\\n    23\\t- docs/evidence/drecover001/recovery_inventory.json（18205 字节）：65df586e7067f20767ff6419d6d00bb2a769df780ad1b2c41be92ac409aa4a43 — R0 loss ledger and provenance inventory\\n    24\\t- docs/evidence/drecover001/recovery_inventory.md（20216 字节）：7ef7933caa21457b6c484416f313f290c48a3913e4357bea0edb90d81ec7a2ce — R0 human-readable inventory\\n    25\\t- docs/evidence/drecover001/all_ref_blob_audit.json（6308435 字节）：ad8222e8965c5a5fa3834f29b4309ff7cea71d71729100f245d29984e10a1613 — R0 remote-ref byte/blob audit\\n    26\\t- docs/evidence/drecover001/reachable_history_audit.json（1309494 字节）：ba8f65fd5f1bc4f6eebe980dad3992b853360acf9b01ebf508c79d49f001d6dc — R0 reachable-history audit\\n    27\\t- docs/evidence/drecover001/r0_provenance_extension.json（330839 字节）：b553857c5ce986e9fbfd7f6fa6de37d7aca42af9ade61075db6e17e87c524c37 — R0 provenance extension records\\n    28\\t- docs/evidence/drecover001/r0_provenance_extension_20261117.md（6794 字节）：bdf7380e4d0c9368b3128d51b52de652ea21bf06a7d2d107edc674914d54327f — R0 provenance extension summary\\n    29\\t- docs/evidence/drecover001/r0_provenance_extension_verification.json（81117 字节）：73b99833c7f86c5ef317dc21ca83a3ae0537170384309c6d1dbf07af7dbcb3b5 — R0 archived-byte self-verification\\n    30\\t- docs/evidence/drecover001/needed_for_next_run.json（18157 字节）：23e92281901061a016bbf3401fbb41252c516959e75a061b3d2bc01e612c6d4e — R0/R1/R2 handoff requirements\\n    31\\t- docs/evidence/drecover001/recovery_preflight_receipt.json（7358 字节）：d41d1b7f374d52d52038f428da1666ac30a6c41dd924dc60e131751384b97a64 — R1 software preflight receipt\\n    32\\t- docs/evidence/drecover001/synthetic_software_training_trace.json（6328 字节）：8d3be1525e4b2c18459c9f5d1ad21997920c58fbc5c43d932f933e6fed19ca94 — R1 fixture training trace\\n    33\\t- docs/evidence/drecover001/synthetic_software_checkpoint.json（9081 字节）：0211bc97e73418722d60e45c3eb2dd812686cc17cc412f99168b227f0dc7b155 — R1 fixture checkpoint roundtrip artifact\\n    34\\t- docs/evidence/drecover001/m1_batch_software_rehearsal_receipt.json（3468 字节）：526d337ae54fb6849fc6822f032560b3c9a3a21ba39395a5c18594f1479ab7f5 — M1 control-path rehearsal receipt\\n    35\\t- docs/evidence/drecover001/m1_batch_software_result.json（12411 字节）：63ee7a6a868f5f1b9abda6a55480e1e72068a6ec4ee9f7fdc075a3e4df96fac8 — M1 control-path result\\n    36\\t- docs/evidence/drecover001/m1_batch_software_verification.json（1785 字节）：e0e678b2c24ded6056e1dc63ec02858d215b4c31ba251f8424584c3dcf657d15 — M1 artifact verification\\n    37\\t- docs/evidence/drecover001/m2_offline_rehearsal_receipt.json（33973 字节）：232551c3a7eb996d7b9edf0fe156d2e3fd6e23d1db574c6e7e4a0cd46dadc0bc — M2 offline rehearsal receipt\\n    38\\t- docs/evidence/drecover001/m2_rehearsal_repeat_check.json（1862 字节）：8f6ad3e69462f1b3c16970f7cd9194de50b17352e3d540ef251e1c50e9c64c10 — M2 repeatability check\\n    39\\t- docs/evidence/drecover001/local_restore_receipt.json（1686 字节）：3936ba0ed45a4ce178fb6faa502662f036e99bd24b2834321514892259fa30b6 — same-host restore test (not a backup)\\n    40\\t- docs/evidence/drecover001/issue12_consolidated_receipt_draft_20261117.md（9016 字节）：8c778d108bdde9c06ff891094210815cc768c332442c64ed4a0b0ccc1288"
+ },
+ {
+  "step": 1,
+  "tool": "list_dir",
+  "args": {
+   "path": "docs/evidence/drecover001"
+  },
+  "result_preview": "{\"path\": \"docs\\\\evidence\\\\drecover001\", \"entries\": [{\"name\": \"__pycache__\", \"dir\": true, \"bytes\": null}, {\"name\": \"_probe_u6k4gkur\", \"dir\": true, \"bytes\": null}, {\"name\": \"a1_thickness_repair\", \"dir\": true, \"bytes\": null}, {\"name\": \"a1_u1_reference_gap.json\", \"dir\": false, \"bytes\": 3051}, {\"name\": \"a4_path_injection_20261117.md\", \"dir\": false, \"bytes\": 5744}, {\"name\": \"a5_review_packet.json\", \"dir\": false, \"bytes\": 12240}, {\"name\": \"a5_review_packet.md\", \"dir\": false, \"bytes\": 7137}, {\"name\": \"all_ref_blob_audit.json\", \"dir\": false, \"bytes\": 6308435}, {\"name\": \"assess_recovery_readiness.py\", \"dir\": false, \"bytes\": 34560}, {\"name\": \"asset_audit_summary.json\", \"dir\": false, \"bytes\": 29358}, {\"name\": \"audit_canonical_inventory.py\", \"dir\": false, \"bytes\": 5696}, {\"name\": \"audit_historical_raw.py\", \"dir\": false, \"bytes\": 8651}, {\"name\": \"audit_local_object_store.py\", \"dir\": false, \"bytes\": 3111}, {\"name\": \"audit_provenance_extension.py\", \"dir\": false, \"bytes\": 22450}, {\"name\": \"audit_reachable_history.py\", \"dir\": false, \"bytes\": 4345}, {\"name\": \"audit_remote_ref_blobs.py\", \"dir\": false, \"bytes\": 3244}, {\"name\": \"build_a5_review_packet.py\", \"dir\": false, \"bytes\": 16715}, {\"name\": \"build_change_manifest.py\", \"dir\": false, \"bytes\": 4187}, {\"name\": \"canonical_blob_audit.json\", \"dir\": false, \"bytes\": 1143520}, {\"name\": \"diagnose_geometry_effects.py\", \"dir\": false, \"bytes\": 5183}, {\"name\": \"geometry_effect_diagnostic.json\", \"dir\": false, \"bytes\": 8549}, {\"name\": \"historical_asset_matrix.json\", \"dir\": false, \"bytes\": 294850}, {\"name\": \"historical_raw_reconciliation.json\", \"dir\": false, \"bytes\": 104333}, {\"name\": \"issue12_consolidated_receipt_draft_20261117.md\", \"dir\": false, \"bytes\": 9016}, {\"name\": \"local_restore_receipt.json\", \"dir\": false, \"bytes\": 1686}, {\"name\": \"m1_batch_software_rehearsal_receipt.json\", \"dir\": false, \"bytes\": 3468}, {\"name\": \"m1_batch_software_result.json\", \"dir\": false, \"bytes\": 12411}, {\"name\": \"m1_batch_software_verification.json\", \"dir\": false, \"bytes\": 1785}, {\"name\": \"m2_offline_rehearsal_checkpoint.json\", \"dir\": false, \"bytes\": 128321}, {\"name\": \"m2_offline_rehearsal_receipt.json\", \"dir\": false, \"bytes\": 33973}, {\"name\": \"m2_rehearsal_repeat_check.json\", \"dir\": false, \"bytes\": 1862}, {\"name\": \"maml_readiness_20261117.md\", \"dir\": false, \"bytes\": 9665}, {\"name\": \"map_recovery_assets.py\", \"dir\": false, \"bytes\": 6485}, {\"name\": \"native_12d_response\", \"dir\": true, \"bytes\": null}, {\"name\": \"native_stl_export\", \"dir\": true, \"bytes\": null}, {\"name\": \"needed_for_next_run.json\", \"dir\": false, \"bytes\": 18157}, {\"name\": \"probe_real_openvsp.py\", \"dir\": false, \"bytes\": 7841}, {\"name\": \"r0_local_object_store_audit.json\", \"dir\": false, \"bytes\": 1105}, {\"name\": \"r0_provenance_extension.json\", \"dir\": false, \"bytes\": 330839}, {\"name\": \"r0_provenance_extension_20261117.md\", \"dir\": false, \"bytes\": 6794}, {\"name\": \"r0_provenance_extension_verification.json\", \"dir\": false, \"bytes\": 81117}, {\"name\": \"r1_software_progress_20261117.md\", \"dir\": false, \"bytes\": 19494}, {\"name\": \"reachable_history_audit.json\", \"dir\": false, \"bytes\": 1309494}, {\"name\": \"real_openvsp_geometry_probe.json\", \"dir\": false, \"bytes\": 8392}, {\"name\": \"real_openvsp_geometry_probe.vsp3\", \"dir\": false, \"bytes\": 301252}, {\"name\": \"recovery_change_manifest.json\", \"dir\": false, \"bytes\": 29150}, {\"name\": \"recovery_inventory.json\", \"dir\": false, \"bytes\": 18205}, {\"name\": \"recovery_inventory.md\", \"dir\": false, \"bytes\": 20216}, {\"name\": \"recovery_meta_contract_tests.txt\", \"dir\": false, \"bytes\": 40992}, {\"name\": \"recovery_preflight_receipt.json\", \"dir\": false, \"bytes\": 7358}, {\"name\": \"recovery_readiness.json\", \"dir\": false, \"bytes\": 16738}, {\"name\": \"recovery_readiness.md\", \"dir\": false, \"bytes\": 1635}, {\"name\": \"remote_refs.json\", \"dir\": false, \"bytes\": 3404}, {\"name\": \"run_fixture_holdout.py\", \"dir\": false, \"bytes\": 5329}, {\"name\": \"run_local_restore.py\", \"dir\": false, \"bytes\": 19048}, {\"name\": \"run_m1_batch_software.py\", \"dir\": false, \"bytes\": 5116}, {\"name\": \"run_reco"
+ },
+ {
+  "step": 2,
+  "assistant": {
+   "role": "assistant",
+   "content": "",
+   "tool_calls": [
+    {
+     "function": {
+      "arguments": "{\"path\": \"docs/evidence/drecover001/a5_review_packet.json\", \"max_chars\": 20000}",
+      "name": "json_summary"
+     },
+     "id": "call_00_n5zxk7wehy3llf8v4fik9j1k",
+     "type": "function"
+    },
+    {
+     "function": {
+      "arguments": "{}",
+      "name": "verify_packet_evidence"
+     },
+     "id": "call_01_g7ocyze9gvf98bn4zg3583t9",
+     "type": "function"
+    }
+   ],
+   "reasoning_content": "Note: a5_review_packet.md is 7137 bytes on disk. Let me now read the JSON packet.\n\nNote there are interesting directories: `_probe_u6k4gkur`, `a1_thickness_repair`, `native_12d_response`, `native_stl_export`, `__pycache__`. Also `real_openvsp_geometry_probe.vsp3` exists — that could be a real physical artifact? Need to check whether real physical solver starts occurred. The recovery claims zero-physical. Let me check.\n\nLet me read the JSON packet."
+  },
+  "finish_reason": "tool_calls"
+ },
+ {
+  "step": 2,
+  "tool": "json_summary",
+  "args": {
+   "path": "docs/evidence/drecover001/a5_review_packet.json",
+   "max_chars": 20000
+  },
+  "result_preview": "{\"path\": \"docs\\\\evidence\\\\drecover001\\\\a5_review_packet.json\", \"type\": \"dict\", \"keys\": [\"schema\", \"generated_utc\", \"root\", \"scope\", \"attestation\", \"software_run_id\", \"software_tests\", \"gate_states\", \"readiness_matrix\", \"claims\", \"evidence_index\", \"open_external_gates\", \"known_limitations\", \"reproduction\", \"review_checklist\", \"requested_a5_verdict\", \"disclosure\"], \"scalars\": {\"schema\": \"drecover001.a5_review_packet.v1\", \"generated_utc\": \"2026-11-18T04:56:18Z\", \"root\": \"D:\\\\RCAIDE\\\\.worktrees\\\\drecover001-20261117\", \"scope\": \"READ_ONLY_EVIDENCE_AGGREGATION_FOR_INDEPENDENT_A5_REVIEW\", \"software_run_id\": \"DRECOVER001-SOFTWARE-20261117T162945Z\", \"requested_a5_verdict\": null, \"disclosure\": \"This packet is input to review, not a review. It creates no evidence, no approval, no budget and no physical authorization.\"}, \"evidence_index_type\": \"list\", \"evidence_index_len\": 19, \"claims_type\": \"list\", \"claims_len\": 7, \"nested_keys\": {\"attestation\": [\"physical_solver_starts_actual\", \"internal_solver_cases_actual\", \"real_meta_training_executed\", \"admitted_real_labels\", \"a5_review_performed\", \"physical_go_issued\", \"backup_restore_established\", \"new_scientific_evidence_created\", \"network_used\"], \"software_tests\": [\"run\", \"failures\", \"errors\", \"skipped\"], \"gate_states\": [\"R0_INVENTORY\", \"R1_SOFTWARE\", \"M1_BATCH_CONTROL_PATH\", \"M2_OFFLINE_REHEARSAL\", \"BACKUP_INDEPENDENT_FAILURE_DOMAIN\", \"A5_INDEPENDENT_REVIEW\", \"REAL_ADMISSION\", \"EVIDENCE_MANIFEST\"], \"readiness_matrix\": [\"path\", \"status\", \"generated_utc\", \"note\"], \"claims\": 7, \"evidence_index\": 19, \"open_external_gates\": 4, \"known_limitations\": 7, \"reproduction\": 4, \"review_checklist\": 7}, \"truncated_json_preview\": \"{\\\"schema\\\": \\\"drecover001.a5_review_packet.v1\\\", \\\"generated_utc\\\": \\\"2026-11-18T04:56:18Z\\\", \\\"root\\\": \\\"D:\\\\\\\\RCAIDE\\\\\\\\.worktrees\\\\\\\\drecover001-20261117\\\", \\\"scope\\\": \\\"READ_ONLY_EVIDENCE_AGGREGATION_FOR_INDEPENDENT_A5_REVIEW\\\", \\\"attestation\\\": {\\\"physical_solver_starts_actual\\\": 0, \\\"internal_solver_cases_actual\\\": 0, \\\"real_meta_training_executed\\\": false, \\\"admitted_real_labels\\\": 0, \\\"a5_review_performed\\\": false, \\\"physical_go_issued\\\": false, \\\"backup_restore_established\\\": false, \\\"new_scientific_evidence_created\\\": false, \\\"network_used\\\": false}, \\\"software_run_id\\\": \\\"DRECOVER001-SOFTWARE-20261117T162945Z\\\", \\\"software_tests\\\": {\\\"run\\\": 229, \\\"failures\\\": 0, \\\"errors\\\": 0, \\\"skipped\\\": 0}, \\\"gate_states\\\": {\\\"R0_INVENTORY\\\": \\\"CLOSED\\\", \\\"R1_SOFTWARE\\\": \\\"CLOSED\\\", \\\"M1_BATCH_CONTROL_PATH\\\": \\\"CLOSED\\\", \\\"M2_OFFLINE_REHEARSAL\\\": \\\"CLOSED\\\", \\\"BACKUP_INDEPENDENT_FAILURE_DOMAIN\\\": \\\"CLOSED\\\", \\\"A5_INDEPENDENT_REVIEW\\\": \\\"CLOSED\\\", \\\"REAL_ADMISSION\\\": \\\"CLOSED\\\", \\\"EVIDENCE_MANIFEST\\\": \\\"CLEAN\\\"}, \\\"readiness_matrix\\\": {\\\"path\\\": \\\"docs/evidence/drecover001/recovery_readiness.json\\\", \\\"status\\\": \\\"RECOVERY_READINESS_GATES_CLOSED_EXPECTED\\\", \\\"generated_utc\\\": \\\"2026-11-18T04:56:17Z\\\", \\\"note\\\": \\\"status is quoted, not hashed, to avoid a self-referential hash cycle; rerun the aggregator to verify\\\"}, \\\"claims\\\": [{\\\"claim\\\": \\\"R0 inventory, provenance and loss ledger are complete as offline records, not independently audited\\\", \\\"gate\\\": \\\"R0_INVENTORY\\\", \\\"state\\\": \\\"CLOSED\\\"}, {\\\"claim\\\": \\\"R1 software baseline passes 229 offline tests; fixture-only training changes parameters and checkpoint roundtrips\\\", \\\"gate\\\": \\\"R1_SOFTWARE\\\", \\\"state\\\": \\\"CLOSED\\\"}, {\\\"claim\\\": \\\"M1 batch control path is exercised with a structural placeholder authorization, not a real GO\\\", \\\"gate\\\": \\\"M1_BATCH_CONTROL_PATH\\\", \\\"state\\\": \\\"CLOSED\\\"}, {\\\"claim\\\": \\\"M2 offline rehearsal is deterministic across repeated runs; it is not real meta-training\\\", \\\"gate\\\": \\\"M2_OFFLINE_REHEARSAL\\\", \\\"state\\\": \\\"CLOSED\\\"}, {\\\"claim\\\": \\\"Only a same-host restore test exists; independent failure-domain backup is absent\\\", \\\"gate\\\": \\\"BACKUP_INDEPENDENT_FAILURE_DOMAIN\\\", \\\"state\\\": \\\"CLOSED\\\"}, {\\\"claim\\\": \\\"No independent A5 reviewer is attached and no A5 signature exists\\\", \\\"gate\\\": \\\"A5_INDEPENDENT_REVIEW"
+ },
+ {
+  "step": 2,
+  "tool": "verify_packet_evidence",
+  "args": {},
+  "result_preview": "{\"packet\": \"docs\\\\evidence\\\\drecover001\\\\a5_review_packet.json\", \"entries\": 19, \"verified\": 19, \"mismatch_count\": 0, \"mismatches\": [], \"rows\": [{\"path\": \"docs/evidence/drecover001/recovery_inventory.json\", \"exists\": true, \"declared_bytes\": 18205, \"actual_bytes\": 18205, \"declared_sha256\": \"65df586e7067f20767ff6419d6d00bb2a769df780ad1b2c41be92ac409aa4a43\", \"actual_sha256\": \"65df586e7067f20767ff6419d6d00bb2a769df780ad1b2c41be92ac409aa4a43\", \"ok\": true}, {\"path\": \"docs/evidence/drecover001/recovery_inventory.md\", \"exists\": true, \"declared_bytes\": 20216, \"actual_bytes\": 20216, \"declared_sha256\": \"7ef7933caa21457b6c484416f313f290c48a3913e4357bea0edb90d81ec7a2ce\", \"actual_sha256\": \"7ef7933caa21457b6c484416f313f290c48a3913e4357bea0edb90d81ec7a2ce\", \"ok\": true}, {\"path\": \"docs/evidence/drecover001/all_ref_blob_audit.json\", \"exists\": true, \"declared_bytes\": 6308435, \"actual_bytes\": 6308435, \"declared_sha256\": \"ad8222e8965c5a5fa3834f29b4309ff7cea71d71729100f245d29984e10a1613\", \"actual_sha256\": \"ad8222e8965c5a5fa3834f29b4309ff7cea71d71729100f245d29984e10a1613\", \"ok\": true}, {\"path\": \"docs/evidence/drecover001/reachable_history_audit.json\", \"exists\": true, \"declared_bytes\": 1309494, \"actual_bytes\": 1309494, \"declared_sha256\": \"ba8f65fd5f1bc4f6eebe980dad3992b853360acf9b01ebf508c79d49f001d6dc\", \"actual_sha256\": \"ba8f65fd5f1bc4f6eebe980dad3992b853360acf9b01ebf508c79d49f001d6dc\", \"ok\": true}, {\"path\": \"docs/evidence/drecover001/r0_provenance_extension.json\", \"exists\": true, \"declared_bytes\": 330839, \"actual_bytes\": 330839, \"declared_sha256\": \"b553857c5ce986e9fbfd7f6fa6de37d7aca42af9ade61075db6e17e87c524c37\", \"actual_sha256\": \"b553857c5ce986e9fbfd7f6fa6de37d7aca42af9ade61075db6e17e87c524c37\", \"ok\": true}, {\"path\": \"docs/evidence/drecover001/r0_provenance_extension_20261117.md\", \"exists\": true, \"declared_bytes\": 6794, \"actual_bytes\": 6794, \"declared_sha256\": \"bdf7380e4d0c9368b3128d51b52de652ea21bf06a7d2d107edc674914d54327f\", \"actual_sha256\": \"bdf7380e4d0c9368b3128d51b52de652ea21bf06a7d2d107edc674914d54327f\", \"ok\": true}, {\"path\": \"docs/evidence/drecover001/r0_provenance_extension_verification.json\", \"exists\": true, \"declared_bytes\": 81117, \"actual_bytes\": 81117, \"declared_sha256\": \"73b99833c7f86c5ef317dc21ca83a3ae0537170384309c6d1dbf07af7dbcb3b5\", \"actual_sha256\": \"73b99833c7f86c5ef317dc21ca83a3ae0537170384309c6d1dbf07af7dbcb3b5\", \"ok\": true}, {\"path\": \"docs/evidence/drecover001/needed_for_next_run.json\", \"exists\": true, \"declared_bytes\": 18157, \"actual_bytes\": 18157, \"declared_sha256\": \"23e92281901061a016bbf3401fbb41252c516959e75a061b3d2bc01e612c6d4e\", \"actual_sha256\": \"23e92281901061a016bbf3401fbb41252c516959e75a061b3d2bc01e612c6d4e\", \"ok\": true}, {\"path\": \"docs/evidence/drecover001/recovery_preflight_receipt.json\", \"exists\": true, \"declared_bytes\": 7358, \"actual_bytes\": 7358, \"declared_sha256\": \"d41d1b7f374d52d52038f428da1666ac30a6c41dd924dc60e131751384b97a64\", \"actual_sha256\": \"d41d1b7f374d52d52038f428da1666ac30a6c41dd924dc60e131751384b97a64\", \"ok\": true}, {\"path\": \"docs/evidence/drecover001/synthetic_software_training_trace.json\", \"exists\": true, \"declared_bytes\": 6328, \"actual_bytes\": 6328, \"declared_sha256\": \"8d3be1525e4b2c18459c9f5d1ad21997920c58fbc5c43d932f933e6fed19ca94\", \"actual_sha256\": \"8d3be1525e4b2c18459c9f5d1ad21997920c58fbc5c43d932f933e6fed19ca94\", \"ok\": true}, {\"path\": \"docs/evidence/drecover001/synthetic_software_checkpoint.json\", \"exists\": true, \"declared_bytes\": 9081, \"actual_bytes\": 9081, \"declared_sha256\": \"0211bc97e73418722d60e45c3eb2dd812686cc17cc412f99168b227f0dc7b155\", \"actual_sha256\": \"0211bc97e73418722d60e45c3eb2dd812686cc17cc412f99168b227f0dc7b155\", \"ok\": true}, {\"path\": \"docs/evidence/drecover001/m1_batch_software_rehearsal_receipt.json\", \"exists\": true, \"declared_bytes\": 3468, \"actual_bytes\": 3468, \"declared_sha256\": \"526d337ae54fb6849fc6822f032560b3c9a3a21ba39395a5c18594f1479ab7f5\", \"actual_sha256\": \"526d337ae54fb6849fc6822f032560b3c9a3a21ba39395a5c18594f1479ab7f5\", \"ok\": true}, {\"path\": \"docs/evidence/drecover00"
+ },
+ {
+  "step": 3,
+  "assistant": {
+   "role": "assistant",
+   "content": "Packet evidence verified with 0 mismatches. Now running the four documented commands and inspecting the bundle.",
+   "tool_calls": [
+    {
+     "function": {
+      "arguments": "{\"command_id\": \"assess_readiness\"}",
+      "name": "run_readonly"
+     },
+     "id": "call_00_n5u0yiqvqzgtrlcqpqvcveyu",
+     "type": "function"
+    },
+    {
+     "function": {
+      "arguments": "{\"command_id\": \"verify_r0_provenance\"}",
+      "name": "run_readonly"
+     },
+     "id": "call_01_h9tiinggpyjtxho8ps6en2aq",
+     "type": "function"
+    },
+    {
+     "function": {
+      "arguments": "{\"command_id\": \"verify_m1_batch\"}",
+      "name": "run_readonly"
+     },
+     "id": "call_02_2pxwzq8ripkh6ljijknv8kc9",
+     "type": "function"
+    },
+    {
+     "function": {
+      "arguments": "{\"command_id\": \"packet_check\"}",
+      "name": "run_readonly"
+     },
+     "id": "call_03_s6mfnh62jlg0pmrz42n9y2de",
+     "type": "function"
+    }
+   ],
+   "reasoning_content": "All 19 evidence entries verified: 0 mismatches.\n\nInteresting: the JSON packet has an attestation field: physical_solver_starts_actual 0, internal_solver_cases_actual 0, real_meta_training_executed false, admitted_real_labels 0, backup_restore_established false, network_used false.\n\nNow, note the worktree contains `real_openvsp_geometry_probe.vsp3` (301252 bytes) and `real_openvsp_geometry_probe.json`, and `probe_real_openvsp.py`, and directories `_probe_u6k4gkur`, `native_12d_response`, `native_stl_export`. That suggests a real OpenVSP physical solver probe may have been run — this could contradict the \"physical_solver_starts_actual=0\" claim. Need to inspect. Let me check the real_openvsp_geometry_probe.json and probe_real_openvsp.py, and the timestamps... I can't get timestamps directly. Hmm.\n\nActually the recovery is \"zero-physical\" about the recovery run. Any earlier probe might be from prior work (pre-recovery). Need to determine whether these artifacts were produced during this recovery (which would contradict the attestation) or are pre-existing. Let's read them.\n\nAlso need to run the four documented commands and inspect the bundle. Let me do that."
+  },
+  "finish_reason": "tool_calls"
+ },
+ {
+  "step": 3,
+  "tool": "run_readonly",
+  "args": {
+   "command_id": "assess_readiness"
+  },
+  "result_preview": "{\"command_id\": \"assess_readiness\", \"returncode\": 0, \"stdout\": \"{\\n  \\\"status\\\": \\\"RECOVERY_READINESS_GATES_CLOSED_EXPECTED\\\",\\n  \\\"counts\\\": {\\n    \\\"gates\\\": 8,\\n    \\\"clean\\\": 1,\\n    \\\"closed\\\": 7,\\n    \\\"unknown\\\": 0,\\n    \\\"conflict\\\": 0,\\n    \\\"violations\\\": 0,\\n    \\\"missing\\\": 0,\\n    \\\"blockers\\\": 8\\n  },\\n  \\\"software_run_id\\\": \\\"DRECOVER001-SOFTWARE-20261117T162945Z\\\"\\n}\\n\", \"stderr\": \"\"}"
+ },
+ {
+  "step": 3,
+  "tool": "run_readonly",
+  "args": {
+   "command_id": "verify_r0_provenance"
+  },
+  "result_preview": "{\"command_id\": \"verify_r0_provenance\", \"returncode\": 0, \"stdout\": \"{\\\"status\\\": \\\"R0_PROVENANCE_EXTENSION_EVIDENCE_INTERNALLY_CONSISTENT\\\", \\\"check_count\\\": 328, \\\"failure_count\\\": 0, \\\"extension_sha256\\\": \\\"b553857c5ce986e9fbfd7f6fa6de37d7aca42af9ade61075db6e17e87c524c37\\\"}\\n\", \"stderr\": \"\"}"
+ },
+ {
+  "step": 3,
+  "tool": "run_readonly",
+  "args": {
+   "command_id": "verify_m1_batch"
+  },
+  "result_preview": "{\"command_id\": \"verify_m1_batch\", \"returncode\": 0, \"stdout\": \"{\\n  \\\"status\\\": \\\"M1_BATCH_EVIDENCE_INTERNALLY_CONSISTENT\\\",\\n  \\\"check_count\\\": 20,\\n  \\\"failures\\\": []\\n}\\n\", \"stderr\": \"\"}"
+ },
+ {
+  "step": 3,
+  "tool": "run_readonly",
+  "args": {
+   "command_id": "packet_check"
+  },
+  "result_preview": "{\"command_id\": \"packet_check\", \"returncode\": 0, \"stdout\": \"{\\n  \\\"problems\\\": [],\\n  \\\"evidence_count\\\": 19,\\n  \\\"gate_states\\\": {\\n    \\\"R0_INVENTORY\\\": \\\"CLOSED\\\",\\n    \\\"R1_SOFTWARE\\\": \\\"CLOSED\\\",\\n    \\\"M1_BATCH_CONTROL_PATH\\\": \\\"CLOSED\\\",\\n    \\\"M2_OFFLINE_REHEARSAL\\\": \\\"CLOSED\\\",\\n    \\\"BACKUP_INDEPENDENT_FAILURE_DOMAIN\\\": \\\"CLOSED\\\",\\n    \\\"A5_INDEPENDENT_REVIEW\\\": \\\"CLOSED\\\",\\n    \\\"REAL_ADMISSION\\\": \\\"CLOSED\\\",\\n    \\\"EVIDENCE_MANIFEST\\\": \\\"CLEAN\\\"\\n  }\\n}\\n\", \"stderr\": \"\"}"
+ },
+ {
+  "step": 4,
+  "assistant": {
+   "role": "assistant",
+   "content": "All four commands returned 0. Now the frozen bundle, plus I must investigate apparent \"real OpenVSP\" artifacts that could contradict the zero-physical claim.",
+   "tool_calls": [
+    {
+     "function": {
+      "arguments": "{}",
+      "name": "inspect_bundle"
+     },
+     "id": "call_00_kw6ejvsnggexhihqurzrsxqd",
+     "type": "function"
+    },
+    {
+     "function": {
+      "arguments": "{\"path\": \"docs/evidence/drecover001/real_openvsp_geometry_probe.json\", \"max_chars\": 8000}",
+      "name": "json_summary"
+     },
+     "id": "call_01_v9jdbj7w3cq2wvwr1iseohu3",
+     "type": "function"
+    }
+   ],
+   "reasoning_content": "All four commands pass with returncode 0.\n\nNow inspect the bundle. Also check the real_openvsp probe artifacts to rule out physical activity contradiction."
+  },
+  "finish_reason": "tool_calls"
+ },
+ {
+  "step": 4,
+  "tool": "inspect_bundle",
+  "args": {},
+  "result_preview": "{\"bundle\": \"D:\\\\RCAIDE\\\\.recovery-local-restore\\\\20261118011500Z\\\\recovery_bundle.zip\", \"bundle_bytes\": 58059223, \"bundle_sha256\": \"bfe10ef5538cf17ccb987911389562493f8ce718d6d765fc8966a4950753b99a\", \"zip_entries\": 2220, \"payload_files\": 2219, \"path_set_equal\": true, \"bad_count\": 0, \"bad\": [], \"manifest_keys\": [\"baseline_commit\", \"excluded_from_manifest\", \"files\", \"includes_all_worktree_changes\", \"independent_failure_domain\", \"overlay_paths\", \"real_admission\", \"scope\"], \"overlay_paths_count\": 133, \"baseline_commit\": \"4c51c7df34c9626999ef2e66e5a6c76a2b9c92e2\", \"includes_all_worktree_changes\": true, \"excluded_from_manifest\": [{\"path\": \"docs/evidence/drecover001/local_restore_receipt.json\", \"reason\": \"created after the bundle exists; would make the manifest self-referential\"}], \"independent_failure_domain\": false, \"scope\": \"LOCAL_SOFTWARE_RESTORE_ONLY\", \"real_admission\": false}"
+ },
+ {
+  "step": 4,
+  "tool": "json_summary",
+  "args": {
+   "path": "docs/evidence/drecover001/real_openvsp_geometry_probe.json",
+   "max_chars": 8000
+  },
+  "result_preview": "{\"path\": \"docs\\\\evidence\\\\drecover001\\\\real_openvsp_geometry_probe.json\", \"type\": \"dict\", \"keys\": [\"scope\", \"status\", \"physical_solver_starts_actual\", \"internal_solver_cases_actual\", \"aerodynamic_active_mask\", \"freeze_issued\", \"real_admission\", \"generated_utc\", \"import_recipe\", \"module_path\", \"python\", \"python_version\", \"runtime_root\", \"runtime_binary_sha256\", \"request\", \"request_sha256\", \"config_sha256\", \"surfaces\", \"airfoil_readback\", \"checks\", \"vsp3_sha256\", \"vsp3_bytes\", \"limitations\", \"source_sha256\"], \"scalars\": {\"scope\": \"REAL_OPENVSP_SURFACE_DIAGNOSTIC_ONLY\", \"status\": \"SURFACE_DIAGNOSTIC_FAIL\", \"physical_solver_starts_actual\": 0, \"internal_solver_cases_actual\": 0, \"aerodynamic_active_mask\": \"NOT_VALIDATED\", \"freeze_issued\": false, \"real_admission\": false, \"generated_utc\": \"2026-11-17T08:10:30.116138+00:00\", \"import_recipe\": \"3.55 native package roots + retained DLL handle; legacy worker import has openvsp_config namespace collision\", \"module_path\": \"D:\\\\OpenVSP-3.55.0\\\\OpenVSP-3.55.0-win64\\\\python\\\\openvsp\\\\openvsp\\\\__init__.py\", \"python\": \"D:\\\\Anaconda\\\\envs\\\\RCAIDE\\\\python.exe\", \"python_version\": \"3.11.17 | packaged by Anaconda, Inc. | (main, Oct  1 2026, 20:16:54) [MSC v.1942 64 bit (AMD64)]\", \"runtime_root\": \"D:\\\\OpenVSP-3.55.0\\\\OpenVSP-3.55.0-win64\", \"runtime_binary_sha256\": \"c002e778eed8801cda0aa9753e038cbb93555a37cf0df3cb7fd9b5565814fa37\", \"request_sha256\": \"d98bac5ff9ec350957e7a3f1d2d00b06ca8d5a1f5638955dde4de7115a6f739b\", \"config_sha256\": \"ebca2b7bb2920ce1e3729a3dedd7c361a1c78d34337918a973866bef48f76efc\", \"vsp3_sha256\": \"9538868e9078d89f0db8951fc80643457997f36079a851eabc19c55a42e4d708\", \"vsp3_bytes\": 301252, \"limitations\": \"Sparse native surface samples, not STL/solver mesh or full 12D response; no Sref/AC/mass validation or aerodynamic evidence.\"}, \"checks_type\": \"dict\", \"checks_len\": 7, \"nested_keys\": {\"request\": 3, \"surfaces\": [\"main_wing\", \"vertical_tail\", \"fuselage\"], \"airfoil_readback\": [\"main_wing\", \"vertical_tail\"], \"checks\": [\"tail_height_over_1m\", \"tail_height_exceeds_width\", \"tail_aft_of_wing_origin\", \"tail_above_wing_plane\", \"tail_single_native_surface\", \"wing_span_over_10m\", \"airfoil_thickness_matches_model\"], \"source_sha256\": [\"docs\\\\evidence\\\\drecover001\\\\probe_real_openvsp.py\", \"research\\\\concorde_metaopt\\\\aircraft\\\\openvsp_geometry.py\", \"research\\\\concorde_metaopt\\\\aircraft\\\\geometry_model.py\"]}, \"truncated_json_preview\": \"{\\\"scope\\\": \\\"REAL_OPENVSP_SURFACE_DIAGNOSTIC_ONLY\\\", \\\"status\\\": \\\"SURFACE_DIAGNOSTIC_FAIL\\\", \\\"physical_solver_starts_actual\\\": 0, \\\"internal_solver_cases_actual\\\": 0, \\\"aerodynamic_active_mask\\\": \\\"NOT_VALIDATED\\\", \\\"freeze_issued\\\": false, \\\"real_admission\\\": false, \\\"generated_utc\\\": \\\"2026-11-17T08:10:30.116138+00:00\\\", \\\"import_recipe\\\": \\\"3.55 native package roots + retained DLL handle; legacy worker import has openvsp_config namespace collision\\\", \\\"module_path\\\": \\\"D:\\\\\\\\OpenVSP-3.55.0\\\\\\\\OpenVSP-3.55.0-win64\\\\\\\\python\\\\\\\\openvsp\\\\\\\\openvsp\\\\\\\\__init__.py\\\", \\\"python\\\": \\\"D:\\\\\\\\Anaconda\\\\\\\\envs\\\\\\\\RCAIDE\\\\\\\\python.exe\\\", \\\"python_version\\\": \\\"3.11.17 | packaged by Anaconda, Inc. | (main, Oct  1 2026, 20:16:54) [MSC v.1942 64 bit (AMD64)]\\\", \\\"runtime_root\\\": \\\"D:\\\\\\\\OpenVSP-3.55.0\\\\\\\\OpenVSP-3.55.0-win64\\\", \\\"runtime_binary_sha256\\\": \\\"c002e778eed8801cda0aa9753e038cbb93555a37cf0df3cb7fd9b5565814fa37\\\", \\\"request\\\": [{\\\"kind\\\": \\\"wing\\\", \\\"name\\\": \\\"main_wing\\\", \\\"symmetric\\\": true, \\\"span_m\\\": 25.604638251691824, \\\"location\\\": [14.0, 0.0, -0.8], \\\"rotation\\\": [0.0, 0.0, 0.0], \\\"sections\\\": [{\\\"percent_span_location\\\": 0.0, \\\"chord_m\\\": 29.901818514349216, \\\"leading_edge_x_m\\\": 0.0, \\\"twist_deg\\\": 0.0}, {\\\"percent_span_location\\\": 0.480469, \\\"chord_m\\\": 12.208434070312554, \\\"leading_edge_x_m\\\": 18.914470750635964, \\\"twist_deg\\\": 0.0}, {\\\"percent_span_location\\\": 0.945313, \\\"chord_m\\\": 3.892558930560952, \\\"leading_edge_x_m\\\": 27.60278482830357, \\\"twist_deg\\\": 0.0}, {\\\"percent_span_location\\\": 1.0, \\\"chord_m\\\": 0.9731361054965724, \\\"leading_edge_x_m\\\": 30.36593789154"
+ },
+ {
+  "step": 5,
+  "assistant": {
+   "role": "assistant",
+   "content": "Bundle is internally consistent but declares `independent_failure_domain: false` (consistent with the waiver). Now verifying content claims.",
+   "tool_calls": [
+    {
+     "function": {
+      "arguments": "{\"command_id\": \"git_status\"}",
+      "name": "run_readonly"
+     },
+     "id": "call_00_dknmiytpxbzlxxe9b4bnmgtp",
+     "type": "function"
+    },
+    {
+     "function": {
+      "arguments": "{\"command_id\": \"git_head\"}",
+      "name": "run_readonly"
+     },
+     "id": "call_01_63qb8hjvsnfn3ii87vcs5ip4",
+     "type": "function"
+    },
+    {
+     "function": {
+      "arguments": "{\"pattern\": \"R0_PARTIAL_NOT_AUDITED|RAW_LOST\", \"path\": \"docs/evidence/drecover001\", \"include\": \"*.json\", \"max_matches\": 40}",
+      "name": "grep_text"
+     },
+     "id": "call_02_31m58tf8k4zriwe9jgp16w19",
+     "type": "function"
+    }
+   ],
+   "reasoning_content": "Important finding: there IS a real OpenVSP geometry probe artifact in this tree, generated 2026-11-17T08:10:30Z. It invoked real OpenVSP 3.55.0 native library, produced a .vsp3 file and surface samples. But it declares physical_solver_starts_actual=0, internal_solver_cases_actual=0, real_admission=false, scope=REAL_OPENVSP_SURFACE_DIAGNOSTIC_ONLY. That is discipline: geometry generation is not a solver start. But is it before/after the recovery? The recovery software run_id is DRECOVER001-SOFTWARE-20261117T162945Z, i.e., 16:29:45Z. The probe generated at 08:10:30Z — earlier in the same day, before the recovery run began. So it's pre-existing prior-attempt evidence within the worktree, not a recovery activity. Also the bundle includes all worktree changes (includes_all_worktree_changes=true) so these probe files may be in the bundle. That's a scope note; not a contradiction of the recovery claim since physical_solver_starts_actual=0 refers to solver starts, and probe declares it too.\n\nWait — but does \"physical solver start\" include launching OpenVSP with a native geometry kernel? The probe claims 0 physical_solver_starts_actual while invoking real OpenVSP library. That's arguably a definitional issue: the aerodynamic solver never ran; only geometry generation. The probe explicitly discloses this and its limitations in probe json, and the artifact scope says diagnostic only, real_admission false. Let me check whether probe_real_openvsp.py truly invokes real OpenVSP (does it call a solver?). Also check the \"native_stl_export\" dir and \"_probe_u6k4gkur\". And whether the A5 packet/maml readiness discloses these.\n\nAlso examine what the a1_thickness_repair dir is.\n\nAlso I should check the readiness matrix oddity: assess_readiness says \"blockers: 8\" which is an info disclosure.\n\nNow key verifications remaining:\n1. Confirmed counters zero / no real labels: check preflight receipt, M2 receipt, M1 result, needed_for_next_run.\n2. R0 inventory R0_PARTIAL_NOT_AUDITED and RAW_LOST preserved; no pretending regenerated artifacts are original raw.\n3. R1 changes do not overwrite historical raw data or S1/S2/S3 negative results. Need recovery_change_manifest.json — check for deletions/overwrites of raw data. Also check git status.\n4. REAL_ADMISSION fail-closed.\n5. Destructive preflight not run — verify run_recovery_preflight.py not run: preflight receipt run_id should still match DRECOVER001-SOFTWARE-20261117T162945Z and hash matches (verified). Also check that receipt's generated time.\n6. Bundle: entry count 2220, payload 2219, path_set_equal true, bad_count 0, baseline commit 4c51c7df..., independent_failure_domain false, scope LOCAL_SOFTWARE_RESTORE_ONLY, real_admission false. Good. Overlay paths 133.\n\nLet me check git status/head, and grep for R0_PARTIAL_NOT_AUDITED, RAW_LOST, S1/S2/S3, REAL_ADMISSION."
+  },
+  "finish_reason": "tool_calls"
+ },
+ {
+  "step": 5,
+  "tool": "run_readonly",
+  "args": {
+   "command_id": "git_status"
+  },
+  "result_preview": "{\"command_id\": \"git_status\", \"returncode\": 0, \"stdout\": \" M research/concorde_metaopt/aircraft/openvsp_check.py\\n M research/concorde_metaopt/aircraft/openvsp_geometry.py\\n M research/concorde_metaopt/configs/design_space_12d_lifting_surfaces.yaml\\n M research/concorde_metaopt/dreal001/m1/task_evaluator.py\\n M research/concorde_metaopt/dreal001/meta/m0r_predraft.py\\n M research/concorde_metaopt/dreal001/optimizers/arms.py\\n M research/concorde_metaopt/dreal001/optimizers/evaluators.py\\n M research/concorde_metaopt/dreal001/optimizers/ledger.py\\n M research/concorde_metaopt/dreal001/optimizers/p2a.py\\n M research/concorde_metaopt/dreal001/optimizers/p2a_v2.py\\n M research/concorde_metaopt/dreal001/optimizers/p2a_v2_common.py\\n M research/concorde_metaopt/gpu/bench_gpu.py\\n M research/concorde_metaopt/gpu/env_check.py\\n M research/concorde_metaopt/meta_learning/m5_runner.py\\n M research/concorde_metaopt/meta_learning/m6_study.py\\n M research/concorde_metaopt/reviews/a5_audit/a5_audit.py\\n M research/concorde_metaopt/reviews/a5_audit/test_a5_audit.py\\n M research/concorde_metaopt/tests/test_openvsp_geometry.py\\n?? docs/evidence/drecover001/\\n?? docs/planning/drecover001_next_experiment_plan_20261117.md\\n?? research/concorde_metaopt/dreal001/meta/checkpoint.py\\n?? research/concorde_metaopt/dreal001/meta/m1_batch.py\\n?? research/concorde_metaopt/dreal001/meta/m2_rehearsal.py\\n?? research/concorde_metaopt/dreal001/meta/meta_dataset.py\\n?? research/concorde_metaopt/dreal001/meta/production.py\\n?? research/concorde_metaopt/dreal001/meta/raw_verification.py\\n?? research/concorde_metaopt/dreal001/meta/task_deck.py\\n?? research/concorde_metaopt/dreal001/meta/task_spec.py\\n?? research/concorde_metaopt/dreal001/meta/validation_training.py\\n?? research/concorde_metaopt/dreal001/optimizers/recovery_bo.py\\n?? research/concorde_metaopt/dreal001/optimizers/recovery_population.py\\n?? research/concorde_metaopt/tests/_readiness_fixture/\\n?? research/concorde_metaopt/tests/test_recovery_adaptation_guards.py\\n?? research/concorde_metaopt/tests/test_recovery_bo.py\\n?? research/concorde_metaopt/tests/test_recovery_checkpoint.py\\n?? research/concorde_metaopt/tests/test_recovery_feedback.py\\n?? research/concorde_metaopt/tests/test_recovery_geometry_effects.py\\n?? research/concorde_metaopt/tests/test_recovery_ledger.py\\n?? research/concorde_metaopt/tests/test_recovery_m1_batch.py\\n?? research/concorde_metaopt/tests/test_recovery_m2_rehearsal.py\\n?? research/concorde_metaopt/tests/test_recovery_meta_contracts.py\\n?? research/concorde_metaopt/tests/test_recovery_path_injection.py\\n?? research/concorde_metaopt/tests/test_recovery_population.py\\n?? research/concorde_metaopt/tests/test_recovery_raw_verification.py\\n?? research/concorde_metaopt/tests/test_recovery_readiness.py\\n?? research/concorde_metaopt/tests/test_recovery_task_deck.py\\n\", \"stderr\": \"warning: could not open directory 'probe_ov5x7fni/': Permission denied\\nwarning: could not open directory 'pytest-cache-files-0trbydi5/': Permission denied\\nwarning: could not open directory 'pytest-cache-files-2pkjb9i2/': Permission denied\\nwarning: could not open directory 'pytest-cache-files-40sqju73/': Permission denied\\nwarning: could not open directory 'pytest-cache-files-4np__cer/': Permission denied\\nwarning: could not open directory 'pytest-cache-files-5puhrv8n/': Permission denied\\nwarning: could not open directory 'pytest-cache-files-5r1c59j8/': Permission denied\\nwarning: could not open directory 'pytest-cache-files-6n2qymv4/': Permission denied\\nwarning: could not open directory 'pytest-cache-files-77djfw0e/': Permission denied\\nwarning: could not open directory 'pytest-cache-files-fgr9xlbi/': Permission denied\\nwarning: could not open directory 'pytest-cache-files-figu_nez/': Permission denied\\nwarning: could not open directory 'pytest-cache-files-frredn29/': Permission denied\\nwarning: could not open directory 'pytest-cache-files-gywe660i/': Permission denied\\nwarning: could not open directory 'p"
+ },
+ {
+  "step": 5,
+  "tool": "run_readonly",
+  "args": {
+   "command_id": "git_head"
+  },
+  "result_preview": "{\"command_id\": \"git_head\", \"returncode\": 0, \"stdout\": \"4c51c7df34c9626999ef2e66e5a6c76a2b9c92e2\\nQingYangJin\\n118662522+QingYangJin@users.noreply.github.com\\n2026-11-13T16:16:29+08:00\\n\", \"stderr\": \"\"}"
+ },
+ {
+  "step": 5,
+  "tool": "grep_text",
+  "args": {
+   "pattern": "R0_PARTIAL_NOT_AUDITED|RAW_LOST",
+   "path": "docs/evidence/drecover001",
+   "include": "*.json",
+   "max_matches": 40
+  },
+  "result_preview": "{\"matches\": [{\"path\": \"docs\\\\evidence\\\\drecover001\\\\a5_review_packet.json\", \"line\": 272, \"text\": \"    \\\"Confirm the R0 inventory still says R0_PARTIAL_NOT_AUDITED and keeps RAW_LOST items raw-lost.\\\",\"}, {\"path\": \"docs\\\\evidence\\\\drecover001\\\\needed_for_next_run.json\", \"line\": 74, \"text\": \"      \\\"required\\\": \\\"200 reachable commits / 2829 blob identities / 2760 historical paths audited. Older batch2 ledger reconciles 8 distinct completed events, not 16 starts; 80 artifact claims checked, 56 newline-only mismatches remain non-exact. Extended provenance classification beyond batch2 is now complete offline (docs/evidence/drecover001/r0_provenance_extension.json): 25 budget/ledger sources, 58 raw solver outputs, 62 solver logs and 157 input decks classified; no additional recoverable ra\"}, {\"path\": \"docs\\\\evidence\\\\drecover001\\\\needed_for_next_run.json\", \"line\": 114, \"text\": \"      \\\"required\\\": \\\"Classify provenance of raw/budget sources beyond the reconciled older batch2 and confirm whether any recoverable raw remains. Done offline: no new recoverable raw; F1R2/F2R2 RAW_LOST; historical ledgers are provenance records only.\\\"\"}, {\"path\": \"docs\\\\evidence\\\\drecover001\\\\r0_provenance_extension.json\", \"line\": 8650, \"text\": \"      \\\"classification\\\": \\\"RAW_LOST\\\",\"}, {\"path\": \"docs\\\\evidence\\\\drecover001\\\\r0_provenance_extension.json\", \"line\": 8657, \"text\": \"      \\\"classification\\\": \\\"RAW_LOST\\\",\"}, {\"path\": \"docs\\\\evidence\\\\drecover001\\\\recovery_inventory.json\", \"line\": 4, \"text\": \"  \\\"status\\\": \\\"R0_PARTIAL_NOT_AUDITED\\\",\"}, {\"path\": \"docs\\\\evidence\\\\drecover001\\\\recovery_inventory.json\", \"line\": 119, \"text\": \"      \\\"classification\\\": \\\"RAW_LOST\\\",\"}, {\"path\": \"docs\\\\evidence\\\\drecover001\\\\recovery_inventory.json\", \"line\": 120, \"text\": \"      \\\"evidence_kind\\\": \\\"ORIGINAL_RAW_LOST\\\",\"}, {\"path\": \"docs\\\\evidence\\\\drecover001\\\\recovery_inventory.json\", \"line\": 320, \"text\": \"      \\\"RAW_LOST\\\": 2,\"}, {\"path\": \"docs\\\\evidence\\\\drecover001\\\\recovery_inventory.json\", \"line\": 369, \"text\": \"    \\\"conclusion\\\": \\\"No additional recovered raw was found beyond what earlier audits already recorded; F1R2/F2R2 originals remain RAW_LOST; historical ledgers are provenance records only, not new process witnesses.\\\",\"}, {\"path\": \"docs\\\\evidence\\\\drecover001\\\\recovery_readiness.json\", \"line\": 14, \"text\": \"          \\\"detail\\\": \\\"status='R0_PARTIAL_NOT_AUDITED'\\\"\"}], \"files_scanned\": 35, \"truncated\": false}"
+ },
+ {
+  "step": 6,
+  "assistant": {
+   "role": "assistant",
+   "content": "",
+   "tool_calls": [
+    {
+     "function": {
+      "arguments": "{\"path\": \"docs/evidence/drecover001/recovery_preflight_receipt.json\", \"max_chars\": 6000}",
+      "name": "json_summary"
+     },
+     "id": "call_00_ta23jt8awhpxaypg9ufzgkim",
+     "type": "function"
+    },
+    {
+     "function": {
+      "arguments": "{\"path\": \"docs/evidence/drecover001/m1_batch_software_rehearsal_receipt.json\", \"max_chars\": 6000}",
+      "name": "json_summary"
+     },
+     "id": "call_01_ratv4y05vic8k43xn48k9omh",
+     "type": "function"
+    },
+    {
+     "function": {
+      "arguments": "{\"pattern\": \"REAL_ADMISSION_NOT_IMPLEMENTED|real_admission\", \"path\": \"docs/evidence/drecover001\", \"include\": \"*.json\", \"max_matches\": 40}",
+      "name": "grep_text"
+     },
+     "id": "call_02_b62bbb2jowsrsf6rxqh4rwqk",
+     "type": "function"
+    }
+   ],
+   "reasoning_content": "R0 status R0_PARTIAL_NOT_AUDITED confirmed, RAW_LOST count 2 confirmed, ORIGINAL_RAW_LOST evidence_kind.\n\nNote: git status reveals many untracked pytest cache dirs and tmp dirs at repo root, permission denied warnings. Those are not modified. Also `probe_ov5x7fni/`. Those are leftover temp dirs from tests — info, possibly a minor hygiene finding (untracked temp dirs in the frozen worktree, unreadable). Not critical.\n\nImportant: git status shows only modifications (M) to source files, no deletions, and no modifications to historical raw data paths. Need to verify R1 changes don't overwrite historical raw data or S1/S2/S3 negative results. The modified list is source code in research/concorde_metaopt/. Let me check whether any of those files are historical raw or S1/S2/S3 negative results. Need to check recovery_change_manifest.json for the change list and look for any deletions. Also check git status for deletions (\" D \" none present).\n\nLet me inspect recovery_change_manifest.json summary and check the R0 inventory for the claim about regenerated artifacts not pretending to be original raw. Also check historical_raw_reconciliation.json maybe.\n\nAlso I should verify the destructive preflight wasn't run: the preflight receipt hash matches and its run_id matches 20261117T162945Z. Let me read recovery_preflight_receipt.json for details, e.g., generated_utc and counters.\n\nAlso check M2 receipt for determinism and zero counters, M1 result for placeholder authorization. And REAL_ADMISSION fail-closed: grep REAL_ADMISSION_NOT_IMPLEMENTED.\n\nLet's do multiple calls."
+  },
+  "finish_reason": "tool_calls"
+ },
+ {
+  "step": 6,
+  "tool": "json_summary",
+  "args": {
+   "path": "docs/evidence/drecover001/recovery_preflight_receipt.json",
+   "max_chars": 6000
+  },
+  "result_preview": "{\"path\": \"docs\\\\evidence\\\\drecover001\\\\recovery_preflight_receipt.json\", \"type\": \"dict\", \"keys\": [\"schema\", \"run_id\", \"origin\", \"python\", \"version\", \"tests_run\", \"failures\", \"errors\", \"skipped\", \"torch_available\", \"torch_error\", \"training_status\", \"physical_solver_starts_actual_this_recovery\", \"internal_solver_cases_actual_this_recovery\", \"real_meta_training_executed\", \"admitted_real_labels\", \"a5_independent_review\", \"physical_go\", \"backup_restore\", \"synthetic_training_trace_sha256\", \"training_steps_per_model\", \"parameter_l2_change_from_initial\", \"synthetic_checkpoint_sha256\", \"local_fixture_checkpoint_roundtrip\", \"source_sha256\", \"software_tests_status\"], \"scalars\": {\"schema\": \"drecover001.recovery_preflight.v1\", \"run_id\": \"DRECOVER001-SOFTWARE-20261117T162945Z\", \"origin\": \"REGENERATED_FROM_SPEC\", \"python\": \"D:\\\\Anaconda\\\\envs\\\\RCAIDE\\\\python.exe\", \"version\": \"3.11.17\", \"tests_run\": 229, \"failures\": 0, \"errors\": 0, \"skipped\": 0, \"torch_available\": true, \"torch_error\": null, \"training_status\": \"SOFTWARE_FIXTURE_TRAINING_ONLY\", \"physical_solver_starts_actual_this_recovery\": 0, \"internal_solver_cases_actual_this_recovery\": 0, \"real_meta_training_executed\": false, \"admitted_real_labels\": 0, \"a5_independent_review\": \"NOT_PERFORMED\", \"physical_go\": \"NOT_ISSUED\", \"backup_restore\": \"NOT_ESTABLISHED\", \"synthetic_training_trace_sha256\": \"8d3be1525e4b2c18459c9f5d1ad21997920c58fbc5c43d932f933e6fed19ca94\", \"training_steps_per_model\": 20, \"synthetic_checkpoint_sha256\": \"0211bc97e73418722d60e45c3eb2dd812686cc17cc412f99168b227f0dc7b155\", \"local_fixture_checkpoint_roundtrip\": \"PASS_NOT_REMOTE_BACKUP\", \"software_tests_status\": \"PASS\"}, \"nested_keys\": {\"parameter_l2_change_from_initial\": [\"fomaml\", \"pretrain\"], \"source_sha256\": [\"research\\\\concorde_metaopt\\\\dreal001\\\\meta\\\\task_spec.py\", \"research\\\\concorde_metaopt\\\\dreal001\\\\meta\\\\meta_dataset.py\", \"research\\\\concorde_metaopt\\\\dreal001\\\\meta\\\\production.py\", \"research\\\\concorde_metaopt\\\\meta_learning\\\\maml.py\", \"research\\\\concorde_metaopt\\\\meta_learning\\\\adaptation.py\", \"research\\\\concorde_metaopt\\\\aircraft\\\\design_space.py\", \"research\\\\concorde_metaopt\\\\tests\\\\test_recovery_meta_contracts.py\", \"research\\\\concorde_metaopt\\\\aircraft\\\\openvsp_geometry.py\", \"research\\\\concorde_metaopt\\\\aircraft\\\\openvsp_check.py\", \"research\\\\concorde_metaopt\\\\tests\\\\test_openvsp_geometry.py\", \"research\\\\concorde_metaopt\\\\dreal001\\\\optimizers\\\\arms.py\", \"research\\\\concorde_metaopt\\\\tests\\\\test_recovery_feedback.py\", \"research\\\\concorde_metaopt\\\\dreal001\\\\optimizers\\\\recovery_bo.py\", \"research\\\\concorde_metaopt\\\\tests\\\\test_recovery_bo.py\", \"research\\\\concorde_metaopt\\\\configs\\\\design_space_12d_lifting_surfaces.yaml\", \"research\\\\concorde_metaopt\\\\dreal001\\\\optimizers\\\\recovery_population.py\", \"research\\\\concorde_metaopt\\\\tests\\\\test_recovery_population.py\", \"research\\\\concorde_metaopt\\\\dreal001\\\\meta\\\\raw_verification.py\", \"research\\\\concorde_metaopt\\\\dreal001\\\\geometry\\\\polar_parser.py\", \"research\\\\concorde_metaopt\\\\tests\\\\test_recovery_raw_verification.py\"]}, \"truncated_json_preview\": \"{\\\"schema\\\": \\\"drecover001.recovery_preflight.v1\\\", \\\"run_id\\\": \\\"DRECOVER001-SOFTWARE-20261117T162945Z\\\", \\\"origin\\\": \\\"REGENERATED_FROM_SPEC\\\", \\\"python\\\": \\\"D:\\\\\\\\Anaconda\\\\\\\\envs\\\\\\\\RCAIDE\\\\\\\\python.exe\\\", \\\"version\\\": \\\"3.11.17\\\", \\\"tests_run\\\": 229, \\\"failures\\\": 0, \\\"errors\\\": 0, \\\"skipped\\\": 0, \\\"torch_available\\\": true, \\\"torch_error\\\": null, \\\"training_status\\\": \\\"SOFTWARE_FIXTURE_TRAINING_ONLY\\\", \\\"physical_solver_starts_actual_this_recovery\\\": 0, \\\"internal_solver_cases_actual_this_recovery\\\": 0, \\\"real_meta_training_executed\\\": false, \\\"admitted_real_labels\\\": 0, \\\"a5_independent_review\\\": \\\"NOT_PERFORMED\\\", \\\"physical_go\\\": \\\"NOT_ISSUED\\\", \\\"backup_restore\\\": \\\"NOT_ESTABLISHED\\\", \\\"synthetic_training_trace_sha256\\\": \\\"8d3be1525e4b2c18459c9f5d1ad21997920c58fbc5c43d932f933e6fed19ca94\\\", \\\"training_steps_per_model\\\": 20, \\\"parameter_l2_change_from_initial\\\": {\\\"fomaml\\\": 0.029548995371190743, \\\"pretrain\\\": 0.036880830910"
+ },
+ {
+  "step": 6,
+  "tool": "json_summary",
+  "args": {
+   "path": "docs/evidence/drecover001/m1_batch_software_rehearsal_receipt.json",
+   "max_chars": 6000
+  },
+  "result_preview": "{\"path\": \"docs\\\\evidence\\\\drecover001\\\\m1_batch_software_rehearsal_receipt.json\", \"type\": \"dict\", \"keys\": [\"a5_independent_review\", \"accounting\", \"admitted_real_labels\", \"authorization_kind\", \"authorization_sha256\", \"batch_id\", \"code_sha256\", \"controls\", \"design_family\", \"note\", \"physical_go\", \"plan_sha256\", \"real_admission\", \"result_file\", \"result_sha256\", \"result_status\", \"run_id\", \"schema\", \"scope\", \"solver_executable_used\", \"task_family\"], \"scalars\": {\"a5_independent_review\": \"NOT_PERFORMED\", \"admitted_real_labels\": 0, \"authorization_kind\": \"STRUCTURAL_SOFTWARE_FIXTURE_NOT_A_REAL_GO\", \"authorization_sha256\": \"c23ff7022c2ecd903d0b7b15afa5a2103e8c4eebd440111a715a8322ceb36a83\", \"batch_id\": \"FIXTURE-BATCH-0001\", \"code_sha256\": \"526d4edfda4962c69dbaa335921c5985a93aa362ee2a11ad2768910473d69e76\", \"note\": \"Control-path rehearsal only. The evaluator is a software fixture, so these numbers are not solver evidence and grant no budget.\", \"physical_go\": \"NOT_ISSUED\", \"plan_sha256\": \"67a5d75c7fffacbf9b88e5eb9e35d55a58f66a4208698238f765c4b01d1fda1b\", \"real_admission\": false, \"result_sha256\": \"6676695c5e230b1ed9258cb1e25c0289c126008826551e0b8d4855e63114833a\", \"result_status\": \"COMPLETE\", \"run_id\": \"DRECOVER001-M1-SOFTWARE-20261118T000000Z\", \"schema\": \"drecover001.m1_batch_software_rehearsal.v1\", \"scope\": \"OFFLINE_BATCH_SKELETON_ONLY\", \"solver_executable_used\": null}, \"nested_keys\": {\"accounting\": [\"cached_reads\", \"charged_planned_reserved\", \"design_evaluations\", \"failed_evaluations\", \"internal_solver_cases_actual\", \"physical_solver_starts_actual\", \"planned_reserved\", \"retries_used\", \"simulated_solver_starts_actual\", \"starts_issued\"], \"controls\": [\"a5_verdict\", \"max_batch_wall_s\", \"max_starts\", \"new_r2_gate\", \"parallel\", \"physical_go\", \"retries\", \"solver_timeout_s\"], \"design_family\": 3, \"result_file\": [\"bytes\", \"path\", \"sha256\"], \"task_family\": 6}, \"truncated_json_preview\": \"{\\\"a5_independent_review\\\": \\\"NOT_PERFORMED\\\", \\\"accounting\\\": {\\\"cached_reads\\\": 0, \\\"charged_planned_reserved\\\": 18, \\\"design_evaluations\\\": 18, \\\"failed_evaluations\\\": 0, \\\"internal_solver_cases_actual\\\": 126, \\\"physical_solver_starts_actual\\\": 0, \\\"planned_reserved\\\": 18, \\\"retries_used\\\": 0, \\\"simulated_solver_starts_actual\\\": 18, \\\"starts_issued\\\": 18}, \\\"admitted_real_labels\\\": 0, \\\"authorization_kind\\\": \\\"STRUCTURAL_SOFTWARE_FIXTURE_NOT_A_REAL_GO\\\", \\\"authorization_sha256\\\": \\\"c23ff7022c2ecd903d0b7b15afa5a2103e8c4eebd440111a715a8322ceb36a83\\\", \\\"batch_id\\\": \\\"FIXTURE-BATCH-0001\\\", \\\"code_sha256\\\": \\\"526d4edfda4962c69dbaa335921c5985a93aa362ee2a11ad2768910473d69e76\\\", \\\"controls\\\": {\\\"a5_verdict\\\": \\\"R2_FIXED_LOOP_GATE_APPROVED_WITH_DISCLOSURE\\\", \\\"max_batch_wall_s\\\": 7200, \\\"max_starts\\\": 24, \\\"new_r2_gate\\\": true, \\\"parallel\\\": 1, \\\"physical_go\\\": true, \\\"retries\\\": 1, \\\"solver_timeout_s\\\": 600}, \\\"design_family\\\": [{\\\"design_hash\\\": \\\"8bd5a6c7c8311938\\\", \\\"design_id\\\": \\\"B0-01\\\"}, {\\\"design_hash\\\": \\\"6653517b11d6f891\\\", \\\"design_id\\\": \\\"B1-01\\\"}, {\\\"design_hash\\\": \\\"bc52a54ecefaac4c\\\", \\\"design_id\\\": \\\"C5\\\"}], \\\"note\\\": \\\"Control-path rehearsal only. The evaluator is a software fixture, so these numbers are not solver evidence and grant no budget.\\\", \\\"physical_go\\\": \\\"NOT_ISSUED\\\", \\\"plan_sha256\\\": \\\"67a5d75c7fffacbf9b88e5eb9e35d55a58f66a4208698238f765c4b01d1fda1b\\\", \\\"real_admission\\\": false, \\\"result_file\\\": {\\\"bytes\\\": 12411, \\\"path\\\": \\\"D:\\\\\\\\RCAIDE\\\\\\\\.worktrees\\\\\\\\drecover001-20261117\\\\\\\\docs\\\\\\\\evidence\\\\\\\\drecover001\\\\\\\\m1_batch_software_result.json\\\", \\\"sha256\\\": \\\"63ee7a6a868f5f1b9abda6a55480e1e72068a6ec4ee9f7fdc075a3e4df96fac8\\\"}, \\\"result_sha256\\\": \\\"6676695c5e230b1ed9258cb1e25c0289c126008826551e0b8d4855e63114833a\\\", \\\"result_status\\\": \\\"COMPLETE\\\", \\\"run_id\\\": \\\"DRECOVER001-M1-SOFTWARE-20261118T000000Z\\\", \\\"schema\\\": \\\"drecover001.m1_batch_software_rehearsal.v1\\\", \\\"scope\\\": \\\"OFFLINE_BATCH_SKELETON_ONLY\\\", \\\"solver_executable_used\\\": null, \\\"task_family\\\": [{\\\"cl_target\\\": 0.17, \\\"mach\\\": 2.02, \\\"split\\\": \\\"meta_train\\\", \\\"task_fingerprint\\\": \\\""
+ },
+ {
+  "step": 6,
+  "tool": "grep_text",
+  "args": {
+   "pattern": "REAL_ADMISSION_NOT_IMPLEMENTED|real_admission",
+   "path": "docs/evidence/drecover001",
+   "include": "*.json",
+   "max_matches": 40
+  },
+  "result_preview": "{\"matches\": [{\"path\": \"docs\\\\evidence\\\\drecover001\\\\a5_review_packet.json\", \"line\": 72, \"text\": \"      \\\"claim\\\": \\\"Real admission remains fail-closed with REAL_ADMISSION_NOT_IMPLEMENTED\\\",\"}, {\"path\": \"docs\\\\evidence\\\\drecover001\\\\geometry_effect_diagnostic.json\", \"line\": 6, \"text\": \"  \\\"real_admission\\\": false,\"}, {\"path\": \"docs\\\\evidence\\\\drecover001\\\\m1_batch_software_rehearsal_receipt.json\", \"line\": 47, \"text\": \"  \\\"real_admission\\\": false,\"}, {\"path\": \"docs\\\\evidence\\\\drecover001\\\\m2_offline_rehearsal_checkpoint.json\", \"line\": 1, \"text\": \"{\\\"code_sha256\\\":\\\"5d642680af3dab9b8f3238c5febe95b7ce37544bf6b7231b2b12b0420d904bfb\\\",\\\"conditional_config\\\":{\\\"backend\\\":\\\"torch\\\",\\\"first_order\\\":true,\\\"head_only\\\":false,\\\"hidden_sizes\\\":[32,32],\\\"inner_lr\\\":0.01,\\\"inner_steps\\\":5,\\\"input_dim\\\":16,\\\"outer_lr\\\":0.001,\\\"output_dim\\\":1,\\\"seed\\\":42,\\\"tasks_per_batch\\\":3},\\\"config\\\":{\\\"backend\\\":\\\"torch\\\",\\\"first_order\\\":true,\\\"head_only\\\":false,\\\"hidden_sizes\\\":[32,32],\\\"inner_lr\\\":0.01,\\\"inner_steps\\\":5,\\\"input_dim\\\":12,\\\"outer_lr\\\":0.001,\\\"output_dim\\\":1,\\\"seed\\\":42,\\\"tasks_per_batch\\\":3},\\\"dataset_m\"}, {\"path\": \"docs\\\\evidence\\\\drecover001\\\\m2_offline_rehearsal_receipt.json\", \"line\": 409, \"text\": \"  \\\"real_admission\\\": false,\"}, {\"path\": \"docs\\\\evidence\\\\drecover001\\\\needed_for_next_run.json\", \"line\": 79, \"text\": \"      \\\"required\\\": \\\"TaskSpec numeric identities normalized (mach/altitude int-vs-float and signed zero cannot create distinct physics). New TaskSpec/MetaDataset/MetaTrainer/AdaptationRunner/WarmStartSampler recovery contracts added; 229 software/mock/math/backend tests pass (run_id DRECOVER001-SOFTWARE-20261117T162945Z), none skipped; CPU float64 FOMAML and pooled pretraining each executed20steps on synthetic fixtures, parameters changed and local checkpoint roundtrip passed. Training remains SOF\"}, {\"path\": \"docs\\\\evidence\\\\drecover001\\\\needed_for_next_run.json\", \"line\": 104, \"text\": \"      \\\"required\\\": \\\"Blocked on R0 A5 review, RESTORED_CODE_BASELINE_PASS, BACKUP_RESTORE_PASS (independent failure domain), REAL_ADMISSION_NOT_IMPLEMENTED, A1 freeze reissue, new R2 gate plus Lead batch GO, and a remotely verifiable commit (no git identity / github connection).\\\"\"}, {\"path\": \"docs\\\\evidence\\\\drecover001\\\\real_openvsp_geometry_probe.json\", \"line\": 8, \"text\": \"  \\\"real_admission\\\": false,\"}, {\"path\": \"docs\\\\evidence\\\\drecover001\\\\recovery_readiness.json\", \"line\": 365, \"text\": \"          \\\"name\\\": \\\"require_real_admission_fails_closed\\\",\"}, {\"path\": \"docs\\\\evidence\\\\drecover001\\\\recovery_readiness.json\", \"line\": 367, \"text\": \"          \\\"detail\\\": \\\"raise ContractError(REAL_ADMISSION_NOT_IMPLEMENTED) found=True\\\"\"}, {\"path\": \"docs\\\\evidence\\\\drecover001\\\\synthetic_software_checkpoint.json\", \"line\": 1, \"text\": \"{\\\"config\\\":{\\\"backend\\\":\\\"torch\\\",\\\"first_order\\\":true,\\\"head_only\\\":false,\\\"hidden_sizes\\\":[8,8],\\\"inner_lr\\\":0.01,\\\"inner_steps\\\":2,\\\"input_dim\\\":12,\\\"outer_lr\\\":0.001,\\\"output_dim\\\":1,\\\"seed\\\":17,\\\"tasks_per_batch\\\":2},\\\"models\\\":{\\\"fomaml\\\":{\\\"names\\\":[\\\"layer_0_weight\\\",\\\"layer_0_bias\\\",\\\"layer_1_weight\\\",\\\"layer_1_bias\\\",\\\"layer_2_weight\\\",\\\"layer_2_bias\\\"],\\\"tensors\\\":[[[0.3782302610091572,-0.371063748301803,0.06285387976775487,-0.15048359052584714,-0.3121801024507197,-0.12486855870616659,-0.0824664529062209,0.12393877607808343],[0.\"}, {\"path\": \"docs\\\\evidence\\\\drecover001\\\\a1_thickness_repair\\\\real_openvsp_geometry_probe.json\", \"line\": 8, \"text\": \"  \\\"real_admission\\\": false,\"}, {\"path\": \"docs\\\\evidence\\\\drecover001\\\\native_12d_response\\\\native_response_receipt.json\", \"line\": 8, \"text\": \"  \\\"real_admission\\\": false,\"}, {\"path\": \"docs\\\\evidence\\\\drecover001\\\\native_stl_export\\\\stl_diagnostic_receipt.json\", \"line\": 7, \"text\": \"  \\\"real_admission\\\": false,\"}], \"files_scanned\": 35, \"truncated\": false}"
+ },
+ {
+  "step": 7,
+  "assistant": {
+   "role": "assistant",
+   "content": "Two potential contradictions surfaced: the M1 receipt records `internal_solver_cases_actual: 126` and `controls.physical_go: true`, while the packet attests 0 and NOT_ISSUED. I must resolve the semantics from source.",
+   "tool_calls": [
+    {
+     "function": {
+      "arguments": "{\"pattern\": \"internal_solver_cases_actual|physical_go|a5_verdict\", \"path\": \"research/concorde_metaopt/dreal001/meta/m1_batch.py\", \"max_matches\": 60}",
+      "name": "grep_text"
+     },
+     "id": "call_00_pd2oyakjty6xzsfd7ygsmshk",
+     "type": "function"
+    },
+    {
+     "function": {
+      "arguments": "{\"path\": \"docs/evidence/drecover001/m1_batch_software_result.json\", \"max_chars\": 5000}",
+      "name": "json_summary"
+     },
+     "id": "call_01_m9xdnexo1fepocjz50yp59t9",
+     "type": "function"
+    }
+   ],
+   "reasoning_content": "Key discrepancy: M1 rehearsal receipt's `accounting.internal_solver_cases_actual: 126` — NOT zero. Also simulated_solver_starts_actual: 18. The packet's attestation says internal_solver_cases_actual: 0. Hmm.\n\nIs this a contradiction? Need to understand semantics. Let's look at what \"internal_solver_cases_actual\" means in the M1 fixture: the evaluator is a software fixture. Let me inspect the M1 result json and the m1_batch.py code to see how internal_solver_cases_actual is defined. Possibly internal_solver_cases counts evaluations inside the batch accounting (18 designs × 7 cases = 126?) as \"internal\" meaning inside the fixture evaluator — but these were simulated, no solver. However the packet attestation states internal_solver_cases_actual = 0 at the recovery level. The preflight receipt says internal_solver_cases_actual_this_recovery: 0. But M1 receipt says 126 in accounting.\n\nThis is a real discrepancy that needs investigation: the global attestation claims internal_solver_cases_actual=0, but the M1 evidence file records internal_solver_cases_actual=126. Either the accounting field counts something else (e.g., internal solver cases that were *simulated* within the batch control path), or the attestation is inconsistent.\n\nNote the controls also show \"physical_go\": true and \"a5_verdict\": \"R2_FIXED_LOOP_GATE_APPROVED_WITH_DISCLOSURE\" inside the rehearsal receipt's controls — but top-level physical_go: \"NOT_ISSUED\" and authorization_kind: STRUCTURAL_SOFTWARE_FIXTURE_NOT_A_REAL_GO. The controls.a5_verdict being \"R2_FIXED_LOOP_GATE_APPROVED_WITH_DISCLOSURE\" is concerning — a placeholder authorization carrying a string that looks like an approval. Requirement 7 says no placeholder authorization presented as a real GO. The controls nested field has physical_go: true and a5_verdict: \"R2_FIXED_LOOP_GATE_APPROVED_WITH_DISCLOSURE\". That is inside \"controls\" which may be a per-run config/plan structure describing what the plan's controls were. It is labeled a structural fixture. But an auditor could read \"a5_verdict: R2_FIXED_LOOP_GATE_APPROVED_WITH_DISCLOSURE\" and \"physical_go: true\" as an authorization. This is a disclosure hazard — potentially major, but the top-level explicitly says authorization_kind=STRUCTURAL_SOFTWARE_FIXTURE_NOT_A_REAL_GO, physical_go=NOT_ISSUED, solver_executable_used=null, real_admission=false, and the M1 result is fixture.\n\nLet me inspect the m1_batch_software_result.json and the source m1_batch.py to determine the semantics of internal_solver_cases_actual and whether the controls block is the fixture plan's control spec (which is expected to describe gate requirements). Let me grep the code.\n\nAlso check M2 receipt for counters and determinism."
+  },
+  "finish_reason": "tool_calls"
+ },
+ {
+  "step": 7,
+  "tool": "grep_text",
+  "args": {
+   "pattern": "internal_solver_cases_actual|physical_go|a5_verdict",
+   "path": "research/concorde_metaopt/dreal001/meta/m1_batch.py",
+   "max_matches": 60
+  },
+  "result_preview": "{\"matches\": [], \"files_scanned\": 0, \"truncated\": false}"
+ },
+ {
+  "step": 7,
+  "tool": "json_summary",
+  "args": {
+   "path": "docs/evidence/drecover001/m1_batch_software_result.json",
+   "max_chars": 5000
+  },
+  "result_preview": "{\"path\": \"docs\\\\evidence\\\\drecover001\\\\m1_batch_software_result.json\", \"type\": \"dict\", \"keys\": [\"accounting\", \"authorization_id\", \"authorization_sha256\", \"batch_id\", \"controls\", \"evaluator\", \"evidence_grade\", \"item_count\", \"items\", \"plan_sha256\", \"result_sha256\", \"run_id\", \"schema\", \"scope\", \"status\", \"stop_reason\", \"wall_s\"], \"scalars\": {\"authorization_id\": \"FIXTURE-AUTH-0001\", \"authorization_sha256\": \"c23ff7022c2ecd903d0b7b15afa5a2103e8c4eebd440111a715a8322ceb36a83\", \"batch_id\": \"FIXTURE-BATCH-0001\", \"evaluator\": \"FixtureEvaluator\", \"evidence_grade\": \"SOFTWARE_CONTROL_PATH_ONLY\", \"item_count\": 18, \"plan_sha256\": \"67a5d75c7fffacbf9b88e5eb9e35d55a58f66a4208698238f765c4b01d1fda1b\", \"result_sha256\": \"6676695c5e230b1ed9258cb1e25c0289c126008826551e0b8d4855e63114833a\", \"run_id\": \"DRECOVER001-M1-SOFTWARE-20261118T000000Z\", \"schema\": \"drecover001.m1_batch_result.v1\", \"scope\": \"OFFLINE_BATCH_SKELETON_ONLY\", \"status\": \"COMPLETE\", \"stop_reason\": null, \"wall_s\": 0.0}, \"nested_keys\": {\"accounting\": [\"cached_reads\", \"charged_planned_reserved\", \"design_evaluations\", \"failed_evaluations\", \"internal_solver_cases_actual\", \"physical_solver_starts_actual\", \"planned_reserved\", \"retries_used\", \"simulated_solver_starts_actual\", \"starts_issued\"], \"controls\": [\"a5_verdict\", \"max_batch_wall_s\", \"max_starts\", \"new_r2_gate\", \"parallel\", \"physical_go\", \"retries\", \"solver_timeout_s\"], \"items\": 18}, \"truncated_json_preview\": \"{\\\"accounting\\\": {\\\"cached_reads\\\": 0, \\\"charged_planned_reserved\\\": 18, \\\"design_evaluations\\\": 18, \\\"failed_evaluations\\\": 0, \\\"internal_solver_cases_actual\\\": 126, \\\"physical_solver_starts_actual\\\": 0, \\\"planned_reserved\\\": 18, \\\"retries_used\\\": 0, \\\"simulated_solver_starts_actual\\\": 18, \\\"starts_issued\\\": 18}, \\\"authorization_id\\\": \\\"FIXTURE-AUTH-0001\\\", \\\"authorization_sha256\\\": \\\"c23ff7022c2ecd903d0b7b15afa5a2103e8c4eebd440111a715a8322ceb36a83\\\", \\\"batch_id\\\": \\\"FIXTURE-BATCH-0001\\\", \\\"controls\\\": {\\\"a5_verdict\\\": \\\"R2_FIXED_LOOP_GATE_APPROVED_WITH_DISCLOSURE\\\", \\\"max_batch_wall_s\\\": 7200, \\\"max_starts\\\": 24, \\\"new_r2_gate\\\": true, \\\"parallel\\\": 1, \\\"physical_go\\\": true, \\\"retries\\\": 1, \\\"solver_timeout_s\\\": 600}, \\\"evaluator\\\": \\\"FixtureEvaluator\\\", \\\"evidence_grade\\\": \\\"SOFTWARE_CONTROL_PATH_ONLY\\\", \\\"item_count\\\": 18, \\\"items\\\": [{\\\"attempt\\\": 0, \\\"cached\\\": false, \\\"cdi\\\": 0.0012, \\\"cl\\\": 0.17, \\\"design_hash\\\": \\\"8bd5a6c7c8311938\\\", \\\"design_id\\\": \\\"B0-01\\\", \\\"detail\\\": \\\"SOFTWARE_FIXTURE_RESPONSE\\\", \\\"di_n\\\": 6776.0, \\\"failure_kind\\\": null, \\\"index\\\": 0, \\\"internal_solver_cases\\\": 7, \\\"objective\\\": 6776.0, \\\"raw_path\\\": \\\"SOFTWARE_FIXTURE/no_solver_raw.json\\\", \\\"raw_sha256\\\": \\\"b0f76c5938c964136338af76778bfe6559a88140ec6fd3c7233f101168fde4a3\\\", \\\"reservation_id\\\": 1, \\\"solver_started\\\": true, \\\"status\\\": \\\"ok\\\", \\\"task_id\\\": \\\"T18K_M202_CL017\\\", \\\"wall_s\\\": 0.02}, {\\\"attempt\\\": 0, \\\"cached\\\": false, \\\"cdi\\\": 0.0012, \\\"cl\\\": 0.17, \\\"design_hash\\\": \\\"6653517b11d6f891\\\", \\\"design_id\\\": \\\"B1-01\\\", \\\"detail\\\": \\\"SOFTWARE_FIXTURE_RESPONSE\\\", \\\"di_n\\\": 6789.0, \\\"failure_kind\\\": null, \\\"index\\\": 1, \\\"internal_solver_cases\\\": 7, \\\"objective\\\": 6789.0, \\\"raw_path\\\": \\\"SOFTWARE_FIXTURE/no_solver_raw.json\\\", \\\"raw_sha256\\\": \\\"5e501962b335a4b9e9d35b2355443a19ff2c54d62af12626568947921a32a6c6\\\", \\\"reservation_id\\\": 2, \\\"solver_started\\\": true, \\\"status\\\": \\\"ok\\\", \\\"task_id\\\": \\\"T18K_M202_CL017\\\", \\\"wall_s\\\": 0.02}, {\\\"attempt\\\": 0, \\\"cached\\\": false, \\\"cdi\\\": 0.0012, \\\"cl\\\": 0.17, \\\"design_hash\\\": \\\"bc52a54ecefaac4c\\\", \\\"design_id\\\": \\\"C5\\\", \\\"detail\\\": \\\"SOFTWARE_FIXTURE_RESPONSE\\\", \\\"di_n\\\": 6629.0, \\\"failure_kind\\\": null, \\\"index\\\": 2, \\\"internal_solver_cases\\\": 7, \\\"objective\\\": 6629.0, \\\"raw_path\\\": \\\"SOFTWARE_FIXTURE/no_solver_raw.json\\\", \\\"raw_sha256\\\": \\\"2fab3db62e703d87a3ec165298e1b858c058fee53e5b795630b74bdd627f3e62\\\", \\\"reservation_id\\\": 3, \\\"solver_started\\\": true, \\\"status\\\": \\\"ok\\\", \\\"task_id\\\": \\\"T18K_M202_CL017\\\", \\\"wall_s\\\": 0.02}, {\\\"attempt\\\": 0, \\\"cached\\\": false, \\\"cdi\\\": 0.0012, \\\"cl\\\": 0.17, \\\"design_hash\\\": \\\"8bd5a"
+ },
+ {
+  "step": 8,
+  "assistant": {
+   "role": "assistant",
+   "content": "",
+   "tool_calls": [
+    {
+     "function": {
+      "arguments": "{\"pattern\": \"internal_solver_cases_actual|physical_go|STRUCTURAL\", \"path\": \"research/concorde_metaopt/dreal001/meta\", \"include\": \"*.py\", \"max_matches\": 60}",
+      "name": "grep_text"
+     },
+     "id": "call_00_iv4wqqzpqib36tjcxw3uid0x",
+     "type": "function"
+    },
+    {
+     "function": {
+      "arguments": "{\"pattern\": \"internal_solver_cases_actual|physical_solver_starts_actual|simulated\", \"path\": \"docs/evidence/drecover001/assess_recovery_readiness.py\", \"max_matches\": 50}",
+      "name": "grep_text"
+     },
+     "id": "call_01_qcubjtxv1668m17nw4q52zmq",
+     "type": "function"
+    }
+   ],
+   "reasoning_content": "The M1 result items have `solver_started: true` and `internal_solver_cases: 7`, summing to 126. The evaluator is FixtureEvaluator with evidence_grade SOFTWARE_CONTROL_PATH_ONLY, raw_path \"SOFTWARE_FIXTURE/no_solver_raw.json\". So \"solver_started: true\" is a flag recorded by the fixture to exercise the control path; the underlying raw is \"no_solver_raw.json\". So the accounting field internal_solver_cases_actual=126 is the control-path bookkeeping of the fixture, not real solver cases. The packet attestation internal_solver_cases_actual=0 refers to real internal solver cases in the recovery. This is a semantic collision: same field name used for (a) real internal solver cases = 0, and (b) simulated fixture cases = 126.\n\nIs that a contradiction that invalidates the recovery claim? The physical claim is \"zero physical\". The claim \"internal_solver_cases_actual=0\" is at the top level and is about actual cases. The M1 receipt explicitly says simulated_solver_starts_actual=18, physical_solver_starts_actual=0, evaluator FixtureEvaluator, raw path SOFTWARE_FIXTURE/no_solver_raw.json, evidence_grade SOFTWARE_CONTROL_PATH_ONLY. So it's disclosed. But the name collision `internal_solver_cases_actual: 126` inside a file named \"evidence\" is a disclosure/naming hazard: a reader grepping `internal_solver_cases_actual` would find 126 and could be misled. Given the task instruction \"critical only for contradiction that invalidates the recovery claim\", this is not invalidating because top-level attestation, preflight, packet, M1 receipt all disclose fixture-only, and the field is scoped to the fixture accounting. But it IS a genuine ambiguity — I'd call it major? Let's think about severity. The requirement says: \"Confirm physical/internal counters are zero and no real labels/training were admitted.\" I need to check the definition: does the packet/checklist interpret internal_solver_cases_actual as the batch accounting field? Let me check assess_recovery_readiness.py for how it counts, and m1_batch source, to see whether the code explicitly labels this as simulated.\n\nAlso: `controls.physical_go: true` and `a5_verdict: R2_FIXED_LOOP_GATE_APPROVED_WITH_DISCLOSURE` in both M1 receipt and result. This is the placeholder authorization content. Requirement 7: \"no placeholder authorization is presented as a real GO.\" Top-level of the receipt says authorization_kind STRUCTURAL_SOFTWARE_FIXTURE_NOT_A_REAL_GO, physical_go NOT_ISSUED. But the embedded authorization document itself claims a5_verdict \"R2_FIXED_LOOP_GATE_APPROVED_WITH_DISCLOSURE\" and physical_go true. That's a pre-existing A5 verdict string from the earlier (pre-recovery) A5 audit — likely `research/concorde_metaopt/reviews/a5_audit/a5_audit.py`. This is a placeholder that internally claims approval. Hmm. Is it \"presented as a real GO\"? The enclosing receipt labels it structural fixture, not a real GO; the strings are inside a fixture authorization record used to exercise gate-check logic. The risk: a downstream consumer reading controls.physical_go=true would think physical GO issued. This is a disclosure hazard worth flagging as major-or-minor. But given the explicit authorization_kind and physical_go NOT_ISSUED plus evaluator FixtureEvaluator and solver_executable_used null, and the A5 packet disclosing \"The M1 run uses a structural placeholder authorization and simulated starts\", I'd call it minor/major disclosure. Let me look at the fixture authorization file and the m1_batch code to see how it's constructed, and whether assess_readiness flags it.\n\nLet me find the m1 batch source: research/concorde_metaopt/dreal001/meta/m1_batch.py — the grep returned files_scanned 0, which is odd. Maybe the grep path handling. Let me list dir and read. Actually grep_text scanned 0 files — maybe because of path pattern; earlier grep with include *.json worked. Let me retry with include *.py."
+  },
+  "finish_reason": "tool_calls"
+ },
+ {
+  "step": 8,
+  "tool": "grep_text",
+  "args": {
+   "pattern": "internal_solver_cases_actual|physical_go|STRUCTURAL",
+   "path": "research/concorde_metaopt/dreal001/meta",
+   "include": "*.py",
+   "max_matches": 60
+  },
+  "result_preview": "{\"matches\": [{\"path\": \"research\\\\concorde_metaopt\\\\dreal001\\\\meta\\\\m0r_predraft.py\", \"line\": 819, \"text\": \"            \\\"internal_solver_cases_actual\\\": 0,\"}, {\"path\": \"research\\\\concorde_metaopt\\\\dreal001\\\\meta\\\\m0r_predraft.py\", \"line\": 929, \"text\": \"        \\\"internal_solver_cases_actual\\\": 0,\"}, {\"path\": \"research\\\\concorde_metaopt\\\\dreal001\\\\meta\\\\m1_batch.py\", \"line\": 106, \"text\": \"    physical_go: bool\"}, {\"path\": \"research\\\\concorde_metaopt\\\\dreal001\\\\meta\\\\m1_batch.py\", \"line\": 119, \"text\": \"        if type(self.physical_go) is not bool:\"}, {\"path\": \"research\\\\concorde_metaopt\\\\dreal001\\\\meta\\\\m1_batch.py\", \"line\": 120, \"text\": \"            raise BatchContractError(\\\"physical_go must be a bool\\\")\"}, {\"path\": \"research\\\\concorde_metaopt\\\\dreal001\\\\meta\\\\m1_batch.py\", \"line\": 143, \"text\": \"            \\\"physical_go\\\": self.physical_go,\"}, {\"path\": \"research\\\\concorde_metaopt\\\\dreal001\\\\meta\\\\m1_batch.py\", \"line\": 159, \"text\": \"        if self.physical_go is not True:\"}, {\"path\": \"research\\\\concorde_metaopt\\\\dreal001\\\\meta\\\\m1_batch.py\", \"line\": 565, \"text\": \"            \\\"physical_go\\\": plan.authorization.physical_go,\"}, {\"path\": \"research\\\\concorde_metaopt\\\\dreal001\\\\meta\\\\m1_batch.py\", \"line\": 572, \"text\": \"            \\\"internal_solver_cases_actual\\\": ledger_internal,\"}, {\"path\": \"research\\\\concorde_metaopt\\\\dreal001\\\\meta\\\\m2_rehearsal.py\", \"line\": 604, \"text\": \"        \\\"internal_solver_cases_actual\\\": 0,\"}], \"files_scanned\": 11, \"truncated\": false}"
+ },
+ {
+  "step": 8,
+  "tool": "grep_text",
+  "args": {
+   "pattern": "internal_solver_cases_actual|physical_solver_starts_actual|simulated",
+   "path": "docs/evidence/drecover001/assess_recovery_readiness.py",
+   "max_matches": 50
+  },
+  "result_preview": "{\"matches\": [], \"files_scanned\": 0, \"truncated\": false}"
+ },
+ {
+  "step": 9,
+  "assistant": {
+   "role": "assistant",
+   "content": "",
+   "tool_calls": [
+    {
+     "function": {
+      "arguments": "{\"path\": \"research/concorde_metaopt/dreal001/meta/m1_batch.py\", \"start_line\": 530, \"max_lines\": 90}",
+      "name": "read_text"
+     },
+     "id": "call_00_almrbj92ydo5q29g7c6gnaau",
+     "type": "function"
+    },
+    {
+     "function": {
+      "arguments": "{\"pattern\": \"internal_solver_cases_actual|physical_solver_starts|simulated_solver\", \"path\": \"docs/evidence/drecover001\", \"include\": \"*.py\", \"max_matches\": 50}",
+      "name": "grep_text"
+     },
+     "id": "call_01_1vhbszbo2muxxmxx6ydi89rz",
+     "type": "function"
+    }
+   ],
+   "reasoning_content": "m1_batch.py line 572: \"internal_solver_cases_actual\": ledger_internal. Let me read around m1_batch.py lines 540-600 to see how ledger_internal is computed and labeled. Also the assess_recovery_readiness.py grep returned 0 files scanned — odd; maybe the grep tool's include doesn't apply to a single file path. Let me just read the relevant part of assess script. But it's 34560 bytes. Instead grep with path docs/evidence/drecover001 and include *.py.\n\nActually earlier grep on docs/evidence/drecover001 with include *.json worked. Let me try pattern with include *.py."
+  },
+  "finish_reason": "tool_calls"
+ },
+ {
+  "step": 9,
+  "tool": "read_text",
+  "args": {
+   "path": "research/concorde_metaopt/dreal001/meta/m1_batch.py",
+   "start_line": 530,
+   "max_lines": 90
+  },
+  "result_preview": "{\"path\": \"research\\\\concorde_metaopt\\\\dreal001\\\\meta\\\\m1_batch.py\", \"total_lines\": 625, \"start_line\": 530, \"returned_lines\": 90, \"text\": \"   530\\t                ledger.register_invalid_design()\\n   531\\t            row = _row(item, index, attempt, sample,\\n   532\\t                       reservation_id=reservation_id, cached=False)\\n   533\\t            rows.append(row)\\n   534\\t            retryable = (sample.status == \\\"failed\\\"\\n   535\\t                         and sample.failure_kind in RETRYABLE_FAILURES\\n   536\\t                         and attempt < plan.authorization.retries\\n   537\\t                         and starts_issued < plan.authorization.max_starts)\\n   538\\t            if retryable:\\n   539\\t                attempt += 1\\n   540\\t                retries_used += 1\\n   541\\t                continue\\n   542\\t            seen[key] = row\\n   543\\t            break\\n   544\\t\\n   545\\t    finished_clock = float(clock())\\n   546\\t    physical = int(getattr(ledger, \\\"physical_solver_starts\\\", 0))\\n   547\\t    simulated = int(getattr(ledger, \\\"simulated_solver_starts\\\", 0))\\n   548\\t    ledger_internal = int(getattr(ledger, \\\"internal_solver_cases\\\", 0))\\n   549\\t    result: Dict[str, Any] = {\\n   550\\t        \\\"schema\\\": SCHEMA_RESULT,\\n   551\\t        \\\"scope\\\": SCOPE,\\n   552\\t        \\\"run_id\\\": plan.authorization.run_id,\\n   553\\t        \\\"batch_id\\\": plan.authorization.batch_id,\\n   554\\t        \\\"authorization_id\\\": plan.authorization.authorization_id,\\n   555\\t        \\\"authorization_sha256\\\": plan.authorization.sha256,\\n   556\\t        \\\"plan_sha256\\\": plan.plan_sha256,\\n   557\\t        \\\"status\\\": status,\\n   558\\t        \\\"stop_reason\\\": stop_reason,\\n   559\\t        \\\"controls\\\": {\\n   560\\t            \\\"max_starts\\\": plan.authorization.max_starts,\\n   561\\t            \\\"solver_timeout_s\\\": plan.authorization.solver_timeout_s,\\n   562\\t            \\\"retries\\\": plan.authorization.retries,\\n   563\\t            \\\"parallel\\\": plan.authorization.parallel,\\n   564\\t            \\\"max_batch_wall_s\\\": plan.authorization.max_batch_wall_s,\\n   565\\t            \\\"physical_go\\\": plan.authorization.physical_go,\\n   566\\t            \\\"a5_verdict\\\": plan.authorization.a5_verdict,\\n   567\\t            \\\"new_r2_gate\\\": plan.authorization.new_r2_gate,\\n   568\\t        },\\n   569\\t        \\\"accounting\\\": {\\n   570\\t            \\\"physical_solver_starts_actual\\\": physical,\\n   571\\t            \\\"simulated_solver_starts_actual\\\": simulated,\\n   572\\t            \\\"internal_solver_cases_actual\\\": ledger_internal,\\n   573\\t            \\\"charged_planned_reserved\\\": charged,\\n   574\\t            \\\"planned_reserved\\\": charged,\\n   575\\t            \\\"design_evaluations\\\": sum(1 for row in rows if not row[\\\"cached\\\"]),\\n   576\\t            \\\"cached_reads\\\": sum(1 for row in rows if row[\\\"cached\\\"]),\\n   577\\t            \\\"failed_evaluations\\\": sum(1 for row in rows if row[\\\"status\\\"] == \\\"failed\\\"),\\n   578\\t            \\\"retries_used\\\": retries_used,\\n   579\\t            \\\"starts_issued\\\": starts_issued,\\n   580\\t        },\\n   581\\t        \\\"items\\\": rows,\\n   582\\t        \\\"item_count\\\": len(plan.items),\\n   583\\t        \\\"evaluator\\\": getattr(evaluator, \\\"__qualname__\\\", type(evaluator).__name__),\\n   584\\t        \\\"wall_s\\\": round(finished_clock - started_clock, 6),\\n   585\\t        \\\"evidence_grade\\\": \\\"SOFTWARE_CONTROL_PATH_ONLY\\\",\\n   586\\t    }\\n   587\\t    result[\\\"result_sha256\\\"] = canonical_sha(result)\\n   588\\t    return result\\n   589\\t\\n   590\\t\\n   591\\tdef verify_result(result: Mapping[str, Any]) -> None:\\n   592\\t    if not isinstance(result, Mapping):\\n   593\\t        raise BatchContractError(\\\"result must be a mapping\\\")\\n   594\\t    if result.get(\\\"schema\\\") != SCHEMA_RESULT:\\n   595\\t        raise BatchContractError(\\\"unexpected result schema\\\")\\n   596\\t    claimed = result.get(\\\"result_sha256\\\")\\n   597\\t    payload = {key: value for key, value in result.items() if key != \\\"result_sha256\\\"}\\n   598\\t    if claimed "
+ },
+ {
+  "step": 9,
+  "tool": "grep_text",
+  "args": {
+   "pattern": "internal_solver_cases_actual|physical_solver_starts|simulated_solver",
+   "path": "docs/evidence/drecover001",
+   "include": "*.py",
+   "max_matches": 50
+  },
+  "result_preview": "{\"matches\": [{\"path\": \"docs\\\\evidence\\\\drecover001\\\\assess_recovery_readiness.py\", \"line\": 147, \"text\": \"           inventory.get(\\\"physical_solver_starts_actual_this_recovery\\\") == 0\"}, {\"path\": \"docs\\\\evidence\\\\drecover001\\\\assess_recovery_readiness.py\", \"line\": 148, \"text\": \"           and inventory.get(\\\"internal_solver_cases_actual_this_recovery\\\") == 0,\"}, {\"path\": \"docs\\\\evidence\\\\drecover001\\\\assess_recovery_readiness.py\", \"line\": 150, \"text\": \"               inventory.get(\\\"physical_solver_starts_actual_this_recovery\\\"),\"}, {\"path\": \"docs\\\\evidence\\\\drecover001\\\\assess_recovery_readiness.py\", \"line\": 151, \"text\": \"               inventory.get(\\\"internal_solver_cases_actual_this_recovery\\\")))\"}, {\"path\": \"docs\\\\evidence\\\\drecover001\\\\assess_recovery_readiness.py\", \"line\": 229, \"text\": \"           preflight.get(\\\"physical_solver_starts_actual_this_recovery\\\") == 0\"}, {\"path\": \"docs\\\\evidence\\\\drecover001\\\\assess_recovery_readiness.py\", \"line\": 230, \"text\": \"           and preflight.get(\\\"internal_solver_cases_actual_this_recovery\\\") == 0,\"}, {\"path\": \"docs\\\\evidence\\\\drecover001\\\\assess_recovery_readiness.py\", \"line\": 232, \"text\": \"               preflight.get(\\\"physical_solver_starts_actual_this_recovery\\\"),\"}, {\"path\": \"docs\\\\evidence\\\\drecover001\\\\assess_recovery_readiness.py\", \"line\": 233, \"text\": \"               preflight.get(\\\"internal_solver_cases_actual_this_recovery\\\")))\"}, {\"path\": \"docs\\\\evidence\\\\drecover001\\\\assess_recovery_readiness.py\", \"line\": 336, \"text\": \"           accounting.get(\\\"physical_solver_starts_actual\\\") == 0\"}, {\"path\": \"docs\\\\evidence\\\\drecover001\\\\assess_recovery_readiness.py\", \"line\": 339, \"text\": \"               accounting.get(\\\"physical_solver_starts_actual\\\"),\"}, {\"path\": \"docs\\\\evidence\\\\drecover001\\\\assess_recovery_readiness.py\", \"line\": 342, \"text\": \"           accounting.get(\\\"starts_issued\\\") == accounting.get(\\\"simulated_solver_starts_actual\\\")\"}, {\"path\": \"docs\\\\evidence\\\\drecover001\\\\assess_recovery_readiness.py\", \"line\": 344, \"text\": \"           and (accounting.get(\\\"internal_solver_cases_actual\\\") or 0) >= 0,\"}, {\"path\": \"docs\\\\evidence\\\\drecover001\\\\assess_recovery_readiness.py\", \"line\": 381, \"text\": \"           receipt.get(\\\"physical_solver_starts_actual\\\") == 0\"}, {\"path\": \"docs\\\\evidence\\\\drecover001\\\\assess_recovery_readiness.py\", \"line\": 382, \"text\": \"           and receipt.get(\\\"internal_solver_cases_actual\\\") == 0,\"}, {\"path\": \"docs\\\\evidence\\\\drecover001\\\\assess_recovery_readiness.py\", \"line\": 384, \"text\": \"               receipt.get(\\\"physical_solver_starts_actual\\\"),\"}, {\"path\": \"docs\\\\evidence\\\\drecover001\\\\assess_recovery_readiness.py\", \"line\": 385, \"text\": \"               receipt.get(\\\"internal_solver_cases_actual\\\")))\"}, {\"path\": \"docs\\\\evidence\\\\drecover001\\\\assess_recovery_readiness.py\", \"line\": 405, \"text\": \"               repeat.get(\\\"physical_solver_starts_actual\\\") == 0,\"}, {\"path\": \"docs\\\\evidence\\\\drecover001\\\\assess_recovery_readiness.py\", \"line\": 406, \"text\": \"               \\\"physical=%r\\\" % repeat.get(\\\"physical_solver_starts_actual\\\"))\"}, {\"path\": \"docs\\\\evidence\\\\drecover001\\\\assess_recovery_readiness.py\", \"line\": 439, \"text\": \"           receipt.get(\\\"physical_solver_starts_actual\\\") == 0,\"}, {\"path\": \"docs\\\\evidence\\\\drecover001\\\\assess_recovery_readiness.py\", \"line\": 440, \"text\": \"           \\\"physical=%r\\\" % receipt.get(\\\"physical_solver_starts_actual\\\"))\"}, {\"path\": \"docs\\\\evidence\\\\drecover001\\\\assess_recovery_readiness.py\", \"line\": 615, \"text\": \"    report[\\\"physical_solver_starts_actual\\\"] = 0\"}, {\"path\": \"docs\\\\evidence\\\\drecover001\\\\assess_recovery_readiness.py\", \"line\": 616, \"text\": \"    report[\\\"internal_solver_cases_actual\\\"] = 0\"}, {\"path\": \"docs\\\\evidence\\\\drecover001\\\\assess_recovery_readiness.py\", \"line\": 635, \"text\": \"             \\\"- physical_solver_starts_actual: 0 / internal_solver_cases_actual: 0\\\",\"}, {\"path\": \"docs\\\\evidence\\\\drecover001\\\\audit_canonical_inventory.py\", \"line\": 63, \"text\": \"    return {'schema': 'drecover00"
+ },
+ {
+  "step": 10,
+  "assistant": {
+   "role": "assistant",
+   "content": "",
+   "tool_calls": [
+    {
+     "function": {
+      "arguments": "{\"path\": \"docs/evidence/drecover001/verify_m1_batch_evidence.py\", \"max_lines\": 130, \"start_line\": 30}",
+      "name": "read_text"
+     },
+     "id": "call_00_18znv8s04t12ltmgaw50jvtj",
+     "type": "function"
+    },
+    {
+     "function": {
+      "arguments": "{\"pattern\": \"subprocess|openvsp|import solver|Popen|run_worker|execute\", \"path\": \"research/concorde_metaopt/dreal001/meta/m1_batch.py\", \"max_matches\": 40}",
+      "name": "grep_text"
+     },
+     "id": "call_01_t1w6l03drxpw3ts1lcv66ola",
+     "type": "function"
+    }
+   ],
+   "reasoning_content": "So the semantic: in m1_batch, `internal_solver_cases` comes from the ledger; for the fixture, each simulated evaluation records 7 internal solver cases (simulated). The M1 fixture is designed to exercise bookkeeping, so internal_solver_cases_actual=126 reflects *simulated* internal cases attributed to fixture evaluations. The top-level attestation \"internal_solver_cases_actual=0\" means real ones. verify_m1_batch_evidence.py line 63 checks internal_solver_cases_actual equals simulated(18)*7 = 126 presumably. Let me read that verify script to see.\n\nThis is a naming collision but the M1 receipt discloses simulated_solver_starts_actual=18 and evaluator fixture. Still, the field name in the fixture artifact is identical to the real counter. A reviewer could be misled. But note the packet's attestation is about actual real activity; the preflight says \"internal_solver_cases_actual_this_recovery\": 0 (scoped \"_this_recovery\"). The M1 receipt is explicitly scoped OFFLINE_BATCH_SKELETON_ONLY with evidence_grade SOFTWARE_CONTROL_PATH_ONLY. So it's a disclosure-quality issue, not a contradiction that invalidates the claim, since the artifact itself labels simulated and fixture. I'll flag as minor/major? I'd say minor-to-major: \"ambiguous field naming in fixture artifact could be misread as 126 real internal solver cases.\" I'd mark it \"major\" perhaps because a counter with identical name is nonzero in evidence while packet attests zero, requiring the reader to distinguish. Hmm. The prompt asks me to \"Confirm physical/internal counters are zero\". Given M1 internal=126 (simulated), I cannot say \"internal counters are zero\" without qualification. I will report PASS_WITH_DISCLOSURE for M1 gate and note in findings.\n\nBut careful: is the M1 fixture's use of `solver_started: true` and internal_solver_cases 7 per item a *design* of the control path that simulates the real counters in order to test them? Let's read verify_m1_batch_evidence.py and run_m1_batch_software.py to confirm the fixture evaluator is a pure software stub (no subprocess/no solver import).\n\nThen M2: check m2 receipt for counters and determinism (repeat check).\n\nAlso need to check R1 change manifest for no raw overwrite, and historical raw data. Let me read recovery_change_manifest.json summary, and grep for deletions. And check whether M1 controls.physical_go true is from the fixture authorization document (structural placeholder). Let's find the fixture auth file.\n\nLet me do several calls."
+  },
+  "finish_reason": "tool_calls"
+ },
+ {
+  "step": 10,
+  "tool": "read_text",
+  "args": {
+   "path": "docs/evidence/drecover001/verify_m1_batch_evidence.py",
+   "max_lines": 130,
+   "start_line": 30
+  },
+  "result_preview": "{\"path\": \"docs\\\\evidence\\\\drecover001\\\\verify_m1_batch_evidence.py\", \"total_lines\": 95, \"start_line\": 30, \"returned_lines\": 66, \"text\": \"    30\\t    result = json.loads(RESULT.read_text(encoding=\\\"utf-8\\\"))\\n    31\\t    batch.verify_result(result)\\n    32\\t\\n    33\\t    checks = {}\\n    34\\t\\n    35\\t    def check(name, condition, detail=None):\\n    36\\t        checks[name] = {\\\"status\\\": \\\"PASS\\\" if condition else \\\"FAIL\\\"}\\n    37\\t        if detail is not None:\\n    38\\t            checks[name][\\\"detail\\\"] = detail\\n    39\\t\\n    40\\t    check(\\\"schema\\\", receipt[\\\"schema\\\"] == \\\"drecover001.m1_batch_software_rehearsal.v1\\\")\\n    41\\t    check(\\\"scope\\\", receipt[\\\"scope\\\"] == batch.SCOPE and result[\\\"scope\\\"] == batch.SCOPE)\\n    42\\t    check(\\\"authorization_kind\\\",\\n    43\\t          receipt[\\\"authorization_kind\\\"] == \\\"STRUCTURAL_SOFTWARE_FIXTURE_NOT_A_REAL_GO\\\")\\n    44\\t    check(\\\"a5_not_performed\\\", receipt[\\\"a5_independent_review\\\"] == \\\"NOT_PERFORMED\\\")\\n    45\\t    check(\\\"no_real_go\\\", receipt[\\\"physical_go\\\"] == \\\"NOT_ISSUED\\\" and receipt[\\\"real_admission\\\"] is False)\\n    46\\t    check(\\\"solver_not_used\\\", receipt[\\\"solver_executable_used\\\"] is None)\\n    47\\t    check(\\\"result_sha_matches_receipt\\\",\\n    48\\t          receipt[\\\"result_sha256\\\"] == result[\\\"result_sha256\\\"])\\n    49\\t    check(\\\"plan_sha_matches_result\\\",\\n    50\\t          receipt[\\\"plan_sha256\\\"] == result[\\\"plan_sha256\\\"])\\n    51\\t    check(\\\"authorization_sha_matches_result\\\",\\n    52\\t          receipt[\\\"authorization_sha256\\\"] == result[\\\"authorization_sha256\\\"])\\n    53\\t    check(\\\"result_file_bytes\\\", receipt[\\\"result_file\\\"][\\\"sha256\\\"] == file_sha256(RESULT),\\n    54\\t          receipt[\\\"result_file\\\"][\\\"sha256\\\"])\\n    55\\t    check(\\\"code_still_current\\\", receipt[\\\"code_sha256\\\"] == batch.module_source_sha256(),\\n    56\\t          batch.module_source_sha256())\\n    57\\t    check(\\\"evidence_grade\\\", result[\\\"evidence_grade\\\"] == \\\"SOFTWARE_CONTROL_PATH_ONLY\\\")\\n    58\\t\\n    59\\t    accounting = result[\\\"accounting\\\"]\\n    60\\t    check(\\\"physical_zero\\\", accounting[\\\"physical_solver_starts_actual\\\"] == 0)\\n    61\\t    check(\\\"simulated_matches_plan\\\", accounting[\\\"simulated_solver_starts_actual\\\"] == result[\\\"item_count\\\"])\\n    62\\t    check(\\\"internal_equals_simulated_times_cases\\\",\\n    63\\t          accounting[\\\"internal_solver_cases_actual\\\"]\\n    64\\t          == accounting[\\\"simulated_solver_starts_actual\\\"] * batch.INTERNAL_CASES_PER_START)\\n    65\\t    check(\\\"charged_matches_plan\\\", accounting[\\\"charged_planned_reserved\\\"] == result[\\\"item_count\\\"])\\n    66\\t    check(\\\"no_failed_no_retry\\\",\\n    67\\t          accounting[\\\"failed_evaluations\\\"] == 0 and accounting[\\\"retries_used\\\"] == 0)\\n    68\\t    check(\\\"status_complete\\\", result[\\\"status\\\"] == \\\"COMPLETE\\\" and result[\\\"item_count\\\"] == 18)\\n    69\\t    check(\\\"receipt_accounting_copied\\\", receipt[\\\"accounting\\\"] == accounting)\\n    70\\t    check(\\\"all_ok_objects\\\", all(\\n    71\\t        item[\\\"objective\\\"] is not None and item[\\\"status\\\"] == \\\"ok\\\" for item in result[\\\"items\\\"]))\\n    72\\t\\n    73\\t    failed = [name for name, entry in checks.items() if entry[\\\"status\\\"] == \\\"FAIL\\\"]\\n    74\\t    verification = {\\n    75\\t        \\\"schema\\\": \\\"drecover001.m1_batch_software_verification.v1\\\",\\n    76\\t        \\\"scope\\\": batch.SCOPE,\\n    77\\t        \\\"receipt\\\": RECEIPT.name,\\n    78\\t        \\\"result\\\": RESULT.name,\\n    79\\t        \\\"checks\\\": checks,\\n    80\\t        \\\"check_count\\\": len(checks),\\n    81\\t        \\\"failures\\\": failed,\\n    82\\t        \\\"status\\\": \\\"M1_BATCH_EVIDENCE_INTERNALLY_CONSISTENT\\\" if not failed else \\\"FAILED\\\",\\n    83\\t        \\\"disclosure\\\": (\\\"Software fixture evidence only. No A5 review, no Lead GO, no real \\\"\\n    84\\t                       \\\"admission, no solver start, no physical budget.\\\"),\\n    85\\t    }\\n    86\\t    target = EVIDENCE / \\\"m1_batch_software_verification.json\\\"\\n    87\\t    target.write_text(json.dumps(verification"
+ },
+ {
+  "step": 10,
+  "tool": "grep_text",
+  "args": {
+   "pattern": "subprocess|openvsp|import solver|Popen|run_worker|execute",
+   "path": "research/concorde_metaopt/dreal001/meta/m1_batch.py",
+   "max_matches": 40
+  },
+  "result_preview": "{\"matches\": [], \"files_scanned\": 0, \"truncated\": false}"
+ },
+ {
+  "step": 11,
+  "assistant": {
+   "role": "assistant",
+   "content": "",
+   "tool_calls": [
+    {
+     "function": {
+      "arguments": "{\"pattern\": \"FIXTURE-AUTH-0001|STRUCTURAL_SOFTWARE_FIXTURE_NOT_A_REAL_GO\", \"path\": \"research\", \"max_matches\": 40}",
+      "name": "grep_text"
+     },
+     "id": "call_00_t4pig7qx2sqkl3qod22hs9tc",
+     "type": "function"
+    },
+    {
+     "function": {
+      "arguments": "{\"path\": \"docs/evidence/drecover001/m2_offline_rehearsal_receipt.json\", \"max_chars\": 6000}",
+      "name": "json_summary"
+     },
+     "id": "call_01_auvvumwlm40cafysfjrmjd7m",
+     "type": "function"
+    },
+    {
+     "function": {
+      "arguments": "{\"path\": \"docs/evidence/drecover001/m2_rehearsal_repeat_check.json\", \"max_chars\": 4000}",
+      "name": "json_summary"
+     },
+     "id": "call_02_unp2v9llhhd05p3ywhq8ov3r",
+     "type": "function"
+    }
+   ],
+   "reasoning_content": "The grep on a single file returns files_scanned 0 — seems grep_text on a file path doesn't work (needs dir). Let me grep the dir with include m1_batch.py.\n\nAlso verify_m1_batch_evidence confirms internal = simulated*INTERNAL_CASES_PER_START=7 → 126. So it's explicitly simulated bookkeeping, checks the arithmetic. Good — the 126 is derived from 18 simulated starts × 7 internal cases per start, i.e., synthetic accounting, disclosed as simulated. Not a physical contradiction. But the top-level field name is still ambiguous. I'll note as a minor disclosure finding.\n\nAlso `controls.physical_go: true` is copied from the fixture authorization (plan.authorization.physical_go), which is a structural placeholder; the receipt top-level says NOT_ISSUED. The fixture auth presumably has physical_go true to pass the gate check in the code (line 159: if self.physical_go is not True: raise). So the structural placeholder authorization has physical_go=True solely to exercise the control path. This is disclosed in receipt authorization_kind and note. Still, the embedded authorization document, if extracted alone, looks like a real GO. Need to check the fixture authorization document — is it stored as a file somewhere? Let me search for FIXTURE-AUTH-0001 in repo.\n\nLet me also check M2 receipt and repeat check, R0 inventory content around regenerated artifacts, and the change manifest for deletions."
+  },
+  "finish_reason": "tool_calls"
+ },
+ {
+  "step": 11,
+  "tool": "grep_text",
+  "args": {
+   "pattern": "FIXTURE-AUTH-0001|STRUCTURAL_SOFTWARE_FIXTURE_NOT_A_REAL_GO",
+   "path": "research",
+   "max_matches": 40
+  },
+  "result_preview": "{\"matches\": [{\"path\": \"research\\\\concorde_metaopt\\\\tests\\\\test_recovery_readiness.py\", \"line\": 22, \"text\": \"PLACEHOLDER = \\\"STRUCTURAL_SOFTWARE_FIXTURE_NOT_A_REAL_GO\\\"\"}], \"files_scanned\": 1406, \"truncated\": false}"
+ },
+ {
+  "step": 11,
+  "tool": "json_summary",
+  "args": {
+   "path": "docs/evidence/drecover001/m2_offline_rehearsal_receipt.json",
+   "max_chars": 6000
+  },
+  "result_preview": "{\"path\": \"docs\\\\evidence\\\\drecover001\\\\m2_offline_rehearsal_receipt.json\", \"type\": \"dict\", \"keys\": [\"admitted_real_labels\", \"checkpoint_parameters_sha256\", \"code_files\", \"conditional_config\", \"config\", \"created_utc\", \"dataset\", \"evaluation\", \"evidence_grade\", \"geometry_contract\", \"internal_solver_cases_actual\", \"labels\", \"physical_solver_starts_actual\", \"real_admission\", \"real_meta_training_executed\", \"run_id\", \"schema\", \"scope\", \"sha256\", \"task_identity\", \"training\", \"validation_policy\", \"verdict\"], \"scalars\": {\"admitted_real_labels\": 0, \"created_utc\": \"2026-11-17T16:02:33Z\", \"evidence_grade\": \"OFFLINE_REHEARSAL_NO_PHYSICAL_EVIDENCE\", \"internal_solver_cases_actual\": 0, \"physical_solver_starts_actual\": 0, \"real_admission\": false, \"real_meta_training_executed\": false, \"run_id\": \"DRECOVER001-M2-REHEARSAL-20261117T160233Z\", \"schema\": \"drecover001.m2_offline_rehearsal.v1\", \"scope\": \"OFFLINE_REHEARSAL_ONLY\"}, \"nested_keys\": {\"checkpoint_parameters_sha256\": [\"conditional_pretrain_parameters_sha256\", \"fomaml_parameters_sha256\", \"pretrain_parameters_sha256\", \"random_init_parameters_sha256\"], \"code_files\": [\"research/concorde_metaopt/configs/design_space_12d_lifting_surfaces.yaml\", \"research/concorde_metaopt/dreal001/m1/task_evaluator.py\", \"research/concorde_metaopt/dreal001/meta/m2_rehearsal.py\", \"research/concorde_metaopt/dreal001/meta/meta_dataset.py\", \"research/concorde_metaopt/dreal001/meta/production.py\", \"research/concorde_metaopt/dreal001/meta/task_spec.py\", \"research/concorde_metaopt/dreal001/meta/validation_training.py\", \"research/concorde_metaopt/meta_learning/adaptation.py\", \"research/concorde_metaopt/meta_learning/maml.py\"], \"conditional_config\": [\"backend\", \"first_order\", \"head_only\", \"hidden_sizes\", \"inner_lr\", \"inner_steps\", \"input_dim\", \"outer_lr\", \"output_dim\", \"seed\", \"tasks_per_batch\"], \"config\": [\"backend\", \"first_order\", \"head_only\", \"hidden_sizes\", \"inner_lr\", \"inner_steps\", \"input_dim\", \"outer_lr\", \"output_dim\", \"seed\", \"tasks_per_batch\"], \"dataset\": [\"observations_per_task\", \"query_rows\", \"rows_sha256\", \"support_rows\", \"task_count\", \"treatment\"], \"evaluation\": [\"k0\", \"k10\", \"k4\", \"metric\", \"note\", \"test_labels_used_only_for_post_hoc_scoring\", \"test_task_diagnostics\", \"test_task_ids\"], \"geometry_contract\": [\"active_mask\", \"atmosphere\", \"baseline_x12\", \"design_space_sha256\", \"native_probe_status\", \"note\", \"origin\", \"schema\", \"source\", \"sref_ref_m2\"], \"labels\": [\"formula\", \"kind\", \"note\", \"shape\", \"u\"], \"sha256\": [\"checkpoint\", \"code\", \"conditional_config\", \"config\", \"dataset_manifest\", \"geometry_contract\", \"task_split\"], \"task_identity\": [\"character\", \"source\", \"tasks\"], \"training\": [\"conditional_pretrain\", \"fixture_scope\", \"fomaml\", \"pretrain\", \"pretraining_kind\", \"test_used_for_selection\", \"validation_task_ids\"], \"validation_policy\": [\"interval\", \"max_steps\", \"min_delta\", \"patience\"], \"verdict\": [\"blocking_gates_before_real_maml\", \"fomaml_k0_vs_pretrain_k0_mse_delta\", \"fomaml_k10_vs_pretrain_k10_mse_delta\", \"fomaml_k4_vs_pretrain_k4_mse_delta\", \"fomaml_k4_vs_random_init_k4_mse_reduction\", \"interpretation\", \"meta_learning_gain_claim\", \"mse_normalized_by_k_shot\", \"ood_blind_test_gap_expected\", \"status\"]}, \"truncated_json_preview\": \"{\\\"admitted_real_labels\\\": 0, \\\"checkpoint_parameters_sha256\\\": {\\\"conditional_pretrain_parameters_sha256\\\": \\\"0c839e4f71b77dfd9d30bd799eb7ee6e417e3d813bf87ae606f4fe6dbb6ece15\\\", \\\"fomaml_parameters_sha256\\\": \\\"41c8f8b483429df1a43cc0b3a56fff4d283e37ee4c8d44b066d4a9de7ef01bb7\\\", \\\"pretrain_parameters_sha256\\\": \\\"29da105396cb25958a9fa6682e0d64d18e69006f021098228aee224e804e9ce3\\\", \\\"random_init_parameters_sha256\\\": \\\"6be63a3faa3f568ca7a14126e0920b9fef8e98113f499aa1303f3730c7bb0882\\\"}, \\\"code_files\\\": {\\\"research/concorde_metaopt/configs/design_space_12d_lifting_surfaces.yaml\\\": \\\"ebca2b7bb2920ce1e3729a3dedd7c361a1c78d34337918a973866bef48f76efc\\\", \\\"research/concorde_metaopt/dreal001/m1/task_evaluator.py\\\": \\\"41b4cb9cffad4949cf885c0f9f6857637a8c28ed9188c414fcca13084e9bd215\\\", \\\"research/co"
+ },
+ {
+  "step": 11,
+  "tool": "json_summary",
+  "args": {
+   "path": "docs/evidence/drecover001/m2_rehearsal_repeat_check.json",
+   "max_chars": 4000
+  },
+  "result_preview": "{\"path\": \"docs\\\\evidence\\\\drecover001\\\\m2_rehearsal_repeat_check.json\", \"type\": \"dict\", \"keys\": [\"checkpoint_file_sha_differs_because\", \"checkpoint_identical\", \"checkpoint_payload_identical_except_run_id\", \"checkpoint_sha256_original\", \"checkpoint_sha256_repeat\", \"code_sha256_identical\", \"configs_identical\", \"dataset_manifest_identical\", \"evaluation_identical\", \"field_comparison\", \"geometry_contract_identical\", \"internal_solver_cases_actual\", \"labels_identical\", \"note\", \"original_run_id\", \"parameters_sha256_identical\", \"physical_solver_starts_actual\", \"repeat_run_id\", \"schema\", \"scope\", \"train_task_ids_identical\", \"training_reports_identical\", \"validation_policy_identical\"], \"scalars\": {\"checkpoint_file_sha_differs_because\": \"checkpoint JSON embeds run_id (created_utc is null); parameter tensors and evaluation/training blocks are identical. Recorded checkpoint sha256 values are the compact-JSON payload hashes in the receipt, not the platform-newline-normalized file bytes.\", \"checkpoint_identical\": false, \"checkpoint_payload_identical_except_run_id\": true, \"checkpoint_sha256_original\": \"1616dc5d7441caf7ab0214aeb753aa9cb3be51fec12c7b7a8c3e4739ea326e49\", \"checkpoint_sha256_repeat\": \"f4ae84488459ae9c8b58c174e2bae46c8772324405b7f9dc983072c9f7051e82\", \"code_sha256_identical\": true, \"configs_identical\": true, \"dataset_manifest_identical\": true, \"evaluation_identical\": true, \"geometry_contract_identical\": true, \"internal_solver_cases_actual\": 0, \"labels_identical\": true, \"note\": \"Repeat executed offline with the same code, seed and policy after the TaskSpec numeric-identity normalization. The checkpoint payload differs only through the embedded run_id; parameter hashes, task identities, training and evaluation blocks are identical.\", \"original_run_id\": \"DRECOVER001-M2-REHEARSAL-20261117T160233Z\", \"parameters_sha256_identical\": true, \"physical_solver_starts_actual\": 0, \"repeat_run_id\": \"DRECOVER001-M2-REHEARSAL-20261117T160500Z\", \"schema\": \"drecover001.m2_rehearsal_repeat_check.v1\", \"scope\": \"OFFLINE_REHEARSAL_ONLY\", \"train_task_ids_identical\": true, \"training_reports_identical\": true, \"validation_policy_identical\": true}, \"nested_keys\": {\"field_comparison\": [\"checkpoint_parameters_sha256\", \"code_sha256\", \"conditional_config\", \"config\", \"dataset\", \"evaluation\", \"geometry_contract\", \"labels\", \"task_identity\", \"training\", \"validation_policy\"]}, \"truncated_json_preview\": \"{\\\"checkpoint_file_sha_differs_because\\\": \\\"checkpoint JSON embeds run_id (created_utc is null); parameter tensors and evaluation/training blocks are identical. Recorded checkpoint sha256 values are the compact-JSON payload hashes in the receipt, not the platform-newline-normalized file bytes.\\\", \\\"checkpoint_identical\\\": false, \\\"checkpoint_payload_identical_except_run_id\\\": true, \\\"checkpoint_sha256_original\\\": \\\"1616dc5d7441caf7ab0214aeb753aa9cb3be51fec12c7b7a8c3e4739ea326e49\\\", \\\"checkpoint_sha256_repeat\\\": \\\"f4ae84488459ae9c8b58c174e2bae46c8772324405b7f9dc983072c9f7051e82\\\", \\\"code_sha256_identical\\\": true, \\\"configs_identical\\\": true, \\\"dataset_manifest_identical\\\": true, \\\"evaluation_identical\\\": true, \\\"field_comparison\\\": {\\\"checkpoint_parameters_sha256\\\": true, \\\"code_sha256\\\": true, \\\"conditional_config\\\": true, \\\"config\\\": true, \\\"dataset\\\": true, \\\"evaluation\\\": true, \\\"geometry_contract\\\": true, \\\"labels\\\": true, \\\"task_identity\\\": true, \\\"training\\\": true, \\\"validation_policy\\\": true}, \\\"geometry_contract_identical\\\": true, \\\"internal_solver_cases_actual\\\": 0, \\\"labels_identical\\\": true, \\\"note\\\": \\\"Repeat executed offline with the same code, seed and policy after the TaskSpec numeric-identity normalization. The checkpoint payload differs only through the embedded run_id; parameter hashes, task identities, training and evaluation blocks are identical.\\\", \\\"original_run_id\\\": \\\"DRECOVER001-M2-REHEARSAL-20261117T160233Z\\\", \\\"parameters_sha256_identical\\\": true, \\\"physical_solver_starts_actual\\\": 0, \\\"repeat_run_id\\\": \\\"DRECOVER001-M2-REHEARSAL-20261117T16050"
+ },
+ {
+  "step": 12,
+  "assistant": {
+   "role": "assistant",
+   "content": "",
+   "tool_calls": [
+    {
+     "function": {
+      "arguments": "{\"path\": \"docs/evidence/drecover001/recovery_change_manifest.json\", \"max_chars\": 6000}",
+      "name": "json_summary"
+     },
+     "id": "call_00_pw740viqk1flo9rzmp20qog6",
+     "type": "function"
+    },
+    {
+     "function": {
+      "arguments": "{\"pattern\": \"S1|S2|S3|negative\", \"path\": \"docs/evidence/drecover001\", \"include\": \"*.md\", \"max_matches\": 40}",
+      "name": "grep_text"
+     },
+     "id": "call_01_uosmom3z8nq98a03ouy2v6a2",
+     "type": "function"
+    }
+   ],
+   "reasoning_content": "M2 counters zero, real_meta_training false, admitted_real_labels 0, deterministic except run_id embedded, disclosed.\n\nNow check R0 inventory content: R0_PARTIAL_NOT_AUDITED preserved, RAW_LOST raw-lost, and regenerated artifacts not pretending to be original raw. Read parts of recovery_inventory.json and recovery_inventory.md.\n\nAlso check the change manifest for deletions/historical raw overwrite. And check whether the S1/S2/S3 negative results files are untouched (git status shows no modifications to docs outside evidence dirs; but S1/S2/S3 results might live in research/... paths). Let me search for \"S1\" \"S2\" \"S3\" negative results references and the change manifest.\n\nLet's read recovery_change_manifest.json summary."
+  },
+  "finish_reason": "tool_calls"
+ },
+ {
+  "step": 12,
+  "tool": "json_summary",
+  "args": {
+   "path": "docs/evidence/drecover001/recovery_change_manifest.json",
+   "max_chars": 6000
+  },
+  "result_preview": "{\"path\": \"docs\\\\evidence\\\\drecover001\\\\recovery_change_manifest.json\", \"type\": \"dict\", \"keys\": [\"schema\", \"branch\", \"baseline\", \"note\", \"generated_utc\", \"file_count\", \"total_bytes\", \"files\", \"deleted_pending_review\", \"generated_after_bundle_excluded\", \"self_excluded\"], \"scalars\": {\"schema\": \"drecover001.recovery_change_manifest.v1\", \"branch\": \"recovery/drecover001-20261117\", \"baseline\": \"4c51c7df34c9626999ef2e66e5a6c76a2b9c92e2\", \"note\": \"Working-tree changes relative to baseline, regenerated from the actual worktree by build_change_manifest.py; excludes __pycache__/.pyc, this manifest, readiness aggregator outputs, generated A5 review packet, and the post-bundle restore receipt (self-reference avoidance). Nothing committed or pushed (no git author identity and no remote credentials).\", \"generated_utc\": \"2026-11-18T04:56:16Z\", \"file_count\": 123, \"total_bytes\": 16507750, \"self_excluded\": true}, \"files_type\": \"list\", \"files_len\": 123, \"nested_keys\": {\"files\": 123, \"deleted_pending_review\": 0, \"generated_after_bundle_excluded\": 1}, \"truncated_json_preview\": \"{\\\"schema\\\": \\\"drecover001.recovery_change_manifest.v1\\\", \\\"branch\\\": \\\"recovery/drecover001-20261117\\\", \\\"baseline\\\": \\\"4c51c7df34c9626999ef2e66e5a6c76a2b9c92e2\\\", \\\"note\\\": \\\"Working-tree changes relative to baseline, regenerated from the actual worktree by build_change_manifest.py; excludes __pycache__/.pyc, this manifest, readiness aggregator outputs, generated A5 review packet, and the post-bundle restore receipt (self-reference avoidance). Nothing committed or pushed (no git author identity and no remote credentials).\\\", \\\"generated_utc\\\": \\\"2026-11-18T04:56:16Z\\\", \\\"file_count\\\": 123, \\\"total_bytes\\\": 16507750, \\\"files\\\": [{\\\"path\\\": \\\"docs/evidence/drecover001/a1_thickness_repair/native_stdout.txt\\\", \\\"status\\\": \\\"untracked\\\", \\\"sha256\\\": \\\"d48db172ad7de76149113e5044ddc6a3f23aa71819fa9bb6db8f50a76cb49920\\\", \\\"bytes\\\": 16202}, {\\\"path\\\": \\\"docs/evidence/drecover001/a1_thickness_repair/preflight_stdout.txt\\\", \\\"status\\\": \\\"untracked\\\", \\\"sha256\\\": \\\"ede8a4ac8d86b1d5d84d25b816aaaea39fc8a45d635591855308b8f78f404b1b\\\", \\\"bytes\\\": 11166}, {\\\"path\\\": \\\"docs/evidence/drecover001/a1_thickness_repair/probe_repaired_openvsp.py\\\", \\\"status\\\": \\\"untracked\\\", \\\"sha256\\\": \\\"2d55c7611d2079429fddc8070f97801c95dddb4bc84f308eea36c618df77be61\\\", \\\"bytes\\\": 6751}, {\\\"path\\\": \\\"docs/evidence/drecover001/a1_thickness_repair/real_openvsp_geometry_probe.json\\\", \\\"status\\\": \\\"untracked\\\", \\\"sha256\\\": \\\"b8ec388783d94c1b9c4af40ead478dd08a50cb7cae30d941e75b36ddca162d01\\\", \\\"bytes\\\": 8098}, {\\\"path\\\": \\\"docs/evidence/drecover001/a1_thickness_repair/real_openvsp_geometry_probe.vsp3\\\", \\\"status\\\": \\\"untracked\\\", \\\"sha256\\\": \\\"33c3b8185017659c718a234e284f72d2d3fa21c729e2ff50cab20526ac0cee5f\\\", \\\"bytes\\\": 301252}, {\\\"path\\\": \\\"docs/evidence/drecover001/a1_u1_reference_gap.json\\\", \\\"status\\\": \\\"untracked\\\", \\\"sha256\\\": \\\"c9fb7f3bdc47a3c0479a027a0ef7650e413b1f8c3a8cad891ab67047272a9648\\\", \\\"bytes\\\": 3051}, {\\\"path\\\": \\\"docs/evidence/drecover001/a4_path_injection_20261117.md\\\", \\\"status\\\": \\\"untracked\\\", \\\"sha256\\\": \\\"9df905956088e6fee0f96d390459a529ac6ba540b653e2abc4037cb1e54ad624\\\", \\\"bytes\\\": 5744}, {\\\"path\\\": \\\"docs/evidence/drecover001/all_ref_blob_audit.json\\\", \\\"status\\\": \\\"untracked\\\", \\\"sha256\\\": \\\"ad8222e8965c5a5fa3834f29b4309ff7cea71d71729100f245d29984e10a1613\\\", \\\"bytes\\\": 6308435}, {\\\"path\\\": \\\"docs/evidence/drecover001/assess_recovery_readiness.py\\\", \\\"status\\\": \\\"untracked\\\", \\\"sha256\\\": \\\"450898832ca2122332a105c09f4d5c46abde682c5e8d70f98f8becf74058118c\\\", \\\"bytes\\\": 34560}, {\\\"path\\\": \\\"docs/evidence/drecover001/asset_audit_summary.json\\\", \\\"status\\\": \\\"untracked\\\", \\\"sha256\\\": \\\"fed79523ef7cd304adf90da9e5744052e87894fb7b4907ff43ca49cea0de0557\\\", \\\"bytes\\\": 29358}, {\\\"path\\\": \\\"docs/evidence/drecover001/audit_canonical_inventory.py\\\", \\\"status\\\": \\\"untracked\\\", \\\"sha256\\\": \\\"d0e39a9b5b73d00f9f376f3dfe02fcade7aab9ce7144fa343d4a7e73c1860b72\\\", \\\"bytes\\\": 5696}, {\\\"path\\\": \\\"docs/evidence/dr"
+ },
+ {
+  "step": 12,
+  "tool": "grep_text",
+  "args": {
+   "pattern": "S1|S2|S3|negative",
+   "path": "docs/evidence/drecover001",
+   "include": "*.md",
+   "max_matches": 40
+  },
+  "result_preview": "{\"matches\": [{\"path\": \"docs\\\\evidence\\\\drecover001\\\\a4_path_injection_20261117.md\", \"line\": 13, \"text\": \"| `research/concorde_metaopt/reviews/a5_audit/a5_audit.py` | `DEFAULT_DNEXT_ROOT = Path(r\\\"D:\\\\RCAIDE\\\\dnext001\\\")`；`--s3-root` 默认 `D:\\\\RCAIDE-s3-dev` | 删除硬编码；新增 `RCAIDE_S3_ROOT` / `RCAIDE_DNEXT_ROOT`；argparse 默认取环境变量或空串；缺失时打印 `S3 root is not injected: pass --s3-root or set RCAIDE_S3_ROOT`（dnext 同理）并以退出码 2 结束 |\"}, {\"path\": \"docs\\\\evidence\\\\drecover001\\\\a5_review_packet.md\", \"line\": 72, \"text\": \"- [ ] Confirm R1 changes do not overwrite historical raw data or S1/S2/S3 negative results.\"}, {\"path\": \"docs\\\\evidence\\\\drecover001\\\\issue12_consolidated_receipt_draft_20261117.md\", \"line\": 48, \"text\": \"旧 S1/S2/S3 与 M0R 的负结果、`NOT_COMPUTABLE`、`PHYSICS_VALIDATED=NOT_VALIDATED` 均保留，不追认为正结果；历史 `verified=true` 仅是历史叙述。\"}, {\"path\": \"docs\\\\evidence\\\\drecover001\\\\maml_readiness_20261117.md\", \"line\": 18, \"text\": \"| A4 可注入根目录 | `RCAIDE_A1_ROOT` / `RCAIDE_S3_ROOT` / `RCAIDE_DNEXT_ROOT` / `RCAIDE_DNEXT_PARENT`；缺注入即失败，不再静默指向本机路径 | [a4_path_injection_20261117.md](<.worktrees/drecover001-20261117/docs/evidence/drecover001/a4_path_injection_20261117.md>) |\"}, {\"path\": \"docs\\\\evidence\\\\drecover001\\\\r1_software_progress_20261117.md\", \"line\": 22, \"text\": \"- CPU环境接续：权限策略变更后Python3.12隔离venv已成功建立；官方CPU/PyPI及系统代理的pip请求遭TLS EOF。后续直接TLS1.2连接PyPI成功，且发现现有RCAIDE环境自带torch2.8.0+cpu；在该环境通过正常证书校验的PyPI安装PyYAML6.0.3后完成软件训练，不再依赖下载torch。清华镜像下载任务已取消；未关闭证书验证。\"}, {\"path\": \"docs\\\\evidence\\\\drecover001\\\\r1_software_progress_20261117.md\", \"line\": 35, \"text\": \"- A4可注入根目录：`p2a_v2.py`新增`RCAIDE_A1_ROOT`+`resolve_a1_root()`（缺注入即ValueError），7处调用点改造；`p2a_v2_common.py`历史默认改为可env覆盖并声明；`a5_audit.py`删除硬编码，缺`RCAIDE_S3_ROOT`/`RCAIDE_DNEXT_ROOT`时退出码2；`m0r_predraft.py`改用`RCAIDE_DNEXT_PARENT`；m5/m6改用`sys.executable`；文档串改占位符。新增10项回归测试（含静态扫描）。详见a4_path_injection_20261117.md。\"}, {\"path\": \"docs\\\\evidence\\\\drecover001\\\\recovery_inventory.md\", \"line\": 25, \"text\": \"| P0 / A3 | 历史 S1/S2/S3/meta_learning 与 tasks 源码保留；生产 T0 的六个指定完整摘要未找到 | TaskSpec/MetaDataset/MetaTrainer/AdaptationRunner/WarmStartSampler/production、真实标签 fail-closed、任务改变 deck/约束、固定任务 split 与 support/query 隔离；不能用旧 readiness 代替真实训练 |\"}, {\"path\": \"docs\\\\evidence\\\\drecover001\\\\recovery_inventory.md\", \"line\": 36, \"text\": \"- SOURCE_CODE_PRESENT：矩阵列出 272 条研究 Python 源码路径；R1 软件回归已实施（见第 6 节），但 `RESTORED_CODE_BASELINE_PASS` 未签，仍不承诺真实 VSPAERO 可执行。实现复用 S1/S2/S3，不从零重写。\"}, {\"path\": \"docs\\\\evidence\\\\drecover001\\\\recovery_inventory.md\", \"line\": 60, \"text\": \"- A4 可注入根目录：`RCAIDE_A1_ROOT` / `RCAIDE_S3_ROOT` / `RCAIDE_DNEXT_ROOT` / `RCAIDE_DNEXT_PARENT`，缺失即失败；详见 [a4_path_injection_20261117.md](<.worktrees/drecover001-20261117/docs/evidence/drecover001/a4_path_injection_20261117.md>)。\"}], \"files_scanned\": 8, \"truncated\": false}"
+ },
+ {
+  "step": 13,
+  "assistant": {
+   "role": "assistant",
+   "content": "",
+   "tool_calls": [
+    {
+     "function": {
+      "arguments": "{\"path\": \"docs/evidence/drecover001/recovery_inventory.md\", \"max_lines\": 70}",
+      "name": "read_text"
+     },
+     "id": "call_00_o5pm1snbsao2omeel45q3o4t",
+     "type": "function"
+    },
+    {
+     "function": {
+      "arguments": "{\"path\": \"docs/evidence/drecover001/issue12_consolidated_receipt_draft_20261117.md\", \"max_lines\": 60}",
+      "name": "read_text"
+     },
+     "id": "call_01_lgq2cs9754nxk7pqhtdpkf8v",
+     "type": "function"
+    }
+   ],
+   "reasoning_content": "Change manifest: deleted_pending_review: 0, file_count 123, generated_after_bundle_excluded 1. Good: no deletions.\n\nNow I need to verify R1 changes do not overwrite historical raw data. Git status shows 17 modified files, all source code/docs in research/concorde_metaopt/. None are historical raw solver outputs. But \"S1/S2/S3 negative results\" are presumably in research dirs or docs; git status shows no modifications to any docs except the untracked drecover001 dir plus docs/planning. So historical raw data and S1/S2/S3 negative results are untouched in the working tree (no M entries for them). Let me confirm whether S1/S2/S3 results live in tracked files and whether any of the modified files contain negative results. E.g., m5_runner.py, m6_study.py modified — those are source. Negative results would be result JSON under maybe research/concorde_metaopt/.../results. Since git status shows no modifications there except the listed, fine.\n\nAlso need to check that the 17 modified files don't alter historical raw data within them? m1/task_evaluator.py, optimizers etc. Could be considered \"S1/S2/S3\" code reused. The claim in maml_readiness \"实现复用 S1/S2/S3，不从零重写\" and issue12 draft line 48 says old S1/S2/S3 negative results preserved and not upgraded to positives. Verify that claim by reading issue12 draft and maml readiness. Also check for \"NOT_VALIDATED\" preserved.\n\nAlso I must verify R0 inventory discloses regenerated artifacts not pretending to be original raw. Let me read recovery_inventory.md sections. It's 20216 bytes; read in parts. Let me read the summary/relevant sections.\n\nAlso need to check that historical raw data files are actually unchanged: could use the bundle baseline check but I can't compare hashes for tracked files without extra tools. git_status showing only 17 M and nothing else for tracked files is decent evidence. However git status doesn't show whether content of those modified files includes raw historical data — no.\n\nLet me read recovery_inventory.md key portions."
+  },
+  "finish_reason": "tool_calls"
+ },
+ {
+  "step": 13,
+  "tool": "read_text",
+  "args": {
+   "path": "docs/evidence/drecover001/recovery_inventory.md",
+   "max_lines": 70
+  },
+  "result_preview": "{\"path\": \"docs\\\\evidence\\\\drecover001\\\\recovery_inventory.md\", \"total_lines\": 85, \"start_line\": 1, \"returned_lines\": 70, \"text\": \"     1\\t# D-RECOVER-001 R0 资产、损失与最小恢复矩阵（待独立验收）\\n     2\\t\\n     3\\t日期：2026-11-17；基线：`4c51c7df34c9626999ef2e66e5a6c76a2b9c92e2`；分支：`recovery/drecover001-20261117`。\\n     4\\t\\n     5\\t## 结论与门禁\\n     6\\t\\n     7\\t**R0_PARTIAL_NOT_AUDITED / R1_SOFTWARE_IN_PROGRESS_NOT_AUDITED / NO_PHYSICAL_GO。新增 physical starts=0、internal cases=0。**\\n     8\\t\\n     9\\t本报告是 Issue #12 要求的工程资产核对，不是 AI 记忆文件，也不是 A5 独立签署。R0 remaining_r0_work 第①项（batch2 之外的 raw/budget 来源分类）已在离线侧补做，见第 7 节；未发现额外可恢复 raw，F1R2/F2R2 仍为 RAW_LOST。A1–A4 要求实际 GPT-6-luna，A5 要求实际 6-terra；当前仅有 Lead，工具未提供创建子智能体/指定模型能力。当前任务板为 0 条，且没有成员创建/模型指定接口，A5 无法由 Lead 自签。R1 软件侧已实施并复跑（229 项测试通过，见第 6 节），但 R1 门禁 RESTORED_CODE_BASELINE_PASS 未由 A5 签发；异机备份/恢复未验收，R2 与 #11 真实训练未启动。\\n    10\\t\\n    11\\t## 1. 审计范围与字节结论\\n    12\\t\\n    13\\t- [远端头清单](<.worktrees/drecover001-20261117/docs/evidence/drecover001/remote_refs.json>)来自 [GitHub heads API](https://api.github.com/repos/QingYangJin/RCAIDE_Supersonic/git/matching-refs/heads/)：20 heads、0 tags。git fetch 失败的原始错误为 `schannel: AcquireCredentialsHandle failed: SEC_E_NO_CREDENTIALS (0x8009030e)`；只读 API 回退已验证 heads 身份。\\n    14\\t- [全部可达历史对象审计](<.worktrees/drecover001-20261117/docs/evidence/drecover001/reachable_history_audit.json>)覆盖这 20 个固定 SHA 的 **200 个可达提交、4,633 个对象、2,829 个唯一 blob、186,537,818 字节、2,760 条历史文件路径**。逐 blob 验 Git object identity、大小与 SHA256，非 shallow；不包含隐藏 refs、服务器不可达对象或从未推送的提交，不能宣称这些也不存在。\\n    15\\t- [冻结清单核对](<.worktrees/drecover001-20261117/docs/evidence/drecover001/canonical_blob_audit.json>)：基线 2,109 文件 / 164,917,591 字节与原始 Git blob 一致；docs checksum 162 MATCH、2 MISSING、0 HASH_MISMATCH；M1A 12 slots 的 60/60 payload 大小和 SHA 一致。\\n    16\\t- 导出必须关闭 core.autocrlf 转换；先前默认 archive 的 54 个 checksum 与 24 个 payload 差异全部是 CRLF，不是远端损坏。历史中文阶段报告原始 20,227B / SHA256 4a8200df7ab052252286084897e3aae8dc25a9a17372f0247e10b707f07d373f 完整保留。\\n    17\\t- [历史资产矩阵](<.worktrees/drecover001-20261117/docs/evidence/drecover001/historical_asset_matrix.json>)含每条路径的全部 blob 版本。阶段索引 17 个摘要声明：8 找到身份、8 未找到、1 是短摘要不能证明身份；此为声明数，不是文件数。图表 source 55 个摘要声明中 13 找到、42 未找到。历史 verified=true/PASS 仅是历史叙述，不是当前验收。\\n    18\\t\\n    19\\t## 2. 最小恢复集合与严重度\\n    20\\t\\n    21\\t| 严重度 / 角色 | 当前材料 | 必须恢复的最小能力；验证前不得放行 |\\n    22\\t|---|---|---|\\n    23\\t| P0 / A1 | 旧几何源码在；指定修正版 13,654B / d20ee7adc38286c7da3ef3ea5aa5be8204596d491d6601b9a635b0ae5213dc56 不在可达 blob 中 | 绝对 XForm 模式写入+回读 fail-closed、垂尾非共面、12D active mask、固定机身、Sref、同升力 Di_N=qSrefCDi、CG/质量合同；新 freeze/replay 身份 |\\n    24\\t| P0 / A2 | 普通 BO/DE/PSO 与旧执行器代码候选在，不代表 VSPAERO 适配正确；旧精确 runner 摘要未找到 | returned-feedback ask→evaluate→tell、null 失败、skip 语义、缓存去重、actual/charged/reserved/eval/cache 分账；反事实反馈分叉测试证明下一候选非预生成 |\\n    25\\t| P0 / A3 | 历史 S1/S2/S3/meta_learning 与 tasks 源码保留；生产 T0 的六个指定完整摘要未找到 | TaskSpec/MetaDataset/MetaTrainer/AdaptationRunner/WarmStartSampler/production、真实标签 fail-closed、任务改变 deck/约束、固定任务 split 与 support/query 隔离；不能用旧 readiness 代替真实训练 |\\n    26\\t| P0 / A4 | 历史绝对路径与备份报告在，当前异机原件没有证明 | 注入根目录/fresh-clone 软件回归、固定 exe SHA、CPU 双精度、可选 GPU；批准独立故障域存储并实际下载恢复 SHA/size，不能把 D: 另目录当异机 |\\n    27\\t| P0 / A5 | 旧审查报告部分在、部分原始签署未找到；新审查未开始 | 独立实际 6-terra 签 RECOVERY_INVENTORY_PASS；R1 后再签 RESTORED_CODE_BASELINE_PASS + BACKUP_RESTORE_PASS |\\n    28\\t| P1 / Lead | 报告、账本名文件与数字在；缺 F1R2/F2R2 原始运行目录 | 保留历史实际成本，不重建旧 raw 或旧 approval；后续只预注册必要新诊断，不自动全重跑 |\\n    29\\t\\n    30\\t五条关键路径在所有 200 个可达树均不存在：production、task_spec、meta_dataset、geometry freeze、replay manifest。前六个相关 U1 文件中仅 **2 个精确字节身份保留**（设计空间 YAML 与 baseline 网格）；修正几何、bundle manifest、zero-physics audit、freeze 均未找到。\\n    31\\t\\n    32\\t特别保留：baseline 网格 **225,414B / 16da482a1f8e59f6b454378769961caafde5eef87784127db6cce87381943b84** 在 M1A 冻结路径存在，虽然旧 replay 路径不在。它是可复用的网格字节，不是完整 replay bundle、真实标签或新的物理验证。\\n    33\\t\\n    34\\t## 3. source / report / raw / replayable / physics 分层\\n    35\\t\\n    36\\t- SOURCE_CODE_PRESENT：矩阵列出 272 条研究 Python 源码路径；R1 软件回归已实施（见第 6 节），但 `RESTORED_CODE_BASELINE_PASS` 未签，仍不承诺真实 VSPAERO 可执行。"
+ },
+ {
+  "step": 13,
+  "tool": "read_text",
+  "args": {
+   "path": "docs/evidence/drecover001/issue12_consolidated_receipt_draft_20261117.md",
+   "max_lines": 60
+  },
+  "result_preview": "{\"path\": \"docs\\\\evidence\\\\drecover001\\\\issue12_consolidated_receipt_draft_20261117.md\", \"total_lines\": 58, \"start_line\": 1, \"returned_lines\": 58, \"text\": \"     1\\t# Issue #12 合并回执（草案，未发布）\\n     2\\t\\n     3\\t> **状态：DRAFT / NOT POSTED。** 本文件是 Lead 准备的唯一中文合并回执草案，用于在取得 GitHub 连通与提交身份后一次性发布到 Issue #12。它不是已发布的回执，任何自动化流程不得把它当作业已完成或门禁已签。发布前须由 A5 独立审查并核对本文件与证据 JSON 的一致性。\\n     4\\t\\n     5\\t- 日期：2026-11-17（本地）；仓库：`QingYangJin/RCAIDE_Supersonic`；基线：`4c51c7df34c9626999ef2e66e5a6c76a2b9c92e2`。\\n     6\\t- 分支 / worktree：`recovery/drecover001-20261117`（D:\\\\RCAIDE\\\\.worktrees\\\\drecover001-20261117）。\\n     7\\t- 远端 commit / ref：**无**。本机无 git author identity，且 git 无法访问 github.com（本轮复核：`Failed to connect to github.com:443 after 21071 ms: Could not connect to server`；此前亦见 `schannel: AcquireCredentialsHandle failed: SEC_E_NO_CREDENTIALS (0x8009030e)` / connection reset）；未 fetch、未 push、未合并 main，未触碰 PR #3/#6。本地变更清单：[recovery_change_manifest.json](recovery_change_manifest.json)（123 文件；逐文件 SHA256/字节见清单，未提交）。\\n     8\\t- 门禁状态：`R0_PARTIAL_NOT_AUDITED`、`R1_SOFTWARE_IN_PROGRESS_NOT_AUDITED`、`NO_PHYSICAL_GO`。A5 独立审查：`NOT_PERFORMED`（当前仅有 Lead，工具无创建子智能体/指定模型能力；Lead 不自签）。\\n     9\\t\\n    10\\t## 本轮恢复内容\\n    11\\t\\n    12\\t1. **R0 清单（未签）**：20 个远端固定 head、0 tags、200 个可达提交、4,633 对象、2,829 唯一 blob、186,537,818 字节、2,760 条历史路径逐字节审计；基线 2,109 文件 / 164,917,591 字节与 Git blob 一致；docs checksum 162 MATCH / 2 MISSING / 0 MISMATCH。\\n    13\\t2. **R0 来源扩展（本轮新增，离线）**：batch2 之外的 25 个 budget/ledger 源、58 个 raw solver 输出、62 个 solver 日志、157 个输入 deck 完成 provenance 分类；未发现额外可恢复 raw；F1R2/F2R2 原始 raw 确认 `RAW_LOST`；历史账本仅作 provenance 记录（d12d004 4/2/4、v1 4/0/4、v1b 2/0/2、batch2 8/0/8；authoritative flag=0，唯一启发式分歧已披露）。证据：[r0_provenance_extension.json](r0_provenance_extension.json)（330,839B / `b553857c…`）、[r0_provenance_extension_20261117.md](r0_provenance_extension_20261117.md)。\\n    14\\t3. **R1 软件侧（未签）**：新 TaskSpec/MetaDataset/MetaTrainer/AdaptationRunner/WarmStartSampler/ValidationSelector 合同；绝对 XForm 写读回、12D 掩码、Sref/升力 Di_N、账本所有权与不可变预留、BO/DE/PSO 反馈接线等修复；真实准入保持 fail-closed（`REAL_ADMISSION_NOT_IMPLEMENTED`）。本轮另修复 M1 批次结算异常的 fail-closed 路径：`settle`/`register_evaluation` 抛错时强制停止未结算预留、行状态覆盖为 `failed`/`objective=null`/`failure_kind=ACCOUNTING_VIOLATION`，并新增 1 项回归（M1 套件 20 项），使 `summary.accounting_resolved=false` 且未结算预留进入 unresolved，不再可能误报对账完成。另修复账本 `accounting_resolved` 的 open-reservation fail-open：未结算预留（`starts_reserved>0`）不再被视为已对账，`assert_conserved` 明确拒绝并新增 1 项账本回归（套件 229 项）。另修复 `TaskSpec` 数值表示 fail-open：`mach=1` 与 `1.0`、`altitude=0.0` 与 `-0.0` 曾产生不同 `physics_sha256`，同一物理条件可被当成新任务；现统一转 float、拒绝非有限值并把 signed zero 规范为 `0.0`，新增 2 项回归（同物理条件唯一身份、数值 clone 必须拒绝）。本轮另修复 evaluator 异常分支的 stop fail-open：`_stop_reservation` 若在 quarantine 阶段抛错，旧实现会直接抛出、没有结构化结果；现捕获并转 `STOPPED_ACCOUNTING_VIOLATION` + `failure_kind=ACCOUNTING_VIOLATION`，保留 open reservation（新增 1 项回归）。MetaDataset 同时要求 failed observation 的 `cl`/`cdi` 也为空（新增 1 项回归）。\\n    15\\t4. **M0/MAML 就绪（离线）**：M2 rehearsal `run_id=DRECOVER001-M2-REHEARSAL-20261117T160233Z`，16D 条件特征、K=0/4/10、验证早停均跑通，`SOFTWARE_FIXTURE_TRAINING_ONLY`；`production.py` 已补 `ConditionalPretrainer`/`ConditionalAdaptationRunner` fixture-only 生产入口，真实准入门仍 fail-closed；M1 批次控制路径 `run_id=DRECOVER001-M1-SOFTWARE-20261118T000000Z`，18 fixture（6 任务身份 × 3 设计）physical=0 / simulated=18 / internal=126 / charged=18，回执标记 `STRUCTURAL_SOFTWARE_FIXTURE_NOT_A_REAL_GO`。\\n    16\\t5. **软件回归**：`run_id=DRECOVER001-SOFTWARE-20261117T162945Z`，229 tests / 0 failed / 0 error / 0 skipped；preflight 记录 `a5_independent_review=NOT_PERFORMED`、`physical_go=NOT_ISSUED`、`backup_restore=NOT_ESTABLISHED`。\\n    17\\t6. **恢复门禁就绪矩阵（本轮新增，离线只读）**：聚合器 [assess_recovery_readiness.py](assess_recovery_readiness.py) 输出 [recovery_readiness.json](recovery_readiness.json) / [recovery_readiness.md](recovery_readiness.md)，`status=RECOVERY_READINESS_GATES_CLOSED_EXPECTED`、8 gate（7 `CLOSED` + 1 `CLEAN`）、`violations=0`、`blockers=8`；只证明证据一致、门禁仍按预期关闭，不是 A5 签署。\\n    18\\t7. **数据完整性修复**：`needed_for_next_run.json` 的 R1 `required` 文本曾被历史编辑截断为非法 JSON；已恢复合法 JSON，丢"
+ },
+ {
+  "step": 14,
+  "assistant": {
+   "role": "assistant",
+   "content": "",
+   "tool_calls": [
+    {
+     "function": {
+      "arguments": "{\"path\": \"docs/evidence/drecover001/local_restore_receipt.json\", \"max_chars\": 5000}",
+      "name": "json_summary"
+     },
+     "id": "call_00_p1gpzdpbu2afy4rnnz7400xp",
+     "type": "function"
+    },
+    {
+     "function": {
+      "arguments": "{\"path\": \"docs/evidence/drecover001/recovery_readiness.json\", \"max_chars\": 4000}",
+      "name": "json_summary"
+     },
+     "id": "call_01_cofzn698c4mkf5ntrv56p6r2",
+     "type": "function"
+    }
+   ],
+   "reasoning_content": "Good disclosure: issue12 draft line 44 says regenerated files marked REGENERATED_FROM_SPEC, new identity, not masquerading as old raw. Preflight origin = REGENERATED_FROM_SPEC. Good.\n\nNow, line 63 of recovery_inventory.md: \"恢复后先把被 preflight 覆盖的 80 个证据文件恢复为 bundle 原字节\" — the preflight in the restored copy overwrote 80 evidence files, then they restored bundle bytes. Then A5 packet was regenerated after restore. Wait — the A5 packet evidence index hashes include the restored evidence. But there's a subtlety: the restore process overwrote files then restored, and then regenerated readiness and packet, which the restore receipt records externally. Need to check that after final restore the 19 evidence hashes match — they do now (verified).\n\nPotential issue: 'a5_review_packet.md' on disk is 7137 bytes while the list shows 7137; the JSON is 12240. These are not in evidence_index (self-reference). Fine.\n\nNow check the local_restore_receipt.json — verify same-host only, not described as off-machine backup. Read it.\n\nAlso verify the bundle manifest baseline and scope; inspect_bundle already. Need to independently check bundle entry count 2220 (payload 2219 + manifest), path_set_equal true, bad_count 0. Also 133 overlay paths; change manifest file_count 123 — hmm, overlay 133 vs change manifest 123. 10 more overlay paths = generated after bundle (readiness, packet etc.)? Fine.\n\nLet me read local_restore_receipt.json. Also check the readiness json for the gate conditions and blockers (8 blockers). Also confirm \"destructive preflight not run in this tree\": preflight receipt origin REGENERATED_FROM_SPEC, run_id matches, hash matches; if the preflight had been rerun in this tree, the receipt hash would change (new run_id). The receipt declares origin REGENERATED_FROM_SPEC and is byte-identical to the packet hash. Also m1 and M2 hashes match. But could the preflight have been re-run with identical output? It assigns a new run_id based on time, so hash would change. So evidence supports not run. Additionally the run_recovery_preflight.py source exists; check whether it's in evidence_index? No. Good.\n\nLet me read local_restore_receipt.json and recovery_readiness.json top-level details about blockers, and check maml_readiness."
+  },
+  "finish_reason": "tool_calls"
+ },
+ {
+  "step": 14,
+  "tool": "json_summary",
+  "args": {
+   "path": "docs/evidence/drecover001/local_restore_receipt.json",
+   "max_chars": 5000
+  },
+  "result_preview": "{\"path\": \"docs\\\\evidence\\\\drecover001\\\\local_restore_receipt.json\", \"type\": \"dict\", \"keys\": [\"scope\", \"status\", \"baseline_commit\", \"bundle_path\", \"bundle_sha256\", \"restored_path\", \"files_verified\", \"overlay_files\", \"tests_run\", \"tests_passed\", \"fresh_import_origin\", \"training_status\", \"checkpoint_retrained_exact\", \"holdout_recomputed_exact\", \"evidence_files_restored\", \"bundle_manifest_verified\", \"bundle_manifest_files\", \"bundle_manifest_sha256\", \"evidence_chain_verified\", \"readiness_status\", \"readiness_violations\", \"packet_check_problems\", \"evidence_verifiers\", \"verification_passes\", \"independent_failure_domain\", \"backup_restore_pass\", \"real_meta_training_executed\", \"physical_solver_starts_actual\", \"source_sha256\"], \"scalars\": {\"scope\": \"LOCAL_SOFTWARE_RESTORE_ONLY\", \"status\": \"PASS_NOT_REMOTE_BACKUP\", \"baseline_commit\": \"4c51c7df34c9626999ef2e66e5a6c76a2b9c92e2\", \"bundle_path\": \"D:\\\\RCAIDE\\\\.recovery-local-restore\\\\20261118011500Z\\\\recovery_bundle.zip\", \"bundle_sha256\": \"bfe10ef5538cf17ccb987911389562493f8ce718d6d765fc8966a4950753b99a\", \"restored_path\": \"D:\\\\RCAIDE\\\\.recovery-local-restore\\\\20261118011500Z\\\\restored\", \"files_verified\": 2219, \"overlay_files\": 133, \"tests_run\": 229, \"tests_passed\": 229, \"fresh_import_origin\": \"RESTORED_TREE\", \"training_status\": \"SOFTWARE_FIXTURE_TRAINING_ONLY\", \"checkpoint_retrained_exact\": true, \"holdout_recomputed_exact\": true, \"evidence_files_restored\": 80, \"bundle_manifest_verified\": true, \"bundle_manifest_files\": 2219, \"bundle_manifest_sha256\": \"b492416875f0bf3d6534fc0eced7bc93fb16a75671453b2d4da6eff8124edf93\", \"evidence_chain_verified\": true, \"readiness_status\": \"RECOVERY_READINESS_GATES_CLOSED_EXPECTED\", \"verification_passes\": 2, \"independent_failure_domain\": false, \"backup_restore_pass\": false, \"real_meta_training_executed\": false, \"physical_solver_starts_actual\": 0, \"source_sha256\": \"4d6ec776a5cc4ce5b4cd5b0588f90c0a830db72022a05eae4a852f28eac28355\"}, \"nested_keys\": {\"readiness_violations\": 0, \"packet_check_problems\": 0, \"evidence_verifiers\": [\"r0_provenance\", \"m1_batch\"]}, \"truncated_json_preview\": \"{\\\"scope\\\": \\\"LOCAL_SOFTWARE_RESTORE_ONLY\\\", \\\"status\\\": \\\"PASS_NOT_REMOTE_BACKUP\\\", \\\"baseline_commit\\\": \\\"4c51c7df34c9626999ef2e66e5a6c76a2b9c92e2\\\", \\\"bundle_path\\\": \\\"D:\\\\\\\\RCAIDE\\\\\\\\.recovery-local-restore\\\\\\\\20261118011500Z\\\\\\\\recovery_bundle.zip\\\", \\\"bundle_sha256\\\": \\\"bfe10ef5538cf17ccb987911389562493f8ce718d6d765fc8966a4950753b99a\\\", \\\"restored_path\\\": \\\"D:\\\\\\\\RCAIDE\\\\\\\\.recovery-local-restore\\\\\\\\20261118011500Z\\\\\\\\restored\\\", \\\"files_verified\\\": 2219, \\\"overlay_files\\\": 133, \\\"tests_run\\\": 229, \\\"tests_passed\\\": 229, \\\"fresh_import_origin\\\": \\\"RESTORED_TREE\\\", \\\"training_status\\\": \\\"SOFTWARE_FIXTURE_TRAINING_ONLY\\\", \\\"checkpoint_retrained_exact\\\": true, \\\"holdout_recomputed_exact\\\": true, \\\"evidence_files_restored\\\": 80, \\\"bundle_manifest_verified\\\": true, \\\"bundle_manifest_files\\\": 2219, \\\"bundle_manifest_sha256\\\": \\\"b492416875f0bf3d6534fc0eced7bc93fb16a75671453b2d4da6eff8124edf93\\\", \\\"evidence_chain_verified\\\": true, \\\"readiness_status\\\": \\\"RECOVERY_READINESS_GATES_CLOSED_EXPECTED\\\", \\\"readiness_violations\\\": [], \\\"packet_check_problems\\\": [], \\\"evidence_verifiers\\\": {\\\"r0_provenance\\\": {\\\"returncode\\\": 0, \\\"status\\\": \\\"R0_PROVENANCE_EXTENSION_EVIDENCE_INTERNALLY_CONSISTENT\\\", \\\"failures\\\": [], \\\"ok\\\": true}, \\\"m1_batch\\\": {\\\"returncode\\\": 0, \\\"status\\\": \\\"M1_BATCH_EVIDENCE_INTERNALLY_CONSISTENT\\\", \\\"failures\\\": [], \\\"ok\\\": true}}, \\\"verification_passes\\\": 2, \\\"independent_failure_domain\\\": false, \\\"backup_restore_pass\\\": false, \\\"real_meta_training_executed\\\": false, \\\"physical_solver_starts_actual\\\": 0, \\\"source_sha256\\\": \\\"4d6ec776a5cc4ce5b4cd5b0588f90c0a830db72022a05eae4a852f28eac28355\\\"}\"}"
+ },
+ {
+  "step": 14,
+  "tool": "json_summary",
+  "args": {
+   "path": "docs/evidence/drecover001/recovery_readiness.json",
+   "max_chars": 4000
+  },
+  "result_preview": "{\"path\": \"docs\\\\evidence\\\\drecover001\\\\recovery_readiness.json\", \"type\": \"dict\", \"keys\": [\"schema\", \"generated_utc\", \"root\", \"gates\", \"git\", \"counts\", \"violations\", \"missing_evidence\", \"blockers\", \"software_run_id\", \"physical_solver_starts_actual\", \"internal_solver_cases_actual\", \"real_meta_training_executed\", \"admitted_real_labels\", \"ready_for_physical\", \"ready_for_real_meta_training\", \"status\", \"disclosure\"], \"scalars\": {\"schema\": \"drecover001.recovery_readiness.v1\", \"generated_utc\": \"2026-11-18T05:46:37Z\", \"root\": \"D:\\\\RCAIDE\\\\.worktrees\\\\drecover001-20261117\", \"software_run_id\": \"DRECOVER001-SOFTWARE-20261117T162945Z\", \"physical_solver_starts_actual\": 0, \"internal_solver_cases_actual\": 0, \"real_meta_training_executed\": false, \"admitted_real_labels\": 0, \"ready_for_physical\": false, \"ready_for_real_meta_training\": false, \"status\": \"RECOVERY_READINESS_GATES_CLOSED_EXPECTED\", \"disclosure\": \"Offline evidence aggregation only. No solver start, no network, no new physical evidence, no A5 signature. A CLOSED gate is expected and is not a PASS.\"}, \"gates_type\": \"list\", \"gates_len\": 8, \"counts_type\": \"dict\", \"counts_len\": 8, \"violations_type\": \"list\", \"violations_len\": 0, \"blockers_type\": \"list\", \"blockers_len\": 8, \"nested_keys\": {\"gates\": 8, \"git\": [\"head\", \"branch\", \"dirty_paths\", \"head_error\", \"author_email_configured\", \"author_email_error\"], \"counts\": [\"gates\", \"clean\", \"closed\", \"unknown\", \"conflict\", \"violations\", \"missing\", \"blockers\"], \"violations\": 0, \"missing_evidence\": 0, \"blockers\": 8}, \"truncated_json_preview\": \"{\\\"schema\\\": \\\"drecover001.recovery_readiness.v1\\\", \\\"generated_utc\\\": \\\"2026-11-18T05:46:37Z\\\", \\\"root\\\": \\\"D:\\\\\\\\RCAIDE\\\\\\\\.worktrees\\\\\\\\drecover001-20261117\\\", \\\"gates\\\": [{\\\"id\\\": \\\"R0_INVENTORY\\\", \\\"title\\\": \\\"R0 loss ledger and provenance inventory\\\", \\\"state\\\": \\\"CLOSED\\\", \\\"checks\\\": [{\\\"name\\\": \\\"inventory_status_expected\\\", \\\"status\\\": \\\"PASS\\\", \\\"detail\\\": \\\"status='R0_PARTIAL_NOT_AUDITED'\\\"}, {\\\"name\\\": \\\"inventory_gate_unsigned\\\", \\\"status\\\": \\\"PASS\\\", \\\"detail\\\": \\\"gate_verdict='NOT_SIGNED_R0_INCOMPLETE'\\\"}, {\\\"name\\\": \\\"independent_review_not_started\\\", \\\"status\\\": \\\"PASS\\\", \\\"detail\\\": \\\"independent_review.status='NOT_STARTED'\\\"}, {\\\"name\\\": \\\"zero_physical_counters\\\", \\\"status\\\": \\\"PASS\\\", \\\"detail\\\": \\\"physical=0 internal=0\\\"}, {\\\"name\\\": \\\"zero_admitted_labels\\\", \\\"status\\\": \\\"PASS\\\", \\\"detail\\\": \\\"admitted=0\\\"}, {\\\"name\\\": \\\"byte_audit_present\\\", \\\"status\\\": \\\"PASS\\\", \\\"detail\\\": \\\"evidence='docs/evidence/drecover001/all_ref_blob_audit.json'\\\"}, {\\\"name\\\": \\\"raw_git_object_identity_verified\\\", \\\"status\\\": \\\"PASS\\\", \\\"detail\\\": \\\"raw_git_object_identity_verified=True\\\"}, {\\\"name\\\": \\\"reachable_history_documented\\\", \\\"status\\\": \\\"PASS\\\", \\\"detail\\\": \\\"commits=200 evidence='docs/evidence/drecover001/reachable_history_audit.json'\\\"}, {\\\"name\\\": \\\"provenance_extension_present\\\", \\\"status\\\": \\\"PASS\\\", \\\"detail\\\": \\\"path=docs\\\\\\\\evidence\\\\\\\\drecover001\\\\\\\\r0_provenance_extension.json\\\"}, {\\\"name\\\": \\\"provenance_extension_sha_matches_inventory\\\", \\\"status\\\": \\\"PASS\\\", \\\"detail\\\": \\\"inventory='b553857c5ce986e9fbfd7f6fa6de37d7aca42af9ade61075db6e17e87c524c37' actual='b553857c5ce986e9fbfd7f6fa6de37d7aca42af9ade61075db6e17e87c524c37'\\\"}, {\\\"name\\\": \\\"provenance_verification_status\\\", \\\"status\\\": \\\"PASS\\\", \\\"detail\\\": \\\"status='R0_PROVENANCE_EXTENSION_EVIDENCE_INTERNALLY_CONSISTENT'\\\"}, {\\\"name\\\": \\\"provenance_verification_no_failures\\\", \\\"status\\\": \\\"PASS\\\", \\\"detail\\\": \\\"failure_count=0\\\"}, {\\\"name\\\": \\\"provenance_verification_checks_positive\\\", \\\"status\\\": \\\"PASS\\\", \\\"detail\\\": \\\"check_count=328\\\"}, {\\\"name\\\": \\\"extension_sha_matches_archived_bytes\\\", \\\"status\\\": \\\"PASS\\\", \\\"detail\\\": \\\"recorded='b553857c5ce986e9fbfd7f6fa6de37d7aca42af9ade61075db6e17e87c524c37' actual='b553857c5ce986e9fbfd7f6fa6de37d7aca42af9ade61075db6e17e87c524c37'\\\"}, {\\\"name\\\": \\\"script_sha_matches_archived_bytes\\\", \\\"status\\\": \\\"PASS\\\", \\\"detail\\\": \\\"recorded='63eb6e468ce40de035b15737b5f69d63d07f0acae369c2b76b4b1e41c0e7bb6e' actua"
+ },
+ {
+  "step": 15,
+  "assistant": {
+   "role": "assistant",
+   "content": "",
+   "tool_calls": [
+    {
+     "function": {
+      "arguments": "{\"pattern\": \"write_text|write_bytes|open\\\\(|OUTPUT|recovery_readiness\", \"path\": \"docs/evidence/drecover001\", \"include\": \"assess_recovery_readiness.py\", \"max_matches\": 40}",
+      "name": "grep_text"
+     },
+     "id": "call_00_jz13wrrdi6ax31fuma0oyzn2",
+     "type": "function"
+    },
+    {
+     "function": {
+      "arguments": "{\"path\": \"docs/evidence/drecover001/assess_recovery_readiness.py\"}",
+      "name": "sha256_file"
+     },
+     "id": "call_01_en1oncjja0nqpcd5jf7we1jy",
+     "type": "function"
+    }
+   ],
+   "reasoning_content": "Everything consistent. Readiness generated_utc 2026-11-18T05:46:37Z — later than packet generated 04:56:18Z. That's because assess_readiness rewrote recovery_readiness.json at 05:46 during my run? Wait — I just ran assess_readiness, which may have regenerated recovery_readiness.json! Hmm, the command was documented as non-destructive. Does assess_recovery_readiness.py write files? Let's check: it may write recovery_readiness.json/md. If it did, that would modify the tree — but the instruction says worktree frozen, and the command list is sanctioned as non-destructive. The generated_utc 05:46:37Z is likely from an earlier run (the current time unknown). Actually my calls happened just now; what's the current time? The packet generated 2026-11-18T04:56:18Z, restore receipt directory 20261118011500Z. Readiness at 05:46:37Z is after packet generation 04:56. So likely from a run around 05:46 (perhaps the Lead's final verification). Hmm, but could my assess_readiness call have rewritten it at 05:46:37Z? That would mean current UTC is ~05:46. Plausible! If assess_readiness writes the readiness file, my run would have modified the tree, contradicting \"non-destructive\". Let me check the source of assess_recovery_readiness.py to see whether it writes files, and its hash. The change manifest lists assess_recovery_readiness.py sha 450898832c... Let me check the script for write_text.\n\nAlso the readiness json hash isn't in the evidence index, so no mismatch. But if my command rewrote it, that's a concern about the \"non-destructive\" claim and about the frozen worktree. Let me read the tail of assess_recovery_readiness.py."
+  },
+  "finish_reason": "tool_calls"
+ },
+ {
+  "step": 15,
+  "tool": "grep_text",
+  "args": {
+   "pattern": "write_text|write_bytes|open\\(|OUTPUT|recovery_readiness",
+   "path": "docs/evidence/drecover001",
+   "include": "assess_recovery_readiness.py",
+   "max_matches": 40
+  },
+  "result_preview": "{\"matches\": [{\"path\": \"docs\\\\evidence\\\\drecover001\\\\assess_recovery_readiness.py\", \"line\": 24, \"text\": \"READINESS_FILES = {\\\"recovery_readiness.json\\\", \\\"recovery_readiness.md\\\"}\"}, {\"path\": \"docs\\\\evidence\\\\drecover001\\\\assess_recovery_readiness.py\", \"line\": 106, \"text\": \"        \\\"docs/evidence/drecover001/recovery_readiness.json\\\",\"}, {\"path\": \"docs\\\\evidence\\\\drecover001\\\\assess_recovery_readiness.py\", \"line\": 107, \"text\": \"        \\\"docs/evidence/drecover001/recovery_readiness.md\\\",\"}, {\"path\": \"docs\\\\evidence\\\\drecover001\\\\assess_recovery_readiness.py\", \"line\": 576, \"text\": \"    report = {\\\"schema\\\": \\\"drecover001.recovery_readiness.v1\\\",\"}, {\"path\": \"docs\\\\evidence\\\\drecover001\\\\assess_recovery_readiness.py\", \"line\": 659, \"text\": \"    out = Path(args.out) if args.out else Path(args.root) / EVIDENCE_REL / \\\"recovery_readiness.json\\\"\"}, {\"path\": \"docs\\\\evidence\\\\drecover001\\\\assess_recovery_readiness.py\", \"line\": 660, \"text\": \"    md = Path(args.md) if args.md else Path(args.root) / EVIDENCE_REL / \\\"recovery_readiness.md\\\"\"}, {\"path\": \"docs\\\\evidence\\\\drecover001\\\\assess_recovery_readiness.py\", \"line\": 662, \"text\": \"    out.write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding=\\\"utf-8\\\")\"}, {\"path\": \"docs\\\\evidence\\\\drecover001\\\\assess_recovery_readiness.py\", \"line\": 663, \"text\": \"    md.write_text(render_markdown(report), encoding=\\\"utf-8\\\")\"}], \"files_scanned\": 1, \"truncated\": false}"
+ },
+ {
+  "step": 15,
+  "tool": "sha256_file",
+  "args": {
+   "path": "docs/evidence/drecover001/assess_recovery_readiness.py"
+  },
+  "result_preview": "{\"path\": \"D:\\\\RCAIDE\\\\.worktrees\\\\drecover001-20261117\\\\docs\\\\evidence\\\\drecover001\\\\assess_recovery_readiness.py\", \"bytes\": 34560, \"sha256\": \"450898832ca2122332a105c09f4d5c46abde682c5e8d70f98f8becf74058118c\"}"
+ },
+ {
+  "step": 16,
+  "assistant": {
+   "role": "assistant",
+   "content": "Note: `assess_recovery_readiness.py` rewrites readiness files, and `verify_m1_batch_evidence.py` rewrites a hashed evidence file. Since I verified hashes *before* running commands, I must re-verify the full index afterwards.",
+   "tool_calls": [
+    {
+     "function": {
+      "arguments": "{}",
+      "name": "verify_packet_evidence"
+     },
+     "id": "call_00_d50sye022vgc756xud9wg4si",
+     "type": "function"
+    },
+    {
+     "function": {
+      "arguments": "{\"pattern\": \"write_text|write_bytes\", \"path\": \"docs/evidence/drecover001\", \"include\": \"verify_r0_provenance_extension.py\", \"max_matches\": 20}",
+      "name": "grep_text"
+     },
+     "id": "call_01_fuypjwn1bzr407qe7kbh1eqo",
+     "type": "function"
+    }
+   ],
+   "reasoning_content": "So assess_recovery_readiness.py writes recovery_readiness.json and .md by default. My run of it regenerated those two files. That is a write to the worktree — but self-excluded from the change manifest (READINESS_FILES excluded). This is a disclosure: the documented \"non-destructive\" reproduction step #1 actually rewrites readiness artifacts (self-referential exclusion). The packet's known_limitations mentions \"The readiness matrix is regenerated evidence; this packet quotes its status but intentionally does not embed its file hash.\" And assess script excludes readiness files from the change manifest. So it's disclosed as regenerated, self-excluded, and not in evidence index → the four commands don't alter any hashed evidence. So the \"non-destructive\" claim is scoped: it doesn't alter hashed evidence, but it does rewrite readiness outputs. Also build_a5_review_packet.py --check — check mode should not write. verify_r0 and verify_m1: do they write? verify_m1_batch_evidence.py writes m1_batch_software_verification.json (line 86 target.write_text)! Wait — that file IS in the evidence index with hash e0e678b2... If running verify_m1 rewrites it, the hash could change (indentation/ordering). It writes deterministic content, so it should produce the same bytes — that's why hash matches after run (verified before I ran it though). Hmm: order of operations: I called verify_packet_evidence BEFORE running the commands. So the hashes verified were pre-run. If verify_m1 rewrote m1_batch_software_verification.json, the current bytes might differ. I should re-verify evidence hashes AFTER running the commands to confirm the whole chain is stable — that's exactly checklist item 6 (\"Confirm ... every evidence_index hash still matches on disk\"). I must re-run verify_packet_evidence now. Good catch.\n\nSimilarly verify_r0_provenance_extension.py may write r0_provenance_extension_verification.json. Let me check. And reassess hashes.\n\nLet me re-run verify_packet_evidence."
+  },
+  "finish_reason": "tool_calls"
+ },
+ {
+  "step": 16,
+  "tool": "verify_packet_evidence",
+  "args": {},
+  "result_preview": "{\"packet\": \"docs\\\\evidence\\\\drecover001\\\\a5_review_packet.json\", \"entries\": 19, \"verified\": 19, \"mismatch_count\": 0, \"mismatches\": [], \"rows\": [{\"path\": \"docs/evidence/drecover001/recovery_inventory.json\", \"exists\": true, \"declared_bytes\": 18205, \"actual_bytes\": 18205, \"declared_sha256\": \"65df586e7067f20767ff6419d6d00bb2a769df780ad1b2c41be92ac409aa4a43\", \"actual_sha256\": \"65df586e7067f20767ff6419d6d00bb2a769df780ad1b2c41be92ac409aa4a43\", \"ok\": true}, {\"path\": \"docs/evidence/drecover001/recovery_inventory.md\", \"exists\": true, \"declared_bytes\": 20216, \"actual_bytes\": 20216, \"declared_sha256\": \"7ef7933caa21457b6c484416f313f290c48a3913e4357bea0edb90d81ec7a2ce\", \"actual_sha256\": \"7ef7933caa21457b6c484416f313f290c48a3913e4357bea0edb90d81ec7a2ce\", \"ok\": true}, {\"path\": \"docs/evidence/drecover001/all_ref_blob_audit.json\", \"exists\": true, \"declared_bytes\": 6308435, \"actual_bytes\": 6308435, \"declared_sha256\": \"ad8222e8965c5a5fa3834f29b4309ff7cea71d71729100f245d29984e10a1613\", \"actual_sha256\": \"ad8222e8965c5a5fa3834f29b4309ff7cea71d71729100f245d29984e10a1613\", \"ok\": true}, {\"path\": \"docs/evidence/drecover001/reachable_history_audit.json\", \"exists\": true, \"declared_bytes\": 1309494, \"actual_bytes\": 1309494, \"declared_sha256\": \"ba8f65fd5f1bc4f6eebe980dad3992b853360acf9b01ebf508c79d49f001d6dc\", \"actual_sha256\": \"ba8f65fd5f1bc4f6eebe980dad3992b853360acf9b01ebf508c79d49f001d6dc\", \"ok\": true}, {\"path\": \"docs/evidence/drecover001/r0_provenance_extension.json\", \"exists\": true, \"declared_bytes\": 330839, \"actual_bytes\": 330839, \"declared_sha256\": \"b553857c5ce986e9fbfd7f6fa6de37d7aca42af9ade61075db6e17e87c524c37\", \"actual_sha256\": \"b553857c5ce986e9fbfd7f6fa6de37d7aca42af9ade61075db6e17e87c524c37\", \"ok\": true}, {\"path\": \"docs/evidence/drecover001/r0_provenance_extension_20261117.md\", \"exists\": true, \"declared_bytes\": 6794, \"actual_bytes\": 6794, \"declared_sha256\": \"bdf7380e4d0c9368b3128d51b52de652ea21bf06a7d2d107edc674914d54327f\", \"actual_sha256\": \"bdf7380e4d0c9368b3128d51b52de652ea21bf06a7d2d107edc674914d54327f\", \"ok\": true}, {\"path\": \"docs/evidence/drecover001/r0_provenance_extension_verification.json\", \"exists\": true, \"declared_bytes\": 81117, \"actual_bytes\": 81117, \"declared_sha256\": \"73b99833c7f86c5ef317dc21ca83a3ae0537170384309c6d1dbf07af7dbcb3b5\", \"actual_sha256\": \"73b99833c7f86c5ef317dc21ca83a3ae0537170384309c6d1dbf07af7dbcb3b5\", \"ok\": true}, {\"path\": \"docs/evidence/drecover001/needed_for_next_run.json\", \"exists\": true, \"declared_bytes\": 18157, \"actual_bytes\": 18157, \"declared_sha256\": \"23e92281901061a016bbf3401fbb41252c516959e75a061b3d2bc01e612c6d4e\", \"actual_sha256\": \"23e92281901061a016bbf3401fbb41252c516959e75a061b3d2bc01e612c6d4e\", \"ok\": true}, {\"path\": \"docs/evidence/drecover001/recovery_preflight_receipt.json\", \"exists\": true, \"declared_bytes\": 7358, \"actual_bytes\": 7358, \"declared_sha256\": \"d41d1b7f374d52d52038f428da1666ac30a6c41dd924dc60e131751384b97a64\", \"actual_sha256\": \"d41d1b7f374d52d52038f428da1666ac30a6c41dd924dc60e131751384b97a64\", \"ok\": true}, {\"path\": \"docs/evidence/drecover001/synthetic_software_training_trace.json\", \"exists\": true, \"declared_bytes\": 6328, \"actual_bytes\": 6328, \"declared_sha256\": \"8d3be1525e4b2c18459c9f5d1ad21997920c58fbc5c43d932f933e6fed19ca94\", \"actual_sha256\": \"8d3be1525e4b2c18459c9f5d1ad21997920c58fbc5c43d932f933e6fed19ca94\", \"ok\": true}, {\"path\": \"docs/evidence/drecover001/synthetic_software_checkpoint.json\", \"exists\": true, \"declared_bytes\": 9081, \"actual_bytes\": 9081, \"declared_sha256\": \"0211bc97e73418722d60e45c3eb2dd812686cc17cc412f99168b227f0dc7b155\", \"actual_sha256\": \"0211bc97e73418722d60e45c3eb2dd812686cc17cc412f99168b227f0dc7b155\", \"ok\": true}, {\"path\": \"docs/evidence/drecover001/m1_batch_software_rehearsal_receipt.json\", \"exists\": true, \"declared_bytes\": 3468, \"actual_bytes\": 3468, \"declared_sha256\": \"526d337ae54fb6849fc6822f032560b3c9a3a21ba39395a5c18594f1479ab7f5\", \"actual_sha256\": \"526d337ae54fb6849fc6822f032560b3c9a3a21ba39395a5c18594f1479ab7f5\", \"ok\": true}, {\"path\": \"docs/evidence/drecover00"
+ },
+ {
+  "step": 16,
+  "tool": "grep_text",
+  "args": {
+   "pattern": "write_text|write_bytes",
+   "path": "docs/evidence/drecover001",
+   "include": "verify_r0_provenance_extension.py",
+   "max_matches": 20
+  },
+  "result_preview": "{\"matches\": [{\"path\": \"docs\\\\evidence\\\\drecover001\\\\verify_r0_provenance_extension.py\", \"line\": 127, \"text\": \"    OUT.write_text(json.dumps(result, indent=2, ensure_ascii=False) + \\\"\\\\n\\\", encoding=\\\"utf-8\\\")\"}], \"files_scanned\": 1, \"truncated\": false}"
+ }
+]

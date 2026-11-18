@@ -45,14 +45,24 @@ import sys
 import traceback
 from pathlib import Path
 
+_OPENVSP_DLL_HANDLES = []  # add_dll_directory handles must outlive native calls.
+
 OPENVSP_PYTHON_SUBDIRS = ("python", os.path.join("python", "openvsp"),
                           os.path.join("python", "degen_geom"),
                           os.path.join("python", "utilities"))
 
 
 def import_openvsp(openvsp_root):
-    root = Path(openvsp_root)
-    for subdir in OPENVSP_PYTHON_SUBDIRS:
+    root = Path(openvsp_root).resolve()
+    if hasattr(os, "add_dll_directory"):
+        _OPENVSP_DLL_HANDLES.append(os.add_dll_directory(str(root)))
+    # New distributions package openvsp_config one level deeper. Adding python/
+    # then imports a namespace lacking LOAD_GRAPHICS instead of that package.
+    nested_config = root / "python" / "openvsp_config" / "openvsp_config" / "__init__.py"
+    subdirs = (tuple(os.path.join("python", name) for name in
+                     ("openvsp_config", "openvsp", "degen_geom", "utilities"))
+               if nested_config.is_file() else OPENVSP_PYTHON_SUBDIRS)
+    for subdir in subdirs:
         candidate = str(root / subdir)
         if candidate not in sys.path:
             sys.path.insert(0, candidate)
@@ -72,11 +82,48 @@ def _require_xsec_count(vsp, surf, expected, name):
                            % (name, expected, actual))
 
 
+def _apply_absolute_transform(vsp, geom, spec):
+    """Set world-frame placement and fail if OpenVSP silently rejects it.
+
+    This is a regenerated software repair, not proof of exported mesh semantics.
+    Geometry placement must be checked on fresh real OpenVSP exports separately.
+    """
+    expected = {"Abs_Or_Relitive_flag": float(vsp.ABS)}
+    for suffix, key in (("Location", "location"), ("Rotation", "rotation")):
+        values = spec.get(key, [0.0, 0.0, 0.0])
+        if len(values) != 3:
+            raise ValueError("%s must contain exactly three values" % key)
+        for axis, value in zip(("X", "Y", "Z"), values):
+            value = float(value)
+            if not math.isfinite(value):
+                raise ValueError("%s must contain finite values" % key)
+            expected[axis + "_" + suffix] = value
+    handles = {}
+    for name in expected:
+        handle = vsp.GetParm(geom, name, "XForm")
+        if not handle:
+            raise RuntimeError("component %s: missing XForm parameter %s"
+                               % (spec["name"], name))
+        handles[name] = handle
+    # Select the absolute frame before writing locations or rotations. Do not
+    # depend on version-specific default frame settings or unchecked overloads.
+    for name, value in expected.items():
+        _set(vsp, handles[name], value)
+    for name, value in expected.items():
+        actual = float(vsp.GetParmVal(handles[name]))
+        if not math.isfinite(actual) or not math.isclose(actual, value, rel_tol=0.0, abs_tol=1.0e-8):
+            raise RuntimeError("component %s: XForm %s rejected (%r != %r)"
+                               % (spec["name"], name, actual, value))
+
+
 def _add_wing(vsp, spec):
     name = spec["name"]
     sections = spec["sections"]
     if len(sections) < 2:
         raise RuntimeError("wing %s needs at least two sections" % name)
+    thickness = spec.get("thickness_to_chord")
+    if isinstance(thickness, bool) or not isinstance(thickness, (float, int)) or not math.isfinite(thickness) or not 0.0 < thickness < 1.0:
+        raise ValueError("wing %s requires finite thickness_to_chord in (0, 1)" % name)
     geom = vsp.AddGeom("WING")
     vsp.SetGeomName(geom, name)
     for index in range(1, len(sections) - 1):
@@ -113,15 +160,30 @@ def _add_wing(vsp, spec):
         _set(vsp, vsp.GetXSecParm(xsec, "Twist_Location"), 0.0)
     _set(vsp, vsp.GetXSecParm(vsp.GetXSec(surf, len(sections) - 1), "Tip_Chord"), chords[-1])
 
-    location = spec.get("location", [0.0, 0.0, 0.0])
-    rotation = spec.get("rotation", [0.0, 0.0, 0.0])
-    for axis, value in zip(("X", "Y", "Z"), location):
-        vsp.SetParmVal(geom, axis + "_Location", "XForm", float(value))
-    for axis, value in zip(("X", "Y", "Z"), rotation):
-        vsp.SetParmVal(geom, axis + "_Rotation", "XForm", float(value))
-    if not spec.get("symmetric", True):
-        vsp.SetParmVal(geom, "Sym_Planar_Flag", "Sym", 0.0)
-    vsp.Update()
+    # Airfoil thickness is independent of chord-driver mapping. Never silently
+    # accept the OpenVSP default (0.10) for this supersonic geometry.
+    thickness_handles = []
+    for index in range(len(sections)):
+        handle = vsp.GetXSecParm(vsp.GetXSec(surf, index), "ThickChord")
+        if not handle:
+            raise RuntimeError("wing %s: missing ThickChord section %d" % (name, index))
+        thickness_handles.append(handle)
+    for handle in thickness_handles:
+        _set(vsp, handle, thickness)
+    for index, handle in enumerate(thickness_handles):
+        actual = float(vsp.GetParmVal(handle))
+        if not math.isfinite(actual) or not math.isclose(actual, thickness, rel_tol=0.0, abs_tol=1e-8):
+            raise RuntimeError("wing %s: ThickChord section %d rejected" % (name, index))
+
+    # Symmetry changes may update dependent transform state, so do them first.
+    symmetry = vsp.GetParm(geom, "Sym_Planar_Flag", "Sym")
+    if not symmetry:
+        raise RuntimeError("component %s: missing planar symmetry parameter" % name)
+    symmetry_value = float(vsp.SYM_XZ) if spec.get("symmetric", True) else 0.0
+    _set(vsp, symmetry, symmetry_value)
+    if float(vsp.GetParmVal(symmetry)) != symmetry_value:
+        raise RuntimeError("component %s: planar symmetry rejected" % name)
+    _apply_absolute_transform(vsp, geom, spec)
     return geom
 
 
@@ -167,6 +229,7 @@ def _add_fuselage(vsp, spec):
         if abs(actual - positions[index]) > 1.0e-9:
             raise RuntimeError("fuselage %s: section %d position rejected (%r != %r)"
                                % (name, index, actual, positions[index]))
+    _apply_absolute_transform(vsp, geom, spec)
     return geom
 
 

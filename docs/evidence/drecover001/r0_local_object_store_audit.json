@@ -1,0 +1,30 @@
+{
+  "schema": "drecover001.r0_local_object_store_audit.v1",
+  "scope": "LOCAL_GIT_OBJECT_STORE_ONLY_NOT_REMOTE_REAUDIT",
+  "head": "4c51c7df34c9626999ef2e66e5a6c76a2b9c92e2",
+  "refs_total": 24,
+  "tags_total": 0,
+  "count_objects": {
+    "count": 0,
+    "size": 0,
+    "in-pack": 4633,
+    "packs": 1,
+    "size-pack": 45894,
+    "prune-packable": 0,
+    "garbage": 1,
+    "size-garbage": 0
+  },
+  "command": "git fsck --full --unreachable --no-reflogs",
+  "fsck_returncode": 0,
+  "unreachable_objects": 0,
+  "unreachable_lines": [],
+  "warning_lines": [],
+  "count_objects_warning_lines": [
+    "warning: garbage found: D:/RCAIDE/.git/worktrees/drecover001-20261117/refs"
+  ],
+  "fsck_output_sha256": "9f3f0a9698fa98ea3b18499eb24bd36f34b447a47b846922e828930d0b0a8707",
+  "conclusion": "NO_UNREACHABLE_GIT_OBJECTS; missing critical paths are not recoverable from dangling local objects",
+  "physical_solver_starts_actual": 0,
+  "network_used": false,
+  "limitation": "A local fsck cannot prove the remote server has no hidden refs; the reachable-history audit covers the 20 API-verified remote heads."
+}

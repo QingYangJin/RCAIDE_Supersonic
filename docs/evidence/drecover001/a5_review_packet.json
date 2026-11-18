@@ -1,0 +1,373 @@
+{
+  "schema": "drecover001.a5_review_packet.v1",
+  "generated_utc": "2026-11-18T06:37:42Z",
+  "root": "D:\\RCAIDE\\.worktrees\\drecover001-20261117",
+  "scope": "READ_ONLY_EVIDENCE_AGGREGATION_FOR_INDEPENDENT_A5_REVIEW",
+  "attestation": {
+    "physical_solver_starts_actual": 0,
+    "internal_solver_cases_actual": 0,
+    "real_meta_training_executed": false,
+    "admitted_real_labels": 0,
+    "a5_review_performed": true,
+    "a5_reviewer": "deepseek-flash",
+    "a5_verdict_recorded": "CHANGES_REQUIRED",
+    "a5_human_signature": false,
+    "physical_go_issued": false,
+    "backup_restore_established": false,
+    "off_machine_backup_waived_by_owner": true,
+    "new_scientific_evidence_created": false,
+    "network_used": false
+  },
+  "software_run_id": "DRECOVER001-SOFTWARE-20261118T062546Z",
+  "software_tests": {
+    "run": 230,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "gate_states": {
+    "R0_INVENTORY": "CLOSED",
+    "R1_SOFTWARE": "CLOSED",
+    "M1_BATCH_CONTROL_PATH": "CLOSED",
+    "M2_OFFLINE_REHEARSAL": "CLOSED",
+    "BACKUP_INDEPENDENT_FAILURE_DOMAIN": "WAIVED",
+    "A5_INDEPENDENT_REVIEW": "CLOSED",
+    "REAL_ADMISSION": "CLOSED",
+    "EVIDENCE_MANIFEST": "CLEAN"
+  },
+  "owner_waiver": {
+    "waiver_id": "WAIVER-OFFMACHINE-BACKUP-20261118",
+    "owner_message_ref": "m03569",
+    "scope": "OFF_MACHINE_INDEPENDENT_FAILURE_DOMAIN_BACKUP",
+    "waived": true,
+    "owner_message_quote": "2：这个没有独立存储位置，忽略这一项目，后续只需要在本机及逆行操作",
+    "effect": "The off-machine/independent failure-domain backup requirement is waived for the Issue #12 recovery. Only a same-host restore is required.",
+    "not_waived": [
+      "same-host restore must be labelled explicitly as NOT an off-machine backup",
+      "backup_restore_pass stays false and independent_failure_domain stays false",
+      "no physical solver start, no real-label admission and no M1/M2 real training is authorized"
+    ],
+    "file": "docs/evidence/drecover001/owner_waiver_offmachine_backup_20261118.json"
+  },
+  "a5_review": {
+    "performed": true,
+    "reviewer": "deepseek-flash",
+    "reviewer_role": "authorized independent subagent created by the Lead at the Owner's instruction (m03569)",
+    "human_signature": false,
+    "verdict": "CHANGES_REQUIRED",
+    "gate_verdicts": {
+      "R0_INVENTORY": "PASS_WITH_DISCLOSURE",
+      "R1_SOFTWARE": "PASS",
+      "M1_BATCH_CONTROL_PATH": "PASS",
+      "M2_OFFLINE_REHEARSAL": "PASS",
+      "BACKUP_INDEPENDENT_FAILURE_DOMAIN": "WAIVED_BY_OWNER",
+      "A5_INDEPENDENT_REVIEW": "PASS",
+      "REAL_ADMISSION": "FAIL",
+      "EVIDENCE_MANIFEST": "PASS"
+    },
+    "findings": [
+      {
+        "severity": "major",
+        "finding": "Same-host restore receipt lacks the owner-required 'not-an-off-machine-backup' label.",
+        "evidence": "local_restore_receipt keys shown include scope,status,bundle_path,... no such label"
+      },
+      {
+        "severity": "major",
+        "finding": "Packet reports BACKUP_INDEPENDENT_FAILURE_DOMAIN CLOSED, conflicting with owner waiver; should be WAIVED_BY_OWNER.",
+        "evidence": "packet_check gate_states BACKUP_INDEPENDENT_FAILURE_DOMAIN: CLOSED"
+      },
+      {
+        "severity": "minor",
+        "finding": "R0 inventory is R0_PARTIAL_NOT_AUDITED, so R0 should pass only with disclosure.",
+        "evidence": "grep: 'Confirm the R0 inventory still says R0_PARTIAL_NOT_AUDIT...'"
+      },
+      {
+        "severity": "info",
+        "finding": "REAL_ADMISSION remains fail-closed; no R2 preregistration or Lead batch GO is shown, so physics is not authorized.",
+        "evidence": "packet claim: Real admission remains fail-closed with REAL..."
+      }
+    ],
+    "harness": null,
+    "signature": "deepseek-flash independent A5 review; not a human signature",
+    "is_not_an_approval": "The recorded verdict is review input, not a human signature and not a physical-run authorization.",
+    "files": [
+      "docs/evidence/drecover001/a5_review_verdict.json",
+      "docs/evidence/drecover001/a5_review_transcript.json"
+    ]
+  },
+  "readiness_matrix": {
+    "path": "docs/evidence/drecover001/recovery_readiness.json",
+    "status": "RECOVERY_READINESS_GATES_CLOSED_EXPECTED",
+    "generated_utc": "2026-11-18T06:37:42Z",
+    "note": "status is quoted, not hashed, to avoid a self-referential hash cycle; rerun the aggregator to verify"
+  },
+  "claims": [
+    {
+      "claim": "R0 inventory, provenance and loss ledger are complete as offline records, not independently audited",
+      "gate": "R0_INVENTORY",
+      "state": "CLOSED"
+    },
+    {
+      "claim": "R1 software baseline passes 230 offline tests; fixture-only training changes parameters and checkpoint roundtrips",
+      "gate": "R1_SOFTWARE",
+      "state": "CLOSED"
+    },
+    {
+      "claim": "M1 batch control path is exercised with a structural placeholder authorization, not a real GO",
+      "gate": "M1_BATCH_CONTROL_PATH",
+      "state": "CLOSED"
+    },
+    {
+      "claim": "M2 offline rehearsal is deterministic across repeated runs; it is not real meta-training",
+      "gate": "M2_OFFLINE_REHEARSAL",
+      "state": "CLOSED"
+    },
+    {
+      "claim": "Only a same-host restore test exists and is explicitly labelled NOT an off-machine backup; the off-machine failure-domain requirement is waived by the Owner (WAIVER-OFFMACHINE-BACKUP-20261118, m03569) but backup_restore_pass remains false",
+      "gate": "BACKUP_INDEPENDENT_FAILURE_DOMAIN",
+      "state": "WAIVED"
+    },
+    {
+      "claim": "A5 independent review was performed by the authorized deepseek-flash subagent (read-only tools); its verdict is recorded, it is not a human signature, and it is not an approval for physical runs",
+      "gate": "A5_INDEPENDENT_REVIEW",
+      "state": "CLOSED"
+    },
+    {
+      "claim": "Real admission remains fail-closed with REAL_ADMISSION_NOT_IMPLEMENTED",
+      "gate": "REAL_ADMISSION",
+      "state": "CLOSED"
+    }
+  ],
+  "evidence_index": [
+    {
+      "path": "docs/evidence/drecover001/recovery_inventory.json",
+      "bytes": 18205,
+      "sha256": "65df586e7067f20767ff6419d6d00bb2a769df780ad1b2c41be92ac409aa4a43",
+      "claim": "R0 loss ledger and provenance inventory",
+      "gate": "R0_INVENTORY",
+      "in_change_manifest": true
+    },
+    {
+      "path": "docs/evidence/drecover001/recovery_inventory.md",
+      "bytes": 20930,
+      "sha256": "43dc411bb4d303bc7db478883c851045504809ee8a6f084f38111b2dc9bc8bae",
+      "claim": "R0 human-readable inventory",
+      "gate": "R0_INVENTORY",
+      "in_change_manifest": true
+    },
+    {
+      "path": "docs/evidence/drecover001/all_ref_blob_audit.json",
+      "bytes": 6308435,
+      "sha256": "ad8222e8965c5a5fa3834f29b4309ff7cea71d71729100f245d29984e10a1613",
+      "claim": "R0 remote-ref byte/blob audit",
+      "gate": "R0_INVENTORY",
+      "in_change_manifest": true
+    },
+    {
+      "path": "docs/evidence/drecover001/reachable_history_audit.json",
+      "bytes": 1309494,
+      "sha256": "ba8f65fd5f1bc4f6eebe980dad3992b853360acf9b01ebf508c79d49f001d6dc",
+      "claim": "R0 reachable-history audit",
+      "gate": "R0_INVENTORY",
+      "in_change_manifest": true
+    },
+    {
+      "path": "docs/evidence/drecover001/r0_provenance_extension.json",
+      "bytes": 330839,
+      "sha256": "b553857c5ce986e9fbfd7f6fa6de37d7aca42af9ade61075db6e17e87c524c37",
+      "claim": "R0 provenance extension records",
+      "gate": "R0_INVENTORY",
+      "in_change_manifest": true
+    },
+    {
+      "path": "docs/evidence/drecover001/r0_provenance_extension_20261117.md",
+      "bytes": 6794,
+      "sha256": "bdf7380e4d0c9368b3128d51b52de652ea21bf06a7d2d107edc674914d54327f",
+      "claim": "R0 provenance extension summary",
+      "gate": "R0_INVENTORY",
+      "in_change_manifest": true
+    },
+    {
+      "path": "docs/evidence/drecover001/r0_provenance_extension_verification.json",
+      "bytes": 81117,
+      "sha256": "73b99833c7f86c5ef317dc21ca83a3ae0537170384309c6d1dbf07af7dbcb3b5",
+      "claim": "R0 archived-byte self-verification",
+      "gate": "R0_INVENTORY",
+      "in_change_manifest": true
+    },
+    {
+      "path": "docs/evidence/drecover001/needed_for_next_run.json",
+      "bytes": 19663,
+      "sha256": "edceccd8d1be1e54fa064f0c747fd3fb7d18220018172d2f071107dc8395c0f6",
+      "claim": "R0/R1/R2 handoff requirements",
+      "gate": "R0_INVENTORY",
+      "in_change_manifest": true
+    },
+    {
+      "path": "docs/evidence/drecover001/recovery_preflight_receipt.json",
+      "bytes": 7358,
+      "sha256": "cff5cc1f4d3ed81e1f9164a0b877c2bf441d0f27f11f86eccf497c5e793b1e39",
+      "claim": "R1 software preflight receipt",
+      "gate": "R1_SOFTWARE",
+      "in_change_manifest": true
+    },
+    {
+      "path": "docs/evidence/drecover001/synthetic_software_training_trace.json",
+      "bytes": 6327,
+      "sha256": "290dccc5bc06cd80b445d2bb8c2a36460a1c944eb2a5cf632680f1ffa74fbd65",
+      "claim": "R1 fixture training trace",
+      "gate": "R1_SOFTWARE",
+      "in_change_manifest": true
+    },
+    {
+      "path": "docs/evidence/drecover001/synthetic_software_checkpoint.json",
+      "bytes": 9081,
+      "sha256": "0211bc97e73418722d60e45c3eb2dd812686cc17cc412f99168b227f0dc7b155",
+      "claim": "R1 fixture checkpoint roundtrip artifact",
+      "gate": "R1_SOFTWARE",
+      "in_change_manifest": true
+    },
+    {
+      "path": "docs/evidence/drecover001/m1_batch_software_rehearsal_receipt.json",
+      "bytes": 3468,
+      "sha256": "526d337ae54fb6849fc6822f032560b3c9a3a21ba39395a5c18594f1479ab7f5",
+      "claim": "M1 control-path rehearsal receipt",
+      "gate": "M1_BATCH_CONTROL_PATH",
+      "in_change_manifest": true
+    },
+    {
+      "path": "docs/evidence/drecover001/m1_batch_software_result.json",
+      "bytes": 12411,
+      "sha256": "63ee7a6a868f5f1b9abda6a55480e1e72068a6ec4ee9f7fdc075a3e4df96fac8",
+      "claim": "M1 control-path result",
+      "gate": "M1_BATCH_CONTROL_PATH",
+      "in_change_manifest": true
+    },
+    {
+      "path": "docs/evidence/drecover001/m1_batch_software_verification.json",
+      "bytes": 1785,
+      "sha256": "e0e678b2c24ded6056e1dc63ec02858d215b4c31ba251f8424584c3dcf657d15",
+      "claim": "M1 artifact verification",
+      "gate": "M1_BATCH_CONTROL_PATH",
+      "in_change_manifest": true
+    },
+    {
+      "path": "docs/evidence/drecover001/m2_offline_rehearsal_receipt.json",
+      "bytes": 33973,
+      "sha256": "232551c3a7eb996d7b9edf0fe156d2e3fd6e23d1db574c6e7e4a0cd46dadc0bc",
+      "claim": "M2 offline rehearsal receipt",
+      "gate": "M2_OFFLINE_REHEARSAL",
+      "in_change_manifest": true
+    },
+    {
+      "path": "docs/evidence/drecover001/m2_rehearsal_repeat_check.json",
+      "bytes": 1862,
+      "sha256": "8f6ad3e69462f1b3c16970f7cd9194de50b17352e3d540ef251e1c50e9c64c10",
+      "claim": "M2 repeatability check",
+      "gate": "M2_OFFLINE_REHEARSAL",
+      "in_change_manifest": true
+    },
+    {
+      "path": "docs/evidence/drecover001/local_restore_receipt.json",
+      "bytes": 2099,
+      "sha256": "6f82dd68db850b693d3ab6e59d5bf251736046f4b8bd2b34d813c247bd223cde",
+      "claim": "same-host restore test explicitly labelled not an off-machine backup",
+      "gate": "BACKUP_INDEPENDENT_FAILURE_DOMAIN",
+      "in_change_manifest": false,
+      "manifest_exclusion_reason": "generated after the bundle exists; excluded from the bundle manifest to avoid a self-referential hash"
+    },
+    {
+      "path": "docs/evidence/drecover001/owner_waiver_offmachine_backup_20261118.json",
+      "bytes": 839,
+      "sha256": "b9edcaae932060bc684972427d34b6f3247e1dc6cade83a599e7d25c8ac0bb68",
+      "claim": "Owner waiver of the off-machine failure-domain backup",
+      "gate": "BACKUP_INDEPENDENT_FAILURE_DOMAIN",
+      "in_change_manifest": true
+    },
+    {
+      "path": "docs/evidence/drecover001/a5_review_verdict.json",
+      "bytes": 3551,
+      "sha256": "e6cfc666c0491b281e0a3c7c621b6de7529d41470ea8f257420d19e5fe9af7df",
+      "claim": "A5 verdict from the authorized deepseek-flash subagent (not a human signature)",
+      "gate": "A5_INDEPENDENT_REVIEW",
+      "in_change_manifest": true
+    },
+    {
+      "path": "docs/evidence/drecover001/a5_review_transcript.json",
+      "bytes": 155516,
+      "sha256": "71e08f219ae7c3759f1a20714ccd037138897afed99ecfd5904986c10d943deb",
+      "claim": "Read-only A5 inspection transcript (16 tool steps before HTTP 524)",
+      "gate": "A5_INDEPENDENT_REVIEW",
+      "in_change_manifest": true
+    },
+    {
+      "path": "docs/evidence/drecover001/issue12_consolidated_receipt_draft_20261117.md",
+      "bytes": 10259,
+      "sha256": "5c98d20cfbb4d1f6b92c695ad7702aa0db4614fa5c7a0c8f814eb07a8521f3b6",
+      "claim": "Issue #12 receipt draft (not posted)",
+      "gate": "EVIDENCE_MANIFEST",
+      "in_change_manifest": true
+    },
+    {
+      "path": "docs/evidence/drecover001/maml_readiness_20261117.md",
+      "bytes": 10287,
+      "sha256": "69bfbdfbfb55fc70cc45fac514fa51509cf74ee751a075cf6352bc5919831e56",
+      "claim": "MAML offline readiness summary",
+      "gate": "M2_OFFLINE_REHEARSAL",
+      "in_change_manifest": true
+    }
+  ],
+  "open_external_gates": [
+    {
+      "gate": "A5_INDEPENDENT_REVIEW",
+      "state": "CLOSED",
+      "required": "A deepseek-flash subagent performed a read-only review and recorded a verdict (not a human signature). Owner acceptance of that verdict is still external; the Lead must not upgrade it to a human sign-off."
+    },
+    {
+      "gate": "BACKUP_INDEPENDENT_FAILURE_DOMAIN",
+      "state": "WAIVED",
+      "required": "WAIVED by Owner (m03569): only a same-host restore is required. The same-host restore is still not an off-machine backup; backup_restore_pass stays false and the receipt must keep the explicit label."
+    },
+    {
+      "gate": "REAL_ADMISSION",
+      "state": "CLOSED",
+      "required": "Implement and independently audit raw parsing, signed manifests, task-deck binding and gate checks; this is intentionally blocked now."
+    },
+    {
+      "gate": "R2_BATCH_GO",
+      "state": "NOT_ISSUED",
+      "required": "After the above, A5 and Lead must pre-register a new batch with new ids, budget, stop conditions and approval; no physical run is authorized by this packet."
+    }
+  ],
+  "known_limitations": [
+    "A CLOSED gate is expected and is not a PASS.",
+    "The off-machine failure-domain backup is WAIVED by the Owner (m03569); the same-host restore receipt is explicitly labelled SAME_HOST_RESTORE_NOT_AN_OFF_MACHINE_BACKUP and backup_restore_pass remains false. WAIVED is not a PASS.",
+    "The A5 review was performed by a deepseek-flash subagent with read-only tools; it is not a human signature and does not by itself authorize physical runs. It returned CHANGES_REQUIRED, and the Lead must close or disclose each finding.",
+    "Two files named real_openvsp_geometry_probe.json exist: docs/evidence/drecover001/real_openvsp_geometry_probe.json is the pre-repair SURFACE_DIAGNOSTIC_FAIL snapshot; the authoritative post-repair record is docs/evidence/drecover001/a1_thickness_repair/real_openvsp_geometry_probe.json (SURFACE_DIAGNOSTIC_PASS_NOT_FREEZE). Neither is a solver freeze or physics validation.",
+    "research/concorde_metaopt/dreal001/meta/m2_rehearsal.py hardcodes three native_probe_status PASS strings into its geometry contract; the rehearsal therefore asserts, rather than reads, those probe statuses.",
+    "needed_for_next_run.json had a truncated R1 requirement tail; it is valid JSON now but the lost tail is marked UNKNOWN and is not evidence.",
+    "The evidence tree is uncommitted: no git author identity is configured and github.com is unreachable from this host.",
+    "Some R0 report claims are REPORT_PRESENT only; raw identity is not established for all historical numbers.",
+    "The M1 run uses a structural placeholder authorization and simulated starts.",
+    "The readiness matrix is regenerated evidence; this packet quotes its status but intentionally does not embed its file hash.",
+    "run_recovery_preflight.py is deliberately excluded from the non-destructive reproduction list: it assigns a new run_id and overwrites the preflight receipt, trace and checkpoint hashed here. Rerun the suite only inside a restored copy of the bundle, never in this frozen evidence tree."
+  ],
+  "reproduction": [
+    "D:/Anaconda/envs/RCAIDE/python.exe docs/evidence/drecover001/assess_recovery_readiness.py",
+    "D:/Anaconda/envs/RCAIDE/python.exe docs/evidence/drecover001/verify_r0_provenance_extension.py",
+    "D:/Anaconda/envs/RCAIDE/python.exe docs/evidence/drecover001/verify_m1_batch_evidence.py",
+    "D:/Anaconda/envs/RCAIDE/python.exe docs/evidence/drecover001/build_a5_review_packet.py --check"
+  ],
+  "review_checklist": [
+    "Confirm every evidence_index hash against the bytes on disk.",
+    "Confirm physical/internal counters are 0 and no admitted real labels exist.",
+    "Confirm the R0 inventory still says R0_PARTIAL_NOT_AUDITED and keeps RAW_LOST items raw-lost.",
+    "Confirm R1 changes do not overwrite historical raw data or S1/S2/S3 negative results.",
+    "Confirm REAL_ADMISSION remains fail-closed and no placeholder is presented as a real GO.",
+    "Confirm the destructive preflight was NOT run in this tree and every evidence_index hash still matches on disk.",
+    "Record an explicit verdict: APPROVE_FOR_R2, REJECT, or CHANGES_REQUIRED, with scope and date."
+  ],
+  "requested_a5_verdict": null,
+  "recorded_a5_verdict": "CHANGES_REQUIRED",
+  "disclosure": "This packet is input to review, not a review. It creates no evidence, no approval, no budget and no physical authorization."
+}

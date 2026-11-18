@@ -18,6 +18,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import math
+import sys
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -699,7 +700,7 @@ def _base_run_config(config: M5RunnerConfig, *, stage: str, git_state: Mapping[s
 
 
 def _running_commands(config: M5RunnerConfig) -> list[str]:
-    base = "D:/RCAIDE/envs/RCAIDE/python.exe -E -s -B -m research.concorde_metaopt.meta_learning.m5_runner"
+    base = f"{sys.executable} -E -s -B -m research.concorde_metaopt.meta_learning.m5_runner"
     common = f"--run-id {config.run_id} --output-root {Path(config.output_root).as_posix()}"
     return [f"{base} --stage {stage} {common}" for stage in STAGES]
 

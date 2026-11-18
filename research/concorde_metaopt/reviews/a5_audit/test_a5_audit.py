@@ -1,7 +1,7 @@
 r"""A5 复核脚本单测：只读、纯 stdlib、构造最小合成证据包做断言回归。
 
 运行：
-  & D:\RCAIDE\envs\RCAIDE\python.exe -m pytest research/concorde_metaopt/reviews/a5_audit -q
+  & <python> -m pytest research/concorde_metaopt/reviews/a5_audit -q
 """
 
 from __future__ import annotations

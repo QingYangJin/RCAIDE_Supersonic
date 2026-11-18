@@ -7,7 +7,8 @@ r"""D-NEXT-001 / A5 独立复核脚本：只读证据收集 + 断言检查。
 - FAIL 仅用于"证据被篡改/自相矛盾/断言被证伪"；证据缺失或外部化而无法复核一律 NOT_RUN/NOT_VALIDATED，不得升级为 FAIL，也不得降级为 PASS。
 
 用法示例（PowerShell）：
-  & D:\RCAIDE\envs\RCAIDE\python.exe research\concorde_metaopt\reviews\a5_audit\a5_audit.py --s3-root D:\RCAIDE-s3-dev --out docs\reviews\dnext001_a5_sample_audit_output_20261110.json --md docs\reviews\dnext001_a5_sample_audit_output_20261110.md
+  & <python> research\concorde_metaopt\reviews\a5_audit\a5_audit.py --s3-root <s3-worktree> --dnext-root <dnext-worktrees-root> --out docs\reviews\dnext001_a5_sample_audit_output_20261110.json --md docs\reviews\dnext001_a5_sample_audit_output_20261110.md
+  （根目录必须显式注入或通过 RCAIDE_S3_ROOT / RCAIDE_DNEXT_ROOT 提供；缺失时退出码 2，不静默回退到硬编码路径。）
 
 退出码：0 = 无 FAIL；2 = 存在 FAIL；3 = 证据根缺失/不可读。
 """
@@ -19,6 +20,7 @@ import csv
 import datetime as _dt
 import hashlib
 import json
+import os
 import re
 import sys
 from pathlib import Path
@@ -46,7 +48,8 @@ NC15_REQUIRED_KEYS = (
     "con_minus_obj_shuffled",
 )
 
-DEFAULT_DNEXT_ROOT = Path(r"D:\RCAIDE\dnext001")
+S3_ROOT_ENV = "RCAIDE_S3_ROOT"
+DNEXT_ROOT_ENV = "RCAIDE_DNEXT_ROOT"
 BINARY_SUFFIXES = {".png", ".jpg", ".jpeg", ".webp", ".gif", ".zip", ".gz", ".npz", ".npy", ".pt", ".ckpt", ".pdf"}
 DOWNSTREAM_ROLES = {"a1": "wt-a1", "a2": "wt-a2", "a3": "wt-a3", "a4": "wt-a4"}
 
@@ -680,12 +683,18 @@ def render_markdown(report: Mapping[str, Any]) -> str:
 
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="D-NEXT-001 A5 独立只读复核（S3 归档 + 下游产物存在性）")
-    parser.add_argument("--s3-root", default=str(Path(r"D:\RCAIDE-s3-dev")), help="S3 只读工作树根（含 research/concorde_metaopt/evidence/s3）")
-    parser.add_argument("--dnext-root", default=str(DEFAULT_DNEXT_ROOT), help="D-NEXT-001 worktrees 根（含 wt-a1..wt-a4）")
+    parser.add_argument("--s3-root", default=os.environ.get(S3_ROOT_ENV, ""), help="S3 只读工作树根（含 research/concorde_metaopt/evidence/s3）；也可用 RCAIDE_S3_ROOT 注入")
+    parser.add_argument("--dnext-root", default=os.environ.get(DNEXT_ROOT_ENV, ""), help="D-NEXT-001 worktrees 根（含 wt-a1..wt-a4）；也可用 RCAIDE_DNEXT_ROOT 注入")
     parser.add_argument("--out", default="", help="JSON 输出路径；为空则打印到 stdout")
     parser.add_argument("--md", default="", help="Markdown 输出路径")
     args = parser.parse_args(argv)
 
+    if not args.s3_root:
+        print("S3 root is not injected: pass --s3-root or set " + S3_ROOT_ENV, file=sys.stderr)
+        return 2
+    if not args.dnext_root:
+        print("D-NEXT root is not injected: pass --dnext-root or set " + DNEXT_ROOT_ENV, file=sys.stderr)
+        return 2
     s3_root = Path(args.s3_root)
     evidence_root = s3_root / S3_EVIDENCE_RELPATH
     if not evidence_root.is_dir():

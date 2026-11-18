@@ -118,7 +118,18 @@ from .p2a_v2_runtime import (
 REPO_ROOT = Path(__file__).resolve().parents[4]
 RUN_DIR = REPO_ROOT / "research/concorde_metaopt/dreal001/runs/DREAL001-P2A2R10-20261111-01"
 PKG_DIR = RUN_DIR
-DEFAULT_A1_ROOT = Path(r"D:\RCAIDE\dnext001\wt-real-a1-geometry-solver")
+A1_ROOT_ENV = "RCAIDE_A1_ROOT"
+DEFAULT_A1_ROOT: Optional[Path] = None
+
+
+def resolve_a1_root(a1_root: Optional[Path] = None) -> Path:
+    """Return the injected A1 source root; never fall back to a hard-coded path."""
+    value = a1_root if a1_root is not None else os.environ.get(A1_ROOT_ENV)
+    if not value:
+        raise ValueError(
+            "A1 root is not injected: pass a1_root/--a1-root or set " + A1_ROOT_ENV
+        )
+    return Path(value)
 APPROVAL_FILENAME = "approval.DRAFT.json"
 IDENTITY_FILENAME = "identity_binding.json"
 INITIAL_MANIFEST_FILENAME = "initial_designs_manifest.json"
@@ -208,7 +219,7 @@ def _import_a1(a1_root: Path, module_name: str) -> Any:
 
 
 def a1_binding(a1_root: Optional[Path] = None) -> dict[str, Any]:
-    root = Path(a1_root) if a1_root is not None else DEFAULT_A1_ROOT
+    root = resolve_a1_root(a1_root)
     files = [
         _file_binding(root / FREEZE_API_REL, "A1_FREEZE_API"),
         _file_binding(root / EVALUATOR_REL, "A1_EVALUATOR_V1_2"),
@@ -562,7 +573,7 @@ def preregistration_text(plan_sha: str = "", a1: Optional[Mapping[str, Any]] = N
 
 
 def _preflight_binding(bundle_path: Optional[Path] = None, a1_root: Optional[Path] = None) -> dict[str, Any]:
-    root = Path(a1_root) if a1_root is not None else DEFAULT_A1_ROOT
+    root = resolve_a1_root(a1_root)
     path = Path(bundle_path) if bundle_path is not None else Path(A1_PREFLIGHT_BUNDLE_PATH)
     if not path.is_file():
         path = root / "research/concorde_metaopt/dreal001/geometry/replay_bundles/P2A_V2_PREFLIGHT_20261111/bundle_manifest.json"
@@ -704,7 +715,7 @@ def build_plan(*, prereg_sha256: str, prereg_path: Path,
         "pair_manifest_sha256": FROZEN_PAIR_MANIFEST_SHA256,
         "pair_manifest_path": A1_PAIR_MANIFEST_PATH,
         "policy_doc_path": str(Path(prereg_path).resolve()),
-        "builder_code_path": str((Path(a1.get("a1_root", DEFAULT_A1_ROOT)) / "research/concorde_metaopt/dreal001/geometry/openvsp_model.py").resolve()),
+        "builder_code_path": str((resolve_a1_root(a1.get("a1_root")) / "research/concorde_metaopt/dreal001/geometry/openvsp_model.py").resolve()),
         "builder_code_sha256": a1.get("builder_code_sha256"),
         "builder_code_bundle_sha256": a1.get("builder_code_bundle_sha256"),
         "evaluator_code_sha256": a1.get("evaluator_code_sha256"),
@@ -1601,7 +1612,7 @@ def build_approval_draft(*, plan: Mapping[str, Any], plan_sha256: str, plan_byte
         "identity_binding_note": "identity_binding_sha256 is the internal canonical digest (identity_sha256 field excluded); identity_binding_file_sha256 is the SHA256 of the identity_binding.json file bytes.",
         "policy_doc_path": str(Path(prereg_path).resolve()),
         "policy_doc_sha256": sha256_file(prereg_path),
-        "builder_code_path": str((Path(a1.get("a1_root", DEFAULT_A1_ROOT)) / "research/concorde_metaopt/dreal001/geometry/openvsp_model.py").resolve()),
+        "builder_code_path": str((resolve_a1_root(a1.get("a1_root")) / "research/concorde_metaopt/dreal001/geometry/openvsp_model.py").resolve()),
         "pair_manifest_sha256": FROZEN_PAIR_MANIFEST_SHA256,
         "pair_manifest_path": A1_PAIR_MANIFEST_PATH,
         "pair_manifest_role": "schema and initial-design binding only; not an approval of future designs",
@@ -1963,7 +1974,7 @@ def run_dry_run(*, plan_path: Path, approval_path: Path, prereg_path: Path,
                 initial_manifest_path: Path, identity_path: Path,
                 a1_root: Optional[Path] = None, out_path: Optional[Path] = None,
                 now_utc: Optional[str] = None) -> dict[str, Any]:
-    root = Path(a1_root) if a1_root is not None else DEFAULT_A1_ROOT
+    root = resolve_a1_root(a1_root)
     now_utc = now_utc or utc_now()
     plan_bytes = Path(plan_path).read_bytes()
     plan = json.loads(plan_bytes)
@@ -2087,7 +2098,7 @@ def build_package(*, out_dir: Optional[Path] = None, a1_root: Optional[Path] = N
                   prereg_path: Optional[Path] = None,
                   preflight_bundle: Optional[Path] = None,
                   previous_plan_sha256: str = "") -> dict[str, Any]:
-    root = Path(a1_root) if a1_root is not None else DEFAULT_A1_ROOT
+    root = resolve_a1_root(a1_root)
     out = Path(out_dir) if out_dir is not None else RUN_DIR
     out.mkdir(parents=True, exist_ok=True)
     a1 = a1_binding(root)
@@ -2222,7 +2233,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     parser.add_argument("--json", action="store_true")
     args = parser.parse_args(argv)
     out = Path(args.out) if args.out else RUN_DIR
-    root = Path(args.a1_root) if args.a1_root else DEFAULT_A1_ROOT
+    root = resolve_a1_root(Path(args.a1_root) if args.a1_root else None)
     if args.command == "build":
         result = build_package(out_dir=out, a1_root=root,
                                prereg_path=Path(args.prereg) if args.prereg else None)
