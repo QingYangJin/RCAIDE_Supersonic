@@ -14,8 +14,8 @@
     "local_restore_receipt": "docs/evidence/drecover001/local_restore_receipt.json",
     "local_restore_status": "PASS_NOT_REMOTE_BACKUP; bundle sha256 3088b3166ba4009f92d453785be3e117a7b4015dfdf40457aea1d0b5565b181e; 58419708 bytes; 2241 files verified; 54 overlay files; 247 tests pass; retrained checkpoint and heldout JSON exact; 98 evidence files restored to bundle bytes; bundle_manifest_verified=true; bundle_manifest_sha256=5392a6d392e76edd38039e730c15267a70342e7f18170221448c81fe2febfd1b; evidence_chain_verified=true; evidence_verifiers=both ok; readiness=RECOVERY_READINESS_GATES_CLOSED_EXPECTED (7 CLOSED+1 CLEAN+1 WAIVED); packet_check_problems=[]; verification_passes=2; off_machine_backup=false; backup_label=SAME_HOST_RESTORE_NOT_AN_OFF_MACHINE_BACKUP; owner_waiver=WAIVER-OFFMACHINE-BACKUP-20261118; independent_failure_domain=false",
     "latest_issue_number": 12,
-    "independent_team_recheck": "Owner authorized the Lead to create a deepseek-flash subagent for the A5 review (m03569). It ran read-only outside the Agent Teams board and recorded verdict CHANGES_REQUIRED (not a human signature); its two major findings were addressed. The Agent Teams board still has 0 shared tasks and list_agents returns only lead.",
-    "blocking_condition_persistence": "Unresolved: A5 review is a deepseek-flash subagent verdict, not a human signature; no git identity for CLI transport (GitHub API write used for the snapshot branch); REAL_ADMISSION protocol implemented but zero real raw admitted and F1R2/F2R2 remain RAW_LOST; R2 is not preregistered and NO_PHYSICAL_GO holds. Off-machine backup requirement is waived by the Owner (m03569).",
+    "independent_team_recheck": "Owner authorized the Lead to create a deepseek-flash subagent for the A5 review (m03569). It ran read-only outside the Agent Teams board and recorded verdict CHANGES_REQUIRED (not a human signature); its two major findings were addressed. The Agent Teams board still has 0 shared tasks and list_agents returns only lead. A second single-shot dossier review of c0723397 also returned CHANGES_REQUIRED (7 major + 3 minor); a5_finding_disposition_20261118.md records the disposition of every prior and current finding.",
+    "blocking_condition_persistence": "Unresolved: A5 review is a deepseek-flash subagent verdict, not a human signature; no git identity for CLI transport (GitHub API write used for the snapshot branch); REAL_ADMISSION protocol implemented but zero real raw admitted and F1R2/F2R2 remain RAW_LOST; R2 is not preregistered and NO_PHYSICAL_GO holds. Off-machine backup requirement is waived by the Owner (m03569). The second A5 review (c0723397) still returns CHANGES_REQUIRED; no human/Owner signature exists.",
     "requested_user_actions": [],
     "execution_policy": "User enabled team collaboration and requested autonomous handling of other matters. Do not repeat environment/storage/identity questions; use existing authorized resources. Missing independent evidence remains unverified, not waived.",
     "fixture_holdout_receipt": "docs/evidence/drecover001/synthetic_fixture_holdout.json",
@@ -34,7 +34,20 @@
         "same-host restore receipt lacked an explicit not-an-off-machine-backup label",
         "packet reported the backup gate CLOSED instead of the Owner waiver"
       ],
-      "major_findings_status": "ADDRESSED_IN_THIS_REVISION; the verdict itself is not an approval and does not authorize physical runs"
+      "major_findings_status": "01c9274 findings addressed with machine-checkable evidence (receipt label, WAIVED gate); not an approval and does not authorize physical runs",
+      "latest_review": {
+        "reviewed_commit": "c072339730f33a64d70aac2b2114797bb085ad1d",
+        "mode": "single_shot_read_only_dossier_no_tools",
+        "verdict": "CHANGES_REQUIRED",
+        "major_findings": 7,
+        "minor_findings": 3,
+        "human_signature": false,
+        "physical_go_granted": false,
+        "verdict_file": "docs/evidence/drecover001/a5_review_verdict_c0723397.json",
+        "dossier_file": "docs/evidence/drecover001/a5_review_dossier_c0723397.txt",
+        "disposition_file": "docs/evidence/drecover001/a5_finding_disposition_20261118.md",
+        "note": "Review input only; the reviewer had no tools and did not inspect files independently."
+      }
     },
     "owner_waiver": {
       "waiver_id": "WAIVER-OFFMACHINE-BACKUP-20261118",
@@ -44,7 +57,7 @@
       "same_host_backup_label": "SAME_HOST_RESTORE_NOT_AN_OFF_MACHINE_BACKUP",
       "backup_restore_pass": false
     },
-    "software_run_id": "DRECOVER001-SOFTWARE-20261118T114410Z",
+    "software_run_id": "DRECOVER001-SOFTWARE-20261118T120547Z",
     "software_tests": {
       "run": 247,
       "passed": 247,
@@ -96,7 +109,7 @@
     {
       "id": "AGENTS",
       "state": "MISSING_CAPABILITY",
-      "required": "The Owner authorized the Lead to create a deepseek-flash subagent for A5 (m03569); it performed a read-only review and recorded verdict CHANGES_REQUIRED, which is not a human signature. The Agent Teams board still has 0 shared tasks; Lead must not self-sign or upgrade a subagent verdict to a human sign-off."
+      "required": "The Owner authorized the Lead to create a deepseek-flash subagent for A5 (m03569); it performed a read-only review and recorded verdict CHANGES_REQUIRED, which is not a human signature. The Agent Teams board still has 0 shared tasks; Lead must not self-sign or upgrade a subagent verdict to a human sign-off. A second single-shot dossier review of clean snapshot c0723397 also returned CHANGES_REQUIRED (7 major + 3 minor); dispositions are recorded in a5_finding_disposition_20261118.md and no finding is closed by assertion."
     },
     {
       "id": "R0",
@@ -106,7 +119,7 @@
     {
       "id": "R1",
       "state": "PARTIAL_SOFTWARE_ONLY",
-      "required": "TaskSpec numeric identities normalized (mach/altitude int-vs-float and signed zero cannot create distinct physics). New TaskSpec/MetaDataset/MetaTrainer/AdaptationRunner/WarmStartSampler recovery contracts added; 247 software/mock/math/backend tests pass (run_id DRECOVER001-SOFTWARE-20261118T114410Z), none skipped; CPU float64 FOMAML and pooled pretraining each executed20steps on synthetic fixtures, parameters changed and local checkpoint roundtrip passed. Training remains SOFTWARE_FIXTURE_TRAINING_ONLY, not real-task training. Absolute XForm/symmetry write/readback repaired with mock rejection tests; real mesh semantics not validated. Portable local restore now verifies the embedded bundle manifest (2241 files) and the restored evidence chain (98 files, 2 verifier+readiness+packet passes) for bundle 3088b3166ba4009f92d453785be3e117a7b4015dfdf40457aea1d0b5565b181e, but it remains same-host PASS_NOT_REMOTE_BACKUP with independent_failure_domain=false. Real production admission deliberately disabled, not T0 readiness PASS. Initial BO tell wiring and error/null/feasible feedback restored; explicit regenerated RECOVERY_NUMPY_RBF_GP_EI_V1 backend mathematically tested, not historical maml_opt recovery or true physics evidence. Regenerated callback-only DE/rand1/bin and synchronous PSO now execute with bounded requests and feedback tests; not original algorithm recovery. YAML provenance quoting repaired without value changes. In-memory ledger ownership and immutable reservations hardened; 12 tests reject forged/foreign tokens, invalid integer costs, double settlement and cancellation of charged costs; Seven additional tests verify single/batch callback exceptions, interruptions and malformed returned costs quarantine the reservation and block new starts without fabricating actual usage; summary refuses accounting completion; an open (reserved but unsettled) start also keeps accounting_resolved=false and assert_conserved refuses to sign off. This quarantine is in-memory only, with no crash recovery or external incident reconciliation; actual spawn/end/raw provenance remains unverified. Legacy integration still blocked by frozen config/loader contradiction and Windows temp/cache permissions (4 setup errors, not passes). Offline raw artifact consistency added with 18 synthetic-byte tests: task/design/geometry plus mesh/deck/polar SHA binding, deck flow/grid checks and only actual matched-lift polar rows; self-consistent fabricated bytes do not authenticate a run and return real_admission=false. Adaptation now rejects support/query coordinate over... (line truncated to 2000 chars)"
+      "required": "TaskSpec numeric identities normalized (mach/altitude int-vs-float and signed zero cannot create distinct physics). New TaskSpec/MetaDataset/MetaTrainer/AdaptationRunner/WarmStartSampler recovery contracts added; 247 software/mock/math/backend tests pass (run_id DRECOVER001-SOFTWARE-20261118T120547Z), none skipped; CPU float64 FOMAML and pooled pretraining each executed20steps on synthetic fixtures, parameters changed and local checkpoint roundtrip passed. Training remains SOFTWARE_FIXTURE_TRAINING_ONLY, not real-task training. Absolute XForm/symmetry write/readback repaired with mock rejection tests; real mesh semantics not validated. Portable local restore now verifies the embedded bundle manifest (2241 files) and the restored evidence chain (98 files, 2 verifier+readiness+packet passes) for bundle 3088b3166ba4009f92d453785be3e117a7b4015dfdf40457aea1d0b5565b181e, but it remains same-host PASS_NOT_REMOTE_BACKUP with independent_failure_domain=false. Real production admission deliberately disabled, not T0 readiness PASS. Initial BO tell wiring and error/null/feasible feedback restored; explicit regenerated RECOVERY_NUMPY_RBF_GP_EI_V1 backend mathematically tested, not historical maml_opt recovery or true physics evidence. Regenerated callback-only DE/rand1/bin and synchronous PSO now execute with bounded requests and feedback tests; not original algorithm recovery. YAML provenance quoting repaired without value changes. In-memory ledger ownership and immutable reservations hardened; 12 tests reject forged/foreign tokens, invalid integer costs, double settlement and cancellation of charged costs; Seven additional tests verify single/batch callback exceptions, interruptions and malformed returned costs quarantine the reservation and block new starts without fabricating actual usage; summary refuses accounting completion; an open (reserved but unsettled) start also keeps accounting_resolved=false and assert_conserved refuses to sign off. This quarantine is in-memory only, with no crash recovery or external incident reconciliation; actual spawn/end/raw provenance remains unverified. Legacy integration still blocked by frozen config/loader contradiction and Windows temp/cache permissions (4 setup errors, not passes). Offline raw artifact consistency added with 18 synthetic-byte tests: task/design/geometry plus mesh/deck/polar SHA binding, deck flow/grid checks and only actual matched-lift polar rows; self-consistent fabricated bytes do not authenticate a run and return real_admission=false. Adaptation now rejects support/query coordinate over... (line truncated to 2000 chars)"
     },
     {
       "id": "BACKUP",
@@ -131,7 +144,7 @@
     {
       "id": "MAML_READINESS",
       "state": "SOFTWARE_REHEARSAL_READY_REAL_TRAINING_BLOCKED",
-      "required": "Blocked on R0 A5 human/Owner acceptance of the subagent verdict, RESTORED_CODE_BASELINE_PASS without an independent failure domain (waived), REAL_ADMISSION_NOT_IMPLEMENTED, A1 freeze reissue, new R2 gate plus Lead batch GO, and a remotely verifiable commit (no git identity / GitHub write)."
+      "required": "Blocked on R0 A5 human/Owner acceptance of the subagent verdict, RESTORED_CODE_BASELINE_PASS without an independent failure domain (waived), REAL_ADMISSION_NOT_IMPLEMENTED, A1 freeze reissue, new R2 gate plus Lead batch GO, and a remotely verifiable commit (no git identity / GitHub write). The second A5 review of c0723397 is also CHANGES_REQUIRED; its open blockers B1/B7 (no real raw admission, no real M1 GO) and the absence of a human/Owner signature remain."
     },
     {
       "id": "M1_BATCH_CONTROL_PATH",
@@ -231,7 +244,7 @@
     "json": "docs/evidence/drecover001/a5_review_packet.json",
     "md": "docs/evidence/drecover001/a5_review_packet.md",
     "generator": "docs/evidence/drecover001/build_a5_review_packet.py",
-    "evidence_count": 19,
+    "evidence_count": 39,
     "a5_verdict": null,
     "note": "READ_ONLY_AGGREGATION_NOT_A_REVIEW; no signature and no physical GO"
   }

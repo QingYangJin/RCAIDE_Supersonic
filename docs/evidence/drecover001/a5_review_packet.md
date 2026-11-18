@@ -1,8 +1,8 @@
 # A5 独立审查包（只读聚合）
 
-- 生成时间（UTC）：2026-11-18T11:51:44Z
+- 生成时间（UTC）：2026-11-18T12:06:52Z
 - 范围：READ_ONLY_EVIDENCE_AGGREGATION_FOR_INDEPENDENT_A5_REVIEW
-- 软件 run_id：DRECOVER001-SOFTWARE-20261118T114410Z
+- 软件 run_id：DRECOVER001-SOFTWARE-20261118T120547Z
 - 离线测试：247 项，失败 0，错误 0，跳过 0
 - 物理求解器启动：0；内部求解案例：0；真实元训练：false；真实标签：0
 - 异机备份：Owner 已豁免（m03569），只做同机恢复；同机恢复标注为非异机备份，backup_restore_pass 仍为 false。
@@ -23,13 +23,13 @@
 ## 可复核证据（逐文件 SHA256）
 
 - docs/evidence/drecover001/recovery_inventory.json（18205 字节）：65df586e7067f20767ff6419d6d00bb2a769df780ad1b2c41be92ac409aa4a43 — R0 loss ledger and provenance inventory
-- docs/evidence/drecover001/recovery_inventory.md（25955 字节）：145d2aa88391ea4df4430c596d1a800abf9035e10e9b7fcf889496254bba9d6f — R0 human-readable inventory
+- docs/evidence/drecover001/recovery_inventory.md（26509 字节）：6a46cf1d046d1929464be4140fb0a7a4b954b2a06a9626d2ec6c16d8a3d3e116 — R0 human-readable inventory
 - docs/evidence/drecover001/all_ref_blob_audit.json（6308435 字节）：ad8222e8965c5a5fa3834f29b4309ff7cea71d71729100f245d29984e10a1613 — R0 remote-ref byte/blob audit
 - docs/evidence/drecover001/reachable_history_audit.json（1309494 字节）：ba8f65fd5f1bc4f6eebe980dad3992b853360acf9b01ebf508c79d49f001d6dc — R0 reachable-history audit
 - docs/evidence/drecover001/r0_provenance_extension.json（330839 字节）：b553857c5ce986e9fbfd7f6fa6de37d7aca42af9ade61075db6e17e87c524c37 — R0 provenance extension records
 - docs/evidence/drecover001/r0_provenance_extension_20261117.md（6794 字节）：bdf7380e4d0c9368b3128d51b52de652ea21bf06a7d2d107edc674914d54327f — R0 provenance extension summary
 - docs/evidence/drecover001/r0_provenance_extension_verification.json（81117 字节）：73b99833c7f86c5ef317dc21ca83a3ae0537170384309c6d1dbf07af7dbcb3b5 — R0 archived-byte self-verification
-- docs/evidence/drecover001/needed_for_next_run.json（21615 字节）：e2cb8f1d167aa2ccb5a899e4e04fc0f10135d8dda9ee0d10fd065df6440b9131 — R0/R1/R2 handoff requirements
+- docs/evidence/drecover001/needed_for_next_run.json（23285 字节）：158a5804f2688c76af1fa9556ab902628576dab2009c90e9105911163d6ebd45 — R0/R1/R2 handoff requirements
 - docs/evidence/drecover001/new_baseline_manifest.json（11391 字节）：f9944250699ae86994b363cc94a9cf04c4c2e7cc1568150fc1baf03c39ed21dd — R0 new-baseline identity and RAW_LOST archive policy
 - docs/evidence/drecover001/geometry_freeze_v2.json（354374 字节）：401bc6b6c605eafe416bd4b0e925d106b93673b2e4d2c21f1d21e688d7e62bf1 — A1 geometry/reference contract freeze v2 (zero physical)
 - docs/evidence/drecover001/geometry_freeze_v2.md（4099 字节）：1af6ff72afc698269edc83218aa90ce4f7a080dcdabc41020ac4ce0b83d17c21 — A1 human-readable geometry freeze v2
@@ -40,12 +40,12 @@
 - docs/evidence/drecover001/geometry_freeze_v2_artifacts/concorde_geometry_freeze_v2_main_wing.stl（653984 字节）：f5ff10e9a7c46693a9bd7e316d7fe1e21ea404bc4ae3692b6681958c03ca17b6 — A1 main-wing STL component placement artifact
 - docs/evidence/drecover001/geometry_freeze_v2_artifacts/concorde_geometry_freeze_v2_vertical_tail.stl（263430 字节）：18d8246bcd8a3dced4df96868f32c88f509faa348a3cde24f8d6e29f3e37df8f — A1 vertical-tail STL component placement artifact
 - docs/evidence/drecover001/geometry_freeze_v2_artifacts/concorde_geometry_freeze_v2_fuselage.stl（327922 字节）：dabd56e97bc480f3227650b282a318e4236d385289b79b3960e27a217a3b167a — A1 fuselage STL component placement artifact
-- docs/evidence/drecover001/recovery_preflight_receipt.json（7639 字节）：70096ac2a29a7d5d1ba31393a7b2f662f496408ebb001f1c9ad20f95a59cda10 — R1 software preflight receipt
+- docs/evidence/drecover001/recovery_preflight_receipt.json（7639 字节）：38787b65c4ee0a4d38ff90b9edbb72ea55970db9cb288791de3b96f5bb36c622 — R1 software preflight receipt
 - docs/evidence/drecover001/a2_feedback_rehearsal.json（7213 字节）：b8f5c6950d99be20c982bead819a552046b501746abbbd25ecc02df926f83436 — A2 executable BO feedback rehearsal (software only, zero physical)
 - docs/evidence/drecover001/run_a2_feedback_rehearsal.py（9649 字节）：892920f2a5792fff873bc29a210c3655702e459fd032f683974fe8692afd3573 — A2 rehearsal generator over the real ArmHarness/GP-BO path
 - research/concorde_metaopt/dreal001/meta/real_admission.py（17896 字节）：b27da1547a4b8c21395b0f637aef3f0410c357e7b7a8300ec59c16d8597cdde7 — A3 real-admission manifest/certificate protocol
 - research/concorde_metaopt/tests/test_recovery_real_admission.py（13924 字节）：1171ad3cd9c790c58dd3c0cc355e2c87e3a90473932fa37e7b06904e5f6a540c — A3 real-admission fixture tests (synthetic bytes)
-- docs/evidence/drecover001/synthetic_software_training_trace.json（6327 字节）：7ec0ff3f00dfb02468faf9ea1c0fd39367f978259b3359b4cb9053d14b4abc68 — R1 fixture training trace
+- docs/evidence/drecover001/synthetic_software_training_trace.json（6328 字节）：1231c57e77e09dd318832ab4668e64aab256ed2610baeffb527392212b436ef3 — R1 fixture training trace
 - docs/evidence/drecover001/synthetic_software_checkpoint.json（9081 字节）：0211bc97e73418722d60e45c3eb2dd812686cc17cc412f99168b227f0dc7b155 — R1 fixture checkpoint roundtrip artifact
 - docs/evidence/drecover001/m1_batch_software_rehearsal_receipt.json（3468 字节）：526d337ae54fb6849fc6822f032560b3c9a3a21ba39395a5c18594f1479ab7f5 — M1 control-path rehearsal receipt
 - docs/evidence/drecover001/m1_batch_software_result.json（12411 字节）：63ee7a6a868f5f1b9abda6a55480e1e72068a6ec4ee9f7fdc075a3e4df96fac8 — M1 control-path result
@@ -56,8 +56,11 @@
 - docs/evidence/drecover001/owner_waiver_offmachine_backup_20261118.json（839 字节）：b9edcaae932060bc684972427d34b6f3247e1dc6cade83a599e7d25c8ac0bb68 — Owner waiver of the off-machine failure-domain backup
 - docs/evidence/drecover001/a5_review_verdict.json（3551 字节）：e6cfc666c0491b281e0a3c7c621b6de7529d41470ea8f257420d19e5fe9af7df — A5 verdict from the authorized deepseek-flash subagent (not a human signature)
 - docs/evidence/drecover001/a5_review_transcript.json（155516 字节）：71e08f219ae7c3759f1a20714ccd037138897afed99ecfd5904986c10d943deb — Read-only A5 inspection transcript (16 tool steps before HTTP 524)
-- docs/evidence/drecover001/issue12_consolidated_receipt_draft_20261117.md（14869 字节）：003aead695169083075c2ad7114461e936a3b7fff30b0020b2fec4ee4bdb2b49 — Issue #12 receipt draft (not posted)
-- docs/evidence/drecover001/maml_readiness_20261117.md（11422 字节）：3ea1c2e2f36989b45b2aef6dff700c9466c0997cedfbe4757cc0cd113fefd187 — MAML offline readiness summary
+- docs/evidence/drecover001/a5_review_verdict_c0723397.json（10292 字节）：6e610fb8c8ff4a1059408d281726a632f689e582effb604367cf944b49701886 — A5 verdict on the clean pushed snapshot c0723397 (deepseek-flash, single-shot dossier mode, not a human signature)
+- docs/evidence/drecover001/a5_review_dossier_c0723397.txt（16950 字节）：2b8ccb0ca8a391e3b0ece121788b466695b8418ece125f24ba08be3159f710cc — Read-only dossier that was the sole input to the c0723397 A5 review
+- docs/evidence/drecover001/a5_finding_disposition_20261118.md（5992 字节）：3730f308886b4ac6fd5cba9b64140d8ee07f7ddeb35956c5d69117a3449d48a2 — Finding-by-finding disposition matrix for the prior and current A5 verdicts
+- docs/evidence/drecover001/issue12_consolidated_receipt_draft_20261117.md（16218 字节）：c9e2af6fecdb0eced2743052e0b9cdb2b40898c718ffb6cbd5dbf9b6af8f7f50 — Issue #12 receipt draft (not posted)
+- docs/evidence/drecover001/maml_readiness_20261117.md（11650 字节）：a53927ae05cf49e8b36661aee7af1aca70694c42fb470353a70a04a5689bcead — MAML offline readiness summary
 
 ## 已记录的 A5 审查
 
@@ -77,7 +80,8 @@
 
 - A CLOSED gate is expected and is not a PASS.
 - The off-machine failure-domain backup is WAIVED by the Owner (m03569); the same-host restore receipt is explicitly labelled SAME_HOST_RESTORE_NOT_AN_OFF_MACHINE_BACKUP and backup_restore_pass remains false. WAIVED is not a PASS.
-- The A5 review was performed by a deepseek-flash subagent with read-only tools; it is not a human signature and does not by itself authorize physical runs. It returned CHANGES_REQUIRED, and the Lead must close or disclose each finding.
+- The A5 reviews were performed by a deepseek-flash subagent; they are not human signatures and do not authorize physical runs. The 01c9274 review used read-only tools and returned CHANGES_REQUIRED; the c0723397 review was single-shot over a harness-assembled dossier with no tools (so the reviewer did not inspect files independently). Both returned CHANGES_REQUIRED. a5_finding_disposition_20261118.md records a disposition for every finding: A1/A2 fixed, A3/A4 and B1/B7 remain open blockers, the rest disclosed. No finding is closed by assertion.
+- The readiness A5 gate state CLOSED means the review evidence was checked and is internally consistent; it does not mean the reviewer approved, and it does not mean PASS.
 - Two files named real_openvsp_geometry_probe.json exist: docs/evidence/drecover001/real_openvsp_geometry_probe.json is the pre-repair SURFACE_DIAGNOSTIC_FAIL snapshot; the authoritative post-repair record is docs/evidence/drecover001/a1_thickness_repair/real_openvsp_geometry_probe.json (SURFACE_DIAGNOSTIC_PASS_NOT_FREEZE). Neither is a solver freeze or physics validation.
 - research/concorde_metaopt/dreal001/meta/m2_rehearsal.py hardcodes three native_probe_status PASS strings into its geometry contract; the rehearsal therefore asserts, rather than reads, those probe statuses.
 - needed_for_next_run.json had a truncated R1 requirement tail; it is valid JSON now but the lost tail is marked UNKNOWN and is not evidence.

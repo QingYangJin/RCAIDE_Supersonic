@@ -1,0 +1,102 @@
+{
+  "verdict": "CHANGES_REQUIRED",
+  "scope": "A5 independent read-only review of the Issue #12 R0/R1 evidence packet at worktree commit c072339730f33a64d70aac2b2114797bb085ad1d, with R0 baseline 01c9274801474c113a2c488e375d451bcd0297c3. This review covers current-code evidence, isolation claims, and real-admission readiness only. It does not authorize R2, M1, M2, or any physical solver start.",
+  "rationale": "The packet shows substantial offline software scaffolding and internally consistent verifier outputs, but it does not establish real admission over real raw bytes, does not convert CLOSED or WAIVED gates into PASS, and leaves prior A5 CHANGES_REQUIRED findings without a finding-by-finding closure record. Real admission is fixture-tested only (admitted_real_labels=None), A2 is a mock-evaluator feedback rehearsal, M2 is an offline rehearsal that hardcodes native probe PASS strings, and M1 uses a structural placeholder authorization. The same-host restore is explicitly not an off-machine backup and backup_restore_pass remains false. Therefore the packet is not READY_FOR_NEW_REAL_BATCH and R2/M1 physics must not start.",
+  "findings": [
+    {
+      "severity": "major",
+      "issue": "Real admission is not proven over real raw bytes and therefore does not prove real physics.",
+      "evidence": "admitted_real_labels=None; REAL_ADMISSION gate is CLOSED with blocker 'No real raw artifact has been admitted or independently audited; the protocol is fixture-tested only'; all admission tests use synthetic non-physical bytes; RealAdmissionManifest binds an audit record by SHA256 but does not authenticate who produced it.",
+      "required_action": "Admit at least one real raw artifact through RealAdmissionManifest with an independently audited certificate, or keep REAL_ADMISSION explicitly non-passing and do not issue a real batch GO. Do not describe fixture admission as physics validation."
+    },
+    {
+      "severity": "major",
+      "issue": "CLOSED readiness gates are being presented alongside language that could be mistaken for PASS.",
+      "evidence": "readiness_status=RECOVERY_READINESS_GATES_CLOSED_EXPECTED with 9 blockers; A5_INDEPENDENT_REVIEW is CLOSED while recording prior verdict CHANGES_REQUIRED; R0_INVENTORY blocker says independent A5 review is not a human signature; R1_SOFTWARE blocker says no human/Owner sign-off exists.",
+      "required_action": "Use PASS only where a gate actually passes. Provide a finding-by-finding disposition of the prior A5 CHANGES_REQUIRED verdict and obtain the required human/Owner sign-off before any physical authorization."
+    },
+    {
+      "severity": "major",
+      "issue": "The same-host restore is not an independent backup and must not be treated as one.",
+      "evidence": "Local restore receipt status=PASS_NOT_REMOTE_BACKUP; independent_failure_domain=false; backup_restore_pass=false; off_machine_backup=false; backup_label=SAME_HOST_RESTORE_NOT_AN_OFF_MACHINE_BACKUP; BACKUP_INDEPENDENT_FAILURE_DOMAIN is WAIVED, not PASS.",
+      "required_action": "Do not claim backup coverage. Either obtain an independent failure-domain backup or explicitly record the accepted residual risk and keep backup_restore_pass false in all readiness and batch-GO materials."
+    },
+    {
+      "severity": "major",
+      "issue": "Zero-physical rehearsals are at risk of being read as real MAML/physics results.",
+      "evidence": "A2 is SOFTWARE_FEEDBACK_REHEARSAL_ONLY_NOT_PHYSICAL_EVIDENCE with a deterministic mock evaluator and zero physical starts; M2 is an offline rehearsal and not real meta-training; M1 uses a structural placeholder authorization and simulated starts; M2 hardcodes three native_probe_status PASS strings into its geometry contract.",
+      "required_action": "Label all such outputs as fixture/software evidence in every report and batch-GO artifact. Remove or replace hardcoded native_probe_status strings so the rehearsal reads statuses rather than asserting them, or explicitly mark the rehearsal as non-authoritative."
+    },
+    {
+      "severity": "major",
+      "issue": "A1 geometry freeze v2 is not an aerodynamic validation and retains open physics items.",
+      "evidence": "Open items include unvalidated force-axis signs, ambiguous WING_AC moment-reference origin, provisional mass/CG, and no VSPAERO readback. The freeze is GEOMETRY_FREEZE_V2_ISSUED_ZERO_PHYSICAL and the A1 gate blocker states force-axis signs, WING_AC moment origin and mass/CG remain unvalidated until R2 VSPAERO readback.",
+      "required_action": "Do not treat the geometry freeze as aero validation. Carry the open items into R2 preregistration and require VSPAERO readback validation of signs, moment origin, and mass/CG before any physics claim."
+    },
+    {
+      "severity": "major",
+      "issue": "The prior A5 CHANGES_REQUIRED verdict has not been shown to be closed finding by finding.",
+      "evidence": "A5_INDEPENDENT_REVIEW gate records verdict='CHANGES_REQUIRED'; packet limitations state the Lead must close or disclose each finding; no closure matrix is present in the dossier.",
+      "required_action": "Provide a finding-by-finding closure or explicit disclosure matrix for the prior A5 review, with evidence for each disposition, before requesting a new A5 gate or batch GO."
+    },
+    {
+      "severity": "major",
+      "issue": "M1 batch control is not authorized by a real Lead GO.",
+      "evidence": "M1_BATCH_CONTROL_PATH is CLOSED with blocker 'Real M1 label batch requires a new A5 gate and a Lead batch GO; none issued'; the M1 run uses a structural placeholder authorization and simulated starts.",
+      "required_action": "Do not start M1. Require a fresh A5 gate, preregistration, and a real Lead batch GO before any M1 label batch."
+    },
+    {
+      "severity": "minor",
+      "issue": "Two probe JSON files create ambiguity about which OpenVSP probe record is authoritative.",
+      "evidence": "docs/evidence/drecover001/real_openvsp_geometry_probe.json is the pre-repair SURFACE_DIAGNOSTIC_FAIL snapshot; docs/evidence/drecover001/a1_thickness_repair/real_openvsp_geometry_probe.json is SURFACE_DIAGNOSTIC_PASS_NOT_FREEZE; neither is a solver freeze or physics validation.",
+      "required_action": "Keep the authoritative path explicit in the evidence index and batch-GO materials, and state that neither probe is a solver freeze or physics validation."
+    },
+    {
+      "severity": "minor",
+      "issue": "Some historical R0 claims are report-present only and one requirement tail is UNKNOWN.",
+      "evidence": "Packet limitations state some R0 report claims are REPORT_PRESENT only and needed_for_next_run.json had a truncated R1 requirement tail marked UNKNOWN.",
+      "required_action": "Do not use REPORT_PRESENT or UNKNOWN-tail content as evidence of raw identity or requirement completeness. Keep these limitations visible in the new baseline manifest."
+    },
+    {
+      "severity": "minor",
+      "issue": "OpenVSP export reproducibility is not asserted across machines.",
+      "evidence": "Packet limitations state VSP3/STL/STEP exports are real OpenVSP 3.55 bytes checked by SHA and STL bounds, but byte-identical re-export across machines is not asserted; re-running verify_geometry_freeze_v2.py requires the same OpenVSP installation.",
+      "required_action": "Record the OpenVSP version and environment as part of the freeze verification contract, and do not claim cross-machine byte reproducibility."
+    }
+  ],
+  "residual_risks": [
+    "Historical F1R2/F2R2 raw data remains RAW_LOST and is not recoverable; no historical raw identity is established.",
+    "No independent off-machine backup exists; the same-host restore is a single-failure-domain risk and backup_restore_pass remains false.",
+    "Real admission has not been exercised on real raw bytes, so fail-closed behavior is demonstrated only against synthetic fixtures.",
+    "The RealAdmissionManifest does not authenticate the independent auditor; independent review remains an external trust assumption.",
+    "A1 force-axis signs, WING_AC moment origin, and mass/CG remain unvalidated until R2 VSPAERO readback.",
+    "M2 rehearsal hardcodes native probe PASS strings, so its geometry-contract assertions are not independently read from the environment.",
+    "M1 uses a placeholder authorization and simulated starts; no real Lead batch GO exists.",
+    "No human/Owner sign-off exists for the A5 review; the deepseek-flash verdict is review input only.",
+    "OpenVSP export reproducibility across machines is not asserted.",
+    "Some R0 report claims are REPORT_PRESENT only and one requirement tail is UNKNOWN."
+  ],
+  "physical_go_granted": false,
+  "reviewer": "deepseek-flash",
+  "human_signature": false,
+  "reviewed_commit": "c072339730f33a64d70aac2b2114797bb085ad1d",
+  "reviewed_utc": "2026-11-18T11:58:59Z",
+  "disclosure": "Read-only subagent review based solely on the supplied dossier; no tools were available and no files were independently inspected. This is not a human signature, not an Owner authorization, and not a physical-run approval. The verdict is limited to the evidence in the dossier and does not validate any claim beyond it.",
+  "_harness": {
+    "model": "deepseek-flash",
+    "mode": "single_shot_read_only_dossier",
+    "reviewer_tools": 0,
+    "worktree": "D:\\RCAIDE\\.worktrees\\drecover001-20261117",
+    "git_head": "c072339730f33a64d70aac2b2114797bb085ad1d",
+    "dossier": "D:\\RCAIDE\\.recovery-local-restore\\a5_reviewer\\run_c0723397\\dossier.txt",
+    "dossier_sha256": "2b8ccb0ca8a391e3b0ece121788b466695b8418ece125f24ba08be3159f710cc",
+    "dossier_chars": 16837,
+    "packet_sha256": "1069a962f293d533d5ae87617741d4de28c7cd75af4e69bd39c85705109067da",
+    "bundle_sha256": "3088b3166ba4009f92d453785be3e117a7b4015dfdf40457aea1d0b5565b181e",
+    "reviewed_utc": "2026-11-18T11:59:32Z",
+    "finish_reason": "stop",
+    "human_signature": false,
+    "physical_go_granted": false,
+    "note": "Single-shot deepseek-flash review over a harness-assembled read-only dossier. No tools were available; this is review input only and must not be treated as an A5 PASS, a human signature, or a physical GO."
+  }
+}

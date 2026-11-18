@@ -629,7 +629,9 @@ def assess_a5(root, report, preflight, m1_receipt):
            "unbacked approvals=%r" % verdicts)
     allowed_a5_inputs = {"a5_review_packet.json", "a5_review_packet.md",
                          "build_a5_review_packet.py", "a5_review_verdict.json",
-                         "a5_review_transcript.json"}
+                         "a5_review_transcript.json", "a5_review_verdict_c0723397.json",
+                         "a5_review_dossier_c0723397.txt",
+                         "a5_finding_disposition_20261118.md"}
     found = sorted(p.name for p in (Path(root) / EVIDENCE_REL).glob("*a5*")
                    if p.name not in allowed_a5_inputs)
     record(node, "no_unreviewed_a5_artifact", not found, "a5 artifacts=%r" % found)
@@ -650,6 +652,27 @@ def assess_a5(root, report, preflight, m1_receipt):
         node["blockers"].append(
             "A5 review performed by deepseek-flash subagent (not a human signature): verdict=%r; "
             "R2/M1 physics is not authorized by this review" % verdict_doc.get("verdict"))
+        latest_doc, latest_err = load_json(root, EVIDENCE_REL / "a5_review_verdict_c0723397.json")
+        latest = latest_doc or {}
+        if latest_doc is not None:
+            node["evidence"].append("docs/evidence/drecover001/a5_review_verdict_c0723397.json")
+            node["evidence"].append("docs/evidence/drecover001/a5_finding_disposition_20261118.md")
+            record(node, "latest_a5_review_on_pushed_snapshot",
+                   latest.get("reviewed_commit") == "c072339730f33a64d70aac2b2114797bb085ad1d",
+                   "reviewed_commit=%r" % latest.get("reviewed_commit"))
+            record(node, "latest_a5_verdict_is_review_input",
+                   latest.get("verdict") in ("APPROVE_FOR_R2", "READY_FOR_NEW_REAL_BATCH",
+                                             "CHANGES_REQUIRED", "REJECT")
+                   and latest.get("physical_go_granted") is False
+                   and latest.get("human_signature") is False,
+                   "verdict=%r physical_go=%r human_signature=%r" % (
+                       latest.get("verdict"), latest.get("physical_go_granted"),
+                       latest.get("human_signature")))
+            node["blockers"].append(
+                "Latest A5 review (snapshot c0723397) is also CHANGES_REQUIRED; its findings are "
+                "dispositioned in a5_finding_disposition_20261118.md, not closed by assertion")
+        else:
+            record(node, "latest_a5_review_present", False, latest_err or "missing")
     report["gates"].append(finalize(node))
 
 

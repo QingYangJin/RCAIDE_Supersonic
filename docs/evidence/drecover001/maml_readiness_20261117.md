@@ -20,7 +20,7 @@
 | A2 可执行反馈（软件） | 真实 `ArmHarness`/GP-BO 路径 6 次 MOCK 评价；交换前两次反馈会改变第 3 个 proposal；失败设计 objective=null；physical=0，`scope=SOFTWARE_FEEDBACK_REHEARSAL_ONLY_NOT_PHYSICAL_EVIDENCE` | [a2_feedback_rehearsal.json](<.worktrees/drecover001-20261117/docs/evidence/drecover001/a2_feedback_rehearsal.json>) |
 | 软件回归 | 247 项 pytest 全绿（0 failed / 0 error / 0 skipped），含 M1 批次控制、M2、路径注入、恢复合同、审计工具等 | [recovery_preflight_receipt.json](<.worktrees/drecover001-20261117/docs/evidence/drecover001/recovery_preflight_receipt.json>) |
 | 恢复门禁就绪聚合 | 9 个 gate（R0/A1 几何冻结/R1/M1/M2/备份/A5/真实准入/变更清单）自动核对；结果 `RECOVERY_READINESS_GATES_CLOSED_EXPECTED`、`violations=0`、`blockers=9`，`CLOSED` 不等于 PASS | [recovery_readiness.json](<.worktrees/drecover001-20261117/docs/evidence/drecover001/recovery_readiness.json>)、[recovery_readiness.md](<.worktrees/drecover001-20261117/docs/evidence/drecover001/recovery_readiness.md>) |
-| A5 审查包 | 只读聚合 36 项证据的 SHA256、9 门禁状态、外部待签项与检查清单；已由 Owner 授权的 deepseek-flash 只读子智能体执行审查，verdict=`CHANGES_REQUIRED`，非人类签名、不授予 GO | [a5_review_packet.json](<.worktrees/drecover001-20261117/docs/evidence/drecover001/a5_review_packet.json>)、[a5_review_packet.md](<.worktrees/drecover001-20261117/docs/evidence/drecover001/a5_review_packet.md>) |
+| A5 审查包 | 只读聚合 39 项证据的 SHA256、9 门禁状态、外部待签项与检查清单；deepseek-flash 子智能体已执行两次审查（01c9274 只读工具、c0723397 单发 dossier），两次 verdict 均 `CHANGES_REQUIRED`，逐项处置见 `a5_finding_disposition_20261118.md`；非人类签名、不授予 GO | [a5_review_packet.json](<.worktrees/drecover001-20261117/docs/evidence/drecover001/a5_review_packet.json>)、[a5_review_packet.md](<.worktrees/drecover001-20261117/docs/evidence/drecover001/a5_review_packet.md>) |
 | 本地恢复演练 | 2,241 文件 + 54 overlay 逐 SHA 核对、247 测试通过、重训 checkpoint/holdout 精确一致；bundle 内嵌 manifest 2,241 项逐 SHA/字节复验通过（`bundle_manifest_verified=true`）；恢复后 98 个证据文件还原为 bundle 原字节，两轮 R0/M1 verifier、readiness 与 A5 packet 校验均通过（`evidence_chain_verified=true`）；bundle SHA256 `3088b3166ba4009f92d453785be3e117a7b4015dfdf40457aea1d0b5565b181e` / 58,419,708B；receipt `off_machine_backup=false` / `backup_label=SAME_HOST_RESTORE_NOT_AN_OFF_MACHINE_BACKUP` | [local_restore_receipt.json](<.worktrees/drecover001-20261117/docs/evidence/drecover001/local_restore_receipt.json>)（同机，**不构成独立故障域，Owner 已豁免**） |
 
 M2 rehearsal 回执关键身份：`run_id=DRECOVER001-M2-REHEARSAL-20261117T160233Z`；`scope=OFFLINE_REHEARSAL_ONLY`；`real_meta_training_executed=false`；`admitted_real_labels=0`；`physical_solver_starts_actual=0`；checkpoint SHA256=`1616dc5d7441caf7ab0214aeb753aa9cb3be51fec12c7b7a8c3e4739ea326e49`；code SHA256=`5d642680af3dab9b8f3238c5febe95b7ce37544bf6b7231b2b12b0420d904bfb`。
@@ -40,7 +40,7 @@ M2 rehearsal 回执关键身份：`run_id=DRECOVER001-M2-REHEARSAL-20261117T1602
 
 ## 3. 阻断真实 MAML 的门禁（全部未通过）
 
-1. **R0 A5 独立审查**：已由 Owner 授权的 deepseek-flash 子智能体执行，verdict=`CHANGES_REQUIRED`（两项 major 已修复，见 `a5_review_verdict.json`）；这不是人类签署，R0 清单状态仍为 `R0_PARTIAL_NOT_AUDITED`。
+1. **R0 A5 独立审查**：已由 Owner 授权的 deepseek-flash 子智能体执行两次，两次 verdict 均 `CHANGES_REQUIRED`（01c9274 的旧两项 major 已修复；c0723397 的 7 major + 3 minor 已逐项处置，见 `a5_review_verdict_c0723397.json` 与 `a5_finding_disposition_20261118.md`）；这不是人类签署，R0 清单状态仍为 `R0_PARTIAL_NOT_AUDITED`。
 2. **RESTORED_CODE_BASELINE_PASS**：未签发（需 A5）。
 3. **BACKUP_RESTORE_PASS（独立故障域）**：Owner 已豁免异机要求（`WAIVER-OFFMACHINE-BACKUP-20261118`，m03569）；同机恢复带 `SAME_HOST_RESTORE_NOT_AN_OFF_MACHINE_BACKUP` 标签，`backup_restore_pass=false`，不得写成 PASS。
 4. **真实准入 + raw 验证**：`dreal001/meta/meta_dataset.py` 的 `require_real_admission()` 仍直接抛 `REAL_ADMISSION_NOT_IMPLEMENTED`；F1R2/F2R2 原始运行目录未恢复，可免重跑的标签认定 0 条。

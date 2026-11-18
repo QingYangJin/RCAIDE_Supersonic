@@ -37,6 +37,8 @@ def build(root: Path) -> tuple[dict, list[str]]:
     manifest = load_json(ev / "recovery_change_manifest.json")
     waiver = load_json(ev / "owner_waiver_offmachine_backup_20261118.json")
     a5_verdict = load_json(ev / "a5_review_verdict.json")
+    a5_verdict_v2 = load_json(ev / "a5_review_verdict_c0723397.json")
+    a5_disposition = ev / "a5_finding_disposition_20261118.md"
 
     gates = {g["id"]: g["state"] for g in readiness.get("gates", [])}
     if readiness.get("status") != EXPECTED_READINESS:
@@ -107,6 +109,9 @@ def build(root: Path) -> tuple[dict, list[str]]:
         ("owner_waiver_offmachine_backup_20261118.json", "Owner waiver of the off-machine failure-domain backup", "BACKUP_INDEPENDENT_FAILURE_DOMAIN"),
         ("a5_review_verdict.json", "A5 verdict from the authorized deepseek-flash subagent (not a human signature)", "A5_INDEPENDENT_REVIEW"),
         ("a5_review_transcript.json", "Read-only A5 inspection transcript (16 tool steps before HTTP 524)", "A5_INDEPENDENT_REVIEW"),
+        ("a5_review_verdict_c0723397.json", "A5 verdict on the clean pushed snapshot c0723397 (deepseek-flash, single-shot dossier mode, not a human signature)", "A5_INDEPENDENT_REVIEW"),
+        ("a5_review_dossier_c0723397.txt", "Read-only dossier that was the sole input to the c0723397 A5 review", "A5_INDEPENDENT_REVIEW"),
+        ("a5_finding_disposition_20261118.md", "Finding-by-finding disposition matrix for the prior and current A5 verdicts", "A5_INDEPENDENT_REVIEW"),
         ("issue12_consolidated_receipt_draft_20261117.md", "Issue #12 receipt draft (not posted)", "EVIDENCE_MANIFEST"),
         ("maml_readiness_20261117.md", "MAML offline readiness summary", "M2_OFFLINE_REHEARSAL"),
     ]
@@ -191,7 +196,29 @@ def build(root: Path) -> tuple[dict, list[str]]:
             "harness": a5_verdict.get("harness"),
             "signature": a5_verdict.get("signature"),
             "is_not_an_approval": "The recorded verdict is review input, not a human signature and not a physical-run authorization.",
-            "files": [EV + "/a5_review_verdict.json", EV + "/a5_review_transcript.json"],
+            "gate_semantics": "A CLOSED verdict in this packet means the evidence for that gate was checked and is internally consistent. It never means PASS, approval, or authorization.",
+            "prior_review": {
+                "reviewed_commit": "01c9274801474c113a2c488e375d451bcd0297c3",
+                "verdict": a5_verdict.get("verdict"),
+                "findings": a5_verdict.get("findings"),
+                "files": [EV + "/a5_review_verdict.json", EV + "/a5_review_transcript.json"],
+            },
+            "latest_review": {
+                "reviewed_commit": a5_verdict_v2.get("reviewed_commit"),
+                "verdict": a5_verdict_v2.get("verdict"),
+                "scope": a5_verdict_v2.get("scope"),
+                "rationale": a5_verdict_v2.get("rationale"),
+                "findings": a5_verdict_v2.get("findings"),
+                "residual_risks": a5_verdict_v2.get("residual_risks"),
+                "reviewer": a5_verdict_v2.get("reviewer"),
+                "human_signature": a5_verdict_v2.get("human_signature"),
+                "physical_go_granted": a5_verdict_v2.get("physical_go_granted"),
+                "harness": a5_verdict_v2.get("_harness"),
+                "files": [EV + "/a5_review_verdict_c0723397.json", EV + "/a5_review_dossier_c0723397.txt"],
+            },
+            "findings_disposition_file": EV + "/a5_finding_disposition_20261118.md",
+            "findings_disposition_sha256": sha256_bytes(a5_disposition.read_bytes()),
+            "closure_statement": "Prior findings A1/A2 are fixed with machine-checkable receipt/readiness evidence; A3/A4 and the current findings B1-B10 are disclosed, and B1/B7 remain open blockers. No finding is claimed closed by assertion.",
         },
         "readiness_matrix": {"path": EV + "/recovery_readiness.json",
                              "status": readiness.get("status"),
@@ -215,7 +242,7 @@ def build(root: Path) -> tuple[dict, list[str]]:
             {"claim": "Only a same-host restore test exists and is explicitly labelled NOT an off-machine backup; the off-machine failure-domain requirement is waived by the Owner "
                       "(WAIVER-OFFMACHINE-BACKUP-20261118, m03569) but backup_restore_pass remains false",
              "gate": "BACKUP_INDEPENDENT_FAILURE_DOMAIN", "state": gates.get("BACKUP_INDEPENDENT_FAILURE_DOMAIN")},
-            {"claim": "A5 independent review was performed by the authorized deepseek-flash subagent (read-only tools); its verdict is recorded, it is not a human signature, and it is not an approval for physical runs",
+            {"claim": "A5 independent review was performed twice by the authorized deepseek-flash subagent: a read-only tool loop on 01c9274 and a single-shot dossier review on c0723397. Both returned CHANGES_REQUIRED; neither is a human signature and neither is an approval for physical runs. The finding-by-finding disposition matrix records which findings are fixed (A1/A2), which remain open (A3/A4, B1/B7), and which are disclosed (the rest)",
              "gate": "A5_INDEPENDENT_REVIEW", "state": gates.get("A5_INDEPENDENT_REVIEW")},
             {"claim": "A RealAdmissionManifest/AdmissionCertificate protocol now exists and is fixture-tested: it recomputes file SHA256, deck conditions, q, matched-lift row and D_i_N=q*Sref*CDi, and refuses tampered/missing/path-escaping artifacts; no real raw artifact has been admitted, and require_real_admission still raises without matching certificates",
              "gate": "REAL_ADMISSION", "state": gates.get("REAL_ADMISSION")},
@@ -238,7 +265,8 @@ def build(root: Path) -> tuple[dict, list[str]]:
         "known_limitations": [
             "A CLOSED gate is expected and is not a PASS.",
             "The off-machine failure-domain backup is WAIVED by the Owner (m03569); the same-host restore receipt is explicitly labelled SAME_HOST_RESTORE_NOT_AN_OFF_MACHINE_BACKUP and backup_restore_pass remains false. WAIVED is not a PASS.",
-            "The A5 review was performed by a deepseek-flash subagent with read-only tools; it is not a human signature and does not by itself authorize physical runs. It returned CHANGES_REQUIRED, and the Lead must close or disclose each finding.",
+            "The A5 reviews were performed by a deepseek-flash subagent; they are not human signatures and do not authorize physical runs. The 01c9274 review used read-only tools and returned CHANGES_REQUIRED; the c0723397 review was single-shot over a harness-assembled dossier with no tools (so the reviewer did not inspect files independently). Both returned CHANGES_REQUIRED. a5_finding_disposition_20261118.md records a disposition for every finding: A1/A2 fixed, A3/A4 and B1/B7 remain open blockers, the rest disclosed. No finding is closed by assertion.",
+            "The readiness A5 gate state CLOSED means the review evidence was checked and is internally consistent; it does not mean the reviewer approved, and it does not mean PASS.",
             "Two files named real_openvsp_geometry_probe.json exist: docs/evidence/drecover001/real_openvsp_geometry_probe.json is the pre-repair SURFACE_DIAGNOSTIC_FAIL snapshot; the authoritative post-repair record is docs/evidence/drecover001/a1_thickness_repair/real_openvsp_geometry_probe.json (SURFACE_DIAGNOSTIC_PASS_NOT_FREEZE). Neither is a solver freeze or physics validation.",
             "research/concorde_metaopt/dreal001/meta/m2_rehearsal.py hardcodes three native_probe_status PASS strings into its geometry contract; the rehearsal therefore asserts, rather than reads, those probe statuses.",
             "needed_for_next_run.json had a truncated R1 requirement tail; it is valid JSON now but the lost tail is marked UNKNOWN and is not evidence.",

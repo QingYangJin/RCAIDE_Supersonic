@@ -1,0 +1,114 @@
+# A5 read-only dossier (assembled from disk, 2026-11-18T11:58:59Z)
+
+## Snapshot
+worktree=D:\RCAIDE\.worktrees\drecover001-20261117
+git_head=c072339730f33a64d70aac2b2114797bb085ad1d
+git_status_lines=0 ()
+packet_sha256=1069a962f293d533d5ae87617741d4de28c7cd75af4e69bd39c85705109067da
+bundle=D:\RCAIDE\.recovery-local-restore\20261118115500Z\recovery_bundle.zip sha256=3088b3166ba4009f92d453785be3e117a7b4015dfdf40457aea1d0b5565b181e bytes=58419708
+
+## Issue #12 revised acceptance (R0/R1, real physical 0)
+- R0: stop old-history search, archive RAW_LOST, new baseline identity, regenerate geometry/task contracts, A5 focuses on current code + isolation + real admission.
+- R1: A1 geometry freeze v2; A2 executable BO/DE ask->evaluate->tell with causal feedback and accounting; A3 RealAdmissionManifest success and rejection paths over real raw bytes, fail-closed; A4 relative roots/fresh-clone/CPU float64/optional GPU/per-batch evidence; A5 re-reviews new commit and submits READY_FOR_NEW_REAL_BATCH or CHANGES_REQUIRED.
+- R2 and #11 must NOT start until a new A5 gate, preregistration and a fresh Lead batch GO.
+
+## Zero-physical facts
+tests_run=247
+training_status=SOFTWARE_FIXTURE_TRAINING_ONLY
+real_meta_training_executed=False
+physical_solver_starts_actual=0
+readiness_status=RECOVERY_READINESS_GATES_CLOSED_EXPECTED counts={"gates": 9, "clean": 1, "closed": 7, "waived": 1, "unknown": 0, "conflict": 0, "violations": 0, "missing": 0, "blockers": 9}
+gate R0_INVENTORY = CLOSED (violations=[] blockers=['Independent A5 review of the new baseline identity is not a human signature; the recorded deepseek-flash verdict is review input only'])
+gate A1_GEOMETRY_FREEZE_V2 = CLOSED (violations=[] blockers=['A1 geometry freeze is geometry/reference only; force-axis signs, WING_AC moment origin and mass/CG remain unvalidated until R2 VSPAERO readback'])
+gate R1_SOFTWARE = CLOSED (violations=[] blockers=['Independent A5 review is a recorded deepseek-flash subagent verdict (not a human signature); no human/Owner sign-off exists', 'Independent failure-domain backup is waived by the Owner (m03569); the same-host restore is not an off-machine backup'])
+gate M1_BATCH_CONTROL_PATH = CLOSED (violations=[] blockers=['Real M1 label batch requires a new A5 gate and a Lead batch GO; none issued'])
+gate M2_OFFLINE_REHEARSAL = CLOSED (violations=[] blockers=['Rehearsal is offline-only; M2 real training awaits real admitted labels'])
+gate BACKUP_INDEPENDENT_FAILURE_DOMAIN = WAIVED (violations=[] blockers=['Owner waived the off-machine failure-domain backup (WAIVER-OFFMACHINE-BACKUP-20261118); same-host restore is still not an off-machine backup and backup_restore_pass remains false'])
+gate A5_INDEPENDENT_REVIEW = CLOSED (violations=[] blockers=["A5 review performed by deepseek-flash subagent (not a human signature): verdict='CHANGES_REQUIRED'; R2/M1 physics is not authorized by this review"])
+gate REAL_ADMISSION = CLOSED (violations=[] blockers=['No real raw artifact has been admitted or independently audited; the protocol is fixture-tested only'])
+gate EVIDENCE_MANIFEST = CLEAN (violations=[] blockers=[])
+
+## R0 new baseline
+base_commit=01c9274801474c113a2c488e375d451bcd0297c3
+base_tree=8b2be0a4b122dc1ef2ec9a5b4d01cf113f216861
+branch=recovery/drecover001-20261117
+historical_data_policy={"status": "RAW_LOST_ARCHIVED", "do_not_recover": ["F1R2 original raw", "F2R2 original raw"], "old_reports_and_receipts": "READ_ONLY_HISTORICAL_REFERENCE", "old_geometry_freeze_identity": "NOT_REUSABLE", "old_checkpoint_identity": "LOST_NOT_REUSABLE", "search_policy": "STOPPED_NO_FURTHER_HISTORY_RECOVERY_SEARCH", "note": "Issue #12 (2026-11-18 revision) forbids treating historical reports as recoverable raw. Lost originals stay RAW_LOST."}
+identity_policy={"new_physical_runs_require": ["new_run_id", "new_batch_id", "new_geometry_sha256", "new_task_family_sha256", "RealAdmissionManifest", "fresh Lead batch GO"], "allowed_origins": ["REGENERATED_FROM_SPEC", "NEW_PHYSICAL_RUN"], "forbidden": ["reuse_old_run_id", "reuse_old_batch_id", "reuse_old_geometry_sha256", "reuse_old_checkpoint", "claim_historical_raw_recovered"], "note": "Regenerated artifacts must be labelled REGENERATED_FROM_SPEC; physical artifacts must be NEW_PHYSICAL_RUN and admitted through real_admission.py."}
+geometry_freeze_status={"status": "GEOMETRY_FREEZE_V2_ISSUED_ZERO_PHYSICAL", "freeze_id": "GBFREEZE2-5f2bb12fe8b1dc68", "current_geometry_contract_sha256": "5f2bb12fe8b1dc68c67901843c777328ae984cfdbe4ee71176b369a16a133f15", "freeze_json_path": "docs/evidence/drecover001/geometry_freeze_v2.json", "freeze_json_sha256": "401bc6b6c605eafe416bd4b0e925d106b93673b2e4d2c21f1d21e688d7e62bf1", "freeze_md_path": "docs/evidence/drecover001/geometry_freeze_v2.md", "freeze_md_sha256": "1af6ff72afc698269edc83218aa90ce4f7a080dcdabc41020ac4ce0b83d17c21", "verification_path": "docs/evidence/drecover001/geometry_freeze_v2_verification.json", "verification_sha256": "ca1c052b0d3093223706676bcb70cd81bc9627f94ecd3d3c3fbb13e3df763aa4", "verification_check_count": 101, "verification_failure_count": 0, "model_version": "p1-2026-10-28", "reference_contract": {"sref_m2": 358.25, "cref_m": 18.489893, "bref_m": 25.604638, "reference_frame": "WING_AC", "xcg_m": 16.821978259514246, "lift_reference_N": 1333704.4, "q_pa": 20483.940233430174, "lift_tol_rel": 0.001, "cl_target": 0.18174391742}, "consistency_checks": "7/7 PASS", "boundary_perturbation": {"model_cases": "24/24 PASS", "native_openvsp_cases": "24/24 PASS"}, "stl_placement_checks": "PASS", "exports": {"step": {"bytes": 630057, "path": "docs/evidence/drecover001/geometry_freeze_v2_artifacts/concorde_geometry_freeze_v2.step", "sha256": "3b0d96366ea22bdbeb982232d17aa5eb6e1595b
+
+## A1 geometry freeze v2
+freeze_id=GBFREEZE2-5f2bb12fe8b1dc68 contract_sha256=5f2bb12fe8b1dc68c67901843c777328ae984cfdbe4ee71176b369a16a133f15 status=GEOMETRY_FREEZE_V2_ISSUED_ZERO_PHYSICAL
+verification_status=GEOMETRY_FREEZE_V2_VERIFIED checks=101 failures=0 sha=ca1c052b0d3093223706676bcb70cd81bc9627f94ecd3d3c3fbb13e3df763aa4
+open_items=["Mass and CG are the geometry model's PROVISIONAL estimate; this is not a weight-and-balance validation.", "WING_AC moment-reference origin is ambiguous: P2A xcg_m equals the wing-local AC; applying WING_ORIGIN_X_M gives a different global station.", "Force-axis signs are defined here but not read back from VSPAERO; R2 must validate signs and moment reference.", "Nacelle is not exported by the current worker; it remains reference geometry only.", "Lift reference 136,000 kg differs from the provisional 184,880 kg takeoff mass; L_ref is contractual, not a performance result."]
+
+## A2 feedback rehearsal
+scope=SOFTWARE_FEEDBACK_REHEARSAL_ONLY_NOT_PHYSICAL_EVIDENCE status=None physical=None simulated=None best_D_i_N=None
+counterfactual={"description": "first two returned D_i_N labels reversed; only the preference order changes", "first_two_labels_original": [84140.02971093793, 57556.84695435855], "first_two_labels_swapped": [57556.84695435855, 84140.02971093793], "first_two_proposals_identical": true, "third_proposal_counterfactual": [0.23411971634356418, 0.09668307537989554, 0.10485015657130914, 0.5769920176569463, 0.8062755672197471, 0.7160906323911216, 0.8742424999426921, 0.4822972843992287, 0.5547731480117188, 0.3982005775519558, 0.3391816837348671, 0.4050224716627431], "third_proposal_differs": true, "third_proposal_original": [0.38527209688405256, 0.5009381542768304, 0.884956852999596, 0.9330334771404907, 0.35991075605279355, 0.2276312521882682, 0.4315793093903025, 0.16343101956398018, 0.9953928867365662, 0.8030242
+failed_branch={"description": "first initial design forced to solver-failure; objective must remain null", "first_row_objective_D_i_N": null, "first_row_status": "FAIL", "first_row_valid": false, "physical_solver_starts": 0}
+
+## A3 real admission
+real_admission.py bytes=17896 sha=b27da1547a4b8c21395b0f637aef3f0410c357e7b7a8300ec59c16d8597cdde7
+test file bytes=13924 sha=1171ad3cd9c790c58dd3c0cc355e2c87e3a90473932fa37e7b06904e5f6a540c test_count=17
+guard_present=True
+admitted_real_labels=None
+
+## Local restore receipt (same-host, not a backup)
+status=PASS_NOT_REMOTE_BACKUP
+baseline_commit=170875f1fe1d67fd46122617cafbd748f39ea40e
+bundle_sha256=3088b3166ba4009f92d453785be3e117a7b4015dfdf40457aea1d0b5565b181e
+files_verified=2241
+overlay_files=54
+tests_run=247
+bundle_manifest_verified=true
+bundle_manifest_files=2241
+bundle_manifest_sha256=5392a6d392e76edd38039e730c15267a70342e7f18170221448c81fe2febfd1b
+evidence_chain_verified=true
+readiness_status=RECOVERY_READINESS_GATES_CLOSED_EXPECTED
+readiness_violations=[]
+packet_check_problems=[]
+evidence_verifiers={"r0_provenance": {"returncode": 0, "status": "R0_PROVENANCE_EXTENSION_EVIDENCE_INTERNALLY_CONSISTENT", "failures": [], "ok": true}, "m1_batch": {"returncode": 0, "status": "M1_BATCH_EVIDENCE_INTERNALLY_CONSISTENT", "failures": [], "ok": true}}
+verification_passes=2
+independent_failure_domain=false
+backup_restore_pass=false
+off_machine_backup=false
+backup_label=SAME_HOST_RESTORE_NOT_AN_OFF_MACHINE_BACKUP
+
+## Non-destructive verifier outputs (run by the dossier harness, not by the reviewer)
+verify_r0 returncode=0 stdout_tail={"status": "R0_PROVENANCE_EXTENSION_EVIDENCE_INTERNALLY_CONSISTENT", "check_count": 328, "failure_count": 0, "extension_sha256": "b553857c5ce986e9fbfd7f6fa6de37d7aca42af9ade61075db6e17e87c524c37"}
+verify_geometry_freeze returncode=0 stdout_tail={   "status": "GEOMETRY_FREEZE_V2_VERIFIED",   "freeze_id": "GBFREEZE2-5f2bb12fe8b1dc68",   "geometry_contract_sha256": "5f2bb12fe8b1dc68c67901843c777328ae984cfdbe4ee71176b369a16a133f15",   "freeze_json_sha256": "401bc6b6c605eafe416bd4b0e925d106b93673b2e4d2c21f1d21e688d7e62bf1",   "verification_sha256": "ca1c052b0d3093223706676bcb70cd81bc9627f94ecd3d3c3fbb13e3df763aa4",   "check_count": 101,   "failure_count": 0,   "physical_solver_starts_actual": 0 }
+verify_m1 returncode=0 stdout_tail={   "status": "M1_BATCH_EVIDENCE_INTERNALLY_CONSISTENT",   "check_count": 20,   "failures": [] }
+
+## A5 packet claims
+- {"claim": "R0 inventory, provenance and loss ledger are complete as offline records, not independently audited", "gate": "R0_INVENTORY", "state": "CLOSED"}
+- {"claim": "R0 new-baseline manifest starts from commit 01c9274, archives the historical F1R2/F2R2 raw data as RAW_LOST, stops further history-recovery search, and requires new run/batch/geometry/task-family identities plus a fresh Lead GO", "gate": "R0_INVENTORY", "state": "CLOSED"}
+- {"claim": "A1 geometry freeze v2 issues a 15-variable geometry/reference contract (12D lifting surfaces plus fixed fuselage), 24/24 declared-boundary perturbations in both the pure model and real OpenVSP 3.55, and real VSP3/STL/STEP exports with read-back; force-axis signs, WING_AC moment origin and mass/CG remain unvalidated and provisional", "gate": "A1_GEOMETRY_FREEZE_V2", "state": "CLOSED"}
+- {"claim": "A2 exercises the real ArmHarness/GP-BO feedback path with a deterministic mock evaluator: six evaluations, zero physical starts, swapping the first two returned values changes the third proposal, and a failed design carries a null objective; this is software feedback evidence, not a physical loop", "gate": "R1_SOFTWARE", "state": "CLOSED"}
+- {"claim": "R1 software baseline passes 247 offline tests; fixture-only training changes parameters and checkpoint roundtrips", "gate": "R1_SOFTWARE", "state": "CLOSED"}
+- {"claim": "M1 batch control path is exercised with a structural placeholder authorization, not a real GO", "gate": "M1_BATCH_CONTROL_PATH", "state": "CLOSED"}
+- {"claim": "M2 offline rehearsal is deterministic across repeated runs; it is not real meta-training", "gate": "M2_OFFLINE_REHEARSAL", "state": "CLOSED"}
+- {"claim": "Only a same-host restore test exists and is explicitly labelled NOT an off-machine backup; the off-machine failure-domain requirement is waived by the Owner (WAIVER-OFFMACHINE-BACKUP-20261118, m03569) but backup_restore_pass remains false", "gate": "BACKUP_INDEPENDENT_FAILURE_DOMAIN", "state": "WAIVED"}
+- {"claim": "A5 independent review was performed by the authorized deepseek-flash subagent (read-only tools); its verdict is recorded, it is not a human signature, and it is not an approval for physical runs", "gate": "A5_INDEPENDENT_REVIEW", "state": "CLOSED"}
+- {"claim": "A RealAdmissionManifest/AdmissionCertificate protocol now exists and is fixture-tested: it recomputes file SHA256, deck conditions, q, matched-lift row and D_i_N=q*Sref*CDi, and refuses tampered/missing/path-escaping artifacts; no real raw artifact has been admitted, and require_real_admission still raises without matching certificates", "gate": "REAL_ADMISSION", "state": "CLOSED"}
+
+## A5 packet known limitations
+- A CLOSED gate is expected and is not a PASS.
+- The off-machine failure-domain backup is WAIVED by the Owner (m03569); the same-host restore receipt is explicitly labelled SAME_HOST_RESTORE_NOT_AN_OFF_MACHINE_BACKUP and backup_restore_pass remains false. WAIVED is not a PASS.
+- The A5 review was performed by a deepseek-flash subagent with read-only tools; it is not a human signature and does not by itself authorize physical runs. It returned CHANGES_REQUIRED, and the Lead must close or disclose each finding.
+- Two files named real_openvsp_geometry_probe.json exist: docs/evidence/drecover001/real_openvsp_geometry_probe.json is the pre-repair SURFACE_DIAGNOSTIC_FAIL snapshot; the authoritative post-repair record is docs/evidence/drecover001/a1_thickness_repair/real_openvsp_geometry_probe.json (SURFACE_DIAGNOSTIC_PASS_NOT_FREEZE). Neither is a solver freeze or physics validation.
+- research/concorde_metaopt/dreal001/meta/m2_rehearsal.py hardcodes three native_probe_status PASS strings into its geometry contract; the rehearsal therefore asserts, rather than reads, those probe statuses.
+- needed_for_next_run.json had a truncated R1 requirement tail; it is valid JSON now but the lost tail is marked UNKNOWN and is not evidence.
+- Snapshots after 01c9274801474c113a2c488e375d451bcd0297c3 were pushed to branch recovery/drecover001-20261117 through the GitHub Data API because CLI git transport has no configured credential and fails with SEC_E_NO_CREDENTIALS. The GitHub branch head is authoritative for pushed content; the local worktree may temporarily hold newer uncommitted edits.
+- assess_recovery_readiness.py --check computes and prints the readiness matrix without rewriting recovery_readiness.json/.md; the committed matrix is a dated report generated at its recorded HEAD and is intentionally excluded from the evidence index.
+- Some R0 report claims are REPORT_PRESENT only; raw identity is not established for all historical numbers.
+- A1 geometry freeze v2 validates the declared geometry/reference contract and zero-physical boundary perturbations, not aerodynamics. Force-axis signs, the WING_AC moment origin and mass/CG remain unvalidated; the global-versus-wing-local XCG ambiguity is disclosed as an open item for R2 VSPAERO read-back.
+- The VSP3/STL/STEP exports are real OpenVSP 3.55 bytes checked by SHA and STL bounds, but byte-identical re-export across machines is not asserted. Re-running verify_geometry_freeze_v2.py requires the same OpenVSP installation.
+- The RealAdmissionManifest protocol binds a matching independent-audit record by SHA256, but the protocol does not authenticate who produced that audit record; independent review remains an external requirement, and all admission tests use synthetic non-physical bytes.
+- The M1 run uses a structural placeholder authorization and simulated starts.
+- The readiness matrix is regenerated evidence; this packet quotes its status but intentionally does not embed its file hash.
+- run_recovery_preflight.py is deliberately excluded from the non-destructive reproduction list: it assigns a new run_id and overwrites the preflight receipt, trace and checkpoint hashed here. Rerun the suite only inside a restored copy of the bundle, never in this frozen evidence tree.
+
+## Evidence index verification
+evidence_count=36 mismatch_count=0
+
+## Requested output
+Return ONLY a JSON object with keys: verdict (one of APPROVE_FOR_R2, READY_FOR_NEW_REAL_BATCH, CHANGES_REQUIRED, REJECT), scope, rationale, findings (list of {severity: major|minor, issue, evidence, required_action}), residual_risks (list), physical_go_granted (must be false), reviewer (deepseek-flash), human_signature (false), reviewed_commit, reviewed_utc, disclosure. Be adversarial about: whether real admission proves real physics (it does not), whether readiness CLOSED is being confused with PASS, whether the same-host restore is being confused with a backup, and whether any zero-physical rehearsal is presented as a real MAML/physics result. Do not accept claims without evidence. This dossier is your only input; no tools are available.

@@ -1,6 +1,6 @@
 {
   "schema": "drecover001.a5_review_packet.v1",
-  "generated_utc": "2026-11-18T11:51:44Z",
+  "generated_utc": "2026-11-18T12:06:52Z",
   "root": "D:\\RCAIDE\\.worktrees\\drecover001-20261117",
   "scope": "READ_ONLY_EVIDENCE_AGGREGATION_FOR_INDEPENDENT_A5_REVIEW",
   "attestation": {
@@ -18,7 +18,7 @@
     "new_scientific_evidence_created": false,
     "network_used": false
   },
-  "software_run_id": "DRECOVER001-SOFTWARE-20261118T114410Z",
+  "software_run_id": "DRECOVER001-SOFTWARE-20261118T120547Z",
   "software_tests": {
     "run": 247,
     "failures": 0,
@@ -91,15 +91,149 @@
     "harness": null,
     "signature": "deepseek-flash independent A5 review; not a human signature",
     "is_not_an_approval": "The recorded verdict is review input, not a human signature and not a physical-run authorization.",
-    "files": [
-      "docs/evidence/drecover001/a5_review_verdict.json",
-      "docs/evidence/drecover001/a5_review_transcript.json"
-    ]
+    "gate_semantics": "A CLOSED verdict in this packet means the evidence for that gate was checked and is internally consistent. It never means PASS, approval, or authorization.",
+    "prior_review": {
+      "reviewed_commit": "01c9274801474c113a2c488e375d451bcd0297c3",
+      "verdict": "CHANGES_REQUIRED",
+      "findings": [
+        {
+          "severity": "major",
+          "finding": "Same-host restore receipt lacks the owner-required 'not-an-off-machine-backup' label.",
+          "evidence": "local_restore_receipt keys shown include scope,status,bundle_path,... no such label"
+        },
+        {
+          "severity": "major",
+          "finding": "Packet reports BACKUP_INDEPENDENT_FAILURE_DOMAIN CLOSED, conflicting with owner waiver; should be WAIVED_BY_OWNER.",
+          "evidence": "packet_check gate_states BACKUP_INDEPENDENT_FAILURE_DOMAIN: CLOSED"
+        },
+        {
+          "severity": "minor",
+          "finding": "R0 inventory is R0_PARTIAL_NOT_AUDITED, so R0 should pass only with disclosure.",
+          "evidence": "grep: 'Confirm the R0 inventory still says R0_PARTIAL_NOT_AUDIT...'"
+        },
+        {
+          "severity": "info",
+          "finding": "REAL_ADMISSION remains fail-closed; no R2 preregistration or Lead batch GO is shown, so physics is not authorized.",
+          "evidence": "packet claim: Real admission remains fail-closed with REAL..."
+        }
+      ],
+      "files": [
+        "docs/evidence/drecover001/a5_review_verdict.json",
+        "docs/evidence/drecover001/a5_review_transcript.json"
+      ]
+    },
+    "latest_review": {
+      "reviewed_commit": "c072339730f33a64d70aac2b2114797bb085ad1d",
+      "verdict": "CHANGES_REQUIRED",
+      "scope": "A5 independent read-only review of the Issue #12 R0/R1 evidence packet at worktree commit c072339730f33a64d70aac2b2114797bb085ad1d, with R0 baseline 01c9274801474c113a2c488e375d451bcd0297c3. This review covers current-code evidence, isolation claims, and real-admission readiness only. It does not authorize R2, M1, M2, or any physical solver start.",
+      "rationale": "The packet shows substantial offline software scaffolding and internally consistent verifier outputs, but it does not establish real admission over real raw bytes, does not convert CLOSED or WAIVED gates into PASS, and leaves prior A5 CHANGES_REQUIRED findings without a finding-by-finding closure record. Real admission is fixture-tested only (admitted_real_labels=None), A2 is a mock-evaluator feedback rehearsal, M2 is an offline rehearsal that hardcodes native probe PASS strings, and M1 uses a structural placeholder authorization. The same-host restore is explicitly not an off-machine backup and backup_restore_pass remains false. Therefore the packet is not READY_FOR_NEW_REAL_BATCH and R2/M1 physics must not start.",
+      "findings": [
+        {
+          "severity": "major",
+          "issue": "Real admission is not proven over real raw bytes and therefore does not prove real physics.",
+          "evidence": "admitted_real_labels=None; REAL_ADMISSION gate is CLOSED with blocker 'No real raw artifact has been admitted or independently audited; the protocol is fixture-tested only'; all admission tests use synthetic non-physical bytes; RealAdmissionManifest binds an audit record by SHA256 but does not authenticate who produced it.",
+          "required_action": "Admit at least one real raw artifact through RealAdmissionManifest with an independently audited certificate, or keep REAL_ADMISSION explicitly non-passing and do not issue a real batch GO. Do not describe fixture admission as physics validation."
+        },
+        {
+          "severity": "major",
+          "issue": "CLOSED readiness gates are being presented alongside language that could be mistaken for PASS.",
+          "evidence": "readiness_status=RECOVERY_READINESS_GATES_CLOSED_EXPECTED with 9 blockers; A5_INDEPENDENT_REVIEW is CLOSED while recording prior verdict CHANGES_REQUIRED; R0_INVENTORY blocker says independent A5 review is not a human signature; R1_SOFTWARE blocker says no human/Owner sign-off exists.",
+          "required_action": "Use PASS only where a gate actually passes. Provide a finding-by-finding disposition of the prior A5 CHANGES_REQUIRED verdict and obtain the required human/Owner sign-off before any physical authorization."
+        },
+        {
+          "severity": "major",
+          "issue": "The same-host restore is not an independent backup and must not be treated as one.",
+          "evidence": "Local restore receipt status=PASS_NOT_REMOTE_BACKUP; independent_failure_domain=false; backup_restore_pass=false; off_machine_backup=false; backup_label=SAME_HOST_RESTORE_NOT_AN_OFF_MACHINE_BACKUP; BACKUP_INDEPENDENT_FAILURE_DOMAIN is WAIVED, not PASS.",
+          "required_action": "Do not claim backup coverage. Either obtain an independent failure-domain backup or explicitly record the accepted residual risk and keep backup_restore_pass false in all readiness and batch-GO materials."
+        },
+        {
+          "severity": "major",
+          "issue": "Zero-physical rehearsals are at risk of being read as real MAML/physics results.",
+          "evidence": "A2 is SOFTWARE_FEEDBACK_REHEARSAL_ONLY_NOT_PHYSICAL_EVIDENCE with a deterministic mock evaluator and zero physical starts; M2 is an offline rehearsal and not real meta-training; M1 uses a structural placeholder authorization and simulated starts; M2 hardcodes three native_probe_status PASS strings into its geometry contract.",
+          "required_action": "Label all such outputs as fixture/software evidence in every report and batch-GO artifact. Remove or replace hardcoded native_probe_status strings so the rehearsal reads statuses rather than asserting them, or explicitly mark the rehearsal as non-authoritative."
+        },
+        {
+          "severity": "major",
+          "issue": "A1 geometry freeze v2 is not an aerodynamic validation and retains open physics items.",
+          "evidence": "Open items include unvalidated force-axis signs, ambiguous WING_AC moment-reference origin, provisional mass/CG, and no VSPAERO readback. The freeze is GEOMETRY_FREEZE_V2_ISSUED_ZERO_PHYSICAL and the A1 gate blocker states force-axis signs, WING_AC moment origin and mass/CG remain unvalidated until R2 VSPAERO readback.",
+          "required_action": "Do not treat the geometry freeze as aero validation. Carry the open items into R2 preregistration and require VSPAERO readback validation of signs, moment origin, and mass/CG before any physics claim."
+        },
+        {
+          "severity": "major",
+          "issue": "The prior A5 CHANGES_REQUIRED verdict has not been shown to be closed finding by finding.",
+          "evidence": "A5_INDEPENDENT_REVIEW gate records verdict='CHANGES_REQUIRED'; packet limitations state the Lead must close or disclose each finding; no closure matrix is present in the dossier.",
+          "required_action": "Provide a finding-by-finding closure or explicit disclosure matrix for the prior A5 review, with evidence for each disposition, before requesting a new A5 gate or batch GO."
+        },
+        {
+          "severity": "major",
+          "issue": "M1 batch control is not authorized by a real Lead GO.",
+          "evidence": "M1_BATCH_CONTROL_PATH is CLOSED with blocker 'Real M1 label batch requires a new A5 gate and a Lead batch GO; none issued'; the M1 run uses a structural placeholder authorization and simulated starts.",
+          "required_action": "Do not start M1. Require a fresh A5 gate, preregistration, and a real Lead batch GO before any M1 label batch."
+        },
+        {
+          "severity": "minor",
+          "issue": "Two probe JSON files create ambiguity about which OpenVSP probe record is authoritative.",
+          "evidence": "docs/evidence/drecover001/real_openvsp_geometry_probe.json is the pre-repair SURFACE_DIAGNOSTIC_FAIL snapshot; docs/evidence/drecover001/a1_thickness_repair/real_openvsp_geometry_probe.json is SURFACE_DIAGNOSTIC_PASS_NOT_FREEZE; neither is a solver freeze or physics validation.",
+          "required_action": "Keep the authoritative path explicit in the evidence index and batch-GO materials, and state that neither probe is a solver freeze or physics validation."
+        },
+        {
+          "severity": "minor",
+          "issue": "Some historical R0 claims are report-present only and one requirement tail is UNKNOWN.",
+          "evidence": "Packet limitations state some R0 report claims are REPORT_PRESENT only and needed_for_next_run.json had a truncated R1 requirement tail marked UNKNOWN.",
+          "required_action": "Do not use REPORT_PRESENT or UNKNOWN-tail content as evidence of raw identity or requirement completeness. Keep these limitations visible in the new baseline manifest."
+        },
+        {
+          "severity": "minor",
+          "issue": "OpenVSP export reproducibility is not asserted across machines.",
+          "evidence": "Packet limitations state VSP3/STL/STEP exports are real OpenVSP 3.55 bytes checked by SHA and STL bounds, but byte-identical re-export across machines is not asserted; re-running verify_geometry_freeze_v2.py requires the same OpenVSP installation.",
+          "required_action": "Record the OpenVSP version and environment as part of the freeze verification contract, and do not claim cross-machine byte reproducibility."
+        }
+      ],
+      "residual_risks": [
+        "Historical F1R2/F2R2 raw data remains RAW_LOST and is not recoverable; no historical raw identity is established.",
+        "No independent off-machine backup exists; the same-host restore is a single-failure-domain risk and backup_restore_pass remains false.",
+        "Real admission has not been exercised on real raw bytes, so fail-closed behavior is demonstrated only against synthetic fixtures.",
+        "The RealAdmissionManifest does not authenticate the independent auditor; independent review remains an external trust assumption.",
+        "A1 force-axis signs, WING_AC moment origin, and mass/CG remain unvalidated until R2 VSPAERO readback.",
+        "M2 rehearsal hardcodes native probe PASS strings, so its geometry-contract assertions are not independently read from the environment.",
+        "M1 uses a placeholder authorization and simulated starts; no real Lead batch GO exists.",
+        "No human/Owner sign-off exists for the A5 review; the deepseek-flash verdict is review input only.",
+        "OpenVSP export reproducibility across machines is not asserted.",
+        "Some R0 report claims are REPORT_PRESENT only and one requirement tail is UNKNOWN."
+      ],
+      "reviewer": "deepseek-flash",
+      "human_signature": false,
+      "physical_go_granted": false,
+      "harness": {
+        "model": "deepseek-flash",
+        "mode": "single_shot_read_only_dossier",
+        "reviewer_tools": 0,
+        "worktree": "D:\\RCAIDE\\.worktrees\\drecover001-20261117",
+        "git_head": "c072339730f33a64d70aac2b2114797bb085ad1d",
+        "dossier": "D:\\RCAIDE\\.recovery-local-restore\\a5_reviewer\\run_c0723397\\dossier.txt",
+        "dossier_sha256": "2b8ccb0ca8a391e3b0ece121788b466695b8418ece125f24ba08be3159f710cc",
+        "dossier_chars": 16837,
+        "packet_sha256": "1069a962f293d533d5ae87617741d4de28c7cd75af4e69bd39c85705109067da",
+        "bundle_sha256": "3088b3166ba4009f92d453785be3e117a7b4015dfdf40457aea1d0b5565b181e",
+        "reviewed_utc": "2026-11-18T11:59:32Z",
+        "finish_reason": "stop",
+        "human_signature": false,
+        "physical_go_granted": false,
+        "note": "Single-shot deepseek-flash review over a harness-assembled read-only dossier. No tools were available; this is review input only and must not be treated as an A5 PASS, a human signature, or a physical GO."
+      },
+      "files": [
+        "docs/evidence/drecover001/a5_review_verdict_c0723397.json",
+        "docs/evidence/drecover001/a5_review_dossier_c0723397.txt"
+      ]
+    },
+    "findings_disposition_file": "docs/evidence/drecover001/a5_finding_disposition_20261118.md",
+    "findings_disposition_sha256": "3730f308886b4ac6fd5cba9b64140d8ee07f7ddeb35956c5d69117a3449d48a2",
+    "closure_statement": "Prior findings A1/A2 are fixed with machine-checkable receipt/readiness evidence; A3/A4 and the current findings B1-B10 are disclosed, and B1/B7 remain open blockers. No finding is claimed closed by assertion."
   },
   "readiness_matrix": {
     "path": "docs/evidence/drecover001/recovery_readiness.json",
     "status": "RECOVERY_READINESS_GATES_CLOSED_EXPECTED",
-    "generated_utc": "2026-11-18T11:51:43Z",
+    "generated_utc": "2026-11-18T12:06:51Z",
     "note": "status is quoted, not hashed, to avoid a self-referential hash cycle; rerun the aggregator to verify"
   },
   "claims": [
@@ -144,7 +278,7 @@
       "state": "WAIVED"
     },
     {
-      "claim": "A5 independent review was performed by the authorized deepseek-flash subagent (read-only tools); its verdict is recorded, it is not a human signature, and it is not an approval for physical runs",
+      "claim": "A5 independent review was performed twice by the authorized deepseek-flash subagent: a read-only tool loop on 01c9274 and a single-shot dossier review on c0723397. Both returned CHANGES_REQUIRED; neither is a human signature and neither is an approval for physical runs. The finding-by-finding disposition matrix records which findings are fixed (A1/A2), which remain open (A3/A4, B1/B7), and which are disclosed (the rest)",
       "gate": "A5_INDEPENDENT_REVIEW",
       "state": "CLOSED"
     },
@@ -165,8 +299,8 @@
     },
     {
       "path": "docs/evidence/drecover001/recovery_inventory.md",
-      "bytes": 25955,
-      "sha256": "145d2aa88391ea4df4430c596d1a800abf9035e10e9b7fcf889496254bba9d6f",
+      "bytes": 26509,
+      "sha256": "6a46cf1d046d1929464be4140fb0a7a4b954b2a06a9626d2ec6c16d8a3d3e116",
       "claim": "R0 human-readable inventory",
       "gate": "R0_INVENTORY",
       "in_change_manifest": true
@@ -213,8 +347,8 @@
     },
     {
       "path": "docs/evidence/drecover001/needed_for_next_run.json",
-      "bytes": 21615,
-      "sha256": "e2cb8f1d167aa2ccb5a899e4e04fc0f10135d8dda9ee0d10fd065df6440b9131",
+      "bytes": 23285,
+      "sha256": "158a5804f2688c76af1fa9556ab902628576dab2009c90e9105911163d6ebd45",
       "claim": "R0/R1/R2 handoff requirements",
       "gate": "R0_INVENTORY",
       "in_change_manifest": true
@@ -302,10 +436,10 @@
     {
       "path": "docs/evidence/drecover001/recovery_preflight_receipt.json",
       "bytes": 7639,
-      "sha256": "70096ac2a29a7d5d1ba31393a7b2f662f496408ebb001f1c9ad20f95a59cda10",
+      "sha256": "38787b65c4ee0a4d38ff90b9edbb72ea55970db9cb288791de3b96f5bb36c622",
       "claim": "R1 software preflight receipt",
       "gate": "R1_SOFTWARE",
-      "in_change_manifest": false
+      "in_change_manifest": true
     },
     {
       "path": "docs/evidence/drecover001/a2_feedback_rehearsal.json",
@@ -341,11 +475,11 @@
     },
     {
       "path": "docs/evidence/drecover001/synthetic_software_training_trace.json",
-      "bytes": 6327,
-      "sha256": "7ec0ff3f00dfb02468faf9ea1c0fd39367f978259b3359b4cb9053d14b4abc68",
+      "bytes": 6328,
+      "sha256": "1231c57e77e09dd318832ab4668e64aab256ed2610baeffb527392212b436ef3",
       "claim": "R1 fixture training trace",
       "gate": "R1_SOFTWARE",
-      "in_change_manifest": false
+      "in_change_manifest": true
     },
     {
       "path": "docs/evidence/drecover001/synthetic_software_checkpoint.json",
@@ -429,17 +563,41 @@
       "in_change_manifest": false
     },
     {
+      "path": "docs/evidence/drecover001/a5_review_verdict_c0723397.json",
+      "bytes": 10292,
+      "sha256": "6e610fb8c8ff4a1059408d281726a632f689e582effb604367cf944b49701886",
+      "claim": "A5 verdict on the clean pushed snapshot c0723397 (deepseek-flash, single-shot dossier mode, not a human signature)",
+      "gate": "A5_INDEPENDENT_REVIEW",
+      "in_change_manifest": true
+    },
+    {
+      "path": "docs/evidence/drecover001/a5_review_dossier_c0723397.txt",
+      "bytes": 16950,
+      "sha256": "2b8ccb0ca8a391e3b0ece121788b466695b8418ece125f24ba08be3159f710cc",
+      "claim": "Read-only dossier that was the sole input to the c0723397 A5 review",
+      "gate": "A5_INDEPENDENT_REVIEW",
+      "in_change_manifest": true
+    },
+    {
+      "path": "docs/evidence/drecover001/a5_finding_disposition_20261118.md",
+      "bytes": 5992,
+      "sha256": "3730f308886b4ac6fd5cba9b64140d8ee07f7ddeb35956c5d69117a3449d48a2",
+      "claim": "Finding-by-finding disposition matrix for the prior and current A5 verdicts",
+      "gate": "A5_INDEPENDENT_REVIEW",
+      "in_change_manifest": true
+    },
+    {
       "path": "docs/evidence/drecover001/issue12_consolidated_receipt_draft_20261117.md",
-      "bytes": 14869,
-      "sha256": "003aead695169083075c2ad7114461e936a3b7fff30b0020b2fec4ee4bdb2b49",
+      "bytes": 16218,
+      "sha256": "c9e2af6fecdb0eced2743052e0b9cdb2b40898c718ffb6cbd5dbf9b6af8f7f50",
       "claim": "Issue #12 receipt draft (not posted)",
       "gate": "EVIDENCE_MANIFEST",
       "in_change_manifest": true
     },
     {
       "path": "docs/evidence/drecover001/maml_readiness_20261117.md",
-      "bytes": 11422,
-      "sha256": "3ea1c2e2f36989b45b2aef6dff700c9466c0997cedfbe4757cc0cd113fefd187",
+      "bytes": 11650,
+      "sha256": "a53927ae05cf49e8b36661aee7af1aca70694c42fb470353a70a04a5689bcead",
       "claim": "MAML offline readiness summary",
       "gate": "M2_OFFLINE_REHEARSAL",
       "in_change_manifest": true
@@ -470,7 +628,8 @@
   "known_limitations": [
     "A CLOSED gate is expected and is not a PASS.",
     "The off-machine failure-domain backup is WAIVED by the Owner (m03569); the same-host restore receipt is explicitly labelled SAME_HOST_RESTORE_NOT_AN_OFF_MACHINE_BACKUP and backup_restore_pass remains false. WAIVED is not a PASS.",
-    "The A5 review was performed by a deepseek-flash subagent with read-only tools; it is not a human signature and does not by itself authorize physical runs. It returned CHANGES_REQUIRED, and the Lead must close or disclose each finding.",
+    "The A5 reviews were performed by a deepseek-flash subagent; they are not human signatures and do not authorize physical runs. The 01c9274 review used read-only tools and returned CHANGES_REQUIRED; the c0723397 review was single-shot over a harness-assembled dossier with no tools (so the reviewer did not inspect files independently). Both returned CHANGES_REQUIRED. a5_finding_disposition_20261118.md records a disposition for every finding: A1/A2 fixed, A3/A4 and B1/B7 remain open blockers, the rest disclosed. No finding is closed by assertion.",
+    "The readiness A5 gate state CLOSED means the review evidence was checked and is internally consistent; it does not mean the reviewer approved, and it does not mean PASS.",
     "Two files named real_openvsp_geometry_probe.json exist: docs/evidence/drecover001/real_openvsp_geometry_probe.json is the pre-repair SURFACE_DIAGNOSTIC_FAIL snapshot; the authoritative post-repair record is docs/evidence/drecover001/a1_thickness_repair/real_openvsp_geometry_probe.json (SURFACE_DIAGNOSTIC_PASS_NOT_FREEZE). Neither is a solver freeze or physics validation.",
     "research/concorde_metaopt/dreal001/meta/m2_rehearsal.py hardcodes three native_probe_status PASS strings into its geometry contract; the rehearsal therefore asserts, rather than reads, those probe statuses.",
     "needed_for_next_run.json had a truncated R1 requirement tail; it is valid JSON now but the lost tail is marked UNKNOWN and is not evidence.",
