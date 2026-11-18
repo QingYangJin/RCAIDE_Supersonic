@@ -1,8 +1,8 @@
 # A5 独立审查包（只读聚合）
 
-- 生成时间（UTC）：2026-11-18T11:12:18Z
+- 生成时间（UTC）：2026-11-18T11:30:00Z
 - 范围：READ_ONLY_EVIDENCE_AGGREGATION_FOR_INDEPENDENT_A5_REVIEW
-- 软件 run_id：DRECOVER001-SOFTWARE-20261118T110705Z
+- 软件 run_id：DRECOVER001-SOFTWARE-20261118T112826Z
 - 离线测试：247 项，失败 0，错误 0，跳过 0
 - 物理求解器启动：0；内部求解案例：0；真实元训练：false；真实标签：0
 - 异机备份：Owner 已豁免（m03569），只做同机恢复；同机恢复标注为非异机备份，backup_restore_pass 仍为 false。
@@ -23,13 +23,13 @@
 ## 可复核证据（逐文件 SHA256）
 
 - docs/evidence/drecover001/recovery_inventory.json（18205 字节）：65df586e7067f20767ff6419d6d00bb2a769df780ad1b2c41be92ac409aa4a43 — R0 loss ledger and provenance inventory
-- docs/evidence/drecover001/recovery_inventory.md（25955 字节）：fad431a3c3517fbeeddc752986150bb3b18df2d563a2445d0123fd8c050b10c7 — R0 human-readable inventory
+- docs/evidence/drecover001/recovery_inventory.md（25955 字节）：9ad7c74bd9dc1eaea6560eb6fe94754962fcd821677d8627aa666645e7009266 — R0 human-readable inventory
 - docs/evidence/drecover001/all_ref_blob_audit.json（6308435 字节）：ad8222e8965c5a5fa3834f29b4309ff7cea71d71729100f245d29984e10a1613 — R0 remote-ref byte/blob audit
 - docs/evidence/drecover001/reachable_history_audit.json（1309494 字节）：ba8f65fd5f1bc4f6eebe980dad3992b853360acf9b01ebf508c79d49f001d6dc — R0 reachable-history audit
 - docs/evidence/drecover001/r0_provenance_extension.json（330839 字节）：b553857c5ce986e9fbfd7f6fa6de37d7aca42af9ade61075db6e17e87c524c37 — R0 provenance extension records
 - docs/evidence/drecover001/r0_provenance_extension_20261117.md（6794 字节）：bdf7380e4d0c9368b3128d51b52de652ea21bf06a7d2d107edc674914d54327f — R0 provenance extension summary
 - docs/evidence/drecover001/r0_provenance_extension_verification.json（81117 字节）：73b99833c7f86c5ef317dc21ca83a3ae0537170384309c6d1dbf07af7dbcb3b5 — R0 archived-byte self-verification
-- docs/evidence/drecover001/needed_for_next_run.json（21615 字节）：4c672c31d805518f92866acc40aaae5049cf9275b7a47683ba7132e996a9f5c9 — R0/R1/R2 handoff requirements
+- docs/evidence/drecover001/needed_for_next_run.json（21615 字节）：a3fc77ac9439f292f994feda29dbab0dce1d6d388997b4bdf00879977ad98589 — R0/R1/R2 handoff requirements
 - docs/evidence/drecover001/new_baseline_manifest.json（11391 字节）：f9944250699ae86994b363cc94a9cf04c4c2e7cc1568150fc1baf03c39ed21dd — R0 new-baseline identity and RAW_LOST archive policy
 - docs/evidence/drecover001/geometry_freeze_v2.json（354374 字节）：401bc6b6c605eafe416bd4b0e925d106b93673b2e4d2c21f1d21e688d7e62bf1 — A1 geometry/reference contract freeze v2 (zero physical)
 - docs/evidence/drecover001/geometry_freeze_v2.md（4099 字节）：1af6ff72afc698269edc83218aa90ce4f7a080dcdabc41020ac4ce0b83d17c21 — A1 human-readable geometry freeze v2
@@ -40,12 +40,12 @@
 - docs/evidence/drecover001/geometry_freeze_v2_artifacts/concorde_geometry_freeze_v2_main_wing.stl（653984 字节）：f5ff10e9a7c46693a9bd7e316d7fe1e21ea404bc4ae3692b6681958c03ca17b6 — A1 main-wing STL component placement artifact
 - docs/evidence/drecover001/geometry_freeze_v2_artifacts/concorde_geometry_freeze_v2_vertical_tail.stl（263430 字节）：18d8246bcd8a3dced4df96868f32c88f509faa348a3cde24f8d6e29f3e37df8f — A1 vertical-tail STL component placement artifact
 - docs/evidence/drecover001/geometry_freeze_v2_artifacts/concorde_geometry_freeze_v2_fuselage.stl（327922 字节）：dabd56e97bc480f3227650b282a318e4236d385289b79b3960e27a217a3b167a — A1 fuselage STL component placement artifact
-- docs/evidence/drecover001/recovery_preflight_receipt.json（7639 字节）：6b544ac2ee063876135186752fdfb474fa4f162c9213a41c89ddd6b3c646f83d — R1 software preflight receipt
+- docs/evidence/drecover001/recovery_preflight_receipt.json（7639 字节）：04dbb7191dcae42f350a8c47f3729694c03d7ae18fb3f27a4db132fd0c25e949 — R1 software preflight receipt
 - docs/evidence/drecover001/a2_feedback_rehearsal.json（7213 字节）：b8f5c6950d99be20c982bead819a552046b501746abbbd25ecc02df926f83436 — A2 executable BO feedback rehearsal (software only, zero physical)
 - docs/evidence/drecover001/run_a2_feedback_rehearsal.py（9649 字节）：892920f2a5792fff873bc29a210c3655702e459fd032f683974fe8692afd3573 — A2 rehearsal generator over the real ArmHarness/GP-BO path
 - research/concorde_metaopt/dreal001/meta/real_admission.py（17896 字节）：b27da1547a4b8c21395b0f637aef3f0410c357e7b7a8300ec59c16d8597cdde7 — A3 real-admission manifest/certificate protocol
 - research/concorde_metaopt/tests/test_recovery_real_admission.py（13924 字节）：1171ad3cd9c790c58dd3c0cc355e2c87e3a90473932fa37e7b06904e5f6a540c — A3 real-admission fixture tests (synthetic bytes)
-- docs/evidence/drecover001/synthetic_software_training_trace.json（6328 字节）：53c404f1cb817c0820a45726fc887d9803704d13fd378c27a24978ff6971875c — R1 fixture training trace
+- docs/evidence/drecover001/synthetic_software_training_trace.json（6328 字节）：8f745bb2ec78fad93410baa5c50975ba938a9bf87cf9c160e5d43a422bb8573d — R1 fixture training trace
 - docs/evidence/drecover001/synthetic_software_checkpoint.json（9081 字节）：0211bc97e73418722d60e45c3eb2dd812686cc17cc412f99168b227f0dc7b155 — R1 fixture checkpoint roundtrip artifact
 - docs/evidence/drecover001/m1_batch_software_rehearsal_receipt.json（3468 字节）：526d337ae54fb6849fc6822f032560b3c9a3a21ba39395a5c18594f1479ab7f5 — M1 control-path rehearsal receipt
 - docs/evidence/drecover001/m1_batch_software_result.json（12411 字节）：63ee7a6a868f5f1b9abda6a55480e1e72068a6ec4ee9f7fdc075a3e4df96fac8 — M1 control-path result
@@ -56,7 +56,7 @@
 - docs/evidence/drecover001/owner_waiver_offmachine_backup_20261118.json（839 字节）：b9edcaae932060bc684972427d34b6f3247e1dc6cade83a599e7d25c8ac0bb68 — Owner waiver of the off-machine failure-domain backup
 - docs/evidence/drecover001/a5_review_verdict.json（3551 字节）：e6cfc666c0491b281e0a3c7c621b6de7529d41470ea8f257420d19e5fe9af7df — A5 verdict from the authorized deepseek-flash subagent (not a human signature)
 - docs/evidence/drecover001/a5_review_transcript.json（155516 字节）：71e08f219ae7c3759f1a20714ccd037138897afed99ecfd5904986c10d943deb — Read-only A5 inspection transcript (16 tool steps before HTTP 524)
-- docs/evidence/drecover001/issue12_consolidated_receipt_draft_20261117.md（13052 字节）：3c1fedbacfc9578c329db759f84a52c6b546b6cfb3421a169d7a795eb58b8d2e — Issue #12 receipt draft (not posted)
+- docs/evidence/drecover001/issue12_consolidated_receipt_draft_20261117.md（13890 字节）：1e4633486d24c8ade949ea9dedbeeb03f230c5d431c1efee1825aca464742627 — Issue #12 receipt draft (not posted)
 - docs/evidence/drecover001/maml_readiness_20261117.md（11422 字节）：201345fe29834178712db633678be0041eba9eb146fc0bbd99cf73cdf50b2f6b — MAML offline readiness summary
 
 ## 已记录的 A5 审查

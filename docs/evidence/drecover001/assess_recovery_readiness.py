@@ -775,56 +775,67 @@ def assess_manifest(root, report):
         head = str(manifest.get("head") or manifest.get("baseline") or "")
         record(node, "clean_worktree_head_is_commit", bool(re.fullmatch(r"[0-9a-f]{40}", head)),
                "head=%r" % head)
-        return report["gates"].append(finalize(node, clean=True))
-    record(node, "manifest_is_non_empty", len(files) > 0, "entries=%d" % len(files))
-    record(node, "manifest_file_count_consistent",
-           manifest.get("file_count") == len(files),
-           "file_count=%r entries=%d" % (manifest.get("file_count"), len(files)))
-    stale, missing = [], []
-    total = 0
-    for entry in files:
-        name = entry.get("path")
-        if not name:
-            continue
-        candidate = Path(root) / name
-        if not candidate.is_file():
-            missing.append(name)
-            continue
-        data = candidate.read_bytes()
-        total += len(data)
-        if sha256_bytes(data) != entry.get("sha256"):
-            stale.append(name)
-        elif entry.get("bytes") not in (None, len(data)):
-            stale.append(name)
-    record(node, "manifest_paths_exist", not missing,
-           "missing=%d %s" % (len(missing), missing[:5]))
-    record(node, "manifest_hashes_current", not stale,
-           "stale=%d %s" % (len(stale), stale[:5]))
-    record(node, "manifest_total_bytes_consistent",
-           manifest.get("total_bytes") == total,
-           "recorded=%r actual=%d" % (manifest.get("total_bytes"), total))
+    else:
+        record(node, "manifest_is_non_empty", len(files) > 0, "entries=%d" % len(files))
+        record(node, "manifest_file_count_consistent",
+               manifest.get("file_count") == len(files),
+               "file_count=%r entries=%d" % (manifest.get("file_count"), len(files)))
+        stale, missing = [], []
+        total = 0
+        for entry in files:
+            name = entry.get("path")
+            if not name:
+                continue
+            candidate = Path(root) / name
+            if not candidate.is_file():
+                missing.append(name)
+                continue
+            data = candidate.read_bytes()
+            total += len(data)
+            if sha256_bytes(data) != entry.get("sha256"):
+                stale.append(name)
+            elif entry.get("bytes") not in (None, len(data)):
+                stale.append(name)
+        record(node, "manifest_paths_exist", not missing,
+               "missing=%d %s" % (len(missing), missing[:5]))
+        record(node, "manifest_hashes_current", not stale,
+               "stale=%d %s" % (len(stale), stale[:5]))
+        record(node, "manifest_total_bytes_consistent",
+               manifest.get("total_bytes") == total,
+               "recorded=%r actual=%d" % (manifest.get("total_bytes"), total))
     toplevel, top_err = _git(root, ["rev-parse", "--show-toplevel"])
+    dirty = None
     if toplevel is None or Path(toplevel).resolve() != root:
         info(node, "manifest_completeness_not_checked",
              "root is not a git worktree top level: %r" % top_err)
     else:
         status_text, status_err = _git_raw(root, ["status", "--porcelain=v1", "-z",
                                                   "--untracked-files=all"])
-    if toplevel is None or Path(toplevel).resolve() != root:
-        info(node, "manifest_completeness_not_checked",
-             "root is not a git worktree top level: %r" % top_err)
-    elif status_text is None:
-        info(node, "manifest_completeness_not_checked",
-             "git status unavailable: %r" % status_err)
-    else:
-        dirty = _status_paths(status_text)
-        listed = {entry.get("path") for entry in files}
-        unlisted = sorted(dirty - listed)
-        ghosts = sorted(listed - dirty)
-        record(node, "manifest_covers_worktree", not unlisted,
-               "unlisted=%d %s" % (len(unlisted), unlisted[:5]))
-        record(node, "manifest_has_no_ghost_entries", not ghosts,
-               "ghosts=%d %s" % (len(ghosts), ghosts[:5]))
+        if status_text is None:
+            info(node, "manifest_completeness_not_checked",
+                 "git status unavailable: %r" % status_err)
+        else:
+            dirty = _status_paths(status_text)
+    if dirty is not None:
+        if not files:
+            # The manifest claims a clean worktree; verify that claim instead of
+            # trusting it. A dirty tree under an empty manifest is a conflict.
+            record(node, "clean_worktree_actually_clean", not dirty,
+                   "dirty=%d %s" % (len(dirty), sorted(dirty)[:5]))
+        elif dirty:
+            listed = {entry.get("path") for entry in files}
+            unlisted = sorted(dirty - listed)
+            ghosts = sorted(listed - dirty)
+            record(node, "manifest_covers_worktree", not unlisted,
+                   "unlisted=%d %s" % (len(unlisted), unlisted[:5]))
+            record(node, "manifest_has_no_ghost_entries", not ghosts,
+                   "ghosts=%d %s" % (len(ghosts), ghosts[:5]))
+        else:
+            # A committed manifest lists the change set relative to its parent
+            # commit. Once committed, those paths are clean at HEAD; their hashes
+            # still match the recorded snapshot, so this is not a ghost entry.
+            info(node, "manifest_entries_describe_committed_snapshot",
+                 "worktree clean at HEAD; %d entries are the committed change set" % len(files))
     return report["gates"].append(finalize(node, clean=True))
 
 
