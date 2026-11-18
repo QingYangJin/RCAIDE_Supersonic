@@ -1,11 +1,11 @@
 # Issue #12 合并回执（草案，未发布）
 
-> **状态：DRAFT / NOT POSTED。** 本文件是 Lead 准备的唯一中文合并回执草案，用于在取得 GitHub 连通与提交身份后一次性发布到 Issue #12。它不是已发布的回执，任何自动化流程不得把它当作业已完成或门禁已签。A5 审查已由 Owner 授权的 deepseek-flash 只读子智能体执行并记录 `CHANGES_REQUIRED`（非人类签名）；发布前仍须 Owner 接受该结果并核对本文件与证据 JSON 的一致性。
+> **状态：DRAFT / NOT POSTED。** 本文件是 Lead 准备的唯一中文合并回执草案，用于在 Owner 接受 A5 结论后一次性发布到 Issue #12（GitHub 推送已可通过 API 完成，但本文件尚未发布）。它不是已发布的回执，任何自动化流程不得把它当作业已完成或门禁已签。A5 审查已由 Owner 授权的 deepseek-flash 只读子智能体执行并记录 `CHANGES_REQUIRED`（非人类签名）；发布前仍须 Owner 接受该结果并核对本文件与证据 JSON 的一致性。
 
-- 日期：2026-11-17（本地）；仓库：`QingYangJin/RCAIDE_Supersonic`；基线：`4c51c7df34c9626999ef2e66e5a6c76a2b9c92e2`。
+- 日期：2026-11-18（Issue #12 修订后）；仓库：`QingYangJin/RCAIDE_Supersonic`；新基线：`01c9274801474c113a2c488e375d451bcd0297c3`。
 - 分支 / worktree：`recovery/drecover001-20261117`（D:\RCAIDE\.worktrees\drecover001-20261117）。
-- 远端 commit / ref：**无**。本机无 git author identity，且 git 无法访问 github.com（本轮复核：`schannel: AcquireCredentialsHandle failed: SEC_E_NO_CREDENTIALS (0x8009030e)`；另见 connection timeout / connection reset，详见 `github_connectivity_check_20261118.md`）；未 fetch、未 push、未合并 main，未触碰 PR #3/#6。本地变更清单：[recovery_change_manifest.json](recovery_change_manifest.json)（127 文件；逐文件 SHA256/字节见清单，未提交）。
-- 门禁状态：`R0_PARTIAL_NOT_AUDITED`、`R1_SOFTWARE_IN_PROGRESS_NOT_AUDITED`、`NO_PHYSICAL_GO`。A5 审查：已由 Owner 授权的 deepseek-flash 子智能体完成只读审查，verdict=`CHANGES_REQUIRED`（`a5_review_verdict.json` / `a5_review_transcript.json`）；它不是人类签名，Lead 未自签。异机备份要求已由 Owner 豁免（`WAIVER-OFFMACHINE-BACKUP-20261118`，m03569）。
+- 远端 commit / ref：`recovery/drecover001-20261117` @ `f367b8e4230902cd72f88a093411f635f4563f19`（tree `529d016da29862988e6e5f010e018a0fa8654829`，parent `01c9274`，36 文件 / 4,234,995 字节；经 GitHub Data API 推送，并用本地临时 index `git write-tree` 得到相同 tree、抽查 blob 逐字节一致；main 未动，未触碰 PR #3/#6）。此前快照 `01c9274`（tree `8b2be0a4…`）是同一恢复分支的上一版。本地 worktree HEAD 仍为 `01c9274` 且带有与远端快照内容相同的未提交改动；CLI git 传输仍无凭据（`SEC_E_NO_CREDENTIALS`），推送经 API。变更清单：[recovery_change_manifest.json](recovery_change_manifest.json)（30 文件；逐文件 SHA256/字节见清单）。
+- 门禁状态：`RECOVERY_READINESS_GATES_CLOSED_EXPECTED`（9 gates = 7 CLOSED + 1 CLEAN + 1 WAIVED，blockers=9，`CLOSED` 不等于 PASS）、`NO_PHYSICAL_GO`。A5 审查：Owner 授权的 deepseek-flash 只读子智能体对上一快照给出 verdict=`CHANGES_REQUIRED`（`a5_review_verdict.json` / `a5_review_transcript.json`），两项 major 已修复；新快照 `f367b8e4` 尚未复审。它不是人类签名，Lead 未自签。异机备份要求已由 Owner 豁免（`WAIVER-OFFMACHINE-BACKUP-20261118`，m03569）。
 
 ## 本轮恢复内容
 
@@ -44,7 +44,7 @@
 
 ## 源码差异摘要
 
-- 新增：`dreal001/meta/{task_spec,meta_dataset,m1_batch,...}.py`、对应 tests（247 项套件）、证据与审计脚本；修改 18 个 tracked 源码文件（几何校验、12D 配置、evaluator、优化器 arms/evaluators/ledger/p2a*、GPU 探测、M5/M6、A5 审计、几何测试）。
+- 新增：`dreal001/meta/{task_spec,meta_dataset,m1_batch,real_admission,...}.py`、对应 tests（247 项套件）、新基线/几何冻结/A2/A3 证据与审计脚本；本轮远端快照共 36 个路径（19 个已跟踪文件修改 + 17 个新增）。
 - 未删除历史 Issue、未覆盖旧跑数、未把重生成文件冒充旧 raw（重生成件标 `REGENERATED_FROM_SPEC`，新身份）。
 
 ## 负结果（原样保留）
@@ -54,7 +54,7 @@
 ## 下一门禁
 
 1. Owner 接受 A5 子智能体 verdict（当前 `CHANGES_REQUIRED`，两项 major 已修复）后，R0 收口仍不能自签 `RECOVERY_INVENTORY_PASS`；如需要人类签署，须由 Owner 或授权审阅者给出。
-2. 管理员提供 git 提交身份与 GitHub 连通后，推送分支并发布本回执；远端复核 SHA。
+2. A5/授权审阅者对远端快照 `f367b8e4…` 复审（当前 verdict 针对上一快照 `01c9274`）；是否把本回执发布到 Issue #12 由 Owner 决定并接受 A5 结论。
 3. ~~批准独立故障域存储并签 BACKUP_RESTORE_PASS~~：Owner 已豁免异机备份（m03569）；保留同机 bundle/恢复证据与显式标签，不再要求异机签名。
 4. 上述通过后由 A5/Lead 记录 `RESTORED_CODE_BASELINE_PASS`（A5 结果须标为 deepseek-flash 子智能体 verdict、非人类签名）；再由 A5/Lead 预注册 R2 最小矩阵，Lead 逐批 `GO`。
 5. 真实准入（REAL_ADMISSION）在 R2 首个真实 batch 前实现并验证；在此之前 physical 保持 0。
