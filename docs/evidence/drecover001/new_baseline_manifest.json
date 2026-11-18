@@ -7,18 +7,28 @@
   "base_tree": "8b2be0a4b122dc1ef2ec9a5b4d01cf113f216861",
   "branch": "recovery/drecover001-20261117",
   "remote": "https://github.com/QingYangJin/RCAIDE_Supersonic.git",
-  "authoritative_source": "remote snapshot f367b8e4 (branch recovery/drecover001-20261117) whose tree equals the current worktree; base_commit 01c9274 is the first new-baseline commit and this manifest is the only identity anchor for new work",
+  "authoritative_source": "the pushed snapshot chain on branch recovery/drecover001-20261117; base_commit 01c9274 is the first new-baseline commit, f367b8e4 is the code snapshot, and 949eedbf is the latest snapshot whose tree was verified equal to the worktree at 2026-11-18T10:49Z. Later receipt-sync commits may advance the branch head; this manifest is the identity anchor for new work",
   "remote_snapshot": {
     "branch": "recovery/drecover001-20261117",
-    "commit": "f367b8e4230902cd72f88a093411f635f4563f19",
-    "tree": "529d016da29862988e6e5f010e018a0fa8654829",
-    "parent": "01c9274801474c113a2c488e375d451bcd0297c3",
-    "files_changed_vs_parent": 36,
-    "total_bytes_changed_vs_parent": 4234995,
-    "pushed_via": "GitHub Data API (blobs -> tree -> commit -> ref)",
-    "pushed_utc": "2026-11-18T10:44:00Z",
-    "verification": "local temporary-index git write-tree reproduces the remote tree; sampled blobs byte-identical; parent and branch ref confirmed",
-    "local_worktree_head": "01c9274801474c113a2c488e375d451bcd0297c3 with the same uncommitted changes"
+    "code_snapshot": {
+      "commit": "f367b8e4230902cd72f88a093411f635f4563f19",
+      "tree": "529d016da29862988e6e5f010e018a0fa8654829",
+      "parent": "01c9274801474c113a2c488e375d451bcd0297c3",
+      "files_changed_vs_parent": 36,
+      "total_bytes_changed_vs_parent": 4234995,
+      "pushed_utc": "2026-11-18T10:44:00Z"
+    },
+    "latest_verified_snapshot": {
+      "commit": "949eedbfd832b492625110c6eedcb080a8b79e48",
+      "tree": "9c4b570376e5e88389510a16728dcdec61685cd2",
+      "parent": "f367b8e4230902cd72f88a093411f635f4563f19",
+      "files_changed_vs_parent": 36,
+      "total_bytes_changed_vs_parent": 4236245,
+      "verified_utc": "2026-11-18T10:49:00Z",
+      "verification": "remote ref -> commit, parent and tree confirmed by API; local temporary-index git write-tree reproduces the remote tree; sampled blobs byte-identical"
+    },
+    "pushed_via": "GitHub Data API (blobs -> tree -> commit -> ref); CLI git transport has no configured credential (SEC_E_NO_CREDENTIALS)",
+    "local_worktree_head": "01c9274801474c113a2c488e375d451bcd0297c3 with the same uncommitted changes that were pushed"
   },
   "historical_data_policy": {
     "status": "RAW_LOST_ARCHIVED",

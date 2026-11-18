@@ -4,7 +4,7 @@
 
 - 日期：2026-11-18（Issue #12 修订后）；仓库：`QingYangJin/RCAIDE_Supersonic`；新基线：`01c9274801474c113a2c488e375d451bcd0297c3`。
 - 分支 / worktree：`recovery/drecover001-20261117`（D:\RCAIDE\.worktrees\drecover001-20261117）。
-- 远端 commit / ref：`recovery/drecover001-20261117` @ `f367b8e4230902cd72f88a093411f635f4563f19`（tree `529d016da29862988e6e5f010e018a0fa8654829`，parent `01c9274`，36 文件 / 4,234,995 字节；经 GitHub Data API 推送，并用本地临时 index `git write-tree` 得到相同 tree、抽查 blob 逐字节一致；main 未动，未触碰 PR #3/#6）。此前快照 `01c9274`（tree `8b2be0a4…`）是同一恢复分支的上一版。本地 worktree HEAD 仍为 `01c9274` 且带有与远端快照内容相同的未提交改动；CLI git 传输仍无凭据（`SEC_E_NO_CREDENTIALS`），推送经 API。变更清单：[recovery_change_manifest.json](recovery_change_manifest.json)（30 文件；逐文件 SHA256/字节见清单）。
+- 远端 commit / ref：分支 `recovery/drecover001-20261117`。代码快照提交 `f367b8e4230902cd72f88a093411f635f4563f19`（tree `529d016da29862988e6e5f010e018a0fa8654829`，parent `01c9274`，36 文件 / 4,234,995 字节）；最近一次已复核快照 `949eedbfd832b492625110c6eedcb080a8b79e48`（tree `9c4b570376e5e88389510a16728dcdec61685cd2`，parent `f367b8e4`，36 文件 / 4,236,245 字节），其 tree 与本地 worktree 在 `git write-tree` 层面逐项相等，抽查 blob 逐字节一致（2026-11-18T10:49Z）；其后回执同步提交可能继续推进分支 head，最新 head 以 GitHub 分支为准。main 未动，未触碰 PR #3/#6。推送经 GitHub Data API（CLI git 传输仍无凭据 `SEC_E_NO_CREDENTIALS`）。变更清单：[recovery_change_manifest.json](recovery_change_manifest.json)（30 文件；逐文件 SHA256/字节见清单）。
 - 门禁状态：`RECOVERY_READINESS_GATES_CLOSED_EXPECTED`（9 gates = 7 CLOSED + 1 CLEAN + 1 WAIVED，blockers=9，`CLOSED` 不等于 PASS）、`NO_PHYSICAL_GO`。A5 审查：Owner 授权的 deepseek-flash 只读子智能体对上一快照给出 verdict=`CHANGES_REQUIRED`（`a5_review_verdict.json` / `a5_review_transcript.json`），两项 major 已修复；新快照 `f367b8e4` 尚未复审。它不是人类签名，Lead 未自签。异机备份要求已由 Owner 豁免（`WAIVER-OFFMACHINE-BACKUP-20261118`，m03569）。
 
 ## 本轮恢复内容
@@ -54,7 +54,7 @@
 ## 下一门禁
 
 1. Owner 接受 A5 子智能体 verdict（当前 `CHANGES_REQUIRED`，两项 major 已修复）后，R0 收口仍不能自签 `RECOVERY_INVENTORY_PASS`；如需要人类签署，须由 Owner 或授权审阅者给出。
-2. A5/授权审阅者对远端快照 `f367b8e4…` 复审（当前 verdict 针对上一快照 `01c9274`）；是否把本回执发布到 Issue #12 由 Owner 决定并接受 A5 结论。
+2. A5/授权审阅者对远端已复核快照 `949eedbf…` 复审（当前 verdict 针对快照 `01c9274`）；是否把本回执发布到 Issue #12 由 Owner 决定并接受 A5 结论。
 3. ~~批准独立故障域存储并签 BACKUP_RESTORE_PASS~~：Owner 已豁免异机备份（m03569）；保留同机 bundle/恢复证据与显式标签，不再要求异机签名。
 4. 上述通过后由 A5/Lead 记录 `RESTORED_CODE_BASELINE_PASS`（A5 结果须标为 deepseek-flash 子智能体 verdict、非人类签名）；再由 A5/Lead 预注册 R2 最小矩阵，Lead 逐批 `GO`。
 5. 真实准入（REAL_ADMISSION）在 R2 首个真实 batch 前实现并验证；在此之前 physical 保持 0。

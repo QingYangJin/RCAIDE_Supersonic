@@ -1,6 +1,6 @@
 # A5 独立审查包（只读聚合）
 
-- 生成时间（UTC）：2026-11-18T10:48:02Z
+- 生成时间（UTC）：2026-11-18T10:54:41Z
 - 范围：READ_ONLY_EVIDENCE_AGGREGATION_FOR_INDEPENDENT_A5_REVIEW
 - 软件 run_id：DRECOVER001-SOFTWARE-20261118T102149Z
 - 离线测试：247 项，失败 0，错误 0，跳过 0
@@ -30,7 +30,7 @@
 - docs/evidence/drecover001/r0_provenance_extension_20261117.md（6794 字节）：bdf7380e4d0c9368b3128d51b52de652ea21bf06a7d2d107edc674914d54327f — R0 provenance extension summary
 - docs/evidence/drecover001/r0_provenance_extension_verification.json（81117 字节）：73b99833c7f86c5ef317dc21ca83a3ae0537170384309c6d1dbf07af7dbcb3b5 — R0 archived-byte self-verification
 - docs/evidence/drecover001/needed_for_next_run.json（21615 字节）：45ec96373d6577f7238de6aa7b61099205a988a714015bcc6d17dca512b69830 — R0/R1/R2 handoff requirements
-- docs/evidence/drecover001/new_baseline_manifest.json（10742 字节）：5601258c7ea6e6e3f8aab1de4ecef099465c4687fa751e2182d083612842f270 — R0 new-baseline identity and RAW_LOST archive policy
+- docs/evidence/drecover001/new_baseline_manifest.json（11391 字节）：f9944250699ae86994b363cc94a9cf04c4c2e7cc1568150fc1baf03c39ed21dd — R0 new-baseline identity and RAW_LOST archive policy
 - docs/evidence/drecover001/geometry_freeze_v2.json（354374 字节）：401bc6b6c605eafe416bd4b0e925d106b93673b2e4d2c21f1d21e688d7e62bf1 — A1 geometry/reference contract freeze v2 (zero physical)
 - docs/evidence/drecover001/geometry_freeze_v2.md（4099 字节）：1af6ff72afc698269edc83218aa90ce4f7a080dcdabc41020ac4ce0b83d17c21 — A1 human-readable geometry freeze v2
 - docs/evidence/drecover001/geometry_freeze_v2_verification.json（10017 字节）：ca1c052b0d3093223706676bcb70cd81bc9627f94ecd3d3c3fbb13e3df763aa4 — A1 archived-byte geometry freeze verification
@@ -56,7 +56,7 @@
 - docs/evidence/drecover001/owner_waiver_offmachine_backup_20261118.json（839 字节）：b9edcaae932060bc684972427d34b6f3247e1dc6cade83a599e7d25c8ac0bb68 — Owner waiver of the off-machine failure-domain backup
 - docs/evidence/drecover001/a5_review_verdict.json（3551 字节）：e6cfc666c0491b281e0a3c7c621b6de7529d41470ea8f257420d19e5fe9af7df — A5 verdict from the authorized deepseek-flash subagent (not a human signature)
 - docs/evidence/drecover001/a5_review_transcript.json（155516 字节）：71e08f219ae7c3759f1a20714ccd037138897afed99ecfd5904986c10d943deb — Read-only A5 inspection transcript (16 tool steps before HTTP 524)
-- docs/evidence/drecover001/issue12_consolidated_receipt_draft_20261117.md（12978 字节）：7251d50491ce7c6e4c5f3accd39e1ae450038b4a3f7029f6e6fd84f926427760 — Issue #12 receipt draft (not posted)
+- docs/evidence/drecover001/issue12_consolidated_receipt_draft_20261117.md（13113 字节）：072a6e74e56c90bd19f20251ae7ae5efd9d0fff3b7e04398e8a3f55a2081a9c2 — Issue #12 receipt draft (not posted)
 - docs/evidence/drecover001/maml_readiness_20261117.md（11422 字节）：201345fe29834178712db633678be0041eba9eb146fc0bbd99cf73cdf50b2f6b — MAML offline readiness summary
 
 ## 已记录的 A5 审查
