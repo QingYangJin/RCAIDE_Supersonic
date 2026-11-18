@@ -763,10 +763,20 @@ def assess_manifest(root, report):
     record(node, "current_state_json_parses", not parse_bad,
            "invalid=%d %s" % (len(parse_bad), parse_bad[:3]))
     files = manifest.get("files")
-    record(node, "manifest_is_non_empty", isinstance(files, list) and len(files) > 0,
-           "entries=%r" % (len(files) if isinstance(files, list) else None))
     if not isinstance(files, list):
+        record(node, "manifest_files_is_list", False, "files=%r" % type(files).__name__)
         return report["gates"].append(finalize(node))
+    if not files:
+        # A pushed, clean checkout has no uncommitted changes to list. A manifest
+        # that explicitly records that state is valid evidence, not an empty
+        # placeholder; it is regenerated from the actual worktree.
+        record(node, "worktree_clean_recorded", manifest.get("worktree_clean") is True,
+               "worktree_clean=%r" % manifest.get("worktree_clean"))
+        head = str(manifest.get("head") or manifest.get("baseline") or "")
+        record(node, "clean_worktree_head_is_commit", bool(re.fullmatch(r"[0-9a-f]{40}", head)),
+               "head=%r" % head)
+        return report["gates"].append(finalize(node, clean=True))
+    record(node, "manifest_is_non_empty", len(files) > 0, "entries=%d" % len(files))
     record(node, "manifest_file_count_consistent",
            manifest.get("file_count") == len(files),
            "file_count=%r entries=%d" % (manifest.get("file_count"), len(files)))

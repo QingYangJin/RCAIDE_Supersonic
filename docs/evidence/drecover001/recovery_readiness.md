@@ -1,9 +1,9 @@
 # 恢复门禁就绪矩阵（离线聚合）
 
 - status: RECOVERY_READINESS_GATES_CLOSED_EXPECTED
-- generated_utc: 2026-11-18T10:54:54Z
-- HEAD: 01c9274801474c113a2c488e375d451bcd0297c3 (recovery/drecover001-20261117)
-- software_run_id: DRECOVER001-SOFTWARE-20261118T102149Z
+- generated_utc: 2026-11-18T11:12:17Z
+- HEAD: 908e4105f8e0e0452024322d99f4ae42051acc5d (recovery/drecover001-20261117)
+- software_run_id: DRECOVER001-SOFTWARE-20261118T110705Z
 - physical_solver_starts_actual: 0 / internal_solver_cases_actual: 0
 - real_meta_training_executed: false / admitted_real_labels: 0
 

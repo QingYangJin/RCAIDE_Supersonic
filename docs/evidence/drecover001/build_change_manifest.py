@@ -67,15 +67,19 @@ def main(argv=None):
         files.append({"path": name, "status": state,
                       "sha256": hashlib.sha256(data).hexdigest(), "bytes": len(data)})
     files.sort(key=lambda item: item["path"])
+    worktree_clean = not files and not deleted
     manifest = {
         "schema": "drecover001.recovery_change_manifest.v1",
         "branch": branch,
         "baseline": baseline,
-        "note": ("Working-tree changes relative to baseline, regenerated from the actual "
-                 "worktree by build_change_manifest.py; excludes __pycache__/.pyc, this "
-                 "manifest, readiness aggregator outputs, generated A5 review packet, and the "
-                 "post-bundle restore receipt (self-reference avoidance). Nothing committed or "
-                 "pushed (no git author identity and no remote credentials)."),
+        "head": baseline,
+        "worktree_clean": worktree_clean,
+        "note": ("Working-tree changes relative to baseline (HEAD), regenerated from the actual "
+                 "worktree by build_change_manifest.py. When the worktree is clean, files is empty "
+                 "and worktree_clean is true with head recorded; snapshots are pushed through the "
+                 "GitHub Data API because CLI git transport has no configured credential. Excludes "
+                 "__pycache__/.pyc, this manifest, readiness aggregator outputs, generated A5 review "
+                 "packet, and the post-bundle restore receipt (self-reference avoidance)."),
         "generated_utc": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "file_count": len(files),
         "total_bytes": sum(item["bytes"] for item in files),
