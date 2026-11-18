@@ -1,6 +1,6 @@
 {
   "schema": "drecover001.a5_review_packet.v1",
-  "generated_utc": "2026-11-18T11:45:05Z",
+  "generated_utc": "2026-11-18T11:51:44Z",
   "root": "D:\\RCAIDE\\.worktrees\\drecover001-20261117",
   "scope": "READ_ONLY_EVIDENCE_AGGREGATION_FOR_INDEPENDENT_A5_REVIEW",
   "attestation": {
@@ -99,7 +99,7 @@
   "readiness_matrix": {
     "path": "docs/evidence/drecover001/recovery_readiness.json",
     "status": "RECOVERY_READINESS_GATES_CLOSED_EXPECTED",
-    "generated_utc": "2026-11-18T11:44:43Z",
+    "generated_utc": "2026-11-18T11:51:43Z",
     "note": "status is quoted, not hashed, to avoid a self-referential hash cycle; rerun the aggregator to verify"
   },
   "claims": [
@@ -166,7 +166,7 @@
     {
       "path": "docs/evidence/drecover001/recovery_inventory.md",
       "bytes": 25955,
-      "sha256": "1b66f270aa83845d9ed45ec549745b908563798b9507fdc52c0c5dc0751791b7",
+      "sha256": "145d2aa88391ea4df4430c596d1a800abf9035e10e9b7fcf889496254bba9d6f",
       "claim": "R0 human-readable inventory",
       "gate": "R0_INVENTORY",
       "in_change_manifest": true
@@ -214,7 +214,7 @@
     {
       "path": "docs/evidence/drecover001/needed_for_next_run.json",
       "bytes": 21615,
-      "sha256": "cdefa2728004850114a6e7467dc87435fa544051967f6e81e02d15d69dfe5038",
+      "sha256": "e2cb8f1d167aa2ccb5a899e4e04fc0f10135d8dda9ee0d10fd065df6440b9131",
       "claim": "R0/R1/R2 handoff requirements",
       "gate": "R0_INVENTORY",
       "in_change_manifest": true
@@ -305,7 +305,7 @@
       "sha256": "70096ac2a29a7d5d1ba31393a7b2f662f496408ebb001f1c9ad20f95a59cda10",
       "claim": "R1 software preflight receipt",
       "gate": "R1_SOFTWARE",
-      "in_change_manifest": true
+      "in_change_manifest": false
     },
     {
       "path": "docs/evidence/drecover001/a2_feedback_rehearsal.json",
@@ -345,7 +345,7 @@
       "sha256": "7ec0ff3f00dfb02468faf9ea1c0fd39367f978259b3359b4cb9053d14b4abc68",
       "claim": "R1 fixture training trace",
       "gate": "R1_SOFTWARE",
-      "in_change_manifest": true
+      "in_change_manifest": false
     },
     {
       "path": "docs/evidence/drecover001/synthetic_software_checkpoint.json",
@@ -398,7 +398,7 @@
     {
       "path": "docs/evidence/drecover001/local_restore_receipt.json",
       "bytes": 2098,
-      "sha256": "aa3d7532fd8c288a5311d01ae475dc9d105002a28ae5c293dcc76c0abfedda50",
+      "sha256": "5160726508f3089800b99def3f6093fba657238a029920fedee7b12a52a3c9b3",
       "claim": "same-host restore test explicitly labelled not an off-machine backup",
       "gate": "BACKUP_INDEPENDENT_FAILURE_DOMAIN",
       "in_change_manifest": false,
@@ -430,8 +430,8 @@
     },
     {
       "path": "docs/evidence/drecover001/issue12_consolidated_receipt_draft_20261117.md",
-      "bytes": 13956,
-      "sha256": "48a3df47b2b0846001ff71abbad09954e9b1d394a002788b05d0bd1e81156886",
+      "bytes": 14869,
+      "sha256": "003aead695169083075c2ad7114461e936a3b7fff30b0020b2fec4ee4bdb2b49",
       "claim": "Issue #12 receipt draft (not posted)",
       "gate": "EVIDENCE_MANIFEST",
       "in_change_manifest": true
@@ -439,10 +439,10 @@
     {
       "path": "docs/evidence/drecover001/maml_readiness_20261117.md",
       "bytes": 11422,
-      "sha256": "201345fe29834178712db633678be0041eba9eb146fc0bbd99cf73cdf50b2f6b",
+      "sha256": "3ea1c2e2f36989b45b2aef6dff700c9466c0997cedfbe4757cc0cd113fefd187",
       "claim": "MAML offline readiness summary",
       "gate": "M2_OFFLINE_REHEARSAL",
-      "in_change_manifest": false
+      "in_change_manifest": true
     }
   ],
   "open_external_gates": [

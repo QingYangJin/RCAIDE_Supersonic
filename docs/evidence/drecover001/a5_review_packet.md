@@ -1,6 +1,6 @@
 # A5 独立审查包（只读聚合）
 
-- 生成时间（UTC）：2026-11-18T11:45:05Z
+- 生成时间（UTC）：2026-11-18T11:51:44Z
 - 范围：READ_ONLY_EVIDENCE_AGGREGATION_FOR_INDEPENDENT_A5_REVIEW
 - 软件 run_id：DRECOVER001-SOFTWARE-20261118T114410Z
 - 离线测试：247 项，失败 0，错误 0，跳过 0
@@ -23,13 +23,13 @@
 ## 可复核证据（逐文件 SHA256）
 
 - docs/evidence/drecover001/recovery_inventory.json（18205 字节）：65df586e7067f20767ff6419d6d00bb2a769df780ad1b2c41be92ac409aa4a43 — R0 loss ledger and provenance inventory
-- docs/evidence/drecover001/recovery_inventory.md（25955 字节）：1b66f270aa83845d9ed45ec549745b908563798b9507fdc52c0c5dc0751791b7 — R0 human-readable inventory
+- docs/evidence/drecover001/recovery_inventory.md（25955 字节）：145d2aa88391ea4df4430c596d1a800abf9035e10e9b7fcf889496254bba9d6f — R0 human-readable inventory
 - docs/evidence/drecover001/all_ref_blob_audit.json（6308435 字节）：ad8222e8965c5a5fa3834f29b4309ff7cea71d71729100f245d29984e10a1613 — R0 remote-ref byte/blob audit
 - docs/evidence/drecover001/reachable_history_audit.json（1309494 字节）：ba8f65fd5f1bc4f6eebe980dad3992b853360acf9b01ebf508c79d49f001d6dc — R0 reachable-history audit
 - docs/evidence/drecover001/r0_provenance_extension.json（330839 字节）：b553857c5ce986e9fbfd7f6fa6de37d7aca42af9ade61075db6e17e87c524c37 — R0 provenance extension records
 - docs/evidence/drecover001/r0_provenance_extension_20261117.md（6794 字节）：bdf7380e4d0c9368b3128d51b52de652ea21bf06a7d2d107edc674914d54327f — R0 provenance extension summary
 - docs/evidence/drecover001/r0_provenance_extension_verification.json（81117 字节）：73b99833c7f86c5ef317dc21ca83a3ae0537170384309c6d1dbf07af7dbcb3b5 — R0 archived-byte self-verification
-- docs/evidence/drecover001/needed_for_next_run.json（21615 字节）：cdefa2728004850114a6e7467dc87435fa544051967f6e81e02d15d69dfe5038 — R0/R1/R2 handoff requirements
+- docs/evidence/drecover001/needed_for_next_run.json（21615 字节）：e2cb8f1d167aa2ccb5a899e4e04fc0f10135d8dda9ee0d10fd065df6440b9131 — R0/R1/R2 handoff requirements
 - docs/evidence/drecover001/new_baseline_manifest.json（11391 字节）：f9944250699ae86994b363cc94a9cf04c4c2e7cc1568150fc1baf03c39ed21dd — R0 new-baseline identity and RAW_LOST archive policy
 - docs/evidence/drecover001/geometry_freeze_v2.json（354374 字节）：401bc6b6c605eafe416bd4b0e925d106b93673b2e4d2c21f1d21e688d7e62bf1 — A1 geometry/reference contract freeze v2 (zero physical)
 - docs/evidence/drecover001/geometry_freeze_v2.md（4099 字节）：1af6ff72afc698269edc83218aa90ce4f7a080dcdabc41020ac4ce0b83d17c21 — A1 human-readable geometry freeze v2
@@ -52,12 +52,12 @@
 - docs/evidence/drecover001/m1_batch_software_verification.json（1785 字节）：e0e678b2c24ded6056e1dc63ec02858d215b4c31ba251f8424584c3dcf657d15 — M1 artifact verification
 - docs/evidence/drecover001/m2_offline_rehearsal_receipt.json（33973 字节）：232551c3a7eb996d7b9edf0fe156d2e3fd6e23d1db574c6e7e4a0cd46dadc0bc — M2 offline rehearsal receipt
 - docs/evidence/drecover001/m2_rehearsal_repeat_check.json（1862 字节）：8f6ad3e69462f1b3c16970f7cd9194de50b17352e3d540ef251e1c50e9c64c10 — M2 repeatability check
-- docs/evidence/drecover001/local_restore_receipt.json（2098 字节）：aa3d7532fd8c288a5311d01ae475dc9d105002a28ae5c293dcc76c0abfedda50 — same-host restore test explicitly labelled not an off-machine backup
+- docs/evidence/drecover001/local_restore_receipt.json（2098 字节）：5160726508f3089800b99def3f6093fba657238a029920fedee7b12a52a3c9b3 — same-host restore test explicitly labelled not an off-machine backup
 - docs/evidence/drecover001/owner_waiver_offmachine_backup_20261118.json（839 字节）：b9edcaae932060bc684972427d34b6f3247e1dc6cade83a599e7d25c8ac0bb68 — Owner waiver of the off-machine failure-domain backup
 - docs/evidence/drecover001/a5_review_verdict.json（3551 字节）：e6cfc666c0491b281e0a3c7c621b6de7529d41470ea8f257420d19e5fe9af7df — A5 verdict from the authorized deepseek-flash subagent (not a human signature)
 - docs/evidence/drecover001/a5_review_transcript.json（155516 字节）：71e08f219ae7c3759f1a20714ccd037138897afed99ecfd5904986c10d943deb — Read-only A5 inspection transcript (16 tool steps before HTTP 524)
-- docs/evidence/drecover001/issue12_consolidated_receipt_draft_20261117.md（13956 字节）：48a3df47b2b0846001ff71abbad09954e9b1d394a002788b05d0bd1e81156886 — Issue #12 receipt draft (not posted)
-- docs/evidence/drecover001/maml_readiness_20261117.md（11422 字节）：201345fe29834178712db633678be0041eba9eb146fc0bbd99cf73cdf50b2f6b — MAML offline readiness summary
+- docs/evidence/drecover001/issue12_consolidated_receipt_draft_20261117.md（14869 字节）：003aead695169083075c2ad7114461e936a3b7fff30b0020b2fec4ee4bdb2b49 — Issue #12 receipt draft (not posted)
+- docs/evidence/drecover001/maml_readiness_20261117.md（11422 字节）：3ea1c2e2f36989b45b2aef6dff700c9466c0997cedfbe4757cc0cd113fefd187 — MAML offline readiness summary
 
 ## 已记录的 A5 审查
 
