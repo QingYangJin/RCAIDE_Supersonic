@@ -38,6 +38,10 @@ POLAR = (b"Beta Mach AoA Re/1e6 CLtot CDo CDi CDtot\n"
          b"0 2.02 0 1 .1 .01 .01 .02\n"
          b"0 2.02 2 1 .2 .01 .02 .03\n"
          b"0 2.02 4 1 .3 .01 .04 .05\n")
+POLAR_AUX = (b"Beta Mach AoA Re/1e6 CLtot CDo CDi CDtot Ew\n"
+             b"0 2.02 0 1 .1 .01 .01 .02 inf\n"
+             b"0 2.02 2 1 .2 .01 .02 .03 inf\n"
+             b"0 2.02 4 1 .3 .01 .04 .05 inf\n")
 HISTORY = b"SYNTHETIC VSPAERO HISTORY - NOT A REAL SOLVER LOG\n"
 WORK_ROOT = Path(__file__).resolve().parent / "_real_admission_work"
 
@@ -206,6 +210,17 @@ class RealAdmissionTests(unittest.TestCase):
             self.admit(case, expected_evaluator_id="other-evaluator")
         with self.assertRaisesRegex(ContractError, "unexpected independent audit"):
             self.admit(case, expected_audit_ref="OTHER-AUDIT")
+
+    def test_infinite_ew_diagnostic_tolerated_but_nan_or_core_inf_fatal(self):
+        certificate = self.admit(self.case(polar=POLAR_AUX))
+        self.assertEqual((certificate.alpha_deg, certificate.cl, certificate.cdi),
+                         (2., .2, .02))
+        with self.assertRaisesRegex(ContractError, "nonfinite polar row"):
+            self.admit(self.case(polar=POLAR_AUX.replace(
+                b".2 .01 .02 .03 inf", b"nan .01 .02 .03 inf")))
+        with self.assertRaisesRegex(ContractError, "nonfinite polar row"):
+            self.admit(self.case(polar=POLAR_AUX.replace(
+                b".2 .01 .02 .03 inf", b".2 .01 .02 .03 nan")))
 
     def test_missing_actual_lift_row_rejected_even_when_hashes_bind(self):
         polar = POLAR.replace(b".2 .01 .02", b".21 .01 .02")

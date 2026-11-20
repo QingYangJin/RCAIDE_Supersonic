@@ -23,6 +23,7 @@ import argparse
 import hashlib
 import importlib.util
 import json
+import math
 import os
 import platform
 import sys
@@ -121,6 +122,7 @@ def geometry_component_specs(
             "name": name,
             "symmetric": definition["symmetric"],
             "span_m": float(planform.span_m),
+            "thickness_to_chord": float(planform.thickness_to_chord),
             "location": list(definition["location"]),
             "rotation": list(definition["rotation"]),
             "sections": [
@@ -129,6 +131,7 @@ def geometry_component_specs(
                     "chord_m": float(section.chord_m),
                     "leading_edge_x_m": float(section.leading_edge_x_m),
                     "twist_deg": float(section.twist_deg),
+                    "thickness_to_chord": float(section.thickness_to_chord),
                 }
                 for section in planform.sections
             ],
@@ -357,6 +360,7 @@ def prepare_case(
     rebuild_strategy: str = "direct",
     target_mesh_family: Optional[Sequence[int]] = None,
     max_mesh_attempts: int = MAX_MESH_ATTEMPTS,
+    flow_conditions: Optional[Mapping[str, float]] = None,
 ) -> Dict[str, Any]:
     """Build the model and write .vspgeom/.vkey/.vspaero. Performs NO solver start."""
     if geometry_set not in GEOMETRY_SET_CODES:
@@ -372,9 +376,20 @@ def prepare_case(
             raise ValueError("alpha %r outside preregistered window %r" % (alpha, TASK_SPEC.alpha_window_deg))
 
     sref = float(geometry.wing.area_m2)
-    vinf = TASK_SPEC.vinf_m_s
-    rho = TASK_SPEC.rho_kg_m3
-    recref = TASK_SPEC.recref
+    flow = dict(flow_conditions or {})
+    unknown_flow = sorted(set(flow) - {"vinf_m_s", "rho_kg_m3", "recref"})
+    if unknown_flow:
+        raise ValueError("unknown flow_conditions keys: %s" % unknown_flow)
+    def _positive_flow(name: str, default: float) -> float:
+        value = float(flow.get(name, default))
+        if not math.isfinite(value) or value <= 0.0:
+            raise ValueError("flow_conditions[%r] must be finite and positive, got %r"
+                             % (name, value))
+        return value
+    vinf = _positive_flow("vinf_m_s", TASK_SPEC.vinf_m_s)
+    rho = _positive_flow("rho_kg_m3", TASK_SPEC.rho_kg_m3)
+    recref = _positive_flow("recref", TASK_SPEC.recref)
+    q_pa = 0.5 * rho * vinf * vinf
     machs = [float(value) for value in
              (mach_values if mach_values is not None else [TASK_SPEC.mach])]
     if not machs:
@@ -637,8 +652,13 @@ def prepare_case(
         "xcg_m": float(TASK_SPEC.xcg_m),
         "sweep_input_readback": readback,
         "sweep_readback_check": readback_check,
-        "cl_required": TASK_SPEC.cl_required(sref),
+        "cl_required": float(TASK_SPEC.l_ref_n / (q_pa * sref)),
+        "q_pa": float(q_pa),
+        "flow_conditions": {"vinf_m_s": float(vinf), "rho_kg_m3": float(rho),
+                            "recref": float(recref)},
         "reference_injection": TASK_SPEC.reference_injection(sref),
+        "reference_injection_note": "baseline contract block; flow_conditions override "
+                                    "Vinf/Rho/ReCref for this case",
         "design_variable_identification": {
             "W01": {"name": "wing_area", "role": "sets Sref",
                     "baseline_m2": TASK_SPEC.sref_baseline_m2,

@@ -141,8 +141,22 @@ def verify_artifact_bundle(*, task: TaskSpec, design, binding: ArtifactBinding,
     for row in parsed["rows"]:
         values = {key: value for key, value in row.items() if not key.startswith("_")}
         extras = row.get("_extra_unlabeled", [])
+        # VSPAERO writes Ew=inf whenever the wake-induced drag is exactly zero
+        # (for example a purely attached VLM case). Ew is a diagnostic L/D-like
+        # ratio, not a coefficient used for admission, so an infinite Ew is
+        # tolerated while every other nonfinite payload remains fatal. NaN is
+        # never tolerated, including for Ew.
+        nonfinite = {
+            key for key, value in values.items()
+            if not (isinstance(value, (int, float)) and math.isfinite(value))
+        }
+        tolerated = {
+            key for key in nonfinite
+            if key == "Ew" and isinstance(values[key], (int, float))
+            and math.isinf(values[key])
+        }
         if (set(values) != set(header) or not all(math.isfinite(v) for v in extras)
-                or not all(isinstance(v, (int, float)) and math.isfinite(v) for v in values.values())):
+                or nonfinite - tolerated):
             raise ContractError("nonfinite polar row")
         try:
             alpha, mach, beta = values["AoA"], values["Mach"], values["Beta"]
