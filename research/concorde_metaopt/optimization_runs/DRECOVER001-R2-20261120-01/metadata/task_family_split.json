@@ -1,0 +1,59 @@
+{
+  "schema": "dreal003.task_family_split.v1",
+  "run_id": "DRECOVER001-R2-20261120-01",
+  "source": "real_dataset_manifest.json tasks; frozen before the MAML run",
+  "tasks": [
+    {
+      "task_id": "concorde-real-M160",
+      "split": "train",
+      "mach": 1.6,
+      "altitude_m": 18288.0,
+      "dynamic_pressure_pa": 12851.40843975621,
+      "lift_target_n": 1333704.4,
+      "geometry_contract_sha256": "5f2bb12fe8b1dc68c67901843c777328ae984cfdbe4ee71176b369a16a133f15",
+      "physics_sha256": "7c2eda73f10feada3b186fc3e54ef50e38dcc0665ddeefd7376c6bd4b059329f"
+    },
+    {
+      "task_id": "concorde-fixed-cruise-dreal001-real-v1",
+      "split": "train",
+      "mach": 2.02,
+      "altitude_m": 18288.0,
+      "dynamic_pressure_pa": 20483.940233430174,
+      "lift_target_n": 1333704.4,
+      "geometry_contract_sha256": "5f2bb12fe8b1dc68c67901843c777328ae984cfdbe4ee71176b369a16a133f15",
+      "physics_sha256": "8914a4f16f9b9c2210e60a6a1f8575f570eb23e20a3dc8b495e87f33434ddb26"
+    },
+    {
+      "task_id": "concorde-real-M180",
+      "split": "val",
+      "mach": 1.8,
+      "altitude_m": 18288.0,
+      "dynamic_pressure_pa": 16265.063806566453,
+      "lift_target_n": 1333704.4,
+      "geometry_contract_sha256": "5f2bb12fe8b1dc68c67901843c777328ae984cfdbe4ee71176b369a16a133f15",
+      "physics_sha256": "51473b18e5051241c484ef05b6da713c0b0ce0dcae266ed68b9c1c1d41cd0b93"
+    },
+    {
+      "task_id": "concorde-real-M240",
+      "split": "test",
+      "mach": 2.4,
+      "altitude_m": 18288.0,
+      "dynamic_pressure_pa": 28915.66898945147,
+      "lift_target_n": 1333704.4,
+      "geometry_contract_sha256": "5f2bb12fe8b1dc68c67901843c777328ae984cfdbe4ee71176b369a16a133f15",
+      "physics_sha256": "a173fc67e2893c62c6089d76971a2ed18fc2bff503a1391b0ac1f4564f1b148b"
+    }
+  ],
+  "label_counts_by_task": {
+    "concorde-real-M160": 2,
+    "concorde-fixed-cruise-dreal001-real-v1": 3,
+    "concorde-real-M180": 2,
+    "concorde-real-M240": 2
+  },
+  "case_counts_by_task": {
+    "concorde-real-M160": 0,
+    "concorde-fixed-cruise-dreal001-real-v1": 0,
+    "concorde-real-M180": 0,
+    "concorde-real-M240": 0
+  }
+}

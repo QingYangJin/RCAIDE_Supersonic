@@ -1,0 +1,45 @@
+{
+  "schema": "dreal001.real_analysis_authorization.v1",
+  "authorization_id": "AUTH-DRECOVER001-R2-20261120-01",
+  "owner_message_ref": "m05968",
+  "owner_statement": "批准实际分析预算，通过实际分析恢复数据并开展MAML实验",
+  "granted_utc": "2026-11-20T06:00:00Z",
+  "scope": [
+    "REAL_VSPAERO_SOLVER_STARTS",
+    "REAL_RAW_LABEL_GENERATION",
+    "REAL_ADMISSION",
+    "REAL_FEEDBACK_OPTIMIZATION",
+    "REAL_FOMAML_AND_KSHOT",
+    "ON_MACHINE_BACKUP_ONLY"
+  ],
+  "run_id": "DRECOVER001-R2-20261120-01",
+  "batch_id": "DRECOVER001-R2-20261120-01-B01",
+  "budgets": {
+    "physical_solver_starts_max": 24,
+    "max_internal_cases_per_start": 128,
+    "timeout_s": 1200,
+    "retries": 0,
+    "max_parallel": 1,
+    "maml_training_runs_max": 8
+  },
+  "stop_conditions": [
+    "non-zero solver exit or timeout: stop the batch, no retry",
+    "ledger accounting violation or open reservation: stop the batch",
+    "polar missing, unparsable, or invalid rows: stop the batch",
+    "raw file hash mismatch or admission failure: stop the batch",
+    "matched lift not bracketed after two refine starts for a design: stop that design",
+    "any physical anomaly, resource exhaustion, or unplanned restart: stop and report"
+  ],
+  "backup": {
+    "mode": "SAME_HOST_SEPARATE_DIRECTORY",
+    "off_machine_waived": true,
+    "waiver_id": "WAIVER-OFFMACHINE-BACKUP-20261118",
+    "disclosure": "This is not an independent failure-domain backup."
+  },
+  "constraints": {
+    "parallel": 1,
+    "no_retries": true,
+    "no_reuse_of_historical_raw": true,
+    "no_claim_of_physics_validated_without_raw_admission": true
+  }
+}

@@ -29,6 +29,7 @@ from research.concorde_metaopt.tests import test_recovery_path_injection as path
 from research.concorde_metaopt.tests import test_recovery_m1_batch as batch_tests
 from research.concorde_metaopt.tests import test_recovery_readiness as readiness_tests
 from research.concorde_metaopt.tests import test_recovery_real_admission as admission_tests
+from research.concorde_metaopt.tests import test_recovery_solver_runner as solver_runner_tests
 from research.concorde_metaopt.dreal001.meta.checkpoint import pack_fixture_checkpoint, restore_fixture_checkpoint
 from research.concorde_metaopt.meta_learning import maml
 from research.concorde_metaopt.dreal001.meta.production import MetaTrainer
@@ -38,7 +39,7 @@ def main():
     out = Path(__file__).resolve().parent
     stream = io.StringIO()
     suite = unittest.TestSuite([unittest.defaultTestLoader.loadTestsFromModule(module)
-                                for module in (tests, geometry_tests, feedback_tests, bo_tests, population_tests, raw_tests, adaptation_tests, effect_tests, deck_tests, checkpoint_tests, ledger_tests, rehearsal_tests, path_tests, batch_tests, readiness_tests, admission_tests)])
+                                for module in (tests, geometry_tests, feedback_tests, bo_tests, population_tests, raw_tests, adaptation_tests, effect_tests, deck_tests, checkpoint_tests, ledger_tests, rehearsal_tests, path_tests, batch_tests, readiness_tests, admission_tests, solver_runner_tests)])
     result = unittest.TextTestRunner(stream=stream, verbosity=2).run(suite)
     (out / "recovery_meta_contract_tests.txt").write_text(stream.getvalue(), encoding="utf-8")
     receipt = {

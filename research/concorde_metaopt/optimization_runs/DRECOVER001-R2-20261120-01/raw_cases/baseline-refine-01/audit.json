@@ -1,0 +1,48 @@
+{
+  "schema": "dreal001.independent_audit_record.v1",
+  "audit_id": "AUDIT-R2-B01-BASELINE-REFINE-01",
+  "run_id": "DRECOVER001-R2-20261120-01",
+  "task_id": "concorde-fixed-cruise-dreal001-real-v1",
+  "design_id": "937aa7c9c789ccd8fce4fdbde942a258248f2b1c91ba90cf6c99c7e4c5a8a3fe",
+  "geometry_sha256": "5f2bb12fe8b1dc68c67901843c777328ae984cfdbe4ee71176b369a16a133f15",
+  "artifact_sha256": "24e41548548bdf58e40ad289eebcc81123e012ecf8c07443a68e3245d3e1f931",
+  "reviewer": "local-audit-script-v1",
+  "reviewer_role": "SEPARATE_LOCAL_REIMPLEMENTATION_NOT_HUMAN_NOT_A5",
+  "verdict": "ADMIT_REAL_LABEL",
+  "created_utc": "2026-11-20T06:59:00Z",
+  "notes": {
+    "audit_scope": "SEPARATE_LOCAL_REIMPLEMENTATION_NOT_HUMAN_NOT_A5",
+    "method": "independent hash/size scan, deck field parse, polar row scan, lift residual recomputation",
+    "deck_sref": 358.25000000000006,
+    "deck_mach": 2.02,
+    "deck_rho": 0.1153178340089936,
+    "deck_vinf": 596.0373972278921,
+    "alpha_grid_deg": [
+      5.17,
+      5.1725,
+      5.175,
+      5.1775,
+      5.18,
+      5.1825,
+      5.1850000000000005,
+      5.1875,
+      5.19,
+      5.1925,
+      5.195,
+      5.1975,
+      5.2
+    ],
+    "polar_rows": 13,
+    "lift_target_n": 1333704.4,
+    "q_pa": 20483.94023343017,
+    "cl_target": 0.1817439174199205,
+    "matched_lift_row": {
+      "alpha_deg": 5.1825,
+      "cl": 0.181784583426,
+      "cdi": 0.016555791798,
+      "rel_error": 0.00022375442687054152
+    },
+    "artifact_sha256_definition": "canonical_sha of sorted deck/history/mesh/polar kinds with sha256+bytes",
+    "not_authenticated": "hashes bind bytes only; reviewer identity and provenance are not authenticated"
+  }
+}

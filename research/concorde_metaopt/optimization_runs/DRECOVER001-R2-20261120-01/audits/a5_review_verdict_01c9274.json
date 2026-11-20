@@ -1,0 +1,73 @@
+{
+  "reviewer": "deepseek-flash",
+  "review_type": "independent_subagent_read_only_compact_transcript",
+  "reviewed_utc": "2026-11-18T00:00:00Z",
+  "verdict": "CHANGES_REQUIRED",
+  "gate_verdicts": {
+    "R0_INVENTORY": "PASS_WITH_DISCLOSURE",
+    "R1_SOFTWARE": "PASS",
+    "M1_BATCH_CONTROL_PATH": "PASS",
+    "M2_OFFLINE_REHEARSAL": "PASS",
+    "BACKUP_INDEPENDENT_FAILURE_DOMAIN": "WAIVED_BY_OWNER",
+    "A5_INDEPENDENT_REVIEW": "PASS",
+    "REAL_ADMISSION": "FAIL",
+    "EVIDENCE_MANIFEST": "PASS"
+  },
+  "evidence_checked": [
+    "packet evidence 19/19 verified, 0 mismatches",
+    "bundle SHA256 matches, 2220 entries, bad_count 0",
+    "R0 provenance 328 checks, 0 failures",
+    "M1 batch evidence 20 checks, 0 failures",
+    "packet_check problems empty",
+    "git HEAD 4c51c7d",
+    "local_restore_receipt keys",
+    "M2 rehearsal receipt and repeat check"
+  ],
+  "findings": [
+    {
+      "severity": "major",
+      "finding": "Same-host restore receipt lacks the owner-required 'not-an-off-machine-backup' label.",
+      "evidence": "local_restore_receipt keys shown include scope,status,bundle_path,... no such label"
+    },
+    {
+      "severity": "major",
+      "finding": "Packet reports BACKUP_INDEPENDENT_FAILURE_DOMAIN CLOSED, conflicting with owner waiver; should be WAIVED_BY_OWNER.",
+      "evidence": "packet_check gate_states BACKUP_INDEPENDENT_FAILURE_DOMAIN: CLOSED"
+    },
+    {
+      "severity": "minor",
+      "finding": "R0 inventory is R0_PARTIAL_NOT_AUDITED, so R0 should pass only with disclosure.",
+      "evidence": "grep: 'Confirm the R0 inventory still says R0_PARTIAL_NOT_AUDIT...'"
+    },
+    {
+      "severity": "info",
+      "finding": "REAL_ADMISSION remains fail-closed; no R2 preregistration or Lead batch GO is shown, so physics is not authorized.",
+      "evidence": "packet claim: Real admission remains fail-closed with REAL..."
+    }
+  ],
+  "owner_waiver_acknowledged": true,
+  "limitations": [
+    "Compact transcript only; receipt field values and full packet text not shown.",
+    "No tools available; label absence inferred from shown keys.",
+    "Not a human signature."
+  ],
+  "scope": "RCAIDE Issue #12 R0/R1 evidence packet, bundle, M1/M2 software rehearsal, backup waiver; excludes real physics.",
+  "signature": "deepseek-flash independent A5 review; not a human signature",
+  "_harness": {
+    "model": "deepseek-flash",
+    "endpoint": "https://concept-generated-visitors-trackbacks.trycloudflare.com/v1",
+    "worktree": "D:\\RCAIDE\\.worktrees\\drecover001-20261117",
+    "bundle": "D:\\RCAIDE\\.recovery-local-restore\\20261118011500Z\\recovery_bundle.zip",
+    "packet_path": "D:\\RCAIDE\\.worktrees\\drecover001-20261117\\docs\\evidence\\drecover001\\a5_review_packet.json",
+    "packet_sha256_actual": "1ceccc9b938c91e2374cda00e37af8129d59bbdec59b2159fc26e8728086c969",
+    "bundle_sha256": "bfe10ef5538cf17ccb987911389562493f8ce718d6d765fc8966a4950753b99a",
+    "reviewed_utc_actual": "2026-11-18T06:09:30Z",
+    "reviewer_live_steps": 16,
+    "digest_chars": 12839,
+    "finish_reason": "stop",
+    "reasoning_chars": 603,
+    "transcript_path": "D:\\RCAIDE\\.recovery-local-restore\\a5_reviewer\\transcript.json",
+    "transcript_sha256": "71e08f219ae7c3759f1a20714ccd037138897afed99ecfd5904986c10d943deb",
+    "note": "Live read-only loop was cut by HTTP 524 after 16 verifiable steps; verdict comes from a compact digest of that same reviewer transcript via streaming SSE, with no tools available."
+  }
+}

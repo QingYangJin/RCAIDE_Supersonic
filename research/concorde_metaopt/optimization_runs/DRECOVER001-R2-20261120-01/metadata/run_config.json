@@ -1,0 +1,272 @@
+{
+  "schema": "dreal003.run_config.v1",
+  "run_id": "DRECOVER001-R2-20261120-01",
+  "batch_id": "DRECOVER001-R2-20261120-01-B01",
+  "authorization": {
+    "schema": "dreal001.real_analysis_authorization.v1",
+    "authorization_id": "AUTH-DRECOVER001-R2-20261120-01",
+    "owner_message_ref": "m05968",
+    "owner_statement": "批准实际分析预算，通过实际分析恢复数据并开展MAML实验",
+    "granted_utc": "2026-11-20T06:00:00Z",
+    "scope": [
+      "REAL_VSPAERO_SOLVER_STARTS",
+      "REAL_RAW_LABEL_GENERATION",
+      "REAL_ADMISSION",
+      "REAL_FEEDBACK_OPTIMIZATION",
+      "REAL_FOMAML_AND_KSHOT",
+      "ON_MACHINE_BACKUP_ONLY"
+    ],
+    "run_id": "DRECOVER001-R2-20261120-01",
+    "batch_id": "DRECOVER001-R2-20261120-01-B01",
+    "budgets": {
+      "physical_solver_starts_max": 24,
+      "max_internal_cases_per_start": 128,
+      "timeout_s": 1200,
+      "retries": 0,
+      "max_parallel": 1,
+      "maml_training_runs_max": 8
+    },
+    "stop_conditions": [
+      "non-zero solver exit or timeout: stop the batch, no retry",
+      "ledger accounting violation or open reservation: stop the batch",
+      "polar missing, unparsable, or invalid rows: stop the batch",
+      "raw file hash mismatch or admission failure: stop the batch",
+      "matched lift not bracketed after two refine starts for a design: stop that design",
+      "any physical anomaly, resource exhaustion, or unplanned restart: stop and report"
+    ],
+    "backup": {
+      "mode": "SAME_HOST_SEPARATE_DIRECTORY",
+      "off_machine_waived": true,
+      "waiver_id": "WAIVER-OFFMACHINE-BACKUP-20261118",
+      "disclosure": "This is not an independent failure-domain backup."
+    },
+    "constraints": {
+      "parallel": 1,
+      "no_retries": true,
+      "no_reuse_of_historical_raw": true,
+      "no_claim_of_physics_validated_without_raw_admission": true
+    }
+  },
+  "repair_authorization": {
+    "schema": "drecover001.r2_repair_authorization.v1",
+    "authorization_id": "AUTH-DRECOVER001-R2-20261120-01",
+    "amendment_id": "AUTH-DRECOVER001-R2-20261120-01-B01R",
+    "owner_message_ref": "m05968",
+    "run_id": "DRECOVER001-R2-20261120-01",
+    "batch_id": "DRECOVER001-R2-20261120-01-B01R",
+    "a5_verdict_ref": "docs/evidence/drecover001/r2_a5_repair_verdict_20261120.json",
+    "a5_verdict_sha256": "be47e81d363345026e41312c794cfe156dfba20fb6719c3d1f8475eb9d281d9a",
+    "a5_dossier_sha256": "6a041d75880c9d5bb6dd8506b9662b866f32cce7b1abdef49611bdfd8b611c42",
+    "scope": "exactly seven named repair solver starts; K=1 exploratory MAML after admissions",
+    "budget": {
+      "physical_solver_starts_used_before_repair": 17,
+      "physical_solver_starts_max_total": 24,
+      "physical_solver_starts_this_amendment": 7,
+      "retries": 0,
+      "max_parallel": 1,
+      "timeout_s": 1200,
+      "internal_cases_per_start": 61
+    },
+    "window": {
+      "start_utc": "2026-11-20T06:39:39Z",
+      "end_utc": "2026-11-20T18:44:39Z",
+      "token": "AUTH-DRECOVER001-R2-20261120-01-B01R-WINDOW"
+    },
+    "cases": [
+      {
+        "case_id": "m160-d00-support-r1",
+        "task_id": "concorde-real-M160",
+        "mach": 1.6,
+        "split": "train",
+        "partition": "support",
+        "design": "d00",
+        "alpha_center": 7.49
+      },
+      {
+        "case_id": "m160-d02-query-r1",
+        "task_id": "concorde-real-M160",
+        "mach": 1.6,
+        "split": "train",
+        "partition": "query",
+        "design": "d02",
+        "alpha_center": 7.56
+      },
+      {
+        "case_id": "m180-d00-support-r1",
+        "task_id": "concorde-real-M180",
+        "mach": 1.8,
+        "split": "val",
+        "partition": "support",
+        "design": "d00",
+        "alpha_center": 6.2
+      },
+      {
+        "case_id": "m180-d02-query-r1",
+        "task_id": "concorde-real-M180",
+        "mach": 1.8,
+        "split": "val",
+        "partition": "query",
+        "design": "d02",
+        "alpha_center": 6.2
+      },
+      {
+        "case_id": "m202-d02-query-r1",
+        "task_id": "concorde-fixed-cruise-dreal001-real-v1",
+        "mach": 2.02,
+        "split": "train",
+        "partition": "query",
+        "design": "d02",
+        "alpha_center": 5.345
+      },
+      {
+        "case_id": "m240-d00-support-r1",
+        "task_id": "concorde-real-M240",
+        "mach": 2.4,
+        "split": "test",
+        "partition": "support",
+        "design": "d00",
+        "alpha_center": 4.44
+      },
+      {
+        "case_id": "m240-d02-query-r1",
+        "task_id": "concorde-real-M240",
+        "mach": 2.4,
+        "split": "test",
+        "partition": "query",
+        "design": "d02",
+        "alpha_center": 4.43
+      }
+    ],
+    "forbidden": "any start not in this case list, any retry, any second attempt",
+    "null_label_rule": "case must have an actual polar row within 1e-3 relative lift tolerance; otherwise NULL_LABEL and no rerun",
+    "maml_rule": "start only after at least two train tasks plus one val and one test task are admitted; K=1 exploratory; max 8 training runs; no generalization claim"
+  },
+  "code_freeze": {
+    "schema": "drecover001.r2_code_freeze.v1",
+    "freeze_id": "R2FREEZE-6bdfe74e7f41b664",
+    "generated_utc": "2026-11-20T07:04:05Z",
+    "git_head": "2273024eeb5eae634b11fcebcee16376c82e409e",
+    "git_head_at_freeze": "0effd7628774c8ee61468627c7af446b21591705",
+    "remote_commit": "2273024eeb5eae634b11fcebcee16376c82e409e",
+    "remote_tree": "cdcaa9663e87678b6db308cfe7333a09ef9f811e",
+    "remote_parent": "0effd7628774c8ee61468627c7af446b21591705",
+    "remote_branch": "recovery/drecover001-20261117",
+    "dirty_paths": 0,
+    "dirty_list": [],
+    "files": [
+      {
+        "path": "D:\\RCAIDE\\.worktrees\\drecover001-20261117\\research\\concorde_metaopt\\dreal001\\geometry\\openvsp_model.py",
+        "bytes": 38907,
+        "sha256": "9e6797901564f48435974c5dad66faa063d4c3602e07f643bd2d540b79939dc8"
+      },
+      {
+        "path": "D:\\RCAIDE\\.worktrees\\drecover001-20261117\\research\\concorde_metaopt\\dreal001\\meta\\raw_verification.py",
+        "bytes": 9124,
+        "sha256": "9db0693558d187b2f383f62ca4ce7bfbe0212c6d5f6745dc9ac01e5a53826676"
+      },
+      {
+        "path": "D:\\RCAIDE\\.worktrees\\drecover001-20261117\\research\\concorde_metaopt\\tests\\test_recovery_real_admission.py",
+        "bytes": 14790,
+        "sha256": "5b5d583177b3c42282f2d988c7da8c2463573e3efbf857cee5171c56691b1129"
+      },
+      {
+        "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-R2-20261120-01\\scripts\\build_task_case.py",
+        "bytes": 8315,
+        "sha256": "3d2d18187cad1b544f58ee03ff0c2d8e4bdd1b85ceda9d7807d629f80f26912a"
+      },
+      {
+        "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-R2-20261120-01\\scripts\\build_matrix_inputs.py",
+        "bytes": 3341,
+        "sha256": "1b3c4b907b845ed3d0ca50843805d89a1fdb3446221e319dbf0950f8f9f60a57"
+      },
+      {
+        "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-R2-20261120-01\\scripts\\verify_matrix_inputs.py",
+        "bytes": 3791,
+        "sha256": "3803ff0f09d3b2ce03d8cf67df22248cfa96460bfd7c176f357f99ddf933263b"
+      },
+      {
+        "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-R2-20261120-01\\scripts\\verify_flow_default_equivalence.py",
+        "bytes": 2595,
+        "sha256": "1b6a8aec1b83a5d97bd99d594e868e9e350ec7a91b58b11c7f40cfdfe4496c63"
+      },
+      {
+        "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-R2-20261120-01\\scripts\\build_pilot_ledger.py",
+        "bytes": 3568,
+        "sha256": "7856ae485ae43387baddf63fc154b45b86219f8b09eb4af3cda5c485a713e803"
+      },
+      {
+        "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-R2-20261120-01\\scripts\\build_pilot_label_status.py",
+        "bytes": 1631,
+        "sha256": "84a3f54d370a81bb1dbd52f71081d531c9048a772353ca165efe90495a40dfab"
+      },
+      {
+        "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-R2-20261120-01\\scripts\\audit_real_case.py",
+        "bytes": 5378,
+        "sha256": "5c07a4865f37d434961f99b9862fea7ea1e8b4a238db8b1cd79aba4c339a842c"
+      },
+      {
+        "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-R2-20261120-01\\scripts\\admit_case.py",
+        "bytes": 7297,
+        "sha256": "46ca47bba18aa65842ad120027ad585f75b2787816433c028e5c92b47a71ecc7"
+      },
+      {
+        "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-R2-20261120-01\\authorization.json",
+        "bytes": 1636,
+        "sha256": "582b1dfd23698e20655d9fed4222b673fdb42ff703e6981771ee6d0919b68a09"
+      },
+      {
+        "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-R2-20261120-01\\pilot_ledger.json",
+        "bytes": 3155,
+        "sha256": "af77faac03df79a04797d494a24af1e3cde8365c2d9c82d7c7844538642118ff"
+      },
+      {
+        "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-R2-20261120-01\\pilot_label_status.json",
+        "bytes": 2055,
+        "sha256": "f4ac668b1360c2ccb4916f1b00a06d093d341baa26059c8503e19a082a7b8691"
+      },
+      {
+        "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-R2-20261120-01\\matrix_input_verification.json",
+        "bytes": 9204,
+        "sha256": "6551dce4ad2055d7fb40db52d9a25813dadb8ef21534becfcfb387754d37d9cb"
+      },
+      {
+        "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-R2-20261120-01\\flow_default_equivalence\\verification.json",
+        "bytes": 3479,
+        "sha256": "a2570bcf5b9fb70661ecd55da9e0da403d5ed7432e7d8faa5d0ab50dc94de155"
+      },
+      {
+        "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-R2-20261120-01\\preflight_r2\\recovery_preflight_receipt.json",
+        "bytes": 7639,
+        "sha256": "33fe78aa8728ac2114b0813e47e761b4144772fb462e4e2eb0e3be1ff566dd65"
+      },
+      {
+        "path": "D:\\RCAIDE\\.worktrees\\drecover001-20261117\\docs\\evidence\\drecover001\\r2_a5_review_dossier_20261120.md",
+        "bytes": 7361,
+        "sha256": "e96f10fb21505249c4bc98492d95044cd7e69fbbd77ebc5e81a5b9f83ceba8a9"
+      },
+      {
+        "path": "D:\\RCAIDE\\.recovery-local-restore\\a5_reviewer\\run_r2_20261120\\verdict.json",
+        "bytes": 3537,
+        "sha256": "c47ee91fd9c63d335941d0d5cca22c197c0072a5772926fce54e64179678c1b4"
+      }
+    ],
+    "file_count": 19,
+    "physical_solver_starts": 0,
+    "note": "Freeze binds exact source, scripts, authorization and A5 evidence bytes used for the R2 batch. The three source files and the A5 dossier were committed as the remote commit above; the worktree is clean at that commit."
+  },
+  "solver": {
+    "name": "VSPAERO",
+    "version": "v.7.2.2",
+    "executable_sha256": "db71c4412489af82398833408ea30fb73327bdd9434de2ef530d31375b9fddad",
+    "omp_threads": 1,
+    "timeout_s": 1200
+  },
+  "software_preflight": {
+    "run_id": "DRECOVER001-SOFTWARE-20261120T121100Z",
+    "tests_run": 253,
+    "failures": 0,
+    "errors": 0,
+    "physical_solver_starts_actual": 0
+  },
+  "disclosure": "Historical run executed before the A1 per-case Mach/q fix; raw bytes are preserved unchanged and are not recomputed or relabeled."
+}

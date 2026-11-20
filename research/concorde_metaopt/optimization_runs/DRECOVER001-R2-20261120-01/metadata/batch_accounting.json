@@ -1,0 +1,974 @@
+{
+  "schema": "drecover001.r2_batch_accounting.v1",
+  "run_id": "DRECOVER001-R2-20261120-01",
+  "authorization_id": "AUTH-DRECOVER001-R2-20261120-01",
+  "batch_id": "DRECOVER001-R2-20261120-01-B01R",
+  "physical_solver_starts_actual": 24,
+  "physical_solver_starts_completed": 23,
+  "retries_actual": 0,
+  "parallelism": 1,
+  "solver": "vspaero-3.55.0-v7.2.2-omp1",
+  "planned_reserved_starts": 24,
+  "remaining_starts": 0,
+  "internal_solver_cases_actual_completed": 645,
+  "internal_solver_cases_note": "pilot 23 (baseline coarse 7 + refine 13 + admit 3) + 13 completed matrix cases x 15 + 7 B01R repair cases x 61; interrupted m240-d01 internal cases unknown and not counted",
+  "admitted_labels": [
+    {
+      "case_id": "baseline-admit-01",
+      "task_id": "concorde-fixed-cruise-dreal001-real-v1",
+      "design": [
+        358.25,
+        1.83,
+        67.0,
+        48.0,
+        71.0,
+        0.480469,
+        0.945313,
+        0.408284,
+        0.130178,
+        0.0,
+        33.91,
+        0.0
+      ],
+      "design_sha256": "937aa7c9c789ccd8fce4fdbde942a258248f2b1c91ba90cf6c99c7e4c5a8a3fe",
+      "partition": "support",
+      "admission_id": "ADM-R2-B01-BASELINE-ADMIT-01",
+      "di_n": 121434.35218570218,
+      "cl": 0.181741590896,
+      "cdi": 0.016547860887,
+      "alpha_deg": 5.18125,
+      "raw_sha256": "21bf20be892c29df12f8d46d88692039303638205bf8b1f93469653211def628",
+      "evidence_scope": "LOCAL_RAW_BYTES_VERIFIED_AUDIT_BOUND_NOT_AUTHENTICATED"
+    },
+    {
+      "case_id": "baseline-refine-01",
+      "task_id": "concorde-fixed-cruise-dreal001-real-v1",
+      "design": [
+        358.25,
+        1.83,
+        67.0,
+        48.0,
+        71.0,
+        0.480469,
+        0.945313,
+        0.408284,
+        0.130178,
+        0.0,
+        33.91,
+        0.0
+      ],
+      "design_sha256": "937aa7c9c789ccd8fce4fdbde942a258248f2b1c91ba90cf6c99c7e4c5a8a3fe",
+      "partition": "support",
+      "admission_id": "ADM-R2-B01-BASELINE-REFINE-01",
+      "di_n": 121492.55215765651,
+      "cl": 0.181784583426,
+      "cdi": 0.016555791798,
+      "alpha_deg": 5.1825,
+      "raw_sha256": "a46bdc4da245f2e60633adc298f4dd77f9a3caec2872921948d1440e6e22ffd3",
+      "evidence_scope": "LOCAL_RAW_BYTES_VERIFIED_AUDIT_BOUND_NOT_AUTHENTICATED"
+    },
+    {
+      "case_id": "m202-d01-support",
+      "task_id": "concorde-fixed-cruise-dreal001-real-v1",
+      "design": [
+        361.8325,
+        1.83,
+        67.0,
+        48.0,
+        71.0,
+        0.480469,
+        0.945313,
+        0.408284,
+        0.130178,
+        0.0,
+        33.91,
+        0.0
+      ],
+      "design_sha256": "3de72a4bb698202b5377db7489f747ee2426f4f62f94fabc71684db4bd50fd71",
+      "partition": "support",
+      "admission_id": "ADM-R2-MATRIX-M202-D01-SUPPORT",
+      "di_n": 120203.9250481344,
+      "cl": 0.179945080054,
+      "cdi": 0.016218010459,
+      "alpha_deg": 5.1289994884,
+      "raw_sha256": "5b8bfb2d27b34bc3c8dbd718b6567c3433dbc2a6e879dcaad1374aad7c183ff0",
+      "evidence_scope": "LOCAL_RAW_BYTES_VERIFIED_AUDIT_BOUND_NOT_AUTHENTICATED"
+    },
+    {
+      "case_id": "m160-d00-support-r1",
+      "task_id": "concorde-real-M160",
+      "design": [
+        358.25,
+        1.83,
+        67.0,
+        48.0,
+        71.0,
+        0.480469,
+        0.945313,
+        0.408284,
+        0.130178,
+        0.0,
+        33.91,
+        0.0
+      ],
+      "design_sha256": "937aa7c9c789ccd8fce4fdbde942a258248f2b1c91ba90cf6c99c7e4c5a8a3fe",
+      "partition": "support",
+      "admission_id": "ADM-R2-B01R-M160_D00_SUPPORT_R1",
+      "di_n": 175533.59122875682,
+      "cl": 0.289604495511,
+      "cdi": 0.038126181642,
+      "alpha_deg": 7.47,
+      "raw_sha256": "0f32d5f12ed2d87a0b63a616530d3f4757ffa86737561e16b31b3756ff9f6d93",
+      "evidence_scope": "LOCAL_RAW_BYTES_VERIFIED_AUDIT_BOUND_NOT_AUTHENTICATED"
+    },
+    {
+      "case_id": "m160-d02-query-r1",
+      "task_id": "concorde-real-M160",
+      "design": [
+        358.25,
+        1.83,
+        67.5,
+        48.0,
+        71.0,
+        0.480469,
+        0.945313,
+        0.408284,
+        0.130178,
+        0.0,
+        33.91,
+        0.0
+      ],
+      "design_sha256": "408cafa19c7ee08986398a9531c369b7060f333695589437f428c0f5baacfe6c",
+      "partition": "query",
+      "admission_id": "ADM-R2-B01R-M160_D02_QUERY_R1",
+      "di_n": 177703.75652673654,
+      "cl": 0.289639928901,
+      "cdi": 0.038597545076,
+      "alpha_deg": 7.56,
+      "raw_sha256": "d9ccbe1a8a753146b91b760933a270d0b0a023836670f6c9469a65bf43ce9328",
+      "evidence_scope": "LOCAL_RAW_BYTES_VERIFIED_AUDIT_BOUND_NOT_AUTHENTICATED"
+    },
+    {
+      "case_id": "m202-d02-query-r1",
+      "task_id": "concorde-fixed-cruise-dreal001-real-v1",
+      "design": [
+        358.25,
+        1.83,
+        67.5,
+        48.0,
+        71.0,
+        0.480469,
+        0.945313,
+        0.408284,
+        0.130178,
+        0.0,
+        33.91,
+        0.0
+      ],
+      "design_sha256": "408cafa19c7ee08986398a9531c369b7060f333695589437f428c0f5baacfe6c",
+      "partition": "query",
+      "admission_id": "ADM-R2-B01R-M202_D02_QUERY_R1",
+      "di_n": 125276.44522708771,
+      "cl": 0.181692135186,
+      "cdi": 0.01707142296,
+      "alpha_deg": 5.345,
+      "raw_sha256": "d3dfdc3136bf77916d28385d4517b1f1b663f24cb360716e1a7b509d7eb2fde7",
+      "evidence_scope": "LOCAL_RAW_BYTES_VERIFIED_AUDIT_BOUND_NOT_AUTHENTICATED"
+    },
+    {
+      "case_id": "m180-d00-support-r1",
+      "task_id": "concorde-real-M180",
+      "design": [
+        358.25,
+        1.83,
+        67.0,
+        48.0,
+        71.0,
+        0.480469,
+        0.945313,
+        0.408284,
+        0.130178,
+        0.0,
+        33.91,
+        0.0
+      ],
+      "design_sha256": "937aa7c9c789ccd8fce4fdbde942a258248f2b1c91ba90cf6c99c7e4c5a8a3fe",
+      "partition": "support",
+      "admission_id": "ADM-R2-B01R-M180_D00_SUPPORT_R1",
+      "di_n": 145108.8263085832,
+      "cl": 0.228869482987,
+      "cdi": 0.024903010919,
+      "alpha_deg": 6.185,
+      "raw_sha256": "59f61032299dc92753132f29debe0dcbf0ca61f947e2ae1b18eba0cb46a6b325",
+      "evidence_scope": "LOCAL_RAW_BYTES_VERIFIED_AUDIT_BOUND_NOT_AUTHENTICATED"
+    },
+    {
+      "case_id": "m180-d02-query-r1",
+      "task_id": "concorde-real-M180",
+      "design": [
+        358.25,
+        1.83,
+        67.5,
+        48.0,
+        71.0,
+        0.480469,
+        0.945313,
+        0.408284,
+        0.130178,
+        0.0,
+        33.91,
+        0.0
+      ],
+      "design_sha256": "408cafa19c7ee08986398a9531c369b7060f333695589437f428c0f5baacfe6c",
+      "partition": "query",
+      "admission_id": "ADM-R2-B01R-M180_D02_QUERY_R1",
+      "di_n": 145594.1728160381,
+      "cl": 0.228885920881,
+      "cdi": 0.024986304194,
+      "alpha_deg": 6.205,
+      "raw_sha256": "87bf022e6b12cb97a04589e4a8d51c2452f030a13998c2a25524379610e1f347",
+      "evidence_scope": "LOCAL_RAW_BYTES_VERIFIED_AUDIT_BOUND_NOT_AUTHENTICATED"
+    },
+    {
+      "case_id": "m240-d00-support-r1",
+      "task_id": "concorde-real-M240",
+      "design": [
+        358.25,
+        1.83,
+        67.0,
+        48.0,
+        71.0,
+        0.480469,
+        0.945313,
+        0.408284,
+        0.130178,
+        0.0,
+        33.91,
+        0.0
+      ],
+      "design_sha256": "937aa7c9c789ccd8fce4fdbde942a258248f2b1c91ba90cf6c99c7e4c5a8a3fe",
+      "partition": "support",
+      "admission_id": "ADM-R2-B01R-M240_D00_SUPPORT_R1",
+      "di_n": 104105.74762111844,
+      "cl": 0.128809590323,
+      "cdi": 0.010049750126,
+      "alpha_deg": 4.44,
+      "raw_sha256": "fd2e965d207419d2b96dbe12d420f2bee90051eb3e0f9df301031bbbebd067bd",
+      "evidence_scope": "LOCAL_RAW_BYTES_VERIFIED_AUDIT_BOUND_NOT_AUTHENTICATED"
+    },
+    {
+      "case_id": "m240-d02-query-r1",
+      "task_id": "concorde-real-M240",
+      "design": [
+        358.25,
+        1.83,
+        67.5,
+        48.0,
+        71.0,
+        0.480469,
+        0.945313,
+        0.408284,
+        0.130178,
+        0.0,
+        33.91,
+        0.0
+      ],
+      "design_sha256": "408cafa19c7ee08986398a9531c369b7060f333695589437f428c0f5baacfe6c",
+      "partition": "query",
+      "admission_id": "ADM-R2-B01R-M240_D02_QUERY_R1",
+      "di_n": 103658.98529132444,
+      "cl": 0.128694845874,
+      "cdi": 0.010006622346,
+      "alpha_deg": 4.425,
+      "raw_sha256": "e02f4f3a4e5db5ea9336d628b750dd06b1e8620e3a446c52a460b9c559e4da54",
+      "evidence_scope": "LOCAL_RAW_BYTES_VERIFIED_AUDIT_BOUND_NOT_AUTHENTICATED"
+    }
+  ],
+  "admitted_dataset_usable_designs": [
+    {
+      "task_id": "concorde-fixed-cruise-dreal001-real-v1",
+      "design": "d00",
+      "partition": "support",
+      "source": "baseline-admit-01",
+      "note": "baseline-refine-01 repeats d00 and is not a second design"
+    },
+    {
+      "task_id": "concorde-fixed-cruise-dreal001-real-v1",
+      "design": "d01",
+      "partition": "support",
+      "source": "m202-d01-support"
+    }
+  ],
+  "null_labels": [
+    {
+      "case_id": "baseline-coarse",
+      "task_id": "concorde-fixed-cruise-dreal001-real-v1",
+      "design": [
+        358.25,
+        1.83,
+        67.0,
+        48.0,
+        71.0,
+        0.480469,
+        0.945313,
+        0.408284,
+        0.130178,
+        0.0,
+        33.91,
+        0.0
+      ],
+      "partition": null,
+      "attempt_id": "real-baseline-coarse-01",
+      "start_ts_utc": "2026-11-20T06:13:11.276562Z",
+      "solver_success": true,
+      "reason": "POLAR_HAS_INVALID_ROWS",
+      "best_lift_rel_error": 0.15416984178535353,
+      "label": null,
+      "reusable": false,
+      "note": "solver completed but no actual polar row meets 1e-3 lift tolerance; null label retained, not an admission"
+    },
+    {
+      "case_id": "m160-d00-support",
+      "task_id": "concorde-real-M160",
+      "design": [
+        358.25,
+        1.83,
+        67.0,
+        48.0,
+        71.0,
+        0.480469,
+        0.945313,
+        0.408284,
+        0.130178,
+        0.0,
+        33.91,
+        0.0
+      ],
+      "partition": null,
+      "attempt_id": "real-matrix-m160-d00-support-01",
+      "start_ts_utc": "2026-11-20T07:09:47.694263Z",
+      "solver_success": true,
+      "reason": "NO_ACTUAL_ROW_WITHIN_LIFT_TOLERANCE",
+      "best_lift_rel_error": 0.10578779625819464,
+      "label": null,
+      "reusable": false,
+      "note": "solver completed but no actual polar row meets 1e-3 lift tolerance; null label retained, not an admission"
+    },
+    {
+      "case_id": "m160-d01-support",
+      "task_id": "concorde-real-M160",
+      "design": [
+        361.8325,
+        1.83,
+        67.0,
+        48.0,
+        71.0,
+        0.480469,
+        0.945313,
+        0.408284,
+        0.130178,
+        0.0,
+        33.91,
+        0.0
+      ],
+      "partition": null,
+      "attempt_id": "real-matrix-m160-d01-support-01",
+      "start_ts_utc": "2026-11-20T07:09:53.647089Z",
+      "solver_success": true,
+      "reason": "NO_ACTUAL_ROW_WITHIN_LIFT_TOLERANCE",
+      "best_lift_rel_error": 0.1061891178624283,
+      "label": null,
+      "reusable": false,
+      "note": "solver completed but no actual polar row meets 1e-3 lift tolerance; null label retained, not an admission"
+    },
+    {
+      "case_id": "m160-d02-query",
+      "task_id": "concorde-real-M160",
+      "design": [
+        358.25,
+        1.83,
+        67.5,
+        48.0,
+        71.0,
+        0.480469,
+        0.945313,
+        0.408284,
+        0.130178,
+        0.0,
+        33.91,
+        0.0
+      ],
+      "partition": null,
+      "attempt_id": "real-matrix-m160-d02-query-01",
+      "start_ts_utc": "2026-11-20T07:09:59.470825Z",
+      "solver_success": true,
+      "reason": "NO_ACTUAL_ROW_WITHIN_LIFT_TOLERANCE",
+      "best_lift_rel_error": 0.09330309331055901,
+      "label": null,
+      "reusable": false,
+      "note": "solver completed but no actual polar row meets 1e-3 lift tolerance; null label retained, not an admission"
+    },
+    {
+      "case_id": "m180-d00-support",
+      "task_id": "concorde-real-M180",
+      "design": [
+        358.25,
+        1.83,
+        67.0,
+        48.0,
+        71.0,
+        0.480469,
+        0.945313,
+        0.408284,
+        0.130178,
+        0.0,
+        33.91,
+        0.0
+      ],
+      "partition": null,
+      "attempt_id": "real-matrix-m180-d00-support-01",
+      "start_ts_utc": "2026-11-20T07:10:05.445303Z",
+      "solver_success": true,
+      "reason": "NO_ACTUAL_ROW_WITHIN_LIFT_TOLERANCE",
+      "best_lift_rel_error": 0.054710582537794976,
+      "label": null,
+      "reusable": false,
+      "note": "solver completed but no actual polar row meets 1e-3 lift tolerance; null label retained, not an admission"
+    },
+    {
+      "case_id": "m180-d01-support",
+      "task_id": "concorde-real-M180",
+      "design": [
+        361.8325,
+        1.83,
+        67.0,
+        48.0,
+        71.0,
+        0.480469,
+        0.945313,
+        0.408284,
+        0.130178,
+        0.0,
+        33.91,
+        0.0
+      ],
+      "partition": null,
+      "attempt_id": "real-matrix-m180-d01-support-01",
+      "start_ts_utc": "2026-11-20T07:10:11.502027Z",
+      "solver_success": true,
+      "reason": "NO_ACTUAL_ROW_WITHIN_LIFT_TOLERANCE",
+      "best_lift_rel_error": 0.05485104819977545,
+      "label": null,
+      "reusable": false,
+      "note": "solver completed but no actual polar row meets 1e-3 lift tolerance; null label retained, not an admission"
+    },
+    {
+      "case_id": "m180-d02-query",
+      "task_id": "concorde-real-M180",
+      "design": [
+        358.25,
+        1.83,
+        67.5,
+        48.0,
+        71.0,
+        0.480469,
+        0.945313,
+        0.408284,
+        0.130178,
+        0.0,
+        33.91,
+        0.0
+      ],
+      "partition": null,
+      "attempt_id": "real-matrix-m180-d02-query-01",
+      "start_ts_utc": "2026-11-20T07:10:17.475184Z",
+      "solver_success": true,
+      "reason": "NO_ACTUAL_ROW_WITHIN_LIFT_TOLERANCE",
+      "best_lift_rel_error": 0.05148961325984811,
+      "label": null,
+      "reusable": false,
+      "note": "solver completed but no actual polar row meets 1e-3 lift tolerance; null label retained, not an admission"
+    },
+    {
+      "case_id": "m202-d02-query",
+      "task_id": "concorde-fixed-cruise-dreal001-real-v1",
+      "design": [
+        358.25,
+        1.83,
+        67.5,
+        48.0,
+        71.0,
+        0.480469,
+        0.945313,
+        0.408284,
+        0.130178,
+        0.0,
+        33.91,
+        0.0
+      ],
+      "partition": null,
+      "attempt_id": "real-matrix-m202-d02-query-01",
+      "start_ts_utc": "2026-11-20T07:10:36.315884Z",
+      "solver_success": true,
+      "reason": "NO_ACTUAL_ROW_WITHIN_LIFT_TOLERANCE",
+      "best_lift_rel_error": 0.027083339259974474,
+      "label": null,
+      "reusable": false,
+      "note": "solver completed but no actual polar row meets 1e-3 lift tolerance; null label retained, not an admission"
+    },
+    {
+      "case_id": "m220-d00-support",
+      "task_id": "concorde-real-M220",
+      "design": [
+        358.25,
+        1.83,
+        67.0,
+        48.0,
+        71.0,
+        0.480469,
+        0.945313,
+        0.408284,
+        0.130178,
+        0.0,
+        33.91,
+        0.0
+      ],
+      "partition": null,
+      "attempt_id": "real-matrix-m220-d00-support-01",
+      "start_ts_utc": "2026-11-20T07:10:42.256321Z",
+      "solver_success": true,
+      "reason": "NO_ACTUAL_ROW_WITHIN_LIFT_TOLERANCE",
+      "best_lift_rel_error": 0.046155439362807166,
+      "label": null,
+      "reusable": false,
+      "note": "solver completed but no actual polar row meets 1e-3 lift tolerance; null label retained, not an admission"
+    },
+    {
+      "case_id": "m220-d01-support",
+      "task_id": "concorde-real-M220",
+      "design": [
+        361.8325,
+        1.83,
+        67.0,
+        48.0,
+        71.0,
+        0.480469,
+        0.945313,
+        0.408284,
+        0.130178,
+        0.0,
+        33.91,
+        0.0
+      ],
+      "partition": null,
+      "attempt_id": "real-matrix-m220-d01-support-01",
+      "start_ts_utc": "2026-11-20T07:10:55.237062Z",
+      "solver_success": true,
+      "reason": "NO_ACTUAL_ROW_WITHIN_LIFT_TOLERANCE",
+      "best_lift_rel_error": 0.0462030436016151,
+      "label": null,
+      "reusable": false,
+      "note": "solver completed but no actual polar row meets 1e-3 lift tolerance; null label retained, not an admission"
+    },
+    {
+      "case_id": "m220-d02-query",
+      "task_id": "concorde-real-M220",
+      "design": [
+        358.25,
+        1.83,
+        67.5,
+        48.0,
+        71.0,
+        0.480469,
+        0.945313,
+        0.408284,
+        0.130178,
+        0.0,
+        33.91,
+        0.0
+      ],
+      "partition": null,
+      "attempt_id": "real-matrix-m220-d02-query-01",
+      "start_ts_utc": "2026-11-20T07:11:08.293375Z",
+      "solver_success": true,
+      "reason": "NO_ACTUAL_ROW_WITHIN_LIFT_TOLERANCE",
+      "best_lift_rel_error": 0.07948320800274504,
+      "label": null,
+      "reusable": false,
+      "note": "solver completed but no actual polar row meets 1e-3 lift tolerance; null label retained, not an admission"
+    },
+    {
+      "case_id": "m240-d00-support",
+      "task_id": "concorde-real-M240",
+      "design": [
+        358.25,
+        1.83,
+        67.0,
+        48.0,
+        71.0,
+        0.480469,
+        0.945313,
+        0.408284,
+        0.130178,
+        0.0,
+        33.91,
+        0.0
+      ],
+      "partition": null,
+      "attempt_id": "real-matrix-m240-d00-support-01",
+      "start_ts_utc": "2026-11-20T07:11:22.106482Z",
+      "solver_success": true,
+      "reason": "NO_ACTUAL_ROW_WITHIN_LIFT_TOLERANCE",
+      "best_lift_rel_error": 0.17384908548049322,
+      "label": null,
+      "reusable": false,
+      "note": "solver completed but no actual polar row meets 1e-3 lift tolerance; null label retained, not an admission"
+    },
+    {
+      "case_id": "m240-d01-support",
+      "task_id": null,
+      "design": null,
+      "partition": null,
+      "attempt_id": "real-matrix-m240-d01-support-01",
+      "start_ts_utc": "2026-11-20T07:11:35.666676Z",
+      "solver_success": null,
+      "reason": "PROCESS_KILLED_BY_OUTER_TIMEOUT_NO_RESULT",
+      "best_lift_rel_error": null,
+      "label": null,
+      "reusable": false,
+      "note": "counted physical start; no end event; do not rerun under A5 14-start cap"
+    },
+    {
+      "case_id": "m240-d02-query",
+      "task_id": "concorde-real-M240",
+      "design": [
+        358.25,
+        1.83,
+        67.5,
+        48.0,
+        71.0,
+        0.480469,
+        0.945313,
+        0.408284,
+        0.130178,
+        0.0,
+        33.91,
+        0.0
+      ],
+      "partition": null,
+      "attempt_id": "real-matrix-m240-d02-query-01",
+      "start_ts_utc": "2026-11-20T07:14:13.679748Z",
+      "solver_success": true,
+      "reason": "NO_ACTUAL_ROW_WITHIN_LIFT_TOLERANCE",
+      "best_lift_rel_error": 0.1718266440798798,
+      "label": null,
+      "reusable": false,
+      "note": "solver completed but no actual polar row meets 1e-3 lift tolerance; null label retained, not an admission"
+    }
+  ],
+  "starts": [
+    {
+      "case_id": "baseline-coarse",
+      "start_events": 1,
+      "end_events": 1,
+      "attempt_ids": [
+        "real-baseline-coarse-01"
+      ],
+      "start_ts_utc": [
+        "2026-11-20T06:13:11.276562Z"
+      ]
+    },
+    {
+      "case_id": "baseline-refine-01",
+      "start_events": 1,
+      "end_events": 1,
+      "attempt_ids": [
+        "real-baseline-refine-01"
+      ],
+      "start_ts_utc": [
+        "2026-11-20T06:15:02.523122Z"
+      ]
+    },
+    {
+      "case_id": "baseline-admit-01",
+      "start_events": 1,
+      "end_events": 1,
+      "attempt_ids": [
+        "real-baseline-admit-01"
+      ],
+      "start_ts_utc": [
+        "2026-11-20T06:16:56.561867Z"
+      ]
+    },
+    {
+      "case_id": "m160-d00-support",
+      "start_events": 1,
+      "end_events": 1,
+      "attempt_ids": [
+        "real-matrix-m160-d00-support-01"
+      ],
+      "start_ts_utc": [
+        "2026-11-20T07:09:47.694263Z"
+      ]
+    },
+    {
+      "case_id": "m160-d01-support",
+      "start_events": 1,
+      "end_events": 1,
+      "attempt_ids": [
+        "real-matrix-m160-d01-support-01"
+      ],
+      "start_ts_utc": [
+        "2026-11-20T07:09:53.647089Z"
+      ]
+    },
+    {
+      "case_id": "m160-d02-query",
+      "start_events": 1,
+      "end_events": 1,
+      "attempt_ids": [
+        "real-matrix-m160-d02-query-01"
+      ],
+      "start_ts_utc": [
+        "2026-11-20T07:09:59.470825Z"
+      ]
+    },
+    {
+      "case_id": "m180-d00-support",
+      "start_events": 1,
+      "end_events": 1,
+      "attempt_ids": [
+        "real-matrix-m180-d00-support-01"
+      ],
+      "start_ts_utc": [
+        "2026-11-20T07:10:05.445303Z"
+      ]
+    },
+    {
+      "case_id": "m180-d01-support",
+      "start_events": 1,
+      "end_events": 1,
+      "attempt_ids": [
+        "real-matrix-m180-d01-support-01"
+      ],
+      "start_ts_utc": [
+        "2026-11-20T07:10:11.502027Z"
+      ]
+    },
+    {
+      "case_id": "m180-d02-query",
+      "start_events": 1,
+      "end_events": 1,
+      "attempt_ids": [
+        "real-matrix-m180-d02-query-01"
+      ],
+      "start_ts_utc": [
+        "2026-11-20T07:10:17.475184Z"
+      ]
+    },
+    {
+      "case_id": "m202-d01-support",
+      "start_events": 1,
+      "end_events": 1,
+      "attempt_ids": [
+        "real-matrix-m202-d01-support-01"
+      ],
+      "start_ts_utc": [
+        "2026-11-20T07:10:23.404835Z"
+      ]
+    },
+    {
+      "case_id": "m202-d02-query",
+      "start_events": 1,
+      "end_events": 1,
+      "attempt_ids": [
+        "real-matrix-m202-d02-query-01"
+      ],
+      "start_ts_utc": [
+        "2026-11-20T07:10:36.315884Z"
+      ]
+    },
+    {
+      "case_id": "m220-d00-support",
+      "start_events": 1,
+      "end_events": 1,
+      "attempt_ids": [
+        "real-matrix-m220-d00-support-01"
+      ],
+      "start_ts_utc": [
+        "2026-11-20T07:10:42.256321Z"
+      ]
+    },
+    {
+      "case_id": "m220-d01-support",
+      "start_events": 1,
+      "end_events": 1,
+      "attempt_ids": [
+        "real-matrix-m220-d01-support-01"
+      ],
+      "start_ts_utc": [
+        "2026-11-20T07:10:55.237062Z"
+      ]
+    },
+    {
+      "case_id": "m220-d02-query",
+      "start_events": 1,
+      "end_events": 1,
+      "attempt_ids": [
+        "real-matrix-m220-d02-query-01"
+      ],
+      "start_ts_utc": [
+        "2026-11-20T07:11:08.293375Z"
+      ]
+    },
+    {
+      "case_id": "m240-d00-support",
+      "start_events": 1,
+      "end_events": 1,
+      "attempt_ids": [
+        "real-matrix-m240-d00-support-01"
+      ],
+      "start_ts_utc": [
+        "2026-11-20T07:11:22.106482Z"
+      ]
+    },
+    {
+      "case_id": "m240-d01-support",
+      "start_events": 1,
+      "end_events": 0,
+      "attempt_ids": [
+        "real-matrix-m240-d01-support-01"
+      ],
+      "start_ts_utc": [
+        "2026-11-20T07:11:35.666676Z"
+      ]
+    },
+    {
+      "case_id": "m240-d02-query",
+      "start_events": 1,
+      "end_events": 1,
+      "attempt_ids": [
+        "real-matrix-m240-d02-query-01"
+      ],
+      "start_ts_utc": [
+        "2026-11-20T07:14:13.679748Z"
+      ]
+    },
+    {
+      "case_id": "m160-d00-support-r1",
+      "start_events": 1,
+      "end_events": 1,
+      "attempt_ids": [
+        "real-repair-m160-d00-support-r1-01"
+      ],
+      "start_ts_utc": [
+        "2026-11-20T07:30:48.364484Z"
+      ]
+    },
+    {
+      "case_id": "m160-d02-query-r1",
+      "start_events": 1,
+      "end_events": 1,
+      "attempt_ids": [
+        "real-repair-m160-d02-query-r1-01"
+      ],
+      "start_ts_utc": [
+        "2026-11-20T07:31:33.057903Z"
+      ]
+    },
+    {
+      "case_id": "m180-d00-support-r1",
+      "start_events": 1,
+      "end_events": 1,
+      "attempt_ids": [
+        "real-repair-m180-d00-support-r1-01"
+      ],
+      "start_ts_utc": [
+        "2026-11-20T07:32:19.902636Z"
+      ]
+    },
+    {
+      "case_id": "m180-d02-query-r1",
+      "start_events": 1,
+      "end_events": 1,
+      "attempt_ids": [
+        "real-repair-m180-d02-query-r1-01"
+      ],
+      "start_ts_utc": [
+        "2026-11-20T07:32:59.162498Z"
+      ]
+    },
+    {
+      "case_id": "m202-d02-query-r1",
+      "start_events": 1,
+      "end_events": 1,
+      "attempt_ids": [
+        "real-repair-m202-d02-query-r1-01"
+      ],
+      "start_ts_utc": [
+        "2026-11-20T07:34:03.326706Z"
+      ]
+    },
+    {
+      "case_id": "m240-d00-support-r1",
+      "start_events": 1,
+      "end_events": 1,
+      "attempt_ids": [
+        "real-repair-m240-d00-support-r1-01"
+      ],
+      "start_ts_utc": [
+        "2026-11-20T07:35:01.839505Z"
+      ]
+    },
+    {
+      "case_id": "m240-d02-query-r1",
+      "start_events": 1,
+      "end_events": 1,
+      "attempt_ids": [
+        "real-repair-m240-d02-query-r1-01"
+      ],
+      "start_ts_utc": [
+        "2026-11-20T07:36:08.513675Z"
+      ]
+    }
+  ],
+  "prior_batch_id": "DRECOVER001-R2-20261120-01-B01",
+  "admitted_total_certificates": 10,
+  "admitted_dataset_usable_rows": 9,
+  "admitted_dataset_note": "10 certificates; baseline-refine-01 repeats M202 d00 and is excluded from the 9-row MetaDataset to avoid duplicate design identity",
+  "dataset_sha256": "c63ccb0a7becd3dd7f558b9de7c61efa280c75bc1d385ea96492d631fccbab8b",
+  "maml": {
+    "run_id": "DRECOVER001-MAML-20261120T074500Z",
+    "batch_id": "DRECOVER001-R2-20261120-01-MAML01",
+    "status": "REAL_META_TRAINING_EXECUTED",
+    "scope": "EXPLORATORY_REAL_K1_NINE_LABELS",
+    "admitted_real_labels": 9,
+    "physical_solver_starts_actual": 0,
+    "config": {
+      "backend": "torch",
+      "first_order": true,
+      "hidden_sizes": [
+        32,
+        32
+      ],
+      "inner_lr": 0.05,
+      "inner_steps": 5,
+      "input_dim": 12,
+      "outer_lr": 0.01,
+      "output_dim": 1,
+      "seed": 7,
+      "tasks_per_batch": 2
+    },
+    "training_steps": 20,
+    "dataset_sha256": "c63ccb0a7becd3dd7f558b9de7c61efa280c75bc1d385ea96492d631fccbab8b",
+    "final_parameters_sha256": "a75073640aefb5bd9fc6b8fce11fdcd7fea5efff45bd7fe34f140602f9001abb",
+    "val_adapted_mse": 194471711.40892053,
+    "val_zero_shot_mse": 172004200.8751603,
+    "test_adapted_mse_once": 2495232593.693889,
+    "test_zero_shot_mse_once": 3030527242.735841,
+    "generalization_claimed": false,
+    "test_used_for_selection": false,
+    "result_file": "D:\\RCAIDE\\.real_runs\\DRECOVER001-R2-20261120-01\\real_maml_result.json",
+    "result_sha256": "8a3d998747a5f91abcec6388cdec0f1074516bfadc159b15b3cfabb7602621b7"
+  }
+}

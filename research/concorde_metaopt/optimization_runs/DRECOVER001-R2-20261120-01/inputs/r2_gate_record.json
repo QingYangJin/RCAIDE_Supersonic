@@ -1,0 +1,180 @@
+{
+  "schema": "drecover001.r2_gate_record.v1",
+  "generated_utc": "2026-11-20T07:50:00Z",
+  "authorization_id": "AUTH-DRECOVER001-R2-20261120-01",
+  "run_id": "DRECOVER001-R2-20261120-01",
+  "batch_id": "DRECOVER001-R2-20261120-01-B01R",
+  "owner_message_ref": "m05968",
+  "a5": {
+    "verdict": "CHANGES_REQUIRED",
+    "pilot_disposition": "RATIFIED_WITH_CONDITIONS",
+    "model": "deepseek-flash",
+    "reviewed_utc": "2026-11-20T06:50:06Z",
+    "dossier_sha256": "e96f10fb21505249c4bc98492d95044cd7e69fbbd77ebc5e81a5b9f83ceba8a9",
+    "tool_access": "NONE_SINGLE_SHOT_DOSSIER_STREAM",
+    "human_signature": false,
+    "note": "A5 is a deepseek-flash independent-context reviewer, not a human signer."
+  },
+  "code_freeze": {
+    "freeze_id": "R2FREEZE-6bdfe74e7f41b664",
+    "git_head": "2273024eeb5eae634b11fcebcee16376c82e409e",
+    "remote_commit": "2273024eeb5eae634b11fcebcee16376c82e409e",
+    "remote_tree": "cdcaa9663e87678b6db308cfe7333a09ef9f811e",
+    "remote_parent": "0effd7628774c8ee61468627c7af446b21591705",
+    "dirty_paths": 0,
+    "file_count": 19
+  },
+  "preflight": {
+    "run_id": "DRECOVER001-SOFTWARE-20261120T065735Z",
+    "tests_run": 248,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "status": "PASS",
+    "physical_solver_starts_actual": 0,
+    "real_meta_training_executed": false
+  },
+  "pilot": {
+    "physical_solver_starts_actual": 3,
+    "internal_solver_cases_actual": 23,
+    "remaining_starts": 21,
+    "successful_cases": 2,
+    "admitted_cases": 2,
+    "null_label_cases": [
+      "baseline-coarse"
+    ]
+  },
+  "matrix": {
+    "case_count": 14,
+    "checks": 168,
+    "failures": 0,
+    "successful_cases": 13,
+    "interrupted_cases": 1,
+    "admitted_cases": 7,
+    "null_labels": 14
+  },
+  "conditions": [
+    {
+      "id": "C1_PILOT_EXCEPTION",
+      "status": "CLOSED",
+      "evidence": [
+        "pilot_ledger.json",
+        "r2_a5_review_dossier_20261120.md"
+      ],
+      "detail": "3 pilot starts charged; A5 verdict CHANGES_REQUIRED with pilot RATIFIED_WITH_CONDITIONS recorded; no further starts until closure review."
+    },
+    {
+      "id": "C2_CODE_FREEZE_AND_FULL_PREFLIGHT",
+      "status": "CLOSED",
+      "evidence": [
+        "r2_code_freeze.json",
+        "preflight_r2/recovery_preflight_receipt.json"
+      ],
+      "detail": "freeze_id R2FREEZE-6bdfe74e7f41b664 binds 19 files; pushed remote commit 2273024eeb5eae634b11fcebcee16376c82e409e (parent 0effd7628774c8ee61468627c7af446b21591705); full preflight DRECOVER001-SOFTWARE-20261120T065735Z ran 248 tests, 0 failures/errors/skipped, PASS. Targeted pytest PermissionError was a sandbox temp ACL issue; preflight unittest path passed; --basetemp workaround documented."
+    },
+    {
+      "id": "C3_EW_INF_SCOPE",
+      "status": "CLOSED",
+      "evidence": [
+        "research/concorde_metaopt/dreal001/meta/raw_verification.py:144-160",
+        "research/concorde_metaopt/tests/test_recovery_real_admission.py:214"
+      ],
+      "detail": "Only Ew with math.isinf is removed from nonfinite; Ew NaN and every other nonfinite payload still raise ContractError. Regression test test_infinite_ew_diagnostic_tolerated_but_nan_or_core_inf_fatal; 18 admission tests passed."
+    },
+    {
+      "id": "C4_FLOW_CONDITIONS",
+      "status": "CLOSED",
+      "evidence": [
+        "flow_default_equivalence/verification.json",
+        "matrix_input_verification.json"
+      ],
+      "detail": "Default vs explicit baseline flow: same vspgeom SHA and same deck Sref/Mach/AoA/ReCref/Vinf/Rho; verdict DEFAULT_PATH_EQUIVALENT. 14 matrix decks, 168 checks, 0 failures; q/CL recomputed from deck Rho/Vinf."
+    },
+    {
+      "id": "C5_PILOT_ADMISSIONS",
+      "status": "CLOSED",
+      "evidence": [
+        "pilot_label_status.json",
+        "cases/baseline-admit-01/admission_certificate.json",
+        "cases/baseline-refine-01/admission_certificate.json"
+      ],
+      "detail": "2/2 successful pilot cases have admission certificates; baseline-coarse remains NULL_LABEL (POLAR_HAS_INVALID_ROWS). All certificates are LOCAL_RAW_BYTES_VERIFIED_AUDIT_BOUND_NOT_AUTHENTICATED."
+    },
+    {
+      "id": "C6_MAML_AFTER_ADMISSIONS",
+      "status": "CLOSED",
+      "evidence": [
+        "real_dataset_manifest.json",
+        "real_maml_result.json",
+        "docs/evidence/drecover001/real_maml_experiment_20261120.md"
+      ],
+      "detail": "Nine unique admitted rows (ten certificates; baseline-refine-01 duplicates M202 d00) used for one K=1 FOMAML run (2 train tasks, 20 steps); val/test evaluated once each; exploratory, no generalization claim; test not used for selection."
+    }
+  ],
+  "further_starts_blocked_until_a5_closure_review": false,
+  "maml_started": true,
+  "evidence_sha256": {
+    "pilot_ledger.json": "af77faac03df79a04797d494a24af1e3cde8365c2d9c82d7c7844538642118ff",
+    "pilot_label_status.json": "f4ac668b1360c2ccb4916f1b00a06d093d341baa26059c8503e19a082a7b8691",
+    "matrix_input_verification.json": "6551dce4ad2055d7fb40db52d9a25813dadb8ef21534becfcfb387754d37d9cb",
+    "flow_default_equivalence/verification.json": "a2570bcf5b9fb70661ecd55da9e0da403d5ed7432e7d8faa5d0ab50dc94de155",
+    "r2_code_freeze.json": "dcfd8f430407014d1caafe2f0fffe02bb6ab515ce62d2db7208ce861133e2b22",
+    "preflight_r2/recovery_preflight_receipt.json": "33fe78aa8728ac2114b0813e47e761b4144772fb462e4e2eb0e3be1ff566dd65",
+    "batch_accounting.json": "5e2a44c15fbed7cd9da2541deceb82ee82fbf924f6511e762b4c24eeac17cc48",
+    "real_dataset_manifest.json": "a655a014aeab38503c843b04cdc3dec08b90e9360649dd80da4d994ea8ea0517",
+    "real_maml_result.json": "8a3d998747a5f91abcec6388cdec0f1074516bfadc159b15b3cfabb7602621b7"
+  },
+  "a5_closure": {
+    "verdict": "PASS",
+    "pilot_disposition": "RATIFIED_WITH_CONDITIONS",
+    "model": "deepseek-flash",
+    "reviewed_utc": "2026-11-20T07:07:37Z",
+    "dossier_sha256": "d3ea44763fa9124c7326a3583980b650be44dbbc9340cf614ac5df6eefbc1e21",
+    "tool_access": "NONE_SINGLE_SHOT_DOSSIER_STREAM",
+    "human_signature": false,
+    "conditions": [
+      "Proceed with at most 14 matrix physical starts; maintain total at or below 24, retries 0, parallel 1, timeout 1200 s.",
+      "Admit each successful matrix case individually; failed cases remain null; no label synthesis or interpolation.",
+      "Start MAML only after all successful matrix cases are admitted; exploratory, max 8 runs, no generalization claim.",
+      "Keep labels marked LOCAL_RAW_BYTES_VERIFIED_AUDIT_BOUND_NOT_AUTHENTICATED and disclose the same-machine backup waiver.",
+      "Exclude baseline-coarse and any other NULL_LABEL cases from MAML."
+    ],
+    "verdict_path": "D:\\RCAIDE\\.worktrees\\drecover001-20261117\\docs\\evidence\\drecover001\\r2_a5_closure_verdict_20261120.json",
+    "verdict_sha256": "bfd5d3575feb847a30aa1b7461770ed9075cbd2e0a9f85f98872d79a7d75fe49",
+    "note": "Closure review PASS: C1-C5 closed; 14 matrix starts admissible; MAML only after per-case admission."
+  },
+  "next_step": "No further starts under this authorization (24/24). Fix build_evaluation per-case q/Mach; obtain independent review of the new real-training entry; a new authorization is required for more tasks/designs or feedback-driven BO.",
+  "a5_repair_authorization": {
+    "verdict": "PASS",
+    "repair_starts_authorized": true,
+    "k_shot_authorized": "K=1",
+    "reviewed_utc": "2026-11-20T07:25:10Z",
+    "model": "deepseek-flash",
+    "dossier_path": "D:\\RCAIDE\\.worktrees\\drecover001-20261117\\docs\\evidence\\drecover001\\r2_a5_repair_dossier_20261120.md",
+    "dossier_sha256": "6a041d75880c9d5bb6dd8506b9662b866f32cce7b1abdef49611bdfd8b611c42",
+    "verdict_path": "D:\\RCAIDE\\.worktrees\\drecover001-20261117\\docs\\evidence\\drecover001\\r2_a5_repair_verdict_20261120.json",
+    "verdict_sha256": "be47e81d363345026e41312c794cfe156dfba20fb6719c3d1f8475eb9d281d9a",
+    "scope": "only the seven B01R repair case ids; total physical starts 24/24; no retries; K=1 exploratory MAML",
+    "nonhuman_signature": true,
+    "tool_access": "NONE_SINGLE_SHOT_DOSSIER_STREAM"
+  },
+  "physical_solver_starts_actual": 24,
+  "admitted_certificates": 10,
+  "admitted_dataset_rows": 9,
+  "maml": "DRECOVER001-MAML-20261120T074500Z",
+  "maml_result": {
+    "run_id": "DRECOVER001-MAML-20261120T074500Z",
+    "status": "REAL_META_TRAINING_EXECUTED",
+    "scope": "EXPLORATORY_REAL_K1_NINE_LABELS",
+    "physical_solver_starts_actual": 0,
+    "admitted_real_labels": 9,
+    "training_steps": 20,
+    "val_adapted_mse": 194471711.40892053,
+    "val_zero_shot_mse": 172004200.8751603,
+    "test_adapted_mse_once": 2495232593.693889,
+    "test_zero_shot_mse_once": 3030527242.735841,
+    "generalization_claimed": false,
+    "test_used_for_selection": false,
+    "result_sha256": "8a3d998747a5f91abcec6388cdec0f1074516bfadc159b15b3cfabb7602621b7"
+  }
+}

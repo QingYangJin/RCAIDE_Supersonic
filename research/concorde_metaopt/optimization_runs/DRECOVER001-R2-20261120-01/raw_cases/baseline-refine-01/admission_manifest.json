@@ -1,0 +1,99 @@
+{
+  "schema": "dreal001.real_admission_manifest.v1",
+  "admission_id": "ADM-R2-B01-BASELINE-REFINE-01",
+  "run_id": "DRECOVER001-R2-20261120-01",
+  "task_id": "concorde-fixed-cruise-dreal001-real-v1",
+  "design_id": "937aa7c9c789ccd8fce4fdbde942a258248f2b1c91ba90cf6c99c7e4c5a8a3fe",
+  "design": [
+    358.25,
+    1.83,
+    67.0,
+    48.0,
+    71.0,
+    0.480469,
+    0.945313,
+    0.408284,
+    0.130178,
+    0.0,
+    33.91,
+    0.0
+  ],
+  "geometry_sha256": "5f2bb12fe8b1dc68c67901843c777328ae984cfdbe4ee71176b369a16a133f15",
+  "evaluator_id": "vspaero-3.55.0-v7.2.2-omp1",
+  "solver_returncode": 0,
+  "solver_started_utc": "2026-11-20T06:15:02Z",
+  "outcome": "success",
+  "partition": "support",
+  "files": [
+    {
+      "kind": "audit",
+      "path": "audit.json",
+      "sha256": "7a16171a3f86e52063aeb997b366ff2ea0a7bf04941661b1e7d6a7217de5f270",
+      "bytes": 1731
+    },
+    {
+      "kind": "deck",
+      "path": "baseline_refine_01.vspaero",
+      "sha256": "c35dd5a21fb683db50eb64192e1468c1657865c5876b2321f44719929c998a61",
+      "bytes": 1210
+    },
+    {
+      "kind": "history",
+      "path": "baseline_refine_01.history",
+      "sha256": "f262eedeb49f631768ab4ac6e767fa8879997cac485c40a8a8c09955a1eb2d61",
+      "bytes": 98180
+    },
+    {
+      "kind": "mesh",
+      "path": "baseline_refine_01.vspgeom",
+      "sha256": "f7e5a5dae37cfc0c72419028978125993dbcbdf4776b83ea8eb34d74452d1b34",
+      "bytes": 225414
+    },
+    {
+      "kind": "polar",
+      "path": "baseline_refine_01.polar",
+      "sha256": "a46bdc4da245f2e60633adc298f4dd77f9a3caec2872921948d1440e6e22ffd3",
+      "bytes": 12841
+    }
+  ],
+  "artifact_sha256": "24e41548548bdf58e40ad289eebcc81123e012ecf8c07443a68e3245d3e1f931",
+  "independent_audit_ref": "AUDIT-R2-B01-BASELINE-REFINE-01",
+  "binding": {
+    "task_physics_sha256": "8914a4f16f9b9c2210e60a6a1f8575f570eb23e20a3dc8b495e87f33434ddb26",
+    "design_sha256": "937aa7c9c789ccd8fce4fdbde942a258248f2b1c91ba90cf6c99c7e4c5a8a3fe",
+    "geometry_contract_sha256": "5f2bb12fe8b1dc68c67901843c777328ae984cfdbe4ee71176b369a16a133f15",
+    "mesh_sha256": "f7e5a5dae37cfc0c72419028978125993dbcbdf4776b83ea8eb34d74452d1b34",
+    "deck_sha256": "c35dd5a21fb683db50eb64192e1468c1657865c5876b2321f44719929c998a61",
+    "polar_sha256": "a46bdc4da245f2e60633adc298f4dd77f9a3caec2872921948d1440e6e22ffd3",
+    "sref_m2": 358.25000000000006,
+    "rho_kg_m3": 0.1153178340089936,
+    "vinf_m_s": 596.0373972278921,
+    "recref": 89397005.8767656,
+    "alpha_grid_deg": [
+      5.17,
+      5.1725,
+      5.175,
+      5.1775,
+      5.18,
+      5.1825,
+      5.185,
+      5.1875,
+      5.19,
+      5.1925,
+      5.195,
+      5.1975,
+      5.2
+    ]
+  },
+  "task": {
+    "task_id": "concorde-fixed-cruise-dreal001-real-v1",
+    "split": "train",
+    "physics_sha256": "8914a4f16f9b9c2210e60a6a1f8575f570eb23e20a3dc8b495e87f33434ddb26",
+    "mach": 2.02,
+    "altitude_m": 18288.0,
+    "dynamic_pressure_pa": 20483.940233430174,
+    "lift_target_n": 1333704.4,
+    "lift_tolerance_rel": 0.001,
+    "geometry_contract_sha256": "5f2bb12fe8b1dc68c67901843c777328ae984cfdbe4ee71176b369a16a133f15"
+  }
+}

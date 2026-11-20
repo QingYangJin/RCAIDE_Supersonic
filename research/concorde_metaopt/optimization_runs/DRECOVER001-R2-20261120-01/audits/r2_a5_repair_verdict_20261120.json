@@ -1,0 +1,21 @@
+{
+  "verdict": "PASS",
+  "repair_starts_authorized": true,
+  "k_shot_authorized": "K=1",
+  "findings": [],
+  "conditions": [
+    "Authorize only the seven named B01R case ids; no other starts or retries.",
+    "Any repair case lacking an actual polar row within 1e-3 relative lift tolerance is NULL_LABEL and must not be rerun.",
+    "Stop before MAML unless at least two train tasks plus one val and one test task are admitted.",
+    "K=1 MAML is exploratory only, max 8 training runs, no generalization claim.",
+    "Keep LOCAL_RAW_BYTES_VERIFIED_AUDIT_BOUND_NOT_AUTHENTICATED; audit is separate and not A5/human.",
+    "Same-host backup disclosed; off-machine backup remains waived."
+  ],
+  "summary": "The seven repair starts are admissible as a named amendment: they use exactly the remaining 7 of 24 physical starts, target the calibration defect with actual-row admission, and preserve no-retry/null-label gates. K=1 MAML is authorized only as exploratory, contingent on sufficient admitted tasks, with no generalization claim.",
+  "model": "deepseek-flash",
+  "reviewed_utc": "2026-11-20T07:25:10Z",
+  "started_utc": "2026-11-20T07:24:38Z",
+  "dossier_path": "D:\\RCAIDE\\.worktrees\\drecover001-20261117\\docs\\evidence\\drecover001\\r2_a5_repair_dossier_20261120.md",
+  "dossier_sha256": "6a041d75880c9d5bb6dd8506b9662b866f32cce7b1abdef49611bdfd8b611c42",
+  "tool_access": "NONE_SINGLE_SHOT_DOSSIER_STREAM"
+}
