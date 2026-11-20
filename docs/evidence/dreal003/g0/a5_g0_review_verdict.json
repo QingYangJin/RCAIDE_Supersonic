@@ -1,73 +1,102 @@
 {
   "reviewer": "deepseek-flash",
-  "review_type": "independent_subagent_single_shot_read_only_dossier",
-  "reviewed_utc": "2026-11-20T13:07:19Z",
+  "review_type": "independent_subagent_single_shot_read_only_dossier_reexamination",
+  "reviewed_utc": "2026-11-20T13:16:59Z",
+  "prior_verdict": "G0_CHANGES_REQUIRED",
   "verdict": "G0_CHANGES_REQUIRED",
   "gate_verdicts": {
-    "G0_CODE_PASS": "UNVERIFIED",
-    "G0_REMOTE_RAW_RETRIEVAL_PASS": "FAIL"
+    "G0_CODE_PASS": "PASS_WITH_DISCLOSURE",
+    "G0_REMOTE_RAW_RETRIEVAL_PASS": "UNVERIFIED"
   },
+  "finding_disposition": [
+    {
+      "finding": "1,274 vs 1,344 file count inconsistency",
+      "status": "ADDRESSED",
+      "evidence": "Dossier now reconciles 1,345 originals as 1,249 case files + 96 non-case files, and 1,384 final uploads as originals + 36 curated derived files + mapping + README + SHA256SUMS. Internal arithmetic is consistent, but actual remote file count remains independently unverified."
+    },
+    {
+      "finding": "645 internal solver cases unreconciled",
+      "status": "ADDRESSED",
+      "evidence": "23 pilot + 13 completed matrix cases x15 + 7 B01R repair cases x61 = 645; arithmetic is correct. The interrupted m240-d01-support internal count is explicitly excluded and unknown."
+    },
+    {
+      "finding": "Remote readback lacked URLs and 7-file hashes",
+      "status": "PARTIAL",
+      "evidence": "Seven files with bytes and SHA256 are listed, plus one final-commit certificate sample. However the seven URLs are pinned to commit 1f0bdd5, not final data commit e71e25e, and the full 1,345-file remote equivalence is not demonstrated."
+    },
+    {
+      "finding": "A1 lacked diff and raw test log",
+      "status": "ADDRESSED",
+      "evidence": "Full solver_runner.py and test-file diff is included; g0_preflight.log path, test count 253, and pass/fail/error/skip counts are stated. Actual log execution and hashes are not independently checkable from the dossier."
+    },
+    {
+      "finding": "A3 was only Lead self-audit and cannot be independent A5 evidence",
+      "status": "ADDRESSED",
+      "evidence": "A3 is explicitly downgraded to input material; G0_CODE_PASS is left to A5; human_signature=false and A5 is described as an AI subagent, not human approval."
+    },
+    {
+      "finding": "10 certificates vs 9 labels duplicate identity unexplained",
+      "status": "ADDRESSED",
+      "evidence": "baseline-admit-01 and baseline-refine-01 are two measurements of the same task/design; admitted_labels.csv deduplicates by (task_id, design_sha256) and keeps admit, not refine."
+    },
+    {
+      "finding": "Per-case Sref/lift not fully listed",
+      "status": "PARTIAL",
+      "evidence": "Dossier points to a1_per_case_flow_table.csv for 24 cases, but the table contents are not reproduced in the dossier and cannot be independently checked here."
+    }
+  ],
   "findings": [
     {
       "severity": "major",
-      "claim": "Remote upload contains all 24 historical case originals.",
-      "evidence": "Dossier §4 reports remote path has 1,274 files / 209,746,158 bytes, but also reports the 24-case batch originals as 1,344 files / 209,926,588 bytes. The 70-file and 180,430-byte discrepancy is unexplained.",
-      "required_action": "Reconcile the 1,274 vs 1,344 file count and byte totals. Provide a complete manifest of all 1,344 original files with per-file SHA256 and exact commit-pinned GitHub URLs, or explicitly identify which files are out of scope and why."
+      "claim": "Remote raw-file retrieval evidence is not anchored to the final data commit e71e25e. The seven listed URLs are pinned to code commit 1f0bdd5, and only one final-commit file was rechecked, so the claim that all payload bytes are unchanged in e71e25e is not demonstrated for the other 1,344 files.",
+      "required_action": "Republish the remote-readback URLs at commit e71e25e and provide byte/SHA256 verification for those files, or provide a final-commit tree hash plus a full per-file remote hash audit with zero mismatches."
     },
     {
       "severity": "major",
-      "claim": "The 24/645/9/null ledger is reconciled.",
-      "evidence": "Issue #13 requires checking the 24/645/9/null ledger. The dossier reports 24 cases, 23 evaluations, 10 certificates, 9 unique labels, and 14 null/failed, but never accounts for the 645 figure.",
-      "required_action": "Provide a ledger reconciliation table showing the source and count for 24, 645, 9, and null/failed, with file paths and exact queries used."
-    },
-    {
-      "severity": "major",
-      "claim": "GitHub remote raw retrieval was independently demonstrated.",
-      "evidence": "Dossier §4 claims GitHub API tree readback truncated=False and 7/7 retrieved files match local SHA256, but provides no exact GitHub URLs, no API response payload, and no list of the 7 expected/actual SHA256 values.",
-      "required_action": "Provide exact commit-pinned GitHub URLs for at least one successful case and one failed case, plus the API tree/manifest payload and the 7-file SHA256 comparison table."
-    },
-    {
-      "severity": "major",
-      "claim": "A1 per-case Mach/Rho/Vinf/q/Sref fix is verified by tests.",
-      "evidence": "Dossier §3 asserts the fix and reports 253 tests with 0 failures, but includes no code diff, no raw test log, and no command output. The code identity hashes alone do not demonstrate the behavioral fix.",
-      "required_action": "Attach the solver_runner.py diff and raw test/preflight logs, including the exact commands and outputs for the 253-test run and verify_a1_case_flow.py."
-    },
-    {
-      "severity": "major",
-      "claim": "A3 real_training / RealAdmissionManifest / split / fail-closed review supports G0_CODE_PASS.",
-      "evidence": "Dossier §6 explicitly states A3 is a Lead self-audit, not an A5 conclusion. The gate claim therefore lacks independent review evidence.",
-      "required_action": "Provide independent A5/A3 review evidence, or downgrade the A3 claim to self-audit only and do not use it as independent gate evidence."
+      "claim": "The upload_file_mapping.json all_sha256_match=true assertion appears to be a local mapping audit, not a remote readback of all 1,345 original files. No SHA256 for the mapping file itself and no full remote verification summary are included.",
+      "required_action": "Provide the mapping file SHA256 and a final-commit-pinned remote verification summary covering all 1,345 original files: file count, byte total, and mismatch list (or zero mismatches)."
     },
     {
       "severity": "minor",
-      "claim": "Admission label accounting is unambiguous.",
-      "evidence": "Dossier §4/§6 reports 10 certificates but 9 unique (task_id, design_sha256) labels because the same task/design appears twice with different certificate IDs.",
-      "required_action": "Explain the duplicate certificate identity, state whether both certificates are valid, and show how the duplicate is counted in the 9-label and null/failed ledger."
+      "claim": "The 253-test PASS and A1 evidence-file hashes are self-reported. The dossier gives paths but no commit-pinned URLs or SHA256 for g0_preflight.log or a1_fix.diff.",
+      "required_action": "Provide commit-pinned URLs and SHA256 for g0_preflight.log and a1_fix.diff, and state whether the 253-test run was performed on the frozen commit."
     },
     {
       "severity": "minor",
-      "claim": "Per-case Sref and lift-target mapping is fully specified.",
-      "evidence": "Dossier §3 states Sref is 358.25 or 361.8325 and lift is 1,333,704.4 N, but the per-case table lists only q and Mach.",
-      "required_action": "Provide a per-case table with Sref, lift target, q, Mach, rho, and Vinf for all 24 cases."
+      "claim": "The 645 internal solver count excludes the interrupted m240-d01-support internal cases, so total internal solver starts are not fully accounted.",
+      "required_action": "State explicitly that 645 is a lower bound excluding unknown interrupted-case internal starts, or supply the interrupted-case internal count if recoverable."
+    },
+    {
+      "severity": "minor",
+      "claim": "The original-file count is now 1,345, differing by one from the prior 1,344 figure, and the dossier does not identify the one-file difference or reconcile the earlier 1,274 count.",
+      "required_action": "Identify the one-file difference and reconcile the prior 1,274/1,344 counts to the current 1,345 count."
+    },
+    {
+      "severity": "minor",
+      "claim": "The A1 _case_flow_conditions validation checks mach/q_pa/sref_m2/lift_target_n finiteness and positivity, but does not validate rho, Vinf, cref, or bref for finiteness/positivity before use.",
+      "required_action": "Add validation or explicitly disclose that these values are protected by TASK_SPEC defaults and the q consistency check; add a malformed-rho/Vinf test."
     }
   ],
   "disclosures_required": [
-    "Old 24 admission labels are pre-A1 historical labels using alpha=7.47 nearest-grid evaluation; they are not re-certified. A1 exact-lift interpolation shifts m160 Di_N by 5.56e-4 (175533.59122875682 to 175631.11677151572).",
-    "Remote upload is a same-machine backup, not an independent fault domain; the Owner waiver applies.",
-    "A3 is a Lead self-audit, not an independent A5 conclusion.",
-    "No new physical solver starts occurred in G0; physical_solver_starts_actual=0.",
-    "G1 is not authorized; NO_PHYSICAL_GO.",
-    "10 certificates map to 9 unique (task_id, design_sha256) labels due duplicate identity; the duplicate must be explicitly accounted for.",
-    "Sref is not uniform across cases (358.25 or 361.8325); per-case Sref mapping must be disclosed."
+    "A5 is an AI subagent performing a single-shot read-only dossier reexamination; human_signature=false and this is not human approval.",
+    "The 24 solver starts are historical pre-A1 originals; old certificates and labels were not relabeled. The old m160 alpha=7.47 grid label versus A1 exact-lift interpolation shift of 5.56e-4 is disclosed.",
+    "G0 is upload/readback of historical originals, not new physics; physical_solver_starts_actual_this_recovery=0 and G1/G2/G3 are not authorized.",
+    "The 645 internal solver-case figure excludes the interrupted m240-d01-support internal cases, whose count is unknown.",
+    "A3 is input material only and is not independent A5 evidence.",
+    "Seven remote-readback URLs are pinned to commit 1f0bdd5; only one file was rechecked at final data commit e71e25e.",
+    "The 253-test log, code/test SHA256 values, local file counts, and upload_file_mapping.json all_sha256_match=true are self-reported and were not independently verified in this review.",
+    "Same-machine storage does not provide an independent failure domain; the Owner waiver is noted.",
+    "The 36 curated derived copies plus README and SHA256SUMS are not raw original files."
   ],
   "residual_risks": [
-    "The dossier alone cannot prove GitHub remote contents; exact URLs and API payloads are absent.",
-    "The 1,274 vs 1,344 file-count mismatch may indicate missing original files.",
-    "The 645 ledger figure is unexplained, so the 24/645/9/null reconciliation is incomplete.",
-    "A1 interpolation changes Di_N; old certificates and new evaluations are not directly comparable.",
-    "The 253-test and preflight claims lack raw logs and are not independently verifiable from the dossier.",
-    "Same-machine backup does not protect against host failure.",
-    "Duplicate admission certificate identity may cause ambiguous label accounting."
+    "Remote GitHub URLs, commit trees, byte sizes, and SHA256 values cannot be independently fetched or verified from this dossier.",
+    "Full remote retrievability of all 1,345 original files is not proven; missing or corrupted remote blobs would not be detected by the seven-file sample plus one final-commit sample.",
+    "The upload_file_mapping.json self-assertion all_sha256_match=true and original_file_count=1345 remain unverified without the mapping file hash and remote audit result.",
+    "The 253-test PASS log and the A1 code/test file hashes are self-reported and were not independently reproduced.",
+    "The one-file discrepancy versus the prior 1,344 count is unexplained.",
+    "The interrupted m240-d01-support internal solver count is unknown, so 645 is not a complete internal-solver-start ledger.",
+    "Old m160 labels differ from A1 exact-lift interpolation by 5.56e-4; any downstream use of the old certificate must carry that disclosure.",
+    "reviewed_utc is dossier-context based and not independently attested by a trusted clock."
   ],
   "human_signature": false
 }
