@@ -1,0 +1,35 @@
+{
+  "verdict": "PASS",
+  "pilot_disposition": "RATIFIED_WITH_CONDITIONS",
+  "findings": [
+    {
+      "severity": "minor",
+      "finding": "C6 remains a sequencing gate: MAML has not started and must wait for per-case admission of successful matrix cases.",
+      "required_action": "Start MAML only after each successful matrix case has an admission certificate; leave failed cases null."
+    },
+    {
+      "severity": "minor",
+      "finding": "Labels remain LOCAL_RAW_BYTES_VERIFIED_AUDIT_BOUND_NOT_AUTHENTICATED and backup is same-machine only under waiver.",
+      "required_action": "Carry these limitations into all matrix/MAML reporting; make no authentication or generalization claim."
+    },
+    {
+      "severity": "minor",
+      "finding": "baseline-coarse is NULL_LABEL due invalid rows and is not an admitted pilot case.",
+      "required_action": "Exclude baseline-coarse from labels and MAML; do not synthesize or interpolate a label."
+    }
+  ],
+  "conditions": [
+    "Proceed with at most 14 matrix physical starts; maintain total at or below 24, retries 0, parallel 1, timeout 1200 s.",
+    "Admit each successful matrix case individually; failed cases remain null; no label synthesis or interpolation.",
+    "Start MAML only after all successful matrix cases are admitted; exploratory, max 8 runs, no generalization claim.",
+    "Keep labels marked LOCAL_RAW_BYTES_VERIFIED_AUDIT_BOUND_NOT_AUTHENTICATED and disclose the same-machine backup waiver.",
+    "Exclude baseline-coarse and any other NULL_LABEL cases from MAML."
+  ],
+  "summary": "C1-C5 are closed with evidence. C6 is pending but correctly sequenced: matrix batch is admissible now, and MAML only after per-case admission. Pilot disposition remains ratified with conditions. No new scope added.",
+  "model": "deepseek-flash",
+  "reviewed_utc": "2026-11-20T07:07:37Z",
+  "started_utc": "2026-11-20T07:07:22Z",
+  "dossier_path": "D:\\RCAIDE\\.worktrees\\drecover001-20261117\\docs\\evidence\\drecover001\\r2_a5_closure_dossier_20261120.md",
+  "dossier_sha256": "d3ea44763fa9124c7326a3583980b650be44dbbc9340cf614ac5df6eefbc1e21",
+  "tool_access": "NONE_SINGLE_SHOT_DOSSIER_STREAM"
+}
