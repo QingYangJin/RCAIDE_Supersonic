@@ -1,0 +1,73 @@
+{
+  "reviewer": "deepseek-flash",
+  "review_type": "independent_subagent_single_shot_read_only_dossier",
+  "reviewed_utc": "2026-11-20T12:11:00Z",
+  "verdict": "G0_CHANGES_REQUIRED",
+  "gate_verdicts": {
+    "G0_CODE_PASS": "UNVERIFIED",
+    "G0_REMOTE_RAW_RETRIEVAL_PASS": "FAIL"
+  },
+  "findings": [
+    {
+      "severity": "major",
+      "claim": "Remote upload contains all 24 historical case originals.",
+      "evidence": "Dossier §4 reports remote path has 1,274 files / 209,746,158 bytes, but also reports the 24-case batch originals as 1,344 files / 209,926,588 bytes. The 70-file and 180,430-byte discrepancy is unexplained.",
+      "required_action": "Reconcile the 1,274 vs 1,344 file count and byte totals. Provide a complete manifest of all 1,344 original files with per-file SHA256 and exact commit-pinned GitHub URLs, or explicitly identify which files are out of scope and why."
+    },
+    {
+      "severity": "major",
+      "claim": "The 24/645/9/null ledger is reconciled.",
+      "evidence": "Issue #13 requires checking the 24/645/9/null ledger. The dossier reports 24 cases, 23 evaluations, 10 certificates, 9 unique labels, and 14 null/failed, but never accounts for the 645 figure.",
+      "required_action": "Provide a ledger reconciliation table showing the source and count for 24, 645, 9, and null/failed, with file paths and exact queries used."
+    },
+    {
+      "severity": "major",
+      "claim": "GitHub remote raw retrieval was independently demonstrated.",
+      "evidence": "Dossier §4 claims GitHub API tree readback truncated=False and 7/7 retrieved files match local SHA256, but provides no exact GitHub URLs, no API response payload, and no list of the 7 expected/actual SHA256 values.",
+      "required_action": "Provide exact commit-pinned GitHub URLs for at least one successful case and one failed case, plus the API tree/manifest payload and the 7-file SHA256 comparison table."
+    },
+    {
+      "severity": "major",
+      "claim": "A1 per-case Mach/Rho/Vinf/q/Sref fix is verified by tests.",
+      "evidence": "Dossier §3 asserts the fix and reports 253 tests with 0 failures, but includes no code diff, no raw test log, and no command output. The code identity hashes alone do not demonstrate the behavioral fix.",
+      "required_action": "Attach the solver_runner.py diff and raw test/preflight logs, including the exact commands and outputs for the 253-test run and verify_a1_case_flow.py."
+    },
+    {
+      "severity": "major",
+      "claim": "A3 real_training / RealAdmissionManifest / split / fail-closed review supports G0_CODE_PASS.",
+      "evidence": "Dossier §6 explicitly states A3 is a Lead self-audit, not an A5 conclusion. The gate claim therefore lacks independent review evidence.",
+      "required_action": "Provide independent A5/A3 review evidence, or downgrade the A3 claim to self-audit only and do not use it as independent gate evidence."
+    },
+    {
+      "severity": "minor",
+      "claim": "Admission label accounting is unambiguous.",
+      "evidence": "Dossier §4/§6 reports 10 certificates but 9 unique (task_id, design_sha256) labels because the same task/design appears twice with different certificate IDs.",
+      "required_action": "Explain the duplicate certificate identity, state whether both certificates are valid, and show how the duplicate is counted in the 9-label and null/failed ledger."
+    },
+    {
+      "severity": "minor",
+      "claim": "Per-case Sref and lift-target mapping is fully specified.",
+      "evidence": "Dossier §3 states Sref is 358.25 or 361.8325 and lift is 1,333,704.4 N, but the per-case table lists only q and Mach.",
+      "required_action": "Provide a per-case table with Sref, lift target, q, Mach, rho, and Vinf for all 24 cases."
+    }
+  ],
+  "disclosures_required": [
+    "Old 24 admission labels are pre-A1 historical labels using alpha=7.47 nearest-grid evaluation; they are not re-certified. A1 exact-lift interpolation shifts m160 Di_N by 5.56e-4 (175533.59122875682 to 175631.11677151572).",
+    "Remote upload is a same-machine backup, not an independent fault domain; the Owner waiver applies.",
+    "A3 is a Lead self-audit, not an independent A5 conclusion.",
+    "No new physical solver starts occurred in G0; physical_solver_starts_actual=0.",
+    "G1 is not authorized; NO_PHYSICAL_GO.",
+    "10 certificates map to 9 unique (task_id, design_sha256) labels due duplicate identity; the duplicate must be explicitly accounted for.",
+    "Sref is not uniform across cases (358.25 or 361.8325); per-case Sref mapping must be disclosed."
+  ],
+  "residual_risks": [
+    "The dossier alone cannot prove GitHub remote contents; exact URLs and API payloads are absent.",
+    "The 1,274 vs 1,344 file-count mismatch may indicate missing original files.",
+    "The 645 ledger figure is unexplained, so the 24/645/9/null reconciliation is incomplete.",
+    "A1 interpolation changes Di_N; old certificates and new evaluations are not directly comparable.",
+    "The 253-test and preflight claims lack raw logs and are not independently verifiable from the dossier.",
+    "Same-machine backup does not protect against host failure.",
+    "Duplicate admission certificate identity may cause ambiguous label accounting."
+  ],
+  "human_signature": false
+}

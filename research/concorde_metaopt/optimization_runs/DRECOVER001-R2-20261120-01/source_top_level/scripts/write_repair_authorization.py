@@ -1,0 +1,34 @@
+import json, pathlib
+root=pathlib.Path(r"D:/RCAIDE/.real_runs/DRECOVER001-R2-20261120-01")
+auth={
+ "schema":"drecover001.r2_repair_authorization.v1",
+ "authorization_id":"AUTH-DRECOVER001-R2-20261120-01",
+ "amendment_id":"AUTH-DRECOVER001-R2-20261120-01-B01R",
+ "owner_message_ref":"m05968",
+ "run_id":"DRECOVER001-R2-20261120-01",
+ "batch_id":"DRECOVER001-R2-20261120-01-B01R",
+ "a5_verdict_ref":"docs/evidence/drecover001/r2_a5_repair_verdict_20261120.json",
+ "a5_verdict_sha256":"be47e81d363345026e41312c794cfe156dfba20fb6719c3d1f8475eb9d281d9a",
+ "a5_dossier_sha256":"6a041d75880c9d5bb6dd8506b9662b866f32cce7b1abdef49611bdfd8b611c42",
+ "scope":"exactly seven named repair solver starts; K=1 exploratory MAML after admissions",
+ "budget":{"physical_solver_starts_used_before_repair":17,"physical_solver_starts_max_total":24,
+           "physical_solver_starts_this_amendment":7,"retries":0,"max_parallel":1,
+           "timeout_s":1200,"internal_cases_per_start":61},
+ "window":{"start_utc":"2026-11-20T06:39:39Z","end_utc":"2026-11-20T18:44:39Z",
+           "token":"AUTH-DRECOVER001-R2-20261120-01-B01R-WINDOW"},
+ "cases":[
+  {"case_id":"m160-d00-support-r1","task_id":"concorde-real-M160","mach":1.6,"split":"train","partition":"support","design":"d00","alpha_center":7.49},
+  {"case_id":"m160-d02-query-r1","task_id":"concorde-real-M160","mach":1.6,"split":"train","partition":"query","design":"d02","alpha_center":7.56},
+  {"case_id":"m180-d00-support-r1","task_id":"concorde-real-M180","mach":1.8,"split":"val","partition":"support","design":"d00","alpha_center":6.20},
+  {"case_id":"m180-d02-query-r1","task_id":"concorde-real-M180","mach":1.8,"split":"val","partition":"query","design":"d02","alpha_center":6.20},
+  {"case_id":"m202-d02-query-r1","task_id":"concorde-fixed-cruise-dreal001-real-v1","mach":2.02,"split":"train","partition":"query","design":"d02","alpha_center":5.345},
+  {"case_id":"m240-d00-support-r1","task_id":"concorde-real-M240","mach":2.4,"split":"test","partition":"support","design":"d00","alpha_center":4.44},
+  {"case_id":"m240-d02-query-r1","task_id":"concorde-real-M240","mach":2.4,"split":"test","partition":"query","design":"d02","alpha_center":4.43}
+ ],
+ "forbidden":"any start not in this case list, any retry, any second attempt",
+ "null_label_rule":"case must have an actual polar row within 1e-3 relative lift tolerance; otherwise NULL_LABEL and no rerun",
+ "maml_rule":"start only after at least two train tasks plus one val and one test task are admitted; K=1 exploratory; max 8 training runs; no generalization claim"
+}
+(root/"repair_authorization.json").write_text(json.dumps(auth,indent=2,ensure_ascii=False)+"\n",encoding="utf-8")
+print("written",root/"repair_authorization.json")
+print([p.name for p in (root/"cases").iterdir() if p.name.endswith("-r1")])

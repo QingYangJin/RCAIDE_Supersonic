@@ -1,0 +1,111 @@
+{
+  "schema": "drecover001.r2_pilot_ledger.v1",
+  "generated_utc": "2026-11-20T06:50:20Z",
+  "authorization_id": "AUTH-DRECOVER001-R2-20261120-01",
+  "run_id": "DRECOVER001-R2-20261120-01",
+  "batch_id": "DRECOVER001-R2-20261120-01-B01",
+  "owner_message_ref": "m05968",
+  "budget": {
+    "physical_solver_starts_max": 24,
+    "max_internal_cases_per_start": 128,
+    "timeout_s": 1200,
+    "retries": 0
+  },
+  "pilot": {
+    "cases": [
+      {
+        "case_id": "baseline-admit-01",
+        "task_id": "concorde-fixed-cruise-dreal001-real-v1",
+        "design": null,
+        "split": null,
+        "partition": null,
+        "starts": 1,
+        "retries": 0,
+        "attempt_ids": [
+          "real-baseline-admit-01"
+        ],
+        "start_ts_utc": [
+          "2026-11-20T06:16:56.561867Z"
+        ],
+        "end_ts_utc": [
+          "2026-11-20T06:16:58.708097Z"
+        ],
+        "exit_codes": [
+          0
+        ],
+        "statuses": [
+          "SOLVED"
+        ],
+        "polar_rows": 3,
+        "admitted": true
+      },
+      {
+        "case_id": "baseline-coarse",
+        "task_id": "concorde-fixed-cruise-dreal001-real-v1",
+        "design": null,
+        "split": null,
+        "partition": null,
+        "starts": 1,
+        "retries": 0,
+        "attempt_ids": [
+          "real-baseline-coarse-01"
+        ],
+        "start_ts_utc": [
+          "2026-11-20T06:13:11.276562Z"
+        ],
+        "end_ts_utc": [
+          "2026-11-20T06:13:14.906426Z"
+        ],
+        "exit_codes": [
+          0
+        ],
+        "statuses": [
+          "POLAR_HAS_INVALID_ROWS"
+        ],
+        "polar_rows": 7,
+        "admitted": false
+      },
+      {
+        "case_id": "baseline-refine-01",
+        "task_id": "concorde-fixed-cruise-dreal001-real-v1",
+        "design": null,
+        "split": null,
+        "partition": null,
+        "starts": 1,
+        "retries": 0,
+        "attempt_ids": [
+          "real-baseline-refine-01"
+        ],
+        "start_ts_utc": [
+          "2026-11-20T06:15:02.523122Z"
+        ],
+        "end_ts_utc": [
+          "2026-11-20T06:15:14.878181Z"
+        ],
+        "exit_codes": [
+          0
+        ],
+        "statuses": [
+          "SOLVED"
+        ],
+        "polar_rows": 13,
+        "admitted": false
+      }
+    ],
+    "physical_solver_starts_actual": 3,
+    "internal_solver_cases_actual": 23,
+    "retries_actual": 0,
+    "billable_starts_actual": 3,
+    "charged_starts": 3,
+    "remaining_starts": 21
+  },
+  "disclosure": {
+    "pilot_started_before_a5_review": true,
+    "pilot_ratification": "A5 verdict pending in this file; do not start additional cases until disposition and conditions are recorded",
+    "evidence_scope": "LOCAL_RAW_BYTES_VERIFIED_AUDIT_BOUND_NOT_AUTHENTICATED",
+    "same_machine_backup": true,
+    "off_machine_backup": false,
+    "owner_waiver": "WAIVER-OFFMACHINE-BACKUP-20261118"
+  },
+  "note": "Counted from per-case solver_attempts.jsonl start events and polar data rows; internal rows are solver-internal alpha cases, not physical starts."
+}

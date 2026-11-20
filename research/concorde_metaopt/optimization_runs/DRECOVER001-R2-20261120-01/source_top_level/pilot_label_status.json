@@ -1,0 +1,48 @@
+{
+  "schema": "drecover001.r2_pilot_label_status.v1",
+  "physical_solver_starts": 3,
+  "evidence_scope_default": "LOCAL_RAW_BYTES_VERIFIED_AUDIT_BOUND_NOT_AUTHENTICATED",
+  "cases": [
+    {
+      "case_id": "baseline-admit-01",
+      "solver_status": "SOLVED",
+      "label_status": "ADMITTED",
+      "certificate": "D:\\RCAIDE\\.real_runs\\DRECOVER001-R2-20261120-01\\cases\\baseline-admit-01\\admission_certificate.json",
+      "admission_id": "ADM-R2-B01-BASELINE-ADMIT-01",
+      "task_id": "concorde-fixed-cruise-dreal001-real-v1",
+      "partition": "support",
+      "alpha_deg": 5.18125,
+      "cl": 0.181741590896,
+      "cdi": 0.016547860887,
+      "di_n": 121434.35218570218,
+      "q_pa": 20483.94023343017,
+      "raw_sha256": "21bf20be892c29df12f8d46d88692039303638205bf8b1f93469653211def628",
+      "evidence_scope": "LOCAL_RAW_BYTES_VERIFIED_AUDIT_BOUND_NOT_AUTHENTICATED"
+    },
+    {
+      "case_id": "baseline-coarse",
+      "solver_status": "POLAR_HAS_INVALID_ROWS",
+      "label_status": "NULL_LABEL",
+      "objective": null,
+      "reason": "solver status POLAR_HAS_INVALID_ROWS; no admission certificate generated",
+      "certificate": null
+    },
+    {
+      "case_id": "baseline-refine-01",
+      "solver_status": "SOLVED",
+      "label_status": "ADMITTED",
+      "certificate": "D:\\RCAIDE\\.real_runs\\DRECOVER001-R2-20261120-01\\cases\\baseline-refine-01\\admission_certificate.json",
+      "admission_id": "ADM-R2-B01-BASELINE-REFINE-01",
+      "task_id": "concorde-fixed-cruise-dreal001-real-v1",
+      "partition": "support",
+      "alpha_deg": 5.1825,
+      "cl": 0.181784583426,
+      "cdi": 0.016555791798,
+      "di_n": 121492.55215765651,
+      "q_pa": 20483.94023343017,
+      "raw_sha256": "a46bdc4da245f2e60633adc298f4dd77f9a3caec2872921948d1440e6e22ffd3",
+      "evidence_scope": "LOCAL_RAW_BYTES_VERIFIED_AUDIT_BOUND_NOT_AUTHENTICATED"
+    }
+  ],
+  "note": "Only cases with an admission certificate contribute labels; failed or unadmitted pilot cases remain null."
+}
