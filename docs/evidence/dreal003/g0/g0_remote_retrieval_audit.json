@@ -1,0 +1,99 @@
+{
+  "schema": "dreal003.g0_remote_retrieval_audit.v1",
+  "branch": "research/dreal003-expanded-aero-meta-20261120",
+  "commit": "1f0bdd53af38e58f5e16394fc7e1c4cc2ee866f7",
+  "tree": "71d9fcfef564d8a51b3f54b2e2c4c39f144fe5cc",
+  "parent": "4b6bff5688b264935dc8181a40fc5b76298f20f2",
+  "run_path": "research/concorde_metaopt/optimization_runs/DRECOVER001-R2-20261120-01",
+  "remote_file_count": 1274,
+  "remote_total_bytes": 209746158,
+  "local_file_count": 1274,
+  "download_method": "GitHub API file reads at the exact commit into an initially empty directory",
+  "downloaded_from_github": 7,
+  "downloaded_sha_mismatches": [],
+  "downloaded_files": [
+    {
+      "path": "m160-d00-support-r1/admission_certificate.json",
+      "bytes": 1024,
+      "sha256": "08cc414abc81f591390454bca51c9eda753049678d370d290a64b1f3c94ee1b6",
+      "local_sha256": "08cc414abc81f591390454bca51c9eda753049678d370d290a64b1f3c94ee1b6",
+      "match": true
+    },
+    {
+      "path": "m160-d00-support-r1/case_inputs.json",
+      "bytes": 17564,
+      "sha256": "492eaacf0adc175092ca31440323f1e020098fa5a4f696875f7840979a620343",
+      "local_sha256": "492eaacf0adc175092ca31440323f1e020098fa5a4f696875f7840979a620343",
+      "match": true
+    },
+    {
+      "path": "m160-d00-support-r1/case_result.json",
+      "bytes": 228876,
+      "sha256": "f887b24352516dc528069c93644cb601b1b8646beb0e1fbf7d3852132d2f7112",
+      "local_sha256": "f887b24352516dc528069c93644cb601b1b8646beb0e1fbf7d3852132d2f7112",
+      "match": true
+    },
+    {
+      "path": "m160-d00-support-r1/m160_d00_support_r1.polar",
+      "bytes": 52105,
+      "sha256": "0f32d5f12ed2d87a0b63a616530d3f4757ffa86737561e16b31b3756ff9f6d93",
+      "local_sha256": "0f32d5f12ed2d87a0b63a616530d3f4757ffa86737561e16b31b3756ff9f6d93",
+      "match": true
+    },
+    {
+      "path": "m160-d00-support-r1/task_spec.json",
+      "bytes": 1742,
+      "sha256": "58c46a28d0e1ddb6bb266602657811581cc779368f3d2a5888874f7406a63e8e",
+      "local_sha256": "58c46a28d0e1ddb6bb266602657811581cc779368f3d2a5888874f7406a63e8e",
+      "match": true
+    },
+    {
+      "path": "m240-d01-support/m240_d01_support.vspaero",
+      "bytes": 1252,
+      "sha256": "b101fb22f5b8e9511f4de1e3e3fa1fa6453c2b187f53a39728630dd88f40c93e",
+      "local_sha256": "b101fb22f5b8e9511f4de1e3e3fa1fa6453c2b187f53a39728630dd88f40c93e",
+      "match": true
+    },
+    {
+      "path": "m240-d01-support/task_spec.json",
+      "bytes": 1340,
+      "sha256": "af3c41c55fb25dda8c8c984f1015553b82f5de6640c1e7c514ab7f95dc906908",
+      "local_sha256": "af3c41c55fb25dda8c8c984f1015553b82f5de6640c1e7c514ab7f95dc906908",
+      "match": true
+    }
+  ],
+  "success_case": {
+    "case_id": "m160-d00-support-r1",
+    "flow": {
+      "mach": 1.6,
+      "q_pa": 12851.40843975621,
+      "sref_m2": 358.25000000000006,
+      "lift_target_n": 1333704.4,
+      "rho_kg_m3": 0.1153178340089936,
+      "vinf_m_s": 472.1088294874393,
+      "cref_m": 18.489893,
+      "bref_m": 25.604638,
+      "lift_tolerance_rel": 0.001,
+      "cl_target": 0.2896827658750951,
+      "source": "CASE_TASK_SPEC",
+      "task_spec_path": "D:\\RCAIDE\\.recovery-local-restore\\g0_download\\m160-d00-support-r1\\task_spec.json",
+      "case_inputs_path": "D:\\RCAIDE\\.recovery-local-restore\\g0_download\\m160-d00-support-r1\\case_inputs.json"
+    },
+    "recomputed_di_n_at_admitted_alpha": 175533.59122875682,
+    "recomputed_di_n_a1_exact_lift": 175631.11677151572,
+    "admitted_di_n": 175533.59122875682,
+    "admitted_alpha_deg": 7.47,
+    "di_match": true,
+    "a1_exact_lift_relative_shift": 0.0005555947558311154,
+    "lift_match_status_a1": "LIFT_MATCHED_BY_INTERPOLATION"
+  },
+  "failed_case": {
+    "case_id": "m240-d01-support",
+    "remote_case_result_http": 404,
+    "remote_admission_certificate_http": 404,
+    "local_file_count": 31,
+    "label": null
+  },
+  "physical_solver_starts": 0,
+  "note": "Downloaded into a fresh empty directory from GitHub at the exact commit; no solver was started."
+}

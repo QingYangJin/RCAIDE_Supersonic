@@ -1,0 +1,70 @@
+{
+  "schema": "dreal003.a3_gate_audit.v1",
+  "certificates": 10,
+  "unique_design_identities": 9,
+  "duplicate_identities": {
+    "('concorde-fixed-cruise-dreal001-real-v1', '937aa7c9c789ccd8fce4fdbde942a258248f2b1c91ba90cf6c99c7e4c5a8a3fe')": [
+      "ADM-R2-B01-BASELINE-ADMIT-01",
+      "ADM-R2-B01-BASELINE-REFINE-01"
+    ]
+  },
+  "admitted_label_rows": 9,
+  "checks": [
+    {
+      "check": "certificate_count_is_10",
+      "ok": true,
+      "detail": 10
+    },
+    {
+      "check": "all_certificates_identity_di_eq_q_sref_cdi",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "check": "certificate_identities_unique_or_explained",
+      "ok": true,
+      "detail": {
+        "duplicates": {
+          "('concorde-fixed-cruise-dreal001-real-v1', '937aa7c9c789ccd8fce4fdbde942a258248f2b1c91ba90cf6c99c7e4c5a8a3fe')": [
+            "ADM-R2-B01-BASELINE-ADMIT-01",
+            "ADM-R2-B01-BASELINE-REFINE-01"
+          ]
+        },
+        "unique_identities": 9
+      }
+    },
+    {
+      "check": "admitted_labels_csv_matches_certificates",
+      "ok": true,
+      "detail": 9
+    },
+    {
+      "check": "hand_written_certificate_rejected",
+      "ok": true,
+      "detail": "admission certificate must be issued by admit_real_manifest"
+    },
+    {
+      "check": "uncertified_real_guard_fails_closed",
+      "ok": true,
+      "detail": "REAL_ADMISSION_NOT_IMPLEMENTED: independent gates and raw verification required"
+    },
+    {
+      "check": "support_query_leakage_rejected",
+      "ok": true,
+      "detail": "duplicate design or support/query leakage within task"
+    },
+    {
+      "check": "failed_observation_labels_rejected",
+      "ok": true,
+      "detail": "failed observation must not carry coefficient labels"
+    },
+    {
+      "check": "raw_path_traversal_rejected",
+      "ok": true,
+      "detail": "raw file path must stay relative and normalized"
+    }
+  ],
+  "failures": [],
+  "verdict": "A3_INTERNAL_AUDIT_PASS",
+  "note": "Lead-authored internal audit; not an independent A5 review. Certificates bind local bytes and an audit record but do not authenticate their producer."
+}

@@ -1,0 +1,80 @@
+STDOUT
+{
+  "case_id": "m240-d00-support",
+  "case_dir": "D:\\RCAIDE\\.real_runs\\DRECOVER001-R2-20261120-01\\cases\\m240-d00-support",
+  "mach": 2.4,
+  "split": "test",
+  "partition": "support",
+  "design": "d00",
+  "design_id": "937aa7c9c789ccd8fce4fdbde942a258248f2b1c91ba90cf6c99c7e4c5a8a3fe",
+  "sref_m2": 358.25000000000006,
+  "q_pa": 28915.66898945147,
+  "vinf_m_s": 708.163244231159,
+  "recref": 106214264.40803832,
+  "cl_target": 0.12874789594448674,
+  "alpha_center_deg": 3.6404789660017562,
+  "alphas": [
+    3.622978966,
+    3.625478966,
+    3.627978966,
+    3.630478966,
+    3.632978966,
+    3.635478966,
+    3.637978966,
+    3.640478966,
+    3.642978966,
+    3.645478966,
+    3.647978966,
+    3.650478966,
+    3.652978966,
+    3.655478966,
+    3.657978966
+  ],
+  "geometry_sha256": "f7e5a5dae37cfc0c72419028978125993dbcbdf4776b83ea8eb34d74452d1b34",
+  "vspgeom_header": {
+    "parsed": true,
+    "lines": [
+      "# vspgeom v3",
+      "1",
+      "546 480 2",
+      "     43.43423239      1.230223494             -0.8"
+    ],
+    "format": "# vspgeom v3",
+    "nodes": 546,
+    "elements": 480
+  },
+  "mesh": {
+    "schema": "dreal001.mesh_identity.v1",
+    "rebuild_strategy": "direct",
+    "target_mesh_family": "543x472",
+    "max_mesh_attempts": 12,
+    "mesh_attempts": 1,
+    "mesh_family": "546x480",
+    "nodes": 546,
+    "elements": 480,
+    "vspgeom_sha256": "f7e5a5dae37cfc0c72419028978125993dbcbdf4776b83ea8eb34d74452d1b34",
+    "vspgeom_bytes": 225414,
+    "canonical_mesh_sha256": "61b63ce6aefe87aa9fe837a1d5d2f533237403e6ff829f2eb1802cb79e621d6b",
+    "roundtrip_vsp3_sha256": "3a592958a3bbdea0ca84be4f63b986c1c507832f62d234f7b60abcfb553e11de",
+    "attempt_history": [
+      {
+        "attempt": 1,
+        "mesh_family": "546x480",
+        "nodes": 546,
+        "elements": 480,
+        "vspgeom_sha256": "f7e5a5dae37cfc0c72419028978125993dbcbdf4776b83ea8eb34d74452d1b34",
+        "vspgeom_bytes": 225414,
+        "canonical_mesh_sha256": "61b63ce6aefe87aa9fe837a1d5d2f533237403e6ff829f2eb1802cb79e621d6b"
+      }
+    ],
+    "note": "byte SHA varies across rebuilds even in the target family; canonical_mesh_sha256 removes object-ID/ordering bytes but keeps per-node geometry (occasional ~1e-2 m single-node jitter is disclosed, not normalised away)."
+  },
+  "plan_sha256": "b7834f39a3e74d1a18781f8f570bac37e09d8b901b54e9e4aa23c50ca1146a70",
+  "task_physics_sha256": "a173fc67e2893c62c6089d76971a2ed18fc2bff503a1391b0ac1f4564f1b148b",
+  "plan": "D:\\RCAIDE\\.real_runs\\DRECOVER001-R2-20261120-01\\cases\\m240-d00-support\\plan.json",
+  "approval": "D:\\RCAIDE\\.real_runs\\DRECOVER001-R2-20261120-01\\cases\\m240-d00-support\\approval.json",
+  "task_spec": "D:\\RCAIDE\\.real_runs\\DRECOVER001-R2-20261120-01\\cases\\m240-d00-support\\task_spec.json"
+}
+D:\OpenVSP-3.55.0\OpenVSP-3.55.0-win64\python\openvsp\openvsp\vspaero.exe -omp 1 D:\RCAIDE\.real_runs\DRECOVER001-R2-20261120-01\cases\m240-d00-support\m240_d00_support
+
+STDERR
