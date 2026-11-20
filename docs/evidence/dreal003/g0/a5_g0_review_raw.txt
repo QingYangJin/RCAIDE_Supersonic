@@ -3,100 +3,83 @@
   "review_type": "independent_subagent_single_shot_read_only_dossier_reexamination",
   "reviewed_utc": "2026-11-20T00:00:00Z",
   "prior_verdict": "G0_CHANGES_REQUIRED",
-  "verdict": "G0_CHANGES_REQUIRED",
+  "verdict": "G0_APPROVE",
   "gate_verdicts": {
     "G0_CODE_PASS": "PASS_WITH_DISCLOSURE",
-    "G0_REMOTE_RAW_RETRIEVAL_PASS": "UNVERIFIED"
+    "G0_REMOTE_RAW_RETRIEVAL_PASS": "PASS_WITH_DISCLOSURE"
   },
   "finding_disposition": [
     {
       "finding": "1,274 vs 1,344 file count inconsistency",
       "status": "ADDRESSED",
-      "evidence": "Dossier now reconciles 1,345 originals as 1,249 case files + 96 non-case files, and 1,384 final uploads as originals + 36 curated derived files + mapping + README + SHA256SUMS. Internal arithmetic is consistent, but actual remote file count remains independently unverified."
+      "evidence": "Section 2.1 reconciles 1,274 -> 1,287 -> 1,344 -> 1,345; final upload is 1,384 files = 1,345 originals + 36 curated + mapping + README + SHA256SUMS; mapping reports original_file_count=1345 and all_sha256_match=true."
     },
     {
       "finding": "645 internal solver cases unreconciled",
       "status": "ADDRESSED",
-      "evidence": "23 pilot + 13 completed matrix cases x15 + 7 B01R repair cases x61 = 645; arithmetic is correct. The interrupted m240-d01-support internal count is explicitly excluded and unknown."
+      "evidence": "Section 6 decomposes 645 = pilot 23 + 13 completed matrix cases x15 + 7 B01R repair cases x61 = 23+195+427; interrupted m240-d01 is explicitly excluded. The pilot case count is not explicit, but the arithmetic matches the stated total."
     },
     {
-      "finding": "Remote readback lacked URLs and 7-file hashes",
-      "status": "PARTIAL",
-      "evidence": "Seven files with bytes and SHA256 are listed, plus one final-commit certificate sample. However the seven URLs are pinned to commit 1f0bdd5, not final data commit e71e25e, and the full 1,345-file remote equivalence is not demonstrated."
-    },
-    {
-      "finding": "A1 lacked diff and raw test log",
+      "finding": "Remote readback lacked URLs and 7 file hashes",
       "status": "ADDRESSED",
-      "evidence": "Full solver_runner.py and test-file diff is included; g0_preflight.log path, test count 253, and pass/fail/error/skip counts are stated. Actual log execution and hashes are not independently checkable from the dossier."
+      "evidence": "Section 5 lists 7 commit-pinned URLs, byte counts, and SHA256 values; Section 5.1 reports a full shallow-clone verification at bd8fa4a with 1,345/1,345 originals passing and bad=0."
     },
     {
-      "finding": "A3 was only Lead self-audit and cannot be independent A5 evidence",
+      "finding": "A1 lacked diff and original test log",
       "status": "ADDRESSED",
-      "evidence": "A3 is explicitly downgraded to input material; G0_CODE_PASS is left to A5; human_signature=false and A5 is described as an AI subagent, not human approval."
+      "evidence": "Section 3 provides the full solver_runner.py and test diff; Section 4 provides g0_preflight.log with 253 tests, 0 failures/errors/skips, and matching source SHA256 values."
+    },
+    {
+      "finding": "A3 was Lead self-audit and cannot serve as independent A5 evidence",
+      "status": "ADDRESSED",
+      "evidence": "Section 7 explicitly downgrades A3 to input material; G0_CODE_PASS is left to A5 independent judgment; Section 9 states A5 is an AI single-shot read-only review, not a human signature."
     },
     {
       "finding": "10 certificates vs 9 labels duplicate identity unexplained",
       "status": "ADDRESSED",
-      "evidence": "baseline-admit-01 and baseline-refine-01 are two measurements of the same task/design; admitted_labels.csv deduplicates by (task_id, design_sha256) and keeps admit, not refine."
+      "evidence": "Section 1 finding 6 and Section 6 explain baseline-admit-01 and baseline-refine-01 are two measurements of the same task/design; admitted_labels.csv deduplicates by (task_id, design_sha256) and keeps baseline-admit-01."
     },
     {
       "finding": "Per-case Sref/lift not fully listed",
-      "status": "PARTIAL",
-      "evidence": "Dossier points to a1_per_case_flow_table.csv for 24 cases, but the table contents are not reproduced in the dossier and cannot be independently checked here."
+      "status": "ADDRESSED",
+      "evidence": "Section 1 finding 7 and Section 4 point to docs/evidence/dreal003/g0/a1_per_case_flow_table.csv covering 24 cases with Mach/q/Sref/lift/rho/Vinf/match status."
     }
   ],
   "findings": [
     {
-      "severity": "major",
-      "claim": "Remote raw-file retrieval evidence is not anchored to the final data commit e71e25e. The seven listed URLs are pinned to code commit 1f0bdd5, and only one final-commit file was rechecked, so the claim that all payload bytes are unchanged in e71e25e is not demonstrated for the other 1,344 files.",
-      "required_action": "Republish the remote-readback URLs at commit e71e25e and provide byte/SHA256 verification for those files, or provide a final-commit tree hash plus a full per-file remote hash audit with zero mismatches."
-    },
-    {
-      "severity": "major",
-      "claim": "The upload_file_mapping.json all_sha256_match=true assertion appears to be a local mapping audit, not a remote readback of all 1,345 original files. No SHA256 for the mapping file itself and no full remote verification summary are included.",
-      "required_action": "Provide the mapping file SHA256 and a final-commit-pinned remote verification summary covering all 1,345 original files: file count, byte total, and mismatch list (or zero mismatches)."
+      "severity": "minor",
+      "claim": "The mapping file URL in Section 2 is pinned to parent commit e71e25e, while the final verified commit is bd8fa4a. If the mapping blob differs or was added/updated in bd8fa4a, the cited URL is stale.",
+      "required_action": "Pin the mapping URL to bd8fa4a or explicitly confirm the e71e25e blob is byte-identical to the bd8fa4a mapping."
     },
     {
       "severity": "minor",
-      "claim": "The 253-test PASS and A1 evidence-file hashes are self-reported. The dossier gives paths but no commit-pinned URLs or SHA256 for g0_preflight.log or a1_fix.diff.",
-      "required_action": "Provide commit-pinned URLs and SHA256 for g0_preflight.log and a1_fix.diff, and state whether the 253-test run was performed on the frozen commit."
+      "claim": "Section 5.1 discloses that 3 __pycache__/*.pyc files were missing from e71e25e and added in bd8fa4a. This means the earlier commit was not a complete original-file upload, and the full-clone PASS applies only to bd8fa4a.",
+      "required_action": "State explicitly that e71e25e was incomplete for those 3 files and that only bd8fa4a is the verified complete upload commit."
     },
     {
       "severity": "minor",
-      "claim": "The 645 internal solver count excludes the interrupted m240-d01-support internal cases, so total internal solver starts are not fully accounted.",
-      "required_action": "State explicitly that 645 is a lower bound excluding unknown interrupted-case internal starts, or supply the interrupted-case internal count if recoverable."
+      "claim": "Section 4 summarizes 23 evaluations as 6 changed to LIFT_MATCHED_BY_INTERPOLATION and 12 still outside, leaving 5 evaluations unclassified in the summary.",
+      "required_action": "Either list all 23 statuses in the summary or state that the remaining 5 were already matched and are detailed in a1_per_case_flow_table.csv."
     },
     {
       "severity": "minor",
-      "claim": "The original-file count is now 1,345, differing by one from the prior 1,344 figure, and the dossier does not identify the one-file difference or reconcile the earlier 1,274 count.",
-      "required_action": "Identify the one-file difference and reconcile the prior 1,274/1,344 counts to the current 1,345 count."
-    },
-    {
-      "severity": "minor",
-      "claim": "The A1 _case_flow_conditions validation checks mach/q_pa/sref_m2/lift_target_n finiteness and positivity, but does not validate rho, Vinf, cref, or bref for finiteness/positivity before use.",
-      "required_action": "Add validation or explicitly disclose that these values are protected by TASK_SPEC defaults and the q consistency check; add a malformed-rho/Vinf test."
+      "claim": "Section 6 reports 14 null/failed rows and 1 interrupted case without explicitly stating whether the interrupted case is included in the 14.",
+      "required_action": "Clarify whether failed_or_null.csv includes m240-d01-support, so 10 certificates + 14 null/failed = 24 starts is unambiguous."
     }
   ],
   "disclosures_required": [
-    "A5 is an AI subagent performing a single-shot read-only dossier reexamination; human_signature=false and this is not human approval.",
-    "The 24 solver starts are historical pre-A1 originals; old certificates and labels were not relabeled. The old m160 alpha=7.47 grid label versus A1 exact-lift interpolation shift of 5.56e-4 is disclosed.",
-    "G0 is upload/readback of historical originals, not new physics; physical_solver_starts_actual_this_recovery=0 and G1/G2/G3 are not authorized.",
-    "The 645 internal solver-case figure excludes the interrupted m240-d01-support internal cases, whose count is unknown.",
-    "A3 is input material only and is not independent A5 evidence.",
-    "Seven remote-readback URLs are pinned to commit 1f0bdd5; only one file was rechecked at final data commit e71e25e.",
-    "The 253-test log, code/test SHA256 values, local file counts, and upload_file_mapping.json all_sha256_match=true are self-reported and were not independently verified in this review.",
-    "Same-machine storage does not provide an independent failure domain; the Owner waiver is noted.",
-    "The 36 curated derived copies plus README and SHA256SUMS are not raw original files."
+    "Old m160 certificate di_n=175533.59122875682 at alpha=7.47 is pre-A1 and was not relabeled; A1 exact-lift interpolation gives alpha=7.472104416484619 and di=175631.11677151572, relative difference 5.56e-4.",
+    "The 3 __pycache__/*.pyc files were absent from e71e25e and added in bd8fa4a; the full 1,345/1,345 remote verification applies to bd8fa4a, not to the parent commit.",
+    "The mapping URL in Section 2 is pinned to e71e25e; the final verified commit is bd8fa4a.",
+    "A5 is an AI reviewer, not a human signer; human_signature=false.",
+    "G1/G2/G3 are not authorized; no new physical solver starts were made in this G0 round."
   ],
   "residual_risks": [
-    "Remote GitHub URLs, commit trees, byte sizes, and SHA256 values cannot be independently fetched or verified from this dossier.",
-    "Full remote retrievability of all 1,345 original files is not proven; missing or corrupted remote blobs would not be detected by the seven-file sample plus one final-commit sample.",
-    "The upload_file_mapping.json self-assertion all_sha256_match=true and original_file_count=1345 remain unverified without the mapping file hash and remote audit result.",
-    "The 253-test PASS log and the A1 code/test file hashes are self-reported and were not independently reproduced.",
-    "The one-file discrepancy versus the prior 1,344 count is unexplained.",
-    "The interrupted m240-d01-support internal solver count is unknown, so 645 is not a complete internal-solver-start ledger.",
-    "Old m160 labels differ from A1 exact-lift interpolation by 5.56e-4; any downstream use of the old certificate must carry that disclosure.",
-    "reviewed_utc is dossier-context based and not independently attested by a trusted clock."
+    "A5 did not independently re-run the 253 tests or the shallow clone; the PASS relies on the dossier's logs and hashes.",
+    "The 645 decomposition does not explicitly state the number of pilot cases, so a reader cannot fully map the 645 internal cases to all 24 case directories without the underlying batch accounting.",
+    "The 5 unclassified evaluations in Section 4 are not explained in the summary, though the per-case CSV may cover them.",
+    "The 14 null/failed count may or may not include the interrupted m240-d01-support case; the ledger total is consistent only under one interpretation.",
+    "The late addition of 3 .pyc files shows the upload process was not complete at e71e25e; future audits should pin all evidence URLs to the final verified commit."
   ],
   "human_signature": false
 }
