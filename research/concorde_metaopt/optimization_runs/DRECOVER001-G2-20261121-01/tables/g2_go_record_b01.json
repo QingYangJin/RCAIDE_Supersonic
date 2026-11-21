@@ -1,0 +1,45 @@
+{
+  "schema": "dreal003.g2_go_record.v1",
+  "gate": "G2",
+  "run_id": "DRECOVER001-G2-20261121-01",
+  "authorization_id": "AUTH-DREAL003-G2-20261121-01",
+  "batch_id": "DRECOVER001-G2-20261121-01-B01",
+  "owner_authorization": {
+    "message_ref": "m08739",
+    "text": "批准",
+    "scope": "G2 <=240 starts total; this GO only first <=24 starts"
+  },
+  "issued_utc": "2026-11-21T15:45:00Z",
+  "issued_by": "Lead",
+  "a5_verdict": "G2_APPROVE",
+  "a5_verdict_sha256": "f857511a4a7f9a5d1a1a8e89bdde063adf429da2384953703da8610d17215454",
+  "a5_dossier_sha256": "225acf7af76ee8a38bbae12812439354b3c2e5a1706ce0cabf1232f58a3ab905",
+  "preregistration_sha256": "d4aa6c235367a3093933dacb2039ceab8baa9c392fe6c61aeb00dd4e4fce83f9",
+  "g2_build_sha256": "3de1c261abc1a38f5f12c4d2d4c3c83bccefd75300d5b4f3df65fc0bbedf18b8",
+  "authorized_starts_this_go": 24,
+  "planned_starts_total": 128,
+  "conditions": [
+    "no retries",
+    "parallel 1",
+    "case_timeout 600s",
+    "wall stop 3300s per mini-batch",
+    "upload and readback after this batch before any further starts",
+    "A5 verdict and dossier hash must match at runtime",
+    "G3/R2 not authorized"
+  ],
+  "runner_sha256": "45bfe3beadabb3dfaa2ae30379d03ef4ab61446e2bdc195a59ece657694650be",
+  "b01_case_ids": [
+    "g2-m140-d00-support-s1",
+    "g2-m140-d04-query-s1",
+    "g2-m160-d00-support-s1",
+    "g2-m180-d00-support-s1",
+    "g2-m200-d00-support-s1",
+    "g2-m202-d00-support-s1",
+    "g2-m220-d00-support-s1",
+    "g2-m240-d00-support-s1",
+    "g2-m260-d00-support-s1",
+    "g2-m202-d03-support-s1",
+    "g2-m240-d04-query-s1",
+    "g2-m260-d07-query-s1"
+  ]
+}

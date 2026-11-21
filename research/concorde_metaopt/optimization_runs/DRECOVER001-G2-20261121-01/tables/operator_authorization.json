@@ -1,0 +1,22 @@
+{
+  "schema": "dreal003.g2_operator_authorization.v1",
+  "authorization_id": "AUTH-DREAL003-G2-20261121-01",
+  "run_id": "DRECOVER001-G2-20261121-01",
+  "owner_message_ref": "m08739",
+  "owner_text": "批准",
+  "authorized": true,
+  "planned_starts": 128,
+  "window": {
+    "start_utc": "2026-11-21T15:25:43Z",
+    "end_utc": "2026-11-23T00:00:00Z",
+    "token": "AUTH-DREAL003-G2-20261121-01-WINDOW"
+  },
+  "constraints": [
+    "parallel 1",
+    "no retry",
+    "<=24 starts per mini-batch",
+    "upload and remote readback after each mini-batch",
+    "failed stage objective=null and no rerun",
+    "A5 pre-review of preregistration and stage1 manifest required before first start"
+  ]
+}

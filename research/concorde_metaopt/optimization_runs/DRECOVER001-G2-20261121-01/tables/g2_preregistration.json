@@ -1,0 +1,222 @@
+{
+  "schema": "dreal003.g2_preregistration.v1",
+  "generated_utc": "2026-11-21T15:25:43Z",
+  "owner_message_ref": "m08739",
+  "owner_text": "批准",
+  "authorization_id": "AUTH-DREAL003-G2-20261121-01",
+  "run_id": "DRECOVER001-G2-20261121-01",
+  "batch_prefix": "DRECOVER001-G2-20261121-01-B",
+  "branch": "research/dreal003-expanded-aero-meta-20261120",
+  "base_commit": "409f09c8b31ce653873727217273805a16d5b422",
+  "geometry_contract_sha256": "5f2bb12fe8b1dc68c67901843c777328ae984cfdbe4ee71176b369a16a133f15",
+  "solver": {
+    "path": "D:/OpenVSP-3.55.0/OpenVSP-3.55.0-win64/vspaero.exe",
+    "name": "vspaero-3.55.0-v7.2.2-omp1",
+    "omp_threads": 1,
+    "case_timeout_s": 600,
+    "parallelism": 1,
+    "retries": 0,
+    "planned_starts": 128,
+    "stage1_starts": 64,
+    "stage2_starts": 64,
+    "mini_batch_max_starts": 24,
+    "mini_batch_max_minutes": 60,
+    "upload_readback_after_each_mini_batch": true,
+    "mini_batch_wall_clock_stop": {
+      "rule": "before each start the runner measures elapsed batch wall time; if elapsed >= 3300s, or elapsed + case_timeout_s > 3300s, no further starts are issued and the batch closes; 300s is reserved for upload/readback",
+      "active_case_timeout": "min(600s, max(1s, 3300s - elapsed))",
+      "enforced_by": "run_g2_batch.py pre-start check"
+    }
+  },
+  "task_family": {
+    "tasks": [
+      {
+        "task_id": "DREAL003-G2-M140",
+        "mach": 1.4,
+        "split": "train",
+        "designs": 8
+      },
+      {
+        "task_id": "DREAL003-G2-M160",
+        "mach": 1.6,
+        "split": "train",
+        "designs": 8
+      },
+      {
+        "task_id": "DREAL003-G2-M180",
+        "mach": 1.8,
+        "split": "val",
+        "designs": 8
+      },
+      {
+        "task_id": "DREAL003-G2-M200",
+        "mach": 2,
+        "split": "train",
+        "designs": 8
+      },
+      {
+        "task_id": "DREAL003-G2-M202",
+        "mach": 2.02,
+        "split": "train",
+        "designs": 8
+      },
+      {
+        "task_id": "DREAL003-G2-M220",
+        "mach": 2.2,
+        "split": "val",
+        "designs": 8
+      },
+      {
+        "task_id": "DREAL003-G2-M240",
+        "mach": 2.4,
+        "split": "test",
+        "designs": 8
+      },
+      {
+        "task_id": "DREAL003-G2-M260",
+        "mach": 2.6,
+        "split": "test",
+        "designs": 8
+      }
+    ],
+    "split_counts": {
+      "train": 4,
+      "val": 2,
+      "test": 2
+    },
+    "support_designs": [
+      "d00",
+      "d01",
+      "d02",
+      "d03"
+    ],
+    "query_designs": [
+      "d04",
+      "d05",
+      "d06",
+      "d07"
+    ],
+    "designs_per_task": 8,
+    "unique_designs": 64
+  },
+  "alpha_schedule": {
+    "stage1": {
+      "points": 49,
+      "step_deg": 0.24,
+      "coverage": "full TASK_SPEC window (-2,10) interior",
+      "purpose": "bracket target lift without Mach-specific alpha calibration",
+      "internal_cases_per_start": 49,
+      "regression_spec": {
+        "points_used": "all valid stage1 rows at the nearest Mach (up to 49)",
+        "window": "entire stage1 alpha range",
+        "estimator": "ordinary least squares CL on alpha",
+        "outlier_rule": "drop rows with invalid tokens; require >=5 valid rows and R^2>=0.99; if not met, stage2 is not built and the case is null (no rerun, no interpolation)"
+      }
+    },
+    "stage2": {
+      "points": 13,
+      "step_deg": 0.001,
+      "half_width_deg": 0.006,
+      "center": "local ordinary-least-squares regression of stage1 polar CL(alpha) evaluated at cl_target",
+      "purpose": "produce a raw polar row within lift tolerance; no interpolation admitted; bracketing is NOT required, only a raw row within tolerance",
+      "internal_cases_per_start": 13,
+      "quantitative_justification": {
+        "worst_case_cl_target": 0.108616,
+        "relative_tolerance": 0.001,
+        "absolute_cl_tolerance": 0.000108616,
+        "minimum_expected_cl_slope_per_deg": 0.02,
+        "grid_nearest_error_deg": 0.0005,
+        "worst_induced_cl_error_at_min_slope": 0.00001,
+        "conclusion": "at a conservative local slope of 0.020/deg, worst nearest-point induced CL error is 1e-5, over 10x below the 1.086e-4 absolute tolerance; even a 50% slope error (0.030 predicted vs 0.020 actual) shifts the target by only 0.0033 deg, well inside the 0.006 deg half-width"
+      },
+      "ols_disclosure": "The OLS fit is a modeling step used only to choose the stage2 grid center. It is not used for admission; admission requires a raw stage2 polar row within 1e-3 relative lift tolerance. Fit quality is reported (n points, R^2) per case."
+    },
+    "total_internal_estimate": 3968
+  },
+  "admission": {
+    "criterion": "only a raw stage2 polar row satisfying |L_a - L_target| <= 1e-3*L_target through RealAdmissionManifest is admitted",
+    "interpolation_admitted": false,
+    "audit": "separate local reimplementation audit_real_case.py; not human and not A5",
+    "failed": "objective=null, no rerun inside G2"
+  },
+  "label_acceptance": {
+    "denominator": "completed stage2 starts with case_result and polar",
+    "target_valid_label_rate": 0.7,
+    "lift_tolerance_rel": 0.001
+  },
+  "stop_conditions": [
+    "any REFUSED start",
+    "two consecutive non-SOLVED stage starts",
+    "any timeout or missing process result",
+    "accounting ledger not conserved after a mini-batch",
+    "any raw hash mismatch or upload/readback mismatch",
+    "stage2 unavailable for >20% of completed stage1 cases in the SAME mini-batch (authoritative denominator = that mini-batch only; the cumulative rate is reported for disclosure but does not trigger STOP)"
+  ],
+  "accounting": {
+    "six_way": [
+      "physical_solver_starts_actual",
+      "internal_solver_cases_actual",
+      "charged_starts",
+      "planned_reserved_starts",
+      "design_evaluations",
+      "cached_reads"
+    ],
+    "planned_reserved_starts": 128,
+    "charged_rule": "each VSPAERO process start counts 1; retries 0"
+  },
+  "upload": {
+    "repository_dir": "research/concorde_metaopt/optimization_runs/DRECOVER001-G2-20261121-01",
+    "raw_cases": "raw_cases/<case_id>/",
+    "required_tables": [
+      "all_evaluations.csv",
+      "admitted_labels.csv",
+      "failed_or_null.csv",
+      "attempt_ledger.csv"
+    ],
+    "raw_extensions": [
+      ".vspgeom",
+      ".vspaero",
+      ".polar",
+      ".history",
+      ".lod",
+      ".adb",
+      ".vsp3"
+    ],
+    "after_each_mini_batch": "push raw+logs+accounting and read back SHA256SUMS from remote before next mini-batch"
+  },
+  "maml": {
+    "scope": "after G2 labels only; zero additional VSPAERO starts",
+    "arms": [
+      "FOMAML K=1/3/5",
+      "pooled pretraining + K-shot",
+      "zero-shot",
+      "random baseline"
+    ],
+    "not_authorized_here": false
+  },
+  "a5_requirement": "independent deepseek-flash read-only review of this preregistration and stage1 manifest before first start",
+  "stage1_manifest_path": "D:/RCAIDE/.real_runs/DRECOVER001-G2-20261121-01/g2_stage1_manifest.json",
+  "stage1_manifest_sha256": "87ba0f47c9069ee4b00ed9312f1ad3cd32aac020e08546a4605d0c21b1bfe5fc",
+  "stage1_case_count": 64,
+  "build_script_sha256": "ee528aaafffd4285fd8682df5e8e08a1942a4e9bfc9704d8bbf5638e899b9e2a",
+  "physical_solver_starts_actual": 0,
+  "status": "PRE_REGISTERED_PENDING_A5_AND_GO",
+  "a5_review_binding": {
+    "dossier_path": "D:/RCAIDE/.worktrees/dreal003-g0-20261120/docs/evidence/dreal003/g2/g2_a5_dossier.md",
+    "self_hash_method": "dossier_payload_sha256 = sha256 of all dossier bytes before the marker line '<!-- SELF_HASH -->'; the hash value is printed in section 8 after the marker, so the verifier truncates at the marker and recomputes",
+    "note": "a file cannot contain its own full SHA256; the payload hash is the verifiable binding"
+  },
+  "null_classification": {
+    "NULL_STAGE1_NOT_BRACKETED": "stage1 raw rows do not bracket cl_target (e.g. M140 near the 10 deg window edge); case is null, no window extension, no rerun",
+    "NULL_STAGE1_REGRESSION_UNRELIABLE": "fewer than 5 valid same-Mach stage1 rows or R^2<0.99; stage2 not built; case null",
+    "NULL_STAGE2_NO_RAW_ROW_WITHIN_TOLERANCE": "stage2 ran but no raw row meets |L-L_target|<=1e-3*L_target; case null, tolerance not relaxed, no interpolation",
+    "NULL_SOLVER_NO_RESULT": "start issued but no process result (timeout/crash); case null, not rerun"
+  },
+  "expected_outcomes": {
+    "planned_cases_stage1": 64,
+    "expected_null_upper_bound": 16,
+    "expected_null_lower_bound": 0,
+    "rationale": "M140's eight designs may fail to bracket the 10 deg window edge and are the main expected null source; all other tasks have CL targets well inside the window. No label rate is promised; null cases are reported, not hidden.",
+    "expected_min_label_rate_disclosed_not_gated": 0.75
+  }
+}
