@@ -1,0 +1,77 @@
+{
+  "reviewer": "deepseek-flash",
+  "review_type": "independent_single_shot_dossier_review",
+  "reviewed_utc": "2026-11-21T19:24:11Z",
+  "dossier_sha256": "7a5a559ffd86362518c03a116c3d653025278f16faf860b7dc854a1298c7838b",
+  "verdict": "P0_CODE_AND_PROTOCOL_PASS",
+  "gate_verdicts": {
+    "P0_CODE_PASS": "PASS",
+    "P0_ZERO_PHYSICAL_REPLAY_PASS": "PASS",
+    "P0_12D_RESPONSE_AUDIT_PASS": "PASS_WITH_DISCLOSURE",
+    "P0_A2_ENDPOINT_ANALYZER_PASS": "PASS",
+    "P0_PROTOCOL_FREEZE_PASS": "PASS",
+    "P0_ZERO_PHYSICAL": "PASS"
+  },
+  "evidence_checked": [
+    "Code SHA256 table for 12 files",
+    "A1 AdaptiveAlphaSolver contract and statuses",
+    "280-test zero-physical run log and summary hashes",
+    "G1 replay statuses: 8 raw hits, 7 new-alpha, 8 no-bracket, 1 missing",
+    "12D audit: 15 wired, 56 pairs, V01 passive, V02 pending",
+    "A2 endpoints and G1 ledger consistency 391=391",
+    "Frozen split, P1/P2/P3 bounds, tol_CL=1e-3 unchanged",
+    "Prior G1/G2 state not re-graded"
+  ],
+  "findings": [
+    {
+      "severity": "info",
+      "finding": "Dossier grants no new physics and explicitly withholds P1 authorisation; P1 requires separate batch-plan A5 review and fresh Lead GO.",
+      "evidence": "Sections 1, 7, 10: P1/P2/P3 NOT authorised; Lead must issue separate P1 GO."
+    },
+    {
+      "severity": "info",
+      "finding": "Interpolated estimates are not counted as raw hits; replay returns REPLAY_ROW_NOT_AVAILABLE for missing rows.",
+      "evidence": "Section 2 statuses and replay_on_existing_rows contract; 8 raw hits equal 8 G1 admitted labels."
+    },
+    {
+      "severity": "info",
+      "finding": "tol_CL=1e-3 is unchanged and prior G1/G2 results are not re-graded.",
+      "evidence": "Sections 7 and 8: tol_CL not relaxed; G1 24 starts/8 labels; G2 102/240 starts, 30 labels, no receipt."
+    },
+    {
+      "severity": "minor",
+      "finding": "V01/V02 are passive at beta=0 and correctly excluded from active 12D response claims; V02 response remains unmeasured.",
+      "evidence": "Section 5: V01 delta CDi=0.0; V02 RESPONSE_PENDING_P1_PROBE; P2/P3 must not claim their 12D response."
+    },
+    {
+      "severity": "minor",
+      "finding": "Dossier does not state its own SHA256, so dossier_sha256 could not be verified from provided content.",
+      "evidence": "No dossier-level hash appears in the supplied text; only per-file hashes are listed."
+    },
+    {
+      "severity": "minor",
+      "finding": "Mach 1.6 has zero G1 labels and 6 no-bracket cases; P2 inclusion is conditional on new admitted labels.",
+      "evidence": "Sections 4 and 9: 6 of 8 no-bracket cases are Mach 1.6; conditional P2 training."
+    },
+    {
+      "severity": "info",
+      "finding": "Zero-physical claim is supported by 0 solver starts, 0 labels, and 0 internal solver cases this round.",
+      "evidence": "Section 1: physical_solver_starts_used=0, labels_created=0; Section 4 same."
+    }
+  ],
+  "limitations": [
+    "Read-only single-shot review; no tools, no file re-hashing, no test re-execution.",
+    "Dossier SHA256 absent; per-file hashes accepted as reported, not independently verified.",
+    "Same-host evidence; off-machine backup waived by Owner; no independent failure domain.",
+    "No independent Di_N reference, so simple_regret remains null.",
+    "V02 12D response unmeasured pending P1 probe.",
+    "This review is not a human signature and does not replace Owner sign-off."
+  ],
+  "scope": "P0 only: code, zero-physical G1 replay, 12D response audit, A2 endpoint analyzer, protocol freeze. No new physics authorised; P1 not authorised and requires separate batch-plan A5 review plus fresh Lead GO.",
+  "signature": "deepseek-flash independent A5 review; not a human signature",
+  "model": "deepseek-flash",
+  "dossier_path": "D:\\RCAIDE\\.worktrees\\dreal004-p0-20261122\\docs\\evidence\\dreal004\\p0\\p0_a5_dossier.md",
+  "started_utc": "2026-11-21T19:23:56Z",
+  "tool_access": "NONE_SINGLE_SHOT_DOSSIER_STREAM",
+  "human_signature": false
+}
