@@ -1,0 +1,64 @@
+{
+  "reviewer": "deepseek-flash",
+  "review_type": "independent_single_shot_dossier_review",
+  "reviewed_utc": "2026-11-21T09:17:38Z",
+  "dossier_sha256": "0ed4a2410357a34c6ff7620d42eca269034f496be1e89cc03e9f47e8b4b0fa79",
+  "verdict": "G1_APPROVE",
+  "gate_verdicts": {
+    "G1_PREREGISTRATION": "PASS_WITH_DISCLOSURE",
+    "G1_CODE_STATE": "PASS_WITH_DISCLOSURE",
+    "G1_CASE_PLAN": "PASS",
+    "G1_CONTROLS": "PASS_WITH_DISCLOSURE",
+    "G1_ZERO_PHYSICAL": "PASS"
+  },
+  "evidence_checked": [
+    "owner authorization: 24 starts, parallel=1, 0 retry, 1200s/case, mini-batch <=8/<=60min",
+    "solver_runner.py SHA256 cd732583... and test_recovery_solver_runner.py SHA256 7f29d21c...; 5 passed asserted",
+    "24-case plan/geom SHA list: 4 tasks x 6 designs, 3 support + 3 query",
+    "zero-physical counts: 24 case dirs, case_result=0, solver_attempts=0, .polar=0, files=240",
+    "controls: per-case max_starts=1, global 24, stop rules, upload/readback SHA256SUMS",
+    "prereg JSON: AUTH-DREAL003-G1-20261121-01, planned_starts=24, mini_batch_max=8, retries=0, timeout=1200"
+  ],
+  "findings": [
+    {
+      "severity": "minor",
+      "finding": "Dossier SHA256 is not supplied, so this review cannot be cryptographically bound to exact dossier bytes.",
+      "evidence": "No dossier_sha256 value appears in the dossier; schema field filled as NOT_PROVIDED."
+    },
+    {
+      "severity": "minor",
+      "finding": "Pre-registration status remains PRE_REGISTERED_PENDING_A5_AND_GO; A5 approval alone does not record the required GO.",
+      "evidence": "prereg JSON status field is PRE_REGISTERED_PENDING_A5_AND_GO."
+    },
+    {
+      "severity": "minor",
+      "finding": "Code/test evidence is asserted rather than independently recomputed; no raw test log or diff is included.",
+      "evidence": "solver_runner SHA and '5 passed' are stated; no test output or patch shown."
+    },
+    {
+      "severity": "minor",
+      "finding": "target_valid_label_rate=0.7 is declared but not listed among stop/abort triggers.",
+      "evidence": "Stop list covers rejection, timeout, two non-SOLVED, ledger, upload/readback; not label rate."
+    },
+    {
+      "severity": "info",
+      "finding": "First-batch scope is clear: <=8 starts now, total G1 cap 24, no G2/G3/R2.",
+      "evidence": "Owner cap 24, mini-batch <=8, dossier says review does not authorize G2/G3/R2."
+    }
+  ],
+  "limitations": [
+    "No tools used; SHA256 values, test results, and runner enforcement were not independently recomputed.",
+    "Dossier SHA256 absent; review is not bound to exact dossier bytes.",
+    "No raw solver_runner diff, test log, or runner enforcement log included.",
+    "Approval covers only first G1 mini-batch <=8 starts; later batches need separate control.",
+    "Pre-registration still pending A5/GO; GO must be recorded before physical starts.",
+    "Target valid-label-rate 0.7 lacks an explicit stop rule."
+  ],
+  "scope": "Authorizes only the first G1 mini-batch of at most 8 real solver starts under the stated 24-start G1 cap, parallel=1, 0 retry, 1200s/case, with upload/readback and stop controls. Does not authorize later batches, G2/G3/R2, or human signature.",
+  "signature": "deepseek-flash independent A5 review; not a human signature",
+  "model": "deepseek-flash",
+  "dossier_path": "D:\\RCAIDE\\.worktrees\\dreal003-g0-20261120\\docs\\evidence\\dreal003\\g1\\g1_a5_dossier_compact.md",
+  "started_utc": "2026-11-21T09:16:56Z",
+  "tool_access": "NONE_SINGLE_SHOT_DOSSIER_STREAM",
+  "human_signature": false
+}

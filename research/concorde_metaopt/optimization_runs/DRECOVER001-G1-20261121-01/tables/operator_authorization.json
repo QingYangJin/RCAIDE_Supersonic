@@ -1,0 +1,23 @@
+{
+  "schema": "dreal003.g1_operator_authorization.v1",
+  "authorization_id": "AUTH-DREAL003-G1-20261121-01",
+  "run_id": "DRECOVER001-G1-20261121-01",
+  "batch_id": "DRECOVER001-G1-20261121-01-B01",
+  "owner_message_ref": "m07992",
+  "owner_text": "继续执行，把G1阶段也完成，批准实际物理计算",
+  "authorized": true,
+  "planned_starts": 24,
+  "window": {
+    "start_utc": "2026-11-21T08:56:05Z",
+    "end_utc": "2026-11-22T12:00:00Z",
+    "token": "AUTH-DREAL003-G1-20261121-01-WINDOW"
+  },
+  "constraints": [
+    "parallel 1",
+    "no retry",
+    "<=8 starts per mini-batch",
+    "upload and remote readback before next mini-batch",
+    "failed case objective=null and no rerun",
+    "A5 pre-review of exact case manifest required before first start"
+  ]
+}

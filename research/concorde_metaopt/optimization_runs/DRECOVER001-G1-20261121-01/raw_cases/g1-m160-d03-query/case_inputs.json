@@ -1,0 +1,496 @@
+{
+  "schema": "dreal001.vspaero_case_inputs.v1",
+  "case_id": "g1-m160-d03-query",
+  "task_id": "P0_INPUT_PREP",
+  "generated_utc": "2026-11-21T08:56:06Z",
+  "openvsp_root": "D:\\OpenVSP-3.55.0\\OpenVSP-3.55.0-win64",
+  "openvsp_version": "OpenVSP 3.55.0",
+  "python_version": "3.11.17",
+  "solver_started": false,
+  "physical_solver_starts": 0,
+  "geometry_set": "thin",
+  "geometry_set_codes": {
+    "GeomSet": -1,
+    "ThinGeomSet": 0
+  },
+  "solver_geometry_components": [
+    "main_wing",
+    "vertical_tail"
+  ],
+  "solver_includes_fuselage": false,
+  "tessellation": {
+    "main_wing": {
+      "Tess_U": 12.0,
+      "Tess_W": 25.0
+    },
+    "vertical_tail": {
+      "Tess_U": 12.0,
+      "Tess_W": 25.0
+    }
+  },
+  "component_metrics": {
+    "main_wing": {
+      "name": "main_wing",
+      "total_area_m2": 354.66749999999996,
+      "total_span_m": 25.476293392092973,
+      "bbox_m": [
+        31.33747136742459,
+        25.476293392092973,
+        0.8939095523463925
+      ]
+    },
+    "vertical_tail": {
+      "name": "vertical_tail",
+      "total_area_m2": 33.91,
+      "total_span_m": 5.009331292697659,
+      "bbox_m": [
+        13.15761606842186,
+        0.5270820690619678,
+        5.009331292697659
+      ]
+    }
+  },
+  "sref_m2": 354.66749999999996,
+  "cref_m": 18.489893,
+  "bref_m": 25.604638,
+  "xcg_m": 16.821978259514246,
+  "sweep_input_readback": {
+    "analysis": "VSPAEROSweep",
+    "inputs_int": {
+      "RefFlag": 0,
+      "NCPU": 1,
+      "GeomSet": -1,
+      "ThinGeomSet": 0,
+      "StopBeforeRun": 1,
+      "MachNpts": 1,
+      "AlphaNpts": 17,
+      "BetaNpts": 1,
+      "NumWakeNodes": 8,
+      "Symmetry": 0
+    },
+    "inputs_double": {
+      "Sref": 354.66749999999996,
+      "Cref": 18.489893,
+      "Bref": 25.604638,
+      "Xcg": 16.821978259514246,
+      "Ycg": 0.0,
+      "Zcg": 0.0,
+      "MachStart": 1.6,
+      "MachEnd": 1.6,
+      "AlphaStart": 8.1646724923,
+      "AlphaEnd": 8.6446724923,
+      "BetaStart": 0.0,
+      "BetaEnd": 0.0,
+      "Vinf": 472.1088294874393,
+      "Rho": 0.1153178340089936,
+      "ReCref": 70809509.60535888
+    },
+    "available_int_keys": [
+      "AlphaNpts",
+      "BetaNpts",
+      "GeomSet",
+      "MachNpts",
+      "NCPU",
+      "NumWakeNodes",
+      "RefFlag",
+      "StopBeforeRun",
+      "Symmetry",
+      "ThinGeomSet"
+    ],
+    "available_double_keys": [
+      "AlphaEnd",
+      "AlphaStart",
+      "BetaEnd",
+      "BetaStart",
+      "Bref",
+      "Cref",
+      "MachEnd",
+      "MachStart",
+      "ReCref",
+      "Rho",
+      "Sref",
+      "Vinf",
+      "Xcg",
+      "Ycg",
+      "Zcg"
+    ]
+  },
+  "sweep_readback_check": {
+    "schema": "dreal001.sweep_input_readback_check.v1",
+    "ok": true,
+    "int": {
+      "RefFlag": {
+        "expected": 0,
+        "observed": 0,
+        "ok": true
+      },
+      "NCPU": {
+        "expected": 1,
+        "observed": 1,
+        "ok": true
+      },
+      "GeomSet": {
+        "expected": -1,
+        "observed": -1,
+        "ok": true
+      },
+      "ThinGeomSet": {
+        "expected": 0,
+        "observed": 0,
+        "ok": true
+      },
+      "StopBeforeRun": {
+        "expected": 1,
+        "observed": 1,
+        "ok": true
+      },
+      "MachNpts": {
+        "expected": 1,
+        "observed": 1,
+        "ok": true
+      },
+      "AlphaNpts": {
+        "expected": 17,
+        "observed": 17,
+        "ok": true
+      },
+      "BetaNpts": {
+        "expected": 1,
+        "observed": 1,
+        "ok": true
+      },
+      "NumWakeNodes": {
+        "expected": 8,
+        "observed": 8,
+        "ok": true
+      }
+    },
+    "double": {
+      "Sref": {
+        "expected": 354.66749999999996,
+        "observed": 354.66749999999996,
+        "ok": true
+      },
+      "Cref": {
+        "expected": 18.489893,
+        "observed": 18.489893,
+        "ok": true
+      },
+      "Bref": {
+        "expected": 25.604638,
+        "observed": 25.604638,
+        "ok": true
+      },
+      "Xcg": {
+        "expected": 16.821978259514246,
+        "observed": 16.821978259514246,
+        "ok": true
+      },
+      "Ycg": {
+        "expected": 0.0,
+        "observed": 0.0,
+        "ok": true
+      },
+      "Zcg": {
+        "expected": 0.0,
+        "observed": 0.0,
+        "ok": true
+      },
+      "MachStart": {
+        "expected": 1.6,
+        "observed": 1.6,
+        "ok": true
+      },
+      "MachEnd": {
+        "expected": 1.6,
+        "observed": 1.6,
+        "ok": true
+      },
+      "AlphaStart": {
+        "expected": 8.1646724923,
+        "observed": 8.1646724923,
+        "ok": true
+      },
+      "AlphaEnd": {
+        "expected": 8.6446724923,
+        "observed": 8.6446724923,
+        "ok": true
+      },
+      "BetaStart": {
+        "expected": 0.0,
+        "observed": 0.0,
+        "ok": true
+      },
+      "BetaEnd": {
+        "expected": 0.0,
+        "observed": 0.0,
+        "ok": true
+      },
+      "Vinf": {
+        "expected": 472.1088294874393,
+        "observed": 472.1088294874393,
+        "ok": true
+      },
+      "Rho": {
+        "expected": 0.1153178340089936,
+        "observed": 0.1153178340089936,
+        "ok": true
+      },
+      "ReCref": {
+        "expected": 70809509.60535888,
+        "observed": 70809509.60535888,
+        "ok": true
+      }
+    },
+    "mismatches": []
+  },
+  "cl_required": 0.29260885441928813,
+  "q_pa": 12851.40843975621,
+  "flow_conditions": {
+    "vinf_m_s": 472.1088294874393,
+    "rho_kg_m3": 0.1153178340089936,
+    "recref": 70809509.60535888
+  },
+  "reference_injection": {
+    "ref_flag": 0,
+    "policy": "RefFlag=0: Sref/Cref/Bref/X_cg are injected manually from this contract and are verified line-by-line in the generated .vspaero before any solver start; the solver MUST NOT recompute reference quantities from component areas. Manual injection keeps the reference geometry fixed while the lifting-surface geometry is perturbed.",
+    "solver_recomputes_references": false,
+    "injected": {
+      "Sref": 354.66749999999996,
+      "Cref": 18.489893,
+      "Bref": 25.604638,
+      "X_cg": 16.821978259514246,
+      "Y_cg": 0.0,
+      "Z_cg": 0.0,
+      "Mach": 2.02,
+      "Vinf": 596.0373972278921,
+      "Rho": 0.1153178340089936,
+      "ReCref": 89397005.8767656
+    },
+    "reference_frame": "WING_AC",
+    "verification": "every injected field is parsed back from the generated .vspaero and compared against this contract before any solver start"
+  },
+  "reference_injection_note": "baseline contract block; flow_conditions override Vinf/Rho/ReCref for this case",
+  "design_variable_identification": {
+    "W01": {
+      "name": "wing_area",
+      "role": "sets Sref",
+      "baseline_m2": 358.25,
+      "range_m2": [
+        300.0,
+        420.0
+      ],
+      "sref_recompute_rule": "Sref(x) = geometry.wing.area_m2 = exposed main-wing planform area, recomputed by aircraft/geometry_model.build_geometry for every 12D design vector x. W01 (wing_area) is the design variable that sets it. Sref is recomputed by the GEOMETRY BUILDER, never by VSPAERO (RefFlag=0). Cref=18.489893 m and Bref=25.604638 m stay frozen at the baseline reference lengths; ReCref stays frozen too. Every reported dimensional value is recomputed per design: L = q*Sref(x)*CLtot, D_i = q*Sref(x)*CDi, CL_req(x) = L_ref/(q*Sref(x)); only the coefficient-to-force conversion uses the design Sref."
+    },
+    "sref_recompute_rule": "Sref(x) = geometry.wing.area_m2 = exposed main-wing planform area, recomputed by aircraft/geometry_model.build_geometry for every 12D design vector x. W01 (wing_area) is the design variable that sets it. Sref is recomputed by the GEOMETRY BUILDER, never by VSPAERO (RefFlag=0). Cref=18.489893 m and Bref=25.604638 m stay frozen at the baseline reference lengths; ReCref stays frozen too. Every reported dimensional value is recomputed per design: L = q*Sref(x)*CLtot, D_i = q*Sref(x)*CDi, CL_req(x) = L_ref/(q*Sref(x)); only the coefficient-to-force conversion uses the design Sref."
+  },
+  "solver_invocation": {
+    "argv": [
+      "D:\\OpenVSP-3.55.0\\OpenVSP-3.55.0-win64\\vspaero.exe",
+      "-omp",
+      "1",
+      "g1-m160-d03-query"
+    ],
+    "fs_cli_used": false,
+    "one_process_one_start": true,
+    "internal_solver_cases_expected": 17,
+    "note": "case lists live in .vspaero; -fs/-mach are forbidden (7.2.2 appends them)"
+  },
+  "alpha_list_deg": [
+    8.1646724923,
+    8.1946724923,
+    8.2246724923,
+    8.2546724923,
+    8.2846724923,
+    8.3146724923,
+    8.3446724923,
+    8.3746724923,
+    8.4046724923,
+    8.4346724923,
+    8.4646724923,
+    8.4946724923,
+    8.5246724923,
+    8.5546724923,
+    8.5846724923,
+    8.6146724923,
+    8.6446724923
+  ],
+  "mach_list": [
+    1.6
+  ],
+  "alpha_in_one_process_note": "alpha/mach/beta lists are written into .vspaero (AlphaStart/AlphaEnd/AlphaNpts, integer-typed); the solver is invoked WITHOUT -fs because VSPAERO 7.2.2 appends -fs lists to the file lists instead of replacing them",
+  "internal_solver_cases_expected": 17,
+  "setup_sweep_fields": {
+    "Mach": "1.6000000000000001",
+    "AoA": "8.1646724922999994, 8.1946724922999987, 8.2246724922999999, 8.2546724922999992, 8.2846724923000004, 8.3146724922999997, 8.3446724922999991, 8.3746724923000002, 8.4046724922999996, 8.4346724922999989, 8.4646724923000001, 8.4946724922999994, 8.5246724922999988, 8.5546724922999999, 8.5846724922999993, 8.6146724923000004, 8.6446724922999998",
+    "AlphaStart": null,
+    "AlphaNpts": null,
+    "Vinf": "472.10882948743932",
+    "Rho": "0.11531783400899361",
+    "ReCref": "70809509.605358884"
+  },
+  "setup_contract_check": {
+    "Sref": {
+      "expected": 354.66749999999996,
+      "observed": 354.66749999999996,
+      "ok": true
+    },
+    "Cref": {
+      "expected": 18.489893,
+      "observed": 18.489893,
+      "ok": true
+    },
+    "Bref": {
+      "expected": 25.604638,
+      "observed": 25.604638,
+      "ok": true
+    },
+    "X_cg": {
+      "expected": 16.821978259514246,
+      "observed": 16.821978259514246,
+      "ok": true
+    },
+    "Vinf": {
+      "expected": 472.1088294874393,
+      "observed": 472.1088294874393,
+      "ok": true
+    },
+    "Rho": {
+      "expected": 0.1153178340089936,
+      "observed": 0.1153178340089936,
+      "ok": true
+    },
+    "ReCref": {
+      "expected": 70809509.60535888,
+      "observed": 70809509.60535888,
+      "ok": true
+    },
+    "Mach_list": {
+      "expected": [
+        1.6
+      ],
+      "observed": [
+        1.6
+      ],
+      "ok": true
+    },
+    "AoA_list": {
+      "expected": [
+        8.1646724923,
+        8.1946724923,
+        8.2246724923,
+        8.2546724923,
+        8.2846724923,
+        8.3146724923,
+        8.3446724923,
+        8.3746724923,
+        8.4046724923,
+        8.4346724923,
+        8.4646724923,
+        8.4946724923,
+        8.5246724923,
+        8.5546724923,
+        8.5846724923,
+        8.6146724923,
+        8.6446724923
+      ],
+      "observed": [
+        8.1646724923,
+        8.194672492299999,
+        8.2246724923,
+        8.2546724923,
+        8.2846724923,
+        8.3146724923,
+        8.344672492299999,
+        8.3746724923,
+        8.4046724923,
+        8.434672492299999,
+        8.4646724923,
+        8.4946724923,
+        8.524672492299999,
+        8.5546724923,
+        8.5846724923,
+        8.6146724923,
+        8.6446724923
+      ],
+      "ok": true
+    }
+  },
+  "sweep_result_id": "",
+  "geometry_result_id": "XKTTSFE",
+  "vspgeom_header": {
+    "parsed": true,
+    "lines": [
+      "# vspgeom v3",
+      "1",
+      "546 480 2",
+      "     43.28669145      1.224056921             -0.8"
+    ],
+    "format": "# vspgeom v3",
+    "nodes": 546,
+    "elements": 480
+  },
+  "artifacts": {
+    "vspgeom": {
+      "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-G1-20261121-01\\cases\\g1-m160-d03-query\\g1-m160-d03-query.vspgeom",
+      "bytes": 225414,
+      "sha256": "78f40ba8a562cebd71b014e1b2c159d5bbad9f34f62da49e4a725f8adef5de12"
+    },
+    "vkey": {
+      "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-G1-20261121-01\\cases\\g1-m160-d03-query\\g1-m160-d03-query.vkey",
+      "bytes": 380,
+      "sha256": "0eb00ee98f0d1a0933e0869e0f89dde50cdab193099c2f794bd0600b2e215a39"
+    },
+    "vspaero": {
+      "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-G1-20261121-01\\cases\\g1-m160-d03-query\\g1-m160-d03-query.vspaero",
+      "bytes": 1316,
+      "sha256": "7e55cc2556d4c846c27ade4485743a098dd7a93fdd3920335d39c5794f2f4b0b"
+    },
+    "csf": {
+      "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-G1-20261121-01\\cases\\g1-m160-d03-query\\g1-m160-d03-query.csf",
+      "bytes": 20,
+      "sha256": "bb29bf526f4379308ca9c271a8df90c39f4df4235f81f63e370f25e714bb797c"
+    },
+    "vsp3": {
+      "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-G1-20261121-01\\cases\\g1-m160-d03-query\\g1-m160-d03-query.vsp3",
+      "bytes": 158021,
+      "sha256": "221cd1736ea3997456386d12b77aa8ed7fccade3fc6fc081f5d93b5feecd4f72"
+    },
+    "geom_csv": {
+      "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-G1-20261121-01\\cases\\g1-m160-d03-query\\g1-m160-d03-query_vspaero_geom.csv",
+      "bytes": 326,
+      "sha256": "9e77a1dfe46a1dd0ffcf9aac599f767f177935605a1a08a595b730d0205247d7"
+    }
+  },
+  "geometry_sha256": "78f40ba8a562cebd71b014e1b2c159d5bbad9f34f62da49e4a725f8adef5de12",
+  "geometry_sha256_definition": "sha256(raw bytes of <base>.vspgeom)",
+  "vspaero_input_sha256": "71b96a2337ae4be025f6cd37ebfaf3561723e07904759ff0e4710cb20d87763f",
+  "vspaero_input_sha256_definition": "sha256 over [<base>.vspgeom, <base>.vspaero] name+sha256 pairs",
+  "build_seconds": 0.23,
+  "mesh": {
+    "schema": "dreal001.mesh_identity.v1",
+    "rebuild_strategy": "direct",
+    "target_mesh_family": "543x472",
+    "max_mesh_attempts": 12,
+    "mesh_attempts": 1,
+    "mesh_family": "546x480",
+    "nodes": 546,
+    "elements": 480,
+    "vspgeom_sha256": "78f40ba8a562cebd71b014e1b2c159d5bbad9f34f62da49e4a725f8adef5de12",
+    "vspgeom_bytes": 225414,
+    "canonical_mesh_sha256": "ade7cead8d37c207ff42c79c653022b7d1ddbcd3a8a5f8d1f58819e37a2e5c4b",
+    "roundtrip_vsp3_sha256": "221cd1736ea3997456386d12b77aa8ed7fccade3fc6fc081f5d93b5feecd4f72",
+    "attempt_history": [
+      {
+        "attempt": 1,
+        "mesh_family": "546x480",
+        "nodes": 546,
+        "elements": 480,
+        "vspgeom_sha256": "78f40ba8a562cebd71b014e1b2c159d5bbad9f34f62da49e4a725f8adef5de12",
+        "vspgeom_bytes": 225414,
+        "canonical_mesh_sha256": "ade7cead8d37c207ff42c79c653022b7d1ddbcd3a8a5f8d1f58819e37a2e5c4b"
+      }
+    ],
+    "note": "byte SHA varies across rebuilds even in the target family; canonical_mesh_sha256 removes object-ID/ordering bytes but keeps per-node geometry (occasional ~1e-2 m single-node jitter is disclosed, not normalised away)."
+  }
+}
