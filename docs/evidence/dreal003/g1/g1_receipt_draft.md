@@ -115,4 +115,4 @@ G1 → G2 之前必须：
 - 是否接受“G1 标签率 34.78%、未达 70%，因此 G2 暂不放行”，还是先批准一次小规模 alpha/审计策略修复（仅代码与零物理重放，不新增 starts）？
 - 修复策略二选一：A）保持 1e-3 并改进 alpha 搜索/扫描密度，使真实行命中；B）由 A5 预审后修改审计定义（例如允许插值但标注插值来源）。我建议 A，B 会改变标签定义，必须单独审查。
 
-文档提交：55284cfc3bafe6bc97e591e8cb04896eab6faffc（tree c2cfd4125bd0d2fc0a645bd9789e34e6694d08a7，父 f0e455f32b70da88f40d32f8be1fbabd649981ab）。G1 数据提交 f0e455f；本回执所在提交只增加 docs/evidence/dreal003/g1/ 三份文档，不改变原始数据。
+文档位置：本分支 docs/evidence/dreal003/g1/g1_receipt_draft.md；G1 数据提交 f0e455f32b70da88f40d32f8be1fbabd649981ab。本回执所在提交只增加/修订 docs/evidence/dreal003/g1/ 文档，不改变原始数据。
