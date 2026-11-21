@@ -27,7 +27,7 @@ def main():
     for c in started:
         src=RUN/"cases"/c["case_id"]; dst=DEST/"raw_cases"/c["case_id"]
         copy_tree(src,dst); copied.append(c["case_id"])
-    for name in ("all_evaluations.csv","admitted_labels.csv","failed_or_null.csv","attempt_ledger.csv","batch_accounting.json","null_labels.json","g1_preregistration.json","operator_authorization.json","g1_case_manifest.json","g1_batch_runs.json","g1_go_record.json"):
+    for name in ("all_evaluations.csv","admitted_labels.csv","failed_or_null.csv","attempt_ledger.csv","batch_accounting.json","null_labels.json","g1_preregistration.json","operator_authorization.json","g1_case_manifest.json","g1_batch_runs.json","g1_go_record.json","g1_go_record_b02.json","g1_repair_amendment.json"):
         src=RUN/name
         if src.exists():
             t=DEST/"tables"/name; t.parent.mkdir(parents=True,exist_ok=True); shutil.copy2(src,t)
@@ -36,6 +36,12 @@ def main():
         shutil.copy2(src,DEST/"audits"/src.name)
     a5=RUN/"a5_review/verdict.json"
     if a5.exists(): shutil.copy2(a5,DEST/"audits"/"a5_g1_review_verdict.json")
+    a5r=RUN/"a5_review_repair/verdict.json"
+    if a5r.exists(): shutil.copy2(a5r,DEST/"audits"/"a5_g1_repair_review_verdict.json")
+    for src in (REPO/"docs/evidence/dreal003/g1").glob("g1_a5_dossier*.md"):
+        shutil.copy2(src,DEST/"audits"/src.name)
+    if (RUN/"figures").exists():
+        copy_tree(RUN/"figures",DEST/"figures")
     (DEST/"scripts").mkdir(parents=True,exist_ok=True)
     for src in (RUN/"scripts").glob("*.py"):
         shutil.copy2(src,DEST/"scripts"/src.name)
@@ -57,6 +63,8 @@ def main():
     (DEST/"metadata/code_sha.json").write_text(json.dumps(code,indent=2)+"\n",encoding="utf-8")
     gf=REPO/"docs/evidence/drecover001/geometry_freeze_v2.json"
     if gf.exists(): shutil.copy2(gf,DEST/"metadata/geometry_freeze.json")
+    for src in (RUN/"README.md",):
+        if src.exists(): shutil.copy2(src,DEST/src.name)
     # manifest + sums
     entries=[]
     for p in sorted(DEST.rglob("*")):

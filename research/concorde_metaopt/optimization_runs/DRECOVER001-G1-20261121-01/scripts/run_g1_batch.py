@@ -15,16 +15,25 @@ def main():
     a=ap.parse_args()
     man=json.loads((RUN/"g1_case_manifest.json").read_text(encoding="utf-8"))
     pre=json.loads((RUN/"g1_preregistration.json").read_text(encoding="utf-8"))
-    verdict=json.loads((RUN/"a5_review/verdict.json").read_text(encoding="utf-8"))
-    dossier_sha=sha(REPO/"docs/evidence/dreal003/g1/g1_a5_dossier_compact.md")
-    if a.limit<1 or a.limit>8: raise SystemExit("per mini-batch limit must be 1..8")
-    if verdict.get("verdict")!="G1_APPROVE":
-        raise SystemExit("A5 verdict is not G1_APPROVE: %r"%(verdict.get("verdict"),))
+    repair="B02" in a.label.upper()
+    if repair:
+        verdict=json.loads((RUN/"a5_review_repair/verdict.json").read_text(encoding="utf-8"))
+        dossier_sha=sha(REPO/"docs/evidence/dreal003/g1/g1_a5_dossier_repair.md")
+        expected="G1_REPAIR_APPROVE"
+    else:
+        verdict=json.loads((RUN/"a5_review/verdict.json").read_text(encoding="utf-8"))
+        dossier_sha=sha(REPO/"docs/evidence/dreal003/g1/g1_a5_dossier_compact.md")
+        expected="G1_APPROVE"
+    if a.limit<1 or a.limit>16: raise SystemExit("per mini-batch limit must be 1..16")
+    if verdict.get("verdict")!=expected:
+        raise SystemExit("A5 verdict is not %s: %r"%(expected,verdict.get("verdict"),))
     if verdict.get("dossier_sha256")!=dossier_sha:
         raise SystemExit("A5 dossier sha mismatch: %s vs %s"%(verdict.get("dossier_sha256"),dossier_sha))
     logpath=RUN/"g1_batch_runs.json"
     log=json.loads(logpath.read_text(encoding="utf-8")) if logpath.exists() else {"schema":"dreal003.g1_batch_runs.v1","runs":[]}
     cases=man["cases"]
+    existing_attempts=sum(1 for c in cases if (RUN/"cases"/c["case_id"]/"solver_attempts.jsonl").exists())
+    if existing_attempts+a.limit>24: raise SystemExit("G1 cap exceeded: existing %d + requested %d > 24"%(existing_attempts,a.limit))
     selected=[c for c in cases if not (RUN/"cases"/c["case_id"]/"case_result.json").exists() and not (RUN/"cases"/c["case_id"]/"solver_attempts.jsonl").exists()]
     if len(selected)<a.limit:
         print("ONLY_AVAILABLE",len(selected)); a_limit=len(selected)

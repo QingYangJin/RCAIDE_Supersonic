@@ -1,0 +1,71 @@
+{
+  "reviewer": "deepseek-flash",
+  "review_type": "independent_single_shot_dossier_review",
+  "reviewed_utc": "2026-11-21T09:30:33Z",
+  "dossier_sha256": "4da7b3183079d2cf7fa798ef6652595f58d3104d0d9ff99573fce9c1251abe55",
+  "verdict": "G1_REPAIR_APPROVE",
+  "gate_verdicts": {
+    "G1_REPAIR_ROOT_CAUSE": "PASS_WITH_DISCLOSURE",
+    "G1_REPAIR_CASE_PLAN": "PASS",
+    "G1_REPAIR_BUDGET": "PASS_WITH_DISCLOSURE",
+    "G1_REPAIR_CONTROLS": "PASS"
+  },
+  "evidence_checked": [
+    "amendment G1-REPAIR-B02-20261121 SHA256 9dc47742648e04a385400c511eef0ae300616fc1e225ecb3faec8dbe78261b5f",
+    "B01 8 starts consumed, 8/8 CL_TARGET_OUTSIDE_POLAR, 0 labels, nulls preserved",
+    "16-case list with per-case plan and geom SHA256",
+    "alpha_center bases/slopes for M180/M202/M240/M160",
+    "17 alpha points, step 0.03 deg, span 0.48 deg, lift tol 1e-3, max_starts=1",
+    "budget: 16 starts, parallel 1, 0 retry, 1200s/case, no B01 rerun",
+    "zero-physics check: no solver_attempts.jsonl, no case_result, no polar in 16 dirs",
+    "accounting: 16/24=0.667 below 0.70, no label-rate pass claimed",
+    "upload/readback of raw/CSV/PNG/ledger with SHA256SUMS"
+  ],
+  "findings": [
+    {
+      "severity": "info",
+      "finding": "Root cause addressed by per-Mach alpha_center bases/slopes replacing single global slope; B01 nulls retained.",
+      "evidence": "amendment alpha_center table; B01 8/8 CL_TARGET_OUTSIDE_POLAR with M160 0.61 deg and M180 0.12 deg offsets"
+    },
+    {
+      "severity": "info",
+      "finding": "Case plan is exactly the 16 unstarted cases; 8 B01 cases excluded; per-case plan/geom SHA256 present.",
+      "evidence": "16-row list: M180 d02-d05, M202 d00-d05, M240 d00-d05"
+    },
+    {
+      "severity": "info",
+      "finding": "Budget arithmetic consistent: 8 consumed + 16 remaining = 24 cap; max_starts=1, 0 retry, parallel 1.",
+      "evidence": "accounting disclosure 8/24 consumed, 16 remaining; B02 max 16 starts"
+    },
+    {
+      "severity": "minor",
+      "finding": "Aggregate valid rate even if all 16 succeed is 16/24=0.667, below 0.70; dossier correctly does not claim a label-rate pass.",
+      "evidence": "accounting disclosure states 16/24=0.667 and no G1 label-rate claim"
+    },
+    {
+      "severity": "info",
+      "finding": "Zero-physics pre-check supports no starts yet consumed in B02.",
+      "evidence": "16 dirs lack solver_attempts.jsonl, case_result, polar"
+    },
+    {
+      "severity": "info",
+      "finding": "Scope limited to B02 16 starts; G2/G3/R2 not authorized; not a human signature.",
+      "evidence": "authorization section and request item 3"
+    }
+  ],
+  "limitations": [
+    "Read-only review; no file hashes or solver outputs independently recomputed.",
+    "Per-case plan/geom SHA256 values accepted as stated, not verified against artifacts.",
+    "B01 failure evidence accepted from dossier summary, not re-inspected.",
+    "Alpha model adequacy for M202/M240 not empirically validated until B02 runs.",
+    "Label-rate outcome remains below 0.70 regardless of B02 success.",
+    "No human sign-off; this review is not a human signature."
+  ],
+  "scope": "Authorizes ONLY the 16 remaining real solver starts of B02 under the 24-start G1 cap (8 consumed in B01, 0 labels, nulls preserved). G2/G3/R2 not authorized. Aggregate 16/24=0.667 below 0.70; no label-rate pass claimed.",
+  "signature": "deepseek-flash independent A5 review; not a human signature",
+  "model": "deepseek-flash",
+  "dossier_path": "D:\\RCAIDE\\.worktrees\\dreal003-g0-20261120\\docs\\evidence\\dreal003\\g1\\g1_a5_dossier_repair.md",
+  "started_utc": "2026-11-21T09:30:23Z",
+  "tool_access": "NONE_SINGLE_SHOT_DOSSIER_STREAM",
+  "human_signature": false
+}

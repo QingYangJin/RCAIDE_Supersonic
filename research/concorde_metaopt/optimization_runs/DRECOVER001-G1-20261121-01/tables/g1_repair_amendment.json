@@ -1,0 +1,79 @@
+{
+  "schema": "dreal003.g1_repair_amendment.v1",
+  "amendment_id": "G1-REPAIR-B02-20261121",
+  "run_id": "DRECOVER001-G1-20261121-01",
+  "authorization_id": "AUTH-DREAL003-G1-20261121-01",
+  "owner_message_ref": "m07992",
+  "created_utc": "2026-11-21T09:24:25Z",
+  "trigger": {
+    "batch": "B01",
+    "physical_solver_starts": 8,
+    "successful_solver_runs": 8,
+    "admitted_labels": 0,
+    "failure": "8/8 CL_TARGET_OUTSIDE_POLAR; alpha grid overpredicted by 0.12-0.62 deg",
+    "evidence": {
+      "batch_accounting_sha256": "e855438bd4e8198d806901e23ab7c1414020347d66eec37b516a1d7ec26b7d5e",
+      "failed_or_null_sha256": "7e3199aa2efc48a44cdd041a291c58e458a24f09150c12402606a2746a08e27f",
+      "all_evaluations_sha256": "7e3199aa2efc48a44cdd041a291c58e458a24f09150c12402606a2746a08e27f"
+    }
+  },
+  "root_cause": "single global alpha slope/base CL reused across Mach; actual slopes are Mach-dependent",
+  "correction": {
+    "base_alpha_by_mach": {
+      "1.6": [
+        7.4658,
+        0.2896827658750951,
+        0.03655
+      ],
+      "1.8": [
+        6.1846,
+        0.22888514834575416,
+        0.03579
+      ],
+      "2.02": [
+        5.18125,
+        0.181741590896,
+        0.03439427
+      ],
+      "2.4": [
+        4.44,
+        0.128809590323,
+        0.034
+      ]
+    },
+    "formula": "alpha_center=base_alpha+(cl_target-base_cl)/slope",
+    "calibrated_from": "B01 measured polars for M160/M180 and pre-A1 admitted cases for M202/M240; design deltas use local slope"
+  },
+  "scope": {
+    "batch_id": "DRECOVER001-G1-20261121-01-B02",
+    "rebuilt_unstarted_cases": 16,
+    "started_cases_not_rerun": 8,
+    "max_starts_this_batch": 16,
+    "max_starts_total_g1": 24,
+    "already_consumed": 8,
+    "remaining": 16,
+    "parallel": 1,
+    "retries": 0,
+    "case_timeout_s": 1200,
+    "not_authorized": [
+      "G2",
+      "G3",
+      "R2",
+      "rerun of B01 cases"
+    ]
+  },
+  "accounting_effect": {
+    "planned_starts": 24,
+    "consumed_B01": 8,
+    "remaining_B02": 16,
+    "expected_valid_if_all_succeed": 16,
+    "aggregate_valid_rate_if_all_succeed": 0.6666666666666666,
+    "disclosure": "16/24 = 0.667 < 0.70 G1 target; B01 nulls cannot be erased; G1 cannot claim label-rate pass"
+  },
+  "references": {
+    "original_preregistration_sha256": "08a6d1b24f48ce3c54609f0d90381a683c593bab6c73d819b547e02c21d3f66e",
+    "repaired_case_manifest_sha256": "0bfe75a5a6b95a0c20d5ad2ff9c4a24fa063306bfe615a29ce8d1f43a67b7b13",
+    "b01_a5_verdict_sha256": "d56e21831cb0021215a7d9d50bae92d3773ec317b5c0c94bb224fb78c5ece149"
+  },
+  "status": "AMENDMENT_PENDING_A5_AND_GO"
+}
