@@ -24,15 +24,15 @@
 代码提交 `db44071`；证据目录 `docs/evidence/dreal004/p0/`。
 
 - `docs/evidence/dreal004/p0/p0_a5_dossier.md` sha256 `7a5a559ffd86362518c03a116c3d653025278f16faf860b7dc854a1298c7838b`
-- `docs/evidence/dreal004/p0/p0_test_summary.json` sha256 `ae52d064f1fdf9e3b5723c7ffbc8aa83102be44d98d18618964e41ad7a2f74e8`
-- `docs/evidence/dreal004/p0/p0_test_log.txt` sha256 `dfe20629ddcf3c73df5eb4da3f0bfa9cc5661bf8bfa351d6cf8b2259096dc6f5`
-- `docs/evidence/dreal004/p0/g1_alpha_replay.json` sha256 `165a32616a57b4084b907e9f9c88d7784913664af0db49fb02c8803a11aa04b4`
-- `docs/evidence/dreal004/p0/12d_variable_response_audit.json` sha256 `5e4aa7ceb7c76ea7480f17383bdb74ece0a140cb931130383a42a6e43092759b`
-- `docs/evidence/dreal004/p0/a2_g1_baseline_endpoints.json` sha256 `2e73717d703bf8bc163640884c3b2063b8fc5b366c3d95af96a25bf68e675c08`
-- `docs/evidence/dreal004/p0/p1_p2_p3_preregistration.json` sha256 `21d36ce1a58d64f08aefc958926b997ef28baa20d6972789a2710108584af1dd`
+- `docs/evidence/dreal004/p0/p0_test_summary.json` sha256 `865e7e21e351a7fd5db5c01ab6f2b775214ab2f8324fd21372c12bf91b3a11e8`
+- `docs/evidence/dreal004/p0/p0_test_log.txt` sha256 `7cfb970e8f2f98ce5b534c7e532af13fff0bb21ddea539b972065704619f0303`
+- `docs/evidence/dreal004/p0/g1_alpha_replay.json` sha256 `342ff7a1cd389955a877d3028af91bb1c18a6aca8f3059dd0754817e3cf1df2d`
+- `docs/evidence/dreal004/p0/12d_variable_response_audit.json` sha256 `c6e903199cfbb607f8b4cecd10d50942e3c2670de9ac2c4198af6615f9fb018d`
+- `docs/evidence/dreal004/p0/a2_g1_baseline_endpoints.json` sha256 `c28c0dc02e1104c1f5d724a4ff0fb6cb1fc4e2ff19fdac0de7e01cdd62183f43`
+- `docs/evidence/dreal004/p0/p1_p2_p3_preregistration.json` sha256 `aa01f5c0b3556f2627c43b69213da6559beedc6951828a0e25dce31af6daa645`
 - `docs/evidence/dreal004/p0/p0_protocol_freeze_20261122.md` sha256 `9a96c0d8530c4fe66d7edb8bb1260889cb046cf2aca017ea4b969bfbf8a04f70`
-- `docs/evidence/dreal004/p0/a5_review_p0_verdict.json` sha256 `c9f1cfa55bd5ce47a694d0543dd6e61d0cae7af7a4aad4476fd55d127ccb4ecc`
-- `docs/evidence/dreal004/p0/g2_halt_reference.json` sha256 `5a2d19e443f51cc917cf3f6cf25de4078a3585cd8325d28ecffea2ed9af8f784`
+- `docs/evidence/dreal004/p0/a5_review_p0_verdict.json` sha256 `6d406b035268db835678e0aafa74edaee8865911d24ff039abf0a4a922b08f67`
+- `docs/evidence/dreal004/p0/g2_halt_reference.json` sha256 `6594bd35feee69809fa892eb2f1d41b6f5c4cb0dcb4ebbc4d6e00631d69fd106`
 
 ## 3. A5 独立审查结论
 
