@@ -1,0 +1,38 @@
+{
+  "schema": "dreal004.g2_halt_reference.v1",
+  "purpose": "truthful record of the G2 batch halted by Issue #14; not a G2 receipt and not a PASS",
+  "issue13_handover_comment": "7063823679",
+  "issue14": "QingYangJin/RCAIDE_Supersonic#14",
+  "b01": {
+    "charged_starts": 24,
+    "completed": 23,
+    "internal_solver_cases": 731,
+    "admitted_labels": 4,
+    "null_labels": 20,
+    "source": "batch_accounting.json",
+    "sha256": "1fa46038c1e0ad288e8db7045da69449a14cb2c5b451b6b5ce3fc193cfa063fc"
+  },
+  "b02": {
+    "charged_starts": 78,
+    "completed": 78,
+    "internal_solver_cases": 2886,
+    "admitted_labels": 26,
+    "null_labels": 52,
+    "valid_label_rate": 0.3333333333333333,
+    "b02_starts_max": 112,
+    "unused_b02_starts": 34,
+    "source": "b02_accounting.json",
+    "sha256": "16b7c1fad74d1804735bcdcb084dd4f4946549ad27d05537a5c501a3bbcd4de0"
+  },
+  "cumulative_starts": 102,
+  "g2_cap": 240,
+  "g2_receipt_issued": false,
+  "g2_maml_run": false,
+  "g1_preserved": {
+    "starts": 24,
+    "admitted_labels": 8,
+    "valid_rate": 0.34782608695652173,
+    "reported_in_issue13_receipt_7041128848": true
+  },
+  "disclosure": "B02 was stopped mid-stage2 under issue #14; 34 of the 60 planned stage2 cases were never started and 34 B02 starts remain unused. No G2 label is re-graded or deleted."
+}
