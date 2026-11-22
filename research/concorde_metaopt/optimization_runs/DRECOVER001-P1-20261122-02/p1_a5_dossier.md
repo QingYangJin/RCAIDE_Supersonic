@@ -68,13 +68,13 @@
 
 ## 8. 待绑定哈希
 
-- 本 preregistration sha256: 202ef7916eaab861e5f646f60c321dd1d81ec85f217351feb7bec4033398bcaa
+- 本 preregistration sha256: 863c9e696166a15e643aa18b0aa14d7606173d321745193ae23312d21ecea94f
 - 代码/脚本 sha256:
   - research/concorde_metaopt/dreal001/geometry/adaptive_alpha.py: 8442da15459aa6da9d0b717daf0a419f4478cafabc22b578c4d599441cbaf738
   - research/concorde_metaopt/dreal001/geometry/polar_rows.py: bc590fb4e3ef2881f1f03464c00364d88dad17b50e9463320b29d6aeb21beeaf
   - research/concorde_metaopt/dreal001/geometry/solver_runner.py: cd732583ab492885a225b06ef57d16a6930503cae87873689eaec1dde6f30ec3
   - research/concorde_metaopt/dreal001/meta/real_admission.py: 4322554ea488dd583a9c06fc8bb611e0584360573287673fe46bbbcc605ee3fc
-  - scripts/p1_run.py: 48ca55e648addf6c6f6854f1a9b22bc8b32e9c7127d9a72361b22374eac9c1ef
+  - scripts/p1_run.py: 0f5bf109a41e69c58ed86fa170385fc0f77f6e51ce2a36bf8d972b5293db81b6
   - scripts/audit_real_case.py: 5c07a4865f37d434961f99b9862fea7ea1e8b4a238db8b1cd79aba4c339a842c
   - scripts/admit_g1_case.py: b2b70846b1fe17b3335b4e8c46be3afd40188459c302ce59b0ecfeef20d8cddf
 

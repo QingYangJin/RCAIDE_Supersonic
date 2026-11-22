@@ -5,7 +5,7 @@ Requires: p1_preregistration.json, p1_a5_dossier.md, a5_review/verdict.json with
 P1_PROTOCOL_AND_CODE_REVIEW_PASS, and p1_go_record.json binding those hashes.
 """
 from __future__ import annotations
-import argparse, csv, hashlib, json, math, shutil, subprocess, sys, time
+import argparse, csv, hashlib, json, math, os, re, shutil, subprocess, sys, time
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
@@ -38,6 +38,7 @@ MAX_PER_DESIGN = 3
 MAX_INTERNAL = 36
 WALL_MAX = 3600.0
 HALF_WIDTHS = [0.004, 0.002, 0.001]
+brackets_cache = []
 
 NAMES = ["wing_area", "aspect_ratio", "sweep_1", "sweep_2", "sweep_3", "span_location_2",
          "span_location_3", "chord_ratio_2", "chord_ratio_3", "tip_twist",
@@ -199,10 +200,21 @@ def run_and_admit(case_id, case_dir, partition, split, timeout):
     wall = time.time() - t0
     proc = r.get("process") or {}
     res = case_dir / "case_result.json"
+    internal = None
+    started_utc = None
+    if res.exists():
+        try:
+            cr = read_json(res)
+            internal = cr.get("internal_solver_cases")
+            attempt_rec = cr.get("attempt") or {}
+            started_utc = attempt_rec.get("start_ts_utc") or attempt_rec.get("ts_utc")
+        except Exception:  # noqa: BLE001
+            internal = None
     row = {"case_id": case_id, "attempt_id": attempt, "status": r.get("status"),
            "exit_code": proc.get("exit_code"), "timed_out": proc.get("timed_out"),
            "wall_s": round(wall, 3), "physical_solver_starts": r.get("physical_solver_starts"),
-           "internal_solver_cases": (r.get("internal") or {}).get("count"),
+           "internal_solver_cases": internal if internal is not None else (r.get("internal") or {}).get("count"),
+           "solver_started_utc": started_utc,
            "case_result": str(res) if res.exists() else None, "error": r.get("error")}
     return row
 
@@ -230,10 +242,13 @@ def admit(case_dir: Path, case_id: str, partition: str, split: str):
                        capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=300)
     if p.returncode != 0:
         return {"admitted": False, "stage": "AUDIT_FAILED", "detail": (p.stdout + p.stderr)[-600:]}
-    cert = json.loads((case_dir / "admission_certificate.json").read_text(encoding="utf-8")) if (
-        case_dir / "admission_certificate.json").exists() else {}
     result = read_json(case_dir / "case_result.json")
-    started = (result.get("attempt") or {}).get("ts_utc") or now()
+    started = (result.get("attempt") or {}).get("start_ts_utc") or (result.get("attempt") or {}).get("ts_utc") or now()
+    m = re.match(r"^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2})", str(started))
+    if m:
+        started = m.group(1) + "Z"
+    else:
+        started = now()
     q = subprocess.run([str(PY), str(ADMIT), "--case-dir", str(case_dir),
                         "--admission-id", "p1-adm-" + case_id, "--audit-ref", audit_id,
                         "--evaluator-id", "vspaero-3.55.0-v7.2.2-omp1",
@@ -342,10 +357,60 @@ def write_tables(state) -> None:
             shutil.copy2(src, RUN / name)
 
 
+def acquire_lock(force: bool) -> Path:
+    """Prevent two driver processes from overlapping (each would double-spend starts)."""
+    lock = RUN / "p1_run.lock"
+    if lock.exists() and not force:
+        age = time.time() - lock.stat().st_mtime
+        if age < 7200:
+            raise SystemExit("LOCK_HELD: %s age %.1fs; use --force only if no driver is running" % (lock, age))
+    lock.write_text("%d %s\n" % (os.getpid(), now()), encoding="utf-8")
+    return lock
+
+
+def recover_pending_admissions(state) -> int:
+    """Admit already-solved cases whose admission step failed, without any new solver start."""
+    fixed = 0
+    for row in state["runs"]:
+        if row.get("admitted") or row.get("status") != "SOLVED":
+            continue
+        if row.get("failure_kind") not in ("ADMIT_FAILED", "AUDIT_FAILED", None):
+            continue
+        if state["designs"].get(row["design"], {}).get("status") == "HIT":
+            continue
+        case_dir = RUN / "cases" / row["case_id"]
+        if not case_dir.exists():
+            continue
+        b = next(x for x in brackets_cache if x["design"] == row["design"])
+        clt = float(b["cl_target"])
+        rm = best_match(case_dir, clt)
+        if not rm or "error" in rm or rm.get("rel_error") is None or rm["rel_error"] > 1e-3:
+            continue
+        res = admit(case_dir, row["case_id"], b["partition"], "train")
+        if not res.get("admitted"):
+            row["failure_kind"] = res.get("stage")
+            row["detail"] = res.get("detail")
+            continue
+        cert = res["certificate"]
+        row.update(admitted=True, admission_id=cert.get("admission_id"), di_n=cert.get("di_n"),
+                   q_pa=cert.get("q_pa"), sref_m2=cert.get("sref_m2"), cl_target=clt,
+                   matched_alpha_deg=rm["alpha_deg"], matched_cl=rm["cl"], match_rel_error=rm["rel_error"],
+                   design_sha256=cert.get("design_sha256"), raw_sha256=cert.get("raw_sha256"),
+                   artifact_sha256=cert.get("artifact_sha256"),
+                   admission_manifest_sha256=res.get("admission_manifest_sha256"),
+                   certificate_sha256=res.get("certificate_sha256"), audit_sha256=res.get("audit_sha256"),
+                   failure_kind=None, detail=None)
+        state["designs"][row["design"]]["status"] = "HIT"
+        fixed += 1
+        print("READMITTED", row["case_id"], "di_n", row.get("di_n"), flush=True)
+    return fixed
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--no-upload", action="store_true")
+    ap.add_argument("--force", action="store_true", help="ignore a stale run lock")
     a = ap.parse_args()
     prereg = read_json(RUN / "p1_preregistration.json")
     gate_check(prereg)
@@ -356,6 +421,8 @@ def main() -> int:
         state = {"schema": "dreal004.p1_state.v1", "runs": [], "stops": [],
                  "designs": {d: {"starts": 0, "status": "PENDING"} for d in ("d00", "d01", "d04", "d07")}}
     brackets = {b["design"]: b for b in prereg["designs"]}
+    global brackets_cache
+    brackets_cache = prereg["designs"]
     starts = sum(1 for r in state["runs"] if r.get("physical_solver_starts") == 1)
     internal = sum(int(r.get("internal_solver_cases") or 0) for r in state["runs"])
     wall = sum(r.get("wall_s") or 0 for r in state["runs"])
@@ -370,6 +437,24 @@ def main() -> int:
         print(json.dumps({"dry_run": True, "starts": starts, "internal": internal,
                           "wall": wall, "designs": state["designs"]}, ensure_ascii=False, indent=2))
         return 0
+    lock = acquire_lock(a.force)
+    try:
+        fixed = recover_pending_admissions(state)
+    finally:
+        pass
+    if fixed:
+        write_json(state_p, state)
+        write_tables(state)
+        starts = sum(1 for r in state["runs"] if r.get("physical_solver_starts") == 1)
+        internal = sum(int(r.get("internal_solver_cases") or 0) for r in state["runs"])
+        wall = sum(r.get("wall_s") or 0 for r in state["runs"])
+        print("RECOVERED_ADMISSIONS", fixed, flush=True)
+    if internal + 3 > MAX_INTERNAL and any(state["designs"][d]["status"] == "PENDING" for d in state["designs"]):
+        state["stops"].append({"reason": "MAX_INTERNAL", "internal": internal})
+        write_json(state_p, state)
+        write_tables(state)
+        lock.unlink(missing_ok=True)
+        return 8
     for design in ("d00", "d01", "d04", "d07"):
         dstate = state["designs"][design]
         if dstate["status"] in ("HIT", "NO_RAW_POINT", "NO_BRACKET"):
@@ -483,11 +568,13 @@ def main() -> int:
                     state["stops"].append({"design": design, "reason": "UPLOAD_READBACK_FAILED", "round": rnd})
                     write_json(state_p, state)
                     write_tables(state)
+                    lock.unlink(missing_ok=True)
                     return 6
             if row["status"] == "REFUSED" or row["status"] == "EXCEPTION":
                 state["stops"].append({"design": design, "reason": "SOLVER_REFUSED_OR_EXCEPTION", "round": rnd})
                 write_json(state_p, state)
                 write_tables(state)
+                lock.unlink(missing_ok=True)
                 return 7
         if dstate["status"] == "RUNNING":
             dstate["status"] = "NO_RAW_POINT"
@@ -501,6 +588,7 @@ def main() -> int:
     write_tables(state)
     if not a.no_upload:
         upload("P1-FINAL", state["final"]["starts"])
+    lock.unlink(missing_ok=True)
     print("DONE", json.dumps(state["final"], ensure_ascii=False), flush=True)
     return 0
 
