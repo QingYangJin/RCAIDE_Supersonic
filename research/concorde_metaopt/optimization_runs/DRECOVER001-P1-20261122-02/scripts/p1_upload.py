@@ -201,6 +201,7 @@ def main() -> int:
     a = ap.parse_args()
     files = build_package(a.total_starts)
     git(["add", "-A", RUN_REL])
+    git(["add", ".gitignore"])
     msg = "P1 %s: raw cases/tables/metadata (%d files, %d starts)" % (a.label, len(files), a.total_starts)
     c = git(["commit", "-m", msg])
     if c.returncode != 0 and "nothing to commit" not in (c.stdout + c.stderr):
