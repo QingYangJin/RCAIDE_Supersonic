@@ -1,0 +1,39 @@
+{
+  "schema": "dreal004.p1_go_record.v1",
+  "go_issued": true,
+  "go_issued_utc": "2026-11-22T08:41:02Z",
+  "issued_by": "Lead (agent), not a human approver and not the A5 reviewer",
+  "owner_authorization_ref": "m10191 批准真实评估",
+  "owner_authorization_interpretation": "Owner approved the P1 real evaluation described in the Issue #14 body, bounded by the frozen P1 preregistration: <=12 real solver starts, 3 per design, 3 alpha probes per start, <=36 internal cases, tolerance 1e-3 not relaxed, no retries, parallelism 1, upload/readback every <=4 starts.",
+  "issue": "QingYangJin/RCAIDE_Supersonic#14",
+  "run_id": "DRECOVER001-P1-20261122-02",
+  "batch_id": "DRECOVER001-P1-20261122-02-B01",
+  "authorization_id": "AUTH-DREAL004-P1-20261122-01",
+  "preregistration_sha256": "202ef7916eaab861e5f646f60c321dd1d81ec85f217351feb7bec4033398bcaa",
+  "a5_dossier_sha256": "d493be76693f87dd208bc455f7a952bcc1cd4b0a9f2cd51c97dfc2716af0194c",
+  "a5_verdict_sha256": "85926157f52fbb969f04df843e6bfb573658a3bc609386ad6e8bda954b8c972f",
+  "a5_verdict": "P1_PROTOCOL_AND_CODE_REVIEW_PASS",
+  "a5_reviewer": "deepseek-flash",
+  "a5_human_signature": false,
+  "caps": {
+    "max_design_starts": 12,
+    "max_starts_per_design": 3,
+    "max_alpha_probes_per_start": 3,
+    "max_internal_solver_cases": 36,
+    "retries": 0,
+    "parallelism": 1,
+    "case_timeout_s": 600,
+    "wall_clock_s": 3600,
+    "consecutive_solver_failure_stop": 2
+  },
+  "not_authorized": [
+    "P2",
+    "P3",
+    "MAML training",
+    "G2 restart",
+    "R2",
+    "tol widening"
+  ],
+  "physical_starts_authorized_this_go": 12,
+  "physical_starts_used_before_this_go": 0
+}
