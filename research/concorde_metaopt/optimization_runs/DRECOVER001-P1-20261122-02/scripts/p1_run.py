@@ -188,6 +188,16 @@ def make_case(design: str, rnd: int, alphas, alpha_center, cl_target, sref, q, s
     return case_id, case_dir, alphas
 
 
+def internal_count(case_dir: Path):
+    """Count independent internal solver cases for a finished case: alpha rows in the polar."""
+    try:
+        polar = next(case_dir.glob("*.polar"))
+        rows = read_polar_rows(polar, mach=2.02)
+        return len(rows) if rows else None
+    except Exception:  # noqa: BLE001
+        return None
+
+
 def run_and_admit(case_id, case_dir, partition, split, timeout):
     attempt = "p1-" + case_id + "-01"
     t0 = time.time()
@@ -205,7 +215,7 @@ def run_and_admit(case_id, case_dir, partition, split, timeout):
     if res.exists():
         try:
             cr = read_json(res)
-            internal = cr.get("internal_solver_cases")
+            internal = cr.get("internal_solver_cases") or internal_count(case_dir)
             attempt_rec = cr.get("attempt") or {}
             started_utc = attempt_rec.get("start_ts_utc") or attempt_rec.get("ts_utc")
         except Exception:  # noqa: BLE001
@@ -376,7 +386,9 @@ def recover_pending_admissions(state) -> int:
             continue
         if row.get("failure_kind") not in ("ADMIT_FAILED", "AUDIT_FAILED", None):
             continue
-        if state["designs"].get(row["design"], {}).get("status") == "HIT":
+        design_admitted = sum(1 for r in state["runs"]
+                              if r.get("design") == row.get("design") and r.get("admitted"))
+        if design_admitted >= MAX_PER_DESIGN:
             continue
         case_dir = RUN / "cases" / row["case_id"]
         if not case_dir.exists():
