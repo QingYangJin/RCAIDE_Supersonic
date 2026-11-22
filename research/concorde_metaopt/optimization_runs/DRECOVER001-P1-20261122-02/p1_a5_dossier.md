@@ -68,7 +68,7 @@
 
 ## 8. 待绑定哈希
 
-- 本 preregistration sha256: 863c9e696166a15e643aa18b0aa14d7606173d321745193ae23312d21ecea94f
+- 本 preregistration sha256: deb426bf9be8ff6c8c28e0a941f37b10700d112f69320079eaa6c1258158c0c9
 - 代码/脚本 sha256:
   - research/concorde_metaopt/dreal001/geometry/adaptive_alpha.py: 8442da15459aa6da9d0b717daf0a419f4478cafabc22b578c4d599441cbaf738
   - research/concorde_metaopt/dreal001/geometry/polar_rows.py: bc590fb4e3ef2881f1f03464c00364d88dad17b50e9463320b29d6aeb21beeaf

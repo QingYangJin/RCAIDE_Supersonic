@@ -4,21 +4,26 @@
   "batch_id": "DRECOVER001-P1-20261122-02-B01",
   "authorization_id": "AUTH-DREAL004-P1-20261122-01",
   "owner_instruction_ref": "m10191 批准真实评估",
-  "physical_solver_starts_actual": 4,
-  "physical_solver_starts_completed": 4,
+  "physical_solver_starts_actual": 6,
+  "physical_solver_starts_completed": 6,
   "internal_solver_cases_actual": 0,
   "retries_actual": 0,
   "parallelism": 1,
-  "admitted_labels": 0,
-  "null_labels": 4,
-  "designs_hit": [],
-  "valid_label_rate_over_completed": 0.0,
+  "admitted_labels": 4,
+  "null_labels": 2,
+  "designs_hit": [
+    "d00",
+    "d01",
+    "d04",
+    "d07"
+  ],
+  "valid_label_rate_over_completed": 0.6666666666666666,
   "max_starts": 12,
   "max_starts_per_design": 3,
   "max_internal_solver_cases": 36,
   "fixed_sweep_internal_baseline": 196,
   "internal_saved_vs_fixed_sweep": 196,
-  "wall_clock_s": 8.368,
+  "wall_clock_s": 12.566,
   "stops": [
     {
       "design": "d00",
@@ -62,8 +67,20 @@
       "match_rel_error": 4.420247405998996e-06,
       "matched_alpha_deg": 5.181341,
       "matched_cl": 0.181744720773,
-      "failure_kind": "ADMIT_FAILED",
-      "detail": "est(\n               ^^^^^^^^^^^^^^^^^^^^^^\n  File \"<string>\", line 18, in __init__\n  File \"D:\\RCAIDE\\.worktrees\\dreal003-g0-20261120\\research\\concorde_metaopt\\dreal001\\meta\\real_admission.py\", line 144, in __post_init__\n    _parse_utc(self.solver_started_utc, \"solver_started_utc\")\n  File \"D:\\RCAIDE\\.worktrees\\dreal003-g0-20261120\\research\\concorde_metaopt\\dreal001\\meta\\real_admission.py\", line 60, in _parse_utc\n    raise ContractError(name + \" must be UTC YYYY-MM-DDTHH:MM:SSZ\")\nresearch.concorde_metaopt.dreal001.meta.task_spec.ContractError: solver_started_utc must be UTC YYYY-MM-DDTHH:MM:SSZ\n"
+      "failure_kind": null,
+      "detail": null,
+      "admitted": true,
+      "admission_id": "p1-adm-p1-m202-d00-r1",
+      "di_n": 121438.58868632729,
+      "q_pa": 20483.94023343017,
+      "sref_m2": 358.25000000000006,
+      "cl_target": 0.18174391741992046,
+      "design_sha256": "937aa7c9c789ccd8fce4fdbde942a258248f2b1c91ba90cf6c99c7e4c5a8a3fe",
+      "raw_sha256": "e33ddb6e3853a77f0d34b7c99d7b60a07c1117617423efe057f64822cf33814e",
+      "artifact_sha256": "3ae5b277a33d0c225c73904c00273cc3b4dc3924779219b67141aef8d28f3e03",
+      "admission_manifest_sha256": "d32d3e4ad6b28dc257dfa38713cb26926dd54b2587ff5f13ab9684c4c5227dbf",
+      "certificate_sha256": "7e920302ec65a9bfed35de93ef4e0bb3932f223bf74e41a0fe2815013aaedd1b",
+      "audit_sha256": "42472536df55d8017aee33afcf57597b60ab7b61f2cf35e448c9a45124d58b3f"
     },
     {
       "case_id": "p1-m202-d00-r1",
@@ -176,9 +193,121 @@
       "match_rel_error": 1.2844512392003504e-05,
       "matched_alpha_deg": 5.129049,
       "matched_cl": 0.179946783992,
-      "failure_kind": "ADMIT_FAILED",
-      "detail": "est(\n               ^^^^^^^^^^^^^^^^^^^^^^\n  File \"<string>\", line 18, in __init__\n  File \"D:\\RCAIDE\\.worktrees\\dreal003-g0-20261120\\research\\concorde_metaopt\\dreal001\\meta\\real_admission.py\", line 144, in __post_init__\n    _parse_utc(self.solver_started_utc, \"solver_started_utc\")\n  File \"D:\\RCAIDE\\.worktrees\\dreal003-g0-20261120\\research\\concorde_metaopt\\dreal001\\meta\\real_admission.py\", line 60, in _parse_utc\n    raise ContractError(name + \" must be UTC YYYY-MM-DDTHH:MM:SSZ\")\nresearch.concorde_metaopt.dreal001.meta.task_spec.ContractError: solver_started_utc must be UTC YYYY-MM-DDTHH:MM:SSZ\n"
+      "failure_kind": null,
+      "detail": null,
+      "admitted": true,
+      "admission_id": "p1-adm-p1-m202-d01-r1",
+      "di_n": 120206.23025968097,
+      "q_pa": 20483.94023343017,
+      "sref_m2": 361.8324999999999,
+      "cl_target": 0.17994447269299063,
+      "design_sha256": "3de72a4bb698202b5377db7489f747ee2426f4f62f94fabc71684db4bd50fd71",
+      "raw_sha256": "9a07658d8cebec1983a5edcfcd79a9f1ebb556857748cc07518effe226bd83a4",
+      "artifact_sha256": "95b2f258559f727ce809a30cdbb2b6346d9d8d1cbba8eb09351f3e7b9e889c76",
+      "admission_manifest_sha256": "5b99b185f9f364165fce1ce3febbf51e93d49213c891f08fa441acb459f4004b",
+      "certificate_sha256": "9c5b25243ad31c07f6174c4fa9e80013c130d013fbb096be46ab1803c67e154b",
+      "audit_sha256": "9fb0a769ebe961150fbe0861c22129614a5ddb9b37e1438a245808bc9b124eaf"
+    },
+    {
+      "case_id": "p1-m202-d04-r1",
+      "attempt_id": "p1-p1-m202-d04-r1-01",
+      "status": "SOLVED",
+      "exit_code": null,
+      "timed_out": null,
+      "wall_s": 2.143,
+      "physical_solver_starts": 1,
+      "internal_solver_cases": null,
+      "solver_started_utc": "2026-11-22T08:56:38.030314Z",
+      "case_result": "D:\\RCAIDE\\.real_runs\\DRECOVER001-P1-20261122-02\\cases\\p1-m202-d04-r1\\case_result.json",
+      "error": null,
+      "design": "d04",
+      "round": 1,
+      "alphas": [
+        5.187543,
+        5.191543,
+        5.195543
+      ],
+      "observed_rows": [
+        [
+          5.187543,
+          0.181606787213
+        ],
+        [
+          5.191543,
+          0.18174429066
+        ],
+        [
+          5.195543,
+          0.181881583314
+        ]
+      ],
+      "match_rel_error": 2.0536592631882506e-06,
+      "matched_alpha_deg": 5.191543,
+      "matched_cl": 0.18174429066,
+      "admitted": true,
+      "admission_id": "p1-adm-p1-m202-d04-r1",
+      "di_n": 121679.60586249837,
+      "q_pa": 20483.94023343017,
+      "sref_m2": 358.25000000000006,
+      "cl_target": 0.18174391741992046,
+      "design_sha256": "f8626bb58503d58682b82354759b073deefcc60f605049546966a838f1729d0c",
+      "raw_sha256": "22f8dfce1701346986bc06aca1df0fdbe38771404c318b38fa8de6dd9ead2a5a",
+      "artifact_sha256": "b1d89d9b0ffcab09accfd0b72f4e3c24aed2e6ff2021728c9d6ae190419ae3ba",
+      "admission_manifest_sha256": "53fca22c34bb42e8b7c84a00447e9b97cdc2fe31852cc2631db7e03a319b64bf",
+      "certificate_sha256": "6011e1ac3a3794e9f89863b656ca341994a5f2eba0a47e18a2010fba648ce9f2",
+      "audit_sha256": "4616df8aac65f11ef645e4bf21c0559e05c9cba49e72b8d43ceb65e236a8c19e",
+      "failure_kind": null
+    },
+    {
+      "case_id": "p1-m202-d07-r1",
+      "attempt_id": "p1-p1-m202-d07-r1-01",
+      "status": "SOLVED",
+      "exit_code": null,
+      "timed_out": null,
+      "wall_s": 2.055,
+      "physical_solver_starts": 1,
+      "internal_solver_cases": null,
+      "solver_started_utc": "2026-11-22T08:56:40.529173Z",
+      "case_result": "D:\\RCAIDE\\.real_runs\\DRECOVER001-P1-20261122-02\\cases\\p1-m202-d07-r1\\case_result.json",
+      "error": null,
+      "design": "d07",
+      "round": 1,
+      "alphas": [
+        5.177341,
+        5.181341,
+        5.185341
+      ],
+      "observed_rows": [
+        [
+          5.177341,
+          0.18160807157
+        ],
+        [
+          5.181341,
+          0.181744720773
+        ],
+        [
+          5.185341,
+          0.181882294563
+        ]
+      ],
+      "match_rel_error": 4.420247405998996e-06,
+      "matched_alpha_deg": 5.181341,
+      "matched_cl": 0.181744720773,
+      "admitted": true,
+      "admission_id": "p1-adm-p1-m202-d07-r1",
+      "di_n": 121438.58868632729,
+      "q_pa": 20483.94023343017,
+      "sref_m2": 358.25000000000006,
+      "cl_target": 0.18174391741992046,
+      "design_sha256": "937aa7c9c789ccd8fce4fdbde942a258248f2b1c91ba90cf6c99c7e4c5a8a3fe",
+      "raw_sha256": "e33ddb6e3853a77f0d34b7c99d7b60a07c1117617423efe057f64822cf33814e",
+      "artifact_sha256": "743779d0ba8a0f7c57f715963228a5aaee03d8814182aab672d96e7c15703487",
+      "admission_manifest_sha256": "ec6926e459fad12c1f8f776aa39291aee9b39ca2d6dc3394a35bc12b9d6c9c8d",
+      "certificate_sha256": "9f5f8028d3d89f6d0a4df07cfc2819c89cbd904e8e47e4c14e8984573b3bee0b",
+      "audit_sha256": "caccf3d9b6f8c68d1ddb39bea6a6d515822461692335c3cff16ddf01556320b8",
+      "failure_kind": null
     }
   ],
-  "generated_utc": "2026-11-22T08:41:11Z"
+  "generated_utc": "2026-11-22T08:56:42Z"
 }
