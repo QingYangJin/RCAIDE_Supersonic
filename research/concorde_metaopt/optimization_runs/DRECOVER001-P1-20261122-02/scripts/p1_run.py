@@ -285,7 +285,19 @@ def upload(label: str, starts: int) -> bool:
     return p.returncode == 0
 
 
+def backfill_internal(state) -> None:
+    """Recover internal-case counts for rows recorded before the counter was wired."""
+    for r in state["runs"]:
+        if not r.get("internal_solver_cases"):
+            cd = RUN / "cases" / r["case_id"]
+            if cd.exists():
+                n = internal_count(cd)
+                if n:
+                    r["internal_solver_cases"] = n
+
+
 def write_tables(state) -> None:
+    backfill_internal(state)
     tdir = RUN / "tables"
     tdir.mkdir(exist_ok=True)
     runs = state["runs"]
@@ -307,7 +319,14 @@ def write_tables(state) -> None:
         w.writeheader()
         for h in hist:
             w.writerow(h)
-    adm = [r for r in runs if r.get("admitted")]
+    rows_admitted = [r for r in runs if r.get("admitted")]
+    adm, seen_adm = [], set()
+    for r in rows_admitted:
+        aid = r.get("admission_id") or r["case_id"]
+        if aid in seen_adm:
+            continue
+        seen_adm.add(aid)
+        adm.append(dict(r, rel_error=r.get("match_rel_error")))
     with (tdir / "p1_admitted_labels.csv").open("w", encoding="utf-8", newline="") as fh:
         fl = ["design", "case_id", "round", "di_n", "q_pa", "sref_m2", "cl_target", "matched_alpha_deg",
               "matched_cl", "rel_error", "admission_id", "design_sha256", "raw_sha256", "artifact_sha256"]
@@ -329,7 +348,11 @@ def write_tables(state) -> None:
            "physical_solver_starts_actual": starts,
            "physical_solver_starts_completed": sum(1 for r in runs if r["status"] == "SOLVED"),
            "internal_solver_cases_actual": internal, "retries_actual": 0, "parallelism": 1,
-           "admitted_labels": len(adm), "null_labels": len(nulls),
+           "admitted_labels": len(adm), "admitted_rows": len(rows_admitted),
+           "unique_admission_certificates": len({r.get("admission_id") for r in rows_admitted}),
+           "duplicate_attempt_rows": sorted({r["case_id"] for r in runs
+                                             if sum(1 for x in runs if x["case_id"] == r["case_id"]) > 1}),
+           "null_labels": len(nulls),
            "designs_hit": sorted({r["design"] for r in adm}),
            "valid_label_rate_over_completed": (len(adm) / max(1, sum(1 for r in runs if r["status"] == "SOLVED"))),
            "max_starts": MAX_STARTS, "max_starts_per_design": MAX_PER_DESIGN,

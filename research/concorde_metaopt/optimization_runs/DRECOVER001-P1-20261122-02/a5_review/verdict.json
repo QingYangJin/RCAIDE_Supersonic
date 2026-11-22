@@ -1,11 +1,11 @@
 {
   "reviewer": "deepseek-flash",
   "review_type": "independent_single_shot_dossier_review",
-  "reviewed_utc": "2026-11-22T09:01:15Z",
-  "dossier_sha256": "32e536daaa30e94ca6cb1ffd70047567fb06159cb88007d86379b33e7839506f",
+  "reviewed_utc": "2026-11-22T09:03:50Z",
+  "dossier_sha256": "639ac4a206e58e2310367938c381dcec93dd06e9f5351e4879ca89450f17de28",
   "verdict": "P1_PROTOCOL_AND_CODE_REVIEW_PASS",
   "gate_verdicts": {
-    "P1_PREREGISTRATION": "PASS",
+    "P1_PREREGISTRATION": "PASS_WITH_DISCLOSURE",
     "P1_COARSE_BRACKET_PROVENANCE": "PASS_WITH_DISCLOSURE",
     "P1_ALPHA_ALGORITHM": "PASS",
     "P1_ADMISSION_TOLERANCE": "PASS",
@@ -14,70 +14,75 @@
     "P1_ZERO_PHYSICAL_UNTIL_GO": "PASS"
   },
   "evidence_checked": [
-    "Sec 1 caps: 12 starts, 3/design, 3 probes/start, 36 internal, 0 retry, parallel 1, 600s/case, wall 3600s",
-    "Sec 1 arithmetic: 12x3=36 internal; fixed 49-point scan 4x49=196 internal",
-    "Sec 2 coarse bracket table: 4 designs, G2 stage1 polar sha256, cl_target, bracket alpha/CL, predicted alpha",
-    "Sec 3 adaptive algorithm: secant inside bracket, half widths 0.004/0.002/0.001 deg, no extrapolation, 3-round stop",
-    "Sec 4 admission: raw rows only, tol 1e-3, independent audit + RealAdmissionManifest, upload/readback every <=4 starts",
-    "Sec 6 disclosures: d00/d01 G1 relabel, d07 duplicate sha256 b1374bdf, non-human certs, no MAML",
-    "Sec 7 A5 checkpoints P1_CAPS through P1_ZERO_PHYSICAL_UNTIL_GO",
-    "Sec 8 prereg sha256 c6394564... and 7 code/script sha256 entries"
+    "Sec1 caps: 12 starts, 3/design, 3 probes/start, 36 internal, 0 retry, parallel 1, 600s/case, 3600s wall",
+    "Sec1 arithmetic: 12x3=36 internal; fixed 49-point scan 4x49=196 internal",
+    "Sec2 coarse bracket table: 4 designs, G2 stage1 polar sha256, bracket [4.96,5.20] deg, step 0.24",
+    "Sec3 adaptive algorithm: secant inside raw bracket, half widths 0.004/0.002/0.001, no extrapolation, 3-round stop",
+    "Sec4 admission: only new raw polar rows admitted; tol_CL=1e-3; per-start pre-checks; upload/readback every <=4 starts",
+    "Sec6 disclosures: d00/d01 G1 relabel, d07 duplicate sha256 b1374bdf, non-human certs, no MAML",
+    "Sec7 checkpoints P1_CAPS through P1_ZERO_PHYSICAL_UNTIL_GO",
+    "Sec8 prereg sha256 dfbde72f... and 7 code/script sha256 bindings"
   ],
   "findings": [
     {
       "severity": "info",
-      "finding": "Caps and arithmetic are internally consistent: 12 starts x 3 probes = 36 internal <= 36; 3 starts/design x 4 designs = 12.",
-      "evidence": "Sec 1 and Sec 7 P1_CAPS"
+      "finding": "Caps and arithmetic are internally consistent: 12 starts x 3 probes = 36 internal <=36; fixed 49-point scan 196 internal shown for comparison.",
+      "evidence": "Sec1: 12 starts, 3/design, 3 probes/start, 36 internal, 0 retry, parallel 1, 600s, 3600s; 4x49=196"
+    },
+    {
+      "severity": "info",
+      "finding": "Coarse brackets are zero-physical, sourced from existing G2 stage1 M202 raw polars with per-design sha256; no new solver call before GO.",
+      "evidence": "Sec2 table lists g2-m202-d0x-support/query-s1 and sha256 b1374bdf/21e4d8ee/852abc80; Sec7 P1_COARSE_BRACKET_PROVENANCE"
     },
     {
       "severity": "minor",
-      "finding": "d07 coarse polar sha256 equals d00 (b1374bdf...); dossier discloses this and limits d07 to a repeatability/null control, not an independent geometry finding.",
-      "evidence": "Sec 2 table and Sec 6 duplicate disclosure"
+      "finding": "d07 coarse polar sha256 equals d00 (b1374bdf), so d07 is a repeatability/null control, not an independent geometry finding; disclosed.",
+      "evidence": "Sec2 d07 sha256 b1374bdf67822f8f; Sec6 duplicate disclosure, fuselage_length only difference"
+    },
+    {
+      "severity": "info",
+      "finding": "Alpha algorithm is bounded: secant inside observed raw bracket, half widths 0.004/0.002/0.001 deg, no extrapolation, non-monotone/missing bracket stops.",
+      "evidence": "Sec3 steps 1-5; Sec7 P1_ALPHA_ALGORITHM"
+    },
+    {
+      "severity": "info",
+      "finding": "Admission tolerance 1e-3 not relaxed; only new raw polar rows admitted; interpolated targets never labels.",
+      "evidence": "Sec3 step 3 |q*Sref*CL-lift_target|/lift_target<=1e-3; Sec4 only new raw rows; Sec7 P1_ADMISSION_TOLERANCE"
+    },
+    {
+      "severity": "info",
+      "finding": "Accounting controls: per-start ledger, cumulative caps checked before each start, 2-consecutive-failure stop, upload/readback every <=4 starts.",
+      "evidence": "Sec4 pre-start checks; Sec5 actual_solver_ledger.csv; Sec7 P1_ACCOUNTING_CONTROLS"
+    },
+    {
+      "severity": "info",
+      "finding": "Zero-physical-until-GO is stated: batch starts only after A5 PASS and separate Lead GO binding prereg sha256; P2/P3/MAML excluded.",
+      "evidence": "Sec0 no real solve yet; Sec6 no MAML, P2/P3 need separate A5+Lead GO; Sec7 P1_ZERO_PHYSICAL_UNTIL_GO"
     },
     {
       "severity": "minor",
-      "finding": "d00/d01 already have admitted G1 labels; P1 is relabel plus efficiency measurement, disclosed, so not a new-geometry claim.",
-      "evidence": "Sec 6 disclosure"
-    },
-    {
-      "severity": "info",
-      "finding": "Tolerance 1e-3 is not relaxed; interpolated targets are selection-only and never admitted as labels.",
-      "evidence": "Sec 3 step 3 and Sec 4 admission rules"
-    },
-    {
-      "severity": "info",
-      "finding": "No start may occur before a separate Lead GO record binding prereg sha256 c6394564...; P2/P3/MAML are outside this authorization.",
-      "evidence": "Sec 0, Sec 6, Sec 7 P1_ZERO_PHYSICAL_UNTIL_GO"
-    },
-    {
-      "severity": "info",
-      "finding": "Upload and per-file SHA256 readback required every <=4 starts; readback failure stops the batch.",
-      "evidence": "Sec 4 accounting controls"
-    },
-    {
-      "severity": "info",
-      "finding": "Code/script sha256 values are listed for binding but their contents were not inspected in this read-only review.",
-      "evidence": "Sec 8 hash list"
+      "finding": "Code/script sha256 are listed but not independently verifiable in this read-only review; binding to prereg is asserted, not re-derived.",
+      "evidence": "Sec8 lists 7 sha256 for adaptive_alpha.py, polar_rows.py, solver_runner.py, real_admission.py, p1_run.py, audit_real_case.py, admit_g1_case.py"
     }
   ],
   "limitations": [
-    "Read-only review; no code execution or file-content verification of the listed sha256 artifacts.",
-    "Coarse bracket provenance accepted from dossier-declared G2 stage1 sha256; raw polar files not independently re-hashed.",
+    "Read-only review; no tools, so code sha256 and artifact bytes were not independently recomputed.",
+    "No solver execution or raw polar inspection; coarse bracket provenance accepted from dossier table only.",
     "Admission scripts and RealAdmissionManifest behavior not executed or inspected.",
-    "Wall-clock accounting definition (sum of run_case wall_s, excluding upload wait) accepted as declared.",
-    "No human signature; certificates are same-machine, non-physical, non-authenticated.",
-    "P2/P3/MAML and G2 restart/R2 are outside scope and not reviewed."
+    "Wall-clock accounting (sum of run_case wall_s, excluding upload wait) not independently verified.",
+    "d07 duplicate-polar null-control status relies on dossier disclosure, not byte comparison.",
+    "A5 is deepseek-flash single-shot; not a human signature and not a substitute for Lead GO."
   ],
-  "scope": "Strict review of whether this dossier authorizes only the first P1 mini-batch: <=12 real starts on Mach 2.02 designs d00/d01/d04/d07, 3 starts/design, 3 alpha probes/start, <=36 internal, tol 1e-3 unrelaxed, 0 retry, parallel 1, upload/readback every <=4 starts, no P2/P3/MAML, and no start before a separate Lead GO record.",
+  "scope": "Strict review of Issue #14 P1 mini-batch protocol: <=12 real starts on d00/d01/d04/d07, 3 starts/design, 3 alpha probes/start, 36 internal max, tol 1e-3, no retry, parallel 1, upload/readback <=4 starts, P2/P3/MAML excluded, no start before separate Lead GO.",
   "signature": "deepseek-flash independent A5 review; not a human signature",
   "model": "deepseek-flash",
   "dossier_path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-P1-20261122-02\\p1_a5_dossier.md",
-  "preregistration_sha256": "c639456488ab645ce1cb277edaca34224590389536eb3ad8a5eb17ac58698f63",
+  "preregistration_sha256": "dfbde72fe6e6e2064dc61b2d9efabcc792adb4414576d6c03bc907817744d477",
   "preregistration_schema": "dreal004.p1_preregistration.v1",
   "run_id": "DRECOVER001-P1-20261122-02",
   "batch_id": "DRECOVER001-P1-20261122-02-B01",
   "authorization_id": "AUTH-DREAL004-P1-20261122-01",
-  "started_utc": "2026-11-22T09:01:05Z",
+  "started_utc": "2026-11-22T09:03:35Z",
   "tool_access": "NONE_SINGLE_SHOT_DOSSIER_STREAM",
   "human_signature": false,
   "scope_of_this_review": "P1 protocol and code review only; NOT an R1 blanket PASS, NOT a physical-GO by itself, and NOT an approval of P2/P3/MAML."
