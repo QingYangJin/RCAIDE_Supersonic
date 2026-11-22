@@ -1,0 +1,87 @@
+{
+  "schema": "dreal004.a4_remote_retrieval_audit.v1",
+  "run_id": "DRECOVER001-P1-20261122-02",
+  "remote_head": "8c1acc13d2c041c6ee966ce008ebb2b5572cf52b",
+  "branch": "research/dreal004-alpha-adaptive-meta-sampling",
+  "method": "GitHub Git Data API：按 commit->tree SHA 下钻得到远端 blob SHA1，再按 blob API 读回原始字节做 SHA256 逐字节核对；未构建整仓 zip",
+  "manifest_file_count": 132,
+  "manifest_files_checked": 132,
+  "manifest_bad": [],
+  "manifest_not_ok": [],
+  "success_case_recompute": [
+    {
+      "case_id": "p1-m202-d00-r1",
+      "alpha_reported": 5.181341,
+      "alpha_matched": 5.181341,
+      "cl_reported": 0.181744720773,
+      "cl_recomputed": 0.181744720773,
+      "cdi_recomputed": 0.016548438195,
+      "di_reported": 121438.58868632729,
+      "di_recomputed": 121438.58868632729,
+      "rel_di": 0.0,
+      "rel_cl": 0.0,
+      "status": "OK"
+    },
+    {
+      "case_id": "p1-m202-d00-r2",
+      "alpha_reported": 5.18134,
+      "alpha_matched": 5.18134,
+      "cl_reported": 0.181744686378,
+      "cl_recomputed": 0.181744686378,
+      "cdi_recomputed": 0.016548431851,
+      "di_reported": 121438.5421316979,
+      "di_recomputed": 121438.5421316979,
+      "rel_di": 0.0,
+      "rel_cl": 0.0,
+      "status": "OK"
+    },
+    {
+      "case_id": "p1-m202-d01-r1",
+      "alpha_reported": 5.129049,
+      "alpha_matched": 5.129049,
+      "cl_reported": 0.179946783992,
+      "cl_recomputed": 0.179946783992,
+      "cdi_recomputed": 0.01621832148,
+      "di_reported": 120206.23025968097,
+      "di_recomputed": 120206.23025968097,
+      "rel_di": 0.0,
+      "rel_cl": 0.0,
+      "status": "OK"
+    },
+    {
+      "case_id": "p1-m202-d04-r1",
+      "alpha_reported": 5.191543,
+      "alpha_matched": 5.191543,
+      "cl_reported": 0.18174429066,
+      "cl_recomputed": 0.18174429066,
+      "cdi_recomputed": 0.016581281609,
+      "di_reported": 121679.60586249837,
+      "di_recomputed": 121679.60586249837,
+      "rel_di": 0.0,
+      "rel_cl": 0.0,
+      "status": "OK"
+    },
+    {
+      "case_id": "p1-m202-d07-r1",
+      "alpha_reported": 5.181341,
+      "alpha_matched": 5.181341,
+      "cl_reported": 0.181744720773,
+      "cl_recomputed": 0.181744720773,
+      "cdi_recomputed": 0.016548438195,
+      "di_reported": 121438.58868632729,
+      "di_recomputed": 121438.58868632729,
+      "rel_di": 0.0,
+      "rel_cl": 0.0,
+      "status": "OK"
+    }
+  ],
+  "success_cases_ok": 5,
+  "failure_case": {
+    "path": "research/concorde_metaopt/optimization_runs/DRECOVER001-G1-20261121-01/raw_cases/g1-m202-d05-query/g1-m202-d05-query.polar",
+    "present_in_remote": false,
+    "no_polar_as_expected": true,
+    "http_status": 404
+  },
+  "a4_criteria_met": true,
+  "note": "从 GitHub 远端 Git 对象读回 132 个文件原始字节（不使用本地工作树作为远端证据）；从远端 .polar 原始行独立复算 CL/CDi；核对 D_i_N=q*Sref*CDi 与 CL 相对容差；未启动求解器。"
+}

@@ -1,0 +1,173 @@
+{
+  "schema": "dreal004.p1_preregistration.v1",
+  "generated_utc": "2026-11-22T09:03:35Z",
+  "issue": "QingYangJin/RCAIDE_Supersonic#14",
+  "owner_instruction_refs": [
+    "issue #14 body（P1 需 A5 批次审查 + Lead 新 GO）",
+    "m10191 批准真实评估"
+  ],
+  "branch": "research/dreal004-alpha-adaptive-meta-sampling",
+  "base_commit": "3a8de159aa461d10ac72571db042d3feb893afe0",
+  "run_id": "DRECOVER001-P1-20261122-02",
+  "batch_id": "DRECOVER001-P1-20261122-02-B01",
+  "authorization_id": "AUTH-DREAL004-P1-20261122-01",
+  "target_task": "DREAL004-M202",
+  "target_mach": 2.02,
+  "designs": [
+    {
+      "design": "d00",
+      "partition": "support",
+      "coarse_case_id": "g2-m202-d00-support-s1",
+      "coarse_polar_path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-G2-20261121-01\\cases\\g2-m202-d00-support-s1\\g2-m202-d00-support-s1.polar",
+      "coarse_polar_sha256": "b1374bdf67822f8fb6ba742af664892524732ab23e6e01d5008b15a83cd03278",
+      "coarse_task_spec_sha256": "3be41bc4b9d580e77cebbcd96f9685fafdba8c51d78dd9a84b3b6801da0900aa",
+      "cl_target": 0.18174391741992046,
+      "sref_m2": 358.25000000000006,
+      "q_pa": 20483.940233430174,
+      "coarse_rows": 49,
+      "coarse_alpha_step_deg": 0.24,
+      "bracket_alpha_deg": [
+        4.96,
+        5.2
+      ],
+      "bracket_cl": [
+        0.174122366197,
+        0.182386414246
+      ],
+      "coarse_slope_cl_per_deg": 0.03443353353749995,
+      "alpha_target_estimate_deg": 5.181340955746531
+    },
+    {
+      "design": "d01",
+      "partition": "support",
+      "coarse_case_id": "g2-m202-d01-support-s1",
+      "coarse_polar_path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-G2-20261121-01\\cases\\g2-m202-d01-support-s1\\g2-m202-d01-support-s1.polar",
+      "coarse_polar_sha256": "21e4d8ee7cc7a88b286888f169e4961801d98af5a53189aab3b4c411720b133a",
+      "coarse_task_spec_sha256": "7fba1ec7a8afc9a60b075a12fc34c58d84cdc9e579769f669f0a66706bad8daa",
+      "cl_target": 0.17994447269299063,
+      "sref_m2": 361.8324999999999,
+      "q_pa": 20483.940233430174,
+      "coarse_rows": 49,
+      "coarse_alpha_step_deg": 0.24,
+      "bracket_alpha_deg": [
+        4.96,
+        5.2
+      ],
+      "bracket_cl": [
+        0.174123471132,
+        0.182387572502
+      ],
+      "coarse_slope_cl_per_deg": 0.0344337557083333,
+      "alpha_target_estimate_deg": 5.129049278571198
+    },
+    {
+      "design": "d04",
+      "partition": "query",
+      "coarse_case_id": "g2-m202-d04-query-s1",
+      "coarse_polar_path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-G2-20261121-01\\cases\\g2-m202-d04-query-s1\\g2-m202-d04-query-s1.polar",
+      "coarse_polar_sha256": "852abc80194b66918efcaa7676f129bbecd9d8b96382c81a1111d00a97b56a31",
+      "coarse_task_spec_sha256": "a8f62ff550fc51e1e8dbe49a98efc699c4fc65f19de0974a21ac4f1257185035",
+      "cl_target": 0.18174391741992046,
+      "sref_m2": 358.25000000000006,
+      "q_pa": 20483.940233430174,
+      "coarse_rows": 49,
+      "coarse_alpha_step_deg": 0.24,
+      "bracket_alpha_deg": [
+        4.96,
+        5.2
+      ],
+      "bracket_cl": [
+        0.173786431729,
+        0.182034554236
+      ],
+      "coarse_slope_cl_per_deg": 0.034367177112500064,
+      "alpha_target_estimate_deg": 5.191543186246338
+    },
+    {
+      "design": "d07",
+      "partition": "query",
+      "coarse_case_id": "g2-m202-d07-query-s1",
+      "coarse_polar_path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-G2-20261121-01\\cases\\g2-m202-d07-query-s1\\g2-m202-d07-query-s1.polar",
+      "coarse_polar_sha256": "b1374bdf67822f8fb6ba742af664892524732ab23e6e01d5008b15a83cd03278",
+      "coarse_task_spec_sha256": "08bf10447ed6f7c6d199f9115517e33daa27f5f33e60a44a35e8d493af6f1dcc",
+      "cl_target": 0.18174391741992046,
+      "sref_m2": 358.25000000000006,
+      "q_pa": 20483.940233430174,
+      "coarse_rows": 49,
+      "coarse_alpha_step_deg": 0.24,
+      "bracket_alpha_deg": [
+        4.96,
+        5.2
+      ],
+      "bracket_cl": [
+        0.174122366197,
+        0.182386414246
+      ],
+      "coarse_slope_cl_per_deg": 0.03443353353749995,
+      "alpha_target_estimate_deg": 5.181340955746531
+    }
+  ],
+  "caps": {
+    "max_design_starts": 12,
+    "max_starts_per_design": 3,
+    "max_alpha_probes_per_start": 3,
+    "max_internal_solver_cases": 36,
+    "retries": 0,
+    "parallelism": 1,
+    "case_timeout_s": 600,
+    "wall_clock_s": 3600,
+    "consecutive_solver_failure_stop": 2
+  },
+  "algorithm": {
+    "name": "ADAPTIVE_SECANT_ALPHA_REFINEMENT",
+    "coarse_source": "existing G2 stage1 M202 raw polar rows only (zero physical)",
+    "round_half_widths_deg": [
+      0.004,
+      0.002,
+      0.001
+    ],
+    "probes_per_round": 3,
+    "probe_rule": "predicted alpha_target and predicted +/- half_width, clipped to the current raw bracket; never extrapolate",
+    "bracket_update": "refit a local secant bracket around cl_target using all observed raw rows (coarse + new rounds); if no bracket -> NO_BRACKET and stop that design",
+    "stop_when": "a raw polar row from a new solver run satisfies |q*Sref*CL - lift_target|/lift_target <= 1e-3"
+  },
+  "admission": {
+    "tol_cl_rel": 0.001,
+    "may_not_be_relaxed": true,
+    "interpolated_target_never_admitted": true,
+    "only_raw_polar_rows_admitted": true,
+    "audit_script": "D:/RCAIDE/.real_runs/DRECOVER001-R2-20261120-01/scripts/audit_real_case.py",
+    "admit_script": "D:/RCAIDE/.real_runs/DRECOVER001-G1-20261121-01/scripts/admit_g1_case.py",
+    "certificate_scope": "LOCAL_RAW_BYTES_VERIFIED_AUDIT_BOUND_NOT_AUTHENTICATED"
+  },
+  "success_criteria": {
+    "raw_point_hit_rate": ">=0.70 over 4 designs",
+    "internal_cases": "report per design; comparison baseline = 4 fixed 49-point sweeps = 196 internal"
+  },
+  "stop_rules": [
+    "3 starts per design exhausted without a raw point -> NO_RAW_POINT",
+    "12 starts total -> batch closes",
+    "2 consecutive solver failures -> STOP",
+    "wall clock >= 3600s -> STOP",
+    "accounting not conserved -> STOP_ACCOUNTING_VIOLATION",
+    "each mini-batch (<=4 starts) uploaded and remote-readback verified before the next"
+  ],
+  "not_authorized": [
+    "P2",
+    "P3",
+    "MAML training",
+    "G2 restart",
+    "R2",
+    "tol widening"
+  ],
+  "code_shas": {
+    "research/concorde_metaopt/dreal001/geometry/adaptive_alpha.py": "8442da15459aa6da9d0b717daf0a419f4478cafabc22b578c4d599441cbaf738",
+    "research/concorde_metaopt/dreal001/geometry/polar_rows.py": "bc590fb4e3ef2881f1f03464c00364d88dad17b50e9463320b29d6aeb21beeaf",
+    "research/concorde_metaopt/dreal001/geometry/solver_runner.py": "cd732583ab492885a225b06ef57d16a6930503cae87873689eaec1dde6f30ec3",
+    "research/concorde_metaopt/dreal001/meta/real_admission.py": "4322554ea488dd583a9c06fc8bb611e0584360573287673fe46bbbcc605ee3fc",
+    "scripts/p1_run.py": "628e4bf15dd565b488eda69fb38513cf318df4869f13b8832cd5e94cdfb8dc27",
+    "scripts/audit_real_case.py": "5c07a4865f37d434961f99b9862fea7ea1e8b4a238db8b1cd79aba4c339a842c",
+    "scripts/admit_g1_case.py": "b2b70846b1fe17b3335b4e8c46be3afd40188459c302ce59b0ecfeef20d8cddf"
+  },
+  "physical_starts_before_batch": 0
+}

@@ -1,0 +1,77 @@
+{
+  "reviewer": "deepseek-flash",
+  "review_type": "independent_single_shot_result_review",
+  "dossier_sha256": "c4adae27fca46d8d7afbf84e257d0c2bcedc20d21e29e63a9df4367d5e412089",
+  "verdict": "P1_RESULT_REVIEW_PASS",
+  "gate_verdicts": {
+    "P1_ACCOUNTING_CONSISTENCY": "PASS_WITH_DISCLOSURE",
+    "P1_RAW_BYTES_REMOTE": "PASS",
+    "P1_ADMISSION_TOLERANCE": "PASS",
+    "P1_BUDGET_COST": "PASS",
+    "P1_STATISTICAL_CLAIMS": "PASS",
+    "P1_BOUNDARIES": "PASS"
+  },
+  "evidence_checked": [
+    "6 starts/12 cap, 0 retries, parallel 1, NULL 0",
+    "18 internal cases/36 cap; per-design [9,3,3,3] median 3.0",
+    "6 rows -> 5 unique certs; duplicate p1-m202-d00-r1 disclosed and billed twice",
+    "5 raw label rows with rel CL error 2.054e-06 to 1.284e-05, all <=1e-3",
+    "remote head 8c1acc13; 132/132 byte-verified, bad=0 not_ok=0",
+    "independent recompute 5/5 pass from remote .polar rows",
+    "G1 d05 failure sample present=False HTTP=404",
+    "row-level 5/6=0.8333, n=6, UNDERPOWERED_SMALL_SAMPLE",
+    "boundaries: same host, no wind tunnel, fuel_burn_kg=null, LF-M2.02 NOT_VALIDATED, no MAML"
+  ],
+  "findings": [
+    {
+      "severity": "minor",
+      "finding": "Duplicate start p1-m202-d00-r1 launched twice with overlapping processes; both billed, labels deduped by certificate.",
+      "evidence": "Sec2: 6 starts, 5 unique certs; Sec6 discloses execution-control defect honestly."
+    },
+    {
+      "severity": "minor",
+      "finding": "6 starts span multiple driver GO versions; final GO binds final code only.",
+      "evidence": "Sec6: 4 driver versions, re-preregistered and re-reviewed each time; disclosed."
+    },
+    {
+      "severity": "minor",
+      "finding": "First 3 starts SOLVED but ADMIT_FAILED on timestamp format; offline re-audit added no physical runs.",
+      "evidence": "Sec6: fixed then offline re-admit; no new physics."
+    },
+    {
+      "severity": "info",
+      "finding": "CL identity check is self-consistent against matched_cl; independent info limited to CDi/D_i_N recompute.",
+      "evidence": "Sec6: CL baseline is admission-stage matched_cl; D_i_N=q*Sref*CDi recomputed from remote raw rows."
+    },
+    {
+      "severity": "info",
+      "finding": "Failure sample for A4 is G1 NO_RESULT, not a P1 case, since P1 had zero failed solver runs.",
+      "evidence": "Sec5: G1 d05 present=False HTTP=404; acceptable as negative-path check."
+    },
+    {
+      "severity": "info",
+      "finding": "Adaptive bracket sourced from G2 stage1 coarse polar, not P1 data.",
+      "evidence": "Sec6: zero new physics; disclosed."
+    }
+  ],
+  "limitations": [
+    "Only 5 unique labels; n=6 rows; UNDERPOWERED, no robust 70% claim.",
+    "Same-host storage; no off-host certification.",
+    "No wind tunnel or physical validation; fuel_burn_kg=null; LF-M2.02 NOT_VALIDATED.",
+    "No MAML or cross-task conclusions; P1 is not a training batch.",
+    "A4 failure-path evidence comes from G1, not P1.",
+    "Review is read-only dossier review, not a human signature."
+  ],
+  "scope": "P1 result review only; not a human signature; does not authorize P2/P3/MAML",
+  "signature": "deepseek-flash independent A5 review; not a human signature",
+  "model": "deepseek-flash",
+  "reviewed_utc": "2026-11-22T10:06:25Z",
+  "review_recorded_utc": "2026-11-22T10:06:25Z",
+  "dossier_path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-P1-20261122-02\\p1_a5_result_dossier.md",
+  "run_id": "DRECOVER001-P1-20261122-02",
+  "batch_id": "DRECOVER001-P1-20261122-02-B01",
+  "authorization_id": "AUTH-DREAL004-P1-20261122-01",
+  "tool_access": "NONE_SINGLE_SHOT_DOSSIER_STREAM",
+  "human_signature": false,
+  "scope_of_this_review": "P1 result review only; not a human signature; does not authorize P2/P3/MAML"
+}
