@@ -1,0 +1,143 @@
+{
+  "schema": "dreal004.p1_result.v1",
+  "run_id": "DRECOVER001-P1-20261122-02",
+  "batch_id": "DRECOVER001-P1-20261122-02-B01",
+  "authorization_id": "AUTH-DREAL004-P1-20261122-01",
+  "metrics": {
+    "schema": "dreal004.p1_metrics.v1",
+    "run_id": "DRECOVER001-P1-20261122-02",
+    "batch_id": "DRECOVER001-P1-20261122-02-B01",
+    "authorization_id": "AUTH-DREAL004-P1-20261122-01",
+    "physical_solver_starts_actual": 6,
+    "physical_solver_starts_completed": 6,
+    "internal_solver_cases_actual": 18,
+    "retries_actual": 0,
+    "parallelism": 1,
+    "admitted_rows": 6,
+    "unique_admission_certificates": 5,
+    "admitted_labels": 5,
+    "null_labels": 0,
+    "duplicate_attempt_rows": [
+      "p1-m202-d00-r1"
+    ],
+    "valid_label_rate_over_completed_rows": 0.833333,
+    "raw_point_match_rate_over_starts": 1.0,
+    "target_label_rate": 0.7,
+    "target_label_rate_met_on_rows": true,
+    "sample_size_verdict": "UNDERPOWERED_SMALL_SAMPLE",
+    "sample_size_note": "6 starts / 5 unique raw labels; 70 percent 仅按行计算，样本过小，不宣称目标稳健达成",
+    "internal_solver_cases_per_label": 3.6,
+    "per_design_internal_solver_cases": [
+      9,
+      3,
+      3,
+      3
+    ],
+    "per_design_internal_median": 3.0,
+    "per_design_internal_q1": 3.0,
+    "per_design_internal_q3": 7.5,
+    "total_wall_clock_s": 12.566,
+    "fixed_sweep_internal_baseline": 196,
+    "internal_saved_vs_fixed_sweep": 178,
+    "evaluation_mode": "PILOT_NOT_A_TRAINING_BATCH",
+    "physical_validation": "NOT_PERFORMED",
+    "fuel_burn_kg": null,
+    "lf_m202": "NOT_VALIDATED",
+    "label_scope": "LOCAL_RAW_BYTES_VERIFIED_AUDIT_BOUND_NOT_AUTHENTICATED_SAME_HOST"
+  },
+  "per_design": [
+    {
+      "design": "d00",
+      "starts": 3,
+      "internal_solver_cases": 9,
+      "wall_clock_s": 6.309,
+      "unique_labels": 2,
+      "di_n": 121438.5421316979
+    },
+    {
+      "design": "d01",
+      "starts": 1,
+      "internal_solver_cases": 3,
+      "wall_clock_s": 2.059,
+      "unique_labels": 1,
+      "di_n": 120206.23025968097
+    },
+    {
+      "design": "d04",
+      "starts": 1,
+      "internal_solver_cases": 3,
+      "wall_clock_s": 2.143,
+      "unique_labels": 1,
+      "di_n": 121679.60586249837
+    },
+    {
+      "design": "d07",
+      "starts": 1,
+      "internal_solver_cases": 3,
+      "wall_clock_s": 2.055,
+      "unique_labels": 1,
+      "di_n": 121438.58868632729
+    }
+  ],
+  "admitted_labels": [
+    {
+      "design": "d00",
+      "case_id": "p1-m202-d00-r1",
+      "di_n": 121438.58868632729,
+      "cl": 0.181744720773,
+      "alpha_deg": 5.181341,
+      "rel_error": 4.420247405998996e-06,
+      "admission_id": "p1-adm-p1-m202-d00-r1"
+    },
+    {
+      "design": "d00",
+      "case_id": "p1-m202-d00-r2",
+      "di_n": 121438.5421316979,
+      "cl": 0.181744686378,
+      "alpha_deg": 5.18134,
+      "rel_error": 4.230997606196558e-06,
+      "admission_id": "p1-adm-p1-m202-d00-r2"
+    },
+    {
+      "design": "d01",
+      "case_id": "p1-m202-d01-r1",
+      "di_n": 120206.23025968097,
+      "cl": 0.179946783992,
+      "alpha_deg": 5.129049,
+      "rel_error": 1.2844512392003504e-05,
+      "admission_id": "p1-adm-p1-m202-d01-r1"
+    },
+    {
+      "design": "d04",
+      "case_id": "p1-m202-d04-r1",
+      "di_n": 121679.60586249837,
+      "cl": 0.18174429066,
+      "alpha_deg": 5.191543,
+      "rel_error": 2.0536592631882506e-06,
+      "admission_id": "p1-adm-p1-m202-d04-r1"
+    },
+    {
+      "design": "d07",
+      "case_id": "p1-m202-d07-r1",
+      "di_n": 121438.58868632729,
+      "cl": 0.181744720773,
+      "alpha_deg": 5.181341,
+      "rel_error": 4.420247405998996e-06,
+      "admission_id": "p1-adm-p1-m202-d07-r1"
+    }
+  ],
+  "null_labels_detail": [],
+  "figures": [
+    "D:\\RCAIDE\\.real_runs\\DRECOVER001-P1-20261122-02\\figures\\cl_alpha_adaptive_vs_fixed.png",
+    "D:\\RCAIDE\\.real_runs\\DRECOVER001-P1-20261122-02\\figures\\p1_outcome_overview.png",
+    "D:\\RCAIDE\\.real_runs\\DRECOVER001-P1-20261122-02\\figures\\di_n_by_design.png",
+    "D:\\RCAIDE\\.real_runs\\DRECOVER001-P1-20261122-02\\figures\\internal_cost_by_design.png"
+  ],
+  "disclosures": [
+    "P1 是 pilot，不是训练批次；5 条标签不足以训练可靠 MAML",
+    "p1-m202-d00-r1 被重复启动两次（两个进程重叠），两次均按真实 start 计费；标签按证书去重",
+    "自适应搜索先用 G2 stage1 的 M202 coarse polar 原始行建立 bracket，该部分零新物理",
+    "tol=1e-3 未放宽，插值只用于估计，不进入严格 raw 标签",
+    "同机保存、未做异机认证；未做风洞/物理验证；fuel_burn_kg=null；LF-M2.02=NOT_VALIDATED"
+  ]
+}

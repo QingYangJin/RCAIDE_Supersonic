@@ -1,0 +1,40 @@
+{
+  "schema": "dreal004.p1_run_config.v1",
+  "run_id": "DRECOVER001-P1-20261122-02",
+  "batch_id": "DRECOVER001-P1-20261122-02-B01",
+  "authorization_id": "AUTH-DREAL004-P1-20261122-01",
+  "owner_instruction_ref": "m10191 批准真实评估",
+  "target_task": "DREAL004-M202",
+  "mach": 2.02,
+  "altitude_m": 18288.0,
+  "designs": [
+    "d00",
+    "d01",
+    "d04",
+    "d07"
+  ],
+  "max_starts": 12,
+  "max_starts_per_design": 3,
+  "max_alpha_probes_per_start": 3,
+  "max_internal_solver_cases": 36,
+  "cl_tolerance_rel": 0.001,
+  "cl_tolerance_relaxed": false,
+  "half_widths_deg": [
+    0.004,
+    0.002,
+    0.001
+  ],
+  "bracket_source": "G2 stage1 M202 coarse polar raw rows (zero new physics for bracket)",
+  "solver": "VSPAERO 3.55.0 omp1",
+  "parallelism": 1,
+  "retries": 0,
+  "alpha_points_per_start": 3,
+  "label_evidence_scope": "SAME_HOST_NOT_AUTHENTICATED",
+  "physical_validation": "NOT_PERFORMED",
+  "fuel_burn_kg": null,
+  "notes": [
+    "P1 是 pilot，不是训练批次；不据此训练正式 MAML",
+    "插值结果不进入严格 raw 训练集",
+    "重复启动 p1-m202-d00-r1 两次均计费，标签按证书去重"
+  ]
+}

@@ -89,12 +89,13 @@ def build_package(total_starts: int) -> list[dict]:
     raw_root.mkdir(exist_ok=True)
     for c in cases:
         copy_case(c, raw_root / c.name)
-    tables = RUN / "tables"
-    if tables.exists():
-        tdir = PKG / "tables"
-        if tdir.exists():
-            shutil.rmtree(tdir)
-        shutil.copytree(tables, tdir)
+    for dname in ("tables", "figures", "metadata"):
+        src = RUN / dname
+        if src.exists():
+            ddir = PKG / dname
+            if ddir.exists():
+                shutil.rmtree(ddir)
+            shutil.copytree(src, ddir)
     st = PKG / "scripts"
     st.mkdir(exist_ok=True)
     for p in (RUN / "scripts").glob("*.py"):
@@ -102,7 +103,9 @@ def build_package(total_starts: int) -> list[dict]:
     for name in ("p1_preregistration.json", "p1_a5_dossier.md", "p1_go_record.json",
                  "p1_runs.json", "p1_state.json", "p1_accounting.json",
                  "p1_admitted_labels.csv", "p1_failed_or_null.csv", "p1_attempt_ledger.csv",
-                 "p1_alpha_refinement_history.csv", "README.md"):
+                 "p1_alpha_refinement_history.csv", "p1_attempt_ledger.csv",
+                 "p1_metrics.json", "p1_result.json", "run_config.json",
+                 "task_family_split.json", "geometry_freeze.json", "README.md"):
         p = RUN / name
         if p.exists():
             shutil.copy2(p, PKG / name)
