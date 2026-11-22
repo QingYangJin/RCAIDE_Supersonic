@@ -40,12 +40,30 @@ def token() -> str:
 
 
 def api(path: str, tok: str) -> dict:
+    """GET a GitHub API JSON document with retries and chunked reads (large trees truncate otherwise)."""
     import urllib.request
-    req = urllib.request.Request("https://api.github.com" + path,
-        headers={"Authorization": "Bearer " + tok,
-                 "Accept": "application/vnd.github+json", "User-Agent": "x"})
-    with urllib.request.urlopen(req, timeout=120) as r:
-        return json.loads(r.read().decode())
+    last = None
+    for attempt in range(6):
+        try:
+            req = urllib.request.Request("https://api.github.com" + path,
+                headers={"Authorization": "Bearer " + tok,
+                         "Accept": "application/vnd.github+json", "User-Agent": "x"})
+            with urllib.request.urlopen(req, timeout=180) as r:
+                buf = bytearray()
+                expected = r.length
+                while True:
+                    chunk = r.read(1 << 16)
+                    if not chunk:
+                        break
+                    buf.extend(chunk)
+                if expected is not None and len(buf) != expected:
+                    raise IOError("short read %d/%d bytes" % (len(buf), expected))
+                return json.loads(buf.decode())
+        except Exception as e:  # noqa: BLE001
+            last = e
+            import time as _t
+            _t.sleep(2 + 2 * attempt)
+    raise RuntimeError("API failed after retries: %r" % (last,))
 
 
 def copy_case(case_dir: Path, dst: Path) -> None:
@@ -142,15 +160,31 @@ def push() -> tuple[bool, str]:
     return False, last
 
 
+def local_blobs(commit: str) -> dict:
+    out = git(["ls-tree", "-r", "-z", commit, "--", RUN_REL]).stdout
+    res = {}
+    for ent in out.split("\x00"):
+        if not ent:
+            continue
+        meta, path = ent.split("\t", 1)
+        parts = meta.split()
+        if len(parts) >= 3 and parts[1] == "blob":
+            res[path.split(RUN_REL + "/", 1)[-1]] = parts[2]
+    return res
+
+
 def verify_remote(commit: str, files: list[dict]) -> dict:
     tok = token()
     tree = api("/repos/%s/git/trees/%s?recursive=1" % (OWNER_REPO, commit), tok)["tree"]
     remote = {t["path"]: t["sha"] for t in tree if t["type"] == "blob"}
+    local = local_blobs(commit)
     bad, missing = [], []
     for f in files:
-        local_blob = git(["rev-parse", "HEAD:" + RUN_REL + "/" + f["path"]]).stdout.strip()
+        local_blob = local.get(f["path"])
         r = remote.get(RUN_REL + "/" + f["path"])
-        if r is None:
+        if local_blob is None:
+            missing.append(f["path"] + " (absent from local commit)")
+        elif r is None:
             missing.append(f["path"])
         elif r != local_blob:
             bad.append(f["path"])
