@@ -89,7 +89,8 @@ def build_package(total_starts: int) -> list[dict]:
     raw_root.mkdir(exist_ok=True)
     for c in cases:
         copy_case(c, raw_root / c.name)
-    for dname in ("tables", "figures", "metadata", "p2_dataset", "training"):
+    for dname in ("tables", "figures", "metadata", "p2_dataset", "training",
+                  "a5_result_review", "remote_retrieval"):
         src = RUN / dname
         if src.exists():
             ddir = PKG / dname

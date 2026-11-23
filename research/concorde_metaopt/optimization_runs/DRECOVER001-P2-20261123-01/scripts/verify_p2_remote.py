@@ -13,6 +13,7 @@ RUN = Path(r"D:/RCAIDE/.real_runs/DRECOVER001-P2-20261123-01")
 OUT = RUN / "remote_retrieval"
 OUT.mkdir(parents=True, exist_ok=True)
 BRANCH = "research/dreal004-alpha-adaptive-meta-sampling"
+OREPO = "QingYangJin/RCAIDE_Supersonic"
 RUN_REL = "research/concorde_metaopt/optimization_runs/DRECOVER001-P2-20261123-01"
 TOK = re.search(r"GITHUB_TOKEN:\s*([^\s]+)",
                 Path(r"C:/Users/pc/.dsh/.credentials.yaml").read_text(encoding="utf-8")).group(1).strip().strip('"').strip("'")
@@ -24,6 +25,7 @@ def api(path: str):
     for attempt in range(6):
         try:
             req = urllib.request.Request("https://api.github.com" + path, headers=HEADERS)
+            # path already absolute (starts with /repos)
             with urllib.request.urlopen(req, timeout=180) as r:
                 return json.loads(r.read().decode())
         except Exception as e:  # noqa: BLE001
@@ -36,7 +38,7 @@ def blob(sha: str) -> bytes:
     last = None
     for attempt in range(6):
         try:
-            req = urllib.request.Request("https://api.github.com/git/blobs/" + sha, headers=HEADERS)
+            req = urllib.request.Request("https://api.github.com/repos/" + OREPO + "/git/blobs/" + sha, headers=HEADERS)
             with urllib.request.urlopen(req, timeout=180) as r:
                 doc = json.loads(r.read().decode())
             return base64.b64decode(doc["content"])
@@ -47,7 +49,7 @@ def blob(sha: str) -> bytes:
 
 
 def tree(sha: str):
-    return api("/git/trees/" + sha)
+    return api("/repos/" + OREPO + "/git/trees/" + sha)
 
 
 def find(root_sha: str, parts):
@@ -80,14 +82,14 @@ def parse_polar(text: str):
     return header, rows, ri, ci, li
 
 
-ref = api("/git/ref/heads/" + BRANCH)
+ref = api("/repos/" + OREPO + "/git/ref/heads/" + BRANCH)
 head = ref["object"]["sha"]
-commit = api("/git/commits/" + head)
+commit = api("/repos/" + OREPO + "/git/commits/" + head)
 run_tree = find(commit["tree"]["sha"], RUN_REL.split("/") + ["raw_cases"])
 if run_tree is None:
     raise SystemExit("raw_cases tree not found")
 listing = tree(run_tree)
-cases = sorted(e for e in listing["tree"] if e["type"] == "tree")
+cases = sorted((e for e in listing["tree"] if e["type"] == "tree"), key=lambda e: e["path"])
 
 results, bad = [], []
 for entry in cases:

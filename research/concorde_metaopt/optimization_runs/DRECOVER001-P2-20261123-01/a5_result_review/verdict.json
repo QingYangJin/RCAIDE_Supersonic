@@ -1,0 +1,79 @@
+{
+  "reviewer": "deepseek-flash",
+  "review_type": "independent_single_shot_result_review",
+  "dossier_sha256": "7aa878ffe123158798a3c2bf96ea9d90abd2e6dbcf9c63cf0dded1294069a245",
+  "verdict": "P2_RESULT_REVIEW_PASS",
+  "gate_verdicts": {
+    "P2_ACCOUNTING": "PASS",
+    "P2_DATASET_SPLIT": "PASS_WITH_DISCLOSURE",
+    "P2_ARM_FAIRNESS": "PASS",
+    "P2_REMOTE_RETRIEVAL": "PASS",
+    "P2_STATISTICAL_CLAIMS": "PASS",
+    "P2_BOUNDARIES": "PASS"
+  },
+  "evidence_checked": [
+    "accounting: 16 starts/16 completed/48 internal/16 labels/0 nulls/0 retries",
+    "dataset: 44 rows/44 certs, 8 fixed tasks, K=5 NOT_ELIGIBLE, post-GO dedupe fix disclosed with diff",
+    "arm fairness: shared labels, train-only normalization (23 train rows), same capacity/budget/seeds, no test tuning",
+    "remote: 373 readback, 16/16 case recompute, Di_N=q*Sref*CDi identity, raw_sha256 match",
+    "statistics: FOMAML negative result reported; claims limited to 44 rows/2 held-out tasks",
+    "boundaries: no physical validation, same-host labels, no P3 authorization"
+  ],
+  "findings": [
+    {
+      "severity": "info",
+      "finding": "Accounting self-consistent: 16 starts, 16 completed, 48 internal cases, 16 labels, 0 nulls, 0 retries, within 240 cap",
+      "evidence": "Section 2: 16/16, 48/48, labels 16, NULL 0, retry 0, wall 29.394 s"
+    },
+    {
+      "severity": "minor",
+      "finding": "Post-GO dedupe fix changed dataset from 25 to 44 rows; disclosed with pre/post SHA and per-task diff, no physical impact",
+      "evidence": "Section 3 diff: pre_fix 25 rows/excluded 23; post_fix 44 rows/excluded 20; 16 starts pre-date fix"
+    },
+    {
+      "severity": "info",
+      "finding": "Split has no support/query leakage; 8 canonical tasks fixed; K=5 correctly ineligible due to only d00-d03 slots",
+      "evidence": "Section 3 per-task support/query counts; K=5 NOT_ELIGIBLE stated"
+    },
+    {
+      "severity": "info",
+      "finding": "Four arms share labels, train-only normalization, capacity, budget, seeds; no test tuning; FOMAML hyperparameters untuned",
+      "evidence": "Section 4: 24 npz checkpoints, fit_observation_ids 23 train rows, seeds [7,19,43], K [1,3]"
+    },
+    {
+      "severity": "info",
+      "finding": "Remote blob readback and independent Di_N recompute adequate for A4: 373 checked, 16/16 cases pass, identity verified",
+      "evidence": "Section 7: readback 373, missing [], bad []; 16/16 case pass; Di_N=q*Sref*CDi"
+    },
+    {
+      "severity": "info",
+      "finding": "Negative FOMAML result honestly reported; statistical claims limited to 44 rows and 2 held-out tasks, no significance claim",
+      "evidence": "Section 6: FOMAML K=3 degrades; Section 8: no significance/generalization claim"
+    },
+    {
+      "severity": "info",
+      "finding": "Boundaries respected: physics_validated=false, same-host labels with Owner waiver, no P3 authorization requested",
+      "evidence": "Section 8: same-host, no wind tunnel, fuel_burn_kg=null, no P3 GO"
+    }
+  ],
+  "limitations": [
+    "Single-shot deepseek-flash review, not a human signature",
+    "Small sample: 44 rows, 2 held-out tasks; no statistical significance",
+    "Labels same-host; no independent fault-domain backup (Owner waiver)",
+    "No physical/wind-tunnel validation; LF-M2.02 unverified",
+    "M140 alpha near G2 stage-1 upper bound; 1.0 label rate not guaranteed for other Mach",
+    "Post-GO code changes disclosed but not re-audited line-by-line here"
+  ],
+  "scope": "P2 result review only; not a human signature; does not authorize P3/MAML",
+  "signature": "deepseek-flash independent A5 review; not a human signature",
+  "model": "deepseek-flash",
+  "reviewed_utc": "2026-11-23T16:38:52Z",
+  "review_recorded_utc": "2026-11-23T16:38:52Z",
+  "dossier_path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-P2-20261123-01\\p2_a5_result_dossier.md",
+  "run_id": "DRECOVER001-P2-20261123-01",
+  "batch_id": "DRECOVER001-P2-20261123-01-B01",
+  "authorization_id": "AUTH-DREAL004-P2-20261123-01",
+  "tool_access": "NONE_SINGLE_SHOT_DOSSIER_STREAM",
+  "human_signature": false,
+  "scope_of_this_review": "P2 result review only; not a human signature; does not authorize P3/MAML"
+}

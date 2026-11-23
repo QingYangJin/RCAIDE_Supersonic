@@ -17,6 +17,7 @@ proto = json.loads((RUN / "a5_review" / "verdict.json").read_text(encoding="utf-
 acc = json.loads((RUN / "p2_supplement_accounting.json").read_text(encoding="utf-8"))
 ds = json.loads((RUN / "p2_dataset" / "p2_dataset.json").read_text(encoding="utf-8"))
 res = json.loads((RUN / "training" / "p2_training_result.json").read_text(encoding="utf-8"))
+diff = json.loads((RUN / "p2_dataset" / "p2_dataset_diff.json").read_text(encoding="utf-8"))
 summ = json.loads((RUN / "training" / "p2_arm_summary.json").read_text(encoding="utf-8"))
 up = json.loads((RUN / "upload_receipt.json").read_text(encoding="utf-8"))
 audit_p = RUN / "remote_retrieval" / "p2_remote_retrieval_audit.json"
@@ -38,7 +39,7 @@ A("")
 A("## 0. 文件身份")
 for name in ("p2_preregistration.json", "p2_go_record.json", "a5_review/verdict.json",
              "p2_supplement_plan.json", "p2_supplement_accounting.json",
-             "p2_dataset/p2_dataset.json", "tables/p2_arm_metrics.csv",
+             "p2_dataset/p2_dataset.json", "p2_dataset/p2_dataset_diff.json", "tables/p2_arm_metrics.csv",
              "tables/p2_predictions.csv", "tables/p2_training_curves.csv",
              "training/p2_training_result.json", "training/p2_arm_summary.json",
              "training/p2_normalizer.json", "upload_receipt.json",
@@ -67,7 +68,15 @@ for t in ds["tasks"]:
     A("  - " + t["task_id"] + "（" + t["split"] + "，Mach " + str(t["mach"]) + "）：support " + str(t["support"]) + " / query " + str(t["query"]) + "；K=3 可行=" + str(t["k3_support_ok"] and t["k3_query_ok"]))
 A("- 数据来源：R2/G1/G2 旧案例只读复用 + P2 补采 16 个案例；历史 task_id 通过显式别名表映射到 8 个 canonical 任务，历史证书/原始文件未被改写")
 A("- 去重与冲突：excluded=" + str(len(ds["excluded"])) + " 条（同设计重复、低优先级冲突被高优先级批次取代、同优先级 support/query 冲突整条丢弃）")
-A("- 关键披露（post-GO 数据构建器修复）：首次重建时 2 条 R2 低优先级 query 记录与 P2 补采 support 记录在“同设计不同分区”分支被误判为不可解冲突并同时剔除，导致 M180/M202 各少 1 条 support（39 行、K=3 不可行）；修复为“低优先级冲突只剔除低优先级记录”后重建为 44 行，M180/M202 恢复 3+ support。该修复只影响样本分配，不改变已发生的 16 次物理启动与 16 条标签；修复前后数据集 SHA 与行数差异在此披露。")
+A("- 关键披露（post-GO 数据构建器修复）：首次重建时 2 条 R2 低优先级 query 记录与 P2 补采 support 记录在“同设计不同分区”分支被误判为不可解冲突并同时剔除，导致 M180/M202 各少 1 条 support（39 行、K=3 不可行）；修复为“低优先级冲突只剔除低优先级记录”后重建为 44 行，M180/M202 恢复 3+ support。该修复只影响样本分配，不改变已发生的 16 次物理启动与 16 条标签；修复前后数据集 SHA 与行数差异见下。")
+A("- 修复前后逐项差异（p2_dataset/p2_dataset_diff.json，sha256 " + sha(RUN / "p2_dataset" / "p2_dataset_diff.json") + "）：")
+A("  - pre_fix: " + diff["pre_fix"]["source"] + "，sha256 " + diff["pre_fix"]["sha256"] + "，rows " + str(diff["pre_fix"]["rows"]) + "，certificates " + str(diff["pre_fix"]["certificates"]) + "，excluded " + str(diff["pre_fix"]["excluded_count"]))
+A("  - post_fix: sha256 " + diff["post_fix"]["sha256"] + "，rows " + str(diff["post_fix"]["rows"]) + "，certificates " + str(diff["post_fix"]["certificates"]) + "，excluded " + str(diff["post_fix"]["excluded_count"]))
+A("  - 新增准入记录 " + str(len(diff["added_admission_ids"])) + " 条：" + ", ".join(diff["added_admission_ids"]))
+A("  - 移除准入记录 " + str(len(diff["removed_admission_ids"])) + " 条")
+for c in diff["per_task_changes"]:
+    A("  - " + c["task_id"] + "（" + str(c["split"]) + "）：support " + str(c["support_before"]) + " -> " + str(c["support_after"]) + "；query " + str(c["query_before"]) + " -> " + str(c["query_after"]))
+A("- 修复原因：" + diff["cause"] + "；物理影响：" + diff["physical_effect"])
 A("- 数据集合规：K=5 为 NOT_ELIGIBLE（冻结协议仅 d00–d03 四个独立 support 槽位；禁止 query 充数或重复采样）")
 A("")
 A("## 4. 四臂训练协议")
