@@ -1,0 +1,160 @@
+{
+  "schema": "dreal004.p2_run_config.v1",
+  "run_id": "DRECOVER001-P2-20261123-01",
+  "issue": "QingYangJin/RCAIDE_Supersonic#14 (P2 directive; owner comment 7103901506)",
+  "authorization_id": "AUTH-DREAL004-P2-20261123-01",
+  "batch_ids": [
+    "DRECOVER001-P2-20261123-01-B01",
+    "DRECOVER001-P2-20261123-01-B02"
+  ],
+  "solver": {
+    "executable": "D:/OpenVSP-3.55.0/OpenVSP-3.55.0-win64/vspaero.exe",
+    "executable_id": "vspaero-3.55.0-v7.2.2-omp1",
+    "openmp": 1,
+    "dtype": "float64",
+    "device": "cpu"
+  },
+  "caps": {
+    "max_physical_starts": 16,
+    "max_internal_solver_cases": 48,
+    "alpha_probes_per_start": 3,
+    "parallelism": 1,
+    "retries": 0,
+    "per_start_timeout_s": 600,
+    "wall_clock_max_s": 9600
+  },
+  "actual": {
+    "physical_solver_starts_actual": 16,
+    "physical_solver_starts_completed": 16,
+    "internal_solver_cases_actual": 48,
+    "retries_actual": 0,
+    "parallelism": 1,
+    "wall_clock_s": 29.394,
+    "admitted_labels": 16,
+    "null_labels": 0,
+    "valid_label_rate_over_completed": 1.0
+  },
+  "task_family": {
+    "train": [
+      "P2-CANON-M140",
+      "P2-CANON-M160",
+      "P2-CANON-M200",
+      "P2-CANON-M202"
+    ],
+    "val": [
+      "P2-CANON-M180",
+      "P2-CANON-M220"
+    ],
+    "test": [
+      "P2-CANON-M240",
+      "P2-CANON-M260"
+    ]
+  },
+  "training": {
+    "arms": [
+      "RANDOM_INIT",
+      "POOLED_PRETRAIN",
+      "TASK_COND_PRETRAIN",
+      "FOMAML"
+    ],
+    "k_values": [
+      1,
+      3
+    ],
+    "seeds": [
+      7,
+      19,
+      43
+    ],
+    "k5": "NOT_ELIGIBLE (frozen four support slots; query rows never borrowed as support)",
+    "normalizer_sha256": "dd054cdcb76e71350b18f090782c98b7ca931a53d542a3ee8e9036d674203e0a",
+    "checkpoints": 24,
+    "max_steps": 60,
+    "hidden_sizes": [
+      32,
+      32
+    ],
+    "inner_lr": 0.05,
+    "inner_steps": 5,
+    "outer_lr": 0.01,
+    "tasks_per_batch": 2,
+    "device": "cpu",
+    "dtype": "float64"
+  },
+  "summary_rows": [
+    {
+      "arm": "RANDOM_INIT",
+      "split": "val",
+      "mean_mae_n": 21089.02536379994,
+      "mean_rmse_n": 23187.33445736006,
+      "n_task_k_seed": 12
+    },
+    {
+      "arm": "RANDOM_INIT",
+      "split": "test",
+      "mean_mae_n": 28509.17403823738,
+      "mean_rmse_n": 30234.804016173348,
+      "n_task_k_seed": 12
+    },
+    {
+      "arm": "POOLED_PRETRAIN",
+      "split": "val",
+      "mean_mae_n": 15015.943122873083,
+      "mean_rmse_n": 16197.558271101947,
+      "n_task_k_seed": 12
+    },
+    {
+      "arm": "POOLED_PRETRAIN",
+      "split": "test",
+      "mean_mae_n": 25192.778986804205,
+      "mean_rmse_n": 26190.47454929427,
+      "n_task_k_seed": 12
+    },
+    {
+      "arm": "TASK_COND_PRETRAIN",
+      "split": "val",
+      "mean_mae_n": 10693.00591703195,
+      "mean_rmse_n": 11785.99742448727,
+      "n_task_k_seed": 12
+    },
+    {
+      "arm": "TASK_COND_PRETRAIN",
+      "split": "test",
+      "mean_mae_n": 8528.89539226679,
+      "mean_rmse_n": 9729.982986032152,
+      "n_task_k_seed": 12
+    },
+    {
+      "arm": "FOMAML",
+      "split": "val",
+      "mean_mae_n": 25350.244272760134,
+      "mean_rmse_n": 26713.237984982887,
+      "n_task_k_seed": 12
+    },
+    {
+      "arm": "FOMAML",
+      "split": "test",
+      "mean_mae_n": 40053.83698354073,
+      "mean_rmse_n": 40497.96169810164,
+      "n_task_k_seed": 12
+    }
+  ],
+  "environment": {
+    "python": "3.11.17",
+    "platform": "Windows-10-10.0.26200-SP0",
+    "torch": "2.8.0+cpu",
+    "torch_cuda": false,
+    "dtype": "float64",
+    "device": "cpu",
+    "note": "CPU float64 is the reproducible reference; CUDA was not used"
+  },
+  "code_shas": {
+    "research/concorde_metaopt/dreal001/meta/real_p2_arms.py": "8c8b28e3afa55dda8b696dc3e8954baae32f391d7ab63c3373b374979033d8a4",
+    "research/concorde_metaopt/dreal001/meta/meta_dataset.py": "e608d652d85c875e6a19b041de1beed54004598d13266f51e26a2c528bdb63a3",
+    "research/concorde_metaopt/meta_learning/maml.py": "ea5e45ac5b98d9d68f88a8db1456de0545acb086e7521a3574ea1a124b3c7e57",
+    "scripts/p2_train.py": "7aa49195c55a6afbc4c0d1deab7de3c18bdd5c71f461064442a8d7e64dff792f",
+    "scripts/p2_data.py": "124822d06ac4357f6342c0f3f4294a6fa33702af7ad19a98b8a1579b753a1e8b"
+  },
+  "created_utc": "2026-11-23T15:59:50Z",
+  "physical_solver_starts_during_training": 0
+}

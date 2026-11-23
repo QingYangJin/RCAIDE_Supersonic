@@ -124,6 +124,13 @@ def build_family_and_dataset(*, verbose=False):
             excluded.append({"admission_id": payload["admission_id"],
                              "reason": "duplicate design within canonical task",
                              "kept": prior["payload"]["admission_id"]})
+        elif priority < prior["priority"]:
+            # A lower-priority batch disagrees with the partition already chosen
+            # from a higher-priority batch. Keep the higher-priority audited row
+            # and discard only the lower-priority record.
+            excluded.append({"admission_id": payload["admission_id"],
+                             "reason": "lower-priority batch contradicts the higher-priority partition for this design",
+                             "kept": prior["payload"]["admission_id"]})
         else:
             partition_conflicts[key[0]] = partition_conflicts.get(key[0], 0) + 1
             excluded.append({"admission_id": payload["admission_id"],

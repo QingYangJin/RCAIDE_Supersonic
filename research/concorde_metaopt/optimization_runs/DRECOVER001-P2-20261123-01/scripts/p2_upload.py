@@ -89,7 +89,7 @@ def build_package(total_starts: int) -> list[dict]:
     raw_root.mkdir(exist_ok=True)
     for c in cases:
         copy_case(c, raw_root / c.name)
-    for dname in ("tables", "figures", "metadata", "p2_dataset"):
+    for dname in ("tables", "figures", "metadata", "p2_dataset", "training"):
         src = RUN / dname
         if src.exists():
             ddir = PKG / dname
@@ -104,7 +104,8 @@ def build_package(total_starts: int) -> list[dict]:
                  "p2_supplement_plan.json", "p2_supplement_state.json",
                  "p2_supplement_accounting.json", "p2_admitted_labels.csv",
                  "p2_failed_or_null.csv", "p2_attempt_ledger.csv", "p2_alpha_rows.csv",
-                 "all_evaluations.json", "run_config.json",
+                 "all_evaluations.json", "run_config.json", "p2_train.log",
+                 "p2_pytest_recovery.log", "p2_supplement_run.log",
                  "task_family_split.json", "geometry_freeze.json", "README.md"):
         p = RUN / name
         if p.exists():

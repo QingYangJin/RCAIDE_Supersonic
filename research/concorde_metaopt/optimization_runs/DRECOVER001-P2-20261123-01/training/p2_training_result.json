@@ -1,0 +1,763 @@
+{
+  "schema": "dreal004.p2_training_result.v1",
+  "run_id": "DRECOVER001-P2-20261123-01",
+  "created_utc": "2026-11-23T15:40:46Z",
+  "status": "REAL_META_TRAINING_EXECUTED",
+  "scope": "real admitted labels only; no physical solver invoked by this script",
+  "k_values": [
+    1,
+    3
+  ],
+  "seeds": [
+    7,
+    19,
+    43
+  ],
+  "k5": "NOT_ELIGIBLE (frozen four support slots; query rows never borrowed as support)",
+  "arms": [
+    "RANDOM_INIT",
+    "POOLED_PRETRAIN",
+    "TASK_COND_PRETRAIN",
+    "FOMAML"
+  ],
+  "task_family": {
+    "train": [
+      "P2-CANON-M140",
+      "P2-CANON-M160",
+      "P2-CANON-M200",
+      "P2-CANON-M202"
+    ],
+    "val": [
+      "P2-CANON-M180",
+      "P2-CANON-M220"
+    ],
+    "test": [
+      "P2-CANON-M240",
+      "P2-CANON-M260"
+    ]
+  },
+  "rows": 44,
+  "certificates": 44,
+  "normalizer": {
+    "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-P2-20261123-01\\training\\p2_normalizer.json",
+    "sha256": "dd054cdcb76e71350b18f090782c98b7ca931a53d542a3ee8e9036d674203e0a"
+  },
+  "checkpoints": {
+    "RANDOM_INIT_k1_seed7": {
+      "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-P2-20261123-01\\training\\checkpoints\\RANDOM_INIT_k1_seed7.npz",
+      "sha256": "d754c590b9724a7de6bab46f6cebea2265690fb56f2e1ae0380bcb01be58e1f4",
+      "bytes": 13562,
+      "tensors": 6,
+      "shape": [
+        [
+          12,
+          32
+        ],
+        [
+          32
+        ],
+        [
+          32,
+          32
+        ],
+        [
+          32
+        ],
+        [
+          32,
+          1
+        ],
+        [
+          1
+        ]
+      ]
+    },
+    "POOLED_PRETRAIN_k1_seed7": {
+      "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-P2-20261123-01\\training\\checkpoints\\POOLED_PRETRAIN_k1_seed7.npz",
+      "sha256": "7da14a29c3e983c9c5672e630decc26d5ad14068201404f7a9c4346e6b6649c2",
+      "bytes": 13562,
+      "tensors": 6,
+      "shape": [
+        [
+          12,
+          32
+        ],
+        [
+          32
+        ],
+        [
+          32,
+          32
+        ],
+        [
+          32
+        ],
+        [
+          32,
+          1
+        ],
+        [
+          1
+        ]
+      ]
+    },
+    "TASK_COND_PRETRAIN_k1_seed7": {
+      "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-P2-20261123-01\\training\\checkpoints\\TASK_COND_PRETRAIN_k1_seed7.npz",
+      "sha256": "2de9929641be5b9d6f2cff88c281d28c4a6171f0db277bb546d5976d85d21355",
+      "bytes": 14586,
+      "tensors": 6,
+      "shape": [
+        [
+          16,
+          32
+        ],
+        [
+          32
+        ],
+        [
+          32,
+          32
+        ],
+        [
+          32
+        ],
+        [
+          32,
+          1
+        ],
+        [
+          1
+        ]
+      ]
+    },
+    "FOMAML_k1_seed7": {
+      "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-P2-20261123-01\\training\\checkpoints\\FOMAML_k1_seed7.npz",
+      "sha256": "cf84eca73f7b66a63ff14033ce1ab50b89fd92de8e50c5e2eb7fe5a5b6fcbcdf",
+      "bytes": 13562,
+      "tensors": 6,
+      "shape": [
+        [
+          12,
+          32
+        ],
+        [
+          32
+        ],
+        [
+          32,
+          32
+        ],
+        [
+          32
+        ],
+        [
+          32,
+          1
+        ],
+        [
+          1
+        ]
+      ]
+    },
+    "RANDOM_INIT_k1_seed19": {
+      "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-P2-20261123-01\\training\\checkpoints\\RANDOM_INIT_k1_seed19.npz",
+      "sha256": "412811bca851a504dbdc17ae0a90cc488587f65ccb349c4c5203352d90eb696f",
+      "bytes": 13562,
+      "tensors": 6,
+      "shape": [
+        [
+          12,
+          32
+        ],
+        [
+          32
+        ],
+        [
+          32,
+          32
+        ],
+        [
+          32
+        ],
+        [
+          32,
+          1
+        ],
+        [
+          1
+        ]
+      ]
+    },
+    "POOLED_PRETRAIN_k1_seed19": {
+      "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-P2-20261123-01\\training\\checkpoints\\POOLED_PRETRAIN_k1_seed19.npz",
+      "sha256": "ca0c943f74fc763465191dfcc8b7c808badcd0b8b835528e50f46e6b15762916",
+      "bytes": 13562,
+      "tensors": 6,
+      "shape": [
+        [
+          12,
+          32
+        ],
+        [
+          32
+        ],
+        [
+          32,
+          32
+        ],
+        [
+          32
+        ],
+        [
+          32,
+          1
+        ],
+        [
+          1
+        ]
+      ]
+    },
+    "TASK_COND_PRETRAIN_k1_seed19": {
+      "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-P2-20261123-01\\training\\checkpoints\\TASK_COND_PRETRAIN_k1_seed19.npz",
+      "sha256": "97b45b8601196a66dc233031be91bfbcfb7fa8ae7e687437e6d31897f4e9dd02",
+      "bytes": 14586,
+      "tensors": 6,
+      "shape": [
+        [
+          16,
+          32
+        ],
+        [
+          32
+        ],
+        [
+          32,
+          32
+        ],
+        [
+          32
+        ],
+        [
+          32,
+          1
+        ],
+        [
+          1
+        ]
+      ]
+    },
+    "FOMAML_k1_seed19": {
+      "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-P2-20261123-01\\training\\checkpoints\\FOMAML_k1_seed19.npz",
+      "sha256": "918cc85be2265be93c03e4740cffeed21cf1aeb6b99ea4ebde1c24adfdd46c0e",
+      "bytes": 13562,
+      "tensors": 6,
+      "shape": [
+        [
+          12,
+          32
+        ],
+        [
+          32
+        ],
+        [
+          32,
+          32
+        ],
+        [
+          32
+        ],
+        [
+          32,
+          1
+        ],
+        [
+          1
+        ]
+      ]
+    },
+    "RANDOM_INIT_k1_seed43": {
+      "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-P2-20261123-01\\training\\checkpoints\\RANDOM_INIT_k1_seed43.npz",
+      "sha256": "c9d532bea325acb6ddb8f298480d39d35ff169f0c461f1a38797abd355adf5e9",
+      "bytes": 13562,
+      "tensors": 6,
+      "shape": [
+        [
+          12,
+          32
+        ],
+        [
+          32
+        ],
+        [
+          32,
+          32
+        ],
+        [
+          32
+        ],
+        [
+          32,
+          1
+        ],
+        [
+          1
+        ]
+      ]
+    },
+    "POOLED_PRETRAIN_k1_seed43": {
+      "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-P2-20261123-01\\training\\checkpoints\\POOLED_PRETRAIN_k1_seed43.npz",
+      "sha256": "bfd3823f2ca3fb14f4ce9d76eebc96cf0bf5e09d356f55ef3a18ae7d1268d033",
+      "bytes": 13562,
+      "tensors": 6,
+      "shape": [
+        [
+          12,
+          32
+        ],
+        [
+          32
+        ],
+        [
+          32,
+          32
+        ],
+        [
+          32
+        ],
+        [
+          32,
+          1
+        ],
+        [
+          1
+        ]
+      ]
+    },
+    "TASK_COND_PRETRAIN_k1_seed43": {
+      "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-P2-20261123-01\\training\\checkpoints\\TASK_COND_PRETRAIN_k1_seed43.npz",
+      "sha256": "53f1073574a1ce78a8266f68bab426391033e2477b4d364d91aac5faf309364c",
+      "bytes": 14586,
+      "tensors": 6,
+      "shape": [
+        [
+          16,
+          32
+        ],
+        [
+          32
+        ],
+        [
+          32,
+          32
+        ],
+        [
+          32
+        ],
+        [
+          32,
+          1
+        ],
+        [
+          1
+        ]
+      ]
+    },
+    "FOMAML_k1_seed43": {
+      "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-P2-20261123-01\\training\\checkpoints\\FOMAML_k1_seed43.npz",
+      "sha256": "ff2d73bff122d7e838526a62077535f54a608521a763912948937ee8a74e169d",
+      "bytes": 13562,
+      "tensors": 6,
+      "shape": [
+        [
+          12,
+          32
+        ],
+        [
+          32
+        ],
+        [
+          32,
+          32
+        ],
+        [
+          32
+        ],
+        [
+          32,
+          1
+        ],
+        [
+          1
+        ]
+      ]
+    },
+    "RANDOM_INIT_k3_seed7": {
+      "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-P2-20261123-01\\training\\checkpoints\\RANDOM_INIT_k3_seed7.npz",
+      "sha256": "d754c590b9724a7de6bab46f6cebea2265690fb56f2e1ae0380bcb01be58e1f4",
+      "bytes": 13562,
+      "tensors": 6,
+      "shape": [
+        [
+          12,
+          32
+        ],
+        [
+          32
+        ],
+        [
+          32,
+          32
+        ],
+        [
+          32
+        ],
+        [
+          32,
+          1
+        ],
+        [
+          1
+        ]
+      ]
+    },
+    "POOLED_PRETRAIN_k3_seed7": {
+      "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-P2-20261123-01\\training\\checkpoints\\POOLED_PRETRAIN_k3_seed7.npz",
+      "sha256": "7da14a29c3e983c9c5672e630decc26d5ad14068201404f7a9c4346e6b6649c2",
+      "bytes": 13562,
+      "tensors": 6,
+      "shape": [
+        [
+          12,
+          32
+        ],
+        [
+          32
+        ],
+        [
+          32,
+          32
+        ],
+        [
+          32
+        ],
+        [
+          32,
+          1
+        ],
+        [
+          1
+        ]
+      ]
+    },
+    "TASK_COND_PRETRAIN_k3_seed7": {
+      "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-P2-20261123-01\\training\\checkpoints\\TASK_COND_PRETRAIN_k3_seed7.npz",
+      "sha256": "50774493cb8351f799aff2f35752951f0e90c35724c1b9c9e83314fdb3c6b35c",
+      "bytes": 14586,
+      "tensors": 6,
+      "shape": [
+        [
+          16,
+          32
+        ],
+        [
+          32
+        ],
+        [
+          32,
+          32
+        ],
+        [
+          32
+        ],
+        [
+          32,
+          1
+        ],
+        [
+          1
+        ]
+      ]
+    },
+    "FOMAML_k3_seed7": {
+      "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-P2-20261123-01\\training\\checkpoints\\FOMAML_k3_seed7.npz",
+      "sha256": "632632bcc3f3c6256b9b738e7186ff679ee9269d21b949cc4d66c5657f549dc5",
+      "bytes": 13562,
+      "tensors": 6,
+      "shape": [
+        [
+          12,
+          32
+        ],
+        [
+          32
+        ],
+        [
+          32,
+          32
+        ],
+        [
+          32
+        ],
+        [
+          32,
+          1
+        ],
+        [
+          1
+        ]
+      ]
+    },
+    "RANDOM_INIT_k3_seed19": {
+      "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-P2-20261123-01\\training\\checkpoints\\RANDOM_INIT_k3_seed19.npz",
+      "sha256": "412811bca851a504dbdc17ae0a90cc488587f65ccb349c4c5203352d90eb696f",
+      "bytes": 13562,
+      "tensors": 6,
+      "shape": [
+        [
+          12,
+          32
+        ],
+        [
+          32
+        ],
+        [
+          32,
+          32
+        ],
+        [
+          32
+        ],
+        [
+          32,
+          1
+        ],
+        [
+          1
+        ]
+      ]
+    },
+    "POOLED_PRETRAIN_k3_seed19": {
+      "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-P2-20261123-01\\training\\checkpoints\\POOLED_PRETRAIN_k3_seed19.npz",
+      "sha256": "ca0c943f74fc763465191dfcc8b7c808badcd0b8b835528e50f46e6b15762916",
+      "bytes": 13562,
+      "tensors": 6,
+      "shape": [
+        [
+          12,
+          32
+        ],
+        [
+          32
+        ],
+        [
+          32,
+          32
+        ],
+        [
+          32
+        ],
+        [
+          32,
+          1
+        ],
+        [
+          1
+        ]
+      ]
+    },
+    "TASK_COND_PRETRAIN_k3_seed19": {
+      "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-P2-20261123-01\\training\\checkpoints\\TASK_COND_PRETRAIN_k3_seed19.npz",
+      "sha256": "5f8a631b3fbbdabc043bac1f3e2bd1221d6d26ed9f2265e0d26d28cb92f5b996",
+      "bytes": 14586,
+      "tensors": 6,
+      "shape": [
+        [
+          16,
+          32
+        ],
+        [
+          32
+        ],
+        [
+          32,
+          32
+        ],
+        [
+          32
+        ],
+        [
+          32,
+          1
+        ],
+        [
+          1
+        ]
+      ]
+    },
+    "FOMAML_k3_seed19": {
+      "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-P2-20261123-01\\training\\checkpoints\\FOMAML_k3_seed19.npz",
+      "sha256": "4a505f307da9d4c18a06080c01c5b30ba22b3e731785ec8d90d5c651f7d4a279",
+      "bytes": 13562,
+      "tensors": 6,
+      "shape": [
+        [
+          12,
+          32
+        ],
+        [
+          32
+        ],
+        [
+          32,
+          32
+        ],
+        [
+          32
+        ],
+        [
+          32,
+          1
+        ],
+        [
+          1
+        ]
+      ]
+    },
+    "RANDOM_INIT_k3_seed43": {
+      "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-P2-20261123-01\\training\\checkpoints\\RANDOM_INIT_k3_seed43.npz",
+      "sha256": "c9d532bea325acb6ddb8f298480d39d35ff169f0c461f1a38797abd355adf5e9",
+      "bytes": 13562,
+      "tensors": 6,
+      "shape": [
+        [
+          12,
+          32
+        ],
+        [
+          32
+        ],
+        [
+          32,
+          32
+        ],
+        [
+          32
+        ],
+        [
+          32,
+          1
+        ],
+        [
+          1
+        ]
+      ]
+    },
+    "POOLED_PRETRAIN_k3_seed43": {
+      "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-P2-20261123-01\\training\\checkpoints\\POOLED_PRETRAIN_k3_seed43.npz",
+      "sha256": "bfd3823f2ca3fb14f4ce9d76eebc96cf0bf5e09d356f55ef3a18ae7d1268d033",
+      "bytes": 13562,
+      "tensors": 6,
+      "shape": [
+        [
+          12,
+          32
+        ],
+        [
+          32
+        ],
+        [
+          32,
+          32
+        ],
+        [
+          32
+        ],
+        [
+          32,
+          1
+        ],
+        [
+          1
+        ]
+      ]
+    },
+    "TASK_COND_PRETRAIN_k3_seed43": {
+      "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-P2-20261123-01\\training\\checkpoints\\TASK_COND_PRETRAIN_k3_seed43.npz",
+      "sha256": "1ee8d6da32f7855dea1a17a0b4f49eeb6b26995f748924cc425534025a9467b4",
+      "bytes": 14586,
+      "tensors": 6,
+      "shape": [
+        [
+          16,
+          32
+        ],
+        [
+          32
+        ],
+        [
+          32,
+          32
+        ],
+        [
+          32
+        ],
+        [
+          32,
+          1
+        ],
+        [
+          1
+        ]
+      ]
+    },
+    "FOMAML_k3_seed43": {
+      "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-P2-20261123-01\\training\\checkpoints\\FOMAML_k3_seed43.npz",
+      "sha256": "d316cd23ecc3bd7ac321f013b273d1394a4cd421dcf1621eac08ba5d53e0c716",
+      "bytes": 13562,
+      "tensors": 6,
+      "shape": [
+        [
+          12,
+          32
+        ],
+        [
+          32
+        ],
+        [
+          32,
+          32
+        ],
+        [
+          32
+        ],
+        [
+          32,
+          1
+        ],
+        [
+          1
+        ]
+      ]
+    }
+  },
+  "train_rows_only_for_normalization": true,
+  "validation_only_for_selection": true,
+  "test_scored_once": true,
+  "environment": {
+    "python": "3.11.17",
+    "platform": "Windows-10-10.0.26200-SP0",
+    "torch": "2.8.0+cpu",
+    "torch_cuda": false,
+    "dtype": "float64",
+    "device": "cpu",
+    "note": "CPU float64 is the reproducible reference; CUDA was not used"
+  },
+  "code_shas": {
+    "research/concorde_metaopt/dreal001/meta/real_p2_arms.py": "8c8b28e3afa55dda8b696dc3e8954baae32f391d7ab63c3373b374979033d8a4",
+    "research/concorde_metaopt/dreal001/meta/meta_dataset.py": "e608d652d85c875e6a19b041de1beed54004598d13266f51e26a2c528bdb63a3",
+    "research/concorde_metaopt/meta_learning/maml.py": "ea5e45ac5b98d9d68f88a8db1456de0545acb086e7521a3574ea1a124b3c7e57",
+    "scripts/p2_train.py": "7aa49195c55a6afbc4c0d1deab7de3c18bdd5c71f461064442a8d7e64dff792f",
+    "scripts/p2_data.py": "124822d06ac4357f6342c0f3f4294a6fa33702af7ad19a98b8a1579b753a1e8b"
+  },
+  "physical_solver_starts_actual": 0
+}
