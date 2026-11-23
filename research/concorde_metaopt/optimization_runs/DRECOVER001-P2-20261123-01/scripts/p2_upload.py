@@ -188,7 +188,7 @@ def remote_blobs(commit: str) -> dict:
             return {}
         tree_sha = hit["sha"]
     out: dict[str, str] = {}
-    stack = [("", tree_sha)]
+    stack = [(RUN_REL, tree_sha)]
     while stack:
         prefix, sha = stack.pop()
         ents = api("/repos/%s/git/trees/%s" % (OWNER_REPO, sha), tok)["tree"]
