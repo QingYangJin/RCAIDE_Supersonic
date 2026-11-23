@@ -177,10 +177,32 @@ def local_blobs(commit: str) -> dict:
     return res
 
 
-def verify_remote(commit: str, files: list[dict]) -> dict:
+def remote_blobs(commit: str) -> dict:
+    """Walk only the run subtree with non-recursive tree calls (recursive trees truncate)."""
     tok = token()
-    tree = api("/repos/%s/git/trees/%s?recursive=1" % (OWNER_REPO, commit), tok)["tree"]
-    remote = {t["path"]: t["sha"] for t in tree if t["type"] == "blob"}
+    tree_sha = api("/repos/%s/git/commits/%s" % (OWNER_REPO, commit), tok)["tree"]["sha"]
+    for part in RUN_REL.split("/"):
+        ents = api("/repos/%s/git/trees/%s" % (OWNER_REPO, tree_sha), tok)["tree"]
+        hit = next((e for e in ents if e["path"] == part), None)
+        if hit is None:
+            return {}
+        tree_sha = hit["sha"]
+    out: dict[str, str] = {}
+    stack = [("", tree_sha)]
+    while stack:
+        prefix, sha = stack.pop()
+        ents = api("/repos/%s/git/trees/%s" % (OWNER_REPO, sha), tok)["tree"]
+        for e in ents:
+            path = prefix + "/" + e["path"] if prefix else e["path"]
+            if e["type"] == "blob":
+                out[path] = e["sha"]
+            elif e["type"] == "tree":
+                stack.append((path, e["sha"]))
+    return out
+
+
+def verify_remote(commit: str, files: list[dict]) -> dict:
+    remote = remote_blobs(commit)
     local = local_blobs(commit)
     bad, missing = [], []
     for f in files:
