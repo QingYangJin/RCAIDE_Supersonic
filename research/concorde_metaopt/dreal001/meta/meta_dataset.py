@@ -3,6 +3,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 import math
+from typing import Mapping, Sequence
+
 import numpy as np
 
 from .real_admission import AdmissionCertificate
@@ -24,10 +26,16 @@ class Observation:
     cl: float | None = None
     raw_sha256: str | None = None
     fuel_burn_kg: None = None
+    # Canonical task identity may merge several historical batch task ids for the
+    # same physical task. source_task_id preserves the certificate's own task_id.
+    source_task_id: str | None = None
 
     def __post_init__(self) -> None:
         if not self.observation_id or not self.task_id:
             raise ContractError("observation identity missing")
+        if self.source_task_id is not None:
+            if not isinstance(self.source_task_id, str) or not self.source_task_id.strip():
+                raise ContractError("source_task_id must be a nonempty string when given")
         object.__setattr__(self, "design", tuple(float(v) for v in self.design))
         if len(self.design) != 12 or not all(math.isfinite(v) for v in self.design):
             raise ContractError("design must have 12 finite coordinates")
@@ -53,14 +61,58 @@ class Observation:
         return canonical_sha([0.0 if v == 0 else v for v in self.design])
 
 
+def normalize_task_aliases(task_aliases) -> dict[str, tuple[str, ...]]:
+    """Validate an explicit canonical-task -> historical task_id mapping.
+
+    The alias table is declared by the recovery run (never inferred at runtime) so
+    that historical batches with different task_id strings for the same physical
+    task can be merged without rewriting any historical certificate.
+    """
+    if task_aliases is None:
+        return {}
+    if not isinstance(task_aliases, Mapping):
+        raise ContractError("task_aliases must be a mapping")
+    normalized: dict[str, tuple[str, ...]] = {}
+    reverse: dict[str, str] = {}
+    for canonical, aliases in task_aliases.items():
+        if not isinstance(canonical, str) or not canonical.strip():
+            raise ContractError("canonical task_id must be a nonempty string")
+        if isinstance(aliases, str):
+            aliases = (aliases,)
+        if isinstance(aliases, Sequence) and not isinstance(aliases, (str, bytes)):
+            sequence = tuple(aliases)
+        else:
+            raise ContractError("task alias entries must be a string or a sequence of strings")
+        if not sequence or any(not isinstance(item, str) or not item.strip() for item in sequence):
+            raise ContractError("task alias list must be nonempty strings")
+        if len(set(sequence)) != len(sequence):
+            raise ContractError("duplicate task alias for " + canonical)
+        for alias in sequence:
+            if alias in reverse and reverse[alias] != canonical:
+                raise ContractError("task alias maps to more than one canonical task: " + alias)
+            reverse[alias] = canonical
+        normalized[canonical] = sequence
+    return normalized
+
+
 class MetaDataset:
     def __init__(self, tasks: tuple[TaskSpec, ...], rows: tuple[Observation, ...], *,
-                 admissions: tuple[AdmissionCertificate, ...] = ()):
+                 admissions: tuple[AdmissionCertificate, ...] = (),
+                 task_aliases: Mapping[str, Sequence[str]] | None = None):
         self.tasks = tuple(tasks)
         self.rows = tuple(rows)
         self.admissions = tuple(admissions)
+        self.task_aliases = normalize_task_aliases(task_aliases)
+        self._alias_to_canonical = {
+            alias: canonical
+            for canonical, aliases in self.task_aliases.items()
+            for alias in aliases
+        }
         validate_task_family(self.tasks)
         by_id = {t.task_id: t for t in self.tasks}
+        for canonical in self.task_aliases:
+            if canonical not in by_id:
+                raise ContractError("task alias names an unknown canonical task: " + canonical)
         if not self.rows or len({r.observation_id for r in self.rows}) != len(self.rows):
             raise ContractError("empty dataset or duplicate observation_id")
         seen: set[tuple[str, str]] = set()
@@ -71,21 +123,45 @@ class MetaDataset:
             if key in seen:
                 raise ContractError("duplicate design or support/query leakage within task")
             seen.add(key)
+            if row.source_task_id is not None and row.source_task_id != row.task_id:
+                mapped = self._alias_to_canonical.get(row.source_task_id)
+                if mapped != row.task_id:
+                    raise ContractError("observation source_task_id is not mapped to its canonical task")
         if len({r.source_kind for r in self.rows}) != 1:
             raise ContractError("real and synthetic sources must never mix")
         self._validate_admissions()
 
+    def _canonical_task_for_certificate(self, certificate: AdmissionCertificate) -> str:
+        return self._alias_to_canonical.get(certificate.task_id, certificate.task_id)
+
     @classmethod
     def from_admitted_certificates(cls, tasks: tuple[TaskSpec, ...],
-                                   certificates) -> "MetaDataset":
+                                   certificates, *,
+                                   task_aliases: Mapping[str, Sequence[str]] | None = None
+                                   ) -> "MetaDataset":
         certificates = tuple(certificates)
+        normalized = normalize_task_aliases(task_aliases)
+        alias_to_canonical = {
+            alias: canonical for canonical, aliases in normalized.items() for alias in aliases
+        }
+        by_id = {task.task_id: task for task in tasks}
         rows = []
         for certificate in certificates:
             if not isinstance(certificate, AdmissionCertificate):
                 raise ContractError("admission certificate must be minted by admit_real_manifest")
+            canonical = alias_to_canonical.get(certificate.task_id, certificate.task_id)
+            task = by_id.get(canonical)
+            if task is None:
+                raise ContractError("admission certificate task is not in the task family: "
+                                    + certificate.task_id)
+            if not math.isclose(certificate.q_pa, task.dynamic_pressure_pa,
+                                rel_tol=1e-9, abs_tol=1e-12):
+                raise ContractError("admission certificate q_pa disagrees with canonical task")
+            if certificate.geometry_sha256 != task.geometry_contract_sha256:
+                raise ContractError("admission certificate geometry disagrees with canonical task")
             rows.append(Observation(
                 observation_id=certificate.admission_id,
-                task_id=certificate.task_id,
+                task_id=canonical,
                 design=certificate.design,
                 partition=certificate.partition,
                 source_kind="vspaero_raw",
@@ -96,8 +172,10 @@ class MetaDataset:
                 cdi=certificate.cdi,
                 cl=certificate.cl,
                 raw_sha256=certificate.raw_sha256,
+                source_task_id=certificate.task_id,
             ))
-        return cls(tuple(tasks), tuple(rows), admissions=certificates)
+        return cls(tuple(tasks), tuple(rows), admissions=certificates,
+                   task_aliases=normalized)
 
     def _validate_admissions(self) -> None:
         if not self.admissions:
@@ -116,7 +194,7 @@ class MetaDataset:
             raise ContractError("every raw observation requires exactly one admission certificate")
         for row in self.rows:
             certificate = certificates[row.observation_id]
-            if certificate.task_id != row.task_id:
+            if self._canonical_task_for_certificate(certificate) != row.task_id:
                 raise ContractError("admission certificate task mismatch")
             if certificate.design_sha256 != row.design_sha256:
                 raise ContractError("admission certificate design mismatch")
