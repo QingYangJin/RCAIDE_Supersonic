@@ -1,0 +1,928 @@
+{
+  "schema": "dreal004.p2_preregistration.v1",
+  "run_id": "DRECOVER001-P2-20261123-01",
+  "batch_id": "DRECOVER001-P2-20261123-01-B01",
+  "authorization_id": "AUTH-DREAL004-P2-20261123-01",
+  "owner_instruction_ref": "m10841 + Issue #14 comment 7103901506 (P2 directive)",
+  "created_utc": "2026-11-23T15:20:00Z",
+  "nature": "P2: reuse existing admitted real labels, supplement only the missing support slots with one frozen <=16-start batch, then run four-arm meta-learning with K=1 and K=3. Not a P3 optimization comparison and no online BO.",
+  "dataset_before_supplement": {
+    "source_runs_scanned": [
+      "DRECOVER001-R2-20261120-01",
+      "DRECOVER001-G1-20261121-01",
+      "DRECOVER001-G2-20261121-01"
+    ],
+    "rows": 25,
+    "certificates": 25,
+    "tasks": [
+      {
+        "task_id": "P2-CANON-M160",
+        "split": "train",
+        "support_designs": [
+          "3de72a4bb698",
+          "937aa7c9c789",
+          "cab5c852e3db"
+        ],
+        "query_designs": [
+          "3e904d57780d",
+          "a6baa19d0129"
+        ],
+        "support": 3,
+        "query": 2,
+        "k_eligible_after_supplement": [
+          1,
+          3
+        ]
+      },
+      {
+        "task_id": "P2-CANON-M180",
+        "split": "val",
+        "support_designs": [
+          "3de72a4bb698",
+          "937aa7c9c789"
+        ],
+        "query_designs": [
+          "3e904d57780d",
+          "a6baa19d0129",
+          "f8626bb58503"
+        ],
+        "support": 2,
+        "query": 3,
+        "k_eligible_after_supplement": [
+          1
+        ]
+      },
+      {
+        "task_id": "P2-CANON-M200",
+        "split": "train",
+        "support_designs": [
+          "3de72a4bb698",
+          "408cafa19c7e",
+          "cab5c852e3db"
+        ],
+        "query_designs": [
+          "3e904d57780d",
+          "a6baa19d0129",
+          "f8626bb58503"
+        ],
+        "support": 3,
+        "query": 3,
+        "k_eligible_after_supplement": [
+          1,
+          3
+        ]
+      },
+      {
+        "task_id": "P2-CANON-M202",
+        "split": "train",
+        "support_designs": [
+          "3de72a4bb698",
+          "937aa7c9c789"
+        ],
+        "query_designs": [
+          "3e904d57780d",
+          "a6baa19d0129",
+          "f8626bb58503"
+        ],
+        "support": 2,
+        "query": 3,
+        "k_eligible_after_supplement": [
+          1
+        ]
+      },
+      {
+        "task_id": "P2-CANON-M240",
+        "split": "test",
+        "support_designs": [
+          "937aa7c9c789"
+        ],
+        "query_designs": [
+          "408cafa19c7e",
+          "a6baa19d0129",
+          "f8626bb58503"
+        ],
+        "support": 1,
+        "query": 3,
+        "k_eligible_after_supplement": [
+          1
+        ]
+      }
+    ],
+    "excluded_records": 23,
+    "replay_method": "re-admit historical admission_manifest.json in place with the original historical task_id mapped by an explicit alias table; no solver start, historical files unmodified"
+  },
+  "supplement_batch": {
+    "starts": 16,
+    "max_starts": 16,
+    "max_alpha_probes_per_start": 3,
+    "max_internal_solver_cases": 48,
+    "parallelism": 1,
+    "timeout_s_per_start": 600,
+    "retries": 0,
+    "wall_clock_max_s": 9600,
+    "upload_readback_every_starts": 8,
+    "bracket_provenance": "zero-physical G2 stage-1 polars (49 alpha rows, Mach per task); no solver start used",
+    "plan_sha256": "208edee0dbc95e27f140ca4211138ee465120b7082c0b4720d893db477179411",
+    "starts_plan": [
+      {
+        "mach": 140,
+        "tag": "m140",
+        "design": "d00",
+        "partition": "support",
+        "task_id": "P2-CANON-M140",
+        "split": "train",
+        "stage1_case_dir": "D:\\RCAIDE\\.real_runs\\DRECOVER001-G2-20261121-01\\cases\\g2-m140-d00-support-s1",
+        "stage1_polar": "D:\\RCAIDE\\.real_runs\\DRECOVER001-G2-20261121-01\\cases\\g2-m140-d00-support-s1\\g2-m140-d00-support-s1.polar",
+        "stage1_polar_sha256": "6bebbae3682a296d7f4965e28590125c3da31192fc69813988ce1c6839605fbd",
+        "q_pa": 9839.359586688344,
+        "sref_m2": 358.25000000000006,
+        "cl_target": 0.37836116359196115,
+        "bracket_alpha_deg": [
+          9.52,
+          9.76
+        ],
+        "bracket_cl": [
+          0.377433587768,
+          0.386295475352
+        ],
+        "slope_cl_per_deg": 0.03692453159999985,
+        "alpha_target_deg": 9.545120855533375,
+        "alpha_grid_deg": [
+          9.541121,
+          9.545121,
+          9.549121
+        ],
+        "design_x12": [
+          358.25,
+          1.83,
+          67.0,
+          48.0,
+          71.0,
+          0.480469,
+          0.945313,
+          0.408284,
+          0.130178,
+          0.0,
+          33.91,
+          0.0
+        ],
+        "design_id": "937aa7c9c789ccd8fce4fdbde942a258248f2b1c91ba90cf6c99c7e4c5a8a3fe"
+      },
+      {
+        "mach": 140,
+        "tag": "m140",
+        "design": "d01",
+        "partition": "support",
+        "task_id": "P2-CANON-M140",
+        "split": "train",
+        "stage1_case_dir": "D:\\RCAIDE\\.real_runs\\DRECOVER001-G2-20261121-01\\cases\\g2-m140-d01-support-s1",
+        "stage1_polar": "D:\\RCAIDE\\.real_runs\\DRECOVER001-G2-20261121-01\\cases\\g2-m140-d01-support-s1\\g2-m140-d01-support-s1.polar",
+        "stage1_polar_sha256": "3f771f637ced430c56819377306eb76470363978a5a4931dcad0660b5cc37470",
+        "q_pa": 9839.359586688344,
+        "sref_m2": 361.8324999999999,
+        "cl_target": 0.3746150134573874,
+        "bracket_alpha_deg": [
+          9.28,
+          9.52
+        ],
+        "bracket_cl": [
+          0.368527045647,
+          0.377435837919
+        ],
+        "slope_cl_per_deg": 0.03711996779999987,
+        "alpha_target_deg": 9.444007895782372,
+        "alpha_grid_deg": [
+          9.440008,
+          9.444008,
+          9.448008
+        ],
+        "design_x12": [
+          361.8325,
+          1.83,
+          67.0,
+          48.0,
+          71.0,
+          0.480469,
+          0.945313,
+          0.408284,
+          0.130178,
+          0.0,
+          33.91,
+          0.0
+        ],
+        "design_id": "3de72a4bb698202b5377db7489f747ee2426f4f62f94fabc71684db4bd50fd71"
+      },
+      {
+        "mach": 140,
+        "tag": "m140",
+        "design": "d02",
+        "partition": "support",
+        "task_id": "P2-CANON-M140",
+        "split": "train",
+        "stage1_case_dir": "D:\\RCAIDE\\.real_runs\\DRECOVER001-G2-20261121-01\\cases\\g2-m140-d02-support-s1",
+        "stage1_polar": "D:\\RCAIDE\\.real_runs\\DRECOVER001-G2-20261121-01\\cases\\g2-m140-d02-support-s1\\g2-m140-d02-support-s1.polar",
+        "stage1_polar_sha256": "f8ac2ff378fc7270a2c0a116a6a4b8fe23f5870a42c3cff417a83b2434630a80",
+        "q_pa": 9839.359586688344,
+        "sref_m2": 358.25000000000006,
+        "cl_target": 0.37836116359196115,
+        "bracket_alpha_deg": [
+          9.28,
+          9.52
+        ],
+        "bracket_cl": [
+          0.370426018451,
+          0.379380615717
+        ],
+        "slope_cl_per_deg": 0.03731082194166667,
+        "alpha_target_deg": 9.492676771188995,
+        "alpha_grid_deg": [
+          9.488677,
+          9.492677,
+          9.496677
+        ],
+        "design_x12": [
+          358.25,
+          1.83,
+          67.5,
+          48.0,
+          71.0,
+          0.480469,
+          0.945313,
+          0.408284,
+          0.130178,
+          0.0,
+          33.91,
+          0.0
+        ],
+        "design_id": "408cafa19c7ee08986398a9531c369b7060f333695589437f428c0f5baacfe6c"
+      },
+      {
+        "mach": 140,
+        "tag": "m140",
+        "design": "d03",
+        "partition": "query",
+        "task_id": "P2-CANON-M140",
+        "split": "train",
+        "stage1_case_dir": "D:\\RCAIDE\\.real_runs\\DRECOVER001-G2-20261121-01\\cases\\g2-m140-d03-support-s1",
+        "stage1_polar": "D:\\RCAIDE\\.real_runs\\DRECOVER001-G2-20261121-01\\cases\\g2-m140-d03-support-s1\\g2-m140-d03-support-s1.polar",
+        "stage1_polar_sha256": "c635407b8627b60c0f08808c6a85de69e62eed08332e876c8a2236eb86b0f31d",
+        "q_pa": 9839.359586688344,
+        "sref_m2": 354.66749999999996,
+        "cl_target": 0.38218299352723356,
+        "bracket_alpha_deg": [
+          9.52,
+          9.76
+        ],
+        "bracket_cl": [
+          0.377431300314,
+          0.386293130783
+        ],
+        "slope_cl_per_deg": 0.03692429362083315,
+        "alpha_target_deg": 9.648687450653155,
+        "alpha_grid_deg": [
+          9.644687,
+          9.648687,
+          9.652687
+        ],
+        "design_x12": [
+          354.6675,
+          1.83,
+          67.0,
+          48.0,
+          71.0,
+          0.480469,
+          0.945313,
+          0.408284,
+          0.130178,
+          0.0,
+          33.91,
+          0.0
+        ],
+        "design_id": "cab5c852e3db80770d8e1c93c86edd1149d389e6f6729b4ec4da5e1618c3c22a"
+      },
+      {
+        "mach": 220,
+        "tag": "m220",
+        "design": "d00",
+        "partition": "support",
+        "task_id": "P2-CANON-M220",
+        "split": "val",
+        "stage1_case_dir": "D:\\RCAIDE\\.real_runs\\DRECOVER001-G2-20261121-01\\cases\\g2-m220-d00-support-s1",
+        "stage1_polar": "D:\\RCAIDE\\.real_runs\\DRECOVER001-G2-20261121-01\\cases\\g2-m220-d00-support-s1\\g2-m220-d00-support-s1.polar",
+        "stage1_polar_sha256": "4f754ae751684e61e97dd02a802bdc619b08a875f5aac3dcf717b1216422ce51",
+        "q_pa": 24297.194081414087,
+        "sref_m2": 358.25000000000006,
+        "cl_target": 0.15322063649591805,
+        "bracket_alpha_deg": [
+          4.48,
+          4.72
+        ],
+        "bracket_cl": [
+          0.149791106152,
+          0.157689545133
+        ],
+        "slope_cl_per_deg": 0.032910162420833354,
+        "alpha_target_deg": 4.584208855005438,
+        "alpha_grid_deg": [
+          4.580209,
+          4.584209,
+          4.588209
+        ],
+        "design_x12": [
+          358.25,
+          1.83,
+          67.0,
+          48.0,
+          71.0,
+          0.480469,
+          0.945313,
+          0.408284,
+          0.130178,
+          0.0,
+          33.91,
+          0.0
+        ],
+        "design_id": "937aa7c9c789ccd8fce4fdbde942a258248f2b1c91ba90cf6c99c7e4c5a8a3fe"
+      },
+      {
+        "mach": 220,
+        "tag": "m220",
+        "design": "d01",
+        "partition": "support",
+        "task_id": "P2-CANON-M220",
+        "split": "val",
+        "stage1_case_dir": "D:\\RCAIDE\\.real_runs\\DRECOVER001-G2-20261121-01\\cases\\g2-m220-d01-support-s1",
+        "stage1_polar": "D:\\RCAIDE\\.real_runs\\DRECOVER001-G2-20261121-01\\cases\\g2-m220-d01-support-s1\\g2-m220-d01-support-s1.polar",
+        "stage1_polar_sha256": "6f263df0955c669cd2fe3dadb537161c3d76c970a6b8f71ab12b059535d179c2",
+        "q_pa": 24297.194081414087,
+        "sref_m2": 361.8324999999999,
+        "cl_target": 0.15170360049100806,
+        "bracket_alpha_deg": [
+          4.48,
+          4.72
+        ],
+        "bracket_cl": [
+          0.149792090665,
+          0.157690582271
+        ],
+        "slope_cl_per_deg": 0.03291038169166679,
+        "alpha_target_deg": 4.538082274581826,
+        "alpha_grid_deg": [
+          4.534082,
+          4.538082,
+          4.542082
+        ],
+        "design_x12": [
+          361.8325,
+          1.83,
+          67.0,
+          48.0,
+          71.0,
+          0.480469,
+          0.945313,
+          0.408284,
+          0.130178,
+          0.0,
+          33.91,
+          0.0
+        ],
+        "design_id": "3de72a4bb698202b5377db7489f747ee2426f4f62f94fabc71684db4bd50fd71"
+      },
+      {
+        "mach": 220,
+        "tag": "m220",
+        "design": "d02",
+        "partition": "support",
+        "task_id": "P2-CANON-M220",
+        "split": "val",
+        "stage1_case_dir": "D:\\RCAIDE\\.real_runs\\DRECOVER001-G2-20261121-01\\cases\\g2-m220-d02-support-s1",
+        "stage1_polar": "D:\\RCAIDE\\.real_runs\\DRECOVER001-G2-20261121-01\\cases\\g2-m220-d02-support-s1\\g2-m220-d02-support-s1.polar",
+        "stage1_polar_sha256": "0255508da46b370573374635db61e5c99e5ae95dc13258ef46f72ae26b55ae21",
+        "q_pa": 24297.194081414087,
+        "sref_m2": 358.25000000000006,
+        "cl_target": 0.15322063649591805,
+        "bracket_alpha_deg": [
+          4.72,
+          4.96
+        ],
+        "bracket_cl": [
+          0.152179909513,
+          0.15978348424
+        ],
+        "slope_cl_per_deg": 0.03168156136249993,
+        "alpha_target_deg": 4.752849611514094,
+        "alpha_grid_deg": [
+          4.74885,
+          4.75285,
+          4.75685
+        ],
+        "design_x12": [
+          358.25,
+          1.83,
+          67.5,
+          48.0,
+          71.0,
+          0.480469,
+          0.945313,
+          0.408284,
+          0.130178,
+          0.0,
+          33.91,
+          0.0
+        ],
+        "design_id": "408cafa19c7ee08986398a9531c369b7060f333695589437f428c0f5baacfe6c"
+      },
+      {
+        "mach": 220,
+        "tag": "m220",
+        "design": "d03",
+        "partition": "query",
+        "task_id": "P2-CANON-M220",
+        "split": "val",
+        "stage1_case_dir": "D:\\RCAIDE\\.real_runs\\DRECOVER001-G2-20261121-01\\cases\\g2-m220-d03-support-s1",
+        "stage1_polar": "D:\\RCAIDE\\.real_runs\\DRECOVER001-G2-20261121-01\\cases\\g2-m220-d03-support-s1\\g2-m220-d03-support-s1.polar",
+        "stage1_polar_sha256": "957ae25bfdc28c2942beaf9763b70727af82f1740be800b267f586a5bc66a491",
+        "q_pa": 24297.194081414087,
+        "sref_m2": 354.66749999999996,
+        "cl_target": 0.15476831969284657,
+        "bracket_alpha_deg": [
+          4.48,
+          4.72
+        ],
+        "bracket_cl": [
+          0.149790106976,
+          0.157688492546
+        ],
+        "slope_cl_per_deg": 0.03290993987500009,
+        "alpha_target_deg": 4.631267754841091,
+        "alpha_grid_deg": [
+          4.627268,
+          4.631268,
+          4.635268
+        ],
+        "design_x12": [
+          354.6675,
+          1.83,
+          67.0,
+          48.0,
+          71.0,
+          0.480469,
+          0.945313,
+          0.408284,
+          0.130178,
+          0.0,
+          33.91,
+          0.0
+        ],
+        "design_id": "cab5c852e3db80770d8e1c93c86edd1149d389e6f6729b4ec4da5e1618c3c22a"
+      },
+      {
+        "mach": 260,
+        "tag": "m260",
+        "design": "d00",
+        "partition": "support",
+        "task_id": "P2-CANON-M260",
+        "split": "test",
+        "stage1_case_dir": "D:\\RCAIDE\\.real_runs\\DRECOVER001-G2-20261121-01\\cases\\g2-m260-d00-support-s1",
+        "stage1_polar": "D:\\RCAIDE\\.real_runs\\DRECOVER001-G2-20261121-01\\cases\\g2-m260-d00-support-s1\\g2-m260-d00-support-s1.polar",
+        "stage1_polar_sha256": "c2bfdbd02e383d20aa9764fc7bac706db69abd7d2ca9ab1c0514517c82c94a3f",
+        "q_pa": 33935.75041123124,
+        "sref_m2": 358.25000000000006,
+        "cl_target": 0.10970234920713663,
+        "bracket_alpha_deg": [
+          4.0,
+          4.24
+        ],
+        "bracket_cl": [
+          0.105077558896,
+          0.111302774628
+        ],
+        "slope_cl_per_deg": 0.025938398883333345,
+        "alpha_target_deg": 4.178298989538182,
+        "alpha_grid_deg": [
+          4.174299,
+          4.178299,
+          4.182299
+        ],
+        "design_x12": [
+          358.25,
+          1.83,
+          67.0,
+          48.0,
+          71.0,
+          0.480469,
+          0.945313,
+          0.408284,
+          0.130178,
+          0.0,
+          33.91,
+          0.0
+        ],
+        "design_id": "937aa7c9c789ccd8fce4fdbde942a258248f2b1c91ba90cf6c99c7e4c5a8a3fe"
+      },
+      {
+        "mach": 260,
+        "tag": "m260",
+        "design": "d01",
+        "partition": "support",
+        "task_id": "P2-CANON-M260",
+        "split": "test",
+        "stage1_case_dir": "D:\\RCAIDE\\.real_runs\\DRECOVER001-G2-20261121-01\\cases\\g2-m260-d01-support-s1",
+        "stage1_polar": "D:\\RCAIDE\\.real_runs\\DRECOVER001-G2-20261121-01\\cases\\g2-m260-d01-support-s1\\g2-m260-d01-support-s1.polar",
+        "stage1_polar_sha256": "ffb0db92568af6b349c4a90e55ff113b5000f41b72653d3797f39dc906f4c16a",
+        "q_pa": 33935.75041123124,
+        "sref_m2": 361.8324999999999,
+        "cl_target": 0.10861618733379869,
+        "bracket_alpha_deg": [
+          4.0,
+          4.24
+        ],
+        "bracket_cl": [
+          0.105078413707,
+          0.111303680637
+        ],
+        "slope_cl_per_deg": 0.025938612208333312,
+        "alpha_target_deg": 4.136390243178164,
+        "alpha_grid_deg": [
+          4.13239,
+          4.13639,
+          4.14039
+        ],
+        "design_x12": [
+          361.8325,
+          1.83,
+          67.0,
+          48.0,
+          71.0,
+          0.480469,
+          0.945313,
+          0.408284,
+          0.130178,
+          0.0,
+          33.91,
+          0.0
+        ],
+        "design_id": "3de72a4bb698202b5377db7489f747ee2426f4f62f94fabc71684db4bd50fd71"
+      },
+      {
+        "mach": 260,
+        "tag": "m260",
+        "design": "d02",
+        "partition": "support",
+        "task_id": "P2-CANON-M260",
+        "split": "test",
+        "stage1_case_dir": "D:\\RCAIDE\\.real_runs\\DRECOVER001-G2-20261121-01\\cases\\g2-m260-d02-support-s1",
+        "stage1_polar": "D:\\RCAIDE\\.real_runs\\DRECOVER001-G2-20261121-01\\cases\\g2-m260-d02-support-s1\\g2-m260-d02-support-s1.polar",
+        "stage1_polar_sha256": "af1350f6300d364860c1d3af506933da8d035eb2464a9072dabeba525a9e67c3",
+        "q_pa": 33935.75041123124,
+        "sref_m2": 358.25000000000006,
+        "cl_target": 0.10970234920713663,
+        "bracket_alpha_deg": [
+          4.0,
+          4.24
+        ],
+        "bracket_cl": [
+          0.104477887685,
+          0.11066757602
+        ],
+        "slope_cl_per_deg": 0.02579036806249997,
+        "alpha_target_deg": 4.202574135796579,
+        "alpha_grid_deg": [
+          4.198574,
+          4.202574,
+          4.206574
+        ],
+        "design_x12": [
+          358.25,
+          1.83,
+          67.5,
+          48.0,
+          71.0,
+          0.480469,
+          0.945313,
+          0.408284,
+          0.130178,
+          0.0,
+          33.91,
+          0.0
+        ],
+        "design_id": "408cafa19c7ee08986398a9531c369b7060f333695589437f428c0f5baacfe6c"
+      },
+      {
+        "mach": 260,
+        "tag": "m260",
+        "design": "d03",
+        "partition": "query",
+        "task_id": "P2-CANON-M260",
+        "split": "test",
+        "stage1_case_dir": "D:\\RCAIDE\\.real_runs\\DRECOVER001-G2-20261121-01\\cases\\g2-m260-d03-support-s1",
+        "stage1_polar": "D:\\RCAIDE\\.real_runs\\DRECOVER001-G2-20261121-01\\cases\\g2-m260-d03-support-s1\\g2-m260-d03-support-s1.polar",
+        "stage1_polar_sha256": "38c3116308d17032da0a1ff6be9af4ade978b2ce208c7c5870a971dc784f3023",
+        "q_pa": 33935.75041123124,
+        "sref_m2": 354.66749999999996,
+        "cl_target": 0.1108104537445825,
+        "bracket_alpha_deg": [
+          4.0,
+          4.24
+        ],
+        "bracket_cl": [
+          0.105076689857,
+          0.111301853539
+        ],
+        "slope_cl_per_deg": 0.025938182008333328,
+        "alpha_target_deg": 4.221054963903807,
+        "alpha_grid_deg": [
+          4.217055,
+          4.221055,
+          4.225055
+        ],
+        "design_x12": [
+          354.6675,
+          1.83,
+          67.0,
+          48.0,
+          71.0,
+          0.480469,
+          0.945313,
+          0.408284,
+          0.130178,
+          0.0,
+          33.91,
+          0.0
+        ],
+        "design_id": "cab5c852e3db80770d8e1c93c86edd1149d389e6f6729b4ec4da5e1618c3c22a"
+      },
+      {
+        "mach": 240,
+        "tag": "m240",
+        "design": "d01",
+        "partition": "support",
+        "task_id": "P2-CANON-M240",
+        "split": "test",
+        "stage1_case_dir": "D:\\RCAIDE\\.real_runs\\DRECOVER001-G2-20261121-01\\cases\\g2-m240-d01-support-s1",
+        "stage1_polar": "D:\\RCAIDE\\.real_runs\\DRECOVER001-G2-20261121-01\\cases\\g2-m240-d01-support-s1\\g2-m240-d01-support-s1.polar",
+        "stage1_polar_sha256": "1de4e396ec1c429f58c959b8eb00012b2f5826a5736d79cd7dffde222e904e98",
+        "q_pa": 28915.66898945147,
+        "sref_m2": 361.8324999999999,
+        "cl_target": 0.12747316430147207,
+        "bracket_alpha_deg": [
+          4.24,
+          4.48
+        ],
+        "bracket_cl": [
+          0.123085422449,
+          0.129954258118
+        ],
+        "slope_cl_per_deg": 0.02862014862083324,
+        "alpha_target_deg": 4.39330954114187,
+        "alpha_grid_deg": [
+          4.38931,
+          4.39331,
+          4.39731
+        ],
+        "design_x12": [
+          361.8325,
+          1.83,
+          67.0,
+          48.0,
+          71.0,
+          0.480469,
+          0.945313,
+          0.408284,
+          0.130178,
+          0.0,
+          33.91,
+          0.0
+        ],
+        "design_id": "3de72a4bb698202b5377db7489f747ee2426f4f62f94fabc71684db4bd50fd71"
+      },
+      {
+        "mach": 240,
+        "tag": "m240",
+        "design": "d03",
+        "partition": "support",
+        "task_id": "P2-CANON-M240",
+        "split": "test",
+        "stage1_case_dir": "D:\\RCAIDE\\.real_runs\\DRECOVER001-G2-20261121-01\\cases\\g2-m240-d03-support-s1",
+        "stage1_polar": "D:\\RCAIDE\\.real_runs\\DRECOVER001-G2-20261121-01\\cases\\g2-m240-d03-support-s1\\g2-m240-d03-support-s1.polar",
+        "stage1_polar_sha256": "d36470474a30b29182808e009cd9e880b22e3382d294f6f663e68a5ecde8cdc6",
+        "q_pa": 28915.66898945147,
+        "sref_m2": 354.66749999999996,
+        "cl_target": 0.13004837974190583,
+        "bracket_alpha_deg": [
+          4.48,
+          4.72
+        ],
+        "bracket_cl": [
+          0.129952302009,
+          0.136804868633
+        ],
+        "slope_cl_per_deg": 0.028552360933333507,
+        "alpha_target_deg": 4.484,
+        "alpha_grid_deg": [
+          4.48,
+          4.484,
+          4.488
+        ],
+        "design_x12": [
+          354.6675,
+          1.83,
+          67.0,
+          48.0,
+          71.0,
+          0.480469,
+          0.945313,
+          0.408284,
+          0.130178,
+          0.0,
+          33.91,
+          0.0
+        ],
+        "design_id": "cab5c852e3db80770d8e1c93c86edd1149d389e6f6729b4ec4da5e1618c3c22a"
+      },
+      {
+        "mach": 202,
+        "tag": "m202",
+        "design": "d02",
+        "partition": "support",
+        "task_id": "P2-CANON-M202",
+        "split": "train",
+        "stage1_case_dir": "D:\\RCAIDE\\.real_runs\\DRECOVER001-G2-20261121-01\\cases\\g2-m202-d02-support-s1",
+        "stage1_polar": "D:\\RCAIDE\\.real_runs\\DRECOVER001-G2-20261121-01\\cases\\g2-m202-d02-support-s1\\g2-m202-d02-support-s1.polar",
+        "stage1_polar_sha256": "cd59696806af0f46ffa1a4c67659c0bb5c0f80253687d9746aed83f4a669284e",
+        "q_pa": 20483.940233430174,
+        "sref_m2": 358.25000000000006,
+        "cl_target": 0.18174391741992046,
+        "bracket_alpha_deg": [
+          5.2,
+          5.44
+        ],
+        "bracket_cl": [
+          0.176861111679,
+          0.18485282205
+        ],
+        "slope_cl_per_deg": 0.03329879321249994,
+        "alpha_target_deg": 5.346636117103713,
+        "alpha_grid_deg": [
+          5.342636,
+          5.346636,
+          5.350636
+        ],
+        "design_x12": [
+          358.25,
+          1.83,
+          67.5,
+          48.0,
+          71.0,
+          0.480469,
+          0.945313,
+          0.408284,
+          0.130178,
+          0.0,
+          33.91,
+          0.0
+        ],
+        "design_id": "408cafa19c7ee08986398a9531c369b7060f333695589437f428c0f5baacfe6c"
+      },
+      {
+        "mach": 180,
+        "tag": "m180",
+        "design": "d02",
+        "partition": "support",
+        "task_id": "P2-CANON-M180",
+        "split": "val",
+        "stage1_case_dir": "D:\\RCAIDE\\.real_runs\\DRECOVER001-G2-20261121-01\\cases\\g2-m180-d02-support-s1",
+        "stage1_polar": "D:\\RCAIDE\\.real_runs\\DRECOVER001-G2-20261121-01\\cases\\g2-m180-d02-support-s1\\g2-m180-d02-support-s1.polar",
+        "stage1_polar_sha256": "0223628bbdd9de4fc9e7c14f339c740fb965faa1400a41bc32b00c988c45b0cf",
+        "q_pa": 16265.063806566453,
+        "sref_m2": 358.25000000000006,
+        "cl_target": 0.22888514834575416,
+        "bracket_alpha_deg": [
+          6.16,
+          6.4
+        ],
+        "bracket_cl": [
+          0.227271899782,
+          0.235868334393
+        ],
+        "slope_cl_per_deg": 0.03581847754583336,
+        "alpha_target_deg": 6.205039562658404,
+        "alpha_grid_deg": [
+          6.20104,
+          6.20504,
+          6.20904
+        ],
+        "design_x12": [
+          358.25,
+          1.83,
+          67.5,
+          48.0,
+          71.0,
+          0.480469,
+          0.945313,
+          0.408284,
+          0.130178,
+          0.0,
+          33.91,
+          0.0
+        ],
+        "design_id": "408cafa19c7ee08986398a9531c369b7060f333695589437f428c0f5baacfe6c"
+      }
+    ],
+    "stop_rules": [
+      "max 16 charged starts",
+      "max 48 internal cases",
+      "wall clock 9600 s (= 16 x 600 s worst case)",
+      "two consecutive non-SOLVED starts",
+      "solver REFUSED/EXCEPTION",
+      "accounting not conserved",
+      "upload/readback failure",
+      "any physics anomaly"
+    ],
+    "no_retry_on_failed_label": true
+  },
+  "post_supplement_expectation": {
+    "note": "expected availability if every supplement start admits; shortfalls are reported, not filled with synthetic or interpolated values",
+    "expected": {
+      "P2-CANON-M140": "3 support / 1 query",
+      "P2-CANON-M160": "3 support / 2 query",
+      "P2-CANON-M180": "3 support / 3 query",
+      "P2-CANON-M200": "3 support / 3 query",
+      "P2-CANON-M202": "3 support / 3 query",
+      "P2-CANON-M220": "3 support / 1 query",
+      "P2-CANON-M240": "3 support / 3 query",
+      "P2-CANON-M260": "3 support / 1 query"
+    },
+    "k5": "NOT_ELIGIBLE: frozen protocol has four independent support slots d00-d03; query rows may never be borrowed as support and repeated sampling is forbidden"
+  },
+  "arms": {
+    "names": [
+      "RANDOM_INIT",
+      "POOLED_PRETRAIN",
+      "TASK_COND_PRETRAIN",
+      "FOMAML"
+    ],
+    "module": "research/concorde_metaopt/dreal001/meta/real_p2_arms.py",
+    "k_values": [
+      1,
+      3
+    ],
+    "seeds": [
+      7,
+      19,
+      43
+    ],
+    "network": "12D input, two hidden layers of 32, scalar output; the task-conditioned arm adds 4 affine context features in a separate input block and is reported separately",
+    "fomaml": "first-order, inner_lr 0.05, inner_steps 5, outer_lr 0.01, tasks_per_batch 2, max_steps 60, CPU float64",
+    "pretrain": "pooled supervised pretraining on all training-task support+query rows with validation-selected early stopping; the same pretrained weights are the primary control for the FOMAML adaptation",
+    "normalization": "TrainNormalizer fitted on training-task rows only",
+    "selection": "hyperparameters and early stopping use validation tasks only; test rows are scored once after selection",
+    "reporting": "per task per seed per arm: MAE and RMSE in newtons, predictions, targets, support/query ids, training curves, checkpoint sha256, normalization params"
+  },
+  "splits": {
+    "train": [
+      "P2-CANON-M140",
+      "P2-CANON-M160",
+      "P2-CANON-M200",
+      "P2-CANON-M202"
+    ],
+    "val": [
+      "P2-CANON-M180",
+      "P2-CANON-M220"
+    ],
+    "test": [
+      "P2-CANON-M240",
+      "P2-CANON-M260"
+    ]
+  },
+  "source_code_sha256": {
+    "research/concorde_metaopt/dreal001/meta/real_p2_arms.py": "8c8b28e3afa55dda8b696dc3e8954baae32f391d7ab63c3373b374979033d8a4",
+    "research/concorde_metaopt/dreal001/meta/real_training.py": "608f9b087f4d0293ea667c837aaa7f9855f4c1f1fd3718536cc3dadf177819ca",
+    "research/concorde_metaopt/dreal001/meta/meta_dataset.py": "e608d652d85c875e6a19b041de1beed54004598d13266f51e26a2c528bdb63a3",
+    "research/concorde_metaopt/dreal001/meta/task_spec.py": "5413a1e8c1b6c71bb2af3093abfb1102eb2191e8781a5afcf5fbbe5ff5810ca5",
+    "research/concorde_metaopt/meta_learning/maml.py": "ea5e45ac5b98d9d68f88a8db1456de0545acb086e7521a3574ea1a124b3c7e57",
+    "research/concorde_metaopt/dreal001/meta/real_admission.py": "4322554ea488dd583a9c06fc8bb611e0584360573287673fe46bbbcc605ee3fc",
+    "scripts/p2_data.py": "de5d154a602b8c063f875c150ae5a1c6e07014595ca489d9b3863ca87b2b9780",
+    "scripts/p2_plan.py": "f6724db3c1309157378fc3273acd2c34573f78ad70daa184bc13b4a9eef57314",
+    "scripts/p2_supplement.py": "57e4f2690957e88cbd06c4e9e84405944889128653119ee2539b19678b151147",
+    "scripts/p2_upload.py": "32c77aafa41ab8f8ec174a7488a995a41aad8d73297eada9da9cb3c004255069",
+    "scripts/audit_real_case.py": "5c07a4865f37d434961f99b9862fea7ea1e8b4a238db8b1cd79aba4c339a842c",
+    "scripts/admit_g1_case.py": "b2b70846b1fe17b3335b4e8c46be3afd40188459c302ce59b0ecfeef20d8cddf"
+  },
+  "targets_and_claims": {
+    "primary": "unseen-task K-shot MAE/RMSE in newtons and paired difference versus POOLED_PRETRAIN, reported per task and per seed",
+    "secondary": "offline candidate ranking diagnostics only; not online optimization",
+    "not_claimed": [
+      "statistical普遍显著性 from two held-out tasks",
+      "P1 internal-case reduction as MAML benefit",
+      "any physical/wind-tunnel validation"
+    ]
+  },
+  "disclosures": [
+    "labels are LOCAL_RAW_BYTES_VERIFIED_AUDIT_BOUND_NOT_AUTHENTICATED; same-host storage",
+    "no off-machine backup (Owner waiver WAIVER-OFFMACHINE-BACKUP-20261118)",
+    "CPU float64 23 repeated K=1/K=3 runs are the reproducible reference; CUDA only after numeric parity",
+    "fuel_burn_kg is null; VSPAERO_INTERNAL_ONLY; LF-M2.02 NOT_VALIDATED",
+    "old 24/8/4-label batches keep their own scopes; P1 is a pilot and is not a training batch"
+  ]
+}

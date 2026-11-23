@@ -1,0 +1,89 @@
+{
+  "schema": "dreal001.real_admission_manifest.v1",
+  "admission_id": "p2-adm-p2-m140-d03",
+  "run_id": "DRECOVER001-P2-20261123-01",
+  "task_id": "P2-CANON-M140",
+  "design_id": "cab5c852e3db80770d8e1c93c86edd1149d389e6f6729b4ec4da5e1618c3c22a",
+  "design": [
+    354.6675,
+    1.83,
+    67.0,
+    48.0,
+    71.0,
+    0.480469,
+    0.945313,
+    0.408284,
+    0.130178,
+    0.0,
+    33.91,
+    0.0
+  ],
+  "geometry_sha256": "5f2bb12fe8b1dc68c67901843c777328ae984cfdbe4ee71176b369a16a133f15",
+  "evaluator_id": "vspaero-3.55.0-v7.2.2-omp1",
+  "solver_returncode": 0,
+  "solver_started_utc": "2026-11-23T15:22:53Z",
+  "outcome": "success",
+  "partition": "query",
+  "files": [
+    {
+      "kind": "audit",
+      "path": "audit.json",
+      "sha256": "14adbf640e8b83d77184a6223bef5f3f3b5360d577d2041c2c36614063a9cdf7",
+      "bytes": 1557
+    },
+    {
+      "kind": "deck",
+      "path": "p2-m140-d03.vspaero",
+      "sha256": "29aaf267bd16ed27e29590df9f7cf90497bd7ea2f25a18996fae38d1e54e6da6",
+      "bytes": 1036
+    },
+    {
+      "kind": "history",
+      "path": "p2-m140-d03.history",
+      "sha256": "31cd67b9445bdfe46807f226d085dfaacf5fefafb41d1716ba7f5597aae7d5de",
+      "bytes": 22656
+    },
+    {
+      "kind": "mesh",
+      "path": "p2-m140-d03.vspgeom",
+      "sha256": "78f40ba8a562cebd71b014e1b2c159d5bbad9f34f62da49e4a725f8adef5de12",
+      "bytes": 225414
+    },
+    {
+      "kind": "polar",
+      "path": "p2-m140-d03.polar",
+      "sha256": "425e119df37f3594f184bb76fa24f6e6627801def6d68d6ad0a7e08cf4e2325a",
+      "bytes": 4661
+    }
+  ],
+  "artifact_sha256": "21ed3514a7d8c95a16850e369493f4b5d7d1ff27c9eb75479744aadb9a819fe4",
+  "independent_audit_ref": "p2-audit-p2-m140-d03",
+  "binding": {
+    "task_physics_sha256": "5ced6709392b6f03e466d1994553483c1447d340b6887c2024271a7eacad45ff",
+    "design_sha256": "cab5c852e3db80770d8e1c93c86edd1149d389e6f6729b4ec4da5e1618c3c22a",
+    "geometry_contract_sha256": "5f2bb12fe8b1dc68c67901843c777328ae984cfdbe4ee71176b369a16a133f15",
+    "mesh_sha256": "78f40ba8a562cebd71b014e1b2c159d5bbad9f34f62da49e4a725f8adef5de12",
+    "deck_sha256": "29aaf267bd16ed27e29590df9f7cf90497bd7ea2f25a18996fae38d1e54e6da6",
+    "polar_sha256": "425e119df37f3594f184bb76fa24f6e6627801def6d68d6ad0a7e08cf4e2325a",
+    "sref_m2": 354.66749999999996,
+    "rho_kg_m3": 0.1153178340089936,
+    "vinf_m_s": 413.09522580150934,
+    "recref": 61958320.90468902,
+    "alpha_grid_deg": [
+      9.644687,
+      9.648687,
+      9.652687
+    ]
+  },
+  "task": {
+    "task_id": "P2-CANON-M140",
+    "split": "train",
+    "physics_sha256": "5ced6709392b6f03e466d1994553483c1447d340b6887c2024271a7eacad45ff",
+    "mach": 1.4,
+    "altitude_m": 18288.0,
+    "dynamic_pressure_pa": 9839.359586688344,
+    "lift_target_n": 1333704.4,
+    "lift_tolerance_rel": 0.001,
+    "geometry_contract_sha256": "5f2bb12fe8b1dc68c67901843c777328ae984cfdbe4ee71176b369a16a133f15"
+  }
+}

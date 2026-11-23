@@ -1,0 +1,368 @@
+{
+  "schema": "dreal004.p2_dataset.v1",
+  "generated_by": "p2_data.py (zero physical; replayed admit_real_manifest)",
+  "family": [
+    "P2-CANON-M160",
+    "P2-CANON-M180",
+    "P2-CANON-M200",
+    "P2-CANON-M202",
+    "P2-CANON-M240"
+  ],
+  "task_aliases": {
+    "P2-CANON-M202": [
+      "DREAL003-G1-M202",
+      "DREAL003-G2-M202",
+      "concorde-fixed-cruise-dreal001-real-v1"
+    ],
+    "P2-CANON-M160": [
+      "DREAL003-G2-M160",
+      "concorde-real-M160"
+    ],
+    "P2-CANON-M180": [
+      "DREAL003-G1-M180",
+      "DREAL003-G2-M180",
+      "concorde-real-M180"
+    ],
+    "P2-CANON-M240": [
+      "DREAL003-G1-M240",
+      "concorde-real-M240"
+    ],
+    "P2-CANON-M200": [
+      "DREAL003-G2-M200"
+    ]
+  },
+  "rows": 25,
+  "certificates": 25,
+  "tasks": [
+    {
+      "task_id": "P2-CANON-M160",
+      "split": "train",
+      "mach": 1.6,
+      "dynamic_pressure_pa": 12851.40843975621,
+      "support": 3,
+      "query": 2,
+      "k3_support_ok": true,
+      "k3_query_ok": true,
+      "support_designs": [
+        "3de72a4bb698",
+        "937aa7c9c789",
+        "cab5c852e3db"
+      ],
+      "query_designs": [
+        "3e904d57780d",
+        "a6baa19d0129"
+      ]
+    },
+    {
+      "task_id": "P2-CANON-M180",
+      "split": "val",
+      "mach": 1.8,
+      "dynamic_pressure_pa": 16265.063806566453,
+      "support": 2,
+      "query": 3,
+      "k3_support_ok": false,
+      "k3_query_ok": true,
+      "support_designs": [
+        "3de72a4bb698",
+        "937aa7c9c789"
+      ],
+      "query_designs": [
+        "3e904d57780d",
+        "a6baa19d0129",
+        "f8626bb58503"
+      ]
+    },
+    {
+      "task_id": "P2-CANON-M200",
+      "split": "train",
+      "mach": 2.0,
+      "dynamic_pressure_pa": 20080.325687119075,
+      "support": 3,
+      "query": 3,
+      "k3_support_ok": true,
+      "k3_query_ok": true,
+      "support_designs": [
+        "3de72a4bb698",
+        "408cafa19c7e",
+        "cab5c852e3db"
+      ],
+      "query_designs": [
+        "3e904d57780d",
+        "a6baa19d0129",
+        "f8626bb58503"
+      ]
+    },
+    {
+      "task_id": "P2-CANON-M202",
+      "split": "train",
+      "mach": 2.02,
+      "dynamic_pressure_pa": 20483.940233430174,
+      "support": 2,
+      "query": 3,
+      "k3_support_ok": false,
+      "k3_query_ok": true,
+      "support_designs": [
+        "3de72a4bb698",
+        "937aa7c9c789"
+      ],
+      "query_designs": [
+        "3e904d57780d",
+        "a6baa19d0129",
+        "f8626bb58503"
+      ]
+    },
+    {
+      "task_id": "P2-CANON-M240",
+      "split": "test",
+      "mach": 2.4,
+      "dynamic_pressure_pa": 28915.66898945147,
+      "support": 1,
+      "query": 3,
+      "k3_support_ok": false,
+      "k3_query_ok": true,
+      "support_designs": [
+        "937aa7c9c789"
+      ],
+      "query_designs": [
+        "408cafa19c7e",
+        "a6baa19d0129",
+        "f8626bb58503"
+      ]
+    }
+  ],
+  "excluded": [
+    {
+      "admission_id": "g2b02-adm-g2-m160-d07-query-s2",
+      "reason": "design appears in both support and query at the same priority"
+    },
+    {
+      "admission_id": "g2-adm-g2-m160-d00-support-s2",
+      "reason": "design appears in both support and query at the same priority"
+    },
+    {
+      "admission_id": "g2b02-adm-g2-m180-d07-query-s2",
+      "reason": "design appears in both support and query at the same priority"
+    },
+    {
+      "admission_id": "g2b02-adm-g2-m180-d00-support-s2",
+      "reason": "design appears in both support and query at the same priority"
+    },
+    {
+      "admission_id": "g2b02-adm-g2-m200-d07-query-s2",
+      "reason": "design appears in both support and query at the same priority"
+    },
+    {
+      "admission_id": "g2b02-adm-g2-m200-d00-support-s2",
+      "reason": "design appears in both support and query at the same priority"
+    },
+    {
+      "admission_id": "g1-adm-g1-m180-d03-query",
+      "reason": "design appears in both support and query at the same priority"
+    },
+    {
+      "admission_id": "g2b02-adm-g2-m180-d03-support-s2",
+      "reason": "design appears in both support and query at the same priority"
+    },
+    {
+      "admission_id": "g1-adm-g1-m180-d05-query",
+      "reason": "duplicate design within canonical task",
+      "kept": "g2b02-adm-g2-m180-d05-query-s2"
+    },
+    {
+      "admission_id": "g1-adm-g1-m202-d00-support",
+      "reason": "duplicate design within canonical task",
+      "kept": "g2b02-adm-g2-m202-d00-support-s2"
+    },
+    {
+      "admission_id": "g1-adm-g1-m202-d01-support",
+      "reason": "duplicate design within canonical task",
+      "kept": "g2b02-adm-g2-m202-d01-support-s2"
+    },
+    {
+      "admission_id": "g1-adm-g1-m202-d03-query",
+      "reason": "design appears in both support and query at the same priority"
+    },
+    {
+      "admission_id": "g2b02-adm-g2-m202-d03-support-s2",
+      "reason": "design appears in both support and query at the same priority"
+    },
+    {
+      "admission_id": "ADM-R2-B01R-M160_D02_QUERY_R1",
+      "reason": "design appears in both support and query at the same priority"
+    },
+    {
+      "admission_id": "g2-adm-g2-m160-d02-support-s2",
+      "reason": "design appears in both support and query at the same priority"
+    },
+    {
+      "admission_id": "ADM-R2-B01R-M180_D02_QUERY_R1",
+      "reason": "design appears in both support and query at the same priority"
+    },
+    {
+      "admission_id": "g2b02-adm-g2-m180-d02-support-s2",
+      "reason": "design appears in both support and query at the same priority"
+    },
+    {
+      "admission_id": "ADM-R2-B01-BASELINE-ADMIT-01",
+      "reason": "duplicate design within canonical task",
+      "kept": "g2b02-adm-g2-m202-d00-support-s2"
+    },
+    {
+      "admission_id": "ADM-R2-B01-BASELINE-REFINE-01",
+      "reason": "duplicate design within canonical task",
+      "kept": "g2b02-adm-g2-m202-d00-support-s2"
+    },
+    {
+      "admission_id": "ADM-R2-B01R-M202_D02_QUERY_R1",
+      "reason": "design appears in both support and query at the same priority"
+    },
+    {
+      "admission_id": "g2b02-adm-g2-m202-d02-support-s2",
+      "reason": "design appears in both support and query at the same priority"
+    },
+    {
+      "admission_id": "ADM-R2-MATRIX-M202-D01-SUPPORT",
+      "reason": "duplicate design within canonical task",
+      "kept": "g2b02-adm-g2-m202-d01-support-s2"
+    },
+    {
+      "admission_id": "ADM-R2-B01R-M240_D00_SUPPORT_R1",
+      "reason": "duplicate design within canonical task",
+      "kept": "g1-adm-g1-m240-d00-support"
+    }
+  ],
+  "partition_conflicts": {
+    "P2-CANON-M160": 2,
+    "P2-CANON-M180": 3,
+    "P2-CANON-M200": 1,
+    "P2-CANON-M202": 2
+  },
+  "sources": {
+    "g2-adm-g2-m160-d01-support-s2": {
+      "case_dir": "D:\\RCAIDE\\.real_runs\\DRECOVER001-G2-20261121-01\\cases\\g2-m160-d01-support-s2",
+      "run_id": "DRECOVER001-G2-20261121-01",
+      "historical_task_id": "DREAL003-G2-M160"
+    },
+    "g2b02-adm-g2-m160-d06-query-s2": {
+      "case_dir": "D:\\RCAIDE\\.real_runs\\DRECOVER001-G2-20261121-01\\cases\\g2-m160-d06-query-s2",
+      "run_id": "DRECOVER001-G2-20261121-01",
+      "historical_task_id": "DREAL003-G2-M160"
+    },
+    "ADM-R2-B01R-M160_D00_SUPPORT_R1": {
+      "case_dir": "D:\\RCAIDE\\.real_runs\\DRECOVER001-R2-20261120-01\\cases\\m160-d00-support-r1",
+      "run_id": "DRECOVER001-R2-20261120-01",
+      "historical_task_id": "concorde-real-M160"
+    },
+    "g2b02-adm-g2-m160-d05-query-s2": {
+      "case_dir": "D:\\RCAIDE\\.real_runs\\DRECOVER001-G2-20261121-01\\cases\\g2-m160-d05-query-s2",
+      "run_id": "DRECOVER001-G2-20261121-01",
+      "historical_task_id": "DREAL003-G2-M160"
+    },
+    "g2-adm-g2-m160-d03-support-s2": {
+      "case_dir": "D:\\RCAIDE\\.real_runs\\DRECOVER001-G2-20261121-01\\cases\\g2-m160-d03-support-s2",
+      "run_id": "DRECOVER001-G2-20261121-01",
+      "historical_task_id": "DREAL003-G2-M160"
+    },
+    "g2b02-adm-g2-m180-d01-support-s2": {
+      "case_dir": "D:\\RCAIDE\\.real_runs\\DRECOVER001-G2-20261121-01\\cases\\g2-m180-d01-support-s2",
+      "run_id": "DRECOVER001-G2-20261121-01",
+      "historical_task_id": "DREAL003-G2-M180"
+    },
+    "g2b02-adm-g2-m180-d06-query-s2": {
+      "case_dir": "D:\\RCAIDE\\.real_runs\\DRECOVER001-G2-20261121-01\\cases\\g2-m180-d06-query-s2",
+      "run_id": "DRECOVER001-G2-20261121-01",
+      "historical_task_id": "DREAL003-G2-M180"
+    },
+    "ADM-R2-B01R-M180_D00_SUPPORT_R1": {
+      "case_dir": "D:\\RCAIDE\\.real_runs\\DRECOVER001-R2-20261120-01\\cases\\m180-d00-support-r1",
+      "run_id": "DRECOVER001-R2-20261120-01",
+      "historical_task_id": "concorde-real-M180"
+    },
+    "g2b02-adm-g2-m180-d05-query-s2": {
+      "case_dir": "D:\\RCAIDE\\.real_runs\\DRECOVER001-G2-20261121-01\\cases\\g2-m180-d05-query-s2",
+      "run_id": "DRECOVER001-G2-20261121-01",
+      "historical_task_id": "DREAL003-G2-M180"
+    },
+    "g2b02-adm-g2-m180-d04-query-s2": {
+      "case_dir": "D:\\RCAIDE\\.real_runs\\DRECOVER001-G2-20261121-01\\cases\\g2-m180-d04-query-s2",
+      "run_id": "DRECOVER001-G2-20261121-01",
+      "historical_task_id": "DREAL003-G2-M180"
+    },
+    "g2b02-adm-g2-m200-d01-support-s2": {
+      "case_dir": "D:\\RCAIDE\\.real_runs\\DRECOVER001-G2-20261121-01\\cases\\g2-m200-d01-support-s2",
+      "run_id": "DRECOVER001-G2-20261121-01",
+      "historical_task_id": "DREAL003-G2-M200"
+    },
+    "g2b02-adm-g2-m200-d06-query-s2": {
+      "case_dir": "D:\\RCAIDE\\.real_runs\\DRECOVER001-G2-20261121-01\\cases\\g2-m200-d06-query-s2",
+      "run_id": "DRECOVER001-G2-20261121-01",
+      "historical_task_id": "DREAL003-G2-M200"
+    },
+    "g2b02-adm-g2-m200-d02-support-s2": {
+      "case_dir": "D:\\RCAIDE\\.real_runs\\DRECOVER001-G2-20261121-01\\cases\\g2-m200-d02-support-s2",
+      "run_id": "DRECOVER001-G2-20261121-01",
+      "historical_task_id": "DREAL003-G2-M200"
+    },
+    "g2b02-adm-g2-m200-d05-query-s2": {
+      "case_dir": "D:\\RCAIDE\\.real_runs\\DRECOVER001-G2-20261121-01\\cases\\g2-m200-d05-query-s2",
+      "run_id": "DRECOVER001-G2-20261121-01",
+      "historical_task_id": "DREAL003-G2-M200"
+    },
+    "g2b02-adm-g2-m200-d03-support-s2": {
+      "case_dir": "D:\\RCAIDE\\.real_runs\\DRECOVER001-G2-20261121-01\\cases\\g2-m200-d03-support-s2",
+      "run_id": "DRECOVER001-G2-20261121-01",
+      "historical_task_id": "DREAL003-G2-M200"
+    },
+    "g2b02-adm-g2-m200-d04-query-s2": {
+      "case_dir": "D:\\RCAIDE\\.real_runs\\DRECOVER001-G2-20261121-01\\cases\\g2-m200-d04-query-s2",
+      "run_id": "DRECOVER001-G2-20261121-01",
+      "historical_task_id": "DREAL003-G2-M200"
+    },
+    "g2b02-adm-g2-m202-d01-support-s2": {
+      "case_dir": "D:\\RCAIDE\\.real_runs\\DRECOVER001-G2-20261121-01\\cases\\g2-m202-d01-support-s2",
+      "run_id": "DRECOVER001-G2-20261121-01",
+      "historical_task_id": "DREAL003-G2-M202"
+    },
+    "g2b02-adm-g2-m202-d06-query-s2": {
+      "case_dir": "D:\\RCAIDE\\.real_runs\\DRECOVER001-G2-20261121-01\\cases\\g2-m202-d06-query-s2",
+      "run_id": "DRECOVER001-G2-20261121-01",
+      "historical_task_id": "DREAL003-G2-M202"
+    },
+    "g2b02-adm-g2-m202-d00-support-s2": {
+      "case_dir": "D:\\RCAIDE\\.real_runs\\DRECOVER001-G2-20261121-01\\cases\\g2-m202-d00-support-s2",
+      "run_id": "DRECOVER001-G2-20261121-01",
+      "historical_task_id": "DREAL003-G2-M202"
+    },
+    "g2b02-adm-g2-m202-d05-query-s2": {
+      "case_dir": "D:\\RCAIDE\\.real_runs\\DRECOVER001-G2-20261121-01\\cases\\g2-m202-d05-query-s2",
+      "run_id": "DRECOVER001-G2-20261121-01",
+      "historical_task_id": "DREAL003-G2-M202"
+    },
+    "g2b02-adm-g2-m202-d04-query-s2": {
+      "case_dir": "D:\\RCAIDE\\.real_runs\\DRECOVER001-G2-20261121-01\\cases\\g2-m202-d04-query-s2",
+      "run_id": "DRECOVER001-G2-20261121-01",
+      "historical_task_id": "DREAL003-G2-M202"
+    },
+    "ADM-R2-B01R-M240_D02_QUERY_R1": {
+      "case_dir": "D:\\RCAIDE\\.real_runs\\DRECOVER001-R2-20261120-01\\cases\\m240-d02-query-r1",
+      "run_id": "DRECOVER001-R2-20261120-01",
+      "historical_task_id": "concorde-real-M240"
+    },
+    "g1-adm-g1-m240-d00-support": {
+      "case_dir": "D:\\RCAIDE\\.real_runs\\DRECOVER001-G1-20261121-01\\cases\\g1-m240-d00-support",
+      "run_id": "DRECOVER001-G1-20261121-01",
+      "historical_task_id": "DREAL003-G1-M240"
+    },
+    "g1-adm-g1-m240-d05-query": {
+      "case_dir": "D:\\RCAIDE\\.real_runs\\DRECOVER001-G1-20261121-01\\cases\\g1-m240-d05-query",
+      "run_id": "DRECOVER001-G1-20261121-01",
+      "historical_task_id": "DREAL003-G1-M240"
+    },
+    "g1-adm-g1-m240-d04-query": {
+      "case_dir": "D:\\RCAIDE\\.real_runs\\DRECOVER001-G1-20261121-01\\cases\\g1-m240-d04-query",
+      "run_id": "DRECOVER001-G1-20261121-01",
+      "historical_task_id": "DREAL003-G1-M240"
+    }
+  },
+  "physical_solver_starts_actual": 0
+}

@@ -1,0 +1,289 @@
+We need answer only compact JSON. Need review dossier. Need decide verdict/gates. Need be strict. Need identify issues. We cannot tools. Need use only dossier. Need determine whether protocol authorizes exactly described: one frozen supplement batch <=16 starts, fills missing slots, tasks M160/M200 0, M140/M220/M260 3 support +1 query d03, M180/M202/M240 support only; 3 probes, 48 internal, 9600, tol 1e-3, no retries, parallelism 1, upload/readback <=8, four-arm meta-learning K=1/K=3 seeds 7/19/43 admitted real labels train-only norm val-only selection test once; P3 not authorized; no start before Lead GO.
+
+Need review dossier. Likely pass? But need inspect inconsistencies.
+
+We need produce JSON with reviewer "deepseek-flash", review_type, reviewed_utc 2026-11-23T15:25:00Z, dossier_sha256 given 6b26... Need verdict likely P2_PROTOCOL_AND_CODE_REVIEW_PASS if all gates pass. But need identify potential flaws. Let's examine dossier carefully.
+
+Dossier claims 16 starts plan. Table 3: counts:
+M140 d00,d01,d02 support + d03 query =4
+M220 4
+M260 4
+M240 d01 support, d03 support =2 (but M240 had prior 1 support +3 query => after 3 support/3 query yes)
+M202 d02 support =1 (prior 2 support+3 query => after 3/3)
+M180 d02 support=1 (prior 2 support+3 query => after 3/3)
+Total 4+4+4+2+1+1=16. Support count: M140 3 + M220 3 + M260 3 + M240 2 + M202 1 + M180 1 =13 support. Query count M140/M220/M260 each d03 =3. Fits.
+
+But need check "tasks with zero labels (M140, M220, M260) get 3 support plus 1 independent query design (d03)" yes.
+
+Need check "M180/M202/M240 get support only" yes.
+
+Need check "fills only missing slots of frozen eight-task family (M140/M160/M180/M200/M202/M220/M240/M260)" yes.
+
+Potential issue: M140/M220/M260 query d03 is also included in same batch. They say query independent geometry d03, never support. Fine. But query design d03 appears as query in zero-label tasks; no support d03 for them. Good.
+
+Potential issue: M240 gets d01 and d03 support. But dossier's reuse table shows M240 has existing support design 937aa7c9; queries f8626bb58503 and a6baa19d0129 and 408cafa19c7e. New support d01 (design 3de72a4bb698?) and d03 (cab5c852e3db?) Wait M240 new designs d01 and d03. Need frozen support slots d00-d03? Existing support d00 only; missing d01,d02,d03? They only add d01 and d03, but M240 after support 3. If existing support d00 plus new d01 + d03 =3. Fine, missing d02 not needed because target 3 supports. But "fills only missing slots" might imply they pick only needed. Fine.
+
+M202 existing supports d00 and d01, missing d02; add d02. Good.
+M180 existing support d00 and d01, add d02. Good.
+
+But wait M140/M220/M260 no labels, need support d00,d01,d02 and query d03. They add d00,d01,d02 support + d03 query. Good.
+
+Potential issue: Table 3 for M140 d00 alpha 9.541121, d01 9.440008 etc. Need check bracket clamping and 3 points spacing 0.004; centers within bracket. Let's verify some:
+M140 d00 bracket [9.52,9.76], points 9.541121,9.545121,9.549121 all within. d01 bracket [9.28,9.52], points 9.440008 etc within. d02 bracket [9.28,9.52], points 9.488677 etc within. d03 [9.52,9.76], points 9.644687 etc within.
+M220 d00 [4.48,4.72], points 4.580209 etc within; d01 points 4.534082 within; d02 bracket [4.72,4.96], points 4.748850 etc within; d03 [4.48,4.72] points 4.627268 within.
+M260 d00 [4.00,4.24] points 4.174299 etc within; d01 4.132390; d02 4.198574; d03 4.217055 within.
+M240 d01 [4.24,4.48] points 4.389310 etc within; d03 [4.48,4.72] points 4.480000, 4.484, 4.488 within. Note alpha point exactly at bracket lower bound 4.480000. Is endpoint allowed? Section 7 says "端点绝不超出原始 bracket 与 alpha 允许窗口" not "strictly inside"; okay. But "中心按 bracket 夹紧" maybe point center not outside. Fine.
+M202 d02 [5.20,5.44] points 5.342636 etc within.
+M180 d02 [6.16,6.40] points 6.201040 etc within.
+Spacing 0.004 exactly yes.
+
+Potential issue: "中心按 bracket 夹紧" but points are triples not centers? Each alpha three points; spacing 0.004 total span 0.008. Need no issue.
+
+Potential issue: "internal 数从原始 polar 行数回填，缺失记 UNKNOWN 而非 0" But dossier says MAX_INTERNAL=48 = 16*3. If internal count from raw polar rows maybe not 3? Hmm P2_ACCOUNTING says internal number from raw polar rows; missing UNKNOWN. But cap 48. Could be okay.
+
+Potential issue: Dataset matrix says reuse 25 admitted labels. Let's count reuse table rows: M160 4? Rows: M160 support R2, M160 d01, d03 support, d05 query, d06 query =5? Let's count: row 1 M160 support (R2) 1; row 7 M160 d01 support; row 8 M160 d03 support; row 9 M160 d05 query; row 10 M160 d06 query =5. M180: row2 support R2; row11 d01 support; row12 d04 query; row13 d05 query; row14 d06 query =5. M240: row3 d02 query; row4 d00 support; row5 d04 query; row6 d05 query =4. M200: rows 15-20 =6. M202: rows 21-25 =5. Total 5+5+4+6+5 =25. Yes.
+
+But check matrix pre-support/query counts:
+M160: support 3, query 2. Reuse table M160 supports: R2 d00 support, G2 d01 support, G2 d03 support =3; queries d05,d06=2. Good.
+M180: supports R2 d00 + G2 d01 =2; queries d04,d05,d06 =3. Good.
+M240: supports G1 d00 =1; queries R2 d02 + G1 d04 + G1 d05 =3. Good.
+M200: supports d01,d02,d03 =3; queries d04,d05,d06 =3. Good.
+M202: supports d00,d01 =2; queries d04,d05,d06 =3. Good.
+M140/M220/M260 none. Good.
+
+Potential issue: "M160, M200 get 0 starts" yes.
+
+Potential issue: "13 support, 3 query" yes.
+
+Potential issue: "K=5 NOT_ELIGIBLE because only d00-d03 four independent support slots" But for M140/M220/M260 after batch support d00,d01,d02 only 3, not 4; K=3 eligible. M180/M202/M240 have 3 supports. M160/M200 have 3. K=5 not eligible. Fine.
+
+Potential issue: "four-arm meta-learning with K=1 and K=3 at seeds 7/19/43 using only admitted real labels (train-only normalization, validation-only selection, test scored once)." Dossier section 5 lists arms, K, seeds, normalization, validation, test. Good.
+
+Potential issue: P3 online optimization not authorized. Section 1 and 6 state. Good.
+
+Potential issue: no start before Lead GO. Section 6 states only after A5 pass + GO binding hashes. Good. Section 1 says GO record separate after pass. Good.
+
+Need decide gate verdicts. Most PASS. But maybe P2_BRACKET_PROVENANCE should PASS_WITH_DISCLOSURE? Need find weaknesses. The dossier says 16 brackets all from G2 stage-1 raw polar, with polar sha truncated. Full in plan. But no actual verification possible? Review independent single shot only dossier. Gate could PASS if evidence sufficient. We need maybe note limitations: truncated SHA in dossier, cannot independently recompute, but full fields in plan. However review is of dossier; "No tools." We can state limitations. But verdict likely PASS.
+
+Need be strict: "reviewed_utc" use current given. "dossier_sha256": 6b26bb180b55515fe887e04a30e5136d94f37ff658539e19449fc4bf09f1ca59.
+
+Need produce only valid compact JSON. Need include evidence_checked list, findings list, limitations, scope, signature. At most 8 findings, each string <=240 chars. At most 6 limitations. Scope <=400. Need ensure JSON valid. No markdown.
+
+Need decide findings. If pass, findings can include minor/info. Need not invent. Could mention:
+- info: plan counts reconcile: 16 starts = 13 support + 3 query; M160/M200 zero; M140/M220/M260 4 each; M180/M202/M240 1/1/2.
+- info: alpha triples spacing 0.004, all listed points lie within brackets; tolerance 1e-3 not relaxed.
+- info: accounting constants and stop/upload controls present in dossier.
+- info: training protocol lists four arms, K=1/3, seeds 7/19/43, train-only norm, val-only selection, test once.
+- minor? Maybe "Dossier presents truncated polar SHA256 values in section 3c; full hashes are said to be in plan, so independent byte verification is limited in this dossier-only review." This is a limitation rather than finding. Could include as minor? If gate pass, maybe limitations.
+
+Need maybe identify a real issue: Section 3c table lists polar SHA "6bebbae3682a296d..." truncated 16 hex. The gate P2_BRACKET_PROVENANCE requires bracket provenance. Truncated hashes are not full evidence, but dossier says full in plan. As an independent reviewer with no tools, cannot verify. Does that require PASS_WITH_DISCLOSURE? The gate should be PASS_WITH_DISCLOSURE if evidence depends on external files not included? But dossier references plan and pre-registration hashes. The review is protocol and code review; likely can accept with disclosure? The instructions say decide strictly whether protocol authorizes only one frozen batch etc. If all conditions in dossier, pass. But gate verdict can PASS_WITH_DISCLOSURE for bracket provenance because truncated hashes in dossier; full hashes in separate plan not in dossier. However PREREGISTRATION includes file hashes. Hmm.
+
+Need parse "DOSSIER_BYTE_IDENTITY" and file hashes. This is a dossier containing protocol. The review should check gates. It may be acceptable to mark PASS with limitations. But "P2_BRACKET_PROVENANCE" evidence in dossier includes raw polar rows and truncated SHA. Full path/hash in plan. Since plan hash known, but no tool. I'd mark PASS_WITH_DISCLOSURE? Need be strict. The gate asks "16 brackets all from G2 stage-1 raw polar and no solver starts." Dossier asserts this, and section 3c has truncated hashes. But actual full provenance is external. In a dossier-only review, cannot independently verify full SHA; that's a disclosure. But not necessarily fail.
+
+Potential issue: "P2_PREREGISTRATION" has file hash and source_code_sha256; but dossier cannot include itself. Good. Could be PASS.
+
+Potential issue: "P2_DATASET_MATRIX" has 25 labels; alias and dedup rules. But there is a potential conflict: "同一( canonical task, design_sha256)为键去重" but table shows M160 design a6baa19d0129 query in G2 and M240 design a6baa19d0129 query in G1; different tasks okay. However M240 has existing query design 408cafa19c7e and M200 support design 408cafa19c7e; different tasks okay. No issue.
+
+Potential issue: "同优先级在同一设计上出现 support/query 冲突时，两条都排除" and excluded 16 conflicts, 7 duplicates. Okay.
+
+Potential issue: "每条复用证书原 case 目录重放 admit_real_manifest" ensures q_pa matches. Good.
+
+Potential issue: "alpha probes per start 3" but if a point fails admission? No retries; label maybe missing. The plan may result fewer labels. But cap remains. They report shortage matrix. Fine.
+
+Potential issue: "wall-clock stop 9600s (=16x600 worst case)" but with 16 starts and 600 each =9600. If upload/readback overhead, wall clock could exceed 9600. They say wall-clock stop 9600. Maybe if overhead included, cannot complete all 16. But protocol says stop at 9600, so maybe fewer starts. It still authorizes at most 16. Fine.
+
+Potential issue: "parallelism 1" yes.
+
+Potential issue: "upload/readback every <=8 starts" yes.
+
+Potential issue: "48 internal max (=16x3)" yes.
+
+Potential issue: "tolerance 1e-3 not relaxed" yes.
+
+Potential issue: "P3 online optimization NOT authorized" yes.
+
+Potential issue: "no start may occur before separate Lead GO record" yes.
+
+Could verdict be PASS. Need include gate verdicts all PASS maybe P2_ZERO_PHYSICAL_UNTIL_GO PASS. If all pass, verdict P2_PROTOCOL_AND_CODE_REVIEW_PASS.
+
+Need maybe include "P2_BRACKET_PROVENANCE":"PASS_WITH_DISCLOSURE" due truncated SHA. But then overall could still PASS? The verdict field allowed PASS with gate pass_with_disclosure. The instruction says decide strictly. If any gate PASS_WITH_DISCLOSURE, overall likely PASS. But if bracket provenance needs disclosure, maybe overall PASS. Need choose.
+
+Let's think as independent reviewer. The dossier includes "完整 polar 路径与 SHA256 见 p2_supplement_plan.json". The dossier itself doesn't include full hashes, but the plan is referenced and hashed. Since no tools, cannot read plan. A strict reviewer might not accept truncated hashes as proof. But the dossier is the review artifact; it says full hashes in plan. The gate can be PASS_WITH_DISCLOSURE: provenance asserted and full evidence in referenced hashed plan, but not independently verified here. However "P2_BRACKET_PROVENANCE" asks "16 bracket 是否全部来自 G2 stage-1 raw polar 且未启动求解器." The dossier table shows original polar two rows; truncated SHA. That is enough to see bracket values lie between rows. Full hash not needed to check bracket math. But to verify source file, need plan. I can mark PASS with limitation "polar hashes truncated; full verification depends on plan." But gate might be PASS.
+
+Need maybe identify "M240 d03 support alpha 4.480000 equals lower bracket endpoint; section 7 says endpoints never exceed, so allowed. But "中心按 bracket 夹紧" and "端点绝不超出" okay. No issue.
+
+Potential issue: "P2_ALPHA_PROTOCOL: 探测点间距 0.004° (总跨度 0.008°)" But table for M240 d03: 4.480000, 4.484000, 4.488000. Yes. For M220 d02: 4.748850,4.752850,4.756850. Yes. All spacing 0.004. Good.
+
+Potential issue: "中心按 bracket 夹紧" What is center? For M140 d00 points centered at 9.545121; bracket center 9.64. Not center; maybe "center clamped" means if computed center outside bracket, clamp. Fine.
+
+Potential issue: "alpha allowed window" not explicitly defined. Could be okay.
+
+Potential issue: "M140/M220/M260 get 3 support plus 1 independent query design (d03)" But if d03 query is added at same time as support labels, is it independent? It is same geometry design d03 but no support d03. Fine.
+
+Potential issue: "Reuse existing 25 admitted real labels" but for M140/M220/M260 zero labels. The total after batch labels = 25+16=41. Supports after: M1403 M1603 M1803 M2003 M2023 M2203 M2403 M2603 =24 supports; queries: M1401 M1602 M1803 M2003 M2023 M2201 M2403 M2601 =17; total 41. Fits.
+
+Potential issue: "M160, M200 already 3 independent supports get 0 starts" yes.
+
+Potential issue: "P2_CAPS: MAX_STARTS=16, MAX_INTERNAL=48, WALL_MAX=9600, UPLOAD_EVERY=8; retries 0; parallelism 1; timeout 600." yes.
+
+Potential issue: "P2_ACCOUNTING_CONTROLS" includes null rows failure_kind not duplicate. yes.
+
+Potential issue: "P2_ADMISSION: independent local reimplementation audit non-human non-A5 and RealAdmissionManifest per-file hash." yes.
+
+Potential issue: "P2_TRAINING_PROTOCOL" not in required gate list? The required gates include P2_ALPHA_PROTOCOL, P2_ADMISSION, etc. Training protocol not a gate key in schema? Actually schema gate_verdicts has P2_PREREGISTRATION, P2_DATASET_MATRIX, P2_BRACKET_PROVENANCE, P2_ALPHA_PROTOCOL, P2_ADMISSION, P2_ACCOUNTING_CONTROLS, P2_CAPS, P2_ZERO_PHYSICAL_UNTIL_GO. No P2_TRAINING_PROTOCOL. So okay.
+
+Need decide if any finding critical/major. If no, findings can be info/minor. But if all pass, findings maybe include "No blocking discrepancy found." But findings array can be empty? Better include 3-4 info findings. The required output says findings array. Can be empty? It says at most 8, no minimum. But to show review, include info. Need ensure each finding/evidence <=240. Use ASCII? JSON can contain unicode but compact. We can write English. Fine.
+
+Need include "evidence_checked" list. Could include strings:
+"DOSSIER_BYTE_IDENTITY sha256 6b26...ca59"
+"Section 1/2/3 start accounting: 16 starts = 13 support + 3 query; M160/M200 zero"
+"Section 3 alpha triples spacing 0.004 and within listed brackets"
+"Section 3c/plan full polar provenance and truncated hashes"
+"Section 4/5/6 tolerance, four-arm training, zero physical until GO"
+Maybe 5 items.
+
+Limitations:
+- "Dossier-only review; full plan, preregistration, code, manifests, and polar files were not opened; verification relies on stated hashes and bindings." This is important.
+- "Polar SHA256 values in section 3c are truncated; full hashes are only referenced in p2_supplement_plan.json."
+- "No independent execution or recomputation of code constants or admission certificates was performed."
+- "Training protocol is assessed as written; no training run or data leakage test was executed."
+- "Historical reuse labels are accepted by stated admission replay, not replayed here."
+At most 6. Good.
+
+Scope <=400: "Protocol/code review of P2 supplement batch and four-arm training preregistration against the stated caps, matrix, bracket provenance, alpha protocol, admission, accounting, and zero-physical gates." That's 210. Good.
+
+Verdict: P2_PROTOCOL_AND_CODE_REVIEW_PASS.
+
+Gate verdicts: all PASS? Need maybe P2_BRACKET_PROVENANCE PASS_WITH_DISCLOSURE due truncated hashes. But overall PASS. The schema allows. Which is more accurate? Let's weigh.
+
+If I mark all PASS, limitations note truncated. But gate verdict PASS despite truncated? Could be okay because full hashes in plan. However a strict reviewer might say bracket provenance gate cannot be fully verified from dossier alone, so PASS_WITH_DISCLOSURE. The prompt says "Decide strictly whether this protocol authorizes..." It doesn't require verifying actual hash. It wants check protocol. The dossier's plan says full polar paths and SHA in plan. The gate "P2_BRACKET_PROVENANCE" likely can pass with disclosure. I'd use PASS_WITH_DISCLOSURE for P2_BRACKET_PROVENANCE to reflect truncation. Also P2_DATASET_MATRIX maybe PASS_WITH_DISCLOSURE? Alias table and 25 rows are detailed. Could be PASS. P2_PREREGISTRATION PASS. P2_ALPHA_PROTOCOL PASS. P2_ADMISSION PASS_WITH_DISCLOSURE? It states independent audit and manifest but not included; but this is protocol, so PASS. P2_ACCOUNTING_CONTROLS PASS. P2_CAPS PASS. ZERO PASS.
+
+If one gate PASS_WITH_DISCLOSURE, overall verdict still PASS. The verdict options include PASS. It doesn't require all pass. Fine.
+
+Need maybe "P2_ADMISSION":"PASS_WITH_DISCLOSURE" because admission relies on independent audit not included. But dossier says "每条新标签须有独立本地重实现审计与 RealAdmissionManifest..." This is a requirement, not evidence. Gate is about protocol requiring admission. The protocol includes it. So PASS.
+
+Potential hidden issue: "P2_ADMISSION" gate: "1e-3 未放宽、原始行判据、证书逐文件哈希." Dossier section 4 says maintain 1e-3; section 7 says 1e-3 not relaxed, original row criterion, certificate per-file hash. Good.
+
+Potential hidden issue: "P2_ACCOUNTING_CONTROLS" ② "internal 数从原始 polar 行数回填，缺失记 UNKNOWN 而非 0" But MAX_INTERNAL=48. If internal count from raw polar rows, each start has 3 alpha probes, but raw polar rows? Hmm "internal" might mean internal cases (alpha probes) count. It says "internal 数从原始 polar 行数回填" maybe weird. But okay.
+
+Potential hidden issue: "M240 d03 support alpha 4.480000 equals bracket lower bound. Is this an "alpha allowed window" endpoint? It says endpoints never exceed original bracket and alpha allowed window; endpoint equal allowed. Fine.
+
+Potential hidden issue: "M140 d01 bracket [9.28,9.52], alpha 9.440008 etc. Original polar rows (9.28,0.368527)/(9.52,0.377436). cl_target 0.374615. Interpolated CL at 9.44? Linear between: fraction .16/.24=.6667; CL=0.368527+0.6667*(0.008909)=0.374466. cl_target 0.374615 slightly above? Maybe not exactly linear? But target within range. Fine.
+
+Potential hidden issue: "M140 d00 cl_target 0.378361, bracket 9.52-9.76 rows CL 0.377434-0.386295, target within. Fine.
+M220 d02 cl_target 0.153221, bracket [4.72,4.96] rows 0.152180-0.159783; within. Fine.
+M260 d03 cl_target 0.110810, bracket [4.00,4.24] rows 0.105077-0.111302; within. Fine.
+M240 d03 cl_target 0.130048, bracket [4.48,4.72] rows 0.129952-0.136805; within. Fine.
+M202 d02 target 0.181744, bracket [5.20,5.44] rows 0.176861-0.184853; within. Fine.
+M180 d02 target 0.228885, bracket [6.16,6.40] rows 0.227272-0.235868; within. Fine.
+
+Potential issue: Some cl_target close to lower bracket but alpha points maybe not around target? For M240 d03 target 0.130048, bracket lower CL 0.129952 at alpha 4.48. Alpha points start at 4.48 exactly. Good.
+
+Potential issue: "13 support, 3 query" but section 2 table "本批最多 16 次启动（13 support、3 query）" yes.
+
+Potential issue: "M140/M220/M260 query d03" but for M140 d03 query, alpha 9.644687 etc, bracket [9.52,9.76], target 0.382183. Good.
+
+Potential issue: "M160/M200 get 0 starts" but M160 and M200 have queries too; no need. Good.
+
+Potential issue: "P3 online optimization not authorized" but training four-arm meta-learning maybe P3? They explicitly says training no solver. Fine.
+
+Potential issue: "no start may occur before a separate Lead GO record" but section 6 says only after A5 pass and GO record binds hashes. Good.
+
+Need output. But let's think if the expected answer might be "P2_CHANGES_REQUIRED" due a subtle inconsistency. The prompt asks "Decide strictly whether this protocol authorizes only ONE frozen supplement batch..." It might be a test to see if reviewer catches that M240 gets d01 and d03 support but "fills only missing slots" and "M180/M202/M240 get support only" yes. Another subtle: M140/M220/M260 need 3 support + 1 query, but for M140/M220/M260 they designate d03 as query, while d00-d02 support. However section 2 says "所有 query 使用 d03 这一独立几何，绝不充当 support." But for M240, d03 is support, not query. Is that a contradiction? "所有 query 使用 d03" means all queries in this batch use d03; M240 d03 is support, not query. That's okay. But "d03 这一独立几何，绝不充当 support" could be read globally: d03 never support. But M240 d03 is support. Wait exact: "所有 query 使用 d03 这一独立几何，绝不充当 support。" This likely means for zero-label tasks, d03 query is independent and never support. But table 3 has P2-CANON-M240 d03 support. That's a potential contradiction: d03 is used as support for M240, while sentence says d03 never acts as support. Need parse: "所有 query 使用 d03 这一独立几何，绝不充当 support。" It says all query use d03 this independent geometry, never act as support. But M240 d03 support is not a query; it is a support design. It uses d03 as support, violating "d03 ... 绝不充当 support" if global. However maybe "所有 query" refers to the new queries for zero-label tasks; d03 query doesn't serve as support. But the phrase "绝不充当 support" could be global. Is this a critical issue? It might be a language issue. The design d03 is one of d00-d03 support slots in frozen protocol. M240 has existing support d00, needs two more to reach 3; they choose d01 and d03. If d03 is a support slot, that's allowed by frozen protocol. The sentence "所有 query 使用 d03 ... 绝不充当 support" likely means the query labels (for M140/M220/M260) are not used as support. But M240's d03 is a support label, not the same labels. It doesn't say design d03 can never be support across tasks. Hmm.
+
+Potential issue: M140/M220/M260 get support d00,d01,d02 and query d03. Then K=3 supports available. But the frozen protocol has d00-d03 four independent support slots; they choose three. Fine.
+
+Potential issue: "M160/M200 already 3 independent supports get 0 starts" but M160 has support designs: 937aa7c9, 3de72a4bb698, cab5c852e3db. M200 supports: 3de72a4bb698, 408cafa19c7e, cab5c852e3db. M160 and M200 share support designs? M160 supports d00 (937aa), d01 (3de72), d03 (cab5). M200 supports d01 (3de72), d02 (408c), d03 (cab5). They share d01 and d03. Is that allowed? Supports are per task; same design can appear in multiple tasks? Maybe yes, different tasks. But "independent supports" for a task: 3 distinct designs. M160 distinct; M200 distinct. Fine.
+
+Potential issue: "M202 supports d00 937aa, d01 3de72; add d02 408c? Wait table 3 M202 d02 support cl 0.181744. Existing M200 support d02 is 408cafa19c7e. So M202 new d02 design likely 408cafa19c7e. But M202 existing query d04 f8626, d05 a6ba, d06 3e904. Fine.
+M240 new d01 3de72, d03 cab5? Existing M240 support d00 937aa, queries d02 408c, d04 f8626, d05 a6ba. New d01 3de72, d03 cab5. Fine.
+
+Potential issue: "M180 new d02 support" likely design 408cafa19c7e? Existing M180 support d00 937aa, d01 3de72. New d02 408c? But M180 existing query d04 f8626, d05 a6ba, d06 3e904. Fine.
+
+All good.
+
+Potential issue: "M140/M220/M260 get 3 support plus 1 independent query design (d03)" but table 3 for M260 d03 query alpha 4.217055 etc; bracket [4.00,4.24]. But cl_target 0.110810. The alpha center 4.221055, which is near upper part. Fine.
+
+Potential issue: "3 alpha probes per start" but if a probe fails tolerance, no retries; maybe fewer than 3 labels. They have "shortage matrix" disclosure. Good.
+
+Potential issue: "upload/readback every <=8 starts" yes.
+
+Potential issue: "wall-clock stop 9600 s (=16 x 600 s worst case)" yes.
+
+Potential issue: "P2_CAPS: MAX_INTERNAL=48" but if each start has 3 alpha probes, 16*3=48. Good.
+
+Potential issue: "internal cases max" maybe includes reused labels? No, only new. Fine.
+
+Potential issue: "P2_PREREGISTRATION" file hash and source code hash. But dossier says "预注册文件 sha256 = ..." and "补采计划 sha256 = ..." and dataset hash. The dossier itself hash given. Good.
+
+Potential issue: "本卷宗无法在正文中包含自身哈希" handled.
+
+Need maybe "review_type":"independent_single_shot_dossier_review". Good.
+
+Need ensure JSON compact and valid. Use no trailing commas. Use quotes. Chinese in values allowed, but ensure ASCII maybe. Could use English to avoid unicode issues. But valid JSON allows unicode. I'll use English mostly.
+
+Need decide findings. Let's draft:
+
+{
+"reviewer":"deepseek-flash",
+"review_type":"independent_single_shot_dossier_review",
+"reviewed_utc":"2026-11-23T15:25:00Z",
+"dossier_sha256":"6b26bb180b55515fe887e04a30e5136d94f37ff658539e19449fc4bf09f1ca59",
+"verdict":"P2_PROTOCOL_AND_CODE_REVIEW_PASS",
+"gate_verdicts":{
+"P2_PREREGISTRATION":"PASS",
+"P2_DATASET_MATRIX":"PASS",
+"P2_BRACKET_PROVENANCE":"PASS_WITH_DISCLOSURE",
+"P2_ALPHA_PROTOCOL":"PASS",
+"P2_ADMISSION":"PASS",
+"P2_ACCOUNTING_CONTROLS":"PASS",
+"P2_CAPS":"PASS",
+"P2_ZERO_PHYSICAL_UNTIL_GO":"PASS"
+},
+"evidence_checked":[
+"Byte identity sha256 6b26...ca59 and referenced file hashes",
+"Start matrix reconciles to 16 starts: 13 support + 3 query; M160/M200 zero; M140/M220/M260 four each; M180/M202/M240 one/one/two",
+"Section 3 alpha triples have 0.004 spacing and lie within listed brackets",
+"Section 3c polar rows bracket all cl_targets; section 1/6 give zero-physical-until-GO",
+"Section 4/5 give 1e-3 tolerance, four arms, K=1/3, seeds 7/19/43, train-only normalization, val-only selection, test once",
+"Section 1/3c code constants cover 16/48/9600/0 retries/parallel 1/upload every 8"
+],
+"findings":[
+{"severity":"info","finding":"Start accounting is internally consistent and matches the required one-batch cap.","evidence":"Section 2 table: M140 4, M220 4, M260 4, M240 2, M202 1, M180 1 = 16; 13 support + 3 query; M160/M200 0."},
+{"severity":"info","finding":"Alpha probe geometry is consistent with the stated 3-probe, 0.004-degree spacing rule.","evidence":"All 16 rows list three alphas spaced by 0.004 and within the listed bracket endpoints."},
+{"severity":"info","finding":"Accounting and cap controls are explicitly specified.","evidence":"MAX_STARTS=16, MAX_INTERNAL=48, WALL_MAX=9600, UPLOAD_EVERY=8, retries=0, parallelism=1, timeout=600."},
+{"severity":"info","finding":"Training protocol matches the required four-arm, K=1/K=3, seed set and split discipline.","evidence":"Section 5 lists RANDOM_INIT, POOLED_PRETRAIN, TASK_COND_PRETRAIN, FOMAML; K=1/3; seeds 7/19/43; train-only norm; val-only selection; test once."},
+{"severity":"minor","finding":"Bracket provenance uses truncated polar SHA256 values in the dossier, so full byte verification depends on the referenced plan.","evidence":"Section 3c shows 16-hex prefixes and states full paths/hashes are in p2_supplement_plan.json."}
+],
+"limitations":[
+"Dossier-only review: full preregistration, plan, code, manifests, and polar files were not opened.",
+"Polar SHA256 values in section 3c are truncated; full hashes are only referenced externally.",
+"No independent execution or recomputation of code constants, admission replays, or training was performed.",
+"Historical reuse labels are accepted as stated, not re-admitted here.",
+"Bracket provenance is assessed from the displayed raw polar rows, not from the original files."
+],
+"scope":"Protocol/code review of the P2 supplement batch and four-arm training preregistration against the stated caps, dataset matrix, bracket provenance, alpha protocol, admission, accounting, and zero-physical gates.",
+"signature":"deepseek-flash independent A5 review; not a human signature"
+}
+
+Need check finding/evidence <=240 chars. Let's count approximate. Fine. But evidence string with "Section 2 table..." okay. Findings at most 8, we have 5. Limitations 5 <=6. Scope <=400. Good.
+
+Need ensure "reviewed_utc" exact. Good.
+
+But is "P2_BRACKET_PROVENANCE":"PASS_WITH_DISCLOSURE" acceptable with verdict PASS? Yes.
+
+Need maybe "P2_PREREGISTRATION":"PASS_WITH_DISCLOSURE"? No.
+
+Potential concern: The prompt says "Return ONLY one valid compact JSON object, no markdown, ending with }". We must output no markdown. Good.
+
+Need final only JSON. Ensure no newline? Compact enough. Fine.
+
+Double-check all gate values allowed: "PASS" or "PASS_WITH_DISCLOSURE" or "FAIL". Yes. P2_ZERO_PHYSICAL_UNTIL_GO only PASS/FAIL. Good.
+
+Need maybe "dossier_sha256" exactly given. Yes.
+
+Need maybe "reviewer":"deepseek-flash" as required. Good.
+
+Need not sign as human. Good.
+
+Let's final.
