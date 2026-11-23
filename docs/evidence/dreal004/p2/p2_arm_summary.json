@@ -1,0 +1,63 @@
+{
+  "schema": "dreal004.p2_arm_summary.v1",
+  "metric": "MAE/RMSE in N over independent query rows after K-shot adaptation",
+  "rows": [
+    {
+      "arm": "RANDOM_INIT",
+      "split": "val",
+      "mean_mae_n": 21089.02536379994,
+      "mean_rmse_n": 23187.33445736006,
+      "n_task_k_seed": 12
+    },
+    {
+      "arm": "RANDOM_INIT",
+      "split": "test",
+      "mean_mae_n": 28509.17403823738,
+      "mean_rmse_n": 30234.804016173348,
+      "n_task_k_seed": 12
+    },
+    {
+      "arm": "POOLED_PRETRAIN",
+      "split": "val",
+      "mean_mae_n": 15015.943122873083,
+      "mean_rmse_n": 16197.558271101947,
+      "n_task_k_seed": 12
+    },
+    {
+      "arm": "POOLED_PRETRAIN",
+      "split": "test",
+      "mean_mae_n": 25192.778986804205,
+      "mean_rmse_n": 26190.47454929427,
+      "n_task_k_seed": 12
+    },
+    {
+      "arm": "TASK_COND_PRETRAIN",
+      "split": "val",
+      "mean_mae_n": 10693.00591703195,
+      "mean_rmse_n": 11785.99742448727,
+      "n_task_k_seed": 12
+    },
+    {
+      "arm": "TASK_COND_PRETRAIN",
+      "split": "test",
+      "mean_mae_n": 8528.89539226679,
+      "mean_rmse_n": 9729.982986032152,
+      "n_task_k_seed": 12
+    },
+    {
+      "arm": "FOMAML",
+      "split": "val",
+      "mean_mae_n": 25350.244272760134,
+      "mean_rmse_n": 26713.237984982887,
+      "n_task_k_seed": 12
+    },
+    {
+      "arm": "FOMAML",
+      "split": "test",
+      "mean_mae_n": 40053.83698354073,
+      "mean_rmse_n": 40497.96169810164,
+      "n_task_k_seed": 12
+    }
+  ],
+  "k5": "NOT_ELIGIBLE"
+}

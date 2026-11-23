@@ -1,0 +1,856 @@
+{
+ "schema": "dreal004.p2_inventory.v1",
+ "run_id": "DRECOVER001-P2-20261123-01",
+ "physical_solver_starts_actual": 0,
+ "note": "read-only inventory of already admitted certificates; no solver launched",
+ "runs_scanned": {
+  "R2": "D:\\RCAIDE\\.real_runs\\DRECOVER001-R2-20261120-01",
+  "G1": "D:\\RCAIDE\\.real_runs\\DRECOVER001-G1-20261121-01",
+  "G2": "D:\\RCAIDE\\.real_runs\\DRECOVER001-G2-20261121-01"
+ },
+ "certificates_total": 47,
+ "certificates_ok": 47,
+ "certificates_failed": 0,
+ "unique_ok_labels": 45,
+ "duplicate_evidence_dropped": 2,
+ "duplicates": [
+  {
+   "kept": "g2b02-adm-g2-m180-d00-support-s2",
+   "dropped": "g2b02-adm-g2-m180-d07-query-s2",
+   "run": "G2",
+   "task": "M180",
+   "design": "d07",
+   "same_polar": true
+  },
+  {
+   "kept": "g2b02-adm-g2-m200-d00-support-s2",
+   "dropped": "g2b02-adm-g2-m200-d07-query-s2",
+   "run": "G2",
+   "task": "M200",
+   "design": "d07",
+   "same_polar": true
+  }
+ ],
+ "numeric_retest_same_design_different_polar": [
+  {
+   "task": "M160",
+   "design": "937aa7c9c789ccd8fce4fdbde942a258248f2b1c91ba90cf6c99c7e4c5a8a3fe",
+   "cases": [
+    "ADM-R2-B01R-M160_D00_SUPPORT_R1",
+    "g2-adm-g2-m160-d00-support-s2",
+    "g2b02-adm-g2-m160-d07-query-s2"
+   ],
+   "polar_variants": 3,
+   "di_n_spread": 207.92664209543727
+  },
+  {
+   "task": "M160",
+   "design": "408cafa19c7ee08986398a9531c369b7060f333695589437f428c0f5baacfe6c",
+   "cases": [
+    "ADM-R2-B01R-M160_D02_QUERY_R1",
+    "g2-adm-g2-m160-d02-support-s2"
+   ],
+   "polar_variants": 2,
+   "di_n_spread": 59.9735332019045
+  },
+  {
+   "task": "M180",
+   "design": "937aa7c9c789ccd8fce4fdbde942a258248f2b1c91ba90cf6c99c7e4c5a8a3fe",
+   "cases": [
+    "ADM-R2-B01R-M180_D00_SUPPORT_R1",
+    "g2b02-adm-g2-m180-d00-support-s2",
+    "g2b02-adm-g2-m180-d07-query-s2"
+   ],
+   "polar_variants": 2,
+   "di_n_spread": 21.998722666641697
+  },
+  {
+   "task": "M180",
+   "design": "408cafa19c7ee08986398a9531c369b7060f333695589437f428c0f5baacfe6c",
+   "cases": [
+    "ADM-R2-B01R-M180_D02_QUERY_R1",
+    "g2b02-adm-g2-m180-d02-support-s2"
+   ],
+   "polar_variants": 2,
+   "di_n_spread": 1.8384114257642068
+  },
+  {
+   "task": "M202",
+   "design": "3de72a4bb698202b5377db7489f747ee2426f4f62f94fabc71684db4bd50fd71",
+   "cases": [
+    "ADM-R2-MATRIX-M202-D01-SUPPORT",
+    "g1-adm-g1-m202-d01-support",
+    "g2b02-adm-g2-m202-d01-support-s2"
+   ],
+   "polar_variants": 3,
+   "di_n_spread": 2.318182118367986
+  },
+  {
+   "task": "M202",
+   "design": "408cafa19c7ee08986398a9531c369b7060f333695589437f428c0f5baacfe6c",
+   "cases": [
+    "ADM-R2-B01R-M202_D02_QUERY_R1",
+    "g2b02-adm-g2-m202-d02-support-s2"
+   ],
+   "polar_variants": 2,
+   "di_n_spread": 76.14883631598786
+  },
+  {
+   "task": "M240",
+   "design": "937aa7c9c789ccd8fce4fdbde942a258248f2b1c91ba90cf6c99c7e4c5a8a3fe",
+   "cases": [
+    "ADM-R2-B01R-M240_D00_SUPPORT_R1",
+    "g1-adm-g1-m240-d00-support"
+   ],
+   "polar_variants": 2,
+   "di_n_spread": 84.64858199992159
+  },
+  {
+   "task": "M180",
+   "design": "cab5c852e3db80770d8e1c93c86edd1149d389e6f6729b4ec4da5e1618c3c22a",
+   "cases": [
+    "g1-adm-g1-m180-d03-query",
+    "g2b02-adm-g2-m180-d03-support-s2"
+   ],
+   "polar_variants": 2,
+   "di_n_spread": 30.87550885148812
+  },
+  {
+   "task": "M180",
+   "design": "a6baa19d0129d544fb2c63e6704983200c07008ef0a30434cb8439f698852ba0",
+   "cases": [
+    "g1-adm-g1-m180-d05-query",
+    "g2b02-adm-g2-m180-d05-query-s2"
+   ],
+   "polar_variants": 2,
+   "di_n_spread": 42.606824061105726
+  },
+  {
+   "task": "M202",
+   "design": "937aa7c9c789ccd8fce4fdbde942a258248f2b1c91ba90cf6c99c7e4c5a8a3fe",
+   "cases": [
+    "g1-adm-g1-m202-d00-support",
+    "g2b02-adm-g2-m202-d00-support-s2"
+   ],
+   "polar_variants": 2,
+   "di_n_spread": 1.0853378195752157
+  },
+  {
+   "task": "M202",
+   "design": "cab5c852e3db80770d8e1c93c86edd1149d389e6f6729b4ec4da5e1618c3c22a",
+   "cases": [
+    "g1-adm-g1-m202-d03-query",
+    "g2b02-adm-g2-m202-d03-support-s2"
+   ],
+   "polar_variants": 2,
+   "di_n_spread": 4.310121150207124
+  }
+ ],
+ "per_task": {
+  "M140": {
+   "declared_split": "train",
+   "unique_designs": 0,
+   "support_designs": 0,
+   "query_designs": 0,
+   "designs": []
+  },
+  "M160": {
+   "declared_split": "train",
+   "unique_designs": 6,
+   "support_designs": 4,
+   "query_designs": 2,
+   "designs": [
+    {
+     "design": "d00",
+     "design_sha256": "937aa7c9c789ccd8fce4fdbde942a258248f2b1c91ba90cf6c99c7e4c5a8a3fe",
+     "partition_observed": "support",
+     "di_n": 175741.51787085226,
+     "cl": 0.289770270714,
+     "alpha_deg": 7.4745148219,
+     "runs": [
+      "G2",
+      "R2"
+     ],
+     "admission_ids": [
+      "ADM-R2-B01R-M160_D00_SUPPORT_R1",
+      "g2-adm-g2-m160-d00-support-s2",
+      "g2b02-adm-g2-m160-d07-query-s2"
+     ]
+    },
+    {
+     "design": "d01",
+     "design_sha256": "3de72a4bb698202b5377db7489f747ee2426f4f62f94fabc71684db4bd50fd71",
+     "partition_observed": "support",
+     "di_n": 174033.2901422012,
+     "cl": 0.287004214635,
+     "alpha_deg": 7.4001425458,
+     "runs": [
+      "G2"
+     ],
+     "admission_ids": [
+      "g2-adm-g2-m160-d01-support-s2"
+     ]
+    },
+    {
+     "design": "d02",
+     "design_sha256": "408cafa19c7ee08986398a9531c369b7060f333695589437f428c0f5baacfe6c",
+     "partition_observed": "support",
+     "di_n": 177763.73005993845,
+     "cl": 0.289687458338,
+     "alpha_deg": 7.5612945065,
+     "runs": [
+      "G2",
+      "R2"
+     ],
+     "admission_ids": [
+      "ADM-R2-B01R-M160_D02_QUERY_R1",
+      "g2-adm-g2-m160-d02-support-s2"
+     ]
+    },
+    {
+     "design": "d03",
+     "design_sha256": "cab5c852e3db80770d8e1c93c86edd1149d389e6f6729b4ec4da5e1618c3c22a",
+     "partition_observed": "support",
+     "di_n": 177530.4075414802,
+     "cl": 0.292627944682,
+     "alpha_deg": 7.5513903279,
+     "runs": [
+      "G2"
+     ],
+     "admission_ids": [
+      "g2-adm-g2-m160-d03-support-s2"
+     ]
+    },
+    {
+     "design": "d05",
+     "design_sha256": "a6baa19d0129d544fb2c63e6704983200c07008ef0a30434cb8439f698852ba0",
+     "partition_observed": "query",
+     "di_n": 175639.08507010632,
+     "cl": 0.28968725769,
+     "alpha_deg": 7.4722767483,
+     "runs": [
+      "G2"
+     ],
+     "admission_ids": [
+      "g2b02-adm-g2-m160-d05-query-s2"
+     ]
+    },
+    {
+     "design": "d06",
+     "design_sha256": "3e904d57780da937c5105b957954c672e6986dd575e44f87448fc881624b65aa",
+     "partition_observed": "query",
+     "di_n": 177087.8922547767,
+     "cl": 0.28968637608,
+     "alpha_deg": 7.5330375131,
+     "runs": [
+      "G2"
+     ],
+     "admission_ids": [
+      "g2b02-adm-g2-m160-d06-query-s2"
+     ]
+    }
+   ]
+  },
+  "M200": {
+   "declared_split": "train",
+   "unique_designs": 7,
+   "support_designs": 4,
+   "query_designs": 3,
+   "designs": [
+    {
+     "design": "d00",
+     "design_sha256": "937aa7c9c789ccd8fce4fdbde942a258248f2b1c91ba90cf6c99c7e4c5a8a3fe",
+     "partition_observed": "support",
+     "di_n": 126146.73554980532,
+     "cl": 0.185399106197,
+     "alpha_deg": 5.3805742722,
+     "runs": [
+      "G2"
+     ],
+     "admission_ids": [
+      "g2b02-adm-g2-m200-d00-support-s2"
+     ]
+    },
+    {
+     "design": "d01",
+     "design_sha256": "3de72a4bb698202b5377db7489f747ee2426f4f62f94fabc71684db4bd50fd71",
+     "partition_observed": "support",
+     "di_n": 124862.9173612346,
+     "cl": 0.183564206,
+     "alpha_deg": 5.326163557,
+     "runs": [
+      "G2"
+     ],
+     "admission_ids": [
+      "g2b02-adm-g2-m200-d01-support-s2"
+     ]
+    },
+    {
+     "design": "d02",
+     "design_sha256": "408cafa19c7ee08986398a9531c369b7060f333695589437f428c0f5baacfe6c",
+     "partition_observed": "support",
+     "di_n": 126091.06044463345,
+     "cl": 0.185399162616,
+     "alpha_deg": 5.3782192539,
+     "runs": [
+      "G2"
+     ],
+     "admission_ids": [
+      "g2b02-adm-g2-m200-d02-support-s2"
+     ]
+    },
+    {
+     "design": "d03",
+     "design_sha256": "cab5c852e3db80770d8e1c93c86edd1149d389e6f6729b4ec4da5e1618c3c22a",
+     "partition_observed": "support",
+     "di_n": 127455.93595959242,
+     "cl": 0.187269851443,
+     "alpha_deg": 5.4360848053,
+     "runs": [
+      "G2"
+     ],
+     "admission_ids": [
+      "g2b02-adm-g2-m200-d03-support-s2"
+     ]
+    },
+    {
+     "design": "d04",
+     "design_sha256": "f8626bb58503d58682b82354759b073deefcc60f605049546966a838f1729d0c",
+     "partition_observed": "query",
+     "di_n": 123406.08833612328,
+     "cl": 0.185399263531,
+     "alpha_deg": 5.2648056268,
+     "runs": [
+      "G2"
+     ],
+     "admission_ids": [
+      "g2b02-adm-g2-m200-d04-query-s2"
+     ]
+    },
+    {
+     "design": "d05",
+     "design_sha256": "a6baa19d0129d544fb2c63e6704983200c07008ef0a30434cb8439f698852ba0",
+     "partition_observed": "query",
+     "di_n": 126148.5833720578,
+     "cl": 0.185399105242,
+     "alpha_deg": 5.3806139722,
+     "runs": [
+      "G2"
+     ],
+     "admission_ids": [
+      "g2b02-adm-g2-m200-d05-query-s2"
+     ]
+    },
+    {
+     "design": "d06",
+     "design_sha256": "3e904d57780da937c5105b957954c672e6986dd575e44f87448fc881624b65aa",
+     "partition_observed": "query",
+     "di_n": 126842.14264724136,
+     "cl": 0.185398220916,
+     "alpha_deg": 5.4099648627,
+     "runs": [
+      "G2"
+     ],
+     "admission_ids": [
+      "g2b02-adm-g2-m200-d06-query-s2"
+     ]
+    }
+   ]
+  },
+  "M202": {
+   "declared_split": "train",
+   "unique_designs": 7,
+   "support_designs": 3,
+   "query_designs": 4,
+   "designs": [
+    {
+     "design": "d00",
+     "design_sha256": "937aa7c9c789ccd8fce4fdbde942a258248f2b1c91ba90cf6c99c7e4c5a8a3fe",
+     "partition_observed": "support",
+     "di_n": 121437.50128642528,
+     "cl": 0.181743917419,
+     "alpha_deg": 5.1813176428,
+     "runs": [
+      "G1",
+      "G2"
+     ],
+     "admission_ids": [
+      "g1-adm-g1-m202-d00-support",
+      "g2b02-adm-g2-m202-d00-support-s2"
+     ]
+    },
+    {
+     "design": "d01",
+     "design_sha256": "3de72a4bb698202b5377db7489f747ee2426f4f62f94fabc71684db4bd50fd71",
+     "partition_observed": "support",
+     "di_n": 120203.9250481344,
+     "cl": 0.179945080054,
+     "alpha_deg": 5.1289994884,
+     "runs": [
+      "G1",
+      "G2",
+      "R2"
+     ],
+     "admission_ids": [
+      "ADM-R2-MATRIX-M202-D01-SUPPORT",
+      "g1-adm-g1-m202-d01-support",
+      "g2b02-adm-g2-m202-d01-support-s2"
+     ]
+    },
+    {
+     "design": "d02",
+     "design_sha256": "408cafa19c7ee08986398a9531c369b7060f333695589437f428c0f5baacfe6c",
+     "partition_observed": "support",
+     "di_n": 125352.5940634037,
+     "cl": 0.181746599628,
+     "alpha_deg": 5.3466361171,
+     "runs": [
+      "G2",
+      "R2"
+     ],
+     "admission_ids": [
+      "ADM-R2-B01R-M202_D02_QUERY_R1",
+      "g2b02-adm-g2-m202-d02-support-s2"
+     ]
+    },
+    {
+     "design": "d03",
+     "design_sha256": "cab5c852e3db80770d8e1c93c86edd1149d389e6f6729b4ec4da5e1618c3c22a",
+     "partition_observed": "query",
+     "di_n": 122695.47957091438,
+     "cl": 0.183577964964,
+     "alpha_deg": 5.2346927295,
+     "runs": [
+      "G1",
+      "G2"
+     ],
+     "admission_ids": [
+      "g1-adm-g1-m202-d03-query",
+      "g2b02-adm-g2-m202-d03-support-s2"
+     ]
+    },
+    {
+     "design": "d04",
+     "design_sha256": "f8626bb58503d58682b82354759b073deefcc60f605049546966a838f1729d0c",
+     "partition_observed": "query",
+     "di_n": 121679.6145291152,
+     "cl": 0.181744297052,
+     "alpha_deg": 5.1915431862,
+     "runs": [
+      "G2"
+     ],
+     "admission_ids": [
+      "g2b02-adm-g2-m202-d04-query-s2"
+     ]
+    },
+    {
+     "design": "d05",
+     "design_sha256": "a6baa19d0129d544fb2c63e6704983200c07008ef0a30434cb8439f698852ba0",
+     "partition_observed": "query",
+     "di_n": 121440.3292159774,
+     "cl": 0.181744717778,
+     "alpha_deg": 5.1813783862,
+     "runs": [
+      "G2"
+     ],
+     "admission_ids": [
+      "g2b02-adm-g2-m202-d05-query-s2"
+     ]
+    },
+    {
+     "design": "d06",
+     "design_sha256": "3e904d57780da937c5105b957954c672e6986dd575e44f87448fc881624b65aa",
+     "partition_observed": "query",
+     "di_n": 121622.82838250791,
+     "cl": 0.181744400305,
+     "alpha_deg": 5.1891346403,
+     "runs": [
+      "G2"
+     ],
+     "admission_ids": [
+      "g2b02-adm-g2-m202-d06-query-s2"
+     ]
+    }
+   ]
+  },
+  "M180": {
+   "declared_split": "val",
+   "unique_designs": 7,
+   "support_designs": 3,
+   "query_designs": 4,
+   "designs": [
+    {
+     "design": "d00",
+     "design_sha256": "937aa7c9c789ccd8fce4fdbde942a258248f2b1c91ba90cf6c99c7e4c5a8a3fe",
+     "partition_observed": "support",
+     "di_n": 145130.82503124984,
+     "cl": 0.228886514729,
+     "alpha_deg": 6.1854734199,
+     "runs": [
+      "G2",
+      "R2"
+     ],
+     "admission_ids": [
+      "ADM-R2-B01R-M180_D00_SUPPORT_R1",
+      "g2b02-adm-g2-m180-d00-support-s2"
+     ]
+    },
+    {
+     "design": "d01",
+     "design_sha256": "3de72a4bb698202b5377db7489f747ee2426f4f62f94fabc71684db4bd50fd71",
+     "partition_observed": "support",
+     "di_n": 143640.2236112964,
+     "cl": 0.226620804979,
+     "alpha_deg": 6.1224833831,
+     "runs": [
+      "G2"
+     ],
+     "admission_ids": [
+      "g2b02-adm-g2-m180-d01-support-s2"
+     ]
+    },
+    {
+     "design": "d02",
+     "design_sha256": "408cafa19c7ee08986398a9531c369b7060f333695589437f428c0f5baacfe6c",
+     "partition_observed": "support",
+     "di_n": 145596.01122746387,
+     "cl": 0.228887339441,
+     "alpha_deg": 6.2050395627,
+     "runs": [
+      "G2",
+      "R2"
+     ],
+     "admission_ids": [
+      "ADM-R2-B01R-M180_D02_QUERY_R1",
+      "g2b02-adm-g2-m180-d02-support-s2"
+     ]
+    },
+    {
+     "design": "d03",
+     "design_sha256": "cab5c852e3db80770d8e1c93c86edd1149d389e6f6729b4ec4da5e1618c3c22a",
+     "partition_observed": "query",
+     "di_n": 146625.66015490517,
+     "cl": 0.23117661844,
+     "alpha_deg": 6.2491982452,
+     "runs": [
+      "G1",
+      "G2"
+     ],
+     "admission_ids": [
+      "g1-adm-g1-m180-d03-query",
+      "g2b02-adm-g2-m180-d03-support-s2"
+     ]
+    },
+    {
+     "design": "d04",
+     "design_sha256": "f8626bb58503d58682b82354759b073deefcc60f605049546966a838f1729d0c",
+     "partition_observed": "query",
+     "di_n": 144125.05933969424,
+     "cl": 0.228886070827,
+     "alpha_deg": 6.1431204723,
+     "runs": [
+      "G2"
+     ],
+     "admission_ids": [
+      "g2b02-adm-g2-m180-d04-query-s2"
+     ]
+    },
+    {
+     "design": "d05",
+     "design_sha256": "a6baa19d0129d544fb2c63e6704983200c07008ef0a30434cb8439f698852ba0",
+     "partition_observed": "query",
+     "di_n": 145090.24050579005,
+     "cl": 0.228853529175,
+     "alpha_deg": 6.1846,
+     "runs": [
+      "G1",
+      "G2"
+     ],
+     "admission_ids": [
+      "g1-adm-g1-m180-d05-query",
+      "g2b02-adm-g2-m180-d05-query-s2"
+     ]
+    },
+    {
+     "design": "d06",
+     "design_sha256": "3e904d57780da937c5105b957954c672e6986dd575e44f87448fc881624b65aa",
+     "partition_observed": "query",
+     "di_n": 146397.11782877115,
+     "cl": 0.228888305453,
+     "alpha_deg": 6.2387621639,
+     "runs": [
+      "G2"
+     ],
+     "admission_ids": [
+      "g2b02-adm-g2-m180-d06-query-s2"
+     ]
+    }
+   ]
+  },
+  "M220": {
+   "declared_split": "val",
+   "unique_designs": 0,
+   "support_designs": 0,
+   "query_designs": 0,
+   "designs": []
+  },
+  "M240": {
+   "declared_split": "test",
+   "unique_designs": 4,
+   "support_designs": 1,
+   "query_designs": 3,
+   "designs": [
+    {
+     "design": "d00",
+     "design_sha256": "937aa7c9c789ccd8fce4fdbde942a258248f2b1c91ba90cf6c99c7e4c5a8a3fe",
+     "partition_observed": "support",
+     "di_n": 104021.09903911852,
+     "cl": 0.128757697594,
+     "alpha_deg": 4.4381854595,
+     "runs": [
+      "G1",
+      "R2"
+     ],
+     "admission_ids": [
+      "ADM-R2-B01R-M240_D00_SUPPORT_R1",
+      "g1-adm-g1-m240-d00-support"
+     ]
+    },
+    {
+     "design": "d02",
+     "design_sha256": "408cafa19c7ee08986398a9531c369b7060f333695589437f428c0f5baacfe6c",
+     "partition_observed": "query",
+     "di_n": 103658.98529132444,
+     "cl": 0.128694845874,
+     "alpha_deg": 4.425,
+     "runs": [
+      "R2"
+     ],
+     "admission_ids": [
+      "ADM-R2-B01R-M240_D02_QUERY_R1"
+     ]
+    },
+    {
+     "design": "d04",
+     "design_sha256": "f8626bb58503d58682b82354759b073deefcc60f605049546966a838f1729d0c",
+     "partition_observed": "query",
+     "di_n": 105515.00008485503,
+     "cl": 0.128850023123,
+     "alpha_deg": 4.4981854595,
+     "runs": [
+      "G1"
+     ],
+     "admission_ids": [
+      "g1-adm-g1-m240-d04-query"
+     ]
+    },
+    {
+     "design": "d05",
+     "design_sha256": "a6baa19d0129d544fb2c63e6704983200c07008ef0a30434cb8439f698852ba0",
+     "partition_observed": "query",
+     "di_n": 104021.09903911852,
+     "cl": 0.128756620131,
+     "alpha_deg": 4.4381854595,
+     "runs": [
+      "G1"
+     ],
+     "admission_ids": [
+      "g1-adm-g1-m240-d05-query"
+     ]
+    }
+   ]
+  },
+  "M260": {
+   "declared_split": "test",
+   "unique_designs": 0,
+   "support_designs": 0,
+   "query_designs": 0,
+   "designs": []
+  }
+ },
+ "shortage": {
+  "M140": {
+   "split": "train",
+   "needed": {
+    "support_designs": 3,
+    "query_designs": 1,
+    "for_arms": "K=3 support / >=1 independent query"
+   },
+   "have": {
+    "support_designs": 0,
+    "query_designs": 0
+   },
+   "missing": {
+    "support_designs": 3,
+    "query_designs": 1
+   },
+   "short": 4
+  },
+  "M160": {
+   "split": "train",
+   "needed": {
+    "support_designs": 3,
+    "query_designs": 1,
+    "for_arms": "K=3 support / >=1 independent query"
+   },
+   "have": {
+    "support_designs": 4,
+    "query_designs": 2
+   },
+   "missing": {
+    "support_designs": 0,
+    "query_designs": 0
+   },
+   "short": 0
+  },
+  "M200": {
+   "split": "train",
+   "needed": {
+    "support_designs": 3,
+    "query_designs": 1,
+    "for_arms": "K=3 support / >=1 independent query"
+   },
+   "have": {
+    "support_designs": 4,
+    "query_designs": 3
+   },
+   "missing": {
+    "support_designs": 0,
+    "query_designs": 0
+   },
+   "short": 0
+  },
+  "M202": {
+   "split": "train",
+   "needed": {
+    "support_designs": 3,
+    "query_designs": 1,
+    "for_arms": "K=3 support / >=1 independent query"
+   },
+   "have": {
+    "support_designs": 3,
+    "query_designs": 4
+   },
+   "missing": {
+    "support_designs": 0,
+    "query_designs": 0
+   },
+   "short": 0
+  },
+  "M180": {
+   "split": "val",
+   "needed": {
+    "support_designs": 2,
+    "query_designs": 1,
+    "for_arms": "K=3 support / >=1 independent query"
+   },
+   "have": {
+    "support_designs": 3,
+    "query_designs": 4
+   },
+   "missing": {
+    "support_designs": 0,
+    "query_designs": 0
+   },
+   "short": 0
+  },
+  "M220": {
+   "split": "val",
+   "needed": {
+    "support_designs": 2,
+    "query_designs": 1,
+    "for_arms": "K=3 support / >=1 independent query"
+   },
+   "have": {
+    "support_designs": 0,
+    "query_designs": 0
+   },
+   "missing": {
+    "support_designs": 2,
+    "query_designs": 1
+   },
+   "short": 3
+  },
+  "M240": {
+   "split": "test",
+   "needed": {
+    "support_designs": 2,
+    "query_designs": 1,
+    "for_arms": "K=3 support / >=1 independent query"
+   },
+   "have": {
+    "support_designs": 1,
+    "query_designs": 3
+   },
+   "missing": {
+    "support_designs": 1,
+    "query_designs": 0
+   },
+   "short": 1
+  },
+  "M260": {
+   "split": "test",
+   "needed": {
+    "support_designs": 2,
+    "query_designs": 1,
+    "for_arms": "K=3 support / >=1 independent query"
+   },
+   "have": {
+    "support_designs": 0,
+    "query_designs": 0
+   },
+   "missing": {
+    "support_designs": 2,
+    "query_designs": 1
+   },
+   "short": 3
+  }
+ },
+ "integrity": {
+  "geometry_contract_variants": {
+   "5f2bb12fe8b1dc68c67901843c777328ae984cfdbe4ee71176b369a16a133f15": 47
+  },
+  "q_variants": {
+   "20483.940233": 13,
+   "12851.40844": 9,
+   "16265.063807": 12,
+   "28915.668989": 5,
+   "20080.325687": 8
+  },
+  "sref_variants": {
+   "358.25": 35,
+   "361.8325": 6,
+   "354.6675": 6
+  },
+  "lift_tolerance_rel_variants": {
+   "0.001": 47
+  },
+  "x12_distinct_vectors": 7,
+  "x12_expected_field_order": [
+   "Sref_m2",
+   "AR",
+   "sweep_le_deg",
+   "root_chord_m",
+   "tip_chord_m",
+   "twist_root_deg",
+   "twist_tip_deg",
+   "dihedral_deg",
+   "thickness_root",
+   "thickness_tip",
+   "fuselage_len_m",
+   "nose_fineness",
+   "tail_arm_m",
+   "tail_area_m2",
+   "tail_volume_coeff"
+  ],
+  "x12_fields_in_task_spec": "12 numeric fields ending with tail_volume_coeff; fuselage/tail held fixed per scheme"
+ },
+ "skipped": [
+  {
+   "run": "R2",
+   "case": "D:\\RCAIDE\\.real_runs\\DRECOVER001-R2-20261120-01\\cases\\baseline-admit-01",
+   "reason": "missing cert or task_spec"
+  }
+ ],
+ "family_rule_note": "train M140/M160/M200/M202, val M180/M220, test M240/M260 fixed by the P2 directive; labels per task must be independent designs and must never cross support/query"
+}
