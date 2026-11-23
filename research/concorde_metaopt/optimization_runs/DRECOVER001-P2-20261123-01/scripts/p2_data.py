@@ -21,6 +21,7 @@ from research.concorde_metaopt.dreal001.meta.task_spec import TaskSpec, canonica
 
 RUN = Path(r"D:/RCAIDE/.real_runs/DRECOVER001-P2-20261123-01")
 CASE_ROOTS = (
+    Path(r"D:/RCAIDE/.real_runs/DRECOVER001-P2-20261123-01/cases"),
     Path(r"D:/RCAIDE/.real_runs/DRECOVER001-R2-20261120-01/cases"),
     Path(r"D:/RCAIDE/.real_runs/DRECOVER001-G1-20261121-01/cases"),
     Path(r"D:/RCAIDE/.real_runs/DRECOVER001-G2-20261121-01/cases"),
