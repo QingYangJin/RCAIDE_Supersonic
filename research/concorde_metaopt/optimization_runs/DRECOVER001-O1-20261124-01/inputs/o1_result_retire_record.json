@@ -1,0 +1,22 @@
+{
+  "created_utc": "2026-11-24T14:06:07Z",
+  "dossier_on_disk": {
+    "bytes": 21817,
+    "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\o1_a5_result_dossier.md",
+    "sha256": "f91dd131f8b1312f2a9d45226863ab12b929f247741d51c2b6373a3e94729d9c"
+  },
+  "dry_run": false,
+  "kept": [],
+  "retired": [
+    {
+      "archived_as": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\a5_result_review\\history\\verdict_20261124T140607Z_45eebdd7fddd8ea7.json",
+      "bytes": 12148,
+      "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\a5_result_review\\verdict.json",
+      "reason": "verdict binds dossier 'f65b574b5fd38f6a2e934c1575de085dcf018ac96015afa846854327d9f38de8', disk is 'f91dd131f8b1312f2a9d45226863ab12b929f247741d51c2b6373a3e94729d9c'",
+      "removed_from_the_live_path": true,
+      "sha256": "45eebdd7fddd8ea71d1acff7fac6a8a33ad2b3371d1394dfb3e30dcd9ef675b8"
+    }
+  ],
+  "rule": "a result-level PASS speaks only for the dossier bytes it reviewed; a verdict over superseded bytes is copied into dated history and then removed from the live path, never deleted outright",
+  "schema": "dreal005.o1_result_retire_record.v1"
+}

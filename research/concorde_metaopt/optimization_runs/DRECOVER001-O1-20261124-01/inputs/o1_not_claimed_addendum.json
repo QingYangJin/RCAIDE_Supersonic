@@ -1,0 +1,34 @@
+{
+  "schema": "dreal005.o1_not_claimed_addendum.v1",
+  "created_utc": "2026-11-24T14:02:00Z",
+  "why_this_file_exists": "o1_result.json 的 not_claimed 只列了四项（global optimum / regret / aerodynamic validation / MAML superiority over supervised meta-learning），漏了「热启动未胜过 Sobol」这一条。o1_result.json 的 sha256 已被 o1_batch_close.json 与上传回执引用，改写它会让已发布的证据链失效，所以用本附加文件补齐，而不是改结果文件。本文件不修改、不覆盖、也不替代 o1_result.json 的任何字段。",
+  "complements": {
+    "path": "o1_result.json",
+    "sha256": "f4cf8183977c4a3ee1beda2e80f507419877a53d23a9f65b7c487619958d4368",
+    "bytes": 22391,
+    "existing_not_claimed": [
+      "global optimum",
+      "regret",
+      "aerodynamic validation",
+      "MAML superiority over supervised meta-learning"
+    ]
+  },
+  "additional_not_claimed": [
+    {
+      "claim": "the model-ranked K-shot warm start beats Sobol on this task",
+      "why_not_claimed": "it does not: SOBOL_BO improvement 2.687264 percent versus 0.813444 percent for both K-shot arms on O1-M190",
+      "where_the_real_numbers_live": "tables/o1_three_arm_endpoint.csv"
+    },
+    {
+      "claim": "the two K-shot arms converged",
+      "why_not_claimed": "all three arms were truncated at the same common internal-case cap of 160 per arm; the third adaptive design never got budget",
+      "where_the_real_numbers_live": "o1_result.json arms each adaptive_designs 2"
+    },
+    {
+      "claim": "anything about task O1-M210",
+      "why_not_claimed": "the pairing was pre-registered for two tasks but only O1-M190 was executed",
+      "where_the_real_numbers_live": "o1_batch_close.json pairings_executed"
+    }
+  ],
+  "effect_on_this_finding": "the previous round minor finding that not_claimed omits a no-Sobol-superiority clause is hereby made machine-readable outside the frozen result file; the omission inside o1_result.json is left in place and is not hidden"
+}

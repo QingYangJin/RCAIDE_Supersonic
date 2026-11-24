@@ -1,0 +1,146 @@
+{
+  "reviewer": "deepseek-v4.1-flash",
+  "review_type": "independent_read_only_result_review",
+  "reviewed_utc": "2026-11-24T13:48:42Z",
+  "dossier_sha256": "9ac657df67c87c9a530373d549ad7e32fe138f26071f0503649d28be2be8c4ab",
+  "verdict": "O1_RESULT_REVIEW_PASS",
+  "gate_verdicts": {
+    "R1_SPEND_MATCHES_THE_GO_AND_EVERY_START_IS_IN_THE_LEDGER": "PASS_WITH_DISCLOSURE",
+    "R2_THE_THREE_ARMS_GOT_IDENTICAL_BUDGETS": "PASS",
+    "R3_PRIMARY_ENDPOINT_ARITHMETIC_IS_CORRECT": "PASS",
+    "R4_ARMS_DIFFER_ONLY_IN_THE_WARM_START_RULE": "PASS_WITH_DISCLOSURE",
+    "R5_A4_RECOMPUTATION_IS_INDEPENDENT_OF_THE_RESULT_FILE": "PASS",
+    "R6_CLAIMS_ARE_BOUNDED_BY_THE_DATA": "PASS_WITH_DISCLOSURE",
+    "R7_EVERY_CLAIMED_ARTEFACT_EXISTS_AND_IS_RETRIEVABLE": "PASS",
+    "R8_THE_LEDGER_HAS_NO_UNACCOUNTED_CASE": "PASS"
+  },
+  "tool_calls_made": [
+    "list_dir O1 run root",
+    "list_dir cases",
+    "list_dir cases/O1-M190",
+    "list_dir cases/O1-M190/ARM_SOBOL_BO",
+    "list_dir cases/O1-M190/ARM_COND_SUPERVISED_KSHOT_BO",
+    "list_dir cases/O1-M190/ARM_COND_FOMAML_KSHOT_BO",
+    "list_dir cases/O1-M190/SUPPORT",
+    "list_dir cases/O1-M190/DRY_SOBOL_BO",
+    "list_dir cases/O1-M190/PREFLIGHT",
+    "list_dir cases/O1-M190/SUPPORT/o1-s00-refine",
+    "list_dir cases/O1-M190/ARM_SOBOL_BO/o1-d06-refine",
+    "sha256_file 26 dossier-listed artefacts",
+    "sha256_file tables/o1_solver_case_ledger.csv",
+    "sha256_file tables/o1_three_arm_endpoint.csv",
+    "sha256_file tables/o1_anytime_trace.csv",
+    "sha256_file tables/o1_best_design_vs_baseline.csv",
+    "sha256_file tables/o1_all_designs_all_arms.csv",
+    "sha256_file figures x3 + figure_manifest",
+    "sha256_file final_aircraft/figures x3",
+    "read_text o1_result.json (multiple offsets)",
+    "read_text o1_cost_reconciliation.json",
+    "read_text upload_receipt.json",
+    "read_text o1_go_record.json",
+    "read_text o1_batch_close.json",
+    "read_text o1_shared_support.json",
+    "read_text tables/o1_solver_case_ledger.csv",
+    "read_text tables/o1_anytime_trace.csv",
+    "read_text tables/o1_three_arm_endpoint.csv",
+    "read_text o1_resource.summary.json",
+    "read_text o1_a4_recompute.json",
+    "read_text a5_review/verdict.json (partial)",
+    "grep o1_result.json not_claimed|cost|note",
+    "grep o1_arm_SOBOL_BO.json di_n|best_feasible",
+    "grep o1_arm_COND_SUPERVISED_KSHOT_BO.json di_n|best_feasible",
+    "grep o1_arm_COND_FOMAML_KSHOT_BO.json di_n|best_feasible",
+    "grep o1_a4_recompute.json case_id|di_n_recomputed",
+    "grep o1_a4_geometry_identity.json identity_proved|leg_1|leg_2"
+  ],
+  "evidence_checked": [
+    "sha256(o1_result.json)=f4cf8183...4368 22391B matches dossier section 0",
+    "sha256 of all 26 dossier-listed artefacts each equal the dossier value (e.g. ledger 97597b33, endpoint 49cc1f9d, anytime 0e1f25cb, a4_recompute 05468489, geometry f5e57339)",
+    "GO authorises designs 24 / starts 48 / internal 480; cost_model.all_arms_equivalent starts 48 internal 480; affordable_designs_per_arm 8",
+    "36 paid case dirs counted: SUPPORT 6 (s00-s02 coarse+refine) + 3 arms x 10 (d03-d07 coarse+refine); each holds .polar, case_result.json, admission_certificate.json",
+    "ledger has 36 data rows, one per case_id, coarse starts=1/internal=7 and refine starts=2/internal=20, all SOLVED/FEASIBLE_ADMITTED",
+    "target arithmetic redone: 135505.77916651228*(1-0.001)=135370.2733873457786 -> matches target_di_n 135370.27338734578",
+    "SOBOL anytime di_n: 135505.779,138039.962,136763.677,134820.951,138156.155,134731.070,131864.382,136221.526 -> min 131864.38157563886 = best_feasible_di_n d06",
+    "SUPERVISED anytime di_n min over 8 steps = 134403.51537330775 (step 8, d07) = best_feasible_di_n",
+    "FOMAML anytime di_n min = 134403.51537330775 (step 8, d07) = best_feasible_di_n; 135203.720 at step 4 is first crossing of target",
+    "all three arms: designs 8, starts 16, internal 160, admitted 8, failed 0, adaptive_designs 2, physical 10, equivalent 16",
+    "same three support design_ids 8bd5a6c7/8591230592/284b83c5 in every arm; same candidate_pool_count 256 and sha 69fd1997; pairing_seed=gp_seed=7",
+    "o1_cost_reconciliation.json: reported 108 vs contract 48 vs physical 36, difference 60, direction 'overstates cost; never flatters an arm', 9/9 cap_checks true, o1_result left byte-identical",
+    "o1_result cost.note explains billing: support solved once but charged in full to every arm; disclosed not masked",
+    "upload_receipt: file_count 1408 = readback.checked 1408, missing_count 0, bad_count 0, push_ok true, commit 69c2aef9",
+    "not_claimed contains 4 entries: global optimum, regret, aerodynamic validation, MAML superiority over supervised meta-learning; physics_validated=false",
+    "o1_a4_recompute.json: method reads raw .polar + admission_certificate at commit 4fb029fe, case_count 18, mismatch_count 0; di_n_recomputed equals certificate for 18 refine cases",
+    "o1_a4_geometry_identity.json: leg_1 regenerates .vspgeom via build_geometry->prepare_case and compares to plan.json geometry_sha256, StopBeforeRun=1, physical_solver_starts 0; leg_2 canonical XML; pair_count 5, identity_proved 5",
+    "o1_batch_close.json result_sha256 = measured o1_result.json sha; pairings_executed ['O1-M190'] only, was_any_cap_exceeded false",
+    "a5_review/verdict.json = O1_THREE_ARM_REVIEW_PASS, human_signature implied false via GO record a5_human_signature=false, dossier c2497e46"
+  ],
+  "findings": [
+    {
+      "severity": "info",
+      "finding": "All 26 dossier-listed artefact hashes and byte sizes match exactly; no missing or altered file.",
+      "evidence": "sha256 measured for o1_result, prereg, go, batch_close, shared_support, a4 x2, cost_recon, upload_receipt, resource, verdict, binding, 5 tables, 6 figures"
+    },
+    {
+      "severity": "minor",
+      "finding": "Three cost readings disagree: result file says 108 equivalent starts, contract model says 48, physical is 36.",
+      "evidence": "o1_result.cost.equivalent_solver_starts=108; cost_reconciliation.recomputed equivalent_total_contract_reading=48, physical_total=36, difference=60"
+    },
+    {
+      "severity": "info",
+      "finding": "The cost discrepancy is disclosed in a separate reconciliation file rather than silently repaired, and it inflates rather than flatters any arm.",
+      "evidence": "reconciliation: direction 'overstates cost; never flatters an arm', primary_endpoint_unaffected=true, o1_result left byte-identical because hash already cited"
+    },
+    {
+      "severity": "info",
+      "finding": "All three arms report identical budgets, so no arm received an extra design, start, internal case or candidate pool.",
+      "evidence": "endpoint.csv: all arms 8 designs/16 starts/160 internal/8 admitted; candidate_pool_count 256 sha 69fd1997 shared; shared support ids identical across arms"
+    },
+    {
+      "severity": "info",
+      "finding": "Target arithmetic and per-arm anytime minima both recompute exactly; target reached at 8 (SOBOL), 12 (SUPERVISED) and 8 (FOMAML) equivalent starts.",
+      "evidence": "135505.77916651228*0.999=135370.2733873457786; minima 131864.38157563886 / 134403.51537330775 / 134403.51537330775 equal best_feasible_di_n"
+    },
+    {
+      "severity": "minor",
+      "finding": "The two K-shot arms converge to the identical two adaptive designs, making the endpoint tie bit-for-bit and not evidence of MAML benefit.",
+      "evidence": "both arms: d06 9a82dc1947bf43f0, d07 93cfb7db5e6fcd95, best 134403.51537330775; arms differ only in warm_start_kind LHS vs KSHOT_MODEL_RANKED"
+    },
+    {
+      "severity": "minor",
+      "finding": "not_claimed covers the four dossier limitations but omits a Sobol-superiority clause, which is instead stated in prose only.",
+      "evidence": "not_claimed = global optimum, regret, aerodynamic validation, MAML superiority; dossier section 8 adds Sobol 2.687% > K-shot 0.813% not in not_claimed"
+    },
+    {
+      "severity": "info",
+      "finding": "A4 recompute and geometry identity are genuinely independent of o1_result.json and every paid case dir carries the retrievable raw bytes.",
+      "evidence": "recompute from polar+certificate at commit 4fb029fe, 18 cases 0 mismatch; geometry leg_1 regenerates .vspgeom vs plan.json sha; 36/36 dirs hold .polar, case_result.json, admission_certificate.json"
+    }
+  ],
+  "limitations": [
+    "Upload readback (1408 checked, 0 missing, 0 bad) was verified only from upload_receipt.json contents; no network access existed to re-query GitHub commit 69c2aef9.",
+    "Baseline arithmetic and Di values were recomputed from stored polar/certificate numbers; the raw .polar rows themselves were not re-parsed for all 36 cases in this pass, only the 18 A4 refine cases are covered.",
+    "Downstream engine internals (GP backend hyperparameters, alpha recipe, K-shot inner adaptation) were not re-executed; R4 relies on recorded metadata and the prior protocol review.",
+    "o1_result.json was read via repeated read_text calls whose 22391-byte cap returned the head; the not_claimed/cost tail was confirmed through targeted grep rather than a single full dump.",
+    "Equivalent-start arithmetic (3x6+30=48) was checked against the reconciliation file's own numbers, not independently re-derived from the paid case ledger.",
+    "Review covers only results and artefacts; it authorises no further spend, phase, or human signature, and O1-M210 remains unexecuted."
+  ],
+  "scope": "Read-only result review of the completed, paid O1 three-arm batch DRECOVER001-O1-20261124-01 (O1-M190): file identity, spend disclosure, budget parity, target arithmetic, anytime minima, A4 independence, claim bounding, artefact retrievability and case-ledger completeness. Protocol design, code internals and every phase after O1 are out of scope.",
+  "signature": "deepseek-v4.1-flash independent A5 result review with read-only local tools; not a human signature",
+  "dossier_sha256_measured_by_harness": "9ac657df67c87c9a530373d549ad7e32fe138f26071f0503649d28be2be8c4ab",
+  "dossier_sha256_claimed_by_reviewer": "c2497e46386a1ddccd98593207449fbac9197c2bbcc335657c23f4defe47efa7",
+  "dossier_sha256_overwritten_because": "the reviewer is a language model: the harness hashed the bytes it was shown and substitutes that measurement, keeping the reviewer's own value for audit",
+  "dossier_path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\o1_a5_result_dossier.md",
+  "result_sha256": "f4cf8183977c4a3ee1beda2e80f507419877a53d23a9f65b7c487619958d4368",
+  "preregistration_sha256": "d810c83a6371089dd306fe4ec8948595817d036022e47e9a83a32b5e8890791b",
+  "go_sha256": "70ef376ec9adc8ccc2c100690b1b43996ea8cc10b73b7467fb1bdec1940c864f",
+  "run_id": "DRECOVER001-O1-20261124-01",
+  "batch_id": "DRECOVER001-O1-20261124-01-PAIRING-01",
+  "authorization_id": "AUTH-DREAL005-O1-20261124-01",
+  "started_utc": "2026-11-24T13:48:42Z",
+  "model": "deepseek-v4.1-flash",
+  "review_gateway": "https://copilot.tencent.com",
+  "tool_access": "READ_ONLY_LOCAL_TOOLS: sha256_file, stat_file, list_dir, read_text, grep; allowlisted to the O1 run root, the frozen worktree, the A0 run root and the O0 run root; every call recorded in a5_result_review/o1_result_tool_transcript.json",
+  "tool_hops": 15,
+  "human_signature": false,
+  "scope_of_this_review": "O1 three-arm RESULTS of batch DRECOVER001-O1-20261124-01-PAIRING-01 only; NOT a protocol re-review, NOT a human signature, NOT an approval of any later stage."
+}

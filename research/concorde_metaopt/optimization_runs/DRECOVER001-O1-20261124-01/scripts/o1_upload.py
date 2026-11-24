@@ -199,14 +199,18 @@ def build_o1(pkg: Path, run: Path) -> dict:
     counts["inputs"] = copy_files(run, pkg / "inputs", (
         "o1_preregistration.json", "o1_a5_dossier.md", "o1_dossier_receipt.json",
         "o1_go_record.json", "o1_binding_verification.json", "o1_a5_verdict.json",
-        "o1_retire_record.json", "o1_shared_support.json", "o1_batch_close.json"))
+        "o1_retire_record.json", "o1_shared_support.json", "o1_batch_close.json",
+        "o1_a5_result_dossier.md", "o1_a5_result_verdict.json",
+        "o1_result_retire_record.json", "o1_not_claimed_addendum.json",
+        "o1_result_review_rounds.json"))
     counts["metadata"] = copy_files(run, pkg / "metadata", (
         "o1_result.json", "o1_attempts.jsonl", "o1_resource.summary.json",
         "o1_resource.jsonl",
         "o1_arm_SOBOL_BO.json", "o1_arm_COND_SUPERVISED_KSHOT_BO.json",
         "o1_arm_COND_FOMAML_KSHOT_BO.json", "o1_run_console.log", "o1_a4_recompute.json",
-        "README.md"))
+        "o1_a4_geometry_identity.json", "o1_cost_reconciliation.json", "README.md"))
     counts["audits"] = (copy_tree(run / "a5_review", pkg / "audits" / "a5_review")
+                        + copy_tree(run / "a5_result_review", pkg / "audits" / "a5_result_review")
                         + copy_tree(run / "a5_support", pkg / "audits" / "a5_support")
                         + copy_tree(run / "go_history", pkg / "audits" / "go_history"))
     counts["audits_logs"] = copy_files(run, pkg / "audits", tuple(

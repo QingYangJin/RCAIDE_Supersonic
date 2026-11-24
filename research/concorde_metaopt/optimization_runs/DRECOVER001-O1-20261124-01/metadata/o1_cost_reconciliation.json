@@ -1,0 +1,122 @@
+{
+  "schema": "dreal005.o1_cost_reconciliation.v1",
+  "created_utc": "2026-11-24T13:38:44Z",
+  "run_id": "DRECOVER001-O1-20261124-01",
+  "batch_id": "DRECOVER001-O1-20261124-01-PAIRING-01",
+  "batch_close_outcome": "COMPLETED",
+  "why_this_file_exists": "the cost block of o1_result.json triples the whole physical bill, which charges each arm's own designs three times; the preregistered model triples only the shared support block. o1_result.json is bound by the batch record and the upload receipt, so it is left byte-identical and the recomputation is recorded here.",
+  "reported_numbers": {
+    "physical_solver_starts_actual": 36,
+    "equivalent_solver_starts_in_o1_result_cost_block": 108,
+    "per_arm_equivalent_starts": {
+      "SOBOL_BO": 16,
+      "COND_SUPERVISED_KSHOT_BO": 16,
+      "COND_FOMAML_KSHOT_BO": 16
+    },
+    "per_arm_internal_cases": {
+      "SOBOL_BO": 160,
+      "COND_SUPERVISED_KSHOT_BO": 160,
+      "COND_FOMAML_KSHOT_BO": 160
+    },
+    "per_arm_designs": {
+      "SOBOL_BO": 8,
+      "COND_SUPERVISED_KSHOT_BO": 8,
+      "COND_FOMAML_KSHOT_BO": 8
+    }
+  },
+  "recomputed_numbers": {
+    "support_starts": 6,
+    "support_internal": 60,
+    "arm_own_physical_starts": {
+      "SOBOL_BO": 10,
+      "COND_SUPERVISED_KSHOT_BO": 10,
+      "COND_FOMAML_KSHOT_BO": 10
+    },
+    "physical_total": 36,
+    "equivalent_total_contract_reading": 48,
+    "equivalent_total_reported_reading": 108,
+    "difference": 60,
+    "direction_of_the_difference": "the reported figure is larger, i.e. it overstates cost; it never flatters an arm",
+    "internal_physical_total": 360,
+    "internal_equivalent_total_charged_to_the_three_arms": 480
+  },
+  "cap_checks": [
+    {
+      "check": "per-arm equivalent starts within cap",
+      "value": {
+        "SOBOL_BO": 16,
+        "COND_SUPERVISED_KSHOT_BO": 16,
+        "COND_FOMAML_KSHOT_BO": 16
+      },
+      "cap": 24,
+      "pass": true
+    },
+    {
+      "check": "per-arm internal cases within cap",
+      "value": {
+        "SOBOL_BO": 160,
+        "COND_SUPERVISED_KSHOT_BO": 160,
+        "COND_FOMAML_KSHOT_BO": 160
+      },
+      "cap": 160,
+      "pass": true
+    },
+    {
+      "check": "per-arm designs within cap",
+      "value": {
+        "SOBOL_BO": 8,
+        "COND_SUPERVISED_KSHOT_BO": 8,
+        "COND_FOMAML_KSHOT_BO": 8
+      },
+      "cap": 12,
+      "pass": true
+    },
+    {
+      "check": "three-arm charged equivalent starts within cap",
+      "value": 48,
+      "cap": 72,
+      "pass": true
+    },
+    {
+      "check": "three-arm charged internal cases within cap",
+      "value": 480,
+      "cap": 480,
+      "pass": true
+    },
+    {
+      "check": "three-arm designs within cap",
+      "value": 24,
+      "cap": 36,
+      "pass": true
+    },
+    {
+      "check": "physical bill equals the preregistered prediction",
+      "value": 36,
+      "cap": 36,
+      "pass": true
+    },
+    {
+      "check": "contract-reading equivalent bill equals the preregistered model",
+      "value": 48,
+      "cap": 48,
+      "pass": true
+    },
+    {
+      "check": "charged internal equals the preregistered model",
+      "value": 480,
+      "cap": 480,
+      "pass": true
+    }
+  ],
+  "all_cap_checks_pass": true,
+  "which_numbers_the_caps_are_judged_against": "the per-arm charged figures (16 equivalent starts, 160 internal cases, 8 designs) and their three-arm sums (48 / 480 / 24), because those are the quantities the cap keys name; on the contract reading the bill matches the preregistration exactly",
+  "disclosure": "the discrepancy is disclosed, not repaired in place: the batch is closed and uploaded, and rewriting o1_result.json would change a hash that o1_batch_close.json, the A4 recompute and the upload receipt already cite",
+  "does_the_discrepancy_flatter_any_arm": "no; it inflates the total, and every per-arm number used for the comparison is unaffected",
+  "primary_endpoint_unaffected": true,
+  "source_sha256": {
+    "o1_result.json": "f4cf8183977c4a3ee1beda2e80f507419877a53d23a9f65b7c487619958d4368",
+    "o1_shared_support.json": "1674a9c62fc74fd7d35d38d4e48a758dc00ac533859348f7710840bd2f65424b",
+    "o1_batch_close.json": "d36c64256f68c08baf97184d5ea852909261f1157fbad937490683dacbd21f49",
+    "o1_preregistration.json": "d810c83a6371089dd306fe4ec8948595817d036022e47e9a83a32b5e8890791b"
+  }
+}

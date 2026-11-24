@@ -1,0 +1,124 @@
+{
+  "reviewer": "deepseek-v4.1-flash",
+  "review_type": "independent_read_only_result_review",
+  "reviewed_utc": "2026-11-24T13:59:25Z",
+  "dossier_sha256": "ae662a1cee2a8ba8f70cfd2d7f144cf7810c9ab8b8ddd6ce21ad5c12c5c873b5",
+  "verdict": "O1_RESULT_REVIEW_CHANGES_REQUIRED",
+  "gate_verdicts": {
+    "R1_SPEND_MATCHES_THE_GO_AND_EVERY_START_IS_IN_THE_LEDGER": "PASS_WITH_DISCLOSURE",
+    "R2_THE_THREE_ARMS_GOT_IDENTICAL_BUDGETS": "PASS",
+    "R3_PRIMARY_ENDPOINT_ARITHMETIC_IS_CORRECT": "PASS",
+    "R4_ARMS_DIFFER_ONLY_IN_THE_WARM_START_RULE": "PASS",
+    "R5_A4_RECOMPUTATION_IS_INDEPENDENT_OF_THE_RESULT_FILE": "PASS_WITH_DISCLOSURE",
+    "R6_CLAIMS_ARE_BOUNDED_BY_THE_DATA": "PASS_WITH_DISCLOSURE",
+    "R7_EVERY_CLAIMED_ARTEFACT_EXISTS_AND_IS_RETRIEVABLE": "PASS",
+    "R8_THE_LEDGER_HAS_NO_UNACCOUNTED_CASE": "PASS"
+  },
+  "tool_calls_made": [
+    "list_dir D:/RCAIDE/.real_runs/DRECOVER001-O1-20261124-01",
+    "sha256_file o1_a5_result_dossier.md (ae662a1c…c873b5, 20980 B)",
+    "sha256_file o1_result.json, o1_preregistration.json, o1_go_record.json, o1_batch_close.json, o1_shared_support.json",
+    "sha256_file o1_a4_recompute.json, o1_a4_geometry_identity.json, o1_cost_reconciliation.json, o1_resource.summary.json, a5_review/verdict.json",
+    "sha256_file o1_binding_verification.json, tables/o1_three_arm_endpoint.csv, tables/o1_anytime_trace.csv, tables/o1_solver_case_ledger.csv, tables/o1_best_design_vs_baseline.csv, tables/o1_all_designs_all_arms.csv",
+    "sha256_file figures/figure_manifest.json, figures/o1_three_arm_endpoint.png, figures/o1_anytime_comparison.png, figures/o1_resource_usage.png",
+    "sha256_file final_aircraft/figures/figure_manifest.json, final_aircraft/figures/cl_alpha_and_cdi_alpha_all_arms.png, final_aircraft/figures/geometry_overlay_all_arms.png",
+    "sha256_file o1_arm_SOBOL_BO.json, o1_arm_COND_SUPERVISED_KSHOT_BO.json, o1_arm_COND_FOMAML_KSHOT_BO.json",
+    "read_text o1_arm_SOBOL_BO.json",
+    "read_text o1_cost_reconciliation.json (2x, full 4310 B)",
+    "read_text upload_receipt.json",
+    "list_dir cases/O1-M190 and its 8 subdirectories",
+    "list_dir 4 paid case dirs (o1-d03-coarse, o1-d03-refine, PREFLIGHT/o1-s00-coarse, DRY_SOBOL_BO/o1-dry-coarse)",
+    "read_text tables/o1_solver_case_ledger.csv (2 slices, 4000+1200 B)",
+    "read_text tables/o1_three_arm_endpoint.csv",
+    "grep o1_result.json for best_feasible/target/not_claimed/cost",
+    "grep o1_arm_*.json for totals/best_feasible/backend/candidate_count/cumulative_starts",
+    "grep o1_a4_recompute.json / o1_a4_geometry_identity.json for method/commit/case_count/pair_count",
+    "read_text admission_certificate.json of o1-d06-refine; sha256_file same",
+    "grep o1-d06-refine.polar for the certified alpha row",
+    "read_text o1_binding_verification.json, o1_dossier_receipt.json",
+    "list_dir a5_result_review, a5_result_review/rounds, a5_result_review/history",
+    "grep rounds/verdict_20261124T135502Z_7228f9800d15afaf.json for not_claimed/Sobol"
+  ],
+  "evidence_checked": [
+    "dossier on disk: ae662a1cee2a8ba8f70cfd2d7f144cf7810c9ab8b8ddd6ce21ad5c12c5c873b5, 20980 B",
+    "all 24 section-0 hashes re-measured: every one matches the dossier byte-for-byte",
+    "target arithmetic redone: 135505.77916651228*(1-0.001)=135370.27338734578, matches o1_result.json line 238",
+    "SOBOL_BO anytime di_n: 135505.7792,138039.9624,136763.6768,134820.9505,138156.1553,134731.0704,131864.3816,136221.5259; min=131864.38157563886=best_feasible_di_n (d06)",
+    "COND_SUPERVISED_KSHOT_BO anytime min=134403.51537330775 at step 8=d07=best_feasible_di_n",
+    "COND_FOMAML_KSHOT_BO anytime min=134403.51537330775 at step 8=d07=best_feasible_di_n",
+    "first crossing: SOBOL 134820.9505@8 starts; SUPERVISED 135203.7199@12; FOMAML 135203.7199@8; matches endpoint CSV starts_to_target 8/12/8",
+    "all three arms totals designs=8, cumulative_starts 2..16, best_so_far monotone, admitted=8 failed=0",
+    "each of the two K-shot arms' d06 (9a82dc1947bf43f0) and d07 (93cfb7db5e6fcd95) carry the same di_n; different warm-start order, same 3 warm-start x12 vectors",
+    "candidate_count=256, backend RECOVERY_NUMPY_RBF_GP_EI_V1, length_scale 0.35, noise_variance 1e-06 identical across arms",
+    "cost: 108 reported / 48 contract / 36 physical; reconciliation states direction and 'never flatters an arm'; internal 480 vs GO internal 480",
+    "ledger 36 rows (6 SHARED + 30 arm rows), no dry/preflight rows, matches 36 paid dirs",
+    "case dirs: 10 ARM_SOBOL_BO + 10 ARM_COND_SUPERVISED + 10 ARM_COND_FOMAML + 6 SUPPORT = 36 paid; 4 dry/preflight dirs with .vspgeom but no .polar/no case_result.json",
+    "o1-d03-coarse has 29 files and no admission_certificate.json; o1-d03-refine has 38 incl. admission_certificate.json; PREFLIGHT and DRY each 11 files",
+    "o1-d06-refine certificate sha256 2cd0823315ac94e95d53b946ea893fa3efedb4ab5ff3a5896cc1b8a6d0d48060 equals o1_arm_SOBOL_BO record",
+    "o1-d06-refine.polar row at alpha 5.623861 gives cl 0.205430407316, cdi 0.020310627455, matching certificate; A4 recompute lists the same",
+    "A4 recompute: commit 4fb029fe…, case_count 18, mismatch_count 0, method states nothing read from o1_result.json",
+    "geometry identity: pair_count 5, identity_proved_count 5, regenerated_vspgeom_sha256 == case_plan geometry_sha256 == on-disk sha for pairs",
+    "upload_receipt: file_count 1408, readback checked 1408, missing 0, bad 0, commit 69c2aef9505c…",
+    "o1_result not_claimed lines 705-708: global optimum, regret, aerodynamic validation, MAML superiority over supervised meta-learning",
+    "o1_batch_close pairings_executed ['O1-M190'] with split ['O1-M190','O1-M210']; batch_close result_sha256 == measured o1_result.json sha",
+    "rounds/verdict_20261124T135502Z_7228…json exists with byte size 9747; history holds 45a1e6f3… and 70aa1e10…; no verdict file anywhere records the CHANGES_REQUIRED of round 2"
+  ],
+  "findings": [
+    {
+      "severity": "minor",
+      "finding": "§0b's round-2 row is not corroborated by any file on disk: no verdict file with the CHANGES_REQUIRED payload exists in rounds/ or history/.",
+      "evidence": "rounds/ has only 7228f9800…; history/ has 45a1e6f3e… (PASS) and 70aa1e10b…; neither carries the round-2 text; dossier calls round 2 '无文件'"
+    },
+    {
+      "severity": "info",
+      "finding": "§0b finding 2 (coarse dirs carry no certificate) is genuinely fixed on disk: §7 now splits 36 paid = 18 coarse + 18 refine and puts certificates per design in refine.",
+      "evidence": "measured: o1-d03-coarse 29 files, no admission_certificate.json; o1-d03-refine 38 files incl. it; 4 dry dirs 11 files, no .polar, no case_result.json"
+    },
+    {
+      "severity": "info",
+      "finding": "§0b finding 3 (cost note wording) is substantively fixed in text: §2 says the note itself is wrong and gives 3x6+30=48, with cost_reconciliation as separate disclosure.",
+      "evidence": "o1_cost_reconciliation.json: contract 48 vs reported 108, difference 60, 'overstates cost; it never flatters an arm'; o1_result.json note left byte-identical"
+    },
+    {
+      "severity": "info",
+      "finding": "§0b finding 1 (hash difference vs protocol verdict) is correct, not drift: protocol dossier c2497e46386a1ddc and this result dossier are different files.",
+      "evidence": "o1_binding_verification.json binds o1_a5_dossier.md sha c2497e46… (10962 B); this review measured o1_a5_result_dossier.md ae662a1c… (20980 B)"
+    },
+    {
+      "severity": "minor",
+      "finding": "o1_result.json's not_claimed omits an explicit no-Sobol-superiority clause, which §0b itself flagged as still outstanding from round 3.",
+      "evidence": "lines 705-708 list only four items; the Sobol 2.687% vs K-shot 0.813% caveat exists only in dossier §8 prose"
+    },
+    {
+      "severity": "info",
+      "finding": "K-shot arms converge to identical d06/d07 designs and identical endpoint; no leakage path found, recorded as observation only.",
+      "evidence": "identical candidate_count 256, backend, length_scale, noise_variance; different warm-start order and different predicted_min (112000.34 vs 128726.38)"
+    }
+  ],
+  "limitations": [
+    "Read-only reviewer with hash/stat/read/grep only; I did not re-download from the GitHub blob API, so the 1408/0/0 readback is taken from upload_receipt.json counts, not re-verified remotely.",
+    "Budget ran out before I could hash the remaining 30 refine certificates, the 4 dry-run plans, or enumerate every case dir file list; the 18-coarse/18-refine/4-dry split is confirmed from directory listings, not byte-level for all 36.",
+    "A4 recompute and geometry identity were inspected for internal consistency and single-point spot checks; I did not independently rerun the q*Sref*CDi recomputation across all 18 cases.",
+    "§0b round-2 history cannot be audited from disk; its text rests on the generator's stdout, as the dossier itself discloses."
+  ],
+  "scope": "Read-only result review of O1 batch DRECOVER001-O1-20261124-01: re-hashed all 24 section-0 artefacts, redone target arithmetic and per-arm anytime minima, compared three-arm budgets, checked case-dir classification into 36 paid + 4 dry, ledger completeness, cost reconciliation, not_claimed coverage, and §0b dispositions against on-disk verdict files.",
+  "signature": "deepseek-v4.1-flash independent A5 result review with read-only local tools; not a human signature",
+  "dossier_sha256_measured_by_harness": "ae662a1cee2a8ba8f70cfd2d7f144cf7810c9ab8b8ddd6ce21ad5c12c5c873b5",
+  "dossier_sha256_claimed_by_reviewer": "ae662a1cee2a8ba8f70cfd2d7f144cf7810c9ab8b8ddd6ce21ad5c12c5c873b5",
+  "dossier_sha256_overwritten_because": "the reviewer is a language model: the harness hashed the bytes it was shown and substitutes that measurement, keeping the reviewer's own value for audit",
+  "dossier_path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\o1_a5_result_dossier.md",
+  "result_sha256": "f4cf8183977c4a3ee1beda2e80f507419877a53d23a9f65b7c487619958d4368",
+  "preregistration_sha256": "d810c83a6371089dd306fe4ec8948595817d036022e47e9a83a32b5e8890791b",
+  "go_sha256": "70ef376ec9adc8ccc2c100690b1b43996ea8cc10b73b7467fb1bdec1940c864f",
+  "run_id": "DRECOVER001-O1-20261124-01",
+  "batch_id": "DRECOVER001-O1-20261124-01-PAIRING-01",
+  "authorization_id": "AUTH-DREAL005-O1-20261124-01",
+  "started_utc": "2026-11-24T13:59:25Z",
+  "model": "deepseek-v4.1-flash",
+  "review_gateway": "https://copilot.tencent.com",
+  "tool_access": "READ_ONLY_LOCAL_TOOLS: sha256_file, stat_file, list_dir, read_text, grep; allowlisted to the O1 run root, the frozen worktree, the A0 run root and the O0 run root; every call recorded in a5_result_review/o1_result_tool_transcript.json",
+  "tool_hops": 29,
+  "human_signature": false,
+  "scope_of_this_review": "O1 three-arm RESULTS of batch DRECOVER001-O1-20261124-01-PAIRING-01 only; NOT a protocol re-review, NOT a human signature, NOT an approval of any later stage.",
+  "round_record": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\a5_result_review\\rounds\\verdict_20261124T135925Z_ae662a1cee2a8ba8.json"
+}
