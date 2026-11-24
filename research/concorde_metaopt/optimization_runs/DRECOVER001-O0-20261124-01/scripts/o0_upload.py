@@ -29,7 +29,8 @@ RUNS = {
     "O0": Path(r"D:/RCAIDE/.real_runs/DRECOVER001-O0-20261124-01"),
 }
 RUN_REL_TMPL = "research/concorde_metaopt/optimization_runs/%s"
-DATA_SUFFIXES = (".vspgeom", ".vspaero", ".polar", ".history", ".lod", ".adb", ".vkey",
+DATA_SUFFIXES = (".vspgeom", ".vspaero", ".vsp3", ".polar", ".history", ".lod", ".adb",
+                 ".vkey",
                  ".dat", ".cases", ".quad.cases", ".csf", ".group.0", ".group.1", ".0", ".1")
 CASE_JSON = ("admission_certificate.json", "admission_manifest.json", "approval.json",
              "audit.json", "case_inputs.json", "case_result.json", "evaluations.jsonl",
