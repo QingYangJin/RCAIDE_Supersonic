@@ -1,0 +1,47 @@
+{
+  "configurations": {
+    "基准构型": {
+      "stl": "D:/RCAIDE/.real_runs/DRECOVER001-O1-20261124-01/final_aircraft/geometry/baseline_solver.stl",
+      "triangles": 3040
+    },
+    "Sobol+BO 最佳": {
+      "stl": "D:/RCAIDE/.real_runs/DRECOVER001-O1-20261124-01/final_aircraft/geometry/sobol_best_solver.stl",
+      "triangles": 3040
+    },
+    "模型排序最佳": {
+      "stl": "D:/RCAIDE/.real_runs/DRECOVER001-O1-20261124-01/final_aircraft/geometry/supervised_best_solver.stl",
+      "triangles": 3040
+    }
+  },
+  "curves": {
+    "基准构型": {
+      "alpha_star_deg": 5.777517,
+      "cl": 0.205429863929,
+      "cdi": 0.020871499686,
+      "di_n": 135505.77916651228,
+      "polar_rows": 20
+    },
+    "Sobol+BO 最佳": {
+      "alpha_star_deg": 5.623861,
+      "cl": 0.205430407316,
+      "cdi": 0.020310627455,
+      "di_n": 131864.38157563886,
+      "polar_rows": 20
+    },
+    "模型排序最佳": {
+      "alpha_star_deg": 5.731042,
+      "cl": 0.205429620489,
+      "cdi": 0.020701721699,
+      "di_n": 134403.51537330775,
+      "polar_rows": 20
+    }
+  },
+  "curve_figure": "cl_alpha_and_cdi_alpha_all_arms.png",
+  "figures": [
+    "baseline_views.png",
+    "cl_alpha_and_cdi_alpha_all_arms.png",
+    "geometry_overlay_all_arms.png",
+    "sobol_best_views.png",
+    "supervised_best_views.png"
+  ]
+}

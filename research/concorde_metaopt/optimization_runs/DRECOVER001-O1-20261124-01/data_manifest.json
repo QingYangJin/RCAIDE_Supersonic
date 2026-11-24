@@ -1,18 +1,18 @@
 {
   "schema": "dreal005.upload_manifest.v1",
   "run_id": "DRECOVER001-O1-20261124-01",
-  "label": "O1",
-  "generated_utc": "2026-11-24T12:38:55Z",
+  "label": "O1 三臂热启动对照（SOBOL_BO vs COND_SUPERVISED_KSHOT_BO vs COND_FOMAML_KSHOT_BO）+ 真实构型图 + A4 复算/几何身份",
+  "generated_utc": "2026-11-24T13:34:02Z",
   "physical_starts_recorded": 36,
-  "file_count": 1381,
-  "total_bytes": 144326042,
+  "file_count": 1408,
+  "total_bytes": 146111770,
   "source_root": "D:/RCAIDE/.real_runs/DRECOVER001-O1-20261124-01",
   "copied_by_section": {
     "raw_cases": 40,
     "tables": 6,
     "figures": 4,
-    "final_aircraft": 36,
-    "scripts": 18,
+    "final_aircraft": 42,
+    "scripts": 39,
     "inputs": 9,
     "metadata": 9,
     "audits": 11,
@@ -103,6 +103,36 @@
       "path": "final_aircraft/baseline_geometry.json",
       "bytes": 5533,
       "sha256": "bb67d04f05edb003f984ea602d7c1ae86b2da606a38f6fe72c054567686d0e09"
+    },
+    {
+      "path": "final_aircraft/figures/baseline_views.png",
+      "bytes": 404653,
+      "sha256": "5724e0290467d1fed64215be0e4923cbb367b586f5fb2514a3b01dd8a24ac3c2"
+    },
+    {
+      "path": "final_aircraft/figures/cl_alpha_and_cdi_alpha_all_arms.png",
+      "bytes": 197934,
+      "sha256": "81831d6b4275be2dec5a7ea9605d5986cfb31f4462bdfe3bc4acde1751f81b57"
+    },
+    {
+      "path": "final_aircraft/figures/figure_manifest.json",
+      "bytes": 1331,
+      "sha256": "96bdd7043f1bdfebe19c936019a1b95f026159f55a0ea2a01a0db295c90c5506"
+    },
+    {
+      "path": "final_aircraft/figures/geometry_overlay_all_arms.png",
+      "bytes": 330748,
+      "sha256": "abfd651e313c7a2e799071ec0ee4a35a02d7e0bcb83c2484561fe0b73c81dab8"
+    },
+    {
+      "path": "final_aircraft/figures/sobol_best_views.png",
+      "bytes": 404410,
+      "sha256": "429ad37231663f83177f36c5bf0aa284591a872fab322e9f363d642bb6b678a2"
+    },
+    {
+      "path": "final_aircraft/figures/supervised_best_views.png",
+      "bytes": 403873,
+      "sha256": "159874474f9d847845876b86fa553424fb7a69785c319d8f74c4f333915f1600"
     },
     {
       "path": "final_aircraft/geometry/baseline.step",
@@ -6805,14 +6835,109 @@
       "sha256": "d69ce535b90988502a6d1f1d0f4f20f25057fbffa7e2533468026f4067a5ad62"
     },
     {
+      "path": "scripts/_probe_a4.py",
+      "bytes": 1026,
+      "sha256": "2bf28b4e9d6ca6acb6ef7099ca457a8734f54a038a426be4e03be4ca64b72e92"
+    },
+    {
+      "path": "scripts/_probe_canon.py",
+      "bytes": 554,
+      "sha256": "4de60f27bf1c994aa25ca823a3b012fb2b2ab8788bb6dd0b212061e9b5120f36"
+    },
+    {
+      "path": "scripts/_probe_case.py",
+      "bytes": 384,
+      "sha256": "951f279e6da3944325262153c91cbdbb619aeb97f830a2bcfd57a529293b882e"
+    },
+    {
       "path": "scripts/_probe_dataset.py",
       "bytes": 1075,
       "sha256": "83252b6577f4bebb16bba07dd8c78543aa2860349895f042d49738c25ae7bf86"
     },
     {
+      "path": "scripts/_probe_manifests.py",
+      "bytes": 834,
+      "sha256": "06573817aa6a58bab3d2da3de8166aa030c1c71d0461a70d391e079be8b7eba0"
+    },
+    {
+      "path": "scripts/_probe_o0x12.py",
+      "bytes": 896,
+      "sha256": "72fb4ab93d8cac63fc9ef30e351f8092eb7cec7da4c49e4aa946bfbfea92cfb5"
+    },
+    {
+      "path": "scripts/_probe_plan.py",
+      "bytes": 213,
+      "sha256": "b302530c478d33a70c2d3f49a3d95f70eb2166624e5af9f7b40e97fab8663b06"
+    },
+    {
+      "path": "scripts/_probe_polar_cert.py",
+      "bytes": 1028,
+      "sha256": "b796f2f61763096911c46402f84a387a2ceb3ac097ebc894867ff0985870e463"
+    },
+    {
+      "path": "scripts/_probe_ranges.py",
+      "bytes": 1423,
+      "sha256": "57e88f8b8f9c3c9370c957cd3fceabb86ade1b820d9559760241dbb8538ebf34"
+    },
+    {
+      "path": "scripts/_probe_regen.py",
+      "bytes": 1659,
+      "sha256": "d20d8faf910e9bd2c2f3bda1da8ba9d324830aa06409e4e9de1f2a744126a81e"
+    },
+    {
       "path": "scripts/_probe_tokens.py",
       "bytes": 1636,
       "sha256": "61108b98c525d6e041b56d08661df9d05013f7d4da0bb5f11538d213d4296ac7"
+    },
+    {
+      "path": "scripts/_probe_xml.py",
+      "bytes": 199,
+      "sha256": "29d29869f8fb039a801640a205280d01cf1703cb5a2107270f1e4ba062c08517"
+    },
+    {
+      "path": "scripts/_probe_xml2.py",
+      "bytes": 208,
+      "sha256": "44491216931287b93fb2f5e64b65793d39234b4866db2b0c6cb6fd420db5613a"
+    },
+    {
+      "path": "scripts/_probe_xml3.py",
+      "bytes": 307,
+      "sha256": "12a1ae16615131d488c245ef7743269bd720f7d3f6d28af9a855c647578b32c8"
+    },
+    {
+      "path": "scripts/_vsp3diff.py",
+      "bytes": 917,
+      "sha256": "ee2427394de72868349de90644d3f358c691e0f7c7279d9b684e1225d9c029eb"
+    },
+    {
+      "path": "scripts/_vsp3ids.py",
+      "bytes": 856,
+      "sha256": "af89c14d06d1d4b40b332f4e7554c70ba49508a8ac529516debd1034102099d9"
+    },
+    {
+      "path": "scripts/_vsp3norm.py",
+      "bytes": 1829,
+      "sha256": "062f0e5a87613d483421774124e714f9d4f804f986758a5a6ca35f06963f0daf"
+    },
+    {
+      "path": "scripts/_vsp3solver.py",
+      "bytes": 2862,
+      "sha256": "4022ba5f54888c49e37d0539e3646ece27ff1d8e6d7976827e562b378e9e40fa"
+    },
+    {
+      "path": "scripts/_vsp3struct.py",
+      "bytes": 993,
+      "sha256": "342a58c7c204fedcf959ded2131359abae09d499ec9493dbc130c9234b8c24c4"
+    },
+    {
+      "path": "scripts/dump_issue.py",
+      "bytes": 1106,
+      "sha256": "58aa2c64fc54f0bbef01cc76d04ec42a51a6d519801938243862868b545b4825"
+    },
+    {
+      "path": "scripts/o1_a4_geometry_identity.py",
+      "bytes": 13046,
+      "sha256": "b7e749523dd24af9c51405cfd3a7a243db28a415153d4d896f2272e4605e1534"
     },
     {
       "path": "scripts/o1_a4_recompute.py",
@@ -6828,6 +6953,11 @@
       "path": "scripts/o1_admit_case.py",
       "bytes": 7463,
       "sha256": "d79be02ec4494a3937126f88cf9040b9c77067b6c1b26780715ecde605f316b8"
+    },
+    {
+      "path": "scripts/o1_aircraft_figures.py",
+      "bytes": 11253,
+      "sha256": "53cef87e5a62a44e89d2f9c93725752589863e4778a00a7a2d22925b975e3c38"
     },
     {
       "path": "scripts/o1_arms.py",
@@ -6893,6 +7023,11 @@
       "path": "scripts/o1_verify_binding.py",
       "bytes": 8347,
       "sha256": "50ba4a31d7d8311de1d98d6e0e27d0ff2eb5c8f28f4b414f8797639d12155742"
+    },
+    {
+      "path": "scripts/show_issue.py",
+      "bytes": 1186,
+      "sha256": "2b388ec93077ab5ca9fb1fa4f9559b390dc503aa32a2d910d57a7dfe0f723a7e"
     },
     {
       "path": "tables/o1_all_designs_all_arms.csv",
