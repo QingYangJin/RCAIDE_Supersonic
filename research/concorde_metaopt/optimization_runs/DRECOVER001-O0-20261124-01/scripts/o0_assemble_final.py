@@ -204,8 +204,11 @@ def main() -> int:
              ("m2" if "area" in name else "dimensionless")}
             for i, name in enumerate(o0.VARIABLE_ORDER)
         ],
+        # %.17g round-trips a double exactly. "%.10g" silently rounded the wing sweep and
+        # chord here once, and the aircraft was exported from the rounded command, which made
+        # the delivered .vspgeom differ from the paid case (design_id changed at the 11th digit).
         "generation_command": ("python scripts/o0_export_aircraft.py --prefix optimized "
-                               "--x12 " + " ".join("%.10g" % v for v in x12_best)),
+                               "--x12 " + " ".join("%.17g" % float(v) for v in x12_best)),
         "source_geometry_exports": load(OUT / "optimized_geometry.json")
         if (OUT / "optimized_geometry.json").is_file() else None,
         "verdict": verdict,

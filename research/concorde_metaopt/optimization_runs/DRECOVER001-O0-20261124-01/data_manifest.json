@@ -1,22 +1,22 @@
 {
   "schema": "dreal005.upload_manifest.v1",
   "run_id": "DRECOVER001-O0-20261124-01",
-  "label": "O0 全链（B01 崩溃 + B02 真实 BO + O0-FINAL 复验 + final_aircraft）",
-  "generated_utc": "2026-11-24T10:50:57Z",
+  "label": "O0 全链（B01 崩溃 + B02 真实 BO + O0-FINAL 复验 + final_aircraft + 新图 CL-alpha/CDi-alpha 与尺寸变化）",
+  "generated_utc": "2026-11-24T13:31:02Z",
   "physical_starts_recorded": 31,
-  "file_count": 1357,
-  "total_bytes": 137274650,
+  "file_count": 1365,
+  "total_bytes": 137604985,
   "source_root": "D:/RCAIDE/.real_runs/DRECOVER001-O0-20261124-01",
   "copied_by_section": {
     "raw_cases": 34,
     "tables": 5,
     "figures": 4,
-    "final_aircraft": 45,
-    "scripts": 55,
+    "final_aircraft": 48,
+    "scripts": 58,
     "inputs": 9,
     "metadata": 4,
     "audits": 94,
-    "audits_logs": 18
+    "audits_logs": 20
   },
   "files": [
     {
@@ -253,6 +253,16 @@
       "path": "audits/go_history/o0_go_record_SUPERSEDED_20261124T085110Z_94fef447.json",
       "bytes": 8460,
       "sha256": "bc1b6925d0e2131427492547aa71252584a3d566a0933ec0addbe965e3309fc3"
+    },
+    {
+      "path": "audits/logs_o0_upload2.log",
+      "bytes": 1414,
+      "sha256": "8ff78fb9173db8230ca17763cd50d687cf5cf21403aa8294f106f0c679665658"
+    },
+    {
+      "path": "audits/o0_a4_run.log",
+      "bytes": 4574,
+      "sha256": "ca9c22e16c44ba546a91dad5a710291a44fc72e7d306cc73de3f634237e38da3"
     },
     {
       "path": "audits/o0_a5_daemon.log",
@@ -612,7 +622,7 @@
     {
       "path": "final_aircraft/constraint_report.json",
       "bytes": 1494,
-      "sha256": "8ead46c1d850f423f4ad27166e3c2e1143501591b9ea31ef0ea178ea3aadb2a4"
+      "sha256": "00ac42458126a5ce9da2e040a766a2d36916bc5a2c79cde7652f4aad27418243"
     },
     {
       "path": "final_aircraft/design_before_after.csv",
@@ -625,9 +635,14 @@
       "sha256": "d366b437ce1ba0d0a54dba03689ce438b2fe874963089854a6cf4e926a7ec9cb"
     },
     {
+      "path": "final_aircraft/figures/cl_alpha_and_cdi_alpha.png",
+      "bytes": 176848,
+      "sha256": "33a220d761eaba8d750d99466a3932ee16ed3cb610e818d26aa234faeff755f9"
+    },
+    {
       "path": "final_aircraft/figures/figure_manifest.json",
-      "bytes": 309,
-      "sha256": "0a7bfe9bce52fb8c95664654bf24fca652a31188e4e2380f9147ebeb82189a35"
+      "bytes": 417,
+      "sha256": "cf1fe92e2bb09a3778c1bbb227d7d5ec19e1a9e67fc9f64ba914c10683a45081"
     },
     {
       "path": "final_aircraft/figures/geometry_before_after_overlay.png",
@@ -635,9 +650,19 @@
       "sha256": "9e6e6a66e695c1403fb3972b3a44ff5a7c363c32162b96b8d7da4b102f97d28b"
     },
     {
+      "path": "final_aircraft/figures/geometry_dimension_changes.png",
+      "bytes": 122710,
+      "sha256": "352dc8b20b7fc4c2e9c5e8a97d0e311e79967f6345bff44eed4a943fd0a10d5e"
+    },
+    {
       "path": "final_aircraft/figures/optimized_views.png",
       "bytes": 403495,
       "sha256": "8cb74ec4260fe88a40e38d473932ebccf222c5ee48f0f9206076b8005365d7bd"
+    },
+    {
+      "path": "final_aircraft/figures/polar_figure_manifest.json",
+      "bytes": 1074,
+      "sha256": "f969c34fbe3031e30de2f4e46cf358e16bbd3688ccfa720af04b14632d220c2e"
     },
     {
       "path": "final_aircraft/geometry/baseline.step",
@@ -751,18 +776,18 @@
     },
     {
       "path": "final_aircraft/geometry/optimized.step",
-      "bytes": 629924,
-      "sha256": "e574bdbf996c124c820598925398b559747c9d0c8e9e00609a82b66b728283ce"
+      "bytes": 629968,
+      "sha256": "8637e5967166292f0c91eef0ea757d69c8a10c3e6d83a9c98cb519cccf1fcdae"
     },
     {
       "path": "final_aircraft/geometry/optimized.stl",
-      "bytes": 1245302,
-      "sha256": "d47b8c24c2703d24942580b97993fc9f7c5af0d837a532948cc1ada62f2539a3"
+      "bytes": 1245303,
+      "sha256": "a3ae2fb29133f386fb7b263cbaaad25b59d8e7e4f8b75bd6b6f090e7bd50f665"
     },
     {
       "path": "final_aircraft/geometry/optimized.vsp3",
       "bytes": 301252,
-      "sha256": "ecb2f403a7248817d63b4e5c82752c8b02b22f5cfa36e1be198c7f82535a25d8"
+      "sha256": "509819d8b82f7f771358106129415a9f09ee7c9c4c81517a139e872eab18c026"
     },
     {
       "path": "final_aircraft/geometry/optimized_fuselage.stl",
@@ -771,28 +796,28 @@
     },
     {
       "path": "final_aircraft/geometry/optimized_main_wing.stl",
-      "bytes": 653984,
-      "sha256": "bd7479c37f9395228b717556f0301d8a4fb4895fcb68c9b288da0e4a4f5e3eb5"
+      "bytes": 653985,
+      "sha256": "7d7a6a7e6b51fd166d7060e31b7361ce9e8a9904731966da68d74e1b2c7727ac"
     },
     {
       "path": "final_aircraft/geometry/optimized_solver.step",
-      "bytes": 410612,
-      "sha256": "f6ef6c174b1471bddf5ba9ae48b08faa71ce8810ad917915f51bf3ceeefd8d6f"
+      "bytes": 410656,
+      "sha256": "4f94628befd364d63c3db3f71ed005ccf07756f7a2b1b144bb008df4dded5e99"
     },
     {
       "path": "final_aircraft/geometry/optimized_solver.stl",
-      "bytes": 917397,
-      "sha256": "bee0905667f3788fff64670519f6be14791b0b1d0c79b66ea16b100439aeb398"
+      "bytes": 917398,
+      "sha256": "c2f212f098460dee96bee5f4f8b5680d6889c550873b1dd08e4db8e2e444033e"
     },
     {
       "path": "final_aircraft/geometry/optimized_solver.vsp3",
       "bytes": 158021,
-      "sha256": "42ecd5c26073d28406792ca9ecfbffcc7e6f2a91f0efe8f6e141c766a8de3a8a"
+      "sha256": "3b25944fcc8aa7764a383947957eca5fced319f09ce65a3f2034faeaadc6fe87"
     },
     {
       "path": "final_aircraft/geometry/optimized_solver_main_wing.stl",
-      "bytes": 653984,
-      "sha256": "bd7479c37f9395228b717556f0301d8a4fb4895fcb68c9b288da0e4a4f5e3eb5"
+      "bytes": 653985,
+      "sha256": "7d7a6a7e6b51fd166d7060e31b7361ce9e8a9904731966da68d74e1b2c7727ac"
     },
     {
       "path": "final_aircraft/geometry/optimized_solver_vertical_tail.stl",
@@ -806,13 +831,13 @@
     },
     {
       "path": "final_aircraft/optimized_design.json",
-      "bytes": 10561,
-      "sha256": "3f74b3d05b8cc4be1da122a36f63b1fc58a7b1597882ed1fd243d2fe56309915"
+      "bytes": 10668,
+      "sha256": "9fb55904d6fa43cf291f45368826133289b6ee43b52ec6f0fa14d62572fc50fa"
     },
     {
       "path": "final_aircraft/optimized_geometry.json",
-      "bytes": 5604,
-      "sha256": "8e898ab980ed42557454a1d37a903ff0dc5965f7550ada4c7dcab7a1b8ec6fc5"
+      "bytes": 5626,
+      "sha256": "c63e760c01af9c38ff53b522c4e7a64e77797e47d87cfdeb3080dc0b3a029978"
     },
     {
       "path": "final_aircraft/performance_before_after.csv",
@@ -822,7 +847,7 @@
     {
       "path": "final_aircraft/verification_receipt.json",
       "bytes": 22120,
-      "sha256": "d16c4fb845142a79b9b0258bfac53fafebdd03175d65644318ff755526c06888"
+      "sha256": "1835a41bf8b18256a246a10a9d46812c0fdb2aa8a0ba1e15d623c7e2b8d46398"
     },
     {
       "path": "inputs/o0_a5_dossier.md",
@@ -6501,8 +6526,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 785,
-      "sha256": "bf3648fcaecf952b2e08808f450e86f4260072886912699ada72445b0b13163e"
+      "bytes": 792,
+      "sha256": "b655963f5f4d8d042cad9b1d9d7c82288f403ae9c8a3c87ce085087c1874a2d0"
     },
     {
       "path": "scripts/_archive_verdict.py",
@@ -6605,6 +6630,11 @@
       "sha256": "7db97f27bf084bc48d271a0fbd046f2509cb17b1d078ad81783e54f2764b3c7c"
     },
     {
+      "path": "scripts/_probe_x12.py",
+      "bytes": 640,
+      "sha256": "cd13da084bc405d495781c84d80ab439ec5caf049c7319362d41a988a1b0ed3d"
+    },
+    {
       "path": "scripts/_tmp_d02.py",
       "bytes": 1560,
       "sha256": "89c62613f41390c91e5bc611a7cceb68c055b2930b39ce5909bc76dac08484ca"
@@ -6618,6 +6648,11 @@
       "path": "scripts/_tmp_spans.py",
       "bytes": 1282,
       "sha256": "ac530223214288ac54d764dbdc02342629bab492ee0b950ee231b82e35b1e2c1"
+    },
+    {
+      "path": "scripts/o0_a4_recompute.py",
+      "bytes": 10089,
+      "sha256": "cff3b988f678d63022a31a7daf3dc2c30c3634b009b6fcd0541e9fd0aaa23549"
     },
     {
       "path": "scripts/o0_a5_retry.py",
@@ -6676,8 +6711,8 @@
     },
     {
       "path": "scripts/o0_assemble_final.py",
-      "bytes": 14945,
-      "sha256": "e2ba50afe11b045ac76e9f7e9c59c5105a959e9ae8ab24e4b165f51ff8c48a8b"
+      "bytes": 15234,
+      "sha256": "cc03e80e80504247fafce2863824e891696133b4a367613fc1cded06f397547d"
     },
     {
       "path": "scripts/o0_build_dossier.py",
@@ -6728,6 +6763,11 @@
       "path": "scripts/o0_make_go.py",
       "bytes": 13793,
       "sha256": "8bcef437dee0c6e3a05b04d6575b6c16bdc743992e662a9c57ea994dc6510df4"
+    },
+    {
+      "path": "scripts/o0_polar_figures.py",
+      "bytes": 12361,
+      "sha256": "2b154ac0837907330f381959bb4ac0bda963b7d423c36afd471c95f62fde087d"
     },
     {
       "path": "scripts/o0_prereg.py",
