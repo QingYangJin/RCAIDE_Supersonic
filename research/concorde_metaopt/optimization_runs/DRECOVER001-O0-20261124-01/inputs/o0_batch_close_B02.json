@@ -1,0 +1,84 @@
+{
+  "schema": "dreal005.o0_batch_close.v1",
+  "run_id": "DRECOVER001-O0-20261124-01",
+  "batch_id": "DRECOVER001-O0-20261124-01-B02",
+  "authorization_id": "AUTH-DREAL005-O0-20261124-01",
+  "created_utc": "2026-11-24T08:20:19Z",
+  "outcome": "COMPLETED_BY_EXHAUSTING_THE_AUTHORIZATION_DESIGN_CAP",
+  "why_it_looks_like_a_crash": "run would exceed 12 design attempts",
+  "was_any_cap_exceeded": false,
+  "defect": {
+    "where": "run_bo_loop adaptive loop bound",
+    "what": "the loop compares len(records) to the authorization-wide design cap without subtracting the design attempts already carried forward from B01, so after the last permitted design it asked the ledger for one more and the ledger correctly refused",
+    "who_caught_it": "the ledger, not the loop: the charge path fails closed, which is why the batch stopped with an accounting error instead of spending a start it was not entitled to"
+  },
+  "batch_spend": {
+    "designs": 11,
+    "solver_starts": 22,
+    "internal_cases": 220,
+    "admitted_labels": 11,
+    "failed_or_null": 0
+  },
+  "authorization_spend": {
+    "designs": 12,
+    "solver_starts": 23,
+    "internal_cases": 227
+  },
+  "authorization_caps": {
+    "designs": 12,
+    "spendable_solver_starts": 24,
+    "spendable_internal_cases": 240
+  },
+  "design_cap_fully_used": true,
+  "baseline": {
+    "design_index": 0,
+    "design_id": "8bd5a6c7c8311938",
+    "di_n": 121437.61102443402,
+    "alpha_deg": 5.18132,
+    "lift_rel_error": 4.4608964445702973e-07
+  },
+  "best_non_baseline": {
+    "design_index": 10,
+    "design_id": "605311c6e95881d1",
+    "di_n": 121146.85696341874,
+    "alpha_deg": 5.169035,
+    "lift_rel_error": 4.327348152089466e-07,
+    "sweep_1": 66.92203997956408,
+    "sweep_2": 48.00055732910467
+  },
+  "improvement_n": 290.75406101527915,
+  "improvement_fraction_of_baseline": 0.0023942669701957292,
+  "feedback_dependent": false,
+  "artifact_sha256": {
+    "o0_result_B02.json": "a0edfe0c53a31665eb4abaae545e4555d131eb5d4220168763e3b920a23e34ab",
+    "o0_batch_accounting_B02.json": "973885c3fdf340975a2dd13e4b0ab915c44fc0b0faa7183d62255265251e66e9",
+    "o0_batch_crash_B02.json": "b0da8a5e37e9ea82dacf1fe22b30db1316144c3c962a7dc5d474147af1fe0740",
+    "o0_go_record.json": "0de639f496c0532039036af214736fa293bb9dea1508b3db6d2810b118f7544b"
+  },
+  "resource_summary": {
+    "schema": "dreal005.resource_summary.v1",
+    "label": "O0-BO-B02",
+    "platform": "Windows",
+    "sampler": "ctypes kernel32 GetSystemTimes/GlobalMemoryStatusEx/psapi",
+    "interval_s": 1.0,
+    "sample_count": 163,
+    "cpu_available": true,
+    "cpu_busy_fraction_mean": 0.18067104056525668,
+    "cpu_busy_fraction_max": 0.5100961538461539,
+    "cpu_busy_fraction_min": 0.08935546875,
+    "memory_load_percent_mean": 50.87116564417178,
+    "memory_load_percent_max": 51.0,
+    "phys_used_bytes_mean": 17141702404.711657,
+    "phys_used_bytes_max": 17290063872,
+    "tracked_working_set_bytes_mean": 385773316.71165645,
+    "tracked_working_set_bytes_max": 458760192,
+    "tracked_process_count_max": 2,
+    "first_utc": "2026-11-24T08:14:56.825017Z",
+    "last_utc": "2026-11-24T08:17:40.338638Z",
+    "note": "cpu_busy_fraction is total system processor utilisation from GetSystemTimes deltas; it is a host-wide figure, not a per-run share. tracked_working_set_bytes covers only python/vspaero/openvsp processes and is therefore a lower bound on this run's memory footprint."
+  },
+  "physical_solver_starts_actual_batch": 22,
+  "internal_solver_cases_actual_batch": 220,
+  "physics_validated": false,
+  "physical_interpretation": "lifting-surface VSPAERO internal only; forced-lift induced drag at fixed Mach and altitude"
+}

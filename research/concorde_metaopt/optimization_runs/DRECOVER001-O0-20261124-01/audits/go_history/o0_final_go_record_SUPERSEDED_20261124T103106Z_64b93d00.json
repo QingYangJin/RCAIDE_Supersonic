@@ -1,0 +1,247 @@
+{
+  "schema": "dreal005.o0_final_go_record.superseded.v1",
+  "retired_utc": "2026-11-24T10:31:06Z",
+  "original_sha256": "3b1b621d03947a9342d3e9ac84a9663b54a821e2895eb688380c4fb906b6ecc2",
+  "bound_dossier_sha256": "64b93d00df31bcf7b596ec6814439c66001595c600f3a1eeaa2ed36e21d806ec",
+  "bound_preregistration_sha256": "841e7f0a933c807e4aced0d27b6ad3c0d08a796745beb6791c171aa700e03021",
+  "current_dossier_sha256": "f7c79c0f364987cc9baccf06f590149c2fb3aca3557f59d7d593fa3be7d6f206",
+  "current_preregistration_sha256": "7063ef4d44a4726d98ab056c4c2d20eb667e3c83d4bfe508ca7f84a7da4512b2",
+  "reason": "the dossier and the pre-registration changed after this GO was issued (the crashed first verification attempt is now disclosed and the verification budget is gross 8 starts / 104 internal cases), so this record no longer states anything about the current bytes; keeping it at the working path would present an expired authorization as live",
+  "superseded_by": "the next GO issued by scripts/o0_make_final_go.py",
+  "go": {
+    "schema": "dreal005.o0_final_go_record.v1",
+    "go_issued": true,
+    "go_issued_utc": "2026-11-24T10:21:40Z",
+    "authorization_kind": "O0_FINAL_VERIFICATION",
+    "issued_by": "Lead (agent), not a human approver and not the A5 reviewer",
+    "owner_authorization_ref": "Issue #15 (2026-11-24) + comment 1 + Owner m11649",
+    "issue": 15,
+    "run_id": "DRECOVER001-O0-20261124-01",
+    "authorization_id": "AUTH-DREAL005-O0-20261124-01",
+    "preregistration_path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O0-20261124-01\\o0_preregistration.json",
+    "preregistration_sha256": "841e7f0a933c807e4aced0d27b6ad3c0d08a796745beb6791c171aa700e03021",
+    "a5_dossier_path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O0-20261124-01\\o0_a5_dossier.md",
+    "a5_dossier_sha256": "64b93d00df31bcf7b596ec6814439c66001595c600f3a1eeaa2ed36e21d806ec",
+    "a5_dossier_bytes": 54419,
+    "a5_dossier_receipt_path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O0-20261124-01\\o0_dossier_receipt.json",
+    "a5_dossier_receipt_sha256": "a977eb2dd24792b7bcb6d30c12aff792de107a54b717e68404d7e0174ef7da1c",
+    "a5_verdict_path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O0-20261124-01\\a5_review\\verdict.json",
+    "a5_verdict_sha256": "daa656efbb8679e396f21f4a7dc0097e4b2dd36d1e47a124e4f30504f081a8ed",
+    "a5_verdict": "H0_A0_O0_REVIEW_PASS",
+    "a5_reviewer": "deepseek-v4.1-flash",
+    "a5_human_signature": false,
+    "byte_verifier": {
+      "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O0-20261124-01\\o0_binding_verification.json",
+      "sha256": "ff9dc0556a6dd0792bafddb900cf3608610ffccab23b5a5980553da796035ca7",
+      "status": "O0_BYTES_BOUND_MECHANICALLY",
+      "check_count": 10,
+      "failure_count": 0,
+      "dossier_sha256": "64b93d00df31bcf7b596ec6814439c66001595c600f3a1eeaa2ed36e21d806ec",
+      "dossier_bytes": 54419,
+      "created_utc": "2026-11-24T10:21:33Z",
+      "archived_as": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O0-20261124-01\\a5_support\\binding_history\\o0_binding_verification_20261124T102133Z.json"
+    },
+    "byte_verifier_is_a_hard_precondition": "this record was refused unless a fresh mechanical verifier round reported O0_BYTES_BOUND_MECHANICALLY with zero failures over exactly these dossier bytes, written after the dossier and archived where it cannot be overwritten",
+    "batch_close": {
+      "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O0-20261124-01\\o0_batch_close_B02.json",
+      "sha256": "684db6bc56cecd30421a0672063534b7ccdfbc524308ffe963c2d20e96577629",
+      "outcome": "COMPLETED_BY_EXHAUSTING_THE_AUTHORIZATION_DESIGN_CAP",
+      "design_cap_fully_used": true
+    },
+    "optimizer_batch_result": {
+      "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O0-20261124-01\\o0_result_B02.json",
+      "sha256": "a0edfe0c53a31665eb4abaae545e4555d131eb5d4220168763e3b920a23e34ab"
+    },
+    "optimizer_carried_forward": {
+      "design_attempts": 12,
+      "solver_starts": 23,
+      "internal_solver_cases": 227,
+      "records": [
+        {
+          "record": "o0_batch_abort_B01.json",
+          "sha256": "0445d41401ff913c30806d57de5651b56740c2eba55b450385ff80726f1bac07",
+          "basis": "BATCH_LOCAL",
+          "charged_starts": 1,
+          "internal_solver_cases": 7,
+          "design_evaluations": 1
+        },
+        {
+          "record": "o0_batch_crash_B02.json",
+          "sha256": "e24b747ee2afc8ae0a778e511f4a7bf1f4c2a56a1ef142d950e2d8b7f964c484",
+          "basis": "AUTHORIZATION_CUMULATIVE",
+          "charged_starts": 23,
+          "internal_solver_cases": 227,
+          "design_evaluations": 12
+        }
+      ],
+      "counting_rule": "the latest AUTHORIZATION_CUMULATIVE record is the floor because its counters already include what it carried forward; only batch-local records it did not absorb are added, so nothing is counted twice",
+      "basis_record": {
+        "record": "o0_batch_crash_B02.json",
+        "sha256": "e24b747ee2afc8ae0a778e511f4a7bf1f4c2a56a1ef142d950e2d8b7f964c484",
+        "basis": "AUTHORIZATION_CUMULATIVE"
+      }
+    },
+    "optimizer_budget_note": "the optimizer authorization is exhausted by design; this record authorizes no further optimizer start and cannot propose or admit a new design",
+    "authorized_designs": {
+      "baseline": {
+        "design_id": "8bd5a6c7c8311938",
+        "design_index": 0,
+        "is_baseline": true,
+        "x12": [
+          358.25,
+          1.83,
+          67.0,
+          48.0,
+          71.0,
+          0.480469,
+          0.945313,
+          0.408284,
+          0.130178,
+          0.0,
+          33.91,
+          0.0
+        ],
+        "alpha_cent_deg": 5.18132,
+        "batch_di_n": 121437.61102443402
+      },
+      "best": {
+        "design_id": "605311c6e95881d1",
+        "design_index": 10,
+        "is_baseline": false,
+        "x12": [
+          358.25,
+          1.83,
+          66.92203997956408,
+          48.00055732910467,
+          71.0,
+          0.480469,
+          0.945313,
+          0.408284,
+          0.130178,
+          0.0,
+          33.91,
+          0.0
+        ],
+        "alpha_cent_deg": 5.169035,
+        "batch_di_n": 121146.85696341874
+      }
+    },
+    "verification_budget": {
+      "max_verification_starts": 8,
+      "max_verification_internal_cases": 104,
+      "max_repeat_runs_per_design": 2,
+      "max_wake_probe_starts": 2,
+      "max_void_rows": 2,
+      "n_wake_nodes_reference": 8,
+      "n_wake_nodes_probe": 16,
+      "refinement_points": 13
+    },
+    "verification_budget_source": "read back from o0_preregistration.json o0_final.separate_budget; a budget typed into the runner would not be pre-registered and is refused",
+    "verification_ledger": {
+      "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O0-20261124-01\\o0_final\\verification_ledger.json",
+      "sha256": "36ed2189ea4ade267a941aece0a63fed929bff3f27c3058a729777e0a80dc900",
+      "verification_starts_actual": 3,
+      "verification_internal_cases_actual": 39,
+      "kinds": [
+        "void",
+        "void",
+        "wake"
+      ],
+      "void_rows_actual": 2,
+      "admissible_rows_actual": 0,
+      "rows": [
+        {
+          "label": "final-baseline-r1",
+          "kind": "void",
+          "starts": 1,
+          "internal": 13,
+          "note": "spent before the crash on a case whose wake count was 2, below the admission mesh of 8; the polar it produced is real but the mesh is not the admitted mesh, so it can never be admitted and must never be re-run under this label"
+        },
+        {
+          "label": "final-baseline-r2",
+          "kind": "void",
+          "starts": 1,
+          "internal": 13,
+          "note": "spent before the crash on a case whose wake count was 2, below the admission mesh of 8; same disposition as final-baseline-r1"
+        },
+        {
+          "label": "final-baseline-wake16",
+          "kind": "wake",
+          "starts": 1,
+          "internal": 13,
+          "note": "the pre-registered 16-wake-node probe for the baseline; it completed before the crash and its paid output is on the disk, but the charge never ran because the charge used to happen after the run. It is charged here, it is a probe and is never admitted, and it is not re-run because it already happened"
+        }
+      ],
+      "repair": {
+        "reason": "the crashed O0-FINAL run charged its starts after the run, so the third paid start never reached the ledger, and the two starts that did reach it were labelled kind=wake although they were repeats configured with 2 wake nodes. Both facts are corrected here from the paid case directories.",
+        "old_ledger_sha256": "2d99ab4af1ed9bdf4a96bbbf2ffc9c87ceea599da82b78ff9bfac62d29c4fc76",
+        "old_rows": [
+          {
+            "label": "final-baseline-r1",
+            "kind": "wake",
+            "starts": 1,
+            "internal": 13,
+            "utc": "2026-11-24T09:13:04Z"
+          },
+          {
+            "label": "final-baseline-r2",
+            "kind": "wake",
+            "starts": 1,
+            "internal": 13,
+            "utc": "2026-11-24T09:13:13Z"
+          }
+        ],
+        "old_caps": {
+          "max_verification_starts": 6,
+          "max_verification_internal_cases": 78,
+          "max_repeat_runs_per_design": 2,
+          "max_wake_probe_starts": 2,
+          "n_wake_nodes_reference": 8,
+          "n_wake_nodes_probe": 16,
+          "refinement_points": 13
+        },
+        "kind_corrections": [
+          {
+            "label": "final-baseline-r1",
+            "old_kind": "wake",
+            "new_kind": "void"
+          },
+          {
+            "label": "final-baseline-r2",
+            "old_kind": "wake",
+            "new_kind": "void"
+          },
+          {
+            "label": "final-baseline-wake16",
+            "old_kind": null,
+            "new_kind": "wake",
+            "why": "the run completed and the paid output is on the disk but the charge never happened"
+          }
+        ],
+        "total_charged_is_unchanged_in_kind_but_not_in_count": "the old ledger claimed 2 starts and 26 internal cases; the true bill is 3 starts and 39 internal cases, all of them already spent, none of them re-runnable",
+        "not_a_new_budget": "this repair adds no permission to spend. It only makes the already-spent bill visible, and the caps are the repaired verification caps that include the five starts still to be spent."
+      }
+    },
+    "verification_spend_carried_forward": {
+      "starts_already_spent": 3,
+      "internal_cases_already_spent": 39,
+      "budget_is_gross": "the pre-registered 8 starts and 104 internal cases are the whole of the verification step, gross. Three of those starts and 39 internal cases were already spent before this GO; the five starts and 65 internal cases that remain are what this GO actually authorizes, and the ledger decides that, not this paragraph",
+      "how_the_remainder_is_enforced": "the runner reads the ledger back on start-up and refuses any charge past the pre-registered cap, so the already-spent starts are subtracted automatically rather than by arithmetic in a comment"
+    },
+    "ledger_file": "o0_final/verification_ledger.json",
+    "caps_are_separate_from_the_optimizer_caps": "these starts are itemized verification work; they never extend the O0 search budget and may not be used to look for a better design",
+    "not_authorized": [
+      "any further optimizer start or any new design proposal",
+      "O1 warm-start arms",
+      "any change to the lift tolerance, target lift or reference quantities",
+      "re-use of the O0 optimizer GO for verification work"
+    ],
+    "conditions": [
+      "the verification ledger is charged before the case is evaluated and persists after every charge; a crash restarts owing what was already spent",
+      "wake-probe cases at 16 wake nodes are never admitted and never counted as labels",
+      "no retry of an interrupted verification start; an interrupted start stays charged",
+      "lift tolerance 1e-3 is never relaxed and no interpolated row may be admitted",
+      "resulting verdict is one of the four pre-registered verdict strings, never 'PASS'"
+    ]
+  }
+}

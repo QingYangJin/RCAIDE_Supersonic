@@ -1,0 +1,177 @@
+{
+  "schema": "dreal005.o0_batch_abort_record.v1",
+  "run_id": "DRECOVER001-O0-20261124-01",
+  "batch_id_attempted": "DRECOVER001-O0-20261124-01-B01",
+  "authorization_id": "AUTH-DREAL005-O0-20261124-01",
+  "go_record_sha256": "6312fab292445b5ebabb037d24ca66dabe88e948a6a615916e002c03c50db8cd",
+  "created_utc": "2026-11-24T07:19:48Z",
+  "outcome": "ABORTED_BY_CODE_DEFECT_AFTER_ONE_CHARGED_START",
+  "narrative": "The batch acquired the run lock and evaluated bootstrap design 0 (the baseline) for real. The VSPAERO start completed and wrote a full case directory, but o0_eval.bracket_rows() then raised AttributeError because solver_runner.run_case() reports case_result as a path string, not as an inline object. The exception escaped evaluate_design() before AttemptLedger.settle(), so the run counters never saw the start. Nothing was deleted: the raw case, its polar, its solver ledger and its stdout/stderr logs are all still on disk.",
+  "root_cause": {
+    "exception": "AttributeError: 'str' object has no attribute 'get'",
+    "file": "scripts/o0_eval.py",
+    "old_line": 175,
+    "old_code": "rows = ((result.get(\"case_result\") or {}).get(\"evaluation\") or {}).get(\"rows\") or []",
+    "contract": "solver_runner.run_case() returns case_result as str(case_result_path), so the path has to be read before indexing",
+    "fix": "bracket_rows() now loads the JSON file when case_result is a str or Path, and keeps the inline-dict behaviour for callers that pass one"
+  },
+  "charged_starts_actual": 1,
+  "internal_solver_cases_actual": 7,
+  "design_evaluations_actual": 1,
+  "admitted_labels_actual": 0,
+  "retries_actual": 0,
+  "parallelism": 1,
+  "case": {
+    "case_id": "o0-d00-coarse",
+    "design_index": 0,
+    "stage": "BOOTSTRAP",
+    "is_baseline": true,
+    "attempt_id": "d00-coarse",
+    "status": "SOLVED",
+    "exit_code": 0,
+    "wall_s": 5.524,
+    "polar_rows": 7,
+    "alpha_list_deg": [
+      4.13,
+      4.48,
+      4.83,
+      5.18,
+      5.53,
+      5.88,
+      6.23
+    ],
+    "lift_match_status": "LIFT_MATCHED_BY_INTERPOLATION",
+    "files": [
+      "approval.json",
+      "case_inputs.json",
+      "case_result.json",
+      "evaluations.jsonl",
+      "o0-d00-coarse.adb",
+      "o0-d00-coarse.adb.cases",
+      "o0-d00-coarse.case.-7.quad.1.dat",
+      "o0-d00-coarse.case.1.quad.1.dat",
+      "o0-d00-coarse.case.2.quad.1.dat",
+      "o0-d00-coarse.case.3.quad.1.dat",
+      "o0-d00-coarse.case.4.quad.1.dat",
+      "o0-d00-coarse.case.5.quad.1.dat",
+      "o0-d00-coarse.case.6.quad.1.dat",
+      "o0-d00-coarse.csf",
+      "o0-d00-coarse.group.0",
+      "o0-d00-coarse.group.1",
+      "o0-d00-coarse.history",
+      "o0-d00-coarse.lod",
+      "o0-d00-coarse.polar",
+      "o0-d00-coarse.quad.cases",
+      "o0-d00-coarse.vkey",
+      "o0-d00-coarse.vsp3",
+      "o0-d00-coarse.vspaero",
+      "o0-d00-coarse.vspgeom",
+      "o0-d00-coarse_vspaero_geom.csv",
+      "plan.json",
+      "solver_attempts.jsonl",
+      "task_spec.json"
+    ],
+    "raw_artifact_paths": [
+      "D:\\RCAIDE\\.real_runs\\DRECOVER001-O0-20261124-01\\cases\\o0-d00-coarse\\o0-d00-coarse.adb",
+      "D:\\RCAIDE\\.real_runs\\DRECOVER001-O0-20261124-01\\cases\\o0-d00-coarse\\o0-d00-coarse.history",
+      "D:\\RCAIDE\\.real_runs\\DRECOVER001-O0-20261124-01\\cases\\o0-d00-coarse\\o0-d00-coarse.lod",
+      "D:\\RCAIDE\\.real_runs\\DRECOVER001-O0-20261124-01\\cases\\o0-d00-coarse\\o0-d00-coarse.polar",
+      "D:\\RCAIDE\\.real_runs\\DRECOVER001-O0-20261124-01\\cases\\o0-d00-coarse\\o0-d00-coarse.vsp3",
+      "D:\\RCAIDE\\.real_runs\\DRECOVER001-O0-20261124-01\\cases\\o0-d00-coarse\\o0-d00-coarse.vspaero",
+      "D:\\RCAIDE\\.real_runs\\DRECOVER001-O0-20261124-01\\cases\\o0-d00-coarse\\o0-d00-coarse.vspgeom"
+    ],
+    "raw_artifact_sha256": {
+      "o0-d00-coarse.adb": "129605dff13e25fee132b58fb0a1a0a15054fa0f9dd2b1956632bf2a878c3869",
+      "o0-d00-coarse.history": "ed4338b3444b7d3eae217236d5b6e2197f2ea84b8aaa2f2fe1f569e6868e68f1",
+      "o0-d00-coarse.lod": "e58e849aba0ae14cbf04ee7f8feb5c680f8b7a57e69e0f025698af647f9878b9",
+      "o0-d00-coarse.polar": "8e8fe608682b017b2c169a6d34f19fd70bee3b41b9ba7a220fe1e1298ff499ac",
+      "o0-d00-coarse.vsp3": "9c2fbe70cbc7ab19d7c77c3fdc19fc831165f747a24621038a7fa26b6b996272",
+      "o0-d00-coarse.vspaero": "701ec25f576103075b3d56f1c2b48400a474fe6de159bf3aa72f3f37c98f1483",
+      "o0-d00-coarse.vspgeom": "f7e5a5dae37cfc0c72419028978125993dbcbdf4776b83ea8eb34d74452d1b34"
+    },
+    "solver_attempts_jsonl_sha256": "b9e1073cd262f5d17dc0e5601f0dc7c715e4ef85f36ccc4273f7635d22b87687",
+    "case_result_sha256": "c9362d16370c800b85b6c50204b0fb216363f25e37c281cd522aa8fd8c609186"
+  },
+  "why_no_label_was_admitted": "Only the 7-point coarse bracket ran, at 0.35 deg spacing. Admission requires a raw polar row inside the 1e-3 relative lift tolerance, and the CL increment per 0.35 deg is about 0.012, which is an order of magnitude coarser than the tolerance. The design therefore has no admissible raw row, and no tolerance was relaxed to manufacture one.",
+  "accounting_consequence": "One physical solver start is spent and must be carried into every later O0 count. It is recorded here rather than silently re-run, and no retry was granted.",
+  "caps_after_this_abort": {
+    "authorized_solver_starts": 36,
+    "spent_solver_starts": 1,
+    "remaining_solver_starts": 35,
+    "authorized_internal_cases": 240,
+    "spent_internal_cases": 7,
+    "remaining_internal_cases": 233
+  },
+  "lock_file_left_behind": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O0-20261124-01\\o0_run.lock",
+  "lock_disposition": "Deleted after confirming the process was gone, because a stale single-writer lock would otherwise block the corrected batch. The deletion is recorded here.",
+  "physics_validated": false,
+  "note": "This is an accounting and provenance record for the aborted attempt. It is not a GO, not an A5 verdict and not an admitted label.",
+  "post_abort_annotations": {
+    "annotated_utc": "2026-11-24T07:33:49Z",
+    "why": "post-abort housekeeping only; every field above is unchanged and still means what it meant when the abort was recorded",
+    "relocation": {
+      "from": "cases/<case_id>",
+      "to": "cases/B01/<case_id>",
+      "reason": "each batch writes into its own case directory so a corrected batch cannot overwrite raw solver output that has already been paid for",
+      "files_rehashed": 9,
+      "sha256_verified": [
+        "o0-d00-coarse.adb",
+        "o0-d00-coarse.history",
+        "o0-d00-coarse.lod",
+        "o0-d00-coarse.polar",
+        "o0-d00-coarse.vsp3",
+        "o0-d00-coarse.vspaero",
+        "o0-d00-coarse.vspgeom",
+        "case_result.json",
+        "solver_attempts.jsonl"
+      ],
+      "sha256_missing": [],
+      "sha256_mismatched": [],
+      "byte_identical_after_move": true
+    },
+    "lock": {
+      "existed": true,
+      "sha256": "944bcf5b002a56a730e2c2de17e0ea915f9acdd0f158bf259db5879c1e229506",
+      "contents": {
+        "pid": 2399581326544,
+        "created_utc": "2026-11-24T07:09:08Z",
+        "note": "single-writer lock for the O0 batch"
+      },
+      "python_processes_running": "1",
+      "deleted_utc": "2026-11-24T07:33:49Z",
+      "deleted_because": "single-writer lock of the crashed B01 process; the process is gone and the spend is already recorded, so the lock would only block the corrected batch",
+      "exists_after": false
+    },
+    "caps_reconciliation": {
+      "annotated_utc": "2026-11-24T08:09:32Z",
+      "why": "the caps_after_this_abort block above subtracts the spend from the STORED ceilings (36 starts, 240 internal cases). Those ceilings are not what a GO authorizes: the design cap allows at most 12 designs x 2 starts = 24 starts and 12 x 20 = 240 internal cases, so 36 starts can never be spent and 35 was never a remainder. The spendable remainder is derived here and is the only number a reader should carry forward.",
+      "stored_ceilings": {
+        "max_solver_starts": 36,
+        "max_internal_cases": 240,
+        "max_design_attempts": 12,
+        "max_starts_per_design": 2,
+        "max_internal_per_design": 20
+      },
+      "spendable_under_the_design_cap": {
+        "solver_starts": 24,
+        "internal_cases": 240,
+        "derivation": "min(stored ceiling, designs x per-design cap)"
+      },
+      "spent_by_this_abort": {
+        "solver_starts": 1,
+        "internal_cases": 7
+      },
+      "spendable_remainder": {
+        "solver_starts": 23,
+        "internal_cases": 233,
+        "designs": 11
+      },
+      "original_fields_unchanged": true
+    },
+    "annotation_order": [
+      "relocation",
+      "lock",
+      "caps_reconciliation"
+    ]
+  }
+}

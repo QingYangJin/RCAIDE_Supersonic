@@ -1,0 +1,128 @@
+{
+  "schema": "dreal005.o0_go_record.superseded.v1",
+  "retired_utc": "2026-11-24T08:51:10Z",
+  "original_sha256": "0de639f496c0532039036af214736fa293bb9dea1508b3db6d2810b118f7544b",
+  "bound_dossier_sha256": "94fef447d87caf2a20778fe8d1d3a449be05f4e13642abcc13b138399a8e0784",
+  "current_dossier_sha256": "ca70636daf148c8c81b5af99714a14cf447e5ce33f9c8ac613c28c45d2f2c204",
+  "reason": "the dossier (and the frozen code it lists) changed after this GO was issued, so the GO no longer states anything about the current bytes; keeping it at the working path would present an expired authorization as a live one",
+  "superseded_by": "the next GO issued by scripts/o0_make_go.py",
+  "go": {
+    "schema": "dreal005.o0_go_record.v1",
+    "go_issued": true,
+    "go_issued_utc": "2026-11-24T08:14:27Z",
+    "issued_by": "Lead (agent), not a human approver and not the A5 reviewer",
+    "owner_authorization_ref": "Issue #15 (2026-11-24) body plus first comment; Owner instruction m11649",
+    "issue": 15,
+    "run_id": "DRECOVER001-O0-20261124-01",
+    "batch_id": "DRECOVER001-O0-20261124-01-B02",
+    "authorization_id": "AUTH-DREAL005-O0-20261124-01",
+    "preregistration_path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O0-20261124-01\\o0_preregistration.json",
+    "preregistration_sha256": "8465e257080e7dd582183a57aae52d5b877d1b545e112643f105da7bd693064e",
+    "a5_dossier_path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O0-20261124-01\\o0_a5_dossier.md",
+    "a5_dossier_sha256": "94fef447d87caf2a20778fe8d1d3a449be05f4e13642abcc13b138399a8e0784",
+    "a5_dossier_receipt_path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O0-20261124-01\\o0_dossier_receipt.json",
+    "a5_dossier_receipt_sha256": "22a3992e166b43eb5947bfe04cb06f5d739c5a9a2f45c613ec8d4972acdfa8f0",
+    "byte_binding": "three independent values agree: sha256(dossier on disk), o0_dossier_receipt.dossier.sha256, verdict.dossier_sha256",
+    "a5_verdict_path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O0-20261124-01\\a5_review\\verdict.json",
+    "a5_verdict_sha256": "33830d9406a622c33aa2b5b80342600ba8cfc53ae69b3d8c375dc4ab0b9c8522",
+    "a5_verdict": "H0_A0_O0_REVIEW_PASS",
+    "a5_reviewer": "deepseek-v4.1-flash",
+    "byte_verifier": {
+      "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O0-20261124-01\\o0_binding_verification.json",
+      "sha256": "163a7ba05df2068c873494054e3bd9bea3cae67b690e9b8f6ccb2a2138822df1",
+      "status": "O0_BYTES_BOUND_MECHANICALLY",
+      "check_count": 10,
+      "failure_count": 0,
+      "dossier_sha256": "94fef447d87caf2a20778fe8d1d3a449be05f4e13642abcc13b138399a8e0784",
+      "dossier_bytes": 41448,
+      "created_utc": "2026-11-24T08:14:20Z",
+      "archived_as": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O0-20261124-01\\a5_support\\binding_history\\o0_binding_verification_20261124T081420Z.json"
+    },
+    "byte_verifier_is_a_hard_precondition": "this GO was refused unless o0_binding_verification.json reported O0_BYTES_BOUND_MECHANICALLY with zero failures over exactly these dossier bytes, written after the dossier, and archived where it cannot be overwritten",
+    "a5_human_signature": false,
+    "code_shas": {
+      "research/concorde_metaopt/dreal001/geometry/h0_contract.py": "6ff0c486aeba7ca10c4d6821cba22e730a4f3988f2fdb541086c1ecd1c644396",
+      "research/concorde_metaopt/dreal001/ops/o0_short_bo.py": "bd19af41265afd77ae152917cc5c0a978558cab679b78f9e929c7e8da7cdd91b",
+      "research/concorde_metaopt/dreal001/ops/resource_monitor.py": "e3cfdafc2ef9f3e92c5006ee1b00e32d68b758374429b23d3a3e28d7f63739b9",
+      "research/concorde_metaopt/dreal001/optimizers/recovery_bo.py": "8328a90ded506564ce454804efa4c89d7ae5d8024784fd2b34cd8c02557eb929",
+      "research/concorde_metaopt/dreal001/geometry/solver_runner.py": "cd732583ab492885a225b06ef57d16a6930503cae87873689eaec1dde6f30ec3",
+      "research/concorde_metaopt/dreal001/geometry/openvsp_model.py": "9e6797901564f48435974c5dad66faa063d4c3602e07f643bd2d540b79939dc8",
+      "research/concorde_metaopt/dreal001/geometry/design_identity.py": "63d3f1a96150785b2ebf21eca5a41447d3fdde7f77f99ed209f3500355a3e409",
+      "research/concorde_metaopt/dreal001/geometry/task_spec.py": "100d2f265880b07ba679883e744fc13634d4502cee8206604dc491ab2346ec3f",
+      "research/concorde_metaopt/dreal001/meta/real_admission.py": "4322554ea488dd583a9c06fc8bb611e0584360573287673fe46bbbcc605ee3fc",
+      "research/concorde_metaopt/dreal001/meta/raw_verification.py": "36016cb57d28a018b2b2f1e5cbc532ab686552f0204ab3bef1316cea0d87322a",
+      "research/concorde_metaopt/dreal001/meta/task_spec.py": "5413a1e8c1b6c71bb2af3093abfb1102eb2191e8781a5afcf5fbbe5ff5810ca5",
+      "research/concorde_metaopt/configs/design_space_12d_lifting_surfaces.yaml": "ebca2b7bb2920ce1e3729a3dedd7c361a1c78d34337918a973866bef48f76efc",
+      "scripts/o0_eval.py": "825e90a0e2aa8b75d95789333b5deb79f9ad5ce1ae4de7af936d6e286904746c",
+      "scripts/o0_admit_case.py": "d79be02ec4494a3937126f88cf9040b9c77067b6c1b26780715ecde605f316b8",
+      "scripts/o0_prereg.py": "e62888f19ad2c347563e8ebfe5245ab77f6050346fb42b1aeae91db1e02e42e6",
+      "scripts/o0_run.py": "cd5a31f31d9963c698f29519c06a41ade22e0b9d162aca2c107c59f1edab3335",
+      "scripts/o0_final.py": "c902b822c4a095344139bd44f50ea8104e6d92a8049a833c171e8077d99f6bbd",
+      "scripts/o0_fix_evidence.py": "0cf149f3e2f00051be7def24edd2aa8a6893c954655c67dd5b105dc0535ee851",
+      "scripts/o0_make_go.py": "280024d15330e3205a614d452eb3d65668ea33936adcc5f76942e3195e67fcd3",
+      "scripts/o0_verify_binding.py": "18dbd947a5747fc544dc79415d160309db3aaa5b5d57e1a2df4c6b8085d50664",
+      "scripts/o0_build_dossier.py": "b680a26193073a503d829c642728f689ec5509743336cf3ee39fb639aa04e7dc",
+      "scripts/o0_a5_review_tools.py": "2e7fbdbaf11f723b2f9cfc00abccbe19daae1e09938b0d1ece2a82a53ac594b6",
+      "scripts/o0_probe_production_loader.py": "d716142bad3dbf6b850a3ed3c08ec499f681fd40a9f8f83a60ff4a6cd4cda80c",
+      "D:/RCAIDE/.real_runs/DRECOVER001-R2-20261120-01/scripts/audit_real_case.py": "5c07a4865f37d434961f99b9862fea7ea1e8b4a238db8b1cd79aba4c339a842c"
+    },
+    "caps": {
+      "max_design_attempts": 12,
+      "max_solver_starts": 36,
+      "max_internal_cases": 240,
+      "max_starts_per_design": 2,
+      "max_internal_per_design": 20,
+      "max_adaptive_attempts": 8,
+      "bootstrap_attempts": 4,
+      "max_consecutive_unadmitted_designs": 3,
+      "solver_timeout_s": 600,
+      "wall_clock_s": 3300,
+      "parallelism": 1,
+      "retries": 0
+    },
+    "spendable_under_this_authorization": {
+      "design_attempts": 12,
+      "solver_starts": 24,
+      "internal_solver_cases": 240,
+      "derivation": "min(stored_cap, max_design_attempts x per_design_cost); the design cap binds first, so the stored solver-start ceiling is inert"
+    },
+    "carried_forward": {
+      "design_attempts": 1,
+      "solver_starts": 1,
+      "internal_solver_cases": 7,
+      "records": [
+        {
+          "record": "o0_batch_abort_B01.json",
+          "sha256": "0445d41401ff913c30806d57de5651b56740c2eba55b450385ff80726f1bac07",
+          "charged_starts": 1,
+          "internal_solver_cases": 7,
+          "design_evaluations": 1
+        }
+      ]
+    },
+    "authorized_remaining": {
+      "design_attempts": 11,
+      "solver_starts": 23,
+      "internal_solver_cases": 233
+    },
+    "physical_starts_authorized_this_go": 23,
+    "physical_starts_used_before_this_go": 1,
+    "internal_cases_authorized": 233,
+    "internal_cases_used_before_this_go": 7,
+    "design_attempts_authorized": 11,
+    "caps_are_for_the_authorization_not_the_batch": "the caps in the pre-registration bind the authorization id; starts and internal cases consumed by an earlier aborted batch are carried forward, so the amounts authorized here are the remainder, not the full cap",
+    "not_authorized": [
+      "any VSPAERO start before the A5 verdict and the Lead GO record",
+      "O1 warm-start arms",
+      "any change to the lift tolerance, target lift or reference quantities",
+      "re-use of an old GO or an old authorization id"
+    ],
+    "conditions": [
+      "upload and remote readback after every 8 starts or 60 minutes before continuing",
+      "abort the batch if the baseline design fails to yield an admitted real row",
+      "no retry of an interrupted start; an interrupted start stays charged",
+      "lift tolerance 1e-3 is never relaxed and no interpolated row may be admitted",
+      "O1 warm-start arms require a separate preregistration, A5 review and GO"
+    ]
+  }
+}

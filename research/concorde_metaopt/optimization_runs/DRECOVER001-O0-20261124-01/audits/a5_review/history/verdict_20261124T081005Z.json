@@ -1,0 +1,130 @@
+{
+  "reviewer": "deepseek-v4.1-flash",
+  "review_type": "independent_read_only_tool_review",
+  "reviewed_utc": "2026-11-24T08:10:05Z",
+  "dossier_sha256": "2f7f424c8101cb73291d882d65dfa97e89d747b2e5776c2381c3ed6aea8ba68b",
+  "verdict": "H0_A0_O0_CHANGES_REQUIRED",
+  "gate_verdicts": {
+    "H0_GEOMETRY_CONTRACT_FROZEN": "PASS",
+    "H0_FREEZE_CONFLICT_DISCLOSED": "PASS",
+    "H0_RESOURCE_ACCOUNTING_INSTRUMENTED": "PASS",
+    "H0_CODE_SHA_FROZEN": "PASS",
+    "H0_ZERO_PHYSICAL": "PASS",
+    "A0_ABLATION_FAIRNESS": "PASS",
+    "A0_CONDITIONAL_SUPERVISION": "PASS",
+    "O0_TASK_AND_SUBSPACE": "PASS",
+    "O0_ALPHA_ALGORITHM": "PASS",
+    "O0_ADMISSION_TOLERANCE": "PASS",
+    "O0_ACCOUNTING_CONTROLS": "PASS",
+    "O0_BUDGET_CAPS": "PASS",
+    "O0_ABORT_DISCLOSED": "PASS",
+    "O0_CARRY_FORWARD_ACCOUNTING": "PASS",
+    "O0_BINDING_VERIFYABLE": "PASS_WITH_DISCLOSURE"
+  },
+  "tool_calls_made": [
+    "list_dir D:/RCAIDE/.real_runs/DRECOVER001-O0-20261124-01",
+    "list_dir .../a5_support",
+    "list_dir .../a5_support/binding_history",
+    "sha256_file o0_a5_dossier.md",
+    "sha256_file o0_preregistration.json",
+    "sha256_file o0_batch_abort_B01.json",
+    "sha256_file o0_binding_verification.json",
+    "sha256_file binding_history/o0_binding_verification_20261124T080703Z.json",
+    "sha256_file binding_history/o0_binding_verification_20261124T080415Z.json",
+    "sha256_file a5_support/fix_evidence/fix_evidence.json",
+    "sha256_file all 24 code files in section 1",
+    "read_text o0_binding_verification.json",
+    "read_text o0_dossier_receipt.json",
+    "read_text fix_evidence.json",
+    "read_text o0_make_go.py",
+    "read_text o0_batch_abort_B01.json",
+    "read_text o0_run_B01.log",
+    "read_text o0_preregistration.json",
+    "read_text o0_short_bo.py (head)",
+    "grep o0_short_bo.py CAPS/settle/charge",
+    "grep o0_make_go.py carried_forward/verifier gates",
+    "grep o0_verify_binding.py status logic",
+    "grep o0_preregistration.json caps/tolerance",
+    "grep o0_a5_support_stats.json",
+    "grep o0_run_B01.log",
+    "stat_file o0_a5_dossier.md"
+  ],
+  "evidence_checked": [
+    "dossier sha256 2f7f424c...ba68b, 41177 bytes, mtime 2026-11-24T08:09:49Z",
+    "preregistration 86940ffa...f76c2, 14014 bytes: matches dossier table",
+    "abort B01 0445d414...1bac07: charged_starts_actual 1, internal_solver_cases_actual 7, design_evaluations_actual 1, admitted 0",
+    "fix evidence 24ae998b...f99b, 3502 bytes: matches dossier claim",
+    "all 24 code SHAs in section 1 measured and identical to the table",
+    "receipt 2f7f424c...ba68b agrees with disk and with carried_forward 1/7/1",
+    "archived verifier fd175f23...e17 = O0_BINDING_INCOMPLETE_OR_BROKEN, 3 failures, read dossier 77dea8cd",
+    "binding_history holds 3 rounds, none reading 2f7f424c",
+    "o0_make_go.py hard-gates on status O0_BYTES_BOUND_MECHANICALLY, failure_count 0, dossier sha/bytes match, created_utc >= dossier mtime"
+  ],
+  "findings": [
+    {
+      "severity": "major",
+      "finding": "O0_BINDING_VERIFYABLE: the only archived verifier round is BROKEN (3 failures); no round reads this dossier hash, so the gate is unmet and only conditionally satisfiable.",
+      "evidence": "binding_history has rounds 070833/080415/080703, all reading 77dea8cd; no 2f7f424c round exists. o0_make_go.py line 96-99 refuses GO unless status O0_BYTES_BOUND_MECHANICALLY and 0 failures."
+    },
+    {
+      "severity": "major",
+      "finding": "Two quoted problems show a prior verdict bound to stale bytes (1ad77a49, d7d6efdd), so a verdict-receipt-disk mismatch has occurred; stale-binding guard is only the fresh-round precondition.",
+      "evidence": "o0_binding_verification.json problems: verdict '1ad77a49...' vs disk 77dea8cd; verdict prereg 'd7d6efdd...' vs disk c2baaa77."
+    },
+    {
+      "severity": "minor",
+      "finding": "Archive collision risk is real and already realised in spirit: rounds are named per-second and 080415 and 080703 are byte-different but same-size, so history is thin.",
+      "evidence": "binding_history: 080415 sha 9ea795c6 vs 080703 sha fd175f23, both 3513 bytes; dossier admits later-write-wins."
+    },
+    {
+      "severity": "minor",
+      "finding": "The dossier's section 0/8 disclosure is accurate: it explicitly says the quoted round read an earlier dossier and proves nothing about current bytes.",
+      "evidence": "Dossier text: 'Read the quoted round for exactly what it is: it read an EARLIER dossier than this one'."
+    },
+    {
+      "severity": "minor",
+      "finding": "Docstring drift in o0_short_bo.py (13-point refinement over 0.048 deg vs dossier +-0.024 deg, consistent) and its 'over 2.1 deg' bracket reads as width where the code means +-1.05; prose, not behavior.",
+      "evidence": "o0_short_bo.py lines 12-14; dossier section 4 states 7-point coarse spanning 2.1 deg, refine +-0.024 deg at 0.004 deg."
+    },
+    {
+      "severity": "info",
+      "finding": "Abort disclosure is accurate and matches disk: one charged start, 7 internal cases, 1 design, 0 labels, AttributeError root cause; carry-forward 11 designs/23 starts/233 cases is consistent in 0b, 4, 7, receipt, prereg.",
+      "evidence": "o0_batch_abort_B01.json charged_starts_actual 1, internal_solver_cases_actual 7; receipt carried_forward 1/7/1; o0_make_go.py computes 12-1=11, 24-1=23, 240-7=233."
+    },
+    {
+      "severity": "info",
+      "finding": "H0_ZERO_PHYSICAL holds under the stated definition: only start is the disclosed B01 start; H0 contract, A0 training and support stats all report 0 starts.",
+      "evidence": "preregistration physical_solver_starts_actual h0 block 0; support_stats physical_solver_starts_actual 0; fix_evidence 0; abort 1 carried forward."
+    },
+    {
+      "severity": "info",
+      "finding": "CAPS and assertions are real and match the dossier: design 12, starts/design 2, internal/design 20, internal 240, starts 36, parallelism 1, retries 0, unadmitted streak 3; charge() fails closed.",
+      "evidence": "o0_short_bo.py lines 103-135, 423-457: prior_* added to used, ProtocolError on exceed; assert_execution_contract enforces 2 starts and streak limits."
+    }
+  ],
+  "limitations": [
+    "read_text returns file head only; I could not read o0_short_bo.py line ~600 evaluate_and_settle body, so exception-path settlement is judged by fix_evidence + tests, not by direct line read.",
+    "I cannot run the pytest suite or the binding verifier (read-only tools); the 18/20 pass logs are accepted as archived hashes, not re-executed.",
+    "A0 arm metrics and paired CSVs were not read cell-by-cell; the -893 N / CI straddle-zero claim is taken from dossier text, not recomputed.",
+    "The H0 docs/evidence JSON files were not in scope of measured paths and were not hashed this round.",
+    "Dossier as supplied in the prompt is treated as the same bytes I hashed (2f7f424c); I did not diff prompt text against disk bytes."
+  ],
+  "scope": "Read-only measurement of the O0 dossier, preregistration, abort record, fix evidence, 24 section-1 code files, receipt, and archived verifier rounds; code inspection of CAPS, charge/assert gates, carried_forward and make_go verifier hard-gate. Not a human signature.",
+  "signature": "deepseek-v4.1-flash independent A5 review with read-only local tools; not a human signature",
+  "dossier_sha256_measured_by_harness": "2f7f424c8101cb73291d882d65dfa97e89d747b2e5776c2381c3ed6aea8ba68b",
+  "dossier_sha256_claimed_by_reviewer": "2f7f424c8101cb73291d882d65dfa97e89d747b2e5776c2381c3ed6aea8ba68b",
+  "dossier_sha256_overwritten_because": "the reviewer is a language model: the harness hashed the bytes it was shown and substitutes that measurement, keeping the reviewer's own value for audit",
+  "preregistration_sha256": "86940ffaffd0739763ff7f5235873c6e79f78b74e99c373c7830ad44a02976c2",
+  "preregistration_schema": "dreal005.o0_preregistration.v1",
+  "run_id": "DRECOVER001-O0-20261124-01",
+  "batch_id": "DRECOVER001-O0-20261124-01-B02",
+  "authorization_id": "AUTH-DREAL005-O0-20261124-01",
+  "started_utc": "2026-11-24T08:10:05Z",
+  "model": "deepseek-v4.1-flash",
+  "review_gateway": "https://copilot.tencent.com",
+  "tool_access": "READ_ONLY_LOCAL_TOOLS: sha256_file, stat_file, list_dir, read_text, grep; allowlisted to the run root and frozen worktree; every call recorded in a5_review/o0_tool_transcript.json",
+  "tool_hops": 21,
+  "human_signature": false,
+  "dossier_path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O0-20261124-01\\o0_a5_dossier.md",
+  "scope_of_this_review": "H0 contract, A0 ablation and O0 protocol review only; NOT an R1 blanket PASS, NOT a physical GO by itself, and NOT an approval of O1 or any later gate."
+}

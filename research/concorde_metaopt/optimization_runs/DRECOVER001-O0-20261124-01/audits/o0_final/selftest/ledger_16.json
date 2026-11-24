@@ -1,0 +1,42 @@
+{
+  "schema": "dreal005.o0_final_verification_ledger.v1",
+  "created_utc": "2026-11-24T10:23:06Z",
+  "caps": {
+    "max_verification_starts": 8,
+    "max_verification_internal_cases": 104,
+    "max_repeat_runs_per_design": 2,
+    "max_wake_probe_starts": 2,
+    "max_void_rows": 2,
+    "n_wake_nodes_reference": 8,
+    "n_wake_nodes_probe": 16,
+    "refinement_points": 13
+  },
+  "rows": [
+    {
+      "label": "v1",
+      "kind": "void",
+      "starts": 1,
+      "internal": 13,
+      "utc": "2026-11-24T10:23:06Z",
+      "note": "",
+      "admissible_as_evidence": false
+    },
+    {
+      "label": "v2",
+      "kind": "void",
+      "starts": 1,
+      "internal": 13,
+      "utc": "2026-11-24T10:23:06Z",
+      "note": "",
+      "admissible_as_evidence": false
+    }
+  ],
+  "verification_starts_actual": 2,
+  "verification_internal_cases_actual": 26,
+  "wake_probe_starts_actual": 0,
+  "repeat_runs_actual": 0,
+  "void_rows_actual": 2,
+  "admissible_rows_actual": 0,
+  "prior_ledger_sha256": null,
+  "note": "separately itemized verification budget; never folded into the O0 optimizer caps, and the wake probe cases are never admitted because the admitted wake count is fixed at 8. A void row is a start that was already spent on a mis-configured case: it is charged so the bill matches the disk, it is never admitted, and it is never re-run."
+}

@@ -1,0 +1,92 @@
+{
+  "reviewer": "deepseek-v4.1-flash",
+  "review_type": "independent_single_shot_dossier_review",
+  "reviewed_utc": "2026-11-24T07:52:30Z",
+  "dossier_sha256": "07ef795b2fd7d7498a188dc621711991c1a320c06b9e82443aa7df50795cbf72",
+  "verdict": "H0_A0_O0_CHANGES_REQUIRED",
+  "gate_verdicts": {
+    "H0_GEOMETRY_CONTRACT_FROZEN": "PASS_WITH_DISCLOSURE",
+    "H0_FREEZE_CONFLICT_DISCLOSED": "PASS_WITH_DISCLOSURE",
+    "H0_RESOURCE_ACCOUNTING_INSTRUMENTED": "PASS_WITH_DISCLOSURE",
+    "H0_CODE_SHA_FROZEN": "PASS_WITH_DISCLOSURE",
+    "H0_ZERO_PHYSICAL": "PASS",
+    "A0_ABLATION_FAIRNESS": "PASS_WITH_DISCLOSURE",
+    "A0_CONDITIONAL_SUPERVISION": "PASS",
+    "O0_TASK_AND_SUBSPACE": "PASS_WITH_DISCLOSURE",
+    "O0_ALPHA_ALGORITHM": "PASS_WITH_DISCLOSURE",
+    "O0_ADMISSION_TOLERANCE": "PASS",
+    "O0_ACCOUNTING_CONTROLS": "PASS_WITH_DISCLOSURE",
+    "O0_BUDGET_CAPS": "PASS_WITH_DISCLOSURE",
+    "O0_ABORT_DISCLOSED": "PASS_WITH_DISCLOSURE",
+    "O0_CARRY_FORWARD_ACCOUNTING": "PASS_WITH_DISCLOSURE"
+  },
+  "evidence_checked": [
+    "Section 0 file SHA table and byte sizes",
+    "Section 0b abort record hash, exception text and cost of 1 start / 7 internal cases",
+    "Section 0c fix evidence hashes and pytest pass counts",
+    "Section 1 exact code SHA table",
+    "Section 2 frozen variables, baseline vector and recorded YAML conflict",
+    "Section 3 five-arm MAE table and core pair delta -893.1 N",
+    "Section 3b paired CI and sign tests",
+    "Section 3c seven-design alpha table and refinement geometry",
+    "Section 4 caps dict and stop conditions",
+    "Section 5 ledger settle and carried_forward accounting",
+    "Section 6 non-authorization list",
+    "Binding verifier quote status O0_BYTES_BOUND_MECHANICALLY, check_count 9"
+  ],
+  "findings": [
+    {
+      "severity": "major",
+      "finding": "Dossier sha256 cannot be supplied by this read-only reviewer; binding relies on harness and verifier, so byte-to-verdict identity is disclosed, not independently proven here.",
+      "evidence": "Section 0 states the reviewer has no tools and its typed hash is overwritten; the quoted verifier read dossier sha 112cfd73..., which cannot match these current bytes."
+    },
+    {
+      "severity": "major",
+      "finding": "Alpha-strategy margin rests on 7 historical M202 designs, not the O0 subspace; the dossier itself concedes a novel design's root may miss the 0.024 deg refinement window and record objective=None after paying both starts.",
+      "evidence": "Section 3c: '7 designs from one M202 family is not a sample over the O0 subspace'; section 4 permits objective=None with both starts charged."
+    },
+    {
+      "severity": "major",
+      "finding": "Core mechanism comparison is not statistically established on test; the -893.1 N delta straddles zero and FOMAML is significantly worse on validation.",
+      "evidence": "Section 3b: test CI [-7111.5, 5289.6], sign p 0.815; val p 0.031 favours supervised."
+    },
+    {
+      "severity": "minor",
+      "finding": "Active-mask evidence for ten frozen variables uses N=8 historical rows, one perturbation per variable; small effects could hide in spread.",
+      "evidence": "Section 2: 'N=8 historical M202 rows, roughly one perturbed design per variable'."
+    },
+    {
+      "severity": "minor",
+      "finding": "Stored 36-start cap is inert and design cap binds first; internal 240 cap coincides exactly, so two caps are not independent cross-checks.",
+      "evidence": "Section 0b/4: 24<36; 12x20=240 equals max_internal_cases."
+    },
+    {
+      "severity": "info",
+      "finding": "Abort, root cause, spent 1 start and 7 cases are disclosed and carried forward rather than hidden or reset.",
+      "evidence": "Section 0b: charged starts 1, internal 7, AttributeError; carry-forward 23 starts and 233 internal cases remain."
+    }
+  ],
+  "limitations": [
+    "No tools: dossiers sha256, on-disk file hashes and binding verification not independently measured.",
+    "No access to raw polars, abort record, verifier files or code bytes; reliance on dossier-reported values.",
+    "A0 results and paired statistics read as reported, not recomputed.",
+    "Execution contract enforcement inferred from prose; assert_execution_contract and AttemptLedger.charge not inspected.",
+    "Prior-round binding artifact quoted cannot certify the current, revised bytes.",
+    "Review scope is the protocol and carry-forward, not any executed solver outcome."
+  ],
+  "scope": "Strict H0/A0/O0 fitness review of D-REAL-EXP-003: frozen 12D geometry and YAML conflict, five-arm A0 ablation with supervised-vs-meta distinction, two-start/20-case O0 alpha strategy under 1e-3 tolerance, caps and carry-forward for 1 spent start and 7 internal cases, and whether any claim exceeds evidence. No authorization beyond the remaining limited O0 batch; O1, P2/P3, mission claims and old GO reuse excluded.",
+  "signature": "deepseek-v4.1-flash independent A5 review; not a human signature",
+  "model": "deepseek-v4.1-flash",
+  "review_gateway": "https://copilot.tencent.com",
+  "review_gateway_note": "WorkBuddy CN gateway (copilot.tencent.com). Earlier A5 reviews in this project used the lab's trycloudflare gateway; this review is a different serving endpoint for the same deepseek model family. Streaming is mandatory on this gateway.",
+  "dossier_path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O0-20261124-01\\o0_a5_dossier.md",
+  "preregistration_sha256": "d7d6efdd78ec37651350888a09a11318fa1d0734ca1a1da10d2b2bc556f328c3",
+  "preregistration_schema": "dreal005.o0_preregistration.v1",
+  "run_id": "DRECOVER001-O0-20261124-01",
+  "batch_id": "DRECOVER001-O0-20261124-01-B02",
+  "authorization_id": "AUTH-DREAL005-O0-20261124-01",
+  "started_utc": "2026-11-24T07:52:23Z",
+  "tool_access": "NONE_SINGLE_SHOT_DOSSIER_STREAM",
+  "human_signature": false,
+  "scope_of_this_review": "H0 contract, A0 ablation and O0 protocol review only; NOT an R1 blanket PASS, NOT a physical GO by itself, and NOT an approval of O1 or any later gate."
+}

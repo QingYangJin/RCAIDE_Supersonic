@@ -1,0 +1,144 @@
+{
+  "schema": "dreal005.o0_final_verification_ledger.v1",
+  "created_utc": "2026-11-24T10:35:21Z",
+  "caps": {
+    "max_verification_starts": 8,
+    "max_verification_internal_cases": 104,
+    "max_repeat_runs_per_design": 2,
+    "max_wake_probe_starts": 2,
+    "max_void_rows": 2,
+    "n_wake_nodes_reference": 8,
+    "n_wake_nodes_probe": 16,
+    "refinement_points": 13
+  },
+  "rows": [
+    {
+      "label": "final-baseline-r1",
+      "kind": "void",
+      "starts": 1,
+      "internal": 13,
+      "utc": "2026-11-24T09:13:00Z",
+      "note": "spent before the crash on a case whose wake count was 2, below the admission mesh of 8; the polar it produced is real but the mesh is not the admitted mesh, so it can never be admitted and must never be re-run under this label",
+      "admissible_as_evidence": false,
+      "charged_post_hoc_because_the_run_crashed_before_the_charge": true,
+      "evidence": {
+        "case_id": "o0-final-baseline-r1-final",
+        "case_dir": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O0-20261124-01\\cases\\O0F\\o0-final-baseline-r1-final",
+        "file_count": 36,
+        "bytes": 3510071,
+        "polar_sha256": "2100c5a57f814430f652b92eda473f4664b97a61b393ec075114d86cca1ad4e7",
+        "polar_bytes": 12841,
+        "case_result_sha256": "c66b262a81ad672d9e6aa05a648e4ed62e944c784b407fdfbb88dd0befb63848",
+        "status": "SOLVED",
+        "rows": 13,
+        "physical_solver_starts": 1,
+        "internal_solver_cases": 13,
+        "n_wake_nodes": 2,
+        "solver_config_sha256": "a9f51b75d56a0e7eecc5adea7f51c7af6727d6d8364eae8828c09969c21feb3b"
+      }
+    },
+    {
+      "label": "final-baseline-r2",
+      "kind": "void",
+      "starts": 1,
+      "internal": 13,
+      "utc": "2026-11-24T09:13:00Z",
+      "note": "spent before the crash on a case whose wake count was 2, below the admission mesh of 8; same disposition as final-baseline-r1",
+      "admissible_as_evidence": false,
+      "charged_post_hoc_because_the_run_crashed_before_the_charge": true,
+      "evidence": {
+        "case_id": "o0-final-baseline-r2-final",
+        "case_dir": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O0-20261124-01\\cases\\O0F\\o0-final-baseline-r2-final",
+        "file_count": 36,
+        "bytes": 3510068,
+        "polar_sha256": "2100c5a57f814430f652b92eda473f4664b97a61b393ec075114d86cca1ad4e7",
+        "polar_bytes": 12841,
+        "case_result_sha256": "1e82a74ab4e26fba543f385cdb3ed041d1375ddb59e48087cf9b138360a2a809",
+        "status": "SOLVED",
+        "rows": 13,
+        "physical_solver_starts": 1,
+        "internal_solver_cases": 13,
+        "n_wake_nodes": 2,
+        "solver_config_sha256": "a9f51b75d56a0e7eecc5adea7f51c7af6727d6d8364eae8828c09969c21feb3b"
+      }
+    },
+    {
+      "label": "final-baseline-wake16",
+      "kind": "wake",
+      "starts": 1,
+      "internal": 13,
+      "utc": "2026-11-24T09:13:00Z",
+      "note": "the pre-registered 16-wake-node probe for the baseline; it completed before the crash and its paid output is on the disk, but the charge never ran because the charge used to happen after the run. It is charged here, it is a probe and is never admitted, and it is not re-run because it already happened",
+      "admissible_as_evidence": false,
+      "charged_post_hoc_because_the_run_crashed_before_the_charge": true,
+      "evidence": {
+        "case_id": "o0-final-baseline-wake16-final",
+        "case_dir": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O0-20261124-01\\cases\\O0F\\o0-final-baseline-wake16-final",
+        "file_count": 36,
+        "bytes": 5831056,
+        "polar_sha256": "2100c5a57f814430f652b92eda473f4664b97a61b393ec075114d86cca1ad4e7",
+        "polar_bytes": 12841,
+        "case_result_sha256": "9657471d505a63fe27d1dc9fedb95cf261a27693d48224632c4c702c0a21ccfe",
+        "status": "SOLVED",
+        "rows": 13,
+        "physical_solver_starts": 1,
+        "internal_solver_cases": 13,
+        "n_wake_nodes": 16,
+        "solver_config_sha256": "f50376a6ccd4ba56f39cb60330e474777b74cfea14251d74b520a484b9418af2"
+      }
+    },
+    {
+      "label": "final-baseline-r1b",
+      "kind": "repeat",
+      "starts": 1,
+      "internal": 13,
+      "utc": "2026-11-24T10:34:37Z",
+      "note": "",
+      "admissible_as_evidence": true
+    },
+    {
+      "label": "final-baseline-r2b",
+      "kind": "repeat",
+      "starts": 1,
+      "internal": 13,
+      "utc": "2026-11-24T10:34:49Z",
+      "note": "",
+      "admissible_as_evidence": true
+    },
+    {
+      "label": "final-best-r1",
+      "kind": "repeat",
+      "starts": 1,
+      "internal": 13,
+      "utc": "2026-11-24T10:34:59Z",
+      "note": "",
+      "admissible_as_evidence": true
+    },
+    {
+      "label": "final-best-r2",
+      "kind": "repeat",
+      "starts": 1,
+      "internal": 13,
+      "utc": "2026-11-24T10:35:10Z",
+      "note": "",
+      "admissible_as_evidence": true
+    },
+    {
+      "label": "final-best-wake16",
+      "kind": "wake",
+      "starts": 1,
+      "internal": 13,
+      "utc": "2026-11-24T10:35:21Z",
+      "note": "",
+      "admissible_as_evidence": false
+    }
+  ],
+  "verification_starts_actual": 8,
+  "verification_internal_cases_actual": 104,
+  "wake_probe_starts_actual": 2,
+  "repeat_runs_actual": 4,
+  "void_rows_actual": 2,
+  "admissible_rows_actual": 4,
+  "prior_ledger_sha256": "36ed2189ea4ade267a941aece0a63fed929bff3f27c3058a729777e0a80dc900",
+  "note": "separately itemized verification budget; never folded into the O0 optimizer caps, and the wake probe cases are never admitted because the admitted wake count is fixed at 8. A void row is a start that was already spent on a mis-configured case: it is charged so the bill matches the disk, it is never admitted, and it is never re-run."
+}

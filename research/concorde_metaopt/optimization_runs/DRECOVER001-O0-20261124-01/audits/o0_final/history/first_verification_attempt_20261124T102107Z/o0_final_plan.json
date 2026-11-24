@@ -1,0 +1,203 @@
+{
+  "schema": "dreal005.o0_final_plan.v1",
+  "created_utc": "2026-11-24T09:12:56Z",
+  "run_id": "DRECOVER001-O0-20261124-01",
+  "authorization_kind": "O0_FINAL_VERIFICATION",
+  "batch_label": "O0F",
+  "case_root": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O0-20261124-01\\cases\\O0F",
+  "result_source": "o0_result_B02.json",
+  "result_sha256": "a0edfe0c53a31665eb4abaae545e4555d131eb5d4220168763e3b920a23e34ab",
+  "final_go": {
+    "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O0-20261124-01\\o0_final_go_record.json",
+    "sha256": "285f090c72d69a974aac234cbe946f238e15d1dde789fd1a41f164639c8a1906",
+    "go_issued": true,
+    "kind": "O0_FINAL_VERIFICATION",
+    "a5_verdict": "H0_A0_O0_REVIEW_PASS",
+    "a5_dossier_sha256": "90b7e9b8e44cdc01e14c9fb6481200e296179d0e96b8b0d153e972bdae5bfdd1",
+    "authorized_designs": {
+      "baseline": {
+        "design_id": "8bd5a6c7c8311938",
+        "design_index": 0,
+        "is_baseline": true,
+        "x12": [
+          358.25,
+          1.83,
+          67.0,
+          48.0,
+          71.0,
+          0.480469,
+          0.945313,
+          0.408284,
+          0.130178,
+          0.0,
+          33.91,
+          0.0
+        ],
+        "alpha_cent_deg": 5.18132,
+        "batch_di_n": 121437.61102443402
+      },
+      "best": {
+        "design_id": "605311c6e95881d1",
+        "design_index": 10,
+        "is_baseline": false,
+        "x12": [
+          358.25,
+          1.83,
+          66.92203997956408,
+          48.00055732910467,
+          71.0,
+          0.480469,
+          0.945313,
+          0.408284,
+          0.130178,
+          0.0,
+          33.91,
+          0.0
+        ],
+        "alpha_cent_deg": 5.169035,
+        "batch_di_n": 121146.85696341874
+      }
+    },
+    "budget": {
+      "max_verification_starts": 6,
+      "max_verification_internal_cases": 78,
+      "max_repeat_runs_per_design": 2,
+      "max_wake_probe_starts": 2,
+      "n_wake_nodes_reference": 8,
+      "n_wake_nodes_probe": 16,
+      "refinement_points": 13
+    },
+    "problems": []
+  },
+  "preregistration_sha256": "2e08fbeafb2e23c0df565f7b0d30299cc2a6653c07e559ce40ad5b824b2b5bf8",
+  "dossier_sha256": "90b7e9b8e44cdc01e14c9fb6481200e296179d0e96b8b0d153e972bdae5bfdd1",
+  "budget": {
+    "max_verification_starts": 6,
+    "max_verification_internal_cases": 78,
+    "max_repeat_runs_per_design": 2,
+    "max_wake_probe_starts": 2,
+    "n_wake_nodes_reference": 8,
+    "n_wake_nodes_probe": 16,
+    "refinement_points": 13
+  },
+  "designs": {
+    "baseline": {
+      "design_id": "8bd5a6c7c8311938",
+      "design_index": 0,
+      "is_baseline": true,
+      "x12": [
+        358.25,
+        1.83,
+        67.0,
+        48.0,
+        71.0,
+        0.480469,
+        0.945313,
+        0.408284,
+        0.130178,
+        0.0,
+        33.91,
+        0.0
+      ],
+      "alpha_center_deg": 5.18132,
+      "batch_di_n": 121437.61102443402
+    },
+    "best": {
+      "design_id": "605311c6e95881d1",
+      "design_index": 10,
+      "is_baseline": false,
+      "x12": [
+        358.25,
+        1.83,
+        66.92203997956408,
+        48.00055732910467,
+        71.0,
+        0.480469,
+        0.945313,
+        0.408284,
+        0.130178,
+        0.0,
+        33.91,
+        0.0
+      ],
+      "alpha_center_deg": 5.169035,
+      "batch_di_n": 121146.85696341874
+    }
+  },
+  "planned_cases": [
+    {
+      "design": "baseline",
+      "label": "final-baseline-r1",
+      "repeat": 1,
+      "n_wake_nodes": 2,
+      "admit": false,
+      "planned_starts": 1,
+      "planned_internal": 13
+    },
+    {
+      "design": "baseline",
+      "label": "final-baseline-r2",
+      "repeat": 2,
+      "n_wake_nodes": 2,
+      "admit": false,
+      "planned_starts": 1,
+      "planned_internal": 13
+    },
+    {
+      "design": "baseline",
+      "label": "final-baseline-wake16",
+      "repeat": null,
+      "n_wake_nodes": 16,
+      "admit": false,
+      "planned_starts": 1,
+      "planned_internal": 13
+    },
+    {
+      "design": "best",
+      "label": "final-best-r1",
+      "repeat": 1,
+      "n_wake_nodes": 2,
+      "admit": false,
+      "planned_starts": 1,
+      "planned_internal": 13
+    },
+    {
+      "design": "best",
+      "label": "final-best-r2",
+      "repeat": 2,
+      "n_wake_nodes": 2,
+      "admit": false,
+      "planned_starts": 1,
+      "planned_internal": 13
+    },
+    {
+      "design": "best",
+      "label": "final-best-wake16",
+      "repeat": null,
+      "n_wake_nodes": 16,
+      "admit": false,
+      "planned_starts": 1,
+      "planned_internal": 13
+    }
+  ],
+  "already_charged_labels": [],
+  "prior_verification_ledger": {
+    "caps": {
+      "max_verification_starts": 6,
+      "max_verification_internal_cases": 78,
+      "max_repeat_runs_per_design": 2,
+      "max_wake_probe_starts": 2,
+      "n_wake_nodes_reference": 8,
+      "n_wake_nodes_probe": 16,
+      "refinement_points": 13
+    },
+    "rows": [],
+    "verification_starts_actual": 0,
+    "verification_internal_cases_actual": 0,
+    "wake_probe_starts_actual": 0,
+    "prior_ledger_sha256": null
+  },
+  "physical_solver_starts_actual": 0,
+  "internal_solver_cases_actual": 0,
+  "note": "this plan is written before the first start so the intended spend is on record even if the run dies"
+}

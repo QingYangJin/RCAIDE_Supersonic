@@ -1,0 +1,21 @@
+def bracket_rows(result: Dict[str, Any]) -> List[List[float]]:
+    """Read the alpha/CL bracket pairs from one solver result.
+
+    solver_runner.run_case() reports the case result as a path to case_result.json,
+    not as an inline object, so this has to load the file before indexing it.
+    Feeding the path straight into .get() is what aborted the first O0-B01 attempt.
+    """
+    payload = result.get("case_result")
+    if isinstance(payload, (str, Path)):
+        payload = json.loads(Path(payload).read_text(encoding="utf-8"))
+    rows = ((payload or {}).get("evaluation") or {}).get("rows") or []
+    out = []
+    for row in rows:
+        alpha = row.get("alpha_deg")
+        cl = row.get("CLtot")
+        if alpha is None or cl is None:
+            continue
+        if row.get("valid") is False:
+            continue
+        out.append([float(alpha), float(cl)])
+    return out

@@ -1,0 +1,78 @@
+{
+  "schema": "dreal005.o0_binding_verification.v1",
+  "created_utc": "2026-11-24T10:21:33Z",
+  "dossier": {
+    "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O0-20261124-01\\o0_a5_dossier.md",
+    "sha256": "64b93d00df31bcf7b596ec6814439c66001595c600f3a1eeaa2ed36e21d806ec",
+    "bytes": 54419
+  },
+  "receipt": {
+    "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O0-20261124-01\\o0_dossier_receipt.json",
+    "sha256": "a977eb2dd24792b7bcb6d30c12aff792de107a54b717e68404d7e0174ef7da1c"
+  },
+  "preregistration": {
+    "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O0-20261124-01\\o0_preregistration.json",
+    "sha256": "841e7f0a933c807e4aced0d27b6ad3c0d08a796745beb6791c171aa700e03021"
+  },
+  "a5_verdict": "H0_A0_O0_REVIEW_PASS",
+  "go_record": "ABSENT",
+  "checks": [
+    {
+      "check": "receipt_exists",
+      "ok": true,
+      "detail": "o0_dossier_receipt.json present, 3691 bytes"
+    },
+    {
+      "check": "receipt_dossier_sha_matches_disk",
+      "ok": true,
+      "detail": "receipt '64b93d00df31bcf7b596ec6814439c66001595c600f3a1eeaa2ed36e21d806ec' vs disk 64b93d00df31bcf7b596ec6814439c66001595c600f3a1eeaa2ed36e21d806ec"
+    },
+    {
+      "check": "receipt_dossier_bytes_matches_disk",
+      "ok": true,
+      "detail": "receipt 54419 vs disk 54419"
+    },
+    {
+      "check": "receipt_preregistration_sha_matches_disk",
+      "ok": true,
+      "detail": "receipt '841e7f0a933c807e4aced0d27b6ad3c0d08a796745beb6791c171aa700e03021' vs disk 841e7f0a933c807e4aced0d27b6ad3c0d08a796745beb6791c171aa700e03021"
+    },
+    {
+      "check": "receipt_code_shas_match_preregistration",
+      "ok": true,
+      "detail": "receipt '8c53a9a05021d18cca534dbeed756ed602990476cebf203fe931c87e8aa407de' vs prereg 8c53a9a05021d18cca534dbeed756ed602990476cebf203fe931c87e8aa407de"
+    },
+    {
+      "check": "code_files_still_match_preregistration",
+      "ok": true,
+      "detail": "all 29 files match"
+    },
+    {
+      "check": "verdict_dossier_sha_matches_disk",
+      "ok": true,
+      "detail": "verdict '64b93d00df31bcf7b596ec6814439c66001595c600f3a1eeaa2ed36e21d806ec' vs disk 64b93d00df31bcf7b596ec6814439c66001595c600f3a1eeaa2ed36e21d806ec"
+    },
+    {
+      "check": "verdict_preregistration_sha_matches_disk",
+      "ok": true,
+      "detail": "verdict '841e7f0a933c807e4aced0d27b6ad3c0d08a796745beb6791c171aa700e03021' vs disk 841e7f0a933c807e4aced0d27b6ad3c0d08a796745beb6791c171aa700e03021"
+    },
+    {
+      "check": "verdict_dossier_sha_matches_receipt",
+      "ok": true,
+      "detail": "verdict vs receipt"
+    },
+    {
+      "name": "go_record_absent_at_verification_time",
+      "ok": true,
+      "detail": "no GO exists yet, which is the expected ordering: this verifier runs first and o0_make_go.py treats its output as a precondition"
+    }
+  ],
+  "check_count": 10,
+  "failure_count": 0,
+  "problems": [],
+  "status": "O0_BYTES_BOUND_MECHANICALLY",
+  "note": "this verifies artifact-to-artifact byte agreement only. It is not a scientific result, not an A5 verdict and not a GO.",
+  "physical_solver_starts_actual": 0,
+  "archived_as": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O0-20261124-01\\a5_support\\binding_history\\o0_binding_verification_20261124T102133Z.json"
+}

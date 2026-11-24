@@ -1,0 +1,28 @@
+    def evaluate_and_settle(attempt: AttemptRecord) -> AttemptRecord:
+        """Charge what the evaluator declared, even when the evaluator dies.
+
+        O0-B01 was aborted by a bug inside the evaluator after one start had already
+        been spent; because the exception unwound before settle(), the run counters
+        never saw that start. A design evaluation that raises therefore still settles
+        its declared consumption through the caps before the exception propagates:
+        the batch may die, the start may not disappear.
+        """
+        try:
+            done = evaluate(attempt)
+        except BaseException:
+            declared = (int(attempt.starts), int(attempt.internal))
+            try:
+                book.settle(attempt)
+            except ProtocolError as settle_error:
+                # An evaluator that declares more than the pre-registered caps allows is
+                # itself a protocol violation. Keep the original failure as the raised
+                # error, restore the declared numbers so the abort record can still show
+                # what was spent, and say why the charge could not be adopted.
+                attempt.starts, attempt.internal = declared
+                attempt.detail = ("%s | ledger could not settle the declared consumption "
+                                  "%s start(s) / %s internal case(s): %s"
+                                  % (attempt.detail or "", declared[0], declared[1],
+                                     settle_error)).strip()
+            raise
+        book.settle(done)
+        return done

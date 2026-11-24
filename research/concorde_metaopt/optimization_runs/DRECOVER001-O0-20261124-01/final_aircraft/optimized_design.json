@@ -1,0 +1,393 @@
+{
+  "schema": "dreal005.o0_optimized_design.v1",
+  "created_utc": "2026-11-24T10:37:40Z",
+  "run_id": "DRECOVER001-O0-20261124-01",
+  "batch_id": "DRECOVER001-O0-20261124-01-B02",
+  "task": {
+    "task_id": "O0-M202",
+    "mach": 2.02,
+    "altitude_m": 18288.0,
+    "lift_target_n": 1333704.4,
+    "lift_tolerance_rel": 0.001,
+    "dynamic_pressure_pa": 20483.940233430174,
+    "dimensionless": "LIFTING_SURFACE_ONLY_INDUCED_DRAG"
+  },
+  "design_id": "605311c6e95881d1",
+  "geometry_sha256": "becac8898dfc354ccbaecbdf4f04714a217f14f800235d727de429d04fefa2a8",
+  "is_baseline": false,
+  "full_12d_vector": [
+    358.25,
+    1.83,
+    66.92203997956408,
+    48.00055732910467,
+    71.0,
+    0.480469,
+    0.945313,
+    0.408284,
+    0.130178,
+    0.0,
+    33.91,
+    0.0
+  ],
+  "variable_order_12d": [
+    "wing_area",
+    "aspect_ratio",
+    "sweep_1",
+    "sweep_2",
+    "sweep_3",
+    "span_location_2",
+    "span_location_3",
+    "chord_ratio_2",
+    "chord_ratio_3",
+    "tip_twist",
+    "vertical_tail_area",
+    "vertical_tail_sweep_delta"
+  ],
+  "physical_15_vector": [
+    358.25,
+    1.83,
+    66.92203997956408,
+    48.00055732910467,
+    71.0,
+    0.480469,
+    0.945313,
+    0.408284,
+    0.130178,
+    0.0,
+    33.91,
+    0.0,
+    61.66,
+    4.3,
+    1.152778
+  ],
+  "physical_15_order": [
+    "wing_area",
+    "aspect_ratio",
+    "sweep_1",
+    "sweep_2",
+    "sweep_3",
+    "span_location_2",
+    "span_location_3",
+    "chord_ratio_2",
+    "chord_ratio_3",
+    "tip_twist",
+    "vertical_tail_area",
+    "vertical_tail_sweep_delta",
+    "fuselage_length",
+    "fuselage_fineness",
+    "fuselage_height_width_ratio"
+  ],
+  "active_subspace": {
+    "variables": [
+      "sweep_1",
+      "sweep_2"
+    ],
+    "indices_12d": {
+      "sweep_1": 2,
+      "sweep_2": 3
+    },
+    "bounds": {
+      "sweep_1": [
+        65.5,
+        68.5
+      ],
+      "sweep_2": [
+        46.5,
+        49.5
+      ]
+    },
+    "selection_rule": "only variables with a measured CDi response on existing raw rows are active; the other ten are frozen at the baseline values and this is disclosed"
+  },
+  "frozen_non_active_variables": {
+    "wing_area": 358.25,
+    "aspect_ratio": 1.83,
+    "sweep_3": 71.0,
+    "span_location_2": 0.480469,
+    "span_location_3": 0.945313,
+    "chord_ratio_2": 0.408284,
+    "chord_ratio_3": 0.130178,
+    "tip_twist": 0.0,
+    "vertical_tail_area": 33.91,
+    "vertical_tail_sweep_delta": 0.0
+  },
+  "field_mapping": [
+    {
+      "index_12d": 0,
+      "name": "wing_area",
+      "baseline": 358.25,
+      "final": 358.25,
+      "unit": "m2"
+    },
+    {
+      "index_12d": 1,
+      "name": "aspect_ratio",
+      "baseline": 1.83,
+      "final": 1.83,
+      "unit": "dimensionless"
+    },
+    {
+      "index_12d": 2,
+      "name": "sweep_1",
+      "baseline": 67.0,
+      "final": 66.92203997956408,
+      "unit": "deg"
+    },
+    {
+      "index_12d": 3,
+      "name": "sweep_2",
+      "baseline": 48.0,
+      "final": 48.00055732910467,
+      "unit": "deg"
+    },
+    {
+      "index_12d": 4,
+      "name": "sweep_3",
+      "baseline": 71.0,
+      "final": 71.0,
+      "unit": "deg"
+    },
+    {
+      "index_12d": 5,
+      "name": "span_location_2",
+      "baseline": 0.480469,
+      "final": 0.480469,
+      "unit": "dimensionless"
+    },
+    {
+      "index_12d": 6,
+      "name": "span_location_3",
+      "baseline": 0.945313,
+      "final": 0.945313,
+      "unit": "dimensionless"
+    },
+    {
+      "index_12d": 7,
+      "name": "chord_ratio_2",
+      "baseline": 0.408284,
+      "final": 0.408284,
+      "unit": "dimensionless"
+    },
+    {
+      "index_12d": 8,
+      "name": "chord_ratio_3",
+      "baseline": 0.130178,
+      "final": 0.130178,
+      "unit": "dimensionless"
+    },
+    {
+      "index_12d": 9,
+      "name": "tip_twist",
+      "baseline": 0.0,
+      "final": 0.0,
+      "unit": "deg"
+    },
+    {
+      "index_12d": 10,
+      "name": "vertical_tail_area",
+      "baseline": 33.91,
+      "final": 33.91,
+      "unit": "m2"
+    },
+    {
+      "index_12d": 11,
+      "name": "vertical_tail_sweep_delta",
+      "baseline": 0.0,
+      "final": 0.0,
+      "unit": "deg"
+    }
+  ],
+  "generation_command": "python scripts/o0_export_aircraft.py --prefix optimized --x12 358.25 1.83 66.92203998 48.00055733 71 0.480469 0.945313 0.408284 0.130178 0 33.91 0",
+  "source_geometry_exports": {
+    "prefix": "optimized",
+    "design": {
+      "x12": [
+        358.25,
+        1.83,
+        66.9220399796,
+        48.0005573291,
+        71.0,
+        0.480469,
+        0.945313,
+        0.408284,
+        0.130178,
+        0.0,
+        33.91,
+        0.0
+      ],
+      "geometry_sha256": "be71e81cabf740dfb1c0286a1b637b68cb1a588947e5b4df268f67dcac4af61d",
+      "design_id": "605311c6e95881d1",
+      "is_baseline": false
+    },
+    "x12": [
+      358.25,
+      1.83,
+      66.9220399796,
+      48.0005573291,
+      71.0,
+      0.480469,
+      0.945313,
+      0.408284,
+      0.130178,
+      0.0,
+      33.91,
+      0.0
+    ],
+    "physical_15": [
+      358.25,
+      1.83,
+      66.9220399796,
+      48.0005573291,
+      71.0,
+      0.480469,
+      0.945313,
+      0.408284,
+      0.130178,
+      0.0,
+      33.91,
+      0.0,
+      61.66,
+      4.3,
+      1.152778
+    ],
+    "frozen_non_active_match": true,
+    "model_metrics": {
+      "wing_area_m2": 358.25000000000006,
+      "wing_span_m": 25.604638251691824,
+      "wing_mac_m": 18.489892944055953,
+      "tail_area_m2": 33.91,
+      "tail_span_m": 5.0093312926976585,
+      "fuselage_length_m": 61.66
+    },
+    "full": {
+      "basename": "optimized",
+      "includes_fuselage": true,
+      "components": [
+        "main_wing",
+        "vertical_tail",
+        "fuselage"
+      ],
+      "metrics": {
+        "main_wing": {
+          "total_area_m2": 358.25000000000006,
+          "total_span_m": 25.604638251691824,
+          "bbox_m": [
+            31.440827139205197,
+            25.604638251691824,
+            0.8984129035295588
+          ]
+        },
+        "vertical_tail": {
+          "total_area_m2": 33.91,
+          "total_span_m": 5.009331292697659,
+          "bbox_m": [
+            13.15761606842186,
+            0.5270820690619678,
+            5.009331292697659
+          ]
+        },
+        "fuselage": {
+          "length_m": 61.66,
+          "bbox_m": [
+            61.66000000000001,
+            5.021001322193859,
+            5.021001322193859
+          ]
+        }
+      },
+      "exports": {
+        "vsp3": {
+          "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O0-20261124-01\\final_aircraft\\geometry\\optimized.vsp3",
+          "bytes": 301252,
+          "sha256": "ecb2f403a7248817d63b4e5c82752c8b02b22f5cfa36e1be198c7f82535a25d8"
+        },
+        "stl": {
+          "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O0-20261124-01\\final_aircraft\\geometry\\optimized.stl",
+          "bytes": 1245302,
+          "sha256": "d47b8c24c2703d24942580b97993fc9f7c5af0d837a532948cc1ada62f2539a3"
+        },
+        "step": {
+          "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O0-20261124-01\\final_aircraft\\geometry\\optimized.step",
+          "bytes": 629924,
+          "sha256": "e574bdbf996c124c820598925398b559747c9d0c8e9e00609a82b66b728283ce"
+        }
+      },
+      "component_stls": {
+        "main_wing": {
+          "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O0-20261124-01\\final_aircraft\\geometry\\optimized_main_wing.stl",
+          "bytes": 653984,
+          "sha256": "bd7479c37f9395228b717556f0301d8a4fb4895fcb68c9b288da0e4a4f5e3eb5"
+        },
+        "vertical_tail": {
+          "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O0-20261124-01\\final_aircraft\\geometry\\optimized_vertical_tail.stl",
+          "bytes": 263430,
+          "sha256": "18d8246bcd8a3dced4df96868f32c88f509faa348a3cde24f8d6e29f3e37df8f"
+        },
+        "fuselage": {
+          "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O0-20261124-01\\final_aircraft\\geometry\\optimized_fuselage.stl",
+          "bytes": 327922,
+          "sha256": "dabd56e97bc480f3227650b282a318e4236d385289b79b3960e27a217a3b167a"
+        }
+      }
+    },
+    "solver": {
+      "basename": "optimized_solver",
+      "includes_fuselage": false,
+      "components": [
+        "main_wing",
+        "vertical_tail"
+      ],
+      "metrics": {
+        "main_wing": {
+          "total_area_m2": 358.25000000000006,
+          "total_span_m": 25.604638251691824,
+          "bbox_m": [
+            31.440827139205197,
+            25.604638251691824,
+            0.8984129035295588
+          ]
+        },
+        "vertical_tail": {
+          "total_area_m2": 33.91,
+          "total_span_m": 5.009331292697659,
+          "bbox_m": [
+            13.15761606842186,
+            0.5270820690619678,
+            5.009331292697659
+          ]
+        }
+      },
+      "exports": {
+        "vsp3": {
+          "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O0-20261124-01\\final_aircraft\\geometry\\optimized_solver.vsp3",
+          "bytes": 158021,
+          "sha256": "42ecd5c26073d28406792ca9ecfbffcc7e6f2a91f0efe8f6e141c766a8de3a8a"
+        },
+        "stl": {
+          "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O0-20261124-01\\final_aircraft\\geometry\\optimized_solver.stl",
+          "bytes": 917397,
+          "sha256": "bee0905667f3788fff64670519f6be14791b0b1d0c79b66ea16b100439aeb398"
+        },
+        "step": {
+          "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O0-20261124-01\\final_aircraft\\geometry\\optimized_solver.step",
+          "bytes": 410612,
+          "sha256": "f6ef6c174b1471bddf5ba9ae48b08faa71ce8810ad917915f51bf3ceeefd8d6f"
+        }
+      },
+      "component_stls": {
+        "main_wing": {
+          "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O0-20261124-01\\final_aircraft\\geometry\\optimized_solver_main_wing.stl",
+          "bytes": 653984,
+          "sha256": "bd7479c37f9395228b717556f0301d8a4fb4895fcb68c9b288da0e4a4f5e3eb5"
+        },
+        "vertical_tail": {
+          "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O0-20261124-01\\final_aircraft\\geometry\\optimized_solver_vertical_tail.stl",
+          "bytes": 263430,
+          "sha256": "18d8246bcd8a3dced4df96868f32c88f509faa348a3cde24f8d6e29f3e37df8f"
+        }
+      }
+    },
+    "note": "full includes the fuselage; solver is the main wing plus vertical tail, which is exactly what this project's VSPAERO evaluation meshes"
+  },
+  "verdict": "VERIFIED_IMPROVEMENT",
+  "disclosure": "the solver model contains the main wing and the vertical tail; the fuselage is exported for visual completeness but is not meshed by the evaluation, so no fuselage aerodynamic claim is made"
+}

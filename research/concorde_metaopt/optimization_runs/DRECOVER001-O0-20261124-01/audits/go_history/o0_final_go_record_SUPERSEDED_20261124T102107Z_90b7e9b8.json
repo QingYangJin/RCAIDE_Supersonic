@@ -1,0 +1,155 @@
+{
+  "schema": "dreal005.o0_final_go_record.superseded.v1",
+  "retired_utc": "2026-11-24T10:21:07Z",
+  "original_sha256": "285f090c72d69a974aac234cbe946f238e15d1dde789fd1a41f164639c8a1906",
+  "bound_dossier_sha256": "90b7e9b8e44cdc01e14c9fb6481200e296179d0e96b8b0d153e972bdae5bfdd1",
+  "bound_preregistration_sha256": "2e08fbeafb2e23c0df565f7b0d30299cc2a6653c07e559ce40ad5b824b2b5bf8",
+  "current_dossier_sha256": "64b93d00df31bcf7b596ec6814439c66001595c600f3a1eeaa2ed36e21d806ec",
+  "current_preregistration_sha256": "841e7f0a933c807e4aced0d27b6ad3c0d08a796745beb6791c171aa700e03021",
+  "reason": "the dossier and the pre-registration changed after this GO was issued (the crashed first verification attempt is now disclosed and the verification budget is gross 8 starts / 104 internal cases), so this record no longer states anything about the current bytes; keeping it at the working path would present an expired authorization as live",
+  "superseded_by": "the next GO issued by scripts/o0_make_final_go.py",
+  "go": {
+    "schema": "dreal005.o0_final_go_record.v1",
+    "go_issued": true,
+    "go_issued_utc": "2026-11-24T09:11:59Z",
+    "authorization_kind": "O0_FINAL_VERIFICATION",
+    "issued_by": "Lead (agent), not a human approver and not the A5 reviewer",
+    "owner_authorization_ref": "Issue #15 (2026-11-24) + comment 1 + Owner m11649",
+    "issue": 15,
+    "run_id": "DRECOVER001-O0-20261124-01",
+    "authorization_id": "AUTH-DREAL005-O0-20261124-01",
+    "preregistration_path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O0-20261124-01\\o0_preregistration.json",
+    "preregistration_sha256": "2e08fbeafb2e23c0df565f7b0d30299cc2a6653c07e559ce40ad5b824b2b5bf8",
+    "a5_dossier_path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O0-20261124-01\\o0_a5_dossier.md",
+    "a5_dossier_sha256": "90b7e9b8e44cdc01e14c9fb6481200e296179d0e96b8b0d153e972bdae5bfdd1",
+    "a5_dossier_bytes": 50334,
+    "a5_dossier_receipt_path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O0-20261124-01\\o0_dossier_receipt.json",
+    "a5_dossier_receipt_sha256": "b4a8a8815aefc05596b619530b5258b4286179e52541161d6b667d6e27082862",
+    "a5_verdict_path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O0-20261124-01\\a5_review\\verdict.json",
+    "a5_verdict_sha256": "4a8bcaf15a0d3cb27e784d3d0dbfe38bce997b5390e4b8c979311535821f6def",
+    "a5_verdict": "H0_A0_O0_REVIEW_PASS",
+    "a5_reviewer": "deepseek-v4.1-flash",
+    "a5_human_signature": false,
+    "byte_verifier": {
+      "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O0-20261124-01\\o0_binding_verification.json",
+      "sha256": "f8df87408109ed3ebfb4c867efefe4e60e8dce313c69b353e6c8a14c96281a4f",
+      "status": "O0_BYTES_BOUND_MECHANICALLY",
+      "check_count": 10,
+      "failure_count": 0,
+      "dossier_sha256": "90b7e9b8e44cdc01e14c9fb6481200e296179d0e96b8b0d153e972bdae5bfdd1",
+      "dossier_bytes": 50334,
+      "created_utc": "2026-11-24T09:11:59Z",
+      "archived_as": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O0-20261124-01\\a5_support\\binding_history\\o0_binding_verification_20261124T091159Z.json"
+    },
+    "byte_verifier_is_a_hard_precondition": "this record was refused unless a fresh mechanical verifier round reported O0_BYTES_BOUND_MECHANICALLY with zero failures over exactly these dossier bytes, written after the dossier and archived where it cannot be overwritten",
+    "batch_close": {
+      "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O0-20261124-01\\o0_batch_close_B02.json",
+      "sha256": "684db6bc56cecd30421a0672063534b7ccdfbc524308ffe963c2d20e96577629",
+      "outcome": "COMPLETED_BY_EXHAUSTING_THE_AUTHORIZATION_DESIGN_CAP",
+      "design_cap_fully_used": true
+    },
+    "optimizer_batch_result": {
+      "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O0-20261124-01\\o0_result_B02.json",
+      "sha256": "a0edfe0c53a31665eb4abaae545e4555d131eb5d4220168763e3b920a23e34ab"
+    },
+    "optimizer_carried_forward": {
+      "design_attempts": 12,
+      "solver_starts": 23,
+      "internal_solver_cases": 227,
+      "records": [
+        {
+          "record": "o0_batch_abort_B01.json",
+          "sha256": "0445d41401ff913c30806d57de5651b56740c2eba55b450385ff80726f1bac07",
+          "basis": "BATCH_LOCAL",
+          "charged_starts": 1,
+          "internal_solver_cases": 7,
+          "design_evaluations": 1
+        },
+        {
+          "record": "o0_batch_crash_B02.json",
+          "sha256": "e24b747ee2afc8ae0a778e511f4a7bf1f4c2a56a1ef142d950e2d8b7f964c484",
+          "basis": "AUTHORIZATION_CUMULATIVE",
+          "charged_starts": 23,
+          "internal_solver_cases": 227,
+          "design_evaluations": 12
+        }
+      ],
+      "counting_rule": "the latest AUTHORIZATION_CUMULATIVE record is the floor because its counters already include what it carried forward; only batch-local records it did not absorb are added, so nothing is counted twice",
+      "basis_record": {
+        "record": "o0_batch_crash_B02.json",
+        "sha256": "e24b747ee2afc8ae0a778e511f4a7bf1f4c2a56a1ef142d950e2d8b7f964c484",
+        "basis": "AUTHORIZATION_CUMULATIVE"
+      }
+    },
+    "optimizer_budget_note": "the optimizer authorization is exhausted by design; this record authorizes no further optimizer start and cannot propose or admit a new design",
+    "authorized_designs": {
+      "baseline": {
+        "design_id": "8bd5a6c7c8311938",
+        "design_index": 0,
+        "is_baseline": true,
+        "x12": [
+          358.25,
+          1.83,
+          67.0,
+          48.0,
+          71.0,
+          0.480469,
+          0.945313,
+          0.408284,
+          0.130178,
+          0.0,
+          33.91,
+          0.0
+        ],
+        "alpha_cent_deg": 5.18132,
+        "batch_di_n": 121437.61102443402
+      },
+      "best": {
+        "design_id": "605311c6e95881d1",
+        "design_index": 10,
+        "is_baseline": false,
+        "x12": [
+          358.25,
+          1.83,
+          66.92203997956408,
+          48.00055732910467,
+          71.0,
+          0.480469,
+          0.945313,
+          0.408284,
+          0.130178,
+          0.0,
+          33.91,
+          0.0
+        ],
+        "alpha_cent_deg": 5.169035,
+        "batch_di_n": 121146.85696341874
+      }
+    },
+    "verification_budget": {
+      "max_verification_starts": 6,
+      "max_verification_internal_cases": 78,
+      "max_repeat_runs_per_design": 2,
+      "max_wake_probe_starts": 2,
+      "n_wake_nodes_reference": 8,
+      "n_wake_nodes_probe": 16,
+      "refinement_points": 13
+    },
+    "verification_budget_source": "read back from o0_preregistration.json o0_final.separate_budget; a budget typed into the runner would not be pre-registered and is refused",
+    "ledger_file": "o0_final/verification_ledger.json",
+    "caps_are_separate_from_the_optimizer_caps": "these starts are itemized verification work; they never extend the O0 search budget and may not be used to look for a better design",
+    "not_authorized": [
+      "any further optimizer start or any new design proposal",
+      "O1 warm-start arms",
+      "any change to the lift tolerance, target lift or reference quantities",
+      "re-use of the O0 optimizer GO for verification work"
+    ],
+    "conditions": [
+      "the verification ledger is charged before the case is evaluated and persists after every charge; a crash restarts owing what was already spent",
+      "wake-probe cases at 16 wake nodes are never admitted and never counted as labels",
+      "no retry of an interrupted verification start; an interrupted start stays charged",
+      "lift tolerance 1e-3 is never relaxed and no interpolated row may be admitted",
+      "resulting verdict is one of the four pre-registered verdict strings, never 'PASS'"
+    ]
+  }
+}

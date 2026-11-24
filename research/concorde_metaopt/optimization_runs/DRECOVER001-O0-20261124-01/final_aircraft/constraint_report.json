@@ -1,0 +1,51 @@
+{
+  "schema": "dreal005.o0_constraint_report.v1",
+  "created_utc": "2026-11-24T10:37:40Z",
+  "task": {
+    "task_id": "O0-M202",
+    "mach": 2.02,
+    "altitude_m": 18288.0,
+    "lift_target_n": 1333704.4,
+    "lift_tolerance_rel": 0.001,
+    "dynamic_pressure_pa": 20483.940233430174,
+    "dimensionless": "LIFTING_SURFACE_ONLY_INDUCED_DRAG"
+  },
+  "checks": [
+    {
+      "check": "lift_target",
+      "target_n": 1333704.4,
+      "tolerance_rel": 0.001,
+      "baseline_rel_error": 4.4608964445702973e-07,
+      "optimized_rel_error": 4.327348152089466e-07,
+      "rule": "an actual raw polar row must satisfy |q*Sref*CL - L_ref|/L_ref <= 1e-3"
+    },
+    {
+      "check": "di_n_finite_positive",
+      "baseline_di_n": 121437.61102443402,
+      "optimized_di_n": 121146.85696341874
+    },
+    {
+      "check": "design_identity_differs_from_baseline",
+      "optimized_design_id": "605311c6e95881d1",
+      "baseline_design_id": "8bd5a6c7c8311938",
+      "ok": true
+    },
+    {
+      "check": "non_active_variables_unchanged",
+      "ok": true
+    },
+    {
+      "check": "subspace_bounds_respected",
+      "ok": true
+    }
+  ],
+  "not_checked": [
+    "structural integrity",
+    "trim and stability",
+    "total drag",
+    "fuel burn",
+    "mission performance",
+    "airworthiness"
+  ],
+  "scope": "FEASIBLE here means only: the frozen geometry produced a real VSPAERO solution whose raw polar contains a point at the target lift, and the resulting induced drag is finite and positive"
+}

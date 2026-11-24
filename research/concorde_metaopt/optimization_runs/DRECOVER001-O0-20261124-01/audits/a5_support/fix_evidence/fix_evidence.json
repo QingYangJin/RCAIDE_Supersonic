@@ -1,0 +1,72 @@
+{
+  "schema": "dreal005.o0_fix_evidence.v1",
+  "created_utc": "2026-11-24T07:37:47Z",
+  "why": "the previous A5 review found that section 0b described the two fixes but showed no execution under the listed code SHAs; this file is that execution",
+  "physical_solver_starts_actual": 0,
+  "internal_solver_cases_actual": 0,
+  "admitted_labels_actual": 0,
+  "note": "zero solver starts: the replay consumes solver output that B01 already paid for; the tests are pure unit tests on fixtures",
+  "results": {
+    "bracket_rows_excerpt": {
+      "source_file": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O0-20261124-01\\scripts\\o0_eval.py",
+      "source_sha256": "825e90a0e2aa8b75d95789333b5deb79f9ad5ce1ae4de7af936d6e286904746c",
+      "excerpt": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O0-20261124-01\\a5_support\\fix_evidence\\bracket_rows_excerpt.txt",
+      "excerpt_sha256": "4947172cdeb779fb66a327197de24d25c627a5209ec2dd3400d08e42307e2668",
+      "excerpt_bytes": 887
+    },
+    "evaluate_and_settle_excerpt": {
+      "source_file": "D:\\RCAIDE\\.worktrees\\dreal005-20261124\\research\\concorde_metaopt\\dreal001\\ops\\o0_short_bo.py",
+      "source_sha256": "31393c2e97af8e493090aff5a905fbc294f6b8ed276c333812350323653a9729",
+      "excerpt": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O0-20261124-01\\a5_support\\fix_evidence\\evaluate_and_settle_excerpt.txt",
+      "excerpt_sha256": "31a92b54eb4dbea26eadaf5da8ed4ed5120909c598e5eb9d24806de61fee23a0",
+      "excerpt_bytes": 1584
+    },
+    "pytest_o0_short_bo": {
+      "returncode": 0,
+      "log": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O0-20261124-01\\a5_support\\fix_evidence\\pytest_o0_short_bo.log",
+      "log_sha256": "5a76665e3ada012d81e09859d438d2a6040bc689000078bc0e5b59a519e68a5b",
+      "log_bytes": 814,
+      "tail": [
+        "    config.cache.set(\"cache/nodeids\", sorted(self.cached_nodeids))",
+        "-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html",
+        "18 passed, 1 warning in 2.45s"
+      ]
+    },
+    "pytest_ledger": {
+      "returncode": 0,
+      "log": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O0-20261124-01\\a5_support\\fix_evidence\\pytest_ledger.log",
+      "log_sha256": "192e1fed3fc7e5934c7922d03cac3a4af39f3e861b4806f6f4e437c7b7205537",
+      "log_bytes": 809,
+      "tail": [
+        "    config.cache.set(\"cache/nodeids\", sorted(self.cached_nodeids))",
+        "-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html",
+        "20 passed, 1 warning in 3.10s"
+      ]
+    },
+    "test_file": {
+      "path": "D:\\RCAIDE\\.worktrees\\dreal005-20261124\\research\\concorde_metaopt\\tests\\test_recovery_o0_short_bo.py",
+      "sha256": "cfca7fa17cc707c3754b18eb2249e21d98bc3dfce42ca9c7884bd31374612ce8",
+      "bytes": 12796
+    },
+    "replay_paid_b01": {
+      "returncode": 0,
+      "log": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O0-20261124-01\\a5_support\\fix_evidence\\replay_paid_b01.log",
+      "log_sha256": "6960dad018f60bd04ce8b27ed59b62204d15cacbbbc054aac7435b8af3156681",
+      "log_bytes": 893,
+      "tail": [
+        "  \"n_points\": 7",
+        " }",
+        "}"
+      ],
+      "json": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O0-20261124-01\\a5_support\\fix_evidence\\replay_paid_b01.json",
+      "json_sha256": "a8bffdc0d49e977fec14fc0ee68b5107b8426885a309ef06fd19fc92a53b0530",
+      "n_rows": 7,
+      "predict": {
+        "ok": true,
+        "predicted_alpha_deg": 5.181320403221669,
+        "method": "QUADRATIC_BRACKET",
+        "reason": null
+      }
+    }
+  }
+}

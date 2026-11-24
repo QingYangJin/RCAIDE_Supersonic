@@ -1,0 +1,80 @@
+{
+  "schema": "dreal005.o0_dossier_receipt.v1",
+  "created_utc": "2026-11-24T10:32:37Z",
+  "dossier": {
+    "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O0-20261124-01\\o0_a5_dossier.md",
+    "sha256": "cd8b83c564452f186aa3ea230bd17c47c71971d958139e2965891cf5b554bad8",
+    "bytes": 57612,
+    "chars": 57552
+  },
+  "preregistration": {
+    "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O0-20261124-01\\o0_preregistration.json",
+    "sha256": "123145bbad45a05a4ae54df303b028e916fcba3f5b93b8352dc680830131ba68"
+  },
+  "code_shas_sha256": "4ea8a3b6d862b213882e69c681721c724c9a89b39338cfcea2a967957d497148",
+  "physical_solver_starts_actual": 23,
+  "internal_solver_cases_actual": 227,
+  "carried_forward": {
+    "design_attempts": 12,
+    "solver_starts": 23,
+    "internal_solver_cases": 227,
+    "records": [
+      {
+        "record": "o0_batch_abort_B01.json",
+        "sha256": "0445d41401ff913c30806d57de5651b56740c2eba55b450385ff80726f1bac07",
+        "basis": "BATCH_LOCAL",
+        "outcome": "ABORTED_BY_CODE_DEFECT_AFTER_ONE_CHARGED_START",
+        "charged_starts": 1,
+        "internal_solver_cases": 7,
+        "design_evaluations": 1,
+        "admitted_labels": 0,
+        "exception": "AttributeError: 'str' object has no attribute 'get'"
+      },
+      {
+        "record": "o0_batch_crash_B02.json",
+        "sha256": "e24b747ee2afc8ae0a778e511f4a7bf1f4c2a56a1ef142d950e2d8b7f964c484",
+        "basis": "AUTHORIZATION_CUMULATIVE",
+        "outcome": "run would exceed 12 design attempts",
+        "charged_starts": 23,
+        "internal_solver_cases": 227,
+        "design_evaluations": 12,
+        "admitted_labels": null,
+        "exception": "run would exceed 12 design attempts"
+      }
+    ],
+    "counting_rule": "the latest AUTHORIZATION_CUMULATIVE record is the floor because its counters already include what it carried forward; only batch-local records it did not absorb are added, so nothing is counted twice",
+    "basis_record": {
+      "record": "o0_batch_crash_B02.json",
+      "sha256": "e24b747ee2afc8ae0a778e511f4a7bf1f4c2a56a1ef142d950e2d8b7f964c484",
+      "basis": "AUTHORIZATION_CUMULATIVE"
+    },
+    "added_batch_local": []
+  },
+  "counting_rule": "the latest AUTHORIZATION_CUMULATIVE record is the floor because its counters already include what it carried forward; only batch-local records it did not absorb are added, so nothing is counted twice",
+  "basis_record": {
+    "record": "o0_batch_crash_B02.json",
+    "sha256": "e24b747ee2afc8ae0a778e511f4a7bf1f4c2a56a1ef142d950e2d8b7f964c484",
+    "basis": "AUTHORIZATION_CUMULATIVE"
+  },
+  "o0_final_budget": {
+    "verification_starts": 8,
+    "verification_internal_cases": 104,
+    "wake_probe_starts": 2
+  },
+  "sections": [
+    "0. File identity",
+    "0b. The aborted first attempt (O0-B01), disclosed rather than deleted",
+    "0c. Executed evidence that the two fixes are in the frozen code",
+    "1. Exact code SHAs under review",
+    "2. H0 gate: frozen geometry contract and the design-space conflict",
+    "3. A0 ablation: what was actually trained",
+    "3d. The two open majors from the previous round, answered here",
+    "4. O0: the real feedback optimization protocol",
+    "4b. The O0-FINAL verification step: a separate budget, and a separate review",
+    "5. Accounting and resource instrumentation",
+    "6. What this dossier does NOT authorize",
+    "7. Requested verdict",
+    "8. How this document's own hash becomes checkable, in two rounds"
+  ],
+  "note_physical": "non-zero on purpose: this receipt reports measured spend under the authorization, including the one charged start from the aborted first attempt documented in section 0b, and not the intent of the next batch"
+}

@@ -1,0 +1,118 @@
+{
+  "reviewer": "deepseek-v4.1-flash",
+  "review_type": "independent_read_only_tool_review",
+  "reviewed_utc": "2026-11-24T08:07:10Z",
+  "dossier_sha256": "77dea8cdd8bcb0f9acb3f2cc188961f5b0051c88df9a3940e99ded6155fb8be6",
+  "verdict": "H0_A0_O0_CHANGES_REQUIRED",
+  "gate_verdicts": {
+    "H0_GEOMETRY_CONTRACT_FROZEN": "PASS",
+    "H0_FREEZE_CONFLICT_DISCLOSED": "PASS",
+    "H0_RESOURCE_ACCOUNTING_INSTRUMENTED": "PASS",
+    "H0_CODE_SHA_FROZEN": "PASS",
+    "H0_ZERO_PHYSICAL": "PASS",
+    "A0_ABLATION_FAIRNESS": "PASS",
+    "A0_CONDITIONAL_SUPERVISION": "PASS",
+    "O0_TASK_AND_SUBSPACE": "PASS",
+    "O0_ALPHA_ALGORITHM": "PASS_WITH_DISCLOSURE",
+    "O0_ADMISSION_TOLERANCE": "PASS",
+    "O0_ACCOUNTING_CONTROLS": "PASS",
+    "O0_BUDGET_CAPS": "PASS_WITH_DISCLOSURE",
+    "O0_ABORT_DISCLOSED": "PASS_WITH_DISCLOSURE",
+    "O0_CARRY_FORWARD_ACCOUNTING": "PASS_WITH_DISCLOSURE",
+    "O0_BINDING_VERIFYABLE": "PASS_WITH_DISCLOSURE"
+  },
+  "tool_calls_made": [
+    "list_dir run root, worktree root, run/scripts, a5_support, a5_support/binding_history, a5_support/fix_evidence, a5_review, a5_review/history, go_history, worktree/scripts",
+    "sha256_file o0_a5_dossier.md -> 77dea8cd..., 39662 B",
+    "sha256_file o0_preregistration.json -> c2baaa77..., 14014 B",
+    "sha256_file o0_batch_abort_B01.json -> 85a61656..., 7384 B",
+    "sha256_file a5_support/fix_evidence/fix_evidence.json, bracket_rows_excerpt.txt, evaluate_and_settle_excerpt.txt (all match dossier)",
+    "sha256_file a5_support/o0_a5_support_stats.json -> 3c78abbd..., 12376 B",
+    "sha256_file o0_binding_verification.json and 20261124T080415Z archive -> 9ea795... (matches quoted verifier sha)",
+    "sha256_file 11 code files in worktree (all match)",
+    "sha256_file 11 code files at run root scripts (all match)",
+    "sha256_file R2 audit_real_case.py -> 5c07a486... (matches)",
+    "sha256_file 11 scripts/*.py paths under worktree -> ERROR not a file; worktree/scripts holds only dnext001_lead_gate_audit.py",
+    "read_text o0_binding_verification.json, o0_dossier_receipt.json, o0_batch_abort_B01.json, fix_evidence.json, evaluate_and_settle_excerpt.txt, a5_support_stats.json (head), a5_make_go.py, o0_verify_binding.py, verdict.json, review_meta.json, o0_short_bo.py (head)",
+    "grep o0_make_go.py (carried_forward, verifier gate), o0_verify_binding.py (archived_as/write_text), o0_short_bo.py (CAPS, charge, settle, streak), archived verifier 080415Z"
+  ],
+  "evidence_checked": [
+    "Dossier sha256 77dea8cd..., 39662 B equals receipt.dossier.sha256 and o0_binding_verification.json dossier.sha256, and its mtime 08:07:02Z is 1 s before verifier created_utc 08:07:03Z",
+    "Preregistration c2baaa77..., abort 85a61656..., fix_evidence 24ae998b... and both excerpts, stats 3c78abbd..., quoted verifier 9ea795...: all match dossier table",
+    "All 23 code hashes in section 1 measured: match at worktree paths or run-root scripts/; 11 listed as bare scripts/*.py are absent from the worktree",
+    "Current verifier status O0_BINDING_INCOMPLETE_OR_BROKEN, 10 checks, 3 failures, all three against the stale verdict.json (dossier 1ad77a49..., prereg d7d6efdd...); code_files_still_match_preregistration ok, 24 files",
+    "Abort record matches disclosure: charged_starts 1, internal 7, admitted 0, AttributeError parse of case_result path; caps_after_this_abort again lists remaining 35 starts",
+    "o0_make_go.py requires ver.O0_BYTES_BOUND_MECHANICALLY, failure_count 0, dossier sha/bytes == disk, created_utc >= dossier mtime, archived_as truthy, verdict == H0_A0_O0_REVIEW_PASS, and recomputes carry-forward by summing o0_batch_abort_*.json",
+    "o0_verify_binding.py never writes archived_as into OUT or the archive it writes; o0_make_go.py rejects any round lacking archived_as, so status O0_BYTES_BOUND_MECHANICALLY is unreachable as the code stands",
+    "o0_short_bo.py: CAPS 12 designs/36 starts/240 internal/2 per design/20 per design/streak 3/parallelism 1/retries 0; charge() raises; evaluate_and_settle settles declared spend on exception",
+    "go_history holds one SUPERSEDED GO (112cfd73...); no live o0_go_record.json; receipt reports 1 start and 7 cases actual"
+  ],
+  "findings": [
+    {
+      "severity": "critical",
+      "finding": "GO is hard-gated on the verifier, but the verifier can never emit the pass string: it never records archived_as, and o0_make_go.py rejects rounds without it.",
+      "evidence": "o0_verify_binding.py line 143 sets archived_as only on the in-memory payload after write; o0_make_go.py appends a problem if not ver.get('archived_as'). Executed round 080703Z lacks the field."
+    },
+    {
+      "severity": "major",
+      "finding": "The dossier's claim that the fresh round 'is archived' and that the chain is closed by code is therefore not executable; it overstates a mechanism I read and found deadlocked.",
+      "evidence": "Dossier 0/3d/8 promise archived_as and O0_BYTES_BOUND_MECHANICALLY; measured round status O0_BINDING_INCOMPLETE_OR_BROKEN with 3 failures and no archived_as key."
+    },
+    {
+      "severity": "major",
+      "finding": "Section 0 and 0b claim scripts/o0_verify_binding.py and the other bare scripts/*.py are frozen under the listed SHAs; the worktree has none of them.",
+      "evidence": "sha256_file on 11 worktree scripts/*.py returned 'not a file'; worktree/scripts contains only dnext001_lead_gate_audit.py. Matching copies live only at the run root, which the dossier never names."
+    },
+    {
+      "severity": "major",
+      "finding": "Carry-forward is not stated the same way everywhere: the abort record's own caps block still implies 35 remaining starts, contradicting 23 further starts in 0b/4/7.",
+      "evidence": "o0_batch_abort_B01.json caps_after_this_abort.remaining_solver_starts 35; dossier 0b/4/7 say 23 further starts of 24 spendable. make_go sums the record, so the document's arithmetic is not what code reads."
+    },
+    {
+      "severity": "minor",
+      "finding": "Section 0b says the 0.35 deg coarse step is an order of magnitude coarser than 1e-3 CL; measured coarse CL increment is 0.33 deg x ~0.033 per deg = 0.011, one order in CL but 330x in alpha.",
+      "evidence": "o0_short_bo.py COARSE_ALPHA_OFFSETS step 0.35, slope 0.03279-0.03385 per deg; abort record why_no_label_was_admitted gives CL increment about 0.012."
+    },
+    {
+      "severity": "minor",
+      "finding": "Section 0 fails to name the archive path; the quoted verifier is only findable in a5_support/binding_history, an archive o0_verify_binding.py can overwrite on same-second reruns.",
+      "evidence": "Archived 080415Z sha matches quote; 080703Z archive is byte-identical to the root file. Paths are named only in section 8."
+    },
+    {
+      "severity": "info",
+      "finding": "A0 pairing is fair as reported: one geometry/condition network per arm, unified K=1 validation selection, 18 paired cells; the meta advantage is correctly stated as unestablished on test.",
+      "evidence": "stats bootstrap CI test [-7111.5, 5289.6], p 0.815, val p 0.031 worse; dossier 3b states 8 vs 10 wins and no measurable meta effect."
+    },
+    {
+      "severity": "info",
+      "finding": "Alpha margin is plausible but rests on 7 historical designs of one family; dossier names the limit and the objective=None failure mode honestly.",
+      "evidence": "3c: 7 designs, tolerance window 0.0053 deg, refine 0.024 deg (4.37x), sweep_1 coupling 0.1574 deg/deg; o0_short_bo.py comment gives 0.33 deg/deg on d00-d07."
+    }
+  ],
+  "limitations": [
+    "Did not run o0_verify_binding.py or o0_make_go.py; the archived_as deadlock is read from source, not observed at runtime",
+    "Could not cross-check the worktree git HEAD or that main is untouched; no git tool is exposed",
+    "Section 2 loader probe artifact audits/production_loader_probe.json and the 3c polar sources were not hashed; directories were not listed",
+    "alpha_plan() body beyond line 135 and run_bo_loop() were only grepped, not read in full",
+    "pytest logs and the B01 polar replay were accepted by hash only, not re-executed",
+    "Section 3 A0 numbers were checked against a5_support stats, not against a0_result.json at the separate A0 run root"
+  ],
+  "scope": "Read-only tool review of D-REAL-EXP-003 H0/A0/O0 dossier measured at 77dea8cd..., its receipt, B01 abort record, fix evidence, support stats, current and archived binding verifier rounds, o0_make_go.py, o0_verify_binding.py, o0_short_bo.py and the section 1 code hashes. Scoped to authorizing only the remaining O0 batch: 11 designs, 23 starts, 233 internal cases, 1e-3 tolerance, no retries, parallelism 1.",
+  "signature": "deepseek-v4.1-flash independent A5 review with read-only local tools; not a human signature",
+  "dossier_sha256_measured_by_harness": "77dea8cdd8bcb0f9acb3f2cc188961f5b0051c88df9a3940e99ded6155fb8be6",
+  "dossier_sha256_claimed_by_reviewer": "77dea8cdd8bcb0f9acb3f2cc188961f5b0051c88df9a3940e99ded6155fb8be6",
+  "dossier_sha256_overwritten_because": "the reviewer is a language model: the harness hashed the bytes it was shown and substitutes that measurement, keeping the reviewer's own value for audit",
+  "preregistration_sha256": "c2baaa77ad2dac5bd9f5cd4ba287c44928f1abe663d65712e84b4f7aff0d9413",
+  "preregistration_schema": "dreal005.o0_preregistration.v1",
+  "run_id": "DRECOVER001-O0-20261124-01",
+  "batch_id": "DRECOVER001-O0-20261124-01-B02",
+  "authorization_id": "AUTH-DREAL005-O0-20261124-01",
+  "started_utc": "2026-11-24T08:07:10Z",
+  "model": "deepseek-v4.1-flash",
+  "review_gateway": "https://copilot.tencent.com",
+  "tool_access": "READ_ONLY_LOCAL_TOOLS: sha256_file, stat_file, list_dir, read_text, grep; allowlisted to the run root and frozen worktree; every call recorded in a5_review/o0_tool_transcript.json",
+  "tool_hops": 23,
+  "human_signature": false,
+  "dossier_path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O0-20261124-01\\o0_a5_dossier.md",
+  "scope_of_this_review": "H0 contract, A0 ablation and O0 protocol review only; NOT an R1 blanket PASS, NOT a physical GO by itself, and NOT an approval of O1 or any later gate."
+}
