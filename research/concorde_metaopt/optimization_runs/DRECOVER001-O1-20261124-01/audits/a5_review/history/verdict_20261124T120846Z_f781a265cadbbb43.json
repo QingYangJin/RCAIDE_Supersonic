@@ -1,0 +1,102 @@
+{
+  "reviewer": "deepseek-v4.1-flash",
+  "review_type": "independent_read_only_tool_review",
+  "reviewed_utc": "2026-11-24T12:01:49Z",
+  "dossier_sha256": "dc4d7f2cf680c2fa670c6a1e34e333a84801134c7e681a223bd20a00e503844a",
+  "verdict": "O1_THREE_ARM_CHANGES_REQUIRED",
+  "gate_verdicts": {
+    "O1_TASK_IS_NEW": "PASS",
+    "O1_CODE_SHA_FROZEN": "PASS",
+    "O1_ZERO_PHYSICAL": "PASS",
+    "O1_THREE_ARMS_FAIR": "PASS",
+    "O1_KSHOT_NO_LEAKAGE": "PASS",
+    "O1_CANDIDATE_POOL_NO_TRUTH": "PASS",
+    "O1_COST_MODEL_CONSISTENT": "PASS",
+    "O1_SHARED_SUPPORT_CHARGED_TO_ALL_ARMS": "PASS",
+    "O1_BUDGET_CAPS": "PASS",
+    "O1_TARGET_PRE_REGISTERED": "PASS",
+    "O1_TRUNCATION_DISCLOSED": "PASS",
+    "O1_GEOMETRY_AND_ALPHA_UNCHANGED": "PASS",
+    "O1_CLAIMS_BOUNDED": "PASS",
+    "O1_CARRY_FORWARD_ACCOUNTED": "PASS",
+    "O1_BINDING_VERIFYABLE": "PASS",
+    "O1_GO_REQUIRED": "PASS"
+  },
+  "tool_calls_made": [
+    "list_dir O1 run root",
+    "list_dir O1 scripts",
+    "list_dir O1 cases and cases/O1-M190",
+    "list_dir all four O1-M190 case dirs (DRY_SOBOL_BO/o1-dry-coarse, DRY_COND_SUPERVISED_KSHOT_BO, DRY_COND_FOMAML_KSHOT_BO, PREFLIGHT/o1-s00-coarse)",
+    "sha256_file o1_a5_dossier.md",
+    "sha256_file o1_preregistration.json",
+    "sha256_file all 9 frozen code files in section 1",
+    "sha256_file o1_dossier_receipt.json",
+    "read_text o1_dossier_receipt.json",
+    "read_text o1_binding_verification.json",
+    "read_text o1_a5_verdict.json",
+    "read_text a5_review/verdict.json",
+    "read_text o1_verify_binding.py",
+    "read_text o1_make_go.py (multiple windows)",
+    "grep o1_make_go.py for mtime/stale/status/verdict gating",
+    "read_text o1_arms.py (windows incl. kshot_ranked_candidates and run_arm)",
+    "grep o1_arms.py for kshot_ranked_candidates/support_rows/warm_start/ledger",
+    "grep O1 cases for polar|case_result",
+    "list_dir A0 run root",
+    "list_dir A0 training and training/checkpoints",
+    "grep o1_preregistration.json for task/target/caps",
+    "list_dir O0 run root (O0 batch close + final artifacts present)"
+  ],
+  "evidence_checked": [
+    "dossier sha256 dc4d7f2cf680c2fa670c6a1e34e333a84801134c7e681a223bd20a00e503844a, 9453 bytes; matches o1_dossier_receipt.json but NOT o1_binding_verification.json (93744e81...), o1_a5_verdict.json or a5_review/verdict.json",
+    "preregistration sha256 acf7a55eb6289115ede0bd90c590924109370c6ab39050693fab25ae0661c928, 12806 bytes, matches dossier section 1 header; receipt agrees; prior binding round and prior verdict both record c9cdc46dfa62... for the same 12806 bytes",
+    "all 9 frozen code files match dossier byte counts and sha256 exactly (o1_arms.py 27338/2fbcb271..., o1_eval.py 12558/cd5d4b0d..., o1_verify_binding.py 8347/50ba4a31..., etc.)",
+    "o1_arms.py kshot_ranked_candidates builds context only from task spec (cl_target from lift target, q, Mach) and inner-adapts on support_rows (len==3 enforced); pool ranked before run_arm adds any warm-start or adaptive record; only A0_RUN checkpoints/*_k3_seed7.npz and a0_normalizer.json are read",
+    "A0 checkpoints COND_SUPERVISED_16D_k3_seed7.npz and COND_FOMAML_16D_k3_seed7.npz exist (14586 bytes each); A0 training/a0_normalizer.json and a0_grid_search.json exist",
+    "grep over O1 cases for polar|case_result returned 0 hits; all four O1-M190 case dirs contain only geometry dry-run artifacts (vspgeom/vspaero/csf/plan.json/dry_run.json), no .polar and no case_result.json",
+    "o1_make_go.py hard-gates on exact verdict string, verdict-bound dossier/preregistration sha, binding round status O1_BYTES_BOUND_MECHANICALLY with failure_count 0, verifier newer than dossier mtime, archived_as present, code re-hash, and zero prior physical starts; non-zero problems writes o1_go_blocked.json and no GO",
+    "CAPS in o1_arms.py: 160 internal / 20 per design = 8 affordable designs per arm; 3 arms = 480 internal / 48 equivalent starts; ArmLedger.add raises past 8 records and carry_shared_support charges all 3 support records to every arm",
+    "o1_preregistration.json stores mach 1.9 task O1-M190, physics_sha256 e1caa676..., target_improvement_fraction 0.001, affordable_designs_per_arm 8",
+    "O0 run root contains o0_batch_close_B02.json and o0_final/, consistent with the 12/23/227 and 8/104 carried-forward figures cited"
+  ],
+  "findings": [
+    {
+      "severity": "major",
+      "finding": "Stale PASS artifacts for superseded bytes remain in the run root: a prior verdict and a prior binding round both bind a dossier hash (93744e81...) that is not the bytes under review, while the live receipt binds dc4d7f2c...",
+      "evidence": "o1_a5_verdict.json and a5_review/verdict.json: dossier_sha256 93744e81..., verdict REVIEW_PASS; o1_binding_verification.json: same 93744e81..., status O1_BYTES_BOUND_MECHANICALLY"
+    },
+    {
+      "severity": "major",
+      "finding": "Prior binding round also records preregistration c9cdc46d... for 12806 bytes, while disk and receipt say acf7a55e... for the same 12806 bytes; one of the two byte sets is unaccounted for and only the current pair is bound",
+      "evidence": "o1_binding_verification.json preregistration.sha256 c9cdc46dfa62... bytes 12806; receipt preregistration.sha256 acf7a55eb628... bytes 12806; sha256_file measured acf7a55e..."
+    },
+    {
+      "severity": "major",
+      "finding": "Because the stale PASS verdict and stale binding round already exist in place, a GO run today would not be obviously distinguishable from a GO run against superseded bytes; the stale artifacts must be archived or invalidated before any GO",
+      "evidence": "o1_make_go.py gates on VERDICT=a5_review/verdict.json and VERDICT_COPY=o1_a5_verdict.json plus VERIFY=o1_binding_verification.json, all currently on disk with mismatched dossier hash"
+    }
+  ],
+  "limitations": [
+    "No clean binding round over dc4d7f2c... exists yet, which is expected; the mechanism itself (order validators -> verdict -> binding -> GO) is sound and hard-gated, so O1_BINDING_VERIFYABLE is PASS",
+    "o1_make_go.py freshness gate uses dossier mtime granularity (1 s string compare); the dossier and receipt timestamps are 2 s apart here, which is enough, but a same-second rewrite could be judged stale-safe",
+    "I could not re-execute o1_selftest.py or recompute the preregistration's internal code_shas digest; I verified code bytes against the dossier table and receipt only",
+    "Nonzero-delta items (paired delta, CI, p-values) in section 0 were read as disclosed limitations, not re-derived from A0 numbers"
+  ],
+  "scope": "Read-only check of the O1 dossier dc4d7f2c (9453 bytes), the preregistration, all nine frozen code files, the A0 checkpoints, the O1 case directories for any solver output, and the GO/binding scripts. Content of the protocol is sound; the objections are to superseded PASS artifacts still on disk.",
+  "signature": "deepseek-v4.1-flash independent A5 review with read-only local tools; not a human signature",
+  "dossier_sha256_measured_by_harness": "dc4d7f2cf680c2fa670c6a1e34e333a84801134c7e681a223bd20a00e503844a",
+  "dossier_sha256_claimed_by_reviewer": "dc4d7f2cf680c2fa670c6a1e34e333a84801134c7e681a223bd20a00e503844a",
+  "dossier_sha256_overwritten_because": "the reviewer is a language model: the harness hashed the bytes it was shown and substitutes that measurement, keeping the reviewer's own value for audit",
+  "preregistration_sha256": "acf7a55eb6289115ede0bd90c590924109370c6ab39050693fab25ae0661c928",
+  "preregistration_schema": "dreal005.o1_preregistration.v1",
+  "run_id": "DRECOVER001-O1-20261124-01",
+  "batch_id": "DRECOVER001-O1-20261124-01-PAIRING-01",
+  "authorization_id": "AUTH-DREAL005-O1-20261124-01",
+  "started_utc": "2026-11-24T12:01:49Z",
+  "model": "deepseek-v4.1-flash",
+  "review_gateway": "https://copilot.tencent.com",
+  "tool_access": "READ_ONLY_LOCAL_TOOLS: sha256_file, stat_file, list_dir, read_text, grep; allowlisted to the O1 run root, the frozen worktree, the A0 run root and the O0 run root; every call recorded in a5_review/o1_tool_transcript.json",
+  "tool_hops": 16,
+  "human_signature": false,
+  "dossier_path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\o1_a5_dossier.md",
+  "scope_of_this_review": "O1 three-arm warm-start protocol only; NOT an R1 blanket PASS, NOT a physical GO by itself, and NOT an approval of any later gate."
+}

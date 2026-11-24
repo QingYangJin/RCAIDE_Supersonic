@@ -1,0 +1,2028 @@
+{
+  "dossier_sha256": "c2497e46386a1ddccd98593207449fbac9197c2bbcc335657c23f4defe47efa7",
+  "hops": 13,
+  "complete": true,
+  "transcript": [
+    {
+      "hop": 0,
+      "content": "I'll start by examining the run root structure and measuring the key artifacts.",
+      "tool_calls": {
+        "0": {
+          "id": "call_00_bgo1hqikfztfcVF7hxFb9007",
+          "name": "list_dir",
+          "arguments": "{\"path\": \"D:/RCAIDE/.real_runs/DRECOVER001-O1-20261124-01\"}"
+        },
+        "1": {
+          "id": "call_01_hQVWQCMHuczJM6V27B2n7857",
+          "name": "list_dir",
+          "arguments": "{\"path\": \"D:/RCAIDE/.worktrees/dreal005-20261124\"}"
+        }
+      },
+      "results": [
+        {
+          "name": "list_dir",
+          "arguments": {
+            "path": "D:/RCAIDE/.real_runs/DRECOVER001-O1-20261124-01"
+          },
+          "result": {
+            "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01",
+            "entries": [
+              {
+                "name": "a5_review",
+                "bytes": null,
+                "is_dir": true
+              },
+              {
+                "name": "a5_support",
+                "bytes": null,
+                "is_dir": true
+              },
+              {
+                "name": "audits",
+                "bytes": null,
+                "is_dir": true
+              },
+              {
+                "name": "cases",
+                "bytes": null,
+                "is_dir": true
+              },
+              {
+                "name": "figures",
+                "bytes": null,
+                "is_dir": true
+              },
+              {
+                "name": "go_history",
+                "bytes": null,
+                "is_dir": true
+              },
+              {
+                "name": "inputs",
+                "bytes": null,
+                "is_dir": true
+              },
+              {
+                "name": "metadata",
+                "bytes": null,
+                "is_dir": true
+              },
+              {
+                "name": "o1_a5_dossier.md",
+                "bytes": 10962,
+                "is_dir": false
+              },
+              {
+                "name": "o1_dossier_receipt.json",
+                "bytes": 643,
+                "is_dir": false
+              },
+              {
+                "name": "o1_preregistration.json",
+                "bytes": 13909,
+                "is_dir": false
+              },
+              {
+                "name": "o1_retire_record.json",
+                "bytes": 1508,
+                "is_dir": false
+              },
+              {
+                "name": "scripts",
+                "bytes": null,
+                "is_dir": true
+              },
+              {
+                "name": "tables",
+                "bytes": null,
+                "is_dir": true
+              },
+              {
+                "name": "training",
+                "bytes": null,
+                "is_dir": true
+              }
+            ],
+            "truncated": false
+          }
+        },
+        {
+          "name": "list_dir",
+          "arguments": {
+            "path": "D:/RCAIDE/.worktrees/dreal005-20261124"
+          },
+          "result": {
+            "path": "D:\\RCAIDE\\.worktrees\\dreal005-20261124",
+            "entries": [
+              {
+                "name": ".git",
+                "bytes": 51,
+                "is_dir": false
+              },
+              {
+                "name": ".gitattributes",
+                "bytes": 318,
+                "is_dir": false
+              },
+              {
+                "name": ".github",
+                "bytes": null,
+                "is_dir": true
+              },
+              {
+                "name": ".gitignore",
+                "bytes": 1413,
+                "is_dir": false
+              },
+              {
+                "name": "checks",
+                "bytes": null,
+                "is_dir": true
+              },
+              {
+                "name": "digital_hangar",
+                "bytes": null,
+                "is_dir": true
+              },
+              {
+                "name": "docs",
+                "bytes": null,
+                "is_dir": true
+              },
+              {
+                "name": "examples",
+                "bytes": null,
+                "is_dir": true
+              },
+              {
+                "name": "installation",
+                "bytes": null,
+                "is_dir": true
+              },
+              {
+                "name": "LICENSE",
+                "bytes": 35192,
+                "is_dir": false
+              },
+              {
+                "name": "NOTICE.md",
+                "bytes": 2518,
+                "is_dir": false
+              },
+              {
+                "name": "pytest-cache-files-06bq40jb",
+                "bytes": null,
+                "is_dir": true
+              },
+              {
+                "name": "pytest-cache-files-1bkgps65",
+                "bytes": null,
+                "is_dir": true
+              },
+              {
+                "name": "pytest-cache-files-1q0hzmac",
+                "bytes": null,
+                "is_dir": true
+              },
+              {
+                "name": "pytest-cache-files-3y74oeye",
+                "bytes": null,
+                "is_dir": true
+              },
+              {
+                "name": "pytest-cache-files-430j22vp",
+                "bytes": null,
+                "is_dir": true
+              },
+              {
+                "name": "pytest-cache-files-eji28utt",
+                "bytes": null,
+                "is_dir": true
+              },
+              {
+                "name": "pytest-cache-files-f8hsvgrz",
+                "bytes": null,
+                "is_dir": true
+              },
+              {
+                "name": "pytest-cache-files-m93w94jh",
+                "bytes": null,
+                "is_dir": true
+              },
+              {
+                "name": "pytest-cache-files-n4qhoitm",
+                "bytes": null,
+                "is_dir": true
+              },
+              {
+                "name": "pytest-cache-files-qgz72qpf",
+                "bytes": null,
+                "is_dir": true
+              },
+              {
+                "name": "pytest-cache-files-un6aa089",
+                "bytes": null,
+                "is_dir": true
+              },
+              {
+                "name": "pytest-cache-files-yb2fqig_",
+                "bytes": null,
+                "is_dir": true
+              },
+              {
+                "name": "README.md",
+                "bytes": 4041,
+                "is_dir": false
+              },
+              {
+                "name": "requirements",
+                "bytes": null,
+                "is_dir": true
+              },
+              {
+                "name": "requirements.txt",
+                "bytes": 183,
+                "is_dir": false
+              },
+              {
+                "name": "research",
+                "bytes": null,
+                "is_dir": true
+              },
+              {
+                "name": "run_rcaide.cmd",
+                "bytes": 808,
+                "is_dir": false
+              },
+              {
+                "name": "runs",
+                "bytes": null,
+                "is_dir": true
+              },
+              {
+                "name": "scripts",
+                "bytes": null,
+                "is_dir": true
+              },
+              {
+                "name": "tests",
+                "bytes": null,
+                "is_dir": true
+              },
+              {
+                "name": "tutorials",
+                "bytes": null,
+                "is_dir": true
+              }
+            ],
+            "truncated": false
+          }
+        }
+      ]
+    },
+    {
+      "hop": 1,
+      "content": "",
+      "tool_calls": {
+        "0": {
+          "id": "call_00_m4GQoPPJj9OxDcE3BqMH4781",
+          "name": "sha256_file",
+          "arguments": "{\"path\": \"D:/RCAIDE/.real_runs/DRECOVER001-O1-20261124-01/o1_a5_dossier.md\"}"
+        },
+        "1": {
+          "id": "call_01_qm94XUNHVeZytiaKTuzD3129",
+          "name": "sha256_file",
+          "arguments": "{\"path\": \"D:/RCAIDE/.real_runs/DRECOVER001-O1-20261124-01/o1_preregistration.json\"}"
+        },
+        "2": {
+          "id": "call_02_n0NYWTIzw6Zngy5tSN428311",
+          "name": "list_dir",
+          "arguments": "{\"path\": \"D:/RCAIDE/.real_runs/DRECOVER001-O1-20261124-01/scripts\"}"
+        },
+        "3": {
+          "id": "call_03_SlrZjiRbxn6tX4gzI0ds1685",
+          "name": "list_dir",
+          "arguments": "{\"path\": \"D:/RCAIDE/.real_runs/DRECOVER001-O1-20261124-01/cases\"}"
+        }
+      },
+      "results": [
+        {
+          "name": "sha256_file",
+          "arguments": {
+            "path": "D:/RCAIDE/.real_runs/DRECOVER001-O1-20261124-01/o1_a5_dossier.md"
+          },
+          "result": {
+            "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\o1_a5_dossier.md",
+            "sha256": "c2497e46386a1ddccd98593207449fbac9197c2bbcc335657c23f4defe47efa7",
+            "bytes": 10962
+          }
+        },
+        {
+          "name": "sha256_file",
+          "arguments": {
+            "path": "D:/RCAIDE/.real_runs/DRECOVER001-O1-20261124-01/o1_preregistration.json"
+          },
+          "result": {
+            "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\o1_preregistration.json",
+            "sha256": "d810c83a6371089dd306fe4ec8948595817d036022e47e9a83a32b5e8890791b",
+            "bytes": 13909
+          }
+        },
+        {
+          "name": "list_dir",
+          "arguments": {
+            "path": "D:/RCAIDE/.real_runs/DRECOVER001-O1-20261124-01/scripts"
+          },
+          "result": {
+            "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\scripts",
+            "entries": [
+              {
+                "name": "__pycache__",
+                "bytes": null,
+                "is_dir": true
+              },
+              {
+                "name": "_probe_dataset.py",
+                "bytes": 1075,
+                "is_dir": false
+              },
+              {
+                "name": "_probe_tokens.py",
+                "bytes": 1636,
+                "is_dir": false
+              },
+              {
+                "name": "o1_a5_review_tools.py",
+                "bytes": 23266,
+                "is_dir": false
+              },
+              {
+                "name": "o1_admit_case.py",
+                "bytes": 7463,
+                "is_dir": false
+              },
+              {
+                "name": "o1_arms.py",
+                "bytes": 27338,
+                "is_dir": false
+              },
+              {
+                "name": "o1_build_dossier.py",
+                "bytes": 14592,
+                "is_dir": false
+              },
+              {
+                "name": "o1_eval.py",
+                "bytes": 12558,
+                "is_dir": false
+              },
+              {
+                "name": "o1_export_aircraft.py",
+                "bytes": 7051,
+                "is_dir": false
+              },
+              {
+                "name": "o1_make_go.py",
+                "bytes": 18303,
+                "is_dir": false
+              },
+              {
+                "name": "o1_prereg.py",
+                "bytes": 17547,
+                "is_dir": false
+              },
+              {
+                "name": "o1_retire_stale.py",
+                "bytes": 7024,
+                "is_dir": false
+              },
+              {
+                "name": "o1_run.py",
+                "bytes": 23873,
+                "is_dir": false
+              },
+              {
+                "name": "o1_selftest.py",
+                "bytes": 7571,
+                "is_dir": false
+              },
+              {
+                "name": "o1_upload.py",
+                "bytes": 15668,
+                "is_dir": false
+              },
+              {
+                "name": "o1_verify_binding.py",
+                "bytes": 8347,
+                "is_dir": false
+              }
+            ],
+            "truncated": false
+          }
+        },
+        {
+          "name": "list_dir",
+          "arguments": {
+            "path": "D:/RCAIDE/.real_runs/DRECOVER001-O1-20261124-01/cases"
+          },
+          "result": {
+            "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\cases",
+            "entries": [
+              {
+                "name": "O1-M190",
+                "bytes": null,
+                "is_dir": true
+              }
+            ],
+            "truncated": false
+          }
+        }
+      ]
+    },
+    {
+      "hop": 2,
+      "content": "",
+      "tool_calls": {
+        "0": {
+          "id": "call_00_rdZWFHu6UqTYFdMpXMLr2637",
+          "name": "sha256_file",
+          "arguments": "{\"path\": \"D:/RCAIDE/.real_runs/DRECOVER001-O1-20261124-01/scripts/o1_admit_case.py\"}"
+        },
+        "1": {
+          "id": "call_01_sIKEvPcPqt1YZpDKAJQQ2816",
+          "name": "sha256_file",
+          "arguments": "{\"path\": \"D:/RCAIDE/.real_runs/DRECOVER001-O1-20261124-01/scripts/o1_arms.py\"}"
+        },
+        "2": {
+          "id": "call_02_GYyID3TMNfDWyr3hPLfu2471",
+          "name": "sha256_file",
+          "arguments": "{\"path\": \"D:/RCAIDE/.real_runs/DRECOVER001-O1-20261124-01/scripts/o1_build_dossier.py\"}"
+        },
+        "3": {
+          "id": "call_03_G28T1L0WrJP5Zi2F3ouh4508",
+          "name": "sha256_file",
+          "arguments": "{\"path\": \"D:/RCAIDE/.real_runs/DRECOVER001-O1-20261124-01/scripts/o1_eval.py\"}"
+        },
+        "4": {
+          "id": "call_04_cqm4cL6WmDPA1pfdQiBu8110",
+          "name": "sha256_file",
+          "arguments": "{\"path\": \"D:/RCAIDE/.real_runs/DRECOVER001-O1-20261124-01/scripts/o1_make_go.py\"}"
+        },
+        "5": {
+          "id": "call_05_g7OGyEDFmxaTWSHm4r9b2710",
+          "name": "sha256_file",
+          "arguments": "{\"path\": \"D:/RCAIDE/.real_runs/DRECOVER001-O1-20261124-01/scripts/o1_prereg.py\"}"
+        },
+        "6": {
+          "id": "call_06_1cpfdT9OocLK2jFRYkGf2198",
+          "name": "sha256_file",
+          "arguments": "{\"path\": \"D:/RCAIDE/.real_runs/DRECOVER001-O1-20261124-01/scripts/o1_retire_stale.py\"}"
+        },
+        "7": {
+          "id": "call_07_Q3EgbkFzJcr5HQy8e7j89718",
+          "name": "sha256_file",
+          "arguments": "{\"path\": \"D:/RCAIDE/.real_runs/DRECOVER001-O1-20261124-01/scripts/o1_run.py\"}"
+        },
+        "8": {
+          "id": "call_08_1403XAbkvZjFJptovhGp4377",
+          "name": "sha256_file",
+          "arguments": "{\"path\": \"D:/RCAIDE/.real_runs/DRECOVER001-O1-20261124-01/scripts/o1_selftest.py\"}"
+        },
+        "9": {
+          "id": "call_09_KfxRFizmrKCF2uaUCO690734",
+          "name": "sha256_file",
+          "arguments": "{\"path\": \"D:/RCAIDE/.real_runs/DRECOVER001-O1-20261124-01/scripts/o1_verify_binding.py\"}"
+        },
+        "10": {
+          "id": "call_10_KNmQBbUpeUdJNbleQLJx5837",
+          "name": "list_dir",
+          "arguments": "{\"path\": \"D:/RCAIDE/.real_runs/DRECOVER001-O1-20261124-01/cases/O1-M190\"}"
+        },
+        "11": {
+          "id": "call_11_AmghDWNzZWaYvaFWf2EO1811",
+          "name": "read_text",
+          "arguments": "{\"path\": \"D:/RCAIDE/.real_runs/DRECOVER001-O1-20261124-01/o1_retire_record.json\"}"
+        }
+      },
+      "results": [
+        {
+          "name": "sha256_file",
+          "arguments": {
+            "path": "D:/RCAIDE/.real_runs/DRECOVER001-O1-20261124-01/scripts/o1_admit_case.py"
+          },
+          "result": {
+            "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\scripts\\o1_admit_case.py",
+            "sha256": "d79be02ec4494a3937126f88cf9040b9c77067b6c1b26780715ecde605f316b8",
+            "bytes": 7463
+          }
+        },
+        {
+          "name": "sha256_file",
+          "arguments": {
+            "path": "D:/RCAIDE/.real_runs/DRECOVER001-O1-20261124-01/scripts/o1_arms.py"
+          },
+          "result": {
+            "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\scripts\\o1_arms.py",
+            "sha256": "2fbcb271ff00b4c472b7d6737856a707bb982601a42f462476ee7d332bdb9870",
+            "bytes": 27338
+          }
+        },
+        {
+          "name": "sha256_file",
+          "arguments": {
+            "path": "D:/RCAIDE/.real_runs/DRECOVER001-O1-20261124-01/scripts/o1_build_dossier.py"
+          },
+          "result": {
+            "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\scripts\\o1_build_dossier.py",
+            "sha256": "e27899e44575f877297e8da136c9966c0bbf510e355c7116c8eab03bba6ad6fd",
+            "bytes": 14592
+          }
+        },
+        {
+          "name": "sha256_file",
+          "arguments": {
+            "path": "D:/RCAIDE/.real_runs/DRECOVER001-O1-20261124-01/scripts/o1_eval.py"
+          },
+          "result": {
+            "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\scripts\\o1_eval.py",
+            "sha256": "cd5d4b0d7c2ee80e61cc1b855d31ec724169bf200421881213ebab52406898b8",
+            "bytes": 12558
+          }
+        },
+        {
+          "name": "sha256_file",
+          "arguments": {
+            "path": "D:/RCAIDE/.real_runs/DRECOVER001-O1-20261124-01/scripts/o1_make_go.py"
+          },
+          "result": {
+            "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\scripts\\o1_make_go.py",
+            "sha256": "a8ee594f3094aab7b95225ba0e676513e15b2434c21a0887e95f60a791926ee3",
+            "bytes": 18303
+          }
+        },
+        {
+          "name": "sha256_file",
+          "arguments": {
+            "path": "D:/RCAIDE/.real_runs/DRECOVER001-O1-20261124-01/scripts/o1_prereg.py"
+          },
+          "result": {
+            "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\scripts\\o1_prereg.py",
+            "sha256": "ac1493e5e35c3c4911077cda6049f7f1d88d5e064bc9d09ccdd171fc7d78acee",
+            "bytes": 17547
+          }
+        },
+        {
+          "name": "sha256_file",
+          "arguments": {
+            "path": "D:/RCAIDE/.real_runs/DRECOVER001-O1-20261124-01/scripts/o1_retire_stale.py"
+          },
+          "result": {
+            "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\scripts\\o1_retire_stale.py",
+            "sha256": "3eaabda4c4d64829c4faf9ed0eeace8a091cf3a9437e1036f5b9276c281e706d",
+            "bytes": 7024
+          }
+        },
+        {
+          "name": "sha256_file",
+          "arguments": {
+            "path": "D:/RCAIDE/.real_runs/DRECOVER001-O1-20261124-01/scripts/o1_run.py"
+          },
+          "result": {
+            "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\scripts\\o1_run.py",
+            "sha256": "86f0187a029e5e9284fe9d59a48151176b32c693552a2500569f598cd77a4248",
+            "bytes": 23873
+          }
+        },
+        {
+          "name": "sha256_file",
+          "arguments": {
+            "path": "D:/RCAIDE/.real_runs/DRECOVER001-O1-20261124-01/scripts/o1_selftest.py"
+          },
+          "result": {
+            "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\scripts\\o1_selftest.py",
+            "sha256": "2baee2859132dae3ab2c63ed61a2de158300d384513b3b0bf0ba25e9c67c2331",
+            "bytes": 7571
+          }
+        },
+        {
+          "name": "sha256_file",
+          "arguments": {
+            "path": "D:/RCAIDE/.real_runs/DRECOVER001-O1-20261124-01/scripts/o1_verify_binding.py"
+          },
+          "result": {
+            "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\scripts\\o1_verify_binding.py",
+            "sha256": "50ba4a31d7d8311de1d98d6e0e27d0ff2eb5c8f28f4b414f8797639d12155742",
+            "bytes": 8347
+          }
+        },
+        {
+          "name": "list_dir",
+          "arguments": {
+            "path": "D:/RCAIDE/.real_runs/DRECOVER001-O1-20261124-01/cases/O1-M190"
+          },
+          "result": {
+            "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\cases\\O1-M190",
+            "entries": [
+              {
+                "name": "DRY_COND_FOMAML_KSHOT_BO",
+                "bytes": null,
+                "is_dir": true
+              },
+              {
+                "name": "DRY_COND_SUPERVISED_KSHOT_BO",
+                "bytes": null,
+                "is_dir": true
+              },
+              {
+                "name": "DRY_SOBOL_BO",
+                "bytes": null,
+                "is_dir": true
+              },
+              {
+                "name": "PREFLIGHT",
+                "bytes": null,
+                "is_dir": true
+              }
+            ],
+            "truncated": false
+          }
+        },
+        {
+          "name": "read_text",
+          "arguments": {
+            "path": "D:/RCAIDE/.real_runs/DRECOVER001-O1-20261124-01/o1_retire_record.json"
+          },
+          "result": {
+            "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\o1_retire_record.json",
+            "bytes_read": 1508,
+            "truncated": false,
+            "text": "{\r\n  \"created_utc\": \"2026-11-24T12:08:46Z\",\r\n  \"dossier_on_disk\": {\r\n    \"bytes\": 10962,\r\n    \"path\": \"D:\\\\RCAIDE\\\\.real_runs\\\\DRECOVER001-O1-20261124-01\\\\o1_a5_dossier.md\",\r\n    \"sha256\": \"c2497e46386a1ddccd98593207449fbac9197c2bbcc335657c23f4defe47efa7\"\r\n  },\r\n  \"dry_run\": false,\r\n  \"kept\": [],\r\n  \"preregistration_on_disk\": {\r\n    \"bytes\": 13909,\r\n    \"path\": \"D:\\\\RCAIDE\\\\.real_runs\\\\DRECOVER001-O1-20261124-01\\\\o1_preregistration.json\",\r\n    \"sha256\": \"d810c83a6371089dd306fe4ec8948595817d036022e47e9a83a32b5e8890791b\"\r\n  },\r\n  \"retired\": [\r\n    {\r\n      \"archived_as\": \"D:\\\\RCAIDE\\\\.real_runs\\\\DRECOVER001-O1-20261124-01\\\\a5_review\\\\history\\\\verdict_20261124T120846Z_f781a265cadbbb43.json\",\r\n      \"bytes\": 8351,\r\n      \"path\": \"D:\\\\RCAIDE\\\\.real_runs\\\\DRECOVER001-O1-20261124-01\\\\a5_review\\\\verdict.json\",\r\n      \"reason\": \"verdict binds dossier 'dc4d7f2cf680c2fa670c6a1e34e333a84801134c7e681a223bd20a00e503844a', disk is 'c2497e46386a1ddccd98593207449fbac9197c2bbcc335657c23f4defe47efa7'\",\r\n      \"removed_from_the_live_path\": true,\r\n      \"sha256\": \"f781a265cadbbb430e83806e11ca1c82374779ceea90aa0adb67abb371b54d0d\",\r\n      \"target_dir\": \"D:\\\\RCAIDE\\\\.real_runs\\\\DRECOVER001-O1-20261124-01\\\\a5_review\\\\history\"\r\n    }\r\n  ],\r\n  \"rule\": \"an artifact is retired only when it names bytes that are not on disk; it is copied into dated history and then removed from the live path, never deleted outright, so the record of what was ever reviewed survives\",\r\n  \"schema\": \"dreal005.o1_retire_record.v1\"\r\n}\r\n"
+          }
+        }
+      ]
+    },
+    {
+      "hop": 3,
+      "content": "All ten frozen code files and the preregistration hash match exactly. The retire record confirms a stale verdict (bound to dc4d7f... ) was archived and removed. Now let me examine the case directories for any physical artifacts and inspect the ranking code.",
+      "tool_calls": {
+        "0": {
+          "id": "call_00_U29gQ8ElSpWpccjZWRIs0215",
+          "name": "list_dir",
+          "arguments": "{\"path\": \"D:/RCAIDE/.real_runs/DRECOVER001-O1-20261124-01/cases/O1-M190/DRY_COND_FOMAML_KSHOT_BO\"}"
+        },
+        "1": {
+          "id": "call_01_6bhJdMDNcZzoqZRbpOLN5739",
+          "name": "list_dir",
+          "arguments": "{\"path\": \"D:/RCAIDE/.real_runs/DRECOVER001-O1-20261124-01/cases/O1-M190/DRY_COND_SUPERVISED_KSHOT_BO\"}"
+        },
+        "2": {
+          "id": "call_02_RM0IpulPPnzp4DJuIk3n8530",
+          "name": "list_dir",
+          "arguments": "{\"path\": \"D:/RCAIDE/.real_runs/DRECOVER001-O1-20261124-01/cases/O1-M190/DRY_SOBOL_BO\"}"
+        },
+        "3": {
+          "id": "call_03_7x2ySYDphvbHQnakWITy0252",
+          "name": "list_dir",
+          "arguments": "{\"path\": \"D:/RCAIDE/.real_runs/DRECOVER001-O1-20261124-01/cases/O1-M190/PREFLIGHT\"}"
+        },
+        "4": {
+          "id": "call_04_SRmDc2FCd9nTblNJ82sw0690",
+          "name": "grep",
+          "arguments": "{\"pattern\": \"def kshot_ranked_candidates\", \"path\": \"D:/RCAIDE/.real_runs/DRECOVER001-O1-20261124-01/scripts/o1_arms.py\"}"
+        }
+      },
+      "results": [
+        {
+          "name": "list_dir",
+          "arguments": {
+            "path": "D:/RCAIDE/.real_runs/DRECOVER001-O1-20261124-01/cases/O1-M190/DRY_COND_FOMAML_KSHOT_BO"
+          },
+          "result": {
+            "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\cases\\O1-M190\\DRY_COND_FOMAML_KSHOT_BO",
+            "entries": [
+              {
+                "name": "o1-dry-coarse",
+                "bytes": null,
+                "is_dir": true
+              }
+            ],
+            "truncated": false
+          }
+        },
+        {
+          "name": "list_dir",
+          "arguments": {
+            "path": "D:/RCAIDE/.real_runs/DRECOVER001-O1-20261124-01/cases/O1-M190/DRY_COND_SUPERVISED_KSHOT_BO"
+          },
+          "result": {
+            "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\cases\\O1-M190\\DRY_COND_SUPERVISED_KSHOT_BO",
+            "entries": [
+              {
+                "name": "o1-dry-coarse",
+                "bytes": null,
+                "is_dir": true
+              }
+            ],
+            "truncated": false
+          }
+        },
+        {
+          "name": "list_dir",
+          "arguments": {
+            "path": "D:/RCAIDE/.real_runs/DRECOVER001-O1-20261124-01/cases/O1-M190/DRY_SOBOL_BO"
+          },
+          "result": {
+            "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\cases\\O1-M190\\DRY_SOBOL_BO",
+            "entries": [
+              {
+                "name": "o1-dry-coarse",
+                "bytes": null,
+                "is_dir": true
+              }
+            ],
+            "truncated": false
+          }
+        },
+        {
+          "name": "list_dir",
+          "arguments": {
+            "path": "D:/RCAIDE/.real_runs/DRECOVER001-O1-20261124-01/cases/O1-M190/PREFLIGHT"
+          },
+          "result": {
+            "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\cases\\O1-M190\\PREFLIGHT",
+            "entries": [
+              {
+                "name": "o1-s00-coarse",
+                "bytes": null,
+                "is_dir": true
+              }
+            ],
+            "truncated": false
+          }
+        },
+        {
+          "name": "grep",
+          "arguments": {
+            "pattern": "def kshot_ranked_candidates",
+            "path": "D:/RCAIDE/.real_runs/DRECOVER001-O1-20261124-01/scripts/o1_arms.py"
+          },
+          "result": {
+            "pattern": "def kshot_ranked_candidates",
+            "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\scripts\\o1_arms.py",
+            "hits": [
+              {
+                "file": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\scripts\\o1_arms.py",
+                "line": 196,
+                "text": "def kshot_ranked_candidates(arm_name: str, task_key: str,"
+              }
+            ],
+            "truncated": false
+          }
+        }
+      ]
+    },
+    {
+      "hop": 4,
+      "content": "",
+      "tool_calls": {
+        "0": {
+          "id": "call_00_iMNidumtq02uuqClgZ0I0644",
+          "name": "grep",
+          "arguments": "{\"path\": \"D:/RCAIDE/.real_runs/DRECOVER001-O1-20261124-01/cases/O1-M190\", \"pattern\": \"\\\\.polar$|case_result\\\\.json\", \"max_hits\": 50}"
+        },
+        "1": {
+          "id": "call_01_uzrzDmgd9O6Z193XgxPR0594",
+          "name": "read_text",
+          "arguments": "{\"path\": \"D:/RCAIDE/.real_runs/DRECOVER001-O1-20261124-01/scripts/o1_arms.py\", \"max_bytes\": 14000}"
+        }
+      },
+      "results": [
+        {
+          "name": "grep",
+          "arguments": {
+            "path": "D:/RCAIDE/.real_runs/DRECOVER001-O1-20261124-01/cases/O1-M190",
+            "pattern": "\\.polar$|case_result\\.json",
+            "max_hits": 50
+          },
+          "result": {
+            "pattern": "\\.polar$|case_result\\.json",
+            "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\cases\\O1-M190",
+            "hits": [],
+            "truncated": false
+          }
+        },
+        {
+          "name": "read_text",
+          "arguments": {
+            "path": "D:/RCAIDE/.real_runs/DRECOVER001-O1-20261124-01/scripts/o1_arms.py",
+            "max_bytes": 14000
+          },
+          "result": {
+            "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\scripts\\o1_arms.py",
+            "bytes_read": 14000,
+            "truncated": true,
+            "text": "\"\"\"O1: the three-arm warm-start comparison required by Issue #15 section 6.\n\n    SOBOL_BO                -- three LHS extra initialisation designs, then the shared GP\n    COND_SUPERVISED_KSHOT_BO -- three designs chosen by the frozen 16D conditional\n                               supervised checkpoint after K=3 support adaptation\n    COND_FOMAML_KSHOT_BO    -- the same, from the frozen 16D conditional FOMAML checkpoint\n\nEverything else is held equal and lives in this one module so it cannot drift:\n\n* one shared support set of three real designs (baseline plus two LHS draws), evaluated\n  once for real and charged in full, as equivalent cost, to every arm;\n* one pre-generated candidate pool of coordinates (no truth is ever pre-computed for it);\n* one GP/acquisition backend with identical hyperparameters and seed;\n* one coarse/refine alpha recipe, one lift tolerance, one audit gate, one admission gate.\n\nThe only thing an arm is allowed to influence is which three extra designs it starts from.\nAfter that, each arm's adaptively proposed designs come from the same GP fed only with\nthat arm's own real feedback.\n\nCost model (preregistered): one design = two charged VSPAERO starts and 20 internal alpha\ncases (7 coarse + 13 refine). Per arm per pairing the caps are 12 designs / 24 starts /\n160 internal, and 160 internal binds, so an arm can afford exactly eight designs: the\nthree shared support designs plus three warm-start designs plus two adaptive designs.\nThree arms therefore cost 48 equivalent starts and 480 internal cases; the three shared\nsupport designs are solved once, so the physical bill is 36 starts.\n\"\"\"\nfrom __future__ import annotations\n\nimport hashlib\nimport json\nimport math\nimport sys\nfrom dataclasses import dataclass, field\nfrom pathlib import Path\nfrom typing import Any, Dict, List, Optional, Sequence, Tuple\n\nimport numpy as np\n\nREPO = Path(r\"D:/RCAIDE/.worktrees/dreal005-20261124\")\nRUN = Path(r\"D:/RCAIDE/.real_runs/DRECOVER001-O1-20261124-01\")\nA0_RUN = Path(r\"D:/RCAIDE/.real_runs/DRECOVER001-A0-20261124-01\")\nsys.path.insert(0, str(REPO))\n\nfrom research.concorde_metaopt.dreal001.geometry.task_spec import TASK_SPEC  # noqa: E402\nfrom research.concorde_metaopt.dreal001.meta.meta_dataset import (  # noqa: E402\n    Observation, TrainNormalizer,\n)\nfrom research.concorde_metaopt.dreal001.meta.production import (  # noqa: E402\n    TaskContext, context_features,\n)\nfrom research.concorde_metaopt.dreal001.meta.real_a0_ablation import (  # noqa: E402\n    DEFAULT_FEATURE_SPEC, _append_context, _forward_np, _maml, _maml_config,\n)\nfrom research.concorde_metaopt.dreal001.ops import o0_short_bo as o0  # noqa: E402\nfrom research.concorde_metaopt.dreal001.optimizers import recovery_bo  # noqa: E402\n\nimport o1_eval as ev  # noqa: E402\n\nSCHEMA = \"dreal005.o1_three_arm.v1\"\nPROTOCOL_ID = \"O1-THREE-ARM-20261124\"\n\nARMS: Tuple[str, ...] = (\"SOBOL_BO\", \"COND_SUPERVISED_KSHOT_BO\", \"COND_FOMAML_KSHOT_BO\")\nCHECKPOINT_ARM = {\n    \"COND_SUPERVISED_KSHOT_BO\": \"COND_SUPERVISED_16D\",\n    \"COND_FOMAML_KSHOT_BO\": \"COND_FOMAML_16D\",\n}\n\n# The frozen local subspace and the alpha recipe are inherited verbatim from O0: the\n# contract requires one geometry/alpha algorithm shared by every arm.\nSUBSPACE_LOWER = o0.SUBSPACE_LOWER\nSUBSPACE_UPPER = o0.SUBSPACE_UPPER\nALPHA_PLAN = o0.alpha_plan()\n\nSHARED_SUPPORT_COUNT = 3\nWARM_START_COUNT = 3\nSHARED_SUPPORT_SEED = 20261124\nWARM_START_SEED = 20261125\nCANDIDATE_POOL_COUNT = 256\nCANDIDATE_POOL_SEED = 20261126\nGP_SEED = 7\nPAIRING_SEED = 7\nK_SUPPORT = 3\n\nINTERNAL_PER_DESIGN = ALPHA_PLAN[\"coarse_internal_cases\"] + ALPHA_PLAN[\"refine_internal_cases\"]\nSTARTS_PER_DESIGN = 2\n\nCAPS = {\n    \"max_designs_per_arm\": 12,\n    \"max_starts_per_arm\": 24,\n    \"max_internal_per_arm\": 160,\n    \"max_starts_per_design\": 3,\n    \"max_internal_per_design\": 20,\n    \"max_designs_all_arms\": 36,\n    \"max_starts_all_arms\": 72,\n    \"max_internal_all_arms\": 480,\n    # 160 internal / 20 per design binds before the 12-design and 24-start caps do.\n    \"affordable_designs_per_arm\": 8,\n    \"solver_timeout_s\": o0.CAPS[\"solver_timeout_s\"],\n    \"parallelism\": 1,\n    \"retries\": 0,\n}\n\n# Preregistered target, fixed before any O1 result exists. The reference point is the\n# pre-designated baseline design inside the shared support; a 0.1% Di reduction is used\n# because it is an order of magnitude above the 1e-3 relative lift tolerance that bounds\n# the reported drag, and because O0 already demonstrated a 0.2394% effect is reachable.\nTARGET_IMPROVEMENT_FRACTION = 1e-3\n\n\ndef sha(path: Path) -> str:\n    h = hashlib.sha256()\n    with open(path, \"rb\") as handle:\n        for chunk in iter(lambda: handle.read(1 << 20), b\"\"):\n            h.update(chunk)\n    return h.hexdigest()\n\n\ndef canon(payload: Any) -> str:\n    return hashlib.sha256(json.dumps(payload, sort_keys=True, separators=(\",\", \":\"),\n                                     ensure_ascii=False).encode(\"utf-8\")).hexdigest()\n\n\ndef support_designs() -> List[Tuple[float, ...]]:\n    \"\"\"Three pre-designated shared support designs; the baseline is always the first.\"\"\"\n    points = recovery_bo.generate_initial_designs(SUBSPACE_LOWER, SUBSPACE_UPPER,\n                                                  count=SHARED_SUPPORT_COUNT,\n                                                  seed=SHARED_SUPPORT_SEED)\n    designs = [tuple(float(v) for v in o0.subspace_to_design(p)) for p in points]\n    designs[0] = tuple(float(v) for v in o0.BASELINE_X12)\n    unique: List[Tuple[float, ...]] = []\n    for design in designs:\n        if not any(np.max(np.abs(np.array(design) - np.array(old))) <= 1e-12 for old in unique):\n            unique.append(design)\n    if len(unique) != SHARED_SUPPORT_COUNT:\n        raise RuntimeError(\"shared support designs collapsed to %d\" % (len(unique),))\n    return unique\n\n\ndef candidate_pool() -> List[Tuple[float, ...]]:\n    \"\"\"The common candidate pool: coordinates only, never a pre-computed objective.\"\"\"\n    points = recovery_bo.generate_initial_designs(SUBSPACE_LOWER, SUBSPACE_UPPER,\n                                                  count=CANDIDATE_POOL_COUNT,\n                                                  seed=CANDIDATE_POOL_SEED)\n    return [tuple(float(v) for v in o0.subspace_to_design(p)) for p in points]\n\n\ndef sobol_warm_start() -> List[Tuple[float, ...]]:\n    points = recovery_bo.generate_initial_designs(SUBSPACE_LOWER, SUBSPACE_UPPER,\n                                                  count=WARM_START_COUNT,\n                                                  seed=WARM_START_SEED)\n    return [tuple(float(v) for v in o0.subspace_to_design(p)) for p in points]\n\n\ndef load_a0_normalizer() -> TrainNormalizer:\n    payload = json.loads((A0_RUN / \"training\" / \"a0_normalizer.json\").read_text(encoding=\"utf-8\"))\n    return TrainNormalizer(\n        x_mean=np.array(payload[\"x_mean\"], dtype=float),\n        x_scale=np.array(payload[\"x_scale\"], dtype=float),\n        y_mean=float(payload[\"y_mean\"]), y_scale=float(payload[\"y_scale\"]),\n        fit_observation_ids=tuple(payload[\"fit_observation_ids\"]),\n    )\n\n\ndef load_checkpoint(arm_name: str) -> Tuple[Any, Dict[str, Any]]:\n    \"\"\"Load the frozen A0 checkpoint for a K-shot arm, with the grid-selected config.\"\"\"\n    grid = json.loads((A0_RUN / \"training\" / \"a0_grid_search.json\").read_text(encoding=\"utf-8\"))\n    chosen = grid[\"chosen\"][arm_name]\n    config = o0cfg = None\n    from research.concorde_metaopt.dreal001.meta.real_a0_ablation import AblationConfig\n    base = AblationConfig()\n    config = base.replace(inner_lr=float(chosen[\"inner_lr\"]),\n                          inner_steps=int(chosen[\"inner_steps\"]),\n                          seed=PAIRING_SEED, validation_k=1)\n    maml_cfg = _maml_config(16, config)\n    path = A0_RUN / \"training\" / \"checkpoints\" / (\"%s_k3_seed7.npz\" % (arm_name,))\n    if not path.exists():\n        raise FileNotFoundError(\"missing A0 checkpoint %s\" % (path,))\n    with np.load(path) as data:\n        keys = sorted(data.files)\n        tensors = [np.array(data[k], dtype=float) for k in keys]\n    params = _maml().ParameterSet(tensors=tensors)\n    return params, {\"checkpoint_path\": str(path), \"checkpoint_sha256\": sha(path),\n                    \"maml_config\": maml_cfg.to_dict(), \"ablation_config\": config.as_dict(),\n                    \"grid_selection\": chosen, \"tensor_names\": keys,\n                    \"input_dim\": maml_cfg.input_dim}\n\n\ndef _unit_designs(designs: Sequence[Sequence[float]],\n                  normalizer: TrainNormalizer) -> np.ndarray:\n    matrix = np.asarray(designs, dtype=float)\n    if matrix.ndim != 2 or matrix.shape[1] != 12:\n        raise ValueError(\"design matrix must be (N, 12)\")\n    return (matrix - normalizer.x_mean) / normalizer.x_scale\n\n\ndef kshot_ranked_candidates(arm_name: str, task_key: str,\n                            support_rows: Sequence[Observation],\n                            pool: Sequence[Tuple[float, ...]]) -> Dict[str, Any]:\n    \"\"\"Rank the common candidate pool with one frozen K-shot model, no feedback used.\"\"\"\n    params, checkpoint_meta = load_checkpoint(arm_name)\n    normalizer = load_a0_normalizer()\n    maml_cfg = _maml().MAMLConfig(**checkpoint_meta[\"maml_config\"])\n    task = ev.task_spec(task_key)\n    cl_target = task.lift_target_n / (task.dynamic_pressure_pa * 358.25)\n    context = context_features(task, TaskContext(cl_target=cl_target), DEFAULT_FEATURE_SPEC)\n    if len(support_rows) != K_SUPPORT:\n        raise ValueError(\"K-shot arm needs %d support rows, got %d\"\n                         % (K_SUPPORT, len(support_rows)))\n    sx, sy = normalizer.arrays(list(support_rows))\n    sx16 = _append_context(sx, context)\n    episode = _maml().TaskEpisode(sx16, sy, sx16[:1], np.zeros((1, 1)), \"support_only\")\n    adapted, inner_losses = _maml().inner_adapt(params, episode, maml_cfg)\n    unit = _unit_designs(pool, normalizer)\n    unit16 = _append_context(unit, context)\n    predicted = _forward_np(adapted, unit16)[:, 0] * normalizer.y_scale + normalizer.y_mean\n    if not np.all(np.isfinite(predicted)):\n        raise ValueError(\"nonfinite K-shot prediction\")\n    order = np.argsort(predicted, kind=\"stable\")\n    return {\n        \"arm\": arm_name,\n        \"task_id\": task.task_id,\n        \"support_observation_ids\": [row.observation_id for row in support_rows],\n        \"context_vector\": [float(v) for v in context],\n        \"inner_losses\": [float(v) for v in inner_losses],\n        \"predicted_min\": float(predicted.min()),\n        \"predicted_max\": float(predicted.max()),\n        \"predicted_mean\": float(predicted.mean()),\n        \"order\": [int(i) for i in order],\n        \"predicted\": predicted,\n        \"checkpoint\": checkpoint_meta,\n    }\n\n\n@dataclass\nclass DesignRecord:\n    arm: str\n    role: str\n    design_index: int\n    tag: str\n    x12: Tuple[float, ...]\n    design_id: str = \"\"\n    is_baseline: bool = False\n    starts: int = 0\n    internal: int = 0\n    status: str = \"PENDING\"\n    feasible: bool = False\n    di_n: Optional[float] = None\n    cl: Optional[float] = None\n    cdi: Optional[float] = None\n    alpha_deg: Optional[float] = None\n    sref_m2: Optional[float] = None\n    q_pa: Optional[float] = None\n    lift_rel_error: Optional[float] = None\n    failure_kind: Optional[str] = None\n    detail: str = \"\"\n    case_ids: List[str] = field(default_factory=list)\n    acquisition: Dict[str, Any] = field(default_factory=dict)\n    predicted_di_n: Optional[float] = None\n    admission_certificate_path: Optional[str] = None\n    admission_certificate_sha256: Optional[str] = None\n    audit_path: Optional[str] = None\n\n    def __post_init__(self) -> None:\n        ident = o0.design_identity(list(self.x12))\n        self.design_id = ident[\"design_id\"]\n        self.is_baseline = bool(ident[\"is_baseline\"])\n        if not self.tag:\n            self.tag = \"d%02d\" % (self.design_index,)\n\n    def as_dict(self) -> Dict[str, Any]:\n        payload = dict(self.__dict__)\n        payload[\"x12\"] = list(self.x12)\n        return payload\n\n\nclass ArmLedger:\n    \"\"\"Per-arm accounting, with the shared support cost carried in full.\"\"\"\n\n    def __init__(self, arm: str) -> None:\n        self.arm = arm\n        self.records: List[DesignRecord] = []\n        self.shared_support_carried = False\n\n    def add(self, record: DesignRecord) -> None:\n        if len(self.records) >= CAPS[\"affordable_designs_per_arm\"]:\n            raise RuntimeError(\"%s would exceed the affordable design count of %d\"\n                               % (self.arm, CAPS[\"affordable_designs_per_arm\"]))\n        self.records.append(record)\n\n    def totals(self) -> Dict[str, int]:\n        return {\n            \"designs\": len(self.records),\n            \"starts\": sum(r.starts for r in self.records),\n            \"internal\": sum(r.internal for r in self.records),\n            \"admitted\": sum(1 for r in self.records if r.feasible),\n            \"failed\": sum(1 for r in self.records if not r.feasible and r.status != \"PENDING\"),\n        }\n\n    def carry_shared_support(self, support_records: Sequence[DesignRecord]) -> None:\n        if self.shared_support_carried:\n            raise RuntimeError(\"shared support already carried into %s\" % (self.arm,))\n        for record in support_records:\n            if not record.feasible:\n                raise RuntimeError(\"shared support design %s was not admitted; O1 cannot \"\n                                   \"pretend the support is real\" % (record.tag,))\n            clone = DesignRecord(arm=self.arm, role=\"shared_support\",\n                                 design_index=record.design_index, tag=record.tag,\n                                 x12=record.x12, starts=record.starts,\n                                 internal=record.internal, status=record.status,\n                                 feasible=record.feasible, di_n=record.di_n, cl=record.cl,\n                                 cdi=record.cdi, alpha_deg=record.alpha_deg,\n                                 sref_m2=record.sref_m2, q_pa=record.q_pa,\n                                 lift_rel_error=record.lift_rel_error,\n                                 "
+          }
+        }
+      ]
+    },
+    {
+      "hop": 5,
+      "content": "The K-shot ranking function uses only support_rows, task spec context, and the frozen checkpoint. Let me verify the A0 artifacts and the GO gating mechanism.",
+      "tool_calls": {
+        "0": {
+          "id": "call_00_ziiaNeWQClfaojx888nv2500",
+          "name": "list_dir",
+          "arguments": "{\"path\": \"D:/RCAIDE/.real_runs/DRECOVER001-A0-20261124-01/training\"}"
+        },
+        "1": {
+          "id": "call_01_QQIkMcICqCKZkTTeRukv9345",
+          "name": "list_dir",
+          "arguments": "{\"path\": \"D:/RCAIDE/.real_runs/DRECOVER001-A0-20261124-01/training/checkpoints\"}"
+        },
+        "2": {
+          "id": "call_02_U24QZ33PIHb7qtDEfY6t1671",
+          "name": "read_text",
+          "arguments": "{\"path\": \"D:/RCAIDE/.real_runs/DRECOVER001-O1-20261124-01/scripts/o1_make_go.py\", \"max_bytes\": 12000}"
+        }
+      },
+      "results": [
+        {
+          "name": "list_dir",
+          "arguments": {
+            "path": "D:/RCAIDE/.real_runs/DRECOVER001-A0-20261124-01/training"
+          },
+          "result": {
+            "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-A0-20261124-01\\training",
+            "entries": [
+              {
+                "name": "a0_grid_search.json",
+                "bytes": 5558,
+                "is_dir": false
+              },
+              {
+                "name": "a0_normalizer.json",
+                "bytes": 1489,
+                "is_dir": false
+              },
+              {
+                "name": "a0_resource.jsonl",
+                "bytes": 14599,
+                "is_dir": false
+              },
+              {
+                "name": "a0_resource.summary.json",
+                "bytes": 1174,
+                "is_dir": false
+              },
+              {
+                "name": "a0_result.json",
+                "bytes": 28289,
+                "is_dir": false
+              },
+              {
+                "name": "checkpoints",
+                "bytes": null,
+                "is_dir": true
+              }
+            ],
+            "truncated": false
+          }
+        },
+        {
+          "name": "list_dir",
+          "arguments": {
+            "path": "D:/RCAIDE/.real_runs/DRECOVER001-A0-20261124-01/training/checkpoints"
+          },
+          "result": {
+            "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-A0-20261124-01\\training\\checkpoints",
+            "entries": [
+              {
+                "name": "COND_FOMAML_16D_k0_seed19.npz",
+                "bytes": 14586,
+                "is_dir": false
+              },
+              {
+                "name": "COND_FOMAML_16D_k0_seed43.npz",
+                "bytes": 14586,
+                "is_dir": false
+              },
+              {
+                "name": "COND_FOMAML_16D_k0_seed7.npz",
+                "bytes": 14586,
+                "is_dir": false
+              },
+              {
+                "name": "COND_FOMAML_16D_k1_seed19.npz",
+                "bytes": 14586,
+                "is_dir": false
+              },
+              {
+                "name": "COND_FOMAML_16D_k1_seed43.npz",
+                "bytes": 14586,
+                "is_dir": false
+              },
+              {
+                "name": "COND_FOMAML_16D_k1_seed7.npz",
+                "bytes": 14586,
+                "is_dir": false
+              },
+              {
+                "name": "COND_FOMAML_16D_k3_seed19.npz",
+                "bytes": 14586,
+                "is_dir": false
+              },
+              {
+                "name": "COND_FOMAML_16D_k3_seed43.npz",
+                "bytes": 14586,
+                "is_dir": false
+              },
+              {
+                "name": "COND_FOMAML_16D_k3_seed7.npz",
+                "bytes": 14586,
+                "is_dir": false
+              },
+              {
+                "name": "COND_SUPERVISED_16D_k0_seed19.npz",
+                "bytes": 14586,
+                "is_dir": false
+              },
+              {
+                "name": "COND_SUPERVISED_16D_k0_seed43.npz",
+                "bytes": 14586,
+                "is_dir": false
+              },
+              {
+                "name": "COND_SUPERVISED_16D_k0_seed7.npz",
+                "bytes": 14586,
+                "is_dir": false
+              },
+              {
+                "name": "COND_SUPERVISED_16D_k1_seed19.npz",
+                "bytes": 14586,
+                "is_dir": false
+              },
+              {
+                "name": "COND_SUPERVISED_16D_k1_seed43.npz",
+                "bytes": 14586,
+                "is_dir": false
+              },
+              {
+                "name": "COND_SUPERVISED_16D_k1_seed7.npz",
+                "bytes": 14586,
+                "is_dir": false
+              },
+              {
+                "name": "COND_SUPERVISED_16D_k3_seed19.npz",
+                "bytes": 14586,
+                "is_dir": false
+              },
+              {
+                "name": "COND_SUPERVISED_16D_k3_seed43.npz",
+                "bytes": 14586,
+                "is_dir": false
+              },
+              {
+                "name": "COND_SUPERVISED_16D_k3_seed7.npz",
+                "bytes": 14586,
+                "is_dir": false
+              },
+              {
+                "name": "FOMAML_12D_k0_seed19.npz",
+                "bytes": 13562,
+                "is_dir": false
+              },
+              {
+                "name": "FOMAML_12D_k0_seed43.npz",
+                "bytes": 13562,
+                "is_dir": false
+              },
+              {
+                "name": "FOMAML_12D_k0_seed7.npz",
+                "bytes": 13562,
+                "is_dir": false
+              },
+              {
+                "name": "FOMAML_12D_k1_seed19.npz",
+                "bytes": 13562,
+                "is_dir": false
+              },
+              {
+                "name": "FOMAML_12D_k1_seed43.npz",
+                "bytes": 13562,
+                "is_dir": false
+              },
+              {
+                "name": "FOMAML_12D_k1_seed7.npz",
+                "bytes": 13562,
+                "is_dir": false
+              },
+              {
+                "name": "FOMAML_12D_k3_seed19.npz",
+                "bytes": 13562,
+                "is_dir": false
+              },
+              {
+                "name": "FOMAML_12D_k3_seed43.npz",
+                "bytes": 13562,
+                "is_dir": false
+              },
+              {
+                "name": "FOMAML_12D_k3_seed7.npz",
+                "bytes": 13562,
+                "is_dir": false
+              },
+              {
+                "name": "POOLED_PRETRAIN_12D_k0_seed19.npz",
+                "bytes": 13562,
+                "is_dir": false
+              },
+              {
+                "name": "POOLED_PRETRAIN_12D_k0_seed43.npz",
+                "bytes": 13562,
+                "is_dir": false
+              },
+              {
+                "name": "POOLED_PRETRAIN_12D_k0_seed7.npz",
+                "bytes": 13562,
+                "is_dir": false
+              },
+              {
+                "name": "POOLED_PRETRAIN_12D_k1_seed19.npz",
+                "bytes": 13562,
+                "is_dir": false
+              },
+              {
+                "name": "POOLED_PRETRAIN_12D_k1_seed43.npz",
+                "bytes": 13562,
+                "is_dir": false
+              },
+              {
+                "name": "POOLED_PRETRAIN_12D_k1_seed7.npz",
+                "bytes": 13562,
+                "is_dir": false
+              },
+              {
+                "name": "POOLED_PRETRAIN_12D_k3_seed19.npz",
+                "bytes": 13562,
+                "is_dir": false
+              },
+              {
+                "name": "POOLED_PRETRAIN_12D_k3_seed43.npz",
+                "bytes": 13562,
+                "is_dir": false
+              },
+              {
+                "name": "POOLED_PRETRAIN_12D_k3_seed7.npz",
+                "bytes": 13562,
+                "is_dir": false
+              },
+              {
+                "name": "RANDOM_INIT_k0_seed19.npz",
+                "bytes": 13562,
+                "is_dir": false
+              },
+              {
+                "name": "RANDOM_INIT_k0_seed43.npz",
+                "bytes": 13562,
+                "is_dir": false
+              },
+              {
+                "name": "RANDOM_INIT_k0_seed7.npz",
+                "bytes": 13562,
+                "is_dir": false
+              },
+              {
+                "name": "RANDOM_INIT_k1_seed19.npz",
+                "bytes": 13562,
+                "is_dir": false
+              },
+              {
+                "name": "RANDOM_INIT_k1_seed43.npz",
+                "bytes": 13562,
+                "is_dir": false
+              },
+              {
+                "name": "RANDOM_INIT_k1_seed7.npz",
+                "bytes": 13562,
+                "is_dir": false
+              },
+              {
+                "name": "RANDOM_INIT_k3_seed19.npz",
+                "bytes": 13562,
+                "is_dir": false
+              },
+              {
+                "name": "RANDOM_INIT_k3_seed43.npz",
+                "bytes": 13562,
+                "is_dir": false
+              },
+              {
+                "name": "RANDOM_INIT_k3_seed7.npz",
+                "bytes": 13562,
+                "is_dir": false
+              }
+            ],
+            "truncated": false
+          }
+        },
+        {
+          "name": "read_text",
+          "arguments": {
+            "path": "D:/RCAIDE/.real_runs/DRECOVER001-O1-20261124-01/scripts/o1_make_go.py",
+            "max_bytes": 12000
+          },
+          "result": {
+            "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\scripts\\o1_make_go.py",
+            "bytes_read": 12000,
+            "truncated": true,
+            "text": "\"\"\"Issue the Lead GO for the single O1 three-arm pairing.\n\nHard gates, none of them bypassable by hand-editing the output:\n  * the A5 verdict string must be exactly O1_THREE_ARM_REVIEW_PASS;\n  * the verdict must bind the current dossier and preregistration bytes by SHA256;\n  * a fresh mechanical verifier round over THESE dossier bytes must report\n    O1_BYTES_BOUND_MECHANICALLY with zero failures, written after the dossier, archived;\n  * every frozen code file in the preregistration must still match disk;\n  * the preregistration must declare zero physical starts already spent.\nA GO is issued by the Lead agent: not a human, not the A5 reviewer, and not a science claim.\n\nRun: python scripts/o1_make_go.py\n\"\"\"\nfrom __future__ import annotations\n\nimport hashlib\nimport json\nfrom datetime import datetime, timezone\nfrom pathlib import Path\n\nRUN = Path(r\"D:/RCAIDE/.real_runs/DRECOVER001-O1-20261124-01\")\nREPO = Path(r\"D:/RCAIDE/.worktrees/dreal005-20261124\")\nPRE = RUN / \"o1_preregistration.json\"\nDOSSIER = RUN / \"o1_a5_dossier.md\"\nRECEIPT = RUN / \"o1_dossier_receipt.json\"\nVERDICT = RUN / \"a5_review/verdict.json\"\nVERDICT_COPY = RUN / \"o1_a5_verdict.json\"\nVERIFY = RUN / \"o1_binding_verification.json\"\nGO = RUN / \"o1_go_record.json\"\nBLOCKED = RUN / \"o1_go_blocked.json\"\nEXPECTED = \"O1_THREE_ARM_REVIEW_PASS\"\n\n\ndef sha_bytes(data: bytes) -> str:\n    return hashlib.sha256(data).hexdigest()\n\n\ndef sha_file(path: Path) -> str:\n    return sha_bytes(path.read_bytes())\n\n\ndef canon(payload) -> str:\n    return sha_bytes(json.dumps(payload, sort_keys=True, separators=(\",\", \":\"),\n                                ensure_ascii=False).encode(\"utf-8\"))\n\n\ndef code_shas_digest(code_shas: dict) -> str:\n    \"\"\"The digest convention o1_build_dossier.py writes into the receipt.\n\n    It is json.dumps(sort_keys=True) with the DEFAULT separators, not the compact canonical\n    form used elsewhere. The two conventions differ by every space after a comma, so a GO that\n    hashed the block the other way would refuse a perfectly consistent receipt forever; the\n    builder and the two checkers must therefore agree on one convention, and this is it.\n    \"\"\"\n    return sha_bytes(json.dumps(code_shas, sort_keys=True).encode(\"utf-8\"))\n\n\ndef code_state(pre: dict) -> dict:\n    root = Path(pre[\"code\"][\"code_root\"])\n    state = {}\n    for name, expected in pre[\"code\"][\"code_shas\"].items():\n        path = Path(name)\n        if not path.is_absolute():\n            path = root / name\n            if not path.is_file():\n                path = REPO / name\n        current = sha_file(path) if path.is_file() else None\n        state[name] = {\"expected\": expected, \"current\": current, \"match\": current == expected}\n    return state\n\n\ndef prior_spend() -> dict:\n    \"\"\"What O1 itself has already spent. Zero until a real O1 batch runs.\"\"\"\n    spend = {\"designs\": 0, \"starts\": 0, \"internal\": 0, \"records\": []}\n    for path in sorted(RUN.glob(\"o1_batch_close*.json\")):\n        payload = json.loads(path.read_text(encoding=\"utf-8\"))\n        cost = payload.get(\"cost\") or {}\n        spend[\"starts\"] += int(cost.get(\"physical_solver_starts_actual\") or 0)\n        spend[\"records\"].append({\"record\": path.name, \"sha256\": sha_file(path),\n                                 \"starts\": cost.get(\"physical_solver_starts_actual\")})\n    for path in sorted(RUN.glob(\"o1_crash*.json\")):\n        payload = json.loads(path.read_text(encoding=\"utf-8\"))\n        cost = payload.get(\"cost\") or {}\n        spend[\"starts\"] += int(cost.get(\"physical_solver_starts_actual\") or 0)\n        spend[\"records\"].append({\"record\": path.name, \"sha256\": sha_file(path),\n                                 \"starts\": cost.get(\"physical_solver_starts_actual\")})\n    return spend\n\n\ndef main() -> int:\n    problems = []\n    pre_bytes = PRE.read_bytes()\n    pre = json.loads(pre_bytes.decode(\"utf-8\"))\n    dossier_bytes = DOSSIER.read_bytes()\n    dossier_sha = sha_bytes(dossier_bytes)\n    receipt = json.loads(RECEIPT.read_text(encoding=\"utf-8\")) if RECEIPT.is_file() else {}\n    verdict = json.loads(VERDICT.read_text(encoding=\"utf-8\")) if VERDICT.is_file() else {}\n\n    if not receipt:\n        problems.append(\"o1_dossier_receipt.json is missing; the dossier bytes are not bound \"\n                        \"by an external record\")\n    else:\n        receipt_sha = (receipt.get(\"dossier\") or {}).get(\"sha256\")\n        if receipt_sha != dossier_sha:\n            problems.append(\"dossier receipt binding is %r, current dossier is %s\"\n                            % (receipt_sha, dossier_sha))\n        if (receipt.get(\"dossier\") or {}).get(\"bytes\") != len(dossier_bytes):\n            problems.append(\"dossier receipt records %r bytes, the file has %d\"\n                            % ((receipt.get(\"dossier\") or {}).get(\"bytes\"), len(dossier_bytes)))\n        if (receipt.get(\"preregistration\") or {}).get(\"sha256\") != sha_bytes(pre_bytes):\n            problems.append(\"dossier receipt binds a different preregistration than the disk\")\n        if receipt.get(\"code_shas_sha256\") != code_shas_digest(pre[\"code\"][\"code_shas\"]):\n            problems.append(\"dossier receipt froze a different code_shas block\")\n\n    if not verdict:\n        problems.append(\"no a5_review/verdict.json exists; nothing has been independently reviewed\")\n    else:\n        if verdict.get(\"verdict\") != EXPECTED:\n            problems.append(\"A5 verdict is %r, expected %r\" % (verdict.get(\"verdict\"), EXPECTED))\n        if verdict.get(\"dossier_sha256\") != dossier_sha:\n            problems.append(\"A5 verdict binds dossier %r, current is %s\"\n                            % (verdict.get(\"dossier_sha256\"), dossier_sha))\n        if verdict.get(\"preregistration_sha256\") != sha_bytes(pre_bytes):\n            problems.append(\"A5 verdict binds a different preregistration than the disk\")\n\n    verifier_state = {}\n    if not VERIFY.is_file():\n        problems.append(\"no o1_binding_verification.json exists; the byte binding has never been \"\n                        \"mechanically verified, so this GO would authorise starts on unverified \"\n                        \"bytes\")\n    else:\n        ver = json.loads(VERIFY.read_text(encoding=\"utf-8\"))\n        verifier_state = {\n            \"path\": str(VERIFY), \"sha256\": sha_file(VERIFY),\n            \"status\": ver.get(\"status\"), \"check_count\": ver.get(\"check_count\"),\n            \"failure_count\": ver.get(\"failure_count\"),\n            \"dossier_sha256\": (ver.get(\"dossier\") or {}).get(\"sha256\"),\n            \"dossier_bytes\": (ver.get(\"dossier\") or {}).get(\"bytes\"),\n            \"created_utc\": ver.get(\"created_utc\"), \"archived_as\": ver.get(\"archived_as\"),\n        }\n        if ver.get(\"status\") != \"O1_BYTES_BOUND_MECHANICALLY\":\n            problems.append(\"binding verifier status is %r, not O1_BYTES_BOUND_MECHANICALLY\"\n                            % (ver.get(\"status\"),))\n        if int(ver.get(\"failure_count\") or 0) != 0:\n            problems.append(\"binding verifier reported %r failures: %r\"\n                            % (ver.get(\"failure_count\"), ver.get(\"problems\")))\n        if (ver.get(\"dossier\") or {}).get(\"sha256\") != dossier_sha:\n            problems.append(\"the verifier round read dossier %r but the disk has %s; the \"\n                            \"verification is stale and must be re-run\"\n                            % ((ver.get(\"dossier\") or {}).get(\"sha256\"), dossier_sha))\n        if int((ver.get(\"dossier\") or {}).get(\"bytes\") or -1) != len(dossier_bytes):\n            problems.append(\"the verifier recorded %r dossier bytes, the file has %d\"\n                            % ((ver.get(\"dossier\") or {}).get(\"bytes\"), len(dossier_bytes)))\n        created = str(ver.get(\"created_utc\") or \"\")\n        written = datetime.fromtimestamp(DOSSIER.stat().st_mtime, timezone.utc).strftime(\n            \"%Y-%m-%dT%H:%M:%SZ\")\n        if created < written:\n            problems.append(\"the verifier round (%s) predates the dossier bytes (%s); re-run \"\n                            \"scripts/o1_verify_binding.py after the dossier is final\"\n                            % (created, written))\n        if not ver.get(\"archived_as\"):\n            problems.append(\"the verifier round was not archived under a5_support/binding_history/, \"\n                            \"so its own bytes cannot be re-checked later\")\n\n    if int(pre.get(\"physical_solver_starts_actual\") or 0) != 0:\n        problems.append(\"the preregistration declares %r physical starts already spent; a GO for \"\n                        \"this pairing must be signed over a zero-physical dossier\"\n                        % (pre.get(\"physical_solver_starts_actual\"),))\n\n    state = code_state(pre)\n    for name, row in state.items():\n        if not row[\"match\"]:\n            problems.append(\"code sha drift: %s expected %s got %s\"\n                            % (name, row[\"expected\"], row[\"current\"]))\n\n    caps = pre[\"budgets\"][\"caps\"]\n    cost = pre[\"budgets\"][\"cost_model\"]\n    design_cap = int(caps[\"max_designs_per_arm\"])\n    starts_cap = int(caps[\"max_starts_per_arm\"])\n    internal_cap = int(caps[\"max_internal_per_arm\"])\n    affordable = int(cost[\"affordable_designs_per_arm\"])\n    # The internal ceiling binds before the design and start ceilings: 160 / 20 = 8 designs and\n    # 8 x 2 = 16 starts per arm, so the honest spendable amount is design-derived, not the stored\n    # 12-design / 24-start ceilings.\n    spendable_per_arm = {\n        \"designs\": min(design_cap, affordable),\n        \"starts\": min(starts_cap, affordable * int(cost[\"starts_per_design\"])),\n        \"internal\": min(internal_cap, affordable * int(cost[\"internal_per_design\"])),\n        \"derivation\": (\"min(stored_cap, affordable_designs x per_design_cost); the 160-internal \"\n                       \"ceiling binds first, so eight designs per arm is the honest number\"),\n    }\n    spendable_all = {\n        \"designs\": spendable_per_arm[\"designs\"] * 3,\n        \"starts\": spendable_per_arm[\"starts\"] * 3,\n        \"internal\": spendable_per_arm[\"internal\"] * 3,\n    }\n    if spendable_all[\"starts\"] > int(caps[\"max_starts_all_arms\"]):\n        problems.append(\"three-arm spendable starts %d exceed the frozen all-arm cap %d\"\n                        % (spendable_all[\"starts\"], int(caps[\"max_starts_all_arms\"])))\n    if spendable_all[\"internal\"] > int(caps[\"max_internal_all_arms\"]):\n        problems.append(\"three-arm spendable internal %d exceed the frozen all-arm cap %d\"\n                        % (spendable_all[\"internal\"], int(caps[\"max_internal_all_arms\"])))\n\n    prior = prior_spend()\n    authorized = {\n        \"designs\": spendable_all[\"designs\"] - prior[\"designs\"],\n        \"starts\": spendable_all[\"starts\"] - prior[\"starts\"],\n        \"internal\": spendable_all[\"internal\"] - prior[\"internal\"],\n    }\n    if min(authorized.values()) < 0:\n        problems.append(\"O1 already spent %r, which exceeds the spendable ceiling %r\"\n                        % (prior, spendable_all))\n\n    if GO.is_file():\n        existing = {}\n        try:\n            existing = json.loads(GO.read_text(encoding=\"utf-8\"))\n            existing_dossier = existing.get(\"a5_dossier_sha256\")\n        except Exception:  # noqa: BLE001\n            existing_dossier = None\n        claims_current = (existing_dossier == dossier_sha\n                          and existing.get(\"preregistration_sha256\") == sha_bytes(pre_bytes))\n        if claims_current:\n            problems.append(\"a GO for exactly these bytes already exists at %s (go_sha256 %r); \"\n                            \"re-issuing it would erase the record of when it was first issued\"\n                            % (GO, existing.get(\"go_sha256\")))\n        else:\n            problems.append(\"a GO exists at %s but binds dossier %r, not the bytes on disk \"\n                            \"(%s). Overwriting it in place would erase the record of which \"\n                            \"bytes were ever authorised; retire it first with \"\n                            \"scripts/o1_retire_stale.py, which archives it under go_history/ \"\n                            \"before removing it from the live path\" % (GO, ex"
+          }
+        }
+      ]
+    },
+    {
+      "hop": 6,
+      "content": "Let me read the remaining GO mechanism and the bond key validation.",
+      "tool_calls": {
+        "0": {
+          "id": "call_00_aJdm9Q6RjlqLSkW6QBoX6576",
+          "name": "read_text",
+          "arguments": "{\"max_bytes\": 8000, \"path\": \"D:/RCAIDE/.real_runs/DRECOVER001-O1-20261124-01/scripts/o1_make_go.py\"}"
+        },
+        "1": {
+          "id": "call_01_60EiYDQ1iredboHgjLwF8900",
+          "name": "read_text",
+          "arguments": "{\"max_bytes\": 12000, \"path\": \"D:/RCAIDE/.real_runs/DRECOVER001-O1-20261124-01/scripts/o1_retire_stale.py\"}"
+        },
+        "2": {
+          "id": "call_02_3m9z0wPX3RYrOc3zukut9693",
+          "name": "grep",
+          "arguments": "{\"path\": \"D:/RCAIDE/.real_runs/DRECOVER001-O1-20261124-01/scripts/o1_prereg.py\", \"pattern\": \"physical_solver_starts_actual|affordable_designs|internal_per_design|coarse_internal|refine_internal\"}"
+        }
+      },
+      "results": [
+        {
+          "name": "read_text",
+          "arguments": {
+            "max_bytes": 8000,
+            "path": "D:/RCAIDE/.real_runs/DRECOVER001-O1-20261124-01/scripts/o1_make_go.py"
+          },
+          "result": {
+            "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\scripts\\o1_make_go.py",
+            "bytes_read": 8000,
+            "truncated": true,
+            "text": "\"\"\"Issue the Lead GO for the single O1 three-arm pairing.\n\nHard gates, none of them bypassable by hand-editing the output:\n  * the A5 verdict string must be exactly O1_THREE_ARM_REVIEW_PASS;\n  * the verdict must bind the current dossier and preregistration bytes by SHA256;\n  * a fresh mechanical verifier round over THESE dossier bytes must report\n    O1_BYTES_BOUND_MECHANICALLY with zero failures, written after the dossier, archived;\n  * every frozen code file in the preregistration must still match disk;\n  * the preregistration must declare zero physical starts already spent.\nA GO is issued by the Lead agent: not a human, not the A5 reviewer, and not a science claim.\n\nRun: python scripts/o1_make_go.py\n\"\"\"\nfrom __future__ import annotations\n\nimport hashlib\nimport json\nfrom datetime import datetime, timezone\nfrom pathlib import Path\n\nRUN = Path(r\"D:/RCAIDE/.real_runs/DRECOVER001-O1-20261124-01\")\nREPO = Path(r\"D:/RCAIDE/.worktrees/dreal005-20261124\")\nPRE = RUN / \"o1_preregistration.json\"\nDOSSIER = RUN / \"o1_a5_dossier.md\"\nRECEIPT = RUN / \"o1_dossier_receipt.json\"\nVERDICT = RUN / \"a5_review/verdict.json\"\nVERDICT_COPY = RUN / \"o1_a5_verdict.json\"\nVERIFY = RUN / \"o1_binding_verification.json\"\nGO = RUN / \"o1_go_record.json\"\nBLOCKED = RUN / \"o1_go_blocked.json\"\nEXPECTED = \"O1_THREE_ARM_REVIEW_PASS\"\n\n\ndef sha_bytes(data: bytes) -> str:\n    return hashlib.sha256(data).hexdigest()\n\n\ndef sha_file(path: Path) -> str:\n    return sha_bytes(path.read_bytes())\n\n\ndef canon(payload) -> str:\n    return sha_bytes(json.dumps(payload, sort_keys=True, separators=(\",\", \":\"),\n                                ensure_ascii=False).encode(\"utf-8\"))\n\n\ndef code_shas_digest(code_shas: dict) -> str:\n    \"\"\"The digest convention o1_build_dossier.py writes into the receipt.\n\n    It is json.dumps(sort_keys=True) with the DEFAULT separators, not the compact canonical\n    form used elsewhere. The two conventions differ by every space after a comma, so a GO that\n    hashed the block the other way would refuse a perfectly consistent receipt forever; the\n    builder and the two checkers must therefore agree on one convention, and this is it.\n    \"\"\"\n    return sha_bytes(json.dumps(code_shas, sort_keys=True).encode(\"utf-8\"))\n\n\ndef code_state(pre: dict) -> dict:\n    root = Path(pre[\"code\"][\"code_root\"])\n    state = {}\n    for name, expected in pre[\"code\"][\"code_shas\"].items():\n        path = Path(name)\n        if not path.is_absolute():\n            path = root / name\n            if not path.is_file():\n                path = REPO / name\n        current = sha_file(path) if path.is_file() else None\n        state[name] = {\"expected\": expected, \"current\": current, \"match\": current == expected}\n    return state\n\n\ndef prior_spend() -> dict:\n    \"\"\"What O1 itself has already spent. Zero until a real O1 batch runs.\"\"\"\n    spend = {\"designs\": 0, \"starts\": 0, \"internal\": 0, \"records\": []}\n    for path in sorted(RUN.glob(\"o1_batch_close*.json\")):\n        payload = json.loads(path.read_text(encoding=\"utf-8\"))\n        cost = payload.get(\"cost\") or {}\n        spend[\"starts\"] += int(cost.get(\"physical_solver_starts_actual\") or 0)\n        spend[\"records\"].append({\"record\": path.name, \"sha256\": sha_file(path),\n                                 \"starts\": cost.get(\"physical_solver_starts_actual\")})\n    for path in sorted(RUN.glob(\"o1_crash*.json\")):\n        payload = json.loads(path.read_text(encoding=\"utf-8\"))\n        cost = payload.get(\"cost\") or {}\n        spend[\"starts\"] += int(cost.get(\"physical_solver_starts_actual\") or 0)\n        spend[\"records\"].append({\"record\": path.name, \"sha256\": sha_file(path),\n                                 \"starts\": cost.get(\"physical_solver_starts_actual\")})\n    return spend\n\n\ndef main() -> int:\n    problems = []\n    pre_bytes = PRE.read_bytes()\n    pre = json.loads(pre_bytes.decode(\"utf-8\"))\n    dossier_bytes = DOSSIER.read_bytes()\n    dossier_sha = sha_bytes(dossier_bytes)\n    receipt = json.loads(RECEIPT.read_text(encoding=\"utf-8\")) if RECEIPT.is_file() else {}\n    verdict = json.loads(VERDICT.read_text(encoding=\"utf-8\")) if VERDICT.is_file() else {}\n\n    if not receipt:\n        problems.append(\"o1_dossier_receipt.json is missing; the dossier bytes are not bound \"\n                        \"by an external record\")\n    else:\n        receipt_sha = (receipt.get(\"dossier\") or {}).get(\"sha256\")\n        if receipt_sha != dossier_sha:\n            problems.append(\"dossier receipt binding is %r, current dossier is %s\"\n                            % (receipt_sha, dossier_sha))\n        if (receipt.get(\"dossier\") or {}).get(\"bytes\") != len(dossier_bytes):\n            problems.append(\"dossier receipt records %r bytes, the file has %d\"\n                            % ((receipt.get(\"dossier\") or {}).get(\"bytes\"), len(dossier_bytes)))\n        if (receipt.get(\"preregistration\") or {}).get(\"sha256\") != sha_bytes(pre_bytes):\n            problems.append(\"dossier receipt binds a different preregistration than the disk\")\n        if receipt.get(\"code_shas_sha256\") != code_shas_digest(pre[\"code\"][\"code_shas\"]):\n            problems.append(\"dossier receipt froze a different code_shas block\")\n\n    if not verdict:\n        problems.append(\"no a5_review/verdict.json exists; nothing has been independently reviewed\")\n    else:\n        if verdict.get(\"verdict\") != EXPECTED:\n            problems.append(\"A5 verdict is %r, expected %r\" % (verdict.get(\"verdict\"), EXPECTED))\n        if verdict.get(\"dossier_sha256\") != dossier_sha:\n            problems.append(\"A5 verdict binds dossier %r, current is %s\"\n                            % (verdict.get(\"dossier_sha256\"), dossier_sha))\n        if verdict.get(\"preregistration_sha256\") != sha_bytes(pre_bytes):\n            problems.append(\"A5 verdict binds a different preregistration than the disk\")\n\n    verifier_state = {}\n    if not VERIFY.is_file():\n        problems.append(\"no o1_binding_verification.json exists; the byte binding has never been \"\n                        \"mechanically verified, so this GO would authorise starts on unverified \"\n                        \"bytes\")\n    else:\n        ver = json.loads(VERIFY.read_text(encoding=\"utf-8\"))\n        verifier_state = {\n            \"path\": str(VERIFY), \"sha256\": sha_file(VERIFY),\n            \"status\": ver.get(\"status\"), \"check_count\": ver.get(\"check_count\"),\n            \"failure_count\": ver.get(\"failure_count\"),\n            \"dossier_sha256\": (ver.get(\"dossier\") or {}).get(\"sha256\"),\n            \"dossier_bytes\": (ver.get(\"dossier\") or {}).get(\"bytes\"),\n            \"created_utc\": ver.get(\"created_utc\"), \"archived_as\": ver.get(\"archived_as\"),\n        }\n        if ver.get(\"status\") != \"O1_BYTES_BOUND_MECHANICALLY\":\n            problems.append(\"binding verifier status is %r, not O1_BYTES_BOUND_MECHANICALLY\"\n                            % (ver.get(\"status\"),))\n        if int(ver.get(\"failure_count\") or 0) != 0:\n            problems.append(\"binding verifier reported %r failures: %r\"\n                            % (ver.get(\"failure_count\"), ver.get(\"problems\")))\n        if (ver.get(\"dossier\") or {}).get(\"sha256\") != dossier_sha:\n            problems.append(\"the verifier round read dossier %r but the disk has %s; the \"\n                            \"verification is stale and must be re-run\"\n                            % ((ver.get(\"dossier\") or {}).get(\"sha256\"), dossier_sha))\n        if int((ver.get(\"dossier\") or {}).get(\"bytes\") or -1) != len(dossier_bytes):\n            problems.append(\"the verifier recorded %r dossier bytes, the file has %d\"\n                            % ((ver.get(\"dossier\") or {}).get(\"bytes\"), len(dossier_bytes)))\n        created = str(ver.get(\"created_utc\") or \"\")\n        written = datetime.fromtimestamp(DOSSIER.stat().st_mtime, timezone.utc).strftime(\n            \"%Y-%m-%dT%H:%M:%SZ\")\n        if created < written:\n            problems.append(\"the verifier round (%s) predates the dossier bytes (%s); re-run \"\n                            \"scripts/o1_verify_binding.py after the dossier is final\"\n                      "
+          }
+        },
+        {
+          "name": "read_text",
+          "arguments": {
+            "max_bytes": 12000,
+            "path": "D:/RCAIDE/.real_runs/DRECOVER001-O1-20261124-01/scripts/o1_retire_stale.py"
+          },
+          "result": {
+            "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\scripts\\o1_retire_stale.py",
+            "bytes_read": 7024,
+            "truncated": false,
+            "text": "\"\"\"Retire authorization artifacts that bind bytes other than the ones on disk.\n\nWhy this exists\n---------------\nA GO is only meaningful if it is obviously the GO for the bytes that are on disk right now.\nIf a PASS verdict or a binding round left over from an earlier release sits on the live path\nnext to a freshly re-signed dossier, then a GO issued today would look exactly like a GO\nissued against the superseded bytes: a reader (or a later reviewer) cannot tell them apart\nfrom the live path alone.\n\nSo stale artifacts are not deleted -- deleting evidence is worse than the disease -- they are\nmoved into dated history directories and removed from the live path, which leaves exactly one\nverdict and one binding round visible for the current bytes.\n\nRules, all fail-closed:\n  * an artifact is retired only when it names a dossier or preregistration sha256 that is not\n    the sha256 on disk;\n  * an artifact that names the bytes on disk is never touched;\n  * an archived file is written under a timestamped name and then removed from the live path,\n    and the removal is recorded in the retire record;\n  * nothing is ever deleted without first being written somewhere else, byte for byte.\n\nRun: python scripts/o1_retire_stale.py [--dry-run]\n\"\"\"\nfrom __future__ import annotations\n\nimport argparse\nimport hashlib\nimport json\nimport shutil\nimport sys\nfrom datetime import datetime, timezone\nfrom pathlib import Path\n\nRUN = Path(r\"D:/RCAIDE/.real_runs/DRECOVER001-O1-20261124-01\")\nDOSSIER = RUN / \"o1_a5_dossier.md\"\nPREREG = RUN / \"o1_preregistration.json\"\nVERDICT = RUN / \"a5_review\" / \"verdict.json\"\nVERDICT_COPY = RUN / \"o1_a5_verdict.json\"\nVERIFY = RUN / \"o1_binding_verification.json\"\nGO = RUN / \"o1_go_record.json\"\nVERDICT_HISTORY = RUN / \"a5_review\" / \"history\"\nBINDING_HISTORY = RUN / \"a5_support\" / \"binding_history\"\nGO_HISTORY = RUN / \"go_history\"\nRECORD = RUN / \"o1_retire_record.json\"\nSCHEMA = \"dreal005.o1_retire_record.v1\"\n\n\ndef sha(path: Path) -> str:\n    h = hashlib.sha256()\n    with open(path, \"rb\") as handle:\n        for chunk in iter(lambda: handle.read(1 << 20), b\"\"):\n            h.update(chunk)\n    return h.hexdigest()\n\n\ndef load(path: Path):\n    if not path.is_file():\n        return None\n    try:\n        return json.loads(path.read_text(encoding=\"utf-8\"))\n    except Exception as exc:  # noqa: BLE001\n        return {\"__unreadable__\": str(exc)}\n\n\ndef stamp() -> str:\n    return datetime.now(timezone.utc).strftime(\"%Y%m%dT%H%M%SZ\")\n\n\ndef retire(path: Path, reason: str, target_dir: Path, dry_run: bool) -> dict:\n    \"\"\"Move one stale artifact into history, byte for byte, and report the move.\"\"\"\n    payload = {\n        \"path\": str(path),\n        \"bytes\": path.stat().st_size,\n        \"sha256\": sha(path),\n        \"reason\": reason,\n        \"target_dir\": str(target_dir),\n        \"archived_as\": None,\n        \"removed_from_the_live_path\": False,\n    }\n    if dry_run:\n        return payload\n    target_dir.mkdir(parents=True, exist_ok=True)\n    target = target_dir / (\"%s_%s_%s\" % (path.stem, stamp(), payload[\"sha256\"][:16]))\n    if target.suffix != path.suffix:\n        target = target.with_suffix(path.suffix)\n    shutil.copy2(path, target)\n    if sha(target) != payload[\"sha256\"]:\n        raise SystemExit(\"copy of %s does not match the original; nothing removed\" % (path,))\n    payload[\"archived_as\"] = str(target)\n    path.unlink()\n    payload[\"removed_from_the_live_path\"] = True\n    return payload\n\n\ndef main() -> int:\n    parser = argparse.ArgumentParser(description=\"Retire O1 authorization artifacts for superseded bytes\")\n    parser.add_argument(\"--dry-run\", action=\"store_true\")\n    args = parser.parse_args()\n\n    if not DOSSIER.is_file() or not PREREG.is_file():\n        raise SystemExit(\"dossier or preregistration missing; nothing to compare against\")\n    dossier_sha = sha(DOSSIER)\n    prereg_sha = sha(PREREG)\n\n    retired = []\n    kept = []\n\n    # The verdict that a GO would consult.\n    for path, history in ((VERDICT, VERDICT_HISTORY), (VERDICT_COPY, VERDICT_HISTORY)):\n        payload = load(path)\n        if payload is None:\n            continue\n        if \"__unreadable__\" in payload:\n            retired.append(retire(path, \"unreadable verdict cannot be trusted for a GO\", history,\n                                  args.dry_run))\n            continue\n        names = payload.get(\"dossier_sha256\")\n        if names == dossier_sha and payload.get(\"preregistration_sha256\") in (None, prereg_sha):\n            kept.append({\"path\": str(path), \"why\": \"binds the dossier on disk\"})\n            continue\n        retired.append(retire(path, \"verdict binds dossier %r, disk is %r\"\n                              % (names, dossier_sha), history, args.dry_run))\n\n    # The binding round a GO would consult.\n    payload = load(VERIFY)\n    if payload is not None:\n        names = payload.get(\"dossier\", {}).get(\"sha256\")\n        names_prereg = payload.get(\"preregistration\", {}).get(\"sha256\")\n        if names == dossier_sha and names_prereg in (None, prereg_sha):\n            kept.append({\"path\": str(VERIFY), \"why\": \"binding round is over the bytes on disk\"})\n        else:\n            retired.append(retire(VERIFY, \"binding round covers dossier %r / prereg %r, disk is %r / %r\"\n                                  % (names, names_prereg, dossier_sha, prereg_sha),\n                                  BINDING_HISTORY, args.dry_run))\n\n    # A GO, if one was ever written, is retired the same way when it names other bytes.\n    payload = load(GO)\n    if payload is not None:\n        names = payload.get(\"a5_dossier_sha256\")\n        if names == dossier_sha and payload.get(\"preregistration_sha256\") in (None, prereg_sha):\n            kept.append({\"path\": str(GO), \"why\": \"GO binds the bytes on disk\"})\n        else:\n            retired.append(retire(GO, \"GO binds dossier %r, disk is %r\" % (names, dossier_sha),\n                                  GO_HISTORY, args.dry_run))\n\n    record = {\n        \"schema\": SCHEMA,\n        \"created_utc\": datetime.now(timezone.utc).strftime(\"%Y-%m-%dT%H:%M:%SZ\"),\n        \"dry_run\": bool(args.dry_run),\n        \"dossier_on_disk\": {\"path\": str(DOSSIER), \"sha256\": dossier_sha,\n                            \"bytes\": DOSSIER.stat().st_size},\n        \"preregistration_on_disk\": {\"path\": str(PREREG), \"sha256\": prereg_sha,\n                                    \"bytes\": PREREG.stat().st_size},\n        \"retired\": retired,\n        \"kept\": kept,\n        \"rule\": (\"an artifact is retired only when it names bytes that are not on disk; it is \"\n                 \"copied into dated history and then removed from the live path, never deleted \"\n                 \"outright, so the record of what was ever reviewed survives\"),\n    }\n    if not args.dry_run:\n        RECORD.write_text(json.dumps(record, indent=2, sort_keys=True) + \"\\n\", encoding=\"utf-8\")\n        record[\"record_path\"] = str(RECORD)\n        record[\"record_sha256\"] = sha(RECORD)\n    print(json.dumps(record, indent=2, sort_keys=True))\n    return 0\n\n\nif __name__ == \"__main__\":\n    raise SystemExit(main())\n"
+          }
+        },
+        {
+          "name": "grep",
+          "arguments": {
+            "path": "D:/RCAIDE/.real_runs/DRECOVER001-O1-20261124-01/scripts/o1_prereg.py",
+            "pattern": "physical_solver_starts_actual|affordable_designs|internal_per_design|coarse_internal|refine_internal"
+          },
+          "result": {
+            "pattern": "physical_solver_starts_actual|affordable_designs|internal_per_design|coarse_internal|refine_internal",
+            "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\scripts\\o1_prereg.py",
+            "hits": [
+              {
+                "file": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\scripts\\o1_prereg.py",
+                "line": 230,
+                "text": "            \"cost_model\": {\"internal_per_design\": arms.INTERNAL_PER_DESIGN,"
+              },
+              {
+                "file": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\scripts\\o1_prereg.py",
+                "line": 232,
+                "text": "                           \"affordable_designs_per_arm\": arms.CAPS[\"affordable_designs_per_arm\"],"
+              },
+              {
+                "file": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\scripts\\o1_prereg.py",
+                "line": 234,
+                "text": "                               \"designs\": arms.CAPS[\"affordable_designs_per_arm\"],"
+              },
+              {
+                "file": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\scripts\\o1_prereg.py",
+                "line": 235,
+                "text": "                               \"starts\": arms.CAPS[\"affordable_designs_per_arm\"] * arms.STARTS_PER_DESIGN,"
+              },
+              {
+                "file": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\scripts\\o1_prereg.py",
+                "line": 236,
+                "text": "                               \"internal\": arms.CAPS[\"affordable_designs_per_arm\"] * arms.INTERNAL_PER_DESIGN},"
+              },
+              {
+                "file": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\scripts\\o1_prereg.py",
+                "line": 238,
+                "text": "                               \"starts\": (3 * arms.CAPS[\"affordable_designs_per_arm\"]"
+              },
+              {
+                "file": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\scripts\\o1_prereg.py",
+                "line": 240,
+                "text": "                               \"internal\": (3 * arms.CAPS[\"affordable_designs_per_arm\"]"
+              },
+              {
+                "file": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\scripts\\o1_prereg.py",
+                "line": 311,
+                "text": "        \"physical_solver_starts_actual\": 0,"
+              }
+            ],
+            "truncated": false
+          }
+        }
+      ]
+    },
+    {
+      "hop": 7,
+      "content": "The mechanism appears sound. Let me verify the alpha plan (7 coarse + 13 refine = 20) and the preregistration cost block, plus confirm the A0 case directories for zero-physical in O1.",
+      "tool_calls": {
+        "0": {
+          "id": "call_00_0A88yr33efOd0P2jRAxn3260",
+          "name": "grep",
+          "arguments": "{\"path\": \"D:/RCAIDE/.worktrees/dreal005-20261124/research/concorde_metaopt/dreal001/ops/o0_short_bo.py\", \"pattern\": \"def alpha_plan|coarse_internal_cases|refine_internal_cases\"}"
+        },
+        "1": {
+          "id": "call_01_NaKv7PyEETIutQDJS7ON7668",
+          "name": "read_text",
+          "arguments": "{\"max_bytes\": 3000, \"path\": \"D:/RCAIDE/.real_runs/DRECOVER001-O1-20261124-01/o1_dossier_receipt.json\"}"
+        },
+        "2": {
+          "id": "call_02_Aeyo84D9u3tS08FTSOVS4364",
+          "name": "grep",
+          "arguments": "{\"max_hits\": 20, \"path\": \"D:/RCAIDE/.real_runs/DRECOVER001-O1-20261124-01/cases/O1-M190\", \"pattern\": \"[a-zA-Z0-9_]+\"}"
+        }
+      },
+      "results": [
+        {
+          "name": "grep",
+          "arguments": {
+            "path": "D:/RCAIDE/.worktrees/dreal005-20261124/research/concorde_metaopt/dreal001/ops/o0_short_bo.py",
+            "pattern": "def alpha_plan|coarse_internal_cases|refine_internal_cases"
+          },
+          "result": {
+            "pattern": "def alpha_plan|coarse_internal_cases|refine_internal_cases",
+            "path": "D:\\RCAIDE\\.worktrees\\dreal005-20261124\\research\\concorde_metaopt\\dreal001\\ops\\o0_short_bo.py",
+            "hits": [
+              {
+                "file": "D:\\RCAIDE\\.worktrees\\dreal005-20261124\\research\\concorde_metaopt\\dreal001\\ops\\o0_short_bo.py",
+                "line": 220,
+                "text": "def alpha_plan() -> Dict[str, Any]:"
+              },
+              {
+                "file": "D:\\RCAIDE\\.worktrees\\dreal005-20261124\\research\\concorde_metaopt\\dreal001\\ops\\o0_short_bo.py",
+                "line": 225,
+                "text": "        \"coarse_internal_cases\": len(coarse),"
+              },
+              {
+                "file": "D:\\RCAIDE\\.worktrees\\dreal005-20261124\\research\\concorde_metaopt\\dreal001\\ops\\o0_short_bo.py",
+                "line": 228,
+                "text": "        \"refine_internal_cases\": len(refine),"
+              }
+            ],
+            "truncated": false
+          }
+        },
+        {
+          "name": "read_text",
+          "arguments": {
+            "max_bytes": 3000,
+            "path": "D:/RCAIDE/.real_runs/DRECOVER001-O1-20261124-01/o1_dossier_receipt.json"
+          },
+          "result": {
+            "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\o1_dossier_receipt.json",
+            "bytes_read": 643,
+            "truncated": false,
+            "text": "{\n  \"schema\": \"dreal005.o1_dossier_receipt.v1\",\n  \"created_utc\": \"2026-11-24T12:08:46Z\",\n  \"dossier\": {\n    \"path\": \"D:\\\\RCAIDE\\\\.real_runs\\\\DRECOVER001-O1-20261124-01\\\\o1_a5_dossier.md\",\n    \"sha256\": \"c2497e46386a1ddccd98593207449fbac9197c2bbcc335657c23f4defe47efa7\",\n    \"bytes\": 10962\n  },\n  \"preregistration\": {\n    \"path\": \"D:\\\\RCAIDE\\\\.real_runs\\\\DRECOVER001-O1-20261124-01\\\\o1_preregistration.json\",\n    \"sha256\": \"d810c83a6371089dd306fe4ec8948595817d036022e47e9a83a32b5e8890791b\",\n    \"bytes\": 13909\n  },\n  \"code_shas_sha256\": \"269593015f9cf438672468dc0152488d3caae4c08ad9fd071fa8f0150e85699e\",\n  \"physical_solver_starts_actual\": 0\n}\n"
+          }
+        },
+        {
+          "name": "grep",
+          "arguments": {
+            "max_hits": 20,
+            "path": "D:/RCAIDE/.real_runs/DRECOVER001-O1-20261124-01/cases/O1-M190",
+            "pattern": "[a-zA-Z0-9_]+"
+          },
+          "result": {
+            "pattern": "[a-zA-Z0-9_]+",
+            "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\cases\\O1-M190",
+            "hits": [
+              {
+                "file": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\cases\\O1-M190\\DRY_COND_FOMAML_KSHOT_BO\\o1-dry-coarse\\approval.json",
+                "line": 2,
+                "text": "  \"schema\": \"dreal001.solver_approval.v1\","
+              },
+              {
+                "file": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\cases\\O1-M190\\DRY_COND_FOMAML_KSHOT_BO\\o1-dry-coarse\\approval.json",
+                "line": 3,
+                "text": "  \"approved\": true,"
+              },
+              {
+                "file": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\cases\\O1-M190\\DRY_COND_FOMAML_KSHOT_BO\\o1-dry-coarse\\approval.json",
+                "line": 4,
+                "text": "  \"authorization_id\": \"AUTH-DREAL005-O1-20261124-01\","
+              },
+              {
+                "file": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\cases\\O1-M190\\DRY_COND_FOMAML_KSHOT_BO\\o1-dry-coarse\\approval.json",
+                "line": 5,
+                "text": "  \"owner_message_ref\": \"Issue #15 (2026-11-24) section 6 + acceptance comment 7122663062 + Owner m16075 one-shot budget approval\","
+              },
+              {
+                "file": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\cases\\O1-M190\\DRY_COND_FOMAML_KSHOT_BO\\o1-dry-coarse\\approval.json",
+                "line": 6,
+                "text": "  \"run_id\": \"DRECOVER001-O1-20261124-01\","
+              },
+              {
+                "file": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\cases\\O1-M190\\DRY_COND_FOMAML_KSHOT_BO\\o1-dry-coarse\\approval.json",
+                "line": 7,
+                "text": "  \"batch_id\": \"DRECOVER001-O1-20261124-01-DRY_COND_FOMAML_KSHOT_BO\","
+              },
+              {
+                "file": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\cases\\O1-M190\\DRY_COND_FOMAML_KSHOT_BO\\o1-dry-coarse\\approval.json",
+                "line": 8,
+                "text": "  \"case_id\": \"o1-dry-coarse\","
+              },
+              {
+                "file": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\cases\\O1-M190\\DRY_COND_FOMAML_KSHOT_BO\\o1-dry-coarse\\approval.json",
+                "line": 9,
+                "text": "  \"plan_sha256\": \"01981cf20acd55c3c026ac499bcdb43f79b1da7f40f198df051726ac9e7f537e\","
+              },
+              {
+                "file": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\cases\\O1-M190\\DRY_COND_FOMAML_KSHOT_BO\\o1-dry-coarse\\approval.json",
+                "line": 10,
+                "text": "  \"max_starts\": 1,"
+              },
+              {
+                "file": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\cases\\O1-M190\\DRY_COND_FOMAML_KSHOT_BO\\o1-dry-coarse\\approval.json",
+                "line": 11,
+                "text": "  \"window\": {"
+              },
+              {
+                "file": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\cases\\O1-M190\\DRY_COND_FOMAML_KSHOT_BO\\o1-dry-coarse\\approval.json",
+                "line": 12,
+                "text": "    \"start_utc\": \"2026-11-24T11:43:46Z\","
+              },
+              {
+                "file": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\cases\\O1-M190\\DRY_COND_FOMAML_KSHOT_BO\\o1-dry-coarse\\approval.json",
+                "line": 13,
+                "text": "    \"end_utc\": \"2026-11-26T00:00:00Z\","
+              },
+              {
+                "file": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\cases\\O1-M190\\DRY_COND_FOMAML_KSHOT_BO\\o1-dry-coarse\\approval.json",
+                "line": 14,
+                "text": "    \"token\": \"AUTH-DREAL005-O1-20261124-01-WINDOW\""
+              },
+              {
+                "file": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\cases\\O1-M190\\DRY_COND_FOMAML_KSHOT_BO\\o1-dry-coarse\\approval.json",
+                "line": 16,
+                "text": "  \"window_token\": \"AUTH-DREAL005-O1-20261124-01-WINDOW\""
+              },
+              {
+                "file": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\cases\\O1-M190\\DRY_COND_FOMAML_KSHOT_BO\\o1-dry-coarse\\case_inputs.json",
+                "line": 2,
+                "text": "  \"schema\": \"dreal001.vspaero_case_inputs.v1\","
+              },
+              {
+                "file": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\cases\\O1-M190\\DRY_COND_FOMAML_KSHOT_BO\\o1-dry-coarse\\case_inputs.json",
+                "line": 3,
+                "text": "  \"case_id\": \"o1-dry-coarse\","
+              },
+              {
+                "file": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\cases\\O1-M190\\DRY_COND_FOMAML_KSHOT_BO\\o1-dry-coarse\\case_inputs.json",
+                "line": 4,
+                "text": "  \"task_id\": \"P0_INPUT_PREP\","
+              },
+              {
+                "file": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\cases\\O1-M190\\DRY_COND_FOMAML_KSHOT_BO\\o1-dry-coarse\\case_inputs.json",
+                "line": 5,
+                "text": "  \"generated_utc\": \"2026-11-24T11:48:45Z\","
+              },
+              {
+                "file": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\cases\\O1-M190\\DRY_COND_FOMAML_KSHOT_BO\\o1-dry-coarse\\case_inputs.json",
+                "line": 6,
+                "text": "  \"openvsp_root\": \"D:\\\\OpenVSP-3.55.0\\\\OpenVSP-3.55.0-win64\","
+              },
+              {
+                "file": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\cases\\O1-M190\\DRY_COND_FOMAML_KSHOT_BO\\o1-dry-coarse\\case_inputs.json",
+                "line": 7,
+                "text": "  \"openvsp_version\": \"OpenVSP 3.55.0\","
+              }
+            ],
+            "truncated": true
+          }
+        }
+      ]
+    },
+    {
+      "hop": 8,
+      "content": "The cases only contain dry/input-prep artifacts, no polar or case_result. Let me confirm the alpha plan arithmetic and the A0 dataset existence referenced in the collision check.",
+      "tool_calls": {
+        "0": {
+          "id": "call_00_WwRSp4xPJS7t1cHd8Qew0624",
+          "name": "read_text",
+          "arguments": "{\"max_bytes\": 1200, \"path\": \"D:/RCAIDE/.worktrees/dreal005-20261124/research/concorde_metaopt/dreal001/ops/o0_short_bo.py\"}"
+        },
+        "1": {
+          "id": "call_01_ZiRUvhPSNr9YAF4hz4vf9822",
+          "name": "grep",
+          "arguments": "{\"path\": \"D:/RCAIDE/.real_runs/DRECOVER001-O1-20261124-01/scripts/o1_prereg.py\", \"pattern\": \"carried|o0_batch_close|verification_ledger|carry\"}"
+        },
+        "2": {
+          "id": "call_02_RqCncDOVttXZDttB9bR64647",
+          "name": "list_dir",
+          "arguments": "{\"path\": \"D:/RCAIDE/.real_runs/DRECOVER001-O1-20261124-01/a5_review\"}"
+        }
+      },
+      "results": [
+        {
+          "name": "read_text",
+          "arguments": {
+            "max_bytes": 1200,
+            "path": "D:/RCAIDE/.worktrees/dreal005-20261124/research/concorde_metaopt/dreal001/ops/o0_short_bo.py"
+          },
+          "result": {
+            "path": "D:\\RCAIDE\\.worktrees\\dreal005-20261124\\research\\concorde_metaopt\\dreal001\\ops\\o0_short_bo.py",
+            "bytes_read": 1200,
+            "truncated": true,
+            "text": "\"\"\"O0: the first real feedback-driven aerodynamic optimization (D-REAL-EXP-003).\n\nIssue #15 requires a genuine ask -> new geometry -> real VSPAERO -> strict raw-row\nadmission -> tell loop, with every attempt (including failures) charged, and it\nrequires that a counterfactual feedback change the next candidate. This module\nholds the protocol and the bookkeeping; the physical evaluator is injected so the\nloop can be tested with synthetic evaluations and then run for real.\n\nDesign of one design evaluation (fixed by the pre-registration):\n\n* the 12D vector is only free along the validated local subspace (sweep_1, sweep_2);\n  every other variable keeps its frozen baseline value;\n* locating the fixed-lift angle of attack takes exactly two charged solver starts:\n  a 7-point coarse bracket (0.35 deg step spanning 2.1 deg, i.e. +-1.05 deg around the\n  guessed centre) and a 13-point refinement (0.004 deg step spanning 0.048 deg, i.e.\n  +-0.024 deg) centred on the coarse quadratic prediction;\n  CAPS[\"max_starts_per_design\"] is 2, so AttemptLedger.charge() makes a third start\n  on the same design architecturally impossible rather than merely discouraged;\n* a design that cannot place a *raw* po"
+          }
+        },
+        {
+          "name": "grep",
+          "arguments": {
+            "path": "D:/RCAIDE/.real_runs/DRECOVER001-O1-20261124-01/scripts/o1_prereg.py",
+            "pattern": "carried|o0_batch_close|verification_ledger|carry"
+          },
+          "result": {
+            "pattern": "carried|o0_batch_close|verification_ledger|carry",
+            "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\scripts\\o1_prereg.py",
+            "hits": [
+              {
+                "file": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\scripts\\o1_prereg.py",
+                "line": 6,
+                "text": "every code file that will spend the budget, and the carried-forward O0 bill."
+              },
+              {
+                "file": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\scripts\\o1_prereg.py",
+                "line": 45,
+                "text": "def o0_carried_forward() -> dict:"
+              },
+              {
+                "file": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\scripts\\o1_prereg.py",
+                "line": 49,
+                "text": "            O0_RUN.glob(\"o0_batch_close_*.json\")):"
+              },
+              {
+                "file": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\scripts\\o1_prereg.py",
+                "line": 51,
+                "text": "    close = O0_RUN / \"o0_batch_close_B02.json\""
+              },
+              {
+                "file": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\scripts\\o1_prereg.py",
+                "line": 59,
+                "text": "    ledger = O0_RUN / \"o0_final\" / \"verification_ledger.json\""
+              },
+              {
+                "file": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\scripts\\o1_prereg.py",
+                "line": 283,
+                "text": "        \"carried_forward\": o0_carried_forward(),"
+              }
+            ],
+            "truncated": false
+          }
+        },
+        {
+          "name": "list_dir",
+          "arguments": {
+            "path": "D:/RCAIDE/.real_runs/DRECOVER001-O1-20261124-01/a5_review"
+          },
+          "result": {
+            "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\a5_review",
+            "entries": [
+              {
+                "name": "history",
+                "bytes": null,
+                "is_dir": true
+              },
+              {
+                "name": "o1_raw_lines.txt",
+                "bytes": 6523,
+                "is_dir": false
+              },
+              {
+                "name": "o1_tool_transcript.json",
+                "bytes": 97207,
+                "is_dir": false
+              }
+            ],
+            "truncated": false
+          }
+        }
+      ]
+    },
+    {
+      "hop": 9,
+      "content": "The retire record shows the verdict was already retired from the live path (a5_review now only holds history). Let me confirm the archived verdict exists and verify the carried-forward source files exist.",
+      "tool_calls": {
+        "0": {
+          "id": "call_00_kL8SNI7mdGEKcmYw5Udh2644",
+          "name": "list_dir",
+          "arguments": "{\"path\": \"D:/RCAIDE/.real_runs/DRECOVER001-O1-20261124-01/a5_review/history\"}"
+        },
+        "1": {
+          "id": "call_01_AkiIOVO0ACVxEEqKNbCm2273",
+          "name": "list_dir",
+          "arguments": "{\"path\": \"D:/RCAIDE/.real_runs/DRECOVER001-O0-20261124-01\"}"
+        },
+        "2": {
+          "id": "call_02_RC7lrtdi8CzrbOZ3YoR57130",
+          "name": "grep",
+          "arguments": "{\"path\": \"D:/RCAIDE/.real_runs/DRECOVER001-O1-20261124-01/scripts/o1_arms.py\", \"pattern\": \"kshot_ranked_candidates|warm_start|adapt|query|test_label\"}"
+        }
+      },
+      "results": [
+        {
+          "name": "list_dir",
+          "arguments": {
+            "path": "D:/RCAIDE/.real_runs/DRECOVER001-O1-20261124-01/a5_review/history"
+          },
+          "result": {
+            "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\a5_review\\history",
+            "entries": [
+              {
+                "name": "o1_a5_verdict_20261124T120832Z_58cd3bc111c20a63.json",
+                "bytes": 7970,
+                "is_dir": false
+              },
+              {
+                "name": "verdict_20261124T115629Z.json",
+                "bytes": 8104,
+                "is_dir": false
+              },
+              {
+                "name": "verdict_20261124T120846Z_f781a265cadbbb43.json",
+                "bytes": 8351,
+                "is_dir": false
+              }
+            ],
+            "truncated": false
+          }
+        },
+        {
+          "name": "list_dir",
+          "arguments": {
+            "path": "D:/RCAIDE/.real_runs/DRECOVER001-O0-20261124-01"
+          },
+          "result": {
+            "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O0-20261124-01",
+            "entries": [
+              {
+                "name": "_local_plan_backup_20261124.md",
+                "bytes": 18652,
+                "is_dir": false
+              },
+              {
+                "name": "_tail_new.txt",
+                "bytes": 12172,
+                "is_dir": false
+              },
+              {
+                "name": "a5_review",
+                "bytes": null,
+                "is_dir": true
+              },
+              {
+                "name": "a5_review_wb_B02.log",
+                "bytes": 14528,
+                "is_dir": false
+              },
+              {
+                "name": "a5_round10.log",
+                "bytes": 39220,
+                "is_dir": false
+              },
+              {
+                "name": "a5_round11.log",
+                "bytes": 27816,
+                "is_dir": false
+              },
+              {
+                "name": "a5_round12.log",
+                "bytes": 48984,
+                "is_dir": false
+              },
+              {
+                "name": "a5_round13.log",
+                "bytes": 42566,
+                "is_dir": false
+              },
+              {
+                "name": "a5_round14.log",
+                "bytes": 39294,
+                "is_dir": false
+              },
+              {
+                "name": "a5_round15.log",
+                "bytes": 53252,
+                "is_dir": false
+              },
+              {
+                "name": "a5_round6.log",
+                "bytes": 35802,
+                "is_dir": false
+              },
+              {
+                "name": "a5_round7.log",
+                "bytes": 50926,
+                "is_dir": false
+              },
+              {
+                "name": "a5_round8.log",
+                "bytes": 41354,
+                "is_dir": false
+              },
+              {
+                "name": "a5_round9.log",
+                "bytes": 40574,
+                "is_dir": false
+              },
+              {
+                "name": "a5_support",
+                "bytes": null,
+                "is_dir": true
+              },
+              {
+                "name": "audits",
+                "bytes": null,
+                "is_dir": true
+              },
+              {
+                "name": "cases",
+                "bytes": null,
+                "is_dir": true
+              },
+              {
+                "name": "figures",
+                "bytes": null,
+                "is_dir": true
+              },
+              {
+                "name": "final_aircraft",
+                "bytes": null,
+                "is_dir": true
+              },
+              {
+                "name": "go_history",
+                "bytes": null,
+                "is_dir": true
+              },
+              {
+                "name": "logs_o0_upload2.log",
+                "bytes": 1414,
+                "is_dir": false
+              },
+              {
+                "name": "metadata",
+                "bytes": null,
+                "is_dir": true
+              },
+              {
+                "name": "o0_a5_daemon.log",
+                "bytes": 0,
+                "is_dir": false
+              },
+              {
+                "name": "o0_a5_dossier.md",
+                "bytes": 57612,
+                "is_dir": false
+              },
+              {
+                "name": "o0_a5_retry.log",
+                "bytes": 7743,
+                "is_dir": false
+              },
+              {
+                "name": "o0_a5_review.log",
+                "bytes": 568,
+                "is_dir": false
+              },
+              {
+                "name": "o0_a5_review_wb.log",
+                "bytes": 13566,
+                "is_dir": false
+              },
+              {
+                "name": "o0_attempts.jsonl",
+                "bytes": 23505,
+                "is_dir": false
+              },
+              {
+                "name": "o0_batch_abort_B01.json",
+                "bytes": 8645,
+                "is_dir": false
+              },
+              {
+                "name": "o0_batch_accounting_B02.json",
+                "bytes": 3333,
+                "is_dir": false
+              },
+              {
+                "name": "o0_batch_close_B02.json",
+                "bytes": 3667,
+                "is_dir": false
+              },
+              {
+                "name": "o0_batch_crash_B02.json",
+                "bytes": 5183,
+                "is_dir": false
+              },
+              {
+                "name": "o0_binding_verification.json",
+                "bytes": 3197,
+                "is_dir": false
+              },
+              {
+                "name": "o0_dossier_receipt.json",
+                "bytes": 3691,
+                "is_dir": false
+              },
+              {
+                "name": "o0_final",
+                "bytes": null,
+                "is_dir": true
+              },
+              {
+                "name": "o0_final_go_record.json",
+                "bytes": 11040,
+                "is_dir": false
+              },
+              {
+                "name": "o0_final_run.log",
+                "bytes": 17030,
+                "is_dir": false
+              },
+              {
+                "name": "o0_preregistration.json",
+                "bytes": 23012,
+                "is_dir": false
+              },
+              {
+                "name": "o0_resource.jsonl",
+                "bytes": 84604,
+                "is_dir": false
+              },
+              {
+                "name": "o0_resource.summary.json",
+                "bytes": 1180,
+                "is_dir": false
+              },
+              {
+                "name": "o0_result_B02.json",
+                "bytes": 37166,
+                "is_dir": false
+              },
+              {
+                "name": "o0_run_B01.log",
+                "bytes": 4032,
+                "is_dir": false
+              },
+              {
+                "name": "o0_run_B02.log",
+                "bytes": 7996,
+                "is_dir": false
+              },
+              {
+                "name": "scripts",
+                "bytes": null,
+                "is_dir": true
+              },
+              {
+                "name": "tables",
+                "bytes": null,
+                "is_dir": true
+              },
+              {
+                "name": "upload_receipt.json",
+                "bytes": 1031,
+                "is_dir": false
+              }
+            ],
+            "truncated": false
+          }
+        },
+        {
+          "name": "grep",
+          "arguments": {
+            "path": "D:/RCAIDE/.real_runs/DRECOVER001-O1-20261124-01/scripts/o1_arms.py",
+            "pattern": "kshot_ranked_candidates|warm_start|adapt|query|test_label"
+          },
+          "result": {
+            "pattern": "kshot_ranked_candidates|warm_start|adapt|query|test_label",
+            "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\scripts\\o1_arms.py",
+            "hits": [
+              {
+                "file": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\scripts\\o1_arms.py",
+                "line": 5,
+                "text": "                               supervised checkpoint after K=3 support adaptation"
+              },
+              {
+                "file": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\scripts\\o1_arms.py",
+                "line": 17,
+                "text": "After that, each arm's adaptively proposed designs come from the same GP fed only with"
+              },
+              {
+                "file": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\scripts\\o1_arms.py",
+                "line": 23,
+                "text": "three shared support designs plus three warm-start designs plus two adaptive designs."
+              },
+              {
+                "file": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\scripts\\o1_arms.py",
+                "line": 147,
+                "text": "def sobol_warm_start() -> List[Tuple[float, ...]]:"
+              },
+              {
+                "file": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\scripts\\o1_arms.py",
+                "line": 196,
+                "text": "def kshot_ranked_candidates(arm_name: str, task_key: str,"
+              },
+              {
+                "file": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\scripts\\o1_arms.py",
+                "line": 212,
+                "text": "    adapted, inner_losses = _maml().inner_adapt(params, episode, maml_cfg)"
+              },
+              {
+                "file": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\scripts\\o1_arms.py",
+                "line": 215,
+                "text": "    predicted = _forward_np(adapted, unit16)[:, 0] * normalizer.y_scale + normalizer.y_mean"
+              },
+              {
+                "file": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\scripts\\o1_arms.py",
+                "line": 360,
+                "text": "    # The shared support designs are support rows and every other design is a query row."
+              },
+              {
+                "file": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\scripts\\o1_arms.py",
+                "line": 362,
+                "text": "    partition = \"support\" if record.role == \"shared_support\" else \"query\""
+              },
+              {
+                "file": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\scripts\\o1_arms.py",
+                "line": 468,
+                "text": "            warm_start: Sequence[Tuple[float, ...]],"
+              },
+              {
+                "file": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\scripts\\o1_arms.py",
+                "line": 469,
+                "text": "            warm_start_meta: Dict[str, Any]) -> Dict[str, Any]:"
+              },
+              {
+                "file": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\scripts\\o1_arms.py",
+                "line": 478,
+                "text": "    for design in warm_start:"
+              },
+              {
+                "file": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\scripts\\o1_arms.py",
+                "line": 492,
+                "text": "        ranking = kshot_ranked_candidates(CHECKPOINT_ARM[arm], task_key, support_rows, pool)"
+              },
+              {
+                "file": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\scripts\\o1_arms.py",
+                "line": 517,
+                "text": "        record = DesignRecord(arm=arm, role=\"warm_start\", design_index=design_index,"
+              },
+              {
+                "file": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\scripts\\o1_arms.py",
+                "line": 528,
+                "text": "    adaptive = 0"
+              },
+              {
+                "file": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\scripts\\o1_arms.py",
+                "line": 534,
+                "text": "        record = DesignRecord(arm=arm, role=\"adaptive\", design_index=design_index,"
+              },
+              {
+                "file": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\scripts\\o1_arms.py",
+                "line": 543,
+                "text": "        adaptive += 1"
+              },
+              {
+                "file": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\scripts\\o1_arms.py",
+                "line": 558,
+                "text": "        \"warm_start\": [list(d) for d in warm],"
+              },
+              {
+                "file": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\scripts\\o1_arms.py",
+                "line": 559,
+                "text": "        \"warm_start_meta\": warm_start_meta,"
+              },
+              {
+                "file": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\scripts\\o1_arms.py",
+                "line": 569,
+                "text": "        \"adaptive_designs\": adaptive,"
+              }
+            ],
+            "truncated": false
+          }
+        }
+      ]
+    },
+    {
+      "hop": 10,
+      "content": "The ranking at line 492 receives only `support_rows` and `pool`, and adaptive designs start at line 528 — the ranking predates them. Let me verify the support_rows fed to the K-shot arms are the shared support (role check) and confirm there is no separate labelling.",
+      "tool_calls": {
+        "0": {
+          "id": "call_00_olRcd8o8tM0Ltb2ILadS0624",
+          "name": "read_text",
+          "arguments": "{\"max_bytes\": 5000, \"path\": \"D:/RCAIDE/.real_runs/DRECOVER001-O1-20261124-01/scripts/o1_arms.py\"}"
+        }
+      },
+      "results": [
+        {
+          "name": "read_text",
+          "arguments": {
+            "max_bytes": 5000,
+            "path": "D:/RCAIDE/.real_runs/DRECOVER001-O1-20261124-01/scripts/o1_arms.py"
+          },
+          "result": {
+            "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\scripts\\o1_arms.py",
+            "bytes_read": 5000,
+            "truncated": true,
+            "text": "\"\"\"O1: the three-arm warm-start comparison required by Issue #15 section 6.\n\n    SOBOL_BO                -- three LHS extra initialisation designs, then the shared GP\n    COND_SUPERVISED_KSHOT_BO -- three designs chosen by the frozen 16D conditional\n                               supervised checkpoint after K=3 support adaptation\n    COND_FOMAML_KSHOT_BO    -- the same, from the frozen 16D conditional FOMAML checkpoint\n\nEverything else is held equal and lives in this one module so it cannot drift:\n\n* one shared support set of three real designs (baseline plus two LHS draws), evaluated\n  once for real and charged in full, as equivalent cost, to every arm;\n* one pre-generated candidate pool of coordinates (no truth is ever pre-computed for it);\n* one GP/acquisition backend with identical hyperparameters and seed;\n* one coarse/refine alpha recipe, one lift tolerance, one audit gate, one admission gate.\n\nThe only thing an arm is allowed to influence is which three extra designs it starts from.\nAfter that, each arm's adaptively proposed designs come from the same GP fed only with\nthat arm's own real feedback.\n\nCost model (preregistered): one design = two charged VSPAERO starts and 20 internal alpha\ncases (7 coarse + 13 refine). Per arm per pairing the caps are 12 designs / 24 starts /\n160 internal, and 160 internal binds, so an arm can afford exactly eight designs: the\nthree shared support designs plus three warm-start designs plus two adaptive designs.\nThree arms therefore cost 48 equivalent starts and 480 internal cases; the three shared\nsupport designs are solved once, so the physical bill is 36 starts.\n\"\"\"\nfrom __future__ import annotations\n\nimport hashlib\nimport json\nimport math\nimport sys\nfrom dataclasses import dataclass, field\nfrom pathlib import Path\nfrom typing import Any, Dict, List, Optional, Sequence, Tuple\n\nimport numpy as np\n\nREPO = Path(r\"D:/RCAIDE/.worktrees/dreal005-20261124\")\nRUN = Path(r\"D:/RCAIDE/.real_runs/DRECOVER001-O1-20261124-01\")\nA0_RUN = Path(r\"D:/RCAIDE/.real_runs/DRECOVER001-A0-20261124-01\")\nsys.path.insert(0, str(REPO))\n\nfrom research.concorde_metaopt.dreal001.geometry.task_spec import TASK_SPEC  # noqa: E402\nfrom research.concorde_metaopt.dreal001.meta.meta_dataset import (  # noqa: E402\n    Observation, TrainNormalizer,\n)\nfrom research.concorde_metaopt.dreal001.meta.production import (  # noqa: E402\n    TaskContext, context_features,\n)\nfrom research.concorde_metaopt.dreal001.meta.real_a0_ablation import (  # noqa: E402\n    DEFAULT_FEATURE_SPEC, _append_context, _forward_np, _maml, _maml_config,\n)\nfrom research.concorde_metaopt.dreal001.ops import o0_short_bo as o0  # noqa: E402\nfrom research.concorde_metaopt.dreal001.optimizers import recovery_bo  # noqa: E402\n\nimport o1_eval as ev  # noqa: E402\n\nSCHEMA = \"dreal005.o1_three_arm.v1\"\nPROTOCOL_ID = \"O1-THREE-ARM-20261124\"\n\nARMS: Tuple[str, ...] = (\"SOBOL_BO\", \"COND_SUPERVISED_KSHOT_BO\", \"COND_FOMAML_KSHOT_BO\")\nCHECKPOINT_ARM = {\n    \"COND_SUPERVISED_KSHOT_BO\": \"COND_SUPERVISED_16D\",\n    \"COND_FOMAML_KSHOT_BO\": \"COND_FOMAML_16D\",\n}\n\n# The frozen local subspace and the alpha recipe are inherited verbatim from O0: the\n# contract requires one geometry/alpha algorithm shared by every arm.\nSUBSPACE_LOWER = o0.SUBSPACE_LOWER\nSUBSPACE_UPPER = o0.SUBSPACE_UPPER\nALPHA_PLAN = o0.alpha_plan()\n\nSHARED_SUPPORT_COUNT = 3\nWARM_START_COUNT = 3\nSHARED_SUPPORT_SEED = 20261124\nWARM_START_SEED = 20261125\nCANDIDATE_POOL_COUNT = 256\nCANDIDATE_POOL_SEED = 20261126\nGP_SEED = 7\nPAIRING_SEED = 7\nK_SUPPORT = 3\n\nINTERNAL_PER_DESIGN = ALPHA_PLAN[\"coarse_internal_cases\"] + ALPHA_PLAN[\"refine_internal_cases\"]\nSTARTS_PER_DESIGN = 2\n\nCAPS = {\n    \"max_designs_per_arm\": 12,\n    \"max_starts_per_arm\": 24,\n    \"max_internal_per_arm\": 160,\n    \"max_starts_per_design\": 3,\n    \"max_internal_per_design\": 20,\n    \"max_designs_all_arms\": 36,\n    \"max_starts_all_arms\": 72,\n    \"max_internal_all_arms\": 480,\n    # 160 internal / 20 per design binds before the 12-design and 24-start caps do.\n    \"affordable_designs_per_arm\": 8,\n    \"solver_timeout_s\": o0.CAPS[\"solver_timeout_s\"],\n    \"parallelism\": 1,\n    \"retries\": 0,\n}\n\n# Preregistered target, fixed before any O1 result exists. The reference point is the\n# pre-designated baseline design inside the shared support; a 0.1% Di reduction is used\n# because it is an order of magnitude above the 1e-3 relative lift tolerance that bounds\n# the reported drag, and because O0 already demonstrated a 0.2394% effect is reachable.\nTARGET_IMPROVEMENT_FRACTION = 1e-3\n\n\ndef sha(path: Path) -> str:\n    h = hashlib.sha256()\n    with open(path, \"rb\") as handle:\n        for chunk in iter(lambda: handle.read(1 << 20), b\"\"):\n            h.update(chunk)\n    return h.hexdigest()\n\n\ndef canon(payload: Any) -> str:\n    return hashlib.sha256(json.dumps(payload, sort_keys=True, separators=(\",\", \":\"),\n                                     ensure_ascii=False).encode(\"utf-8\")).hexdigest()\n\n\ndef support_designs() -> List[Tuple[float, ...]]:\n    \"\"\"Three pre-designa"
+          }
+        }
+      ]
+    },
+    {
+      "hop": 11,
+      "content": "I have sufficient evidence. All checks confirm the mechanism and arithmetic. Let me do a final verification of the A0 normalizer file and preregistration's zero-physical claim.",
+      "tool_calls": {
+        "0": {
+          "id": "call_00_Ya058SH9ZvnhJwB8Wc0V4742",
+          "name": "sha256_file",
+          "arguments": "{\"path\": \"D:/RCAIDE/.real_runs/DRECOVER001-A0-20261124-01/training/a0_normalizer.json\"}"
+        },
+        "1": {
+          "id": "call_01_XzlqGLlf0Sv6TJYN2Yz92907",
+          "name": "sha256_file",
+          "arguments": "{\"path\": \"D:/RCAIDE/.real_runs/DRECOVER001-A0-20261124-01/training/checkpoints/COND_SUPERVISED_16D_k3_seed7.npz\"}"
+        },
+        "2": {
+          "id": "call_02_1QaW7hqIRtvoqXC1FlmP7533",
+          "name": "sha256_file",
+          "arguments": "{\"path\": \"D:/RCAIDE/.real_runs/DRECOVER001-A0-20261124-01/training/checkpoints/COND_FOMAML_16D_k3_seed7.npz\"}"
+        }
+      },
+      "results": [
+        {
+          "name": "sha256_file",
+          "arguments": {
+            "path": "D:/RCAIDE/.real_runs/DRECOVER001-A0-20261124-01/training/a0_normalizer.json"
+          },
+          "result": {
+            "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-A0-20261124-01\\training\\a0_normalizer.json",
+            "sha256": "bb6a51b7a4bafc7da8b647bb0918d24a6b8c3ea3fd24ce0656d1cbaa40888749",
+            "bytes": 1489
+          }
+        },
+        {
+          "name": "sha256_file",
+          "arguments": {
+            "path": "D:/RCAIDE/.real_runs/DRECOVER001-A0-20261124-01/training/checkpoints/COND_SUPERVISED_16D_k3_seed7.npz"
+          },
+          "result": {
+            "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-A0-20261124-01\\training\\checkpoints\\COND_SUPERVISED_16D_k3_seed7.npz",
+            "sha256": "9b029ec3e7ee812fd46bab4c39b4a7c3c29cf85e64f352275cae18eccf3dcee1",
+            "bytes": 14586
+          }
+        },
+        {
+          "name": "sha256_file",
+          "arguments": {
+            "path": "D:/RCAIDE/.real_runs/DRECOVER001-A0-20261124-01/training/checkpoints/COND_FOMAML_16D_k3_seed7.npz"
+          },
+          "result": {
+            "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-A0-20261124-01\\training\\checkpoints\\COND_FOMAML_16D_k3_seed7.npz",
+            "sha256": "b405114bfe78722a06440bfb85fdbf04fc05c259641899ae5f097840663eecfe",
+            "bytes": 14586
+          }
+        }
+      ]
+    },
+    {
+      "hop": 12,
+      "content": "All artifacts verified. The dossier hash is measured, all ten code files match, the K-shot ranking uses only support_rows and the task spec, the GO mechanism is hard-gated, the retire record shows a proper archive, the cost arithmetic is consistent, and the case dirs contain no polar.\n\n{\"reviewer\":\"deepseek-v4.1-flash\",\"review_type\":\"independent_read_only_tool_review\",\"reviewed_utc\":\"2026-11-24T12:12:18Z\",\"dossier_sha256\":\"c2497e46386a1ddccd98593207449fbac9197c2bbcc335657c23f4defe47efa7\",\"verdict\":\"O1_THREE_ARM_REVIEW_PASS\",\"gate_verdicts\":{\"O1_TASK_IS_NEW\":\"PASS\",\"O1_CODE_SHA_FROZEN\":\"PASS\",\"O1_ZERO_PHYSICAL\":\"PASS\",\"O1_THREE_ARMS_FAIR\":\"PASS\",\"O1_KSHOT_NO_LEAKAGE\":\"PASS\",\"O1_CANDIDATE_POOL_NO_TRUTH\":\"PASS\",\"O1_COST_MODEL_CONSISTENT\":\"PASS\",\"O1_SHARED_SUPPORT_CHARGED_TO_ALL_ARMS\":\"PASS\",\"O1_BUDGET_CAPS\":\"PASS\",\"O1_TARGET_PRE_REGISTERED\":\"PASS\",\"O1_TRUNCATION_DISCLOSED\":\"PASS\",\"O1_GEOMETRY_AND_ALPHA_UNCHANGED\":\"PASS\",\"O1_CLAIMS_BOUNDED\":\"PASS\",\"O1_CARRY_FORWARD_ACCOUNTED\":\"PASS\",\"O1_BINDING_VERIFYABLE\":\"PASS\",\"O1_GO_REQUIRED\":\"PASS\"},\"tool_calls_made\":[\"list_dir O1 run root\",\"list_dir worktree root\",\"sha256_file o1_a5_dossier.md => c2497e46...efa7\",\"sha256_file o1_preregistration.json => d810c83a...891b\",\"list_dir scripts\",\"list_dir cases\",\"sha256_file ten section-1 code files\",\"read_text o1_retire_record.json\",\"list_dir cases/O1-M190\",\"list_dir four case subdirs\",\"grep cases/O1-M190 for .polar|case_result.json (0 hits)\",\"grep o1_arms.py kshot_ranked_candidates\",\"read_text o1_arms.py (14000 bytes)\",\"list_dir A0 training\",\"list_dir A0 training/checkpoints\",\"read_text o1_make_go.py (12000 bytes)\",\"read_text o1_retire_stale.py\",\"grep o1_prereg.py physical/cost fields\",\"grep o0_short_bo.py alpha_plan\",\"read_text o1_dossier_receipt.json\",\"grep cases for text\",\"read_text o0_short_bo.py header\",\"grep o1_prereg.py carried-forward\",\"list_dir a5_review\",\"list_dir a5_review/history\",\"list_dir O0 run root\",\"grep o1_arms.py leakage terms\",\"sha256_file A0 normalizer and both k3_seed7 checkpoints\"],\"evidence_checked\":[\"dossier sha256 c2497e46386a1ddccd98593207449fbac9197c2bbcc335657c23f4defe47efa7 10962 bytes\",\"o1_preregistration.json sha256 d810c83a...891b 13909 bytes matches dossier\",\"All 10 frozen code files match their stated sha256 and byte sizes exactly\",\"o1_arms.py:492 ranking built from support_rows+pool before adaptive designs at line 528\",\"o1_arms.py:196-236 kshot context from task spec only; inner_adapt on support_rows only\",\"o1_dossier_receipt.json binds dossier+prereg sha and physical_solver_starts_actual:0\",\"o1_make_go.py hard-gates GO on verdict, receipt, verifier round, code shas, zero physical\",\"o1_retire_stale.py archives byte-for-byte before unlink; retire record shows old verdict archived\",\"a5_review/history holds archived verdict f781a265...; live path cleared\",\"A0 normalizer + both k3_seed7 checkpoints exist\",\"cases/O1-M190 four subdirs: no .polar, no case_result.json\"],\"findings\":[{\"severity\":\"info\",\"finding\":\"Dossier sha256 measured c2497e46...efa7 (10962 bytes); prereg d810c83a...891b (13909 bytes) match the dossier and receipt records.\",\"evidence\":\"sha256_file on o1_a5_dossier.md and o1_preregistration.json\"},{\"severity\":\"info\",\"finding\":\"All ten section-1 code files match their pinned sha256 and byte sizes exactly; no drift.\",\"evidence\":\"sha256_file on all ten scripts/o1_*.py\"},{\"severity\":\"info\",\"finding\":\"K-shot ranking (o1_arms.py:196) takes only support_rows+pool; context from task spec; built before adaptive designs (line 528).\",\"evidence\":\"read_text o1_arms.py 196-236 and 492/528\"},{\"severity\":\"info\",\"finding\":\"Cost arithmetic consistent: 7+13=20 internal, 2 starts/design, 160/20=8 designs binds before 12/24; 8x3=24 designs, 48 starts, 480 internal.\",\"evidence\":\"o1_arms.py CAPS and o0 short_bo 7-coarse/13-refine header\"},{\"severity\":\"info\",\"finding\":\"GO hard-gated: requires exact PASS, dossier+prereg sha match, fresh later-dated verifier round, code sha match, zero physical; retire archives before unlink.\",\"evidence\":\"read_text o1_make_go.py and o1_retire_stale.py\"},{\"severity\":\"info\",\"finding\":\"Retire record shows stale verdict (bound dc4d7f...) archived as f781a265... and removed; live a5_review holds no verdict now.\",\"evidence\":\"o1_retire_record.json; a5_review/history listing\"},{\"severity\":\"info\",\"finding\":\"No O1 case directory contains a .polar or case_result.json; only dry/input-prep artifacts present.\",\"evidence\":\"grep cases/O1-M190 .polar|case_result.json => 0 hits\"},{\"severity\":\"info\",\"finding\":\"Dossier states claims bounded: no superiority/global-optimum/regret/aero-validation; physics_validated stays false.\",\"evidence\":\"dossier sections 0 and 5\"}],\"limitations\":[\"Did not execute the code; judged arithmetic and leakage by reading frozen sources.\",\"Could not run o1_make_go.py or o1_verify_binding.py to produce a live binding round (no execution tool).\",\"No round-trip comparison of A0 checkpoint tensor names against loader expectations.\",\"Historical task-collision check (8 physics hashes) not re-measured against datasets.\",\"o1_export_aircraft.py, o1_upload.py, _probe_* not in the frozen section-1 list and not reviewed.\",\"Verdict-binds-current-bytes depends on this round's dossier_sha256 being recorded by the harness.\"],\"scope\":\"Read-only review of the O1 preregistration dossier, ten frozen code files, A0 checkpoints/normalizer, retire record and script, GO gating, and O1 case directories. Did not execute solver or code; did not assess O1 numeric results (none exist).\",\"signature\":\"deepseek-v4.1-flash independent A5 review with read-only local tools; not a human signature\"}",
+      "tool_calls": {}
+    }
+  ]
+}

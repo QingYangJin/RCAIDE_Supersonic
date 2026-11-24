@@ -1,0 +1,28 @@
+{
+  "created_utc": "2026-11-24T12:08:46Z",
+  "dossier_on_disk": {
+    "bytes": 10962,
+    "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\o1_a5_dossier.md",
+    "sha256": "c2497e46386a1ddccd98593207449fbac9197c2bbcc335657c23f4defe47efa7"
+  },
+  "dry_run": false,
+  "kept": [],
+  "preregistration_on_disk": {
+    "bytes": 13909,
+    "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\o1_preregistration.json",
+    "sha256": "d810c83a6371089dd306fe4ec8948595817d036022e47e9a83a32b5e8890791b"
+  },
+  "retired": [
+    {
+      "archived_as": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\a5_review\\history\\verdict_20261124T120846Z_f781a265cadbbb43.json",
+      "bytes": 8351,
+      "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\a5_review\\verdict.json",
+      "reason": "verdict binds dossier 'dc4d7f2cf680c2fa670c6a1e34e333a84801134c7e681a223bd20a00e503844a', disk is 'c2497e46386a1ddccd98593207449fbac9197c2bbcc335657c23f4defe47efa7'",
+      "removed_from_the_live_path": true,
+      "sha256": "f781a265cadbbb430e83806e11ca1c82374779ceea90aa0adb67abb371b54d0d",
+      "target_dir": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\a5_review\\history"
+    }
+  ],
+  "rule": "an artifact is retired only when it names bytes that are not on disk; it is copied into dated history and then removed from the live path, never deleted outright, so the record of what was ever reviewed survives",
+  "schema": "dreal005.o1_retire_record.v1"
+}

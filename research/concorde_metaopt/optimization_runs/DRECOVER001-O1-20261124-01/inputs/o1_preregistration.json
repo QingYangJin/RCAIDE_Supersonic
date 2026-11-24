@@ -1,0 +1,311 @@
+{
+  "schema": "dreal005.o1_preregistration.v1",
+  "issue": "Issue #15 D-REAL-EXP-003 section 6 (O1 three-arm warm start)",
+  "stage": "O1",
+  "run_id": "DRECOVER001-O1-20261124-01",
+  "batch_id": "DRECOVER001-O1-20261124-01-PAIRING-01",
+  "authorization_id": "AUTH-DREAL005-O1-20261124-01",
+  "created_utc": "2026-11-24T12:08:44Z",
+  "protocol_id": "O1-THREE-ARM-20261124",
+  "owner_authorization_ref": "Issue #15 (2026-11-24) section 6 + acceptance comment 7122663062 + Owner m16075 one-shot budget approval",
+  "nature": {
+    "physical_solver_starts_spent_by_this_preregistration": 0,
+    "this_is": "a zero-physical registration of the O1 three-arm comparison; it authorises nothing on its own",
+    "requires_a_separate_a5_review": true,
+    "requires_a_separate_go_record": true,
+    "go_file": "o1_go_record.json"
+  },
+  "why_three_arms": "Issue #15 section 6 asks whether a meta-learned warm start beats a plain Sobol warm start at equal real evaluation cost. The comparison is therefore three arms that differ ONLY in how the three extra initialisation designs are chosen.",
+  "arms": {
+    "order": [
+      "SOBOL_BO",
+      "COND_SUPERVISED_KSHOT_BO",
+      "COND_FOMAML_KSHOT_BO"
+    ],
+    "SOBOL_BO": {
+      "warm_start_rule": "three LHS designs from seeds 20261125, shared by every Sobol arm and independent of any model",
+      "model": null
+    },
+    "COND_SUPERVISED_KSHOT_BO": {
+      "warm_start_rule": "rank the common candidate pool with the frozen A0 COND_SUPERVISED_16D checkpoint after K=3 support adaptation, then take the top three",
+      "model": {
+        "checkpoint_arm": "COND_SUPERVISED_16D",
+        "checkpoint": "A0 training/checkpoints/COND_SUPERVISED_16D_k3_seed7.npz",
+        "k_support": 3,
+        "uses_test_labels": false,
+        "uses_optimizer_feedback": false
+      }
+    },
+    "COND_FOMAML_KSHOT_BO": {
+      "warm_start_rule": "rank the common candidate pool with the frozen A0 COND_FOMAML_16D checkpoint after K=3 support adaptation, then take the top three",
+      "model": {
+        "checkpoint_arm": "COND_FOMAML_16D",
+        "checkpoint": "A0 training/checkpoints/COND_FOMAML_16D_k3_seed7.npz",
+        "k_support": 3,
+        "uses_test_labels": false,
+        "uses_optimizer_feedback": false
+      }
+    },
+    "held_equal": [
+      "the same three real shared support designs",
+      "the same 256-design candidate pool of coordinates (no truth pre-computed)",
+      "the same GP backend RECOVERY_NUMPY_RBF_GP_EI_V1 with the same seed and hyperparameters (candidate_count 256, length_scale 0.35, noise 1e-6)",
+      "the same coarse/refine alpha recipe, lift tolerance, audit and admission gate",
+      "the same geometry contract and the same frozen two-dimensional subspace",
+      "each arm's adaptive proposals use only that arm's own real feedback"
+    ],
+    "cost_modelling": "the three shared support designs are solved once but charged in full to all three arms; the physical and equivalent bills are reported separately and never conflated"
+  },
+  "pairing": {
+    "task_key": "O1-M190",
+    "pairing_seed": 7,
+    "gp_seed": 7,
+    "n_tasks_executed_in_this_pairing": 1,
+    "why_this_task": "Mach 1.90 is named in Issue #15 section 6 as the first-pairing candidate; its physics hash does not appear in any historical A0 label, so it is a genuinely new task",
+    "future_pairings_not_authorised_here": [
+      "O1-M210 at seed 19 and seed 43"
+    ]
+  },
+  "tasks": {
+    "O1-M190": {
+      "task_id": "O1-M190",
+      "mach": 1.9,
+      "altitude_m": 18288.0,
+      "dynamic_pressure_pa": 18122.493932624966,
+      "lift_target_n": 1333704.4,
+      "physics_sha256": "e1caa676b2237cbb9f09590ed41a9a36726f738e29d60c16c29758ba3b5f5acb",
+      "flow": {
+        "vinf_m_s": 560.6292350163342,
+        "rho_kg_m3": 0.1153178340089936,
+        "recref": 84086292.65636367,
+        "q_pa": 18122.493932624966
+      },
+      "split": "train"
+    },
+    "O1-M210": {
+      "task_id": "O1-M210",
+      "mach": 2.1,
+      "altitude_m": 18288.0,
+      "dynamic_pressure_pa": 22138.559070048777,
+      "lift_target_n": 1333704.4,
+      "physics_sha256": "c298ffb75d600daa79f81d35947fbbe1f46ea02d13e2ad0748cb688d347151cf",
+      "flow": {
+        "vinf_m_s": 619.642838702264,
+        "rho_kg_m3": 0.1153178340089936,
+        "recref": 92937481.35703352,
+        "q_pa": 22138.559070048777
+      },
+      "split": "train"
+    }
+  },
+  "task_collision_check": {
+    "historical_physics_hashes_considered": 8,
+    "collisions": {},
+    "source": "D:\\RCAIDE\\.real_runs\\DRECOVER001-A0-20261124-01\\dataset\\a0_dataset.json"
+  },
+  "geometry": {
+    "contract_sha256": "08c1341bdab944dd2a6e20985553e8eafc1d35ce50105a022c0a816da018f35b",
+    "sref_note": "Sref is the design's own wing area as reported by the geometry model; it is not pinned to 358.25 for non-baseline designs",
+    "subspace": {
+      "index": {
+        "sweep_1": 2,
+        "sweep_2": 3
+      },
+      "lower": [
+        65.5,
+        46.5
+      ],
+      "upper": [
+        68.5,
+        49.5
+      ],
+      "frozen_from": "O0-SHORT-BO-20261124",
+      "not_claimed": "a full 12-variable optimisation"
+    }
+  },
+  "alpha_search": {
+    "plan": {
+      "coarse_alphas_deg": [
+        4.13,
+        4.48,
+        4.83,
+        5.18,
+        5.53,
+        5.88,
+        6.23
+      ],
+      "coarse_internal_cases": 7,
+      "refine_half_width_deg": 0.024,
+      "refine_step_deg": 0.004,
+      "refine_internal_cases": 13,
+      "max_internal_cases_per_design": 20,
+      "starts_per_design_max": 2,
+      "alpha_window_deg": [
+        -2.0,
+        10.0
+      ]
+    },
+    "lift_tolerance_rel": 0.001,
+    "tolerance_is_not_relaxed": true
+  },
+  "admission_rule": {
+    "gate": "audit_real_case.py then o1_admit_case.py",
+    "requires": "an actual raw polar row within 1e-3 relative lift error, an independent recomputation of the deck/polar and a bound artifact manifest",
+    "interpolated_rows_never_admitted": true
+  },
+  "shared_support": {
+    "count": 3,
+    "seed": 20261124,
+    "first_design_is_baseline": true,
+    "design_ids": [
+      "8bd5a6c7c8311938",
+      "8591230592ee7d88",
+      "284b83c5f16226aa"
+    ],
+    "must_all_be_admitted": true
+  },
+  "candidate_pool": {
+    "count": 256,
+    "seed": 20261126,
+    "contains_objectives": false,
+    "overlap_rule": "the pool and the Sobol warm-start triple are drawn from the same LHS generator with different seeds (20261126 vs 20261125). No coordinate is excluded in advance, because a pool point can only help an arm by being ranked or proposed, and every design is scored by the same real evaluation regardless of where its coordinates came from. Any arm that would propose a design already present in its own ledger (shared support included) skips it and takes the next one, so no arm can be charged twice for one design. The SOBOL arm never reads the pool; the two K-shot arms rank the pool but receive no objective value for any point in it.",
+    "pool_sha256": "69fd1997bc3bb12397a800caf3f45810862e0898a285af3ea71a563252364748",
+    "sobol_warm_start_sha256": "7584fd73ef931b39c0501c54501015c3a66649001f8167ca1ebec8d059b4a623",
+    "pool_minus_sobol_overlap_count": 0
+  },
+  "budgets": {
+    "target_improvement_fraction": 0.001,
+    "target_derivation": "fixed before any O1 result exists; a 0.1% Di reduction is an order of magnitude above the 1e-3 relative lift tolerance that bounds the reported drag, and O0 already demonstrated a reachable 0.2394% effect",
+    "reference_point": "the pre-designated baseline design inside the shared support",
+    "caps": {
+      "max_designs_per_arm": 12,
+      "max_starts_per_arm": 24,
+      "max_internal_per_arm": 160,
+      "max_starts_per_design": 3,
+      "max_internal_per_design": 20,
+      "max_designs_all_arms": 36,
+      "max_starts_all_arms": 72,
+      "max_internal_all_arms": 480,
+      "affordable_designs_per_arm": 8,
+      "solver_timeout_s": 600,
+      "parallelism": 1,
+      "retries": 0
+    },
+    "cost_model": {
+      "internal_per_design": 20,
+      "starts_per_design": 2,
+      "affordable_designs_per_arm": 8,
+      "per_arm_equivalent": {
+        "designs": 8,
+        "starts": 16,
+        "internal": 160
+      },
+      "all_arms_equivalent": {
+        "starts": 48,
+        "internal": 480
+      },
+      "physical_if_everything_admits": "48 equivalent minus 2 x 3 shared support starts = 36",
+      "why_160_binds": "the internal cap binds before the 12-design and 24-start caps, so eight designs per arm is the honest affordable number, and every arm is truncated at the same place"
+    },
+    "truncation_rule": "all three arms are truncated at the same design count; the report must say so instead of pretending the arms spent identical effort by accident"
+  },
+  "stop_conditions": [
+    "any shared support design fails to admit a raw row -> abort before any arm starts",
+    "an arm reaches eight designs -> stop that arm",
+    "a solver start returns a non-SOLVED status -> record it as a paid failure, keep charging, do not retry (retries are zero)",
+    "a wall-clock or internal cap would be exceeded -> abort rather than overspend"
+  ],
+  "primary_endpoints": [
+    "best_feasible_Di_N at equal equivalent starts/internal",
+    "equivalent starts needed to reach the preregistered target Di",
+    "the anytime curve (best feasible Di against cumulative equivalent starts)",
+    "point-level and run-level feasible rate"
+  ],
+  "not_claimed": [
+    "global optimum",
+    "regret",
+    "aerodynamic validation",
+    "that the meta objective is superior (A0 did not establish it)",
+    "that a seed is an independent task"
+  ],
+  "deliverables": [
+    "o1_result.json with the primary endpoints and both cost ledgers",
+    "o1_shared_support.json, one file per arm, o1_attempts.jsonl",
+    "every raw solver artifact under cases/ uploaded and read back from GitHub",
+    "the best geometry for each arm exported as vsp3/stl/step",
+    "figures and tables, including an anytime comparison across the three arms"
+  ],
+  "code": {
+    "code_root": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\scripts",
+    "code_files": [
+      "o1_eval.py",
+      "o1_arms.py",
+      "o1_run.py",
+      "o1_admit_case.py",
+      "o1_prereg.py",
+      "o1_selftest.py",
+      "o1_verify_binding.py",
+      "o1_make_go.py",
+      "o1_build_dossier.py",
+      "o1_retire_stale.py"
+    ],
+    "code_shas": {
+      "o1_eval.py": "cd5d4b0d7c2ee80e61cc1b855d31ec724169bf200421881213ebab52406898b8",
+      "o1_arms.py": "2fbcb271ff00b4c472b7d6737856a707bb982601a42f462476ee7d332bdb9870",
+      "o1_run.py": "86f0187a029e5e9284fe9d59a48151176b32c693552a2500569f598cd77a4248",
+      "o1_admit_case.py": "d79be02ec4494a3937126f88cf9040b9c77067b6c1b26780715ecde605f316b8",
+      "o1_prereg.py": "ac1493e5e35c3c4911077cda6049f7f1d88d5e064bc9d09ccdd171fc7d78acee",
+      "o1_selftest.py": "2baee2859132dae3ab2c63ed61a2de158300d384513b3b0bf0ba25e9c67c2331",
+      "o1_verify_binding.py": "50ba4a31d7d8311de1d98d6e0e27d0ff2eb5c8f28f4b414f8797639d12155742",
+      "o1_make_go.py": "a8ee594f3094aab7b95225ba0e676513e15b2434c21a0887e95f60a791926ee3",
+      "o1_build_dossier.py": "e27899e44575f877297e8da136c9966c0bbf510e355c7116c8eab03bba6ad6fd",
+      "o1_retire_stale.py": "3eaabda4c4d64829c4faf9ed0eeace8a091cf3a9437e1036f5b9276c281e706d"
+    },
+    "repo": "D:\\RCAIDE\\.worktrees\\dreal005-20261124",
+    "repo_head": null
+  },
+  "carried_forward": {
+    "optimizer": {
+      "source": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O0-20261124-01\\o0_batch_close_B02.json",
+      "source_sha256": "684db6bc56cecd30421a0672063534b7ccdfbc524308ffe963c2d20e96577629",
+      "authorization_spend": {
+        "designs": 12,
+        "solver_starts": 23,
+        "internal_cases": 227
+      },
+      "batch_spend": {
+        "designs": 11,
+        "solver_starts": 22,
+        "internal_cases": 220,
+        "admitted_labels": 11,
+        "failed_or_null": 0
+      }
+    },
+    "final_verification": {
+      "source": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O0-20261124-01\\o0_final\\verification_ledger.json",
+      "source_sha256": "5c3907b9d382f611d159780e7be22e82ab9223ad00cc688536e691576a749a65",
+      "starts": 8,
+      "internal": 104
+    }
+  },
+  "not_authorized": [
+    "Mach 2.10 or any second pairing task",
+    "a second seed for the same task",
+    "more than eight designs per arm in this pairing",
+    "any change to the GP, the alpha recipe, the geometry contract or the tolerance",
+    "reusing an old GO",
+    "touching main or merging any pull request"
+  ],
+  "authorization_artifacts": {
+    "why_this_is_preregistered": "a GO is only meaningful if it binds the bytes that are on disk now; if a verdict or a binding round for superseded bytes stays on the live path, a GO issued today cannot be told apart from a GO issued against the old bytes",
+    "retirement_rule": "an artifact is retired only when it names a dossier or preregistration sha256 that is not on disk; it is copied into dated history, verified byte for byte, and only then removed from the live path; nothing is deleted outright",
+    "retired_never_overwritten": true,
+    "retire_record": "o1_retire_record.json",
+    "retire_script": "scripts/o1_retire_stale.py",
+    "live_path_after_retirement": "exactly one verdict and at most one binding round, both naming the dossier bytes on disk",
+    "go_gate": "o1_make_go.py refuses unless the binding round and the verdict both bind the dossier sha256 on disk, so a GO for other bytes cannot be issued"
+  },
+  "physical_solver_starts_actual": 0,
+  "internal_solver_cases_actual": 0,
+  "physics_validated": false
+}

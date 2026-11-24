@@ -1,0 +1,39 @@
+{
+  "schema": "dreal005.o1_tables.v1",
+  "tables": [
+    {
+      "table": "o1_three_arm_endpoint.csv",
+      "rows": 3,
+      "bytes": 581
+    },
+    {
+      "table": "o1_anytime_trace.csv",
+      "rows": 24,
+      "bytes": 2908
+    },
+    {
+      "table": "o1_all_designs_all_arms.csv",
+      "rows": 24,
+      "bytes": 4592
+    },
+    {
+      "table": "o1_best_design_vs_baseline.csv",
+      "rows": 36,
+      "bytes": 1187
+    },
+    {
+      "table": "o1_solver_case_ledger.csv",
+      "rows": 36,
+      "bytes": 4541
+    },
+    {
+      "reference_point": "the pre-designated baseline inside the shared support",
+      "baseline_di_n": 135505.77916651228,
+      "target_di_n": 135370.27338734578,
+      "target_rule": "baseline x (1 - 0.001), frozen before the batch",
+      "physical_solver_starts_actual": 36,
+      "equivalent_solver_starts": 108,
+      "note": "every Di in these tables is a raw VSPAERO polar row admitted at 1e-3 lift tolerance; no number here comes from the surrogate"
+    }
+  ]
+}

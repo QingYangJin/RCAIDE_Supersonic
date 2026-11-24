@@ -1,0 +1,118 @@
+{
+  "reviewer": "deepseek-v4.1-flash",
+  "review_type": "independent_read_only_tool_review",
+  "reviewed_utc": "2026-11-24T11:59:52Z",
+  "dossier_sha256": "93744e81b1b1ad0ded3705e74df68cd93f97ea55f3209bcc666c2e10de56d315",
+  "verdict": "O1_THREE_ARM_REVIEW_PASS",
+  "gate_verdicts": {
+    "O1_TASK_IS_NEW": "PASS_WITH_DISCLOSURE",
+    "O1_CODE_SHA_FROZEN": "PASS",
+    "O1_ZERO_PHYSICAL": "PASS",
+    "O1_THREE_ARMS_FAIR": "PASS",
+    "O1_KSHOT_NO_LEAKAGE": "PASS",
+    "O1_CANDIDATE_POOL_NO_TRUTH": "PASS",
+    "O1_COST_MODEL_CONSISTENT": "PASS",
+    "O1_SHARED_SUPPORT_CHARGED_TO_ALL_ARMS": "PASS",
+    "O1_BUDGET_CAPS": "PASS",
+    "O1_TARGET_PRE_REGISTERED": "PASS",
+    "O1_TRUNCATION_DISCLOSED": "PASS",
+    "O1_GEOMETRY_AND_ALPHA_UNCHANGED": "PASS",
+    "O1_CLAIMS_BOUNDED": "PASS",
+    "O1_CARRY_FORWARD_ACCOUNTED": "PASS",
+    "O1_BINDING_VERIFYABLE": "PASS_WITH_DISCLOSURE",
+    "O1_GO_REQUIRED": "PASS"
+  },
+  "tool_calls_made": [
+    "list_dir O1 run root",
+    "list_dir frozen worktree",
+    "sha256_file o1_a5_dossier.md",
+    "sha256_file o1_preregistration.json",
+    "list_dir scripts",
+    "list_dir cases",
+    "sha256_file all 9 frozen code files",
+    "list_dir cases/O1-M190 and its 4 case dirs",
+    "list_dir go_history",
+    "grep o1_arms.py kshot_ranked_candidates/support_rows/pool",
+    "read_text o1_arms.py (2 windows)",
+    "list_dir A0 run root and A0 training/checkpoints",
+    "read_text o1_verify_binding.py",
+    "read_text o1_dossier_receipt.json",
+    "grep o1_make_go.py",
+    "grep o1_verify_binding.py",
+    "grep a5_review/verdict.json",
+    "grep o1_preregistration.json",
+    "grep o1_run.py",
+    "stat_file O0 batch close + verification ledger",
+    "stat_file o1_go_record.json"
+  ],
+  "evidence_checked": [
+    "dossier sha256 93744e81b1b1ad0ded3705e74df68cd93f97ea55f3209bcc666c2e10de56d315, 9453 bytes, matches o1_dossier_receipt.json",
+    "preregistration sha256 c9cdc46dfa62efa8552ee77a672e54f01537a393ce161b75804734d6d48d33de, 12806 bytes, as cited",
+    "all 9 frozen code files rehashed: o1_admit_case d79be02e, o1_arms 2fbcb271, o1_build_dossier b0242ba7, o1_eval cd5d4b0d, o1_make_go cd0ba3a8, o1_prereg db7ede30, o1_run 86f0187a, o1_selftest 2baee285, o1_verify_binding 50ba4a31 -- all match section 1 and byte sizes",
+    "cases/O1-M190 contains only PREFLIGHT and DRY_* dirs; no .polar and no case_result.json in any",
+    "o1_arms.py:203-205 context from ev.task_spec only; 206-211 inner_adapt on support_rows only; 492 ranking computed from pool before adaptive designs",
+    "o1_arms.py CARRIER: carry_shared_support clones support records in full into each arm ledger; CAPS affordable_designs_per_arm 8; INTERNAL_PER_DESIGN=coarse+refine",
+    "A0 training/checkpoints has COND_SUPERVISED_16D_k3_seed7.npz and COND_FOMAML_16D_k3_seed7.npz; A0 a0_normalizer.json present",
+    "O0 carry-forward sources exist: o0_batch_close_B02.json (3667 B), o0_final/verification_ledger.json (5692 B)",
+    "o1_make_go.py hard-gates GO on STATUS_OK, failure_count 0, verdict string, dossier/prereg/verdict hashes, archived_as, post-dossier created_utc",
+    "o1_go_record.json does not exist (expected pre-GO state)"
+  ],
+  "findings": [
+    {
+      "severity": "major",
+      "finding": "A stale a5_review/verdict.json already exists binding dossier 3b58ac9d and prereg acdff6ca, both different from the bytes on disk; it carries verdict O1_THREE_ARM_REVIEW_PASS.",
+      "evidence": "grep verdict.json: dossier_sha256 3b58ac9d..., prereg acdff6ca..., reviewed_utc 2026-11-24T11:55:08Z; disk dossier is 93744e81..., prereg c9cdc46d..."
+    },
+    {
+      "severity": "info",
+      "finding": "The stale verdict cannot issue a GO: o1_make_go.py refuses when verdict.dossier_sha256 != disk dossier hash, so the mechanism self-blocks until a reviewed verdict over these bytes replaces it.",
+      "evidence": "o1_make_go.py lines 120-124 append problems when verdict hashes differ from disk; problems non-empty -> BLOCKED, no GO"
+    },
+    {
+      "severity": "minor",
+      "finding": "O1_TASK_IS_NEW rests on the dossier's own claim (8 historical hashes compared, no collision); I could not recompute historical hashes, only confirm the two task entries exist.",
+      "evidence": "preregistration.json lists lift_target_n 1333704.4 for O1-M190/M210; no dataset file readable in scope to recheck collisions"
+    },
+    {
+      "severity": "minor",
+      "finding": "Section 3 claims the same GP seed and hyperparameters for all three arms, but the K-shot arms additionally run inner_adapt with A0 grid-selected inner_lr/inner_steps; disclosed only as 'frozen checkpoint'.",
+      "evidence": "o1_arms.py load_checkpoint reads a0_grid_search.json chosen[arm] inner_lr/inner_steps; this is the warm-start rule, not the BO GP"
+    },
+    {
+      "severity": "info",
+      "finding": "Pool/Sobol generator overlap is disclosed and measured at 0 shared coordinate vectors rather than left implicit.",
+      "evidence": "dossier section 6 discloses seeds 20261126 vs 20261125 and 0 overlap; sobol_warm_start and candidate_pool both call generate_initial_designs with different seeds"
+    },
+    {
+      "severity": "info",
+      "finding": "Carried-forward O0 figures (12 designs/23 starts/227 internal; 8 starts/104 internal) point at real files, and O1 authorises zero further optimizer designs.",
+      "evidence": "o0_batch_close_B02.json and o0_final/verification_ledger.json exist; prereg carried_forward block cites both paths; physical_solver_starts_actual 0"
+    }
+  ],
+  "limitations": [
+    "I could not execute the code; leakage and cost findings rest on reading source, not on a run.",
+    "I cannot recompute the A0 checkpoint tensors or verify inner_adapt composition numerically.",
+    "The historical label-collision claim for O1-M190 was not independently rederived.",
+    "I did not verify o0.SUBSPACE_LOWER/UPPER/alpha_plan values in the frozen worktree.",
+    "No binding round over the current dossier bytes exists yet, which is expected pre-verdict.",
+    "I did not read the full 27338-byte o1_arms.py beyond two windows around the ranking and ledger functions."
+  ],
+  "scope": "Read-only review of the O1 three-arm preregistration dossier: hashed the dossier, preregistration and all nine frozen code files; confirmed A0 checkpoints and normalizer exist; confirmed no O1 case directory holds a polar or case_result.json; read the K-shot ranking and ledger code; inspected the GO hard-gate mechanism.",
+  "signature": "deepseek-v4.1-flash independent A5 review with read-only local tools; not a human signature",
+  "dossier_sha256_measured_by_harness": "93744e81b1b1ad0ded3705e74df68cd93f97ea55f3209bcc666c2e10de56d315",
+  "dossier_sha256_claimed_by_reviewer": "93744e81b1b1ad0ded3705e74df68cd93f97ea55f3209bcc666c2e10de56d315",
+  "dossier_sha256_overwritten_because": "the reviewer is a language model: the harness hashed the bytes it was shown and substitutes that measurement, keeping the reviewer's own value for audit",
+  "preregistration_sha256": "c9cdc46dfa62efa8552ee77a672e54f01537a393ce161b75804734d6d48d33de",
+  "preregistration_schema": "dreal005.o1_preregistration.v1",
+  "run_id": "DRECOVER001-O1-20261124-01",
+  "batch_id": "DRECOVER001-O1-20261124-01-PAIRING-01",
+  "authorization_id": "AUTH-DREAL005-O1-20261124-01",
+  "started_utc": "2026-11-24T11:59:52Z",
+  "model": "deepseek-v4.1-flash",
+  "review_gateway": "https://copilot.tencent.com",
+  "tool_access": "READ_ONLY_LOCAL_TOOLS: sha256_file, stat_file, list_dir, read_text, grep; allowlisted to the O1 run root, the frozen worktree, the A0 run root and the O0 run root; every call recorded in a5_review/o1_tool_transcript.json",
+  "tool_hops": 15,
+  "human_signature": false,
+  "dossier_path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\o1_a5_dossier.md",
+  "scope_of_this_review": "O1 three-arm warm-start protocol only; NOT an R1 blanket PASS, NOT a physical GO by itself, and NOT an approval of any later gate."
+}

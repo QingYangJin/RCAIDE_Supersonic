@@ -1,0 +1,66 @@
+{
+  "schema": "dreal001.solver_plan.v1",
+  "run_id": "DRECOVER001-O1-20261124-01",
+  "batch_id": "DRECOVER001-O1-20261124-01-SUPPORT",
+  "task_id": "O1-M190",
+  "case_id": "o1-s01-coarse",
+  "purpose": "D-REAL-EXP-003 O1 three-arm warm start, task O1-M190, group SUPPORT, coarse stage",
+  "solver": {
+    "path": "D:\\OpenVSP-3.55.0\\OpenVSP-3.55.0-win64\\vspaero.exe",
+    "sha256": "db71c4412489af82398833408ea30fb73327bdd9434de2ef530d31375b9fddad",
+    "cwd": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\cases\\O1-M190\\SUPPORT\\o1-s01-coarse",
+    "version_banner": "VSPAERO v.7.2.2",
+    "omp_threads": 1,
+    "timeout_s": 600,
+    "solver_config_hash": "b8cbdf249d5144b2a5d5bec4e01cc816f6851f923c5607161099d9da62f2b37b"
+  },
+  "command": {
+    "argv": [
+      "D:\\OpenVSP-3.55.0\\OpenVSP-3.55.0-win64\\vspaero.exe",
+      "-omp",
+      "1",
+      "o1-s01-coarse"
+    ]
+  },
+  "geometry": {
+    "files": {
+      "vspgeom": {
+        "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\cases\\O1-M190\\SUPPORT\\o1-s01-coarse\\o1-s01-coarse.vspgeom",
+        "sha256": "f6d2444279a73845a1764daa0ef5f8dd55abf240a6e71070ad9b20f5f432a66c"
+      },
+      "vkey": {
+        "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\cases\\O1-M190\\SUPPORT\\o1-s01-coarse\\o1-s01-coarse.vkey",
+        "sha256": "eabfeca891d5f160543eec87b9feaec6dac970b953912888ef481309421c3708"
+      },
+      "vspaero": {
+        "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\cases\\O1-M190\\SUPPORT\\o1-s01-coarse\\o1-s01-coarse.vspaero",
+        "sha256": "b8cbdf249d5144b2a5d5bec4e01cc816f6851f923c5607161099d9da62f2b37b"
+      }
+    },
+    "sref_m2": 358.25000000000006,
+    "geometry_sha256": "f6d2444279a73845a1764daa0ef5f8dd55abf240a6e71070ad9b20f5f432a66c",
+    "design_hash": "8591230592ee7d88"
+  },
+  "design": {
+    "design_hash": "8591230592ee7d88",
+    "x12": [
+      358.25,
+      1.83,
+      67.62579077145453,
+      48.91897466062624,
+      71.0,
+      0.480469,
+      0.945313,
+      0.408284,
+      0.130178,
+      0.0,
+      33.91,
+      0.0
+    ]
+  },
+  "budget": {
+    "physical_solver_starts_max": 1,
+    "expected_internal_cases": 7,
+    "max_internal_cases": 64
+  }
+}

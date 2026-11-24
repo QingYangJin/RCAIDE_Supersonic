@@ -1,0 +1,93 @@
+{
+  "reviewer": "deepseek-v4.1-flash",
+  "review_type": "independent_read_only_tool_review",
+  "reviewed_utc": "2026-11-24T11:55:08Z",
+  "dossier_sha256": "3b58ac9d66f6ce2a27f5c9fd9a51cc9c20d587c43065de480dece0073829e3b9",
+  "verdict": "O1_THREE_ARM_REVIEW_PASS",
+  "gate_verdicts": {
+    "O1_TASK_IS_NEW": "PASS",
+    "O1_CODE_SHA_FROZEN": "PASS",
+    "O1_ZERO_PHYSICAL": "PASS",
+    "O1_THREE_ARMS_FAIR": "PASS",
+    "O1_KSHOT_NO_LEAKAGE": "PASS",
+    "O1_CANDIDATE_POOL_NO_TRUTH": "PASS_WITH_DISCLOSURE",
+    "O1_COST_MODEL_CONSISTENT": "PASS",
+    "O1_SHARED_SUPPORT_CHARGED_TO_ALL_ARMS": "PASS",
+    "O1_BUDGET_CAPS": "PASS",
+    "O1_TARGET_PRE_REGISTERED": "PASS_WITH_DISCLOSURE",
+    "O1_TRUNCATION_DISCLOSED": "PASS",
+    "O1_GEOMETRY_AND_ALPHA_UNCHANGED": "PASS",
+    "O1_CLAIMS_BOUNDED": "PASS",
+    "O1_CARRY_FORWARD_ACCOUNTED": "PASS",
+    "O1_BINDING_VERIFYABLE": "PASS",
+    "O1_GO_REQUIRED": "PASS"
+  },
+  "tool_calls_made": [
+    "sha256_file(o1_a5_dossier.md) -> 3b58ac9d66f6ce2a27f5c9fd9a51cc9c20d587c43065de480dece0073829e3b9, 8377 bytes; sha256_file(run root) -> error 'not a file'",
+    "sha256_file(o1_preregistration.json) -> acdff6ca..., 11919 bytes; matches dossier",
+    "sha256_file x9 on scripts/: o1_admit_case, o1_arms, o1_build_dossier, o1_eval, o1_make_go, o1_prereg, o1_run, o1_selftest, o1_verify_binding -> all 9 match section 1",
+    "list_dir run root, cases, cases/O1-M190, 4 arm subdirs, PREFLIGHT",
+    "list_dir A0-20261124-01/training and training/checkpoints -> a0_normalizer.json, a0_grid_search.json, COND_*_k3_seed7.npz present",
+    "read_text o1_arms.py (top 12000 bytes), read_text dry_run.json x2, read_text o1_dossier_receipt.json, read_text o1_run.py head, read_text o1_preregistration.json head",
+    "grep o1_arms.py (kshot_ranked_candidates, labels, warm_start, truncation, charging); grep o1_verify_binding.py, o1_make_go.py, o1_run.py, o1_prereg.py, o1_build_dossier.py, o1_preregistration.json",
+    "list_dir go_history (empty), a5_support (empty), a5_review (verdict absent, o1_tool_transcript.json present)"
+  ],
+  "evidence_checked": [
+    "Dossier sha256 3b58ac9d... measured; receipt o1_dossier_receipt.json binds same sha and 8377 bytes",
+    "Preregistration acdff6caf4888613bc325556bbdf00fa35185405ec2cebaa7a98461d5ce359e7/11919 bytes matches both dossier claim and receipt",
+    "All nine frozen code files byte size and sha256 match the section 1 table exactly",
+    "cases/O1-M190 contains only PREFLIGHT and three DRY_* dirs; each holds one dry case with .vsp3/.vsm/.csf/.vkey, no .polar and no case_result.json; dry_run.json shows physical_solver_starts 0, internal_solver_cases 0",
+    "A0 normalizer a0_normalizer.json and checkpoints COND_SUPERVISED_16D_k3_seed7.npz / COND_FOMAML_16D_k3_seed7.npz exist under A0-20261124-01/training",
+    "o1_arms.py kshot_ranked_candidates: context = context_features(task, TaskContext(cl_target), DEFAULT_FEATURE_SPEC); episode built from support_rows only (sx16, sy), dummy query sx16[:1] with zero label; ranking computed on candidate_pool coordinates before warm designs admit",
+    "o1_arms.py CAPS: max_internal_per_arm 160, max_internal_per_design 20, affordable_designs_per_arm 8; STARTS_PER_DESIGN 2; INTERNAL_PER_DESIGN from o0 alpha_plan (7+13)",
+    "o1_verify_binding.py recomputes dossier/prereg sha from disk and cross-checks receipt + verdict; o1_make_go.py EXPECTED = O1_THREE_ARM_REVIEW_PASS, refuses absent verdict, sha mismatch, absent o1_binding_verification.json and non-archived round; o1_run.py check_go raises ProtocolError without a GO",
+    "go_history empty and no o1_go_record.json: expected, GO is issued only after this verdict"
+  ],
+  "findings": [
+    {
+      "severity": "minor",
+      "finding": "Candidate pool is produced with the same design generator as the Sobol warm start (20261126 vs 20261125); the dossier/prereg never state how overlap between the pool and the Sobol triple is handled.",
+      "evidence": "o1_arms.py candidate_pool() and sobol_warm_start() both call recovery_bo.generate_initial_designs with different seeds; no exclusion or dedup step is present or disclosed."
+    },
+    {
+      "severity": "minor",
+      "finding": "Target derivation cites an O0 0.2394% effect as evidence the 0.1% target is reachable; that is prior-run information used to size a threshold, not a fit to O1 data, but its provenance is O0 not O1.",
+      "evidence": "o1_arms.py TARGET_IMPROVEMENT_FRACTION 1e-3 comment: 'O0 already demonstrated a 0.2394% effect is reachable'."
+    },
+    {
+      "severity": "info",
+      "finding": "A5 dossier receipt exists and binds dossier, prereg and code_shas_sha256; it is produced by o1_build_dossier.py, not by a human signer, and the verdict chain is a model verdict plus hash binding.",
+      "evidence": "o1_dossier_receipt.json physical_solver_starts_actual 0, code_shas_sha256 d7f66790...; o1_verify_binding.py docstring: 'A5 reviewer is a model, not a signer'."
+    },
+    {
+      "severity": "info",
+      "finding": "Binding order is dossier->receipt->verdict->verify_binding->GO->runner, each step re-hashing disk bytes; the GO is hard-gated because o1_run.py refuses to run without it. No clean binding round exists yet, as expected.",
+      "evidence": "o1_make_go.py lines 104-151 and 213-245; o1_run.py lines 99-126 raise ProtocolError when GO/verdict/code hashes disagree."
+    }
+  ],
+  "limitations": [
+    "Did not execute any code; the GP/alpha admission gate and o0_short_bo.alpha_plan() internals (7 coarse + 13 refine) were not independently recomputed, only the arithmetic 160/20=8 and 8x3x20=480 verified as stated.",
+    "The dossier passed to me is reproduced in the prompt; I measured the sha256 of the file at the on-disk path, which matches the receipt, but did not byte-compare prompt text to file beyond the hash.",
+    "No O1 go record exists and go_history is empty; whether the GO is later archived correctly cannot be checked from these bytes.",
+    "The candidate pool contents were not enumerated, so a pool coordinate coinciding with a known-truth design cannot be ruled out beyond the code showing no objective values are attached.",
+    "A0 checkpoint tensor contents were not inspected; only existence, name (k3_seed7) and load path (arm->COND_*_16D) were checked."
+  ],
+  "scope": "Read-only tool review of dossier 3b58ac9d..., prereg acdff6ca..., the nine frozen scripts (all sha match), O1 case dirs (no polar, no case_result.json, dry-run 0 starts), A0 normalizer and k3_seed7 checkpoints, and the binding/GO mechanism in o1_verify_binding.py, o1_make_go.py and o1_run.py.",
+  "signature": "deepseek-v4.1-flash independent A5 review with read-only local tools; not a human signature",
+  "dossier_sha256_measured_by_harness": "3b58ac9d66f6ce2a27f5c9fd9a51cc9c20d587c43065de480dece0073829e3b9",
+  "dossier_sha256_claimed_by_reviewer": "3b58ac9d66f6ce2a27f5c9fd9a51cc9c20d587c43065de480dece0073829e3b9",
+  "dossier_sha256_overwritten_because": "the reviewer is a language model: the harness hashed the bytes it was shown and substitutes that measurement, keeping the reviewer's own value for audit",
+  "preregistration_sha256": "acdff6caf4888613bc325556bbdf00fa35185405ec2cebaa7a98461d5ce359e7",
+  "preregistration_schema": "dreal005.o1_preregistration.v1",
+  "run_id": "DRECOVER001-O1-20261124-01",
+  "batch_id": "DRECOVER001-O1-20261124-01-PAIRING-01",
+  "authorization_id": "AUTH-DREAL005-O1-20261124-01",
+  "started_utc": "2026-11-24T11:55:08Z",
+  "model": "deepseek-v4.1-flash",
+  "review_gateway": "https://copilot.tencent.com",
+  "tool_access": "READ_ONLY_LOCAL_TOOLS: sha256_file, stat_file, list_dir, read_text, grep; allowlisted to the O1 run root, the frozen worktree, the A0 run root and the O0 run root; every call recorded in a5_review/o1_tool_transcript.json",
+  "tool_hops": 16,
+  "human_signature": false,
+  "dossier_path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\o1_a5_dossier.md",
+  "scope_of_this_review": "O1 three-arm warm-start protocol only; NOT an R1 blanket PASS, NOT a physical GO by itself, and NOT an approval of any later gate."
+}

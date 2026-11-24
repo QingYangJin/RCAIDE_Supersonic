@@ -1,0 +1,159 @@
+{
+  "schema": "dreal005.o1_go_record.v1",
+  "go_issued": true,
+  "go_issued_utc": "2026-11-24T12:13:10Z",
+  "issued_by": "Lead (agent), not a human approver and not the A5 reviewer",
+  "authorization_kind": "O1_THREE_ARM",
+  "owner_authorization_ref": "Issue #15 (2026-11-24) section 6 + acceptance comment 7122663062 + Owner m16075 one-shot budget approval",
+  "issue": 15,
+  "run_id": "DRECOVER001-O1-20261124-01",
+  "batch_id": "DRECOVER001-O1-20261124-01-PAIRING-01",
+  "authorization_id": "AUTH-DREAL005-O1-20261124-01",
+  "pairing": {
+    "task_key": "O1-M190",
+    "pairing_seed": 7,
+    "gp_seed": 7,
+    "tasks_authorised": [
+      "O1-M190"
+    ]
+  },
+  "preregistration_path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\o1_preregistration.json",
+  "preregistration_sha256": "d810c83a6371089dd306fe4ec8948595817d036022e47e9a83a32b5e8890791b",
+  "a5_dossier_path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\o1_a5_dossier.md",
+  "a5_dossier_sha256": "c2497e46386a1ddccd98593207449fbac9197c2bbcc335657c23f4defe47efa7",
+  "a5_dossier_receipt_path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\o1_dossier_receipt.json",
+  "a5_dossier_receipt_sha256": "1116bb74a6412fcd1cb4069bc17fd8426ee8cc7af45d7181e5e4fa9312f76062",
+  "a5_verdict_path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\o1_a5_verdict.json",
+  "a5_verdict_source_path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\a5_review\\verdict.json",
+  "a5_verdict_sha256": "b2dcb05e48b91905b0932256c154edfb820197e7ea7937cf072663af20b97b11",
+  "a5_verdict": "O1_THREE_ARM_REVIEW_PASS",
+  "a5_reviewer": "deepseek-v4.1-flash",
+  "a5_human_signature": false,
+  "a5_verdict_is_byte_identical_copy": "o1_a5_verdict.json is a byte copy of a5_review/verdict.json; a5_verdict_sha256 binds that copy, and the runner re-hashes it before spending anything",
+  "byte_binding": "three independent values agree: sha256(dossier on disk), the external o1_dossier_receipt.dossier.sha256, and verdict.dossier_sha256",
+  "byte_verifier": {
+    "path": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\o1_binding_verification.json",
+    "sha256": "a715a2d82cd48354eeee9de04adaf14b820f26ad97f0c909d2912ed74449eeba",
+    "status": "O1_BYTES_BOUND_MECHANICALLY",
+    "check_count": 11,
+    "failure_count": 0,
+    "dossier_sha256": "c2497e46386a1ddccd98593207449fbac9197c2bbcc335657c23f4defe47efa7",
+    "dossier_bytes": 10962,
+    "created_utc": "2026-11-24T12:13:10Z",
+    "archived_as": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O1-20261124-01\\a5_support\\binding_history\\o1_binding_verification_20261124T121310Z.json"
+  },
+  "byte_verifier_is_a_hard_precondition": "this GO was refused unless o1_binding_verification.json reported O1_BYTES_BOUND_MECHANICALLY with zero failures over exactly these dossier bytes, written after the dossier and archived where it cannot be overwritten",
+  "code_shas": {
+    "o1_eval.py": "cd5d4b0d7c2ee80e61cc1b855d31ec724169bf200421881213ebab52406898b8",
+    "o1_arms.py": "2fbcb271ff00b4c472b7d6737856a707bb982601a42f462476ee7d332bdb9870",
+    "o1_run.py": "86f0187a029e5e9284fe9d59a48151176b32c693552a2500569f598cd77a4248",
+    "o1_admit_case.py": "d79be02ec4494a3937126f88cf9040b9c77067b6c1b26780715ecde605f316b8",
+    "o1_prereg.py": "ac1493e5e35c3c4911077cda6049f7f1d88d5e064bc9d09ccdd171fc7d78acee",
+    "o1_selftest.py": "2baee2859132dae3ab2c63ed61a2de158300d384513b3b0bf0ba25e9c67c2331",
+    "o1_verify_binding.py": "50ba4a31d7d8311de1d98d6e0e27d0ff2eb5c8f28f4b414f8797639d12155742",
+    "o1_make_go.py": "a8ee594f3094aab7b95225ba0e676513e15b2434c21a0887e95f60a791926ee3",
+    "o1_build_dossier.py": "e27899e44575f877297e8da136c9966c0bbf510e355c7116c8eab03bba6ad6fd",
+    "o1_retire_stale.py": "3eaabda4c4d64829c4faf9ed0eeace8a091cf3a9437e1036f5b9276c281e706d"
+  },
+  "caps": {
+    "max_designs_per_arm": 12,
+    "max_starts_per_arm": 24,
+    "max_internal_per_arm": 160,
+    "max_starts_per_design": 3,
+    "max_internal_per_design": 20,
+    "max_designs_all_arms": 36,
+    "max_starts_all_arms": 72,
+    "max_internal_all_arms": 480,
+    "affordable_designs_per_arm": 8,
+    "solver_timeout_s": 600,
+    "parallelism": 1,
+    "retries": 0
+  },
+  "cost_model": {
+    "internal_per_design": 20,
+    "starts_per_design": 2,
+    "affordable_designs_per_arm": 8,
+    "per_arm_equivalent": {
+      "designs": 8,
+      "starts": 16,
+      "internal": 160
+    },
+    "all_arms_equivalent": {
+      "starts": 48,
+      "internal": 480
+    },
+    "physical_if_everything_admits": "48 equivalent minus 2 x 3 shared support starts = 36",
+    "why_160_binds": "the internal cap binds before the 12-design and 24-start caps, so eight designs per arm is the honest affordable number, and every arm is truncated at the same place"
+  },
+  "spendable_under_this_authorization": {
+    "per_arm": {
+      "designs": 8,
+      "starts": 16,
+      "internal": 160,
+      "derivation": "min(stored_cap, affordable_designs x per_design_cost); the 160-internal ceiling binds first, so eight designs per arm is the honest number"
+    },
+    "all_arms": {
+      "designs": 24,
+      "starts": 48,
+      "internal": 480
+    }
+  },
+  "carried_forward_from_earlier_stages": {
+    "optimizer": {
+      "source": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O0-20261124-01\\o0_batch_close_B02.json",
+      "source_sha256": "684db6bc56cecd30421a0672063534b7ccdfbc524308ffe963c2d20e96577629",
+      "authorization_spend": {
+        "designs": 12,
+        "solver_starts": 23,
+        "internal_cases": 227
+      },
+      "batch_spend": {
+        "designs": 11,
+        "solver_starts": 22,
+        "internal_cases": 220,
+        "admitted_labels": 11,
+        "failed_or_null": 0
+      }
+    },
+    "final_verification": {
+      "source": "D:\\RCAIDE\\.real_runs\\DRECOVER001-O0-20261124-01\\o0_final\\verification_ledger.json",
+      "source_sha256": "5c3907b9d382f611d159780e7be22e82ab9223ad00cc688536e691576a749a65",
+      "starts": 8,
+      "internal": 104
+    }
+  },
+  "prior_o1_spend": {
+    "designs": 0,
+    "starts": 0,
+    "internal": 0,
+    "records": []
+  },
+  "authorized_remaining": {
+    "designs": 24,
+    "starts": 48,
+    "internal": 480
+  },
+  "physical_starts_authorized_this_go": 48,
+  "physical_starts_used_before_this_go": 0,
+  "internal_cases_authorized": 480,
+  "designs_authorized_per_arm": 8,
+  "physical_starts_if_everything_admits": "48 equivalent starts minus the 6 equivalent support starts that are solved once = 42 physical starts, of which 6 are the shared support block",
+  "not_authorized": [
+    "Mach 2.10 or any second pairing task",
+    "a second seed for the same task",
+    "more than eight designs per arm in this pairing",
+    "any change to the GP, the alpha recipe, the geometry contract or the tolerance",
+    "reusing an old GO",
+    "touching main or merging any pull request"
+  ],
+  "conditions": [
+    "upload and remote readback after every 8 starts or 60 minutes before continuing",
+    "abort the pairing if a shared support design fails to admit a raw row",
+    "no retry of an interrupted start; an interrupted start stays charged",
+    "lift tolerance 1e-3 is never relaxed and no interpolated row may be admitted",
+    "the three arms are truncated at the same design count; the report must say so",
+    "Mach 2.10 and any second seed require a separate preregistration, A5 review and GO"
+  ],
+  "go_sha256": "e4989d6db2e3a322d2da50742d98807350aff023db3eb3e4a6c794b2920272f6",
+  "go_sha256_scope": "sha256 of the canonical JSON (sort_keys, indent 2) of every field in this record except go_sha256 and go_sha256_scope"
+}

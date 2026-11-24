@@ -1,0 +1,100 @@
+{
+  "schema": "dreal001.real_admission_manifest.v1",
+  "admission_id": "O1-ADM-o1-d05-refine",
+  "run_id": "DRECOVER001-O1-20261124-01",
+  "task_id": "O1-M190",
+  "design_id": "6594f8b4ce57d57b3d35d928f02f73c7a2ac16f5c75bf6a196246f62ed1f8ede",
+  "design": [
+    358.25,
+    1.83,
+    66.18567272328441,
+    49.28528483084385,
+    71.0,
+    0.480469,
+    0.945313,
+    0.408284,
+    0.130178,
+    0.0,
+    33.91,
+    0.0
+  ],
+  "geometry_sha256": "08c1341bdab944dd2a6e20985553e8eafc1d35ce50105a022c0a816da018f35b",
+  "evaluator_id": "vspaero-3.55.0-v7.2.2-omp1",
+  "solver_returncode": 0,
+  "solver_started_utc": "2026-11-24T12:15:13Z",
+  "outcome": "success",
+  "partition": "query",
+  "performance_tag": "d05",
+  "files": [
+    {
+      "kind": "audit",
+      "path": "audit.json",
+      "sha256": "aff37c9d37e06c99f6cfc22c6f432cc00a2c864a9eaa9fd6801a6de16ef1e491",
+      "bytes": 1720
+    },
+    {
+      "kind": "deck",
+      "path": "o1-d05-refine.vspaero",
+      "sha256": "13446541a816480240de252116cc374194df161d503116279b3d3313f20168b0",
+      "bytes": 1236
+    },
+    {
+      "kind": "history",
+      "path": "o1-d05-refine.history",
+      "sha256": "335e924b306572283ef9b9731c884160c2e02187a3f39addf4f6cb394faf8b2f",
+      "bytes": 64289
+    },
+    {
+      "kind": "mesh",
+      "path": "o1-d05-refine.vspgeom",
+      "sha256": "ac4ca0e85387ff29751d784c5dd86cae1cfa414210045e00e435a4035d5f36ae",
+      "bytes": 225414
+    },
+    {
+      "kind": "polar",
+      "path": "o1-d05-refine.polar",
+      "sha256": "6c630a76e5c610ba8f66b877af9f2b3cfdc3fed903fa2376f661ed6a893e3333",
+      "bytes": 12841
+    }
+  ],
+  "artifact_sha256": "45e2dc3eb7aedd59f4199f5c261681b32386be1afb9d67bbbd5097e534fcf50f",
+  "independent_audit_ref": "O1-AUDIT-o1-d05-refine",
+  "binding": {
+    "task_physics_sha256": "e1caa676b2237cbb9f09590ed41a9a36726f738e29d60c16c29758ba3b5f5acb",
+    "design_sha256": "6594f8b4ce57d57b3d35d928f02f73c7a2ac16f5c75bf6a196246f62ed1f8ede",
+    "geometry_contract_sha256": "08c1341bdab944dd2a6e20985553e8eafc1d35ce50105a022c0a816da018f35b",
+    "mesh_sha256": "ac4ca0e85387ff29751d784c5dd86cae1cfa414210045e00e435a4035d5f36ae",
+    "deck_sha256": "13446541a816480240de252116cc374194df161d503116279b3d3313f20168b0",
+    "polar_sha256": "6c630a76e5c610ba8f66b877af9f2b3cfdc3fed903fa2376f661ed6a893e3333",
+    "sref_m2": 358.25000000000006,
+    "rho_kg_m3": 0.1153178340089936,
+    "vinf_m_s": 560.6292350163342,
+    "recref": 84086292.65636367,
+    "alpha_grid_deg": [
+      5.720865,
+      5.724865,
+      5.728865,
+      5.732865,
+      5.736865,
+      5.740865,
+      5.744865,
+      5.748865,
+      5.752865,
+      5.756865,
+      5.760865,
+      5.764865,
+      5.768865
+    ]
+  },
+  "task": {
+    "task_id": "O1-M190",
+    "split": "train",
+    "physics_sha256": "e1caa676b2237cbb9f09590ed41a9a36726f738e29d60c16c29758ba3b5f5acb",
+    "mach": 1.9,
+    "altitude_m": 18288.0,
+    "dynamic_pressure_pa": 18122.493932624966,
+    "lift_target_n": 1333704.4,
+    "lift_tolerance_rel": 0.001,
+    "geometry_contract_sha256": "08c1341bdab944dd2a6e20985553e8eafc1d35ce50105a022c0a816da018f35b"
+  }
+}
