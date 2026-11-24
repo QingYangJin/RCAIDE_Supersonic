@@ -144,7 +144,8 @@ def build_a0(pkg: Path, run: Path) -> dict:
                                   ("run_config.json", "a0_preregistration.json"))
     counts["metadata"] = copy_files(run, pkg / "metadata",
                                     ("a0_resource.summary.json", "a0_result.json",
-                                     "a0_batch_accounting.json", "README.md"))
+                                     "a0_batch_accounting.json", "a0_remote_readback.json",
+                                     "README.md"))
     return counts
 
 
@@ -203,7 +204,8 @@ def build_o1(pkg: Path, run: Path) -> dict:
         "o1_result.json", "o1_attempts.jsonl", "o1_resource.summary.json",
         "o1_resource.jsonl",
         "o1_arm_SOBOL_BO.json", "o1_arm_COND_SUPERVISED_KSHOT_BO.json",
-        "o1_arm_COND_FOMAML_KSHOT_BO.json", "o1_run_console.log", "README.md"))
+        "o1_arm_COND_FOMAML_KSHOT_BO.json", "o1_run_console.log", "o1_a4_recompute.json",
+        "README.md"))
     counts["audits"] = (copy_tree(run / "a5_review", pkg / "audits" / "a5_review")
                         + copy_tree(run / "a5_support", pkg / "audits" / "a5_support")
                         + copy_tree(run / "go_history", pkg / "audits" / "go_history"))
