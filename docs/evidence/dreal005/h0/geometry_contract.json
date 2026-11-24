@@ -1,0 +1,337 @@
+{
+  "schema": "dreal005.h0_geometry_contract.v1",
+  "contract_id": "H0GEOM-20261124",
+  "issue": 15,
+  "plan_document": "docs/planning/dreal005_task_conditioned_maml_real_optimization_20261124.md",
+  "scope": "H0 geometry contract for zero-physical freeze and the O0 real short BO",
+  "variable_order_12d": [
+    "wing_area",
+    "aspect_ratio",
+    "sweep_1",
+    "sweep_2",
+    "sweep_3",
+    "span_location_2",
+    "span_location_3",
+    "chord_ratio_2",
+    "chord_ratio_3",
+    "tip_twist",
+    "vertical_tail_area",
+    "vertical_tail_sweep_delta"
+  ],
+  "variable_ids_12d": [
+    "W01",
+    "W02",
+    "W03",
+    "W04",
+    "W05",
+    "W06",
+    "W07",
+    "W08",
+    "W09",
+    "W10",
+    "V01",
+    "V02"
+  ],
+  "baseline_x12": [
+    358.25,
+    1.83,
+    67.0,
+    48.0,
+    71.0,
+    0.480469,
+    0.945313,
+    0.408284,
+    0.130178,
+    0.0,
+    33.91,
+    0.0
+  ],
+  "fixed_variables": {
+    "fuselage_length": 61.66,
+    "fuselage_fineness": 4.3,
+    "fuselage_height_width_ratio": 1.152778
+  },
+  "physical_parameter_order_15": [
+    "wing_area",
+    "aspect_ratio",
+    "sweep_1",
+    "sweep_2",
+    "sweep_3",
+    "span_location_2",
+    "span_location_3",
+    "chord_ratio_2",
+    "chord_ratio_3",
+    "tip_twist",
+    "vertical_tail_area",
+    "vertical_tail_sweep_delta",
+    "fuselage_length",
+    "fuselage_fineness",
+    "fuselage_height_width_ratio"
+  ],
+  "baseline_physical_15": [
+    358.25,
+    1.83,
+    67.0,
+    48.0,
+    71.0,
+    0.480469,
+    0.945313,
+    0.408284,
+    0.130178,
+    0.0,
+    33.91,
+    0.0,
+    61.66,
+    4.3,
+    1.152778
+  ],
+  "bounds": {
+    "wing_area": {
+      "id": "W01",
+      "unit": "m^2",
+      "baseline": 358.25,
+      "lower": 300.0,
+      "upper": 420.0
+    },
+    "aspect_ratio": {
+      "id": "W02",
+      "unit": "dimensionless",
+      "baseline": 1.83,
+      "lower": 1.5,
+      "upper": 2.2
+    },
+    "sweep_1": {
+      "id": "W03",
+      "unit": "deg",
+      "baseline": 67.0,
+      "lower": 62.0,
+      "upper": 72.0
+    },
+    "sweep_2": {
+      "id": "W04",
+      "unit": "deg",
+      "baseline": 48.0,
+      "lower": 40.0,
+      "upper": 56.0
+    },
+    "sweep_3": {
+      "id": "W05",
+      "unit": "deg",
+      "baseline": 71.0,
+      "lower": 66.0,
+      "upper": 76.0
+    },
+    "span_location_2": {
+      "id": "W06",
+      "unit": "dimensionless",
+      "baseline": 0.480469,
+      "lower": 0.35,
+      "upper": 0.58
+    },
+    "span_location_3": {
+      "id": "W07",
+      "unit": "dimensionless",
+      "baseline": 0.945313,
+      "lower": 0.85,
+      "upper": 0.98
+    },
+    "chord_ratio_2": {
+      "id": "W08",
+      "unit": "dimensionless",
+      "baseline": 0.408284,
+      "lower": 0.3,
+      "upper": 0.5
+    },
+    "chord_ratio_3": {
+      "id": "W09",
+      "unit": "dimensionless",
+      "baseline": 0.130178,
+      "lower": 0.08,
+      "upper": 0.2
+    },
+    "tip_twist": {
+      "id": "W10",
+      "unit": "deg",
+      "baseline": 0.0,
+      "lower": -4.0,
+      "upper": 4.0
+    },
+    "vertical_tail_area": {
+      "id": "V01",
+      "unit": "m^2",
+      "baseline": 33.91,
+      "lower": 28.0,
+      "upper": 40.0
+    },
+    "vertical_tail_sweep_delta": {
+      "id": "V02",
+      "unit": "deg",
+      "baseline": 0.0,
+      "lower": -10.0,
+      "upper": 10.0
+    }
+  },
+  "cross_constraints": [
+    {
+      "id": "C01",
+      "expression": "span_location_2 < span_location_3"
+    },
+    {
+      "id": "C02",
+      "expression": "chord_ratio_3 < chord_ratio_2 < 1.0"
+    },
+    {
+      "id": "C03",
+      "expression": "0 < wing_area, 0 < aspect_ratio, 0 < vertical_tail_area, 0 < fuselage_length"
+    },
+    {
+      "id": "C04",
+      "expression": "0 <= sweep_1, sweep_2, sweep_3 <= 90"
+    }
+  ],
+  "optimization_subspace": {
+    "sweep_1": {
+      "id": "W03",
+      "unit": "deg",
+      "baseline": 67.0,
+      "lower": 62.0,
+      "upper": 72.0,
+      "measured_max_abs_delta_cdi": 0.001707,
+      "active": true,
+      "reason": "measured on existing raw rows above the polar resolution floor; variable is a genuine aerodynamic freedom"
+    },
+    "sweep_2": {
+      "id": "W04",
+      "unit": "deg",
+      "baseline": 48.0,
+      "lower": 40.0,
+      "upper": 56.0,
+      "measured_max_abs_delta_cdi": 0.0006977,
+      "active": true,
+      "reason": "measured on existing raw rows above the polar resolution floor; variable is a genuine aerodynamic freedom"
+    }
+  },
+  "held_fixed_variables": {
+    "wing_area": {
+      "frozen_value": 358.25,
+      "held_fixed": true,
+      "measured_max_abs_delta_cdi": 1.45e-10,
+      "reason": "measured response at or below the raw polar resolution floor"
+    },
+    "aspect_ratio": {
+      "frozen_value": 1.83,
+      "held_fixed": true,
+      "measured_max_abs_delta_cdi": 0.0,
+      "reason": "measured response at or below the raw polar resolution floor"
+    },
+    "sweep_3": {
+      "frozen_value": 71.0,
+      "held_fixed": true,
+      "measured_max_abs_delta_cdi": 0.0,
+      "reason": "measured response at or below the raw polar resolution floor"
+    },
+    "span_location_2": {
+      "frozen_value": 0.480469,
+      "held_fixed": true,
+      "measured_max_abs_delta_cdi": 0.0,
+      "reason": "measured response at or below the raw polar resolution floor"
+    },
+    "span_location_3": {
+      "frozen_value": 0.945313,
+      "held_fixed": true,
+      "measured_max_abs_delta_cdi": 0.0,
+      "reason": "measured response at or below the raw polar resolution floor"
+    },
+    "chord_ratio_2": {
+      "frozen_value": 0.408284,
+      "held_fixed": true,
+      "measured_max_abs_delta_cdi": 0.0,
+      "reason": "measured response at or below the raw polar resolution floor"
+    },
+    "chord_ratio_3": {
+      "frozen_value": 0.130178,
+      "held_fixed": true,
+      "measured_max_abs_delta_cdi": 0.0,
+      "reason": "measured response at or below the raw polar resolution floor"
+    },
+    "tip_twist": {
+      "frozen_value": 0.0,
+      "held_fixed": true,
+      "measured_max_abs_delta_cdi": 0.0,
+      "reason": "measured response at or below the raw polar resolution floor"
+    },
+    "vertical_tail_area": {
+      "frozen_value": 33.91,
+      "held_fixed": true,
+      "measured_max_abs_delta_cdi": 0.0,
+      "reason": "measured response at or below the raw polar resolution floor"
+    },
+    "vertical_tail_sweep_delta": {
+      "frozen_value": 0.0,
+      "held_fixed": true,
+      "measured_max_abs_delta_cdi": null,
+      "reason": "response not measured yet (P1 probe pending)"
+    }
+  },
+  "reference_contract": {
+    "sref_m2": 358.25,
+    "cref_m": 18.489893,
+    "bref_m": 25.604638,
+    "reference_frame": "WING_AC",
+    "xcg_m": 16.821978259514246,
+    "lift_reference_N": 1333704.4,
+    "q_pa": 20483.940233430174,
+    "lift_tol_rel": 0.001
+  },
+  "baseline_geometry_hash": "937aa7c9c789ccd8fce4fdbde942a258248f2b1c91ba90cf6c99c7e4c5a8a3fe",
+  "baseline_design_id": "8bd5a6c7c8311938",
+  "contract_sha256": "08c1341bdab944dd2a6e20985553e8eafc1d35ce50105a022c0a816da018f35b",
+  "geometry_contract_sha256_freeze_v2": "5f2bb12fe8b1dc68c67901843c777328ae984cfdbe4ee71176b369a16a133f15",
+  "freeze_v2_id": "GBFREEZE2-5f2bb12fe8b1dc68",
+  "source_file_sha256": {
+    "research/concorde_metaopt/aircraft/geometry_model.py": "5bbcf984c5f7ee48e7aee104e4b3953e7d0fb918502c6d5929f2e48d8d064ce2",
+    "research/concorde_metaopt/aircraft/openvsp_geometry.py": "4f64d4c0046ca2f72e9cd770fbf8af227fd55b165b868b74a856c7d282c7aa3c",
+    "research/concorde_metaopt/dreal001/optimizers/constants.py": "cd3d818a60a50917e83aecd307d728050f3d15f5b1ed1245595ec7f55fb10f9d",
+    "research/concorde_metaopt/dreal001/optimizers/task.py": "06504aae2b165e6ac8be24ff9de9006d8a14f9401b273aea6f006dc8c1c55484",
+    "research/concorde_metaopt/configs/design_space_12d_lifting_surfaces.yaml": "ebca2b7bb2920ce1e3729a3dedd7c361a1c78d34337918a973866bef48f76efc"
+  },
+  "baseline_geometry_reproduction": {
+    "wing_area_m2": 358.25000000000006,
+    "wing_span_m": 25.604638251691824,
+    "wing_mac_m": 18.489892944055953,
+    "vertical_tail_area_m2": 33.91,
+    "vertical_tail_span_m": 5.0093312926976585,
+    "geometry_model_version": "p1-2026-10-28",
+    "matches_frozen_reference": {
+      "sref_m2": true,
+      "bref_m": true,
+      "cref_m": true
+    },
+    "reference_rounding_note": "reference_contract carries the rounded published values; the comparison uses a 1e-6 relative tolerance because the frozen JSON stores 6 decimal places"
+  },
+  "production_loader_probe": {
+    "loader": "research.concorde_metaopt.aircraft.design_space.load_design_space",
+    "loaded": false,
+    "exception_type": "DesignSpaceError",
+    "exception_message": "D:\\RCAIDE\\.worktrees\\dreal005-20261124\\research\\concorde_metaopt\\configs\\design_space_12d_lifting_surfaces.yaml: the P1 design space is provisional and must not be loaded as frozen before the geometry perturbation checks are complete",
+    "disposition": "DO_NOT_BYPASS_SILENTLY; optimizer builds geometry via build_geometry()"
+  },
+  "freeze_conflict": {
+    "summary": "design_space_12d_lifting_surfaces.yaml declares stage: P1 with frozen: true; design_space._validate_space raises for any frozen space, so load_design_space() cannot load the 12D YAML from the production path",
+    "yaml_stage": "P1",
+    "yaml_frozen": true,
+    "yaml_bounds_status": "frozen_for_dreal001_20261110",
+    "resolution": "keep YAML semantics unchanged; the executable contract above is the frozen copy and the optimizer builds geometry with build_geometry() directly",
+    "silently_flipped_yaml": false,
+    "touches_main": false
+  },
+  "aerodynamic_active_mask_status": "VALIDATED_FOR_SWEEP_SUBSPACE_ON_EXISTING_RAW_ROWS; the full 12D mask remains NOT_VALIDATED because 9 of 12 variables show no measurable CDi response",
+  "physical_solver_starts_actual": 0,
+  "internal_solver_cases_actual": 0,
+  "physics_validated": false,
+  "limitations": [
+    "response magnitudes are measured on historical raw polar rows (d00-d07 single-variable perturbations) and are not a solver-side sensitivity study",
+    "VSPAERO runs in LIFTING_SURFACE_ONLY mode: the fuselage is not part of the evaluated aerodynamic model",
+    "the local subspace optimizes induced drag at fixed lift for one fixed Mach/altitude task; it is not a full-aircraft or full-mission optimization"
+  ]
+}

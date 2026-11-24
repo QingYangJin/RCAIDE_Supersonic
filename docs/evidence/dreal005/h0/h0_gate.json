@@ -1,0 +1,125 @@
+{
+  "schema": "dreal005.h0_gate.v1",
+  "run_id": "DRECOVER001-H0-20261124",
+  "issue": 15,
+  "stage": "H0",
+  "created_utc": "2026-11-24T05:38:52Z",
+  "branch": {
+    "head": {
+      "returncode": 0,
+      "stdout": "e70660a40df4f73ff8069d3d6fd5b0af2a2448b7",
+      "stderr": ""
+    },
+    "branch": {
+      "returncode": 0,
+      "stdout": "research/dreal005-conditional-meta-real-optimization",
+      "stderr": ""
+    },
+    "status_porcelain_short": {
+      "returncode": 0,
+      "stdout": "?? docs/evidence/dreal005/\n?? docs/planning/dreal005_task_conditioned_maml_real_optimization_20261124.md\n?? research/concorde_metaopt/dreal001/geometry/h0_contract.py\n?? research/concorde_metaopt/dreal001/meta/real_a0_ablation.py\n?? research/concorde_metaopt/dreal001/ops/\n?? research/concorde_metaopt/tests/_resource_monitor_scratch/\n?? research/concorde_metaopt/tests/test_recovery_h0_contract.py\n?? research/concorde_metaopt/tests/test_recovery_real_a0_ablation.py\n?? research/concorde_metaopt/tests/test_recovery_resource_monitor.py",
+      "stderr": "warning: could not open directory 'pytest-cache-files-1bkgps65/': Permission denied\nwarning: could not open directory 'pytest-cache-files-m93w94jh/': Permission denied\nwarning: could not open directory 'pytest-cache-files-qgz72qpf/': Permission denied"
+    }
+  },
+  "geometry_contract_sha256": "08c1341bdab944dd2a6e20985553e8eafc1d35ce50105a022c0a816da018f35b",
+  "geometry_contract_file_sha256": "4c7602c1d28dd235a982b54d9c74454d0727b5b1d726623453a4c59d31a130f0",
+  "geometry_contract_verification_file_sha256": "243d1e580a14cd78c68345bd0903717c1093d10b09be4ad3080d40eca1e236b6",
+  "freeze_conflict": {
+    "summary": "design_space_12d_lifting_surfaces.yaml declares stage: P1 with frozen: true; design_space._validate_space raises for any frozen space, so load_design_space() cannot load the 12D YAML from the production path",
+    "yaml_stage": "P1",
+    "yaml_frozen": true,
+    "yaml_bounds_status": "frozen_for_dreal001_20261110",
+    "resolution": "keep YAML semantics unchanged; the executable contract above is the frozen copy and the optimizer builds geometry with build_geometry() directly",
+    "silently_flipped_yaml": false,
+    "touches_main": false
+  },
+  "optimization_subspace": [
+    "sweep_1",
+    "sweep_2"
+  ],
+  "aerodynamic_active_mask_status": "VALIDATED_FOR_SWEEP_SUBSPACE_ON_EXISTING_RAW_ROWS; the full 12D mask remains NOT_VALIDATED because 9 of 12 variables show no measurable CDi response",
+  "code_sha256": {
+    "research/concorde_metaopt/dreal001/geometry/h0_contract.py": {
+      "sha256": "6ff0c486aeba7ca10c4d6821cba22e730a4f3988f2fdb541086c1ecd1c644396",
+      "bytes": 16643
+    },
+    "research/concorde_metaopt/dreal001/ops/resource_monitor.py": {
+      "sha256": "e3cfdafc2ef9f3e92c5006ee1b00e32d68b758374429b23d3a3e28d7f63739b9",
+      "bytes": 15259
+    },
+    "research/concorde_metaopt/dreal001/meta/real_a0_ablation.py": {
+      "sha256": "b6abd278b0a268e0de55d4bfe6398e5f868f993186bcdbb6a7eefd590232a4d7",
+      "bytes": 22515
+    },
+    "research/concorde_metaopt/dreal001/optimizers/recovery_bo.py": {
+      "sha256": "8328a90ded506564ce454804efa4c89d7ae5d8024784fd2b34cd8c02557eb929",
+      "bytes": 8238
+    },
+    "research/concorde_metaopt/dreal001/geometry/solver_runner.py": {
+      "sha256": "cd732583ab492885a225b06ef57d16a6930503cae87873689eaec1dde6f30ec3",
+      "bytes": 42284
+    },
+    "research/concorde_metaopt/dreal001/geometry/openvsp_model.py": {
+      "sha256": "9e6797901564f48435974c5dad66faa063d4c3602e07f643bd2d540b79939dc8",
+      "bytes": 38907
+    },
+    "research/concorde_metaopt/dreal001/geometry/adaptive_alpha.py": {
+      "sha256": "aa2ff00ff840568e805727a6a05f3cd5001eb26a4d8047fe95c0483f782b5d83",
+      "bytes": 12398
+    },
+    "research/concorde_metaopt/dreal001/geometry/design_identity.py": {
+      "sha256": "63d3f1a96150785b2ebf21eca5a41447d3fdde7f77f99ed209f3500355a3e409",
+      "bytes": 1565
+    },
+    "research/concorde_metaopt/dreal001/meta/real_admission.py": {
+      "sha256": "4322554ea488dd583a9c06fc8bb611e0584360573287673fe46bbbcc605ee3fc",
+      "bytes": 18286
+    },
+    "research/concorde_metaopt/dreal001/meta/meta_dataset.py": {
+      "sha256": "e608d652d85c875e6a19b041de1beed54004598d13266f51e26a2c528bdb63a3",
+      "bytes": 15066
+    },
+    "research/concorde_metaopt/dreal001/meta/task_spec.py": {
+      "sha256": "5413a1e8c1b6c71bb2af3093abfb1102eb2191e8781a5afcf5fbbe5ff5810ca5",
+      "bytes": 4052
+    },
+    "research/concorde_metaopt/dreal001/meta/production.py": {
+      "sha256": "91d91171c2fd8f04b8595843542910c5480baf42250a5d4f3b88acf06c64aec7",
+      "bytes": 23113
+    },
+    "research/concorde_metaopt/dreal001/geometry/task_spec.py": {
+      "sha256": "100d2f265880b07ba679883e744fc13634d4502cee8206604dc491ab2346ec3f",
+      "bytes": 16361
+    },
+    "research/concorde_metaopt/configs/design_space_12d_lifting_surfaces.yaml": {
+      "sha256": "ebca2b7bb2920ce1e3729a3dedd7c361a1c78d34337918a973866bef48f76efc",
+      "bytes": 11099
+    }
+  },
+  "code_bundle_sha256": "b890b9319b11bb304557a906f1898e0df98237e13fd9ff3220326aa9679ce39b",
+  "resource_probe": {
+    "summary_file": "docs/evidence/dreal005/h0/h0_resource_probe_summary.json",
+    "summary_file_sha256": "868f2b092b1f94808a0b92b15ae377ac67ad8c45daa535abfbe84b653158a4a4",
+    "sample_count": 4,
+    "cpu_busy_fraction_mean": 0.07052258481782296,
+    "memory_load_percent_mean": 41.0,
+    "tracked_working_set_bytes_max": 26091520
+  },
+  "gates": {
+    "H0_GEOMETRY_CONTRACT_FROZEN": "PENDING_A5_REVIEW",
+    "H0_FREEZE_CONFLICT_DISCLOSED": "PENDING_A5_REVIEW",
+    "H0_RESOURCE_ACCOUNTING_INSTRUMENTED": "PENDING_A5_REVIEW",
+    "H0_CODE_SHA_FROZEN": "PENDING_A5_REVIEW",
+    "H0_ZERO_PHYSICAL": "PASS"
+  },
+  "physical_solver_starts_actual": 0,
+  "internal_solver_cases_actual": 0,
+  "physics_validated": false,
+  "not_authorized": [
+    "any VSPAERO start",
+    "A0 real training on admitted labels before A5 review of the exact code SHA",
+    "O0 real BO before a fresh Lead GO"
+  ],
+  "next_gate": "A5 independent review of this H0 packet, then the A0/O0 GO records",
+  "h0_gate_sha256": "1036ee10316dd834296712e33c7b6c3219a34727d90909324aa727dc69d3043c"
+}
