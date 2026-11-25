@@ -41,7 +41,11 @@ class Observation:
             raise ContractError("design must have 12 finite coordinates")
         if self.partition not in {"support", "query"}:
             raise ContractError("invalid support/query partition")
-        if self.source_kind not in {"synthetic_fixture", "vspaero_raw"}:
+        # "rcaide_vlm_20x10" is a declared-computed label source: every row is
+        # reproducible from (design, task, lattice) through SupersonicVLMBackend and
+        # carries no solver raw bytes. It is deliberately a distinct kind so that it
+        # can never satisfy require_real_admission(), which demands certificates.
+        if self.source_kind not in {"synthetic_fixture", "vspaero_raw", "rcaide_vlm_20x10"}:
             raise ContractError("unrecognized data source")
         if self.status not in {"ok", "failed"}:
             raise ContractError("unrecognized observation status")
@@ -220,6 +224,23 @@ class MetaDataset:
     def require_software_fixture(self) -> None:
         if any(r.source_kind != "synthetic_fixture" for r in self.rows):
             raise ContractError("software fixture entry rejects real/declared-real data")
+
+    def require_declared_computed_labels(self) -> None:
+        """Fail-closed gate for declared-computed label sources.
+
+        A computed dataset carries no admission certificates by construction, so it
+        must declare exactly one source kind and every row must be a finite positive
+        label. This never authorises a raw-bytes claim: require_real_admission()
+        still rejects the dataset because admissions is empty.
+        """
+        if self.admissions:
+            raise ContractError("declared-computed dataset must not carry admission certificates")
+        kinds = {r.source_kind for r in self.rows}
+        if kinds != {"rcaide_vlm_20x10"}:
+            raise ContractError("declared-computed dataset must be rcaide_vlm_20x10 only, got %s" % sorted(kinds))
+        for row in self.rows:
+            if row.status != "ok" or row.di_n is None or not math.isfinite(row.di_n) or row.di_n <= 0.0:
+                raise ContractError("declared-computed row %s has no finite positive label" % row.observation_id)
 
     def require_real_admission(self) -> None:
         # A declared raw source is not enough. Every row must carry a certificate

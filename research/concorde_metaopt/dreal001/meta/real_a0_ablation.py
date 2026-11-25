@@ -420,6 +420,8 @@ def run_arm(dataset: MetaDataset, *, config: AblationConfig, k: int,
     require_k(k)
     if mode == "real":
         dataset.require_real_admission()
+    elif mode == "vlm_labels":
+        dataset.require_declared_computed_labels()
     elif mode != "software_fixture":
         raise ContractError("unsupported execution mode")
     else:
@@ -502,6 +504,8 @@ def run_arm_for_arm(dataset: MetaDataset, *, config: AblationConfig, k: int,
         raise ContractError("unknown arm: %r" % (arm,))
     if mode == "real":
         dataset.require_real_admission()
+    elif mode == "vlm_labels":
+        dataset.require_declared_computed_labels()
     elif mode != "software_fixture":
         raise ContractError("unsupported execution mode")
     else:
