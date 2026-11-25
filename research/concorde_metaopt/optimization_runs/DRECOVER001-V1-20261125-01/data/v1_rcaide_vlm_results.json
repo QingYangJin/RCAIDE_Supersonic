@@ -1,0 +1,199 @@
+{
+  "schema": "dreal005.v1_rcaide_vlm.v1",
+  "generated_utc": "2026-11-25T03:58:30Z",
+  "purpose": "RCAIDE native supersonic VLM (use_surrogate=False) on the frozen 12D model: A lattice convergence, B Mach sweep, C O0 improvement robustness, D cross-check vs VSPAERO",
+  "physics_scope": "VLM_INVISCID_LINEAR_THEORY_ONLY",
+  "physical_solver_starts": 0,
+  "reference": {
+    "SREF_m2": 358.25,
+    "CREF_m": 18.489893,
+    "BREF_m": 25.604638,
+    "altitude_m": 18288.0,
+    "q_Pa": 20483.94,
+    "CL_target": 0.181743998494,
+    "alpha0_deg": 5.18132,
+    "mach": 2.02
+  },
+  "vspaero_reference": {
+    "CL": 0.18174,
+    "CDi": 0.016548,
+    "Di_N": 121437.61102443402,
+    "Di_optimized_N": 121146.85696341874,
+    "delta_Di_N": 290.754
+  },
+  "tests": {
+    "A_lattice": [
+      {
+        "n_span": 6,
+        "n_chord": 3,
+        "n_panels": 18,
+        "CL": 0.16933482634088162,
+        "CDi": 0.00504913173942057,
+        "L_over_D": 33.537414961629466,
+        "secs": 0.02
+      },
+      {
+        "n_span": 8,
+        "n_chord": 4,
+        "n_panels": 32,
+        "CL": 0.18181312373296316,
+        "CDi": 0.006489786091635603,
+        "L_over_D": 28.015272177813998,
+        "secs": 0.03
+      },
+      {
+        "n_span": 12,
+        "n_chord": 6,
+        "n_panels": 72,
+        "CL": 0.1777255281628317,
+        "CDi": 0.006698341974798202,
+        "L_over_D": 26.532764202171975,
+        "secs": 0.05
+      },
+      {
+        "n_span": 15,
+        "n_chord": 8,
+        "n_panels": 120,
+        "CL": 0.17772122394967674,
+        "CDi": 0.006925671743596655,
+        "L_over_D": 25.66122544199332,
+        "secs": 0.08
+      },
+      {
+        "n_span": 20,
+        "n_chord": 10,
+        "n_panels": 200,
+        "CL": 0.1706615869986022,
+        "CDi": 0.00641046232045629,
+        "L_over_D": 26.62235240881264,
+        "secs": 0.13
+      },
+      {
+        "n_span": 30,
+        "n_chord": 15,
+        "n_panels": 450,
+        "CL": 0.19040900982746334,
+        "CDi": 0.009302505763459264,
+        "L_over_D": 20.46857208897414,
+        "secs": 0.32
+      },
+      {
+        "n_span": 45,
+        "n_chord": 25,
+        "n_panels": 1125,
+        "CL": 0.18364218221960052,
+        "CDi": 0.0083099031064734,
+        "L_over_D": 22.099196569036234,
+        "secs": 1.46
+      }
+    ],
+    "B_mach": [
+      {
+        "mach": 1.6,
+        "CL": 0.21477877307855503,
+        "CDi": 0.01062990975688737,
+        "CL_alpha_per_rad": 2.111032245300442,
+        "theory_4_over_beta": 3.202563076101742,
+        "ratio": 0.659169607322787,
+        "CDi_over_CL2": 0.23043416165289063
+      },
+      {
+        "mach": 1.8,
+        "CL": 0.19868866338074376,
+        "CDi": 0.009191871913374177,
+        "CL_alpha_per_rad": 2.0086798691930516,
+        "theory_4_over_beta": 2.6726124191242437,
+        "ratio": 0.7515791870230296,
+        "CDi_over_CL2": 0.23284010558536455
+      },
+      {
+        "mach": 2.0,
+        "CL": 0.17204862680704033,
+        "CDi": 0.006544877790442571,
+        "CL_alpha_per_rad": 1.8588095408858836,
+        "theory_4_over_beta": 2.3094010767585034,
+        "ratio": 0.804888141602032,
+        "CDi_over_CL2": 0.22110528333241863
+      },
+      {
+        "mach": 2.2,
+        "CL": 0.15837567575644595,
+        "CDi": 0.00549293597532737,
+        "CL_alpha_per_rad": 1.7012992749373017,
+        "theory_4_over_beta": 2.0412414523193148,
+        "ratio": 0.8334630246726759,
+        "CDi_over_CL2": 0.21899165973361248
+      },
+      {
+        "mach": 2.4,
+        "CL": 0.1458186733747707,
+        "CDi": 0.004568273157605606,
+        "CL_alpha_per_rad": 1.5775838518672396,
+        "theory_4_over_beta": 1.8333969940564225,
+        "ratio": 0.8604704038358916,
+        "CDi_over_CL2": 0.21484526112539323
+      }
+    ],
+    "C_robustness": [
+      {
+        "n_span": 15,
+        "n_chord": 8,
+        "alpha_baseline_deg": 5.307100201739926,
+        "alpha_optimized_deg": 5.304473966886562,
+        "CL_baseline": 0.18174399849442313,
+        "CL_optimized": 0.18174399849440886,
+        "CDi_baseline": 0.007255005963964479,
+        "CDi_optimized": 0.007232091557022073,
+        "Di_baseline_N": 53239.92903456199,
+        "Di_optimized_N": 53071.77460360186,
+        "delta_Di_N": 168.1544309601304,
+        "delta_Di_pct": 0.3158427030414877
+      },
+      {
+        "n_span": 30,
+        "n_chord": 15,
+        "alpha_baseline_deg": 4.910865252318006,
+        "alpha_optimized_deg": 4.91155802390391,
+        "CL_baseline": 0.1817439985008726,
+        "CL_optimized": 0.18174399850082443,
+        "CDi_baseline": 0.008463521739390646,
+        "CDi_optimized": 0.008441372718247455,
+        "Di_baseline_N": 62108.466764292345,
+        "Di_optimized_N": 61945.929018671515,
+        "delta_Di_N": 162.5377456208298,
+        "delta_Di_pct": 0.26169981982919704
+      },
+      {
+        "n_span": 45,
+        "n_chord": 25,
+        "alpha_baseline_deg": 5.121891758302477,
+        "alpha_optimized_deg": 5.1169094993343505,
+        "CL_baseline": 0.18174407758191669,
+        "CL_optimized": 0.1817440850231245,
+        "CDi_baseline": 0.008133291712654365,
+        "CDi_optimized": 0.008111926935832,
+        "Di_baseline_N": 59685.11614599544,
+        "Di_optimized_N": 59528.33347655151,
+        "delta_Di_N": 156.78266944392817,
+        "delta_Di_pct": 0.2626830264691501
+      }
+    ],
+    "D_crosscheck": {
+      "vspero": {
+        "CL": 0.18174,
+        "CDi": 0.016548,
+        "alpha_deg": 5.18132
+      },
+      "vlm_direct": {
+        "CL": 0.19040900982746334,
+        "CDi_trefftz": 0.009302505763459264,
+        "CL_over_CDi": 20.46857208897414,
+        "CDi_ratio_vlm_over_vspaero": 0.5621528742723751,
+        "CL_ratio_vlm_over_vspaero": 1.0477000650790322
+      },
+      "full_pipeline": {
+        "error": "ork\\Analyses\\Process.py\", line 52, in evaluate\n    result = step.evaluate(*args,**kwarg)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"D:\\Anaconda\\envs\\RCAIDE\\Lib\\site-packages\\RCAIDE\\Framework\\Analyses\\Process.py\", line 54, in evaluate\n    result = step(*args,**kwarg)\n             ^^^^^^^^^^^^^^^^^^^\n  File \"D:\\Anaconda\\envs\\RCAIDE\\Lib\\site-packages\\RCAIDE\\Library\\Methods\\Aerodynamics\\Vortex_Lattice_Method\\evaluate_VLM.py\", line 328, in evaluate_no_surrogate\n    aerodynamics  = state.analyses.aerodynamics\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"D:\\Anaconda\\envs\\RCAIDE\\Lib\\site-packages\\RCAIDE\\Framework\\Core\\Data.py\", line 66, in __getattribute__\n    return objgetattrib(self,k)\n           ^^^^^^^^^^^^^^^^^^^^\nAttributeError: 'Data' object has no attribute 'aerodynamics'\n"
+      }
+    }
+  }
+}
