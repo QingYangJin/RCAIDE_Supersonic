@@ -50,6 +50,38 @@ import numpy as np
 SCHEMA = "dreal006.rcaide_vlm_backend.v2"
 BACKEND_VERSION = "2.0.0"
 
+
+def rcaide_version_string() -> str:
+    """Return the installed RCAIDE version without importing RCAIDE.
+
+    Importing RCAIDE pulls in Framework.External_Interfaces.OpenVSP, whose
+    module-level openvsp import runs CheckForVSPAERO and aborts the interpreter
+    (exit 3, "Fatal Python error: Aborted").  Provenance only needs a version
+    string, so read the VERSION file shipped next to RCAIDE/__init__.py and fall
+    back to distribution metadata rather than paying for the import.
+    """
+    try:
+        import importlib.util
+        import os
+
+        spec = importlib.util.find_spec("RCAIDE")
+        if spec is not None and spec.origin:
+            version_file = os.path.join(os.path.dirname(spec.origin), "VERSION")
+            if os.path.exists(version_file):
+                with open(version_file, "r", encoding="utf-8") as handle:
+                    value = handle.read().strip()
+                if value:
+                    return value
+    except (ImportError, OSError, ValueError):
+        pass
+    try:
+        from importlib.metadata import version
+
+        return version("RCAIDE")
+    except Exception:
+        return "unknown"
+
+
 # Baseline reference quantities of the frozen 12D design space.  They are kept
 # only as the historical V1L reference convention and as cross-check values; the
 # default path recomputes Sref/Cref/Bref from the evaluated geometry.
@@ -186,7 +218,6 @@ class SupersonicVLMBackend:
     def _vehicle(self, x12: Mapping[str, float]) -> Tuple[Any, str, Dict[str, float]]:
         from research.concorde_metaopt.aircraft.concorde_adapter import build_vehicle
         from research.concorde_metaopt.aircraft.geometry_model import build_geometry
-        from RCAIDE.Library.Methods.Geometry.Planform.wing_planform import wing_planform
 
         key = _digest([x12[n] for n in self.design_names])
         if key in self._vehicles:
@@ -202,8 +233,15 @@ class SupersonicVLMBackend:
         expanded = self.space.expand(full)
         geometry = build_geometry(tuple(expanded), tuple(expanded.values()))
         _, vehicle = build_vehicle(geometry, module=self._module)
-        for wing in vehicle.wings:
-            wing_planform(wing)  # fills areas.projected that the VLM paneliser requires
+        if vehicle.wings:
+            # Imported lazily and only when a wing exists: importing RCAIDE
+            # geometry pulls in Framework.External_Interfaces.OpenVSP, and that
+            # module-level openvsp import can abort the interpreter the first time
+            # it runs in a process.  A stubbed vehicle with no wings never needs it.
+            from RCAIDE.Library.Methods.Geometry.Planform.wing_planform import wing_planform
+
+            for wing in vehicle.wings:
+                wing_planform(wing)  # fills areas.projected that the VLM paneliser requires
 
         if self.reference_mode == REFERENCE_MODE_FROZEN:
             refs = {"Sref_m2": SREF_M2, "Cref_m": CREF_M, "Bref_m": BREF_M}
@@ -454,14 +492,12 @@ class SupersonicVLMBackend:
         return record
 
     def provenance(self) -> Dict[str, Any]:
-        import RCAIDE
-
         return {
             "schema": SCHEMA,
             "backend_version": BACKEND_VERSION,
             "backend": "RCAIDE.Vortex_Lattice_Method",
             "use_surrogate": False,
-            "rcaide_version": getattr(RCAIDE, "__version__", "unknown"),
+            "rcaide_version": rcaide_version_string(),
             "lattice": {"spanwise": self.lattice[0], "chordwise": self.lattice[1]},
             "mach": self.mach,
             "altitude_m": self.altitude_m,
