@@ -22,12 +22,21 @@ class H0ContractTests(unittest.TestCase):
         self.assertEqual(tuple(contract["fixed_variables"]), h0.FIXED_ORDER)
 
     def test_production_loader_conflict_is_recorded_not_hidden(self):
+        # dreal006 S0 (issue 16) replaced the blanket "reject every frozen space"
+        # guard with an evidence check, so the 12D YAML now loads.  What must
+        # stay true either way: the probe reports the real loader outcome instead
+        # of hiding it, the YAML is never silently rewritten, and the disposition
+        # names whichever side the code is on.
         contract = h0.build_contract()
         probe = contract["production_loader_probe"]
-        self.assertFalse(probe["loaded"])
-        self.assertEqual(probe["exception_type"], "DesignSpaceError")
-        self.assertIn("provisional", probe["exception_message"])
         conflict = contract["freeze_conflict"]
+        self.assertEqual(probe["loaded"], conflict["loader_accepts_the_frozen_yaml"])
+        if probe["loaded"]:
+            self.assertIsNone(probe["exception_type"])
+            self.assertIn("accepts", conflict["summary"])
+        else:
+            self.assertEqual(probe["exception_type"], "DesignSpaceError")
+            self.assertIn("rejects", conflict["summary"])
         self.assertFalse(conflict["silently_flipped_yaml"])
         self.assertTrue(conflict["yaml_frozen"])
         self.assertEqual(conflict["yaml_stage"], "P1")

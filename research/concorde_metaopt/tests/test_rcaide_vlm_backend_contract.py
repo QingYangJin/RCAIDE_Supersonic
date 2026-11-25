@@ -17,6 +17,7 @@ pure-python stubs.  What they pin is the contract the S0 repair introduced:
 import unittest
 
 import numpy as np
+from unittest import mock
 
 from research.concorde_metaopt.evaluation import rcaide_vlm_backend as backend_module
 from research.concorde_metaopt.evaluation.rcaide_vlm_backend import SupersonicVLMBackend
@@ -208,6 +209,58 @@ class ConstructorContractTests(unittest.TestCase):
     def test_unknown_reference_mode_is_rejected_before_any_physics(self):
         with self.assertRaises(ValueError):
             SupersonicVLMBackend("<repo>", "<config>", reference_mode="whatever")
+
+
+
+class _FakeWing:
+    area_m2 = 400.0
+    mean_aerodynamic_chord_m = 19.0
+    span_m = 27.0
+
+
+class _FakeGeometry:
+    wing = _FakeWing()
+
+
+class _FakeSpace:
+    def __init__(self, captured):
+        self.captured = captured
+
+    def expand(self, full):
+        self.captured.append(dict(full))
+        return dict(full)
+
+
+class SubspaceDeclarationTests(unittest.TestCase):
+    def test_undeclared_dimensions_are_taken_from_the_frozen_baseline(self):
+        captured = []
+        obj = make_backend(design_names=["wing_area", "aspect_ratio"],
+                           name="subspace", _vehicles={}, build_count=0, solve_count=0)
+        obj._declared_baseline = {"wing_area": 358.25, "aspect_ratio": 1.83, "sweep_1": 67.0}
+        obj.space = _FakeSpace(captured)
+        obj._module = object()
+        del obj._vehicle  # use the real implementation for this check
+        design = {"wing_area": 400.0, "aspect_ratio": 2.0}
+        with mock.patch("research.concorde_metaopt.aircraft.geometry_model.build_geometry",
+                        return_value=_FakeGeometry()),              mock.patch("research.concorde_metaopt.aircraft.concorde_adapter.build_vehicle",
+                        return_value=(object(), mock.MagicMock(wings=[]))):
+            _, key, refs = obj._vehicle(design)
+        self.assertEqual(captured[0], {"wing_area": 400.0, "aspect_ratio": 2.0, "sweep_1": 67.0})
+        self.assertEqual(refs["Sref_m2"], 400.0)
+        self.assertEqual(key, backend_module._digest([400.0, 2.0]))
+
+    def test_provenance_names_the_held_dimensions(self):
+        obj = make_backend(design_names=["wing_area"], name="prov", _vehicles={}, build_count=0, solve_count=0)
+        obj._declared_baseline = {"wing_area": 358.25, "aspect_ratio": 1.83, "sweep_1": 67.0}
+        obj.space = mock.MagicMock(config_path="cfg", design_set="12d_lifting_surfaces",
+                                   frozen=True, bounds_status="frozen_for_dreal001_20261110")
+        obj._template_path = "t"
+        obj._template_sha256 = "a"
+        obj._expected_template_sha256 = "a"
+        obj._template_hash_verified = True
+        prov = obj.provenance()
+        self.assertEqual(prov["design_names"], ["wing_area"])
+        self.assertEqual(prov["held_at_baseline"], ["aspect_ratio", "sweep_1"])
 
 
 if __name__ == "__main__":

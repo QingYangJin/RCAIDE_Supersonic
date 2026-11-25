@@ -138,6 +138,9 @@ class SupersonicVLMBackend:
             repr(sorted(self.space.config_summary().items())).encode("utf-8")
         ).hexdigest()[:16]
         self.design_names = list(design_names or self.space.names)
+        self._declared_baseline = {
+            variable.name: float(variable.baseline) for variable in self.space.variables
+        }
         self.mach = float(mach)
         self.altitude_m = float(altitude_m)
         self.cl_target = float(cl_target)
@@ -189,7 +192,14 @@ class SupersonicVLMBackend:
         if key in self._vehicles:
             cached_vehicle, cached_refs = self._vehicles[key]
             return cached_vehicle, key, dict(cached_refs)
-        expanded = self.space.expand({n: float(x12[n]) for n in self.design_names})
+        # A declared subspace may be narrower than the 12D schema.  Variables the
+        # caller did not hand over stay at their frozen config baseline; they are
+        # never read from the caller, so an active 5D search cannot perturb the
+        # seven held dimensions by accident.
+        subspace = {n: float(x12[n]) for n in self.design_names}
+        full = dict(self._declared_baseline)
+        full.update(subspace)
+        expanded = self.space.expand(full)
         geometry = build_geometry(tuple(expanded), tuple(expanded.values()))
         _, vehicle = build_vehicle(geometry, module=self._module)
         for wing in vehicle.wings:
@@ -459,6 +469,8 @@ class SupersonicVLMBackend:
             "cl_target": self.cl_target if self.lift_target_mode == "coefficient" else None,
             "lift_target_n": self.lift_target_n,
             "task_fingerprint": self.task_fingerprint,
+            "design_names": list(self.design_names),
+            "held_at_baseline": sorted(set(self._declared_baseline) - set(self.design_names)),
             "design_space": {
                 "config_path": self.space.config_path,
                 "design_set": self.space.design_set,

@@ -1,0 +1,75 @@
+{
+  "automatic_retries": 0,
+  "budget_assertion": "sum(stages) == total == 100000",
+  "counters": {
+    "cache_hits": "repeat requests served from the in-run cache; reported, never charged",
+    "evaluation_attempts_charged": "every call that reaches the evaluator, VALID or not",
+    "fresh_evaluator_attempts": "those that actually built a vehicle and ran a solve",
+    "unique_task_design_labels": "distinct (task, design) pairs with a VALID label",
+    "vlm_inner_solves_actual": "inner VLM solves performed, reported separately and never counted as budget units"
+  },
+  "global_inner_solve_guard": 1600000,
+  "nominal_solves_per_evaluation_at_20x10": 5,
+  "not_a_unit": [
+    "SGD update",
+    "network forward pass",
+    "angle-of-attack iteration",
+    "repeated certificate",
+    "cache hit"
+  ],
+  "per_design_inner_solve_cap": 16,
+  "per_task_initial_timeout_s": 120,
+  "schema": "dreal006.evaluation_budget.v1",
+  "stages": {
+    "R_reserve": {
+      "buys": "retry and rework reserve",
+      "charged_attempts": 4864,
+      "counting_rule": "spent only against a recorded failure, never pre-assigned",
+      "share_of_total": 0.04864
+    },
+    "S0_repair_and_calibration": {
+      "buys": "backend repair, zero-physics tests, lattice calibration, BO smoke",
+      "charged_attempts": 2000,
+      "counting_rule": "every calibration evaluation of a real deck",
+      "share_of_total": 0.02
+    },
+    "S1_meta_training": {
+      "buys": "24 train tasks x 256 designs",
+      "charged_attempts": 8192,
+      "counting_rule": "charged attempts; the 24x256 grid is the full charge",
+      "share_of_total": 0.08192
+    },
+    "S2_meta_test": {
+      "buys": "12 unseen tasks x 128 designs",
+      "charged_attempts": 1536,
+      "counting_rule": "charged attempts on the held-out tasks",
+      "share_of_total": 0.01536
+    },
+    "S3_model_selection": {
+      "buys": "4 val tasks x 3 methods x 4 repeats x 64 designs",
+      "charged_attempts": 3072,
+      "counting_rule": "charged attempts of the frozen comparison",
+      "share_of_total": 0.03072
+    },
+    "S4_online_bo": {
+      "buys": "12 new test tasks x 10 paired repeats x 3 arms x 192 evaluations",
+      "charged_attempts": 69120,
+      "counting_rule": "the dominant spend; 16 init + up to 176 BO candidates per arm-task-repeat",
+      "share_of_total": 0.6912
+    },
+    "S5_baseline_optimisers": {
+      "buys": "DE/PSO: 2 backends x 4 tasks x 3 repeats x 3 sampling methods x 128 evaluations",
+      "charged_attempts": 9216,
+      "counting_rule": "charged attempts of the classical baselines",
+      "share_of_total": 0.09216
+    },
+    "S6_final_report": {
+      "buys": "final geometry recheck, statistics and cost report",
+      "charged_attempts": 2000,
+      "counting_rule": "charged attempts of the closing audit",
+      "share_of_total": 0.02
+    }
+  },
+  "total": 100000,
+  "unit": "one charged evaluation attempt of one design under one task, one backend and one lattice, including attempts that fail"
+}

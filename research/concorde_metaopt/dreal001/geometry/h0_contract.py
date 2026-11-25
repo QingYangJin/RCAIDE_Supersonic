@@ -146,6 +146,50 @@ def probe_production_loader() -> Dict[str, Any]:
     }
 
 
+
+def freeze_disposition(yaml_payload: Dict[str, Any]) -> Dict[str, Any]:
+    """Record the loader/freeze relationship as it currently stands.
+
+    Historically the P1 loader rejected every frozen space, so this contract
+    documented a conflict between the YAML (frozen: true) and the code.
+    dreal006 S0 (issue 16) replaced that blanket rejection with an evidence
+    check: a frozen config loads only when its bounds_status is frozen and its
+    baseline hash matches the baseline file on disk.  The probe above always
+    reports what the production loader actually does, so this record follows
+    the code instead of pinning the old rejection."""
+    probe = probe_production_loader()
+    loaded = bool(probe.get("loaded"))
+    if loaded:
+        summary = (
+            "design_space_12d_lifting_surfaces.yaml declares stage: P1 with frozen: true; "
+            "the production loader accepts it because the freeze evidence is complete "
+            "(bounds_status starts with 'frozen' and source.baseline_sha256 matches the "
+            "baseline file on disk); the earlier blanket rejection was replaced in S0 of "
+            "issue 16, so the loader and the YAML no longer disagree")
+        resolution = (
+            "the executable contract above is still built from the frozen copy and the "
+            "optimizer still builds geometry with build_geometry() directly; neither path "
+            "rewrites the YAML")
+    else:
+        summary = (
+            "design_space_12d_lifting_surfaces.yaml declares stage: P1 with frozen: true; "
+            "the production loader rejects it (%s: %s)"
+            % (probe.get("exception_type"), probe.get("exception_message")))
+        resolution = (
+            "keep YAML semantics unchanged; the executable contract above is the frozen "
+            "copy and the optimizer builds geometry with build_geometry() directly")
+    return {
+        "summary": summary,
+        "yaml_stage": yaml_payload.get("stage"),
+        "yaml_frozen": yaml_payload.get("frozen"),
+        "yaml_bounds_status": yaml_payload.get("bounds_status"),
+        "loader_accepts_the_frozen_yaml": loaded,
+        "resolution": resolution,
+        "silently_flipped_yaml": False,
+        "touches_main": False,
+    }
+
+
 def build_contract() -> Dict[str, Any]:
     """Assemble the executable H0 contract from the frozen sources."""
     from research.concorde_metaopt.aircraft.geometry_model import (
@@ -297,20 +341,7 @@ def build_contract() -> Dict[str, Any]:
         "source_file_sha256": source_hashes,
         "baseline_geometry_reproduction": reproduction,
         "production_loader_probe": probe_production_loader(),
-        "freeze_conflict": {
-            "summary": (
-                "design_space_12d_lifting_surfaces.yaml declares stage: P1 with frozen: true; "
-                "design_space._validate_space raises for any frozen space, so "
-                "load_design_space() cannot load the 12D YAML from the production path"),
-            "yaml_stage": yaml_payload.get("stage"),
-            "yaml_frozen": yaml_payload.get("frozen"),
-            "yaml_bounds_status": yaml_payload.get("bounds_status"),
-            "resolution": (
-                "keep YAML semantics unchanged; the executable contract above is the frozen copy "
-                "and the optimizer builds geometry with build_geometry() directly"),
-            "silently_flipped_yaml": False,
-            "touches_main": False,
-        },
+        "freeze_conflict": freeze_disposition(yaml_payload),
         "aerodynamic_active_mask_status": (
             "VALIDATED_FOR_SWEEP_SUBSPACE_ON_EXISTING_RAW_ROWS; the full 12D mask remains "
             "NOT_VALIDATED because 9 of 12 variables show no measurable CDi response"),

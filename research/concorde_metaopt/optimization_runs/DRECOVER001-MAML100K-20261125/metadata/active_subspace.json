@@ -1,0 +1,27 @@
+{
+  "schema": "dreal006.active_subspace.v1",
+  "created_utc": "2026-11-25",
+  "design_space": "research/concorde_metaopt/configs/design_space_12d_lifting_surfaces.yaml",
+  "selection_rule": "one-at-a-time bound perturbation at 20x10 and the M2.02 task force; keep the leading group before the first ordinate-gap (14.86% then 4.86%)",
+  "evidence": "metadata/subspace_screen_force.json",
+  "reference_mode": "geometry",
+  "lift_target_mode": "force",
+  "active_names": [
+    "wing_area",
+    "aspect_ratio",
+    "sweep_1",
+    "span_location_2",
+    "chord_ratio_2"
+  ],
+  "active_dim": 5,
+  "excluded": {
+    "sweep_2": "4.86% of baseline CDi, below the gap",
+    "chord_ratio_3": "4.46% of baseline CDi, below the gap",
+    "span_location_3": "1.60% of baseline CDi, below the gap",
+    "tip_twist": "0.22% of baseline CDi, numerically marginal",
+    "sweep_3": "0.12% of baseline CDi, numerically marginal",
+    "vertical_tail_area": "affects the tail only; no lift contribution at these attitudes",
+    "vertical_tail_sweep_delta": "affects the tail only; no lift contribution at these attitudes"
+  },
+  "note": "The 12D schema is retained; this run optimises a declared 5D wing subspace and never claims a 12D search."
+}

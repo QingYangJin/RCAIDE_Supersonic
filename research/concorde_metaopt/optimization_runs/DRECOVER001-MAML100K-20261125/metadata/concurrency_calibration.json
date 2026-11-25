@@ -1,0 +1,138 @@
+{
+  "cpu_count": 32,
+  "lattice": [
+    20,
+    10
+  ],
+  "per_worker_designs": 4,
+  "process_model": "subprocess + stdio DEVNULL (multiprocessing.Pool is blocked by the sandbox)",
+  "rows": [
+    {
+      "evaluations": 4,
+      "evaluations_per_minute": 37.26,
+      "exit_codes": [
+        0
+      ],
+      "mean_worker_wall_s": 0.724,
+      "p50_worker_wall_s": 0.72,
+      "p95_worker_wall_s": 0.723,
+      "status_counts": {
+        "VALID": 4
+      },
+      "valid": 4,
+      "wall_seconds": 6.44,
+      "workers": 1
+    },
+    {
+      "evaluations": 16,
+      "evaluations_per_minute": 117.87,
+      "exit_codes": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "mean_worker_wall_s": 0.858,
+      "p50_worker_wall_s": 0.831,
+      "p95_worker_wall_s": 0.953,
+      "status_counts": {
+        "VALID": 16
+      },
+      "valid": 16,
+      "wall_seconds": 8.14,
+      "workers": 4
+    },
+    {
+      "evaluations": 32,
+      "evaluations_per_minute": 232.66,
+      "exit_codes": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "mean_worker_wall_s": 0.858,
+      "p50_worker_wall_s": 0.829,
+      "p95_worker_wall_s": 0.981,
+      "status_counts": {
+        "VALID": 32
+      },
+      "valid": 32,
+      "wall_seconds": 8.25,
+      "workers": 8
+    },
+    {
+      "evaluations": 48,
+      "evaluations_per_minute": 275.8,
+      "exit_codes": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "mean_worker_wall_s": 1.155,
+      "p50_worker_wall_s": 1.131,
+      "p95_worker_wall_s": 1.377,
+      "status_counts": {
+        "NON_PHYSICAL_CDI": 1,
+        "VALID": 47
+      },
+      "valid": 47,
+      "wall_seconds": 10.44,
+      "workers": 12
+    },
+    {
+      "evaluations": 64,
+      "evaluations_per_minute": 295.24,
+      "exit_codes": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "mean_worker_wall_s": 1.453,
+      "p50_worker_wall_s": 1.477,
+      "p95_worker_wall_s": 1.732,
+      "status_counts": {
+        "NON_PHYSICAL_CDI": 1,
+        "VALID": 63
+      },
+      "valid": 63,
+      "wall_seconds": 13.01,
+      "workers": 16
+    }
+  ],
+  "schema": "dreal006.concurrency_calibration.v1",
+  "thread_limits": {
+    "MKL_NUM_THREADS": "1",
+    "NUMEXPR_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "TORCH_NUM_THREADS": "1",
+    "VECLIB_MAXIMUM_THREADS": "1"
+  }
+}

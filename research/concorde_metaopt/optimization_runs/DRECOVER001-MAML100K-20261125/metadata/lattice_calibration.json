@@ -1,0 +1,941 @@
+{
+  "active_names": [
+    "wing_area",
+    "aspect_ratio",
+    "sweep_1",
+    "span_location_2",
+    "chord_ratio_2"
+  ],
+  "altitude_m": 18288.0,
+  "common_designs": 21,
+  "design_set": {
+    "composition": "baseline + 32 corners + 39 seeded space-filling",
+    "fine_subset": 24,
+    "fine_subset_labels": [
+      "baseline",
+      "corner-00",
+      "corner-04",
+      "corner-08",
+      "corner-12",
+      "corner-16",
+      "corner-20",
+      "corner-31",
+      "sobol-00",
+      "sobol-01",
+      "sobol-02",
+      "sobol-03",
+      "sobol-04",
+      "sobol-05",
+      "sobol-06",
+      "sobol-07",
+      "sobol-08",
+      "sobol-09",
+      "sobol-10",
+      "sobol-11",
+      "sobol-12",
+      "sobol-13",
+      "sobol-14",
+      "sobol-15"
+    ],
+    "seed": 20261125,
+    "total": 72
+  },
+  "lattices": [
+    [
+      20,
+      10
+    ],
+    [
+      30,
+      15
+    ],
+    [
+      45,
+      25
+    ]
+  ],
+  "lift_target_mode": "force",
+  "lift_target_n": 1344778.5,
+  "mach": 2.02,
+  "metrics": {
+    "differential_sign_agreement_20x10_vs_45x25": 0.95,
+    "mean_wall_seconds": {
+      "(20, 10)": 0.762,
+      "(30, 15)": 6.612,
+      "(45, 25)": 7.974
+    },
+    "p95_wall_seconds": {
+      "(20, 10)": 0.862,
+      "(30, 15)": 42.077,
+      "(45, 25)": 9.027
+    },
+    "resolution_median_gap_45x25": 0.00042397726420760444,
+    "resolvable_pairs": 20,
+    "spearman_20x10_vs_30x15": 0.9415584415584416,
+    "spearman_20x10_vs_45x25": 0.9506493506493506,
+    "spearman_30x15_vs_45x25": 0.9974025974025974,
+    "status_counts_20x10": {
+      "NON_PHYSICAL_CDI": 1,
+      "VALID": 71
+    },
+    "status_counts_30x15": {
+      "ALPHA_SOLVE_FAILED": 3,
+      "VALID": 21
+    },
+    "status_counts_45x25": {
+      "VALID": 24
+    },
+    "total_pairs": 20
+  },
+  "purpose": "engineering screening of the panel resolution, not an external physical certification",
+  "readings": {
+    "(20, 10)": {
+      "baseline": {
+        "alpha_deg": 5.5284981054163245,
+        "cdi": 0.00731466708778896,
+        "lift_residual": 4.4332931770085793e-10,
+        "sref_used_m2": 358.25000000000006,
+        "status": "VALID"
+      },
+      "corner-00": {
+        "alpha_deg": 7.371779223832759,
+        "cdi": 0.006934699482560137,
+        "lift_residual": 2.159844386673271e-09,
+        "sref_used_m2": 300.0,
+        "status": "VALID"
+      },
+      "corner-01": {
+        "alpha_deg": 5.241615456138056,
+        "cdi": 0.0030070662139958224,
+        "lift_residual": 1.4155339622679008e-08,
+        "sref_used_m2": 420.0,
+        "status": "VALID"
+      },
+      "corner-02": {
+        "alpha_deg": 6.683799942671286,
+        "cdi": 0.005557320158321744,
+        "lift_residual": 2.3937882231983565e-10,
+        "sref_used_m2": 300.0,
+        "status": "VALID"
+      },
+      "corner-03": {
+        "alpha_deg": 4.79607005597771,
+        "cdi": 0.0026199290083366166,
+        "lift_residual": 1.3889031619251924e-08,
+        "sref_used_m2": 420.00000000000006,
+        "status": "VALID"
+      },
+      "corner-04": {
+        "alpha_deg": 6.8870323792936725,
+        "cdi": 0.0016972550968460303,
+        "lift_residual": 5.775709632782622e-10,
+        "sref_used_m2": 300.0,
+        "status": "VALID"
+      },
+      "corner-05": {
+        "alpha_deg": 4.7978784429909584,
+        "cdi": 0.0001635438009735196,
+        "lift_residual": 1.4426315447790827e-08,
+        "sref_used_m2": 420.0,
+        "status": "VALID"
+      },
+      "corner-06": {
+        "alpha_deg": 6.69491008567975,
+        "cdi": 0.006549085034209304,
+        "lift_residual": 2.701194545817742e-10,
+        "sref_used_m2": 300.0,
+        "status": "VALID"
+      },
+      "corner-07": {
+        "alpha_deg": 4.722094812027148,
+        "cdi": 0.003079651049570698,
+        "lift_residual": 1.0894906893321732e-08,
+        "sref_used_m2": 420.00000000000006,
+        "status": "VALID"
+      },
+      "corner-08": {
+        "alpha_deg": 6.767900815538183,
+        "cdi": 0.010074819804028662,
+        "lift_residual": 3.529717906847196e-10,
+        "sref_used_m2": 300.00000000000006,
+        "status": "VALID"
+      },
+      "corner-09": {
+        "alpha_deg": 4.736572142059766,
+        "cdi": 0.00489724995490977,
+        "lift_residual": 1.145077782593873e-08,
+        "sref_used_m2": 419.99999999999994,
+        "status": "VALID"
+      },
+      "corner-10": {
+        "alpha_deg": 6.006211033687079,
+        "cdi": 0.008213667936133297,
+        "lift_residual": 6.110584260810015e-12,
+        "sref_used_m2": 300.00000000000006,
+        "status": "VALID"
+      },
+      "corner-11": {
+        "alpha_deg": 4.216109410467592,
+        "cdi": 0.004112587552045691,
+        "lift_residual": 4.9254997996905914e-08,
+        "sref_used_m2": 420.0,
+        "status": "VALID"
+      },
+      "corner-12": {
+        "alpha_deg": 7.0542925965756735,
+        "cdi": 0.013850221101349975,
+        "lift_residual": 1.0856065768560796e-09,
+        "sref_used_m2": 300.00000000000006,
+        "status": "VALID"
+      },
+      "corner-13": {
+        "alpha_deg": 4.830417659998626,
+        "cdi": 0.006907210342194115,
+        "lift_residual": 1.5477149173381832e-08,
+        "sref_used_m2": 419.99999999999994,
+        "status": "VALID"
+      },
+      "corner-14": {
+        "alpha_deg": 6.105951974892593,
+        "cdi": 0.010272245212259218,
+        "lift_residual": 1.554484319044036e-11,
+        "sref_used_m2": 300.00000000000006,
+        "status": "VALID"
+      },
+      "corner-15": {
+        "alpha_deg": 4.112971663418539,
+        "cdi": 0.0052597324118467915,
+        "lift_residual": 9.63062962711092e-13,
+        "sref_used_m2": 420.0,
+        "status": "VALID"
+      },
+      "corner-16": {
+        "alpha_deg": 6.770496229997709,
+        "cdi": 0.007639031940127944,
+        "lift_residual": 3.239715995473347e-10,
+        "sref_used_m2": 300.00000000000006,
+        "status": "VALID"
+      },
+      "corner-17": {
+        "alpha_deg": 4.825216240785318,
+        "cdi": 0.0034836011203140966,
+        "lift_residual": 1.3869530357535353e-08,
+        "sref_used_m2": 420.0000000000001,
+        "status": "VALID"
+      },
+      "corner-18": {
+        "alpha_deg": 6.446453862197071,
+        "cdi": 0.007654850865091816,
+        "lift_residual": 7.855396888523103e-11,
+        "sref_used_m2": 300.00000000000006,
+        "status": "VALID"
+      },
+      "corner-19": {
+        "alpha_deg": 4.672997564539289,
+        "cdi": 0.0038372017080937014,
+        "lift_residual": 7.312866479036728e-09,
+        "sref_used_m2": 420.00000000000006,
+        "status": "VALID"
+      },
+      "corner-20": {
+        "alpha_deg": 6.949377780696404,
+        "cdi": 0.012538120679116601,
+        "lift_residual": 6.502085814208414e-10,
+        "sref_used_m2": 300.00000000000006,
+        "status": "VALID"
+      },
+      "corner-21": {
+        "alpha_deg": 4.902586232943646,
+        "cdi": 0.006279071427766122,
+        "lift_residual": 1.2240601615642888e-08,
+        "sref_used_m2": 420.0000000000001,
+        "status": "VALID"
+      },
+      "corner-22": {
+        "alpha_deg": 6.4152282508106016,
+        "cdi": 0.010456706293459869,
+        "lift_residual": 7.337827567788224e-11,
+        "sref_used_m2": 300.00000000000006,
+        "status": "VALID"
+      },
+      "corner-23": {
+        "alpha_deg": 4.553442970431365,
+        "cdi": 0.005253721915436926,
+        "lift_residual": 9.693913172181823e-10,
+        "sref_used_m2": 420.00000000000006,
+        "status": "VALID"
+      },
+      "corner-24": {
+        "alpha_deg": 6.475594690312599,
+        "cdi": 0.013902237191341175,
+        "lift_residual": 1.015645900714901e-10,
+        "sref_used_m2": 300.0,
+        "status": "VALID"
+      },
+      "corner-25": {
+        "alpha_deg": 4.524725511815195,
+        "cdi": 0.006978089427435283,
+        "lift_residual": 2.2070179017674718e-10,
+        "sref_used_m2": 420.0,
+        "status": "VALID"
+      },
+      "corner-26": {
+        "alpha_deg": 5.781202532437117,
+        "cdi": 0.010557301985521584,
+        "lift_residual": 7.430961493359867e-08,
+        "sref_used_m2": 300.0,
+        "status": "VALID"
+      },
+      "corner-27": {
+        "alpha_deg": 4.089798821421766,
+        "cdi": 0.0054128587822803755,
+        "lift_residual": 8.384959393481495e-13,
+        "sref_used_m2": 420.0,
+        "status": "VALID"
+      },
+      "corner-28": {
+        "alpha_deg": 6.59734541083567,
+        "cdi": 0.01679380432589165,
+        "lift_residual": 2.0854903914901968e-10,
+        "sref_used_m2": 300.0,
+        "status": "VALID"
+      },
+      "corner-29": {
+        "alpha_deg": 4.4587248699613955,
+        "cdi": 0.00857030177940432,
+        "lift_residual": 7.537658275325043e-10,
+        "sref_used_m2": 420.0,
+        "status": "VALID"
+      },
+      "corner-30": {
+        "alpha_deg": 5.817234664044808,
+        "cdi": 0.012468803888535777,
+        "lift_residual": 1.0568490527163021e-12,
+        "sref_used_m2": 300.0,
+        "status": "VALID"
+      },
+      "corner-31": {
+        "alpha_deg": 3.91871735964179,
+        "cdi": 0.006426333274485117,
+        "lift_residual": 4.1416037266372996e-12,
+        "sref_used_m2": 420.0,
+        "status": "VALID"
+      },
+      "sobol-00": {
+        "alpha_deg": 5.877062879529888,
+        "cdi": 0.007844365931239135,
+        "lift_residual": 1.6366630273267901e-12,
+        "sref_used_m2": 342.6020619578685,
+        "status": "VALID"
+      },
+      "sobol-01": {
+        "alpha_deg": 6.643661348244586,
+        "cdi": 0.010894882660039707,
+        "lift_residual": 2.33150582173991e-10,
+        "sref_used_m2": 301.4035843089398,
+        "status": "VALID"
+      },
+      "sobol-02": {
+        "alpha_deg": 6.4674993252447015,
+        "cdi": 0.008746516000598711,
+        "lift_residual": 9.447609361501463e-11,
+        "sref_used_m2": 303.1037586026168,
+        "status": "VALID"
+      },
+      "sobol-03": {
+        "alpha_deg": 6.519673059336029,
+        "cdi": 0.006595812568790726,
+        "lift_residual": 1.1927545062739853e-10,
+        "sref_used_m2": 301.04115104158956,
+        "status": "VALID"
+      },
+      "sobol-04": {
+        "alpha_deg": 4.580218972757746,
+        "cdi": 0.00425148432613627,
+        "lift_residual": 2.0856081306419583e-09,
+        "sref_used_m2": 418.3189800385748,
+        "status": "VALID"
+      },
+      "sobol-05": {
+        "alpha_deg": 5.2135449231843465,
+        "cdi": 0.007430371740746297,
+        "lift_residual": 1.7116509321013496e-08,
+        "sref_used_m2": 376.86136674565654,
+        "status": "VALID"
+      },
+      "sobol-06": {
+        "alpha_deg": 5.762923646576282,
+        "cdi": 0.005961103361064332,
+        "lift_residual": 5.528297744583632e-08,
+        "sref_used_m2": 357.29697628783146,
+        "status": "VALID"
+      },
+      "sobol-07": {
+        "alpha_deg": 5.246271079798527,
+        "cdi": 0.008813133761982441,
+        "lift_residual": 1.6701923788442485e-08,
+        "sref_used_m2": 356.05829290744504,
+        "status": "VALID"
+      },
+      "sobol-08": {
+        "alpha_deg": 4.8171122836033415,
+        "cdi": 0.005895602083345403,
+        "lift_residual": 1.4447349622193073e-08,
+        "sref_used_m2": 408.19430184863245,
+        "status": "VALID"
+      },
+      "sobol-09": {
+        "alpha_deg": 5.481553966047016,
+        "cdi": 0.00718086429306148,
+        "lift_residual": 1.723023668187551e-10,
+        "sref_used_m2": 364.59123606967285,
+        "status": "VALID"
+      },
+      "sobol-10": {
+        "alpha_deg": 6.001059013043244,
+        "cdi": 0.009558693309841135,
+        "lift_residual": 5.5191129444409626e-12,
+        "sref_used_m2": 329.5353513818283,
+        "status": "VALID"
+      },
+      "sobol-11": {
+        "alpha_deg": 5.904562494884946,
+        "cdi": 0.008265018895362543,
+        "lift_residual": 2.211314464872771e-12,
+        "sref_used_m2": 349.61235188285656,
+        "status": "VALID"
+      },
+      "sobol-12": {
+        "alpha_deg": 5.113170526705848,
+        "cdi": 0.006341307767354722,
+        "lift_residual": 1.685617079250079e-08,
+        "sref_used_m2": 382.2681026385469,
+        "status": "VALID"
+      },
+      "sobol-13": {
+        "alpha_deg": 6.223752762722069,
+        "cdi": 0.0049307066693122905,
+        "lift_residual": 2.5631941014125914e-11,
+        "sref_used_m2": 330.35294727852755,
+        "status": "VALID"
+      },
+      "sobol-14": {
+        "alpha_deg": 5.204752216648361,
+        "cdi": 0.008065046087451094,
+        "lift_residual": 1.862936913066271e-08,
+        "sref_used_m2": 356.7624039762994,
+        "status": "VALID"
+      },
+      "sobol-15": {
+        "alpha_deg": 5.043153344586746,
+        "cdi": 0.00830176148785321,
+        "lift_residual": 9.325750005562128e-09,
+        "sref_used_m2": 357.19603832749624,
+        "status": "VALID"
+      },
+      "sobol-16": {
+        "alpha_deg": 4.612848949376603,
+        "cdi": 0.004764662196269269,
+        "lift_residual": 3.853034696854607e-09,
+        "sref_used_m2": 418.99154772061047,
+        "status": "VALID"
+      },
+      "sobol-17": {
+        "alpha_deg": 5.783392708699596,
+        "cdi": 0.009127453076671907,
+        "lift_residual": 7.281657402047337e-08,
+        "sref_used_m2": 331.2776140269662,
+        "status": "VALID"
+      },
+      "sobol-18": {
+        "alpha_deg": 5.684096062012059,
+        "cdi": 0.00790083256033351,
+        "lift_residual": 2.5368228184774466e-08,
+        "sref_used_m2": 336.29859197611296,
+        "status": "VALID"
+      },
+      "sobol-19": {
+        "alpha_deg": 5.149243489321325,
+        "cdi": 0.0064914097417490945,
+        "lift_residual": 1.874773086774084e-08,
+        "sref_used_m2": 364.507036753918,
+        "status": "VALID"
+      },
+      "sobol-20": {
+        "alpha_deg": 6.030189838771882,
+        "cdi": 0.011984793395469933,
+        "lift_residual": 6.947081798713839e-12,
+        "sref_used_m2": 325.58836525149,
+        "status": "VALID"
+      },
+      "sobol-21": {
+        "alpha_deg": 6.253022101428881,
+        "cdi": 0.0050645379228943695,
+        "lift_residual": 3.0551838836601064e-11,
+        "sref_used_m2": 316.5514236491364,
+        "status": "VALID"
+      },
+      "sobol-22": {
+        "alpha_deg": 6.240488086583845,
+        "cdi": 0.011580633999143186,
+        "lift_residual": 2.974862023386038e-11,
+        "sref_used_m2": 320.620123662326,
+        "status": "VALID"
+      },
+      "sobol-23": {
+        "alpha_deg": 4.392331001268324,
+        "cdi": 0.005113720845169624,
+        "lift_residual": 5.444655087893935e-09,
+        "sref_used_m2": 418.04514695970056,
+        "status": "VALID"
+      },
+      "sobol-24": {
+        "alpha_deg": 6.3226685506077445,
+        "cdi": 0.006207523801447816,
+        "lift_residual": 4.397435193759236e-11,
+        "sref_used_m2": 319.5274081840777,
+        "status": "VALID"
+      },
+      "sobol-25": {
+        "alpha_deg": 5.8447074035123565,
+        "cdi": 0.008871671461960983,
+        "lift_residual": 1.1181056080999952e-12,
+        "sref_used_m2": 350.4770020468723,
+        "status": "VALID"
+      },
+      "sobol-26": {
+        "alpha_deg": 4.4072838307961115,
+        "cdi": 0.007251874596568963,
+        "lift_residual": 4.542786646855035e-09,
+        "sref_used_m2": 377.0095384175659,
+        "status": "VALID"
+      },
+      "sobol-27": {
+        "alpha_deg": 4.657961636973507,
+        "cdi": 0.005423530944403565,
+        "lift_residual": 6.722495227151626e-09,
+        "sref_used_m2": 412.8196751610265,
+        "status": "VALID"
+      },
+      "sobol-28": {
+        "alpha_deg": 5.844721542810132,
+        "cdi": 0.005100238712319949,
+        "lift_residual": 1.040473263103081e-12,
+        "sref_used_m2": 339.24941680403975,
+        "status": "VALID"
+      },
+      "sobol-29": {
+        "alpha_deg": 5.040684037128905,
+        "cdi": 0.005151149038521873,
+        "lift_residual": 8.292862951897462e-09,
+        "sref_used_m2": 383.832737613844,
+        "status": "VALID"
+      },
+      "sobol-30": {
+        "alpha_deg": 5.257621361051823,
+        "cdi": 0.006869988807950309,
+        "lift_residual": 1.4503426654099982e-08,
+        "sref_used_m2": 390.6713827351049,
+        "status": "VALID"
+      },
+      "sobol-31": {
+        "alpha_deg": 5.844127255630131,
+        "cdi": 0.006700268726947117,
+        "lift_residual": 1.1038947533847931e-12,
+        "sref_used_m2": 338.7453763309917,
+        "status": "VALID"
+      },
+      "sobol-32": {
+        "alpha_deg": 5.536137315265465,
+        "cdi": 0.007407987792108475,
+        "lift_residual": 6.962841414548393e-10,
+        "sref_used_m2": 366.27550371118883,
+        "status": "VALID"
+      },
+      "sobol-33": {
+        "alpha_deg": 5.248470356517018,
+        "cdi": 0.0067310877814546295,
+        "lift_residual": 1.5991279633809086e-08,
+        "sref_used_m2": 356.728951856029,
+        "status": "VALID"
+      },
+      "sobol-34": {
+        "alpha_deg": 4.981025179332804,
+        "cdi": 0.006869177386816604,
+        "lift_residual": 3.7128275731657112e-09,
+        "sref_used_m2": 392.9598302157623,
+        "status": "VALID"
+      },
+      "sobol-35": {
+        "alpha_deg": 5.382861497119621,
+        "cdi": 0.006804197535225029,
+        "lift_residual": 5.254836704660093e-09,
+        "sref_used_m2": 373.67019354416647,
+        "status": "VALID"
+      },
+      "sobol-36": {
+        "alpha_deg": 5.836116715660666,
+        "cdi": 0.008454172760434803,
+        "lift_residual": 1.0079992396327953e-12,
+        "sref_used_m2": 332.0101220714705,
+        "status": "VALID"
+      },
+      "sobol-37": {
+        "alpha_deg": 5.101228511429353,
+        "cdi": null,
+        "lift_residual": 1.9060409556237445e-08,
+        "sref_used_m2": 325.1031154198059,
+        "status": "NON_PHYSICAL_CDI"
+      },
+      "sobol-38": {
+        "alpha_deg": 5.346043663631155,
+        "cdi": 0.008969095563742044,
+        "lift_residual": 8.615247210075339e-09,
+        "sref_used_m2": 347.74768021294454,
+        "status": "VALID"
+      }
+    },
+    "(30, 15)": {
+      "baseline": {
+        "alpha_deg": 4.910865910812946,
+        "cdi": 0.008463523736946288,
+        "lift_residual": 1.530728291343486e-08,
+        "sref_used_m2": 358.25000000000006,
+        "status": "VALID"
+      },
+      "corner-00": {
+        "alpha_deg": 6.367439735037444,
+        "cdi": 0.009420630678063964,
+        "lift_residual": 8.483747038212641e-11,
+        "sref_used_m2": 300.0,
+        "status": "VALID"
+      },
+      "corner-04": {
+        "alpha_deg": 6.3660743207597665,
+        "cdi": 0.00347364733864167,
+        "lift_residual": 9.209433216028629e-11,
+        "sref_used_m2": 300.0,
+        "status": "VALID"
+      },
+      "corner-08": {
+        "alpha_deg": 6.384781018860456,
+        "cdi": 0.010574572304605246,
+        "lift_residual": 8.049935718013046e-11,
+        "sref_used_m2": 300.00000000000006,
+        "status": "VALID"
+      },
+      "corner-12": {
+        "alpha_deg": 6.88508698899467,
+        "cdi": 0.01506775551091089,
+        "lift_residual": 6.76657674336667e-10,
+        "sref_used_m2": 300.00000000000006,
+        "status": "VALID"
+      },
+      "corner-16": {
+        "alpha_deg": 5.947205404492528,
+        "cdi": 0.0077525102244911225,
+        "lift_residual": 5.167616334844638e-12,
+        "sref_used_m2": 300.00000000000006,
+        "status": "VALID"
+      },
+      "corner-20": {
+        "alpha_deg": 6.217833840271111,
+        "cdi": 0.013202617434123574,
+        "lift_residual": 3.9240222182712614e-11,
+        "sref_used_m2": 300.00000000000006,
+        "status": "VALID"
+      },
+      "corner-31": {
+        "alpha_deg": 3.626906594663733,
+        "cdi": 0.007199901226407655,
+        "lift_residual": 2.74028577607055e-11,
+        "sref_used_m2": 420.0,
+        "status": "VALID"
+      },
+      "sobol-00": {
+        "alpha_deg": 5.504576127530937,
+        "cdi": 0.00813556991290019,
+        "lift_residual": 1.2652490166686903e-11,
+        "sref_used_m2": 342.6020619578685,
+        "status": "VALID"
+      },
+      "sobol-01": {
+        "alpha_deg": 6.222414500777645,
+        "cdi": 0.0121321257611142,
+        "lift_residual": 3.45302952897697e-11,
+        "sref_used_m2": 301.4035843089398,
+        "status": "VALID"
+      },
+      "sobol-02": {
+        "alpha_deg": 5.749897005484221,
+        "cdi": 0.009755004635399703,
+        "lift_residual": 6.544033165356566e-08,
+        "sref_used_m2": 303.1037586026168,
+        "status": "VALID"
+      },
+      "sobol-03": {
+        "alpha_deg": 5.6831967077550525,
+        "cdi": 0.00700400082647677,
+        "lift_residual": 3.1767397989934665e-08,
+        "sref_used_m2": 301.04115104158956,
+        "status": "VALID"
+      },
+      "sobol-04": {
+        "alpha_deg": 3.97821279748237,
+        "cdi": 0.00496357664899898,
+        "lift_residual": 3.3200664439902994e-12,
+        "sref_used_m2": 418.3189800385748,
+        "status": "VALID"
+      },
+      "sobol-05": {
+        "alpha_deg": 4.614499674192801,
+        "cdi": 0.008342528725493755,
+        "lift_residual": 5.117965218293108e-09,
+        "sref_used_m2": 376.86136674565654,
+        "status": "VALID"
+      },
+      "sobol-06": {
+        "alpha_deg": 5.143709447017107,
+        "cdi": 0.006208314099935357,
+        "lift_residual": 2.166419019178356e-08,
+        "sref_used_m2": 357.29697628783146,
+        "status": "VALID"
+      },
+      "sobol-07": {
+        "alpha_deg": 4.81608643704174,
+        "cdi": 0.010068005592326516,
+        "lift_residual": 1.9127314010436436e-08,
+        "sref_used_m2": 356.05829290744504,
+        "status": "VALID"
+      },
+      "sobol-08": {
+        "alpha_deg": 2.3661965431027543,
+        "cdi": null,
+        "lift_residual": null,
+        "sref_used_m2": 408.19430184863245,
+        "status": "ALPHA_SOLVE_FAILED"
+      },
+      "sobol-09": {
+        "alpha_deg": 5.112480843788599,
+        "cdi": 0.00812511328093685,
+        "lift_residual": 1.9232825970716405e-08,
+        "sref_used_m2": 364.59123606967285,
+        "status": "VALID"
+      },
+      "sobol-10": {
+        "alpha_deg": 5.364213219589646,
+        "cdi": 0.011055549139900096,
+        "lift_residual": 8.332559975343656e-09,
+        "sref_used_m2": 329.5353513818283,
+        "status": "VALID"
+      },
+      "sobol-11": {
+        "alpha_deg": 5.442031082168176,
+        "cdi": 0.008850324081297297,
+        "lift_residual": 1.7340729130399524e-09,
+        "sref_used_m2": 349.61235188285656,
+        "status": "VALID"
+      },
+      "sobol-12": {
+        "alpha_deg": 4.709420157971251,
+        "cdi": 0.00714394292607677,
+        "lift_residual": 1.2260209486525397e-08,
+        "sref_used_m2": 382.2681026385469,
+        "status": "VALID"
+      },
+      "sobol-13": {
+        "alpha_deg": 2.0064247319890627,
+        "cdi": null,
+        "lift_residual": null,
+        "sref_used_m2": 330.35294727852755,
+        "status": "ALPHA_SOLVE_FAILED"
+      },
+      "sobol-14": {
+        "alpha_deg": 4.8223527846070295,
+        "cdi": 0.009180518687663907,
+        "lift_residual": 1.89137079609214e-08,
+        "sref_used_m2": 356.7624039762994,
+        "status": "VALID"
+      },
+      "sobol-15": {
+        "alpha_deg": 9.875637206337544,
+        "cdi": null,
+        "lift_residual": null,
+        "sref_used_m2": 357.19603832749624,
+        "status": "ALPHA_SOLVE_FAILED"
+      }
+    },
+    "(45, 25)": {
+      "baseline": {
+        "alpha_deg": 5.1218888754653085,
+        "cdi": 0.00813328318921112,
+        "lift_residual": 1.8849939303899887e-08,
+        "sref_used_m2": 358.25000000000006,
+        "status": "VALID"
+      },
+      "corner-00": {
+        "alpha_deg": 6.757094351834961,
+        "cdi": 0.008737107090842132,
+        "lift_residual": 3.942819126745434e-10,
+        "sref_used_m2": 300.0,
+        "status": "VALID"
+      },
+      "corner-04": {
+        "alpha_deg": 6.892535630973575,
+        "cdi": 0.003977773216265048,
+        "lift_residual": 6.867673096877525e-10,
+        "sref_used_m2": 300.0,
+        "status": "VALID"
+      },
+      "corner-08": {
+        "alpha_deg": 6.542088047686297,
+        "cdi": 0.010219601101153823,
+        "lift_residual": 1.524077253289846e-10,
+        "sref_used_m2": 300.00000000000006,
+        "status": "VALID"
+      },
+      "corner-12": {
+        "alpha_deg": 6.967889448479748,
+        "cdi": 0.0149853539172169,
+        "lift_residual": 8.05572525353071e-10,
+        "sref_used_m2": 300.00000000000006,
+        "status": "VALID"
+      },
+      "corner-16": {
+        "alpha_deg": 6.297881457510484,
+        "cdi": 0.007240216955327435,
+        "lift_residual": 4.965355904218427e-11,
+        "sref_used_m2": 300.00000000000006,
+        "status": "VALID"
+      },
+      "corner-20": {
+        "alpha_deg": 6.5651165005090215,
+        "cdi": 0.01315030277833346,
+        "lift_residual": 1.883694034088279e-10,
+        "sref_used_m2": 300.00000000000006,
+        "status": "VALID"
+      },
+      "corner-31": {
+        "alpha_deg": 3.7186181974006636,
+        "cdi": 0.007229852758317947,
+        "lift_residual": 1.6343093545145848e-11,
+        "sref_used_m2": 420.0,
+        "status": "VALID"
+      },
+      "sobol-00": {
+        "alpha_deg": 5.618270715006748,
+        "cdi": 0.007978305266790714,
+        "lift_residual": 9.885910090545735e-09,
+        "sref_used_m2": 342.6020619578685,
+        "status": "VALID"
+      },
+      "sobol-01": {
+        "alpha_deg": 6.296952528907575,
+        "cdi": 0.011970197525590037,
+        "lift_residual": 4.688649468675976e-11,
+        "sref_used_m2": 301.4035843089398,
+        "status": "VALID"
+      },
+      "sobol-02": {
+        "alpha_deg": 6.027517715287864,
+        "cdi": 0.009388211448318027,
+        "lift_residual": 8.340356183467179e-12,
+        "sref_used_m2": 303.1037586026168,
+        "status": "VALID"
+      },
+      "sobol-03": {
+        "alpha_deg": 6.071318673571352,
+        "cdi": 0.006929143939040948,
+        "lift_residual": 1.1386558362858068e-11,
+        "sref_used_m2": 301.04115104158956,
+        "status": "VALID"
+      },
+      "sobol-04": {
+        "alpha_deg": 4.207767900215073,
+        "cdi": 0.004691785915851353,
+        "lift_residual": 5.5943449206452556e-08,
+        "sref_used_m2": 418.3189800385748,
+        "status": "VALID"
+      },
+      "sobol-05": {
+        "alpha_deg": 4.897211993462397,
+        "cdi": 0.008214891872532767,
+        "lift_residual": 1.511045272239997e-08,
+        "sref_used_m2": 376.86136674565654,
+        "status": "VALID"
+      },
+      "sobol-06": {
+        "alpha_deg": 5.358865958408811,
+        "cdi": 0.005804435180321808,
+        "lift_residual": 8.068231083235844e-09,
+        "sref_used_m2": 357.29697628783146,
+        "status": "VALID"
+      },
+      "sobol-07": {
+        "alpha_deg": 4.962187105117837,
+        "cdi": 0.009996706847963464,
+        "lift_residual": 7.911433425045189e-09,
+        "sref_used_m2": 356.05829290744504,
+        "status": "VALID"
+      },
+      "sobol-08": {
+        "alpha_deg": 4.499618130382131,
+        "cdi": 0.006362767371068984,
+        "lift_residual": 3.180183480444576e-08,
+        "sref_used_m2": 408.19430184863245,
+        "status": "VALID"
+      },
+      "sobol-09": {
+        "alpha_deg": 5.234004076373974,
+        "cdi": 0.00793426881175596,
+        "lift_residual": 1.794735587923313e-08,
+        "sref_used_m2": 364.59123606967285,
+        "status": "VALID"
+      },
+      "sobol-10": {
+        "alpha_deg": 5.538910882283969,
+        "cdi": 0.010757658820850488,
+        "lift_residual": 9.703019221429798e-10,
+        "sref_used_m2": 329.5353513818283,
+        "status": "VALID"
+      },
+      "sobol-11": {
+        "alpha_deg": 5.576368305290235,
+        "cdi": 0.008594698056401093,
+        "lift_residual": 3.739598075647166e-09,
+        "sref_used_m2": 349.61235188285656,
+        "status": "VALID"
+      },
+      "sobol-12": {
+        "alpha_deg": 4.840683352368611,
+        "cdi": 0.006937846241270782,
+        "lift_residual": 1.6896623378226394e-08,
+        "sref_used_m2": 382.2681026385469,
+        "status": "VALID"
+      },
+      "sobol-13": {
+        "alpha_deg": 5.794771596793974,
+        "cdi": 0.0037058236622569906,
+        "lift_residual": 8.499071485479348e-08,
+        "sref_used_m2": 330.35294727852755,
+        "status": "VALID"
+      },
+      "sobol-14": {
+        "alpha_deg": 4.999097310073658,
+        "cdi": 0.008920063103771145,
+        "lift_residual": 7.963993089998844e-08,
+        "sref_used_m2": 356.7624039762994,
+        "status": "VALID"
+      },
+      "sobol-15": {
+        "alpha_deg": 4.817687471409635,
+        "cdi": 0.00913091511571925,
+        "lift_residual": 1.7360844595248892e-08,
+        "sref_used_m2": 357.19603832749624,
+        "status": "VALID"
+      }
+    }
+  },
+  "schema": "dreal006.lattice_calibration.v1",
+  "wall_seconds": 405.02
+}

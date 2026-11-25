@@ -30,10 +30,18 @@ class GeometryEffectDiagnosticTests(unittest.TestCase):
         self.assertEqual(report["physical_solver_starts_actual"], 0)
 
     def test_diagnostic_does_not_call_or_patch_production_loader(self):
+        # diagnose() must not consult the production loader and must not rewrite
+        # the YAML.  What the loader itself answers is a separate question, and
+        # since dreal006 S0 (issue 16) it accepts a frozen space whose evidence is
+        # complete, so this test asserts the loader outcome instead of pinning
+        # the old blanket rejection.
         with patch.object(diag, "load_design_space", side_effect=AssertionError("called")):
             self.assertEqual(diag.diagnose(self.config)["expected_component_only_count"], 12)
-        with self.assertRaisesRegex(diag.DesignSpaceError, "provisional"):
-            diag.load_design_space(diag.CONFIG)
+        raw_before = diag.CONFIG.read_bytes()
+        loaded = diag.load_design_space(diag.CONFIG)
+        self.assertEqual(loaded.frozen, True)
+        self.assertEqual(loaded.bounds_status, "frozen_for_dreal001_20261110")
+        self.assertEqual(diag.CONFIG.read_bytes(), raw_before)
 
     def test_reordered_or_renamed_active_variables_rejected(self):
         for change in ("swap", "rename"):
