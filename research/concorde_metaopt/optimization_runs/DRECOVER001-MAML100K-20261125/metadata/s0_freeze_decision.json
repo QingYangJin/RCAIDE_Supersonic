@@ -1,0 +1,108 @@
+{
+  "active_design_subspace": {
+    "claim": "a declared 5D wing subspace of the 12D schema, never a 12D search",
+    "declared_in": "metadata/active_subspace.json",
+    "dim": 5,
+    "names": [
+      "wing_area",
+      "aspect_ratio",
+      "sweep_1",
+      "span_location_2",
+      "chord_ratio_2"
+    ],
+    "schema_retained": "12d_lifting_surfaces"
+  },
+  "created_utc": "2026-11-25",
+  "evidence": {
+    "bo_smoke": "metadata/bo_smoke.json",
+    "concurrency": "metadata/concurrency_calibration.json",
+    "lattice": "metadata/lattice_calibration.json",
+    "screens": [
+      "metadata/subspace_screen.json",
+      "metadata/subspace_screen_force.json"
+    ],
+    "subspace": "metadata/active_subspace.json"
+  },
+  "evidence_scope": "RCAIDE_VLM_INTERNAL_ONLY",
+  "forbidden_lattices": [
+    {
+      "panel": [
+        30,
+        15
+      ],
+      "why": "numerically unstable on three of 24 common designs: CL explodes to 1e26-1e38 at alpha=5 and a full 0.5-12 degree sweep has no converging region; same designs are fine at 20x10 and 45x25"
+    }
+  ],
+  "fuel_burn_kg": null,
+  "issue_number": 16,
+  "known_limitations": [
+    "absolute CDi at 20x10 carries about 9% median error against 45x25; only same-lattice differences are used for ranking",
+    "one of 72 pre-registered designs returns a non-physical negative CDi at 20x10 (alpha 4.0-5.5 all negative) and is correctly rejected as NON_PHYSICAL_CDI, so a small part of the box is unlabelled rather than scored",
+    "Trefftz CDi excludes wave drag; RCAIDE compressibility term returns NaN on this vehicle",
+    "the task family covers Mach 1.6-2.4 at 18,288 m with a fixed per-task lift; the envelope is a candidate range, not a verified flight envelope"
+  ],
+  "lift_target_contract": {
+    "base_lift_n": 1344778.456859767,
+    "mode": "force",
+    "per_task_fixed": true
+  },
+  "measured_error_versus_45x25": {
+    "cdi_relative_error_max": 0.5733,
+    "cdi_relative_error_median": 0.0903,
+    "cdi_relative_error_p90": 0.1184,
+    "differential_sign_agreement": 0.95,
+    "spearman_20x10_vs_45x25": 0.9506493506493506
+  },
+  "not_claimed": [
+    "physics_validated",
+    "a completed 100000 campaign",
+    "a 12D search",
+    "a flight envelope"
+  ],
+  "physics_validated": false,
+  "production_lattice": {
+    "measured_mean_wall_seconds": 0.762,
+    "measured_p95_wall_seconds": 0.862,
+    "panel": [
+      20,
+      10
+    ],
+    "why": "the 100k campaign compares designs inside one lattice; 20x10 keeps the 69,120-evaluation S4 block inside a few hours on 8-12 workers"
+  },
+  "reference_contract": {
+    "bref": "per-design wing.span_m",
+    "cref": "per-design wing.mean_aerodynamic_chord_m",
+    "mode": "geometry",
+    "sref": "per-design wing.area_m2"
+  },
+  "s0_spend": {
+    "breakdown": {
+      "bo_smoke": 24,
+      "concurrency_calibration": 164,
+      "lattice_calibration": 120,
+      "subspace_screen_coefficient": 105,
+      "subspace_screen_force": 106
+    },
+    "cap": 2000,
+    "charged_attempts": 519
+  },
+  "schema": "dreal006.s0_freeze_decision.v1",
+  "status": "FROZEN_BY_S0_PENDING_STAGE_GO",
+  "verification_lattice": {
+    "measured_mean_wall_seconds": 7.974,
+    "panel": [
+      45,
+      25
+    ],
+    "why": "S6 final recheck only; 10.5x slower per evaluation, so it is not the production lattice"
+  },
+  "workers": {
+    "blas_threads_per_worker": 1,
+    "cpu_count": 32,
+    "recommended": [
+      8,
+      12
+    ],
+    "why": "throughput saturates by 8 workers (232.66 eval/min); 8->16 adds 27% throughput but doubles p50 latency"
+  }
+}
