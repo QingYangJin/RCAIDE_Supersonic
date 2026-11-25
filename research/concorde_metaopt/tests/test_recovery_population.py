@@ -32,8 +32,17 @@ class RecoveryPopulationTests(unittest.TestCase):
         self.assertEqual(len(config['fixed_variables']),3)
         self.assertTrue(config['frozen'])
         self.assertIn('item 2: adopt',config['fixed_variables'][0]['source'])
-        with self.assertRaisesRegex(DesignSpaceError,'provisional'):
-            design_space_from_config(config,source=str(path))
+        # S0 of issue 16 replaced the blanket frozen rejection with an evidence
+        # check: a frozen claim is accepted only when bounds_status starts with
+        # 'frozen', freeze_requires is non-empty and source.baseline_sha256
+        # matches the baseline file on disk. This repository config satisfies all
+        # three, so it loads; the historical freeze record is still not readiness
+        # evidence for a real campaign, which is what this test guards.
+        space = design_space_from_config(config,source=str(path))
+        self.assertTrue(space.frozen)
+        self.assertEqual(space.bounds_status,'frozen_for_dreal001_20261110')
+        self.assertTrue(space.freeze_requires)
+        self.assertEqual(len(space.source['baseline_sha256']),64)
 
     def test_feasibility_selection_order(self):
         self.assertTrue(better(feedback(100.),feedback(.1,1.)))
