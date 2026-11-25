@@ -42,6 +42,8 @@ def make_backend(**overrides):
     obj.mach = overrides.pop("mach", 2.02)
     obj.altitude_m = overrides.pop("altitude_m", 18288.0)
     obj.cl_target = overrides.pop("cl_target", 0.18)
+    obj.lift_target_mode = overrides.pop("lift_target_mode", "coefficient")
+    obj.lift_target_n = overrides.pop("lift_target_n", None)
     obj.lattice = overrides.pop("lattice", (20, 10))
     obj._atmo = dict(ATMO)
     obj._vehicles = {}
@@ -62,7 +64,7 @@ class AlphaSolverContractTests(unittest.TestCase):
         obj = make_backend()
         obj._vehicle_obj = _FakeVehicle()
         obj._solve = lambda vehicle, alpha: (0.05 * alpha, 0.0073)
-        solve = obj._alpha_for_lift(obj._vehicle_obj)
+        solve = obj._alpha_for_lift(obj._vehicle_obj, obj.cl_target)
         self.assertTrue(solve["ok"])
         self.assertAlmostEqual(solve["cl"], 0.05 * solve["alpha_deg"], places=12)
         self.assertLessEqual(abs(solve["cl"] - obj.cl_target), backend_module.ALPHA_TOL)
@@ -73,7 +75,7 @@ class AlphaSolverContractTests(unittest.TestCase):
         # CL does not respond to alpha: the secant must give up, and the CL it
         # returns must still be the CL at the alpha it returns.
         obj._solve = lambda vehicle, alpha: (0.05, 0.0073)
-        solve = obj._alpha_for_lift(obj._vehicle_obj)
+        solve = obj._alpha_for_lift(obj._vehicle_obj, obj.cl_target)
         self.assertFalse(solve["ok"])
         self.assertEqual(solve["cl"], 0.05)
         self.assertEqual(obj._solve(obj._vehicle_obj, solve["alpha_deg"])[0], 0.05)
@@ -88,7 +90,7 @@ class EvaluateContractTests(unittest.TestCase):
 
     def test_lift_residual_rejection_is_not_valid(self):
         obj = self._backend_with_solver(lambda vehicle, alpha: (0.30, 0.0073))
-        obj._alpha_for_lift = lambda vehicle, alpha_guess=5.0: {
+        obj._alpha_for_lift = lambda vehicle, cl_target, alpha_guess=5.0: {
             "alpha_deg": 3.6, "cl": 0.30, "iterations": 3, "ok": True, "history": [],
         }
         record = obj.evaluate({"wing_area": 358.25, "aspect_ratio": 1.83})
@@ -162,6 +164,44 @@ class EvaluateContractTests(unittest.TestCase):
         record = obj.evaluate({"wing_area": 358.25, "aspect_ratio": 1.83})
         self.assertEqual(record["status"], "ERROR")
         self.assertIn("vlm exploded", record["diagnostics"][0])
+
+
+class LiftTargetModeTests(unittest.TestCase):
+    """A task fixes a lift force, not a coefficient (contract section 3.1)."""
+
+    def test_force_mode_derives_cl_from_the_design_reference_area(self):
+        obj = make_backend(lift_target_mode="force", lift_target_n=1.0e6, refs={"Sref_m2": 400.0, "Cref_m": 19.0, "Bref_m": 27.0})
+        q = ATMO["dynamic_pressure_Pa"]
+        self.assertAlmostEqual(obj.cl_target_for(obj._refs), 1.0e6 / (q * 400.0))
+        # Halving the wing doubles the CL the same force demands.
+        small = dict(obj._refs)
+        small["Sref_m2"] = 200.0
+        self.assertAlmostEqual(obj.cl_target_for(small), 2.0 * obj.cl_target_for(obj._refs))
+
+    def test_coefficient_mode_ignores_the_reference_area(self):
+        obj = make_backend(cl_target=0.18)
+        other = {"Sref_m2": 300.0, "Cref_m": 17.0, "Bref_m": 24.0}
+        self.assertEqual(obj.cl_target_for(obj._refs), 0.18)
+        self.assertEqual(obj.cl_target_for(other), 0.18)
+
+    def test_two_designs_at_one_force_are_compared_at_the_same_lift(self):
+        # Same task force, different areas -> different CL, identical q*Sref*CL.
+        obj = make_backend(lift_target_mode="force", lift_target_n=1.3e6)
+        results = []
+        for sref in (358.25, 420.0):
+            refs = {"Sref_m2": sref, "Cref_m": 18.5, "Bref_m": 25.6}
+            obj._refs = refs
+            cl_target = obj.cl_target_for(refs)
+            obj._vehicle_obj = _FakeVehicle()
+            obj._solve = lambda vehicle, alpha, _cl=cl_target: (_cl, 0.0073)
+            record = obj.evaluate({"wing_area": sref, "aspect_ratio": 1.83})
+            self.assertEqual(record["status"], "VALID")
+            results.append(record["lift_times_q_sref_N"])
+        self.assertAlmostEqual(results[0], results[1], delta=1.0)
+
+    def test_force_mode_without_a_force_is_rejected(self):
+        with self.assertRaises(ValueError):
+            SupersonicVLMBackend("<repo>", "<config>", lift_target_mode="force")
 
 
 class ConstructorContractTests(unittest.TestCase):

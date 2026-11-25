@@ -68,6 +68,11 @@ REFERENCE_MODES = (REFERENCE_MODE_GEOMETRY, REFERENCE_MODE_FROZEN)
 # and returned a stale CL from the previous iteration.
 ALPHA_TOL = 1.0e-7
 MAX_ALPHA_STEPS = 30
+# A task fixes the *lift force* it wants, not a CL: CL_target falls out of the
+# per-design reference area as L_ref / (q * Sref_used).  Fixing CL instead would
+# let a bigger wing fly a heavier aircraft and win the comparison by moving the
+# goalposts.
+LIFT_TARGET_MODES = ("coefficient", "force")
 # The final re-solve must reproduce the target lift within this band, otherwise
 # the label is rejected instead of being reported as VALID.
 LIFT_RESIDUAL_TOL = 1.0e-6
@@ -93,6 +98,8 @@ class SupersonicVLMBackend:
         design_names: Optional[Sequence[str]] = None,
         reference_mode: str = REFERENCE_MODE_GEOMETRY,
         task_fingerprint: Optional[str] = None,
+        lift_target_n: Optional[float] = None,
+        lift_target_mode: str = "coefficient",
     ) -> None:
         import sys
 
@@ -107,7 +114,19 @@ class SupersonicVLMBackend:
             raise ValueError(
                 "reference_mode must be one of %s, got %r" % (list(REFERENCE_MODES), reference_mode)
             )
+        if lift_target_mode not in LIFT_TARGET_MODES:
+            raise ValueError(
+                "lift_target_mode must be one of %s, got %r"
+                % (list(LIFT_TARGET_MODES), lift_target_mode)
+            )
+        if lift_target_mode == "force":
+            if lift_target_n is None:
+                raise ValueError("lift_target_mode='force' needs lift_target_n")
+            if not math.isfinite(float(lift_target_n)) or float(lift_target_n) <= 0.0:
+                raise ValueError("lift_target_n must be finite and positive, got %r" % (lift_target_n,))
         self.reference_mode = reference_mode
+        self.lift_target_mode = lift_target_mode
+        self.lift_target_n = None if lift_target_n is None else float(lift_target_n)
         self.task_fingerprint = str(task_fingerprint) if task_fingerprint else "unset"
 
         # Load the design space through the real validator: no frozen bypass and
@@ -246,8 +265,24 @@ class SupersonicVLMBackend:
         # coefficient is CLift (VLM.py:438).
         return float(result.CLift[0][0]), float(result.CDrag_induced[0][0])
 
+    def cl_target_for(self, refs: Mapping[str, float]) -> float:
+        """The CL this task asks of this design.
+
+        In coefficient mode the task names a CL directly (legacy V1L behaviour).
+        In force mode the task names a lift force and the CL follows from the
+        design's own reference area, so two designs are compared at the same
+        physical lift rather than at the same coefficient.
+        """
+        if self.lift_target_mode == "force":
+            q = self._atmo["dynamic_pressure_Pa"]
+            sref = float(refs["Sref_m2"])
+            if not math.isfinite(q) or q <= 0.0 or not math.isfinite(sref) or sref <= 0.0:
+                raise ValueError("cannot convert lift force: q=%r Sref=%r" % (q, sref))
+            return self.lift_target_n / (q * sref)
+        return self.cl_target
+
     # -- alpha solve ------------------------------------------------------
-    def _alpha_for_lift(self, vehicle: Any, alpha_guess: float = 5.0) -> Dict[str, Any]:
+    def _alpha_for_lift(self, vehicle: Any, cl_target: float, alpha_guess: float = 5.0) -> Dict[str, Any]:
         """Secant solve for the angle of attack that hits cl_target.
 
         The returned cl is always the CL evaluated at the returned alpha_deg.
@@ -259,13 +294,13 @@ class SupersonicVLMBackend:
         x0 = min(max(alpha_guess, lo), hi)
         cl0, _ = self._solve(vehicle, x0)
         hist.append((x0, cl0))
-        f0 = cl0 - self.cl_target
+        f0 = cl0 - cl_target
         if abs(f0) <= ALPHA_TOL:
             return {"alpha_deg": x0, "cl": cl0, "iterations": 1, "ok": True, "history": hist}
-        x1 = min(max(x0 + 0.5 if cl0 < self.cl_target else x0 - 0.5, lo), hi)
+        x1 = min(max(x0 + 0.5 if cl0 < cl_target else x0 - 0.5, lo), hi)
         cl1, _ = self._solve(vehicle, x1)
         hist.append((x1, cl1))
-        f1 = cl1 - self.cl_target
+        f1 = cl1 - cl_target
         for _step in range(MAX_ALPHA_STEPS):
             if abs(f1) <= ALPHA_TOL:
                 break
@@ -278,7 +313,7 @@ class SupersonicVLMBackend:
             cl2, _ = self._solve(vehicle, x2)
             hist.append((x2, cl2))
             x0, cl0, f0 = x1, cl1, f1
-            x1, cl1, f1 = x2, cl2, cl2 - self.cl_target
+            x1, cl1, f1 = x2, cl2, cl2 - cl_target
         return {
             "alpha_deg": x1,
             "cl": cl1,
@@ -288,7 +323,7 @@ class SupersonicVLMBackend:
         }
 
     # -- public API -------------------------------------------------------
-    def _cache_key(self, design_key: str, refs: Mapping[str, float]) -> Tuple[Any, ...]:
+    def _cache_key(self, design_key: str, refs: Mapping[str, float], cl_target: float) -> Tuple[Any, ...]:
         """Bind the cache entry to everything that can change the number.
 
         The V1L key was (design_key, spanwise, chordwise), so the same design
@@ -301,7 +336,9 @@ class SupersonicVLMBackend:
             self.design_space_fingerprint,
             "%.12g" % self.mach,
             "%.9g" % self.altitude_m,
-            "%.12g" % self.cl_target,
+            "%.12g" % cl_target,
+            self.lift_target_mode,
+            "unset" if self.lift_target_n is None else "%.12g" % self.lift_target_n,
             self.reference_mode,
             "%.12g" % refs["Sref_m2"],
             "%.12g" % refs["Cref_m"],
@@ -323,7 +360,9 @@ class SupersonicVLMBackend:
             "lattice": {"spanwise": self.lattice[0], "chordwise": self.lattice[1]},
             "mach": self.mach,
             "altitude_m": self.altitude_m,
-            "cl_target": self.cl_target,
+            "cl_target": None,
+            "lift_target_n": self.lift_target_n,
+            "lift_target_mode": self.lift_target_mode,
             "task_fingerprint": self.task_fingerprint,
             "design_space_fingerprint": self.design_space_fingerprint,
             "reference_mode": self.reference_mode,
@@ -349,7 +388,9 @@ class SupersonicVLMBackend:
                 cref_used_m=float(refs["Cref_m"]),
                 bref_used_m=float(refs["Bref_m"]),
             )
-            cache_key = self._cache_key(record["design_key"], refs)
+            cl_target = self.cl_target_for(refs)
+            record["cl_target"] = float(cl_target)
+            cache_key = self._cache_key(record["design_key"], refs, cl_target)
             if cache_key in self.cache:
                 hit = dict(self.cache[cache_key])
                 hit["cached"] = True
@@ -357,7 +398,7 @@ class SupersonicVLMBackend:
                 hit["wall_seconds"] = round(time.perf_counter() - started, 3)
                 return hit
 
-            solve = self._alpha_for_lift(vehicle)
+            solve = self._alpha_for_lift(vehicle, cl_target)
             record["alpha_deg"] = float(solve["alpha_deg"])
             record["cl_actual"] = float(solve["cl"])
             record["alpha_iterations"] = int(solve["iterations"])
@@ -365,13 +406,13 @@ class SupersonicVLMBackend:
                 record["status"] = "ALPHA_SOLVE_FAILED"
                 record["diagnostics"].append(
                     "secant did not place CL within %g of %.12g in %d steps"
-                    % (ALPHA_TOL, self.cl_target, MAX_ALPHA_STEPS)
+                    % (ALPHA_TOL, cl_target, MAX_ALPHA_STEPS)
                 )
                 return record
 
             cl, cdi = self._solve(vehicle, solve["alpha_deg"])
             record["cl_actual"] = float(cl)
-            residual = abs(cl - self.cl_target)
+            residual = abs(cl - cl_target)
             record["lift_residual"] = residual
             if not math.isfinite(residual) or residual > LIFT_RESIDUAL_TOL:
                 # A label whose lift closure is broken must not be reported as valid:
@@ -414,7 +455,9 @@ class SupersonicVLMBackend:
             "lattice": {"spanwise": self.lattice[0], "chordwise": self.lattice[1]},
             "mach": self.mach,
             "altitude_m": self.altitude_m,
-            "cl_target": self.cl_target,
+            "cl_target_mode": self.lift_target_mode,
+            "cl_target": self.cl_target if self.lift_target_mode == "coefficient" else None,
+            "lift_target_n": self.lift_target_n,
             "task_fingerprint": self.task_fingerprint,
             "design_space": {
                 "config_path": self.space.config_path,
