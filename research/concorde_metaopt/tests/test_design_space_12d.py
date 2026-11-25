@@ -55,9 +55,16 @@ class LoadReal12DConfigTests(unittest.TestCase):
         self.assertEqual(summary["geometry_dim"], 15)
         self.assertEqual(summary["design_dim"], 12)
 
-    def test_stays_provisional_and_records_the_fixed_fuselage_source(self):
-        self.assertFalse(self.space.frozen)
-        self.assertEqual(self.space.bounds_status, "provisional_until_geometry_perturbation")
+    def test_is_frozen_and_records_the_freezing_evidence(self):
+        # The 12D bounds were frozen by Lead decision L-03 (commit 3624db7) on
+        # 2026-11-10; the loader now accepts a freeze that carries its evidence
+        # instead of rejecting every frozen space.
+        self.assertTrue(self.space.frozen)
+        self.assertEqual(self.space.bounds_status, "frozen_for_dreal001_20261110")
+        self.assertTrue(str(self.space.source.get("baseline_sha256") or "").strip())
+        self.assertEqual(str(self.space.source["baseline_sha256"]).strip().lower(),
+                         "4c633e485a915151faaa8104e6647f9dc02bd08ae1436c22845e5917b3d735bd")
+        self.assertEqual(len(self.space.freeze_requires), 3)
         for fixed in self.space.fixed_variables:
             self.assertIn("owner decision", fixed.source)
 

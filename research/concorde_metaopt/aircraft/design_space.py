@@ -27,6 +27,7 @@ physical design vector is inside the declared box and cross constraints.
 
 from __future__ import annotations
 
+import hashlib
 import math
 from dataclasses import dataclass
 from pathlib import Path
@@ -538,14 +539,71 @@ def _build_fixed_variable(raw: Mapping[str, Any], position: int, source: str) ->
     )
 
 
+def _repo_root() -> Path:
+    """Repository root of this package (aircraft -> concorde_metaopt -> research -> root)."""
+    return Path(__file__).resolve().parents[3]
+
+
+def _file_sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with Path(path).open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def _validate_frozen_claim(space: DesignSpace, source: str) -> None:
+    """Accept a genuinely frozen design space and reject a bare flag flip.
+
+    The P1 loader used to reject every frozen space outright, which pushed
+    callers into silently rewriting frozen=False before loading (the V1L
+    backend did exactly that).  A freeze is now accepted only when the config
+    carries the evidence that made the freeze legitimate:
+
+    * bounds_status starts with "frozen" (a provisional status next to
+      frozen: true is a contradiction, not a freeze);
+    * freeze_requires is non-empty (the freeze names what it depends on);
+    * source.baseline_sha256 is present, and it matches the SHA-256 of the
+      baseline file on disk (a stale hash means the frozen baseline moved).
+    """
+    status = str(space.bounds_status or "")
+    if not status.lower().startswith("frozen"):
+        raise DesignSpaceError(
+            "%s: frozen: true requires a bounds_status starting with 'frozen', got %r; "
+            "a provisional status must keep frozen: false" % (source, status)
+        )
+    if not space.freeze_requires:
+        raise DesignSpaceError(
+            "%s: frozen: true requires a non-empty freeze_requires list naming what the "
+            "freeze depends on" % source
+        )
+    declared = str(space.source.get("baseline_sha256") or "").strip().lower()
+    if len(declared) != 64 or any(ch not in "0123456789abcdef" for ch in declared):
+        raise DesignSpaceError(
+            "%s: frozen: true requires source.baseline_sha256 to be a 64-char SHA-256 hex "
+            "digest, got %r" % (source, declared)
+        )
+    baseline_file = str(space.source.get("baseline_file") or "").strip()
+    if not baseline_file:
+        raise DesignSpaceError("%s: frozen: true requires source.baseline_file" % source)
+    path = Path(baseline_file)
+    if not path.is_absolute():
+        path = _repo_root() / path
+    if not path.is_file():
+        raise DesignSpaceError("%s: frozen baseline file not found: %s" % (source, path))
+    actual = _file_sha256(path)
+    if actual != declared:
+        raise DesignSpaceError(
+            "%s: frozen baseline hash mismatch: source.baseline_sha256=%s but %s has %s"
+            % (source, declared, path, actual)
+        )
+
+
 def _validate_space(space: DesignSpace, source: str) -> None:
     if not space.units.upper() == "SI":
         raise DesignSpaceError("%s: Phase I design space must declare SI units" % source)
     if space.frozen:
-        raise DesignSpaceError(
-            "%s: the P1 design space is provisional and must not be loaded as frozen before "
-            "the geometry perturbation checks are complete" % source
-        )
+        _validate_frozen_claim(space, source)
     allowed_cross = {"C01", "C02", "C03", "C04"}
     declared_cross = {str(rule.get("id")) for rule in space.cross_constraints}
     missing_cross = sorted(allowed_cross - declared_cross)

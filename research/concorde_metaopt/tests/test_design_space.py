@@ -194,11 +194,42 @@ class ConfigValidationTests(unittest.TestCase):
         with self.assertRaises(ds.DesignSpaceError):
             self.build(data)
 
-    def test_frozen_space_is_rejected_until_measured(self):
+    def test_frozen_flag_without_a_frozen_status_is_rejected(self):
+        # Flipping frozen=true while bounds_status still says provisional is a
+        # bare flag change, not a freeze: the loader must keep rejecting it.
         data = copy.deepcopy(self.raw)
         data["frozen"] = True
-        with self.assertRaises(ds.DesignSpaceError):
+        with self.assertRaises(ds.DesignSpaceError) as context:
             self.build(data)
+        self.assertIn("bounds_status", str(context.exception))
+
+    def test_frozen_flag_without_freeze_requires_is_rejected(self):
+        data = copy.deepcopy(self.raw)
+        data["frozen"] = True
+        data["bounds_status"] = "frozen_for_unit_test"
+        data["freeze_requires"] = []
+        with self.assertRaises(ds.DesignSpaceError) as context:
+            self.build(data)
+        self.assertIn("freeze_requires", str(context.exception))
+
+    def test_frozen_baseline_hash_mismatch_is_rejected(self):
+        data = copy.deepcopy(self.raw)
+        data["frozen"] = True
+        data["bounds_status"] = "frozen_for_unit_test"
+        data["source"]["baseline_sha256"] = "0" * 64
+        with self.assertRaises(ds.DesignSpaceError) as context:
+            self.build(data)
+        self.assertIn("baseline hash mismatch", str(context.exception))
+
+    def test_a_freeze_with_complete_evidence_is_accepted(self):
+        data = copy.deepcopy(self.raw)
+        data["frozen"] = True
+        data["bounds_status"] = "frozen_for_unit_test"
+        space = self.build(data)
+        self.assertTrue(space.frozen)
+        self.assertEqual(space.bounds_status, "frozen_for_unit_test")
+        # The freeze does not change any physics numbers.
+        self.assertEqual(space.baseline_dict(), ds.load_design_space(CONFIG_PATH).baseline_dict())
 
     def test_missing_cross_constraint_is_rejected(self):
         data = copy.deepcopy(self.raw)
