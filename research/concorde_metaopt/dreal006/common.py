@@ -40,6 +40,66 @@ S1_BUDGET = 8192  # 24 train x 256 + 8 val x 256
 MAX_INNER_SOLVES_PER_EVAL = 16
 SCHEMA_PREFIX = "dreal006"
 
+# A "phase" is one budgeted block of the campaign that owns its own data tree,
+# design manifest, ledger, status and lock file.  S1 evaluates 24 train + 8 val
+# tasks with 256 designs each; S2 evaluates the 12 sealed test tasks with 128
+# designs each (the test queries are generated once, independently of any online
+# candidate or support set).
+CURRENT_PHASE = "s1"
+BUDGET = S1_BUDGET
+PHASE_CONFIGS = {
+    "s1": {
+        "stage": "S1",
+        "data_dir": "s1",
+        "designs_per_task": 256,
+        "fit_designs": 128,
+        "splits": ("train", "val"),
+        "budget": 8192,
+        "manifest": "s1_design_manifest.json",
+        "ledger": "s1_ledger.json",
+        "status": "s1_run_status.json",
+        "lock": "s1_run.lock",
+    },
+    "s2": {
+        "stage": "S2",
+        "data_dir": "s2",
+        "designs_per_task": 128,
+        "fit_designs": 64,
+        "splits": ("test",),
+        "budget": 1536,
+        "manifest": "s2_design_manifest.json",
+        "ledger": "s2_ledger.json",
+        "status": "s2_run_status.json",
+        "lock": "s2_run.lock",
+    },
+}
+
+
+def phase_config(phase: str) -> dict:
+    if phase not in PHASE_CONFIGS:
+        raise SystemExit("unknown phase %r (choose from %s)" % (phase, sorted(PHASE_CONFIGS)))
+    return PHASE_CONFIGS[phase]
+
+
+def apply_phase(phase: str) -> dict:
+    """Point the module's paths and counts at one campaign phase."""
+    global CURRENT_PHASE, BUDGET, S1_BUDGET, DATA_DIR, RAW_DIR, SHARD_DIR
+    global MANIFEST_PATH, LEDGER_PATH, STATUS_PATH, LOCK_PATH, DESIGNS_PER_TASK, FIT_DESIGNS
+    cfg = phase_config(phase)
+    CURRENT_PHASE = phase
+    BUDGET = int(cfg["budget"])
+    S1_BUDGET = BUDGET  # legacy alias: code written before phases existed
+    DESIGNS_PER_TASK = int(cfg["designs_per_task"])
+    FIT_DESIGNS = int(cfg["fit_designs"])
+    DATA_DIR = RUN_DIR / "data" / cfg["data_dir"]
+    RAW_DIR = DATA_DIR / "raw"
+    SHARD_DIR = DATA_DIR / "shards"
+    MANIFEST_PATH = META_DIR / cfg["manifest"]
+    LEDGER_PATH = META_DIR / cfg["ledger"]
+    STATUS_PATH = META_DIR / cfg["status"]
+    LOCK_PATH = RUN_DIR / cfg["lock"]
+    return cfg
+
 
 def utc_now() -> str:
     return time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())

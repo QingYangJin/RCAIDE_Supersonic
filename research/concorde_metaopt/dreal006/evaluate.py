@@ -232,7 +232,7 @@ def build_labels(records: list[dict]) -> dict:
     os.replace(tmp, labels_path)
     missing_jref = sorted(t for t, info in by_task.items() if info["j_ref"] is None)
     manifest = {
-        "schema": "dreal006.s1_labels.v1",
+        "schema": "dreal006.%s_labels.v1" % common.CURRENT_PHASE,
         "created_utc": common.utc_now(),
         "rows": len(valid),
         "tasks": len(by_task),
@@ -257,7 +257,7 @@ def build_shards(records: list[dict]) -> dict:
     shards = []
     for start in range(0, len(ordered), common.SHARD_SIZE):
         chunk = ordered[start:start + common.SHARD_SIZE]
-        name = "s1_shard_%05d.jsonl.gz" % (start // common.SHARD_SIZE)
+        name = "%s_shard_%05d.jsonl.gz" % (common.CURRENT_PHASE, start // common.SHARD_SIZE)
         path = common.SHARD_DIR / name
         with gzip.open(path, "wt", encoding="utf-8") as handle:
             for record in chunk:
@@ -271,7 +271,7 @@ def build_shards(records: list[dict]) -> dict:
             "last": [chunk[-1]["task_id"], chunk[-1]["design_index"]],
         })
     manifest = {
-        "schema": "dreal006.s1_shards.v1",
+        "schema": "dreal006.%s_shards.v1" % common.CURRENT_PHASE,
         "created_utc": common.utc_now(),
         "records": len(ordered),
         "shard_size": common.SHARD_SIZE,
@@ -293,15 +293,16 @@ def write_ledger(records: list[dict], per_task: dict, labels: dict | None, shard
     counts = {status: 0 for status in STATUSES}
     for record in records:
         counts[record.get("status", "ERROR")] = counts.get(record.get("status", "ERROR"), 0) + 1
+    phase = common.CURRENT_PHASE
     ledger = {
-        "schema": "dreal006.s1_ledger.v1",
+        "schema": "dreal006.%s_ledger.v1" % phase,
         "run_id": common.RUN_ID,
-        "stage": "S1",
+        "stage": common.phase_config(phase)["stage"],
         "updated_utc": common.utc_now(),
         "budget": {
-            "s1_attempts_cap": common.S1_BUDGET,
+            "%s_attempts_cap" % phase: common.BUDGET,
             "charged": len(records),
-            "remaining": common.S1_BUDGET - len(records),
+            "remaining": common.BUDGET - len(records),
         },
         "protocol": {
             "lattice": list(common.LATTICE),
@@ -343,7 +344,8 @@ def write_ledger(records: list[dict], per_task: dict, labels: dict | None, shard
 
 
 def update_status(phase: str, **extra: Any) -> None:
-    payload = {"schema": "dreal006.s1_status.v1", "phase": phase, "updated_utc": common.utc_now()}
+    payload = {"schema": "dreal006.%s_status.v1" % common.CURRENT_PHASE, "phase": phase,
+               "updated_utc": common.utc_now()}
     payload.update(extra)
     common.atomic_write_json(common.STATUS_PATH, payload)
 
@@ -370,6 +372,8 @@ def _acquire_lock(force: bool) -> None:
 
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--phase", choices=("s1", "s2"), default="s1",
+                        help="S1 = train+val design bank; S2 = sealed test queries (1536 attempts)")
     parser.add_argument("--workers", type=int, default=8)
     parser.add_argument("--task-limit", type=int, default=0, help="only the first N manifest tasks (smoke)")
     parser.add_argument("--design-limit", type=int, default=0, help="only the first N missing designs per task (smoke)")
@@ -381,6 +385,7 @@ def main(argv=None) -> int:
     parser.add_argument("--worker-task", default="", help=argparse.SUPPRESS)
     parser.add_argument("--worker-summary", default="", help=argparse.SUPPRESS)
     args = parser.parse_args(argv)
+    cfg = common.apply_phase(args.phase)
 
     common.DATA_DIR.mkdir(parents=True, exist_ok=True)
     common.RAW_DIR.mkdir(parents=True, exist_ok=True)
@@ -441,14 +446,14 @@ def main(argv=None) -> int:
             if args.design_limit:
                 todo = todo[: args.design_limit]
             if n + len(todo) > len(task["designs"]):
-                raise SystemExit("task %s would exceed 256 designs" % task["task_id"])
+                raise SystemExit("task %s would exceed %d designs" % (task["task_id"], len(task["designs"])))
             if todo:
                 planned.append((task, todo))
 
-        if existing_total > common.S1_BUDGET:
-            raise SystemExit("already recorded %d > budget %d" % (existing_total, common.S1_BUDGET))
+        if existing_total > common.BUDGET:
+            raise SystemExit("already recorded %d > budget %d" % (existing_total, common.BUDGET))
         todo_total = sum(len(todo) for _, todo in planned)
-        remaining = common.S1_BUDGET - existing_total
+        remaining = common.BUDGET - existing_total
         cap = remaining if args.max_attempts <= 0 else min(remaining, args.max_attempts)
         if todo_total > cap:
             raise SystemExit("planned %d attempts exceeds allowed %d (budget remaining %d)" % (todo_total, cap, remaining))
@@ -496,6 +501,7 @@ def main(argv=None) -> int:
                 log_path = logs_dir / ("%s.log" % task["task_id"])
                 command = [
                     sys.executable, "-m", "research.concorde_metaopt.dreal006.evaluate",
+                    "--phase", args.phase,
                     "--worker-task", task["task_id"], "--worker-summary", str(summary_path),
                 ]
                 if args.design_limit:
@@ -556,8 +562,9 @@ def main(argv=None) -> int:
                 len(shards["shards"]), shards["records"], shards["total_bytes"]))
         update_status("complete", charged=len(records), labels_rows=labels["rows"],
                       missing_j_ref_tasks=labels["missing_j_ref_tasks"], ledger=ledger["counters"])
-        if not args.allow_partial and len(records) < common.S1_BUDGET and todo_total + existing_total < common.S1_BUDGET:
-            print("NOTE: S1 is not complete (%d/%d); rerun to continue." % (len(records), common.S1_BUDGET))
+        if not args.allow_partial and len(records) < common.BUDGET and todo_total + existing_total < common.BUDGET:
+            print("NOTE: %s is not complete (%d/%d); rerun to continue." % (
+                cfg["stage"], len(records), common.BUDGET))
         return 0
     finally:
         try:

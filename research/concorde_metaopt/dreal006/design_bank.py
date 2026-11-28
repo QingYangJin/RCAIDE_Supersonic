@@ -34,10 +34,13 @@ def _full_design(active_names: list[str], active_values: dict[str, float], bound
     return design
 
 
-def build_task_designs(task: dict, active_names: list[str], bounds: dict) -> list[dict]:
+def build_task_designs(task: dict, active_names: list[str], bounds: dict,
+                        n_designs: int | None = None, fit_designs: int | None = None) -> list[dict]:
     import numpy as np
     from scipy.stats.qmc import Sobol
 
+    n_designs = common.DESIGNS_PER_TASK if n_designs is None else int(n_designs)
+    fit_designs = common.FIT_DESIGNS if fit_designs is None else int(fit_designs)
     lower = np.array([bounds[name]["lower"] for name in active_names], dtype=float)
     upper = np.array([bounds[name]["upper"] for name in active_names], dtype=float)
     baseline = np.array([bounds[name]["baseline"] for name in active_names], dtype=float)
@@ -52,9 +55,10 @@ def build_task_designs(task: dict, active_names: list[str], bounds: dict) -> lis
     for label, unit in anchors:
         values = lower + unit * (upper - lower)
         rows.append((label, values))
-    sampler = Sobol(d=len(active_names), scramble=True, seed=common.task_seed(task["task_id"]))
-    points = sampler.random(common.DESIGNS_PER_TASK)  # 256 including the zero corner
-    for index in range(len(rows), common.DESIGNS_PER_TASK):
+    sampler = Sobol(d=len(active_names), scramble=True,
+                    seed=common.task_seed(task["task_id"], purpose="%s-designs-v1" % common.CURRENT_PHASE))
+    points = sampler.random(n_designs)  # n_designs including the zero corner
+    for index in range(len(rows), n_designs):
         rows.append(("sobol", lower + points[index] * (upper - lower)))
 
     designs = []
@@ -70,22 +74,27 @@ def build_task_designs(task: dict, active_names: list[str], bounds: dict) -> lis
             "kind": kind,
             "design_id": design_id,
             "active": [float(active[name]) for name in active_names],
-            "split": "fit" if index < common.FIT_DESIGNS else "query",
+            "split": "fit" if index < fit_designs else "query",
         })
-    if len(designs) != common.DESIGNS_PER_TASK:
+    if len(designs) != n_designs:
         raise RuntimeError("design count mismatch for %s" % task["task_id"])
     return designs
 
 
-def build_manifest(splits: tuple[str, ...] = ("train", "val")) -> dict:
+def build_manifest(splits: tuple[str, ...] | None = None, n_designs: int | None = None,
+                   fit_designs: int | None = None) -> dict:
     family = common.load_task_family()
     subspace = common.load_active_subspace()
     bounds = common.load_design_bounds()
     active_names = list(subspace["active_names"])
+    phase = common.CURRENT_PHASE
+    splits = tuple(common.phase_config(phase)["splits"]) if splits is None else splits
+    n_designs = common.DESIGNS_PER_TASK if n_designs is None else int(n_designs)
+    fit_designs = common.FIT_DESIGNS if fit_designs is None else int(fit_designs)
     tasks = [t for t in family["tasks"] if t["split"] in splits]
     per_task = {}
     for task in tasks:
-        designs = build_task_designs(task, active_names, bounds)
+        designs = build_task_designs(task, active_names, bounds, n_designs, fit_designs)
         per_task[task["task_id"]] = {
             "task_id": task["task_id"],
             "split": task["split"],
@@ -95,11 +104,11 @@ def build_manifest(splits: tuple[str, ...] = ("train", "val")) -> dict:
             "lift_target_n": float(task["lift_target_n"]),
             "lift_fraction_of_base": float(task["lift_fraction_of_base"]),
             "physics_sha256": task["physics_sha256"],
-            "seed": common.task_seed(task["task_id"]),
+            "seed": common.task_seed(task["task_id"], purpose="%s-designs-v1" % phase),
             "designs": designs,
         }
     payload = {
-        "schema": "dreal006.s1_design_manifest.v1",
+        "schema": "dreal006.%s_design_manifest.v1" % phase,
         "created_utc": common.utc_now(),
         "run_id": common.RUN_ID,
         "task_family_sha256": common.sha256_file(common.TASK_FAMILY_PATH),
@@ -116,36 +125,45 @@ def build_manifest(splits: tuple[str, ...] = ("train", "val")) -> dict:
         },
         "counts": {
             "tasks": len(per_task),
-            "designs_per_task": common.DESIGNS_PER_TASK,
-            "total_attempts": len(per_task) * common.DESIGNS_PER_TASK,
-            "fit_per_task": common.FIT_DESIGNS,
-            "query_per_task": common.DESIGNS_PER_TASK - common.FIT_DESIGNS,
+            "designs_per_task": n_designs,
+            "total_attempts": len(per_task) * n_designs,
+            "fit_per_task": fit_designs,
+            "query_per_task": n_designs - fit_designs,
             "shared_anchors_per_task": 4,
         },
         "sampling": {
             "kind": "scrambled Sobol",
-            "seed_rule": "sha256(task_id + '|s1-designs-v1')[:4 bytes]",
+            "seed_rule": "sha256(task_id + '|%s-designs-v1')[:4 bytes]" % phase,
             "anchors": ["baseline", "low", "high", "mixed"],
-            "split_rule": "index < 128 fit, index >= 128 query",
+            "split_rule": "index < %d fit, index >= %d query" % (fit_designs, fit_designs),
         },
         "tasks": per_task,
     }
+    if phase == "s2":
+        payload["sealed"] = True
+        payload["protocol_note"] = (
+            "S2 test queries are generated once and are independent of any online candidate set or support set"
+        )
     payload["manifest_sha256"] = common.sha256_text(common.canonical_json(payload))
     return payload
 
 
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--out", default=str(common.MANIFEST_PATH))
+    parser.add_argument("--phase", choices=("s1", "s2"), default="s1")
+    parser.add_argument("--out", default="")
     args = parser.parse_args(argv)
+    cfg = common.apply_phase(args.phase)
+    out = args.out or str(common.MANIFEST_PATH)
     manifest = build_manifest()
-    common.atomic_write_json(args.out, manifest)
+    common.atomic_write_json(out, manifest)
     counts = manifest["counts"]
-    print("wrote %s" % args.out)
-    print("tasks=%d designs/task=%d attempts=%d" % (counts["tasks"], counts["designs_per_task"], counts["total_attempts"]))
+    print("wrote %s" % out)
+    print("phase=%s tasks=%d designs/task=%d attempts=%d" % (
+        cfg["stage"], counts["tasks"], counts["designs_per_task"], counts["total_attempts"]))
     print("manifest_sha256=%s" % manifest["manifest_sha256"])
-    if counts["total_attempts"] != common.S1_BUDGET:
-        raise SystemExit("S1 attempts %d != budget %d" % (counts["total_attempts"], common.S1_BUDGET))
+    if counts["total_attempts"] != common.BUDGET:
+        raise SystemExit("%s attempts %d != budget %d" % (cfg["stage"], counts["total_attempts"], common.BUDGET))
     return 0
 
 
