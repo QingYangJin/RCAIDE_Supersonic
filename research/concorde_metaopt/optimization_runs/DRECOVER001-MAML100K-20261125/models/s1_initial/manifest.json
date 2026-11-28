@@ -1,0 +1,302 @@
+{
+  "schema": "dreal006.s1_training.v1",
+  "run_id": "DRECOVER001-MAML100K-20261125",
+  "created_utc": "2026-11-28T09:09:38Z",
+  "git_commit": "c781b50bea511c808e67142d0766fe8bc1a54813",
+  "command": "python -m research.concorde_metaopt.dreal006.train --steps 2000 --out-dir .../models/s1_initial",
+  "protocol": {
+    "task_family": "24 train + 8 val tasks, S1 only (test split untouched)",
+    "target_mode": "log",
+    "target": "y = log(CDi / J_ref), J_ref = CDi of the task anchor-baseline design",
+    "metrics": "back-transformed to CDi; rel_rmse = RMSE of (CDi_pred-CDi_true)/CDi_true over 128 query designs per val task",
+    "network": "Linear(d)-SiLU-Linear(64)-SiLU-Linear(1)",
+    "adapt": "K=5 support designs, 10 full-batch SGD steps lr=0.01 (no-adapt uses the identical model with 0 steps)",
+    "supervised": "Adam lr=1e-3, batch=256, 2000 steps, uniform over all train fit rows",
+    "fomaml": "first-order MAML, meta-batch=8 tasks, K=5 support, Q=16 query, 1 inner SGD step lr=0.01, Adam lr=1e-3, 2000 steps"
+  },
+  "seeds": [
+    7,
+    19,
+    43,
+    71,
+    101
+  ],
+  "steps": 2000,
+  "environment": {
+    "python": "3.11.17",
+    "torch": "2.8.0+cpu",
+    "platform": "Windows-10-10.0.26300-SP0",
+    "blas_threads": 1
+  },
+  "inputs": {
+    "labels_sha256": "df924d3b55b8e0d93291d1b3b836aa6b6a5b3875e66b351aff7ff708dc432258",
+    "labels_rows": 8123,
+    "labels_fit_rows": 4062,
+    "labels_query_rows": 4061,
+    "design_manifest_sha256": "7c24b189a69b803d0c76d5927357d8999e604773b9603cd521cdaefa360e1940",
+    "shards_manifest_sha256": "8ddeb2f1548dd8a3bfa4e9a5a566e4c1bfa0f545b026c74884ed42fc1c81240c",
+    "shards_records": 8192,
+    "shards": 16,
+    "shards_total_bytes": 1584620
+  },
+  "arms": {
+    "POOLED_SUPERVISED_12D": {
+      "runs": 5,
+      "val_rel_rmse_mean": 0.498519,
+      "val_rel_rmse_std": 0.013678,
+      "val_cdi_mape_mean": 0.207198,
+      "val_cdi_mape_std": 0.009109,
+      "val_r2_mean": 0.683344,
+      "no_adapt_rel_rmse_mean": 0.628911,
+      "no_adapt_rel_rmse_std": 0.006305,
+      "adapt_gain_mean": 0.130392,
+      "params": 5057,
+      "labels_seen_mean": 512000,
+      "wall_seconds_mean": 0.86
+    },
+    "COND_SUPERVISED_16D": {
+      "runs": 5,
+      "val_rel_rmse_mean": 0.399842,
+      "val_rel_rmse_std": 0.033178,
+      "val_cdi_mape_mean": 0.124656,
+      "val_cdi_mape_std": 0.029799,
+      "val_r2_mean": 0.768966,
+      "no_adapt_rel_rmse_mean": 0.429257,
+      "no_adapt_rel_rmse_std": 0.016317,
+      "adapt_gain_mean": 0.029416,
+      "params": 5313,
+      "labels_seen_mean": 512000,
+      "wall_seconds_mean": 0.86
+    },
+    "FOMAML_12D": {
+      "runs": 5,
+      "val_rel_rmse_mean": 0.416151,
+      "val_rel_rmse_std": 0.038113,
+      "val_cdi_mape_mean": 0.123473,
+      "val_cdi_mape_std": 0.055423,
+      "val_r2_mean": 0.745469,
+      "no_adapt_rel_rmse_mean": 0.607902,
+      "no_adapt_rel_rmse_std": 0.058996,
+      "adapt_gain_mean": 0.191751,
+      "params": 5057,
+      "labels_seen_mean": 336000,
+      "wall_seconds_mean": 7.28
+    },
+    "COND_FOMAML_16D": {
+      "runs": 5,
+      "val_rel_rmse_mean": 0.401856,
+      "val_rel_rmse_std": 0.022336,
+      "val_cdi_mape_mean": 0.120228,
+      "val_cdi_mape_std": 0.034993,
+      "val_r2_mean": 0.770455,
+      "no_adapt_rel_rmse_mean": 0.426317,
+      "no_adapt_rel_rmse_std": 0.008266,
+      "adapt_gain_mean": 0.024461,
+      "params": 5313,
+      "labels_seen_mean": 336000,
+      "wall_seconds_mean": 7.5
+    }
+  },
+  "per_run": [
+    {
+      "arm": "POOLED_SUPERVISED_12D",
+      "seed": 7,
+      "val_rel_rmse": 0.514559,
+      "val_cdi_mape": 0.210474,
+      "val_r2": 0.681513,
+      "no_adapt_rel_rmse": 0.636462,
+      "params": 5057,
+      "wall_seconds": 0.8
+    },
+    {
+      "arm": "POOLED_SUPERVISED_12D",
+      "seed": 19,
+      "val_rel_rmse": 0.499454,
+      "val_cdi_mape": 0.207569,
+      "val_r2": 0.683735,
+      "no_adapt_rel_rmse": 0.630507,
+      "params": 5057,
+      "wall_seconds": 0.8
+    },
+    {
+      "arm": "POOLED_SUPERVISED_12D",
+      "seed": 43,
+      "val_rel_rmse": 0.508725,
+      "val_cdi_mape": 0.220479,
+      "val_r2": 0.65602,
+      "no_adapt_rel_rmse": 0.621064,
+      "params": 5057,
+      "wall_seconds": 0.9
+    },
+    {
+      "arm": "POOLED_SUPERVISED_12D",
+      "seed": 71,
+      "val_rel_rmse": 0.487816,
+      "val_cdi_mape": 0.199568,
+      "val_r2": 0.706032,
+      "no_adapt_rel_rmse": 0.632565,
+      "params": 5057,
+      "wall_seconds": 0.9
+    },
+    {
+      "arm": "POOLED_SUPERVISED_12D",
+      "seed": 101,
+      "val_rel_rmse": 0.482042,
+      "val_cdi_mape": 0.197902,
+      "val_r2": 0.689421,
+      "no_adapt_rel_rmse": 0.623959,
+      "params": 5057,
+      "wall_seconds": 0.9
+    },
+    {
+      "arm": "COND_SUPERVISED_16D",
+      "seed": 7,
+      "val_rel_rmse": 0.434828,
+      "val_cdi_mape": 0.122231,
+      "val_r2": 0.778704,
+      "no_adapt_rel_rmse": 0.454583,
+      "params": 5313,
+      "wall_seconds": 0.9
+    },
+    {
+      "arm": "COND_SUPERVISED_16D",
+      "seed": 19,
+      "val_rel_rmse": 0.375461,
+      "val_cdi_mape": 0.101505,
+      "val_r2": 0.795623,
+      "no_adapt_rel_rmse": 0.423761,
+      "params": 5313,
+      "wall_seconds": 0.8
+    },
+    {
+      "arm": "COND_SUPERVISED_16D",
+      "seed": 43,
+      "val_rel_rmse": 0.390775,
+      "val_cdi_mape": 0.118196,
+      "val_r2": 0.773729,
+      "no_adapt_rel_rmse": 0.425994,
+      "params": 5313,
+      "wall_seconds": 0.9
+    },
+    {
+      "arm": "COND_SUPERVISED_16D",
+      "seed": 71,
+      "val_rel_rmse": 0.434437,
+      "val_cdi_mape": 0.175711,
+      "val_r2": 0.706659,
+      "no_adapt_rel_rmse": 0.432055,
+      "params": 5313,
+      "wall_seconds": 0.8
+    },
+    {
+      "arm": "COND_SUPERVISED_16D",
+      "seed": 101,
+      "val_rel_rmse": 0.363708,
+      "val_cdi_mape": 0.105635,
+      "val_r2": 0.790116,
+      "no_adapt_rel_rmse": 0.409894,
+      "params": 5313,
+      "wall_seconds": 0.9
+    },
+    {
+      "arm": "FOMAML_12D",
+      "seed": 7,
+      "val_rel_rmse": 0.434642,
+      "val_cdi_mape": 0.109957,
+      "val_r2": 0.788031,
+      "no_adapt_rel_rmse": 0.700419,
+      "params": 5057,
+      "wall_seconds": 7.4
+    },
+    {
+      "arm": "FOMAML_12D",
+      "seed": 19,
+      "val_rel_rmse": 0.395575,
+      "val_cdi_mape": 0.088965,
+      "val_r2": 0.799953,
+      "no_adapt_rel_rmse": 0.559285,
+      "params": 5057,
+      "wall_seconds": 6.8
+    },
+    {
+      "arm": "FOMAML_12D",
+      "seed": 43,
+      "val_rel_rmse": 0.404323,
+      "val_cdi_mape": 0.108723,
+      "val_r2": 0.779121,
+      "no_adapt_rel_rmse": 0.632113,
+      "params": 5057,
+      "wall_seconds": 7.5
+    },
+    {
+      "arm": "FOMAML_12D",
+      "seed": 71,
+      "val_rel_rmse": 0.47214,
+      "val_cdi_mape": 0.220911,
+      "val_r2": 0.557414,
+      "no_adapt_rel_rmse": 0.580676,
+      "params": 5057,
+      "wall_seconds": 7.3
+    },
+    {
+      "arm": "FOMAML_12D",
+      "seed": 101,
+      "val_rel_rmse": 0.374073,
+      "val_cdi_mape": 0.088808,
+      "val_r2": 0.802827,
+      "no_adapt_rel_rmse": 0.567015,
+      "params": 5057,
+      "wall_seconds": 7.4
+    },
+    {
+      "arm": "COND_FOMAML_16D",
+      "seed": 7,
+      "val_rel_rmse": 0.424544,
+      "val_cdi_mape": 0.113711,
+      "val_r2": 0.786993,
+      "no_adapt_rel_rmse": 0.424172,
+      "params": 5313,
+      "wall_seconds": 7.3
+    },
+    {
+      "arm": "COND_FOMAML_16D",
+      "seed": 19,
+      "val_rel_rmse": 0.388747,
+      "val_cdi_mape": 0.10098,
+      "val_r2": 0.795587,
+      "no_adapt_rel_rmse": 0.422318,
+      "params": 5313,
+      "wall_seconds": 7.4
+    },
+    {
+      "arm": "COND_FOMAML_16D",
+      "seed": 43,
+      "val_rel_rmse": 0.406614,
+      "val_cdi_mape": 0.12226,
+      "val_r2": 0.769353,
+      "no_adapt_rel_rmse": 0.440334,
+      "params": 5313,
+      "wall_seconds": 7.6
+    },
+    {
+      "arm": "COND_FOMAML_16D",
+      "seed": 71,
+      "val_rel_rmse": 0.419016,
+      "val_cdi_mape": 0.177916,
+      "val_r2": 0.696872,
+      "no_adapt_rel_rmse": 0.418827,
+      "params": 5313,
+      "wall_seconds": 7.7
+    },
+    {
+      "arm": "COND_FOMAML_16D",
+      "seed": 101,
+      "val_rel_rmse": 0.370361,
+      "val_cdi_mape": 0.086271,
+      "val_r2": 0.803472,
+      "no_adapt_rel_rmse": 0.425935,
+      "params": 5313,
+      "wall_seconds": 7.5
+    }
+  ]
+}
