@@ -1,0 +1,2438 @@
+{
+  "budget": {
+    "charged": 3072,
+    "remaining": 0,
+    "s3_attempts_cap": 3072
+  },
+  "by_status": {
+    "ALPHA_SOLVE_FAILED": 0,
+    "ERROR": 2,
+    "LIFT_RESIDUAL_REJECTED": 0,
+    "NON_PHYSICAL_CDI": 25,
+    "VALID": 3045
+  },
+  "counters": {
+    "cache_hits": 0,
+    "evaluation_attempts_charged": 3072,
+    "fresh_evaluator_attempts": 3072,
+    "unique_task_design_labels": 305,
+    "vlm_inner_solves_actual": 16620
+  },
+  "max_inner_solves_observed": 16,
+  "per_arm": {
+    "COND_FOMAML_KSHOT_BO": {
+      "marks": {
+        "11": {
+          "mean_best_cdi": 0.0029301788666163896,
+          "mean_rel_improvement": 0.6508120958622176,
+          "n": 16
+        },
+        "16": {
+          "mean_best_cdi": 0.0029301788666163896,
+          "mean_rel_improvement": 0.6508120958622176,
+          "n": 16
+        },
+        "32": {
+          "mean_best_cdi": 0.0029301788666163896,
+          "mean_rel_improvement": 0.6508120958622176,
+          "n": 16
+        },
+        "48": {
+          "mean_best_cdi": 0.0029301788666163896,
+          "mean_rel_improvement": 0.6508120958622176,
+          "n": 16
+        },
+        "5": {
+          "mean_best_cdi": 0.00490976678118822,
+          "mean_rel_improvement": 0.4254968727541733,
+          "n": 16
+        },
+        "64": {
+          "mean_best_cdi": 0.0024451667464951287,
+          "mean_rel_improvement": 0.683368014375438,
+          "n": 16
+        },
+        "8": {
+          "mean_best_cdi": 0.0029301788666163896,
+          "mean_rel_improvement": 0.6508120958622176,
+          "n": 16
+        }
+      },
+      "trials": 16
+    },
+    "COND_SUPERVISED_KSHOT_BO": {
+      "marks": {
+        "11": {
+          "mean_best_cdi": 0.002502088224771066,
+          "mean_rel_improvement": 0.6610673455891104,
+          "n": 16
+        },
+        "16": {
+          "mean_best_cdi": 0.002502088224771066,
+          "mean_rel_improvement": 0.6610673455891104,
+          "n": 16
+        },
+        "32": {
+          "mean_best_cdi": 0.002479675316167593,
+          "mean_rel_improvement": 0.6666275114384721,
+          "n": 16
+        },
+        "48": {
+          "mean_best_cdi": 0.002479675316167593,
+          "mean_rel_improvement": 0.6666275114384721,
+          "n": 16
+        },
+        "5": {
+          "mean_best_cdi": 0.00490976678118822,
+          "mean_rel_improvement": 0.4254968727541733,
+          "n": 16
+        },
+        "64": {
+          "mean_best_cdi": 0.0020693736274954577,
+          "mean_rel_improvement": 0.6968735558711177,
+          "n": 16
+        },
+        "8": {
+          "mean_best_cdi": 0.002502088224771066,
+          "mean_rel_improvement": 0.6610673455891104,
+          "n": 16
+        }
+      },
+      "trials": 16
+    },
+    "SOBOL_BO": {
+      "marks": {
+        "11": {
+          "mean_best_cdi": 0.00490976678118822,
+          "mean_rel_improvement": 0.4254968727541733,
+          "n": 16
+        },
+        "16": {
+          "mean_best_cdi": 0.004680757163102113,
+          "mean_rel_improvement": 0.4404088295759803,
+          "n": 16
+        },
+        "32": {
+          "mean_best_cdi": 0.004317745145305655,
+          "mean_rel_improvement": 0.4840960035152666,
+          "n": 16
+        },
+        "48": {
+          "mean_best_cdi": 0.003199087766122887,
+          "mean_rel_improvement": 0.5591846806225144,
+          "n": 16
+        },
+        "5": {
+          "mean_best_cdi": 0.00490976678118822,
+          "mean_rel_improvement": 0.4254968727541733,
+          "n": 16
+        },
+        "64": {
+          "mean_best_cdi": 0.0029816618095849265,
+          "mean_rel_improvement": 0.5836235176995227,
+          "n": 16
+        },
+        "8": {
+          "mean_best_cdi": 0.00490976678118822,
+          "mean_rel_improvement": 0.4254968727541733,
+          "n": 16
+        }
+      },
+      "trials": 16
+    }
+  },
+  "per_trial": [
+    {
+      "arm": "COND_FOMAML_KSHOT_BO",
+      "best_at": {
+        "11": {
+          "best_cdi": 0.004408022667172248,
+          "best_design_id": "a6c73733cdcc9624",
+          "rel_improvement": 0.7041162049290454
+        },
+        "16": {
+          "best_cdi": 0.004408022667172248,
+          "best_design_id": "a6c73733cdcc9624",
+          "rel_improvement": 0.7041162049290454
+        },
+        "32": {
+          "best_cdi": 0.004408022667172248,
+          "best_design_id": "a6c73733cdcc9624",
+          "rel_improvement": 0.7041162049290454
+        },
+        "48": {
+          "best_cdi": 0.004408022667172248,
+          "best_design_id": "a6c73733cdcc9624",
+          "rel_improvement": 0.7041162049290454
+        },
+        "5": {
+          "best_cdi": 0.00746581980052174,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.4988648510486594
+        },
+        "64": {
+          "best_cdi": 0.001815788553992873,
+          "best_design_id": "3c718bcf3b9d21bc",
+          "rel_improvement": 0.8781171402763074
+        },
+        "8": {
+          "best_cdi": 0.004408022667172248,
+          "best_design_id": "a6c73733cdcc9624",
+          "rel_improvement": 0.7041162049290454
+        }
+      },
+      "charged": 64,
+      "inner_solves": 353,
+      "seed": 19,
+      "task_id": "DREAL006-VAL-M170-L0090",
+      "trial_id": "DREAL006-VAL-M170-L0090__COND_FOMAML_KSHOT_BO__s19",
+      "valid": 62,
+      "wall_seconds": 60.217
+    },
+    {
+      "arm": "COND_FOMAML_KSHOT_BO",
+      "best_at": {
+        "11": {
+          "best_cdi": 0.005112042183619001,
+          "best_design_id": "c5da7de2ea4e1dab",
+          "rel_improvement": 0.6568596497662033
+        },
+        "16": {
+          "best_cdi": 0.005112042183619001,
+          "best_design_id": "c5da7de2ea4e1dab",
+          "rel_improvement": 0.6568596497662033
+        },
+        "32": {
+          "best_cdi": 0.005112042183619001,
+          "best_design_id": "c5da7de2ea4e1dab",
+          "rel_improvement": 0.6568596497662033
+        },
+        "48": {
+          "best_cdi": 0.005112042183619001,
+          "best_design_id": "c5da7de2ea4e1dab",
+          "rel_improvement": 0.6568596497662033
+        },
+        "5": {
+          "best_cdi": 0.00746581980052174,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.4988648510486594
+        },
+        "64": {
+          "best_cdi": 0.001815788553992873,
+          "best_design_id": "3c718bcf3b9d21bc",
+          "rel_improvement": 0.8781171402763074
+        },
+        "8": {
+          "best_cdi": 0.005112042183619001,
+          "best_design_id": "c5da7de2ea4e1dab",
+          "rel_improvement": 0.6568596497662033
+        }
+      },
+      "charged": 64,
+      "inner_solves": 352,
+      "seed": 43,
+      "task_id": "DREAL006-VAL-M170-L0090",
+      "trial_id": "DREAL006-VAL-M170-L0090__COND_FOMAML_KSHOT_BO__s43",
+      "valid": 62,
+      "wall_seconds": 60.373
+    },
+    {
+      "arm": "COND_FOMAML_KSHOT_BO",
+      "best_at": {
+        "11": {
+          "best_cdi": 0.003083805786718221,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.7930028431497846
+        },
+        "16": {
+          "best_cdi": 0.003083805786718221,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.7930028431497846
+        },
+        "32": {
+          "best_cdi": 0.003083805786718221,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.7930028431497846
+        },
+        "48": {
+          "best_cdi": 0.003083805786718221,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.7930028431497846
+        },
+        "5": {
+          "best_cdi": 0.00746581980052174,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.4988648510486594
+        },
+        "64": {
+          "best_cdi": 0.001815788553992873,
+          "best_design_id": "3c718bcf3b9d21bc",
+          "rel_improvement": 0.8781171402763074
+        },
+        "8": {
+          "best_cdi": 0.003083805786718221,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.7930028431497846
+        }
+      },
+      "charged": 64,
+      "inner_solves": 351,
+      "seed": 7,
+      "task_id": "DREAL006-VAL-M170-L0090",
+      "trial_id": "DREAL006-VAL-M170-L0090__COND_FOMAML_KSHOT_BO__s7",
+      "valid": 63,
+      "wall_seconds": 37.953
+    },
+    {
+      "arm": "COND_FOMAML_KSHOT_BO",
+      "best_at": {
+        "11": {
+          "best_cdi": 0.0024194775004022047,
+          "best_design_id": "2c38538e6bd48615",
+          "rel_improvement": 0.8375951670486685
+        },
+        "16": {
+          "best_cdi": 0.0024194775004022047,
+          "best_design_id": "2c38538e6bd48615",
+          "rel_improvement": 0.8375951670486685
+        },
+        "32": {
+          "best_cdi": 0.0024194775004022047,
+          "best_design_id": "2c38538e6bd48615",
+          "rel_improvement": 0.8375951670486685
+        },
+        "48": {
+          "best_cdi": 0.0024194775004022047,
+          "best_design_id": "2c38538e6bd48615",
+          "rel_improvement": 0.8375951670486685
+        },
+        "5": {
+          "best_cdi": 0.00746581980052174,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.4988648510486594
+        },
+        "64": {
+          "best_cdi": 0.001815788553992873,
+          "best_design_id": "3c718bcf3b9d21bc",
+          "rel_improvement": 0.8781171402763074
+        },
+        "8": {
+          "best_cdi": 0.0024194775004022047,
+          "best_design_id": "2c38538e6bd48615",
+          "rel_improvement": 0.8375951670486685
+        }
+      },
+      "charged": 64,
+      "inner_solves": 351,
+      "seed": 71,
+      "task_id": "DREAL006-VAL-M170-L0090",
+      "trial_id": "DREAL006-VAL-M170-L0090__COND_FOMAML_KSHOT_BO__s71",
+      "valid": 64,
+      "wall_seconds": 60.131
+    },
+    {
+      "arm": "COND_SUPERVISED_KSHOT_BO",
+      "best_at": {
+        "11": {
+          "best_cdi": 0.005623339120014445,
+          "best_design_id": "04965f63c2ad1e2e",
+          "rel_improvement": 0.622539391144238
+        },
+        "16": {
+          "best_cdi": 0.005623339120014445,
+          "best_design_id": "04965f63c2ad1e2e",
+          "rel_improvement": 0.622539391144238
+        },
+        "32": {
+          "best_cdi": 0.005623339120014445,
+          "best_design_id": "04965f63c2ad1e2e",
+          "rel_improvement": 0.622539391144238
+        },
+        "48": {
+          "best_cdi": 0.005623339120014445,
+          "best_design_id": "04965f63c2ad1e2e",
+          "rel_improvement": 0.622539391144238
+        },
+        "5": {
+          "best_cdi": 0.00746581980052174,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.4988648510486594
+        },
+        "64": {
+          "best_cdi": 0.001815788553992873,
+          "best_design_id": "3c718bcf3b9d21bc",
+          "rel_improvement": 0.8781171402763074
+        },
+        "8": {
+          "best_cdi": 0.005623339120014445,
+          "best_design_id": "04965f63c2ad1e2e",
+          "rel_improvement": 0.622539391144238
+        }
+      },
+      "charged": 64,
+      "inner_solves": 353,
+      "seed": 19,
+      "task_id": "DREAL006-VAL-M170-L0090",
+      "trial_id": "DREAL006-VAL-M170-L0090__COND_SUPERVISED_KSHOT_BO__s19",
+      "valid": 62,
+      "wall_seconds": 62.769
+    },
+    {
+      "arm": "COND_SUPERVISED_KSHOT_BO",
+      "best_at": {
+        "11": {
+          "best_cdi": 0.0008119485928427949,
+          "best_design_id": "f10c5f8e9056bd54",
+          "rel_improvement": 0.9454988213100629
+        },
+        "16": {
+          "best_cdi": 0.0008119485928427949,
+          "best_design_id": "f10c5f8e9056bd54",
+          "rel_improvement": 0.9454988213100629
+        },
+        "32": {
+          "best_cdi": 0.0008119485928427949,
+          "best_design_id": "f10c5f8e9056bd54",
+          "rel_improvement": 0.9454988213100629
+        },
+        "48": {
+          "best_cdi": 0.0008119485928427949,
+          "best_design_id": "f10c5f8e9056bd54",
+          "rel_improvement": 0.9454988213100629
+        },
+        "5": {
+          "best_cdi": 0.00746581980052174,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.4988648510486594
+        },
+        "64": {
+          "best_cdi": 0.0008119485928427949,
+          "best_design_id": "f10c5f8e9056bd54",
+          "rel_improvement": 0.9454988213100629
+        },
+        "8": {
+          "best_cdi": 0.0008119485928427949,
+          "best_design_id": "f10c5f8e9056bd54",
+          "rel_improvement": 0.9454988213100629
+        }
+      },
+      "charged": 64,
+      "inner_solves": 352,
+      "seed": 43,
+      "task_id": "DREAL006-VAL-M170-L0090",
+      "trial_id": "DREAL006-VAL-M170-L0090__COND_SUPERVISED_KSHOT_BO__s43",
+      "valid": 63,
+      "wall_seconds": 62.29
+    },
+    {
+      "arm": "COND_SUPERVISED_KSHOT_BO",
+      "best_at": {
+        "11": {
+          "best_cdi": 0.003083805786718221,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.7930028431497846
+        },
+        "16": {
+          "best_cdi": 0.003083805786718221,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.7930028431497846
+        },
+        "32": {
+          "best_cdi": 0.003083805786718221,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.7930028431497846
+        },
+        "48": {
+          "best_cdi": 0.003083805786718221,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.7930028431497846
+        },
+        "5": {
+          "best_cdi": 0.00746581980052174,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.4988648510486594
+        },
+        "64": {
+          "best_cdi": 0.001815788553992873,
+          "best_design_id": "3c718bcf3b9d21bc",
+          "rel_improvement": 0.8781171402763074
+        },
+        "8": {
+          "best_cdi": 0.003083805786718221,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.7930028431497846
+        }
+      },
+      "charged": 64,
+      "inner_solves": 351,
+      "seed": 7,
+      "task_id": "DREAL006-VAL-M170-L0090",
+      "trial_id": "DREAL006-VAL-M170-L0090__COND_SUPERVISED_KSHOT_BO__s7",
+      "valid": 63,
+      "wall_seconds": 62.68
+    },
+    {
+      "arm": "COND_SUPERVISED_KSHOT_BO",
+      "best_at": {
+        "11": {
+          "best_cdi": 0.003083805786718221,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.7930028431497846
+        },
+        "16": {
+          "best_cdi": 0.003083805786718221,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.7930028431497846
+        },
+        "32": {
+          "best_cdi": 0.003083805786718221,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.7930028431497846
+        },
+        "48": {
+          "best_cdi": 0.003083805786718221,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.7930028431497846
+        },
+        "5": {
+          "best_cdi": 0.00746581980052174,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.4988648510486594
+        },
+        "64": {
+          "best_cdi": 0.001815788553992873,
+          "best_design_id": "3c718bcf3b9d21bc",
+          "rel_improvement": 0.8781171402763074
+        },
+        "8": {
+          "best_cdi": 0.003083805786718221,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.7930028431497846
+        }
+      },
+      "charged": 64,
+      "inner_solves": 351,
+      "seed": 71,
+      "task_id": "DREAL006-VAL-M170-L0090",
+      "trial_id": "DREAL006-VAL-M170-L0090__COND_SUPERVISED_KSHOT_BO__s71",
+      "valid": 64,
+      "wall_seconds": 62.659
+    },
+    {
+      "arm": "SOBOL_BO",
+      "best_at": {
+        "11": {
+          "best_cdi": 0.00746581980052174,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.4988648510486594
+        },
+        "16": {
+          "best_cdi": 0.006855585388158188,
+          "best_design_id": "45896fd9250c41a5",
+          "rel_improvement": 0.5398261816601578
+        },
+        "32": {
+          "best_cdi": 0.00629041807072395,
+          "best_design_id": "d973eba39fbd5953",
+          "rel_improvement": 0.5777624318473167
+        },
+        "48": {
+          "best_cdi": 0.001815788553992873,
+          "best_design_id": "3c718bcf3b9d21bc",
+          "rel_improvement": 0.8781171402763074
+        },
+        "5": {
+          "best_cdi": 0.00746581980052174,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.4988648510486594
+        },
+        "64": {
+          "best_cdi": 0.001815788553992873,
+          "best_design_id": "3c718bcf3b9d21bc",
+          "rel_improvement": 0.8781171402763074
+        },
+        "8": {
+          "best_cdi": 0.00746581980052174,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.4988648510486594
+        }
+      },
+      "charged": 64,
+      "inner_solves": 353,
+      "seed": 19,
+      "task_id": "DREAL006-VAL-M170-L0090",
+      "trial_id": "DREAL006-VAL-M170-L0090__SOBOL_BO__s19",
+      "valid": 64,
+      "wall_seconds": 55.643
+    },
+    {
+      "arm": "SOBOL_BO",
+      "best_at": {
+        "11": {
+          "best_cdi": 0.00746581980052174,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.4988648510486594
+        },
+        "16": {
+          "best_cdi": 0.006855585388158188,
+          "best_design_id": "45896fd9250c41a5",
+          "rel_improvement": 0.5398261816601578
+        },
+        "32": {
+          "best_cdi": 0.00629041807072395,
+          "best_design_id": "d973eba39fbd5953",
+          "rel_improvement": 0.5777624318473167
+        },
+        "48": {
+          "best_cdi": 0.001815788553992873,
+          "best_design_id": "3c718bcf3b9d21bc",
+          "rel_improvement": 0.8781171402763074
+        },
+        "5": {
+          "best_cdi": 0.00746581980052174,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.4988648510486594
+        },
+        "64": {
+          "best_cdi": 0.001815788553992873,
+          "best_design_id": "3c718bcf3b9d21bc",
+          "rel_improvement": 0.8781171402763074
+        },
+        "8": {
+          "best_cdi": 0.00746581980052174,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.4988648510486594
+        }
+      },
+      "charged": 64,
+      "inner_solves": 353,
+      "seed": 43,
+      "task_id": "DREAL006-VAL-M170-L0090",
+      "trial_id": "DREAL006-VAL-M170-L0090__SOBOL_BO__s43",
+      "valid": 64,
+      "wall_seconds": 56.623
+    },
+    {
+      "arm": "SOBOL_BO",
+      "best_at": {
+        "11": {
+          "best_cdi": 0.00746581980052174,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.4988648510486594
+        },
+        "16": {
+          "best_cdi": 0.006855585388158188,
+          "best_design_id": "45896fd9250c41a5",
+          "rel_improvement": 0.5398261816601578
+        },
+        "32": {
+          "best_cdi": 0.00629041807072395,
+          "best_design_id": "d973eba39fbd5953",
+          "rel_improvement": 0.5777624318473167
+        },
+        "48": {
+          "best_cdi": 0.001815788553992873,
+          "best_design_id": "3c718bcf3b9d21bc",
+          "rel_improvement": 0.8781171402763074
+        },
+        "5": {
+          "best_cdi": 0.00746581980052174,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.4988648510486594
+        },
+        "64": {
+          "best_cdi": 0.001815788553992873,
+          "best_design_id": "3c718bcf3b9d21bc",
+          "rel_improvement": 0.8781171402763074
+        },
+        "8": {
+          "best_cdi": 0.00746581980052174,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.4988648510486594
+        }
+      },
+      "charged": 64,
+      "inner_solves": 353,
+      "seed": 7,
+      "task_id": "DREAL006-VAL-M170-L0090",
+      "trial_id": "DREAL006-VAL-M170-L0090__SOBOL_BO__s7",
+      "valid": 64,
+      "wall_seconds": 35.24
+    },
+    {
+      "arm": "SOBOL_BO",
+      "best_at": {
+        "11": {
+          "best_cdi": 0.00746581980052174,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.4988648510486594
+        },
+        "16": {
+          "best_cdi": 0.006855585388158188,
+          "best_design_id": "45896fd9250c41a5",
+          "rel_improvement": 0.5398261816601578
+        },
+        "32": {
+          "best_cdi": 0.00629041807072395,
+          "best_design_id": "d973eba39fbd5953",
+          "rel_improvement": 0.5777624318473167
+        },
+        "48": {
+          "best_cdi": 0.001815788553992873,
+          "best_design_id": "3c718bcf3b9d21bc",
+          "rel_improvement": 0.8781171402763074
+        },
+        "5": {
+          "best_cdi": 0.00746581980052174,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.4988648510486594
+        },
+        "64": {
+          "best_cdi": 0.001815788553992873,
+          "best_design_id": "3c718bcf3b9d21bc",
+          "rel_improvement": 0.8781171402763074
+        },
+        "8": {
+          "best_cdi": 0.00746581980052174,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.4988648510486594
+        }
+      },
+      "charged": 64,
+      "inner_solves": 353,
+      "seed": 71,
+      "task_id": "DREAL006-VAL-M170-L0090",
+      "trial_id": "DREAL006-VAL-M170-L0090__SOBOL_BO__s71",
+      "valid": 64,
+      "wall_seconds": 55.318
+    },
+    {
+      "arm": "COND_FOMAML_KSHOT_BO",
+      "best_at": {
+        "11": {
+          "best_cdi": 0.004806310047714366,
+          "best_design_id": "81d218bc184a0b74",
+          "rel_improvement": 0.7063050872027101
+        },
+        "16": {
+          "best_cdi": 0.004806310047714366,
+          "best_design_id": "81d218bc184a0b74",
+          "rel_improvement": 0.7063050872027101
+        },
+        "32": {
+          "best_cdi": 0.004806310047714366,
+          "best_design_id": "81d218bc184a0b74",
+          "rel_improvement": 0.7063050872027101
+        },
+        "48": {
+          "best_cdi": 0.004806310047714366,
+          "best_design_id": "81d218bc184a0b74",
+          "rel_improvement": 0.7063050872027101
+        },
+        "5": {
+          "best_cdi": 0.006698182605616663,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.5907001136573743
+        },
+        "64": {
+          "best_cdi": 0.004806310047714366,
+          "best_design_id": "81d218bc184a0b74",
+          "rel_improvement": 0.7063050872027101
+        },
+        "8": {
+          "best_cdi": 0.004806310047714366,
+          "best_design_id": "81d218bc184a0b74",
+          "rel_improvement": 0.7063050872027101
+        }
+      },
+      "charged": 64,
+      "inner_solves": 376,
+      "seed": 19,
+      "task_id": "DREAL006-VAL-M190-L0108",
+      "trial_id": "DREAL006-VAL-M190-L0108__COND_FOMAML_KSHOT_BO__s19",
+      "valid": 63,
+      "wall_seconds": 53.62
+    },
+    {
+      "arm": "COND_FOMAML_KSHOT_BO",
+      "best_at": {
+        "11": {
+          "best_cdi": 0.005274338529303413,
+          "best_design_id": "c5da7de2ea4e1dab",
+          "rel_improvement": 0.6777056870969447
+        },
+        "16": {
+          "best_cdi": 0.005274338529303413,
+          "best_design_id": "c5da7de2ea4e1dab",
+          "rel_improvement": 0.6777056870969447
+        },
+        "32": {
+          "best_cdi": 0.005274338529303413,
+          "best_design_id": "c5da7de2ea4e1dab",
+          "rel_improvement": 0.6777056870969447
+        },
+        "48": {
+          "best_cdi": 0.005274338529303413,
+          "best_design_id": "c5da7de2ea4e1dab",
+          "rel_improvement": 0.6777056870969447
+        },
+        "5": {
+          "best_cdi": 0.006698182605616663,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.5907001136573743
+        },
+        "64": {
+          "best_cdi": 0.005274338529303413,
+          "best_design_id": "c5da7de2ea4e1dab",
+          "rel_improvement": 0.6777056870969447
+        },
+        "8": {
+          "best_cdi": 0.005274338529303413,
+          "best_design_id": "c5da7de2ea4e1dab",
+          "rel_improvement": 0.6777056870969447
+        }
+      },
+      "charged": 64,
+      "inner_solves": 366,
+      "seed": 43,
+      "task_id": "DREAL006-VAL-M190-L0108",
+      "trial_id": "DREAL006-VAL-M190-L0108__COND_FOMAML_KSHOT_BO__s43",
+      "valid": 64,
+      "wall_seconds": 54.8
+    },
+    {
+      "arm": "COND_FOMAML_KSHOT_BO",
+      "best_at": {
+        "11": {
+          "best_cdi": 0.004083971189895355,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.7504444052556798
+        },
+        "16": {
+          "best_cdi": 0.004083971189895355,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.7504444052556798
+        },
+        "32": {
+          "best_cdi": 0.004083971189895355,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.7504444052556798
+        },
+        "48": {
+          "best_cdi": 0.004083971189895355,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.7504444052556798
+        },
+        "5": {
+          "best_cdi": 0.006698182605616663,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.5907001136573743
+        },
+        "64": {
+          "best_cdi": 0.004083971189895355,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.7504444052556798
+        },
+        "8": {
+          "best_cdi": 0.004083971189895355,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.7504444052556798
+        }
+      },
+      "charged": 64,
+      "inner_solves": 366,
+      "seed": 7,
+      "task_id": "DREAL006-VAL-M190-L0108",
+      "trial_id": "DREAL006-VAL-M190-L0108__COND_FOMAML_KSHOT_BO__s7",
+      "valid": 64,
+      "wall_seconds": 52.597
+    },
+    {
+      "arm": "COND_FOMAML_KSHOT_BO",
+      "best_at": {
+        "11": {
+          "best_cdi": 0.004083971189895355,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.7504444052556798
+        },
+        "16": {
+          "best_cdi": 0.004083971189895355,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.7504444052556798
+        },
+        "32": {
+          "best_cdi": 0.004083971189895355,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.7504444052556798
+        },
+        "48": {
+          "best_cdi": 0.004083971189895355,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.7504444052556798
+        },
+        "5": {
+          "best_cdi": 0.006698182605616663,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.5907001136573743
+        },
+        "64": {
+          "best_cdi": 0.004083971189895355,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.7504444052556798
+        },
+        "8": {
+          "best_cdi": 0.004083971189895355,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.7504444052556798
+        }
+      },
+      "charged": 64,
+      "inner_solves": 366,
+      "seed": 71,
+      "task_id": "DREAL006-VAL-M190-L0108",
+      "trial_id": "DREAL006-VAL-M190-L0108__COND_FOMAML_KSHOT_BO__s71",
+      "valid": 63,
+      "wall_seconds": 54.798
+    },
+    {
+      "arm": "COND_SUPERVISED_KSHOT_BO",
+      "best_at": {
+        "11": {
+          "best_cdi": 0.002027367170030676,
+          "best_design_id": "3b8bf86d3d34c61f",
+          "rel_improvement": 0.8761154777159242
+        },
+        "16": {
+          "best_cdi": 0.002027367170030676,
+          "best_design_id": "3b8bf86d3d34c61f",
+          "rel_improvement": 0.8761154777159242
+        },
+        "32": {
+          "best_cdi": 0.002027367170030676,
+          "best_design_id": "3b8bf86d3d34c61f",
+          "rel_improvement": 0.8761154777159242
+        },
+        "48": {
+          "best_cdi": 0.002027367170030676,
+          "best_design_id": "3b8bf86d3d34c61f",
+          "rel_improvement": 0.8761154777159242
+        },
+        "5": {
+          "best_cdi": 0.006698182605616663,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.5907001136573743
+        },
+        "64": {
+          "best_cdi": 0.002027367170030676,
+          "best_design_id": "3b8bf86d3d34c61f",
+          "rel_improvement": 0.8761154777159242
+        },
+        "8": {
+          "best_cdi": 0.002027367170030676,
+          "best_design_id": "3b8bf86d3d34c61f",
+          "rel_improvement": 0.8761154777159242
+        }
+      },
+      "charged": 64,
+      "inner_solves": 376,
+      "seed": 19,
+      "task_id": "DREAL006-VAL-M190-L0108",
+      "trial_id": "DREAL006-VAL-M190-L0108__COND_SUPERVISED_KSHOT_BO__s19",
+      "valid": 63,
+      "wall_seconds": 65.438
+    },
+    {
+      "arm": "COND_SUPERVISED_KSHOT_BO",
+      "best_at": {
+        "11": {
+          "best_cdi": 0.002181463227397582,
+          "best_design_id": "f10c5f8e9056bd54",
+          "rel_improvement": 0.8666992670092717
+        },
+        "16": {
+          "best_cdi": 0.002181463227397582,
+          "best_design_id": "f10c5f8e9056bd54",
+          "rel_improvement": 0.8666992670092717
+        },
+        "32": {
+          "best_cdi": 0.002181463227397582,
+          "best_design_id": "f10c5f8e9056bd54",
+          "rel_improvement": 0.8666992670092717
+        },
+        "48": {
+          "best_cdi": 0.002181463227397582,
+          "best_design_id": "f10c5f8e9056bd54",
+          "rel_improvement": 0.8666992670092717
+        },
+        "5": {
+          "best_cdi": 0.006698182605616663,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.5907001136573743
+        },
+        "64": {
+          "best_cdi": 0.002181463227397582,
+          "best_design_id": "f10c5f8e9056bd54",
+          "rel_improvement": 0.8666992670092717
+        },
+        "8": {
+          "best_cdi": 0.002181463227397582,
+          "best_design_id": "f10c5f8e9056bd54",
+          "rel_improvement": 0.8666992670092717
+        }
+      },
+      "charged": 64,
+      "inner_solves": 367,
+      "seed": 43,
+      "task_id": "DREAL006-VAL-M190-L0108",
+      "trial_id": "DREAL006-VAL-M190-L0108__COND_SUPERVISED_KSHOT_BO__s43",
+      "valid": 64,
+      "wall_seconds": 64.525
+    },
+    {
+      "arm": "COND_SUPERVISED_KSHOT_BO",
+      "best_at": {
+        "11": {
+          "best_cdi": 0.004083971189895355,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.7504444052556798
+        },
+        "16": {
+          "best_cdi": 0.004083971189895355,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.7504444052556798
+        },
+        "32": {
+          "best_cdi": 0.004083971189895355,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.7504444052556798
+        },
+        "48": {
+          "best_cdi": 0.004083971189895355,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.7504444052556798
+        },
+        "5": {
+          "best_cdi": 0.006698182605616663,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.5907001136573743
+        },
+        "64": {
+          "best_cdi": 0.004083971189895355,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.7504444052556798
+        },
+        "8": {
+          "best_cdi": 0.004083971189895355,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.7504444052556798
+        }
+      },
+      "charged": 64,
+      "inner_solves": 366,
+      "seed": 7,
+      "task_id": "DREAL006-VAL-M190-L0108",
+      "trial_id": "DREAL006-VAL-M190-L0108__COND_SUPERVISED_KSHOT_BO__s7",
+      "valid": 64,
+      "wall_seconds": 64.324
+    },
+    {
+      "arm": "COND_SUPERVISED_KSHOT_BO",
+      "best_at": {
+        "11": {
+          "best_cdi": 0.004083971189895355,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.7504444052556798
+        },
+        "16": {
+          "best_cdi": 0.004083971189895355,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.7504444052556798
+        },
+        "32": {
+          "best_cdi": 0.004083971189895355,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.7504444052556798
+        },
+        "48": {
+          "best_cdi": 0.004083971189895355,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.7504444052556798
+        },
+        "5": {
+          "best_cdi": 0.006698182605616663,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.5907001136573743
+        },
+        "64": {
+          "best_cdi": 0.004083971189895355,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.7504444052556798
+        },
+        "8": {
+          "best_cdi": 0.004083971189895355,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.7504444052556798
+        }
+      },
+      "charged": 64,
+      "inner_solves": 366,
+      "seed": 71,
+      "task_id": "DREAL006-VAL-M190-L0108",
+      "trial_id": "DREAL006-VAL-M190-L0108__COND_SUPERVISED_KSHOT_BO__s71",
+      "valid": 63,
+      "wall_seconds": 64.437
+    },
+    {
+      "arm": "SOBOL_BO",
+      "best_at": {
+        "11": {
+          "best_cdi": 0.006698182605616663,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.5907001136573743
+        },
+        "16": {
+          "best_cdi": 0.006392378545635787,
+          "best_design_id": "45896fd9250c41a5",
+          "rel_improvement": 0.6093866103331039
+        },
+        "32": {
+          "best_cdi": 0.005940987545993069,
+          "best_design_id": "d973eba39fbd5953",
+          "rel_improvement": 0.6369693586288768
+        },
+        "48": {
+          "best_cdi": 0.005940987545993069,
+          "best_design_id": "d973eba39fbd5953",
+          "rel_improvement": 0.6369693586288768
+        },
+        "5": {
+          "best_cdi": 0.006698182605616663,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.5907001136573743
+        },
+        "64": {
+          "best_cdi": 0.005292525707123127,
+          "best_design_id": "de29f784ca2ff9f8",
+          "rel_improvement": 0.6765943393996963
+        },
+        "8": {
+          "best_cdi": 0.006698182605616663,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.5907001136573743
+        }
+      },
+      "charged": 64,
+      "inner_solves": 367,
+      "seed": 19,
+      "task_id": "DREAL006-VAL-M190-L0108",
+      "trial_id": "DREAL006-VAL-M190-L0108__SOBOL_BO__s19",
+      "valid": 64,
+      "wall_seconds": 54.397
+    },
+    {
+      "arm": "SOBOL_BO",
+      "best_at": {
+        "11": {
+          "best_cdi": 0.006698182605616663,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.5907001136573743
+        },
+        "16": {
+          "best_cdi": 0.006392378545635787,
+          "best_design_id": "45896fd9250c41a5",
+          "rel_improvement": 0.6093866103331039
+        },
+        "32": {
+          "best_cdi": 0.005940987545993069,
+          "best_design_id": "d973eba39fbd5953",
+          "rel_improvement": 0.6369693586288768
+        },
+        "48": {
+          "best_cdi": 0.005940987545993069,
+          "best_design_id": "d973eba39fbd5953",
+          "rel_improvement": 0.6369693586288768
+        },
+        "5": {
+          "best_cdi": 0.006698182605616663,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.5907001136573743
+        },
+        "64": {
+          "best_cdi": 0.005292525707123127,
+          "best_design_id": "de29f784ca2ff9f8",
+          "rel_improvement": 0.6765943393996963
+        },
+        "8": {
+          "best_cdi": 0.006698182605616663,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.5907001136573743
+        }
+      },
+      "charged": 64,
+      "inner_solves": 367,
+      "seed": 43,
+      "task_id": "DREAL006-VAL-M190-L0108",
+      "trial_id": "DREAL006-VAL-M190-L0108__SOBOL_BO__s43",
+      "valid": 64,
+      "wall_seconds": 53.676
+    },
+    {
+      "arm": "SOBOL_BO",
+      "best_at": {
+        "11": {
+          "best_cdi": 0.006698182605616663,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.5907001136573743
+        },
+        "16": {
+          "best_cdi": 0.006392378545635787,
+          "best_design_id": "45896fd9250c41a5",
+          "rel_improvement": 0.6093866103331039
+        },
+        "32": {
+          "best_cdi": 0.005940987545993069,
+          "best_design_id": "d973eba39fbd5953",
+          "rel_improvement": 0.6369693586288768
+        },
+        "48": {
+          "best_cdi": 0.005940987545993069,
+          "best_design_id": "d973eba39fbd5953",
+          "rel_improvement": 0.6369693586288768
+        },
+        "5": {
+          "best_cdi": 0.006698182605616663,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.5907001136573743
+        },
+        "64": {
+          "best_cdi": 0.005292525707123127,
+          "best_design_id": "de29f784ca2ff9f8",
+          "rel_improvement": 0.6765943393996963
+        },
+        "8": {
+          "best_cdi": 0.006698182605616663,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.5907001136573743
+        }
+      },
+      "charged": 64,
+      "inner_solves": 367,
+      "seed": 7,
+      "task_id": "DREAL006-VAL-M190-L0108",
+      "trial_id": "DREAL006-VAL-M190-L0108__SOBOL_BO__s7",
+      "valid": 64,
+      "wall_seconds": 53.788
+    },
+    {
+      "arm": "SOBOL_BO",
+      "best_at": {
+        "11": {
+          "best_cdi": 0.006698182605616663,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.5907001136573743
+        },
+        "16": {
+          "best_cdi": 0.006392378545635787,
+          "best_design_id": "45896fd9250c41a5",
+          "rel_improvement": 0.6093866103331039
+        },
+        "32": {
+          "best_cdi": 0.005940987545993069,
+          "best_design_id": "d973eba39fbd5953",
+          "rel_improvement": 0.6369693586288768
+        },
+        "48": {
+          "best_cdi": 0.005940987545993069,
+          "best_design_id": "d973eba39fbd5953",
+          "rel_improvement": 0.6369693586288768
+        },
+        "5": {
+          "best_cdi": 0.006698182605616663,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.5907001136573743
+        },
+        "64": {
+          "best_cdi": 0.005292525707123127,
+          "best_design_id": "de29f784ca2ff9f8",
+          "rel_improvement": 0.6765943393996963
+        },
+        "8": {
+          "best_cdi": 0.006698182605616663,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.5907001136573743
+        }
+      },
+      "charged": 64,
+      "inner_solves": 367,
+      "seed": 71,
+      "task_id": "DREAL006-VAL-M190-L0108",
+      "trial_id": "DREAL006-VAL-M190-L0108__SOBOL_BO__s71",
+      "valid": 64,
+      "wall_seconds": 54.065
+    },
+    {
+      "arm": "COND_FOMAML_KSHOT_BO",
+      "best_at": {
+        "11": {
+          "best_cdi": 0.001835453242547125,
+          "best_design_id": "81d218bc184a0b74",
+          "rel_improvement": 0.5537450748123143
+        },
+        "16": {
+          "best_cdi": 0.001835453242547125,
+          "best_design_id": "81d218bc184a0b74",
+          "rel_improvement": 0.5537450748123143
+        },
+        "32": {
+          "best_cdi": 0.001835453242547125,
+          "best_design_id": "81d218bc184a0b74",
+          "rel_improvement": 0.5537450748123143
+        },
+        "48": {
+          "best_cdi": 0.001835453242547125,
+          "best_design_id": "81d218bc184a0b74",
+          "rel_improvement": 0.5537450748123143
+        },
+        "5": {
+          "best_cdi": 0.0027197768357922346,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.3387389118671585
+        },
+        "64": {
+          "best_cdi": 0.001835453242547125,
+          "best_design_id": "81d218bc184a0b74",
+          "rel_improvement": 0.5537450748123143
+        },
+        "8": {
+          "best_cdi": 0.001835453242547125,
+          "best_design_id": "81d218bc184a0b74",
+          "rel_improvement": 0.5537450748123143
+        }
+      },
+      "charged": 64,
+      "inner_solves": 332,
+      "seed": 19,
+      "task_id": "DREAL006-VAL-M210-L0090",
+      "trial_id": "DREAL006-VAL-M210-L0090__COND_FOMAML_KSHOT_BO__s19",
+      "valid": 62,
+      "wall_seconds": 50.972
+    },
+    {
+      "arm": "COND_FOMAML_KSHOT_BO",
+      "best_at": {
+        "11": {
+          "best_cdi": 0.0022701109891655334,
+          "best_design_id": "f94a3ddaac7e7fea",
+          "rel_improvement": 0.44806645783470656
+        },
+        "16": {
+          "best_cdi": 0.0022701109891655334,
+          "best_design_id": "f94a3ddaac7e7fea",
+          "rel_improvement": 0.44806645783470656
+        },
+        "32": {
+          "best_cdi": 0.0022701109891655334,
+          "best_design_id": "f94a3ddaac7e7fea",
+          "rel_improvement": 0.44806645783470656
+        },
+        "48": {
+          "best_cdi": 0.0022701109891655334,
+          "best_design_id": "f94a3ddaac7e7fea",
+          "rel_improvement": 0.44806645783470656
+        },
+        "5": {
+          "best_cdi": 0.0027197768357922346,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.3387389118671585
+        },
+        "64": {
+          "best_cdi": 0.0022701109891655334,
+          "best_design_id": "f94a3ddaac7e7fea",
+          "rel_improvement": 0.44806645783470656
+        },
+        "8": {
+          "best_cdi": 0.0022701109891655334,
+          "best_design_id": "f94a3ddaac7e7fea",
+          "rel_improvement": 0.44806645783470656
+        }
+      },
+      "charged": 64,
+      "inner_solves": 333,
+      "seed": 43,
+      "task_id": "DREAL006-VAL-M210-L0090",
+      "trial_id": "DREAL006-VAL-M210-L0090__COND_FOMAML_KSHOT_BO__s43",
+      "valid": 63,
+      "wall_seconds": 49.009
+    },
+    {
+      "arm": "COND_FOMAML_KSHOT_BO",
+      "best_at": {
+        "11": {
+          "best_cdi": 0.001326793992138824,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.6774157249139623
+        },
+        "16": {
+          "best_cdi": 0.001326793992138824,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.6774157249139623
+        },
+        "32": {
+          "best_cdi": 0.001326793992138824,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.6774157249139623
+        },
+        "48": {
+          "best_cdi": 0.001326793992138824,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.6774157249139623
+        },
+        "5": {
+          "best_cdi": 0.0027197768357922346,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.3387389118671585
+        },
+        "64": {
+          "best_cdi": 0.001326793992138824,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.6774157249139623
+        },
+        "8": {
+          "best_cdi": 0.001326793992138824,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.6774157249139623
+        }
+      },
+      "charged": 64,
+      "inner_solves": 332,
+      "seed": 7,
+      "task_id": "DREAL006-VAL-M210-L0090",
+      "trial_id": "DREAL006-VAL-M210-L0090__COND_FOMAML_KSHOT_BO__s7",
+      "valid": 63,
+      "wall_seconds": 51.483
+    },
+    {
+      "arm": "COND_FOMAML_KSHOT_BO",
+      "best_at": {
+        "11": {
+          "best_cdi": 0.0006460364662525697,
+          "best_design_id": "a6c73733cdcc9624",
+          "rel_improvement": 0.8429287392164907
+        },
+        "16": {
+          "best_cdi": 0.0006460364662525697,
+          "best_design_id": "a6c73733cdcc9624",
+          "rel_improvement": 0.8429287392164907
+        },
+        "32": {
+          "best_cdi": 0.0006460364662525697,
+          "best_design_id": "a6c73733cdcc9624",
+          "rel_improvement": 0.8429287392164907
+        },
+        "48": {
+          "best_cdi": 0.0006460364662525697,
+          "best_design_id": "a6c73733cdcc9624",
+          "rel_improvement": 0.8429287392164907
+        },
+        "5": {
+          "best_cdi": 0.0027197768357922346,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.3387389118671585
+        },
+        "64": {
+          "best_cdi": 0.0006460364662525697,
+          "best_design_id": "a6c73733cdcc9624",
+          "rel_improvement": 0.8429287392164907
+        },
+        "8": {
+          "best_cdi": 0.0006460364662525697,
+          "best_design_id": "a6c73733cdcc9624",
+          "rel_improvement": 0.8429287392164907
+        }
+      },
+      "charged": 64,
+      "inner_solves": 332,
+      "seed": 71,
+      "task_id": "DREAL006-VAL-M210-L0090",
+      "trial_id": "DREAL006-VAL-M210-L0090__COND_FOMAML_KSHOT_BO__s71",
+      "valid": 63,
+      "wall_seconds": 48.759
+    },
+    {
+      "arm": "COND_SUPERVISED_KSHOT_BO",
+      "best_at": {
+        "11": {
+          "best_cdi": 0.001835453242547125,
+          "best_design_id": "81d218bc184a0b74",
+          "rel_improvement": 0.5537450748123143
+        },
+        "16": {
+          "best_cdi": 0.001835453242547125,
+          "best_design_id": "81d218bc184a0b74",
+          "rel_improvement": 0.5537450748123143
+        },
+        "32": {
+          "best_cdi": 0.001835453242547125,
+          "best_design_id": "81d218bc184a0b74",
+          "rel_improvement": 0.5537450748123143
+        },
+        "48": {
+          "best_cdi": 0.001835453242547125,
+          "best_design_id": "81d218bc184a0b74",
+          "rel_improvement": 0.5537450748123143
+        },
+        "5": {
+          "best_cdi": 0.0027197768357922346,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.3387389118671585
+        },
+        "64": {
+          "best_cdi": 0.001835453242547125,
+          "best_design_id": "81d218bc184a0b74",
+          "rel_improvement": 0.5537450748123143
+        },
+        "8": {
+          "best_cdi": 0.001835453242547125,
+          "best_design_id": "81d218bc184a0b74",
+          "rel_improvement": 0.5537450748123143
+        }
+      },
+      "charged": 64,
+      "inner_solves": 332,
+      "seed": 19,
+      "task_id": "DREAL006-VAL-M210-L0090",
+      "trial_id": "DREAL006-VAL-M210-L0090__COND_SUPERVISED_KSHOT_BO__s19",
+      "valid": 63,
+      "wall_seconds": 59.531
+    },
+    {
+      "arm": "COND_SUPERVISED_KSHOT_BO",
+      "best_at": {
+        "11": {
+          "best_cdi": 0.0027197768357922346,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.3387389118671585
+        },
+        "16": {
+          "best_cdi": 0.0027197768357922346,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.3387389118671585
+        },
+        "32": {
+          "best_cdi": 0.002447822174132038,
+          "best_design_id": "d973eba39fbd5953",
+          "rel_improvement": 0.40485942334649005
+        },
+        "48": {
+          "best_cdi": 0.002447822174132038,
+          "best_design_id": "d973eba39fbd5953",
+          "rel_improvement": 0.40485942334649005
+        },
+        "5": {
+          "best_cdi": 0.0027197768357922346,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.3387389118671585
+        },
+        "64": {
+          "best_cdi": 0.0024385033243824474,
+          "best_design_id": "de29f784ca2ff9f8",
+          "rel_improvement": 0.40712512126863803
+        },
+        "8": {
+          "best_cdi": 0.0027197768357922346,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.3387389118671585
+        }
+      },
+      "charged": 64,
+      "inner_solves": 332,
+      "seed": 43,
+      "task_id": "DREAL006-VAL-M210-L0090",
+      "trial_id": "DREAL006-VAL-M210-L0090__COND_SUPERVISED_KSHOT_BO__s43",
+      "valid": 63,
+      "wall_seconds": 44.885
+    },
+    {
+      "arm": "COND_SUPERVISED_KSHOT_BO",
+      "best_at": {
+        "11": {
+          "best_cdi": 0.001326793992138824,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.6774157249139623
+        },
+        "16": {
+          "best_cdi": 0.001326793992138824,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.6774157249139623
+        },
+        "32": {
+          "best_cdi": 0.001326793992138824,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.6774157249139623
+        },
+        "48": {
+          "best_cdi": 0.001326793992138824,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.6774157249139623
+        },
+        "5": {
+          "best_cdi": 0.0027197768357922346,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.3387389118671585
+        },
+        "64": {
+          "best_cdi": 0.001326793992138824,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.6774157249139623
+        },
+        "8": {
+          "best_cdi": 0.001326793992138824,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.6774157249139623
+        }
+      },
+      "charged": 64,
+      "inner_solves": 332,
+      "seed": 7,
+      "task_id": "DREAL006-VAL-M210-L0090",
+      "trial_id": "DREAL006-VAL-M210-L0090__COND_SUPERVISED_KSHOT_BO__s7",
+      "valid": 62,
+      "wall_seconds": 59.898
+    },
+    {
+      "arm": "COND_SUPERVISED_KSHOT_BO",
+      "best_at": {
+        "11": {
+          "best_cdi": 0.001326793992138824,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.6774157249139623
+        },
+        "16": {
+          "best_cdi": 0.001326793992138824,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.6774157249139623
+        },
+        "32": {
+          "best_cdi": 0.001326793992138824,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.6774157249139623
+        },
+        "48": {
+          "best_cdi": 0.001326793992138824,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.6774157249139623
+        },
+        "5": {
+          "best_cdi": 0.0027197768357922346,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.3387389118671585
+        },
+        "64": {
+          "best_cdi": 0.001326793992138824,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.6774157249139623
+        },
+        "8": {
+          "best_cdi": 0.001326793992138824,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.6774157249139623
+        }
+      },
+      "charged": 64,
+      "inner_solves": 332,
+      "seed": 71,
+      "task_id": "DREAL006-VAL-M210-L0090",
+      "trial_id": "DREAL006-VAL-M210-L0090__COND_SUPERVISED_KSHOT_BO__s71",
+      "valid": 63,
+      "wall_seconds": 45.098
+    },
+    {
+      "arm": "SOBOL_BO",
+      "best_at": {
+        "11": {
+          "best_cdi": 0.0027197768357922346,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.3387389118671585
+        },
+        "16": {
+          "best_cdi": 0.0027197768357922346,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.3387389118671585
+        },
+        "32": {
+          "best_cdi": 0.002447822174132038,
+          "best_design_id": "d973eba39fbd5953",
+          "rel_improvement": 0.40485942334649005
+        },
+        "48": {
+          "best_cdi": 0.002447822174132038,
+          "best_design_id": "d973eba39fbd5953",
+          "rel_improvement": 0.40485942334649005
+        },
+        "5": {
+          "best_cdi": 0.0027197768357922346,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.3387389118671585
+        },
+        "64": {
+          "best_cdi": 0.0024385033243824474,
+          "best_design_id": "de29f784ca2ff9f8",
+          "rel_improvement": 0.40712512126863803
+        },
+        "8": {
+          "best_cdi": 0.0027197768357922346,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.3387389118671585
+        }
+      },
+      "charged": 64,
+      "inner_solves": 332,
+      "seed": 19,
+      "task_id": "DREAL006-VAL-M210-L0090",
+      "trial_id": "DREAL006-VAL-M210-L0090__SOBOL_BO__s19",
+      "valid": 63,
+      "wall_seconds": 46.74
+    },
+    {
+      "arm": "SOBOL_BO",
+      "best_at": {
+        "11": {
+          "best_cdi": 0.0027197768357922346,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.3387389118671585
+        },
+        "16": {
+          "best_cdi": 0.0027197768357922346,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.3387389118671585
+        },
+        "32": {
+          "best_cdi": 0.002447822174132038,
+          "best_design_id": "d973eba39fbd5953",
+          "rel_improvement": 0.40485942334649005
+        },
+        "48": {
+          "best_cdi": 0.002447822174132038,
+          "best_design_id": "d973eba39fbd5953",
+          "rel_improvement": 0.40485942334649005
+        },
+        "5": {
+          "best_cdi": 0.0027197768357922346,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.3387389118671585
+        },
+        "64": {
+          "best_cdi": 0.0024385033243824474,
+          "best_design_id": "de29f784ca2ff9f8",
+          "rel_improvement": 0.40712512126863803
+        },
+        "8": {
+          "best_cdi": 0.0027197768357922346,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.3387389118671585
+        }
+      },
+      "charged": 64,
+      "inner_solves": 332,
+      "seed": 43,
+      "task_id": "DREAL006-VAL-M210-L0090",
+      "trial_id": "DREAL006-VAL-M210-L0090__SOBOL_BO__s43",
+      "valid": 63,
+      "wall_seconds": 46.866
+    },
+    {
+      "arm": "SOBOL_BO",
+      "best_at": {
+        "11": {
+          "best_cdi": 0.0027197768357922346,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.3387389118671585
+        },
+        "16": {
+          "best_cdi": 0.0027197768357922346,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.3387389118671585
+        },
+        "32": {
+          "best_cdi": 0.002447822174132038,
+          "best_design_id": "d973eba39fbd5953",
+          "rel_improvement": 0.40485942334649005
+        },
+        "48": {
+          "best_cdi": 0.002447822174132038,
+          "best_design_id": "d973eba39fbd5953",
+          "rel_improvement": 0.40485942334649005
+        },
+        "5": {
+          "best_cdi": 0.0027197768357922346,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.3387389118671585
+        },
+        "64": {
+          "best_cdi": 0.0024385033243824474,
+          "best_design_id": "de29f784ca2ff9f8",
+          "rel_improvement": 0.40712512126863803
+        },
+        "8": {
+          "best_cdi": 0.0027197768357922346,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.3387389118671585
+        }
+      },
+      "charged": 64,
+      "inner_solves": 332,
+      "seed": 7,
+      "task_id": "DREAL006-VAL-M210-L0090",
+      "trial_id": "DREAL006-VAL-M210-L0090__SOBOL_BO__s7",
+      "valid": 63,
+      "wall_seconds": 45.991
+    },
+    {
+      "arm": "SOBOL_BO",
+      "best_at": {
+        "11": {
+          "best_cdi": 0.0027197768357922346,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.3387389118671585
+        },
+        "16": {
+          "best_cdi": 0.0027197768357922346,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.3387389118671585
+        },
+        "32": {
+          "best_cdi": 0.002447822174132038,
+          "best_design_id": "d973eba39fbd5953",
+          "rel_improvement": 0.40485942334649005
+        },
+        "48": {
+          "best_cdi": 0.002447822174132038,
+          "best_design_id": "d973eba39fbd5953",
+          "rel_improvement": 0.40485942334649005
+        },
+        "5": {
+          "best_cdi": 0.0027197768357922346,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.3387389118671585
+        },
+        "64": {
+          "best_cdi": 0.0024385033243824474,
+          "best_design_id": "de29f784ca2ff9f8",
+          "rel_improvement": 0.40712512126863803
+        },
+        "8": {
+          "best_cdi": 0.0027197768357922346,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.3387389118671585
+        }
+      },
+      "charged": 64,
+      "inner_solves": 332,
+      "seed": 71,
+      "task_id": "DREAL006-VAL-M210-L0090",
+      "trial_id": "DREAL006-VAL-M210-L0090__SOBOL_BO__s71",
+      "valid": 63,
+      "wall_seconds": 46.763
+    },
+    {
+      "arm": "COND_FOMAML_KSHOT_BO",
+      "best_at": {
+        "11": {
+          "best_cdi": 0.0020438013083663156,
+          "best_design_id": "81d218bc184a0b74",
+          "rel_improvement": 0.46123728546007803
+        },
+        "16": {
+          "best_cdi": 0.0020438013083663156,
+          "best_design_id": "81d218bc184a0b74",
+          "rel_improvement": 0.46123728546007803
+        },
+        "32": {
+          "best_cdi": 0.0020438013083663156,
+          "best_design_id": "81d218bc184a0b74",
+          "rel_improvement": 0.46123728546007803
+        },
+        "48": {
+          "best_cdi": 0.0020438013083663156,
+          "best_design_id": "81d218bc184a0b74",
+          "rel_improvement": 0.46123728546007803
+        },
+        "5": {
+          "best_cdi": 0.002755287882822245,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.2736836144435004
+        },
+        "64": {
+          "best_cdi": 0.0020438013083663156,
+          "best_design_id": "81d218bc184a0b74",
+          "rel_improvement": 0.46123728546007803
+        },
+        "8": {
+          "best_cdi": 0.0020438013083663156,
+          "best_design_id": "81d218bc184a0b74",
+          "rel_improvement": 0.46123728546007803
+        }
+      },
+      "charged": 64,
+      "inner_solves": 332,
+      "seed": 19,
+      "task_id": "DREAL006-VAL-M230-L0108",
+      "trial_id": "DREAL006-VAL-M230-L0108__COND_FOMAML_KSHOT_BO__s19",
+      "valid": 64,
+      "wall_seconds": 49.436
+    },
+    {
+      "arm": "COND_FOMAML_KSHOT_BO",
+      "best_at": {
+        "11": {
+          "best_cdi": 0.002366011277199563,
+          "best_design_id": "f94a3ddaac7e7fea",
+          "rel_improvement": 0.37630010651327295
+        },
+        "16": {
+          "best_cdi": 0.002366011277199563,
+          "best_design_id": "f94a3ddaac7e7fea",
+          "rel_improvement": 0.37630010651327295
+        },
+        "32": {
+          "best_cdi": 0.002366011277199563,
+          "best_design_id": "f94a3ddaac7e7fea",
+          "rel_improvement": 0.37630010651327295
+        },
+        "48": {
+          "best_cdi": 0.002366011277199563,
+          "best_design_id": "f94a3ddaac7e7fea",
+          "rel_improvement": 0.37630010651327295
+        },
+        "5": {
+          "best_cdi": 0.002755287882822245,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.2736836144435004
+        },
+        "64": {
+          "best_cdi": 0.002366011277199563,
+          "best_design_id": "f94a3ddaac7e7fea",
+          "rel_improvement": 0.37630010651327295
+        },
+        "8": {
+          "best_cdi": 0.002366011277199563,
+          "best_design_id": "f94a3ddaac7e7fea",
+          "rel_improvement": 0.37630010651327295
+        }
+      },
+      "charged": 64,
+      "inner_solves": 332,
+      "seed": 43,
+      "task_id": "DREAL006-VAL-M230-L0108",
+      "trial_id": "DREAL006-VAL-M230-L0108__COND_FOMAML_KSHOT_BO__s43",
+      "valid": 64,
+      "wall_seconds": 48.602
+    },
+    {
+      "arm": "COND_FOMAML_KSHOT_BO",
+      "best_at": {
+        "11": {
+          "best_cdi": 0.0015613577477360736,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.5884133476699708
+        },
+        "16": {
+          "best_cdi": 0.0015613577477360736,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.5884133476699708
+        },
+        "32": {
+          "best_cdi": 0.0015613577477360736,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.5884133476699708
+        },
+        "48": {
+          "best_cdi": 0.0015613577477360736,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.5884133476699708
+        },
+        "5": {
+          "best_cdi": 0.002755287882822245,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.2736836144435004
+        },
+        "64": {
+          "best_cdi": 0.0015613577477360736,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.5884133476699708
+        },
+        "8": {
+          "best_cdi": 0.0015613577477360736,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.5884133476699708
+        }
+      },
+      "charged": 64,
+      "inner_solves": 332,
+      "seed": 7,
+      "task_id": "DREAL006-VAL-M230-L0108",
+      "trial_id": "DREAL006-VAL-M230-L0108__COND_FOMAML_KSHOT_BO__s7",
+      "valid": 64,
+      "wall_seconds": 49.304
+    },
+    {
+      "arm": "COND_FOMAML_KSHOT_BO",
+      "best_at": {
+        "11": {
+          "best_cdi": 0.0015613577477360736,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.5884133476699708
+        },
+        "16": {
+          "best_cdi": 0.0015613577477360736,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.5884133476699708
+        },
+        "32": {
+          "best_cdi": 0.0015613577477360736,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.5884133476699708
+        },
+        "48": {
+          "best_cdi": 0.0015613577477360736,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.5884133476699708
+        },
+        "5": {
+          "best_cdi": 0.002755287882822245,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.2736836144435004
+        },
+        "64": {
+          "best_cdi": 0.0015613577477360736,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.5884133476699708
+        },
+        "8": {
+          "best_cdi": 0.0015613577477360736,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.5884133476699708
+        }
+      },
+      "charged": 64,
+      "inner_solves": 332,
+      "seed": 71,
+      "task_id": "DREAL006-VAL-M230-L0108",
+      "trial_id": "DREAL006-VAL-M230-L0108__COND_FOMAML_KSHOT_BO__s71",
+      "valid": 64,
+      "wall_seconds": 48.789
+    },
+    {
+      "arm": "COND_SUPERVISED_KSHOT_BO",
+      "best_at": {
+        "11": {
+          "best_cdi": 0.0020438013083663156,
+          "best_design_id": "81d218bc184a0b74",
+          "rel_improvement": 0.46123728546007803
+        },
+        "16": {
+          "best_cdi": 0.0020438013083663156,
+          "best_design_id": "81d218bc184a0b74",
+          "rel_improvement": 0.46123728546007803
+        },
+        "32": {
+          "best_cdi": 0.0020438013083663156,
+          "best_design_id": "81d218bc184a0b74",
+          "rel_improvement": 0.46123728546007803
+        },
+        "48": {
+          "best_cdi": 0.0020438013083663156,
+          "best_design_id": "81d218bc184a0b74",
+          "rel_improvement": 0.46123728546007803
+        },
+        "5": {
+          "best_cdi": 0.002755287882822245,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.2736836144435004
+        },
+        "64": {
+          "best_cdi": 0.0020438013083663156,
+          "best_design_id": "81d218bc184a0b74",
+          "rel_improvement": 0.46123728546007803
+        },
+        "8": {
+          "best_cdi": 0.0020438013083663156,
+          "best_design_id": "81d218bc184a0b74",
+          "rel_improvement": 0.46123728546007803
+        }
+      },
+      "charged": 64,
+      "inner_solves": 332,
+      "seed": 19,
+      "task_id": "DREAL006-VAL-M230-L0108",
+      "trial_id": "DREAL006-VAL-M230-L0108__COND_SUPERVISED_KSHOT_BO__s19",
+      "valid": 64,
+      "wall_seconds": 45.189
+    },
+    {
+      "arm": "COND_SUPERVISED_KSHOT_BO",
+      "best_at": {
+        "11": {
+          "best_cdi": 0.002678404666368931,
+          "best_design_id": "c5da7de2ea4e1dab",
+          "rel_improvement": 0.29395065812792676
+        },
+        "16": {
+          "best_cdi": 0.002678404666368931,
+          "best_design_id": "c5da7de2ea4e1dab",
+          "rel_improvement": 0.29395065812792676
+        },
+        "32": {
+          "best_cdi": 0.0025917527903735666,
+          "best_design_id": "d973eba39fbd5953",
+          "rel_improvement": 0.31679280023838274
+        },
+        "48": {
+          "best_cdi": 0.0025917527903735666,
+          "best_design_id": "d973eba39fbd5953",
+          "rel_improvement": 0.31679280023838274
+        },
+        "5": {
+          "best_cdi": 0.002755287882822245,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.2736836144435004
+        },
+        "64": {
+          "best_cdi": 0.0023798296528412606,
+          "best_design_id": "de29f784ca2ff9f8",
+          "rel_improvement": 0.372657469853448
+        },
+        "8": {
+          "best_cdi": 0.002678404666368931,
+          "best_design_id": "c5da7de2ea4e1dab",
+          "rel_improvement": 0.29395065812792676
+        }
+      },
+      "charged": 64,
+      "inner_solves": 332,
+      "seed": 43,
+      "task_id": "DREAL006-VAL-M230-L0108",
+      "trial_id": "DREAL006-VAL-M230-L0108__COND_SUPERVISED_KSHOT_BO__s43",
+      "valid": 64,
+      "wall_seconds": 44.723
+    },
+    {
+      "arm": "COND_SUPERVISED_KSHOT_BO",
+      "best_at": {
+        "11": {
+          "best_cdi": 0.0015613577477360736,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.5884133476699708
+        },
+        "16": {
+          "best_cdi": 0.0015613577477360736,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.5884133476699708
+        },
+        "32": {
+          "best_cdi": 0.0015613577477360736,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.5884133476699708
+        },
+        "48": {
+          "best_cdi": 0.0015613577477360736,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.5884133476699708
+        },
+        "5": {
+          "best_cdi": 0.002755287882822245,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.2736836144435004
+        },
+        "64": {
+          "best_cdi": 0.0015613577477360736,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.5884133476699708
+        },
+        "8": {
+          "best_cdi": 0.0015613577477360736,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.5884133476699708
+        }
+      },
+      "charged": 64,
+      "inner_solves": 332,
+      "seed": 7,
+      "task_id": "DREAL006-VAL-M230-L0108",
+      "trial_id": "DREAL006-VAL-M230-L0108__COND_SUPERVISED_KSHOT_BO__s7",
+      "valid": 64,
+      "wall_seconds": 44.565
+    },
+    {
+      "arm": "COND_SUPERVISED_KSHOT_BO",
+      "best_at": {
+        "11": {
+          "best_cdi": 0.0015613577477360736,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.5884133476699708
+        },
+        "16": {
+          "best_cdi": 0.0015613577477360736,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.5884133476699708
+        },
+        "32": {
+          "best_cdi": 0.0015613577477360736,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.5884133476699708
+        },
+        "48": {
+          "best_cdi": 0.0015613577477360736,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.5884133476699708
+        },
+        "5": {
+          "best_cdi": 0.002755287882822245,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.2736836144435004
+        },
+        "64": {
+          "best_cdi": 0.0015613577477360736,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.5884133476699708
+        },
+        "8": {
+          "best_cdi": 0.0015613577477360736,
+          "best_design_id": "5592bd3e7fe7a417",
+          "rel_improvement": 0.5884133476699708
+        }
+      },
+      "charged": 64,
+      "inner_solves": 332,
+      "seed": 71,
+      "task_id": "DREAL006-VAL-M230-L0108",
+      "trial_id": "DREAL006-VAL-M230-L0108__COND_SUPERVISED_KSHOT_BO__s71",
+      "valid": 64,
+      "wall_seconds": 44.958
+    },
+    {
+      "arm": "SOBOL_BO",
+      "best_at": {
+        "11": {
+          "best_cdi": 0.002755287882822245,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.2736836144435004
+        },
+        "16": {
+          "best_cdi": 0.002755287882822245,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.2736836144435004
+        },
+        "32": {
+          "best_cdi": 0.0025917527903735666,
+          "best_design_id": "d973eba39fbd5953",
+          "rel_improvement": 0.31679280023838274
+        },
+        "48": {
+          "best_cdi": 0.0025917527903735666,
+          "best_design_id": "d973eba39fbd5953",
+          "rel_improvement": 0.31679280023838274
+        },
+        "5": {
+          "best_cdi": 0.002755287882822245,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.2736836144435004
+        },
+        "64": {
+          "best_cdi": 0.0023798296528412606,
+          "best_design_id": "de29f784ca2ff9f8",
+          "rel_improvement": 0.372657469853448
+        },
+        "8": {
+          "best_cdi": 0.002755287882822245,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.2736836144435004
+        }
+      },
+      "charged": 64,
+      "inner_solves": 334,
+      "seed": 19,
+      "task_id": "DREAL006-VAL-M230-L0108",
+      "trial_id": "DREAL006-VAL-M230-L0108__SOBOL_BO__s19",
+      "valid": 64,
+      "wall_seconds": 44.504
+    },
+    {
+      "arm": "SOBOL_BO",
+      "best_at": {
+        "11": {
+          "best_cdi": 0.002755287882822245,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.2736836144435004
+        },
+        "16": {
+          "best_cdi": 0.002755287882822245,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.2736836144435004
+        },
+        "32": {
+          "best_cdi": 0.0025917527903735666,
+          "best_design_id": "d973eba39fbd5953",
+          "rel_improvement": 0.31679280023838274
+        },
+        "48": {
+          "best_cdi": 0.0025917527903735666,
+          "best_design_id": "d973eba39fbd5953",
+          "rel_improvement": 0.31679280023838274
+        },
+        "5": {
+          "best_cdi": 0.002755287882822245,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.2736836144435004
+        },
+        "64": {
+          "best_cdi": 0.0023798296528412606,
+          "best_design_id": "de29f784ca2ff9f8",
+          "rel_improvement": 0.372657469853448
+        },
+        "8": {
+          "best_cdi": 0.002755287882822245,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.2736836144435004
+        }
+      },
+      "charged": 64,
+      "inner_solves": 334,
+      "seed": 43,
+      "task_id": "DREAL006-VAL-M230-L0108",
+      "trial_id": "DREAL006-VAL-M230-L0108__SOBOL_BO__s43",
+      "valid": 64,
+      "wall_seconds": 44.385
+    },
+    {
+      "arm": "SOBOL_BO",
+      "best_at": {
+        "11": {
+          "best_cdi": 0.002755287882822245,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.2736836144435004
+        },
+        "16": {
+          "best_cdi": 0.002755287882822245,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.2736836144435004
+        },
+        "32": {
+          "best_cdi": 0.0025917527903735666,
+          "best_design_id": "d973eba39fbd5953",
+          "rel_improvement": 0.31679280023838274
+        },
+        "48": {
+          "best_cdi": 0.0025917527903735666,
+          "best_design_id": "d973eba39fbd5953",
+          "rel_improvement": 0.31679280023838274
+        },
+        "5": {
+          "best_cdi": 0.002755287882822245,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.2736836144435004
+        },
+        "64": {
+          "best_cdi": 0.0023798296528412606,
+          "best_design_id": "de29f784ca2ff9f8",
+          "rel_improvement": 0.372657469853448
+        },
+        "8": {
+          "best_cdi": 0.002755287882822245,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.2736836144435004
+        }
+      },
+      "charged": 64,
+      "inner_solves": 334,
+      "seed": 7,
+      "task_id": "DREAL006-VAL-M230-L0108",
+      "trial_id": "DREAL006-VAL-M230-L0108__SOBOL_BO__s7",
+      "valid": 64,
+      "wall_seconds": 44.559
+    },
+    {
+      "arm": "SOBOL_BO",
+      "best_at": {
+        "11": {
+          "best_cdi": 0.002755287882822245,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.2736836144435004
+        },
+        "16": {
+          "best_cdi": 0.002755287882822245,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.2736836144435004
+        },
+        "32": {
+          "best_cdi": 0.0025917527903735666,
+          "best_design_id": "d973eba39fbd5953",
+          "rel_improvement": 0.31679280023838274
+        },
+        "48": {
+          "best_cdi": 0.0025917527903735666,
+          "best_design_id": "d973eba39fbd5953",
+          "rel_improvement": 0.31679280023838274
+        },
+        "5": {
+          "best_cdi": 0.002755287882822245,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.2736836144435004
+        },
+        "64": {
+          "best_cdi": 0.0023798296528412606,
+          "best_design_id": "de29f784ca2ff9f8",
+          "rel_improvement": 0.372657469853448
+        },
+        "8": {
+          "best_cdi": 0.002755287882822245,
+          "best_design_id": "fecdede947a937ae",
+          "rel_improvement": 0.2736836144435004
+        }
+      },
+      "charged": 64,
+      "inner_solves": 334,
+      "seed": 71,
+      "task_id": "DREAL006-VAL-M230-L0108",
+      "trial_id": "DREAL006-VAL-M230-L0108__SOBOL_BO__s71",
+      "valid": 64,
+      "wall_seconds": 44.436
+    }
+  ],
+  "phase": "s3",
+  "protocol": {
+    "acquisition": "expected improvement, xi=0.01, minimising log(CDi/J_ref)",
+    "arms": [
+      "SOBOL_BO",
+      "COND_SUPERVISED_KSHOT_BO",
+      "COND_FOMAML_KSHOT_BO"
+    ],
+    "bo_steps": 56,
+    "budget": 3072,
+    "charge_per_trial": 64,
+    "dev_tasks": [
+      "DREAL006-VAL-M170-L0090",
+      "DREAL006-VAL-M190-L0108",
+      "DREAL006-VAL-M210-L0090",
+      "DREAL006-VAL-M230-L0108"
+    ],
+    "failure_rule": "charged, recorded as NULL, excluded from the GP",
+    "gp": "fixed RBF length_scale=0.25 + WhiteKernel(1e-4), normalised y, no hyper-optimisation",
+    "hot_start": 3,
+    "hot_start_rule": "learning arms: three lowest predicted means; SOBOL_BO: first three pool points",
+    "k_support": 5,
+    "pool_seed": 20261125,
+    "pool_size": 8192,
+    "repeat_seeds": [
+      7,
+      19,
+      43,
+      71
+    ],
+    "schema": "dreal006.s3_protocol.v1",
+    "support_seed": 20261126,
+    "target": "log(CDi / J_ref) with J_ref from the S1 baseline anchor of the same task",
+    "trial_evals": 64
+  },
+  "schema": "dreal006.s3_ledger.v1"
+}

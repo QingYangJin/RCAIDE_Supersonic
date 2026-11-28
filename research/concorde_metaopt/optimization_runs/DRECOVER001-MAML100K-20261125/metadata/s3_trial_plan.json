@@ -1,0 +1,474 @@
+{
+  "created_utc": "2026-11-28T11:12:47Z",
+  "phase": "s3",
+  "plan_sha256": "5a8eddf7b096a6101219ae2891256c7df00e4b172e95420149520707671e4a2b",
+  "protocol": {
+    "acquisition": "expected improvement, xi=0.01, minimising log(CDi/J_ref)",
+    "arms": [
+      "SOBOL_BO",
+      "COND_SUPERVISED_KSHOT_BO",
+      "COND_FOMAML_KSHOT_BO"
+    ],
+    "bo_steps": 56,
+    "budget": 3072,
+    "charge_per_trial": 64,
+    "dev_tasks": [
+      "DREAL006-VAL-M170-L0090",
+      "DREAL006-VAL-M190-L0108",
+      "DREAL006-VAL-M210-L0090",
+      "DREAL006-VAL-M230-L0108"
+    ],
+    "failure_rule": "charged, recorded as NULL, excluded from the GP",
+    "gp": "fixed RBF length_scale=0.25 + WhiteKernel(1e-4), normalised y, no hyper-optimisation",
+    "hot_start": 3,
+    "hot_start_rule": "learning arms: three lowest predicted means; SOBOL_BO: first three pool points",
+    "k_support": 5,
+    "pool_seed": 20261125,
+    "pool_size": 8192,
+    "repeat_seeds": [
+      7,
+      19,
+      43,
+      71
+    ],
+    "schema": "dreal006.s3_protocol.v1",
+    "support_seed": 20261126,
+    "target": "log(CDi / J_ref) with J_ref from the S1 baseline anchor of the same task",
+    "trial_evals": 64
+  },
+  "schema": "dreal006.s3_trial_plan.v1",
+  "trials": [
+    {
+      "arm": "SOBOL_BO",
+      "evals": 64,
+      "j_ref": 0.014897817118085762,
+      "repeat": 0,
+      "seed": 7,
+      "task_id": "DREAL006-VAL-M170-L0090",
+      "trial_id": "DREAL006-VAL-M170-L0090__SOBOL_BO__s7"
+    },
+    {
+      "arm": "SOBOL_BO",
+      "evals": 64,
+      "j_ref": 0.014897817118085762,
+      "repeat": 1,
+      "seed": 19,
+      "task_id": "DREAL006-VAL-M170-L0090",
+      "trial_id": "DREAL006-VAL-M170-L0090__SOBOL_BO__s19"
+    },
+    {
+      "arm": "SOBOL_BO",
+      "evals": 64,
+      "j_ref": 0.014897817118085762,
+      "repeat": 2,
+      "seed": 43,
+      "task_id": "DREAL006-VAL-M170-L0090",
+      "trial_id": "DREAL006-VAL-M170-L0090__SOBOL_BO__s43"
+    },
+    {
+      "arm": "SOBOL_BO",
+      "evals": 64,
+      "j_ref": 0.014897817118085762,
+      "repeat": 3,
+      "seed": 71,
+      "task_id": "DREAL006-VAL-M170-L0090",
+      "trial_id": "DREAL006-VAL-M170-L0090__SOBOL_BO__s71"
+    },
+    {
+      "arm": "COND_SUPERVISED_KSHOT_BO",
+      "evals": 64,
+      "j_ref": 0.014897817118085762,
+      "repeat": 0,
+      "seed": 7,
+      "task_id": "DREAL006-VAL-M170-L0090",
+      "trial_id": "DREAL006-VAL-M170-L0090__COND_SUPERVISED_KSHOT_BO__s7"
+    },
+    {
+      "arm": "COND_SUPERVISED_KSHOT_BO",
+      "evals": 64,
+      "j_ref": 0.014897817118085762,
+      "repeat": 1,
+      "seed": 19,
+      "task_id": "DREAL006-VAL-M170-L0090",
+      "trial_id": "DREAL006-VAL-M170-L0090__COND_SUPERVISED_KSHOT_BO__s19"
+    },
+    {
+      "arm": "COND_SUPERVISED_KSHOT_BO",
+      "evals": 64,
+      "j_ref": 0.014897817118085762,
+      "repeat": 2,
+      "seed": 43,
+      "task_id": "DREAL006-VAL-M170-L0090",
+      "trial_id": "DREAL006-VAL-M170-L0090__COND_SUPERVISED_KSHOT_BO__s43"
+    },
+    {
+      "arm": "COND_SUPERVISED_KSHOT_BO",
+      "evals": 64,
+      "j_ref": 0.014897817118085762,
+      "repeat": 3,
+      "seed": 71,
+      "task_id": "DREAL006-VAL-M170-L0090",
+      "trial_id": "DREAL006-VAL-M170-L0090__COND_SUPERVISED_KSHOT_BO__s71"
+    },
+    {
+      "arm": "COND_FOMAML_KSHOT_BO",
+      "evals": 64,
+      "j_ref": 0.014897817118085762,
+      "repeat": 0,
+      "seed": 7,
+      "task_id": "DREAL006-VAL-M170-L0090",
+      "trial_id": "DREAL006-VAL-M170-L0090__COND_FOMAML_KSHOT_BO__s7"
+    },
+    {
+      "arm": "COND_FOMAML_KSHOT_BO",
+      "evals": 64,
+      "j_ref": 0.014897817118085762,
+      "repeat": 1,
+      "seed": 19,
+      "task_id": "DREAL006-VAL-M170-L0090",
+      "trial_id": "DREAL006-VAL-M170-L0090__COND_FOMAML_KSHOT_BO__s19"
+    },
+    {
+      "arm": "COND_FOMAML_KSHOT_BO",
+      "evals": 64,
+      "j_ref": 0.014897817118085762,
+      "repeat": 2,
+      "seed": 43,
+      "task_id": "DREAL006-VAL-M170-L0090",
+      "trial_id": "DREAL006-VAL-M170-L0090__COND_FOMAML_KSHOT_BO__s43"
+    },
+    {
+      "arm": "COND_FOMAML_KSHOT_BO",
+      "evals": 64,
+      "j_ref": 0.014897817118085762,
+      "repeat": 3,
+      "seed": 71,
+      "task_id": "DREAL006-VAL-M170-L0090",
+      "trial_id": "DREAL006-VAL-M170-L0090__COND_FOMAML_KSHOT_BO__s71"
+    },
+    {
+      "arm": "SOBOL_BO",
+      "evals": 64,
+      "j_ref": 0.01636497548403813,
+      "repeat": 0,
+      "seed": 7,
+      "task_id": "DREAL006-VAL-M190-L0108",
+      "trial_id": "DREAL006-VAL-M190-L0108__SOBOL_BO__s7"
+    },
+    {
+      "arm": "SOBOL_BO",
+      "evals": 64,
+      "j_ref": 0.01636497548403813,
+      "repeat": 1,
+      "seed": 19,
+      "task_id": "DREAL006-VAL-M190-L0108",
+      "trial_id": "DREAL006-VAL-M190-L0108__SOBOL_BO__s19"
+    },
+    {
+      "arm": "SOBOL_BO",
+      "evals": 64,
+      "j_ref": 0.01636497548403813,
+      "repeat": 2,
+      "seed": 43,
+      "task_id": "DREAL006-VAL-M190-L0108",
+      "trial_id": "DREAL006-VAL-M190-L0108__SOBOL_BO__s43"
+    },
+    {
+      "arm": "SOBOL_BO",
+      "evals": 64,
+      "j_ref": 0.01636497548403813,
+      "repeat": 3,
+      "seed": 71,
+      "task_id": "DREAL006-VAL-M190-L0108",
+      "trial_id": "DREAL006-VAL-M190-L0108__SOBOL_BO__s71"
+    },
+    {
+      "arm": "COND_SUPERVISED_KSHOT_BO",
+      "evals": 64,
+      "j_ref": 0.01636497548403813,
+      "repeat": 0,
+      "seed": 7,
+      "task_id": "DREAL006-VAL-M190-L0108",
+      "trial_id": "DREAL006-VAL-M190-L0108__COND_SUPERVISED_KSHOT_BO__s7"
+    },
+    {
+      "arm": "COND_SUPERVISED_KSHOT_BO",
+      "evals": 64,
+      "j_ref": 0.01636497548403813,
+      "repeat": 1,
+      "seed": 19,
+      "task_id": "DREAL006-VAL-M190-L0108",
+      "trial_id": "DREAL006-VAL-M190-L0108__COND_SUPERVISED_KSHOT_BO__s19"
+    },
+    {
+      "arm": "COND_SUPERVISED_KSHOT_BO",
+      "evals": 64,
+      "j_ref": 0.01636497548403813,
+      "repeat": 2,
+      "seed": 43,
+      "task_id": "DREAL006-VAL-M190-L0108",
+      "trial_id": "DREAL006-VAL-M190-L0108__COND_SUPERVISED_KSHOT_BO__s43"
+    },
+    {
+      "arm": "COND_SUPERVISED_KSHOT_BO",
+      "evals": 64,
+      "j_ref": 0.01636497548403813,
+      "repeat": 3,
+      "seed": 71,
+      "task_id": "DREAL006-VAL-M190-L0108",
+      "trial_id": "DREAL006-VAL-M190-L0108__COND_SUPERVISED_KSHOT_BO__s71"
+    },
+    {
+      "arm": "COND_FOMAML_KSHOT_BO",
+      "evals": 64,
+      "j_ref": 0.01636497548403813,
+      "repeat": 0,
+      "seed": 7,
+      "task_id": "DREAL006-VAL-M190-L0108",
+      "trial_id": "DREAL006-VAL-M190-L0108__COND_FOMAML_KSHOT_BO__s7"
+    },
+    {
+      "arm": "COND_FOMAML_KSHOT_BO",
+      "evals": 64,
+      "j_ref": 0.01636497548403813,
+      "repeat": 1,
+      "seed": 19,
+      "task_id": "DREAL006-VAL-M190-L0108",
+      "trial_id": "DREAL006-VAL-M190-L0108__COND_FOMAML_KSHOT_BO__s19"
+    },
+    {
+      "arm": "COND_FOMAML_KSHOT_BO",
+      "evals": 64,
+      "j_ref": 0.01636497548403813,
+      "repeat": 2,
+      "seed": 43,
+      "task_id": "DREAL006-VAL-M190-L0108",
+      "trial_id": "DREAL006-VAL-M190-L0108__COND_FOMAML_KSHOT_BO__s43"
+    },
+    {
+      "arm": "COND_FOMAML_KSHOT_BO",
+      "evals": 64,
+      "j_ref": 0.01636497548403813,
+      "repeat": 3,
+      "seed": 71,
+      "task_id": "DREAL006-VAL-M190-L0108",
+      "trial_id": "DREAL006-VAL-M190-L0108__COND_FOMAML_KSHOT_BO__s71"
+    },
+    {
+      "arm": "SOBOL_BO",
+      "evals": 64,
+      "j_ref": 0.004113015092831011,
+      "repeat": 0,
+      "seed": 7,
+      "task_id": "DREAL006-VAL-M210-L0090",
+      "trial_id": "DREAL006-VAL-M210-L0090__SOBOL_BO__s7"
+    },
+    {
+      "arm": "SOBOL_BO",
+      "evals": 64,
+      "j_ref": 0.004113015092831011,
+      "repeat": 1,
+      "seed": 19,
+      "task_id": "DREAL006-VAL-M210-L0090",
+      "trial_id": "DREAL006-VAL-M210-L0090__SOBOL_BO__s19"
+    },
+    {
+      "arm": "SOBOL_BO",
+      "evals": 64,
+      "j_ref": 0.004113015092831011,
+      "repeat": 2,
+      "seed": 43,
+      "task_id": "DREAL006-VAL-M210-L0090",
+      "trial_id": "DREAL006-VAL-M210-L0090__SOBOL_BO__s43"
+    },
+    {
+      "arm": "SOBOL_BO",
+      "evals": 64,
+      "j_ref": 0.004113015092831011,
+      "repeat": 3,
+      "seed": 71,
+      "task_id": "DREAL006-VAL-M210-L0090",
+      "trial_id": "DREAL006-VAL-M210-L0090__SOBOL_BO__s71"
+    },
+    {
+      "arm": "COND_SUPERVISED_KSHOT_BO",
+      "evals": 64,
+      "j_ref": 0.004113015092831011,
+      "repeat": 0,
+      "seed": 7,
+      "task_id": "DREAL006-VAL-M210-L0090",
+      "trial_id": "DREAL006-VAL-M210-L0090__COND_SUPERVISED_KSHOT_BO__s7"
+    },
+    {
+      "arm": "COND_SUPERVISED_KSHOT_BO",
+      "evals": 64,
+      "j_ref": 0.004113015092831011,
+      "repeat": 1,
+      "seed": 19,
+      "task_id": "DREAL006-VAL-M210-L0090",
+      "trial_id": "DREAL006-VAL-M210-L0090__COND_SUPERVISED_KSHOT_BO__s19"
+    },
+    {
+      "arm": "COND_SUPERVISED_KSHOT_BO",
+      "evals": 64,
+      "j_ref": 0.004113015092831011,
+      "repeat": 2,
+      "seed": 43,
+      "task_id": "DREAL006-VAL-M210-L0090",
+      "trial_id": "DREAL006-VAL-M210-L0090__COND_SUPERVISED_KSHOT_BO__s43"
+    },
+    {
+      "arm": "COND_SUPERVISED_KSHOT_BO",
+      "evals": 64,
+      "j_ref": 0.004113015092831011,
+      "repeat": 3,
+      "seed": 71,
+      "task_id": "DREAL006-VAL-M210-L0090",
+      "trial_id": "DREAL006-VAL-M210-L0090__COND_SUPERVISED_KSHOT_BO__s71"
+    },
+    {
+      "arm": "COND_FOMAML_KSHOT_BO",
+      "evals": 64,
+      "j_ref": 0.004113015092831011,
+      "repeat": 0,
+      "seed": 7,
+      "task_id": "DREAL006-VAL-M210-L0090",
+      "trial_id": "DREAL006-VAL-M210-L0090__COND_FOMAML_KSHOT_BO__s7"
+    },
+    {
+      "arm": "COND_FOMAML_KSHOT_BO",
+      "evals": 64,
+      "j_ref": 0.004113015092831011,
+      "repeat": 1,
+      "seed": 19,
+      "task_id": "DREAL006-VAL-M210-L0090",
+      "trial_id": "DREAL006-VAL-M210-L0090__COND_FOMAML_KSHOT_BO__s19"
+    },
+    {
+      "arm": "COND_FOMAML_KSHOT_BO",
+      "evals": 64,
+      "j_ref": 0.004113015092831011,
+      "repeat": 2,
+      "seed": 43,
+      "task_id": "DREAL006-VAL-M210-L0090",
+      "trial_id": "DREAL006-VAL-M210-L0090__COND_FOMAML_KSHOT_BO__s43"
+    },
+    {
+      "arm": "COND_FOMAML_KSHOT_BO",
+      "evals": 64,
+      "j_ref": 0.004113015092831011,
+      "repeat": 3,
+      "seed": 71,
+      "task_id": "DREAL006-VAL-M210-L0090",
+      "trial_id": "DREAL006-VAL-M210-L0090__COND_FOMAML_KSHOT_BO__s71"
+    },
+    {
+      "arm": "SOBOL_BO",
+      "evals": 64,
+      "j_ref": 0.003793509189127213,
+      "repeat": 0,
+      "seed": 7,
+      "task_id": "DREAL006-VAL-M230-L0108",
+      "trial_id": "DREAL006-VAL-M230-L0108__SOBOL_BO__s7"
+    },
+    {
+      "arm": "SOBOL_BO",
+      "evals": 64,
+      "j_ref": 0.003793509189127213,
+      "repeat": 1,
+      "seed": 19,
+      "task_id": "DREAL006-VAL-M230-L0108",
+      "trial_id": "DREAL006-VAL-M230-L0108__SOBOL_BO__s19"
+    },
+    {
+      "arm": "SOBOL_BO",
+      "evals": 64,
+      "j_ref": 0.003793509189127213,
+      "repeat": 2,
+      "seed": 43,
+      "task_id": "DREAL006-VAL-M230-L0108",
+      "trial_id": "DREAL006-VAL-M230-L0108__SOBOL_BO__s43"
+    },
+    {
+      "arm": "SOBOL_BO",
+      "evals": 64,
+      "j_ref": 0.003793509189127213,
+      "repeat": 3,
+      "seed": 71,
+      "task_id": "DREAL006-VAL-M230-L0108",
+      "trial_id": "DREAL006-VAL-M230-L0108__SOBOL_BO__s71"
+    },
+    {
+      "arm": "COND_SUPERVISED_KSHOT_BO",
+      "evals": 64,
+      "j_ref": 0.003793509189127213,
+      "repeat": 0,
+      "seed": 7,
+      "task_id": "DREAL006-VAL-M230-L0108",
+      "trial_id": "DREAL006-VAL-M230-L0108__COND_SUPERVISED_KSHOT_BO__s7"
+    },
+    {
+      "arm": "COND_SUPERVISED_KSHOT_BO",
+      "evals": 64,
+      "j_ref": 0.003793509189127213,
+      "repeat": 1,
+      "seed": 19,
+      "task_id": "DREAL006-VAL-M230-L0108",
+      "trial_id": "DREAL006-VAL-M230-L0108__COND_SUPERVISED_KSHOT_BO__s19"
+    },
+    {
+      "arm": "COND_SUPERVISED_KSHOT_BO",
+      "evals": 64,
+      "j_ref": 0.003793509189127213,
+      "repeat": 2,
+      "seed": 43,
+      "task_id": "DREAL006-VAL-M230-L0108",
+      "trial_id": "DREAL006-VAL-M230-L0108__COND_SUPERVISED_KSHOT_BO__s43"
+    },
+    {
+      "arm": "COND_SUPERVISED_KSHOT_BO",
+      "evals": 64,
+      "j_ref": 0.003793509189127213,
+      "repeat": 3,
+      "seed": 71,
+      "task_id": "DREAL006-VAL-M230-L0108",
+      "trial_id": "DREAL006-VAL-M230-L0108__COND_SUPERVISED_KSHOT_BO__s71"
+    },
+    {
+      "arm": "COND_FOMAML_KSHOT_BO",
+      "evals": 64,
+      "j_ref": 0.003793509189127213,
+      "repeat": 0,
+      "seed": 7,
+      "task_id": "DREAL006-VAL-M230-L0108",
+      "trial_id": "DREAL006-VAL-M230-L0108__COND_FOMAML_KSHOT_BO__s7"
+    },
+    {
+      "arm": "COND_FOMAML_KSHOT_BO",
+      "evals": 64,
+      "j_ref": 0.003793509189127213,
+      "repeat": 1,
+      "seed": 19,
+      "task_id": "DREAL006-VAL-M230-L0108",
+      "trial_id": "DREAL006-VAL-M230-L0108__COND_FOMAML_KSHOT_BO__s19"
+    },
+    {
+      "arm": "COND_FOMAML_KSHOT_BO",
+      "evals": 64,
+      "j_ref": 0.003793509189127213,
+      "repeat": 2,
+      "seed": 43,
+      "task_id": "DREAL006-VAL-M230-L0108",
+      "trial_id": "DREAL006-VAL-M230-L0108__COND_FOMAML_KSHOT_BO__s43"
+    },
+    {
+      "arm": "COND_FOMAML_KSHOT_BO",
+      "evals": 64,
+      "j_ref": 0.003793509189127213,
+      "repeat": 3,
+      "seed": 71,
+      "task_id": "DREAL006-VAL-M230-L0108",
+      "trial_id": "DREAL006-VAL-M230-L0108__COND_FOMAML_KSHOT_BO__s71"
+    }
+  ]
+}
