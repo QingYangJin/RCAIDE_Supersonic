@@ -1,0 +1,20 @@
+{
+ "schema": "dreal006.s4_smoke_spend.v1",
+ "charged": 246,
+ "breakdown": [
+  {
+   "what": "24-eval s4 trajectory smoke (COND_SUPERVISED, TEST-M160-L0085, m19/e20261125)",
+   "charged": 24
+  },
+  {
+   "what": "192-eval full-length s4 trajectory smoke (SOBOL_BO, TEST-M160-L0085, m19/e20261125)",
+   "charged": 192
+  },
+  {
+   "what": "aborted first launch of the S4 scheduler (bug: --repeats defaulted to 4, so the plan held 144 trials); stopped after ~40 s, no records or summaries persisted",
+   "charged": 30
+  }
+ ],
+ "note": "Evaluator work outside the 69,120-unit S4 stage cap: two protocol smoke trajectories plus one aborted launch (upper-bound estimate). Disclosed so total campaign spend is honest.",
+ "created_utc": "2026-11-28T11:20:36Z"
+}

@@ -84,6 +84,18 @@ PHASE_CONFIGS = {
         "status": "s3_run_status.json",
         "lock": "s3_run.lock",
     },
+    "s4": {
+        "stage": "S4",
+        "data_dir": "s4",
+        "designs_per_task": 192,
+        "fit_designs": 5,
+        "splits": ("test",),
+        "budget": 69120,
+        "manifest": "s4_trial_plan.json",
+        "ledger": "s4_ledger.json",
+        "status": "s4_run_status.json",
+        "lock": "s4_run.lock",
+    },
 }
 
 

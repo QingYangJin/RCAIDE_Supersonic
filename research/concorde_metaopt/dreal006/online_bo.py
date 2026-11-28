@@ -41,7 +41,23 @@ DEV_TASKS = (
     "DREAL006-VAL-M210-L0090",
     "DREAL006-VAL-M230-L0108",
 )
+TEST_TASKS = (
+    "DREAL006-TEST-M160-L0085",
+    "DREAL006-TEST-M160-L0115",
+    "DREAL006-TEST-M166-L0088",
+    "DREAL006-TEST-M166-L0112",
+    "DREAL006-TEST-M186-L0088",
+    "DREAL006-TEST-M186-L0112",
+    "DREAL006-TEST-M206-L0088",
+    "DREAL006-TEST-M206-L0112",
+    "DREAL006-TEST-M226-L0088",
+    "DREAL006-TEST-M226-L0112",
+    "DREAL006-TEST-M240-L0085",
+    "DREAL006-TEST-M240-L0115",
+)
 REPEAT_SEEDS = (7, 19, 43, 71)
+S4_MODEL_SEEDS = (7, 19, 43, 71, 101)
+S4_ENV_SEEDS = (20261125, 20261126)
 K_SUPPORT = 5
 HOT_START = 3
 TRIAL_EVALS = 64
@@ -50,6 +66,8 @@ POOL_SEED = 20261125
 SUPPORT_SEED = 20261126
 GP_XI = 0.01
 BUDGET_MARKS = (5, 8, 11, 16, 32, 48, 64)
+S4_EVALS = 192
+S4_MARKS = (8, 16, 32, 64, 128, 192)
 STATUSES = ("VALID", "LIFT_RESIDUAL_REJECTED", "NON_PHYSICAL_CDI", "ALPHA_SOLVE_FAILED", "ERROR")
 
 
@@ -63,26 +81,77 @@ def _worker_env(tmp_dir: pathlib.Path) -> None:
     os.environ.setdefault("PYTHONHASHSEED", "0")
 
 
-def protocol() -> dict:
-    return {
+GP_RULE = "fixed RBF length_scale=0.25 + WhiteKernel(1e-4), normalised y, no hyper-optimisation"
+ACQ_RULE = "expected improvement, xi=0.01, minimising log(CDi/J_ref)"
+FAILURE_RULE = "charged, recorded as NULL, excluded from the GP"
+
+# One frozen protocol per online stage.  S3 is the development stage on 4 val
+# tasks with 64 evaluations per trajectory; S4 is the main comparison on the 12
+# sealed test tasks with 192 evaluations per trajectory, 5 model seeds x 2
+# independent support/pool environments.
+PHASE_PROTOCOLS = {
+    "s3": {
         "schema": "dreal006.s3_protocol.v1",
-        "dev_tasks": list(DEV_TASKS),
-        "arms": list(ARMS),
-        "repeat_seeds": list(REPEAT_SEEDS),
+        "tasks": DEV_TASKS,
+        "task_split": "val",
+        "j_ref_source": "data/s1/labels_manifest.json",
+        "repeats": [{"model_seed": seed, "env_seed": POOL_SEED} for seed in REPEAT_SEEDS],
         "k_support": K_SUPPORT,
-        "hot_start": HOT_START,
-        "trial_evals": TRIAL_EVALS,
-        "bo_steps": TRIAL_EVALS - K_SUPPORT - HOT_START,
+        "evals": TRIAL_EVALS,
+        "marks": BUDGET_MARKS,
+        "init_plan": {"SOBOL_BO": [["explore", HOT_START]], "LEARNING": [["guided", HOT_START]]},
         "pool_size": POOL_SIZE,
-        "pool_seed": POOL_SEED,
-        "support_seed": SUPPORT_SEED,
-        "gp": "fixed RBF length_scale=0.25 + WhiteKernel(1e-4), normalised y, no hyper-optimisation",
-        "acquisition": "expected improvement, xi=0.01, minimising log(CDi/J_ref)",
-        "target": "log(CDi / J_ref) with J_ref from the S1 baseline anchor of the same task",
-        "hot_start_rule": "learning arms: three lowest predicted means; SOBOL_BO: first three pool points",
-        "failure_rule": "charged, recorded as NULL, excluded from the GP",
-        "charge_per_trial": TRIAL_EVALS,
-        "budget": len(DEV_TASKS) * len(ARMS) * len(REPEAT_SEEDS) * TRIAL_EVALS,
+        "budget": 3072,
+    },
+    "s4": {
+        "schema": "dreal006.s4_protocol.v1",
+        "tasks": TEST_TASKS,
+        "task_split": "test",
+        "j_ref_source": "data/s2/labels_manifest.json",
+        "repeats": [{"model_seed": model, "env_seed": env}
+                    for env in S4_ENV_SEEDS for model in S4_MODEL_SEEDS],
+        "k_support": K_SUPPORT,
+        "evals": S4_EVALS,
+        "marks": S4_MARKS,
+        "init_plan": {
+            "SOBOL_BO": [["explore", 3], ["order", 8]],
+            "LEARNING": [["explore", 3], ["guided", 8]],
+        },
+        "pool_size": POOL_SIZE,
+        "budget": 69120,
+    },
+}
+
+
+def phase_protocol(phase: str) -> dict:
+    if phase not in PHASE_PROTOCOLS:
+        raise SystemExit("unknown online phase %r (choose s3 or s4)" % phase)
+    return PHASE_PROTOCOLS[phase]
+
+
+def protocol(phase: str = "s3") -> dict:
+    cfg = phase_protocol(phase)
+    init_learning = sum(count for _, count in cfg["init_plan"]["LEARNING"])
+    return {
+        "schema": cfg["schema"],
+        "phase": phase,
+        "tasks": list(cfg["tasks"]),
+        "task_split": cfg["task_split"],
+        "arms": list(ARMS),
+        "repeats": [dict(item) for item in cfg["repeats"]],
+        "k_support": cfg["k_support"],
+        "init_plan": {arm: [list(pair) for pair in plan] for arm, plan in cfg["init_plan"].items()},
+        "evals": cfg["evals"],
+        "bo_steps": cfg["evals"] - cfg["k_support"] - init_learning,
+        "marks": list(cfg["marks"]),
+        "pool_size": cfg["pool_size"],
+        "gp": GP_RULE,
+        "acquisition": ACQ_RULE,
+        "target": "log(CDi / J_ref); J_ref is the billed baseline anchor of the same task (%s)" % cfg["j_ref_source"],
+        "hot_start_rule": "learning arms: model-predicted lowest means; SOBOL_BO: pool order; shared exploration points identical across arms",
+        "failure_rule": FAILURE_RULE,
+        "charge_per_trial": cfg["evals"],
+        "budget": cfg["budget"],
     }
 
 
@@ -146,6 +215,7 @@ def build_support(active_names: list[str], bounds: dict, k: int = K_SUPPORT, see
 
 
 def _load_model(arm: str, seed: int):
+    from . import common
     from .train import make_model
 
     base_arm, _needs_adaptation = MODEL_ARMS[arm]
@@ -275,7 +345,9 @@ def run_trial(spec: dict, tmp_dir: pathlib.Path) -> dict:
     _worker_env(tmp_dir)
     from . import common
 
-    common.apply_phase("s3")
+    phase = str(spec.get("phase", "s3"))
+    common.apply_phase(phase)
+    cfg = phase_protocol(phase)
     repo_root = str(common.REPO_ROOT)
     if repo_root not in sys.path:
         sys.path.insert(0, repo_root)
@@ -288,8 +360,14 @@ def run_trial(spec: dict, tmp_dir: pathlib.Path) -> dict:
     arm = spec["arm"]
     bounds = common.load_design_bounds()
     active_names = list(bounds)
-    pool = build_pool(active_names, bounds)
-    support = build_support(active_names, bounds)
+    pool_seed = int(spec.get("pool_seed", POOL_SEED))
+    support_seed = int(spec.get("support_seed", SUPPORT_SEED))
+    k_support = int(spec.get("k_support", K_SUPPORT))
+    evals = int(spec.get("evals", cfg["evals"]))
+    marks = tuple(spec.get("marks", cfg["marks"]))
+    init_plan = spec.get("init_plan", cfg["init_plan"])
+    pool = build_pool(active_names, bounds, seed=pool_seed)
+    support = build_support(active_names, bounds, k=k_support, seed=support_seed)
     backend, solve_state = _build_backend(task, active_names)
     j_ref = float(spec["j_ref"])
 
@@ -357,16 +435,11 @@ def run_trial(spec: dict, tmp_dir: pathlib.Path) -> dict:
     for design in support:
         evaluate_design(design, "support")
 
-    # ---- hot start -------------------------------------------------------
+    # ---- initialisation (shared exploration + arm-specific guided points) --
     hot_start_ids = []
-    if arm == "SOBOL_BO":
-        picks = [0, 1, 2]
-        extra = {"selector": "sobol-order"}
-        for idx in picks:
-            evaluated.add(idx)
-            evaluate_design(pool[idx], "hotstart", extra)
-            hot_start_ids.append(pool[idx]["design_id"])
-    else:
+    predicted = None
+    plan = init_plan.get(arm) or init_plan.get("LEARNING", [])
+    if any(kind == "guided" for kind, _ in plan):
         model, conditional = _load_model(arm, spec["seed"])
         adapted = model
         if MODEL_ARMS[arm][1]:
@@ -378,21 +451,23 @@ def run_trial(spec: dict, tmp_dir: pathlib.Path) -> dict:
                     [float(r["cdi"]) for r in support_valid], j_ref, bounds, active_names, conditional,
                 )
         predicted = _predict(adapted, task, pool, bounds, active_names, conditional)
-        order = np.argsort(predicted)
-        picks = []
-        for idx in order.tolist():
-            if idx in evaluated:
-                continue
-            picks.append(int(idx))
-            evaluated.add(int(idx))
-            if len(picks) >= HOT_START:
-                break
-        for idx in picks:
-            evaluate_design(pool[idx], "hotstart", {"selector": "model-predicted", "pred_mean": float(predicted[idx])})
+    for kind, count in plan:
+        for _ in range(int(count)):
+            if kind == "guided":
+                order = np.argsort(predicted)
+                idx = next(int(i) for i in order.tolist() if int(i) not in evaluated)
+                extra = {"selector": "model-predicted", "init_kind": "guided",
+                         "pred_mean": float(predicted[idx])}
+            else:
+                idx = next(i for i in range(len(pool)) if i not in evaluated)
+                extra = {"selector": "sobol-order" if kind == "explore" else "pool-order",
+                         "init_kind": kind}
+            evaluated.add(idx)
+            evaluate_design(pool[idx], "hotstart", extra)
             hot_start_ids.append(pool[idx]["design_id"])
 
     # ---- BO loop ---------------------------------------------------------
-    bo_steps = TRIAL_EVALS - K_SUPPORT - HOT_START
+    bo_steps = evals - len(sequence)
     for step in range(bo_steps):
         next_free = next(i for i in range(len(pool)) if i not in evaluated)
         X_obs = np.asarray(obs_x, dtype="float64").reshape(-1, len(active_names))
@@ -411,7 +486,7 @@ def run_trial(spec: dict, tmp_dir: pathlib.Path) -> dict:
 
     wall = time.perf_counter() - started
     best_at = {}
-    for mark in BUDGET_MARKS:
+    for mark in marks:
         if mark > len(sequence):
             continue
         valid = [r for r in sequence[:mark] if r["status"] == "VALID" and r["cdi"]]
@@ -425,7 +500,11 @@ def run_trial(spec: dict, tmp_dir: pathlib.Path) -> dict:
         else:
             best_at[str(mark)] = {"best_cdi": None, "rel_improvement": None, "best_design_id": None}
     summary = {
-        "schema": "dreal006.s3_trial.v1",
+        "schema": "dreal006.%s_trial.v1" % phase,
+        "phase": phase,
+        "evals": evals,
+        "pool_seed": pool_seed,
+        "support_seed": support_seed,
         "trial_id": spec["trial_id"],
         "task_id": task["task_id"],
         "arm": arm,
@@ -444,7 +523,7 @@ def run_trial(spec: dict, tmp_dir: pathlib.Path) -> dict:
         "support_ids": [d["design_id"] for d in support],
         "order": [r["design_id"] for r in sequence],
         "best_at": best_at,
-        "final_best": best_at.get(str(TRIAL_EVALS), {}),
+        "final_best": best_at.get(str(max(marks)), {}),
     }
     summary_path = pathlib.Path(spec["summary_path"])
     summary_path.write_text(json.dumps(summary, indent=1, sort_keys=True) + "\n", encoding="utf-8")
@@ -452,36 +531,61 @@ def run_trial(spec: dict, tmp_dir: pathlib.Path) -> dict:
 
 
 def _task_map() -> dict:
+    from . import common
+
     family = json.loads(common.TASK_FAMILY_PATH.read_text(encoding="utf-8"))
     return {task["task_id"]: task for task in family["tasks"]}
 
 
-def plan_trials(tasks: list[str] | None = None, arms: list[str] | None = None, repeats: int = 4) -> list[dict]:
+def plan_trials(phase: str = "s3", tasks: list[str] | None = None, arms: list[str] | None = None,
+                repeats: int | None = None) -> list[dict]:
     from . import common
 
+    cfg = phase_protocol(phase)
     family = _task_map()
-    labels = json.loads((common.RUN_DIR / "data" / "s1" / "labels_manifest.json").read_text(encoding="utf-8"))
-    chosen_tasks = [t for t in (tasks or DEV_TASKS) if t in family]
+    labels_path = common.RUN_DIR / cfg["j_ref_source"]
+    if not labels_path.exists():
+        raise SystemExit("missing j_ref source %s" % labels_path)
+    labels = json.loads(labels_path.read_text(encoding="utf-8"))
+    repeat_plan = list(cfg["repeats"])
+    if repeats:
+        repeat_plan = repeat_plan[: int(repeats)]
+    chosen_tasks = [t for t in (tasks or cfg["tasks"]) if t in family]
+    missing = sorted({str(t) for t in (tasks or cfg["tasks"])} - set(chosen_tasks))
+    if missing:
+        raise SystemExit("tasks not in the frozen family: %s" % missing)
     chosen_arms = [a for a in (arms or ARMS) if a in ARMS]
     trials = []
     for task_id in chosen_tasks:
         for arm in chosen_arms:
-            for repeat in range(repeats):
-                seed = REPEAT_SEEDS[repeat]
-                trial_id = "%s__%s__s%d" % (task_id, arm, seed)
+            for repeat, combo in enumerate(repeat_plan):
+                model_seed = int(combo["model_seed"])
+                env_seed = int(combo["env_seed"])
+                if phase == "s3":
+                    trial_id = "%s__%s__s%d" % (task_id, arm, model_seed)
+                else:
+                    trial_id = "%s__%s__m%d__e%d" % (task_id, arm, model_seed, env_seed)
                 task = dict(family[task_id])
                 task["q"] = float(task["dynamic_pressure_pa"])
                 task["lift_fraction"] = float(task["lift_fraction_of_base"])
                 task["altitude"] = float(task["altitude_m"])
                 trials.append({
                     "trial_id": trial_id,
+                    "phase": phase,
                     "task_id": task_id,
                     "arm": arm,
                     "repeat": repeat,
-                    "seed": seed,
+                    "seed": model_seed,
+                    "model_seed": model_seed,
+                    "env_seed": env_seed,
                     "task": task,
                     "j_ref": float(labels["per_task"][task_id]["j_ref"]),
-                    "evals": TRIAL_EVALS,
+                    "evals": int(cfg["evals"]),
+                    "marks": list(cfg["marks"]),
+                    "k_support": int(cfg["k_support"]),
+                    "init_plan": cfg["init_plan"],
+                    "pool_seed": env_seed,
+                    "support_seed": env_seed + 1,
                 })
     return trials
 
@@ -496,9 +600,11 @@ def _paths(trial: dict) -> tuple[pathlib.Path, pathlib.Path]:
     )
 
 
-def aggregate(summaries: list[dict]) -> dict:
+def aggregate(phase: str, summaries: list[dict]) -> dict:
     from . import common
 
+    cfg = phase_protocol(phase)
+    marks = tuple(cfg["marks"])
     counters = {
         "evaluation_attempts_charged": 0,
         "fresh_evaluator_attempts": 0,
@@ -532,11 +638,11 @@ def aggregate(summaries: list[dict]) -> dict:
         })
     arm_stats = {}
     for arm, rows in sorted(by_arm.items()):
-        marks = {}
-        for mark in BUDGET_MARKS:
+        arm_marks = {}
+        for mark in marks:
             values = [r["best_at"].get(str(mark), {}).get("rel_improvement") for r in rows]
             values = [v for v in values if v is not None]
-            marks[str(mark)] = {
+            arm_marks[str(mark)] = {
                 "n": len(values),
                 "mean_rel_improvement": float(sum(values) / len(values)) if values else None,
                 "mean_best_cdi": (
@@ -544,13 +650,18 @@ def aggregate(summaries: list[dict]) -> dict:
                     if all(r["best_at"].get(str(mark), {}).get("best_cdi") for r in rows) else None
                 ),
             }
-        arm_stats[arm] = {"trials": len(rows), "marks": marks}
+        arm_stats[arm] = {"trials": len(rows), "marks": arm_marks}
     charged = counters["evaluation_attempts_charged"]
+    cap = int(cfg["budget"])
+    smoke_path = common.META_DIR / ("%s_smoke_spend.json" % phase)
+    smoke = 0
+    if smoke_path.exists():
+        smoke = int(json.loads(smoke_path.read_text(encoding="utf-8")).get("charged", 0))
     return {
-        "schema": "dreal006.s3_ledger.v1",
-        "phase": "s3",
-        "protocol": protocol(),
-        "budget": {"charged": charged, "s3_attempts_cap": 3072, "remaining": max(0, 3072 - charged)},
+        "schema": "dreal006.%s_ledger.v1" % phase,
+        "phase": phase,
+        "protocol": protocol(phase),
+        "budget": {"charged": charged, "%s_attempts_cap" % phase: cap, "remaining": max(0, cap - charged)},
         "counters": {
             "evaluation_attempts_charged": charged,
             "fresh_evaluator_attempts": counters["fresh_evaluator_attempts"],
@@ -559,6 +670,7 @@ def aggregate(summaries: list[dict]) -> dict:
             "cache_hits": counters["cache_hits"],
         },
         "by_status": by_status,
+        "pre_protocol_smoke_charged": smoke,
         "max_inner_solves_observed": max(
             (int(s.get("max_inner_solves_per_eval", 0)) for s in summaries), default=0),
         "per_arm": arm_stats,
@@ -566,12 +678,12 @@ def aggregate(summaries: list[dict]) -> dict:
     }
 
 
-def _status_payload(planned: int, done: int, charged: int, workers: int) -> dict:
+def _status_payload(phase: str, planned: int, done: int, charged: int, workers: int) -> dict:
     from . import common
 
     return {
-        "schema": "dreal006.s3_status.v1",
-        "phase": "s3",
+        "schema": "dreal006.%s_status.v1" % phase,
+        "phase": phase,
         "planned_trials": planned,
         "completed_trials": done,
         "charged": charged,
@@ -580,10 +692,10 @@ def _status_payload(planned: int, done: int, charged: int, workers: int) -> dict
     }
 
 
-def _write_ledger(summaries: list[dict]) -> dict:
+def _write_ledger(phase: str, summaries: list[dict]) -> dict:
     from . import common
 
-    ledger = aggregate(summaries)
+    ledger = aggregate(phase, summaries)
     common.atomic_write_json(common.LEDGER_PATH, ledger)
     return ledger
 
@@ -605,7 +717,9 @@ def run_worker(spec_path: str, tmp_dir: str) -> int:
 def _scheduler(args) -> int:
     from . import common
 
-    common.apply_phase("s3")
+    phase = args.phase
+    common.apply_phase(phase)
+    cfg = phase_protocol(phase)
     common.LOCK_PATH.parent.mkdir(parents=True, exist_ok=True)
     if common.LOCK_PATH.exists():
         if not args.force_unlock:
@@ -615,18 +729,18 @@ def _scheduler(args) -> int:
     os.write(lock_fd, str(os.getpid()).encode())
     os.close(lock_fd)
 
-    tasks = None
+    tasks = list(cfg["tasks"])
     if args.task_limit:
-        tasks = list(DEV_TASKS)[: args.task_limit]
+        tasks = tasks[: args.task_limit]
     arms = [a for a in (args.arms.split(",") if args.arms else ARMS) if a]
-    trials = plan_trials(tasks, arms, args.repeats)
+    trials = plan_trials(phase, tasks, arms, args.repeats)
     if args.trial_limit:
         trials = trials[: args.trial_limit]
     plan = {
-        "schema": "dreal006.s3_trial_plan.v1",
-        "phase": "s3",
+        "schema": "dreal006.%s_trial_plan.v1" % phase,
+        "phase": phase,
         "created_utc": common.utc_now(),
-        "protocol": protocol(),
+        "protocol": protocol(phase),
         "trials": [{k: v for k, v in t.items() if k != "task"} for t in trials],
     }
     plan_payload = common.canonical_json(plan)
@@ -637,7 +751,7 @@ def _scheduler(args) -> int:
     trials_dir.mkdir(parents=True, exist_ok=True)
     logs_dir = common.DATA_DIR / "logs"
     logs_dir.mkdir(parents=True, exist_ok=True)
-    tmp_dir = common.RUN_DIR / "tmp" / "s3"
+    tmp_dir = common.RUN_DIR / "tmp" / phase
     tmp_dir.mkdir(parents=True, exist_ok=True)
 
     pending = []
@@ -657,7 +771,8 @@ def _scheduler(args) -> int:
     charged = sum(int(s["charged"]) for s in summaries)
     print("plan %s trials=%d pending=%d already=%d charged=%d"
           % (plan["plan_sha256"][:16], total_planned, len(pending), len(summaries), charged), flush=True)
-    common.atomic_write_json(common.STATUS_PATH, _status_payload(total_planned, len(summaries), charged, args.workers))
+    common.atomic_write_json(common.STATUS_PATH,
+                             _status_payload(phase, total_planned, len(summaries), charged, args.workers))
 
     running: dict[str, tuple[subprocess.Popen, dict, float]] = {}
     failures = []
@@ -669,7 +784,7 @@ def _scheduler(args) -> int:
                 spec = dict(trial)
                 spec["records_path"] = str(records_path)
                 spec["summary_path"] = str(summary_path)
-                spec_path = common.RUN_DIR / "tmp" / "s3" / (trial["trial_id"] + ".spec.json")
+                spec_path = common.RUN_DIR / "tmp" / phase / (trial["trial_id"] + ".spec.json")
                 spec_path.write_text(json.dumps(spec), encoding="utf-8")
                 log_path = logs_dir / (trial["trial_id"] + ".log")
                 with log_path.open("w", encoding="utf-8") as log:
@@ -700,8 +815,9 @@ def _scheduler(args) -> int:
                 else:
                     failures.append({"trial_id": trial_id, "returncode": proc.returncode})
                     print("[fail] %s rc=%s" % (trial_id, proc.returncode), flush=True)
-                common.atomic_write_json(common.STATUS_PATH, _status_payload(total_planned, len(summaries), charged, args.workers))
-        ledger = _write_ledger(summaries)
+                common.atomic_write_json(common.STATUS_PATH,
+                                         _status_payload(phase, total_planned, len(summaries), charged, args.workers))
+        ledger = _write_ledger(phase, summaries)
         print(json.dumps(ledger["counters"], indent=1, sort_keys=True), flush=True)
         print("trials=%d failures=%d" % (len(summaries), len(failures)), flush=True)
         if failures:
@@ -714,30 +830,33 @@ def _scheduler(args) -> int:
     return 0
 
 
-def analyze() -> int:
+def analyze(phase: str = "s3") -> int:
     from . import common
 
-    common.apply_phase("s3")
+    common.apply_phase(phase)
+    cfg = phase_protocol(phase)
+    marks = tuple(cfg["marks"])
+    final_mark = max(marks)
     trials_dir = common.DATA_DIR / "trials"
     summaries = []
     for path in sorted(trials_dir.glob("*.summary.json")):
         summaries.append(json.loads(path.read_text(encoding="utf-8")))
     if not summaries:
-        raise SystemExit("no S3 trial summaries under %s" % trials_dir)
-    ledger = aggregate(summaries)
+        raise SystemExit("no %s trial summaries under %s" % (phase.upper(), trials_dir))
+    ledger = aggregate(phase, summaries)
     common.atomic_write_json(common.DATA_DIR / "analysis.json", ledger)
-    print("%-28s %-8s %s" % ("arm", "trials", " ".join("B=%d" % m for m in BUDGET_MARKS)))
+    print("%-28s %-8s %s" % ("arm", "trials", " ".join("B=%d" % m for m in marks)))
     for arm, stats in ledger["per_arm"].items():
         row = []
-        for mark in BUDGET_MARKS:
+        for mark in marks:
             value = stats["marks"][str(mark)]["mean_rel_improvement"]
             row.append("%6.3f" % value if value is not None else "    NA")
         print("%-28s %-8d %s" % (arm, stats["trials"], " ".join(row)))
     by_task = {}
     for summary in summaries:
         key = (summary["task_id"], summary["arm"])
-        by_task.setdefault(key, []).append(summary["best_at"].get(str(TRIAL_EVALS), {}).get("rel_improvement"))
-    print("\nper task (B=64 mean rel improvement over available repeats)")
+        by_task.setdefault(key, []).append(summary["best_at"].get(str(final_mark), {}).get("rel_improvement"))
+    print("\nper task (B=%d mean rel improvement over available repeats)" % final_mark)
     for (task_id, arm), values in sorted(by_task.items()):
         values = [v for v in values if v is not None]
         print("%-28s %-28s %s" % (task_id, arm,
@@ -752,20 +871,22 @@ def main(argv=None) -> int:
     common = _common
 
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--phase", default="s3", choices=["s3", "s4"])
     parser.add_argument("--workers", type=int, default=10)
     parser.add_argument("--trial-limit", type=int, default=0)
     parser.add_argument("--task-limit", type=int, default=0)
     parser.add_argument("--arms", default="")
-    parser.add_argument("--repeats", type=int, default=4)
+    parser.add_argument("--repeats", type=int, default=0,
+                        help="0 = the full repeat plan declared by the phase protocol")
     parser.add_argument("--force-unlock", action="store_true")
     parser.add_argument("--analyze", action="store_true")
     parser.add_argument("--worker-spec", default="")
     parser.add_argument("--worker-tmp", default="")
     args = parser.parse_args(argv)
     if args.worker_spec:
-        return run_worker(args.worker_spec, args.worker_tmp or str(common.RUN_DIR / "tmp" / "s3"))
+        return run_worker(args.worker_spec, args.worker_tmp or str(common.RUN_DIR / "tmp" / args.phase))
     if args.analyze:
-        return analyze()
+        return analyze(args.phase)
     return _scheduler(args)
 
 
